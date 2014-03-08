@@ -51,8 +51,10 @@ def main():
   device, b_inv = pcv.invert(b_fill, device, args.debug)
 
   # Join the thresholded saturation and blue-yellow images
-  device, bs = pcv.logical_and(s_fill, b_fill, device, args.debug)
+  device, bs = pcv.logical_and(s_fill, b_inv, device, args.debug)
   
+  # Apply Mask (for vis images, mask_color=white)
+  device, masked = pcv.apply_mask(img, bs, 'white', device, args.debug)
 
 if __name__ == '__main__':
   main()
