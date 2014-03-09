@@ -126,7 +126,8 @@ def fill(img, mask, size, device, debug=False):
   
   # Loop through contours, fill contours less than or equal to size in area
   for cnt in contours:
-    area = cnt.size
+    m = cv2.moments(cnt)
+    area = m['m00']
     if area <= size:
       cv2.fillPoly(img, pts = cnt, color=(0,0,0))
 
@@ -187,3 +188,47 @@ def apply_mask(img, mask, mask_color, device, debug=False):
     return device, masked_img
   else:
       fatal_error('Mask Color' + mask_color + ' is not "white" or "black"!')
+      
+### Object identification and numeric properties
+def object_identification(img, mask, device, debug=False):
+  # Identifies and aggregates objects (assuming we will do this here)
+  # Outputs numeric properties for resulting object
+  # Also color classification?
+  # img = image object (most likely the original), color(RGB)
+  # mask = binary image object (black-white mask)
+  # device = device number. Used to count steps in the pipeline
+  # debug= True/False. If True, print image
+  device += 1
+  
+  # Find contours
+  contours, hierarchy = cv2.findContours(mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+  
+  # Loop through contours
+  for cnt in contours:
+    if cnt.size == 6590:
+      # Convex Hull
+      hull = cv2.convexHull(cnt)
+      # Moments
+      m = cv2.moments(cnt)
+      
+      ## Properties
+      # Area
+      area = m['m00']
+      # Perimeter
+      perimeter = cv2.arcLength(cnt, closed=True)
+      # x and y position (bottom left?) and extent x (width) and extent y (height)
+      x,y,width,height = cv2.boundingRect(cnt)
+      # Centroid (center of mass x, center of mass y)
+      cmx,cmy = (m['m10']/m['m00'], m['m01']/m['m00'])
+      
+      # Draw properties
+      if debug:
+        cv2.drawContours(img, [hull], -1, (0,0,255), 3)
+        cv2.line(img, (x,y), (x+width,y), (255,0,0), 3)
+        cv2.line(img, (int(cmx),y), (int(cmx),y+height), (255,0,0), 3)
+        cv2.circle(img, (int(cmx),int(cmy)), 10, (0,255,0), 3)
+      
+  if debug:
+    print_image(img, str(device) + '_obj.png')
+
+  return device, mask
