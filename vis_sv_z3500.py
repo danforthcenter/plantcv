@@ -74,6 +74,19 @@ def main():
   
   # Apply mask (for vis images, mask_color=white)
   device, masked2 = pcv.apply_mask(masked, ab_fill, 'white', device, args.debug)
+  
+  # Identify objects and fill them
+  #device, id_objects = pcv.fill_objects(masked2, ab_fill, device, args.debug)
+  
+  #Convert ROI made in imagej to usable binary form
+  device, roi_s = pcv.rgb2gray_hsv(roi, 'v', device, args.debug)
+  device, roi_binary = pcv.binary_threshold(roi_s, 0, 255, 'light', device, args.debug)
+  
+  # Define ROI
+  #device, roi1= pcv.define_roi(img, roi,'rgb', 'rectangle', device, args.debug)
+  
+  # Use ROI to select objects
+  device, obj_roi= pcv.obj_roi(ab_fill,roi_binary,'cut',device,'no',[],args.debug)
 
 if __name__ == '__main__':
   main()
