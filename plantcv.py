@@ -72,6 +72,18 @@ def rgb2gray_lab(img, channel, device, debug=False):
     return device, b
   else:
     fatal_error('Channel ' + channel + ' is not l, a or b!')
+    
+### RGB -> Gray
+def rgb2gray(img, device, debug=False):
+  # Convert image from RGB colorspace to Gray
+  # img = image object, RGB colorspace
+  # device = device number. Used to count steps in the pipeline
+  # debug = True/False. If True, print image
+  gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+  device += 1
+  if debug:
+    print_image(gray, str(device) + '_gray.png')
+  return device, gray
 
 ### Binary image threshold device
 def binary_threshold(img, threshold, maxValue, object_type, device, debug=False):
@@ -418,7 +430,7 @@ def find_contours(img, device, debug=False):
   
   # Find contours
   contours, hierarchy = cv2.findContours(img,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
-  
+    
   return device, contours
 
 ### Object composition
@@ -431,8 +443,8 @@ def object_composition(img, contours, device, debug=False):
   
   group = np.vstack(contours)
   if debug:
-    for cnt in contours:
-      cv2.drawContours(img, cnt, -1, (255,0,0), 2)
+    #for cnt in contours:
+    #  cv2.drawContours(img, cnt, -1, (255,0,0), 2)
     cv2.drawContours(img, [group], -1, (0,0,255), 3)
     print_image(img, str(device) + '_objcomp.png')
   return device, group
@@ -486,7 +498,7 @@ def analyze_object(img, obj, device, debug=False):
       
   # Draw properties
   if debug:
-    cv2.drawContours(img, [hull], -1, (0,0,255), 3)
+    cv2.drawContours(img, [hull], -1, (0,255,0), 3)
     cv2.line(img, (x,y), (x+width,y), (255,0,0), 3)
     cv2.line(img, (int(cmx),y), (int(cmx),y+height), (255,0,0), 3)
     cv2.circle(img, (int(cmx),int(cmy)), 10, (0,255,0), 3)

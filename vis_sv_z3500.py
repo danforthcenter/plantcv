@@ -88,8 +88,17 @@ def main():
   # Use ROI to select objects
   device, obj_roi= pcv.obj_roi(ab_fill,roi_binary,'cut',device, args.debug, 'no',[])
   
+  # Convert to gray through LAB since object is blue
+  device, obj_b = pcv.rgb2gray_lab(obj_roi, 'b', device, args.debug)
+  
+  # RGB to Gray
+  #device, obj_roi_gray = pcv.rgb2gray(obj_roi, device, args.debug)
+  
+  # Threshold to make binary image
+  device, obj_thresh = pcv.binary_threshold(obj_b, 100, 255, 'dark', device, args.debug)
+  
   # Identify objects
-  device, contours = pcv.find_contours(obj_roi, device, args.debug)
+  device, contours = pcv.find_contours(obj_thresh, device, args.debug)
   device, obj = pcv.object_composition(img, contours, device, args.debug)
   device, data = pcv.analyze_object(img, obj, device, args.debug)
   for key, value in data.items():
