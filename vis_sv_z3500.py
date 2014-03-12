@@ -56,10 +56,6 @@ def main():
   # Apply Mask (for vis images, mask_color=white)
   device, masked = pcv.apply_mask(img, bs, 'white', device, args.debug)
   
-  
-  # For now, pretending that the bs mask is our final plant object image
-  # Methods below will hopefully be used to extract properties for plant object
-  device, obj = pcv.object_identification(img, bs, device, args.debug)
 
 if __name__ == '__main__':
   main()
