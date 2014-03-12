@@ -86,7 +86,14 @@ def main():
   #device, roi1= pcv.define_roi(img, roi,'rgb', 'rectangle', device, args.debug)
   
   # Use ROI to select objects
-  device, obj_roi= pcv.obj_roi(ab_fill,roi_binary,'cut',device,'no',[],args.debug)
+  device, obj_roi= pcv.obj_roi(ab_fill,roi_binary,'cut',device, args.debug, 'no',[])
+  
+  # Identify objects
+  device, contours = pcv.find_contours(obj_roi, device, args.debug)
+  device, obj = pcv.object_composition(img, contours, device, args.debug)
+  device, data = pcv.analyze_object(img, obj, device, args.debug)
+  for key, value in data.items():
+    print key, ': ', value
 
 if __name__ == '__main__':
   main()

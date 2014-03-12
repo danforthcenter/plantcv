@@ -395,7 +395,7 @@ def obj_roi(mask,roi,roi_type,device, debug=False, overlay='no', img=[] ):
       return device, w_back
     else:
       fatal_error('ROI Type' + roi_type + ' is not "cut" or "partial"!')
-  elif overylay=='yes':
+  elif overlay=='yes':
     if roi_type=='cut':
       obj_roi=cv2.multiply(mask,roi)
       obj_roi_contour,hierarchy = cv2.findContours(obj_roi,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
@@ -407,3 +407,91 @@ def obj_roi(mask,roi,roi_type,device, debug=False, overlay='no', img=[] ):
       fatal_error('ROI Type' + roi_type + ' is not "cut" or "partial"!')
   else:
    fatal_error('Overlay' + overlay + ' is not "no" or "yes"!')
+   
+### Find contours
+# Temp method
+def find_contours(img, device, debug=False):
+  # img = binary image object
+  # device = device number. Used to count steps in the pipeline
+  # debug= True/False. If True, print image
+  device += 1
+  
+  # Find contours
+  contours, hierarchy = cv2.findContours(img,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+  
+  return device, contours
+
+### Object composition
+def object_composition(img, contours, device, debug=False):
+  # Groups objects into a single object, usually done after object filtering
+  # contours = object list
+  # device = device number. Used to count steps in the pipeline
+  # debug= True/False. If True, print image
+  device += 1
+  
+  group = np.vstack(contours)
+  if debug:
+    for cnt in contours:
+      cv2.drawContours(img, cnt, -1, (255,0,0), 2)
+    cv2.drawContours(img, [group], -1, (0,0,255), 3)
+    print_image(img, str(device) + '_objcomp.png')
+  return device, group
+
+      
+### Analyzes an object and outputs numeric properties
+def analyze_object(img, obj, device, debug=False):
+  # Outputs numeric properties for an input object (contour or grouped contours)
+  # Also color classification?
+  # img = image object (most likely the original), color(RGB)
+  # obj = single or grouped contour object
+  # device = device number. Used to count steps in the pipeline
+  # debug= True/False. If True, print image
+  device += 1
+  
+  # Convex Hull
+  hull = cv2.convexHull(obj)
+  # Moments
+  m = cv2.moments(obj)
+  ## Properties
+  # Area
+  area = m['m00']
+  # Convex Hull area
+  hull_area = cv2.contourArea(hull)
+  # Solidity
+  solidity = area / hull_area
+  # Perimeter
+  perimeter = cv2.arcLength(obj, closed=True)
+  # x and y position (bottom left?) and extent x (width) and extent y (height)
+  x,y,width,height = cv2.boundingRect(obj)
+  # Centroid (center of mass x, center of mass y)
+  cmx,cmy = (m['m10']/m['m00'], m['m01']/m['m00'])
+  # Ellipse
+  center, axes, angle = cv2.fitEllipse(obj)
+  major_axis = np.argmax(axes)
+  minor_axis = 1 - major_axis
+  major_axis_length = axes[major_axis]
+  minor_axis_length = axes[minor_axis]
+  eccentricity = np.sqrt(1 - (axes[minor_axis]/axes[major_axis]) ** 2)
+      
+  data = {
+    'area' : area,
+    'hull_area' : hull_area,
+    'solidity' : solidity,
+    'perimeter' : perimeter,
+    'width' : width,
+    'height' : height,
+    'center_mass_x' : cmx,
+    'center_mass_y' : cmy
+  }
+      
+  # Draw properties
+  if debug:
+    cv2.drawContours(img, [hull], -1, (0,0,255), 3)
+    cv2.line(img, (x,y), (x+width,y), (255,0,0), 3)
+    cv2.line(img, (int(cmx),y), (int(cmx),y+height), (255,0,0), 3)
+    cv2.circle(img, (int(cmx),int(cmy)), 10, (0,255,0), 3)
+      
+  if debug:
+    print_image(img, str(device) + '_obj.png')
+
+  return device, data
