@@ -60,6 +60,10 @@ def main():
   # Convert RGB to LAB and extract the Green-Magenta and Blue-Yellow channels
   device, masked_a = pcv.rgb2gray_lab(masked, 'a', device, args.debug)
   device, masked_b = pcv.rgb2gray_lab(masked, 'b', device, args.debug)
+  
+  # Threshold the green-magenta and blue images
+  device, maskeda_thresh = pcv.binary_threshold(masked_a, 122, 255, 'dark', device, args.debug)
+  device, maskedb_thresh = pcv.binary_threshold(masked_b, 133, 255, 'light', device, args.debug)
 
 if __name__ == '__main__':
   main()
