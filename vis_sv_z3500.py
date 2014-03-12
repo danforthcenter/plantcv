@@ -64,6 +64,16 @@ def main():
   # Threshold the green-magenta and blue images
   device, maskeda_thresh = pcv.binary_threshold(masked_a, 122, 255, 'dark', device, args.debug)
   device, maskedb_thresh = pcv.binary_threshold(masked_b, 133, 255, 'light', device, args.debug)
+  
+  # Join the thresholded saturation and blue-yellow images (OR)
+  device, ab = pcv.logical_or(maskeda_thresh, maskedb_thresh, device, args.debug)
+  device, ab_cnt = pcv.logical_or(maskeda_thresh, maskedb_thresh, device, args.debug)
+  
+  # Fill small objects
+  device, ab_fill = pcv.fill(ab, ab_cnt, 200, device, args.debug)
+  
+  # Apply mask (for vis images, mask_color=white)
+  device, masked2 = pcv.apply_mask(masked, ab_fill, 'white', device, args.debug)
 
 if __name__ == '__main__':
   main()
