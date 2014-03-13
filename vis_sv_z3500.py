@@ -22,8 +22,6 @@ def main():
   # Read image
   img = cv2.imread(args.image)
   roi = cv2.imread(args.roi)
-  # plain white image the same size as your image is needed to display objects on white background
-  w_back = cv2.imread('white.png')
   
   # Pipeline step
   device = 0
@@ -75,39 +73,21 @@ def main():
   # Apply mask (for vis images, mask_color=white)
   device, masked2 = pcv.apply_mask(masked, ab_fill, 'white', device, args.debug)
   
-  # Identify objects and fill them
-  #device, id_objects = pcv.fill_objects(masked2, ab_fill, device, args.debug)
-  
-  #Convert ROI made in imagej to usable binary form
-  device, roi_s = pcv.rgb2gray_hsv(roi, 'v', device, args.debug)
-  device, roi_binary = pcv.binary_threshold(roi_s, 0, 255, 'light', device, args.debug)
-  
-  # Define ROI
-  #device, roi1= pcv.define_roi(img, roi,'rgb', 'rectangle', device, args.debug)
-  
-  # Use ROI to select objects
-  device, obj_roi= pcv.obj_roi(ab_fill,roi_binary,'cut',device, args.debug, 'no',[])
-  
-  # Convert to gray through LAB since object is blue
-  device, obj_b = pcv.rgb2gray_lab(obj_roi, 'b', device, args.debug)
-  
-  # RGB to Gray
-  #device, obj_roi_gray = pcv.rgb2gray(obj_roi, device, args.debug)
-  
-  # Threshold to make binary image
-  device, obj_thresh = pcv.binary_threshold(obj_b, 100, 255, 'dark', device, args.debug)
-  
   # Identify objects
-  device, contours = pcv.find_contours(obj_thresh, device, args.debug)
-  device, obj = pcv.object_composition(img, contours, device, args.debug)
+  device, id_objects,obj_hierarchy = pcv.find_objects(masked2, ab_fill, device, args.debug)
+
+  # Define ROI
+  device, roi1, roi_hierarchy= pcv.define_roi(img, roi,'rgb', 'rectangle', device, args.debug,True, 0,0,0,-30)
+  
+  # Decide which objects to keep
+  device,roi_objects, hierarchy3 =pcv.roi_objects(img,'partial',roi1,roi_hierarchy,id_objects,obj_hierarchy,device, args.debug)
+  
+  # Object properties
+  #device, contours = pcv.find_contours(obj_thresh, device, args.debug)
+  device, obj = pcv.object_composition(img, roi_objects, device, args.debug)
   device, data = pcv.analyze_object(img, obj, device, args.debug)
   for key, value in data.items():
     print key, ': ', value
 
 if __name__ == '__main__':
   main()
-
-
-
-
-
