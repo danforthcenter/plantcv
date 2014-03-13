@@ -456,21 +456,7 @@ def roi_objects(img,roi_type,roi_contour, roi_hierarchy,object_contour, obj_hier
     print_image(w_back, str(device) + '_roi_objects.png')
     print_image(img, str(device) + '_obj_on_img.png')
   
-  return device, kept_cnt, hierarchy  
-
-   
-### Find contours
-# Temp method
-def find_contours(img, device, debug=False):
-  # img = binary image object
-  # device = device number. Used to count steps in the pipeline
-  # debug= True/False. If True, print image
-  device += 1
-  
-  # Find contours
-  contours, hierarchy = cv2.findContours(img,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
- 
-  return device, contours
+  return device, kept_cnt, hierarchy
 
 ### Object composition
 def object_composition(img, contours, device, debug=False):
