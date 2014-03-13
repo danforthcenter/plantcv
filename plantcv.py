@@ -225,19 +225,21 @@ def apply_mask(img, mask, mask_color, device, debug=False):
   else:
       fatal_error('Mask Color' + mask_color + ' is not "white" or "black"!')
 
-### Find and Fill Objects
-def fill_objects(img, mask, device, debug=False):
-  # fill all objects and color them blue
+### Find Objects
+def find_objects(img, mask, device, debug=False):
+  # find all objects and color them blue
   # img = image that the objects will be overlayed
   # mask = what is used for object detection
   # device = device number.  Used to count steps in the pipeline
   # debug = True/False. If True, print image
   device += 1
+  mask1=np.copy(mask)
   objects,hierarchy = cv2.findContours(mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
-  cv2.drawContours(img,objects,-1, (255,0,0),-1)
+  cv2.drawContours(img,objects,-1, (255,0,0),-1, lineType=8,hierarchy=hierarchy)
   if debug:
     print_image(img, str(device) + '_id_objects.png')
-  return device, img
+  
+  return device, objects, hierarchy
 
 ### View and Adjust ROI
 def define_roi(img, roi, roi_input, shape, device, debug=False, adjust=False, x_adj=0, y_adj=0, w_adj=0, h_adj=0, ):
@@ -430,7 +432,7 @@ def find_contours(img, device, debug=False):
   
   # Find contours
   contours, hierarchy = cv2.findContours(img,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
-    
+ 
   return device, contours
 
 ### Object composition
@@ -445,7 +447,7 @@ def object_composition(img, contours, device, debug=False):
   if debug:
     #for cnt in contours:
     #  cv2.drawContours(img, cnt, -1, (255,0,0), 2)
-    cv2.drawContours(img, [group], -1, (0,0,255), 3)
+    cv2.drawContours(img, [group], -1, (0,0,255), -1)
     print_image(img, str(device) + '_objcomp.png')
   return device, group
 
