@@ -80,7 +80,7 @@ def main():
   device, roi1, roi_hierarchy= pcv.define_roi(img, roi,'rgb', 'rectangle', device, args.debug,True, 0,0,0,-30)
   
   # Decide which objects to keep
-  device,roi_objects, hierarchy3 =pcv.roi_objects(img,'partial',roi1,roi_hierarchy,id_objects,obj_hierarchy,device, args.debug)
+  device,roi_objects, hierarchy3, obj_area = pcv.roi_objects(img,'partial',roi1,roi_hierarchy,id_objects,obj_hierarchy,device, args.debug)
   
   # Object properties
   #device, contours = pcv.find_contours(obj_thresh, device, args.debug)
