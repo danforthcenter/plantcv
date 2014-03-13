@@ -462,18 +462,26 @@ def roi_objects(img,roi_type,roi_contour, roi_hierarchy,object_contour, obj_hier
   return device, kept_cnt, hierarchy, obj_area
 
 ### Object composition
-def object_composition(img, contours, device, debug=False):
+def object_composition(img, contours, hierarchy, device, debug=False):
   # Groups objects into a single object, usually done after object filtering
   # contours = object list
   # device = device number. Used to count steps in the pipeline
   # debug= True/False. If True, print image
   device += 1
   
-  group = np.vstack(contours)
+  stack = np.zeros((len(contours), 1))
+  for c,cnt in enumerate(contours):
+    if hierarchy[0][c][0] == -1:
+      stack[c] = 1
+      #np.append(group, np.vstack(cnt))
+    else:
+      stack[c] = 0
+  ids = np.where(stack==1)[0]
+  group = np.vstack(contours[i] for i in ids)
   if debug:
     #for cnt in contours:
     #  cv2.drawContours(img, cnt, -1, (255,0,0), 2)
-    cv2.drawContours(img, [group], -1, (0,0,255), -1)
+    cv2.drawContours(img, group, -1, (255,0,0), 2)
     print_image(img, str(device) + '_objcomp.png')
   return device, group
 

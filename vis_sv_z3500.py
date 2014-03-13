@@ -84,7 +84,7 @@ def main():
   
   # Object properties
   #device, contours = pcv.find_contours(obj_thresh, device, args.debug)
-  device, obj = pcv.object_composition(img, roi_objects, device, args.debug)
+  device, obj = pcv.object_composition(img, roi_objects, hierarchy3, device, args.debug)
   device, data = pcv.analyze_object(img, obj, device, args.debug)
   for key, value in data.items():
     print key, ': ', value
