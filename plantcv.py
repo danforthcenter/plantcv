@@ -137,12 +137,12 @@ def fill(img, mask, size, device, debug=False):
   contours, hierarchy = cv2.findContours(mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
   
   # Loop through contours, fill contours less than or equal to size in area
-  for cnt in contours:
-    m = cv2.moments(cnt)
-    area = m['m00']
-    if area <= size:
-      cv2.fillPoly(img, pts = cnt, color=(0,0,0))
-
+  for c,cnt in enumerate(contours):
+    if hierarchy[0][c][0] == -1:
+      m = cv2.moments(cnt)
+      area = m['m00']
+      if area <= size:
+        cv2.fillPoly(img, pts = cnt, color=(0,0,0))
   if debug:
     print_image(img, str(device) + '_fill' + str(size) + '.png')
 
