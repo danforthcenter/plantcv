@@ -435,6 +435,7 @@ def roi_objects(img,roi_type,roi_contour, roi_hierarchy,object_contour, obj_hier
      
     kept=cv2.cvtColor(w_back, cv2.COLOR_RGB2GRAY )
     kept_inv= cv2.bitwise_not(kept)
+    obj_area=cv2.countNonZero(kept_inv)
     kept_cnt,hierarchy=cv2.findContours(kept_inv,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
     cv2.drawContours(img,kept_cnt,-1, (0,255,0),-1, lineType=8,hierarchy=hierarchy)
   
@@ -445,6 +446,7 @@ def roi_objects(img,roi_type,roi_contour, roi_hierarchy,object_contour, obj_hier
     cv2.fillPoly(background2,[roi_points], (255,255,255))
     obj_roi=cv2.multiply(background1,background2)
     obj_gray=cv2.cvtColor(obj_roi, cv2.COLOR_RGB2GRAY )
+    obj_area=cv2.countNonZero(obj_gray)
     kept_cnt,hierarchy = cv2.findContours(obj_gray,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
     cv2.drawContours(w_back,kept_cnt,-1, (0,0,0),-1)
     cv2.drawContours(img,kept_cnt,-1, (0,255,0),-1, lineType=8,hierarchy=hierarchy)
@@ -455,8 +457,9 @@ def roi_objects(img,roi_type,roi_contour, roi_hierarchy,object_contour, obj_hier
   if debug:
     print_image(w_back, str(device) + '_roi_objects.png')
     print_image(img, str(device) + '_obj_on_img.png')
+    print ('Object Area=', obj_area)
   
-  return device, kept_cnt, hierarchy
+  return device, kept_cnt, hierarchy, obj_area
 
 ### Object composition
 def object_composition(img, contours, device, debug=False):
