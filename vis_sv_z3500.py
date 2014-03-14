@@ -3,6 +3,7 @@ import sys, traceback
 import cv2
 import numpy as np
 import argparse
+import string
 import plantcv as pcv
 
 ### Parse command-line arguments
@@ -10,6 +11,7 @@ def options():
   parser = argparse.ArgumentParser(description="Imaging processing with opencv")
   parser.add_argument("-i", "--image", help="Input image file.", required=True)
   parser.add_argument("-m", "--roi", help="Input region of interest file.", required=True)
+  parser.add_argument("-o", "--outdir", help="Output directory for image files.", required=True)
   parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.", action="store_true")
   args = parser.parse_args()
   return args
@@ -85,9 +87,26 @@ def main():
   # Object properties
   #device, contours = pcv.find_contours(obj_thresh, device, args.debug)
   device, obj = pcv.object_composition(img, roi_objects, hierarchy3, device, args.debug)
-  device, data = pcv.analyze_object(img, obj, device, args.debug)
-  for key, value in data.items():
-    print key, ': ', value
+  #device, data = pcv.analyze_object(img, obj, device, args.debug)
+  device, data = pcv.analyze_object(img, obj, device, True)
+  
+  parts = string.split(args.image,'/')
+  filename = parts[len(parts)-1]
+  result = (
+    filename,
+    data['area'],
+    data['hull_area'],
+    data['solidity'],
+    data['perimeter'],
+    data['width'],
+    data['height'],
+    data['center_mass_x'],
+    data['center_mass_y']
+  )
+  #for key, value in data.items():
+  #  print key, ': ', value
+  print('\t'.join(map(str,result)))
+  pcv.print_image(img, args.outdir + '/' + filename + '_results.png')
 
 if __name__ == '__main__':
   main()

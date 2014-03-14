@@ -471,7 +471,7 @@ def object_composition(img, contours, hierarchy, device, debug=False):
   
   stack = np.zeros((len(contours), 1))
   for c,cnt in enumerate(contours):
-    if hierarchy[0][c][0] == -1:
+    if hierarchy[0][c][3] == -1:
       stack[c] = 1
       #np.append(group, np.vstack(cnt))
     else:
@@ -503,23 +503,27 @@ def analyze_object(img, obj, device, debug=False):
   ## Properties
   # Area
   area = m['m00']
-  # Convex Hull area
-  hull_area = cv2.contourArea(hull)
-  # Solidity
-  solidity = area / hull_area
-  # Perimeter
-  perimeter = cv2.arcLength(obj, closed=True)
-  # x and y position (bottom left?) and extent x (width) and extent y (height)
-  x,y,width,height = cv2.boundingRect(obj)
-  # Centroid (center of mass x, center of mass y)
-  cmx,cmy = (m['m10']/m['m00'], m['m01']/m['m00'])
-  # Ellipse
-  center, axes, angle = cv2.fitEllipse(obj)
-  major_axis = np.argmax(axes)
-  minor_axis = 1 - major_axis
-  major_axis_length = axes[major_axis]
-  minor_axis_length = axes[minor_axis]
-  eccentricity = np.sqrt(1 - (axes[minor_axis]/axes[major_axis]) ** 2)
+  
+  if area:
+    # Convex Hull area
+    hull_area = cv2.contourArea(hull)
+    # Solidity
+    solidity = area / hull_area
+    # Perimeter
+    perimeter = cv2.arcLength(obj, closed=True)
+    # x and y position (bottom left?) and extent x (width) and extent y (height)
+    x,y,width,height = cv2.boundingRect(obj)
+    # Centroid (center of mass x, center of mass y)
+    cmx,cmy = (m['m10']/m['m00'], m['m01']/m['m00'])
+    # Ellipse
+    center, axes, angle = cv2.fitEllipse(obj)
+    major_axis = np.argmax(axes)
+    minor_axis = 1 - major_axis
+    major_axis_length = axes[major_axis]
+    minor_axis_length = axes[minor_axis]
+    eccentricity = np.sqrt(1 - (axes[minor_axis]/axes[major_axis]) ** 2)
+  else:
+    hull_area, solidity, perimeter, width, height, cmx, cmy = 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND'
       
   data = {
     'area' : area,
@@ -533,13 +537,13 @@ def analyze_object(img, obj, device, debug=False):
   }
       
   # Draw properties
-  if debug:
-    cv2.drawContours(img, [hull], -1, (0,255,0), 3)
-    cv2.line(img, (x,y), (x+width,y), (255,0,0), 3)
-    cv2.line(img, (int(cmx),y), (int(cmx),y+height), (255,0,0), 3)
-    cv2.circle(img, (int(cmx),int(cmy)), 10, (0,255,0), 3)
+  if debug and area:
+    cv2.drawContours(img, [hull], -1, (0,0,255), 3)
+    cv2.line(img, (x,y), (x+width,y), (0,0,255), 3)
+    cv2.line(img, (int(cmx),y), (int(cmx),y+height), (0,0,255), 3)
+    cv2.circle(img, (int(cmx),int(cmy)), 10, (0,0,255), 3)
       
-  if debug:
-    print_image(img, str(device) + '_obj.png')
+  #if debug:
+  #  print_image(img, str(device) + '_obj.png')
 
   return device, data
