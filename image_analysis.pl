@@ -73,7 +73,7 @@ while (threads->list(threads::running)) {
     my $result = $resultq->dequeue();
     print $result;
   }
-  sleep 5;
+  sleep 2;
 }
 while ($resultq->pending) {
   my $result = $resultq->dequeue();

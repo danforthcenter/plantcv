@@ -538,6 +538,7 @@ def analyze_object(img, obj, device, debug=False):
       
   # Draw properties
   if debug and area:
+    cv2.drawContours(img, obj, -1, (255,0,0), 2)
     cv2.drawContours(img, [hull], -1, (0,0,255), 3)
     cv2.line(img, (x,y), (x+width,y), (0,0,255), 3)
     cv2.line(img, (int(cmx),y), (int(cmx),y+height), (0,0,255), 3)
