@@ -584,3 +584,261 @@ def color_palette(num):
       index += dist
     return colors
     
+    
+### Analyze Color of Object
+def analyze_color(img, mask,bins, device, debug=False,visualize=True,visualize_type='RGB',pseudocolor=True,pseudo_channel='v'):
+  # img = image
+  # mask = mask made from selected contours
+  # device = device number. Used to count steps in the pipeline
+  # debug = True/False. If True, print data and histograms
+  # visualize = True/False
+  # visualize_type = 'RGB', 'HSV' or 'LAB'
+  # pseudocolor= True/False. If True, create pseudocolored image
+  # pseudo_channel= 'h','s', or 'v', creates pseduocolored image based on the specified channel
+  
+  device += 1
+  
+  masked=cv2.bitwise_and(img,img, mask=mask)
+  b,g,r=cv2.split(masked)
+  lab = cv2.cvtColor(masked, cv2.COLOR_BGR2LAB)
+  l,m,y=cv2.split(lab)
+  hsv = cv2.cvtColor(masked, cv2.COLOR_BGR2HSV)
+  h,s,v=cv2.split(hsv)
+  
+  channel=(b,g,r,l,m,y,h,s,v)
+  hist_data = {}
+  graph_color=('blue','forestgreen','red','dimgray','magenta','yellow','blueviolet','cyan','orange' )
+  label=('blue','green','red', 'lightness','green-magenta','blue-yellow','hue','saturation', 'value')
+
+  # Color Histogram Stats
+  for c,i in enumerate(channel):
+    if c<=8: #0-2 for RGB ony, 3-5 for LAB ony, 6-8 for HSV only
+      i_bin=i/(256/bins)
+      hist = cv2.calcHist([i_bin],[0],mask,[bins], [0,(bins-1)])
+      max_bin= np.argmax(hist)
+      max_pixel=np.amax(hist)
+      non_zero=np.nonzero(hist)
+      non_zero_stack=np.vstack(non_zero)
+      last_non_zero=(len(non_zero_stack))-2
+      hist_data[label[c]] = {
+        'bin with most pixels': max_bin,
+        'pixels in max bin': max_pixel,
+        'left_border':non_zero_stack[0][0],
+        'right_border':non_zero_stack[0][last_non_zero],
+        'hist values': hist
+      }
+      
+    if debug:
+      print_image(masked, str(device) + '_masked_forcc.png')
+      if c<=8: #0-2 for RGB ony, 3-5 for LAB ony, 6-8 for HSV only
+        hist1 = cv2.calcHist([i_bin],[0],mask,[bins], [0,(bins-1)])    
+        plt.plot(hist1,color=graph_color[c],label=label[c])
+        plt.xlim([0,(bins-1)])
+        plt.legend() 
+        plt.savefig(str(device)+'color_hist.png')
+  plt.clf()
+
+  # Generate Color Slice: Get Flattened Color Histogram for Visualization     
+  if visualize==True:
+    if visualize_type=='RGB':
+      b_bin=b/(256/bins)
+      g_bin=g/(256/bins)
+      r_bin=r/(256/bins)
+      b_hist = cv2.calcHist([b_bin],[0],mask,[bins], [0,(bins-1)])
+      b_stack = np.vstack(b_hist)
+      g_hist = cv2.calcHist([g_bin],[0],mask,[bins], [0,(bins-1)])
+      g_stack= np.vstack(g_hist)
+      r_hist = cv2.calcHist([r_bin],[0],mask,[bins], [0,(bins-1)])
+      r_stack = np.vstack(r_hist)
+    
+      b_max=np.amax(b_stack)
+      g_max=np.amax(g_stack)
+      r_max=np.amax(r_stack)
+      
+      b_min=np.amin(b_stack)
+      g_min=np.amin(g_stack)
+      r_min=np.amin(r_stack)
+      
+      maximums=(b_max,g_max,r_max)
+      minimums=(b_min,g_min,r_min)
+      max_max=np.amax(maximums)
+      min_min=np.amin(minimums)
+      
+      b_norm=((b_stack-min_min)/(max_max-min_min))*255
+      g_norm=((g_stack-min_min)/(max_max-min_min))*255
+      r_norm=((r_stack-min_min)/(max_max-min_min))*255
+      
+      #color_slice=np.dstack((b_stack,g_stack,r_stack))
+      norm_slice=np.dstack((b_norm,g_norm,r_norm))
+      #print_image(color_slice, str(device) + '_bgr_stack.png')
+      #print_image(norm_slice, str(device) + '_bgr_norm.png')
+    elif visualize_type=='HSV':
+      h_bin=h/(256/bins)
+      s_bin=s/(256/bins)
+      v_bin=v/(256/bins)
+      
+      h_hist = cv2.calcHist([h_bin],[0],mask,[bins], [0,(bins-1)])
+      h_stack = np.vstack(h_hist)
+      s_hist = cv2.calcHist([s_bin],[0],mask,[bins], [0,(bins-1)])
+      s_stack= np.vstack(s_hist)
+      v_hist = cv2.calcHist([v_bin],[0],mask,[bins], [0,(bins-1)])
+      v_stack = np.vstack(v_hist)
+    
+      h_max=np.amax(h_stack)
+      s_max=np.amax(s_stack)
+      v_max=np.amax(v_stack)
+      
+      h_min=np.amin(h_stack)
+      s_min=np.amin(s_stack)
+      v_min=np.amin(v_stack)
+      
+      maximums=(h_max,s_max,v_max)
+      minimums=(h_min,s_min,v_min)
+      max_max=np.amax(maximums)
+      min_min=np.amin(minimums)
+      
+      h_norm=((h_stack-min_min)/(max_max-min_min))*255
+      s_norm=((s_stack-min_min)/(max_max-min_min))*255
+      v_norm=((v_stack-min_min)/(max_max-min_min))*255
+      
+      #color_slice=np.dstack((h_stack,s_stack,v_stack))
+      norm_slice=np.dstack((h_norm,s_norm,v_norm))
+      #print_image(color_slice, str(device) + '_hsv_stack.png')
+      #print_image(norm_slice, str(device) + '_hsv_norm.png')
+    elif visualize_type=='LAB':
+      l_bin=l/(256/bins)
+      m_bin=m/(256/bins)
+      y_bin=y/(256/bins)
+      
+      l_hist = cv2.calcHist([l_bin],[0],mask,[bins], [0,(bins-1)])
+      l_stack = np.vstack(l_hist)
+      m_hist = cv2.calcHist([m_bin],[0],mask,[bins], [0,(bins-1)])
+      m_stack= np.vstack(m_hist)
+      y_hist = cv2.calcHist([y_bin],[0],mask,[bins], [0,(bins-1)])
+      y_stack = np.vstack(y_hist)
+    
+      l_max=np.amax(l_stack)
+      m_max=np.amax(m_stack)
+      y_max=np.amax(y_stack)
+      
+      l_min=np.amin(l_stack)
+      m_min=np.amin(m_stack)
+      y_min=np.amin(y_stack)
+      
+      maximums=(l_max,m_max,y_max)
+      minimums=(l_min,m_min,y_min)
+      max_max=np.amax(maximums)
+      min_min=np.amin(minimums)
+      
+      l_norm=((l_stack-min_min)/(max_max-min_min))*255
+      m_norm=((m_stack-min_min)/(max_max-min_min))*255
+      y_norm=((y_stack-min_min)/(max_max-min_min))*255
+      
+      #color_slice=np.dstack((c_stack,m_stack,y_stack))
+      norm_slice=np.dstack((l_norm,m_norm,y_norm))
+      #print_image(color_slice, str(device) + '_lab_stack.png')
+      #print_image(norm_slice, str(device) + '_lab_norm.png')
+    else:
+      fatal_error('Visualize Type' + visualize_type + ' is not "RGB","HSV" or "LAB"!')
+      
+  # PseudoColor Image Based On h, s, or v Channel
+  if pseudocolor==True:
+    p_channel=pseudo_channel
+    
+    
+    if p_channel=='v':
+      size = 2056,2454
+      background = np.zeros(size, dtype=np.uint8)
+      w_back=background+255
+      
+      v_bin=v/(256/bins)
+      
+      v_img =plt.imshow(v_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
+      plt.colorbar()
+      
+      mask_inv=cv2.bitwise_not(mask)
+      img_gray=cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+      pot=cv2.bitwise_and(img_gray,img_gray,mask=mask_inv)
+      pot_img=cv2.add(pot,mask)
+      pot_rgba=np.dstack((pot_img,pot_img,pot_img,mask_inv))
+      my_cmap = plt.get_cmap('binary_r')
+      pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
+      plt.axis('off')
+    
+      plt.savefig(str(device)+'pseudocolor_on_ori.png')
+      plt.clf()
+      
+      v_img =plt.imshow(v_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
+      plt.colorbar()
+      white_rgba=np.dstack((w_back,w_back,w_back,mask_inv))
+      pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
+      plt.axis('off')
+      plt.savefig(str(device)+'pseudocolor_on_white.png')
+      plt.clf()
+      
+    elif p_channel=='h':
+      size = 2056,2454
+      background = np.zeros(size, dtype=np.uint8)
+      w_back=background+255
+      
+      h_bin=h/(256/bins)
+      
+      h_img =plt.imshow(h_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
+      plt.colorbar()
+      
+      mask_inv=cv2.bitwise_not(mask)
+      img_gray=cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+      pot=cv2.bitwise_and(img_gray,img_gray,mask=mask_inv)
+      pot_img=cv2.add(pot,mask)
+      pot_rgba=np.dstack((pot_img,pot_img,pot_img,mask_inv))
+      my_cmap = plt.get_cmap('binary_r')
+      pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
+
+      plt.axis('off')
+      
+      plt.savefig(str(device)+'pseudocolor_on_ori.png')
+      plt.clf()
+      
+      h_img =plt.imshow(h_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
+      plt.colorbar()
+      white_rgba=np.dstack((w_back,w_back,w_back,mask_inv))
+      pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
+      plt.axis('off')
+      plt.savefig(str(device)+'pseudocolor_on_white.png')
+      plt.clf()
+      
+    elif p_channel=='s':
+      size = 2056,2454
+      background = np.zeros(size, dtype=np.uint8)
+      w_back=background+255
+      
+      s_bin=s/(256/bins)
+      
+      s_img =plt.imshow(s_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
+      plt.colorbar()
+      
+      mask_inv=cv2.bitwise_not(mask)
+      img_gray=cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+      pot=cv2.bitwise_and(img_gray,img_gray,mask=mask_inv)
+      pot_img=cv2.add(pot,mask)
+      pot_rgba=np.dstack((pot_img,pot_img,pot_img,mask_inv))
+      my_cmap = plt.get_cmap('binary_r')
+      pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
+
+      plt.axis('off')
+      
+      plt.savefig(str(device)+'pseudocolor_on_ori.png')
+      plt.clf()
+      
+      s_img =plt.imshow(s_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
+      plt.colorbar()
+      white_rgba=np.dstack((w_back,w_back,w_back,mask_inv))
+      pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
+      plt.axis('off')
+      plt.savefig(str(device)+'pseudocolor_on_white.png')
+      plt.clf()
+    
+    else:
+      fatal_error('Pseudocolor Channel' + pseudo_channel + ' is not "h","s" or "v"!')
+
+  return device, hist_data, norm_slice
