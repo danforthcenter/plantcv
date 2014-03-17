@@ -479,9 +479,10 @@ def object_composition(img, contours, hierarchy, device, debug=False):
   # device = device number. Used to count steps in the pipeline
   # debug= True/False. If True, print image
   device += 1
+  ori_img=np.copy(img)
   
   stack = np.zeros((len(contours), 1))
-  r,g,b = cv2.split(img)
+  r,g,b = cv2.split(ori_img)
   mask = np.zeros(g.shape,dtype=np.uint8)
   
   for c,cnt in enumerate(contours):
@@ -503,7 +504,7 @@ def object_composition(img, contours, hierarchy, device, debug=False):
     #for cnt in contours:
     #  cv2.drawContours(img, cnt, -1, (255,0,0), 2)
     #cv2.drawContours(img, group, -1, (255,0,0), 2)
-    print_image(img, str(device) + '_objcomp.png')
+    print_image(ori_img, str(device) + '_objcomp.png')
     print_image(mask, str(device) + '_objcomp_mask.png')
   return device, group, mask
 
