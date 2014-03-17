@@ -107,6 +107,11 @@ def main():
   #  print key, ': ', value
   print('\t'.join(map(str,result)))
   pcv.print_image(img, args.outdir + '/' + filename + '_results.png')
+  
+  # Color properties: Histograms, Color Slices and Pseudocolored Images
+  device, hist_data, norm_slice= pcv.analyze_color(img, kept_mask, 256, device,args.debug,True,'HSV',True,'v')
+  print hist_data
+  pcv.print_image(norm_slice, str(device) + str(args.image[0:((len(str(args.image))-4))]) + '_norm_slice.png')
 
 if __name__ == '__main__':
   main()
