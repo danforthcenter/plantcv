@@ -471,24 +471,35 @@ def object_composition(img, contours, hierarchy, device, debug=False):
   device += 1
   
   stack = np.zeros((len(contours), 1))
+  r,g,b = cv2.split(img)
+  mask = np.zeros(g.shape,dtype=np.uint8)
+  
   for c,cnt in enumerate(contours):
-    if hierarchy[0][c][3] == -1:
-      stack[c] = 1
+    #if hierarchy[0][c][3] == -1:
+    if hierarchy[0][c][2] == -1 and hierarchy[0][c][3] > -1:
+      stack[c] = 0
+      #stack[c] = 1
+      #cv2.drawContours(img, cnt, -1, color_palette(1)[0], 3)
       #np.append(group, np.vstack(cnt))
     else:
-      stack[c] = 0
+      stack[c] = 1
+      #cv2.drawContours(img, contours, -1, color_palette(1)[0], -1, hierarchy=hierarchy)
+      #stack[c] = 0
   ids = np.where(stack==1)[0]
   group = np.vstack(contours[i] for i in ids)
+  cv2.drawContours(mask,contours, -1, (255), -1, hierarchy=hierarchy)
+  
   if debug:
     #for cnt in contours:
     #  cv2.drawContours(img, cnt, -1, (255,0,0), 2)
-    cv2.drawContours(img, group, -1, (255,0,0), 2)
+    #cv2.drawContours(img, group, -1, (255,0,0), 2)
     print_image(img, str(device) + '_objcomp.png')
-  return device, group
+    print_image(mask, str(device) + '_objcomp_mask.png')
+  return device, group, mask
 
       
 ### Analyzes an object and outputs numeric properties
-def analyze_object(img, obj, device, debug=False):
+def analyze_object(img, obj, mask, device, debug=False):
   # Outputs numeric properties for an input object (contour or grouped contours)
   # Also color classification?
   # img = image object (most likely the original), color(RGB)
@@ -500,7 +511,8 @@ def analyze_object(img, obj, device, debug=False):
   # Convex Hull
   hull = cv2.convexHull(obj)
   # Moments
-  m = cv2.moments(obj)
+#  m = cv2.moments(obj)
+  m = cv2.moments(mask, binaryImage=True)
   ## Properties
   # Area
   area = m['m00']
