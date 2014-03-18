@@ -1,9 +1,12 @@
 #!/usr/bin/python
-import sys, traceback
+import sys, os, traceback
 import cv2
 import numpy as np
 from random import randrange
 import pygtk
+import matplotlib
+if not os.getenv('DISPLAY'):
+  matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 from matplotlib import cm as cm
 
