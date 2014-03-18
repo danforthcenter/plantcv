@@ -648,9 +648,8 @@ def analyze_color(img, mask,bins, device, debug=False,visualize=True,visualize_t
       #non_zero=np.nonzero(hist)
       #non_zero_stack=np.vstack(non_zero)
       #last_non_zero=(len(non_zero_stack))-2
-      hist_data[label[c]] = hist
-      hist1 = cv2.calcHist([i_bin],[0],mask,[bins], [0,(bins-1)])    
-      plt.plot(hist1,color=graph_color[c],label=label[c])
+      hist_data[label[c]] = hist   
+      plt.plot(hist,color=graph_color[c],label=label[c])
       plt.xlim([0,(bins-1)])
       plt.legend() 
       plt.savefig(str(device)+'color_hist.png')
@@ -781,7 +780,6 @@ def analyze_color(img, mask,bins, device, debug=False,visualize=True,visualize_t
   if pseudocolor==True:
     p_channel=pseudo_channel
     
-    
     if p_channel=='v':
       size = 2056,2454
       background = np.zeros(size, dtype=np.uint8)
@@ -873,8 +871,101 @@ def analyze_color(img, mask,bins, device, debug=False,visualize=True,visualize_t
       plt.axis('off')
       plt.savefig(str(device)+'pseudocolor_on_white.png')
       plt.clf()
+      
+    elif p_channel=='l':
+      size = 2056,2454
+      background = np.zeros(size, dtype=np.uint8)
+      w_back=background+255
+      
+      l_bin=l/(256/bins)
+      
+      l_img =plt.imshow(l_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
+      plt.colorbar()
+      
+      mask_inv=cv2.bitwise_not(mask)
+      img_gray=cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+      pot=cv2.bitwise_and(img_gray,img_gray,mask=mask_inv)
+      pot_img=cv2.add(pot,mask)
+      pot_rgba=np.dstack((pot_img,pot_img,pot_img,mask_inv))
+      my_cmap = plt.get_cmap('binary_r')
+      pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
+
+      plt.axis('off')
+      
+      plt.savefig(str(device)+'pseudocolor_on_ori.png')
+      plt.clf()
+      
+      l_img =plt.imshow(l_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
+      plt.colorbar()
+      white_rgba=np.dstack((w_back,w_back,w_back,mask_inv))
+      pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
+      plt.axis('off')
+      plt.savefig(str(device)+'pseudocolor_on_white.png')
+      plt.clf()
+      
+    elif p_channel=='m':
+      size = 2056,2454
+      background = np.zeros(size, dtype=np.uint8)
+      w_back=background+255
+      
+      m_bin=m/(256/bins)
+      
+      m_img =plt.imshow(m_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
+      plt.colorbar()
+      
+      mask_inv=cv2.bitwise_not(mask)
+      img_gray=cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+      pot=cv2.bitwise_and(img_gray,img_gray,mask=mask_inv)
+      pot_img=cv2.add(pot,mask)
+      pot_rgba=np.dstack((pot_img,pot_img,pot_img,mask_inv))
+      my_cmap = plt.get_cmap('binary_r')
+      pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
+
+      plt.axis('off')
+      
+      plt.savefig(str(device)+'pseudocolor_on_ori.png')
+      plt.clf()
+      
+      m_img =plt.imshow(m_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
+      plt.colorbar()
+      white_rgba=np.dstack((w_back,w_back,w_back,mask_inv))
+      pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
+      plt.axis('off')
+      plt.savefig(str(device)+'pseudocolor_on_white.png')
+      plt.clf()
+      
+    elif p_channel=='y':
+      size = 2056,2454
+      background = np.zeros(size, dtype=np.uint8)
+      w_back=background+255
+      
+      y_bin=l/(256/bins)
+      
+      y_img =plt.imshow(y_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
+      plt.colorbar()
+      
+      mask_inv=cv2.bitwise_not(mask)
+      img_gray=cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+      pot=cv2.bitwise_and(img_gray,img_gray,mask=mask_inv)
+      pot_img=cv2.add(pot,mask)
+      pot_rgba=np.dstack((pot_img,pot_img,pot_img,mask_inv))
+      my_cmap = plt.get_cmap('binary_r')
+      pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
+
+      plt.axis('off')
+      
+      plt.savefig(str(device)+'pseudocolor_on_ori.png')
+      plt.clf()
+      
+      y_img =plt.imshow(y_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
+      plt.colorbar()
+      white_rgba=np.dstack((w_back,w_back,w_back,mask_inv))
+      pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
+      plt.axis('off')
+      plt.savefig(str(device)+'pseudocolor_on_white.png')
+      plt.clf()
     
     else:
-      fatal_error('Pseudocolor Channel' + pseudo_channel + ' is not "h","s" or "v"!')
+      fatal_error('Pseudocolor Channel' + pseudo_channel + ' is not "l","m", "y", "h","s" or "v"!')
 
   return device, hist_data, norm_slice
