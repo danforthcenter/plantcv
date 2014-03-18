@@ -25,6 +25,13 @@ def print_image(img, filename):
     cv2.imwrite(filename, img)
   except:
     fatal_error("Unexpected error: " + sys.exc_info()[0])
+    
+#################################################################################################################################################
+   
+"""Object Idenfication and Shape Functions Below"""
+
+#################################################################################################################################################
+
 
 ### RGB -> HSV -> Gray
 def rgb2gray_hsv(img, channel, device, debug=False):
@@ -521,6 +528,7 @@ def analyze_object(img, obj, mask, device, debug=False):
   # device = device number. Used to count steps in the pipeline
   # debug= True/False. If True, print image
   device += 1
+  ori_img=np.copy(img)
   
   # Convex Hull
   hull = cv2.convexHull(obj)
@@ -565,11 +573,11 @@ def analyze_object(img, obj, mask, device, debug=False):
       
   # Draw properties
   if debug and area:
-    cv2.drawContours(img, obj, -1, (255,0,0), 2)
-    cv2.drawContours(img, [hull], -1, (0,0,255), 3)
-    cv2.line(img, (x,y), (x+width,y), (0,0,255), 3)
-    cv2.line(img, (int(cmx),y), (int(cmx),y+height), (0,0,255), 3)
-    cv2.circle(img, (int(cmx),int(cmy)), 10, (0,0,255), 3)
+    cv2.drawContours(ori_img, obj, -1, (255,0,0), 2)
+    cv2.drawContours(ori_img, [hull], -1, (0,0,255), 3)
+    cv2.line(ori_img, (x,y), (x+width,y), (0,0,255), 3)
+    cv2.line(ori_img, (int(cmx),y), (int(cmx),y+height), (0,0,255), 3)
+    cv2.circle(ori_img, (int(cmx),int(cmy)), 10, (0,0,255), 3)
       
   #if debug:
   #  print_image(img, str(device) + '_obj.png')
@@ -597,7 +605,13 @@ def color_palette(num):
       colors.append(rainbow[index])
       index += dist
     return colors
-    
+  
+#################################################################################################################################################
+   
+"""ANAlYSIS FUNCTIONS BELOW"""
+
+#################################################################################################################################################
+
     
 ### Analyze Color of Object
 def analyze_color(img, mask,bins, device, debug=False,visualize=True,visualize_type='RGB',pseudocolor=True,pseudo_channel='v'):
@@ -629,28 +643,36 @@ def analyze_color(img, mask,bins, device, debug=False,visualize=True,visualize_t
     if c<=8: #0-2 for RGB ony, 3-5 for LAB ony, 6-8 for HSV only
       i_bin=i/(256/bins)
       hist = cv2.calcHist([i_bin],[0],mask,[bins], [0,(bins-1)])
-      max_bin= np.argmax(hist)
-      max_pixel=np.amax(hist)
-      non_zero=np.nonzero(hist)
-      non_zero_stack=np.vstack(non_zero)
-      last_non_zero=(len(non_zero_stack))-2
-      hist_data[label[c]] = {
-        'bin with most pixels': max_bin,
-        'pixels in max bin': max_pixel,
-        'left_border':non_zero_stack[0][0],
-        'right_border':non_zero_stack[0][last_non_zero],
-        'hist values': hist
-      }
-      
-    if debug:
-      print_image(masked, str(device) + '_masked_forcc.png')
-      if c<=8: #0-2 for RGB ony, 3-5 for LAB ony, 6-8 for HSV only
-        hist1 = cv2.calcHist([i_bin],[0],mask,[bins], [0,(bins-1)])    
-        plt.plot(hist1,color=graph_color[c],label=label[c])
-        plt.xlim([0,(bins-1)])
-        plt.legend() 
-        plt.savefig(str(device)+'color_hist.png')
+      #max_bin= np.argmax(hist)
+      #max_pixel=np.amax(hist)
+      #non_zero=np.nonzero(hist)
+      #non_zero_stack=np.vstack(non_zero)
+      #last_non_zero=(len(non_zero_stack))-2
+      hist_data[label[c]] = hist
+      hist1 = cv2.calcHist([i_bin],[0],mask,[bins], [0,(bins-1)])    
+      plt.plot(hist1,color=graph_color[c],label=label[c])
+      plt.xlim([0,(bins-1)])
+      plt.legend() 
+      plt.savefig(str(device)+'color_hist.png')
   plt.clf()
+      
+      #hist_data[label[c]] = {
+        #'bin with most pixels': max_bin,
+        #'pixels in max bin': max_pixel,
+        #'left_border':non_zero_stack[0][0],
+        #'right_border':non_zero_stack[0][last_non_zero],
+        #str(label[c]): hist
+      #}
+      
+    #if debug:
+      #print_image(masked, str(device) + '_masked_forcc.png')
+      #if c<=8: #0-2 for RGB ony, 3-5 for LAB ony, 6-8 for HSV only
+        #hist1 = cv2.calcHist([i_bin],[0],mask,[bins], [0,(bins-1)])    
+        #plt.plot(hist1,color=graph_color[c],label=label[c])
+        #plt.xlim([0,(bins-1)])
+        #plt.legend() 
+        #plt.savefig(str(device)+'color_hist.png')
+  #plt.clf()
 
   # Generate Color Slice: Get Flattened Color Histogram for Visualization     
   if visualize==True:
