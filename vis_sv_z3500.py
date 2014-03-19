@@ -84,34 +84,20 @@ def main():
   # Decide which objects to keep
   device,roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(img,'partial',roi1,roi_hierarchy,id_objects,obj_hierarchy,device, args.debug)
   
- # Object properties
-  #device, contours = pcv.find_contours(obj_thresh, device, args.debug)
+  # Object combine kept objects
   device, obj, mask = pcv.object_composition(img, roi_objects, hierarchy3, device, args.debug)
-  #device, data = pcv.analyze_object(img, obj, device, args.debug)
-  device, data = pcv.analyze_object(img, obj, mask, device, True)
   
-  parts = string.split(args.image,'/')
-  filename = parts[len(parts)-1]
-  result = (
-    filename,
-    data['area'],
-    data['hull_area'],
-    data['solidity'],
-    data['perimeter'],
-    data['width'],
-    data['height'],
-    data['center_mass_x'],
-    data['center_mass_y']
-  )
-  #for key, value in data.items():
-  #  print key, ': ', value
-  print('\t'.join(map(str,result)))
-  pcv.print_image(img, args.outdir + '/' + filename + '_results.png')
+############## Analysis ################  
   
-  # Color properties: Histograms, Color Slices and Pseudocolored Images
-  device, hist_data, norm_slice= pcv.analyze_color(img, kept_mask, 256, device,args.debug,True,'HSV',True,'v')
-  print hist_data
-  pcv.print_image(norm_slice, str(device) + str(args.image[0:((len(str(args.image))-4))]) + '_norm_slice.png')
-
+  # Find shape properties, output shape image (optional)
+  device, shape_header,shape_data,shape_img = pcv.analyze_object(img, args.image, obj, mask, device,args.debug,True)
+  
+  # Determine color properties: Histograms, Color Slices and Pseudocolored Images, output color analyzed images (optional)
+  device, color_header,color_data,norm_slice= pcv.analyze_color(img, args.image, kept_mask, 256, device, args.debug,'all','rgb','v')
+  
+  # Output shape and color data
+  pcv.print_results(args.image, shape_header, shape_data)
+  pcv.print_results(args.image, color_header, color_data)
+  
 if __name__ == '__main__':
   main()
