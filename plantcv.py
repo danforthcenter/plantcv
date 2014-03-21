@@ -9,7 +9,7 @@ if not os.getenv('DISPLAY'):
   matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 from matplotlib import cm as cm
-import pickle
+from Bio.Statistics.lowess import lowess
 
 ### Error handling
 def fatal_error(error):
@@ -559,11 +559,16 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,draw=True):
   # draw= True/False. If True print image
   device += 1
   ori_img=np.copy(img)
+  size = 2056,2454,3
+  size1 = 2056,2454
+  background = np.zeros(size, dtype=np.uint8)
+  background1 = np.zeros(size1, dtype=np.uint8)
+  background2 = np.zeros(size1, dtype=np.uint8)
   
   # Convex Hull
   hull = cv2.convexHull(obj)
   # Moments
-#  m = cv2.moments(obj)
+  #  m = cv2.moments(obj)
   m = cv2.moments(mask, binaryImage=True)
   ## Properties
   # Area
@@ -587,11 +592,54 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,draw=True):
     major_axis_length = axes[major_axis]
     minor_axis_length = axes[minor_axis]
     eccentricity = np.sqrt(1 - (axes[minor_axis]/axes[major_axis]) ** 2)
+    
+    #Caliper Length: line through center of mass and point on the convex hull that is furthest away
+    cv2.circle(background, (int(cmx),int(cmy)), 4, (255,255,255),-1)
+    center_p = cv2.cvtColor(background, cv2.COLOR_BGR2GRAY)
+    ret,centerp_binary = cv2.threshold(center_p, 0, 255, cv2.THRESH_BINARY)
+    centerpoint,cpoint_h = cv2.findContours(centerp_binary,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+    
+    dist=[]
+    vhull=np.vstack(hull)
+    
+    for i,c in enumerate(vhull):
+      xy=tuple(c)
+      pptest=cv2.pointPolygonTest(centerpoint[0],xy, measureDist=True)
+      dist.append(pptest)
+    
+    abs_dist=np.absolute(dist)
+    max_i=np.argmax(abs_dist)
+    
+    caliper_max=list(tuple(vhull[max_i]))
+    caliper_mid=[int(cmx),int(cmy)]
+    
+    caliper_points=np.array([caliper_max, caliper_mid])
+    
+    [vx,vy,x1,y1] = cv2.fitLine(caliper_points,cv2.cv.CV_DIST_L2,0,0.01,0.01)
+    lefty = int((-x1*vy/vx) + y1)
+    righty = int(((mask.shape[1]-x1)*vy/vx)+y1)
+    cv2.line(background1,(mask.shape[1]-1,righty),(0,lefty),(255),5)
+    ret1,line_binary = cv2.threshold(background1, 0, 255, cv2.THRESH_BINARY)
+    #print_image(line_binary,(str(device)+'_caliperfit.png'))
+    
+    cv2.drawContours(background2, [hull], -1, (255), -1)
+    ret2,hullp_binary = cv2.threshold(background2, 0, 255, cv2.THRESH_BINARY)
+    #print_image(hullp_binary,(str(device)+'_hull.png'))
+    
+    caliper=cv2.multiply(line_binary,hullp_binary)    
+    #print_image(caliper,(str(device)+'_caliperlength.png'))
+    
+    caliper_y,caliper_x=np.array(caliper.nonzero())
+    caliper_matrix=np.vstack((caliper_x,caliper_y))
+    caliper_transpose=np.transpose(caliper_matrix)
+    caliper_length=len(caliper_transpose)
+    
+    
   else:
     hull_area, solidity, perimeter, width, height, cmx, cmy = 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND'
       
   #Store Shape Data
-  shape_header=('area','hull-area','solidity','perimeter','width','height','center-of-mass-x', 'center-of-mass-y')
+  shape_header=('area','hull-area','solidity','perimeter','width','height','caliper_length','center-of-mass-x', 'center-of-mass-y')
   data = {
     'area' : area,
     'hull_area' : hull_area,
@@ -599,6 +647,7 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,draw=True):
     'perimeter' : perimeter,
     'width' : width,
     'height' : height,
+    'caliper_length': caliper_length,
     'center_mass_x' : cmx,
     'center_mass_y' : cmy
   }
@@ -610,6 +659,7 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,draw=True):
     data['perimeter'],
     data['width'],
     data['height'],
+    data['caliper_length'],
     data['center_mass_x'],
     data['center_mass_y']
     )
@@ -620,6 +670,7 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,draw=True):
     cv2.drawContours(ori_img, [hull], -1, (0,0,255), 3)
     cv2.line(ori_img, (x,y), (x+width,y), (0,0,255), 3)
     cv2.line(ori_img, (int(cmx),y), (int(cmx),y+height), (0,0,255), 3)
+    cv2.line(ori_img,(tuple(caliper_transpose[caliper_length-1])),(tuple(caliper_transpose[0])),(0,0,255),3)
     cv2.circle(ori_img, (int(cmx),int(cmy)), 10, (0,0,255), 3)
     print_image(ori_img,(str(imgname[0:((len(str(imgname))-4))])+'_shapes.png'))
   else:
@@ -630,6 +681,7 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,draw=True):
     cv2.drawContours(ori_img, [hull], -1, (0,0,255), 3)
     cv2.line(ori_img, (x,y), (x+width,y), (0,0,255), 3)
     cv2.line(ori_img, (int(cmx),y), (int(cmx),y+height), (0,0,255), 3)
+    cv2.line(ori_img,(tuple(caliper_transpose[caliper_length-1])),(tuple(caliper_transpose[0])),(0,0,255),3)
     cv2.circle(ori_img, (int(cmx),int(cmy)), 10, (0,0,255), 3)
     print_image(ori_img,(str(device)+'_shapes.png'))
  
@@ -650,6 +702,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
   size = 2056,2454
   background = np.zeros(size, dtype=np.uint8)
   w_back=background+255
+  ori_img=np.copy(img)
   
   masked=cv2.bitwise_and(img,img, mask=mask)
   b,g,r=cv2.split(masked)
@@ -1063,7 +1116,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
   
   else:
     fatal_error('Pseudocolor Channel' + pseudo_channel + ' is not "None", "l","m", "y", "h","s" or "v"!')
-
+  
   return device, hist_header, hist_data, norm_slice
 
 ### Print Numerical Data 
