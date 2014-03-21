@@ -250,16 +250,17 @@ def find_objects(img, mask, device, debug=False):
   device += 1
   mask1=np.copy(mask)
   objects,hierarchy = cv2.findContours(mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
-  cv2.drawContours(img,objects,-1, (255,0,0),-1, lineType=8,hierarchy=hierarchy)
+  for i,cnt in enumerate(objects):
+     cv2.drawContours(img,objects,i, color_palette(1)[0],-1, lineType=8,hierarchy=hierarchy)
   if debug:
     print_image(img, str(device) + '_id_objects.png')
   
   return device, objects, hierarchy
 
 ### View and Adjust ROI
-def define_roi(img, roi, roi_input, shape, device, debug=False, adjust=False, x_adj=0, y_adj=0, w_adj=0, h_adj=0, ):
+def define_roi(img, shape, device, roi=None, roi_input='default', debug=False, adjust=False, x_adj=0, y_adj=0, w_adj=0, h_adj=0, ):
   # img = img to overlay roi 
-  # roi_base = user input ROI image, object area should be white and background should be black, only one ROI can be specified at once
+  # roi =default or user input ROI image, object area should be white and background should be black, has not been optimized for more than one ROI
   # roi_input = type of file roi_base is, either 'binary' or 'rgb'
   # shape = desired shape of final roi, either 'rectangle' or 'circle', if  user inputs rectangular roi but chooses 'circle' for shape then a circle is fitted around rectangular roi (and vice versa)
   # device = device number.  Used to count steps in the pipeline
@@ -269,11 +270,12 @@ def define_roi(img, roi, roi_input, shape, device, debug=False, adjust=False, x_
   # y_adj = adjust center along y axis
   # w_adj = adjust width
   # h_adj = adjust height
-  
+
   device += 1
   ori_img=np.copy(img)
+  ix,iy,iz=np.shape(img)
   
-  # Allows user to enter either RGB or binary image (made with imagej or some other program) as a base ROI (that can be adjusted below)
+  #Allows user to enter either RGB or binary image (made with imagej or some other program) as a base ROI (that can be adjusted below)
   if roi_input== 'rgb':
     hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
     h,s,v = cv2.split(hsv)
@@ -281,13 +283,26 @@ def define_roi(img, roi, roi_input, shape, device, debug=False, adjust=False, x_
     roi_contour,hierarchy = cv2.findContours(v_img,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
   elif roi_input== 'binary':
     roi_contour,hierarchy = cv2.findContours(rois,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)  
+  elif roi_input=='default':
+    size = ix,iy
+    roi_background = np.zeros(size, dtype=np.uint8)
+    roi=roi_background+1
+    roi_contour,roi_heirarchy=cv2.findContours(roi,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+    cv2.drawContours(roi_background,roi_contour[0],-1, (255,0,0),5)
+    if adjust==True:
+      if x_adj>0 and w_adj>=0:
+        fatal_error('Adjusted ROI position is out of frame, this will cause problems in detecting objects')
+      elif y_adj>0 and h_adj>=0:
+        fatal_error('Adjusted ROI position is out of frame, this will cause problems in detecting objects')
+      elif x_adj<0 or y_adj<0:
+        fatal_error('Adjusted ROI position is out of frame, this will cause problems in detecting objects')
   else:
-    fatal_error('ROI Input' + roi_input + ' is not "binary" or "rgb"!')
+    fatal_error('ROI Input' + roi_input + ' is not "binary", "rgb" or "default roi"!')
     
-  # If the ROI is exactly in the 'correct' position 
+  #If the ROI is exactly in the 'correct' position 
   if adjust==False:    
     for cnt in roi_contour:
-      size = 2056,2454, 3
+      size = ix,iy,3
       background = np.zeros(size, dtype=np.uint8)
       if shape=='rectangle':
         x,y,w,h = cv2.boundingRect(cnt)
@@ -342,13 +357,14 @@ def define_roi(img, roi, roi_input, shape, device, debug=False, adjust=False, x_
       else:
           fatal_error('Shape' + shape + ' is not "rectangle", "circle", or "ellipse"!')
           
-  # If the user wants to change the shape of the ROI or adjust ROI size or position   
+  # If the user wants to change the size of the ROI or adjust ROI position   
   if adjust==True:
+    print 'If this is your first time running this pipeline make sure ROI is in frame or object detection will not perform properly'
     if x_adj==0 and y_adj==0 and w_adj==0 and h_adj==0:
-      fatal_error( 'If Adjust is True then x_adj, y_adj, w_adj or h_adj must have a non-zero value')
+      fatal_error( 'If adjust is true then x_adj, y_adj, w_adj or h_adj must have a non-zero value')
     else:
       for cnt in roi_contour:
-        size = 2056,2454, 3
+        size = ix,iy, 3
         background = np.zeros(size, dtype=np.uint8)
         if shape=='rectangle':
           x,y,w,h = cv2.boundingRect(cnt)
@@ -424,7 +440,8 @@ def roi_objects(img,roi_type,roi_contour, roi_hierarchy,object_contour, obj_hier
  # obj_hierarchy = hierarchy of objects, output from "Identifying Objects" fuction
  # device = device number.  Used to count steps in the pipeline
   device +=1
-  size = 2056,2454, 3
+  ix,iy,iz=np.shape(img)
+  size = ix,iy,3
   background = np.zeros(size, dtype=np.uint8)
   ori_img=np.copy(img)
   w_back=background+255
@@ -559,8 +576,9 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,draw=True):
   # draw= True/False. If True print image
   device += 1
   ori_img=np.copy(img)
-  size = 2056,2454,3
-  size1 = 2056,2454
+  ix,iy,iz=np.shape(img)
+  size = ix,iy,3
+  size1 = ix,iy
   background = np.zeros(size, dtype=np.uint8)
   background1 = np.zeros(size1, dtype=np.uint8)
   background2 = np.zeros(size1, dtype=np.uint8)
@@ -699,7 +717,8 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
   # pseudo_channel= 'None', 'l', 'm' (green-magenta), 'y' (blue-yellow), h','s', or 'v', creates pseduocolored image based on the specified channel
   
   device += 1
-  size = 2056,2454
+  ix,iy,iz=np.shape(img)
+  size = ix,iy
   background = np.zeros(size, dtype=np.uint8)
   w_back=background+255
   ori_img=np.copy(img)
@@ -1125,6 +1144,9 @@ def print_results(filename, header, data):
   print filename
   for i,c in enumerate(header):
     print "%s\t%s" %(header[i], data[i])
+    
+    
+###
 
 
 
