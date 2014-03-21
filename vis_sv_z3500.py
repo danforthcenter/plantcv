@@ -10,7 +10,7 @@ import plantcv as pcv
 def options():
   parser = argparse.ArgumentParser(description="Imaging processing with opencv")
   parser.add_argument("-i", "--image", help="Input image file.", required=True)
-  parser.add_argument("-m", "--roi", help="Input region of interest file.", required=True)
+  parser.add_argument("-m", "--roi", help="Input region of interest file.", required=False)
   parser.add_argument("-o", "--outdir", help="Output directory for image files.", required=True)
   parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.", action="store_true")
   args = parser.parse_args()
@@ -79,7 +79,7 @@ def main():
   device, id_objects,obj_hierarchy = pcv.find_objects(masked2, ab_fill, device, args.debug)
 
   # Define ROI
-  device, roi1, roi_hierarchy= pcv.define_roi(img, roi,'rgb', 'rectangle', device, args.debug,True, 0,-0,0,-30)
+  device, roi1, roi_hierarchy= pcv.define_roi(img,'rectangle', device, None, 'default', args.debug,True, 650, 0,-600,-350)
   
   # Decide which objects to keep
   device,roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(img,'partial',roi1,roi_hierarchy,id_objects,obj_hierarchy,device, args.debug)
