@@ -5,14 +5,28 @@ use Getopt::Std;
 use threads;
 use Thread::Queue;
 use Cwd;
+use DBI;
+use FindBin qw($Bin);
 
-my (%opt, $dir, $pipeline, $threads, $num, $roi, @images, $image_dir);
-getopts('d:p:t:n:m:i:rh', \%opt);
+my (%opt, $dir, $pipeline, $threads, $num, $roi, @images, $image_dir, $sqldb);
+getopts('d:p:t:n:m:i:s:rch', \%opt);
 arg_check();
 
 ################################################################################
 # Begin main
 ################################################################################
+
+## Database setup
+if ($opt{'c'}) {
+  if (-e $sqldb) {
+    unlink($sqldb);
+  }
+  # Create new database and initialize with template schema
+  `sqlite3 $sqldb '.read $Bin/docs/results.sql'`;
+}
+
+# Connect to the SQLite database
+my $dbh = DBI->connect("dbi:SQLite:dbname=$sqldb","","");
 
 ## Read image file names
 opendir (DIR, $dir) or die "Cannot open directory $dir: $!\n\n";
@@ -66,7 +80,7 @@ for (my $t = 1; $t <= $threads; $t++) {
   threads->create("process");
 }
 
-# Dequeue data from the results queue
+## Dequeue data from the results queue
 print "Image\tArea\tConvex hull area\tSolidity\tPerimeter\tWidth\tHeight\tCenter of mass X\tCenter of mass Y\n";
 while (threads->list(threads::running)) {
   while ($resultq->pending) {
@@ -79,6 +93,8 @@ while ($resultq->pending) {
   my $result = $resultq->dequeue();
   print $result;
 }
+
+## Populated database
 
 exit;
 ################################################################################
@@ -125,6 +141,11 @@ sub arg_check {
   } else {
     arg_error("A pipeline script file is required!");
   }
+  if ($opt{'s'}) {
+    $sqldb = $opt{'s'};
+  } else {
+    arg_error("A SQLite database filename is required!");
+  }
   if ($opt{'t'}) {
     $threads = $opt{'t'};
   } else {
@@ -167,10 +188,13 @@ arguments:
   -d DIR                Input directory containing images.
   -p PIPELINE           Pipeline script file.
   -m ROI                ROI image.
+  -s DB                 SQLite database file name.
   -i DIR                Output directory for images. Not required by all pipelines, Default = cwd;
   -t THREADS            Number of threads/CPU to use. Default = 1.
   -r                    Select a random set of images from the input directory.
   -n NUM                Number of random images to test. Only used with -r. Default = 10.
+  -c                    Create output database (SQLite). Default behaviour adds to existing database.
+                        Warning: activating this option will delete an existing database!
   -h, --help            show this help message and exit
 
   ";
