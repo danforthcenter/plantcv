@@ -8,9 +8,19 @@ use Cwd;
 use DBI;
 use FindBin qw($Bin);
 
-my (%opt, $dir, $pipeline, $threads, $num, $roi, @images, $image_dir, $sqldb);
-getopts('d:p:t:n:m:i:s:rch', \%opt);
+my (%opt, $dir, $pipeline, $threads, $num, $roi, @images, $image_dir, $sqldb, $type);
+getopts('d:p:t:n:m:i:s:T:rch', \%opt);
 arg_check();
+
+## Temporary file names
+my $snapshot_tmp = 'snapshots.tab';
+my $runinfo_tmp = 'runinfo.tab';
+my $vis_shapes = 'vis_shapes.tab';
+my $vis_colors = 'vis_colors.tab';
+my $nir_shapes = 'nir_shapes.tab';
+my $nir_signal = 'nir_signal.tab';
+my $flu_shapes = 'flu_shapes.tab';
+my $flu_signal = 'flu_signal.tab';
 
 ################################################################################
 # Begin main
@@ -81,11 +91,27 @@ for (my $t = 1; $t <= $threads; $t++) {
 }
 
 ## Dequeue data from the results queue
-print "Image\tArea\tConvex hull area\tSolidity\tPerimeter\tWidth\tHeight\tCenter of mass X\tCenter of mass Y\n";
+open(SNAP, ">$snapshot_tmp") or die "Cannot open file $snapshot_tmp: $!\n\n";
+open(RUN, ">$runinfo_tmp") or die "Cannot open file $runinfo_tmp: $!\n\n";
+
+if ($type eq 'vis') {
+  open(SHAPE, ">$vis_shapes") or die "Cannot open file $vis_shapes: $!\n\n";
+  open(SIG, ">$vis_colors") or die "Cannot open file $vis_colors: $!\n\n";
+} elsif ($type eq 'nir') {
+  open(SHAPE, ">$nir_shapes") or die "Cannot open file $nir_shapes: $!\n\n";
+  open(SIG, ">$nir_signal") or die "Cannot open file $nir_signal: $!\n\n";
+} elsif ($type eq 'flu') {
+  open(SHAPE, ">$flu_shapes") or die "Cannot open file $flu_shapes: $!\n\n";
+  open(SIG, ">$flu_signal") or die "Cannot open file $flu_signal: $!\n\n";
+}
+
 while (threads->list(threads::running)) {
   while ($resultq->pending) {
     my $result = $resultq->dequeue();
-    print $result;
+    my @results = split /\n/, $result;
+    my $image = shift(@results);
+    
+    # Shape results
   }
   sleep 2;
 }
@@ -96,6 +122,10 @@ while ($resultq->pending) {
 
 ## Populated database
 
+close SIG;
+close SHAPE;
+close RUN;
+close SNAP;
 exit;
 ################################################################################
 # End main
@@ -167,6 +197,11 @@ sub arg_check {
   } else {
     $image_dir = getcwd();
   }
+  if ($opt{'T'}) {
+    $type = $opt{'T'};
+  } else {
+    $type = 'vis';
+  }
 }
 
 ########################################
@@ -179,7 +214,7 @@ sub arg_error {
     print STDERR $error."\n";
   }
   my $usage = "
-usage: image_analysis.pl -d DIR -p PIPELINE [-r] [-n NUM] [-t THREADS] [-h]
+usage: image_analysis.pl -d DIR -p PIPELINE [-r] [-n NUM] [-t THREADS] [-T TYPE] [-h]
 
 Multi-threaded execution of a plantcv image processing pipeline with
 specific or randomly selected images.
@@ -191,6 +226,7 @@ arguments:
   -s DB                 SQLite database file name.
   -i DIR                Output directory for images. Not required by all pipelines, Default = cwd;
   -t THREADS            Number of threads/CPU to use. Default = 1.
+  -T TYPE               Pipeline type (vis, nir, flu), Default = vis.
   -r                    Select a random set of images from the input directory.
   -n NUM                Number of random images to test. Only used with -r. Default = 10.
   -c                    Create output database (SQLite). Default behaviour adds to existing database.
