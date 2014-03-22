@@ -583,7 +583,7 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,draw=True):
   background1 = np.zeros(size1, dtype=np.uint8)
   background2 = np.zeros(size1, dtype=np.uint8)
   
-  # Check is object is touching image boundries (QC)
+  # Check is object is touching image boundaries (QC)
   frame_background = np.zeros(size1, dtype=np.uint8)
   frame=frame_background+1
   frame_contour,frame_heirarchy=cv2.findContours(frame,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
