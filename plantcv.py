@@ -260,7 +260,7 @@ def find_objects(img, mask, device, debug=False):
 ### View and Adjust ROI
 def define_roi(img, shape, device, roi=None, roi_input='default', debug=False, adjust=False, x_adj=0, y_adj=0, w_adj=0, h_adj=0, ):
   # img = img to overlay roi 
-  # roi =default or user input ROI image, object area should be white and background should be black, has not been optimized for more than one ROI
+  # roi =default (None) or user input ROI image, object area should be white and background should be black, has not been optimized for more than one ROI
   # roi_input = type of file roi_base is, either 'binary' or 'rgb'
   # shape = desired shape of final roi, either 'rectangle' or 'circle', if  user inputs rectangular roi but chooses 'circle' for shape then a circle is fitted around rectangular roi (and vice versa)
   # device = device number.  Used to count steps in the pipeline
@@ -275,7 +275,7 @@ def define_roi(img, shape, device, roi=None, roi_input='default', debug=False, a
   ori_img=np.copy(img)
   ix,iy,iz=np.shape(img)
   
-  #Allows user to enter either RGB or binary image (made with imagej or some other program) as a base ROI (that can be adjusted below)
+  #Allows user to use the default ROI or input their own RGB or binary image (made with imagej or some other program) as a base ROI (that can be adjusted below)
   if roi_input== 'rgb':
     hsv = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
     h,s,v = cv2.split(hsv)
@@ -583,6 +583,18 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,draw=True):
   background1 = np.zeros(size1, dtype=np.uint8)
   background2 = np.zeros(size1, dtype=np.uint8)
   
+  # Check is object is touching image boundries (QC)
+  frame_background = np.zeros(size1, dtype=np.uint8)
+  frame=frame_background+1
+  frame_contour,frame_heirarchy=cv2.findContours(frame,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+  ptest=[]
+  vobj=np.vstack(obj)
+  for i,c in enumerate(vobj):
+      xy=tuple(c)
+      pptest=cv2.pointPolygonTest(frame_contour[0],xy, measureDist=False)
+      ptest.append(pptest)
+  in_bounds=all(c==1 for c in ptest)
+    
   # Convex Hull
   hull = cv2.convexHull(obj)
   # Moments
@@ -611,7 +623,7 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,draw=True):
     minor_axis_length = axes[minor_axis]
     eccentricity = np.sqrt(1 - (axes[minor_axis]/axes[major_axis]) ** 2)
     
-    #Caliper Length: line through center of mass and point on the convex hull that is furthest away
+    #Longest Axis: line through center of mass and point on the convex hull that is furthest away
     cv2.circle(background, (int(cmx),int(cmy)), 4, (255,255,255),-1)
     center_p = cv2.cvtColor(background, cv2.COLOR_BGR2GRAY)
     ret,centerp_binary = cv2.threshold(center_p, 0, 255, cv2.THRESH_BINARY)
@@ -657,7 +669,7 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,draw=True):
     hull_area, solidity, perimeter, width, height, cmx, cmy = 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND'
       
   #Store Shape Data
-  shape_header=('area','hull-area','solidity','perimeter','width','height','caliper_length','center-of-mass-x', 'center-of-mass-y')
+  shape_header=('area','hull-area','solidity','perimeter','width','height','longest_axis','center-of-mass-x', 'center-of-mass-y', 'in_bounds')
   data = {
     'area' : area,
     'hull_area' : hull_area,
@@ -665,9 +677,10 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,draw=True):
     'perimeter' : perimeter,
     'width' : width,
     'height' : height,
-    'caliper_length': caliper_length,
+    'longest_axis': caliper_length,
     'center_mass_x' : cmx,
-    'center_mass_y' : cmy
+    'center_mass_y' : cmy,
+    'in_bounds': in_bounds
   }
   
   shape_data = (
@@ -677,9 +690,10 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,draw=True):
     data['perimeter'],
     data['width'],
     data['height'],
-    data['caliper_length'],
+    data['longest_axis'],
     data['center_mass_x'],
-    data['center_mass_y']
+    data['center_mass_y'],
+    data['in_bounds']
     )
       
   # Draw properties
