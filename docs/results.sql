@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `snapshots` (
   `plant_id` TEXT NOT NULL,
   `datetime` INTEGER NOT NULL,
   `camera` TEXT NOT NULL,
-  `frame` TEXT NOT NULL,
+  `frame` INTEGER NOT NULL,
   `zoom` INTEGER NOT NULL,
   `image_path` TEXT NOT NULL
 );
@@ -21,17 +21,21 @@ CREATE TABLE IF NOT EXISTS `snapshots` (
 CREATE TABLE IF NOT EXISTS `vis_shapes` (
   `image_id` INTEGER PRIMARY KEY,
   `area_raw` REAL NOT NULL,
+  `area_corrected` REAL NOT NULL,
   `hull_area` REAL NOT NULL,
   `solidity` REAL NOT NULL,
   `perimeter` REAL NOT NULL,
   `extent_x` INTEGER NOT NULL,
   `extent_y` INTEGER NOT NULL,
   `centroid_x` REAL NOT NULL,
-  `centroid_y` REAL NOT NULL
+  `centroid_y` REAL NOT NULL,
+  `longest_axis` REAL NOT NULL,
+  `in_bounds` INTEGER NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `vis_colors` (
   `image_id` INTEGER PRIMARY KEY,
+  `bins` INTEGER NOT NULL,
   `blue` TEXT NOT NULL,
   `green` TEXT NOT NULL,
   `red` TEXT NOT NULL,
@@ -57,6 +61,7 @@ CREATE TABLE IF NOT EXISTS `nir_shapes` (
 
 CREATE TABLE IF NOT EXISTS `nir_signal` (
   `image_id` INTEGER PRIMARY KEY,
+  `bins` INTEGER NOT NULL,
   `signal` TEXT NOT NULL
 );
 
@@ -74,6 +79,7 @@ CREATE TABLE IF NOT EXISTS `flu_shapes` (
 
 CREATE TABLE IF NOT EXISTS `flu_fvfm` (
   `image_id` INTEGER PRIMARY KEY,
+  `bins` INTEGER NOT NULL,
   `fvfm` TEXT NOT NULL
 );
 
