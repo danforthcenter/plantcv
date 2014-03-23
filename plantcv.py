@@ -48,18 +48,18 @@ def rgb2gray_hsv(img, channel, device, debug=False):
   device += 1
   if channel == 'h':
     if debug:
-      print_image(h, str(device) + '_hsv_hue.png')
+      print_image(h, (str(device) + '_hsv_hue.png'))
     return device, h
   elif channel == 's':
     if debug:
-      print_image(s, str(device) + '_hsv_saturation.png')
+      print_image(s, (str(device) + '_hsv_saturation.png'))
     return device, s
   elif channel == 'v':
     if debug:
-      print_image(v, str(device) + '_hsv_value.png')
+      print_image(v, (str(device) + '_hsv_value.png'))
     return device, v
   else:
-    fatal_error('Channel ' + channel + ' is not h, s or v!')
+    fatal_error('Channel ' + (str(channel) + ' is not h, s or v!'))
 
 ### RGB -> LAB -> Gray
 def rgb2gray_lab(img, channel, device, debug=False):
@@ -75,18 +75,18 @@ def rgb2gray_lab(img, channel, device, debug=False):
   device += 1
   if channel == 'l':
     if debug:
-      print_image(l, str(device) + '_lab_lightness.png')
+      print_image(l, (str(device) + '_lab_lightness.png'))
     return device, l
   elif channel == 'a':
     if debug:
-      print_image(a, str(device) + '_lab_green-magenta.png')
+      print_image(a, (str(device) + '_lab_green-magenta.png'))
     return device, a
   elif channel == 'b':
     if debug:
-      print_image(b, str(device) + '_lab_blue-yellow.png')
+      print_image(b, (str(device) + '_lab_blue-yellow.png'))
     return device, b
   else:
-    fatal_error('Channel ' + channel + ' is not l, a or b!')
+    fatal_error('Channel ' + str(channel) + ' is not l, a or b!')
     
 ### RGB -> Gray
 def rgb2gray(img, device, debug=False):
@@ -97,7 +97,7 @@ def rgb2gray(img, device, debug=False):
   gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
   device += 1
   if debug:
-    print_image(gray, str(device) + '_gray.png')
+    print_image(gray, (str(device) + '_gray.png'))
   return device, gray
 
 ### Binary image threshold device
@@ -115,15 +115,15 @@ def binary_threshold(img, threshold, maxValue, object_type, device, debug=False)
   if object_type == 'light':
     ret,t_img = cv2.threshold(img, threshold, maxValue, cv2.THRESH_BINARY)
     if debug:
-      print_image(t_img, str(device) + '_binary_threshold' + str(threshold) + '.png')
+      print_image(t_img, (str(device) + '_binary_threshold' + str(threshold) + '.png'))
     return device, t_img
   elif object_type == 'dark':
     ret,t_img = cv2.threshold(img, threshold, maxValue, cv2.THRESH_BINARY_INV)
     if debug:
-      print_image(t_img, str(device) + '_binary_threshold' + str(threshold) + '_inv.png')
+      print_image(t_img, (str(device) + '_binary_threshold' + str(threshold) + '_inv.png'))
     return device, t_img
   else:
-    fatal_error('Object type ' + object_type + ' is not "light" or "dark"!')
+    fatal_error('Object type ' + str(object_type) + ' is not "light" or "dark"!')
 
 ### Median blur device
 def median_blur(img, ksize, device, debug=False):
@@ -135,7 +135,7 @@ def median_blur(img, ksize, device, debug=False):
   img_mblur = cv2.medianBlur(img, ksize)
   device += 1
   if debug:
-    print_image(img_mblur, str(device) + '_median_blur' + str(ksize) + '.png')
+    print_image(img_mblur, (str(device) + '_median_blur' + str(ksize) + '.png'))
   return device, img_mblur
 
 ### Object fill device
@@ -165,7 +165,7 @@ def fill(img, mask, size, device, debug=False):
         #cv2.fillPoly(img, pts = cnt, color=(0,0,0))
         cv2.drawContours(img,contours,c, (0,0,0),-1, lineType=8,hierarchy=hierarchy)
   if debug:
-    print_image(img, str(device) + '_fill' + str(size) + '.png')
+    print_image(img, (str(device) + '_fill' + str(size) + '.png'))
 
   return device, img
 
@@ -178,7 +178,7 @@ def invert(img, device, debug=False):
   device += 1
   img_inv = cv2.bitwise_not(img)
   if debug:
-    print_image(img_inv, str(device) + '_invert.png')
+    print_image(img_inv, (str(device) + '_invert.png'))
   return device, img_inv
 
 ### Join images (AND)
@@ -190,7 +190,7 @@ def logical_and(img1, img2, device, debug=False):
   device += 1
   merged = cv2.bitwise_and(img1, img2)
   if debug:
-    print_image(merged, str(device) + '_and_joined.png')
+    print_image(merged, (str(device) + '_and_joined.png'))
   return device, merged
 
 ### Join images (OR)
@@ -202,7 +202,7 @@ def logical_or(img1, img2, device, debug=False):
   device += 1
   merged = cv2.bitwise_or(img1, img2)
   if debug:
-    print_image(merged, str(device) + '_or_joined.png')
+    print_image(merged, (str(device) + '_or_joined.png'))
   return device, merged
 
 ### Join images (XOR)
@@ -214,7 +214,7 @@ def logical_xor(img1, img2, device, debug=False):
   device += 1
   merged = cv2.bitwise_xor(img1, img2)
   if debug:
-    print_image(merged, str(device) + '_xor_joined.png')
+    print_image(merged, (str(device) + '_xor_joined.png'))
   return device, merged
 
 ### Apply White or Black Background Mask
@@ -236,15 +236,15 @@ def apply_mask(img, mask, mask_color, device, debug=False):
     # Add masked image to white background (can't just use mask_inv because that is a binary)
     white_masked= cv2.add(masked_img, white_mask)
     if debug:
-      print_image(white_masked, str(device) + '_wmasked.png')
+      print_image(white_masked, (str(device) + '_wmasked.png'))
     return device, white_masked
   elif mask_color=='black':
     masked_img= cv2.bitwise_and(img,img, mask = mask)
     if debug:
-      print_image(masked_img, str(device) + '_bmasked.png')
+      print_image(masked_img, (str(device) + '_bmasked.png'))
     return device, masked_img
   else:
-      fatal_error('Mask Color' + mask_color + ' is not "white" or "black"!')
+      fatal_error('Mask Color' + str(mask_color) + ' is not "white" or "black"!')
 
 ### Find Objects
 def find_objects(img, mask, device, debug=False):
@@ -259,7 +259,7 @@ def find_objects(img, mask, device, debug=False):
   for i,cnt in enumerate(objects):
      cv2.drawContours(img,objects,i, color_palette(1)[0],-1, lineType=8,hierarchy=hierarchy)
   if debug:
-    print_image(img, str(device) + '_id_objects.png')
+    print_image(img, (str(device) + '_id_objects.png'))
   
   return device, objects, hierarchy
 
@@ -305,7 +305,7 @@ def define_roi(img, shape, device, roi=None, roi_input='default', debug=False, a
       elif x_adj<0 or y_adj<0:
         fatal_error('Adjusted ROI position is out of frame, this will cause problems in detecting objects')
   else:
-    fatal_error('ROI Input' + roi_input + ' is not "binary", "rgb" or "default roi"!')
+    fatal_error('ROI Input' + str(roi_input) + ' is not "binary", "rgb" or "default roi"!')
     
   #If the ROI is exactly in the 'correct' position 
   if adjust==False:    
@@ -319,7 +319,7 @@ def define_roi(img, shape, device, roi=None, roi_input='default', debug=False, a
         rect_contour,hierarchy = cv2.findContours(rect,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
         cv2.drawContours(ori_img,rect_contour[0],-1, (255,0,0),5)
         if debug:
-          print_image(ori_img, str(device) + '_roi.png')
+          print_image(ori_img, (str(device) + '_roi.png'))
         return device, rect_contour, hierarchy
       elif shape== 'circle':
         x,y,w,h = cv2.boundingRect(cnt)
@@ -331,7 +331,7 @@ def define_roi(img, shape, device, roi=None, roi_input='default', debug=False, a
           circle_contour,hierarchy = cv2.findContours(circle,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
           cv2.drawContours(ori_img,circle_contour[0],-1, (255,0,0),5)
           if debug:
-            print_image(ori_img, str(device) + '_roi.png')
+            print_image(ori_img, (str(device) + '_roi.png'))
           return device, circle_contour, hierarchy
         else:
           radius = int(h/2)
@@ -340,7 +340,7 @@ def define_roi(img, shape, device, roi=None, roi_input='default', debug=False, a
           circle_contour,hierarchy = cv2.findContours(circle,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
           cv2.drawContours(ori_img,circle_contour[0],-1, (255,0,0),5)
           if debug:
-            print_image(ori_img, str(device) + '_roi.png')
+            print_image(ori_img, (str(device) + '_roi.png'))
           return device, circle_contour, hierarchy
       elif shape== 'ellipse': 
         x,y,w,h = cv2.boundingRect(cnt)
@@ -351,7 +351,7 @@ def define_roi(img, shape, device, roi=None, roi_input='default', debug=False, a
           ellipse_contour,hierarchy = cv2.findContours(ellipse,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
           cv2.drawContours(ori_img,ellipse_contour[0],-1, (255,0,0),5)
           if debug:
-            print_image(ori_img, str(device) + '_roi.png')
+            print_image(ori_img, (str(device) + '_roi.png'))
           return device, ellipse_contour, hierarchy
         else:
           cv2.ellipse(ori_img,center,(h/2,w/2),0,0,360, (0,255,0), 2)
@@ -360,12 +360,12 @@ def define_roi(img, shape, device, roi=None, roi_input='default', debug=False, a
           ellipse_contour,hierarchy = cv2.findContours(ellipse,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
           cv2.drawContours(ori_img,ellipse_contour[0],-1, (255,0,0),5)
           if debug:
-            print_image(ori_img, str(device) + '_roi.png')
+            print_image(ori_img, (str(device) + '_roi.png'))
           return device, ellipse_contour, hierarchy
       else:
-          fatal_error('Shape' + shape + ' is not "rectangle", "circle", or "ellipse"!')
+          fatal_error('Shape' + str(shape) + ' is not "rectangle", "circle", or "ellipse"!')
           
-  # If the user wants to change the size of the ROI or adjust ROI position   
+   #If the user wants to change the size of the ROI or adjust ROI position   
   if adjust==True:
     print 'WARNING: Make sure ROI is COMPLETELY in frame or object detection will not perform properly'
     if x_adj==0 and y_adj==0 and w_adj==0 and h_adj==0:
@@ -385,7 +385,7 @@ def define_roi(img, shape, device, roi=None, roi_input='default', debug=False, a
           rect_contour,hierarchy = cv2.findContours(rect,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
           cv2.drawContours(ori_img,rect_contour[0],-1, (255,0,0),5)
           if debug:
-            print_image(ori_img, str(device) + '_roi.png')
+            print_image(ori_img, (str(device) + '_roi.png'))
           return device, rect_contour, hierarchy
         elif shape== 'circle':
           x,y,w,h = cv2.boundingRect(cnt)
@@ -401,7 +401,7 @@ def define_roi(img, shape, device, roi=None, roi_input='default', debug=False, a
             circle_contour,hierarchy = cv2.findContours(circle,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
             cv2.drawContours(ori_img,circle_contour[0],-1, (255,0,0),5)
             if debug:
-              print_image(ori_img, str(device) + '_roi.png')
+              print_image(ori_img, (str(device) + '_roi.png'))
             return device, circle_contour, hierarchy
           else:
             radius = int(h1/2)
@@ -410,7 +410,7 @@ def define_roi(img, shape, device, roi=None, roi_input='default', debug=False, a
             circle_contour,hierarchy = cv2.findContours(circle,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
             cv2.drawContours(ori_img,circle_contour[0],-1, (255,0,0),5)
             if debug:
-              print_image(ori_img, str(device) + '_roi.png')
+              print_image(ori_img, (str(device) + '_roi.png'))
             return device, circle_contour, hierarchy
         elif shape== 'ellipse': 
           x,y,w,h = cv2.boundingRect(cnt)
@@ -425,7 +425,7 @@ def define_roi(img, shape, device, roi=None, roi_input='default', debug=False, a
             ellipse_contour,hierarchy = cv2.findContours(ellipse,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
             cv2.drawContours(ori_img,ellipse_contour[0],-1, (255,0,0),5)
             if debug:
-              print_image(ori_img, str(device) + '_roi.png')
+              print_image(ori_img, (str(device) + '_roi.png'))
             return device, ellipse_contour, hierarchy
           else:
             cv2.ellipse(background,center,(h1/2,w1/2),0,0,360, (0,255,0), 2)
@@ -433,10 +433,10 @@ def define_roi(img, shape, device, roi=None, roi_input='default', debug=False, a
             ellipse_contour,hierarchy = cv2.findContours(ellipse,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
             cv2.drawContours(ori_img,ellipse_contour[0],-1, (255,0,0),5)
             if debug:
-              print_image(ori_img, str(device) + '_roi.png')
+              print_image(ori_img, (str(device) + '_roi.png'))
             return device, ellipse_contour, hierarchy
         else:
-            fatal_error('Shape' + shape + ' is not "rectangle", "circle", or "ellipse"!')
+            fatal_error('Shape' + str(shape) + ' is not "rectangle", "circle", or "ellipse"!')
         
 ### Find Objects Partially Inside Region of Interest or Cut Objects to Region of Interest
 def roi_objects(img,roi_type,roi_contour, roi_hierarchy,object_contour, obj_hierarchy, device, debug=False):
@@ -498,12 +498,12 @@ def roi_objects(img,roi_type,roi_contour, roi_hierarchy,object_contour, obj_hier
     cv2.drawContours(ori_img,roi_contour,-1, (255,0,0),5, lineType=8,hierarchy=roi_hierarchy)
          
   else:
-    fatal_error('ROI Type' + roi_type + ' is not "cutto" or "partial"!')
+    fatal_error('ROI Type' + str(roi_type) + ' is not "cutto" or "partial"!')
   
   if debug:
-    print_image(w_back, str(device) + '_roi_objects.png')
-    print_image(ori_img, str(device) + '_obj_on_img.png')
-    print_image(mask, str(device) + '_roi_mask.png')
+    print_image(w_back, (str(device) + '_roi_objects.png'))
+    print_image(ori_img, (str(device) + '_obj_on_img.png'))
+    print_image(mask, (str(device) + '_roi_mask.png'))
     #print ('Object Area=', obj_area)
   
   return device, kept_cnt, hierarchy, mask, obj_area
@@ -540,8 +540,8 @@ def object_composition(img, contours, hierarchy, device, debug=False):
     for cnt in contours:
       cv2.drawContours(ori_img, cnt, -1, (255,0,0), 4)
       cv2.drawContours(ori_img, group, -1, (255,0,0), 4)
-    print_image(ori_img, str(device) + '_objcomp.png')
-    print_image(ori_img, str(device) + '_objcomp_mask.png')
+    print_image(ori_img, (str(device) + '_objcomp.png'))
+    print_image(ori_img, (str(device) + '_objcomp_mask.png'))
   return device, group, mask
 
 ### Color palette returns an array of colors (rainbow)
@@ -873,7 +873,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
   elif hist_plot_type==None:
     pass
   else:
-    fatal_error('Histogram Plot Type' + hist_plot_type + ' is not "none", "all","rgb", "lab" or "hsv"!')
+    fatal_error('Histogram Plot Type' + str(hist_plot_type) + ' is not "none", "all","rgb", "lab" or "hsv"!')
   
   # Generate Color Slice: Get Flattened RGB, LAB or HSV Histogram for Visualization     
   if cslice_type==None:
@@ -951,7 +951,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     norm_slice=np.dstack((l_norm,m_norm,y_norm))
     
   else:
-    fatal_error('Visualize Type' + visualize_type + ' is not "None", "rgb","hsv" or "lab"!')
+    fatal_error('Visualize Type' + str(visualize_type) + ' is not "None", "rgb","hsv" or "lab"!')
   
   if cslice_type==None:
     pass
@@ -1156,7 +1156,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     plt.clf()
   
   else:
-    fatal_error('Pseudocolor Channel' + pseudo_channel + ' is not "None", "l","m", "y", "h","s" or "v"!')
+    fatal_error('Pseudocolor Channel' + str(pseudo_channel) + ' is not "None", "l","m", "y", "h","s" or "v"!')
   
   return device, hist_header, hist_data, norm_slice
 
