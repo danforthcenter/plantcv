@@ -147,17 +147,23 @@ def fill(img, mask, size, device, debug=False):
   # device = device number. Used to count steps in the pipeline
   # debug = True/False. If True, print image
   device += 1
+  ix,iy= np.shape(img)
+  size1=ix,iy,3
+  background=np.zeros(size1, dtype=np.uint8)
   
   # Find contours
   contours, hierarchy = cv2.findContours(mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+  #cv2.drawContours(background,contours,-1, (255,0,0),5, lineType=8,hierarchy=hierarchy)
+  #print_image(background, str(device) + '_fillcheck'+ '.png')
   
   # Loop through contours, fill contours less than or equal to size in area
   for c,cnt in enumerate(contours):
-    if hierarchy[0][c][0] == -1:
+    #if hierarchy[0][c][0]==-1:
       m = cv2.moments(cnt)
       area = m['m00']
-      if area <= size:
-        cv2.fillPoly(img, pts = cnt, color=(0,0,0))
+      if area<=size:
+        #cv2.fillPoly(img, pts = cnt, color=(0,0,0))
+        cv2.drawContours(img,contours,c, (0,0,0),-1, lineType=8,hierarchy=hierarchy)
   if debug:
     print_image(img, str(device) + '_fill' + str(size) + '.png')
 
@@ -496,7 +502,7 @@ def roi_objects(img,roi_type,roi_contour, roi_hierarchy,object_contour, obj_hier
     print_image(w_back, str(device) + '_roi_objects.png')
     print_image(ori_img, str(device) + '_obj_on_img.png')
     print_image(mask, str(device) + '_roi_mask.png')
-    print ('Object Area=', obj_area)
+    #print ('Object Area=', obj_area)
   
   return device, kept_cnt, hierarchy, mask, obj_area
 

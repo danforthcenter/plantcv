@@ -23,7 +23,7 @@ def main():
   
   # Read image
   img = cv2.imread(args.image)
-  roi = cv2.imread(args.roi)
+  brass_mask = cv2.imread(args.roi)
   
   # Pipeline step
   device = 0
@@ -32,14 +32,14 @@ def main():
   device, s = pcv.rgb2gray_hsv(img, 's', device, args.debug)
   
   # Threshold the Saturation image
-  device, s_thresh = pcv.binary_threshold(s, 36, 255, 'light', device, args.debug)
+  device, s_thresh = pcv.binary_threshold(s, 49, 255, 'light', device, args.debug)
   
   # Median Filter
   device, s_mblur = pcv.median_blur(s_thresh, 5, device, args.debug)
   device, s_cnt = pcv.median_blur(s_thresh, 5, device, args.debug)
   
   # Fill small objects
-  device, s_fill = pcv.fill(s_mblur, s_cnt, 0, device, args.debug)
+  device, s_fill = pcv.fill(s_mblur, s_cnt, 150, device, args.debug)
   
   # Convert RGB to LAB and extract the Blue channel
   device, b = pcv.rgb2gray_lab(img, 'b', device, args.debug)
@@ -57,29 +57,44 @@ def main():
   # Apply Mask (for vis images, mask_color=white)
   device, masked = pcv.apply_mask(img, bs, 'white', device, args.debug)
   
+  # Mask pesky brass piece
+  device, brass_mask1 = pcv.rgb2gray_hsv(brass_mask, 'v', device, args.debug)
+  device, brass_thresh = pcv.binary_threshold(brass_mask1, 0, 255, 'light', device, args.debug)
+  device, brass_inv=pcv.invert(brass_thresh, device, args.debug)
+  device, brass_masked = pcv.apply_mask(masked, brass_inv, 'white', device, args.debug)
+  
+  # Further mask soil and car
+  device, masked_a = pcv.rgb2gray_lab(brass_masked, 'a', device, args.debug)
+  device, soil_car = pcv.binary_threshold(masked_a, 128, 255, 'dark', device, args.debug)
+  device, soil_masked = pcv.apply_mask(brass_masked, soil_car, 'white', device, args.debug)
+  
   # Convert RGB to LAB and extract the Green-Magenta and Blue-Yellow channels
-  device, masked_a = pcv.rgb2gray_lab(masked, 'a', device, args.debug)
-  device, masked_b = pcv.rgb2gray_lab(masked, 'b', device, args.debug)
+  device, soil_a = pcv.rgb2gray_lab(soil_masked, 'a', device, args.debug)
+  device, soil_b = pcv.rgb2gray_lab(soil_masked, 'b', device, args.debug)
   
   # Threshold the green-magenta and blue images
-  device, maskeda_thresh = pcv.binary_threshold(masked_a, 122, 255, 'dark', device, args.debug)
-  device, maskedb_thresh = pcv.binary_threshold(masked_b, 133, 255, 'light', device, args.debug)
-  
+  device, soila_thresh = pcv.binary_threshold(soil_a, 118, 255, 'dark', device, args.debug)
+  device, soilb_thresh = pcv.binary_threshold(soil_b, 155, 255, 'light', device, args.debug)
+
   # Join the thresholded saturation and blue-yellow images (OR)
-  device, ab = pcv.logical_or(maskeda_thresh, maskedb_thresh, device, args.debug)
-  device, ab_cnt = pcv.logical_or(maskeda_thresh, maskedb_thresh, device, args.debug)
-  
+  device, soil_ab = pcv.logical_or(soila_thresh, soilb_thresh, device, args.debug)
+  device, soil_ab_cnt = pcv.logical_or(soila_thresh, soilb_thresh, device, args.debug)
+
   # Fill small objects
-  device, ab_fill = pcv.fill(ab, ab_cnt, 200, device, args.debug)
+  device, soil_fill = pcv.fill(soil_ab, soil_ab_cnt, 200, device, args.debug)
+
+  # Median Filter
+  device, soil_mblur = pcv.median_blur(soil_fill, 5, device, args.debug)
+  device, soil_cnt = pcv.median_blur(soil_fill, 5, device, args.debug)
   
   # Apply mask (for vis images, mask_color=white)
-  device, masked2 = pcv.apply_mask(masked, ab_fill, 'white', device, args.debug)
+  device, masked2 = pcv.apply_mask(soil_masked, soil_cnt, 'white', device, args.debug)
   
   # Identify objects
-  device, id_objects,obj_hierarchy = pcv.find_objects(masked2, ab_fill, device, args.debug)
+  device, id_objects,obj_hierarchy = pcv.find_objects(masked2, soil_cnt, device, args.debug)
 
   # Define ROI
-  device, roi1, roi_hierarchy= pcv.define_roi(img,'rectangle', device, None, 'default', args.debug,False, 0, 0,0,0)
+  device, roi1, roi_hierarchy= pcv.define_roi(img,'circle', device, None, 'default', args.debug,True, 0, 0,-50,-50)
   
   # Decide which objects to keep
   device,roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(img,'partial',roi1,roi_hierarchy,id_objects,obj_hierarchy,device, args.debug)
