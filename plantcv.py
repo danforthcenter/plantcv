@@ -587,7 +587,7 @@ def color_palette(num):
 #################################################################################################################################################
       
 ### Analyzes an object and outputs numeric properties
-def analyze_object(img,imgname,obj, mask, device, debug=False,draw=True):
+def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
   # Outputs numeric properties for an input object (contour or grouped contours)
   # Also color classification?
   # img = image object (most likely the original), color(RGB)
@@ -595,7 +595,7 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,draw=True):
   # obj = single or grouped contour object
   # device = device number. Used to count steps in the pipeline
   # debug= True/False. If True, print image
-  # draw= True/False. If True print image
+  # filename= False or image name. If defined print image
   device += 1
   ori_img=np.copy(img)
   ix,iy,iz=np.shape(img)
@@ -719,14 +719,14 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,draw=True):
     )
       
   # Draw properties
-  if area and draw:
+  if area and filename:
     cv2.drawContours(ori_img, obj, -1, (255,0,0), 2)
     cv2.drawContours(ori_img, [hull], -1, (0,0,255), 3)
     cv2.line(ori_img, (x,y), (x+width,y), (0,0,255), 3)
     cv2.line(ori_img, (int(cmx),y), (int(cmx),y+height), (0,0,255), 3)
     cv2.line(ori_img,(tuple(caliper_transpose[caliper_length-1])),(tuple(caliper_transpose[0])),(0,0,255),3)
     cv2.circle(ori_img, (int(cmx),int(cmy)), 10, (0,0,255), 3)
-    print_image(ori_img,(str(imgname[0:((len(str(imgname))-4))])+'_shapes.png'))
+    print_image(ori_img,(filename + '_shapes.png'))
   else:
     pass
   
@@ -742,7 +742,7 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,draw=True):
   return device, shape_header, shape_data, ori_img
     
 ### Analyze Color of Object
-def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all',cslice_type='rgb',pseudo_channel='v'):
+def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all',cslice_type='rgb',pseudo_channel='v',filename=False):
   # img = image
   # imgname = name of input image
   # mask = mask made from selected contours
@@ -751,6 +751,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
   # hist_plot_type= 'None', 'all', 'rgb','lab' or 'hsv'
   # color_slice_type = 'None', 'rgb', 'hsv' or 'lab'
   # pseudo_channel= 'None', 'l', 'm' (green-magenta), 'y' (blue-yellow), h','s', or 'v', creates pseduocolored image based on the specified channel
+  # filename= False or image name. If defined print image
   
   device += 1
   ix,iy,iz=np.shape(img)
@@ -832,63 +833,63 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
   
   
   # Create Histogram Plot
-  
-  if hist_plot_type=='all':
-    hist_plotb=plt.plot(hist_b,color=graph_color[0],label=label[0])
-    hist_plotg=plt.plot(hist_g,color=graph_color[1],label=label[1])
-    hist_plotr= plt.plot(hist_r,color=graph_color[2],label=label[2])
-    hist_plotl=plt.plot(hist_l,color=graph_color[3],label=label[3])
-    hist_plotm= plt.plot(hist_m,color=graph_color[4],label=label[4])
-    hist_ploty=plt.plot(hist_y,color=graph_color[5],label=label[5])
-    hist_ploth=plt.plot(hist_h,color=graph_color[6],label=label[6])
-    hist_plots= plt.plot(hist_s,color=graph_color[7],label=label[7])
-    hist_plotv=plt.plot(hist_v,color=graph_color[8],label=label[8])
-    xaxis=plt.xlim([0,(bins-1)])
-    legend=plt.legend()
-    fig_name=(str(imgname[0:((len(str(imgname))-4))]) +'_' + str(hist_plot_type) + '_hist.png')
-    plt.savefig(fig_name)
-    if debug:
-      fig_name=(str(device) +'_' + str(hist_plot_type) + '_hist.png')
+  if filename:
+    if hist_plot_type=='all':
+      hist_plotb=plt.plot(hist_b,color=graph_color[0],label=label[0])
+      hist_plotg=plt.plot(hist_g,color=graph_color[1],label=label[1])
+      hist_plotr= plt.plot(hist_r,color=graph_color[2],label=label[2])
+      hist_plotl=plt.plot(hist_l,color=graph_color[3],label=label[3])
+      hist_plotm= plt.plot(hist_m,color=graph_color[4],label=label[4])
+      hist_ploty=plt.plot(hist_y,color=graph_color[5],label=label[5])
+      hist_ploth=plt.plot(hist_h,color=graph_color[6],label=label[6])
+      hist_plots= plt.plot(hist_s,color=graph_color[7],label=label[7])
+      hist_plotv=plt.plot(hist_v,color=graph_color[8],label=label[8])
+      xaxis=plt.xlim([0,(bins-1)])
+      legend=plt.legend()
+      fig_name=(filename +'_' + str(hist_plot_type) + '_hist.png')
       plt.savefig(fig_name)
-    plt.clf()
-  elif hist_plot_type=='rgb':
-    hist_plotb=plt.plot(hist_b,color=graph_color[0],label=label[0])
-    hist_plotg=plt.plot(hist_g,color=graph_color[1],label=label[1])
-    hist_plotr= plt.plot(hist_r,color=graph_color[2],label=label[2])
-    xaxis=plt.xlim([0,(bins-1)])
-    legend=plt.legend()
-    fig_name=(str(imgname[0:((len(str(imgname))-4))]) +'_' + str(hist_plot_type) + '_hist.png')
-    plt.savefig(fig_name)
-    plt.clf()
-  elif hist_plot_type=='lab':
-    hist_plotl=plt.plot(hist_l,color=graph_color[3],label=label[3])
-    hist_plotm= plt.plot(hist_m,color=graph_color[4],label=label[4])
-    hist_ploty=plt.plot(hist_y,color=graph_color[5],label=label[5])
-    xaxis=plt.xlim([0,(bins-1)])
-    legend=plt.legend()
-    fig_name=(str(imgname[0:((len(str(imgname))-4))]) +'_' + str(hist_plot_type) + '_hist.png')
-    plt.savefig(fig_name)
-    if debug:
-      fig_name=(str(device) +'_' + str(hist_plot_type) + '_hist.png')
+      if debug:
+        fig_name=(str(device) +'_' + str(hist_plot_type) + '_hist.png')
+        plt.savefig(fig_name)
+      plt.clf()
+    elif hist_plot_type=='rgb':
+      hist_plotb=plt.plot(hist_b,color=graph_color[0],label=label[0])
+      hist_plotg=plt.plot(hist_g,color=graph_color[1],label=label[1])
+      hist_plotr= plt.plot(hist_r,color=graph_color[2],label=label[2])
+      xaxis=plt.xlim([0,(bins-1)])
+      legend=plt.legend()
+      fig_name=(filename +'_' + str(hist_plot_type) + '_hist.png')
       plt.savefig(fig_name)
-    plt.clf()
-  elif hist_plot_type=='hsv':
-    hist_ploth=plt.plot(hist_h,color=graph_color[6],label=label[6])
-    hist_plots= plt.plot(hist_s,color=graph_color[7],label=label[7])
-    hist_plotv=plt.plot(hist_v,color=graph_color[8],label=label[8])
-    xaxis=plt.xlim([0,(bins-1)])
-    legend=plt.legend()
-    fig_name=(str(imgname[0:((len(str(imgname))-4))]) +'_' + str(hist_plot_type) + '_hist.png')
-    plt.savefig(fig_name)
-    if debug:
-      fig_name=(str(device) +'_' + str(hist_plot_type) + '_hist.png')
+      plt.clf()
+    elif hist_plot_type=='lab':
+      hist_plotl=plt.plot(hist_l,color=graph_color[3],label=label[3])
+      hist_plotm= plt.plot(hist_m,color=graph_color[4],label=label[4])
+      hist_ploty=plt.plot(hist_y,color=graph_color[5],label=label[5])
+      xaxis=plt.xlim([0,(bins-1)])
+      legend=plt.legend()
+      fig_name=(filename +'_' + str(hist_plot_type) + '_hist.png')
       plt.savefig(fig_name)
-    plt.clf()
-  elif hist_plot_type==None:
-    pass
-  else:
-    fatal_error('Histogram Plot Type' + str(hist_plot_type) + ' is not "none", "all","rgb", "lab" or "hsv"!')
-  
+      if debug:
+        fig_name=(str(device) +'_' + str(hist_plot_type) + '_hist.png')
+        plt.savefig(fig_name)
+      plt.clf()
+    elif hist_plot_type=='hsv':
+      hist_ploth=plt.plot(hist_h,color=graph_color[6],label=label[6])
+      hist_plots= plt.plot(hist_s,color=graph_color[7],label=label[7])
+      hist_plotv=plt.plot(hist_v,color=graph_color[8],label=label[8])
+      xaxis=plt.xlim([0,(bins-1)])
+      legend=plt.legend()
+      fig_name=(filename +'_' + str(hist_plot_type) + '_hist.png')
+      plt.savefig(fig_name)
+      if debug:
+        fig_name=(str(device) +'_' + str(hist_plot_type) + '_hist.png')
+        plt.savefig(fig_name)
+      plt.clf()
+    elif hist_plot_type==None:
+      pass
+    else:
+      fatal_error('Histogram Plot Type' + str(hist_plot_type) + ' is not "none", "all","rgb", "lab" or "hsv"!')
+    
   # Generate Color Slice: Get Flattened RGB, LAB or HSV Histogram for Visualization     
   if cslice_type==None:
     pass
@@ -967,10 +968,10 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
   else:
     fatal_error('Visualize Type' + str(visualize_type) + ' is not "None", "rgb","hsv" or "lab"!')
   
-  if cslice_type==None:
-    pass
+  if filename:
+    print_image(norm_slice, (filename + '_'+ str(cslice_type)+ '_norm_slice.png'))
   else:
-    print_image(norm_slice, (str(imgname[0:((len(str(imgname))-4))])+ '_'+ str(cslice_type)+ '_norm_slice.png'))
+    pass
   
   if debug:
     print_image(norm_slice, (str(device)+ '_'+ str(cslice_type)+ '_norm_slice.png'))
@@ -995,7 +996,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     my_cmap = plt.get_cmap('binary_r')
     pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
     plt.axis('off')
-    fig_name=(str(imgname[0:((len(str(imgname))-4))]) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
+    fig_name=(filename +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
     plt.savefig(fig_name)
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
@@ -1007,7 +1008,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     white_rgba=np.dstack((w_back,w_back,w_back,mask_inv))
     pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
     plt.axis('off')
-    fig_name=(str(imgname[0:((len(str(imgname))-4))]) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
+    fig_name=(filename +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
     plt.savefig(fig_name)
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
@@ -1026,7 +1027,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     my_cmap = plt.get_cmap('binary_r')
     pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
     plt.axis('off')
-    fig_name=(str(imgname[0:((len(str(imgname))-4))]) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
+    fig_name=(filename +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
     plt.savefig(fig_name)
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
@@ -1038,7 +1039,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     white_rgba=np.dstack((w_back,w_back,w_back,mask_inv))
     pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
     plt.axis('off')
-    fig_name=(str(imgname[0:((len(str(imgname))-4))]) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
+    fig_name=(filename +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
     plt.savefig(fig_name)
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
@@ -1057,7 +1058,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     my_cmap = plt.get_cmap('binary_r')
     pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
     plt.axis('off')
-    fig_name=(str(imgname[0:((len(str(imgname))-4))]) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
+    fig_name=(filename +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
     plt.savefig(fig_name)
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
@@ -1069,7 +1070,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     white_rgba=np.dstack((w_back,w_back,w_back,mask_inv))
     pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
     plt.axis('off')
-    fig_name=(str(imgname[0:((len(str(imgname))-4))]) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
+    fig_name=(filename +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
     plt.savefig(fig_name)
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
@@ -1088,7 +1089,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     my_cmap = plt.get_cmap('binary_r')
     pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
     plt.axis('off')
-    fig_name=(str(imgname[0:((len(str(imgname))-4))]) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
+    fig_name=(filename +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
     plt.savefig(fig_name)
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
@@ -1100,7 +1101,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     white_rgba=np.dstack((w_back,w_back,w_back,mask_inv))
     pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
     plt.axis('off')
-    fig_name=(str(imgname[0:((len(str(imgname))-4))]) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
+    fig_name=(filename +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
     plt.savefig(fig_name)
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
@@ -1119,7 +1120,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     my_cmap = plt.get_cmap('binary_r')
     pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
     plt.axis('off')
-    fig_name=(str(imgname[0:((len(str(imgname))-4))]) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
+    fig_name=(filename +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
     plt.savefig(fig_name)
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
@@ -1131,7 +1132,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     white_rgba=np.dstack((w_back,w_back,w_back,mask_inv))
     pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
     plt.axis('off')
-    fig_name=(str(imgname[0:((len(str(imgname))-4))]) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
+    fig_name=(filename +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
     plt.savefig(fig_name)
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
@@ -1150,7 +1151,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     my_cmap = plt.get_cmap('binary_r')
     pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
     plt.axis('off')
-    fig_name=(str(imgname[0:((len(str(imgname))-4))]) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
+    fig_name=(filename +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
     plt.savefig(fig_name)
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
@@ -1162,7 +1163,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     white_rgba=np.dstack((w_back,w_back,w_back,mask_inv))
     pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
     plt.axis('off')
-    fig_name=(str(imgname[0:((len(str(imgname))-4))]) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
+    fig_name=(filename +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
     plt.savefig(fig_name)
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')

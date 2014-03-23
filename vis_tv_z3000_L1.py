@@ -22,7 +22,7 @@ def main():
   args = options()
   
   # Read image
-  img = cv2.imread(args.image)
+  img, path, filename = pcv.readimage(args.image)
   brass_mask = cv2.imread(args.roi)
   
   # Pipeline step
@@ -105,10 +105,10 @@ def main():
 ############## Analysis ################  
   
   # Find shape properties, output shape image (optional)
-  device, shape_header,shape_data,shape_img = pcv.analyze_object(img, args.image, obj, mask, device,args.debug,True)
+  device, shape_header,shape_data,shape_img = pcv.analyze_object(img, args.image, obj, mask, device,args.debug,args.outdir+'/'+filename)
   
   # Determine color properties: Histograms, Color Slices and Pseudocolored Images, output color analyzed images (optional)
-  device, color_header,color_data,norm_slice= pcv.analyze_color(img, args.image, kept_mask, 256, device, args.debug,'all','rgb','v')
+  device, color_header,color_data,norm_slice= pcv.analyze_color(img, args.image, kept_mask, 256, device, args.debug,'all','rgb','v',args.outdir+'/'+filename)
   
   # Output shape and color data
   pcv.print_results(args.image, shape_header, shape_data)
