@@ -292,8 +292,10 @@ def define_roi(img, shape, device, roi=None, roi_input='default', debug=False, a
   elif roi_input=='default':
     size = ix,iy
     roi_background = np.zeros(size, dtype=np.uint8)
-    roi=roi_background+1
-    roi_contour,roi_heirarchy=cv2.findContours(roi,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+    roi_size=(ix-5),(iy-5)
+    roi=np.zeros(roi_size, dtype=np.uint8)
+    roi1=roi+1
+    roi_contour,roi_heirarchy=cv2.findContours(roi1,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
     cv2.drawContours(roi_background,roi_contour[0],-1, (255,0,0),5)
     if adjust==True:
       if x_adj>0 and w_adj>=0:
@@ -365,7 +367,7 @@ def define_roi(img, shape, device, roi=None, roi_input='default', debug=False, a
           
   # If the user wants to change the size of the ROI or adjust ROI position   
   if adjust==True:
-    print 'If this is your first time running this pipeline make sure ROI is in frame or object detection will not perform properly'
+    print 'WARNING: Make sure ROI is COMPLETELY in frame or object detection will not perform properly'
     if x_adj==0 and y_adj==0 and w_adj==0 and h_adj==0:
       fatal_error( 'If adjust is true then x_adj, y_adj, w_adj or h_adj must have a non-zero value')
     else:
