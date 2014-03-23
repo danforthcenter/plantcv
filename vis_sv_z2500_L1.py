@@ -75,29 +75,29 @@ def main():
   # Apply mask (for vis images, mask_color=white)
   device, masked2 = pcv.apply_mask(masked, ab_fill, 'white', device, args.debug)
   
-  # Identify objects
-  device, id_objects,obj_hierarchy = pcv.find_objects(masked2, ab_fill, device, args.debug)
-
-  # Define ROI
-  device, roi1, roi_hierarchy= pcv.define_roi(img,'rectangle', device, None, 'default', args.debug,True, 600, 0,-600,-350)
-  
-  # Decide which objects to keep
-  device,roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(img,'partial',roi1,roi_hierarchy,id_objects,obj_hierarchy,device, args.debug)
-  
-  # Object combine kept objects
-  device, obj, mask = pcv.object_composition(img, roi_objects, hierarchy3, device, args.debug)
-  
-############## Analysis ################  
-  
-  # Find shape properties, output shape image (optional)
-  device, shape_header,shape_data,shape_img = pcv.analyze_object(img, args.image, obj, mask, device,args.debug,True)
-  
-  # Determine color properties: Histograms, Color Slices and Pseudocolored Images, output color analyzed images (optional)
-  device, color_header,color_data,norm_slice= pcv.analyze_color(img, args.image, kept_mask, 256, device, args.debug,'all','rgb','v')
-  
-  # Output shape and color data
-  pcv.print_results(args.image, shape_header, shape_data)
-  pcv.print_results(args.image, color_header, color_data)
-  
-if __name__ == '__main__':
-  main()
+#  # Identify objects
+#  device, id_objects,obj_hierarchy = pcv.find_objects(masked2, ab_fill, device, args.debug)
+#
+#  # Define ROI
+#  device, roi1, roi_hierarchy= pcv.define_roi(img,'rectangle', device, None, 'default', args.debug,True, 0, 0,0,-900)
+#  
+#  # Decide which objects to keep
+#  device,roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(img,'partial',roi1,roi_hierarchy,id_objects,obj_hierarchy,device, args.debug)
+#  
+#  # Object combine kept objects
+#  device, obj, mask = pcv.object_composition(img, roi_objects, hierarchy3, device, args.debug)
+#  
+############### Analysis ################  
+#  
+#  # Find shape properties, output shape image (optional)
+#  device, shape_header,shape_data,shape_img = pcv.analyze_object(img, args.image, obj, mask, device,args.debug,True)
+#  
+#  # Determine color properties: Histograms, Color Slices and Pseudocolored Images, output color analyzed images (optional)
+#  device, color_header,color_data,norm_slice= pcv.analyze_color(img, args.image, kept_mask, 256, device, args.debug,'all','rgb','v')
+#  
+#  # Output shape and color data
+#  pcv.print_results(args.image, shape_header, shape_data)
+#  pcv.print_results(args.image, color_header, color_data)
+#  
+#if __name__ == '__main__':
+#  main()
