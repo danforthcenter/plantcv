@@ -26,6 +26,20 @@ def print_image(img, filename):
     cv2.imwrite(filename, img)
   except:
     fatal_error("Unexpected error: " + sys.exc_info()[0])
+
+### Read image
+def readimage(filename):
+  # Reads image into numpy ndarray and splits the path and image filename
+  # filename = user inputed filename (possibly including a path)
+  try:
+    img = cv2.imread(filename)
+  except:
+    fatal_error("Cannot open " + filename);
+  
+  # Split path from filename
+  path, img_name = os.path.split(filename)
+  
+  return img, path, img_name
     
 #################################################################################################################################################
    
@@ -367,7 +381,7 @@ def define_roi(img, shape, device, roi=None, roi_input='default', debug=False, a
           
    #If the user wants to change the size of the ROI or adjust ROI position   
   if adjust==True:
-    print 'WARNING: Make sure ROI is COMPLETELY in frame or object detection will not perform properly'
+    sys.stderr.write('WARNING: Make sure ROI is COMPLETELY in frame or object detection will not perform properly\n')
     if x_adj==0 and y_adj==0 and w_adj==0 and h_adj==0:
       fatal_error( 'If adjust is true then x_adj, y_adj, w_adj or h_adj must have a non-zero value')
     else:
@@ -1162,10 +1176,8 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
 
 ### Print Numerical Data 
 def print_results(filename, header, data):
-
-  print filename
-  for i,c in enumerate(header):
-    print "%s\t%s" %(header[i], data[i])
+  print '\t'.join(map(str, header))
+  print '\t'.join(map(str, data))
     
     
 ###
