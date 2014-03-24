@@ -26,14 +26,14 @@ arg_check();
 my $start_time = strftime("%Y-%m-%d_%H:%M:%S", localtime());
 
 ## Temporary file names
-my $snapshot_tmp = 'snapshots.tab';
-my $runinfo_tmp = 'runinfo.tab';
-my $vis_shapes = 'vis_shapes.tab';
-my $vis_colors = 'vis_colors.tab';
-my $nir_shapes = 'nir_shapes.tab';
-my $nir_signal = 'nir_signal.tab';
-my $flu_shapes = 'flu_shapes.tab';
-my $flu_signal = 'flu_signal.tab';
+my $snapshot_tmp = $type.'_z'.$zoom_setting.'_snapshots.tab';
+my $runinfo_tmp = $type.'_z'.$zoom_setting.'_runinfo.tab';
+my $vis_shapes = $type.'_z'.$zoom_setting.'_vis_shapes.tab';
+my $vis_colors = $type.'_z'.$zoom_setting.'_vis_colors.tab';
+my $nir_shapes = $type.'_z'.$zoom_setting.'_nir_shapes.tab';
+my $nir_signal = $type.'_z'.$zoom_setting.'_nir_signal.tab';
+my $flu_shapes = $type.'_z'.$zoom_setting.'_flu_shapes.tab';
+my $flu_signal = $type.'_z'.$zoom_setting.'_flu_signal.tab';
 
 # Later connect to Bioinfo site to get version
 our $outlier_vs = 0;
