@@ -544,6 +544,7 @@ def object_composition(img, contours, hierarchy, device, debug=False):
     print_image(ori_img, (str(device) + '_objcomp_mask.png'))
   return device, group, mask
 
+
 ### Color palette returns an array of colors (rainbow)
 def color_palette(num):
   # Returns array of colors length num
