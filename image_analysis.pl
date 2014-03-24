@@ -218,7 +218,7 @@ sub process {
   while (my $job = $jobq->dequeue()) {
     last if ($job eq 'EXIT');
     my $result = $job."\n";
-    open JOB, "$job |" or die "Cannot execute job $job: $!\n\n";
+    open JOB, "$job 2> /dev/null |" or die "Cannot execute job $job: $!\n\n";
     while (my $data = <JOB>) {
       $result .= $data;
     }
