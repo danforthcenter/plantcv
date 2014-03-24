@@ -111,9 +111,15 @@ while (my $result = $sth->fetchrow_hashref) {
 if (!exists($ids{'run_id'})) {
   $ids{'run_id'} = 0;
 }
+###########################################
 
+# Run info
+###########################################
 # Next run ID
 $ids{'run_id'}++;
+my $analysis_time = time;
+my @run = ($ids{'run_id'}, $analysis_time, $pipeline, $outlier_vs);
+print RUN join("\t", @run)."\n";
 ###########################################
 
 # Read image file names
@@ -189,8 +195,6 @@ while ($resultq->pending) {
   process_results(@results);
 }
 
-## Populated database
-
 # Cleanup
 ###########################################
 close SIG;
@@ -199,6 +203,24 @@ close RUN;
 close SNAP;
 close SKIP;
 close FAIL;
+###########################################
+
+# Populated database
+###########################################
+# Run info
+`sqlite3 -separator \$'\t' $sqldb '.import $runinfo_tmp runinfo'`;
+# Snapshots
+`sqlite3 -separator \$'\t' $sqldb '.import $snapshot_tmp snapshots'`;
+if ($type =~ /vis/) {
+  `sqlite3 -separator \$'\t' $sqldb '.import $vis_shapes vis_shapes'`;  
+  `sqlite3 -separator \$'\t' $sqldb '.import $vis_colors vis_colors'`;  
+} elsif ($type =~ /nir/) {
+  `sqlite3 -separator \$'\t' $sqldb '.import $nir_shapes nir_shapes'`;  
+  `sqlite3 -separator \$'\t' $sqldb '.import $nir_signal nir_signal'`;  
+} elsif ($type =~ /flu/) {
+  `sqlite3 -separator \$'\t' $sqldb '.import $flu_shapes flu_shapes'`;  
+  `sqlite3 -separator \$'\t' $sqldb '.import $flu_signal flu_signal'`;  
+}
 ###########################################
 
 exit;
@@ -236,14 +258,12 @@ sub process_results {
   
   # Job info
   ###########################################
-  my $analysis_time = time;
   # Job
   my $job = shift @results;
   my @job = split /'/, $job;
   my @image = split /\//, $job[1];
   my $image = pop(@image);
   my $path = join('/', @image);
-  my @run = ($ids{'run_id'}, $analysis_time, $pipeline, $outlier_vs);
   ###########################################
   
   # Parse filename
@@ -331,7 +351,6 @@ sub process_results {
   
   # Print run info
   ###########################################
-  print RUN join("\t", @run)."\n";
   print SNAP join("\t", @snap)."\n";
   print SHAPE join("\t", @shape)."\n";
   print SIG join("\t", @signal)."\n";
