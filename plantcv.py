@@ -162,7 +162,7 @@ def fill(img, mask, size, device, debug=False):
   # debug = True/False. If True, print image
   device += 1
   ix,iy= np.shape(img)
-  size1=ix,iy,3
+  size1=ix,iy
   background=np.zeros(size1, dtype=np.uint8)
   
   # Find contours
@@ -269,11 +269,12 @@ def find_objects(img, mask, device, debug=False):
   # debug = True/False. If True, print image
   device += 1
   mask1=np.copy(mask)
+  ori_img=np.copy(img)
   objects,hierarchy = cv2.findContours(mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
   for i,cnt in enumerate(objects):
-     cv2.drawContours(img,objects,i, color_palette(1)[0],-1, lineType=8,hierarchy=hierarchy)
+     cv2.drawContours(ori_img,objects,i, color_palette(1)[0],-1, lineType=8,hierarchy=hierarchy)
   if debug:
-    print_image(img, (str(device) + '_id_objects.png'))
+    print_image(ori_img, (str(device) + '_id_objects.png'))
   
   return device, objects, hierarchy
 
@@ -727,7 +728,7 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     cv2.line(ori_img, (int(cmx),y), (int(cmx),y+height), (0,0,255), 3)
     cv2.line(ori_img,(tuple(caliper_transpose[caliper_length-1])),(tuple(caliper_transpose[0])),(0,0,255),3)
     cv2.circle(ori_img, (int(cmx),int(cmy)), 10, (0,0,255), 3)
-    print_image(ori_img,(filename + '_shapes.png'))
+    print_image(ori_img,(str(filename) + '_shapes.png'))
   else:
     pass
   
@@ -1181,8 +1182,98 @@ def print_results(filename, header, data):
   print '\t'.join(map(str, header))
   print '\t'.join(map(str, data))
     
-    
-###
+### Fluorescence Analysis
+def fluor_fvfm(fdark,fmin,fmax,mask, device,filename, debug=False):
+  device+=1
+  ix,iy,iz=np.shape(fmax)
+  size = ix,iy
+  background = np.zeros(size, dtype=np.uint8)
+  w_back=background+255
 
-
-
+  fdark1,fdark2,fdark3=np.dsplit(fdark,3)
+  fmin1,fmin2,fmin3=np.dsplit(fmin,3)
+  fmax1,fmax2,fmax3=np.dsplit(fmax,3)
+  
+  fdark_s=np.squeeze(fdark1)
+  fmin_s=np.squeeze(fmin1)
+  fmax_s=np.squeeze(fmax1)
+ 
+  fdark_mask=cv2.bitwise_and(fdark_s,fdark_s, mask = mask)
+  fmin_mask=cv2.bitwise_and(fmin_s,fmin_s, mask = mask)
+  fmax_mask=cv2.bitwise_and(fmax_s,fmax_s, mask = mask)
+  
+  print_image(fdark_mask,(str(device)+'fdark_mask.png'))
+  print_image(fmin_mask,(str(device)+'fmin_mask.png'))
+  print_image(fmax_mask,(str(device)+'fmax_mask.png'))
+  
+  fmin_dark=np.subtract(fmin_mask,fdark_mask)
+  print_image(fmin_dark,(str(device)+'fmin_dark.png'))
+  fmax_dark=np.subtract(fmax_mask,fdark_mask)
+  print_image(fmax_dark,(str(device)+'fmax_dark.png'))
+  fv=np.subtract(fmax_dark,fmin_dark)
+  print_image(fv,(str(device)+'fv_dark.png'))
+  #fvfm=np.divide(fv,fmax_dark)
+  #fvfm_d=fvfm[np.nonzero(fvfm)]
+  #print len(fvfm_d)
+  #fvfm_data=tuple(fvfm_d)
+  #print fvfm_data
+  #fvfm_data_1=[l[0] for l in fvfm_data]
+  #print fvfm_data_1
+  
+  ##Pseudo_color fvfm
+  #fvfm_color=fvfm*256
+  #
+  #fvfm_img =plt.imshow(fvfm_color, vmin=0,vmax=(255), cmap=cm.jet)
+  #bar=plt.colorbar(orientation='horizontal')
+  #mask_inv=cv2.bitwise_not(mask)
+  #white_rgba=np.dstack((w_back,w_back,w_back,mask_inv))
+  #my_cmap = plt.get_cmap('binary_r')
+  #pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
+  #plt.axis('off')
+  #fig_name=(str(filename) + '_pseduo_fvfm_white.png')
+  #plt.savefig(fig_name)
+  #if debug:
+  #  fig_name=(str(device) + '_pseduo_fvfm_white.png')
+  #  plt.savefig(fig_name)
+  #plt.clf()
+  #
+  #hist_fvfm= np.histogram([fvfm],[0],mask,[1], [0,1])
+  #print hist_fvfm
+  ##
+  #fvfm_color=
+  #fvfm_bin=fvfm_color/(256/bins)
+  #
+  #hist_b= cv2.calcHist([b_bin],[0],mask,[bins], [0,(bins-1)])
+  #
+  #fvfm_stack=np.
+  
+    #h_img =plt.imshow(h_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
+    #bar=plt.colorbar(orientation='horizontal')
+    #mask_inv=cv2.bitwise_not(mask)
+    #img_gray=cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    #pot=cv2.bitwise_and(img_gray,img_gray,mask=mask_inv)
+    #pot_img=cv2.add(pot,mask)
+    #pot_rgba=np.dstack((pot_img,pot_img,pot_img,mask_inv))
+    #my_cmap = plt.get_cmap('binary_r')
+    #pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
+    #plt.axis('off')
+    #fig_name=(filename +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
+    #plt.savefig(fig_name)
+    #if debug:
+    #  fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
+    #  plt.savefig(fig_name)
+    #plt.clf()
+    #
+    #h_img =plt.imshow(h_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
+    #bar=plt.colorbar(orientation='horizontal')
+    #white_rgba=np.dstack((w_back,w_back,w_back,mask_inv))
+    #pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
+    #plt.axis('off')
+    #fig_name=(filename +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
+    #plt.savefig(fig_name)
+    #if debug:
+    #  fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
+    #  plt.savefig(fig_name)
+    #plt.clf()
+  
+  #return fvfm,fmax_dark,fmin_dark
