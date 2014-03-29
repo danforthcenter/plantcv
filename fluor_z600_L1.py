@@ -23,23 +23,20 @@ def main():
   # Get options
   args = options()
   
-  # Read image
-  img1 = cv2.imread(args.fdark)
-  img2 = cv2.imread(args.fmin)
-  img3 = cv2.imread(args.fmax)
+  # Read image (converting fmax and track to 8 bit just to create a mask, use 16-bit for all the math)
+  mask = cv2.imread(args.fmax)
   track = cv2.imread(args.track)
+  
+  mask1, mask2, mask3= cv2.split(mask)
   
   # Pipeline step
   device = 0
   
-  # Create an image mask with Fmax image
-  img30,img31,img32=np.dsplit(img3,3)
-
   # Mask pesky track autofluor
   device, track1= pcv.rgb2gray_hsv(track, 'v', device, args.debug)
   device, track_thresh = pcv.binary_threshold(track1, 0, 255, 'light', device, args.debug)
   device, track_inv=pcv.invert(track_thresh, device, args.debug)
-  device, track_masked = pcv.apply_mask(img30, track_inv, 'black', device, args.debug)
+  device, track_masked = pcv.apply_mask(mask1, track_inv, 'black', device, args.debug)
   
   # Threshold the Saturation image
   device, fmax_thresh = pcv.binary_threshold(track_masked, 20, 255, 'light', device, args.debug)
@@ -53,27 +50,33 @@ def main():
   device, sfill_cnt = pcv.fill(s_mblur, s_cnt, 110, device, args.debug)
   
   # Identify objects
-  device, id_objects,obj_hierarchy = pcv.find_objects(img3, sfill_cnt, device, args.debug)
+  device, id_objects,obj_hierarchy = pcv.find_objects(mask, sfill_cnt, device, args.debug)
   
   # Define ROI
-  device, roi1, roi_hierarchy= pcv.define_roi(img3,'circle', device, None, 'default', args.debug,True, 0,0,-50,-50)
+  device, roi1, roi_hierarchy= pcv.define_roi(mask,'circle', device, None, 'default', args.debug,True, 0,0,-50,-50)
   
   # Decide which objects to keep
-  device,roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(img3,'partial',roi1,roi_hierarchy,id_objects,obj_hierarchy,device, args.debug)
+  device,roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(mask,'partial',roi1,roi_hierarchy,id_objects,obj_hierarchy,device, args.debug)
   
   # Object combine kept objects
-  device, obj, mask = pcv.object_composition(img3, roi_objects, hierarchy3, device, args.debug)
+  device, obj, masked = pcv.object_composition(mask, roi_objects, hierarchy3, device, args.debug)
   
-############### Analysis ################  
+################ Analysis ################  
   
   # Find shape properties, output shape image (optional)
-  device, shape_header,shape_data,shape_img = pcv.analyze_object(img3, args.fmax, obj, mask, device,args.debug,True)
+  device, shape_header,shape_data,shape_img = pcv.analyze_object(mask, args.fmax, obj, masked, device,args.debug,True)
+  
+  # Fluorescence Measurement (read in 16-bit images)
+  fdark=cv2.imread(args.fdark, -1)
+  fmin=cv2.imread(args.fmin, -1)
+  fmax=cv2.imread(args.fmax, -1)
+  
+  device, fvfm_header, fvfm_data=pcv.fluor_fvfm(fdark,fmin,fmax,kept_mask, device, args.fmax,1000, args.debug)
 
-  # Fluorescence Measurement
-  device, fvfm=pcv.fluor_fvfm(img1,img2,img3,kept_mask, device,args.debug)  
-#  # Output shape and color data
-#  pcv.print_results(args.image, shape_header, shape_data)
-#  pcv.print_results(args.image, color_header, color_data)
+
+  # Output shape and color data
+  pcv.print_results(args.fmax, shape_header, shape_data)
+  pcv.print_results(args.fmax, fvfm_header, fvfm_data)
   
 if __name__ == '__main__':
   main()
