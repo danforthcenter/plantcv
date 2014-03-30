@@ -1238,7 +1238,7 @@ def fluor_fvfm(fdark,fmin,fmax,mask, device,filename,bins=1000, debug=False):
   fv_img=fv3
   print_image(fv_img,(str(filename[0:-4])+'_fv_img.png'))
 
-  #Calculate Fv/Fm
+  # Calculate Fv/Fm
   fvfm=[]
   fm=np.hstack(fmax_flat)
   fv1=np.array([float(i) for i in fv], dtype=np.float)
@@ -1265,15 +1265,17 @@ def fluor_fvfm(fdark,fmin,fmax,mask, device,filename,bins=1000, debug=False):
   fvfm_hist, fvfm_bins=np.histogram(fvfm_nonzero_hist, bins, range=(0,1))
   lower = np.resize(fvfm_bins, len(fvfm_bins)-1)
   tmid = lower + 0.5*np.diff(fvfm_bins)
+  tmid_list= [l for l in tmid]
+  fvfm_hist_list=[l for l in fvfm_hist]
   fvfm_hist_max=np.argmax(fvfm_hist)
   max_bin=tmid[fvfm_hist_max]
   
-  #Store Fluorescence Histogram Data
+  # Store Fluorescence Histogram Data
   hist_header=('bin-number','fvfm_bins','fvfm_hist','fvfm_hist_peak', 'fdark_passed_qc')
   data={
     'bin-number': bins,
-    'fvfm_bins': tmid,
-    'fvfm_hist': fvfm_hist,
+    'fvfm_bins': tmid_list,
+    'fvfm_hist': fvfm_hist_list,
     'fvfm_hist_peak':max_bin,
     'fdark_passed_qc': qc_fdark
     }
@@ -1300,8 +1302,17 @@ def fluor_fvfm(fdark,fmin,fmax,mask, device,filename,bins=1000, debug=False):
   plt.savefig(fig_name)
   plt.clf()
   
-  #pseudocolor FvFm image
+  # Histogram Visualization Slice (normalized to 255 for size)
+  fvfm_max=np.amax(fvfm_hist)
+  fvfm_min=np.amin(fvfm_hist)
+  hist_shape=np.shape(fvfm_hist)
+  hist_float=np.array([float(i) for i in fvfm_hist], dtype=np.float)
+  hist_background=np.zeros(hist_shape,dtype=np.uint8)
+  fvfm_norm_slice=np.array((((hist_float-fvfm_min)/(fvfm_max-fvfm_min))*255),dtype=np.uint8)
+  fvfm_stack=np.dstack((hist_background,hist_background,fvfm_norm_slice))
+  print_image(fvfm_stack,(str(filename[0:-4]) + '_fvfm_hist_slice.png'))
   
+  # Pseudocolor FvFm image
   ix,iy=np.shape(fmax)
   size=ix,iy
   background=np.zeros(size)
