@@ -293,7 +293,10 @@ def define_roi(img, shape, device, roi=None, roi_input='default', debug=False, a
 
   device += 1
   ori_img=np.copy(img)
-  ix,iy,iz=np.shape(img)
+  if len(np.shape(img))==3:
+    ix,iy,iz=np.shape(img)
+  else:
+    ix,iy=np.shape(img)
   
   #Allows user to use the default ROI or input their own RGB or binary image (made with imagej or some other program) as a base ROI (that can be adjusted below)
   if roi_input== 'rgb':
@@ -462,7 +465,10 @@ def roi_objects(img,roi_type,roi_contour, roi_hierarchy,object_contour, obj_hier
  # obj_hierarchy = hierarchy of objects, output from "Identifying Objects" fuction
  # device = device number.  Used to count steps in the pipeline
   device +=1
-  ix,iy,iz=np.shape(img)
+  if len(np.shape(img))==3:
+    ix,iy,iz=np.shape(img)
+  else:
+    ix,iy=np.shape(img)
   size = ix,iy,3
   background = np.zeros(size, dtype=np.uint8)
   ori_img=np.copy(img)
@@ -599,7 +605,10 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
   # filename= False or image name. If defined print image
   device += 1
   ori_img=np.copy(img)
-  ix,iy,iz=np.shape(img)
+  if len(np.shape(img))==3:
+    ix,iy,iz=np.shape(img)
+  else:
+    ix,iy=np.shape(img)
   size = ix,iy,3
   size1 = ix,iy
   background = np.zeros(size, dtype=np.uint8)
@@ -755,7 +764,10 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
   # filename= False or image name. If defined print image
   
   device += 1
-  ix,iy,iz=np.shape(img)
+  if np.shape(img)[2]==3:
+    ix,iy,iz=np.shape(img)
+  else:
+    ix,iy=np.shape(img)
   size = ix,iy
   background = np.zeros(size, dtype=np.uint8)
   w_back=background+255
@@ -1193,7 +1205,11 @@ def fluor_fvfm(fdark,fmin,fmax,mask, device,filename,bins=1000, debug=False):
   # debug = if True prints out images
   
   device+=1
-  ix,iy=np.shape(fmax)
+  if len(np.shape(fmax))==3:
+    ix,iy,iz=np.shape(fmax)
+  else:
+    ix,iy=np.shape(fmax)
+  
   size = ix,iy
   background = np.zeros(size, dtype=np.uint8)
   w_back=background+255
@@ -1211,7 +1227,10 @@ def fluor_fvfm(fdark,fmin,fmax,mask, device,filename,bins=1000, debug=False):
   fmax_mask=cv2.bitwise_and(fmax,fmax, mask = mask)
   
   # Calculate Fvariable
-  ix,iy=np.shape(fmax)
+  if len(np.shape(fmax))==3:
+    ix,iy,iz=np.shape(fmax)
+  else:
+    ix,iy=np.shape(fmax)
   shape=ix,iy
   
   fv=[]
