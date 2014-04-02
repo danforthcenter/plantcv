@@ -551,7 +551,6 @@ def object_composition(img, contours, hierarchy, device, debug=False):
   # debug= True/False. If True, print image
   device += 1
   ori_img=np.copy(img)
-  print np.shape(ori_img)
   
   stack = np.zeros((len(contours), 1))
   r,g,b = cv2.split(ori_img)
