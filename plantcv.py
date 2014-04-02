@@ -31,7 +31,7 @@ def readimage(filename):
   # Reads image into numpy ndarray and splits the path and image filename
   # filename = user inputed filename (possibly including a path)
   try:
-    img = cv2.imread(filename,-1)
+    img = cv2.imread(filename)
   except:
     fatal_error("Cannot open " + filename);
   
@@ -551,6 +551,7 @@ def object_composition(img, contours, hierarchy, device, debug=False):
   # debug= True/False. If True, print image
   device += 1
   ori_img=np.copy(img)
+  print np.shape(ori_img)
   
   stack = np.zeros((len(contours), 1))
   r,g,b = cv2.split(ori_img)
