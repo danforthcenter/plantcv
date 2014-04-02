@@ -23,7 +23,7 @@ def main():
   
   # Read image
   img, path, filename = pcv.readimage(args.image)
-  roi = cv2.imread(args.roi)
+  #roi = cv2.imread(args.roi)
   
   # Pipeline step
   device = 0
