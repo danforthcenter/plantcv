@@ -65,18 +65,29 @@ def main():
   
   # Find shape properties, output shape image (optional)
   device, shape_header,shape_data,shape_img = pcv.analyze_object(mask, args.fmax, obj, masked, device,args.debug,True)
+    # Fluorescence Measurement (read in 16-bit images)
+  fdark=cv2.imread(args.fdark, -1)
+  fmin=cv2.imread(args.fmin, -1)
+  fmax=cv2.imread(args.fmax, -1)
   
-  ## Fluorescence Measurement (read in 16-bit images)
-  #fdark=cv2.imread(args.fdark, -1)
-  #fmin=cv2.imread(args.fmin, -1)
-  #fmax=cv2.imread(args.fmax, -1)
-  #
-  #device, fvfm_header, fvfm_data=pcv.fluor_fvfm(fdark,fmin,fmax,kept_mask, device, args.fmax,1000, args.debug)
-  #
-  #
-  ## Output shape and color data
-  #pcv.print_results(args.fmax, shape_header, shape_data)
-  #pcv.print_results(args.fmax, fvfm_header, fvfm_data)
+  device, fvfm_header, fvfm_data=pcv.fluor_fvfm(fdark,fmin,fmax,kept_mask, device, args.fmax,1000, args.debug)
+  
+  
+  # Output shape and color data
+  pcv.print_results(args.fmax, shape_header, shape_data)
+  pcv.print_results(args.fmax, fvfm_header, fvfm_data)
+  
+  # Fluorescence Measurement (read in 16-bit images)
+  fdark=cv2.imread(args.fdark, -1)
+  fmin=cv2.imread(args.fmin, -1)
+  fmax=cv2.imread(args.fmax, -1)
+  
+  device, fvfm_header, fvfm_data=pcv.fluor_fvfm(fdark,fmin,fmax,kept_mask, device, args.fmax,1000, args.debug)
+  
+  
+  # Output shape and color data
+  pcv.print_results(args.fmax, shape_header, shape_data)
+  pcv.print_results(args.fmax, fvfm_header, fvfm_data)
   #
 if __name__ == '__main__':
   main()
