@@ -469,6 +469,7 @@ def roi_objects(img,roi_type,roi_contour, roi_hierarchy,object_contour, obj_hier
     ix,iy,iz=np.shape(img)
   else:
     ix,iy=np.shape(img)
+    
   size = ix,iy,3
   background = np.zeros(size, dtype=np.uint8)
   ori_img=np.copy(img)
