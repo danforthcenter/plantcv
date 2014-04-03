@@ -39,7 +39,122 @@ def readimage(filename):
   path, img_name = os.path.split(filename)
   
   return img, path, img_name
-    
+
+#################################################################################################################################################
+   
+"""Object Filtering"""
+
+#################################################################################################################################################
+
+### Laplace filtering
+def laplace_filter(img, k, scale, device, debug):
+  # This is a filtering method used to identify and highlight fine edges based on the 2nd derivative
+  # A very sensetive method to highlight edges but will also amplify background noise
+  # img = input image
+  # k = apertures size used to calculate 2nd derivative filter, specifies the size of the kernel (must be an odd integer: 1,3,5...)
+  # scale = scaling factor applied (multiplied) to computed Laplacian values (scale = 1 is unscaled)
+  # device = device number. Used to count steps in the pipeline
+  # debug = True/False. If True; print output image
+  # ddepth = -1 specifies that the dimensions of output image will be the same as the input image
+  lp_filtered = cv2.Laplacian(src = img, ddepth = -1, ksize = k, scale = scale)
+  device += 1
+  if debug:
+    print_image(lp_filtered, str(device) + '_lp_out' + '_k_' + str(k) + '_scale_' + str(scale) + '_.png')
+  return device, lp_filtered
+
+
+### Sobel filtering
+def sobel_filter(img, dx, dy, k, scale, device, debug):
+  # This is a filtering method used to identify and highlight gradient edges/features using the 1st derivative
+  # Typically used to identify gradients along the x-axis (dx = 1, dy = 0) and y-axis (dx = 0, dy = 1) independently
+  # Performance is quite similar to Scharr filter
+  # Used to detect edges / changes in pixel intensity 
+  # img = image
+  # dx = derivative of x to analyze (1-3)
+  # dy = derivative of x to analyze (1-3)
+  # k = specifies the size of the kernel (must be an odd integer: 1,3,5...)
+  # scale = scaling factor applied (multiplied) to computed Sobel values (scale = 1 is unscaled)
+  # device = device number. Used to count steps in the pipeline
+  # debug = True/False. If True; print output image
+  # ddepth = -1 specifies that the dimensions of output image will be the same as the input image
+  sb_img = cv2.Sobel(src = img, ddepth = -1, dx = dx, dy = dy, ksize = k)
+  device += 1
+  if debug:
+    print_image(sb_img, str(device) + '_sb_img' + '_dx_' + str(dx) + '_dy_' + str(dy) + '_k_' + str(k) +'.png')
+  return device, sb_img
+
+### Scharr filtering
+def scharr_filter(img, dX, dY, scale, device, debug):
+  # This is a filtering method used to identify and highlight gradient edges/features using the 1st derivative
+  # Typically used to identify gradients along the x-axis (dx = 1, dy = 0) and y-axis (dx = 0, dy = 1) independently
+  # Performance is quite similar to Sobel filter
+  # Used to detect edges / changes in pixel intensity 
+  # img = image
+  # dx = derivative of x to analyze (1-3)
+  # dy = derivative of x to analyze (1-3)
+  # scale = scaling factor applied (multiplied) to computed Scharr values (scale = 1 is unscaled)
+  # device = device number. Used to count steps in the pipeline
+  # debug = True/False. If True; print output image
+  # ddepth = -1 specifies that the dimensions of output image will be the same as the input image
+  sr_img = cv2.Scharr(src = img, ddepth = -1, dx = dX, dy = dY, scale = scale)
+  device += 1
+  if debug:
+    print_image(sr_img, str(device) + '_sr_img' + '_dx_' + str(dX) + '_dy_' + str(dY) + '_scale_' + str(scale) + '.png')
+  return device, sr_img
+
+### Highboost filtering
+def high_boost(img, img_mblur, c, device, debug):
+  # High-boost filtering is a method used to sharpen images
+  # This method will sharpen regions of high contrast while keeping blurred regions intact
+  # See Digital Image Processsing by Gonzalez and Woods
+  # img = image for filtering
+  # img_mblur = an image subjected to lowpass filtering (median, gaussian, etc.). I like median.
+  # c = scaling factor to multiply output array by
+  # device = device number. Used to count steps in the pipeline
+  # debug = True/False. If True; print output image
+  
+  # Get difference between original and smoothed image
+  img_sub = np.sub(img, img_blur)
+  # Enhance the difference by an appropriate scaling factor (c)
+  img_mult = np.multiply(img_sub, c)
+  # Sharpen the original image
+  img_hb = np.add(img, img_mult)
+  device += 1
+  if debug:
+    print_image(img_hb, str(device) + '_hb_image_' + 'scale_' + str(c) + '.png')
+  return device, img_hb
+
+### Histogram equalization
+def HistEqualization(img, device, debug):
+  # Histogram equalization is a method to normalize the distribution of intensity values
+  # If the image has low contrast it will make it easier to threshold
+  # img = input image
+  # device = device number. Used to count steps in the pipeline
+  # debug = True/False. If True; print output image
+  img_eh = cv2.equalizeHist(img)
+  device += 1
+  if debug:
+    print_image(img_eh, str(device) + '_hist_equal_img.png')
+  return device, img_eh
+
+### Plot histogram
+def plot_hist(img, name):
+  # Plot a histogram using the pyplot library
+  # img = image to analyze
+  # name = name for plot output
+  # get histogram
+  hist = cv2.calcHist([img],[0],None,[256],[0,255])
+  # open pyplot plotting window using hist data
+  plt.plot(hist)
+  # set range of x-axis 
+  xaxis=plt.xlim([0,(255)])
+  fig_name = name + '.png'
+  # write the figure to current directory
+  plt.savefig(fig_name)
+  # close pyplot plotting window
+  plt.clf()
+  
+  
 #################################################################################################################################################
    
 """Object Idenfication and Shape Functions Below"""
@@ -60,6 +175,94 @@ def image_add(img1, img2, device, debug):
   if debug:
     print_image(added_img, str(device) + '_added' + '.png')
   return device, added_img
+
+### Image subtraction
+def image_subtract(img1, img2, device, debug):
+  # This is a function used to subtract one image from another image (img1 - img2)
+  # The numpy subtraction function '-' is used. This is a modulo operation rather than the cv2.subtract fxn which is a saturation operation
+  # img1 = input image
+  # img2 = input image used to subtract from img1
+  # device = device number. Used to count steps in the pipeline
+  # debug = True/False. If True; print output image
+  # ddepth = -1 specifies that the dimensions of output image will be the same as the input image
+  subed_img = img1 - img2
+  device += 1
+  if debug:
+    print_image(subed_img, str(device) + '_subtracted' + '.png')
+  return device, subed_img
+
+### Erosion filter
+def erode(img, kernel, i, device, debug):
+  # Perform morphological 'erosion' filtering. Keeps pixel in center of the kernel if conditions set in kernel are true, otherwise removes pixel. 
+  # img = input image
+  # kernel = filtering window, you'll need to make your own using as such:  kernal = np.zeros((x,y), dtype=np.uint8), then fill the kernal with appropriate values
+  # i = interations, i.e. number of consecutive filtering passes
+  # device = device number. Used to count steps in the pipeline
+  # debug = True/False. If True; print output image
+  er_img = cv2.erode(src = img, kernel = kernel, iterations = i)
+  device += 1
+  if debug:
+    print_image(er_img, str(device) + '_er_image_' + 'itr_' + str(i) + '.png')
+  return device, er_img
+
+### Dilation filter
+def dilate(img, kernel, i, device, debug):
+  # Performs morphological 'dilation' filtering. Adds pixel to center of kernel if conditions set in kernel are true.
+  # img = input image
+  # kernel = filtering window, you'll need to make your own using as such:  kernal = np.zeros((x,y), dtype=np.uint8), then fill the kernal with appropriate values
+  # i = interations, i.e. number of consecutive filtering passes
+  # device = device number. Used to count steps in the pipeline
+  # debug = True/False. If True; print output image
+    dil_img = cv2.dilate(src = img, kernel = kernel, iterations = i)
+    device += 1
+    if debug:
+        print_image(dil_img, str(device) + '_dil_image_' + 'itr_' + str(i) + '.png')
+    return device, dil_img
+
+
+### Make masking rectangle
+def rectangle_mask(img, p1, p2, device, debug):
+  # takes an input image and returns a binary image masked by a rectangular area denoted by p1 and p2
+  # note that p1 = (0,0) is the top left hand corner bottom right hand corner is p2 = (max-value(x), max-value(y))
+  # device = device number. Used to count steps in the pipeline
+  # debug = True/False. If True; print output image
+  # get the dimensions of the input image
+  ix, iy = np.shape(img)
+  size = ix,iy
+  # create a blank image of same size
+  bnk = np.zeros(size, dtype=np.uint8)
+  # draw a rectangle denoted by pt1 and pt2 on the blank image
+  cv2.rectangle(img = bnk, pt1 = p1, pt2 = p2, color = (255,255,255))
+  ret, bnk = cv2.threshold(bnk,127,255,0)
+  contour,hierarchy = cv2.findContours(bnk,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+  # make sure entire rectangle is within (visable within) plotting region or else it will not fill with thickness = -1
+  # note that you should only print the first contour (contour[0]) if you want to fill with thickness = -1
+  # otherwise two rectangles will be drawn and the space between them will get filled
+  cv2.drawContours(bnk, contour, 0 ,(255,255,255), -1)
+  device +=1
+  if debug:
+    print_image(bnk, (str(device) + '_roi.png'))
+  return device, bnk, contour, hierarchy
+
+### Mask border of image
+def border_mask(img, p1, p2, device, debug):
+  # by using rectangle_mask to mask the edge of plotting regions you end up missing the border of the images by 1 pixel
+  # This function fills this region in
+  # note that p1 = (0,0) is the top left hand corner bottom right hand corner is p2 = (max-value(x), max-value(y))
+  # device = device number. Used to count steps in the pipeline
+  # debug = True/False. If True; print output image
+    
+  ix, iy = np.shape(img)
+  size = ix,iy
+  bnk = np.zeros(size, dtype=np.uint8)
+  cv2.rectangle(img = bnk, pt1 = p1, pt2 = p2, color = (255,255,255))
+  ret, bnk = cv2.threshold(bnk,127,255,0)
+  contour,hierarchy = cv2.findContours(bnk,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+  cv2.drawContours(bnk, contour, -1 ,(255,255,255), 5)
+  device +=1
+  if debug:
+    print_image(bnk, (str(device) + '_brd_mskd_' + '.png'))
+  return device, bnk, contour, hierarchy
 
 ### RGB -> HSV -> Gray
 def rgb2gray_hsv(img, channel, device, debug=False):
@@ -1202,6 +1405,83 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     fatal_error('Pseudocolor Channel' + str(pseudo_channel) + ' is not "None", "l","m", "y", "h","s" or "v"!')
   
   return device, hist_header, hist_data, norm_slice
+
+### Analyze Color of Object
+def analyze_NIR_intensity(img, imgname, mask, bins, device, debug=False ,filename=False):
+  # This function calculates the intensity of each pixel associated with the plant and writes the values out to a file
+  # Can also print out a histogram plot of pixel intensity and a pseudocolor image of the plant
+  # img = input image
+  # imgname = name of input image 
+  # mask = mask made from selected contours
+  # bins = number of classes to divide spectrum into
+  # device = device number. Used to count steps in the pipeline
+  # debug = True/False. If True, print data and histograms
+  # filename= False or image name. If defined print image
+  
+  device += 1
+  ix,iy = np.shape(img)
+  size = ix,iy
+  background = np.zeros(size, dtype=np.uint8)
+  w_back=background+255
+  ori_img=np.copy(img)
+  
+  masked=cv2.bitwise_and(img,img, mask=mask)
+  
+  nir_bin=img/(256/bins)
+  hist_nir= cv2.calcHist([nir_bin],[0],mask,[bins], [0,(bins-1)])
+  pixels = cv2.countNonZero(mask)
+  hist_nir = (hist_nir/pixels) * 100
+  hist_data_nir=[l[0] for l in hist_nir]
+  
+  hist_header=('bin', 'intensity') # 'bin', 'intensity'
+  data={
+    'bin-number': bins,
+    'intensity': hist_data_nir
+  }
+  
+  hist_data= (
+    data['bin-number'],
+    data['intensity']
+    )
+  if debug:
+    hist_plot_nir=plt.plot(hist_nir, color = 'red', label = 'Signal Intensity')
+    xaxis=plt.xlim([0,(bins-1)])
+    plt.xlabel('Grayscale pixel intensity (0-255)')
+    plt.ylabel('Proportion of pixels (%)')
+    fig_name=('NIR' + '_hist_' + imgname)
+    plt.savefig(fig_name)
+ 
+ 
+  # what is this subset of code used for? color scaling?
+  h_max=np.amax(hist_data_nir)
+  h_min=np.amin(hist_data_nir)
+  h_norm=((h_min)/(h_max-h_min))*255
+  
+  # prepare and print a pseduocolor image of the plant on NIR grayscale background
+  if debug:
+    mask_inv=cv2.bitwise_not(mask)
+    # mask the background and color the plant with color scheme 'summer' see cmap/applyColorMap fxn
+    plant = cv2.bitwise_and(img, mask)
+    cplant = cv2.applyColorMap(plant, colormap = 6)
+    # need to make the mask 3 dimensional if you want to mask the image because the pseudocolor image is now ~RGB
+    mask3 = np.dstack((mask, mask, mask))
+    # mask the image
+    col_msk_plant = cv2.bitwise_and(cplant, cplant, mask = mask)
+    # mask the plant out of the background using the inverse make
+    bkg = cv2.bitwise_and(img,img,mask=mask_inv)
+    bkg3 = np.dstack((bkg, bkg, bkg))
+    # overlay the masked images
+    final = cv2.add(col_msk_plant, bkg3)
+    cv2.imwrite("pseudocol_plant.png", final)
+  
+  # pring a colorbar which can be associated with pseudo image
+  if debug:
+    plt.imshow(final, cmap='summer')
+    plt.colorbar(orientation='horizontal')
+    plt.axis('off')
+    fig_name=('NIR' + '_colorbar_' + imgname)
+    plt.savefig(fig_name)
+  plt.clf()
 
 ### Print Numerical Data 
 def print_results(filename, header, data):
