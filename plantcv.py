@@ -1296,6 +1296,7 @@ def fluor_fvfm(fdark,fmin,fmax,mask, device,filename,bins=1000, debug=False):
   # Make Fv/Fm Histogram for Non-Zero Values
   fvfm_nonzero=[e for i,e in enumerate(fvfm) if e!= 0]
   fvfm_nonzero_hist=np.array(fvfm_nonzero,dtype=np.float)
+  fvfm_median=np.median(fvfm_nonzero_hist)
   fvfm_hist, fvfm_bins=np.histogram(fvfm_nonzero_hist, bins, range=(0,1))
   lower = np.resize(fvfm_bins, len(fvfm_bins)-1)
   tmid = lower + 0.5*np.diff(fvfm_bins)
@@ -1305,12 +1306,13 @@ def fluor_fvfm(fdark,fmin,fmax,mask, device,filename,bins=1000, debug=False):
   max_bin=tmid[fvfm_hist_max]
   
   # Store Fluorescence Histogram Data
-  hist_header=('bin-number','fvfm_bins','fvfm_hist','fvfm_hist_peak', 'fdark_passed_qc')
+  hist_header=('bin-number','fvfm_bins','fvfm_hist','fvfm_hist_peak','fvfm_median', 'fdark_passed_qc')
   data={
     'bin-number': bins,
     'fvfm_bins': tmid_list,
     'fvfm_hist': fvfm_hist_list,
     'fvfm_hist_peak':max_bin,
+    'fvfm_median':fvfm_median,
     'fdark_passed_qc': qc_fdark
     }
   
@@ -1319,6 +1321,7 @@ def fluor_fvfm(fdark,fmin,fmax,mask, device,filename,bins=1000, debug=False):
     data['fvfm_bins'],
     data['fvfm_hist'],
     data['fvfm_hist_peak'],
+    data['fvfm_median'],
     data['fdark_passed_qc']
     )
   
