@@ -898,13 +898,13 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     [vx,vy,x1,y1] = cv2.fitLine(caliper_points,cv2.cv.CV_DIST_L2,0,0.01,0.01)
     lefty = int((-x1*vy/vx) + y1)
     righty = int(((mask.shape[1]-x1)*vy/vx)+y1)
-    cv2.line(background1,(mask.shape[1]-1,righty),(0,lefty),(255),5)
+    cv2.line(background1,(mask.shape[1]-1,righty),(0,lefty),(255),1)
     ret1,line_binary = cv2.threshold(background1, 0, 255, cv2.THRESH_BINARY)
     #print_image(line_binary,(str(device)+'_caliperfit.png'))
     
     cv2.drawContours(background2, [hull], -1, (255), -1)
     ret2,hullp_binary = cv2.threshold(background2, 0, 255, cv2.THRESH_BINARY)
-    #print_image(hullp_binary,(str(device)+'_hull.png'))
+    print_image(hullp_binary,(str(device)+'_hull.png'))
     
     caliper=cv2.multiply(line_binary,hullp_binary)    
     #print_image(caliper,(str(device)+'_caliperlength.png'))
