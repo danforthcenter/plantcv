@@ -91,6 +91,9 @@ def main():
   
   # Find shape properties, output shape image (optional)
   device, shape_header,shape_data,shape_img = pcv.analyze_object(img, args.image, obj, mask, device,args.debug,args.outdir+'/'+filename)
+    
+  # Shape properties relative to user boundary line (optional)
+  device, shape_header,shape_data, shape_img1= pcv.analyze_bound(img, args.image,obj, mask, shape_header, shape_data, 900, device,args.debug,args.outdir+'/'+filename)
   
   # Determine color properties: Histograms, Color Slices and Pseudocolored Images, output color analyzed images (optional)
   device, color_header,color_data,norm_slice= pcv.analyze_color(img, args.image, kept_mask, 256, device, args.debug,'all','rgb','v',args.outdir+'/'+filename)

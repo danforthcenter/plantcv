@@ -1033,20 +1033,26 @@ def analyze_bound(img,imgname, obj, mask,shape_header, shape_data, line_position
       cv2.circle(wback,xy,1, (0,255,0))
   above_bound_area=len(above)
   below_bound_area=len(below)
+  percent_bound_area_above=((float(above_bound_area))/(float(above_bound_area+below_bound_area)))*100
+  percent_bound_area_below=((float(below_bound_area))/(float(above_bound_area+below_bound_area)))*100
  
-  bound_header=('height_above_bound', 'height_below_bound', 'above_bound_area', 'below_bound_area')
+  bound_header=('height_above_bound', 'height_below_bound', 'above_bound_area', 'percent_above_bound_area', 'below_bound_area', 'percent_below_bound_area' )
   data = {
     'height_above_bound': height_above_bound,
     'height_below_bound': height_below_bound,
     'above_bound_area' : above_bound_area,
+    'percent_above_bound_area':percent_bound_area_above,
     'below_bound_area' : below_bound_area,
+    'percent_below_bound_area': percent_bound_area_below
   }
   
   bound_data = (
     data['height_above_bound'],
     data['height_below_bound'],
     data['above_bound_area'],
+    data['percent_above_bound_area'],
     data['below_bound_area'],
+    data['percent_below_bound_area']
   )
   
   shape_header1=shape_header+bound_header
