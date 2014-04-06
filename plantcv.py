@@ -532,9 +532,9 @@ def define_roi(img, shape, device, roi=None, roi_input='default', debug=False, a
     roi_contour,roi_heirarchy=cv2.findContours(roi1,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
     cv2.drawContours(roi_background,roi_contour[0],-1, (255,0,0),5)
     if adjust==True:
-      if x_adj>0 and w_adj>=0:
+      if x_adj>0 and w_adj>0:
         fatal_error('Adjusted ROI position is out of frame, this will cause problems in detecting objects')
-      elif y_adj>0 and h_adj>=0:
+      elif y_adj>0 and h_adj>0:
         fatal_error('Adjusted ROI position is out of frame, this will cause problems in detecting objects')
       elif x_adj<0 or y_adj<0:
         fatal_error('Adjusted ROI position is out of frame, this will cause problems in detecting objects')
@@ -1059,6 +1059,28 @@ def analyze_bound(img,imgname, obj, mask,shape_header, shape_data, line_position
   shape_header=shape_header1
   shape_data1=shape_data+bound_data
   shape_data=shape_data1
+  
+  if above_bound_area or below_bound_area:  
+    point3=(0,y_coor-4)
+    point4=(x_coor,y_coor-4)
+    cv2.line(ori_img, point3, point4, (255,0,255),5)
+    cv2.line(wback, point3, point4, (255,0,255),5)
+    m = cv2.moments(mask, binaryImage=True)
+    cmx,cmy = (m['m10']/m['m00'], m['m01']/m['m00'])
+    if y_coor-y<=0:
+        cv2.line(ori_img, (int(cmx),y), (int(cmx),y+height), (0,255,0), 3)
+        cv2.line(wback, (int(cmx),y), (int(cmx),y+height), (0,255,0), 3)
+    elif y_coor-y>0:
+      height_1=y_coor-y
+      if height-height_1<=0:
+        cv2.line(ori_img, (int(cmx),y), (int(cmx),y+height), (255,0,0), 3)
+        cv2.line(wback, (int(cmx),y), (int(cmx),y+height), (255,0,0), 3)
+      else:
+        cv2.line(ori_img, (int(cmx),y_coor-2), (int(cmx),y_coor-height_above_bound), (255,0,0), 3)
+        cv2.line(ori_img, (int(cmx),y_coor-2), (int(cmx),y_coor+height_below_bound), (0,255,0), 3)
+        cv2.line(wback, (int(cmx),y_coor-2), (int(cmx),y_coor-height_above_bound), (255,0,0), 3)
+        cv2.line(wback, (int(cmx),y_coor-2), (int(cmx),y_coor+height_below_bound), (0,255,0), 3)
+    print_image(ori_img,(str(filename) + '_boundary_shapes.png'))
   
   if debug:
     point3=(0,y_coor-4)
