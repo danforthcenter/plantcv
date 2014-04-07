@@ -45,8 +45,8 @@ def main():
   device, b = pcv.rgb2gray_lab(img, 'b', device, args.debug)
   
   # Threshold the blue image
-  device, b_thresh = pcv.binary_threshold(b, 130, 255, 'light', device, args.debug)
-  device, b_cnt = pcv.binary_threshold(b, 130, 255, 'light', device, args.debug)
+  device, b_thresh = pcv.binary_threshold(b, 138, 255, 'light', device, args.debug)
+  device, b_cnt = pcv.binary_threshold(b, 138, 255, 'light', device, args.debug)
   
   # Fill small objects
   device, b_fill = pcv.fill(b_thresh, b_cnt, 150, device, args.debug)
@@ -74,7 +74,7 @@ def main():
   
   # Threshold the green-magenta and blue images
   device, soila_thresh = pcv.binary_threshold(soil_a, 118, 255, 'dark', device, args.debug)
-  device, soilb_thresh = pcv.binary_threshold(soil_b, 155, 255, 'light', device, args.debug)
+  device, soilb_thresh = pcv.binary_threshold(soil_b, 140, 255, 'light', device, args.debug)
 
   # Join the thresholded saturation and blue-yellow images (OR)
   device, soil_ab = pcv.logical_or(soila_thresh, soilb_thresh, device, args.debug)
@@ -94,7 +94,7 @@ def main():
   device, id_objects,obj_hierarchy = pcv.find_objects(masked2, soil_cnt, device, args.debug)
 
   # Define ROI
-  device, roi1, roi_hierarchy= pcv.define_roi(img,'circle', device, None, 'default', args.debug,True, 0,0,-50,-50)
+  device, roi1, roi_hierarchy= pcv.define_roi(img,'circle', device, None, 'default', args.debug,True, 0,50,-700,-700)
   
   # Decide which objects to keep
   device,roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(img,'partial',roi1,roi_hierarchy,id_objects,obj_hierarchy,device, args.debug)
