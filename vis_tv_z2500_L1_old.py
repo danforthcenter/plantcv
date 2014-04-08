@@ -94,7 +94,7 @@ def main():
   device, id_objects,obj_hierarchy = pcv.find_objects(masked2, soil_cnt, device, args.debug)
 
   # Define ROI
-  device, roi1, roi_hierarchy= pcv.define_roi(img,'circle', device, None, 'default', args.debug,True, 0,50,-700,-700)
+  device, roi1, roi_hierarchy= pcv.define_roi(img,'circle', device, None, 'default', args.debug,True, 0,50,-1100,-1100)
   
   # Decide which objects to keep
   device,roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(img,'partial',roi1,roi_hierarchy,id_objects,obj_hierarchy,device, args.debug)
