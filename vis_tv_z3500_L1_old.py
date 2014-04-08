@@ -45,14 +45,14 @@ def main():
   device, b = pcv.rgb2gray_lab(img, 'b', device, args.debug)
   
   # Threshold the blue image
-  device, b_thresh = pcv.binary_threshold(b, 138, 255, 'light', device, args.debug)
-  device, b_cnt = pcv.binary_threshold(b, 138, 255, 'light', device, args.debug)
+  device, b_thresh = pcv.binary_threshold(b, 130, 255, 'light', device, args.debug)
+  device, b_cnt = pcv.binary_threshold(b, 130, 255, 'light', device, args.debug)
   
   # Fill small objects
-  device, b_fill = pcv.fill(b_thresh, b_cnt, 150, device, args.debug)
+  #device, b_fill = pcv.fill(b_thresh, b_cnt, 150, device, args.debug)
   
   # Join the thresholded saturation and blue-yellow images
-  device, bs = pcv.logical_and(s_fill, b_fill, device, args.debug)
+  device, bs = pcv.logical_and(s_fill, b_thresh, device, args.debug)
   
   # Apply Mask (for vis images, mask_color=white)
   device, masked = pcv.apply_mask(img, bs, 'white', device, args.debug)
@@ -65,7 +65,7 @@ def main():
   
   # Further mask soil and car
   device, masked_a = pcv.rgb2gray_lab(brass_masked, 'a', device, args.debug)
-  device, soil_car = pcv.binary_threshold(masked_a, 128, 255, 'dark', device, args.debug)
+  device, soil_car = pcv.binary_threshold(masked_a, 132, 255, 'dark', device, args.debug)
   device, soil_masked = pcv.apply_mask(brass_masked, soil_car, 'white', device, args.debug)
   
   # Convert RGB to LAB and extract the Green-Magenta and Blue-Yellow channels
@@ -73,7 +73,7 @@ def main():
   device, soil_b = pcv.rgb2gray_lab(soil_masked, 'b', device, args.debug)
   
   # Threshold the green-magenta and blue images
-  device, soila_thresh = pcv.binary_threshold(soil_a, 118, 255, 'dark', device, args.debug)
+  device, soila_thresh = pcv.binary_threshold(soil_a, 120, 255, 'dark', device, args.debug)
   device, soilb_thresh = pcv.binary_threshold(soil_b, 140, 255, 'light', device, args.debug)
 
   # Join the thresholded saturation and blue-yellow images (OR)
@@ -94,7 +94,7 @@ def main():
   device, id_objects,obj_hierarchy = pcv.find_objects(masked2, soil_cnt, device, args.debug)
 
   # Define ROI
-  device, roi1, roi_hierarchy= pcv.define_roi(img,'circle', device, None, 'default', args.debug,True, 0,50,-1100,-1100)
+  device, roi1, roi_hierarchy= pcv.define_roi(img,'circle', device, None, 'default', args.debug,True, 0,50,-700,-700)
   
   # Decide which objects to keep
   device,roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(img,'partial',roi1,roi_hierarchy,id_objects,obj_hierarchy,device, args.debug)
