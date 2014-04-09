@@ -23,9 +23,9 @@ def main():
   # Get options
   args = options()
 
-  for file in os.listdir(args.directory):
-      if re.match("*rgb_norm_slice*"):
-          print file
+  for filename in os.listdir(args.directory):
+    if re.search("rgb_norm_slice\.png$",filename):
+      print filename
 
 if __name__ == '__main__':
   main()
