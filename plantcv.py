@@ -904,7 +904,7 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     
     cv2.drawContours(background2, [hull], -1, (255), -1)
     ret2,hullp_binary = cv2.threshold(background2, 0, 255, cv2.THRESH_BINARY)
-    print_image(hullp_binary,(str(device)+'_hull.png'))
+    #print_image(hullp_binary,(str(device)+'_hull.png'))
     
     caliper=cv2.multiply(line_binary,hullp_binary)    
     #print_image(caliper,(str(device)+'_caliperlength.png'))
