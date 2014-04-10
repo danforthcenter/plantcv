@@ -919,31 +919,44 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     hull_area, solidity, perimeter, width, height, cmx, cmy = 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND'
       
   #Store Shape Data
-  shape_header=('area','hull-area','solidity','perimeter','width','height','longest_axis','center-of-mass-x', 'center-of-mass-y', 'in_bounds')
-  data = {
-    'area' : area,
-    'hull_area' : hull_area,
-    'solidity' : solidity,
-    'perimeter' : perimeter,
-    'width' : width,
-    'height' : height,
-    'longest_axis': caliper_length,
-    'center_mass_x' : cmx,
-    'center_mass_y' : cmy,
-    'in_bounds': in_bounds
-  }
-  
+  shape_header=('HEADER_SHAPES', 'area','hull-area','solidity','perimeter','width','height','longest_axis','center-of-mass-x', 'center-of-mass-y', 'in_bounds')
+  #data = {
+  #  'area' : area,
+  #  'hull_area' : hull_area,
+  #  'solidity' : solidity,
+  #  'perimeter' : perimeter,
+  #  'width' : width,
+  #  'height' : height,
+  #  'longest_axis': caliper_length,
+  #  'center_mass_x' : cmx,
+  #  'center_mass_y' : cmy,
+  #  'in_bounds': in_bounds
+  #}
+  #
+  #shape_data = (
+  #  data['area'],
+  #  data['hull_area'],
+  #  data['solidity'],
+  #  data['perimeter'],
+  #  data['width'],
+  #  data['height'],
+  #  data['longest_axis'],
+  #  data['center_mass_x'],
+  #  data['center_mass_y'],
+  #  data['in_bounds']
+  #  )
   shape_data = (
-    data['area'],
-    data['hull_area'],
-    data['solidity'],
-    data['perimeter'],
-    data['width'],
-    data['height'],
-    data['longest_axis'],
-    data['center_mass_x'],
-    data['center_mass_y'],
-    data['in_bounds']
+    'SHAPES_DATA',
+    area,
+    hull_area,
+    solidity,
+    perimeter,
+    width,
+    height,
+    caliper_length,
+    cmx,
+    cmy,
+    in_bounds
     )
       
   # Draw properties
@@ -955,6 +968,7 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     cv2.line(ori_img,(tuple(caliper_transpose[caliper_length-1])),(tuple(caliper_transpose[0])),(0,0,255),3)
     cv2.circle(ori_img, (int(cmx),int(cmy)), 10, (0,0,255), 3)
     print_image(ori_img,(str(filename) + '_shapes.png'))
+    print('\t'.join(map(str, ('IMAGE', 'shapes', str(filename) + '_shapes.png'))))
   else:
     pass
   
@@ -970,7 +984,8 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
   return device, shape_header, shape_data, ori_img
     
 ### User-Input Boundary Line
-def analyze_bound(img,imgname, obj, mask,shape_header, shape_data, line_position, device , debug=False, filename=False):
+#def analyze_bound(img,imgname, obj, mask,shape_header, shape_data, line_position, device , debug=False, filename=False):
+def analyze_bound(img,imgname, obj, mask, line_position, device , debug=False, filename=False):
   # img = image
   # imgname = name of input image
   # obj = single or grouped contour object
@@ -1036,29 +1051,38 @@ def analyze_bound(img,imgname, obj, mask,shape_header, shape_data, line_position
   percent_bound_area_above=((float(above_bound_area))/(float(above_bound_area+below_bound_area)))*100
   percent_bound_area_below=((float(below_bound_area))/(float(above_bound_area+below_bound_area)))*100
  
-  bound_header=('height_above_bound', 'height_below_bound', 'above_bound_area', 'percent_above_bound_area', 'below_bound_area', 'percent_below_bound_area' )
-  data = {
-    'height_above_bound': height_above_bound,
-    'height_below_bound': height_below_bound,
-    'above_bound_area' : above_bound_area,
-    'percent_above_bound_area':percent_bound_area_above,
-    'below_bound_area' : below_bound_area,
-    'percent_below_bound_area': percent_bound_area_below
-  }
-  
+  bound_header=('HEADER_BOUNDARY' + str(line_position), 'height_above_bound', 'height_below_bound', 'above_bound_area', 'percent_above_bound_area', 'below_bound_area', 'percent_below_bound_area' )
+  #data = {
+  #  'height_above_bound': height_above_bound,
+  #  'height_below_bound': height_below_bound,
+  #  'above_bound_area' : above_bound_area,
+  #  'percent_above_bound_area':percent_bound_area_above,
+  #  'below_bound_area' : below_bound_area,
+  #  'percent_below_bound_area': percent_bound_area_below
+  #}
+  #
+  #bound_data = (
+  #  data['height_above_bound'],
+  #  data['height_below_bound'],
+  #  data['above_bound_area'],
+  #  data['percent_above_bound_area'],
+  #  data['below_bound_area'],
+  #  data['percent_below_bound_area']
+  #)
   bound_data = (
-    data['height_above_bound'],
-    data['height_below_bound'],
-    data['above_bound_area'],
-    data['percent_above_bound_area'],
-    data['below_bound_area'],
-    data['percent_below_bound_area']
+    'BOUNDARY_DATA',
+    height_above_bound,
+    height_below_bound,
+    above_bound_area,
+    percent_bound_area_above,
+    below_bound_area,
+    percent_bound_area_below
   )
   
-  shape_header1=shape_header+bound_header
-  shape_header=shape_header1
-  shape_data1=shape_data+bound_data
-  shape_data=shape_data1
+  #shape_header1=shape_header+bound_header
+  #shape_header=shape_header1
+  #shape_data1=shape_data+bound_data
+  #shape_data=shape_data1
   
   if above_bound_area or below_bound_area:  
     point3=(0,y_coor-4)
@@ -1080,7 +1104,10 @@ def analyze_bound(img,imgname, obj, mask,shape_header, shape_data, line_position
         cv2.line(ori_img, (int(cmx),y_coor-2), (int(cmx),y_coor+height_below_bound), (0,255,0), 3)
         cv2.line(wback, (int(cmx),y_coor-2), (int(cmx),y_coor-height_above_bound), (255,0,0), 3)
         cv2.line(wback, (int(cmx),y_coor-2), (int(cmx),y_coor+height_below_bound), (0,255,0), 3)
-    print_image(ori_img,(str(filename) + '_boundary_shapes.png'))
+    if filename:
+      #print_image(ori_img,(str(filename) + '_boundary_shapes.png'))
+      print_image(ori_img,str(filename) + '_boundary' + str(line_position) + '.png')
+      print('\t'.join(map(str, ('IMAGE', 'boundary', str(filename) + '_boundary' + str(line_position) + '.png'))))
   
   if debug:
     point3=(0,y_coor-4)
@@ -1105,7 +1132,8 @@ def analyze_bound(img,imgname, obj, mask,shape_header, shape_data, line_position
     print_image(wback,(str(device) + '_boundary_on_white.png'))
     print_image(ori_img,(str(device) + '_boundary_on_img.png'))
   
-  return device, shape_header, shape_data, ori_img
+  #return device, shape_header, shape_data, ori_img
+  return device, bound_header, bound_data, ori_img
 
 
 ### Analyze Color of Object
@@ -1174,31 +1202,44 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     
   
   #Store Color Histogram Data
-  hist_header=('bin-number','blue','green','red', 'lightness','green-magenta','blue-yellow','hue','saturation', 'value')
-  data={
-    'bin-number': bins,
-    'blue': hist_data_b,
-    'green':hist_data_g,
-    'red':hist_data_r,
-    'lightness':hist_data_l,
-    'green-magenta':hist_data_m,
-    'blue-yellow':hist_data_y,
-    'hue': hist_data_h,
-    'saturation':hist_data_s,
-    'value':hist_data_v  
-    }
+  hist_header=('HEADER_HISTOGRAM','bin-number','blue','green','red', 'lightness','green-magenta','blue-yellow','hue','saturation', 'value')
+  #data={
+  #  'bin-number': bins,
+  #  'blue': hist_data_b,
+  #  'green':hist_data_g,
+  #  'red':hist_data_r,
+  #  'lightness':hist_data_l,
+  #  'green-magenta':hist_data_m,
+  #  'blue-yellow':hist_data_y,
+  #  'hue': hist_data_h,
+  #  'saturation':hist_data_s,
+  #  'value':hist_data_v  
+  #  }
   
+  #hist_data= (
+  #  data['bin-number'],
+  #  data['blue'],
+  #  data['green'],
+  #  data['red'],
+  #  data['lightness'],
+  #  data['green-magenta'],
+  #  data['blue-yellow'],
+  #  data['hue'],
+  #  data['saturation'],
+  #  data['value']
+  #  )
   hist_data= (
-    data['bin-number'],
-    data['blue'],
-    data['green'],
-    data['red'],
-    data['lightness'],
-    data['green-magenta'],
-    data['blue-yellow'],
-    data['hue'],
-    data['saturation'],
-    data['value']
+    'HISTOGRAM_DATA',
+    bins,
+    hist_data_b,
+    hist_data_g,
+    hist_data_r,
+    hist_data_l,
+    hist_data_m,
+    hist_data_y,
+    hist_data_h,
+    hist_data_s,
+    hist_data_v
     )
   
   
@@ -1218,6 +1259,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
       legend=plt.legend()
       fig_name=(str(filename)+'_' + str(hist_plot_type) + '_hist.png')
       plt.savefig(fig_name)
+      print('\t'.join(map(str, ('IMAGE', 'hist', fig_name))))
       if debug:
         fig_name=(str(device) +'_' + str(hist_plot_type) + '_hist.png')
         plt.savefig(fig_name)
@@ -1231,6 +1273,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
       fig_name=(str(filename) +'_' + str(hist_plot_type) + '_hist.png')
       plt.savefig(fig_name)
       plt.clf()
+      print('\t'.join(map(str, ('IMAGE', 'hist', fig_name))))
     elif hist_plot_type=='lab':
       hist_plotl=plt.plot(hist_l,color=graph_color[3],label=label[3])
       hist_plotm= plt.plot(hist_m,color=graph_color[4],label=label[4])
@@ -1243,6 +1286,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
         fig_name=(str(device) +'_' + str(hist_plot_type) + '_hist.png')
         plt.savefig(fig_name)
       plt.clf()
+      print('\t'.join(map(str, ('IMAGE', 'hist', fig_name))))
     elif hist_plot_type=='hsv':
       hist_ploth=plt.plot(hist_h,color=graph_color[6],label=label[6])
       hist_plots= plt.plot(hist_s,color=graph_color[7],label=label[7])
@@ -1251,6 +1295,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
       legend=plt.legend()
       fig_name=(str(filename) +'_' + str(hist_plot_type) + '_hist.png')
       plt.savefig(fig_name)
+      print('\t'.join(map(str, ('IMAGE', 'hist', fig_name))))
       if debug:
         fig_name=(str(device) +'_' + str(hist_plot_type) + '_hist.png')
         plt.savefig(fig_name)
@@ -1340,6 +1385,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
   
   if filename:
     print_image(norm_slice, (str(filename) + '_'+ str(cslice_type)+ '_norm_slice.png'))
+    print('\t'.join(map(str, ('IMAGE', 'slice', str(filename) + '_'+ str(cslice_type)+ '_norm_slice.png'))))
   else:
     pass
   
@@ -1366,10 +1412,11 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     my_cmap = plt.get_cmap('binary_r')
     pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
     plt.axis('off')
-    fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
+    fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseudo_on_img.png')
     plt.savefig(fig_name)
+    print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
-      fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
+      fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseudo_on_img.png')
       plt.savefig(fig_name)
     plt.clf()
     
@@ -1378,10 +1425,11 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     white_rgba=np.dstack((w_back,w_back,w_back,mask_inv))
     pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
     plt.axis('off')
-    fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
+    fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseudo_on_white.png')
     plt.savefig(fig_name)
+    print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
-      fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
+      fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseudo_on_white.png')
       plt.savefig(fig_name)
     plt.clf()
     
@@ -1399,6 +1447,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
     plt.savefig(fig_name)
+    print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
       plt.savefig(fig_name)
@@ -1411,6 +1460,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
     plt.savefig(fig_name)
+    print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
       plt.savefig(fig_name)
@@ -1430,6 +1480,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
     plt.savefig(fig_name)
+    print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
       plt.savefig(fig_name)
@@ -1442,6 +1493,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
     plt.savefig(fig_name)
+    print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
       plt.savefig(fig_name)
@@ -1461,6 +1513,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
     plt.savefig(fig_name)
+    print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
       plt.savefig(fig_name)
@@ -1473,6 +1526,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
     plt.savefig(fig_name)
+    print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
       plt.savefig(fig_name)
@@ -1492,6 +1546,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
     plt.savefig(fig_name)
+    print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
       plt.savefig(fig_name)
@@ -1504,6 +1559,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
     plt.savefig(fig_name)
+    print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
       plt.savefig(fig_name)
@@ -1523,6 +1579,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
     plt.savefig(fig_name)
+    print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
       plt.savefig(fig_name)
@@ -1535,6 +1592,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
     plt.savefig(fig_name)
+    print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
       plt.savefig(fig_name)
@@ -1689,7 +1747,9 @@ def fluor_fvfm(fdark,fmin,fmax,mask, device,filename,bins=1000, debug=False):
   fv2=np.array(fv,dtype=np.uint16)
   fv3=np.reshape(fv2,shape)
   fv_img=fv3
+  # Is this debug?
   print_image(fv_img,(str(filename[0:-4])+'_fv_img.png'))
+  print('\t'.join(map(str, ('IMAGE', 'fv', str(filename[0:-4])+'_fv_img.png'))))
 
   # Calculate Fv/Fm
   fvfm=[]
@@ -1757,6 +1817,7 @@ def fluor_fvfm(fdark,fmin,fmax,mask, device,filename,bins=1000, debug=False):
   fig_name=(str(filename[0:-4]) + '_fvfm_hist.png')
   plt.savefig(fig_name)
   plt.clf()
+  print('\t'.join(map(str, ('IMAGE', 'hist', fig_name))))
   
   # Histogram Visualization Slice (normalized to 255 for size)
   fvfm_max=np.amax(fvfm_hist)
@@ -1767,6 +1828,7 @@ def fluor_fvfm(fdark,fmin,fmax,mask, device,filename,bins=1000, debug=False):
   fvfm_norm_slice=np.array((((hist_float-fvfm_min)/(fvfm_max-fvfm_min))*255),dtype=np.uint8)
   fvfm_stack=np.dstack((hist_background,hist_background,fvfm_norm_slice))
   print_image(fvfm_stack,(str(filename[0:-4]) + '_fvfm_hist_slice.png'))
+  print('\t'.join(map(str, ('IMAGE', 'slice', fig_name))))
   
   # Pseudocolor FvFm image
   ix,iy=np.shape(fmax)
@@ -1788,9 +1850,10 @@ def fluor_fvfm(fdark,fmin,fmax,mask, device,filename,bins=1000, debug=False):
   my_cmap = plt.get_cmap('binary_r')
   plt.imshow(background1, cmap=my_cmap)
   plt.axis('off')
-  fig_name=(str(filename[0:-4]) + '_pseduo_fvfm.png')
+  fig_name=(str(filename[0:-4]) + '_pseudo_fvfm.png')
   plt.savefig(fig_name)
   plt.clf()
+  print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
   
   if debug: 
     print_image(fmin_mask,(str(device)+'_fmin_mask.png'))
