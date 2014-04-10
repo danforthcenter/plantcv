@@ -1741,6 +1741,9 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, debug=False ,filenam
     fig_name=('NIR' + '_colorbar_' + imgname)
     plt.savefig(fig_name)
   plt.clf()
+  
+    # return values
+  return device, hist_header, hist_data, h_norm
 
 ### Print Numerical Data 
 def print_results(filename, header, data):
