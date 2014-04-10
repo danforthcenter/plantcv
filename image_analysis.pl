@@ -11,7 +11,7 @@ use Config::Tiny;
 use Time::Local;
 use POSIX qw(strftime);
 
-my (%opt, $dir, $pipeline, $threads, $num,  @images, $image_dir, $sqldb, $type, %snapshots, %ids, $zoom_setting);
+my (%opt, $dir, $pipeline, $threads, $num,  @images, $image_dir, $sqldb, $type, %snapshots, %ids, $zoom_setting, $roi);
 my %is_valid = (
   'vis_sv' => 1,
   'vis_tv' => 1,
@@ -19,7 +19,7 @@ my %is_valid = (
   'nir_sv' => 1,
   'flu_tv' => 1
 );
-getopts('d:p:t:n:i:s:T:z:rch', \%opt);
+getopts('d:p:t:n:i:s:T:z:m:rch', \%opt);
 arg_check();
 
 ## Job start time
@@ -34,6 +34,8 @@ my $nir_shapes = $type.'_z'.$zoom_setting.'_nir_shapes.tab';
 my $nir_signal = $type.'_z'.$zoom_setting.'_nir_signal.tab';
 my $flu_shapes = $type.'_z'.$zoom_setting.'_flu_shapes.tab';
 my $flu_signal = $type.'_z'.$zoom_setting.'_flu_signal.tab';
+my $analysis_images = $type.'_z'.$zoom_setting.'_analysis_images.tab';
+my $boundary_data = $type.'_z'.$zoom_setting.'_boundary_data.tab';
 
 # Later connect to Bioinfo site to get version
 our $outlier_vs = 0;
@@ -47,6 +49,8 @@ open(FAIL, ">$fail_log") or die "Cannot open file $fail_log: $!\n\n";
 # Open temporary database files
 open(SNAP, ">$snapshot_tmp") or die "Cannot open file $snapshot_tmp: $!\n\n";
 open(RUN, ">$runinfo_tmp") or die "Cannot open file $runinfo_tmp: $!\n\n";
+open(IMG, ">$analysis_images") or die "Cannot open file $analysis_images: $!\n\n";
+open(BOUND, ">$boundary_data") or die "Cannot open file $boundary_data: $!\n\n";
 
 if ($type =~ /vis/) {
   open(SHAPE, ">$vis_shapes") or die "Cannot open file $vis_shapes: $!\n\n";
@@ -145,6 +149,10 @@ our @jobs;
 # Pipeline script prototype
 # img will be replaced by the actual image file path
 my @args = ('python', $pipeline, '-i', 'img', '-o', $image_dir);
+if ($roi) {
+	push @args, ('-m', $roi);
+}
+
 
 if ($opt{'r'}) {
   # For 1 to number of requested images
@@ -203,6 +211,8 @@ close RUN;
 close SNAP;
 close SKIP;
 close FAIL;
+close IMG;
+close BOUND;
 ###########################################
 
 # Populated database
@@ -211,6 +221,10 @@ close FAIL;
 `sqlite3 -separator \$'\t' $sqldb '.import $runinfo_tmp runinfo'`;
 # Snapshots
 `sqlite3 -separator \$'\t' $sqldb '.import $snapshot_tmp snapshots'`;
+# Analysis images
+`sqlite3 -separator \$'\t' $sqldb '.import $analysis_images analysis_images'`;
+# Boundary data
+`sqlite3 -separator \$'\t' $sqldb '.import $boundary_data boundary_data'`;
 if ($type =~ /vis/) {
   `sqlite3 -separator \$'\t' $sqldb '.import $vis_shapes vis_shapes'`;  
   `sqlite3 -separator \$'\t' $sqldb '.import $vis_colors vis_colors'`;  
@@ -302,13 +316,6 @@ sub process_results {
 	my $epoch_time = timelocal($sec,$min,$hour,$day,$month,$year);
   ###########################################
   
-  # Did the job succeed?
-  ###########################################
-  if (scalar(@results) != 4) {
-    print FAIL "$image: FAILED\n";
-    return;
-  }
-  
   # DB IDs
   ###########################################
   # New image ID
@@ -324,37 +331,62 @@ sub process_results {
     $snapshot_id = $ids{'snapshot_id'};
     $snapshots{$id}->{$epoch_time} = $snapshot_id;
   }
-  my @snap = ($image_id, $snapshot_id, $id, $epoch_time, $camera, $frame, $zoom, "$path/$image");
+  my @snap = ($image_id, $ids{'run_id'}, $snapshot_id, $id, $epoch_time, $camera, $frame, $zoom, "$path/$image");
   ###########################################
-  
-  # Shape results
+
+	my $success = 0;
+	while (@results) {
+		my $line = shift @results;
+		my @fields = split /\t/, $line;
+		if ($fields[0] eq 'IMAGE') {
+			# Analysis image
+			###########################################
+			my @img = ($image_id, $fields[1], $fields[2]);
+			print IMG join("\t", @img)."\n";
+			$success = 1;
+		} elsif ($fields[0] eq 'HEADER_SHAPES') {
+			# Shape results
+      ###########################################
+			my $data = shift @results;
+			my @shape = shape_results($line, $data, $zoom);
+			unshift(@shape, $image_id);
+			print SHAPE join("\t", @shape)."\n";
+			$success = 1;
+		} elsif ($fields[0] eq 'HEADER_HISTOGRAM') {
+			# Signal results
+			###########################################
+			my $data = shift @results;
+			my @signal;
+			if ($type =~ /vis/) {
+				@signal = color_results($line, $data);
+			} else {
+				@signal = signal_results($line, $data);
+			}
+			
+			unshift(@signal, $image_id);
+			print SIG join("\t", @signal)."\n";
+		} elsif ($fields[0] =~ /HEADER_BOUNDARY(\d+)/) {
+			# Boundary results
+			###########################################
+			my $x = $1;
+			my $data = shift @results;
+			my @bound = boundary_results($line, $data);
+			unshift(@bound, $x);
+			unshift(@bound, $image_id);
+			print BOUND join("\t", @bound)."\n";
+			$success = 1;
+		} else {
+			print STDERR "ERROR: unrecognized output line\n  $line\n";
+		}
+	}
+	
+	# Did the job succeed?
   ###########################################
-  my $header = shift @results;
-  my $data = shift @results;
-  my @shape = shape_results($header, $data, $zoom);
-  unshift(@shape, $image_id);
-  ###########################################
-  
-  # Signal results
-  ###########################################
-  $header = shift @results;
-  $data = shift @results;
-  my @signal;
-  if ($type =~ /vis/) {
-    @signal = color_results($header, $data);
-  } else {
-    @signal = signal_results($header, $data);
+  if ($success == 0) {
+    print FAIL "$image: FAILED\n";
+    return;
   }
-  
-  unshift(@signal, $image_id);
-  ###########################################
-  
-  # Print run info
-  ###########################################
   print SNAP join("\t", @snap)."\n";
-  print SHAPE join("\t", @shape)."\n";
-  print SIG join("\t", @signal)."\n";
-  ###########################################
 }
 
 ########################################
@@ -390,6 +422,30 @@ sub shape_results {
                $extent_x, $extent_y, $centroid_x, $centroid_y, $longest_axis, $in_bounds
               );
   return @shape;
+}
+
+########################################
+# Function: boundary_results
+#   Process boundary results
+########################################
+sub boundary_results {
+  my $header = shift;
+  my $data = shift;
+  
+  my @data = split /\t/, $data;
+  my $ci = column_index($header);
+  
+  my $height_above_bound = $data[$ci->{'height_above_bound'}];
+  my $height_below_bound = $data[$ci->{'height_below_bound'}];
+  my $above_bound_area = $data[$ci->{'above_bound_area'}];
+  my $percent_above_bound_area = $data[$ci->{'percent_above_bound_area'}];
+  my $below_bound_area = $data[$ci->{'below_bound_area'}];
+  my $percent_below_bound_area = $data[$ci->{'percent_below_bound_area'}];
+  
+  my @bound = ($height_above_bound, $height_below_bound, $above_bound_area,
+							 $percent_above_bound_area, $below_bound_area, $percent_below_bound_area
+              );
+  return @bound;
 }
 
 ########################################
@@ -523,6 +579,9 @@ sub arg_check {
   } else {
     $zoom_setting = 0;
   }
+	if ($opt{'m'}) {
+		$roi = $opt{'m'};
+	}
 }
 
 ########################################
@@ -552,6 +611,7 @@ arguments:
   -n NUM                Number of random images to test. Only used with -r. Default = 10.
   -c                    Create output database (SQLite). Default behaviour adds to existing database.
                         Warning: activating this option will delete an existing database!
+  -m ROI                ROI/mask image. Required by some pipelines.
   -h, --help            show this help message and exit
 
   ";

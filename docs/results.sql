@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS `runinfo` (
 --Stores data on individual images and image groups (snapshots)
 CREATE TABLE IF NOT EXISTS `snapshots` (
   `image_id` INTEGER PRIMARY KEY,
+  `run_id` INTEGER NOT NULL,
   `snapshot_id` INTEGER NOT NULL,
   `plant_id` TEXT NOT NULL,
   `datetime` INTEGER NOT NULL,
@@ -83,5 +84,25 @@ CREATE TABLE IF NOT EXISTS `flu_fvfm` (
   `fvfm` TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS `analysis_images` (
+  `image_id` INTEGER NOT NULL,
+  `type` TEXT NOT NULL,
+  `image_path` TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS `boundary_data` (
+  `image_id` INTEGER NOT NULL,
+  `x_position` INTEGER NOT NULL,
+  `height_above_bound` INTEGER NOT NULL,
+  `height_below_bound` INTEGER NOT NULL,
+  `above_bound_area` INTEGER NOT NULL,
+  `percent_above_bound_area` REAL NOT NULL,
+  `below_bound_area` INTEGER NOT NULL,
+  `percent_below_bound_area` REAL NOT NULL
+);
+
 CREATE INDEX IF NOT EXISTS `snapshot_id` ON `snapshots` (`snapshot_id`);
 CREATE INDEX IF NOT EXISTS `plant_id` ON `snapshots` (`plant_id`);
+CREATE INDEX IF NOT EXISTS `image_id` ON `analysis_images` (`image_id`);
+CREATE INDEX IF NOT EXISTS `type` ON `analysis_images` (`type`);
+CREATE INDEX IF NOT EXISTS `image_id` ON `boundary_data` (`image_id`);
