@@ -1691,16 +1691,16 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, debug=False ,filenam
   hist_nir = (hist_nir/pixels) * 100
   hist_data_nir=[l[0] for l in hist_nir]
   
-  hist_header=('HEADER_HISTOGRAM', 'bin', 'intensity') # 'bin', 'intensity'
+  hist_header=('HEADER_HISTOGRAM', 'bin-number', 'signal') # 'bin', 'intensity'
   data={
     'bin-number': bins,
-    'intensity': hist_data_nir
+    'signal': hist_data_nir
   }
   
   hist_data= (
     'NIR_DATA',
     data['bin-number'],
-    data['intensity']
+    data['signal']
     )
   if debug:
     hist_plot_nir=plt.plot(hist_nir, color = 'red', label = 'Signal Intensity')
