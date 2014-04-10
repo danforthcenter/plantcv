@@ -269,7 +269,7 @@ def dilate(img, kernel, i, device, debug):
         print_image(dil_img, str(device) + '_dil_image_' + 'itr_' + str(i) + '.png')
     return device, dil_img
 
-### Watershed boundry detection
+### Watershed boundry detection function
 def watershed(img, marker, device, debug):
   # Uses the watershed algorithm to detect boundry of objects
   # Needs a marker file which specifies area which is object (white), background (grey), unknown area (black)
