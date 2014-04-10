@@ -365,6 +365,7 @@ sub process_results {
 			
 			unshift(@signal, $image_id);
 			print SIG join("\t", @signal)."\n";
+			$success = 1;
 		} elsif ($fields[0] =~ /HEADER_BOUNDARY(\d+)/) {
 			# Boundary results
 			###########################################
