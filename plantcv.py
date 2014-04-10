@@ -161,6 +161,26 @@ def plot_hist(img, name):
 
 #################################################################################################################################################
 
+### Convert image to 32-bit integer from 8-bit floating point
+def image_to_32(img, device, debug):
+  # Converts image to a 32-bit integer format from an 8-bit floating point image
+  # img = image to convert
+  img32 = np.int32(img)
+  device += 1
+  if debug:
+    print_image(img32, str(device) + '_img32' + '.png')
+  return device, img32
+
+### Convert image to 8-bit
+def convertScaleAbs(img, device, debug):
+  # Scales, calculates absolute values and converts result to an 8-bit image
+  # img = image to convert
+  img8 = cv2.convertScaleAbs(img)
+  device += 1
+  if debug:
+    print_image(img8, str(device) + '_img8' + '.png')
+  return device, img8
+
 ### Image addition
 def image_add(img1, img2, device, debug):
   # This is a function used to add images
@@ -176,6 +196,21 @@ def image_add(img1, img2, device, debug):
     print_image(added_img, str(device) + '_added' + '.png')
   return device, added_img
 
+### Image addition (saturation)
+def image_sat_add(img1, img2, device, debug):
+  # This is a function used to subtract one image from another image (img1 - img2)
+  # The numpy subtraction function '-' is used. This is a modulo operation rather than the cv2.subtract fxn which is a saturation operation
+  # img1 = input image
+  # img2 = input image used to subtract from img1
+  # device = device number. Used to count steps in the pipeline
+  # debug = True/False. If True; print output image
+  # ddepth = -1 specifies that the dimensions of output image will be the same as the input image
+  s_added_img = cv2.add(img1, img2)
+  device += 1
+  if debug:
+    print_image(s_added_img, str(device) + '_s_added' + '.png')
+  return device, s_added_img
+
 ### Image subtraction
 def image_subtract(img1, img2, device, debug):
   # This is a function used to subtract one image from another image (img1 - img2)
@@ -190,6 +225,21 @@ def image_subtract(img1, img2, device, debug):
   if debug:
     print_image(subed_img, str(device) + '_subtracted' + '.png')
   return device, subed_img
+
+### Image subtraction (saturation)
+def image_sat_subtract(img1, img2, device, debug):
+  # This is a function used to subtract one image from another image (img1 - img2)
+  # The numpy subtraction function '-' is used. This is a modulo operation rather than the cv2.subtract fxn which is a saturation operation
+  # img1 = input image
+  # img2 = input image used to subtract from img1
+  # device = device number. Used to count steps in the pipeline
+  # debug = True/False. If True; print output image
+  # ddepth = -1 specifies that the dimensions of output image will be the same as the input image
+  s_subed_img = cv2.subtract(img1, img2)
+  device += 1
+  if debug:
+    print_image(s_subed_img, str(device) + '_s_subtracted' + '.png')
+  return device, s_subed_img
 
 ### Erosion filter
 def erode(img, kernel, i, device, debug):
@@ -219,6 +269,17 @@ def dilate(img, kernel, i, device, debug):
         print_image(dil_img, str(device) + '_dil_image_' + 'itr_' + str(i) + '.png')
     return device, dil_img
 
+### Watershed boundry detection
+def watershed(img, marker, device, debug):
+  # Uses the watershed algorithm to detect boundry of objects
+  # Needs a marker file which specifies area which is object (white), background (grey), unknown area (black)
+  # img = image to perform watershed on needs to be 3D (i.e. np.shape = x,y,z not np.shape = x,y)
+  # marker = a 32-bit image file that specifies what areas are what (2D, np.shape = x,y)
+  cv2.watershed(img, marker)
+  device += 1
+  if debug:
+    print_image(marker, str(device) + 'watershed_img' + '.png')
+  return device, marker
 
 ### Make masking rectangle
 def rectangle_mask(img, p1, p2, device, debug):
