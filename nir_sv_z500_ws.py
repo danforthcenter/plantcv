@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # This is a computational pipeline which uses the plantcv module to sharpen, filter and analyze NIR images
-# Pipeline designed for use with Setaria plants at zoom X1 (pot raise level seen in images 2.8.14 - 2.10.14)
+# Pipeline designed for use with Setaria plants at zoom X500
 # The strategy/methodology is adopted from the textbook "Digital Image Processing" by Gonzalez and Woods
 # Version 0.2 Max Feldman 4.6.14
 
@@ -127,15 +127,35 @@ def main():
     device, masked_erd = pcv.apply_mask(img, c1234_img, 'black', device, args.debug)
     device, masked_erd_dil = pcv.apply_mask(img, dil_img, 'black', device, args.debug)
     
+    # Get area where we are not sure what is background vs foreground
+    copy = np.copy(img)
+    copy3 = np.dstack((copy,copy,copy))
+    device, unknown = pcv.image_sat_subtract(dil_img,c1234_img, device, args.debug)
+    ret,bg = pcv.binary_threshold(dil_img,1,128, 'dark', device, args.debug)
+    #cv2.imwrite('bkgrd.png', bg)
+    device, marker = pcv.image_sat_add(c1234_img, bg, device, args.debug)
+    #cv2.imwrite('marker.png', marker)
+    device, marker32 = pcv.image_to_32(marker, device, args.debug)
+    device, marker32 = pcv.watershed(copy3, marker32, device, args.debug)
+    #cv2.watershed(copy3, marker32)
+    device, m = pcv.convertScaleAbs(marker32, device, args.debug)
+    #cv2.imwrite('m.png', m)
+    #cv2.imwrite('copy3.png', copy3)
+    #device,thresh = pcv.binary_threshold(m, 0, 128, 'dark', device, args.debug)
+    ret,thresh = cv2.threshold(m,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+    res = cv2.bitwise_and(img,img,mask = thresh)
+    #cv2.imwrite('ws_result.png', res)
+    
+    
     # Need to remove the edges of the image, we did that by generating a set of rectangles to mask the edges
     # img is (254 X 320)
     
     # mask for the bottom of the image
-    device, box1_img, rect_contour1, hierarchy1 = pcv.rectangle_mask(img, (140,215), (180,252), device, args.debug)
+    device, box1_img, rect_contour1, hierarchy1 = pcv.rectangle_mask(img, (1,226), (318,252), device, args.debug)
     # mask for the left side of the image
-    device, box2_img, rect_contour2, hierarchy2 = pcv.rectangle_mask(img, (1,1), (85,252), device, args.debug)
+    device, box2_img, rect_contour2, hierarchy2 = pcv.rectangle_mask(img, (1,1), (75,252), device, args.debug)
     # mask for the right side of the image
-    device, box3_img, rect_contour3, hierarchy3 = pcv.rectangle_mask(img, (240,1), (318,252), device, args.debug)
+    device, box3_img, rect_contour3, hierarchy3 = pcv.rectangle_mask(img, (245,1), (318,252), device, args.debug)
     # mask the edges
     device, box4_img, rect_contour4, hierarchy4 = pcv.border_mask(img, (1,1), (318,252), device, args.debug)
     
@@ -152,8 +172,8 @@ def main():
     # Make a ROI around the plant, include connected objects
     # Apply the box mask to the image
     # device, masked_img = pcv.apply_mask(masked_erd_dil, inv_bx1234_img, 'black', device, args.debug)
-    device, edge_masked_img = pcv.apply_mask(masked_erd_dil, inv_bx1234_img, 'black', device, args.debug)
-    device, roi_img, roi_contour, roi_hierarchy = pcv.rectangle_mask(img, (120,75), (200,215), device, args.debug)
+    device, edge_masked_img = pcv.apply_mask(thresh, inv_bx1234_img, 'black', device, args.debug)
+    device, roi_img, roi_contour, roi_hierarchy = pcv.rectangle_mask(img, (120,75), (200,226), device, args.debug)
     plant_objects, plant_hierarchy = cv2.findContours(edge_masked_img,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
     
     device, roi_objects, hierarchy5, kept_mask, obj_area = pcv.roi_objects(img, 'partial', roi_contour, roi_hierarchy, plant_objects, plant_hierarchy, device, args.debug)

@@ -127,6 +127,9 @@ def main():
     device, masked_erd = pcv.apply_mask(img, c1234_img, 'black', device, args.debug)
     device, masked_erd_dil = pcv.apply_mask(img, dil_img, 'black', device, args.debug)
     
+    # Get area where we are not sure what is background vs foreground
+    device, unknown = pcv.image_sat_subtract(masked_erd_dil, masked_erd, device, args.debug)
+    
     # Need to remove the edges of the image, we did that by generating a set of rectangles to mask the edges
     # img is (254 X 320)
     
@@ -153,7 +156,7 @@ def main():
     # Apply the box mask to the image
     # device, masked_img = pcv.apply_mask(masked_erd_dil, inv_bx1234_img, 'black', device, args.debug)
     device, edge_masked_img = pcv.apply_mask(masked_erd_dil, inv_bx1234_img, 'black', device, args.debug)
-    device, roi_img, roi_contour, roi_hierarchy = pcv.rectangle_mask(img, (130,75), (190,226), device, args.debug)
+    device, roi_img, roi_contour, roi_hierarchy = pcv.rectangle_mask(img, (120,75), (200,226), device, args.debug)
     plant_objects, plant_hierarchy = cv2.findContours(edge_masked_img,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
     
     device, roi_objects, hierarchy5, kept_mask, obj_area = pcv.roi_objects(img, 'partial', roi_contour, roi_hierarchy, plant_objects, plant_hierarchy, device, args.debug)
@@ -164,7 +167,11 @@ def main():
     
     # Generate a binary to send to the analysis function
     device, mask = pcv.binary_threshold(masked_img, 1, 255, 'light', device, args.debug)
-    pcv.analyze_NIR_intensity(img, args.image, mask, 256, device, args.debug, 'example')
+    
+    ### Analysis ###
+    device, hist_header, hist_data, h_norm = pcv.analyze_NIR_intensity(img, args.image, mask, 256, device, args.debug, args.image)
+    #device, shape_header, shape_data, ori_img = pcv.analyze_object(img, args.img, roi_objects, mask, device, args.debug, args.image)
+    pcv.print_results(args.image, hist_header, hist_data)
     
 if __name__ == '__main__':
     main()
