@@ -9,6 +9,7 @@ if not os.getenv('DISPLAY'):
   matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 from matplotlib import cm as cm
+import pylab as pl
 
 ### Error handling
 def fatal_error(error):
@@ -1319,11 +1320,11 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
       xaxis=plt.xlim([0,(bins-1)])
       legend=plt.legend()
       fig_name=(str(filename)+'_' + str(hist_plot_type) + '_hist.png')
-      plt.savefig(fig_name)
+      plt.savefig(fig_name, dpi=600)
       print('\t'.join(map(str, ('IMAGE', 'hist', fig_name))))
       if debug:
         fig_name=(str(device) +'_' + str(hist_plot_type) + '_hist.png')
-        plt.savefig(fig_name)
+        plt.savefig(fig_name, dpi=600)
       plt.clf()
     elif hist_plot_type=='rgb':
       hist_plotb=plt.plot(hist_b,color=graph_color[0],label=label[0])
@@ -1332,7 +1333,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
       xaxis=plt.xlim([0,(bins-1)])
       legend=plt.legend()
       fig_name=(str(filename) +'_' + str(hist_plot_type) + '_hist.png')
-      plt.savefig(fig_name)
+      plt.savefig(fig_name, dpi=600)
       plt.clf()
       print('\t'.join(map(str, ('IMAGE', 'hist', fig_name))))
     elif hist_plot_type=='lab':
@@ -1342,10 +1343,10 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
       xaxis=plt.xlim([0,(bins-1)])
       legend=plt.legend()
       fig_name=(str(filename) +'_' + str(hist_plot_type) + '_hist.png')
-      plt.savefig(fig_name)
+      plt.savefig(fig_name, dpi=600)
       if debug:
         fig_name=(str(device) +'_' + str(hist_plot_type) + '_hist.png')
-        plt.savefig(fig_name)
+        plt.savefig(fig_name, dpi=600)
       plt.clf()
       print('\t'.join(map(str, ('IMAGE', 'hist', fig_name))))
     elif hist_plot_type=='hsv':
@@ -1355,11 +1356,11 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
       xaxis=plt.xlim([0,(bins-1)])
       legend=plt.legend()
       fig_name=(str(filename) +'_' + str(hist_plot_type) + '_hist.png')
-      plt.savefig(fig_name)
+      plt.savefig(fig_name, dpi=600)
       print('\t'.join(map(str, ('IMAGE', 'hist', fig_name))))
       if debug:
         fig_name=(str(device) +'_' + str(hist_plot_type) + '_hist.png')
-        plt.savefig(fig_name)
+        plt.savefig(fig_name, dpi=600)
       plt.clf()
     elif hist_plot_type==None:
       pass
@@ -1474,11 +1475,11 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseudo_on_img.png')
-    plt.savefig(fig_name)
+    plt.savefig(fig_name, dpi=600)
     print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseudo_on_img.png')
-      plt.savefig(fig_name)
+      plt.savefig(fig_name, dpi=600)
     plt.clf()
     
     h_img =plt.imshow(h_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
@@ -1487,11 +1488,11 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseudo_on_white.png')
-    plt.savefig(fig_name)
+    plt.savefig(fig_name, dpi=600)
     print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseudo_on_white.png')
-      plt.savefig(fig_name)
+      plt.savefig(fig_name, dpi=600)
     plt.clf()
     
   elif p_channel=='s':
@@ -1507,11 +1508,11 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-    plt.savefig(fig_name)
+    plt.savefig(fig_name, dpi=600)
     print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-      plt.savefig(fig_name)
+      plt.savefig(fig_name, dpi=600)
     plt.clf()
     
     s_img =plt.imshow(s_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
@@ -1520,11 +1521,11 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-    plt.savefig(fig_name)
+    plt.savefig(fig_name, dpi=600)
     print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-      plt.savefig(fig_name)
+      plt.savefig(fig_name, dpi=600)
     plt.clf()
     
   elif p_channel=='v':
@@ -1540,11 +1541,11 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-    plt.savefig(fig_name)
+    plt.savefig(fig_name, dpi=600)
     print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-      plt.savefig(fig_name)
+      plt.savefig(fig_name, dpi=600)
     plt.clf()
     
     v_img =plt.imshow(v_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
@@ -1553,11 +1554,11 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-    plt.savefig(fig_name)
+    plt.savefig(fig_name, dpi=600)
     print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-      plt.savefig(fig_name)
+      plt.savefig(fig_name, dpi=600)
     plt.clf()
     
   elif p_channel=='l':
@@ -1573,11 +1574,11 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-    plt.savefig(fig_name)
+    plt.savefig(fig_name, dpi=600)
     print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-      plt.savefig(fig_name)
+      plt.savefig(fig_name, dpi=600)
     plt.clf()
     
     l_img =plt.imshow(l_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
@@ -1586,11 +1587,11 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-    plt.savefig(fig_name)
+    plt.savefig(fig_name, dpi=600)
     print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-      plt.savefig(fig_name)
+      plt.savefig(fig_name, dpi=600)
     plt.clf()
     
   elif p_channel=='m':
@@ -1606,11 +1607,11 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-    plt.savefig(fig_name)
+    plt.savefig(fig_name, dpi=600)
     print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-      plt.savefig(fig_name)
+      plt.savefig(fig_name, dpi=600)
     plt.clf()
     
     m_img =plt.imshow(m_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
@@ -1619,11 +1620,11 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-    plt.savefig(fig_name)
+    plt.savefig(fig_name, dpi=600)
     print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-      plt.savefig(fig_name)
+      plt.savefig(fig_name, dpi=600)
     plt.clf()
     
   elif p_channel=='y':
@@ -1639,11 +1640,11 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-    plt.savefig(fig_name)
+    plt.savefig(fig_name, dpi=600)
     print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-      plt.savefig(fig_name)
+      plt.savefig(fig_name, dpi=600)
     plt.clf()
     
     y_img =plt.imshow(y_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
@@ -1652,11 +1653,11 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-    plt.savefig(fig_name)
+    plt.savefig(fig_name, dpi=600)
     print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-      plt.savefig(fig_name)
+      plt.savefig(fig_name, dpi=600)
     plt.clf()
   
   else:
@@ -1708,7 +1709,7 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, debug=False ,filenam
     plt.xlabel('Grayscale pixel intensity (0-255)')
     plt.ylabel('Proportion of pixels (%)')
     fig_name=('NIR' + '_hist_' + imgname)
-    plt.savefig(fig_name)
+    plt.savefig(fig_name, dpi=600)
  
  
   # what is this subset of code used for? color scaling?
@@ -1739,7 +1740,7 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, debug=False ,filenam
     plt.colorbar(orientation='horizontal')
     plt.axis('off')
     fig_name=('NIR' + '_colorbar_' + imgname)
-    plt.savefig(fig_name)
+    plt.savefig(fig_name, dpi=600)
   plt.clf()
   
     # return values
@@ -1880,7 +1881,7 @@ def fluor_fvfm(fdark,fmin,fmax,mask, device,filename,bins=1000, debug=False):
   plt.grid()
   plt.title('Fv/Fm of '+ str(filename[0:-4]))
   fig_name=(str(filename[0:-4]) + '_fvfm_hist.png')
-  plt.savefig(fig_name)
+  plt.savefig(fig_name, dpi=600)
   plt.clf()
   print('\t'.join(map(str, ('IMAGE', 'hist', fig_name))))
   
@@ -1916,7 +1917,7 @@ def fluor_fvfm(fdark,fmin,fmax,mask, device,filename,bins=1000, debug=False):
   plt.imshow(background1, cmap=my_cmap)
   plt.axis('off')
   fig_name=(str(filename[0:-4]) + '_pseudo_fvfm.png')
-  plt.savefig(fig_name)
+  plt.savefig(fig_name, dpi=600)
   plt.clf()
   print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
   
