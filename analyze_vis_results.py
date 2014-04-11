@@ -105,6 +105,7 @@ def dict_factory(cursor, row):
 
 def slice_stitch(sqlitedb, outdir):
   #sqlitedb = sqlite database to query (path to db)
+  #outdir = path to outdirectory
 
   connect=sq.connect(sqlitedb)
   connect.row_factory = dict_factory
@@ -115,15 +116,16 @@ def slice_stitch(sqlitedb, outdir):
   time_array=[]
   id_array=[]
   path_array=[]
-  ch1=[]
-  ch2=[]
-  ch3=[]
+  group=[]
+
+  data_w_group=[]
   
   for date in h.execute('select min(datetime) as first from snapshots'):
     firstday=date['first']
 
   for i, data in enumerate(h.execute('select * from snapshots inner join analysis_images on snapshots.image_id = analysis_images.image_id where type = "slice" order by cast((((datetime-'+str(firstday)+')/86400)) as int), plant_id asc')):
     imgpath=data['image_path']
+    path_array.append(imgpath)
 
     plantid=data['plant_id']
     plantgeno=re.match('^([A-Z][a-zA-Z]\d*[A-Z]{2})',plantid)
@@ -140,30 +142,52 @@ def slice_stitch(sqlitedb, outdir):
     time_int=int(time_con)
     time_array.append(time_int)
     
-    path=(data['image_path'])
-    path_array.append(path)
-    
     if i==0:
-      line1=cv2.imread(path_array[i])
-      split1, split2, split3=np.dsplit(line1,3)
-      
-      split1_f=split1.flatten()
-      split2_f=split2.flatten()
-      split3_f=split3.flatten()
-      
-      stacked_1=np.column_stack((split1_f,split1_f, split1_f, split1_f, split1_f, split1_f, split1_f, split1_f, split1_f, split1_f))
-      stacked_2=np.column_stack((split2_f,split2_f, split2_f, split2_f, split2_f, split2_f, split2_f, split2_f, split2_f, split2_f))
-      stacked_3=np.column_stack((split3_f,split3_f, split3_f, split3_f, split3_f, split3_f, split3_f, split3_f, split3_f, split3_f)) 
-      stacked_1t=np.transpose(stacked_1)
-      stacked_2t=np.transpose(stacked_2)
-      stacked_3t=np.transpose(stacked_3)
-      
-      ch1.extend(stacked_1t)
-      ch2.extend(stacked_2t)
-      ch3.extend(stacked_3t)
-    else:
-      if time_array[i-1]==time_array[i] and id_array[i-1]==id_array[i]:
-        line1=cv2.imread(path_array[i])      
+      group_count=0
+      group.append(group_count)
+    elif id_array[i-1]==id_array[i]:
+      group_count=int(group[i-1])
+      group.append(group_count)
+    elif id_array[i-1]!=id_array[i]:
+      group_count=int(group[i-1])+1
+      group.append(group_count)
+
+    group_data={
+      'img_day':time_array,
+      'img_geno_treat':id_array,
+      'group_num':group,
+      'path':path_array
+    }
+    
+  group_array=(
+    group_data['img_geno_treat'],
+    group_data['img_day'],
+    group_data['group_num'],
+    group_data['path']
+    )
+    
+  unique_group=np.unique(group)
+  #print np.shape(id_array)
+  #print np.shape(group)
+  #print np.shape(time_array)
+  #print np.shape(path_array)
+  
+  for i,num in enumerate(unique_group):
+    num_match=num
+    match=[]
+    ch1=[]
+    ch2=[]
+    ch3=[]
+    for c, data in enumerate(group):
+      if data==num:
+        match.append(True)
+      else:
+        match.append(False)
+    id_plant=""
+    for a, value in enumerate(id_array):
+      if match[a]==True:
+        id_plant=id_array[a]
+        line1=cv2.imread(path_array[a])      
         split1, split2, split3=np.dsplit(line1,3)
         
         split1_f=split1.flatten()
@@ -185,66 +209,6 @@ def slice_stitch(sqlitedb, outdir):
         ch1.extend(stacked_1t)
         ch2.extend(stacked_2t)
         ch3.extend(stacked_3t)
-      elif time_array[i-1]!=time_array[i] and id_array[i-1]==id_array[i]:
-        line1=cv2.imread(path_array[i])      
-        split1, split2, split3=np.dsplit(line1,3)
-        
-        split1_f=split1.flatten()
-        split2_f=split2.flatten()
-        split3_f=split3.flatten()
-        
-        spacer_size=np.shape(split1)
-        spacer_blank=np.zeros(spacer_size)
-        spacer=spacer_blank+255
-        
-        stacked_1=np.column_stack((spacer,spacer,spacer,spacer,spacer, split1_f,split1_f, split1_f, split1_f, split1_f, split1_f, split1_f, split1_f, split1_f, split1_f))
-        stacked_2=np.column_stack((spacer,spacer, spacer, spacer, spacer, split2_f,split2_f, split2_f, split2_f, split2_f, split2_f, split2_f, split2_f, split2_f, split2_f))
-        stacked_3=np.column_stack((spacer, spacer, spacer, spacer,spacer,split3_f,split3_f, split3_f, split3_f, split3_f, split3_f, split3_f, split3_f, split3_f, split3_f)) 
-        stacked_1t=np.transpose(stacked_1)
-        stacked_2t=np.transpose(stacked_2)
-        stacked_3t=np.transpose(stacked_3)
-        
-        ch1.extend(stacked_1t)
-        ch2.extend(stacked_2t)
-        ch3.extend(stacked_3t)
-      elif id_array[i-1]!=id_array[i]:
-        color_cat=np.dstack((ch1,ch2,ch3))
-        pcv.print_image(color_cat,(str(outdir)+str(plantgeno_id)+"_slice_joined_img.png"))
-        ch1=[]
-        ch2=[]
-        ch3=[]
-        line1=cv2.imread(path_array[i])
-        split1, split2, split3=np.dsplit(line1,3)
-         
-        split1_f=split1.flatten()
-        split2_f=split2.flatten()
-        split3_f=split3.flatten()
-        
-        stacked_1=np.column_stack((split1_f,split1_f, split1_f, split1_f, split1_f, split1_f, split1_f, split1_f, split1_f, split1_f))
-        stacked_2=np.column_stack((split2_f,split2_f, split2_f, split2_f, split2_f, split2_f, split2_f, split2_f, split2_f, split2_f))
-        stacked_3=np.column_stack((split3_f,split3_f, split3_f, split3_f, split3_f, split3_f, split3_f, split3_f, split3_f, split3_f)) 
-        stacked_1t=np.transpose(stacked_1)
-        stacked_2t=np.transpose(stacked_2)
-        stacked_3t=np.transpose(stacked_3)
-        
-        ch1.extend(stacked_1t)
-        ch2.extend(stacked_2t)
-        ch3.extend(stacked_3t)
-  
-  print np.shape(path_array)
-  print np.shape(time_array)
-  print np.shape(id_array)  
-      #else:
-      #  color_cat=np.dstack((ch1,ch2,ch3))
-      #  pcv.print_image(color_cat,(str(outdir)+str(plantgeno_id)+"_slice_joined_img.png"))
-      #  ch1=[]
-      #  ch2=[]
-      #  ch3=[]
-  
-  
 
-
-        
-
-
-    
+    color_cat=np.dstack((ch1,ch2,ch3))
+    pcv.print_image(color_cat,(str(outdir)+str(id_plant)+"_slice_joined_img.png"))
