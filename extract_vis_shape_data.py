@@ -38,6 +38,12 @@ def main():
   except sq.Error, e:
     print("Error %s:" % e.args[0])
   
+  # Open output file
+  try:
+    out = open(args.outfile, 'w')
+  except IOError:
+    print("IO error")
+  
   # Replace the row_factory result constructor with a dictionary constructor
   connect.row_factory = dict_factory
   # Change the text output format from unicode to UTF-8
@@ -61,7 +67,7 @@ def main():
         centroid_y += row['centroid_y']
     if image_count > 0:
       centroid_y_ave = centroid_y / image_count
-      print('\t'.join(map(str,(row['image_path'], centroid_y_ave))))
+      out.write('\t'.join(map(str,(row['image_path'], centroid_y_ave))))
   
    ## Measure plant height
   #for snapshot in snapshots:
