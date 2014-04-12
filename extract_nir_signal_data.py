@@ -34,6 +34,12 @@ def main():
   except sq.Error, e:
     print("Error %s:" % e.args[0])
   
+  # Open output file
+  try:
+    out = open(args.outfile, 'w')
+  except IOError:
+    print("IO error")
+    
   # Replace the row_factory result constructor with a dictionary constructor
   #connect.row_factory = dict_factory
   # Change the text output format from unicode to UTF-8
@@ -52,8 +58,8 @@ def main():
       bins = row[10]
       for s in range(1,bins):
         names.append('s' + str(s))
-      print(','.join(map(str,names)))
-    print(','.join(map(str, row)))
+      out.write(','.join(map(str,names)))
+    out.write(','.join(map(str, row)))
   
 
 if __name__ == '__main__':
