@@ -103,6 +103,7 @@ CREATE TABLE IF NOT EXISTS `boundary_data` (
 
 CREATE INDEX IF NOT EXISTS `snapshot_id` ON `snapshots` (`snapshot_id`);
 CREATE INDEX IF NOT EXISTS `plant_id` ON `snapshots` (`plant_id`);
+CREATE INDEX IF NOT EXISTS `datetime` ON `snapshots` (`datetime`);
 CREATE INDEX IF NOT EXISTS `image_id` ON `analysis_images` (`image_id`);
 CREATE INDEX IF NOT EXISTS `type` ON `analysis_images` (`type`);
 CREATE INDEX IF NOT EXISTS `image_id` ON `boundary_data` (`image_id`);
