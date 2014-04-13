@@ -103,112 +103,251 @@ def dict_factory(cursor, row):
         d[col[0]] = row[idx]
     return d
 
-def slice_stitch(sqlitedb, outdir):
+def slice_stitch(sqlitedb, outdir, camera_label='sv', spacer='on'):
   #sqlitedb = sqlite database to query (path to db)
   #outdir = path to outdirectory
+  #camera_label = either 'tv' or 'sv'
+  #spacer = either 'on' or 'off', adds a gray line between days
 
   connect=sq.connect(sqlitedb)
   connect.row_factory = dict_factory
   connect.text_factory=str
   c = connect.cursor()
   h = connect.cursor()
+  m = connect.cursor()
   
-  time_array=[]
+
   id_array=[]
   path_array=[]
-  group=[]
-
-  data_w_group=[]
+  unique_array=[]
   
-  for date in h.execute('select min(datetime) as first from snapshots'):
+  for date in c.execute('select min(datetime) as first from snapshots'):
     firstday=date['first']
-
-  for i, data in enumerate(h.execute('select * from snapshots inner join analysis_images on snapshots.image_id = analysis_images.image_id where type = "slice" order by cast((((datetime-'+str(firstday)+')/86400)) as int), plant_id asc')):
-    imgpath=data['image_path']
-    path_array.append(imgpath)
-
-    plantid=data['plant_id']
-    plantgeno=re.match('^([A-Z][a-zA-Z]\d*[A-Z]{2})',plantid)
+  
+  for i, group in enumerate(m.execute('select * from snapshots inner join analysis_images on snapshots.image_id = analysis_images.image_id where type = "slice" order by plant_id asc')):
+    plant_id=group['plant_id']
+    plantgeno=re.match('^([A-Z][a-zA-Z]\d*[A-Z]{2})',plant_id)
     if plantgeno==None:
-      plantgeno_id=data['plant_id']
+      plantgeno_id=group['plant_id']
       id_array.append(plantgeno_id)
     else:
       span1,span2=plantgeno.span()
-      plantgeno_id=data['plant_id'][span1:span2]
+      plantgeno_id=group['plant_id'][span1:span2]
       id_array.append(plantgeno_id)
-    
-    time=(data['datetime'])
-    time_con=(float(time-firstday)/86400)
-    time_int=int(time_con)
-    time_array.append(time_int)
-    
-    if i==0:
-      group_count=0
-      group.append(group_count)
-    elif id_array[i-1]==id_array[i]:
-      group_count=int(group[i-1])
-      group.append(group_count)
-    elif id_array[i-1]!=id_array[i]:
-      group_count=int(group[i-1])+1
-      group.append(group_count)
+  id_unique=np.unique(id_array)
 
-    group_data={
-      'img_day':time_array,
-      'img_geno_treat':id_array,
-      'group_num':group,
-      'path':path_array
-    }
-    
-  group_array=(
-    group_data['img_geno_treat'],
-    group_data['img_day'],
-    group_data['group_num'],
-    group_data['path']
-    )
-    
-  unique_group=np.unique(group)
-  #print np.shape(id_array)
-  #print np.shape(group)
-  #print np.shape(time_array)
-  #print np.shape(path_array)
+  if camera_label=='sv' and spacer=='on':
+    for group_label in id_unique:
+      ch1=[]
+      ch2=[]
+      ch3=[]
+      time_array=[]
+      for i, data in enumerate(h.execute('select * from snapshots inner join analysis_images on snapshots.image_id = analysis_images.image_id where plant_id like ? and type = "slice" and camera="vis_sv" order by datetime asc', ('%'+group_label+'%',))):
+        date_int=((data['datetime']-firstday)/86400) 
+        time_array.append(date_int)
+      for i, data in enumerate(h.execute('select * from snapshots inner join analysis_images on snapshots.image_id = analysis_images.image_id where plant_id like ? and type = "slice" and camera="vis_sv" order by datetime asc', ('%'+group_label+'%',))):
+        if i==0:
+          line1=cv2.imread(data['image_path'])
   
-  for i,num in enumerate(unique_group):
-    num_match=num
-    match=[]
-    ch1=[]
-    ch2=[]
-    ch3=[]
-    for c, data in enumerate(group):
-      if data==num:
-        match.append(True)
-      else:
-        match.append(False)
-    id_plant=""
-    for a, value in enumerate(id_array):
-      if match[a]==True:
-        id_plant=id_array[a]
-        line1=cv2.imread(path_array[a])      
-        split1, split2, split3=np.dsplit(line1,3)
+          split1, split2, split3=np.dsplit(line1,3)
+          
+          split1_f=split1.flatten()
+          split2_f=split2.flatten()
+          split3_f=split3.flatten()
+          
+          stacked_1=np.column_stack((split1_f,split1_f, split1_f, split1_f, split1_f))
+          stacked_2=np.column_stack((split2_f,split2_f, split2_f, split2_f, split2_f))
+          stacked_3=np.column_stack((split3_f,split3_f, split3_f, split3_f, split3_f)) 
+          stacked_1t=np.transpose(stacked_1)
+          stacked_2t=np.transpose(stacked_2)
+          stacked_3t=np.transpose(stacked_3)
         
-        split1_f=split1.flatten()
-        split2_f=split2.flatten()
-        split3_f=split3.flatten()
+          ch1.extend(stacked_1t)
+          ch2.extend(stacked_2t)
+          ch3.extend(stacked_3t)
+        elif time_array[i-1]==time_array[i]:
+          line1=cv2.imread(data['image_path'])
+  
+          split1, split2, split3=np.dsplit(line1,3)
+          
+          split1_f=split1.flatten()
+          split2_f=split2.flatten()
+          split3_f=split3.flatten()
+          
+          stacked_1=np.column_stack((split1_f,split1_f, split1_f, split1_f, split1_f))
+          stacked_2=np.column_stack((split2_f,split2_f, split2_f, split2_f, split2_f))
+          stacked_3=np.column_stack((split3_f,split3_f, split3_f, split3_f, split3_f)) 
+          stacked_1t=np.transpose(stacked_1)
+          stacked_2t=np.transpose(stacked_2)
+          stacked_3t=np.transpose(stacked_3)
         
-        spacer_size=np.shape(split1)
-        spacer=(np.zeros((spacer_size)))+255
-        stacked_spacer=np.column_stack((spacer, spacer, spacer, spacer, spacer))
-        stacked_spacert=np.transpose(stacked_spacer)
-        
-        stacked_1=np.column_stack((split1_f,split1_f, split1_f, split1_f, split1_f, split1_f, split1_f, split1_f, split1_f, split1_f))
-        stacked_2=np.column_stack((split2_f,split2_f, split2_f, split2_f, split2_f, split2_f, split2_f, split2_f, split2_f, split2_f))
-        stacked_3=np.column_stack((split3_f,split3_f, split3_f, split3_f, split3_f, split3_f, split3_f, split3_f, split3_f, split3_f)) 
-        stacked_1t=np.transpose(stacked_1)
-        stacked_2t=np.transpose(stacked_2)
-        stacked_3t=np.transpose(stacked_3)
+          ch1.extend(stacked_1t)
+          ch2.extend(stacked_2t)
+          ch3.extend(stacked_3t)
+        else:
+          line1=cv2.imread(data['image_path'])
+  
+          split1, split2, split3=np.dsplit(line1,3)
+          
+          split1_f=split1.flatten()
+          split2_f=split2.flatten()
+          split3_f=split3.flatten()
+          
+          spacer_size=np.shape(split1)
+          spacer=(np.zeros((spacer_size)))+100
+          spacer_f=spacer.flatten()
+          
+          stacked_1=np.column_stack((spacer_f, spacer_f, spacer_f, spacer_f, spacer_f,spacer_f, spacer_f, spacer_f, spacer_f, spacer_f, split1_f,split1_f, split1_f, split1_f, split1_f))
+          stacked_2=np.column_stack((spacer_f, spacer_f, spacer_f, spacer_f, spacer_f,spacer_f, spacer_f, spacer_f, spacer_f, spacer_f, split2_f, split2_f, split2_f, split2_f, split2_f))
+          stacked_3=np.column_stack((spacer_f, spacer_f, spacer_f, spacer_f, spacer_f,spacer_f, spacer_f, spacer_f, spacer_f, spacer_f,  split3_f, split3_f, split3_f, split3_f, split3_f)) 
+          stacked_1t=np.transpose(stacked_1)
+          stacked_2t=np.transpose(stacked_2)
+          stacked_3t=np.transpose(stacked_3)
       
-        ch1.extend(stacked_1t)
-        ch2.extend(stacked_2t)
-        ch3.extend(stacked_3t)
-
-    color_cat=np.dstack((ch1,ch2,ch3))
-    pcv.print_image(color_cat,(str(outdir)+str(id_plant)+"_slice_joined_img.png"))
+          ch1.extend(stacked_1t)
+          ch2.extend(stacked_2t)
+          ch3.extend(stacked_3t) 
+    
+      color_cat=np.dstack((ch1,ch2,ch3))
+      pcv.print_image(color_cat,(str(outdir)+str(group_label)+"_SV_slice_joined_img.png"))
+    
+  if camera_label=='sv' and spacer=='off':
+    for group_label in id_unique:
+      ch1=[]
+      ch2=[]
+      ch3=[]
+      time_array=[]
+      for i, data in enumerate(h.execute('select * from snapshots inner join analysis_images on snapshots.image_id = analysis_images.image_id where plant_id like ? and type = "slice" and camera="vis_sv" order by datetime asc', ('%'+group_label+'%',))):
+        date_int=((data['datetime']-firstday)/86400) 
+        time_array.append(date_int)
+      for i, data in enumerate(h.execute('select * from snapshots inner join analysis_images on snapshots.image_id = analysis_images.image_id where plant_id like ? and type = "slice" and camera="vis_sv" order by datetime asc', ('%'+group_label+'%',))):
+          line1=cv2.imread(data['image_path'])
+  
+          split1, split2, split3=np.dsplit(line1,3)
+          
+          split1_f=split1.flatten()
+          split2_f=split2.flatten()
+          split3_f=split3.flatten()
+          
+          stacked_1=np.column_stack((split1_f,split1_f, split1_f, split1_f, split1_f))
+          stacked_2=np.column_stack((split2_f,split2_f, split2_f, split2_f, split2_f))
+          stacked_3=np.column_stack((split3_f,split3_f, split3_f, split3_f, split3_f)) 
+          stacked_1t=np.transpose(stacked_1)
+          stacked_2t=np.transpose(stacked_2)
+          stacked_3t=np.transpose(stacked_3)
+        
+          ch1.extend(stacked_1t)
+          ch2.extend(stacked_2t)
+          ch3.extend(stacked_3t)
+    
+      color_cat=np.dstack((ch1,ch2,ch3))
+      pcv.print_image(color_cat,(str(outdir)+str(group_label)+"_SV_slice_joined_img.png"))    
+ 
+  if camera_label=='tv' and spacer=='on':
+    for group_label in id_unique:
+      ch1=[]
+      ch2=[]
+      ch3=[]
+      time_array=[]
+      for i, data in enumerate(h.execute('select * from snapshots inner join analysis_images on snapshots.image_id = analysis_images.image_id where plant_id like ? and type = "slice" and camera="vis_tv" order by datetime asc', ('%'+group_label+'%',))):
+        date_int=((data['datetime']-firstday)/86400) 
+        time_array.append(date_int)
+      for i, data in enumerate(h.execute('select * from snapshots inner join analysis_images on snapshots.image_id = analysis_images.image_id where plant_id like ? and type = "slice" and camera="vis_tv" order by datetime asc', ('%'+group_label+'%',))):
+        if i==0:
+          line1=cv2.imread(data['image_path'])
+  
+          split1, split2, split3=np.dsplit(line1,3)
+          
+          split1_f=split1.flatten()
+          split2_f=split2.flatten()
+          split3_f=split3.flatten()
+          
+          stacked_1=np.column_stack((split1_f,split1_f, split1_f, split1_f, split1_f))
+          stacked_2=np.column_stack((split2_f,split2_f, split2_f, split2_f, split2_f))
+          stacked_3=np.column_stack((split3_f,split3_f, split3_f, split3_f, split3_f)) 
+          stacked_1t=np.transpose(stacked_1)
+          stacked_2t=np.transpose(stacked_2)
+          stacked_3t=np.transpose(stacked_3)
+        
+          ch1.extend(stacked_1t)
+          ch2.extend(stacked_2t)
+          ch3.extend(stacked_3t)
+        elif time_array[i-1]==time_array[i]:
+          line1=cv2.imread(data['image_path'])
+  
+          split1, split2, split3=np.dsplit(line1,3)
+          
+          split1_f=split1.flatten()
+          split2_f=split2.flatten()
+          split3_f=split3.flatten()
+          
+          stacked_1=np.column_stack((split1_f,split1_f, split1_f, split1_f, split1_f))
+          stacked_2=np.column_stack((split2_f,split2_f, split2_f, split2_f, split2_f))
+          stacked_3=np.column_stack((split3_f,split3_f, split3_f, split3_f, split3_f)) 
+          stacked_1t=np.transpose(stacked_1)
+          stacked_2t=np.transpose(stacked_2)
+          stacked_3t=np.transpose(stacked_3)
+        
+          ch1.extend(stacked_1t)
+          ch2.extend(stacked_2t)
+          ch3.extend(stacked_3t)
+        else:
+          line1=cv2.imread(data['image_path'])
+  
+          split1, split2, split3=np.dsplit(line1,3)
+          
+          split1_f=split1.flatten()
+          split2_f=split2.flatten()
+          split3_f=split3.flatten()
+          
+          spacer_size=np.shape(split1)
+          spacer=(np.zeros((spacer_size)))+100
+          spacer_f=spacer.flatten()
+          
+          stacked_1=np.column_stack((spacer_f, spacer_f, spacer_f, spacer_f, spacer_f,spacer_f, spacer_f, spacer_f, spacer_f, spacer_f, split1_f,split1_f, split1_f, split1_f, split1_f))
+          stacked_2=np.column_stack((spacer_f, spacer_f, spacer_f, spacer_f, spacer_f,spacer_f, spacer_f, spacer_f, spacer_f, spacer_f, split2_f, split2_f, split2_f, split2_f, split2_f))
+          stacked_3=np.column_stack((spacer_f, spacer_f, spacer_f, spacer_f, spacer_f,spacer_f, spacer_f, spacer_f, spacer_f, spacer_f,  split3_f, split3_f, split3_f, split3_f, split3_f)) 
+          stacked_1t=np.transpose(stacked_1)
+          stacked_2t=np.transpose(stacked_2)
+          stacked_3t=np.transpose(stacked_3)
+      
+          ch1.extend(stacked_1t)
+          ch2.extend(stacked_2t)
+          ch3.extend(stacked_3t) 
+    
+      color_cat=np.dstack((ch1,ch2,ch3))
+      pcv.print_image(color_cat,(str(outdir)+str(group_label)+"_TV_slice_joined_img.png"))
+    
+  if camera_label=='tv' and spacer=='off':
+    for group_label in id_unique:
+      ch1=[]
+      ch2=[]
+      ch3=[]
+      time_array=[]
+      for i, data in enumerate(h.execute('select * from snapshots inner join analysis_images on snapshots.image_id = analysis_images.image_id where plant_id like ? and type = "slice" and camera="vis_sv" order by datetime asc', ('%'+group_label+'%',))):
+        date_int=((data['datetime']-firstday)/86400) 
+        time_array.append(date_int)
+      for i, data in enumerate(h.execute('select * from snapshots inner join analysis_images on snapshots.image_id = analysis_images.image_id where plant_id like ? and type = "slice" and camera="vis_sv" order by datetime asc', ('%'+group_label+'%',))):
+          line1=cv2.imread(data['image_path'])
+  
+          split1, split2, split3=np.dsplit(line1,3)
+          
+          split1_f=split1.flatten()
+          split2_f=split2.flatten()
+          split3_f=split3.flatten()
+          
+          stacked_1=np.column_stack((split1_f,split1_f, split1_f, split1_f, split1_f))
+          stacked_2=np.column_stack((split2_f,split2_f, split2_f, split2_f, split2_f))
+          stacked_3=np.column_stack((split3_f,split3_f, split3_f, split3_f, split3_f)) 
+          stacked_1t=np.transpose(stacked_1)
+          stacked_2t=np.transpose(stacked_2)
+          stacked_3t=np.transpose(stacked_3)
+        
+          ch1.extend(stacked_1t)
+          ch2.extend(stacked_2t)
+          ch3.extend(stacked_3t)
+ 
+      color_cat=np.dstack((ch1,ch2,ch3))
+      pcv.print_image(color_cat,(str(outdir)+str(group_label)+"_TV_slice_joined_img.png"))
+      
+  return time_array, id_unique
