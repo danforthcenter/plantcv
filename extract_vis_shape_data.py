@@ -109,22 +109,21 @@ def main():
   
     # Measure plant height
     if outlier == False:
-      for snapshot in snapshots:
-        image_count = 0
-        for row in (db.execute('SELECT * FROM `snapshots` INNER JOIN `boundary_data` ON `snapshots`.`image_id` = `boundary_data`.`image_id` WHERE `datetime` = %i' % snapshot)):
-          height_above_bound += row['height_above_bound']
-          height_below_bound += row['height_below_bound']
-          above_bound_area += row['above_bound_area']
-          percent_above_bound_area += row['percent_above_bound_area']
-          below_bound_area += row['below_bound_area']
-          percent_below_bound_area += row['percent_below_bound_area']
-        if image_count > 0:
-          height_above_bound /= image_count
-          height_below_bound /= image_count
-          above_bound_area /= image_count
-          percent_above_bound_area /= image_count
-          below_bound_area /= image_count
-          percent_below_bound_area /= image_count
+      image_count = 0
+      for row in (db.execute('SELECT * FROM `snapshots` INNER JOIN `boundary_data` ON `snapshots`.`image_id` = `boundary_data`.`image_id` WHERE `datetime` = %i' % snapshot)):
+        height_above_bound += row['height_above_bound']
+        height_below_bound += row['height_below_bound']
+        above_bound_area += row['above_bound_area']
+        percent_above_bound_area += row['percent_above_bound_area']
+        below_bound_area += row['below_bound_area']
+        percent_below_bound_area += row['percent_below_bound_area']
+      if image_count > 0:
+        height_above_bound /= image_count
+        height_below_bound /= image_count
+        above_bound_area /= image_count
+        percent_above_bound_area /= image_count
+        below_bound_area /= image_count
+        percent_below_bound_area /= image_count
     if outlier == False:
       out.write(','.join(map(str, (plant_id, snapshot, surface_area, solidity, perimeter, centroid_x, centroid_y, longest_axis,
                                    height_above_bound, height_below_bound, above_bound_area, percent_above_bound_area, below_bound_area,
