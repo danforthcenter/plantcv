@@ -26,7 +26,7 @@ def main():
   # Get options
   args = options()
 
-  time_array, id_unique=avr.slice_stitch(args.database, args.outdir, 'tv', 'off')
+  time_array, id_unique=avr.slice_stitch(args.database, args.outdir, 'vis_sv', 'off')
   
 if __name__ == '__main__':
   main()
