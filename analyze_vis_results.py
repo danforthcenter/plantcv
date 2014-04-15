@@ -10,6 +10,11 @@ import numpy as np
 import argparse
 import string
 import plantcv as pcv
+from datetime import datetime
+import Image
+from matplotlib import pyplot as plt
+from matplotlib import cm as cm
+import pylab as pl
 
 
 def handle_vis_output(directory,imgtype,outdir,action):
@@ -109,13 +114,18 @@ def slice_stitch(sqlitedb, outdir, camera_label='vis_sv', spacer='on'):
   #camera_label = either 'vis_tv','vis_sv',or 'fluor_tv'
   #spacer = either 'on' or 'off', adds a gray line between days
 
+  i=datetime.now()
+  timenow=i.strftime('%m-%d-%Y_%H:%M:%S')
+  newfolder="slice_analysis_"+(str(timenow))
+  
+  os.mkdir((str(outdir)+newfolder))
+  
   connect=sq.connect(sqlitedb)
   connect.row_factory = dict_factory
   connect.text_factory=str
   c = connect.cursor()
   h = connect.cursor()
   m = connect.cursor()
-  
 
   id_array=[]
   path_array=[]
@@ -194,7 +204,7 @@ def slice_stitch(sqlitedb, outdir, camera_label='vis_sv', spacer='on'):
           split3_f=split3.flatten()
           
           spacer_size=np.shape(split1)
-          spacer=(np.zeros((spacer_size)))+100
+          spacer=(np.zeros((spacer_size)))+255
           spacer_f=spacer.flatten()
           
           stacked_1=np.column_stack((spacer_f, spacer_f, spacer_f, spacer_f, spacer_f,spacer_f, spacer_f, spacer_f, spacer_f, spacer_f, split1_f,split1_f, split1_f, split1_f, split1_f))
@@ -209,7 +219,7 @@ def slice_stitch(sqlitedb, outdir, camera_label='vis_sv', spacer='on'):
           ch3.extend(stacked_3t) 
     
       color_cat=np.dstack((ch1,ch2,ch3))
-      pcv.print_image(color_cat,(str(outdir)+str(group_label)+"_"+str(camera_label)+"_spacer_"+str(spacer)+"_slice_joined_img.png"))
+      pcv.print_image(color_cat,(str(outdir)+newfolder+"/"+str(group_label)+"_"+str(camera_label)+"_spacer_"+str(spacer)+"_slice_joined_img.png"))
     
   if spacer=='off':
     for group_label in id_unique:
@@ -241,6 +251,36 @@ def slice_stitch(sqlitedb, outdir, camera_label='vis_sv', spacer='on'):
           ch3.extend(stacked_3t)
     
       color_cat=np.dstack((ch1,ch2,ch3))
-      pcv.print_image(color_cat,(str(outdir)+str(group_label)+"_"+str(camera_label)+"_spacer_"+str(spacer)+"_slice_joined_img.png"))
+      pcv.print_image(color_cat,(str(outdir)+newfolder+"/"+str(group_label)+"_"+str(camera_label)+"_spacer_"+str(spacer)+"_slice_joined_img.png"))
   
-  return time_array, id_unique
+  folder_path=(str(outdir)+newfolder)
+      
+  return time_array, id_unique ,folder_path
+
+def slice_figure(folder_path):
+  
+  i=datetime.now()
+  timenow=i.strftime('%m-%d-%Y_%H:%M:%S')
+  newfolder="slice_figure_"+(str(timenow))
+  
+  os.mkdir((str(folder_path)+"/"+newfolder))
+  new_folder_path=str(folder_path)+"/"+newfolder+"/"
+  
+  list_files=os.listdir(folder_path)
+  sorted_list=sorted(list_files)
+  for files in sorted_list:
+    img=cv2.imread((str(folder_path)+"/"+str(files)))
+    titles=re.match('^([A-Z][a-zA-Z]\d*[A-Z]{2})',files)
+    span1,span2=titles.span()
+    title_name=files[span1:span2]
+    
+    plt.imshow(img)
+    plt.axis('off')
+    plt.title(str(title_name))
+    fig_name=new_folder_path+str(title_name)+"_slice_join_figure_img.png"
+    plt.savefig(fig_name, dpi=300)
+    plt.clf()
+
+
+
+  
