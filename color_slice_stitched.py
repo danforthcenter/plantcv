@@ -26,8 +26,7 @@ def main():
   # Get options
   args = options()
 
-  time_array, id_unique, folder_path=avr.slice_stitch(args.database, args.outdir, 'vis_sv', 'off')
-  avr.slice_figure(folder_path)
+  folder_path=avr.slice_stitch(args.database, args.outdir,'vis_sv','off','yes')
   
 if __name__ == '__main__':
   main()
