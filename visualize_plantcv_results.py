@@ -140,134 +140,130 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
     signal=c.execute('select * from snapshots inner join flu_signal on snapshots.image_id =flu_signal.image_id order by plant_id asc')
   
   id_array=[]
+  barcode_array=[]
   
   for i, group in enumerate(signal):
     plant_id=group['plant_id']
     plantgeno=re.match('^([A-Z][a-zA-Z]\d*[A-Z]{2})',plant_id)
     if plantgeno==None:
       plantgeno_id=group['plant_id']
+      barcode_array.append(plantgeno_id,)
       id_array.append(plantgeno_id,)
     else:
       span1,span2=plantgeno.span()
       plantgeno_id=group['plant_id'][span1:span2]
       id_array.append(plantgeno_id,)
       plantgeno_id1=group['plant_id']
+      barcode_array.append(plantgeno_id1,)
   id_unique=np.unique(id_array)
+  barcode_unique=np.unique(barcode_array)
+  print id_unique
   
-  if channels=='rgb':
-    channel1='blue'
-    channel2='green'
-    channel3='red'
-  elif channels=='lab':
-    channel1='lightness'
-    channel2='green-magenta'
-    channel3='blue-yellow'
-  elif channels=='hsv':
-    channel1='hue'
-    channel2='saturation'
-    channel3='value'
-  else:
-    channel1='signal'
-    channel2='signal'
-    channel3='signal'
-  
-  for date in c.execute('select min(datetime) as first from snapshots'):
-    firstday=date['first']
-  
-  ch1_total_array=[]
-  ch2_total_array=[]
-  ch3_total_array=[]
-  
-  if spacer=='on':
-    for group_label in id_unique: 
-      ch1=[]
-      ch2=[]
-      ch3=[]
-      time_array=[]
-      if signal_type=='vis':
-        database=h.execute('select * from snapshots inner join vis_colors on snapshots.image_id=vis_colors.image_id where plant_id like ? and camera=? order by datetime asc', ("%"+group_label+"%",camera_label,))
-      elif signal_type=='nir':
-        database=h.execute('select * from snapshots inner join nir_signal on snapshots.image_id=nir_signal.image_id where plant_id like ? and camera=? order by datetime asc', ("%"+group_label+"%",camera_label,))
-      elif signal_type=='flu':
-        database=h.execute('select * from snapshots inner join flu_signal on snapshots.image_id=flu_signal.image_id where plant_id like ? and camera=? order by datetime asc', ("%"+group_label+"%",camera_label,))
-      
-      for i,t in enumerate(database):
-        date_int=((t['datetime']-firstday)/86400) 
-        time_array.append(str(date_int),)
-      unique_time=np.unique(time_array)
-      
-      if average_angles=='on':
-        for time in unique_time:
-          barcode=[]
-          if signal_type=='vis':
-            database_time=h.execute('select * from snapshots inner join vis_colors on snapshots.image_id=vis_colors.image_id where cast((((datetime-'+str(firstday)+')/86400)) as int)=?',(time,))
-          elif signal_type=='nir':
-            database_time=h.execute('select * from snapshots inner join nir_signal on snapshots.image_id=nir_signal.image_id where cast((((datetime-'+str(firstday)+')/86400)) as int)=?',(time,))
-          elif signal_type=='flu':
-            database_time=h.execute('select * from snapshots inner join flu_signal on snapshots.image_id=flu_signal.image_id where cast((((datetime-'+str(firstday)+')/86400)) as int)=?',(time,))
-          
-          for i, data in enumerate(database_time):          
-            plantid=data['plant_id']
-            plantid1=str(plantid)
-            barcode.append(plantid1,)
-          barcode_unique=np.unique(barcode)
-          for id_name in barcode_unique:
-            dim1_avg=[]
-            dim2_avg=[]
-            dim3_avg=[]
-            if signal_type=='vis':
-              database_id=h.execute('select * from snapshots inner join vis_colors on snapshots.image_id=vis_colors.image_id where plant_id=? and camera=?' , (id_name,camera_label,))
-            elif signal_type=='nir':
-              database_id=h.execute('select * from snapshots inner join nir_signal on snapshots.image_id=nir_signal.image_id where plant_id=? and camera=?', ("%"+id_name+"%",camera_label,))
-            elif signal_type=='flu':
-              database_id=h.execute('select * from snapshots inner join flu_signal on snapshots.image_id=flu_signal.image_id where plant_id=? and camera=?', ("%"+id_name+"%",camera_label,))
-            for i, name in enumerate(database_id):
-              dim1=np.matrix(data[channel1])
-              dim2=np.matrix(data[channel2])
-              dim3=np.matrix(data[channel3])
-              
-              #normalize
-              max_dim1=np.amax(dim1)
-              max_dim2=np.amax(dim2)
-              max_dim3=np.amax(dim3)
-              maxval=[max_dim1,max_dim2,max_dim3]
-              max_max=np.amax(maxval)
-              
-              min_dim1=np.amin(dim1)
-              min_dim2=np.amin(dim2)
-              min_dim3=np.amin(dim3)
-              minval=[min_dim1,min_dim2,min_dim3]
-              min_min=np.amin(minval)
-              
-              dim1_norm=((dim1-min_min)/(max_max-min_min))*255
-              dim2_norm=((dim2-min_min)/(max_max-min_min))*255
-              dim3_norm=((dim3-min_min)/(max_max-min_min))*255
-              
-              dim1_avg.append(dim1_norm)
-              dim2_avg.append(dim2_norm)
-              dim3_avg.append(dim3_norm)
-            
-            ch1_avg=np.average(dim1_avg,axis=0)
-            ch2_avg=np.average(dim2_avg,axis=0)
-            ch3_avg=np.average(dim3_avg,axis=0)
-            
-            ch1_total_array.append((time,id_name,ch1_avg))
-            ch2_total_array.append((time,id_name,ch2_avg))
-            ch3_total_array.append((time,id_name,ch3_avg))
-            
-            if signal_type=='vis':
-              norm_slice=np.dstack((ch1_avg,ch2_avg,ch3_avg))
-            else:
-              size=np.shape(dim1)
-              blank=np.zeros(size)
-              norm_slice=np.dstack((blank,blank,ch1_avg))
-            
-            if average_angles=='on':
-              pcv.print_image(norm_slice, (str(outdir)+newfolder+"/"+str(barcode[i])+"averaged_angles_slice.png"))
-            else:
-              angle=data['frame']
-              pcv.print_image(norm_slice,(str(outdir)+newfolder+"/"+str(barcode[i])+"_"+str(angle)+"_slice.png"))
-      print ch1_total_array
+  #if channels=='rgb':
+  #  channel1='blue'
+  #  channel2='green'
+  #  channel3='red'
+  #elif channels=='lab':
+  #  channel1='lightness'
+  #  channel2='green-magenta'
+  #  channel3='blue-yellow'
+  #elif channels=='hsv':
+  #  channel1='hue'
+  #  channel2='saturation'
+  #  channel3='value'
+  #else:
+  #  channel1='signal'
+  #  channel2='signal'
+  #  channel3='signal'
+  #
+  #for date in c.execute('select min(datetime) as first from snapshots'):
+  #  firstday=date['first']
+  #
+  #ch1_total_array=[]
+  #ch2_total_array=[]
+  #ch3_total_array=[]
+  #
+  #if spacer=='on':
+  #  for barcode_label in barcode_unique: 
+  #    ch1=[]
+  #    ch2=[]
+  #    ch3=[]
+  #    time_array=[]
+  #    if signal_type=='vis':
+  #      database=h.execute('select * from snapshots inner join vis_colors on snapshots.image_id=vis_colors.image_id where plant_id= ? and camera=? order by datetime asc', ("%"+barcode_label+"%",camera_label,))
+  #    elif signal_type=='nir':
+  #      database=h.execute('select * from snapshots inner join nir_signal on snapshots.image_id=nir_signal.image_id where plant_id= and camera=? order by datetime asc', ("%"+barcode_label+"%",camera_label,))
+  #    elif signal_type=='flu':
+  #      database=h.execute('select * from snapshots inner join flu_signal on snapshots.image_id=flu_signal.image_id where plant_id= and camera=? order by datetime asc', ("%"+barcode_label+"%",camera_label,))
+  #    
+  #    for i,t in enumerate(database):
+  #      date=(t['datetime']) 
+  #      time_array.append(str(date),)
+  #    unique_time=np.unique(time_array)
+  #    print unique_time
+  #    
+  #    if average_angles=='on':
+  #      for time in unique_time:
+  #        dim1_avg=[]
+  #        dim2_avg=[]
+  #        dim3_avg=[]
+  #        barcode=[]
+  #        date_int=((time-firstday)/86400) 
+  #
+  #        if signal_type=='vis':
+  #          database_time=h.execute('select * from snapshots inner join vis_colors on snapshots.image_id=vis_colors.image_id where datetime=?',(time,))
+  #        elif signal_type=='nir':
+  #          database_time=h.execute('select * from snapshots inner join nir_signal on snapshots.image_id=nir_signal.image_id where datetime=?',(time,))
+  #        elif signal_type=='flu':
+  #          database_time=h.execute('select * from snapshots inner join flu_signal on snapshots.image_id=flu_signal.image_id where datetime=?',(time,))
+  #        for i, data in enumerate(database_time):          
+  #          dim1=np.matrix(data[channel1])
+  #          dim2=np.matrix(data[channel2])
+  #          dim3=np.matrix(data[channel3])
+  #          
+  #          #normalize
+  #          max_dim1=np.amax(dim1)
+  #          max_dim2=np.amax(dim2)
+  #          max_dim3=np.amax(dim3)
+  #          maxval=[max_dim1,max_dim2,max_dim3]
+  #          max_max=np.amax(maxval)
+  #          
+  #          min_dim1=np.amin(dim1)
+  #          min_dim2=np.amin(dim2)
+  #          min_dim3=np.amin(dim3)
+  #          minval=[min_dim1,min_dim2,min_dim3]
+  #          min_min=np.amin(minval)
+  #          
+  #          dim1_norm=((dim1-min_min)/(max_max-min_min))*255
+  #          dim2_norm=((dim2-min_min)/(max_max-min_min))*255
+  #          dim3_norm=((dim3-min_min)/(max_max-min_min))*255
+  #          
+  #          dim1_avg.append(dim1_norm)
+  #          dim2_avg.append(dim2_norm)
+  #          dim3_avg.append(dim3_norm)
+  #        
+  #        ch1_avg=np.average(dim1_avg,axis=0)
+  #        ch2_avg=np.average(dim2_avg,axis=0)
+  #        ch3_avg=np.average(dim3_avg,axis=0)
+  #        
+  #        ch1_total_array.append((time,id_name,ch1_avg))
+  #        ch2_total_array.append((time,id_name,ch2_avg))
+  #        ch3_total_array.append((time,id_name,ch3_avg))
+  #        
+  #    if signal_type=='vis':
+  #      norm_slice=np.dstack((ch1_avg,ch2_avg,ch3_avg))
+  #    else:
+  #      size=np.shape(dim1)
+  #      blank=np.zeros(size)
+  #      norm_slice=np.dstack((blank,blank,ch1_avg))
+  #        
+  #    if average_angles=='on':
+  #      pcv.print_image(norm_slice, (str(outdir)+newfolder+"/"+str(group_label)+"_day"+str(date_int)+"_averaged_angles_slice.png"))
+  #    
+  #    else:
+  #      angle=data['frame']
+  #      pcv.print_image(norm_slice,(str(outdir)+newfolder+"/"+str(id_name)+"_"+str(angle)+"_slice.png"))
+      #print ch1_total_array
 
 
 def slice_stitch(sqlitedb, outdir, camera_label='vis_sv', spacer='on',makefig='yes'):
@@ -977,27 +973,27 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
               dim2_avg.append(dim2_norm)
               dim3_avg.append(dim3_norm)
             
-            ch1_avg=np.average(dim1_avg,axis=0)
-            ch2_avg=np.average(dim2_avg,axis=0)
-            ch3_avg=np.average(dim3_avg,axis=0)
+          ch1_avg=np.average(dim1_avg,axis=0)
+          ch2_avg=np.average(dim2_avg,axis=0)
+          ch3_avg=np.average(dim3_avg,axis=0)
             
-            ch1_total_array.append((time,id_name,ch1_avg))
-            ch2_total_array.append((time,id_name,ch2_avg))
-            ch3_total_array.append((time,id_name,ch3_avg))
+          ch1_total_array.append((time,id_name,ch1_avg))
+          ch2_total_array.append((time,id_name,ch2_avg))
+          ch3_total_array.append((time,id_name,ch3_avg))
             
-            if signal_type=='vis':
-              norm_slice=np.dstack((ch1_avg,ch2_avg,ch3_avg))
-            else:
-              size=np.shape(dim1)
-              blank=np.zeros(size)
-              norm_slice=np.dstack((blank,blank,ch1_avg))
-            
-            if average_angles=='on':
-              pcv.print_image(norm_slice, (str(outdir)+newfolder+"/"+str(barcode[i])+"averaged_angles_slice.png"))
-            else:
-              angle=data['frame']
-              pcv.print_image(norm_slice,(str(outdir)+newfolder+"/"+str(barcode[i])+"_"+str(angle)+"_slice.png"))
-      print ch1_total_array
+          if signal_type=='vis':
+            norm_slice=np.dstack((ch1_avg,ch2_avg,ch3_avg))
+          else:
+            size=np.shape(dim1)
+            blank=np.zeros(size)
+            norm_slice=np.dstack((blank,blank,ch1_avg))
+          
+          if average_angles=='on':
+            pcv.print_image(norm_slice, (str(outdir)+newfolder+"/"+str(barcode_unique[i])+"_averaged_angles_slice.png"))
+          else:
+            angle=data['frame']
+            pcv.print_image(norm_slice,(str(outdir)+newfolder+"/"+str(barcode_unique[i])+"_"+str(angle)+"_slice.png"))
+      #print ch1_total_array
 
 def slice_stitch(sqlitedb, outdir, camera_label='vis_sv', spacer='on',makefig='yes'):
   #sqlitedb = sqlite database to query (path to db)
