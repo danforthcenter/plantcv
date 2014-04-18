@@ -10,7 +10,7 @@ import numpy as np
 import argparse
 import string
 import plantcv as pcv
-import analyze_vis_results as avr
+import visualize_plantcv_results as avr
 
 ### Parse command-line arguments
 def options():
@@ -26,8 +26,10 @@ def main():
   # Get options
   args = options()
 
-  folder_path=avr.slice_stitch(args.database, args.outdir,'vis_sv','off','yes')
-  
+  avr.visualize_slice(args.database,args.outdir,'vis','vis_sv','rgb','on','on','yes')
+
+  #folder_path=avr.slice_stitch(args.database, args.outdir,'vis_sv','off','yes')
+  #folder_path=avr.slice_stitch_geno(args.database, args.outdir,'Experiment 1 Genotypes','vis_sv','on','yes')
 if __name__ == '__main__':
   main()
         
