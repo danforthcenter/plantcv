@@ -26,7 +26,7 @@ def main():
   # Get options
   args = options()
 
-  avr.visualize_slice(args.database,args.outdir,'vis','vis_sv','rgb','on','on','yes')
+  avr.visualize_slice(args.database,args.outdir,'vis','vis_sv','lab','on','off','yes')
 
   #folder_path=avr.slice_stitch(args.database, args.outdir,'vis_sv','off','yes')
   #folder_path=avr.slice_stitch_geno(args.database, args.outdir,'Experiment 1 Genotypes','vis_sv','on','yes')
