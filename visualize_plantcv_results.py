@@ -15,6 +15,8 @@ import matplotlib
 if not os.getenv('DISPLAY'):
   matplotlib.use('Agg')
 from matplotlib import pyplot as plt
+import pylab as plab
+import Image
 
 def handle_vis_output(directory,imgtype,outdir,action):
   # directory = path to directory you want to grab images from
@@ -119,9 +121,10 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
   
   i=datetime.now()
   timenow=i.strftime('%m-%d-%Y_%H:%M:%S')
-  newfolder="slice_analysis_"+(str(timenow))
+  newfolder="slice_figs_and_images_"+(str(timenow))
   
   os.mkdir((str(outdir)+newfolder))
+  outdir_name=str(outdir)+str(newfolder)+"/"
   
   connect=sq.connect(sqlitedb)
   connect.row_factory = dict_factory
@@ -370,10 +373,26 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
     sorted_ch1 =sort_ch1[sort_ch1[:,0].argsort()]
     sorted_ch2 =sort_ch2[sort_ch2[:,0].argsort()]
     sorted_ch3 =sort_ch3[sort_ch3[:,0].argsort()]
+    day_int_array=np.array(sorted_ch1[:,0])
+    unique_int_day=np.unique(day_int_array)
     
-    for i,data in enumerate(sorted_ch1):
-      plant_treat=sorted_ch1[i][1]
-      date_val=sorted_ch1[i][0]
+    unique_int_day1=unique_int_day.astype(int)
+    sort_unique_day=np.sort(unique_int_day1,axis=None)
+    
+    sorted_ch1_final=[]
+    sorted_ch2_final=[]
+    sorted_ch3_final=[]
+    
+    for int_sort in sort_unique_day:
+      for i, data in enumerate(sorted_ch1):
+        if int(data[0])==int_sort:
+          sorted_ch1_final.append(sorted_ch1[i])
+          sorted_ch2_final.append(sorted_ch2[i])
+          sorted_ch3_final.append(sorted_ch3[i])
+        
+    for i,data in enumerate(sorted_ch1_final):
+      plant_treat=sorted_ch1_final[i][1]
+      date_val=sorted_ch1_final[i][0]
       plantgeno=re.match('^([A-Z][a-zA-Z]\d*[A-Z]{2})',plant_treat)
       if plantgeno==None:
         plantgeno_id=plant_treat
@@ -385,6 +404,7 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
         date_array.append(date_val)
         id_array.append(plantgeno_id)
     unique_id=np.unique(id_array)
+    
     
     for name in unique_id:
       ch1_all=[]
@@ -402,20 +422,20 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
       for i,n in enumerate(id_array):
         if n==name:
           if signal_type=='vis':
-            ch1_line1=np.array(sorted_ch1[i][3:])
-            ch2_line1=np.array(sorted_ch2[i][3:])
-            ch3_line1=np.array(sorted_ch3[i][3:])
+            ch1_line1=np.array(sorted_ch1_final[i][3:])
+            ch2_line1=np.array(sorted_ch2_final[i][3:])
+            ch3_line1=np.array(sorted_ch3_final[i][3:])
             ch1_line=ch1_line1.astype(float)
             ch2_line=ch2_line1.astype(float)
             ch3_line=ch3_line1.astype(float)
           else:
-            ch1_line1=np.array(sorted_ch1[i][3:])
+            ch1_line1=np.array(sorted_ch1_final[i][3:])
             ch1_line=ch1_line1.astype(float)            
             size=np.shape(ch1_line)
             ch2_line1=np.zeros(size)
             ch3_line1=np.zeros(size)
                     
-          day=date_array[i]
+          day=int(date_array[i])
     
           ch1_all.append(ch1_line)
           ch2_all.append(ch2_line)
@@ -573,8 +593,9 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
         fig_name=str(str(outdir)+str(newfolder)+"/"+str(name)+"_"+str(camera_label)+"_"+str(channels)+"_averaging_"+str(average_angles)+"_spacer_"+str(spacer)+"_slice_joined_img.png")
         print fig_name
         pcv.print_image(color_cat,(fig_name))
-          
+        
         unique_day=np.unique(ch1_day)
+                
         length_time=[]
         unique_time1=[]
         ypos=[0]
@@ -603,7 +624,7 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
           else:
             yadd=((length*5)+5)
             ypos.append(yadd)
-
+    
         for i,y in enumerate(ypos):
           if i==0:
             y1=y
@@ -611,7 +632,7 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
           else:
             y1=y+ypos1[i-1]
             ypos1.append(y1)
-
+    
       img1=cv2.imread(str(fig_name), -1)
       if len(np.shape(img1))==3: 
         ch1,ch2,ch3=np.dsplit(img1,3)
@@ -619,7 +640,7 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
       
       plt.imshow(img)
       ax = plt.subplot(111)
-      ax.set_ylabel('Days on Bellwether Phenotyper', size=10)
+      ax.set_ylabel('Days', size=10)
       ax.set_yticks(ypos1)
       ax.set_yticklabels(unique_time1,size=5)
       ax.yaxis.tick_left()
@@ -636,13 +657,72 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
       plt.title(str(name))
       fig_name1=(str(outdir)+str(newfolder)+"/"+str(name)+"_"+str(camera_label)+"_"+str(channels)+"_averaging_"+str(average_angles)+"_spacer_"+str(spacer)+"_slice_joined_figure.png")
       print fig_name1
-      plt.savefig(fig_name1, dpi=300,bbox_inches='tight')
+      plt.savefig(fig_name1, dpi=300, bbox_inches='tight')
       plt.clf()
-          
+  
   os.close(signal_file1)
   os.close(signal_file2)
   os.close(signal_file3)     
 
+  return outdir_name
+
+def cat_fig(outdir,img_dir_name):
+  i=datetime.now()
+  timenow=i.strftime('%m-%d-%Y_%H:%M:%S')
+  newfolder="concatenated_slice_figs_"+(str(timenow))
+  
+  os.mkdir((str(outdir)+newfolder))
+  
+  path=str(img_dir_name)
+  opendir=os.listdir(path)
+
+  slice_fig_path=[]
+  treat_array=[]
+  geno_treat=[]
+
+  for filename in opendir:
+    if re.search("_slice_joined_figure\.png$",filename):
+      slice_fig=str(filename)
+      slice_fig_path.append(slice_fig)
+  for fig in slice_fig_path:
+    gt=re.match('^([A-Z][a-zA-Z]\d*[A-Z]{2})',fig)
+    if gt!=None:
+      t=re.match('^([A-Z][a-zA-Z]\d*)',fig)
+      span1,span2=gt.span()
+      span3,span4=t.span()
+      geno_id=fig[span1:span2]
+      treat=fig[span3:span4]
+      fig_path=str(path)+str(fig)
+      info_array=(treat,geno_id,fig_path)
+      treat_array.append(treat)
+      geno_treat.append(info_array)
+  
+  path_info=np.array(geno_treat)
+  treat_array1=np.array(treat_array)
+  unique_treat=np.unique(treat_array1)
+  
+  print path_info
+  print unique_treat
+  
+  for t in unique_treat:
+    cat=[]
+    for i,p in enumerate(path_info):
+      if p[0]==t:
+        path_cat=p[2]
+        cat.append(path_cat)
+     
+    x=len(cat)    
+    f = plt.figure()
+    for n, fname in enumerate(cat):
+      image=Image.open(fname)
+      arr=np.asarray(image)
+      f.add_subplot(x,1,n, aspect='equal')
+      plt.imshow(arr)
+      plt.axis('off')
+    fig_name1=(str(outdir)+str(newfolder)+"/"+str(t)+"_slice_joined_figure.png")
+    print fig_name1
+    plt.savefig(fig_name1, dpi=300,bbox_inches='tight')
+    plt.clf()
 
 def slice_stitch(sqlitedb, outdir, camera_label='vis_sv', spacer='on',makefig='yes'):
   #sqlitedb = sqlite database to query (path to db)
