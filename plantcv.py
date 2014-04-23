@@ -1477,11 +1477,11 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseudo_on_img.png')
-    plt.savefig(fig_name, dpi=600)
+    plt.savefig(fig_name, dpi=600,bbox_inches='tight')
     print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseudo_on_img.png')
-      plt.savefig(fig_name, dpi=600)
+      plt.savefig(fig_name, dpi=600,bbox_inches='tight')
     plt.clf()
     
     h_img =plt.imshow(h_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
@@ -1490,11 +1490,11 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseudo_on_white.png')
-    plt.savefig(fig_name, dpi=600)
+    plt.savefig(fig_name, dpi=600,bbox_inches='tight')
     print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseudo_on_white.png')
-      plt.savefig(fig_name, dpi=600)
+      plt.savefig(fig_name, dpi=600,bbox_inches='tight')
     plt.clf()
     
   elif p_channel=='s':
@@ -1510,11 +1510,11 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-    plt.savefig(fig_name, dpi=600)
+    plt.savefig(fig_name, dpi=600,bbox_inches='tight')
     print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-      plt.savefig(fig_name, dpi=600)
+      plt.savefig(fig_name, dpi=600,bbox_inches='tight')
     plt.clf()
     
     s_img =plt.imshow(s_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
@@ -1523,11 +1523,11 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-    plt.savefig(fig_name, dpi=600)
+    plt.savefig(fig_name, dpi=600,bbox_inches='tight')
     print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-      plt.savefig(fig_name, dpi=600)
+      plt.savefig(fig_name, dpi=600,bbox_inches='tight')
     plt.clf()
     
   elif p_channel=='v':
@@ -1543,11 +1543,11 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-    plt.savefig(fig_name, dpi=600)
+    plt.savefig(fig_name, dpi=600,bbox_inches='tight')
     print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-      plt.savefig(fig_name, dpi=600)
+      plt.savefig(fig_name, dpi=600,bbox_inches='tight')
     plt.clf()
     
     v_img =plt.imshow(v_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
@@ -1556,11 +1556,11 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-    plt.savefig(fig_name, dpi=600)
+    plt.savefig(fig_name, dpi=600,bbox_inches='tight')
     print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-      plt.savefig(fig_name, dpi=600)
+      plt.savefig(fig_name, dpi=600,bbox_inches='tight')
     plt.clf()
     
   elif p_channel=='l':
@@ -1576,11 +1576,11 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-    plt.savefig(fig_name, dpi=600)
+    plt.savefig(fig_name, dpi=600,bbox_inches='tight')
     print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-      plt.savefig(fig_name, dpi=600)
+      plt.savefig(fig_name, dpi=600,bbox_inches='tight')
     plt.clf()
     
     l_img =plt.imshow(l_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
@@ -1589,11 +1589,11 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-    plt.savefig(fig_name, dpi=600)
+    plt.savefig(fig_name, dpi=600,bbox_inches='tight')
     print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-      plt.savefig(fig_name, dpi=600)
+      plt.savefig(fig_name, dpi=600,bbox_inches='tight')
     plt.clf()
     
   elif p_channel=='m':
@@ -1609,11 +1609,11 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-    plt.savefig(fig_name, dpi=600)
+    plt.savefig(fig_name, dpi=600,bbox_inches='tight')
     print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-      plt.savefig(fig_name, dpi=600)
+      plt.savefig(fig_name, dpi=600,bbox_inches='tight')
     plt.clf()
     
     m_img =plt.imshow(m_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
@@ -1622,11 +1622,11 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-    plt.savefig(fig_name, dpi=600)
+    plt.savefig(fig_name, dpi=600,bbox_inches='tight')
     print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-      plt.savefig(fig_name, dpi=600)
+      plt.savefig(fig_name, dpi=600,bbox_inches='tight')
     plt.clf()
     
   elif p_channel=='y':
@@ -1642,11 +1642,11 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-    plt.savefig(fig_name, dpi=600)
+    plt.savefig(fig_name, dpi=600,bbox_inches='tight')
     print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-      plt.savefig(fig_name, dpi=600)
+      plt.savefig(fig_name, dpi=600,bbox_inches='tight')
     plt.clf()
     
     y_img =plt.imshow(y_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
@@ -1655,11 +1655,11 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
     plt.axis('off')
     fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-    plt.savefig(fig_name, dpi=600)
+    plt.savefig(fig_name, dpi=600,bbox_inches='tight')
     print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
     if debug:
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-      plt.savefig(fig_name, dpi=600)
+      plt.savefig(fig_name, dpi=600,bbox_inches='tight')
     plt.clf()
     
   else:
@@ -1933,7 +1933,7 @@ def fluor_fvfm(fdark,fmin,fmax,mask, device,filename,bins=1000, debug=False):
   plt.imshow(background1, cmap=my_cmap)
   plt.axis('off')
   fig_name=(str(filename[0:-4]) + '_pseudo_fvfm.png')
-  plt.savefig(fig_name, dpi=600)
+  plt.savefig(fig_name, dpi=600, bbox_inches='tight')
   plt.clf()
   print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
   
