@@ -9,6 +9,8 @@ if not os.getenv('DISPLAY'):
   matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 from matplotlib import cm as cm
+from matplotlib import colors as colors
+from matplotlib import colorbar as colorbar
 import pylab as pl
 
 ### Error handling
@@ -1459,13 +1461,13 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
   p_channel=pseudo_channel
   pseudocolor_img=1
   
-  if pseudo_channel==None:
+  if p_channel==None:
     pass
-  
+        
   elif p_channel=='h':
         
     h_img =plt.imshow(h_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
-    bar=plt.colorbar(orientation='horizontal')
+    #bar=plt.colorbar(orientation='horizontal')
     mask_inv=cv2.bitwise_not(mask)
     img_gray=cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     pot=cv2.bitwise_and(img_gray,img_gray,mask=mask_inv)
@@ -1483,7 +1485,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     plt.clf()
     
     h_img =plt.imshow(h_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
-    bar=plt.colorbar(orientation='horizontal')
+    #bar=plt.colorbar(orientation='horizontal')
     white_rgba=np.dstack((w_back,w_back,w_back,mask_inv))
     pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
     plt.axis('off')
@@ -1498,7 +1500,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
   elif p_channel=='s':
     
     s_img =plt.imshow(s_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
-    bar=plt.colorbar(orientation='horizontal')
+    #bar=plt.colorbar(orientation='horizontal')
     mask_inv=cv2.bitwise_not(mask)
     img_gray=cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     pot=cv2.bitwise_and(img_gray,img_gray,mask=mask_inv)
@@ -1516,7 +1518,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     plt.clf()
     
     s_img =plt.imshow(s_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
-    bar=plt.colorbar(orientation='horizontal')
+    #bar=plt.colorbar(orientation='horizontal')
     white_rgba=np.dstack((w_back,w_back,w_back,mask_inv))
     pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
     plt.axis('off')
@@ -1531,7 +1533,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
   elif p_channel=='v':
     
     v_img =plt.imshow(v_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
-    bar=plt.colorbar(orientation='horizontal')
+    #bar=plt.colorbar(orientation='horizontal')
     mask_inv=cv2.bitwise_not(mask)
     img_gray=cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     pot=cv2.bitwise_and(img_gray,img_gray,mask=mask_inv)
@@ -1549,7 +1551,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     plt.clf()
     
     v_img =plt.imshow(v_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
-    bar=plt.colorbar(orientation='horizontal')
+    #bar=plt.colorbar(orientation='horizontal')
     white_rgba=np.dstack((w_back,w_back,w_back,mask_inv))
     pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
     plt.axis('off')
@@ -1564,7 +1566,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
   elif p_channel=='l':
     
     l_img =plt.imshow(l_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
-    bar=plt.colorbar(orientation='horizontal')
+    #bar=plt.colorbar(orientation='horizontal')
     mask_inv=cv2.bitwise_not(mask)
     img_gray=cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     pot=cv2.bitwise_and(img_gray,img_gray,mask=mask_inv)
@@ -1582,7 +1584,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     plt.clf()
     
     l_img =plt.imshow(l_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
-    bar=plt.colorbar(orientation='horizontal')
+    #bar=plt.colorbar(orientation='horizontal')
     white_rgba=np.dstack((w_back,w_back,w_back,mask_inv))
     pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
     plt.axis('off')
@@ -1597,7 +1599,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
   elif p_channel=='m':
     
     m_img =plt.imshow(m_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
-    bar=plt.colorbar(orientation='horizontal')
+    #bar=plt.colorbar(orientation='horizontal')
     mask_inv=cv2.bitwise_not(mask)
     img_gray=cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     pot=cv2.bitwise_and(img_gray,img_gray,mask=mask_inv)
@@ -1615,7 +1617,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     plt.clf()
     
     m_img =plt.imshow(m_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
-    bar=plt.colorbar(orientation='horizontal')
+    #bar=plt.colorbar(orientation='horizontal')
     white_rgba=np.dstack((w_back,w_back,w_back,mask_inv))
     pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
     plt.axis('off')
@@ -1630,7 +1632,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
   elif p_channel=='y':
     
     y_img =plt.imshow(y_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
-    bar=plt.colorbar(orientation='horizontal')
+    #bar=plt.colorbar(orientation='horizontal')
     mask_inv=cv2.bitwise_not(mask)
     img_gray=cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     pot=cv2.bitwise_and(img_gray,img_gray,mask=mask_inv)
@@ -1648,7 +1650,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     plt.clf()
     
     y_img =plt.imshow(y_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
-    bar=plt.colorbar(orientation='horizontal')
+    #bar=plt.colorbar(orientation='horizontal')
     white_rgba=np.dstack((w_back,w_back,w_back,mask_inv))
     pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
     plt.axis('off')
@@ -1659,9 +1661,23 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
       fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
       plt.savefig(fig_name, dpi=600)
     plt.clf()
-  
+    
   else:
     fatal_error('Pseudocolor Channel' + str(pseudo_channel) + ' is not "None", "l","m", "y", "h","s" or "v"!')
+  
+  if p_channel!=None:
+    if os.path.isfile(('1_vis_pseudocolor_colorbar_' + str(pseudo_channel) + '_channel.png')):
+      pass
+    else:
+      fig = plt.figure()
+      ax1 = fig.add_axes([0.05, 0.80, 0.9, 0.15])
+      valmin=-0
+      valmax=(bins-1)
+      norm=colors.Normalize(vmin=valmin, vmax=valmax)
+      cb1=colorbar.ColorbarBase(ax1,cmap=cm.jet, norm=norm, orientation='horizontal')
+      fig_name='1_vis_pseudocolor_colorbar_' + str(pseudo_channel) + '_channel.png'
+      plt.savefig(fig_name,dpi=600,bbox_inches='tight')
+      plt.clf()
   
   return device, hist_header, hist_data, norm_slice
 
@@ -1734,7 +1750,7 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, debug=False ,filenam
     final = cv2.add(col_msk_plant, bkg3)
     cv2.imwrite("pseudocol_plant.png", final)
   
-  # pring a colorbar which can be associated with pseudo image
+  # print a colorbar which can be associated with pseudo image
   if debug:
     plt.imshow(final, cmap='summer')
     plt.colorbar(orientation='horizontal')
@@ -1909,8 +1925,8 @@ def fluor_fvfm(fdark,fmin,fmax,mask, device,filename,bins=1000, debug=False):
   
   fvfm_img =plt.imshow(fvfm_pshape, vmin=0,vmax=255, cmap=cm.jet_r)
   ax = plt.subplot(111)
-  bar=plt.colorbar(orientation='horizontal', ticks=[0,25.5, 51,76.5, 102, 127.5, 153, 178.5, 204, 229.5, 255])
-  bar.ax.set_xticklabels([0.0,0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
+  #bar=plt.colorbar(orientation='horizontal', ticks=[0,25.5, 51,76.5, 102, 127.5, 153, 178.5, 204, 229.5, 255])
+  #bar.ax.set_xticklabels([0.0,0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
   mask_inv=cv2.bitwise_not(mask)
   background1=np.dstack((mask,mask,mask,mask_inv))
   my_cmap = plt.get_cmap('binary_r')
@@ -1920,6 +1936,19 @@ def fluor_fvfm(fdark,fmin,fmax,mask, device,filename,bins=1000, debug=False):
   plt.savefig(fig_name, dpi=600)
   plt.clf()
   print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
+  
+  if os.path.isfile(('1_fluor_pseudocolor_colorbar.png')):
+    pass
+  else:
+    fig = plt.figure()
+    ax1 = fig.add_axes([0.05, 0.80, 0.9, 0.15])
+    valmin=-0
+    valmax=1
+    norm=colors.Normalize(vmin=valmin, vmax=valmax)
+    cb1=colorbar.ColorbarBase(ax1,cmap=cm.jet,norm=norm, orientation='horizontal')
+    fig_name='1_fluor_pseudocolor_colorbar.png'
+    plt.savefig(fig_name,dpi=600,bbox_inches='tight')
+    plt.clf()
   
   if debug: 
     print_image(fmin_mask,(str(device)+'_fmin_mask.png'))

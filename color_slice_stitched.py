@@ -26,9 +26,9 @@ def main():
   # Get options
   args = options()
 
-  img_file_dir =avr.visualize_slice(args.database,args.outdir,'vis','vis_sv','rgb','on','on','yes')
-  #img_file_dir='/home/mgehan/LemnaTec/out_folder/slice_figs_and_images_04-20-2014_15:21:57/'
-  #avr.cat_fig(args.outdir,img_file_dir)
+  #img_file_dir =avr.visualize_slice(args.database,args.outdir,'vis','vis_sv','rgb','on','off','yes','yes')
+  img_file_dir='/home/mgehan/LemnaTec/out_folder/slice_figs_and_images_04-21-2014_16:59:07/'
+  avr.cat_fig(args.outdir,img_file_dir)
 
 if __name__ == '__main__':
   main()

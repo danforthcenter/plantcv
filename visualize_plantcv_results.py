@@ -13,10 +13,10 @@ import plantcv as pcv
 from datetime import datetime
 import matplotlib
 if not os.getenv('DISPLAY'):
-  matplotlib.use('Agg')
+  matplotlib.use('SVG')
 from matplotlib import pyplot as plt
 import pylab as plab
-import Image
+import Image as im
 
 def handle_vis_output(directory,imgtype,outdir,action):
   # directory = path to directory you want to grab images from
@@ -109,7 +109,7 @@ def dict_factory(cursor, row):
         d[col[0]] = row[idx]
     return d
 
-def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',channels='rgb',average_angles='on',spacer='on', makefig='yes'):
+def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',channels='rgb',average_angles='on',spacer='on', write_txt='no',makefig='yes'):
   #sqlitedb = sqlite database to query (path to db)
   #outdir = path to outdirectory
   #camera_type='vis','nir' or 'fluor'
@@ -202,28 +202,29 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
       b="fluor_bin_"+str(bn)
       ch1_headers.append(b)
   
-  if signal_type=='vis':
-    header1_fin=','.join(map(str,ch1_headers))
-    header2_fin=','.join(map(str,ch2_headers))
-    header3_fin=','.join(map(str,ch3_headers))
-    filename1=str(outdir)+newfolder+"/"+str(signal_type)+"_signal_"+str(channel1)+"_"+str(timenow)+".txt"
-    filename2=str(outdir)+newfolder+"/"+str(signal_type)+"_signal_"+str(channel2)+"_"+str(timenow)+".txt"
-    filename3=str(outdir)+newfolder+"/"+str(signal_type)+"_signal_"+str(channel3)+"_"+str(timenow)+".txt"
-    signal_file1= os.open(filename1,os.O_RDWR|os.O_CREAT)
-    signal_file2= os.open(filename2,os.O_RDWR|os.O_CREAT)
-    signal_file3= os.open(filename3,os.O_RDWR|os.O_CREAT)
-    os.write(signal_file1, header1_fin)
-    os.write(signal_file2, header2_fin)
-    os.write(signal_file3, header3_fin)
-    os.write(signal_file1, os.linesep)
-    os.write(signal_file2, os.linesep)
-    os.write(signal_file3, os.linesep)
-  else:
-    header1_fin=','.join(map(str,ch1_headers))
-    filename1=str(outdir)+newfolder+"/"+str(signal_type)+"_signal_"+str(channel1)+"_"+str(timenow)+".txt"
-    signal_file1= os.open(filename1,os.O_RDWR|os.O_CREAT)
-    os.write(signal_file1, header1_fin)
-    os.write(signal_file1, os.linesep)
+  if write_txt=='yes':
+    if signal_type=='vis':
+      header1_fin=','.join(map(str,ch1_headers))
+      header2_fin=','.join(map(str,ch2_headers))
+      header3_fin=','.join(map(str,ch3_headers))
+      filename1=str(outdir)+newfolder+"/"+str(signal_type)+"_signal_"+str(channel1)+"_"+str(timenow)+".txt"
+      filename2=str(outdir)+newfolder+"/"+str(signal_type)+"_signal_"+str(channel2)+"_"+str(timenow)+".txt"
+      filename3=str(outdir)+newfolder+"/"+str(signal_type)+"_signal_"+str(channel3)+"_"+str(timenow)+".txt"
+      signal_file1= os.open(filename1,os.O_RDWR|os.O_CREAT)
+      signal_file2= os.open(filename2,os.O_RDWR|os.O_CREAT)
+      signal_file3= os.open(filename3,os.O_RDWR|os.O_CREAT)
+      os.write(signal_file1, header1_fin)
+      os.write(signal_file2, header2_fin)
+      os.write(signal_file3, header3_fin)
+      os.write(signal_file1, os.linesep)
+      os.write(signal_file2, os.linesep)
+      os.write(signal_file3, os.linesep)
+    else:
+      header1_fin=','.join(map(str,ch1_headers))
+      filename1=str(outdir)+newfolder+"/"+str(signal_type)+"_signal_"+str(channel1)+"_"+str(timenow)+".txt"
+      signal_file1= os.open(filename1,os.O_RDWR|os.O_CREAT)
+      os.write(signal_file1, header1_fin)
+      os.write(signal_file1, os.linesep)
   
   for barcode_label in barcode_unique: 
     time_array=[]
@@ -309,16 +310,17 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
           ch1_total_array.append(ch1)
           ch2_total_array.append(ch2)
           ch3_total_array.append(ch3)
-
-          ch1_join=','.join(map(str,ch1))
-          ch2_join=','.join(map(str,ch2))
-          ch3_join=','.join(map(str,ch3))
-          os.write(signal_file1, ch1_join)
-          os.write(signal_file2, ch2_join)
-          os.write(signal_file3, ch3_join)
-          os.write(signal_file1, os.linesep)
-          os.write(signal_file2, os.linesep)
-          os.write(signal_file3, os.linesep)
+          
+          if write_txt=='yes':
+            ch1_join=','.join(map(str,ch1))
+            ch2_join=','.join(map(str,ch2))
+            ch3_join=','.join(map(str,ch3))
+            os.write(signal_file1, ch1_join)
+            os.write(signal_file2, ch2_join)
+            os.write(signal_file3, ch3_join)
+            os.write(signal_file1, os.linesep)
+            os.write(signal_file2, os.linesep)
+            os.write(signal_file3, os.linesep)
                 
       if average_angles=='on':
         ch1=[]
@@ -354,15 +356,16 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
         ch2_total_array.append(ch2)
         ch3_total_array.append(ch3)
         
-        ch1_join=','.join(map(str,ch1))
-        ch2_join=','.join(map(str,ch2))
-        ch3_join=','.join(map(str,ch3))
-        os.write(signal_file1, ch1_join)
-        os.write(signal_file2, ch2_join)
-        os.write(signal_file3, ch3_join)
-        os.write(signal_file1, os.linesep)
-        os.write(signal_file2, os.linesep)
-        os.write(signal_file3, os.linesep)
+        if write_txt=='yes':
+          ch1_join=','.join(map(str,ch1))
+          ch2_join=','.join(map(str,ch2))
+          ch3_join=','.join(map(str,ch3))
+          os.write(signal_file1, ch1_join)
+          os.write(signal_file2, ch2_join)
+          os.write(signal_file3, ch3_join)
+          os.write(signal_file1, os.linesep)
+          os.write(signal_file2, os.linesep)
+          os.write(signal_file3, os.linesep)
 
   if makefig=='yes':  
     id_array=[]
@@ -404,7 +407,6 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
         date_array.append(date_val)
         id_array.append(plantgeno_id)
     unique_id=np.unique(id_array)
-    
     
     for name in unique_id:
       ch1_all=[]
@@ -660,13 +662,17 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
       plt.savefig(fig_name1, dpi=300, bbox_inches='tight')
       plt.clf()
   
-  os.close(signal_file1)
-  os.close(signal_file2)
-  os.close(signal_file3)     
+  if write_txt=='yes':
+    os.close(signal_file1)
+    os.close(signal_file2)
+    os.close(signal_file3)     
 
   return outdir_name
 
 def cat_fig(outdir,img_dir_name):
+# outdir = outdir to put the images into
+# im_dir_name = path to the images
+
   i=datetime.now()
   timenow=i.strftime('%m-%d-%Y_%H:%M:%S')
   newfolder="concatenated_slice_figs_"+(str(timenow))
@@ -700,29 +706,50 @@ def cat_fig(outdir,img_dir_name):
   path_info=np.array(geno_treat)
   treat_array1=np.array(treat_array)
   unique_treat=np.unique(treat_array1)
-  
-  print path_info
-  print unique_treat
+  unique_id=np.unique(geno_id)
   
   for t in unique_treat:
     cat=[]
+    id1=[]
+    width=[]
+    height=[]
+    ch1_norm=[]
+    ch2_norm=[]
+    ch3_norm=[]
     for i,p in enumerate(path_info):
       if p[0]==t:
         path_cat=p[2]
+        i1=p[1]
         cat.append(path_cat)
-     
+        id1.append(i1)
     x=len(cat)    
     f = plt.figure()
     for n, fname in enumerate(cat):
-      image=Image.open(fname)
-      arr=np.asarray(image)
-      f.add_subplot(x,1,n, aspect='equal')
-      plt.imshow(arr)
-      plt.axis('off')
-    fig_name1=(str(outdir)+str(newfolder)+"/"+str(t)+"_slice_joined_figure.png")
-    print fig_name1
-    plt.savefig(fig_name1, dpi=300,bbox_inches='tight')
-    plt.clf()
+      image=cv2.imread(fname)
+      h,w,z=np.shape(image)
+      width.append(w)
+      height.append(h)
+    avg_width=np.average(width)
+    
+    norm_factor=[]
+    
+    for i,wd in enumerate(width):
+      norm=float(avg_width/wd)
+      norm_factor.append(norm)
+    
+    resized_fig=[]
+    for i, fname in enumerate(cat):
+      x=len(cat)
+      image1=cv2.imread(fname)
+      f=float(norm_factor[i])
+      if f<1:
+        newim=cv2.resize(image1,None,fx=f,fy=f,interpolation = cv2.INTER_AREA)
+      else:
+        newim=cv2.resize(image1,None,fx=f,fy=f,interpolation = cv2.INTER_CUBIC)
+      fig_name1=(str(outdir)+str(newfolder)+"/"+str(id1[i])+"_slice_figure_resized.png")
+      resized_fig.append(fig_name1)
+      pcv.print_image(newim,fig_name1)
+      
 
 def slice_stitch(sqlitedb, outdir, camera_label='vis_sv', spacer='on',makefig='yes'):
   #sqlitedb = sqlite database to query (path to db)
