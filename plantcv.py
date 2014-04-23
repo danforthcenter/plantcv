@@ -1669,13 +1669,16 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     if os.path.isfile(('1_vis_pseudocolor_colorbar_' + str(pseudo_channel) + '_channel.png')):
       pass
     else:
+      filename1=str(filename)
+      name_array=filename1.split("/")
+      filename2="/".join(map(str,name_array[:-1]))
       fig = plt.figure()
       ax1 = fig.add_axes([0.05, 0.80, 0.9, 0.15])
       valmin=-0
       valmax=(bins-1)
       norm=colors.Normalize(vmin=valmin, vmax=valmax)
       cb1=colorbar.ColorbarBase(ax1,cmap=cm.jet, norm=norm, orientation='horizontal')
-      fig_name='1_vis_pseudocolor_colorbar_' + str(pseudo_channel) + '_channel.png'
+      fig_name=str(filename2)+'/1_vis_pseudocolor_colorbar_' + str(pseudo_channel) + '_channel.png'
       plt.savefig(fig_name,dpi=600,bbox_inches='tight')
       plt.clf()
   
@@ -1940,13 +1943,16 @@ def fluor_fvfm(fdark,fmin,fmax,mask, device,filename,bins=1000, debug=False):
   if os.path.isfile(('1_fluor_pseudocolor_colorbar.png')):
     pass
   else:
+    filename1=str(filename)
+    name_array=filename1.split("/")
+    filename2="/".join(map(str,name_array[:-1]))
     fig = plt.figure()
     ax1 = fig.add_axes([0.05, 0.80, 0.9, 0.15])
     valmin=-0
     valmax=1
     norm=colors.Normalize(vmin=valmin, vmax=valmax)
     cb1=colorbar.ColorbarBase(ax1,cmap=cm.jet,norm=norm, orientation='horizontal')
-    fig_name='1_fluor_pseudocolor_colorbar.png'
+    fig_name=str(filename2)+'/1_fluor_pseudocolor_colorbar.png'
     plt.savefig(fig_name,dpi=600,bbox_inches='tight')
     plt.clf()
   
