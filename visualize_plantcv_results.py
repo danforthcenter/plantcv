@@ -592,7 +592,7 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
       
         
         color_cat=np.dstack((ch1_fig,ch2_fig,ch3_fig))
-        fig_name=str(str(outdir)+str(newfolder)+"/"+str(name)+"_"+str(camera_label)+"_"+str(channels)+"_averaging_"+str(average_angles)+"_spacer_"+str(spacer)+"_slice_joined_img.png")
+        fig_name=str(str(outdir)+str(newfolder)+"/"+str(name)+"_"+str(camera_label)+"_"+str(channels)+"_averaging_"+str(average_angles)+"_spacer_"+str(spacer)+"_slice_joined_img.svg")
         print fig_name
         pcv.print_image(color_cat,(fig_name))
         
@@ -657,7 +657,7 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
       ax.spines['right'].set_color('none')
       
       plt.title(str(name))
-      fig_name1=(str(outdir)+str(newfolder)+"/"+str(name)+"_"+str(camera_label)+"_"+str(channels)+"_averaging_"+str(average_angles)+"_spacer_"+str(spacer)+"_slice_joined_figure.png")
+      fig_name1=(str(outdir)+str(newfolder)+"/"+str(name)+"_"+str(camera_label)+"_"+str(channels)+"_averaging_"+str(average_angles)+"_spacer_"+str(spacer)+"_slice_joined_figure.svg")
       print fig_name1
       plt.savefig(fig_name1, dpi=300, bbox_inches='tight')
       plt.clf()

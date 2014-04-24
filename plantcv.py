@@ -1671,9 +1671,10 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     fatal_error('Pseudocolor Channel' + str(pseudo_channel) + ' is not "None", "l","m", "y", "h","s" or "v"!')
   
   if p_channel!=None:
-    if os.path.isfile(('1_vis_pseudocolor_colorbar_' + str(pseudo_channel) + '_channel.png')):
+    if os.path.isfile(('1_vis_pseudocolor_colorbar_' + str(pseudo_channel) + '_channel.svg')):
       pass
     else:
+      matplotlib.use('SVG')
       filename1=str(filename)
       name_array=filename1.split("/")
       filename2="/".join(map(str,name_array[:-1]))
@@ -1683,7 +1684,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
       valmax=(bins-1)
       norm=colors.Normalize(vmin=valmin, vmax=valmax)
       cb1=colorbar.ColorbarBase(ax1,cmap=cm.jet, norm=norm, orientation='horizontal')
-      fig_name=str(filename2)+'/1_vis_pseudocolor_colorbar_' + str(pseudo_channel) + '_channel.png'
+      fig_name=str(filename2)+'/1_vis_pseudocolor_colorbar_' + str(pseudo_channel) + '_channel.svg'
       plt.savefig(fig_name,dpi=600,bbox_inches='tight')
       plt.clf()
   
@@ -1947,9 +1948,10 @@ def fluor_fvfm(fdark,fmin,fmax,mask, device,filename,bins=1000, debug=False):
   plt.clf()
   print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
   
-  if os.path.isfile(('1_fluor_pseudocolor_colorbar.png')):
+  if os.path.isfile(('1_fluor_pseudocolor_colorbar.svg')):
     pass
   else:
+    matplotlib.use('SVG')
     filename1=str(filename)
     name_array=filename1.split("/")
     filename2="/".join(map(str,name_array[:-1]))
@@ -1959,7 +1961,7 @@ def fluor_fvfm(fdark,fmin,fmax,mask, device,filename,bins=1000, debug=False):
     valmax=1
     norm=colors.Normalize(vmin=valmin, vmax=valmax)
     cb1=colorbar.ColorbarBase(ax1,cmap=cm.jet,norm=norm, orientation='horizontal')
-    fig_name=str(filename2)+'/1_fluor_pseudocolor_colorbar.png'
+    fig_name=str(filename2)+'/1_fluor_pseudocolor_colorbar.svg'
     plt.savefig(fig_name,dpi=600,bbox_inches='tight')
     plt.clf()
   
