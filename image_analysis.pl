@@ -582,6 +582,8 @@ sub arg_check {
   }
 	if ($opt{'m'}) {
 		$roi = $opt{'m'};
+	} elsif ($type eq 'vis_tv' || $type eq 'flu_tv') {
+		arg_error("$type pipelines require an ROI image!");
 	}
 }
 
@@ -595,13 +597,13 @@ sub arg_error {
     print STDERR $error."\n";
   }
   my $usage = "
-usage: image_analysis.pl -d DIR -p PIPELINE -t TYPE -s DB [-z ZOOM] [-i DIR] [-T THREADS] [-r] [-n NUM] [-c] [-h]
+usage: image_analysis.pl -d DIR -p PIPELINE -t TYPE -s DB [-z ZOOM] [-i DIR] [-T THREADS] [-r] [-n NUM] [-c] [-m ROI] [-h]
 
 Multi-threaded execution of a plantcv image processing pipeline with
 specific or randomly selected images.
 
 arguments:
-  -d DIR                Input directory containing images.
+  -d DIR                Input directory containing images or snapshots.
   -p PIPELINE           Pipeline script file.
   -t TYPE               Pipeline type (vis_sv, vis_tv, nir_sv, nir_tv, flu_tv).
   -z ZOOM               Optional camera zoom setting (INTEGER).
@@ -612,7 +614,7 @@ arguments:
   -n NUM                Number of random images to test. Only used with -r. Default = 10.
   -c                    Create output database (SQLite). Default behaviour adds to existing database.
                         Warning: activating this option will delete an existing database!
-  -m ROI                ROI/mask image. Required by some pipelines.
+  -m ROI                ROI/mask image. Required by some pipelines (vis_tv, flu_tv).
   -h, --help            show this help message and exit
 
   ";
