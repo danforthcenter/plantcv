@@ -88,6 +88,11 @@ if ($opt{'c'}) {
   }
   # Create new database and initialize with template schema
   `sqlite3 $sqldb '.read $Bin/docs/results.sql'`;
+} else {
+	unless (-e $sqldb) {
+		arg_error("The database $sqldb does not exist and you did not ask to create it [-c].");
+		exit 1;
+	}
 }
 
 # Connect to the SQLite database
