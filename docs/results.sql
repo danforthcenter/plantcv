@@ -10,7 +10,6 @@ CREATE TABLE IF NOT EXISTS `runinfo` (
 CREATE TABLE IF NOT EXISTS `snapshots` (
   `image_id` INTEGER PRIMARY KEY,
   `run_id` INTEGER NOT NULL,
-  `snapshot_id` INTEGER NOT NULL,
   `plant_id` TEXT NOT NULL,
   `datetime` INTEGER NOT NULL,
   `camera` TEXT NOT NULL,
@@ -101,7 +100,6 @@ CREATE TABLE IF NOT EXISTS `boundary_data` (
   `percent_below_bound_area` REAL NOT NULL
 );
 
-CREATE INDEX IF NOT EXISTS `snapshot_id` ON `snapshots` (`snapshot_id`);
 CREATE INDEX IF NOT EXISTS `plant_id` ON `snapshots` (`plant_id`);
 CREATE INDEX IF NOT EXISTS `datetime` ON `snapshots` (`datetime`);
 CREATE INDEX IF NOT EXISTS `image_id` ON `analysis_images` (`image_id`);

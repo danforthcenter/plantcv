@@ -11,7 +11,7 @@ use Config::Tiny;
 use Time::Local;
 use POSIX qw(strftime);
 
-my (%opt, $dir, $pipeline, $threads, $num,  @images, $image_dir, $sqldb, $type, %snapshots, %ids, $zoom_setting, $roi);
+my (%opt, $dir, $pipeline, $threads, $num,  @images, $image_dir, $sqldb, $type, %ids, $zoom_setting, $roi);
 my %is_valid = (
   'vis_sv' => 1,
   'vis_tv' => 1,
@@ -99,20 +99,18 @@ if ($opt{'c'}) {
 my $dbh = DBI->connect("dbi:SQLite:dbname=$sqldb","","");
 ###########################################
 
-# Get last image, snapshot, and run entries
+# Get last image and run entries
 ###########################################
-foreach my $field ('image_id', 'snapshot_id') {
-  my $sth = $dbh->prepare("SELECT MAX(`$field`) as max FROM `snapshots`");
-  $sth->execute();
-  while (my $result = $sth->fetchrow_hashref) {
-    $ids{$field} = $result->{'max'};
-  }
-  if (!exists($ids{$field})) {
-    $ids{$field} = 0;
-  }
+my $sth = $dbh->prepare("SELECT MAX(`image_id`) as max FROM `snapshots`");
+$sth->execute();
+while (my $result = $sth->fetchrow_hashref) {
+  $ids{'image_id'} = $result->{'max'};
+}
+if (!exists($ids{'image_id'})) {
+  $ids{'image_id'} = 0;
 }
 
-my $sth = $dbh->prepare("SELECT MAX(`run_id`) as max FROM `runinfo`");
+$sth = $dbh->prepare("SELECT MAX(`run_id`) as max FROM `runinfo`");
 $sth->execute();
 while (my $result = $sth->fetchrow_hashref) {
   $ids{'run_id'} = $result->{'max'};
@@ -326,17 +324,7 @@ sub process_results {
   # New image ID
   $ids{'image_id'}++;
   my $image_id = $ids{'image_id'};
-  # Snapshot ID
-  my $snapshot_id;
-  if (exists($snapshots{$id}->{$epoch_time})) {
-    $snapshot_id = $snapshots{$id}->{$epoch_time};
-  } else {
-    # New snapshot ID
-    $ids{'snapshot_id'}++;
-    $snapshot_id = $ids{'snapshot_id'};
-    $snapshots{$id}->{$epoch_time} = $snapshot_id;
-  }
-  my @snap = ($image_id, $ids{'run_id'}, $snapshot_id, $id, $epoch_time, $camera, $frame, $zoom, "$path/$image");
+  my @snap = ($image_id, $ids{'run_id'}, $id, $epoch_time, $camera, $frame, $zoom, "$path/$image");
   ###########################################
 
 	my $success = 0;
