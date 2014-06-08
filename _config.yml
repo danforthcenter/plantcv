@@ -1,0 +1,7 @@
+# Site settings
+title: PlantCV
+baseurl: "/plantcv"
+
+# Build settings
+markdown: redcarpet
+pygments: true
