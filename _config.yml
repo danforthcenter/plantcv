@@ -4,4 +4,4 @@ baseurl: "/plantcv"
 
 # Build settings
 markdown: redcarpet
-pygments: true
+highlighter: pygments
