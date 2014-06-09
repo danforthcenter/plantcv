@@ -8,6 +8,9 @@
     pageTracker._trackPageview();
     } catch(err) {}
   </script>
+  <script type="text/javascript">
+    $('.nav a:contains({{page.title}})').parent().addClass('active');
+  </script>
   <footer>
     <p>&copy;Donald Danforth Plant Science Center 2014</p>
   </footer>
