@@ -1,34 +1,30 @@
-<div class="navbar navbar-inverse navbar-fixed-top">
-  <div class="navbar-inner">
-    <div class="container">
-      <button type="button" class="btn btn-navbar collapsed" data-toggle="collapse" data-target=".nav-collapse">
+<!--Static navbar-->
+<div class="navbar navbar-inverse navbar-static-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="sr-olnly">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="brand" href={{site.url}}>PlantCV</a>
-      <div class="nav-collapse collapse">
-        <ul class="nav">
-          <li class="nav">
+      <a class="navbar-brand" href={{site.url}}>PlantCV</a>
+    </div>
+    <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li>
             <a href={{site.url}}>Home</a>
           </li>
-          <li class="nav">
+          <li>
             <a href={{site.url}}/about>About</a>
           </li>
-          <li class="nav">
+          <li>
             <a href={{site.url}}/documentation>Documentation</a>
           </li>
-          <li class="nav">
+          <li>
             <a href="http://github.com/nfahlgren/plantcv">Download</a>
           </li>
         </ul>
       </div>
-      <!--<button type="button" class="btn btn-navbar pull-right">
-        <span class="icon-bar"></span>
-      </button>
-      <a href="https://github.com/nfahlgren/plantcv" class="btn">View on GitHub</a>-->
-    </div>
   </div>
 </div>
-
-
