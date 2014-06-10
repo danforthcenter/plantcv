@@ -1,6 +1,6 @@
 ---
 layout: default
-tile: Documentation
+title: Documentation
 ---
 
 # Documentation

@@ -1,6 +1,6 @@
 ---
 layout: default
-tile: About
+title: About
 ---
 
 # About
