@@ -1,4 +1,7 @@
 ---
 layout: default
-tile: About
+tile: Documentation
 ---
+
+# Documentation
+Coming soon.
