@@ -10,7 +10,6 @@ CREATE TABLE IF NOT EXISTS `runinfo` (
 CREATE TABLE IF NOT EXISTS `snapshots` (
   `image_id` INTEGER PRIMARY KEY,
   `run_id` INTEGER NOT NULL,
-  `snapshot_id` INTEGER NOT NULL,
   `plant_id` TEXT NOT NULL,
   `datetime` INTEGER NOT NULL,
   `camera` TEXT NOT NULL,
@@ -31,6 +30,7 @@ CREATE TABLE IF NOT EXISTS `vis_shapes` (
   `centroid_x` REAL NOT NULL,
   `centroid_y` REAL NOT NULL,
   `longest_axis` REAL NOT NULL,
+  `hull_vertices` INTEGER NOT NULL,
   `in_bounds` INTEGER NOT NULL
 );
 
@@ -51,13 +51,17 @@ CREATE TABLE IF NOT EXISTS `vis_colors` (
 CREATE TABLE IF NOT EXISTS `nir_shapes` (
   `image_id` INTEGER PRIMARY KEY,
   `area_raw` REAL NOT NULL,
+  `area_corrected` REAL NOT NULL,
   `hull_area` REAL NOT NULL,
   `solidity` REAL NOT NULL,
   `perimeter` REAL NOT NULL,
   `extent_x` INTEGER NOT NULL,
   `extent_y` INTEGER NOT NULL,
   `centroid_x` REAL NOT NULL,
-  `centroid_y` REAL NOT NULL
+  `centroid_y` REAL NOT NULL,
+  `longest_axis` REAL NOT NULL,
+  `hull_vertices` INTEGER NOT NULL,
+  `in_bounds` INTEGER NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `nir_signal` (
@@ -69,19 +73,27 @@ CREATE TABLE IF NOT EXISTS `nir_signal` (
 CREATE TABLE IF NOT EXISTS `flu_shapes` (
   `image_id` INTEGER PRIMARY KEY,
   `area_raw` REAL NOT NULL,
+  `area_corrected` REAL NOT NULL,
   `hull_area` REAL NOT NULL,
   `solidity` REAL NOT NULL,
   `perimeter` REAL NOT NULL,
   `extent_x` INTEGER NOT NULL,
   `extent_y` INTEGER NOT NULL,
   `centroid_x` REAL NOT NULL,
-  `centroid_y` REAL NOT NULL
+  `centroid_y` REAL NOT NULL,
+  `longest_axis` REAL NOT NULL,
+  `hull_vertices` INTEGER NOT NULL,
+  `in_bounds` INTEGER NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `flu_fvfm` (
   `image_id` INTEGER PRIMARY KEY,
   `bins` INTEGER NOT NULL,
-  `fvfm` TEXT NOT NULL
+  `fvfm_bins` TEXT NOT NULL,
+  `fvfm` TEXT NOT NULL,
+  `peak_bin` INTEGER NOT NULL,
+  `median` REAL NOT NULL,
+  `fdark_qc` INTEGER NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `analysis_images` (
@@ -101,7 +113,6 @@ CREATE TABLE IF NOT EXISTS `boundary_data` (
   `percent_below_bound_area` REAL NOT NULL
 );
 
-CREATE INDEX IF NOT EXISTS `snapshot_id` ON `snapshots` (`snapshot_id`);
 CREATE INDEX IF NOT EXISTS `plant_id` ON `snapshots` (`plant_id`);
 CREATE INDEX IF NOT EXISTS `datetime` ON `snapshots` (`datetime`);
 CREATE INDEX IF NOT EXISTS `image_id` ON `analysis_images` (`image_id`);

@@ -10,8 +10,10 @@ use FindBin qw($Bin);
 use Config::Tiny;
 use Time::Local;
 use POSIX qw(strftime);
+use Data::Dumper;
 
-my (%opt, $dir, $pipeline, $threads, $num,  @images, $image_dir, $sqldb, $type, %snapshots, %ids, $zoom_setting, $roi);
+my (%opt, $dir, $pipeline, $threads, $num, $image_dir, $sqldb, $type, %ids, $zoom_setting, $roi);
+our ($meta);
 my %is_valid = (
   'vis_sv' => 1,
   'vis_tv' => 1,
@@ -19,7 +21,7 @@ my %is_valid = (
   'nir_sv' => 1,
   'flu_tv' => 1
 );
-getopts('d:p:t:n:i:s:T:z:m:rch', \%opt);
+getopts('d:p:t:n:i:s:T:z:m:rcfh', \%opt);
 arg_check();
 
 ## Job start time
@@ -43,8 +45,11 @@ our $outlier_vs = 0;
 # Log files
 my $skipped_log = 'plantcv_skipped_images_'.$type.'_z'.$zoom_setting.'_'.$start_time.'.log';
 my $fail_log = 'plantcv_failed_images_'.$type.'_z'.$zoom_setting.'_'.$start_time.'.log';
+my $error_log = 'plantcv_errors_'.$type.'_z'.$zoom_setting.'_'.$start_time.'.log';
 open(SKIP, ">$skipped_log") or die "Cannot open file $skipped_log: $!\n\n";
 open(FAIL, ">$fail_log") or die "Cannot open file $fail_log: $!\n\n";
+open(ERROR, ">$error_log") or die "Cannot open file $error_log: $!\n\n";
+close ERROR;
 
 # Open temporary database files
 open(SNAP, ">$snapshot_tmp") or die "Cannot open file $snapshot_tmp: $!\n\n";
@@ -88,26 +93,29 @@ if ($opt{'c'}) {
   }
   # Create new database and initialize with template schema
   `sqlite3 $sqldb '.read $Bin/docs/results.sql'`;
+} else {
+	unless (-e $sqldb) {
+		arg_error("The database $sqldb does not exist and you did not ask to create it [-c].");
+		exit 1;
+	}
 }
 
 # Connect to the SQLite database
 my $dbh = DBI->connect("dbi:SQLite:dbname=$sqldb","","");
 ###########################################
 
-# Get last image, snapshot, and run entries
+# Get last image and run entries
 ###########################################
-foreach my $field ('image_id', 'snapshot_id') {
-  my $sth = $dbh->prepare("SELECT MAX(`$field`) as max FROM `snapshots`");
-  $sth->execute();
-  while (my $result = $sth->fetchrow_hashref) {
-    $ids{$field} = $result->{'max'};
-  }
-  if (!exists($ids{$field})) {
-    $ids{$field} = 0;
-  }
+my $sth = $dbh->prepare("SELECT MAX(`image_id`) as max FROM `snapshots`");
+$sth->execute();
+while (my $result = $sth->fetchrow_hashref) {
+  $ids{'image_id'} = $result->{'max'};
+}
+if (!exists($ids{'image_id'})) {
+  $ids{'image_id'} = 0;
 }
 
-my $sth = $dbh->prepare("SELECT MAX(`run_id`) as max FROM `runinfo`");
+$sth = $dbh->prepare("SELECT MAX(`run_id`) as max FROM `runinfo`");
 $sth->execute();
 while (my $result = $sth->fetchrow_hashref) {
   $ids{'run_id'} = $result->{'max'};
@@ -128,44 +136,61 @@ print RUN join("\t", @run)."\n";
 
 # Read image file names
 ###########################################
-opendir (DIR, $dir) or die "Cannot open directory $dir: $!\n\n";
-while (my $img = readdir(DIR)) {
-  next if (substr($img,0,1) eq '.');
-  
-  # The directory might contain many types of images
-  # Does this image match the input settings?
-  if ($img =~ /$type.+z$zoom_setting/i) {
-    push @images, $img;  
-  } else {
-    print SKIP $img."\n";
-  }
+if ($opt{'f'}) {
+	# Input directory is in flat format (single directory with images in it)
+	$meta = read_flat_image_dir($dir, $type, $zoom_setting);
+} else {
+	# Input directory is in snapshot format with subdirectories for each snapshot
+	$meta = read_snapshot_dir($dir, $type, $zoom_setting);
 }
-closedir DIR;
 ###########################################
 
 # Create job list
 ###########################################
 our @jobs;
-# Pipeline script prototype
-# img will be replaced by the actual image file path
-my @args = ('python', $pipeline, '-i', 'img', '-o', $image_dir);
-if ($roi) {
-	push @args, ('-m', $roi);
-}
-
 
 if ($opt{'r'}) {
   # For 1 to number of requested images
+	my @images = keys(%{$meta});
   for (my $n = 1; $n <= $num; $n++) {
-    my $random_image = $images[rand(@images)];
-    $args[3] = "'".$dir.'/'.$random_image."'";
-    push @jobs, join(' ', @args);
+		# Random image
+		my $random_image = $images[rand(@images)];
+		my $mdata = $meta->{$random_image};
+		if ($opt{'f'}) {
+			# Images are in one directory
+			my $job = job_builder($type, $pipeline, $image_dir, "'$dir/$random_image'", $roi);
+			push @jobs, $job;
+		} else {
+			if ($type eq 'flu_tv') {
+				# For FLU images the pipeline needs three frames
+				my ($fdark, $fmin, $fmax) = split /,/, $mdata->{'multi'};
+				my $job = flu_job_builder($type, $pipeline, $image_dir, "'$dir/snapshot$mdata->{'snapshot'}/$fdark.png'", "'$dir/snapshot$mdata->{'snapshot'}/$fmin.png'", "'$dir/snapshot$mdata->{'snapshot'}/$fmax.png'", $roi);
+				push @jobs, $job;
+			} else {
+				my $job = job_builder($type, $pipeline, $image_dir, "'$dir/snapshot$mdata->{'snapshot'}/$random_image.png'", $roi);
+				push @jobs, $job;
+			}
+		}
   }
 } else {
-  foreach my $img (@images) {
-    $args[3] = "'".$dir.'/'.$img."'";
-    push @jobs, join(' ', @args);
-  }
+	# For each snapshot
+	while (my ($img, $mdata) = each(%{$meta})) {
+		if ($opt{'f'}) {
+			# Images are in one directory
+			my $job = job_builder($type, $pipeline, $image_dir, "'$dir/$img'", $roi);
+			push @jobs, $job;
+		} else {
+			if ($type eq 'flu_tv') {
+				# For FLU images the pipeline needs three frames
+				my ($fdark, $fmin, $fmax) = split /,/, $mdata->{'multi'};
+				my $job = flu_job_builder($type, $pipeline, $image_dir, "'$dir/snapshot$mdata->{'snapshot'}/$fdark.png'", "'$dir/snapshot$mdata->{'snapshot'}/$fmin.png'", "'$dir/snapshot$mdata->{'snapshot'}/$fmax.png'", $roi);
+				push @jobs, $job;
+			} else {
+				my $job = job_builder($type, $pipeline, $image_dir, "'$dir/snapshot$mdata->{'snapshot'}/$img.png'", $roi);
+				push @jobs, $job;
+			}
+		}
+	}
 }
 ###########################################
 
@@ -193,14 +218,14 @@ while (threads->list(threads::running)) {
   while ($resultq->pending) {
     my $result = $resultq->dequeue();
     my @results = split /\n/, $result;
-    process_results(@results);
+    process_results($type, $zoom_setting, @results);
   }
   sleep 2;
 }
 while ($resultq->pending) {
   my $result = $resultq->dequeue();
   my @results = split /\n/, $result;
-  process_results(@results);
+  process_results($type, $zoom_setting, @results);
 }
 
 # Cleanup
@@ -233,7 +258,7 @@ if ($type =~ /vis/) {
   `sqlite3 -separator \$'\t' $sqldb '.import $nir_signal nir_signal'`;  
 } elsif ($type =~ /flu/) {
   `sqlite3 -separator \$'\t' $sqldb '.import $flu_shapes flu_shapes'`;  
-  `sqlite3 -separator \$'\t' $sqldb '.import $flu_signal flu_signal'`;  
+  `sqlite3 -separator \$'\t' $sqldb '.import $flu_signal flu_fvfm'`;  
 }
 ###########################################
 
@@ -247,42 +272,149 @@ exit;
 ################################################################################
 
 ########################################
-# Function: process
-#   Execute image processing jobs
+# Function: job_builder
+#   Builds a command string
 ########################################
-sub process {
-  while (my $job = $jobq->dequeue()) {
-    last if ($job eq 'EXIT');
-    my $result = $job."\n";
-    open JOB, "$job 2> /dev/null |" or die "Cannot execute job $job: $!\n\n";
-    while (my $data = <JOB>) {
-      $result .= $data;
-    }
-    close JOB;
-    $resultq->enqueue($result);
-  }
-  threads->detach();
+sub job_builder {
+	my $type = shift;
+	my $pipeline = shift;
+	my $image_dir = shift;
+	my $img = shift;
+	my $roi = shift;
+	
+	# Pipeline script prototype
+	# img will be replaced by the actual image file path
+	my @args = ('python', $pipeline, '-i', 'img', '-o', $image_dir);
+	if ($roi) {
+		push @args, ('-m', $roi);
+	}
+	
+	$args[3] = $img;
+	
+	return join(' ', @args);
 }
 
 ########################################
-# Function: process_results
+# Function: flu_job_builder
+#   Builds a command string for FLU pipelines
 ########################################
-sub process_results {
-  my @results = @_;
-  
-  # Job info
-  ###########################################
-  # Job
-  my $job = shift @results;
-  my @job = split /'/, $job;
-  my @image = split /\//, $job[1];
-  my $image = pop(@image);
-  my $path = join('/', @image);
-  ###########################################
-  
-  # Parse filename
+sub flu_job_builder {
+	my $type = shift;
+	my $pipeline = shift;
+	my $image_dir = shift;
+	my $fdark = shift;
+	my $fmin = shift;
+	my $fmax = shift;
+	my $roi = shift;
+	
+	# Pipeline script prototype
+	# img will be replaced by the actual image file path
+	my @args = ('python', $pipeline, '-i1', 'img', '-i2', 'img', '-i3', 'img', '-o', $image_dir);
+	if ($roi) {
+		push @args, ('-m', $roi);
+	}
+	
+	$args[3] = $fdark;
+	$args[5] = $fmin;
+	$args[7] = $fmax;
+	
+	return join(' ', @args);
+}
+
+########################################
+# Function: read_flat_image_dir
+#   Reads images from a single directory
+########################################
+sub read_flat_image_dir {
+	my $dir = shift;
+	my $type = shift;
+	my $zoom_setting = shift;
+	
+	my %meta;
+	opendir (DIR, $dir) or die "Cannot open directory $dir: $!\n\n";
+	while (my $img = readdir(DIR)) {
+		next if (substr($img,0,1) eq '.');
+		
+		# The directory might contain many types of images
+		# Does this image match the input settings?
+		if ($img =~ /$type.+z$zoom_setting/i) {
+			my ($plant_id, $datetime, $frame, $zoom) = parse_filename($img, $type, $zoom_setting);
+			$meta{$img}->{'plant_id'} = $plant_id;
+			$meta{$img}->{'datetime'} = $datetime;
+			$meta{$img}->{'frame'} = $frame;
+		} else {
+			print SKIP $img."\n";
+		}
+	}
+	closedir DIR;
+	return \%meta;
+}
+
+########################################
+# Function: read_flat_image_dir
+#   Reads images from a single directory
+########################################
+sub read_snapshot_dir {
+	my $dir = shift;
+	my $type = shift;
+	my $zoom_setting = shift;
+	
+	# For image name compatibility
+	$type =~ s/flu/fluo/;
+	
+	my %meta;
+	# Open snapshot metadata file
+	open(CSV, "$dir/SnapshotInfo.csv") or die "Cannot open $dir/SnapshotInfo.csv: #!\n\n";
+	# Shift off header
+	my $header = <CSV>;
+	while (my $line = <CSV>) {
+		chomp $line;
+		my ($snapshot_id, $plant_id, $car_id, $datetime, $weight_before, $weight_after, $water_vol, $completed, $measure_label, $tiles) = split /,/, $line;
+		my @tiles = split /;/, $tiles;
+		
+		# Check for the requested image files
+		my @matches = grep(/^$type.+z$zoom_setting/i, @tiles);
+		@matches = sort @matches;
+		# Build image meta object
+		if (@matches && $type eq 'fluo_tv') {
+			$meta{$matches[0]}->{'frame'} = 0;
+			$meta{$matches[0]}->{'plant_id'} = $plant_id;
+			$meta{$matches[0]}->{'datetime'} = $datetime;
+			$meta{$matches[0]}->{'snapshot'} = $snapshot_id;
+			$meta{$matches[0]}->{'multi'} = join(',', @matches);
+		} elsif (@matches) {
+			foreach my $tile (@matches) {
+				my @parts = split /_/, $tile;
+				my $frame = 0;
+				if ($parts[1] eq 'SV') {
+					$meta{$tile}->{'frame'} = $parts[2];
+				} else {
+					$meta{$tile}->{'frame'} = 0;
+				}
+				$meta{$tile}->{'plant_id'} = $plant_id;
+				$meta{$tile}->{'datetime'} = $datetime;
+				$meta{$tile}->{'snapshot'} = $snapshot_id;
+			}
+		}
+	}
+	
+	close CSV;
+	return \%meta;
+}
+
+########################################
+# Function: parse_filename
+#   Parses filenames from dbImportExport
+########################################
+sub parse_filename {
+	my $image = shift;
+	my $type = shift;
+	my $zoom_setting = shift;
+
+	# Parse filename
   ###########################################
   my ($id, $year, $month, $day_time, $label, $camera_label) = split /-/, $image;
+	$day_time =~ s/_/:/g;
   $camera_label =~ s/FLUO/FLU/i;
   $camera_label =~ s/\.png//;
   my @camera_parts = split /_/, $camera_label;
@@ -307,9 +439,65 @@ sub process_results {
     }
   }
   $zoom =~ s/z//i;
+	
+	return ($id, $year.'-'.$month.'-'.$day_time, $frame, $zoom);
+}
 
-  my ($day, $time) = split /\s/, $day_time;
-  my ($hour, $min, $sec) = split /_/, $time;
+########################################
+# Function: process
+#   Execute image processing jobs
+########################################
+sub process {
+  while (my $job = $jobq->dequeue()) {
+    last if ($job eq 'EXIT');
+    my $result = $job."\n";
+    open JOB, "$job 2>> $error_log |" or die "Cannot execute job $job: $!\n\n";
+    while (my $data = <JOB>) {
+      $result .= $data;
+    }
+    close JOB;
+    $resultq->enqueue($result);
+  }
+  threads->detach();
+}
+
+########################################
+# Function: process_results
+########################################
+sub process_results {
+	my $camera = shift;
+	my $zoom = shift;
+  my @results = @_;
+  
+  # Job info
+  ###########################################
+  # Job
+  my $job = shift @results;
+  my @job = split /'/, $job;
+  my @image = split /\//, $job[1];
+  my $image = pop(@image);
+	if (!$opt{'f'}) {
+		$image =~ s/\.png//;	
+	}
+  my $path = join('/', @image);
+  ###########################################
+  
+  # Process attributes
+  ###########################################
+	my $plant_id = $meta->{$image}->{'plant_id'};
+	my $datetime = $meta->{$image}->{'datetime'};
+	my $frame = $meta->{$image}->{'frame'};
+	my @multi;
+	if ($camera eq 'flu_tv') {
+		@multi = split /,/, $meta->{$image}->{'multi'};
+		for (my $i = 0; $i < scalar(@multi); $i++) {
+			$multi[$i] = $path.'/'.$multi[$i].'.png';
+		}
+	}
+	my ($date, $time) = split /\s/, $datetime;
+	my ($year, $month, $day) = split /-/, $date;
+	my ($hour, $min, $sec) = split /:/, $time;
+
   # Time since Unix Epoch
 	# For timelocal months are coded 0-11, so reduce month by 1
 	$month--;
@@ -321,17 +509,12 @@ sub process_results {
   # New image ID
   $ids{'image_id'}++;
   my $image_id = $ids{'image_id'};
-  # Snapshot ID
-  my $snapshot_id;
-  if (exists($snapshots{$id}->{$epoch_time})) {
-    $snapshot_id = $snapshots{$id}->{$epoch_time};
-  } else {
-    # New snapshot ID
-    $ids{'snapshot_id'}++;
-    $snapshot_id = $ids{'snapshot_id'};
-    $snapshots{$id}->{$epoch_time} = $snapshot_id;
-  }
-  my @snap = ($image_id, $ids{'run_id'}, $snapshot_id, $id, $epoch_time, $camera, $frame, $zoom, "$path/$image");
+	my @snap;
+	if ($camera eq 'flu_tv') {
+		@snap = ($image_id, $ids{'run_id'}, $plant_id, $epoch_time, $camera, $frame, $zoom, join(',', @multi));
+	} else {
+		@snap = ($image_id, $ids{'run_id'}, $plant_id, $epoch_time, $camera, $frame, $zoom, "$path/$image.png");
+	}
   ###########################################
 
 	my $success = 0;
@@ -359,8 +542,10 @@ sub process_results {
 			my @signal;
 			if ($type =~ /vis/) {
 				@signal = color_results($line, $data);
-			} else {
-				@signal = signal_results($line, $data);
+			} elsif ($type =~ /nir/) {
+				@signal = nir_results($line, $data);
+			} elsif ($type =~ /flu/) {
+				@signal = flu_results($line, $data);
 			}
 			
 			unshift(@signal, $image_id);
@@ -412,6 +597,7 @@ sub shape_results {
   my $centroid_x = $data[$ci->{'center-of-mass-x'}];
   my $centroid_y = $data[$ci->{'center-of-mass-y'}];
   my $longest_axis = $data[$ci->{'longest_axis'}];
+	my $vertices = $data[$ci->{'hull_vertices'}];
   my $in_bounds = $data[$ci->{'in_bounds'}];
   
   # Zoom calibration: Note that TV correction has to be done during analysis
@@ -420,7 +606,7 @@ sub shape_results {
   }
   
   my @shape = ($area_raw, $area_corrected, $hull_area, $solidity, $perimeter,
-               $extent_x, $extent_y, $centroid_x, $centroid_y, $longest_axis, $in_bounds
+               $extent_x, $extent_y, $centroid_x, $centroid_y, $longest_axis, $vertices, $in_bounds
               );
   return @shape;
 }
@@ -481,10 +667,10 @@ sub color_results {
 }
 
 ########################################
-# Function: signal_results
-#   Process signal results
+# Function: nir_results
+#   Process NIR reflectance results
 ########################################
-sub signal_results {
+sub nir_results {
   my $header = shift;
   my $data = shift;
   
@@ -497,6 +683,31 @@ sub signal_results {
   my $signal = $data[$ci->{'signal'}];
   
   my @signal = ($bins, $signal);
+  
+  return @signal;
+}
+
+########################################
+# Function: flu_results
+#   Process NIR reflectance results
+########################################
+sub flu_results {
+  my $header = shift;
+  my $data = shift;
+  
+  $data =~ s/[\[\]]//g;
+  $data =~ s/, /,/g;
+  my @data = split /\t/, $data;
+  my $ci = column_index($header);
+  
+  my $bins = $data[$ci->{'bin-number'}];
+	my $fvfm_bins = $data[$ci->{'fvfm_bins'}];
+  my $fvfm = $data[$ci->{'fvfm_hist'}];
+	my $peak = $data[$ci->{'fvfm_hist_peak'}];
+	my $median = $data[$ci->{'fvfm_median'}];
+	my $qc = $data[$ci->{'fdark_passed_qc'}];
+  
+  my @signal = ($bins, $fvfm_bins, $fvfm, $peak, $median, $qc);
   
   return @signal;
 }
@@ -578,10 +789,18 @@ sub arg_check {
   if ($opt{'z'}) {
     $zoom_setting = $opt{'z'};
   } else {
-    $zoom_setting = 0;
+    arg_error("A camera zoom setting is required!");
   }
 	if ($opt{'m'}) {
 		$roi = $opt{'m'};
+	} elsif ($type eq 'vis_tv' || $type eq 'flu_tv') {
+		arg_error("$type pipelines require an ROI image!");
+	}
+	if (!$opt{'f'}) {
+		# Does the snapshot metadata file exist?
+		unless (-e "$dir/SnapshotInfo.csv") {
+			arg_error("The snapshot metadata file SnapshotInfo.csv does not exist in $dir. Perhaps you did not mean to use the -f option?");
+		}
 	}
 }
 
@@ -595,16 +814,17 @@ sub arg_error {
     print STDERR $error."\n";
   }
   my $usage = "
-usage: image_analysis.pl -d DIR -p PIPELINE -t TYPE -s DB [-z ZOOM] [-i DIR] [-T THREADS] [-r] [-n NUM] [-c] [-h]
+usage: image_analysis.pl -d DIR [-f] -p PIPELINE -t TYPE -s DB -z ZOOM [-i DIR] [-T THREADS] [-r] [-n NUM] [-c] [-m ROI] [-h]
 
 Multi-threaded execution of a plantcv image processing pipeline with
 specific or randomly selected images.
 
 arguments:
-  -d DIR                Input directory containing images.
+  -d DIR                Input directory containing images or snapshots.
+  -f                    Input directory format is flat (directory of images). Default behavior expects a directory of snapshot folders and CSV metafile.
   -p PIPELINE           Pipeline script file.
   -t TYPE               Pipeline type (vis_sv, vis_tv, nir_sv, nir_tv, flu_tv).
-  -z ZOOM               Optional camera zoom setting (INTEGER).
+  -z ZOOM               Camera zoom setting (INTEGER).
   -s DB                 SQLite database file name.
   -i DIR                Output directory for images. Not required by all pipelines, Default = cwd;
   -T THREADS            Number of threads/CPU to use. Default = 1.
@@ -612,8 +832,8 @@ arguments:
   -n NUM                Number of random images to test. Only used with -r. Default = 10.
   -c                    Create output database (SQLite). Default behaviour adds to existing database.
                         Warning: activating this option will delete an existing database!
-  -m ROI                ROI/mask image. Required by some pipelines.
-  -h, --help            show this help message and exit
+  -m ROI                ROI/mask image. Required by some pipelines (vis_tv, flu_tv).
+  -h                    Show this help message and exit
 
   ";
   print STDERR $usage;

@@ -960,6 +960,13 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     caliper_mid_x, caliper_mid_y=[int(cmx),int(cmy)]
     
     #caliper_points=np.array([caliper_max, caliper_mid])
+    #[vx,vy,x1,y1] = cv2.fitLine(caliper_points,cv2.cv.CV_DIST_L2,0,0.01,0.01)
+    #lefty = int(((-x1*vy)/vx) + y1)
+    #righty = int(((mask.shape[1]-x1)*vy/vx)+y1)
+    #cv2.line(background1,(mask.shape[1]-1,righty),(0,lefty),(255),1)
+    #ret1,line_binary = cv2.threshold(background1, 0, 255, cv2.THRESH_BINARY)
+    #print_image(line_binary,(str(device)+'_caliperfit.png'))
+    #
     
     if caliper_max_y<caliper_mid_y:
       xdiff = caliper_max_x-caliper_mid_x
@@ -990,16 +997,6 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     caliper_matrix=np.vstack((caliper_x,caliper_y))
     caliper_transpose=np.transpose(caliper_matrix)
     caliper_length=len(caliper_transpose)
-    
-    
-    #[vx,vy,x1,y1] = cv2.fitLine(caliper_points,cv2.cv.CV_DIST_L2,0,0.01,0.01)
-    #lefty = int(((-x1*vy)/vx) + y1)
-    #righty = int(((mask.shape[1]-x1)*vy/vx)+y1)
-    #cv2.line(background1,(mask.shape[1]-1,righty),(0,lefty),(255),1)
-    #ret1,line_binary = cv2.threshold(background1, 0, 255, cv2.THRESH_BINARY)
-    #print_image(line_binary,(str(device)+'_caliperfit.png'))
-    #
-
 
   else:
     hull_area, solidity, perimeter, width, height, cmx, cmy = 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND'
