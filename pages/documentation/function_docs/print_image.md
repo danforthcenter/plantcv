@@ -18,14 +18,16 @@ Write image to the file specified. This is a wrapper for the OpenCV function [im
   - Often used to debug new image processing pipelines  
   - Used to write out final results images  
 
-- **Example use:**  
+- **Example use:**
+
+   - [Use In Tutorial]()  
   
    ```python
     import plantcv as pcv      
     pcv.print_image(img,"home/malia/images/test-image.png")
   ```
   
-   - [Use In Tutorial]()  
+
 
    
 
