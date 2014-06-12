@@ -112,7 +112,9 @@ def main():
  
   # Decide which objects to keep and combine with objects overlapping with black bars
   device,roi_objects3, hierarchy3, kept_mask3, obj_area1 = pcv.roi_objects(img,'cutto',roi3,roi_hierarchy3,id_objects3,obj_hierarchy3,device, args.debug)
-  device, kept_mask4 = pcv.logical_or(ab_cnt3, kept_mask3, device, args.debug)
+  device, kept_mask4_1 = pcv.logical_or(ab_cnt3, kept_mask3, device, args.debug)
+  device, kept_cnt = pcv.logical_or(ab_cnt3, kept_mask3, device, args.debug)
+  device, kept_mask4 = pcv.fill(kept_mask4_1, kept_cnt, 200, device, args.debug)
   device, masked5 = pcv.apply_mask(masked2, kept_mask4, 'white', device, args.debug)
   device, id_objects4,obj_hierarchy4 = pcv.find_objects(masked5, kept_mask4, device, args.debug)
   device, roi4, roi_hierarchy4= pcv.define_roi(masked2,'rectangle', device, None, 'default', args.debug,False, 0, 0,0,0)

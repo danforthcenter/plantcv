@@ -12,6 +12,7 @@ from matplotlib import cm as cm
 from matplotlib import colors as colors
 from matplotlib import colorbar as colorbar
 import pylab as pl
+from math import atan2,degrees
 
 ### Error handling
 def fatal_error(error):
@@ -942,6 +943,7 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     center_p = cv2.cvtColor(background, cv2.COLOR_BGR2GRAY)
     ret,centerp_binary = cv2.threshold(center_p, 0, 255, cv2.THRESH_BINARY)
     centerpoint,cpoint_h = cv2.findContours(centerp_binary,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+
     
     dist=[]
     vhull=np.vstack(hull)
@@ -954,24 +956,35 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     abs_dist=np.absolute(dist)
     max_i=np.argmax(abs_dist)
     
-    caliper_max=list(tuple(vhull[max_i]))
-    caliper_mid=[int(cmx),int(cmy)]
+    caliper_max_x, caliper_max_y=list(tuple(vhull[max_i]))
+    caliper_mid_x, caliper_mid_y=[int(cmx),int(cmy)]
     
-    caliper_points=np.array([caliper_max, caliper_mid])
+    #caliper_points=np.array([caliper_max, caliper_mid])
     
-    [vx,vy,x1,y1] = cv2.fitLine(caliper_points,cv2.cv.CV_DIST_L2,0,0.01,0.01)
-    lefty = int((-x1*vy/vx) + y1)
-    righty = int(((mask.shape[1]-x1)*vy/vx)+y1)
-    cv2.line(background1,(mask.shape[1]-1,righty),(0,lefty),(255),1)
+    if caliper_max_y<caliper_mid_y:
+      xdiff = caliper_max_x-caliper_mid_x
+      ydiff= caliper_max_y-caliper_mid_y
+      slope=ydiff/xdiff
+      b_line=caliper_mid_y-(slope*caliper_mid_x)
+
+    else:
+      xdiff= caliper_mid_x-caliper_max_x
+      ydiff= caliper_mid_y-caliper_max_y
+      slope=ydiff/xdiff
+      b_line=caliper_max_y-(slope*caliper_max_x)
+    
+    xintercept=(-b_line/slope)
+    xintercept1=(iy-b_line)/slope
+    cv2.line(background1,(xintercept1,iy),(xintercept,0),(255),1)
     ret1,line_binary = cv2.threshold(background1, 0, 255, cv2.THRESH_BINARY)
-    #print_image(line_binary,(str(device)+'_caliperfit.png'))
-    
+    print_image(line_binary,(str(device)+'_caliperfit.png'))
+
     cv2.drawContours(background2, [hull], -1, (255), -1)
     ret2,hullp_binary = cv2.threshold(background2, 0, 255, cv2.THRESH_BINARY)
-    #print_image(hullp_binary,(str(device)+'_hull.png'))
+    print_image(hullp_binary,(str(device)+'_hull.png'))
     
     caliper=cv2.multiply(line_binary,hullp_binary)    
-    #print_image(caliper,(str(device)+'_caliperlength.png'))
+    print_image(caliper,(str(device)+'_caliperlength.png'))
     
     caliper_y,caliper_x=np.array(caliper.nonzero())
     caliper_matrix=np.vstack((caliper_x,caliper_y))
@@ -979,6 +992,15 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     caliper_length=len(caliper_transpose)
     
     
+    #[vx,vy,x1,y1] = cv2.fitLine(caliper_points,cv2.cv.CV_DIST_L2,0,0.01,0.01)
+    #lefty = int(((-x1*vy)/vx) + y1)
+    #righty = int(((mask.shape[1]-x1)*vy/vx)+y1)
+    #cv2.line(background1,(mask.shape[1]-1,righty),(0,lefty),(255),1)
+    #ret1,line_binary = cv2.threshold(background1, 0, 255, cv2.THRESH_BINARY)
+    #print_image(line_binary,(str(device)+'_caliperfit.png'))
+    #
+
+
   else:
     hull_area, solidity, perimeter, width, height, cmx, cmy = 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND'
       
@@ -1023,7 +1045,7 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     in_bounds
     )
       
-  # Draw properties
+   #Draw properties
   if area and filename:
     cv2.drawContours(ori_img, obj, -1, (255,0,0), 2)
     cv2.drawContours(ori_img, [hull], -1, (0,0,255), 3)
@@ -1041,8 +1063,8 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     cv2.drawContours(ori_img, [hull], -1, (0,0,255), 3)
     cv2.line(ori_img, (x,y), (x+width,y), (0,0,255), 3)
     cv2.line(ori_img, (int(cmx),y), (int(cmx),y+height), (0,0,255), 3)
-    cv2.line(ori_img,(tuple(caliper_transpose[caliper_length-1])),(tuple(caliper_transpose[0])),(0,0,255),3)
     cv2.circle(ori_img, (int(cmx),int(cmy)), 10, (0,0,255), 3)
+    cv2.line(ori_img,(tuple(caliper_transpose[caliper_length-1])),(tuple(caliper_transpose[0])),(0,0,255),3)
     print_image(ori_img,(str(device)+'_shapes.png'))
  
   return device, shape_header, shape_data, ori_img

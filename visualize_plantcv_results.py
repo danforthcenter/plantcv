@@ -109,7 +109,7 @@ def dict_factory(cursor, row):
         d[col[0]] = row[idx]
     return d
 
-def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',channels='rgb',average_angles='on',spacer='on', write_txt='no',makefig='yes'):
+def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',channels='rgb',average_angles='on',spacer='on', write_txt='no',makefig='yes', cat_treat='yes'):
   #sqlitedb = sqlite database to query (path to db)
   #outdir = path to outdirectory
   #camera_type='vis','nir' or 'fluor'
@@ -118,7 +118,9 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
   #average_angles = if on side angles for a plant are averaged
   #spacer = either 'on' or 'off', adds a white line between day breaks
   #makefig = either 'yes' or 'no', adds labels to days and a title
+  #cat_treat = either 'yes','no',or 'all', if yes concatenates figures by treatment, if all all slice plots are put together, this only works properly if plots are roughly similar in size
   
+  # Makes folder in specified directory for the slice figures and images
   i=datetime.now()
   timenow=i.strftime('%m-%d-%Y_%H:%M:%S')
   newfolder="slice_figs_and_images_"+(str(timenow))
@@ -126,6 +128,7 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
   os.mkdir((str(outdir)+newfolder))
   outdir_name=str(outdir)+str(newfolder)+"/"
   
+  # Connect to sqlite database
   connect=sq.connect(sqlitedb)
   connect.row_factory = dict_factory
   connect.text_factory=str
@@ -133,9 +136,11 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
   h = connect.cursor()
   m = connect.cursor()
   
+  # Find first day of experiment, this is needed to calculate the days in integer values instead of epoch time
   for date in c.execute('select min(datetime) as first from snapshots'):
     firstday=date['first']
-    
+  
+  # Query database to get plant ids
   if signal_type=='vis':
     signal=c.execute('select * from snapshots inner join vis_colors on snapshots.image_id =vis_colors.image_id order by plant_id asc')
   elif signal_type=='nir':
@@ -144,9 +149,13 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
     signal=c.execute('select * from snapshots inner join flu_signal on snapshots.image_id =flu_signal.image_id order by plant_id asc')
   
   barcode_array=[]
+  group_id=[]
+  just_id=[]
   ch1_total_array=[]
   ch2_total_array=[]
   ch3_total_array=[]
+  
+  # find unique ids so that angles can be averaged
   
   for i, group in enumerate(signal):
     bins=int(group['bins'])
@@ -154,6 +163,7 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
     barcode_array.append(plant_id,)
   barcode_unique=np.unique(barcode_array)
 
+  # slices can be made from color histogram data or from fluor/nir signal histogram data stored in the database
   if channels=='rgb':
     channel1='blue'
     channel2='green'
@@ -170,6 +180,8 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
     channel1='signal'
     channel2='signal'
     channel3='signal'
+  
+  # Make first lines of empty arrays the header titles
   
   ch1_headers=[]
   ch2_headers=[]
@@ -202,6 +214,8 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
       b="fluor_bin_"+str(bn)
       ch1_headers.append(b)
   
+  # Initialize the txt files which are compatible with imput into R
+  
   if write_txt=='yes':
     if signal_type=='vis':
       header1_fin=','.join(map(str,ch1_headers))
@@ -226,6 +240,8 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
       os.write(signal_file1, header1_fin)
       os.write(signal_file1, os.linesep)
   
+  # For each plant id find the unique timestamp, this will be used to group snapshot angles
+  
   for barcode_label in barcode_unique: 
     time_array=[]
     if signal_type=='vis':
@@ -239,6 +255,8 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
       date=(t['datetime'])          
       time_array.append(date,)
     unique_time=np.unique(time_array)
+  
+  # For each unique time grab the histogram data and either use each individual angle or averaged angles
     
     for time in unique_time:
       dim1_all=[]
@@ -366,6 +384,8 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
           os.write(signal_file1, os.linesep)
           os.write(signal_file2, os.linesep)
           os.write(signal_file3, os.linesep)
+  
+  # If you want text including, the day (y-axis) and plant genotype/treatment to be included in a figure, each genotype/treatment is an individual plot
 
   if makefig=='yes':  
     id_array=[]
@@ -373,6 +393,8 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
     sort_ch1= np.array(ch1_total_array)
     sort_ch2= np.array(ch2_total_array)
     sort_ch3= np.array(ch3_total_array)
+    
+    # Sort the arrays by day and find the unique days
     sorted_ch1 =sort_ch1[sort_ch1[:,0].argsort()]
     sorted_ch2 =sort_ch2[sort_ch2[:,0].argsort()]
     sorted_ch3 =sort_ch3[sort_ch3[:,0].argsort()]
@@ -393,6 +415,7 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
           sorted_ch2_final.append(sorted_ch2[i])
           sorted_ch3_final.append(sorted_ch3[i])
         
+    # Find each unique plant treatment
     for i,data in enumerate(sorted_ch1_final):
       plant_treat=sorted_ch1_final[i][1]
       date_val=sorted_ch1_final[i][0]
@@ -408,6 +431,7 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
         id_array.append(plantgeno_id)
     unique_id=np.unique(id_array)
     
+    # Build the slice figure by adding the data of each geno-treatment to an array
     for name in unique_id:
       ch1_all=[]
       ch2_all=[]
@@ -445,6 +469,8 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
           ch1_day.append(day)
           ch2_day.append(day)
           ch3_day.append(day)
+      
+      # if the spacer is off just stack the data 5 lines high
       if spacer=='off':
         for c,d in enumerate(ch1_all):
           if signal_type=='vis':
@@ -506,7 +532,8 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
           else:
             y1=y+ypos1[i-1]
             ypos1.append(y1)
-        
+      
+      # If the spacer is on stack the data and add a spacer of blank lines between each day
       if spacer=='on':
         for c,d in enumerate(ch1_all):
           if c==0:
@@ -592,7 +619,7 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
       
         
         color_cat=np.dstack((ch1_fig,ch2_fig,ch3_fig))
-        fig_name=str(str(outdir)+str(newfolder)+"/"+str(name)+"_"+str(camera_label)+"_"+str(channels)+"_averaging_"+str(average_angles)+"_spacer_"+str(spacer)+"_slice_joined_img.svg")
+        fig_name=str(str(outdir)+str(newfolder)+"/"+str(name)+"_"+str(camera_label)+"_"+str(channels)+"_averaging_"+str(average_angles)+"_spacer_"+str(spacer)+"_slice_joined_img.png")
         print fig_name
         pcv.print_image(color_cat,(fig_name))
         
@@ -639,7 +666,8 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
       if len(np.shape(img1))==3: 
         ch1,ch2,ch3=np.dsplit(img1,3)
       img=np.dstack((ch3,ch2,ch1))
-      
+          
+      matplotlib.use('SVG')
       plt.imshow(img)
       ax = plt.subplot(111)
       ax.set_ylabel('Days', size=10)
@@ -661,551 +689,127 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
       print fig_name1
       plt.savefig(fig_name1, dpi=300, bbox_inches='tight')
       plt.clf()
+      
+      name_array=[]
+      
+      fig_name2=str(fig_name)
+      name_array=fig_name2.split("/")
+      g=re.match('^([A-Z][a-zA-Z]\d*)',name_array[-1])
+      gt=re.match('^([A-Z][a-zA-Z]\d*[A-Z]{2})',name_array[-1])
+      if g!=None and gt!=None:
+        span1,span2=gt.span()
+        span3,span4=g.span()
+        name1=name_array[-1]
+        geno=name1[span3:span4]
+        genotreat=name1[span1:span2]
+        just_id.append(geno)
+        group_id.append((geno,genotreat,ypos1,unique_time1,fig_name))
+      elif g==None or gt==None:
+        name1=name_array[-1]
+        geno=name1
+        genotreat=name1
+        just_id.append(geno)
+        group_id.append(genotreat)
+        
+  if cat_treat=='yes':
+    unique_just_id=np.unique(just_id)
+    for unique in unique_just_id:
+      group_name=[]
+      group_y=[]
+      group_time=[]
+      group_paths=[]
+      for i,data in enumerate(group_id):
+        if unique==data[0]:
+          group_name.append(data[1])
+          group_y.append(data[2])
+          group_time.append(data[3])
+          group_paths.append(data[4])
+      x=len(group_paths)
+      length=np.array((np.arange(0,x, step=1)))
+      length1=length+1
+      matplotlib.use('SVG')
+      f = plt.figure()
+      for n, fname in enumerate((group_paths)):
+          image=im.open(fname)
+          arr=np.asarray(image)
+          f.add_subplot(x, 1, n)  # this line outputs images on top of each other
+          ax = plt.subplot(x,1,n)
+          ax.set_ylabel('Days', size=10)
+          ax.set_yticks(group_y[n])
+          ax.set_yticklabels(group_time[n],size=5)
+          ax.set_title(group_name[n], size=10)
+          ax.yaxis.tick_left()
+          ax.set_xticks([0,255])
+          ax.set_xticklabels([0,255],size=5)
+          #for t in ax.yaxis.get_ticklines(): t.set_color('white')
+          #for t in ax.xaxis.get_ticklines(): t.set_color('white')
+          for line in ax.get_xticklines() + ax.get_yticklines(): line.set_alpha(0)
+          ax.spines['bottom'].set_color('none')
+          ax.spines['top'].set_color('none')
+          ax.spines['left'].set_color('none')
+          ax.spines['right'].set_color('none')
+          plt.subplots_adjust()
+          plt.imshow(arr)
+      fig_name3=(str(outdir)+str(newfolder)+"/"+str(unique)+"_"+str(camera_label)+"_"+str(channels)+"_averaging_"+str(average_angles)+"_spacer_"+str(spacer)+"_slice_grouped_figure.svg")
+      plt.savefig(fig_name3)
+      plt.clf()
+      
+  elif cat_treat=='all':
+    group_name=[]
+    group_y=[]
+    group_time=[]
+    group_paths=[]
+    height=[]
+    unique_just_id=np.unique(just_id)
+    for unique in unique_just_id:
+      for i,data in enumerate(group_id):
+        if unique==data[0]:
+          group_name.append(data[1])
+          group_y.append(data[2])
+          group_time.append(data[3])
+          group_paths.append(data[4])
+      x=len(group_paths)
+      length=np.array((np.arange(0,x, step=1)))
+      length1=length+1
+      matplotlib.use('SVG')
+      f = plt.figure()
+    for n, fname in enumerate((group_paths)):
+        image=im.open(fname)
+        arr=np.asarray(image)
+        f.add_subplot(x, 1, n)  # this line outputs images on top of each other
+        ax = plt.subplot(x,1,n)
+        ax.set_ylabel('Days', size=10)
+        ax.set_yticks(group_y[n])
+        ax.set_yticklabels(group_time[n],size=5)
+        ax.set_title(group_name[n], size=10)
+        ax.yaxis.tick_left()
+        ax.set_xticks([0,255])
+        ax.set_xticklabels([0,255],size=5)
+        #for t in ax.yaxis.get_ticklines(): t.set_color('white')
+        #for t in ax.xaxis.get_ticklines(): t.set_color('white')
+        for line in ax.get_xticklines() + ax.get_yticklines(): line.set_alpha(0)
+        ax.spines['bottom'].set_color('none')
+        ax.spines['top'].set_color('none')
+        ax.spines['left'].set_color('none')
+        ax.spines['right'].set_color('none')
+        plt.subplots_adjust()
+        plt.imshow(arr)
+        figheight=f.get_figheight()
+        height.append(figheight)
+    sumheight=np.sum(height)
+    print sumheight
+    #plt.set_figheight(figheight)
+    fig_name3=(str(outdir)+str(newfolder)+"/"+"ALL_SAMPLES_"+str(camera_label)+"_"+str(channels)+"_averaging_"+str(average_angles)+"_spacer_"+str(spacer)+"_slice_grouped_figure.svg")
+    plt.savefig(fig_name3)
+    plt.clf
   
   if write_txt=='yes':
     os.close(signal_file1)
     os.close(signal_file2)
     os.close(signal_file3)     
-
+  
   return outdir_name
 
-def cat_fig(outdir,img_dir_name):
-# outdir = outdir to put the images into
-# im_dir_name = path to the images
-
-  i=datetime.now()
-  timenow=i.strftime('%m-%d-%Y_%H:%M:%S')
-  newfolder="concatenated_slice_figs_"+(str(timenow))
-  
-  os.mkdir((str(outdir)+newfolder))
-  
-  path=str(img_dir_name)
-  opendir=os.listdir(path)
-
-  slice_fig_path=[]
-  treat_array=[]
-  geno_treat=[]
-
-  for filename in opendir:
-    if re.search("_slice_joined_figure\.png$",filename):
-      slice_fig=str(filename)
-      slice_fig_path.append(slice_fig)
-  for fig in slice_fig_path:
-    gt=re.match('^([A-Z][a-zA-Z]\d*[A-Z]{2})',fig)
-    if gt!=None:
-      t=re.match('^([A-Z][a-zA-Z]\d*)',fig)
-      span1,span2=gt.span()
-      span3,span4=t.span()
-      geno_id=fig[span1:span2]
-      treat=fig[span3:span4]
-      fig_path=str(path)+str(fig)
-      info_array=(treat,geno_id,fig_path)
-      treat_array.append(treat)
-      geno_treat.append(info_array)
-  
-  path_info=np.array(geno_treat)
-  treat_array1=np.array(treat_array)
-  unique_treat=np.unique(treat_array1)
-  unique_id=np.unique(geno_id)
-  
-  for t in unique_treat:
-    cat=[]
-    id1=[]
-    width=[]
-    height=[]
-    ch1_norm=[]
-    ch2_norm=[]
-    ch3_norm=[]
-    for i,p in enumerate(path_info):
-      if p[0]==t:
-        path_cat=p[2]
-        i1=p[1]
-        cat.append(path_cat)
-        id1.append(i1)
-    x=len(cat)    
-    f = plt.figure()
-    for n, fname in enumerate(cat):
-      image=cv2.imread(fname)
-      h,w,z=np.shape(image)
-      width.append(w)
-      height.append(h)
-    avg_width=np.average(width)
-    
-    norm_factor=[]
-    
-    for i,wd in enumerate(width):
-      norm=float(avg_width/wd)
-      norm_factor.append(norm)
-    
-    resized_fig=[]
-    for i, fname in enumerate(cat):
-      x=len(cat)
-      image1=cv2.imread(fname)
-      f=float(norm_factor[i])
-      if f<1:
-        newim=cv2.resize(image1,None,fx=f,fy=f,interpolation = cv2.INTER_AREA)
-      else:
-        newim=cv2.resize(image1,None,fx=f,fy=f,interpolation = cv2.INTER_CUBIC)
-      fig_name1=(str(outdir)+str(newfolder)+"/"+str(id1[i])+"_slice_figure_resized.png")
-      resized_fig.append(fig_name1)
-      pcv.print_image(newim,fig_name1)
-      
-
-def slice_stitch(sqlitedb, outdir, camera_label='vis_sv', spacer='on',makefig='yes'):
-  #sqlitedb = sqlite database to query (path to db)
-  #outdir = path to outdirectory
-  #camera_label = either 'vis_tv','vis_sv',or 'fluor_tv'
-  #spacer = either 'on' or 'off', adds a white line between day breaks
-  #makefig = either 'yes' or 'no', adds labels to days and a title
-
-  i=datetime.now()
-  timenow=i.strftime('%m-%d-%Y_%H:%M:%S')
-  newfolder="slice_analysis_"+(str(timenow))
-  
-  os.mkdir((str(outdir)+newfolder))
-  
-  connect=sq.connect(sqlitedb)
-  connect.row_factory = dict_factory
-  connect.text_factory=str
-  c = connect.cursor()
-  h = connect.cursor()
-  m = connect.cursor()
-  k = connect.cursor()
-
-  id_array=[]
-  path_array=[]
-  unique_array=[]
-  
-  
-  for date in c.execute('select min(datetime) as first from snapshots'):
-    firstday=date['first']
-  
-  for i, group in enumerate(m.execute('select * from snapshots inner join analysis_images on snapshots.image_id = analysis_images.image_id where type = "slice" order by plant_id asc')):
-    plant_id=group['plant_id']
-    plantgeno=re.match('^([A-Z][a-zA-Z]\d*[A-Z]{2})',plant_id)
-    if plantgeno==None:
-      plantgeno_id=group['plant_id']
-      id_array.append(plantgeno_id,)
-    else:
-      span1,span2=plantgeno.span()
-      plantgeno_id=group['plant_id'][span1:span2]
-      id_array.append(plantgeno_id,)
-  id_unique=np.unique(id_array)
-  
-  if spacer=='on':
-    for group_label in id_unique:
-      ch1=[]
-      ch2=[]
-      ch3=[]
-      time_array=[]
-      for i, data in enumerate(h.execute('select * from snapshots inner join analysis_images on snapshots.image_id = analysis_images.image_id where plant_id like ? and type = "slice" and camera=? order by datetime asc', ("%"+group_label+"%",camera_label,))):
-        date_int=((data['datetime']-firstday)/86400) 
-        time_array.append(date_int)
-      for i, data in enumerate(k.execute('select * from snapshots inner join analysis_images on snapshots.image_id = analysis_images.image_id where plant_id like ? and type = "slice" and camera=? order by datetime asc', ("%"+group_label+"%",camera_label,))): 
-        if i==0:
-          line1=cv2.imread(data['image_path'])
-          split1, split2, split3=np.dsplit(line1,3)
-          split1_f=split1.flatten()
-          split2_f=split2.flatten()
-          split3_f=split3.flatten()
-          
-          stacked_1=np.column_stack((split1_f,split1_f, split1_f, split1_f, split1_f))
-          stacked_2=np.column_stack((split2_f,split2_f, split2_f, split2_f, split2_f))
-          stacked_3=np.column_stack((split3_f,split3_f, split3_f, split3_f, split3_f)) 
-          stacked_1t=np.transpose(stacked_1)
-          stacked_2t=np.transpose(stacked_2)
-          stacked_3t=np.transpose(stacked_3)
-        
-          ch1.extend(stacked_1t)
-          ch2.extend(stacked_2t)
-          ch3.extend(stacked_3t)
-        elif time_array[i-1]==time_array[i]:
-          line1=cv2.imread(data['image_path'])
-          split1, split2, split3=np.dsplit(line1,3)
-          
-          split1_f=split1.flatten()
-          split2_f=split2.flatten()
-          split3_f=split3.flatten()
-          
-          stacked_1=np.column_stack((split1_f,split1_f, split1_f, split1_f, split1_f))
-          stacked_2=np.column_stack((split2_f,split2_f, split2_f, split2_f, split2_f))
-          stacked_3=np.column_stack((split3_f,split3_f, split3_f, split3_f, split3_f)) 
-          stacked_1t=np.transpose(stacked_1)
-          stacked_2t=np.transpose(stacked_2)
-          stacked_3t=np.transpose(stacked_3)
-        
-          ch1.extend(stacked_1t)
-          ch2.extend(stacked_2t)
-          ch3.extend(stacked_3t)
-        else:
-          line1=cv2.imread(data['image_path'])
-          split1, split2, split3=np.dsplit(line1,3)
-          
-          split1_f=split1.flatten()
-          split2_f=split2.flatten()
-          split3_f=split3.flatten()
-          
-          spacer_size=np.shape(split1_f)
-          spacer1=np.zeros(spacer_size)
-          spacer_f=spacer1+255
-          
-          stacked_1=np.column_stack((spacer_f, spacer_f, spacer_f, spacer_f, spacer_f,spacer_f, spacer_f, spacer_f, spacer_f, spacer_f))
-          stacked_2=np.column_stack((spacer_f, spacer_f, spacer_f, spacer_f, spacer_f,spacer_f, spacer_f, spacer_f, spacer_f, spacer_f))
-          stacked_3=np.column_stack((spacer_f, spacer_f, spacer_f, spacer_f, spacer_f,spacer_f, spacer_f, spacer_f, spacer_f, spacer_f)) 
-          stacked_1t=np.transpose(stacked_1)
-          stacked_2t=np.transpose(stacked_2)
-          stacked_3t=np.transpose(stacked_3)
-          
-          ch1.extend(stacked_1t)
-          ch2.extend(stacked_2t)
-          ch3.extend(stacked_3t)
-          
-          stacked_4=np.column_stack((split1_f,split1_f, split1_f, split1_f, split1_f))
-          stacked_5=np.column_stack((split2_f,split2_f, split2_f, split2_f, split2_f))
-          stacked_6=np.column_stack((split3_f,split3_f, split3_f, split3_f, split3_f)) 
-          stacked_4t=np.transpose(stacked_4)
-          stacked_5t=np.transpose(stacked_5)
-          stacked_6t=np.transpose(stacked_6)
-        
-          ch1.extend(stacked_4t)
-          ch2.extend(stacked_5t)
-          ch3.extend(stacked_6t)
-        
-      color_cat=np.dstack((ch1,ch2,ch3))
-      pcv.print_image(color_cat,(str(outdir)+str(newfolder)+"/"+str(group_label)+"_"+str(camera_label)+"_spacer_"+str(spacer)+"_slice_joined_img.png"))
-      
-  if spacer=='off':
-    for group_label in id_unique:
-      ch1=[]
-      ch2=[]
-      ch3=[]
-      for i, data in enumerate(h.execute('select * from snapshots inner join analysis_images on snapshots.image_id = analysis_images.image_id where plant_id like ? and type = "slice" and camera=? order by datetime asc', ("%"+group_label+"%",camera_label,))):
-        line1=cv2.imread(data['image_path'])
-        
-        split1, split2, split3=np.dsplit(line1,3)
-         
-        split1_f=split1.flatten()
-        split2_f=split2.flatten()
-        split3_f=split3.flatten()
-        
-        stacked_1=np.column_stack((split1_f,split1_f, split1_f, split1_f, split1_f))
-        stacked_2=np.column_stack((split2_f,split2_f, split2_f, split2_f, split2_f))
-        stacked_3=np.column_stack((split3_f,split3_f, split3_f, split3_f, split3_f)) 
-        stacked_1t=np.transpose(stacked_1)
-        stacked_2t=np.transpose(stacked_2)
-        stacked_3t=np.transpose(stacked_3)
-      
-        ch1.extend(stacked_1t)
-        ch2.extend(stacked_2t)
-        ch3.extend(stacked_3t)
-      
-      color_cat=np.dstack((ch1,ch2,ch3))
-      pcv.print_image(color_cat,(str(outdir)+newfolder+"/"+str(group_label)+"_"+str(camera_label)+"_spacer_"+str(spacer)+"_slice_joined_img.png"))
-  
-  folder_path=(str(outdir)+newfolder)
-      
-  if makefig=='yes':
-    list_files=os.listdir(folder_path)
-    sorted_list=sorted(list_files)
-  
-    for group_label in id_unique:
-      time_array=[]
-      length_time=[]
-      ypos=[]
-      ypos1=[]
-      ypos2=[]
-      unique_time1=[]
-      for i, data in enumerate(h.execute('select * from snapshots inner join analysis_images on snapshots.image_id = analysis_images.image_id where plant_id like ? and type = "slice" and camera=? order by datetime asc', ("%"+group_label+"%",camera_label,))):
-        date_int=((data['datetime']-firstday)/86400) 
-        time_array.append(date_int)
-    
-      unique_time=np.unique(time_array)
-      
-      for times in unique_time:
-        length=[]
-        for i,time in enumerate(time_array):
-          if time_array[i]==times:
-            tm=1
-            length.append(tm)
-          else:
-            tm=0
-            length.append(tm)
-        sum_time=np.sum(length)
-        length_time.append(sum_time) 
-  
-      if spacer=='off':  
-        for i,length in enumerate(length_time):
-          if i==0:
-            yadd=length*5
-            ypos.append(yadd)
-          else:
-            yadd=(length*5)
-            ypos.append(yadd)
-      elif spacer=='on':
-        for i,length in enumerate(length_time):
-          if i==0:
-            yadd=length*5
-            ypos.append(yadd)
-          else:
-            yadd=(length*5)+10
-            ypos.append(yadd)
-            
-      for i,y in enumerate(ypos):
-        if i==0:
-          y1=y
-          ypos1.append(y1)
-        else:
-          y1=y+ypos1[i-1]
-          ypos1.append(y1)
-      
-      for time in unique_time:
-        time1=time+1
-        unique_time1.append(time1)
-  
-      file_name=str(group_label)+"_"+str(camera_label)+"_spacer_"+str(spacer)+"_slice_joined_img.png"
-      img1=cv2.imread((str(folder_path)+"/"+str(file_name)), -1)
-      if len(np.shape(img1))==3: 
-        ch1,ch2,ch3=np.dsplit(img1,3)
-        img=np.dstack((ch3,ch2,ch1))
-        
-        plt.imshow(img)
-        ax = plt.subplot(111)
-        ax.set_ylabel('Days on Bellwether Phenotyper', size=10)
-        ax.set_yticks(ypos1)
-        ax.set_yticklabels(unique_time1,size=5)
-        ax.yaxis.tick_left()
-        ax.set_xticks([0,255])
-        ax.set_xticklabels([0,255],size=5)
-        for t in ax.yaxis.get_ticklines(): t.set_color('white')
-        for t in ax.xaxis.get_ticklines(): t.set_color('white')
-        for line in ax.get_xticklines() + ax.get_yticklines(): line.set_alpha(0)
-        ax.spines['bottom'].set_color('none')
-        ax.spines['top'].set_color('none')
-        ax.spines['left'].set_color('none')
-        ax.spines['right'].set_color('none')
-        #ax.tick_params(axis='y',direction='out')
-
-        plt.title(str(group_label))
-        fig_name=(str(folder_path)+"/"+str(group_label)+"_spacer_"+str(spacer)+"_slice_join_figure_img.png")
-        plt.savefig(fig_name, dpi=300,bbox_inches='tight')
-        plt.clf()
-      
-  return folder_path
-
-
-def slice_stitch_geno(sqlitedb, outdir, title, camera_label='vis_sv', spacer='on',makefig='yes'):
-  ###note: this function only works well if you have a reasonable number of genotypes and timepoints otherwise use the fig_stitch tool###
-  #sqlitedb = sqlite database to query (path to db)
-  #outdir = path to outdirectory
-  #camera_label = either 'vis_tv','vis_sv',or 'fluor_tv'
-  #spacer = either 'on' or 'off', adds a white line between day breaks
-  #makefig = either 'yes' or 'no', adds labels to days and a title
-
-  i=datetime.now()
-  timenow=i.strftime('%m-%d-%Y_%H:%M:%S')
-  newfolder="slice_analysis_"+(str(timenow))
-  
-  os.mkdir((str(outdir)+newfolder))
-  
-  connect=sq.connect(sqlitedb)
-  connect.row_factory = dict_factory
-  connect.text_factory=str
-  c = connect.cursor()
-  h = connect.cursor()
-  m = connect.cursor()
-  k = connect.cursor()
-
-  id_array=[]
-  path_array=[]
-  unique_array=[]
-  geno_id=[]
-  ch1=[]
-  ch2=[]
-  ch3=[]
-  
-  for date in c.execute('select min(datetime) as first from snapshots'):
-    firstday=date['first']
-  
-  for i, group in enumerate(m.execute('select * from snapshots inner join analysis_images on snapshots.image_id = analysis_images.image_id where type = "slice" order by plant_id asc')):
-    plant_id=group['plant_id']
-    plantgeno=re.match('^([A-Z][a-zA-Z]\d*[A-Z]{2})',plant_id)
-    if plantgeno==None:
-      plantgeno_id=group['plant_id']
-      id_array.append(plantgeno_id,)
-    else:
-      span1,span2=plantgeno.span()
-      plantgeno_id=group['plant_id'][span1:span2]
-      id_array.append(plantgeno_id,)
-  id_unique=np.unique(id_array)
-  
-  if spacer=='on':
-    for group_label in id_unique:
-      geno_array=[]
-      for i, data in enumerate(h.execute('select * from snapshots inner join analysis_images on snapshots.image_id = analysis_images.image_id where plant_id like ? and type = "slice" and camera=? order by datetime asc', ("%"+group_label+"%",camera_label,))):
-        plantid=data['plant_id']
-        geno_array.append(plantid)
-      length_id=len(geno_array)
-      for i, data in enumerate(k.execute('select * from snapshots inner join analysis_images on snapshots.image_id = analysis_images.image_id where plant_id like ? and type = "slice" and camera=? order by datetime asc', ("%"+group_label+"%",camera_label,))): 
-        geno_id.append(group_label)
-        if i==(length_id-1):
-          line1=cv2.imread(data['image_path'])
-          split1, split2, split3=np.dsplit(line1,3)
-          
-          split1_f=split1.flatten()
-          split2_f=split2.flatten()
-          split3_f=split3.flatten()
-          
-          stacked_4=np.column_stack((split1_f,split1_f, split1_f, split1_f, split1_f))
-          stacked_5=np.column_stack((split2_f,split2_f, split2_f, split2_f, split2_f))
-          stacked_6=np.column_stack((split3_f,split3_f, split3_f, split3_f, split3_f)) 
-          stacked_4t=np.transpose(stacked_4)
-          stacked_5t=np.transpose(stacked_5)
-          stacked_6t=np.transpose(stacked_6)
-        
-          ch1.extend(stacked_4t)
-          ch2.extend(stacked_5t)
-          ch3.extend(stacked_6t)
-          
-          spacer_size=np.shape(split1_f)
-          spacer1=np.zeros(spacer_size)
-          spacer_f=spacer1+255
-          
-          stacked_1=np.column_stack((spacer_f, spacer_f, spacer_f, spacer_f, spacer_f,spacer_f, spacer_f, spacer_f, spacer_f, spacer_f))
-          stacked_2=np.column_stack((spacer_f, spacer_f, spacer_f, spacer_f, spacer_f,spacer_f, spacer_f, spacer_f, spacer_f, spacer_f))
-          stacked_3=np.column_stack((spacer_f, spacer_f, spacer_f, spacer_f, spacer_f,spacer_f, spacer_f, spacer_f, spacer_f, spacer_f)) 
-          stacked_1t=np.transpose(stacked_1)
-          stacked_2t=np.transpose(stacked_2)
-          stacked_3t=np.transpose(stacked_3)
-          
-          ch1.extend(stacked_1t)
-          ch2.extend(stacked_2t)
-          ch3.extend(stacked_3t)
-          
-        else:
-          line1=cv2.imread(data['image_path'])
-          split1, split2, split3=np.dsplit(line1,3)
-          split1_f=split1.flatten()
-          split2_f=split2.flatten()
-          split3_f=split3.flatten()
-          
-          stacked_1=np.column_stack((split1_f,split1_f, split1_f, split1_f, split1_f))
-          stacked_2=np.column_stack((split2_f,split2_f, split2_f, split2_f, split2_f))
-          stacked_3=np.column_stack((split3_f,split3_f, split3_f, split3_f, split3_f)) 
-          stacked_1t=np.transpose(stacked_1)
-          stacked_2t=np.transpose(stacked_2)
-          stacked_3t=np.transpose(stacked_3)
-        
-          ch1.extend(stacked_1t)
-          ch2.extend(stacked_2t)
-          ch3.extend(stacked_3t)
-   
-    color_cat=np.dstack((ch1,ch2,ch3))
-    pcv.print_image(color_cat,(str(outdir)+str(newfolder)+"/"+str(group_label)+"_"+str(camera_label)+"_spacer_"+str(spacer)+"_slice_joined_img.png"))
-      
-  if spacer=='off':
-    for group_label in id_unique:
-      for i, data in enumerate(h.execute('select * from snapshots inner join analysis_images on snapshots.image_id = analysis_images.image_id where plant_id like ? and type = "slice" and camera=? order by datetime asc', ("%"+group_label+"%",camera_label,))):
-        geno_id.append(group_label)
-
-        line1=cv2.imread(data['image_path'])
-        
-        split1, split2, split3=np.dsplit(line1,3)
-         
-        split1_f=split1.flatten()
-        split2_f=split2.flatten()
-        split3_f=split3.flatten()
-        
-        stacked_1=np.column_stack((split1_f,split1_f, split1_f, split1_f, split1_f))
-        stacked_2=np.column_stack((split2_f,split2_f, split2_f, split2_f, split2_f))
-        stacked_3=np.column_stack((split3_f,split3_f, split3_f, split3_f, split3_f)) 
-        stacked_1t=np.transpose(stacked_1)
-        stacked_2t=np.transpose(stacked_2)
-        stacked_3t=np.transpose(stacked_3)
-      
-        ch1.extend(stacked_1t)
-        ch2.extend(stacked_2t)
-        ch3.extend(stacked_3t)
-      
-    color_cat=np.dstack((ch1,ch2,ch3))
-    pcv.print_image(color_cat,(str(outdir)+newfolder+"/"+"ALL_GENOTYPE_"+str(camera_label)+"_spacer_"+str(spacer)+"_slice_joined_img.png"))
-  
-  folder_path=(str(outdir)+newfolder)
-      
-  if makefig=='yes':
-      ypos=[]
-      ypos1=[]
-      geno_num=[]
-      
-      unique_geno=np.unique(geno_id)
-      for geno in unique_geno:
-        length=[]
-        for i, id in enumerate(geno_id):
-          if geno_id[i]==geno:
-            g=1
-            length.append(g)
-          else:
-            g=0
-            length.append(g)
-        sum_geno=np.sum(length)
-        geno_num.append(sum_geno)
-      
-  
-      if spacer=='off':  
-        for i,geno in enumerate(geno_num):
-          if i==0:
-            yadd=geno*5
-            ypos.append(yadd)
-          else:
-            yadd=(geno*5)
-            ypos.append(yadd)
-      elif spacer=='on':
-        for i,geno in enumerate(geno_num):
-          if i==0:
-            yadd=geno*5
-            ypos.append(yadd)
-          else:
-            yadd=(geno*5)+10
-            ypos.append(yadd)
-            
-      for i,y in enumerate(ypos):
-        if i==0:
-          y1=y
-          ypos1.append(y1)
-        else:
-          y1=y+ypos1[i-1]
-          ypos1.append(y1)
-      
-      print unique_geno
-  
-      file_name=str(group_label)+"_"+str(camera_label)+"_spacer_"+str(spacer)+"_slice_joined_img.png"
-      img1=cv2.imread((str(folder_path)+"/"+str(file_name)), -1)
-      if len(np.shape(img1))==3: 
-        ch1,ch2,ch3=np.dsplit(img1,3)
-        img=np.dstack((ch3,ch2,ch1))
-        
-        plt.imshow(img)
-        ax = plt.subplot(111)
-        ax.set_ylabel('Genotype', size=10)
-        ax.set_yticks(ypos1)
-        ax.set_yticklabels(unique_geno,size=3)
-        ax.yaxis.tick_left()
-        ax.set_xticks([0,255])
-        ax.set_xticklabels([0,255],size=5)
-        for t in ax.yaxis.get_ticklines(): t.set_color('white')
-        for t in ax.xaxis.get_ticklines(): t.set_color('white')
-        for line in ax.get_xticklines() + ax.get_yticklines(): line.set_alpha(0)
-        ax.spines['bottom'].set_color('none')
-        ax.spines['top'].set_color('none')
-        ax.spines['left'].set_color('none')
-        ax.spines['right'].set_color('none')
-        #ax.tick_params(axis='y',direction='out')
-
-        plt.title(str(title))
-        fig_name=(str(folder_path)+"/"+"All_genotypes_spacer_"+str(spacer)+"_slice_join_figure_img.png")
-        plt.savefig(fig_name, dpi=300)
-        plt.clf()
-      
-  return folder_path
 
 
 
