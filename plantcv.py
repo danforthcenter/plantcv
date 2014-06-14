@@ -912,7 +912,7 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     
   # Convex Hull
   hull = cv2.convexHull(obj)
-	hull_vertices = len(hull)
+  hull_vertices = len(hull)
   # Moments
   #  m = cv2.moments(obj)
   m = cv2.moments(mask, binaryImage=True)
