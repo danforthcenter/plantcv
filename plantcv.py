@@ -912,6 +912,7 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     
   # Convex Hull
   hull = cv2.convexHull(obj)
+  hull_vertices = len(hull)
   # Moments
   #  m = cv2.moments(obj)
   m = cv2.moments(mask, binaryImage=True)
@@ -984,14 +985,17 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     xintercept1=(iy-b_line)/slope
     cv2.line(background1,(xintercept1,iy),(xintercept,0),(255),1)
     ret1,line_binary = cv2.threshold(background1, 0, 255, cv2.THRESH_BINARY)
-    print_image(line_binary,(str(device)+'_caliperfit.png'))
+    if debug:
+      print_image(line_binary,(str(device)+'_caliperfit.png'))
 
     cv2.drawContours(background2, [hull], -1, (255), -1)
     ret2,hullp_binary = cv2.threshold(background2, 0, 255, cv2.THRESH_BINARY)
-    print_image(hullp_binary,(str(device)+'_hull.png'))
+    if debug:
+      print_image(hullp_binary,(str(device)+'_hull.png'))
     
-    caliper=cv2.multiply(line_binary,hullp_binary)    
-    print_image(caliper,(str(device)+'_caliperlength.png'))
+    caliper=cv2.multiply(line_binary,hullp_binary)
+    if debug:
+      print_image(caliper,(str(device)+'_caliperlength.png'))
     
     caliper_y,caliper_x=np.array(caliper.nonzero())
     caliper_matrix=np.vstack((caliper_x,caliper_y))
@@ -1002,7 +1006,7 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     hull_area, solidity, perimeter, width, height, cmx, cmy = 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND'
       
   #Store Shape Data
-  shape_header=('HEADER_SHAPES', 'area','hull-area','solidity','perimeter','width','height','longest_axis','center-of-mass-x', 'center-of-mass-y', 'in_bounds')
+  shape_header=('HEADER_SHAPES', 'area','hull-area','solidity','perimeter','width','height','longest_axis','center-of-mass-x', 'center-of-mass-y', 'hull_vertices', 'in_bounds')
   #data = {
   #  'area' : area,
   #  'hull_area' : hull_area,
@@ -1039,6 +1043,7 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     caliper_length,
     cmx,
     cmy,
+    hull_vertices,
     in_bounds
     )
       
@@ -1329,7 +1334,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
   # Create Histogram Plot
   if filename:
     if hist_plot_type=='all':
-      matplotlib.use('SVG')
+      #matplotlib.use('SVG')
       hist_plotb=plt.plot(hist_b,color=graph_color[0],label=label[0])
       hist_plotg=plt.plot(hist_g,color=graph_color[1],label=label[1])
       hist_plotr= plt.plot(hist_r,color=graph_color[2],label=label[2])
@@ -1349,7 +1354,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
         plt.savefig(fig_name)
       plt.clf()
     elif hist_plot_type=='rgb':
-      matplotlib.use('SVG')
+      #matplotlib.use('SVG')
       hist_plotb=plt.plot(hist_b,color=graph_color[0],label=label[0])
       hist_plotg=plt.plot(hist_g,color=graph_color[1],label=label[1])
       hist_plotr= plt.plot(hist_r,color=graph_color[2],label=label[2])
@@ -1360,7 +1365,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
       plt.clf()
       print('\t'.join(map(str, ('IMAGE', 'hist', fig_name))))
     elif hist_plot_type=='lab':
-      matplotlib.use('SVG')
+      #matplotlib.use('SVG')
       hist_plotl=plt.plot(hist_l,color=graph_color[3],label=label[3])
       hist_plotm= plt.plot(hist_m,color=graph_color[4],label=label[4])
       hist_ploty=plt.plot(hist_y,color=graph_color[5],label=label[5])
@@ -1374,7 +1379,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
       plt.clf()
       print('\t'.join(map(str, ('IMAGE', 'hist', fig_name))))
     elif hist_plot_type=='hsv':
-      matplotlib.use('SVG')
+      #matplotlib.use('SVG')
       hist_ploth=plt.plot(hist_h,color=graph_color[6],label=label[6])
       hist_plots= plt.plot(hist_s,color=graph_color[7],label=label[7])
       hist_plotv=plt.plot(hist_v,color=graph_color[8],label=label[8])
@@ -1384,7 +1389,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
       plt.savefig(fig_name)
       print('\t'.join(map(str, ('IMAGE', 'hist', fig_name))))
       if debug:
-        matplotlib.use('SVG')
+        #matplotlib.use('SVG')
         fig_name=(str(device) +'_' + str(hist_plot_type) + '_hist.svg')
         plt.savefig(fig_name)
       plt.clf()
@@ -1693,7 +1698,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     if os.path.isfile(('1_vis_pseudocolor_colorbar_' + str(pseudo_channel) + '_channel.svg')):
       pass
     else:
-      matplotlib.use('SVG')
+      #matplotlib.use('SVG')
       filename1=str(filename)
       name_array=filename1.split("/")
       filename2="/".join(map(str,name_array[:-1]))
@@ -1915,7 +1920,7 @@ def fluor_fvfm(fdark,fmin,fmax,mask, device,filename,bins=1000, debug=False):
     )
   
   # Create Histogram Plot, if you change the bin number you might need to change binx so that it prints an appropriate number of labels
-  matplotlib.use('SVG')
+  #matplotlib.use('SVG')
   binx=bins/50
   fvfm_plot=plt.plot(tmid,fvfm_hist,color='green', label='FvFm')
   plt.xticks(list(tmid[0::binx]), rotation='vertical',size='xx-small')
@@ -1931,7 +1936,7 @@ def fluor_fvfm(fdark,fmin,fmax,mask, device,filename,bins=1000, debug=False):
   print('\t'.join(map(str, ('IMAGE', 'hist', fig_name))))
   
   # Histogram Visualization Slice (normalized to 255 for size)
-  matplotlib.use('Agg')
+  #matplotlib.use('Agg')
   fvfm_max=np.amax(fvfm_hist)
   fvfm_min=np.amin(fvfm_hist)
   hist_shape=np.shape(fvfm_hist)
@@ -1970,7 +1975,7 @@ def fluor_fvfm(fdark,fmin,fmax,mask, device,filename,bins=1000, debug=False):
   if os.path.isfile(('1_fluor_pseudocolor_colorbar.svg')):
     pass
   else:
-    matplotlib.use('SVG')
+    #matplotlib.use('SVG')
     filename1=str(filename)
     name_array=filename1.split("/")
     filename2="/".join(map(str,name_array[:-1]))

@@ -11,6 +11,7 @@ use Config::Tiny;
 use Time::Local;
 use POSIX qw(strftime);
 use Data::Dumper;
+use Capture::Tiny ':all';
 
 my (%opt, $dir, $pipeline, $threads, $num, $image_dir, $sqldb, $type, %ids, $zoom_setting, $roi);
 our ($meta);
@@ -49,7 +50,6 @@ my $error_log = 'plantcv_errors_'.$type.'_z'.$zoom_setting.'_'.$start_time.'.log
 open(SKIP, ">$skipped_log") or die "Cannot open file $skipped_log: $!\n\n";
 open(FAIL, ">$fail_log") or die "Cannot open file $fail_log: $!\n\n";
 open(ERROR, ">$error_log") or die "Cannot open file $error_log: $!\n\n";
-close ERROR;
 
 # Open temporary database files
 open(SNAP, ">$snapshot_tmp") or die "Cannot open file $snapshot_tmp: $!\n\n";
@@ -238,6 +238,7 @@ close SKIP;
 close FAIL;
 close IMG;
 close BOUND;
+close ERROR;
 ###########################################
 
 # Populated database
@@ -451,11 +452,22 @@ sub process {
   while (my $job = $jobq->dequeue()) {
     last if ($job eq 'EXIT');
     my $result = $job."\n";
-    open JOB, "$job 2>> $error_log |" or die "Cannot execute job $job: $!\n\n";
-    while (my $data = <JOB>) {
-      $result .= $data;
-    }
-    close JOB;
+		my ($stdout, $stderr, $exit) = capture {
+			system($job);
+		};
+    #open JOB, "$job 2>> $error_log |" or die "Cannot execute job $job: $!\n\n";
+    #while (my $data = <JOB>) {
+    #  $result .= $data;
+    #}
+    #close JOB;
+		
+		# Append results
+		$result .= $stdout;
+		
+		# Print error messages
+		print ERROR $job."\n";
+		print ERROR $stderr."\n\n";
+		
     $resultq->enqueue($result);
   }
   threads->detach();
