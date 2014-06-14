@@ -912,6 +912,7 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     
   # Convex Hull
   hull = cv2.convexHull(obj)
+	hull_vertices = len(hull)
   # Moments
   #  m = cv2.moments(obj)
   m = cv2.moments(mask, binaryImage=True)
@@ -1001,7 +1002,7 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     hull_area, solidity, perimeter, width, height, cmx, cmy = 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND'
       
   #Store Shape Data
-  shape_header=('HEADER_SHAPES', 'area','hull-area','solidity','perimeter','width','height','longest_axis','center-of-mass-x', 'center-of-mass-y', 'in_bounds')
+  shape_header=('HEADER_SHAPES', 'area','hull-area','solidity','perimeter','width','height','longest_axis','center-of-mass-x', 'center-of-mass-y', 'hull_vertices', 'in_bounds')
   #data = {
   #  'area' : area,
   #  'hull_area' : hull_area,
@@ -1038,6 +1039,7 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     caliper_length,
     cmx,
     cmy,
+    hull_vertices,
     in_bounds
     )
       
