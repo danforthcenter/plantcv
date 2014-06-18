@@ -9,23 +9,23 @@ subtitle: Region of Interest- Objects
 Find objects within a region of interest, either cut those objects to the region of interest or include objects that overlap with the region of interest.
 
 <font color='blue'><b>roi\_objects(img,roi\_type,roi\_contour, roi\_hierarchy,object\_contour, obj\_hierarchy, device, debug=False)</b></font><br>
-<font color='orange'><b>returns</b></font> device, ROI contour, ROI hierarchy<br>
+<font color='orange'><b>returns</b></font> device, kept objects, object hierarchy, object mask, object area <br>
 
 <font color='red'><b> Important Note:</b></font> If your ROI object detection does not perform first check that the ROI is completely within the image<br>
 
 - **Parameters:**
   - img = img to display kept objects
-  - roi_type = 'cutto' or 'partial' (for partially inside)
-  - roi_contour = contour of roi, output from "View and Ajust ROI" function
-  - roi_hierarchy = contour of roi, output from "View and Ajust ROI" function
-  - object_contour = contours of objects, output from "Identifying Objects" fuction
-  - obj_hierarchy = hierarchy of objects, output from "Identifying Objects" fuction
+  - roi\_type = 'cutto' or 'partial' (include objects that are partially inside or overlapping with ROI)
+  - roi\_contour = contour of roi, output from "define_roi" function
+  - roi\_hierarchy = contour of roi, output from "define_roi" function 
+  - object\_contour = contours of objects, output from "find_objects" fuction 
+  - obj\_hierarchy = hierarchy of objects, output from "find_objects" fuction
   - device = device number.  Used to count steps in the pipeline
   - device- Counter for image processing steps
-  - debug- Default value is False, if True, intermediate image with ROI will be printed 
+  - debug- Default value is False, if True, intermediate image with ROI objects identified will be printed 
 
 - **Context:**  
-  - Used to define a region of interest in the image.
+  - Used to find objects within a region of interest and decide which ones to keep.
 
 - **Example use:**  
 
@@ -34,35 +34,33 @@ Find objects within a region of interest, either cut those objects to the region
   ```python
     import plantcv as pcv
     
-    # Define region of interest in an image, there is a futher function 'ROI Objects' that allows the user to define if you want to include objects partially inside ROI or if you want to do cut objects to ROI.
+    # ROI objects allows the user to define if objects partially inside ROI are included or if objects are cut to ROI.
     
-    define_roi(img, rectangle, device, roi=None, roi_input='default', debug=True, adjust=True, x_adj=0, y_adj=0, w_adj=0, h_adj=-925 )
+    device,roi_objects, hierarchy, kept_mask, obj_area = pcv.roi_objects(img,'partial', roi, roi_hierarchy, objects, obj_hierarchy, device, debug=True)
 
   ```
-  <a href="{{site.baseurl}}/img/documentation_images/roi/21_roi.png" target="_blank">
-  <img src="{{site.baseurl}}/img/documentation_images/roi/21_roi.png" width="200"></a><br>
-  Figure 1. Image with ROI made 'on the fly'. 
+  <a href="{{site.baseurl}}/img/documentation_images/roi_objects/22_obj_on_img.png" target="_blank">
+  <img src="{{site.baseurl}}/img/documentation_images/roi_objects/22_obj_on_img.png" width="200"></a>
+  <a href="{{site.baseurl}}/img/documentation_images/roi_objects/22_roi_mask.png" target="_blank">
+  <img src="{{site.baseurl}}/img/documentation_images/roi_objects/22_roi_mask.png" width="200"></a>
+  <a href="{{site.baseurl}}/img/documentation_images/roi_objects/22_roi_objects.png" target="_blank">
+  <img src="{{site.baseurl}}/img/documentation_images/roi_objects/22_roi_objects.png" width="200"></a><br>
+  Figure 1. (Left) Object (green) that is identified as partially inside ROI. (Middle) Mask of identified object. (Right) Kept objects. 
  
   ```python
     import plantcv as pcv
     
     # Define region of interest in an image, there is a futher function 'ROI Objects' that allows the user to define if you want to include objects partially inside ROI or if you want to do cut objects to ROI.
     
-    define_roi(img, circle, device, roi=None, roi_input='default', debug=True, adjust=True, x_adj=0, y_adj=0, w_adj=0, h_adj=-925 )
+    device,roi_objects, hierarchy, kept_mask, obj_area = pcv.roi_objects(img,'cutto', roi, roi_hierarchy, objects, obj_hierarchy, device, debug=True)
 
   ```
-  <a href="{{site.baseurl}}/img/documentation_images/roi/21_roi1.png" target="_blank">
-  <img src="{{site.baseurl}}/img/documentation_images/roi/21_roi1.png" width="200"></a><br>
-  Figure 2. Image with ROI made 'on the fly'. 
-
-  ```python
-    import plantcv as pcv
-    
-    # Define region of interest in an image, there is a futher function 'ROI Objects' that allows the user to define if you want to include objects partially inside ROI or if you want to do cut objects to ROI.
-    
-    define_roi(img, ellipse, device, roi=None, roi_input='default', debug=True, adjust=True, x_adj=0, y_adj=0, w_adj=0, h_adj=-925 )
-
-  ```
-  <a href="{{site.baseurl}}/img/documentation_images/roi/21_roi2.png" target="_blank">
-  <img src="{{site.baseurl}}/img/documentation_images/roi/21_roi2.png" width="200"></a><br>
-  Figure 3. Image with ROI made 'on the fly'. 
+  <a href="{{site.baseurl}}/img/documentation_images/roi_objects/22_obj_on_img1.png" target="_blank">
+  <img src="{{site.baseurl}}/img/documentation_images/roi_objects/22_obj_on_img1.png" width="200"></a>
+  <a href="{{site.baseurl}}/img/documentation_images/roi_objects/22_roi_mask1.png" target="_blank">
+  <img src="{{site.baseurl}}/img/documentation_images/roi_objects/22_roi_mask1.png" width="200"></a>
+  <a href="{{site.baseurl}}/img/documentation_images/roi_objects/22_roi_objects1.png" target="_blank">
+  <img src="{{site.baseurl}}/img/documentation_images/roi_objects/22_roi_objects1.png" width="200"></a><br>
+  Figure 2. (Left) Object (green) that is cut to the ROI. (Middle) Mask of identified object. (Right) Kept objects. 
+ 
+ 
