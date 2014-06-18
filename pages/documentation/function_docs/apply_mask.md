@@ -6,9 +6,9 @@ subtitle: Apply Mask
 
 ## Apply Mask
 
-Join two images using the bitwise AND operator. Images must be the same size. This is a wrapper for the Opencv Function [bitwise_and](http://docs.opencv.org/modules/core/doc/operations_on_arrays.html).  
+Apply binary mask to an image.
 
-<font color='blue'><b><plaintext>apply_mask(img, mask, mask_color, device, debug=False)</plaintext></font></b><br>
+<font color='blue'><b>apply\_mask(img, mask, mask\_color, device, debug=False)</font></b><br>
 <font color='orange'>**returns**</font> device, masked image
     
 - **Parameters:**   
@@ -28,17 +28,31 @@ Join two images using the bitwise AND operator. Images must be the same size. Th
   ```python
     import plantcv as pcv
     
-    # Apply binary mask over an image. 
+    # Apply binary 'white' mask over an image. 
     
       device, masked_image = pcv.apply_mask(img, mask, 'white', device, debug=True)
-
   ```
-  <a href="{{site.baseurl}}/img/documentation_images/logical_and/5_fill0.png" target="_blank">
-  <img src="{{site.baseurl}}/img/documentation_images/logical_and/5_fill0.png" width="200"></a>
-  <a href="{{site.baseurl}}/img/documentation_images/logical_and/9_fill150.png" target="_blank">
-  <img src="{{site.baseurl}}/img/documentation_images/logical_and/9_fill150.png" width="200"></a>
-  <a href="{{site.baseurl}}/img/documentation_images/logical_and/10_and_joined.png" target="_blank">
-  <img src="{{site.baseurl}}/img/documentation_images/logical_and/10_and_joined.png" width="200"></a><br>
-  Figure 1. (Left) Original image 1. (Middle) Original image 2.(Right) Image combined with logical 'and' operation.  
+  
+  <a href="{{site.baseurl}}/img/documentation_images/apply_mask/VIS_SV_180_z2500_349810.png" target="_blank">
+  <img src="{{site.baseurl}}/img/documentation_images/apply_mask/VIS_SV_180_z2500_349810.png" width="200"></a>
+  <a href="{{site.baseurl}}/img/documentation_images/apply_mask/10_and_joined.png" target="_blank">
+  <img src="{{site.baseurl}}/img/documentation_images/apply_mask/10_and_joined.png" width="200"></a>
+  <a href="{{site.baseurl}}/img/documentation_images/apply_mask/11_wmasked.png" target="_blank">
+  <img src="{{site.baseurl}}/img/documentation_images/apply_mask/11_wmasked.png" width="200"></a><br>
+  Figure 1. (Left) Original image. (Middle) Binary mask. (Right) White masked image. 
  
-
+  ```python
+    import plantcv as pcv
+    
+    # Apply binary 'black' mask over an image. 
+    
+      device, masked_image = pcv.apply_mask(img, mask, 'black', device, debug=True)
+  ```
+  
+  <a href="{{site.baseurl}}/img/documentation_images/apply_mask/VIS_SV_180_z2500_349810.png" target="_blank">
+  <img src="{{site.baseurl}}/img/documentation_images/apply_mask/VIS_SV_180_z2500_349810.png" width="200"></a>
+  <a href="{{site.baseurl}}/img/documentation_images/apply_mask/10_and_joined.png" target="_blank">
+  <img src="{{site.baseurl}}/img/documentation_images/apply_mask/10_and_joined.png" width="200"></a>
+  <a href="{{site.baseurl}}/img/documentation_images/apply_mask/11_bmasked.png" target="_blank">
+  <img src="{{site.baseurl}}/img/documentation_images/apply_mask/11_bmasked.png" width="200"></a><br>
+  Figure 2. (Left) Original image. (Middle) Binary mask. (Right) Black masked image. 

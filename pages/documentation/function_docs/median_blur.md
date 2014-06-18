@@ -8,7 +8,7 @@ subtitle: Median Blur
 
 Applies a median blur filter. Applies median value to central pixel within a kernel size (ksize x ksize). The function is a wrapper for the OpenCV function [median blur](http://docs.opencv.org/doc/tutorials/imgproc/gausian_median_blur_bilateral_filter/gausian_median_blur_bilateral_filter.html_).  
 
-<font color='blue'>**median_blur(img, ksize, device, debug=False)**</font><br>
+<font color='blue'>**median\_blur(img, ksize, device, debug=False)**</font><br>
 <font color='orange'>**returns**</font> device, blurred image
 
     

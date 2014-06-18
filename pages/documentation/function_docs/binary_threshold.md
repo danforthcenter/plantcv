@@ -8,7 +8,7 @@ subtitle: Binary Threshold
 
 Creates a binary image from a gray image based on the threshold values. The object target can be specified as dark or light.
 
-<font color='blue'><b>binary_threshold(img, threshold, maxValue, object_type, device, debug=False)</b></font><br>
+<font color='blue'><b>binary\_threshold(img, threshold, maxValue, object\_type, device, debug=False)</b></font><br>
 <font color='orange'><b>returns</b></font> device, thresholded image
 
 - **Parameters:**   

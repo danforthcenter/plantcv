@@ -8,7 +8,7 @@ subtitle: Logical Operations-And
 
 Join two images using the bitwise AND operator. Images must be the same size. This is a wrapper for the Opencv Function [bitwise_and](http://docs.opencv.org/modules/core/doc/operations_on_arrays.html).  
 
-<font color='blue'><b>logical_and(img1, img2, device, debug=False)</font></b><br>
+<font color='blue'><b>logical\_and(img1, img2, device, debug=False)</font></b><br>
 <font color='orange'>**returns**</font> device, 'and' image
     
 - **Parameters:**   

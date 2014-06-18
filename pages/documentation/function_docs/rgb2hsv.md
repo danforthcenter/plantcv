@@ -8,7 +8,7 @@ subtitle: RGB to HSV
 
 Convert image from RGB colorspace to HSV colorspace and split the channels.
 
-<font color='blue'>**rgb2gray_hsv(img, channel, device, debug=False)**</font><br>
+<font color='blue'>**rgb2gray\_hsv(img, channel, device, debug=False)**</font><br>
 <font color='orange'>**returns**</font> device, split image (h, s, or v channel)  
     
 - **Parameters:**   
