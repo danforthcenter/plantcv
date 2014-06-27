@@ -6,7 +6,7 @@ import argparse
 import string
 import plantcv as pcv
 
-## Parse command-line arguments
+### Parse command-line arguments
 def options():
   parser = argparse.ArgumentParser(description="Imaging processing with opencv")
   parser.add_argument("-i", "--image", help="Input image file.", required=True)
@@ -16,45 +16,45 @@ def options():
   args = parser.parse_args()
   return args
 
-## Main pipeline
+### Main pipeline
 def main():
-   Get options
+  # Get options
   args = options()
   
-   Read image
+  # Read image
   img, path, filename = pcv.readimage(args.image)
-  roi = cv2.imread(args.roi)
+  #roi = cv2.imread(args.roi)
   
-   Pipeline step
+  # Pipeline step
   device = 0
 
-   Convert RGB to HSV and extract the Saturation channel
+  # Convert RGB to HSV and extract the Saturation channel
   device, s = pcv.rgb2gray_hsv(img, 's', device, args.debug)
   
-   Threshold the Saturation image
+  # Threshold the Saturation image
   device, s_thresh = pcv.binary_threshold(s, 36, 255, 'light', device, args.debug)
   
-   Median Filter
+  # Median Filter
   device, s_mblur = pcv.median_blur(s_thresh, 5, device, args.debug)
   device, s_cnt = pcv.median_blur(s_thresh, 5, device, args.debug)
   
-   Fill small objects
+  # Fill small objects
   device, s_fill = pcv.fill(s_mblur, s_cnt, 0, device, args.debug)
   
-   Convert RGB to LAB and extract the Blue channel
+  # Convert RGB to LAB and extract the Blue channel
   device, b = pcv.rgb2gray_lab(img, 'b', device, args.debug)
   
-   Threshold the blue image
+  # Threshold the blue image
   device, b_thresh = pcv.binary_threshold(b, 138, 255, 'light', device, args.debug)
   device, b_cnt = pcv.binary_threshold(b, 138, 255, 'light', device, args.debug)
   
-   Fill small objects
+  # Fill small objects
   device, b_fill = pcv.fill(b_thresh, b_cnt, 150, device, args.debug)
   
-   Join the thresholded saturation and blue-yellow images
+  # Join the thresholded saturation and blue-yellow images
   device, bs = pcv.logical_and(s_fill, b_fill, device, args.debug)
   
-   Apply Mask (for vis images, mask_color=white)
+  # Apply Mask (for vis images, mask_color=white)
   device, masked = pcv.apply_mask(img, bs, 'white', device, args.debug)
   
   # Convert RGB to LAB and extract the Green-Magenta and Blue-Yellow channels
@@ -108,7 +108,7 @@ def main():
   device, id_objects3,obj_hierarchy3 = pcv.find_objects(masked2, ab_fill, device, args.debug)
 
   # Define ROI
-  device, roi3, roi_hierarchy3= pcv.define_roi(masked2,'rectangle', device, None, 'default', args.debug,True, 550, 0,-500,-110)
+  device, roi3, roi_hierarchy3= pcv.define_roi(masked2,'rectangle', device, None, 'default', args.debug,True, 500, 0,-500,-110)
  
   # Decide which objects to keep and combine with objects overlapping with black bars
   device,roi_objects3, hierarchy3, kept_mask3, obj_area1 = pcv.roi_objects(img,'cutto',roi3,roi_hierarchy3,id_objects3,obj_hierarchy3,device, args.debug)
@@ -140,4 +140,5 @@ def main():
   pcv.print_results(args.image, boundary_header, boundary_data)
   
 if __name__ == '__main__':
-  main()
+  main()#!/usr/bin/env python
+
