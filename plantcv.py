@@ -1890,7 +1890,7 @@ def fluor_fvfm(fdark,fmin,fmax,mask, device,filename,bins=1000, debug=False):
   max_bin=tmid[fvfm_hist_max]
   
   # Store Fluorescence Histogram Data
-  hist_header=('bin-number','fvfm_bins','fvfm_hist','fvfm_hist_peak','fvfm_median', 'fdark_passed_qc')
+  hist_header=('HEADER_HISTOGRAM', 'bin-number','fvfm_bins','fvfm_hist','fvfm_hist_peak','fvfm_median', 'fdark_passed_qc')
   data={
     'bin-number': bins,
     'fvfm_bins': tmid_list,
@@ -1901,6 +1901,7 @@ def fluor_fvfm(fdark,fmin,fmax,mask, device,filename,bins=1000, debug=False):
     }
   
   hist_data= (
+    'FLU_DATA',
     data['bin-number'],
     data['fvfm_bins'],
     data['fvfm_hist'],
