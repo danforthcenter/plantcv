@@ -72,7 +72,7 @@ def main():
   fmin=cv2.imread(args.fmin, -1)
   fmax=cv2.imread(args.fmax, -1)
   
-  device, fvfm_header, fvfm_data=pcv.fluor_fvfm(fdark,fmin,fmax,kept_mask, device, 1000, args.debug, args.outdir+'/'+filename)
+  device, fvfm_header, fvfm_data=pcv.fluor_fvfm(fdark,fmin,fmax,kept_mask, device, args.outdir+'/'+filename, 1000, args.debug)
 
   # Output shape and color data
   pcv.print_results(args.fmax, shape_header, shape_data)

@@ -13,7 +13,7 @@ use POSIX qw(strftime);
 use Data::Dumper;
 use Capture::Tiny ':all';
 
-my (%opt, $dir, $pipeline, $threads, $num, $image_dir, $sqldb, $type, %ids, $zoom_setting, $roi);
+my (%opt, $dir, $pipeline, $threads, $num, $image_dir, $sqldb, $type, %ids, $zoom_setting, $roi, $start_date, $end_date);
 our ($meta);
 my %is_valid = (
   'vis_sv' => 1,
@@ -22,7 +22,7 @@ my %is_valid = (
   'nir_sv' => 1,
   'flu_tv' => 1
 );
-getopts('d:p:t:n:i:s:T:z:m:rcfh', \%opt);
+getopts('d:p:t:n:i:s:T:z:m:D:rcfh', \%opt);
 arg_check();
 
 ## Job start time
@@ -141,7 +141,7 @@ if ($opt{'f'}) {
 	$meta = read_flat_image_dir($dir, $type, $zoom_setting);
 } else {
 	# Input directory is in snapshot format with subdirectories for each snapshot
-	$meta = read_snapshot_dir($dir, $type, $zoom_setting);
+	$meta = read_snapshot_dir($dir, $type, $zoom_setting, $start_date, $end_date);
 }
 ###########################################
 
@@ -359,6 +359,8 @@ sub read_snapshot_dir {
 	my $dir = shift;
 	my $type = shift;
 	my $zoom_setting = shift;
+	my $start_date = shift;
+	my $end_date = shift;
 	
 	# For image name compatibility
 	$type =~ s/flu/fluo/;
@@ -371,10 +373,28 @@ sub read_snapshot_dir {
 	while (my $line = <CSV>) {
 		chomp $line;
 		my ($snapshot_id, $plant_id, $car_id, $datetime, $weight_before, $weight_after, $water_vol, $completed, $measure_label, $tiles) = split /,/, $line;
+		my ($date, $time) = split /\s/, $datetime;
+		my ($year, $month, $day) = split /-/, $date;
+		my ($hour, $min, $sec) = split /:/, $time;
+	
+		# Time since Unix Epoch
+		# For timelocal months are coded 0-11, so reduce month by 1
+		$month--;
+		my $epoch_time = timelocal($sec,$min,$hour,$day,$month,$year);
+		
+		# Is this snapshot within the defined date range?
+		next if ($epoch_time < $start_date || $epoch_time > $end_date);
+		
 		my @tiles = split /;/, $tiles;
 		
 		# Check for the requested image files
-		my @matches = grep(/^$type.+z$zoom_setting/i, @tiles);
+		my @matches;
+		if ($opt{'D'}) {
+			@matches = grep(/^$type/i, @tiles);
+		} else {
+			@matches = grep(/^$type.+z$zoom_setting/i, @tiles);	
+		}
+		
 		@matches = sort @matches;
 		# Build image meta object
 		if (@matches && $type eq 'fluo_tv') {
@@ -814,6 +834,27 @@ sub arg_check {
 			arg_error("The snapshot metadata file SnapshotInfo.csv does not exist in $dir. Perhaps you did not mean to use the -f option?");
 		}
 	}
+	if ($opt{'D'}) {
+		my ($start, $end) = split /_/, $opt{'D'};
+		if (!$end) {
+			$end = strftime("%Y-%m-%d-%H-%M-%S", localtime());
+		}
+		my @start = split /-/, $start;
+		my @end = split /-/, $end;
+		
+		# Time since Unix Epoch
+		# For timelocal months are coded 0-11, so reduce month by 1
+		$start[1]--;
+		$end[1]--;
+		$start_date = timelocal(reverse(@start));
+		$end_date = timelocal(reverse(@end));
+	} else {
+		$start_date = 1;
+		my $current = strftime("%Y-%m-%d-%H-%M-%S", localtime());
+		my @current = split /-/, $current;
+		$current[1]--;
+		$end_date = timelocal(reverse(@current));
+	}
 }
 
 ########################################
@@ -845,6 +886,7 @@ arguments:
   -c                    Create output database (SQLite). Default behaviour adds to existing database.
                         Warning: activating this option will delete an existing database!
   -m ROI                ROI/mask image. Required by some pipelines (vis_tv, flu_tv).
+  -D DATES              Date range. Format: YYYY-MM-DD-hh-mm-ss_YYYY-MM-DD-hh-mm-ss. If the second date is excluded then the current date is assumed.
   -h                    Show this help message and exit
 
   ";
