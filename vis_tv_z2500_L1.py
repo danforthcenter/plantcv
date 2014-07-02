@@ -55,8 +55,8 @@ def main():
   device, bs = pcv.logical_and(s_fill, b_fill, device, args.debug)
   
   # Apply Mask (for vis images, mask_color=white)
-  device, masked = pcv.apply_mask(img, bs, 'white', device, args.debug)
-  
+  device, masked = pcv.apply_mask(img, bs,'white', device, args.debug)
+    
   # Mask pesky brass piece
   device, brass_mask1 = pcv.rgb2gray_hsv(brass_mask, 'v', device, args.debug)
   device, brass_thresh = pcv.binary_threshold(brass_mask1, 0, 255, 'light', device, args.debug)
