@@ -55,7 +55,7 @@ def main():
   device, bs = pcv.logical_and(s_fill, b_fill, device, args.debug)
   
   # Apply Mask (for vis images, mask_color=white)
-  device, masked = pcv.apply_mask(img, bs, 'black', device, args.debug)
+  device, masked = pcv.apply_mask(img, bs, 'white', device, args.debug)
   
   # Convert RGB to LAB and extract the Green-Magenta and Blue-Yellow channels
   device, masked_a = pcv.rgb2gray_lab(masked, 'a', device, args.debug)

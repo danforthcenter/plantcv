@@ -959,45 +959,56 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     
     caliper_max_x, caliper_max_y=list(tuple(vhull[max_i]))
     caliper_mid_x, caliper_mid_y=[int(cmx),int(cmy)]
-    
-    if caliper_max_y<caliper_mid_y:
-      xdiff = float(caliper_max_x-caliper_mid_x)
-      ydiff= float(caliper_max_y-caliper_mid_y)
-      slope=(float(ydiff/xdiff))
-      b_line=caliper_mid_y-(slope*caliper_mid_x)
 
-
-    elif caliper_max_y>=caliper_mid_y:
-      xdiff= float(caliper_mid_x-caliper_max_x)
-      ydiff= float(caliper_mid_y-caliper_max_y)
-      slope=(float(ydiff/xdiff))
-      b_line=caliper_max_y-(slope*caliper_max_x)
-    
+    xdiff = float(caliper_max_x-caliper_mid_x)
+    ydiff= float(caliper_max_y-caliper_mid_y)
+    slope=(float(ydiff/xdiff))
+    b_line=caliper_mid_y-(slope*caliper_mid_x)
     
     if slope==0:
       xintercept=0
       xintercept1=0
+      yintercept=0
+      yintercept1=0
       cv2.line(background1,(iy,caliper_mid_y),(0,caliper_mid_y),(255),1)
     else:
       xintercept=int(-b_line/slope)
       xintercept1=int((iy-b_line)/slope)
-      cv2.line(background1,(xintercept1,iy),(xintercept,0),(255),1)
+      yintercept=0
+      yintercept1=0
+      if 0<=xintercept<=iy and 0<=xintercept1<=iy:
+        cv2.line(background1,(xintercept1,iy),(xintercept,0),(255),1)
+      #elif xintercept is not 0<=xintercept<=iy and xintercept1 is not 0<=xintercept1<=iy:
+      else:  
+        yintercept=int(b_line)
+        yintercept1=int((slope*iy)+b_line)
+        cv2.line(background1,(0,yintercept),(iy,yintercept1),(255),1)
+        print yintercept
+        print yintercept1 
     
     ret1,line_binary = cv2.threshold(background1, 0, 255, cv2.THRESH_BINARY)
-    #print_image(line_binary,(str(device)+'_caliperfit.png'))
+    print_image(line_binary,(str(device)+'_caliperfit.png'))
 
     cv2.drawContours(background2, [hull], -1, (255), -1)
     ret2,hullp_binary = cv2.threshold(background2, 0, 255, cv2.THRESH_BINARY)
-    #print_image(hullp_binary,(str(device)+'_hull.png'))
+    print_image(hullp_binary,(str(device)+'_hull.png'))
     
     caliper=cv2.multiply(line_binary,hullp_binary)    
-    #print_image(caliper,(str(device)+'_caliperlength.png'))
+    print_image(caliper,(str(device)+'_caliperlength.png'))
     
     caliper_y,caliper_x=np.array(caliper.nonzero())
     caliper_matrix=np.vstack((caliper_x,caliper_y))
     caliper_transpose=np.transpose(caliper_matrix)
     caliper_length=len(caliper_transpose)
-
+    if yintercept!=0:
+      caliper_transpose1 = np.lexsort((caliper_y, caliper_x))
+      caliper_transpose2 = [(caliper_x[i],caliper_y[i]) for i in caliper_transpose1]
+      caliper_transpose=np.array(caliper_transpose2)
+    else:
+      caliper_transpose1 = np.lexsort((caliper_x, caliper_y))
+      caliper_transpose2 = [(caliper_x[i],caliper_y[i]) for i in caliper_transpose1]
+      caliper_transpose=np.array(caliper_transpose2)
+      
   else:
     hull_area, solidity, perimeter, width, height, cmx, cmy = 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND'
       
