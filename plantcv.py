@@ -968,23 +968,33 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     if slope==0:
       xintercept=0
       xintercept1=0
-      yintercept=0
-      yintercept1=0
+      yintercept='none'
+      yintercept1='none'
       cv2.line(background1,(iy,caliper_mid_y),(0,caliper_mid_y),(255),1)
     else:
       xintercept=int(-b_line/slope)
-      xintercept1=int((iy-b_line)/slope)
-      yintercept=0
-      yintercept1=0
+      xintercept1=int((ix-b_line)/slope)
+      yintercept='none'
+      yintercept1='none'
       if 0<=xintercept<=iy and 0<=xintercept1<=iy:
-        cv2.line(background1,(xintercept1,iy),(xintercept,0),(255),1)
-      #elif xintercept is not 0<=xintercept<=iy and xintercept1 is not 0<=xintercept1<=iy:
-      else:  
-        yintercept=int(b_line)
-        yintercept1=int((slope*iy)+b_line)
-        cv2.line(background1,(0,yintercept),(iy,yintercept1),(255),1)
-        print yintercept
-        print yintercept1 
+        cv2.line(background1,(xintercept1,ix),(xintercept,0),(255),1)
+      elif xintercept<0 or xintercept>iy or xintercept1<0 or xintercept1>iy:
+        if xintercept<0 and 0<=xintercept1<=iy:
+          yintercept=int(b_line)
+          cv2.line(background1,(0,yintercept),(xintercept1,ix),(255),1)
+        elif xintercept>iy and 0<=xintercept1<=iy:
+          yintercept1=int((slope*iy)+b_line)
+          cv2.line(background1,(iy,yintercept1),(xintercept1,ix),(255),1)          
+        elif 0<=xintercept<=iy and xintercept1<0:          
+          yintercept=int(b_line)
+          cv2.line(background1,(0,yintercept),(xintercept,0),(255),1)          
+        elif 0<=xintercept<=iy and xintercept1>iy:
+          yintercept1=int((slope*iy)+b_line)
+          cv2.line(background1,(iy,yintercept1),(xintercept,0),(255),1)          
+        else:  
+          yintercept=int(b_line)
+          yintercept1=int((slope*iy)+b_line)
+          cv2.line(background1,(0,yintercept),(iy,yintercept1),(255),1)
     
     ret1,line_binary = cv2.threshold(background1, 0, 255, cv2.THRESH_BINARY)
     print_image(line_binary,(str(device)+'_caliperfit.png'))
@@ -1000,14 +1010,10 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     caliper_matrix=np.vstack((caliper_x,caliper_y))
     caliper_transpose=np.transpose(caliper_matrix)
     caliper_length=len(caliper_transpose)
-    if yintercept!=0:
-      caliper_transpose1 = np.lexsort((caliper_y, caliper_x))
-      caliper_transpose2 = [(caliper_x[i],caliper_y[i]) for i in caliper_transpose1]
-      caliper_transpose=np.array(caliper_transpose2)
-    else:
-      caliper_transpose1 = np.lexsort((caliper_x, caliper_y))
-      caliper_transpose2 = [(caliper_x[i],caliper_y[i]) for i in caliper_transpose1]
-      caliper_transpose=np.array(caliper_transpose2)
+
+    caliper_transpose1 = np.lexsort((caliper_y, caliper_x))
+    caliper_transpose2 = [(caliper_x[i],caliper_y[i]) for i in caliper_transpose1]
+    caliper_transpose=np.array(caliper_transpose2)
       
   else:
     hull_area, solidity, perimeter, width, height, cmx, cmy = 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND'
