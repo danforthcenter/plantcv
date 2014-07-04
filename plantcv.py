@@ -997,14 +997,14 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
           cv2.line(background1,(0,yintercept),(iy,yintercept1),(255),1)
     
     ret1,line_binary = cv2.threshold(background1, 0, 255, cv2.THRESH_BINARY)
-    print_image(line_binary,(str(device)+'_caliperfit.png'))
+    #print_image(line_binary,(str(device)+'_caliperfit.png'))
 
     cv2.drawContours(background2, [hull], -1, (255), -1)
     ret2,hullp_binary = cv2.threshold(background2, 0, 255, cv2.THRESH_BINARY)
-    print_image(hullp_binary,(str(device)+'_hull.png'))
+    #print_image(hullp_binary,(str(device)+'_hull.png'))
     
     caliper=cv2.multiply(line_binary,hullp_binary)    
-    print_image(caliper,(str(device)+'_caliperlength.png'))
+    #print_image(caliper,(str(device)+'_caliperlength.png'))
     
     caliper_y,caliper_x=np.array(caliper.nonzero())
     caliper_matrix=np.vstack((caliper_x,caliper_y))
