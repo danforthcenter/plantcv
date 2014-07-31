@@ -44,6 +44,8 @@ def main():
     # Pipeline step
     device = 0
     
+    img = ndimage.rotate(img,180)
+    
     # Start by examining the distribution of pixel intensity values
     if args.debug:
       pcv.plot_hist(img, 'hist_img')
