@@ -22,6 +22,7 @@ my %is_valid = (
   'nir_sv' => 1,
   'flu_tv' => 1
 );
+my $command = $0.' '.join(' ', @ARGV);
 getopts('d:p:t:n:i:s:T:z:m:D:rcfh', \%opt);
 arg_check();
 
@@ -130,7 +131,7 @@ if (!exists($ids{'run_id'})) {
 # Next run ID
 $ids{'run_id'}++;
 my $analysis_time = time;
-my @run = ($ids{'run_id'}, $analysis_time, $pipeline, $outlier_vs);
+my @run = ($ids{'run_id'}, $analysis_time, $command, $outlier_vs);
 print RUN join("\t", @run)."\n";
 ###########################################
 

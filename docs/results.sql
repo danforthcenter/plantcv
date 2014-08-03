@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS `runinfo` (
   `run_id` INTEGER PRIMARY KEY,
   `datetime` INTEGER NOT NULL,
-  `pipeline` TEXT NOT NULL,
+  `command` TEXT NOT NULL,
   `outlier_version` TEXT NOT NULL
 );
 
