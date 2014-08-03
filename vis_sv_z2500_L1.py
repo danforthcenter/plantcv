@@ -79,7 +79,7 @@ def main():
   device, id_objects,obj_hierarchy = pcv.find_objects(masked2, ab_fill, device, args.debug)
 
   # Define ROI
-  device, roi1, roi_hierarchy= pcv.define_roi(img,'rectangle', device, None, 'default', args.debug,True, 0, 0,0,-925)
+  device, roi1, roi_hierarchy= pcv.define_roi(masked2,'rectangle', device, None, 'default', args.debug,True, 0, 0,0,-925)
   
   # Decide which objects to keep
   device,roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(img,'partial',roi1,roi_hierarchy,id_objects,obj_hierarchy,device, args.debug)
@@ -87,7 +87,7 @@ def main():
   # Object combine kept objects
   device, obj, mask = pcv.object_composition(img, roi_objects, hierarchy3, device, args.debug)
   
-############## Analysis ################  
+############### Analysis ################  
   
   # Find shape properties, output shape image (optional)
   device, shape_header,shape_data,shape_img = pcv.analyze_object(img, args.image, obj, mask, device,args.debug,args.outdir+'/'+filename)

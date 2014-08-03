@@ -563,7 +563,7 @@ def find_objects(img, mask, device, debug=False):
 def define_roi(img, shape, device, roi=None, roi_input='default', debug=False, adjust=False, x_adj=0, y_adj=0, w_adj=0, h_adj=0, ):
   # img = img to overlay roi 
   # roi =default (None) or user input ROI image, object area should be white and background should be black, has not been optimized for more than one ROI
-  # roi_input = type of file roi_base is, either 'binary' or 'rgb'
+  # roi_input = type of file roi_base is, either 'binary', 'rgb', or 'default' (no ROI inputted)
   # shape = desired shape of final roi, either 'rectangle' or 'circle', if  user inputs rectangular roi but chooses 'circle' for shape then a circle is fitted around rectangular roi (and vice versa)
   # device = device number.  Used to count steps in the pipeline
   # debug = True/False. If True, print image
@@ -959,29 +959,42 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     
     caliper_max_x, caliper_max_y=list(tuple(vhull[max_i]))
     caliper_mid_x, caliper_mid_y=[int(cmx),int(cmy)]
-    
-    if caliper_max_y<caliper_mid_y:
-      xdiff = float(caliper_max_x-caliper_mid_x)
-      ydiff= float(caliper_max_y-caliper_mid_y)
-      slope=(float(ydiff/xdiff))
-      b_line=caliper_mid_y-(slope*caliper_mid_x)
 
-
-    elif caliper_max_y>=caliper_mid_y:
-      xdiff= float(caliper_mid_x-caliper_max_x)
-      ydiff= float(caliper_mid_y-caliper_max_y)
-      slope=(float(ydiff/xdiff))
-      b_line=caliper_max_y-(slope*caliper_max_x)
-    
+    xdiff = float(caliper_max_x-caliper_mid_x)
+    ydiff= float(caliper_max_y-caliper_mid_y)
+    slope=(float(ydiff/xdiff))
+    b_line=caliper_mid_y-(slope*caliper_mid_x)
     
     if slope==0:
       xintercept=0
       xintercept1=0
+      yintercept='none'
+      yintercept1='none'
       cv2.line(background1,(iy,caliper_mid_y),(0,caliper_mid_y),(255),1)
     else:
-      xintercept=(-b_line/slope)
-      xintercept1=(iy-b_line)/slope
-      cv2.line(background1,(xintercept1,iy),(xintercept,0),(255),1)
+      xintercept=int(-b_line/slope)
+      xintercept1=int((ix-b_line)/slope)
+      yintercept='none'
+      yintercept1='none'
+      if 0<=xintercept<=iy and 0<=xintercept1<=iy:
+        cv2.line(background1,(xintercept1,ix),(xintercept,0),(255),1)
+      elif xintercept<0 or xintercept>iy or xintercept1<0 or xintercept1>iy:
+        if xintercept<0 and 0<=xintercept1<=iy:
+          yintercept=int(b_line)
+          cv2.line(background1,(0,yintercept),(xintercept1,ix),(255),1)
+        elif xintercept>iy and 0<=xintercept1<=iy:
+          yintercept1=int((slope*iy)+b_line)
+          cv2.line(background1,(iy,yintercept1),(xintercept1,ix),(255),1)          
+        elif 0<=xintercept<=iy and xintercept1<0:          
+          yintercept=int(b_line)
+          cv2.line(background1,(0,yintercept),(xintercept,0),(255),1)          
+        elif 0<=xintercept<=iy and xintercept1>iy:
+          yintercept1=int((slope*iy)+b_line)
+          cv2.line(background1,(iy,yintercept1),(xintercept,0),(255),1)          
+        else:  
+          yintercept=int(b_line)
+          yintercept1=int((slope*iy)+b_line)
+          cv2.line(background1,(0,yintercept),(iy,yintercept1),(255),1)
     
     ret1,line_binary = cv2.threshold(background1, 0, 255, cv2.THRESH_BINARY)
     #print_image(line_binary,(str(device)+'_caliperfit.png'))
@@ -998,6 +1011,10 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     caliper_transpose=np.transpose(caliper_matrix)
     caliper_length=len(caliper_transpose)
 
+    caliper_transpose1 = np.lexsort((caliper_y, caliper_x))
+    caliper_transpose2 = [(caliper_x[i],caliper_y[i]) for i in caliper_transpose1]
+    caliper_transpose=np.array(caliper_transpose2)
+      
   else:
     hull_area, solidity, perimeter, width, height, cmx, cmy = 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND'
       
