@@ -635,8 +635,8 @@ sub shape_results {
   my @data = split /\t/, $data;
   my $ci = column_index($header);
   
-  my $area_raw = $data[$ci->{'area'}];
-  my $area_corrected = 0;
+  my $area = $data[$ci->{'area'}];
+  #my $area_corrected = 0;
   my $hull_area = $data[$ci->{'hull-area'}];
   my $solidity = $data[$ci->{'solidity'}];
   my $perimeter = $data[$ci->{'perimeter'}];
@@ -649,11 +649,11 @@ sub shape_results {
   my $in_bounds = $data[$ci->{'in_bounds'}];
   
   # Zoom calibration: Note that TV correction has to be done during analysis
-  if ($zoom > 0) {
-    $area_corrected = $area_raw / zoom_calibration($zoom);
-  }
+  #if ($zoom > 0) {
+  #  $area_corrected = $area_raw / zoom_calibration($zoom);
+  #}
   
-  my @shape = ($area_raw, $area_corrected, $hull_area, $solidity, $perimeter,
+  my @shape = ($area, $hull_area, $solidity, $perimeter,
                $extent_x, $extent_y, $centroid_x, $centroid_y, $longest_axis, $vertices, $in_bounds
               );
   return @shape;

@@ -21,8 +21,7 @@ CREATE TABLE IF NOT EXISTS `snapshots` (
 
 CREATE TABLE IF NOT EXISTS `vis_shapes` (
   `image_id` INTEGER PRIMARY KEY,
-  `area_raw` REAL NOT NULL,
-  `area_corrected` REAL NOT NULL,
+  `area` REAL NOT NULL,
   `hull_area` REAL NOT NULL,
   `solidity` REAL NOT NULL,
   `perimeter` REAL NOT NULL,
