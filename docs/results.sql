@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS `snapshots` (
   `camera` TEXT NOT NULL,
   `frame` INTEGER NOT NULL,
   `zoom` INTEGER NOT NULL,
+  `lifter` INTEGER NOT NULL,
   `image_path` TEXT NOT NULL
 );
 
