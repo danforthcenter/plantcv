@@ -22,6 +22,7 @@ my %is_valid = (
   'nir_sv' => 1,
   'flu_tv' => 1
 );
+my $command = $0.' '.join(' ', @ARGV);
 getopts('d:p:t:n:i:s:T:z:m:D:rcfh', \%opt);
 arg_check();
 
@@ -130,7 +131,7 @@ if (!exists($ids{'run_id'})) {
 # Next run ID
 $ids{'run_id'}++;
 my $analysis_time = time;
-my @run = ($ids{'run_id'}, $analysis_time, $pipeline, $outlier_vs);
+my @run = ($ids{'run_id'}, $analysis_time, $command, $outlier_vs);
 print RUN join("\t", @run)."\n";
 ###########################################
 
@@ -339,10 +340,11 @@ sub read_flat_image_dir {
 		# The directory might contain many types of images
 		# Does this image match the input settings?
 		if ($img =~ /$type.+z$zoom_setting/i) {
-			my ($plant_id, $datetime, $frame, $zoom) = parse_filename($img, $type, $zoom_setting);
+			my ($plant_id, $datetime, $frame, $zoom, $lifter) = parse_filename($img, $type, $zoom_setting);
 			$meta{$img}->{'plant_id'} = $plant_id;
 			$meta{$img}->{'datetime'} = $datetime;
 			$meta{$img}->{'frame'} = $frame;
+			$meta{$img}->{'lifter'} = $lifter;
 		} else {
 			print SKIP $img."\n";
 		}
@@ -392,7 +394,7 @@ sub read_snapshot_dir {
 		if ($opt{'D'}) {
 			@matches = grep(/^$type/i, @tiles);
 		} else {
-			@matches = grep(/^$type.+z$zoom_setting/i, @tiles);	
+			@matches = grep(/^$type.+[hz]$zoom_setting/i, @tiles);	
 		}
 		
 		@matches = sort @matches;
@@ -403,14 +405,25 @@ sub read_snapshot_dir {
 			$meta{$matches[0]}->{'datetime'} = $datetime;
 			$meta{$matches[0]}->{'snapshot'} = $snapshot_id;
 			$meta{$matches[0]}->{'multi'} = join(',', @matches);
+			$meta{$matches[0]}->{'lifter'} = $zoom_setting;
 		} elsif (@matches) {
 			foreach my $tile (@matches) {
 				my @parts = split /_/, $tile;
 				my $frame = 0;
 				if ($parts[1] eq 'SV') {
 					$meta{$tile}->{'frame'} = $parts[2];
+					if (exists($parts[4]) && substr($parts[4],0,1) eq 'h') {
+						$parts[4] =~ s/h//;
+						$meta{$tile}->{'lifter'} = $parts[4];
+					} else {
+						$meta{$tile}->{'lifter'} = 0;
+					}
 				} else {
 					$meta{$tile}->{'frame'} = 0;
+					if (exists($parts[3]) && substr($parts[4],0,1) eq 'h') {
+						$parts[3] =~ s/h//;
+						$meta{$tile}->{'lifter'} = $parts[3];
+					}
 				}
 				$meta{$tile}->{'plant_id'} = $plant_id;
 				$meta{$tile}->{'datetime'} = $datetime;
@@ -435,6 +448,8 @@ sub parse_filename {
 	# Parse filename
   ###########################################
   my ($id, $year, $month, $day_time, $label, $camera_label) = split /-/, $image;
+	# Temporarily fix lifter at 0
+	my $lifter = 0;
 	$day_time =~ s/_/:/g;
   $camera_label =~ s/FLUO/FLU/i;
   $camera_label =~ s/\.png//;
@@ -461,7 +476,7 @@ sub parse_filename {
   }
   $zoom =~ s/z//i;
 	
-	return ($id, $year.'-'.$month.'-'.$day_time, $frame, $zoom);
+	return ($id, $year.'-'.$month.'-'.$day_time, $frame, $zoom, $lifter);
 }
 
 ########################################
@@ -519,6 +534,7 @@ sub process_results {
 	my $plant_id = $meta->{$image}->{'plant_id'};
 	my $datetime = $meta->{$image}->{'datetime'};
 	my $frame = $meta->{$image}->{'frame'};
+	my $lifter = $meta->{$image}->{'lifter'};
 	my @multi;
 	if ($camera eq 'flu_tv') {
 		@multi = split /,/, $meta->{$image}->{'multi'};
@@ -543,9 +559,9 @@ sub process_results {
   my $image_id = $ids{'image_id'};
 	my @snap;
 	if ($camera eq 'flu_tv') {
-		@snap = ($image_id, $ids{'run_id'}, $plant_id, $epoch_time, $camera, $frame, $zoom, join(',', @multi));
+		@snap = ($image_id, $ids{'run_id'}, $plant_id, $epoch_time, $camera, $frame, $zoom, $lifter, join(',', @multi));
 	} else {
-		@snap = ($image_id, $ids{'run_id'}, $plant_id, $epoch_time, $camera, $frame, $zoom, "$path/$image.png");
+		@snap = ($image_id, $ids{'run_id'}, $plant_id, $epoch_time, $camera, $frame, $zoom, $lifter, "$path/$image.png");
 	}
   ###########################################
 
@@ -619,8 +635,8 @@ sub shape_results {
   my @data = split /\t/, $data;
   my $ci = column_index($header);
   
-  my $area_raw = $data[$ci->{'area'}];
-  my $area_corrected = 0;
+  my $area = $data[$ci->{'area'}];
+  #my $area_corrected = 0;
   my $hull_area = $data[$ci->{'hull-area'}];
   my $solidity = $data[$ci->{'solidity'}];
   my $perimeter = $data[$ci->{'perimeter'}];
@@ -633,11 +649,11 @@ sub shape_results {
   my $in_bounds = $data[$ci->{'in_bounds'}];
   
   # Zoom calibration: Note that TV correction has to be done during analysis
-  if ($zoom > 0) {
-    $area_corrected = $area_raw / zoom_calibration($zoom);
-  }
+  #if ($zoom > 0) {
+  #  $area_corrected = $area_raw / zoom_calibration($zoom);
+  #}
   
-  my @shape = ($area_raw, $area_corrected, $hull_area, $solidity, $perimeter,
+  my @shape = ($area, $hull_area, $solidity, $perimeter,
                $extent_x, $extent_y, $centroid_x, $centroid_y, $longest_axis, $vertices, $in_bounds
               );
   return @shape;

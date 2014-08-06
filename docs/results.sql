@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS `runinfo` (
   `run_id` INTEGER PRIMARY KEY,
   `datetime` INTEGER NOT NULL,
-  `pipeline` TEXT NOT NULL,
+  `command` TEXT NOT NULL,
   `outlier_version` TEXT NOT NULL
 );
 
@@ -15,13 +15,13 @@ CREATE TABLE IF NOT EXISTS `snapshots` (
   `camera` TEXT NOT NULL,
   `frame` INTEGER NOT NULL,
   `zoom` INTEGER NOT NULL,
+  `lifter` INTEGER NOT NULL,
   `image_path` TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `vis_shapes` (
   `image_id` INTEGER PRIMARY KEY,
-  `area_raw` REAL NOT NULL,
-  `area_corrected` REAL NOT NULL,
+  `area` REAL NOT NULL,
   `hull_area` REAL NOT NULL,
   `solidity` REAL NOT NULL,
   `perimeter` REAL NOT NULL,

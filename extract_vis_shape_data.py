@@ -50,7 +50,7 @@ def main():
   # Header
   out.write(','.join(map(str, ('plant_id', 'datetime', 'surface_area', 'solidity', 'perimeter', 'centroid_x', 'centroid_y', 'longest_axis',
                                    'height_above_bound', 'height_below_bound', 'above_bound_area', 'percent_above_bound_area', 'below_bound_area',
-                                   'percent_below_bound_area'))) + '\n')
+                                   'percent_below_bound_area', 'outlier'))) + '\n')
   
   # Replace the row_factory result constructor with a dictionary constructor
   connect.row_factory = dict_factory
@@ -98,7 +98,7 @@ def main():
         longest_axis += row['longest_axis']
       elif row['camera'] == 'vis_tv':
         tv_area = row['area_corrected']
-    if sv_image_count > 0 and tv_area > 0 and outlier == False:
+    if sv_image_count == 4 and tv_area > 0:
       solidity /= sv_image_count
       perimeter /= sv_image_count
       centroid_x /= sv_image_count
@@ -107,8 +107,7 @@ def main():
       surface_area += tv_centroid_correction(tv_area, centroid_y)
       #print('\t'.join(map(str,(row['plant_id'], surface_area, tv_area, tv_centroid_correction(tv_area, centroid_y)))))
   
-    # Measure plant height
-    if outlier == False:
+      # Measure plant height
       image_count = 0
       for row in (db.execute('SELECT * FROM `snapshots` INNER JOIN `boundary_data` ON `snapshots`.`image_id` = `boundary_data`.`image_id` WHERE `datetime` = %i' % snapshot)):
         height_above_bound += row['height_above_bound']
@@ -124,10 +123,9 @@ def main():
         percent_above_bound_area /= image_count
         below_bound_area /= image_count
         percent_below_bound_area /= image_count
-    if outlier == False:
       out.write(','.join(map(str, (plant_id, snapshot, surface_area, solidity, perimeter, centroid_x, centroid_y, longest_axis,
                                    height_above_bound, height_below_bound, above_bound_area, percent_above_bound_area, below_bound_area,
-                                   percent_below_bound_area))) + '\n')
+                                   percent_below_bound_area, outlier))) + '\n')
 
 if __name__ == '__main__':
   main()
