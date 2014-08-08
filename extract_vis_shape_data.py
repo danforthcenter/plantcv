@@ -21,8 +21,14 @@ def dict_factory(cursor, row):
     return d
 
 ### Top-view center of mass correction
-def tv_centroid_correction(area, centroid_y):
-  correction_factor = 0.9015 * math.exp(0.0007 * centroid_y);
+def tv_centroid_correction(area, centroid_height):
+  correction_factor = 0.9015 * math.exp(0.0007 * centroid_height)
+  area /= correction_factor
+  return area
+
+### Zoom correction
+def zoom_correction(area, zoom):
+  correction_factor = 0.9015 * math.exp(0.0007 * zoom)
   area /= correction_factor
   return area
 
@@ -90,25 +96,24 @@ def main():
         outlier = True
       if row['camera'] == 'vis_sv':
         sv_image_count += 1
-        surface_area += row['area_corrected']
+        surface_area += zoom_correction(row['area'], row['zoom'])
         solidity += row['solidity']
         perimeter += row['perimeter']
         centroid_x += row['centroid_x']
         centroid_y += row['centroid_y']
         longest_axis += row['longest_axis']
       elif row['camera'] == 'vis_tv':
-        tv_area = row['area_corrected']
+        tv_area = zoom_correction(row['area'], row['zoom'])
     if sv_image_count == 4 and tv_area > 0:
       solidity /= sv_image_count
       perimeter /= sv_image_count
       centroid_x /= sv_image_count
       centroid_y /= sv_image_count
       longest_axis /= sv_image_count
-      surface_area += tv_centroid_correction(tv_area, centroid_y)
-      #print('\t'.join(map(str,(row['plant_id'], surface_area, tv_area, tv_centroid_correction(tv_area, centroid_y)))))
   
       # Measure plant height
       image_count = 0
+      boundary_line_y = 0
       for row in (db.execute('SELECT * FROM `snapshots` INNER JOIN `boundary_data` ON `snapshots`.`image_id` = `boundary_data`.`image_id` WHERE `datetime` = %i' % snapshot)):
         height_above_bound += row['height_above_bound']
         height_below_bound += row['height_below_bound']
@@ -116,6 +121,8 @@ def main():
         percent_above_bound_area += row['percent_above_bound_area']
         below_bound_area += row['below_bound_area']
         percent_below_bound_area += row['percent_below_bound_area']
+        boundary_line_y = row['x_position']
+        image_count += 1
       if image_count > 0:
         height_above_bound /= image_count
         height_below_bound /= image_count
@@ -123,7 +130,13 @@ def main():
         percent_above_bound_area /= image_count
         below_bound_area /= image_count
         percent_below_bound_area /= image_count
-      out.write(','.join(map(str, (plant_id, snapshot, surface_area, solidity, perimeter, centroid_x, centroid_y, longest_axis,
+        # Adjusted center of mass y (height above boundary line to cmy)
+        centroid_height = boundary_line_y - centroid_y
+        if centroid_height < 0:
+          centroid_height = 0
+          
+        surface_area += tv_centroid_correction(tv_area, centroid_height)
+        out.write(','.join(map(str, (plant_id, snapshot, surface_area, solidity, perimeter, centroid_x, centroid_y, longest_axis,
                                    height_above_bound, height_below_bound, above_bound_area, percent_above_bound_area, below_bound_area,
                                    percent_below_bound_area, outlier))) + '\n')
 
