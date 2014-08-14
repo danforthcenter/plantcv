@@ -394,7 +394,7 @@ sub read_snapshot_dir {
 		if ($opt{'D'}) {
 			@matches = grep(/^$type/i, @tiles);
 		} else {
-			@matches = grep(/^$type.+[hz]$zoom_setting/i, @tiles);	
+			@matches = grep(/^$type.+[hz]$zoom_setting\_/i, @tiles);
 		}
 		
 		@matches = sort @matches;
