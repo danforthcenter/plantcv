@@ -10,6 +10,7 @@ def options():
   parser = argparse.ArgumentParser(description="Extract VIS object shape data from an SQLite database")
   parser.add_argument("-d", "--database", help="SQLite database file from plantcv.", required=True)
   parser.add_argument("-o", "--outfile", help="Output text file.", required=True)
+  parser.add_argument("-p", "--height", help="Height of images in pixels", required=True, type=int)
   args = parser.parse_args()
   return args
 
@@ -56,7 +57,7 @@ def main():
   # Header
   out.write(','.join(map(str, ('plant_id', 'datetime', 'surface_area', 'solidity', 'perimeter', 'centroid_x', 'centroid_y', 'longest_axis',
                                    'height_above_bound', 'height_below_bound', 'above_bound_area', 'percent_above_bound_area', 'below_bound_area',
-                                   'percent_below_bound_area', 'outlier'))) + '\n')
+                                   'percent_below_bound_area', 'outlier', 'boundary_line', 'centroid_height'))) + '\n')
   
   # Replace the row_factory result constructor with a dictionary constructor
   connect.row_factory = dict_factory
@@ -131,14 +132,14 @@ def main():
         below_bound_area /= image_count
         percent_below_bound_area /= image_count
         # Adjusted center of mass y (height above boundary line to cmy)
-        centroid_height = boundary_line_y - centroid_y
+        centroid_height = (args.height - boundary_line_y) - centroid_y
         if centroid_height < 0:
           centroid_height = 0
           
         surface_area += tv_centroid_correction(tv_area, centroid_height)
         out.write(','.join(map(str, (plant_id, snapshot, surface_area, solidity, perimeter, centroid_x, centroid_y, longest_axis,
                                    height_above_bound, height_below_bound, above_bound_area, percent_above_bound_area, below_bound_area,
-                                   percent_below_bound_area, outlier))) + '\n')
+                                   percent_below_bound_area, outlier, boundary_line_y, centroid_height))) + '\n')
 
 if __name__ == '__main__':
   main()
