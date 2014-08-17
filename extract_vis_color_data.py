@@ -63,8 +63,8 @@ def main():
       for channel in channels:
         for b in range(0,bins):
           names.append(str(channel) + str(b))
-        out.write(','.join(map(str,names)))
-    out.write(','.join(map(str, row)))
+      out.write(','.join(map(str,names)) + '\n')
+    out.write(','.join(map(str, row)) + '\n')
   
 
 if __name__ == '__main__':
