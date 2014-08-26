@@ -51,7 +51,6 @@ CREATE TABLE IF NOT EXISTS `vis_colors` (
 CREATE TABLE IF NOT EXISTS `nir_shapes` (
   `image_id` INTEGER PRIMARY KEY,
   `area_raw` REAL NOT NULL,
-  `area_corrected` REAL NOT NULL,
   `hull_area` REAL NOT NULL,
   `solidity` REAL NOT NULL,
   `perimeter` REAL NOT NULL,
@@ -73,7 +72,6 @@ CREATE TABLE IF NOT EXISTS `nir_signal` (
 CREATE TABLE IF NOT EXISTS `flu_shapes` (
   `image_id` INTEGER PRIMARY KEY,
   `area_raw` REAL NOT NULL,
-  `area_corrected` REAL NOT NULL,
   `hull_area` REAL NOT NULL,
   `solidity` REAL NOT NULL,
   `perimeter` REAL NOT NULL,

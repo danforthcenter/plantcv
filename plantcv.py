@@ -1721,8 +1721,8 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
   
   return device, hist_header, hist_data, norm_slice
 
-### Analyze Color of Object
-def analyze_NIR_intensity(img, imgname, mask, bins, device, debug=False ,filename=False):
+### Analyze signal data in NIR image
+def analyze_NIR_intensity(img, imgname, mask, bins, device, debug=False, filename=False):
   # This function calculates the intensity of each pixel associated with the plant and writes the values out to a file
   # Can also print out a histogram plot of pixel intensity and a pseudocolor image of the plant
   # img = input image
@@ -1759,13 +1759,15 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, debug=False ,filenam
     data['bin-number'],
     data['signal']
     )
-  if debug:
-    hist_plot_nir=plt.plot(hist_nir, color = 'red', label = 'Signal Intensity')
-    xaxis=plt.xlim([0,(bins-1)])
-    plt.xlabel('Grayscale pixel intensity (0-255)')
-    plt.ylabel('Proportion of pixels (%)')
-    fig_name=('NIR' + '_hist_' + imgname)
-    plt.savefig(fig_name, dpi=600)
+  
+  hist_plot_nir=plt.plot(hist_nir, color = 'red', label = 'Signal Intensity')
+  xaxis=plt.xlim([0,(bins-1)])
+  plt.xlabel('Grayscale pixel intensity (0-255)')
+  plt.ylabel('Proportion of pixels (%)')
+  fig_name_hist=(str(filename[0:-4]) + '_nir_hist.png')
+  plt.savefig(fig_name_hist)
+  plt.clf()
+  print('\t'.join(map(str, ('IMAGE', 'hist', fig_name_hist))))
  
  
   # what is this subset of code used for? color scaling?
@@ -1774,25 +1776,27 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, debug=False ,filenam
   h_norm=((h_min)/(h_max-h_min))*255
   
   # prepare and print a pseduocolor image of the plant on NIR grayscale background
-  if debug:
-    mask_inv=cv2.bitwise_not(mask)
-    # mask the background and color the plant with color scheme 'summer' see cmap/applyColorMap fxn
-    plant = cv2.bitwise_and(img, mask)
-    cplant = cv2.applyColorMap(plant, colormap = 6)
-    # need to make the mask 3 dimensional if you want to mask the image because the pseudocolor image is now ~RGB
-    mask3 = np.dstack((mask, mask, mask))
-    # mask the image
-    col_msk_plant = cv2.bitwise_and(cplant, cplant, mask = mask)
-    # mask the plant out of the background using the inverse make
-    bkg = cv2.bitwise_and(img,img,mask=mask_inv)
-    bkg3 = np.dstack((bkg, bkg, bkg))
-    # overlay the masked images
-    final = cv2.add(col_msk_plant, bkg3)
-    cv2.imwrite("pseudocol_plant.png", final)
+  
+  mask_inv=cv2.bitwise_not(mask)
+  # mask the background and color the plant with color scheme 'summer' see cmap/applyColorMap fxn
+  plant = cv2.bitwise_and(img, mask)
+  cplant = cv2.applyColorMap(plant, colormap = 6)
+  # need to make the mask 3 dimensional if you want to mask the image because the pseudocolor image is now ~RGB
+  mask3 = np.dstack((mask, mask, mask))
+  # mask the image
+  col_msk_plant = cv2.bitwise_and(cplant, cplant, mask = mask)
+  # mask the plant out of the background using the inverse make
+  bkg = cv2.bitwise_and(img,img,mask=mask_inv)
+  bkg3 = np.dstack((bkg, bkg, bkg))
+  # overlay the masked images
+  final_pseudo = cv2.add(col_msk_plant, bkg3)
+  fig_name_pseudo =(str(filename[0:-4]) + '_nir_pseudo_col.png')
+  cv2.imwrite(fig_name_pseudo, final_pseudo)
+  print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name_pseudo))))
   
   # print a colorbar which can be associated with pseudo image
   if debug:
-    plt.imshow(final, cmap='summer')
+    plt.imshow(final_pseudo, cmap='summer')
     plt.colorbar(orientation='horizontal')
     plt.axis('off')
     fig_name=('NIR' + '_colorbar_' + imgname)

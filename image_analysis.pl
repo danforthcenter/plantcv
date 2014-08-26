@@ -394,7 +394,7 @@ sub read_snapshot_dir {
 		if ($opt{'D'}) {
 			@matches = grep(/^$type/i, @tiles);
 		} else {
-			@matches = grep(/^$type.+[hz]$zoom_setting/i, @tiles);	
+			@matches = grep(/^$type.+[hz]$zoom_setting\_/i, @tiles);
 		}
 		
 		@matches = sort @matches;
@@ -420,7 +420,7 @@ sub read_snapshot_dir {
 					}
 				} else {
 					$meta{$tile}->{'frame'} = 0;
-					if (exists($parts[3]) && substr($parts[4],0,1) eq 'h') {
+					if (exists($parts[3]) && substr($parts[3],0,1) eq 'h') {
 						$parts[3] =~ s/h//;
 						$meta{$tile}->{'lifter'} = $parts[3];
 					}

@@ -58,8 +58,8 @@ def main():
       bins = row[9]
       for s in range(1,bins):
         names.append('s' + str(s))
-      out.write(','.join(map(str,names)))
-    out.write(','.join(map(str, row)))
+      out.write(','.join(map(str,names)) + '\n')
+    out.write(','.join(map(str, row)) + '\n')
   
 
 if __name__ == '__main__':
