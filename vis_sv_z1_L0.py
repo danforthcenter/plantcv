@@ -49,10 +49,10 @@ def main():
   device, b_cnt = pcv.binary_threshold(b, 138, 255, 'light', device, args.debug)
   
   # Fill small objects
-  device, b_fill = pcv.fill(b_thresh, b_cnt, 150, device, args.debug)
+  device, bs = pcv.fill(b_thresh, b_cnt, 100, device, args.debug)
   
   # Join the thresholded saturation and blue-yellow images
-  device, bs = pcv.logical_and(s_fill, b_fill, device, args.debug)
+  #device, bs = pcv.logical_and(s_fill, b_fill, device, args.debug)
   
   # Apply Mask (for vis images, mask_color=white)
   device, masked = pcv.apply_mask(img, bs, 'white', device, args.debug)
@@ -70,7 +70,7 @@ def main():
   device, ab_cnt = pcv.logical_or(maskeda_thresh, maskedb_thresh, device, args.debug)
   
   # Fill small objects
-  device, ab_fill = pcv.fill(ab, ab_cnt, 200, device, args.debug)
+  device, ab_fill = pcv.fill(ab, ab_cnt, 100, device, args.debug)
   
   # Apply mask (for vis images, mask_color=white)
   device, masked2 = pcv.apply_mask(masked, ab_fill, 'white', device, args.debug)
@@ -99,7 +99,7 @@ def main():
   device, maskedb_thresh2 = pcv.binary_threshold(masked_b2, 170, 255, 'light', device, args.debug)
   device, ab2 = pcv.logical_or(maskeda_thresh2, maskedb_thresh2, device, args.debug)
   device, ab_cnt2 = pcv.logical_or(maskeda_thresh2, maskedb_thresh2, device, args.debug)
-  device, ab_fill2 = pcv.fill(ab2, ab_cnt2, 200, device, args.debug)
+  device, ab_fill2 = pcv.fill(ab2, ab_cnt2, 450, device, args.debug)
   
   device, ab_cnt3 = pcv.logical_or(ab_fill1, ab_fill2, device, args.debug)
   device, masked3 = pcv.apply_mask(masked2, ab_cnt3, 'white', device, args.debug)
@@ -108,7 +108,7 @@ def main():
   device, id_objects3,obj_hierarchy3 = pcv.find_objects(masked2, ab_fill, device, args.debug)
 
   # Define ROI
-  device, roi3, roi_hierarchy3= pcv.define_roi(masked2,'rectangle', device, None, 'default', args.debug,True, 650, 0,-450,-120)
+  device, roi3, roi_hierarchy3= pcv.define_roi(masked2,'rectangle', device, None, 'default', args.debug,True, 650, 0,-650,-300)
  
   # Decide which objects to keep and combine with objects overlapping with black bars
   device,roi_objects3, hierarchy3, kept_mask3, obj_area1 = pcv.roi_objects(img,'cutto',roi3,roi_hierarchy3,id_objects3,obj_hierarchy3,device, args.debug)
@@ -123,13 +123,13 @@ def main():
  # Object combine kept objects
   device, obj, mask = pcv.object_composition(img, roi_objects4, hierarchy4, device, args.debug)
   
-############## Analysis ################  
+############### Analysis ################  
   
   # Find shape properties, output shape image (optional)
   device, shape_header,shape_data,shape_img = pcv.analyze_object(img, args.image, obj, mask, device,args.debug,args.outdir+'/'+filename)
    
   # Shape properties relative to user boundary line (optional)
-  device, boundary_header,boundary_data, boundary_img1= pcv.analyze_bound(img, args.image,obj, mask, 270, device,args.debug,args.outdir+'/'+filename)
+  device, boundary_header,boundary_data, boundary_img1= pcv.analyze_bound(img, args.image,obj, mask, 380, device,args.debug,args.outdir+'/'+filename)
   
   # Determine color properties: Histograms, Color Slices and Pseudocolored Images, output color analyzed images (optional)
   device, color_header,color_data,norm_slice= pcv.analyze_color(img, args.image, kept_mask4, 256, device, args.debug,'all','rgb','v',args.outdir+'/'+filename)
