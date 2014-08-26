@@ -55,11 +55,11 @@ def db_lookup(database, ids, outdir, vis=False, nir=False, flu=False):
           img_name = outdir + '/' + row['plant_id'] + '_' + row['camera'] + '_' + str(row['frame']) + '_z' + str(row['zoom']) + '_h' + str(row['lifter']) + '_' + dt + '.png'
           copy(row['image_path'], img_name)
           #print(args.outdir + '/' + row['plant_id'])
-      elif (nir):
+      if (nir):
         if (row['camera'] == 'nir_sv' or row['camera'] == 'nir_tv'):
           img_name = outdir + '/' + row['plant_id'] + '_' + row['camera'] + '_' + str(row['frame']) + '_z' + str(row['zoom']) + '_h' + str(row['lifter']) + '_' + dt + '.png'
           copy(row['image_path'], img_name)
-      elif (flu):
+      if (flu):
         if (row['camera'] == 'flu_tv'):
           images = row['image_path'].split(',')
           for i in enumerate(images):
@@ -88,10 +88,10 @@ def csv_lookup(csv, ids, outdir, vis=False, nir=False, flu=False):
           if (vis):
             if (vis_pattern.match(tile)):
               copy(path + '/snapshot' + data[0] + '/' + tile + '.png', img_name)
-          elif (nir):
+          if (nir):
             if (nir_pattern.match(tile)):
               copy(path + '/snapshot' + data[0] + '/' + tile + '.png', img_name)
-          elif (flu):
+          if (flu):
             if (flu_pattern.match(tile)):
               copy(path + '/snapshot' + data[0] + '/' + tile + '.png', img_name)
 
