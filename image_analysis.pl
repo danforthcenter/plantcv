@@ -372,6 +372,7 @@ sub read_snapshot_dir {
 	open(CSV, "$dir/SnapshotInfo.csv") or die "Cannot open $dir/SnapshotInfo.csv: #!\n\n";
 	# Shift off header
 	my $header = <CSV>;
+	chomp $header;
 	my @header = split /,/, $header;
 	my %index;
 	for (my $i = 0; $i < scalar(@header); $i++) {
