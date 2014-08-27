@@ -381,10 +381,10 @@ sub read_snapshot_dir {
 	while (my $line = <CSV>) {
 		chomp $line;
 		#my ($snapshot_id, $plant_id, $car_id, $datetime, $weight_before, $weight_after, $water_vol, $completed, $measure_label, $tiles) = split /,/, $line;
-		my $snapshot_id = $index{'id'};
-		my $plant_id = $index{'plant barcode'};
-		my $datetime = $index{'timestamp'};
-		my $tiles = $index{'tiles'};
+		my $snapshot_id = $header[$index{'id'}];
+		my $plant_id = $header[$index{'plant barcode'}];
+		my $datetime = $header[$index{'timestamp'}];
+		my $tiles = $header[$index{'tiles'}];
 		my ($date, $time) = split /\s/, $datetime;
 		my ($year, $month, $day) = split /-/, $date;
 		my ($hour, $min, $sec) = split /:/, $time;
