@@ -372,9 +372,19 @@ sub read_snapshot_dir {
 	open(CSV, "$dir/SnapshotInfo.csv") or die "Cannot open $dir/SnapshotInfo.csv: #!\n\n";
 	# Shift off header
 	my $header = <CSV>;
+	my @header = split /,/, $header;
+	my %index;
+	for (my $i = 0; $i < scalar(@header); $i++) {
+		$index{$header[$i]} = $i;
+	}
+	
 	while (my $line = <CSV>) {
 		chomp $line;
-		my ($snapshot_id, $plant_id, $car_id, $datetime, $weight_before, $weight_after, $water_vol, $completed, $measure_label, $tiles) = split /,/, $line;
+		#my ($snapshot_id, $plant_id, $car_id, $datetime, $weight_before, $weight_after, $water_vol, $completed, $measure_label, $tiles) = split /,/, $line;
+		my $snapshot_id = $index{'id'};
+		my $plant_id = $index{'plant barcode'};
+		my $datetime = $index{'timestamp'};
+		my $tiles = $index{'tiles'};
 		my ($date, $time) = split /\s/, $datetime;
 		my ($year, $month, $day) = split /-/, $date;
 		my ($hour, $min, $sec) = split /:/, $time;
