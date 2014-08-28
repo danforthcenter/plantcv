@@ -383,6 +383,7 @@ sub read_snapshot_dir {
 		chomp $line;
 		#my ($snapshot_id, $plant_id, $car_id, $datetime, $weight_before, $weight_after, $water_vol, $completed, $measure_label, $tiles) = split /,/, $line;
 		my @fields = split /,/, $line;
+		next if (!$fields[$index{'tiles'}]);
 		my $snapshot_id = $fields[$index{'id'}];
 		my $plant_id = $fields[$index{'plant barcode'}];
 		my $datetime = $fields[$index{'timestamp'}];
