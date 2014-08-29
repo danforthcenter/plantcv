@@ -79,7 +79,7 @@ def main():
   for row in (db.execute('SELECT DISTINCT(`datetime`) FROM `snapshots`')):
     snapshots.append(row['datetime'])
   if (args.debug):
-    print('Found ' + str(len(snapshots)) + ' snapshots' + '\n')
+    print('Found ' + str(len(snapshots)) + ' snapshots')
   
   # Retrieve snapshots and process data
   s = 0
@@ -118,7 +118,7 @@ def main():
         tv_area = zoom_correction(row['area'], row['zoom'])
     if sv_image_count == 4 and tv_area > 0:
       if (args.debug):
-        print('Snapshot ' + str(s) + ' has 5 images' + '\n')
+        print('Snapshot ' + str(s) + ' has 5 images')
       solidity /= sv_image_count
       perimeter /= sv_image_count
       centroid_x /= sv_image_count
@@ -139,7 +139,7 @@ def main():
         image_count += 1
       if image_count > 0:
         if (args.debug):
-          print('Snapshot ' + str(s) + ' has boundary data' + '\n')
+          print('Snapshot ' + str(s) + ' has boundary data')
         height_above_bound /= image_count
         height_below_bound /= image_count
         above_bound_area /= image_count
@@ -162,6 +162,9 @@ def main():
         out.write(','.join(map(str, (plant_id, snapshot, sv_area, tv_area, centroid_height, solidity, perimeter, centroid_x, centroid_y, longest_axis,
                                    height_above_bound, height_below_bound, above_bound_area, percent_above_bound_area, below_bound_area,
                                    percent_below_bound_area, outlier, boundary_line_y))) + '\n')
+    else:
+      if (args.debug):
+        print('Something is wrong, snapshot ' + str(s) + ' has ' + str(sv_image_count) + ' SV images and TV area is ' + str(tv_area))
 
 if __name__ == '__main__':
   main()
