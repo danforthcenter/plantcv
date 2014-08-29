@@ -76,7 +76,7 @@ def main():
   
   # Retrieve snapshot IDs from the database
   snapshots = []
-  for row in (db.execute('SELECT DISTINCT(`datetime`) FROM `snapshots`')):
+  for row in (db.execute('SELECT DISTINCT(`datetime`) FROM `snapshots` WHERE `camera` LIKE "vis%"')):
     snapshots.append(row['datetime'])
   if (args.debug):
     print('Found ' + str(len(snapshots)) + ' snapshots')
