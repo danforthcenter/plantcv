@@ -11,6 +11,7 @@ def options():
   parser.add_argument("-d", "--database", help="SQLite database file from plantcv.", required=True)
   parser.add_argument("-o", "--outfile", help="Output text file.", required=True)
   parser.add_argument("-p", "--height", help="Height of images in pixels", required=True, type=int)
+  parser.add_argument("-D", "--debug", help="Turn on debugging mode", action="store_true")
   args = parser.parse_args()
   return args
 
@@ -77,9 +78,13 @@ def main():
   snapshots = []
   for row in (db.execute('SELECT DISTINCT(`datetime`) FROM `snapshots`')):
     snapshots.append(row['datetime'])
+  if (args.debug):
+    print('Found ' + str(len(snapshots)) + ' snapshots' + '\n')
   
   # Retrieve snapshots and process data
+  s = 0
   for snapshot in snapshots:
+    s += 1
     sv_image_count = 0
     outlier = False
     plant_id = ''
@@ -112,6 +117,8 @@ def main():
       elif row['camera'] == 'vis_tv':
         tv_area = zoom_correction(row['area'], row['zoom'])
     if sv_image_count == 4 and tv_area > 0:
+      if (args.debug):
+        print('Snapshot ' + str(s) + ' has 5 images' + '\n')
       solidity /= sv_image_count
       perimeter /= sv_image_count
       centroid_x /= sv_image_count
@@ -131,6 +138,8 @@ def main():
         boundary_line_y = row['x_position']
         image_count += 1
       if image_count > 0:
+        if (args.debug):
+          print('Snapshot ' + str(s) + ' has boundary data' + '\n')
         height_above_bound /= image_count
         height_below_bound /= image_count
         above_bound_area /= image_count
