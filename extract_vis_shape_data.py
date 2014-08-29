@@ -82,9 +82,7 @@ def main():
     print('Found ' + str(len(snapshots)) + ' snapshots')
   
   # Retrieve snapshots and process data
-  s = 0
   for snapshot in snapshots:
-    s += 1
     sv_image_count = 0
     outlier = False
     plant_id = ''
@@ -118,7 +116,7 @@ def main():
         tv_area = zoom_correction(row['area'], row['zoom'])
     if sv_image_count == 4 and tv_area > 0:
       if (args.debug):
-        print('Snapshot ' + str(s) + ' has 5 images')
+        print('Snapshot ' + str(snapshot) + ' has 5 images')
       solidity /= sv_image_count
       perimeter /= sv_image_count
       centroid_x /= sv_image_count
@@ -139,7 +137,7 @@ def main():
         image_count += 1
       if image_count > 0:
         if (args.debug):
-          print('Snapshot ' + str(s) + ' has boundary data')
+          print('Snapshot ' + str(snapshot) + ' has boundary data')
         height_above_bound /= image_count
         height_below_bound /= image_count
         above_bound_area /= image_count
@@ -164,7 +162,7 @@ def main():
                                    percent_below_bound_area, outlier, boundary_line_y))) + '\n')
     else:
       if (args.debug):
-        print('Something is wrong, snapshot ' + str(s) + ' has ' + str(sv_image_count) + ' SV images and TV area is ' + str(tv_area))
+        print('Something is wrong, snapshot ' + str(snapshot) + ' has ' + str(sv_image_count) + ' SV images and TV area is ' + str(tv_area))
 
 if __name__ == '__main__':
   main()
