@@ -1269,7 +1269,7 @@ def tiller_count (img,imgname, obj, mask, line_position, device , debug=False, f
   # filename = False or image name. If defined print image.
   device +=1
   ori_img=np.copy(img)
-
+  ori_mask=np.copy(mask)
   # Draw line horizontal line through bottom of image, that is adjusted to user input height
   if len(np.shape(ori_img))==3:
     iy,ix,iz=np.shape(ori_img)
@@ -1281,13 +1281,21 @@ def tiller_count (img,imgname, obj, mask, line_position, device , debug=False, f
   wback=(np.zeros(size1,dtype=np.uint8))+255
   x_coor=int(ix)
   y_coor=int(iy)-int(line_position)
-  rec_point1=(1,2054)
-  rec_point2=(x_coor-2,y_coor-2)
-  cv2.rectangle(background,rec_point1,rec_point2,(255),1)
-  below_contour,below_hierarchy = cv2.findContours(background,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
-  print_image(background,(str(device) + '_tiller1.png'))
+  
+  print x_coor
+  print y_coor
+  
+  line_point1=(1,y_coor-2)
+  line_point2=(ix,y_coor-2)
+  cv2.line(background,line_point1,line_point2,(255),1)
 
-  x,y,width,height = cv2.boundingRect(obj)
+  tillers=np.multiply(background, ori_mask)
+  print_image(background,(str(device) + '_tiller1.png'))
+  print_image(tillers,(str(device) + '_tiller2.png'))
+  
+  if debug:
+    cv2.line(ori_img,line_point1,line_point2,(255,0,0),1)
+    print_image(ori_img,(str(device) + '_tiller_line.png'))
   
   return device
 
