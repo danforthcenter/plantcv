@@ -132,7 +132,7 @@ def main():
   device, boundary_header,boundary_data, boundary_img1= pcv.analyze_bound(img, args.image,obj, mask, 950, device,args.debug,args.outdir+'/'+filename)
   
   # Tiller Tool Test
-  device= pcv.tiller_count(img, args.image,obj, mask, 970, device,args.debug,args.outdir+'/'+filename)
+  device= pcv.tiller_count(img, args.image,obj, mask, 965, device,args.debug,args.outdir+'/'+filename)
 
   
   ## Determine color properties: Histograms, Color Slices and Pseudocolored Images, output color analyzed images (optional)
