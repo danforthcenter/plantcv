@@ -1288,10 +1288,11 @@ def tiller_count (img,imgname, obj, mask, line_position, device , debug=False, f
   line_point1=(1,y_coor-2)
   line_point2=(ix,y_coor-2)
   cv2.line(background,line_point1,line_point2,(255),1)
-
-  tillers=np.multiply(background, ori_mask)
+  tillers=cv2.bitwise_and(background, ori_mask)
+  
   print_image(background,(str(device) + '_tiller1.png'))
-  print_image(tillers,(str(device) + '_tiller2.png'))
+  print_image(ori_mask,(str(device) + '_tiller2.png'))
+  print_image(tillers,(str(device) + '_tiller3.png'))
   
   if debug:
     cv2.line(ori_img,line_point1,line_point2,(255,0,0),1)
