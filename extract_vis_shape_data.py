@@ -129,9 +129,9 @@ def main():
       for row in (db.execute('SELECT * FROM `snapshots` INNER JOIN `boundary_data` ON `snapshots`.`image_id` = `boundary_data`.`image_id` WHERE `datetime` = %i' % snapshot)):
         height_above_bound += row['height_above_bound']
         height_below_bound += row['height_below_bound']
-        above_bound_area += row['above_bound_area']
+        above_bound_area += zoom_correction(row['above_bound_area'], row['zoom'])
         percent_above_bound_area += row['percent_above_bound_area']
-        below_bound_area += row['below_bound_area']
+        below_bound_area += zoom_correction(row['below_bound_area'], row['zoom'])
         percent_below_bound_area += row['percent_below_bound_area']
         boundary_line_y = row['x_position']
         image_count += 1
