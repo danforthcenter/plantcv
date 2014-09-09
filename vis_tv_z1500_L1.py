@@ -49,7 +49,7 @@ def main():
   device, b_cnt = pcv.binary_threshold(b, 138, 255, 'light', device, args.debug)
   
   # Fill small objects
-  device, b_fill = pcv.fill(b_thresh, b_cnt, 150, device, args.debug)
+  device, b_fill = pcv.fill(b_thresh, b_cnt, 50, device, args.debug)
   
   # Join the thresholded saturation and blue-yellow images
   device, bs = pcv.logical_and(s_fill, b_fill, device, args.debug)
@@ -81,7 +81,7 @@ def main():
   device, soil_ab_cnt = pcv.logical_or(soila_thresh, soilb_thresh, device, args.debug)
 
   # Fill small objects
-  device, soil_fill = pcv.fill(soil_ab, soil_ab_cnt, 200, device, args.debug)
+  device, soil_fill = pcv.fill(soil_ab, soil_ab_cnt, 50, device, args.debug)
 
   # Median Filter
   device, soil_mblur = pcv.median_blur(soil_fill, 5, device, args.debug)

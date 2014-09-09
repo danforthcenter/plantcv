@@ -44,7 +44,7 @@ def main():
     img = cv2.imread(args.image, flags=0)
     path, img_name = os.path.split(args.image)
     # Read in image which is average of average of backgrounds
-    img_bkgrd = cv2.imread("background.png", flags=0)
+    img_bkgrd = cv2.imread("/home/mgehan/LemnaTec/ddpsc_image_git/docs/background_nir_z3500.png", flags=0)
 
     # NIR images for burnin2 are up-side down. This may be fixed in later experiments
     img =  ndimage.rotate(img, 0)
@@ -54,7 +54,7 @@ def main():
     device, bkg_sub_img = pcv.image_subtract(img, img_bkgrd, device, args.debug)
     if args.debug:
         pcv.plot_hist(bkg_sub_img, 'bkg_sub_img')
-    device, bkg_sub_thres_img = pcv.binary_threshold(bkg_sub_img, 145, 255, 'dark', device, args.debug)
+    device, bkg_sub_thres_img = pcv.binary_threshold(bkg_sub_img, 150, 255, 'dark', device, args.debug)
     bkg_sub_thres_img = cv2.inRange(bkg_sub_img, 50, 190)
     if args.debug:
         cv2.imwrite('bkgrd_sub_thres.png', bkg_sub_thres_img)
@@ -112,7 +112,7 @@ def main():
       pcv.plot_hist(edge_shrp_img, 'hist_edge_shrp_img')
       
     # Perform thresholding to generate a binary image
-    device, tr_es_img = pcv.binary_threshold(edge_shrp_img, 132, 255, 'dark', device, args.debug)
+    device, tr_es_img = pcv.binary_threshold(edge_shrp_img, 150, 255, 'dark', device, args.debug)
     
     # Prepare a few small kernels for morphological filtering
     kern = np.zeros((3,3), dtype=np.uint8)
@@ -153,7 +153,7 @@ def main():
     # img is (254 X 320)
     
     # mask for the bottom of the image
-    device, box1_img, rect_contour1, hierarchy1 = pcv.rectangle_mask(img, (128,245), (192,252), device, args.debug)
+    device, box1_img, rect_contour1, hierarchy1 = pcv.rectangle_mask(img, (75,212), (250,252), device, args.debug)
     # mask for the left side of the image
     device, box2_img, rect_contour2, hierarchy2 = pcv.rectangle_mask(img, (1,1), (75,252), device, args.debug)
     # mask for the right side of the image
@@ -173,7 +173,7 @@ def main():
     
     device, edge_masked_img = pcv.apply_mask(masked_erd, inv_bx1234_img, 'black', device, args.debug)
     
-    device, roi_img, roi_contour, roi_hierarchy = pcv.rectangle_mask(img, (120,75), (200,245), device, args.debug)
+    device, roi_img, roi_contour, roi_hierarchy = pcv.rectangle_mask(img, (50,50), (280,215), device, args.debug)
     
     plant_objects, plant_hierarchy = cv2.findContours(edge_masked_img,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
     device, roi_objects, hierarchy5, kept_mask, obj_area = pcv.roi_objects(img, 'partial', roi_contour, roi_hierarchy, plant_objects, plant_hierarchy, device, args.debug)

@@ -70,7 +70,7 @@ def main():
   device, ab_cnt = pcv.logical_or(maskeda_thresh, maskedb_thresh, device, args.debug)
   
   # Fill small objects
-  device, ab_fill = pcv.fill(ab, ab_cnt, 0, device, args.debug)
+  device, ab_fill = pcv.fill(ab, ab_cnt, 200, device, args.debug)
   
   # Apply mask (for vis images, mask_color=white)
   device, masked2 = pcv.apply_mask(masked, ab_fill, 'white', device, args.debug)
@@ -82,8 +82,8 @@ def main():
   device, masked3 = pcv.apply_mask(masked2, kept_mask1, 'white', device, args.debug)
   device, masked_a1 = pcv.rgb2gray_lab(masked3, 'a', device, args.debug)
   device, masked_b1 = pcv.rgb2gray_lab(masked3, 'b', device, args.debug)
-  device, maskeda_thresh1 = pcv.binary_threshold(masked_a1, 110, 255, 'dark', device, args.debug)
-  device, maskedb_thresh1 = pcv.binary_threshold(masked_b1, 200, 255, 'light', device, args.debug)
+  device, maskeda_thresh1 = pcv.binary_threshold(masked_a1, 122, 255, 'dark', device, args.debug)
+  device, maskedb_thresh1 = pcv.binary_threshold(masked_b1, 170, 255, 'light', device, args.debug)
   device, ab1 = pcv.logical_or(maskeda_thresh1, maskedb_thresh1, device, args.debug)
   device, ab_cnt1 = pcv.logical_or(maskeda_thresh1, maskedb_thresh1, device, args.debug)
   device, ab_fill1 = pcv.fill(ab1, ab_cnt1, 300, device, args.debug)
@@ -108,13 +108,13 @@ def main():
   device, id_objects3,obj_hierarchy3 = pcv.find_objects(masked2, ab_fill, device, args.debug)
 
   # Define ROI
-  device, roi3, roi_hierarchy3= pcv.define_roi(masked2,'rectangle', device, None, 'default', args.debug,True, 500, 0,-450,-750)
+  device, roi3, roi_hierarchy3= pcv.define_roi(masked2,'rectangle', device, None, 'default', args.debug,True, 500, 0,-450,-530)
  
   # Decide which objects to keep and combine with objects overlapping with black bars
   device,roi_objects3, hierarchy3, kept_mask3, obj_area1 = pcv.roi_objects(img,'cutto',roi3,roi_hierarchy3,id_objects3,obj_hierarchy3,device, args.debug)
   device, kept_mask4_1 = pcv.logical_or(ab_cnt3, kept_mask3, device, args.debug)
   device, kept_cnt = pcv.logical_or(ab_cnt3, kept_mask3, device, args.debug)
-  device, kept_mask4 = pcv.fill(kept_mask4_1, kept_cnt, 0, device, args.debug)
+  device, kept_mask4 = pcv.fill(kept_mask4_1, kept_cnt, 200, device, args.debug)
   device, masked5 = pcv.apply_mask(masked2, kept_mask4, 'white', device, args.debug)
   device, id_objects4,obj_hierarchy4 = pcv.find_objects(masked5, kept_mask4, device, args.debug)
   device, roi4, roi_hierarchy4= pcv.define_roi(masked2,'rectangle', device, None, 'default', args.debug,False, 0, 0,0,0)
@@ -129,15 +129,19 @@ def main():
   device, shape_header,shape_data,shape_img = pcv.analyze_object(img, args.image, obj, mask, device,args.debug,args.outdir+'/'+filename)
    
   # Shape properties relative to user boundary line (optional)
-  device, boundary_header,boundary_data, boundary_img1= pcv.analyze_bound(img, args.image,obj, mask, 920, device,args.debug,args.outdir+'/'+filename)
+  device, boundary_header,boundary_data, boundary_img1= pcv.analyze_bound(img, args.image,obj, mask, 950, device,args.debug,args.outdir+'/'+filename)
   
-  # Determine color properties: Histograms, Color Slices and Pseudocolored Images, output color analyzed images (optional)
-  device, color_header,color_data,norm_slice= pcv.analyze_color(img, args.image, kept_mask4, 256, device, args.debug,'all','rgb','v',args.outdir+'/'+filename)
+  # Tiller Tool Test
+  device= pcv.tiller_count(img, args.image,obj, mask, 950, device,args.debug,args.outdir+'/'+filename)
+
   
-  # Output shape and color data
-  pcv.print_results(args.image, shape_header, shape_data)
-  pcv.print_results(args.image, color_header, color_data)
-  pcv.print_results(args.image, boundary_header, boundary_data)
+  ## Determine color properties: Histograms, Color Slices and Pseudocolored Images, output color analyzed images (optional)
+  #device, color_header,color_data,norm_slice= pcv.analyze_color(img, args.image, kept_mask4, 256, device, args.debug,'all','rgb','v',args.outdir+'/'+filename)
+  #
+  ## Output shape and color data
+  #pcv.print_results(args.image, shape_header, shape_data)
+  #pcv.print_results(args.image, color_header, color_data)
+  #pcv.print_results(args.image, boundary_header, boundary_data)
   
 if __name__ == '__main__':
   main()#!/usr/bin/env python

@@ -286,7 +286,7 @@ def watershed(img, marker, device, debug):
   return device, marker
 
 ### Make masking rectangle
-def rectangle_mask(img, p1, p2, device, debug):
+def rectangle_mask(img, p1, p2, device, debug, color="black"):
   # takes an input image and returns a binary image masked by a rectangular area denoted by p1 and p2
   # note that p1 = (0,0) is the top left hand corner bottom right hand corner is p2 = (max-value(x), max-value(y))
   # device = device number. Used to count steps in the pipeline
@@ -297,34 +297,53 @@ def rectangle_mask(img, p1, p2, device, debug):
   # create a blank image of same size
   bnk = np.zeros(size, dtype=np.uint8)
   # draw a rectangle denoted by pt1 and pt2 on the blank image
-  cv2.rectangle(img = bnk, pt1 = p1, pt2 = p2, color = (255,255,255))
-  ret, bnk = cv2.threshold(bnk,127,255,0)
-  contour,hierarchy = cv2.findContours(bnk,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
-  # make sure entire rectangle is within (visable within) plotting region or else it will not fill with thickness = -1
-  # note that you should only print the first contour (contour[0]) if you want to fill with thickness = -1
-  # otherwise two rectangles will be drawn and the space between them will get filled
-  cv2.drawContours(bnk, contour, 0 ,(255,255,255), -1)
-  device +=1
+  
+  if color=="black":
+    cv2.rectangle(img = bnk, pt1 = p1, pt2 = p2, color = (255,255,255))
+    ret, bnk = cv2.threshold(bnk,127,255,0)
+    contour,hierarchy = cv2.findContours(bnk,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+    # make sure entire rectangle is within (visable within) plotting region or else it will not fill with thickness = -1
+    # note that you should only print the first contour (contour[0]) if you want to fill with thickness = -1
+    # otherwise two rectangles will be drawn and the space between them will get filled
+    cv2.drawContours(bnk, contour, 0 ,(255,255,255), -1)
+    device +=1
+  if color=="gray":
+    cv2.rectangle(img = bnk, pt1 = p1, pt2 = p2, color = (192,192,192))
+    ret, bnk = cv2.threshold(bnk,127,255,0)
+    contour,hierarchy = cv2.findContours(bnk,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+    # make sure entire rectangle is within (visable within) plotting region or else it will not fill with thickness = -1
+    # note that you should only print the first contour (contour[0]) if you want to fill with thickness = -1
+    # otherwise two rectangles will be drawn and the space between them will get filled
+    cv2.drawContours(bnk, contour, 0 ,(192,192,192), -1)
   if debug:
     print_image(bnk, (str(device) + '_roi.png'))
   return device, bnk, contour, hierarchy
 
 ### Mask border of image
-def border_mask(img, p1, p2, device, debug):
+def border_mask(img, p1, p2, device, debug, color="black"):
   # by using rectangle_mask to mask the edge of plotting regions you end up missing the border of the images by 1 pixel
   # This function fills this region in
   # note that p1 = (0,0) is the top left hand corner bottom right hand corner is p2 = (max-value(x), max-value(y))
   # device = device number. Used to count steps in the pipeline
   # debug = True/False. If True; print output image
-    
-  ix, iy = np.shape(img)
-  size = ix,iy
-  bnk = np.zeros(size, dtype=np.uint8)
-  cv2.rectangle(img = bnk, pt1 = p1, pt2 = p2, color = (255,255,255))
-  ret, bnk = cv2.threshold(bnk,127,255,0)
-  contour,hierarchy = cv2.findContours(bnk,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
-  cv2.drawContours(bnk, contour, -1 ,(255,255,255), 5)
-  device +=1
+  if color=="black":
+    ix, iy = np.shape(img)
+    size = ix,iy
+    bnk = np.zeros(size, dtype=np.uint8)
+    cv2.rectangle(img = bnk, pt1 = p1, pt2 = p2, color = (255,255,255))
+    ret, bnk = cv2.threshold(bnk,127,255,0)
+    contour,hierarchy = cv2.findContours(bnk,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+    cv2.drawContours(bnk, contour, -1 ,(255,255,255), 5)
+    device +=1
+  if color=="gray":
+    ix, iy = np.shape(img)
+    size = ix,iy
+    bnk = np.zeros(size, dtype=np.uint8)
+    cv2.rectangle(img = bnk, pt1 = p1, pt2 = p2, color = (192,192,192))
+    ret, bnk = cv2.threshold(bnk,127,255,0)
+    contour,hierarchy = cv2.findContours(bnk,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+    cv2.drawContours(bnk, contour, -1 ,(192,192,192), 5)
+    device +=1
   if debug:
     print_image(bnk, (str(device) + '_brd_mskd_' + '.png'))
   return device, bnk, contour, hierarchy
@@ -1236,6 +1255,42 @@ def analyze_bound(img,imgname, obj, mask, line_position, device , debug=False, f
   #return device, shape_header, shape_data, ori_img
   return device, bound_header, bound_data, ori_img
 
+### Shape Tiller Tool
+def tiller_count (img,imgname, obj, mask, line_position, device , debug=False, filename=False):
+  # img = image
+  # imgname = name of input image
+  # obj = single or grouped contour object
+  # mask = mask made from selected contours
+  # shape_header = pass shape header data to function
+  # shape_data = pass shape data so that analyze_bound data can be appended to it
+  # line_position = position of boundry line (a value of 0 would draw the line through the bottom of the image)
+  # device = device number. Used to count steps in the pipeline
+  # debug = True/False. If True, print data.
+  # filename = False or image name. If defined print image.
+  device +=1
+  ori_img=np.copy(img)
+
+  # Draw line horizontal line through bottom of image, that is adjusted to user input height
+  if len(np.shape(ori_img))==3:
+    iy,ix,iz=np.shape(ori_img)
+  else:
+    iy,ix=np.shape(ori_img)
+  size=(iy,ix)
+  size1=(iy,ix,3)
+  background=np.zeros(size,dtype=np.uint8)
+  wback=(np.zeros(size1,dtype=np.uint8))+255
+  x_coor=int(ix)
+  y_coor=int(iy)-int(line_position)
+  rec_point1=(1,2054)
+  rec_point2=(x_coor-2,y_coor-2)
+  cv2.rectangle(background,rec_point1,rec_point2,(255),1)
+  below_contour,below_hierarchy = cv2.findContours(background,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+  print_image(background,(str(device) + '_tiller1.png'))
+
+  x,y,width,height = cv2.boundingRect(obj)
+  
+  return device
+
 
 ### Analyze Color of Object
 def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all',cslice_type='rgb',pseudo_channel='v',filename=False):
@@ -1780,7 +1835,7 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, debug=False, filenam
   mask_inv=cv2.bitwise_not(mask)
   # mask the background and color the plant with color scheme 'summer' see cmap/applyColorMap fxn
   plant = cv2.bitwise_and(img, mask)
-  cplant = cv2.applyColorMap(plant, colormap = 6)
+  cplant = cv2.applyColorMap(plant, colormap =2)
   # need to make the mask 3 dimensional if you want to mask the image because the pseudocolor image is now ~RGB
   mask3 = np.dstack((mask, mask, mask))
   # mask the image
