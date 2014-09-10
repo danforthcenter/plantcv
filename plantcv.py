@@ -1297,7 +1297,8 @@ def tiller_count (img,imgname, obj, mask, line_position, device , debug=False, f
   for i,c in enumerate(tiller_contour):
       tiller_width=len(c)
       tiller_len.append(tiller_width)
-      
+  tiller_length=len(tiller_len)
+  
   # find the average width of each object and two standard deviations
   average_width=np.average(tiller_len)
   std=np.std(tiller_len)
@@ -1318,12 +1319,12 @@ def tiller_count (img,imgname, obj, mask, line_position, device , debug=False, f
   
   tiller_final_count=(sum(tiller_final))
   
-  bound_header=('HEADER_TILLERING' + str(line_position), 'tillering_count', 'raw_tillering_count', 'raw_tillering_widths','average_tillering_width','std_tillering_width')
-  bound_data = (
+  tillering_header=('HEADER_TILLERING' + str(line_position), 'tillering_count', 'raw_tillering_count', 'raw_tillering_widths','average_tillering_width','std_tillering_width')
+  tillering_data = (
     'TILLERING_DATA',
-    tillering_final_count,
-    raw_tillering_count,
-    raw_tillering_widths,
+    tiller_final_count,
+    tiller_length,
+    tiller_len,
     average_width,
     std
   )

@@ -142,7 +142,7 @@ def main():
   pcv.print_results(args.image, shape_header, shape_data)
   pcv.print_results(args.image, color_header, color_data)
   pcv.print_results(args.image, boundary_header, boundary_data)
-  pcv.print_results(args.image, tiller_header,tiller_data)
+  pcv.print_results(args.image, tillering_header,tillering_data)
   
 if __name__ == '__main__':
   main()#!/usr/bin/env python
