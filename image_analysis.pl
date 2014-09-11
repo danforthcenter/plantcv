@@ -30,16 +30,21 @@ arg_check();
 my $start_time = strftime("%Y-%m-%d_%H:%M:%S", localtime());
 
 ## Temporary file names
-my $snapshot_tmp = $type.'_z'.$zoom_setting.'_snapshots.tab';
-my $runinfo_tmp = $type.'_z'.$zoom_setting.'_runinfo.tab';
-my $vis_shapes = $type.'_z'.$zoom_setting.'_vis_shapes.tab';
-my $vis_colors = $type.'_z'.$zoom_setting.'_vis_colors.tab';
-my $nir_shapes = $type.'_z'.$zoom_setting.'_nir_shapes.tab';
-my $nir_signal = $type.'_z'.$zoom_setting.'_nir_signal.tab';
-my $flu_shapes = $type.'_z'.$zoom_setting.'_flu_shapes.tab';
-my $flu_signal = $type.'_z'.$zoom_setting.'_flu_signal.tab';
-my $analysis_images = $type.'_z'.$zoom_setting.'_analysis_images.tab';
-my $boundary_data = $type.'_z'.$zoom_setting.'_boundary_data.tab';
+my $prefix = $type.'_z'.$zoom_setting;
+if ($opt{'D'}) {
+	$prefix .= '_'.$opt{'D'};
+}
+
+my $snapshot_tmp = $prefix.'_snapshots.tab';
+my $runinfo_tmp = $prefix.'_runinfo.tab';
+my $vis_shapes = $prefix.'_vis_shapes.tab';
+my $vis_colors = $prefix.'_vis_colors.tab';
+my $nir_shapes = $prefix.'_nir_shapes.tab';
+my $nir_signal = $prefix.'_nir_signal.tab';
+my $flu_shapes = $prefix.'_flu_shapes.tab';
+my $flu_signal = $prefix.'_flu_signal.tab';
+my $analysis_images = $prefix.'_analysis_images.tab';
+my $boundary_data = $prefix.'_boundary_data.tab';
 
 # Later connect to Bioinfo site to get version
 our $outlier_vs = 0;
