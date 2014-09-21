@@ -1295,34 +1295,34 @@ def tiller_count (img,imgname, obj, mask, line_position, device , debug=False, f
   # find the width of each object
   tiller_len=[]
   for i,c in enumerate(tiller_contour):
-      tiller_width=len(c)
-      tiller_len.append(tiller_width)
-  tiller_length=len(tiller_len)
+      tiller_width1=len(c)
+      tiller_len.append(tiller_width1)
+  tiller_count=len(tiller_len)
   
+  tiller_width=[l for l in tiller_len]
   # find the average width of each object and two standard deviations
   average_width=np.average(tiller_len)
   std=np.std(tiller_len)
   median=np.median(tiller_len)
   two_std=(2*std)
   
-  # see if tiller width is wider than two standard deviations, if it is it might be more than one tiller
-  tiller_final=[]
-  for t,n in enumerate(tiller_len):
-    if (n-average_width)>=median:
-      tiller_split=round((n/median))
-      tiller_final.append(tiller_split)
-    else:
-      tiller_split=1
-      tiller_final.append(tiller_split)
+  ## see if tiller width is wider than two standard deviations, if it is it might be more than one tiller
+  #tiller_final=[]
+  #for t,n in enumerate(tiller_len):
+  #  if (n-average_width)>=median:
+  #    tiller_split=round((n/median))
+  #    tiller_final.append(tiller_split)
+  #  else:
+  #    tiller_split=1
+  #    tiller_final.append(tiller_split)
+  #
+  #tiller_final_count=(sum(tiller_final))
   
-  tiller_final_count=(sum(tiller_final))
-  
-  tillering_header=('HEADER_TILLERING' + str(line_position), 'tillering_count', 'raw_tillering_count', 'raw_tillering_widths','average_tillering_width','median_tillering_width','std_tillering_width')
+  tillering_header=('HEADER_TILLERING' + str(line_position), 'raw_tillering_count', 'raw_tillering_widths','average_tillering_width','median_tillering_width','std_tillering_width')
   tillering_data = (
     'TILLERING_DATA',
-    tiller_final_count,
-    tiller_length,
-    tiller_len,
+    tiller_count,
+    tiller_width,
     average_width,
     median,
     std

@@ -109,7 +109,7 @@ def dict_factory(cursor, row):
         d[col[0]] = row[idx]
     return d
 
-def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',channels='rgb',average_angles='on',spacer='on', write_txt='no',makefig='yes', cat_treat='yes'):
+def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',channels='rgb',average_angles='on',spacer='on', write_txt='yes',makefig='yes', cat_treat='all'):
   #sqlitedb = sqlite database to query (path to db)
   #outdir = path to outdirectory
   #camera_type='vis','nir' or 'fluor'
@@ -196,6 +196,10 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
   ch1_headers.append('frame')
   ch2_headers.append('frame')
   ch3_headers.append('frame')
+  ch1_headers.append('date_time')
+  ch2_headers.append('date_time')
+  ch3_headers.append('date_time')
+
         
   if signal_type=='vis':
     for i,bn in enumerate(bin_nums):
@@ -300,6 +304,7 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
           ch2=[]
           ch3=[]
           frame=data['frame']
+          date_time=data['datetime']
           
           ch1.append(date_int)
           ch2.append(date_int)
@@ -310,6 +315,10 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
           ch1.append(frame)
           ch2.append(frame)
           ch3.append(frame)
+          ch1.append(date_time)
+          ch2.append(date_time)
+          ch3.append(date_time)
+
           
           dim1_t=np.transpose(dim1_norm)
           dim2_t=np.transpose(dim2_norm)
@@ -345,6 +354,7 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
         ch2=[]
         ch3=[]
         frame='all_avg'
+        date_time=data['datetime']
         
         ch1_avg=np.transpose(np.average(dim1_all,axis=0))
         ch2_avg=np.transpose(np.average(dim2_all,axis=0))
@@ -359,7 +369,10 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
         ch1.append(frame)
         ch2.append(frame)
         ch3.append(frame)
-        
+        ch1.append(date_time)
+        ch2.append(date_time)
+        ch3.append(date_time)
+          
         for i,c in enumerate(ch1_avg):
           b=float(c)
           ch1.append(b)
@@ -448,14 +461,15 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
       for i,n in enumerate(id_array):
         if n==name:
           if signal_type=='vis':
-            ch1_line1=np.array(sorted_ch1_final[i][3:])
-            ch2_line1=np.array(sorted_ch2_final[i][3:])
-            ch3_line1=np.array(sorted_ch3_final[i][3:])
+            ch1_line1=np.array(sorted_ch1_final[i][4:])
+            ch2_line1=np.array(sorted_ch2_final[i][4:])
+            ch3_line1=np.array(sorted_ch3_final[i][4:])
             ch1_line=ch1_line1.astype(float)
             ch2_line=ch2_line1.astype(float)
             ch3_line=ch3_line1.astype(float)
+            print ch1_line1
           else:
-            ch1_line1=np.array(sorted_ch1_final[i][3:])
+            ch1_line1=np.array(sorted_ch1_final[i][4:])
             ch1_line=ch1_line1.astype(float)            
             size=np.shape(ch1_line)
             ch2_line1=np.zeros(size)
@@ -811,7 +825,323 @@ def visualize_slice(sqlitedb,outdir,signal_type='vis', camera_label='vis_sv',cha
   return outdir_name
 
 
-
-
+def d3_color_output(sqlitedb,outdir,genotreat='*',signal_type='vis', camera_label='vis_sv',channels='rgb',average_angles='on',spacer='on', write_txt='yes',makefig='yes', cat_treat='all'):
+  #sqlitedb = sqlite database to query (path to db)
+  #outdir = path to outdirectory
+  #camera_type='vis','nir' or 'fluor'
+  #camera_label = either 'vis_tv','vis_sv',or 'fluor_tv'
+  #channels = signal,'rgb' 'lab' or 'hsv'
+  #average_angles = if on side angles for a plant are averaged
+  #spacer = either 'on' or 'off', adds a white line between day breaks
+  #makefig = either 'yes' or 'no', adds labels to days and a title
+  #cat_treat = either 'yes','no',or 'all', if yes concatenates figures by treatment, if all all slice plots are put together, this only works properly if plots are roughly similar in size
+  
+  # Makes folder in specified directory for the slice figures and images
+  i=datetime.now()
+  timenow=i.strftime('%m-%d-%Y_%H:%M:%S')
+  newfolder="slice_figs_and_images_"+(str(timenow))
+  
+  os.mkdir((str(outdir)+newfolder))
+  outdir_name=str(outdir)+str(newfolder)+"/"
+  
+  # Connect to sqlite database
+  connect=sq.connect(sqlitedb)
+  connect.row_factory = dict_factory
+  connect.text_factory=str
+  c = connect.cursor()
+  h = connect.cursor()
+  m = connect.cursor()
+  k = connect.cursor()
+  
+  # Find first day of experiment, this is needed to calculate the days in integer values instead of epoch time
+  for date in c.execute('select min(datetime) as first from snapshots'):
+    firstday=date['first']
+  
+  # Query database to get plant ids
+  if signal_type=='vis':
+    signal=c.execute('select * from snapshots inner join vis_colors on snapshots.image_id =vis_colors.image_id order by plant_id asc')
+  elif signal_type=='nir':
+    signal=c.execute('select * from snapshots inner join nir_signal on snapshots.image_id =nir_signal.image_id order by plant_id asc')
+  elif signal_type=='fluor':
+    signal=c.execute('select * from snapshots inner join flu_signal on snapshots.image_id =flu_signal.image_id order by plant_id asc')
+  
+  barcode_array=[]
+  group_id=[]
+  just_id=[]
+  ch1_total_array=[]
+  
+  # find unique ids so that angles can be averaged
+  
+  for i, group in enumerate(signal):
+    bins=int(group['bins'])
+    plant_id=group['plant_id']
+    gt=genotreat
+    if re.match('^'+re.escape(gt),plant_id)!=None:
+      barcode_array.append(plant_id,)
+    elif gt=='*':
+      barcode_array.append(plant_id,)
+    else:
+      pass
+  barcode_unique=np.unique(barcode_array)
 
   
+  # slices can be made from color histogram data or from fluor/nir signal histogram data stored in the database
+  if channels=='rgb':
+    channel1='blue'
+    channel2='green'
+    channel3='red'
+  elif channels=='lab':
+    channel1='lightness'
+    channel2='green-magenta'
+    channel3='blue-yellow'
+  elif channels=='hsv':
+    channel1='hue'
+    channel2='saturation'
+    channel3='value'
+  else:
+    channel1='signal'
+    channel2='signal'
+    channel3='signal'
+  
+  # Make first lines of empty arrays the header title
+  ch1_headers=[]
+  ch2_headers=[]
+  ch1_bins=[]
+  ch2_bins=[]
+  ch3_bins=[]
+  bin_nums=np.transpose((np.arange(0,bins, step=1)))
+  ch1_headers.append('day')
+  ch1_headers.append('date_time')
+  ch1_headers.append('barcode')
+  ch1_headers.append('frame')
+  ch1_headers.append('img_path')
+  ch2_headers.append('day')
+  ch2_headers.append('date_time')
+  ch2_headers.append('barcode')
+  ch2_headers.append('frame')
+  ch2_headers.append('img_path_1')
+  ch2_headers.append('img_path_2')
+  ch2_headers.append('img_path_3')
+  ch2_headers.append('img_path_4')
+
+        
+  if signal_type=='vis':
+    for i,bn in enumerate(bin_nums):
+      b=(str(channel1)+"_bin_"+str(bn))
+      g=(str(channel2)+"_bin_"+str(bn))
+      r=(str(channel3)+"_bin_"+str(bn))
+      ch1_bins.append(b)
+      ch2_bins.append(g)
+      ch3_bins.append(r)
+    ch1_headers.append(ch1_bins)
+    ch1_headers.append(ch2_bins)
+    ch1_headers.append(ch3_bins)
+    ch2_headers.append(ch1_bins)
+    ch2_headers.append(ch2_bins)
+    ch2_headers.append(ch3_bins)
+  elif signal_type=='nir':
+    for i,bn in enumerate(bin_nums):
+      b="nir_bin_"+str(bn)
+      ch1_headers.append(b)
+      ch2_headers.append(b)
+  elif signal_type=='fluor':
+    for i,bn in enumerate(bin_nums):
+      b="fluor_bin_"+str(bn)
+      ch1_headers.append(b)
+      ch2_headers.append(b)
+
+    
+  # Initialize the txt files which are compatible with imput into R
+  
+  if write_txt=='yes':
+    if signal_type=='vis':
+      if average_angles=='off':
+        header1_fin=','.join(repr(e) for e in ch1_headers)
+        filename1=str(outdir)+newfolder+"/"+str(signal_type)+"_rgb_signal_"+str(genotreat)+"_"+str(timenow)+".txt"
+        signal_file1= os.open(filename1,os.O_RDWR|os.O_CREAT)
+        os.write(signal_file1, header1_fin)
+        os.write(signal_file1, os.linesep)
+      elif average_angles=='on':
+        header1_fin=','.join(repr(e) for e in ch2_headers)
+        filename1=str(outdir)+newfolder+"/"+str(signal_type)+"_rgb_signal_"+str(genotreat)+"_"+str(timenow)+".txt"
+        signal_file1= os.open(filename1,os.O_RDWR|os.O_CREAT)
+        os.write(signal_file1, header1_fin)
+        os.write(signal_file1, os.linesep)
+    else:
+      header1_fin=','.join(repr(e) for e in ch1_headers)
+      filename1=str(outdir)+newfolder+"/"+str(signal_type)+"_signal_"+str(genotreat)+"_"+str(channel1)+"_"+str(timenow)+".txt"
+      signal_file1= os.open(filename1,os.O_RDWR|os.O_CREAT)
+      os.write(signal_file1, header1_fin)
+      os.write(signal_file1, os.linesep)
+
+  # For each plant id find the unique timestamp, this will be used to group snapshot angles
+  
+  for barcode_label in barcode_unique: 
+    time_array=[]
+    if signal_type=='vis':
+      database=h.execute('select * from snapshots inner join vis_colors on snapshots.image_id=vis_colors.image_id where plant_id= ? and camera=? order by datetime asc', (barcode_label,camera_label,))
+    elif signal_type=='nir':
+      database=h.execute('select * from snapshots inner join nir_signal on snapshots.image_id=nir_signal.image_id where plant_id= ? and camera=? order by datetime asc', (barcode_label,camera_label,))
+    elif signal_type=='flu':
+      database=h.execute('select * from snapshots inner join flu_signal on snapshots.image_id=flu_signal.image_id where plant_id= ? and camera=? order by datetime asc', (barcode_label,camera_label,))
+    
+    for i,t in enumerate(database):
+      date=(t['datetime'])          
+      time_array.append(date,)
+    unique_time=np.unique(time_array)
+  
+  # For each unique time grab the histogram data and either use each individual angle or averaged angles
+    
+    for time in unique_time:
+      dim1_all=[]
+      dim2_all=[]
+      dim3_all=[]
+      data_image_array=[]
+      date_int=((time-firstday)/86400) 
+      if signal_type=='vis':
+        pseudo='pseudo'
+        database_time=h.execute('select * from snapshots inner join vis_colors on snapshots.image_id=vis_colors.image_id inner join analysis_images on snapshots.image_id=analysis_images.image_id where type=? and plant_id=? and camera=? and datetime=?',(pseudo, barcode_label, camera_label,str(time),))
+      elif signal_type=='nir':
+        database_time=h.execute('select * from snapshots inner join nir_signal on snapshots.image_id=nir_signal.image_id where plant_id=? and camera=? and datetime=?',(barcode_label, camera_label,str(time),))
+      elif signal_type=='flu':
+        database_time=h.execute('select * from snapshots inner join flu_signal on snapshots.image_id=flu_signal.image_id where plant_id=? and camera=? and datetime=?',(barcode_label, camera_label,str(time),))
+      for i, data in enumerate(database_time):
+        angle_images=data['image_path']
+        path_name=str(angle_images)
+        name_array=path_name.split("_")
+        check=re.match('img.png',name_array[-1])
+        if check!=None:
+          data_image_array.append(angle_images)
+        else:
+          pass
+        
+        dim1=np.matrix(data[channel1])
+        dim2=np.matrix(data[channel2])
+        dim3=np.matrix(data[channel3])
+        
+        #normalize
+        max_dim1=np.amax(dim1)
+        max_dim2=np.amax(dim2)
+        max_dim3=np.amax(dim3)
+        maxval=[max_dim1,max_dim2,max_dim3]
+        max_max=np.amax(maxval)
+        
+        min_dim1=np.amin(dim1)
+        min_dim2=np.amin(dim2)
+        min_dim3=np.amin(dim3)
+        minval=[min_dim1,min_dim2,min_dim3]
+        min_min=np.amin(minval)
+        
+        dim1_norm=((dim1-min_min)/(max_max-min_min))*255
+        dim2_norm=((dim2-min_min)/(max_max-min_min))*255
+        dim3_norm=((dim3-min_min)/(max_max-min_min))*255
+        
+        dim1_all.append(dim1_norm)
+        dim2_all.append(dim2_norm)
+        dim3_all.append(dim3_norm)
+        
+        
+        if average_angles=='off':
+          frame=data['frame']
+          date_time=data['datetime']
+          data_image=data['image_path']
+          
+          path_name=str(data_image)
+          name_array=path_name.split("_")
+          check=re.match('img.png',name_array[-1])
+          if check!=None:
+            ch1=[]
+            ch1.append(date_int)
+            ch1.append(date_time)
+            ch1.append(barcode_label)
+            ch1.append(frame)
+            ch1.append(data_image)
+            dim1_t=np.transpose(dim1_norm)
+            dim2_t=np.transpose(dim2_norm)
+            dim3_t=np.transpose(dim3_norm)
+            
+            for i,c in enumerate(dim1_t):
+              b=float(c)
+              ch1.append(b)
+            for i,c in enumerate(dim2_t):
+              b=float(c)
+              ch1.append(b)
+            for i,c in enumerate(dim3_t):
+              b=float(c)
+              ch1.append(b)
+            ch1_total_array.append(ch1)
+          else:
+            pass
+          
+          if write_txt=='yes':
+            #print ch1
+            ch1_join=','.join(map(str,ch1))
+            os.write(signal_file1, ch1_join)
+            os.write(signal_file1, os.linesep)
+
+                
+      if average_angles=='on':
+        ch1=[]
+        
+        frame='all_avg'
+        date_time=data['datetime']
+        data_image=data['image_path']
+        print data_image_array
+        ch1.append(date_int)
+        ch1.append(date_time)
+        ch1.append(barcode_label)
+        ch1.append(frame)
+        if len(data_image_array)>4:
+          ch1.append('something-wrong')
+          ch1.append('something-wrong')
+          ch1.append('something-wrong')
+          ch1.append('something-wrong')
+        if len(data_image_array)==4:
+          for i,c in enumerate(data_image_array):
+            ch1.append(c)
+        elif len(data_image_array)==3:
+          for i,c in enumerate(data_image_array):
+            ch1.append(c)
+          ch1.append('none')
+        elif len(data_image_array)==2:
+          for i,c in enumerate(data_image_array):
+            ch1.append(c)
+          ch1.append('none')
+          ch1.append('none')
+        elif len(data_image_array)==1:
+          for i,c in enumerate(data_image_array):
+            ch1.append(c)
+          ch1.append('none')
+          ch1.append('none')
+          ch1.append('none')
+        elif len(data_image_array)==0:
+          ch1.append('none')
+          ch1.append('none')
+          ch1.append('none')
+          ch1.append('none')
+        ch1_avg=np.transpose(np.average(dim1_all,axis=0))
+        ch2_avg=np.transpose(np.average(dim2_all,axis=0))
+        ch3_avg=np.transpose(np.average(dim3_all,axis=0))
+        
+        for i,c in enumerate(ch1_avg):
+          b=float(c)
+          ch1.append(b)
+        for i,c in enumerate(ch2_avg):
+          b=float(c)
+          ch1.append(b)
+        for i,c in enumerate(ch3_avg):
+          b=float(c)
+          ch1.append(b)
+        ch1_total_array.append(ch1)
+        
+        if write_txt=='yes':
+          ch1_join=','.join(map(str,ch1))
+          os.write(signal_file1, ch1_join)
+          os.write(signal_file1, os.linesep)
+      
+  
+  if write_txt=='yes':
+    os.close(signal_file1)
+    
+  
+  return outdir_name

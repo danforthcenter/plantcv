@@ -111,6 +111,16 @@ CREATE TABLE IF NOT EXISTS `boundary_data` (
   `percent_below_bound_area` REAL NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS `tillering_data` (
+  `image_id` INTEGER NOT NULL,
+  `x_position` INTEGER NOT NULL,
+  `raw_tillering_count` INTEGER NOT NULL,
+  `raw_tillering_width` INTEGER NOT NULL,
+  `average_tillering_width` REAL NOT NULL,
+  `median_tillering_width` REAL NOT NULL,
+  `std_tillering_width` REAL NOT NULL
+);
+
 CREATE INDEX IF NOT EXISTS `plant_id` ON `snapshots` (`plant_id`);
 CREATE INDEX IF NOT EXISTS `datetime` ON `snapshots` (`datetime`);
 CREATE INDEX IF NOT EXISTS `image_id` ON `analysis_images` (`image_id`);
