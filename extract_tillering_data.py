@@ -11,6 +11,9 @@ def options():
   parser.add_argument("-d", "--database", help="SQLite database file from plantcv.", required=True)
   parser.add_argument("-o", "--outfile", help="Output text file.", required=True)
   parser.add_argument("-p", "--height", help="Height of images in pixels", required=True, type=int)
+  parser.add_argument("-t", "--tiller", help="Optional manual input of zoom-corrected tiller width in pixels", required=False, type=int)
+  parser.add_argument("-g", "--genotype",help="choose 'on' or 'off' to seperate widths by genotype", required=True)
+  parser.add_argument("-e", "--treatment", help="choose 'on' or 'off' to sepearte widths by treatment", required=True)
   parser.add_argument("-D", "--debug", help="Turn on debugging mode", action="store_true")
   args = parser.parse_args()
   return args
@@ -62,7 +65,7 @@ def main():
     print("IO error")
   
   # Header
-  out.write(','.join(map(str, ('plant_id', 'datetime', 'tillering_line', 'raw_tillering_count', 'raw_tillering_widths', 'average_tillering_width', 'median_tillering_width', 'std_tillering_width'))) + '\n')
+  out.write(','.join(map(str, ('plant_id', 'datetime', 'image_path', 'raw_tillering_count', 'raw_tillering_widths', 'zoom_corrected_tiller_widths','manual_input_single_tiller','estimated_single_tiller','new_tiller_count'))) + '\n')
   
   # Replace the row_factory result constructor with a dictionary constructor
   connect.row_factory = dict_factory
@@ -78,20 +81,23 @@ def main():
     snapshots.append(row['datetime'])
   if (args.debug):
     print('Found ' + str(len(snapshots)) + ' snapshots')
+    
+  print snapshots  
+  
   
   # Retrieve snapshots and process data
-  for snapshot in snapshots:
-    sv_image_count = 0
-    outlier = False
-    plant_id = ''
-    tillering_line=0
-    raw_tillering_count=0
-    raw_tillering_width=[]
-    average_tillering_width=0
-    median_tillering_width=0
-    std_tillering_width=0
-    print raw_tillering_width
-    
+  #for snapshot in snapshots:
+  #  sv_image_count = 0
+  #  outlier = False
+  #  plant_id = ''
+  #  tillering_line=0
+  #  raw_tillering_count=0
+  #  raw_tillering_width=[]
+  #  average_tillering_width=0
+  #  median_tillering_width=0
+  #  std_tillering_width=0
+  #  print raw_tillering_width
+  #  
     ## Measure plant height
     
     #image_count = 0
