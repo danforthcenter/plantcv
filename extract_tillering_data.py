@@ -12,8 +12,8 @@ def options():
   parser.add_argument("-o", "--outfile", help="Output text file.", required=True)
   parser.add_argument("-p", "--height", help="Height of images in pixels", required=True, type=int)
   parser.add_argument("-t", "--tiller", help="Optional manual input of zoom-corrected tiller width in pixels", required=False, type=int)
-  parser.add_argument("-g", "--genotype",help="choose 'on' or 'off' to seperate widths by genotype", required=True)
-  parser.add_argument("-e", "--treatment", help="choose 'on' or 'off' to sepearte widths by treatment", required=True)
+  parser.add_argument("-g", "--genotype",help="choose 'on' to seperate widths by genotype", required=False)
+  parser.add_argument("-e", "--treatment", help="choose 'on' to sepearte widths by treatment", required=False)
   parser.add_argument("-D", "--debug", help="Turn on debugging mode", action="store_true")
   args = parser.parse_args()
   return args
@@ -74,6 +74,8 @@ def main():
   
   # Database handler
   db = connect.cursor()
+  db1= connect.cursor()
+  db2= connect.cursor()
   
   # Retrieve snapshot IDs from the database
   snapshots = []
@@ -83,6 +85,17 @@ def main():
     print('Found ' + str(len(snapshots)) + ' snapshots')
     
   print snapshots  
+  
+  for snaps in snapshots:
+    img_path=[]
+    data_db=db1.execute('select * from snapshots inner join tillering_data on snapshots.image_id=tillering_data.image_id inner join analysis_images on snapshots.image_id=analysis_images.image_id where camera="vis_sv" and type="tillers" and datetime=?', (snaps,))
+    
+    for i, data in enumerate(database):
+      angles=data('image_path')
+      img_path.append(angles)
+    print img_path
+      
+
   
   
   # Retrieve snapshots and process data
