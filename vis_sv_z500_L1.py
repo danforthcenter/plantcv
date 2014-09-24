@@ -49,7 +49,7 @@ def main():
   device, b_cnt = pcv.binary_threshold(b, 138, 255, 'light', device, args.debug)
   
   # Fill small objects
-  device, b_fill = pcv.fill(b_thresh, b_cnt, 150, device, args.debug)
+  device, b_fill = pcv.fill(b_thresh,b_cnt, 0, device, args.debug)
   
   # Join the thresholded saturation and blue-yellow images
   device, bs = pcv.logical_and(s_fill, b_fill, device, args.debug)
@@ -108,7 +108,7 @@ def main():
   device, id_objects3,obj_hierarchy3 = pcv.find_objects(masked2, ab_fill, device, args.debug)
 
   # Define ROI
-  device, roi3, roi_hierarchy3= pcv.define_roi(masked2,'rectangle', device, None, 'default', args.debug,True, 500, 0,-500,-110)
+  device, roi3, roi_hierarchy3= pcv.define_roi(masked2,'rectangle', device, None, 'default', args.debug,True, 525, 0,-500,-110)
  
   # Decide which objects to keep and combine with objects overlapping with black bars
   device,roi_objects3, hierarchy3, kept_mask3, obj_area1 = pcv.roi_objects(img,'cutto',roi3,roi_hierarchy3,id_objects3,obj_hierarchy3,device, args.debug)

@@ -4,6 +4,9 @@ import sys, os
 import sqlite3 as sq
 import plantcv as pcv
 import math
+import numpy as np
+import re
+import cv2
 
 ### Parse command-line arguments
 def options():
@@ -12,8 +15,7 @@ def options():
   parser.add_argument("-o", "--outfile", help="Output text file.", required=True)
   parser.add_argument("-p", "--height", help="Height of images in pixels", required=True, type=int)
   parser.add_argument("-t", "--tiller", help="Optional manual input of zoom-corrected tiller width in pixels", required=False, type=int)
-  parser.add_argument("-g", "--genotype",help="choose 'on' to seperate widths by genotype", required=False)
-  parser.add_argument("-e", "--treatment", help="choose 'on' to sepearte widths by treatment", required=False)
+  parser.add_argument("-te", "--tillerest",help="number of days that should be used for tiller estimation, requires an integer", required=False, type=int)
   parser.add_argument("-D", "--debug", help="Turn on debugging mode", action="store_true")
   args = parser.parse_args()
   return args
@@ -64,6 +66,11 @@ def main():
   except IOError:
     print("IO error")
   
+  # Make Directory For Output Images
+  print out
+  #if not os.path.exists(tillering_img_path):
+  #  os.makedirs()
+  
   # Header
   out.write(','.join(map(str, ('plant_id', 'datetime', 'image_path', 'raw_tillering_count', 'raw_tillering_widths', 'zoom_corrected_tiller_widths','manual_input_single_tiller','estimated_single_tiller','new_tiller_count'))) + '\n')
   
@@ -76,27 +83,114 @@ def main():
   db = connect.cursor()
   db1= connect.cursor()
   db2= connect.cursor()
+  t= connect.cursor()
   
   # Retrieve snapshot IDs from the database
   snapshots = []
+  column_headers='date_int', 'datetime','barcode', 'frame','image_path', 'raw_tillering_widths', 'zoom_corrected_widths'
+  
+  # Find first day of dataset (tool works best with multiple days)
+  for date in t.execute('select min(datetime) as first from snapshots'):
+    firstday=date['first']
+  
+  #find unique datetimes (would find all angles)
   for row in (db.execute('SELECT DISTINCT(`datetime`) FROM `snapshots` WHERE `camera`="vis_sv"')):
     snapshots.append(row['datetime'])
   if (args.debug):
     print('Found ' + str(len(snapshots)) + ' snapshots')
-    
-  print snapshots  
   
+###Average values from first day of experiment to estimate tillering width based on median value of tiller-width values from date-range
+  zoom_width_est=[]
   for snaps in snapshots:
-    img_path=[]
     data_db=db1.execute('select * from snapshots inner join tillering_data on snapshots.image_id=tillering_data.image_id inner join analysis_images on snapshots.image_id=analysis_images.image_id where camera="vis_sv" and type="tillers" and datetime=?', (snaps,))
     
-    for i, data in enumerate(database):
-      angles=data('image_path')
-      img_path.append(angles)
-    print img_path
-      
-
+    #number of days to use for tiller estimation (if 0 includes first day only)
+    tiller_est_days=args.tillerest
+    
+    date_int=((snaps-firstday)/86400)
+    if date_int<=tiller_est_days and args.tiller==None:
+      for i, data in enumerate(data_db):
+        raw_width = re.sub('[\[\] ]', '', data['raw_tillering_width']).split(',')
+        int_raw_width=[int(l) for l in raw_width]
+        
+        for x in int_raw_width:
+          width=px_to_cm(x,data['zoom'])
+          zoom_width_est.append(width)
   
+  zoom_width_median=np.median(zoom_width_est)
+  zoom_width_std=np.std(zoom_width_est)
+  print zoom_width_est
+  print zoom_width_median
+  print zoom_width_std
+
+###Take the width estimation measurement and apply it to the widths to get a better estimation of the number of tillers    
+  for snaps in snapshots:
+    data_all=db2.execute('select * from snapshots inner join tillering_data on snapshots.image_id=tillering_data.image_id inner join analysis_images on snapshots.image_id=analysis_images.image_id where camera="vis_sv" and type="tillers" and datetime=?', (snaps,))
+    average_angles=[]    
+    for c, data1 in enumerate(data_all):
+      width_all=[]
+      tiller_count=[]
+      datetime=data1['datetime']
+      barcode=data1['plant_id']
+      img_path=data1['image_path']
+      raw_count=data1['raw_tillering_count']
+      raw_width_all = re.sub('[\[\] ]', '', data1['raw_tillering_width']).split(',')
+      int_raw_width_all=[int(l) for l in raw_width_all]
+      
+      for x in int_raw_width_all:
+        width=px_to_cm(x,data['zoom'])
+        width_all.append(width)
+      print date_int
+      print datetime
+      print barcode
+      print img_path
+      print width_all
+      print len(width_all)
+      
+      #adjust tiller count so that 
+      for x in width_all:
+        tiller_width_est=zoom_width_median+zoom_width_std
+        if x<=(tiller_width_est):
+          count=1
+          tiller_count.append(count)
+        elif x>=(tiller_width_est):
+          count=int(x/tiller_width_est)
+          tiller_count.append(count)
+      #add tiller count to array
+      tiller_count_total=sum(tiller_count)
+      print tiller_count_total
+      #add tiller count to an array so sides can be averaged
+      average_angles.append(tiller_count_total)
+      
+      #change image so that tiller number is written on the image.
+      #read in image
+      tiller_img=cv2.imread(str(img_path))
+      img=np.copy(tiller_img)
+      ix,iy,iz=np.shape(img)
+      x=ix/10
+      y=iy/10
+      y1=iy/7
+      text=('Raw Tiller Count='+str(raw_count))
+      text1=('Normalized Tiller Count='+str(tiller_count_total))
+
+      if args.debug:
+        cv2.putText(img,text, (x,y), cv2.FONT_HERSHEY_SIMPLEX, 3,(0,0,255),4)
+        cv2.putText(img,text1, (x,y1), cv2.FONT_HERSHEY_SIMPLEX, 3,(0,0,255),4)
+        pcv.print_image(img, str(barcode)+'_'+str(datetime) + '_tillering_img.png')
+     
+      #tiller_img_shape=np.shape(tiller_img)
+      #print tiller_img_shape
+    
+    tiller_angles_averaged=np.mean(average_angles)
+    tiller_angles_std=np.std(average_angles)
+    
+
+      
+        
+          
+
+        
+     
   
   # Retrieve snapshots and process data
   #for snapshot in snapshots:
