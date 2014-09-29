@@ -17,6 +17,7 @@ def options():
   parser.add_argument("--vis", help="Images are class VIS.", action='store_true')
   parser.add_argument("--nir", help="Images are class NIR.", action='store_true')
   parser.add_argument("--flu", help="Images are class FLU.", action='store_true')
+  parser.add_argument("-t", "--type", help="Image format type.", required=True)
   args = parser.parse_args()
   return args
 
@@ -28,7 +29,7 @@ def dict_factory(cursor, row):
     return d
 
 ### Database image lookup method
-def db_lookup(database, ids, outdir, vis=False, nir=False, flu=False):
+def db_lookup(database, ids, outdir, type, vis=False, nir=False, flu=False):
   # Does the database exist?
   if not os.path.exists(database):
     pcv.fatal_error("The database file " + str(database) + " does not exist");
@@ -52,22 +53,22 @@ def db_lookup(database, ids, outdir, vis=False, nir=False, flu=False):
       dt = datetime.datetime.fromtimestamp(row['datetime']).strftime('%Y-%m-%d_%H:%M:%S')
       if (vis):
         if (row['camera'] == 'vis_sv' or row['camera'] == 'vis_tv'):
-          img_name = outdir + '/' + row['plant_id'] + '_' + row['camera'] + '_' + str(row['frame']) + '_z' + str(row['zoom']) + '_h' + str(row['lifter']) + '_' + dt + '.png'
+          img_name = outdir + '/' + row['plant_id'] + '_' + row['camera'] + '_' + str(row['frame']) + '_z' + str(row['zoom']) + '_h' + str(row['lifter']) + '_' + dt + '.' + type
           copy(row['image_path'], img_name)
           #print(args.outdir + '/' + row['plant_id'])
       if (nir):
         if (row['camera'] == 'nir_sv' or row['camera'] == 'nir_tv'):
-          img_name = outdir + '/' + row['plant_id'] + '_' + row['camera'] + '_' + str(row['frame']) + '_z' + str(row['zoom']) + '_h' + str(row['lifter']) + '_' + dt + '.png'
+          img_name = outdir + '/' + row['plant_id'] + '_' + row['camera'] + '_' + str(row['frame']) + '_z' + str(row['zoom']) + '_h' + str(row['lifter']) + '_' + dt + '.' + type
           copy(row['image_path'], img_name)
       if (flu):
         if (row['camera'] == 'flu_tv'):
           images = row['image_path'].split(',')
           for i in enumerate(images):
-            img_name = outdir + '/' + row['plant_id'] + '_' + row['camera'] + '_' + str(row['frame']) + '_z' + str(row['zoom']) + '_h' + str(row['lifter']) + '_' + str(i) + '_' + dt + '.png'
+            img_name = outdir + '/' + row['plant_id'] + '_' + row['camera'] + '_' + str(row['frame']) + '_z' + str(row['zoom']) + '_h' + str(row['lifter']) + '_' + str(i) + '_' + dt + '.' + type
             copy(images[i], outdir)
   
 ### CSV image lookup method
-def csv_lookup(csv, ids, outdir, vis=False, nir=False, flu=False):
+def csv_lookup(csv, ids, outdir, type, vis=False, nir=False, flu=False):
   # Regexs
   vis_pattern = re.compile('^vis', re.IGNORECASE)
   nir_pattern = re.compile('^nir', re.IGNORECASE)
@@ -80,20 +81,20 @@ def csv_lookup(csv, ids, outdir, vis=False, nir=False, flu=False):
     for row in snapshots:
       snapshot = row.rstrip('\n')
       data = snapshot.split(',')
-      date = data[3].split(' ')
-      if (data[1] in ids):
-        tiles = data[9].split(';')
+      date = data[4].split(' ')
+      if (data[2] in ids):
+        tiles = data[11].split(';')
         for tile in tiles:
-          img_name = outdir + '/' + data[1] + '_' + tile + '_' + date[0] + '_' + date[1] + '.png'
+          img_name = outdir + '/' + data[2] + '_' + tile + '_' + date[0] + '_' + date[1] + '.' + type
           if (vis):
             if (vis_pattern.match(tile)):
-              copy(path + '/snapshot' + data[0] + '/' + tile + '.png', img_name)
+              copy(path + '/snapshot' + data[1] + '/' + tile + '.' + type, img_name)
           if (nir):
             if (nir_pattern.match(tile)):
-              copy(path + '/snapshot' + data[0] + '/' + tile + '.png', img_name)
+              copy(path + '/snapshot' + data[1] + '/' + tile + '.' + type, img_name)
           if (flu):
             if (flu_pattern.match(tile)):
-              copy(path + '/snapshot' + data[0] + '/' + tile + '.png', img_name)
+              copy(path + '/snapshot' + data[1] + '/' + tile + '.' + type, img_name)
 
 ### Create dictionary of plant_id from file
 def dict_plant_id(infile):
@@ -116,9 +117,9 @@ def main():
   plant_ids = dict_plant_id(args.file)
   
   if (args.database):
-    db_lookup(args.database, plant_ids, args.outdir, args.vis, args.nir, args.flu)
+    db_lookup(args.database, plant_ids, args.outdir, args.type, args.vis, args.nir, args.flu)
   elif (args.csv):
-    csv_lookup(args.csv, plant_ids, args.outdir, args.vis, args.nir, args.flu)
+    csv_lookup(args.csv, plant_ids, args.outdir, args.type, args.vis, args.nir, args.flu)
   
 
 if __name__ == '__main__':
