@@ -1255,6 +1255,93 @@ def analyze_bound(img,imgname, obj, mask, line_position, device , debug=False, f
   #return device, shape_header, shape_data, ori_img
   return device, bound_header, bound_data, ori_img
 
+#### Shape Tiller Tool2
+#def tiller_tool(img, imgname, obj, obj_hierarchy, device,debug=False, filename=False, x_adj=0,y_adj=0,w_adj=0,h_adj=0):
+#  # img = image
+#  # imgname = name of input image
+#  # obj = single or grouped contour objects
+#  # mask = mask from selected contours
+#  # box_position= area to skeletonize to estimate tillers
+#  # device = device number. Used to count steps in the pipeline.
+#  # debug = True/False. If True, print data.
+#  # filename = False or image name. If definted print image.
+#  
+#  device +=1
+#  ori_img=np.copy(img)
+#  ori_img2=np.copy(img)
+#  
+#  # Saftey checks to make sure that ROI stays in frame
+#  sys.stderr.write('WARNING: Make sure ROI is COMPLETELY in frame or object detection will not perform properly\n')
+#  if x_adj>0 and w_adj>0:
+#    fatal_error('Adjusted ROI position is out of frame, this will cause problems in detecting objects')
+#  elif y_adj>0 and h_adj>0:
+#    fatal_error('Adjusted ROI position is out of frame, this will cause problems in detecting objects')
+#  elif x_adj<0 or y_adj<0:
+#    fatal_error('Adjusted ROI position is out of frame, this will cause problems in detecting objects')
+#  
+#  # Get size of image to draw initial tiller box
+#  if len(np.shape(img))==3:
+#      ix,iy,iz=np.shape(img)
+#  else:
+#    ix,iy=np.shape(img)
+#  
+#  # Make blank background to add initial roi rectangle    
+#  size = ix,iy,3
+#  background = np.zeros(size, dtype=np.uint8)
+#  ori_img=np.copy(img)
+#  w_back=background+255
+#  background1 = np.zeros(size, dtype=np.uint8)
+#  background2 = np.zeros(size, dtype=np.uint8)
+#  
+#  # Find contour of the blank background to draw a rectangle
+#  size = ix,iy
+#  roi_background = np.zeros(size, dtype=np.uint8)
+#  roi_size=(ix-5),(iy-5)
+#  roi=np.zeros(roi_size, dtype=np.uint8)
+#  roi1=roi+1
+#  rect_contour,roi_heirarchy=cv2.findContours(roi1,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+#  cv2.drawContours(roi_background,rect_contour[0],-1, (255,0,0),5)
+#
+#  # Adjust rectangle
+#  for cnt in rect_contour:
+#    size = ix,iy, 3
+#    background = np.zeros(size, dtype=np.uint8)
+#    x,y,w,h = cv2.boundingRect(cnt)
+#    x1=x+x_adj
+#    y1=y+y_adj
+#    w1=w+w_adj
+#    h1=h+h_adj
+#    cv2.rectangle(background,(x1,y1),(x+w1,y+h1),(0,255,0),1)
+#    rect = cv2.cvtColor( background, cv2.COLOR_RGB2GRAY )
+#    roi_contour,roi_hierarchy = cv2.findContours(rect,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+#
+#  # Find objects within the rectangle
+#  cv2.drawContours(background1,obj,-1, (255,255,255),-1, lineType=8,hierarchy=obj_hierarchy)
+#  roi_points=np.vstack(roi_contour[0])
+#  cv2.fillPoly(background2,[roi_points], (255,255,255))
+#  obj_roi=cv2.multiply(background1,background2)
+#  kept_obj=cv2.cvtColor(obj_roi, cv2.COLOR_RGB2GRAY)
+#  mask=np.copy(kept_obj)
+#  
+#  kernel = np.ones((10,10),np.uint8)
+#  img_erosion = cv2.erode(mask,kernel,iterations = 1)
+#  erosion_cnt,erosion_hierarchy= cv2.findContours(img_erosion, cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+#  cv2.drawContours(ori_img2,erosion_cnt,-1, (0,0,255),-1, lineType=8,hierarchy=erosion_hierarchy)
+#  if debug:
+#    print_image(ori_img2, (str(device)+'_tiller_erosion.png'))
+#  
+#  obj_area=cv2.countNonZero(kept_obj)
+#  kept_cnt,hierarchy = cv2.findContours(kept_obj,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+#  cv2.drawContours(w_back,kept_cnt,-1, (0,0,0),-1)
+#  cv2.drawContours(ori_img,kept_cnt,-1, (0,255,0),-1, lineType=8,hierarchy=hierarchy)
+#  cv2.drawContours(ori_img,roi_contour,-1, (255,0,0),5, lineType=8,hierarchy=roi_hierarchy)
+#  if debug:
+#    print_image(ori_img, (str(device)+'_tiller_objects.png'))
+#    
+#  return device, img_erosion
+  
+
+
 ### Shape Tiller Tool
 def tiller_count (img,imgname, obj, mask, line_position, device , debug=False, filename=False):
   # img = image
@@ -1304,19 +1391,7 @@ def tiller_count (img,imgname, obj, mask, line_position, device , debug=False, f
   average_width=np.average(tiller_len)
   std=np.std(tiller_len)
   median=np.median(tiller_len)
-  two_std=(2*std)
-  
-  ## see if tiller width is wider than two standard deviations, if it is it might be more than one tiller
-  #tiller_final=[]
-  #for t,n in enumerate(tiller_len):
-  #  if (n-average_width)>=median:
-  #    tiller_split=round((n/median))
-  #    tiller_final.append(tiller_split)
-  #  else:
-  #    tiller_split=1
-  #    tiller_final.append(tiller_split)
-  #
-  #tiller_final_count=(sum(tiller_final))
+  two_std=(2*std) 
   
   tillering_header=('HEADER_TILLERING' + str(line_position), 'raw_tillering_count', 'raw_tillering_widths','average_tillering_width','median_tillering_width','std_tillering_width')
   tillering_data = (

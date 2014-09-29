@@ -4,9 +4,11 @@ import sys, os
 import sqlite3 as sq
 import plantcv as pcv
 import math
+from datetime import datetime as dt
 import numpy as np
 import re
 import cv2
+#import pandas as pd
 
 ### Parse command-line arguments
 def options():
@@ -61,18 +63,19 @@ def main():
     print("Error %s:" % e.args[0])
   
   # Open output file
-  try:
-    out = open(args.outfile, 'w')
-  except IOError:
-    print("IO error")
+  #try:
+  #  out = open(args.outfile, 'w')
+  #except IOError:
+  #  print("IO error")
   
   # Make Directory For Output Images
-  print out
-  #if not os.path.exists(tillering_img_path):
-  #  os.makedirs()
-  
-  # Header
-  out.write(','.join(map(str, ('plant_id', 'datetime', 'image_path', 'raw_tillering_count', 'raw_tillering_widths', 'zoom_corrected_tiller_widths','manual_input_single_tiller','estimated_single_tiller','new_tiller_count'))) + '\n')
+  cwd=os.getcwd()
+  i=dt.now()
+  timenow=i.strftime('%m-%d-%Y_%H:%M:%S')
+  newfolder="slice_figs_and_images_"+(str(timenow))
+  tillering_img_path=(str(cwd)+'/tillering_images'+str(timenow)+'/')
+  if not os.path.exists(tillering_img_path):
+    os.makedirs(tillering_img_path)
   
   # Replace the row_factory result constructor with a dictionary constructor
   connect.row_factory = dict_factory
@@ -83,11 +86,26 @@ def main():
   db = connect.cursor()
   db1= connect.cursor()
   db2= connect.cursor()
+  db3= connect.cursor()
   t= connect.cursor()
   
+  #Open file and print headers to file
+ 
+  try:
+    filename1=args.outfile
+    signal_file1= os.open(filename1,os.O_RDWR|os.O_CREAT)
+  except IOError:
+    print("IO error")
+ 
+  column_headers='date_int', 'datetime','barcode','image_path_0','image_path_90','image_path_180','image_path_270','estimated_width', 'estimated_width_std','raw_width_0','raw_width_90','raw_width_180','raw_width_270', 'normalize_width_0','normalized_width_90', 'normalized_width_180', 'normalized_width_270','raw_count_0','raw_count_90','raw_count_180','raw_count_270', 'normalized_count_0','normalized_count_90','normalized_count_180','normalized_count_270'  
+  header_fin='\t'.join(map(str,column_headers))
+  print header_fin
+  os.write(signal_file1, header_fin)
+  os.write(signal_file1, os.linesep)
+
   # Retrieve snapshot IDs from the database
   snapshots = []
-  column_headers='date_int', 'datetime','barcode', 'frame','image_path', 'raw_tillering_widths', 'zoom_corrected_widths'
+  
   
   # Find first day of dataset (tool works best with multiple days)
   for date in t.execute('select min(datetime) as first from snapshots'):
@@ -119,134 +137,145 @@ def main():
   
   zoom_width_median=np.median(zoom_width_est)
   zoom_width_std=np.std(zoom_width_est)
-  print zoom_width_est
-  print zoom_width_median
-  print zoom_width_std
 
 ###Take the width estimation measurement and apply it to the widths to get a better estimation of the number of tillers    
   for snaps in snapshots:
-    data_all=db2.execute('select * from snapshots inner join tillering_data on snapshots.image_id=tillering_data.image_id inner join analysis_images on snapshots.image_id=analysis_images.image_id where camera="vis_sv" and type="tillers" and datetime=?', (snaps,))
-    average_angles=[]    
-    for c, data1 in enumerate(data_all):
-      width_all=[]
-      tiller_count=[]
-      datetime=data1['datetime']
-      barcode=data1['plant_id']
-      img_path=data1['image_path']
-      raw_count=data1['raw_tillering_count']
-      raw_width_all = re.sub('[\[\] ]', '', data1['raw_tillering_width']).split(',')
-      int_raw_width_all=[int(l) for l in raw_width_all]
-      
-      for x in int_raw_width_all:
-        width=px_to_cm(x,data['zoom'])
-        width_all.append(width)
-      print date_int
-      print datetime
-      print barcode
-      print img_path
-      print width_all
-      print len(width_all)
-      
-      #adjust tiller count so that 
-      for x in width_all:
-        tiller_width_est=zoom_width_median+zoom_width_std
-        if x<=(tiller_width_est):
-          count=1
-          tiller_count.append(count)
-        elif x>=(tiller_width_est):
-          count=int(x/tiller_width_est)
-          tiller_count.append(count)
-      #add tiller count to array
-      tiller_count_total=sum(tiller_count)
-      print tiller_count_total
-      #add tiller count to an array so sides can be averaged
-      average_angles.append(tiller_count_total)
-      
-      #change image so that tiller number is written on the image.
-      #read in image
-      tiller_img=cv2.imread(str(img_path))
-      img=np.copy(tiller_img)
-      ix,iy,iz=np.shape(img)
-      x=ix/10
-      y=iy/10
-      y1=iy/7
-      text=('Raw Tiller Count='+str(raw_count))
-      text1=('Normalized Tiller Count='+str(tiller_count_total))
 
-      if args.debug:
+    data_all=db2.execute('select * from snapshots inner join tillering_data on snapshots.image_id=tillering_data.image_id inner join analysis_images on snapshots.image_id=analysis_images.image_id where camera="vis_sv" and type="tillers" and datetime=?', (snaps,)) 
+    data_dict={}
+    frame_data=[]
+    for c, data1 in enumerate(data_all):
+      
+      date_int=((snaps-firstday)/86400)
+      data_dict['date_int']=date_int
+      
+      datetime=data1['datetime']
+      data_dict['datetime']=datetime
+      
+      barcode=data1['plant_id']
+      data_dict['plant_id']=barcode
+      
+      data_dict['estimated_width_cm']=zoom_width_median
+      data_dict['estimated_width_cm_std']=zoom_width_std
+      
+      frame=data1['frame']
+      frame_data.append(frame)
+    
+    for angles in frame_data:
+      data_by_frame=db2.execute('select * from snapshots inner join tillering_data on snapshots.image_id=tillering_data.image_id inner join analysis_images on snapshots.image_id=analysis_images.image_id where camera="vis_sv" and type="tillers" and datetime=? and frame=?', (snaps,angles,)) 
+
+      for i, data2 in enumerate(data_by_frame):
+        width_all=[]
+        tiller_count=[]
+        
+        frame=data2['frame']
+        img_path=data2['image_path']
+        raw_count=data2['raw_tillering_count']
+        raw_width_all = re.sub('[\[\] ]', '', data2['raw_tillering_width']).split(',')
+        int_raw_width_all=[int(l) for l in raw_width_all]
+        
+        for x in int_raw_width_all:
+          width=px_to_cm(x,data['zoom'])
+          width_all.append(width)
+        raw_count=len(width_all)
+        
+        #adjust tiller count so that 
+        for x in width_all:
+          tiller_width_est=zoom_width_median*1.75
+          tiller_none=(float(zoom_width_median/2))
+          #print tiller_none
+          if x<=tiller_width_est and x>=tiller_none:
+            count=1
+            tiller_count.append(count)
+          elif x<=tiller_none:
+            count=0
+            tiller_count.append(count)
+          elif x>=tiller_width_est:
+            count=int(x/tiller_width_est)
+            tiller_count.append(count)
+        #add tiller count to array
+        tiller_count_total=sum(tiller_count)
+        
+        #change image so that tiller number is written on the image.
+        #read in image
+        tiller_img=cv2.imread(str(img_path))
+        img=np.copy(tiller_img)
+        ix,iy,iz=np.shape(img)
+        x=ix/10
+        y=iy/10
+        y1=iy/7
+        text=('Raw Tiller Count='+str(raw_count))
+        text1=('Normalized Tiller Count='+str(tiller_count_total))
+      
         cv2.putText(img,text, (x,y), cv2.FONT_HERSHEY_SIMPLEX, 3,(0,0,255),4)
         cv2.putText(img,text1, (x,y1), cv2.FONT_HERSHEY_SIMPLEX, 3,(0,0,255),4)
-        pcv.print_image(img, str(barcode)+'_'+str(datetime) + '_tillering_img.png')
-     
-      #tiller_img_shape=np.shape(tiller_img)
-      #print tiller_img_shape
-    
-    tiller_angles_averaged=np.mean(average_angles)
-    tiller_angles_std=np.std(average_angles)
-    
-
-      
+        name_img=str(tillering_img_path)+str(barcode)+'_'+'Frame_'+str(frame)+'_day'+str(date_int)+'_'+str(datetime) + '_tillering_img.png'
+        pcv.print_image(img,name_img)
         
-          
-
+      # Put the data for each barcode into the hash
+      if frame==0:
+        data_dict['raw_width_0']=int_raw_width_all
+        data_dict['raw_count_0']=raw_count
+        data_dict['normalized_width_0']=width_all
+        data_dict['normalized_count_0']=tiller_count_total
+        data_dict['img_path_0']=name_img
         
-     
-  
-  # Retrieve snapshots and process data
-  #for snapshot in snapshots:
-  #  sv_image_count = 0
-  #  outlier = False
-  #  plant_id = ''
-  #  tillering_line=0
-  #  raw_tillering_count=0
-  #  raw_tillering_width=[]
-  #  average_tillering_width=0
-  #  median_tillering_width=0
-  #  std_tillering_width=0
-  #  print raw_tillering_width
-  #  
-    ## Measure plant height
+      elif frame==90:
+        data_dict['raw_width_90']=int_raw_width_all
+        data_dict['raw_count_90']=raw_count
+        data_dict['normalized_width_90']=width_all
+        data_dict['normalized_count_90']=tiller_count_total
+        data_dict['img_path_90']=name_img
+
+      elif frame==180:
+        data_dict['raw_width_180']=int_raw_width_all
+        data_dict['raw_count_180']=raw_count
+        data_dict['normalized_width_180']=width_all
+        data_dict['normalized_count_180']=tiller_count_total
+        data_dict['img_path_180']=name_img
+
+      elif frame==270:
+        data_dict['raw_width_270']=int_raw_width_all
+        data_dict['raw_count_270']=raw_count
+        data_dict['normalized_width_270']=width_all
+        data_dict['normalized_count_270']=tiller_count_total
+        data_dict['img_path_270']=name_img
+        
+    # if all angles don't exist fill in a None value.
+    if data_dict.get('raw_width_0')==None:
+      data_dict['raw_width_0']=None
+      data_dict['raw_count_0']=None
+      data_dict['normalized_width_0']=None
+      data_dict['normalized_count_0']=None
+      data_dict['img_path_0']=None
+    if data_dict.get('raw_width_90')==None:
+      data_dict['raw_width_90']=None
+      data_dict['raw_count_90']=None
+      data_dict['normalized_width_90']=None
+      data_dict['normalized_count_90']=None
+      data_dict['img_path_90']=None
+    if data_dict.get('raw_width_180')==None:
+      data_dict['raw_width_180']=None
+      data_dict['raw_count_180']=None
+      data_dict['normalized_width_180']=None
+      data_dict['normalized_count_180']=None
+      data_dict['img_path_180']=None
+    if data_dict.get('raw_width_270')==None:
+      data_dict['raw_width_270']=None
+      data_dict['raw_count_270']=None
+      data_dict['normalized_width_270']=None
+      data_dict['normalized_count_270']=None
+      data_dict['img_path_270']=None
     
-    #image_count = 0
-    #tillering_line = 0
-    #for row in (db.execute('SELECT * FROM `snapshots` INNER JOIN `tillering_data` ON `snapshots`.`image_id` = `tillering_data`.`image_id` WHERE `datetime` = %i' % snapshot)):
-    #  tillering_line = row['x_position']
-    #  raw_tillering_count += row['raw_tillering_count']
-    #  raw_tillering_width += row['height_below_bound']
-    #  above_bound_area += zoom_correction(row['above_bound_area'], row['zoom'])
-    #  percent_above_bound_area += row['percent_above_bound_area']
-    #  below_bound_area += zoom_correction(row['below_bound_area'], row['zoom'])
-    #  percent_below_bound_area += row['percent_below_bound_area']
-    #
-    #  image_count += 1
-    #if image_count > 0:
-    #  if (args.debug):
-    #    print('Snapshot ' + str(snapshot) + ' has boundary data')
-    #  height_above_bound /= image_count
-    #  height_below_bound /= image_count
-    #  above_bound_area /= image_count
-    #  percent_above_bound_area /= image_count
-    #  below_bound_area /= image_count
-    #  percent_below_bound_area /= image_count
-    #  # Adjusted center of mass y (height above boundary line to cmy)
-    #  centroid_height = (args.height - boundary_line_y) - centroid_y
-    #  if centroid_height < 0:
-    #    centroid_height = 0
-    #  
-    #  # Zoom correct length-based traits
-    #  centroid_height = px_to_cm(centroid_height, row['zoom'])
-    #  perimeter = px_to_cm(perimeter, row['zoom'])
-    #  longest_axis = px_to_cm(longest_axis, row['zoom'])
-    #  height_above_bound = px_to_cm(height_above_bound, row['zoom'])
-    #  height_below_bound = px_to_cm(height_below_bound, row['zoom'])
-    #    
-    #  #surface_area += tv_centroid_correction(tv_area, centroid_height)
-    #  out.write(','.join(map(str, (plant_id, snapshot, sv_area, tv_area, centroid_height, solidity, perimeter, centroid_x, centroid_y, longest_axis,
-    #                             height_above_bound, height_below_bound, above_bound_area, percent_above_bound_area, below_bound_area,
-    #                             percent_below_bound_area, outlier, boundary_line_y))) + '\n')
-    #else:
-    #  if (args.debug):
-    #    print('Something is wrong, snapshot ' + str(snapshot) + ' has ' + str(sv_image_count) + ' SV images and TV area is ' + str(tv_area))
+    #print data_dict
+    # Write out data to file
+    list_data=data_dict['date_int'], data_dict['datetime'], data_dict['plant_id'], data_dict['img_path_0'], data_dict['img_path_90'], data_dict['img_path_180'], data_dict['img_path_270'], data_dict['estimated_width_cm'], data_dict['estimated_width_cm_std'], data_dict['raw_width_0'], data_dict['raw_width_90'], data_dict['raw_width_180'], data_dict['raw_width_270'], data_dict['normalized_width_0'], data_dict['normalized_width_90'], data_dict['normalized_width_180'], data_dict['normalized_width_270'], data_dict['raw_count_0'], data_dict['raw_count_90'], data_dict['raw_count_180'], data_dict['raw_count_270'], data_dict['normalized_count_0'], data_dict['normalized_count_90'], data_dict['normalized_count_180'], data_dict['normalized_count_270']
+    data_line='\t'.join(map(str,list_data))
+    print data_line
+    os.write(signal_file1, data_line)
+    os.write(signal_file1, os.linesep)
+    
+  os.close(signal_file1)
 
 if __name__ == '__main__':
   main()
