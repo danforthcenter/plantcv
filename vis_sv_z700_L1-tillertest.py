@@ -132,9 +132,11 @@ def main():
   device, boundary_header,boundary_data, boundary_img1= pcv.analyze_bound(img, args.image,obj, mask, 291, device,args.debug,args.outdir+'/'+filename)
  
   # Tiller Tool Test
-  device, tillering_header, tillering_data, tillering_img= pcv.tiller_count(img, args.image,obj, mask, 315, device,args.debug,args.outdir+'/'+filename)
+  #device, tillering= pcv.tiller_tool(img, args.image,obj, mask, 315, device,args.debug,args.outdir+'/'+filename)
+  #device, tillering= pcv.tiller_tool(img, args.image, roi_objects4, hierarchy4, device,args.debug, args.outdir+'/'+filename, x_adj=1080,y_adj=1710,w_adj=-1080,h_adj=-310)
+  device, tillering= pcv.tiller_tool(img, args.image, roi_objects4, hierarchy4, device,args.debug, args.outdir+'/'+filename, x_adj=0,y_adj=0,w_adj=0,h_adj=0)
 
-  
+
   # Determine color properties: Histograms, Color Slices and Pseudocolored Images, output color analyzed images (optional)
   device, color_header,color_data,norm_slice= pcv.analyze_color(img, args.image, kept_mask4, 256, device, args.debug,'all','rgb','v',args.outdir+'/'+filename)
   
@@ -142,7 +144,7 @@ def main():
   pcv.print_results(args.image, shape_header, shape_data)
   pcv.print_results(args.image, color_header, color_data)
   pcv.print_results(args.image, boundary_header, boundary_data)
-  pcv.print_results(args.image, tillering_header,tillering_data)
+  #pcv.print_results(args.image, tillering_header,tillering_data)
 
   
 if __name__ == '__main__':

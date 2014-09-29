@@ -49,7 +49,7 @@ def main():
   device, b_cnt = pcv.binary_threshold(b, 138, 255, 'light', device, args.debug)
   
   # Fill small objects
-  device, b_fill = pcv.fill(b_thresh, b_cnt, 150, device, args.debug)
+  device, b_fill = pcv.fill(b_thresh,b_cnt, 0, device, args.debug)
   
   # Join the thresholded saturation and blue-yellow images
   device, bs = pcv.logical_and(s_fill, b_fill, device, args.debug)
@@ -108,7 +108,7 @@ def main():
   device, id_objects3,obj_hierarchy3 = pcv.find_objects(masked2, ab_fill, device, args.debug)
 
   # Define ROI
-  device, roi3, roi_hierarchy3= pcv.define_roi(masked2,'rectangle', device, None, 'default', args.debug,True, 500, 0,-450,-50)
+  device, roi3, roi_hierarchy3= pcv.define_roi(masked2,'rectangle', device, None, 'default', args.debug,True, 525, 0,-500,-110)
  
   # Decide which objects to keep and combine with objects overlapping with black bars
   device,roi_objects3, hierarchy3, kept_mask3, obj_area1 = pcv.roi_objects(img,'cutto',roi3,roi_hierarchy3,id_objects3,obj_hierarchy3,device, args.debug)
@@ -129,7 +129,11 @@ def main():
   device, shape_header,shape_data,shape_img = pcv.analyze_object(img, args.image, obj, mask, device,args.debug,args.outdir+'/'+filename)
    
   # Shape properties relative to user boundary line (optional)
-  device, boundary_header,boundary_data, boundary_img1= pcv.analyze_bound(img, args.image,obj, mask, 280, device,args.debug,args.outdir+'/'+filename)
+  device, boundary_header,boundary_data, boundary_img1= pcv.analyze_bound(img, args.image,obj, mask, 330, device,args.debug,args.outdir+'/'+filename)
+  
+   # Tiller Tool Test
+  device, tillering_header, tillering_data, tillering_img= pcv.tiller_count(img, args.image,obj, mask, 354, device,args.debug,args.outdir+'/'+filename)
+ 
   
   # Determine color properties: Histograms, Color Slices and Pseudocolored Images, output color analyzed images (optional)
   device, color_header,color_data,norm_slice= pcv.analyze_color(img, args.image, kept_mask4, 256, device, args.debug,'all','rgb','v',args.outdir+'/'+filename)
@@ -138,6 +142,8 @@ def main():
   pcv.print_results(args.image, shape_header, shape_data)
   pcv.print_results(args.image, color_header, color_data)
   pcv.print_results(args.image, boundary_header, boundary_data)
+  pcv.print_results(args.image, tillering_header,tillering_data)
+
   
 if __name__ == '__main__':
   main()#!/usr/bin/env python
