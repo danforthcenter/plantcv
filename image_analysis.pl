@@ -13,7 +13,7 @@ use POSIX qw(strftime);
 use Data::Dumper;
 use Capture::Tiny ':all';
 
-my (%opt, $dir, $pipeline, $threads, $num, $image_dir, $sqldb, $type, %ids, $zoom_setting, $roi, $start_date, $end_date);
+my (%opt, $dir, $pipeline, $threads, $num, $image_dir, $sqldb, $type, %ids, $zoom_setting, $roi, $start_date, $end_date, $img_format);
 our ($meta);
 my %is_valid = (
   'vis_sv' => 1,
@@ -23,7 +23,7 @@ my %is_valid = (
   'flu_tv' => 1
 );
 my $command = $0.' '.join(' ', @ARGV);
-getopts('d:p:t:n:i:s:T:z:m:D:rcfh', \%opt);
+getopts('d:p:t:n:i:s:T:z:m:D:F:rcfh', \%opt);
 arg_check();
 
 ## Job start time
@@ -170,10 +170,10 @@ if ($opt{'r'}) {
 			if ($type eq 'flu_tv') {
 				# For FLU images the pipeline needs three frames
 				my ($fdark, $fmin, $fmax) = split /,/, $mdata->{'multi'};
-				my $job = flu_job_builder($type, $pipeline, $image_dir, "'$dir/snapshot$mdata->{'snapshot'}/$fdark.png'", "'$dir/snapshot$mdata->{'snapshot'}/$fmin.png'", "'$dir/snapshot$mdata->{'snapshot'}/$fmax.png'", $roi);
+				my $job = flu_job_builder($type, $pipeline, $image_dir, "'$dir/snapshot$mdata->{'snapshot'}/$fdark.$img_format'", "'$dir/snapshot$mdata->{'snapshot'}/$fmin.$img_format'", "'$dir/snapshot$mdata->{'snapshot'}/$fmax.$img_format'", $roi);
 				push @jobs, $job;
 			} else {
-				my $job = job_builder($type, $pipeline, $image_dir, "'$dir/snapshot$mdata->{'snapshot'}/$random_image.png'", $roi);
+				my $job = job_builder($type, $pipeline, $image_dir, "'$dir/snapshot$mdata->{'snapshot'}/$random_image.$img_format'", $roi);
 				push @jobs, $job;
 			}
 		}
@@ -189,10 +189,10 @@ if ($opt{'r'}) {
 			if ($type eq 'flu_tv') {
 				# For FLU images the pipeline needs three frames
 				my ($fdark, $fmin, $fmax) = split /,/, $mdata->{'multi'};
-				my $job = flu_job_builder($type, $pipeline, $image_dir, "'$dir/snapshot$mdata->{'snapshot'}/$fdark.png'", "'$dir/snapshot$mdata->{'snapshot'}/$fmin.png'", "'$dir/snapshot$mdata->{'snapshot'}/$fmax.png'", $roi);
+				my $job = flu_job_builder($type, $pipeline, $image_dir, "'$dir/snapshot$mdata->{'snapshot'}/$fdark.$img_format'", "'$dir/snapshot$mdata->{'snapshot'}/$fmin.$img_format'", "'$dir/snapshot$mdata->{'snapshot'}/$fmax.$img_format'", $roi);
 				push @jobs, $job;
 			} else {
-				my $job = job_builder($type, $pipeline, $image_dir, "'$dir/snapshot$mdata->{'snapshot'}/$img.png'", $roi);
+				my $job = job_builder($type, $pipeline, $image_dir, "'$dir/snapshot$mdata->{'snapshot'}/$img.$img_format'", $roi);
 				push @jobs, $job;
 			}
 		}
@@ -470,7 +470,7 @@ sub parse_filename {
 	my $lifter = 0;
 	$day_time =~ s/_/:/g;
   $camera_label =~ s/FLUO/FLU/i;
-  $camera_label =~ s/\.png//;
+  $camera_label =~ s/\.$img_format//;
   my @camera_parts = split /_/, $camera_label;
   my $camera = lc($camera_parts[0].'_'.$camera_parts[1]);
   my ($frame, $zoom);
@@ -542,7 +542,7 @@ sub process_results {
   my @image = split /\//, $job[1];
   my $image = pop(@image);
 	if (!$opt{'f'}) {
-		$image =~ s/\.png//;	
+		$image =~ s/\.$img_format//;	
 	}
   my $path = join('/', @image);
   ###########################################
@@ -557,7 +557,7 @@ sub process_results {
 	if ($camera eq 'flu_tv') {
 		@multi = split /,/, $meta->{$image}->{'multi'};
 		for (my $i = 0; $i < scalar(@multi); $i++) {
-			$multi[$i] = $path.'/'.$multi[$i].'.png';
+			$multi[$i] = $path.'/'.$multi[$i].'.'.$img_format;
 		}
 	}
 	my ($date, $time) = split /\s/, $datetime;
@@ -579,7 +579,7 @@ sub process_results {
 	if ($camera eq 'flu_tv') {
 		@snap = ($image_id, $ids{'run_id'}, $plant_id, $epoch_time, $camera, $frame, $zoom, $lifter, join(',', @multi));
 	} else {
-		@snap = ($image_id, $ids{'run_id'}, $plant_id, $epoch_time, $camera, $frame, $zoom, $lifter, "$path/$image.png");
+		@snap = ($image_id, $ids{'run_id'}, $plant_id, $epoch_time, $camera, $frame, $zoom, $lifter, "$path/$image.$img_format");
 	}
   ###########################################
 
@@ -889,6 +889,11 @@ sub arg_check {
 		$current[1]--;
 		$end_date = timelocal(reverse(@current));
 	}
+	if ($opt{'F'}) {
+		$img_format = $opt{'F'};
+	} else {
+		$img_format = 'png';
+	}
 }
 
 ########################################
@@ -901,7 +906,7 @@ sub arg_error {
     print STDERR $error."\n";
   }
   my $usage = "
-usage: image_analysis.pl -d DIR [-f] -p PIPELINE -t TYPE -s DB -z ZOOM [-i DIR] [-T THREADS] [-r] [-n NUM] [-c] [-m ROI] [-h]
+usage: image_analysis.pl -d DIR [-f] -p PIPELINE -t TYPE -s DB -z ZOOM [-i DIR] [-T THREADS] [-r] [-n NUM] [-c] [-m ROI] [-F FORMAT] [-h]
 
 Multi-threaded execution of a plantcv image processing pipeline with
 specific or randomly selected images.
@@ -921,6 +926,7 @@ arguments:
                         Warning: activating this option will delete an existing database!
   -m ROI                ROI/mask image. Required by some pipelines (vis_tv, flu_tv).
   -D DATES              Date range. Format: YYYY-MM-DD-hh-mm-ss_YYYY-MM-DD-hh-mm-ss. If the second date is excluded then the current date is assumed.
+	-F FORMAT             Image format (extension). Default is 'png'.
   -h                    Show this help message and exit
 
   ";
