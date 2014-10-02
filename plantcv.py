@@ -3,7 +3,7 @@ import sys, os, traceback
 import cv2
 import numpy as np
 from random import randrange
-import pygtk
+#import pygtk
 import matplotlib
 if not os.getenv('DISPLAY'):
   matplotlib.use('Agg')
