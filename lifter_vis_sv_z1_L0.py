@@ -114,7 +114,7 @@ def main():
   device, boundary_header,boundary_data, boundary_img1= pcv.analyze_bound(img, args.image,obj, mask, 270, device,args.debug,args.outdir+'/'+filename)
   
   # Determine color properties: Histograms, Color Slices and Pseudocolored Images, output color analyzed images (optional)
-  device, color_header,color_data,norm_slice= pcv.analyze_color(img, args.image, mask, 256, device, args.debug,'all','rgb','v',args.outdir+'/'+filename)
+  device, color_header,color_data,norm_slice= pcv.analyze_color(img, args.image, mask, 256, device, args.debug,'all','rgb','v','img',300,args.outdir+'/'+filename)
   
   # Output shape and color data
   pcv.print_results(args.image, shape_header, shape_data)

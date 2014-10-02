@@ -1076,8 +1076,11 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     cv2.line(ori_img, (int(cmx),y), (int(cmx),y+height), (0,0,255), 3)
     cv2.line(ori_img,(tuple(caliper_transpose[caliper_length-1])),(tuple(caliper_transpose[0])),(0,0,255),3)
     cv2.circle(ori_img, (int(cmx),int(cmy)), 10, (0,0,255), 3)
-    print_image(ori_img,(str(filename) + '_shapes.png'))
-    print('\t'.join(map(str, ('IMAGE', 'shapes', str(filename) + '_shapes.png'))))
+    # Output images with convex hull, extent x and y
+    extention = filename.split('.')[-1]
+    out_file = str(filename[0:-4]) + '_shapes.' + extention
+    print_image(ori_img, out_file)
+    print('\t'.join(map(str, ('IMAGE', 'shapes', out_file))))
   else:
     pass
   
@@ -1201,8 +1204,11 @@ def analyze_bound(img,imgname, obj, mask, line_position, device , debug=False, f
         cv2.line(wback, (int(cmx),y_coor-2), (int(cmx),y_coor-height_above_bound), (255,0,0), 3)
         cv2.line(wback, (int(cmx),y_coor-2), (int(cmx),y_coor+height_below_bound), (0,255,0), 3)
     if filename:
-      print_image(ori_img,str(filename) + '_boundary' + str(line_position) + '.png')
-      print('\t'.join(map(str, ('IMAGE', 'boundary', str(filename) + '_boundary' + str(line_position) + '.png'))))
+      # Output images with boundary line, above/below bound area
+      extention = filename.split('.')[-1]
+      out_file = str(filename[0:-4]) + '_boundary' + str(line_position) + '.' + extention
+      print_image(ori_img, out_file)
+      print('\t'.join(map(str, ('IMAGE', 'boundary', out_file))))
   
   if debug:
     point3=(0,y_coor-4)
@@ -1395,7 +1401,7 @@ def tiller_count (img,imgname, obj, mask, line_position, device , debug=False, f
 
 
 ### Analyze Color of Object
-def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all',cslice_type='rgb',pseudo_channel='v',filename=False):
+def analyze_color(img, imgname, mask, bins, device, debug=False, hist_plot_type='all', cslice_type='rgb', pseudo_channel='v', pseudo_bkg='img', resolution=300, filename=False):
   # img = image
   # imgname = name of input image
   # mask = mask made from selected contours
@@ -1404,6 +1410,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
   # hist_plot_type= 'None', 'all', 'rgb','lab' or 'hsv'
   # color_slice_type = 'None', 'rgb', 'hsv' or 'lab'
   # pseudo_channel= 'None', 'l', 'm' (green-magenta), 'y' (blue-yellow), h','s', or 'v', creates pseduocolored image based on the specified channel
+  # pseudo_bkg = 'img' => channel image, 'white' => white background image, 'both' => both img and white options
   # filename= False or image name. If defined print image
   
   device += 1
@@ -1491,64 +1498,49 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
   # Create Histogram Plot
   if filename:
     if hist_plot_type=='all':
-      hist_plotb=plt.plot(hist_b,color=graph_color[0],label=label[0])
-      hist_plotg=plt.plot(hist_g,color=graph_color[1],label=label[1])
-      hist_plotr= plt.plot(hist_r,color=graph_color[2],label=label[2])
-      hist_plotl=plt.plot(hist_l,color=graph_color[3],label=label[3])
-      hist_plotm= plt.plot(hist_m,color=graph_color[4],label=label[4])
-      hist_ploty=plt.plot(hist_y,color=graph_color[5],label=label[5])
-      hist_ploth=plt.plot(hist_h,color=graph_color[6],label=label[6])
-      hist_plots= plt.plot(hist_s,color=graph_color[7],label=label[7])
-      hist_plotv=plt.plot(hist_v,color=graph_color[8],label=label[8])
-      xaxis=plt.xlim([0,(bins-1)])
-      legend=plt.legend()
-      fig_name=(str(filename)+'_' + str(hist_plot_type) + '_hist.svg')
-      plt.savefig(fig_name)
-      print('\t'.join(map(str, ('IMAGE', 'hist', fig_name))))
-      if debug:
-        fig_name=(str(device) +'_' + str(hist_plot_type) + '_hist.svg')
-        plt.savefig(fig_name)
-      plt.clf()
+      plt.plot(hist_b,color=graph_color[0],label=label[0])
+      plt.plot(hist_g,color=graph_color[1],label=label[1])
+      plt.plot(hist_r,color=graph_color[2],label=label[2])
+      plt.plot(hist_l,color=graph_color[3],label=label[3])
+      plt.plot(hist_m,color=graph_color[4],label=label[4])
+      plt.plot(hist_y,color=graph_color[5],label=label[5])
+      plt.plot(hist_h,color=graph_color[6],label=label[6])
+      plt.plot(hist_s,color=graph_color[7],label=label[7])
+      plt.plot(hist_v,color=graph_color[8],label=label[8])
+      plt.xlim([0,(bins-1)])
+      plt.legend()
     elif hist_plot_type=='rgb':
-      hist_plotb=plt.plot(hist_b,color=graph_color[0],label=label[0])
-      hist_plotg=plt.plot(hist_g,color=graph_color[1],label=label[1])
-      hist_plotr= plt.plot(hist_r,color=graph_color[2],label=label[2])
-      xaxis=plt.xlim([0,(bins-1)])
-      legend=plt.legend()
-      fig_name=(str(filename) +'_' + str(hist_plot_type) + '_hist.svg')
-      plt.savefig(fig_name)
-      plt.clf()
-      print('\t'.join(map(str, ('IMAGE', 'hist', fig_name))))
+      plt.plot(hist_b,color=graph_color[0],label=label[0])
+      plt.plot(hist_g,color=graph_color[1],label=label[1])
+      plt.plot(hist_r,color=graph_color[2],label=label[2])
+      plt.xlim([0,(bins-1)])
+      plt.legend()
     elif hist_plot_type=='lab':
-      hist_plotl=plt.plot(hist_l,color=graph_color[3],label=label[3])
-      hist_plotm= plt.plot(hist_m,color=graph_color[4],label=label[4])
-      hist_ploty=plt.plot(hist_y,color=graph_color[5],label=label[5])
-      xaxis=plt.xlim([0,(bins-1)])
-      legend=plt.legend()
-      fig_name=(str(filename) +'_' + str(hist_plot_type) + '_hist.svg')
-      plt.savefig(fig_name)
-      if debug:
-        fig_name=(str(device) +'_' + str(hist_plot_type) + '_hist.svg')
-        plt.savefig(fig_name)
-      plt.clf()
-      print('\t'.join(map(str, ('IMAGE', 'hist', fig_name))))
+      plt.plot(hist_l,color=graph_color[3],label=label[3])
+      plt.plot(hist_m,color=graph_color[4],label=label[4])
+      plt.plot(hist_y,color=graph_color[5],label=label[5])
+      plt.xlim([0,(bins-1)])
+      plt.legend()
     elif hist_plot_type=='hsv':
-      hist_ploth=plt.plot(hist_h,color=graph_color[6],label=label[6])
-      hist_plots= plt.plot(hist_s,color=graph_color[7],label=label[7])
-      hist_plotv=plt.plot(hist_v,color=graph_color[8],label=label[8])
-      xaxis=plt.xlim([0,(bins-1)])
-      legend=plt.legend()
-      fig_name=(str(filename) +'_' + str(hist_plot_type) + '_hist.svg')
-      plt.savefig(fig_name)
-      print('\t'.join(map(str, ('IMAGE', 'hist', fig_name))))
-      if debug:
-        fig_name=(str(device) +'_' + str(hist_plot_type) + '_hist.svg')
-        plt.savefig(fig_name)
-      plt.clf()
+      plt.plot(hist_h,color=graph_color[6],label=label[6])
+      plt.plot(hist_s,color=graph_color[7],label=label[7])
+      plt.plot(hist_v,color=graph_color[8],label=label[8])
+      plt.xlim([0,(bins-1)])
+      plt.legend()
     elif hist_plot_type==None:
       pass
     else:
       fatal_error('Histogram Plot Type' + str(hist_plot_type) + ' is not "none", "all","rgb", "lab" or "hsv"!')
+    
+    if hist_plot_type != None:
+      # Print plot
+      fig_name = (str(filename[0:-4]) + '_' + str(hist_plot_type) + '_hist.svg')
+      plt.savefig(fig_name)
+      print('\t'.join(map(str, ('IMAGE', 'hist', fig_name))))
+      if debug:
+        fig_name=(str(device) +'_' + str(hist_plot_type) + '_hist.svg')
+        plt.savefig(fig_name)
+      plt.clf()
     
   # Generate Color Slice: Get Flattened RGB, LAB or HSV Histogram for Visualization     
   if cslice_type==None:
@@ -1629,8 +1621,10 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     fatal_error('Visualize Type' + str(visualize_type) + ' is not "None", "rgb","hsv" or "lab"!')
   
   if filename:
-    print_image(norm_slice, (str(filename) + '_'+ str(cslice_type)+ '_norm_slice.png'))
-    print('\t'.join(map(str, ('IMAGE', 'slice', str(filename) + '_'+ str(cslice_type)+ '_norm_slice.png'))))
+    # Print color-slice image
+    out_file = str(filename[0:-4]) + '_' + str(cslice_type) + '_norm_slice.png'
+    print_image(norm_slice, out_file)
+    print('\t'.join(map(str, ('IMAGE', 'slice', out_file))))
   else:
     pass
   
@@ -1644,204 +1638,48 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
   
   if p_channel==None:
     pass
-        
-  elif p_channel=='h':
-        
-    h_img =plt.imshow(h_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
-    #bar=plt.colorbar(orientation='horizontal')
-    mask_inv=cv2.bitwise_not(mask)
-    img_gray=cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    pot=cv2.bitwise_and(img_gray,img_gray,mask=mask_inv)
-    pot_img=cv2.add(pot,mask)
-    pot_rgba=np.dstack((pot_img,pot_img,pot_img,mask_inv))
-    my_cmap = plt.get_cmap('binary_r')
-    pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
-    plt.axis('off')
-    fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseudo_on_img.png')
-    plt.savefig(fig_name, dpi=600,bbox_inches='tight')
-    print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
-    if debug:
-      fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseudo_on_img.png')
-      plt.savefig(fig_name, dpi=600,bbox_inches='tight')
-    plt.clf()
     
-    h_img =plt.imshow(h_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
-    #bar=plt.colorbar(orientation='horizontal')
-    white_rgba=np.dstack((w_back,w_back,w_back,mask_inv))
-    pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
-    plt.axis('off')
-    fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseudo_on_white.png')
-    plt.savefig(fig_name, dpi=600,bbox_inches='tight')
-    print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
-    if debug:
-      fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseudo_on_white.png')
-      plt.savefig(fig_name, dpi=600,bbox_inches='tight')
-    plt.clf()
+  elif p_channel=='h':
+    if (pseudo_bkg == 'white' or pseudo_bkg == 'both'):
+      _pseudocolored_image(h_bin, bins, img, mask, 'white', p_channel, filename, resolution)
+    
+    if (pseudo_bkg == 'img' or pseudo_bkg == 'both'):
+      _pseudocolored_image(h_bin, bins, img, mask, 'img', p_channel, filename, resolution)
     
   elif p_channel=='s':
+    if (pseudo_bkg == 'white' or pseudo_bkg == 'both'):
+      _pseudocolored_image(s_bin, bins, img, mask, 'white', p_channel, filename, resolution)
     
-    s_img =plt.imshow(s_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
-    #bar=plt.colorbar(orientation='horizontal')
-    mask_inv=cv2.bitwise_not(mask)
-    img_gray=cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    pot=cv2.bitwise_and(img_gray,img_gray,mask=mask_inv)
-    pot_img=cv2.add(pot,mask)
-    pot_rgba=np.dstack((pot_img,pot_img,pot_img,mask_inv))
-    my_cmap = plt.get_cmap('binary_r')
-    pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
-    plt.axis('off')
-    fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-    plt.savefig(fig_name, dpi=600,bbox_inches='tight')
-    print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
-    if debug:
-      fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-      plt.savefig(fig_name, dpi=600,bbox_inches='tight')
-    plt.clf()
-    
-    s_img =plt.imshow(s_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
-    #bar=plt.colorbar(orientation='horizontal')
-    white_rgba=np.dstack((w_back,w_back,w_back,mask_inv))
-    pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
-    plt.axis('off')
-    fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-    plt.savefig(fig_name, dpi=600,bbox_inches='tight')
-    print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
-    if debug:
-      fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-      plt.savefig(fig_name, dpi=600,bbox_inches='tight')
-    plt.clf()
+    if (pseudo_bkg == 'img' or pseudo_bkg == 'both'):
+      _pseudocolored_image(s_bin, bins, img, mask, 'img', p_channel, filename, resolution)
     
   elif p_channel=='v':
+    if (pseudo_bkg == 'white' or pseudo_bkg == 'both'):
+      _pseudocolored_image(v_bin, bins, img, mask, 'white', p_channel, filename, resolution)
     
-    v_img =plt.imshow(v_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
-    #bar=plt.colorbar(orientation='horizontal')
-    mask_inv=cv2.bitwise_not(mask)
-    img_gray=cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    pot=cv2.bitwise_and(img_gray,img_gray,mask=mask_inv)
-    pot_img=cv2.add(pot,mask)
-    pot_rgba=np.dstack((pot_img,pot_img,pot_img,mask_inv))
-    my_cmap = plt.get_cmap('binary_r')
-    pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
-    plt.axis('off')
-    fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-    plt.savefig(fig_name, dpi=600,bbox_inches='tight')
-    print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
-    if debug:
-      fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-      plt.savefig(fig_name, dpi=600,bbox_inches='tight')
-    plt.clf()
-    
-    v_img =plt.imshow(v_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
-    #bar=plt.colorbar(orientation='horizontal')
-    white_rgba=np.dstack((w_back,w_back,w_back,mask_inv))
-    pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
-    plt.axis('off')
-    fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-    plt.savefig(fig_name, dpi=600,bbox_inches='tight')
-    print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
-    if debug:
-      fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-      plt.savefig(fig_name, dpi=600,bbox_inches='tight')
-    plt.clf()
+    if (pseudo_bkg == 'img' or pseudo_bkg == 'both'):
+      _pseudocolored_image(v_bin, bins, img, mask, 'img', p_channel, filename, resolution)
     
   elif p_channel=='l':
+    if (pseudo_bkg == 'white' or pseudo_bkg == 'both'):
+      _pseudocolored_image(l_bin, bins, img, mask, 'white', p_channel, filename, resolution)
     
-    l_img =plt.imshow(l_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
-    #bar=plt.colorbar(orientation='horizontal')
-    mask_inv=cv2.bitwise_not(mask)
-    img_gray=cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    pot=cv2.bitwise_and(img_gray,img_gray,mask=mask_inv)
-    pot_img=cv2.add(pot,mask)
-    pot_rgba=np.dstack((pot_img,pot_img,pot_img,mask_inv))
-    my_cmap = plt.get_cmap('binary_r')
-    pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
-    plt.axis('off')
-    fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-    plt.savefig(fig_name, dpi=600,bbox_inches='tight')
-    print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
-    if debug:
-      fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-      plt.savefig(fig_name, dpi=600,bbox_inches='tight')
-    plt.clf()
-    
-    l_img =plt.imshow(l_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
-    #bar=plt.colorbar(orientation='horizontal')
-    white_rgba=np.dstack((w_back,w_back,w_back,mask_inv))
-    pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
-    plt.axis('off')
-    fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-    plt.savefig(fig_name, dpi=600,bbox_inches='tight')
-    print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
-    if debug:
-      fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-      plt.savefig(fig_name, dpi=600,bbox_inches='tight')
-    plt.clf()
+    if (pseudo_bkg == 'img' or pseudo_bkg == 'both'):
+      _pseudocolored_image(l_bin, bins, img, mask, 'img', p_channel, filename, resolution)
     
   elif p_channel=='m':
+    if (pseudo_bkg == 'white' or pseudo_bkg == 'both'):
+      _pseudocolored_image(m_bin, bins, img, mask, 'white', p_channel, filename, resolution)
     
-    m_img =plt.imshow(m_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
-    #bar=plt.colorbar(orientation='horizontal')
-    mask_inv=cv2.bitwise_not(mask)
-    img_gray=cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    pot=cv2.bitwise_and(img_gray,img_gray,mask=mask_inv)
-    pot_img=cv2.add(pot,mask)
-    pot_rgba=np.dstack((pot_img,pot_img,pot_img,mask_inv))
-    my_cmap = plt.get_cmap('binary_r')
-    pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
-    plt.axis('off')
-    fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-    plt.savefig(fig_name, dpi=600,bbox_inches='tight')
-    print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
-    if debug:
-      fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-      plt.savefig(fig_name, dpi=600,bbox_inches='tight')
-    plt.clf()
-    
-    m_img =plt.imshow(m_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
-    #bar=plt.colorbar(orientation='horizontal')
-    white_rgba=np.dstack((w_back,w_back,w_back,mask_inv))
-    pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
-    plt.axis('off')
-    fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-    plt.savefig(fig_name, dpi=600,bbox_inches='tight')
-    print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
-    if debug:
-      fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-      plt.savefig(fig_name, dpi=600,bbox_inches='tight')
-    plt.clf()
+    if (pseudo_bkg == 'img' or pseudo_bkg == 'both'):
+      _pseudocolored_image(m_bin, bins, img, mask, 'img', p_channel, filename, resolution)
     
   elif p_channel=='y':
+    if (pseudo_bkg == 'white' or pseudo_bkg == 'both'):
+      _pseudocolored_image(y_bin, bins, img, mask, 'white', p_channel, filename, resolution)
     
-    y_img =plt.imshow(y_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
-    #bar=plt.colorbar(orientation='horizontal')
-    mask_inv=cv2.bitwise_not(mask)
-    img_gray=cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    pot=cv2.bitwise_and(img_gray,img_gray,mask=mask_inv)
-    pot_img=cv2.add(pot,mask)
-    pot_rgba=np.dstack((pot_img,pot_img,pot_img,mask_inv))
-    my_cmap = plt.get_cmap('binary_r')
-    pot_img1 =plt.imshow(pot_rgba, cmap=my_cmap)
-    plt.axis('off')
-    fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-    plt.savefig(fig_name, dpi=600,bbox_inches='tight')
-    print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
-    if debug:
-      fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_img.png')
-      plt.savefig(fig_name, dpi=600,bbox_inches='tight')
-    plt.clf()
-    
-    y_img =plt.imshow(y_bin, vmin=0,vmax=(bins-1), cmap=cm.jet)
-    #bar=plt.colorbar(orientation='horizontal')
-    white_rgba=np.dstack((w_back,w_back,w_back,mask_inv))
-    pot_img1 =plt.imshow(white_rgba, cmap=my_cmap)
-    plt.axis('off')
-    fig_name=(str(filename) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-    plt.savefig(fig_name, dpi=600,bbox_inches='tight')
-    print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
-    if debug:
-      fig_name=(str(device) +'_' + str(pseudo_channel) + '_pseduo_on_white.png')
-      plt.savefig(fig_name, dpi=600,bbox_inches='tight')
-    plt.clf()
+    if (pseudo_bkg == 'img' or pseudo_bkg == 'both'):
+      _pseudocolored_image(y_bin, bins, img, mask, 'img', p_channel, filename, resolution)
     
   else:
     fatal_error('Pseudocolor Channel' + str(pseudo_channel) + ' is not "None", "l","m", "y", "h","s" or "v"!')
@@ -1860,10 +1698,57 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
       norm=colors.Normalize(vmin=valmin, vmax=valmax)
       cb1=colorbar.ColorbarBase(ax1,cmap=cm.jet, norm=norm, orientation='horizontal')
       fig_name=str(filename2)+'/1_vis_pseudocolor_colorbar_' + str(pseudo_channel) + '_channel.svg'
-      plt.savefig(fig_name,dpi=600,bbox_inches='tight')
-      plt.clf()
+      fig.savefig(fig_name,bbox_inches='tight')
+      fig.clf()
   
   return device, hist_header, hist_data, norm_slice
+
+def _pseudocolored_image(histogram, bins, img, mask, background, channel, filename, resolution):
+  # histogram = a normalized histogram of color values from one color channel
+  # bins = number of color bins the channel is divided into
+  # img = input image
+  # mask = binary mask image
+  # background = what background image?: channel image (img) or white
+  # channel = color channel name
+  # filename = input image filename
+  # resolution = output image resolution
+  
+  # Get the image size
+  if np.shape(img)[2] == 3:
+    ix, iy, iz = np.shape(img)
+  else:
+    ix, iy = np.shape(img)
+  size = ix, iy
+  
+  plt.imshow(histogram, vmin=0, vmax=(bins - 1), cmap=cm.jet)
+  mask_inv = cv2.bitwise_not(mask)
+  my_cmap = plt.get_cmap('binary_r')
+  
+  if background == 'img':
+    # Plot pseudocolored plant on the channel image
+    img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    pot = cv2.bitwise_and(img_gray, img_gray, mask=mask_inv)
+    pot_img = cv2.add(pot, mask)
+    pot_rgba = np.dstack((pot_img, pot_img, pot_img, mask_inv))
+    plt.imshow(pot_rgba, cmap=my_cmap)
+  elif background == 'white':
+    # Plot pseudocolored plant on a white background
+    # Create white background
+    w_back = np.zeros(size, dtype=np.uint8) + 255
+    white_rgba = np.dstack((w_back, w_back, w_back, mask_inv))
+    plt.imshow(white_rgba, cmap=my_cmap)
+  else:
+    fatal_error("Background type " + background + " is not a valid type!")
+
+  plt.axis('off')
+  
+  # Name output file
+  fig_name = str(filename[0:-4]) + '_' + str(channel) + '_pseudo_on_' + str(background) + '.png'
+  
+  # Save image
+  plt.savefig(fig_name, dpi=resolution, bbox_inches='tight')
+  print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
+  plt.clf()
 
 ### Analyze signal data in NIR image
 def analyze_NIR_intensity(img, imgname, mask, bins, device, debug=False, filename=False):
