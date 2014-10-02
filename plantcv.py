@@ -1038,7 +1038,20 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     hull_area, solidity, perimeter, width, height, cmx, cmy = 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND'
       
   #Store Shape Data
-  shape_header=('HEADER_SHAPES', 'area','hull-area','solidity','perimeter','width','height','longest_axis','center-of-mass-x', 'center-of-mass-y', 'hull_vertices', 'in_bounds')
+  shape_header=(
+    'HEADER_SHAPES',
+    'area',
+    'hull-area',
+    'solidity',
+    'perimeter',
+    'width',
+    'height',
+    'longest_axis',
+    'center-of-mass-x',
+    'center-of-mass-y',
+    'hull_vertices',
+    'in_bounds'
+    )
 
   shape_data = (
     'SHAPES_DATA',
@@ -1147,7 +1160,15 @@ def analyze_bound(img,imgname, obj, mask, line_position, device , debug=False, f
   percent_bound_area_above=((float(above_bound_area))/(float(above_bound_area+below_bound_area)))*100
   percent_bound_area_below=((float(below_bound_area))/(float(above_bound_area+below_bound_area)))*100
  
-  bound_header=('HEADER_BOUNDARY' + str(line_position), 'height_above_bound', 'height_below_bound', 'above_bound_area', 'percent_above_bound_area', 'below_bound_area', 'percent_below_bound_area' )
+  bound_header=(
+    'HEADER_BOUNDARY' + str(line_position),
+    'height_above_bound',
+    'height_below_bound',
+    'above_bound_area',
+    'percent_above_bound_area',
+    'below_bound_area',
+    'percent_below_bound_area'
+    )
 
   bound_data = (
     'BOUNDARY_DATA',
@@ -1439,7 +1460,19 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     
   
   #Store Color Histogram Data
-  hist_header=('HEADER_HISTOGRAM','bin-number','blue','green','red', 'lightness','green-magenta','blue-yellow','hue','saturation', 'value')
+  hist_header=(
+    'HEADER_HISTOGRAM',
+    'bin-number',
+    'blue',
+    'green',
+    'red',
+    'lightness',
+    'green-magenta',
+    'blue-yellow',
+    'hue',
+    'saturation',
+    'value'
+    )
 
   hist_data= (
     'HISTOGRAM_DATA',
@@ -1454,7 +1487,6 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
     hist_data_s,
     hist_data_v
     )
-  
   
   # Create Histogram Plot
   if filename:
@@ -1860,16 +1892,16 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, debug=False, filenam
   hist_nir = (hist_nir/pixels) * 100
   hist_data_nir=[l[0] for l in hist_nir]
   
-  hist_header=('HEADER_HISTOGRAM', 'bin-number', 'signal') # 'bin', 'intensity'
-  data={
-    'bin-number': bins,
-    'signal': hist_data_nir
-  }
+  hist_header=(
+    'HEADER_HISTOGRAM',
+    'bin-number',
+    'signal'
+    )
   
   hist_data= (
     'NIR_DATA',
-    data['bin-number'],
-    data['signal']
+    bins,
+    hist_data_nir
     )
   
   hist_plot_nir=plt.plot(hist_nir, color = 'red', label = 'Signal Intensity')
@@ -2023,24 +2055,24 @@ def fluor_fvfm(fdark,fmin,fmax,mask, device,filename,bins=1000, debug=False):
   max_bin=tmid[fvfm_hist_max]
   
   # Store Fluorescence Histogram Data
-  hist_header=('HEADER_HISTOGRAM', 'bin-number','fvfm_bins','fvfm_hist','fvfm_hist_peak','fvfm_median', 'fdark_passed_qc')
-  data={
-    'bin-number': bins,
-    'fvfm_bins': tmid_list,
-    'fvfm_hist': fvfm_hist_list,
-    'fvfm_hist_peak':max_bin,
-    'fvfm_median':fvfm_median,
-    'fdark_passed_qc': qc_fdark
-    }
+  hist_header=(
+    'HEADER_HISTOGRAM',
+    'bin-number',
+    'fvfm_bins',
+    'fvfm_hist',
+    'fvfm_hist_peak',
+    'fvfm_median',
+    'fdark_passed_qc'
+    )
   
   hist_data= (
     'FLU_DATA',
-    data['bin-number'],
-    data['fvfm_bins'],
-    data['fvfm_hist'],
-    data['fvfm_hist_peak'],
-    data['fvfm_median'],
-    data['fdark_passed_qc']
+    bins,
+    tmid_list,
+    fvfm_hist_list,
+    max_bin,
+    fvfm_median,
+    qc_fdark
     )
   
   # Create Histogram Plot, if you change the bin number you might need to change binx so that it prints an appropriate number of labels
