@@ -1039,31 +1039,7 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
       
   #Store Shape Data
   shape_header=('HEADER_SHAPES', 'area','hull-area','solidity','perimeter','width','height','longest_axis','center-of-mass-x', 'center-of-mass-y', 'hull_vertices', 'in_bounds')
-  #data = {
-  #  'area' : area,
-  #  'hull_area' : hull_area,
-  #  'solidity' : solidity,
-  #  'perimeter' : perimeter,
-  #  'width' : width,
-  #  'height' : height,
-  #  'longest_axis': caliper_length,
-  #  'center_mass_x' : cmx,
-  #  'center_mass_y' : cmy,
-  #  'in_bounds': in_bounds
-  #}
-  #
-  #shape_data = (
-  #  data['area'],
-  #  data['hull_area'],
-  #  data['solidity'],
-  #  data['perimeter'],
-  #  data['width'],
-  #  data['height'],
-  #  data['longest_axis'],
-  #  data['center_mass_x'],
-  #  data['center_mass_y'],
-  #  data['in_bounds']
-  #  )
+
   shape_data = (
     'SHAPES_DATA',
     area,
@@ -1172,23 +1148,7 @@ def analyze_bound(img,imgname, obj, mask, line_position, device , debug=False, f
   percent_bound_area_below=((float(below_bound_area))/(float(above_bound_area+below_bound_area)))*100
  
   bound_header=('HEADER_BOUNDARY' + str(line_position), 'height_above_bound', 'height_below_bound', 'above_bound_area', 'percent_above_bound_area', 'below_bound_area', 'percent_below_bound_area' )
-  #data = {
-  #  'height_above_bound': height_above_bound,
-  #  'height_below_bound': height_below_bound,
-  #  'above_bound_area' : above_bound_area,
-  #  'percent_above_bound_area':percent_bound_area_above,
-  #  'below_bound_area' : below_bound_area,
-  #  'percent_below_bound_area': percent_bound_area_below
-  #}
-  #
-  #bound_data = (
-  #  data['height_above_bound'],
-  #  data['height_below_bound'],
-  #  data['above_bound_area'],
-  #  data['percent_above_bound_area'],
-  #  data['below_bound_area'],
-  #  data['percent_below_bound_area']
-  #)
+
   bound_data = (
     'BOUNDARY_DATA',
     height_above_bound,
@@ -1198,11 +1158,6 @@ def analyze_bound(img,imgname, obj, mask, line_position, device , debug=False, f
     below_bound_area,
     percent_bound_area_below
   )
-  
-  #shape_header1=shape_header+bound_header
-  #shape_header=shape_header1
-  #shape_data1=shape_data+bound_data
-  #shape_data=shape_data1
   
   if above_bound_area or below_bound_area:  
     point3=(0,y_coor-4)
@@ -1225,7 +1180,6 @@ def analyze_bound(img,imgname, obj, mask, line_position, device , debug=False, f
         cv2.line(wback, (int(cmx),y_coor-2), (int(cmx),y_coor-height_above_bound), (255,0,0), 3)
         cv2.line(wback, (int(cmx),y_coor-2), (int(cmx),y_coor+height_below_bound), (0,255,0), 3)
     if filename:
-      #print_image(ori_img,(str(filename) + '_boundary_shapes.png'))
       print_image(ori_img,str(filename) + '_boundary' + str(line_position) + '.png')
       print('\t'.join(map(str, ('IMAGE', 'boundary', str(filename) + '_boundary' + str(line_position) + '.png'))))
   
@@ -1252,7 +1206,6 @@ def analyze_bound(img,imgname, obj, mask, line_position, device , debug=False, f
     print_image(wback,(str(device) + '_boundary_on_white.png'))
     print_image(ori_img,(str(device) + '_boundary_on_img.png'))
   
-  #return device, shape_header, shape_data, ori_img
   return device, bound_header, bound_data, ori_img
 
 #### Shape Tiller Tool2
@@ -1487,31 +1440,7 @@ def analyze_color(img, imgname, mask,bins,device,debug=False,hist_plot_type='all
   
   #Store Color Histogram Data
   hist_header=('HEADER_HISTOGRAM','bin-number','blue','green','red', 'lightness','green-magenta','blue-yellow','hue','saturation', 'value')
-  #data={
-  #  'bin-number': bins,
-  #  'blue': hist_data_b,
-  #  'green':hist_data_g,
-  #  'red':hist_data_r,
-  #  'lightness':hist_data_l,
-  #  'green-magenta':hist_data_m,
-  #  'blue-yellow':hist_data_y,
-  #  'hue': hist_data_h,
-  #  'saturation':hist_data_s,
-  #  'value':hist_data_v  
-  #  }
-  
-  #hist_data= (
-  #  data['bin-number'],
-  #  data['blue'],
-  #  data['green'],
-  #  data['red'],
-  #  data['lightness'],
-  #  data['green-magenta'],
-  #  data['blue-yellow'],
-  #  data['hue'],
-  #  data['saturation'],
-  #  data['value']
-  #  )
+
   hist_data= (
     'HISTOGRAM_DATA',
     bins,
