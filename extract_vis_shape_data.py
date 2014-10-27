@@ -30,13 +30,13 @@ def tv_centroid_correction(area, centroid_height):
 
 ### Zoom correction
 def zoom_correction(area, zoom):
-  correction_factor = 0.9015 * math.exp(0.0007 * zoom)
+  correction_factor = 0.8854 * math.exp(0.0007224 * zoom)
   area /= correction_factor
   return area
 
 ### Length conversion
 def px_to_cm(px, zoom):
-  pxcm = (0.000002171 * (zoom ** 2)) + (0.002073 * zoom) + 14.27
+  pxcm = (0.00000217 * (zoom ** 2)) + (0.002077 * zoom) + 14.27
   cm = px / pxcm
   return cm
 
@@ -62,9 +62,9 @@ def main():
     print("IO error")
   
   # Header
-  out.write(','.join(map(str, ('plant_id', 'datetime', 'sv_area', 'tv_area', 'centroid_height', 'solidity', 'perimeter', 'centroid_x', 'centroid_y', 'longest_axis',
-                                   'height_above_bound', 'height_below_bound', 'above_bound_area', 'percent_above_bound_area', 'below_bound_area',
-                                   'percent_below_bound_area', 'outlier', 'boundary_line'))) + '\n')
+  out.write(','.join(map(str, ('plant_id', 'datetime', 'sv_area', 'tv_area', 'solidity', 'perimeter', 'centroid_x', 'centroid_y', 'longest_axis',
+                                   'extent_x', 'extent_y', 'height_above_bound', 'height_below_bound', 'above_bound_area',
+                                   'percent_above_bound_area', 'below_bound_area', 'percent_below_bound_area', 'outlier', 'boundary_line', 'spreadratio'))) + '\n')
   
   # Replace the row_factory result constructor with a dictionary constructor
   connect.row_factory = dict_factory
@@ -99,6 +99,8 @@ def main():
     percent_above_bound_area = 0
     below_bound_area = 0
     percent_below_bound_area = 0
+    extent_x = 0
+    extent_y = 0
     
     for row in (db.execute('SELECT * FROM `snapshots` INNER JOIN `vis_shapes` ON `snapshots`.`image_id` = `vis_shapes`.`image_id` WHERE `datetime` = %i' % snapshot)):
       plant_id = row['plant_id']
@@ -112,6 +114,8 @@ def main():
         centroid_x += row['centroid_x']
         centroid_y += row['centroid_y']
         longest_axis += row['longest_axis']
+        extent_x += row['extent_x']
+        extent_y += row['extent_y']
       elif row['camera'] == 'vis_tv':
         tv_area = zoom_correction(row['area'], row['zoom'])
     if sv_image_count == 4 and tv_area > 0:
@@ -122,6 +126,8 @@ def main():
       centroid_x /= sv_image_count
       centroid_y /= sv_image_count
       longest_axis /= sv_image_count
+      extent_x /= sv_image_count
+      extent_y /= sv_image_count
   
       # Measure plant height
       image_count = 0
@@ -145,21 +151,24 @@ def main():
         below_bound_area /= image_count
         percent_below_bound_area /= image_count
         # Adjusted center of mass y (height above boundary line to cmy)
-        centroid_height = (args.height - boundary_line_y) - centroid_y
-        if centroid_height < 0:
-          centroid_height = 0
+        #centroid_height = (args.height - boundary_line_y) - centroid_y
+        #if centroid_height < 0:
+        #  centroid_height = 0
+        spreadratio = height_above_bound / extent_x
         
         # Zoom correct length-based traits
-        centroid_height = px_to_cm(centroid_height, row['zoom'])
+        #centroid_height = px_to_cm(centroid_height, row['zoom'])
         perimeter = px_to_cm(perimeter, row['zoom'])
         longest_axis = px_to_cm(longest_axis, row['zoom'])
         height_above_bound = px_to_cm(height_above_bound, row['zoom'])
         height_below_bound = px_to_cm(height_below_bound, row['zoom'])
+        extent_x = px_to_cm(extent_x, row['zoom'])
+        extent_y = px_to_cm(extent_y, row['zoom'])
           
         #surface_area += tv_centroid_correction(tv_area, centroid_height)
-        out.write(','.join(map(str, (plant_id, snapshot, sv_area, tv_area, centroid_height, solidity, perimeter, centroid_x, centroid_y, longest_axis,
-                                   height_above_bound, height_below_bound, above_bound_area, percent_above_bound_area, below_bound_area,
-                                   percent_below_bound_area, outlier, boundary_line_y))) + '\n')
+        out.write(','.join(map(str, (plant_id, snapshot, sv_area, tv_area, solidity, perimeter, centroid_x, centroid_y, longest_axis,
+                                   extent_x, extent_y, height_above_bound, height_below_bound, above_bound_area, percent_above_bound_area, below_bound_area,
+                                   percent_below_bound_area, outlier, boundary_line_y, spreadratio))) + '\n')
     else:
       if (args.debug):
         print('Something is wrong, snapshot ' + str(snapshot) + ' has ' + str(sv_image_count) + ' SV images and TV area is ' + str(tv_area))
