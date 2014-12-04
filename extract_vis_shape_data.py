@@ -64,7 +64,7 @@ def main():
   # Header
   out.write(','.join(map(str, ('plant_id', 'datetime', 'sv_area', 'tv_area', 'solidity', 'perimeter', 'centroid_x', 'centroid_y', 'longest_axis',
                                    'extent_x', 'extent_y', 'height_above_bound', 'height_below_bound', 'above_bound_area',
-                                   'percent_above_bound_area', 'below_bound_area', 'percent_below_bound_area', 'outlier', 'boundary_line', 'spreadratio'))) + '\n')
+                                   'percent_above_bound_area', 'below_bound_area', 'percent_below_bound_area', 'outlier', 'boundary_line'))) + '\n')
   
   # Replace the row_factory result constructor with a dictionary constructor
   connect.row_factory = dict_factory
@@ -154,7 +154,7 @@ def main():
         #centroid_height = (args.height - boundary_line_y) - centroid_y
         #if centroid_height < 0:
         #  centroid_height = 0
-        spreadratio = height_above_bound / extent_x
+        #spreadratio = float(height_above_bound / extent_x)
         
         # Zoom correct length-based traits
         #centroid_height = px_to_cm(centroid_height, row['zoom'])
@@ -168,7 +168,7 @@ def main():
         #surface_area += tv_centroid_correction(tv_area, centroid_height)
         out.write(','.join(map(str, (plant_id, snapshot, sv_area, tv_area, solidity, perimeter, centroid_x, centroid_y, longest_axis,
                                    extent_x, extent_y, height_above_bound, height_below_bound, above_bound_area, percent_above_bound_area, below_bound_area,
-                                   percent_below_bound_area, outlier, boundary_line_y, spreadratio))) + '\n')
+                                   percent_below_bound_area, outlier, boundary_line_y))) + '\n')
     else:
       if (args.debug):
         print('Something is wrong, snapshot ' + str(snapshot) + ' has ' + str(sv_image_count) + ' SV images and TV area is ' + str(tv_area))
