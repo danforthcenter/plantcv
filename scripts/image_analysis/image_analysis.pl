@@ -92,13 +92,13 @@ if ($opt{'c'}) {
       exit;
     }
   }
-  my $schema = "$Bin/docs/results.sql";
+  my $schema = "$Bin/includes/results.sql";
   unless (-e $schema) {
     print STDERR "Schema file not found: $schema does not exists!\n\n";
     exit 1;
   }
   # Create new database and initialize with template schema
-  `sqlite3 $sqldb '.read $Bin/docs/results.sql'`;
+  `sqlite3 $sqldb '.read $schema'`;
 } else {
 	unless (-e $sqldb) {
 		arg_error("The database $sqldb does not exist and you did not ask to create it [-c].");
