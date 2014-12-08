@@ -1,4 +1,17 @@
 ### Analyze signal data in NIR image
+
+import os
+import cv2
+import numpy as np
+import matplotlib
+if not os.getenv('DISPLAY'):
+  matplotlib.use('Agg')
+from matplotlib import pyplot as plt
+from matplotlib import cm as cm
+from matplotlib import colors as colors
+from matplotlib import colorbar as colorbar
+import pylab as pl
+
 def analyze_NIR_intensity(img, imgname, mask, bins, device, debug=False, filename=False):
   # This function calculates the intensity of each pixel associated with the plant and writes the values out to a file
   # Can also print out a histogram plot of pixel intensity and a pseudocolor image of the plant

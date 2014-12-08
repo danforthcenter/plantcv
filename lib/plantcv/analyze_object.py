@@ -1,4 +1,10 @@
 ### Analyzes an object and outputs numeric properties
+
+import cv2
+import numpy as np
+from . import print_image
+from . import fatal_error
+
 def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
   # Outputs numeric properties for an input object (contour or grouped contours)
   # Also color classification?

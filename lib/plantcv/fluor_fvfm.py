@@ -1,4 +1,17 @@
 ### Fluorescence Analysis
+
+import os
+import cv2
+import numpy as np
+import matplotlib
+if not os.getenv('DISPLAY'):
+  matplotlib.use('Agg')
+from matplotlib import pyplot as plt
+from matplotlib import cm as cm
+from matplotlib import colors as colors
+from matplotlib import colorbar as colorbar
+import pylab as pl
+
 def fluor_fvfm(fdark,fmin,fmax,mask, device,filename,bins=1000, debug=False):
   # fdark = 16-bit fdark image
   # fmin = 16-bit fmin image

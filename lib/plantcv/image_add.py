@@ -1,4 +1,7 @@
 ### Image addition
+
+from . import print_image
+
 def image_add(img1, img2, device, debug):
   # This is a function used to add images
   # The numpy addition function '+' is used. This is a modulo operation rather than the cv2.add fxn which is a saturation operation

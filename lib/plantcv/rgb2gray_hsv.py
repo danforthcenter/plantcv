@@ -1,4 +1,9 @@
 ### RGB -> HSV -> Gray
+
+import cv2
+from . import print_image
+from . import fatal_error
+
 def rgb2gray_hsv(img, channel, device, debug=False):
   # Convert image from RGB colorspace to HSV colorspace
   # Returns the specified subchannel as a gray image

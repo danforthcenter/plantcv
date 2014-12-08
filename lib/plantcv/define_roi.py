@@ -1,4 +1,12 @@
 ### View and Adjust ROI
+
+import sys
+import cv2
+import numpy as np
+from . import print_image
+from . import fatal_error
+
+
 def define_roi(img, shape, device, roi=None, roi_input='default', debug=False, adjust=False, x_adj=0, y_adj=0, w_adj=0, h_adj=0, ):
   # img = img to overlay roi 
   # roi =default (None) or user input ROI image, object area should be white and background should be black, has not been optimized for more than one ROI

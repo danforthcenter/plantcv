@@ -1,4 +1,8 @@
 ### Dilation filter
+
+import cv2
+from . import print_image
+
 def dilate(img, kernel, i, device, debug):
   # Performs morphological 'dilation' filtering. Adds pixel to center of kernel if conditions set in kernel are true.
   # img = input image

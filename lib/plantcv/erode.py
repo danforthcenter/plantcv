@@ -1,4 +1,8 @@
 ### Erosion filter
+
+import cv2
+from . import print_image
+
 def erode(img, kernel, i, device, debug):
   # Perform morphological 'erosion' filtering. Keeps pixel in center of the kernel if conditions set in kernel are true, otherwise removes pixel. 
   # img = input image

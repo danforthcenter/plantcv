@@ -1,4 +1,8 @@
 ### Plot histogram
+
+import cv2
+from matplotlib import pyplot as plt
+
 def plot_hist(img, name):
   # Plot a histogram using the pyplot library
   # img = image to analyze

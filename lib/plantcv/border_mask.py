@@ -1,4 +1,9 @@
 ### Mask border of image
+
+import cv2
+import numpy as np
+from . import print_image
+
 def border_mask(img, p1, p2, device, debug, color="black"):
   # by using rectangle_mask to mask the edge of plotting regions you end up missing the border of the images by 1 pixel
   # This function fills this region in

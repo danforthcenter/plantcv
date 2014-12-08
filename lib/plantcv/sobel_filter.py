@@ -1,4 +1,8 @@
 ### Sobel filtering
+
+import cv2
+from . import print_image
+
 def sobel_filter(img, dx, dy, k, scale, device, debug):
   # This is a filtering method used to identify and highlight gradient edges/features using the 1st derivative
   # Typically used to identify gradients along the x-axis (dx = 1, dy = 0) and y-axis (dx = 0, dy = 1) independently

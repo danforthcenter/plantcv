@@ -1,4 +1,9 @@
 ### User-Input Boundary Line
+
+import cv2
+import numpy as np
+from . import print_image
+
 def analyze_bound(img,imgname, obj, mask, line_position, device , debug=False, filename=False):
   # img = image
   # imgname = name of input image

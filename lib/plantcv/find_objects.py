@@ -1,4 +1,9 @@
 ### Find Objects
+
+import cv2
+import numpy as np
+from . import print_image
+
 def find_objects(img, mask, device, debug=False):
   # find all objects and color them blue
   # img = image that the objects will be overlayed
@@ -10,7 +15,7 @@ def find_objects(img, mask, device, debug=False):
   ori_img=np.copy(img)
   objects,hierarchy = cv2.findContours(mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
   for i,cnt in enumerate(objects):
-     cv2.drawContours(ori_img,objects,i, color_palette(1)[0],-1, lineType=8,hierarchy=hierarchy)
+     cv2.drawContours(ori_img,objects,i, (255,102,255),-1, lineType=8,hierarchy=hierarchy)
   if debug:
     print_image(ori_img, (str(device) + '_id_objects.png'))
   

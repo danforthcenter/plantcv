@@ -1,4 +1,9 @@
 ### RGB -> LAB -> Gray
+
+import cv2
+from . import print_image
+from . import fatal_error
+
 def rgb2gray_lab(img, channel, device, debug=False):
   # Convert image from RGB colorspace to LAB colorspace
   # Returns the specified subchannel as a gray image

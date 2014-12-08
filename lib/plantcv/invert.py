@@ -1,4 +1,8 @@
 ### Invert gray image
+
+import cv2
+from . import print_image
+
 def invert(img, device, debug=False):
   # Inverts grayscale images
   # img = image object, grayscale

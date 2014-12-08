@@ -1,4 +1,8 @@
 ### Watershed boundry detection function
+
+import cv2
+from . import print_image
+
 def watershed(img, marker, device, debug):
   # Uses the watershed algorithm to detect boundry of objects
   # Needs a marker file which specifies area which is object (white), background (grey), unknown area (black)

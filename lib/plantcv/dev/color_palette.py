@@ -1,4 +1,7 @@
 ### Color palette returns an array of colors (rainbow)
+
+from random import randrange
+
 def color_palette(num):
   # Returns array of colors length num
   # num = number of colors to return

@@ -1,4 +1,8 @@
 ### Median blur device
+
+import cv2
+from . import print_image
+
 def median_blur(img, ksize, device, debug=False):
   # Applies a median blur filter (applies median value to central pixel within a kernel size ksize x ksize)
   # img = img object

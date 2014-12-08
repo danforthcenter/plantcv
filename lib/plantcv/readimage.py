@@ -1,4 +1,9 @@
 ### Read image
+
+import os
+import cv2
+from . import fatal_error
+
 def readimage(filename):
   # Reads image into numpy ndarray and splits the path and image filename
   # filename = user inputed filename (possibly including a path)

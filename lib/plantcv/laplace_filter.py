@@ -1,4 +1,8 @@
 ### Laplace filtering
+
+import cv2
+from . import print_image
+
 def laplace_filter(img, k, scale, device, debug):
   # This is a filtering method used to identify and highlight fine edges based on the 2nd derivative
   # A very sensetive method to highlight edges but will also amplify background noise

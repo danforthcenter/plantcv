@@ -1,4 +1,9 @@
 ### Object composition
+
+import numpy as np
+import cv2
+from . import print_image
+
 def object_composition(img, contours, hierarchy, device, debug=False):
   # Groups objects into a single object, usually done after object filtering
   # contours = object list

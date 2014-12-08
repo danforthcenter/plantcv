@@ -1,4 +1,8 @@
 ### RGB -> Gray
+
+import cv2
+from . import print_image
+
 def rgb2gray(img, device, debug=False):
   # Convert image from RGB colorspace to Gray
   # img = image object, RGB colorspace

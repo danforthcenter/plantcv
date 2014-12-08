@@ -1,4 +1,9 @@
 ### Apply White or Black Background Mask
+
+import cv2
+from . import print_image
+from . import fatal_error
+
 def apply_mask(img, mask, mask_color, device, debug=False):
   # Apply white image mask to image, with bitwise AND operator bitwise NOT operator and ADD operator
   # img = image object, color(RGB)

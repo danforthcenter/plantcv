@@ -1,4 +1,9 @@
 ### Object fill device
+
+import numpy as np
+import cv2
+from . import print_image
+
 def fill(img, mask, size, device, debug=False):
   # Identifies objects and fills objects that are less than size
   # img = image object, grayscale. img will be returned after filling

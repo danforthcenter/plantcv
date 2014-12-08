@@ -1,4 +1,9 @@
 ### Make masking rectangle
+
+import cv2
+import numpy as np
+from . import print_image
+
 def rectangle_mask(img, p1, p2, device, debug, color="black"):
   # takes an input image and returns a binary image masked by a rectangular area denoted by p1 and p2
   # note that p1 = (0,0) is the top left hand corner bottom right hand corner is p2 = (max-value(x), max-value(y))

@@ -1,4 +1,10 @@
 ### Binary image threshold device
+
+import cv2
+from . import print_image
+from . import fatal_error
+
+
 def binary_threshold(img, threshold, maxValue, object_type, device, debug=False):
   # Creates a binary image from a gray image based on the threshold value
   # img = img object, grayscale

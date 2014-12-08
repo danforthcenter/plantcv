@@ -1,4 +1,8 @@
 ### Print image to file
+
+import cv2
+from . import fatal_error
+
 def print_image(img, filename):
   # Write the image object to the file specified
   # img = image object

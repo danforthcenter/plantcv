@@ -1,4 +1,8 @@
 ### Join images (OR)
+
+import cv2
+from . import print_image
+
 def logical_or(img1, img2, device, debug=False):
   # Join two images using the bitwise OR operator
   # img1, img2 = image objects, grayscale
