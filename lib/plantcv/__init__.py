@@ -85,5 +85,4 @@ from analyze_bound import analyze_bound
 from analyze_color import analyze_color
 from analyze_NIR_intensity import analyze_NIR_intensity
 from fluor_fvfm import fluor_fvfm
-from color_palette import color_palette
 from print_results import print_results

@@ -92,7 +92,7 @@ if ($opt{'c'}) {
       exit;
     }
   }
-  my $schema = "$Bin/include/results.sql";
+  my $schema = "$Bin/../../include/results.sql";
   unless (-e $schema) {
     print STDERR "Schema file not found: $schema does not exists!\n\n";
     exit 1;
