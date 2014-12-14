@@ -2,7 +2,6 @@
 import argparse
 import sys, os
 import sqlite3 as sq
-import plantcv as pcv
 import math
 
 ### Parse command-line arguments
@@ -10,7 +9,7 @@ def options():
   parser = argparse.ArgumentParser(description="Extract VIS object shape data from an SQLite database")
   parser.add_argument("-d", "--database", help="SQLite database file from plantcv.", required=True)
   parser.add_argument("-o", "--outfile", help="Output text file.", required=True)
-  parser.add_argument("-p", "--height", help="Height of images in pixels", required=True, type=int)
+  #parser.add_argument("-p", "--height", help="Height of images in pixels", required=True, type=int)
   parser.add_argument("-D", "--debug", help="Turn on debugging mode", action="store_true")
   args = parser.parse_args()
   return args
@@ -23,10 +22,10 @@ def dict_factory(cursor, row):
     return d
 
 ### Top-view center of mass correction
-def tv_centroid_correction(area, centroid_height):
-  correction_factor = 0.9015 * math.exp(0.0007 * centroid_height)
-  area /= correction_factor
-  return area
+#def tv_centroid_correction(area, centroid_height):
+#  correction_factor = 0.9015 * math.exp(0.0007 * centroid_height)
+#  area /= correction_factor
+#  return area
 
 ### Zoom correction
 def zoom_correction(area, zoom):
@@ -47,7 +46,7 @@ def main():
   
   # Does the database exist?
   if not os.path.exists(args.database):
-    pcv.fatal_error("The database file " + str(args.database) + " does not exist");
+    raise("The database file " + str(args.database) + " does not exist");
   
   # Open a connection
   try:
