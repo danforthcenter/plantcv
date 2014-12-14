@@ -4,7 +4,7 @@ library(lubridate)
 library(qvalue)
 library(MASS)
 
-dir = '.'
+dir = '~/Google\ Drive/Phenotyping/Manuscripts/data/R'
 setwd(dir)
 
 ########################################################################################
@@ -816,6 +816,139 @@ hw33.plot = ggplot(vis.data[(vis.data$genotype == 'A10' | vis.data$genotype == '
 pdf(file="A10.33_vs_B100.33_height-width_ratio_dap.pdf", height=6, width=6, useDingbats=FALSE)
 print(hw33.plot)
 dev.off()
+
+############################################
+# Tiller count
+############################################
+# 200 random images where Tracy counted tillers
+tiller.counts = read.table(file="200tiller_counts.txt",sep="\t",header=TRUE)
+tiller.counts$date = as.POSIXct(paste(paste(tiller.counts$year,tiller.counts$month,tiller.counts$day,sep='-'), paste(tiller.counts$hours, tiller.counts$minutes, tiller.counts$seconds, sep=':'), sep=' '))
+
+# Merge with VIS table
+tiller.counts = merge(x=tiller.counts, y=vis.data, by = 'date')
+
+# Model tiller count
+tiller.model.full = lm(ave_tillers~fw_biomass+height_above_bound+solidity+extent_x+height_width_ratio, data=tiller.counts)
+
+# Variance inflation
+vif(tiller.model.full)
+
+# Drop height
+tiller.model1 = lm(ave_tillers~fw_biomass+solidity+extent_x+height_width_ratio, data=tiller.counts)
+vif(tiller.model1)
+
+# Drop extent x
+tiller.model2 = lm(ave_tillers~fw_biomass+solidity+height_width_ratio, data=tiller.counts)
+vif(tiller.model2)
+summary(tiller.model2)
+
+# Drop solidity
+tiller.model3 = lm(ave_tillers~fw_biomass+height_width_ratio, data=tiller.counts)
+
+# Partial regression
+pdf(file="tiller_count_avPlot.pdf", height=3, width=6, useDingbats=FALSE)
+avPlots(model = tiller.model3, pch=16)
+dev.off()
+
+# Predict tiller count for another set
+tiller660 = read.table(file="660tiller_counts.txt",sep="\t",header=TRUE)
+tiller660 = merge(x=tiller660, y=vis.data, by='datetime')
+tiller660$predicted_tiller_count = predict.lm(object = tiller.model3, newdata=tiller660)
+
+# Plot manual versus predicted tiller counts
+pdf(file="model_tiller_count_220set.pdf", height=6, width=6, useDingbats=FALSE)
+ggplot(data=tiller660, aes(x=tiller_count, y=predicted_tiller_count)) +
+  geom_point(size=4) +
+  geom_abline(intercept=0, slope=1) +
+  #geom_abline(intercept=3, slope=1) +
+  #geom_abline(intercept=-3, slope=1) +
+  scale_x_continuous(lim=c(0,14), "Manual tiller count") +
+  scale_y_continuous(lim=c(0,14), "Predicted tiller count") +
+  theme_bw() +
+  theme(axis.title.x=element_text(face="bold"),
+        axis.title.y=element_text(face="bold"))
+dev.off()
+
+# Median prediction interval
+predict.var = tiller660.predict[,3]-tiller660.predict[,1]
+predict.var = c(predict.var, tiller660.predict[,1] - tiller660.predict[,2])
+median(predict.var)
+
+# Median difference from actual
+median(abs(tiller660$tiller_count - tiller660$predicted_tiller_count))
+
+# Predict for whole data set
+vis.data$tiller_count = predict.lm(object = tiller.model3, newdata = vis.data)
+
+# Tiller plotting function
+plot_tillers = function(vis.data, genotype) {
+  # Plot command
+  tplot = ggplot(vis.data[vis.data$genotype==genotype & (vis.data$treatment == 100 | vis.data$treatment == 33),], aes(x=dap, y=tiller_count, color=factor(treatment))) +
+    #geom_line(aes(color=factor(treatment),group=plant_id),size=1) +
+    geom_point(size=3) +
+    geom_smooth(method="loess",size=1) +
+    scale_x_continuous(name="Days after planting") +
+    scale_y_continuous(lim=c(0,12), name="Estimated tiller count") +
+    theme_bw() +
+    theme(legend.position=c(0.2,0.8),
+          axis.title.x=element_text(face="bold"),
+          axis.title.y=element_text(face="bold"))
+  
+  # Save file
+  pdf(file=paste(genotype, "_tillers_dap.pdf", sep=''), height=6, width=6, useDingbats=FALSE)
+  print(tplot)
+  dev.off()
+}
+
+# Plot height of each genotype
+for(genotype in levels(factor(vis.data$genotype))) {
+  plot_tillers(vis.data, genotype)
+}
+
+
+# Tiller plotting function by treatment
+plot_tiller_treatment = function(vis.data, treatment) {
+  # Plot command
+  tplot = ggplot(vis.data[vis.data$treatment == treatment,], aes(x=dap, y=tiller_count, color=factor(genotype))) +
+    #geom_line(aes(color=factor(treatment),group=plant_id),size=1) +
+    geom_point(size=3) +
+    geom_smooth(method="loess",size=1) +
+    scale_x_continuous(name="Days after planting") +
+    scale_y_continuous(lim=c(0,12),name="Estimated tiller count") +
+    theme_bw() +
+    theme(legend.position=c(0.2,0.8),
+          axis.title.x=element_text(face="bold"),
+          axis.title.y=element_text(face="bold"))
+  
+  # Save file
+  pdf(file=paste("water",treatment, "all_genotypes_tillers_dap.pdf", sep=''), height=6, width=6, useDingbats=FALSE)
+  print(tplot)
+  dev.off()
+}
+
+# Plot height of each genotype
+for(treatment in levels(factor(vis.data$treatment))) {
+  plot_tiller_treatment(vis.data, treatment)
+}
+
+plot_tiller_parents = function(vis.data, treatment) {
+  # Plot command
+  tplot = ggplot(vis.data[vis.data$treatment == treatment & (vis.data$genotype == 'A10' | vis.data$genotype == 'B100'),], aes(x=dap, y=tiller_count, color=factor(genotype))) +
+    #geom_line(aes(color=factor(treatment),group=plant_id),size=1) +
+    geom_point(size=3) +
+    geom_smooth(method="loess",size=1) +
+    scale_x_continuous(name="Days after planting") +
+    scale_y_continuous(lim=c(0,12),name="Estimated tiller count") +
+    theme_bw() +
+    theme(legend.position=c(0.2,0.8),
+          axis.title.x=element_text(face="bold"),
+          axis.title.y=element_text(face="bold"))
+  
+  # Save file
+  pdf(file=paste("water",treatment, "parents_tillers_dap.pdf", sep=''), height=6, width=6, useDingbats=FALSE)
+  print(tplot)
+  dev.off()
+}
 
 ########################################################################################
 # Trait table
