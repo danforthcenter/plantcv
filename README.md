@@ -4,10 +4,10 @@
 
 *  We also recommend reading DOI X, which is the first manuscript to detail PlantCV and provide examples of functionality.
 
-Table of Contents:
-*  [Issues with PlantCV](#issueswithplantcv)
-*  [PlantCV Contributor's Guide](#plantcvcontributorsguide)
-..* [New Code to PlantCV](#newcode)
+###Table of Contents:
+1.  [Issues with PlantCV](#issueswithplantcv)
+2.  [PlantCV Contributor's Guide](#plantcvcontributorsguide)
+  *  [New Code to PlantCV](#newcode)  
 
 ___
 
@@ -27,7 +27,7 @@ Contribute in three ways:
 3.  Open issues and add suggestions to PlantCV [here](https://github.com/danforthcenter/plantcv/issues)  
 
 ___
-## <a id="newcode"></a> New Code to PlantCV
+##<a id="newcode"></a> New Code to PlantCV
 
 In General:
 *  New image processing functions are highly encouraged for contribution.  
