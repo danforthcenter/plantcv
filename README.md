@@ -19,7 +19,7 @@ ___
 
 # <a id="plantcvcontributorsguide"></a>PlantCV Contributor's Guide
 
-This document aims to give an overview of how to contribute to PlantCV. In general, contributions to PlantCV should be functions that are useful multiple users that extend either the image processing or trait analysis power of PlantCV.
+This document aims to give an overview of how to contribute to PlantCV.
 
 Contribute in three ways:  
 1.  Add new code  
@@ -29,11 +29,22 @@ Contribute in three ways:
 ___
 ##<a id="newcode"></a> New Code to PlantCV
 
-In General:
+In general, new contributions to PlantCV should be functions that are useful multiple users that extend either the image processing or trait analysis power of PlantCV.  
+
+What should/should not be added to PlantCV:
 *  New image processing functions are highly encouraged for contribution.  
 *  New trait extraction algorithms are highly encouraged for contribution.  
 *  Image processing pipeline scripts that are specific for your images should **not** be added to PlantCV, unless they solve an image processing problem that you believe applies to more than one platform.
 
-###Adding new code: Step 1.
+If you have something to add to PlantCV, please following the instructions below.
+
+###Step 1. Open a "New Function" issue or address an exisiting "New Function" issue.
+
+*  If you are interested in adding a completely new function to PlantCV please first add an issue to PlantCV [here](https://github.com/danforthcenter/plantcv/issues) with the label "New Function".
+*  Allow others to comment on the proposed function and if it is well recieved proceed to next step.
+
+###Step 2. 
+
+
 
 
