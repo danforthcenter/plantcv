@@ -1,9 +1,7 @@
-README SCRIPTS ASSOCIATED WITH:
+# README FOR MANUSCRIPT DOI X:
 
-DOI:
+CITATION:  
+*  A high throughput phenotyping system and versatile analytics platform reveal diverse temporal-dependent responses to water limitation in Setaria
 
-A high throughput phenotyping system and versatile analytics platform reveal
-diverse temporal-dependent responses to water limitation in Setaria
-
-All data associated with the R analysis scripts in this file is available via Figshare (http://figshare.com/account/projects/3081)
+All data associated with the R analysis scripts in this file is available via [Figshare](http://figshare.com/account/projects/3081)
 
