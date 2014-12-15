@@ -38,10 +38,10 @@ What should/should not be added to PlantCV:
 
 If you have something to add to PlantCV, please following the instructions below.
 
-###Step 1. Open a "New Function" issue or address an exisiting "New Function" issue.
+###Step 1. Open a new "New Function Proposal" forum or address an exisiting "New Function Request".
 
-*  If you are interested in adding a completely new function to PlantCV please first add an issue to PlantCV [here](https://github.com/danforthcenter/plantcv/issues) with the label "New Function".
-*  Allow others to comment on the proposed function and if it is well recieved proceed to next step.
+*  If you are interested in adding a completely new function to PlantCV please first add an issue to PlantCV [here](https://github.com/danforthcenter/plantcv/issues) with the label "New Function Proposal". This allow others to comment on the proposed function and lets you gauge if the function will have multiple users.
+*  If someone has requested for a new function in the issues forum and you would like to address it, please post a comment on the issue to let others know that you would like to address it.
 
 ###Step 2. 
 
