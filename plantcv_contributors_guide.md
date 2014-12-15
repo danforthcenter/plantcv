@@ -1,1 +1,0 @@
-PlantCV Contributor's Guide
