@@ -1,21 +1,29 @@
 # PlantCV
 
-*  Further documentation for PlantCV functions and use can be found at [PlantCV Website](http://plantcv.danforthcenter.org/)
-
-*  We also recommend reading DOI X, which is the first manuscript to detail PlantCV and provide examples of functionality.
-
-###Table of Contents:
-1.  [Issues with PlantCV](#issueswithplantcv)
-2.  [PlantCV Contributor's Guide](#plantcvcontributorsguide)
+##Table of Contents:
+1.  [Introduction to PlantCV](#introduction)
+1.  [Issues with PlantCV](#issueswithplantcv)  
+2.  [PlantCV Contributor's Guide](#plantcvcontributorsguide  
   *  [New Code to PlantCV](#newcode)  
-  *  [Maintain PlantCV](#maintainplantcv)
-  *  [New Function Requests](#newfunctionrequesnts)
-3.  [Style Guide](#styleguide)
+  *  [Maintain PlantCV](#maintainplantcv)  
+  *  [New Function Requests](#newfunctionrequesnts)  
+  *  [Contribution Style Guide](#styleguide)
+
+---
+##<a id="introduction"></a>Introduction to PlantCV
+
+
+*  Installation instructions can be found [here](http://plantcv.danforthcenter.org/pages/documentation/function_docs/installation.html)
+
+*  Further documentation for PlantCV functions and use can be found at the [PlantCV Website](http://plantcv.danforthcenter.org/pages/documentation/)
+
+*  We recommend reading DOI X, which is the first manuscript to detail PlantCV and provide examples of functionality.
+
 ___
 
 ## <a id="issueswithplantcv"></a>Issues with PlantCV?
 
-  * Please add any PlantCV suggestions/issues [here](https://github.com/danforthcenter/plantcv/issues). Please check to see if the issue is already open.  
+  * Please add any PlantCV suggestions/issues/bugs [here](https://github.com/danforthcenter/plantcv/issues). Please check to see if the issue is already open.  
 
 ---
 
@@ -64,9 +72,9 @@ Steps to adding new code are below.
 ___
 ##<a id="maintainplantcv"></a> Maintain PlantCV
 
+___
+##<a id="newfunctionrequests"></a> New Function Requests
 
 ___
-#<a id="styleguide"></a> Style Guide
+##<a id="styleguide"></a> Contribution Style Guide
 
-___
-#<a id="newfunctionrequests"></a> New Function Requests
