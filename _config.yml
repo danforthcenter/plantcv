@@ -1,7 +1,7 @@
 # Site settings
 title: PlantCV
 baseurl: ''
-# url: http://nfahlgren.github.io/plantcv
+# url: http://plantcv.danforthcenter.org/
 
 # Build settings
 markdown: redcarpet
@@ -10,4 +10,4 @@ highlighter: pygments
 # Jekyll-Bootstrap
 JB:
     version: 2.0.3
-    BASE_PATH : http://nfahlgren.github.io/plantcv
+    BASE_PATH : http://plantcv.danforthcenter.org/
