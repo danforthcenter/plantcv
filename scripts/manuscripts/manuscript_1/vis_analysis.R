@@ -3,6 +3,7 @@ library(ggplot2)
 library(lubridate)
 library(qvalue)
 library(MASS)
+library(plyr)
 
 dir = '~/Google\ Drive/Phenotyping/Manuscripts/data/R'
 setwd(dir)
@@ -666,6 +667,30 @@ water.data$dap = as.numeric(water.data$timestamp - planting_date)
 # Some plants were removed from the system but were not inactivated
 bad.cars = unique(water.data$car.tag[water.data$water.amount >120 & water.data$dap > 14])
 water.data = water.data[!water.data$car.tag %in% bad.cars,]
+
+# Water figure (S.viridis water)
+sv.water = water.data[(water.data$treatment == 100 | water.data$treatment == 33) & water.data$genotype == 'A10',]
+
+# Classify water job as early or later in the day
+sv.water$early.late <- NA  #restrict to the scheduled watering later in the run
+sv.water$early.late[hour(sv.water$timestamp) < 7] <- 'early'
+sv.water$early.late[hour(sv.water$timestamp) < 15 & hour(sv.water$timestamp) > 11 ] <- 'late'
+sv.water = sv.water[!is.na(sv.water$early.late),]
+sv.water$dap = day(sv.water$timestamp) + 4
+sv.water = sv.water[sv.water$dap > 14,]
+
+water.plot = ggplot(sv.water, aes(y = water.amount, x = dap, group = factor(interaction(early.late,treatment,dap)),fill = factor(interaction(early.late, treatment)),color = factor(interaction(early.late, treatment)))) +
+  geom_boxplot(outlier.colour = NULL) +
+  scale_x_continuous("Days after planting") +
+  scale_y_continuous("Water volume (ml)") +
+  theme_bw() +
+  theme(legend.position = c(0.2,0.8),
+        axis.title.x=element_text(face="bold"),
+        axis.title.y=element_text(face="bold"))
+
+pdf(file = "BI2_watering_A10_watercomp_boxplots_clean_dap.pdf", useDingbats=FALSE, width=2.0014, height=2.5708)
+print(water.plot)
+dev.off()
 
 # WUE function
 wue = function(water, biomass, genotype) {
