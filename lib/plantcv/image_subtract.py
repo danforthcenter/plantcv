@@ -1,4 +1,7 @@
 ### Image subtraction
+
+from . import print_image
+
 def image_subtract(img1, img2, device, debug):
   # This is a function used to subtract one image from another image (img1 - img2)
   # The numpy subtraction function '-' is used. This is a modulo operation rather than the cv2.subtract fxn which is a saturation operation
