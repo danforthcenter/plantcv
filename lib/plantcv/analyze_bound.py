@@ -29,7 +29,8 @@ def analyze_bound(img,imgname, obj, mask, line_position, device , debug=False, f
   wback=(np.zeros(size1,dtype=np.uint8))+255
   x_coor=int(ix)
   y_coor=int(iy)-int(line_position)
-  rec_point1=(1,2054)
+  rec_corner=int(iy-2)
+  rec_point1=(1,rec_corner)
   rec_point2=(x_coor-2,y_coor-2)
   cv2.rectangle(background,rec_point1,rec_point2,(255),1)
   below_contour,below_hierarchy = cv2.findContours(background,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
