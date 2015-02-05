@@ -11,6 +11,18 @@
  * Global add-ons
  */
 
+
+th{
+  text-align: center;
+  padding:10px;
+}
+
+td{
+  text-align: center;
+  padding:10px;
+}
+
+
 .sub-header {
   padding-bottom: 10px;
   border-bottom: 1px solid #eee;

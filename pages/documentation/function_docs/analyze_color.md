@@ -42,7 +42,7 @@ Extract color data of objects and produce pseudocolored images, can extract data
 
   ```
   <a href="{{site.baseurl}}/img/documentation_images/analyze_color/Dp1AA002292-2014-02-05 16_28_08-D001dr_012014-VIS_TV_z1.png" target="_blank">
-  <img src="{{site.baseurl}}/img/documentation_images/analyze_color/Dp1AA002292-2014-02-05 16_28_08-D001dr_012014-VIS_TV_z1.png" height="200</a>
+  <img src="{{site.baseurl}}/img/documentation_images/analyze_color/Dp1AA002292-2014-02-05 16_28_08-D001dr_012014-VIS_TV_z1.png" height="200"></a>
   <a href="{{site.baseurl}}/img/documentation_images/analyze_color/Dp1AA002292-2014-02-05 16_28_08-D001dr_012014-VIS_TV_z1png_all_hist.png" target="_blank">
   <img src="{{site.baseurl}}/img/documentation_images/analyze_color/Dp1AA002292-2014-02-05 16_28_08-D001dr_012014-VIS_TV_z1png_all_hist.png" height="200"></a>
   <a href="{{site.baseurl}}/img/documentation_images/analyze_color/Dp1AA002292-2014-02-05 16_28_08-D001dr_012014-VIS_TV_z1png_v_pseduo_on_img.png" target="_blank">
