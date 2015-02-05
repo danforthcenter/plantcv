@@ -6,8 +6,8 @@ subtitle: VIS Pipeline
 
 ## Tutorial: VIS Image Pipeline
 
-PlantCV is composed of modular functions that can be arranged (or rearranged) quickly and relatively easily.
-Pipelines do not need to be linear (and often are not) please see pipeline example below for more details.
+PlantCV is composed of modular functions that can be arranged (or rearranged) and adjusted quickly and easily.
+Pipelines do not need to be linear (and often are not). Please see pipeline example below for more details.
 Every function has a optional debug mode that prints out the resulting image.
 This allows users to visualize and optimize each step on individual test images and small test sets before pipelines are deployed over whole data-sets.
 
