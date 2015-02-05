@@ -326,7 +326,31 @@ if __name__ == '__main__':
 <a href="{{site.baseurl}}/img/documentation_images/tutorial-vis-pipeline/IMG_3276_90_all_hist.png" target="_blank">
 <img src="{{site.baseurl}}/img/documentation_images/tutorial-vis-pipeline/IMG_3276_90_all_hist.png" height="200"></a>
 
-**Figure 13.** Output images from trait analysis. (From left to right)Shape output image, boundary line output image, pseudocolored image (based on value channel), histogram of color values for each plant pixel.
+**Figure 13.** Output images from Sweet Potato trait analysis. (From left to right)Shape output image, boundary line output image, pseudocolored image (based on value channel), histogram of color values for each plant pixel.
+
+##To demonstrate the importance of camera settings on pipeline construction, here are different species of plants captured with the same imaging setup (digital camera) and processed with the same imaging pipeline as above (no settings changed).
+
+<a href="{{site.baseurl}}/img/documentation_images/tutorial-vis-pipeline/IMG_3275_90_shapes.JPG" target="_blank">
+<img src="{{site.baseurl}}/img/documentation_images/tutorial-vis-pipeline/IMG_3275_90_shapes.JPG" height="200"></a>
+<a href="{{site.baseurl}}/img/documentation_images/tutorial-vis-pipeline/IMG_3275_90_boundary1680.JPG" target="_blank">
+<img src="{{site.baseurl}}/img/documentation_images/tutorial-vis-pipeline/IMG_3275_90_boundary1680.JPG" height="200"></a>
+<a href="{{site.baseurl}}/img/documentation_images/tutorial-vis-pipeline/IMG_3275_90_v_pseudo_on_img.png" target="_blank">
+<img src="{{site.baseurl}}/img/documentation_images/tutorial-vis-pipeline/IMG_3275_90_v_pseudo_on_img.png" height="200"></a>
+<a href="{{site.baseurl}}/img/documentation_images/tutorial-vis-pipeline/IMG_3275_90_all_hist.png" target="_blank">
+<img src="{{site.baseurl}}/img/documentation_images/tutorial-vis-pipeline/IMG_3275_90_all_hist.png" height="200"></a>
+
+**Figure 14.** Output images from Cassava trait analysis. (From left to right)Shape output image, boundary line output image, pseudocolored image (based on value channel), histogram of color values for each plant pixel.
+
+<a href="{{site.baseurl}}/img/documentation_images/tutorial-vis-pipeline/IMG_3277_90_shapes.JPG" target="_blank">
+<img src="{{site.baseurl}}/img/documentation_images/tutorial-vis-pipeline/IMG_3277_90_shapes.JPG" height="200"></a>
+<a href="{{site.baseurl}}/img/documentation_images/tutorial-vis-pipeline/IMG_3277_90_boundary1680.JPG" target="_blank">
+<img src="{{site.baseurl}}/img/documentation_images/tutorial-vis-pipeline/IMG_3277_90_boundary1680.JPG" height="200"></a>
+<a href="{{site.baseurl}}/img/documentation_images/tutorial-vis-pipeline/IMG_3277_90_v_pseudo_on_img.png" target="_blank">
+<img src="{{site.baseurl}}/img/documentation_images/tutorial-vis-pipeline/IMG_3277_90_v_pseudo_on_img.png" height="200"></a>
+<a href="{{site.baseurl}}/img/documentation_images/tutorial-vis-pipeline/IMG_3277_90_all_hist.png" target="_blank">
+<img src="{{site.baseurl}}/img/documentation_images/tutorial-vis-pipeline/IMG_3277_90_all_hist.png" height="200"></a>
+
+**Figure 15.** Output images from Tomato trait analysis. (From left to right)Shape output image, boundary line output image, pseudocolored image (based on value channel), histogram of color values for each plant pixel.
 
 
 ##To deploy a pipeline over a full image set please see tutorial on Pipeline Parallelization [here](http://plantcv.danforthcenter.org/pages/documentation/function_docs/pipeline_parallel.html).

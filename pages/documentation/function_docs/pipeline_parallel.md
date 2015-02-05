@@ -1,7 +1,7 @@
 ---
 layout: docs
 title: Documentation
-subtitle: Pipeline Parallelization
+subtitle: Pipeline Parallel
 ---
 
 ## Tutorial: Pipeline Parallelization
