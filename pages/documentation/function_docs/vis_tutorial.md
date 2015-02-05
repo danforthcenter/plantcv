@@ -329,4 +329,4 @@ if __name__ == '__main__':
 **Figure 13.** Output images from trait analysis. (From left to right)Shape output image, boundary line output image, pseudocolored image (based on value channel), histogram of color values for each plant pixel.
 
 
-##To deploy a pipeline over a full image set please see tutorial on Pipeline Parallelization [here]().
+##To deploy a pipeline over a full image set please see tutorial on Pipeline Parallelization [here](http://plantcv.danforthcenter.org/pages/documentation/function_docs/pipeline_parallel.html).
