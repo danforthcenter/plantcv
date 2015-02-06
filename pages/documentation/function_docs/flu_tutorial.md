@@ -227,7 +227,7 @@ objects need to be combined into one object using the Combine Objects function
 
 *  **<font color='orange'>The next step is to analyze the plant object for traits such as shape, or FLU signal.
 For more info see Shape Function [here](http://plantcv.danforthcenter.org/pages/documentation/function_docs/analyze_shape.html),
-and the FLU signal function [here]().</font>**
+and the FLU signal function [here](http://plantcv.danforthcenter.org/pages/documentation/function_docs/analyze_flu.html).</font>**
 *  **For the FLU signal function the 16-bit F0, Fmin, and  Fmax images are read in so that they can be used along with the generated mask to calculate FV/FM.**  
 
 ```python
