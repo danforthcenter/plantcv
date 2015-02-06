@@ -19,11 +19,16 @@ This allows users to visualize and optimize each step on individual test images 
 
 **Running A Pipeline**
 
-To run a pipeline over a single image there are two required inputs:
+To run a VIS pipeline over a single VIS image there are two required inputs:
 
 1.  **Image:** Images can be processed regardless of what type of VIS camera was used (High-throughput platform, digital camera, cell phone camera).
 Image processing will work with adjustments if images are well lit and free of background that is similar in color to plant material.  
-2.  **Output directory:** If debug mode is on output images from each step are produced, otherwise ~4 final output images are produced.  
+2.  **Output directory:** If debug mode is on output images from each step are produced, otherwise ~4 final output images are produced.
+
+Optional inputs:  
+
+*  **Debug Flag:**Prints an image at each step
+*  **Region of Interest:**The user can input their own binary region of interest or image mask (make sure it is the same size as your image or you will have problems).
 
 Sample command to run a pipeline on a single image:  
 
