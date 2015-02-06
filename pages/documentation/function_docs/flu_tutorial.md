@@ -101,7 +101,7 @@ def main():
 *  **We use a premade-mask for the screws on the car that consistenly give background signal, this is not required**
 *  **The track mask is an RGB image so a single channel is selected using the [RGB to HSV](http://plantcv.danforthcenter.org/pages/documentation/function_docs/rgb2hsv.html)
 function and converted to a binary mask with a [binary threshold](http://plantcv.danforthcenter.org/pages/documentation/function_docs/binary_threshold.html).**  
-*  **The mask is [inverted]() since the screws were white in the track image.**
+*  **The mask is [inverted](http://plantcv.danforthcenter.org/pages/documentation/function_docs/inverted.html) since the screws were white in the track image.**
 *  **The [apply mask function](http://plantcv.danforthcenter.org/pages/documentation/function_docs/apply_mask.html) is then used to apply the track mask to one channel of the Fmax image (mask1).**  
 
 ```python
