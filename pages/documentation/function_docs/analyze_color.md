@@ -19,7 +19,7 @@ Extract color data of objects and produce pseudocolored images, can extract data
   - device - Counter for image processing steps
   - debug - Default value is False, if True, intermediate image with boundary line will be printed
   - hist\_plot\_type - 'None', 'all', 'rgb','lab' or 'hsv', this is the data to be printed to an SVG histogram file, however all (every channel) data is still stored to the database.
-  - color\_slice\_type - 'None', 'rgb', 'hsv' or 'lab', this is the type of color-slice image to print. There is also an additional script [here]() to generate color slice images from data stored in the sqlite database.
+  - color\_slice\_type - 'None', 'rgb', 'hsv' or 'lab', this is the type of color-slice image to print. There is also an additional script to generate color slice images from data stored in the sqlite database.
   - pseudo\_channel - 'None', 'r'(red), 'g'(green), 'b'(blue), 'l' (lightness), 'm' (green-magenta), 'y' (blue-yellow), 'h'(hue),'s'(saturation), or 'v'(value), creates pseduocolored image based on the specified channel.
   - filename - False or image name. If defined print image
    

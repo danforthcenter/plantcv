@@ -1,52 +1,56 @@
 ---
 layout: docs
 title: Documentation
-subtitle: Analyze Color
+subtitle: Analyze FLU
 ---
 
-## Analyze Color
+## Analyze FLU Signal
 
 Extract color data of objects and produce pseudocolored images, can extract data for RGB (Red, Green, Blue), HSV (Hue, Saturation, Value) and LAB (Lightness, Green-Magenta, Blue Yellow) channels.
 
-<font color='blue'><b>analyze\_color(img, imgname, mask, bins, device, debug=False, hist\_plot\_type ='all', cslice\_type='rgb', pseudo\_channel='v', filename=False)</b></font><br>
-<font color='orange'><b>returns</b></font> device, color channel histogram headers, color channel histogram data, normalized color slice data<br>
+<font color='blue'><b>fluor\_fvfm (fdark,fmin,fmax,mask, device,filename,bins=1000, debug=False)</b></font><br>
+<font color='orange'><b>returns</b></font> device, FLU channel histogram headers, FLU channel histogram data, normalized color slice data<br>
 
 - **Parameters:**   
-  - img - image object (most likely the original), color(RGB)
-  - imgname - name of image
+  - fdark - image object, grayscale  
+  - fmin - image object  grayscale
+  - fmax - image object, grayscale
   - mask - binary mask of selected contours
-  - bins - number of color bins (0-256), if you would like to bin data, you would alter this number
   - device - Counter for image processing steps
-  - debug - Default value is False, if True, intermediate image with boundary line will be printed
-  - hist\_plot\_type - 'None', 'all', 'rgb','lab' or 'hsv', this is the data to be printed to an SVG histogram file, however all (every channel) data is still stored to the database.
-  - color\_slice\_type - 'None', 'rgb', 'hsv' or 'lab', this is the type of color-slice image to print. There is also an additional script [here]() to generate color slice images from data stored in the sqlite database.
-  - pseudo\_channel - 'None', 'r'(red), 'g'(green), 'b'(blue), 'l' (lightness), 'm' (green-magenta), 'y' (blue-yellow), 'h'(hue),'s'(saturation), or 'v'(value), creates pseduocolored image based on the specified channel.
   - filename - False or image name. If defined print image
+  - bins - number of grayscale bins (0-256 for 8-bit images and 0 to 65,536), if you would like to bin data, you would alter this number
+  - debug - Default value is False, if True, intermediate image with boundary line will be printed
    
    
 - **Context:**  
-  - Used to extract color data from RGB, LAB, and HSV color channels.
-  - Generates histogram of color channel data.
-  - Generaes pseudocolored output image of one of the channels specified.
+  - Used to extract fv/fm per identified plant pixel.
+  - Generates histogram of fv/fm data.
+  - Generaes pseudocolored output image with fv/fm values per plant pixel.
 
 - **Example use:**  
 
- - [Use In Tutorial]()
+ - [Use In Tutorial](http://plantcv.danforthcenter.org/pages/documentation/function_docs/flu_tutorial.html)
  
   ```python
     import plantcv as pcv
     
-    # Analyze Color
+    # Analyze Fv/Fm
         
-    device, color_header, color_data, norm_slice= pcv.analyze_color(img, imagename, mask, 256, device, debug=True, 'all', 'rgb', 'v', /home/malia/analyze_color.png)
+     device, fvfm_header, fvfm_data=pcv.fluor_fvfm(fdark,fmin,fmax,kept_mask, device, filename, 1000, debug=True)
 
   ```
-  <a href="{{site.baseurl}}/img/documentation_images/analyze_color/Dp1AA002292-2014-02-05 16_28_08-D001dr_012014-VIS_TV_z1.png" target="_blank">
-  <img src="{{site.baseurl}}/img/documentation_images/analyze_color/Dp1AA002292-2014-02-05 16_28_08-D001dr_012014-VIS_TV_z1.png" height="200"></a>
-  <a href="{{site.baseurl}}/img/documentation_images/analyze_color/Dp1AA002292-2014-02-05 16_28_08-D001dr_012014-VIS_TV_z1png_all_hist.png" target="_blank">
-  <img src="{{site.baseurl}}/img/documentation_images/analyze_color/Dp1AA002292-2014-02-05 16_28_08-D001dr_012014-VIS_TV_z1png_all_hist.png" height="200"></a>
-  <a href="{{site.baseurl}}/img/documentation_images/analyze_color/Dp1AA002292-2014-02-05 16_28_08-D001dr_012014-VIS_TV_z1png_v_pseduo_on_img.png" target="_blank">
-  <img src="{{site.baseurl}}/img/documentation_images/analyze_color/Dp1AA002292-2014-02-05 16_28_08-D001dr_012014-VIS_TV_z1png_v_pseduo_on_img.png" height="200"></a>  
-  Figure 1. (Left)Originial image. (Middle) Histograms of R,G,B,H,S,V,L,A,and, B color channels. (Right) Top-view Setaria image pseudocolored by value channel.
+  <a href="{{site.baseurl}}/img/documentation_images/analyze_flu/FLUO_TV_z630_820438c.png" target="_blank">
+  <img src="{{site.baseurl}}/img/documentation_images/analyze_flu/FLUO_TV_z630_820438c.png" height="200"></a>
+  <a href="{{site.baseurl}}/img/documentation_images/analyze_flu/FLUO_TV_z630_820439c.png" target="_blank">
+  <img src="{{site.baseurl}}/img/documentation_images/analyze_flu/FLUO_TV_z630_820439c.png" height="200"></a>
+  <a href="{{site.baseurl}}/img/documentation_images/analyze_flu/FLUO_TV_z630_820440c.png" target="_blank">
+  <img src="{{site.baseurl}}/img/documentation_images/analyze_flu/FLUO_TV_z630_820440c.png" height="200"></a>  
+  **Figure 1.** (Left)Fdark image. (Middle) Fmin image. (Right) Fmax image.
+
+  <a href="{{site.baseurl}}/img/documentation_images/analyze_flu/FLUO_TV_z630_820440c_fvfm_hist.png" target="_blank">
+  <img src="{{site.baseurl}}/img/documentation_images/analyze_flu/FLUO_TV_z630_820440c_fvfm_hist.png" height="200"></a>
+  <a href="{{site.baseurl}}/img/documentation_images/analyze_flu/FLUO_TV_z630_820440c_pseudo_fvfm.png" target="_blank">
+  <img src="{{site.baseurl}}/img/documentation_images/analyze_flu/FLUO_TV_z630_820440c_pseudo_fvfm.png" height="200"></a>  
+  **Figure 2.** (Left) Histogram of Fv/Fm values from id. (Right) Pseudocolored output image based on fv/fm values.
  
 
