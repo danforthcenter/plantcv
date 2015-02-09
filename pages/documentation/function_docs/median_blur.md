@@ -23,7 +23,7 @@ Applies a median blur filter. Applies median value to central pixel within a ker
 
 - **Example use:**  
 
- - [Use In Tutorial]()
+ - [Use In Tutorial](http://plantcv.danforthcenter.org/pages/documentation/function_docs/vis_tutorial.html)
  
   ```python
     import plantcv as pcv

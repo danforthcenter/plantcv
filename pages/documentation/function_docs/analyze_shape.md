@@ -24,7 +24,7 @@ Shape analysis outputs numeric properties for an input object (contour or groupe
 
 - **Example use:**  
 
- - [Use In Tutorial]()
+ - [Use In Tutorial](http://plantcv.danforthcenter.org/pages/documentation/function_docs/vis_tutorial.html)
  
   ```python
     import plantcv as pcv

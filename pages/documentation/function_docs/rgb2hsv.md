@@ -22,7 +22,7 @@ Convert image from RGB colorspace to HSV colorspace and split the channels.
 
 - **Example use:**  
 
- - [Use In Tutorial]()
+ - [Use In Tutorial](http://plantcv.danforthcenter.org/pages/documentation/function_docs/vis_tutorial.html)
  
  
   ```python

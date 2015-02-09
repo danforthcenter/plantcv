@@ -29,7 +29,7 @@ Find objects within a region of interest, either cut those objects to the region
 
 - **Example use:**  
 
- - [Use In Tutorial]()
+ - [Use In Tutorial](http://plantcv.danforthcenter.org/pages/documentation/function_docs/vis_tutorial.html)
  
   ```python
     import plantcv as pcv

@@ -23,7 +23,7 @@ Find objects within the image.
 
 - **Example use:**  
 
- - [Use In Tutorial]()
+ - [Use In Tutorial](http://plantcv.danforthcenter.org/pages/documentation/function_docs/vis_tutorial.html)
  
   ```python
     import plantcv as pcv
