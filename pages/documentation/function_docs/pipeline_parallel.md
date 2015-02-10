@@ -12,10 +12,6 @@ Our image download tool, which talks a LemnaTec database system can be found [he
 Our download tool has a specific file structure, which may be different than yours unless you are using our tool, but we also have instructions
 to run PlantCV over a flat file directory (just keep this in mind).
 
-**<font color='red'>Warning:</font>** Make sure that debug flag (-D) is **not** on when running a pipeline over a whole dataset
-or your pipeline will slow down in order to print images at every step.
-
-
 **Running PlantCV over PhenoFront image data-set structure**
 
 We normally execute pipelines in a shell script (remember run shell script in the background using screen or tmux)
