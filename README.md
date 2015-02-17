@@ -1,5 +1,14 @@
 # PlantCV
 
+This is a general guide on how to cite and contribute to PlantCV (which we hope you will do).
+Of course, this is not a comprehensive guide so if you have questions on contributions for PlantCV
+the best thing to do is to put them [here](https://github.com/danforthcenter/plantcv/issues) so we can make sure your question gets answered.
+
+Cheers!
+Malia, Max and Noah
+
+
+
 ##Table of Contents:
 1.  [Introduction to PlantCV](#introduction)
 1.  [Issues with PlantCV](#issueswithplantcv)  
