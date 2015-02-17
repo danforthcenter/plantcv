@@ -59,8 +59,8 @@ summary(a10_25_26_pcr)
 ################
 
 shapes_table<-read.table("vis_snapshots.txt",sep='\t', header=TRUE)
-shapes_table$barcode=height_table$plant_id
-shapes_table$date_time=height_table$datetime
+shapes_table$barcode=shapes_table$plant_id
+shapes_table$date_time=shapes_table$datetime
 
 rgb_shapes<-merge(rgb2,shapes_table,by=c("date_time","barcode"))
 rgb_shapes$day=as.integer(rgb_shapes$day)

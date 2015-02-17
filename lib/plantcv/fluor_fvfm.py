@@ -11,6 +11,7 @@ from matplotlib import cm as cm
 from matplotlib import colors as colors
 from matplotlib import colorbar as colorbar
 import pylab as pl
+from . import print_image
 
 def fluor_fvfm(fdark,fmin,fmax,mask, device,filename,bins=1000, debug=False):
   # fdark = 16-bit fdark image

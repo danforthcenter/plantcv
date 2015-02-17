@@ -22,7 +22,7 @@ that is built upon open-source software platforms <a href="http://opencv.org/">O
 
 *  Further documentation for PlantCV functions and use can be found at the [PlantCV Website](http://plantcv.danforthcenter.org/pages/documentation/)
 
-*  Test image sets can be found via [Figshare](http://figshare.com/account/projects/3081)
+*  Test image sets can be found [here](http://plantcv.danforthcenter.org/pages/data.html), we recommend first testing with sets from the Danforth Center.
 
 *  We recommend reading DOI X, which is the first manuscript to detail PlantCV and provide examples of functionality.
 
@@ -35,7 +35,8 @@ ___
 
 ## <a id="issueswithplantcv"></a>Issues with PlantCV?
 
-  * Please add any PlantCV suggestions/issues/bugs [here](https://github.com/danforthcenter/plantcv/issues). Please check to see if the issue is already open.  
+  * Please add any PlantCV suggestions/issues/bugs [here](https://github.com/danforthcenter/plantcv/issues).
+  Please check to see if the issue is already open.  
 
 ---
 
@@ -50,7 +51,10 @@ Contribute in three ways:
   2.  Maintain and improve existing code: fix bugs, improving quality or speed of functions, add more detailed documentation  
   3.  [Open](https://github.com/danforthcenter/plantcv/issues) issues and add suggestions to improve PlantCV  
 
-PlantCV is licensed under a GPL 2.0 share-alike license to promote open-development of plant image processing functions, please see license for more information.
+**The general structure to contribute code is to Fork the PlantCV repository, make or fix code then to submit a pull request, details are below**
+
+PlantCV is licensed under a GPL 2.0 share-alike license to promote open-development of plant image processing functions,
+please see license for more information.
 
 ___
 ###<a id="newcode"></a> New Code to PlantCV
@@ -60,29 +64,40 @@ In general, new contributions to PlantCV should benefit multiple users and exten
 What should/should not be added to PlantCV:
   *  New validated image processing functions are highly encouraged for contribution.  
   *  New validated trait extraction algorithms are highly encouraged for contribution.  
-  *  Image processing pipeline scripts that are specific for your images should **not** be added to PlantCV, unless they solve an image processing problem that you believe applies to more than one platform/user.
+  *  Image processing pipeline scripts that are specific for your images should **not** be added to PlantCV,
+  unless they solve an image processing problem that you believe applies to more than one platform/user.
 
 Steps to adding new code are below.  
 
 ####  Step 1. Open a new "New Function Proposal" forum or address an exisiting "New Function Request".
 
-  *  If you are interested in adding a completely new function to PlantCV please first add an issue to PlantCV [here](https://github.com/danforthcenter/plantcv/issues) with the label "New Function Proposal". This allow others to comment on the proposed function and lets you gauge if the function will have multiple users.
-  *  If someone has requested a new function in the issues forum and you would like to address it, please post a comment on the issue to let others know that you would like to work on it.
+  *  If you are interested in adding a completely new function to PlantCV please first add an issue to PlantCV [here](https://github.com/danforthcenter/plantcv/issues) with the label "New Function Proposal".
+  This allow others to comment on the proposed function and is a way of letting other people know you're working on it.  
+  *  If someone has requested a new function in the issues forum and you would like to address it,
+  please post a comment on the issue to let others know that you would like to work on it.  
 
-#### Step 2. Test, validate, and document new function
+#### Step 2. Fork the PlantCV repository.
 
-  1.  
-  2.  
-  3.  
+  *  Make additions and changes in Forked repository
 
-#### 3. Add working function to [PlantCV-dev](https://github.com/danforthcenter/plantcv/tree/master/lib/plantcv/dev).  
+#### Step 3. Test and validate new function
 
-  *  Add working functions to PlantCV-dev. This allows new code to be tested by multiple users without breaking working PlantCV functions.
+  1.  Please make sure you follow our [style guide](#styleguide).  
+  2.  Please write your function so that it can be used on multiple image types (for example, no hardcoded image sizes, or paths).  
+  3.  Please test your images on images of different sizes/sources if possible.
 
-#### 4. Move to PlantCV
+#### 4. Add working function/changes to a new Github Branch.
 
-  *  Functions that move to PlantCV from PlantCV-dev meet the following critera:
-    *  
+  *  By adding the new code to a GitHub branch we can move modular portions of code to PlantCV-dev.
+
+#### 5. Add working function/changes to  [PlantCV-dev](https://github.com/danforthcenter/plantcv/tree/master/lib/plantcv/dev)
+
+  *  Add working functions to PlantCV-dev by generating a Pull-Request
+  *  Once in PlantCV-dev, the function will be accessible to all PlantCV users, but they will need to call the function specifically in pipeline scripts.
+
+#### 6. Move to PlantCV
+
+  *  Once core users have tested functions in PlantCV-dev to make sure that there are no conflicts or breaks we will move function to PlantCV
 
 ___
 ### <a id="maintainplantcv"></a> Maintain PlantCV
