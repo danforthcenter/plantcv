@@ -74,10 +74,10 @@ make install
 
 # Install PlantCV
 # This tutorial assumes you clone PlantCV to /home
-git clone https://github.com/nfahlgren/plantcv.git
+git clone https://github.com/danforthcenter/plantcv.git
 
 # Edit your BASH profile to include the OpenCV and PlantCV libraries. Use your favorite editor to edit .bash_profile and add the following line:
-export PYTHONPATH=$PYTHONPATH:$HOME/lib/opencv/lib/python2.6/site-packages:$HOME/plantcv
+export PYTHONPATH=$PYTHONPATH:$HOME/lib/opencv/lib/python2.6/site-packages:$HOME/plantcv/lib
 
 # Reload your BASH profile
 source .bash_profile
@@ -116,10 +116,10 @@ make install
 
 # Install PlantCV
 # This tutorial assumes you clone PlantCV to /home
-git clone https://github.com/nfahlgren/plantcv.git
+git clone https://github.com/danforthcenter/plantcv.git
 
 # Edit your BASH profile to include the OpenCV and PlantCV libraries. Use your favorite editor to edit .profile and add the following line:
-export PYTHONPATH=$PYTHONPATH:$HOME/lib/opencv/lib/python2.7/dist-packages:$HOME/plantcv
+export PYTHONPATH=$PYTHONPATH:$HOME/lib/opencv/lib/python2.7/dist-packages:$HOME/plantcv/lib
 
 # Reload your BASH profile
 source .profile
