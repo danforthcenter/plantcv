@@ -21,7 +21,7 @@ Use PlantCV to process your favorite plant image!
 6. PlantCV output images
 7. What you do (e.g. plant scientist, computer scientist, cat sitter, student, vegetable sculpture artist etc.)
 
-Submit entry to <a href="mailto:ddpsc.plantcv@gmail.com">ddpsc.plantcv@gmail.com</a>
+Submit entry to <a href="mailto:ddpsc.plantcv@gmail.com">ddpsc.plantcv@gmail.com</a> with the subject line **"Challenge 2015: Just a warm up"**
 
 Have problems installing PlantCV? Let us know [here](https://github.com/danforthcenter/plantcv/issues), that way we can keep track of any issues.
 
