@@ -23,9 +23,9 @@ Malia, Max and Noah
 
 PlantCV is an imaging processing and trait extraction package and specific for plants
 that is built upon open-source software platforms <a href="http://opencv.org/">OpenCV</a> <sup>1</sup>,
-<a href="http://www.numpy.org/">NumPy</a> <sup>2</sup>, and <a href="http://matplotlib.org/">MatPlotLib</a> <sup>3</sup>.
+<a href="http://www.numpy.org/">NumPy</a> <sup>2</sup>, and <a href="http://matplotlib.org/">MatPlotLib</a> <sup>3</sup>.  
 
-<p>If you use PlantCV please cite: paper here</p>
+If you use PlantCV please cite: DOIX
 
 *  Installation instructions can be found [here](http://plantcv.danforthcenter.org/pages/documentation/function_docs/installation.html)
 
