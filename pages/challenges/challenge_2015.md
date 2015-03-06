@@ -5,7 +5,8 @@ subtitle: Challenge 2015
 ---
 ## Challenge 2015: Just a warm up.
 
-<font color='green'><b>This challenge is open: 02/18/15</b></font>
+<font color='green'><b>This challenge is open: 02/18/15</b></font><br>
+<font color='red'><b>This challenge will close : 05/01/15</b></font>
 
 **The Challenge:**
 
