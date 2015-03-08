@@ -1,0 +1,555 @@
+---
+title: "color_r161_a10_b100_21115"
+author: "malia gehan"
+date: "February 11, 2015"
+output: html_document
+---
+
+```{r}
+
+library(ggplot2)
+library(pls)
+
+dir<-"~/Desktop/r/"
+setwd(dir)
+```
+
+**Set the planting date**
+
+```{r}
+# Planting date
+planting_date = as.POSIXct("2013-11-26")
+```
+
+#Read in RGB data
+
+```{r}
+green1<-read.table("vis_signal_green_10-20-2014_19:23:58.txt", sep=',', header=TRUE)
+blue1<-read.table("vis_signal_blue_10-20-2014_19:23:58.txt", sep=',', header=TRUE)
+red1<-read.table("vis_signal_red_10-20-2014_19:23:58.txt",sep=',', header=TRUE)
+
+format_data=function(data){
+  # Treatment column
+  data$treatment <- NA
+  data$treatment[grep("AA", data$barcode)] <- 100
+  data$treatment[grep("AB", data$barcode)] <- 0
+  data$treatment[grep("AC", data$barcode)] <- 0
+  data$treatment[grep("AD", data$barcode)] <- 33
+  data$treatment[grep("AE", data$barcode)] <- 66
+  
+  data$genotype <- NA
+  data$genotype[grep("p1", data$barcode)] <- 'A10'
+  data$genotype[grep("p2", data$barcode)] <- 'B100'
+  data$genotype[grep("r1", data$barcode)] <- 'R20'
+  data$genotype[grep("r2", data$barcode)] <- 'R70'
+  data$genotype[grep("r3", data$barcode)] <- 'R98'
+  data$genotype[grep("r4", data$barcode)] <- 'R102'
+  data$genotype[grep("r5", data$barcode)] <- 'R128'
+  data$genotype[grep("r6", data$barcode)] <- 'R133'
+  data$genotype[grep("r7", data$barcode)] <- 'R161'
+  data$genotype[grep("r8", data$barcode)] <- 'R187'
+  
+  data=data[grep('000A',data$barcode, invert=TRUE),]
+  
+  return(data)
+}
+
+green1<-format_data(green1)
+blue1<-format_data(blue1)
+red1<-format_data(red1)
+g<-as.data.frame(green1)
+b<-as.data.frame(blue1)
+r<-as.data.frame(red1)
+gb1<-merge(g,b,by=c("date_time","frame","barcode", "treatment","genotype","day"))
+rgb2<-merge(gb1,r, by=c("date_time","frame","barcode", "treatment","genotype", "day"))
+rgb1=subset(rgb2, select=-c(day))
+rgb1$day=as.integer(rgb2$day) 
+
+```
+
+**Subset the data to 11 and 12 DAP (before treatment starts)**
+
+```{r}
+allday5=rgb1[(rgb1$day<=1),]
+```
+
+**Functions to format RGB data for PCA**
+
+```{r}
+# function to take out the data that isn't going to be used as explainatory variables for PCA
+pca_format=function(data){
+  data_sub=subset(data, select=-c(day,frame,barcode,genotype,treatment,date_time))
+  return(data_sub)
+}
+
+pca_nonzero=function(data_sub){
+  col_sum=colSums(data_sub)
+  channel_data=data_sub[,col_sum!=0]
+  return(channel_data)
+}
+
+go_pca=function(channel_data){
+  channel_pca=prcomp(channel_data,center=TRUE, scale=TRUE)
+}
+
+```
+
+**PCA on all genotypes 11-12 DAP**
+
+```{r}
+allday5_channel=pca_format(allday5)
+allday5_data=pca_nonzero(allday5_channel)
+allday5_pca=go_pca(allday5_data)
+
+summary(allday5_pca)
+
+allday5_scores<-as.data.frame(allday5_pca$x)
+allday5_scores$treatment=allday5$treatment
+allday5_scores$genotype=allday5$genotype
+allday5_scores$date_time=allday5$date_time
+allday5_scores$barcode=allday5$barcode
+
+```
+
+#Plot of RGB Data 
+
+**This is Figure 7 in the main text. It is reproduced here to later correlate with HSV color-space results and LAB color space results.**
+
+```{r echo=FALSE}
+plot1<-ggplot(allday5_scores,aes(x=PC1,y=PC2, color=factor(genotype)))+
+  scale_colour_manual(values=c("#E69F00", "#808080","#808080","#808080","#808080", "#cc33cc","#808080","#808080","#808080","#808080"))+
+  geom_point(size=2)+
+  theme_bw()+
+  labs(y= "PC2 (12.98%)", x="PC1(40.92%)")
+
+plot2<-ggplot(allday5_scores,aes(x=PC1,y=PC2, color=factor(genotype)))+
+  scale_colour_manual(values=c("#808080", "#10ce59","#808080","#808080","#808080", "#cc33cc","#808080","#808080","#808080","#808080"))+
+  geom_point(size=2)+
+  theme_bw()+
+  labs( y= "PC2 (12.98%)", x="PC1(40.92%)")
+
+ggsave(plot1, file="RGB_r161_a10_b100_plot1.pdf", width=5, height=5, units="in", useDingbats=FALSE)
+ggsave(plot2, file="RGB_r161_a10_b100_plot2.pdf", width=5, height=5, units="in", useDingbats=FALSE)
+
+```
+
+**Format data for loading vectors**
+
+```{r echo=FALSE}
+allday5_table = as.data.frame(allday5_pca$rotation)
+allday5_table$explanatory_variables = rownames(allday5_table)
+allday5_table$number<-NA
+countrow=nrow(allday5_table)
+number<- seq(from = 1, to = countrow, by = 1)
+allday5_table$number<-as.data.frame(number)
+
+eigen1=allday5_table
+
+eigen1_sub=subset(eigen1, select=c(number,explanatory_variables,PC1,PC2))
+eigen1_sub$color<-NA
+eigen1_sub$color[grep("green", eigen1_sub$explanatory_variables)] <-"green"
+eigen1_sub$color[grep("red", eigen1_sub$explanatory_variables)] <- "red"
+eigen1_sub$color[grep("blue", eigen1_sub$explanatory_variables)] <- "blue"
+
+label1_bin<-c(as.list(as.character(eigen1_sub$explanatory_variables)))
+count_label1=nrow(eigen1_sub$number)
+number1_bins<-c(as.list(seq(from=1, to= count_label1, 1)))
+label1_skip<-label1_bin[seq(1, length(label1_bin), 20)]
+number1_skip<- number1_bins[seq(1, length(number1_bins), 20)]
+
+plot6<-ggplot(eigen1_sub, aes(x=seq(from=1, to= count_label1, 1), y=eigen1_sub$PC1, color=factor(color)))+
+  scale_colour_manual(values=c("blue","green","red"))+
+  geom_line()+
+  geom_hline(aes(yintercept=0))+
+  scale_x_discrete(breaks=number1_skip, labels=label1_skip) +
+  theme_bw()+
+  theme(text = element_text(size=8),axis.text.x=element_text(angle=90))
+
+plot8<-ggplot(eigen1_sub, aes(x=seq(from=1, to= count_label1, 1), y=eigen1_sub$PC2, color=factor(color)))+
+  scale_colour_manual(values=c("blue","green","red"))+
+  geom_line()+
+  geom_hline(aes(yintercept=0))+
+  scale_x_discrete(breaks=number1_skip, labels=label1_skip) +
+  theme_bw()+
+  theme(text = element_text(size=8),axis.text.x=element_text(angle=90))
+
+ggsave(plot6, file="RGB_a10_b100_r161_loading_plot1.pdf", width=5, height=5, units="in", useDingbats=FALSE)
+ggsave(plot8, file="RGB_a10_b100_r161_loading_plot2.pdf", width=5, height=5, units="in", useDingbats=FALSE)
+
+```
+
+**Read in the HSV data**
+
+```{r}
+
+hue1<-read.table("vis_signal_hue_02-10-2015_16:41:15.txt", sep=',', header=TRUE)
+saturation1<-read.table("vis_signal_saturation_02-10-2015_16:41:15.txt", sep=',', header=TRUE)
+value1<-read.table("vis_signal_value_02-10-2015_16:41:15.txt",sep=',', header=TRUE)
+
+format_data=function(data){
+  # Treatment column
+  data$treatment <- NA
+  data$treatment[grep("AA", data$barcode)] <- 100
+  data$treatment[grep("AB", data$barcode)] <- 0
+  data$treatment[grep("AC", data$barcode)] <- 0
+  data$treatment[grep("AD", data$barcode)] <- 33
+  data$treatment[grep("AE", data$barcode)] <- 66
+  
+  data$genotype <- NA
+  data$genotype[grep("p1", data$barcode)] <- 'A10'
+  data$genotype[grep("p2", data$barcode)] <- 'B100'
+  data$genotype[grep("r1", data$barcode)] <- 'R20'
+  data$genotype[grep("r2", data$barcode)] <- 'R70'
+  data$genotype[grep("r3", data$barcode)] <- 'R98'
+  data$genotype[grep("r4", data$barcode)] <- 'R102'
+  data$genotype[grep("r5", data$barcode)] <- 'R128'
+  data$genotype[grep("r6", data$barcode)] <- 'R133'
+  data$genotype[grep("r7", data$barcode)] <- 'R161'
+  data$genotype[grep("r8", data$barcode)] <- 'R187'
+  
+  data=data[grep('000A',data$barcode, invert=TRUE),]
+  
+  return(data)
+}
+
+hue1<-format_data(hue1)
+saturation1<-format_data(saturation1)
+value1<-format_data(value1)
+h<-as.data.frame(hue1)
+s<-as.data.frame(saturation1)
+v<-as.data.frame(value1)
+hs1<-merge(h,s,by=c("date_time","frame","barcode", "treatment","genotype","day"))
+hsv2<-merge(hs1,v, by=c("date_time","frame","barcode", "treatment","genotype", "day"))
+hsv1=subset(hsv2, select=-c(day, date_time, frame, barcode, treatment, genotype))
+
+hsv_data<-data.frame(hsv2=I(as.matrix(hsv1)),treatment=hsv2$treatment,genotype=hsv2$genotype,date_time=hsv2$date_time, day=as.integer(hsv2$day))
+
+```
+
+#Read in HSV data
+
+```{r}
+hue1<-read.table("vis_signal_hue_02-10-2015_16:41:15.txt", sep=',', header=TRUE)
+saturation1<-read.table("vis_signal_saturation_02-10-2015_16:41:15.txt", sep=',', header=TRUE)
+value1<-read.table("vis_signal_value_02-10-2015_16:41:15.txt",sep=',', header=TRUE)
+
+format_data=function(data){
+  # Treatment column
+  data$treatment <- NA
+  data$treatment[grep("AA", data$barcode)] <- 100
+  data$treatment[grep("AB", data$barcode)] <- 0
+  data$treatment[grep("AC", data$barcode)] <- 0
+  data$treatment[grep("AD", data$barcode)] <- 33
+  data$treatment[grep("AE", data$barcode)] <- 66
+  
+  data$genotype <- NA
+  data$genotype[grep("p1", data$barcode)] <- 'A10'
+  data$genotype[grep("p2", data$barcode)] <- 'B100'
+  data$genotype[grep("r1", data$barcode)] <- 'R20'
+  data$genotype[grep("r2", data$barcode)] <- 'R70'
+  data$genotype[grep("r3", data$barcode)] <- 'R98'
+  data$genotype[grep("r4", data$barcode)] <- 'R102'
+  data$genotype[grep("r5", data$barcode)] <- 'R128'
+  data$genotype[grep("r6", data$barcode)] <- 'R133'
+  data$genotype[grep("r7", data$barcode)] <- 'R161'
+  data$genotype[grep("r8", data$barcode)] <- 'R187'
+  
+  data=data[grep('000A',data$barcode, invert=TRUE),]
+  
+  return(data)
+}
+
+hue1<-format_data(hue1)
+saturation1<-format_data(saturation1)
+value1<-format_data(value1)
+h<-as.data.frame(hue1)
+s<-as.data.frame(saturation1)
+v<-as.data.frame(value1)
+hs1<-merge(h,s,by=c("date_time","frame","barcode", "treatment","genotype","day"))
+hsv2<-merge(hs1,v, by=c("date_time","frame","barcode", "treatment","genotype", "day"))
+hsv1=subset(hsv2, select=-c(day))
+hsv1$day=as.integer(hsv2$day) 
+```
+
+```{r]}
+hsv_allday5=hsv1[(hsv1$day<=1),]
+```
+
+**Functions to format HSV data for PCA**
+
+```{r}
+# function to take out the data that isn't going to be used as explainatory variables for PCA
+pca_format=function(data){
+  data_sub=subset(data, select=-c(day,frame,barcode,genotype,treatment,date_time))
+  return(data_sub)
+}
+
+pca_nonzero=function(data_sub){
+  col_sum=colSums(data_sub)
+  channel_data=data_sub[,col_sum!=0]
+  return(channel_data)
+}
+
+go_pca=function(channel_data){
+  channel_pca=prcomp(channel_data,center=TRUE, scale=TRUE)
+}
+
+```
+
+**PCA on all genotypes 11-12 DAP**
+
+```{r}
+hsv_allday5_channel=pca_format(hsv_allday5)
+hsv_allday5_data=pca_nonzero(hsv_allday5_channel)
+hsv_allday5_pca=go_pca(hsv_allday5_data)
+
+summary(hsv_allday5_pca)
+
+hsv_allday5_scores<-as.data.frame(hsv_allday5_pca$x)
+hsv_allday5_scores$treatment=hsv_allday5$treatment
+hsv_allday5_scores$genotype=hsv_allday5$genotype
+hsv_allday5_scores$date_time=hsv_allday5$date_time
+hsv_allday5_scores$barcode=hsv_allday5$barcode
+
+```
+
+#Plot of HSV Data 
+
+**Interpretation of HSV color-space results is consistent with RGB color-space results: R161 is distinguishable from other Setaria genotypes and the other 7 RILS group along PC1 and PC2 with the Parent lines. Consistent with the RGB results there are also a few B100 lines that group with R161 lines in HSV results.**
+
+```{r echo=FALSE}
+plot1<-ggplot(hsv_allday5_scores,aes(x=PC1,y=PC2, color=factor(genotype)))+
+  scale_colour_manual(values=c("#E69F00", "#808080","#808080","#808080","#808080", "#cc33cc","#808080","#808080","#808080","#808080"))+
+  geom_point(size=2)+
+  theme_bw()+
+  labs(y= "PC2 (11.68%)", x="PC1(33.14%)")
+
+plot2<-ggplot(hsv_allday5_scores,aes(x=PC1,y=PC2, color=factor(genotype)))+
+  scale_colour_manual(values=c("#808080", "#10ce59","#808080","#808080","#808080", "#cc33cc","#808080","#808080","#808080","#808080"))+
+  geom_point(size=2)+
+  theme_bw()+
+  labs( y= "PC2 (11.68%)", x="PC1(33.14%)")
+
+ggsave(plot1, file="hsv_r161_a10_b100_plot1.pdf", width=5, height=5, units="in", useDingbats=FALSE)
+ggsave(plot2, file="hsv_r161_a10_b100_plot2.pdf", width=5, height=5, units="in", useDingbats=FALSE)
+
+```
+
+**Correlation between PC1 and PC2 between RGB and HSV color data**
+
+```{r}
+
+cor.test(allday5_scores$PC1, hsv_allday5_scores$PC1, method="spearman")
+cor.test(allday5_scores$PC2, hsv_allday5_scores$PC2, method="spearman")
+
+```
+
+**Format data for eigen vectors and plot eigen vector**
+
+```{r echo=FALSE}
+hsv_allday5_table = as.data.frame(hsv_allday5_pca$rotation)
+hsv_allday5_table$explanatory_variables = rownames(hsv_allday5_table)
+hsv_allday5_table$number<-NA
+countrow=nrow(hsv_allday5_table)
+number<- seq(from = 1, to = countrow, by = 1)
+hsv_allday5_table$number<-as.data.frame(number)
+
+eigen1=hsv_allday5_table
+
+eigen1_sub=subset(eigen1, select=c(number,explanatory_variables,PC1,PC2))
+eigen1_sub$color<-NA
+eigen1_sub$color[grep("hue", eigen1_sub$explanatory_variables)] <-"hue"
+eigen1_sub$color[grep("saturation", eigen1_sub$explanatory_variables)] <- "saturation"
+eigen1_sub$color[grep("value", eigen1_sub$explanatory_variables)] <- "value"
+
+label1_bin<-c(as.list(as.character(eigen1_sub$explanatory_variables)))
+count_label1=nrow(eigen1_sub$number)
+number1_bins<-c(as.list(seq(from=1, to= count_label1, 1)))
+label1_skip<-label1_bin[seq(1, length(label1_bin), 20)]
+number1_skip<- number1_bins[seq(1, length(number1_bins), 20)]
+
+plot6<-ggplot(eigen1_sub, aes(x=seq(from=1, to= count_label1, 1), y=eigen1_sub$PC1, color=factor(color)))+
+  scale_colour_manual(values=c("green","blue","red"))+
+  geom_line()+
+  geom_hline(aes(yintercept=0))+
+  scale_x_discrete(breaks=number1_skip, labels=label1_skip) +
+  theme_bw()+
+  theme(text = element_text(size=8),axis.text.x=element_text(angle=90))
+
+plot8<-ggplot(eigen1_sub, aes(x=seq(from=1, to= count_label1, 1), y=eigen1_sub$PC2, color=factor(color)))+
+  scale_colour_manual(values=c("green","blue","red"))+
+  geom_line()+
+  geom_hline(aes(yintercept=0))+
+  scale_x_discrete(breaks=number1_skip, labels=label1_skip) +
+  theme_bw()+
+  theme(text = element_text(size=8),axis.text.x=element_text(angle=90))
+
+ggsave(plot6, file="hsv_a10_b100_r161_loading_plot1.pdf", width=5, height=5, units="in", useDingbats=FALSE)
+ggsave(plot8, file="hsv_a10_b100_r161_loading_plot2.pdf", width=5, height=5, units="in", useDingbats=FALSE)
+
+```
+
+#Read in LAB data
+
+```{r}
+lightness1<-read.table("vis_signal_lightness_02-10-2015_16:49:44.txt", sep=',', header=TRUE)
+gm1<-read.table("vis_signal_green-magenta_02-10-2015_16:49:44.txt", sep=',', header=TRUE)
+by1<-read.table("vis_signal_blue-yellow_02-10-2015_16:49:44.txt",sep=',', header=TRUE)
+
+format_data=function(data){
+  # Treatment column
+  data$treatment <- NA
+  data$treatment[grep("AA", data$barcode)] <- 100
+  data$treatment[grep("AB", data$barcode)] <- 0
+  data$treatment[grep("AC", data$barcode)] <- 0
+  data$treatment[grep("AD", data$barcode)] <- 33
+  data$treatment[grep("AE", data$barcode)] <- 66
+  
+  data$genotype <- NA
+  data$genotype[grep("p1", data$barcode)] <- 'A10'
+  data$genotype[grep("p2", data$barcode)] <- 'B100'
+  data$genotype[grep("r1", data$barcode)] <- 'R20'
+  data$genotype[grep("r2", data$barcode)] <- 'R70'
+  data$genotype[grep("r3", data$barcode)] <- 'R98'
+  data$genotype[grep("r4", data$barcode)] <- 'R102'
+  data$genotype[grep("r5", data$barcode)] <- 'R128'
+  data$genotype[grep("r6", data$barcode)] <- 'R133'
+  data$genotype[grep("r7", data$barcode)] <- 'R161'
+  data$genotype[grep("r8", data$barcode)] <- 'R187'
+  
+  data=data[grep('000A',data$barcode, invert=TRUE),]
+  
+  return(data)
+}
+
+lightness1<-format_data(lightness1)
+gm1<-format_data(gm1)
+by1<-format_data(by1)
+l<-as.data.frame(lightness1)
+gm<-as.data.frame(gm1)
+by<-as.data.frame(by1)
+la1<-merge(l,gm,by=c("date_time","frame","barcode", "treatment","genotype","day"))
+lab2<-merge(la1,by, by=c("date_time","frame","barcode", "treatment","genotype", "day"))
+lab1=subset(lab2, select=-c(day))
+lab1$day=as.integer(lab2$day) 
+```
+
+```{r}
+lab_allday5=lab1[(lab1$day<=1),]
+```
+
+**Functions to format LAB data for PCA**
+
+```{r}
+# function to take out the data that isn't going to be used as explainatory variables for PCA
+pca_format=function(data){
+  data_sub=subset(data, select=-c(day,frame,barcode,genotype,treatment,date_time))
+  return(data_sub)
+}
+
+pca_nonzero=function(data_sub){
+  col_sum=colSums(data_sub)
+  channel_data=data_sub[,col_sum!=0]
+  return(channel_data)
+}
+
+go_pca=function(channel_data){
+  channel_pca=prcomp(channel_data,center=TRUE, scale=TRUE)
+}
+
+```
+
+**PCA on all genotypes 11-12 DAP**
+
+```{r}
+lab_allday5_channel=pca_format(lab_allday5)
+lab_allday5_data=pca_nonzero(lab_allday5_channel)
+lab_allday5_pca=go_pca(lab_allday5_data)
+
+summary(lab_allday5_pca)
+
+lab_allday5_scores<-as.data.frame(lab_allday5_pca$x)
+lab_allday5_scores$treatment=lab_allday5$treatment
+lab_allday5_scores$genotype=lab_allday5$genotype
+lab_allday5_scores$date_time=lab_allday5$date_time
+lab_allday5_scores$barcode=lab_allday5$barcode
+
+```
+
+#Plot of LAB Data 
+
+**Interpretation of LAB color-space results is consistent with RGB color-space results: R161 is distinguishable from other Setaria genotypes and the other 7 RILS group along PC1 and PC2 with the Parent lines. Consistent with the RGB results there are also a few B100 lines that group with R161 lines in LAB results.**
+
+
+```{r echo=FALSE}
+plot1<-ggplot(lab_allday5_scores,aes(x=PC1,y=PC2, color=factor(genotype)))+
+  scale_colour_manual(values=c("#E69F00", "#808080","#808080","#808080","#808080", "#cc33cc","#808080","#808080","#808080","#808080"))+
+  geom_point(size=2)+
+  theme_bw()+
+  labs(y= "PC2 (14.58%)", x="PC1(40.12%)")
+
+plot2<-ggplot(lab_allday5_scores,aes(x=PC1,y=PC2, color=factor(genotype)))+
+  scale_colour_manual(values=c("#808080", "#10ce59","#808080","#808080","#808080", "#cc33cc","#808080","#808080","#808080","#808080"))+
+  geom_point(size=2)+
+  theme_bw()+
+  labs( y= "PC2 (14.58%)", x="PC1(40.12%)")
+
+ggsave(plot1, file="lab_r161_a10_b100_plot1.pdf", width=5, height=5, units="in", useDingbats=FALSE)
+ggsave(plot2, file="lab_r161_a10_b100_plot2.pdf", width=5, height=5, units="in", useDingbats=FALSE)
+```
+
+**Correlation between PC1 and PC2 between RGB and LAB color data**
+
+```{r}
+
+cor.test(allday5_scores$PC1, lab_allday5_scores$PC1, method="spearman")
+cor.test(allday5_scores$PC2, lab_allday5_scores$PC2, method="spearman")
+
+```
+
+**Format data for eigen vectors and plot eigen vector**
+
+```{r echo=FALSE}
+lab_allday5_table = as.data.frame(lab_allday5_pca$rotation)
+lab_allday5_table$explanatory_variables = rownames(lab_allday5_table)
+lab_allday5_table$number<-NA
+countrow=nrow(lab_allday5_table)
+number<- seq(from = 1, to = countrow, by = 1)
+lab_allday5_table$number<-as.data.frame(number)
+
+eigen1=lab_allday5_table
+
+eigen1_sub=subset(eigen1, select=c(number,explanatory_variables,PC1,PC2))
+eigen1_sub$color<-NA
+eigen1_sub$color[grep("lightness", eigen1_sub$explanatory_variables)] <-"lightness"
+eigen1_sub$color[grep("green.magenta", eigen1_sub$explanatory_variables)] <- "green.magenta"
+eigen1_sub$color[grep("blue.yellow", eigen1_sub$explanatory_variables)] <- "blue.yellow"
+
+label1_bin<-c(as.list(as.character(eigen1_sub$explanatory_variables)))
+count_label1=nrow(eigen1_sub$number)
+number1_bins<-c(as.list(seq(from=1, to= count_label1, 1)))
+label1_skip<-label1_bin[seq(1, length(label1_bin), 20)]
+number1_skip<- number1_bins[seq(1, length(number1_bins), 20)]
+
+plot6<-ggplot(eigen1_sub, aes(x=seq(from=1, to= count_label1, 1), y=eigen1_sub$PC1, color=factor(color)))+
+  scale_colour_manual(values=c("red","blue","green"))+
+  geom_line()+
+  geom_hline(aes(yintercept=0))+
+  scale_x_discrete(breaks=number1_skip, labels=label1_skip) +
+  theme_bw()+
+  theme(text = element_text(size=8),axis.text.x=element_text(angle=90))
+
+plot8<-ggplot(eigen1_sub, aes(x=seq(from=1, to= count_label1, 1), y=eigen1_sub$PC2, color=factor(color)))+
+  scale_colour_manual(values=c("red","blue","green"))+
+  geom_line()+
+  geom_hline(aes(yintercept=0))+
+  scale_x_discrete(breaks=number1_skip, labels=label1_skip) +
+  theme_bw()+
+  theme(text = element_text(size=8),axis.text.x=element_text(angle=90))
+
+ggsave(plot6, file="lab_a10_b100_r161_loading_plot1.pdf", width=5, height=5, units="in", useDingbats=FALSE)
+ggsave(plot8, file="lab_a10_b100_r161_loading_plot2.pdf", width=5, height=5, units="in", useDingbats=FALSE)
+
+```
+
+
