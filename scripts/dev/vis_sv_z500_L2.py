@@ -39,20 +39,20 @@ def main():
   device, s_cnt = pcv.median_blur(s_thresh, 5, device, args.debug)
   
   # Fill small objects
-  device, s_fill = pcv.fill(s_mblur, s_cnt, 0, device, args.debug)
+  #device, s_fill = pcv.fill(s_mblur, s_cnt, 0, device, args.debug)
   
   # Convert RGB to LAB and extract the Blue channel
   device, b = pcv.rgb2gray_lab(img, 'b', device, args.debug)
   
   # Threshold the blue image
-  device, b_thresh = pcv.binary_threshold(b, 138, 255, 'light', device, args.debug)
-  device, b_cnt = pcv.binary_threshold(b, 138, 255, 'light', device, args.debug)
+  device, b_thresh = pcv.binary_threshold(b, 137, 255, 'light', device, args.debug)
+  device, b_cnt = pcv.binary_threshold(b, 137, 255, 'light', device, args.debug)
   
   # Fill small objects
-  device, b_fill = pcv.fill(b_thresh,b_cnt, 0, device, args.debug)
+  #device, b_fill = pcv.fill(b_thresh,b_cnt, 0, device, args.debug)
   
   # Join the thresholded saturation and blue-yellow images
-  device, bs = pcv.logical_and(s_fill, b_fill, device, args.debug)
+  device, bs = pcv.logical_and(s_mblur, b_cnt, device, args.debug)
   
   # Apply Mask (for vis images, mask_color=white)
   device, masked = pcv.apply_mask(img, bs, 'white', device, args.debug)
@@ -62,8 +62,8 @@ def main():
   device, masked_b = pcv.rgb2gray_lab(masked, 'b', device, args.debug)
   
   # Threshold the green-magenta and blue images
-  device, maskeda_thresh = pcv.binary_threshold(masked_a, 122, 255, 'dark', device, args.debug)
-  device, maskedb_thresh = pcv.binary_threshold(masked_b, 133, 255, 'light', device, args.debug)
+  device, maskeda_thresh = pcv.binary_threshold(masked_a, 127, 255, 'dark', device, args.debug)
+  device, maskedb_thresh = pcv.binary_threshold(masked_b, 128, 255, 'light', device, args.debug)
   
   # Join the thresholded saturation and blue-yellow images (OR)
   device, ab = pcv.logical_or(maskeda_thresh, maskedb_thresh, device, args.debug)

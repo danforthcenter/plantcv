@@ -49,7 +49,7 @@ def main():
   device, b_cnt = pcv.binary_threshold(b, 138, 255, 'light', device, args.debug)
   
   # Fill small objects
-  device, b_fill = pcv.fill(b_thresh, b_cnt, 150, device, args.debug)
+  device, b_fill = pcv.fill(b_thresh, b_cnt, 100, device, args.debug)
   
   # Join the thresholded saturation and blue-yellow images
   device, bs = pcv.logical_and(s_fill, b_fill, device, args.debug)
@@ -74,18 +74,18 @@ def main():
   
   # Threshold the green-magenta and blue images
   device, soila_thresh = pcv.binary_threshold(soil_a, 118, 255, 'dark', device, args.debug)
-  device, soilb_thresh = pcv.binary_threshold(soil_b, 155, 255, 'light', device, args.debug)
+  device, soilb_thresh = pcv.binary_threshold(soil_b, 150, 255, 'light', device, args.debug)
 
   # Join the thresholded saturation and blue-yellow images (OR)
   device, soil_ab = pcv.logical_or(soila_thresh, soilb_thresh, device, args.debug)
   device, soil_ab_cnt = pcv.logical_or(soila_thresh, soilb_thresh, device, args.debug)
 
   # Fill small objects
-  device, soil_fill = pcv.fill(soil_ab, soil_ab_cnt, 200, device, args.debug)
+  device, soil_cnt = pcv.fill(soil_ab, soil_ab_cnt, 150, device, args.debug)
 
   # Median Filter
-  device, soil_mblur = pcv.median_blur(soil_fill, 5, device, args.debug)
-  device, soil_cnt = pcv.median_blur(soil_fill, 5, device, args.debug)
+  #device, soil_mblur = pcv.median_blur(soil_fill, 5, device, args.debug)
+  #device, soil_cnt = pcv.median_blur(soil_fill, 5, device, args.debug)
   
   # Apply mask (for vis images, mask_color=white)
   device, masked2 = pcv.apply_mask(soil_masked, soil_cnt, 'white', device, args.debug)
@@ -94,7 +94,7 @@ def main():
   device, id_objects,obj_hierarchy = pcv.find_objects(masked2, soil_cnt, device, args.debug)
 
   # Define ROI
-  device, roi1, roi_hierarchy= pcv.define_roi(img,'circle', device, None, 'default', args.debug,True, 0,0,-50,-50)
+  device, roi1, roi_hierarchy= pcv.define_roi(img,'rectangle', device, None, 'default', args.debug,True, 0,0,-50,-50)
   
   # Decide which objects to keep
   device,roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(img,'partial',roi1,roi_hierarchy,id_objects,obj_hierarchy,device, args.debug)
