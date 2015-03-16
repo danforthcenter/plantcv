@@ -45,7 +45,7 @@ yum update
 yum groupinstall "Development tools"
 
 # Install software dependencies
-yum install cmake gtk2-devel libjpeg-devel libpng-devel libtiff-devel libjasper-devel opencv opencv-devel opencv-python python-devel numpy python-matplotlib pygtk2 perl-DBI perl-DBD-SQLite perl-CPAN
+yum install cmake gtk2-devel libjpeg-devel libpng-devel libtiff-devel libjasper-devel tbb-devel opencv opencv-devel opencv-python python-devel numpy python-matplotlib pygtk2 perl-DBI perl-DBD-SQLite perl-CPAN
 
 # Install additional Python packages
 easy_install argparse
