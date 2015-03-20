@@ -2,8 +2,8 @@ import os
 import cv2
 import numpy as np
 import matplotlib
-if not os.getenv('DISPLAY'):
-  matplotlib.use('Agg')
+#if not os.getenv('DISPLAY'):
+#  matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 from matplotlib import cm as cm
 from matplotlib import colors as colors
