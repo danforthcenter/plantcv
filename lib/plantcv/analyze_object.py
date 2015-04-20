@@ -90,7 +90,11 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
 
     xdiff = float(caliper_max_x-caliper_mid_x)
     ydiff= float(caliper_max_y-caliper_mid_y)
-    slope=(float(ydiff/xdiff))
+    
+    if xdiff!=0: 
+      slope=(float(ydiff/xdiff))
+    if xdiff==0:
+      slope=1
     b_line=caliper_mid_y-(slope*caliper_mid_x)
     
     if slope==0:
