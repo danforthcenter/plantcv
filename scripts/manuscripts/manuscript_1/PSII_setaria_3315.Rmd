@@ -65,7 +65,7 @@ signal2<-as.data.frame(signal1)
 *read in shape data**
 
 ```{r}         
-height_table<-read.table("vis_snapshots.txt",sep='\t', header=TRUE)
+height_table<-read.table("vis.traits.csv",sep=',', header=TRUE)
 height_table$date_time=height_table$datetime
 
 ```
@@ -73,7 +73,7 @@ height_table$date_time=height_table$datetime
 **merge shape data with PSII signal data and subset 100%fc and 33%fc**
 
 ```{r}
-signal_height<-merge(signal2,height_table,by=c("date_time","plant_id")) 
+signal_height<-merge(signal2,height_table,by=c("date_time","plant_id","treatment")) 
 signal100<-signal_height[ (signal_height$treatment==100 |signal_height$treatment==33),]
 
 ```
@@ -90,7 +90,7 @@ plot6<-ggplot(signal100,aes(y=height_above_bound, x=median_bin ))+
   geom_point(size=1)+
   theme_bw()+
   stat_smooth(method="lm",formula=y~poly(x,2),se=FALSE, size=1)+
-  annotate("text", x = 0.55, y =0, label = "Spearman Correlation: p-value < 2.2e-16 rho=-0.852")
+  annotate("text", x = 0.55, y =0, label = "Spearman Correlation: p-value < 2.2e-16 rho=-0.859")
 
 plot6
 
