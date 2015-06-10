@@ -8,7 +8,7 @@ subtitle: Analyze Color
 
 Extract color data of objects and produce pseudocolored images, can extract data for RGB (Red, Green, Blue), HSV (Hue, Saturation, Value) and LAB (Lightness, Green-Magenta, Blue Yellow) channels.
 
-<font color='blue'><b>analyze\_color(img, imgname, mask, bins, device, debug=False, hist\_plot\_type ='all', cslice\_type='rgb', pseudo\_channel='v', filename=False)</b></font><br>
+<font color='blue'><b>analyze\_color(img, imgname, mask, bins, device, debug=False, hist\_plot\_type ='all', cslice\_type='rgb', pseudo\_channel='v', pseudo\_bkg='img', resolution=300, filename=False)</b></font><br>
 <font color='orange'><b>returns</b></font> device, color channel histogram headers, color channel histogram data, normalized color slice data<br>
 
 - **Parameters:**   
@@ -21,6 +21,8 @@ Extract color data of objects and produce pseudocolored images, can extract data
   - hist\_plot\_type - 'None', 'all', 'rgb','lab' or 'hsv', this is the data to be printed to an SVG histogram file, however all (every channel) data is still stored to the database.
   - color\_slice\_type - 'None', 'rgb', 'hsv' or 'lab', this is the type of color-slice image to print. There is also an additional script to generate color slice images from data stored in the sqlite database.
   - pseudo\_channel - 'None', 'r'(red), 'g'(green), 'b'(blue), 'l' (lightness), 'm' (green-magenta), 'y' (blue-yellow), 'h'(hue),'s'(saturation), or 'v'(value), creates pseduocolored image based on the specified channel.
+  - pseudo_bkg = 'img' => channel image, 'white' => white background image, 'both' => both img and white options
+  - resolution= resolution of output images  
   - filename - False or image name. If defined print image
    
    
@@ -38,7 +40,7 @@ Extract color data of objects and produce pseudocolored images, can extract data
     
     # Analyze Color
         
-    device, color_header, color_data, norm_slice= pcv.analyze_color(img, imagename, mask, 256, device, debug=True, 'all', 'rgb', 'v', /home/malia/analyze_color.png)
+    device, color_header, color_data, norm_slice= pcv.analyze_color(img, imagename, mask, 256, device, debug=True, 'all', 'rgb', 'v', 'img', 300, /home/malia/analyze_color.png)
 
   ```
   <a href="{{site.baseurl}}/img/documentation_images/analyze_color/Dp1AA002292-2014-02-05 16_28_08-D001dr_012014-VIS_TV_z1.png" target="_blank">
