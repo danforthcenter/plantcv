@@ -32,11 +32,11 @@ def main():
   device, s = pcv.rgb2gray_hsv(img, 's', device, args.debug)
   
   # Threshold the Saturation image
-  device, s_thresh = pcv.binary_threshold(s, 34, 255, 'light', device, args.debug)
+  device, s_thresh = pcv.binary_threshold(s, 36, 255, 'light', device, args.debug)
   
   # Median Filter
-  #device, s_mblur = pcv.median_blur(s_thresh, 0, device, args.debug)
-  #device, s_cnt = pcv.median_blur(s_thresh, 0, device, args.debug)
+  device, s_mblur = pcv.median_blur(s_thresh, 5, device, args.debug)
+  device, s_cnt = pcv.median_blur(s_thresh, 5, device, args.debug)
   
   # Fill small objects
   #device, s_fill = pcv.fill(s_mblur, s_cnt, 0, device, args.debug)
@@ -45,14 +45,14 @@ def main():
   device, b = pcv.rgb2gray_lab(img, 'b', device, args.debug)
   
   # Threshold the blue image
-  device, b_thresh = pcv.binary_threshold(b, 138, 255, 'light', device, args.debug)
-  device, b_cnt = pcv.binary_threshold(b, 138, 255, 'light', device, args.debug)
+  device, b_thresh = pcv.binary_threshold(b, 137, 255, 'light', device, args.debug)
+  device, b_cnt = pcv.binary_threshold(b, 137, 255, 'light', device, args.debug)
   
   # Fill small objects
-  device, b_fill = pcv.fill(b_thresh, b_cnt, 150, device, args.debug)
+  #device, b_fill = pcv.fill(b_thresh, b_cnt, 150, device, args.debug)
   
   # Join the thresholded saturation and blue-yellow images
-  device, bs = pcv.logical_and(s_thresh, b_fill, device, args.debug)
+  device, bs = pcv.logical_and(s_mblur, b_cnt, device, args.debug)
   
   # Apply Mask (for vis images, mask_color=white)
   device, masked = pcv.apply_mask(img, bs, 'white', device, args.debug)
@@ -62,8 +62,8 @@ def main():
   device, masked_b = pcv.rgb2gray_lab(masked, 'b', device, args.debug)
   
   # Threshold the green-magenta and blue images
-  device, maskeda_thresh = pcv.binary_threshold(masked_a, 122, 255, 'dark', device, args.debug)
-  device, maskedb_thresh = pcv.binary_threshold(masked_b, 133, 255, 'light', device, args.debug)
+  device, maskeda_thresh = pcv.binary_threshold(masked_a, 127, 255, 'dark', device, args.debug)
+  device, maskedb_thresh = pcv.binary_threshold(masked_b, 128, 255, 'light', device, args.debug)
   
   # Join the thresholded saturation and blue-yellow images (OR)
   device, ab = pcv.logical_or(maskeda_thresh, maskedb_thresh, device, args.debug)
@@ -76,26 +76,26 @@ def main():
   device, masked2 = pcv.apply_mask(masked, ab_fill, 'white', device, args.debug)
   
   # Select area with black bars and find overlapping plant material
-  device, roi1, roi_hierarchy1= pcv.define_roi(masked2,'rectangle', device, None, 'default', args.debug,True, 0, 0,-1700,0)
+  device, roi1, roi_hierarchy1= pcv.define_roi(masked2,'rectangle', device, None, 'default', args.debug,True, 0, 0,-1900,0)
   device, id_objects1,obj_hierarchy1 = pcv.find_objects(masked2, ab_fill, device, args.debug)
   device,roi_objects1, hierarchy1, kept_mask1, obj_area1 = pcv.roi_objects(masked2,'cutto',roi1,roi_hierarchy1,id_objects1,obj_hierarchy1,device, args.debug)
   device, masked3 = pcv.apply_mask(masked2, kept_mask1, 'white', device, args.debug)
   device, masked_a1 = pcv.rgb2gray_lab(masked3, 'a', device, args.debug)
   device, masked_b1 = pcv.rgb2gray_lab(masked3, 'b', device, args.debug)
-  device, maskeda_thresh1 = pcv.binary_threshold(masked_a1, 110, 255, 'dark', device, args.debug)
+  device, maskeda_thresh1 = pcv.binary_threshold(masked_a1, 122, 255, 'dark', device, args.debug)
   device, maskedb_thresh1 = pcv.binary_threshold(masked_b1, 170, 255, 'light', device, args.debug)
   device, ab1 = pcv.logical_or(maskeda_thresh1, maskedb_thresh1, device, args.debug)
   device, ab_cnt1 = pcv.logical_or(maskeda_thresh1, maskedb_thresh1, device, args.debug)
   device, ab_fill1 = pcv.fill(ab1, ab_cnt1, 300, device, args.debug)
 
   
-  device, roi2, roi_hierarchy2= pcv.define_roi(masked2,'rectangle', device, None, 'default', args.debug,True, 1700, 0,0,0)
+  device, roi2, roi_hierarchy2= pcv.define_roi(masked2,'rectangle', device, None, 'default', args.debug,True, 1900, 0,0,0)
   device, id_objects2,obj_hierarchy2 = pcv.find_objects(masked2, ab_fill, device, args.debug)
   device,roi_objects2, hierarchy2, kept_mask2, obj_area2 = pcv.roi_objects(masked2,'cutto',roi2,roi_hierarchy2,id_objects2,obj_hierarchy2,device, args.debug)
   device, masked4 = pcv.apply_mask(masked2, kept_mask2, 'white', device, args.debug)
   device, masked_a2 = pcv.rgb2gray_lab(masked4, 'a', device, args.debug)
   device, masked_b2 = pcv.rgb2gray_lab(masked4, 'b', device, args.debug)
-  device, maskeda_thresh2 = pcv.binary_threshold(masked_a2, 110, 255, 'dark', device, args.debug)
+  device, maskeda_thresh2 = pcv.binary_threshold(masked_a2, 122, 255, 'dark', device, args.debug)
   device, maskedb_thresh2 = pcv.binary_threshold(masked_b2, 170, 255, 'light', device, args.debug)
   device, ab2 = pcv.logical_or(maskeda_thresh2, maskedb_thresh2, device, args.debug)
   device, ab_cnt2 = pcv.logical_or(maskeda_thresh2, maskedb_thresh2, device, args.debug)
@@ -108,7 +108,7 @@ def main():
   device, id_objects3,obj_hierarchy3 = pcv.find_objects(masked2, ab_fill, device, args.debug)
 
   # Define ROI
-  device, roi3, roi_hierarchy3= pcv.define_roi(masked2,'rectangle', device, None, 'default', args.debug,True, 650, 0,-450,-300)
+  device, roi3, roi_hierarchy3= pcv.define_roi(masked2,'rectangle', device, None, 'default', args.debug,True, 525, 0,-500,-900)
  
   # Decide which objects to keep and combine with objects overlapping with black bars
   device,roi_objects3, hierarchy3, kept_mask3, obj_area1 = pcv.roi_objects(img,'cutto',roi3,roi_hierarchy3,id_objects3,obj_hierarchy3,device, args.debug)
@@ -129,7 +129,7 @@ def main():
   device, shape_header,shape_data,shape_img = pcv.analyze_object(img, args.image, obj, mask, device,args.debug,args.outdir+'/'+filename)
    
   # Shape properties relative to user boundary line (optional)
-  device, boundary_header,boundary_data, boundary_img1= pcv.analyze_bound(img, args.image,obj, mask, 375, device,args.debug,args.outdir+'/'+filename)
+  device, boundary_header,boundary_data, boundary_img1= pcv.analyze_bound(img, args.image,obj, mask, 950, device,args.debug,args.outdir+'/'+filename)
   
   # Determine color properties: Histograms, Color Slices and Pseudocolored Images, output color analyzed images (optional)
   device, color_header,color_data,norm_slice= pcv.analyze_color(img, args.image, kept_mask4, 256, device, args.debug,'all','rgb','v','img',300,args.outdir+'/'+filename)

@@ -28,43 +28,43 @@ def main():
   # Pipeline step
   device = 0
 
-  # Convert RGB to HSV and extract the Saturation channel
-  device, s = pcv.rgb2gray_hsv(img, 's', device, args.debug)
-  
-  # Threshold the Saturation image
-  device, s_thresh = pcv.binary_threshold(s, 135, 255, 'light', device, args.debug)
-  
-  # Median Filter
-  device, s_mblur = pcv.median_blur(s_thresh, 5, device, args.debug)
-  device, s_cnt = pcv.median_blur(s_thresh, 5, device, args.debug)
-  
-  # Fill small objects
-  #device, s_fill = pcv.fill(s_mblur, s_cnt, 0, device, args.debug)
-  
-  # Convert RGB to LAB and extract the Blue channel
-  device, b = pcv.rgb2gray_lab(img, 'b', device, args.debug)
-  
-  # Threshold the blue image
-  device, b_thresh = pcv.binary_threshold(b, 160, 255, 'light', device, args.debug)
-  device, b_cnt = pcv.binary_threshold(b, 160, 255, 'light', device, args.debug)
-  
-  # Fill small objects
+  ## Convert RGB to HSV and extract the Saturation channel
+  #device, s = pcv.rgb2gray_hsv(img, 's', device, args.debug)
+  #
+  ## Threshold the Saturation image
+  #device, s_thresh = pcv.binary_threshold(s, 90, 255, 'dark', device, args.debug)
+  #
+  ## Median Filter
+  #device, s_mblur = pcv.median_blur(s_thresh, 5, device, args.debug)
+  #device, s_cnt = pcv.median_blur(s_thresh, 5, device, args.debug)
+  #
+  ## Fill small objects
+  ##device, s_fill = pcv.fill(s_mblur, s_cnt, 0, device, args.debug)
+  #
+  ## Convert RGB to LAB and extract the Blue channel
+  #device, b = pcv.rgb2gray_lab(img, 'b', device, args.debug)
+  #
+  ## Threshold the blue image
+  #device, b_thresh = pcv.binary_threshold(b, 135, 255, 'light', device, args.debug)
+  #device, b_cnt = pcv.binary_threshold(b, 135, 255, 'light', device, args.debug)
+  #
+  ##Fill small objects
   #device, b_fill = pcv.fill(b_thresh, b_cnt, 10, device, args.debug)
-  
-  # Join the thresholded saturation and blue-yellow images
-  device, bs = pcv.logical_or(s_mblur, b_cnt, device, args.debug)
-  
-  # Apply Mask (for vis images, mask_color=white)
-  device, masked = pcv.apply_mask(img, bs, 'white', device, args.debug)
+  #
+  ## Join the thresholded saturation and blue-yellow images
+  #device, bs = pcv.logical_or(s_mblur, b_cnt, device, args.debug)
+  #
+  ## Apply Mask (for vis images, mask_color=white)
+  #device, masked = pcv.apply_mask(img, bs, 'white', device, args.debug)
   
   # Convert RGB to LAB and extract the Green-Magenta and Blue-Yellow channels
-  device, masked_a = pcv.rgb2gray_lab(masked, 'a', device, args.debug)
-  device, masked_b = pcv.rgb2gray_lab(masked, 'b', device, args.debug)
+  device, masked_a = pcv.rgb2gray_lab(img, 'a', device, args.debug)
+  device, masked_b = pcv.rgb2gray_lab(img, 'b', device, args.debug)
   
-  # Threshold the green-magenta and blue images
-  device, maskeda_thresh = pcv.binary_threshold(masked_a, 115, 255, 'dark', device, args.debug)
-  device, maskeda_thresh1 = pcv.binary_threshold(masked_a, 135, 255, 'light', device, args.debug)
-  device, maskedb_thresh = pcv.binary_threshold(masked_b, 128, 255, 'light', device, args.debug)
+    # Threshold the green-magenta and blue images
+  device, maskeda_thresh = pcv.binary_threshold(masked_a, 125, 255, 'dark', device, args.debug)
+  device, maskeda_thresh1 = pcv.binary_threshold(masked_a, 145, 255, 'light', device, args.debug)
+  device, maskedb_thresh = pcv.binary_threshold(masked_b, 135, 255, 'light', device, args.debug)
   
   # Join the thresholded saturation and blue-yellow images (OR)
   device, ab1 = pcv.logical_or(maskeda_thresh, maskedb_thresh, device, args.debug)
@@ -72,10 +72,10 @@ def main():
   device, ab_cnt = pcv.logical_or(maskeda_thresh1, ab1, device, args.debug)
   
   # Fill small objects
-  device, ab_fill = pcv.fill(ab, ab_cnt, 200, device, args.debug)
+  device, ab_fill = pcv.fill(ab, ab_cnt, 1000, device, args.debug)
   
   # Apply mask (for vis images, mask_color=white)
-  device, masked2 = pcv.apply_mask(masked, ab_fill, 'white', device, args.debug)
+  device, masked2 = pcv.apply_mask(img, ab_fill, 'white', device, args.debug)
   
   # Identify objects
   device, id_objects,obj_hierarchy = pcv.find_objects(masked2, ab_fill, device, args.debug)
@@ -95,7 +95,7 @@ def main():
   device, shape_header,shape_data,shape_img = pcv.analyze_object(img, args.image, obj, mask, device,args.debug,args.outdir+'/'+filename)
     
   # Shape properties relative to user boundary line (optional)
-  device, boundary_header,boundary_data, boundary_img1= pcv.analyze_bound(img, args.image,obj, mask, 1680, device,args.debug,args.outdir+'/'+filename)
+  #device, boundary_header,boundary_data, boundary_img1= pcv.analyze_bound(img, args.image,obj, mask, 1680, device,args.debug,args.outdir+'/'+filename)
   
   # Determine color properties: Histograms, Color Slices and Pseudocolored Images, output color analyzed images (optional)
   device, color_header,color_data,norm_slice= pcv.analyze_color(img, args.image, kept_mask, 256, device, args.debug,'all','rgb','v','img',300,args.outdir+'/'+filename)
@@ -103,7 +103,7 @@ def main():
   # Output shape and color data
   pcv.print_results(args.image, shape_header, shape_data)
   pcv.print_results(args.image, color_header, color_data)
-  pcv.print_results(args.image, boundary_header, boundary_data)
+  #pcv.print_results(args.image, boundary_header, boundary_data)
   
 if __name__ == '__main__':
   main()

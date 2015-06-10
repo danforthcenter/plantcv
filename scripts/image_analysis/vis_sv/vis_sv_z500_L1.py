@@ -70,7 +70,7 @@ def main():
   device, ab_cnt = pcv.logical_or(maskeda_thresh, maskedb_thresh, device, args.debug)
   
   # Fill small objects
-  device, ab_fill = pcv.fill(ab, ab_cnt, 200, device, args.debug)
+  device, ab_fill = pcv.fill(ab, ab_cnt, 10, device, args.debug)
   
   # Apply mask (for vis images, mask_color=white)
   device, masked2 = pcv.apply_mask(masked, ab_fill, 'white', device, args.debug)
@@ -129,7 +129,7 @@ def main():
   device, shape_header,shape_data,shape_img = pcv.analyze_object(img, args.image, obj, mask, device,args.debug,args.outdir+'/'+filename)
    
   # Shape properties relative to user boundary line (optional)
-  device, boundary_header,boundary_data, boundary_img1= pcv.analyze_bound(img, args.image,obj, mask, 330, device,args.debug,args.outdir+'/'+filename)
+  device, boundary_header,boundary_data, boundary_img1= pcv.analyze_bound(img, args.image,obj, mask, 320, device,args.debug,args.outdir+'/'+filename)
   
   # Determine color properties: Histograms, Color Slices and Pseudocolored Images, output color analyzed images (optional)
   device, color_header,color_data,norm_slice= pcv.analyze_color(img, args.image, kept_mask4, 256, device, args.debug,'all','rgb','v','img',300,args.outdir+'/'+filename)
