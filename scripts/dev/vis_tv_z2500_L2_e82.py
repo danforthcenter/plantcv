@@ -10,7 +10,7 @@ import plantcv as pcv
 def options():
   parser = argparse.ArgumentParser(description="Imaging processing with opencv")
   parser.add_argument("-i", "--image", help="Input image file.", required=True)
-  parser.add_argument("-m", "--roi", help="Input region of interest file.", required=False)
+  parser.add_argument("-m", "--roi", help="Input region of interest file.", required=False, default="/home/mgehan/LemnaTec/plantcv/masks/vis_tv/mask_brass_tv_z2500_L2.png")
   parser.add_argument("-o", "--outdir", help="Output directory for image files.", required=True)
   parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.", action="store_true")
   args = parser.parse_args()
