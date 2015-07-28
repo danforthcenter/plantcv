@@ -28,16 +28,16 @@ def dict_factory(cursor, row):
 #  return area
 
 ### Zoom correction
-def zoom_correction(area, zoom):
-  correction_factor = 0.8854 * math.exp(0.0007224 * zoom)
-  area /= correction_factor
-  return area
+#def zoom_correction(area, zoom):
+#  correction_factor = 0.8854 * math.exp(0.0007224 * zoom)
+#  area /= correction_factor
+#  return area
 
 ### Length conversion
-def px_to_cm(px, zoom):
-  pxcm = (0.00000217 * (zoom ** 2)) + (0.002077 * zoom) + 14.27
-  cm = px / pxcm
-  return cm
+#def px_to_cm(px, zoom):
+#  pxcm = (0.00000217 * (zoom ** 2)) + (0.002077 * zoom) + 14.27
+#  cm = px / pxcm
+#  return cm
 
 ### Main pipeline
 def main():
@@ -61,9 +61,9 @@ def main():
     print("IO error")
   
   # Header
-  out.write(','.join(map(str, ('plant_id', 'datetime', 'sv_area', 'tv_area', 'solidity', 'perimeter', 'centroid_x', 'centroid_y', 'longest_axis',
-                                   'extent_x', 'extent_y', 'height_above_bound', 'height_below_bound', 'above_bound_area',
-                                   'percent_above_bound_area', 'below_bound_area', 'percent_below_bound_area', 'outlier', 'boundary_line'))) + '\n')
+  out.write(','.join(map(str, ('plant_id', 'datetime', 'sv_zoom', 'tv_zoom', 'sv0_area', 'sv90_area', 'sv180_area', 'sv270_area', 'tv_area', 'solidity', 'perimeter', 'centroid_x', 'centroid_y',
+	                                 'longest_axis', 'extent_x', 'extent_y', 'height_above_bound', 'height_below_bound',
+                                   'percent_above_bound_area', 'percent_below_bound_area', 'outlier', 'boundary_line'))) + '\n')
   
   # Replace the row_factory result constructor with a dictionary constructor
   connect.row_factory = dict_factory
@@ -86,7 +86,10 @@ def main():
     outlier = False
     plant_id = ''
     tv_area = 0
-    sv_area = 0
+    sv0_area = 0
+    sv90_area = 0
+    sv180_area = 0
+    sv270_area = 0
     solidity = 0
     perimeter = 0
     centroid_x = 0
@@ -94,20 +97,30 @@ def main():
     longest_axis = 0
     height_above_bound = 0
     height_below_bound = 0
-    above_bound_area = 0
+    #above_bound_area = 0
     percent_above_bound_area = 0
-    below_bound_area = 0
+    #below_bound_area = 0
     percent_below_bound_area = 0
     extent_x = 0
     extent_y = 0
+    sv_zoom = 0
+    tv_zoom = 0
     
     for row in (db.execute('SELECT * FROM `snapshots` INNER JOIN `vis_shapes` ON `snapshots`.`image_id` = `vis_shapes`.`image_id` WHERE `datetime` = %i' % snapshot)):
       plant_id = row['plant_id']
       if row['in_bounds'] == 'False':
         outlier = True
       if row['camera'] == 'vis_sv':
+        sv_zoom = row['zoom']
         sv_image_count += 1
-        sv_area += zoom_correction(row['area'], row['zoom'])
+        if row['frame'] == 0:
+          sv0_area = row['area']
+        elif row['frame'] == 90:
+          sv90_area = row['area']
+        elif row['frame'] == 180:
+          sv180_area = row['area']
+        elif row['frame'] == 270:
+          sv270_area = row['area']
         solidity += row['solidity']
         perimeter += row['perimeter']
         centroid_x += row['centroid_x']
@@ -116,7 +129,8 @@ def main():
         extent_x += row['extent_x']
         extent_y += row['extent_y']
       elif row['camera'] == 'vis_tv':
-        tv_area = zoom_correction(row['area'], row['zoom'])
+        tv_zoom = row['zoom']
+        tv_area = row['area']
     if sv_image_count == 4 and tv_area > 0:
       if (args.debug):
         print('Snapshot ' + str(snapshot) + ' has 5 images')
@@ -134,9 +148,9 @@ def main():
       for row in (db.execute('SELECT * FROM `snapshots` INNER JOIN `boundary_data` ON `snapshots`.`image_id` = `boundary_data`.`image_id` WHERE `datetime` = %i' % snapshot)):
         height_above_bound += row['height_above_bound']
         height_below_bound += row['height_below_bound']
-        above_bound_area += zoom_correction(row['above_bound_area'], row['zoom'])
+        #above_bound_area += zoom_correction(row['above_bound_area'], row['zoom'])
         percent_above_bound_area += row['percent_above_bound_area']
-        below_bound_area += zoom_correction(row['below_bound_area'], row['zoom'])
+        #below_bound_area += zoom_correction(row['below_bound_area'], row['zoom'])
         percent_below_bound_area += row['percent_below_bound_area']
         boundary_line_y = row['x_position']
         image_count += 1
@@ -145,9 +159,9 @@ def main():
           print('Snapshot ' + str(snapshot) + ' has boundary data')
         height_above_bound /= image_count
         height_below_bound /= image_count
-        above_bound_area /= image_count
+        #above_bound_area /= image_count
         percent_above_bound_area /= image_count
-        below_bound_area /= image_count
+        #below_bound_area /= image_count
         percent_below_bound_area /= image_count
         # Adjusted center of mass y (height above boundary line to cmy)
         #centroid_height = (args.height - boundary_line_y) - centroid_y
@@ -157,16 +171,16 @@ def main():
         
         # Zoom correct length-based traits
         #centroid_height = px_to_cm(centroid_height, row['zoom'])
-        perimeter = px_to_cm(perimeter, row['zoom'])
-        longest_axis = px_to_cm(longest_axis, row['zoom'])
-        height_above_bound = px_to_cm(height_above_bound, row['zoom'])
-        height_below_bound = px_to_cm(height_below_bound, row['zoom'])
-        extent_x = px_to_cm(extent_x, row['zoom'])
-        extent_y = px_to_cm(extent_y, row['zoom'])
+        #perimeter = px_to_cm(perimeter, row['zoom'])
+        #longest_axis = px_to_cm(longest_axis, row['zoom'])
+        #height_above_bound = px_to_cm(height_above_bound, row['zoom'])
+        #height_below_bound = px_to_cm(height_below_bound, row['zoom'])
+        #extent_x = px_to_cm(extent_x, row['zoom'])
+        #extent_y = px_to_cm(extent_y, row['zoom'])
           
         #surface_area += tv_centroid_correction(tv_area, centroid_height)
-        out.write(','.join(map(str, (plant_id, snapshot, sv_area, tv_area, solidity, perimeter, centroid_x, centroid_y, longest_axis,
-                                   extent_x, extent_y, height_above_bound, height_below_bound, above_bound_area, percent_above_bound_area, below_bound_area,
+        out.write(','.join(map(str, (plant_id, snapshot, sv_zoom, tv_zoom, sv0_area, sv90_area, sv180_area, sv270_area, tv_area, solidity, perimeter, centroid_x, centroid_y, longest_axis,
+                                   extent_x, extent_y, height_above_bound, height_below_bound, percent_above_bound_area,
                                    percent_below_bound_area, outlier, boundary_line_y))) + '\n')
     else:
       if (args.debug):

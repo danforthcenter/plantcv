@@ -7,7 +7,7 @@ This knitr document contains the code used to analyze and visualize data from th
 
 Attach the required R packages
 ```{r}
-library(qvalue, warn.conflicts = FALSE)
+#library(qvalue, warn.conflicts = FALSE)
 library(ggplot2, warn.conflicts = FALSE)
 library(lubridate, warn.conflicts = FALSE)
 library(MASS, warn.conflicts = FALSE)
@@ -15,6 +15,65 @@ library(car, warn.conflicts = FALSE)
 library(nlme, warn.conflicts = FALSE)
 library(mvtnorm, warn.conflicts = FALSE)
 library(grid, warn.conflicts = FALSE)
+```
+
+# VIS analysis
+Download the complete VIS data set. There were a total of 6,399 snapshots with VIS image data, but the download only includes the 6,207 snapshots that were successfully processed by PlantCV. Failed snapshots generally are those that lack a plant (empty pot controls, dead plants, etc.)
+```{r}
+if (!file.exists('vis_snapshots_nocorrect.csv')) {
+  download.file('http://files.figshare.com/2084100/vis_snapshots_nocorrect.csv',
+                'vis_snapshots_nocorrect.csv')
+}
+```
+
+Read data and format for analysis
+```{r}
+vis.data = read.table(file="vis_snapshots_nocorrect.csv", sep=",", header=TRUE)
+```
+
+Planting date
+```{r}
+planting_date = as.POSIXct("2013-11-26")
+```
+                       
+Add water treatment column coded in barcodes.
+```{r}
+vis.data$treatment <- NA
+vis.data$treatment[grep("AA", vis.data$plant_id)] <- 100
+vis.data$treatment[grep("AB", vis.data$plant_id)] <- 0
+vis.data$treatment[grep("AC", vis.data$plant_id)] <- 16
+vis.data$treatment[grep("AD", vis.data$plant_id)] <- 33
+vis.data$treatment[grep("AE", vis.data$plant_id)] <- 66
+```
+
+Add plant genotype column coded in barcodes.
+```{r}
+vis.data$genotype <- NA
+vis.data$genotype[grep("p1", vis.data$plant_id)] <- 'A10'
+vis.data$genotype[grep("p2", vis.data$plant_id)] <- 'B100'
+vis.data$genotype[grep("r1", vis.data$plant_id)] <- 'R20'
+vis.data$genotype[grep("r2", vis.data$plant_id)] <- 'R70'
+vis.data$genotype[grep("r3", vis.data$plant_id)] <- 'R98'
+vis.data$genotype[grep("r4", vis.data$plant_id)] <- 'R102'
+vis.data$genotype[grep("r5", vis.data$plant_id)] <- 'R128'
+vis.data$genotype[grep("r6", vis.data$plant_id)] <- 'R133'
+vis.data$genotype[grep("r7", vis.data$plant_id)] <- 'R161'
+vis.data$genotype[grep("r8", vis.data$plant_id)] <- 'R187'
+```
+
+Add genotype x treatment group column
+```{r}
+vis.data$group = paste(vis.data$genotype,'-',vis.data$treatment,sep='')
+```
+
+Add calendar-time data column using the Unix-time data
+```{r}
+vis.data$date = as.POSIXct(vis.data$datetime, origin = "1970-01-01")
+```
+
+Calculate days after planting from planting data
+```{r}
+vis.data$dap = as.numeric(vis.data$date - planting_date)
 ```
 
 # Soil volume water content
@@ -30,7 +89,7 @@ if (!file.exists('soil_weigth_vwc.txt')) {
 
 Read the soil volume water content data
 ```{r}
-vwc.data = read.table(file="soil_weigth_vwc.txt", sep="\t", header=TRUE)
+vwc.data = read.table(file="soil_weight_vwc.txt", sep="\t", header=TRUE)
 ```
 
 Calculate the average soil dry weight
@@ -78,7 +137,7 @@ In this section we define models that are used to convert area and length betwee
 Download data for a reference object imaged at different zoom levels.
 ```{r}
 if (!file.exists('zoom_calibration_data.txt')) {
-  download.file('http://files.figshare.com/1845355/zoom_calibration_data.txt',
+  download.file('http://files.figshare.com/2084101/zoom_calibration_data.txt',
                 'zoom_calibration_data.txt')
 }
 ```
@@ -96,6 +155,10 @@ z.data$px_cm = z.data$length_px / z.data$length_cm
 Convert LemnaTec zoom units to camera zoom units
 ```{r}
 z.data$zoom.camera = predict(object = zoom.lm, newdata=z.data)
+vis.data$zoom = vis.data$sv_zoom
+vis.data$sv.zoom.camera = predict(object = zoom.lm, newdata=vis.data)
+vis.data$zoom = vis.data$tv_zoom
+vis.data$tv.zoom.camera = predict(object = zoom.lm, newdata=vis.data)
 ```
 
 ## Zoom correction for area
@@ -127,7 +190,7 @@ The exponential model minimizes AIC. Plot exponential model.
 nls.plot = ggplot(z.data, aes(x=zoom.camera, y=rel_area)) +
                   geom_point(size=2.5) +
                   scale_x_continuous(lim=c(0.5,4.5), "Camera zoom setting") +
-                  scale_y_continuous(lim=c(0,16),
+                  scale_y_continuous(lim=c(0,17),
                                      "Reference object relative pixel area") +
                   stat_smooth(data=z.data, aes(x=zoom.camera, y=rel_area),
                               method="nls", se=FALSE, formula=y ~ a * exp(b * x),
@@ -180,7 +243,7 @@ The polynomial model minimizes AIC. Plot polynomial model.
 poly.plot = ggplot(z.data[z.data$camera == 'VIS SV',], aes(x=zoom.camera, y=px_cm)) +
                    geom_point(size=2.5) +
                    scale_x_continuous(lim=c(0.5,4.5), "Camera zoom setting") +
-                   scale_y_continuous(lim=c(0,50),
+                   scale_y_continuous(lim=c(0,150),
                                       "Reference object length scale (px/cm)") +
                    stat_smooth(data=z.data[z.data$camera == 'VIS SV',],
                                aes(x=zoom.camera, y=px_cm), method="lm",
@@ -202,20 +265,61 @@ poly.plot = poly.plot + labs(title='Figure 12B')
 print(poly.plot)
 ```
 
+# Correct VIS data for differences in camera zoom
+Create zoom-corrected VIS data frame
+```{r}
+vis.data.zoom = vis.data[,c('plant_id', 'datetime', 'treatment', 'genotype', 'group', 'date', 'dap', 'solidity', 'outlier')]
+```
+
+Predict relative area zoom correction factors
+```{r}
+vis.data$zoom.camera = vis.data$sv.zoom.camera
+vis.data$sv_rel_area = predict(object = area.nls, newdata = vis.data)
+vis.data$zoom.camera = vis.data$tv.zoom.camera
+vis.data$tv_rel_area = predict(object = area.nls, newdata = vis.data)
+```
+
+Calculate total zoom-corrected side-view and top-view area
+```{r}
+vis.data.zoom$sv_area = (vis.data$sv0_area / vis.data$sv_rel_area) + (vis.data$sv90_area / vis.data$sv_rel_area) +
+                        (vis.data$sv180_area / vis.data$sv_rel_area) + (vis.data$sv270_area / vis.data$sv_rel_area)
+
+vis.data.zoom$tv_area = vis.data$tv_area / vis.data$tv_rel_area
+```
+
+Calculate zoom-corrected lengths
+```{r}
+vis.data$zoom.camera = vis.data$sv.zoom.camera
+vis.data$px_cm = predict(object = len.poly, newdata=vis.data)
+vis.data.zoom$extent_x = vis.data$extent_x / vis.data$px_cm
+vis.data.zoom$extent_y = vis.data$extent_y / vis.data$px_cm
+vis.data.zoom$height_above_bound = vis.data$height_above_bound / vis.data$px_cm
+```
+
 # Height modeling
 In this section we measure how well PlantCV estimates plant height.
 
 Download data manually measured plant height data set (n = 173).
 ```{r}
-if (!file.exists('height_model_data.txt')) {
-  download.file('http://files.figshare.com/1845361/height_model_data.txt',
-                'height_model_data.txt')
+if (!file.exists('manual_height_samples.csv')) {
+  download.file('http://files.figshare.com/2084104/manual_height_samples.csv',
+                'manual_height_samples.csv')
 }
 ```
 
 Read height data.
 ```{r}
-ht.data = read.table(file="height_model_data.txt",sep="\t",header=TRUE)
+manual.ht.data = read.table(file="manual_height_samples.csv",sep=",",header=TRUE)
+```
+
+Convert human-readable date to Unix time
+```{r}
+manual.ht.data$datetime = as.numeric(ymd_hms(manual.ht.data$timestamp, tz="America/Chicago"))
+```
+
+Get height data from the VIS data for each manual height sample
+```{r}
+ht.data = merge(manual.ht.data, vis.data.zoom, by = c('plant_id', 'datetime'))
 ```
 
 Convert LemnaTec zoom units to camera zoom units
@@ -223,25 +327,19 @@ Convert LemnaTec zoom units to camera zoom units
 ht.data$zoom.camera = predict(object = zoom.lm, newdata=ht.data)
 ```
 
-Convert pixel traits to cm with zoom correction. px/cm calibration
-```{r}
-px_cm = predict(object = len.poly, newdata=ht.data)
-ht.data$height_above_bound_cm = ht.data$height_above_bound / px_cm
-```
-
 Height linear model
 ```{r}
-height.model = lm(manual_height~height_above_bound_cm, ht.data)
+height.model = lm(manual_height_cm~height_above_bound, ht.data)
 summary(height.model)
 ```
 
 Plot the height linear model.
 ```{r}
-hlm.plot = ggplot(ht.data, aes(x=height_above_bound_cm, y=manual_height)) +
+hlm.plot = ggplot(ht.data, aes(x=height_above_bound, y=manual_height_cm)) +
                   geom_point(aes(color=factor(round(zoom.camera,1))),size=2.5) +
                   geom_smooth(method="lm", formula=y~x, color='black') +
-                  scale_x_continuous(lim=c(0,110), breaks=c(0,25,50,75,100), "Estimated height (cm)") +
-                  scale_y_continuous(lim=c(0,110), breaks=c(0,25,50,75,100), "Manually measured height (cm)") +
+                  scale_x_continuous(lim=c(0,60), "Estimated height (cm)") +
+                  scale_y_continuous(lim=c(0,60), "Manually measured height (cm)") +
                   theme_bw() +
                   theme(legend.position=c(0.2,0.75),
                         axis.title.x=element_text(face="bold"),
@@ -267,23 +365,27 @@ In this section we model fresh- and dry-weight above ground biomass using image 
 
 Download data manually measured plant biomass data set (n = 41).
 ```{r}
-if (!file.exists('biomass_model_data.txt')) {
-  download.file('http://files.figshare.com/1845360/biomass_model_data.txt',
-                'biomass_model_data.txt')
+if (!file.exists('manual_biomass_samples.csv')) {
+  download.file('http://files.figshare.com/2084103/manual_biomass_samples.csv',
+                'manual_biomass_samples.csv')
 }
 ```
 
 Read biomass data.
 ```{r}
-st.data = read.table(file='biomass_model_data.txt', sep="\t", header=TRUE,
-                     stringsAsFactors=FALSE)
+manual.st.data = read.table(file='manual_biomass_samples.csv', sep=",", header=TRUE, stringsAsFactors=FALSE)
+```
+
+Get data from the VIS data for each manual biomass sample
+```{r}
+st.data = merge(manual.st.data, vis.data.zoom, by = c('plant_id', 'datetime'))
 ```
 
 Create out-of-frame indicator variable.
 ```{r}
 st.data$outind = NA
-st.data[st.data$out_of_frame == T,]$outind = 1
-st.data[st.data$out_of_frame == F,]$outind = 0
+st.data[st.data$outlier == 'True',]$outind = 1
+st.data[st.data$outlier == 'False',]$outind = 0
 ```
 
 Genotype indicator variable.
@@ -364,7 +466,7 @@ summary(sv.ind.model)
 Plot SV model with out-of-frame.
 ```{r, fig.width=4, fig.height=4}
 sv.model.out.plot = ggplot(st.data, aes(x=sv_area/1e5, y=fresh_weight, 
-                                        group=out_of_frame, color=out_of_frame)) +
+                                        group=outlier, color=outlier)) +
                            geom_point(size=2.5) +
                            geom_smooth(method="lm", color="black") +
                            scale_x_continuous("Shoot and leaf area (x10^5 px)") +
@@ -439,7 +541,7 @@ summary(dry.sv.ind.model)
 
 ```{r, fig.width=4, fig.height=4}
 dry.sv.model.out.plot = ggplot(st.data, aes(x=sv_area/1e5, y=dry_weight, 
-                                        group=out_of_frame, color=out_of_frame)) +
+                                        group=outlier, color=outlier)) +
                            geom_point(size=2.5) +
                            geom_smooth(method="lm", color="black") +
                            scale_x_continuous("Shoot and leaf area (x10^5 px)") +
@@ -476,88 +578,29 @@ print(dry.sv.model.gen.plot)
 # Analyze VIS data
 In this section we analyze geometric traits from the complete VIS data set.
 
-Download the complete VIS data set. There were a total of 6,399 snapshots with VIS image data, but the download only includes the 6,207 snapshots that were successfully processed by PlantCV. Failed snapshots generally are those that lack a plant (empty pot controls, dead plants, etc.)
-```{r}
-if (!file.exists('vis_snapshots.txt')) {
-  download.file('http://files.figshare.com/1845362/vis_snapshots.txt',
-                'vis_snapshots.txt')
-}
-```
-
-Read data and format for analysis
-```{r}
-vis.data = read.table(file="vis_snapshots.txt", sep=",", header=TRUE)
-```
-
-Planting date
-```{r}
-planting_date = as.POSIXct("2013-11-26")
-```
-                       
-Add water treatment column coded in barcodes.
-```{r}
-vis.data$treatment <- NA
-vis.data$treatment[grep("AA", vis.data$plant_id)] <- 100
-vis.data$treatment[grep("AB", vis.data$plant_id)] <- 0
-vis.data$treatment[grep("AC", vis.data$plant_id)] <- 16
-vis.data$treatment[grep("AD", vis.data$plant_id)] <- 33
-vis.data$treatment[grep("AE", vis.data$plant_id)] <- 66
-```
-
-Add plant genotype column coded in barcodes.
-```{r}
-vis.data$genotype <- NA
-vis.data$genotype[grep("p1", vis.data$plant_id)] <- 'A10'
-vis.data$genotype[grep("p2", vis.data$plant_id)] <- 'B100'
-vis.data$genotype[grep("r1", vis.data$plant_id)] <- 'R20'
-vis.data$genotype[grep("r2", vis.data$plant_id)] <- 'R70'
-vis.data$genotype[grep("r3", vis.data$plant_id)] <- 'R98'
-vis.data$genotype[grep("r4", vis.data$plant_id)] <- 'R102'
-vis.data$genotype[grep("r5", vis.data$plant_id)] <- 'R128'
-vis.data$genotype[grep("r6", vis.data$plant_id)] <- 'R133'
-vis.data$genotype[grep("r7", vis.data$plant_id)] <- 'R161'
-vis.data$genotype[grep("r8", vis.data$plant_id)] <- 'R187'
-```
-
-Add genotype x treatment group column
-```{r}
-vis.data$group = paste(vis.data$genotype,'-',vis.data$treatment,sep='')
-```
-
 Remove plants that were sampled for biomass measurements.
 ```{r}
-vis.data = vis.data[!vis.data$plant_id %in% st.data$barcode,]
-```
-
-Add calendar-time data column using the Unix-time data
-```{r}
-vis.data$date = as.POSIXct(vis.data$datetime, origin = "1970-01-01")
-```
-
-Calculate days after planting from planting data
-```{r}
-vis.data$dap = as.numeric(vis.data$date - planting_date)
+vis.data.zoom = vis.data.zoom[!vis.data.zoom$plant_id %in% st.data$plant_id,]
 ```
 
 Predict fresh- and dry-weight biomass from linear models
 ```{r}
-vis.data$fw_biomass = predict.lm(object = sv.model, newdata=vis.data)
-vis.data$dw_biomass = predict.lm(object = dry.sv.model, newdata=vis.data)
+vis.data.zoom$fw_biomass = predict.lm(object = sv.model, newdata=vis.data.zoom)
+vis.data.zoom$dw_biomass = predict.lm(object = dry.sv.model, newdata=vis.data.zoom)
 ```
 
 ## Plant height analysis
 Plot height for *S. viridis* and *S. italica* water treatments 100% and 33% full-capacity.
 ```{r}
-height.plot = ggplot(vis.data[(vis.data$genotype == 'A10' |
-                               vis.data$genotype == 'B100') &
-                              (vis.data$treatment == 100 |
-                               vis.data$treatment == 33),],
+height.plot = ggplot(vis.data.zoom[(vis.data.zoom$genotype == 'A10' |
+                               vis.data.zoom$genotype == 'B100') &
+                              (vis.data.zoom$treatment == 100 |
+                               vis.data.zoom$treatment == 33),],
                      aes(x=dap, y=height_above_bound, color=factor(group))) +
                      geom_point(size=2.5) +
                      geom_smooth(method="loess",size=1) +
                      scale_x_continuous(name="Days after planting") +
-                     scale_y_continuous(lim=c(0,120),
-                                        breaks=c(0,20,40,60,80,100,120),
+                     scale_y_continuous(lim=c(0,60),
                                         name="Estimated height (cm)") +
                      theme_bw() +
                      theme(legend.position=c(0.25,0.75),
@@ -581,14 +624,13 @@ print(height.plot)
 
 Plot height for all genotypes.
 ```{r}
-height.facet.plot = ggplot(vis.data[vis.data$treatment == 100 |
-                                    vis.data$treatment == 33,],
+height.facet.plot = ggplot(vis.data.zoom[vis.data.zoom$treatment == 100 |
+                                    vis.data.zoom$treatment == 33,],
                            aes(x=dap, y=height_above_bound, color=factor(treatment))) +
                      geom_point(size=1) +
                      geom_smooth(method="loess",size=1) +
                      scale_x_continuous(name="Days after planting") +
-                     scale_y_continuous(lim=c(0,120),
-                                        breaks=c(0,20,40,60,80,100,120),
+                     scale_y_continuous(lim=c(0,60),
                                         name="Estimated height (cm)") +
                      theme_bw() +
                      theme(legend.position=c(0.8,0.1),
@@ -651,7 +693,7 @@ height_per_day = function(vis.data) {
 
 Height per day 95% CI. Write results to file.
 ```{r}
-height.perday.results = height_per_day(vis.data)
+height.perday.results = height_per_day(vis.data.zoom)
 write.csv(height.perday.results,file="height.perday.100water.csv")
 print(height.perday.results)
 ```
@@ -690,15 +732,15 @@ analyze_height = function(vis.data, genotype) {
 
 Test for treatment effect on two-day intervals
 ```{r}
-a10.height.results = analyze_height(vis.data, 'A10')
-b100.height.results = analyze_height(vis.data, 'B100')
+a10.height.results = analyze_height(vis.data.zoom, 'A10')
+b100.height.results = analyze_height(vis.data.zoom, 'B100')
 ```
 
 Control for multiple testing by controlling the FDR
 ```{r}
-qvalues.height = qvalue(c(a10.height.results$pvalue, b100.height.results$pvalue))
-a10.height.results$qvalue = qvalues.height$qvalues[1:nrow(a10.height.results)]
-b100.height.results$qvalue = qvalues.height$qvalues[
+qvalues.height = p.adjust(c(a10.height.results$pvalue, b100.height.results$pvalue),method="fdr")
+a10.height.results$qvalue = qvalues.height[1:nrow(a10.height.results)]
+b100.height.results$qvalue = qvalues.height[
   (nrow(a10.height.results)+1):(nrow(a10.height.results) + nrow(b100.height.results))]
 ```
 
@@ -721,10 +763,10 @@ write.table(b100.height.results, file='height.stats.csv', sep = ',',
 ## Biomass analysis
 Plot fresh-weight biomass for *S. viridis* and *S. italica* water treatments 100% and 33% full-capacity.
 ```{r}
-biomass.plot = ggplot(vis.data[(vis.data$genotype == 'A10' |
-                                vis.data$genotype == 'B100') &
-                               (vis.data$treatment == 100 |
-                                vis.data$treatment == 33),],
+biomass.plot = ggplot(vis.data.zoom[(vis.data.zoom$genotype == 'A10' |
+                                vis.data.zoom$genotype == 'B100') &
+                               (vis.data.zoom$treatment == 100 |
+                                vis.data.zoom$treatment == 33),],
                      aes(x=dap, y=fw_biomass, color=factor(group))) +
                      geom_point(size=2.5) +
                      geom_smooth(method="loess",size=1) +
@@ -753,8 +795,8 @@ print(biomass.plot)
 
 Plot fresh-weight biomass for all genotypes.
 ```{r}
-biomass.facet.plot = ggplot(vis.data[vis.data$treatment == 100 |
-                                    vis.data$treatment == 33,],
+biomass.facet.plot = ggplot(vis.data.zoom[vis.data.zoom$treatment == 100 |
+                                    vis.data.zoom$treatment == 33,],
                            aes(x=dap, y=fw_biomass, color=factor(treatment))) +
                      geom_point(size=1) +
                      geom_smooth(method="loess",size=1) +
@@ -820,15 +862,15 @@ analyze_biomass = function(vis.data, genotype) {
 
 Test for treatment effect on two-day intervals
 ```{r}
-a10.biomass.results = analyze_biomass(vis.data, 'A10')
-b100.biomass.results = analyze_biomass(vis.data, 'B100')
+a10.biomass.results = analyze_biomass(vis.data.zoom, 'A10')
+b100.biomass.results = analyze_biomass(vis.data.zoom, 'B100')
 ```
 
 Control for multiple testing by controlling the FDR
 ```{r}
-qvalues.biomass = qvalue(c(a10.biomass.results$pvalue, b100.biomass.results$pvalue))
-a10.biomass.results$qvalue = qvalues.biomass$qvalues[1:nrow(a10.biomass.results)]
-b100.biomass.results$qvalue = qvalues.biomass$qvalues[
+qvalues.biomass = p.adjust(c(a10.biomass.results$pvalue, b100.biomass.results$pvalue),method="fdr")
+a10.biomass.results$qvalue = qvalues.biomass[1:nrow(a10.biomass.results)]
+b100.biomass.results$qvalue = qvalues.biomass[
   (nrow(a10.biomass.results)+1):(nrow(a10.biomass.results) + 
                                  nrow(b100.biomass.results))]
 ```
@@ -899,7 +941,7 @@ drought_response = function(vis.data, genotypes) {
 
 A10 vs B100 drought responses
 ```{r}
-drought.response.parents = drought_response(vis.data,c('A10','B100'))
+drought.response.parents = drought_response(vis.data.zoom,c('A10','B100'))
 ```
 
 Plot drought response results
@@ -1004,7 +1046,8 @@ output.logis.nlsList <- function(fit, times, CI = F, LOG = F, alpha = 0.05){
       # comparing RGRm has to be done on a biomass basis. So it needs special treatment. First, we aev to know what range of biomasses are shared between groups.
       Mmin <- max(min(rates[[i]]$M), min(rates[[j]]$M)) # yieds the range of overlapping masses between groups i & j
       Mmax <- min(max(rates[[i]]$M), max(rates[[j]]$M))
-      diffs.ij$Mseq <- seq(Mmin, Mmax, length = 100)
+      #diffs.ij$Mseq <- seq(Mmin, Mmax, length = 100)
+      diffs.ij$Mseq <- seq(Mmin, Mmax, length = length(times))
       if(LOG == F){
         diffs.ij$diffRGRm  <- ri*(1 - diffs.ij$Mseq/Ki) - rj*(1 - diffs.ij$Mseq/Kj)
       } else{
@@ -1092,7 +1135,7 @@ summarizer <- function(dat, alpha){
 
 Subset the VIS data
 ```{r}
-sub.vis.data = vis.data[(vis.data$treatment == 100 | vis.data$treatment == 33),
+sub.vis.data = vis.data.zoom[(vis.data.zoom$treatment == 100 | vis.data.zoom$treatment == 33),
                         c("plant_id","dap","fw_biomass","group")]
 sub.vis.data$group = factor(sub.vis.data$group)
 ```
@@ -1120,6 +1163,8 @@ Compute the time and magnitude of maximum growth rate
 logis.results = data.frame(group=levels(sub.vis.data$group))
 logis.results$max.AGR = 0
 logis.results$max.AGR.dap = 0
+logis.results$AGR.lo = 0
+logis.results$AGR.hi = 0
 group.order = names(out.fit.logis$rates)
 for(i in 1:length(group.order)) {
   logis.results[logis.results == group.order[i],]$max.AGR.dap = 
@@ -1127,6 +1172,14 @@ for(i in 1:length(group.order)) {
                                              max(out.fit.logis$rates[[i]]$AGR)]
   logis.results[logis.results == group.order[i],]$max.AGR =
     max(out.fit.logis$rates[[i]]$AGR)
+  
+  logis.results[logis.results == group.order[i],]$AGR.lo = 
+    out.fit.logis$rates[[i]]$AGR.lo[out.fit.logis$rates[[i]]$AGR == 
+                                             max(out.fit.logis$rates[[i]]$AGR)]
+  
+  logis.results[logis.results == group.order[i],]$AGR.hi = 
+    out.fit.logis$rates[[i]]$AGR.hi[out.fit.logis$rates[[i]]$AGR == 
+                                             max(out.fit.logis$rates[[i]]$AGR)]
 }
 print(logis.results)
 ```
@@ -1137,8 +1190,9 @@ parent.groups = c("A10-100", "A10-33", "B100-100", "B100-33")
 group.colors = c("#F8766D", "#7CAE00", "#00BFC4", "#C77CFF")
 
 # Biomass over time
-gca.plot = ggplot(vis.data[(vis.data$genotype == 'A10' | vis.data$genotype == 'B100') &
-                 (vis.data$treatment == 100 | vis.data$treatment == 33),],
+gca.plot = ggplot(vis.data.zoom[(vis.data.zoom$genotype == 'A10' |
+                                 vis.data.zoom$genotype == 'B100') &
+                 (vis.data.zoom$treatment == 100 | vis.data.zoom$treatment == 33),],
                   aes(x=dap, y=fw_biomass, color=factor(group))) +
                   geom_point(size=2.5) +
                   scale_x_continuous(name="Days after planting") +
@@ -1217,7 +1271,7 @@ print(agr.plot)
 
 Plot logistic growth models for all *Setaria* genotypes
 ```{r}
-plot_gca = function(genotype) {
+plot_gca = function(genotype, vis.data, out.fit.logis) {
   groups = c(paste(genotype,'-100',sep=''), paste(genotype,'-33',sep=''))
   group.colors = c("#00BFC4", "#F8766D")
   # Biomass over time
@@ -1292,16 +1346,16 @@ multiplot <- function(..., plotlist=NULL, cols=1, layout=NULL) {
 
 Generate the *Setaria* biomass/growth plots
 ```{r}
-a10.gca.plot = plot_gca('A10')
-b100.gca.plot = plot_gca('B100')
-r102.gca.plot = plot_gca('R102')
-r128.gca.plot = plot_gca('R128')
-r133.gca.plot = plot_gca('R133')
-r161.gca.plot = plot_gca('R161')
-r187.gca.plot = plot_gca('R187')
-r20.gca.plot = plot_gca('R20')
-r70.gca.plot = plot_gca('R70')
-r98.gca.plot = plot_gca('R98')
+a10.gca.plot = plot_gca('A10', vis.data.zoom, out.fit.logis)
+b100.gca.plot = plot_gca('B100', vis.data.zoom, out.fit.logis)
+r102.gca.plot = plot_gca('R102', vis.data.zoom, out.fit.logis)
+r128.gca.plot = plot_gca('R128', vis.data.zoom, out.fit.logis)
+r133.gca.plot = plot_gca('R133', vis.data.zoom, out.fit.logis)
+r161.gca.plot = plot_gca('R161', vis.data.zoom, out.fit.logis)
+r187.gca.plot = plot_gca('R187', vis.data.zoom, out.fit.logis)
+r20.gca.plot = plot_gca('R20', vis.data.zoom, out.fit.logis)
+r70.gca.plot = plot_gca('R70', vis.data.zoom, out.fit.logis)
+r98.gca.plot = plot_gca('R98', vis.data.zoom, out.fit.logis)
 ```
 
 ```{r, echo=FALSE}
@@ -1333,8 +1387,6 @@ invisible(dev.off())
 agr.plot = agr.plot + labs(title='Figure 4C')
 print(agr.plot)
 ```
-
-
 
 # Water use efficiency
 In this section we combine data on the volume of water added to each plant per water application (up to the target weight) with fresh-weight biomass data to estimate water use efficiency.
@@ -1500,7 +1552,7 @@ wue.parents = function(water, biomass) {
   return(wue.data)
 }
 
-parents.wue = wue.parents(water.data, vis.data)
+parents.wue = wue.parents(water.data, vis.data.zoom)
 parents.wue = parents.wue[parents.wue$water != 0,]
 ```
 
@@ -1607,7 +1659,7 @@ Analyze WUE for each genotype and aggregate results
 ```{r}
 wue.results = data.frame()
 for(genotype in c('A10', 'B100')) {
-  genotype.wue = wue(water.data, vis.data, genotype)
+  genotype.wue = wue(water.data, vis.data.zoom, genotype)
   genotype.wue = genotype.wue[genotype.wue$water != 0,]
   genotype.wue.results = analyze_wue(genotype.wue)
   genotype.wue.results$genotype = genotype
@@ -1617,8 +1669,8 @@ for(genotype in c('A10', 'B100')) {
 
 Control for multiple testing by controlling the FDR
 ```{r}
-qvalues.wue = qvalue(wue.results$pvalue)
-wue.results$qvalue = qvalues.wue$qvalues
+qvalues.wue = p.adjust(wue.results$pvalue,method="fdr")
+wue.results$qvalue = qvalues.wue
 write.table(wue.results, file='wue.stats.csv', sep=',', row.names=FALSE)
 print(wue.results)
 ```
@@ -1628,7 +1680,7 @@ In this section we use linear modeling to estimate tiller number.
 
 Calculate height-width ratio.
 ```{r}
-vis.data$height_width_ratio = vis.data$height_above_bound / vis.data$extent_x
+vis.data.zoom$height_width_ratio = vis.data.zoom$height_above_bound / vis.data.zoom$extent_x
 ```
 
 Download data for manually measured tiller counts 195 random images.
@@ -1656,7 +1708,7 @@ tiller.counts$date = as.POSIXct(paste(paste(tiller.counts$year,
 
 Merge with VIS snapshot table.
 ```{r}
-tiller.counts = merge(x=tiller.counts, y=vis.data, by = 'date')
+tiller.counts = merge(x=tiller.counts, y=vis.data.zoom, by = 'date')
 ```
 
 Model tiller counts.
@@ -1715,9 +1767,15 @@ if (!file.exists('660tiller_counts.txt')) {
 Predict tiller count for a second set of ~660 randomly selected plants.
 ```{r}
 tiller660 = read.table(file="660tiller_counts.txt", sep="\t", header=TRUE)
-tiller660 = merge(x=tiller660, y=vis.data, by='datetime')
+tiller660 = merge(x=tiller660, y=vis.data.zoom, by='datetime')
 tiller660$predicted_tiller_count = predict.lm(object = tiller.model3,
                                               newdata=tiller660)
+```
+
+Summarize the difference between the predicted and manual tiller counts
+```{r}
+tiller.diff = tiller660$predicted_tiller_count - tiller660$tiller_count
+t.test(tiller.diff)
 ```
 
 Plot manual versus predicted tiller counts.
@@ -1751,15 +1809,15 @@ print(tiller.plot)
 
 Predict tiller counts for the whole data set.
 ```{r}
-vis.data$tiller_count = predict.lm(object = tiller.model3, newdata = vis.data)
+vis.data.zoom$tiller_count = predict.lm(object = tiller.model3, newdata = vis.data.zoom)
 ```
 
 Plot tiller counts for *S. viridis* and *S. italica* water treatments 100% and 33% full-capacity.
 ```{r}
-tc.par.plot = ggplot(vis.data[(vis.data$genotype == 'A10' |
-                                vis.data$genotype == 'B100') &
-                               (vis.data$treatment == 100 |
-                                vis.data$treatment == 33),],
+tc.par.plot = ggplot(vis.data.zoom[(vis.data.zoom$genotype == 'A10' |
+                                vis.data.zoom$genotype == 'B100') &
+                               (vis.data.zoom$treatment == 100 |
+                                vis.data.zoom$treatment == 33),],
                      aes(x=dap, y=tiller_count, color=factor(group))) +
                      geom_point(size=2.5) +
                      geom_smooth(method="loess",size=1) +
@@ -1788,8 +1846,8 @@ print(tc.par.plot)
 
 Plot estimated tiller counts for all genotypes.
 ```{r}
-tiller.facet.plot = ggplot(vis.data[vis.data$treatment == 100 |
-                                    vis.data$treatment == 33,],
+tiller.facet.plot = ggplot(vis.data.zoom[vis.data.zoom$treatment == 100 |
+                                    vis.data.zoom$treatment == 33,],
                            aes(x=dap, y=tiller_count, color=factor(treatment))) +
                      geom_point(size=1) +
                      geom_smooth(method="loess",size=1) +
@@ -1820,7 +1878,7 @@ print(tiller.facet.plot)
 # Trait table
 Output a table of all of the traits input and added here. Export all of the VIS traits (except color).
 ```{r}
-h.table = vis.data
+h.table = vis.data.zoom
 h.table$plant_id = as.character(h.table$plant_id)
 h.table$wue = NA
 for(r in 1:nrow(h.table)) {
@@ -1830,10 +1888,6 @@ for(r in 1:nrow(h.table)) {
 }
 write.table(h.table,file="vis.traits.csv",quote=FALSE,sep=",",row.names=FALSE)
 ```
-
-
-
-
 
 
 
