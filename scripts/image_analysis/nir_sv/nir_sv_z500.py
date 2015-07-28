@@ -44,11 +44,11 @@ def main():
     img = cv2.imread(args.image, flags=0)
     path, img_name = os.path.split(args.image)
     # Read in image which is average of average of backgrounds
-    img_bkgrd = cv2.imread("background.png", flags=0)
+    img_bkgrd = cv2.imread("bkgrd_ave_z500.png", flags=0)
 
     # NIR images for burnin2 are up-side down. This may be fixed in later experiments
-    img =  ndimage.rotate(img, 0)
-    img_bkgrd =  ndimage.rotate(img_bkgrd, 0)
+    img =  ndimage.rotate(img, 180)
+    img_bkgrd =  ndimage.rotate(img_bkgrd, 180)
 
     # Subtract the image from the image background to make the plant more prominent
     device, bkg_sub_img = pcv.image_subtract(img, img_bkgrd, device, args.debug)
@@ -58,12 +58,12 @@ def main():
     bkg_sub_thres_img = cv2.inRange(bkg_sub_img, 50, 190)
     if args.debug:
         cv2.imwrite('bkgrd_sub_thres.png', bkg_sub_thres_img)
-    
+  
     #device, bkg_sub_thres_img = pcv.binary_threshold_2_sided(img_bkgrd, 50, 190, device, args.debug)
-    
+
     # if a region of interest is specified read it in
     roi = cv2.imread(args.roi)
-    
+
     
     # Start by examining the distribution of pixel intensity values
     if args.debug:
@@ -83,7 +83,7 @@ def main():
     device, lp_shrp_img = pcv.image_subtract(img, lp_img, device, args.debug)
     if args.debug:
       pcv.plot_hist(lp_shrp_img, 'hist_lp_shrp')
-    
+
     # Sobel filtering  
     # 1st derivative sobel filtering along horizontal axis, kernel = 1, unscaled)
     device, sbx_img = pcv.sobel_filter(img, 1, 0, 1, 1, device, args.debug)
@@ -112,7 +112,7 @@ def main():
       pcv.plot_hist(edge_shrp_img, 'hist_edge_shrp_img')
       
     # Perform thresholding to generate a binary image
-    device, tr_es_img = pcv.binary_threshold(edge_shrp_img, 132, 255, 'dark', device, args.debug)
+    device, tr_es_img = pcv.binary_threshold(edge_shrp_img, 145, 255, 'dark', device, args.debug)
     
     # Prepare a few small kernels for morphological filtering
     kern = np.zeros((3,3), dtype=np.uint8)
@@ -153,7 +153,7 @@ def main():
     # img is (254 X 320)
     
     # mask for the bottom of the image
-    device, box1_img, rect_contour1, hierarchy1 = pcv.rectangle_mask(img, (128,245), (192,252), device, args.debug)
+    device, box1_img, rect_contour1, hierarchy1 = pcv.rectangle_mask(img, (128,226), (192,252), device, args.debug)
     # mask for the left side of the image
     device, box2_img, rect_contour2, hierarchy2 = pcv.rectangle_mask(img, (1,1), (75,252), device, args.debug)
     # mask for the right side of the image
@@ -167,13 +167,15 @@ def main():
     device, bx1234_img = pcv.logical_or(bx123_img, box4_img, device, args.debug)
     device, inv_bx1234_img = pcv.invert(bx1234_img, device, args.debug)
     
+    
+   
     # Make a ROI around the plant, include connected objects
     # Apply the box mask to the image
     # device, masked_img = pcv.apply_mask(masked_erd_dil, inv_bx1234_img, 'black', device, args.debug)
-    
+
     device, edge_masked_img = pcv.apply_mask(masked_erd, inv_bx1234_img, 'black', device, args.debug)
-    
-    device, roi_img, roi_contour, roi_hierarchy = pcv.rectangle_mask(img, (120,75), (200,245), device, args.debug)
+
+    device, roi_img, roi_contour, roi_hierarchy = pcv.rectangle_mask(img, (120,75), (200,226), device, args.debug)
     
     plant_objects, plant_hierarchy = cv2.findContours(edge_masked_img,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
     device, roi_objects, hierarchy5, kept_mask, obj_area = pcv.roi_objects(img, 'partial', roi_contour, roi_hierarchy, plant_objects, plant_hierarchy, device, args.debug)
@@ -191,7 +193,7 @@ def main():
     
     ### Analysis ###
     device, hist_header, hist_data, h_norm = pcv.analyze_NIR_intensity(img, args.image, mask, 256, device, args.debug, args.outdir + '/' + img_name)
-    
+ 
     device, shape_header, shape_data, ori_img = pcv.analyze_object(rgb, args.image, o, m, device, args.debug, args.outdir + '/' + img_name)
     pcv.print_results(args.image, hist_header, hist_data)
     pcv.print_results(args.image, shape_header, shape_data)
