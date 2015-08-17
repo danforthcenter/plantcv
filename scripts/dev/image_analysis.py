@@ -577,7 +577,7 @@ def job_builder(args, meta):
     # For each job/CPU
     for j in range(0, jobs_per_cpu):
       # Add job to list
-      job_str = "{0} --image {1}/{2} --outdir {3} >> ./{4}/{5}.txt".format(args.pipeline, meta[images[job]]['path'], images[job], args.outdir, args.jobdir, images[job])
+      job_str = "{0} --image {1}/{2} --outdir {3} --resultdir ./{4}".format(args.pipeline, meta[images[job]]['path'], images[job], args.outdir, args.jobdir)
       jobs.append(job_str)
       
       # Increase the job counter by 1
@@ -590,7 +590,7 @@ def job_builder(args, meta):
   jobs = []
   for j in range(job, len(images)):
     # Add job to list
-    job_str = "{0} --image {1}/{2} --outdir {3} >> ./{4}/{5}.txt".format(args.pipeline, meta[images[j]]['path'], images[j], args.outdir, args.jobdir, images[j])
+    job_str = "{0} --image {1}/{2} --outdir {3} --resultdir ./{4}".format(args.pipeline, meta[images[j]]['path'], images[j], args.outdir, args.jobdir)
     jobs.append(job_str)
   # Add the CPU job list to the job stack
   job_stack.append(jobs)
