@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/usr/bin/env python
 from __future__ import print_function
 import os
 import sys
@@ -65,11 +65,12 @@ def options():
   parser.add_argument("-m", "--roi", help="ROI/mask image. Required by some pipelines (vis_tv, flu_tv).", required=False)
   parser.add_argument("-D", "--dates", help="Date range. Format: YYYY-MM-DD-hh-mm-ss_YYYY-MM-DD-hh-mm-ss. If the second date is excluded then the current date is assumed.", required=False)
   parser.add_argument("-t", "--type", help="Image format type (extension).", default="png")
-  parser.add_argument("-r", "--random", help="Select a random set of images from the input directory.", default=False, action="store_true")
-  parser.add_argument("-n", "--number", help="Number of random images to test. Only used with -r/--random.", default=10)
+  #parser.add_argument("-r", "--random", help="Select a random set of images from the input directory.", default=False, action="store_true")
+  #parser.add_argument("-n", "--number", help="Number of random images to test. Only used with -r/--random.", default=10)
   parser.add_argument("-l", "--deliminator", help="Image file name metadata deliminator character.", default='_')
   parser.add_argument("-f", "--meta", help="Image file name metadata format. List valid metadata fields separated by the deliminator (-l/--deliminator). Valid metadata fields are: " + ', '.join(map(str, list(valid_meta.keys()))), default='imgtype_camera_frame_zoom_id')
   parser.add_argument("-M", "--match", help="Restrict analysis to images with metadata matching input criteria. Input a metadata:value comma-separated list. This is an exact match search. E.g. imgtype:VIS,camera:SV,zoom:z500", required=False)
+  parser.add_argument("-C", "--coprocess", help="Coprocess the specified imgtype with the imgtype specified in --match (e.g. coprocess NIR images with VIS).", default=None)
   args = parser.parse_args()
   
   if not os.path.exists(args.dir):
@@ -134,6 +135,9 @@ def options():
       args.imgtype[key] = value
   else:
     args.imgtype = None
+  
+  if (args.coprocess is not None) and ('imgtype' not in args.imgtype):
+    raise ValueError("When the coprocess imgtype is defined, imgtype must be included in match.")
     
   return args
 ###########################################
@@ -178,8 +182,8 @@ def main():
   ###########################################
   
   # Open log files
-  fail_log = file_writer(prefix + '_failed_images_' + args.start_time + '.log')
-  error_log = file_writer(prefix + '_errors_' + args.start_time + '.log')
+  args.fail_log = file_writer(prefix + '_failed_images_' + args.start_time + '.log')
+  args.error_log = file_writer(prefix + '_errors_' + args.start_time + '.log')
   
   # Open intermediate database files
   runinfo_file = file_writer(prefix + '_runinfo.tab')
@@ -209,7 +213,7 @@ def main():
   elif args.adaptor == 'phenofront':
     # Input directory is in PhenoFront snapshot format with subdirectories for each snapshot.
     # Metadata is stored in a CSV file.
-    meta = phenofront_parser(args)
+    args, meta = phenofront_parser(args)
   ###########################################
   
   # Process images
@@ -225,8 +229,15 @@ def main():
   # Parallel image processing time
   multi_start_time = time.time()
   print("Processing images... ", file=sys.stderr)
-  p = mp.Pool(processes=args.cpu)
-  p.map(process_images_multiproc, jobs)
+  
+  try:
+    p = mp.Pool(processes=args.cpu)
+    p.map_async(process_images_multiproc, jobs).get(9999999)
+  except KeyboardInterrupt:
+    p.terminate()
+    p.join()
+    raise("Execution terminated by user\n")
+  
   # Parallel clock time
   multi_clock_time = time.time() - multi_start_time
   print("took " + str(multi_clock_time) + '\n', file=sys.stderr)
@@ -251,8 +262,8 @@ def main():
   args.features_file.close()
   args.signal_file.close()
   args.analysis_images_file.close()
-  fail_log.close()
-  error_log.close()
+  args.fail_log.close()
+  args.error_log.close()
   args.connect.close()
   ###########################################
   
@@ -455,6 +466,7 @@ def phenofront_parser(args):
   """
   # Metadata data structure
   meta = {}
+  args.jobcount = 0
   
   # Open the SnapshotInfo.csv file
   csvfile  = open (args.dir + '/SnapshotInfo.csv', 'rU')
@@ -484,7 +496,9 @@ def phenofront_parser(args):
         dirpath = args.dir + '/snapshot' + data[colnames['id']]
         filename =  img + '.' + args.type
         if not os.path.exists(dirpath + '/' + filename):
-          raise IOError("Something is wrong, file {0}/{1} does not exist".format(dirpath, filename))
+          args.error_log.write("Something is wrong, file {0}/{1} does not exist".format(dirpath, filename))
+          continue
+          #raise IOError("Something is wrong, file {0}/{1} does not exist".format(dirpath, filename))
         # Metadata from image file name
         metadata = img.split(args.deliminator)
         # Not all images in a directory may have the same metadata structure only keep those that do
@@ -493,6 +507,7 @@ def phenofront_parser(args):
           img_meta = {}
           img_meta['path'] = dirpath
           img_pass = 1
+          coimg_store = 0
           # For each of the type of metadata PlantCV keeps track of
           for field in args.valid_meta:
             # If the same metadata is found in the image filename, store the value
@@ -516,12 +531,45 @@ def phenofront_parser(args):
             # Or use the default value
             else:
                 img_meta[field] = args.valid_meta[field]
+          
+          if img_pass:
+            args.jobcount += 1
             
+          if args.coprocess is not None:
+            if img_meta['imgtype'] == args.coprocess:
+              coimg_store = 1
+          
           # If the image meets the user's criteria, store the metadata
           if img_pass == 1:
+            # Link image to coprocessed image
+            coimg_pass = 0
+            if args.coprocess is not None:
+              for coimg in imgs:
+                if len(coimg) != 0:
+                  meta_parts = coimg.split(args.deliminator)
+                  coimgtype = meta_parts[args.fields['imgtype']]
+                  if coimgtype == args.coprocess:
+                    if 'camera' in args.fields:
+                      cocamera = meta_parts[args.fields['camera']]
+                      if 'frame' in args.fields:
+                        coframe = meta_parts[args.fields['frame']]
+                        if cocamera == img_meta['camera'] and coframe == img_meta['frame']:
+                          img_meta['coimg'] = coimg + '.' + args.type
+                          coimg_pass = 1
+                      else:
+                        if cocamera == img_meta['camera']:
+                          img_meta['coimg'] = coimg + '.' + args.type
+                          coimg_pass = 1
+                    else:
+                      img_meta['coimg'] = coimg + '.' + args.type
+                      coimg_pass = 1
+              if coimg_pass == 0:
+                args.error_log.write("Could not find an image to coprocess with " + dirpath + '/' + filename + '\n')
             meta[filename] = img_meta
-  
-  return(meta)
+          elif coimg_store == 1:
+            meta[filename] = img_meta
+            
+  return(args, meta)
 ###########################################
 
 # Process images using multiprocessing
@@ -550,19 +598,39 @@ def job_builder(args, meta):
   job_stack = []
   
   # Jobs/CPU (INT): divide the number of images by the number of requested CPU resources
-  jobs_per_cpu = len(meta) / args.cpu
+  jobs_per_cpu = args.jobcount / args.cpu
   
   # Get the list of images
-  images = list(meta.keys())
+  #images = list(meta.keys())
+  images = []
+  for img in list(meta.keys()):
+    if args.coprocess is not None:
+      if meta[img]['imgtype'] != args.coprocess:
+        images.append(img)
+    else:
+      images.append(img)
   
+  print("Job list will include " + str(len(images)) + " images" + '\n', file=sys.stderr)
+      
   # For each image
   for img in images:
+    if (args.coprocess is not None) and ('coimg' in meta[img]):
+      # Create an output file to store the co-image processing results and populate with metadata
+      coimg = meta[meta[img]['coimg']]
+      print(meta[img]['coimg'] + '\n') # DEBUG
+      coout = file_writer("./{0}/{1}.txt".format(args.jobdir, meta[img]['coimg']))
+      coout.write('\t'.join(map(str, ("META", "image", coimg['path'] + '/' + meta[img]['coimg']))) + '\n')
+      # Valid metadata
+      for m in list(args.valid_meta.keys()):
+        coout.write('\t'.join(map(str, ("META", m, coimg[m]))) + '\n')
+      
     # Create an output file to store the image processing results and populate with metadata
     outfile = file_writer("./{0}/{1}.txt".format(args.jobdir, img))
     outfile.write('\t'.join(map(str, ("META", "image", meta[img]['path'] + '/' + img))) + '\n')
     # Valid metadata
     for m in list(args.valid_meta.keys()):
       outfile.write('\t'.join(map(str, ("META", m, meta[img][m]))) + '\n')
+        
     outfile.close()
   
   # Build the job stack
@@ -577,8 +645,12 @@ def job_builder(args, meta):
     # For each job/CPU
     for j in range(0, jobs_per_cpu):
       # Add job to list
-      job_str = "{0} --image {1}/{2} --outdir {3} --resultdir ./{4}".format(args.pipeline, meta[images[job]]['path'], images[job], args.outdir, args.jobdir)
-      jobs.append(job_str)
+      if args.coprocess is not None:
+        job_str = "{0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt --coresult ./{6}/{7}.txt".format(args.pipeline, meta[images[job]]['path'], images[job], args.outdir, args.jobdir, images[job], args.jobdir, meta[images[job]]['coimg'])
+        jobs.append(job_str)
+      else:
+        job_str = "{0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt".format(args.pipeline, meta[images[job]]['path'], images[job], args.outdir, args.jobdir, images[job])
+        jobs.append(job_str)
       
       # Increase the job counter by 1
       job = job + 1
@@ -590,8 +662,12 @@ def job_builder(args, meta):
   jobs = []
   for j in range(job, len(images)):
     # Add job to list
-    job_str = "{0} --image {1}/{2} --outdir {3} --resultdir ./{4}".format(args.pipeline, meta[images[j]]['path'], images[j], args.outdir, args.jobdir)
-    jobs.append(job_str)
+    if args.coprocess is not None:
+      job_str = "{0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt --coresult ./{6}/{7}.txt".format(args.pipeline, meta[images[job]]['path'], images[job], args.outdir, args.jobdir, images[job], args.jobdir, meta[images[job]]['coimg'])
+      jobs.append(job_str)
+    else:
+      job_str = "{0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt".format(args.pipeline, meta[images[j]]['path'], images[j], args.outdir, args.jobdir, images[job])
+      jobs.append(job_str)
   # Add the CPU job list to the job stack
   job_stack.append(jobs)
   
@@ -693,22 +769,22 @@ def process_results(args):
                 boundary_data[boundary[i]] = datum
       
       # Check to see if the image failed, if not continue
+      # Convert image datetime to unix time
+      timestamp = dt_parser(meta['timestamp'])
+      time_delta = timestamp - datetime.datetime(1970,1,1)
+      unix_time = (time_delta.days * 24 * 3600) + time_delta.seconds
+      
+      # Print the image metadata to the aggregate output file
+      args.image_id += 1
+      meta['image_id'] = args.image_id
+      meta['run_id'] = args.run_id
+      meta['unixtime'] = unix_time
+      
+      meta_table = []
+      for field in metadata_fields:
+        meta_table.append(meta[field])
+        
       if (len(feature_data) != 0):
-        # Convert image datetime to unix time
-        timestamp = dt_parser(meta['timestamp'])
-        time_delta = timestamp - datetime.datetime(1970,1,1)
-        unix_time = (time_delta.days * 24 * 3600) + time_delta.seconds
-        
-        # Print the image metadata to the aggregate output file
-        args.image_id += 1
-        meta['image_id'] = args.image_id
-        meta['run_id'] = args.run_id
-        meta['unixtime'] = unix_time
-        
-        meta_table = []
-        for field in metadata_fields:
-          meta_table.append(meta[field])
-        
         args.metadata_file.write('|'.join(map(str, meta_table)) + '\n')
         
         # Print the image feature data to the aggregate output file
@@ -737,7 +813,8 @@ def process_results(args):
             signal_data[key] = signal_data[key].replace(']','')
             signal_table = [args.image_id, signal_data['bin-number'], key, signal_data[key]]
             args.signal_file.write('|'.join(map(str, signal_table)) + '\n')
-      
+      else:
+        args.fail_log.write('|'.join(map(str, meta_table)) + '\n')
 
 if __name__ == '__main__':
   main()
