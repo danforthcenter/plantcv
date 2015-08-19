@@ -91,6 +91,8 @@ def analyze_bound(img,imgname, obj, mask, line_position, device , debug=False, f
     percent_bound_area_below
   )
   
+  analysis_images = []
+  
   if above_bound_area or below_bound_area:  
     point3=(0,y_coor-4)
     point4=(x_coor,y_coor-4)
@@ -116,7 +118,7 @@ def analyze_bound(img,imgname, obj, mask, line_position, device , debug=False, f
       extention = filename.split('.')[-1]
       out_file = str(filename[0:-4]) + '_boundary' + str(line_position) + '.' + extention
       print_image(ori_img, out_file)
-      print('\t'.join(map(str, ('IMAGE', 'boundary', out_file))))
+      analysis_images = ['IMAGE', 'boundary', out_file]
   
   if debug:
     point3=(0,y_coor-4)
@@ -141,4 +143,4 @@ def analyze_bound(img,imgname, obj, mask, line_position, device , debug=False, f
     print_image(wback,(str(device) + '_boundary_on_white.png'))
     print_image(ori_img,(str(device) + '_boundary_on_img.png'))
   
-  return device, bound_header, bound_data, ori_img
+  return device, bound_header, bound_data, analysis_images
