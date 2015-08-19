@@ -41,25 +41,27 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False,debug
   hist_nir= cv2.calcHist([nir_bin],[0],mask,[bins], [0,(bins-1)])
   hist_data_nir=[l[0] for l in hist_nir]
   
-  print_image(nir_bin,(str(device)+"_binned_img.png"))
-  
+  # make hist percentage for plotting
+  pixels = cv2.countNonZero(mask)
+  hist_percent = (hist_nir/pixels) * 100
+  hist_data_percent=[l[0] for l in hist_percent]
+    
   # report histogram data
   hist_header=(
     'HEADER_HISTOGRAM',
     'bin-number',
-    'signal'
+    'signal',
+    'hist_percent_100'
     )
   
   hist_data= (
     'NIR_DATA',
     bins,
-    hist_data_nir
+    hist_data_nir,
+    hist_data_percent
     )
   
-  # make hist percentage for plotting
-  pixels = cv2.countNonZero(mask)
-  hist_percent = (hist_nir/pixels) * 100
-  hist_data_percent=[l[0] for l in hist_percent]
+  analysis_img=[]
   
 
   #make mask to select the background
@@ -74,7 +76,7 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False,debug
   
   fig_name_pseudo =(str(filename[0:-4]) + '_nir_pseudo_col.png')
   print_image(cplant_back, fig_name_pseudo)
-  print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name_pseudo))))
+  analysis_img.append(['IMAGE', 'pseudo', fig_name_pseudo])
   
   if histplot==True or debug:
     import matplotlib
@@ -93,6 +95,7 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False,debug
     fig_name_hist=(str(filename[0:-4]) + '_nir_hist.png')
     plt.savefig(fig_name_hist)
     plt.clf()
+    analysis_img.append(['IMAGE', 'hist', fig_name_hist])
     print('\t'.join(map(str, ('IMAGE', 'hist', fig_name_hist))))
 
   if debug:
@@ -113,7 +116,7 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False,debug
     fig.savefig(fig_name,bbox_inches='tight')
     fig.clf()
     
-  return device, hist_header, hist_data, hist_data_percent
+  return device, hist_header, hist_data,analysis_img
 
 
 

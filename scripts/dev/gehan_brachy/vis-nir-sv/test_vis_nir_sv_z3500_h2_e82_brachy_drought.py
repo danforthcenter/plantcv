@@ -16,6 +16,7 @@ def options():
     parser.add_argument("-o", "--outdir", help="Output directory for image files.", required=False)
     parser.add_argument("-r","--result", help="result file.", required= False )
     parser.add_argument("-r2","--coresult", help="result file.", required= False )
+    parser.add_argument("-w","--writeimg", help="write out images.", default=False, action="store_true")
     parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.", action="store_true")
     args = parser.parse_args()
     return args
@@ -104,16 +105,20 @@ def main():
   # Object combine kept objects
   device, obj, mask = pcv.object_composition(img, roi_objects, hierarchy3, device, args.debug)
   
-  ############## VIS Analysis ################  
+  ############## VIS Analysis ################
+  
+  outfile=False
+  if args.writeimg==True:
+    outfile=args.outdir+"/"+filename
   
   # Find shape properties, output shape image (optional)
-  device, shape_header,shape_data,shape_img = pcv.analyze_object(img, args.image, obj, mask, device,args.debug,args.outdir+'/'+filename)
+  device, shape_header,shape_data,shape_img = pcv.analyze_object(img, args.image, obj, mask, device,args.debug,outfile)
   
   # Shape properties relative to user boundary line (optional)
-  device, boundary_header,boundary_data, boundary_img1= pcv.analyze_bound(img, args.image,obj, mask, 845, device,args.debug,args.outdir+'/'+filename)
+  device, boundary_header,boundary_data, boundary_img1= pcv.analyze_bound(img, args.image,obj, mask, 845, device,args.debug,outfile)
   
   # Determine color properties: Histograms, Color Slices and Pseudocolored Images, output color analyzed images (optional)
-  device, color_header,color_data= pcv.analyze_color(img, args.image, mask, 256, device, args.debug,None,'v','img',300,args.outdir+'/'+filename)
+  device, color_header,color_data,color_img= pcv.analyze_color(img, args.image, mask, 256, device, args.debug,None,'v','img',300,outfile)
   
   # Output shape and color data
 
@@ -121,6 +126,8 @@ def main():
   result.write('\t'.join(map(str,shape_header)))
   result.write("\n")
   result.write('\t'.join(map(str,shape_data)))
+  result.write("\n")
+  result.write('\t'.join(map(str,shape_img)))
   result.write("\n")
   result.write('\t'.join(map(str,color_header)))
   result.write("\n")
@@ -130,6 +137,11 @@ def main():
   result.write("\n")
   result.write('\t'.join(map(str,boundary_data)))
   result.write("\n")
+  result.write('\t'.join(map(str,boundary_img1)))
+  result.write("\n")
+  for row in color_img:
+    result.write('\t'.join(map(str,row)))
+    result.write("\n")
     
 ############################# Use VIS image mask for NIR image#########################
   # Find matching NIR image
@@ -153,9 +165,12 @@ def main():
   device, nir_combined, nir_combinedmask = pcv.object_composition(nir, nir_objects, nir_hierarchy, device, args.debug)
 
 ####################################### Analysis #############################################
+  outfile1=False
+  if args.writeimg==True:
+    outfile1=args.outdir+"/"+filename1
 
-  device= pcv.analyze_NIR_intensity(nir2, filename1, nir_combinedmask, 256, device,False, args.debug, args.outdir + '/' + filename1)
-  device, nshape_header, nshape_data, ori_img = pcv.analyze_object(nir2, filename1, nir_combined, nir_combinedmask, device, args.debug, args.outdir + '/' + filename1)
+  device,nhist_header, nhist_data,nir_imgs= pcv.analyze_NIR_intensity(nir2, filename1, nir_combinedmask, 256, device,False, args.debug, outfile1)
+  device, nshape_header, nshape_data, nir_shape = pcv.analyze_object(nir2, filename1, nir_combined, nir_combinedmask, device, args.debug, outfile1)
   
   if args.debug:
     pcv.print_results(path1, nhist_header, nhist_data)
@@ -166,10 +181,19 @@ def main():
   coresult.write("\n")
   coresult.write('\t'.join(map(str,nhist_data)))
   coresult.write("\n")
+  for row in nir_imgs:
+    result.write('\t'.join(map(str,row)))
+    result.write("\n")
+    
   coresult.write('\t'.join(map(str,nshape_header)))
   coresult.write("\n")
   coresult.write('\t'.join(map(str,nshape_data)))
   coresult.write("\n")
+  coresult.write('\t'.join(map(str,nshape_data)))
+  coresult.write("\n")
+  result.write('\t'.join(map(str,nir_shape)))
+  result.write("\n")
+
 
     
 if __name__ == '__main__':
