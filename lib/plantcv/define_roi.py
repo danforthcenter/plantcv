@@ -113,7 +113,8 @@ def define_roi(img, shape, device, roi=None, roi_input='default', debug=False, a
           
    #If the user wants to change the size of the ROI or adjust ROI position   
   if adjust==True:
-    sys.stderr.write('WARNING: Make sure ROI is COMPLETELY in frame or object detection will not perform properly\n')
+    if debug:
+      sys.stderr.write('WARNING: Make sure ROI is COMPLETELY in frame or object detection will not perform properly\n')
     if x_adj==0 and y_adj==0 and w_adj==0 and h_adj==0:
       fatal_error( 'If adjust is true then x_adj, y_adj, w_adj or h_adj must have a non-zero value')
     else:
