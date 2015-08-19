@@ -116,7 +116,8 @@ def analyze_bound(img,imgname, obj, mask, line_position, device , debug=False, f
     if filename:
       # Output images with boundary line, above/below bound area
       extention = filename.split('.')[-1]
-      out_file = str(filename[0:-4]) + '_boundary' + str(line_position) + '.' + extention
+      #out_file = str(filename[0:-4]) + '_boundary' + str(line_position) + '.' + extention
+      out_file = str(filename[0:-4]) + '_boundary' + str(line_position) + '.jpg'
       print_image(ori_img, out_file)
       analysis_images = ['IMAGE', 'boundary', out_file]
   
@@ -140,7 +141,7 @@ def analyze_bound(img,imgname, obj, mask, line_position, device , debug=False, f
         cv2.line(ori_img, (int(cmx),y_coor-2), (int(cmx),y_coor+height_below_bound), (0,255,0), 3)
         cv2.line(wback, (int(cmx),y_coor-2), (int(cmx),y_coor-height_above_bound), (255,0,0), 3)
         cv2.line(wback, (int(cmx),y_coor-2), (int(cmx),y_coor+height_below_bound), (0,255,0), 3)
-    print_image(wback,(str(device) + '_boundary_on_white.png'))
-    print_image(ori_img,(str(device) + '_boundary_on_img.png'))
+    print_image(wback,(str(device) + '_boundary_on_white.jpg'))
+    print_image(ori_img,(str(device) + '_boundary_on_img.jpg'))
   
   return device, bound_header, bound_data, analysis_images

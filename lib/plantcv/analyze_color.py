@@ -45,7 +45,8 @@ def _pseudocolored_image(histogram, bins, img, mask, background, channel, filena
     img_back3=cv2.bitwise_and(w_back3,w_back3, mask=mask_inv)
     cplant_back=cv2.add(cplant1,img_back3)
       
-  fig_name_pseudo= str(filename[0:-4]) + '_' + str(channel) + '_pseudo_on_' + str(background) + '.png'
+  fig_name_pseudo= str(filename[0:-4]) + '_' + str(channel) + '_pseudo_on_' + str(background) + '.jpg'
+  #fig_name_pseudo= str(filename[0:-4]) + '_' + str(channel) + '_pseudo_on_' + str(background) + '.png'
   print_image(cplant_back, fig_name_pseudo)
   analysis_images.append(['IMAGE', 'pseudo', fig_name_pseudo])
   
@@ -272,96 +273,5 @@ def analyze_color(img, imgname, mask, bins, device, debug=False, hist_plot_type=
         fig_name=(str(device) +'_' + str(hist_plot_type) + '_hist.svg')
         plt.savefig(fig_name)
       plt.clf()
-    
-  ## Generate Color Slice: Get Flattened RGB, LAB or HSV Histogram for Visualization     
-  #if cslice_type==None:
-  #  pass
-  #elif cslice_type=='rgb':
-  #  b_stack = np.vstack(hist_b)
-  #  g_stack= np.vstack(hist_g)
-  #  r_stack = np.vstack(hist_r)
-  #
-  #  b_max=np.amax(b_stack)
-  #  g_max=np.amax(g_stack)
-  #  r_max=np.amax(r_stack)
-  #  
-  #  b_min=np.amin(b_stack)
-  #  g_min=np.amin(g_stack)
-  #  r_min=np.amin(r_stack)
-  #  
-  #  maximums=(b_max,g_max,r_max)
-  #  minimums=(b_min,g_min,r_min)
-  #  max_max=np.amax(maximums)
-  #  min_min=np.amin(minimums)
-  #  
-  #  b_norm=((b_stack-min_min)/(max_max-min_min))*255
-  #  g_norm=((g_stack-min_min)/(max_max-min_min))*255
-  #  r_norm=((r_stack-min_min)/(max_max-min_min))*255
-  #  
-  #  norm_slice=np.dstack((b_norm,g_norm,r_norm))
-  #
-  #elif cslice_type=='hsv':
-  #  h_stack = np.vstack(hist_h)
-  #  s_stack= np.vstack(hist_s)
-  #  v_stack = np.vstack(hist_v)
-  #
-  #  h_max=np.amax(h_stack)
-  #  s_max=np.amax(s_stack)
-  #  v_max=np.amax(v_stack)
-  #  
-  #  h_min=np.amin(h_stack)
-  #  s_min=np.amin(s_stack)
-  #  v_min=np.amin(v_stack)
-  #  
-  #  maximums=(h_max,s_max,v_max)
-  #  minimums=(h_min,s_min,v_min)
-  #  max_max=np.amax(maximums)
-  #  min_min=np.amin(minimums)
-  #  
-  #  h_norm=((h_stack-min_min)/(max_max-min_min))*255
-  #  s_norm=((s_stack-min_min)/(max_max-min_min))*255
-  #  v_norm=((v_stack-min_min)/(max_max-min_min))*255
-  #  
-  #  norm_slice=np.dstack((h_norm,s_norm,v_norm))
-  #
-  #elif cslice_type=='lab':
-  #  l_stack = np.vstack(hist_l)
-  #  m_stack= np.vstack(hist_m)
-  #  y_stack = np.vstack(hist_y)
-  #
-  #  l_max=np.amax(l_stack)
-  #  m_max=np.amax(m_stack)
-  #  y_max=np.amax(y_stack)
-  #  
-  #  l_min=np.amin(l_stack)
-  #  m_min=np.amin(m_stack)
-  #  y_min=np.amin(y_stack)
-  #  
-  #  maximums=(l_max,m_max,y_max)
-  #  minimums=(l_min,m_min,y_min)
-  #  max_max=np.amax(maximums)
-  #  min_min=np.amin(minimums)
-  #  
-  #  l_norm=((l_stack-min_min)/(max_max-min_min))*255
-  #  m_norm=((m_stack-min_min)/(max_max-min_min))*255
-  #  y_norm=((y_stack-min_min)/(max_max-min_min))*255
-  #  
-  #  norm_slice=np.dstack((l_norm,m_norm,y_norm))
-  #  
-  #else:
-  #  fatal_error('Visualize Type' + str(visualize_type) + ' is not "None", "rgb","hsv" or "lab"!')
-  #
-  #if filename:
-  #  # Print color-slice image
-  #  out_file = str(filename[0:-4]) + '_' + str(cslice_type) + '_norm_slice.png'
-  #  print_image(norm_slice, out_file)
-  #  print('\t'.join(map(str, ('IMAGE', 'slice', out_file))))
-  #else:
-  #  pass
-  
-  #if debug:
-  #  print_image(norm_slice, (str(device)+ '_'+ str(cslice_type)+ '_norm_slice.png'))
-
-  # PseudoColor Image Based On l,A,B, H, S, or V Channel
   
   return device, hist_header, hist_data, analysis_images
