@@ -89,7 +89,7 @@ if (!file.exists('soil_weigth_vwc.txt')) {
 
 Read the soil volume water content data
 ```{r}
-vwc.data = read.table(file="soil_weight_vwc.txt", sep="\t", header=TRUE)
+vwc.data = read.table(file="soil_weigth_vwc.txt", sep="\t", header=TRUE)
 ```
 
 Calculate the average soil dry weight
