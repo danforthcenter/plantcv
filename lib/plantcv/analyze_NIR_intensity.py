@@ -63,7 +63,6 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False,debug
   
   analysis_img=[]
   
-
   #make mask to select the background
   mask_inv=cv2.bitwise_not(mask)
   img_back=cv2.bitwise_and(img,img, mask=mask_inv)

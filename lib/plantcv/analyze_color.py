@@ -44,7 +44,7 @@ def _pseudocolored_image(histogram, bins, img, mask, background, channel, filena
     
     img_back3=cv2.bitwise_and(w_back3,w_back3, mask=mask_inv)
     cplant_back=cv2.add(cplant1,img_back3)
-    
+      
   fig_name_pseudo= str(filename[0:-4]) + '_' + str(channel) + '_pseudo_on_' + str(background) + '.png'
   print_image(cplant_back, fig_name_pseudo)
   analysis_images.append(['IMAGE', 'pseudo', fig_name_pseudo])
@@ -153,7 +153,8 @@ def analyze_color(img, imgname, mask, bins, device, debug=False, hist_plot_type=
   
   if p_channel==None:
     pass
-    
+  elif filename==False:
+    pass
   elif p_channel=='h':
     if (pseudo_bkg == 'white' or pseudo_bkg == 'both'):
       analysis_images = _pseudocolored_image(h_bin, bins, img, mask, 'white', p_channel, filename, resolution, analysis_images)
