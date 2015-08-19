@@ -180,6 +180,8 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     hull_vertices,
     in_bounds
     )
+  
+  analysis_images = []
       
    #Draw properties
   if area and filename:
@@ -193,7 +195,7 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     extention = filename.split('.')[-1]
     out_file = str(filename[0:-4]) + '_shapes.' + extention
     print_image(ori_img, out_file)
-    print('\t'.join(map(str, ('IMAGE', 'shapes', out_file))))
+    analysis_images = ['IMAGE', 'shapes', out_file]
   else:
     pass
   
@@ -206,4 +208,4 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     cv2.line(ori_img,(tuple(caliper_transpose[caliper_length-1])),(tuple(caliper_transpose[0])),(0,0,255),1)
     print_image(ori_img,(str(device)+'_shapes.png'))
  
-  return device, shape_header, shape_data, ori_img
+  return device, shape_header, shape_data, analysis_images
