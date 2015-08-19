@@ -34,11 +34,16 @@ __all__ = ["fatal_error",
            "_pseudocolored_image",
            "analyze_NIR_intensity",
            "fluor_fvfm",
-           "print_results"]
+           "print_results",
+           "resize",
+           "flip",
+           "crop_position_mask",
+           "get_nir"]
 
 import sys, os, traceback
 import cv2
 import numpy as np
+import re
 from random import randrange
 import matplotlib
 if not os.getenv('DISPLAY'):
@@ -86,3 +91,7 @@ from analyze_color import analyze_color
 from analyze_NIR_intensity import analyze_NIR_intensity
 from fluor_fvfm import fluor_fvfm
 from print_results import print_results
+from resize import resize
+from flip import flip
+from crop_position_mask import crop_position_mask
+from get_nir import get_nir

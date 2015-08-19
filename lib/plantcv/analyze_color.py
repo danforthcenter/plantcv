@@ -1,14 +1,6 @@
 import os
 import cv2
 import numpy as np
-import matplotlib
-#if not os.getenv('DISPLAY'):
-#  matplotlib.use('Agg')
-from matplotlib import pyplot as plt
-from matplotlib import cm as cm
-from matplotlib import colors as colors
-from matplotlib import colorbar as colorbar
-import pylab as pl
 from . import print_image
 from . import fatal_error
 
@@ -30,38 +22,35 @@ def _pseudocolored_image(histogram, bins, img, mask, background, channel, filena
     ix, iy = np.shape(img)
   size = ix, iy
   
-  plt.imshow(histogram, vmin=0, vmax=(bins - 1), cmap=cm.jet)
-  mask_inv = cv2.bitwise_not(mask)
-  my_cmap = plt.get_cmap('binary_r')
+  back = np.zeros(size, dtype=np.uint8)
+  w_back=back+255
+  w_back3=np.dstack((w_back,w_back,w_back))
   
-  if background == 'img':
-    # Plot pseudocolored plant on the channel image
-    img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    pot = cv2.bitwise_and(img_gray, img_gray, mask=mask_inv)
-    pot_img = cv2.add(pot, mask)
-    pot_rgba = np.dstack((pot_img, pot_img, pot_img, mask_inv))
-    plt.imshow(pot_rgba, cmap=my_cmap)
-  elif background == 'white':
-    # Plot pseudocolored plant on a white background
-    # Create white background
-    w_back = np.zeros(size, dtype=np.uint8) + 255
-    white_rgba = np.dstack((w_back, w_back, w_back, mask_inv))
-    plt.imshow(white_rgba, cmap=my_cmap)
-  else:
-    fatal_error("Background type " + background + " is not a valid type!")
+  mask_inv=cv2.bitwise_not(mask)
+  
+  cplant = cv2.applyColorMap(histogram, colormap=2)
+  cplant1=cv2.bitwise_and(cplant,cplant, mask=mask)
 
-  plt.axis('off')
+  if background == 'img':
+  # mask the background and color the plant with color scheme 'jet'
+    img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    img_back=cv2.bitwise_and(img_gray,img_gray, mask=mask_inv)
+    img_back3=np.dstack((img_back,img_back,img_back))
+
+    cplant_back=cv2.add(cplant1,img_back3)
   
-  # Name output file
-  fig_name = str(filename[0:-4]) + '_' + str(channel) + '_pseudo_on_' + str(background) + '.png'
+  if background == 'white':
+    
+    img_back3=cv2.bitwise_and(w_back3,w_back3, mask=mask_inv)
+    cplant_back=cv2.add(cplant1,img_back3)
+    
+  fig_name_pseudo= str(filename[0:-4]) + '_' + str(channel) + '_pseudo_on_' + str(background) + '.png'
+  print_image(cplant_back, fig_name_pseudo)
+  print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name_pseudo))))
   
-  # Save image
-  plt.savefig(fig_name, dpi=resolution, bbox_inches='tight')
-  print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
-  plt.clf()
   
-  
-def analyze_color(img, imgname, mask, bins, device, debug=False, hist_plot_type='all', cslice_type='rgb', pseudo_channel='v', pseudo_bkg='img', resolution=300, filename=False):
+def analyze_color(img, imgname, mask, bins, device, debug=False, hist_plot_type=None, pseudo_channel='v', pseudo_bkg='img', resolution=300, filename=False):
   # img = image
   # imgname = name of input image
   # mask = mask made from selected contours
@@ -74,7 +63,7 @@ def analyze_color(img, imgname, mask, bins, device, debug=False, hist_plot_type=
   # filename= False or image name. If defined print image
   
   device += 1
-  if np.shape(img)[2]==3:
+  if len(np.shape(img))==3:
     ix,iy,iz=np.shape(img)
   else:
     ix,iy=np.shape(img)
@@ -155,144 +144,6 @@ def analyze_color(img, imgname, mask, bins, device, debug=False, hist_plot_type=
     hist_data_v
     )
   
-  # Create Histogram Plot
-  if filename:
-    if hist_plot_type=='all':
-      plt.plot(hist_b,color=graph_color[0],label=label[0])
-      plt.plot(hist_g,color=graph_color[1],label=label[1])
-      plt.plot(hist_r,color=graph_color[2],label=label[2])
-      plt.plot(hist_l,color=graph_color[3],label=label[3])
-      plt.plot(hist_m,color=graph_color[4],label=label[4])
-      plt.plot(hist_y,color=graph_color[5],label=label[5])
-      plt.plot(hist_h,color=graph_color[6],label=label[6])
-      plt.plot(hist_s,color=graph_color[7],label=label[7])
-      plt.plot(hist_v,color=graph_color[8],label=label[8])
-      plt.xlim([0,(bins-1)])
-      plt.legend()
-    elif hist_plot_type=='rgb':
-      plt.plot(hist_b,color=graph_color[0],label=label[0])
-      plt.plot(hist_g,color=graph_color[1],label=label[1])
-      plt.plot(hist_r,color=graph_color[2],label=label[2])
-      plt.xlim([0,(bins-1)])
-      plt.legend()
-    elif hist_plot_type=='lab':
-      plt.plot(hist_l,color=graph_color[3],label=label[3])
-      plt.plot(hist_m,color=graph_color[4],label=label[4])
-      plt.plot(hist_y,color=graph_color[5],label=label[5])
-      plt.xlim([0,(bins-1)])
-      plt.legend()
-    elif hist_plot_type=='hsv':
-      plt.plot(hist_h,color=graph_color[6],label=label[6])
-      plt.plot(hist_s,color=graph_color[7],label=label[7])
-      plt.plot(hist_v,color=graph_color[8],label=label[8])
-      plt.xlim([0,(bins-1)])
-      plt.legend()
-    elif hist_plot_type==None:
-      pass
-    else:
-      fatal_error('Histogram Plot Type' + str(hist_plot_type) + ' is not "none", "all","rgb", "lab" or "hsv"!')
-    
-    if hist_plot_type != None:
-      # Print plot
-      fig_name = (str(filename[0:-4]) + '_' + str(hist_plot_type) + '_hist.svg')
-      plt.savefig(fig_name)
-      print('\t'.join(map(str, ('IMAGE', 'hist', fig_name))))
-      if debug:
-        fig_name=(str(device) +'_' + str(hist_plot_type) + '_hist.svg')
-        plt.savefig(fig_name)
-      plt.clf()
-    
-  # Generate Color Slice: Get Flattened RGB, LAB or HSV Histogram for Visualization     
-  if cslice_type==None:
-    pass
-  elif cslice_type=='rgb':
-    b_stack = np.vstack(hist_b)
-    g_stack= np.vstack(hist_g)
-    r_stack = np.vstack(hist_r)
-  
-    b_max=np.amax(b_stack)
-    g_max=np.amax(g_stack)
-    r_max=np.amax(r_stack)
-    
-    b_min=np.amin(b_stack)
-    g_min=np.amin(g_stack)
-    r_min=np.amin(r_stack)
-    
-    maximums=(b_max,g_max,r_max)
-    minimums=(b_min,g_min,r_min)
-    max_max=np.amax(maximums)
-    min_min=np.amin(minimums)
-    
-    b_norm=((b_stack-min_min)/(max_max-min_min))*255
-    g_norm=((g_stack-min_min)/(max_max-min_min))*255
-    r_norm=((r_stack-min_min)/(max_max-min_min))*255
-    
-    norm_slice=np.dstack((b_norm,g_norm,r_norm))
-
-  elif cslice_type=='hsv':
-    h_stack = np.vstack(hist_h)
-    s_stack= np.vstack(hist_s)
-    v_stack = np.vstack(hist_v)
-  
-    h_max=np.amax(h_stack)
-    s_max=np.amax(s_stack)
-    v_max=np.amax(v_stack)
-    
-    h_min=np.amin(h_stack)
-    s_min=np.amin(s_stack)
-    v_min=np.amin(v_stack)
-    
-    maximums=(h_max,s_max,v_max)
-    minimums=(h_min,s_min,v_min)
-    max_max=np.amax(maximums)
-    min_min=np.amin(minimums)
-    
-    h_norm=((h_stack-min_min)/(max_max-min_min))*255
-    s_norm=((s_stack-min_min)/(max_max-min_min))*255
-    v_norm=((v_stack-min_min)/(max_max-min_min))*255
-    
-    norm_slice=np.dstack((h_norm,s_norm,v_norm))
-
-  elif cslice_type=='lab':
-    l_stack = np.vstack(hist_l)
-    m_stack= np.vstack(hist_m)
-    y_stack = np.vstack(hist_y)
-  
-    l_max=np.amax(l_stack)
-    m_max=np.amax(m_stack)
-    y_max=np.amax(y_stack)
-    
-    l_min=np.amin(l_stack)
-    m_min=np.amin(m_stack)
-    y_min=np.amin(y_stack)
-    
-    maximums=(l_max,m_max,y_max)
-    minimums=(l_min,m_min,y_min)
-    max_max=np.amax(maximums)
-    min_min=np.amin(minimums)
-    
-    l_norm=((l_stack-min_min)/(max_max-min_min))*255
-    m_norm=((m_stack-min_min)/(max_max-min_min))*255
-    y_norm=((y_stack-min_min)/(max_max-min_min))*255
-    
-    norm_slice=np.dstack((l_norm,m_norm,y_norm))
-    
-  else:
-    fatal_error('Visualize Type' + str(visualize_type) + ' is not "None", "rgb","hsv" or "lab"!')
-  
-  if filename:
-    # Print color-slice image
-    out_file = str(filename[0:-4]) + '_' + str(cslice_type) + '_norm_slice.png'
-    print_image(norm_slice, out_file)
-    print('\t'.join(map(str, ('IMAGE', 'slice', out_file))))
-  else:
-    pass
-  
-  if debug:
-    print_image(norm_slice, (str(device)+ '_'+ str(cslice_type)+ '_norm_slice.png'))
-
-  # PseudoColor Image Based On l,A,B, H, S, or V Channel
-  
   p_channel=pseudo_channel
   pseudocolor_img=1
   
@@ -344,8 +195,13 @@ def analyze_color(img, imgname, mask, bins, device, debug=False, hist_plot_type=
   else:
     fatal_error('Pseudocolor Channel' + str(pseudo_channel) + ' is not "None", "l","m", "y", "h","s" or "v"!')
   
-  if p_channel!=None:
-    if os.path.isfile(('1_vis_pseudocolor_colorbar_' + str(pseudo_channel) + '_channel.svg')):
+  if debug and p_channel!=None:
+    import matplotlib
+    from matplotlib import pyplot as plt
+    from matplotlib import cm as cm
+    from matplotlib import colors as colors
+    from matplotlib import colorbar as colorbar
+    if os.path.isfile(('VIS_pseudocolor_colorbar_' + str(pseudo_channel) + '_channel.svg')):
       pass
     else:
       filename1=str(filename)
@@ -357,8 +213,150 @@ def analyze_color(img, imgname, mask, bins, device, debug=False, hist_plot_type=
       valmax=(bins-1)
       norm=colors.Normalize(vmin=valmin, vmax=valmax)
       cb1=colorbar.ColorbarBase(ax1,cmap=cm.jet, norm=norm, orientation='horizontal')
-      fig_name=str(filename2)+'/1_vis_pseudocolor_colorbar_' + str(pseudo_channel) + '_channel.svg'
+      fig_name=str(filename2)+'/VIS_pseudocolor_colorbar_' + str(pseudo_channel) + '_channel.svg'
       fig.savefig(fig_name,bbox_inches='tight')
       fig.clf()
+      
+      
+  if hist_plot_type != None:
+    import matplotlib
+    from matplotlib import pyplot as plt
+    
+  # Create Histogram Plot
+    if filename:
+      if hist_plot_type=='all':
+        plt.plot(hist_b,color=graph_color[0],label=label[0])
+        plt.plot(hist_g,color=graph_color[1],label=label[1])
+        plt.plot(hist_r,color=graph_color[2],label=label[2])
+        plt.plot(hist_l,color=graph_color[3],label=label[3])
+        plt.plot(hist_m,color=graph_color[4],label=label[4])
+        plt.plot(hist_y,color=graph_color[5],label=label[5])
+        plt.plot(hist_h,color=graph_color[6],label=label[6])
+        plt.plot(hist_s,color=graph_color[7],label=label[7])
+        plt.plot(hist_v,color=graph_color[8],label=label[8])
+        plt.xlim([0,(bins-1)])
+        plt.legend()
+      elif hist_plot_type=='rgb':
+        plt.plot(hist_b,color=graph_color[0],label=label[0])
+        plt.plot(hist_g,color=graph_color[1],label=label[1])
+        plt.plot(hist_r,color=graph_color[2],label=label[2])
+        plt.xlim([0,(bins-1)])
+        plt.legend()
+      elif hist_plot_type=='lab':
+        plt.plot(hist_l,color=graph_color[3],label=label[3])
+        plt.plot(hist_m,color=graph_color[4],label=label[4])
+        plt.plot(hist_y,color=graph_color[5],label=label[5])
+        plt.xlim([0,(bins-1)])
+        plt.legend()
+      elif hist_plot_type=='hsv':
+        plt.plot(hist_h,color=graph_color[6],label=label[6])
+        plt.plot(hist_s,color=graph_color[7],label=label[7])
+        plt.plot(hist_v,color=graph_color[8],label=label[8])
+        plt.xlim([0,(bins-1)])
+        plt.legend()
+      elif hist_plot_type==None:
+        pass
+      else:
+        fatal_error('Histogram Plot Type' + str(hist_plot_type) + ' is not "none", "all","rgb", "lab" or "hsv"!')
+      
+      # Print plot
+      fig_name = (str(filename[0:-4]) + '_' + str(hist_plot_type) + '_hist.svg')
+      plt.savefig(fig_name)
+      print('\t'.join(map(str, ('IMAGE', 'hist', fig_name))))
+      if debug:
+        fig_name=(str(device) +'_' + str(hist_plot_type) + '_hist.svg')
+        plt.savefig(fig_name)
+      plt.clf()
+    
+  ## Generate Color Slice: Get Flattened RGB, LAB or HSV Histogram for Visualization     
+  #if cslice_type==None:
+  #  pass
+  #elif cslice_type=='rgb':
+  #  b_stack = np.vstack(hist_b)
+  #  g_stack= np.vstack(hist_g)
+  #  r_stack = np.vstack(hist_r)
+  #
+  #  b_max=np.amax(b_stack)
+  #  g_max=np.amax(g_stack)
+  #  r_max=np.amax(r_stack)
+  #  
+  #  b_min=np.amin(b_stack)
+  #  g_min=np.amin(g_stack)
+  #  r_min=np.amin(r_stack)
+  #  
+  #  maximums=(b_max,g_max,r_max)
+  #  minimums=(b_min,g_min,r_min)
+  #  max_max=np.amax(maximums)
+  #  min_min=np.amin(minimums)
+  #  
+  #  b_norm=((b_stack-min_min)/(max_max-min_min))*255
+  #  g_norm=((g_stack-min_min)/(max_max-min_min))*255
+  #  r_norm=((r_stack-min_min)/(max_max-min_min))*255
+  #  
+  #  norm_slice=np.dstack((b_norm,g_norm,r_norm))
+  #
+  #elif cslice_type=='hsv':
+  #  h_stack = np.vstack(hist_h)
+  #  s_stack= np.vstack(hist_s)
+  #  v_stack = np.vstack(hist_v)
+  #
+  #  h_max=np.amax(h_stack)
+  #  s_max=np.amax(s_stack)
+  #  v_max=np.amax(v_stack)
+  #  
+  #  h_min=np.amin(h_stack)
+  #  s_min=np.amin(s_stack)
+  #  v_min=np.amin(v_stack)
+  #  
+  #  maximums=(h_max,s_max,v_max)
+  #  minimums=(h_min,s_min,v_min)
+  #  max_max=np.amax(maximums)
+  #  min_min=np.amin(minimums)
+  #  
+  #  h_norm=((h_stack-min_min)/(max_max-min_min))*255
+  #  s_norm=((s_stack-min_min)/(max_max-min_min))*255
+  #  v_norm=((v_stack-min_min)/(max_max-min_min))*255
+  #  
+  #  norm_slice=np.dstack((h_norm,s_norm,v_norm))
+  #
+  #elif cslice_type=='lab':
+  #  l_stack = np.vstack(hist_l)
+  #  m_stack= np.vstack(hist_m)
+  #  y_stack = np.vstack(hist_y)
+  #
+  #  l_max=np.amax(l_stack)
+  #  m_max=np.amax(m_stack)
+  #  y_max=np.amax(y_stack)
+  #  
+  #  l_min=np.amin(l_stack)
+  #  m_min=np.amin(m_stack)
+  #  y_min=np.amin(y_stack)
+  #  
+  #  maximums=(l_max,m_max,y_max)
+  #  minimums=(l_min,m_min,y_min)
+  #  max_max=np.amax(maximums)
+  #  min_min=np.amin(minimums)
+  #  
+  #  l_norm=((l_stack-min_min)/(max_max-min_min))*255
+  #  m_norm=((m_stack-min_min)/(max_max-min_min))*255
+  #  y_norm=((y_stack-min_min)/(max_max-min_min))*255
+  #  
+  #  norm_slice=np.dstack((l_norm,m_norm,y_norm))
+  #  
+  #else:
+  #  fatal_error('Visualize Type' + str(visualize_type) + ' is not "None", "rgb","hsv" or "lab"!')
+  #
+  #if filename:
+  #  # Print color-slice image
+  #  out_file = str(filename[0:-4]) + '_' + str(cslice_type) + '_norm_slice.png'
+  #  print_image(norm_slice, out_file)
+  #  print('\t'.join(map(str, ('IMAGE', 'slice', out_file))))
+  #else:
+  #  pass
   
-  return device, hist_header, hist_data, norm_slice
+  #if debug:
+  #  print_image(norm_slice, (str(device)+ '_'+ str(cslice_type)+ '_norm_slice.png'))
+
+  # PseudoColor Image Based On l,A,B, H, S, or V Channel
+  
+  return device, hist_header, hist_data
