@@ -617,7 +617,6 @@ def job_builder(args, meta):
     if (args.coprocess is not None) and ('coimg' in meta[img]):
       # Create an output file to store the co-image processing results and populate with metadata
       coimg = meta[meta[img]['coimg']]
-      print(meta[img]['coimg'] + '\n') # DEBUG
       coout = file_writer("./{0}/{1}.txt".format(args.jobdir, meta[img]['coimg']))
       coout.write('\t'.join(map(str, ("META", "image", coimg['path'] + '/' + meta[img]['coimg']))) + '\n')
       # Valid metadata
@@ -663,10 +662,10 @@ def job_builder(args, meta):
   for j in range(job, len(images)):
     # Add job to list
     if args.coprocess is not None:
-      job_str = "{0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt --coresult ./{6}/{7}.txt".format(args.pipeline, meta[images[job]]['path'], images[job], args.outdir, args.jobdir, images[job], args.jobdir, meta[images[job]]['coimg'])
+      job_str = "{0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt --coresult ./{6}/{7}.txt".format(args.pipeline, meta[images[j]]['path'], images[j], args.outdir, args.jobdir, images[j], args.jobdir, meta[images[j]]['coimg'])
       jobs.append(job_str)
     else:
-      job_str = "{0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt".format(args.pipeline, meta[images[j]]['path'], images[j], args.outdir, args.jobdir, images[job])
+      job_str = "{0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt".format(args.pipeline, meta[images[j]]['path'], images[j], args.outdir, args.jobdir, images[j])
       jobs.append(job_str)
   # Add the CPU job list to the job stack
   job_stack.append(jobs)
