@@ -1,5 +1,5 @@
 ### Print image to file
-
+import sys
 import cv2
 from . import fatal_error
 

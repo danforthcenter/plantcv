@@ -1,6 +1,7 @@
 ### Dilation filter
 
 import cv2
+import numpy as np
 from . import print_image
 
 def dilate(img, kernel, i, device, debug):
@@ -10,7 +11,9 @@ def dilate(img, kernel, i, device, debug):
   # i = interations, i.e. number of consecutive filtering passes
   # device = device number. Used to count steps in the pipeline
   # debug = True/False. If True; print output image
-    dil_img = cv2.dilate(src = img, kernel = kernel, iterations = i)
+    kernel1=int(kernel)
+    kernel2 = np.ones((kernel1,kernel1),np.uint8)
+    dil_img = cv2.dilate(src = img, kernel = kernel2, iterations = i)
     device += 1
     if debug:
         print_image(dil_img, str(device) + '_dil_image_' + 'itr_' + str(i) + '.png')

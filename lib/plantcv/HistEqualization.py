@@ -4,7 +4,7 @@ import cv2
 from . import print_image
 
 
-def HistEqualization(img, device, debug):
+def HistEqualization(img, device, debug=False):
   # Histogram equalization is a method to normalize the distribution of intensity values
   # If the image has low contrast it will make it easier to threshold
   # img = input image
