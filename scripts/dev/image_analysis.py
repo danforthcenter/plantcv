@@ -71,6 +71,7 @@ def options():
   parser.add_argument("-f", "--meta", help="Image file name metadata format. List valid metadata fields separated by the deliminator (-l/--deliminator). Valid metadata fields are: " + ', '.join(map(str, list(valid_meta.keys()))), default='imgtype_camera_frame_zoom_id')
   parser.add_argument("-M", "--match", help="Restrict analysis to images with metadata matching input criteria. Input a metadata:value comma-separated list. This is an exact match search. E.g. imgtype:VIS,camera:SV,zoom:z500", required=False)
   parser.add_argument("-C", "--coprocess", help="Coprocess the specified imgtype with the imgtype specified in --match (e.g. coprocess NIR images with VIS).", default=None)
+  parser.add_argument("-w", "--writeimg", help="Include analysis images in output.", default=False, action="store_true")
   args = parser.parse_args()
   
   if not os.path.exists(args.dir):
@@ -646,9 +647,13 @@ def job_builder(args, meta):
       # Add job to list
       if args.coprocess is not None:
         job_str = "{0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt --coresult ./{6}/{7}.txt".format(args.pipeline, meta[images[job]]['path'], images[job], args.outdir, args.jobdir, images[job], args.jobdir, meta[images[job]]['coimg'])
+        if args.writeimg:
+          job_str = job_str + ' --writeimg'
         jobs.append(job_str)
       else:
         job_str = "{0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt".format(args.pipeline, meta[images[job]]['path'], images[job], args.outdir, args.jobdir, images[job])
+        if args.writeimg:
+          job_str = job_str + ' --writeimg'
         jobs.append(job_str)
       
       # Increase the job counter by 1
@@ -663,9 +668,13 @@ def job_builder(args, meta):
     # Add job to list
     if args.coprocess is not None:
       job_str = "{0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt --coresult ./{6}/{7}.txt".format(args.pipeline, meta[images[j]]['path'], images[j], args.outdir, args.jobdir, images[j], args.jobdir, meta[images[j]]['coimg'])
+      if args.writeimg:
+          job_str = job_str + ' --writeimg'
       jobs.append(job_str)
     else:
       job_str = "{0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt".format(args.pipeline, meta[images[j]]['path'], images[j], args.outdir, args.jobdir, images[j])
+      if args.writeimg:
+          job_str = job_str + ' --writeimg'
       jobs.append(job_str)
   # Add the CPU job list to the job stack
   job_stack.append(jobs)
