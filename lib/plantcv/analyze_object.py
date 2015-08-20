@@ -171,7 +171,7 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     'ellipse_major_axis',
     'ellipse_minor_axis',
     'ellipse_angle',
-    'ellipse_ecentricity'
+    'ellipse_eccentricity'
     )
 
   shape_data = (
