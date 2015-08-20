@@ -52,7 +52,9 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     # Convex Hull area
     hull_area = cv2.contourArea(hull)
     # Solidity
-    solidity = area / hull_area
+    solidity = 1
+    if int(hull_area) != 0:
+      solidity = area / hull_area
     # Perimeter
     perimeter = cv2.arcLength(obj, closed=True)
     # x and y position (bottom left?) and extent x (width) and extent y (height)
@@ -147,8 +149,8 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     caliper_transpose2 = [(caliper_x[i],caliper_y[i]) for i in caliper_transpose1]
     caliper_transpose=np.array(caliper_transpose2)
       
-  else:
-    hull_area, solidity, perimeter, width, height, cmx, cmy = 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND'
+  #else:
+  #  hull_area, solidity, perimeter, width, height, cmx, cmy = 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND'
       
   #Store Shape Data
   shape_header=(
@@ -163,7 +165,13 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     'center-of-mass-x',
     'center-of-mass-y',
     'hull_vertices',
-    'in_bounds'
+    'in_bounds',
+    'ellipse_center_x',
+    'ellipse_center_y',
+    'ellipse_major_axis',
+    'ellipse_minor_axis',
+    'ellipse_angle',
+    'ellipse_ecentricity'
     )
 
   shape_data = (
@@ -178,9 +186,15 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     cmx,
     cmy,
     hull_vertices,
-    in_bounds
+    in_bounds,
+    center[0],
+    center[1],
+    major_axis_length,
+    minor_axis_length,
+    angle,
+    eccentricity
     )
-  
+
   analysis_images = []
       
    #Draw properties
