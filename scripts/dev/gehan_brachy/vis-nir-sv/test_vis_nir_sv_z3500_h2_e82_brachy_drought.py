@@ -182,17 +182,15 @@ def main():
   coresult.write('\t'.join(map(str,nhist_data)))
   coresult.write("\n")
   for row in nir_imgs:
-    result.write('\t'.join(map(str,row)))
-    result.write("\n")
+    coresult.write('\t'.join(map(str,row)))
+    coresult.write("\n")
     
   coresult.write('\t'.join(map(str,nshape_header)))
   coresult.write("\n")
   coresult.write('\t'.join(map(str,nshape_data)))
   coresult.write("\n")
-  coresult.write('\t'.join(map(str,nshape_data)))
+  coresult.write('\t'.join(map(str,nir_shape)))
   coresult.write("\n")
-  result.write('\t'.join(map(str,nir_shape)))
-  result.write("\n")
 
 
     
