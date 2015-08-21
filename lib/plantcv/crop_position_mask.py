@@ -133,7 +133,7 @@ def crop_position_mask(img,mask,device,x,y,v_pos,h_pos="right",debug=False):
       print_image(maskv,(str(device)+"_push-left.png"))  
     
     
-    newmask=1
+  newmask=1
     
     ##Add rows to the left
     #l=((x+mx),y)
