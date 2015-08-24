@@ -17,6 +17,6 @@ def resize(img, resize_x, resize_y, device,debug=False):
     fatal_error("Resize values both cannot be 0 or negative values!")
 
   if debug:
-    print_image(reimg,(str(device)+"_resize.png"))
+    print_image(reimg,(str(device)+"_resize1.png"))
   
   return device, reimg

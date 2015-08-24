@@ -19,12 +19,12 @@ def get_nir(path,filename,device,debug=False):
     cam=visname[1]
     
     if cam=="SV":
-        angle=visname[2]    
-    
+        angle=visname[2]
+        
     for n in allfiles:
       if re.search("NIR",n)!=None:
         nirfiles.append(n)
-      
+        
     if cam=="TV":
       for n in nirfiles:   
         if re.search("TV",n)!=None:
@@ -34,7 +34,8 @@ def get_nir(path,filename,device,debug=False):
       for n in nirfiles:   
         if re.search("SV",n)!=None:
           nsplit=n.split("_")
-          if re.search(angle,nsplit[2])!=None:
+          exangle='\\b'+str(angle)+'\\b'
+          if re.search(exangle,nsplit[2])!=None:
             nirpath=str(path)+"/"+str(n)
                 
     return device,nirpath
