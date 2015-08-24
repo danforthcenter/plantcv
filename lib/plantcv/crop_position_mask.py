@@ -39,9 +39,7 @@ def crop_position_mask(img,mask,device,x,y,v_pos,h_pos="right",debug=False):
     mx,my=np.shape(mask)
     
   npimg=np.zeros((ix,iy), dtype=np.uint8)
-  
-  print np.shape(img)
-  
+    
   if v_pos=="top":
     # Add rows to the top
     top=np.zeros((x,my),dtype=np.uint8)
@@ -61,6 +59,9 @@ def crop_position_mask(img,mask,device,x,y,v_pos,h_pos="right",debug=False):
       maskv=np.vstack((maskv,rows))
     if debug:
       print_image(maskv,(str(device)+"_push-top_.png"))
+    
+    print np.shape(img)
+    print np.shape(maskv)
     
   if v_pos=="bottom":
     # Add rows to the top
@@ -106,6 +107,9 @@ def crop_position_mask(img,mask,device,x,y,v_pos,h_pos="right",debug=False):
       maskv=np.hstack((maskv,col))
     if debug:
       print_image(maskv,(str(device)+"_push-left.png"))
+      
+    print np.shape(img)
+    print np.shape(maskv)
     
   if h_pos=="right":
     if len(np.shape(maskv))==3:
@@ -123,14 +127,15 @@ def crop_position_mask(img,mask,device,x,y,v_pos,h_pos="right",debug=False):
       mx,my=np.shape(maskv)
         
     if my>=iy:
-      maskv=maskv[0:mx,0:iy]
+      ex=my-iy
+      maskv=maskv[0:mx,ex:my]
             
     if my<iy:
       c=iy-my
       col=np.zeros((mx,c),dtype=np.uint8)
-      maskv=np.hstack((maskv,col))
+      maskv=np.hstack((col,maskv))
     if debug:
-      print_image(maskv,(str(device)+"_push-left.png"))  
+      print_image(maskv,(str(device)+"_push-right.png"))  
     
     
   newmask=1

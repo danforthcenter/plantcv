@@ -69,17 +69,31 @@ def main():
   device, ab = pcv.logical_or(maskeda_thresh, maskedb_thresh, device, args.debug)
   device, ab_cnt = pcv.logical_or(maskeda_thresh, maskedb_thresh, device, args.debug)
   
-  # Fill small objects
-  device, ab_fill = pcv.fill(ab, ab_cnt, 50, device, args.debug)
+   # Fill small noise
+  device, ab_fill1 = pcv.fill(ab, ab_cnt, 2, device, args.debug)
   
-  # Apply mask (for vis images, mask_color=white)
-  device, masked2 = pcv.apply_mask(masked, ab_fill, 'white', device, args.debug)
+  # Dilate to join small objects with larger ones
+  device, ab_cnt1=pcv.dilate(ab_fill1, 3, 2, device, args.debug)
+  device, ab_cnt2=pcv.dilate(ab_fill1, 3, 2, device, args.debug)
+
+  # Fill dilated image mask
+  device, ab_cnt3=pcv.fill(ab_cnt2,ab_cnt1,150,device,args.debug)
+  device, masked2 = pcv.apply_mask(masked, ab_cnt3, 'white', device, args.debug)
+  
+  # Convert RGB to LAB and extract the Green-Magenta and Blue-Yellow channels
+  device, masked2_a = pcv.rgb2gray_lab(masked2, 'a', device, args.debug)
+  device, masked2_b = pcv.rgb2gray_lab(masked2, 'b', device, args.debug)
+  
+  # Threshold the green-magenta and blue images
+  device, masked2a_thresh = pcv.binary_threshold(masked2_a, 127, 255, 'dark', device, args.debug)
+  device, masked2b_thresh = pcv.binary_threshold(masked2_b, 128, 255, 'light', device, args.debug)
+  device, ab_fill = pcv.logical_or(masked2a_thresh, masked2b_thresh, device, args.debug)
   
   # Identify objects
   device, id_objects,obj_hierarchy = pcv.find_objects(masked2, ab_fill, device, args.debug)
 
   # Define ROI
-  device, roi1, roi_hierarchy= pcv.define_roi(masked2,'rectangle', device, None, 'default', args.debug,True, 550, 0,-600,-907)
+  device, roi1, roi_hierarchy= pcv.define_roi(masked2,'rectangle', device, None, 'default', args.debug,True, 550, 0,-600,-925)
   
   # Decide which objects to keep
   device,roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(img,'partial',roi1,roi_hierarchy,id_objects,obj_hierarchy,device, args.debug)
@@ -93,10 +107,10 @@ def main():
   device, shape_header,shape_data,shape_img = pcv.analyze_object(img, args.image, obj, mask, device,args.debug,args.outdir+'/'+filename)
     
   # Shape properties relative to user boundary line (optional)
-  device, boundary_header,boundary_data, boundary_img1= pcv.analyze_bound(img, args.image,obj, mask, 885, device,args.debug,args.outdir+'/'+filename)
+  device, boundary_header,boundary_data, boundary_img1= pcv.analyze_bound(img, args.image,obj, mask, 900, device,args.debug,args.outdir+'/'+filename)
   
   # Determine color properties: Histograms, Color Slices and Pseudocolored Images, output color analyzed images (optional)
-  device, color_header,color_data,norm_slice= pcv.analyze_color(img, args.image, kept_mask, 256, device, args.debug,'all','rgb','v','img',300,args.outdir+'/'+filename)
+  device, color_header,color_data,color_img= pcv.analyze_color(img, args.image, kept_mask, 256, device, args.debug,None,'v','img',300,args.outdir+'/'+filename)
   
   # Output shape and color data
   pcv.print_results(args.image, shape_header, shape_data)

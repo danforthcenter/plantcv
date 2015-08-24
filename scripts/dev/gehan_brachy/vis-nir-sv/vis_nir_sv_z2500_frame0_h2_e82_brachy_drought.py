@@ -97,7 +97,7 @@ def main():
   device, id_objects,obj_hierarchy = pcv.find_objects(masked2, ab_fill, device, args.debug)
   
   # Define ROI
-  device, roi1, roi_hierarchy= pcv.define_roi(masked2,'rectangle', device, None, 'default', args.debug,True, 500, 0,-600,-885)
+  device, roi1, roi_hierarchy= pcv.define_roi(masked2,'rectangle', device, None, 'default', args.debug,True, 550, 0,-600,-915)
   
   # Decide which objects to keep
   device,roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(img,'partial',roi1,roi_hierarchy,id_objects,obj_hierarchy,device, args.debug)
@@ -115,14 +115,15 @@ def main():
   device, shape_header,shape_data,shape_img = pcv.analyze_object(img, args.image, obj, mask, device,args.debug,outfile)
   
   # Shape properties relative to user boundary line (optional)
-  device, boundary_header,boundary_data, boundary_img1= pcv.analyze_bound(img, args.image,obj, mask, 845, device,args.debug,outfile)
+  device, boundary_header,boundary_data, boundary_img1= pcv.analyze_bound(img, args.image,obj, mask, 885, device,args.debug,outfile)
   
   # Determine color properties: Histograms, Color Slices and Pseudocolored Images, output color analyzed images (optional)
   device, color_header,color_data,color_img= pcv.analyze_color(img, args.image, mask, 256, device, args.debug,None,'v','img',300,outfile)
   
   # Output shape and color data
-
-  result=open(args.result,"a")
+  result=open(args.result,"a+")
+  
+  
   result.write('\t'.join(map(str,shape_header)))
   result.write("\n")
   result.write('\t'.join(map(str,shape_data)))
@@ -153,44 +154,44 @@ def main():
   device, f_mask= pcv.flip(mask,"vertical",device,args.debug)
   
   # Reize mask
-  device, nmask = pcv.resize(f_mask, 0.1304,0.1304, device, args.debug)
+  device, nmask = pcv.resize(f_mask, 0.11532,0.11532, device, args.debug)
   
   # position, and crop mask
-  device,newmask=pcv.crop_position_mask(nir,nmask,device,65,0,"top","left",args.debug)
-  
-  # Identify objects
-  device, nir_objects,nir_hierarchy = pcv.find_objects(nir, newmask, device, args.debug)
-  
-  # Object combine kept objects
-  device, nir_combined, nir_combinedmask = pcv.object_composition(nir, nir_objects, nir_hierarchy, device, args.debug)
-
-####################################### Analysis #############################################
-  outfile1=False
-  if args.writeimg==True:
-    outfile1=args.outdir+"/"+filename1
-
-  device,nhist_header, nhist_data,nir_imgs= pcv.analyze_NIR_intensity(nir2, filename1, nir_combinedmask, 256, device,False, args.debug, outfile1)
-  device, nshape_header, nshape_data, nir_shape = pcv.analyze_object(nir2, filename1, nir_combined, nir_combinedmask, device, args.debug, outfile1)
-  
-  if args.debug:
-    pcv.print_results(path1, nhist_header, nhist_data)
-    pcv.print_results(path1, nshape_header, nshape_data)
-  
-  coresult=open(args.coresult,"a")
-  coresult.write('\t'.join(map(str,nhist_header)))
-  coresult.write("\n")
-  coresult.write('\t'.join(map(str,nhist_data)))
-  coresult.write("\n")
-  for row in nir_imgs:
-    coresult.write('\t'.join(map(str,row)))
-    coresult.write("\n")
-    
-  coresult.write('\t'.join(map(str,nshape_header)))
-  coresult.write("\n")
-  coresult.write('\t'.join(map(str,nshape_data)))
-  coresult.write("\n")
-  coresult.write('\t'.join(map(str,nir_shape)))
-  coresult.write("\n")
+  device,newmask=pcv.crop_position_mask(nir,nmask,device,56,50,"top","left",args.debug)
+#  
+#  # Identify objects
+#  device, nir_objects,nir_hierarchy = pcv.find_objects(nir, newmask, device, args.debug)
+#  
+#  # Object combine kept objects
+#  device, nir_combined, nir_combinedmask = pcv.object_composition(nir, nir_objects, nir_hierarchy, device, args.debug)
+#
+######################################## Analysis #############################################
+#  outfile1=False
+#  if args.writeimg==True:
+#    outfile1=args.outdir+"/"+filename1
+#
+#  device,nhist_header, nhist_data,nir_imgs= pcv.analyze_NIR_intensity(nir2, filename1, nir_combinedmask, 256, device,False, args.debug, outfile1)
+#  device, nshape_header, nshape_data, nir_shape = pcv.analyze_object(nir2, filename1, nir_combined, nir_combinedmask, device, args.debug, outfile1)
+#  
+#  if args.debug:
+#    pcv.print_results(path1, nhist_header, nhist_data)
+#    pcv.print_results(path1, nshape_header, nshape_data)
+#  
+#  coresult=open(args.coresult,"a")
+#  coresult.write('\t'.join(map(str,nhist_header)))
+#  coresult.write("\n")
+#  coresult.write('\t'.join(map(str,nhist_data)))
+#  coresult.write("\n")
+#  for row in nir_imgs:
+#    coresult.write('\t'.join(map(str,row)))
+#    coresult.write("\n")
+#    
+#  coresult.write('\t'.join(map(str,nshape_header)))
+#  coresult.write("\n")
+#  coresult.write('\t'.join(map(str,nshape_data)))
+#  coresult.write("\n")
+#  coresult.write('\t'.join(map(str,nir_shape)))
+#  coresult.write("\n")
 
 
     

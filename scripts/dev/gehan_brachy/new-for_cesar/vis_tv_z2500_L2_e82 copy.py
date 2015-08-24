@@ -10,7 +10,7 @@ import plantcv as pcv
 def options():
   parser = argparse.ArgumentParser(description="Imaging processing with opencv")
   parser.add_argument("-i", "--image", help="Input image file.", required=True)
-  parser.add_argument("-m", "--roi", help="Input region of interest file.", required=False)
+  parser.add_argument("-m", "--roi", help="Input region of interest file.", required=False, default="/home/mgehan/LemnaTec/plantcv/masks/vis_tv/mask_brass_tv_z2500_L2.png")
   parser.add_argument("-o", "--outdir", help="Output directory for image files.", required=True)
   parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.", action="store_true")
   args = parser.parse_args()
@@ -55,8 +55,8 @@ def main():
   device, bs = pcv.logical_and(s_fill, b_fill, device, args.debug)
   
   # Apply Mask (for vis images, mask_color=white)
-  device, masked = pcv.apply_mask(img, bs, 'white', device, args.debug)
-  
+  device, masked = pcv.apply_mask(img, bs,'white', device, args.debug)
+    
   # Mask pesky brass piece
   device, brass_mask1 = pcv.rgb2gray_hsv(brass_mask, 'v', device, args.debug)
   device, brass_thresh = pcv.binary_threshold(brass_mask1, 0, 255, 'light', device, args.debug)
@@ -65,7 +65,9 @@ def main():
   
   # Further mask soil and car
   device, masked_a = pcv.rgb2gray_lab(brass_masked, 'a', device, args.debug)
-  device, soil_car = pcv.binary_threshold(masked_a, 128, 255, 'dark', device, args.debug)
+  device, soil_car1 = pcv.binary_threshold(masked_a, 128, 255, 'dark', device, args.debug)
+  device, soil_car2 = pcv.binary_threshold(masked_a, 128, 255, 'light', device, args.debug)
+  device, soil_car=pcv.logical_or(soil_car1, soil_car2,device, args.debug)
   device, soil_masked = pcv.apply_mask(brass_masked, soil_car, 'white', device, args.debug)
   
   # Convert RGB to LAB and extract the Green-Magenta and Blue-Yellow channels
@@ -73,15 +75,15 @@ def main():
   device, soil_b = pcv.rgb2gray_lab(soil_masked, 'b', device, args.debug)
   
   # Threshold the green-magenta and blue images
-  device, soila_thresh = pcv.binary_threshold(soil_a, 118, 255, 'dark', device, args.debug)
-  device, soilb_thresh = pcv.binary_threshold(soil_b, 150, 255, 'light', device, args.debug)
+  device, soila_thresh = pcv.binary_threshold(soil_a, 124, 255, 'dark', device, args.debug)
+  device, soilb_thresh = pcv.binary_threshold(soil_b, 148, 255, 'light', device, args.debug)
 
   # Join the thresholded saturation and blue-yellow images (OR)
   device, soil_ab = pcv.logical_or(soila_thresh, soilb_thresh, device, args.debug)
   device, soil_ab_cnt = pcv.logical_or(soila_thresh, soilb_thresh, device, args.debug)
 
   # Fill small objects
-  device, soil_cnt = pcv.fill(soil_ab, soil_ab_cnt, 75, device, args.debug)
+  device, soil_cnt = pcv.fill(soil_ab, soil_ab_cnt, 250, device, args.debug)
 
   # Median Filter
   #device, soil_mblur = pcv.median_blur(soil_fill, 5, device, args.debug)
@@ -94,7 +96,7 @@ def main():
   device, id_objects,obj_hierarchy = pcv.find_objects(masked2, soil_cnt, device, args.debug)
 
   # Define ROI
-  device, roi1, roi_hierarchy= pcv.define_roi(img,'circle', device, None, 'default', args.debug,True, 0,0,-200,-200)
+  device, roi1, roi_hierarchy= pcv.define_roi(img,'rectangle', device, None, 'default', args.debug,True, 600,450,-600,-350)
   
   # Decide which objects to keep
   device,roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(img,'partial',roi1,roi_hierarchy,id_objects,obj_hierarchy,device, args.debug)
@@ -108,7 +110,7 @@ def main():
   device, shape_header,shape_data,shape_img = pcv.analyze_object(img, args.image, obj, mask, device,args.debug,args.outdir+'/'+filename)
   
   # Determine color properties: Histograms, Color Slices and Pseudocolored Images, output color analyzed images (optional)
-  device, color_header,color_data,norm_slice= pcv.analyze_color(img, args.image, kept_mask, 256, device, args.debug,'all','rgb','v','img',300,args.outdir+'/'+filename)
+  device, color_header,color_data,color_img= pcv.analyze_color(img, args.image, kept_mask, 256, device, args.debug,None,'v','img',300,args.outdir+'/'+filename)
   
   # Output shape and color data
   pcv.print_results(args.image, shape_header, shape_data)
