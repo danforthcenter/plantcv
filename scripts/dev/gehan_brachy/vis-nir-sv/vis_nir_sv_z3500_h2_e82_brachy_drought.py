@@ -142,6 +142,7 @@ def main():
   for row in color_img:
     result.write('\t'.join(map(str,row)))
     result.write("\n")
+  result.close()
     
 ############################# Use VIS image mask for NIR image#########################
   # Find matching NIR image
@@ -172,10 +173,6 @@ def main():
   device,nhist_header, nhist_data,nir_imgs= pcv.analyze_NIR_intensity(nir2, filename1, nir_combinedmask, 256, device,False, args.debug, outfile1)
   device, nshape_header, nshape_data, nir_shape = pcv.analyze_object(nir2, filename1, nir_combined, nir_combinedmask, device, args.debug, outfile1)
   
-  if args.debug:
-    pcv.print_results(path1, nhist_header, nhist_data)
-    pcv.print_results(path1, nshape_header, nshape_data)
-  
   coresult=open(args.coresult,"a")
   coresult.write('\t'.join(map(str,nhist_header)))
   coresult.write("\n")
@@ -191,7 +188,7 @@ def main():
   coresult.write("\n")
   coresult.write('\t'.join(map(str,nir_shape)))
   coresult.write("\n")
-
+  coresult.close()
 
     
 if __name__ == '__main__':
