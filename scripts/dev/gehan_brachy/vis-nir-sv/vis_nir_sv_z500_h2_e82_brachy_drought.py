@@ -97,7 +97,7 @@ def main():
   device, id_objects,obj_hierarchy = pcv.find_objects(masked2, ab_fill, device, args.debug)
   
   # Define ROI
-  device, roi1, roi_hierarchy= pcv.define_roi(masked2,'rectangle', device, None, 'default', args.debug,True, 550, 0,-600,-907)
+  device, roi1, roi_hierarchy= pcv.define_roi(masked2,'rectangle', device, None, 'default', args.debug,True, 525, 0,-490,-150)
   
   # Decide which objects to keep
   device,roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(img,'partial',roi1,roi_hierarchy,id_objects,obj_hierarchy,device, args.debug)
@@ -115,7 +115,7 @@ def main():
   device, shape_header,shape_data,shape_img = pcv.analyze_object(img, args.image, obj, mask, device,args.debug,outfile)
   
   # Shape properties relative to user boundary line (optional)
-  device, boundary_header,boundary_data, boundary_img1= pcv.analyze_bound(img, args.image,obj, mask, 935, device,args.debug,outfile)
+  device, boundary_header,boundary_data, boundary_img1= pcv.analyze_bound(img, args.image,obj, mask, 325, device,args.debug,outfile)
   
   # Determine color properties: Histograms, Color Slices and Pseudocolored Images, output color analyzed images (optional)
   device, color_header,color_data,color_img= pcv.analyze_color(img, args.image, mask, 256, device, args.debug,None,'v','img',300,outfile)
@@ -154,10 +154,10 @@ def main():
   device, f_mask= pcv.flip(mask,"vertical",device,args.debug)
   
   # Reize mask
-  device, nmask = pcv.resize(f_mask, 0.118069,0.118069, device, args.debug)
+  device, nmask = pcv.resize(f_mask, 0.116148,0.116148, device, args.debug)
   
   # position, and crop mask
-  device,newmask=pcv.crop_position_mask(nir,nmask,device,40,3,"top","right",args.debug)
+  device,newmask=pcv.crop_position_mask(nir,nmask,device,36,2,"top","right",args.debug)
   
   # Identify objects
   device, nir_objects,nir_hierarchy = pcv.find_objects(nir, newmask, device, args.debug)

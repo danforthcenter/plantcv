@@ -65,7 +65,7 @@ def crop_position_mask(img,mask,device,x,y,v_pos,h_pos="right",debug=False):
         r2=r1-1
         rows1=np.zeros((r1,my),dtype=np.uint8)
         rows2=np.zeros((r2,my),dtype=np.uint8)
-        maskv=np.vstack(rows1,maskv,rows2)
+        maskv=np.vstack((rows1,maskv,rows2))
     if debug:
       print_image(maskv,(str(device)+"_push-top_.png"))
     

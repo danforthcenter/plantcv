@@ -156,7 +156,7 @@ def main():
   device, nmask = pcv.resize(f_mask, 0.118069,0.118069, device, args.debug)
   
   # position, and crop mask
-  device,newmask=pcv.crop_position_mask(nir,nmask,device,40,2,"top","right",args.debug)
+  device,newmask=pcv.crop_position_mask(nir,nmask,device,40,3,"top","right",args.debug)
   
   # Identify objects
   device, nir_objects,nir_hierarchy = pcv.find_objects(nir, newmask, device, args.debug)
