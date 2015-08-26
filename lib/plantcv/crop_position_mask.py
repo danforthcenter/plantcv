@@ -97,9 +97,6 @@ def crop_position_mask(img,mask,device,x,y,v_pos,h_pos="right",debug=False):
     if debug:
       print_image(maskv,(str(device)+"_push-bottom.png"))
   
-  print np.shape(img)
-  print np.shape(maskv)
-  
   if h_pos=="left":
     if len(np.shape(maskv))==3:
       mx,my,mz=np.shape(maskv)
@@ -166,9 +163,6 @@ def crop_position_mask(img,mask,device,x,y,v_pos,h_pos="right",debug=False):
         maskv=np.hstack((col1,maskv,col2))
     if debug:
       print_image(maskv,(str(device)+"_push-right.png"))  
-  
-  print np.shape(img)
-  print np.shape(maskv) 
     
   newmask=np.array(maskv)
   if debug:
