@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 # This is a computational pipeline which uses the plantcv module to sharpen, filter and analyze NIR images
 # Pipeline designed for use with Setaria plants at zoom X3500
