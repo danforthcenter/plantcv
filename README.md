@@ -21,11 +21,11 @@ Malia, Max and Noah
 ---
 ##<a id="introduction"></a>Introduction to PlantCV
 
-PlantCV is an imaging processing and trait extraction package and specific for plants
-that is built upon open-source software platforms <a href="http://opencv.org/">OpenCV</a> <sup>1</sup>,
-<a href="http://www.numpy.org/">NumPy</a> <sup>2</sup>, and <a href="http://matplotlib.org/">MatPlotLib</a> <sup>3</sup>.  
+PlantCV<sup>1</sup> is an imaging processing and trait extraction package and specific for plants
+that is built upon open-source software platforms <a href="http://opencv.org/">OpenCV</a> <sup>2</sup>,
+<a href="http://www.numpy.org/">NumPy</a> <sup>4</sup>, and <a href="http://matplotlib.org/">MatPlotLib</a> <sup>4</sup>.
 
-If you use PlantCV please cite: DOIX
+If you use PlantCV please cite us.<sup>1</sup>
 
 *  Installation instructions can be found [here](http://plantcv.danforthcenter.org/pages/documentation/function_docs/installation.html)
 
@@ -33,12 +33,21 @@ If you use PlantCV please cite: DOIX
 
 *  Test image sets can be found [here](http://plantcv.danforthcenter.org/pages/data.html), we recommend first testing with sets from the Danforth Center.
 
-*  We recommend reading DOI X, which is the first manuscript to detail PlantCV and provide examples of functionality.
+*  We recommend reading Reference 1, the first publication to detail PlantCV and provide examples of functionality.
 
-<p>Citations:<br>
-  1. Bradski G (2000) The opencv library. Doctor Dobbs Journal 25(11):120-126.<br>
-  2. Oliphant TE (2007) Python for Scientific Computing. Computing in Science & Engineering, 9, 10-20.<br>
-  3. Hunter JD (2007) Matplotlib: A 2D graphics environment. Computing in Science & Engineering, 9, 90-95.</p>
+Citations:
+
+  1. Fahlgren N, Feldman M, Gehan MA, Wilson MS, Shyu C, Bryant DW,
+     Hill ST, McEntee CJ, Warnasooriya SN, Kumar I, Ficor T,
+     Turnipseed S, Gilbert KB, Brutnell TP, Carrington JC, Mockler TC,
+     Baxter I.
+     A versatile phenotyping system and analytics platform reveals
+     diverse temporal responses to water availability in *Setaria*.
+     Molecular Plant. 2015.
+     http://doi.org/10.1016/j.molp.2015.06.005
+  2. Bradski G (2000) The opencv library. Doctor Dobbs Journal 25(11):120-126.
+  3. Oliphant TE (2007) Python for Scientific Computing. Computing in Science & Engineering, 9, 10-20.
+  4. Hunter JD (2007) Matplotlib: A 2D graphics environment. Computing in Science & Engineering, 9, 90-95.
 
 ___
 
