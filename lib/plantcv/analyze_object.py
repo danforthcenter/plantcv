@@ -209,8 +209,14 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     extention = filename.split('.')[-1]
     #out_file = str(filename[0:-4]) + '_shapes.' + extention
     out_file = str(filename[0:-4]) + '_shapes.jpg'
+    out_file1 = str(filename[0:-4]) + '_mask.jpg'
+    
     print_image(ori_img, out_file)
-    analysis_images = ['IMAGE', 'shapes', out_file]
+    analysis_images.append(['IMAGE', 'shapes', out_file])
+    
+    print_image(mask,out_file1)
+    analysis_images.append(['IMAGE','mask',out_file1])
+    
   else:
     pass
   

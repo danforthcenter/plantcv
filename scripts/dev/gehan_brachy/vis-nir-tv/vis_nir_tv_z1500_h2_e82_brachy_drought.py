@@ -129,8 +129,9 @@ def main():
   result.write("\n")
   result.write('\t'.join(map(str,shape_data)))
   result.write("\n")
-  result.write('\t'.join(map(str,shape_img)))
-  result.write("\n")
+  for row in shape_img:
+    result.write('\t'.join(map(str,row)))
+    result.write("\n")
   result.write('\t'.join(map(str,color_header)))
   result.write("\n")
   result.write('\t'.join(map(str,color_data)))
