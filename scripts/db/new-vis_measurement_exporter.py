@@ -38,7 +38,7 @@ def main():
   
   # Open output file
   try:
-    out = open(args.outfile, 'w')
+    out=open(args.outfile, 'w')
   except IOError:
     print("IO error")
   
@@ -56,7 +56,7 @@ def main():
   
   # Header
   #out.write(','.join(map(str, ('plant_id', 'datetime', 'sv_zoom', 'tv_zoom', 'sv0_area', 'sv90_area', 'sv180_area', 'sv270_area', 'tv_area', 'solidity', 'perimeter', 'centroid_x', 'centroid_y',
-  out.write(','.join(map(str, ('plant_id', 'datetime', 'sv_zoom', 'tv_zoom', 'sv0_area', 'sv90_area', 'tv_area', 'solidity', 'perimeter', 'centroid_x', 'centroid_y',
+  out.write(','.join(map(str, ('plant_id', 'datetime', 'sv_zoom', 'tv_zoom', 'sv0_area', 'sv90_area', 'sv180_area','sv270_area','tv_area', 'solidity', 'perimeter', 'centroid_x', 'centroid_y',
 	                                 'longest_axis', 'extent_x', 'extent_y', 'height_above_bound', 'height_below_bound',
                                    'percent_above_bound_area', 'percent_below_bound_area', 'outlier', 'boundary_line'))) + '\n')
   
@@ -66,7 +66,6 @@ def main():
     snapshots.append(row['timestamp'])
   if (args.debug):
     print('Found ' + str(len(snapshots)) + ' snapshots')
-  
   # Retrieve snapshots and process data
   for snapshot in snapshots:
     sv_image_count = 0

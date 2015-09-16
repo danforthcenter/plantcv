@@ -22,8 +22,6 @@ def fill(img, mask, size, device, debug=False):
   
   # Find contours
   contours, hierarchy = cv2.findContours(mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
-  #cv2.drawContours(background,contours,-1, (255,0,0),5, lineType=8,hierarchy=hierarchy)
-  #print_image(background, str(device) + '_fillcheck'+ '.png')
   
   # Loop through contours, fill contours less than or equal to size in area
   for c,cnt in enumerate(contours):
