@@ -101,14 +101,14 @@ def main():
         sv_zoom = row['zoom']
         sv_image_count += 1
         boundary_line_y = row['y-position']
-        if row['frame'] == 0:
-          sv0_area = int(row['area'])
-        elif row['frame'] == 90:
-          sv90_area = int(row['area'])
-        elif row['frame'] == 180:
-          sv180_area = int(row['area'])
-        elif row['frame'] == 270:
-          sv270_area = int(row['area'])
+        if row['frame'] =='0':
+          sv0_area = float(row['area'])
+        elif row['frame'] =='90':
+          sv90_area = float(row['area'])
+        elif row['frame'] =='180':
+          sv180_area = float(row['area'])
+        elif row['frame'] =='270':
+          sv270_area = float(row['area'])
         solidity += float(row['solidity'])
         perimeter += float(row['perimeter'])
         centroid_x += float(row['center-of-mass-x'])
