@@ -89,7 +89,7 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False,debug
       xaxis=plt.xlim([0,(bins-1)])
       plt.xlabel(('Grayscale pixel intensity (0-'+str(bins)+")"))
       plt.ylabel('Proportion of pixels (%)')
-      fig_name_hist=(str(filename[0:-4]) + '_nir_hist.jpg')
+      fig_name_hist=(str(filename[0:-4]) + '_nir_hist.svg')
       plt.savefig(fig_name_hist)
       plt.clf()
       analysis_img.append(['IMAGE', 'hist', fig_name_hist])
