@@ -3,6 +3,7 @@
 import numpy as np
 import cv2
 from . import print_image
+from . import fatal_error
 
 def fill(img, mask, size, device, debug=False):
   # Identifies objects and fills objects that are less than size
@@ -12,14 +13,15 @@ def fill(img, mask, size, device, debug=False):
   # device = device number. Used to count steps in the pipeline
   # debug = True/False. If True, print image
   device += 1
-  ix,iy= np.shape(img)
+  if len(np.shape(img))>=3:
+    fatal_error("Image " + filename+" is not binary")
+  else:
+    ix,iy=np.shape(img)
   size1=ix,iy
   background=np.zeros(size1, dtype=np.uint8)
   
   # Find contours
   contours, hierarchy = cv2.findContours(mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
-  #cv2.drawContours(background,contours,-1, (255,0,0),5, lineType=8,hierarchy=hierarchy)
-  #print_image(background, str(device) + '_fillcheck'+ '.png')
   
   # Loop through contours, fill contours less than or equal to size in area
   for c,cnt in enumerate(contours):

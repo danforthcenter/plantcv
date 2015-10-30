@@ -1,20 +1,26 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+
 import sys, traceback
 import cv2
+import os
+import re
 import numpy as np
 import argparse
 import string
 import plantcv as pcv
 
-### Parse command-line arguments
+
 def options():
-  parser = argparse.ArgumentParser(description="Imaging processing with opencv")
-  parser.add_argument("-i", "--image", help="Input image file.", required=True)
-  parser.add_argument("-m", "--roi", help="Input region of interest file.", required=False, default="/home/mgehan/LemnaTec/plantcv/masks/vis_tv/mask_brass_tv_z2500_L2.png")
-  parser.add_argument("-o", "--outdir", help="Output directory for image files.", required=True)
-  parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.", action="store_true")
-  args = parser.parse_args()
-  return args
+    parser = argparse.ArgumentParser(description="Imaging processing with opencv")
+    parser.add_argument("-i", "--image", help="Input image file.", required=True)
+    parser.add_argument("-m", "--roi", help="Input region of interest file.", required=False, default="/home/mgehan/LemnaTec/plantcv/masks/vis_tv/mask_brass_tv_z1500_L2.png")
+    parser.add_argument("-o", "--outdir", help="Output directory for image files.", required=False)
+    parser.add_argument("-r","--result", help="result file.", required= False )
+    parser.add_argument("-r2","--coresult", help="result file.", required= False )
+    parser.add_argument("-w","--writeimg", help="write out images.", default=False, action="store_true")
+    parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.", action="store_true")
+    args = parser.parse_args()
+    return args
 
 ### Main pipeline
 def main():
@@ -49,7 +55,7 @@ def main():
   device, b_cnt = pcv.binary_threshold(b, 138, 255, 'light', device, args.debug)
   
   # Fill small objects
-  device, b_fill = pcv.fill(b_thresh, b_cnt, 150, device, args.debug)
+  device, b_fill = pcv.fill(b_thresh, b_cnt, 100, device, args.debug)
   
   # Join the thresholded saturation and blue-yellow images
   device, bs = pcv.logical_and(s_fill, b_fill, device, args.debug)
@@ -83,7 +89,7 @@ def main():
   device, soil_ab_cnt = pcv.logical_or(soila_thresh, soilb_thresh, device, args.debug)
 
   # Fill small objects
-  device, soil_cnt = pcv.fill(soil_ab, soil_ab_cnt, 250, device, args.debug)
+  device, soil_cnt = pcv.fill(soil_ab, soil_ab_cnt, 200, device, args.debug)
 
   # Median Filter
   #device, soil_mblur = pcv.median_blur(soil_fill, 5, device, args.debug)
@@ -104,17 +110,83 @@ def main():
   # Object combine kept objects
   device, obj, mask = pcv.object_composition(img, roi_objects, hierarchy3, device, args.debug)
   
-############## Analysis ################  
+  ############## VIS Analysis ################
+  
+  outfile=False
+  if args.writeimg==True:
+    outfile=args.outdir+"/"+filename
   
   # Find shape properties, output shape image (optional)
-  device, shape_header,shape_data,shape_img = pcv.analyze_object(img, args.image, obj, mask, device,args.debug,args.outdir+'/'+filename)
-  
+  device, shape_header,shape_data,shape_img = pcv.analyze_object(img, args.image, obj, mask, device,args.debug,outfile)
+    
   # Determine color properties: Histograms, Color Slices and Pseudocolored Images, output color analyzed images (optional)
-  device, color_header,color_data,norm_slice= pcv.analyze_color(img, args.image, kept_mask, 256, device, args.debug,'all','rgb','v','img',300,args.outdir+'/'+filename)
+  device, color_header,color_data,color_img= pcv.analyze_color(img, args.image, mask, 256, device, args.debug,None,'v','img',300,outfile)
   
   # Output shape and color data
-  pcv.print_results(args.image, shape_header, shape_data)
-  pcv.print_results(args.image, color_header, color_data)
+
+  result=open(args.result,"a")
+  result.write('\t'.join(map(str,shape_header)))
+  result.write("\n")
+  result.write('\t'.join(map(str,shape_data)))
+  result.write("\n")
+  for row in shape_img:
+    result.write('\t'.join(map(str,row)))
+    result.write("\n")
+  result.write('\t'.join(map(str,color_header)))
+  result.write("\n")
+  result.write('\t'.join(map(str,color_data)))
+  result.write("\n")
+  for row in color_img:
+    result.write('\t'.join(map(str,row)))
+    result.write("\n")
+  result.close()
+    
+############################# Use VIS image mask for NIR image#########################
+  # Find matching NIR image
+  device, nirpath=pcv.get_nir(path,filename,device,args.debug)
+  nir, path1, filename1=pcv.readimage(nirpath)
+  nir2=cv2.imread(nirpath,-1)
   
+  # Flip mask
+  device, f_mask= pcv.flip(mask,"horizontal",device,args.debug)
+  
+  # Reize mask
+  device, nmask = pcv.resize(f_mask, 0.118069,0.118069, device, args.debug)
+  
+  # position, and crop mask
+  device,newmask=pcv.crop_position_mask(nir,nmask,device,17,0,"top","right",args.debug)
+  
+  # Identify objects
+  device, nir_objects,nir_hierarchy = pcv.find_objects(nir, newmask, device, args.debug)
+  
+  # Object combine kept objects
+  device, nir_combined, nir_combinedmask = pcv.object_composition(nir, nir_objects, nir_hierarchy, device, args.debug)
+
+####################################### Analysis #############################################
+  outfile1=False
+  if args.writeimg==True:
+    outfile1=args.outdir+"/"+filename1
+
+  device,nhist_header, nhist_data,nir_imgs= pcv.analyze_NIR_intensity(nir2, filename1, nir_combinedmask, 256, device,False, args.debug, outfile1)
+  device, nshape_header, nshape_data, nir_shape = pcv.analyze_object(nir2, filename1, nir_combined, nir_combinedmask, device, args.debug, outfile1)
+  
+  coresult=open(args.coresult,"a")
+  coresult.write('\t'.join(map(str,nhist_header)))
+  coresult.write("\n")
+  coresult.write('\t'.join(map(str,nhist_data)))
+  coresult.write("\n")
+  for row in nir_imgs:
+    coresult.write('\t'.join(map(str,row)))
+    coresult.write("\n")
+    
+  coresult.write('\t'.join(map(str,nshape_header)))
+  coresult.write("\n")
+  coresult.write('\t'.join(map(str,nshape_data)))
+  coresult.write("\n")
+  coresult.write('\t'.join(map(str,nir_shape)))
+  coresult.write("\n")
+  coresult.close()
+
+    
 if __name__ == '__main__':
-  main()
+    main()

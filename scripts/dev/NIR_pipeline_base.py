@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 # This is a computational pipeline which uses the plantcv module to sharpen, filter and analyze NIR images
 # The strategy/methodology is adopted from the textbook "Digital Image Processing" by Gonzalez and Woods

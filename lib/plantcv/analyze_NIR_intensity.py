@@ -17,7 +17,6 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False,debug
   # filename= False or image name. If defined print image
 
   device += 1
-  
   ori_img=np.copy(img)
   
   if len(np.shape(img))==3:
@@ -50,15 +49,13 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False,debug
   hist_header=(
     'HEADER_HISTOGRAM',
     'bin-number',
-    'signal',
-    'hist_percent_100'
+    'nir'
     )
   
   hist_data= (
-    'NIR_DATA',
+    'HISTOGRAM_DATA',
     bins,
-    hist_data_nir,
-    hist_data_percent
+    hist_data_nir
     )
   
   analysis_img=[]
@@ -92,7 +89,7 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False,debug
       xaxis=plt.xlim([0,(bins-1)])
       plt.xlabel(('Grayscale pixel intensity (0-'+str(bins)+")"))
       plt.ylabel('Proportion of pixels (%)')
-      fig_name_hist=(str(filename[0:-4]) + '_nir_hist.jpg')
+      fig_name_hist=(str(filename[0:-4]) + '_nir_hist.svg')
       plt.savefig(fig_name_hist)
       plt.clf()
       analysis_img.append(['IMAGE', 'hist', fig_name_hist])
