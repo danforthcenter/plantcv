@@ -645,6 +645,14 @@ def job_builder(args, meta):
     # images = list(meta.keys())
     images = []
     for img in list(meta.keys()):
+        # If a date range was requested, check whether the image is within range
+        if args.dates:
+            # Convert image datetime to unix time
+            timestamp = dt_parser(meta[img]['timestamp'])
+            time_delta = timestamp - datetime.datetime(1970, 1, 1)
+            unix_time = (time_delta.days * 24 * 3600) + time_delta.seconds
+            if unix_time < args.start_date or unix_time > args.end_date:
+                continue
         if args.coprocess is not None:
             if meta[img]['imgtype'] != args.coprocess:
                 images.append(img)
@@ -839,15 +847,6 @@ def process_results(args):
                                 boundary_data[boundary[i]] = datum
 
             # Check to see if the image failed, if not continue
-
-            # If a date range was requested, check whether the image is within range
-            if args.dates:
-                # Convert image datetime to unix time
-                timestamp = dt_parser(meta['timestamp'])
-                time_delta = timestamp - datetime.datetime(1970, 1, 1)
-                unix_time = (time_delta.days * 24 * 3600) + time_delta.seconds
-                if unix_time < args.start_date or unix_time > args.end_date:
-                    continue
 
             # Print the image metadata to the aggregate output file
             args.image_id += 1
