@@ -808,7 +808,7 @@ def process_results(args):
                     row = row.rstrip('\n')
                     # Split the line by tab characters
                     cols = row.split('\t')
-                    # If the data is of class meta, store in the metadata dicitonary
+                    # If the data is of class meta, store in the metadata dictionary
                     if cols[0] == 'META':
                         meta[cols[1]] = cols[2]
                     # If the data is of class image, store in the image dictionary
@@ -839,16 +839,21 @@ def process_results(args):
                                 boundary_data[boundary[i]] = datum
 
             # Check to see if the image failed, if not continue
-            # Convert image datetime to unix time
-            timestamp = dt_parser(meta['timestamp'])
-            time_delta = timestamp - datetime.datetime(1970, 1, 1)
-            unix_time = (time_delta.days * 24 * 3600) + time_delta.seconds
+
+            # If a date range was requested, check whether the image is within range
+            if args.dates:
+                # Convert image datetime to unix time
+                timestamp = dt_parser(meta['timestamp'])
+                time_delta = timestamp - datetime.datetime(1970, 1, 1)
+                unix_time = (time_delta.days * 24 * 3600) + time_delta.seconds
+                if unix_time < args.start_date or unix_time > args.end_date:
+                    continue
 
             # Print the image metadata to the aggregate output file
             args.image_id += 1
             meta['image_id'] = args.image_id
             meta['run_id'] = args.run_id
-            meta['unixtime'] = unix_time
+            #meta['unixtime'] = unix_time
 
             meta_table = []
             for field in metadata_fields:
