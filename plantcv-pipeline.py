@@ -891,6 +891,16 @@ def process_results(args):
             else:
                 args.fail_log.write('|'.join(map(str, meta_table)) + '\n')
 
+                args.metadata_file.write('|'.join(map(str, meta_table)) + '\n')
+
+                feature_table = [args.image_id]
+
+                for field in feature_fields + opt_feature_fields:
+                    feature_table.append(0)
+
+                args.features_file.write('|'.join(map(str, feature_table)) + '\n')
+
+
 
 if __name__ == '__main__':
     main()
