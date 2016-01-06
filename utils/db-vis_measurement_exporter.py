@@ -96,6 +96,8 @@ def main():
             data['timestamp'] = row['timestamp']
 
             for feature in feature_names:
+                if row['frame'] is None:
+                    row['frame'] = 0
                 data[row['imgtype'] + row['frame'] + '_' + feature] = row[feature]
 
             output = []
