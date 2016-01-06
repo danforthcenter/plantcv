@@ -57,7 +57,7 @@ def main():
     db = connect.cursor()
 
     # Get database schema
-    feature_names = []
+    feature_names = ['zoom']
     for row in (db.execute("SELECT * FROM `features` LIMIT 1")):
         feature_names += row.keys()
 
@@ -94,17 +94,18 @@ def main():
         for row in (db.execute('SELECT * FROM `metadata` NATURAL JOIN `features` WHERE `timestamp` = "%s" AND `imgtype` = "VIS"' % snapshot)):
             data['plantbarcode'] = row['plantbarcode']
             data['timestamp'] = row['timestamp']
+            row['camera'] = row['camera'].lower()
+
+            if row['frame'] == 'none':
+                row['frame'] = '0'
 
             for feature in feature_names:
-                if row['frame'] is None:
-                    row['frame'] = 0
-                data[row['imgtype'] + row['frame'] + '_' + feature] = row[feature]
+                data[row['camera'] + row['frame'] + '_' + feature] = row[feature]
 
-            output = []
-            for field in output_header:
-                output.append(data[field])
-            out.write(','.join(map(str, output) + '\n'))
-
+        output = []
+        for field in output_header:
+            output.append(data[field])
+        out.write(','.join(map(str, output)) + '\n')
 
 if __name__ == '__main__':
     main()
