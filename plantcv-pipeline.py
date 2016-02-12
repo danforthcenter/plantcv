@@ -693,7 +693,7 @@ def job_builder(args, meta):
         # For each job/CPU
         for j in range(0, jobs_per_cpu):
             # Add job to list
-            if args.coprocess is not None:
+            if args.coprocess is not None and ('coimg' in meta[img]):
                 job_str = "{0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt --coresult ./{6}/{7}.txt".format(
                     args.pipeline, meta[images[job]]['path'], images[job], args.outdir, args.jobdir, images[job],
                     args.jobdir, meta[images[job]]['coimg'])
@@ -719,7 +719,7 @@ def job_builder(args, meta):
     jobs = []
     for j in range(job, len(images)):
         # Add job to list
-        if args.coprocess is not None:
+        if args.coprocess is not None and ('coimg' in meta[img]):
             job_str = "{0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt --coresult ./{6}/{7}.txt".format(
                 args.pipeline, meta[images[j]]['path'], images[j], args.outdir, args.jobdir, images[j], args.jobdir,
                 meta[images[j]]['coimg'])
