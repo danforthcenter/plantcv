@@ -237,7 +237,7 @@ def main():
     ###########################################
     if args.adaptor == 'filename':
         # Input directory contains images where the file name contains all metadata
-        meta = filename_parser(args)
+        args, meta = filename_parser(args)
     elif args.adaptor == 'phenofront':
         # Input directory is in PhenoFront snapshot format with subdirectories for each snapshot.
         # Metadata is stored in a CSV file.
@@ -445,6 +445,7 @@ def filename_parser(args):
     """
     # Metadata data structure
     meta = {}
+    args.jobcount = 0
 
     # Compile regular expression to remove image file extensions
     pattern = '\.' + args.type + '$'
@@ -482,8 +483,9 @@ def filename_parser(args):
                 # If the image meets the user's criteria, store the metadata
                 if img_pass == 1:
                     meta[filename] = img_meta
+                    args.jobcount += 1
 
-    return meta
+    return args, meta
 
 
 ###########################################
