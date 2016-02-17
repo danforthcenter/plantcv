@@ -70,9 +70,10 @@ def crop_position_mask(img,mask,device,x,y,v_pos,h_pos="right",debug=False):
       print_image(maskv,(str(device)+"_push-top_.png"))
     
   if v_pos=="bottom":
-    # Add rows to the top
+    # Add rows to the bottom
     bottom=np.zeros((x,my),dtype=np.uint8)
     maskv=np.vstack((mask,bottom))
+    #print_image(maskv,(str(device)+"_push-bottom-test.png"))
     
     if len(np.shape(maskv))==3:
       mx,my,mz=np.shape(maskv)
@@ -80,7 +81,9 @@ def crop_position_mask(img,mask,device,x,y,v_pos,h_pos="right",debug=False):
       mx,my=np.shape(maskv)
         
     if mx>=ix:
-      maskv=maskv[0:ix,0:my]
+      maskdiff=mx-ix
+      maskv=maskv[maskdiff:mx,0:my]
+      #print_image(maskv,(str(device)+"_push-bottom-test.png"))
             
     if mx<ix:
       r=ix-mx
