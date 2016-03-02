@@ -38,7 +38,9 @@ __all__ = ["fatal_error",
            "resize",
            "flip",
            "crop_position_mask",
-           "get_nir"]
+           "get_nir",
+           "adaptive_threshold",
+           "otsu_auto_threshold"]
 
 import sys, os, traceback
 import cv2
@@ -95,3 +97,5 @@ from resize import resize
 from flip import flip
 from crop_position_mask import crop_position_mask
 from get_nir import get_nir
+from adaptive_threshold import adaptive_threshold
+from otsu_auto_threshold import otsu_auto_threshold
