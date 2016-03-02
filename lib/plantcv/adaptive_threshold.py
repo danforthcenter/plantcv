@@ -42,7 +42,7 @@ def adaptive_threshold(img,maxValue,thres_type,object_type,device,debug=False):
 
 	# print out the image if the debug is true
 	if debug:
-		name = str(device) + '_adaptive_threshold' + thres_type + ext
+		name = str(device) + '_adaptive_threshold_' + thres_type + ext
 		print_image(t_img, name)
 
 	return device,t_img
