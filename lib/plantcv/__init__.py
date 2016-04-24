@@ -4,7 +4,7 @@ __all__ = ['fatal_error', 'print_image', 'readimage', 'laplace_filter', 'sobel_f
            'median_blur', 'fill', 'invert', 'logical_and', 'logical_or', 'logical_xor', 'apply_mask', 'find_objects',
            'define_roi', 'roi_objects', 'object_composition', 'analyze_object', 'analyze_bound', 'analyze_color',
            '_pseudocolored_image', 'analyze_NIR_intensity', 'fluor_fvfm', 'print_results', 'resize', 'flip',
-           'crop_position_mask', 'get_nir', 'adaptive_threshold', 'otsu_auto_threshold']
+           'crop_position_mask', 'get_nir', 'adaptive_threshold', 'otsu_auto_threshold', 'plot_image']
 
 from fatal_error import fatal_error
 from print_image import print_image
