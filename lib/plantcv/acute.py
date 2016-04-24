@@ -6,14 +6,14 @@ import math
 def acute(cont, win, thresh, debug=False):
     #Inputs:
     #cont        = opencv contour array of interest to be scanned for landmarks
-    #win         = maximum cumulative pixel distance window for calculating angle 
+    #win         = maximum cumulative pixel distance window for calculating angle
     #              score; 1 cm in pixels often works well
-    #thresh      = angle score threshold to be applied for mapping out landmark 
+    #thresh      = angle score threshold to be applied for mapping out landmark
     #              coordinate clusters within each contour
     #Outputs:
     #homolog_pts = homologous points selected from each landmark cluster
     #chain       = raw angle scores for entire contour, used to visualize landmark
-    #              clusters 
+    #              clusters
     #verbose_out = supplemental file which stores coordinates, distance from
     #              landmark cluster edges, and angle score for entire contour.  Used
     #              in troubleshooting.
