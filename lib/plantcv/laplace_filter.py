@@ -2,9 +2,10 @@
 
 import cv2
 from . import print_image
+from . import plot_image
 
 
-def laplace_filter(img, k, scale, device, debug=False):
+def laplace_filter(img, k, scale, device, debug=None):
     """This is a filtering method used to identify and highlight fine edges based on the 2nd derivative. A very
        sensetive method to highlight edges but will also amplify background noise. ddepth = -1 specifies that the
        dimensions of output image will be the same as the input image.
@@ -15,7 +16,7 @@ def laplace_filter(img, k, scale, device, debug=False):
                   (must be an odd integer: 1,3,5...)
     scale       = scaling factor applied (multiplied) to computed Laplacian values (scale = 1 is unscaled)
     device      = device number. Used to count steps in the pipeline
-    debug       = True/False. If True; print output image
+    debug       = None, print, or plot. Print = save to file, Plot = print to screen.
 
     Returns:
     device      = device number
@@ -25,13 +26,15 @@ def laplace_filter(img, k, scale, device, debug=False):
     :param k: int
     :param scale: int
     :param device: int
-    :param debug: bool
+    :param debug: str
     :return device: int
     :return lp_filtered: numpy array
     """
 
     lp_filtered = cv2.Laplacian(src=img, ddepth=-1, ksize=k, scale=scale)
     device += 1
-    if debug:
+    if debug is 'print':
         print_image(lp_filtered, str(device) + '_lp_out' + '_k_' + str(k) + '_scale_' + str(scale) + '_.png')
+    elif debug is 'plot':
+        plot_image(lp_filtered, cmap='gray')
     return device, lp_filtered

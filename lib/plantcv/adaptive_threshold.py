@@ -2,10 +2,11 @@
 
 import cv2
 from . import print_image
+from . import plot_image
 from . import fatal_error
 
 
-def adaptive_threshold(img, maxValue, thres_type, object_type, device, debug=False):
+def adaptive_threshold(img, maxValue, thres_type, object_type, device, debug=None):
     """Creates a binary image from a grayscaled image using adaptive thresholding
 
     Inputs:
@@ -16,7 +17,7 @@ def adaptive_threshold(img, maxValue, thres_type, object_type, device, debug=Fal
                   - If object is light then standard thresholding is done
                   - If object is dark then inverse thresholding is done
     device      = device number. Used to count steps in the pipeline
-    debug       = True/False. If True, print image
+    debug       = None, print, or plot. Print = save to file, Plot = print to screen.
 
     Returns:
     device      = device number
@@ -27,7 +28,7 @@ def adaptive_threshold(img, maxValue, thres_type, object_type, device, debug=Fal
     :param thres_type: str
     :param object_type: str
     :param device: int
-    :param debug: bool
+    :param debug: str
     :return device: int
     :return t_img: numpy array
     """
@@ -59,8 +60,10 @@ def adaptive_threshold(img, maxValue, thres_type, object_type, device, debug=Fal
     t_img = cv2.adaptiveThreshold(img, maxValue, thres, obj, 11, 2)
 
     # print out the image if the debug is true
-    if debug:
+    if debug is 'print':
         name = str(device) + '_adaptive_threshold_' + thres_type + ext
         print_image(t_img, name)
+    elif debug is 'plot':
+        plot_image(t_img, cmap='gray')
 
     return device, t_img

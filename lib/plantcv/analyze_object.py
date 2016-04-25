@@ -3,9 +3,10 @@
 import cv2
 import numpy as np
 from . import print_image
+from . import plot_image
 
 
-def analyze_object(img, imgname, obj, mask, device, debug=False, filename=False):
+def analyze_object(img, imgname, obj, mask, device, debug=None, filename=False):
     """Outputs numeric properties for an input object (contour or grouped contours).
 
     Inputs:
@@ -13,7 +14,7 @@ def analyze_object(img, imgname, obj, mask, device, debug=False, filename=False)
     imgname         = name of image
     obj             = single or grouped contour object
     device          = device number. Used to count steps in the pipeline
-    debug           = True/False. If True, print image
+    debug           = None, print, or plot. Print = save to file, Plot = print to screen.
     filename        = False or image name. If defined print image
 
     Returns:
@@ -27,7 +28,7 @@ def analyze_object(img, imgname, obj, mask, device, debug=False, filename=False)
     :param obj: list
     :param mask: numpy array
     :param device: int
-    :param debug: bool
+    :param debug: str
     :param filename: str
     :return:
     """
@@ -237,13 +238,16 @@ def analyze_object(img, imgname, obj, mask, device, debug=False, filename=False)
     else:
         pass
 
-    if debug:
+    if debug is not None:
         cv2.drawContours(ori_img, obj, -1, (255, 0, 0), 1)
         cv2.drawContours(ori_img, [hull], -1, (0, 0, 255), 1)
         cv2.line(ori_img, (x, y), (x + width, y), (0, 0, 255), 1)
         cv2.line(ori_img, (int(cmx), y), (int(cmx), y + height), (0, 0, 255), 1)
         cv2.circle(ori_img, (int(cmx), int(cmy)), 10, (0, 0, 255), 1)
         cv2.line(ori_img, (tuple(caliper_transpose[caliper_length - 1])), (tuple(caliper_transpose[0])), (0, 0, 255), 1)
-        print_image(ori_img, (str(device) + '_shapes.jpg'))
+        if debug is 'print':
+            print_image(ori_img, (str(device) + '_shapes.jpg'))
+        elif debug is 'plot':
+            plot_image(ori_img)
 
     return device, shape_header, shape_data, analysis_images

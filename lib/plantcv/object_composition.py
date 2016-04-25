@@ -3,15 +3,16 @@
 import numpy as np
 import cv2
 from . import print_image
+from . import plot_image
 
 
-def object_composition(img, contours, hierarchy, device, debug=False):
+def object_composition(img, contours, hierarchy, device, debug=None):
     """Groups objects into a single object, usually done after object filtering.
 
     Inputs:
     contours = object list
     device   = device number. Used to count steps in the pipeline
-    debug    = True/False. If True, print image
+    debug    = None, print, or plot. Print = save to file, Plot = print to screen.
 
     Returns:
     device   = device number
@@ -22,7 +23,7 @@ def object_composition(img, contours, hierarchy, device, debug=False):
     :param contours: list
     :param hierarchy: list
     :param device: int
-    :param debug: bool
+    :param debug: str
     :return device: int
     :return group: list
     :return mask: numpy array
@@ -50,10 +51,13 @@ def object_composition(img, contours, hierarchy, device, debug=False):
     group = np.vstack(contours[i] for i in ids)
     cv2.drawContours(mask, contours, -1, (255), -1, hierarchy=hierarchy)
 
-    if debug:
+    if debug is not None:
         for cnt in contours:
             cv2.drawContours(ori_img, cnt, -1, (255, 0, 0), 4)
             cv2.drawContours(ori_img, group, -1, (255, 0, 0), 4)
-        print_image(ori_img, (str(device) + '_objcomp.png'))
-        print_image(ori_img, (str(device) + '_objcomp_mask.png'))
+        if debug is 'print':
+            print_image(ori_img, (str(device) + '_objcomp.png'))
+            print_image(ori_img, (str(device) + '_objcomp_mask.png'))
+        elif debug is 'plot':
+            plot_image(ori_img)
     return device, group, mask

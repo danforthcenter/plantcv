@@ -3,10 +3,11 @@
 import numpy as np
 import cv2
 from . import print_image
+from . import plot_image
 from . import fatal_error
 
 
-def fill(img, mask, size, device, debug=False):
+def fill(img, mask, size, device, debug=None):
     """Identifies objects and fills objects that are less than size.
 
     Inputs:
@@ -14,7 +15,7 @@ def fill(img, mask, size, device, debug=False):
     mask   = image object, grayscale. This image will be used to identify contours
     size   = minimum object area size in pixels (integer)
     device = device number. Used to count steps in the pipeline
-    debug  = True/False. If True, print image
+    debug  = None, print, or plot. Print = save to file, Plot = print to screen.
 
     Returns:
     device = device number
@@ -24,7 +25,7 @@ def fill(img, mask, size, device, debug=False):
     :param mask: numpy array
     :param size: int
     :param device: int
-    :param debug: bool
+    :param debug: str
     :return device: int
     :return img: numpy array
     """
@@ -48,7 +49,9 @@ def fill(img, mask, size, device, debug=False):
         if area <= size:
             # cv2.fillPoly(img, pts = cnt, color=(0,0,0))
             cv2.drawContours(img, contours, c, (0, 0, 0), -1, lineType=8, hierarchy=hierarchy)
-    if debug:
+    if debug is 'print':
         print_image(img, (str(device) + '_fill' + str(size) + '.png'))
+    elif debug is 'plot':
+        plot_image(img, cmap='gray')
 
     return device, img

@@ -3,10 +3,11 @@
 import cv2
 import numpy as np
 from . import print_image
+from . import plot_image
 from . import fatal_error
 
 
-def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, device, debug=False):
+def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, device, debug=None):
     """Find objects partially inside a region of interest or cut objects to the ROI.
 
     Inputs:
@@ -17,6 +18,7 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
     object_contour = contours of objects, output from "Identifying Objects" fuction
     obj_hierarchy  = hierarchy of objects, output from "Identifying Objects" fuction
     device         = device number.  Used to count steps in the pipeline
+    debug          = None, print, or plot. Print = save to file, Plot = print to screen.
 
     Returns:
     device         = device number
@@ -32,7 +34,7 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
     :param object_contour: list
     :param obj_hierarchy: list
     :param device: int
-    :param debug: bool
+    :param debug: str
     :return device: int
     :return kept_cnt: list
     :return hierarchy: list
@@ -98,10 +100,14 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
     else:
         fatal_error('ROI Type' + str(roi_type) + ' is not "cutto" or "partial"!')
 
-    if debug:
+    if debug is 'print':
         print_image(w_back, (str(device) + '_roi_objects.png'))
         print_image(ori_img, (str(device) + '_obj_on_img.png'))
         print_image(mask, (str(device) + '_roi_mask.png'))
+    elif debug is 'plot':
+        plot_image(w_back)
+        plot_image(ori_img)
+        plot_image(mask, cmap='gray')
         # print ('Object Area=', obj_area)
 
     return device, kept_cnt, hierarchy, mask, obj_area

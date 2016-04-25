@@ -5,14 +5,14 @@ import re
 import numpy as np
 
 
-def get_nir(path, filename, device, debug=False):
+def get_nir(path, filename, device, debug=None):
     """Find a corresponding NIR image from the same snapshot as the VIS image.
 
     Inputs:
     path     = path to vis image
     filename = vis image file name
     device   = pipeline step counter
-    debug    = if debug prints matching nir image
+    debug    = None, print, or plot. Print = save to file, Plot = print to screen.
 
     Returns:
     device   = device number
@@ -21,7 +21,7 @@ def get_nir(path, filename, device, debug=False):
     :param path: str
     :param filename: str
     :param device: int
-    :param debug: bool
+    :param debug: str
     :return device: int
     :return nirpath: str
     """

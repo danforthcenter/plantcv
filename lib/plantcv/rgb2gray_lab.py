@@ -2,17 +2,18 @@
 
 import cv2
 from . import print_image
+from . import plot_image
 from . import fatal_error
 
 
-def rgb2gray_lab(img, channel, device, debug=False):
+def rgb2gray_lab(img, channel, device, debug=None):
     """Convert image from RGB colorspace to LAB colorspace. Returns the specified subchannel as a gray image.
 
     Inputs:
     img       = image object, RGB colorspace
     channel   = color subchannel (l = lightness, a = green-magenta, b = blue-yellow)
     device    = device number. Used to count steps in the pipeline
-    debug     = True/False. If True, print image
+    debug     = None, print, or plot. Print = save to file, Plot = print to screen.
 
     Returns:
     device    = device number
@@ -21,7 +22,7 @@ def rgb2gray_lab(img, channel, device, debug=False):
     :param img: numpy array
     :param channel: str
     :param device: int
-    :param debug: bool
+    :param debug: str
     :return device: int
     :return channel: numpy array
     """
@@ -31,16 +32,22 @@ def rgb2gray_lab(img, channel, device, debug=False):
     l, a, b = cv2.split(lab)
     device += 1
     if channel == 'l':
-        if debug:
+        if debug is 'print':
             print_image(l, (str(device) + '_lab_lightness.png'))
+        elif debug is 'plot':
+            plot_image(l, cmap='gray')
         return device, l
     elif channel == 'a':
-        if debug:
+        if debug is 'print':
             print_image(a, (str(device) + '_lab_green-magenta.png'))
+        elif debug is 'plot':
+            plot_image(a, cmap='gray')
         return device, a
     elif channel == 'b':
-        if debug:
+        if debug is 'print':
             print_image(b, (str(device) + '_lab_blue-yellow.png'))
+        elif debug is 'plot':
+            plot_image(b, cmap='gray')
         return device, b
     else:
         fatal_error('Channel ' + str(channel) + ' is not l, a or b!')

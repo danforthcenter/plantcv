@@ -3,9 +3,10 @@
 import cv2
 import numpy as np
 from . import print_image
+from . import plot_image
 
 
-def analyze_bound(img, imgname, obj, mask, line_position, device, debug=False, filename=False):
+def analyze_bound(img, imgname, obj, mask, line_position, device, debug=None, filename=False):
     """User-input boundary line tool
 
     Inputs:
@@ -17,7 +18,7 @@ def analyze_bound(img, imgname, obj, mask, line_position, device, debug=False, f
     shape_data      = pass shape data so that analyze_bound data can be appended to it
     line_position   = position of boundry line (a value of 0 would draw the line through the bottom of the image)
     device          = device number. Used to count steps in the pipeline
-    debug           = True/False. If True, print data.
+    debug           = None, print, or plot. Print = save to file, Plot = print to screen.
     filename        = False or image name. If defined print image.
 
     Returns:
@@ -32,7 +33,7 @@ def analyze_bound(img, imgname, obj, mask, line_position, device, debug=False, f
     :param mask: numpy array
     :param line_position: int
     :param device: int
-    :param debug: bool
+    :param debug: str
     :param filename: str
     :return device: int
     :return bound_header: tuple
@@ -146,7 +147,7 @@ def analyze_bound(img, imgname, obj, mask, line_position, device, debug=False, f
             print_image(ori_img, out_file)
             analysis_images = ['IMAGE', 'boundary', out_file]
 
-    if debug:
+    if debug is not None:
         point3 = (0, y_coor - 4)
         point4 = (x_coor, y_coor - 4)
         cv2.line(ori_img, point3, point4, (255, 0, 255), 5)
@@ -166,7 +167,12 @@ def analyze_bound(img, imgname, obj, mask, line_position, device, debug=False, f
                 cv2.line(ori_img, (int(cmx), y_coor - 2), (int(cmx), y_coor + height_below_bound), (0, 255, 0), 3)
                 cv2.line(wback, (int(cmx), y_coor - 2), (int(cmx), y_coor - height_above_bound), (255, 0, 0), 3)
                 cv2.line(wback, (int(cmx), y_coor - 2), (int(cmx), y_coor + height_below_bound), (0, 255, 0), 3)
-        print_image(wback, (str(device) + '_boundary_on_white.jpg'))
-        print_image(ori_img, (str(device) + '_boundary_on_img.jpg'))
+        if debug is 'print':
+            print_image(wback, (str(device) + '_boundary_on_white.jpg'))
+            print_image(ori_img, (str(device) + '_boundary_on_img.jpg'))
+        if debug is 'plot':
+            plot_image(wback)
+            plot_image(ori_img)
+
 
     return device, bound_header, bound_data, analysis_images

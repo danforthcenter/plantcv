@@ -2,10 +2,11 @@
 
 import cv2
 from . import print_image
+from . import plot_image
 from . import fatal_error
 
 
-def binary_threshold(img, threshold, maxValue, object_type, device, debug=False):
+def binary_threshold(img, threshold, maxValue, object_type, device, debug=None):
     """Creates a binary image from a gray image based on the threshold value.
 
     Inputs:
@@ -16,7 +17,7 @@ def binary_threshold(img, threshold, maxValue, object_type, device, debug=False)
                   - If object is light then standard thresholding is done
                   - If object is dark then inverse thresholding is done
     device      = device number. Used to count steps in the pipeline
-    debug       = True/False. If True, print image
+    debug       = None, print, or plot. Print = save to file, Plot = print to screen.
 
     Returns:
     device      = device number
@@ -27,7 +28,7 @@ def binary_threshold(img, threshold, maxValue, object_type, device, debug=False)
     :param maxValue: int
     :param object_type: str
     :param device: int
-    :param debug: bool
+    :param debug: str
     :return device: int
     :return t_img: numpy array
     """
@@ -35,13 +36,17 @@ def binary_threshold(img, threshold, maxValue, object_type, device, debug=False)
     device += 1
     if object_type == 'light':
         ret, t_img = cv2.threshold(img, threshold, maxValue, cv2.THRESH_BINARY)
-        if debug:
+        if debug is 'print':
             print_image(t_img, (str(device) + '_binary_threshold' + str(threshold) + '.png'))
+        elif debug is 'plot':
+            plot_image(t_img, cmap='gray')
         return device, t_img
     elif object_type == 'dark':
         ret, t_img = cv2.threshold(img, threshold, maxValue, cv2.THRESH_BINARY_INV)
-        if debug:
+        if debug is 'print':
             print_image(t_img, (str(device) + '_binary_threshold' + str(threshold) + '_inv.png'))
+        elif debug is 'plot':
+            plot_image(t_img, cmap='gray')
         return device, t_img
     else:
         fatal_error('Object type ' + str(object_type) + ' is not "light" or "dark"!')

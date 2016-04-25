@@ -4,10 +4,11 @@ import os
 import cv2
 import numpy as np
 from . import print_image
+from . import plot_image
 from . import fatal_error
 
 
-def _pseudocolored_image(histogram, bins, img, mask, background, channel, filename, resolution, analysis_images):
+def _pseudocolored_image(histogram, bins, img, mask, background, channel, filename, resolution, analysis_images, debug):
     """Pseudocolor image.
 
     Inputs:
@@ -20,6 +21,7 @@ def _pseudocolored_image(histogram, bins, img, mask, background, channel, filena
     filename        = input image filename
     resolution      = output image resolution
     analysis_images = list of analysis image filenames
+    debug           = print or plot. Print = save to file, Plot = print to screen.
 
     Returns:
     analysis_images = list of analysis image filenames
@@ -67,13 +69,16 @@ def _pseudocolored_image(histogram, bins, img, mask, background, channel, filena
 
     fig_name_pseudo = str(filename[0:-4]) + '_' + str(channel) + '_pseudo_on_' + str(background) + '.jpg'
     # fig_name_pseudo= str(filename[0:-4]) + '_' + str(channel) + '_pseudo_on_' + str(background) + '.png'
-    print_image(cplant_back, fig_name_pseudo)
+    if debug is 'print':
+        print_image(cplant_back, fig_name_pseudo)
+    elif debug is 'plot':
+        plot_image(cplant_back)
     analysis_images.append(['IMAGE', 'pseudo', fig_name_pseudo])
 
     return analysis_images
 
 
-def analyze_color(img, imgname, mask, bins, device, debug=False, hist_plot_type=None, pseudo_channel='v',
+def analyze_color(img, imgname, mask, bins, device, debug=None, hist_plot_type=None, pseudo_channel='v',
                   pseudo_bkg='img', resolution=300, filename=False):
     """Analyze the color properties of an image object
 
@@ -82,7 +87,7 @@ def analyze_color(img, imgname, mask, bins, device, debug=False, hist_plot_type=
     imgname          = name of input image
     mask             = mask made from selected contours
     device           = device number. Used to count steps in the pipeline
-    debug            = True/False. If True, print data and histograms
+    debug            = None, print, or plot. Print = save to file, Plot = print to screen.
     hist_plot_type   = 'None', 'all', 'rgb','lab' or 'hsv'
     color_slice_type = 'None', 'rgb', 'hsv' or 'lab'
     pseudo_channel   = 'None', 'l', 'm' (green-magenta), 'y' (blue-yellow), h','s', or 'v', creates pseduocolored image
@@ -101,7 +106,7 @@ def analyze_color(img, imgname, mask, bins, device, debug=False, hist_plot_type=
     :param mask: numpy array
     :param bins: int
     :param device: int
-    :param debug: bool
+    :param debug: str
     :param hist_plot_type: str
     :param pseudo_channel: str
     :param pseudo_bkg: str
@@ -206,56 +211,56 @@ def analyze_color(img, imgname, mask, bins, device, debug=False, hist_plot_type=
     elif p_channel == 'h':
         if (pseudo_bkg == 'white' or pseudo_bkg == 'both'):
             analysis_images = _pseudocolored_image(h_bin, bins, img, mask, 'white', p_channel, filename, resolution,
-                                                   analysis_images)
+                                                   analysis_images, debug)
 
         if (pseudo_bkg == 'img' or pseudo_bkg == 'both'):
             analysis_images = _pseudocolored_image(h_bin, bins, img, mask, 'img', p_channel, filename, resolution,
-                                                   analysis_images)
+                                                   analysis_images, debug)
 
     elif p_channel == 's':
         if (pseudo_bkg == 'white' or pseudo_bkg == 'both'):
             analysis_images = _pseudocolored_image(s_bin, bins, img, mask, 'white', p_channel, filename, resolution,
-                                                   analysis_images)
+                                                   analysis_images, debug)
 
         if (pseudo_bkg == 'img' or pseudo_bkg == 'both'):
             analysis_images = _pseudocolored_image(s_bin, bins, img, mask, 'img', p_channel, filename, resolution,
-                                                   analysis_images)
+                                                   analysis_images, debug)
 
     elif p_channel == 'v':
         if (pseudo_bkg == 'white' or pseudo_bkg == 'both'):
             analysis_images = _pseudocolored_image(v_bin, bins, img, mask, 'white', p_channel, filename, resolution,
-                                                   analysis_images)
+                                                   analysis_images, debug)
 
         if (pseudo_bkg == 'img' or pseudo_bkg == 'both'):
             analysis_images = _pseudocolored_image(v_bin, bins, img, mask, 'img', p_channel, filename, resolution,
-                                                   analysis_images)
+                                                   analysis_images, debug)
 
     elif p_channel == 'l':
         if (pseudo_bkg == 'white' or pseudo_bkg == 'both'):
             analysis_images = _pseudocolored_image(l_bin, bins, img, mask, 'white', p_channel, filename, resolution,
-                                                   analysis_images)
+                                                   analysis_images, debug)
 
         if (pseudo_bkg == 'img' or pseudo_bkg == 'both'):
             analysis_images = _pseudocolored_image(l_bin, bins, img, mask, 'img', p_channel, filename, resolution,
-                                                   analysis_images)
+                                                   analysis_images, debug)
 
     elif p_channel == 'm':
         if (pseudo_bkg == 'white' or pseudo_bkg == 'both'):
             analysis_images = _pseudocolored_image(m_bin, bins, img, mask, 'white', p_channel, filename, resolution,
-                                                   analysis_images)
+                                                   analysis_images, debug)
 
         if (pseudo_bkg == 'img' or pseudo_bkg == 'both'):
             analysis_images = _pseudocolored_image(m_bin, bins, img, mask, 'img', p_channel, filename, resolution,
-                                                   analysis_images)
+                                                   analysis_images, debug)
 
     elif p_channel == 'y':
         if (pseudo_bkg == 'white' or pseudo_bkg == 'both'):
             analysis_images = _pseudocolored_image(y_bin, bins, img, mask, 'white', p_channel, filename, resolution,
-                                                   analysis_images)
+                                                   analysis_images, debug)
 
         if (pseudo_bkg == 'img' or pseudo_bkg == 'both'):
             analysis_images = _pseudocolored_image(y_bin, bins, img, mask, 'img', p_channel, filename, resolution,
-                                                   analysis_images)
+                                                   analysis_images, debug)
 
     else:
         fatal_error('Pseudocolor Channel' + str(pseudo_channel) + ' is not "None", "l","m", "y", "h","s" or "v"!')

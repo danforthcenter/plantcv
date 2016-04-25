@@ -3,9 +3,10 @@
 import cv2
 import numpy as np
 from . import print_image
+from . import plot_image
 
 
-def rectangle_mask(img, p1, p2, device, debug=False, color="black"):
+def rectangle_mask(img, p1, p2, device, debug=None, color="black"):
     """Takes an input image and returns a binary image masked by a rectangular area denoted by p1 and p2. Note that
        p1 = (0,0) is the top left hand corner bottom right hand corner is p2 = (max-value(x), max-value(y)).
 
@@ -14,7 +15,7 @@ def rectangle_mask(img, p1, p2, device, debug=False, color="black"):
     p1        = point 1
     p2        = point 2
     device    = device number. Used to count steps in the pipeline
-    debug     = True/False. If True; print output image
+    debug     = None, print, or plot. Print = save to file, Plot = print to screen.
     color     = black or gray
 
     Returns:
@@ -27,7 +28,7 @@ def rectangle_mask(img, p1, p2, device, debug=False, color="black"):
     :param p1: tuple
     :param p2: tuple
     :param device: int
-    :param debug: bool
+    :param debug: str
     :param color: str
     :return device: int
     :return bnk: numpy array
@@ -59,6 +60,8 @@ def rectangle_mask(img, p1, p2, device, debug=False, color="black"):
         # thickness = -1. Note that you should only print the first contour (contour[0]) if you want to fill with
         # thickness = -1. otherwise two rectangles will be drawn and the space between them will get filled
         cv2.drawContours(bnk, contour, 0, (192, 192, 192), -1)
-    if debug:
+    if debug is 'print':
         print_image(bnk, (str(device) + '_roi.png'))
+    elif debug is 'plot':
+        plot_image(bnk)
     return device, bnk, contour, hierarchy

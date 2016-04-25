@@ -3,9 +3,10 @@
 import cv2
 import numpy as np
 from . import print_image
+from . import plot_image
 
 
-def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False, debug=False, filename=False):
+def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False, debug=None, filename=False):
     """This function calculates the intensity of each pixel associated with the plant and writes the values out to
        a file. It can also print out a histogram plot of pixel intensity and a pseudocolor image of the plant.
 
@@ -15,7 +16,7 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False, debu
     mask         = mask made from selected contours
     bins         = number of classes to divide spectrum into
     device       = device number. Used to count steps in the pipeline
-    debug        = True/False. If True, print data and histograms
+    debug        = None, print, or plot. Print = save to file, Plot = print to screen.
     filename     = False or image name. If defined print image
 
     Returns:
@@ -30,7 +31,7 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False, debu
     :param bins: int
     :param device: int
     :param histplot: bool
-    :param debug: bool
+    :param debug: str
     :param filename: str
     :return device: int
     :return hist_header: list
@@ -97,8 +98,7 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False, debu
         print_image(cplant_back, fig_name_pseudo)
         analysis_img.append(['IMAGE', 'pseudo', fig_name_pseudo])
 
-    if filename != False and (histplot == True or debug):
-        import matplotlib
+    if filename != False and (histplot == True or debug is not None):
         from matplotlib import pyplot as plt
         from matplotlib import cm as cm
         from matplotlib import colors as colors
@@ -117,7 +117,7 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False, debu
             analysis_img.append(['IMAGE', 'hist', fig_name_hist])
             print('\t'.join(map(str, ('IMAGE', 'hist', fig_name_hist))))
 
-        if debug:
+        if debug is 'print':
             print_image(cplant1, (str(device) + "_nir_pseudo_plant.jpg"))
             print_image(img_back3, (str(device) + "_nir_pseudo_background.jpg"))
             print_image(cplant_back, (str(device) + "_nir_pseudo_plant_back.jpg"))
@@ -131,8 +131,12 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False, debu
             valmax = (bins - 1)
             norm = colors.Normalize(vmin=valmin, vmax=valmax)
             cb1 = colorbar.ColorbarBase(ax1, cmap=cm.jet, norm=norm, orientation='horizontal')
-            fig_name = str(filename2) + '/NIR_pseudocolor_colorbar.svg'
+            fig_name = 'NIR_pseudocolor_colorbar.svg'
             fig.savefig(fig_name, bbox_inches='tight')
-        fig.clf()
+            fig.clf()
+        elif debug is 'plot':
+            plot_image(cplant1)
+            plot_image(img_back3)
+            plot_image(cplant_back)
 
     return device, hist_header, hist_data, analysis_img

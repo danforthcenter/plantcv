@@ -8,9 +8,10 @@ from matplotlib import cm as cm
 from matplotlib import colors as colors
 from matplotlib import colorbar as colorbar
 from . import print_image
+from . import plot_image
 
 
-def fluor_fvfm(fdark, fmin, fmax, mask, device, filename, bins=1000, debug=False):
+def fluor_fvfm(fdark, fmin, fmax, mask, device, filename, bins=1000, debug=None):
     """Analyze PSII camera images.
 
     Inputs:
@@ -21,7 +22,7 @@ def fluor_fvfm(fdark, fmin, fmax, mask, device, filename, bins=1000, debug=False
     device      = counter for debug
     filename    = name of file
     bins        = number of bins from 0 to 65,536 (default is 1000)
-    debug       = if True prints out images
+    debug       = None, print, or plot. Print = save to file, Plot = print to screen.
 
     Returns:
     device      = device number
@@ -35,7 +36,7 @@ def fluor_fvfm(fdark, fmin, fmax, mask, device, filename, bins=1000, debug=False
     :param device: int
     :param filename: str
     :param bins: int
-    :param debug: bool
+    :param debug: str
     :return device: int
     :return hist_header: list
     :return hist_data: list
@@ -91,9 +92,9 @@ def fluor_fvfm(fdark, fmin, fmax, mask, device, filename, bins=1000, debug=False
     fv2 = np.array(fv, dtype=np.uint16)
     fv3 = np.reshape(fv2, shape)
     fv_img = fv3
-    # Is this debug?
-    print_image(fv_img, (str(filename[0:-4]) + '_fv_img.png'))
-    print('\t'.join(map(str, ('IMAGE', 'fv', str(filename[0:-4]) + '_fv_img.png'))))
+    if filename:
+        print_image(fv_img, (str(filename[0:-4]) + '_fv_img.png'))
+        print('\t'.join(map(str, ('IMAGE', 'fv', str(filename[0:-4]) + '_fv_img.png'))))
 
     # Calculate Fv/Fm
     fvfm = []
@@ -172,53 +173,58 @@ def fluor_fvfm(fdark, fmin, fmax, mask, device, filename, bins=1000, debug=False
     hist_background = np.zeros(hist_shape, dtype=np.uint8)
     fvfm_norm_slice = np.array((((hist_float - fvfm_min) / (fvfm_max - fvfm_min)) * 255), dtype=np.uint8)
     fvfm_stack = np.dstack((hist_background, hist_background, fvfm_norm_slice))
-    print_image(fvfm_stack, (str(filename[0:-4]) + '_fvfm_hist_slice.png'))
-    print('\t'.join(map(str, ('IMAGE', 'slice', fig_name))))
+    if filename:
+        print_image(fvfm_stack, (str(filename[0:-4]) + '_fvfm_hist_slice.png'))
+        print('\t'.join(map(str, ('IMAGE', 'slice', fig_name))))
 
-    # Pseudocolor FvFm image
-    ix, iy = np.shape(fmax)
-    size = ix, iy
-    background = np.zeros(size)
-    w_back = background + 1
-    fvfm1 = np.array(fvfm, dtype=np.float)
-    fvfm256 = fvfm1 * 255
-    fvfm_p = np.array(fvfm256, dtype=np.uint8)
-    fvfm_pshape = np.reshape(fvfm_p, shape)
-    fvfm_pstack = np.dstack((fvfm_pshape, fvfm_pshape, fvfm_pshape))
+        # Pseudocolor FvFm image
+        ix, iy = np.shape(fmax)
+        size = ix, iy
+        background = np.zeros(size)
+        w_back = background + 1
+        fvfm1 = np.array(fvfm, dtype=np.float)
+        fvfm256 = fvfm1 * 255
+        fvfm_p = np.array(fvfm256, dtype=np.uint8)
+        fvfm_pshape = np.reshape(fvfm_p, shape)
+        fvfm_pstack = np.dstack((fvfm_pshape, fvfm_pshape, fvfm_pshape))
 
-    fvfm_img = plt.imshow(fvfm_pshape, vmin=0, vmax=255, cmap=cm.jet_r)
-    ax = plt.subplot(111)
-    # bar=plt.colorbar(orientation='horizontal', ticks=[0,25.5, 51,76.5, 102, 127.5, 153, 178.5, 204, 229.5, 255])
-    # bar.ax.set_xticklabels([0.0,0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
-    mask_inv = cv2.bitwise_not(mask)
-    background1 = np.dstack((mask, mask, mask, mask_inv))
-    my_cmap = plt.get_cmap('binary_r')
-    plt.imshow(background1, cmap=my_cmap)
-    plt.axis('off')
-    fig_name = (str(filename[0:-4]) + '_pseudo_fvfm.png')
-    plt.savefig(fig_name, dpi=600, bbox_inches='tight')
-    plt.clf()
-    print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
-
-    if os.path.isfile(('1_fluor_pseudocolor_colorbar.svg')):
-        pass
-    else:
-        filename1 = str(filename)
-        name_array = filename1.split("/")
-        filename2 = "/".join(map(str, name_array[:-1]))
-        fig = plt.figure()
-        ax1 = fig.add_axes([0.05, 0.80, 0.9, 0.15])
-        valmin = -0
-        valmax = 1
-        norm = colors.Normalize(vmin=valmin, vmax=valmax)
-        cb1 = colorbar.ColorbarBase(ax1, cmap=cm.jet, norm=norm, orientation='horizontal')
-        fig_name = str(filename2) + '/1_fluor_pseudocolor_colorbar.svg'
+        fvfm_img = plt.imshow(fvfm_pshape, vmin=0, vmax=255, cmap=cm.jet_r)
+        ax = plt.subplot(111)
+        # bar=plt.colorbar(orientation='horizontal', ticks=[0,25.5, 51,76.5, 102, 127.5, 153, 178.5, 204, 229.5, 255])
+        # bar.ax.set_xticklabels([0.0,0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
+        mask_inv = cv2.bitwise_not(mask)
+        background1 = np.dstack((mask, mask, mask, mask_inv))
+        my_cmap = plt.get_cmap('binary_r')
+        plt.imshow(background1, cmap=my_cmap)
+        plt.axis('off')
+        fig_name = (str(filename[0:-4]) + '_pseudo_fvfm.png')
         plt.savefig(fig_name, dpi=600, bbox_inches='tight')
         plt.clf()
+        print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
 
-    if debug:
+        if os.path.isfile(('1_fluor_pseudocolor_colorbar.svg')):
+            pass
+        else:
+            filename1 = str(filename)
+            name_array = filename1.split("/")
+            filename2 = "/".join(map(str, name_array[:-1]))
+            fig = plt.figure()
+            ax1 = fig.add_axes([0.05, 0.80, 0.9, 0.15])
+            valmin = -0
+            valmax = 1
+            norm = colors.Normalize(vmin=valmin, vmax=valmax)
+            cb1 = colorbar.ColorbarBase(ax1, cmap=cm.jet, norm=norm, orientation='horizontal')
+            fig_name = str(filename2) + '/1_fluor_pseudocolor_colorbar.svg'
+            plt.savefig(fig_name, dpi=600, bbox_inches='tight')
+            plt.clf()
+
+    if debug is 'print':
         print_image(fmin_mask, (str(device) + '_fmin_mask.png'))
         print_image(fmax_mask, (str(device) + '_fmax_mask.png'))
         print_image(fv3, (str(device) + '_fv_convert.png'))
+    elif debug is 'plot':
+        plot_image(fmin_mask, cmap='gray')
+        plot_image(fmax_mask, cmap='gray')
+        plot_image(fv3, cmap='gray')
 
     return device, hist_header, hist_data
