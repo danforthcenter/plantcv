@@ -72,7 +72,7 @@ def _pseudocolored_image(histogram, bins, img, mask, background, channel, filena
     # fig_name_pseudo= str(filename[0:-4]) + '_' + str(channel) + '_pseudo_on_' + str(background) + '.png'
 
     path = os.path.dirname(filename)
-    fig_name = 'VIS_pseudocolor_colorbar_' + str(pseudo_channel) + '_channel.svg'
+    fig_name = 'VIS_pseudocolor_colorbar_' + str(channel) + '_channel.svg'
     if not os.path.isfile(path + '/' + fig_name):
         plot_colorbar(path, fig_name, bins)
 
