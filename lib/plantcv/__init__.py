@@ -1,6 +1,6 @@
-__all__ = ['fatal_error', 'print_image', 'plot_image', 'readimage', 'laplace_filter', 'sobel_filter', 'scharr_filter',
-           'HistEqualization', 'plot_hist', 'image_add', 'image_subtract', 'erode', 'dilate', 'watershed',
-           'rectangle_mask', 'border_mask', 'rgb2gray_hsv', 'rgb2gray_lab', 'rgb2gray', 'binary_threshold',
+__all__ = ['fatal_error', 'print_image', 'plot_image', 'plot_colorbar', 'readimage', 'laplace_filter', 'sobel_filter',
+           'scharr_filter', 'HistEqualization', 'plot_hist', 'image_add', 'image_subtract', 'erode', 'dilate',
+           'watershed', 'rectangle_mask', 'border_mask', 'rgb2gray_hsv', 'rgb2gray_lab', 'rgb2gray', 'binary_threshold',
            'median_blur', 'fill', 'invert', 'logical_and', 'logical_or', 'logical_xor', 'apply_mask', 'find_objects',
            'define_roi', 'roi_objects', 'object_composition', 'analyze_object', 'analyze_bound', 'analyze_color',
            '_pseudocolored_image', 'analyze_NIR_intensity', 'fluor_fvfm', 'print_results', 'resize', 'flip',
@@ -9,6 +9,7 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'readimage', 'laplace_fil
 from fatal_error import fatal_error
 from print_image import print_image
 from plot_image import plot_image
+from plot_colorbar import plot_colorbar
 from readimage import readimage
 from laplace_filter import laplace_filter
 from sobel_filter import sobel_filter

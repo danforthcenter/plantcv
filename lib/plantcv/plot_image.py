@@ -1,5 +1,4 @@
 # Plot image to screen
-from matplotlib import pyplot as plt
 
 
 def plot_image(img, cmap=None):
@@ -8,6 +7,7 @@ def plot_image(img, cmap=None):
     :param img: numpy array
     :return:
     """
+    from matplotlib import pyplot as plt
 
     plt.imshow(img, cmap=cmap)
     plt.show()

@@ -1,7 +1,7 @@
 # Plot histogram
 
 import cv2
-from matplotlib import pyplot as plt
+
 
 
 def plot_hist(img, name):
@@ -15,6 +15,10 @@ def plot_hist(img, name):
     :param name: str
     :return:
     """
+
+    import matplotlib
+    matplotlib.use('Agg')
+    from matplotlib import pyplot as plt
 
     # get histogram
     hist = cv2.calcHist([img], [0], None, [256], [0, 255])

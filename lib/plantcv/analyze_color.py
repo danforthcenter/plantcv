@@ -6,6 +6,7 @@ import numpy as np
 from . import print_image
 from . import plot_image
 from . import fatal_error
+from . import plot_colorbar
 
 
 def _pseudocolored_image(histogram, bins, img, mask, background, channel, filename, resolution, analysis_images, debug):
@@ -69,6 +70,12 @@ def _pseudocolored_image(histogram, bins, img, mask, background, channel, filena
 
     fig_name_pseudo = str(filename[0:-4]) + '_' + str(channel) + '_pseudo_on_' + str(background) + '.jpg'
     # fig_name_pseudo= str(filename[0:-4]) + '_' + str(channel) + '_pseudo_on_' + str(background) + '.png'
+
+    path = os.path.dirname(filename)
+    fig_name = 'VIS_pseudocolor_colorbar_' + str(pseudo_channel) + '_channel.svg'
+    if not os.path.isfile(path + '/' + fig_name):
+        plot_colorbar(path, fig_name, bins)
+
     if debug is 'print':
         print_image(cplant_back, fig_name_pseudo)
     elif debug is 'plot':
@@ -204,9 +211,9 @@ def analyze_color(img, imgname, mask, bins, device, debug=None, hist_plot_type=N
     p_channel = pseudo_channel
     pseudocolor_img = 1
 
-    if p_channel == None:
+    if p_channel is not None:
         pass
-    elif filename == False:
+    elif not filename:
         pass
     elif p_channel == 'h':
         if (pseudo_bkg == 'white' or pseudo_bkg == 'both'):
@@ -265,28 +272,9 @@ def analyze_color(img, imgname, mask, bins, device, debug=None, hist_plot_type=N
     else:
         fatal_error('Pseudocolor Channel' + str(pseudo_channel) + ' is not "None", "l","m", "y", "h","s" or "v"!')
 
-    if debug and p_channel != None:
-        from matplotlib import pyplot as plt
-        from matplotlib import cm as cm
-        from matplotlib import colors as colors
-        from matplotlib import colorbar as colorbar
-        if os.path.isfile(('VIS_pseudocolor_colorbar_' + str(pseudo_channel) + '_channel.svg')):
-            pass
-        else:
-            filename1 = str(filename)
-            name_array = filename1.split("/")
-            filename2 = "/".join(map(str, name_array[:-1]))
-            fig = plt.figure()
-            ax1 = fig.add_axes([0.05, 0.80, 0.9, 0.15])
-            valmin = -0
-            valmax = (bins - 1)
-            norm = colors.Normalize(vmin=valmin, vmax=valmax)
-            cb1 = colorbar.ColorbarBase(ax1, cmap=cm.jet, norm=norm, orientation='horizontal')
-            fig_name = 'VIS_pseudocolor_colorbar_' + str(pseudo_channel) + '_channel.svg'
-            fig.savefig(fig_name, bbox_inches='tight')
-            fig.clf()
-
-    if hist_plot_type != None:
+    if hist_plot_type is not None:
+        import matplotlib
+        matplotlib.use('Agg')
         from matplotlib import pyplot as plt
 
         # Create Histogram Plot
@@ -331,7 +319,7 @@ def analyze_color(img, imgname, mask, bins, device, debug=None, hist_plot_type=N
             fig_name = (str(filename[0:-4]) + '_' + str(hist_plot_type) + '_hist.svg')
             plt.savefig(fig_name)
             analysis_images.append(['IMAGE', 'hist', fig_name])
-            if debug:
+            if debug is 'print':
                 fig_name = (str(device) + '_' + str(hist_plot_type) + '_hist.svg')
                 plt.savefig(fig_name)
             plt.clf()

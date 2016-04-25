@@ -1,9 +1,11 @@
 # Analyze signal data in NIR image
 
+import os
 import cv2
 import numpy as np
 from . import print_image
 from . import plot_image
+from . import plot_colorbar
 
 
 def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False, debug=None, filename=False):
@@ -83,7 +85,7 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False, debu
 
     analysis_img = []
 
-    if filename != False:
+    if filename is not False:
         # make mask to select the background
         mask_inv = cv2.bitwise_not(mask)
         img_back = cv2.bitwise_and(img, img, mask=mask_inv)
@@ -98,42 +100,31 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False, debu
         print_image(cplant_back, fig_name_pseudo)
         analysis_img.append(['IMAGE', 'pseudo', fig_name_pseudo])
 
-    if filename != False and (histplot == True or debug is not None):
+    if filename is not False and (histplot is True or debug is not None):
+        import matplotlib
+        matplotlib.use('Agg')
         from matplotlib import pyplot as plt
-        from matplotlib import cm as cm
-        from matplotlib import colors as colors
-        from matplotlib import colorbar as colorbar
-        import pylab as pl
 
-        if histplot == True:
-            # plot hist percent
-            hist_plot_nir = plt.plot(hist_percent, color='green', label='Signal Intensity')
-            xaxis = plt.xlim([0, (bins - 1)])
-            plt.xlabel(('Grayscale pixel intensity (0-' + str(bins) + ")"))
-            plt.ylabel('Proportion of pixels (%)')
-            fig_name_hist = (str(filename[0:-4]) + '_nir_hist.svg')
-            plt.savefig(fig_name_hist)
-            plt.clf()
-            analysis_img.append(['IMAGE', 'hist', fig_name_hist])
-            print('\t'.join(map(str, ('IMAGE', 'hist', fig_name_hist))))
+        # plot hist percent
+        hist_plot_nir = plt.plot(hist_percent, color='green', label='Signal Intensity')
+        xaxis = plt.xlim([0, (bins - 1)])
+        plt.xlabel(('Grayscale pixel intensity (0-' + str(bins) + ")"))
+        plt.ylabel('Proportion of pixels (%)')
+        fig_name_hist = (str(filename[0:-4]) + '_nir_hist.svg')
+        plt.savefig(fig_name_hist)
+        plt.clf()
+        analysis_img.append(['IMAGE', 'hist', fig_name_hist])
+        print('\t'.join(map(str, ('IMAGE', 'hist', fig_name_hist))))
+
+        path = os.path.dirname(filename)
+        fig_name = 'NIR_pseudocolor_colorbar.svg'
+        if not os.path.isfile(path + '/' + fig_name):
+            plot_colorbar(path, fig_name, bins)
 
         if debug is 'print':
             print_image(cplant1, (str(device) + "_nir_pseudo_plant.jpg"))
             print_image(img_back3, (str(device) + "_nir_pseudo_background.jpg"))
             print_image(cplant_back, (str(device) + "_nir_pseudo_plant_back.jpg"))
-
-            filename1 = str(filename)
-            name_array = filename1.split("/")
-            filename2 = "/".join(map(str, name_array[:-1]))
-            fig = plt.figure()
-            ax1 = fig.add_axes([0.05, 0.80, 0.9, 0.15])
-            valmin = -0
-            valmax = (bins - 1)
-            norm = colors.Normalize(vmin=valmin, vmax=valmax)
-            cb1 = colorbar.ColorbarBase(ax1, cmap=cm.jet, norm=norm, orientation='horizontal')
-            fig_name = 'NIR_pseudocolor_colorbar.svg'
-            fig.savefig(fig_name, bbox_inches='tight')
-            fig.clf()
         elif debug is 'plot':
             plot_image(cplant1)
             plot_image(img_back3)

@@ -3,12 +3,9 @@
 import os
 import cv2
 import numpy as np
-from matplotlib import pyplot as plt
-from matplotlib import cm as cm
-from matplotlib import colors as colors
-from matplotlib import colorbar as colorbar
 from . import print_image
 from . import plot_image
+from . import plot_colorbar
 
 
 def fluor_fvfm(fdark, fmin, fmax, mask, device, filename, bins=1000, debug=None):
@@ -92,9 +89,6 @@ def fluor_fvfm(fdark, fmin, fmax, mask, device, filename, bins=1000, debug=None)
     fv2 = np.array(fv, dtype=np.uint16)
     fv3 = np.reshape(fv2, shape)
     fv_img = fv3
-    if filename:
-        print_image(fv_img, (str(filename[0:-4]) + '_fv_img.png'))
-        print('\t'.join(map(str, ('IMAGE', 'fv', str(filename[0:-4]) + '_fv_img.png'))))
 
     # Calculate Fv/Fm
     fvfm = []
@@ -150,21 +144,6 @@ def fluor_fvfm(fdark, fmin, fmax, mask, device, filename, bins=1000, debug=None)
         qc_fdark
     )
 
-    # Create Histogram Plot, if you change the bin number you might need to change binx so that it prints an appropriate number of labels
-    binx = bins / 50
-    fvfm_plot = plt.plot(tmid, fvfm_hist, color='green', label='FvFm')
-    plt.xticks(list(tmid[0::binx]), rotation='vertical', size='xx-small')
-    legend = plt.legend()
-    ax = plt.subplot(111)
-    ax.set_ylabel('Plant Pixels')
-    ax.text(0.05, 0.95, ('Peak Bin Value: ' + str(max_bin)), transform=ax.transAxes, verticalalignment='top')
-    plt.grid()
-    plt.title('Fv/Fm of ' + str(filename[0:-4]))
-    fig_name = (str(filename[0:-4]) + '_fvfm_hist.svg')
-    plt.savefig(fig_name)
-    plt.clf()
-    print('\t'.join(map(str, ('IMAGE', 'hist', fig_name))))
-
     # Histogram Visualization Slice (normalized to 255 for size)
     fvfm_max = np.amax(fvfm_hist)
     fvfm_min = np.amin(fvfm_hist)
@@ -174,8 +153,36 @@ def fluor_fvfm(fdark, fmin, fmax, mask, device, filename, bins=1000, debug=None)
     fvfm_norm_slice = np.array((((hist_float - fvfm_min) / (fvfm_max - fvfm_min)) * 255), dtype=np.uint8)
     fvfm_stack = np.dstack((hist_background, hist_background, fvfm_norm_slice))
     if filename:
+        import matplotlib
+        matplotlib.use('Agg')
+        from matplotlib import pyplot as plt
+        from matplotlib import cm as cm
+        from matplotlib import colors as colors
+        from matplotlib import colorbar as colorbar
+
+        # Print Fv image
+        print_image(fv_img, (str(filename[0:-4]) + '_fv_img.png'))
+        print('\t'.join(map(str, ('IMAGE', 'fv', str(filename[0:-4]) + '_fv_img.png'))))
+
+        # Print FvFm slice
         print_image(fvfm_stack, (str(filename[0:-4]) + '_fvfm_hist_slice.png'))
         print('\t'.join(map(str, ('IMAGE', 'slice', fig_name))))
+
+        # Create Histogram Plot, if you change the bin number you might need to change binx so that it prints an appropriate number of labels
+        binx = bins / 50
+        fvfm_plot = plt.plot(tmid, fvfm_hist, color='green', label='FvFm')
+        plt.xticks(list(tmid[0::binx]), rotation='vertical', size='xx-small')
+        legend = plt.legend()
+        ax = plt.subplot(111)
+        ax.set_ylabel('Plant Pixels')
+        ax.text(0.05, 0.95, ('Peak Bin Value: ' + str(max_bin)), transform=ax.transAxes, verticalalignment='top')
+        plt.grid()
+        plt.title('Fv/Fm of ' + str(filename[0:-4]))
+        fig_name = (str(filename[0:-4]) + '_fvfm_hist.svg')
+        plt.savefig(fig_name)
+        plt.clf()
+        print('\t'.join(map(str, ('IMAGE', 'hist', fig_name))))
+
 
         # Pseudocolor FvFm image
         ix, iy = np.shape(fmax)
@@ -202,21 +209,10 @@ def fluor_fvfm(fdark, fmin, fmax, mask, device, filename, bins=1000, debug=None)
         plt.clf()
         print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
 
-        if os.path.isfile(('1_fluor_pseudocolor_colorbar.svg')):
-            pass
-        else:
-            filename1 = str(filename)
-            name_array = filename1.split("/")
-            filename2 = "/".join(map(str, name_array[:-1]))
-            fig = plt.figure()
-            ax1 = fig.add_axes([0.05, 0.80, 0.9, 0.15])
-            valmin = -0
-            valmax = 1
-            norm = colors.Normalize(vmin=valmin, vmax=valmax)
-            cb1 = colorbar.ColorbarBase(ax1, cmap=cm.jet, norm=norm, orientation='horizontal')
-            fig_name = str(filename2) + '/1_fluor_pseudocolor_colorbar.svg'
-            plt.savefig(fig_name, dpi=600, bbox_inches='tight')
-            plt.clf()
+        path = os.path.dirname(filename)
+        fig_name = 'FvFm_pseudocolor_colorbar.svg'
+        if not os.path.isfile(path + '/' + fig_name):
+            plot_colorbar(path, fig_name, 2)
 
     if debug is 'print':
         print_image(fmin_mask, (str(device) + '_fmin_mask.png'))
