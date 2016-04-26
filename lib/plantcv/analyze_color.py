@@ -68,19 +68,21 @@ def _pseudocolored_image(histogram, bins, img, mask, background, channel, filena
         img_back3 = cv2.bitwise_and(w_back3, w_back3, mask=mask_inv)
         cplant_back = cv2.add(cplant1, img_back3)
 
-    fig_name_pseudo = str(filename[0:-4]) + '_' + str(channel) + '_pseudo_on_' + str(background) + '.jpg'
-    # fig_name_pseudo= str(filename[0:-4]) + '_' + str(channel) + '_pseudo_on_' + str(background) + '.png'
+    if filename is not None:
+        fig_name_pseudo = str(filename[0:-4]) + '_' + str(channel) + '_pseudo_on_' + str(background) + '.jpg'
+        # fig_name_pseudo= str(filename[0:-4]) + '_' + str(channel) + '_pseudo_on_' + str(background) + '.png'
 
-    path = os.path.dirname(filename)
-    fig_name = 'VIS_pseudocolor_colorbar_' + str(channel) + '_channel.svg'
-    if not os.path.isfile(path + '/' + fig_name):
-        plot_colorbar(path, fig_name, bins)
+        path = os.path.dirname(filename)
+        fig_name = 'VIS_pseudocolor_colorbar_' + str(channel) + '_channel.svg'
+        if not os.path.isfile(path + '/' + fig_name):
+            plot_colorbar(path, fig_name, bins)
 
-    if debug is 'print':
-        print_image(cplant_back, fig_name_pseudo)
-    elif debug is 'plot':
+        if debug is 'print':
+            print_image(cplant_back, fig_name_pseudo)
+        analysis_images.append(['IMAGE', 'pseudo', fig_name_pseudo])
+
+    if debug is 'plot':
         plot_image(cplant_back)
-    analysis_images.append(['IMAGE', 'pseudo', fig_name_pseudo])
 
     return analysis_images
 
