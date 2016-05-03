@@ -213,43 +213,6 @@ def analyze_object(img, imgname, obj, mask, device, debug=None, filename=False):
         eccentricity
     )
 
-<<<<<<< HEAD
-  analysis_images = []
-      
-   #Draw properties
-  if area and filename:
-    cv2.drawContours(ori_img, obj, -1, (255,0,0), 1)
-    cv2.drawContours(ori_img, [hull], -1, (0,0,255), 1)
-    cv2.line(ori_img, (x,y), (x+width,y), (0,0,255), 1)
-    cv2.line(ori_img, (int(cmx),y), (int(cmx),y+height), (0,0,255), 1)
-    cv2.line(ori_img,(tuple(caliper_transpose[caliper_length-1])),(tuple(caliper_transpose[0])),(0,0,255),1)
-    cv2.circle(ori_img, (int(cmx),int(cmy)), 10, (0,0,255), 1)
-    # Output images with convex hull, extent x and y
-    extention = filename.split('.')[-1]
-    #out_file = str(filename[0:-4]) + '_shapes.' + extention
-    out_file = str(filename[0:-4]) + '_shapes.jpg'
-    out_file1 = str(filename[0:-4]) + '_mask.jpg'
-    
-    print_image(ori_img, out_file)
-    analysis_images.append(['IMAGE', 'shapes', out_file])
-    
-    print_image(mask,out_file1)
-    analysis_images.append(['IMAGE','mask',out_file1])
-    
-  else:
-    pass
-  
-  if debug:
-    cv2.drawContours(ori_img, obj, -1, (255,0,0), 3)
-    cv2.drawContours(ori_img, [hull], -1, (0,0,255), 3)
-    cv2.line(ori_img, (x,y), (x+width,y), (0,0,255), 3)
-    cv2.line(ori_img, (int(cmx),y), (int(cmx),y+height), (0,0,255), 3)
-    cv2.circle(ori_img, (int(cmx),int(cmy)), 10, (0,0,255), 3)
-    cv2.line(ori_img,(tuple(caliper_transpose[caliper_length-1])),(tuple(caliper_transpose[0])),(0,0,255),3)
-    print_image(ori_img,(str(device)+'_shapes.jpg'))
- 
-  return device, shape_header, shape_data, analysis_images
-=======
     analysis_images = []
 
     # Draw properties
@@ -276,16 +239,16 @@ def analyze_object(img, imgname, obj, mask, device, debug=None, filename=False):
         pass
 
     if debug is not None:
-        cv2.drawContours(ori_img, obj, -1, (255, 0, 0), 1)
-        cv2.drawContours(ori_img, [hull], -1, (0, 0, 255), 1)
-        cv2.line(ori_img, (x, y), (x + width, y), (0, 0, 255), 1)
-        cv2.line(ori_img, (int(cmx), y), (int(cmx), y + height), (0, 0, 255), 1)
-        cv2.circle(ori_img, (int(cmx), int(cmy)), 10, (0, 0, 255), 1)
-        cv2.line(ori_img, (tuple(caliper_transpose[caliper_length - 1])), (tuple(caliper_transpose[0])), (0, 0, 255), 1)
+        cv2.drawContours(ori_img, obj, -1, (255, 0, 0), 3)
+        cv2.drawContours(ori_img, [hull], -1, (0, 0, 255), 3)
+        cv2.line(ori_img, (x, y), (x + width, y), (0, 0, 255), 3)
+        cv2.line(ori_img, (int(cmx), y), (int(cmx), y + height), (0, 0, 255), 3)
+        cv2.circle(ori_img, (int(cmx), int(cmy)), 10, (0, 0, 255), 3)
+        cv2.line(ori_img, (tuple(caliper_transpose[caliper_length - 1])), (tuple(caliper_transpose[0])), (0, 0, 255), 3)
         if debug is 'print':
             print_image(ori_img, (str(device) + '_shapes.jpg'))
         elif debug is 'plot':
             plot_image(ori_img)
 
     return device, shape_header, shape_data, analysis_images
->>>>>>> ead12f2b97deb082e2d5d7181463b34f78cc9a89
+
