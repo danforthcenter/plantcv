@@ -221,12 +221,12 @@ def analyze_object(img,imgname,obj, mask, device, debug=False,filename=False):
     pass
   
   if debug:
-    cv2.drawContours(ori_img, obj, -1, (255,0,0), 1)
-    cv2.drawContours(ori_img, [hull], -1, (0,0,255), 1)
-    cv2.line(ori_img, (x,y), (x+width,y), (0,0,255), 1)
-    cv2.line(ori_img, (int(cmx),y), (int(cmx),y+height), (0,0,255), 1)
-    cv2.circle(ori_img, (int(cmx),int(cmy)), 10, (0,0,255), 1)
-    cv2.line(ori_img,(tuple(caliper_transpose[caliper_length-1])),(tuple(caliper_transpose[0])),(0,0,255),1)
+    cv2.drawContours(ori_img, obj, -1, (255,0,0), 3)
+    cv2.drawContours(ori_img, [hull], -1, (0,0,255), 3)
+    cv2.line(ori_img, (x,y), (x+width,y), (0,0,255), 3)
+    cv2.line(ori_img, (int(cmx),y), (int(cmx),y+height), (0,0,255), 3)
+    cv2.circle(ori_img, (int(cmx),int(cmy)), 10, (0,0,255), 3)
+    cv2.line(ori_img,(tuple(caliper_transpose[caliper_length-1])),(tuple(caliper_transpose[0])),(0,0,255),3)
     print_image(ori_img,(str(device)+'_shapes.jpg'))
  
   return device, shape_header, shape_data, analysis_images
