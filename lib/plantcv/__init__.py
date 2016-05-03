@@ -1,62 +1,15 @@
-__all__ = ["fatal_error",
-           "print_image",
-           "readimage",
-           "laplace_filter",
-           "sobel_filter",
-           "scharr_filter",
-           "HistEqualization",
-           "plot_hist",
-           "image_add",
-           "image_subtract",
-           "erode",
-           "dilate",
-           "watershed",
-           "rectangle_mask",
-           "border_mask",
-           "rgb2gray_hsv",
-           "rgb2gray_lab",
-           "rgb2gray",
-           "binary_threshold",
-           "median_blur",
-           "fill",
-           "invert",
-           "logical_and",
-           "logical_or",
-           "logical_xor",
-           "apply_mask",
-           "find_objects",
-           "define_roi",
-           "roi_objects",
-           "object_composition",
-           "analyze_object",
-           "analyze_bound",
-           "analyze_color",
-           "_pseudocolored_image",
-           "analyze_NIR_intensity",
-           "fluor_fvfm",
-           "print_results",
-           "resize",
-           "flip",
-           "crop_position_mask",
-           "get_nir"]
-
-import sys, os, traceback
-import cv2
-import numpy as np
-import re
-from random import randrange
-import matplotlib
-if not os.getenv('DISPLAY'):
-  matplotlib.use('Agg')
-from matplotlib import pyplot as plt
-from matplotlib import cm as cm
-from matplotlib import colors as colors
-from matplotlib import colorbar as colorbar
-import pylab as pl
-from math import atan2,degrees
+__all__ = ['fatal_error', 'print_image', 'plot_image', 'plot_colorbar', 'readimage', 'laplace_filter', 'sobel_filter',
+           'scharr_filter', 'HistEqualization', 'plot_hist', 'image_add', 'image_subtract', 'erode', 'dilate',
+           'watershed', 'rectangle_mask', 'border_mask', 'rgb2gray_hsv', 'rgb2gray_lab', 'rgb2gray', 'binary_threshold',
+           'median_blur', 'fill', 'invert', 'logical_and', 'logical_or', 'logical_xor', 'apply_mask', 'find_objects',
+           'define_roi', 'roi_objects', 'object_composition', 'analyze_object', 'analyze_bound', 'analyze_color',
+           '_pseudocolored_image', 'analyze_NIR_intensity', 'fluor_fvfm', 'print_results', 'resize', 'flip',
+           'crop_position_mask', 'get_nir', 'adaptive_threshold', 'otsu_auto_threshold']
 
 from fatal_error import fatal_error
 from print_image import print_image
+from plot_image import plot_image
+from plot_colorbar import plot_colorbar
 from readimage import readimage
 from laplace_filter import laplace_filter
 from sobel_filter import sobel_filter
@@ -95,3 +48,5 @@ from resize import resize
 from flip import flip
 from crop_position_mask import crop_position_mask
 from get_nir import get_nir
+from adaptive_threshold import adaptive_threshold
+from otsu_auto_threshold import otsu_auto_threshold
