@@ -258,13 +258,7 @@ def main():
     multi_start_time = time.time()
     print("Processing images... ", file=sys.stderr)
 
-    try:
-        p = mp.Pool(processes=args.cpu)
-        p.map_async(process_images_multiproc, jobs).get(9999999)
-    except KeyboardInterrupt:
-        p.terminate()
-        p.join()
-        raise ValueError("Execution terminated by user\n")
+    exe_multiproc(jobs, args.cpu)
 
     # Parallel clock time
     multi_clock_time = time.time() - multi_start_time
@@ -611,8 +605,8 @@ def phenofront_parser(args):
 
     return args, meta
 
-
 ###########################################
+
 
 # Process images using multiprocessing
 ###########################################
@@ -620,6 +614,17 @@ def process_images_multiproc(jobs):
     for job in jobs:
         os.system(job)
 
+
+# Multiprocessing pool builder
+###########################################
+def exe_multiproc(jobs, cpus):
+    try:
+        p = mp.Pool(processes=cpus)
+        p.map_async(process_images_multiproc, jobs).get(9999999)
+    except KeyboardInterrupt:
+        p.terminate()
+        p.join()
+        raise ValueError("Execution terminated by user\n")
 
 ###########################################
 
