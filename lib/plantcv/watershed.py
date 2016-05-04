@@ -29,8 +29,8 @@ def watershed(img, marker, device, debug=None):
 
     cv2.watershed(img, marker)
     device += 1
-    if debug is 'print':
+    if debug == 'print':
         print_image(marker, str(device) + 'watershed_img' + '.png')
-    elif debug is 'plot':
+    elif debug == 'plot':
         plot_image(marker, cmap='gray')
     return device, marker

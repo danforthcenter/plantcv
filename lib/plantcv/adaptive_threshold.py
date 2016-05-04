@@ -60,10 +60,10 @@ def adaptive_threshold(img, maxValue, thres_type, object_type, device, debug=Non
     t_img = cv2.adaptiveThreshold(img, maxValue, thres, obj, 11, 2)
 
     # print out the image if the debug is true
-    if debug is 'print':
+    if debug == 'print':
         name = str(device) + '_adaptive_threshold_' + thres_type + ext
         print_image(t_img, name)
-    elif debug is 'plot':
+    elif debug == 'plot':
         plot_image(t_img, cmap='gray')
 
     return device, t_img

@@ -121,11 +121,11 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False, debu
         if not os.path.isfile(path + '/' + fig_name):
             plot_colorbar(path, fig_name, bins)
 
-        if debug is 'print':
+        if debug == 'print':
             print_image(cplant1, (str(device) + "_nir_pseudo_plant.jpg"))
             print_image(img_back3, (str(device) + "_nir_pseudo_background.jpg"))
             print_image(cplant_back, (str(device) + "_nir_pseudo_plant_back.jpg"))
-        elif debug is 'plot':
+        elif debug == 'plot':
             plot_image(cplant1)
             plot_image(img_back3)
             plot_image(cplant_back)

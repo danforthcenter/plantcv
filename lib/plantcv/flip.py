@@ -34,9 +34,9 @@ def flip(img, direction, device, debug=None):
     else:
         fatal_error(str(direction) + " is not a valid direction, must be horizontal or vertical")
 
-    if debug is 'print':
+    if debug == 'print':
         print_image(vh_img, (str(device) + "_flipped.png"))
-    elif debug is 'plot':
+    elif debug == 'plot':
         plot_image(vh_img)
 
     return device, vh_img

@@ -36,9 +36,9 @@ def resize(img, resize_x, resize_y, device, debug=None):
     if resize_x <= 0 and resize_y <= 0:
         fatal_error("Resize values both cannot be 0 or negative values!")
 
-    if debug is 'print':
+    if debug == 'print':
         print_image(reimg, (str(device) + "_resize1.png"))
-    elif debug is 'plot':
+    elif debug == 'plot':
         plot_image(reimg)
 
     return device, reimg

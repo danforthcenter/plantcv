@@ -55,8 +55,8 @@ def border_mask(img, p1, p2, device, debug=None, color="black"):
         contour, hierarchy = cv2.findContours(bnk, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
         cv2.drawContours(bnk, contour, -1, (192, 192, 192), 5)
         device += 1
-    if debug is 'print':
+    if debug == 'print':
         print_image(bnk, (str(device) + '_brd_mskd_' + '.png'))
-    elif debug is 'plot':
+    elif debug == 'plot':
         plot_image(bnk)
     return device, bnk, contour, hierarchy

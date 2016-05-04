@@ -32,21 +32,21 @@ def rgb2gray_hsv(img, channel, device, debug=None):
     h, s, v = cv2.split(hsv)
     device += 1
     if channel == 'h':
-        if debug is 'print':
+        if debug == 'print':
             print_image(h, (str(device) + '_hsv_hue.png'))
-        elif debug is 'plot':
+        elif debug == 'plot':
             plot_image(h, cmap='gray')
         return device, h
     elif channel == 's':
-        if debug is 'print':
+        if debug == 'print':
             print_image(s, (str(device) + '_hsv_saturation.png'))
-        elif debug is 'plot':
+        elif debug == 'plot':
             plot_image(s, cmap='gray')
         return device, s
     elif channel == 'v':
-        if debug is 'print':
+        if debug == 'print':
             print_image(v, (str(device) + '_hsv_value.png'))
-        elif debug is 'plot':
+        elif debug == 'plot':
             plot_image(v, cmap='gray')
         return device, v
     else:

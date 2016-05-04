@@ -245,9 +245,9 @@ def analyze_object(img, imgname, obj, mask, device, debug=None, filename=False):
         cv2.line(ori_img, (int(cmx), y), (int(cmx), y + height), (0, 0, 255), 3)
         cv2.circle(ori_img, (int(cmx), int(cmy)), 10, (0, 0, 255), 3)
         cv2.line(ori_img, (tuple(caliper_transpose[caliper_length - 1])), (tuple(caliper_transpose[0])), (0, 0, 255), 3)
-        if debug is 'print':
+        if debug == 'print':
             print_image(ori_img, (str(device) + '_shapes.jpg'))
-        elif debug is 'plot':
+        elif debug == 'plot':
             plot_image(ori_img)
 
     return device, shape_header, shape_data, analysis_images

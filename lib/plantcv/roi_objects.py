@@ -100,11 +100,11 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
     else:
         fatal_error('ROI Type' + str(roi_type) + ' is not "cutto" or "partial"!')
 
-    if debug is 'print':
+    if debug == 'print':
         print_image(w_back, (str(device) + '_roi_objects.png'))
         print_image(ori_img, (str(device) + '_obj_on_img.png'))
         print_image(mask, (str(device) + '_roi_mask.png'))
-    elif debug is 'plot':
+    elif debug == 'plot':
         plot_image(w_back)
         plot_image(ori_img)
         plot_image(mask, cmap='gray')

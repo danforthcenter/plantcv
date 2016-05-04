@@ -26,8 +26,8 @@ def invert(img, device, debug=None):
 
     device += 1
     img_inv = cv2.bitwise_not(img)
-    if debug is 'print':
+    if debug == 'print':
         print_image(img_inv, (str(device) + '_invert.png'))
-    elif debug is 'plot':
+    elif debug == 'plot':
         plot_image(img_inv, cmap='gray')
     return device, img_inv

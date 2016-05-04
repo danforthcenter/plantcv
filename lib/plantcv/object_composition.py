@@ -55,9 +55,9 @@ def object_composition(img, contours, hierarchy, device, debug=None):
         for cnt in contours:
             cv2.drawContours(ori_img, cnt, -1, (255, 0, 0), 4)
             cv2.drawContours(ori_img, group, -1, (255, 0, 0), 4)
-        if debug is 'print':
+        if debug == 'print':
             print_image(ori_img, (str(device) + '_objcomp.png'))
             print_image(ori_img, (str(device) + '_objcomp_mask.png'))
-        elif debug is 'plot':
+        elif debug == 'plot':
             plot_image(ori_img)
     return device, group, mask

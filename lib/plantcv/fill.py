@@ -49,9 +49,9 @@ def fill(img, mask, size, device, debug=None):
         if area <= size:
             # cv2.fillPoly(img, pts = cnt, color=(0,0,0))
             cv2.drawContours(img, contours, c, (0, 0, 0), -1, lineType=8, hierarchy=hierarchy)
-    if debug is 'print':
+    if debug == 'print':
         print_image(img, (str(device) + '_fill' + str(size) + '.png'))
-    elif debug is 'plot':
+    elif debug == 'plot':
         plot_image(img, cmap='gray')
 
     return device, img

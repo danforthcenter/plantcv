@@ -60,8 +60,8 @@ def rectangle_mask(img, p1, p2, device, debug=None, color="black"):
         # thickness = -1. Note that you should only print the first contour (contour[0]) if you want to fill with
         # thickness = -1. otherwise two rectangles will be drawn and the space between them will get filled
         cv2.drawContours(bnk, contour, 0, (192, 192, 192), -1)
-    if debug is 'print':
+    if debug == 'print':
         print_image(bnk, (str(device) + '_roi.png'))
-    elif debug is 'plot':
+    elif debug == 'plot':
         plot_image(bnk)
     return device, bnk, contour, hierarchy

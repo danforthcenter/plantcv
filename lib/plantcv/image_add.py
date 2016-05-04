@@ -29,8 +29,8 @@ def image_add(img1, img2, device, debug=None):
 
     added_img = img1 + img2
     device += 1
-    if debug is 'print':
+    if debug == 'print':
         print_image(added_img, str(device) + '_added' + '.png')
-    elif debug is 'plot':
+    elif debug == 'plot':
         plot_image(added_img, cmap='gray')
     return device, added_img

@@ -26,8 +26,8 @@ def rgb2gray(img, device, debug=None):
 
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     device += 1
-    if debug is 'print':
+    if debug == 'print':
         print_image(gray, (str(device) + '_gray.png'))
-    elif debug is 'plot':
+    elif debug == 'plot':
         plot_image(gray, cmap='gray')
     return device, gray

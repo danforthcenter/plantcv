@@ -35,9 +35,9 @@ def scharr_filter(img, dX, dY, scale, device, debug=None):
 
     sr_img = cv2.Scharr(src=img, ddepth=-1, dx=dX, dy=dY, scale=scale)
     device += 1
-    if debug is 'print':
+    if debug == 'print':
         print_image(sr_img,
                     str(device) + '_sr_img' + '_dx_' + str(dX) + '_dy_' + str(dY) + '_scale_' + str(scale) + '.png')
-    elif debug is 'plot':
+    elif debug == 'plot':
         plot_image(sr_img, cmap='gray')
     return device, sr_img

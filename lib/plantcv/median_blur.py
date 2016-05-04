@@ -28,8 +28,8 @@ def median_blur(img, ksize, device, debug=None):
 
     img_mblur = cv2.medianBlur(img, ksize)
     device += 1
-    if debug is 'print':
+    if debug == 'print':
         print_image(img_mblur, (str(device) + '_median_blur' + str(ksize) + '.png'))
-    elif debug is 'plot':
+    elif debug == 'plot':
         plot_image(img_mblur, cmap='gray')
     return device, img_mblur
