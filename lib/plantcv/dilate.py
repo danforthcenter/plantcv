@@ -34,8 +34,8 @@ def dilate(img, kernel, i, device, debug=None):
     kernel2 = np.ones((kernel1,kernel1),np.uint8)
     dil_img = cv2.dilate(src = img, kernel = kernel2, iterations = i)
     device += 1
-    if debug is 'print':
+    if debug == 'print':
         print_image(dil_img, str(device) + '_dil_image_' + 'itr_' + str(i) + '.png')
-    elif debug is 'plot':
+    elif debug == 'plot':
         plot_image(dil_img, cmap='gray')
     return device, dil_img

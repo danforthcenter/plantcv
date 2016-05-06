@@ -27,8 +27,8 @@ def HistEqualization(img, device, debug=None):
 
     img_eh = cv2.equalizeHist(img)
     device += 1
-    if debug is 'print':
+    if debug == 'print':
         print_image(img_eh, str(device) + '_hist_equal_img.png')
-    elif debug is 'plot':
+    elif debug == 'plot':
         plot_image(img_eh)
     return device, img_eh

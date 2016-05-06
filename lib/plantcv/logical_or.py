@@ -28,8 +28,8 @@ def logical_or(img1, img2, device, debug=None):
 
     device += 1
     merged = cv2.bitwise_or(img1, img2)
-    if debug is 'print':
+    if debug == 'print':
         print_image(merged, (str(device) + '_or_joined.png'))
-    elif debug is 'plot':
+    elif debug == 'plot':
         plot_image(merged, cmap='gray')
     return device, merged

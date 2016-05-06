@@ -214,11 +214,11 @@ def fluor_fvfm(fdark, fmin, fmax, mask, device, filename, bins=1000, debug=None)
         if not os.path.isfile(path + '/' + fig_name):
             plot_colorbar(path, fig_name, 2)
 
-    if debug is 'print':
+    if debug == 'print':
         print_image(fmin_mask, (str(device) + '_fmin_mask.png'))
         print_image(fmax_mask, (str(device) + '_fmax_mask.png'))
         print_image(fv3, (str(device) + '_fv_convert.png'))
-    elif debug is 'plot':
+    elif debug == 'plot':
         plot_image(fmin_mask, cmap='gray')
         plot_image(fmax_mask, cmap='gray')
         plot_image(fv3, cmap='gray')

@@ -35,9 +35,9 @@ def find_objects(img, mask, device, debug=None):
     objects, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     for i, cnt in enumerate(objects):
         cv2.drawContours(ori_img, objects, i, (255, 102, 255), -1, lineType=8, hierarchy=hierarchy)
-    if debug is 'print':
+    if debug == 'print':
         print_image(ori_img, (str(device) + '_id_objects.png'))
-    elif debug is 'plot':
+    elif debug == 'plot':
         plot_image(ori_img)
 
     return device, objects, hierarchy

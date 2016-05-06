@@ -29,8 +29,8 @@ def image_subtract(img1, img2, device, debug=None):
 
     subed_img = img1 - img2
     device += 1
-    if debug is 'print':
+    if debug == 'print':
         print_image(subed_img, str(device) + '_subtracted' + '.png')
-    elif debug is 'plot':
+    elif debug == 'plot':
         plot_image(subed_img, cmap='gray')
     return device, subed_img

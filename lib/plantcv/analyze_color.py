@@ -77,11 +77,11 @@ def _pseudocolored_image(histogram, bins, img, mask, background, channel, filena
         if not os.path.isfile(path + '/' + fig_name):
             plot_colorbar(path, fig_name, bins)
 
-        if debug is 'print':
+        if debug == 'print':
             print_image(cplant_back, fig_name_pseudo)
         analysis_images.append(['IMAGE', 'pseudo', fig_name_pseudo])
 
-    if debug is 'plot':
+    if debug == 'plot':
         plot_image(cplant_back)
 
     return analysis_images
@@ -321,7 +321,7 @@ def analyze_color(img, imgname, mask, bins, device, debug=None, hist_plot_type=N
             fig_name = (str(filename[0:-4]) + '_' + str(hist_plot_type) + '_hist.svg')
             plt.savefig(fig_name)
             analysis_images.append(['IMAGE', 'hist', fig_name])
-            if debug is 'print':
+            if debug == 'print':
                 fig_name = (str(device) + '_' + str(hist_plot_type) + '_hist.svg')
                 plt.savefig(fig_name)
             plt.clf()

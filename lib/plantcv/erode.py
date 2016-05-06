@@ -35,8 +35,8 @@ def erode(img, kernel, i, device, debug=None):
     kernel2 = np.ones((kernel1, kernel1), np.uint8)
     er_img = cv2.erode(src=img, kernel=kernel2, iterations=i)
     device += 1
-    if debug is 'print':
+    if debug == 'print':
         print_image(er_img, str(device) + '_er_image_' + 'itr_' + str(i) + '.png')
-    elif debug is 'plot':
+    elif debug == 'plot':
         plot_image(er_img)
     return device, er_img

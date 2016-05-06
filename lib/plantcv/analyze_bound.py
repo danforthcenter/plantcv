@@ -167,10 +167,10 @@ def analyze_bound(img, imgname, obj, mask, line_position, device, debug=None, fi
                 cv2.line(ori_img, (int(cmx), y_coor - 2), (int(cmx), y_coor + height_below_bound), (0, 255, 0), 3)
                 cv2.line(wback, (int(cmx), y_coor - 2), (int(cmx), y_coor - height_above_bound), (255, 0, 0), 3)
                 cv2.line(wback, (int(cmx), y_coor - 2), (int(cmx), y_coor + height_below_bound), (0, 255, 0), 3)
-        if debug is 'print':
+        if debug == 'print':
             print_image(wback, (str(device) + '_boundary_on_white.jpg'))
             print_image(ori_img, (str(device) + '_boundary_on_img.jpg'))
-        if debug is 'plot':
+        if debug == 'plot':
             plot_image(wback)
             plot_image(ori_img)
 

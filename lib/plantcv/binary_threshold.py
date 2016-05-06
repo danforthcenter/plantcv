@@ -36,16 +36,16 @@ def binary_threshold(img, threshold, maxValue, object_type, device, debug=None):
     device += 1
     if object_type == 'light':
         ret, t_img = cv2.threshold(img, threshold, maxValue, cv2.THRESH_BINARY)
-        if debug is 'print':
+        if debug == 'print':
             print_image(t_img, (str(device) + '_binary_threshold' + str(threshold) + '.png'))
-        elif debug is 'plot':
+        elif debug == 'plot':
             plot_image(t_img, cmap='gray')
         return device, t_img
     elif object_type == 'dark':
         ret, t_img = cv2.threshold(img, threshold, maxValue, cv2.THRESH_BINARY_INV)
-        if debug is 'print':
+        if debug == 'print':
             print_image(t_img, (str(device) + '_binary_threshold' + str(threshold) + '_inv.png'))
-        elif debug is 'plot':
+        elif debug == 'plot':
             plot_image(t_img, cmap='gray')
         return device, t_img
     else:

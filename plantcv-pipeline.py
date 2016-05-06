@@ -258,13 +258,7 @@ def main():
     multi_start_time = time.time()
     print("Processing images... ", file=sys.stderr)
 
-    try:
-        p = mp.Pool(processes=args.cpu)
-        p.map_async(process_images_multiproc, jobs).get(9999999)
-    except KeyboardInterrupt:
-        p.terminate()
-        p.join()
-        raise ValueError("Execution terminated by user\n")
+    exe_multiproc(jobs, args.cpu)
 
     # Parallel clock time
     multi_clock_time = time.time() - multi_start_time
@@ -415,12 +409,12 @@ def db_connect(args):
 
     if not args.create:
         # Get the last run ID
-        for row in args.sq.execute('SELECT MAX(run_id) as max FROM runinfo'):
+        for row in args.sq.execute('SELECT MAX(run_id) AS max FROM runinfo'):
             if row['max'] is not None:
                 args.run_id = row['max']
 
         # Get the last run ID
-        for row in args.sq.execute('SELECT MAX(image_id) as max FROM metadata'):
+        for row in args.sq.execute('SELECT MAX(image_id) AS max FROM metadata'):
             if row['max'] is not None:
                 args.image_id = row['max']
 
@@ -611,8 +605,8 @@ def phenofront_parser(args):
 
     return args, meta
 
-
 ###########################################
+
 
 # Process images using multiprocessing
 ###########################################
@@ -620,6 +614,17 @@ def process_images_multiproc(jobs):
     for job in jobs:
         os.system(job)
 
+
+# Multiprocessing pool builder
+###########################################
+def exe_multiproc(jobs, cpus):
+    try:
+        p = mp.Pool(processes=cpus)
+        p.map_async(process_images_multiproc, jobs).get(9999999)
+    except KeyboardInterrupt:
+        p.terminate()
+        p.join()
+        raise ValueError("Execution terminated by user\n")
 
 ###########################################
 
@@ -854,7 +859,6 @@ def process_results(args):
             args.image_id += 1
             meta['image_id'] = args.image_id
             meta['run_id'] = args.run_id
-            #meta['unixtime'] = unix_time
 
             meta_table = []
             for field in metadata_fields:
@@ -901,7 +905,6 @@ def process_results(args):
                     feature_table.append(0)
 
                 args.features_file.write('|'.join(map(str, feature_table)) + '\n')
-
 
 
 if __name__ == '__main__':

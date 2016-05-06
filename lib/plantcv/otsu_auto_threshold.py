@@ -2,6 +2,7 @@
 
 import cv2
 from . import print_image
+from . import plot_image
 
 
 def otsu_auto_threshold(img, maxValue, object_type, device, debug=False):
@@ -44,8 +45,10 @@ def otsu_auto_threshold(img, maxValue, object_type, device, debug=False):
     # threshold the image based on the object type using otsu's binarization
     t_val, t_img = cv2.threshold(img, 0, maxValue, obj)
 
-    if debug:
+    if debug == 'print':
         name = str(device) + '_otsu_auto_threshold_' + str(t_val) + str(extension)
         print_image(t_img, name)
+    elif debug == 'plot':
+        plot_image(t_img, cmap="gray")
 
     return device, t_img
