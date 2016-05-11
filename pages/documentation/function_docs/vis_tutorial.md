@@ -238,7 +238,7 @@ The point of this mask is really to exclude as much background with simple thres
 <img src="{{site.baseurl}}/img/documentation_images/tutorial-vis-pipeline/17_or_joined.png" height="200"></a>  
 <a href="{{site.baseurl}}/img/documentation_images/tutorial-vis-pipeline/18_fill200.png" target="_blank">
 <img src="{{site.baseurl}}/img/documentation_images/tutorial-vis-pipeline/18_fill200.png" height="200"></a>
-<a href="{{site.baseurl}}/img/documentation_images/tutorial-vis-pipeline/18_fill200.png" target="_blank">
+<a href="{{site.baseurl}}/img/documentation_images/tutorial-vis-pipeline/19_wmasked.png" target="_blank">
 <img src="{{site.baseurl}}/img/documentation_images/tutorial-vis-pipeline/19_wmasked.png" height="200"></a>
 
 **Figure 8.** Thresholding for plant material. The sample image used had very green leaves, but often (especially with stress treatments) there are yellowing or redish leaves or regions of necrosis.
