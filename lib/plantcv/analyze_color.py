@@ -68,21 +68,20 @@ def _pseudocolored_image(histogram, bins, img, mask, background, channel, filena
         img_back3 = cv2.bitwise_and(w_back3, w_back3, mask=mask_inv)
         cplant_back = cv2.add(cplant1, img_back3)
 
-    if filename is not None:
+    if filename:
         fig_name_pseudo = str(filename[0:-4]) + '_' + str(channel) + '_pseudo_on_' + str(background) + '.jpg'
-        # fig_name_pseudo= str(filename[0:-4]) + '_' + str(channel) + '_pseudo_on_' + str(background) + '.png'
-
         path = os.path.dirname(filename)
-        fig_name = 'VIS_pseudocolor_colorbar_' + str(channel) + '_channel.svg'
-        if not os.path.isfile(path + '/' + fig_name):
-            plot_colorbar(path, fig_name, bins)
-
-        if debug == 'print':
-            print_image(cplant_back, fig_name_pseudo)
+        print_image(cplant_back,fig_name_pseudo)
         analysis_images.append(['IMAGE', 'pseudo', fig_name_pseudo])
-
-    if debug == 'plot':
-        plot_image(cplant_back)
+        
+        if debug is not None:
+            if debug == 'print':
+                print_image(cplant_back, (str(device) + '_pseudocolor.jpg'))
+                fig_name = 'VIS_pseudocolor_colorbar_' + str(channel) + '_channel.svg'
+                if not os.path.isfile(path + '/' + fig_name):
+                    plot_colorbar(path, fig_name, bins)
+            elif debug == 'plot':
+                plot_image(cplant_back)       
 
     return analysis_images
 
@@ -126,7 +125,6 @@ def analyze_color(img, imgname, mask, bins, device, debug=None, hist_plot_type=N
     :return hist_data: list
     :return analysis_images: list
     """
-
     device += 1
     if len(np.shape(img)) == 3:
         ix, iy, iz = np.shape(img)
@@ -211,9 +209,8 @@ def analyze_color(img, imgname, mask, bins, device, debug=None, hist_plot_type=N
     analysis_images = []
 
     p_channel = pseudo_channel
-    pseudocolor_img = 1
 
-    if p_channel is not None:
+    if p_channel is None:
         pass
     elif not filename:
         pass

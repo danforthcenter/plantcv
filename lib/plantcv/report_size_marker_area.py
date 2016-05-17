@@ -14,7 +14,7 @@ from . import object_composition
 
 
 def report_size_marker_area(img, shape, device, debug, marker='define', x_adj=0, y_adj=0, w_adj=0, h_adj=0,
-                            base='white', thresh_channel=None, thresh=None, filename=False):
+                            base='white', objcolor='dark', thresh_channel=None, thresh=None, filename=False):
     """Outputs numeric properties for an input object (contour or grouped contours).
 
     Inputs:
@@ -28,6 +28,7 @@ def report_size_marker_area(img, shape, device, debug, marker='define', x_adj=0,
     w_adj           = width
     h_adj           = height
     base            = background color 'white' is default
+    objcolor        = object color is 'dark' or 'light'
     thresh_channel  = 'h', 's','v'
     thresh          = integer value
     filename        = name of file
@@ -116,9 +117,10 @@ def report_size_marker_area(img, shape, device, debug, marker='define', x_adj=0,
 
     markerback = cv2.cvtColor(background, cv2.COLOR_RGB2GRAY)
     shape_contour, hierarchy = cv2.findContours(markerback, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-    cv2.drawContours(ori_img, shape_contour, -1, (255, 0, 0), 5)
+    cv2.drawContours(ori_img, shape_contour, -1, (255, 255, 0), 5)
+    
     if debug is 'print':
-        print_image(ori_img, (str(device) + '_roi.png'))
+        print_image(ori_img, (str(device) + '_marker_roi.png'))
     elif debug is 'plot':
         plot_image(ori_img)
 
@@ -137,7 +139,7 @@ def report_size_marker_area(img, shape, device, debug, marker='define', x_adj=0,
             else:
                 added = cv2.multiply(img, background)
             device, maskedhsv = rgb2gray_hsv(added, thresh_channel, device, debug)
-            device, masked2a_thresh = binary_threshold(maskedhsv, thresh, 255, 'dark', device, debug)
+            device, masked2a_thresh = binary_threshold(maskedhsv, thresh, 255, objcolor, device, debug)
             device, id_objects, obj_hierarchy = find_objects(added, masked2a_thresh, device, debug)
             device, roi1, roi_hierarchy = define_roi(added, shape, device, None, 'default', debug, True, x_adj, y_adj,
                                                      w_adj, h_adj)
@@ -145,19 +147,23 @@ def report_size_marker_area(img, shape, device, debug, marker='define', x_adj=0,
                                                                          id_objects, obj_hierarchy, device, debug)
             device, obj, mask = object_composition(img, roi_o, hierarchy3, device, debug)
 
-            cv2.drawContours(ori_img, obj, -1, (255, 0, 255), -1)
-
+            cv2.drawContours(ori_img, roi_o, -1, (0, 255, 0), -1, lineType=8, hierarchy=hierarchy3)
             m = cv2.moments(mask, binaryImage=True)
             area = m['m00']
         else:
             fatal_error('thresh_channel and thresh must be defined in detect mode')
     else:
         fatal_error("marker must be either in 'detect' or 'define' mode")
-
+    
+    analysis_images=[]
     if filename:
         out_file = str(filename[0:-4]) + '_sizemarker.jpg'
         print_image(ori_img, out_file)
-        analysis_images = ['IMAGE', 'marker', out_file]
+        analysis_images.append(['IMAGE', 'marker', out_file])
+    if debug is 'print':
+        print_image(ori_img, (str(device) + '_marker_shape.png'))
+    elif debug is 'plot':
+        plot_image(ori_img)
 
     marker_header = (
         'HEADER_MARKER',
