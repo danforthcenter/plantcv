@@ -42,7 +42,7 @@ def apply_mask(img, mask, mask_color, device, debug=None):
         if debug == 'print':
             print_image(white_masked, (str(device) + '_wmasked.png'))
         elif debug == 'plot':
-            plot_image(white_mask)
+            plot_image(white_masked)
         return device, white_masked
     elif mask_color == 'black':
         masked_img = cv2.bitwise_and(img, img, mask=mask)
