@@ -48,16 +48,20 @@ def object_composition(img, contours, hierarchy, device, debug=None):
             # cv2.drawContours(img, contours, -1, color_palette(1)[0], -1, hierarchy=hierarchy)
             # stack[c] = 0
     ids = np.where(stack == 1)[0]
-    group = np.vstack(contours[i] for i in ids)
-    cv2.drawContours(mask, contours, -1, (255), -1, hierarchy=hierarchy)
+    if len(ids) > 0:
+        group = np.vstack(contours[i] for i in ids)
+        cv2.drawContours(mask, contours, -1, (255), -1, hierarchy=hierarchy)
 
-    if debug is not None:
-        for cnt in contours:
-            cv2.drawContours(ori_img, cnt, -1, (255, 0, 0), 4)
-            cv2.drawContours(ori_img, group, -1, (255, 0, 0), 4)
-        if debug == 'print':
-            print_image(ori_img, (str(device) + '_objcomp.png'))
-            print_image(ori_img, (str(device) + '_objcomp_mask.png'))
-        elif debug == 'plot':
-            plot_image(ori_img)
-    return device, group, mask
+        if debug is not None:
+            for cnt in contours:
+                cv2.drawContours(ori_img, cnt, -1, (255, 0, 0), 4)
+                cv2.drawContours(ori_img, group, -1, (255, 0, 0), 4)
+            if debug == 'print':
+                print_image(ori_img, (str(device) + '_objcomp.png'))
+                print_image(ori_img, (str(device) + '_objcomp_mask.png'))
+            elif debug == 'plot':
+                plot_image(ori_img)
+        return device, group, mask
+    else:
+        print("Warning: Invalid contour.")
+        return device, None, None
