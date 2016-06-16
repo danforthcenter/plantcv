@@ -37,7 +37,7 @@ def analyze_object(img, imgname, obj, mask, device, debug=None, filename=False):
 
     # Valid objects can only be analyzed if they have >= 5 vertices
     if len(obj) < 5:
-        pass
+        return device, None, None, None
 
     ori_img = np.copy(img)
     if len(np.shape(img)) == 3:
