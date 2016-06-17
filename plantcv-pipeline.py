@@ -809,7 +809,7 @@ def process_results(args):
     for (dirpath, dirnames, filenames) in os.walk(args.jobdir):
         for filename in filenames:
             # Make sure file is a text file
-            if mimetypes.guess_type(filename) == 'text/plain':
+            if 'text/plain' in mimetypes.guess_type(filename):
                 meta = {}
                 images = {}
                 features = []
