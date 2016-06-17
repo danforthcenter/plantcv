@@ -778,6 +778,7 @@ def process_results(args):
     opt_feature_fields = ['y-position', 'height_above_bound', 'height_below_bound',
                           'above_bound_area', 'percent_above_bound_area', 'below_bound_area',
                           'percent_below_bound_area']
+    marker_fields = ['marker_area']
 
     # args.features_file.write('#' + '\t'.join(map(str, feature_fields + opt_feature_fields)) + '\n')
 
@@ -797,7 +798,7 @@ def process_results(args):
             '` TEXT NOT NULL, `'.join(map(str, metadata_fields[2:])) + '` TEXT NOT NULL);')
         args.sq.execute(
             'CREATE TABLE IF NOT EXISTS `features` (`image_id` INTEGER PRIMARY KEY, `' + '` TEXT NOT NULL, `'.join(
-                map(str, feature_fields + opt_feature_fields)) + '` TEXT NOT NULL);')
+                map(str, feature_fields + opt_feature_fields + marker_fields)) + '` TEXT NOT NULL);')
         args.sq.execute(
             'CREATE TABLE IF NOT EXISTS `analysis_images` (`image_id` INTEGER NOT NULL, `type` TEXT NOT NULL, '
             '`image_path` TEXT NOT NULL);')
@@ -818,6 +819,8 @@ def process_results(args):
                 signal_data = {}
                 boundary = []
                 boundary_data = {}
+                marker = []
+                marker_data = {}
                 # Open results file
                 with open(dirpath + '/' + filename) as results:
                     # For each line in the file
@@ -855,6 +858,14 @@ def process_results(args):
                             for i, datum in enumerate(cols):
                                 if i > 0:
                                     boundary_data[boundary[i]] = datum
+                        elif 'HEADER_MARKER' in cols[0]:
+                            marker = cols
+                            # Temporary hack
+                            marker[1] = 'marker_area'
+                        elif 'MARKER_DATA' in cols[0]:
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    marker_data[marker[i]] = datum
 
                 # Check to see if the image failed, if not continue
 
@@ -879,8 +890,14 @@ def process_results(args):
                             boundary_data[field] = 0
                     feature_data.update(boundary_data)
 
+                    # Marker data is optional, if it's not there we need to add in placeholder data
+                    if len(marker_data) == 0:
+                        for field in marker_fields:
+                            marker_data[field] = 0
+                    feature_data.update(marker_data)
+
                     feature_table = [args.image_id]
-                    for field in feature_fields + opt_feature_fields:
+                    for field in feature_fields + opt_feature_fields + marker_fields:
                         feature_table.append(feature_data[field])
 
                     args.features_file.write('|'.join(map(str, feature_table)) + '\n')
