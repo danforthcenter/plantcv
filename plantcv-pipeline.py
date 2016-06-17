@@ -160,7 +160,7 @@ def options():
             key, value = pair.split(':')
             args.imgtype[key] = value
     else:
-        args.imgtype = None
+        args.imgtype['None'] = 'None'
 
     if (args.coprocess is not None) and ('imgtype' not in args.imgtype):
         raise ValueError("When the coprocess imgtype is defined, imgtype must be included in match.")
@@ -701,14 +701,14 @@ def job_builder(args, meta):
         for j in range(0, jobs_per_cpu):
             # Add job to list
             if args.coprocess is not None and ('coimg' in meta[images[job]]):
-                job_str = "{0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt --coresult ./{6}/{7}.txt".format(
+                job_str = "python {0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt --coresult ./{6}/{7}.txt".format(
                     args.pipeline, meta[images[job]]['path'], images[job], args.outdir, args.jobdir, images[job],
                     args.jobdir, meta[images[job]]['coimg'])
                 if args.writeimg:
                     job_str += ' --writeimg'
                 jobs.append(job_str)
             else:
-                job_str = "{0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt".format(args.pipeline,
+                job_str = "python {0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt".format(args.pipeline,
                                                                                            meta[images[job]]['path'],
                                                                                            images[job], args.outdir,
                                                                                            args.jobdir, images[job])
@@ -727,14 +727,14 @@ def job_builder(args, meta):
     for j in range(job, len(images)):
         # Add job to list
         if args.coprocess is not None and ('coimg' in meta[images[j]]):
-            job_str = "{0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt --coresult ./{6}/{7}.txt".format(
+            job_str = "python {0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt --coresult ./{6}/{7}.txt".format(
                 args.pipeline, meta[images[j]]['path'], images[j], args.outdir, args.jobdir, images[j], args.jobdir,
                 meta[images[j]]['coimg'])
             if args.writeimg:
                 job_str += ' --writeimg'
             jobs.append(job_str)
         else:
-            job_str = "{0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt".format(args.pipeline,
+            job_str = "python {0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt".format(args.pipeline,
                                                                                        meta[images[j]]['path'],
                                                                                        images[j], args.outdir,
                                                                                        args.jobdir, images[j])
