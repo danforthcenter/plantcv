@@ -10,6 +10,7 @@ from dateutil.parser import parse as dt_parser
 import sqlite3
 import re
 from subprocess import call
+import mimetypes
 
 
 # Parse command-line arguments
@@ -807,104 +808,106 @@ def process_results(args):
     # Walk through the image processing job directory and process data from each file
     for (dirpath, dirnames, filenames) in os.walk(args.jobdir):
         for filename in filenames:
-            meta = {}
-            images = {}
-            features = []
-            feature_data = {}
-            signal = []
-            signal_data = {}
-            boundary = []
-            boundary_data = {}
-            # Open results file
-            with open(dirpath + '/' + filename) as results:
-                # For each line in the file
-                for row in results:
-                    # Remove the newline character
-                    row = row.rstrip('\n')
-                    # Split the line by tab characters
-                    cols = row.split('\t')
-                    # If the data is of class meta, store in the metadata dictionary
-                    if cols[0] == 'META':
-                        meta[cols[1]] = cols[2]
-                    # If the data is of class image, store in the image dictionary
-                    elif cols[0] == 'IMAGE':
-                        images[cols[1]] = cols[2]
-                    # If the data is of class shapes, store in the shapes dictionary
-                    elif cols[0] == 'HEADER_SHAPES':
-                        features = cols
-                    elif cols[0] == 'SHAPES_DATA':
-                        for i, datum in enumerate(cols):
-                            if i > 0:
-                                feature_data[features[i]] = datum
-                    # If the data is of class histogram/signal, store in the signal dictionary
-                    elif cols[0] == 'HEADER_HISTOGRAM':
-                        signal = cols
-                    elif cols[0] == 'HISTOGRAM_DATA':
-                        for i, datum in enumerate(cols):
-                            if i > 0:
-                                signal_data[signal[i]] = datum
-                    # If the data is of class boundary (horizontal rule), store in the boundary dictionary
-                    elif 'HEADER_BOUNDARY' in cols[0]:
-                        boundary = cols
-                        # Temporary hack
-                        boundary_data['y-position'] = cols[0].replace('HEADER_BOUNDARY', '')
-                    elif cols[0] == 'BOUNDARY_DATA':
-                        for i, datum in enumerate(cols):
-                            if i > 0:
-                                boundary_data[boundary[i]] = datum
+            # Make sure file is a text file
+            if mimetypes.guess_type(filename) == 'text/plain':
+                meta = {}
+                images = {}
+                features = []
+                feature_data = {}
+                signal = []
+                signal_data = {}
+                boundary = []
+                boundary_data = {}
+                # Open results file
+                with open(dirpath + '/' + filename) as results:
+                    # For each line in the file
+                    for row in results:
+                        # Remove the newline character
+                        row = row.rstrip('\n')
+                        # Split the line by tab characters
+                        cols = row.split('\t')
+                        # If the data is of class meta, store in the metadata dictionary
+                        if cols[0] == 'META':
+                            meta[cols[1]] = cols[2]
+                        # If the data is of class image, store in the image dictionary
+                        elif cols[0] == 'IMAGE':
+                            images[cols[1]] = cols[2]
+                        # If the data is of class shapes, store in the shapes dictionary
+                        elif cols[0] == 'HEADER_SHAPES':
+                            features = cols
+                        elif cols[0] == 'SHAPES_DATA':
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    feature_data[features[i]] = datum
+                        # If the data is of class histogram/signal, store in the signal dictionary
+                        elif cols[0] == 'HEADER_HISTOGRAM':
+                            signal = cols
+                        elif cols[0] == 'HISTOGRAM_DATA':
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    signal_data[signal[i]] = datum
+                        # If the data is of class boundary (horizontal rule), store in the boundary dictionary
+                        elif 'HEADER_BOUNDARY' in cols[0]:
+                            boundary = cols
+                            # Temporary hack
+                            boundary_data['y-position'] = cols[0].replace('HEADER_BOUNDARY', '')
+                        elif cols[0] == 'BOUNDARY_DATA':
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    boundary_data[boundary[i]] = datum
 
-            # Check to see if the image failed, if not continue
+                # Check to see if the image failed, if not continue
 
-            # Print the image metadata to the aggregate output file
-            args.image_id += 1
-            meta['image_id'] = args.image_id
-            meta['run_id'] = args.run_id
+                # Print the image metadata to the aggregate output file
+                args.image_id += 1
+                meta['image_id'] = args.image_id
+                meta['run_id'] = args.run_id
 
-            meta_table = []
-            for field in metadata_fields:
-                meta_table.append(meta[field])
+                meta_table = []
+                for field in metadata_fields:
+                    meta_table.append(meta[field])
 
-            if len(feature_data) != 0:
-                args.metadata_file.write('|'.join(map(str, meta_table)) + '\n')
+                if len(feature_data) != 0:
+                    args.metadata_file.write('|'.join(map(str, meta_table)) + '\n')
 
-                # Print the image feature data to the aggregate output file
-                feature_data['image_id'] = args.image_id
+                    # Print the image feature data to the aggregate output file
+                    feature_data['image_id'] = args.image_id
 
-                # Boundary data is optional, if it's not there we need to add in placeholder data
-                if len(boundary_data) == 0:
-                    for field in opt_feature_fields:
-                        boundary_data[field] = 0
-                feature_data.update(boundary_data)
+                    # Boundary data is optional, if it's not there we need to add in placeholder data
+                    if len(boundary_data) == 0:
+                        for field in opt_feature_fields:
+                            boundary_data[field] = 0
+                    feature_data.update(boundary_data)
 
-                feature_table = [args.image_id]
-                for field in feature_fields + opt_feature_fields:
-                    feature_table.append(feature_data[field])
+                    feature_table = [args.image_id]
+                    for field in feature_fields + opt_feature_fields:
+                        feature_table.append(feature_data[field])
 
-                args.features_file.write('|'.join(map(str, feature_table)) + '\n')
+                    args.features_file.write('|'.join(map(str, feature_table)) + '\n')
 
-                # Print the analysis image data to the aggregate output file
-                for img_type in images:
-                    args.analysis_images_file.write(
-                        '|'.join(map(str, (args.image_id, img_type, images[img_type]))) + '\n')
+                    # Print the analysis image data to the aggregate output file
+                    for img_type in images:
+                        args.analysis_images_file.write(
+                            '|'.join(map(str, (args.image_id, img_type, images[img_type]))) + '\n')
 
-                # Print the image signal data to the aggregate output file
-                for key in signal_data.keys():
-                    if key != 'bin-number':
-                        signal_data[key] = signal_data[key].replace('[', '')
-                        signal_data[key] = signal_data[key].replace(']', '')
-                        signal_table = [args.image_id, signal_data['bin-number'], key, signal_data[key]]
-                        args.signal_file.write('|'.join(map(str, signal_table)) + '\n')
-            else:
-                args.fail_log.write('|'.join(map(str, meta_table)) + '\n')
+                    # Print the image signal data to the aggregate output file
+                    for key in signal_data.keys():
+                        if key != 'bin-number':
+                            signal_data[key] = signal_data[key].replace('[', '')
+                            signal_data[key] = signal_data[key].replace(']', '')
+                            signal_table = [args.image_id, signal_data['bin-number'], key, signal_data[key]]
+                            args.signal_file.write('|'.join(map(str, signal_table)) + '\n')
+                else:
+                    args.fail_log.write('|'.join(map(str, meta_table)) + '\n')
 
-                args.metadata_file.write('|'.join(map(str, meta_table)) + '\n')
+                    args.metadata_file.write('|'.join(map(str, meta_table)) + '\n')
 
-                feature_table = [args.image_id]
+                    feature_table = [args.image_id]
 
-                for field in feature_fields + opt_feature_fields:
-                    feature_table.append(0)
+                    for field in feature_fields + opt_feature_fields:
+                        feature_table.append(0)
 
-                args.features_file.write('|'.join(map(str, feature_table)) + '\n')
+                    args.features_file.write('|'.join(map(str, feature_table)) + '\n')
 
 
 if __name__ == '__main__':
