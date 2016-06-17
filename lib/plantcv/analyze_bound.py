@@ -97,7 +97,7 @@ def analyze_bound(img, imgname, obj, mask, line_position, device, debug=None, fi
     percent_bound_area_above = ((float(above_bound_area)) / (float(above_bound_area + below_bound_area))) * 100
     percent_bound_area_below = ((float(below_bound_area)) / (float(above_bound_area + below_bound_area))) * 100
 
-    bound_header = (
+    bound_header = [
         'HEADER_BOUNDARY' + str(line_position),
         'height_above_bound',
         'height_below_bound',
@@ -105,9 +105,9 @@ def analyze_bound(img, imgname, obj, mask, line_position, device, debug=None, fi
         'percent_above_bound_area',
         'below_bound_area',
         'percent_below_bound_area'
-    )
+    ]
 
-    bound_data = (
+    bound_data = [
         'BOUNDARY_DATA',
         height_above_bound,
         height_below_bound,
@@ -115,7 +115,7 @@ def analyze_bound(img, imgname, obj, mask, line_position, device, debug=None, fi
         percent_bound_area_above,
         below_bound_area,
         percent_bound_area_below
-    )
+    ]
 
     analysis_images = []
 
