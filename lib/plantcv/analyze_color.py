@@ -178,7 +178,7 @@ def analyze_color(img, imgname, mask, bins, device, debug=None, hist_plot_type=N
     hist_data_v = [l[0] for l in hist_v]
 
     # Store Color Histogram Data
-    hist_header = (
+    hist_header = [
         'HEADER_HISTOGRAM',
         'bin-number',
         'blue',
@@ -190,9 +190,9 @@ def analyze_color(img, imgname, mask, bins, device, debug=None, hist_plot_type=N
         'hue',
         'saturation',
         'value'
-    )
+    ]
 
-    hist_data = (
+    hist_data = [
         'HISTOGRAM_DATA',
         bins,
         hist_data_b,
@@ -204,7 +204,7 @@ def analyze_color(img, imgname, mask, bins, device, debug=None, hist_plot_type=N
         hist_data_h,
         hist_data_s,
         hist_data_v
-    )
+    ]
 
     analysis_images = []
 

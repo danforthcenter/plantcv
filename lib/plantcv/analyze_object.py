@@ -176,7 +176,7 @@ def analyze_object(img, imgname, obj, mask, device, debug=None, filename=False):
     #  hull_area, solidity, perimeter, width, height, cmx, cmy = 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND'
 
     # Store Shape Data
-    shape_header = (
+    shape_header = [
         'HEADER_SHAPES',
         'area',
         'hull-area',
@@ -195,9 +195,9 @@ def analyze_object(img, imgname, obj, mask, device, debug=None, filename=False):
         'ellipse_minor_axis',
         'ellipse_angle',
         'ellipse_eccentricity'
-    )
+    ]
 
-    shape_data = (
+    shape_data = [
         'SHAPES_DATA',
         area,
         hull_area,
@@ -216,7 +216,7 @@ def analyze_object(img, imgname, obj, mask, device, debug=None, filename=False):
         minor_axis_length,
         angle,
         eccentricity
-    )
+    ]
 
     analysis_images = []
 
