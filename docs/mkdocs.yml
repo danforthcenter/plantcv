@@ -1,3 +1,4 @@
 pages:
 - Home: index.md
-
+- User Guide:
+	- Installation: installation.md
