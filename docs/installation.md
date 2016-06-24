@@ -1,9 +1,3 @@
----
-layout: docs
-title: Documentation
-subtitle: Installation
----
-
 ## Installation
 ### Minimum requirements
 We have tested PlantCV on CentOS 6 (RedHat Enterprise Linux) and Ubuntu 14 (Debian Linux), x86 64-bit versions only. A list of minimum tested software dependencies is listed below:
