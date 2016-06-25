@@ -9,3 +9,8 @@ pages:
     - Library:
         - Convert RGB to Gray:
             - RGB to HSV: rgb2hsv.md
+
+markdown_extensions:
+    - toc:
+        permalink: True
+    - admonition:
