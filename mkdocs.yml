@@ -9,6 +9,7 @@ pages:
 - Documentation:
   - Installation: installation.md
   - Library:
+    - 'Analyze color': analyze_color.md
     - 'Print image': print_image.md
     - 'Read image': read_image.md
     - 'RGB to HSV': rgb2hsv.md
