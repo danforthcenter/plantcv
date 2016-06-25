@@ -9,6 +9,7 @@ pages:
 - Documentation:
   - Installation: installation.md
   - Library:
+    - 'Read image': read_image.md
     - 'RGB to HSV': rgb2hsv.md
     - 'RGB to LAB': rgb2lab.md
 
