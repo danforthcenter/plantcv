@@ -24,7 +24,7 @@ returns device, color channel histogram headers, color channel histogram data, n
     - Generates histogram of color channel data.
     - Generaes pseudocolored output image of one of the channels specified.
 - **Example use:**  
- - [Use In Tutorial](../vis_tutorial.md)
+ - [Use In Tutorial](vis_tutorial.md)
 
 **Original image**
 
