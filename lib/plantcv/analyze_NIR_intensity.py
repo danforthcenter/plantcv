@@ -6,6 +6,7 @@ import numpy as np
 from . import print_image
 from . import plot_image
 from . import plot_colorbar
+from . import apply_mask
 
 
 def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False, debug=None, filename=False):
@@ -56,7 +57,7 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False, debu
     w_back = background + 255
 
     # apply plant shaped mask to image
-    masked = cv2.bitwise_and(img, img, mask=mask)
+    device, masked = apply_mask(img, mask, 'black', device, debug=None)
 
     # allow user to choose number of bins
     nir_bin = masked / (256 / bins)
