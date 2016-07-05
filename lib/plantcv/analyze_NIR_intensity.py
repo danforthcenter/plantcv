@@ -72,17 +72,17 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False, debu
     hist_data_percent = [l[0] for l in hist_percent]
 
     # report histogram data
-    hist_header = (
+    hist_header = [
         'HEADER_HISTOGRAM',
         'bin-number',
         'nir'
-    )
+    ]
 
-    hist_data = (
+    hist_data = [
         'HISTOGRAM_DATA',
         bins,
         hist_data_nir
-    )
+    ]
 
     analysis_img = []
 

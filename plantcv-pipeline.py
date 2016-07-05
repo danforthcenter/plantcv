@@ -10,6 +10,7 @@ from dateutil.parser import parse as dt_parser
 import sqlite3
 import re
 from subprocess import call
+import mimetypes
 
 
 # Parse command-line arguments
@@ -160,7 +161,7 @@ def options():
             key, value = pair.split(':')
             args.imgtype[key] = value
     else:
-        args.imgtype = None
+        args.imgtype['None'] = 'None'
 
     if (args.coprocess is not None) and ('imgtype' not in args.imgtype):
         raise ValueError("When the coprocess imgtype is defined, imgtype must be included in match.")
@@ -701,14 +702,14 @@ def job_builder(args, meta):
         for j in range(0, jobs_per_cpu):
             # Add job to list
             if args.coprocess is not None and ('coimg' in meta[images[job]]):
-                job_str = "{0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt --coresult ./{6}/{7}.txt".format(
+                job_str = "python {0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt --coresult ./{6}/{7}.txt".format(
                     args.pipeline, meta[images[job]]['path'], images[job], args.outdir, args.jobdir, images[job],
                     args.jobdir, meta[images[job]]['coimg'])
                 if args.writeimg:
                     job_str += ' --writeimg'
                 jobs.append(job_str)
             else:
-                job_str = "{0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt".format(args.pipeline,
+                job_str = "python {0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt".format(args.pipeline,
                                                                                            meta[images[job]]['path'],
                                                                                            images[job], args.outdir,
                                                                                            args.jobdir, images[job])
@@ -727,14 +728,14 @@ def job_builder(args, meta):
     for j in range(job, len(images)):
         # Add job to list
         if args.coprocess is not None and ('coimg' in meta[images[j]]):
-            job_str = "{0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt --coresult ./{6}/{7}.txt".format(
+            job_str = "python {0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt --coresult ./{6}/{7}.txt".format(
                 args.pipeline, meta[images[j]]['path'], images[j], args.outdir, args.jobdir, images[j], args.jobdir,
                 meta[images[j]]['coimg'])
             if args.writeimg:
                 job_str += ' --writeimg'
             jobs.append(job_str)
         else:
-            job_str = "{0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt".format(args.pipeline,
+            job_str = "python {0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt".format(args.pipeline,
                                                                                        meta[images[j]]['path'],
                                                                                        images[j], args.outdir,
                                                                                        args.jobdir, images[j])
@@ -777,6 +778,7 @@ def process_results(args):
     opt_feature_fields = ['y-position', 'height_above_bound', 'height_below_bound',
                           'above_bound_area', 'percent_above_bound_area', 'below_bound_area',
                           'percent_below_bound_area']
+    marker_fields = ['marker_area']
 
     # args.features_file.write('#' + '\t'.join(map(str, feature_fields + opt_feature_fields)) + '\n')
 
@@ -796,7 +798,7 @@ def process_results(args):
             '` TEXT NOT NULL, `'.join(map(str, metadata_fields[2:])) + '` TEXT NOT NULL);')
         args.sq.execute(
             'CREATE TABLE IF NOT EXISTS `features` (`image_id` INTEGER PRIMARY KEY, `' + '` TEXT NOT NULL, `'.join(
-                map(str, feature_fields + opt_feature_fields)) + '` TEXT NOT NULL);')
+                map(str, feature_fields + opt_feature_fields + marker_fields)) + '` TEXT NOT NULL);')
         args.sq.execute(
             'CREATE TABLE IF NOT EXISTS `analysis_images` (`image_id` INTEGER NOT NULL, `type` TEXT NOT NULL, '
             '`image_path` TEXT NOT NULL);')
@@ -807,104 +809,122 @@ def process_results(args):
     # Walk through the image processing job directory and process data from each file
     for (dirpath, dirnames, filenames) in os.walk(args.jobdir):
         for filename in filenames:
-            meta = {}
-            images = {}
-            features = []
-            feature_data = {}
-            signal = []
-            signal_data = {}
-            boundary = []
-            boundary_data = {}
-            # Open results file
-            with open(dirpath + '/' + filename) as results:
-                # For each line in the file
-                for row in results:
-                    # Remove the newline character
-                    row = row.rstrip('\n')
-                    # Split the line by tab characters
-                    cols = row.split('\t')
-                    # If the data is of class meta, store in the metadata dictionary
-                    if cols[0] == 'META':
-                        meta[cols[1]] = cols[2]
-                    # If the data is of class image, store in the image dictionary
-                    elif cols[0] == 'IMAGE':
-                        images[cols[1]] = cols[2]
-                    # If the data is of class shapes, store in the shapes dictionary
-                    elif cols[0] == 'HEADER_SHAPES':
-                        features = cols
-                    elif cols[0] == 'SHAPES_DATA':
-                        for i, datum in enumerate(cols):
-                            if i > 0:
-                                feature_data[features[i]] = datum
-                    # If the data is of class histogram/signal, store in the signal dictionary
-                    elif cols[0] == 'HEADER_HISTOGRAM':
-                        signal = cols
-                    elif cols[0] == 'HISTOGRAM_DATA':
-                        for i, datum in enumerate(cols):
-                            if i > 0:
-                                signal_data[signal[i]] = datum
-                    # If the data is of class boundary (horizontal rule), store in the boundary dictionary
-                    elif 'HEADER_BOUNDARY' in cols[0]:
-                        boundary = cols
-                        # Temporary hack
-                        boundary_data['y-position'] = cols[0].replace('HEADER_BOUNDARY', '')
-                    elif cols[0] == 'BOUNDARY_DATA':
-                        for i, datum in enumerate(cols):
-                            if i > 0:
-                                boundary_data[boundary[i]] = datum
+            # Make sure file is a text file
+            if 'text/plain' in mimetypes.guess_type(filename):
+                meta = {}
+                images = {}
+                features = []
+                feature_data = {}
+                signal = []
+                signal_data = {}
+                boundary = []
+                boundary_data = {}
+                marker = []
+                marker_data = {}
+                # Open results file
+                with open(dirpath + '/' + filename) as results:
+                    # For each line in the file
+                    for row in results:
+                        # Remove the newline character
+                        row = row.rstrip('\n')
+                        # Split the line by tab characters
+                        cols = row.split('\t')
+                        # If the data is of class meta, store in the metadata dictionary
+                        if cols[0] == 'META':
+                            meta[cols[1]] = cols[2]
+                        # If the data is of class image, store in the image dictionary
+                        elif cols[0] == 'IMAGE':
+                            images[cols[1]] = cols[2]
+                        # If the data is of class shapes, store in the shapes dictionary
+                        elif cols[0] == 'HEADER_SHAPES':
+                            features = cols
+                        elif cols[0] == 'SHAPES_DATA':
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    feature_data[features[i]] = datum
+                        # If the data is of class histogram/signal, store in the signal dictionary
+                        elif cols[0] == 'HEADER_HISTOGRAM':
+                            signal = cols
+                        elif cols[0] == 'HISTOGRAM_DATA':
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    signal_data[signal[i]] = datum
+                        # If the data is of class boundary (horizontal rule), store in the boundary dictionary
+                        elif 'HEADER_BOUNDARY' in cols[0]:
+                            boundary = cols
+                            # Temporary hack
+                            boundary_data['y-position'] = cols[0].replace('HEADER_BOUNDARY', '')
+                        elif cols[0] == 'BOUNDARY_DATA':
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    boundary_data[boundary[i]] = datum
+                        elif 'HEADER_MARKER' in cols[0]:
+                            marker = cols
+                            # Temporary hack
+                            marker[1] = 'marker_area'
+                        elif 'MARKER_DATA' in cols[0]:
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    marker_data[marker[i]] = datum
 
-            # Check to see if the image failed, if not continue
+                # Check to see if the image failed, if not continue
 
-            # Print the image metadata to the aggregate output file
-            args.image_id += 1
-            meta['image_id'] = args.image_id
-            meta['run_id'] = args.run_id
+                # Print the image metadata to the aggregate output file
+                args.image_id += 1
+                meta['image_id'] = args.image_id
+                meta['run_id'] = args.run_id
 
-            meta_table = []
-            for field in metadata_fields:
-                meta_table.append(meta[field])
+                meta_table = []
+                for field in metadata_fields:
+                    meta_table.append(meta[field])
 
-            if len(feature_data) != 0:
-                args.metadata_file.write('|'.join(map(str, meta_table)) + '\n')
+                if len(feature_data) != 0:
+                    args.metadata_file.write('|'.join(map(str, meta_table)) + '\n')
 
-                # Print the image feature data to the aggregate output file
-                feature_data['image_id'] = args.image_id
+                    # Print the image feature data to the aggregate output file
+                    feature_data['image_id'] = args.image_id
 
-                # Boundary data is optional, if it's not there we need to add in placeholder data
-                if len(boundary_data) == 0:
-                    for field in opt_feature_fields:
-                        boundary_data[field] = 0
-                feature_data.update(boundary_data)
+                    # Boundary data is optional, if it's not there we need to add in placeholder data
+                    if len(boundary_data) == 0:
+                        for field in opt_feature_fields:
+                            boundary_data[field] = 0
+                    feature_data.update(boundary_data)
 
-                feature_table = [args.image_id]
-                for field in feature_fields + opt_feature_fields:
-                    feature_table.append(feature_data[field])
+                    # Marker data is optional, if it's not there we need to add in placeholder data
+                    if len(marker_data) == 0:
+                        for field in marker_fields:
+                            marker_data[field] = 0
+                    feature_data.update(marker_data)
 
-                args.features_file.write('|'.join(map(str, feature_table)) + '\n')
+                    feature_table = [args.image_id]
+                    for field in feature_fields + opt_feature_fields + marker_fields:
+                        feature_table.append(feature_data[field])
 
-                # Print the analysis image data to the aggregate output file
-                for img_type in images:
-                    args.analysis_images_file.write(
-                        '|'.join(map(str, (args.image_id, img_type, images[img_type]))) + '\n')
+                    args.features_file.write('|'.join(map(str, feature_table)) + '\n')
 
-                # Print the image signal data to the aggregate output file
-                for key in signal_data.keys():
-                    if key != 'bin-number':
-                        signal_data[key] = signal_data[key].replace('[', '')
-                        signal_data[key] = signal_data[key].replace(']', '')
-                        signal_table = [args.image_id, signal_data['bin-number'], key, signal_data[key]]
-                        args.signal_file.write('|'.join(map(str, signal_table)) + '\n')
-            else:
-                args.fail_log.write('|'.join(map(str, meta_table)) + '\n')
+                    # Print the analysis image data to the aggregate output file
+                    for img_type in images:
+                        args.analysis_images_file.write(
+                            '|'.join(map(str, (args.image_id, img_type, images[img_type]))) + '\n')
 
-                args.metadata_file.write('|'.join(map(str, meta_table)) + '\n')
+                    # Print the image signal data to the aggregate output file
+                    for key in signal_data.keys():
+                        if key != 'bin-number':
+                            signal_data[key] = signal_data[key].replace('[', '')
+                            signal_data[key] = signal_data[key].replace(']', '')
+                            signal_table = [args.image_id, signal_data['bin-number'], key, signal_data[key]]
+                            args.signal_file.write('|'.join(map(str, signal_table)) + '\n')
+                else:
+                    args.fail_log.write('|'.join(map(str, meta_table)) + '\n')
 
-                feature_table = [args.image_id]
+                    args.metadata_file.write('|'.join(map(str, meta_table)) + '\n')
 
-                for field in feature_fields + opt_feature_fields:
-                    feature_table.append(0)
+                    feature_table = [args.image_id]
 
-                args.features_file.write('|'.join(map(str, feature_table)) + '\n')
+                    for field in feature_fields + opt_feature_fields:
+                        feature_table.append(0)
+
+                    args.features_file.write('|'.join(map(str, feature_table)) + '\n')
 
 
 if __name__ == '__main__':
