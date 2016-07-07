@@ -92,7 +92,7 @@ def crop_position_mask(img, mask, device, x, y, v_pos, h_pos="right", debug=None
         if debug == 'print':
             print_image(maskv, (str(device) + "_push-top_.png"))
         elif debug == 'plot':
-            plot_image(maskv)
+            plot_image(maskv, cmap='gray')
 
     if v_pos == "bottom":
         # Add rows to the bottom
@@ -125,7 +125,7 @@ def crop_position_mask(img, mask, device, x, y, v_pos, h_pos="right", debug=None
         if debug == 'print':
             print_image(maskv, (str(device) + "_push-bottom.png"))
         elif debug == 'plot':
-            plot_image(maskv)
+            plot_image(maskv, cmap='gray')
 
     if h_pos == "left":
         if len(np.shape(maskv)) == 3:
@@ -160,7 +160,7 @@ def crop_position_mask(img, mask, device, x, y, v_pos, h_pos="right", debug=None
         if debug == 'print':
             print_image(maskv, (str(device) + "_push-left.png"))
         elif debug == 'plot':
-            plot_image(maskv)
+            plot_image(maskv, cmap='gray')
 
     if h_pos == "right":
         if len(np.shape(maskv)) == 3:
@@ -196,7 +196,7 @@ def crop_position_mask(img, mask, device, x, y, v_pos, h_pos="right", debug=None
         if debug == 'print':
             print_image(maskv, (str(device) + "_push-right.png"))
         elif debug == 'plot':
-            plot_image(maskv)
+            plot_image(maskv, cmap='gray')
 
     newmask = np.array(maskv)
     if debug is not None:

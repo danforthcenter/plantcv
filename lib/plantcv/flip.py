@@ -37,6 +37,6 @@ def flip(img, direction, device, debug=None):
     if debug == 'print':
         print_image(vh_img, (str(device) + "_flipped.png"))
     elif debug == 'plot':
-        plot_image(vh_img)
+        plot_image(vh_img, cmap='gray')
 
     return device, vh_img
