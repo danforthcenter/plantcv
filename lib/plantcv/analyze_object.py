@@ -253,7 +253,10 @@ def analyze_object(img, imgname, obj, mask, device, debug=None, filename=False):
         if debug == 'print':
             print_image(ori_img, (str(device) + '_shapes.jpg'))
         elif debug == 'plot':
-            plot_image(ori_img)
+            if len(np.shape(img)) == 3:
+                plot_image(ori_img)
+            else:
+                plot_image(ori_img,cmap='gray')
 
     return device, shape_header, shape_data, analysis_images
 
