@@ -2,7 +2,7 @@
 
 Reads image into numpy ndarray and splits the path and image filename. This is a wrapper for the OpenCV function [imread](http://docs.opencv.org/modules/highgui/doc/reading_and_writing_images_and_video.html).
 
-**readimage(filename)**
+**readimage**(*filename*)
 
 **returns** img, path, image filename
 

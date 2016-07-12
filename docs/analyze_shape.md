@@ -2,9 +2,9 @@
 
 Shape analysis outputs numeric properties for an input object (contour or grouped contours), works best on grouped contours.
  
-analyze_object(img, imgname, obj, mask, device, debug=False, filename=False)
+**analyze_object**(*img, imgname, obj, mask, device, debug=False, filename=False*)
 
-returns device, shape data headers, shape data, image with shape data
+**returns** device, shape data headers, shape data, image with shape data
 
 - **Parameters:**
     - img - image object (most likely the original), color(RGB)

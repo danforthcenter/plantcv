@@ -2,7 +2,7 @@
 
 Convert image from RGB colorspace to LAB colorspace and split the channels.
 
-**rgb2gray_hsv(img, channel, device, debug=False)**
+**rgb2gray_hsv**(*img, channel, device, debug=False*)
 
 **returns** device, split image (l, a, or b channel)
 

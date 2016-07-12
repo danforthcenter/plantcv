@@ -2,9 +2,9 @@
 
 Extract color data of objects and produce pseudocolored images, can extract data for RGB (Red, Green, Blue), HSV (Hue, Saturation, Value) and LAB (Lightness, Green-Magenta, Blue Yellow) channels.
 
-analyze_color(img, imgname, mask, bins, device, debug=False, hist_plot_type ='all', cslice_type='rgb', pseudo_channel='v', pseudo_bkg='img', resolution=300, filename=False)
+**analyze_color**(*img, imgname, mask, bins, device, debug=False, hist_plot_type ='all', cslice_type='rgb', pseudo_channel='v', pseudo_bkg='img', resolution=300, filename=False*)
 
-returns device, color channel histogram headers, color channel histogram data, normalized color slice data
+**returns** device, color channel histogram headers, color channel histogram data, normalized color slice data
 
 - **Parameters:**
     - img - image object (most likely the original), color(RGB)
