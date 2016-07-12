@@ -8,6 +8,8 @@ pages:
 - Home: index.md
 - Documentation:
   - Installation: installation.md
+  - Tutorials:
+    - 'VIS pipeline': vis_tutorial.md
   - Library:
     - 'Analyze color': analyze_color.md
     - 'Analyze shape': analyze_shape.md
