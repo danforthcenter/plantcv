@@ -19,6 +19,7 @@ pages:
     - 'Erosion': erode.md
     - 'Fill objects': fill.md
     - 'Find objects': find_objects.md
+    - 'Image add': image_add.md
     - 'Median blur': median_blur.md
     - 'Print image': print_image.md
     - 'Read image': read_image.md
