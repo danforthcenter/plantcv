@@ -24,6 +24,7 @@ pages:
     - 'Invert': invert.md
     - 'Laplace filter': laplace_filter.md
     - 'Logical operations-And': logical_and.md
+    - 'Logical operations-Or': logical_or.md
     - 'Median blur': median_blur.md
     - 'Print image': print_image.md
     - 'Read image': read_image.md
