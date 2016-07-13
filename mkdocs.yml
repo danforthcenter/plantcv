@@ -22,6 +22,7 @@ pages:
     - 'Image add': image_add.md
     - 'Image subtract': image_subtract.md
     - 'Invert': invert.md
+    - 'Laplace filter': laplace_filter.md
     - 'Median blur': median_blur.md
     - 'Print image': print_image.md
     - 'Read image': read_image.md
