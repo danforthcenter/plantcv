@@ -244,7 +244,7 @@ Even the spaces within an object are colored, but will have different hierarchy 
 ![Screenshot](img/tutorial_images/vis/20_id_objects.jpg)
 
 Next the region of interest is defined (this can be made on the fly, for more information 
-see [here](roi.md))
+see [here](define_roi.md))
 
 ```python
     # Define ROI
