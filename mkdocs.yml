@@ -12,6 +12,7 @@ pages:
     - 'VIS pipeline': vis_tutorial.md
   - Library:
     - 'Analyze color': analyze_color.md
+    - 'Analyze PSII': fluor_fvfm.md
     - 'Analyze shape': analyze_shape.md
     - 'Apply mask': apply_mask.md
     - 'Binary threshold': binary_threshold.md
