@@ -18,6 +18,7 @@ pages:
     - 'Boundary line tool': analyze_bound.md
     - 'Erosion': erode.md
     - 'Fill objects': fill.md
+    - 'Find objects': find_objects.md
     - 'Median blur': median_blur.md
     - 'Print image': print_image.md
     - 'Read image': read_image.md
