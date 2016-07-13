@@ -286,7 +286,7 @@ one object using the Combine Objects function (for more info see [here](object_c
 The next step is to analyze the plant object for traits such as shape, or color.
 For more info see the Shape Function [here](analyze_shape.md),
 the Color Function [here](analyze_color.md),
-and the Boundary tool function [here](boundary_tool.md).
+and the Boundary tool function [here](analyze_bound.md).
 
 ```python
 ############### Analysis ################  
