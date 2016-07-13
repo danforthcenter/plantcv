@@ -15,6 +15,7 @@ pages:
     - 'Analyze shape': analyze_shape.md
     - 'Apply mask': apply_mask.md
     - 'Binary threshold': binary_threshold.md
+    - 'Median blur': median_blur.md
     - 'Print image': print_image.md
     - 'Read image': read_image.md
     - 'RGB to HSV': rgb2hsv.md
