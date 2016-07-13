@@ -18,7 +18,6 @@ pages:
     - 'Apply mask': apply_mask.md
     - 'Binary threshold': binary_threshold.md
     - 'Boundary line tool': analyze_bound.md
-    - 'Define ROI': define_roi.md
     - 'Erosion': erode.md
     - 'Fill objects': fill.md
     - 'Find objects': find_objects.md
@@ -31,6 +30,8 @@ pages:
     - 'Median blur': median_blur.md
     - 'Print image': print_image.md
     - 'Read image': read_image.md
+    - 'Region of interest-Define': define_roi.md
+    - 'Region of interest-Objects': roi_objects.md
     - 'RGB to HSV': rgb2hsv.md
     - 'RGB to LAB': rgb2lab.md
     - 'Sobel filter': sobel_filter.md
