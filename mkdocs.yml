@@ -17,6 +17,7 @@ pages:
     - 'Binary threshold': binary_threshold.md
     - 'Boundary line tool': analyze_bound.md
     - 'Erosion': erode.md
+    - 'Fill objects': fill.md
     - 'Median blur': median_blur.md
     - 'Print image': print_image.md
     - 'Read image': read_image.md
