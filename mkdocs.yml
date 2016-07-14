@@ -31,6 +31,7 @@ pages:
     - 'Object composition': object_composition.md
     - 'Print image': print_image.md
     - 'Read image': read_image.md
+    - 'Rectangle mask': rectangle_mask.md
     - 'Region of interest-Define': define_roi.md
     - 'Region of interest-Objects': roi_objects.md
     - 'RGB to HSV': rgb2hsv.md
