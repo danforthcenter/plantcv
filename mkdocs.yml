@@ -28,6 +28,7 @@ pages:
     - 'Logical operations-And': logical_and.md
     - 'Logical operations-Or': logical_or.md
     - 'Median blur': median_blur.md
+    - 'Object composition': object_composition.md
     - 'Print image': print_image.md
     - 'Read image': read_image.md
     - 'Region of interest-Define': define_roi.md
