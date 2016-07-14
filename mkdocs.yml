@@ -29,6 +29,7 @@ pages:
     - 'Logical operations-Or': logical_or.md
     - 'Median blur': median_blur.md
     - 'Object composition': object_composition.md
+    - 'Plot histogram': plot_hist.md
     - 'Print image': print_image.md
     - 'Read image': read_image.md
     - 'Rectangle mask': rectangle_mask.md
