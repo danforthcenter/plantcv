@@ -11,6 +11,8 @@ This is a plotting method used to examine the distribution of signal within an i
     - name = the name of the output plot
 - **Context:**
     - Examine the distribution of the signal, this help you select a value for binary thresholding.
+- **Example use:**
+    - [Use In NIR Tutorial](nir_tutorial.md)
 
 **Grayscale image**
 

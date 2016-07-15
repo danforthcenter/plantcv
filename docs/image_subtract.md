@@ -14,6 +14,8 @@ This is a wrapper for the OpenCV function [subtract](http://docs.opencv.org/2.4/
     - debug- Default value is False, if True, masked intermediate image will be printed
 - **Context:**
     - Get features that are different between images
+- **Example use:**
+    - [Use In NIR Tutorial](nir_tutorial.md)
 
 **Original grayscale image (image 1)**
 

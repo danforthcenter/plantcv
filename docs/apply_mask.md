@@ -15,7 +15,8 @@ Apply binary mask to an image.
 - **Context:**
     - Apply a binary image mask over a grayscale or RGB image. Useful for seperating plant and background materials.
 - **Example use:**
-    - [Use In Tutorial](vis_tutorial.md)
+    - [Use In VIS Tutorial](vis_tutorial.md)
+    - [Use In NIR Tutorial](nir_tutorial.md)
 
 **Original RGB image**
 

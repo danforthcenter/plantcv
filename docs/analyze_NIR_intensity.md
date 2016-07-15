@@ -18,7 +18,7 @@ the values out to a file. Can also print out a histogram plot of pixel intensity
 - **Context:**
     - Used to mask rectangluar regions of an image
 - **Example use:**
-    - [Use In Tutorial](nir_tutorial.md)
+    - [Use In NIR Tutorial](nir_tutorial.md)
 
 **Original grayscale image**
 

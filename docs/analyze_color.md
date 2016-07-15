@@ -24,7 +24,7 @@ Extract color data of objects and produce pseudocolored images, can extract data
     - Generates histogram of color channel data.
     - Generaes pseudocolored output image of one of the channels specified.
 - **Example use:**  
- - [Use In Tutorial](vis_tutorial.md)
+ - [Use In VIS Tutorial](vis_tutorial.md)
 
 **Original image**
 

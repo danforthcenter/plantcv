@@ -15,7 +15,9 @@ than the cv2.add fxn which is a saturation operation.
     - debug- Default value is False, if True, filled intermediate image will be printed
 - **Context:**
     - Used to combine/stack the pixelwise intensity found in two images
-
+- **Example use:**
+    - [Use In NIR Tutorial](nir_tutorial.md)
+    
 **Image 1 to be added**
 
 ![Screenshot](img/documentation_images/image_add/image1.jpg)

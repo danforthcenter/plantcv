@@ -23,7 +23,8 @@ completely within the image.
 - **Context:**
     - Used to find objects within a region of interest and decide which ones to keep.
 - **Example use:**
-    - [Use In Tutorial](vis_tutorial.md)
+    - [Use In VIS Tutorial](vis_tutorial.md)
+    - [Use In NIR Tutorial](nir_tutorial.md)
 
 ```python
 import plantcv as pcv

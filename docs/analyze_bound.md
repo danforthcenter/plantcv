@@ -21,7 +21,7 @@ best if the pot size/position of the plant remains relatively constant.
     - Used to define a boundary line for the image, to find the height above and below as well as area above and below a boundary line.
     - Could also be used as a method of flagging images about to go out-of-bounds (this QC tool will be added later)
 - **Example use:**
-    - [Use In Tutorial](vis_tutorial.md)
+    - [Use In VIS Tutorial](vis_tutorial.md)
 
 ```python
 import plantcv as pcv

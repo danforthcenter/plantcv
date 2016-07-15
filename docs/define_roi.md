@@ -24,7 +24,7 @@ perform properly ROI must be completely contained within the image.
 - **Context:**
     - Used to define a region of interest in the image.
 - **Example use:**
-    - [Use In Tutorial](vis_tutorial.md)
+    - [Use In VIS Tutorial](vis_tutorial.md)
 
 ```python
 import plantcv as pcv

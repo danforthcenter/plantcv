@@ -11,7 +11,7 @@ Reads image into numpy ndarray and splits the path and image filename. This is a
 - **Context:**
     - Reads in file to be processed
 - **Example use:**
-    - [Use In Tutorial](vis_tutorial.md) 
+    - [Use In VIS Tutorial](vis_tutorial.md) 
 
 ```python
 import plantcv as pcv      

@@ -15,7 +15,9 @@ conditions set in kernel are true, otherwise removes pixel.
     - debug- Default value is False, if True, filled intermediate image will be printed
 - **Context:**
     - Used to perform morphological erosion filtering. Helps remove isolated noise pixels or remove boundary of objects.
-
+- **Example use:**
+    - [Use In NIR Tutorial](nir_tutorial.md)
+    
 **Input grayscale image**
 
 ![Screenshot](img/documentation_images/erode/grayscale_image.jpg)

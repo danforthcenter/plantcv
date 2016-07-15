@@ -15,7 +15,8 @@ The function is a wrapper for the OpenCV function [median blur](http://docs.open
 - **Context:**
     - Used to reduce image noise
 - **Example use:**
-    - [Use In Tutorial](vis_tutorial.md)
+    - [Use In VIS Tutorial](vis_tutorial.md)
+    - [Use In NIR Tutorial](nir_tutorial.md)
 
 **Thresholded image**
 

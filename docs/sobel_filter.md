@@ -16,6 +16,8 @@ This is a filtering method used to identify and highlight coarse changes in pixe
     - debug- Default value is False, if True, filled intermediate image will be printed 
 - **Context:**
     - Used to define edges within and around objects
+- **Example use:**
+    - [Use In NIR Tutorial](nir_tutorial.md)
 
 **Original grayscale image**
 

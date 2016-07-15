@@ -16,7 +16,9 @@ Note that p1 = (0,0) is the top left hand corner bottom right hand corner is p2 
     - color - default is "black" this acts to select (mask) area from object capture (need to invert to remove)
 - **Context:**
     - Used to mask rectangular regions of an image
-
+- **Example use:**
+    - [Use In NIR Tutorial](nir_tutorial.md)
+    
 **Grayscale image**
 
 ![Screenshot](img/documentation_images/rectangle_mask/grayscale_image.jpg) 

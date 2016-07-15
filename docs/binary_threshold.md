@@ -17,8 +17,9 @@ The object target can be specified as dark or light.
 - **Context:**
     - Used to help differentiate plant and background
 - **Example use:**
-    - [Use In Tutorial](vis_tutorial.md)
-
+    - [Use In VIS Tutorial](vis_tutorial.md)
+    - [Use In NIR Tutorial](nir_tutorial.md)
+    
 **Original image**
 
 ![Screenshot](img/documentation_images/binary_threshold/original_image.jpg)
