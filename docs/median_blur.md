@@ -17,6 +17,7 @@ The function is a wrapper for the OpenCV function [median blur](http://docs.open
 - **Example use:**
     - [Use In VIS Tutorial](vis_tutorial.md)
     - [Use In NIR Tutorial](nir_tutorial.md)
+    - [Use In PSII Tutorial](psII_tutorial.md) 
 
 **Thresholded image**
 

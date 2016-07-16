@@ -20,7 +20,7 @@ Extract Fv/Fm data of objects and produce pseudocolored images.
     - Generates histogram of fv/fm data.
     - Generaes pseudocolored output image with fv/fm values per plant pixel.
 - **Example use:**
-    - [Use In Tutorial](flu_tutorial.md)
+    - [Use In PSII Tutorial](psII_tutorial.md)
 
 **Fdark image**
 

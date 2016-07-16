@@ -12,8 +12,8 @@ We normally execute pipelines in a shell script (remember run shell script in th
 
 * First call the image\_analysis.pl script that does the parallelization
 * -d flag is the directory of images
-* -p flag is the pipeline that you are going to run over the images see [vis tutorial here](vis_tutorial.md)
-and [flu tutorial here](flu_tutorial.md)
+* -p flag is the pipeline that you are going to run over the images see [VIS tutorial here](vis_tutorial.md)
+and [PSII tutorial here](psII_tutorial.md)
 * -t is the image type tag vis_tv, vis_sv, flu_tv, nir_sv, nir_tv
 * -z is the zoom level
 * -s is the name of your sqlite database
@@ -84,8 +84,8 @@ We normally execute pipelines in a shell script (remember run shell script in th
 
 * First call the image\_analysis.pl script that does the parallelization
 * -d flag is the directory of images
-* -p flag is the pipeline that you are going to run over the images see [vis tutorial here](vis_tutorial.md)
-and [flu tutorial here](flu_tutorial.md)
+* -p flag is the pipeline that you are going to run over the images see [VIS tutorial here](vis_tutorial.md)
+and [PSII tutorial here](psII_tutorial.md)
 * -t is the image type tag vis_tv, vis_sv, flu_tv, nir_sv, nir_tv
 * -z is the zoom level
 * -s is the name of your sqlite database

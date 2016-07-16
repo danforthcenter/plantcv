@@ -17,6 +17,7 @@ Apply binary mask to an image.
 - **Example use:**
     - [Use In VIS Tutorial](vis_tutorial.md)
     - [Use In NIR Tutorial](nir_tutorial.md)
+    - [Use In PSII Tutorial](psII_tutorial.md)
 
 **Original RGB image**
 

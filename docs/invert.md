@@ -14,6 +14,7 @@ Invert a binary image. This is a wrapper for the OpenCV function [bitwise_not](h
     - Invert image values. Useful for inverting an image mask.
 - **Example use:**
     - [Use In NIR Tutorial](nir_tutorial.md)
+    - [Use In PSII Tutorial](psII_tutorial.md)
     
 **Input binary image**
 

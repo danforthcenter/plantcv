@@ -15,6 +15,7 @@ Convert image from RGB colorspace to HSV colorspace and split the channels.
     - Used to help differentiate plant and background
 - **Example use:**
     - [Use In VIS Tutorial](vis_tutorial.md)
+    - [Use In PSII Tutorial](psII_tutorial.md)
 
 **Original RGB image**
 
