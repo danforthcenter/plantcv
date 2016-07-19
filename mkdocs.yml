@@ -43,6 +43,7 @@ pages:
     - 'RGB to HSV': rgb2hsv.md
     - 'RGB to LAB': rgb2lab.md
     - 'Sobel filter': sobel_filter.md
+    - 'White balance': white_balance.md
 
 markdown_extensions:
   - toc:
