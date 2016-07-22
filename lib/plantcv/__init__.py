@@ -4,7 +4,8 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'plot_colorbar', 'readima
            'median_blur', 'fill', 'invert', 'logical_and', 'logical_or', 'logical_xor', 'apply_mask', 'find_objects',
            'define_roi', 'roi_objects', 'object_composition', 'analyze_object', 'analyze_bound', 'analyze_color',
            '_pseudocolored_image', 'analyze_NIR_intensity', 'fluor_fvfm', 'print_results', 'resize', 'flip',
-           'crop_position_mask', 'get_nir', 'adaptive_threshold', 'otsu_auto_threshold', 'report_size_marker_area']
+           'crop_position_mask', 'get_nir', 'adaptive_threshold', 'otsu_auto_threshold', 'report_size_marker_area',
+           'white_balance']
 
 from fatal_error import fatal_error
 from print_image import print_image
@@ -51,3 +52,4 @@ from get_nir import get_nir
 from adaptive_threshold import adaptive_threshold
 from otsu_auto_threshold import otsu_auto_threshold
 from report_size_marker_area import report_size_marker_area
+from white_balance import white_balance
