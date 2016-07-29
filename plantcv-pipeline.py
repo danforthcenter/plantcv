@@ -921,7 +921,7 @@ def process_results(args):
 
                     feature_table = [args.image_id]
 
-                    for field in feature_fields + opt_feature_fields:
+                    for field in feature_fields + opt_feature_fields + marker_fields:
                         feature_table.append(0)
 
                     args.features_file.write('|'.join(map(str, feature_table)) + '\n')
