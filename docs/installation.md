@@ -69,7 +69,7 @@ After installation, connect to the server with SSH or a local terminal and execu
 
 Install software dependencies
 
-`sudo apt-get install git libopencv-dev python-opencv python-numpy python-matplotlib`
+`sudo apt-get install git libopencv-dev python-opencv python-numpy python-matplotlib sqlite3`
 
 Clone the PlantCV repository into your home directory
 
