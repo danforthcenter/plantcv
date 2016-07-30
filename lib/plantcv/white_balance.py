@@ -1,4 +1,4 @@
-# White Balance correction function
+# White Balance correction function by Monica Tessman
 
 import cv2
 import numpy as np

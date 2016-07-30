@@ -54,3 +54,5 @@ from otsu_auto_threshold import otsu_auto_threshold
 from report_size_marker_area import report_size_marker_area
 from white_balance import white_balance
 from white_balance2 import white_balance2
+
+#add new functions to end of lists
