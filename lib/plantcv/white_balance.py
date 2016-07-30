@@ -37,4 +37,5 @@ def white_balance(img, device, roi=None, debug=None):
         print_image(img, str(device) + '_corrected_img' + '.png')
     elif debug == 'plot':
         plot_image(img, cmap='gray')
+
     return device,img
