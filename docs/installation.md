@@ -62,6 +62,36 @@ cd plantcv
 git checkout dev
 ```
 
+#### Ubuntu Linux
+
+We tested [Ubuntu](http://www.ubuntu.com/) x86 64-bit 12.04.5 server edition.  
+After installation, connect to the server with SSH or a local terminal and execute the following commands to install PlantCV.
+
+Install software dependencies
+
+`sudo apt-get install git libopencv-dev python-opencv python-numpy python-matplotlib`
+
+Clone the PlantCV repository into your home directory
+
+`git clone https://github.com/danforthcenter/plantcv.git`
+
+Edit your BASH profile to include the PlantCV library. Use your favorite editor to edit `~/.profile` (or .bashrc or .bash_profile) and add the following line:
+
+`export PYTHONPATH=$PYTHONPATH:$HOME/plantcv/lib`
+
+Restart your session or resource your profile. If everything is working, the following should run without errors:
+
+`python -c 'import plantcv'`
+
+Optionally, and at any time, check out a specific version or alternate branch of PlantCV
+
+```bash
+# Switch to the development (latest) branch of PlantCV
+cd plantcv
+
+git checkout dev
+```
+
 #### Mac OSX
 
 Tested on OSX 10.11.
