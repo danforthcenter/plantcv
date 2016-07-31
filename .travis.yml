@@ -2,6 +2,9 @@ language: python
 # Which versions of Python to test
 python:
   - "2.7"
+# Have the virtualenv use system-wide site packages
+virtualenv:
+    system_site_packages: true
 # command to install dependencies
 before_install:
   - sudo apt-get update -qq
