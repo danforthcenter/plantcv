@@ -15,6 +15,7 @@ A list of minimum tested software dependencies is listed below:
     - dateutil 1.5
     - matplotlib 1.2.x
     - numpy 1.7.x
+    - setuptools
     - cv2 2.4.x
 - OpenCV 2.4.x
 - SQLite 3.7.x
@@ -41,19 +42,11 @@ Install additional software dependencies
 
 `sudo yum install opencv opencv-devel opencv-python numpy python-matplotlib`
 
-Clone the PlantCV repository into your home directory
+Clone the PlantCV repository
 
 `git clone https://github.com/danforthcenter/plantcv.git`
 
-Edit your BASH profile to include the PlantCV library. Use your favorite editor to edit `~/.bash_profile` (or .bashrc or .profile) and add the following line:
-
-`export PYTHONPATH=$PYTHONPATH:$HOME/plantcv/lib`
-
-Restart your session or resource your profile. If everything is working, the following should run without errors:
-
-`python -c 'import plantcv'`
-
-Optionally, and at any time, check out a specific version or alternate branch of PlantCV
+Optionally, check out a specific version or alternate branch of PlantCV
 
 ```bash
 # Switch to the development (latest) branch of PlantCV
@@ -61,6 +54,18 @@ cd plantcv
 
 git checkout dev
 ```
+
+Install PlantCV
+
+`sudo python setup.py install`
+
+Or to install to a local directory:
+
+`python setup.py install --prefix /home/username`
+
+If everything is working, the following should run without errors:
+
+`python -c 'import plantcv'`
 
 #### Ubuntu Linux
 
@@ -75,15 +80,7 @@ Clone the PlantCV repository into your home directory
 
 `git clone https://github.com/danforthcenter/plantcv.git`
 
-Edit your BASH profile to include the PlantCV library. Use your favorite editor to edit `~/.profile` (or .bashrc or .bash_profile) and add the following line:
-
-`export PYTHONPATH=$PYTHONPATH:$HOME/plantcv/lib`
-
-Restart your session or resource your profile. If everything is working, the following should run without errors:
-
-`python -c 'import plantcv'`
-
-Optionally, and at any time, check out a specific version or alternate branch of PlantCV
+Optionally, check out a specific version or alternate branch of PlantCV
 
 ```bash
 # Switch to the development (latest) branch of PlantCV
@@ -91,6 +88,18 @@ cd plantcv
 
 git checkout dev
 ```
+
+Install PlantCV
+
+`sudo python setup.py install`
+
+Or to install to a local directory:
+
+`python setup.py install --prefix /home/username`
+
+If everything is working, the following should run without errors:
+
+`python -c 'import plantcv'`
 
 #### Mac OSX
 
@@ -108,19 +117,15 @@ brew tap homebrew/science
 brew install opencv
 ```
 
+Add OpenCV to your PYTHONPATH. Use your favorite editor to edit `~/.bash_profile` (or .bashrc or .profile) and add the following line:
+
+`export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python2.7/site-packages`
+
 Clone the PlantCV repository into your home directory
 
 `git clone https://github.com/danforthcenter/plantcv.git`
 
-Add OpenCV and PlantCV to your PYTHONPATH. Use your favorite editor to edit `~/.bash_profile` (or .bashrc or .profile) and add the following line:
-
-`export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python2.7/site-packages:$HOME/plantcv/lib`
-
-Restart your session or resource your profile. If everything is working, the following should run without errors:
-
-`python -c 'import plantcv'`
-
-Optionally, and at any time, check out a specific version or alternate branch of PlantCV
+Optionally, check out a specific version or alternate branch of PlantCV
 
 ```bash
 # Switch to the development (latest) branch of PlantCV
@@ -128,6 +133,22 @@ cd plantcv
 
 git checkout dev
 ```
+
+Install PlantCV
+
+`sudo python setup.py install`
+
+Or to install to a local directory:
+
+`python setup.py install --prefix /home/username`
+
+If everything is working, the following should run without errors:
+
+`python -c 'import plantcv'`
+
+If everything is working, the following should run without errors:
+
+`python -c 'import plantcv'`
 
 #### Windows
 
