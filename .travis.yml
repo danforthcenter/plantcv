@@ -17,4 +17,4 @@ script: python tests/tests.py
 # Which branches to run build tests on
 branches:
   only:
-    - feature-setuptools
+    - dev
