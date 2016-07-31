@@ -2,14 +2,19 @@ language: python
 # Which versions of Python to test
 python:
   - "2.7"
+# Have the virtualenv use system-wide site packages
+virtualenv:
+    system_site_packages: true
 # command to install dependencies
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq git libopencv-dev python-opencv python-numpy python-matplotlib sqlite3
+# Install PlantCV
+install:
+  - python setup.py install
 # command to run tests
 script: python tests/tests.py
 # Which branches to run build tests on
 branches:
   only:
-    - master
     - dev

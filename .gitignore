@@ -1,4 +1,7 @@
 *.pyc
 .idea/*
 _build/*
+build/*
+dist/*
 _site/*
+*.egg-info/
