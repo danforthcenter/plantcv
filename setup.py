@@ -36,6 +36,9 @@ setup(
     # Choose your license
     license='MIT',
 
+    # Supported platforms
+    platforms=['Any'],
+
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
         # How mature is this project? Common values are
@@ -63,7 +66,7 @@ setup(
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
-    packages=find_packages('plantcv'),
+    packages=find_packages(exclude=['docs', 'include', 'masks', 'tests', 'utils']),
 
     # Alternatively, if you want to distribute just a my_module.py, uncomment
     # this:
