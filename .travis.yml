@@ -8,7 +8,7 @@ before_install:
   - sudo apt-get install -qq git libopencv-dev python-opencv python-numpy python-matplotlib sqlite3
 # Install PlantCV
 install:
-  - sudo python setup.py -q install
+  - sudo python setup.py install
 # command to run tests
 script: python tests/tests.py
 # Which branches to run build tests on
