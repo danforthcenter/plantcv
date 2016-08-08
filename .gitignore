@@ -5,3 +5,4 @@ build/*
 dist/*
 _site/*
 *.egg-info/
+.cache/*
