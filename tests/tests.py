@@ -17,6 +17,9 @@ TEST_INPUT_BINARY = "input_binary_img.png"
 TEST_INPUT_ROI = "input_roi.npz"
 TEST_INPUT_CONTOURS = "input_contours.npz"
 
+if not os.path.exists(TEST_TMPDIR):
+    os.mkdir(TEST_TMPDIR)
+
 
 def test_plantcv_readimage():
     img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_COLOR))
