@@ -37,7 +37,7 @@ def test_plantcv_print_image():
     filename = os.path.join(TEST_TMPDIR, 'plantcv_print_image.jpg')
     pcv.print_image(img=img, filename=filename)
     # Assert that the file was created
-    assert os.path.exists(filename)
+    assert os.path.exists(filename) is True
 
 
 def test_plantcv_fatal_error():
