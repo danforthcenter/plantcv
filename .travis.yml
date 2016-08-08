@@ -13,7 +13,7 @@ before_install:
 install:
   - python setup.py install
 # command to run tests
-script: python tests/tests.py
+script: py.test -v tests/tests.py
 # Which branches to run build tests on
 branches:
   only:
