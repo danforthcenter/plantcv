@@ -72,8 +72,6 @@ def options():
                         help='Create output database (SQLite). Default behaviour adds to existing database. '
                              'Warning: activating this option will delete an existing database!',
                         default=False, action="store_true")
-    parser.add_argument("-m", "--roi", help='ROI/mask image. Required by some pipelines (vis_tv, flu_tv).',
-                        required=False)
     parser.add_argument("-D", "--dates",
                         help='Date range. Format: YYYY-MM-DD-hh-mm-ss_YYYY-MM-DD-hh-mm-ss. If the second date '
                              'is excluded then the current date is assumed.',
@@ -95,6 +93,7 @@ def options():
                         default=None)
     parser.add_argument("-w", "--writeimg", help='Include analysis images in output.', default=False,
                         action="store_true")
+    parser.add_argument("-o", "--other_args", help='Other arguments to pass to the pipeline script.', required=False)
     args = parser.parse_args()
 
     if not os.path.exists(args.dir):
@@ -629,6 +628,7 @@ def exe_multiproc(jobs, cpus):
 
 ###########################################
 
+
 # Build job list
 ###########################################
 def job_builder(args, meta):
@@ -707,6 +707,8 @@ def job_builder(args, meta):
                     args.jobdir, meta[images[job]]['coimg'])
                 if args.writeimg:
                     job_str += ' --writeimg'
+                if args.other_args:
+                    job_str += ' ' + args.other_args
                 jobs.append(job_str)
             else:
                 job_str = "python {0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt".format(args.pipeline,
@@ -715,6 +717,8 @@ def job_builder(args, meta):
                                                                                            args.jobdir, images[job])
                 if args.writeimg:
                     job_str += ' --writeimg'
+                if args.other_args:
+                    job_str += ' ' + args.other_args
                 jobs.append(job_str)
 
             # Increase the job counter by 1
@@ -733,6 +737,8 @@ def job_builder(args, meta):
                 meta[images[j]]['coimg'])
             if args.writeimg:
                 job_str += ' --writeimg'
+            if args.other_args:
+                job_str += ' ' + args.other_args
             jobs.append(job_str)
         else:
             job_str = "python {0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt".format(args.pipeline,
@@ -741,6 +747,8 @@ def job_builder(args, meta):
                                                                                        args.jobdir, images[j])
             if args.writeimg:
                 job_str += ' --writeimg'
+            if args.other_args:
+                job_str += ' ' + args.other_args
             jobs.append(job_str)
     # Add the CPU job list to the job stack
     job_stack.append(jobs)
