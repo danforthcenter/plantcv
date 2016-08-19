@@ -9,6 +9,7 @@ pages:
 - Home: index.md
 - Documentation:
   - Installation: installation.md
+  - 'Using Jupyter Notebooks': jupyter.md
   - Tutorials:
     - 'VIS pipeline': vis_tutorial.md
     - 'NIR pipeline': nir_tutorial.md
