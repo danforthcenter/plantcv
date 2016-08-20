@@ -3,7 +3,7 @@
 Creates a binary image from a gray image based on the threshold values. 
 The object target can be specified as dark or light.
 
-**binary_threshold(*img, threshold, maxValue, object_type, device, debug=False*)**
+**binary_threshold(*img, threshold, maxValue, object_type, device, debug=None*)**
 
 **returns** device, thresholded image
 
@@ -13,7 +13,7 @@ The object target can be specified as dark or light.
     - maxValue - value to apply above threshold (255 = white)
     - objecttype - 'light' or 'dark', is target image light or dark?
     - device- Counter for image processing steps
-    - debug- Default value is False, if True, thresholded intermediate image will be printed
+    - debug- None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
 - **Context:**
     - Used to help differentiate plant and background
 - **Example use:**
@@ -33,7 +33,7 @@ The object target can be specified as dark or light.
 import plantcv as pcv
 
 # Create binary image from a gray image based on threshold values. Targeting light objects in the image.
-device, threshold_light = pcv.binary_threshold(img, 36, 255, 'light', device, debug=True)
+device, threshold_light = pcv.binary_threshold(img, 36, 255, 'light', device, debug="print")
 ```
 
 **Thresholded image**
@@ -44,7 +44,7 @@ device, threshold_light = pcv.binary_threshold(img, 36, 255, 'light', device, de
 import plantcv as pcv
 
 # Create binary image from a gray image based on threshold values. Targeting dark objects in the image.
-device, threshold_dark = pcv.binary_threshold(img, 36, 255, 'dark', device, debug=True)
+device, threshold_dark = pcv.binary_threshold(img, 36, 255, 'dark', device, debug="print")
 ```
 
 **Thresholded image (inverse)**

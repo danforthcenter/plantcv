@@ -2,7 +2,7 @@
 
 Convert image from RGB colorspace to HSV colorspace and split the channels.
 
-**rgb2gray_hsv**(*img, channel, device, debug=False*)
+**rgb2gray_hsv**(*img, channel, device, debug=None*)
 
 **returns** device, split image (h, s, or v channel)  
 
@@ -10,7 +10,7 @@ Convert image from RGB colorspace to HSV colorspace and split the channels.
     - img- Image to be converted
     - channel- Split 'h' (hue), 's' (saturation), or 'v' (value) channel
     - device- Counter for image processing steps
-    - debug- Default value is False, if True, RGB to HSV intermediate image will be printed 
+    - debug - None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
 - **Context:**
     - Used to help differentiate plant and background
 - **Example use:**
@@ -26,7 +26,7 @@ import plantcv as pcv
 
 # image converted from RGB to HSV, channels are then split. Hue ('h') channel is outputed.
 
-device, h_channel=pcv.rgb2gray_hsv(img, 'h', device, debug=True)
+device, h_channel=pcv.rgb2gray_hsv(img, 'h', device, debug="print")
 ```
 
 **Hue channel image**
@@ -38,7 +38,7 @@ import plantcv as pcv
     
 # image converted from RGB to HSV, channels are then split. Saturation ('s') channel is outputed.
     
-device, s_channel= pcv.rgb2gray_hsv(img, 's', device, debug=True)
+device, s_channel= pcv.rgb2gray_hsv(img, 's', device, debug="print")
 ```  
 
 **Saturation channel image**
@@ -50,7 +50,7 @@ import plantcv as pcv
 
 # image converted from RGB to HSV, channels are then split. Value ('v') channel is outputed.
 
-device, v_channel=pcv.rgb2gray_hsv(img, 'v', device, debug=True)
+device, v_channel=pcv.rgb2gray_hsv(img, 'v', device, debug="print")
 ```  
 
 **Value channel image**

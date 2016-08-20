@@ -12,7 +12,7 @@ conditions set in kernel are true, otherwise removes pixel.
     - kernel - An odd integer that is used to build a kernel x kernel matrix using np.ones
     - i - Iterations, i.e. the number of consecutive filtering passes
     - device - Counter for image processing steps
-    - debug- Default value is False, if True, filled intermediate image will be printed
+    - debug- None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
 - **Context:**
     - Used to perform morphological erosion filtering. Helps remove isolated noise pixels or remove boundary of objects.
 - **Example use:**
