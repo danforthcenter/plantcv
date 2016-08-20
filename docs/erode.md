@@ -9,7 +9,7 @@ conditions set in kernel are true, otherwise removes pixel.
 
 - **Parameters:**
     - img1 - Input image
-    - kernel - Filtering window, you'll need to make your own using as such:  kernal = np.zeros((x,y), dtype=np.uint8), then fill the kernal with appropriate values
+    - kernel - An odd integer that is used to build a kernel x kernel matrix using np.ones
     - i - Iterations, i.e. the number of consecutive filtering passes
     - device - Counter for image processing steps
     - debug- Default value is False, if True, filled intermediate image will be printed
