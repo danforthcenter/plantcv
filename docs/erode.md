@@ -3,7 +3,7 @@
 Perform morphological 'erosion' filtering. Keeps pixel in center of the kernel if 
 conditions set in kernel are true, otherwise removes pixel.
 
-**erode**(*img, kernel, i, device, debug=False*)
+**erode**(*img, kernel, i, device, debug=None*)
 
 **returns** device, image after erosion
 
@@ -27,7 +27,7 @@ import plantcv as pcv
 
 # Perform erosion filtering
 # Results in removal of isolated pixels or boundary of object removal
-device, er_img = pcv.erosion(img, kernel, 1 device, debug=True)
+device, er_img = pcv.erosion(img, kernel, 1 device, debug='print')
 ```
 
 **Image after erosion**
