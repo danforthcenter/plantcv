@@ -38,5 +38,5 @@ def erode(img, kernel, i, device, debug=None):
     if debug == 'print':
         print_image(er_img, str(device) + '_er_image_' + 'itr_' + str(i) + '.png')
     elif debug == 'plot':
-        plot_image(er_img)
+        plot_image(er_img, cmap='gray')
     return device, er_img
