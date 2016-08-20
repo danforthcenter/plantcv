@@ -150,6 +150,32 @@ If everything is working, the following should run without errors:
 
 `python -c 'import plantcv'`
 
+#### Python virtual environment
+
+Install OpenCV as documented for your system.
+
+Create a Python virtual environment.
+
+```bash
+virtualenv plantcv-venv --system-site-packages
+```
+
+Install PlantCV into the virtual environment.
+
+```bash
+cd plantcv-venv
+
+# Activate the virtual environment
+source bin/activate
+
+# Clone PlantCV
+git clone https://github.com/danforthcenter/plantcv.git
+
+# Install PlantCV
+cd plantcv
+python setup.py install
+```
+
 #### Windows
 
 Tested on Windows 8.1.
