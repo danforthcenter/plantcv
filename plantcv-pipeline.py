@@ -523,7 +523,8 @@ def phenofront_parser(args):
         row = row.rstrip('\n')
         data = row.split(',')
         img_list = data[colnames['tiles']]
-        img_list = img_list[:-1]
+        if img_list[:-1] == ';':
+            img_list = img_list[:-1]
         imgs = img_list.split(';')
         for img in imgs:
             if len(img) != 0:
