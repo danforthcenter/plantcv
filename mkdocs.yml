@@ -10,6 +10,7 @@ pages:
 - Documentation:
   - Installation: installation.md
   - 'Using Jupyter Notebooks': jupyter.md
+  - 'Adding/editing Documentation': documentation.md
   - Tutorials:
     - 'VIS pipeline': vis_tutorial.md
     - 'NIR pipeline': nir_tutorial.md
