@@ -47,5 +47,24 @@ pages:
     - 'New function': new_function.md
 ```
 
+`mkdocs` can be used to test that the new documentation can be built
+correctly locally before submitting to GitHub. From the root of a local
+plantcv repository clone:
+
+```
+mkdocs build --theme readthedocs --site-dir _site
+```
+
+A clean build will output the messages:
+
+```
+INFO    -  Cleaning site directory
+INFO    -  Building documentation to directory: plantcv/_site
+```
+
+The `_site` folder (ignored by git) will contain the static HTML files
+that can be viewed with a web browser to double check that the new
+documentation build looks as intended.
+
 Once a pull request is merged into the repository, a new
 version of the documentation will be built automatically.
