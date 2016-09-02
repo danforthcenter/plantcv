@@ -5,7 +5,7 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'plot_colorbar', 'readima
            'define_roi', 'roi_objects', 'object_composition', 'analyze_object', 'analyze_bound', 'analyze_color',
            '_pseudocolored_image', 'analyze_NIR_intensity', 'fluor_fvfm', 'print_results', 'resize', 'flip',
            'crop_position_mask', 'get_nir', 'adaptive_threshold', 'otsu_auto_threshold', 'report_size_marker_area',
-           'white_balance', 'white_balance2']
+           'white_balance', 'white_balance2', 'triangle_auto_threshold']
 
 from fatal_error import fatal_error
 from print_image import print_image
@@ -54,5 +54,6 @@ from otsu_auto_threshold import otsu_auto_threshold
 from report_size_marker_area import report_size_marker_area
 from white_balance import white_balance
 from white_balance2 import white_balance2
+from triangle_auto_threshold import triangle_auto_threshold
 
 #add new functions to end of lists
