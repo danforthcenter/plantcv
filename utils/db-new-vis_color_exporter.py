@@ -322,7 +322,7 @@ def color_export(sqlitedb,outdir,signal_type='vis', camera='SV',channels='rgb',a
         
         ix,iy,iz=np.shape(dim3_all)
         
-        if ix==4:
+        if ix==2:
           ch3_avg=np.transpose(np.average(dim3_all,axis=0))
                            
           ch3.append(barcode_label)
@@ -349,8 +349,7 @@ def main():
   args = options()
 
   img_file_dir =color_export(args.database,args.outdir,'VIS','SV','hsv','on')
-  #img_file_dir='/home/mgehan/LemnaTec/out_folder/slice_figs_and_images_04-21-2014_16:59:07/'
-  #avr.cat_fig(args.outdir,img_file_dir)
+
 
 if __name__ == '__main__':
   main()
