@@ -788,6 +788,10 @@ def process_results(args):
                           'above_bound_area', 'percent_above_bound_area', 'below_bound_area',
                           'percent_below_bound_area']
     marker_fields = ['marker_area']
+    landmark_fields = ['tip_points', 'tip_points_r', 'centroid_r', 'baseline_r', 'tip_number', 'vert_ave_c',
+                       'hori_ave_c', 'euc_ave_c', 'ang_ave_c', 'vert_ave_b', 'hori_ave_b', 'euc_ave_b', 'ang_ave_b',
+                       'left_lmk', 'right_lmk', 'center_h_lmk', 'left_lmk_r', 'right_lmk_r', 'center_h_lmk_r',
+                       'top_lmk', 'bottom_lmk', 'center_v_lmk', 'top_lmk_r', 'bottom_lmk_r', 'center_v_lmk_r']
 
     # args.features_file.write('#' + '\t'.join(map(str, feature_fields + opt_feature_fields)) + '\n')
 
@@ -807,7 +811,7 @@ def process_results(args):
             '` TEXT NOT NULL, `'.join(map(str, metadata_fields[2:])) + '` TEXT NOT NULL);')
         args.sq.execute(
             'CREATE TABLE IF NOT EXISTS `features` (`image_id` INTEGER PRIMARY KEY, `' + '` TEXT NOT NULL, `'.join(
-                map(str, feature_fields + opt_feature_fields + marker_fields)) + '` TEXT NOT NULL);')
+                map(str, feature_fields + opt_feature_fields + marker_fields + landmark_fields)) + '` TEXT NOT NULL);')
         args.sq.execute(
             'CREATE TABLE IF NOT EXISTS `analysis_images` (`image_id` INTEGER NOT NULL, `type` TEXT NOT NULL, '
             '`image_path` TEXT NOT NULL);')
@@ -830,6 +834,8 @@ def process_results(args):
                 boundary_data = {}
                 marker = []
                 marker_data = {}
+                landmark = []
+                landmark_data = {}
                 # Open results file
                 with open(dirpath + '/' + filename) as results:
                     # For each line in the file
@@ -875,6 +881,12 @@ def process_results(args):
                             for i, datum in enumerate(cols):
                                 if i > 0:
                                     marker_data[marker[i]] = datum
+                        elif 'HEADER_LANDMARK' in cols[0]:
+                            landmark = cols
+                        elif 'LANDMARK_DATA' in cols[0]:
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    landmark_data[landmark[i]] = datum
 
                 # Check to see if the image failed, if not continue
 
@@ -905,8 +917,14 @@ def process_results(args):
                             marker_data[field] = 0
                     feature_data.update(marker_data)
 
+                    # Landmark data is optional, if it's not there we need to add in placeholder data
+                    if len(landmark_data) == 0:
+                        for field in landmark_fields:
+                            landmark_data[field] = 0
+                    feature_data.update(landmark_data)
+
                     feature_table = [args.image_id]
-                    for field in feature_fields + opt_feature_fields + marker_fields:
+                    for field in feature_fields + opt_feature_fields + marker_fields + landmark_fields:
                         feature_table.append(feature_data[field])
 
                     args.features_file.write('|'.join(map(str, feature_table)) + '\n')
@@ -930,7 +948,7 @@ def process_results(args):
 
                     feature_table = [args.image_id]
 
-                    for field in feature_fields + opt_feature_fields + marker_fields:
+                    for field in feature_fields + opt_feature_fields + marker_fields + landmark_fields:
                         feature_table.append(0)
 
                     args.features_file.write('|'.join(map(str, feature_table)) + '\n')
