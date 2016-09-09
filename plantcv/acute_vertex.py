@@ -8,15 +8,17 @@ import argparse
 import string
 import math
 from . import print_image
+from . import plot_image
 from . import fatal_error
 
-def acute_vertex(obj, win, thresh, sep, device, debug=False):
+def acute_vertex(obj, win, thresh, sep, img, device, debug=False):
   ## For each point in contour, get a point before (pre) and after (post) the point of interest
   ## Calculate the angle between the pre and post point
   ## obj = a contour of the plant object (this should be output from the object_composition.py fxn)
   ## win = win argument specifies the pre and post point distances (a value of 30 worked well for a sample image)
   ## thresh = an threshold to set for acuteness; keep points with an angle more acute than the threshold (a value of 15 worked well for sample image)
   ## sep = the number of contour points to search within for the most acute value
+  ## img = the original image
   ## device = a counter variable
   ## debug = True/False. If True, print image
   device += 1
@@ -67,7 +69,12 @@ def acute_vertex(obj, win, thresh, sep, device, debug=False):
       tester = []
     
   ## Store the points in the variable acute
+  flag = 0
   acute = obj[[out]]
+  ## If no points found as acute get the largest point
+  if len(acute) == 0:
+    acute = max(obj, key=cv2.contourArea)
+    flag = 1
   #img2 = np.copy(img)
   #cv2.circle(img2,(int(cmx),int(cmy)),30,(0,215,255),-1)
   #cv2.circle(img2,(int(cmx),int(bly)),30,(255,0,0),-1)
@@ -76,7 +83,7 @@ def acute_vertex(obj, win, thresh, sep, device, debug=False):
   #    x,y = i.ravel()
   #    cv2.circle(img2,(x,y),15,(153,0,153),-1)
   #cv2.imwrite('tip_points_centroid_and_base.png', img2)
-  if debug:
+  if debug == 'print':
     ## Lets make a plot of these values on the
     img2 = np.copy(img)
     ## Plot each of these tip points on the image
@@ -84,6 +91,19 @@ def acute_vertex(obj, win, thresh, sep, device, debug=False):
       x,y = i.ravel()
       cv2.circle(img2,(x,y),15,(255,204,255),-1)
     print_image(img2, (str(device) + '_acute_vertices.png'))
+  elif debug == 'plot':
+    ## Lets make a plot of these values on the
+    img2 = np.copy(img)
+    ## Plot each of these tip points on the image
+    for i in acute:
+      x,y = i.ravel()
+      #cv2.circle(img2,(x,y),15,(255,204,255),-1)
+      cv2.circle(img2,(x,y),15,(0,0,255),-1)
+    plot_image(img2)
+  ## If flag was true (no points found as acute) reformat output appropriate type
+  if flag == 1:
+    acute = np.asarray(acute)
+    acute = acute.reshape(1,1,2)
   return(device, acute)
 ### End of function   
  

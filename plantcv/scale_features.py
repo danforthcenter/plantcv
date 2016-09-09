@@ -8,12 +8,15 @@ import argparse
 import string
 import math
 from . import print_image
+from . import plot_image
 from . import fatal_error
 
 def scale_features(obj, mask, points, boundary_line, device, debug=False):
   ## This is a function to transform the coordinates of landmark points onto a common scale (0 - 1.0)
   ## obj = a contour of the plant object (this should be output from the object_composition.py fxn)
   ## mask = this is a binary image. The object should be white and the background should be black
+  ## points = the points to scale
+  ##
   ## device = a counter variable
   ## img = This is a copy of the original plant image generated using np.copy if debug is true it will be drawn on
   ## debug = True/False. If True, print image
@@ -23,9 +26,12 @@ def scale_features(obj, mask, points, boundary_line, device, debug=False):
   x,y,width,height = cv2.boundingRect(obj)
   m = cv2.moments(mask, binaryImage=True)
   cmx,cmy = (m['m10']/m['m00'], m['m01']/m['m00'])
-  ## Convert the boundary line position (top of the pot) into a coordinate on the image 
-  line_position=int(ix)-int(boundary_line)
-  bly = line_position
+  ## Convert the boundary line position (top of the pot) into a coordinate on the image
+  if boundary_line != 'NA':
+    line_position=int(ix)-int(boundary_line)
+    bly = line_position
+  else:
+    bly = cmy
   blx = cmx
   ## Maximum and minimum values of the object 
   Ymax = y
@@ -50,7 +56,7 @@ def scale_features(obj, mask, points, boundary_line, device, debug=False):
   bly_scaled = float(bly - Ymin) / float(Ymax - Ymin)
   boundary_line_scaled = (blx_scaled, bly_scaled)
   ## If debug is 'True' plot an image of the scaled points on a black background
-  if debug:
+  if debug == 'print':
     ## Make a decent size blank image
     scaled_img = np.zeros((1500,1500,3), np.uint8)
     plotter = np.array(rescaled)
@@ -66,4 +72,21 @@ def scale_features(obj, mask, points, boundary_line, device, debug=False):
     flipped_scaled = cv2.flip(scaled_img, 0)
     cv2.imwrite((str(device) + '_feature_scaled.png'), flipped_scaled)
   ## Return the transformed points
+  if debug == 'plot':
+    ## Make a decent size blank image
+    scaled_img = np.zeros((1500,1500,3), np.uint8)
+    plotter = np.array(rescaled)
+    ## Multiple the values between 0 - 1.0 by 1000 so you can plot on the black image
+    plotter = plotter * 1000
+    ## For each of the coordinates plot a circle where the point is (+250 helps center the object in the middle of the blank image)
+    for i in plotter:
+      x,y = i.ravel()
+      cv2.circle(scaled_img,(int(x) + 250, int(y) + 250),15,(255,255,255),-1)
+    cv2.circle(scaled_img,(int(cmx_scaled * 1000) + 250, int(cmy_scaled * 1000) + 250),25,(0,0,255), -1)
+    cv2.circle(scaled_img,(int(blx_scaled * 1000) + 250, int(bly_scaled * 1000) + 250),25,(0,255,0), -1)
+    ## Because the coordinates increase as you go down and to the right on the image you need to flip the object around the x-axis
+    flipped_scaled = cv2.flip(scaled_img, 0)
+    plot_image(flipped_scaled)
+  ## Return the transformed points
+
   return device, rescaled, centroid_scaled, boundary_line_scaled
