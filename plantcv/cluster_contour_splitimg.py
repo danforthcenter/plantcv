@@ -8,6 +8,7 @@ from . import fatal_error
 from . import apply_mask
 
 
+
 def cluster_contour_splitimg(device,img,grouped_contour_indexes,contours,outdir,file=None, filenames=None,debug=None):
 
     """

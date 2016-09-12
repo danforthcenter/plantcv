@@ -6,9 +6,9 @@ from . import print_image
 from . import plot_image
 from . import fatal_error
 from . import apply_mask
+from plantcv.dev.color_palette import color_palette
 
-
-def cluster_contour(device,img, roi_objects, nrow=1,ncol=1,debug=None):
+def cluster_contours(device,img, roi_objects, nrow=1,ncol=1,debug=None):
 
     """
     This function take a image with multiple contours and clusters them based on user input of rows and columns
@@ -46,8 +46,8 @@ def cluster_contour(device,img, roi_objects, nrow=1,ncol=1,debug=None):
     if ncol==1:
         cbreaks=ix
     else:
-        cstep = np.rint(ix / n)
-        cstep1 = np.int(step)
+        cstep = np.rint(ix / ncol)
+        cstep1 = np.int(cstep)
         cbreaks = range(0, ix, cstep1)
 
     # categorize what bin the center of mass of each contour
@@ -93,13 +93,17 @@ def cluster_contour(device,img, roi_objects, nrow=1,ncol=1,debug=None):
 
     coordlist = [[y[1] for y in coordgroups if y[0] == x] for x in range(0, (len(unigroup)))]
 
-    contours=roi_objects  # Debug image is rainbow printed contours
+    contours=roi_objects
+    grouped_contour_indexes=coordlist
+
+
+    # Debug image is rainbow printed contours
 
     if debug == 'print':
-        if len(np.shape(img1) == 3:
-            img_copy = np.copy(img1)
+        if len(np.shape(img)) == 3:
+            img_copy = np.copy(img)
         else:
-            iy, ix = np.shape(img1)
+            iy, ix = np.shape(img)
             img_copy = np.zeros((iy, ix, 3), dtype=np.uint8)
 
         rand_color = color_palette(len(coordlist))
@@ -109,10 +113,10 @@ def cluster_contour(device,img, roi_objects, nrow=1,ncol=1,debug=None):
         print_image(img_copy, (str(device) + '_clusters.png'))
 
     elif debug == 'plot':
-        if len(np.shape(img1) == 3:
-            img_copy = np.copy(img1)
+        if len(np.shape(img)) == 3:
+            img_copy = np.copy(img)
         else:
-            iy, ix = np.shape(img1)
+            iy, ix = np.shape(img)
             img_copy = np.zeros((iy, ix, 3), dtype=np.uint8)
 
         rand_color = color_palette(len(coordlist))
