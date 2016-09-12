@@ -474,6 +474,11 @@ def filename_parser(args):
                     else:
                         img_meta[field] = args.valid_meta[field]
 
+                if args.dates and 'timestamp' in img_meta:
+                    in_date_range = check_date_range(args, img_meta['timestamp'])
+                    if in_date_range is False:
+                        img_pass = 0
+
                 # If the image meets the user's criteria, store the metadata
                 if img_pass == 1:
                     meta[filename] = img_meta
@@ -566,6 +571,11 @@ def phenofront_parser(args):
                         else:
                             img_meta[field] = args.valid_meta[field]
 
+                    if args.dates:
+                        in_date_range = check_date_range(args, img_meta['timestamp'])
+                        if in_date_range is False:
+                            img_pass = 0
+
                     if img_pass:
                         args.jobcount += 1
 
@@ -654,14 +664,14 @@ def job_builder(args, meta):
     # images = list(meta.keys())
     images = []
     for img in list(meta.keys()):
-        # If a date range was requested, check whether the image is within range
-        if args.dates:
-            # Convert image datetime to unix time
-            timestamp = dt_parser(meta[img]['timestamp'])
-            time_delta = timestamp - datetime.datetime(1970, 1, 1)
-            unix_time = (time_delta.days * 24 * 3600) + time_delta.seconds
-            if unix_time < args.start_date or unix_time > args.end_date:
-                continue
+        # # If a date range was requested, check whether the image is within range
+        # if args.dates:
+        #     # Convert image datetime to unix time
+        #     timestamp = dt_parser(meta[img]['timestamp'])
+        #     time_delta = timestamp - datetime.datetime(1970, 1, 1)
+        #     unix_time = (time_delta.days * 24 * 3600) + time_delta.seconds
+        #     if unix_time < args.start_date or unix_time > args.end_date:
+        #         continue
         if args.coprocess is not None:
             if meta[img]['imgtype'] != args.coprocess:
                 images.append(img)
@@ -952,7 +962,28 @@ def process_results(args):
                         feature_table.append(0)
 
                     args.features_file.write('|'.join(map(str, feature_table)) + '\n')
+###########################################
 
+
+# Check to see if the image was taken between a specified date range
+###########################################
+def check_date_range(args, img_time):
+    """Check image time versus included date range
+
+    :param args: (object) argparse object.
+    :param img_time: date-time string
+    :return: boolean
+    """
+    # Convert image datetime to unix time
+    timestamp = dt_parser(img_time)
+    time_delta = timestamp - datetime.datetime(1970, 1, 1)
+    unix_time = (time_delta.days * 24 * 3600) + time_delta.seconds
+    # Does the image date-time fall outside or inside the included range
+    if unix_time < args.start_date or unix_time > args.end_date:
+        return False
+    else:
+        return True
+###########################################
 
 if __name__ == '__main__':
     main()
