@@ -52,6 +52,18 @@ def cluster_contours(device,img, roi_objects, nrow=1,ncol=1,debug=None):
 
     # categorize what bin the center of mass of each contour
 
+    def digitize(a,step):
+        i=len(step)
+        for x in range(0,i):
+            if x==0:
+                if a>=0 and a<step[x+1]:
+                    return (x+1)
+            elif a>=step[x-1] and a<step[x]:
+                return x
+            elif a>step[x-1] and a>np.max(step):
+                    return (i)
+
+
     dtype = [('cx', int), ('cy', int), ('rowbin', int), ('colbin', int), ('index', int)]
     coord = []
     for i in range(0, len(roi_objects)):
@@ -61,8 +73,10 @@ def cluster_contours(device,img, roi_objects, nrow=1,ncol=1,debug=None):
         else:
             cx = int(m['m10'] / m['m00'])
             cy = int(m['m01'] / m['m00'])
-            colbin = np.digitize(cx, cbreaks)
-            rowbin = np.digitize(cy, rbreaks)
+            #colbin = np.digitize(cx, cbreaks)
+            #rowbin = np.digitize(cy, rbreaks)
+            colbin=digitize(cx,cbreaks)
+            rowbin=digitize(cy,rbreaks)
             a = (cx, cy, colbin, rowbin, i)
             coord.append(a)
     coord1 = np.array(coord, dtype=dtype)
