@@ -8,6 +8,7 @@ import argparse
 import string
 import math
 from . import print_image
+from . import plot_image
 from . import fatal_error
 
 def x_axis_pseudolandmarks(obj, mask, img, device, debug = False):
@@ -118,7 +119,7 @@ def x_axis_pseudolandmarks(obj, mask, img, device, debug = False):
     center_v = list(zip(x_centroids, y_centroids))
     center_v = np.array(center_v)
     center_v.shape = (20,1,2)
-    if debug:
+    if debug == 'plot':
       img2 = np.copy(img)
       for i in top:
         x = i[0,0]
@@ -132,7 +133,8 @@ def x_axis_pseudolandmarks(obj, mask, img, device, debug = False):
         x = i[0,0]
         y = i[0,1]
         cv2.circle(img2,(int(x),int(y)),10,(0,79,255),-1)
-        print_image(img2, (str(device) + '_x_axis_pseudolandmarks.png'))
+      #print_image(img2, (str(device) + '_x_axis_pseudolandmarks.png'))
+      plot_image(img2)
     return device, top, bottom, center_v
     
   if extent < 21:
@@ -168,5 +170,6 @@ def x_axis_pseudolandmarks(obj, mask, img, device, debug = False):
         x = i[0,0]
         y = i[0,1]
         cv2.circle(img2,(int(x),int(y)),10,(0,79,255),-1)
-        print_image(img2, (str(device) + '_x_axis_pseudolandmarks.png'))
+      #print_image(img2, (str(device) + '_x_axis_pseudolandmarks.png'))
+      plot_image(img2)
     return device, top, bottom, center_v
