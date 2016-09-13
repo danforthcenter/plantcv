@@ -60,8 +60,8 @@ def cluster_contour_splitimg(device,img,grouped_contour_indexes,contours,outdir,
         for i, x in enumerate(grouped_contour_indexes):
             totallen = []
             for a in x:
-                g = unigroup[i]
-                la = len(roi_contours[a])
+                g = i
+                la = len(contours[a])
                 totallen.append(la)
             sumlen = np.sum(totallen)
             size.append((sumlen, g, i))
@@ -76,7 +76,7 @@ def cluster_contour_splitimg(device,img,grouped_contour_indexes,contours,outdir,
 
         for x in rm_contour:
             index = x[2]
-            grouped_contours_indexes.append(grouped_contour_indexes[index])
+            corrected_contour_indexes.append(grouped_contour_indexes[index])
 
     elif len(namelist) > len(coordlist):
         print("Warning number of names is more than number of  grouped contours, double check output")
