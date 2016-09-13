@@ -35,6 +35,9 @@ def gaussian_blur(device, img, ksize, sigmax, sigmay=None, debug=None):
     if debug == 'print':
         print_image(img_gblur, (str(device) + '_gaussian_blur' + str(ksize) + '.png'))
     elif debug == 'plot':
-        plot_image(img_gblur, cmap='gray')
+        if len(img_gblur)==3:
+            plot_image(img_gblur)
+        else:
+            plot_image(img_gblur, cmap='gray')
 
     return device, img_gblur
