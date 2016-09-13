@@ -206,8 +206,8 @@ def triangle_auto_threshold(img, maxvalue, object_type, device, debug=False):
     """
     device += 1
 
-    # Calculate automatic threshold value based on triagnle algorithm
-    hist = cv2.calcHist([b], [0], None, [256], [0, 255])
+    # Calculate automatic threshold value based on triangle algorithm
+    hist = cv2.calcHist([img], [0], None, [256], [0, 255])
 
     # Make histogram one array
     newhist = []
