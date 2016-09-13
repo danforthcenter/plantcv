@@ -7,15 +7,11 @@ import numpy as np
 from . import print_image
 from . import plot_image
 
-# Detect peaks function
-"""Detect peaks in data based on their amplitude and other features."""
-__author__ = "Marcos Duarte, https://github.com/demotu/BMC"
-__version__ = "1.0.4"
-__license__ = "MIT"
-
-def detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising',
+def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising',
                  kpsh=False, valley=False, show=False, ax=None):
-    """Detect peaks in data based on their amplitude and other features.
+    """Marcos Duarte, https://github.com/demotu/BMC; version 1.0.4; license MIT
+
+    Detect peaks in data based on their amplitude and other features.
 
     Parameters
     ----------
@@ -179,7 +175,7 @@ def _plot(x, mph, mpd, threshold, edge, valley, ax, ind):
         plt.show()
 
 
-def triangle_auto_threshold(img, maxvalue, object_type, device, debug=False):
+def triangle_auto_threshold(img, maxvalue, object_type, device, debug=False, xstep=None):
     """Creates a binary image from a grayscaled image using Zack et al.'s (1977) thresholding.
 
     Inputs:
@@ -190,6 +186,7 @@ def triangle_auto_threshold(img, maxvalue, object_type, device, debug=False):
                   - If object is dark then inverse thresholding is done
     device      = device number. Used to count steps in the pipeline
     debug       = True/False. If True, print image
+    xstep       = value to move along x-axis to determine the points from which to calculate distance (default = 1)
 
     Returns:
     device      = device number
@@ -201,6 +198,7 @@ def triangle_auto_threshold(img, maxvalue, object_type, device, debug=False):
     :param object_type: str
     :param device: int
     :param debug: bool
+    :param xstep: optional int
     :return device: int
     :return t_img: numpy array
     """
@@ -213,9 +211,10 @@ def triangle_auto_threshold(img, maxvalue, object_type, device, debug=False):
     newhist = []
     for item in hist: newhist.extend(item)
 
-    # Detect all peaks
-    ind = detect_peaks(newhist, mph=None, mpd=1)
+    # Detect peaks
+    ind = _detect_peaks(newhist, mph=None, mpd=1)
 
+    # Find point corresponding to highest peak
     # Find intensity value (y) of highest peak
     max_peak_int = max(list(newhist[i] for i in ind))
     # Find value (x) of highest peak
@@ -233,19 +232,33 @@ def triangle_auto_threshold(img, maxvalue, object_type, device, debug=False):
     x_coords, y_coords = zip(*points)
 
     # Get threshold value
-    dists = []
     peaks = []
-    for i in range((x_coords[0] + 1), (x_coords[1])):
-        distance = (((x_coords[1] - x_coords[0]) * (y_coords[0] - hist[i])) -
-                    ((x_coords[0] - i) * (y_coords[1] - y_coords[0]))) / math.sqrt(
-            (float(x_coords[1]) - float(x_coords[0])) *
-            (float(x_coords[1]) - float(x_coords[0])) +
-            ((float(y_coords[1]) - float(y_coords[0])) *
-             (float(y_coords[1]) - float(y_coords[0]))))
-        peaks.append(i)
-        dists.append(distance)
-    autothresh = [peaks[x] for x in [i for i, x in enumerate(list(dists)) if x == max(list(dists))]]
-    autothreshval = autothresh[0]
+    dists = []
+    if xstep is None:
+        for i in range(x_coords[0], x_coords[1], 1):
+            distance = (((x_coords[1] - x_coords[0]) * (y_coords[0] - hist[i])) -
+                        ((x_coords[0] - i) * (y_coords[1] - y_coords[0]))) / math.sqrt(
+                (float(x_coords[1]) - float(x_coords[0])) *
+                (float(x_coords[1]) - float(x_coords[0])) +
+                ((float(y_coords[1]) - float(y_coords[0])) *
+                (float(y_coords[1]) - float(y_coords[0]))))
+            peaks.append(i)
+            dists.append(distance)
+        autothresh = [peaks[x] for x in [i for i, x in enumerate(list(dists)) if x == max(list(dists))]]
+        autothreshval = autothresh[0]
+    else:
+        for i in range(x_coords[0], x_coords[1], xstep):
+            distance = (((x_coords[1] - x_coords[0]) * (y_coords[0] - hist[i])) -
+                        ((x_coords[0] - i) * (y_coords[1] - y_coords[0]))) / math.sqrt(
+                (float(x_coords[1]) - float(x_coords[0])) *
+                (float(x_coords[1]) - float(x_coords[0])) +
+                ((float(y_coords[1]) - float(y_coords[0])) *
+                (float(y_coords[1]) - float(y_coords[0]))))
+            peaks.append(i)
+            dists.append(distance)
+        autothresh = [peaks[x] for x in [i for i, x in enumerate(list(dists)) if x == max(list(dists))]]
+        autothreshval = autothresh[0]
+
 
     # check whether to inverse the image or not and make an ending extension
     obj = 0
