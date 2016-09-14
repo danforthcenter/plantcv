@@ -246,6 +246,8 @@ def triangle_auto_threshold(img, maxvalue, object_type, device, debug=False, xst
             dists.append(distance)
         autothresh = [peaks[x] for x in [i for i, x in enumerate(list(dists)) if x == max(list(dists))]]
         autothreshval = autothresh[0]
+        print('Threshold value = {t}'.format(t=autothreshval))
+
     else:
         for i in range(x_coords[0], x_coords[1], xstep):
             distance = (((x_coords[1] - x_coords[0]) * (y_coords[0] - hist[i])) -
@@ -258,7 +260,7 @@ def triangle_auto_threshold(img, maxvalue, object_type, device, debug=False, xst
             dists.append(distance)
         autothresh = [peaks[x] for x in [i for i, x in enumerate(list(dists)) if x == max(list(dists))]]
         autothreshval = autothresh[0]
-
+        print('Threshold value = {t}'.format(t=autothreshval))
 
     # check whether to inverse the image or not and make an ending extension
     obj = 0
