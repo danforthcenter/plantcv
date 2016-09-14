@@ -38,7 +38,7 @@ def rotate_img(img, rotation_deg, device, debug=None):
     rotated_img = cv2.warpAffine(img, M, (ix, iy))
 
     if debug == 'print':
-        print_image(rotated_img, (str(device) + '_hsv_value.png'))
+        print_image(rotated_img, (str(device) + '_rotated_img.png'))
 
     elif debug == 'plot':
         if len(np.shape(img))==3:
