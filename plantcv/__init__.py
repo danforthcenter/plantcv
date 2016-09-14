@@ -6,7 +6,8 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'plot_colorbar', 'readima
            '_pseudocolored_image', 'analyze_NIR_intensity', 'fluor_fvfm', 'print_results', 'resize', 'flip',
            'crop_position_mask', 'get_nir', 'adaptive_threshold', 'otsu_auto_threshold', 'report_size_marker_area',
            'white_balance', 'white_balance2', 'triangle_auto_threshold','acute_vertex','scale_features','turgor_proxy',
-           'x_axis_pseudolandmarks', 'y_axis_pseudolandmarks','gaussian_blur', 'cluster_contours','cluster_contour_splitimg']
+           'x_axis_pseudolandmarks', 'y_axis_pseudolandmarks','gaussian_blur', 'cluster_contours','cluster_contour_splitimg',
+           'rotate_img']
 
 from fatal_error import fatal_error
 from print_image import print_image
@@ -64,5 +65,6 @@ from y_axis_pseudolandmarks import y_axis_pseudolandmarks
 from gaussian_blur import gaussian_blur
 from cluster_contours import cluster_contours
 from cluster_contour_splitimg import cluster_contour_splitimg
+from rotate_img import rotate_img
 
 #add new functions to end of lists
