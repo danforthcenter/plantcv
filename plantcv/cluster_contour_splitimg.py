@@ -39,7 +39,7 @@ def cluster_contour_splitimg(device,img,grouped_contour_indexes,contours,outdir,
         filebase = file[:-4]
 
     if filenames==None:
-        l=len(coordlist)
+        l=len(grouped_contour_indexes)
         namelist=[]
         for x in range(0,l):
             namelist.append(x)
@@ -78,9 +78,9 @@ def cluster_contour_splitimg(device,img,grouped_contour_indexes,contours,outdir,
             index = x[2]
             corrected_contour_indexes.append(grouped_contour_indexes[index])
 
-    elif len(namelist) > len(coordlist):
+    elif len(namelist) > len(grouped_contour_indexes):
         print("Warning number of names is more than number of  grouped contours, double check output")
-        diff = len(namelist) - len(coordlist)
+        diff = len(namelist) - len(grouped_contour_indexes)
         namelist=namelist[0:-diff]
         corrected_contour_indexes = grouped_contour_indexes
 
