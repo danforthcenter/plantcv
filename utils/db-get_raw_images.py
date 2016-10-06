@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import argparse
-import sys, os
+import sys
+import os
 import sqlite3 as sq
 import plantcv as pcv
 from shutil import copy
