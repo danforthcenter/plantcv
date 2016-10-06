@@ -1,10 +1,16 @@
-## Tutorial: VIS Image Pipeline
+## Tutorial: VIS/NIR Dual Image Pipeline
 
 PlantCV is composed of modular functions that can be arranged (or rearranged) and adjusted quickly and easily.
 Pipelines do not need to be linear (and often are not). Please see pipeline example below for more details.
 Every function has a optional debug mode that prints out the resulting image. The debug has two modes, either 'plot' or print' if set to
 'print' then the function prints the image out, if using a jupyter notebook, you would set debug to plot to have
 the images plot images to the screen. Debug mode allows users to visualize and optimize each step on individual test images and small test sets before pipelines are deployed over whole data-sets.
+
+For dual VIS/NIR pipelines, a visible images is used to identify an image mask for the plant material.
+The get_nir function is used to get the NIR image that matches the VIS image (must be in same folder, 
+with similar naming scheme), then functions are used to size and place the VIS image mask over the NIR image.
+This allows two workflows to be done at once and also allows plant material to be identified in low-quality images.
+We do not recommend this approach if there is a lot of plant movement between capture of NIR and VIS images.
 
 **Workflow**
 
@@ -15,7 +21,7 @@ the images plot images to the screen. Debug mode allows users to visualize and o
 
 **Running A Pipeline**
 
-To run a VIS pipeline over a single VIS image there are two required inputs:
+To run a VIS/NIR pipeline over a single VIS image there are two required inputs:
 
 1.  **Image:** Images can be processed regardless of what type of VIS camera was used (High-throughput platform, digital camera, cell phone camera).
 Image processing will work with adjustments if images are well lit and free of background that is similar in color to plant material.  
@@ -24,13 +30,14 @@ Image processing will work with adjustments if images are well lit and free of b
 Optional inputs:  
 
 *  **Result File** file to print results to
+*  **CoResult File** file to print co-results (NIR results) to
 *  **Write Image Flag** flag to write out images, otherwise no result images are printed (to save time).
 *  **Debug Flag:** Prints an image at each step
 *  **Region of Interest:** The user can input their own binary region of interest or image mask (make sure it is the same size as your image or you will have problems).
 
 Sample command to run a pipeline on a single image:  
 
-*  Always test pipelines (preferably with -D flag for debug mode) before running over a full image set
+*  Always test pipelines (preferably with -D 'print' option for debug mode) before running over a full image set
 
 ```
 ./pipelinename.py -i testimg.png -o ./output-images -r results.txt -w -D 'print'
