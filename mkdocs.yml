@@ -15,6 +15,7 @@ pages:
     - 'VIS pipeline': vis_tutorial.md
     - 'NIR pipeline': nir_tutorial.md
     - 'PSII pipeline': psII_tutorial.md
+    - 'VIS/NIR dual pipeline' vis_nir_tutorial.md
     - 'Pipeline parallelization': pipeline_parallel.md
   - Library:
     - 'Analyze color': analyze_color.md

@@ -14,7 +14,7 @@ Flips and image in either the horizontal or vertical direction
 - **Context:**
     - Used to flip images when necessary
 - **Example use:**
- - [Use in VIS/NIR Tutorial]()
+ - flip image horizontally or vertically, rotate function is also available to adjust image positioning.
 
 **Original image**
 
