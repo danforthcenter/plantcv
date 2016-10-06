@@ -29,6 +29,7 @@ pages:
     - 'Erosion': erode.md
     - 'Fill objects': fill.md
     - 'Find objects': find_objects.md
+    - 'Flip image': flip.md
     - 'Histogram normalization': HistEqualization.md
     - 'Image add': image_add.md
     - 'Image subtract': image_subtract.md
