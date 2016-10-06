@@ -18,12 +18,12 @@ Flips and image in either the horizontal or vertical direction
 
 **Original image**
 
-![Screenshot](img/documentation_images/analyze_color/original_image.jpg)
+![Screenshot](img/documentation_images/flip/original_image.jpg)
 
 ```python
 import plantcv as pcv
 
-# Flip Image
+# Flip Image Horizontal
 
 device, flipped= pcv.flip(img, 'horizontal', device, debug="print")
 
@@ -31,4 +31,17 @@ device, flipped= pcv.flip(img, 'horizontal', device, debug="print")
 
 **Flipped Image**
 
-![Screenshot](img/documentation_images/analyze_color/color_histogram.jpg)
+![Screenshot](img/documentation_images/flip/flipped.jpg)
+
+```python
+import plantcv as pcv
+
+# Flip Image Vertical
+
+device, flipped= pcv.flip(img, 'vertical', device, debug="print")
+
+```
+
+**Flipped Image**
+
+![Screenshot](img/documentation_images/flip/flipped1.jpg)
