@@ -295,7 +295,11 @@ the Color Function [here](analyze_color.md),
 and the Boundary tool function [here](analyze_bound.md).
 
 ```python
-############### Analysis ################  
+############### Analysis ################
+  
+    outfile=False
+    if args.writeimg==True:
+        outfile=args.outdir+"/"+filename
   
     # Find shape properties, output shape image (optional)
     device, shape_header, shape_data, shape_img = pcv.analyze_object(img, args.image, obj, mask, device, debug, args.outdir + '/' + filename)
@@ -306,10 +310,23 @@ and the Boundary tool function [here](analyze_bound.md).
     # Determine color properties: Histograms, Color Slices and Pseudocolored Images, output color analyzed images (optional)
     device, color_header, color_data, norm_slice = pcv.analyze_color(img, args.image, kept_mask, 256, device, debug, 'all', 'rgb', 'v', 'img', 300, args.outdir + '/' + filename)
     
-    # Output shape and color data
-    pcv.print_results(args.image, shape_header, shape_data)
-    pcv.print_results(args.image, color_header, color_data)
-    pcv.print_results(args.image, boundary_header, boundary_data)
+    # Write shape and color data to results file
+    result=open(args.result,"a")
+    result.write('\t'.join(map(str,shape_header)))
+    result.write("\n")
+    result.write('\t'.join(map(str,shape_data)))
+    result.write("\n")
+    for row in shape_img:  
+        result.write('\t'.join(map(str,row)))
+        result.write("\n")
+    result.write('\t'.join(map(str,color_header)))
+    result.write("\n")
+    result.write('\t'.join(map(str,color_data)))
+    result.write("\n")
+    for row in color_img:
+        result.write('\t'.join(map(str,row)))
+        result.write("\n")
+    result.close()
   
 if __name__ == '__main__':
     main()
@@ -358,6 +375,8 @@ here are different species of plants captured with the same imaging setup
 ![Screenshot](img/tutorial_images/vis/tomato_3_pseudo_on_img.jpg)
 
 ![Screenshot](img/tutorial_images/vis/tomato_4_all_hist.jpg)
+
+
 
 To deploy a pipeline over a full image set please see tutorial on 
 Pipeline Parallelization [here](pipeline_parallel.md).
