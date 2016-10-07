@@ -276,7 +276,7 @@ and the Boundary tool function [here](analyze_bound.md).
 
 **Figure 13.** Boundary line output image.
 
-![Screenshot](img/tutorial_images/vis/15_boundary_on_img.jpg)
+![Screenshot](img/tutorial_images/vis-nir/15_boundary_on_img.jpg)
 
 **Figure 14.** Pseudocolored image (based on value channel).
 
