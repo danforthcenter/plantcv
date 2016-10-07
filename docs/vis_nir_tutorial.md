@@ -120,7 +120,7 @@ Tip: This step is often one that needs to be adjusted depending on the lighting 
 
 **Figure 3.** Thresholded saturation channel image (Figure 2). Remaining objects are in white.
 
-![Screenshot](img/tutorial_images/vis/2_binary_threshold30.jpg)
+![Screenshot](img/tutorial_images/vis-nir/2_binary_threshold30.jpg)
 
 Again depending on the lighting, it will be possible to remove more/less background.
 A median blur (more info [here](median_blur.md)) can be used to remove noise.
@@ -135,7 +135,7 @@ Tip: Fill and median blur type steps should be used as sparingly as possible. De
 
 **Figure 4.** Thresholded saturation channel image with median blur.
 
-![Screenshot](img/tutorial_images/vis-nir/3_median_blur5.jpg)
+![Screenshot](img/tutorial_images/vis-nir/4_median_blur5.jpg)
 
 Here is where the pipeline branches.
 The original image is used again to select the blue-yellow channel from LAB colorspace (more info on the function [here](rgb2lab.md)).
@@ -216,7 +216,7 @@ For more information see [here](roi_objects.md).
 
 **Figure 10.** Kept objects (green) drawn onto image.
 
-![Screenshot](img/tutorial_images/vis/12_obj_on_img.jpg)
+![Screenshot](img/tutorial_images/vis-nir/12_obj_on_img.jpg)
 
 The isolated objects now should all be plant material. There, can however, 
 be more than one object that makes up a plant, since sometimes leaves twist 
@@ -231,7 +231,7 @@ one object using the Combine Objects function (for more info see [here](object_c
 
 **Figure 11.** Outline (blue) of combined objects on the image. 
 
-![Screenshot](img/tutorial_images/vis/13_objcomp.jpg)
+![Screenshot](img/tutorial_images/vis-nir/13_objcomp.jpg)
 
 The next step is to analyze the plant object for traits such as shape, or color.
 For more info see the Shape Function [here](analyze_shape.md),
@@ -280,7 +280,7 @@ and the Boundary tool function [here](analyze_bound.md).
 
 **Figure 14.** Pseudocolored image (based on value channel).
 
-![Screenshot](img/tutorial_images/vis/15_pseudocolor.jpg)
+![Screenshot](img/tutorial_images/vis-nir/15_pseudocolor.jpg)
 
 The next step is to get the matching NIR image and resize and place the VIS mask over it.
 For more info see the get_nir Function [here](get_nir.md),
