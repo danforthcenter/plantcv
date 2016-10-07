@@ -16,6 +16,8 @@ TEST_INPUT_GRAY = "input_gray_img.jpg"
 TEST_INPUT_BINARY = "input_binary_img.png"
 TEST_INPUT_ROI = "input_roi.npz"
 TEST_INPUT_CONTOURS = "input_contours.npz"
+TEST_VIS = "VIS_SV_0_z300_h1_g0_e85_v500_93054.png"
+TEST_NIR = "NIR_SV_0_z300_h1_g0_e15000_v500_93059"
 
 if not os.path.exists(TEST_TMPDIR):
     os.mkdir(TEST_TMPDIR)
@@ -286,3 +288,9 @@ def test_plantcv_logical_xor():
     img2 = np.copy(img1)
     device, xor_img = pcv.logical_xor(img1=img1, img2=img2, device=0, debug=None)
     assert all([i == j] for i, j in zip(np.shape(xor_img), TEST_BINARY_DIM))
+
+
+def test_get_nir():
+    device, nirpath = pcv.get_nir(TEST_DATA, TEST_VIS, device=0, debug=None)
+    nirpath1 = os.path.join(TEST_DATA,TEST_NIR)
+    assert nirpath == nirpath1

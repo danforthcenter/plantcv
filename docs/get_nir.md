@@ -16,21 +16,14 @@ Gets NIR image that matches VIS image
 that is found in the same directory but which contains multiple images (regex). Would need to be modified for different file naming structure / image types / file structures.  
 
 - **Example use:**
- - [Use in VIS/NIR Tutorial]()
-
-**Original image**
-
-![Screenshot](img/documentation_images/analyze_color/original_image.jpg)
+ - [Use in VIS/NIR Tutorial](vis_nir_tutorial.md)
 
 ```python
 import plantcv as pcv
 
 # Get NIR image
 
-device, nir_path= pcv.get_nir(/home/images/rice_photos/, VIS_ , device, debug="print")
+device, nir_path= pcv.get_nir(/home/images/sorghum/snapshot1, VIS_SV_90_z300_h1_g0_e85_v500_86939.png, device, debug="print")
 
 ```
 
-**Flipped Image**
-
-![Screenshot](img/documentation_images/analyze_color/color_histogram.jpg)

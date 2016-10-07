@@ -25,11 +25,13 @@ pages:
     - 'Apply mask': apply_mask.md
     - 'Binary threshold': binary_threshold.md
     - 'Boundary line tool': analyze_bound.md
+    - 'Crop and Position Mask': crop_position_mask.md
     - 'Dilation': dilate.md
     - 'Erosion': erode.md
     - 'Fill objects': fill.md
     - 'Find objects': find_objects.md
     - 'Flip image': flip.md
+    - 'Get NIR images': get_nir.md'
     - 'Histogram normalization': HistEqualization.md
     - 'Image add': image_add.md
     - 'Image subtract': image_subtract.md
