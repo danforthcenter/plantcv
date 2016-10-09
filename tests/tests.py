@@ -17,7 +17,10 @@ TEST_INPUT_BINARY = "input_binary_img.png"
 TEST_INPUT_ROI = "input_roi.npz"
 TEST_INPUT_CONTOURS = "input_contours.npz"
 TEST_VIS = "VIS_SV_0_z300_h1_g0_e85_v500_93054.png"
-TEST_NIR = "NIR_SV_0_z300_h1_g0_e15000_v500_93059"
+TEST_NIR = "NIR_SV_0_z300_h1_g0_e15000_v500_93059.png"
+TEST_INPUT_MASK="input_mask.png"
+TEST_INPUT_NIR_MASK="input_nir.png"
+
 
 if not os.path.exists(TEST_TMPDIR):
     os.mkdir(TEST_TMPDIR)
@@ -294,3 +297,10 @@ def test_get_nir():
     device, nirpath = pcv.get_nir(TEST_DATA, TEST_VIS, device=0, debug=None)
     nirpath1 = os.path.join(TEST_DATA,TEST_NIR)
     assert nirpath == nirpath1
+
+
+def test_crop_position_mask():
+    nir, path1, filename1 = pcv.readimage(os.path.join(TEST_DATA,TEST_INPUT_NIR_MASK))
+    mask= cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_MASK),-1)
+    device, newmask=pcv.crop_position_mask(nir,mask, device=0, x=40,y=3,v_pos="top",h_pos="right",debug=None)
+    assert np.sum(newmask)==641517
