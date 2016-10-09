@@ -25,7 +25,7 @@ pages:
     - 'Apply mask': apply_mask.md
     - 'Binary threshold': binary_threshold.md
     - 'Boundary line tool': analyze_bound.md
-    - 'Crop and Position Mask': crop_mask_position.md
+    - 'Crop and Position Mask': crop_position_mask.md
     - 'Dilation': dilate.md
     - 'Erosion': erode.md
     - 'Fill objects': fill.md

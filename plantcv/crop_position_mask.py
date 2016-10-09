@@ -8,7 +8,7 @@ from . import plot_image
 from . import fatal_error
 
 
-def crop_position_mask(img, mask, device, x, y, v_pos, h_pos="right", debug=None):
+def crop_position_mask(img, mask, device, x, y, v_pos="top", h_pos="right", debug=None):
     """Crop position mask
 
     Inputs:
