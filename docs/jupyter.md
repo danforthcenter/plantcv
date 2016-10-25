@@ -124,7 +124,7 @@ def options():
     parser.add_argument("-r","--result", help="Result file.", required= True )
     parser.add_argument("-o", "--outdir", help="Output directory for image files.", required=False)
     parser.add_argument("-w","--writeimg", help="Write out images.", default=False, action="store_true")
-    parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.", action="store_true")
+    parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.")
     args = parser.parse_args()
     return args
 ```
@@ -140,7 +140,7 @@ def options():
     parser.add_argument("-r2","--coresult", help="Result file for co-processed image.", required=True )
     parser.add_argument("-o", "--outdir", help="Output directory for image files.", required=False)
     parser.add_argument("-w","--writeimg", help="Write out images.", default=False, action="store_true")
-    parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.", action="store_true")
+    parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.")
     args = parser.parse_args()
     return args
 ```
