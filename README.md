@@ -13,9 +13,11 @@ Malia, Max and Noah
 
 
 
+<!--
 ##Table of Contents:
 1.  [Introduction to PlantCV](#introduction)
 2.  [Issues with PlantCV](#issueswithplantcv)
+-->
 
 ---
 ##<a id="introduction"></a>Introduction to PlantCV
