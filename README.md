@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/danforthcenter/plantcv.svg?branch=dev)](https://travis-ci.org/danforthcenter/plantcv)
 [![Documentation Status](http://readthedocs.org/projects/plantcv/badge/?version=latest)](http://plantcv.readthedocs.io/en/latest/?badge=latest)
 
-# PlantCV
+# PlantCV: Plant phenotyping using computer vision
 
 This is a general guide on how to cite and contribute to PlantCV (which we hope you will do).
 Of course, this is not a comprehensive guide so if you have questions on contributions for PlantCV
