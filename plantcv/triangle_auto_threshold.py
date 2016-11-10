@@ -2,6 +2,7 @@
 
 from __future__ import division, print_function
 import cv2
+from matplotlib import pyplot as plt
 import math
 import numpy as np
 from . import print_image
