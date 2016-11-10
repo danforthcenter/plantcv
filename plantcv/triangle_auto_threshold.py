@@ -175,18 +175,19 @@ def _plot(x, mph, mpd, threshold, edge, valley, ax, ind):
         plt.show()
 
 
-def triangle_auto_threshold(img, maxvalue, object_type, device, debug=False, xstep=None):
+def triangle_auto_threshold(device, img, maxvalue, object_type, xstep, debug=False):
     """Creates a binary image from a grayscaled image using Zack et al.'s (1977) thresholding.
 
     Inputs:
+    device      = device number. Used to count steps in the pipeline
     img         = img object, grayscale
     maxvalue    = value to apply above threshold (usually 255 = white)
     object_type = light or dark
                   - If object is light then standard thresholding is done
                   - If object is dark then inverse thresholding is done
-    device      = device number. Used to count steps in the pipeline
+    xstep       = value to move along x-axis to determine the points from which to calculate distance
+                    recommended to start at 1 and change if needed)
     debug       = True/False. If True, print image
-    xstep       = value to move along x-axis to determine the points from which to calculate distance (default = 1)
 
     Returns:
     device      = device number
@@ -234,33 +235,18 @@ def triangle_auto_threshold(img, maxvalue, object_type, device, debug=False, xst
     # Get threshold value
     peaks = []
     dists = []
-    if xstep is None:
-        for i in range(x_coords[0], x_coords[1], 1):
-            distance = (((x_coords[1] - x_coords[0]) * (y_coords[0] - hist[i])) -
-                        ((x_coords[0] - i) * (y_coords[1] - y_coords[0]))) / math.sqrt(
-                (float(x_coords[1]) - float(x_coords[0])) *
-                (float(x_coords[1]) - float(x_coords[0])) +
-                ((float(y_coords[1]) - float(y_coords[0])) *
-                (float(y_coords[1]) - float(y_coords[0]))))
-            peaks.append(i)
-            dists.append(distance)
-        autothresh = [peaks[x] for x in [i for i, x in enumerate(list(dists)) if x == max(list(dists))]]
-        autothreshval = autothresh[0]
-        print('Threshold value = {t}'.format(t=autothreshval))
 
-    else:
-        for i in range(x_coords[0], x_coords[1], xstep):
-            distance = (((x_coords[1] - x_coords[0]) * (y_coords[0] - hist[i])) -
+    for i in range(x_coords[0], x_coords[1], xstep):
+        distance = (((x_coords[1] - x_coords[0]) * (y_coords[0] - hist[i])) -
                         ((x_coords[0] - i) * (y_coords[1] - y_coords[0]))) / math.sqrt(
                 (float(x_coords[1]) - float(x_coords[0])) *
                 (float(x_coords[1]) - float(x_coords[0])) +
                 ((float(y_coords[1]) - float(y_coords[0])) *
                 (float(y_coords[1]) - float(y_coords[0]))))
-            peaks.append(i)
-            dists.append(distance)
-        autothresh = [peaks[x] for x in [i for i, x in enumerate(list(dists)) if x == max(list(dists))]]
-        autothreshval = autothresh[0]
-        print('Threshold value = {t}'.format(t=autothreshval))
+        peaks.append(i)
+        dists.append(distance)
+    autothresh = [peaks[x] for x in [i for i, x in enumerate(list(dists)) if x == max(list(dists))]]
+    autothreshval = autothresh[0]
 
     # check whether to inverse the image or not and make an ending extension
     obj = 0
@@ -276,9 +262,27 @@ def triangle_auto_threshold(img, maxvalue, object_type, device, debug=False, xst
     t_val, t_img = cv2.threshold(img, autothreshval, maxvalue, obj)
 
     if debug == 'print':
-        name = str(device) + '_triangle_auto_threshold_' + str(t_val) + str(extension)
+        name = str(device) + '_triangle_thresh_img_' + str(t_val) + str(extension)
         print_image(t_img, name)
+        plt.clf()
+
+        plt.plot(hist)
+        plt.title('Threshold value = {t}'.format(t=autothreshval))
+        plt.axis([0, 256, 0, max(hist)])
+        plt.grid('on')
+        fig_name_hist = str(device) + '_triangle_thresh_hist_' + str(t_val) + str(extension)
+        # write the figure to current directory
+        plt.savefig(fig_name_hist)
+        # close pyplot plotting window
+        plt.clf()
+
     elif debug == 'plot':
+        print('Threshold value = {t}'.format(t=autothreshval))
         plot_image(t_img, cmap="gray")
+
+        plt.plot(hist)
+        plt.axis([0, 256, 0, max(hist)])
+        plt.grid('on')
+        plt.show()
 
     return device, t_img
