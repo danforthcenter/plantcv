@@ -2,7 +2,6 @@
 
 from __future__ import division, print_function
 import cv2
-from matplotlib import pyplot as plt
 import math
 import numpy as np
 from . import print_image
@@ -261,6 +260,11 @@ def triangle_auto_threshold(device, img, maxvalue, object_type, xstep, debug=Fal
 
     # threshold the image based on the object type using triangle binarization
     t_val, t_img = cv2.threshold(img, autothreshval, maxvalue, obj)
+
+    if debug is not None:
+        import matplotlib
+        matplotlib.use('Agg')
+        from matplotlib import pyplot as plt
 
     if debug == 'print':
         name = str(device) + '_triangle_thresh_img_' + str(t_val) + str(extension)
