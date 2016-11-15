@@ -253,14 +253,6 @@ def test_plantcv_readimage():
         assert 0
 
 
-def test_plantcv_resize():
-    img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_COLOR))
-    device, resized_img=pcv.resize(img,0.5,0.5,device=0,debug=None)
-    ix,iy,iz=np.shape(img)
-    rx,ry,rz=np.shape(resized_img)
-    assert ix>rx
-
-
 def test_plantcv_roi_objects():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     roi_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_ROI))
