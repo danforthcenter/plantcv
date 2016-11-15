@@ -312,3 +312,10 @@ def test_plantcv_sobel_filter():
     device, sobel_img = pcv.sobel_filter(img=img, dx=1, dy=0, k=1, scale=1, device=0, debug=None)
     # Assert that the output image has the dimensions of the input image
     assert all([i == j] for i, j in zip(np.shape(sobel_img), TEST_GRAY_DIM))
+
+def test_plantcv_white_balance():
+    img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_NIR_MASK),-1)
+    device, white_balanced=pcv.white_balance(device=0, img, debug=None,roi=(5,5,80,80))
+    imgavg=np.average(img)
+    balancedavg=np.average(white_balanced)
+    assert balancedavg>imgavg

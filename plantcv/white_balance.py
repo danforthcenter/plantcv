@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 from . import print_image
 from . import plot_image
-
+from . import apply_mask
 
 def white_balance(device,img, debug=None,roi=None):
 
@@ -15,9 +15,12 @@ def white_balance(device,img, debug=None,roi=None):
             If a list of 4 points is not given, whole image will be used.
 
     Returns:
+    device - pipeline step counter
     img - Image after exposure correction
     """
     device += 1
+
+    ori_img = np.copy(img)
 
     if roi is not None:
         roiint = all(isinstance(item, int) for item in roi)
@@ -26,8 +29,6 @@ def white_balance(device,img, debug=None,roi=None):
             fatal_error('If ROI is used ROI must have 4 elements as a list and all must be integers')
     else:
         pass
-
-    ori_img = np.copy(img)
 
     if len(np.shape(img)) == 3:
         iy, ix, iz = np.shape(img)
