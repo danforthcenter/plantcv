@@ -19,7 +19,7 @@ Resizes images, used to resize masks over other images.
     
 **Input image**
 
-![Screenshot](img/documentation_images/resize/19_flipped.jpg)
+![Screenshot](img/documentation_images/dilate/19_flipped.jpg)
 
 ```python
 import plantcv as pcv
@@ -30,4 +30,4 @@ device, resize_img = pcv.resize(img, 0.1154905775,0.1154905775, device, debug='p
 
 **Image after resizing**
 
-![Screenshot](img/documentation_images/resize/19_resize1.jpg)
+![Screenshot](img/documentation_images/dilate/19_resize1.jpg)
