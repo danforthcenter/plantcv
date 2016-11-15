@@ -2,7 +2,11 @@
 
 Apply binary mask to an image.
 
+<<<<<<< HEAD
 **apply_mask**(*img, mask, mask_color, device, debug=None*)
+=======
+**apply_mask**(*img, mask, mask_color, device, debug=False*)
+>>>>>>> master
 
 **returns** device, masked image
 
@@ -11,7 +15,11 @@ Apply binary mask to an image.
     - mask= binary image object (black background with white object)
     - mask_color= 'white' or 'black'
     - device- Counter for image processing steps
+<<<<<<< HEAD
     - debug- None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
+=======
+    - debug- Default value is False, if True, masked intermediate image will be printed 
+>>>>>>> master
 - **Context:**
     - Apply a binary image mask over a grayscale or RGB image. Useful for seperating plant and background materials.
 - **Example use:**
@@ -31,7 +39,11 @@ Apply binary mask to an image.
 import plantcv as pcv
 
 # Apply binary 'white' mask over an image. 
+<<<<<<< HEAD
 device, masked_image = pcv.apply_mask(img, mask, 'white', device, debug="print")
+=======
+device, masked_image = pcv.apply_mask(img, mask, 'white', device, debug=True)
+>>>>>>> master
 ```
 
 **White-masked image**
@@ -42,7 +54,11 @@ device, masked_image = pcv.apply_mask(img, mask, 'white', device, debug="print")
 import plantcv as pcv
 
 # Apply binary 'black' mask over an image.
+<<<<<<< HEAD
 device, masked_image = pcv.apply_mask(img, mask, 'black', device, debug="print")
+=======
+device, masked_image = pcv.apply_mask(img, mask, 'black', device, debug=True)
+>>>>>>> master
 ```
   
 **Black-masked image**

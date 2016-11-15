@@ -2,7 +2,11 @@
 
 Extract Fv/Fm data of objects and produce pseudocolored images.
 
+<<<<<<< HEAD
 **fluor_fvfm**(*fdark, fmin, fmax, mask, device, filename, bins=1000, debug=None*)
+=======
+**fluor_fvfm**(*fdark, fmin, fmax, mask, device, filename, bins=1000, debug=False*)
+>>>>>>> master
 
 **returns** device, FLU channel histogram headers, FLU channel histogram data, normalized color slice data
 
@@ -14,7 +18,11 @@ Extract Fv/Fm data of objects and produce pseudocolored images.
     - device - Counter for image processing steps
     - filename - False or image name. If defined print image
     - bins - number of grayscale bins (0-256 for 8-bit images and 0 to 65,536), if you would like to bin data, you would alter this number
+<<<<<<< HEAD
     - debug - None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
+=======
+    - debug - Default value is False, if True, intermediate image with boundary line will be printed
+>>>>>>> master
 - **Context:**
     - Used to extract fv/fm per identified plant pixel.
     - Generates histogram of fv/fm data.
@@ -38,7 +46,11 @@ Extract Fv/Fm data of objects and produce pseudocolored images.
 import plantcv as pcv
 
 # Analyze Fv/Fm    
+<<<<<<< HEAD
  device, fvfm_header, fvfm_data = pcv.fluor_fvfm(fdark, fmin, fmax, kept_mask, device, filename, 1000, debug="print")
+=======
+ device, fvfm_header, fvfm_data = pcv.fluor_fvfm(fdark, fmin, fmax, kept_mask, device, filename, 1000, debug=True)
+>>>>>>> master
 ```
 
 **Histogram of Fv/Fm values**

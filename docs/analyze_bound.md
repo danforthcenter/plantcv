@@ -4,7 +4,11 @@ Set boundary line with boundary tool, this allows the user to find the extent-y 
 above and below as well as the area above and below the boundary line. This tool functions 
 best if the pot size/position of the plant remains relatively constant.
  
+<<<<<<< HEAD
 **analyze_bound**(*img, imgname, obj, mask, line_position, device , debug=None, filename=False*)
+=======
+**analyze_bound**(*img, imgname, obj, mask, line_position, device , debug=False, filename=False*)
+>>>>>>> master
 
 **returns** device, boundary headers, boundary data, image with boundary data
 
@@ -15,7 +19,11 @@ best if the pot size/position of the plant remains relatively constant.
     - mask - binary mask of selected contours
     - line_position = position of boundary line (a value of 0 would draw the line through the bottom of the image)
     - device - Counter for image processing steps
+<<<<<<< HEAD
     - debug - None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
+=======
+    - debug - Default value is False, if True, intermediate image with boundary line will be printed
+>>>>>>> master
     - filename - False or image name. If defined print image
 - **Context:**
     - Used to define a boundary line for the image, to find the height above and below as well as area above and below a boundary line.
@@ -27,7 +35,11 @@ best if the pot size/position of the plant remains relatively constant.
 import plantcv as pcv
 
 # Set Boundary Line    
+<<<<<<< HEAD
 device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound(img, imgname, obj, mask, 950, device, debug='print', 'setaria_boundary_img.png')
+=======
+device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound(img, imgname, obj, mask, 950, device, debug=True, 'setaria_boundary_img.png')
+>>>>>>> master
 ```
 
 **Boundary tool output image (y = 950)**

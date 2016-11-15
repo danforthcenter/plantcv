@@ -26,6 +26,200 @@ if not os.path.exists(TEST_TMPDIR):
     os.mkdir(TEST_TMPDIR)
 
 
+def test_plantcv_adaptive_threshold():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    device, binary_img = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="gaussian", object_type="light",
+                                                device=0, debug=None)
+    # Assert that the output image has the dimensions of the input image
+    if all([i == j] for i, j in zip(np.shape(binary_img), TEST_GRAY_DIM)):
+        # Assert that the image is binary
+        if all([i == j] for i, j in zip(np.unique(binary_img), [0, 255])):
+            assert 1
+        else:
+            assert 0
+    else:
+        assert 0
+
+def test_plantcv_apply_mask():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    device, masked_img = pcv.apply_mask(img=img, mask=mask, mask_color="white", device=0, debug=None)
+    assert all([i == j] for i, j in zip(np.shape(masked_img), TEST_COLOR_DIM))
+
+
+def test_plantcv_binary_threshold():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    device, binary_img = pcv.binary_threshold(img=img, threshold=25, maxValue=255, object_type="light",
+                                              device=0, debug=None)
+    # Assert that the output image has the dimensions of the input image
+    if all([i == j] for i, j in zip(np.shape(binary_img), TEST_GRAY_DIM)):
+        # Assert that the image is binary
+        if all([i == j] for i, j in zip(np.unique(binary_img), [0, 255])):
+            assert 1
+        else:
+            assert 0
+    else:
+        assert 0
+
+def test_crop_position_mask():
+    nir, path1, filename1 = pcv.readimage(os.path.join(TEST_DATA,TEST_INPUT_NIR_MASK))
+    mask= cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_MASK),-1)
+    device, newmask=pcv.crop_position_mask(nir,mask, device=0, x=40,y=3,v_pos="top",h_pos="right",debug=None)
+    assert np.sum(newmask)==641517
+
+def test_plantcv_define_roi():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    device, contours, hierarchy = pcv.define_roi(img=img, shape="rectangle", device=0, roi=None, roi_input="default",
+                                                 debug=None, adjust=True, x_adj=600, y_adj=300, w_adj=-300, h_adj=-600)
+    # Assert the contours and hierarchy lists contain only the ROI
+    if len(contours) == 2 and len(hierarchy) == 1:
+        assert 1
+    else:
+        assert 0
+
+def test_plantcv_dilate():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    device, dilate_img = pcv.dilate(img=img, kernel=5, i=1, device=0, debug=None)
+    # Assert that the output image has the dimensions of the input image
+    if all([i == j] for i, j in zip(np.shape(dilate_img), TEST_BINARY_DIM)):
+        # Assert that the image is binary
+        if all([i == j] for i, j in zip(np.unique(dilate_img), [0, 255])):
+            assert 1
+        else:
+            assert 0
+    else:
+        assert 0
+
+def test_plantcv_erode():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    device, erode_img = pcv.erode(img=img, kernel=5, i=1, device=0, debug=None)
+    # Assert that the output image has the dimensions of the input image
+    if all([i == j] for i, j in zip(np.shape(erode_img), TEST_BINARY_DIM)):
+        # Assert that the image is binary
+        if all([i == j] for i, j in zip(np.unique(erode_img), [0, 255])):
+            assert 1
+        else:
+            assert 0
+    else:
+        assert 0
+
+def test_plantcv_fatal_error():
+    # Verify that the fatal_error function raises a RuntimeError
+    with pytest.raises(RuntimeError):
+        pcv.fatal_error("Test error")
+
+def test_plantcv_fill():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    mask = np.copy(img)
+    device, fill_img = pcv.fill(img=img, mask=mask, size=1, device=0, debug=None)
+    # Assert that the output image has the dimensions of the input image
+    assert all([i == j] for i, j in zip(np.shape(fill_img), TEST_BINARY_DIM))
+
+def test_plantcv_find_objects():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    device, contours, hierarchy = pcv.find_objects(img=img, mask=mask, device=0, debug=None)
+    # Assert the correct number of contours are found
+    assert len(contours) == 7341
+
+def test_plantcv_flip():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    device, flipped_img = pcv.flip(img=img, direction="horizontal", device=0, debug=None)
+    assert all([i == j] for i, j in zip(np.shape(flipped_img), TEST_COLOR_DIM))
+
+def test_get_nir():
+    device, nirpath = pcv.get_nir(TEST_DATA, TEST_VIS, device=0, debug=None)
+    nirpath1 = os.path.join(TEST_DATA,TEST_NIR)
+    assert nirpath == nirpath1
+
+def test_plantcv_image_add():
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    img2 = np.copy(img1)
+    device, added_img = pcv.image_add(img1=img1, img2=img2, device=0, debug=None)
+    assert all([i == j] for i, j in zip(np.shape(added_img), TEST_BINARY_DIM))
+
+
+def test_plantcv_image_subtract():
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    img2 = np.copy(img1)
+    device, subtract_img = pcv.image_subtract(img1=img1, img2=img2, device=0, debug=None)
+    assert all([i == j] for i, j in zip(np.shape(subtract_img), TEST_BINARY_DIM))
+
+def test_plantcv_invert():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    device, inverted_img = pcv.invert(img=img, device=0, debug=None)
+    # Assert that the output image has the dimensions of the input image
+    if all([i == j] for i, j in zip(np.shape(inverted_img), TEST_BINARY_DIM)):
+        # Assert that the image is binary
+        if all([i == j] for i, j in zip(np.unique(inverted_img), [0, 255])):
+            assert 1
+        else:
+            assert 0
+    else:
+        assert 0
+
+def test_plantcv_laplace_filter():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    device, lp_img = pcv.laplace_filter(img=img, k=1, scale=1, device=0, debug=None)
+    # Assert that the output image has the dimensions of the input image
+    assert all([i == j] for i, j in zip(np.shape(lp_img), TEST_GRAY_DIM))
+
+
+def test_plantcv_logical_and():
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    img2 = np.copy(img1)
+    device, and_img = pcv.logical_and(img1=img1, img2=img2, device=0, debug=None)
+    assert all([i == j] for i, j in zip(np.shape(and_img), TEST_BINARY_DIM))
+
+def test_plantcv_logical_or():
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    img2 = np.copy(img1)
+    device, or_img = pcv.logical_or(img1=img1, img2=img2, device=0, debug=None)
+    assert all([i == j] for i, j in zip(np.shape(or_img), TEST_BINARY_DIM))
+
+
+def test_plantcv_logical_xor():
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    img2 = np.copy(img1)
+    device, xor_img = pcv.logical_xor(img1=img1, img2=img2, device=0, debug=None)
+    assert all([i == j] for i, j in zip(np.shape(xor_img), TEST_BINARY_DIM))
+
+def test_plantcv_median_blur():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    device, blur_img = pcv.median_blur(img=img, ksize=5, device=0, debug=None)
+    # Assert that the output image has the dimensions of the input image
+    if all([i == j] for i, j in zip(np.shape(blur_img), TEST_BINARY_DIM)):
+        # Assert that the image is binary
+        if all([i == j] for i, j in zip(np.unique(blur_img), [0, 255])):
+            assert 1
+        else:
+            assert 0
+    else:
+        assert 0
+
+def test_plantcv_object_composition():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS))
+    object_contours = contours_npz['arr_0']
+    object_hierarchy = contours_npz['arr_1']
+    device, contours, mask = pcv.object_composition(img=img, contours=object_contours, hierarchy=object_hierarchy,
+                                                    device=0, debug=None)
+    # Assert that the objects have been combined
+    contour_shape = np.shape(contours)
+    assert contour_shape[1] == 1
+
+def test_plantcv_print_image():
+    img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    filename = os.path.join(TEST_TMPDIR, 'plantcv_print_image.jpg')
+    pcv.print_image(img=img, filename=filename)
+    # Assert that the file was created
+    assert os.path.exists(filename) is True
+
+def test_plantcv_print_results():
+    header = ['field1', 'field2', 'field3']
+    data = ['value1', 'value2', 'value3']
+    pcv.print_results(filename='not_used', header=header, data=data)
+
 def test_plantcv_readimage():
     img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Assert that the image name returned equals the name of the input image
@@ -39,26 +233,22 @@ def test_plantcv_readimage():
     else:
         assert 0
 
-
-def test_plantcv_print_image():
-    img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    filename = os.path.join(TEST_TMPDIR, 'plantcv_print_image.jpg')
-    pcv.print_image(img=img, filename=filename)
-    # Assert that the file was created
-    assert os.path.exists(filename) is True
-
-
-def test_plantcv_fatal_error():
-    # Verify that the fatal_error function raises a RuntimeError
-    with pytest.raises(RuntimeError):
-        pcv.fatal_error("Test error")
-
-
-def test_plantcv_print_results():
-    header = ['field1', 'field2', 'field3']
-    data = ['value1', 'value2', 'value3']
-    pcv.print_results(filename='not_used', header=header, data=data)
-
+def test_plantcv_roi_objects():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    roi_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_ROI))
+    roi_contour = roi_npz['arr_0']
+    roi_hierarchy = roi_npz['arr_1']
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS))
+    object_contours = contours_npz['arr_0']
+    object_hierarchy = contours_npz['arr_1']
+    device, kept_contours, kept_hierarchy, mask, area = pcv.roi_objects(img=img, roi_type="partial",
+                                                                        roi_contour=roi_contour,
+                                                                        roi_hierarchy=roi_hierarchy,
+                                                                        object_contour=object_contours,
+                                                                        obj_hierarchy=object_hierarchy,
+                                                                        device=0, debug=None)
+    # Assert that the contours were filtered as expected
+    assert len(kept_contours) == 1046
 
 def test_plantcv_rgb2gray_hsv():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
@@ -81,43 +271,6 @@ def test_plantcv_rgb2gray():
     assert all([i == j] for i, j in zip(np.shape(gray), TEST_GRAY_DIM))
 
 
-def test_plantcv_binary_threshold():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    device, binary_img = pcv.binary_threshold(img=img, threshold=25, maxValue=255, object_type="light",
-                                              device=0, debug=None)
-    # Assert that the output image has the dimensions of the input image
-    if all([i == j] for i, j in zip(np.shape(binary_img), TEST_GRAY_DIM)):
-        # Assert that the image is binary
-        if all([i == j] for i, j in zip(np.unique(binary_img), [0, 255])):
-            assert 1
-        else:
-            assert 0
-    else:
-        assert 0
-
-
-def test_plantcv_adaptive_threshold():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    device, binary_img = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="gaussian", object_type="light",
-                                                device=0, debug=None)
-    # Assert that the output image has the dimensions of the input image
-    if all([i == j] for i, j in zip(np.shape(binary_img), TEST_GRAY_DIM)):
-        # Assert that the image is binary
-        if all([i == j] for i, j in zip(np.unique(binary_img), [0, 255])):
-            assert 1
-        else:
-            assert 0
-    else:
-        assert 0
-
-
-def test_plantcv_laplace_filter():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    device, lp_img = pcv.laplace_filter(img=img, k=1, scale=1, device=0, debug=None)
-    # Assert that the output image has the dimensions of the input image
-    assert all([i == j] for i, j in zip(np.shape(lp_img), TEST_GRAY_DIM))
-
-
 def test_plantcv_scharr_filter():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     device, scharr_img = pcv.scharr_filter(img=img, dX=1, dY=0, scale=1, device=0, debug=None)
@@ -130,177 +283,3 @@ def test_plantcv_sobel_filter():
     device, sobel_img = pcv.sobel_filter(img=img, dx=1, dy=0, k=1, scale=1, device=0, debug=None)
     # Assert that the output image has the dimensions of the input image
     assert all([i == j] for i, j in zip(np.shape(sobel_img), TEST_GRAY_DIM))
-
-
-def test_plantcv_median_blur():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    device, blur_img = pcv.median_blur(img=img, ksize=5, device=0, debug=None)
-    # Assert that the output image has the dimensions of the input image
-    if all([i == j] for i, j in zip(np.shape(blur_img), TEST_BINARY_DIM)):
-        # Assert that the image is binary
-        if all([i == j] for i, j in zip(np.unique(blur_img), [0, 255])):
-            assert 1
-        else:
-            assert 0
-    else:
-        assert 0
-
-
-def test_plantcv_dilate():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    device, dilate_img = pcv.dilate(img=img, kernel=5, i=1, device=0, debug=None)
-    # Assert that the output image has the dimensions of the input image
-    if all([i == j] for i, j in zip(np.shape(dilate_img), TEST_BINARY_DIM)):
-        # Assert that the image is binary
-        if all([i == j] for i, j in zip(np.unique(dilate_img), [0, 255])):
-            assert 1
-        else:
-            assert 0
-    else:
-        assert 0
-
-
-def test_plantcv_erode():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    device, erode_img = pcv.erode(img=img, kernel=5, i=1, device=0, debug=None)
-    # Assert that the output image has the dimensions of the input image
-    if all([i == j] for i, j in zip(np.shape(erode_img), TEST_BINARY_DIM)):
-        # Assert that the image is binary
-        if all([i == j] for i, j in zip(np.unique(erode_img), [0, 255])):
-            assert 1
-        else:
-            assert 0
-    else:
-        assert 0
-
-
-def test_plantcv_invert():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    device, inverted_img = pcv.invert(img=img, device=0, debug=None)
-    # Assert that the output image has the dimensions of the input image
-    if all([i == j] for i, j in zip(np.shape(inverted_img), TEST_BINARY_DIM)):
-        # Assert that the image is binary
-        if all([i == j] for i, j in zip(np.unique(inverted_img), [0, 255])):
-            assert 1
-        else:
-            assert 0
-    else:
-        assert 0
-
-
-def test_plantcv_flip():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    device, flipped_img = pcv.flip(img=img, direction="horizontal", device=0, debug=None)
-    assert all([i == j] for i, j in zip(np.shape(flipped_img), TEST_COLOR_DIM))
-
-
-def test_plantcv_fill():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    mask = np.copy(img)
-    device, fill_img = pcv.fill(img=img, mask=mask, size=1, device=0, debug=None)
-    # Assert that the output image has the dimensions of the input image
-    assert all([i == j] for i, j in zip(np.shape(fill_img), TEST_BINARY_DIM))
-
-
-def test_plantcv_define_roi():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    device, contours, hierarchy = pcv.define_roi(img=img, shape="rectangle", device=0, roi=None, roi_input="default",
-                                                 debug=None, adjust=True, x_adj=600, y_adj=300, w_adj=-300, h_adj=-600)
-    # Assert the contours and hierarchy lists contain only the ROI
-    if len(contours) == 2 and len(hierarchy) == 1:
-        assert 1
-    else:
-        assert 0
-
-
-def test_plantcv_find_objects():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    device, contours, hierarchy = pcv.find_objects(img=img, mask=mask, device=0, debug=None)
-    # Assert the correct number of contours are found
-    assert len(contours) == 7341
-
-
-def test_plantcv_roi_objects():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    roi_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_ROI))
-    roi_contour = roi_npz['arr_0']
-    roi_hierarchy = roi_npz['arr_1']
-    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS))
-    object_contours = contours_npz['arr_0']
-    object_hierarchy = contours_npz['arr_1']
-    device, kept_contours, kept_hierarchy, mask, area = pcv.roi_objects(img=img, roi_type="partial",
-                                                                        roi_contour=roi_contour,
-                                                                        roi_hierarchy=roi_hierarchy,
-                                                                        object_contour=object_contours,
-                                                                        obj_hierarchy=object_hierarchy,
-                                                                        device=0, debug=None)
-    # Assert that the contours were filtered as expected
-    assert len(kept_contours) == 1046
-
-
-def test_plantcv_object_composition():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS))
-    object_contours = contours_npz['arr_0']
-    object_hierarchy = contours_npz['arr_1']
-    device, contours, mask = pcv.object_composition(img=img, contours=object_contours, hierarchy=object_hierarchy,
-                                                    device=0, debug=None)
-    # Assert that the objects have been combined
-    contour_shape = np.shape(contours)
-    assert contour_shape[1] == 1
-
-
-def test_plantcv_apply_mask():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    device, masked_img = pcv.apply_mask(img=img, mask=mask, mask_color="white", device=0, debug=None)
-    assert all([i == j] for i, j in zip(np.shape(masked_img), TEST_COLOR_DIM))
-
-
-def test_plantcv_image_add():
-    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    img2 = np.copy(img1)
-    device, added_img = pcv.image_add(img1=img1, img2=img2, device=0, debug=None)
-    assert all([i == j] for i, j in zip(np.shape(added_img), TEST_BINARY_DIM))
-
-
-def test_plantcv_image_subtract():
-    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    img2 = np.copy(img1)
-    device, subtract_img = pcv.image_subtract(img1=img1, img2=img2, device=0, debug=None)
-    assert all([i == j] for i, j in zip(np.shape(subtract_img), TEST_BINARY_DIM))
-
-
-def test_plantcv_logical_and():
-    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    img2 = np.copy(img1)
-    device, and_img = pcv.logical_and(img1=img1, img2=img2, device=0, debug=None)
-    assert all([i == j] for i, j in zip(np.shape(and_img), TEST_BINARY_DIM))
-
-
-def test_plantcv_logical_or():
-    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    img2 = np.copy(img1)
-    device, or_img = pcv.logical_or(img1=img1, img2=img2, device=0, debug=None)
-    assert all([i == j] for i, j in zip(np.shape(or_img), TEST_BINARY_DIM))
-
-
-def test_plantcv_logical_xor():
-    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    img2 = np.copy(img1)
-    device, xor_img = pcv.logical_xor(img1=img1, img2=img2, device=0, debug=None)
-    assert all([i == j] for i, j in zip(np.shape(xor_img), TEST_BINARY_DIM))
-
-
-def test_get_nir():
-    device, nirpath = pcv.get_nir(TEST_DATA, TEST_VIS, device=0, debug=None)
-    nirpath1 = os.path.join(TEST_DATA,TEST_NIR)
-    assert nirpath == nirpath1
-
-
-def test_crop_position_mask():
-    nir, path1, filename1 = pcv.readimage(os.path.join(TEST_DATA,TEST_INPUT_NIR_MASK))
-    mask= cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_MASK),-1)
-    device, newmask=pcv.crop_position_mask(nir,mask, device=0, x=40,y=3,v_pos="top",h_pos="right",debug=None)
-    assert np.sum(newmask)==641517

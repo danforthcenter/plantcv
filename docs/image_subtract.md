@@ -3,7 +3,11 @@
 Obtain a image of the pixelwise input values within two image files. 
 This is a wrapper for the OpenCV function [subtract](http://docs.opencv.org/2.4/modules/core/doc/operations_on_arrays.html#subtract).
 
+<<<<<<< HEAD
 **image_subtract**(*img, img2, device, debug=None*)
+=======
+**image_subtract**(*img, img2, device, debug=False*)
+>>>>>>> master
 
 **returns** device, subtracted image
 
@@ -11,7 +15,11 @@ This is a wrapper for the OpenCV function [subtract](http://docs.opencv.org/2.4/
     - img - image to be analyzed
     - img2 - image to subtract
     - device - Counter for image processing steps
+<<<<<<< HEAD
     - debug - None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
+=======
+    - debug- Default value is False, if True, masked intermediate image will be printed
+>>>>>>> master
 - **Context:**
     - Get features that are different between images
 - **Example use:**
@@ -29,7 +37,11 @@ This is a wrapper for the OpenCV function [subtract](http://docs.opencv.org/2.4/
 import plantcv as pcv
 
 # Subtract image from another image. 
+<<<<<<< HEAD
 device, subtracted_img = pcv.image_subtract(img, img2,  device, debug="print")
+=======
+device, subtracted_img = pcv.image_subtract(img, img2,  device, debug=True)
+>>>>>>> master
 ```
 
 **Subtraction of image 2 from image 1**

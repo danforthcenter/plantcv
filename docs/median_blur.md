@@ -3,7 +3,11 @@
 Applies a median blur filter. Applies median value to central pixel within a kernel size (ksize x ksize). 
 The function is a wrapper for the OpenCV function [median blur](http://docs.opencv.org/doc/tutorials/imgproc/gausian_median_blur_bilateral_filter/gausian_median_blur_bilateral_filter.html_).  
 
+<<<<<<< HEAD
 **median_blur**(*img, ksize, device, debug=None*)**
+=======
+**median_blur**(*img, ksize, device, debug=False*)**
+>>>>>>> master
 
 **returns** device, blurred image
 
@@ -11,7 +15,11 @@ The function is a wrapper for the OpenCV function [median blur](http://docs.open
     - img - img object
     - ksize - kernel size => ksize x ksize box, must be an odd value
     - device - Counter for image processing steps
+<<<<<<< HEAD
     - debug - None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
+=======
+    - debug- Default value is False, if True, median blurred intermediate image will be printed
+>>>>>>> master
 - **Context:**
     - Used to reduce image noise
 - **Example use:**
@@ -27,7 +35,11 @@ The function is a wrapper for the OpenCV function [median blur](http://docs.open
 import plantcv as pcv
 
 # Apply median blur to a binary image that has been previously thresholded.
+<<<<<<< HEAD
 device, blur_5 = pcv.median_blur(img, 5, device, debug="print")
+=======
+device, blur_5 = pcv.median_blur(img, 5, device, debug=True)
+>>>>>>> master
 ```
 
 **Median blur (k = 5)**
@@ -38,7 +50,11 @@ device, blur_5 = pcv.median_blur(img, 5, device, debug="print")
 import plantcv as pcv
 
 # Apply median blur to a binary image that has been previously thresholded.
+<<<<<<< HEAD
 device, blur_11 = pcv.median_blur(img, 11, device, debug="print")
+=======
+device, blur_11 = pcv.median_blur(img, 11, device, debug=True)
+>>>>>>> master
 ```
 
 **Median blur (k = 11)**
