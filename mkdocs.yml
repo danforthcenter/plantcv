@@ -9,19 +9,13 @@ pages:
 - Home: index.md
 - Documentation:
   - Installation: installation.md
-<<<<<<< HEAD
   - 'Using Jupyter Notebooks': jupyter.md
   - 'Adding/editing Documentation': documentation.md
-=======
->>>>>>> master
   - Tutorials:
     - 'VIS pipeline': vis_tutorial.md
     - 'NIR pipeline': nir_tutorial.md
     - 'PSII pipeline': psII_tutorial.md
-<<<<<<< HEAD
     - 'VIS/NIR dual pipeline': vis_nir_tutorial.md
-=======
->>>>>>> master
     - 'Pipeline parallelization': pipeline_parallel.md
   - Library:
     - 'Analyze color': analyze_color.md
@@ -31,7 +25,6 @@ pages:
     - 'Apply mask': apply_mask.md
     - 'Binary threshold': binary_threshold.md
     - 'Boundary line tool': analyze_bound.md
-<<<<<<< HEAD
     - 'Crop and Position Mask': crop_position_mask.md
     - 'Dilation': dilate.md
     - 'Erosion': erode.md
@@ -39,11 +32,6 @@ pages:
     - 'Find objects': find_objects.md
     - 'Flip image': flip.md
     - 'Get NIR images': get_nir.md
-=======
-    - 'Erosion': erode.md
-    - 'Fill objects': fill.md
-    - 'Find objects': find_objects.md
->>>>>>> master
     - 'Histogram normalization': HistEqualization.md
     - 'Image add': image_add.md
     - 'Image subtract': image_subtract.md
@@ -62,10 +50,7 @@ pages:
     - 'RGB to HSV': rgb2hsv.md
     - 'RGB to LAB': rgb2lab.md
     - 'Sobel filter': sobel_filter.md
-<<<<<<< HEAD
     - 'White balance': white_balance.md
-=======
->>>>>>> master
 
 markdown_extensions:
   - toc:

@@ -3,11 +3,7 @@
 This function calculates the intensity of each pixel associated with the plant and writes 
 the values out to a file. Can also print out a histogram plot of pixel intensity and a pseudocolor image of the plant.
 
-<<<<<<< HEAD
 **analyze_NIR_intensity**(*img, rgb, mask, bins, device, debug=None, filename=False*)
-=======
-**analyze_NIR_intensity**(*img, rgb, mask, bins, device, debug=False, filename=False*)
->>>>>>> master
 
 **returns** device, header of histogram, histogram values, histogram of proportion of signal/bin, pseudocolored image
 
@@ -17,11 +13,7 @@ the values out to a file. Can also print out a histogram plot of pixel intensity
     - mask - Mask made from selected contours
     - bins - Number of class to divide spectrum into
     - device - Counter for image processing steps
-<<<<<<< HEAD
     - debug - None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
-=======
-    - debug - Default value is False, if True, filled intermediate image will be printed
->>>>>>> master
     - filename - Name for output images
 - **Context:**
     - Used to mask rectangluar regions of an image
@@ -36,11 +28,7 @@ the values out to a file. Can also print out a histogram plot of pixel intensity
 import plantcv as pcv
 
 # Caclulates the proportion of pixels that fall into a signal bin and writes the values to a file. Also provides a histogram of this data and a pseudocolored image of the plant.
-<<<<<<< HEAD
 device, hist_header, hist_data, h_norm  = pcv.analyze_NIR_intensity(img, rgb, mask, 256, device, debug="print", filename="pseudocolored_plant")
-=======
-device, hist_header, hist_data, h_norm  = pcv.analyze_NIR_intensity(img, rgb, mask, 256, device, debug=True, filename="pseudocolored_plant")
->>>>>>> master
 ```
 
 **Pseudocolored NIR signal**

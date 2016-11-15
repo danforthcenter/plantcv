@@ -1,12 +1,8 @@
 *.pyc
 .idea/*
-<<<<<<< HEAD
 _build/*
 build/*
 dist/*
 _site/*
 *.egg-info/
 .cache/*
-=======
-_build/
->>>>>>> master
