@@ -40,7 +40,6 @@ def test_plantcv_adaptive_threshold():
     else:
         assert 0
 
-
 def test_plantcv_apply_mask():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
@@ -62,13 +61,11 @@ def test_plantcv_binary_threshold():
     else:
         assert 0
 
-
 def test_crop_position_mask():
     nir, path1, filename1 = pcv.readimage(os.path.join(TEST_DATA,TEST_INPUT_NIR_MASK))
     mask= cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_MASK),-1)
     device, newmask=pcv.crop_position_mask(nir,mask, device=0, x=40,y=3,v_pos="top",h_pos="right",debug=None)
     assert np.sum(newmask)==641517
-
 
 def test_plantcv_define_roi():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
@@ -79,7 +76,6 @@ def test_plantcv_define_roi():
         assert 1
     else:
         assert 0
-
 
 def test_plantcv_dilate():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
@@ -94,7 +90,6 @@ def test_plantcv_dilate():
     else:
         assert 0
 
-
 def test_plantcv_erode():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     device, erode_img = pcv.erode(img=img, kernel=5, i=1, device=0, debug=None)
@@ -108,12 +103,10 @@ def test_plantcv_erode():
     else:
         assert 0
 
-
 def test_plantcv_fatal_error():
     # Verify that the fatal_error function raises a RuntimeError
     with pytest.raises(RuntimeError):
         pcv.fatal_error("Test error")
-
 
 def test_plantcv_fill():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
@@ -122,7 +115,6 @@ def test_plantcv_fill():
     # Assert that the output image has the dimensions of the input image
     assert all([i == j] for i, j in zip(np.shape(fill_img), TEST_BINARY_DIM))
 
-
 def test_plantcv_find_objects():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
@@ -130,18 +122,15 @@ def test_plantcv_find_objects():
     # Assert the correct number of contours are found
     assert len(contours) == 7341
 
-
 def test_plantcv_flip():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     device, flipped_img = pcv.flip(img=img, direction="horizontal", device=0, debug=None)
     assert all([i == j] for i, j in zip(np.shape(flipped_img), TEST_COLOR_DIM))
 
-
 def test_get_nir():
     device, nirpath = pcv.get_nir(TEST_DATA, TEST_VIS, device=0, debug=None)
     nirpath1 = os.path.join(TEST_DATA,TEST_NIR)
     assert nirpath == nirpath1
-
 
 def test_plantcv_image_add():
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
@@ -156,7 +145,6 @@ def test_plantcv_image_subtract():
     device, subtract_img = pcv.image_subtract(img1=img1, img2=img2, device=0, debug=None)
     assert all([i == j] for i, j in zip(np.shape(subtract_img), TEST_BINARY_DIM))
 
-
 def test_plantcv_invert():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     device, inverted_img = pcv.invert(img=img, device=0, debug=None)
@@ -169,7 +157,6 @@ def test_plantcv_invert():
             assert 0
     else:
         assert 0
-
 
 def test_plantcv_laplace_filter():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
@@ -184,7 +171,6 @@ def test_plantcv_logical_and():
     device, and_img = pcv.logical_and(img1=img1, img2=img2, device=0, debug=None)
     assert all([i == j] for i, j in zip(np.shape(and_img), TEST_BINARY_DIM))
 
-
 def test_plantcv_logical_or():
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     img2 = np.copy(img1)
@@ -197,7 +183,6 @@ def test_plantcv_logical_xor():
     img2 = np.copy(img1)
     device, xor_img = pcv.logical_xor(img1=img1, img2=img2, device=0, debug=None)
     assert all([i == j] for i, j in zip(np.shape(xor_img), TEST_BINARY_DIM))
-
 
 def test_plantcv_median_blur():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
@@ -212,7 +197,6 @@ def test_plantcv_median_blur():
     else:
         assert 0
 
-
 def test_plantcv_object_composition():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS))
@@ -224,7 +208,6 @@ def test_plantcv_object_composition():
     contour_shape = np.shape(contours)
     assert contour_shape[1] == 1
 
-
 def test_plantcv_print_image():
     img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     filename = os.path.join(TEST_TMPDIR, 'plantcv_print_image.jpg')
@@ -232,12 +215,10 @@ def test_plantcv_print_image():
     # Assert that the file was created
     assert os.path.exists(filename) is True
 
-
 def test_plantcv_print_results():
     header = ['field1', 'field2', 'field3']
     data = ['value1', 'value2', 'value3']
     pcv.print_results(filename='not_used', header=header, data=data)
-
 
 def test_plantcv_readimage():
     img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_COLOR))
@@ -251,7 +232,6 @@ def test_plantcv_readimage():
             assert 0
     else:
         assert 0
-
 
 def test_plantcv_roi_objects():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
@@ -269,7 +249,6 @@ def test_plantcv_roi_objects():
                                                                         device=0, debug=None)
     # Assert that the contours were filtered as expected
     assert len(kept_contours) == 1046
-
 
 def test_plantcv_rgb2gray_hsv():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))

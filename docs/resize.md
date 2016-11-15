@@ -19,15 +19,16 @@ Resizes images, used to resize masks over other images.
     
 **Input image**
 
-![Screenshot](img/documentation_images/dilate/19_flipped.jpg)
+![Screenshot](img/documentation_images/dilate/grayscale_image.jpg)
 
 ```python
 import plantcv as pcv
 
-# Resize image
-device, resize_img = pcv.resize(img, 0.1154905775,0.1154905775, device, debug='print')
+# Perform dilation
+# Results in addition of pixels to the boundary of object
+device, dilate_img = pcv.dilate(img, kernel, 1 device, debug='print')
 ```
 
-**Image after resizing**
+**Image after dilation**
 
-![Screenshot](img/documentation_images/dilate/19_resize1.jpg)
+![Screenshot](img/documentation_images/dilate/dilate.jpg)
