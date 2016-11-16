@@ -4,7 +4,6 @@ import cv2
 import numpy as np
 from . import print_image
 from . import plot_image
-from . import fatal_error
 
 
 def rotate_img(img, rotation_deg, device, debug=None):
@@ -12,7 +11,7 @@ def rotate_img(img, rotation_deg, device, debug=None):
 
     Inputs:
     img     = image object, RGB colorspace (either single or three channel)
-    rotation_deg = rotation angle in degrees, should be an integer, can be a negative number, postive values move counter clockwise.
+    rotation_deg = rotation angle in degrees, should be an integer, can be a negative number, positive values move counter clockwise.
     device  = device number. Used to count steps in the pipeline
     debug   = None, print, or plot. Print = save to file, Plot = print to screen.
 

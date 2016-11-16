@@ -1,4 +1,4 @@
-## Resize
+## Shift Image
 
 Resizes images, used to resize masks over other images.
 
@@ -15,7 +15,7 @@ Resizes images, used to resize masks over other images.
 - **Context:**
     - Resizes images.
 - **Example use:**
-    - [Use In NIR-Vis Tutorial](vis_nir_tutorial.md)
+    - [Use In NIR-Vis Tutorial](nir_vis_tutorial.md)
     
 **Input image**
 

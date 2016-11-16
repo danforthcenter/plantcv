@@ -1,8 +1,6 @@
 # Crop position mask
 
-import cv2
 import numpy as np
-import math
 from . import print_image
 from . import plot_image
 from . import fatal_error

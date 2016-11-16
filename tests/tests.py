@@ -260,25 +260,6 @@ def test_plantcv_resize():
     rx,ry,rz=np.shape(resized_img)
     assert ix>rx
 
-
-def test_plantcv_roi_objects():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    roi_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_ROI))
-    roi_contour = roi_npz['arr_0']
-    roi_hierarchy = roi_npz['arr_1']
-    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS))
-    object_contours = contours_npz['arr_0']
-    object_hierarchy = contours_npz['arr_1']
-    device, kept_contours, kept_hierarchy, mask, area = pcv.roi_objects(img=img, roi_type="partial",
-                                                                        roi_contour=roi_contour,
-                                                                        roi_hierarchy=roi_hierarchy,
-                                                                        object_contour=object_contours,
-                                                                        obj_hierarchy=object_hierarchy,
-                                                                        device=0, debug=None)
-    # Assert that the contours were filtered as expected
-    assert len(kept_contours) == 1046
-
-
 def test_plantcv_rgb2gray_hsv():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     device, s = pcv.rgb2gray_hsv(img=img, channel='s', device=0, debug=None)
@@ -299,6 +280,31 @@ def test_plantcv_rgb2gray():
     # Assert that the output image has the dimensions of the input image but is only a single channel
     assert all([i == j] for i, j in zip(np.shape(gray), TEST_GRAY_DIM))
 
+def test_plantcv_roi_objects():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    roi_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_ROI))
+    roi_contour = roi_npz['arr_0']
+    roi_hierarchy = roi_npz['arr_1']
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS))
+    object_contours = contours_npz['arr_0']
+    object_hierarchy = contours_npz['arr_1']
+    device, kept_contours, kept_hierarchy, mask, area = pcv.roi_objects(img=img, roi_type="partial",
+                                                                        roi_contour=roi_contour,
+                                                                        roi_hierarchy=roi_hierarchy,
+                                                                        object_contour=object_contours,
+                                                                        obj_hierarchy=object_hierarchy,
+                                                                        device=0, debug=None)
+    # Assert that the contours were filtered as expected
+    assert len(kept_contours) == 1046
+
+
+def test_plantcv_rotate_img():
+    img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_COLOR))
+    device, rotated=pcv.rotate_img(img,45,device=0,debug=None)
+    imgavg=np.average(img)
+    rotateavg=np.average(rotated)
+    assert rotateavg<imgavg
+
 
 def test_plantcv_scharr_filter():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
@@ -312,6 +318,7 @@ def test_plantcv_sobel_filter():
     device, sobel_img = pcv.sobel_filter(img=img, dx=1, dy=0, k=1, scale=1, device=0, debug=None)
     # Assert that the output image has the dimensions of the input image
     assert all([i == j] for i, j in zip(np.shape(sobel_img), TEST_GRAY_DIM))
+
 
 def test_plantcv_white_balance():
     img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_NIR_MASK),-1)

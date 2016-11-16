@@ -53,6 +53,7 @@ pages:
     - 'Resize': resize.md
     - 'RGB to HSV': rgb2hsv.md
     - 'RGB to LAB': rgb2lab.md
+    - 'Rotate Image': rotate.md
     - 'Sobel filter': sobel_filter.md
     - 'White balance': white_balance.md
 
