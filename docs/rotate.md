@@ -29,7 +29,7 @@ device, rotate_img = pcv.rotate_img(img, 10, device, debug='print')
 
 **Image after rotating 10 degrees**
 
-![Screenshot](img/documentation_images/rotate/19_resize1.jpg)
+![Screenshot](img/documentation_images/rotate/10_rotated_img.jpg)
 
 ```python
 import plantcv as pcv
