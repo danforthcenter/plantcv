@@ -63,6 +63,16 @@ def test_plantcv_analyze_nir():
     assert np.sum(hist_data[2])==718858.0
 
 
+def test_plantcv_analyze_object():
+    img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_COLOR))
+    mask=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_BINARY),-1)
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS))
+    obj_contour = contours_npz['arr_0']
+    max_obj = max(obj_contour, key=len)
+    device, obj_header, obj_data, obj_images = pcv.analyze_object(img, "img", max_obj,mask, 0, None)
+    assert np.sum(obj_data[1])==718861.0
+
+
 def test_plantcv_apply_mask():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
