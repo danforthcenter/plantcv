@@ -40,6 +40,15 @@ def test_plantcv_adaptive_threshold():
     else:
         assert 0
 
+def test_plantcv_analyze_bound():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS))
+    object_contours = contours_npz['arr_0']
+    device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound(img, "img", object_contours[0], mask, 300, 0, None)
+    assert boundary_data[3]==596347
+
+
 def test_plantcv_analyze_color():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
@@ -175,7 +184,6 @@ def test_plantcv_invert():
             assert 0
     else:
         assert 0
-
 
 def test_plantcv_laplace_filter():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
