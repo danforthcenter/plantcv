@@ -30,4 +30,4 @@ device, shifted_img = pcv.shift_img(img, device,300,"top", debug='print')
 
 **Image after shift**
 
-![Screenshot](img/documentation_images/shift/37_shifted img.jpg)
+![Screenshot](img/documentation_images/shift/37_shifted.jpg)

@@ -4,8 +4,7 @@ Extract color data of objects and produce pseudocolored images, can extract data
 
 **analyze_color**(*img, imgname, mask, bins, device, debug=None, hist_plot_type =None, pseudo_channel='v', pseudo_bkg='img', resolution=300, filename=False*)
 
-**returns** device, color channel histogram headers, color channel histogram data, normalized color slice data
-
+**returns** device, color channel histogram headers, color channel histogram data, analysis images
 - **Parameters:**
     - img - image object (most likely the original), color(RGB)
     - imgname - name of image
@@ -34,7 +33,7 @@ import plantcv as pcv
 
 # Analyze Color
     
-device, color_header, color_data, norm_slice= pcv.analyze_color(img, imagename, mask, 256, device, debug="print", None, 'v', 'img', 300, /home/user/analyze_color.png)
+device, color_header, color_data, analysis_images= pcv.analyze_color(img, imagename, mask, 256, device, debug="print", None, 'v', 'img', 300, /home/user/analyze_color.png)
 ```
 
 **Histograms of (R, G, B), (H, S, V), and (L, A, B) color channels**

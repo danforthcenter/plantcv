@@ -40,6 +40,12 @@ def test_plantcv_adaptive_threshold():
     else:
         assert 0
 
+def test_plantcv_analyze_color():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    device, color_header, color_data, analysis_images = pcv.analyze_color(img, "img", mask, 256, 0, None, None)
+    assert np.sum(color_data[3])!=0
+
 
 def test_plantcv_apply_mask():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
