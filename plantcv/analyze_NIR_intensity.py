@@ -19,6 +19,7 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False, debu
     mask         = mask made from selected contours
     bins         = number of classes to divide spectrum into
     device       = device number. Used to count steps in the pipeline
+    histplot     = if True plots histogram of intensity values
     debug        = None, print, or plot. Print = save to file, Plot = print to screen.
     filename     = False or image name. If defined print image
 
