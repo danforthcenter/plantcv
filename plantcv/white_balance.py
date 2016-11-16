@@ -10,7 +10,9 @@ def white_balance(device,img, debug=None,roi=None):
 
     """Corrects the exposure of an image based on its histogram.
     Inputs:
+    device - pipeline step counter
     img - A RGB image on which to perform the correction, correction is done on each channel and then reassembled, alternatively a single channel can be input but is not recommended.
+    debug   = None, print, or plot. Print = save to file, Plot = print to screen.
     roi - A list of 4 points (x, y, width, height) that form the rectangular ROI of the white color standard.
             If a list of 4 points is not given, whole image will be used.
 
@@ -91,39 +93,54 @@ def white_balance(device,img, debug=None,roi=None):
         return device, finalcorrected
 
     else:
-        iy, ix = np.shape(img)
-        mask = np.zeros((iy, ix, 3), dtype=np.uint8)
-        ori_img = np.dstack((ori_img, ori_img, ori_img))
-        ori_img2 = np.copy(ori_img)
+        if img.dtype=='uint8':
 
-        if roi is not None:
-            x = roi[0]
-            y = roi[1]
-            w = roi[2]
-            h = roi[3]
+            if roi is not None:
+                x = roi[0]
+                y = roi[1]
+                w = roi[2]
+                h = roi[3]
 
-            hist = cv2.calcHist(tuple(img[y:y+h,x:x+w]), [0], None, [256], [0, 256])
-            cv2.rectangle(ori_img2, (x, y), (x + w, y + h), (0, 255, 0), 3)
-        else:
-            hist = cv2.calcHist(tuple(img), [0], None, [256], [0, 256]) # Creates histogram of original image
+                hist = cv2.calcHist(tuple(img[y:y+h,x:x+w]), [0], None, [256], [0, 256])
+                cv2.rectangle(ori_img2, (x, y), (x + w, y + h), (0, 255, 0), 3)
+
+            else:
+                hist = cv2.calcHist(tuple(img), [0], None, [256], [0, 256]) # Creates histogram of original image
+
+            hmax = np.argmax(hist)
+            alpha = 255 / float(hmax)
+            finalcorrected = np.asarray(np.where(img <= hmax, np.multiply(alpha, img), 255), np.uint8)
+
+        elif img.dtype=='uint16':
+
+            if roi is not None:
+                x = roi[0]
+                y = roi[1]
+                w = roi[2]
+                h = roi[3]
+
+                hist, bins = np.histogram(img[y:y+h,x:x+w], bins='auto')
+                cv2.rectangle(ori_img, (x, y), (x + w, y + h), (0, 0, 0), 3)
+
+            else:
+                hist, bins = np.histogram(img, bins='auto')
+
+            hmax = np.amax(bins)
+            alpha = 65536 / float(hmax)
+            finalcorrected = np.asarray(np.where(img <= hmax, np.multiply(alpha, img), 65536), np.uint16)
 
         # Calculates index of maximum of histogram and finds alpha based on the peak
-        hmax = np.argmax(hist)
-        alpha = 255 / float(hmax)
-
-        finalcorrected = np.asarray(np.where(img <= hmax, np.multiply(alpha, img), 255), np.uint8)
 
         if debug == 'print':
-            print_image(ori_img2, (str(device) + '_whitebalance_roi.png'))
+            print_image(ori_img, (str(device) + '_whitebalance_roi.png'))
             print_image(finalcorrected, (str(device) + '_whitebalance.png'))
 
         elif debug == 'plot':
-            if len(np.shape(img)) == 3:
-                ix, iy, iz = np.shape(ori_img2)
-                plot_image(ori_img2)
+            if len(np.shape(img))== 3:
+                plot_image(ori_img)
                 plot_image(finalcorrected)
             else:
-                plot_image(ori_img2, cmap='gray')
+                plot_image(ori_img, cmap='gray')
                 plot_image(finalcorrected, cmap='gray')
 
         return device,finalcorrected

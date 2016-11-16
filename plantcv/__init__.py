@@ -5,7 +5,7 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'plot_colorbar', 'readima
            'define_roi', 'roi_objects', 'object_composition', 'analyze_object', 'analyze_bound', 'analyze_color',
            '_pseudocolored_image', 'analyze_NIR_intensity', 'fluor_fvfm', 'print_results', 'resize', 'flip',
            'crop_position_mask', 'get_nir', 'adaptive_threshold', 'otsu_auto_threshold', 'report_size_marker_area',
-           'white_balance', 'white_balance2', 'triangle_auto_threshold','acute_vertex','scale_features','turgor_proxy',
+           'white_balance','triangle_auto_threshold','acute_vertex','scale_features','turgor_proxy',
            'x_axis_pseudolandmarks', 'y_axis_pseudolandmarks','gaussian_blur', 'cluster_contours','cluster_contour_splitimg',
            'rotate_img', 'shift_img']
 
@@ -55,7 +55,6 @@ from adaptive_threshold import adaptive_threshold
 from otsu_auto_threshold import otsu_auto_threshold
 from report_size_marker_area import report_size_marker_area
 from white_balance import white_balance
-from white_balance2 import white_balance2
 from triangle_auto_threshold import triangle_auto_threshold
 from acute_vertex import acute_vertex
 from scale_features import scale_features

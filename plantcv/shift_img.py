@@ -11,7 +11,7 @@ def shift_img(img, device, number, side="right", debug=None):
 
     Inputs:
     img     = image to mask
-    number  = number of rows or colums to add
+    number  = number of rows or columns to add
     side   = "top", "bottom", "right", "left" where to add the rows or columns to
     device  = device counter
     debug   = None, print, or plot. Print = save to file, Plot = print to screen.

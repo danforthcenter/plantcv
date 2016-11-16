@@ -303,7 +303,7 @@ def test_plantcv_rotate_img():
     device, rotated=pcv.rotate_img(img,45,device=0,debug=None)
     imgavg=np.average(img)
     rotateavg=np.average(rotated)
-    assert rotateavg<imgavg
+    assert rotateavg!=imgavg
 
 
 def test_plantcv_scharr_filter():
@@ -311,6 +311,13 @@ def test_plantcv_scharr_filter():
     device, scharr_img = pcv.scharr_filter(img=img, dX=1, dY=0, scale=1, device=0, debug=None)
     # Assert that the output image has the dimensions of the input image
     assert all([i == j] for i, j in zip(np.shape(scharr_img), TEST_GRAY_DIM))
+
+def test_plantcv_shift_img():
+    img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_COLOR))
+    device, rotated=pcv.shift_img(img,device=0,number=300,side="top",debug=None)
+    imgavg=np.average(img)
+    shiftavg=np.average(rotated)
+    assert shiftavg!=imgavg
 
 
 def test_plantcv_sobel_filter():
@@ -322,7 +329,7 @@ def test_plantcv_sobel_filter():
 
 def test_plantcv_white_balance():
     img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_NIR_MASK),-1)
-    device, white_balanced=pcv.white_balance(device=0, img, debug=None,roi=(5,5,80,80))
+    device, white_balanced=pcv.white_balance(0, img, debug=None,roi=(5,5,80,80))
     imgavg=np.average(img)
     balancedavg=np.average(white_balanced)
-    assert balancedavg>imgavg
+    assert balancedavg!=imgavg
