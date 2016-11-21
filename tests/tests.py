@@ -20,6 +20,10 @@ TEST_VIS = "VIS_SV_0_z300_h1_g0_e85_v500_93054.png"
 TEST_NIR = "NIR_SV_0_z300_h1_g0_e15000_v500_93059.png"
 TEST_INPUT_MASK="input_mask.png"
 TEST_INPUT_NIR_MASK="input_nir.png"
+TEST_INPUT_FDARK="FLUO_TV_dark.jpg"
+TEST_INPUT_FMIN="FLUO_TV_min.jpg"
+TEST_INPUT_FMAX="FLUO_TV_max.jpg"
+TEST_INPUT_FMASK="FLUO_TV_MASK.jpg"
 
 
 if not os.path.exists(TEST_TMPDIR):
@@ -70,7 +74,7 @@ def test_plantcv_analyze_object():
     obj_contour = contours_npz['arr_0']
     max_obj = max(obj_contour, key=len)
     device, obj_header, obj_data, obj_images = pcv.analyze_object(img, "img", max_obj,mask, 0, None)
-    assert np.sum(obj_data[1])==718861.0
+    assert obj_data[1] != 0
 
 
 def test_plantcv_apply_mask():
@@ -167,6 +171,15 @@ def test_plantcv_flip():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     device, flipped_img = pcv.flip(img=img, direction="horizontal", device=0, debug=None)
     assert all([i == j] for i, j in zip(np.shape(flipped_img), TEST_COLOR_DIM))
+
+
+def test_plantcv_fluor_fvfm():
+    fdark=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_FDARK),-1)
+    fmin=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_FMIN),-1)
+    fmax=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_FMAX),-1)
+    fmask=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_FMASK),-1)
+    device, fvfm_header, fvfm_data = pcv.fluor_fvfm(fdark, fmin, fmax, fmask, device=0, filename=False, bins=1000, debug=None)
+    assert fvfm_data[4]>0.66
 
 
 def test_get_nir():
