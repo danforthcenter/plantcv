@@ -182,6 +182,14 @@ def test_plantcv_fluor_fvfm():
     assert fvfm_data[4]>0.66
 
 
+def test_plantcv_gaussian_blur():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    device, gaussian_img = pcv.gaussian_blur(device=0, img=img, ksize=(51,51), sigmax=0, sigmay=None, debug=None)
+    imgavg=np.average(img)
+    gavg=np.average(gaussian_img)
+    assert gavg!=imgavg
+
+
 def test_get_nir():
     device, nirpath = pcv.get_nir(TEST_DATA, TEST_VIS, device=0, debug=None)
     nirpath1 = os.path.join(TEST_DATA,TEST_NIR)

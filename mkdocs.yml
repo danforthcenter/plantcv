@@ -31,6 +31,7 @@ pages:
     - 'Fill objects': fill.md
     - 'Find objects': find_objects.md
     - 'Flip image': flip.md
+    - 'Gaussian Blur': gaussian_blur.md
     - 'Get NIR images': get_nir.md
     - 'Erosion': erode.md
     - 'Fill objects': fill.md
