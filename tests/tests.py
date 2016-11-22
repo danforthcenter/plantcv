@@ -24,6 +24,7 @@ TEST_INPUT_FDARK="FLUO_TV_dark.jpg"
 TEST_INPUT_FMIN="FLUO_TV_min.jpg"
 TEST_INPUT_FMAX="FLUO_TV_max.jpg"
 TEST_INPUT_FMASK="FLUO_TV_MASK.jpg"
+TEST_INTPUT_GREENMAG="input_green-magenta.jpg"
 
 
 if not os.path.exists(TEST_TMPDIR):
@@ -275,6 +276,12 @@ def test_plantcv_object_composition():
     # Assert that the objects have been combined
     contour_shape = np.shape(contours)
     assert contour_shape[1] == 1
+
+
+def test_plantcv_otsu_threshold():
+    img=cv2.imread(os.path.join(TEST_DATA,TEST_INTPUT_GREENMAG),-1)
+    device, threshold_otsu = pcv.otsu_auto_threshold(img, 255, 'dark', device=0, debug=None)
+    assert np.max(threshold_otsu)==255
 
 
 def test_plantcv_print_image():

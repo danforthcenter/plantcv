@@ -18,6 +18,7 @@ pages:
     - 'VIS/NIR dual pipeline': vis_nir_tutorial.md
     - 'Pipeline parallelization': pipeline_parallel.md
   - Library:
+    - 'Adaptive Threshold': adaptive_threshold.md
     - 'Analyze color': analyze_color.md
     - 'Analyze NIR': analyze_NIR_intensity.md
     - 'Analyze PSII': fluor_fvfm.md
@@ -45,6 +46,7 @@ pages:
     - 'Logical operations-Or': logical_or.md
     - 'Median blur': median_blur.md
     - 'Object composition': object_composition.md
+    - 'Otsu Auto Threshold': otsu_threshold.md
     - 'Plot histogram': plot_hist.md
     - 'Print image': print_image.md
     - 'Read image': read_image.md

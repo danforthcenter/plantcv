@@ -11,8 +11,8 @@ The function is a wrapper for the OpenCV function [gaussian blur](http://docs.op
     - device - Counter for image processing steps
     - img - img object
     - ksize - kernel size => ksize x ksize box, e.g. (5,5) 
-    - sigmax = standard deviation in X direction; if 0, calculated from kernel size
-    - sigmay = standard deviation in Y direction; if sigmaY is None, sigmaY is taken to equal sigmaX
+    - sigmax - standard deviation in X direction; if 0, calculated from kernel size
+    - sigmay - standard deviation in Y direction; if sigmaY is None, sigmaY is taken to equal sigmaX
     - debug - None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
 - **Context:**
     - Used to reduce image noise
