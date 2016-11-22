@@ -287,7 +287,7 @@ def test_plantcv_otsu_threshold():
 def test_plantcv_plot_hist():
     img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_COLOR),-1)
     bins,hist=pcv.plot_hist(img,False)
-    assert np.max(hist)==67213.0
+    assert len(hist)==256
 
 
 def test_plantcv_print_image():
