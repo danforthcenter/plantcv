@@ -284,6 +284,12 @@ def test_plantcv_otsu_threshold():
     assert np.max(threshold_otsu)==255
 
 
+def test_plantcv_plot_hist():
+    img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_COLOR),-1)
+    bins,hist=pcv.plot_hist(img,False)
+    assert np.max(hist)==67213.0
+
+
 def test_plantcv_print_image():
     img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     filename = os.path.join(TEST_TMPDIR, 'plantcv_print_image.jpg')

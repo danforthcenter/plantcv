@@ -37,7 +37,7 @@ device, threshold_gaussian = pcv.adaptive_threshold(img, 255, 'gaussian','dark',
 import plantcv as pcv
 
 # Create binary image from a gray image based 
-device, threshold_mean = pcv.adaptive_threshold(img1, 255, 'mean','dark', device, debug="print")
+device, threshold_mean = pcv.adaptive_threshold(img, 255, 'mean','dark', device, debug="print")
 ```
 
 **Auto-Thresholded image (mean)**
