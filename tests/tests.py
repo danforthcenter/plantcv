@@ -27,6 +27,7 @@ TEST_INPUT_FMASK="FLUO_TV_MASK.jpg"
 TEST_INTPUT_GREENMAG="input_green-magenta.jpg"
 TEST_INTPUT_MULTI="multi_ori_image.jpg"
 TEST_INPUT_MULTI_CONTOUR="roi_objects.npz"
+TEST_INPUT_ClUSTER_CONTOUR="clusters_i.npz"
 
 
 if not os.path.exists(TEST_TMPDIR):
@@ -110,6 +111,17 @@ def test_plantcv_cluster_contours():
     lenori=len(roi_contours)
     lenclust=len(clusters_i)
     assert lenori>lenclust
+
+
+def test_plantcv_cluster_contours_splitimg():
+    img1=cv2.imread(os.path.join(TEST_DATA,TEST_INTPUT_MULTI),-1)
+    contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_CONTOUR))
+    clusters = np.load(os.path.join(TEST_DATA, TEST_INPUT_ClUSTER_CONTOUR))
+    roi_contours = contours['arr_0']
+    cluster_contours = clusters['arr_0']
+    device, output_path = pcv.cluster_contour_splitimg(0, img1, cluster_contours, roi_contours, outdir=None, file=None,
+                                                       filenames=None,debug=None)
+    assert len(output_path)!=0
 
 
 def test_plantcv_crop_position_mask():

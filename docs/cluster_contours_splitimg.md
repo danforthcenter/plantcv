@@ -1,49 +1,45 @@
-## Apply Mask
+## Cluster Contours and Split Images
 
-Apply binary mask to an image.
+This function takes clustered contours and splits them into multiple images, also does a check to make sure that
+the number of inputted filenames matches the number of clustered contours.
 
-**apply_mask**(*img, mask, mask_color, device, debug=None*)
+**cluster_contour_splitimg**(*device,img,grouped_contour_indexes,contours,outdir,file=None, filenames=None,debug=None*)
 
-**returns** device, masked image
+**returns** device, output_paths
 
 - **Parameters:**
-    - img = image object to be masked
-    - mask= binary image object (black background with white object)
-    - mask_color= 'white' or 'black'
-    - device- Counter for image processing steps
-    - debug- None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
+    - device= Counter for image processing steps
+    - img= image object to be masked
+    - grouped_contour_indexes= output of cluster_contours, indexes of clusters of contours
+    - contours= contours to cluster, output of cluster_contours
+    - outdir= directory for output images
+    - file= the name of the input image to use as a base name , output of filename from read_image function
+    - filenames= input txt file with list of filenames in order from top to bottom left to right (likely list of genotypes)
+    - debug= None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
 - **Context:**
-    - Apply a binary image mask over a grayscale or RGB image. Useful for seperating plant and background materials.
+    - 
 - **Example use:**
     - [Use In Multi-Plant Tutorial](multi-plant_tutorial.md)
 
 
-**Original RGB image**
+**Output of Cluster Contours**
 
-![Screenshot](img/documentation_images/apply_mask/original_image.jpg)
+![Screenshot](img/documentation_images/cluster_contour_splitimg/14_clusters.jpg)
 
-**Mask image**
-
-![Screenshot](img/documentation_images/apply_mask/mask.jpg)
 
 ```python
 import plantcv as pcv
 
-# Apply binary 'white' mask over an image. 
-device, masked_image = pcv.apply_mask(img, mask, 'white', device, debug="print")
+# Cluster Contours and Split into Separate Images 
+out = './examples/'
+device, output_path = pcv.cluster_contour_splitimg(device, img1, clusters_i, contours, out, filename, names=None,
+                                                       debug="print")
 ```
 
-**White-masked image**
+**Split the Clusters into Separate Images (example of a few images)**
 
-![Screenshot](img/documentation_images/apply_mask/white_masked_image.jpg)
+![Screenshot](img/documentation_images/cluster_contour_splitimg/15_clusters.jpg)
+![Screenshot](img/documentation_images/cluster_contour_splitimg/16_clusters.jpg)
+![Screenshot](img/documentation_images/cluster_contour_splitimg/17_clusters.jpg)
 
-```python
-import plantcv as pcv
 
-# Apply binary 'black' mask over an image.
-device, masked_image = pcv.apply_mask(img, mask, 'black', device, debug="print")
-```
-  
-**Black-masked image**
-
-![Screenshot](img/documentation_images/apply_mask/black_masked_image.jpg)

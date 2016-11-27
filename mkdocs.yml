@@ -27,6 +27,7 @@ pages:
     - 'Binary threshold': binary_threshold.md
     - 'Boundary line tool': analyze_bound.md
     - 'Cluster Contours': cluster_contours.md
+    - 'Cluster Contours and Split Images': cluster_contours_splitimg.md
     - 'Crop and Position Mask': crop_position_mask.md
     - 'Dilation': dilate.md
     - 'Erosion': erode.md
