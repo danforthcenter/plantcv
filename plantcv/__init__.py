@@ -1,5 +1,5 @@
 __all__ = ['fatal_error', 'print_image', 'plot_image', 'plot_colorbar', 'readimage', 'laplace_filter', 'sobel_filter',
-           'scharr_filter', 'HistEqualization', 'plot_hist', 'image_add', 'image_subtract', 'erode', 'dilate',
+           'scharr_filter', 'hist_equalization', 'plot_hist', 'image_add', 'image_subtract', 'erode', 'dilate',
            'watershed', 'rectangle_mask', 'border_mask', 'rgb2gray_hsv', 'rgb2gray_lab', 'rgb2gray', 'binary_threshold',
            'median_blur', 'fill', 'invert', 'logical_and', 'logical_or', 'logical_xor', 'apply_mask', 'find_objects',
            'define_roi', 'roi_objects', 'object_composition', 'analyze_object', 'analyze_bound', 'analyze_color',
@@ -17,7 +17,7 @@ from readimage import readimage
 from laplace_filter import laplace_filter
 from sobel_filter import sobel_filter
 from scharr_filter import scharr_filter
-from HistEqualization import HistEqualization
+from hist_equalization import hist_equalization
 from plot_hist import plot_hist
 from image_add import image_add
 from image_subtract import image_subtract

@@ -4,7 +4,7 @@ This is a plotting method used to examine the distribution of signal within an i
 
 **plot_hist**(*img, 'hist_name'*)
 
-**returns** bins,hist, makes a plot
+**returns** bins,hist, hist plot
 
 - **Parameters:**
     - img = the original image for analysis.

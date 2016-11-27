@@ -191,10 +191,18 @@ def test_plantcv_gaussian_blur():
     assert gavg!=imgavg
 
 
-def test_get_nir():
+def test_plantcv_get_nir():
     device, nirpath = pcv.get_nir(TEST_DATA, TEST_VIS, device=0, debug=None)
     nirpath1 = os.path.join(TEST_DATA,TEST_NIR)
     assert nirpath == nirpath1
+
+
+def test_plantcv_hist_equalization():
+    img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_GRAY),-1)
+    device,hist=pcv.hist_equalization(img,device=0,debug=None)
+    histavg=np.average(hist)
+    imgavg=np.average(img)
+    assert histavg!=imgavg
 
 
 def test_plantcv_image_add():
