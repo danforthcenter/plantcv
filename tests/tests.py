@@ -325,6 +325,9 @@ def test_plantcv_readimage():
     else:
         assert 0
 
+def test_plantcv_rectangle_mask():
+
+
 
 def test_plantcv_resize():
     img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_COLOR))
