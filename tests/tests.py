@@ -326,7 +326,11 @@ def test_plantcv_readimage():
         assert 0
 
 def test_plantcv_rectangle_mask():
-
+    img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_GRAY),-1)
+    device, masked, hist, contour, heir = pcv.rectangle_mask(img, (0, 0), (2454, 2056), device=0, debug=None, color="black")
+    maskedsum=np.sum(masked)
+    imgsum=np.sum(img)
+    assert maskedsum<imgsum
 
 
 def test_plantcv_resize():
