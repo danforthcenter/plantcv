@@ -4,7 +4,6 @@ import cv2
 import numpy as np
 from . import print_image
 from . import plot_image
-from . import apply_mask
 
 def rectangle_mask(img, p1, p2, device, debug=None, color="black"):
     """Takes an input image and returns a binary image masked by a rectangular area denoted by p1 and p2. Note that

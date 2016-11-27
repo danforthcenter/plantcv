@@ -25,6 +25,8 @@ TEST_INPUT_FMIN="FLUO_TV_min.jpg"
 TEST_INPUT_FMAX="FLUO_TV_max.jpg"
 TEST_INPUT_FMASK="FLUO_TV_MASK.jpg"
 TEST_INTPUT_GREENMAG="input_green-magenta.jpg"
+TEST_INTPUT_MULTI="multi_ori_image.jpg"
+TEST_INPUT_MULTI_CONTOUR="roi_objects.npz"
 
 
 if not os.path.exists(TEST_TMPDIR):
@@ -100,7 +102,17 @@ def test_plantcv_binary_threshold():
         assert 0
 
 
-def test_crop_position_mask():
+def test_plantcv_cluster_contours():
+    img1=cv2.imread(os.path.join(TEST_DATA,TEST_INTPUT_MULTI),-1)
+    contours=np.load(os.path.join(TEST_DATA,TEST_INPUT_MULTI_CONTOUR))
+    roi_contours=contours['arr_0']
+    device, clusters_i, contours = pcv.cluster_contours(device=0, img=img1, roi_objects=roi_contours, nrow=4, ncol=6, debug=None)
+    lenori=len(roi_contours)
+    lenclust=len(clusters_i)
+    assert lenori>lenclust
+
+
+def test_plantcv_crop_position_mask():
     nir, path1, filename1 = pcv.readimage(os.path.join(TEST_DATA,TEST_INPUT_NIR_MASK))
     mask= cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_MASK),-1)
     device, newmask=pcv.crop_position_mask(nir,mask, device=0, x=40,y=3,v_pos="top",h_pos="right",debug=None)
