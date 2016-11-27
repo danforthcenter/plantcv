@@ -1,6 +1,6 @@
 __all__ = ['fatal_error', 'print_image', 'plot_image', 'plot_colorbar', 'readimage', 'laplace_filter', 'sobel_filter',
            'scharr_filter', 'hist_equalization', 'plot_hist', 'image_add', 'image_subtract', 'erode', 'dilate',
-           'watershed', 'rectangle_mask', 'border_mask', 'rgb2gray_hsv', 'rgb2gray_lab', 'rgb2gray', 'binary_threshold',
+           'watershed', 'rectangle_mask', 'rgb2gray_hsv', 'rgb2gray_lab', 'rgb2gray', 'binary_threshold',
            'median_blur', 'fill', 'invert', 'logical_and', 'logical_or', 'logical_xor', 'apply_mask', 'find_objects',
            'define_roi', 'roi_objects', 'object_composition', 'analyze_object', 'analyze_bound', 'analyze_color',
            '_pseudocolored_image', 'analyze_NIR_intensity', 'fluor_fvfm', 'print_results', 'resize', 'flip',
@@ -25,7 +25,6 @@ from erode import erode
 from dilate import dilate
 from watershed import watershed
 from rectangle_mask import rectangle_mask
-from border_mask import border_mask
 from rgb2gray_hsv import rgb2gray_hsv
 from rgb2gray_lab import rgb2gray_lab
 from rgb2gray import rgb2gray
