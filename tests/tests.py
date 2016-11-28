@@ -431,6 +431,14 @@ def test_plantcv_sobel_filter():
     assert all([i == j] for i, j in zip(np.shape(sobel_img), TEST_GRAY_DIM))
 
 
+def test_plantcv_triangle_threshold():
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    device, thresholded = pcv.triangle_auto_threshold(0, img1, 255, "light", 10, debug=None)
+    thresholdedavg=np.average(thresholded)
+    imgavg=np.average(img1)
+    assert thresholdedavg>imgavg
+
+
 def test_plantcv_white_balance():
     img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_NIR_MASK),-1)
     device, white_balanced=pcv.white_balance(0, img, debug=None,roi=(5,5,80,80))
