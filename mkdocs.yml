@@ -16,6 +16,7 @@ pages:
     - 'NIR pipeline': nir_tutorial.md
     - 'PSII pipeline': psII_tutorial.md
     - 'VIS/NIR dual pipeline': vis_nir_tutorial.md
+    - 'Multi plant pipeline': multi-plant_tutorial.md
     - 'Pipeline parallelization': pipeline_parallel.md
   - Library:
     - 'Adaptive Threshold': adaptive_threshold.md
