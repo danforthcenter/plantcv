@@ -50,6 +50,7 @@ pages:
     - 'Median blur': median_blur.md
     - 'Object composition': object_composition.md
     - 'Otsu Auto Threshold': otsu_threshold.md
+    - 'Output Mask': output_mask.md
     - 'Plot histogram': plot_hist.md
     - 'Print image': print_image.md
     - 'Read image': read_image.md

@@ -2,6 +2,7 @@
 
 import pytest
 import os
+import shutil
 import numpy as np
 import cv2
 import plantcv as pcv
@@ -316,6 +317,17 @@ def test_plantcv_otsu_threshold():
     assert np.max(threshold_otsu)==255
 
 
+def test_plantcv_output_mask():
+    img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_GRAY),-1)
+    mask=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_BINARY),-1)
+    device, imgpath,maskpath=pcv.output_mask(0, img, mask, 'test.png', TEST_DATA,debug=None)
+    path=str(TEST_DATA)+'/ori-images'
+    path1=str(TEST_DATA)+'/mask-images'
+    assert os.path.exists(path)==True
+    shutil.rmtree(path)
+    shutil.rmtree(path1)
+
+
 def test_plantcv_plot_hist():
     img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_COLOR),-1)
     bins,hist=pcv.plot_hist(img,False)
@@ -426,7 +438,7 @@ def test_plantcv_shift_img():
 
 def test_plantcv_sobel_filter():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    device, sobel_img = pcv.sobel_filter(img=img, dx=1, dy=0, k=1, scale=1, device=0, debug=None)
+    device, sobel_img = pcv.sobel_filter(img=img, dx=1, dy=0, k=1, device=0, debug=None)
     # Assert that the output image has the dimensions of the input image
     assert all([i == j] for i, j in zip(np.shape(sobel_img), TEST_GRAY_DIM))
 
