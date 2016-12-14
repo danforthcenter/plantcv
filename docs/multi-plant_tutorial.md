@@ -195,7 +195,7 @@ device, a = pcv.rgb2gray_lab(img1, 'a', device, debug)
 
 **Figure 5.** (Top) Green-magenta channel from LAB colorspace from original image.
 
-![Screenshot](img/tutorial_images/multi-img/5_lab_green-magenta)
+![Screenshot](img/tutorial_images/multi-img/5_lab_green-magenta.jpg)
 
 Threshold green-magenta image. For more information see binary threshold function [here](binary_threshold.md).
 
@@ -390,25 +390,42 @@ device, output_path = pcv.cluster_contour_splitimg(device, img1, clusters_i, con
 ```
 
 **Figure 13.** Split image based on clustering.
-
+---
 ![Screenshot](img/tutorial_images/multi-img/13_clusters.jpg)
+---
 ![Screenshot](img/tutorial_images/multi-img/14_clusters.jpg)
+---
 ![Screenshot](img/tutorial_images/multi-img/15_clusters.jpg)
+---
 ![Screenshot](img/tutorial_images/multi-img/16_clusters.jpg)
+---
 ![Screenshot](img/tutorial_images/multi-img/17_clusters.jpg)
+---
 ![Screenshot](img/tutorial_images/multi-img/18_clusters.jpg)
+---
 ![Screenshot](img/tutorial_images/multi-img/19_clusters.jpg)
+---
 ![Screenshot](img/tutorial_images/multi-img/20_clusters.jpg)
+---
 ![Screenshot](img/tutorial_images/multi-img/21_clusters.jpg)
+---
 ![Screenshot](img/tutorial_images/multi-img/22_clusters.jpg)
+---
 ![Screenshot](img/tutorial_images/multi-img/23_clusters.jpg)
+---
 ![Screenshot](img/tutorial_images/multi-img/24_clusters.jpg)
+---
 ![Screenshot](img/tutorial_images/multi-img/25_clusters.jpg)
+---
 ![Screenshot](img/tutorial_images/multi-img/26_clusters.jpg)
+---
 ![Screenshot](img/tutorial_images/multi-img/27_clusters.jpg)
+---
 ![Screenshot](img/tutorial_images/multi-img/28_clusters.jpg)
+---
 ![Screenshot](img/tutorial_images/multi-img/29_clusters.jpg)
+---
 ![Screenshot](img/tutorial_images/multi-img/30_clusters.jpg)
-
+---
 To deploy a pipeline over a full image set please see tutorial on 
 Pipeline Parallelization [here](pipeline_parallel.md).

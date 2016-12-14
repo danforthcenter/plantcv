@@ -320,7 +320,7 @@ def test_plantcv_otsu_threshold():
 def test_plantcv_output_mask():
     img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_GRAY),-1)
     mask=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_BINARY),-1)
-    device, imgpath,maskpath=pcv.output_mask(0, img, mask, 'test.png', TEST_DATA,debug=None)
+    device, imgpath,maskpath=pcv.output_mask(0, img, mask, 'test.png', TEST_DATA,mask_only=False, debug=None)
     path=str(TEST_DATA)+'/ori-images'
     path1=str(TEST_DATA)+'/mask-images'
     assert os.path.exists(path)==True

@@ -2,7 +2,7 @@
 
 Write image and mask with the same name to the path specified (creates two folders within the path if they do not exist).
 
-**output_mask**(*device,img,mask, filename,outdir=None, debug=None*)
+**output_mask**(*device,img,mask, filename,outdir=None, mask_only=False,debug=None*)
 
 **returns** device, imgpath, maskpath
 
@@ -20,6 +20,6 @@ Write image and mask with the same name to the path specified (creates two folde
 
 import plantcv as pcv      
 
-pcv.output_mask(device, img, mask, 'test.png', '/home/user/images', debug='print')
+pcv.output_mask(device, img, mask, 'test.png', '/home/user/images', mask_only=False, debug='print')
 
 ```

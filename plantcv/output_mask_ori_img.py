@@ -5,7 +5,7 @@ import numpy as np
 from . import print_image
 from . import plot_image
 
-def output_mask(device,img,mask, filename,outdir=None, debug=None):
+def output_mask(device,img,mask, filename,outdir=None, mask_only=False, debug=None):
     """Prints ori image and mask to directories.
 
     Inputs:
@@ -40,36 +40,55 @@ def output_mask(device,img,mask, filename,outdir=None, debug=None):
     else:
         directory=outdir
 
-    path=str(directory)+"/ori-images"
+    if mask_only==False:
+        path=str(directory)+"/ori-images"
 
-    if os.path.exists(path)==True:
-        imgpath=str(path)+"/"+str(filename)
-        print_image(img,imgpath)
-    else:
-        os.mkdir(path)
-        imgpath=str(path)+"/"+str(filename)
-        print_image(img,imgpath)
-
-    path1=str(directory)+"/mask-images"
-
-    if os. path.exists(path1)==True:
-        maskpath=str(path1)+"/"+str(filename)
-        print_image(mask,maskpath)
-    else:
-        os.mkdir(path1)
-        maskpath=str(path1)+"/"+str(filename)
-        print_image(mask,maskpath)
-
-    if debug == 'print':
-        print_image(img, (str(device) + '_ori-img.png'))
-        print_image(mask, (str(device) + '_mask-img.png'))
-
-    elif debug == 'plot':
-        if len(np.shape(img))==3:
-            plot_image(img)
-            plot_image(mask, cmap='gray')
+        if os.path.exists(path)==True:
+            imgpath=str(path)+"/"+str(filename)
+            print_image(img,imgpath)
         else:
-            plot_image(img, cmap='gray')
-            plot_image(mask,cmap='gray')
+            os.mkdir(path)
+            imgpath=str(path)+"/"+str(filename)
+            print_image(img,imgpath)
 
-    return device, imgpath, maskpath
+        path1=str(directory)+"/mask-images"
+
+        if os. path.exists(path1)==True:
+            maskpath=str(path1)+"/"+str(filename)
+            print_image(mask,maskpath)
+        else:
+            os.mkdir(path1)
+            maskpath=str(path1)+"/"+str(filename)
+            print_image(mask,maskpath)
+
+        if debug == 'print':
+            print_image(img, (str(device) + '_ori-img.png'))
+            print_image(mask, (str(device) + '_mask-img.png'))
+
+        elif debug == 'plot':
+            if len(np.shape(img))==3:
+                plot_image(img)
+                plot_image(mask, cmap='gray')
+            else:
+                plot_image(img, cmap='gray')
+                plot_image(mask,cmap='gray')
+
+        return device, imgpath, maskpath
+
+    else:
+        path1 = str(directory) + "/mask-images"
+
+        if os.path.exists(path1) == True:
+            maskpath = str(path1) + "/" + str(filename)
+            print_image(mask, maskpath)
+        else:
+            os.mkdir(path1)
+            maskpath = str(path1) + "/" + str(filename)
+            print_image(mask, maskpath)
+
+        if debug == 'print':
+            print_image(mask, (str(device) + '_mask-img.png'))
+        elif debug == 'plot':
+                plot_image(mask, cmap='gray')
+
+        return device, maskpath
