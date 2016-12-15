@@ -1,44 +1,60 @@
 # Resize image
 
 import cv2
+import numpy as np
 from . import print_image
 from . import plot_image
-from . import fatal_error
 
-
-def resize(img, resize_x, resize_y, device, debug=None):
+def auto_crop(device, img, objects, padding_x=0, padding_y=0, color='black',debug=None):
     """Resize image.
 
     Inputs:
-    img      = image to resize
-    resize_x = scaling factor
-    resize_y = scaling factor
+    img      = image
+    mask     = mask of target object (binary image)
+    padding_x = padding in the x direction
+    padding_y = padding in the y direction
+    color    = either 'black' or 'white'
     device   = device counter
     debug    = None, print, or plot. Print = save to file, Plot = print to screen.
 
     Returns:
     device   = device number
-    reimg    = resized image
+    cropped    = cropped image
 
     :param img: numpy array
-    :param resize_x: int
-    :param resize_y: int
-    :param device: int
+    :param mask: numpy array
     :param debug: str
     :return device: int
-    :return reimg: numpy array
+    :return cropped: numpy array
     """
 
     device += 1
+    img_copy=np.copy(img)
 
-    reimg = cv2.resize(img, (0, 0), fx=resize_x, fy=resize_y)
+    x,y,w,h=cv2.boundingRect(objects)
+    cv2.rectangle(img_copy,(x,y),(x+w,y+h),(0,255,0),5)
 
-    if resize_x <= 0 and resize_y <= 0:
-        fatal_error("Resize values both cannot be 0 or negative values!")
+    crop_img=img[y:y+h,x:x+w]
+
+    offsetx=int(np.rint((padding_x)))
+    offsety=int(np.rint((padding_y)))
+
+    if color=='black':
+        colorval=(0,0,0)
+    elif color=='white':
+        colorval=(255,255,255)
+
+    cropped=cv2.copyMakeBorder(crop_img,offsety,offsety,offsetx,offsetx,cv2.BORDER_CONSTANT,value=colorval)
 
     if debug == 'print':
-        print_image(reimg, (str(device) + "_resize1.png"))
+        print_image(img_copy, (str(device) + "_crop_area.png"))
+        print_image(cropped, (str(device) + "_auto_cropped.png"))
     elif debug == 'plot':
-        plot_image(reimg,cmap='gray')
+        if len(np.shape(img_copy))==3:
+            plot_image(img_copy)
+            plot_image(cropped)
+        else:
+            plot_image(img_copy,cmap='gray')
+            plot_image(cropped,cmap='gray')
 
-    return device, reimg
+    return device, cropped

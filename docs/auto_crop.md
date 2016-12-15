@@ -1,33 +1,35 @@
-## Resize
+## Auto Crop
 
-Resizes images, used to resize masks over other images.
+Crops image to an object and allows user to specify image padding (if desired)
 
-**resize**(*img, resize_x, resize_y, device, debug=None*)
+**auto_crop**(*device, img, objects, padding_x=0, padding_y=0, color='black',debug=None*)
 
 **returns** device, image after resizing
 
 - **Parameters:**
     - img1 - Input image
-    - resize_x - resize number in the x dimension (does not need to be an integer)
-    - resize_y - resize number in the y dimension (does not need to be an integer)
+    - object - contour of target object 
+    - padding_x - padding in the x direction
+    - padding_y - padding in the y direction
+    - color - either 'black' or 'white'
     - device - Counter for image processing steps
     - debug- None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
 - **Context:**
-    - Resizes images.
-- **Example use:**
-    - [Use In NIR-Vis Tutorial](vis_nir_tutorial.md)
+    - Crops image to object
     
 **Input image**
 
-![Screenshot](img/documentation_images/resize/19_flipped.jpg)
+![Screenshot](img/documentation_images/auto_crop/2016-05-25_1031.chamber129-camera-01.jpg)
 
 ```python
 import plantcv as pcv
 
 # Resize image
-device, resize_img = pcv.resize(img, 0.1154905775,0.1154905775, device, debug='print')
+device, crop_img=pcv.auto_crop(device, img, id_objects[0],20,20,'black',debug)
 ```
 
-**Image after resizing**
+**Debug Auto Crop Images**
 
-![Screenshot](img/documentation_images/resize/19_resize1.jpg)
+![Screenshot](img/documentation_images/auto_crop/155_crop_area.jpg)
+-------------------------------------------------------------------
+![Screenshot](img/documentation_images/auto_crop/155_auto_cropped.jpg)

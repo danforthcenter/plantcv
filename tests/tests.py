@@ -89,6 +89,15 @@ def test_plantcv_apply_mask():
     assert all([i == j] for i, j in zip(np.shape(masked_img), TEST_COLOR_DIM))
 
 
+def test_plantcv_auto_crop():
+    img1=cv2.imread(os.path.join(TEST_DATA,TEST_INTPUT_MULTI),-1)
+    contours=np.load(os.path.join(TEST_DATA,TEST_INPUT_MULTI_CONTOUR))
+    roi_contours=contours['arr_0']
+    device, cropped=pcv.auto_crop(0,img1,roi_contours[48],20,20,'black',debug=None)
+    x,y,z=np.shape(img1)
+    x1,y1,z1=np.shape(cropped)
+    assert x>x1
+
 def test_plantcv_binary_threshold():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     device, binary_img = pcv.binary_threshold(img=img, threshold=25, maxValue=255, object_type="light",

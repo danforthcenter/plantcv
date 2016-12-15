@@ -26,6 +26,7 @@ pages:
     - 'Analyze shape': analyze_shape.md
     - 'Apply mask': apply_mask.md
     - 'Binary threshold': binary_threshold.md
+    - 'Auto Crop': auto_crop.md
     - 'Boundary line tool': analyze_bound.md
     - 'Cluster Contours': cluster_contours.md
     - 'Cluster Contours and Split Images': cluster_contours_splitimg.md
