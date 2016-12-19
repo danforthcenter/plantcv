@@ -6,3 +6,4 @@ dist/*
 _site/*
 *.egg-info/
 .cache/*
+.DS_Store
