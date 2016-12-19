@@ -29,6 +29,8 @@ TEST_INTPUT_GREENMAG="input_green-magenta.jpg"
 TEST_INTPUT_MULTI="multi_ori_image.jpg"
 TEST_INPUT_MULTI_CONTOUR="roi_objects.npz"
 TEST_INPUT_ClUSTER_CONTOUR="clusters_i.npz"
+TEST_INPUT_CROPPED='cropped_img.jpg'
+TEST_INPUT_CROPPED_MASK='cropped-mask.png'
 
 
 if not os.path.exists(TEST_TMPDIR):
@@ -97,6 +99,7 @@ def test_plantcv_auto_crop():
     x,y,z=np.shape(img1)
     x1,y1,z1=np.shape(cropped)
     assert x>x1
+
 
 def test_plantcv_binary_threshold():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
@@ -458,6 +461,13 @@ def test_plantcv_triangle_threshold():
     thresholdedavg=np.average(thresholded)
     imgavg=np.average(img1)
     assert thresholdedavg>imgavg
+
+
+def test_plantcv_watershed_segmentation():
+    img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_CROPPED))
+    mask=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_CROPPED_MASK),-1)
+    device,watershed_header,watershed_data,images=pcv.watershed_segmentation(0,img,mask,distance=10,filename=False,debug=None)
+    assert watershed_data[1]==10
 
 
 def test_plantcv_white_balance():

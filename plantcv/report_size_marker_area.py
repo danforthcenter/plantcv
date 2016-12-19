@@ -53,7 +53,10 @@ def report_size_marker_area(img, shape, device, debug, marker='define', x_adj=0,
     :param thresh_channel:str
     :param thresh:int
     :param filename: str
-    :return:
+    :return: device: int
+    :return: marker_header: str
+    :return: marker_data: int
+    :return: analysis_images: list
     """
 
     device += 1

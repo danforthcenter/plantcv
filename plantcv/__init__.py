@@ -23,7 +23,7 @@ from image_add import image_add
 from image_subtract import image_subtract
 from erode import erode
 from dilate import dilate
-from watershed import watershed
+from watershed import watershed_segmentation
 from rectangle_mask import rectangle_mask
 from rgb2gray_hsv import rgb2gray_hsv
 from rgb2gray_lab import rgb2gray_lab

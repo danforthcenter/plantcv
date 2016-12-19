@@ -65,6 +65,7 @@ pages:
     - 'Shift Image': shift.md
     - 'Sobel filter': sobel_filter.md
     - 'Triangle Auto Threshold': triangle_threshold.md
+    - 'Watershed Segmentation': watershed.md
     - 'White balance': white_balance.md
 
 markdown_extensions:
