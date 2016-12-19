@@ -9,6 +9,7 @@ virtualenv:
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq git libopencv-dev python-opencv python-numpy python-matplotlib python-scipy sqlite3
+  - sudo pip install scikit-image
   - sudo pip install --upgrade numpy
 # Install PlantCV
 install:
