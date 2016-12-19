@@ -285,7 +285,7 @@ and the Boundary tool function [here](analyze_bound.md).
 The next step is to get the matching NIR image and resize and place the VIS mask over it.
 For more info see the get_nir Function [here](get_nir.md),
 the resize function [here](resize.md),
-the Crop and Position function [here](crop_mask_position.md).
+the Crop and Position function [here](crop_position_mask.md).
 
 ```python
   if args.coresult is not None:
