@@ -45,6 +45,7 @@ def watershed_segmentation(device, img, mask, distance=10, filename=False, debug
     #markers = ndi.label(localMax, structure=np.ones((3, 3)))[0]
     #markers = ndi.label(localMax, structure=ndi.generate_binary_structure(2, 2))[0]
     markers = ndi.label(localMax)[0]
+    markers=np.array(markers,dtype=np.int32)
     cv2.watershed(img, markers)
 
     img1 = np.copy(img)
