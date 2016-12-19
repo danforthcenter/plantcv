@@ -467,7 +467,7 @@ def test_plantcv_watershed_segmentation():
     img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_CROPPED))
     mask=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_CROPPED_MASK),-1)
     device,watershed_header,watershed_data,images=pcv.watershed_segmentation(0,img,mask,distance=10,filename=False,debug=None)
-    assert watershed_data[1]==10
+    assert watershed_data[1]>9
 
 
 def test_plantcv_white_balance():
