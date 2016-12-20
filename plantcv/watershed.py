@@ -10,8 +10,6 @@ from . import plot_image
 from plantcv.apply_mask import apply_mask
 from plantcv.dev.color_palette import color_palette
 
-
-
 def watershed_segmentation(device, img, mask, distance=10, filename=False, debug=None):
     """Uses the watershed algorithm to detect boundry of objects. Needs a marker file which specifies area which is
        object (white), background (grey), unknown area (black).
@@ -44,7 +42,7 @@ def watershed_segmentation(device, img, mask, distance=10, filename=False, debug
     localMax = peak_local_max(dist_transform, indices=False, min_distance=distance, labels=mask)
 
     markers = ndi.label(localMax)[0]
-    labels = watershed(-dist_transform, markers, mask=mask)
+    labels = watershed(-(dist_transform), markers, mask=mask)
 
     img1 = np.copy(img)
 
