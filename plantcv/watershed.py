@@ -4,6 +4,8 @@ import cv2
 import numpy as np
 from scipy import ndimage as ndi
 from skimage.feature import peak_local_max
+from skimage import morphology
+from skimage.morphology import watershed
 from . import print_image
 from . import plot_image
 from plantcv.apply_mask import apply_mask
@@ -43,16 +45,15 @@ def watershed_segmentation(device, img, mask, distance=10, filename=False, debug
     localMax = peak_local_max(dist_transform, indices=False, min_distance=distance, labels=mask)
 
     #markers = ndi.label(localMax, structure=np.ones((3, 3)))[0]
-    #markers = ndi.label(localMax, structure=ndi.generate_binary_structure(2, 2))[0]
-    markers = ndi.label(localMax)[0]
-    markers=np.array(markers,dtype=np.int32)
-    cv2.watershed(img, markers)
+    markers = ndi.label(localMax, structure=ndi.generate_binary_structure(2, 2))[0]
+    #markers = ndi.label(localMax)[0]
+    labels = watershed(-dist_transform, markers, mask=mask)
 
     img1 = np.copy(img)
 
-    for x in np.unique(markers):
-        rand_color = color_palette(len(np.unique(markers)))
-        img1[markers == x] = rand_color[x]
+    for x in np.unique(labels):
+        rand_color = color_palette(len(np.unique(labels)))
+        img1[labels == x] = rand_color[x]
 
     device, img2 =apply_mask(img1, mask, 'black', device, debug=None)
 
