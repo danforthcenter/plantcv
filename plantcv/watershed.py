@@ -41,7 +41,7 @@ def watershed_segmentation(device, img, mask, distance=10, filename=False, debug
 
     localMax = peak_local_max(dist_transform, indices=False, min_distance=distance, labels=mask)
 
-    markers = ndi.label(localMax)[0]
+    markers = ndi.label(localMax, structure=np.ones((3, 3)))[0]
     dist_transform1= -dist_transform
     labels = watershed(dist_transform1, markers, mask=mask)
 
