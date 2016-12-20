@@ -4,7 +4,6 @@ import cv2
 import numpy as np
 from scipy import ndimage as ndi
 from skimage.feature import peak_local_max
-from skimage import morphology
 from skimage.morphology import watershed
 from . import print_image
 from . import plot_image
@@ -44,7 +43,6 @@ def watershed_segmentation(device, img, mask, distance=10, filename=False, debug
 
     localMax = peak_local_max(dist_transform, indices=False, min_distance=distance, labels=mask)
 
-    #markers = ndi.label(localMax, structure=ndi.generate_binary_structure(2, 2))[0]
     markers = ndi.label(localMax)[0]
     labels = watershed(-dist_transform, markers, mask=mask)
 
