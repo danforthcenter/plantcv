@@ -59,6 +59,7 @@ pages:
     - 'Rectangle mask': rectangle_mask.md
     - 'Region of interest-Define': define_roi.md
     - 'Region of interest-Objects': roi_objects.md
+    - 'Report Size Marker': report_size_marker.md
     - 'Resize': resize.md
     - 'RGB to HSV': rgb2hsv.md
     - 'RGB to LAB': rgb2lab.md

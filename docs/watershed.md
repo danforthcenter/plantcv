@@ -1,6 +1,9 @@
 ## Watershed Segmentation
 
-Uses the watershed algorithm to detect boundry of objects. Needs a marker file (label output) which specifies area which is object (white), background (grey), unknown area (black)
+This function is based on code contributed by Suxing Liu, Arkansas State University.
+For more information see https://github.com/lsx1980/Leaf_count. 
+This function uses the watershed algorithm to detect boundry of objects. 
+Needs a mask file which specifies area which is object is white, and background is black
 
 **watershed_segmentation**(*device, img, mask, distance=10, filename=False, debug=None*)**
 
@@ -34,5 +37,5 @@ print(watershed_data)
 
 ![Screenshot](img/documentation_images/watershed/watershed.jpg)
 
-('HEADER_WATERSHED', 'estimated_object_count')
+('HEADER_WATERSHED', 'estimated_object_count')  
 ('WATERSHED_DATA', 10)

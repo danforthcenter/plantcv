@@ -1,4 +1,6 @@
-# Watershed boundry detection function
+# Watershed Se detection function
+# This function is based on code contributed by Suxing Liu, Arkansas State University.
+# For more information see https://github.com/lsx1980/Leaf_count
 
 import cv2
 import numpy as np

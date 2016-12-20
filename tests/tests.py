@@ -31,6 +31,7 @@ TEST_INPUT_MULTI_CONTOUR="roi_objects.npz"
 TEST_INPUT_ClUSTER_CONTOUR="clusters_i.npz"
 TEST_INPUT_CROPPED='cropped_img.jpg'
 TEST_INPUT_CROPPED_MASK='cropped-mask.png'
+TEST_INPUT_MARKER='seed-image.jpg'
 
 
 if not os.path.exists(TEST_TMPDIR):
@@ -379,6 +380,15 @@ def test_plantcv_rectangle_mask():
     maskedsum=np.sum(masked)
     imgsum=np.sum(img)
     assert maskedsum<imgsum
+
+
+def test_plantcv_report_size_marker():
+    img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_MARKER),-1)
+    device, marker_header,marker_data,images=pcv.report_size_marker_area(img, 'rectangle', 0, debug=None, marker='detect',
+                                                                         x_adj=3500, y_adj=600, w_adj=-100, h_adj=-1500,
+                                                                         base='white', objcolor='light', thresh_channel='s',
+                                                                         thresh=120, filename=False)
+    assert marker_data[1]>100
 
 
 def test_plantcv_resize():
