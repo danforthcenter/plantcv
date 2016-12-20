@@ -58,7 +58,7 @@ def watershed_segmentation(device, img, mask, distance=10, filename=False, debug
     estimated_object_count=len(np.unique(markers))-1
 
     analysis_images=[]
-    if filename:
+    if filename!=False:
         out_file = str(filename[0:-4]) + '_watershed.jpg'
         print_image(joined, out_file)
         analysis_images.append(['IMAGE', 'watershed', out_file])
@@ -74,8 +74,8 @@ def watershed_segmentation(device, img, mask, distance=10, filename=False, debug
     )
 
     if debug == 'print':
-        print_image(dist_transform, str(device) + 'watershed_dist_img.png')
-        print_image(joined, str(device) + 'watershed_img.png')
+        print_image(dist_transform, str(device) + '_watershed_dist_img.png')
+        print_image(joined, str(device) + '_watershed_img.png')
     elif debug == 'plot':
         plot_image(dist_transform,cmap='gray')
         plot_image(joined)
