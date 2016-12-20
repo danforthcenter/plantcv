@@ -19,6 +19,10 @@ the values out to a file. Can also print out a histogram plot of pixel intensity
     - Used to mask rectangluar regions of an image
 - **Example use:**
     - [Use In NIR Tutorial](nir_tutorial.md)
+    
+**Output Data Units:** 
+    - Bins - bin values based on number of bins set by user  
+    - Signal Histogram - histogram of object pixel intensity values 0 (unsaturated) to 255 (saturated)     
 
 **Original grayscale image**
 
