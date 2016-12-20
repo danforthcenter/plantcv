@@ -8,8 +8,17 @@ virtualenv:
 # command to install dependencies
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -qq git libopencv-dev python-opencv sqlite3
+  - sudo apt-get install -qq git python-dev sqlite3
   - sudo pip install --upgrade numpy matplotlib scipy scikit-image
+  - git clone https://github.com/Itseez/opencv.git
+  - cd opencv
+  - git checkout 2.4.13.2
+  - mkdir build
+  - cd build
+  - cmake ..
+  - make -j4
+  - sudo make -j4 install
+  - cd ../..
 # Install PlantCV
 install:
   - python setup.py install
