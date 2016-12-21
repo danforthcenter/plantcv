@@ -26,6 +26,11 @@ Get and record the size of a size marker or set an area as a size marker.
 - **Context:**
     - Allows user to add size marker data, so that shape data can be normalized between images/cameras
 
+**Output Data Units:**
+    - Marker-Area - area of marker, pixels (units)
+    - Marker Bounding Ellipse Major Axis - length of major axis of bounding ellipse, pixels (units)  
+    - Marker Bounding Ellipse Minor Axis - length of minor axis of bounding ellipse, pixels (units)  
+    - Marker Bounding Ellipse Eccentricity - ratio, 'roundness' of object (a perfect circle is 0, ellipse is greater than 0 but less than 1)  
 
 **Object (green) that is identified as partially inside ROI**
 

@@ -16,7 +16,7 @@ Shape analysis outputs numeric properties for an input object (contour or groupe
 - **Context:**
     - Used to output shape characteristics of an image, including height, object area, convex hull, convex hull area, perimeter, extent x, extent y, longest axis, centroid x coordinate, centroid y coordinate, in bounds QC (if object touches edge of image, image is flagged). 
 - **Example use:**
-    - [Use In VIS Tutorial](../vis_tutorial.html)
+    - [Use In VIS Tutorial](vis_tutorial.md)
     - [Use In NIR Tutorial](nir_tutorial.md)
     - [Use In PSII Tutorial](psII_tutorial.md) 
     

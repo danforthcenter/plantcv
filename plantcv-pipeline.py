@@ -797,7 +797,7 @@ def process_results(args):
     opt_feature_fields = ['y-position', 'height_above_bound', 'height_below_bound',
                           'above_bound_area', 'percent_above_bound_area', 'below_bound_area',
                           'percent_below_bound_area']
-    marker_fields = ['marker_area']
+    marker_fields = ['marker_area','marker_major_axis_length','marker_minor_axis_length','marker_eccentricity']
     landmark_fields = ['tip_points', 'tip_points_r', 'centroid_r', 'baseline_r', 'tip_number', 'vert_ave_c',
                        'hori_ave_c', 'euc_ave_c', 'ang_ave_c', 'vert_ave_b', 'hori_ave_b', 'euc_ave_b', 'ang_ave_b',
                        'left_lmk', 'right_lmk', 'center_h_lmk', 'left_lmk_r', 'right_lmk_r', 'center_h_lmk_r',
