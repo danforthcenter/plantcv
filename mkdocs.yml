@@ -12,7 +12,7 @@ pages:
   - 'Using Jupyter Notebooks': jupyter.md
   - 'Contributing to PlantCV': CONTRIBUTING.md
   - 'Adding/editing Documentation': documentation.md
-  - 'Summary of Output Measurements: output_measurements.md
+  - 'Summary of Output Measurements': output_measurements.md
   - Tutorials:
     - 'VIS pipeline': vis_tutorial.md
     - 'NIR pipeline': nir_tutorial.md
