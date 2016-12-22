@@ -4,8 +4,9 @@ Extract color data of objects and produce pseudocolored images, can extract data
 
 **analyze_color**(*img, imgname, mask, bins, device, debug=None, hist_plot_type =None, pseudo_channel='v', pseudo_bkg='img', resolution=300, filename=False*)
 
-**returns** device, color channel histogram headers, color channel histogram data, analysis images
-- **Parameters:**
+**returns** device, color channel histogram headers, color channel histogram data, analysis images  
+
+- **Parameters:**  
     - img - image object (most likely the original), color(RGB)
     - imgname - name of image
     - mask - binary mask of selected contours
@@ -17,14 +18,14 @@ Extract color data of objects and produce pseudocolored images, can extract data
     - pseudo_bkg = 'img' => channel image, 'white' => white background image, 'both' => both img and white options
     - resolution= resolution of output images
     - filename - False or image name. If defined print image
-- **Context:**
+- **Context:**  
     - Used to extract color data from RGB, LAB, and HSV color channels.
     - Generates histogram of color channel data.
     - Generaes pseudocolored output image of one of the channels specified.
 - **Example use:**  
  - [Use In VIS Tutorial](vis_tutorial.md)
  
-**Output Data Units:** 
+-**Output Data Units:** 
     - Red Channel - histogram of object pixel intensity values 0 (unsaturated) to 255 (saturated)  
     - Green Channel - histogram of object pixel intensity values 0 (unsaturated) to 255 (saturated)  
     - Blue Channel - histogram of object pixel intensity values 0 (unsaturated) to 255 (saturated)  

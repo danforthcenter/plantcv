@@ -30,11 +30,8 @@ Image processing will work with adjustments if images are well lit and free of b
 
 Optional inputs:  
 
-*  **Result File** file to print results to
-*  **CoResult File** file to print co-results (NIR results) to
-*  **Write Image Flag** flag to write out images, otherwise no result images are printed (to save time).
+*  **Names File** path to txt file with names of genotypes to split images into (order of names would be top to bottom, left to right
 *  **Debug Flag:** Prints an image at each step
-*  **Region of Interest:** The user can input their own binary region of interest or image mask (make sure it is the same size as your image or you will have problems).
 
 Sample command to run a pipeline on a single image:  
 
@@ -64,7 +61,7 @@ import plantcv as pcv
 def options():
     parser = argparse.ArgumentParser(description="Imaging processing with opencv")
     parser.add_argument("-i", "--image", help="Input image file.", required=True)
-    parser.add_argument("-o", "--outdir", help="Output directory for image files.", required=False)
+    parser.add_argument("-o", "--outdir", help="Output directory for image files.", required=True)
     parser.add_argument("-n", "--names", help="path to txt file with names of genotypes to split images into", required =False)
     parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.", action=None)
     args = parser.parse_args()
