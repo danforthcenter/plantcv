@@ -142,6 +142,7 @@ def test_plantcv_crop_position_mask():
     nir, path1, filename1 = pcv.readimage(os.path.join(TEST_DATA,TEST_INPUT_NIR_MASK))
     mask= cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_MASK),-1)
     device, newmask=pcv.crop_position_mask(nir,mask, device=0, x=40,y=3,v_pos="top",h_pos="right",debug=None)
+    print(np.sum(newmask))
     assert np.sum(newmask)==641517
 
 
