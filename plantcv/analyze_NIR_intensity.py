@@ -9,13 +9,13 @@ from . import plot_colorbar
 from . import apply_mask
 
 
-def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False, debug=None, filename=False):
+def analyze_NIR_intensity(img, rgbimg, mask, bins, device, histplot=False, debug=None, filename=False):
     """This function calculates the intensity of each pixel associated with the plant and writes the values out to
        a file. It can also print out a histogram plot of pixel intensity and a pseudocolor image of the plant.
 
     Inputs:
-    img          = input image
-    imgname      = name of input image
+    img          = input image original NIR image
+    rgbimg      = RGB NIR image
     mask         = mask made from selected contours
     bins         = number of classes to divide spectrum into
     device       = device number. Used to count steps in the pipeline
@@ -44,7 +44,6 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False, debu
     """
 
     device += 1
-    ori_img = np.copy(img)
 
     if len(np.shape(img)) == 3:
         ix, iy, iz = np.shape(img)
@@ -90,13 +89,13 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False, debu
     if filename is not False:
         # make mask to select the background
         mask_inv = cv2.bitwise_not(mask)
-        img_back = cv2.bitwise_and(img, img, mask=mask_inv)
-        img_back3 = np.dstack((img_back, img_back, img_back))
+        img_back = cv2.bitwise_and(rgbimg, rgbimg, mask=mask_inv)
+        img_back1 = cv2.applyColorMap(img_back, colormap=1)
 
         # mask the background and color the plant with color scheme 'jet'
-        cplant = cv2.applyColorMap(masked, colormap=2)
-        cplant1 = cv2.bitwise_and(cplant, cplant, mask=mask)
-        cplant_back = cv2.add(cplant1, img_back3)
+        cplant = cv2.applyColorMap(rgbimg, colormap=2)
+        device, masked1 = apply_mask(cplant, mask, 'black', device, debug=None)
+        cplant_back = cv2.add(masked1, img_back1)
 
         fig_name_pseudo = (str(filename[0:-4]) + '_nir_pseudo_col.jpg')
         print_image(cplant_back, fig_name_pseudo)
@@ -124,12 +123,10 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False, debu
             plot_colorbar(path, fig_name, bins)
 
         if debug == 'print':
-            print_image(cplant1, (str(device) + "_nir_pseudo_plant.jpg"))
-            print_image(img_back3, (str(device) + "_nir_pseudo_background.jpg"))
+            print_image(masked1, (str(device) + "_nir_pseudo_plant.jpg"))
             print_image(cplant_back, (str(device) + "_nir_pseudo_plant_back.jpg"))
         elif debug == 'plot':
-            plot_image(cplant1)
-            plot_image(img_back3)
+            plot_image(masked1)
             plot_image(cplant_back)
 
     return device, hist_header, hist_data, analysis_img

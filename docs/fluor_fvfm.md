@@ -4,7 +4,7 @@ Extract Fv/Fm data of objects and produce pseudocolored images.
 
 **fluor_fvfm**(*fdark, fmin, fmax, mask, device, filename, bins=1000, debug=None*)
 
-**returns** device, FLU channel histogram headers, FLU channel histogram data, normalized color slice data
+**returns** device, FLU channel histogram headers, FLU channel histogram data
 
 - **Parameters:**
     - fdark - image object, grayscale

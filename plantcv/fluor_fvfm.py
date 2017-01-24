@@ -47,7 +47,6 @@ def fluor_fvfm(fdark, fmin, fmax, mask, device, filename, bins=1000, debug=None)
 
     size = ix, iy
     background = np.zeros(size, dtype=np.uint8)
-    w_back = background + 255
 
     # QC Fdark Image
     fdark_mask = cv2.bitwise_and(fdark, fdark, mask=mask)
