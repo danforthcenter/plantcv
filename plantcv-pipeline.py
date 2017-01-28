@@ -962,7 +962,7 @@ def process_results(args):
 
                     # Print the image signal data to the aggregate output file
                     for key in signal_data.keys():
-                        if key != 'bin-number':
+                        if key != 'bin-number' and key != 'bin-values':
                             signal_data[key] = signal_data[key].replace('[', '')
                             signal_data[key] = signal_data[key].replace(']', '')
                             signal_table = [args.image_id, signal_data['bin-number'],key, signal_data[key],signal_data['bin-values']]
