@@ -807,7 +807,7 @@ def process_results(args):
     # args.features_file.write('#' + '\t'.join(map(str, feature_fields + opt_feature_fields)) + '\n')
 
     # Signal channel data table
-    signal_fields = ['bin-number', 'channel_name', 'values']
+    signal_fields = ['bin-number', 'channel_name', 'values', 'bin_values']
 
     # bin-number	blue	green	red	lightness	green-magenta	blue-yellow	hue	saturation	value
 
@@ -965,7 +965,7 @@ def process_results(args):
                         if key != 'bin-number':
                             signal_data[key] = signal_data[key].replace('[', '')
                             signal_data[key] = signal_data[key].replace(']', '')
-                            signal_table = [args.image_id, signal_data['bin-number'], key, signal_data[key]]
+                            signal_table = [args.image_id, signal_data['bin-number'],key, signal_data[key],signal_data['bin-values']]
                             args.signal_file.write('|'.join(map(str, signal_table)) + '\n')
                 else:
                     args.fail_log.write('|'.join(map(str, meta_table)) + '\n')

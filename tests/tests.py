@@ -72,7 +72,7 @@ def test_plantcv_analyze_nir():
     img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_COLOR),0)
     mask=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_BINARY),-1)
     device, hist_header, hist_data, h_norm = pcv.analyze_NIR_intensity(img, img, mask, 256, 0, False, None)
-    assert np.sum(hist_data[2])==718858.0
+    assert np.sum(hist_data[3])==713986
 
 
 def test_plantcv_analyze_object():

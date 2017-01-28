@@ -62,6 +62,7 @@ def crop_position_mask(img, mask, device, x, y, v_pos="top", h_pos="right", debu
 
     if len(np.shape(mask)) == 3:
         mx, my, mz = np.shape(mask)
+        mask=mask[0]
     else:
         mx, my = np.shape(mask)
 
@@ -88,7 +89,6 @@ def crop_position_mask(img, mask, device, x, y, v_pos="top", h_pos="right", debu
             r2=r1-1
         mask = mask[0:mx,r1:my-r2]
 
-
     # get he sizes of the images again since you might have changed them.
 
     if len(np.shape(img)) == 3:
@@ -108,6 +108,7 @@ def crop_position_mask(img, mask, device, x, y, v_pos="top", h_pos="right", debu
 
         # Add rows to the top
         top = np.zeros((x, my), dtype=np.uint8)
+
         maskv = np.vstack((top, mask))
 
         if len(np.shape(maskv)) == 3:
@@ -138,6 +139,7 @@ def crop_position_mask(img, mask, device, x, y, v_pos="top", h_pos="right", debu
     if v_pos == "bottom":
         # Add rows to the bottom
         bottom = np.zeros((x, my), dtype=np.uint8)
+
         maskv = np.vstack((mask, bottom))
         # print_image(maskv,(str(device)+"_push-bottom-test.png"))
 

@@ -177,10 +177,14 @@ def analyze_color(img, imgname, mask, bins, device, debug=None, hist_plot_type=N
     hist_data_s = [l[0] for l in hist_s]
     hist_data_v = [l[0] for l in hist_v]
 
+    binval=np.arange(0,bins)
+    bin_values = [l for l in binval]
+
     # Store Color Histogram Data
     hist_header = [
         'HEADER_HISTOGRAM',
         'bin-number',
+        'bin-values',
         'blue',
         'green',
         'red',
@@ -195,6 +199,7 @@ def analyze_color(img, imgname, mask, bins, device, debug=None, hist_plot_type=N
     hist_data = [
         'HISTOGRAM_DATA',
         bins,
+        bin_values,
         hist_data_b,
         hist_data_g,
         hist_data_r,

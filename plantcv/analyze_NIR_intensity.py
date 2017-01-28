@@ -6,6 +6,8 @@ import numpy as np
 from . import print_image
 from . import plot_image
 from . import plot_colorbar
+from . import rgb2gray_hsv
+from . import binary_threshold
 from . import apply_mask
 
 
@@ -45,43 +47,41 @@ def analyze_NIR_intensity(img, rgbimg, mask, bins, device, histplot=False, debug
 
     device += 1
 
-    if len(np.shape(img)) == 3:
-        ix, iy, iz = np.shape(img)
-        size = ix, iy
-    else:
-        ix, iy = np.shape(img)
-        size = ix, iy
-
-    # Make empty images, background is a black backdrop and w_back is a white backdrop
-    background = np.zeros(size, dtype=np.uint8)
-    w_back = background + 255
-
     # apply plant shaped mask to image
-    device, masked = apply_mask(img, mask, 'black', device, debug=None)
-
-    # allow user to choose number of bins
-    nir_bin = masked / (256 / bins)
+    device, mask1 = binary_threshold(mask, 0, 255, 'light', device, None)
+    mask1 = (mask1/255)
+    masked=np.multiply(img,mask1)
 
     # calculate histogram
-    hist_nir = cv2.calcHist([nir_bin], [0], mask, [bins], [0, (bins - 1)])
-    hist_data_nir = [l[0] for l in hist_nir]
+    if img.dtype=='uint16':
+        maxval=65536
+    else:
+        maxval=256
+
+    hist_nir,hist_bins=np.histogram(masked, bins,(1,maxval),False, None,None)
+
+    hist_bins1=hist_bins[:-1]
+    hist_bins2=[l for l in hist_bins1]
+
+    hist_nir1=[l for l in hist_nir]
 
     # make hist percentage for plotting
-    pixels = cv2.countNonZero(mask)
+    pixels = cv2.countNonZero(mask1)
     hist_percent = (hist_nir / pixels) * 100
-    hist_data_percent = [l[0] for l in hist_percent]
 
     # report histogram data
     hist_header = [
         'HEADER_HISTOGRAM',
         'bin-number',
+        'bin-values',
         'nir'
     ]
 
     hist_data = [
         'HISTOGRAM_DATA',
         bins,
-        hist_data_nir
+        hist_bins2,
+        hist_nir1
     ]
 
     analysis_img = []
