@@ -38,13 +38,13 @@ def cluster_contours(device,img, roi_objects, nrow=1,ncol=1,debug=None):
     # get the break groups
 
     if nrow==1:
-        rbreaks=iy
+        rbreaks=[0,iy]
     else:
         rstep = np.rint(iy / nrow)
         rstep1 = np.int(rstep)
         rbreaks = range(0, iy, rstep1)
     if ncol==1:
-        cbreaks=ix
+        cbreaks=[0,ix]
     else:
         cstep = np.rint(ix / ncol)
         cstep1 = np.int(cstep)
@@ -53,7 +53,10 @@ def cluster_contours(device,img, roi_objects, nrow=1,ncol=1,debug=None):
     # categorize what bin the center of mass of each contour
 
     def digitize(a,step):
-        i=len(step)
+        if isinstance(step,int)==True:
+            i=step
+        else:
+            i=len(step)
         for x in range(0,i):
             if x==0:
                 if a>=0 and a<step[x+1]:
@@ -61,7 +64,7 @@ def cluster_contours(device,img, roi_objects, nrow=1,ncol=1,debug=None):
             elif a>=step[x-1] and a<step[x]:
                 return x
             elif a>step[x-1] and a>np.max(step):
-                    return (i)
+                return (i)
 
 
     dtype = [('cx', int), ('cy', int), ('rowbin', int), ('colbin', int), ('index', int)]
