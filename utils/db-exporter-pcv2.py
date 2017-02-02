@@ -90,7 +90,7 @@ def main():
       sx2,sy2=signal2.shape
     else:
       signal1 = pd.read_sql_query(
-        'SELECT metadata.*, features.image_id, features.area, signal.* FROM metadata INNER JOIN features ON metadata.image_id=features.image_id INNER JOIN signal ON metadata.image_id=signal.image_id"',db)
+        'SELECT metadata.*, features.image_id, features.area, signal.* FROM metadata INNER JOIN features ON metadata.image_id=features.image_id INNER JOIN signal ON metadata.image_id=signal.image_id',db)
       sx1,sy1=signal1.shape
 
 
