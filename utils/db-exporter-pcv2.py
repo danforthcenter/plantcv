@@ -1,4 +1,4 @@
-#!/Users/mgehan/anaconda2/bin/python
+#!/usr/bin/env python
 
 import argparse
 import os
