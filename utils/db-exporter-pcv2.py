@@ -6,7 +6,6 @@ import sqlite3 as sq
 import pandas as pd
 import numpy as np
 import time
-from datetime import datetime
 
 ### Parse command-line arguments
 def options():
@@ -295,9 +294,9 @@ def main():
       # Subset table with the features that are not completely empty
       table1 = table1[mheader]
       if args.filter:
-        visout = str(args.outfile[:-4]) + "-vis-filtered.csv"
+        visout = str(args.outfile) + "-vis-filtered.csv"
       else:
-        visout = str(args.outfile[:-4]) + "-vis-notfiltered.csv"
+        visout = str(args.outfile) + "-vis-notfiltered.csv"
       table1.to_csv(str(visout), mode='a')
 
     if ix2==0:
@@ -319,9 +318,9 @@ def main():
       # Subset table with the features that are not completely empty
       table2 = table2[mheader]
       if args.filter:
-       nirout = str(args.outfile[:-4]) + "-nir-filtered.csv"
+       nirout = str(args.outfile) + "-nir-filtered.csv"
       else:
-        nirout = str(args.outfile[:-4]) + "-nir-notfiltered.csv"
+        nirout = str(args.outfile) + "-nir-notfiltered.csv"
       table2.to_csv(str(nirout), mode='a')
 
   else:
@@ -344,9 +343,9 @@ def main():
       # Subset table with the features that are not completely empty
       table = table[mheader]
       if args.filter:
-       tablename = str(args.outfile[:-4]) + "-data-filtered.csv"
+       tablename = str(args.outfile) + "-data-filtered.csv"
       else:
-        tablename = str(args.outfile[:-4]) + "-data-notfiltered.csv"
+        tablename = str(args.outfile) + "-data-notfiltered.csv"
       # Write table to csv file
       table.to_csv(str(tablename), mode='a')
 
@@ -354,14 +353,6 @@ def main():
 #######################################################################################
 
   if args.signal:
-    # make folder for signal data
-    i = datetime.now()
-    timenow = i.strftime('%m-%d-%Y_%H:%M:%S')
-    newfolder = "/signal_data_" + (str(timenow))
-    outdir = os.getcwd()
-
-    os.mkdir((str(outdir) + newfolder))
-    outdir_name = str(outdir) + "/" + str(newfolder) + "/"
 
     if sx1!=0:
       # get the channel column
@@ -408,9 +399,9 @@ def main():
       signalnormbase= signalall
       normsignalheaders=signalnormbase.filter(regex='\d', axis=1).columns.values
       if args.filter:
-        filename = str(outdir_name) + str(args.outfile[:-4]) + "_signal-filtered.csv"
+        filename =str(args.outfile) + "_signal-filtered.csv"
       else:
-        filename = str(outdir_name) + str(args.outfile[:-4]) + "_signal-notfiltered.csv"
+        filename = str(args.outfile) + "_signal-notfiltered.csv"
       signalall.to_csv(filename,mode='w')
 
       if args.signalnorm:
@@ -431,9 +422,9 @@ def main():
         signalnormbase2.columns=headers1
 
         if args.filter:
-          filename = str(outdir_name) + str(args.outfile[:-4]) + "_signal-filtered-normalized.csv"
+          filename =str(args.outfile) + "_signal-filtered-normalized.csv"
         else:
-          filename = str(outdir_name) + str(args.outfile[:-4])  + "_signal-notfiltered-normalized.csv"
+          filename =str(args.outfile)  + "_signal-notfiltered-normalized.csv"
         signalnormbase2.to_csv(filename, mode='w')
 
         if args.signalavg:
@@ -458,9 +449,9 @@ def main():
                 svbase = pd.concat([svbase, avgnormsvdata], axis=1)
 
                 if args.filter:
-                    filename = str(outdir_name) + str(args.outfile[:-4]) + "_signal-sv-filtered-normalized-averaged.csv"
+                    filename = str(args.outfile) + "_signal-sv-filtered-normalized-averaged.csv"
                 else:
-                    filename = str(outdir_name) + str(args.outfile[:-4]) + "_signal-sv-notfiltered-normalized-averaged.csv"
+                    filename = str(args.outfile) + "_signal-sv-notfiltered-normalized-averaged.csv"
                 svbase.to_csv(filename, mode='w')
 
             if tvx!=0:
@@ -476,9 +467,9 @@ def main():
                 tvbase = pd.concat([tvbase, avgnormtvdata], axis=1)
 
                 if args.filter:
-                    filename = str(outdir_name) + str(args.outfile[:-4]) + "_signal-tv-filtered-normalized-averaged.csv"
+                    filename = str(args.outfile) + "_signal-tv-filtered-normalized-averaged.csv"
                 else:
-                    filename = str(outdir_name) + str(args.outfile[:-4]) + "_signal-tv-notfiltered-normalized-averaged.csv"
+                    filename = str(args.outfile) + "_signal-tv-notfiltered-normalized-averaged.csv"
                 tvbase.to_csv(filename, mode='w')
 
             if nonex!=0:
@@ -496,9 +487,9 @@ def main():
                 nonebase = pd.concat([nonebase, avgnormnonedata], axis=1)
 
                 if args.filter:
-                    filename = str(outdir_name) + str(args.outfile[:-4]) + "_signal-filtered-normalized-averaged.csv"
+                    filename = str(args.outfile) + "_signal-filtered-normalized-averaged.csv"
                 else:
-                    filename = str(outdir_name) + str(args.outfile[:-4]) + "_signal-notfiltered-normalized-averaged.csv"
+                    filename = str(args.outfile) + "_signal-notfiltered-normalized-averaged.csv"
                 nonebase.to_csv(filename, mode='w')
 
       if args.signalavg:
@@ -586,23 +577,23 @@ def main():
 
          if svx != 0:
             if args.filter:
-              filename = str(outdir_name) + str(args.outfile[:-4]) + "-signal-sv-filtered-averaged.csv"
+              filename = str(args.outfile) + "-signal-sv-filtered-averaged.csv"
             else:
-              filename = str(outdir_name) + str(args.outfile[:-4]) + "-signa-sv-notfiltered-averaged.csv"
+              filename = str(args.outfile) + "-signa-sv-notfiltered-averaged.csv"
             svbase.to_csv(filename, mode='w')
 
          if tvx != 0:
             if args.filter:
-              filename = str(outdir_name) + str(args.outfile[:-4]) + "-signal-tv-filtered-averaged.csv"
+              filename = str(args.outfile) + "-signal-tv-filtered-averaged.csv"
             else:
-              filename = str(outdir_name) + str(args.outfile[:-4]) + "-signal-tv-notfiltered-averaged.csv"
+              filename = str(args.outfile) + "-signal-tv-notfiltered-averaged.csv"
             tvbase.to_csv(filename, mode='w')
 
          if nonex != 0:
             if args.filter:
-              filename = str(outdir_name) + str(args.outfile[:-4]) + "-signal-filtered-averaged.csv"
+              filename = str(args.outfile) + "-signal-filtered-averaged.csv"
             else:
-              filename = str(outdir_name) + str(args.outfile[:-4]) + "-signal-notfiltered-averaged.csv"
+              filename = str(args.outfile) + "-signal-notfiltered-averaged.csv"
             nonebase.to_csv(filename, mode='w')
 
     if sx2!=0:
@@ -650,9 +641,9 @@ def main():
       signalnormbase= signalall
       normsignalheaders=signalnormbase.filter(regex='\d', axis=1).columns.values
       if args.filter:
-        filename = str(outdir_name) + str(args.outfile[:-4]) + "-nir-filtered.csv"
+        filename = str(args.outfile) + "-nir-filtered.csv"
       else:
-        filename = str(outdir_name) + str(args.outfile[:-4]) + "-nir-notfiltered.csv"
+        filename = str(args.outfile) + "-nir-notfiltered.csv"
       signalall.to_csv(filename,mode='w')
 
       if args.signalnorm:
@@ -673,9 +664,9 @@ def main():
         signalnormbase2.columns=headers1
 
         if args.filter:
-          filename = str(outdir_name) + str(args.outfile[:-4]) + "-nir-filtered-normalized.csv"
+          filename = str(args.outfile) + "-nir-filtered-normalized.csv"
         else:
-          filename = str(outdir_name) + str(args.outfile[:-4])  + "-nir-notfiltered-normalized.csv"
+          filename = str(args.outfile)  + "-nir-notfiltered-normalized.csv"
         signalnormbase2.to_csv(filename, mode='w')
 
         if args.signalavg:
@@ -700,9 +691,9 @@ def main():
                 svbase = pd.concat([svbase, avgnormsvdata], axis=1)
 
                 if args.filter:
-                    filename = str(outdir_name) + str(args.outfile[:-4]) + "-nir-sv-filtered-normalized-averaged.csv"
+                    filename = str(args.outfile) + "-nir-sv-filtered-normalized-averaged.csv"
                 else:
-                    filename = str(outdir_name) + str(args.outfile[:-4]) + "-nir-sv-notfiltered-normalized-averaged.csv"
+                    filename = str(args.outfile) + "-nir-sv-notfiltered-normalized-averaged.csv"
                 svbase.to_csv(filename, mode='w')
 
             if tvx!=0:
@@ -718,9 +709,9 @@ def main():
                 tvbase = pd.concat([tvbase, avgnormtvdata], axis=1)
 
                 if args.filter:
-                    filename = str(outdir_name) + str(args.outfile[:-4]) + "-nir-tv-filtered-normalized-averaged.csv"
+                    filename = str(args.outfile) + "-nir-tv-filtered-normalized-averaged.csv"
                 else:
-                    filename = str(outdir_name) + str(args.outfile[:-4]) + "-nir-tv-notfiltered-normalized-averaged.csv"
+                    filename = str(args.outfile) + "-nir-tv-notfiltered-normalized-averaged.csv"
                 tvbase.to_csv(filename, mode='w')
 
             if nonex!=0:
@@ -738,9 +729,9 @@ def main():
                 nonebase = pd.concat([nonebase, avgnormnonedata], axis=1)
 
                 if args.filter:
-                    filename = str(outdir_name) + str(args.outfile[:-4]) + "-nir-filtered-normalized-averaged.csv"
+                    filename = str(args.outfile) + "-nir-filtered-normalized-averaged.csv"
                 else:
-                    filename = str(outdir_name) + str(args.outfile[:-4]) + "-nir-notfiltered-normalized-averaged.csv"
+                    filename = str(args.outfile) + "-nir-notfiltered-normalized-averaged.csv"
                 nonebase.to_csv(filename, mode='w')
 
       if args.signalavg:
@@ -828,23 +819,23 @@ def main():
 
          if svx != 0:
             if args.filter:
-              filename = str(outdir_name) + str(args.outfile[:-4]) + "-nir-sv-filtered-averaged.csv"
+              filename = str(args.outfile) + "-nir-sv-filtered-averaged.csv"
             else:
-              filename = str(outdir_name) + str(args.outfile[:-4]) + "-nir-sv-notfiltered-averaged.csv"
+              filename = str(args.outfile) + "-nir-sv-notfiltered-averaged.csv"
             svbase.to_csv(filename, mode='w')
 
          if tvx != 0:
             if args.filter:
-              filename = str(outdir_name) + str(args.outfile[:-4]) + "-nir-tv-filtered-averaged.csv"
+              filename = str(args.outfile) + "-nir-tv-filtered-averaged.csv"
             else:
-              filename = str(outdir_name) + str(args.outfile[:-4]) + "-nir-tv-notfiltered-averaged.csv"
+              filename = str(args.outfile) + "-nir-tv-notfiltered-averaged.csv"
             tvbase.to_csv(filename, mode='w')
 
          if nonex != 0:
             if args.filter:
-              filename = str(outdir_name) + str(args.outfile[:-4]) + "-nir-filtered-averaged.csv"
+              filename = str(args.outfile) + "-nir-filtered-averaged.csv"
             else:
-              filename = str(outdir_name) + str(args.outfile[:-4]) + "-nir-notfiltered-averaged.csv"
+              filename = str(args.outfile) + "-nir-notfiltered-averaged.csv"
             nonebase.to_csv(filename, mode='w')
 
 #######################################################################################
