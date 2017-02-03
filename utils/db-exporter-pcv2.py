@@ -15,9 +15,9 @@ def options():
   parser.add_argument("-f", "--filter", help="process type, 'filter', or 'raw'", default='raw')
   parser.add_argument("-i", "--imgtype", help="Type of image either 'VIS', 'NIR', or 'BOTH', or 'NONE' ", default='BOTH')
   parser.add_argument("-a", "--angles", help="Total number of angles (TV and SV)", default=5)
-  parser.add_argument("-s", "--signal", help="if true outputs signal data as well", default=True)
-  parser.add_argument("-n", "--signalnorm", help="if true normalizes signal data to area of object", default=True)
-  parser.add_argument("-v", "--signalavg", help="if true also output averaged sv and seperated tv files", default=True)
+  parser.add_argument("-s", "--signal", help="if true outputs signal data as well", default=False)
+  parser.add_argument("-n", "--signalnorm", help="if true normalizes signal data to area of object", default=False)
+  parser.add_argument("-v", "--signalavg", help="if true also output averaged sv and seperated tv files", default=False)
   parser.add_argument("-D", "--debug", help="Turn on debugging mode", action="store_true")
   args = parser.parse_args()
   return args
@@ -78,7 +78,8 @@ def main():
 
 ######################################################################################
 
-# Get the unfiltered data
+# Get the unfiltered signal data
+
   if args.signal:
     if args.imgtype=='BOTH':
       signal1 = pd.read_sql_query(
@@ -91,8 +92,11 @@ def main():
       signal1 = pd.read_sql_query(
         'SELECT metadata.*, features.image_id, features.area, signal.* FROM metadata INNER JOIN features ON metadata.image_id=features.image_id INNER JOIN signal ON metadata.image_id=signal.image_id',db)
       sx1,sy1=signal1.shape
+      sx2=None
 
+######################################################################################
 
+# Get the unfiltered data
   if args.imgtype == 'BOTH':
     table1 = pd.read_sql_query(
       'SELECT * FROM metadata INNER JOIN features ON metadata.image_id=features.image_id WHERE imgtype="VIS"', db)
@@ -249,7 +253,7 @@ def main():
       for remove in removedsnapshots:
         table = table[table['timestamp'] != remove]
 
-      if args.signal==True:
+      if args.signal:
         print("removing " + str(len(removedsnapshots)) + " timestamps from signal")
         for remove in removedsnapshots:
           signal1 = signal1[signal1['timestamp'] != remove]
@@ -293,7 +297,7 @@ def main():
             mheader.append(x)
       # Subset table with the features that are not completely empty
       table1 = table1[mheader]
-      if args.filter:
+      if args.filter=='filter':
         visout = str(args.outfile) + "-vis-filtered.csv"
       else:
         visout = str(args.outfile) + "-vis-notfiltered.csv"
@@ -317,7 +321,7 @@ def main():
             mheader.append(x)
       # Subset table with the features that are not completely empty
       table2 = table2[mheader]
-      if args.filter:
+      if args.filter=='filter':
        nirout = str(args.outfile) + "-nir-filtered.csv"
       else:
         nirout = str(args.outfile) + "-nir-notfiltered.csv"
@@ -342,7 +346,7 @@ def main():
 
       # Subset table with the features that are not completely empty
       table = table[mheader]
-      if args.filter:
+      if args.filter=='filter':
        tablename = str(args.outfile) + "-data-filtered.csv"
       else:
         tablename = str(args.outfile) + "-data-notfiltered.csv"
@@ -353,8 +357,8 @@ def main():
 #######################################################################################
 
   if args.signal:
-
     if sx1!=0:
+      print("starting on signal data")
       # get the channel column
       channel1=signal1['channel_name'].astype('str')
       # get number of bins
@@ -398,13 +402,14 @@ def main():
       signalall.columns=headers
       signalnormbase= signalall
       normsignalheaders=signalnormbase.filter(regex='\d', axis=1).columns.values
-      if args.filter:
+      if args.filter=='filter':
         filename =str(args.outfile) + "_signal-filtered.csv"
       else:
         filename = str(args.outfile) + "_signal-notfiltered.csv"
       signalall.to_csv(filename,mode='w')
 
       if args.signalnorm:
+        print("normalizing signal data")
         normsignal = []
         area = signalnormbase['area'].astype(float)
         area = area.as_matrix()
@@ -421,13 +426,14 @@ def main():
         headers1=signalnormbase.columns.values
         signalnormbase2.columns=headers1
 
-        if args.filter:
+        if args.filter=='filter':
           filename =str(args.outfile) + "_signal-filtered-normalized.csv"
         else:
           filename =str(args.outfile)  + "_signal-notfiltered-normalized.csv"
         signalnormbase2.to_csv(filename, mode='w')
 
         if args.signalavg:
+            print("averaging normalized signal data")
             avgnormsignal=signalnormbase2
             avgnormsv=avgnormsignal[avgnormsignal['camera']=='SV']
             svx,svy=np.shape(avgnormsv)
@@ -448,7 +454,7 @@ def main():
                 avgnormsvdata.reset_index(drop=True, inplace=True)
                 svbase = pd.concat([svbase, avgnormsvdata], axis=1)
 
-                if args.filter:
+                if args.filter=='filter':
                     filename = str(args.outfile) + "_signal-sv-filtered-normalized-averaged.csv"
                 else:
                     filename = str(args.outfile) + "_signal-sv-notfiltered-normalized-averaged.csv"
@@ -466,7 +472,7 @@ def main():
                 avgnormtvdata.reset_index(drop=True, inplace=True)
                 tvbase = pd.concat([tvbase, avgnormtvdata], axis=1)
 
-                if args.filter:
+                if args.filter=='filter':
                     filename = str(args.outfile) + "_signal-tv-filtered-normalized-averaged.csv"
                 else:
                     filename = str(args.outfile) + "_signal-tv-notfiltered-normalized-averaged.csv"
@@ -486,13 +492,14 @@ def main():
                 avgnormnonedata.columns=datacolumns
                 nonebase = pd.concat([nonebase, avgnormnonedata], axis=1)
 
-                if args.filter:
+                if args.filter=='filter':
                     filename = str(args.outfile) + "_signal-filtered-normalized-averaged.csv"
                 else:
                     filename = str(args.outfile) + "_signal-notfiltered-normalized-averaged.csv"
                 nonebase.to_csv(filename, mode='w')
 
       if args.signalavg:
+         print("averaging signal data")
          avgbase=signaldata
          chanelname = signalsplit['channel_name']
          signalsplit1 = signalsplit.drop('channel_name', axis=1)
@@ -576,27 +583,28 @@ def main():
               nonebase = pd.concat([nonebase, subset2], axis=1)
 
          if svx != 0:
-            if args.filter:
+            if args.filter=='filter':
               filename = str(args.outfile) + "-signal-sv-filtered-averaged.csv"
             else:
               filename = str(args.outfile) + "-signa-sv-notfiltered-averaged.csv"
             svbase.to_csv(filename, mode='w')
 
          if tvx != 0:
-            if args.filter:
+            if args.filter=='filter':
               filename = str(args.outfile) + "-signal-tv-filtered-averaged.csv"
             else:
               filename = str(args.outfile) + "-signal-tv-notfiltered-averaged.csv"
             tvbase.to_csv(filename, mode='w')
 
          if nonex != 0:
-            if args.filter:
+            if args.filter=='filter':
               filename = str(args.outfile) + "-signal-filtered-averaged.csv"
             else:
               filename = str(args.outfile) + "-signal-notfiltered-averaged.csv"
             nonebase.to_csv(filename, mode='w')
 
-    if sx2!=0:
+    if sx2!=None:
+      print("analyzing signal 2 data")
       # get the channel column
       channel1=signal2['channel_name'].astype('str')
       # get number of bins
@@ -640,13 +648,14 @@ def main():
       signalall.columns=headers
       signalnormbase= signalall
       normsignalheaders=signalnormbase.filter(regex='\d', axis=1).columns.values
-      if args.filter:
+      if args.filter=='filter':
         filename = str(args.outfile) + "-nir-filtered.csv"
       else:
         filename = str(args.outfile) + "-nir-notfiltered.csv"
       signalall.to_csv(filename,mode='w')
 
       if args.signalnorm:
+        print("normalizing signal2 data")
         normsignal = []
         area = signalnormbase['area'].astype(float)
         area = area.as_matrix()
@@ -663,13 +672,14 @@ def main():
         headers1=signalnormbase.columns.values
         signalnormbase2.columns=headers1
 
-        if args.filter:
+        if args.filter=='filter':
           filename = str(args.outfile) + "-nir-filtered-normalized.csv"
         else:
           filename = str(args.outfile)  + "-nir-notfiltered-normalized.csv"
         signalnormbase2.to_csv(filename, mode='w')
 
         if args.signalavg:
+            print("averaging normalized signal 2 data")
             avgnormsignal=signalnormbase2
             avgnormsv=avgnormsignal[avgnormsignal['camera']=='SV']
             svx,svy=np.shape(avgnormsv)
@@ -690,7 +700,7 @@ def main():
                 avgnormsvdata.reset_index(drop=True, inplace=True)
                 svbase = pd.concat([svbase, avgnormsvdata], axis=1)
 
-                if args.filter:
+                if args.filter=='filter':
                     filename = str(args.outfile) + "-nir-sv-filtered-normalized-averaged.csv"
                 else:
                     filename = str(args.outfile) + "-nir-sv-notfiltered-normalized-averaged.csv"
@@ -708,7 +718,7 @@ def main():
                 avgnormtvdata.reset_index(drop=True, inplace=True)
                 tvbase = pd.concat([tvbase, avgnormtvdata], axis=1)
 
-                if args.filter:
+                if args.filter=='filter':
                     filename = str(args.outfile) + "-nir-tv-filtered-normalized-averaged.csv"
                 else:
                     filename = str(args.outfile) + "-nir-tv-notfiltered-normalized-averaged.csv"
@@ -728,13 +738,14 @@ def main():
                 avgnormnonedata.columns=datacolumns
                 nonebase = pd.concat([nonebase, avgnormnonedata], axis=1)
 
-                if args.filter:
+                if args.filter=='filter':
                     filename = str(args.outfile) + "-nir-filtered-normalized-averaged.csv"
                 else:
                     filename = str(args.outfile) + "-nir-notfiltered-normalized-averaged.csv"
                 nonebase.to_csv(filename, mode='w')
 
       if args.signalavg:
+         print("averaging signal2 data")
          avgbase=signaldata
          chanelname = signalsplit['channel_name']
          signalsplit1 = signalsplit.drop('channel_name', axis=1)
@@ -818,21 +829,21 @@ def main():
               nonebase = pd.concat([nonebase, subset2], axis=1)
 
          if svx != 0:
-            if args.filter:
+            if args.filter=='filter':
               filename = str(args.outfile) + "-nir-sv-filtered-averaged.csv"
             else:
               filename = str(args.outfile) + "-nir-sv-notfiltered-averaged.csv"
             svbase.to_csv(filename, mode='w')
 
          if tvx != 0:
-            if args.filter:
+            if args.filter=='filter':
               filename = str(args.outfile) + "-nir-tv-filtered-averaged.csv"
             else:
               filename = str(args.outfile) + "-nir-tv-notfiltered-averaged.csv"
             tvbase.to_csv(filename, mode='w')
 
          if nonex != 0:
-            if args.filter:
+            if args.filter=='filter':
               filename = str(args.outfile) + "-nir-filtered-averaged.csv"
             else:
               filename = str(args.outfile) + "-nir-notfiltered-averaged.csv"
