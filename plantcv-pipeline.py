@@ -69,7 +69,7 @@ def options():
                         default=".")
     parser.add_argument("-T", "--cpu", help='Number of CPU to use.', default=1, type=int)
     parser.add_argument("-c", "--create",
-                        help='Create output database (SQLite). Default behaviour adds to existing database. '
+                        help='will overwrite an existing database'
                              'Warning: activating this option will delete an existing database!',
                         default=False, action="store_true")
     parser.add_argument("-D", "--dates",
@@ -384,31 +384,17 @@ def db_connect(args):
     # Delete the existing database if create is true
     if args.create:
         if os.path.isfile(args.db):
-            response = raw_input(
-                "WARNING: SQLite database file $sqldb already exists are you sure you want to delete it? (y/n): ")
-            if response == 'y':
-                os.remove(args.db)
-            else:
-                exit_message("Okay, stopping")
+            os.remove(args.db)
 
-    # Connect to the database
-    args.connect = sqlite3.connect(args.db)
+    if os.path.isfile(args.db):
+        args.connect = sqlite3.connect(args.db)
+        # Replace the row_factory result constructor with a dictionary constructor
+        args.connect.row_factory = dict_factory
+        # Change the text output format from unicode to UTF-8
+        args.connect.text_factory = str
+        # Database handler
+        args.sq = args.connect.cursor()
 
-    # Replace the row_factory result constructor with a dictionary constructor
-    args.connect.row_factory = dict_factory
-
-    # Change the text output format from unicode to UTF-8
-    args.connect.text_factory = str
-
-    # Database handler
-    args.sq = args.connect.cursor()
-
-    # Run and image IDs
-    args.run_id = 0
-    args.image_id = 0
-
-    if not args.create:
-        # Get the last run ID
         for row in args.sq.execute('SELECT MAX(run_id) AS max FROM runinfo'):
             if row['max'] is not None:
                 args.run_id = row['max']
@@ -417,6 +403,19 @@ def db_connect(args):
         for row in args.sq.execute('SELECT MAX(image_id) AS max FROM metadata'):
             if row['max'] is not None:
                 args.image_id = row['max']
+
+    if os.path.isfile(args.db)==False:
+        # Connect to the database
+        args.connect = sqlite3.connect(args.db)
+        # Replace the row_factory result constructor with a dictionary constructor
+        args.connect.row_factory = dict_factory
+        # Change the text output format from unicode to UTF-8
+        args.connect.text_factory = str
+        # Database handler
+        args.sq = args.connect.cursor()
+        # Run and image IDs
+        args.run_id = 0
+        args.image_id = 0
 
     return args
 
@@ -783,7 +782,7 @@ def process_results(args):
     Raises:
     
     """
-    # Add a header to each output file
+
     # Metadata table
     metadata_fields = ['image_id', 'run_id']
     metadata_fields.extend(args.valid_meta.keys())
@@ -812,23 +811,21 @@ def process_results(args):
     # bin-number	blue	green	red	lightness	green-magenta	blue-yellow	hue	saturation	value
 
     # Initialize the database with the schema template if create is true
-    if args.create:
-        # Create SQL structure based on accepted metadata and features
-        args.sq.execute(
-            'CREATE TABLE IF NOT EXISTS `runinfo` (`run_id` INTEGER PRIMARY KEY, `datetime` INTEGER NOT NULL, '
-            '`command` TEXT NOT NULL);')
-        args.sq.execute(
-            'CREATE TABLE IF NOT EXISTS `metadata` (`image_id` INTEGER PRIMARY KEY, `run_id` INTEGER NOT NULL, `' +
-            '` TEXT NOT NULL, `'.join(map(str, metadata_fields[2:])) + '` TEXT NOT NULL);')
-        args.sq.execute(
-            'CREATE TABLE IF NOT EXISTS `features` (`image_id` INTEGER PRIMARY KEY, `' + '` TEXT NOT NULL, `'.join(
-                map(str, feature_fields + opt_feature_fields + marker_fields+ watershed_fields + landmark_fields)) + '` TEXT NOT NULL);')
-        args.sq.execute(
-            'CREATE TABLE IF NOT EXISTS `analysis_images` (`image_id` INTEGER NOT NULL, `type` TEXT NOT NULL, '
-            '`image_path` TEXT NOT NULL);')
-        args.sq.execute(
-            'CREATE TABLE IF NOT EXISTS `signal` (`image_id` INTEGER NOT NULL, `' + '` TEXT NOT NULL, `'.join(
-                map(str, signal_fields)) + '` TEXT NOT NULL);')
+    args.sq.execute(
+        'CREATE TABLE IF NOT EXISTS `runinfo` (`run_id` INTEGER PRIMARY KEY, `datetime` INTEGER NOT NULL, '
+        '`command` TEXT NOT NULL);')
+    args.sq.execute(
+        'CREATE TABLE IF NOT EXISTS `metadata` (`image_id` INTEGER PRIMARY KEY, `run_id` INTEGER NOT NULL, `' +
+        '` TEXT NOT NULL, `'.join(map(str, metadata_fields[2:])) + '` TEXT NOT NULL);')
+    args.sq.execute(
+        'CREATE TABLE IF NOT EXISTS `features` (`image_id` INTEGER PRIMARY KEY, `' + '` TEXT NOT NULL, `'.join(
+            map(str, feature_fields + opt_feature_fields + marker_fields+ watershed_fields + landmark_fields)) + '` TEXT NOT NULL);')
+    args.sq.execute(
+        'CREATE TABLE IF NOT EXISTS `analysis_images` (`image_id` INTEGER NOT NULL, `type` TEXT NOT NULL, '
+        '`image_path` TEXT NOT NULL);')
+    args.sq.execute(
+        'CREATE TABLE IF NOT EXISTS `signal` (`image_id` INTEGER NOT NULL, `' + '` TEXT NOT NULL, `'.join(
+            map(str, signal_fields)) + '` TEXT NOT NULL);')
 
     # Walk through the image processing job directory and process data from each file
     for (dirpath, dirnames, filenames) in os.walk(args.jobdir):
@@ -978,6 +975,7 @@ def process_results(args):
                         feature_table.append(0)
 
                     args.features_file.write('|'.join(map(str, feature_table)) + '\n')
+
 ###########################################
 
 
