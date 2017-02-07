@@ -74,14 +74,14 @@ def _pseudocolored_image(device, histogram, bins, img, mask, background, channel
         print_image(cplant_back,fig_name_pseudo)
         analysis_images.append(['IMAGE', 'pseudo', fig_name_pseudo])
         
-        if debug is not None:
-            if debug == 'print':
-                print_image(cplant_back,(str(device)+ '_pseudocolor.jpg'))
-                fig_name = 'VIS_pseudocolor_colorbar_' + str(channel) + '_channel.svg'
-                if not os.path.isfile(path + '/' + fig_name):
-                    plot_colorbar(path, fig_name, bins)
-            elif debug == 'plot':
-                plot_image(cplant_back)       
+    if debug is not None:
+        if debug == 'print':
+            print_image(cplant_back,(str(device)+ '_pseudocolor.jpg'))
+            fig_name = 'VIS_pseudocolor_colorbar_' + str(channel) + '_channel.svg'
+            if not os.path.isfile(path + '/' + fig_name):
+                plot_colorbar(path, fig_name, bins)
+        elif debug == 'plot':
+            plot_image(cplant_back)
 
     return analysis_images
 
