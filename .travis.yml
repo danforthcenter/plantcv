@@ -22,7 +22,7 @@ before_install:
   - conda info -a
   # These are the packages we need
   - conda create -q -c menpo -n test-environment python=$TRAVIS_PYTHON_VERSION numpy=1.11 matplotlib=1.5 scipy=0.18 scikit-image=0.12 opencv=2.4.11
-  - source activate test-environment
+
   #- sudo apt-get install -qq git python-dev sqlite3
   #- sudo pip install --upgrade numpy matplotlib scipy scikit-image
   #- git clone https://github.com/Itseez/opencv.git
@@ -36,6 +36,7 @@ before_install:
   #- cd ../..
 # Install PlantCV
 install:
+  - source activate test-environment
   - python setup.py install
 # command to run tests
 script: py.test -v tests/tests.py
