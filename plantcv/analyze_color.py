@@ -217,8 +217,6 @@ def analyze_color(img, imgname, mask, bins, device, debug=None, hist_plot_type=N
 
     if p_channel is None:
         pass
-    elif not filename:
-        pass
     elif p_channel == 'h':
         if (pseudo_bkg == 'white' or pseudo_bkg == 'both'):
             analysis_images = _pseudocolored_image(device,h_bin, bins, img, mask, 'white', p_channel, filename, resolution,
