@@ -27,7 +27,7 @@ that is built upon open-source software platforms <a href="http://opencv.org/">O
 
 If you use PlantCV please cite us.<sup>1</sup>
 
-*  Installation instructions can be found [here](http://plantcv.danforthcenter.org/pages/documentation/function_docs/installation.html)
+*  Installation instructions can be found [here](http://plantcv.readthedocs.io/en/v1.1/installation/)
 
 *  Further documentation for PlantCV functions and use can be found at the [PlantCV Website](http://plantcv.danforthcenter.org/pages/documentation/)
 
