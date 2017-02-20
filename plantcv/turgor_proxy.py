@@ -7,6 +7,7 @@ import numpy as np
 import argparse
 import string
 import math
+import numbers
 from . import print_image
 from . import fatal_error
 
@@ -33,6 +34,9 @@ def turgor_proxy(points_r, centroid_r, bline_r, device, debug=False):
   euc_dist_c = []
   angles_c = []
   cx, cy = centroid_r
+  ## Check to see if points are numerical or NA
+  if not isinstance(cy, numbers.Number):
+    return device, ('NA','NA'), ('NA','NA'), ('NA','NA'), ('NA','NA'), ('NA','NA'), ('NA','NA'), ('NA','NA'), ('NA','NA')
   ## Do this for centroid
   for pt in points_r:
     ## Get coordinates from point
