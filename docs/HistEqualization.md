@@ -3,7 +3,7 @@
 This is a method used to normalize the distribution of signal intensity values within an image. 
 If the image has low contrast it will make it easier to threshold.
 
-**HistEqualization**(*img, device, debug=None*)
+**hist_equalization**(*img, device, debug=None*)
 
 **returns** device, normalized image
 

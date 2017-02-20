@@ -2,7 +2,7 @@
 
 This is a filtering method used to identify and highlight coarse changes in pixel intensity based on the 1st derivative.
 
-**sobel_filter**(*img, k, scale, device, debug=None*)
+**sobel_filter**(*img, dx,dy,k, device, debug=None*)
 
 **returns** device, filtered image
 

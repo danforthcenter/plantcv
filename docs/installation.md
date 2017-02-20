@@ -227,3 +227,53 @@ Test plantcv using the Python IDLE GUI
 If this returns no errors, everything should be working.
 
 Optionally, and at any time, check out a specific version or alternate branch of PlantCV
+
+#### Cloud9 IDE
+
+[Cloud9](https://c9.io) is a development environment in the cloud that works with Chromebooks or other thin clients.
+The IDE workspaces are powered by Docker Ubuntu containers within a web browser.
+
+After signing up for an account create a new workspace and choose a Python template.
+
+Install update
+
+`sudo apt-get update`
+
+Install software dependencies
+
+`sudo apt-get install git libopencv-dev python-opencv python-numpy python-matplotlib sqlite3`
+
+Clone the PlantCV repository into your home directory
+
+`git clone https://github.com/danforthcenter/plantcv.git`
+
+Switch to the development (latest) branch of PlantCV
+
+`cd plantcv`
+
+`git checkout dev`
+
+Install PlantCV
+
+`sudo python setup.py install`
+
+After installation test with the following:
+
+`python -c 'import plantcv'`
+
+You will be given the following error:
+
+`libdc1394 error: Failed to initialize libdc1394`
+
+libdc1394 allows a program to interface with cameras that work on the ieee1394 standard(firewire).
+Due to no option to enable USB access in the Cloud9 workspace this error will keep occuring when running a pipeline.
+This error will have no effect on the output of your pipelines and can continue working despite the warning.
+
+To temporarily remove the driver and error use:
+
+`sudo ln /dev/null /dev/raw1394`
+
+Test import again and you should see no more errors. Restarting workspace will require input to remove libdc1394 error again.
+
+`python -c 'import plantcv'`
+

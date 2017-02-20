@@ -1,6 +1,7 @@
 # Flip image
 
 import cv2
+import numpy as np
 from . import print_image
 from . import plot_image
 from . import fatal_error
@@ -37,6 +38,9 @@ def flip(img, direction, device, debug=None):
     if debug == 'print':
         print_image(vh_img, (str(device) + "_flipped.png"))
     elif debug == 'plot':
-        plot_image(vh_img, cmap='gray')
+        if len(np.shape(vh_img))==3:
+            plot_image(vh_img)
+        else:
+            plot_image(vh_img,cmap='gray')
 
     return device, vh_img

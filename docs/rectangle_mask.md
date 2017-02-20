@@ -3,9 +3,9 @@
 Takes an input image and returns a binary image masked by a rectangular area denoted by p1 and p2. 
 Note that p1 = (0,0) is the top left hand corner bottom right hand corner is p2 = (max-value(x), max-value(y)).
 
-**rectangle_mask**(*img, kernel, i device, debug=None*)
+**rectangle_mask**(*img, point1, point2, device, debug=None,color="black"*)
 
-**returns** device, image with rectangle area masked
+**returns** device, masked, binary img, contours, hierarchy 
 
 - **Parameters:**
     - img - Input image
@@ -13,7 +13,7 @@ Note that p1 = (0,0) is the top left hand corner bottom right hand corner is p2 
     - p2 - Point is the bottom right corner of rectangle (max-value(x),max-value(y)) is bottom right corner
     - device - Counter for image processing steps
     - debug - None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
-    - color - default is "black" this acts to select (mask) area from object capture (need to invert to remove)
+    - color - "black", "gray","white", default is "black" this acts to select (mask) area from object capture (need to invert to remove)
 - **Context:**
     - Used to mask rectangular regions of an image
 - **Example use:**
@@ -27,7 +27,7 @@ Note that p1 = (0,0) is the top left hand corner bottom right hand corner is p2 
 import plantcv as pcv
 
 # Makes a rectangle area that will be treated as a mask
-device, er_img = pcv.rectangle_mask(img, (0,0), (75,252), device, debug="print", color="black")
+device, masked, binary, contours, hierarchy = pcv.rectangle_mask(img, (0,0), (75,252), device, debug="print", color="black")
 ```
 
 **Region of interest**

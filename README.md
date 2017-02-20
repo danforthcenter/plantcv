@@ -1,37 +1,40 @@
 [![Build Status](https://travis-ci.org/danforthcenter/plantcv.svg?branch=dev)](https://travis-ci.org/danforthcenter/plantcv)
 [![Documentation Status](http://readthedocs.org/projects/plantcv/badge/?version=latest)](http://plantcv.readthedocs.io/en/latest/?badge=latest)
 
-# PlantCV
+# PlantCV: Plant phenotyping using computer vision
 
-This is a general guide on how to cite and contribute to PlantCV (which we hope you will do).
-Of course, this is not a comprehensive guide so if you have questions on contributions for PlantCV
-the best thing to do is to put them [here](https://github.com/danforthcenter/plantcv/issues) so we can make sure your question gets answered.
+Please use, cite, and [contribute to](https://github.com/danforthcenter/plantcv/blob/dev/CONTRIBUTING.md) PlantCV!
+If you have questions,
+please submit them via the
+[GitHub issues page](https://github.com/danforthcenter/plantcv/issues).
 
 Cheers!
 Malia, Max and Noah
 
 
 
+<!--
 ##Table of Contents:
 1.  [Introduction to PlantCV](#introduction)
 2.  [Issues with PlantCV](#issueswithplantcv)
+-->
 
 ---
 ##<a id="introduction"></a>Introduction to PlantCV
 
-PlantCV<sup>1</sup> is an imaging processing and trait extraction package and specific for plants
+PlantCV<sup>1</sup> is an imaging processing and trait extraction package designed for plant biology research
 that is built upon open-source software platforms <a href="http://opencv.org/">OpenCV</a> <sup>2</sup>,
 <a href="http://www.numpy.org/">NumPy</a> <sup>4</sup>, and <a href="http://matplotlib.org/">MatPlotLib</a> <sup>4</sup>.
 
 If you use PlantCV please cite us.<sup>1</sup>
 
-*  The project website can be found [here](http://plantcv.danforthcenter.org)
+*  The project website can be found at [plantcv.danforthcenter.org](http://plantcv.danforthcenter.org)
 
 *  Installation instructions can be found [here](http://plantcv.readthedocs.io/en/latest/installation/)
 
 *  Further documentation for PlantCV functions and use can be found at the [PlantCV Read the Docs site](http://plantcv.readthedocs.io/)
 
-*  Test image sets can be found [here](http://plantcv.danforthcenter.org/pages/data.html), we recommend first testing with sets from the Danforth Center.
+*  Test image sets can be found on our [Data page](http://plantcv.danforthcenter.org/pages/data.html). We recommend first testing with sets from the Danforth Center.
 
 *  We recommend reading Reference 1, the first publication to detail PlantCV and provide examples of functionality.
 
@@ -53,7 +56,7 @@ ___
 
 ## <a id="issueswithplantcv"></a>Issues with PlantCV?
 
-  * Please add any PlantCV suggestions/issues/bugs [here](https://github.com/danforthcenter/plantcv/issues).
-  Please check to see if the issue is already open.  
+  * Please file any PlantCV suggestions/issues/bugs via our [GitHub issues page](https://github.com/danforthcenter/plantcv/issues).
+  Please check to see if any related issues have already been filed.
 
 ---

@@ -4,7 +4,7 @@ Extract Fv/Fm data of objects and produce pseudocolored images.
 
 **fluor_fvfm**(*fdark, fmin, fmax, mask, device, filename, bins=1000, debug=None*)
 
-**returns** device, FLU channel histogram headers, FLU channel histogram data, normalized color slice data
+**returns** device, FLU channel histogram headers, FLU channel histogram data
 
 - **Parameters:**
     - fdark - image object, grayscale
@@ -21,6 +21,14 @@ Extract Fv/Fm data of objects and produce pseudocolored images.
     - Generaes pseudocolored output image with fv/fm values per plant pixel.
 - **Example use:**
     - [Use In PSII Tutorial](psII_tutorial.md)
+    
+**Output Data Units:** 
+    - Bin-number - number of bins set by user  
+    - FV/FM Bins - bin values based on number of bins set by user  
+    - FV/FM Histogram - histogram of FV/FM ratio values for object  
+    - FV/FM Histogram Peak - bin value of histogram peak (greatest number of pixels)  
+    - FV/FM Median - bin value of histogram median  
+    - F-Dark Passed QC - Check (True or False) to determine if Fdark image does not have pixel intensity values above 2000. 
 
 **Fdark image**
 
