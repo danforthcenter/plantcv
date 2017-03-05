@@ -13,6 +13,7 @@ def analyze_object(img, imgname, obj, mask, device, debug=None, filename=False):
     img             = image object (most likely the original), color(RGB)
     imgname         = name of image
     obj             = single or grouped contour object
+    mask            = binary image to use as mask for moments analysis
     device          = device number. Used to count steps in the pipeline
     debug           = None, print, or plot. Print = save to file, Plot = print to screen.
     filename        = False or image name. If defined print image
