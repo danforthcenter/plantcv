@@ -77,10 +77,10 @@ def options():
                              'is excluded then the current date is assumed.',
                         required=False)
     parser.add_argument("-t", "--type", help='Image format type (extension).', default="png")
-    parser.add_argument("-l", "--deliminator", help='Image file name metadata deliminator character.', default='_')
+    parser.add_argument("-l", "--delimiter", help='Image file name metadata delimiter character.', default='_')
     parser.add_argument("-f", "--meta",
                         help='Image file name metadata format. List valid metadata fields separated by the '
-                             'deliminator (-l/--deliminator). Valid metadata fields are: ' +
+                             'delimiter (-l/--delimiter). Valid metadata fields are: ' +
                              ', '.join(map(str, list(valid_meta.keys()))), default='imgtype_camera_frame_zoom_id')
     parser.add_argument("-M", "--match",
                         help='Restrict analysis to images with metadata matching input criteria. Input a '
@@ -141,7 +141,7 @@ def options():
     args.start_time = start_time
 
     # Image filename metadata structure
-    fields = args.meta.split(args.deliminator)
+    fields = args.meta.split(args.delimiter)
     structure = {}
     for i, field in enumerate(fields):
         structure[field] = i
@@ -453,7 +453,7 @@ def filename_parser(args):
             if is_img is not None:
                 # Remove the file extension
                 prefix = ext.sub('', filename)
-                metadata = prefix.split(args.deliminator)
+                metadata = prefix.split(args.delimiter)
 
                 # Image metadata
                 img_meta = {'path': dirpath}
@@ -539,7 +539,7 @@ def phenofront_parser(args):
                     continue
                     # raise IOError("Something is wrong, file {0}/{1} does not exist".format(dirpath, filename))
                 # Metadata from image file name
-                metadata = img.split(args.deliminator)
+                metadata = img.split(args.delimiter)
                 # Not all images in a directory may have the same metadata structure only keep those that do
                 if len(metadata) == len(args.fields.keys()):
                     # Image metadata
@@ -589,7 +589,7 @@ def phenofront_parser(args):
                         if args.coprocess is not None:
                             for coimg in imgs:
                                 if len(coimg) != 0:
-                                    meta_parts = coimg.split(args.deliminator)
+                                    meta_parts = coimg.split(args.delimiter)
                                     coimgtype = meta_parts[args.fields['imgtype']]
                                     if coimgtype == args.coprocess:
                                         if 'camera' in args.fields:
