@@ -142,6 +142,8 @@ def options():
 
     # Image filename metadata structure
     fields = args.meta.split(args.delimiter)
+    # Keep track of the number of metadata fields matching filenames should have
+    args.meta_count = len(fields)
     structure = {}
     for i, field in enumerate(fields):
         structure[field] = i
@@ -541,7 +543,7 @@ def phenofront_parser(args):
                 # Metadata from image file name
                 metadata = img.split(args.delimiter)
                 # Not all images in a directory may have the same metadata structure only keep those that do
-                if len(metadata) == len(args.fields.keys()):
+                if len(metadata) == args.meta_count:
                     # Image metadata
                     img_meta = {'path': dirpath}
                     img_pass = 1
