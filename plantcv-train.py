@@ -31,15 +31,13 @@ def options():
     parser.add_argument("-b", "--maskdir", help="Input directory containing black/white masks.", required=True)
     parser.add_argument("-m", "--method", help="Learning method. Available methods: " + ", ".join(map(str, methods)),
                         required=True)
-    parser.add_argument("-o", "--outdir", help="Output directory.", default=".")
+    parser.add_argument("-o", "--outfile", help="Trained classifier output filename.", required=True)
     args = parser.parse_args()
 
     if not os.path.exists(args.imgdir):
         raise IOError("Directory does not exist: {0}".format(args.imgdir))
     if not os.path.exists(args.maskdir):
         raise IOError("Directory does not exist: {0}".format(args.maskdir))
-    if not os.path.exists(args.outdir):
-        os.mkdir(args.outdir)
     if args.method not in methods:
         raise KeyError("Method is not supported: {0}".format(args.method))
 
@@ -60,7 +58,7 @@ def main():
     args = options()
 
     if args.method == "naive_bayes":
-        naive_bayes(args.imgdir, args.maskdir)
+        naive_bayes(args.imgdir, args.maskdir, args.outfile)
 
 
 ###########################################
@@ -68,7 +66,7 @@ def main():
 
 # Naive Bayes
 ###########################################
-def naive_bayes(imgdir, maskdir):
+def naive_bayes(imgdir, maskdir, outfile):
     """Naive Bayes training function
 
     :param imgdir: str
@@ -123,6 +121,9 @@ def naive_bayes(imgdir, maskdir):
                         background[channel] = np.append(background[channel], bg)
 
     # Calculate a probability density function for each channel using a Gaussian kernel density estimator
+    # Create an output file for the PDFs
+    out = open(outfile, "w")
+    out.write("class\tchannel\t" + "\t".join(map(str, range(0, 256))) + "\n")
     for channel in plant.keys():
         print("Calculating PDF for the " + channel + " channel...")
         # Down-sample background pixels (otherwise there are so many the computing takes forever)
@@ -130,12 +131,15 @@ def naive_bayes(imgdir, maskdir):
                                                                             len(plant[channel]))]
         plant_kde = stats.gaussian_kde(plant[channel])
         bg_kde = stats.gaussian_kde(background[channel])
-        # Calculate PDF and save resulting ndarray to disk
+        # Calculate p from the PDFs for each 8-bit intensity value and save to outfile
         plant_pdf = plant_kde(range(0, 256))
-        np.save("pdf_plant_" + channel, plant_pdf)
+        out.write("plant\t" + channel + "\t" + "\t".join(map(str, plant_pdf)) + "\n")
+        #np.save("pdf_plant_" + channel, plant_pdf)
         bg_pdf = bg_kde(range(0, 256))
-        np.save("pdf_background_" + channel, bg_pdf)
+        out.write("background\t" + channel + "\t" + "\t".join(map(str, bg_pdf)) + "\n")
+        #np.save("pdf_background_" + channel, bg_pdf)
         plot_pdf(channel, plant_pdf, bg_pdf)
+    out.close()
 
 
 def split_plant_background_signal(channel, mask):
