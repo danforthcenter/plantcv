@@ -1,12 +1,12 @@
 ## Background Subtraction
 
-Creates a binary image from a background subtraction of the foreground using cv2.BackgroundSubtractorMOG().
-The binary image returned is a mask that should contain mostly foreground pixels.
+Creates a binary image from a background subtraction of the foreground using cv2.BackgroundSubtractorMOG().  
+The binary image returned is a mask that should contain mostly foreground pixels.  
 The background image should be the same background as the foreground image except not containing the object of interest.
 
-Images must be of the same size and type.
-If not, larger image will be taken and downsampled to smaller image size.
-If they are of different types, an error will occur.
+Images must be of the same size and type.  
+If not, larger image will be taken and downsampled to smaller image size.  
+If they are of different types, an error will occur.  
 
 **background_subtraction(*foreground_image, background_image, device, debug=None*)**
 
