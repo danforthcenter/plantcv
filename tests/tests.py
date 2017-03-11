@@ -499,7 +499,7 @@ def test_plantcv_background_subtraction():
     device, fgmask = pcv.background_subtraction(background_image = bg_img, foreground_image = fg_img, device = 0, debug = None)
     truths.append(np.sum(fgmask) > 0)
     # The same foreground subtracted from itself should be 0
-    device, fgmask = pcv.background_subtraction(background_image = fg_img, foreground_image = fg_img, device = 0, debug = None)n
+    device, fgmask = pcv.background_subtraction(background_image = fg_img, foreground_image = fg_img, device = 0, debug = None)
     truths.append(np.sum(fgmask) == 0)
     # The same background subtracted from itself should be 0
     device, fgmask = pcv.background_subtraction(background_image = bg_img, foreground_image = bg_img, device = 0, debug = None)
