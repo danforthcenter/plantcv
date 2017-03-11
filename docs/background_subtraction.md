@@ -40,4 +40,4 @@ device, fgmask = pcv.background_subtraction(foreground_image, background_image, 
 
 **Foreground Mask**
 
-![Screenshot](img/documentation_images/background_subtraction/1_background_subtraction)
+![Screenshot](img/documentation_images/background_subtraction/1_background_subtraction.png)
