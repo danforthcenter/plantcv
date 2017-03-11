@@ -32,6 +32,8 @@ TEST_INPUT_ClUSTER_CONTOUR="clusters_i.npz"
 TEST_INPUT_CROPPED='cropped_img.jpg'
 TEST_INPUT_CROPPED_MASK='cropped-mask.png'
 TEST_INPUT_MARKER='seed-image.jpg'
+TEST_FOREGROUND="TEST_FOREGROUND.jpg"
+TEST_BACKGROUND="TEST_BACKGROUND.jpg"
 
 
 if not os.path.exists(TEST_TMPDIR):
@@ -486,3 +488,23 @@ def test_plantcv_white_balance():
     imgavg=np.average(img)
     balancedavg=np.average(white_balanced)
     assert balancedavg!=imgavg
+
+def test_plantcv_background_subtraction():
+    # List to hold result of all tests.
+    truths = []
+    fg_img = cv2.imread(os.path.join(TEST_DATA, TEST_FOREGROUND))
+    bg_img = cv2.imread(os.path.join(TEST_DATA, TEST_BACKGROUND))
+    # Testing if background subtraction is actually still working.
+    # This should return an array whose sum is greater than one
+    device, fgmask = pcv.background_subtraction(background_image = bg_img, foreground_image = fg_img, device = 0, debug = None)
+    truths.append(np.sum(fgmask) > 0)
+    # The same foreground subtracted from itself should be 0
+    device, fgmask = pcv.background_subtraction(background_image = fg_img, foreground_image = fg_img, device = 0, debug = None)n
+    truths.append(np.sum(fgmask) == 0)
+    # The same background subtracted from itself should be 0
+    device, fgmask = pcv.background_subtraction(background_image = bg_img, foreground_image = bg_img, device = 0, debug = None)
+    truths.append(np.sum(fgmask) == 0)
+    # All of these should be true for the function to pass testing.
+    assert (all(truths))
+
+    

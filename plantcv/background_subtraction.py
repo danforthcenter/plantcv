@@ -7,47 +7,64 @@ from . import plot_image
 from . import fatal_error
 
 
-def binary_threshold(img, threshold, maxValue, object_type, device, debug=None):
-    """Creates a binary image from a gray image based on the threshold value.
+def background_subtraction(background_image, foreground_image, device, debug=None):
+    """Creates a binary image from a mixture of gaussian subtraction of the background from the foreground.
+    The binary image returned is a mask that should contain mostly foreground pixels and not background pixels.
+    The background image should be the same background as the foreground image except not containing the object
+    of interest.
+
+    Images must be of the same size and type.
+    If not, larger image will be taken and downsampled to smaller image size.
+    If they are of different types, an error will occur.
 
     Inputs:
-    img         = img object, grayscale
-    threshold   = threshold value (0-255)
-    maxValue    = value to apply above threshold (usually 255 = white)
-    object_type = light or dark
-                  - If object is light then standard thresholding is done
-                  - If object is dark then inverse thresholding is done
-    device      = device number. Used to count steps in the pipeline
-    debug       = None, print, or plot. Print = save to file, Plot = print to screen.
+    background_image       = img object, RGB or binary/grayscale/single-channel
+    foreground_image       = img object, RGB or binary/grayscale/single-channel
+    device                 = device number. Used to count steps in the pipeline
+    debug                  = None, print, or plot. Print = save to file, Plot = print to screen.
 
     Returns:
-    device      = device number
-    t_img       = thresholded image
+    device                 = device number
+    fgmask                 = background subtracted foreground image (mask)
 
-    :param img: numpy array
-    :param threshold: int
-    :param maxValue: int
-    :param object_type: str
+    :param background_image: numpy array
+    :param foreground_image: numpy array
     :param device: int
     :param debug: str
     :return device: int
-    :return t_img: numpy array
+    :return fgmask: numpy array
     """
 
     device += 1
-    if object_type == 'light':
-        ret, t_img = cv2.threshold(img, threshold, maxValue, cv2.THRESH_BINARY)
-        if debug == 'print':
-            print_image(t_img, (str(device) + '_binary_threshold' + str(threshold) + '.png'))
-        elif debug == 'plot':
-            plot_image(t_img, cmap='gray')
-        return device, t_img
-    elif object_type == 'dark':
-        ret, t_img = cv2.threshold(img, threshold, maxValue, cv2.THRESH_BINARY_INV)
-        if debug == 'print':
-            print_image(t_img, (str(device) + '_binary_threshold' + str(threshold) + '_inv.png'))
-        elif debug == 'plot':
-            plot_image(t_img, cmap='gray')
-        return device, t_img
-    else:
-        fatal_error('Object type ' + str(object_type) + ' is not "light" or "dark"!')
+    # Copying images to make sure not alter originals
+    bg_img = np.copy(background_image)
+    fg_img = np.copy(foreground_image)
+    # Checking if images need to be resized or error raised
+    if bg_img.shape != fg_img.shape:
+        # If both images are not 3 channel or single channel then raise error.
+        if len(bg_img.shape) != len(fg_img.shape):
+            fatal_error("Images must both be single-channel/grayscale/binary or RGB")
+        # Forcibly resizing largest image to smallest image
+        print("WARNING: Images are not of same size.\nResizing")
+        if bg_img.shape > fg_img.shape:
+            width, height = fg_img.shape[1], fg_img.shape[0]
+            bg_img = cv2.resize(bg_img, (width, height), interpolation = cv2.INTER_AREA)
+        else:
+            width, height = bg_img.shape[1], bg_img.shape[0]
+            fg_img = cv2.resize(fg_img, (width, height), interpolation = cv2.INTER_AREA)
+
+    # Instantiating the background subtractor, for a single history no default parameters need to be changed.
+    bgsub = cv2.BackgroundSubtractorMOG()
+    # Applying the background image to the background subtractor first.
+    # Anything added after is subtracted from the previous iterations.
+    fgmask = bgsub.apply(bg_img)
+    # Applying the foreground image to the background subtractor (therefore removing the background)
+    fgmask = bgsub.apply(fg_img)
+
+    # Debug options
+    if debug == "print":
+        print_image(fgmask, "{0}_background_subtraction.png".format(device))
+    elif debug == "plot":
+        plot_image(fgmask, cmap = "gray")
+    
+    return(device, fgmask)
