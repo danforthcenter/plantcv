@@ -48,3 +48,4 @@ _site/*
 *.egg-info/
 .cache/*
 .DS_Store
+change_plantcv.sh
