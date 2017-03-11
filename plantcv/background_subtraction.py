@@ -2,6 +2,7 @@
 # Subtracts a background image from a foreground image once.
 
 import cv2
+import numpy as np
 from . import print_image
 from . import plot_image
 from . import fatal_error
