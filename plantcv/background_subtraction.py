@@ -9,8 +9,8 @@ from . import fatal_error
 
 
 def background_subtraction(background_image, foreground_image, device, debug=None):
-    """Creates a binary image from a mixture of gaussian subtraction of the background from the foreground.
-    The binary image returned is a mask that should contain mostly foreground pixels and not background pixels.
+    """Creates a binary image from a background subtraction of the foreground using cv2.BackgroundSubtractorMOG().
+    The binary image returned is a mask that should contain mostly foreground pixels.
     The background image should be the same background as the foreground image except not containing the object
     of interest.
 
