@@ -269,7 +269,7 @@ def main():
 
     if args.imgtype=='BOTH':
       table1=table1
-      table2=table
+      table2=table2
     else:
       table=table
 
@@ -586,7 +586,7 @@ def main():
             if args.filter=='filter':
               filename = str(args.outfile) + "-signal-sv-filtered-averaged.csv"
             else:
-              filename = str(args.outfile) + "-signa-sv-notfiltered-averaged.csv"
+              filename = str(args.outfile) + "-signal-sv-notfiltered-averaged.csv"
             svbase.to_csv(filename, mode='w')
 
          if tvx != 0:
