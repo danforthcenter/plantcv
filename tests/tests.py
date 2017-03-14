@@ -34,6 +34,7 @@ TEST_INPUT_CROPPED_MASK='cropped-mask.png'
 TEST_INPUT_MARKER='seed-image.jpg'
 TEST_FOREGROUND="TEST_FOREGROUND.jpg"
 TEST_BACKGROUND="TEST_BACKGROUND.jpg"
+TEST_PDFS = "naive_bayes_pdfs.txt"
 
 
 if not os.path.exists(TEST_TMPDIR):
@@ -307,6 +308,21 @@ def test_plantcv_median_blur():
     if all([i == j] for i, j in zip(np.shape(blur_img), TEST_BINARY_DIM)):
         # Assert that the image is binary
         if all([i == j] for i, j in zip(np.unique(blur_img), [0, 255])):
+            assert 1
+        else:
+            assert 0
+    else:
+        assert 0
+
+
+def test_plantcv_naive_bayes_classifier():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    device, mask = pcv.naive_bayes_classifier(img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS), device=0, debug=None)
+
+    # Assert that the output image has the dimensions of the input image
+    if all([i == j] for i, j in zip(np.shape(mask), TEST_GRAY_DIM)):
+        # Assert that the image is binary
+        if all([i == j] for i, j in zip(np.unique(mask), [0, 255])):
             assert 1
         else:
             assert 0

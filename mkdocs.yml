@@ -21,6 +21,7 @@ pages:
     - 'Multi plant pipeline': multi-plant_tutorial.md
     - 'Pipeline parallelization': pipeline_parallel.md
     - 'Export Filter and Export Data': db-exporter.md
+    - 'Machine Learning': machine_learning_tutorial.md
   - Library:
     - 'Adaptive Threshold': adaptive_threshold.md
     - 'Analyze color': analyze_color.md
@@ -53,6 +54,7 @@ pages:
     - 'Logical operations-And': logical_and.md
     - 'Logical operations-Or': logical_or.md
     - 'Median blur': median_blur.md
+    - 'Naive Bayes classifier': naive_bayes_classifier.md
     - 'Object composition': object_composition.md
     - 'Otsu Auto Threshold': otsu_threshold.md
     - 'Output Mask': output_mask.md
