@@ -175,7 +175,7 @@ def _plot(x, mph, mpd, threshold, edge, valley, ax, ind):
         plt.show()
 
 
-def triangle_auto_threshold(device, img, maxvalue, object_type, xstep, debug=False):
+def triangle_auto_threshold(device, img, maxvalue, object_type, xstep=1, debug=None):
     """Creates a binary image from a grayscaled image using Zack et al.'s (1977) thresholding.
 
     Inputs:

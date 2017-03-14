@@ -10,27 +10,37 @@ pages:
 - Documentation:
   - Installation: installation.md
   - 'Using Jupyter Notebooks': jupyter.md
+  - 'Contributing to PlantCV': CONTRIBUTING.md
   - 'Adding/editing Documentation': documentation.md
+  - 'Summary of Output Measurements': output_measurements.md
   - Tutorials:
     - 'VIS pipeline': vis_tutorial.md
     - 'NIR pipeline': nir_tutorial.md
     - 'PSII pipeline': psII_tutorial.md
     - 'VIS/NIR dual pipeline': vis_nir_tutorial.md
+    - 'Multi plant pipeline': multi-plant_tutorial.md
     - 'Pipeline parallelization': pipeline_parallel.md
+    - 'Export Filter and Export Data': db-exporter.md
   - Library:
+    - 'Adaptive Threshold': adaptive_threshold.md
     - 'Analyze color': analyze_color.md
     - 'Analyze NIR': analyze_NIR_intensity.md
     - 'Analyze PSII': fluor_fvfm.md
     - 'Analyze shape': analyze_shape.md
     - 'Apply mask': apply_mask.md
+    - 'Background Subtraction': background_subtraction.md
     - 'Binary threshold': binary_threshold.md
+    - 'Auto Crop': auto_crop.md
     - 'Boundary line tool': analyze_bound.md
+    - 'Cluster Contours': cluster_contours.md
+    - 'Cluster Contours and Split Images': cluster_contours_splitimg.md
     - 'Crop and Position Mask': crop_position_mask.md
     - 'Dilation': dilate.md
     - 'Erosion': erode.md
     - 'Fill objects': fill.md
     - 'Find objects': find_objects.md
     - 'Flip image': flip.md
+    - 'Gaussian Blur': gaussian_blur.md
     - 'Get NIR images': get_nir.md
     - 'Erosion': erode.md
     - 'Fill objects': fill.md
@@ -44,18 +54,23 @@ pages:
     - 'Logical operations-Or': logical_or.md
     - 'Median blur': median_blur.md
     - 'Object composition': object_composition.md
+    - 'Otsu Auto Threshold': otsu_threshold.md
+    - 'Output Mask': output_mask.md
     - 'Plot histogram': plot_hist.md
     - 'Print image': print_image.md
     - 'Read image': read_image.md
     - 'Rectangle mask': rectangle_mask.md
     - 'Region of interest-Define': define_roi.md
     - 'Region of interest-Objects': roi_objects.md
+    - 'Report Size Marker': report_size_marker.md
     - 'Resize': resize.md
     - 'RGB to HSV': rgb2hsv.md
     - 'RGB to LAB': rgb2lab.md
     - 'Rotate Image': rotate.md
     - 'Shift Image': shift.md
     - 'Sobel filter': sobel_filter.md
+    - 'Triangle Auto Threshold': triangle_threshold.md
+    - 'Watershed Segmentation': watershed.md
     - 'White balance': white_balance.md
 
 markdown_extensions:

@@ -1,13 +1,13 @@
 __all__ = ['fatal_error', 'print_image', 'plot_image', 'plot_colorbar', 'readimage', 'laplace_filter', 'sobel_filter',
-           'scharr_filter', 'HistEqualization', 'plot_hist', 'image_add', 'image_subtract', 'erode', 'dilate',
-           'watershed', 'rectangle_mask', 'border_mask', 'rgb2gray_hsv', 'rgb2gray_lab', 'rgb2gray', 'binary_threshold',
+           'scharr_filter', 'hist_equalization', 'plot_hist', 'image_add', 'image_subtract', 'erode', 'dilate',
+           'watershed', 'rectangle_mask', 'rgb2gray_hsv', 'rgb2gray_lab', 'rgb2gray', 'binary_threshold',
            'median_blur', 'fill', 'invert', 'logical_and', 'logical_or', 'logical_xor', 'apply_mask', 'find_objects',
            'define_roi', 'roi_objects', 'object_composition', 'analyze_object', 'analyze_bound', 'analyze_color',
            '_pseudocolored_image', 'analyze_NIR_intensity', 'fluor_fvfm', 'print_results', 'resize', 'flip',
            'crop_position_mask', 'get_nir', 'adaptive_threshold', 'otsu_auto_threshold', 'report_size_marker_area',
            'white_balance','triangle_auto_threshold','acute_vertex','scale_features','turgor_proxy',
            'x_axis_pseudolandmarks', 'y_axis_pseudolandmarks','gaussian_blur', 'cluster_contours','cluster_contour_splitimg',
-           'rotate_img', 'shift_img']
+           'rotate_img', 'shift_img','output_mask_ori_img', 'auto_crop', 'background_subtraction']
 
 from fatal_error import fatal_error
 from print_image import print_image
@@ -17,15 +17,14 @@ from readimage import readimage
 from laplace_filter import laplace_filter
 from sobel_filter import sobel_filter
 from scharr_filter import scharr_filter
-from HistEqualization import HistEqualization
+from hist_equalization import hist_equalization
 from plot_hist import plot_hist
 from image_add import image_add
 from image_subtract import image_subtract
 from erode import erode
 from dilate import dilate
-from watershed import watershed
+from watershed import watershed_segmentation
 from rectangle_mask import rectangle_mask
-from border_mask import border_mask
 from rgb2gray_hsv import rgb2gray_hsv
 from rgb2gray_lab import rgb2gray_lab
 from rgb2gray import rgb2gray
@@ -66,5 +65,8 @@ from cluster_contours import cluster_contours
 from cluster_contour_splitimg import cluster_contour_splitimg
 from rotate_img import rotate_img
 from shift_img import shift_img
+from output_mask_ori_img import output_mask
+from auto_crop import auto_crop
+from background_subtraction import background_subtraction
 
 #add new functions to end of lists

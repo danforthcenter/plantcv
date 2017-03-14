@@ -9,7 +9,7 @@ the values out to a file. Can also print out a histogram plot of pixel intensity
 
 - **Parameters:**
     - img - Input image
-    - rgb - Input image with 3-dimensions (pseudocolor)
+    - rgb - Input image with 3-dimensions (for pseudocolor)
     - mask - Mask made from selected contours
     - bins - Number of class to divide spectrum into
     - device - Counter for image processing steps
@@ -19,6 +19,10 @@ the values out to a file. Can also print out a histogram plot of pixel intensity
     - Used to mask rectangluar regions of an image
 - **Example use:**
     - [Use In NIR Tutorial](nir_tutorial.md)
+    
+**Output Data Units:** 
+    - Bins - bin values based on number of bins set by user  
+    - Signal Histogram - histogram of object pixel intensity values 0 (unsaturated) to 255 (saturated)     
 
 **Original grayscale image**
 
@@ -28,7 +32,7 @@ the values out to a file. Can also print out a histogram plot of pixel intensity
 import plantcv as pcv
 
 # Caclulates the proportion of pixels that fall into a signal bin and writes the values to a file. Also provides a histogram of this data and a pseudocolored image of the plant.
-device, hist_header, hist_data, h_norm  = pcv.analyze_NIR_intensity(img, rgb, mask, 256, device, debug="print", filename="pseudocolored_plant")
+device, hist_header, hist_data, h_norm  = pcv.analyze_NIR_intensity(img, rgbimg, mask, 256, device, debug="print", filename="pseudocolored_plant")
 ```
 
 **Pseudocolored NIR signal**

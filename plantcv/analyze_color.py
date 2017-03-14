@@ -74,14 +74,14 @@ def _pseudocolored_image(device, histogram, bins, img, mask, background, channel
         print_image(cplant_back,fig_name_pseudo)
         analysis_images.append(['IMAGE', 'pseudo', fig_name_pseudo])
         
-        if debug is not None:
-            if debug == 'print':
-                print_image(cplant_back,(str(device)+ '_pseudocolor.jpg'))
-                fig_name = 'VIS_pseudocolor_colorbar_' + str(channel) + '_channel.svg'
-                if not os.path.isfile(path + '/' + fig_name):
-                    plot_colorbar(path, fig_name, bins)
-            elif debug == 'plot':
-                plot_image(cplant_back)       
+    if debug is not None:
+        if debug == 'print':
+            print_image(cplant_back,(str(device)+ '_pseudocolor.jpg'))
+            fig_name = 'VIS_pseudocolor_colorbar_' + str(channel) + '_channel.svg'
+            if not os.path.isfile(path + '/' + fig_name):
+                plot_colorbar(path, fig_name, bins)
+        elif debug == 'plot':
+            plot_image(cplant_back)
 
     return analysis_images
 
@@ -177,10 +177,14 @@ def analyze_color(img, imgname, mask, bins, device, debug=None, hist_plot_type=N
     hist_data_s = [l[0] for l in hist_s]
     hist_data_v = [l[0] for l in hist_v]
 
+    binval=np.arange(0,bins)
+    bin_values = [l for l in binval]
+
     # Store Color Histogram Data
     hist_header = [
         'HEADER_HISTOGRAM',
         'bin-number',
+        'bin-values',
         'blue',
         'green',
         'red',
@@ -195,6 +199,7 @@ def analyze_color(img, imgname, mask, bins, device, debug=None, hist_plot_type=N
     hist_data = [
         'HISTOGRAM_DATA',
         bins,
+        bin_values,
         hist_data_b,
         hist_data_g,
         hist_data_r,
@@ -211,8 +216,6 @@ def analyze_color(img, imgname, mask, bins, device, debug=None, hist_plot_type=N
     p_channel = pseudo_channel
 
     if p_channel is None:
-        pass
-    elif not filename:
         pass
     elif p_channel == 'h':
         if (pseudo_bkg == 'white' or pseudo_bkg == 'both'):

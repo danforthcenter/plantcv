@@ -20,6 +20,8 @@ def x_axis_pseudolandmarks(obj, mask, img, device, debug = False):
   ## debug = True/False. If True, print image
   ##### Lets get some landmarks scanning along the x-axis
   device += 1
+  if not np.any(obj):
+      return device, ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA')
   x,y,width,height = cv2.boundingRect(obj)
   extent = width
   ## If width is greater than 21 pixels make 20 increments (5% intervals)
@@ -96,9 +98,14 @@ def x_axis_pseudolandmarks(obj, mask, img, device, debug = False):
       s = cv2.moments(window)
       # Centroid (center of mass x, center of mass y)
       if (largest - smallest > 3):
-          smx,smy = (s['m10']/s['m00'], s['m01']/s['m00'])
-          x_centroids.append(int(smx))
-          y_centroids.append(int(smy))
+          if s['m00'] > 0.001:
+            smx,smy = (s['m10']/s['m00'], s['m01']/s['m00'])
+            x_centroids.append(int(smx))
+            y_centroids.append(int(smy))
+          if s['m00'] < 0.001:
+            smx,smy = (s['m10']/0.001, s['m01']/0.001)
+            x_centroids.append(int(smx))
+            y_centroids.append(int(smy))
       else:
         smx = (largest + smallest)/2
         smy = xval

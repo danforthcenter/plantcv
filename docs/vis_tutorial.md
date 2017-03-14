@@ -308,7 +308,7 @@ and the Boundary tool function [here](analyze_bound.md).
     device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound(img, args.image, obj, mask, 1680, device, debug, args.outdir + '/' + filename)
     
     # Determine color properties: Histograms, Color Slices and Pseudocolored Images, output color analyzed images (optional)
-    device, color_header, color_data, norm_slice = pcv.analyze_color(img, args.image, kept_mask, 256, device, debug, 'all', 'rgb', 'v', 'img', 300, args.outdir + '/' + filename)
+    device, color_header, color_data, norm_slice = pcv.analyze_color(img, args.image, kept_mask, 256, device, debug, 'all', 'v', 'img', 300, args.outdir + '/' + filename)
     
     # Write shape and color data to results file
     result=open(args.result,"a")

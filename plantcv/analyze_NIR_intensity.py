@@ -6,16 +6,18 @@ import numpy as np
 from . import print_image
 from . import plot_image
 from . import plot_colorbar
+from . import rgb2gray_hsv
+from . import binary_threshold
 from . import apply_mask
 
 
-def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False, debug=None, filename=False):
+def analyze_NIR_intensity(img, rgbimg, mask, bins, device, histplot=False, debug=None, filename=False):
     """This function calculates the intensity of each pixel associated with the plant and writes the values out to
        a file. It can also print out a histogram plot of pixel intensity and a pseudocolor image of the plant.
 
     Inputs:
-    img          = input image
-    imgname      = name of input image
+    img          = input image original NIR image
+    rgbimg      = RGB NIR image
     mask         = mask made from selected contours
     bins         = number of classes to divide spectrum into
     device       = device number. Used to count steps in the pipeline
@@ -44,45 +46,42 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False, debu
     """
 
     device += 1
-    ori_img = np.copy(img)
-
-    if len(np.shape(img)) == 3:
-        ix, iy, iz = np.shape(img)
-        size = ix, iy
-    else:
-        ix, iy = np.shape(img)
-        size = ix, iy
-
-    # Make empty images, background is a black backdrop and w_back is a white backdrop
-    background = np.zeros(size, dtype=np.uint8)
-    w_back = background + 255
 
     # apply plant shaped mask to image
-    device, masked = apply_mask(img, mask, 'black', device, debug=None)
-
-    # allow user to choose number of bins
-    nir_bin = masked / (256 / bins)
+    device, mask1 = binary_threshold(mask, 0, 255, 'light', device, None)
+    mask1 = (mask1/255)
+    masked=np.multiply(img,mask1)
 
     # calculate histogram
-    hist_nir = cv2.calcHist([nir_bin], [0], mask, [bins], [0, (bins - 1)])
-    hist_data_nir = [l[0] for l in hist_nir]
+    if img.dtype=='uint16':
+        maxval=65536
+    else:
+        maxval=256
+
+    hist_nir,hist_bins=np.histogram(masked, bins,(1,maxval),False, None,None)
+
+    hist_bins1=hist_bins[:-1]
+    hist_bins2=[l for l in hist_bins1]
+
+    hist_nir1=[l for l in hist_nir]
 
     # make hist percentage for plotting
-    pixels = cv2.countNonZero(mask)
+    pixels = cv2.countNonZero(mask1)
     hist_percent = (hist_nir / pixels) * 100
-    hist_data_percent = [l[0] for l in hist_percent]
 
     # report histogram data
     hist_header = [
         'HEADER_HISTOGRAM',
         'bin-number',
+        'bin-values',
         'nir'
     ]
 
     hist_data = [
         'HISTOGRAM_DATA',
         bins,
-        hist_data_nir
+        hist_bins2,
+        hist_nir1
     ]
 
     analysis_img = []
@@ -90,13 +89,13 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False, debu
     if filename is not False:
         # make mask to select the background
         mask_inv = cv2.bitwise_not(mask)
-        img_back = cv2.bitwise_and(img, img, mask=mask_inv)
-        img_back3 = np.dstack((img_back, img_back, img_back))
+        img_back = cv2.bitwise_and(rgbimg, rgbimg, mask=mask_inv)
+        img_back1 = cv2.applyColorMap(img_back, colormap=1)
 
         # mask the background and color the plant with color scheme 'jet'
-        cplant = cv2.applyColorMap(masked, colormap=2)
-        cplant1 = cv2.bitwise_and(cplant, cplant, mask=mask)
-        cplant_back = cv2.add(cplant1, img_back3)
+        cplant = cv2.applyColorMap(rgbimg, colormap=2)
+        device, masked1 = apply_mask(cplant, mask, 'black', device, debug=None)
+        cplant_back = cv2.add(masked1, img_back1)
 
         fig_name_pseudo = (str(filename[0:-4]) + '_nir_pseudo_col.jpg')
         print_image(cplant_back, fig_name_pseudo)
@@ -124,12 +123,10 @@ def analyze_NIR_intensity(img, imgname, mask, bins, device, histplot=False, debu
             plot_colorbar(path, fig_name, bins)
 
         if debug == 'print':
-            print_image(cplant1, (str(device) + "_nir_pseudo_plant.jpg"))
-            print_image(img_back3, (str(device) + "_nir_pseudo_background.jpg"))
+            print_image(masked1, (str(device) + "_nir_pseudo_plant.jpg"))
             print_image(cplant_back, (str(device) + "_nir_pseudo_plant_back.jpg"))
         elif debug == 'plot':
-            plot_image(cplant1)
-            plot_image(img_back3)
+            plot_image(masked1)
             plot_image(cplant_back)
 
     return device, hist_header, hist_data, analysis_img

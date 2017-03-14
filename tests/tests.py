@@ -2,6 +2,7 @@
 
 import pytest
 import os
+import shutil
 import numpy as np
 import cv2
 import plantcv as pcv
@@ -24,6 +25,15 @@ TEST_INPUT_FDARK="FLUO_TV_dark.jpg"
 TEST_INPUT_FMIN="FLUO_TV_min.jpg"
 TEST_INPUT_FMAX="FLUO_TV_max.jpg"
 TEST_INPUT_FMASK="FLUO_TV_MASK.jpg"
+TEST_INTPUT_GREENMAG="input_green-magenta.jpg"
+TEST_INTPUT_MULTI="multi_ori_image.jpg"
+TEST_INPUT_MULTI_CONTOUR="roi_objects.npz"
+TEST_INPUT_ClUSTER_CONTOUR="clusters_i.npz"
+TEST_INPUT_CROPPED='cropped_img.jpg'
+TEST_INPUT_CROPPED_MASK='cropped-mask.png'
+TEST_INPUT_MARKER='seed-image.jpg'
+TEST_FOREGROUND="TEST_FOREGROUND.jpg"
+TEST_BACKGROUND="TEST_BACKGROUND.jpg"
 
 
 if not os.path.exists(TEST_TMPDIR):
@@ -63,8 +73,8 @@ def test_plantcv_analyze_color():
 def test_plantcv_analyze_nir():
     img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_COLOR),0)
     mask=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_BINARY),-1)
-    device, hist_header, hist_data, h_norm = pcv.analyze_NIR_intensity(img, "img", mask, 256, 0, False, None)
-    assert np.sum(hist_data[2])==718858.0
+    device, hist_header, hist_data, h_norm = pcv.analyze_NIR_intensity(img, img, mask, 256, 0, False, None)
+    assert np.sum(hist_data[3])==713986
 
 
 def test_plantcv_analyze_object():
@@ -84,6 +94,16 @@ def test_plantcv_apply_mask():
     assert all([i == j] for i, j in zip(np.shape(masked_img), TEST_COLOR_DIM))
 
 
+def test_plantcv_auto_crop():
+    img1=cv2.imread(os.path.join(TEST_DATA,TEST_INTPUT_MULTI),-1)
+    contours=np.load(os.path.join(TEST_DATA,TEST_INPUT_MULTI_CONTOUR))
+    roi_contours=contours['arr_0']
+    device, cropped=pcv.auto_crop(0,img1,roi_contours[48],20,20,'black',debug=None)
+    x,y,z=np.shape(img1)
+    x1,y1,z1=np.shape(cropped)
+    assert x>x1
+
+
 def test_plantcv_binary_threshold():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     device, binary_img = pcv.binary_threshold(img=img, threshold=25, maxValue=255, object_type="light",
@@ -99,7 +119,28 @@ def test_plantcv_binary_threshold():
         assert 0
 
 
-def test_crop_position_mask():
+def test_plantcv_cluster_contours():
+    img1=cv2.imread(os.path.join(TEST_DATA,TEST_INTPUT_MULTI),-1)
+    contours=np.load(os.path.join(TEST_DATA,TEST_INPUT_MULTI_CONTOUR))
+    roi_contours=contours['arr_0']
+    device, clusters_i, contours = pcv.cluster_contours(device=0, img=img1, roi_objects=roi_contours, nrow=4, ncol=6, debug=None)
+    lenori=len(roi_contours)
+    lenclust=len(clusters_i)
+    assert lenori>lenclust
+
+
+def test_plantcv_cluster_contours_splitimg():
+    img1=cv2.imread(os.path.join(TEST_DATA,TEST_INTPUT_MULTI),-1)
+    contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_CONTOUR))
+    clusters = np.load(os.path.join(TEST_DATA, TEST_INPUT_ClUSTER_CONTOUR))
+    roi_contours = contours['arr_0']
+    cluster_contours = clusters['arr_0']
+    device, output_path = pcv.cluster_contour_splitimg(0, img1, cluster_contours, roi_contours, outdir=None, file=None,
+                                                       filenames=None,debug=None)
+    assert len(output_path)!=0
+
+
+def test_plantcv_crop_position_mask():
     nir, path1, filename1 = pcv.readimage(os.path.join(TEST_DATA,TEST_INPUT_NIR_MASK))
     mask= cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_MASK),-1)
     device, newmask=pcv.crop_position_mask(nir,mask, device=0, x=40,y=3,v_pos="top",h_pos="right",debug=None)
@@ -182,10 +223,26 @@ def test_plantcv_fluor_fvfm():
     assert fvfm_data[4]>0.66
 
 
-def test_get_nir():
+def test_plantcv_gaussian_blur():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    device, gaussian_img = pcv.gaussian_blur(device=0, img=img, ksize=(51,51), sigmax=0, sigmay=None, debug=None)
+    imgavg=np.average(img)
+    gavg=np.average(gaussian_img)
+    assert gavg!=imgavg
+
+
+def test_plantcv_get_nir():
     device, nirpath = pcv.get_nir(TEST_DATA, TEST_VIS, device=0, debug=None)
     nirpath1 = os.path.join(TEST_DATA,TEST_NIR)
     assert nirpath == nirpath1
+
+
+def test_plantcv_hist_equalization():
+    img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_GRAY),-1)
+    device,hist=pcv.hist_equalization(img,device=0,debug=None)
+    histavg=np.average(hist)
+    imgavg=np.average(img)
+    assert histavg!=imgavg
 
 
 def test_plantcv_image_add():
@@ -269,6 +326,29 @@ def test_plantcv_object_composition():
     assert contour_shape[1] == 1
 
 
+def test_plantcv_otsu_threshold():
+    img=cv2.imread(os.path.join(TEST_DATA,TEST_INTPUT_GREENMAG),-1)
+    device, threshold_otsu = pcv.otsu_auto_threshold(img, 255, 'dark', device=0, debug=None)
+    assert np.max(threshold_otsu)==255
+
+
+def test_plantcv_output_mask():
+    img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_GRAY),-1)
+    mask=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_BINARY),-1)
+    device, imgpath,maskpath=pcv.output_mask(0, img, mask, 'test.png', TEST_DATA,mask_only=False, debug=None)
+    path=str(TEST_DATA)+'/ori-images'
+    path1=str(TEST_DATA)+'/mask-images'
+    assert os.path.exists(path)==True
+    shutil.rmtree(path)
+    shutil.rmtree(path1)
+
+
+def test_plantcv_plot_hist():
+    img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_COLOR),-1)
+    bins,hist=pcv.plot_hist(img,False)
+    assert len(hist)==256
+
+
 def test_plantcv_print_image():
     img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     filename = os.path.join(TEST_TMPDIR, 'plantcv_print_image.jpg')
@@ -295,6 +375,22 @@ def test_plantcv_readimage():
             assert 0
     else:
         assert 0
+
+def test_plantcv_rectangle_mask():
+    img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_GRAY),-1)
+    device, masked, hist, contour, heir = pcv.rectangle_mask(img, (0, 0), (2454, 2056), device=0, debug=None, color="black")
+    maskedsum=np.sum(masked)
+    imgsum=np.sum(img)
+    assert maskedsum<imgsum
+
+
+def test_plantcv_report_size_marker():
+    img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_MARKER),-1)
+    device, marker_header,marker_data,images=pcv.report_size_marker_area(img, 'rectangle', 0, debug=None, marker='detect',
+                                                                         x_adj=3500, y_adj=600, w_adj=-100, h_adj=-1500,
+                                                                         base='white', objcolor='light', thresh_channel='s',
+                                                                         thresh=120, filename=False)
+    assert marker_data[1]>100
 
 
 def test_plantcv_resize():
@@ -366,9 +462,24 @@ def test_plantcv_shift_img():
 
 def test_plantcv_sobel_filter():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    device, sobel_img = pcv.sobel_filter(img=img, dx=1, dy=0, k=1, scale=1, device=0, debug=None)
+    device, sobel_img = pcv.sobel_filter(img=img, dx=1, dy=0, k=1, device=0, debug=None)
     # Assert that the output image has the dimensions of the input image
     assert all([i == j] for i, j in zip(np.shape(sobel_img), TEST_GRAY_DIM))
+
+
+def test_plantcv_triangle_threshold():
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    device, thresholded = pcv.triangle_auto_threshold(0, img1, 255, "light", 10, debug=None)
+    thresholdedavg=np.average(thresholded)
+    imgavg=np.average(img1)
+    assert thresholdedavg>imgavg
+
+
+def test_plantcv_watershed_segmentation():
+    img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_CROPPED))
+    mask=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_CROPPED_MASK),-1)
+    device,watershed_header,watershed_data,images=pcv.watershed_segmentation(0,img,mask,distance=10,filename=False,debug=None)
+    assert watershed_data[1]>9
 
 
 def test_plantcv_white_balance():
@@ -377,3 +488,23 @@ def test_plantcv_white_balance():
     imgavg=np.average(img)
     balancedavg=np.average(white_balanced)
     assert balancedavg!=imgavg
+
+def test_plantcv_background_subtraction():
+    # List to hold result of all tests.
+    truths = []
+    fg_img = cv2.imread(os.path.join(TEST_DATA, TEST_FOREGROUND))
+    bg_img = cv2.imread(os.path.join(TEST_DATA, TEST_BACKGROUND))
+    # Testing if background subtraction is actually still working.
+    # This should return an array whose sum is greater than one
+    device, fgmask = pcv.background_subtraction(background_image = bg_img, foreground_image = fg_img, device = 0, debug = None)
+    truths.append(np.sum(fgmask) > 0)
+    # The same foreground subtracted from itself should be 0
+    device, fgmask = pcv.background_subtraction(background_image = fg_img, foreground_image = fg_img, device = 0, debug = None)
+    truths.append(np.sum(fgmask) == 0)
+    # The same background subtracted from itself should be 0
+    device, fgmask = pcv.background_subtraction(background_image = bg_img, foreground_image = bg_img, device = 0, debug = None)
+    truths.append(np.sum(fgmask) == 0)
+    # All of these should be true for the function to pass testing.
+    assert (all(truths))
+
+    

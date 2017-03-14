@@ -22,13 +22,23 @@ def scale_features(obj, mask, points, boundary_line, device, debug=False):
   ## debug = True/False. If True, print image
   device += 1
   ## Get the dimensions of the image from the binary thresholded object (mask)
-  ix, iy = np.shape(mask)
+  if not np.any(mask):
+    rescaled = ('NA', 'NA')
+    centroid_scaled = ('NA', 'NA')
+    boundary_line_scaled = ('NA', 'NA')
+    return device, rescaled, centroid_scaled, boundary_line_scaled
+  if not np.any(obj):
+    rescaled = ('NA', 'NA')
+    centroid_scaled = ('NA', 'NA')
+    boundary_line_scaled = ('NA', 'NA')
+    return device, rescaled, centroid_scaled, boundary_line_scaled
+  iy, ix = np.shape(mask)
   x,y,width,height = cv2.boundingRect(obj)
   m = cv2.moments(mask, binaryImage=True)
   cmx,cmy = (m['m10']/m['m00'], m['m01']/m['m00'])
   ## Convert the boundary line position (top of the pot) into a coordinate on the image
   if boundary_line != 'NA':
-    line_position=int(ix)-int(boundary_line)
+    line_position=int(iy)-int(boundary_line)
     bly = line_position
   else:
     bly = cmy

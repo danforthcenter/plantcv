@@ -9,16 +9,18 @@ from . import apply_mask
 
 
 
-def cluster_contour_splitimg(device,img,grouped_contour_indexes,contours,outdir,file=None, filenames=None,debug=None):
+def cluster_contour_splitimg(device,img,grouped_contour_indexes,contours,outdir=None,file=None, filenames=None,debug=None):
 
     """
     This function takes clustered contours and splits them into multiple images, also does a check to make sure that
     the number of inputted filenames matches the number of clustered contours.
 
     Inputs:
+    device- Counter for image processing steps
     img - ideally a masked RGB image.
     grouped_contour_indexes - output of cluster_contours, indexes of clusters of contours
     contours - contours to cluster, output of cluster_contours
+    outdir - out directory for output images
     file -  the name of the input image to use as a base name , output of filename from read_image function
     filenames - input txt file with list of filenames in order from top to bottom left to right (likely list of genotypes)
     debug - print debugging images
@@ -96,7 +98,10 @@ def cluster_contour_splitimg(device,img,grouped_contour_indexes,contours,outdir,
     output_path=[]
 
     for y, x in enumerate(corrected_contour_indexes):
-        savename = str(outdir)+'/'+group_names[y]
+        if outdir!=None:
+            savename = str(outdir)+'/'+group_names[y]
+        else:
+            savename = './'+group_names[y]
         iy, ix, iz = np.shape(img)
         mask = np.zeros((iy, ix, 3), dtype=np.uint8)
         masked_img = np.copy(img)
@@ -110,7 +115,8 @@ def cluster_contour_splitimg(device,img,grouped_contour_indexes,contours,outdir,
         else:
             retval, mask_binary = cv2.threshold(mask_binary, 254, 255, cv2.THRESH_BINARY)
             device, masked1 = apply_mask(masked_img, mask_binary, 'white', device, debug)
-            print_image(masked1,savename)
+            if outdir!=None:
+                print_image(masked1,savename)
             output_path.append(savename)
 
             if debug == 'print':
