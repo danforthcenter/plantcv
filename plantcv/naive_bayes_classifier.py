@@ -44,8 +44,9 @@ def naive_bayes_classifier(img, pdf_file, device, debug=None):
         # Make sure there are the correct number of columns (i.e. is this a valid PDF file?)
         if len(cols) != 258:
             fatal_error("Naive Bayes PDF file is not formatted correctly. Error on line:\n" + row)
-        # Store the PDFs. Column 0 is the class, Column 1 is the color channel, the rest are p at intensity values 0-255
-        pdfs[cols[0]][cols[1]] = cols[2:]
+        # Store the PDFs. Column 0 is the class, Column 1 is the color channel, the rest are p at
+        # intensity values 0-255. Cast text p values as float
+        pdfs[cols[0]][cols[1]] = [float(i) for i in cols[2:]]
 
     # Split the input BGR image into component channels for BGR, HSV, and LAB colorspaces
     # b, g, r = cv2.split(img)
