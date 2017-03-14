@@ -1,4 +1,5 @@
-# Classify pixels as plant or non-plant using the naive Bayes method
+# Classify pixels as plant or non-plant using the naive Bayes method written by Arash Abbasi,
+# adapted for Python by Noah Fahlgren
 
 import cv2
 import numpy as np
@@ -65,12 +66,10 @@ def naive_bayes_classifier(img, pdf_file, device, debug=None):
         for j in range(0, height):
             # Calculate the joint probability that this is a plant pixel
             plant[i][j] = pdfs["plant"]["hue"][h[i][j]] * pdfs["plant"]["saturation"][s[i][j]] * \
-                          pdfs["plant"]["value"][v[i][j]] * pdfs["plant"]["hue2"][h[i][j]] * \
-                          pdfs["plant"]["saturation2"][s[i][j]] * pdfs["plant"]["value2"][v[i][j]]
+                          pdfs["plant"]["value"][v[i][j]]
             # Calculate the joint probability that this is a background pixel
             bg[i][j] = pdfs["background"]["hue"][h[i][j]] * pdfs["background"]["saturation"][s[i][j]] * \
-                       pdfs["background"]["value"][v[i][j]] * pdfs["background"]["hue2"][h[i][j]] * \
-                       pdfs["background"]["saturation2"][s[i][j]] * pdfs["background"]["value2"][v[i][j]]
+                       pdfs["background"]["value"][v[i][j]]
 
     # Initialize an empty mask ndarray
     mask = np.zeros([width, height])

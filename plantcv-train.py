@@ -127,14 +127,14 @@ def naive_bayes(imgdir, maskdir, outfile):
         plot_pdf(channel, plant_pdf, bg_pdf)
 
         # Add the second moment (variance) distribution for each channel
-        print("Calculating PDF for the " + channel + "^2 channel...")
-        plant2_kde = stats.gaussian_kde(plant[channel].astype(np.int32) ** 2)
-        bg2_kde = stats.gaussian_kde(background[channel].astype(np.int32) ** 2)
-        plant2_pdf = plant2_kde([x ** 2 for x in range(0, 256)])
-        out.write("plant\t" + channel + "2\t" + "\t".join(map(str, plant2_pdf)) + "\n")
-        bg2_pdf = bg2_kde([x ** 2 for x in range(0, 256)])
-        out.write("background\t" + channel + "2\t" + "\t".join(map(str, bg2_pdf)) + "\n")
-        plot_pdf(channel + "2", plant2_pdf, bg2_pdf)
+        # print("Calculating PDF for the " + channel + "^2 channel...")
+        # plant2_kde = stats.gaussian_kde(plant[channel].astype(np.int32) ** 2)
+        # bg2_kde = stats.gaussian_kde(background[channel].astype(np.int32) ** 2)
+        # plant2_pdf = plant2_kde([x ** 2 for x in range(0, 256)])
+        # out.write("plant\t" + channel + "2\t" + "\t".join(map(str, plant2_pdf)) + "\n")
+        # bg2_pdf = bg2_kde([x ** 2 for x in range(0, 256)])
+        # out.write("background\t" + channel + "2\t" + "\t".join(map(str, bg2_pdf)) + "\n")
+        # plot_pdf(channel + "2", plant2_pdf, bg2_pdf)
 
     out.close()
 
