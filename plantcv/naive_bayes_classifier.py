@@ -48,9 +48,9 @@ def naive_bayes_classifier(img, pdf_file, device, debug=None):
         pdfs[cols[0]][cols[1]] = cols[2:]
 
     # Split the input BGR image into component channels for BGR, HSV, and LAB colorspaces
-    b, g, r = cv2.split(img)
+    # b, g, r = cv2.split(img)
     h, s, v = cv2.split(cv2.cvtColor(img, cv2.COLOR_BGR2HSV))
-    l, gm, by = cv2.split(cv2.cvtColor(img, cv2.COLOR_BGR2LAB))
+    # l, gm, by = cv2.split(cv2.cvtColor(img, cv2.COLOR_BGR2LAB))
 
     # Calculate the dimensions of the input image
     width, height, depth = np.shape(img)
@@ -63,17 +63,14 @@ def naive_bayes_classifier(img, pdf_file, device, debug=None):
     for i in range(0, width):
         for j in range(0, height):
             # Calculate the joint probability that this is a plant pixel
-            plant[i][j] = pdfs["plant"]["blue"][b[i][j]] * pdfs["plant"]["green"][g[i][j]] * \
-                          pdfs["plant"]["red"][r[i][j]] * pdfs["plant"]["hue"][h[i][j]] * \
-                          pdfs["plant"]["saturation"][s[i][j]] * pdfs["plant"]["value"][v[i][j]] * \
-                          pdfs["plant"]["lightness"][l[i][j]] * pdfs["plant"]["green-magenta"][gm[i][j]] * \
-                          pdfs["plant"]["blue-yellow"][by[i][j]]
+            plant[i][j] = pdfs["plant"]["hue"][h[i][j]] * pdfs["plant"]["saturation"][s[i][j]] * \
+                          pdfs["plant"]["value"][v[i][j]] * pdfs["plant"]["hue2"][h[i][j]] * \
+                          pdfs["plant"]["saturation2"][s[i][j]] * pdfs["plant"]["value2"][v[i][j]]
             # Calculate the joint probability that this is a background pixel
-            bg[i][j] = pdfs["background"]["blue"][b[i][j]] * pdfs["background"]["green"][g[i][j]] * \
-                       pdfs["background"]["red"][r[i][j]] * pdfs["background"]["hue"][h[i][j]] * \
-                       pdfs["background"]["saturation"][s[i][j]] * pdfs["background"]["value"][v[i][j]] * \
-                       pdfs["background"]["lightness"][l[i][j]] * pdfs["background"]["green-magenta"][gm[i][j]] * \
-                       pdfs["background"]["blue-yellow"][by[i][j]]
+            bg[i][j] = pdfs["background"]["hue"][h[i][j]] * pdfs["background"]["saturation"][s[i][j]] * \
+                       pdfs["background"]["value"][v[i][j]] * pdfs["background"]["hue2"][h[i][j]] * \
+                       pdfs["background"]["saturation2"][s[i][j]] * pdfs["background"]["value2"][v[i][j]]
+
     # Initialize an empty mask ndarray
     mask = np.zeros([width, height])
     # Set pixel intensities to 255 (white) where the probability of the pixel being plant is greater than the

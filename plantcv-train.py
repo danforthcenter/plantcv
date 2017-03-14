@@ -71,19 +71,14 @@ def naive_bayes(imgdir, maskdir, outfile):
 
     :param imgdir: str
     :param maskdir: str
+    :param outfile: str
     :return:
     """
     # Initialize color channel ndarrays for plant (foreground) and background
-    plant = {"red": np.array([], dtype=np.uint8), "green": np.array([], dtype=np.uint8),
-             "blue": np.array([], dtype=np.uint8), "hue": np.array([], dtype=np.uint8),
-             "saturation": np.array([], dtype=np.uint8), "value": np.array([], dtype=np.uint8),
-             "lightness": np.array([], dtype=np.uint8), "green-magenta": np.array([], dtype=np.uint8),
-             "blue-yellow": np.array([], dtype=np.uint8)}
-    background = {"red": np.array([], dtype=np.uint8), "green": np.array([], dtype=np.uint8),
-                  "blue": np.array([], dtype=np.uint8), "hue": np.array([], dtype=np.uint8),
-                  "saturation": np.array([], dtype=np.uint8), "value": np.array([], dtype=np.uint8),
-                  "lightness": np.array([], dtype=np.uint8), "green-magenta": np.array([], dtype=np.uint8),
-                  "blue-yellow": np.array([], dtype=np.uint8)}
+    plant = {"hue": np.array([], dtype=np.uint8), "saturation": np.array([], dtype=np.uint8),
+             "value": np.array([], dtype=np.uint8)}
+    background = {"hue": np.array([], dtype=np.uint8), "saturation": np.array([], dtype=np.uint8),
+                  "value": np.array([], dtype=np.uint8)}
 
     # Walk through the image directory
     print("Reading images...")
@@ -98,25 +93,21 @@ def naive_bayes(imgdir, maskdir, outfile):
                     # Read the mask as grayscale
                     mask = cv2.imread(os.path.join(maskdir, filename), 0)
 
-                    # Split the image into component channels
-                    blue, green, red = cv2.split(img)
-
                     # Convert the image to HSV and split into component channels
                     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
                     hue, saturation, value = cv2.split(hsv)
 
-                    # Convert the image to LAB and split into component channels
-                    lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
-                    lightness, green_magenta, blue_yellow = cv2.split(lab)
-
                     # Store channels in a dictionary
-                    channels = {"blue": blue, "green": green, "red": red, "hue": hue, "saturation": saturation,
-                                "value": value, "lightness": lightness, "green-magenta": green_magenta,
-                                "blue-yellow": blue_yellow}
+                    channels = {"hue": hue, "saturation": saturation, "value": value}
 
                     # Split channels into plant and non-plant signal
                     for channel in channels.keys():
                         fg, bg = split_plant_background_signal(channels[channel], mask)
+
+                        # Randomly sample from the plant class (sample 10% of the pixels)
+                        fg = fg[np.random.random_integers(0, len(fg) - 1, len(fg) / 10)]
+                        # Randomly sample from the background class the same n as the plant class
+                        bg = bg[np.random.random_integers(0, len(bg) - 1, len(fg))]
                         plant[channel] = np.append(plant[channel], fg)
                         background[channel] = np.append(background[channel], bg)
 
@@ -126,19 +117,25 @@ def naive_bayes(imgdir, maskdir, outfile):
     out.write("class\tchannel\t" + "\t".join(map(str, range(0, 256))) + "\n")
     for channel in plant.keys():
         print("Calculating PDF for the " + channel + " channel...")
-        # Down-sample background pixels (otherwise there are so many the computing takes forever)
-        background[channel] = background[channel][np.random.random_integers(0, len(background[channel]) - 1,
-                                                                            len(plant[channel]))]
         plant_kde = stats.gaussian_kde(plant[channel])
         bg_kde = stats.gaussian_kde(background[channel])
         # Calculate p from the PDFs for each 8-bit intensity value and save to outfile
         plant_pdf = plant_kde(range(0, 256))
         out.write("plant\t" + channel + "\t" + "\t".join(map(str, plant_pdf)) + "\n")
-        #np.save("pdf_plant_" + channel, plant_pdf)
         bg_pdf = bg_kde(range(0, 256))
         out.write("background\t" + channel + "\t" + "\t".join(map(str, bg_pdf)) + "\n")
-        #np.save("pdf_background_" + channel, bg_pdf)
         plot_pdf(channel, plant_pdf, bg_pdf)
+
+        # Add the second moment (variance) distribution for each channel
+        print("Calculating PDF for the " + channel + "^2 channel...")
+        plant2_kde = stats.gaussian_kde(plant[channel].astype(np.int32) ** 2)
+        bg2_kde = stats.gaussian_kde(background[channel].astype(np.int32) ** 2)
+        plant2_pdf = plant2_kde([x ** 2 for x in range(0, 255)])
+        out.write("plant\t" + channel + "2\t" + "\t".join(map(str, plant2_pdf)) + "\n")
+        bg2_pdf = bg2_kde([x ** 2 for x in range(0, 255)])
+        out.write("background\t" + channel + "2\t" + "\t".join(map(str, bg2_pdf)) + "\n")
+        plot_pdf(channel + "2", plant2_pdf, bg2_pdf)
+
     out.close()
 
 
