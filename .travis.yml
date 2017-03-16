@@ -21,7 +21,7 @@ before_install:
   - conda update -q conda
   - conda info -a
   # These are the packages we need
-  - conda create -q -c menpo -n test-environment python=$TRAVIS_PYTHON_VERSION numpy=1.11 matplotlib=1.5 scipy=0.18 scikit-image=0.12 opencv=2.4.11 pytest
+  - conda create -q -c menpo -n test-environment python=$TRAVIS_PYTHON_VERSION numpy=1.11 matplotlib=1.5 scipy=0.18 scikit-image=0.12 opencv=2.4.11 pytest pandas
   - source activate test-environment
   #- sudo apt-get install -qq git python-dev sqlite3
   #- sudo pip install --upgrade numpy matplotlib scipy scikit-image
