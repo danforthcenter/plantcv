@@ -15,6 +15,11 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
+try:
+    import cv2
+except ImportError:
+    raise("ERROR: OpenCV package 'cv2' not found.")
+
 setup(
     name='plantcv',
 
@@ -76,7 +81,7 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=['matplotlib', 'numpy', 'scipy', 'scikit-image'],
+    install_requires=['matplotlib>=1.5', 'numpy>=1.11', 'pandas', 'python-dateutil', 'pytest', 'scipy', 'scikit-image'],
 
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
