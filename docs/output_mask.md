@@ -12,6 +12,7 @@ Write image and mask with the same name to the path specified (creates two folde
     - mask - binary mask image created in previous steps (single chanel)
     - filename - vis image file name (output of plantcv read_image function)
     - outdir - output directory
+    - mask_only - If True, only outputs mask
     - debug - None, print, or plot. Print = save to file, Plot = print to screen.
 - **Context:**
     - This function was written to more easily create training sets for machine learning (eg. Naive Bayes Classifier)
@@ -20,6 +21,6 @@ Write image and mask with the same name to the path specified (creates two folde
 
 import plantcv as pcv      
 
-pcv.output_mask(device, img, mask, 'test.png', '/home/user/images', mask_only=False, debug='print')
+device, imgpath,maskpath=pcv.output_mask(device, img, mask, 'test.png', '/home/user/images', mask_only=False, debug='print')
 
 ```

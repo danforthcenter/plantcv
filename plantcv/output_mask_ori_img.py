@@ -34,6 +34,7 @@ def output_mask(device,img,mask, filename,outdir=None, mask_only=False, debug=No
     """
 
     device += 1
+    analysis_images=[]
 
     if outdir==None:
         directory = os.getcwd()
@@ -46,20 +47,25 @@ def output_mask(device,img,mask, filename,outdir=None, mask_only=False, debug=No
         if os.path.exists(path)==True:
             imgpath=str(path)+"/"+str(filename)
             print_image(img,imgpath)
+            analysis_images.append(['IMAGE', 'ori-img', maskpath])
+
         else:
             os.mkdir(path)
             imgpath=str(path)+"/"+str(filename)
             print_image(img,imgpath)
+            analysis_images.append(['IMAGE', 'ori-img', maskpath])
 
         path1=str(directory)+"/mask-images"
 
         if os. path.exists(path1)==True:
             maskpath=str(path1)+"/"+str(filename)
             print_image(mask,maskpath)
+            analysis_images.append(['IMAGE', 'mask', maskpath])
         else:
             os.mkdir(path1)
             maskpath=str(path1)+"/"+str(filename)
             print_image(mask,maskpath)
+            analysis_images.append(['IMAGE', 'mask', maskpath])
 
         if debug == 'print':
             print_image(img, (str(device) + '_ori-img.png'))
@@ -73,7 +79,7 @@ def output_mask(device,img,mask, filename,outdir=None, mask_only=False, debug=No
                 plot_image(img, cmap='gray')
                 plot_image(mask,cmap='gray')
 
-        return device, imgpath, maskpath
+        return device, imgpath, maskpath,analysis_images
 
     else:
         path1 = str(directory) + "/mask-images"
@@ -81,14 +87,16 @@ def output_mask(device,img,mask, filename,outdir=None, mask_only=False, debug=No
         if os.path.exists(path1) == True:
             maskpath = str(path1) + "/" + str(filename)
             print_image(mask, maskpath)
+            analysis_images.append(['IMAGE', 'mask', maskpath])
         else:
             os.mkdir(path1)
             maskpath = str(path1) + "/" + str(filename)
             print_image(mask, maskpath)
+            analysis_images.append(['IMAGE', 'mask', maskpath])
 
         if debug == 'print':
             print_image(mask, (str(device) + '_mask-img.png'))
         elif debug == 'plot':
                 plot_image(mask, cmap='gray')
 
-        return device, maskpath
+        return device, maskpath,analysis_images
