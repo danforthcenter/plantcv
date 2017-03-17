@@ -48,13 +48,13 @@ def output_mask(device, img, mask, filename, outdir=None, mask_only=False, debug
         if os.path.exists(path) == True:
             imgpath = str(path) + "/" + str(filename)
             print_image(img, imgpath)
-            analysis_images.append(['IMAGE', 'ori-img', maskpath])
+            analysis_images.append(['IMAGE', 'ori-img', imgpath])
 
         else:
             os.mkdir(path)
             imgpath = str(path) + "/" + str(filename)
             print_image(img, imgpath)
-            analysis_images.append(['IMAGE', 'ori-img', maskpath])
+            analysis_images.append(['IMAGE', 'ori-img', imgpath])
 
         path1 = str(directory) + "/mask-images"
 

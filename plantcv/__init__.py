@@ -7,7 +7,7 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'plot_colorbar', 'readima
            'crop_position_mask', 'get_nir', 'adaptive_threshold', 'otsu_auto_threshold', 'report_size_marker_area',
            'white_balance', 'triangle_auto_threshold', 'acute_vertex', 'scale_features', 'turgor_proxy',
            'x_axis_pseudolandmarks', 'y_axis_pseudolandmarks', 'gaussian_blur', 'cluster_contours',
-           'cluster_contour_splitimg', 'rotate_img', 'shift_img', 'output_mask_ori_img', 'auto_crop',
+           'cluster_contour_splitimg', 'rotate_img', 'shift_img', 'output_mask', 'auto_crop',
            'background_subtraction', 'naive_bayes_classifier']
 
 from fatal_error import fatal_error
