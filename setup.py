@@ -18,7 +18,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 try:
     import cv2
 except ImportError:
-    raise("ERROR: OpenCV package 'cv2' not found.")
+    raise ImportError("ERROR: OpenCV package 'cv2' not found.")
 
 setup(
     name='plantcv',

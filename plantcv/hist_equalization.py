@@ -27,7 +27,7 @@ def hist_equalization(img, device, debug=None):
     :return img_eh: numpy array
     """
 
-    if len(np.shape(img))== 3:
+    if len(np.shape(img)) == 3:
         fatal_error("Input image must be gray")
 
     img_eh = cv2.equalizeHist(img)
@@ -35,6 +35,6 @@ def hist_equalization(img, device, debug=None):
     if debug == 'print':
         print_image(img_eh, str(device) + '_hist_equal_img.png')
     elif debug == 'plot':
-        plot_image(img_eh,cmap='gray')
+        plot_image(img_eh, cmap='gray')
 
     return device, img_eh

@@ -1,50 +1,59 @@
-import sys
 import cv2
 import numpy as np
-from datetime import datetime
 from . import print_image
 from . import plot_image
-from . import fatal_error
-from . import apply_mask
 from plantcv.dev.color_palette import color_palette
 
-def cluster_contours(device,img, roi_objects, nrow=1,ncol=1,debug=None):
+
+def cluster_contours(device, img, roi_objects, nrow=1, ncol=1, debug=None):
 
     """
     This function take a image with multiple contours and clusters them based on user input of rows and columns
 
     Inputs:
-    img - An RGB image array
-    roi_objects - object contours in an image that are needed to be clustered.
-    nrow - number of rows to cluster (this should be the approximate  number of desired rows in the entire image (even if there isn't a literal row of plants)
-    ncol - number of columns to cluster (this should be the approximate number of desired columns in the entire image (even if there isn't a literal row of plants)
-    file -  output of filename from read_image function
-    filenames - input txt file with list of filenames in order from top to bottom left to right
-    debug - print debugging images
+    img                     = An RGB image array
+    roi_objects             = object contours in an image that are needed to be clustered.
+    nrow                    = number of rows to cluster (this should be the approximate  number of desired rows
+                              in the entire image (even if there isn't a literal row of plants)
+    ncol                    = number of columns to cluster (this should be the approximate number of desired columns
+                              in the entire image (even if there isn't a literal row of plants)
+    file                    = output of filename from read_image function
+    filenames               = input txt file with list of filenames in order from top to bottom left to right
+    debug                   = print debugging images
 
-    :returns:
-    device - pipeline step counter
-    grouped_contour_indexes - contours grouped
-    contours - All inputed contours
+    Returns:
+    device                  = pipeline step counter
+    grouped_contour_indexes = contours grouped
+    contours                = All inputed contours
+
+    :param device: int
+    :param img: ndarray
+    :param roi_objects: list
+    :param nrow: int
+    :param ncol: int
+    :param debug: str
+    :return device: int
+    :return grouped_contour_indexes: list
+    :return contours: list
     """
 
     device += 1
 
-    if len(np.shape(img))==3:
+    if len(np.shape(img)) == 3:
         iy, ix, iz = np.shape(img)
     else:
-        iy, ix, =np.shape(img)
+        iy, ix, = np.shape(img)
 
     # get the break groups
 
-    if nrow==1:
-        rbreaks=[0,iy]
+    if nrow == 1:
+        rbreaks = [0, iy]
     else:
         rstep = np.rint(iy / nrow)
         rstep1 = np.int(rstep)
         rbreaks = range(0, iy, rstep1)
-    if ncol==1:
-        cbreaks=[0,ix]
+    if ncol == 1:
+        cbreaks = [0, ix]
     else:
         cstep = np.rint(ix / ncol)
         cstep1 = np.int(cstep)
@@ -52,20 +61,19 @@ def cluster_contours(device,img, roi_objects, nrow=1,ncol=1,debug=None):
 
     # categorize what bin the center of mass of each contour
 
-    def digitize(a,step):
-        if isinstance(step,int)==True:
-            i=step
+    def digitize(a, step):
+        if isinstance(step, int) == True:
+            i = step
         else:
-            i=len(step)
-        for x in range(0,i):
-            if x==0:
-                if a>=0 and a<step[x+1]:
-                    return (x+1)
-            elif a>=step[x-1] and a<step[x]:
+            i = len(step)
+        for x in range(0, i):
+            if x == 0:
+                if a >= 0 and a < step[x + 1]:
+                    return x + 1
+            elif a >= step[x - 1] and a < step[x]:
                 return x
-            elif a>step[x-1] and a>np.max(step):
-                return (i)
-
+            elif a > step[x - 1] and a > np.max(step):
+                return i
 
     dtype = [('cx', int), ('cy', int), ('rowbin', int), ('colbin', int), ('index', int)]
     coord = []
@@ -76,10 +84,10 @@ def cluster_contours(device,img, roi_objects, nrow=1,ncol=1,debug=None):
         else:
             cx = int(m['m10'] / m['m00'])
             cy = int(m['m01'] / m['m00'])
-            #colbin = np.digitize(cx, cbreaks)
-            #rowbin = np.digitize(cy, rbreaks)
-            colbin=digitize(cx,cbreaks)
-            rowbin=digitize(cy,rbreaks)
+            # colbin = np.digitize(cx, cbreaks)
+            # rowbin = np.digitize(cy, rbreaks)
+            colbin = digitize(cx, cbreaks)
+            rowbin = digitize(cy, rbreaks)
             a = (cx, cy, colbin, rowbin, i)
             coord.append(a)
     coord1 = np.array(coord, dtype=dtype)
@@ -110,9 +118,8 @@ def cluster_contours(device,img, roi_objects, nrow=1,ncol=1,debug=None):
 
     coordlist = [[y[1] for y in coordgroups if y[0] == x] for x in range(0, (len(unigroup)))]
 
-    contours=roi_objects
-    grouped_contour_indexes=coordlist
-
+    contours = roi_objects
+    grouped_contour_indexes = coordlist
 
     # Debug image is rainbow printed contours
 

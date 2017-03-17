@@ -5,6 +5,7 @@ import numpy as np
 from . import print_image
 from . import plot_image
 
+
 def rectangle_mask(img, p1, p2, device, debug=None, color="black"):
     """Takes an input image and returns a binary image masked by a rectangular area denoted by p1 and p2. Note that
        p1 = (0,0) is the top left hand corner bottom right hand corner is p2 = (max-value(x), max-value(y)).
@@ -39,14 +40,14 @@ def rectangle_mask(img, p1, p2, device, debug=None, color="black"):
 
     device += 1
     # get the dimensions of the input image
-    if len(np.shape(img))==3:
-        ix,iy,iz=np.shape(img)
+    if len(np.shape(img)) == 3:
+        ix, iy, iz = np.shape(img)
     else:
         ix, iy = np.shape(img)
     size = ix, iy
     # create a blank image of same size
     bnk = np.zeros(size, dtype=np.uint8)
-    img1= np.copy(img)
+    img1 = np.copy(img)
     # draw a rectangle denoted by pt1 and pt2 on the blank image
 
     cv2.rectangle(img=bnk, pt1=p1, pt2=p2, color=(255, 255, 255), thickness=-1)
@@ -60,7 +61,7 @@ def rectangle_mask(img, p1, p2, device, debug=None, color="black"):
         cv2.drawContours(bnk, contour, 0, (255, 255, 255), -1)
         cv2.drawContours(img1, contour, 0, (255, 255, 255), -1)
     if color == "black":
-        bnk=bnk+255
+        bnk = bnk + 255
         cv2.drawContours(bnk, contour, 0, (0, 0, 0), -1)
         cv2.drawContours(img1, contour, 0, (0, 0, 0), -1)
     if color == "gray":
@@ -74,6 +75,6 @@ def rectangle_mask(img, p1, p2, device, debug=None, color="black"):
             plot_image(bnk)
             plot_image(img1)
         else:
-            plot_image(bnk,cmap="gray")
-            plot_image(img1,cmap="gray")
-    return device, img1, bnk,contour, hierarchy
+            plot_image(bnk, cmap="gray")
+            plot_image(img1, cmap="gray")
+    return device, img1, bnk, contour, hierarchy

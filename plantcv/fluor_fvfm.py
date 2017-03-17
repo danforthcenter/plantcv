@@ -156,18 +156,19 @@ def fluor_fvfm(fdark, fmin, fmax, mask, device, filename, bins=1000, debug=None)
         matplotlib.use('Agg')
         from matplotlib import pyplot as plt
         from matplotlib import cm as cm
-        from matplotlib import colors as colors
-        from matplotlib import colorbar as colorbar
+        # from matplotlib import colors as colors
+        # from matplotlib import colorbar as colorbar
 
         # Print Fv image
         print_image(fv_img, (str(filename[0:-4]) + '_fv_img.png'))
         print('\t'.join(map(str, ('IMAGE', 'fv', str(filename[0:-4]) + '_fv_img.png'))))
 
         # Print FvFm slice
-        print_image(fvfm_stack, (str(filename[0:-4]) + '_fvfm_hist_slice.png'))
-        print('\t'.join(map(str, ('IMAGE', 'slice', fig_name))))
+        # print_image(fvfm_stack, (str(filename[0:-4]) + '_fvfm_hist_slice.png'))
+        # print('\t'.join(map(str, ('IMAGE', 'slice', fig_name))))
 
-        # Create Histogram Plot, if you change the bin number you might need to change binx so that it prints an appropriate number of labels
+        # Create Histogram Plot, if you change the bin number you might need to change binx so that it prints
+        # an appropriate number of labels
         binx = bins / 50
         fvfm_plot = plt.plot(tmid, fvfm_hist, color='green', label='FvFm')
         plt.xticks(list(tmid[0::binx]), rotation='vertical', size='xx-small')
@@ -181,7 +182,6 @@ def fluor_fvfm(fdark, fmin, fmax, mask, device, filename, bins=1000, debug=None)
         plt.savefig(fig_name)
         plt.clf()
         print('\t'.join(map(str, ('IMAGE', 'hist', fig_name))))
-
 
         # Pseudocolor FvFm image
         ix, iy = np.shape(fmax)

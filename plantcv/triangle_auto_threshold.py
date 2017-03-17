@@ -7,8 +7,8 @@ import numpy as np
 from . import print_image
 from . import plot_image
 
-def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising',
-                 kpsh=False, valley=False, show=False, ax=None):
+
+def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, valley=False, show=False, ax=None):
     """Marcos Duarte, https://github.com/demotu/BMC; version 1.0.4; license MIT
 
     Detect peaks in data based on their amplitude and other features.
@@ -57,32 +57,32 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising',
 
     Examples
     --------
-    >>> from detect_peaks import detect_peaks
-    >>> x = np.random.randn(100)
-    >>> x[60:81] = np.nan
-    >>> # detect all peaks and plot data
-    >>> ind = detect_peaks(x, show=True)
-    >>> print(ind)
+    from detect_peaks import detect_peaks
+    x = np.random.randn(100)
+    x[60:81] = np.nan
+    # detect all peaks and plot data
+    ind = detect_peaks(x, show=True)
+    print(ind)
 
-    >>> x = np.sin(2*np.pi*5*np.linspace(0, 1, 200)) + np.random.randn(200)/5
-    >>> # set minimum peak height = 0 and minimum peak distance = 20
-    >>> detect_peaks(x, mph=0, mpd=20, show=True)
+    x = np.sin(2*np.pi*5*np.linspace(0, 1, 200)) + np.random.randn(200)/5
+    # set minimum peak height = 0 and minimum peak distance = 20
+    detect_peaks(x, mph=0, mpd=20, show=True)
 
-    >>> x = [0, 1, 0, 2, 0, 3, 0, 2, 0, 1, 0]
-    >>> # set minimum peak distance = 2
-    >>> detect_peaks(x, mpd=2, show=True)
+    x = [0, 1, 0, 2, 0, 3, 0, 2, 0, 1, 0]
+    # set minimum peak distance = 2
+    detect_peaks(x, mpd=2, show=True)
 
-    >>> x = np.sin(2*np.pi*5*np.linspace(0, 1, 200)) + np.random.randn(200)/5
-    >>> # detection of valleys instead of peaks
-    >>> detect_peaks(x, mph=0, mpd=20, valley=True, show=True)
+    x = np.sin(2*np.pi*5*np.linspace(0, 1, 200)) + np.random.randn(200)/5
+    # detection of valleys instead of peaks
+    detect_peaks(x, mph=0, mpd=20, valley=True, show=True)
 
-    >>> x = [0, 1, 1, 0, 1, 1, 0]
-    >>> # detect both edges
-    >>> detect_peaks(x, edge='both', show=True)
+    x = [0, 1, 1, 0, 1, 1, 0]
+    # detect both edges
+    detect_peaks(x, edge='both', show=True)
 
-    >>> x = [-2, 1, -2, 2, 1, 1, 3, 0]
-    >>> # set threshold = 2
-    >>> detect_peaks(x, threshold = 2, show=True)
+    x = [-2, 1, -2, 2, 1, 1, 3, 0]
+    # set threshold = 2
+    detect_peaks(x, threshold = 2, show=True)
     """
 
     x = np.atleast_1d(x).astype('float64')
@@ -210,7 +210,8 @@ def triangle_auto_threshold(device, img, maxvalue, object_type, xstep=1, debug=N
 
     # Make histogram one array
     newhist = []
-    for item in hist: newhist.extend(item)
+    for item in hist:
+        newhist.extend(item)
 
     # Detect peaks
     ind = _detect_peaks(newhist, mph=None, mpd=1)
@@ -238,11 +239,11 @@ def triangle_auto_threshold(device, img, maxvalue, object_type, xstep=1, debug=N
 
     for i in range(x_coords[0], x_coords[1], xstep):
         distance = (((x_coords[1] - x_coords[0]) * (y_coords[0] - hist[i])) -
-                        ((x_coords[0] - i) * (y_coords[1] - y_coords[0]))) / math.sqrt(
-                (float(x_coords[1]) - float(x_coords[0])) *
-                (float(x_coords[1]) - float(x_coords[0])) +
-                ((float(y_coords[1]) - float(y_coords[0])) *
-                (float(y_coords[1]) - float(y_coords[0]))))
+                    ((x_coords[0] - i) * (y_coords[1] - y_coords[0]))) / math.sqrt(
+            (float(x_coords[1]) - float(x_coords[0])) *
+            (float(x_coords[1]) - float(x_coords[0])) +
+            ((float(y_coords[1]) - float(y_coords[0])) *
+             (float(y_coords[1]) - float(y_coords[0]))))
         peaks.append(i)
         dists.append(distance)
     autothresh = [peaks[x] for x in [i for i, x in enumerate(list(dists)) if x == max(list(dists))]]

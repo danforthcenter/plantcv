@@ -49,10 +49,10 @@ def background_subtraction(background_image, foreground_image, device, debug=Non
         print("WARNING: Images are not of same size.\nResizing")
         if bg_img.shape > fg_img.shape:
             width, height = fg_img.shape[1], fg_img.shape[0]
-            bg_img = cv2.resize(bg_img, (width, height), interpolation = cv2.INTER_AREA)
+            bg_img = cv2.resize(bg_img, (width, height), interpolation=cv2.INTER_AREA)
         else:
             width, height = bg_img.shape[1], bg_img.shape[0]
-            fg_img = cv2.resize(fg_img, (width, height), interpolation = cv2.INTER_AREA)
+            fg_img = cv2.resize(fg_img, (width, height), interpolation=cv2.INTER_AREA)
 
     # Instantiating the background subtractor, for a single history no default parameters need to be changed.
     bgsub = cv2.BackgroundSubtractorMOG()
@@ -66,6 +66,6 @@ def background_subtraction(background_image, foreground_image, device, debug=Non
     if debug == "print":
         print_image(fgmask, "{0}_background_subtraction.png".format(device))
     elif debug == "plot":
-        plot_image(fgmask, cmap = "gray")
+        plot_image(fgmask, cmap="gray")
     
-    return(device, fgmask)
+    return device, fgmask

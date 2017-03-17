@@ -39,6 +39,6 @@ def resize(img, resize_x, resize_y, device, debug=None):
     if debug == 'print':
         print_image(reimg, (str(device) + "_resize1.png"))
     elif debug == 'plot':
-        plot_image(reimg,cmap='gray')
+        plot_image(reimg, cmap='gray')
 
     return device, reimg

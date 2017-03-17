@@ -256,7 +256,6 @@ def analyze_object(img, imgname, obj, mask, device, debug=None, filename=False):
             if len(np.shape(img)) == 3:
                 plot_image(ori_img)
             else:
-                plot_image(ori_img,cmap='gray')
+                plot_image(ori_img, cmap='gray')
 
     return device, shape_header, shape_data, analysis_images
-
