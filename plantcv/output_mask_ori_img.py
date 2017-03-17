@@ -5,7 +5,8 @@ import numpy as np
 from . import print_image
 from . import plot_image
 
-def output_mask(device,img,mask, filename,outdir=None, mask_only=False, debug=None):
+
+def output_mask(device, img, mask, filename, outdir=None, mask_only=False, debug=None):
     """Prints ori image and mask to directories.
 
     Inputs:
@@ -34,37 +35,37 @@ def output_mask(device,img,mask, filename,outdir=None, mask_only=False, debug=No
     """
 
     device += 1
-    analysis_images=[]
+    analysis_images = []
 
-    if outdir==None:
+    if outdir == None:
         directory = os.getcwd()
     else:
-        directory=outdir
+        directory = outdir
 
-    if mask_only==False:
-        path=str(directory)+"/ori-images"
+    if mask_only == False:
+        path = str(directory) + "/ori-images"
 
-        if os.path.exists(path)==True:
-            imgpath=str(path)+"/"+str(filename)
-            print_image(img,imgpath)
+        if os.path.exists(path) == True:
+            imgpath = str(path) + "/" + str(filename)
+            print_image(img, imgpath)
             analysis_images.append(['IMAGE', 'ori-img', maskpath])
 
         else:
             os.mkdir(path)
-            imgpath=str(path)+"/"+str(filename)
-            print_image(img,imgpath)
+            imgpath = str(path) + "/" + str(filename)
+            print_image(img, imgpath)
             analysis_images.append(['IMAGE', 'ori-img', maskpath])
 
-        path1=str(directory)+"/mask-images"
+        path1 = str(directory) + "/mask-images"
 
-        if os. path.exists(path1)==True:
-            maskpath=str(path1)+"/"+str(filename)
-            print_image(mask,maskpath)
+        if os. path.exists(path1) == True:
+            maskpath = str(path1) + "/" + str(filename)
+            print_image(mask, maskpath)
             analysis_images.append(['IMAGE', 'mask', maskpath])
         else:
             os.mkdir(path1)
-            maskpath=str(path1)+"/"+str(filename)
-            print_image(mask,maskpath)
+            maskpath = str(path1) + "/" + str(filename)
+            print_image(mask, maskpath)
             analysis_images.append(['IMAGE', 'mask', maskpath])
 
         if debug == 'print':
@@ -72,14 +73,14 @@ def output_mask(device,img,mask, filename,outdir=None, mask_only=False, debug=No
             print_image(mask, (str(device) + '_mask-img.png'))
 
         elif debug == 'plot':
-            if len(np.shape(img))==3:
+            if len(np.shape(img)) == 3:
                 plot_image(img)
                 plot_image(mask, cmap='gray')
             else:
                 plot_image(img, cmap='gray')
-                plot_image(mask,cmap='gray')
+                plot_image(mask, cmap='gray')
 
-        return device, imgpath, maskpath,analysis_images
+        return device, imgpath, maskpath, analysis_images
 
     else:
         path1 = str(directory) + "/mask-images"
@@ -99,4 +100,4 @@ def output_mask(device,img,mask, filename,outdir=None, mask_only=False, debug=No
         elif debug == 'plot':
                 plot_image(mask, cmap='gray')
 
-        return device, maskpath,analysis_images
+        return device, maskpath, analysis_images
