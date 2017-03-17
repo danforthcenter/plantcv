@@ -30,9 +30,9 @@ def dilate(img, kernel, i, device, debug=None):
     :return dil_img: numpy array
     """
 
-    kernel1=int(kernel)
-    kernel2 = np.ones((kernel1,kernel1),np.uint8)
-    dil_img = cv2.dilate(src = img, kernel = kernel2, iterations = i)
+    kernel1 = int(kernel)
+    kernel2 = np.ones((kernel1, kernel1), np.uint8)
+    dil_img = cv2.dilate(src=img, kernel=kernel2, iterations=i)
     device += 1
     if debug == 'print':
         print_image(dil_img, str(device) + '_dil_image_' + 'itr_' + str(i) + '.png')

@@ -38,9 +38,9 @@ def flip(img, direction, device, debug=None):
     if debug == 'print':
         print_image(vh_img, (str(device) + "_flipped.png"))
     elif debug == 'plot':
-        if len(np.shape(vh_img))==3:
+        if len(np.shape(vh_img)) == 3:
             plot_image(vh_img)
         else:
-            plot_image(vh_img,cmap='gray')
+            plot_image(vh_img, cmap='gray')
 
     return device, vh_img

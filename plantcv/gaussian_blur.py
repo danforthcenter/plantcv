@@ -31,13 +31,13 @@ def gaussian_blur(device, img, ksize, sigmax=0, sigmay=None, debug=None):
     :return img_gblur: numpy array
     """
 
-    img_gblur=cv2.GaussianBlur(img,ksize,sigmax,sigmay)
+    img_gblur = cv2.GaussianBlur(img, ksize, sigmax, sigmay)
 
     device += 1
     if debug == 'print':
         print_image(img_gblur, (str(device) + '_gaussian_blur' + str(ksize) + '.png'))
     elif debug == 'plot':
-        if len(img_gblur)==3:
+        if len(img_gblur) == 3:
             plot_image(img_gblur)
         else:
             plot_image(img_gblur, cmap='gray')

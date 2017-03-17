@@ -32,7 +32,7 @@ def analyze_NIR_intensity(img, rgbimg, mask, bins, device, histplot=False, debug
     analysis_img = output image
 
     :param img: numpy array
-    :param imgname: str
+    :param rgbimg: numpy array
     :param mask: numpy array
     :param bins: int
     :param device: int
@@ -49,21 +49,21 @@ def analyze_NIR_intensity(img, rgbimg, mask, bins, device, histplot=False, debug
 
     # apply plant shaped mask to image
     device, mask1 = binary_threshold(mask, 0, 255, 'light', device, None)
-    mask1 = (mask1/255)
-    masked=np.multiply(img,mask1)
+    mask1 = (mask1 / 255)
+    masked = np.multiply(img, mask1)
 
     # calculate histogram
-    if img.dtype=='uint16':
-        maxval=65536
+    if img.dtype == 'uint16':
+        maxval = 65536
     else:
-        maxval=256
+        maxval = 256
 
-    hist_nir,hist_bins=np.histogram(masked, bins,(1,maxval),False, None,None)
+    hist_nir, hist_bins = np.histogram(masked, bins, (1, maxval), False, None, None)
 
-    hist_bins1=hist_bins[:-1]
-    hist_bins2=[l for l in hist_bins1]
+    hist_bins1 = hist_bins[:-1]
+    hist_bins2 = [l for l in hist_bins1]
 
-    hist_nir1=[l for l in hist_nir]
+    hist_nir1 = [l for l in hist_nir]
 
     # make hist percentage for plotting
     pixels = cv2.countNonZero(mask1)

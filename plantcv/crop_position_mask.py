@@ -44,9 +44,7 @@ def crop_position_mask(img, mask, device, x, y, v_pos="top", h_pos="right", debu
     if x < 0 or y < 0:
         fatal_error("x and y cannot be negative numbers or non-integers")
 
-
-    ## get the sizes of the images
-
+    # get the sizes of the images
     # subtract 1 from x and y since python counts start from 0
     if y != 0:
         y = y - 1
@@ -62,35 +60,33 @@ def crop_position_mask(img, mask, device, x, y, v_pos="top", h_pos="right", debu
 
     if len(np.shape(mask)) == 3:
         mx, my, mz = np.shape(mask)
-        mask=mask[0]
+        mask = mask[0]
     else:
         mx, my = np.shape(mask)
 
     npimg = np.zeros((ix, iy), dtype=np.uint8)
 
-    ## resize the images so they are equal in size and centered
-
-    if mx>=ix:
-        r=mx-ix
-        if r % 2==0:
-            r1=int(np.rint(r/2.0))
-            r2=r1
+    # resize the images so they are equal in size and centered
+    if mx >= ix:
+        r = mx - ix
+        if r % 2 == 0:
+            r1 = int(np.rint(r / 2.0))
+            r2 = r1
         else:
-            r1=int(np.rint(r/2.0))
-            r2=r1-1
-        mask=mask[r1:mx-r2,0:my]
-    if my>=iy:
-        r=my-iy
-        if r % 2==0:
-            r1=int(np.rint(r/2.0))
-            r2=r1
+            r1 = int(np.rint(r / 2.0))
+            r2 = r1 - 1
+        mask = mask[r1:mx - r2, 0:my]
+    if my >= iy:
+        r = my - iy
+        if r % 2 == 0:
+            r1 = int(np.rint(r / 2.0))
+            r2 = r1
         else:
-            r1=int(np.rint(r/2.0))
-            r2=r1-1
-        mask = mask[0:mx,r1:my-r2]
+            r1 = int(np.rint(r / 2.0))
+            r2 = r1 - 1
+        mask = mask[0:mx, r1:my - r2]
 
     # get he sizes of the images again since you might have changed them.
-
     if len(np.shape(img)) == 3:
         ix, iy, iz = np.shape(img)
         ori_img = np.copy(img)
@@ -103,9 +99,7 @@ def crop_position_mask(img, mask, device, x, y, v_pos="top", h_pos="right", debu
     else:
         mx, my = np.shape(mask)
 
-
     if v_pos == "top":
-
         # Add rows to the top
         top = np.zeros((x, my), dtype=np.uint8)
 

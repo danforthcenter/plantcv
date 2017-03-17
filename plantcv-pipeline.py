@@ -406,7 +406,7 @@ def db_connect(args):
             if row['max'] is not None:
                 args.image_id = row['max']
 
-    if os.path.isfile(args.db)==False:
+    if os.path.isfile(args.db) == False:
         # Connect to the database
         args.connect = sqlite3.connect(args.db)
         # Replace the row_factory result constructor with a dictionary constructor

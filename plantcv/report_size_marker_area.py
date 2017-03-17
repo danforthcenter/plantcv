@@ -22,7 +22,8 @@ def report_size_marker_area(img, shape, device, debug, marker='define', x_adj=0,
     shape           = 'rectangle', 'circle', 'ellipse'
     device          = device number. Used to count steps in the pipeline
     debug           = None, print, or plot. Print = save to file, Plot = print to screen.
-    marker          = define or detect, if define it means you set an area, if detect it means you want to detect within an area
+    marker          = define or detect, if define it means you set an area, if detect it means you want to
+                      detect within an area
     x_adj           = x position of shape, integer
     y_adj           = y position of shape, integer
     w_adj           = width
@@ -50,6 +51,7 @@ def report_size_marker_area(img, shape, device, debug, marker='define', x_adj=0,
     :param h_adj:int
     :param h_adj:int
     :param base:str
+    :param objcolor: str
     :param thresh_channel:str
     :param thresh:int
     :param filename: str
@@ -174,7 +176,7 @@ def report_size_marker_area(img, shape, device, debug, marker='define', x_adj=0,
     else:
         fatal_error("marker must be either in 'detect' or 'define' mode")
     
-    analysis_images=[]
+    analysis_images = []
     if filename:
         out_file = str(filename[0:-4]) + '_sizemarker.jpg'
         print_image(ori_img, out_file)
