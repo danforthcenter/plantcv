@@ -276,7 +276,7 @@ For more information see [here](roi_objects.md).
 
 The isolated objects now should all be plant material. There, can however, 
 be more than one object that makes up a plant, since sometimes leaves twist 
-making them appear in images as seperate objects. Therefore, in order for 
+making them appear in images as separate objects. Therefore, in order for
 shape analysis to perform properly the plant objects need to be combined into 
 one object using the Combine Objects function (for more info see [here](object_composition.md)).
 
