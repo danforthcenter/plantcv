@@ -10,29 +10,36 @@ We have tested PlantCV on the following systems:
 
 A list of minimum tested software dependencies is listed below:
 
-- Python 2.7.x
-    - argparse 1.1.x
-    - dateutil 1.5
-    - matplotlib 1.2.x
-    - numpy 1.7.x
-    - setuptools
-    - cv2 2.4.x
-- OpenCV 2.4.x
-- SQLite 3.7.x
-- Git 1.8.x
+- Python 2.7
+    - argparse 1.1
+    - cv2 2.4
+    - matplotlib 1.5
+    - numpy 1.11
+    - pandas 0.18
+    - pytest 2.9
+    - python-dateutil 2.6
+    - scikit-image 0.12
+    - scipy 0.18
+    - setuptools 28.6
+- OpenCV 2.4
+- SQLite 3.7
+- Git 1.8
 
 ### Installation tutorials
 
-The tutorials below require that you have administrator privileges. 
-If you are not logged in as the root user you will need to execute the following commands with root authority by prepending all commands with the sudo command. 
-If you do not have administrator privileges you will need to contact your system administrator.
+The tutorials below require that you have administrator privileges.
+If you are not logged in as the root user you will need to execute the following commands with root authority by 
+prepending all commands with the sudo command.
+If you do not have administrator privileges you will need to contact your system administrator or manually install
+the dependencies into your user directory.
 
 #### RedHat Linux
 
-We use [Centos](https://www.centos.org/) x86 64-bit minimal release 7.2 currently on our system. 
+We use [Centos](https://www.centos.org/) x86 64-bit minimal release 7.3 currently on our system. 
 The minimal install is a bare-bones server installation with only necessary packages installed. 
 More complete editions of CentOS, including those with a graphical user interface should work fine as well. 
-After installation, connect to the server with SSH or a local terminal and execute the following commands to install PlantCV.
+After installation, connect to the server with SSH or a local terminal and execute the following commands 
+to install PlantCV.
 
 Install the developer tools (includes compilers and other tools)
 
@@ -40,19 +47,19 @@ Install the developer tools (includes compilers and other tools)
 
 Install additional software dependencies
 
-`sudo yum install opencv opencv-devel opencv-python numpy python-matplotlib`
+`sudo yum install opencv opencv-devel opencv-python`
 
 Clone the PlantCV repository
 
 `git clone https://github.com/danforthcenter/plantcv.git`
 
-Optionally, check out a specific version or alternate branch of PlantCV
+The default branch (master) is the latest release. If you want to check out a specific version:
 
 ```bash
-# Switch to the development (latest) branch of PlantCV
+# Switch to a stable release
 cd plantcv
 
-git checkout dev
+git checkout v1.1
 ```
 
 Install PlantCV
@@ -69,24 +76,25 @@ If everything is working, the following should run without errors:
 
 #### Ubuntu Linux
 
-We tested [Ubuntu](http://www.ubuntu.com/) x86 64-bit 12.04.5 server edition.  
-After installation, connect to the server with SSH or a local terminal and execute the following commands to install PlantCV.
+We tested [Ubuntu](http://www.ubuntu.com/) x86 64-bit 14.04 server edition.  
+After installation, connect to the server with SSH or a local terminal and execute the following commands 
+to install PlantCV.
 
 Install software dependencies
 
-`sudo apt-get install git libopencv-dev python-opencv python-numpy python-matplotlib sqlite3`
+`sudo apt-get install git libopencv-dev python-opencv sqlite3`
 
 Clone the PlantCV repository into your home directory
 
 `git clone https://github.com/danforthcenter/plantcv.git`
 
-Optionally, check out a specific version or alternate branch of PlantCV
+The default branch (master) is the latest release. If you want to check out a specific version:
 
 ```bash
-# Switch to the development (latest) branch of PlantCV
+# Switch to a stable release
 cd plantcv
 
-git checkout dev
+git checkout v1.1
 ```
 
 Install PlantCV
@@ -105,7 +113,8 @@ If everything is working, the following should run without errors:
 
 Tested on OSX 10.11.
 
-Procedure modified from [here](https://jjyap.wordpress.com/2014/05/24/installing-opencv-2-4-9-on-mac-osx-with-python-support/).
+Procedure modified from 
+[here](https://jjyap.wordpress.com/2014/05/24/installing-opencv-2-4-9-on-mac-osx-with-python-support/).
 
 Install Homebrew by following the instructions [here](http://brew.sh/).
 
@@ -117,7 +126,8 @@ brew tap homebrew/science
 brew install opencv
 ```
 
-Add OpenCV to your PYTHONPATH. Use your favorite editor to edit `~/.bash_profile` (or .bashrc or .profile) and add the following line:
+Add OpenCV to your PYTHONPATH. Use your favorite editor to edit `~/.bash_profile` (or .bashrc or .profile) and 
+add the following line:
 
 `export PYTHONPATH=$PYTHONPATH:/usr/local/lib/python2.7/site-packages`
 
@@ -125,13 +135,13 @@ Clone the PlantCV repository into your home directory
 
 `git clone https://github.com/danforthcenter/plantcv.git`
 
-Optionally, check out a specific version or alternate branch of PlantCV
+The default branch (master) is the latest release. If you want to check out a specific version:
 
 ```bash
-# Switch to the development (latest) branch of PlantCV
+# Switch to a stable release
 cd plantcv
 
-git checkout dev
+git checkout v1.1
 ```
 
 Install PlantCV
@@ -146,15 +156,11 @@ If everything is working, the following should run without errors:
 
 `python -c 'import plantcv'`
 
-If everything is working, the following should run without errors:
-
-`python -c 'import plantcv'`
-
 #### Python virtual environment
 
 Install OpenCV as documented for your system.
 
-Create a Python virtual environment.
+Create a Python virtual environment (assumes OpenCV is already installed in the system).
 
 ```bash
 virtualenv plantcv-venv --system-site-packages
@@ -189,12 +195,17 @@ Add setuptools to your Path. Open PowerShell and run:
 
 `[Environment]::SetEnvironmentVariable("Path", "$env:Path;C:\Python27\;C:\Python27\Scripts\", "User")`
 
-Install additional packages (need numpy >= 1.9, tested 1.11)
+Install additional packages:
 
-```bash
-pip install numpy
-pip install matplotlib
+```
 pip install argparse
+pip install matplotlib
+pip install numpy
+pip install pandas
+pip install pytest
+pip install python-dateutil
+pip install scikit-image
+pip install scipy
 ```
 
 Download [OpenCV](https://github.com/itseez/opencv/releases) (tested 2.4.13)
@@ -247,11 +258,14 @@ Clone the PlantCV repository into your home directory
 
 `git clone https://github.com/danforthcenter/plantcv.git`
 
-Switch to the development (latest) branch of PlantCV
+The default branch (master) is the latest release. If you want to check out a specific version:
 
-`cd plantcv`
+```bash
+# Switch to a stable release
+cd plantcv
 
-`git checkout dev`
+git checkout v1.1
+```
 
 Install PlantCV
 
@@ -273,7 +287,7 @@ To temporarily remove the driver and error use:
 
 `sudo ln /dev/null /dev/raw1394`
 
-Test import again and you should see no more errors. Restarting workspace will require input to remove libdc1394 error again.
+Test import again and you should see no more errors. Restarting workspace will require input to remove 
+libdc1394 error again.
 
 `python -c 'import plantcv'`
-
