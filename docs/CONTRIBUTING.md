@@ -67,39 +67,37 @@ git remote add upstream https://github.com/danforthcenter/plantcv.git
 
 ### Adding Features and Submitting Changes
 
-Always work in a branch rather than directly on the master or dev 
-branches. Branches should focus on fixing or adding a single feature or
+Always work in a branch rather than directly on the master 
+branch. Branches should focus on fixing or adding a single feature or
 set of closely related features because this will make it easier to 
 review and merge your contributions. Since multiple people work on the 
-same repository, make sure to keep your master/dev branches in sync
-with the master/dev of the danforthcenter/plantcv repository. The master
-branch is for official releases only, new developments should be based
-on the dev branch (i.e. your feature branch should be based and merged
-on dev).
+same repository, make sure to keep your master branch in sync
+with the master of the danforthcenter/plantcv repository. The master
+branch is the central repository for stable releases and the latest code.
 
 Here is a simplified workflow on how add a new feature:
 
 #### Get the latest version
 
-Update your dev branch with the main PlantCV repository (both locally and on GitHub)
+Update your master branch with the main PlantCV repository (both locally and on GitHub)
 
 ```
 git fetch upstream
-git checkout dev
-git merge upstream/dev
+git checkout master
+git merge upstream/master
 git push
 ```
 
 #### Create a branch to do your work
 
-A good practice is to call the branch in the form of GH-<issue-number> 
+A good practice is to call the branch in the form of plantcv-<issue-number> 
 followed by the title of the issue. This makes it easier to find out the
 issue you are trying to solve and helps us to understand what is done in
 the branch. Calling a branch my-work is confusing. Names of branch can
 not have a space, and should be replaced with a hyphen.
 
 ```
-git checkout -b GH-issuenumber-title-of-issue
+git checkout -b plantcv-issuenumber-title-of-issue
 ```
 
 #### Work and commit
@@ -121,12 +119,12 @@ first time pushing to GitHub you will need to use the extended command
 below, other wise you can simply do a `git push`.
 
 ```
-git push -u origin GH-issuenumber-title-of-issue
+git push -u origin plantcv-issuenumber-title-of-issue
 ```
 
 #### Pull Request
 
-Once your new feature is ready, create a pull request from your branch 
+Once your new feature is ready, create a pull request from your fork/branch 
 to the main PlantCV repository. Generating a pull request will notify
 the maintainers of PlantCV. GitHub will report whether the merge can be
 done automatically without conflict, or whether manual fixes are 
@@ -155,7 +153,12 @@ In addition to adding a new feature, test your code thoroughly.
 Add unit tests and sample input/outputs to the `tests` folder/script so that 
 automated testing (Travis-CI) will include tests on your new feature. 
 Similarly, if you are updating existing code, make sure that the `test.py`
-script passes on the function you modified.
+script passes on the function you modified. Testing locally can be done with pytest:
+
+```
+cd plantcv
+py.test -v tests/tests.py
+```
 
 Add documentation for your new feature. A new Markdown file should be
 added to the docs folder, and a reference to your new doc file should
