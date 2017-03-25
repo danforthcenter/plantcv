@@ -44,4 +44,5 @@ script:
 # Which branches to run build tests on
 branches:
   only:
+    - master
     - dev
