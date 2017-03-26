@@ -19,4 +19,10 @@ previously published on their steady-state fluorescence imaging systems
 'FLU'. We are working to make the naming changes of our functions from 
 'FLU' to 'PSII' to try and prevent further confusion.
 
+## Versions
+
+The documentation defaults to the `latest` version of PlantCV which is the latest
+commit in the `master` code branch.
+Documentation for all major releases from v1.1 on are also available.
+
 [Return to the PlantCV homepage](http://plantcv.danforthcenter.org)

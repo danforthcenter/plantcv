@@ -2,7 +2,7 @@
 
 Identifies objects and fills objects that are less than specified size
 
-**fill**(*img, mask, size, device, debug=False*)
+**fill**(*img, mask, size, device, debug=None*)
 
 **returns** device, filled image
 
@@ -11,7 +11,7 @@ Identifies objects and fills objects that are less than specified size
     - mask - binary image object. This image will be used to identify image objects (contours).
     - size - minimum object area size in pixels (integer), smaller objects will be filled
     - device - Counter for image processing steps
-    - debug- Default value is False, if True, filled intermediate image will be printed
+    - debug- None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
 - **Context:**
     - Used to reduce image noise
 - **Example use:**
@@ -24,10 +24,10 @@ import plantcv as pcv
 # Apply fill to a binary image that has had a median blur applied.
 # Image mask is the same binary image with median blur.
 
-device, binary_img = pcv.median_blur(img, 5, device, debug=True)
-device, mask = pcv.median_blur(img, 5, device, debug=True)
+device, binary_img = pcv.median_blur(img, 5, device, debug="print")
+device, mask = pcv.median_blur(img, 5, device, debug="print")
 
-device, fill_image = pcv.fill(binary_img, mask, 200, device, debug=True)
+device, fill_image = pcv.fill(binary_img, mask, 200, device, debug="print")
 ```
 
 **Binary image with median blur**
