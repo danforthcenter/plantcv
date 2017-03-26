@@ -8,7 +8,8 @@ copyright: Copyright 2016, Donald Danforth Plant Science Center
 pages:
 - Home: index.md
 - Documentation:
-  - Installation: installation.md
+  - 'Installation': installation.md
+  - 'Updating PlantCV': updating.md
   - 'Using Jupyter Notebooks': jupyter.md
   - 'Contributing to PlantCV': CONTRIBUTING.md
   - 'Adding/editing Documentation': documentation.md
