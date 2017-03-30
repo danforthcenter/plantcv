@@ -20,7 +20,7 @@ angles are often associated with object tip points. Outputs a python list of poi
     
 **Input plant contour**
 
-![Screenshot](img/documentation_images/acute_vertex/av_example_image.png)
+![Screenshot](img/documentation_images/acute_vertex/av_example_image.jpg)
 
 ```python
 import plantcv as pcv
@@ -34,4 +34,4 @@ device, list_of_acute_points = pcv.acute_vertex(obj, 30, 15, 100, device, debug=
 
 **Image of points selected**
 
-![Screenshot](img/documentation_images/acute_vertex/av_output.png)
+![Screenshot](img/documentation_images/acute_vertex/av_output.jpg)

@@ -18,7 +18,7 @@ Once this data is scaled this approach may provide some information regarding sh
     
 **Input object contour and image**
 
-![Screenshot](img/documentation_images/x_axis_pseudolandmarks/xpl_example_image.png)
+![Screenshot](img/documentation_images/x_axis_pseudolandmarks/xpl_example_image.jpg)
 
 ```python
 import plantcv as pcv
@@ -32,4 +32,4 @@ device, top, bottom, center_v = pcv.x_axis_pseudolandmarks(obj, mask, img, devic
 
 **Image of points selected**
 
-![Screenshot](img/documentation_images/x_axis_pseudolandmarks/xap_output.png)
+![Screenshot](img/documentation_images/x_axis_pseudolandmarks/xap_output.jpg)
