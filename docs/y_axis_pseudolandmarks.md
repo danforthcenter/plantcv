@@ -18,7 +18,7 @@ Once this data is scaled this approach may provide some information regarding sh
     
 **Input object contour and image**
 
-![Screenshot](img/documentation_images/y_axis_pseudolandmarks/ypl_example_image.png)
+![Screenshot](img/documentation_images/y_axis_pseudolandmarks/ypl_example_image.jpg)
 
 ```python
 import plantcv as pcv

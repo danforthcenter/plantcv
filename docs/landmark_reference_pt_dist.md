@@ -17,7 +17,7 @@ This is a function to measure the distance from user defined points to the centr
 
 **Input rescaled points, centroid and baseline points**
 
-![Screenshot](img/documentation_images/landmark_reference_pt_dist/lrpd_example_image.png)
+![Screenshot](img/documentation_images/landmark_reference_pt_dist/lrpd_example_image.jpg)
 
 ```python
 import plantcv as pcv
@@ -27,7 +27,8 @@ device = 1
 # Identify acute vertices (tip points) of an object
 # Results in set of point values that may indicate tip points
 device, vert_ave_c, hori_ave_c, euc_ave_c, ang_ave_c, vert_ave_b, hori_ave_b, euc_ave_b, ang_ave_b = pcv.landmark_reference_pt_dist(points_r, centroid_r, bline_r, device)```
+```
 
 **Representation of many data points collected in two treatment blocks throughout time**
 
-![Screenshot](img/documentation_images/landmark_reference_pt_dist/lrpd_output.pdf)
+![Screenshot](img/documentation_images/landmark_reference_pt_dist/lrpd_output.jpg)
