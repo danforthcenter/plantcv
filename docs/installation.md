@@ -229,7 +229,7 @@ Clone the PlantCV repository with the desktop application
 
 Add PlantCV to the system PYTHONPATH using PowerShell
 
-`[Environment]::SetEnvironmentVariable("PYTHONPATH", "$env:PYTHONPATH;C:\Users\<username>\Documents\GitHub\plantcv\lib\", "User")`
+`[Environment]::SetEnvironmentVariable("PYTHONPATH", "$env:PYTHONPATH;C:\Users\<username>\Documents\GitHub\plantcv\", "User")`
 
 Test plantcv using the Python IDLE GUI
 
