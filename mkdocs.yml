@@ -51,6 +51,11 @@ pages:
     - 'Image add': image_add.md
     - 'Image subtract': image_subtract.md
     - 'Invert': invert.md
+    - 'Landmark Analysis':
+      - 'Acute Vertex': acute_vertex.md
+      - 'Landmark Reference Point Distribution': landmark_reference_pt_dist.md
+      - 'x-Axis Pseudolandmarks': x_axis_pseudolandmarks.md
+      - 'y-Axis Pseudolandmarks': y_axis_pseudolandmarks.md
     - 'Laplace filter': laplace_filter.md
     - 'Logical operations-And': logical_and.md
     - 'Logical operations-Or': logical_or.md
