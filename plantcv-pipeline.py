@@ -293,11 +293,11 @@ def main():
 
     # Load database
     ###########################################
-    call("sqlite3 " + args.db + " '.import " + runinfo_file.name + " runinfo'", shell=True)
-    call("sqlite3 " + args.db + " '.import " + args.metadata_file.name + " metadata'", shell=True)
-    call("sqlite3 " + args.db + " '.import " + args.features_file.name + " features'", shell=True)
-    call("sqlite3 " + args.db + " '.import " + args.analysis_images_file.name + " analysis_images'", shell=True)
-    call("sqlite3 " + args.db + " '.import " + args.signal_file.name + " signal'", shell=True)
+    call("sqlite3 " + args.db + " \".import " + runinfo_file.name + " runinfo\"", shell=True)
+    call("sqlite3 " + args.db + " \".import " + args.metadata_file.name + " metadata\"", shell=True)
+    call("sqlite3 " + args.db + " \".import " + args.features_file.name + " features\"", shell=True)
+    call("sqlite3 " + args.db + " \".import " + args.analysis_images_file.name + " analysis_images\"", shell=True)
+    call("sqlite3 " + args.db + " \".import " + args.signal_file.name + " signal\"", shell=True)
     ###########################################
 
 
