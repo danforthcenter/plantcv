@@ -44,7 +44,7 @@ def get_nir(path, filename, device, debug=None):
     if cam == "TV":
         for n in nirfiles:
             if re.search("TV", n) != None:
-                nirpath = str(path) + "/" + str(n)
+                nirpath = os.path.join(str(path), str(n))
 
     if cam == "SV":
         for n in nirfiles:
@@ -52,6 +52,6 @@ def get_nir(path, filename, device, debug=None):
                 nsplit = n.split("_")
                 exangle = '\\b' + str(angle) + '\\b'
                 if re.search(exangle, nsplit[2]) != None:
-                    nirpath = str(path) + "/" + str(n)
+                    nirpath = os.path.join(str(path), str(n))
 
     return device, nirpath
