@@ -48,7 +48,7 @@ Install the developer tools (includes compilers and other tools)
 
 Install additional software dependencies
 
-`sudo yum install opencv opencv-devel opencv-python`
+`sudo yum install opencv opencv-devel opencv-python python-setuptools`
 
 Clone the PlantCV repository
 
@@ -90,7 +90,7 @@ to install PlantCV.
 
 Install software dependencies
 
-`sudo apt-get install git libopencv-dev python-opencv sqlite3`
+`sudo apt-get install git libopencv-dev python-opencv sqlite3 python-setuptools`
 
 Clone the PlantCV repository into your home directory
 
