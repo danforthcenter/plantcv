@@ -63,8 +63,8 @@ def options():
     parser.add_argument("-o", "--outdir", help="Output directory for image files.", required=False)
     parser.add_argument("-r","--result", help="result file.", required= False )
     parser.add_argument("-r2","--coresult", help="result file.", required= False )
-    parser.add_argument("-w","--writeimg", help="write out images.", default=False")
-    parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.", default=None")
+    parser.add_argument("-w","--writeimg", help="write out images.", default=False)
+    parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.", default=None)
     args = parser.parse_args()
     return args
 ```
