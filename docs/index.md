@@ -27,6 +27,7 @@ previously published on their steady-state fluorescence imaging systems
 
 The documentation defaults to the `latest` version of PlantCV which is the latest
 commit in the `master` code branch.
-Documentation for all major releases from v1.1 on are also available.
+Documentation for all releases from v1.1 on are also available
+via the standard ReadTheDocs popup/pulldown menu.
 
 [Return to the PlantCV homepage](http://plantcv.danforthcenter.org)
