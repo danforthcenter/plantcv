@@ -71,3 +71,8 @@ via pull request.
 - Q: How is PlantCV tested?
 - Q: Does PlantCV follow [Semantic Version Numbering](http://semver.org/)
   for stable releases?
+- Q: Is there a naming convention for PlantCV functions?
+    - A: No, not at present.
+    Please see the guide to contributing
+    for some general advice on code style,
+    PEP8 docstrings etc.
