@@ -43,7 +43,7 @@ and [updating documentation](documentation.md).
     <!-- https://github.com/danforthcenter/plantcv/issues/137 -->
     As noted in the ['Getting started' section](index.md),
     PlantCV was designed to work flexibly
-    with photos from as many types of camera as is feasible.
+    with many types of imagery as possible.
     Several groups are processing Raspberry Pi images using PlantCV,
     and the developers enthusiastically use Raspberry Pi cameras
     for [outreach and training efforts](https://github.com/danforthcenter/outreach/network)
@@ -51,7 +51,7 @@ and [updating documentation](documentation.md).
     You can even run PlantCV directly on a Pi
     (installation instructions for Ubuntu
     should work well with Raspbian),
-    though this certainly is not required.
+    though this is certainly not required.
     See also tutorials on the [DDPSC Maker Group site](http://maker.danforthcenter.org/).
 - Q: Can PlantCV use information about the temporal relation of images
   for object tracking etc.?
