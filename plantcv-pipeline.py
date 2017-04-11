@@ -30,7 +30,7 @@ def options():
         ValueError: if a metadata field is not supported.
     """
     # Job start time
-    start_time = datetime.datetime.now().strftime('%Y-%m-%d_%H:%M:%S')
+    start_time = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     print("Starting run " + start_time + '\n', file=sys.stderr)
 
     # These are metadata types that PlantCV deals with.
@@ -293,11 +293,11 @@ def main():
 
     # Load database
     ###########################################
-    call("sqlite3 " + args.db + " '.import " + runinfo_file.name + " runinfo'", shell=True)
-    call("sqlite3 " + args.db + " '.import " + args.metadata_file.name + " metadata'", shell=True)
-    call("sqlite3 " + args.db + " '.import " + args.features_file.name + " features'", shell=True)
-    call("sqlite3 " + args.db + " '.import " + args.analysis_images_file.name + " analysis_images'", shell=True)
-    call("sqlite3 " + args.db + " '.import " + args.signal_file.name + " signal'", shell=True)
+    call("sqlite3 " + args.db + " \".import " + runinfo_file.name + " runinfo\"", shell=True)
+    call("sqlite3 " + args.db + " \".import " + args.metadata_file.name + " metadata\"", shell=True)
+    call("sqlite3 " + args.db + " \".import " + args.features_file.name + " features\"", shell=True)
+    call("sqlite3 " + args.db + " \".import " + args.analysis_images_file.name + " analysis_images\"", shell=True)
+    call("sqlite3 " + args.db + " \".import " + args.signal_file.name + " signal\"", shell=True)
     ###########################################
 
 
@@ -388,15 +388,30 @@ def db_connect(args):
         if os.path.isfile(args.db):
             os.remove(args.db)
 
-    if os.path.isfile(args.db):
-        args.connect = sqlite3.connect(args.db)
-        # Replace the row_factory result constructor with a dictionary constructor
-        args.connect.row_factory = dict_factory
-        # Change the text output format from unicode to UTF-8
-        args.connect.text_factory = str
-        # Database handler
-        args.sq = args.connect.cursor()
+    # Run and image IDs
+    args.run_id = 0
+    args.image_id = 0
 
+    # Connect to the database
+    args.connect = sqlite3.connect(args.db)
+    # Replace the row_factory result constructor with a dictionary constructor
+    args.connect.row_factory = dict_factory
+    # Change the text output format from unicode to UTF-8
+    args.connect.text_factory = str
+    # Database handler
+    args.sq = args.connect.cursor()
+
+    # If the runinfo and metadata tables exists,
+    # then we have data in the database and can increment run_id and image_id
+    runinfo = False
+    metadata = False
+    for row in args.sq.execute('SELECT name FROM sqlite_master WHERE type="table"'):
+        if row["name"] == "runinfo":
+            runinfo = True
+        elif row["name"] == "metadata":
+            metadata = True
+
+    if runinfo is True and metadata is True:
         for row in args.sq.execute('SELECT MAX(run_id) AS max FROM runinfo'):
             if row['max'] is not None:
                 args.run_id = row['max']
@@ -405,19 +420,6 @@ def db_connect(args):
         for row in args.sq.execute('SELECT MAX(image_id) AS max FROM metadata'):
             if row['max'] is not None:
                 args.image_id = row['max']
-
-    if os.path.isfile(args.db) == False:
-        # Connect to the database
-        args.connect = sqlite3.connect(args.db)
-        # Replace the row_factory result constructor with a dictionary constructor
-        args.connect.row_factory = dict_factory
-        # Change the text output format from unicode to UTF-8
-        args.connect.text_factory = str
-        # Database handler
-        args.sq = args.connect.cursor()
-        # Run and image IDs
-        args.run_id = 0
-        args.image_id = 0
 
     return args
 

@@ -47,5 +47,10 @@ Git will automatically remove the `*.py` files but because we do not track the
 `*.pyc` files they will remain behind and can technically be imported, which can
 cause confusion.
 
+For Linux/Unix, `PYTHONPATH` can be edited in `~/.bash_profile`, `~/.bashrc`,
+`~/.profile`, `~/.cshrc`, `~/.zshrc`, etc. For Windows, right-click on My 
+Computer/This PC and select Properties > Advanced system settings >
+Environmental Variables... and edit the User variables entry for `PYTHONPATH`.
+
 Also note that the method for parallelizing PlantCV has changed, please see the
 new [parallel processing documentation](pipeline_parallel.md) for more details.

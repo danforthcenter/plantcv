@@ -53,9 +53,10 @@ import plantcv as pcv
 def options():
     parser = argparse.ArgumentParser(description="Imaging processing with opencv")
     parser.add_argument("-i", "--image", help="Input image file.", required=True)
-    parser.add_argument("-m", "--roi", help="Input region of interest file.", required=False)
-    parser.add_argument("-o", "--outdir", help="Output directory for image files.", required=True)
-    parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.", action="store_true")
+    parser.add_argument("-o", "--outdir", help="Output directory for image files.", required=False)
+    parser.add_argument("-r","--result", help="result file.", required= False )
+    parser.add_argument("-w","--writeimg", help="write out images.", default=False)
+    parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.", default=None)
     args = parser.parse_args()
     return args
 ```
@@ -308,7 +309,7 @@ and the Boundary tool function [here](analyze_bound.md).
     device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound(img, args.image, obj, mask, 1680, device, debug, args.outdir + '/' + filename)
     
     # Determine color properties: Histograms, Color Slices and Pseudocolored Images, output color analyzed images (optional)
-    device, color_header, color_data, norm_slice = pcv.analyze_color(img, args.image, kept_mask, 256, device, debug, 'all', 'v', 'img', 300, args.outdir + '/' + filename)
+    device, color_header, color_data, color_img = pcv.analyze_color(img, args.image, kept_mask, 256, device, debug, 'all', 'v', 'img', 300, args.outdir + '/' + filename)
     
     # Write shape and color data to results file
     result=open(args.result,"a")

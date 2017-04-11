@@ -6,10 +6,7 @@
 Please use, cite, and [contribute to](https://github.com/danforthcenter/plantcv/blob/dev/CONTRIBUTING.md) PlantCV!
 If you have questions, please submit them via the
 [GitHub issues page](https://github.com/danforthcenter/plantcv/issues).
-
-Cheers!
-
-Malia, Max and Noah
+Follow us on twitter [@plantcv](https://twitter.com/plantcv).
 
 ---
 

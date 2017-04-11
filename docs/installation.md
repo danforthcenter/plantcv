@@ -5,8 +5,9 @@
 We have tested PlantCV on the following systems:
 
 - Linux: CentOS 7 x86 64-bit (RedHat Enterprise Linux)
+- Linux: Ubuntu 12.04, 14.04, and 16.04
 - Mac OSX 10.11
-- Windows 8.1 Professional
+- Windows 10
 
 A list of minimum tested software dependencies is listed below:
 
@@ -47,7 +48,7 @@ Install the developer tools (includes compilers and other tools)
 
 Install additional software dependencies
 
-`sudo yum install opencv opencv-devel opencv-python`
+`sudo yum install opencv opencv-devel opencv-python python-setuptools`
 
 Clone the PlantCV repository
 
@@ -74,6 +75,13 @@ If everything is working, the following should run without errors:
 
 `python -c 'import plantcv'`
 
+Or for more extensive tests:
+
+```
+cd plantcv
+py.test -v tests/tests.py
+```
+
 #### Ubuntu Linux
 
 We tested [Ubuntu](http://www.ubuntu.com/) x86 64-bit 14.04 server edition.  
@@ -82,7 +90,7 @@ to install PlantCV.
 
 Install software dependencies
 
-`sudo apt-get install git libopencv-dev python-opencv sqlite3`
+`sudo apt-get install git libopencv-dev python-opencv sqlite3 python-setuptools`
 
 Clone the PlantCV repository into your home directory
 
@@ -108,6 +116,13 @@ Or to install to a local directory:
 If everything is working, the following should run without errors:
 
 `python -c 'import plantcv'`
+
+Or for more extensive tests:
+
+```
+cd plantcv
+py.test -v tests/tests.py
+```
 
 #### Mac OSX
 
@@ -156,6 +171,13 @@ If everything is working, the following should run without errors:
 
 `python -c 'import plantcv'`
 
+Or for more extensive tests:
+
+```
+cd plantcv
+py.test -v tests/tests.py
+```
+
 #### Python virtual environment
 
 Install OpenCV as documented for your system.
@@ -184,18 +206,21 @@ python setup.py install
 
 #### Windows
 
-Tested on Windows 8.1.
+Tested on Windows 10.
 
-Procedure modified from [here](http://docs.opencv.org/master/d5/de5/tutorial_py_setup_in_windows.html#gsc.tab=0).
+The easiest way to get PlantCV working on Windows is to use Anaconda. An alternate approach might be to use the new
+Linux subsystem for Windows, but we have not tested that yet.
 
-Install Python 2.7.9+ (tested with 2.7.11) from [here](https://www.python.org).
-Python 2.7.9 and later comes with the setuptools package managers (pip and easy_install) by default.
+Install Anaconda (tested with 4.3.1) from [here](https://www.continuum.io/downloads#windows). Download and install
+the Python 2.7 version that is appropriate for your system (we used the 64-bit installer).
 
-Add setuptools to your Path. Open PowerShell and run:
+Run the Anaconda Prompt application and update Anaconda:
 
-`[Environment]::SetEnvironmentVariable("Path", "$env:Path;C:\Python27\;C:\Python27\Scripts\", "User")`
+```
+conda update -q conda
+```
 
-Install additional packages:
+Install prerequisite Python packages (most are already installed by default):
 
 ```
 pip install argparse
@@ -208,36 +233,31 @@ pip install scikit-image
 pip install scipy
 ```
 
-Download [OpenCV](https://github.com/itseez/opencv/releases) (tested 2.4.13)
+Use Anaconda to install OpenCV and SQLite3:
 
-- Unzip the package (by default it will extract to `C:\Users\<username>\Downloads\opencv`
-- Copy `opencv\build\python\2.7\x86\cv2.pyd` to `C:\Python27\Lib\site-packages`
-- Open the Python IDLE GUI or the console on the command line and test opencv:
-
-```python
-import numpy
-import matplotlib
-import cv2
-print(cv2.__verion__)
+```
+conda install -c menpo opencv=2.4.11
+conda install -c blaze sqlite3
 ```
 
-If this returns '2.4.13' (or your relevant version) without error then Python and OpenCV are working
+Clone the PlantCV repository and install it in the Anaconda environment:
 
-Install the [GitHub desktop client](https://desktop.github.com) for Windows
+```
+git clone https://github.com/danforthcenter/plantcv.git
+cd plantcv
+python setup.py install
+```
 
-Clone the PlantCV repository with the desktop application
+If everything is working, the following should run without errors:
 
-Add PlantCV to the system PYTHONPATH using PowerShell
+`python -c 'import plantcv'`
 
-`[Environment]::SetEnvironmentVariable("PYTHONPATH", "$env:PYTHONPATH;C:\Users\<username>\Documents\GitHub\plantcv\lib\", "User")`
+Or for more extensive tests:
 
-Test plantcv using the Python IDLE GUI
-
-`import plantcv`
-
-If this returns no errors, everything should be working.
-
-Optionally, and at any time, check out a specific version or alternate branch of PlantCV
+```
+cd plantcv
+py.test -v tests/tests.py
+```
 
 #### Cloud9 IDE
 
