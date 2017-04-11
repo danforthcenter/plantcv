@@ -788,6 +788,7 @@ def process_results(args):
     # Metadata table
     metadata_fields = ['image_id', 'run_id']
     metadata_fields.extend(args.valid_meta.keys())
+    metadata_fields.append("image")
     # args.metadata_file.write('#' + '\t'.join(map(str, metadata_fields)) + '\n')
 
     # Feature data table
