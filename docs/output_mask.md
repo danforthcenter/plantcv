@@ -4,7 +4,11 @@ Write image and mask with the same name to the path specified (creates two folde
 
 **output_mask**(*device,img,mask, filename,outdir=None, mask_only=False,debug=None*)
 
-**returns** device, imgpath, maskpath
+**returns** device, imgpath, maskpath, analysis_images
+
+**output_mask**(*device,img,mask, filename,outdir=None, mask_only=True,debug=None*)
+
+**returns** device, maskpath, analysis_images
 
 - **Parameters:**
     - device - pipeline step counter
@@ -21,6 +25,6 @@ Write image and mask with the same name to the path specified (creates two folde
 
 import plantcv as pcv      
 
-device, imgpath,maskpath=pcv.output_mask(device, img, mask, 'test.png', '/home/user/images', mask_only=False, debug='print')
+device, imgpath,maskpath=pcv.output_mask(device, img, mask, 'test.png', '/home/user/images', mask_only=True, debug='print')
 
 ```
