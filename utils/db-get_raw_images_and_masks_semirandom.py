@@ -5,7 +5,7 @@ import sqlite3 as sq
 import plantcv as pcv
 import pandas as pd
 from random import randrange
-from shutil import copyfile
+from shutil import copy
 
 ### Parse command-line arguments
 def options():
@@ -82,8 +82,8 @@ def grab_random(database,random, outdir, imgtype):
   for x in random_index_list:
     selectmask=str(sorted.iloc[[x-1]]['image_path'].item())
     selectori=str(sorted.iloc[[x-1]]['image'].item())
-    copyfile(selectmask, maskdir)
-    copyfile(selectori, oridir)
+    copy(selectmask, maskdir+"/")
+    copy(selectori, oridir+"/")
 
 ### Main pipeline
 def main():
