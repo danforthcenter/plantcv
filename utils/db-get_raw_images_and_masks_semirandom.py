@@ -2,7 +2,6 @@
 import argparse
 import sys, os
 import sqlite3 as sq
-sys.path.append('/Users/mgehan/Documents/github/plantcv/')
 import plantcv as pcv
 import pandas as pd
 from random import randrange
