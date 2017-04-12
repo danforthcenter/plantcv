@@ -75,9 +75,9 @@ def grab_random(database,random, outdir, imgtype):
   oridir=str(outdir)+"/training-ori-images"
 
   if not os.path.exists(maskdir):
-    open(maskdir, 'a').close()
+    os.makedirs(maskdir)
   if not os.path.exists(oridir):
-    open(oridir, 'a').close()
+    os.makedirs(oridir)
 
   for x in random_index_list:
     selectmask=str(sorted.iloc[[x-1]]['image_path'].item())
