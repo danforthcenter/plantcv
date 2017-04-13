@@ -26,6 +26,15 @@ perform properly ROI must be completely contained within the image.
 - **Example use:**
     - [Use In VIS Tutorial](vis_tutorial.md)
     - [Use In PSII Tutorial](psII_tutorial.md) 
+    
+
+**How to Adjust The ROI**      
+
+    - If -adjust is set to False, then the ROI is the full size of the image (Top)
+    - If you would like to adjust the ROI then it is in the context of the full size of the image (see example image, bottom)  
+        
+![Screenshot](img/documentation_images/define_roi/ROI.jpg)  
+
 
 ```python
 import plantcv as pcv
