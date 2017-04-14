@@ -30,7 +30,7 @@ install:
 # command to run tests
 script:
   - source activate test-environment
-  - coverage run --source=plantcv setupy.py test
+  - coverage run --source=plantcv setup.py test
   # - py.test -v tests/tests.py
 after_success:
   coveralls
