@@ -3,7 +3,7 @@
 This function takes clustered contours and splits them into multiple images, also does a check to make sure that
 the number of inputted filenames matches the number of clustered contours.
 
-**cluster_contour_splitimg**(*device,img,grouped_contour_indexes,contours,outdir,file=None, filenames=None,debug=None*)
+**cluster_contour_splitimg**(*device, img, grouped_contour_indexes, contours, outdir, file=None, filenames=None, debug=None*)
 
 **returns** device, output_paths
 
