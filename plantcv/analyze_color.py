@@ -74,6 +74,8 @@ def _pseudocolored_image(device, histogram, bins, img, mask, background, channel
         path = os.path.dirname(filename)
         print_image(cplant_back, fig_name_pseudo)
         analysis_images.append(['IMAGE', 'pseudo', fig_name_pseudo])
+    else:
+        path = "."
         
     if debug is not None:
         if debug == 'print':
