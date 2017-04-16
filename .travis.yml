@@ -23,7 +23,7 @@ before_install:
   # These are the packages we need
   - conda create -q -c menpo -c conda-forge -n test-environment python=$TRAVIS_PYTHON_VERSION numpy=1.11 matplotlib=2 scipy=0.18 scikit-image=0.12 opencv=2.4.11 pytest pandas
   - source activate test-environment
-  - conda install -y --no-update-deps libpng=1.6.21
+  - conda install -y -c conda-forge --no-update-deps libpng=1.6.21
   - pip install coveralls
 # Install PlantCV
 install:
