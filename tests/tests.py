@@ -48,12 +48,12 @@ if not os.path.exists(TEST_TMPDIR):
 def test_plantcv_adaptive_threshold():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with debug = "print"
-    device, binary_img = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="gaussian", object_type="light",
-                                                device=0, debug="print")
+    _, _ = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="gaussian", object_type="light", device=0,
+                                  debug="print")
     os.rename("1_adaptive_threshold_gaussian.png", os.path.join(TEST_TMPDIR, "1_adaptive_threshold_gaussian.png"))
     # Test with debug = "plot"
-    device, binary_img = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="gaussian", object_type="light",
-                                                device=0, debug="plot")
+    _, _ = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="gaussian", object_type="light", device=0,
+                                  debug="plot")
     # Test with debug = None
     device, binary_img = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="gaussian", object_type="light",
                                                 device=0, debug=None)
@@ -75,17 +75,13 @@ def test_plantcv_analyze_bound():
     object_contours = contours_npz['arr_0']
     # Test with debug = "print"
     outfile = os.path.join(TEST_TMPDIR, TEST_INPUT_COLOR)
-    device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound(img=img, imgname="img",
-                                                                              obj=object_contours[0], mask=mask,
-                                                                              line_position=300, device=0,
-                                                                              debug="print", filename=outfile)
+    _, _, _, _ = pcv.analyze_bound(img=img, imgname="img", obj=object_contours[0], mask=mask, line_position=300,
+                                   device=0, debug="print", filename=outfile)
     os.rename("1_boundary_on_img.jpg", os.path.join(TEST_TMPDIR, "1_boundary_on_img.jpg"))
     os.rename("1_boundary_on_white.jpg", os.path.join(TEST_TMPDIR, "1_boundary_on_white.jpg"))
     # Test with debug = "plot"
-    device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound(img=img, imgname="img",
-                                                                              obj=object_contours[0], mask=mask,
-                                                                              line_position=300, device=0,
-                                                                              debug="plot", filename=False)
+    _, _, _, _ = pcv.analyze_bound(img=img, imgname="img", obj=object_contours[0], mask=mask, line_position=300,
+                                   device=0, debug="plot", filename=False)
     # Test with debug = None
     device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound(img=img, imgname="img",
                                                                               obj=object_contours[0], mask=mask,
@@ -99,21 +95,19 @@ def test_plantcv_analyze_color():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     outfile = os.path.join(TEST_TMPDIR, TEST_INPUT_COLOR)
-    device, color_header, color_data, analysis_images = pcv.analyze_color(img=img, imgname="img", mask=mask, bins=256,
-                                                                          device=0, debug="print", hist_plot_type=None,
-                                                                          pseudo_channel="v", pseudo_bkg="img",
-                                                                          resolution=300, filename=outfile)
+    _, _, _, _ = pcv.analyze_color(img=img, imgname="img", mask=mask, bins=256, device=0, debug="print",
+                                   hist_plot_type=None, pseudo_channel="v", pseudo_bkg="img", resolution=300,
+                                   filename=outfile)
     os.rename("1_pseudocolor.jpg", os.path.join(TEST_TMPDIR, "1_pseudocolor.jpg"))
     # Test with debug = "plot"
-    device, color_header, color_data, analysis_images = pcv.analyze_color(img=img, imgname="img", mask=mask, bins=256,
-                                                                          device=0, debug="plot", hist_plot_type=None,
-                                                                          pseudo_channel="v", pseudo_bkg="img",
-                                                                          resolution=300, filename=False)
+    _, _, _, _ = pcv.analyze_color(img=img, imgname="img", mask=mask, bins=256, device=0, debug="plot",
+                                   hist_plot_type=None, pseudo_channel="v", pseudo_bkg="img", resolution=300,
+                                   filename=False)
     # Test with debug = None
     device, color_header, color_data, analysis_images = pcv.analyze_color(img=img, imgname="img", mask=mask, bins=256,
                                                                           device=0, debug=None, hist_plot_type=None,
                                                                           pseudo_channel="v", pseudo_bkg="img",
-                                                                          resolution=300,filename=False)
+                                                                          resolution=300, filename=False)
     assert np.sum(color_data[3]) != 0
 
 
@@ -122,15 +116,13 @@ def test_plantcv_analyze_nir():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     outfile = os.path.join(TEST_TMPDIR, TEST_INPUT_COLOR)
-    device, hist_header, hist_data, h_norm = pcv.analyze_NIR_intensity(img=img, rgbimg=img, mask=mask, bins=256,
-                                                                       device=0, histplot=False, debug="print",
-                                                                       filename=outfile)
+    _, _, _, _ = pcv.analyze_NIR_intensity(img=img, rgbimg=img, mask=mask, bins=256, device=0, histplot=False,
+                                           debug="print", filename=outfile)
     os.rename("3_nir_pseudo_plant.jpg", os.path.join(TEST_TMPDIR, "3_nir_pseudo_plant.jpg"))
     os.rename("3_nir_pseudo_plant_back.jpg", os.path.join(TEST_TMPDIR, "3_nir_pseudo_plant_back.jpg"))
     # Test with debug = "plot"
-    device, hist_header, hist_data, h_norm = pcv.analyze_NIR_intensity(img=img, rgbimg=img, mask=mask, bins=256,
-                                                                       device=0, histplot=False, debug="plot",
-                                                                       filename=False)
+    _, _, _, _ = pcv.analyze_NIR_intensity(img=img, rgbimg=img, mask=mask, bins=256, device=0, histplot=False,
+                                           debug="plot", filename=False)
     # Test with debug = None
     device, hist_header, hist_data, h_norm = pcv.analyze_NIR_intensity(img=img, rgbimg=img, mask=mask, bins=256,
                                                                        device=0, histplot=False, debug=None,
@@ -146,12 +138,12 @@ def test_plantcv_analyze_object():
     max_obj = max(obj_contour, key=len)
     # Test with debug = "print"
     outfile = os.path.join(TEST_TMPDIR, TEST_INPUT_COLOR)
-    device, obj_header, obj_data, obj_images = pcv.analyze_object(img=img, imgname="img", obj=max_obj, mask=mask,
-                                                                  device=0, debug="print", filename=outfile)
+    _, _, _, _ = pcv.analyze_object(img=img, imgname="img", obj=max_obj, mask=mask, device=0, debug="print",
+                                    filename=outfile)
     os.rename("1_shapes.jpg", os.path.join(TEST_TMPDIR, "1_shapes.jpg"))
     # Test with debug = "plot"
-    device, obj_header, obj_data, obj_images = pcv.analyze_object(img=img, imgname="img", obj=max_obj, mask=mask,
-                                                                  device=0, debug="plot", filename=False)
+    _, _, _, _ = pcv.analyze_object(img=img, imgname="img", obj=max_obj, mask=mask, device=0, debug="plot",
+                                    filename=False)
     # Test with debug = None
     device, obj_header, obj_data, obj_images = pcv.analyze_object(img=img, imgname="img", obj=max_obj, mask=mask,
                                                                   device=0, debug=None, filename=False)
@@ -162,10 +154,10 @@ def test_plantcv_apply_mask():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
-    device, masked_img = pcv.apply_mask(img=img, mask=mask, mask_color="white", device=0, debug="print")
+    _, _ = pcv.apply_mask(img=img, mask=mask, mask_color="white", device=0, debug="print")
     os.rename("1_wmasked.png", os.path.join(TEST_TMPDIR, "1_wmasked.png"))
     # Test with debug = "plot"
-    device, masked_img = pcv.apply_mask(img=img, mask=mask, mask_color="white", device=0, debug="plot")
+    _, _ = pcv.apply_mask(img=img, mask=mask, mask_color="white", device=0, debug="plot")
     # Test with debug = None
     device, masked_img = pcv.apply_mask(img=img, mask=mask, mask_color="white", device=0, debug=None)
     assert all([i == j] for i, j in zip(np.shape(masked_img), TEST_COLOR_DIM))
@@ -176,13 +168,13 @@ def test_plantcv_auto_crop():
     contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_CONTOUR))
     roi_contours = contours['arr_0']
     # Test with debug = "print"
-    device, cropped = pcv.auto_crop(device=0, img=img1, objects=roi_contours[48], padding_x=20, padding_y=20,
-                                    color='black', debug="print")
+    _, _ = pcv.auto_crop(device=0, img=img1, objects=roi_contours[48], padding_x=20, padding_y=20, color='black',
+                         debug="print")
     os.rename("1_crop_area.png", os.path.join(TEST_TMPDIR, "1_crop_area.png"))
     os.rename("1_auto_cropped.png", os.path.join(TEST_TMPDIR, "1_auto_cropped.png"))
     # Test with debug = "plot"
-    device, cropped = pcv.auto_crop(device=0, img=img1, objects=roi_contours[48], padding_x=20, padding_y=20,
-                                    color='black', debug="plot")
+    _, _ = pcv.auto_crop(device=0, img=img1, objects=roi_contours[48], padding_x=20, padding_y=20, color='black',
+                         debug="plot")
     # Test with debug = None
     device, cropped = pcv.auto_crop(device=0, img=img1, objects=roi_contours[48], padding_x=20, padding_y=20,
                                     color='black', debug=None)
@@ -194,12 +186,10 @@ def test_plantcv_auto_crop():
 def test_plantcv_binary_threshold():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with debug = "print"
-    device, binary_img = pcv.binary_threshold(img=img, threshold=25, maxValue=255, object_type="light",
-                                              device=0, debug="print")
+    _, _ = pcv.binary_threshold(img=img, threshold=25, maxValue=255, object_type="light", device=0, debug="print")
     os.rename("1_binary_threshold25.png", os.path.join(TEST_TMPDIR, "1_binary_threshold25.png"))
     # Test with debug = "plot"
-    device, binary_img = pcv.binary_threshold(img=img, threshold=25, maxValue=255, object_type="light",
-                                              device=0, debug="plot")
+    _, _ = pcv.binary_threshold(img=img, threshold=25, maxValue=255, object_type="light", device=0, debug="plot")
     # Test with debug = None
     device, binary_img = pcv.binary_threshold(img=img, threshold=25, maxValue=255, object_type="light",
                                               device=0, debug=None)
@@ -219,12 +209,10 @@ def test_plantcv_cluster_contours():
     contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_CONTOUR))
     roi_contours = contours['arr_0']
     # Test with debug = "print"
-    device, clusters_i, contours = pcv.cluster_contours(device=0, img=img1, roi_objects=roi_contours, nrow=4,
-                                                        ncol=6, debug="print")
+    _, _, _ = pcv.cluster_contours(device=0, img=img1, roi_objects=roi_contours, nrow=4, ncol=6, debug="print")
     os.rename("1_clusters.png", os.path.join(TEST_TMPDIR, "1_clusters.png"))
     # Test with debug = "plot"
-    device, clusters_i, contours = pcv.cluster_contours(device=0, img=img1, roi_objects=roi_contours, nrow=4,
-                                                        ncol=6, debug="plot")
+    _, _, _ = pcv.cluster_contours(device=0, img=img1, roi_objects=roi_contours, nrow=4, ncol=6, debug="plot")
     # Test with debug = None
     device, clusters_i, contours = pcv.cluster_contours(device=0, img=img1, roi_objects=roi_contours, nrow=4,
                                                         ncol=6, debug=None)
@@ -240,16 +228,15 @@ def test_plantcv_cluster_contours_splitimg():
     roi_contours = contours['arr_0']
     cluster_contours = clusters['arr_0']
     # Test with debug = "print"
-    device, output_path = pcv.cluster_contour_splitimg(device=0, img=img1, grouped_contour_indexes=cluster_contours,
-                                                       contours=roi_contours, outdir=TEST_TMPDIR, file=None,
-                                                       filenames=None, debug="print")
+    _, _ = pcv.cluster_contour_splitimg(device=0, img=img1, grouped_contour_indexes=cluster_contours,
+                                        contours=roi_contours, outdir=TEST_TMPDIR, file=None, filenames=None,
+                                        debug="print")
     for i in range(1, 19):
         os.rename(str(i) + "_clusters.png", os.path.join(TEST_TMPDIR, str(i) + "_clusters.png"))
         os.rename(str(i) + "_wmasked.png", os.path.join(TEST_TMPDIR, str(i) + "_wmasked.png"))
     # Test with debug = "plot"
-    device, output_path = pcv.cluster_contour_splitimg(device=0, img=img1, grouped_contour_indexes=cluster_contours,
-                                                       contours=roi_contours, outdir=None, file=None,
-                                                       filenames=None, debug="plot")
+    _, _ = pcv.cluster_contour_splitimg(device=0, img=img1, grouped_contour_indexes=cluster_contours,
+                                        contours=roi_contours, outdir=None, file=None, filenames=None, debug="plot")
     # Test with debug = None
     device, output_path = pcv.cluster_contour_splitimg(device=0, img=img1, grouped_contour_indexes=cluster_contours,
                                                        contours=roi_contours, outdir=None, file=None,
@@ -261,7 +248,9 @@ def test_plantcv_crop_position_mask():
     nir, path1, filename1 = pcv.readimage(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK), -1)
     # Test with debug = "print"
+    _, _ = pcv.crop_position_mask(nir, mask, device=0, x=40, y=3, v_pos="top", h_pos="right", debug="print")
     # Test with debug = "plot"
+    _, _ = pcv.crop_position_mask(nir, mask, device=0, x=40, y=3, v_pos="top", h_pos="right", debug="plot")
     # Test with debug = None
     device, newmask = pcv.crop_position_mask(nir, mask, device=0, x=40, y=3, v_pos="top", h_pos="right", debug=None)
     assert np.sum(newmask) == 641517
