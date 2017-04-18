@@ -664,6 +664,11 @@ def test_plantcv_readimage():
         assert 0
 
 
+def test_plantcv_readimage_bad_file():
+    with pytest.raises(RuntimeError):
+        _, _, _ = pcv.readimage(filename=TEST_INPUT_COLOR)
+
+
 def test_plantcv_rectangle_mask():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with debug = "print"
