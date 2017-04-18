@@ -391,7 +391,10 @@ def test_plantcv_fluor_fvfm():
 def test_plantcv_gaussian_blur():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
+    _, _ = pcv.gaussian_blur(device=0, img=img, ksize=(51, 51), sigmax=0, sigmay=None, debug="print")
+    os.rename("1_gaussian_blur.png", os.path.join(TEST_TMPDIR, "1_gaussian_blur.png"))
     # Test with debug = "plot"
+    _, _ = pcv.gaussian_blur(device=0, img=img, ksize=(51, 51), sigmax=0, sigmay=None, debug="plot")
     # Test with debug = None
     device, gaussian_img = pcv.gaussian_blur(device=0, img=img, ksize=(51, 51), sigmax=0, sigmay=None, debug=None)
     imgavg = np.average(img)

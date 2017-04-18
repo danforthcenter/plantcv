@@ -22,7 +22,7 @@ def gaussian_blur(device, img, ksize, sigmax=0, sigmay=None, debug=None):
     img_gblur = blurred image
 
     :param img: numpy array
-    :param ksize: int
+    :param ksize: tuple
     :param sigmax: int
     :param sigmay: str or int
     :param device: int
@@ -35,7 +35,7 @@ def gaussian_blur(device, img, ksize, sigmax=0, sigmay=None, debug=None):
 
     device += 1
     if debug == 'print':
-        print_image(img_gblur, (str(device) + '_gaussian_blur' + str(ksize) + '.png'))
+        print_image(img_gblur, (str(device) + '_gaussian_blur.png'))
     elif debug == 'plot':
         if len(img_gblur) == 3:
             plot_image(img_gblur)
