@@ -42,7 +42,6 @@ def watershed_segmentation(device, img, mask, distance=10, filename=False, debug
     :return watershed_data: list
     :return analysis_images: list
     """
-    device += 1
 
     dist_transform = cv2.distanceTransform(mask, cv2.cv.CV_DIST_L2, maskSize=0)
 
