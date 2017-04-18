@@ -25,10 +25,10 @@ TEST_VIS = "VIS_SV_0_z300_h1_g0_e85_v500_93054.png"
 TEST_NIR = "NIR_SV_0_z300_h1_g0_e15000_v500_93059.png"
 TEST_INPUT_MASK = "input_mask.png"
 TEST_INPUT_NIR_MASK = "input_nir.png"
-TEST_INPUT_FDARK = "FLUO_TV_dark.jpg"
-TEST_INPUT_FMIN = "FLUO_TV_min.jpg"
-TEST_INPUT_FMAX = "FLUO_TV_max.jpg"
-TEST_INPUT_FMASK = "FLUO_TV_MASK.jpg"
+TEST_INPUT_FDARK = "FLUO_TV_dark.png"
+TEST_INPUT_FMIN = "FLUO_TV_min.png"
+TEST_INPUT_FMAX = "FLUO_TV_max.png"
+TEST_INPUT_FMASK = "FLUO_TV_MASK.png"
 TEST_INTPUT_GREENMAG = "input_green-magenta.jpg"
 TEST_INTPUT_MULTI = "multi_ori_image.jpg"
 TEST_INPUT_MULTI_CONTOUR = "roi_objects.npz"
@@ -249,6 +249,10 @@ def test_plantcv_crop_position_mask():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK), -1)
     # Test with debug = "print"
     _, _ = pcv.crop_position_mask(nir, mask, device=0, x=40, y=3, v_pos="top", h_pos="right", debug="print")
+    os.rename("1_mask_overlay.png", os.path.join(TEST_TMPDIR, "1_mask_overlay.png"))
+    os.rename("1_newmask.png", os.path.join(TEST_TMPDIR, "1_newmask.png"))
+    os.rename("1_push-right.png", os.path.join(TEST_TMPDIR, "1_push-right.png"))
+    os.rename("1_push-top_.png", os.path.join(TEST_TMPDIR, "1_push-top_.png"))
     # Test with debug = "plot"
     _, _ = pcv.crop_position_mask(nir, mask, device=0, x=40, y=3, v_pos="top", h_pos="right", debug="plot")
     # Test with debug = None
@@ -259,7 +263,12 @@ def test_plantcv_crop_position_mask():
 def test_plantcv_define_roi():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
+    _, _, _ = pcv.define_roi(img=img, shape="rectangle", device=0, roi=None, roi_input="default", debug="print",
+                             adjust=True, x_adj=600, y_adj=300, w_adj=-300, h_adj=-600)
+    os.rename("1_roi.png", os.path.join(TEST_TMPDIR, "1_roi.png"))
     # Test with debug = "plot"
+    _, _, _ = pcv.define_roi(img=img, shape="rectangle", device=0, roi=None, roi_input="default", debug="plot",
+                             adjust=True, x_adj=600, y_adj=300, w_adj=-300, h_adj=-600)
     # Test with debug = None
     device, contours, hierarchy = pcv.define_roi(img=img, shape="rectangle", device=0, roi=None, roi_input="default",
                                                  debug=None, adjust=True, x_adj=600, y_adj=300, w_adj=-300, h_adj=-600)
@@ -273,7 +282,10 @@ def test_plantcv_define_roi():
 def test_plantcv_dilate():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
+    _, _ = pcv.dilate(img=img, kernel=5, i=1, device=0, debug="print")
+    os.rename("1_dil_image_itr_1.png", os.path.join(TEST_TMPDIR, "1_dil_image_itr_1.png"))
     # Test with debug = "plot"
+    _, _ = pcv.dilate(img=img, kernel=5, i=1, device=0, debug="plot")
     # Test with debug = None
     device, dilate_img = pcv.dilate(img=img, kernel=5, i=1, device=0, debug=None)
     # Assert that the output image has the dimensions of the input image
@@ -290,7 +302,10 @@ def test_plantcv_dilate():
 def test_plantcv_erode():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
+    _, _ = pcv.erode(img=img, kernel=5, i=1, device=0, debug="print")
+    os.rename("1_er_image_itr_1.png", os.path.join(TEST_TMPDIR, "1_er_image_itr_1.png"))
     # Test with debug = "plot"
+    _, _ = pcv.erode(img=img, kernel=5, i=1, device=0, debug="plot")
     # Test with debug = None
     device, erode_img = pcv.erode(img=img, kernel=5, i=1, device=0, debug=None)
     # Assert that the output image has the dimensions of the input image
@@ -312,10 +327,15 @@ def test_plantcv_fatal_error():
 
 def test_plantcv_fill():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    mask = np.copy(img)
     # Test with debug = "print"
+    mask = np.copy(img)
+    _, _ = pcv.fill(img=img, mask=mask, size=1, device=0, debug="print")
+    os.rename("1_fill1.png", os.path.join(TEST_TMPDIR, "1_fill1.png"))
     # Test with debug = "plot"
+    mask = np.copy(img)
+    _, _ = pcv.fill(img=img, mask=mask, size=1, device=0, debug="plot")
     # Test with debug = None
+    mask = np.copy(img)
     device, fill_img = pcv.fill(img=img, mask=mask, size=1, device=0, debug=None)
     # Assert that the output image has the dimensions of the input image
     assert all([i == j] for i, j in zip(np.shape(fill_img), TEST_BINARY_DIM))
@@ -325,7 +345,10 @@ def test_plantcv_find_objects():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
+    _, _, _ = pcv.find_objects(img=img, mask=mask, device=0, debug="print")
+    os.rename("1_id_objects.png", os.path.join(TEST_TMPDIR, "1_id_objects.png"))
     # Test with debug = "plot"
+    _, _, _ = pcv.find_objects(img=img, mask=mask, device=0, debug="plot")
     # Test with debug = None
     device, contours, hierarchy = pcv.find_objects(img=img, mask=mask, device=0, debug=None)
     # Assert the correct number of contours are found
@@ -335,7 +358,10 @@ def test_plantcv_find_objects():
 def test_plantcv_flip():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
+    _, _ = pcv.flip(img=img, direction="horizontal", device=0, debug="print")
+    os.rename("1_flipped.png", os.path.join(TEST_TMPDIR, "1_flipped.png"))
     # Test with debug = "plot"
+    _, _ = pcv.flip(img=img, direction="horizontal", device=0, debug="plot")
     # Test with debug = None
     device, flipped_img = pcv.flip(img=img, direction="horizontal", device=0, debug=None)
     assert all([i == j] for i, j in zip(np.shape(flipped_img), TEST_COLOR_DIM))
@@ -347,10 +373,18 @@ def test_plantcv_fluor_fvfm():
     fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
     fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
     # Test with debug = "print"
+    outfile = os.path.join(TEST_TMPDIR, TEST_INPUT_FMAX)
+    _, _, _ = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, device=0, filename=outfile, bins=1000,
+                             debug="print")
+    os.rename("1_fmin_mask.png", os.path.join(TEST_TMPDIR, "1_fmin_mask.png"))
+    os.rename("1_fmax_mask.png", os.path.join(TEST_TMPDIR, "1_fmax_mask.png"))
+    os.rename("1_fv_convert.png", os.path.join(TEST_TMPDIR, "1_fv_convert.png"))
     # Test with debug = "plot"
+    _, _, _ = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, device=0, filename=False, bins=1000,
+                             debug="plot")
     # Test with debug = None
-    device, fvfm_header, fvfm_data = pcv.fluor_fvfm(fdark, fmin, fmax, fmask, device=0, filename=False,
-                                                    bins=1000, debug=None)
+    device, fvfm_header, fvfm_data = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, device=0,
+                                                    filename=False, bins=1000, debug=None)
     assert fvfm_data[4] > 0.66
 
 
