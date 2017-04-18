@@ -26,28 +26,23 @@ def rgb2gray_lab(img, channel, device, debug=None):
     :return device: int
     :return channel: numpy array
     """
-
-    lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
-    # Split HSV channels
-    l, a, b = cv2.split(lab)
+    # Auto-increment the device counter
     device += 1
-    if channel == 'l':
-        if debug == 'print':
-            print_image(l, (str(device) + '_lab_lightness.png'))
-        elif debug == 'plot':
-            plot_image(l, cmap='gray')
-        return device, l
-    elif channel == 'a':
-        if debug == 'print':
-            print_image(a, (str(device) + '_lab_green-magenta.png'))
-        elif debug == 'plot':
-            plot_image(a, cmap='gray')
-        return device, a
-    elif channel == 'b':
-        if debug == 'print':
-            print_image(b, (str(device) + '_lab_blue-yellow.png'))
-        elif debug == 'plot':
-            plot_image(b, cmap='gray')
-        return device, b
-    else:
-        fatal_error('Channel ' + str(channel) + ' is not l, a or b!')
+    # The allowable channel inputs are l, a or b
+    names = {"l": "lightness", "a": "green-magenta", "b": "blue-yellow"}
+    if channel not in names:
+        fatal_error("Channel " + str(channel) + " is not l, a or b!")
+
+    # Convert the input BGR image to LAB colorspace
+    lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
+    # Split LAB channels
+    l, a, b = cv2.split(lab)
+    # Create a channel dictionaries for lookups by a channel name index
+    channels = {"l": l, "a": a, "b": b}
+
+    if debug == "print":
+        print_image(channels[channel], str(device) + "_lab_" + names[channel] + ".png")
+    elif debug == "plot":
+        plot_image(channels[channel], cmap="gray")
+
+    return device, channels[channel]
