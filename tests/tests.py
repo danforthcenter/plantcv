@@ -47,6 +47,8 @@ if not os.path.exists(TEST_TMPDIR):
 
 def test_plantcv_adaptive_threshold():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    # Test with threshold type = "mean"
+    _, _ = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="mean", object_type="light", device=0, debug=None)
     # Test with debug = "print"
     _, _ = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="gaussian", object_type="light", device=0,
                                   debug="print")
@@ -66,6 +68,20 @@ def test_plantcv_adaptive_threshold():
             assert 0
     else:
         assert 0
+
+
+def test_plantcv_adaptive_threshold_incorrect_threshold_type():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    with pytest.raises(RuntimeError):
+        _, _ = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="gauss", object_type="light", device=0,
+                                      debug=None)
+
+
+def test_plantcv_adaptive_threshold_incorrect_object_type():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    with pytest.raises(RuntimeError):
+        _, _ = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="mean", object_type="lite", device=0,
+                                      debug=None)
 
 
 def test_plantcv_analyze_bound():
@@ -185,6 +201,8 @@ def test_plantcv_auto_crop():
 
 def test_plantcv_binary_threshold():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    # Test with object type = dark
+    _, _ = pcv.binary_threshold(img=img, threshold=25, maxValue=255, object_type="dark", device=0, debug=None)
     # Test with debug = "print"
     _, _ = pcv.binary_threshold(img=img, threshold=25, maxValue=255, object_type="light", device=0, debug="print")
     os.rename("1_binary_threshold25.png", os.path.join(TEST_TMPDIR, "1_binary_threshold25.png"))
@@ -202,6 +220,12 @@ def test_plantcv_binary_threshold():
             assert 0
     else:
         assert 0
+
+
+def test_plantcv_binary_threshold_incorrect_object_type():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    with pytest.raises(RuntimeError):
+        _, _ = pcv.binary_threshold(img=img, threshold=25, maxValue=255, object_type="lite", device=0, debug=None)
 
 
 def test_plantcv_cluster_contours():
@@ -603,13 +627,15 @@ def test_plantcv_object_composition():
 
 def test_plantcv_otsu_threshold():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_GREENMAG), -1)
+    # Test with object set to light
+    _, _ = pcv.otsu_auto_threshold(img=img, maxValue=255, object_type="light", device=0, debug=None)
     # Test with debug = "print"
-    _, _ = pcv.otsu_auto_threshold(img, 255, 'dark', device=0, debug="print")
+    _, _ = pcv.otsu_auto_threshold(img=img, maxValue=255, object_type='dark', device=0, debug="print")
     os.rename("1_otsu_auto_threshold_125.0_inv.png", os.path.join(TEST_TMPDIR, "1_otsu_auto_threshold_125.0_inv.png"))
     # Test with debug = "plot"
-    _, _ = pcv.otsu_auto_threshold(img, 255, 'dark', device=0, debug="plot")
+    _, _ = pcv.otsu_auto_threshold(img=img, maxValue=255, object_type='dark', device=0, debug="plot")
     # Test with debug = None
-    device, threshold_otsu = pcv.otsu_auto_threshold(img, 255, 'dark', device=0, debug=None)
+    device, threshold_otsu = pcv.otsu_auto_threshold(img=img, maxValue=255, object_type='dark', device=0, debug=None)
     assert np.max(threshold_otsu) == 255
 
 
