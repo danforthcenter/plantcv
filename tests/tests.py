@@ -244,6 +244,24 @@ def test_plantcv_cluster_contours_splitimg():
     assert len(output_path) != 0
 
 
+def test_plantcv_color_palette():
+    # Collect assertions
+    truths = []
+
+    # Return one random color
+    colors = pcv.color_palette(1)
+    # Colors should be a list of length 1, containing a tuple of length 3
+    truths.append(len(colors) == 1)
+    truths.append(len(colors[0]) == 3)
+
+    # Return ten random colors
+    colors = pcv.color_palette(10)
+    # Colors should be a list of length 10
+    truths.append(len(colors) == 10)
+    # All of these should be true for the function to pass testing.
+    assert (all(truths))
+
+
 def test_plantcv_crop_position_mask():
     nir, path1, filename1 = pcv.readimage(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK), -1)
