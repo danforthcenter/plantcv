@@ -48,7 +48,7 @@ import plantcv as pcv
 
 # Characterize object shapes
     
-device, shape_header, shape_data, shape_img = pcv.analyze_object(img, imgname, objects, mask, device, debug="print", /home/malia/setaria_shape_img.png)
+device, shape_header, shape_data, shape_img = pcv.analyze_object(img, imgname, objects, mask, device, debug="print", "/home/malia/setaria_shape_img.png")
 ```
 
 **Image with identified objects**
