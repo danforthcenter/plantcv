@@ -52,31 +52,41 @@ if not os.path.exists(TEST_TMPDIR):
     os.mkdir(TEST_TMPDIR)
 
 
+def test_plantcv_acute():
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR))
+    obj_contour = contours_npz['arr_0']
+    # Test with debug = "print"
+    _ = pcv.acute(obj=obj_contour, win=5, thresh=15, mask=mask, device=0, debug="print")
+    # Test with debug = None
+    device, homology_pts = pcv.acute(obj=obj_contour, win=5, thresh=15, mask=mask, device=0, debug=None)
+    assert all([i == j] for i, j in zip(np.shape(homology_pts), (29, 1, 2)))
+
+
 def test_plantcv_acute_vertex():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_VIS_SMALL))
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR))
     obj_contour = contours_npz['arr_0']
     # Test with debug = "print"
-    _, _ = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img, device=0, debug="print")
+    _ = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img, device=0, debug="print")
     os.rename("1_acute_vertices.png", os.path.join(TEST_TMPDIR, "1_acute_vertices.png"))
     # Test with debug = "plot"
-    _, _ = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img, device=0, debug="plot")
+    _ = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img, device=0, debug="plot")
     # Test with debug = None
     device, acute = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img, device=0, debug=None)
     assert all([i == j] for i, j in zip(np.shape(acute), np.shape(TEST_ACUTE_RESULT)))
 
 
-
 def test_plantcv_adaptive_threshold():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with threshold type = "mean"
-    _, _ = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="mean", object_type="light", device=0, debug=None)
+    _ = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="mean", object_type="light", device=0, debug=None)
     # Test with debug = "print"
-    _, _ = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="gaussian", object_type="light", device=0,
+    _ = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="gaussian", object_type="light", device=0,
                                   debug="print")
     os.rename("1_adaptive_threshold_gaussian.png", os.path.join(TEST_TMPDIR, "1_adaptive_threshold_gaussian.png"))
     # Test with debug = "plot"
-    _, _ = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="gaussian", object_type="light", device=0,
+    _ = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="gaussian", object_type="light", device=0,
                                   debug="plot")
     # Test with debug = None
     device, binary_img = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="gaussian", object_type="light",
@@ -95,15 +105,13 @@ def test_plantcv_adaptive_threshold():
 def test_plantcv_adaptive_threshold_incorrect_threshold_type():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     with pytest.raises(RuntimeError):
-        _, _ = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="gauss", object_type="light", device=0,
-                                      debug=None)
+        _ = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="gauss", object_type="light", device=0, debug=None)
 
 
 def test_plantcv_adaptive_threshold_incorrect_object_type():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     with pytest.raises(RuntimeError):
-        _, _ = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="mean", object_type="lite", device=0,
-                                      debug=None)
+        _ = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="mean", object_type="lite", device=0, debug=None)
 
 
 def test_plantcv_analyze_bound():
@@ -113,13 +121,13 @@ def test_plantcv_analyze_bound():
     object_contours = contours_npz['arr_0']
     # Test with debug = "print"
     outfile = os.path.join(TEST_TMPDIR, TEST_INPUT_COLOR)
-    _, _, _, _ = pcv.analyze_bound(img=img, imgname="img", obj=object_contours[0], mask=mask, line_position=300,
-                                   device=0, debug="print", filename=outfile)
+    _ = pcv.analyze_bound(img=img, imgname="img", obj=object_contours[0], mask=mask, line_position=300, device=0,
+                          debug="print", filename=outfile)
     os.rename("1_boundary_on_img.jpg", os.path.join(TEST_TMPDIR, "1_boundary_on_img.jpg"))
     os.rename("1_boundary_on_white.jpg", os.path.join(TEST_TMPDIR, "1_boundary_on_white.jpg"))
     # Test with debug = "plot"
-    _, _, _, _ = pcv.analyze_bound(img=img, imgname="img", obj=object_contours[0], mask=mask, line_position=300,
-                                   device=0, debug="plot", filename=False)
+    _ = pcv.analyze_bound(img=img, imgname="img", obj=object_contours[0], mask=mask, line_position=300, device=0,
+                          debug="plot", filename=False)
     # Test with debug = None
     device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound(img=img, imgname="img",
                                                                               obj=object_contours[0], mask=mask,
@@ -133,14 +141,12 @@ def test_plantcv_analyze_color():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     outfile = os.path.join(TEST_TMPDIR, TEST_INPUT_COLOR)
-    _, _, _, _ = pcv.analyze_color(img=img, imgname="img", mask=mask, bins=256, device=0, debug="print",
-                                   hist_plot_type=None, pseudo_channel="v", pseudo_bkg="img", resolution=300,
-                                   filename=outfile)
+    _ = pcv.analyze_color(img=img, imgname="img", mask=mask, bins=256, device=0, debug="print", hist_plot_type=None,
+                          pseudo_channel="v", pseudo_bkg="img", resolution=300, filename=outfile)
     os.rename("1_pseudocolor.jpg", os.path.join(TEST_TMPDIR, "1_pseudocolor.jpg"))
     # Test with debug = "plot"
-    _, _, _, _ = pcv.analyze_color(img=img, imgname="img", mask=mask, bins=256, device=0, debug="plot",
-                                   hist_plot_type=None, pseudo_channel="v", pseudo_bkg="img", resolution=300,
-                                   filename=False)
+    _ = pcv.analyze_color(img=img, imgname="img", mask=mask, bins=256, device=0, debug="plot", hist_plot_type=None,
+                          pseudo_channel="v", pseudo_bkg="img", resolution=300, filename=False)
     # Test with debug = None
     device, color_header, color_data, analysis_images = pcv.analyze_color(img=img, imgname="img", mask=mask, bins=256,
                                                                           device=0, debug=None, hist_plot_type=None,
@@ -154,13 +160,13 @@ def test_plantcv_analyze_nir():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     outfile = os.path.join(TEST_TMPDIR, TEST_INPUT_COLOR)
-    _, _, _, _ = pcv.analyze_NIR_intensity(img=img, rgbimg=img, mask=mask, bins=256, device=0, histplot=False,
-                                           debug="print", filename=outfile)
+    _ = pcv.analyze_NIR_intensity(img=img, rgbimg=img, mask=mask, bins=256, device=0, histplot=False, debug="print",
+                                  filename=outfile)
     os.rename("3_nir_pseudo_plant.jpg", os.path.join(TEST_TMPDIR, "3_nir_pseudo_plant.jpg"))
     os.rename("3_nir_pseudo_plant_back.jpg", os.path.join(TEST_TMPDIR, "3_nir_pseudo_plant_back.jpg"))
     # Test with debug = "plot"
-    _, _, _, _ = pcv.analyze_NIR_intensity(img=img, rgbimg=img, mask=mask, bins=256, device=0, histplot=False,
-                                           debug="plot", filename=False)
+    _ = pcv.analyze_NIR_intensity(img=img, rgbimg=img, mask=mask, bins=256, device=0, histplot=False, debug="plot",
+                                  filename=False)
     # Test with debug = None
     device, hist_header, hist_data, h_norm = pcv.analyze_NIR_intensity(img=img, rgbimg=img, mask=mask, bins=256,
                                                                        device=0, histplot=False, debug=None,
@@ -176,12 +182,10 @@ def test_plantcv_analyze_object():
     max_obj = max(obj_contour, key=len)
     # Test with debug = "print"
     outfile = os.path.join(TEST_TMPDIR, TEST_INPUT_COLOR)
-    _, _, _, _ = pcv.analyze_object(img=img, imgname="img", obj=max_obj, mask=mask, device=0, debug="print",
-                                    filename=outfile)
+    _ = pcv.analyze_object(img=img, imgname="img", obj=max_obj, mask=mask, device=0, debug="print", filename=outfile)
     os.rename("1_shapes.jpg", os.path.join(TEST_TMPDIR, "1_shapes.jpg"))
     # Test with debug = "plot"
-    _, _, _, _ = pcv.analyze_object(img=img, imgname="img", obj=max_obj, mask=mask, device=0, debug="plot",
-                                    filename=False)
+    _ = pcv.analyze_object(img=img, imgname="img", obj=max_obj, mask=mask, device=0, debug="plot", filename=False)
     # Test with debug = None
     device, obj_header, obj_data, obj_images = pcv.analyze_object(img=img, imgname="img", obj=max_obj, mask=mask,
                                                                   device=0, debug=None, filename=False)
@@ -192,10 +196,10 @@ def test_plantcv_apply_mask():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
-    _, _ = pcv.apply_mask(img=img, mask=mask, mask_color="white", device=0, debug="print")
+    _ = pcv.apply_mask(img=img, mask=mask, mask_color="white", device=0, debug="print")
     os.rename("1_wmasked.png", os.path.join(TEST_TMPDIR, "1_wmasked.png"))
     # Test with debug = "plot"
-    _, _ = pcv.apply_mask(img=img, mask=mask, mask_color="white", device=0, debug="plot")
+    _ = pcv.apply_mask(img=img, mask=mask, mask_color="white", device=0, debug="plot")
     # Test with debug = None
     device, masked_img = pcv.apply_mask(img=img, mask=mask, mask_color="white", device=0, debug=None)
     assert all([i == j] for i, j in zip(np.shape(masked_img), TEST_COLOR_DIM))
@@ -206,13 +210,13 @@ def test_plantcv_auto_crop():
     contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_CONTOUR))
     roi_contours = contours['arr_0']
     # Test with debug = "print"
-    _, _ = pcv.auto_crop(device=0, img=img1, objects=roi_contours[48], padding_x=20, padding_y=20, color='black',
-                         debug="print")
+    _ = pcv.auto_crop(device=0, img=img1, objects=roi_contours[48], padding_x=20, padding_y=20, color='black',
+                      debug="print")
     os.rename("1_crop_area.png", os.path.join(TEST_TMPDIR, "1_crop_area.png"))
     os.rename("1_auto_cropped.png", os.path.join(TEST_TMPDIR, "1_auto_cropped.png"))
     # Test with debug = "plot"
-    _, _ = pcv.auto_crop(device=0, img=img1, objects=roi_contours[48], padding_x=20, padding_y=20, color='black',
-                         debug="plot")
+    _ = pcv.auto_crop(device=0, img=img1, objects=roi_contours[48], padding_x=20, padding_y=20, color='black',
+                      debug="plot")
     # Test with debug = None
     device, cropped = pcv.auto_crop(device=0, img=img1, objects=roi_contours[48], padding_x=20, padding_y=20,
                                     color='black', debug=None)
@@ -224,12 +228,12 @@ def test_plantcv_auto_crop():
 def test_plantcv_binary_threshold():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with object type = dark
-    _, _ = pcv.binary_threshold(img=img, threshold=25, maxValue=255, object_type="dark", device=0, debug=None)
+    _ = pcv.binary_threshold(img=img, threshold=25, maxValue=255, object_type="dark", device=0, debug=None)
     # Test with debug = "print"
-    _, _ = pcv.binary_threshold(img=img, threshold=25, maxValue=255, object_type="light", device=0, debug="print")
+    _ = pcv.binary_threshold(img=img, threshold=25, maxValue=255, object_type="light", device=0, debug="print")
     os.rename("1_binary_threshold25.png", os.path.join(TEST_TMPDIR, "1_binary_threshold25.png"))
     # Test with debug = "plot"
-    _, _ = pcv.binary_threshold(img=img, threshold=25, maxValue=255, object_type="light", device=0, debug="plot")
+    _ = pcv.binary_threshold(img=img, threshold=25, maxValue=255, object_type="light", device=0, debug="plot")
     # Test with debug = None
     device, binary_img = pcv.binary_threshold(img=img, threshold=25, maxValue=255, object_type="light",
                                               device=0, debug=None)
@@ -247,7 +251,7 @@ def test_plantcv_binary_threshold():
 def test_plantcv_binary_threshold_incorrect_object_type():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     with pytest.raises(RuntimeError):
-        _, _ = pcv.binary_threshold(img=img, threshold=25, maxValue=255, object_type="lite", device=0, debug=None)
+        _ = pcv.binary_threshold(img=img, threshold=25, maxValue=255, object_type="lite", device=0, debug=None)
 
 
 def test_plantcv_cluster_contours():
@@ -255,13 +259,13 @@ def test_plantcv_cluster_contours():
     contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_CONTOUR))
     roi_contours = contours['arr_0']
     # Test with debug = "print"
-    _, _, _ = pcv.cluster_contours(device=0, img=img1, roi_objects=roi_contours, nrow=4, ncol=6, debug="print")
+    _ = pcv.cluster_contours(device=0, img=img1, roi_objects=roi_contours, nrow=4, ncol=6, debug="print")
     os.rename("1_clusters.png", os.path.join(TEST_TMPDIR, "1_clusters.png"))
     # Test with debug = "plot"
-    _, _, _ = pcv.cluster_contours(device=0, img=img1, roi_objects=roi_contours, nrow=4, ncol=6, debug="plot")
+    _ = pcv.cluster_contours(device=0, img=img1, roi_objects=roi_contours, nrow=4, ncol=6, debug="plot")
     # Test with debug = None
-    device, clusters_i, contours = pcv.cluster_contours(device=0, img=img1, roi_objects=roi_contours, nrow=4,
-                                                        ncol=6, debug=None)
+    device, clusters_i, contours = pcv.cluster_contours(device=0, img=img1, roi_objects=roi_contours, nrow=4, ncol=6,
+                                                        debug=None)
     lenori = len(roi_contours)
     lenclust = len(clusters_i)
     assert lenori > lenclust
@@ -274,15 +278,15 @@ def test_plantcv_cluster_contours_splitimg():
     roi_contours = contours['arr_0']
     cluster_contours = clusters['arr_0']
     # Test with debug = "print"
-    _, _ = pcv.cluster_contour_splitimg(device=0, img=img1, grouped_contour_indexes=cluster_contours,
-                                        contours=roi_contours, outdir=TEST_TMPDIR, file=None, filenames=None,
-                                        debug="print")
+    _ = pcv.cluster_contour_splitimg(device=0, img=img1, grouped_contour_indexes=cluster_contours,
+                                     contours=roi_contours, outdir=TEST_TMPDIR, file=None, filenames=None,
+                                     debug="print")
     for i in range(1, 19):
         os.rename(str(i) + "_clusters.png", os.path.join(TEST_TMPDIR, str(i) + "_clusters.png"))
         os.rename(str(i) + "_wmasked.png", os.path.join(TEST_TMPDIR, str(i) + "_wmasked.png"))
     # Test with debug = "plot"
-    _, _ = pcv.cluster_contour_splitimg(device=0, img=img1, grouped_contour_indexes=cluster_contours,
-                                        contours=roi_contours, outdir=None, file=None, filenames=None, debug="plot")
+    _ = pcv.cluster_contour_splitimg(device=0, img=img1, grouped_contour_indexes=cluster_contours,
+                                     contours=roi_contours, outdir=None, file=None, filenames=None, debug="plot")
     # Test with debug = None
     device, output_path = pcv.cluster_contour_splitimg(device=0, img=img1, grouped_contour_indexes=cluster_contours,
                                                        contours=roi_contours, outdir=None, file=None,
@@ -312,13 +316,13 @@ def test_plantcv_crop_position_mask():
     nir, path1, filename1 = pcv.readimage(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK), -1)
     # Test with debug = "print"
-    _, _ = pcv.crop_position_mask(nir, mask, device=0, x=40, y=3, v_pos="top", h_pos="right", debug="print")
+    _ = pcv.crop_position_mask(nir, mask, device=0, x=40, y=3, v_pos="top", h_pos="right", debug="print")
     os.rename("1_mask_overlay.png", os.path.join(TEST_TMPDIR, "1_mask_overlay.png"))
     os.rename("1_newmask.png", os.path.join(TEST_TMPDIR, "1_newmask.png"))
     os.rename("1_push-right.png", os.path.join(TEST_TMPDIR, "1_push-right.png"))
     os.rename("1_push-top_.png", os.path.join(TEST_TMPDIR, "1_push-top_.png"))
     # Test with debug = "plot"
-    _, _ = pcv.crop_position_mask(nir, mask, device=0, x=40, y=3, v_pos="top", h_pos="right", debug="plot")
+    _ = pcv.crop_position_mask(nir, mask, device=0, x=40, y=3, v_pos="top", h_pos="right", debug="plot")
     # Test with debug = None
     device, newmask = pcv.crop_position_mask(nir, mask, device=0, x=40, y=3, v_pos="top", h_pos="right", debug=None)
     assert np.sum(newmask) == 641517
@@ -327,12 +331,12 @@ def test_plantcv_crop_position_mask():
 def test_plantcv_define_roi():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
-    _, _, _ = pcv.define_roi(img=img, shape="rectangle", device=0, roi=None, roi_input="default", debug="print",
-                             adjust=True, x_adj=600, y_adj=300, w_adj=-300, h_adj=-600)
+    _ = pcv.define_roi(img=img, shape="rectangle", device=0, roi=None, roi_input="default", debug="print", adjust=True,
+                       x_adj=600, y_adj=300, w_adj=-300, h_adj=-600)
     os.rename("1_roi.png", os.path.join(TEST_TMPDIR, "1_roi.png"))
     # Test with debug = "plot"
-    _, _, _ = pcv.define_roi(img=img, shape="rectangle", device=0, roi=None, roi_input="default", debug="plot",
-                             adjust=True, x_adj=600, y_adj=300, w_adj=-300, h_adj=-600)
+    _ = pcv.define_roi(img=img, shape="rectangle", device=0, roi=None, roi_input="default", debug="plot", adjust=True,
+                       x_adj=600, y_adj=300, w_adj=-300, h_adj=-600)
     # Test with debug = None
     device, contours, hierarchy = pcv.define_roi(img=img, shape="rectangle", device=0, roi=None, roi_input="default",
                                                  debug=None, adjust=True, x_adj=600, y_adj=300, w_adj=-300, h_adj=-600)
@@ -346,10 +350,10 @@ def test_plantcv_define_roi():
 def test_plantcv_dilate():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
-    _, _ = pcv.dilate(img=img, kernel=5, i=1, device=0, debug="print")
+    _ = pcv.dilate(img=img, kernel=5, i=1, device=0, debug="print")
     os.rename("1_dil_image_itr_1.png", os.path.join(TEST_TMPDIR, "1_dil_image_itr_1.png"))
     # Test with debug = "plot"
-    _, _ = pcv.dilate(img=img, kernel=5, i=1, device=0, debug="plot")
+    _ = pcv.dilate(img=img, kernel=5, i=1, device=0, debug="plot")
     # Test with debug = None
     device, dilate_img = pcv.dilate(img=img, kernel=5, i=1, device=0, debug=None)
     # Assert that the output image has the dimensions of the input image
@@ -366,10 +370,10 @@ def test_plantcv_dilate():
 def test_plantcv_erode():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
-    _, _ = pcv.erode(img=img, kernel=5, i=1, device=0, debug="print")
+    _ = pcv.erode(img=img, kernel=5, i=1, device=0, debug="print")
     os.rename("1_er_image_itr_1.png", os.path.join(TEST_TMPDIR, "1_er_image_itr_1.png"))
     # Test with debug = "plot"
-    _, _ = pcv.erode(img=img, kernel=5, i=1, device=0, debug="plot")
+    _ = pcv.erode(img=img, kernel=5, i=1, device=0, debug="plot")
     # Test with debug = None
     device, erode_img = pcv.erode(img=img, kernel=5, i=1, device=0, debug=None)
     # Assert that the output image has the dimensions of the input image
@@ -393,11 +397,11 @@ def test_plantcv_fill():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     mask = np.copy(img)
-    _, _ = pcv.fill(img=img, mask=mask, size=1, device=0, debug="print")
+    _ = pcv.fill(img=img, mask=mask, size=1, device=0, debug="print")
     os.rename("1_fill1.png", os.path.join(TEST_TMPDIR, "1_fill1.png"))
     # Test with debug = "plot"
     mask = np.copy(img)
-    _, _ = pcv.fill(img=img, mask=mask, size=1, device=0, debug="plot")
+    _ = pcv.fill(img=img, mask=mask, size=1, device=0, debug="plot")
     # Test with debug = None
     mask = np.copy(img)
     device, fill_img = pcv.fill(img=img, mask=mask, size=1, device=0, debug=None)
@@ -409,10 +413,10 @@ def test_plantcv_find_objects():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
-    _, _, _ = pcv.find_objects(img=img, mask=mask, device=0, debug="print")
+    _ = pcv.find_objects(img=img, mask=mask, device=0, debug="print")
     os.rename("1_id_objects.png", os.path.join(TEST_TMPDIR, "1_id_objects.png"))
     # Test with debug = "plot"
-    _, _, _ = pcv.find_objects(img=img, mask=mask, device=0, debug="plot")
+    _ = pcv.find_objects(img=img, mask=mask, device=0, debug="plot")
     # Test with debug = None
     device, contours, hierarchy = pcv.find_objects(img=img, mask=mask, device=0, debug=None)
     # Assert the correct number of contours are found
@@ -422,10 +426,10 @@ def test_plantcv_find_objects():
 def test_plantcv_flip():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
-    _, _ = pcv.flip(img=img, direction="horizontal", device=0, debug="print")
+    _ = pcv.flip(img=img, direction="horizontal", device=0, debug="print")
     os.rename("1_flipped.png", os.path.join(TEST_TMPDIR, "1_flipped.png"))
     # Test with debug = "plot"
-    _, _ = pcv.flip(img=img, direction="horizontal", device=0, debug="plot")
+    _ = pcv.flip(img=img, direction="horizontal", device=0, debug="plot")
     # Test with debug = None
     device, flipped_img = pcv.flip(img=img, direction="horizontal", device=0, debug=None)
     assert all([i == j] for i, j in zip(np.shape(flipped_img), TEST_COLOR_DIM))
@@ -438,14 +442,13 @@ def test_plantcv_fluor_fvfm():
     fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
     # Test with debug = "print"
     outfile = os.path.join(TEST_TMPDIR, TEST_INPUT_FMAX)
-    _, _, _ = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, device=0, filename=outfile, bins=1000,
-                             debug="print")
+    _ = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, device=0, filename=outfile, bins=1000,
+                       debug="print")
     os.rename("1_fmin_mask.png", os.path.join(TEST_TMPDIR, "1_fmin_mask.png"))
     os.rename("1_fmax_mask.png", os.path.join(TEST_TMPDIR, "1_fmax_mask.png"))
     os.rename("1_fv_convert.png", os.path.join(TEST_TMPDIR, "1_fv_convert.png"))
     # Test with debug = "plot"
-    _, _, _ = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, device=0, filename=False, bins=1000,
-                             debug="plot")
+    _ = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, device=0, filename=False, bins=1000, debug="plot")
     # Test with debug = None
     device, fvfm_header, fvfm_data = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, device=0,
                                                     filename=False, bins=1000, debug=None)
@@ -455,10 +458,10 @@ def test_plantcv_fluor_fvfm():
 def test_plantcv_gaussian_blur():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
-    _, _ = pcv.gaussian_blur(device=0, img=img, ksize=(51, 51), sigmax=0, sigmay=None, debug="print")
+    _ = pcv.gaussian_blur(device=0, img=img, ksize=(51, 51), sigmax=0, sigmay=None, debug="print")
     os.rename("1_gaussian_blur.png", os.path.join(TEST_TMPDIR, "1_gaussian_blur.png"))
     # Test with debug = "plot"
-    _, _ = pcv.gaussian_blur(device=0, img=img, ksize=(51, 51), sigmax=0, sigmay=None, debug="plot")
+    _ = pcv.gaussian_blur(device=0, img=img, ksize=(51, 51), sigmax=0, sigmay=None, debug="plot")
     # Test with debug = None
     device, gaussian_img = pcv.gaussian_blur(device=0, img=img, ksize=(51, 51), sigmax=0, sigmay=None, debug=None)
     imgavg = np.average(img)
@@ -475,10 +478,10 @@ def test_plantcv_get_nir():
 def test_plantcv_hist_equalization():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with debug = "print"
-    _, _ = pcv.hist_equalization(img=img, device=0, debug="print")
+    _ = pcv.hist_equalization(img=img, device=0, debug="print")
     os.rename("1_hist_equal_img.png", os.path.join(TEST_TMPDIR, "1_hist_equal_img.png"))
     # Test with debug = "plot"
-    _, _ = pcv.hist_equalization(img=img, device=0, debug="plot")
+    _ = pcv.hist_equalization(img=img, device=0, debug="plot")
     # Test with debug = None
     device, hist = pcv.hist_equalization(img=img, device=0, debug=None)
     histavg = np.average(hist)
@@ -490,10 +493,10 @@ def test_plantcv_image_add():
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     img2 = np.copy(img1)
     # Test with debug = "print"
-    _, _ = pcv.image_add(img1=img1, img2=img2, device=0, debug="print")
+    _ = pcv.image_add(img1=img1, img2=img2, device=0, debug="print")
     os.rename("1_added.png", os.path.join(TEST_TMPDIR, "1_added.png"))
     # Test with debug = "plot"
-    _, _ = pcv.image_add(img1=img1, img2=img2, device=0, debug="plot")
+    _ = pcv.image_add(img1=img1, img2=img2, device=0, debug="plot")
     # Test with debug = None
     device, added_img = pcv.image_add(img1=img1, img2=img2, device=0, debug=None)
     assert all([i == j] for i, j in zip(np.shape(added_img), TEST_BINARY_DIM))
@@ -503,10 +506,10 @@ def test_plantcv_image_subtract():
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     img2 = np.copy(img1)
     # Test with debug = "print"
-    _, _ = pcv.image_subtract(img1=img1, img2=img2, device=0, debug="print")
+    _ = pcv.image_subtract(img1=img1, img2=img2, device=0, debug="print")
     os.rename("1_subtracted.png", os.path.join(TEST_TMPDIR, "1_subtracted.png"))
     # Test with debug = "plot"
-    _, _ = pcv.image_subtract(img1=img1, img2=img2, device=0, debug="plot")
+    _ = pcv.image_subtract(img1=img1, img2=img2, device=0, debug="plot")
     # Test with debug = None
     device, subtract_img = pcv.image_subtract(img1=img1, img2=img2, device=0, debug=None)
     assert all([i == j] for i, j in zip(np.shape(subtract_img), TEST_BINARY_DIM))
@@ -515,10 +518,10 @@ def test_plantcv_image_subtract():
 def test_plantcv_invert():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
-    _, _ = pcv.invert(img=img, device=0, debug="print")
+    _ = pcv.invert(img=img, device=0, debug="print")
     os.rename("1_invert.png", os.path.join(TEST_TMPDIR, "1_invert.png"))
     # Test with debug = "plot"
-    _, _ = pcv.invert(img=img, device=0, debug="plot")
+    _ = pcv.invert(img=img, device=0, debug="plot")
     # Test with debug = None
     device, inverted_img = pcv.invert(img=img, device=0, debug=None)
     # Assert that the output image has the dimensions of the input image
@@ -548,10 +551,10 @@ def test_plantcv_landmark_reference_pt_dist():
 def test_plantcv_laplace_filter():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with debug = "print"
-    _, _ = pcv.laplace_filter(img=img, k=1, scale=1, device=0, debug="print")
+    _ = pcv.laplace_filter(img=img, k=1, scale=1, device=0, debug="print")
     os.rename("1_lp_out_k1_scale1.png", os.path.join(TEST_TMPDIR, "1_lp_out_k1_scale1.png"))
     # Test with debug = "plot"
-    _, _ = pcv.laplace_filter(img=img, k=1, scale=1, device=0, debug="plot")
+    _ = pcv.laplace_filter(img=img, k=1, scale=1, device=0, debug="plot")
     # Test with debug = None
     device, lp_img = pcv.laplace_filter(img=img, k=1, scale=1, device=0, debug=None)
     # Assert that the output image has the dimensions of the input image
@@ -562,10 +565,10 @@ def test_plantcv_logical_and():
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     img2 = np.copy(img1)
     # Test with debug = "print"
-    _, _ = pcv.logical_and(img1=img1, img2=img2, device=0, debug="print")
+    _ = pcv.logical_and(img1=img1, img2=img2, device=0, debug="print")
     os.rename("1_and_joined.png", os.path.join(TEST_TMPDIR, "1_and_joined.png"))
     # Test with debug = "plot"
-    _, _ = pcv.logical_and(img1=img1, img2=img2, device=0, debug="plot")
+    _ = pcv.logical_and(img1=img1, img2=img2, device=0, debug="plot")
     # Test with debug = None
     device, and_img = pcv.logical_and(img1=img1, img2=img2, device=0, debug=None)
     assert all([i == j] for i, j in zip(np.shape(and_img), TEST_BINARY_DIM))
@@ -575,10 +578,10 @@ def test_plantcv_logical_or():
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     img2 = np.copy(img1)
     # Test with debug = "print"
-    _, _ = pcv.logical_or(img1=img1, img2=img2, device=0, debug="print")
+    _ = pcv.logical_or(img1=img1, img2=img2, device=0, debug="print")
     os.rename("1_or_joined.png", os.path.join(TEST_TMPDIR, "1_or_joined.png"))
     # Test with debug = "plot"
-    _, _ = pcv.logical_or(img1=img1, img2=img2, device=0, debug="plot")
+    _ = pcv.logical_or(img1=img1, img2=img2, device=0, debug="plot")
     # Test with debug = None
     device, or_img = pcv.logical_or(img1=img1, img2=img2, device=0, debug=None)
     assert all([i == j] for i, j in zip(np.shape(or_img), TEST_BINARY_DIM))
@@ -588,10 +591,10 @@ def test_plantcv_logical_xor():
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     img2 = np.copy(img1)
     # Test with debug = "print"
-    _, _ = pcv.logical_xor(img1=img1, img2=img2, device=0, debug="print")
+    _ = pcv.logical_xor(img1=img1, img2=img2, device=0, debug="print")
     os.rename("1_xor_joined.png", os.path.join(TEST_TMPDIR, "1_xor_joined.png"))
     # Test with debug = "plot"
-    _, _ = pcv.logical_xor(img1=img1, img2=img2, device=0, debug="plot")
+    _ = pcv.logical_xor(img1=img1, img2=img2, device=0, debug="plot")
     # Test with debug = None
     device, xor_img = pcv.logical_xor(img1=img1, img2=img2, device=0, debug=None)
     assert all([i == j] for i, j in zip(np.shape(xor_img), TEST_BINARY_DIM))
@@ -600,10 +603,10 @@ def test_plantcv_logical_xor():
 def test_plantcv_median_blur():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
-    _, _ = pcv.median_blur(img=img, ksize=5, device=0, debug="print")
+    _ = pcv.median_blur(img=img, ksize=5, device=0, debug="print")
     os.rename("1_median_blur5.png", os.path.join(TEST_TMPDIR, "1_median_blur5.png"))
     # Test with debug = "plot"
-    _, _ = pcv.median_blur(img=img, ksize=5, device=0, debug="plot")
+    _ = pcv.median_blur(img=img, ksize=5, device=0, debug="plot")
     # Test with debug = None
     device, blur_img = pcv.median_blur(img=img, ksize=5, device=0, debug=None)
     # Assert that the output image has the dimensions of the input image
@@ -620,10 +623,10 @@ def test_plantcv_median_blur():
 def test_plantcv_naive_bayes_classifier():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
-    _, _ = pcv.naive_bayes_classifier(img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS), device=0, debug="print")
+    _ = pcv.naive_bayes_classifier(img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS), device=0, debug="print")
     os.rename("1_naive_bayes_mask.jpg", os.path.join(TEST_TMPDIR, "1_naive_bayes_mask.jpg"))
     # Test with debug = "plot"
-    _, _ = pcv.naive_bayes_classifier(img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS), device=0, debug="plot")
+    _ = pcv.naive_bayes_classifier(img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS), device=0, debug="plot")
     # Test with debug = None
     device, mask = pcv.naive_bayes_classifier(img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS), device=0,
                                               debug=None)
@@ -645,13 +648,11 @@ def test_plantcv_object_composition():
     object_contours = contours_npz['arr_0']
     object_hierarchy = contours_npz['arr_1']
     # Test with debug = "print"
-    _, _, _ = pcv.object_composition(img=img, contours=object_contours, hierarchy=object_hierarchy, device=0,
-                                     debug="print")
+    _ = pcv.object_composition(img=img, contours=object_contours, hierarchy=object_hierarchy, device=0, debug="print")
     os.rename("1_objcomp.png", os.path.join(TEST_TMPDIR, "1_objcomp.png"))
     os.rename("1_objcomp_mask.png", os.path.join(TEST_TMPDIR, "1_objcomp_mask.png"))
     # Test with debug = "plot"
-    _, _, _ = pcv.object_composition(img=img, contours=object_contours, hierarchy=object_hierarchy, device=0,
-                                     debug="plot")
+    _ = pcv.object_composition(img=img, contours=object_contours, hierarchy=object_hierarchy, device=0, debug="plot")
     # Test with debug = None
     device, contours, mask = pcv.object_composition(img=img, contours=object_contours, hierarchy=object_hierarchy,
                                                     device=0, debug=None)
@@ -663,12 +664,12 @@ def test_plantcv_object_composition():
 def test_plantcv_otsu_threshold():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_GREENMAG), -1)
     # Test with object set to light
-    _, _ = pcv.otsu_auto_threshold(img=img, maxValue=255, object_type="light", device=0, debug=None)
+    _ = pcv.otsu_auto_threshold(img=img, maxValue=255, object_type="light", device=0, debug=None)
     # Test with debug = "print"
-    _, _ = pcv.otsu_auto_threshold(img=img, maxValue=255, object_type='dark', device=0, debug="print")
+    _ = pcv.otsu_auto_threshold(img=img, maxValue=255, object_type='dark', device=0, debug="print")
     os.rename("1_otsu_auto_threshold_125.0_inv.png", os.path.join(TEST_TMPDIR, "1_otsu_auto_threshold_125.0_inv.png"))
     # Test with debug = "plot"
-    _, _ = pcv.otsu_auto_threshold(img=img, maxValue=255, object_type='dark', device=0, debug="plot")
+    _ = pcv.otsu_auto_threshold(img=img, maxValue=255, object_type='dark', device=0, debug="plot")
     # Test with debug = None
     device, threshold_otsu = pcv.otsu_auto_threshold(img=img, maxValue=255, object_type='dark', device=0, debug=None)
     assert np.max(threshold_otsu) == 255
@@ -678,13 +679,13 @@ def test_plantcv_output_mask():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
-    _, _, _, _ = pcv.output_mask(device=0, img=img, mask=mask, filename='test.png', outdir=TEST_TMPDIR, mask_only=False,
-                                 debug="print")
+    _ = pcv.output_mask(device=0, img=img, mask=mask, filename='test.png', outdir=TEST_TMPDIR, mask_only=False,
+                        debug="print")
     os.rename("1_mask-img.png", os.path.join(TEST_TMPDIR, "1_mask-img.png"))
     os.rename("1_ori-img.png", os.path.join(TEST_TMPDIR, "1_ori-img.png"))
     # Test with debug = "plot"
-    _, _, _, _ = pcv.output_mask(device=0, img=img, mask=mask, filename='test.png', outdir=TEST_TMPDIR, mask_only=False,
-                                 debug="plot")
+    _ = pcv.output_mask(device=0, img=img, mask=mask, filename='test.png', outdir=TEST_TMPDIR, mask_only=False,
+                        debug="plot")
     # Test with debug = None
     device, imgpath, maskpath, analysis_images = pcv.output_mask(device=0, img=img, mask=mask, filename='test.png',
                                                                  outdir=TEST_TMPDIR, mask_only=False, debug=None)
@@ -727,16 +728,16 @@ def test_plantcv_readimage():
 
 def test_plantcv_readimage_bad_file():
     with pytest.raises(RuntimeError):
-        _, _, _ = pcv.readimage(filename=TEST_INPUT_COLOR)
+        _ = pcv.readimage(filename=TEST_INPUT_COLOR)
 
 
 def test_plantcv_rectangle_mask():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with debug = "print"
-    _, _, _, _, _ = pcv.rectangle_mask(img=img, p1=(0, 0), p2=(2454, 2056), device=0, debug="print", color="black")
+    _ = pcv.rectangle_mask(img=img, p1=(0, 0), p2=(2454, 2056), device=0, debug="print", color="black")
     os.rename("1_roi.png", os.path.join(TEST_TMPDIR, "1_roi.png"))
     # Test with debug = "plot"
-    _, _, _, _, _ = pcv.rectangle_mask(img=img, p1=(0, 0), p2=(2454, 2056), device=0, debug="plot", color="black")
+    _ = pcv.rectangle_mask(img=img, p1=(0, 0), p2=(2454, 2056), device=0, debug="plot", color="black")
     # Test with debug = None
     device, masked, hist, contour, heir = pcv.rectangle_mask(img=img, p1=(0, 0), p2=(2454, 2056), device=0, debug=None,
                                                              color="black")
@@ -749,18 +750,18 @@ def test_plantcv_report_size_marker():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MARKER), -1)
     # Test with debug = "print"
     outfile = os.path.join(TEST_TMPDIR, TEST_INPUT_MARKER)
-    _, _, _, _ = pcv.report_size_marker_area(img=img, shape='rectangle', device=0, debug="print", marker='detect',
-                                             x_adj=3500, y_adj=600, w_adj=-100, h_adj=-1500, base='white',
-                                             objcolor='light', thresh_channel='s', thresh=120, filename=outfile)
+    _ = pcv.report_size_marker_area(img=img, shape='rectangle', device=0, debug="print", marker='detect', x_adj=3500,
+                                    y_adj=600, w_adj=-100, h_adj=-1500, base='white', objcolor='light',
+                                    thresh_channel='s', thresh=120, filename=outfile)
     for filename in ["1_marker_roi.png", "2_hsv_saturation.png", "3_binary_threshold120.png", "4_id_objects.png",
                      "5_roi.png", "6_obj_on_img.png", "6_roi_mask.png", "6_roi_objects.png", "7_marker_shape.png",
                      "7_objcomp.png", "7_objcomp_mask.png"]:
         os.rename(filename, os.path.join(TEST_TMPDIR, filename))
 
     # Test with debug = "plot"
-    _, _, _, _ = pcv.report_size_marker_area(img=img, shape='rectangle', device=0, debug="plot", marker='detect',
-                                             x_adj=3500, y_adj=600, w_adj=-100, h_adj=-1500, base='white',
-                                             objcolor='light', thresh_channel='s', thresh=120, filename=False)
+    _ = pcv.report_size_marker_area(img=img, shape='rectangle', device=0, debug="plot", marker='detect', x_adj=3500,
+                                    y_adj=600, w_adj=-100, h_adj=-1500, base='white', objcolor='light',
+                                    thresh_channel='s', thresh=120, filename=False)
     # Test with debug = None
     device, marker_header, marker_data, images = pcv.report_size_marker_area(img=img, shape='rectangle', device=0,
                                                                              debug=None, marker='detect', x_adj=3500,
@@ -774,10 +775,10 @@ def test_plantcv_report_size_marker():
 def test_plantcv_resize():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
-    _, _ = pcv.resize(img=img, resize_x=0.5, resize_y=0.5, device=0, debug="print")
+    _ = pcv.resize(img=img, resize_x=0.5, resize_y=0.5, device=0, debug="print")
     os.rename("1_resize1.png", os.path.join(TEST_TMPDIR, "1_resize1.png"))
     # Test with debug = "plot"
-    _, _ = pcv.resize(img=img, resize_x=0.5, resize_y=0.5, device=0, debug="plot")
+    _ = pcv.resize(img=img, resize_x=0.5, resize_y=0.5, device=0, debug="plot")
     # Test with debug = None
     device, resized_img = pcv.resize(img=img, resize_x=0.5, resize_y=0.5, device=0, debug=None)
     ix, iy, iz = np.shape(img)
@@ -788,10 +789,10 @@ def test_plantcv_resize():
 def test_plantcv_rgb2gray_hsv():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
-    _, _ = pcv.rgb2gray_hsv(img=img, channel="s", device=0, debug="print")
+    _ = pcv.rgb2gray_hsv(img=img, channel="s", device=0, debug="print")
     os.rename("1_hsv_saturation.png", os.path.join(TEST_TMPDIR, "1_hsv_saturation.png"))
     # Test with debug = "plot"
-    _, _ = pcv.rgb2gray_hsv(img=img, channel="s", device=0, debug="plot")
+    _ = pcv.rgb2gray_hsv(img=img, channel="s", device=0, debug="plot")
     # Test with debug = None
     device, s = pcv.rgb2gray_hsv(img=img, channel="s", device=0, debug=None)
     # Assert that the output image has the dimensions of the input image but is only a single channel
@@ -801,10 +802,10 @@ def test_plantcv_rgb2gray_hsv():
 def test_plantcv_rgb2gray_lab():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
-    _, _ = pcv.rgb2gray_lab(img=img, channel='b', device=0, debug="print")
+    _ = pcv.rgb2gray_lab(img=img, channel='b', device=0, debug="print")
     os.rename("1_lab_blue-yellow.png", os.path.join(TEST_TMPDIR, "1_lab_blue-yellow.png"))
     # Test with debug = "plot"
-    _, _ = pcv.rgb2gray_lab(img=img, channel='b', device=0, debug="plot")
+    _ = pcv.rgb2gray_lab(img=img, channel='b', device=0, debug="plot")
     # Test with debug = None
     device, b = pcv.rgb2gray_lab(img=img, channel='b', device=0, debug=None)
     # Assert that the output image has the dimensions of the input image but is only a single channel
@@ -814,10 +815,10 @@ def test_plantcv_rgb2gray_lab():
 def test_plantcv_rgb2gray():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
-    _, _ = pcv.rgb2gray(img=img, device=0, debug="print")
+    _ = pcv.rgb2gray(img=img, device=0, debug="print")
     os.rename("1_gray.png", os.path.join(TEST_TMPDIR, "1_gray.png"))
     # Test with debug = "plot"
-    _, _ = pcv.rgb2gray(img=img, device=0, debug="plot")
+    _ = pcv.rgb2gray(img=img, device=0, debug="plot")
     # Test with debug = None
     device, gray = pcv.rgb2gray(img=img, device=0, debug=None)
     # Assert that the output image has the dimensions of the input image but is only a single channel
@@ -833,16 +834,14 @@ def test_plantcv_roi_objects():
     object_contours = contours_npz['arr_0']
     object_hierarchy = contours_npz['arr_1']
     # Test with debug = "print"
-    _, _, _, _, _ = pcv.roi_objects(img=img, roi_type="partial", roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
-                                    object_contour=object_contours, obj_hierarchy=object_hierarchy, device=0,
-                                    debug="print")
+    _ = pcv.roi_objects(img=img, roi_type="partial", roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
+                        object_contour=object_contours, obj_hierarchy=object_hierarchy, device=0, debug="print")
     os.rename("1_obj_on_img.png", os.path.join(TEST_TMPDIR, "1_obj_on_img.png"))
     os.rename("1_roi_mask.png", os.path.join(TEST_TMPDIR, "1_roi_mask.png"))
     os.rename("1_roi_objects.png", os.path.join(TEST_TMPDIR, "1_roi_objects.png"))
     # Test with debug = "plot"
-    _, _, _, _, _ = pcv.roi_objects(img=img, roi_type="partial", roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
-                                    object_contour=object_contours, obj_hierarchy=object_hierarchy, device=0,
-                                    debug="plot")
+    _ = pcv.roi_objects(img=img, roi_type="partial", roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
+                        object_contour=object_contours, obj_hierarchy=object_hierarchy, device=0, debug="plot")
     # Test with debug = None
     device, kept_contours, kept_hierarchy, mask, area = pcv.roi_objects(img=img, roi_type="partial",
                                                                         roi_contour=roi_contour,
@@ -857,10 +856,10 @@ def test_plantcv_roi_objects():
 def test_plantcv_rotate_img():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
-    _, _ = pcv.rotate_img(img=img, rotation_deg=45, device=0, debug="print")
+    _ = pcv.rotate_img(img=img, rotation_deg=45, device=0, debug="print")
     os.rename("1_rotated_img.png", os.path.join(TEST_TMPDIR, "1_rotated_img.png"))
     # Test with debug = "plot"
-    _, _ = pcv.rotate_img(img=img, rotation_deg=45, device=0, debug="plot")
+    _ = pcv.rotate_img(img=img, rotation_deg=45, device=0, debug="plot")
     # Test with debug = None
     device, rotated = pcv.rotate_img(img=img, rotation_deg=45, device=0, debug=None)
     imgavg = np.average(img)
@@ -873,12 +872,12 @@ def test_plantcv_scale_features():
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR))
     obj_contour = contours_npz['arr_0']
     # Test with debug = "print"
-    _, _, _, _ = pcv.scale_features(obj=obj_contour, mask=mask, points=TEST_ACUTE_RESULT, boundary_line=50, device=0,
-                                    debug="print")
+    _ = pcv.scale_features(obj=obj_contour, mask=mask, points=TEST_ACUTE_RESULT, boundary_line=50, device=0,
+                           debug="print")
     os.rename("1_feature_scaled.png", os.path.join(TEST_TMPDIR, "1_feature_scaled.png"))
     # Test with debug = "plot"
-    _, _, _, _ = pcv.scale_features(obj=obj_contour, mask=mask, points=TEST_ACUTE_RESULT, boundary_line=50, device=0,
-                                    debug="plot")
+    _ = pcv.scale_features(obj=obj_contour, mask=mask, points=TEST_ACUTE_RESULT, boundary_line=50, device=0,
+                           debug="plot")
     # Test with debug = None
     device, points_rescaled, centroid_rescaled, bottomline_rescaled = pcv.scale_features(obj=obj_contour, mask=mask,
                                                                                          points=TEST_ACUTE_RESULT,
@@ -890,10 +889,10 @@ def test_plantcv_scale_features():
 def test_plantcv_scharr_filter():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with debug = "print"
-    _, _ = pcv.scharr_filter(img=img, dX=1, dY=0, scale=1, device=0, debug="print")
+    _ = pcv.scharr_filter(img=img, dX=1, dY=0, scale=1, device=0, debug="print")
     os.rename("1_sr_img_dx1_dy0_scale1.png", os.path.join(TEST_TMPDIR, "1_sr_img_dx1_dy0_scale1.png"))
     # Test with debug = "plot"
-    _, _ = pcv.scharr_filter(img=img, dX=1, dY=0, scale=1, device=0, debug="plot")
+    _ = pcv.scharr_filter(img=img, dX=1, dY=0, scale=1, device=0, debug="plot")
     # Test with debug = None
     device, scharr_img = pcv.scharr_filter(img=img, dX=1, dY=0, scale=1, device=0, debug=None)
     # Assert that the output image has the dimensions of the input image
@@ -903,10 +902,10 @@ def test_plantcv_scharr_filter():
 def test_plantcv_shift_img():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
-    _, _ = pcv.shift_img(img=img, device=0, number=300, side="top", debug="print")
+    _ = pcv.shift_img(img=img, device=0, number=300, side="top", debug="print")
     os.rename("1_shifted_img.png", os.path.join(TEST_TMPDIR, "1_shifted_img.png"))
     # Test with debug = "plot"
-    _, _ = pcv.shift_img(img=img, device=0, number=300, side="top", debug="plot")
+    _ = pcv.shift_img(img=img, device=0, number=300, side="top", debug="plot")
     # Test with debug = None
     device, rotated = pcv.shift_img(img=img, device=0, number=300, side="top", debug=None)
     imgavg = np.average(img)
@@ -917,10 +916,10 @@ def test_plantcv_shift_img():
 def test_plantcv_sobel_filter():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with debug = "print"
-    _, _ = pcv.sobel_filter(img=img, dx=1, dy=0, k=1, device=0, debug="print")
+    _ = pcv.sobel_filter(img=img, dx=1, dy=0, k=1, device=0, debug="print")
     os.rename("1_sb_img_dx1_dy0_k1.png", os.path.join(TEST_TMPDIR, "1_sb_img_dx1_dy0_k1.png"))
     # Test with debug = "plot"
-    _, _ = pcv.sobel_filter(img=img, dx=1, dy=0, k=1, device=0, debug="plot")
+    _ = pcv.sobel_filter(img=img, dx=1, dy=0, k=1, device=0, debug="plot")
     # Test with debug = None
     device, sobel_img = pcv.sobel_filter(img=img, dx=1, dy=0, k=1, device=0, debug=None)
     # Assert that the output image has the dimensions of the input image
@@ -930,11 +929,11 @@ def test_plantcv_sobel_filter():
 def test_plantcv_triangle_threshold():
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with debug = "print"
-    _, _ = pcv.triangle_auto_threshold(device=0, img=img1, maxvalue=255, object_type="light", xstep=10, debug="print")
+    _ = pcv.triangle_auto_threshold(device=0, img=img1, maxvalue=255, object_type="light", xstep=10, debug="print")
     os.rename("1_triangle_thresh_hist_30.0.png", os.path.join(TEST_TMPDIR, "1_triangle_thresh_hist_30.0.png"))
     os.rename("1_triangle_thresh_img_30.0.png", os.path.join(TEST_TMPDIR, "1_triangle_thresh_img_30.0.png"))
     # Test with debug = "plot"
-    _, _ = pcv.triangle_auto_threshold(device=0, img=img1, maxvalue=255, object_type="light", xstep=10, debug="plot")
+    _ = pcv.triangle_auto_threshold(device=0, img=img1, maxvalue=255, object_type="light", xstep=10, debug="plot")
     # Test with debug = None
     device, thresholded = pcv.triangle_auto_threshold(device=0, img=img1, maxvalue=255, object_type="light", xstep=10,
                                                       debug=None)
@@ -948,11 +947,11 @@ def test_plantcv_watershed_segmentation():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED_MASK), -1)
     # Test with debug = "print"
     outfile = os.path.join(TEST_TMPDIR, TEST_INPUT_CROPPED)
-    _, _, _, _ = pcv.watershed_segmentation(device=0, img=img, mask=mask, distance=10, filename=outfile, debug="print")
+    _ = pcv.watershed_segmentation(device=0, img=img, mask=mask, distance=10, filename=outfile, debug="print")
     os.rename("1_watershed_dist_img.png", os.path.join(TEST_TMPDIR, "1_watershed_dist_img.png"))
     os.rename("1_watershed_img.png", os.path.join(TEST_TMPDIR, "1_watershed_img.png"))
     # Test with debug = "plot"
-    _, _, _, _ = pcv.watershed_segmentation(device=0, img=img, mask=mask, distance=10, filename=False, debug="plot")
+    _ = pcv.watershed_segmentation(device=0, img=img, mask=mask, distance=10, filename=False, debug="plot")
     # Test with debug = None
     device, watershed_header, watershed_data, images = pcv.watershed_segmentation(device=0, img=img, mask=mask,
                                                                                   distance=10, filename=False,
@@ -963,11 +962,11 @@ def test_plantcv_watershed_segmentation():
 def test_plantcv_white_balance():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK), -1)
     # Test with debug = "print"
-    _, _ = pcv.white_balance(device=0, img=img, debug="print", roi=(5, 5, 80, 80))
+    _ = pcv.white_balance(device=0, img=img, debug="print", roi=(5, 5, 80, 80))
     os.rename("1_whitebalance_roi.png", os.path.join(TEST_TMPDIR, "1_whitebalance_roi.png"))
     os.rename("1_whitebalance.png", os.path.join(TEST_TMPDIR, "1_whitebalance.png"))
     # Test with debug = "plot"
-    _, _ = pcv.white_balance(device=0, img=img, debug="plot", roi=(5, 5, 80, 80))
+    _ = pcv.white_balance(device=0, img=img, debug="plot", roi=(5, 5, 80, 80))
     # Test with debug = None
     device, white_balanced = pcv.white_balance(device=0, img=img, debug=None, roi=(5, 5, 80, 80))
     imgavg = np.average(img)
@@ -981,7 +980,7 @@ def test_plantcv_x_axis_pseudolandmarks():
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR))
     obj_contour = contours_npz['arr_0']
     # Test with debug = "plot"
-    _, _, _, _ = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img, device=0, debug="plot")
+    _ = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img, device=0, debug="plot")
     # Test with debug = None
     device, top, bottom, center_v = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img, device=0,
                                                                debug=None)
@@ -996,7 +995,7 @@ def test_plantcv_y_axis_pseudolandmarks():
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR))
     obj_contour = contours_npz['arr_0']
     # Test with debug = "plot"
-    _, _, _, _ = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img, device=0, debug="plot")
+    _ = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img, device=0, debug="plot")
     # Test with debug = None
     device, left, right, center_h = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img, device=0,
                                                                debug=None)
