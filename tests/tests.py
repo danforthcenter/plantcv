@@ -39,10 +39,27 @@ TEST_INPUT_MARKER = 'seed-image.jpg'
 TEST_FOREGROUND = "TEST_FOREGROUND.jpg"
 TEST_BACKGROUND = "TEST_BACKGROUND.jpg"
 TEST_PDFS = "naive_bayes_pdfs.txt"
+TEST_VIS_SMALL = "setaria_small_vis.png"
+TEST_VIS_COMP_CONTOUR = "setaria_composed_contours.npz"
+TEST_ACUTE_RESULT = (23, 1, 2)
 
 
 if not os.path.exists(TEST_TMPDIR):
     os.mkdir(TEST_TMPDIR)
+
+
+def test_plantcv_acute_vertex():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_VIS_SMALL))
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR))
+    obj_contour = contours_npz['arr_0']
+    # Test with debug = "print"
+    _, _ = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img, device=0, debug="print")
+    os.rename("1_acute_vertices.png", os.path.join(TEST_TMPDIR, "1_acute_vertices.png"))
+    # Test with debug = "plot"
+    _, _ = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img, device=0, debug="plot")
+    # Test with debug = None
+    device, acute = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img, device=0, debug=None)
+    assert all([i == j] for i, j in zip(np.shape(acute), TEST_ACUTE_RESULT))
 
 
 def test_plantcv_adaptive_threshold():
