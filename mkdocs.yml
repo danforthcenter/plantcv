@@ -9,6 +9,7 @@ pages:
 - Home: index.md
 - Documentation:
   - 'Installation': installation.md
+  - 'Frequently Asked Questions': faq.md
   - 'Updating PlantCV': updating.md
   - 'Using Jupyter Notebooks': jupyter.md
   - 'Contributing to PlantCV': CONTRIBUTING.md
