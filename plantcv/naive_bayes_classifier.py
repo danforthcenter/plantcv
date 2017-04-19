@@ -72,7 +72,7 @@ def naive_bayes_classifier(img, pdf_file, device, debug=None):
                        pdfs["background"]["value"][v[i][j]]
 
     # Initialize an empty mask ndarray
-    mask = np.zeros([width, height])
+    mask = np.zeros([width, height],dtype=np.uint8)
     # Set pixel intensities to 255 (white) where the probability of the pixel being plant is greater than the
     # probability of the pixel being background
     mask[np.where(plant > bg)] = 255
