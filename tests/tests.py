@@ -975,6 +975,36 @@ def test_plantcv_white_balance():
     assert balancedavg != imgavg
 
 
+def test_plantcv_x_axis_pseudolandmarks():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_VIS_SMALL))
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR))
+    obj_contour = contours_npz['arr_0']
+    # Test with debug = "plot"
+    _, _, _, _ = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img, device=0, debug="plot")
+    # Test with debug = None
+    device, top, bottom, center_v = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img, device=0,
+                                                               debug=None)
+    assert all([all([i == j] for i, j in zip(np.shape(top), (20, 1, 2))),
+               all([i == j] for i, j in zip(np.shape(bottom), (20, 1, 2))),
+               all([i == j] for i, j in zip(np.shape(center_v), (20, 1, 2)))])
+
+
+def test_plantcv_y_axis_pseudolandmarks():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_VIS_SMALL))
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR))
+    obj_contour = contours_npz['arr_0']
+    # Test with debug = "plot"
+    _, _, _, _ = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img, device=0, debug="plot")
+    # Test with debug = None
+    device, left, right, center_h = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img, device=0,
+                                                               debug=None)
+    assert all([all([i == j] for i, j in zip(np.shape(left), (20, 1, 2))),
+               all([i == j] for i, j in zip(np.shape(right), (20, 1, 2))),
+               all([i == j] for i, j in zip(np.shape(center_h), (20, 1, 2)))])
+
+
 def test_plantcv_background_subtraction():
     # List to hold result of all tests.
     truths = []

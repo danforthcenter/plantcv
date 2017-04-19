@@ -177,7 +177,7 @@ def x_axis_pseudolandmarks(obj, mask, img, device, debug=None):
         center_v = list(zip(x_coords, c_points))
         center_v = np.array(center_v)
         center_v.shape = (20, 1, 2)
-        if debug:
+        if debug == "plot":
             img2 = np.copy(img)
             for i in top:
                 x = i[0, 0]
