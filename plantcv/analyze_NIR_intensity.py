@@ -6,7 +6,6 @@ import numpy as np
 from . import print_image
 from . import plot_image
 from . import plot_colorbar
-from . import rgb2gray_hsv
 from . import binary_threshold
 from . import apply_mask
 
@@ -67,7 +66,7 @@ def analyze_NIR_intensity(img, rgbimg, mask, bins, device, histplot=False, debug
 
     # make hist percentage for plotting
     pixels = cv2.countNonZero(mask1)
-    hist_percent = (hist_nir / pixels) * 100
+    hist_percent = (hist_nir / float(pixels)) * 100
 
     # report histogram data
     hist_header = [
@@ -86,47 +85,56 @@ def analyze_NIR_intensity(img, rgbimg, mask, bins, device, histplot=False, debug
 
     analysis_img = []
 
-    if filename is not False:
-        # make mask to select the background
-        mask_inv = cv2.bitwise_not(mask)
-        img_back = cv2.bitwise_and(rgbimg, rgbimg, mask=mask_inv)
-        img_back1 = cv2.applyColorMap(img_back, colormap=1)
+    # make mask to select the background
+    mask_inv = cv2.bitwise_not(mask)
+    img_back = cv2.bitwise_and(rgbimg, rgbimg, mask=mask_inv)
+    img_back1 = cv2.applyColorMap(img_back, colormap=1)
 
-        # mask the background and color the plant with color scheme 'jet'
-        cplant = cv2.applyColorMap(rgbimg, colormap=2)
-        device, masked1 = apply_mask(cplant, mask, 'black', device, debug=None)
-        cplant_back = cv2.add(masked1, img_back1)
+    # mask the background and color the plant with color scheme 'jet'
+    cplant = cv2.applyColorMap(rgbimg, colormap=2)
+    device, masked1 = apply_mask(cplant, mask, 'black', device, debug=None)
+    cplant_back = cv2.add(masked1, img_back1)
 
-        fig_name_pseudo = (str(filename[0:-4]) + '_nir_pseudo_col.jpg')
-        print_image(cplant_back, fig_name_pseudo)
-        analysis_img.append(['IMAGE', 'pseudo', fig_name_pseudo])
-
-    if filename is not False and (histplot is True or debug is not None):
-        import matplotlib
-        matplotlib.use('Agg')
-        from matplotlib import pyplot as plt
-
-        # plot hist percent
-        hist_plot_nir = plt.plot(hist_percent, color='green', label='Signal Intensity')
-        xaxis = plt.xlim([0, (bins - 1)])
-        plt.xlabel(('Grayscale pixel intensity (0-' + str(bins) + ")"))
-        plt.ylabel('Proportion of pixels (%)')
-        fig_name_hist = (str(filename[0:-4]) + '_nir_hist.svg')
-        plt.savefig(fig_name_hist)
-        plt.clf()
-        analysis_img.append(['IMAGE', 'hist', fig_name_hist])
-        print('\t'.join(map(str, ('IMAGE', 'hist', fig_name_hist))))
-
+    if filename:
         path = os.path.dirname(filename)
         fig_name = 'NIR_pseudocolor_colorbar.svg'
         if not os.path.isfile(path + '/' + fig_name):
             plot_colorbar(path, fig_name, bins)
 
-        if debug == 'print':
+        fig_name_pseudo = (str(filename[0:-4]) + '_nir_pseudo_col.jpg')
+        print_image(cplant_back, fig_name_pseudo)
+        analysis_img.append(['IMAGE', 'pseudo', fig_name_pseudo])
+
+    if debug is not None:
+        if debug == "print":
             print_image(masked1, (str(device) + "_nir_pseudo_plant.jpg"))
             print_image(cplant_back, (str(device) + "_nir_pseudo_plant_back.jpg"))
-        elif debug == 'plot':
+        if debug == "plot":
             plot_image(masked1)
             plot_image(cplant_back)
+
+
+    if histplot is True:
+        import matplotlib
+        matplotlib.use('Agg')
+        from matplotlib import pyplot as plt
+
+        # plot hist percent
+        plt.plot(hist_percent, color='green', label='Signal Intensity')
+        plt.xlim([0, (bins - 1)])
+        plt.xlabel(('Grayscale pixel intensity (0-' + str(bins) + ")"))
+        plt.ylabel('Proportion of pixels (%)')
+
+        if filename:
+            fig_name_hist = (str(filename[0:-4]) + '_nir_hist.svg')
+            plt.savefig(fig_name_hist)
+        if debug == "print":
+            plt.savefig((str(device) + "_nir_histogram.jpg"))
+        if debug == "plot":
+            plt.figure()
+        plt.clf()
+
+        analysis_img.append(['IMAGE', 'hist', fig_name_hist])
+
 
     return device, hist_header, hist_data, analysis_img
