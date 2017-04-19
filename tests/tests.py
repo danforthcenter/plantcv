@@ -83,11 +83,11 @@ def test_plantcv_adaptive_threshold():
     _ = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="mean", object_type="light", device=0, debug=None)
     # Test with debug = "print"
     _ = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="gaussian", object_type="light", device=0,
-                                  debug="print")
+                               debug="print")
     os.rename("1_adaptive_threshold_gaussian.png", os.path.join(TEST_TMPDIR, "1_adaptive_threshold_gaussian.png"))
     # Test with debug = "plot"
     _ = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="gaussian", object_type="light", device=0,
-                                  debug="plot")
+                               debug="plot")
     # Test with debug = None
     device, binary_img = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="gaussian", object_type="light",
                                                 device=0, debug=None)
@@ -143,10 +143,13 @@ def test_plantcv_analyze_color():
     outfile = os.path.join(TEST_TMPDIR, TEST_INPUT_COLOR)
     _ = pcv.analyze_color(img=img, imgname="img", mask=mask, bins=256, device=0, debug="print", hist_plot_type=None,
                           pseudo_channel="v", pseudo_bkg="img", resolution=300, filename=outfile)
-    os.rename("1_pseudocolor.jpg", os.path.join(TEST_TMPDIR, "1_pseudocolor.jpg"))
+    os.rename("1_img_pseudocolor.jpg", os.path.join(TEST_TMPDIR, "1_img_pseudocolor.jpg"))
     # Test with debug = "plot"
     _ = pcv.analyze_color(img=img, imgname="img", mask=mask, bins=256, device=0, debug="plot", hist_plot_type=None,
                           pseudo_channel="v", pseudo_bkg="img", resolution=300, filename=False)
+    # Test with debug = "plot" and pseudo_bkg = "white"
+    _ = pcv.analyze_color(img=img, imgname="img", mask=mask, bins=256, device=0, debug="plot", hist_plot_type=None,
+                          pseudo_channel="v", pseudo_bkg="white", resolution=300, filename=False)
     # Test with debug = None
     device, color_header, color_data, analysis_images = pcv.analyze_color(img=img, imgname="img", mask=mask, bins=256,
                                                                           device=0, debug=None, hist_plot_type=None,
@@ -704,6 +707,11 @@ def test_plantcv_print_image():
     pcv.print_image(img=img, filename=filename)
     # Assert that the file was created
     assert os.path.exists(filename) is True
+
+
+def test_plantcv_print_image_bad_type():
+    with pytest.raises(RuntimeError):
+        pcv.print_image(img=[], filename="/dev/null")
 
 
 def test_plantcv_print_results():

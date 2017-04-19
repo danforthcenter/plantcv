@@ -39,52 +39,60 @@ def _pseudocolored_image(device, histogram, bins, img, mask, background, channel
     :param analysis_images: list
     :return analysis_images: list
     """
-   
-    # Get the image size
-    if np.shape(img)[2] == 3:
-        ix, iy, iz = np.shape(img)
-    else:
-        ix, iy = np.shape(img)
-    size = ix, iy
-
-    back = np.zeros(size, dtype=np.uint8)
-    w_back = back + 255
-    w_back3 = np.dstack((w_back, w_back, w_back))
-
     mask_inv = cv2.bitwise_not(mask)
 
     cplant = cv2.applyColorMap(histogram, colormap=2)
     cplant1 = cv2.bitwise_and(cplant, cplant, mask=mask)
 
-    if background == 'img':
+    output_imgs = {"pseudo_on_img": {"background": "img", "img": None},
+                   "pseudo_on_white": {"background": "white", "img": None}}
+
+    if background == 'img' or background == 'both':
         # mask the background and color the plant with color scheme 'jet'
         img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
         img_back = cv2.bitwise_and(img_gray, img_gray, mask=mask_inv)
         img_back3 = np.dstack((img_back, img_back, img_back))
 
-        cplant_back = cv2.add(cplant1, img_back3)
+        output_imgs["pseudo_on_img"]["img"] = cv2.add(cplant1, img_back3)
 
-    if background == 'white':
+    if background == 'white' or background == 'both':
+        # Get the image size
+        if np.shape(img)[2] == 3:
+            ix, iy, iz = np.shape(img)
+        else:
+            ix, iy = np.shape(img)
+        size = ix, iy
+        back = np.zeros(size, dtype=np.uint8)
+        w_back = back + 255
+        w_back3 = np.dstack((w_back, w_back, w_back))
         img_back3 = cv2.bitwise_and(w_back3, w_back3, mask=mask_inv)
-        cplant_back = cv2.add(cplant1, img_back3)
+        output_imgs["pseudo_on_white"]["img"] = cv2.add(cplant1, img_back3)
 
     if filename:
-        fig_name_pseudo = str(filename[0:-4]) + '_' + str(channel) + '_pseudo_on_' + str(background) + '.jpg'
-        path = os.path.dirname(filename)
-        print_image(cplant_back, fig_name_pseudo)
-        analysis_images.append(['IMAGE', 'pseudo', fig_name_pseudo])
+        for key in output_imgs:
+            if output_imgs[key]["img"] is not None:
+                fig_name_pseudo = str(filename[0:-4]) + '_' + str(channel) + '_pseudo_on_' + \
+                                  output_imgs[key]["background"] + '.jpg'
+                path = os.path.dirname(filename)
+                print_image(output_imgs[key]["img"], fig_name_pseudo)
+                analysis_images.append(['IMAGE', 'pseudo', fig_name_pseudo])
     else:
         path = "."
         
     if debug is not None:
         if debug == 'print':
-            print_image(cplant_back, (str(device) + '_pseudocolor.jpg'))
+            for key in output_imgs:
+                if output_imgs[key]["img"] is not None:
+                    print_image(output_imgs[key]["img"], (str(device) + "_" + output_imgs[key]["background"] +
+                                                          '_pseudocolor.jpg'))
             fig_name = 'VIS_pseudocolor_colorbar_' + str(channel) + '_channel.svg'
             if not os.path.isfile(path + '/' + fig_name):
                 plot_colorbar(path, fig_name, bins)
         elif debug == 'plot':
-            plot_image(cplant_back)
+            for key in output_imgs:
+                if output_imgs[key]["img"] is not None:
+                    plot_image(output_imgs[key]["img"])
 
     return analysis_images
 
@@ -129,14 +137,6 @@ def analyze_color(img, imgname, mask, bins, device, debug=None, hist_plot_type=N
     :return analysis_images: list
     """
     device += 1
-    if len(np.shape(img)) == 3:
-        ix, iy, iz = np.shape(img)
-    else:
-        ix, iy = np.shape(img)
-    size = ix, iy
-    background = np.zeros(size, dtype=np.uint8)
-    w_back = background + 255
-    ori_img = np.copy(img)
 
     masked = cv2.bitwise_and(img, img, mask=mask)
     b, g, r = cv2.split(masked)
@@ -145,30 +145,37 @@ def analyze_color(img, imgname, mask, bins, device, debug=None, hist_plot_type=N
     hsv = cv2.cvtColor(masked, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(hsv)
 
-    channel = (b, g, r, l, m, y, h, s, v)
     graph_color = ('blue', 'forestgreen', 'red', 'dimgray', 'magenta', 'yellow', 'blueviolet', 'cyan', 'orange')
     label = ('blue', 'green', 'red', 'lightness', 'green-magenta', 'blue-yellow', 'hue', 'saturation', 'value')
 
     # Create Color Histogram Data
-    b_bin = b / (256 / bins)
-    g_bin = g / (256 / bins)
-    r_bin = r / (256 / bins)
-    l_bin = l / (256 / bins)
-    m_bin = m / (256 / bins)
-    y_bin = y / (256 / bins)
-    h_bin = h / (256 / bins)
-    s_bin = s / (256 / bins)
-    v_bin = v / (256 / bins)
+    norm_channels = {"b": b / (256 / bins),
+                     "g": g / (256 / bins),
+                     "r": r / (256 / bins),
+                     "l": l / (256 / bins),
+                     "m": m / (256 / bins),
+                     "y": y / (256 / bins),
+                     "h": h / (256 / bins),
+                     "s": s / (256 / bins),
+                     "v": v / (256 / bins)
+                     }
 
-    hist_b = cv2.calcHist([b_bin], [0], mask, [bins], [0, (bins - 1)])
-    hist_g = cv2.calcHist([g_bin], [0], mask, [bins], [0, (bins - 1)])
-    hist_r = cv2.calcHist([r_bin], [0], mask, [bins], [0, (bins - 1)])
-    hist_l = cv2.calcHist([l_bin], [0], mask, [bins], [0, (bins - 1)])
-    hist_m = cv2.calcHist([m_bin], [0], mask, [bins], [0, (bins - 1)])
-    hist_y = cv2.calcHist([y_bin], [0], mask, [bins], [0, (bins - 1)])
-    hist_h = cv2.calcHist([h_bin], [0], mask, [bins], [0, (bins - 1)])
-    hist_s = cv2.calcHist([s_bin], [0], mask, [bins], [0, (bins - 1)])
-    hist_v = cv2.calcHist([v_bin], [0], mask, [bins], [0, (bins - 1)])
+    if pseudo_channel is not None and pseudo_channel not in norm_channels:
+        fatal_error("Pseudocolor channel was " + str(pseudo_channel) +
+                    ', but can only be one of the following: None, "l", "m", "y", "h", "s" or "v"!')
+    if pseudo_bkg not in ["white", "img", "both"]:
+        fatal_error("The pseudocolored image background was " + str(pseudo_bkg) +
+                    ', but can only be one of the following: "white", "img", or "both"!')
+
+    hist_b = cv2.calcHist([norm_channels["b"]], [0], mask, [bins], [0, (bins - 1)])
+    hist_g = cv2.calcHist([norm_channels["g"]], [0], mask, [bins], [0, (bins - 1)])
+    hist_r = cv2.calcHist([norm_channels["r"]], [0], mask, [bins], [0, (bins - 1)])
+    hist_l = cv2.calcHist([norm_channels["l"]], [0], mask, [bins], [0, (bins - 1)])
+    hist_m = cv2.calcHist([norm_channels["m"]], [0], mask, [bins], [0, (bins - 1)])
+    hist_y = cv2.calcHist([norm_channels["y"]], [0], mask, [bins], [0, (bins - 1)])
+    hist_h = cv2.calcHist([norm_channels["h"]], [0], mask, [bins], [0, (bins - 1)])
+    hist_s = cv2.calcHist([norm_channels["s"]], [0], mask, [bins], [0, (bins - 1)])
+    hist_v = cv2.calcHist([norm_channels["v"]], [0], mask, [bins], [0, (bins - 1)])
 
     hist_data_b = [l[0] for l in hist_b]
     hist_data_g = [l[0] for l in hist_g]
@@ -216,66 +223,9 @@ def analyze_color(img, imgname, mask, bins, device, debug=None, hist_plot_type=N
 
     analysis_images = []
 
-    p_channel = pseudo_channel
-
-    if p_channel is None:
-        pass
-    elif p_channel == 'h':
-        if pseudo_bkg == 'white' or pseudo_bkg == 'both':
-            analysis_images = _pseudocolored_image(device, h_bin, bins, img, mask, 'white', p_channel, filename,
-                                                   resolution, analysis_images, debug)
-
-        if pseudo_bkg == 'img' or pseudo_bkg == 'both':
-            analysis_images = _pseudocolored_image(device, h_bin, bins, img, mask, 'img', p_channel, filename,
-                                                   resolution, analysis_images, debug)
-
-    elif p_channel == 's':
-        if pseudo_bkg == 'white' or pseudo_bkg == 'both':
-            analysis_images = _pseudocolored_image(device, s_bin, bins, img, mask, 'white', p_channel, filename,
-                                                   resolution, analysis_images, debug)
-
-        if pseudo_bkg == 'img' or pseudo_bkg == 'both':
-            analysis_images = _pseudocolored_image(device, s_bin, bins, img, mask, 'img', p_channel, filename,
-                                                   resolution, analysis_images, debug)
-
-    elif p_channel == 'v':
-        if pseudo_bkg == 'white' or pseudo_bkg == 'both':
-            analysis_images = _pseudocolored_image(device, v_bin, bins, img, mask, 'white', p_channel, filename,
-                                                   resolution, analysis_images, debug)
-
-        if pseudo_bkg == 'img' or pseudo_bkg == 'both':
-            analysis_images = _pseudocolored_image(device, v_bin, bins, img, mask, 'img', p_channel, filename,
-                                                   resolution, analysis_images, debug)
-
-    elif p_channel == 'l':
-        if pseudo_bkg == 'white' or pseudo_bkg == 'both':
-            analysis_images = _pseudocolored_image(device, l_bin, bins, img, mask, 'white', p_channel, filename,
-                                                   resolution, analysis_images, debug)
-
-        if pseudo_bkg == 'img' or pseudo_bkg == 'both':
-            analysis_images = _pseudocolored_image(device, l_bin, bins, img, mask, 'img', p_channel, filename,
-                                                   resolution, analysis_images, debug)
-
-    elif p_channel == 'm':
-        if pseudo_bkg == 'white' or pseudo_bkg == 'both':
-            analysis_images = _pseudocolored_image(device, m_bin, bins, img, mask, 'white', p_channel, filename,
-                                                   resolution, analysis_images, debug)
-
-        if pseudo_bkg == 'img' or pseudo_bkg == 'both':
-            analysis_images = _pseudocolored_image(device, m_bin, bins, img, mask, 'img', p_channel, filename,
-                                                   resolution, analysis_images, debug)
-
-    elif p_channel == 'y':
-        if pseudo_bkg == 'white' or pseudo_bkg == 'both':
-            analysis_images = _pseudocolored_image(device, y_bin, bins, img, mask, 'white', p_channel, filename,
-                                                   resolution, analysis_images, debug)
-
-        if pseudo_bkg == 'img' or pseudo_bkg == 'both':
-            analysis_images = _pseudocolored_image(device, y_bin, bins, img, mask, 'img', p_channel, filename,
-                                                   resolution, analysis_images, debug)
-
-    else:
-        fatal_error('Pseudocolor Channel' + str(pseudo_channel) + ' is not "None", "l","m", "y", "h","s" or "v"!')
+    if pseudo_channel is not None:
+        analysis_images = _pseudocolored_image(device, norm_channels[pseudo_channel], bins, img, mask, pseudo_bkg,
+                                               pseudo_channel, filename, resolution, analysis_images, debug)
 
     if hist_plot_type is not None:
         import matplotlib
