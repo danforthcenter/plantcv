@@ -5,7 +5,7 @@ import numpy as np
 from . import plot_image
 
 
-def scale_features(obj, mask, points, boundary_line, device, debug=False):
+def scale_features(obj, mask, points, boundary_line, device, debug=None):
     # This is a function to transform the coordinates of landmark points onto a common scale (0 - 1.0)
     # obj = a contour of the plant object (this should be output from the object_composition.py fxn)
     # mask = this is a binary image. The object should be white and the background should be black

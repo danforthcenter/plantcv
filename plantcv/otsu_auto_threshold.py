@@ -5,7 +5,7 @@ from . import print_image
 from . import plot_image
 
 
-def otsu_auto_threshold(img, maxValue, object_type, device, debug=False):
+def otsu_auto_threshold(img, maxValue, object_type, device, debug=None):
     """Creates a binary image from a grayscaled image using Otsu's thresholding.
 
     Inputs:

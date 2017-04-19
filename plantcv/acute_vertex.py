@@ -11,7 +11,7 @@ from . import print_image
 from . import plot_image
 from . import fatal_error
 
-def acute_vertex(obj, win, thresh, sep, img, device, debug=False):
+def acute_vertex(obj, win, thresh, sep, img, device, debug=None):
   ## For each point in contour, get a point before (pre) and after (post) the point of interest
   ## Calculate the angle between the pre and post point
   ## obj = a contour of the plant object (this should be output from the object_composition.py fxn)

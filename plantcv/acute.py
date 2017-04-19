@@ -3,7 +3,7 @@ import math
 import cv2
 
 ### Identify landmark positions within a contour for morphometric analysis
-def acute(obj, win, thresh, mask, debug=False):
+def acute(obj, win, thresh, mask, debug=None):
     #Inputs:
     #cont        = opencv contour array of interest to be scanned for landmarks
     #win         = maximum cumulative pixel distance window for calculating angle
