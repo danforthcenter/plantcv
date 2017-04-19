@@ -5,7 +5,7 @@ import math
 import numbers
 
 
-def landmark_reference_pt_dist(points_r, centroid_r, bline_r, device, debug=False):
+def landmark_reference_pt_dist(points_r, centroid_r, bline_r, device, debug=None):
     """Turgor proxy
 
     For each point in contour, get a point before (pre) and after (post) the point of interest.
