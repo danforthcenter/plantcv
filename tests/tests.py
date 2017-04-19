@@ -40,8 +40,12 @@ TEST_FOREGROUND = "TEST_FOREGROUND.jpg"
 TEST_BACKGROUND = "TEST_BACKGROUND.jpg"
 TEST_PDFS = "naive_bayes_pdfs.txt"
 TEST_VIS_SMALL = "setaria_small_vis.png"
+TEST_MASK_SMALL = "setaria_small_mask.png"
 TEST_VIS_COMP_CONTOUR = "setaria_composed_contours.npz"
-TEST_ACUTE_RESULT = (23, 1, 2)
+TEST_ACUTE_RESULT = np.asarray([[[119, 285]], [[151, 280]], [[168, 267]], [[168, 262]], [[171, 261]], [[224, 269]],
+                                [[246, 271]], [[260, 277]], [[141, 248]], [[183, 194]], [[188, 237]], [[173, 240]],
+                                [[186, 260]], [[147, 244]], [[163, 246]], [[173, 268]], [[170, 272]], [[151, 320]],
+                                [[195, 289]], [[228, 272]], [[210, 272]],[[209, 247]], [[210, 232]]])
 
 
 if not os.path.exists(TEST_TMPDIR):
@@ -59,7 +63,8 @@ def test_plantcv_acute_vertex():
     _, _ = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img, device=0, debug="plot")
     # Test with debug = None
     device, acute = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img, device=0, debug=None)
-    assert all([i == j] for i, j in zip(np.shape(acute), TEST_ACUTE_RESULT))
+    assert all([i == j] for i, j in zip(np.shape(acute), np.shape(TEST_ACUTE_RESULT)))
+
 
 
 def test_plantcv_adaptive_threshold():
@@ -527,6 +532,19 @@ def test_plantcv_invert():
         assert 0
 
 
+def test_plantcv_landmark_reference_pt_dist():
+    points_rescaled = [(0.0139, 0.2569), (0.2361, 0.2917), (0.3542, 0.3819), (0.3542, 0.4167), (0.375, 0.4236),
+                       (0.7431, 0.3681), (0.8958, 0.3542), (0.9931, 0.3125), (0.1667, 0.5139), (0.4583, 0.8889),
+                       (0.4931, 0.5903), (0.3889, 0.5694), (0.4792, 0.4306), (0.2083, 0.5417), (0.3194, 0.5278),
+                       (0.3889, 0.375), (0.3681, 0.3472), (0.2361, 0.0139), (0.5417, 0.2292), (0.7708, 0.3472),
+                       (0.6458, 0.3472), (0.6389, 0.5208), (0.6458, 0.625)]
+    centroid_rescaled = (0.4685, 0.4945)
+    bottomline_rescaled = (0.4685, 0.2569)
+    results = pcv.landmark_reference_pt_dist(points_r=points_rescaled, centroid_r=centroid_rescaled,
+                                             bline_r=bottomline_rescaled, device=0, debug=None)
+    assert len(results) == 9
+
+
 def test_plantcv_laplace_filter():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with debug = "print"
@@ -848,6 +866,25 @@ def test_plantcv_rotate_img():
     imgavg = np.average(img)
     rotateavg = np.average(rotated)
     assert rotateavg != imgavg
+
+
+def test_plantcv_scale_features():
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR))
+    obj_contour = contours_npz['arr_0']
+    # Test with debug = "print"
+    _, _, _, _ = pcv.scale_features(obj=obj_contour, mask=mask, points=TEST_ACUTE_RESULT, boundary_line=50, device=0,
+                                    debug="print")
+    os.rename("1_feature_scaled.png", os.path.join(TEST_TMPDIR, "1_feature_scaled.png"))
+    # Test with debug = "plot"
+    _, _, _, _ = pcv.scale_features(obj=obj_contour, mask=mask, points=TEST_ACUTE_RESULT, boundary_line=50, device=0,
+                                    debug="plot")
+    # Test with debug = None
+    device, points_rescaled, centroid_rescaled, bottomline_rescaled = pcv.scale_features(obj=obj_contour, mask=mask,
+                                                                                         points=TEST_ACUTE_RESULT,
+                                                                                         boundary_line=50, device=0,
+                                                                                         debug=None)
+    assert len(points_rescaled) == 23
 
 
 def test_plantcv_scharr_filter():
