@@ -23,6 +23,8 @@ TEST_INPUT_ROI = "input_roi.npz"
 TEST_INPUT_CONTOURS = "input_contours.npz"
 TEST_VIS = "VIS_SV_0_z300_h1_g0_e85_v500_93054.png"
 TEST_NIR = "NIR_SV_0_z300_h1_g0_e15000_v500_93059.png"
+TEST_VIS_TV = "VIS_TV_0_z300_h1_g0_e85_v500_93054.png"
+TEST_NIR_TV = "NIR_TV_0_z300_h1_g0_e15000_v500_93059.png"
 TEST_INPUT_MASK = "input_mask.png"
 TEST_INPUT_NIR_MASK = "input_nir.png"
 TEST_INPUT_FDARK = "FLUO_TV_dark.png"
@@ -75,6 +77,13 @@ def test_plantcv_acute_vertex():
     # Test with debug = None
     device, acute = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img, device=0, debug=None)
     assert all([i == j] for i, j in zip(np.shape(acute), np.shape(TEST_ACUTE_RESULT)))
+
+
+def test_plantcv_acute_vertex_bad_obj():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_VIS_SMALL))
+    obj_contour = np.array([])
+    result = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img, device=0, debug=None)
+    assert all([i == j] for i, j in zip(result, [0, ("NA", "NA")]))
 
 
 def test_plantcv_adaptive_threshold():
@@ -220,7 +229,7 @@ def test_plantcv_analyze_object():
     assert obj_data[1] != 0
 
 
-def test_plantcv_apply_mask():
+def test_plantcv_apply_mask_white():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
@@ -230,6 +239,19 @@ def test_plantcv_apply_mask():
     _ = pcv.apply_mask(img=img, mask=mask, mask_color="white", device=0, debug="plot")
     # Test with debug = None
     device, masked_img = pcv.apply_mask(img=img, mask=mask, mask_color="white", device=0, debug=None)
+    assert all([i == j] for i, j in zip(np.shape(masked_img), TEST_COLOR_DIM))
+
+
+def test_plantcv_apply_mask_black():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    # Test with debug = "print"
+    _ = pcv.apply_mask(img=img, mask=mask, mask_color="black", device=0, debug="print")
+    os.rename("1_bmasked.png", os.path.join(TEST_TMPDIR, "1_bmasked.png"))
+    # Test with debug = "plot"
+    _ = pcv.apply_mask(img=img, mask=mask, mask_color="black", device=0, debug="plot")
+    # Test with debug = None
+    device, masked_img = pcv.apply_mask(img=img, mask=mask, mask_color="black", device=0, debug=None)
     assert all([i == j] for i, j in zip(np.shape(masked_img), TEST_COLOR_DIM))
 
 
@@ -495,10 +517,16 @@ def test_plantcv_flip():
     _ = pcv.flip(img=img, direction="horizontal", device=0, debug="print")
     os.rename("1_flipped.png", os.path.join(TEST_TMPDIR, "1_flipped.png"))
     # Test with debug = "plot"
-    _ = pcv.flip(img=img, direction="horizontal", device=0, debug="plot")
+    _ = pcv.flip(img=img, direction="vertical", device=0, debug="plot")
     # Test with debug = None
     device, flipped_img = pcv.flip(img=img, direction="horizontal", device=0, debug=None)
     assert all([i == j] for i, j in zip(np.shape(flipped_img), TEST_COLOR_DIM))
+
+
+def test_plantcv_flip_bad_input():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    with pytest.raises(RuntimeError):
+        _ = pcv.flip(img=img, direction="vert", device=0, debug=None)
 
 
 def test_plantcv_fluor_fvfm():
@@ -535,9 +563,15 @@ def test_plantcv_gaussian_blur():
     assert gavg != imgavg
 
 
-def test_plantcv_get_nir():
+def test_plantcv_get_nir_sv():
     device, nirpath = pcv.get_nir(TEST_DATA, TEST_VIS, device=0, debug=None)
     nirpath1 = os.path.join(TEST_DATA, TEST_NIR)
+    assert nirpath == nirpath1
+
+
+def test_plantcv_get_nir_tv():
+    device, nirpath = pcv.get_nir(TEST_DATA, TEST_VIS_TV, device=0, debug=None)
+    nirpath1 = os.path.join(TEST_DATA, TEST_NIR_TV)
     assert nirpath == nirpath1
 
 
@@ -809,10 +843,10 @@ def test_plantcv_readimage_bad_file():
 def test_plantcv_rectangle_mask():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with debug = "print"
-    _ = pcv.rectangle_mask(img=img, p1=(0, 0), p2=(2454, 2056), device=0, debug="print", color="black")
+    _ = pcv.rectangle_mask(img=img, p1=(0, 0), p2=(2454, 2056), device=0, debug="print", color="white")
     os.rename("1_roi.png", os.path.join(TEST_TMPDIR, "1_roi.png"))
     # Test with debug = "plot"
-    _ = pcv.rectangle_mask(img=img, p1=(0, 0), p2=(2454, 2056), device=0, debug="plot", color="black")
+    _ = pcv.rectangle_mask(img=img, p1=(0, 0), p2=(2454, 2056), device=0, debug="plot", color="gray")
     # Test with debug = None
     device, masked, hist, contour, heir = pcv.rectangle_mask(img=img, p1=(0, 0), p2=(2454, 2056), device=0, debug=None,
                                                              color="black")
@@ -945,6 +979,17 @@ def test_plantcv_rotate_img():
     assert rotateavg != imgavg
 
 
+def test_plantcv_rotate_img_gray():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY))
+    # Test with debug = "plot"
+    _ = pcv.rotate_img(img=img, rotation_deg=45, device=0, debug="plot")
+    # Test with debug = None
+    device, rotated = pcv.rotate_img(img=img, rotation_deg=45, device=0, debug=None)
+    imgavg = np.average(img)
+    rotateavg = np.average(rotated)
+    assert rotateavg != imgavg
+
+
 def test_plantcv_scale_features():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR))
@@ -962,6 +1007,14 @@ def test_plantcv_scale_features():
                                                                                          boundary_line=50, device=0,
                                                                                          debug=None)
     assert len(points_rescaled) == 23
+
+
+def test_plantcv_scale_features_bad_input():
+    mask = np.array([])
+    obj_contour = np.array([])
+    result = pcv.scale_features(obj=obj_contour, mask=mask, points=TEST_ACUTE_RESULT, boundary_line=50, device=0,
+                                debug=None)
+    assert all([i == j] for i, j in zip(result, [0, ("NA", "NA"), ("NA", "NA"), ("NA", "NA")]))
 
 
 def test_plantcv_scharr_filter():
