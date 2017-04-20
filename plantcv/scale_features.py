@@ -29,12 +29,7 @@ def scale_features(obj, mask, points, boundary_line, device, debug=None):
     """
     device += 1
     # Get the dimensions of the image from the binary thresholded object (mask)
-    if not np.any(mask):
-        rescaled = ('NA', 'NA')
-        centroid_scaled = ('NA', 'NA')
-        boundary_line_scaled = ('NA', 'NA')
-        return device, rescaled, centroid_scaled, boundary_line_scaled
-    if not np.any(obj):
+    if not np.any(mask) or not np.any(obj):
         rescaled = ('NA', 'NA')
         centroid_scaled = ('NA', 'NA')
         boundary_line_scaled = ('NA', 'NA')
