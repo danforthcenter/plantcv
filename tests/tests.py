@@ -399,6 +399,25 @@ def test_plantcv_define_roi_rectangle():
         assert 0
 
 
+def test_plantcv_define_roi_rectangle_no_adjust():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # Test with debug = "print"
+    _ = pcv.define_roi(img=img, shape="rectangle", device=0, roi=None, roi_input="default", debug="print", adjust=False,
+                       x_adj=0, y_adj=0, w_adj=0, h_adj=0)
+    os.rename("1_roi.png", os.path.join(TEST_TMPDIR, "1_roi.png"))
+    # Test with debug = "plot"
+    _ = pcv.define_roi(img=img, shape="rectangle", device=0, roi=None, roi_input="default", debug="plot", adjust=False,
+                       x_adj=0, y_adj=0, w_adj=0, h_adj=0)
+    # Test with debug = None
+    device, contours, hierarchy = pcv.define_roi(img=img, shape="rectangle", device=0, roi=None, roi_input="default",
+                                                 debug=None, adjust=False, x_adj=0, y_adj=0, w_adj=0, h_adj=0)
+    # Assert the contours and hierarchy lists contain only the ROI
+    if len(contours) == 2 and len(hierarchy) == 1:
+        assert 1
+    else:
+        assert 0
+
+
 def test_plantcv_define_roi_circle():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
@@ -411,6 +430,25 @@ def test_plantcv_define_roi_circle():
     # Test with debug = None
     device, contours, hierarchy = pcv.define_roi(img=img, shape="circle", device=0, roi=None, roi_input="default",
                                                  debug=None, adjust=True, x_adj=0, y_adj=300, w_adj=0, h_adj=-900)
+    # Assert the contours and hierarchy lists contain only the ROI
+    if len(contours) == 1 and len(hierarchy) == 1:
+        assert 1
+    else:
+        assert 0
+
+
+def test_plantcv_define_roi_circle_no_adjust():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # Test with debug = "print"
+    _ = pcv.define_roi(img=img, shape="circle", device=0, roi=None, roi_input="default", debug="print", adjust=False,
+                       x_adj=0, y_adj=0, w_adj=0, h_adj=0)
+    os.rename("1_roi.png", os.path.join(TEST_TMPDIR, "1_roi.png"))
+    # Test with debug = "plot"
+    _ = pcv.define_roi(img=img, shape="circle", device=0, roi=None, roi_input="default", debug="plot", adjust=False,
+                       x_adj=0, y_adj=0, w_adj=0, h_adj=0)
+    # Test with debug = None
+    device, contours, hierarchy = pcv.define_roi(img=img, shape="circle", device=0, roi=None, roi_input="default",
+                                                 debug=None, adjust=False, x_adj=0, y_adj=0, w_adj=0, h_adj=0)
     # Assert the contours and hierarchy lists contain only the ROI
     if len(contours) == 1 and len(hierarchy) == 1:
         assert 1
@@ -435,6 +473,39 @@ def test_plantcv_define_roi_ellipse():
         assert 1
     else:
         assert 0
+
+
+def test_plantcv_define_roi_ellipse_no_adjust():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # Test with debug = "print"
+    _ = pcv.define_roi(img=img, shape="ellipse", device=0, roi=None, roi_input="default", debug="print", adjust=False,
+                       x_adj=0, y_adj=0, w_adj=0, h_adj=0)
+    os.rename("1_roi.png", os.path.join(TEST_TMPDIR, "1_roi.png"))
+    # Test with debug = "plot"
+    _ = pcv.define_roi(img=img, shape="ellipse", device=0, roi=None, roi_input="default", debug="plot", adjust=False,
+                       x_adj=0, y_adj=0, w_adj=0, h_adj=0)
+    # Test with debug = None
+    device, contours, hierarchy = pcv.define_roi(img=img, shape="ellipse", device=0, roi=None, roi_input="default",
+                                                 debug=None, adjust=False, x_adj=0, y_adj=0, w_adj=0, h_adj=0)
+    # Assert the contours and hierarchy lists contain only the ROI
+    if len(contours) == 2 and len(hierarchy) == 1:
+        assert 1
+    else:
+        assert 0
+
+
+def test_plantcv_define_roi_bad_adjust_values():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    with pytest.raises(RuntimeError):
+        _ = pcv.define_roi(img=img, shape="rectangle", device=0, roi=None, roi_input="default", debug=None, adjust=True,
+                           x_adj=1, y_adj=0, w_adj=1, h_adj=0)
+
+
+def test_plantcv_define_roi_bad_roi_input():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    with pytest.raises(RuntimeError):
+        _ = pcv.define_roi(img=img, shape="rectangle", device=0, roi=None, roi_input="test", debug=None, adjust=True,
+                           x_adj=0, y_adj=0, w_adj=0, h_adj=0)
 
 
 def test_plantcv_dilate():
