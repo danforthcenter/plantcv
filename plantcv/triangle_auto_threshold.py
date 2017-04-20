@@ -214,7 +214,10 @@ def triangle_auto_threshold(device, img, maxvalue, object_type, xstep=1, debug=N
         newhist.extend(item)
 
     # Detect peaks
-    ind = _detect_peaks(newhist, mph=None, mpd=1)
+    show = False
+    if debug == "plot":
+        show = True
+    ind = _detect_peaks(newhist, mph=None, mpd=1, show=show)
 
     # Find point corresponding to highest peak
     # Find intensity value (y) of highest peak
