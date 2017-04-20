@@ -140,11 +140,7 @@ def white_balance(device, img, debug=None, roi=None):
             print_image(finalcorrected, (str(device) + '_whitebalance.png'))
 
         elif debug == 'plot':
-            if len(np.shape(img))== 3:
-                plot_image(ori_img)
-                plot_image(finalcorrected)
-            else:
-                plot_image(ori_img, cmap='gray')
-                plot_image(finalcorrected, cmap='gray')
+            plot_image(ori_img, cmap='gray')
+            plot_image(finalcorrected, cmap='gray')
 
         return device, finalcorrected
