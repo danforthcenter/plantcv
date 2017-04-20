@@ -721,8 +721,12 @@ def test_plantcv_output_mask():
 
 
 def test_plantcv_plot_hist():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), -1)
-    bins, hist = pcv.plot_hist(img, False)
+    # Test in 16-bit image mode
+    img16bit = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK), -1)
+    _ = pcv.plot_hist(img=img16bit, name=os.path.join(TEST_TMPDIR, "hist_nir_uint16"))
+    # Test in 8-bit image mode
+    img8bit = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), -1)
+    bins, hist = pcv.plot_hist(img=img8bit, name=os.path.join(TEST_TMPDIR, "hist_rgb_uint8"))
     assert len(hist) == 256
 
 
