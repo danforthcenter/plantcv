@@ -63,7 +63,7 @@ def white_balance(device, img, debug=None, roi=None):
         mask_binary = mask[:, :, 0]
         retval, mask_binary = cv2.threshold(mask_binary, 254, 255, cv2.THRESH_BINARY)
 
-        device, masked = apply_mask(ori_img2, mask_binary, 'black', device, debug)
+        _, masked = apply_mask(ori_img2, mask_binary, 'black', 0, debug=None)
 
         channel1 = np.amax(masked[:, :, 0])
         channel2 = np.amax(masked[:, :, 1])

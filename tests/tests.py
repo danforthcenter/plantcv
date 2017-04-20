@@ -1092,8 +1092,23 @@ def test_plantcv_watershed_segmentation():
     assert watershed_data[1] > 9
 
 
-def test_plantcv_white_balance():
+def test_plantcv_white_balance_gray():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK), -1)
+    # Test with debug = "print"
+    _ = pcv.white_balance(device=0, img=img, debug="print", roi=(5, 5, 80, 80))
+    os.rename("1_whitebalance_roi.png", os.path.join(TEST_TMPDIR, "1_whitebalance_roi.png"))
+    os.rename("1_whitebalance.png", os.path.join(TEST_TMPDIR, "1_whitebalance.png"))
+    # Test with debug = "plot"
+    _ = pcv.white_balance(device=0, img=img, debug="plot", roi=(5, 5, 80, 80))
+    # Test with debug = None
+    device, white_balanced = pcv.white_balance(device=0, img=img, debug=None, roi=(5, 5, 80, 80))
+    imgavg = np.average(img)
+    balancedavg = np.average(white_balanced)
+    assert balancedavg != imgavg
+
+
+def test_plantcv_white_balance_rgb():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MARKER))
     # Test with debug = "print"
     _ = pcv.white_balance(device=0, img=img, debug="print", roi=(5, 5, 80, 80))
     os.rename("1_whitebalance_roi.png", os.path.join(TEST_TMPDIR, "1_whitebalance_roi.png"))
