@@ -879,6 +879,9 @@ def test_plantcv_roi_objects():
     # Test with debug = "plot"
     _ = pcv.roi_objects(img=img, roi_type="partial", roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
                         object_contour=object_contours, obj_hierarchy=object_hierarchy, device=0, debug="plot")
+    # Test with debug = None and roi_type = cutto
+    _ = pcv.roi_objects(img=img, roi_type="cutto", roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
+                        object_contour=object_contours, obj_hierarchy=object_hierarchy, device=0, debug=None)
     # Test with debug = None
     device, kept_contours, kept_hierarchy, mask, area = pcv.roi_objects(img=img, roi_type="partial",
                                                                         roi_contour=roi_contour,
