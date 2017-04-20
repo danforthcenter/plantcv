@@ -87,7 +87,7 @@ def _pseudocolored_image(device, histogram, bins, img, mask, background, channel
                     print_image(output_imgs[key]["img"], (str(device) + "_" + output_imgs[key]["background"] +
                                                           '_pseudocolor.jpg'))
             fig_name = 'VIS_pseudocolor_colorbar_' + str(channel) + '_channel.svg'
-            if not os.path.isfile(path + '/' + fig_name):
+            if not os.path.isfile(os.path.join(path, fig_name)):
                 plot_colorbar(path, fig_name, bins)
         elif debug == 'plot':
             for key in output_imgs:
@@ -145,10 +145,7 @@ def analyze_color(img, imgname, mask, bins, device, debug=None, hist_plot_type=N
     hsv = cv2.cvtColor(masked, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(hsv)
 
-    graph_color = ('blue', 'forestgreen', 'red', 'dimgray', 'magenta', 'yellow', 'blueviolet', 'cyan', 'orange')
-    label = ('blue', 'green', 'red', 'lightness', 'green-magenta', 'blue-yellow', 'hue', 'saturation', 'value')
-
-    # Create Color Histogram Data
+    # Color channel dictionary
     norm_channels = {"b": b / (256 / bins),
                      "g": g / (256 / bins),
                      "r": r / (256 / bins),
@@ -159,33 +156,55 @@ def analyze_color(img, imgname, mask, bins, device, debug=None, hist_plot_type=N
                      "s": s / (256 / bins),
                      "v": v / (256 / bins)
                      }
+    # Histogram plot types
+    hist_types = {"all": ("b", "g", "r", "l", "m", "y", "h", "s", "v"),
+                  "rgb": ("b", "g", "r"),
+                  "lab": ("l", "m", "y"),
+                  "hsv": ("h", "s", "v")}
 
+    # If the user-input pseudo_channel is not None and is not found in the list of accepted channels, exit
     if pseudo_channel is not None and pseudo_channel not in norm_channels:
         fatal_error("Pseudocolor channel was " + str(pseudo_channel) +
                     ', but can only be one of the following: None, "l", "m", "y", "h", "s" or "v"!')
+    # If the user-input pseudocolored image background is not in the accepted input list, exit
     if pseudo_bkg not in ["white", "img", "both"]:
         fatal_error("The pseudocolored image background was " + str(pseudo_bkg) +
                     ', but can only be one of the following: "white", "img", or "both"!')
+    # If the user-input histogram color-channel plot type is not in the list of accepted channels, exit
+    if hist_plot_type is not None and hist_plot_type not in hist_types:
+        fatal_error("The histogram plot type was " + str(hist_plot_type) +
+                    ', but can only be one of the following: None, "all", "rgb", "lab", or "hsv"!')
 
-    hist_b = cv2.calcHist([norm_channels["b"]], [0], mask, [bins], [0, (bins - 1)])
-    hist_g = cv2.calcHist([norm_channels["g"]], [0], mask, [bins], [0, (bins - 1)])
-    hist_r = cv2.calcHist([norm_channels["r"]], [0], mask, [bins], [0, (bins - 1)])
-    hist_l = cv2.calcHist([norm_channels["l"]], [0], mask, [bins], [0, (bins - 1)])
-    hist_m = cv2.calcHist([norm_channels["m"]], [0], mask, [bins], [0, (bins - 1)])
-    hist_y = cv2.calcHist([norm_channels["y"]], [0], mask, [bins], [0, (bins - 1)])
-    hist_h = cv2.calcHist([norm_channels["h"]], [0], mask, [bins], [0, (bins - 1)])
-    hist_s = cv2.calcHist([norm_channels["s"]], [0], mask, [bins], [0, (bins - 1)])
-    hist_v = cv2.calcHist([norm_channels["v"]], [0], mask, [bins], [0, (bins - 1)])
+    histograms = {
+        "b": {"label": "blue", "graph_color": "blue",
+              "hist": cv2.calcHist([norm_channels["b"]], [0], mask, [bins], [0, (bins - 1)])},
+        "g": {"label": "green", "graph_color": "forestgreen",
+              "hist": cv2.calcHist([norm_channels["g"]], [0], mask, [bins], [0, (bins - 1)])},
+        "r": {"label": "red", "graph_color": "red",
+              "hist": cv2.calcHist([norm_channels["r"]], [0], mask, [bins], [0, (bins - 1)])},
+        "l": {"label": "lightness", "graph_color": "dimgray",
+              "hist": cv2.calcHist([norm_channels["l"]], [0], mask, [bins], [0, (bins - 1)])},
+        "m": {"label": "green-magenta", "graph_color": "magenta",
+              "hist": cv2.calcHist([norm_channels["m"]], [0], mask, [bins], [0, (bins - 1)])},
+        "y": {"label": "blue-yellow", "graph_color": "yellow",
+              "hist": cv2.calcHist([norm_channels["y"]], [0], mask, [bins], [0, (bins - 1)])},
+        "h": {"label": "hue", "graph_color": "blueviolet",
+              "hist": cv2.calcHist([norm_channels["h"]], [0], mask, [bins], [0, (bins - 1)])},
+        "s": {"label": "saturation", "graph_color": "cyan",
+              "hist": cv2.calcHist([norm_channels["s"]], [0], mask, [bins], [0, (bins - 1)])},
+        "v": {"label": "value", "graph_color": "orange",
+              "hist": cv2.calcHist([norm_channels["v"]], [0], mask, [bins], [0, (bins - 1)])}
+    }
 
-    hist_data_b = [l[0] for l in hist_b]
-    hist_data_g = [l[0] for l in hist_g]
-    hist_data_r = [l[0] for l in hist_r]
-    hist_data_l = [l[0] for l in hist_l]
-    hist_data_m = [l[0] for l in hist_m]
-    hist_data_y = [l[0] for l in hist_y]
-    hist_data_h = [l[0] for l in hist_h]
-    hist_data_s = [l[0] for l in hist_s]
-    hist_data_v = [l[0] for l in hist_v]
+    hist_data_b = [l[0] for l in histograms["b"]["hist"]]
+    hist_data_g = [l[0] for l in histograms["g"]["hist"]]
+    hist_data_r = [l[0] for l in histograms["r"]["hist"]]
+    hist_data_l = [l[0] for l in histograms["l"]["hist"]]
+    hist_data_m = [l[0] for l in histograms["m"]["hist"]]
+    hist_data_y = [l[0] for l in histograms["y"]["hist"]]
+    hist_data_h = [l[0] for l in histograms["h"]["hist"]]
+    hist_data_s = [l[0] for l in histograms["s"]["hist"]]
+    hist_data_v = [l[0] for l in histograms["v"]["hist"]]
 
     binval = np.arange(0, bins)
     bin_values = [l for l in binval]
@@ -227,56 +246,25 @@ def analyze_color(img, imgname, mask, bins, device, debug=None, hist_plot_type=N
         analysis_images = _pseudocolored_image(device, norm_channels[pseudo_channel], bins, img, mask, pseudo_bkg,
                                                pseudo_channel, filename, resolution, analysis_images, debug)
 
-    if hist_plot_type is not None:
+    if hist_plot_type is not None and filename:
         import matplotlib
         matplotlib.use('Agg')
         from matplotlib import pyplot as plt
 
         # Create Histogram Plot
-        if filename:
-            if hist_plot_type == 'all':
-                plt.plot(hist_b, color=graph_color[0], label=label[0])
-                plt.plot(hist_g, color=graph_color[1], label=label[1])
-                plt.plot(hist_r, color=graph_color[2], label=label[2])
-                plt.plot(hist_l, color=graph_color[3], label=label[3])
-                plt.plot(hist_m, color=graph_color[4], label=label[4])
-                plt.plot(hist_y, color=graph_color[5], label=label[5])
-                plt.plot(hist_h, color=graph_color[6], label=label[6])
-                plt.plot(hist_s, color=graph_color[7], label=label[7])
-                plt.plot(hist_v, color=graph_color[8], label=label[8])
-                plt.xlim([0, (bins - 1)])
-                plt.legend()
-            elif hist_plot_type == 'rgb':
-                plt.plot(hist_b, color=graph_color[0], label=label[0])
-                plt.plot(hist_g, color=graph_color[1], label=label[1])
-                plt.plot(hist_r, color=graph_color[2], label=label[2])
-                plt.xlim([0, (bins - 1)])
-                plt.legend()
-            elif hist_plot_type == 'lab':
-                plt.plot(hist_l, color=graph_color[3], label=label[3])
-                plt.plot(hist_m, color=graph_color[4], label=label[4])
-                plt.plot(hist_y, color=graph_color[5], label=label[5])
-                plt.xlim([0, (bins - 1)])
-                plt.legend()
-            elif hist_plot_type == 'hsv':
-                plt.plot(hist_h, color=graph_color[6], label=label[6])
-                plt.plot(hist_s, color=graph_color[7], label=label[7])
-                plt.plot(hist_v, color=graph_color[8], label=label[8])
-                plt.xlim([0, (bins - 1)])
-                plt.legend()
-            elif hist_plot_type == None:
-                pass
-            else:
-                fatal_error(
-                    'Histogram Plot Type' + str(hist_plot_type) + ' is not "none", "all","rgb", "lab" or "hsv"!')
+        for channel in hist_types[hist_plot_type]:
+            plt.plot(histograms[channel]["hist"], color=histograms[channel]["graph_color"],
+                     label=histograms[channel]["label"])
+            plt.xlim([0, bins - 1])
+            plt.legend()
 
-            # Print plot
-            fig_name = (str(filename[0:-4]) + '_' + str(hist_plot_type) + '_hist.svg')
+        # Print plot
+        fig_name = (str(filename[0:-4]) + '_' + str(hist_plot_type) + '_hist.svg')
+        plt.savefig(fig_name)
+        analysis_images.append(['IMAGE', 'hist', fig_name])
+        if debug == 'print':
+            fig_name = (str(device) + '_' + str(hist_plot_type) + '_hist.svg')
             plt.savefig(fig_name)
-            analysis_images.append(['IMAGE', 'hist', fig_name])
-            if debug == 'print':
-                fig_name = (str(device) + '_' + str(hist_plot_type) + '_hist.svg')
-                plt.savefig(fig_name)
-            plt.clf()
+        plt.clf()
 
     return device, hist_header, hist_data, analysis_images

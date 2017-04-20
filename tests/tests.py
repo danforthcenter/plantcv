@@ -141,9 +141,10 @@ def test_plantcv_analyze_color():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     outfile = os.path.join(TEST_TMPDIR, TEST_INPUT_COLOR)
-    _ = pcv.analyze_color(img=img, imgname="img", mask=mask, bins=256, device=0, debug="print", hist_plot_type=None,
+    _ = pcv.analyze_color(img=img, imgname="img", mask=mask, bins=256, device=0, debug="print", hist_plot_type="all",
                           pseudo_channel="v", pseudo_bkg="img", resolution=300, filename=outfile)
     os.rename("1_img_pseudocolor.jpg", os.path.join(TEST_TMPDIR, "1_img_pseudocolor.jpg"))
+    os.rename("1_all_hist.svg", os.path.join(TEST_TMPDIR, "1_all_hist.svg"))
     # Test with debug = "plot"
     _ = pcv.analyze_color(img=img, imgname="img", mask=mask, bins=256, device=0, debug="plot", hist_plot_type=None,
                           pseudo_channel="v", pseudo_bkg="img", resolution=300, filename=False)
@@ -156,6 +157,30 @@ def test_plantcv_analyze_color():
                                                                           pseudo_channel="v", pseudo_bkg="img",
                                                                           resolution=300, filename=False)
     assert np.sum(color_data[3]) != 0
+
+
+def test_plantcv_analyze_color_incorrect_pseudo_channel():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    with pytest.raises(RuntimeError):
+        _ = pcv.analyze_color(img=img, imgname="img", mask=mask, bins=256, device=0, debug="plot", hist_plot_type=None,
+                              pseudo_channel="x", pseudo_bkg="white", resolution=300, filename=False)
+
+
+def test_plantcv_analyze_color_incorrect_pseudo_background():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    with pytest.raises(RuntimeError):
+        _ = pcv.analyze_color(img=img, imgname="img", mask=mask, bins=256, device=0, debug="plot", hist_plot_type=None,
+                              pseudo_channel="v", pseudo_bkg="black", resolution=300, filename=False)
+
+
+def test_plantcv_analyze_color_incorrect_hist_plot_type():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    with pytest.raises(RuntimeError):
+        _ = pcv.analyze_color(img=img, imgname="img", mask=mask, bins=256, device=0, debug="plot", hist_plot_type="bgr",
+                              pseudo_channel="v", pseudo_bkg="white", resolution=300, filename=False)
 
 
 def test_plantcv_analyze_nir():
