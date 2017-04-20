@@ -22,10 +22,10 @@ def readimage(filename):
     :return img_name: str
     """
 
-    try:
-        img = cv2.imread(filename)
-    except:
-        fatal_error("Cannot open " + filename)
+    img = cv2.imread(filename)
+
+    if img is None:
+        fatal_error("Failed to open " + filename)
 
     # Split path from filename
     path, img_name = os.path.split(filename)

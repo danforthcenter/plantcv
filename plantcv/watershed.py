@@ -9,8 +9,8 @@ from skimage.feature import peak_local_max
 from skimage.morphology import watershed
 from . import print_image
 from . import plot_image
-from plantcv.apply_mask import apply_mask
-from plantcv.dev.color_palette import color_palette
+from . import apply_mask
+from . import color_palette
 
 
 def watershed_segmentation(device, img, mask, distance=10, filename=False, debug=None):
@@ -42,7 +42,6 @@ def watershed_segmentation(device, img, mask, distance=10, filename=False, debug
     :return watershed_data: list
     :return analysis_images: list
     """
-    device += 1
 
     dist_transform = cv2.distanceTransform(mask, cv2.cv.CV_DIST_L2, maskSize=0)
 

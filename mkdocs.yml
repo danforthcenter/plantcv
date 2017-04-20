@@ -31,12 +31,13 @@ pages:
     - 'Analyze PSII': fluor_fvfm.md
     - 'Analyze shape': analyze_shape.md
     - 'Apply mask': apply_mask.md
+    - 'Auto Crop': auto_crop.md
     - 'Background Subtraction': background_subtraction.md
     - 'Binary threshold': binary_threshold.md
-    - 'Auto Crop': auto_crop.md
     - 'Boundary line tool': analyze_bound.md
     - 'Cluster Contours': cluster_contours.md
     - 'Cluster Contours and Split Images': cluster_contours_splitimg.md
+    - 'Color palette': color_palette.md
     - 'Crop and Position Mask': crop_position_mask.md
     - 'Dilation': dilate.md
     - 'Erosion': erode.md
@@ -54,9 +55,10 @@ pages:
     - 'Invert': invert.md
     - 'Landmark Analysis':
       - 'Acute Vertex': acute_vertex.md
-      - 'Landmark Reference Point Distribution': landmark_reference_pt_dist.md
       - 'x-Axis Pseudolandmarks': x_axis_pseudolandmarks.md
       - 'y-Axis Pseudolandmarks': y_axis_pseudolandmarks.md
+      - 'Scale Features': scale_features.md
+      - 'Landmark Reference Point Distribution': landmark_reference_pt_dist.md
     - 'Laplace filter': laplace_filter.md
     - 'Logical operations-And': logical_and.md
     - 'Logical operations-Or': logical_or.md

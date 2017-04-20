@@ -43,28 +43,28 @@ def output_mask(device, img, mask, filename, outdir=None, mask_only=False, debug
         directory = outdir
 
     if mask_only == False:
-        path = str(directory) + "/ori-images"
+        path = os.path.join(str(directory), "ori-images")
 
         if os.path.exists(path) == True:
-            imgpath = str(path) + "/" + str(filename)
+            imgpath = os.path.join(str(path), str(filename))
             print_image(img, imgpath)
             analysis_images.append(['IMAGE', 'ori-img', imgpath])
 
         else:
             os.mkdir(path)
-            imgpath = str(path) + "/" + str(filename)
+            imgpath = os.path.join(str(path), str(filename))
             print_image(img, imgpath)
             analysis_images.append(['IMAGE', 'ori-img', imgpath])
 
-        path1 = str(directory) + "/mask-images"
+        path1 = os.path.join(str(directory), "mask-images")
 
         if os. path.exists(path1) == True:
-            maskpath = str(path1) + "/" + str(filename)
+            maskpath = os.path.join(str(path1), str(filename))
             print_image(mask, maskpath)
             analysis_images.append(['IMAGE', 'mask', maskpath])
         else:
             os.mkdir(path1)
-            maskpath = str(path1) + "/" + str(filename)
+            maskpath = os.path.join(str(path1), str(filename))
             print_image(mask, maskpath)
             analysis_images.append(['IMAGE', 'mask', maskpath])
 
@@ -83,15 +83,15 @@ def output_mask(device, img, mask, filename, outdir=None, mask_only=False, debug
         return device, imgpath, maskpath, analysis_images
 
     else:
-        path1 = str(directory) + "/mask-images"
+        path1 = os.path.join(str(directory), "mask-images")
 
         if os.path.exists(path1) == True:
-            maskpath = str(path1) + "/" + str(filename)
+            maskpath = os.path.join(str(path1), str(filename))
             print_image(mask, maskpath)
             analysis_images.append(['IMAGE', 'mask', maskpath])
         else:
             os.mkdir(path1)
-            maskpath = str(path1) + "/" + str(filename)
+            maskpath = os.path.join(str(path1), str(filename))
             print_image(mask, maskpath)
             analysis_images.append(['IMAGE', 'mask', maskpath])
 

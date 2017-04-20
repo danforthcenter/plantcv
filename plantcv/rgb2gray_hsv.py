@@ -26,28 +26,24 @@ def rgb2gray_hsv(img, channel, device, debug=None):
     :return device: int
     :return channel: numpy array
     """
+    # Auto-increment the device counter
+    device += 1
 
+    # The allowable channel inputs are h, s or v
+    names = {"h": "hue", "s": "saturation", "v": "value"}
+    if channel not in names:
+        fatal_error("Channel " + str(channel) + " is not h, s or v!")
+
+    # Convert the input BGR image to HSV colorspace
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     # Split HSV channels
     h, s, v = cv2.split(hsv)
-    device += 1
-    if channel == 'h':
-        if debug == 'print':
-            print_image(h, (str(device) + '_hsv_hue.png'))
-        elif debug == 'plot':
-            plot_image(h, cmap='gray')
-        return device, h
-    elif channel == 's':
-        if debug == 'print':
-            print_image(s, (str(device) + '_hsv_saturation.png'))
-        elif debug == 'plot':
-            plot_image(s, cmap='gray')
-        return device, s
-    elif channel == 'v':
-        if debug == 'print':
-            print_image(v, (str(device) + '_hsv_value.png'))
-        elif debug == 'plot':
-            plot_image(v, cmap='gray')
-        return device, v
-    else:
-        fatal_error('Channel ' + (str(channel) + ' is not h, s or v!'))
+    # Create a channel dictionaries for lookups by a channel name index
+    channels = {"h": h, "s": s, "v": v}
+
+    if debug == "print":
+        print_image(channels[channel], str(device) + "_hsv_" + names[channel] + ".png")
+    elif debug == "plot":
+        plot_image(channels[channel], cmap="gray")
+
+    return device, channels[channel]

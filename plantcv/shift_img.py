@@ -63,7 +63,7 @@ def shift_img(img, device, number, side="right", debug=None):
     if len(np.shape(img)) == 2:
         adjusted_img, channel2, channel3 = np.dsplit(adjusted_img, 3)
     if debug == 'print':
-        print_image(adjusted_img, (str(device) + "_shifted img.png"))
+        print_image(adjusted_img, (str(device) + "_shifted_img.png"))
     elif debug == 'plot':
         if len(np.shape(adjusted_img)) == 3:
             plot_image(adjusted_img)
