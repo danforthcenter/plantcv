@@ -356,18 +356,56 @@ def test_plantcv_crop_position_mask():
     assert np.sum(newmask) == 641517
 
 
-def test_plantcv_define_roi():
+def test_plantcv_define_roi_rectangle():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
     _ = pcv.define_roi(img=img, shape="rectangle", device=0, roi=None, roi_input="default", debug="print", adjust=True,
-                       x_adj=600, y_adj=300, w_adj=-300, h_adj=-600)
+                       x_adj=600, y_adj=300, w_adj=-500, h_adj=-600)
     os.rename("1_roi.png", os.path.join(TEST_TMPDIR, "1_roi.png"))
     # Test with debug = "plot"
     _ = pcv.define_roi(img=img, shape="rectangle", device=0, roi=None, roi_input="default", debug="plot", adjust=True,
-                       x_adj=600, y_adj=300, w_adj=-300, h_adj=-600)
+                       x_adj=600, y_adj=300, w_adj=-500, h_adj=-600)
     # Test with debug = None
     device, contours, hierarchy = pcv.define_roi(img=img, shape="rectangle", device=0, roi=None, roi_input="default",
-                                                 debug=None, adjust=True, x_adj=600, y_adj=300, w_adj=-300, h_adj=-600)
+                                                 debug=None, adjust=True, x_adj=600, y_adj=500, w_adj=-300, h_adj=-600)
+    # Assert the contours and hierarchy lists contain only the ROI
+    if len(contours) == 2 and len(hierarchy) == 1:
+        assert 1
+    else:
+        assert 0
+
+
+def test_plantcv_define_roi_circle():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # Test with debug = "print"
+    _ = pcv.define_roi(img=img, shape="circle", device=0, roi=None, roi_input="default", debug="print", adjust=True,
+                       x_adj=0, y_adj=300, w_adj=0, h_adj=-900)
+    os.rename("1_roi.png", os.path.join(TEST_TMPDIR, "1_roi.png"))
+    # Test with debug = "plot"
+    _ = pcv.define_roi(img=img, shape="circle", device=0, roi=None, roi_input="default", debug="plot", adjust=True,
+                       x_adj=0, y_adj=300, w_adj=0, h_adj=-900)
+    # Test with debug = None
+    device, contours, hierarchy = pcv.define_roi(img=img, shape="circle", device=0, roi=None, roi_input="default",
+                                                 debug=None, adjust=True, x_adj=0, y_adj=300, w_adj=0, h_adj=-900)
+    # Assert the contours and hierarchy lists contain only the ROI
+    if len(contours) == 1 and len(hierarchy) == 1:
+        assert 1
+    else:
+        assert 0
+
+
+def test_plantcv_define_roi_ellipse():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # Test with debug = "print"
+    _ = pcv.define_roi(img=img, shape="ellipse", device=0, roi=None, roi_input="default", debug="print", adjust=True,
+                       x_adj=0, y_adj=300, w_adj=-1000, h_adj=-900)
+    os.rename("1_roi.png", os.path.join(TEST_TMPDIR, "1_roi.png"))
+    # Test with debug = "plot"
+    _ = pcv.define_roi(img=img, shape="ellipse", device=0, roi=None, roi_input="default", debug="plot", adjust=True,
+                       x_adj=0, y_adj=300, w_adj=-1000, h_adj=-900)
+    # Test with debug = None
+    device, contours, hierarchy = pcv.define_roi(img=img, shape="ellipse", device=0, roi=None, roi_input="default",
+                                                 debug=None, adjust=True, x_adj=0, y_adj=300, w_adj=-1000, h_adj=-900)
     # Assert the contours and hierarchy lists contain only the ROI
     if len(contours) == 2 and len(hierarchy) == 1:
         assert 1
