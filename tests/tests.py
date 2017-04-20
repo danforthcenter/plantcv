@@ -48,7 +48,9 @@ TEST_ACUTE_RESULT = np.asarray([[[119, 285]], [[151, 280]], [[168, 267]], [[168,
                                 [[246, 271]], [[260, 277]], [[141, 248]], [[183, 194]], [[188, 237]], [[173, 240]],
                                 [[186, 260]], [[147, 244]], [[163, 246]], [[173, 268]], [[170, 272]], [[151, 320]],
                                 [[195, 289]], [[228, 272]], [[210, 272]],[[209, 247]], [[210, 232]]])
-
+TEST_VIS_SMALL_PLANT = "setaria_small_plant_vis.png"
+TEST_MASK_SMALL_PLANT = "setaria_small_plant_mask.png"
+TEST_VIS_COMP_CONTOUR_SMALL_PLANT = "setaria_small_plant_composed_contours.npz"
 
 if not os.path.exists(TEST_TMPDIR):
     os.mkdir(TEST_TMPDIR)
@@ -980,7 +982,7 @@ def test_plantcv_rotate_img():
 
 
 def test_plantcv_rotate_img_gray():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY))
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with debug = "plot"
     _ = pcv.rotate_img(img=img, rotation_deg=45, device=0, debug="plot")
     # Test with debug = None
@@ -1120,6 +1122,27 @@ def test_plantcv_x_axis_pseudolandmarks():
                all([i == j] for i, j in zip(np.shape(center_v), (20, 1, 2)))])
 
 
+def test_plantcv_x_axis_pseudolandmarks_small_obj():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_VIS_SMALL_PLANT))
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL_PLANT), -1)
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR_SMALL_PLANT))
+    obj_contour = contours_npz['arr_0']
+    # Test with debug = "plot"
+    device, top, bottom, center_v = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img, device=0,
+                                                               debug="plot")
+    assert all([all([i == j] for i, j in zip(np.shape(top), (20, 1, 2))),
+               all([i == j] for i, j in zip(np.shape(bottom), (20, 1, 2))),
+               all([i == j] for i, j in zip(np.shape(center_v), (20, 1, 2)))])
+
+
+def test_plantcv_x_axis_pseudolandmarks_bad_input():
+    img = np.array([])
+    mask = np.array([])
+    obj_contour = np.array([])
+    result = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img, device=0, debug=None)
+    assert all([i == j] for i, j in zip(result, [0, ("NA", "NA"), ("NA", "NA"), ("NA", "NA")]))
+
+
 def test_plantcv_y_axis_pseudolandmarks():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_VIS_SMALL))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
@@ -1133,6 +1156,27 @@ def test_plantcv_y_axis_pseudolandmarks():
     assert all([all([i == j] for i, j in zip(np.shape(left), (20, 1, 2))),
                all([i == j] for i, j in zip(np.shape(right), (20, 1, 2))),
                all([i == j] for i, j in zip(np.shape(center_h), (20, 1, 2)))])
+
+
+def test_plantcv_y_axis_pseudolandmarks_small_obj():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_VIS_SMALL_PLANT))
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL_PLANT), -1)
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR_SMALL_PLANT))
+    obj_contour = contours_npz['arr_0']
+    # Test with debug = "plot"
+    device, left, right, center_h = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img, device=0,
+                                                               debug="plot")
+    assert all([all([i == j] for i, j in zip(np.shape(left), (20, 1, 2))),
+               all([i == j] for i, j in zip(np.shape(right), (20, 1, 2))),
+               all([i == j] for i, j in zip(np.shape(center_h), (20, 1, 2)))])
+
+
+def test_plantcv_y_axis_pseudolandmarks_bad_input():
+    img = np.array([])
+    mask = np.array([])
+    obj_contour = np.array([])
+    result = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img, device=0, debug=None)
+    assert all([i == j] for i, j in zip(result, [0, ("NA", "NA"), ("NA", "NA"), ("NA", "NA")]))
 
 
 def test_plantcv_background_subtraction():
@@ -1152,3 +1196,38 @@ def test_plantcv_background_subtraction():
     truths.append(np.sum(fgmask) == 0)
     # All of these should be true for the function to pass testing.
     assert (all(truths))
+
+
+def test_plantcv_background_subtraction_debug():
+    # List to hold result of all tests.
+    truths = []
+    fg_img = cv2.imread(os.path.join(TEST_DATA, TEST_FOREGROUND))
+    bg_img = cv2.imread(os.path.join(TEST_DATA, TEST_BACKGROUND))
+    # Test with debug = "print"
+    device, fgmask = pcv.background_subtraction(background_image=bg_img, foreground_image=fg_img, device=0,
+                                                debug="print")
+    truths.append(np.sum(fgmask) > 0)
+    os.rename("1_background_subtraction.png", os.path.join(TEST_TMPDIR, "1_background_subtraction.png"))
+    # Test with debug = "plot"
+    device, fgmask = pcv.background_subtraction(background_image=bg_img, foreground_image=fg_img, device=0,
+                                                debug="plot")
+    truths.append(np.sum(fgmask) > 0)
+    # All of these should be true for the function to pass testing.
+    assert (all(truths))
+
+
+def test_plantcv_background_subtraction_bad_img_type():
+    fg_color = cv2.imread(os.path.join(TEST_DATA, TEST_FOREGROUND))
+    bg_gray = cv2.imread(os.path.join(TEST_DATA, TEST_BACKGROUND), 0)
+    with pytest.raises(RuntimeError):
+        _ = pcv.background_subtraction(background_image=bg_gray, foreground_image=fg_color, device=0, debug=None)
+
+
+def test_plantcv_background_subtraction_different_sizes():
+    fg_img = cv2.imread(os.path.join(TEST_DATA, TEST_FOREGROUND))
+    bg_img = cv2.imread(os.path.join(TEST_DATA, TEST_BACKGROUND))
+    bg_shp = np.shape(bg_img)
+    bg_img_resized = cv2.resize(bg_img, (bg_shp[0] / 2, bg_shp[1] / 2), interpolation=cv2.INTER_AREA)
+    device, fgmask = pcv.background_subtraction(background_image=bg_img_resized, foreground_image=fg_img, device=0,
+                                                debug=None)
+    assert np.sum(fgmask > 0)
