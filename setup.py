@@ -6,7 +6,7 @@ https://github.com/pypa/sampleproject
 """
 
 import sys
-from setuptools import setup
+import setuptools
 from setuptools.command.test import test as TestCommand
 from codecs import open
 from os import path
@@ -39,7 +39,7 @@ try:
 except ImportError:
     raise ImportError("ERROR: OpenCV package 'cv2' not found.")
 
-setup(
+setuptools.setup(
     name='plantcv',
 
     # Versions should comply with PEP440.  For a discussion on single-sourcing
@@ -90,7 +90,7 @@ setup(
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
-    packages=['plantcv'],
+    packages=setuptools.find_packages(),
 
     # Alternatively, if you want to distribute just a my_module.py, uncomment
     # this:
