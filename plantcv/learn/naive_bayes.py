@@ -6,7 +6,7 @@ import numpy as np
 from scipy import stats
 
 
-def naive_bayes(imgdir, maskdir, outfile):
+def naive_bayes(imgdir, maskdir, outfile, mkplots=False):
     """Naive Bayes training function
 
     Inputs:
@@ -14,10 +14,12 @@ def naive_bayes(imgdir, maskdir, outfile):
     maskdir = Path to a directory of binary mask images. Mask images must have the same name as their corresponding
               color images.
     outfile = Name of the output text file that will store the color channel probability density functions.
+    mkplots = Make PDF plots (True or False).
     
     :param imgdir: str
     :param maskdir: str
     :param outfile: str
+    :param mkplots: bool
     """
     # Initialize color channel ndarrays for plant (foreground) and background
     plant = {"hue": np.array([], dtype=np.uint8), "saturation": np.array([], dtype=np.uint8),
@@ -69,17 +71,9 @@ def naive_bayes(imgdir, maskdir, outfile):
         out.write("plant\t" + channel + "\t" + "\t".join(map(str, plant_pdf)) + "\n")
         bg_pdf = bg_kde(range(0, 256))
         out.write("background\t" + channel + "\t" + "\t".join(map(str, bg_pdf)) + "\n")
-        _plot_pdf(channel, plant_pdf, bg_pdf)
-
-        # Add the second moment (variance) distribution for each channel
-        # print("Calculating PDF for the " + channel + "^2 channel...")
-        # plant2_kde = stats.gaussian_kde(plant[channel].astype(np.int32) ** 2)
-        # bg2_kde = stats.gaussian_kde(background[channel].astype(np.int32) ** 2)
-        # plant2_pdf = plant2_kde([x ** 2 for x in range(0, 256)])
-        # out.write("plant\t" + channel + "2\t" + "\t".join(map(str, plant2_pdf)) + "\n")
-        # bg2_pdf = bg2_kde([x ** 2 for x in range(0, 256)])
-        # out.write("background\t" + channel + "2\t" + "\t".join(map(str, bg2_pdf)) + "\n")
-        # plot_pdf(channel + "2", plant2_pdf, bg2_pdf)
+        if mkplots:
+            # If mkplots is True, make the PDF charts
+            _plot_pdf(channel, plant_pdf, bg_pdf, os.path.dirname(outfile))
 
     out.close()
 
@@ -98,16 +92,17 @@ def _split_plant_background_signal(channel, mask):
     return plant, background
 
 
-def _plot_pdf(channel, plant, background):
+def _plot_pdf(channel, plant, background, outdir):
     """Plot the plant and background probability density functions for the given channel
 
     :param channel: str
     :param plant: ndarray
     :param background: ndarray
+    :param outdir: str
     """
     from matplotlib import pyplot as plt
     plt.plot(plant, label="plant-" + str(channel))
     plt.plot(background, label="background-" + str(channel))
     plt.legend(loc="best")
-    plt.savefig(str(channel) + "_pdf.png")
+    plt.savefig(os.path.join(outdir, str(channel) + "_pdf.png"))
     plt.close()

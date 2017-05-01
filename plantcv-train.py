@@ -30,6 +30,7 @@ def options():
     parser.add_argument("-m", "--method", help="Learning method. Available methods: " + ", ".join(map(str, methods)),
                         required=True)
     parser.add_argument("-o", "--outfile", help="Trained classifier output filename.", required=True)
+    parser.add_argument("-p", "--plots", help="Make output plots.", default=False)
     args = parser.parse_args()
 
     if not os.path.exists(args.imgdir):
@@ -56,7 +57,7 @@ def main():
     args = options()
 
     if args.method == "naive_bayes":
-        plantcv.learn.naive_bayes(args.imgdir, args.maskdir, args.outfile)
+        plantcv.learn.naive_bayes(imgdir=args.imgdir, maskdir=args.maskdir, outfile=args.outfile, mkplots=args.plots)
 
 
 ###########################################
