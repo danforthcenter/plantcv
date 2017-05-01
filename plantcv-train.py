@@ -5,9 +5,6 @@ import os
 import sys
 import argparse
 import datetime
-from scipy import stats
-import numpy as np
-import cv2
 import plantcv.learn
 
 
