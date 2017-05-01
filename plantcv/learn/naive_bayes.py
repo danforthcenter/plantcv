@@ -9,10 +9,15 @@ from scipy import stats
 def naive_bayes(imgdir, maskdir, outfile):
     """Naive Bayes training function
 
+    Inputs:
+    imgdir  = Path to a directory of original 8-bit RGB images. 
+    maskdir = Path to a directory of binary mask images. Mask images must have the same name as their corresponding
+              color images.
+    outfile = Name of the output text file that will store the color channel probability density functions.
+    
     :param imgdir: str
     :param maskdir: str
     :param outfile: str
-    :return:
     """
     # Initialize color channel ndarrays for plant (foreground) and background
     plant = {"hue": np.array([], dtype=np.uint8), "saturation": np.array([], dtype=np.uint8),
