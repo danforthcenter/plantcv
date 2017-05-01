@@ -6,6 +6,7 @@ import shutil
 import numpy as np
 import cv2
 import plantcv as pcv
+import plantcv.learn
 # Import matplotlib and use a null Template to block plotting to screen
 # This will let us test debug = "plot"
 import matplotlib
@@ -47,13 +48,17 @@ TEST_VIS_COMP_CONTOUR = "setaria_composed_contours.npz"
 TEST_ACUTE_RESULT = np.asarray([[[119, 285]], [[151, 280]], [[168, 267]], [[168, 262]], [[171, 261]], [[224, 269]],
                                 [[246, 271]], [[260, 277]], [[141, 248]], [[183, 194]], [[188, 237]], [[173, 240]],
                                 [[186, 260]], [[147, 244]], [[163, 246]], [[173, 268]], [[170, 272]], [[151, 320]],
-                                [[195, 289]], [[228, 272]], [[210, 272]],[[209, 247]], [[210, 232]]])
+                                [[195, 289]], [[228, 272]], [[210, 272]], [[209, 247]], [[210, 232]]])
 TEST_VIS_SMALL_PLANT = "setaria_small_plant_vis.png"
 TEST_MASK_SMALL_PLANT = "setaria_small_plant_mask.png"
 TEST_VIS_COMP_CONTOUR_SMALL_PLANT = "setaria_small_plant_composed_contours.npz"
 
 if not os.path.exists(TEST_TMPDIR):
     os.mkdir(TEST_TMPDIR)
+
+# ##########################
+# Tests for the main package
+# ##########################
 
 
 def test_plantcv_acute():
@@ -1339,3 +1344,22 @@ def test_plantcv_background_subtraction_different_sizes():
     device, fgmask = pcv.background_subtraction(background_image=bg_img_resized, foreground_image=fg_img, device=0,
                                                 debug=None)
     assert np.sum(fgmask > 0)
+
+# ##############################
+# Tests for the learn subpackage
+# ##############################
+
+
+def test_plantcv_learn_naive_bayes():
+    # Make image and mask directories in the cache directory
+    imgdir = os.path.join(TEST_TMPDIR, "images")
+    maskdir = os.path.join(TEST_TMPDIR, "masks")
+    os.mkdir(imgdir)
+    os.mkdir(maskdir)
+    # Copy and image and mask to the image/mask directories
+    shutil.copyfile(os.path.join(TEST_DATA, TEST_VIS_SMALL), os.path.join(imgdir, "image.png"))
+    shutil.copyfile(os.path.join(TEST_DATA, TEST_MASK_SMALL), os.path.join(maskdir, "image.png"))
+    # Run the naive Bayes training module
+    outfile = os.path.join(TEST_TMPDIR, "naive_bayes_pdfs.txt")
+    plantcv.learn.naive_bayes(imgdir=imgdir, maskdir=maskdir, outfile=outfile, mkplots=True)
+    assert os.path.exists(outfile)
