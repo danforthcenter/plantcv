@@ -21,7 +21,7 @@ First, use `plantcv-train.py` to use the training images to output probability d
 and background.
 
 ```
-plantcv-train.py --imgdir ./images --maskdir ./masks --method naive_bayes --outfile naive_bayes_pdfs.txt
+plantcv-train.py --imgdir ./images --maskdir ./masks --method naive_bayes --outfile naive_bayes_pdfs.txt --plots
 ```
 
 The output file from `plantcv-train.py` will contain one row for each color channel (hue, saturation, and value) for

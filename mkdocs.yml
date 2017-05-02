@@ -24,7 +24,7 @@ pages:
     - 'Pipeline parallelization': pipeline_parallel.md
     - 'Export Filter and Export Data': db-exporter.md
     - 'Machine Learning': machine_learning_tutorial.md
-  - Library:
+  - 'Package plantcv':
     - 'Adaptive Threshold': adaptive_threshold.md
     - 'Analyze color': analyze_color.md
     - 'Analyze NIR': analyze_NIR_intensity.md
@@ -83,7 +83,8 @@ pages:
     - 'Triangle Auto Threshold': triangle_threshold.md
     - 'Watershed Segmentation': watershed.md
     - 'White balance': white_balance.md
-
+  - 'Package plantcv.learn':
+    - 'Naive Bayes': naive_bayes.md
 markdown_extensions:
   - toc:
       permalink: True
