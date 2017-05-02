@@ -1,4 +1,6 @@
 language: python
+# Switch to container-based builds
+sudo: false
 # Which versions of Python to test
 python:
   - "2.7"
@@ -7,8 +9,6 @@ virtualenv:
     system_site_packages: false
 # command to install dependencies
 before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install libgtk2.0-dev
   - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
       wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
     else
