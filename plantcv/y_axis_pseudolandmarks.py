@@ -5,7 +5,7 @@ import numpy as np
 from . import plot_image
 
 
-def y_axis_pseudolandmarks(obj, mask, img, device, debug=False):
+def y_axis_pseudolandmarks(obj, mask, img, device, debug=None):
     """Divide up object contour into 19 equidistant segments and generate landmarks for each
 
     Inputs:

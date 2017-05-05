@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from . import print_image
 from . import plot_image
-from plantcv.dev.color_palette import color_palette
+from . import color_palette
 
 
 def cluster_contours(device, img, roi_objects, nrow=1, ncol=1, debug=None):

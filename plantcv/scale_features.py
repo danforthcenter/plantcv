@@ -5,23 +5,31 @@ import numpy as np
 from . import plot_image
 
 
-def scale_features(obj, mask, points, boundary_line, device, debug=False):
-    # This is a function to transform the coordinates of landmark points onto a common scale (0 - 1.0)
-    # obj = a contour of the plant object (this should be output from the object_composition.py fxn)
-    # mask = this is a binary image. The object should be white and the background should be black
-    # points = the points to scale
-    #
-    # device = a counter variable
-    # img = This is a copy of the original plant image generated using np.copy if debug is true it will be drawn on
-    # debug = True/False. If True, print image
+def scale_features(obj, mask, points, boundary_line, device, debug=None):
+    """scale_features: returns feature scaled points
+
+    This is a function to transform the coordinates of landmark points onto a common scale (0 - 1.0).
+
+    Inputs:
+    obj           = a contour of the plant object (this should be output from the object_composition.py fxn)
+    mask          = this is a binary image. The object should be white and the background should be black
+    points        = the points to scale
+    boundary_line = A vertical coordinate that denotes the height of the plant pot, the coordinates of this reference
+                    point is also rescaled
+    device        = a counter variable
+    debug         = True/False. If True, print image
+
+    :param obj: ndarray
+    :param mask: ndarray
+    :param points: ndarray
+    :param boundary_line: int
+    :param device: int
+    :param debug: str
+    :return:
+    """
     device += 1
     # Get the dimensions of the image from the binary thresholded object (mask)
-    if not np.any(mask):
-        rescaled = ('NA', 'NA')
-        centroid_scaled = ('NA', 'NA')
-        boundary_line_scaled = ('NA', 'NA')
-        return device, rescaled, centroid_scaled, boundary_line_scaled
-    if not np.any(obj):
+    if not np.any(mask) or not np.any(obj):
         rescaled = ('NA', 'NA')
         centroid_scaled = ('NA', 'NA')
         boundary_line_scaled = ('NA', 'NA')

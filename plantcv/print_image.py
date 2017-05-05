@@ -19,4 +19,4 @@ def print_image(img, filename):
     try:
         cv2.imwrite(filename, img)
     except:
-        fatal_error("Unexpected error: " + str(sys.exc_info()[0]))
+        fatal_error("Error writing file " + filename + ": " + str(sys.exc_info()[0]))

@@ -30,8 +30,6 @@ Is this a:
 
 ### Checklist:
 
-[ ] Relevant tests (and test data) have been added or updated and passed.
-
-[ ] The documentation was added or updated.
-
-[ ] Relevant issues were updated or added.
+- [ ] Relevant tests (and test data) have been added or updated and passed.
+- [ ] The documentation was added or updated.
+- [ ] Relevant issues were updated or added.

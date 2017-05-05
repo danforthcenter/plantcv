@@ -37,7 +37,7 @@ def sobel_filter(img, dx, dy, k, device, debug=None):
     sb_img = cv2.Sobel(src=img, ddepth=-1, dx=dx, dy=dy, ksize=k)
 
     if debug == 'print':
-        print_image(sb_img, str(device) + '_sb_img' + '_dx_' + str(dx) + '_dy_' + str(dy) + '_k_' + str(k) + '.png')
+        print_image(sb_img, str(device) + '_sb_img_dx' + str(dx) + '_dy' + str(dy) + '_k' + str(k) + '.png')
     elif debug == 'plot':
         plot_image(sb_img, cmap='gray')
     return device, sb_img

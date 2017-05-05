@@ -3,7 +3,7 @@
 Applies a gaussian blur filter. Applies median value to central pixel within a kernel size (ksize x ksize). 
 The function is a wrapper for the OpenCV function [gaussian blur](http://docs.opencv.org/2.4/modules/imgproc/doc/filtering.html?highlight=gaussianblur#gaussianblur).  
 
-**gaussian_blur**(*device,img, ksize, sigmax=0,sigmay=None, debug=None*)**
+**gaussian_blur**(*device, img, ksize, sigmax=0, sigmay=None, debug=None*)**
 
 **returns** device, blurred image
 

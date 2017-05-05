@@ -5,9 +5,7 @@ import os
 import sys
 import argparse
 import datetime
-from scipy import stats
-import numpy as np
-import cv2
+import plantcv.learn
 
 
 # Parse command-line arguments
@@ -23,27 +21,56 @@ def options():
     start_time = datetime.datetime.now().strftime('%Y-%m-%d_%H:%M:%S')
     print("Starting run " + start_time + '\n', file=sys.stderr)
 
-    methods = ["naive_bayes"]
-
-    parser = argparse.ArgumentParser(description='PlantCV machine learning training script.',
+    # Create an argument parser
+    parser = argparse.ArgumentParser(description="PlantCV machine learning training script.",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument("-i", "--imgdir", help='Input directory containing images.', required=True)
-    parser.add_argument("-b", "--maskdir", help="Input directory containing black/white masks.", required=True)
-    parser.add_argument("-m", "--method", help="Learning method. Available methods: " + ", ".join(map(str, methods)),
-                        required=True)
-    parser.add_argument("-o", "--outfile", help="Trained classifier output filename.", required=True)
-    args = parser.parse_args()
+    # Create subcommand parsers
+    subparsers = parser.add_subparsers()
 
+    # Create the Naive Bayes subcommand
+    nb_cmd = subparsers.add_parser("naive_bayes", help="Run the naive Bayes two-class training method.")
+    nb_cmd.add_argument("-i", "--imgdir", help="Input directory containing images.", required=True)
+    nb_cmd.add_argument("-b", "--maskdir", help="Input directory containing black/white masks.", required=True)
+    nb_cmd.add_argument("-o", "--outfile", help="Trained classifier output filename.", required=True)
+    nb_cmd.add_argument("-p", "--plots", help="Make output plots.", default=False, action="store_true")
+    nb_cmd.set_defaults(func=run_naive_bayes)
+
+    # Create the Naive Bayes Multiclass subcommand
+    nbm_cmd = subparsers.add_parser("naive_bayes_multiclass",
+                                    help="Run the naive Bayes two or more class training method.")
+    nbm_cmd.add_argument("-f", "--file",
+                         help="Input file containing a table of pixel RGB values sampled for each input class.",
+                         required=True)
+    nbm_cmd.add_argument("-o", "--outfile", help="Trained classifier output filename.", required=True)
+    nbm_cmd.add_argument("-p", "--plots", help="Make output plots.", default=False, action="store_true")
+    nbm_cmd.set_defaults(func=run_naive_bayes_multiclass)
+
+    # Parse command-line options
+    args = parser.parse_args()
+    # Execute the selected training method
+    args.func(args)
+###########################################
+
+
+# Run the naive Bayes method
+###########################################
+def run_naive_bayes(args):
     if not os.path.exists(args.imgdir):
         raise IOError("Directory does not exist: {0}".format(args.imgdir))
     if not os.path.exists(args.maskdir):
         raise IOError("Directory does not exist: {0}".format(args.maskdir))
-    if args.method not in methods:
-        raise KeyError("Method is not supported: {0}".format(args.method))
+    print("Running the naive Bayes two-class training method...")
+    plantcv.learn.naive_bayes(imgdir=args.imgdir, maskdir=args.maskdir, outfile=args.outfile, mkplots=args.plots)
+###########################################
 
-    return args
 
-
+# Run the naive Bayes multiclass method
+###########################################
+def run_naive_bayes_multiclass(args):
+    if not os.path.exists(args.file):
+        raise IOError("File does not exist: {0}".format(args.file))
+    print("Running the naive Bayes multiclass training method...")
+    plantcv.learn.naive_bayes_multiclass(samples_file=args.file, outfile=args.outfile, mkplots=args.plots)
 ###########################################
 
 
@@ -51,121 +78,10 @@ def options():
 ###########################################
 def main():
     """Main program.
-
     """
-
-    # Parse command-line options
-    args = options()
-
-    if args.method == "naive_bayes":
-        naive_bayes(args.imgdir, args.maskdir, args.outfile)
-
-
+    # Parse command-line options and run training method
+    options()
 ###########################################
-
-
-# Naive Bayes
-###########################################
-def naive_bayes(imgdir, maskdir, outfile):
-    """Naive Bayes training function
-
-    :param imgdir: str
-    :param maskdir: str
-    :param outfile: str
-    :return:
-    """
-    # Initialize color channel ndarrays for plant (foreground) and background
-    plant = {"hue": np.array([], dtype=np.uint8), "saturation": np.array([], dtype=np.uint8),
-             "value": np.array([], dtype=np.uint8)}
-    background = {"hue": np.array([], dtype=np.uint8), "saturation": np.array([], dtype=np.uint8),
-                  "value": np.array([], dtype=np.uint8)}
-
-    # Walk through the image directory
-    print("Reading images...")
-    for (dirpath, dirnames, filenames) in os.walk(imgdir):
-        for filename in filenames:
-            # Is this an image type we can work with?
-            if filename[-3:] in ['png', 'jpg', 'jpeg']:
-                # Does the mask exist?
-                if os.path.exists(os.path.join(maskdir, filename)):
-                    # Read the image as BGR
-                    img = cv2.imread(os.path.join(dirpath, filename), 1)
-                    # Read the mask as grayscale
-                    mask = cv2.imread(os.path.join(maskdir, filename), 0)
-
-                    # Convert the image to HSV and split into component channels
-                    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-                    hue, saturation, value = cv2.split(hsv)
-
-                    # Store channels in a dictionary
-                    channels = {"hue": hue, "saturation": saturation, "value": value}
-
-                    # Split channels into plant and non-plant signal
-                    for channel in channels.keys():
-                        fg, bg = split_plant_background_signal(channels[channel], mask)
-
-                        # Randomly sample from the plant class (sample 10% of the pixels)
-                        fg = fg[np.random.random_integers(0, len(fg) - 1, len(fg) / 10)]
-                        # Randomly sample from the background class the same n as the plant class
-                        bg = bg[np.random.random_integers(0, len(bg) - 1, len(fg))]
-                        plant[channel] = np.append(plant[channel], fg)
-                        background[channel] = np.append(background[channel], bg)
-
-    # Calculate a probability density function for each channel using a Gaussian kernel density estimator
-    # Create an output file for the PDFs
-    out = open(outfile, "w")
-    out.write("class\tchannel\t" + "\t".join(map(str, range(0, 256))) + "\n")
-    for channel in plant.keys():
-        print("Calculating PDF for the " + channel + " channel...")
-        plant_kde = stats.gaussian_kde(plant[channel])
-        bg_kde = stats.gaussian_kde(background[channel])
-        # Calculate p from the PDFs for each 8-bit intensity value and save to outfile
-        plant_pdf = plant_kde(range(0, 256))
-        out.write("plant\t" + channel + "\t" + "\t".join(map(str, plant_pdf)) + "\n")
-        bg_pdf = bg_kde(range(0, 256))
-        out.write("background\t" + channel + "\t" + "\t".join(map(str, bg_pdf)) + "\n")
-        plot_pdf(channel, plant_pdf, bg_pdf)
-
-        # Add the second moment (variance) distribution for each channel
-        # print("Calculating PDF for the " + channel + "^2 channel...")
-        # plant2_kde = stats.gaussian_kde(plant[channel].astype(np.int32) ** 2)
-        # bg2_kde = stats.gaussian_kde(background[channel].astype(np.int32) ** 2)
-        # plant2_pdf = plant2_kde([x ** 2 for x in range(0, 256)])
-        # out.write("plant\t" + channel + "2\t" + "\t".join(map(str, plant2_pdf)) + "\n")
-        # bg2_pdf = bg2_kde([x ** 2 for x in range(0, 256)])
-        # out.write("background\t" + channel + "2\t" + "\t".join(map(str, bg2_pdf)) + "\n")
-        # plot_pdf(channel + "2", plant2_pdf, bg2_pdf)
-
-    out.close()
-
-
-def split_plant_background_signal(channel, mask):
-    """Split a single-channel image by foreground and background using a mask
-
-    :param channel: ndarray
-    :param mask: ndarray
-    :return plant: ndarray
-    :return background: ndarray
-    """
-    plant = channel[np.where(mask == 255)]
-    background = channel[np.where(mask == 0)]
-
-    return plant, background
-
-
-def plot_pdf(channel, plant, background):
-    """Plot the plant and background probability density functions for the given channel
-
-    :param channel: str
-    :param plant: ndarray
-    :param background: ndarray
-    """
-    from matplotlib import pyplot as plt
-    plt.plot(plant, label="plant-" + str(channel))
-    plt.plot(background, label="background-" + str(channel))
-    plt.legend(loc="best")
-    plt.savefig(str(channel) + "_pdf.png")
-    plt.close()
 
 
 if __name__ == '__main__':

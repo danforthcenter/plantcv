@@ -37,15 +37,15 @@ How will we know when this is done?
 Please use boxes like:
 
 For a bug:
-[ ] Now I can [topic of question / bug]
+- [ ] Now I can [topic of question / bug]
 
 For a discussion:
-[ ] Discuss and develop requirements docs
-[ ] Create issues for next steps
+- [ ] Discuss and develop requirements docs
+- [ ] Create issues for next steps
 
 For a new feature:
-[ ] Create algorithm/method
-[ ] Write test
-[ ] Write documentation
-[ ] Add to the package (pull request)
+- [ ] Create algorithm/method
+- [ ] Write test
+- [ ] Write documentation
+- [ ] Add to the package (pull request)
 --->

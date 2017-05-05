@@ -5,9 +5,28 @@ https://packaging.python.org/en/latest/distributing.html
 https://github.com/pypa/sampleproject
 """
 
-from setuptools import setup, find_packages
+import sys
+import setuptools
+from setuptools.command.test import test as TestCommand
 from codecs import open
 from os import path
+
+
+class PyTest(TestCommand):
+    def initialize_options(self):
+        TestCommand.initialize_options(self)
+        self.pytest_args = ["--verbose", "tests/tests.py"]
+
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+
+    def run_tests(self):
+        import pytest
+        errno = pytest.main(self.pytest_args)
+        sys.exit(errno)
+
 
 here = path.abspath(path.dirname(__file__))
 
@@ -20,13 +39,13 @@ try:
 except ImportError:
     raise ImportError("ERROR: OpenCV package 'cv2' not found.")
 
-setup(
+setuptools.setup(
     name='plantcv',
 
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='2.0-dev',
+    version='2.0.dev0',
 
     description='An image processing package for plant phenotyping.',
     long_description=long_description,
@@ -71,7 +90,7 @@ setup(
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
-    packages=find_packages(exclude=['docs', 'include', 'masks', 'tests', 'utils']),
+    packages=setuptools.find_packages(),
 
     # Alternatively, if you want to distribute just a my_module.py, uncomment
     # this:
@@ -81,16 +100,17 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=['matplotlib>=1.5', 'numpy>=1.11', 'pandas', 'python-dateutil', 'pytest', 'scipy', 'scikit-image'],
+    install_requires=['matplotlib>=1.5', 'numpy>=1.11', 'pandas', 'python-dateutil', 'scipy', 'scikit-image'],
 
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
     # for example:
     # $ pip install -e .[dev,test]
     # extras_require={
-    #     'dev': ['check-manifest'],
-    #     'test': ['coverage'],
+    #     'test': ['pytest-runner', 'pytest'],
     # },
+    tests_require=['pytest'],
+    cmdclass={'test': PyTest},
 
     # If there are data files included in your packages that need to be
     # installed, specify them here.  If using Python 2.6 or less, then these

@@ -1,3 +1,4 @@
+import os
 import cv2
 import numpy as np
 from datetime import datetime
@@ -111,9 +112,9 @@ def cluster_contour_splitimg(device, img, grouped_contour_indexes, contours, out
 
     for y, x in enumerate(corrected_contour_indexes):
         if outdir != None:
-            savename = str(outdir) + '/' + group_names[y]
+            savename = os.path.join(str(outdir), group_names[y])
         else:
-            savename = './'+group_names[y]
+            savename = os.path.join(".", group_names[y])
         iy, ix, iz = np.shape(img)
         mask = np.zeros((iy, ix, 3), dtype=np.uint8)
         masked_img = np.copy(img)

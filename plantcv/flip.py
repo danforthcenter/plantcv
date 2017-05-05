@@ -27,7 +27,7 @@ def flip(img, direction, device, debug=None):
     :return device: int
     :return vh_img: numpy array
     """
-
+    device += 1
     if direction == "vertical":
         vh_img = cv2.flip(img, 1)
     elif direction == "horizontal":
