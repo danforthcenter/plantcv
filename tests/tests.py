@@ -902,6 +902,11 @@ def test_plantcv_print_results():
 
 
 def test_plantcv_readimage():
+    # Test with debug = "print"
+    _ = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_COLOR), debug="print")
+    os.rename("input_image.png", os.path.join(TEST_TMPDIR, "input_image.png"))
+    # Test with debug = "plot"
+    _ = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_COLOR), debug="plot")
     img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Assert that the image name returned equals the name of the input image
     # Assert that the path of the image returned equals the path of the input image
