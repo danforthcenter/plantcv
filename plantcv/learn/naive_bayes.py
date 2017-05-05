@@ -73,9 +73,90 @@ def naive_bayes(imgdir, maskdir, outfile, mkplots=False):
         out.write("background\t" + channel + "\t" + "\t".join(map(str, bg_pdf)) + "\n")
         if mkplots:
             # If mkplots is True, make the PDF charts
-            _plot_pdf(channel, plant_pdf, bg_pdf, os.path.dirname(outfile))
+            _plot_pdf(channel, os.path.dirname(outfile), plant=plant_pdf, background=bg_pdf)
 
     out.close()
+
+
+def naive_bayes_multiclass(samples_file, outfile, mkplots=False):
+    """Naive Bayes training function for two or more classes from sampled pixel RGB values
+    
+    Inputs:
+    samples_file = Input text file containing sampled pixel RGB values for each training class. The file should be a
+                   tab-delimited table with one training class per column. The required first row must contain header
+                   labels for each class. The row values for each class must be comma-delimited RGB values. See the
+                   file plantcv/tests/data/sampled_rgb_points.txt for an example.
+    outfile      = Name of the output text file that will store the color channel probability density functions.
+    mkplots      = Make PDF plots (True or False).
+    
+    :param samples_file: str
+    :param outfile: str
+    :param mkplots: bool
+    """
+    # Initialize a dictionary to store sampled RGB pixel values for each input class
+    sample_points = {}
+    # Open the sampled points text file
+    f = open(samples_file, "r")
+    # Read the first line and use the column headers as class labels
+    header = f.readline()
+    header = header.rstrip("\n")
+    class_list = header.split("\t")
+    # Initialize a dictionary for the red, green, and blue channels for each class
+    for cls in class_list:
+        sample_points[cls] = {"red": [], "green": [], "blue": []}
+    # Loop over the rest of the data in the input file
+    for row in f:
+        # Remove newlines and quotes
+        row = row.rstrip("\n")
+        row = row.replace('"', '')
+        # If this is not a blank line, parse the data
+        if len(row) > 0:
+            # Split the row into a list of points per class
+            points = row.split("\t")
+            # For each point per class
+            for i, point in enumerate(points):
+                # Split the point into red, green, and blue integer values
+                red, green, blue = map(int, point.split(","))
+                # Append each intensity value into the appropriate class list
+                sample_points[class_list[i]]["red"].append(red)
+                sample_points[class_list[i]]["green"].append(green)
+                sample_points[class_list[i]]["blue"].append(blue)
+    f.close()
+    # Initialize a dictionary to store probability density functions per color channel in HSV colorspace
+    pdfs = {"hue": {}, "saturation": {}, "value": {}}
+    # For each class
+    for cls in class_list:
+        # Create a blue, green, red-formatted image ndarray with the class RGB values
+        bgr_img = cv2.merge((np.asarray(sample_points[cls]["blue"], dtype=np.uint8),
+                             np.asarray(sample_points[cls]["green"], dtype=np.uint8),
+                             np.asarray(sample_points[cls]["red"], dtype=np.uint8)))
+        # Convert the BGR ndarray to an HSV ndarray
+        hsv_img = cv2.cvtColor(bgr_img, cv2.COLOR_BGR2HSV)
+        # Split the HSV ndarray into the component HSV channels
+        hue, saturation, value = cv2.split(hsv_img)
+        # Create an HSV channel dictionary that stores the channels as lists (horizontally stacked ndarrays)
+        channels = {"hue": np.hstack(hue), "saturation": np.hstack(saturation), "value": np.hstack(value)}
+        # For each channel
+        for channel in channels.keys():
+            # Create a kernel density estimator for the channel values (Guassian kernel)
+            kde = stats.gaussian_kde(channels[channel])
+            # Use the KDE to calculate a probability density function for the channel
+            # Sample at each of the possible 8-bit values
+            pdfs[channel][cls] = kde(range(0, 256))
+    if mkplots:
+        # If mkplots is True, generate a density curve plot per channel for each class
+        for channel, cls in pdfs.items():
+            _plot_pdf(channel, os.path.dirname(outfile), **cls)
+    # Write the PDFs to a text file
+    out = open(outfile, "w")
+    # Write the column labels
+    out.write("class\tchannel\t" + "\t".join(map(str, range(0, 256))) + "\n")
+    # For each channel
+    for channel, cls in pdfs.items():
+        # For each class
+        for class_name, pdf in cls.items():
+            # Each row is the PDF for the given class and color channel
+            out.write(class_name + "\t" + channel + "\t" + "\t".join(map(str, pdf)) + "\n")
 
 
 def _split_plant_background_signal(channel, mask):
@@ -92,17 +173,18 @@ def _split_plant_background_signal(channel, mask):
     return plant, background
 
 
-def _plot_pdf(channel, plant, background, outdir):
-    """Plot the plant and background probability density functions for the given channel
+def _plot_pdf(channel, outdir, **kwargs):
+    """Plot the probability density function of one or more classes for the given channel
 
     :param channel: str
-    :param plant: ndarray
-    :param background: ndarray
     :param outdir: str
+    :param kwargs: dict
     """
+    import matplotlib
+    matplotlib.use("Agg")
     from matplotlib import pyplot as plt
-    plt.plot(plant, label="plant-" + str(channel))
-    plt.plot(background, label="background-" + str(channel))
+    for class_name, pdf in kwargs.items():
+        plt.plot(pdf, label=class_name)
     plt.legend(loc="best")
     plt.savefig(os.path.join(outdir, str(channel) + "_pdf.png"))
     plt.close()

@@ -52,6 +52,7 @@ TEST_ACUTE_RESULT = np.asarray([[[119, 285]], [[151, 280]], [[168, 267]], [[168,
 TEST_VIS_SMALL_PLANT = "setaria_small_plant_vis.png"
 TEST_MASK_SMALL_PLANT = "setaria_small_plant_mask.png"
 TEST_VIS_COMP_CONTOUR_SMALL_PLANT = "setaria_small_plant_composed_contours.npz"
+TEST_SAMPLED_RGB_POINTS = "sampled_rgb_points.txt"
 
 if not os.path.exists(TEST_TMPDIR):
     os.mkdir(TEST_TMPDIR)
@@ -802,7 +803,8 @@ def test_plantcv_naive_bayes_classifier():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
     _ = pcv.naive_bayes_classifier(img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS), device=0, debug="print")
-    os.rename("1_naive_bayes_mask.jpg", os.path.join(TEST_TMPDIR, "1_naive_bayes_mask.jpg"))
+    os.rename("1_naive_bayes_plant_mask.jpg", os.path.join(TEST_TMPDIR, "1_naive_bayes_plant_mask.jpg"))
+    os.rename("1_naive_bayes_background_mask.jpg", os.path.join(TEST_TMPDIR, "1_naive_bayes_background_mask.jpg"))
     # Test with debug = "plot"
     _ = pcv.naive_bayes_classifier(img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS), device=0, debug="plot")
     # Test with debug = None
@@ -1354,12 +1356,22 @@ def test_plantcv_learn_naive_bayes():
     # Make image and mask directories in the cache directory
     imgdir = os.path.join(TEST_TMPDIR, "images")
     maskdir = os.path.join(TEST_TMPDIR, "masks")
-    os.mkdir(imgdir)
-    os.mkdir(maskdir)
+    if not os.path.exists(imgdir):
+        os.mkdir(imgdir)
+    if not os.path.exists(maskdir):
+        os.mkdir(maskdir)
     # Copy and image and mask to the image/mask directories
     shutil.copyfile(os.path.join(TEST_DATA, TEST_VIS_SMALL), os.path.join(imgdir, "image.png"))
     shutil.copyfile(os.path.join(TEST_DATA, TEST_MASK_SMALL), os.path.join(maskdir, "image.png"))
     # Run the naive Bayes training module
     outfile = os.path.join(TEST_TMPDIR, "naive_bayes_pdfs.txt")
     plantcv.learn.naive_bayes(imgdir=imgdir, maskdir=maskdir, outfile=outfile, mkplots=True)
+    assert os.path.exists(outfile)
+
+
+def test_plantcv_learn_naive_bayes_multiclass():
+    # Run the naive Bayes multiclass training module
+    outfile = os.path.join(TEST_TMPDIR, "naive_bayes_multiclass_pdfs.txt")
+    plantcv.learn.naive_bayes_multiclass(samples_file=os.path.join(TEST_DATA, TEST_SAMPLED_RGB_POINTS), outfile=outfile,
+                                         mkplots=True)
     assert os.path.exists(outfile)
