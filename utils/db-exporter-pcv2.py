@@ -286,12 +286,12 @@ def main():
       finalfeatures = []
       # Select the features that are not completely empty
       for x in fheader:
-        if x == 'in_bounds':
+        if x == 'in_bounds' or x=='image_id':
           finalfeatures.append(x)
           mheader.append(x)
         elif x != 'in_bounds':
           table1[str(x)] = table1[str(x)].astype(float)
-          sumcol = table1[str(x)].apply(np.sum)[1]
+          sumcol=((table1[str(x)].sum()))
           if sumcol != 0.0:
             finalfeatures.append(x)
             mheader.append(x)
@@ -310,12 +310,12 @@ def main():
       finalfeatures = []
       # Select the features that are not completely empty
       for x in fheader:
-        if x == 'in_bounds':
+        if x == 'in_bounds' or x=='image_id':
           finalfeatures.append(x)
           mheader.append(x)
         elif x != 'in_bounds':
           table2[str(x)] = table2[str(x)].astype(float)
-          sumcol = table2[str(x)].apply(np.sum)[1]
+          sumcol=((table2[str(x)].sum()))
           if sumcol != 0.0:
             finalfeatures.append(x)
             mheader.append(x)
@@ -334,16 +334,15 @@ def main():
       finalfeatures = []
       # Select the features that are not completely empty
       for x in fheader:
-        if x == 'in_bounds':
+        if x == 'in_bounds' or x=='image_id':
           finalfeatures.append(x)
           mheader.append(x)
         elif x != 'in_bounds':
           table[str(x)] = table[str(x)].astype(float)
-          sumcol = table[str(x)].apply(np.sum)[1]
+          sumcol=((table[str(x)].sum()))
           if sumcol != 0.0:
             finalfeatures.append(x)
             mheader.append(x)
-
       # Subset table with the features that are not completely empty
       table = table[mheader]
       if args.filter=='filter':
