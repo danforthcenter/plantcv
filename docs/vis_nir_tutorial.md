@@ -303,7 +303,7 @@ the Crop and Position function [here](crop_position_mask.md).
 
 **Figure 15.** Resized image.
 
-![Screenshot](img/tutorial_images/vis-nir/17_resize.jpg)
+![Screenshot](img/tutorial_images/vis-nir/17_resize1.jpg)
 
 **Figure 16.** VIS mask on image.
 
