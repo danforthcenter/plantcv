@@ -211,58 +211,23 @@ Adding this (inverted, Sobel filtered) image to the Laplacian filtered image fur
 Increased contrast enables effective binary thresholding.
 
 ```python
-    # Prepare a few small kernels for morphological filtering
-    kern = np.zeros((3,3), dtype=np.uint8)
-    kern1 = np.copy(kern)
-    kern1[1,1:3]=1
-    kern2 = np.copy(kern)
-    kern2[1,0:2]=1
-    kern3 = np.copy(kern)
-    kern3[0:2,1]=1
-    kern4 = np.copy(kern)
-    kern4[1:3,1]=1
-    
-    # Prepare a larger kernel for dilation
-    kern[1,0:3]=1
-    kern[0:3,1]=1
-    
-    # Perform erosion with 4 small kernels
-    device, e1_img = pcv.erode(tr_es_img, kern1, 1, device, args.debug)
-    device, e2_img = pcv.erode(tr_es_img, kern2, 1, device, args.debug)
-    device, e3_img = pcv.erode(tr_es_img, kern3, 1, device, args.debug)
-    device, e4_img = pcv.erode(tr_es_img, kern4, 1, device, args.debug)
-    
-    # Combine eroded images
-    device, c12_img = pcv.logical_or(e1_img, e2_img, device, args.debug)
-    device, c123_img = pcv.logical_or(c12_img, e3_img, device, args.debug)
-    device, c1234_img = pcv.logical_or(c123_img, e4_img, device, args.debug)
+    # Do erosion with a 3x3 kernel
+    device, e1_img = pcv.erode(tr_es_img, 3, 1, device, args.debug)
 ```
 
-**Figure 6.** From top to bottom: Erosion with kernel 1; Erosion with kernel 2; Erosion with kernel 3; Erosion with kernel 4; and 
-Logical join of all eroded images.
+**Figure 6.** Erosion with a 3x3 kernel.
 
 ![Screenshot](img/tutorial_images/nir/12_er_image_itr_1_t.jpg)
 
-![Screenshot](img/tutorial_images/nir/13_er_image_itr_1_t.jpg)
-
-![Screenshot](img/tutorial_images/nir/14_er_image_itr_1_t.jpg)
-
-![Screenshot](img/tutorial_images/nir/15_er_image_itr_1_t.jpg)
-
-![Screenshot](img/tutorial_images/nir/16_or_joined_t.jpg)
-
 Erosion steps help eliminate background noise (pixels called plant that are isolated and are part of background).
-Erosion was performed with 4 different kernels. The focal pixel (one in the middle of the 3X3 grid) is retained if 
-the corresponding other pixel in the kernel non zero.
-Logical join combines these individually eroded images keeping pixels within found within individual images, 
-but also removing some of the object of interest pixels.
+The focal pixel (one in the middle of the 3X3 grid) is retained if the corresponding other pixel in the kernel non zero.
 
 Merging results from both the background subtraction and derivative filter methods is better at capturing the object (plant) than either method alone.
 
 ```python
     # Bring the two object identification approaches together.
     # Using a logical OR combine object identified by background subtraction and the object identified by derivative filter.
-    device, comb_img = pcv.logical_or(c1234_img, bkg_sub_thres_img, device, args.debug)
+    device, comb_img = pcv.logical_or(e1_img, bkg_sub_thres_img, device, args.debug)
     
     # Get masked image, Essentially identify pixels corresponding to plant and keep those.
     device, masked_erd = pcv.apply_mask(img, comb_img, 'black', device, args.debug)
