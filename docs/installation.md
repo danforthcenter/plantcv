@@ -90,11 +90,19 @@ to install PlantCV.
 
 Install software dependencies
 
-`sudo apt-get install git libopencv-dev python-opencv sqlite3 python-setuptools`
+`sudo apt-get install git libopencv-dev python-opencv sqlite3 python-setuptools libpython2.7-dev python-pip`
+
+Add the OpenCV distribution for Python to find it:
+
+`export PYTHONPATH=/usr/lib/python2.7/dist-packages`
 
 Clone the PlantCV repository into your home directory
 
 `git clone https://github.com/danforthcenter/plantcv.git`
+
+Install the minimum dependencies:
+
+`pip install -r requirements`
 
 The default branch (master) is the latest release. If you want to check out a specific version:
 
