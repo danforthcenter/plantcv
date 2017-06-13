@@ -149,13 +149,13 @@ Notice the plant is darker in this image than it was in the original image.
 
 ```python
     # Sobel filtering  
-    # 1st derivative sobel filtering along horizontal axis, kernel = 1, unscaled)
-    device, sbx_img = pcv.sobel_filter(img, 1, 0, 1, 1, device, args.debug)
+    # 1st derivative sobel filtering along horizontal axis, kernel = 1)
+    device, sbx_img = pcv.sobel_filter(img, 1, 0, 1, device, args.debug)
     if args.debug:
         pcv.plot_hist(sbx_img, 'hist_sbx')
     
-    # 1st derivative sobel filtering along vertical axis, kernel = 1, unscaled)
-    device, sby_img = pcv.sobel_filter(img, 0, 1, 1, 1, device, args.debug)
+    # 1st derivative sobel filtering along vertical axis, kernel = 1)
+    device, sby_img = pcv.sobel_filter(img, 0, 1, 1, device, args.debug)
     if args.debug:
         pcv.plot_hist(sby_img, 'hist_sby')
     
