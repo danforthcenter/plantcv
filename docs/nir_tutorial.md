@@ -248,11 +248,11 @@ Combining these methods improves our ability to capture more plant and less back
     # Need to remove the edges of the image, we did that by generating a set of rectangles to mask the edges
     # img is (254 X 320)
     # mask for the bottom of the image
-    device, box1_img, rect_contour1, hierarchy1 = pcv.rectangle_mask(img, (120,184), (215,252), device, args.debug)
+    device, masked1, box1_img, rect_contour1, hierarchy1 = pcv.rectangle_mask(img, (120,184), (215,252), device, args.debug)
     # mask for the left side of the image
-    device, box2_img, rect_contour2, hierarchy2 = pcv.rectangle_mask(img, (1,1), (85,252), device, args.debug)
+    device, masked2, box2_img, rect_contour2, hierarchy2 = pcv.rectangle_mask(img, (1,1), (85,252), device, args.debug)
     # mask for the right side of the image
-    device, box3_img, rect_contour3, hierarchy3 = pcv.rectangle_mask(img, (240,1), (318,252), device, args.debug)
+    device, masked3, box3_img, rect_contour3, hierarchy3 = pcv.rectangle_mask(img, (240,1), (318,252), device, args.debug)
     # mask the edges
     device, box4_img, rect_contour4, hierarchy4 = pcv.border_mask(img, (1,1), (318,252), device, args.debug)
 ```
