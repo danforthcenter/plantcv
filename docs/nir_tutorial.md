@@ -254,7 +254,7 @@ Combining these methods improves our ability to capture more plant and less back
     # mask for the right side of the image
     device, masked3, box3_img, rect_contour3, hierarchy3 = pcv.rectangle_mask(img, (240,1), (318,252), device, args.debug)
     # mask the edges
-    device, box4_img, rect_contour4, hierarchy4 = pcv.border_mask(img, (1,1), (318,252), device, args.debug)
+    device, masked4, box4_img, rect_contour4, hierarchy4 = pcv.rectangle_mask(img, (1,1), (318,252), device, args.debug)
 ```
 
 **Figure 8.** From top to bottom: Make a mask to hide the pot; Make a mask to hide left panel; 
