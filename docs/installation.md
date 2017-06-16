@@ -102,7 +102,7 @@ Clone the PlantCV repository into your home directory
 
 Install the minimum dependencies:
 
-`pip install -r requirements`
+`pip install -r requirements.txt`
 
 The default branch (master) is the latest release. If you want to check out a specific version:
 
