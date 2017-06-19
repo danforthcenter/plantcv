@@ -316,14 +316,6 @@ Include all continuous portions within the plant that fall within the area of in
 This step helps to remove any other areas of background that were not removed during any other filtering steps.
 
 ```python
-    device, masked_img = pcv.apply_mask(kept_mask, inv_bx1234_img, 'black', device, args.debug)
-    rgb = cv2.cvtColor(img,cv2.COLOR_GRAY2RGB)
-    # Generate a binary to send to the analysis function
-    device, mask = pcv.binary_threshold(masked_img, 1, 255, 'light', device, args.debug)
-    mask3d = np.copy(mask)
-    plant_objects_2, plant_hierarchy_2 = cv2.findContours(mask3d,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
-    device, o, m = pcv.object_composition(rgb, roi_objects, hierarchy5, device, args.debug)
-    
     # Get final masked image
     device, masked_img = pcv.apply_mask(kept_mask, inv_bx1234_img, 'black', device, args.debug)
     # Obtain a 3 dimensional representation of this grayscale image (for pseudocoloring)
