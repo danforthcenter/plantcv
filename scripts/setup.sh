@@ -3,11 +3,11 @@
 set -e
 
 source scripts/common.sh
-HERE_DIR="$(get_realpath $(dirname "$0"))"
+HERE_DIR="$(get_realpath $(dirname $(dirname "$0")))"
 
 echo "------------------------------- PlantCV Env Setup -------------------------------"
 
-VENV_PATH=$HERE_DIR/tmp/venv
+VENV_PATH=$HERE_DIR/venv
 if [ ! -d "$VENV_PATH" ]; then
   os_type=`uname -s`
   if [ "Darwin" = "$os_type" ]; then
@@ -25,16 +25,13 @@ if [ ! -d "$VENV_PATH" ]; then
     echo 'export PYTHONPATH=/usr/lib/python2.7/dist-packages' >> $VENV_PATH/bin/activate
   fi
   
-  pushd $HERE_DIR
   source $VENV_PATH/bin/activate
+  pushd $HERE_DIR
   pip install -r requirements.txt
-
   python setup.py install
-
   echo -n "Installation test..."
   python -c 'import plantcv'
   echo 'ok'
-
   deactivate
   popd
   

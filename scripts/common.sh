@@ -57,7 +57,7 @@ function get_realpath() {
 function install_dependencies_darwin() {
   if [ -x '/opt/local/bin/port' ]; then
     echo "Getting dependencies with MacPorts."
-    sudo port install git sqlite3 opencv+python27 py27-virtualenv
+    sudo port install git sqlite3 opencv +python27 py27-virtualenv
   elif [ -x '/usr/local/bin/brew' ]; then
     echo "Getting dependencies with Brew."
     echo "Todo"
