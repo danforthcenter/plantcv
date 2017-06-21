@@ -136,6 +136,25 @@ py.test -v tests/tests.py
 
 Tested on OSX 10.11.
 
+##### With MacPorts
+
+Clone the PlantCV repository:
+
+    git clone https://github.com/danforthcenter/plantcv.git
+
+Note that the following may not be merged in the main repository at this time. The fallback may be [this fork](https://github.com/ic/plantcv.git).
+
+Run the setup script:
+
+```bash
+cd plantcv
+bash scripts/setup.sh
+```
+
+The script should guide you through the installation steps. Successful completion ends with a usage report.
+
+##### With Brew
+
 Procedure modified from 
 [here](https://jjyap.wordpress.com/2014/05/24/installing-opencv-2-4-9-on-mac-osx-with-python-support/).
 
