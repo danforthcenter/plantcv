@@ -84,6 +84,25 @@ py.test -v tests/tests.py
 
 #### Ubuntu Linux
 
+##### Script-based installation
+
+Clone the PlantCV repository:
+
+    git clone https://github.com/danforthcenter/plantcv.git
+
+Note that the following may not be merged in the main repository at this time. The fallback may be [this fork](https://github.com/ic/plantcv.git).
+
+Run the setup script:
+
+```bash
+cd plantcv
+bash scripts/setup.sh
+```
+
+The script should guide you through the installation steps. Successful completion ends with a usage report.
+
+##### Manual
+
 We tested [Ubuntu](http://www.ubuntu.com/) x86 64-bit 14.04 server edition.  
 After installation, connect to the server with SSH or a local terminal and execute the following commands 
 to install PlantCV.
