@@ -99,7 +99,9 @@ cd plantcv
 bash scripts/setup.sh
 ```
 
-The script should guide you through the installation steps. Successful completion ends with a usage report.
+The script guides you through the installation steps. Successful completion ends with a usage report.
+
+The script has been tested on [Ubuntu](http://www.ubuntu.com/) x86_64-bit 16_04 server edition.  
 
 ##### Manual
 
