@@ -149,13 +149,13 @@ Notice the plant is darker in this image than it was in the original image.
 
 ```python
     # Sobel filtering  
-    # 1st derivative sobel filtering along horizontal axis, kernel = 1, unscaled)
-    device, sbx_img = pcv.sobel_filter(img, 1, 0, 1, 1, device, args.debug)
+    # 1st derivative sobel filtering along horizontal axis, kernel = 1)
+    device, sbx_img = pcv.sobel_filter(img, 1, 0, 1, device, args.debug)
     if args.debug:
         pcv.plot_hist(sbx_img, 'hist_sbx')
     
-    # 1st derivative sobel filtering along vertical axis, kernel = 1, unscaled)
-    device, sby_img = pcv.sobel_filter(img, 0, 1, 1, 1, device, args.debug)
+    # 1st derivative sobel filtering along vertical axis, kernel = 1)
+    device, sby_img = pcv.sobel_filter(img, 0, 1, 1, device, args.debug)
     if args.debug:
         pcv.plot_hist(sby_img, 'hist_sby')
     
@@ -211,58 +211,23 @@ Adding this (inverted, Sobel filtered) image to the Laplacian filtered image fur
 Increased contrast enables effective binary thresholding.
 
 ```python
-    # Prepare a few small kernels for morphological filtering
-    kern = np.zeros((3,3), dtype=np.uint8)
-    kern1 = np.copy(kern)
-    kern1[1,1:3]=1
-    kern2 = np.copy(kern)
-    kern2[1,0:2]=1
-    kern3 = np.copy(kern)
-    kern3[0:2,1]=1
-    kern4 = np.copy(kern)
-    kern4[1:3,1]=1
-    
-    # Prepare a larger kernel for dilation
-    kern[1,0:3]=1
-    kern[0:3,1]=1
-    
-    # Perform erosion with 4 small kernels
-    device, e1_img = pcv.erode(tr_es_img, kern1, 1, device, args.debug)
-    device, e2_img = pcv.erode(tr_es_img, kern2, 1, device, args.debug)
-    device, e3_img = pcv.erode(tr_es_img, kern3, 1, device, args.debug)
-    device, e4_img = pcv.erode(tr_es_img, kern4, 1, device, args.debug)
-    
-    # Combine eroded images
-    device, c12_img = pcv.logical_or(e1_img, e2_img, device, args.debug)
-    device, c123_img = pcv.logical_or(c12_img, e3_img, device, args.debug)
-    device, c1234_img = pcv.logical_or(c123_img, e4_img, device, args.debug)
+    # Do erosion with a 3x3 kernel
+    device, e1_img = pcv.erode(tr_es_img, 3, 1, device, args.debug)
 ```
 
-**Figure 6.** From top to bottom: Erosion with kernel 1; Erosion with kernel 2; Erosion with kernel 3; Erosion with kernel 4; and 
-Logical join of all eroded images.
+**Figure 6.** Erosion with a 3x3 kernel.
 
 ![Screenshot](img/tutorial_images/nir/12_er_image_itr_1_t.jpg)
 
-![Screenshot](img/tutorial_images/nir/13_er_image_itr_1_t.jpg)
-
-![Screenshot](img/tutorial_images/nir/14_er_image_itr_1_t.jpg)
-
-![Screenshot](img/tutorial_images/nir/15_er_image_itr_1_t.jpg)
-
-![Screenshot](img/tutorial_images/nir/16_or_joined_t.jpg)
-
 Erosion steps help eliminate background noise (pixels called plant that are isolated and are part of background).
-Erosion was performed with 4 different kernels. The focal pixel (one in the middle of the 3X3 grid) is retained if 
-the corresponding other pixel in the kernel non zero.
-Logical join combines these individually eroded images keeping pixels within found within individual images, 
-but also removing some of the object of interest pixels.
+The focal pixel (one in the middle of the 3X3 grid) is retained if the corresponding other pixel in the kernel non zero.
 
 Merging results from both the background subtraction and derivative filter methods is better at capturing the object (plant) than either method alone.
 
 ```python
     # Bring the two object identification approaches together.
     # Using a logical OR combine object identified by background subtraction and the object identified by derivative filter.
-    device, comb_img = pcv.logical_or(c1234_img, bkg_sub_thres_img, device, args.debug)
+    device, comb_img = pcv.logical_or(e1_img, bkg_sub_thres_img, device, args.debug)
     
     # Get masked image, Essentially identify pixels corresponding to plant and keep those.
     device, masked_erd = pcv.apply_mask(img, comb_img, 'black', device, args.debug)
@@ -283,13 +248,13 @@ Combining these methods improves our ability to capture more plant and less back
     # Need to remove the edges of the image, we did that by generating a set of rectangles to mask the edges
     # img is (254 X 320)
     # mask for the bottom of the image
-    device, box1_img, rect_contour1, hierarchy1 = pcv.rectangle_mask(img, (120,184), (215,252), device, args.debug)
+    device, masked1, box1_img, rect_contour1, hierarchy1 = pcv.rectangle_mask(img, (120,184), (215,252), device, args.debug)
     # mask for the left side of the image
-    device, box2_img, rect_contour2, hierarchy2 = pcv.rectangle_mask(img, (1,1), (85,252), device, args.debug)
+    device, masked2, box2_img, rect_contour2, hierarchy2 = pcv.rectangle_mask(img, (1,1), (85,252), device, args.debug)
     # mask for the right side of the image
-    device, box3_img, rect_contour3, hierarchy3 = pcv.rectangle_mask(img, (240,1), (318,252), device, args.debug)
+    device, masked3, box3_img, rect_contour3, hierarchy3 = pcv.rectangle_mask(img, (240,1), (318,252), device, args.debug)
     # mask the edges
-    device, box4_img, rect_contour4, hierarchy4 = pcv.border_mask(img, (1,1), (318,252), device, args.debug)
+    device, masked4, box4_img, rect_contour4, hierarchy4 = pcv.rectangle_mask(img, (1,1), (318,252), device, args.debug)
 ```
 
 **Figure 8.** From top to bottom: Make a mask to hide the pot; Make a mask to hide left panel; 
@@ -351,14 +316,6 @@ Include all continuous portions within the plant that fall within the area of in
 This step helps to remove any other areas of background that were not removed during any other filtering steps.
 
 ```python
-    device, masked_img = pcv.apply_mask(kept_mask, inv_bx1234_img, 'black', device, args.debug)
-    rgb = cv2.cvtColor(img,cv2.COLOR_GRAY2RGB)
-    # Generate a binary to send to the analysis function
-    device, mask = pcv.binary_threshold(masked_img, 1, 255, 'light', device, args.debug)
-    mask3d = np.copy(mask)
-    plant_objects_2, plant_hierarchy_2 = cv2.findContours(mask3d,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
-    device, o, m = pcv.object_composition(rgb, roi_objects, hierarchy5, device, args.debug)
-    
     # Get final masked image
     device, masked_img = pcv.apply_mask(kept_mask, inv_bx1234_img, 'black', device, args.debug)
     # Obtain a 3 dimensional representation of this grayscale image (for pseudocoloring)
