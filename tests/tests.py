@@ -54,15 +54,20 @@ TEST_MASK_SMALL_PLANT = "setaria_small_plant_mask.png"
 TEST_VIS_COMP_CONTOUR_SMALL_PLANT = "setaria_small_plant_composed_contours.npz"
 TEST_SAMPLED_RGB_POINTS = "sampled_rgb_points.txt"
 
-if not os.path.exists(TEST_TMPDIR):
-    os.mkdir(TEST_TMPDIR)
+
+# ##########################
+# Tests setup function
+# ##########################
+def setup_function():
+    if not os.path.exists(TEST_TMPDIR):
+        os.mkdir(TEST_TMPDIR)
+
 
 # ##########################
 # Tests for the main package
 # ##########################
-
-
 def test_plantcv_acute():
+    # Read in test data
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR))
     obj_contour = contours_npz['arr_0']
@@ -74,12 +79,16 @@ def test_plantcv_acute():
 
 
 def test_plantcv_acute_vertex():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_acute_vertex")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_VIS_SMALL))
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR))
     obj_contour = contours_npz['arr_0']
     # Test with debug = "print"
     _ = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img, device=0, debug="print")
-    os.rename("1_acute_vertices.png", os.path.join(TEST_TMPDIR, "1_acute_vertices.png"))
+    os.rename("1_acute_vertices.png", os.path.join(cache_dir, "1_acute_vertices.png"))
     # Test with debug = "plot"
     _ = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img, device=0, debug="plot")
     # Test with debug = None
