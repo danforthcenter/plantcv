@@ -1380,3 +1380,10 @@ def test_plantcv_learn_naive_bayes_multiclass():
     plantcv.learn.naive_bayes_multiclass(samples_file=os.path.join(TEST_DATA, TEST_SAMPLED_RGB_POINTS), outfile=outfile,
                                          mkplots=True)
     assert os.path.exists(outfile)
+
+
+# ##############################
+# Clean up test files
+# ##############################
+def teardown_function():
+    shutil.rmtree(TEST_TMPDIR)
