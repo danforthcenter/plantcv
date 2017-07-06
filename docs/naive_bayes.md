@@ -9,7 +9,7 @@ from the input mask directory. The input color images are converted the HSV colo
 RGB images are split into foreground (plant) and background pixels. A random sampling of 10% of the foreground pixels 
 and the same number of background pixels are kept. A Kernel Density Estimator (KDE) using a Gaussian kernel is used
 to estimate the Probability Density Function (PDF) for each of the hue, saturation, and value channels for the
-foreground and background classes. The PDFs, sampled at each of the possible 8-bit (256) intensity values is written
+foreground and background classes. The PDFs, sampled at each of the possible 8-bit (256) intensity values are written
 to the output file and can be used with the [naive Bayes classifier](naive_bayes_classifier.md) to segment plants.
 
 **naive_bayes(*imgdir, maskdir, outfile, mkplots=False*)**

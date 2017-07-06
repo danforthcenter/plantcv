@@ -33,6 +33,8 @@ import plantcv as pcv
 device, mask = pcv.naive_bayes_classifier(img, "naive_bayes_pdfs.txt", device=0, debug="print")
 ```
 
+The output mask is a dictionary with the keys being the class names and the values being the corresponding binary masks.
+
 **Binary mask image**
 
 ![Screenshot](img/documentation_images/naive_bayes_classifier/mask_image.jpg)
