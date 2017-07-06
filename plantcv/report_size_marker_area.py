@@ -82,7 +82,7 @@ def report_size_marker_area(img, shape, device, debug, marker='define', x_adj=0,
     for cnt in roi_contour:
         size1 = ix, iy, 3
         background = np.zeros(size1, dtype=np.uint8)
-        if shape == 'rectangle' and (x_adj > 0 and y_adj > 0):
+        if shape == 'rectangle' and (x_adj >= 0 and y_adj >= 0):
             x, y, w, h = cv2.boundingRect(cnt)
             x1 = x + x_adj
             y1 = y + y_adj
