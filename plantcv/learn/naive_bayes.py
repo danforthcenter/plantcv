@@ -186,5 +186,5 @@ def _plot_pdf(channel, outdir, **kwargs):
     for class_name, pdf in kwargs.items():
         plt.plot(pdf, label=class_name)
     plt.legend(loc="best")
-    plt.savefig(os.path.join(outdir, str(channel) + "_pdf.png"))
+    plt.savefig(os.path.join(outdir, str(channel) + "_pdf.svg"))
     plt.close()
