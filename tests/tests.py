@@ -54,15 +54,20 @@ TEST_MASK_SMALL_PLANT = "setaria_small_plant_mask.png"
 TEST_VIS_COMP_CONTOUR_SMALL_PLANT = "setaria_small_plant_composed_contours.npz"
 TEST_SAMPLED_RGB_POINTS = "sampled_rgb_points.txt"
 
-if not os.path.exists(TEST_TMPDIR):
-    os.mkdir(TEST_TMPDIR)
+
+# ##########################
+# Tests setup function
+# ##########################
+def setup_function():
+    if not os.path.exists(TEST_TMPDIR):
+        os.mkdir(TEST_TMPDIR)
+
 
 # ##########################
 # Tests for the main package
 # ##########################
-
-
 def test_plantcv_acute():
+    # Read in test data
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR))
     obj_contour = contours_npz['arr_0']
@@ -74,12 +79,16 @@ def test_plantcv_acute():
 
 
 def test_plantcv_acute_vertex():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_acute_vertex")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_VIS_SMALL))
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR))
     obj_contour = contours_npz['arr_0']
     # Test with debug = "print"
     _ = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img, device=0, debug="print")
-    os.rename("1_acute_vertices.png", os.path.join(TEST_TMPDIR, "1_acute_vertices.png"))
+    os.rename("1_acute_vertices.png", os.path.join(cache_dir, "1_acute_vertices.png"))
     # Test with debug = "plot"
     _ = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img, device=0, debug="plot")
     # Test with debug = None
@@ -95,13 +104,17 @@ def test_plantcv_acute_vertex_bad_obj():
 
 
 def test_plantcv_adaptive_threshold():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_adaptive_threshold")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with threshold type = "mean"
     _ = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="mean", object_type="light", device=0, debug=None)
     # Test with debug = "print"
     _ = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="gaussian", object_type="light", device=0,
                                debug="print")
-    os.rename("1_adaptive_threshold_gaussian.png", os.path.join(TEST_TMPDIR, "1_adaptive_threshold_gaussian.png"))
+    os.rename("1_adaptive_threshold_gaussian.png", os.path.join(cache_dir, "1_adaptive_threshold_gaussian.png"))
     # Test with debug = "plot"
     _ = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="gaussian", object_type="light", device=0,
                                debug="plot")
@@ -132,6 +145,10 @@ def test_plantcv_adaptive_threshold_incorrect_object_type():
 
 
 def test_plantcv_analyze_bound():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_bound")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS))
@@ -140,8 +157,8 @@ def test_plantcv_analyze_bound():
     outfile = os.path.join(TEST_TMPDIR, TEST_INPUT_COLOR)
     _ = pcv.analyze_bound(img=img, imgname="img", obj=object_contours[0], mask=mask, line_position=300, device=0,
                           debug="print", filename=outfile)
-    os.rename("1_boundary_on_img.jpg", os.path.join(TEST_TMPDIR, "1_boundary_on_img.jpg"))
-    os.rename("1_boundary_on_white.jpg", os.path.join(TEST_TMPDIR, "1_boundary_on_white.jpg"))
+    os.rename("1_boundary_on_img.jpg", os.path.join(cache_dir, "1_boundary_on_img.jpg"))
+    os.rename("1_boundary_on_white.jpg", os.path.join(cache_dir, "1_boundary_on_white.jpg"))
     # Test with debug = "plot"
     _ = pcv.analyze_bound(img=img, imgname="img", obj=object_contours[0], mask=mask, line_position=300, device=0,
                           debug="plot", filename=False)
@@ -154,14 +171,18 @@ def test_plantcv_analyze_bound():
 
 
 def test_plantcv_analyze_color():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_color")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
-    outfile = os.path.join(TEST_TMPDIR, TEST_INPUT_COLOR)
+    outfile = os.path.join(cache_dir, TEST_INPUT_COLOR)
     _ = pcv.analyze_color(img=img, imgname="img", mask=mask, bins=256, device=0, debug="print", hist_plot_type="all",
                           pseudo_channel="v", pseudo_bkg="img", resolution=300, filename=outfile)
-    os.rename("1_img_pseudocolor.jpg", os.path.join(TEST_TMPDIR, "1_img_pseudocolor.jpg"))
-    os.rename("1_all_hist.svg", os.path.join(TEST_TMPDIR, "1_all_hist.svg"))
+    os.rename("1_img_pseudocolor.jpg", os.path.join(cache_dir, "1_img_pseudocolor.jpg"))
+    os.rename("1_all_hist.svg", os.path.join(cache_dir, "1_all_hist.svg"))
     # Test with debug = "plot"
     _ = pcv.analyze_color(img=img, imgname="img", mask=mask, bins=256, device=0, debug="plot", hist_plot_type=None,
                           pseudo_channel="v", pseudo_bkg="img", resolution=300, filename=False)
@@ -201,14 +222,18 @@ def test_plantcv_analyze_color_incorrect_hist_plot_type():
 
 
 def test_plantcv_analyze_nir():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_nir")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
-    outfile = os.path.join(TEST_TMPDIR, TEST_INPUT_COLOR)
+    outfile = os.path.join(cache_dir, TEST_INPUT_COLOR)
     _ = pcv.analyze_NIR_intensity(img=img, rgbimg=img, mask=mask, bins=256, device=0, histplot=False, debug="print",
                                   filename=outfile)
-    os.rename("3_nir_pseudo_plant.jpg", os.path.join(TEST_TMPDIR, "3_nir_pseudo_plant.jpg"))
-    os.rename("3_nir_pseudo_plant_back.jpg", os.path.join(TEST_TMPDIR, "3_nir_pseudo_plant_back.jpg"))
+    os.rename("3_nir_pseudo_plant.jpg", os.path.join(cache_dir, "3_nir_pseudo_plant.jpg"))
+    os.rename("3_nir_pseudo_plant_back.jpg", os.path.join(cache_dir, "3_nir_pseudo_plant_back.jpg"))
     # Test with debug = "plot"
     _ = pcv.analyze_NIR_intensity(img=img, rgbimg=img, mask=mask, bins=256, device=0, histplot=False, debug="plot",
                                   filename=False)
@@ -220,15 +245,19 @@ def test_plantcv_analyze_nir():
 
 
 def test_plantcv_analyze_object():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_object")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS))
     obj_contour = contours_npz['arr_0']
     max_obj = max(obj_contour, key=len)
     # Test with debug = "print"
-    outfile = os.path.join(TEST_TMPDIR, TEST_INPUT_COLOR)
+    outfile = os.path.join(cache_dir, TEST_INPUT_COLOR)
     _ = pcv.analyze_object(img=img, imgname="img", obj=max_obj, mask=mask, device=0, debug="print", filename=outfile)
-    os.rename("1_shapes.jpg", os.path.join(TEST_TMPDIR, "1_shapes.jpg"))
+    os.rename("1_shapes.jpg", os.path.join(cache_dir, "1_shapes.jpg"))
     # Test with debug = "plot"
     _ = pcv.analyze_object(img=img, imgname="img", obj=max_obj, mask=mask, device=0, debug="plot", filename=False)
     # Test with debug = None
@@ -238,11 +267,15 @@ def test_plantcv_analyze_object():
 
 
 def test_plantcv_apply_mask_white():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_apply_mask_white")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     _ = pcv.apply_mask(img=img, mask=mask, mask_color="white", device=0, debug="print")
-    os.rename("1_wmasked.png", os.path.join(TEST_TMPDIR, "1_wmasked.png"))
+    os.rename("1_wmasked.png", os.path.join(cache_dir, "1_wmasked.png"))
     # Test with debug = "plot"
     _ = pcv.apply_mask(img=img, mask=mask, mask_color="white", device=0, debug="plot")
     # Test with debug = None
@@ -251,11 +284,15 @@ def test_plantcv_apply_mask_white():
 
 
 def test_plantcv_apply_mask_black():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_apply_mask_black")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     _ = pcv.apply_mask(img=img, mask=mask, mask_color="black", device=0, debug="print")
-    os.rename("1_bmasked.png", os.path.join(TEST_TMPDIR, "1_bmasked.png"))
+    os.rename("1_bmasked.png", os.path.join(cache_dir, "1_bmasked.png"))
     # Test with debug = "plot"
     _ = pcv.apply_mask(img=img, mask=mask, mask_color="black", device=0, debug="plot")
     # Test with debug = None
@@ -264,14 +301,18 @@ def test_plantcv_apply_mask_black():
 
 
 def test_plantcv_auto_crop():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_auto_crop")
+    os.mkdir(cache_dir)
+    # Read in test data
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
     contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_CONTOUR))
     roi_contours = contours['arr_0']
     # Test with debug = "print"
     _ = pcv.auto_crop(device=0, img=img1, objects=roi_contours[48], padding_x=20, padding_y=20, color='black',
                       debug="print")
-    os.rename("1_crop_area.png", os.path.join(TEST_TMPDIR, "1_crop_area.png"))
-    os.rename("1_auto_cropped.png", os.path.join(TEST_TMPDIR, "1_auto_cropped.png"))
+    os.rename("1_crop_area.png", os.path.join(cache_dir, "1_crop_area.png"))
+    os.rename("1_auto_cropped.png", os.path.join(cache_dir, "1_auto_cropped.png"))
     # Test with debug = "plot"
     _ = pcv.auto_crop(device=0, img=img1, objects=roi_contours[48], padding_x=20, padding_y=20, color='black',
                       debug="plot")
@@ -284,12 +325,16 @@ def test_plantcv_auto_crop():
 
 
 def test_plantcv_binary_threshold():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_binary_threshold")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with object type = dark
     _ = pcv.binary_threshold(img=img, threshold=25, maxValue=255, object_type="dark", device=0, debug=None)
     # Test with debug = "print"
     _ = pcv.binary_threshold(img=img, threshold=25, maxValue=255, object_type="light", device=0, debug="print")
-    os.rename("1_binary_threshold25.png", os.path.join(TEST_TMPDIR, "1_binary_threshold25.png"))
+    os.rename("1_binary_threshold25.png", os.path.join(cache_dir, "1_binary_threshold25.png"))
     # Test with debug = "plot"
     _ = pcv.binary_threshold(img=img, threshold=25, maxValue=255, object_type="light", device=0, debug="plot")
     # Test with debug = None
@@ -313,12 +358,16 @@ def test_plantcv_binary_threshold_incorrect_object_type():
 
 
 def test_plantcv_cluster_contours():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_cluster_contours")
+    os.mkdir(cache_dir)
+    # Read in test data
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
     contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_CONTOUR))
     roi_contours = contours['arr_0']
     # Test with debug = "print"
     _ = pcv.cluster_contours(device=0, img=img1, roi_objects=roi_contours, nrow=4, ncol=6, debug="print")
-    os.rename("1_clusters.png", os.path.join(TEST_TMPDIR, "1_clusters.png"))
+    os.rename("1_clusters.png", os.path.join(cache_dir, "1_clusters.png"))
     # Test with debug = "plot"
     _ = pcv.cluster_contours(device=0, img=img1, roi_objects=roi_contours, nrow=4, ncol=6, debug="plot")
     # Test with debug = None
@@ -330,6 +379,10 @@ def test_plantcv_cluster_contours():
 
 
 def test_plantcv_cluster_contours_splitimg():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_cluster_contours_splitimg")
+    os.mkdir(cache_dir)
+    # Read in test data
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
     contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_CONTOUR))
     clusters = np.load(os.path.join(TEST_DATA, TEST_INPUT_ClUSTER_CONTOUR))
@@ -337,11 +390,11 @@ def test_plantcv_cluster_contours_splitimg():
     cluster_contours = clusters['arr_0']
     # Test with debug = "print"
     _ = pcv.cluster_contour_splitimg(device=0, img=img1, grouped_contour_indexes=cluster_contours,
-                                     contours=roi_contours, outdir=TEST_TMPDIR, file=None, filenames=None,
+                                     contours=roi_contours, outdir=cache_dir, file=None, filenames=None,
                                      debug="print")
     for i in range(1, 19):
-        os.rename(str(i) + "_clusters.png", os.path.join(TEST_TMPDIR, str(i) + "_clusters.png"))
-        os.rename(str(i) + "_wmasked.png", os.path.join(TEST_TMPDIR, str(i) + "_wmasked.png"))
+        os.rename(str(i) + "_clusters.png", os.path.join(cache_dir, str(i) + "_clusters.png"))
+        os.rename(str(i) + "_wmasked.png", os.path.join(cache_dir, str(i) + "_wmasked.png"))
     # Test with debug = "plot"
     _ = pcv.cluster_contour_splitimg(device=0, img=img1, grouped_contour_indexes=cluster_contours,
                                      contours=roi_contours, outdir=None, file=None, filenames=None, debug="plot")
@@ -371,14 +424,18 @@ def test_plantcv_color_palette():
 
 
 def test_plantcv_crop_position_mask():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_crop_position_mask")
+    os.mkdir(cache_dir)
+    # Read in test data
     nir, path1, filename1 = pcv.readimage(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK), -1)
     # Test with debug = "print"
     _ = pcv.crop_position_mask(nir, mask, device=0, x=40, y=3, v_pos="top", h_pos="right", debug="print")
-    os.rename("1_mask_overlay.png", os.path.join(TEST_TMPDIR, "1_mask_overlay.png"))
-    os.rename("1_newmask.png", os.path.join(TEST_TMPDIR, "1_newmask.png"))
-    os.rename("1_push-right.png", os.path.join(TEST_TMPDIR, "1_push-right.png"))
-    os.rename("1_push-top_.png", os.path.join(TEST_TMPDIR, "1_push-top_.png"))
+    os.rename("1_mask_overlay.png", os.path.join(cache_dir, "1_mask_overlay.png"))
+    os.rename("1_newmask.png", os.path.join(cache_dir, "1_newmask.png"))
+    os.rename("1_push-right.png", os.path.join(cache_dir, "1_push-right.png"))
+    os.rename("1_push-top_.png", os.path.join(cache_dir, "1_push-top_.png"))
     # Test with debug = "plot"
     _ = pcv.crop_position_mask(nir, mask, device=0, x=40, y=3, v_pos="top", h_pos="right", debug="plot")
     # Test with debug = None
@@ -387,11 +444,15 @@ def test_plantcv_crop_position_mask():
 
 
 def test_plantcv_define_roi_rectangle():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_define_roi_rectangle")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
     _ = pcv.define_roi(img=img, shape="rectangle", device=0, roi=None, roi_input="default", debug="print", adjust=True,
                        x_adj=600, y_adj=300, w_adj=-500, h_adj=-600)
-    os.rename("1_roi.png", os.path.join(TEST_TMPDIR, "1_roi.png"))
+    os.rename("1_roi.png", os.path.join(cache_dir, "1_roi.png"))
     # Test with debug = "plot"
     _ = pcv.define_roi(img=img, shape="rectangle", device=0, roi=None, roi_input="default", debug="plot", adjust=True,
                        x_adj=600, y_adj=300, w_adj=-500, h_adj=-600)
@@ -406,11 +467,15 @@ def test_plantcv_define_roi_rectangle():
 
 
 def test_plantcv_define_roi_rectangle_no_adjust():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_define_roi_rectangle_no_adjust")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
     _ = pcv.define_roi(img=img, shape="rectangle", device=0, roi=None, roi_input="default", debug="print", adjust=False,
                        x_adj=0, y_adj=0, w_adj=0, h_adj=0)
-    os.rename("1_roi.png", os.path.join(TEST_TMPDIR, "1_roi.png"))
+    os.rename("1_roi.png", os.path.join(cache_dir, "1_roi.png"))
     # Test with debug = "plot"
     _ = pcv.define_roi(img=img, shape="rectangle", device=0, roi=None, roi_input="default", debug="plot", adjust=False,
                        x_adj=0, y_adj=0, w_adj=0, h_adj=0)
@@ -425,11 +490,15 @@ def test_plantcv_define_roi_rectangle_no_adjust():
 
 
 def test_plantcv_define_roi_circle():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_define_roi_circle")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
     _ = pcv.define_roi(img=img, shape="circle", device=0, roi=None, roi_input="default", debug="print", adjust=True,
                        x_adj=0, y_adj=300, w_adj=0, h_adj=-900)
-    os.rename("1_roi.png", os.path.join(TEST_TMPDIR, "1_roi.png"))
+    os.rename("1_roi.png", os.path.join(cache_dir, "1_roi.png"))
     # Test with debug = "plot"
     _ = pcv.define_roi(img=img, shape="circle", device=0, roi=None, roi_input="default", debug="plot", adjust=True,
                        x_adj=0, y_adj=300, w_adj=0, h_adj=-900)
@@ -444,11 +513,15 @@ def test_plantcv_define_roi_circle():
 
 
 def test_plantcv_define_roi_circle_no_adjust():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_define_roi_circle_no_adjust")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
     _ = pcv.define_roi(img=img, shape="circle", device=0, roi=None, roi_input="default", debug="print", adjust=False,
                        x_adj=0, y_adj=0, w_adj=0, h_adj=0)
-    os.rename("1_roi.png", os.path.join(TEST_TMPDIR, "1_roi.png"))
+    os.rename("1_roi.png", os.path.join(cache_dir, "1_roi.png"))
     # Test with debug = "plot"
     _ = pcv.define_roi(img=img, shape="circle", device=0, roi=None, roi_input="default", debug="plot", adjust=False,
                        x_adj=0, y_adj=0, w_adj=0, h_adj=0)
@@ -463,11 +536,15 @@ def test_plantcv_define_roi_circle_no_adjust():
 
 
 def test_plantcv_define_roi_ellipse():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_define_roi_ellipse")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
     _ = pcv.define_roi(img=img, shape="ellipse", device=0, roi=None, roi_input="default", debug="print", adjust=True,
                        x_adj=0, y_adj=300, w_adj=-1000, h_adj=-900)
-    os.rename("1_roi.png", os.path.join(TEST_TMPDIR, "1_roi.png"))
+    os.rename("1_roi.png", os.path.join(cache_dir, "1_roi.png"))
     # Test with debug = "plot"
     _ = pcv.define_roi(img=img, shape="ellipse", device=0, roi=None, roi_input="default", debug="plot", adjust=True,
                        x_adj=0, y_adj=300, w_adj=-1000, h_adj=-900)
@@ -482,11 +559,15 @@ def test_plantcv_define_roi_ellipse():
 
 
 def test_plantcv_define_roi_ellipse_no_adjust():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_define_roi_ellipse_no_adjust")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
     _ = pcv.define_roi(img=img, shape="ellipse", device=0, roi=None, roi_input="default", debug="print", adjust=False,
                        x_adj=0, y_adj=0, w_adj=0, h_adj=0)
-    os.rename("1_roi.png", os.path.join(TEST_TMPDIR, "1_roi.png"))
+    os.rename("1_roi.png", os.path.join(cache_dir, "1_roi.png"))
     # Test with debug = "plot"
     _ = pcv.define_roi(img=img, shape="ellipse", device=0, roi=None, roi_input="default", debug="plot", adjust=False,
                        x_adj=0, y_adj=0, w_adj=0, h_adj=0)
@@ -515,10 +596,14 @@ def test_plantcv_define_roi_bad_roi_input():
 
 
 def test_plantcv_dilate():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_dilate")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     _ = pcv.dilate(img=img, kernel=5, i=1, device=0, debug="print")
-    os.rename("1_dil_image_itr_1.png", os.path.join(TEST_TMPDIR, "1_dil_image_itr_1.png"))
+    os.rename("1_dil_image_itr_1.png", os.path.join(cache_dir, "1_dil_image_itr_1.png"))
     # Test with debug = "plot"
     _ = pcv.dilate(img=img, kernel=5, i=1, device=0, debug="plot")
     # Test with debug = None
@@ -535,10 +620,14 @@ def test_plantcv_dilate():
 
 
 def test_plantcv_erode():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_erode")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     _ = pcv.erode(img=img, kernel=5, i=1, device=0, debug="print")
-    os.rename("1_er_image_itr_1.png", os.path.join(TEST_TMPDIR, "1_er_image_itr_1.png"))
+    os.rename("1_er_image_itr_1.png", os.path.join(cache_dir, "1_er_image_itr_1.png"))
     # Test with debug = "plot"
     _ = pcv.erode(img=img, kernel=5, i=1, device=0, debug="plot")
     # Test with debug = None
@@ -561,11 +650,15 @@ def test_plantcv_fatal_error():
 
 
 def test_plantcv_fill():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_fill")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     mask = np.copy(img)
     _ = pcv.fill(img=img, mask=mask, size=1, device=0, debug="print")
-    os.rename("1_fill1.png", os.path.join(TEST_TMPDIR, "1_fill1.png"))
+    os.rename("1_fill1.png", os.path.join(cache_dir, "1_fill1.png"))
     # Test with debug = "plot"
     mask = np.copy(img)
     _ = pcv.fill(img=img, mask=mask, size=1, device=0, debug="plot")
@@ -577,11 +670,15 @@ def test_plantcv_fill():
 
 
 def test_plantcv_find_objects():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_find_objects")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     _ = pcv.find_objects(img=img, mask=mask, device=0, debug="print")
-    os.rename("1_id_objects.png", os.path.join(TEST_TMPDIR, "1_id_objects.png"))
+    os.rename("1_id_objects.png", os.path.join(cache_dir, "1_id_objects.png"))
     # Test with debug = "plot"
     _ = pcv.find_objects(img=img, mask=mask, device=0, debug="plot")
     # Test with debug = None
@@ -591,10 +688,14 @@ def test_plantcv_find_objects():
 
 
 def test_plantcv_flip():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_flip")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
     _ = pcv.flip(img=img, direction="horizontal", device=0, debug="print")
-    os.rename("1_flipped.png", os.path.join(TEST_TMPDIR, "1_flipped.png"))
+    os.rename("1_flipped.png", os.path.join(cache_dir, "1_flipped.png"))
     # Test with debug = "plot"
     _ = pcv.flip(img=img, direction="vertical", device=0, debug="plot")
     # Test with debug = None
@@ -609,17 +710,21 @@ def test_plantcv_flip_bad_input():
 
 
 def test_plantcv_fluor_fvfm():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_fluor_fvfm")
+    os.mkdir(cache_dir)
+    # Read in test data
     fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK), -1)
     fmin = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
     fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
     fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
     # Test with debug = "print"
-    outfile = os.path.join(TEST_TMPDIR, TEST_INPUT_FMAX)
+    outfile = os.path.join(cache_dir, TEST_INPUT_FMAX)
     _ = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, device=0, filename=outfile, bins=1000,
                        debug="print")
-    os.rename("1_fmin_mask.png", os.path.join(TEST_TMPDIR, "1_fmin_mask.png"))
-    os.rename("1_fmax_mask.png", os.path.join(TEST_TMPDIR, "1_fmax_mask.png"))
-    os.rename("1_fv_convert.png", os.path.join(TEST_TMPDIR, "1_fv_convert.png"))
+    os.rename("1_fmin_mask.png", os.path.join(cache_dir, "1_fmin_mask.png"))
+    os.rename("1_fmax_mask.png", os.path.join(cache_dir, "1_fmax_mask.png"))
+    os.rename("1_fv_convert.png", os.path.join(cache_dir, "1_fv_convert.png"))
     # Test with debug = "plot"
     _ = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, device=0, filename=False, bins=1000, debug="plot")
     # Test with debug = None
@@ -629,10 +734,14 @@ def test_plantcv_fluor_fvfm():
 
 
 def test_plantcv_gaussian_blur():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_gaussian_blur")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     _ = pcv.gaussian_blur(device=0, img=img, ksize=(51, 51), sigmax=0, sigmay=None, debug="print")
-    os.rename("1_gaussian_blur.png", os.path.join(TEST_TMPDIR, "1_gaussian_blur.png"))
+    os.rename("1_gaussian_blur.png", os.path.join(cache_dir, "1_gaussian_blur.png"))
     # Test with debug = "plot"
     _ = pcv.gaussian_blur(device=0, img=img, ksize=(51, 51), sigmax=0, sigmay=None, debug="plot")
     # Test with debug = None
@@ -655,10 +764,14 @@ def test_plantcv_get_nir_tv():
 
 
 def test_plantcv_hist_equalization():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hist_equalization")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with debug = "print"
     _ = pcv.hist_equalization(img=img, device=0, debug="print")
-    os.rename("1_hist_equal_img.png", os.path.join(TEST_TMPDIR, "1_hist_equal_img.png"))
+    os.rename("1_hist_equal_img.png", os.path.join(cache_dir, "1_hist_equal_img.png"))
     # Test with debug = "plot"
     _ = pcv.hist_equalization(img=img, device=0, debug="plot")
     # Test with debug = None
@@ -669,11 +782,15 @@ def test_plantcv_hist_equalization():
 
 
 def test_plantcv_image_add():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_image_add")
+    os.mkdir(cache_dir)
+    # Read in test data
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     img2 = np.copy(img1)
     # Test with debug = "print"
     _ = pcv.image_add(img1=img1, img2=img2, device=0, debug="print")
-    os.rename("1_added.png", os.path.join(TEST_TMPDIR, "1_added.png"))
+    os.rename("1_added.png", os.path.join(cache_dir, "1_added.png"))
     # Test with debug = "plot"
     _ = pcv.image_add(img1=img1, img2=img2, device=0, debug="plot")
     # Test with debug = None
@@ -682,11 +799,15 @@ def test_plantcv_image_add():
 
 
 def test_plantcv_image_subtract():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_image_subtract")
+    os.mkdir(cache_dir)
+    # Read in test data
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     img2 = np.copy(img1)
     # Test with debug = "print"
     _ = pcv.image_subtract(img1=img1, img2=img2, device=0, debug="print")
-    os.rename("1_subtracted.png", os.path.join(TEST_TMPDIR, "1_subtracted.png"))
+    os.rename("1_subtracted.png", os.path.join(cache_dir, "1_subtracted.png"))
     # Test with debug = "plot"
     _ = pcv.image_subtract(img1=img1, img2=img2, device=0, debug="plot")
     # Test with debug = None
@@ -695,10 +816,14 @@ def test_plantcv_image_subtract():
 
 
 def test_plantcv_invert():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_invert")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     _ = pcv.invert(img=img, device=0, debug="print")
-    os.rename("1_invert.png", os.path.join(TEST_TMPDIR, "1_invert.png"))
+    os.rename("1_invert.png", os.path.join(cache_dir, "1_invert.png"))
     # Test with debug = "plot"
     _ = pcv.invert(img=img, device=0, debug="plot")
     # Test with debug = None
@@ -728,10 +853,14 @@ def test_plantcv_landmark_reference_pt_dist():
 
 
 def test_plantcv_laplace_filter():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_laplace_filter")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with debug = "print"
     _ = pcv.laplace_filter(img=img, k=1, scale=1, device=0, debug="print")
-    os.rename("1_lp_out_k1_scale1.png", os.path.join(TEST_TMPDIR, "1_lp_out_k1_scale1.png"))
+    os.rename("1_lp_out_k1_scale1.png", os.path.join(cache_dir, "1_lp_out_k1_scale1.png"))
     # Test with debug = "plot"
     _ = pcv.laplace_filter(img=img, k=1, scale=1, device=0, debug="plot")
     # Test with debug = None
@@ -741,11 +870,15 @@ def test_plantcv_laplace_filter():
 
 
 def test_plantcv_logical_and():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_logical_and")
+    os.mkdir(cache_dir)
+    # Read in test data
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     img2 = np.copy(img1)
     # Test with debug = "print"
     _ = pcv.logical_and(img1=img1, img2=img2, device=0, debug="print")
-    os.rename("1_and_joined.png", os.path.join(TEST_TMPDIR, "1_and_joined.png"))
+    os.rename("1_and_joined.png", os.path.join(cache_dir, "1_and_joined.png"))
     # Test with debug = "plot"
     _ = pcv.logical_and(img1=img1, img2=img2, device=0, debug="plot")
     # Test with debug = None
@@ -754,11 +887,15 @@ def test_plantcv_logical_and():
 
 
 def test_plantcv_logical_or():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_logical_or")
+    os.mkdir(cache_dir)
+    # Read in test data
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     img2 = np.copy(img1)
     # Test with debug = "print"
     _ = pcv.logical_or(img1=img1, img2=img2, device=0, debug="print")
-    os.rename("1_or_joined.png", os.path.join(TEST_TMPDIR, "1_or_joined.png"))
+    os.rename("1_or_joined.png", os.path.join(cache_dir, "1_or_joined.png"))
     # Test with debug = "plot"
     _ = pcv.logical_or(img1=img1, img2=img2, device=0, debug="plot")
     # Test with debug = None
@@ -767,11 +904,15 @@ def test_plantcv_logical_or():
 
 
 def test_plantcv_logical_xor():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_logical_xor")
+    os.mkdir(cache_dir)
+    # Read in test data
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     img2 = np.copy(img1)
     # Test with debug = "print"
     _ = pcv.logical_xor(img1=img1, img2=img2, device=0, debug="print")
-    os.rename("1_xor_joined.png", os.path.join(TEST_TMPDIR, "1_xor_joined.png"))
+    os.rename("1_xor_joined.png", os.path.join(cache_dir, "1_xor_joined.png"))
     # Test with debug = "plot"
     _ = pcv.logical_xor(img1=img1, img2=img2, device=0, debug="plot")
     # Test with debug = None
@@ -780,10 +921,14 @@ def test_plantcv_logical_xor():
 
 
 def test_plantcv_median_blur():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_median_blur")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     _ = pcv.median_blur(img=img, ksize=5, device=0, debug="print")
-    os.rename("1_median_blur5.png", os.path.join(TEST_TMPDIR, "1_median_blur5.png"))
+    os.rename("1_median_blur5.png", os.path.join(cache_dir, "1_median_blur5.png"))
     # Test with debug = "plot"
     _ = pcv.median_blur(img=img, ksize=5, device=0, debug="plot")
     # Test with debug = None
@@ -800,11 +945,15 @@ def test_plantcv_median_blur():
 
 
 def test_plantcv_naive_bayes_classifier():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_naive_bayes_classifier")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
     _ = pcv.naive_bayes_classifier(img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS), device=0, debug="print")
-    os.rename("1_naive_bayes_plant_mask.jpg", os.path.join(TEST_TMPDIR, "1_naive_bayes_plant_mask.jpg"))
-    os.rename("1_naive_bayes_background_mask.jpg", os.path.join(TEST_TMPDIR, "1_naive_bayes_background_mask.jpg"))
+    os.rename("1_naive_bayes_plant_mask.jpg", os.path.join(cache_dir, "1_naive_bayes_plant_mask.jpg"))
+    os.rename("1_naive_bayes_background_mask.jpg", os.path.join(cache_dir, "1_naive_bayes_background_mask.jpg"))
     # Test with debug = "plot"
     _ = pcv.naive_bayes_classifier(img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS), device=0, debug="plot")
     # Test with debug = None
@@ -823,14 +972,18 @@ def test_plantcv_naive_bayes_classifier():
 
 
 def test_plantcv_object_composition():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_object_composition")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS))
     object_contours = contours_npz['arr_0']
     object_hierarchy = contours_npz['arr_1']
     # Test with debug = "print"
     _ = pcv.object_composition(img=img, contours=object_contours, hierarchy=object_hierarchy, device=0, debug="print")
-    os.rename("1_objcomp.png", os.path.join(TEST_TMPDIR, "1_objcomp.png"))
-    os.rename("1_objcomp_mask.png", os.path.join(TEST_TMPDIR, "1_objcomp_mask.png"))
+    os.rename("1_objcomp.png", os.path.join(cache_dir, "1_objcomp.png"))
+    os.rename("1_objcomp_mask.png", os.path.join(cache_dir, "1_objcomp_mask.png"))
     # Test with debug = "plot"
     _ = pcv.object_composition(img=img, contours=object_contours, hierarchy=object_hierarchy, device=0, debug="plot")
     # Test with debug = None
@@ -842,12 +995,16 @@ def test_plantcv_object_composition():
 
 
 def test_plantcv_otsu_threshold():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_otsu_threshold")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_GREENMAG), -1)
     # Test with object set to light
     _ = pcv.otsu_auto_threshold(img=img, maxValue=255, object_type="light", device=0, debug=None)
     # Test with debug = "print"
     _ = pcv.otsu_auto_threshold(img=img, maxValue=255, object_type='dark', device=0, debug="print")
-    os.rename("1_otsu_auto_threshold_125.0_inv.png", os.path.join(TEST_TMPDIR, "1_otsu_auto_threshold_125.0_inv.png"))
+    os.rename("1_otsu_auto_threshold_125.0_inv.png", os.path.join(cache_dir, "1_otsu_auto_threshold_125.0_inv.png"))
     # Test with debug = "plot"
     _ = pcv.otsu_auto_threshold(img=img, maxValue=255, object_type='dark', device=0, debug="plot")
     # Test with debug = None
@@ -856,35 +1013,46 @@ def test_plantcv_otsu_threshold():
 
 
 def test_plantcv_output_mask():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_output_mask")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
-    _ = pcv.output_mask(device=0, img=img, mask=mask, filename='test.png', outdir=TEST_TMPDIR, mask_only=False,
+    _ = pcv.output_mask(device=0, img=img, mask=mask, filename='test.png', outdir=cache_dir, mask_only=False,
                         debug="print")
-    os.rename("1_mask-img.png", os.path.join(TEST_TMPDIR, "1_mask-img.png"))
-    os.rename("1_ori-img.png", os.path.join(TEST_TMPDIR, "1_ori-img.png"))
+    os.rename("1_mask-img.png", os.path.join(cache_dir, "1_mask-img.png"))
+    os.rename("1_ori-img.png", os.path.join(cache_dir, "1_ori-img.png"))
     # Test with debug = "plot"
-    _ = pcv.output_mask(device=0, img=img, mask=mask, filename='test.png', outdir=TEST_TMPDIR, mask_only=False,
+    _ = pcv.output_mask(device=0, img=img, mask=mask, filename='test.png', outdir=cache_dir, mask_only=False,
                         debug="plot")
     # Test with debug = None
     device, imgpath, maskpath, analysis_images = pcv.output_mask(device=0, img=img, mask=mask, filename='test.png',
-                                                                 outdir=TEST_TMPDIR, mask_only=False, debug=None)
+                                                                 outdir=cache_dir, mask_only=False, debug=None)
     assert all([os.path.exists(imgpath) is True, os.path.exists(maskpath) is True])
 
 
 def test_plantcv_plot_hist():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_plot_hist")
+    os.mkdir(cache_dir)
     # Test in 16-bit image mode
     img16bit = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK), -1)
-    _ = pcv.plot_hist(img=img16bit, name=os.path.join(TEST_TMPDIR, "hist_nir_uint16"))
+    _ = pcv.plot_hist(img=img16bit, name=os.path.join(cache_dir, "hist_nir_uint16"))
     # Test in 8-bit image mode
     img8bit = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), -1)
-    bins, hist = pcv.plot_hist(img=img8bit, name=os.path.join(TEST_TMPDIR, "hist_rgb_uint8"))
+    bins, hist = pcv.plot_hist(img=img8bit, name=os.path.join(cache_dir, "hist_rgb_uint8"))
     assert len(hist) == 256
 
 
 def test_plantcv_print_image():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_print_image")
+    os.mkdir(cache_dir)
+    # Read in test data
     img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    filename = os.path.join(TEST_TMPDIR, 'plantcv_print_image.jpg')
+    filename = os.path.join(cache_dir, 'plantcv_print_image.jpg')
     pcv.print_image(img=img, filename=filename)
     # Assert that the file was created
     assert os.path.exists(filename) is True
@@ -902,9 +1070,12 @@ def test_plantcv_print_results():
 
 
 def test_plantcv_readimage():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_readimage")
+    os.mkdir(cache_dir)
     # Test with debug = "print"
     _ = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_COLOR), debug="print")
-    os.rename("input_image.png", os.path.join(TEST_TMPDIR, "input_image.png"))
+    os.rename("input_image.png", os.path.join(cache_dir, "input_image.png"))
     # Test with debug = "plot"
     _ = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_COLOR), debug="plot")
     img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_COLOR))
@@ -926,10 +1097,14 @@ def test_plantcv_readimage_bad_file():
 
 
 def test_plantcv_rectangle_mask():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_rectangle_mask")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with debug = "print"
     _ = pcv.rectangle_mask(img=img, p1=(0, 0), p2=(2454, 2056), device=0, debug="print", color="white")
-    os.rename("1_roi.png", os.path.join(TEST_TMPDIR, "1_roi.png"))
+    os.rename("1_roi.png", os.path.join(cache_dir, "1_roi.png"))
     # Test with debug = "plot"
     _ = pcv.rectangle_mask(img=img, p1=(0, 0), p2=(2454, 2056), device=0, debug="plot", color="gray")
     # Test with debug = None
@@ -941,16 +1116,20 @@ def test_plantcv_rectangle_mask():
 
 
 def test_plantcv_report_size_marker():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_report_size_marker")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MARKER), -1)
     # Test with debug = "print"
-    outfile = os.path.join(TEST_TMPDIR, TEST_INPUT_MARKER)
+    outfile = os.path.join(cache_dir, TEST_INPUT_MARKER)
     _ = pcv.report_size_marker_area(img=img, shape='rectangle', device=0, debug="print", marker='detect', x_adj=3500,
                                     y_adj=600, w_adj=-100, h_adj=-1500, base='white', objcolor='light',
                                     thresh_channel='s', thresh=120, filename=outfile)
     for filename in ["1_marker_roi.png", "2_hsv_saturation.png", "3_binary_threshold120.png", "4_id_objects.png",
                      "5_roi.png", "6_obj_on_img.png", "6_roi_mask.png", "6_roi_objects.png", "7_marker_shape.png",
                      "7_objcomp.png", "7_objcomp_mask.png"]:
-        os.rename(filename, os.path.join(TEST_TMPDIR, filename))
+        os.rename(filename, os.path.join(cache_dir, filename))
 
     # Test with debug = "plot"
     _ = pcv.report_size_marker_area(img=img, shape='rectangle', device=0, debug="plot", marker='detect', x_adj=3500,
@@ -967,10 +1146,14 @@ def test_plantcv_report_size_marker():
 
 
 def test_plantcv_resize():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_resize")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
     _ = pcv.resize(img=img, resize_x=0.5, resize_y=0.5, device=0, debug="print")
-    os.rename("1_resize1.png", os.path.join(TEST_TMPDIR, "1_resize1.png"))
+    os.rename("1_resize1.png", os.path.join(cache_dir, "1_resize1.png"))
     # Test with debug = "plot"
     _ = pcv.resize(img=img, resize_x=0.5, resize_y=0.5, device=0, debug="plot")
     # Test with debug = None
@@ -981,10 +1164,14 @@ def test_plantcv_resize():
 
 
 def test_plantcv_rgb2gray_hsv():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_rgb2gray_hsv")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
     _ = pcv.rgb2gray_hsv(img=img, channel="s", device=0, debug="print")
-    os.rename("1_hsv_saturation.png", os.path.join(TEST_TMPDIR, "1_hsv_saturation.png"))
+    os.rename("1_hsv_saturation.png", os.path.join(cache_dir, "1_hsv_saturation.png"))
     # Test with debug = "plot"
     _ = pcv.rgb2gray_hsv(img=img, channel="s", device=0, debug="plot")
     # Test with debug = None
@@ -994,10 +1181,14 @@ def test_plantcv_rgb2gray_hsv():
 
 
 def test_plantcv_rgb2gray_lab():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_rgb2gray_lab")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
     _ = pcv.rgb2gray_lab(img=img, channel='b', device=0, debug="print")
-    os.rename("1_lab_blue-yellow.png", os.path.join(TEST_TMPDIR, "1_lab_blue-yellow.png"))
+    os.rename("1_lab_blue-yellow.png", os.path.join(cache_dir, "1_lab_blue-yellow.png"))
     # Test with debug = "plot"
     _ = pcv.rgb2gray_lab(img=img, channel='b', device=0, debug="plot")
     # Test with debug = None
@@ -1007,10 +1198,14 @@ def test_plantcv_rgb2gray_lab():
 
 
 def test_plantcv_rgb2gray():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_rgb2gray")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
     _ = pcv.rgb2gray(img=img, device=0, debug="print")
-    os.rename("1_gray.png", os.path.join(TEST_TMPDIR, "1_gray.png"))
+    os.rename("1_gray.png", os.path.join(cache_dir, "1_gray.png"))
     # Test with debug = "plot"
     _ = pcv.rgb2gray(img=img, device=0, debug="plot")
     # Test with debug = None
@@ -1020,6 +1215,10 @@ def test_plantcv_rgb2gray():
 
 
 def test_plantcv_roi_objects():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_roi_objects")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     roi_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_ROI))
     roi_contour = roi_npz['arr_0']
@@ -1030,9 +1229,9 @@ def test_plantcv_roi_objects():
     # Test with debug = "print"
     _ = pcv.roi_objects(img=img, roi_type="partial", roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
                         object_contour=object_contours, obj_hierarchy=object_hierarchy, device=0, debug="print")
-    os.rename("1_obj_on_img.png", os.path.join(TEST_TMPDIR, "1_obj_on_img.png"))
-    os.rename("1_roi_mask.png", os.path.join(TEST_TMPDIR, "1_roi_mask.png"))
-    os.rename("1_roi_objects.png", os.path.join(TEST_TMPDIR, "1_roi_objects.png"))
+    os.rename("1_obj_on_img.png", os.path.join(cache_dir, "1_obj_on_img.png"))
+    os.rename("1_roi_mask.png", os.path.join(cache_dir, "1_roi_mask.png"))
+    os.rename("1_roi_objects.png", os.path.join(cache_dir, "1_roi_objects.png"))
     # Test with debug = "plot"
     _ = pcv.roi_objects(img=img, roi_type="partial", roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
                         object_contour=object_contours, obj_hierarchy=object_hierarchy, device=0, debug="plot")
@@ -1051,10 +1250,14 @@ def test_plantcv_roi_objects():
 
 
 def test_plantcv_rotate_img():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_rotate_img")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
     _ = pcv.rotate_img(img=img, rotation_deg=45, device=0, debug="print")
-    os.rename("1_rotated_img.png", os.path.join(TEST_TMPDIR, "1_rotated_img.png"))
+    os.rename("1_rotated_img.png", os.path.join(cache_dir, "1_rotated_img.png"))
     # Test with debug = "plot"
     _ = pcv.rotate_img(img=img, rotation_deg=45, device=0, debug="plot")
     # Test with debug = None
@@ -1076,13 +1279,17 @@ def test_plantcv_rotate_img_gray():
 
 
 def test_plantcv_scale_features():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_scale_features")
+    os.mkdir(cache_dir)
+    # Read in test data
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR))
     obj_contour = contours_npz['arr_0']
     # Test with debug = "print"
     _ = pcv.scale_features(obj=obj_contour, mask=mask, points=TEST_ACUTE_RESULT, boundary_line=50, device=0,
                            debug="print")
-    os.rename("1_feature_scaled.png", os.path.join(TEST_TMPDIR, "1_feature_scaled.png"))
+    os.rename("1_feature_scaled.png", os.path.join(cache_dir, "1_feature_scaled.png"))
     # Test with debug = "plot"
     _ = pcv.scale_features(obj=obj_contour, mask=mask, points=TEST_ACUTE_RESULT, boundary_line=50, device=0,
                            debug="plot")
@@ -1103,10 +1310,14 @@ def test_plantcv_scale_features_bad_input():
 
 
 def test_plantcv_scharr_filter():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_scharr_filter")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with debug = "print"
     _ = pcv.scharr_filter(img=img, dX=1, dY=0, scale=1, device=0, debug="print")
-    os.rename("1_sr_img_dx1_dy0_scale1.png", os.path.join(TEST_TMPDIR, "1_sr_img_dx1_dy0_scale1.png"))
+    os.rename("1_sr_img_dx1_dy0_scale1.png", os.path.join(cache_dir, "1_sr_img_dx1_dy0_scale1.png"))
     # Test with debug = "plot"
     _ = pcv.scharr_filter(img=img, dX=1, dY=0, scale=1, device=0, debug="plot")
     # Test with debug = None
@@ -1116,10 +1327,14 @@ def test_plantcv_scharr_filter():
 
 
 def test_plantcv_shift_img():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_shift_img")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
     _ = pcv.shift_img(img=img, device=0, number=300, side="top", debug="print")
-    os.rename("1_shifted_img.png", os.path.join(TEST_TMPDIR, "1_shifted_img.png"))
+    os.rename("1_shifted_img.png", os.path.join(cache_dir, "1_shifted_img.png"))
     # Test with debug = "plot"
     _ = pcv.shift_img(img=img, device=0, number=300, side="top", debug="plot")
     # Test with debug = None
@@ -1130,10 +1345,14 @@ def test_plantcv_shift_img():
 
 
 def test_plantcv_sobel_filter():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_sobel_filter")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with debug = "print"
     _ = pcv.sobel_filter(img=img, dx=1, dy=0, k=1, device=0, debug="print")
-    os.rename("1_sb_img_dx1_dy0_k1.png", os.path.join(TEST_TMPDIR, "1_sb_img_dx1_dy0_k1.png"))
+    os.rename("1_sb_img_dx1_dy0_k1.png", os.path.join(cache_dir, "1_sb_img_dx1_dy0_k1.png"))
     # Test with debug = "plot"
     _ = pcv.sobel_filter(img=img, dx=1, dy=0, k=1, device=0, debug="plot")
     # Test with debug = None
@@ -1143,11 +1362,15 @@ def test_plantcv_sobel_filter():
 
 
 def test_plantcv_triangle_threshold():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_triangle_threshold")
+    os.mkdir(cache_dir)
+    # Read in test data
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with debug = "print"
     _ = pcv.triangle_auto_threshold(device=0, img=img1, maxvalue=255, object_type="light", xstep=10, debug="print")
-    os.rename("1_triangle_thresh_hist_30.0.png", os.path.join(TEST_TMPDIR, "1_triangle_thresh_hist_30.0.png"))
-    os.rename("1_triangle_thresh_img_30.0.png", os.path.join(TEST_TMPDIR, "1_triangle_thresh_img_30.0.png"))
+    os.rename("1_triangle_thresh_hist_30.0.png", os.path.join(cache_dir, "1_triangle_thresh_hist_30.0.png"))
+    os.rename("1_triangle_thresh_img_30.0.png", os.path.join(cache_dir, "1_triangle_thresh_img_30.0.png"))
     # Test with debug = "plot"
     _ = pcv.triangle_auto_threshold(device=0, img=img1, maxvalue=255, object_type="light", xstep=10, debug="plot")
     # Test with debug = None
@@ -1159,13 +1382,17 @@ def test_plantcv_triangle_threshold():
 
 
 def test_plantcv_watershed_segmentation():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_watershed_segmentation")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED_MASK), -1)
     # Test with debug = "print"
-    outfile = os.path.join(TEST_TMPDIR, TEST_INPUT_CROPPED)
+    outfile = os.path.join(cache_dir, TEST_INPUT_CROPPED)
     _ = pcv.watershed_segmentation(device=0, img=img, mask=mask, distance=10, filename=outfile, debug="print")
-    os.rename("1_watershed_dist_img.png", os.path.join(TEST_TMPDIR, "1_watershed_dist_img.png"))
-    os.rename("1_watershed_img.png", os.path.join(TEST_TMPDIR, "1_watershed_img.png"))
+    os.rename("1_watershed_dist_img.png", os.path.join(cache_dir, "1_watershed_dist_img.png"))
+    os.rename("1_watershed_img.png", os.path.join(cache_dir, "1_watershed_img.png"))
     # Test with debug = "plot"
     _ = pcv.watershed_segmentation(device=0, img=img, mask=mask, distance=10, filename=False, debug="plot")
     # Test with debug = None
@@ -1176,11 +1403,15 @@ def test_plantcv_watershed_segmentation():
 
 
 def test_plantcv_white_balance_gray_16bit():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_white_balance_gray_16bit")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK), -1)
     # Test with debug = "print"
     _ = pcv.white_balance(device=0, img=img, debug="print", roi=(5, 5, 80, 80))
-    os.rename("1_whitebalance_roi.png", os.path.join(TEST_TMPDIR, "1_whitebalance_roi.png"))
-    os.rename("1_whitebalance.png", os.path.join(TEST_TMPDIR, "1_whitebalance.png"))
+    os.rename("1_whitebalance_roi.png", os.path.join(cache_dir, "1_whitebalance_roi.png"))
+    os.rename("1_whitebalance.png", os.path.join(cache_dir, "1_whitebalance.png"))
     # Test with debug = "plot"
     _ = pcv.white_balance(device=0, img=img, debug="plot", roi=(5, 5, 80, 80))
     # Test without an ROI
@@ -1193,12 +1424,16 @@ def test_plantcv_white_balance_gray_16bit():
 
 
 def test_plantcv_white_balance_gray_8bit():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_white_balance_gray_8bit")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK))
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     # Test with debug = "print"
     _ = pcv.white_balance(device=0, img=img, debug="print", roi=(5, 5, 80, 80))
-    os.rename("1_whitebalance_roi.png", os.path.join(TEST_TMPDIR, "1_whitebalance_roi.png"))
-    os.rename("1_whitebalance.png", os.path.join(TEST_TMPDIR, "1_whitebalance.png"))
+    os.rename("1_whitebalance_roi.png", os.path.join(cache_dir, "1_whitebalance_roi.png"))
+    os.rename("1_whitebalance.png", os.path.join(cache_dir, "1_whitebalance.png"))
     # Test with debug = "plot"
     _ = pcv.white_balance(device=0, img=img, debug="plot", roi=(5, 5, 80, 80))
     # Test without an ROI
@@ -1211,11 +1446,15 @@ def test_plantcv_white_balance_gray_8bit():
 
 
 def test_plantcv_white_balance_rgb():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_white_balance_rgb")
+    os.mkdir(cache_dir)
+    # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MARKER))
     # Test with debug = "print"
     _ = pcv.white_balance(device=0, img=img, debug="print", roi=(5, 5, 80, 80))
-    os.rename("1_whitebalance_roi.png", os.path.join(TEST_TMPDIR, "1_whitebalance_roi.png"))
-    os.rename("1_whitebalance.png", os.path.join(TEST_TMPDIR, "1_whitebalance.png"))
+    os.rename("1_whitebalance_roi.png", os.path.join(cache_dir, "1_whitebalance_roi.png"))
+    os.rename("1_whitebalance.png", os.path.join(cache_dir, "1_whitebalance.png"))
     # Test with debug = "plot"
     _ = pcv.white_balance(device=0, img=img, debug="plot", roi=(5, 5, 80, 80))
     # Test without an ROI
@@ -1319,6 +1558,9 @@ def test_plantcv_background_subtraction():
 
 
 def test_plantcv_background_subtraction_debug():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_background_subtraction_debug")
+    os.mkdir(cache_dir)
     # List to hold result of all tests.
     truths = []
     fg_img = cv2.imread(os.path.join(TEST_DATA, TEST_FOREGROUND))
@@ -1327,7 +1569,7 @@ def test_plantcv_background_subtraction_debug():
     device, fgmask = pcv.background_subtraction(background_image=bg_img, foreground_image=fg_img, device=0,
                                                 debug="print")
     truths.append(np.sum(fgmask) > 0)
-    os.rename("1_background_subtraction.png", os.path.join(TEST_TMPDIR, "1_background_subtraction.png"))
+    os.rename("1_background_subtraction.png", os.path.join(cache_dir, "1_background_subtraction.png"))
     # Test with debug = "plot"
     device, fgmask = pcv.background_subtraction(background_image=bg_img, foreground_image=fg_img, device=0,
                                                 debug="plot")
@@ -1358,9 +1600,12 @@ def test_plantcv_background_subtraction_different_sizes():
 
 
 def test_plantcv_learn_naive_bayes():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_learn_naive_bayes")
+    os.mkdir(cache_dir)
     # Make image and mask directories in the cache directory
-    imgdir = os.path.join(TEST_TMPDIR, "images")
-    maskdir = os.path.join(TEST_TMPDIR, "masks")
+    imgdir = os.path.join(cache_dir, "images")
+    maskdir = os.path.join(cache_dir, "masks")
     if not os.path.exists(imgdir):
         os.mkdir(imgdir)
     if not os.path.exists(maskdir):
@@ -1369,14 +1614,24 @@ def test_plantcv_learn_naive_bayes():
     shutil.copyfile(os.path.join(TEST_DATA, TEST_VIS_SMALL), os.path.join(imgdir, "image.png"))
     shutil.copyfile(os.path.join(TEST_DATA, TEST_MASK_SMALL), os.path.join(maskdir, "image.png"))
     # Run the naive Bayes training module
-    outfile = os.path.join(TEST_TMPDIR, "naive_bayes_pdfs.txt")
+    outfile = os.path.join(cache_dir, "naive_bayes_pdfs.txt")
     plantcv.learn.naive_bayes(imgdir=imgdir, maskdir=maskdir, outfile=outfile, mkplots=True)
     assert os.path.exists(outfile)
 
 
 def test_plantcv_learn_naive_bayes_multiclass():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_learn_naive_bayes_multiclass")
+    os.mkdir(cache_dir)
     # Run the naive Bayes multiclass training module
-    outfile = os.path.join(TEST_TMPDIR, "naive_bayes_multiclass_pdfs.txt")
+    outfile = os.path.join(cache_dir, "naive_bayes_multiclass_pdfs.txt")
     plantcv.learn.naive_bayes_multiclass(samples_file=os.path.join(TEST_DATA, TEST_SAMPLED_RGB_POINTS), outfile=outfile,
                                          mkplots=True)
     assert os.path.exists(outfile)
+
+
+# ##############################
+# Clean up test files
+# ##############################
+def teardown_function():
+    shutil.rmtree(TEST_TMPDIR)

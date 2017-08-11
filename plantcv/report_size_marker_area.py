@@ -76,13 +76,13 @@ def report_size_marker_area(img, shape, device, debug, marker='define', x_adj=0,
     roi_contour, roi_heirarchy = cv2.findContours(roi1, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     cv2.drawContours(roi_background, roi_contour[0], -1, (255, 0, 0), 5)
 
-    if (x_adj > 0 and w_adj > 0) or (y_adj > 0 and h_adj > 0) or (x_adj < 0 or y_adj < 0):
+    if (x_adj > 0 and w_adj > 0) or (y_adj > 0 and h_adj > 0):
         fatal_error('Adjusted ROI position is out of frame, this will cause problems in detecting objects')
 
     for cnt in roi_contour:
         size1 = ix, iy, 3
         background = np.zeros(size1, dtype=np.uint8)
-        if shape == 'rectangle':
+        if shape == 'rectangle' and (x_adj >= 0 and y_adj >= 0):
             x, y, w, h = cv2.boundingRect(cnt)
             x1 = x + x_adj
             y1 = y + y_adj
