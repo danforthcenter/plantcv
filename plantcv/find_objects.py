@@ -32,7 +32,7 @@ def find_objects(img, mask, device, debug=None):
     device += 1
     mask1 = np.copy(mask)
     ori_img = np.copy(img)
-    objects, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    objects, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
     for i, cnt in enumerate(objects):
         cv2.drawContours(ori_img, objects, i, (255, 102, 255), -1, lineType=8, hierarchy=hierarchy)
     if debug == 'print':
