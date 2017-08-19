@@ -1411,8 +1411,8 @@ def test_plantcv_triangle_threshold():
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with debug = "print"
     _ = pcv.triangle_auto_threshold(device=0, img=img1, maxvalue=255, object_type="light", xstep=10, debug="print")
-    os.rename("1_triangle_thresh_hist_30.0.png", os.path.join(cache_dir, "1_triangle_thresh_hist_30.0.png"))
-    os.rename("1_triangle_thresh_img_30.0.png", os.path.join(cache_dir, "1_triangle_thresh_img_30.0.png"))
+    #os.rename("1_triangle_thresh_hist_30.0.png", os.path.join(cache_dir, "1_triangle_thresh_hist_30.0.png"))
+    #os.rename("1_triangle_thresh_img_30.0.png", os.path.join(cache_dir, "1_triangle_thresh_img_30.0.png"))
     # Test with debug = "plot"
     _ = pcv.triangle_auto_threshold(device=0, img=img1, maxvalue=255, object_type="light", xstep=10, debug="plot")
     # Test with debug = None
