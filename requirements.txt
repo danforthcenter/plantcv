@@ -1,0 +1,2 @@
+matplotlib==2.0.2
+scikit-image==0.13.0

@@ -84,17 +84,46 @@ py.test -v tests/tests.py
 
 #### Ubuntu Linux
 
+##### Script-based installation
+
+Clone the PlantCV repository:
+
+    git clone https://github.com/danforthcenter/plantcv.git
+
+Note that the following may not be merged in the main repository at this time. The fallback may be [this fork](https://github.com/ic/plantcv.git).
+
+Run the setup script:
+
+```bash
+cd plantcv
+bash scripts/setup.sh
+```
+
+The script guides you through the installation steps. Successful completion ends with a usage report.
+
+The script has been tested on [Ubuntu](http://www.ubuntu.com/) x86_64-bit 16_04 server edition.  
+
+##### Manual
+
 We tested [Ubuntu](http://www.ubuntu.com/) x86 64-bit 14.04 server edition.  
 After installation, connect to the server with SSH or a local terminal and execute the following commands 
 to install PlantCV.
 
 Install software dependencies
 
-`sudo apt-get install git libopencv-dev python-opencv sqlite3 python-setuptools`
+`sudo apt-get install git libopencv-dev python-opencv sqlite3 python-setuptools libpython2.7-dev python-pip`
+
+Add the OpenCV distribution for Python to find it:
+
+`export PYTHONPATH=/usr/lib/python2.7/dist-packages`
 
 Clone the PlantCV repository into your home directory
 
 `git clone https://github.com/danforthcenter/plantcv.git`
+
+Install the minimum dependencies:
+
+`pip install -r requirements.txt`
 
 The default branch (master) is the latest release. If you want to check out a specific version:
 
@@ -127,6 +156,25 @@ py.test -v tests/tests.py
 #### Mac OSX
 
 Tested on OSX 10.11.
+
+##### With MacPorts
+
+Clone the PlantCV repository:
+
+    git clone https://github.com/danforthcenter/plantcv.git
+
+Note that the following may not be merged in the main repository at this time. The fallback may be [this fork](https://github.com/ic/plantcv.git).
+
+Run the setup script:
+
+```bash
+cd plantcv
+bash scripts/setup.sh
+```
+
+The script should guide you through the installation steps. Successful completion ends with a usage report.
+
+##### With Brew
 
 Procedure modified from 
 [here](https://jjyap.wordpress.com/2014/05/24/installing-opencv-2-4-9-on-mac-osx-with-python-support/).
