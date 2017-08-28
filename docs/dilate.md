@@ -1,15 +1,16 @@
 ## Dilate
 
-Perform distance transform on binary image
+Perform morphological 'dilation' filtering. Adds pixel in center of the kernel if 
+conditions set in kernel are true.
 
-**distance_transform**(*img, distanceType, maskSize, device, debug=None*)
+**dilate**(*img, kernel, i, device, debug=None*)
 
-**returns** device, distance transformed image
+**returns** device, image after dilation
 
 - **Parameters:**
-    - img - Input image
-    - distanceType - Type of distance. It can be CV_DIST_L1, CV_DIST_L2 , or CV_DIST_C which are 1,2 and 3 respectively.
-    - maskSize - Size of the distance transform mask. It can be 3, 5, or CV_DIST_MASK_PRECISE (the latter option is only supported by the first function). In case of the CV_DIST_L1 or CV_DIST_C distance type, the parameter is forced to 3 because a 3 by 3 mask gives the same result as 5 by 5 or any larger aperture.
+    - img1 - Input image
+    - kernel - An odd integer that is used to build a kernel x kernel matrix using np.ones
+    - i - Iterations, i.e. the number of consecutive filtering passes
     - device - Counter for image processing steps
     - debug- None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
 - **Context:**
