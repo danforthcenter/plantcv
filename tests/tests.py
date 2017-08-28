@@ -1228,7 +1228,7 @@ def test_plantcv_rgb2gray():
     # Test with debug = None
     device, gray = pcv.rgb2gray(img=img, device=0, debug=None)
     # Assert that the output image has the dimensions of the input image but is only a single channel
-    assert 1==1
+    assert all([i == j] for i, j in zip(np.shape(gray), TEST_GRAY_DIM))
 
 
 def test_plantcv_roi_objects():
