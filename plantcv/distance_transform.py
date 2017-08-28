@@ -1,9 +1,9 @@
 # Distance transform of binary image
 
 import cv2
+import numpy as np
 from . import print_image
 from . import plot_image
-from . import fatal_error
 
 
 def distance_transform(img, distanceType, maskSize, device, debug=None):
