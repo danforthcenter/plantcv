@@ -651,7 +651,7 @@ def test_plantcv_distance_transform():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED_MASK), -1)
     # Test with debug = "print"
     _ = pcv.distance_transform(mask, 1, 3, device=0, debug="print")
-    os.rename("1_distance_transform_image.png", os.path.join(cache_dir, "1_distance_transform_image.png"))
+    os.rename("1_distance_transform.png", os.path.join(cache_dir, "1_distance_transform.png"))
     # Test with debug = "plot"
     _ = pcv.distance_transform(mask, 1, 3, device=0, debug="plot")
     # Test with debug = None
