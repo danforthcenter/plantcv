@@ -35,7 +35,7 @@ def distance_transform(img, distanceType, maskSize, device, debug=None):
 
     if debug == 'print':
         print_image(norm_image, (str(device) + '_distance_transform.jpg'))
-    else if debug == 'plot':
+    elif debug == 'plot':
         plot_image(norm_image)
 
     return device, norm_image
