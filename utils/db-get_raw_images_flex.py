@@ -47,7 +47,7 @@ def dict_plant_info(infile):
     table = table[1:]
 
     # Get the dimensions of the table
-    dims = table.shape()
+    dims = table.shape
     y = dims[0]
     # If there is only one column then x is not defined, so set x to 1
     x = 1
