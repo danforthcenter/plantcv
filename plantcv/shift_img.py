@@ -60,7 +60,7 @@ def shift_img(img, device, number, side="right", debug=None):
         adjusted_img = np.hstack((left, ori_img[0:, 0:adjust]))
 
     if len(np.shape(img)) == 2:
-        adjusted_img=adjusted_img[:,:,0]
+        adjusted_img = adjusted_img[:,:,0]
     if debug == 'print':
         print_image(adjusted_img, (str(device) + "_shifted_img.png"))
     elif debug == 'plot':
