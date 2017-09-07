@@ -1029,10 +1029,14 @@ def test_plantcv_output_mask():
     # Test with debug = "print"
     _ = pcv.output_mask(device=0, img=img, mask=mask, filename='test.png', outdir=cache_dir, mask_only=False,
                         debug="print")
+    _ = pcv.output_mask(device=0, img=img, mask=mask, filename='test.png', outdir=cache_dir, mask_only=True,
+                        debug="print")
     os.rename("1_mask-img.png", os.path.join(cache_dir, "1_mask-img.png"))
     os.rename("1_ori-img.png", os.path.join(cache_dir, "1_ori-img.png"))
     # Test with debug = "plot"
     _ = pcv.output_mask(device=0, img=img, mask=mask, filename='test.png', outdir=cache_dir, mask_only=False,
+                        debug="plot")
+    _ = pcv.output_mask(device=0, img=img, mask=mask, filename='test.png', outdir=cache_dir, mask_only=True,
                         debug="plot")
     # Test with debug = None
     device, imgpath, maskpath, analysis_images = pcv.output_mask(device=0, img=img, mask=mask, filename='test.png',
