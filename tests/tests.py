@@ -447,7 +447,7 @@ def test_plantcv_crop_position_mask():
     os.rename("1_push-top_.png", os.path.join(cache_dir, "1_push-top_.png"))
     # Test with debug = "plot"
     _ = pcv.crop_position_mask(nir, mask, device=0, x=40, y=3, v_pos="top", h_pos="right", debug="plot")
-    # Test with debug = "plot"
+    # Test with debug = "plot" with bottom
     _ = pcv.crop_position_mask(nir, mask, device=0, x=45, y=2, v_pos="bottom", h_pos="left", debug="plot")
     # Test with debug = None
     device, newmask = pcv.crop_position_mask(nir, mask, device=0, x=40, y=3, v_pos="top", h_pos="right", debug=None)
