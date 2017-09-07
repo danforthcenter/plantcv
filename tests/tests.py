@@ -162,6 +162,9 @@ def test_plantcv_analyze_bound():
     # Test with debug = "plot"
     _ = pcv.analyze_bound(img=img, imgname="img", obj=object_contours[0], mask=mask, line_position=300, device=0,
                           debug="plot", filename=False)
+    # Test with debug='plot', line position that will trigger -y, and two channel object
+     _ = pcv.analyze_bound(img=img, imgname="img", obj=object_contours[0], mask=mask, line_position=1000, device=0,
+                           debug="plot", filename=False)
     # Test with debug = None
     device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound(img=img, imgname="img",
                                                                               obj=object_contours[0], mask=mask,
