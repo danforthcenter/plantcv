@@ -233,12 +233,16 @@ def test_plantcv_analyze_nir():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     outfile = os.path.join(cache_dir, TEST_INPUT_COLOR)
-    _ = pcv.analyze_NIR_intensity(img=img, rgbimg=img, mask=mask, bins=256, device=0, histplot=False, debug="print",
+    _ = pcv.analyze_NIR_intensity(img=img, rgbimg=img, mask=mask, bins=256, device=0, histplot=True, debug="print",
                                   filename=outfile)
     os.rename("3_nir_pseudo_plant.jpg", os.path.join(cache_dir, "3_nir_pseudo_plant.jpg"))
     os.rename("3_nir_pseudo_plant_back.jpg", os.path.join(cache_dir, "3_nir_pseudo_plant_back.jpg"))
+    os.rename("3_nir_histogram.jpg", os.path.join(cache_dir, "3_nir_histogram.jpg"))
     # Test with debug = "plot"
     _ = pcv.analyze_NIR_intensity(img=img, rgbimg=img, mask=mask, bins=256, device=0, histplot=False, debug="plot",
+                                  filename=False)
+    # Test with debug = "plot"
+    _ = pcv.analyze_NIR_intensity(img=img, rgbimg=img, mask=mask, bins=256, device=0, histplot=True, debug="plot",
                                   filename=False)
     # Test with debug = None
     device, hist_header, hist_data, h_norm = pcv.analyze_NIR_intensity(img=img, rgbimg=img, mask=mask, bins=256,
