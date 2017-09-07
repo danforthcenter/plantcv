@@ -32,7 +32,7 @@ import plantcv as pcv
 
 # Cluster Contours and Split into Separate Images 
 out = './examples/'
-device, output_path = pcv.cluster_contour_splitimg(device, img1, clusters_i, contours, out, filename, names=None,
+device, output_path = pcv.cluster_contour_splitimg(device, img1, clusters_i, contours, out, file, filenames=None,
                                                        debug="print")
 ```
 
