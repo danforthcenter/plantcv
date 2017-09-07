@@ -1146,6 +1146,14 @@ def test_plantcv_report_size_marker():
     _ = pcv.report_size_marker_area(img=img, shape='rectangle', device=0, debug="plot", marker='detect', x_adj=3500,
                                     y_adj=600, w_adj=-100, h_adj=-1500, base='white', objcolor='light',
                                     thresh_channel='s', thresh=120, filename=False)
+    # Test with debug = "plot"
+    _ = pcv.report_size_marker_area(img=img, shape='circle', device=0, debug="plot", marker='detect', x_adj=3500,
+                                    y_adj=600, w_adj=-100, h_adj=-1500, base='white', objcolor='light',
+                                    thresh_channel='s', thresh=120, filename=False)
+    # Test with debug = "plot"
+    _ = pcv.report_size_marker_area(img=img, shape='ellipse', device=0, debug="plot", marker='detect', x_adj=3500,
+                                    y_adj=600, w_adj=-100, h_adj=-1500, base='white', objcolor='light',
+                                    thresh_channel='s', thresh=120, filename=False)
     # Test with debug = None
     device, marker_header, marker_data, images = pcv.report_size_marker_area(img=img, shape='rectangle', device=0,
                                                                              debug=None, marker='detect', x_adj=3500,
