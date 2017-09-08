@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import argparse
-import numpy as np
 import os
 import sqlite3 as sq
 import plantcv as pcv
@@ -35,40 +34,25 @@ def dict_factory(cursor, row):
 # Get images with more information
 def dict_plant_info(infile):
     # Read table of query parameters from infile
-    table = np.genfromtxt(infile, dtype='str', delimiter='\t')
+    table = open(infile, "r")
 
     # Initialize queries
     query = []
 
     # Read the first row as a header
-    header = table[0].tolist()
-
-    # Remove the header row
-    table = table[1:]
-
-    # Get the dimensions of the table
-    dims = table.shape
-    y = dims[0]
-    # If there is only one column then x is not defined, so set x to 1
-    x = 1
-    if len(dims) == 2:
-        x = dims[1]
-
-    # Enumerate the number of columns
-    columncount = list(range(0, x))
-    # Split up the table
-    split_table = np.vsplit(table, y)
-    split_table = [l[0] for l in split_table]
+    header = table.readline()
+    header = header.rstrip("\n")
+    headers = header.split("\t")
 
     # For each row in the table prepare a query
-    for row in split_table:
+    for row in table:
         where = []
-        col = np.hsplit(row, x)
-        col = [l[0] for l in col]
-        for i, h in enumerate(columncount):
-            where.append(str(header[i]) + '=' + "'" + str(col[i] + "'"))
-        where_and = ' and '.join(map(str, where))
-        query.append(where_and)
+        row = row.rstrip("\n")
+        cols = row.split("\t")
+        for i, col in enumerate(cols):
+            where.append(headers[i] + "=" + "'" + col + "'")
+        where = " and ".join(map(str, where))
+        query.append(where)
     return query
 
 
@@ -97,7 +81,7 @@ def db_lookup(database, outdir, queries, vis=False, nir=False, psii=False, verbo
             if verbose:
                 print(query)
             for row in (db.execute(query)):
-                dt = datetime.datetime.fromtimestamp(row['datetime']).strftime('%Y-%m-%d-%H-%M-%S')
+                dt = datetime.datetime.strptime(row['timestamp'], "%Y-%m-%d %H:%M:%S.%f").strftime('%Y-%m-%d-%H-%M-%S')
                 if vis and row['imgtype'] == 'VIS':
                     img_name = os.path.join(outdir,
                                             row['plantbarcode'] + "_" + dt + "_" + os.path.basename(row['image']))
