@@ -1439,13 +1439,13 @@ def test_plantcv_white_balance_gray_16bit():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK), -1)
     # Test with debug = "print"
-    _ = pcv.white_balance(device=0, img=img, debug="print", roi=(5, 5, 80, 80))
+    _ = pcv.white_balance(device=0, img=img, mode='hist', debug="print", roi=(5, 5, 80, 80))
     os.rename("1_whitebalance_roi.png", os.path.join(cache_dir, "1_whitebalance_roi.png"))
     os.rename("1_whitebalance.png", os.path.join(cache_dir, "1_whitebalance.png"))
     # Test with debug = "plot"
-    _ = pcv.white_balance(device=0, img=img, debug="plot", roi=(5, 5, 80, 80))
+    _ = pcv.white_balance(device=0, img=img, mode ='max', debug="plot", roi=(5, 5, 80, 80))
     # Test without an ROI
-    _ = pcv.white_balance(device=0, img=img, debug=None, roi=None)
+    _ = pcv.white_balance(device=0, img=img, mode = 'hist', debug=None, roi=None)
     # Test with debug = None
     device, white_balanced = pcv.white_balance(device=0, img=img, debug=None, roi=(5, 5, 80, 80))
     imgavg = np.average(img)
@@ -1461,13 +1461,13 @@ def test_plantcv_white_balance_gray_8bit():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK))
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     # Test with debug = "print"
-    _ = pcv.white_balance(device=0, img=img, debug="print", roi=(5, 5, 80, 80))
+    _ = pcv.white_balance(device=0, img=img, mode='hist', debug="print", roi=(5, 5, 80, 80))
     os.rename("1_whitebalance_roi.png", os.path.join(cache_dir, "1_whitebalance_roi.png"))
     os.rename("1_whitebalance.png", os.path.join(cache_dir, "1_whitebalance.png"))
     # Test with debug = "plot"
-    _ = pcv.white_balance(device=0, img=img, debug="plot", roi=(5, 5, 80, 80))
+    _ = pcv.white_balance(device=0, img=img, mode='max', debug="plot", roi=(5, 5, 80, 80))
     # Test without an ROI
-    _ = pcv.white_balance(device=0, img=img, debug=None, roi=None)
+    _ = pcv.white_balance(device=0, img=img, mode='hist', debug=None, roi=None)
     # Test with debug = None
     device, white_balanced = pcv.white_balance(device=0, img=img, debug=None, roi=(5, 5, 80, 80))
     imgavg = np.average(img)
@@ -1482,13 +1482,13 @@ def test_plantcv_white_balance_rgb():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MARKER))
     # Test with debug = "print"
-    _ = pcv.white_balance(device=0, img=img, debug="print", roi=(5, 5, 80, 80))
+    _ = pcv.white_balance(device=0, img=img, mode='hist', debug="print", roi=(5, 5, 80, 80))
     os.rename("1_whitebalance_roi.png", os.path.join(cache_dir, "1_whitebalance_roi.png"))
     os.rename("1_whitebalance.png", os.path.join(cache_dir, "1_whitebalance.png"))
     # Test with debug = "plot"
-    _ = pcv.white_balance(device=0, img=img, debug="plot", roi=(5, 5, 80, 80))
+    _ = pcv.white_balance(device=0, img=img, mode='max', debug="plot", roi=(5, 5, 80, 80))
     # Test without an ROI
-    _ = pcv.white_balance(device=0, img=img, debug=None, roi=None)
+    _ = pcv.white_balance(device=0, img=img, mode='hist', debug=None, roi=None)
     # Test with debug = None
     device, white_balanced = pcv.white_balance(device=0, img=img, debug=None, roi=(5, 5, 80, 80))
     imgavg = np.average(img)
