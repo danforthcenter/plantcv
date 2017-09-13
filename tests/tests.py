@@ -165,7 +165,7 @@ def test_plantcv_analyze_bound():
                           debug="plot", filename=False)
     # Test with debug='plot', line position that will trigger -y, and two channel object
     _ = pcv.analyze_bound(img=img, imgname="img", obj=object_contours[0], mask=mask, line_position=1, device=0,
-                           debug="plot", filename=False)
+                          debug="plot", filename=False)
     # Test with debug = None
     device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound(img=img, imgname="img",
                                                                               obj=object_contours[0], mask=mask,
@@ -394,7 +394,7 @@ def test_plantcv_cluster_contours_splitimg():
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
     contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_CONTOUR))
     clusters = np.load(os.path.join(TEST_DATA, TEST_INPUT_ClUSTER_CONTOUR))
-    cluster_names=os.path.join(TEST_DATA,TEST_INPUT_GENOTXT)
+    cluster_names = os.path.join(TEST_DATA, TEST_INPUT_GENOTXT)
     roi_contours = contours['arr_0']
     cluster_contours = clusters['arr_0']
     # Test with debug = "print"
@@ -406,7 +406,8 @@ def test_plantcv_cluster_contours_splitimg():
         os.rename(str(i) + "_wmasked.png", os.path.join(cache_dir, str(i) + "_wmasked.png"))
     # Test with debug = "plot"
     _ = pcv.cluster_contour_splitimg(device=0, img=img1, grouped_contour_indexes=cluster_contours,
-                                     contours=roi_contours, outdir=None, file=None, filenames=cluster_names,debug="plot")
+                                     contours=roi_contours, outdir=None, file=None, filenames=cluster_names,
+                                     debug="plot")
     # Test with debug = None
     device, output_path = pcv.cluster_contour_splitimg(device=0, img=img1, grouped_contour_indexes=cluster_contours,
                                                        contours=roi_contours, outdir=None, file=None,
@@ -1001,7 +1002,7 @@ def test_plantcv_object_composition():
     device, contours, mask = pcv.object_composition(img=img, contours=object_contours, hierarchy=object_hierarchy,
                                                     device=0, debug=None)
     # Assert that the objects have been combined
-    contour_shape = np.shape(contours)
+    contour_shape = np.shape(contours)  # type: tuple
     assert contour_shape[1] == 1
 
 
@@ -1184,6 +1185,14 @@ def test_plantcv_resize():
     ix, iy, iz = np.shape(img)
     rx, ry, rz = np.shape(resized_img)
     assert ix > rx
+
+
+def test_plantcv_resize_bad_inputs():
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # Test for fatal error caused by two negative resize values
+    with pytest.raises(RuntimeError):
+        _ = pcv.resize(img=img, resize_x=-1, resize_y=-1, device=0, debug=None)
 
 
 def test_plantcv_rgb2gray_hsv():
@@ -1443,9 +1452,9 @@ def test_plantcv_white_balance_gray_16bit():
     os.rename("1_whitebalance_roi.png", os.path.join(cache_dir, "1_whitebalance_roi.png"))
     os.rename("1_whitebalance.png", os.path.join(cache_dir, "1_whitebalance.png"))
     # Test with debug = "plot"
-    _ = pcv.white_balance(device=0, img=img, mode ='max', debug="plot", roi=(5, 5, 80, 80))
+    _ = pcv.white_balance(device=0, img=img, mode='max', debug="plot", roi=(5, 5, 80, 80))
     # Test without an ROI
-    _ = pcv.white_balance(device=0, img=img, mode = 'hist', debug=None, roi=None)
+    _ = pcv.white_balance(device=0, img=img, mode='hist', debug=None, roi=None)
     # Test with debug = None
     device, white_balanced = pcv.white_balance(device=0, img=img, debug=None, roi=(5, 5, 80, 80))
     imgavg = np.average(img)
@@ -1618,11 +1627,11 @@ def test_plantcv_background_subtraction_bad_img_type():
 def test_plantcv_background_subtraction_different_sizes():
     fg_img = cv2.imread(os.path.join(TEST_DATA, TEST_FOREGROUND))
     bg_img = cv2.imread(os.path.join(TEST_DATA, TEST_BACKGROUND))
-    bg_shp = np.shape(bg_img)
+    bg_shp = np.shape(bg_img)  # type: tuple
     bg_img_resized = cv2.resize(bg_img, (bg_shp[0] / 2, bg_shp[1] / 2), interpolation=cv2.INTER_AREA)
     device, fgmask = pcv.background_subtraction(background_image=bg_img_resized, foreground_image=fg_img, device=0,
                                                 debug=None)
-    assert np.sum(fgmask > 0)
+    assert np.sum(fgmask) > 0
 
 # ##############################
 # Tests for the learn subpackage
