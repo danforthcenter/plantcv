@@ -37,8 +37,6 @@ def crop_position_mask(img, mask, device, x, y, v_pos="top", h_pos="right", debu
     :return newmask: numpy array
     """
 
-    ori_mask = np.copy(mask)
-
     device += 1
 
     if x < 0 or y < 0:
@@ -53,18 +51,14 @@ def crop_position_mask(img, mask, device, x, y, v_pos="top", h_pos="right", debu
 
     if len(np.shape(img)) == 3:
         ix, iy, iz = np.shape(img)
-        ori_img = np.copy(img)
     else:
         ix, iy = np.shape(img)
-        ori_img = np.dstack((img, img, img))
 
     if len(np.shape(mask)) == 3:
         mx, my, mz = np.shape(mask)
         mask = mask[0]
     else:
         mx, my = np.shape(mask)
-
-    npimg = np.zeros((ix, iy), dtype=np.uint8)
 
     # resize the images so they are equal in size and centered
     if mx >= ix:
