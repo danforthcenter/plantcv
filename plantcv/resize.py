@@ -31,10 +31,10 @@ def resize(img, resize_x, resize_y, device, debug=None):
 
     device += 1
 
-    reimg = cv2.resize(img, (0, 0), fx=resize_x, fy=resize_y)
-
     if resize_x <= 0 and resize_y <= 0:
         fatal_error("Resize values both cannot be 0 or negative values!")
+
+    reimg = cv2.resize(img, (0, 0), fx=resize_x, fy=resize_y)
 
     if debug == 'print':
         print_image(reimg, (str(device) + "_resize1.png"))

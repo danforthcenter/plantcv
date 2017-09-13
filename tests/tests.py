@@ -1186,6 +1186,14 @@ def test_plantcv_resize():
     assert ix > rx
 
 
+def test_plantcv_resize_bad_inputs():
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # Test for fatal error caused by two negative resize values
+    with pytest.raises(RuntimeError):
+        _ = pcv.resize(img=img, resize_x=-1, resize_y=-1, device=0, debug=None)
+
+
 def test_plantcv_rgb2gray_hsv():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_rgb2gray_hsv")
@@ -1443,9 +1451,9 @@ def test_plantcv_white_balance_gray_16bit():
     os.rename("1_whitebalance_roi.png", os.path.join(cache_dir, "1_whitebalance_roi.png"))
     os.rename("1_whitebalance.png", os.path.join(cache_dir, "1_whitebalance.png"))
     # Test with debug = "plot"
-    _ = pcv.white_balance(device=0, img=img, mode ='max', debug="plot", roi=(5, 5, 80, 80))
+    _ = pcv.white_balance(device=0, img=img, mode='max', debug="plot", roi=(5, 5, 80, 80))
     # Test without an ROI
-    _ = pcv.white_balance(device=0, img=img, mode = 'hist', debug=None, roi=None)
+    _ = pcv.white_balance(device=0, img=img, mode='hist', debug=None, roi=None)
     # Test with debug = None
     device, white_balanced = pcv.white_balance(device=0, img=img, debug=None, roi=(5, 5, 80, 80))
     imgavg = np.average(img)
