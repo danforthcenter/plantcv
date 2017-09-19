@@ -40,7 +40,7 @@ Ficor T, Turnipseed S, Gilbert KB, Brutnell TP, Carrington JC, Mockler TC, Baxte
 system and analytics platform reveals diverse temporal responses to water availability in *Setaria*. Molecular Plant 8:
 1520-1535. http://doi.org/10.1016/j.molp.2015.06.005
 
-2. Bradski G (2000) The opencv library. Doctor Dobbs Journal 25(11): 120-126. 
+2. Bradski G (2000) The OpenCV library. Dr. Dobb's Journal 25(11): 120-126.
 http://www.drdobbs.com/open-source/the-opencv-library/184404319
 
 3. Oliphant TE (2007) Python for Scientific Computing. Computing in Science & Engineering 9: 10-20.
