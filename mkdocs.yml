@@ -13,6 +13,7 @@ pages:
   - 'Updating PlantCV': updating.md
   - 'Using Jupyter Notebooks': jupyter.md
   - 'Contributing to PlantCV': CONTRIBUTING.md
+  - 'Code of Conduct': CODE_OF_CONDUCT.md
   - 'Adding/editing Documentation': documentation.md
   - 'Summary of Output Measurements': output_measurements.md
   - Tutorials:
