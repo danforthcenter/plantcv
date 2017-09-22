@@ -49,9 +49,9 @@ and [updating documentation](documentation.md).
     in a [review article](http://doi.org/10.1016/j.pbi.2015.02.006)
     written by the lead PlantCV developers,
     a [practical guide](https://doi.org/10.1071/FP12028)
-    on growth conditions by Poorter et al.,
-    or in the glossary and general advice
-    offered by [Roeder et al. (2012)](http://doi.org/10.1242/dev.076414)
+    on growth conditions by Poorter et al. (2012),
+    or a [glossary and general advice](https://doi.org/10.1242/dev.076414)
+    by Roeder et al. (2012).
 - Q: Can I use PlantCV to process photos taken with a Raspberry Pi camera?
     - A: Yes.
     <!-- This is related to the previous question. -->
