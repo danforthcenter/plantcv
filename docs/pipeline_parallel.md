@@ -26,7 +26,7 @@ We normally execute pipelines in a shell script or in in a condor job file (or d
 * -T is the --threads (cpus) you would like to use.
 * -w is the --writeimg option, if True will write output images. default= False
 * -c is the --create option to overwrite an sqlite database if it exists, if you are creating a new database or appending to database, do NOT add the -c flag
-* -o is the --other_args option, "other arguments to add to a pipeline option"
+* -o is the --other_args option, used to pass non-standard options to the pipeline script. Must take the form `--other_args="--option1 value1 --option2 value2"`
 
 
 ####If running as a command in a shell script
