@@ -627,9 +627,7 @@ def phenofront_parser(args):
 ###########################################
 def process_images_multiproc(jobs):
     for job in jobs:
-        print(job)
         call(job)
-        # os.system(job)
 
 
 # Multiprocessing pool builder
