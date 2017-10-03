@@ -154,5 +154,5 @@ plantcv-pipeline.py \
 --outdir . \
 --meta imgtype_camera_timestamp \
 --create \
---other_args "--pdfs naive_bayes_pdfs.txt"
+--other_args="--pdfs naive_bayes_pdfs.txt"
 ```
