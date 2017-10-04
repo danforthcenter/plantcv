@@ -723,7 +723,8 @@ def job_builder(args, meta):
             if args.writeimg:
                 job_parts.append("--writeimg")
             if args.other_args:
-                other_args = args.other_args.split(" ")
+                other_args1=re.sub("'","",args.other_args)
+                other_args = other_args1.split(" ")
                 job_parts = job_parts + other_args
             jobs.append(job_parts)
 
@@ -744,7 +745,8 @@ def job_builder(args, meta):
         if args.writeimg:
             job_parts.append("--writeimg")
         if args.other_args:
-            other_args = args.other_args.split(" ")
+            other_args1 = re.sub("'","",args.other_args)
+            other_args = other_args1.split(" ")
             job_parts = job_parts + other_args
         jobs.append(job_parts)
 
