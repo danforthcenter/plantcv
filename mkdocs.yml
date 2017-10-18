@@ -16,7 +16,7 @@ pages:
   - 'Code of Conduct': CODE_OF_CONDUCT.md
   - 'Adding/editing Documentation': documentation.md
   - 'Summary of Output Measurements': output_measurements.md
-  - 'Analysis Approaches': analysis_approaches.md
+  - 'Analysis Approaches': analysis_approach.md
   - Tutorials:
     - 'VIS pipeline': vis_tutorial.md
     - 'NIR pipeline': nir_tutorial.md
