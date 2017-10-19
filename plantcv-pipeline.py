@@ -192,10 +192,6 @@ def main():
     ###########################################
     meta = {}
 
-    # Get this script's path
-    # exedir = os.path.abspath(os.path.dirname(sys.argv[0]))
-    # db_schema = exedir + '/../../include/results.sql'
-
     # Get command
     command = ' '.join(map(str, sys.argv))
 
