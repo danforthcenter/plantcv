@@ -101,6 +101,14 @@ see [instruction to convert jupyter notebook to plantcv workflow script](jupyter
 *  Once the Jupyter notebook has been translated to a Python script (and tested!) the next step is to parallelize that script over a set of images. To do this follow the 
 [pipeline parallelization instructions](pipeline_parallel.md). 
  
+### Troubleshooting
+
+Recommendations for troubleshooting.
+
+1.  If you run into an error, first use the error message as google search terms to see if anyone else has run into (and solved) a similar problem. This isn't snark, the internet is a magical place.
+2.  If your problem isn't solved after a search post an issue on Github [here](https://github.com/danforthcenter/plantcv/issues). It's possible that you have discovered a bug, or there is a use error.
+3.  When posting an issue on Github the community can better help you if you provide detailed information. If you have triggered an error be sure to paste in the error message, the situation that you think triggered that error message, and what you are trying to do (end goal). 
+4.  If you are having issues processing a specific image it is also fine to post on Github [here](https://github.com/danforthcenter/plantcv/issues). But again, be sure to include the image, the specific problem you are having and the end goal. Also, make sure you have looked over the available tutorials.
 
 
 
