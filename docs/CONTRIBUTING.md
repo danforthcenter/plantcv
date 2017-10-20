@@ -11,6 +11,7 @@ There are many ways to contribute:
 * Request features
 * Join the discussion of open issues, features, and bugs
 * Contribute algorithms to the library
+* Add unit tests
 * Revise existing code
 * Add or revise documentation
 
@@ -139,20 +140,30 @@ and extend the image processing or trait analysis power of PlantCV.
 What should/should not be added to PlantCV:
 
 *  New validated image processing functions are highly encouraged for contribution.  
-*  New validated trait extraction algorithms are highly encouraged for contribution.  
+*  New validated trait extraction algorithms are highly encouraged for contribution.
 *  Image processing workflow scripts that are specific for your project 
 should **not** be added to PlantCV since these are (usually) not
 generalized or updated to maintain compatibility with new versions.
 
-If you have questions don't hesitate to ask [here](https://github.com/danforthcenter/plantcv/issues).
+If you are adding new image processing functions or trait extraction algorithms, make sure you read the section on testing and documenting your code below.
+We are very appreciative of all community contributions to PlantCV! 
+We do hope that if you are contribution new functions to PlantCV, you are also contributing documentation and unit tests for your functions(described below), because you understand your code/functionality best.
+If you have questions or need help don't hesitate to ask [here](https://github.com/danforthcenter/plantcv/issues).
 
 #### Testing and documenting your code
 
-In addition to adding a new feature, test your code thoroughly. 
+In addition to adding a new feature, test your code thoroughly:
 
-Add unit tests and sample input/outputs to the `tests` folder/script so that 
-automated testing (Travis-CI) will include tests on your new feature. 
-Similarly, if you are updating existing code, make sure that the `test.py`
+Starting with PlantCV v2.0 we have added integration with [Travis CI](https://travis-ci.org/) and [Coveralls](https://coveralls.io/). 
+Integration with Travis CI allows us to test if new pull requests break or change the output of existing functions.
+Coveralls Integration tells us the percentage of PlantCV repository code that is covered by the unit tests (better the coverage the more likely we are to catch problematic pull requests).
+To include new function in Travis CI tests (to make sure they aren't broken by future pull requests) we need a
+'unit test' or set of 'unit tests' (if you need more than one test to cover function options).
+
+Existing unit tests can be found in `tests/tests.py` as examples  
+The data to support unit tests can be found in `tests/data/`
+
+If you are updating existing code, make sure that the `test.py`
 script passes on the function you modified. Testing locally can be done with pytest:
 
 ```
