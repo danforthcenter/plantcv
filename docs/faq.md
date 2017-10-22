@@ -44,8 +44,8 @@ and [updating documentation](documentation.md).
 ### Image acquisition
 - Q: How should I grow plants and acquire images for quantitative processing?
     - A: This depends on your main question of interest,
-    and is beyond the scope of the current PlantCV documentation.
-    You may be be interested
+    and is beyond the scope of the current PlantCV documentation. We do provide some 
+    [general considerations](analysis_approach.md), but you may be be interested
     in a [review article](http://doi.org/10.1016/j.pbi.2015.02.006)
     written by the lead PlantCV developers,
     a [practical guide](https://doi.org/10.1071/FP12028)
@@ -109,6 +109,6 @@ via pull request.
       between minor version releases.
 - Q: Is there a naming convention for PlantCV functions?
     - A: No, not at present.
-    Please see the guide to contributing
+    Please see the [guide to contributing](CONTRIBUTING.md)
     for some general advice on code style,
     PEP8 docstrings etc.
