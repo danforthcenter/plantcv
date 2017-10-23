@@ -9,14 +9,15 @@ pages:
 - Home: index.md
 - Documentation:
   - 'Installation': installation.md
-  - 'Frequently Asked Questions': faq.md
   - 'Updating PlantCV': updating.md
-  - 'Using Jupyter Notebooks': jupyter.md
-  - 'Contributing to PlantCV': CONTRIBUTING.md
-  - 'Code of Conduct': CODE_OF_CONDUCT.md
-  - 'Adding/editing Documentation': documentation.md
-  - 'Summary of Output Measurements': output_measurements.md
+  - 'Frequently Asked Questions': faq.md
   - 'Analysis Approaches': analysis_approach.md
+  - 'Using Jupyter Notebooks': jupyter.md
+  - 'Summary of Output Measurements': output_measurements.md
+  - 'Contributing':
+    - 'Contributing to PlantCV': CONTRIBUTING.md
+    - 'Code of Conduct': CODE_OF_CONDUCT.md
+    - 'Adding/editing Documentation': documentation.md
   - Tutorials:
     - 'VIS pipeline': vis_tutorial.md
     - 'NIR pipeline': nir_tutorial.md
