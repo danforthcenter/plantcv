@@ -1,6 +1,8 @@
 [![Build Status](https://travis-ci.org/danforthcenter/plantcv.svg?branch=master)](https://travis-ci.org/danforthcenter/plantcv)
 [![Coverage Status](https://coveralls.io/repos/github/danforthcenter/plantcv/badge.svg)](https://coveralls.io/github/danforthcenter/plantcv)
 [![Documentation Status](http://readthedocs.org/projects/plantcv/badge/?version=latest)](http://plantcv.readthedocs.io/en/latest/?badge=latest)
+[![GitHub release](https://img.shields.io/github/release/danforthcenter/plantcv.svg)](https://github.com/danforthcenter/plantcv/releases)
+[![license](https://img.shields.io/github/license/danforthcenter/plantcv.svg)](https://github.com/danforthcenter/plantcv/blob/master/LICENSE)
 
 # PlantCV: Plant phenotyping using computer vision
 
