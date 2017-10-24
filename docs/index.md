@@ -32,12 +32,14 @@ updating, and other questions, see:
 
 Also see our tutorials for more detailed overviews of using PlantCV for specific tasks:
 
-*  [VIS/RGB Image Processing](vis_tutorial.md)
-*  [Near-Infrared Image Processing](nir_tutorial.md)
-*  [PSII Image Processing](psII_tutorial.md)
-*  [VIS / NIR Dual Pipelines](vis_nir_tutorial.md)
-*  [Multi Plant Image Processing](multi-plant_tutorial.md)
-*  [Machine Learning Tutorial](machine_learning_tutorial.md)
+* [VIS/RGB Image Processing](vis_tutorial.md)
+* [Near-Infrared Image Processing](nir_tutorial.md)
+* [PSII Image Processing](psII_tutorial.md)
+* [VIS / NIR Dual Pipelines](vis_nir_tutorial.md)
+* [Multi Plant Image Processing](multi-plant_tutorial.md)
+* [Machine Learning Tutorial](machine_learning_tutorial.md)
+* [Parallel Image Processing](pipeline_parallel.md)
+* [Exporting Data for Downstream Analysis](db-exporter.md)
 
 If you are interested in contributing to PlantCV, please see:
 

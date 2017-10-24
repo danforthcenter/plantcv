@@ -24,9 +24,9 @@ pages:
     - 'PSII pipeline': psII_tutorial.md
     - 'VIS/NIR dual pipeline': vis_nir_tutorial.md
     - 'Multi plant pipeline': multi-plant_tutorial.md
-    - 'Pipeline parallelization': pipeline_parallel.md
-    - 'Export Filter and Export Data': db-exporter.md
     - 'Machine Learning': machine_learning_tutorial.md
+    - 'Pipeline parallelization': pipeline_parallel.md
+    - 'Exporting data': db-exporter.md
   - 'Package plantcv':
     - 'Adaptive Threshold': adaptive_threshold.md
     - 'Analyze color': analyze_color.md
