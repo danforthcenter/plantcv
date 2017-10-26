@@ -113,8 +113,8 @@ def white_balance(device, img, mode='hist',debug=None, roi=None):
             finalcorrected = _max(img, hmax, mask, x, y, h, w, type)
 
     if debug == 'print':
-        print_image(ori_img, (str(device) + '_whitebalance_roi.png'))
-        print_image(finalcorrected, (str(device) + '_whitebalance.png'))
+        print_image(ori_img, str(device) + '_whitebalance_roi.png')
+        print_image(finalcorrected, str(device) + '_whitebalance.png')
 
     elif debug == 'plot':
         plot_image(ori_img, cmap='gray')
