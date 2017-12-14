@@ -16,6 +16,19 @@ and [updating documentation](documentation.md).
     as described in the installation instructions.
     If you are trying to reproduce the results from a specific manuscript,
     you may prefer to use one of the [stable releases](https://github.com/danforthcenter/plantcv/releases).
+    These releases are assigned Digital Object Identifiers (DOI)
+    and [archived](https://doi.org/10.5281/zenodo.595522)
+    at Zenodo.org.
+- Q: How should I cite PlantCV?
+    - A: See the main ['About' page](http://plantcv.danforthcenter.org/pages/about.html).
+    At minimum,
+    you ought to cite
+    the [original published description](http://doi.org/10.1016/j.molp.2015.06.005)
+    of PlantCV.
+    You should ideally reference the specific version used
+    (by number and DOI)
+    and publications related to specific features added
+    since the initial release.
 - Q: Does PlantCV work with OpenCV 3.x?
     - A: Not yet, but this is a major goal for future development.
     Work towards this goal will be coordinated
@@ -31,12 +44,14 @@ and [updating documentation](documentation.md).
 ### Image acquisition
 - Q: How should I grow plants and acquire images for quantitative processing?
     - A: This depends on your main question of interest,
-    and is beyond the scope of the current PlantCV documentation.
-    You may be be interested
+    and is beyond the scope of the current PlantCV documentation. We do provide some 
+    [general considerations](analysis_approach.md), but you may be be interested
     in a [review article](http://doi.org/10.1016/j.pbi.2015.02.006)
-    written by the lead PlantCV developers
-    or in the glossary and general advice
-    offered by [Roeder et al. (2012)](http://doi.org/10.1242/dev.076414)
+    written by the lead PlantCV developers,
+    a [practical guide](https://doi.org/10.1071/FP12028)
+    on growth conditions by Poorter et al. (2012),
+    or a [glossary and general advice](https://doi.org/10.1242/dev.076414)
+    by Roeder et al. (2012).
 - Q: Can I use PlantCV to process photos taken with a Raspberry Pi camera?
     - A: Yes.
     <!-- This is related to the previous question. -->
@@ -45,19 +60,30 @@ and [updating documentation](documentation.md).
     PlantCV was designed to work flexibly
     with many types of imagery as possible.
     Several groups are processing Raspberry Pi images using PlantCV,
-    and the developers enthusiastically use Raspberry Pi cameras
+    and PlantCV developers enthusiastically use Raspberry Pi cameras
     for [outreach and training efforts](https://github.com/danforthcenter/outreach/network)
     and timelapse imaging.
+    See the [example scripts](https://github.com/danforthcenter/apps-phenotyping)
+    associated with a [recently submitted protocol note](https://doi.org/10.1101/183822).
     You can even run PlantCV directly on a Pi
     (installation instructions for Ubuntu
     should work well with Raspbian),
-    though this is certainly not required.
+    but this is certainly not required.
     See also tutorials on the [DDPSC Maker Group site](http://maker.danforthcenter.org/).
 - Q: Can PlantCV use information about the temporal relation of images
   for object tracking etc.?
     - A: Not at present.
     OpenCV includes tools for analyzing video data,
     so this could be added in the future.
+- Q: My plants are touching,
+  and getting merged into a single object.
+  What can I do?
+    - A: Not much, for now.
+      <!-- https://github.com/danforthcenter/plantcv/issues/142 -->
+      PlantCV is geared toward images of well-spaced plants.
+      Facilities for drawing custom boundaries
+      exist in other tools,
+      and could in principle be added.
 
 ### Other
 We try to continually improve our documentation.
@@ -69,10 +95,20 @@ via pull request.
 
 - Q: How is PlantCV structured?
 - Q: How is PlantCV tested?
+    - A: Unit tests are in the 'tests' directory
+    in the root of the source tree.
+    We use the Travis Continuous Integration tool
+    to [monitor status](https://travis-ci.org/danforthcenter/plantcv)
+    and test pull requests
+    for breaking changes.
 - Q: Does PlantCV follow [Semantic Version Numbering](http://semver.org/)
   for stable releases?
+      - A: Not entirely.
+      Major releases are mostly based on new features.
+      We try to avoid changes that break compatibility
+      between minor version releases.
 - Q: Is there a naming convention for PlantCV functions?
     - A: No, not at present.
-    Please see the guide to contributing
+    Please see the [guide to contributing](CONTRIBUTING.md)
     for some general advice on code style,
     PEP8 docstrings etc.

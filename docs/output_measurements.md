@@ -1,74 +1,81 @@
+## Organization of PlantCV Outputs
+
+During [parallel processing](pipeline_parallel.md), outputs from PlantCV analysis functions are collected into an 
+SQLite database. The database is used to collect information about each PlantCV pipeline command that is used in
+conjunction with the database (runinfo table), image metadata (metadata table), object size and shape measurements 
+(features table), object color or intensity measurements (signal table), and output image paths (analysis_images table).
+The database structure is updated as new features are added. The current schema is shown below.
+
+### Database schema
+![Screenshot](img/documentation_images/database/sql_schema.png) 
+For each table, the diagram shows three columns: the field names, data types, and index types. Index types are
+Primary Key (PK) and Foreign Key (FK). Foreign Keys are used to join tables in queries.
+
 ## Summary of Output Measurements and Units
 
-1. Analyze Object Function:  
-    - Object Area - object area, pixels (units)  
-    - Convex-Hull Area - area of convex-hull, pixels (units)  
-    - Solidity - Ratio, object area divided by convex hull area.  
-    - Object Perimeter Length - pixels (units)  
-    - Object Width (extent x) - pixels (units)  
-    - Object Height (extent y) - pixels (units)  
-    - Longest Axis - pixels (units)  
-    - Center of Mass-X - x-coordinate, pixels (units)  
-    - Center of Mass-Y - y-coordinate, pixels (units)  
-    - Hull Vertices - number of convex-hull vertices  
-    - In Bounds - True or False (if False the object is touching top of image)  
-    - Object Bounding Ellipse Center-X - x-coordinate, pixels (units)  
-    - Object Bounding Ellipse Center-Y - y-coordinate, pixels (units)  
-    - Object Bounding Ellipse Major Axis - length of major axis of bounding ellipse, pixels (units)  
-    - Object Bounding Ellipse Minor Axis - length of minor axis of bounding ellipse, pixels (units)  
-    - Object Bounding Ellipse Angle - rotation of ellipse in degrees  
-    - Object Bounding Ellipse Eccentricity - ratio, 'roundness' of object (a perfect circle is 0, ellipse is greater than 0 but less than 1)  
+### Analyze object function (features table)
+
+| Measurement          | Units   | Description                                                                                               | 
+| -------------------- | ------- |---------------------------------------------------------------------------------------------------------- | 
+| area                 | pixels  | object area                                                                                               | 
+| hull-area            | pixels  | convex hull area                                                                                          | 
+| solidity             | none    | ratio of object area divided by convex hull area                                                          |
+| perimeter            | pixels  | object perimeter length                                                                                   |
+| width                | pixels  | maximum object width (horizontal)                                                                         |
+| height               | pixels  | maximum object height (vertical)                                                                          |
+| longest_axis         | pixels  | longest path between convex hull vertices through the center of mass                                      |
+| center-of-mass-x     | none    | x-axis coordinate of the object center of mass                                                            |
+| center-of-mass-y     | none    | y-axis coordinate of the object center of mass                                                            |
+| hull_vertices        | none    | number of convex hul vertices                                                                             |
+| in_bounds            | none    | true of false (false if the object is touching the border of the image)                                   |
+| ellipse_center_x     | none    | x-axis coordinate of the center of the minimum bounding ellipse                                           |
+| ellipse_center_y     | none    | y-axis coordinate of the center of the minimum bounding ellipse                                           |
+| ellipse_major_axis   | pixels  | length of the major axis of the minimum bounding ellipse                                                  |
+| ellipse_minor_axis   | pixels  | length of the minor axis of the minimum bounding ellipse                                                  | 
+| ellipse_angle        | degrees | degrees of rotation of the bounding ellipse major axis                                                    |
+| ellipse_eccentricity | none    | [eccentricity](https://en.wikipedia.org/wiki/Eccentricity_(mathematics)#Ellipses) of the bounding ellipse |
+
+### Analyze bound function (features table)
+
+| Measurement              | Units   | Description                                                          | 
+| ------------------------ | ------- |--------------------------------------------------------------------- | 
+| y-position               | none    | y-axis reference position used for measurements (boundary line)      | 
+| height_above_bound       | pixels  | maximum object height (vertical) above the y-position                | 
+| height_below_bound       | pixels  | maximum object height (vertical) below the y-position                |
+| above_bound_area         | pixels  | area of object above the y-position                                  |
+| percent_above_bound_area | none    | percentage of total object area above the y-position                 |
+| below_bound_area         | pixels  | area of object below the y-position                                  |
+| percent_below_bound_area | none    | percentage of total object area below the y-position                 |
+
+### Report size marker function (features table)
+
+| Measurement              | Units   | Description                                                                                               | 
+| ------------------------ | ------- |---------------------------------------------------------------------------------------------------------- | 
+| marker_area              | pixels  | area of reference object (marker)                                                                         | 
+| marker_major_axis_length | pixels  | length of the major axis of the marker bounding ellipse                                                   | 
+| marker_minor_axis_length | pixels  | length of the minor axis of the marker bounding ellipse                                                   |
+| marker_eccentricity      | none    | [eccentricity](https://en.wikipedia.org/wiki/Eccentricity_(mathematics)#Ellipses) of the bounding ellipse |
+
+### Watershed segmentation function (features table)
+
+| Measurement            | Units   | Description                                                          | 
+| ---------------------- | ------- |--------------------------------------------------------------------- | 
+| estimated_object_count | none    | number of segmented objects (e.g. leaves)                            | 
  
----
+### Analyze color function (signal table)
 
-2. Analyze Color Function:  
-    - Red Channel - histogram of object pixel intensity values 0 (unsaturated) to 255 (saturated)  
-    - Green Channel - histogram of object pixel intensity values 0 (unsaturated) to 255 (saturated)  
-    - Blue Channel - histogram of object pixel intensity values 0 (unsaturated) to 255 (saturated)  
-    - Hue Channel - histogram of object pixel intensity values 0 (unsaturated) to 255 (saturated)  
-    - Saturation Channel - histogram of object pixel intensity values 0 (unsaturated) to 255 (saturated)  
-    - Value Channel - histogram of object pixel intensity values 0 (unsaturated) to 255 (saturated)  
-    - Lightness Channel - histogram of object pixel intensity values 0 (unsaturated) to 255 (saturated)  
-    - Green-Magenta Channel - histogram of object pixel intensity values 0 (unsaturated) to 255 (saturated)  
-    - Blue-Yellow Channel - histogram of object pixel intensity values 0 (unsaturated) to 255 (saturated)  
+| Measurement            | Units   | Description                                                                                      | 
+| ---------------------- | ------- |------------------------------------------------------------------------------------------------- | 
+| bin-number             | none    | number of histogram bins (e.g. 256/8-bit)                                                        |
+| channel_name           | none    | possible values: red, green, blue, hue, saturation, value, lightness, green-magenta, blue-yellow |
+| values                 | none    | list of pixel intensity value counts per bin                                                     |
+| bin_values             | none    | list of bin intensity values                                                                     |
 
-----  
-  
-3. Analyze Bound Function:  
-    - Y-Position - Height of the bound line used for measurement (height from bottom of image), pixels (units)  
-    - Height-Above-Bound - Extent-y of object above bound line, pixels (units)  
-    - Height-Below-Bound - Extent-y of object below bound line, pixels (units)  
-    - Area-Above-Bound - area of object above bound line, pixels (units)  
-    - Area-Below-Bound - area of object below bound line, pixels (units)  
-    - Percent-Above-Bound - percentage of total area above the bound line  
-    - Percent-Below-Bound - percentage of total area below the bound line  
+### Analyze NIR intensity function (signal table)
 
----  
-  
-4. Analyze NIR Intensity Function:  
-    - Bins - bin values based on number of bins set by user  
-    - Signal Histogram - histogram of object pixel intensity values 0 (unsaturated) to 255 (saturated)     
-    
----    
-    
-5. PSII-FV/FM Function:  
-    - Bin-number - number of bins set by user  
-    - FV/FM Bins - bin values based on number of bins set by user  
-    - FV/FM Histogram - histogram of FV/FM ratio values for object  
-    - FV/FM Histogram Peak - bin value of histogram peak (greatest number of pixels)  
-    - FV/FM Median - bin value of histogram median  
-    - F-Dark Passed QC - Check (True or False) to determine if Fdark image does not have pixel intensity values above 2000. 
-  
----  
-  
-6. Report Size Marker Function:  
-    - Marker-Area - area of marker, pixels (units)
-    - Marker Bounding Ellipse Major Axis - length of major axis of bounding ellipse, pixels (units)  
-    - Marker Bounding Ellipse Minor Axis - length of minor axis of bounding ellipse, pixels (units)  
-    - Marker Bounding Ellipse Eccentricity - ratio, 'roundness' of object (a perfect circle is 0, ellipse is greater than 0 but less than 1)  
-   
----  
-  
-7. Watershed Segmentation Function:  
-    - Estimated-Object-Count - number of objects (e.g. estimated leaf count)  
-    
+| Measurement            | Units   | Description                                                                                      | 
+| ---------------------- | ------- |--------------------------------------------- | 
+| bin-number             | none    | number of histogram bins (e.g. 256/8-bit)    |
+| channel_name           | none    | possible values: nir                         |
+| values                 | none    | list of pixel intensity value counts per bin |
+| bin_values             | none    | list of bin intensity values                 |

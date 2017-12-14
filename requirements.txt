@@ -4,3 +4,4 @@ pandas
 python-dateutil
 scipy
 scikit-image
+pytest

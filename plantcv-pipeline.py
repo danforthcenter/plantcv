@@ -62,7 +62,7 @@ def options():
     parser.add_argument("-a", "--adaptor",
                         help='Image metadata reader adaptor. PhenoFront metadata is stored in a CSV file and the '
                              'image file name. For the filename option, all metadata is stored in the image file '
-                             'name. Current adaptors: phenofront, image', default="phenofront")
+                             'name. Current adaptors: phenofront, filename', default="phenofront")
     parser.add_argument("-p", "--pipeline", help='Pipeline script file.', required=True)
     parser.add_argument("-s", "--db", help='SQLite database file name.', required=True)
     parser.add_argument("-i", "--outdir", help='Output directory for images. Not required by all pipelines.',
@@ -101,7 +101,7 @@ def options():
     if not os.path.exists(args.pipeline):
         raise IOError("File does not exist: {0}".format(args.pipeline))
     if args.adaptor is 'phenofront':
-        if not os.path.exists(args.dir + '/SnapshotInfo.csv'):
+        if not os.path.exists(os.path.join(args.dir, 'SnapshotInfo.csv')):
             raise IOError(
                 'The snapshot metadata file SnapshotInfo.csv does not exist in {0}. '
                 'Perhaps you meant to use a different adaptor?'.format(
@@ -191,10 +191,6 @@ def main():
     # Variables
     ###########################################
     meta = {}
-
-    # Get this script's path
-    exedir = os.path.abspath(os.path.dirname(sys.argv[0]))
-    # db_schema = exedir + '/../../include/results.sql'
 
     # Get command
     command = ' '.join(map(str, sys.argv))
@@ -293,11 +289,11 @@ def main():
 
     # Load database
     ###########################################
-    call("sqlite3 " + args.db + " \".import " + runinfo_file.name + " runinfo\"", shell=True)
-    call("sqlite3 " + args.db + " \".import " + args.metadata_file.name + " metadata\"", shell=True)
-    call("sqlite3 " + args.db + " \".import " + args.features_file.name + " features\"", shell=True)
-    call("sqlite3 " + args.db + " \".import " + args.analysis_images_file.name + " analysis_images\"", shell=True)
-    call("sqlite3 " + args.db + " \".import " + args.signal_file.name + " signal\"", shell=True)
+    call(["sqlite3", args.db, '.import ' + runinfo_file.name + ' runinfo'])
+    call(["sqlite3", args.db, '.import ' + args.metadata_file.name + ' metadata'])
+    call(["sqlite3", args.db, '.import ' + args.features_file.name + ' features'])
+    call(["sqlite3", args.db, '.import ' + args.analysis_images_file.name + ' analysis_images'])
+    call(["sqlite3", args.db, '.import ' + args.signal_file.name + ' signal'])
     ###########################################
 
 
@@ -511,7 +507,7 @@ def phenofront_parser(args):
     args.jobcount = 0
 
     # Open the SnapshotInfo.csv file
-    csvfile = open(args.dir + '/SnapshotInfo.csv', 'rU')
+    csvfile = open(os.path.join(args.dir, 'SnapshotInfo.csv'), 'rU')
 
     # Read the first header line
     header = csvfile.readline()
@@ -536,9 +532,9 @@ def phenofront_parser(args):
         imgs = img_list.split(';')
         for img in imgs:
             if len(img) != 0:
-                dirpath = args.dir + '/snapshot' + data[colnames['id']]
+                dirpath = os.path.join(args.dir, 'snapshot' + data[colnames['id']])
                 filename = img + '.' + args.type
-                if not os.path.exists(dirpath + '/' + filename):
+                if not os.path.exists(os.path.join(dirpath, filename)):
                     args.error_log.write("Something is wrong, file {0}/{1} does not exist".format(dirpath, filename))
                     continue
                     # raise IOError("Something is wrong, file {0}/{1} does not exist".format(dirpath, filename))
@@ -612,7 +608,8 @@ def phenofront_parser(args):
                                             coimg_pass = 1
                             if coimg_pass == 0:
                                 args.error_log.write(
-                                    "Could not find an image to coprocess with " + dirpath + '/' + filename + '\n')
+                                    "Could not find an image to coprocess with " + os.path.join(dirpath,
+                                                                                                filename) + '\n')
                         meta[filename] = img_meta
                     elif coimg_store == 1:
                         meta[filename] = img_meta
@@ -626,7 +623,7 @@ def phenofront_parser(args):
 ###########################################
 def process_images_multiproc(jobs):
     for job in jobs:
-        os.system(job)
+        call(job)
 
 
 # Multiprocessing pool builder
@@ -688,15 +685,15 @@ def job_builder(args, meta):
         if (args.coprocess is not None) and ('coimg' in meta[img]):
             # Create an output file to store the co-image processing results and populate with metadata
             coimg = meta[meta[img]['coimg']]
-            coout = file_writer("./{0}/{1}.txt".format(args.jobdir, meta[img]['coimg']))
-            coout.write('\t'.join(map(str, ("META", "image", coimg['path'] + '/' + meta[img]['coimg']))) + '\n')
+            coout = file_writer(os.path.join(".", args.jobdir, meta[img]["coimg"] + ".txt"))
+            coout.write('\t'.join(map(str, ("META", "image", os.path.join(coimg['path'], meta[img]['coimg'])))) + '\n')
             # Valid metadata
             for m in list(args.valid_meta.keys()):
                 coout.write('\t'.join(map(str, ("META", m, coimg[m]))) + '\n')
 
         # Create an output file to store the image processing results and populate with metadata
-        outfile = file_writer("./{0}/{1}.txt".format(args.jobdir, img))
-        outfile.write('\t'.join(map(str, ("META", "image", meta[img]['path'] + '/' + img))) + '\n')
+        outfile = file_writer(os.path.join(".", args.jobdir, img + ".txt"))
+        outfile.write('\t'.join(map(str, ("META", "image", os.path.join(meta[img]['path'], img)))) + '\n')
         # Valid metadata
         for m in list(args.valid_meta.keys()):
             outfile.write('\t'.join(map(str, ("META", m, meta[img][m]))) + '\n')
@@ -714,26 +711,18 @@ def job_builder(args, meta):
 
         # For each job/CPU
         for j in range(0, jobs_per_cpu):
+            job_parts = ["python", args.pipeline, "--image", os.path.join(meta[images[job]]['path'], images[job]),
+                         "--outdir", args.outdir, "--result", os.path.join(args.jobdir, images[job]) + ".txt"]
             # Add job to list
             if args.coprocess is not None and ('coimg' in meta[images[job]]):
-                job_str = "python {0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt --coresult ./{6}/{7}.txt".format(
-                    args.pipeline, meta[images[job]]['path'], images[job], args.outdir, args.jobdir, images[job],
-                    args.jobdir, meta[images[job]]['coimg'])
-                if args.writeimg:
-                    job_str += ' --writeimg'
-                if args.other_args:
-                    job_str += ' ' + args.other_args
-                jobs.append(job_str)
-            else:
-                job_str = "python {0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt".format(args.pipeline,
-                                                                                           meta[images[job]]['path'],
-                                                                                           images[job], args.outdir,
-                                                                                           args.jobdir, images[job])
-                if args.writeimg:
-                    job_str += ' --writeimg'
-                if args.other_args:
-                    job_str += ' ' + args.other_args
-                jobs.append(job_str)
+                job_parts = job_parts + ["--coresult", os.path.join(args.jobdir, meta[images[job]]['coimg']) + ".txt"]
+            if args.writeimg:
+                job_parts.append("--writeimg")
+            if args.other_args:
+                other_args1=re.sub("'","",args.other_args)
+                other_args = other_args1.split(" ")
+                job_parts = job_parts + other_args
+            jobs.append(job_parts)
 
             # Increase the job counter by 1
             job += 1
@@ -744,26 +733,19 @@ def job_builder(args, meta):
     # Add the remaining jobs to the last CPU
     jobs = []
     for j in range(job, len(images)):
+        job_parts = ["python", args.pipeline, "--image", os.path.join(meta[images[job]]['path'], images[job]),
+                     "--outdir", args.outdir, "--result", os.path.join(args.jobdir, images[job]) + ".txt"]
         # Add job to list
         if args.coprocess is not None and ('coimg' in meta[images[j]]):
-            job_str = "python {0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt --coresult ./{6}/{7}.txt".format(
-                args.pipeline, meta[images[j]]['path'], images[j], args.outdir, args.jobdir, images[j], args.jobdir,
-                meta[images[j]]['coimg'])
-            if args.writeimg:
-                job_str += ' --writeimg'
-            if args.other_args:
-                job_str += ' ' + args.other_args
-            jobs.append(job_str)
-        else:
-            job_str = "python {0} --image {1}/{2} --outdir {3} --result ./{4}/{5}.txt".format(args.pipeline,
-                                                                                       meta[images[j]]['path'],
-                                                                                       images[j], args.outdir,
-                                                                                       args.jobdir, images[j])
-            if args.writeimg:
-                job_str += ' --writeimg'
-            if args.other_args:
-                job_str += ' ' + args.other_args
-            jobs.append(job_str)
+            job_parts = job_parts + ["--coresult", os.path.join(args.jobdir, meta[images[job]]['coimg']) + ".txt"]
+        if args.writeimg:
+            job_parts.append("--writeimg")
+        if args.other_args:
+            other_args1 = re.sub("'","",args.other_args)
+            other_args = other_args1.split(" ")
+            job_parts = job_parts + other_args
+        jobs.append(job_parts)
+
     # Add the CPU job list to the job stack
     job_stack.append(jobs)
 
@@ -801,8 +783,8 @@ def process_results(args):
     opt_feature_fields = ['y-position', 'height_above_bound', 'height_below_bound',
                           'above_bound_area', 'percent_above_bound_area', 'below_bound_area',
                           'percent_below_bound_area']
-    marker_fields = ['marker_area','marker_major_axis_length','marker_minor_axis_length','marker_eccentricity']
-    watershed_fields=['estimated_object_count']
+    marker_fields = ['marker_area', 'marker_major_axis_length', 'marker_minor_axis_length', 'marker_eccentricity']
+    watershed_fields = ['estimated_object_count']
     landmark_fields = ['tip_points', 'tip_points_r', 'centroid_r', 'baseline_r', 'tip_number', 'vert_ave_c',
                        'hori_ave_c', 'euc_ave_c', 'ang_ave_c', 'vert_ave_b', 'hori_ave_b', 'euc_ave_b', 'ang_ave_b',
                        'left_lmk', 'right_lmk', 'center_h_lmk', 'left_lmk_r', 'right_lmk_r', 'center_h_lmk_r',
@@ -824,7 +806,8 @@ def process_results(args):
         '` TEXT NOT NULL, `'.join(map(str, metadata_fields[2:])) + '` TEXT NOT NULL);')
     args.sq.execute(
         'CREATE TABLE IF NOT EXISTS `features` (`image_id` INTEGER PRIMARY KEY, `' + '` TEXT NOT NULL, `'.join(
-            map(str, feature_fields + opt_feature_fields + marker_fields+ watershed_fields + landmark_fields)) + '` TEXT NOT NULL);')
+            map(str, feature_fields + opt_feature_fields + marker_fields + watershed_fields + landmark_fields)
+        ) + '` TEXT NOT NULL);')
     args.sq.execute(
         'CREATE TABLE IF NOT EXISTS `analysis_images` (`image_id` INTEGER NOT NULL, `type` TEXT NOT NULL, '
         '`image_path` TEXT NOT NULL);')
@@ -847,12 +830,12 @@ def process_results(args):
                 boundary_data = {}
                 marker = []
                 marker_data = {}
-                watershed=[]
-                watershed_data={}
+                watershed = []
+                watershed_data = {}
                 landmark = []
                 landmark_data = {}
                 # Open results file
-                with open(dirpath + '/' + filename) as results:
+                with open(os.path.join(dirpath, filename)) as results:
                     # For each line in the file
                     for row in results:
                         # Remove the newline character
@@ -897,12 +880,12 @@ def process_results(args):
                                 if i > 0:
                                     marker_data[marker[i]] = datum
                         elif 'HEADER_WATERSHED' in cols[0]:
-                            watershed=cols
-                            watershed[1]='estimated_object_count'
+                            watershed = cols
+                            watershed[1] = 'estimated_object_count'
                         elif 'WATERSHED_DATA' in cols[0]:
                             for i, datum in enumerate(cols):
-                                if i>0:
-                                    watershed_data[watershed[i]]=datum
+                                if i > 0:
+                                    watershed_data[watershed[i]] = datum
                         elif 'HEADER_LANDMARK' in cols[0]:
                             landmark = cols
                         elif 'LANDMARK_DATA' in cols[0]:
@@ -967,7 +950,8 @@ def process_results(args):
                         if key != 'bin-number' and key != 'bin-values':
                             signal_data[key] = signal_data[key].replace('[', '')
                             signal_data[key] = signal_data[key].replace(']', '')
-                            signal_table = [args.image_id, signal_data['bin-number'],key, signal_data[key],signal_data['bin-values']]
+                            signal_table = [args.image_id, signal_data['bin-number'], key, signal_data[key],
+                                            signal_data['bin-values']]
                             args.signal_file.write('|'.join(map(str, signal_table)) + '\n')
                 else:
                     args.fail_log.write('|'.join(map(str, meta_table)) + '\n')
@@ -976,7 +960,7 @@ def process_results(args):
 
                     feature_table = [args.image_id]
 
-                    for field in feature_fields + opt_feature_fields + marker_fields + watershed_fields+ landmark_fields:
+                    for field in feature_fields + opt_feature_fields + marker_fields + watershed_fields + landmark_fields:
                         feature_table.append(0)
 
                     args.features_file.write('|'.join(map(str, feature_table)) + '\n')

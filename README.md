@@ -1,10 +1,12 @@
 [![Build Status](https://travis-ci.org/danforthcenter/plantcv.svg?branch=master)](https://travis-ci.org/danforthcenter/plantcv)
 [![Coverage Status](https://coveralls.io/repos/github/danforthcenter/plantcv/badge.svg)](https://coveralls.io/github/danforthcenter/plantcv)
 [![Documentation Status](http://readthedocs.org/projects/plantcv/badge/?version=latest)](http://plantcv.readthedocs.io/en/latest/?badge=latest)
+[![GitHub release](https://img.shields.io/github/release/danforthcenter/plantcv.svg)](https://github.com/danforthcenter/plantcv/releases)
+[![license](https://img.shields.io/github/license/danforthcenter/plantcv.svg)](https://github.com/danforthcenter/plantcv/blob/master/LICENSE)
 
 # PlantCV: Plant phenotyping using computer vision
 
-Please use, cite, and [contribute to](https://github.com/danforthcenter/plantcv/blob/dev/CONTRIBUTING.md) PlantCV!
+Please use, cite, and [contribute to](http://plantcv.readthedocs.io/en/latest/CONTRIBUTING/) PlantCV!
 If you have questions, please submit them via the
 [GitHub issues page](https://github.com/danforthcenter/plantcv/issues).
 Follow us on twitter [@plantcv](https://twitter.com/plantcv).
@@ -40,7 +42,7 @@ Ficor T, Turnipseed S, Gilbert KB, Brutnell TP, Carrington JC, Mockler TC, Baxte
 system and analytics platform reveals diverse temporal responses to water availability in *Setaria*. Molecular Plant 8:
 1520-1535. http://doi.org/10.1016/j.molp.2015.06.005
 
-2. Bradski G (2000) The opencv library. Doctor Dobbs Journal 25(11): 120-126. 
+2. Bradski G (2000) The OpenCV library. Dr. Dobb's Journal 25(11): 120-126.
 http://www.drdobbs.com/open-source/the-opencv-library/184404319
 
 3. Oliphant TE (2007) Python for Scientific Computing. Computing in Science & Engineering 9: 10-20.

@@ -10,6 +10,7 @@ Title: Please provide a descriptive title that summarizes your pull request.
 
 <!---
 Labels: Please select one or more relevant tags (menu on the right).
+(This only shows up for administrators.)
 --->
 
 ### Description
