@@ -30,3 +30,7 @@ RUN pip install -r requirements.txt
 RUN python setup.py install
 ADD plantcv-pipeline.py /usr/local/bin
 ADD plantcv-train.py /usr/local/bin
+
+# Create a directory to mount a host directory
+RUN mkdir -p /data
+WORKDIR /data
