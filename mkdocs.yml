@@ -43,6 +43,7 @@ pages:
     - 'Color palette': color_palette.md
     - 'Crop and Position Mask': crop_position_mask.md
     - 'Dilation': dilate.md
+    - 'Distance Transform': distance_transform.md
     - 'Erosion': erode.md
     - 'Fill objects': fill.md
     - 'Find objects': find_objects.md

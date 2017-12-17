@@ -8,7 +8,7 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'plot_co
            'white_balance', 'triangle_auto_threshold', 'acute_vertex', 'scale_features', 'landmark_reference_pt_dist',
            'x_axis_pseudolandmarks', 'y_axis_pseudolandmarks', 'gaussian_blur', 'cluster_contours',
            'cluster_contour_splitimg', 'rotate_img', 'shift_img', 'output_mask', 'auto_crop',
-           'background_subtraction', 'naive_bayes_classifier', 'acute']
+           'background_subtraction', 'naive_bayes_classifier', 'acute','distance_transform']
 
 from fatal_error import fatal_error
 from print_image import print_image
@@ -72,5 +72,6 @@ from auto_crop import auto_crop
 from background_subtraction import background_subtraction
 from naive_bayes_classifier import naive_bayes_classifier
 from acute import acute
+from distance_transform import distance_transform
 
 # add new functions to end of lists
