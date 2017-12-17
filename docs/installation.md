@@ -359,3 +359,37 @@ Test import again and you should see no more errors. Restarting workspace will r
 libdc1394 error again.
 
 `python -c 'import plantcv'`
+
+#### Docker
+
+[Docker](https://www.docker.com/) is a company/platform that provides operating-system-level virtualization 
+(containers). See [Wikipedia](https://en.wikipedia.org/wiki/Operating-system-level_virtualization) for more background.
+Containers are a useful way to package and isolate applications (and their dependencies) into a portable, lightweight 
+virtualized environment. A PlantCV Docker container is available through 
+[Docker Hub](https://hub.docker.com/r/danforthcenter/plantcv/). To use the PlantCV container you will need docker
+[installed on your local system](https://docs.docker.com/engine/installation/). If you have docker, you can use PlantCV
+as in the following examples:
+
+```bash
+# Pull the latest image of PlantCV from Docker Hub
+docker pull danforthcenter/plantcv
+
+# A simple command to demonstrate it works (nothing returned if import is successful)
+docker run danforthcenter/plantcv python -c 'import plantcv'
+```
+
+To analyze data with the PlantCV Docker container you will need to map a local folder that contains your inputs into
+the container filesystem. We have set up a directory in the container at `/data` to get data into/out of the container.
+In the example below, local data and scripts are in a directory called `/home/user` but it can be any directory you 
+want. Everything in `/home/user` will be accessible in the container and any outputs written to `/data` in the 
+container will be written locally to the directory you provide.
+
+For the sake of this example, assume that `/home/user` contains a PlantCV script called `test-script.py` and an image
+called `test-image.png`. The `test-script.py` in this case would be a script like the one described in the 
+[VIS tutorial](vis_tutorial.md).
+
+```bash
+# Analyzing data using the PlantCV docker image
+docker run -v /home/user:/data danforthcenter/plantcv \
+python /data/test-script.py -i /data/test-image.png -o /data -r /data/plantcv-results.txt
+```
