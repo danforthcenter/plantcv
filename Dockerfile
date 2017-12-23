@@ -7,9 +7,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -qq update && \
     apt-get -qq clean
 
 # Install conda
-RUN wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O /tmp/miniconda.sh
-RUN bash /tmp/miniconda.sh -b -p /opt/conda
-RUN rm /tmp/miniconda.sh
+RUN wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O /tmp/miniconda.sh && \
+    bash /tmp/miniconda.sh -b -p /opt/conda && rm /tmp/miniconda.sh
 
 # Set PATH and PYTHONPATH environmental variables for conda
 ENV PATH /opt/conda/bin:$PATH
@@ -23,13 +22,13 @@ RUN mkdir -p /tmp/plantcv
 ADD . /tmp/plantcv
 WORKDIR /tmp/plantcv
 
-# Install PlantCV Python prerequisites
-RUN pip install --quiet -r requirements.txt
-
-# Install PlantCV
-RUN python setup.py install
+# Install PlantCV Python prerequisites and PlantCV
+RUN pip install --quiet -r requirements.txt && python setup.py install
 ADD plantcv-pipeline.py /usr/local/bin
 ADD plantcv-train.py /usr/local/bin
 
-# Create a directory to mount a host directory
-RUN mkdir -p /data
+# Create a directory to mount a host directory and remove PlantCV temp files
+RUN mkdir -p /data && rm -fr /tmp/plantcv
+
+# Set /home as the working directory
+WORKDIR /home

@@ -4,6 +4,11 @@ sudo: false
 # Which versions of Python to test
 python:
   - "2.7"
+  - "3.6"
+# Allow Python3 tests to fail for now
+matrix:
+  allow_failures:
+    - python: "3.6"
 # Do not have the virtualenv use system-wide site packages
 virtualenv:
     system_site_packages: false
@@ -21,7 +26,11 @@ before_install:
 #  - conda update -q conda
   - conda info -a
   # These are the packages we need
-  - conda create -q -c menpo -n test-environment python=$TRAVIS_PYTHON_VERSION opencv=2.4.11
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+      conda create -q -c menpo -n test-environment python=$TRAVIS_PYTHON_VERSION opencv=2.4.11;
+    else
+      conda create -q -c conda-forge -n test-environment python=$TRAVIS_PYTHON_VERSION opencv=3.3.0;
+    fi
   - source activate test-environment
   - pip install coveralls matplotlib scipy scikit-image pytest pandas
 # Install PlantCV
@@ -38,4 +47,3 @@ after_success:
 branches:
   only:
     - master
-    - dev
