@@ -1658,7 +1658,7 @@ def test_plantcv_background_subtraction_different_sizes():
     fg_img = cv2.imread(os.path.join(TEST_DATA, TEST_FOREGROUND))
     bg_img = cv2.imread(os.path.join(TEST_DATA, TEST_BACKGROUND))
     bg_shp = np.shape(bg_img)  # type: tuple
-    bg_img_resized = cv2.resize(bg_img, (bg_shp[0] / 2, bg_shp[1] / 2), interpolation=cv2.INTER_AREA)
+    bg_img_resized = cv2.resize(bg_img, (int(bg_shp[0] / 2), int(bg_shp[1] / 2)), interpolation=cv2.INTER_AREA)
     device, fgmask = pcv.background_subtraction(background_image=bg_img_resized, foreground_image=fg_img, device=0,
                                                 debug=None)
     assert np.sum(fgmask) > 0
