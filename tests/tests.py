@@ -1579,7 +1579,7 @@ def test_plantcv_y_axis_pseudolandmarks():
     # Test with debug = "plot"
     _ = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img, device=0, debug="plot")
     # Test with debug = None
-    device, left, right, center_h = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img, device=0,
+    device, left, right, center_h = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img, device=0,
                                                                debug=None)
     assert all([all([i == j] for i, j in zip(np.shape(left), (20, 1, 2))),
                all([i == j] for i, j in zip(np.shape(right), (20, 1, 2))),
