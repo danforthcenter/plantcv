@@ -70,7 +70,7 @@ def setup_function():
 def test_plantcv_acute():
     # Read in test data
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
-    contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR))
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR), encoding="latin1")
     obj_contour = contours_npz['arr_0']
     # Test with debug = "print"
     _ = pcv.acute(obj=obj_contour, win=5, thresh=15, mask=mask, device=0, debug="print")
@@ -85,7 +85,7 @@ def test_plantcv_acute_vertex():
     os.mkdir(cache_dir)
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_VIS_SMALL))
-    contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR))
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR), encoding="latin1")
     obj_contour = contours_npz['arr_0']
     # Test with debug = "print"
     _ = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img, device=0, debug="print")
@@ -152,7 +152,7 @@ def test_plantcv_analyze_bound():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS))
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
     object_contours = contours_npz['arr_0']
     # Test with debug = "print"
     outfile = os.path.join(TEST_TMPDIR, TEST_INPUT_COLOR)
@@ -259,7 +259,7 @@ def test_plantcv_analyze_object():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS))
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
     obj_contour = contours_npz['arr_0']
     max_obj = max(obj_contour, key=len)
     # Test with debug = "print"
@@ -314,7 +314,7 @@ def test_plantcv_auto_crop():
     os.mkdir(cache_dir)
     # Read in test data
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
-    contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_CONTOUR))
+    contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_CONTOUR), encoding="latin1")
     roi_contours = contours['arr_0']
     # Test with debug = "print"
     _ = pcv.auto_crop(device=0, img=img1, objects=roi_contours[48], padding_x=20, padding_y=20, color='black',
@@ -371,7 +371,7 @@ def test_plantcv_cluster_contours():
     os.mkdir(cache_dir)
     # Read in test data
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
-    contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_CONTOUR))
+    contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_CONTOUR), encoding="latin1")
     roi_contours = contours['arr_0']
     # Test with debug = "print"
     _ = pcv.cluster_contours(device=0, img=img1, roi_objects=roi_contours, nrow=4, ncol=6, debug="print")
@@ -392,8 +392,8 @@ def test_plantcv_cluster_contours_splitimg():
     os.mkdir(cache_dir)
     # Read in test data
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
-    contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_CONTOUR))
-    clusters = np.load(os.path.join(TEST_DATA, TEST_INPUT_ClUSTER_CONTOUR))
+    contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_CONTOUR), encoding="latin1")
+    clusters = np.load(os.path.join(TEST_DATA, TEST_INPUT_ClUSTER_CONTOUR), encoding="latin1")
     cluster_names = os.path.join(TEST_DATA, TEST_INPUT_GENOTXT)
     roi_contours = contours['arr_0']
     cluster_contours = clusters['arr_0']
@@ -1009,7 +1009,7 @@ def test_plantcv_object_composition():
     os.mkdir(cache_dir)
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS))
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
     object_contours = contours_npz['arr_0']
     object_hierarchy = contours_npz['arr_1']
     # Test with debug = "print"
@@ -1272,10 +1272,10 @@ def test_plantcv_roi_objects():
     os.mkdir(cache_dir)
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    roi_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_ROI))
+    roi_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_ROI), encoding="latin1")
     roi_contour = roi_npz['arr_0']
     roi_hierarchy = roi_npz['arr_1']
-    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS))
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
     object_contours = contours_npz['arr_0']
     object_hierarchy = contours_npz['arr_1']
     # Test with debug = "print"
@@ -1336,7 +1336,7 @@ def test_plantcv_scale_features():
     os.mkdir(cache_dir)
     # Read in test data
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
-    contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR))
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR), encoding="latin1")
     obj_contour = contours_npz['arr_0']
     # Test with debug = "print"
     _ = pcv.scale_features(obj=obj_contour, mask=mask, points=TEST_ACUTE_RESULT, boundary_line=50, device=0,
@@ -1528,7 +1528,7 @@ def test_plantcv_white_balance_rgb():
 def test_plantcv_x_axis_pseudolandmarks():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_VIS_SMALL))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
-    contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR))
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR), encoding="latin1")
     obj_contour = contours_npz['arr_0']
     # Test with debug = "plot"
     _ = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img, device=0, debug="plot")
@@ -1543,7 +1543,7 @@ def test_plantcv_x_axis_pseudolandmarks():
 def test_plantcv_x_axis_pseudolandmarks_small_obj():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_VIS_SMALL_PLANT))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL_PLANT), -1)
-    contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR_SMALL_PLANT))
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR_SMALL_PLANT), encoding="latin1")
     obj_contour = contours_npz['arr_0']
     # Test with debug = "plot"
     device, top, bottom, center_v = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img, device=0,
@@ -1564,7 +1564,7 @@ def test_plantcv_x_axis_pseudolandmarks_bad_input():
 def test_plantcv_y_axis_pseudolandmarks():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_VIS_SMALL))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
-    contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR))
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR), encoding="latin1")
     obj_contour = contours_npz['arr_0']
     # Test with debug = "plot"
     _ = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img, device=0, debug="plot")
@@ -1579,7 +1579,7 @@ def test_plantcv_y_axis_pseudolandmarks():
 def test_plantcv_y_axis_pseudolandmarks_small_obj():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_VIS_SMALL_PLANT))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL_PLANT), -1)
-    contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR_SMALL_PLANT))
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR_SMALL_PLANT), encoding="latin1")
     obj_contour = contours_npz['arr_0']
     # Test with debug = "plot"
     device, left, right, center_h = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img, device=0,
