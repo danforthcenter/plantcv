@@ -39,7 +39,7 @@ def y_axis_pseudolandmarks(obj, mask, img, device, debug=None):
     extent = height
     # If height is greater than 21 pixels make 20 increments (5% intervals)
     if extent >= 21:
-        inc = extent / 21
+        inc = int(extent / 21)
         # Define variable for max points and min points
         pts_max = []
         pts_min = []
@@ -131,7 +131,7 @@ def y_axis_pseudolandmarks(obj, mask, img, device, debug=None):
         # median_value = row_median[indice_median]
         # ave_value = row_ave[indice_ave]
         # max_value = max_width[indice_ave]
-        left = zip(left_points, y_vals)
+        left = list(zip(left_points, y_vals))
         left = np.array(left)
         left.shape = (20, 1, 2)
         right = list(zip(right_points, y_vals))
