@@ -115,12 +115,13 @@ def naive_bayes_multiclass(samples_file, outfile, mkplots=False):
             points = row.split("\t")
             # For each point per class
             for i, point in enumerate(points):
-                # Split the point into red, green, and blue integer values
-                red, green, blue = map(int, point.split(","))
-                # Append each intensity value into the appropriate class list
-                sample_points[class_list[i]]["red"].append(red)
-                sample_points[class_list[i]]["green"].append(green)
-                sample_points[class_list[i]]["blue"].append(blue)
+                if len(point) > 0:
+                    # Split the point into red, green, and blue integer values
+                    red, green, blue = map(int, point.split(","))
+                    # Append each intensity value into the appropriate class list
+                    sample_points[class_list[i]]["red"].append(red)
+                    sample_points[class_list[i]]["green"].append(green)
+                    sample_points[class_list[i]]["blue"].append(blue)
     f.close()
     # Initialize a dictionary to store probability density functions per color channel in HSV colorspace
     pdfs = {"hue": {}, "saturation": {}, "value": {}}

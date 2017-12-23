@@ -9,22 +9,24 @@ pages:
 - Home: index.md
 - Documentation:
   - 'Installation': installation.md
-  - 'Frequently Asked Questions': faq.md
   - 'Updating PlantCV': updating.md
+  - 'Frequently Asked Questions': faq.md
+  - 'Analysis Approaches': analysis_approach.md
   - 'Using Jupyter Notebooks': jupyter.md
-  - 'Contributing to PlantCV': CONTRIBUTING.md
-  - 'Code of Conduct': CODE_OF_CONDUCT.md
-  - 'Adding/editing Documentation': documentation.md
   - 'Summary of Output Measurements': output_measurements.md
+  - 'Contributing':
+    - 'Contributing to PlantCV': CONTRIBUTING.md
+    - 'Code of Conduct': CODE_OF_CONDUCT.md
+    - 'Adding/editing Documentation': documentation.md
   - Tutorials:
     - 'VIS pipeline': vis_tutorial.md
     - 'NIR pipeline': nir_tutorial.md
     - 'PSII pipeline': psII_tutorial.md
     - 'VIS/NIR dual pipeline': vis_nir_tutorial.md
     - 'Multi plant pipeline': multi-plant_tutorial.md
-    - 'Pipeline parallelization': pipeline_parallel.md
-    - 'Export Filter and Export Data': db-exporter.md
     - 'Machine Learning': machine_learning_tutorial.md
+    - 'Pipeline parallelization': pipeline_parallel.md
+    - 'Exporting data': db-exporter.md
   - 'Package plantcv':
     - 'Adaptive Threshold': adaptive_threshold.md
     - 'Analyze color': analyze_color.md
@@ -41,6 +43,7 @@ pages:
     - 'Color palette': color_palette.md
     - 'Crop and Position Mask': crop_position_mask.md
     - 'Dilation': dilate.md
+    - 'Distance Transform': distance_transform.md
     - 'Erosion': erode.md
     - 'Fill objects': fill.md
     - 'Find objects': find_objects.md

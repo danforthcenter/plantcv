@@ -62,7 +62,7 @@ def options():
     parser.add_argument("-a", "--adaptor",
                         help='Image metadata reader adaptor. PhenoFront metadata is stored in a CSV file and the '
                              'image file name. For the filename option, all metadata is stored in the image file '
-                             'name. Current adaptors: phenofront, image', default="phenofront")
+                             'name. Current adaptors: phenofront, filename', default="phenofront")
     parser.add_argument("-p", "--pipeline", help='Pipeline script file.', required=True)
     parser.add_argument("-s", "--db", help='SQLite database file name.', required=True)
     parser.add_argument("-i", "--outdir", help='Output directory for images. Not required by all pipelines.',
@@ -192,10 +192,6 @@ def main():
     ###########################################
     meta = {}
 
-    # Get this script's path
-    # exedir = os.path.abspath(os.path.dirname(sys.argv[0]))
-    # db_schema = exedir + '/../../include/results.sql'
-
     # Get command
     command = ' '.join(map(str, sys.argv))
 
@@ -293,11 +289,11 @@ def main():
 
     # Load database
     ###########################################
-    call("sqlite3 " + args.db + " \".import " + runinfo_file.name + " runinfo\"", shell=True)
-    call("sqlite3 " + args.db + " \".import " + args.metadata_file.name + " metadata\"", shell=True)
-    call("sqlite3 " + args.db + " \".import " + args.features_file.name + " features\"", shell=True)
-    call("sqlite3 " + args.db + " \".import " + args.analysis_images_file.name + " analysis_images\"", shell=True)
-    call("sqlite3 " + args.db + " \".import " + args.signal_file.name + " signal\"", shell=True)
+    call(["sqlite3", args.db, '.import ' + runinfo_file.name + ' runinfo'])
+    call(["sqlite3", args.db, '.import ' + args.metadata_file.name + ' metadata'])
+    call(["sqlite3", args.db, '.import ' + args.features_file.name + ' features'])
+    call(["sqlite3", args.db, '.import ' + args.analysis_images_file.name + ' analysis_images'])
+    call(["sqlite3", args.db, '.import ' + args.signal_file.name + ' signal'])
     ###########################################
 
 
@@ -627,7 +623,7 @@ def phenofront_parser(args):
 ###########################################
 def process_images_multiproc(jobs):
     for job in jobs:
-        os.system(job)
+        call(job)
 
 
 # Multiprocessing pool builder
@@ -715,27 +711,18 @@ def job_builder(args, meta):
 
         # For each job/CPU
         for j in range(0, jobs_per_cpu):
+            job_parts = ["python", args.pipeline, "--image", os.path.join(meta[images[job]]['path'], images[job]),
+                         "--outdir", args.outdir, "--result", os.path.join(args.jobdir, images[job]) + ".txt"]
             # Add job to list
             if args.coprocess is not None and ('coimg' in meta[images[job]]):
-                job_str = "python {0} --image {1} --outdir {2} --result {3}.txt " \
-                          "--coresult {4}.txt".format(args.pipeline, os.path.join(meta[images[job]]['path'],
-                                                                                  images[job]), args.outdir,
-                                                      os.path.join(args.jobdir, images[job]),
-                                                      os.path.join(args.jobdir, meta[images[job]]['coimg']))
-                if args.writeimg:
-                    job_str += ' --writeimg'
-                if args.other_args:
-                    job_str += ' ' + args.other_args
-                jobs.append(job_str)
-            else:
-                job_str = "python {0} --image {1} --outdir {2} " \
-                          "--result {3}.txt".format(args.pipeline, os.path.join(meta[images[job]]['path'], images[job]),
-                                                    args.outdir, os.path.join(args.jobdir, images[job]))
-                if args.writeimg:
-                    job_str += ' --writeimg'
-                if args.other_args:
-                    job_str += ' ' + args.other_args
-                jobs.append(job_str)
+                job_parts = job_parts + ["--coresult", os.path.join(args.jobdir, meta[images[job]]['coimg']) + ".txt"]
+            if args.writeimg:
+                job_parts.append("--writeimg")
+            if args.other_args:
+                other_args1=re.sub("'","",args.other_args)
+                other_args = other_args1.split(" ")
+                job_parts = job_parts + other_args
+            jobs.append(job_parts)
 
             # Increase the job counter by 1
             job += 1
@@ -746,26 +733,19 @@ def job_builder(args, meta):
     # Add the remaining jobs to the last CPU
     jobs = []
     for j in range(job, len(images)):
+        job_parts = ["python", args.pipeline, "--image", os.path.join(meta[images[job]]['path'], images[job]),
+                     "--outdir", args.outdir, "--result", os.path.join(args.jobdir, images[job]) + ".txt"]
         # Add job to list
         if args.coprocess is not None and ('coimg' in meta[images[j]]):
-            job_str = "python {0} --image {1} --outdir {2} --result {3}.txt " \
-                      "--coresult {4}.txt".format(args.pipeline, os.path.join(meta[images[j]]['path'], images[j]),
-                                                  args.outdir, os.path.join(args.jobdir, images[j]),
-                                                  os.path.join(args.jobdir, meta[images[j]]['coimg']))
-            if args.writeimg:
-                job_str += ' --writeimg'
-            if args.other_args:
-                job_str += ' ' + args.other_args
-            jobs.append(job_str)
-        else:
-            job_str = "python {0} --image {1} --outdir {2} " \
-                      "--result {3}.txt".format(args.pipeline, os.path.join(meta[images[j]]['path'], images[j]),
-                                                args.outdir, os.path.join(args.jobdir, images[j]))
-            if args.writeimg:
-                job_str += ' --writeimg'
-            if args.other_args:
-                job_str += ' ' + args.other_args
-            jobs.append(job_str)
+            job_parts = job_parts + ["--coresult", os.path.join(args.jobdir, meta[images[job]]['coimg']) + ".txt"]
+        if args.writeimg:
+            job_parts.append("--writeimg")
+        if args.other_args:
+            other_args1 = re.sub("'","",args.other_args)
+            other_args = other_args1.split(" ")
+            job_parts = job_parts + other_args
+        jobs.append(job_parts)
+
     # Add the CPU job list to the job stack
     job_stack.append(jobs)
 

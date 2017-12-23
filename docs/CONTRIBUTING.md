@@ -11,6 +11,7 @@ There are many ways to contribute:
 * Request features
 * Join the discussion of open issues, features, and bugs
 * Contribute algorithms to the library
+* Add unit tests
 * Revise existing code
 * Add or revise documentation
 
@@ -20,7 +21,8 @@ If you need any help, please contact us.
 
 - Make sure you have a GitHub account.
 - Search GitHub and Google to see if your issue has already been reported
-    - [Create an issue in GitHub](https://github.com/danforthcenter/plantcv/issues), assuming one does not already exist.
+    - [Create an issue in GitHub](https://github.com/danforthcenter/plantcv/issues), 
+    assuming one does not already exist.
 	- Clearly describe the issue including steps to reproduce when it is a bug.
 	- Make sure you fill in the earliest version that you know has the issue.
 
@@ -139,20 +141,33 @@ and extend the image processing or trait analysis power of PlantCV.
 What should/should not be added to PlantCV:
 
 *  New validated image processing functions are highly encouraged for contribution.  
-*  New validated trait extraction algorithms are highly encouraged for contribution.  
+*  New validated trait extraction algorithms are highly encouraged for contribution.
 *  Image processing workflow scripts that are specific for your project 
 should **not** be added to PlantCV since these are (usually) not
 generalized or updated to maintain compatibility with new versions.
 
-If you have questions don't hesitate to ask [here](https://github.com/danforthcenter/plantcv/issues).
+If you are adding new image processing functions or trait extraction algorithms, make sure you read the section on 
+testing and documenting your code below. We are very appreciative of all community contributions to PlantCV! 
+We do hope that if you are contributing new methods to PlantCV, you are also contributing documentation and unit 
+tests for your functions (described below), because you understand your code/functionality best. If you have questions 
+or need help don't hesitate to ask [here](https://github.com/danforthcenter/plantcv/issues).
 
 #### Testing and documenting your code
 
-In addition to adding a new feature, test your code thoroughly. 
+In addition to adding a new feature, test your code thoroughly:
 
-Add unit tests and sample input/outputs to the `tests` folder/script so that 
-automated testing (Travis-CI) will include tests on your new feature. 
-Similarly, if you are updating existing code, make sure that the `test.py`
+PlantCV utilizes [Travis CI](https://travis-ci.org/), [Coveralls](https://coveralls.io/), and 
+[Read the Docs](https://readthedocs.org/) to provide continuous integration of unit testing and documentation. 
+Integration with Travis CI allows us to test whether new pull requests break or change the output of existing functions.
+Coveralls tells us the percentage of PlantCV repository code that is covered by the unit tests (better the coverage the 
+more likely we are to catch problematic pull requests). To include new functions in Travis CI tests (to make sure they 
+aren't broken by future pull requests) we need a 'unit test' or set of 'unit tests' (if you need more than one test to 
+cover function options).
+
+Existing unit tests can be found in `tests/tests.py` as examples  
+The data to support unit tests can be found in `tests/data/`
+
+If you are updating existing code, make sure that the `test.py`
 script passes on the function you modified. Testing locally can be done with pytest:
 
 ```
@@ -160,8 +175,8 @@ cd plantcv
 py.test -v tests/tests.py
 ```
 
-Add documentation for your new feature. A new Markdown file should be
-added to the docs folder, and a reference to your new doc file should
+Add documentation for your new feature (see [Adding/editing Documentation](documentation.md) for more details). A new 
+Markdown file should be added to the docs folder, and a reference to your new doc file should
 be added to the `mkdocs.yml` file. You can test that your new documentation
 can be built correctly locally using mkdocs from the root of your local
 plantcv repository.
