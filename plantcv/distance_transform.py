@@ -34,8 +34,8 @@ def distance_transform(img, distanceType, maskSize, device, debug=None):
     """
 
     device += 1
-    dist = cv2.distanceTransform(img, distanceType, maskSize)
-    norm_image = cv2.normalize(dist, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
+    dist = cv2.distanceTransform(src=img, distanceType=distanceType, maskSize=maskSize)
+    norm_image = cv2.normalize(src=dist, dst=dist, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
 
     if debug == 'print':
         print_image(norm_image, (str(device) + '_distance_transform.png'))
