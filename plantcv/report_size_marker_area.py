@@ -110,9 +110,9 @@ def report_size_marker_area(img, shape, device, debug, marker='define', x_adj=0,
             h1 = h + h_adj
             center = (int((w + x1) / 2), int((h + y1) / 2))
             if w > h:
-                cv2.ellipse(background, center, (w1 / 2, h1 / 2), 0, 0, 360, (1, 1, 1), -1)
+                cv2.ellipse(background, center, (int(w1 / 2), int(h1 / 2)), 0, 0, 360, (1, 1, 1), -1)
             else:
-                cv2.ellipse(background, center, (h1 / 2, w1 / 2), 0, 0, 360, (1, 1, 1), -1)
+                cv2.ellipse(background, center, (int(h1 / 2), int(w1 / 2)), 0, 0, 360, (1, 1, 1), -1)
         else:
             fatal_error('Shape' + str(shape) + ' is not "rectangle", "circle", or "ellipse"!')
 
