@@ -123,7 +123,7 @@ def define_roi(img, shape, device, roi=None, roi_input='default', debug=None, ad
                 x, y, w, h = cv2.boundingRect(cnt)
                 center = (int(w / 2), int(h / 2))
                 if w > h:
-                    cv2.ellipse(background, center, (w / 2, h / 2), 0, 0, 360, (0, 255, 0), 2)
+                    cv2.ellipse(background, center, (int(w / 2), int(h / 2)), 0, 0, 360, (0, 255, 0), 2)
                     ellipse = cv2.cvtColor(background, cv2.COLOR_RGB2GRAY)
                     ellipse_contour, hierarchy = cv2.findContours(ellipse, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
                     cv2.drawContours(ori_img, ellipse_contour[0], -1, (255, 0, 0), 5)
@@ -133,8 +133,8 @@ def define_roi(img, shape, device, roi=None, roi_input='default', debug=None, ad
                         plot_image(ori_img)
                     return device, ellipse_contour, hierarchy
                 else:
-                    cv2.ellipse(ori_img, center, (h / 2, w / 2), 0, 0, 360, (0, 255, 0), 2)
-                    cv2.ellipse(background, center, (h / 2, w / 2), 0, 0, 360, (0, 255, 0), 2)
+                    cv2.ellipse(ori_img, center, (int(h / 2), int(w / 2)), 0, 0, 360, (0, 255, 0), 2)
+                    cv2.ellipse(background, center, (int(h / 2), int(w / 2)), 0, 0, 360, (0, 255, 0), 2)
                     ellipse = cv2.cvtColor(background, cv2.COLOR_RGB2GRAY)
                     ellipse_contour, hierarchy = cv2.findContours(ellipse, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
                     cv2.drawContours(ori_img, ellipse_contour[0], -1, (255, 0, 0), 5)
@@ -209,7 +209,7 @@ def define_roi(img, shape, device, roi=None, roi_input='default', debug=None, ad
                     h1 = h + h_adj
                     center = (int((w + x1) / 2), int((h + y1) / 2))
                     if w > h:
-                        cv2.ellipse(background, center, (w1 / 2, h1 / 2), 0, 0, 360, (0, 255, 0), 2)
+                        cv2.ellipse(background, center, (int(w1 / 2), int(h1 / 2)), 0, 0, 360, (0, 255, 0), 2)
                         ellipse = cv2.cvtColor(background, cv2.COLOR_RGB2GRAY)
                         ellipse_contour, hierarchy = cv2.findContours(ellipse, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
                         cv2.drawContours(ori_img, ellipse_contour[0], -1, (255, 0, 0), 5)
@@ -219,7 +219,7 @@ def define_roi(img, shape, device, roi=None, roi_input='default', debug=None, ad
                             plot_image(ori_img)
                         return device, ellipse_contour, hierarchy
                     else:
-                        cv2.ellipse(background, center, (h1 / 2, w1 / 2), 0, 0, 360, (0, 255, 0), 2)
+                        cv2.ellipse(background, center, (int(h1 / 2), int(w1 / 2)), 0, 0, 360, (0, 255, 0), 2)
                         ellipse = cv2.cvtColor(background, cv2.COLOR_RGB2GRAY)
                         ellipse_contour, hierarchy = cv2.findContours(ellipse, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
                         cv2.drawContours(ori_img, ellipse_contour[0], -1, (255, 0, 0), 5)
