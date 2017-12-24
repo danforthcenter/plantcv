@@ -121,7 +121,7 @@ def fluor_fvfm(fdark, fmin, fmax, mask, device, filename, bins=1000, debug=None)
 
         # Create Histogram Plot, if you change the bin number you might need to change binx so that it prints
         # an appropriate number of labels
-        binx = bins / 50
+        binx = int(bins / 50)
         plt.plot(midpoints, fvfm_hist, color='green', label='Fv/Fm')
         plt.xticks(list(midpoints[0::binx]), rotation='vertical', size='xx-small')
         plt.legend()
