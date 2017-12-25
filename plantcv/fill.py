@@ -39,7 +39,7 @@ def fill(img, mask, size, device, debug=None):
     background = np.zeros(size1, dtype=np.uint8)
 
     # Find contours
-    contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
 
     # Loop through contours, fill contours less than or equal to size in area
     for c, cnt in enumerate(contours):

@@ -52,7 +52,7 @@ def rectangle_mask(img, p1, p2, device, debug=None, color="black"):
 
     cv2.rectangle(img=bnk, pt1=p1, pt2=p2, color=(255, 255, 255), thickness=-1)
     ret, bnk = cv2.threshold(bnk, 127, 255, 0)
-    contour, hierarchy = cv2.findContours(bnk, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    contour, hierarchy = cv2.findContours(bnk, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
     # make sure entire rectangle is within (visable within) plotting region or else it will not fill with
     # thickness = -1. Note that you should only print the first contour (contour[0]) if you want to fill with
     # thickness = -1. otherwise two rectangles will be drawn and the space between them will get filled
