@@ -6,9 +6,9 @@ python:
   - "2.7"
   - "3.6"
 # Allow Python3 tests to fail for now
-matrix:
-  allow_failures:
-    - python: "3.6"
+#matrix:
+#  allow_failures:
+#    - python: "3.6"
 # Do not have the virtualenv use system-wide site packages
 virtualenv:
     system_site_packages: false
