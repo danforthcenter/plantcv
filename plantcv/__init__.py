@@ -76,3 +76,22 @@ from plantcv.acute import acute
 from plantcv.distance_transform import distance_transform
 
 # add new functions to end of lists
+
+
+class Params:
+    """PlantCV parameters class
+
+    Keyword arguments/parameters:
+
+    device = device number. Used to count steps in the pipeline. (default: 0)
+    debug  = None, print, or plot. Print = save to file, Plot = print to screen. (default: None)
+
+    :param device: int
+    :param debug: str
+    """
+    def __init__(self, device=0, debug=None):
+        self.device = device
+        self.debug = debug
+
+
+params = Params()
