@@ -94,4 +94,6 @@ class Params:
         self.debug = debug
 
 
+# Initialize an instance of the Params class with default values
+# params is available when plantcv is imported
 params = Params()
