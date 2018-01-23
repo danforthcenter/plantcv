@@ -235,10 +235,12 @@ def analyze_object(img, imgname, obj, mask, device, debug=None, filename=False):
         out_file = str(filename[0:-4]) + '_shapes.jpg'
         out_file1 = str(filename[0:-4]) + '_mask.jpg'
 
-        print_image(ori_img, out_file)
+        if debug == 'print':
+            print_image(ori_img, out_file)
         analysis_images.append(['IMAGE', 'shapes', out_file])
 
-        print_image(mask, out_file1)
+        if debug == 'print':
+            print_image(mask, out_file1)
         analysis_images.append(['IMAGE', 'mask', out_file1])
 
     else:
