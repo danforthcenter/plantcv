@@ -1,3 +1,4 @@
+__version__ = 2.1
 __all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'plot_colorbar', 'apply_mask', 'readimage',
            'laplace_filter', 'sobel_filter', 'scharr_filter', 'hist_equalization', 'plot_hist', 'image_add',
            'image_subtract', 'erode', 'dilate', 'watershed', 'rectangle_mask', 'rgb2gray_hsv', 'rgb2gray_lab',
@@ -75,3 +76,24 @@ from plantcv.acute import acute
 from plantcv.distance_transform import distance_transform
 
 # add new functions to end of lists
+
+
+class Params:
+    """PlantCV parameters class
+
+    Keyword arguments/parameters:
+
+    device = device number. Used to count steps in the pipeline. (default: 0)
+    debug  = None, print, or plot. Print = save to file, Plot = print to screen. (default: None)
+
+    :param device: int
+    :param debug: str
+    """
+    def __init__(self, device=0, debug=None):
+        self.device = device
+        self.debug = debug
+
+
+# Initialize an instance of the Params class with default values
+# params is available when plantcv is imported
+params = Params()
