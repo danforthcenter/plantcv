@@ -202,6 +202,35 @@ def test_plantcv_analyze_bound_horizontal():
                                                                               debug=None, filename=False)
     assert boundary_data[3] == 596347
 
+
+def test_plantcv_analyze_bound_vertical():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_bound_vertical")
+    os.mkdir(cache_dir)
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
+    object_contours = contours_npz['arr_0']
+    # Test with debug = "print"
+    outfile = os.path.join(TEST_TMPDIR, TEST_INPUT_COLOR)
+    _ = pcv.analyze_bound_vertical(img=img, obj=object_contours[0], mask=mask, line_position=1000, device=0,
+                          debug="print", filename=outfile)
+    os.rename("1_boundary_on_img.jpg", os.path.join(cache_dir, "1_boundary_on_img.jpg"))
+    os.rename("1_boundary_on_white.jpg", os.path.join(cache_dir, "1_boundary_on_white.jpg"))
+    # Test with debug = "plot"
+    _ = pcv.analyze_bound_vertical(img=img, obj=object_contours[0], mask=mask, line_position=1000, device=0,
+                          debug="plot", filename=False)
+    # Test with debug='plot', line position that will trigger -x, and two channel object
+    _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours[0], mask=mask, line_position=1, device=0,
+                          debug="plot", filename=False)
+    # Test with debug = None
+    device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_vertical(img=img,
+                                                                              obj=object_contours[0], mask=mask,
+                                                                              line_position=1000, device=0,
+                                                                              debug=None, filename=False)
+    assert boundary_data[3] == 333000
+
 def test_plantcv_analyze_color():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_color")
