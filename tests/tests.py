@@ -166,6 +166,9 @@ def test_plantcv_analyze_bound():
     # Test with debug='plot', line position that will trigger -y, and two channel object
     _ = pcv.analyze_bound(img=img, imgname="img", obj=object_contours[0], mask=mask, line_position=1, device=0,
                           debug="plot", filename=False)
+    # Test with debug='plot', line position that will trigger -y, and two channel object
+    _ = pcv.analyze_bound(img=img, imgname="img", obj=object_contours[0], mask=mask, line_position=2056, device=0,
+                          debug="plot", filename=False)
     # Test with debug = None
     device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound(img=img, imgname="img",
                                                                               obj=object_contours[0], mask=mask,
@@ -194,6 +197,9 @@ def test_plantcv_analyze_bound_horizontal():
                           debug="plot", filename=False)
     # Test with debug='plot', line position that will trigger -y, and two channel object
     _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours[0], mask=mask, line_position=1, device=0,
+                          debug="plot", filename=False)
+    # Test with debug='plot', line position that will trigger -y, and two channel object
+    _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours[0], mask=mask, line_position=2056, device=0,
                           debug="plot", filename=False)
     # Test with debug = None
     device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_horizontal(img=img,
@@ -224,12 +230,18 @@ def test_plantcv_analyze_bound_vertical():
     # Test with debug='plot', line position that will trigger -x, and two channel object
     _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours[0], mask=mask, line_position=1, device=0,
                           debug="plot", filename=False)
+    # Test with debug='plot', line position that will trigger -x, and two channel object
+    _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours[0], mask=mask, line_position=2454, device=0,
+                          debug="plot", filename=False)
     # Test with debug = None
     device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_vertical(img=img,
                                                                               obj=object_contours[0], mask=mask,
                                                                               line_position=1000, device=0,
                                                                               debug=None, filename=False)
-    assert boundary_data[3] == 333000
+    if cv2.__version__[0] == '2':
+        assert boundary_data[3] == 333000
+    else:
+        assert boundary_data[3] == 333094
 
 def test_plantcv_analyze_color():
     # Test cache directory
