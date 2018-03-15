@@ -3,8 +3,8 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'plot_co
            'laplace_filter', 'sobel_filter', 'scharr_filter', 'hist_equalization', 'plot_hist', 'image_add',
            'image_subtract', 'erode', 'dilate', 'watershed', 'rectangle_mask', 'rgb2gray_hsv', 'rgb2gray_lab',
            'rgb2gray', 'binary_threshold', 'median_blur', 'fill', 'invert', 'logical_and', 'logical_or', 'logical_xor',
-           'find_objects', 'define_roi', 'roi_objects', 'object_composition', 'analyze_object', 'analyze_bound',
-           'analyze_color', 'analyze_NIR_intensity', 'fluor_fvfm', 'print_results', 'resize', 'flip',
+           'find_objects', 'define_roi', 'roi_objects', 'object_composition', 'analyze_object', 'analyze_bound_horizontal',
+           'analyze_bound_vertical','analyze_bound', 'analyze_color', 'analyze_NIR_intensity', 'fluor_fvfm', 'print_results', 'resize', 'flip',
            'crop_position_mask', 'get_nir', 'adaptive_threshold', 'otsu_auto_threshold', 'report_size_marker_area',
            'white_balance', 'triangle_auto_threshold', 'acute_vertex', 'scale_features', 'landmark_reference_pt_dist',
            'x_axis_pseudolandmarks', 'y_axis_pseudolandmarks', 'gaussian_blur', 'cluster_contours',
@@ -44,6 +44,8 @@ from plantcv.define_roi import define_roi
 from plantcv.roi_objects import roi_objects
 from plantcv.object_composition import object_composition
 from plantcv.analyze_object import analyze_object
+from plantcv.analyze_bound_horizontal import analyze_bound_horizontal
+from plantcv.analyze_bound_vertical import analyze_bound_vertical
 from plantcv.analyze_bound import analyze_bound
 from plantcv.analyze_color import analyze_color
 from plantcv.analyze_NIR_intensity import analyze_NIR_intensity
