@@ -3,12 +3,7 @@
 Set boundary line with boundary tool, this allows the user to find the extent-y ('height')
 above and below as well as the area above and below the boundary line. This tool functions 
 best if the pot size/position of the plant remains relatively constant.
-
-<span style="color:red">NOTE: This function will be depricated in the near future, please
-use the analyze_bound_horizontal function as an equivalent replacement. The analyze_bound
-function will continue to be functional and is now a wrapper for the analyze_bound_horizontal
-function.</span>  
-
+ 
 **analyze_bound**(*img, imgname, obj, mask, line_position, device , debug=None, filename=False*)
 
 **returns** device, boundary headers, boundary data, image with boundary data
