@@ -1,4 +1,4 @@
-## Boundary Line Tool
+## Vertical Boundary Line Tool
 
 Set boundary line with boundary tool, this allows the user to find the extent-y ('height')
 above and below as well as the area above and below the boundary line. This tool functions 
