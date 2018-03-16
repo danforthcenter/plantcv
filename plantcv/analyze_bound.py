@@ -1,6 +1,7 @@
 # User-Input Boundary Line
 
 import cv2
+import sys
 import numpy as np
 from . import print_image
 from . import plot_image
@@ -42,6 +43,8 @@ def analyze_bound(img, imgname, obj, mask, line_position, device, debug=None, fi
     """
 
     # Note analyze_bound is now a wrapper for newer function analyze_bound Horizontal
+    sys.stderr.write(
+        'analyze_bound function will be depricated in the near future, please use analyze_bound_horizontal, which has the same functionality\n')
 
     device, bound_header, bound_data, analysis_images = analyze_bound_horizontal(img, obj, mask, line_position, device, debug, filename)
 
