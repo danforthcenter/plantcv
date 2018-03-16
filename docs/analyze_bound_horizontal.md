@@ -40,14 +40,14 @@ device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_horizo
 
 **Boundary tool output image (y = 950)**
 
-![Screenshot](img/documentation_images/analyze_bound/boundary_950.jpg)
+![Screenshot](img/documentation_images/analyze_bound_horizontal/boundary_950.jpg)
 
 Boundary line set at 950, purple line is boundary line, blue line is extent y above boundary line, 
 green is area above boundary line.
 
 **Boundary tool output image (y = 330)**
 
-![Screenshot](img/documentation_images/analyze_bound/boundary_330.jpg)
+![Screenshot](img/documentation_images/analyze_bound_horizontal/boundary_330.jpg)
 
 Boundary line set at 330, purple is boundary line, blue line is extent y above boundary line, 
 green line is extent y below boundary line, green is area above boundary line and red is area below boundary line.
