@@ -15,7 +15,7 @@ PlantCV has been tested on the following systems:
 
 - Python (tested with versions 2.7 and 3.6)
     - argparse
-    - cv2 (we recommend 2.14+ or 3.3+)
+    - cv2 (we recommend 2.4.14+ or 3.3+)
     - matplotlib (requires at least 1.5, works with 2+)
     - numpy (requires at least 1.11)
     - pandas
@@ -24,7 +24,7 @@ PlantCV has been tested on the following systems:
     - scikit-image
     - scipy
     - setuptools
-- OpenCV (we recommend 2.14+ or 3.3+)
+- OpenCV (we recommend 2.4.14+ or 3.3+)
 
 *Note: OpenCV 3 will work with either Python 2 or 3 but OpenCV 2 will only work with Python 2.*
 
@@ -149,7 +149,8 @@ bash scripts/setup.sh
 
 The script guides you through the installation steps. Successful completion ends with a usage report.
 
-The script has been tested on [Ubuntu](http://www.ubuntu.com/) x86_64-bit 16_04 server edition and OSX 10.11.
+The script has been tested on [Ubuntu](http://www.ubuntu.com/) x86_64-bit 16_04 server edition, OSX 10.11, and
+macOS 10.12.
 
 ### Installation on other systems
 
