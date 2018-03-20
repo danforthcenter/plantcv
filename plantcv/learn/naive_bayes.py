@@ -182,7 +182,7 @@ def _plot_pdf(channel, outdir, **kwargs):
     :param kwargs: dict
     """
     import matplotlib
-    matplotlib.use("Agg")
+    matplotlib.use("Agg", warn=False)
     from matplotlib import pyplot as plt
     for class_name, pdf in kwargs.items():
         plt.plot(pdf, label=class_name)
