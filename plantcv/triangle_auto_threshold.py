@@ -267,7 +267,7 @@ def triangle_auto_threshold(device, img, maxvalue, object_type, xstep=1, debug=N
 
     if debug is not None:
         import matplotlib
-        matplotlib.use('Agg')
+        matplotlib.use('Agg', warn=False)
         from matplotlib import pyplot as plt
 
     if debug == 'print':
