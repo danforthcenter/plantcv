@@ -1377,9 +1377,6 @@ def test_plantcv_rotate_img():
     os.mkdir(cache_dir)
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    # Test with debug = "print"
-    _ = pcv.rotate_img(img=img, rotation_deg=45, device=0, debug="print")
-    os.rename("1_rotated_img.png", os.path.join(cache_dir, "1_rotated_img.png"))
     # Test with debug = "plot"
     _ = pcv.rotate_img(img=img, rotation_deg=45, device=0, debug="plot")
     # Test with debug = None
@@ -1395,6 +1392,35 @@ def test_plantcv_rotate_img_gray():
     _ = pcv.rotate_img(img=img, rotation_deg=45, device=0, debug="plot")
     # Test with debug = None
     device, rotated = pcv.rotate_img(img=img, rotation_deg=45, device=0, debug=None)
+    imgavg = np.average(img)
+    rotateavg = np.average(rotated)
+    assert rotateavg != imgavg
+
+
+def test_plantcv_rotate():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_rotate_img")
+    os.mkdir(cache_dir)
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # Test with debug = "print"
+    _ = pcv.rotate(img=img, rotation_deg=45, crop=True, device=0, debug="print")
+    os.rename("1_rotated_img.png", os.path.join(cache_dir, "1_rotated_img.png"))
+    # Test with debug = "plot"
+    _ = pcv.rotate(img=img, rotation_deg=45, crop=True, device=0, debug="plot")
+    # Test with debug = None
+    device, rotated = pcv.rotate(img=img, rotation_deg=45, crop=True, device=0, debug=None)
+    imgavg = np.average(img)
+    rotateavg = np.average(rotated)
+    assert rotateavg != imgavg
+
+
+def test_plantcv_rotate_gray():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    # Test with debug = "plot"
+    _ = pcv.rotate(img=img, rotation_deg=45, device=0, crop=False, debug="plot")
+    # Test with debug = None
+    device, rotated = pcv.rotate(img=img, rotation_deg=45, crop=False, device=0, debug=None)
     imgavg = np.average(img)
     rotateavg = np.average(rotated)
     assert rotateavg != imgavg

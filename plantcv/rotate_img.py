@@ -1,9 +1,9 @@
 # RGB -> HSV -> Gray
 
+import sys
 import cv2
 import numpy as np
-from . import print_image
-from . import plot_image
+from . import rotate
 
 
 def rotate_img(img, rotation_deg, device, debug=None):
@@ -30,21 +30,29 @@ def rotate_img(img, rotation_deg, device, debug=None):
     """
     device += 1
 
-    if len(np.shape(img)) == 3:
-        iy, ix, iz = np.shape(img)
-    else:
-        iy, ix = np.shape(img)
+    # Note rotate is now a wrapper for newer function rotate
+    sys.stderr.write(
+        'rotate_img function will be depricated in the near future, please use rotate, which has the same functionality\n')
 
-    M = cv2.getRotationMatrix2D((ix / 2, iy / 2), rotation_deg, 1)
-    rotated_img = cv2.warpAffine(img, M, (ix, iy))
-
-    if debug == 'print':
-        print_image(rotated_img, (str(device) + '_rotated_img.png'))
-
-    elif debug == 'plot':
-        if len(np.shape(img)) == 3:
-            plot_image(rotated_img)
-        else:
-            plot_image(rotated_img, cmap='gray')
+    device, rotated_img =rotate(img,rotation_deg,True,device,debug)
 
     return device, rotated_img
+
+    # if len(np.shape(img)) == 3:
+    #     iy, ix, iz = np.shape(img)
+    # else:
+    #     iy, ix = np.shape(img)
+    #
+    # M = cv2.getRotationMatrix2D((ix / 2, iy / 2), rotation_deg, 1)
+    # rotated_img = cv2.warpAffine(img, M, (ix, iy))
+    #
+    # if debug == 'print':
+    #     print_image(rotated_img, (str(device) + '_rotated_img.png'))
+    #
+    # elif debug == 'plot':
+    #     if len(np.shape(img)) == 3:
+    #         plot_image(rotated_img)
+    #     else:
+    #         plot_image(rotated_img, cmap='gray')
+    #
+    # return device, rotated_img
