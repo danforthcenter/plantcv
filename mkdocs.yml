@@ -85,8 +85,8 @@ pages:
     - 'RGB to HSV': rgb2hsv.md
     - 'RGB to LAB': rgb2lab.md
     - 'Rotate Tools':
+      - 'Rotate': rotate2.md
       - 'Rotate Image - Will Be Depricated': rotate.md
-      - 'New Rotate Image': rotate2.md
     - 'Shift Image': shift.md
     - 'Sobel filter': sobel_filter.md
     - 'Triangle Auto Threshold': triangle_threshold.md

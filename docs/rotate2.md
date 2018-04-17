@@ -25,7 +25,7 @@ Rotates image without changing the dimensions of the image.
 import plantcv as pcv
 
 # Rotate image
-device, rotate_img = pcv.rotate_img(img, 10, True, device, debug='print')
+device, rotate_img = pcv.rotate(img, 10, True, device, debug='print')
 ```
 
 **Image after rotating 10 degrees**
@@ -36,7 +36,7 @@ device, rotate_img = pcv.rotate_img(img, 10, True, device, debug='print')
 import plantcv as pcv
 
 # Rotate image
-device, rotate_img = pcv.rotate_img(img, -10, device, False, debug='print')
+device, rotate_img = pcv.rotate(img, -10, device, False, debug='print')
 ```
 
 **Image after rotating -10 degrees**
