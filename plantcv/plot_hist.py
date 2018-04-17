@@ -16,7 +16,7 @@ def plot_hist(img, name=False):
     """
 
     import matplotlib
-    matplotlib.use('Agg')
+    matplotlib.use('Agg', warn=False)
     from matplotlib import pyplot as plt
 
     # get histogram

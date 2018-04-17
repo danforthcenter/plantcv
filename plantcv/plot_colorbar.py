@@ -15,7 +15,7 @@ def plot_colorbar(outdir, filename, bins):
     :return:
     """
     import matplotlib
-    matplotlib.use('Agg')
+    matplotlib.use('Agg', warn=False)
     from matplotlib import pyplot as plt
     from matplotlib import cm as cm
     from matplotlib import colors as colors

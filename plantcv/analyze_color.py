@@ -248,7 +248,7 @@ def analyze_color(img, imgname, mask, bins, device, debug=None, hist_plot_type=N
 
     if hist_plot_type is not None and filename:
         import matplotlib
-        matplotlib.use('Agg')
+        matplotlib.use('Agg', warn=False)
         from matplotlib import pyplot as plt
 
         # Create Histogram Plot
