@@ -8,7 +8,7 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'plot_co
            'crop_position_mask', 'get_nir', 'adaptive_threshold', 'otsu_auto_threshold', 'report_size_marker_area',
            'white_balance', 'triangle_auto_threshold', 'acute_vertex', 'scale_features', 'landmark_reference_pt_dist',
            'x_axis_pseudolandmarks', 'y_axis_pseudolandmarks', 'gaussian_blur', 'cluster_contours',
-           'cluster_contour_splitimg', 'rotate_img', 'shift_img', 'output_mask', 'auto_crop',
+           'cluster_contour_splitimg', 'rotate_img', 'rotate','shift_img', 'output_mask', 'auto_crop',
            'background_subtraction', 'naive_bayes_classifier', 'acute','distance_transform']
 
 from plantcv.fatal_error import fatal_error
@@ -68,6 +68,7 @@ from plantcv.y_axis_pseudolandmarks import y_axis_pseudolandmarks
 from plantcv.gaussian_blur import gaussian_blur
 from plantcv.cluster_contours import cluster_contours
 from plantcv.cluster_contour_splitimg import cluster_contour_splitimg
+from plantcv.rotate import rotate
 from plantcv.rotate_img import rotate_img
 from plantcv.shift_img import shift_img
 from plantcv.output_mask_ori_img import output_mask
