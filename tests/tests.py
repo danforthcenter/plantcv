@@ -190,23 +190,23 @@ def test_plantcv_analyze_bound_horizontal():
     # Test with debug = "print"
     outfile = os.path.join(TEST_TMPDIR, TEST_INPUT_COLOR)
     _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=300, device=0,
-                          debug="print", filename=outfile)
+                                     debug="print", filename=outfile)
     os.rename("1_boundary_on_img.jpg", os.path.join(cache_dir, "1_boundary_on_img.jpg"))
     os.rename("1_boundary_on_white.jpg", os.path.join(cache_dir, "1_boundary_on_white.jpg"))
     # Test with debug = "plot"
     _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=300, device=0,
-                          debug="plot", filename=False)
+                                     debug="plot", filename=False)
     # Test with debug='plot', line position that will trigger -y, and two channel object
     _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=1, device=0,
-                          debug="plot", filename=False)
+                                     debug="plot", filename=False)
     # Test with debug='plot', line position that will trigger -y, and two channel object
     _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=2056, device=0,
-                          debug="plot", filename=False)
+                                     debug="plot", filename=False)
     # Test with debug = None
-    device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_horizontal(img=img,
-                                                                              obj=object_contours, mask=mask,
-                                                                              line_position=300, device=0,
-                                                                              debug=None, filename=False)
+    device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_horizontal(img=img, obj=object_contours,
+                                                                                         mask=mask, line_position=300,
+                                                                                         device=0, debug=None,
+                                                                                         filename=False)
     assert boundary_data[3] == 62555
 
 
@@ -222,27 +222,28 @@ def test_plantcv_analyze_bound_vertical():
     # Test with debug = "print"
     outfile = os.path.join(TEST_TMPDIR, TEST_INPUT_COLOR)
     _ = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=1000, device=0,
-                          debug="print", filename=outfile)
+                                   debug="print", filename=outfile)
     os.rename("1_boundary_on_img.jpg", os.path.join(cache_dir, "1_boundary_on_img.jpg"))
     os.rename("1_boundary_on_white.jpg", os.path.join(cache_dir, "1_boundary_on_white.jpg"))
     # Test with debug = "plot"
     _ = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=1000, device=0,
-                          debug="plot", filename=False)
+                                   debug="plot", filename=False)
     # Test with debug='plot', line position that will trigger -x, and two channel object
     _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=1, device=0,
-                          debug="plot", filename=False)
+                                     debug="plot", filename=False)
     # Test with debug='plot', line position that will trigger -x, and two channel object
     _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=2454, device=0,
-                          debug="plot", filename=False)
+                                     debug="plot", filename=False)
     # Test with debug = None
-    device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_vertical(img=img,
-                                                                              obj=object_contours, mask=mask,
-                                                                              line_position=1000, device=0,
-                                                                              debug=None, filename=False)
+    device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_vertical(img=img, obj=object_contours,
+                                                                                       mask=mask, line_position=1000,
+                                                                                       device=0, debug=None,
+                                                                                       filename=False)
     if cv2.__version__[0] == '2':
         assert boundary_data[3] == 5016
     else:
         assert boundary_data[3] == 5016
+
 
 def test_plantcv_analyze_color():
     # Test cache directory
@@ -331,10 +332,11 @@ def test_plantcv_analyze_object():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
     obj_contour = contours_npz['arr_0']
-    #max_obj = max(obj_contour, key=len)
+    # max_obj = max(obj_contour, key=len)
     # Test with debug = "print"
     outfile = os.path.join(cache_dir, TEST_INPUT_COLOR)
-    _ = pcv.analyze_object(img=img, imgname="img", obj=obj_contour, mask=mask, device=0, debug="print", filename=outfile)
+    _ = pcv.analyze_object(img=img, imgname="img", obj=obj_contour, mask=mask, device=0, debug="print",
+                           filename=outfile)
     os.rename("1_shapes.jpg", os.path.join(cache_dir, "1_shapes.jpg"))
     # Test with debug = "plot"
     _ = pcv.analyze_object(img=img, imgname="img", obj=obj_contour, mask=mask, device=0, debug="plot", filename=False)
@@ -1793,7 +1795,6 @@ def test_plantcv_learn_naive_bayes_multiclass():
     plantcv.learn.naive_bayes_multiclass(samples_file=os.path.join(TEST_DATA, TEST_SAMPLED_RGB_POINTS), outfile=outfile,
                                          mkplots=True)
     assert os.path.exists(outfile)
-
 
 # ##############################
 # Clean up test files
