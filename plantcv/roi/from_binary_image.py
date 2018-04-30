@@ -10,6 +10,13 @@ from plantcv import params
 
 
 def from_binary_image(bin_img, rgb_img=None):
+    """Create an ROI from a binary image
+
+    :param bin_img: numpy.ndarray
+    :param rgb_img: numpy.ndarray
+    :return roi_contour: list
+    :return roi_hierarchy: list
+    """
     # Autoincrement the device counter
     params.device += 1
     # Make sure the image is binary
