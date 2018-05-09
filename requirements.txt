@@ -1,5 +1,6 @@
 matplotlib>=1.5
 numpy>=1.11
+opencv-python
 pandas
 python-dateutil
 scipy
