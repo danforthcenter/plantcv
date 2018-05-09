@@ -116,7 +116,7 @@ def analyze_NIR_intensity(img, rgbimg, mask, bins, device, histplot=False, debug
 
     if histplot is True:
         import matplotlib
-        matplotlib.use('Agg')
+        matplotlib.use('Agg', warn=False)
         from matplotlib import pyplot as plt
 
         # plot hist percent

@@ -142,7 +142,7 @@ For more information see rotate function [here](rotate.md).
 
 # Step 3: Rotate the image 
     
-device, rotate_img = pcv.rotate_img(img1, -1, device, debug)
+device, rotate_img = pcv.rotate(img1, -1, device, debug)
 ```
 
 **Figure 3.** Rotated image

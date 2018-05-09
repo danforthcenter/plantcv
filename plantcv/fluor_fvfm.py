@@ -111,7 +111,7 @@ def fluor_fvfm(fdark, fmin, fmax, mask, device, filename, bins=1000, debug=None)
 
     if filename:
         import matplotlib
-        matplotlib.use('Agg')
+        matplotlib.use('Agg', warn=False)
         from matplotlib import pyplot as plt
         from matplotlib import cm as cm
 

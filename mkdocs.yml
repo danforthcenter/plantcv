@@ -37,7 +37,10 @@ pages:
     - 'Auto Crop': auto_crop.md
     - 'Background Subtraction': background_subtraction.md
     - 'Binary threshold': binary_threshold.md
-    - 'Boundary line tool': analyze_bound.md
+    - 'Boundary line tool':
+      -  'Horizontal Boundary Tool': analyze_bound_horizontal.md
+      -  'Vertical Boundary Tool': analyze_bound_vertical.md
+      -  'Analyze Bound- Will Be Depricated': analyze_bound.md
     - 'Cluster Contours': cluster_contours.md
     - 'Cluster Contours and Split Images': cluster_contours_splitimg.md
     - 'Color palette': color_palette.md
@@ -81,7 +84,9 @@ pages:
     - 'Resize': resize.md
     - 'RGB to HSV': rgb2hsv.md
     - 'RGB to LAB': rgb2lab.md
-    - 'Rotate Image': rotate.md
+    - 'Rotate Tools':
+      - 'Rotate': rotate2.md
+      - 'Rotate Image - Will Be Depricated': rotate.md
     - 'Shift Image': shift.md
     - 'Sobel filter': sobel_filter.md
     - 'Triangle Auto Threshold': triangle_threshold.md
