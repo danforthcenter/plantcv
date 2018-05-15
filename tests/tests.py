@@ -1813,14 +1813,27 @@ def test_plantcv_roi_from_binary_image():
     cv2.rectangle(bin_img, (100, 100), (1000, 1000), 255, -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _, _ = plantcv.roi.from_binary_image(bin_img=bin_img, rgb_img=rgb_img)
+    _, _ = plantcv.roi.from_binary_image(bin_img=bin_img, img=rgb_img)
     os.rename("1_roi.png", os.path.join(cache_dir, "1_roi.png"))
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _, _ = plantcv.roi.from_binary_image(bin_img=bin_img, rgb_img=rgb_img)
+    _, _ = plantcv.roi.from_binary_image(bin_img=bin_img, img=rgb_img)
     # Test with debug = None
     pcv.params.debug = None
-    roi_contour, roi_hierarchy = plantcv.roi.from_binary_image(bin_img=bin_img, rgb_img=rgb_img)
+    roi_contour, roi_hierarchy = plantcv.roi.from_binary_image(bin_img=bin_img, img=rgb_img)
+    # Assert the contours and hierarchy lists contain only the ROI
+    assert np.shape(roi_contour) == (1, 3600, 1, 2)
+
+
+def test_plantcv_roi_from_binary_image_grayscale_input():
+    # Read in a test grayscale image
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY))
+    # Create a binary image
+    bin_img = np.zeros(np.shape(gray_img)[0:2], dtype=np.uint8)
+    cv2.rectangle(bin_img, (100, 100), (1000, 1000), 255, -1)
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    roi_contour, roi_hierarchy = plantcv.roi.from_binary_image(bin_img=bin_img, img=gray_img)
     # Assert the contours and hierarchy lists contain only the ROI
     assert np.shape(roi_contour) == (1, 3600, 1, 2)
 
@@ -1830,16 +1843,45 @@ def test_plantcv_roi_from_binary_image_bad_binary_input():
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Binary input is required but an RGB input is provided
     with pytest.raises(RuntimeError):
-        _, _ = plantcv.roi.from_binary_image(bin_img=rgb_img)
+        _, _ = plantcv.roi.from_binary_image(bin_img=rgb_img, img=rgb_img)
 
 
-def test_plantcv_roi_from_binary_image_bad_rgb_input():
-    # Read in test binary mask
-    bin_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK), -1)
-    # An RGB image is required for plotting but a grayscale image is provided
+def test_plantcv_roi_rectangle():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_roi_rectangle")
+    os.mkdir(cache_dir)
+    # Read in test RGB image
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _, _ = plantcv.roi.rectangle(x=100, y=100, h=500, w=500, img=rgb_img)
+    os.rename("1_roi.png", os.path.join(cache_dir, "1_roi.png"))
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    _, _ = plantcv.roi.rectangle(x=100, y=100, h=500, w=500, img=rgb_img)
+    # Test with debug = None
+    pcv.params.debug = None
+    roi_contour, roi_hierarchy = plantcv.roi.rectangle(x=100, y=100, h=500, w=500, img=rgb_img)
+    # Assert the contours and hierarchy lists contain only the ROI
+    assert np.shape(roi_contour) == (1, 4, 1, 2)
+
+
+def test_plantcv_roi_rectangle_grayscale_input():
+    # Read in a test grayscale image
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY))
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    roi_contour, roi_hierarchy = plantcv.roi.rectangle(x=100, y=100, h=500, w=500, img=gray_img)
+    # Assert the contours and hierarchy lists contain only the ROI
+    assert np.shape(roi_contour) == (1, 4, 1, 2)
+
+
+def test_plantcv_roi_rectangle_out_of_frame():
+    # Read in test RGB image
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # The resulting rectangle needs to be within the dimensions of the image
     with pytest.raises(RuntimeError):
-        pcv.params.debug = "plot"
-        _, _ = plantcv.roi.from_binary_image(bin_img=bin_img, rgb_img=bin_img)
+        _, _ = plantcv.roi.rectangle(x=100, y=100, h=500, w=3000, img=rgb_img)
 
 
 # ##############################
