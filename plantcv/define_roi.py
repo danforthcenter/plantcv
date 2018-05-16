@@ -47,6 +47,9 @@ def define_roi(img, shape, device, roi=None, roi_input='default', debug=None, ad
     :return contour: list
     :return hierarchy: list
     """
+    # Print deprecation notice
+    sys.stderr.write(
+        'define_roi function will be depricated in the near future, please use the roi subpackage, which has the same functionality\n')
 
     device += 1
     ori_img = np.copy(img)
