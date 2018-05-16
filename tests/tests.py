@@ -1813,8 +1813,8 @@ def test_plantcv_roi_from_binary_image():
     cv2.rectangle(bin_img, (100, 100), (1000, 1000), 255, -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
+    pcv.params.debug_outdir = cache_dir
     _, _ = plantcv.roi.from_binary_image(bin_img=bin_img, img=rgb_img)
-    os.rename("1_roi.png", os.path.join(cache_dir, "1_roi.png"))
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _, _ = plantcv.roi.from_binary_image(bin_img=bin_img, img=rgb_img)
@@ -1854,8 +1854,8 @@ def test_plantcv_roi_rectangle():
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
     pcv.params.debug = "print"
+    pcv.params.debug_outdir = cache_dir
     _, _ = plantcv.roi.rectangle(x=100, y=100, h=500, w=500, img=rgb_img)
-    os.rename("1_roi.png", os.path.join(cache_dir, "1_roi.png"))
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _, _ = plantcv.roi.rectangle(x=100, y=100, h=500, w=500, img=rgb_img)
@@ -1892,8 +1892,8 @@ def test_plantcv_roi_circle():
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
     pcv.params.debug = "print"
+    pcv.params.debug_outdir = cache_dir
     _, _ = plantcv.roi.circle(x=100, y=100, r=50, img=rgb_img)
-    os.rename("1_roi.png", os.path.join(cache_dir, "1_roi.png"))
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _, _ = plantcv.roi.circle(x=100, y=100, r=50, img=rgb_img)
@@ -1930,8 +1930,8 @@ def test_plantcv_roi_ellipse():
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
     pcv.params.debug = "print"
+    pcv.params.debug_outdir = cache_dir
     _, _ = plantcv.roi.ellipse(x=200, y=200, r1=75, r2=50, angle=0, img=rgb_img)
-    os.rename("1_roi.png", os.path.join(cache_dir, "1_roi.png"))
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _, _ = plantcv.roi.ellipse(x=200, y=200, r1=75, r2=50, angle=0, img=rgb_img)

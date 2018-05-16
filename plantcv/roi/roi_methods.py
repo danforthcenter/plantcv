@@ -1,5 +1,6 @@
 # ROI functions
 
+import os
 import cv2
 import numpy as np
 from plantcv import print_image
@@ -200,7 +201,7 @@ def _draw_roi(img, roi_contour):
     cv2.drawContours(ref_img, roi_contour, -1, (255, 0, 0), 5)
     if params.debug == "print":
         # If debug is print, save the image to a file
-        print_image(ref_img, (str(params.device) + "_roi.png"))
+        print_image(ref_img, os.path.join(params.debug_outdir, str(params.device) + "_roi.png"))
     elif params.debug == "plot":
         # If debug is plot, print to the plotting device
         plot_image(ref_img)
