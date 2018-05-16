@@ -1884,6 +1884,44 @@ def test_plantcv_roi_rectangle_out_of_frame():
         _, _ = plantcv.roi.rectangle(x=100, y=100, h=500, w=3000, img=rgb_img)
 
 
+def test_plantcv_roi_circle():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_roi_circle")
+    os.mkdir(cache_dir)
+    # Read in test RGB image
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _, _ = plantcv.roi.circle(x=100, y=100, r=50, img=rgb_img)
+    os.rename("1_roi.png", os.path.join(cache_dir, "1_roi.png"))
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    _, _ = plantcv.roi.circle(x=100, y=100, r=50, img=rgb_img)
+    # Test with debug = None
+    pcv.params.debug = None
+    roi_contour, roi_hierarchy = plantcv.roi.circle(x=200, y=225, r=75, img=rgb_img)
+    # Assert the contours and hierarchy lists contain only the ROI
+    assert np.shape(roi_contour) == (1, 424, 1, 2)
+
+
+def test_plantcv_roi_circle_grayscale_input():
+    # Read in a test grayscale image
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY))
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    roi_contour, roi_hierarchy = plantcv.roi.circle(x=200, y=225, r=75, img=gray_img)
+    # Assert the contours and hierarchy lists contain only the ROI
+    assert np.shape(roi_contour) == (1, 424, 1, 2)
+
+
+def test_plantcv_roi_circle_out_of_frame():
+    # Read in test RGB image
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # The resulting rectangle needs to be within the dimensions of the image
+    with pytest.raises(RuntimeError):
+        _, _ = plantcv.roi.circle(x=50, y=225, r=75, img=rgb_img)
+
+
 # ##############################
 # Clean up test files
 # ##############################
