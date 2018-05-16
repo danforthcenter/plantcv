@@ -84,6 +84,7 @@ pages:
     - 'RGB to LAB': rgb2lab.md
     - 'Region of Interest Tools':
       - 'Create a circular ROI': roi_circle.md
+      - 'Create an elliptical ROI': roi_ellipse.md
       - 'Create a rectangular ROI': roi_rectangle.md
       - 'Create ROI from binary image': roi_from_binary_image.md
       - 'Filter Objects by ROI': roi_objects.md
