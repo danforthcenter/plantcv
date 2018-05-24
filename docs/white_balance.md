@@ -2,7 +2,7 @@
 
 Corrects the exposure of an image. A color standard can be specified.
 
-**white_balance**(*device, img, mode='hist, debug=None,roi=None,*)
+**white_balance**(*device, img, mode='hist', debug=None,roi=None*)
 
 **returns** device, img
 
