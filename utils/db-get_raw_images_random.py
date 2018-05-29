@@ -3,7 +3,7 @@
 import argparse
 import os
 import sqlite3 as sq
-import plantcv as pcv
+from plantcv import base as pcv
 from shutil import copy
 import datetime
 

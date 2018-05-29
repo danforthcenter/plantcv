@@ -55,7 +55,7 @@ import re
 import numpy as np
 import argparse
 import string
-import plantcv as pcv
+from plantcv import base as pcv
 
 ### Parse command-line arguments
 def options():

@@ -24,7 +24,7 @@ Corrects the exposure of an image. A color standard can be specified.
 ![Screenshot](img/documentation_images/white_balance/original_image.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import base as pcv
 
 # Corrects image based on color standard and stores output as corrected_img
 device, corrected_img = pcv.white_balance(device,img,mode='hist', debug="print",roi=(5, 5, 80, 80))

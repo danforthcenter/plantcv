@@ -29,7 +29,7 @@ the values out to a file. Can also print out a histogram plot of pixel intensity
 ![Screenshot](img/documentation_images/analyze_NIR_intensity/original_image.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import base as pcv
 
 # Caclulates the proportion of pixels that fall into a signal bin and writes the values to a file. Also provides a histogram of this data and a pseudocolored image of the plant.
 device, hist_header, hist_data, h_norm  = pcv.analyze_NIR_intensity(img, rgbimg, mask, 256, device, debug="print", filename="pseudocolored_plant")

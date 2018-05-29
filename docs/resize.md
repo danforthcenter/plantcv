@@ -22,7 +22,7 @@ Resizes images, used to resize masks over other images.
 ![Screenshot](img/documentation_images/resize/19_flipped.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import base as pcv
 
 # Resize image
 device, resize_img = pcv.resize(img, 0.1154905775,0.1154905775, device, debug='print')

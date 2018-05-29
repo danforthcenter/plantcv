@@ -15,6 +15,6 @@ Reads image into numpy ndarray and splits the path and image filename. This is a
     - [Use In VIS Tutorial](vis_tutorial.md) 
 
 ```python
-import plantcv as pcv      
+from plantcv import base as pcv      
 img, path, img_filename=pcv.readimage("home/user/images/test-image.png")
 ```
