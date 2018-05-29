@@ -70,18 +70,18 @@ from plantcv.base.distance_transform import distance_transform
 
 class Params:
     """PlantCV parameters class
-
     Keyword arguments/parameters:
-
-    device = device number. Used to count steps in the pipeline. (default: 0)
-    debug  = None, print, or plot. Print = save to file, Plot = print to screen. (default: None)
-
+    device       = device number. Used to count steps in the pipeline. (default: 0)
+    debug        = None, print, or plot. Print = save to file, Plot = print to screen. (default: None)
+    debug_outdir = Debug images output directory. (default: .)
     :param device: int
     :param debug: str
+    :param debug_outdir: str
     """
-    def __init__(self, device=0, debug=None):
+    def __init__(self, device=0, debug=None, debug_outdir="."):
         self.device = device
         self.debug = debug
+        self.debug_outdir = debug_outdir
 
 
 # Initialize an instance of the Params class with default values
