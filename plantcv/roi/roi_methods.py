@@ -3,10 +3,10 @@
 import os
 import cv2
 import numpy as np
-from plantcv import print_image
-from plantcv import plot_image
-from plantcv import fatal_error
-from plantcv import params
+from plantcv.base import print_image
+from plantcv.base import plot_image
+from plantcv.base import fatal_error
+from plantcv.base import params
 
 
 # Create an ROI from a binary mask
