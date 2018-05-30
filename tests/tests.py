@@ -1827,7 +1827,7 @@ def test_plantcv_roi_from_binary_image():
 
 def test_plantcv_roi_from_binary_image_grayscale_input():
     # Read in a test grayscale image
-    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY))
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Create a binary image
     bin_img = np.zeros(np.shape(gray_img)[0:2], dtype=np.uint8)
     cv2.rectangle(bin_img, (100, 100), (1000, 1000), 255, -1)
@@ -1868,7 +1868,7 @@ def test_plantcv_roi_rectangle():
 
 def test_plantcv_roi_rectangle_grayscale_input():
     # Read in a test grayscale image
-    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY))
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     roi_contour, roi_hierarchy = plantcv.roi.rectangle(x=100, y=100, h=500, w=500, img=gray_img)
@@ -1906,7 +1906,7 @@ def test_plantcv_roi_circle():
 
 def test_plantcv_roi_circle_grayscale_input():
     # Read in a test grayscale image
-    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY))
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     roi_contour, roi_hierarchy = plantcv.roi.circle(x=200, y=225, r=75, img=gray_img)
@@ -1944,7 +1944,7 @@ def test_plantcv_roi_ellipse():
 
 def test_plantcv_roi_ellipse_grayscale_input():
     # Read in a test grayscale image
-    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY))
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     roi_contour, roi_hierarchy = plantcv.roi.ellipse(x=200, y=200, r1=75, r2=50, angle=0, img=gray_img)
