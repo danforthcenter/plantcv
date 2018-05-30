@@ -279,10 +279,24 @@ def test_plantcv_analyze_bound_vertical_neg_x():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
     object_contours = contours_npz['arr_0']
-    # Test with debug=None, line position that will trigger -x
+    # Test with debug="plot", line position that will trigger -x
     device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_horizontal(img=img, obj=object_contours,
                                                                                          mask=mask, line_position=2454,
-                                                                                         device=0, debug=None,
+                                                                                         device=0, debug="plot",
+                                                                                         filename=False)
+    assert boundary_data[3] == 63632
+
+
+def test_plantcv_analyze_bound_vertical_small_x():
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
+    object_contours = contours_npz['arr_0']
+    # Test with debug='plot', line position that will trigger -x, and two channel object
+    device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_horizontal(img=img, obj=object_contours,
+                                                                                         mask=mask, line_position=1,
+                                                                                         device=0, debug="plot",
                                                                                          filename=False)
     assert boundary_data[3] == 63632
 
