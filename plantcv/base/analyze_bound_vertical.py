@@ -43,10 +43,9 @@ def analyze_bound_vertical(img, obj, mask, line_position, device, debug=None, fi
     ori_img = np.copy(img)
 
     # Draw line horizontal line through bottom of image, that is adjusted to user input height
-    if len(np.shape(ori_img)) == 3:
-        iy, ix, iz = np.shape(ori_img)
-    else:
-        iy, ix = np.shape(ori_img)
+    if len(np.shape(ori_img)) == 2:
+        ori_img = cv2.cvtColor(ori_img, cv2.COLOR_GRAY2BGR)
+    iy, ix, iz = np.shape(ori_img)
     size = (iy, ix)
     size1 = (iy, ix, 3)
     background = np.zeros(size, dtype=np.uint8)
