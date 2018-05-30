@@ -197,18 +197,40 @@ def test_plantcv_analyze_bound_horizontal():
     # Test with debug = "plot"
     _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=300, device=0,
                                      debug="plot", filename=False)
-    # Test with debug='plot', line position that will trigger -y, and two channel object
-    _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=1, device=0,
-                                     debug="plot", filename=False)
-    # Test with debug='plot', line position that will trigger -y, and two channel object
-    _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=2056, device=0,
-                                     debug="plot", filename=False)
     # Test with debug = None
     device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_horizontal(img=img, obj=object_contours,
                                                                                          mask=mask, line_position=300,
                                                                                          device=0, debug=None,
                                                                                          filename=False)
     assert boundary_data[3] == 62555
+
+
+def test_plantcv_analyze_bound_horizontal_grayscale_image():
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
+    object_contours = contours_npz['arr_0']
+    # Test with a grayscale reference image and debug="plot"
+    device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_horizontal(img=img, obj=object_contours,
+                                                                                         mask=mask, line_position=300,
+                                                                                         device=0, debug="plot",
+                                                                                         filename=False)
+    assert boundary_data[3] == 62555
+
+
+def test_plantcv_analyze_bound_horizontal_neg_y():
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
+    object_contours = contours_npz['arr_0']
+    # Test with debug=None, line position that will trigger -y
+    device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_horizontal(img=img, obj=object_contours,
+                                                                                         mask=mask, line_position=2056,
+                                                                                         device=0, debug=None,
+                                                                                         filename=False)
+    assert boundary_data[3] == 63632
 
 
 def test_plantcv_analyze_bound_vertical():
@@ -229,21 +251,40 @@ def test_plantcv_analyze_bound_vertical():
     # Test with debug = "plot"
     _ = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=1000, device=0,
                                    debug="plot", filename=False)
-    # Test with debug='plot', line position that will trigger -x, and two channel object
-    _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=1, device=0,
-                                     debug="plot", filename=False)
-    # Test with debug='plot', line position that will trigger -x, and two channel object
-    _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=2454, device=0,
-                                     debug="plot", filename=False)
     # Test with debug = None
     device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_vertical(img=img, obj=object_contours,
                                                                                        mask=mask, line_position=1000,
                                                                                        device=0, debug=None,
                                                                                        filename=False)
-    if cv2.__version__[0] == '2':
-        assert boundary_data[3] == 5016
-    else:
-        assert boundary_data[3] == 5016
+    assert boundary_data[3] == 5016
+
+
+def test_plantcv_analyze_bound_vertical_grayscale_image():
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
+    object_contours = contours_npz['arr_0']
+    # Test with a grayscale reference image and debug="plot"
+    device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_vertical(img=img, obj=object_contours,
+                                                                                       mask=mask, line_position=1000,
+                                                                                       device=0, debug="plot",
+                                                                                       filename=False)
+    assert boundary_data[3] == 5016
+
+
+def test_plantcv_analyze_bound_vertical_neg_x():
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
+    object_contours = contours_npz['arr_0']
+    # Test with debug=None, line position that will trigger -x
+    device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_horizontal(img=img, obj=object_contours,
+                                                                                         mask=mask, line_position=2454,
+                                                                                         device=0, debug=None,
+                                                                                         filename=False)
+    assert boundary_data[3] == 63632
 
 
 def test_plantcv_analyze_color():
