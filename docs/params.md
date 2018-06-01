@@ -2,21 +2,21 @@
 
 A global PlantCV parameters class.
 
-*class* plantcv.base.**Params**
+*class* plantcv.**Params**
 
 `Params` is a class that stores global PlantCV attributes. An instance of `Params` is created on import automatically
-as `plantcv.base.params`. Updated PlantCV functions import the `plantcv.base.params` instance to access globally
+as `plantcv.params`. Updated PlantCV functions import the `plantcv.params` instance to access globally
 configured attributes.
 
 ### Attributes
 
-Attributes are accessed as plantcv.base.*attribute*.
+Attributes are accessed as plantcv.*attribute*.
 
 **device**: A counter for image processing steps that is autoincremented by functions that use `params`. Default = 0.
 
 **debug**: Debugging mode. Values are `None`, "print", or "plot". Default = `None`.
 
-**debug_outdir**: The directory to output debug images to when `plantcv.base.debug` = "print".
+**debug_outdir**: The directory to output debug images to when `plantcv.debug` = "print".
 
 ### Example
 
@@ -24,8 +24,7 @@ Updated PlantCV functions use `params` implicitly, so overriding the `params` de
 updated functions. In the meantime, it can also be used with older-style functions.
 
 ```python
-from plantcv import base as pcv
-import plantcv.roi
+from plantcv import plantcv as pcv
 
 # Set debug to plot instead of None
 pcv.params.debug = "plot"
@@ -36,5 +35,5 @@ img, imgpath, imgname = pcv.readimage(filename="test.png", debug=pcv.params.debu
 
 # Use a v3 function to create a region of interest
 # Note that debug is not explicitly provided but is used implicitly by the function
-roi_contour, roi_hierarchy = plantcv.roi.rectangle(x=0, y=0, h=100, w=100, img=img)
+roi_contour, roi_hierarchy = pcv.roi.rectangle(x=0, y=0, h=100, w=100, img=img)
 ```

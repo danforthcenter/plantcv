@@ -18,9 +18,9 @@
 ![Screenshot](img/documentation_images/rectangle/original_image.jpg)
 
 ```python
-import plantcv.roi
+from plantcv import plantcv as pcv
 
-roi_contour, roi_hierarchy = plantcv.roi.rectangle(x=100, y=100, h=200, w=200, img=rgb_img)
+roi_contour, roi_hierarchy = pcv.roi.rectangle(x=100, y=100, h=200, w=200, img=rgb_img)
 ```
 
 ![Screenshot](img/documentation_images/rectangle/image_with_roi.jpg)

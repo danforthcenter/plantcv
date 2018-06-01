@@ -43,7 +43,7 @@ Extract Fv/Fm data of objects and produce pseudocolored images.
 ![Screenshot](img/documentation_images/fluor_fvfm/fmax.jpg)
 
 ```python
-from plantcv import base as pcv
+from plantcv import plantcv as pcv
 
 # Analyze Fv/Fm    
  device, fvfm_header, fvfm_data = pcv.fluor_fvfm(fdark, fmin, fmax, kept_mask, device, filename, 1000, debug="print")

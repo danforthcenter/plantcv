@@ -59,7 +59,7 @@ new [parallel processing documentation](pipeline_parallel.md) for more details.
 
 In order to support the installation of optional add-on subpackages, we converted
 PlantCV to a [namespace package](https://packaging.python.org/guides/packaging-namespace-packages/).
-To achieve this new funcitonality, existing functions had to be moved into a 
+To achieve this new functionality, existing functions had to be moved into a 
 subpackage to maintain easy importing. To maintain previous behavior, PlantCV
 analysis scripts simply need to have updated PlantCV import syntax. So if you were
 previously doing something like:
@@ -71,7 +71,7 @@ import plantcv as pcv
 You would now do this instead:
 
 ```python
-from plantcv import base as pcv
+from plantcv import plantcv as pcv
 ```
 
 Another feature we will be rolling out for PlantCV v3 an update to the existing
@@ -86,7 +86,7 @@ it can be imported to set global defaults. For example, to change debug from
 `None` to 'plot' or 'print':
 
 ```python
-from plantcv import base as pcv
+from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 ```
 

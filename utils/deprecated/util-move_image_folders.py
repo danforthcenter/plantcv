@@ -2,7 +2,7 @@
 import argparse
 import sys, os
 import sqlite3 as sq
-from plantcv import base as pcv
+from plantcv import plantcv as pcv
 import math
 import shutil
 import numpy as np

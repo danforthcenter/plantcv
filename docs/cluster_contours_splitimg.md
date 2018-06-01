@@ -28,7 +28,7 @@ the number of inputted filenames matches the number of clustered contours.
 
 
 ```python
-from plantcv import base as pcv
+from plantcv import plantcv as pcv
 
 # Cluster Contours and Split into Separate Images 
 out = './examples/'

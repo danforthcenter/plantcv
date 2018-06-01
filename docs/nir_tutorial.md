@@ -46,7 +46,7 @@ import cv2
 import numpy as np
 import argparse
 import string
-from plantcv import base as pcv
+from plantcv import plantcv as pcv
 
 def options():
     parser = argparse.ArgumentParser(description="Imaging processing with opencv")

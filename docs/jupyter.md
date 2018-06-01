@@ -66,7 +66,7 @@ sys.path.append('/home/user/plantcv')
 import numpy as np
 import cv2
 from matplotlib import pyplot as plt
-from plantcv import base as pcv
+from plantcv import plantcv as pcv
 
 # Set variables
 device = 0                                    # Workflow step counter
@@ -169,7 +169,7 @@ import sys
 import numpy as np
 import cv2
 from matplotlib import pyplot as plt
-from plantcv import base as pcv
+from plantcv import plantcv as pcv
 
 def options():
     parser = argparse.ArgumentParser(description="Imaging processing with PlantCV.")

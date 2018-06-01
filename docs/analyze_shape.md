@@ -44,7 +44,7 @@ Shape analysis outputs numeric properties for an input object (contour or groupe
 ![Screenshot](img/documentation_images/analyze_shape/original_image.jpg)
 
 ```python
-from plantcv import base as pcv
+from plantcv import plantcv as pcv
 
 # Characterize object shapes
     

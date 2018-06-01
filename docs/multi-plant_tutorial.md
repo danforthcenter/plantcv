@@ -55,7 +55,7 @@ import re
 import numpy as np
 import argparse
 import string
-from plantcv import base as pcv
+from plantcv import plancv as pcv
 
 ### Parse command-line arguments
 def options():
@@ -376,7 +376,7 @@ Split the images
 #    img - ideally a masked RGB image.
 #    grouped_contour_indexes - output of cluster_contours, indexes of clusters of contours
 #    contours - contours to cluster, output of cluster_contours
-#    file -  the name of the input image to use as a base name , output of filename from read_image function
+plantcv
 #    filenames - input txt file with list of filenames in order from top to bottom left to right (likely list of genotypes)
 #    debug - print debugging images
     
