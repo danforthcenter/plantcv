@@ -32,7 +32,7 @@ If they are of different types, an error will occur.
 ![Screenshot](img/documentation_images/background_subtraction/TEST_BACKGROUND.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 # Create a foreground mask from both images using cv2.BackgroundSubtractorMOG().
 device, fgmask = pcv.background_subtraction(foreground_image, background_image, device, debug = "print")
 ```

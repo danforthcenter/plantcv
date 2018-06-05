@@ -23,7 +23,7 @@ conditions set in kernel are true, otherwise removes pixel.
 ![Screenshot](img/documentation_images/erode/grayscale_image.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Perform erosion filtering
 # Results in removal of isolated pixels or boundary of object removal

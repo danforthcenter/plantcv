@@ -27,7 +27,7 @@ labeled as plant (255) or background (0) if P(Pixel = plant) > P(Pixel = backgro
 
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Create binary image from a gray image based on threshold values. Targeting light objects in the image.
 device, mask = pcv.naive_bayes_classifier(img, "naive_bayes_pdfs.txt", device=0, debug="print")

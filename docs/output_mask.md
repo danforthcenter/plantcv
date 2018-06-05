@@ -23,7 +23,7 @@ Write image and mask with the same name to the path specified (creates two folde
 
 ```python
 
-import plantcv as pcv      
+from plantcv import plantcv as pcv      
 
 device, imgpath,maskpath=pcv.output_mask(device, img, mask, 'test.png', '/home/user/images', mask_only=True, debug='print')
 

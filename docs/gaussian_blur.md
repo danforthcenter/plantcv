@@ -22,7 +22,7 @@ The function is a wrapper for the OpenCV function [gaussian blur](http://docs.op
 ![Screenshot](img/documentation_images/gaussian_blur/original_image.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Apply gaussian blur to a binary image that has been previously thresholded.
 device, gaussian_img = pcv.gaussian_blur(device, img=img1, ksize=(51,51), sigmax=0, sigmay=None, debug='print')
@@ -33,7 +33,7 @@ device, gaussian_img = pcv.gaussian_blur(device, img=img1, ksize=(51,51), sigmax
 ![Screenshot](img/documentation_images/gaussian_blur/gaussian_blur51.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Apply gaussian blur to a binary image that has been previously thresholded.
 device, gaussian_img = pcv.gaussian_blur(device, img=img1, ksize=(101,101), sigmax=0, sigmay=None, debug='print')

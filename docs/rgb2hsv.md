@@ -22,7 +22,7 @@ Convert image from RGB colorspace to HSV colorspace and split the channels.
 ![Screenshot](img/documentation_images/rgb2hsv/original_image.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # image converted from RGB to HSV, channels are then split. Hue ('h') channel is outputed.
 
@@ -34,7 +34,7 @@ device, h_channel=pcv.rgb2gray_hsv(img, 'h', device, debug="print")
 ![Screenshot](img/documentation_images/rgb2hsv/hsv_hue.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
     
 # image converted from RGB to HSV, channels are then split. Saturation ('s') channel is outputed.
     
@@ -46,7 +46,7 @@ device, s_channel= pcv.rgb2gray_hsv(img, 's', device, debug="print")
 ![Screenshot](img/documentation_images/rgb2hsv/hsv_saturation.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # image converted from RGB to HSV, channels are then split. Value ('v') channel is outputed.
 

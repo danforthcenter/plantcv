@@ -21,7 +21,7 @@ Flips and image in either the horizontal or vertical direction
 ![Screenshot](img/documentation_images/flip/original_image.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Flip Image Horizontal
 
@@ -34,7 +34,7 @@ device, flipped= pcv.flip(img, 'horizontal', device, debug="print")
 ![Screenshot](img/documentation_images/flip/flipped.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Flip Image Vertical
 

@@ -26,7 +26,7 @@ function (with crop set to True) .</span>
 ![Screenshot](img/documentation_images/rotate/34_whitebalance.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Rotate image
 device, rotate_img = pcv.rotate_img(img, 10, device, debug='print')
@@ -37,7 +37,7 @@ device, rotate_img = pcv.rotate_img(img, 10, device, debug='print')
 ![Screenshot](img/documentation_images/rotate/10_rotated_img.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Rotate image
 device, rotate_img = pcv.rotate_img(img, -10, device, debug='print')

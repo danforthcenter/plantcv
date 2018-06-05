@@ -22,7 +22,7 @@ Shifts image, but keeps dimensions the same
 ![Screenshot](img/documentation_images/shift/36_whitebalance.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Shift image
 device, shifted_img = pcv.shift_img(img, device,300,"top", debug='print')

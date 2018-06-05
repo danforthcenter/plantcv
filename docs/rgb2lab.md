@@ -21,7 +21,7 @@ Convert image from RGB colorspace to LAB colorspace and split the channels.
 ![Screenshot](img/documentation_images/rgb2lab/original_image.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # image converted from RGB to LAB, channels are then split. Lightness ('l') channel is outputed.
 
@@ -33,7 +33,7 @@ device, l_channel=pcv.rgb2gray_lab(img, 'l', device, debug="print")
 ![Screenshot](img/documentation_images/rgb2lab/lab_lightness.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # image converted from RGB to LAB, channels are then split. Green-Magenta ('a') channel is outputed.
 
@@ -45,7 +45,7 @@ device, a_channel= pcv.rgb2gray_lab(img, 'a', device, debug="print")
 ![Screenshot](img/documentation_images/rgb2lab/lab_green-magenta.jpg)
    
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # image converted from RGB to Lab, channels are then split. Blue-Yellow ('b') channel is outputed.
 

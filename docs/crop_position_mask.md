@@ -32,7 +32,7 @@ Takes a binary mask and positions it on another image.
 
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Image not positioned (no adustment)
 
@@ -46,7 +46,7 @@ device, cropped1= pcv.crop_position_mask(img,mask,device,0,0,"top","right", debu
 
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Image positioned
 

@@ -23,7 +23,7 @@ angles are often associated with object tip points. Outputs a python list of poi
 ![Screenshot](img/documentation_images/acute_vertex/av_example_image.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 device = 1
 

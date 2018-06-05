@@ -24,7 +24,7 @@ Note that p1 = (0,0) is the top left hand corner bottom right hand corner is p2 
 ![Screenshot](img/documentation_images/rectangle_mask/grayscale_image.jpg) 
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Makes a rectangle area that will be treated as a mask
 device, masked, binary, contours, hierarchy = pcv.rectangle_mask(img, (0,0), (75,252), device, debug="print", color="black")

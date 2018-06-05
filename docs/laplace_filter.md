@@ -22,7 +22,7 @@ This is a filtering method used to identify and highlight fine edges based on th
 ![Screenshot](img/documentation_images/laplace_filter/grayscale_image.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Apply to a grayscale image
 # Filtered image will highlight areas of rapid pixel intensity change

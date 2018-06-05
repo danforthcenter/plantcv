@@ -19,7 +19,7 @@ that is found in the same directory but which contains multiple images (regex). 
  - [Use in VIS/NIR Tutorial](vis_nir_tutorial.md)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Get NIR image
 

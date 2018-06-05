@@ -24,7 +24,7 @@ The function is a wrapper for the OpenCV function [median blur](http://docs.open
 ![Screenshot](img/documentation_images/median_blur/thresholded_image.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Apply median blur to a binary image that has been previously thresholded.
 device, blur_5 = pcv.median_blur(img, 5, device, debug="print")
@@ -35,7 +35,7 @@ device, blur_5 = pcv.median_blur(img, 5, device, debug="print")
 ![Screenshot](img/documentation_images/median_blur/median_blur5.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Apply median blur to a binary image that has been previously thresholded.
 device, blur_11 = pcv.median_blur(img, 11, device, debug="print")

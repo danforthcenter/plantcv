@@ -21,7 +21,7 @@ Creates a binary image from a gray image based on the threshold values.
 
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Create binary image from a gray image based on threshold values. Targeting light objects in the image.
 device, threshold_light = pcv.otsu_auto_threshold(img, 255, 'dark', device, debug="print")
@@ -36,7 +36,7 @@ device, threshold_light = pcv.otsu_auto_threshold(img, 255, 'dark', device, debu
 ![Screenshot](img/documentation_images/otsu_threshold/original_image.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Create binary image from a gray image based on threshold values. Targeting dark objects in the image.
 device, threshold_dark = pcv.otsu_auto_threshold(img1, 255, 'light', device, debug="print")

@@ -38,7 +38,7 @@ Get and record the size of a size marker or set an area as a size marker.
 
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Detect and Measure Size Marker
 device, marker_header,marker_data,images=pcv.report_size_marker_area(img1, 'rectangle', device, debug='print', marker='detect', x_adj=3500, y_adj=600, w_adj=-100, h_adj=-1500, base='white', objcolor='light', thresh_channel='s', thresh=120, filename=False)```

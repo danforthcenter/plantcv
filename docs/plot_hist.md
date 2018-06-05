@@ -19,7 +19,7 @@ This is a plotting method used to examine the distribution of signal within an i
 ![Screenshot](img/documentation_images/plot_hist/grayscale_image.jpg) 
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Examine signal distribution within an image
 # prints out an image histogram of signal within image

@@ -2,7 +2,7 @@
 import argparse
 import sys, os
 import sqlite3 as sq
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 ### Parse command-line arguments
 def options():

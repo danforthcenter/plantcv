@@ -19,7 +19,7 @@ If the image has low contrast it will make it easier to threshold.
 ![Screenshot](img/documentation_images/HistEqualization/grayscale_image.jpg)  
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Examine signal distribution within an image
 # prints out an image histogram of signal within image

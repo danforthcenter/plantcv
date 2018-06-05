@@ -4,7 +4,7 @@ import argparse
 import numpy as np
 import sys, os
 import sqlite3 as sq
-import plantcv as pcv
+from plantcv import plantcv as pcv
 from shutil import copy
 import datetime
 import re

@@ -22,7 +22,7 @@ Perform distance transform on binary image
 ![Screenshot](img/documentation_images/distance_transform/mask_img.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Perform dilation
 # Results in addition of pixels to the boundary of object

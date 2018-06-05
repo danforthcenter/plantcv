@@ -27,7 +27,7 @@ than the cv2.add fxn which is a saturation operation.
 ![Screenshot](img/documentation_images/image_add/image2.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Add two images together
 # Results to combine/stack the pixelwise intensity found in two images

@@ -22,7 +22,7 @@ Scaling is used to remove the influence of size on shape parameters. Returns a l
 ![Screenshot](img/documentation_images/scale_features/av_output.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 device = 1
 

@@ -26,7 +26,7 @@ This is a wrapper for the OpenCV function [subtract](http://docs.opencv.org/2.4/
 ![Screenshot](img/documentation_images/image_subtract/image2.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Subtract image from another image. 
 device, subtracted_img = pcv.image_subtract(img, img2,  device, debug="print")

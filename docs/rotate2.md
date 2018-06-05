@@ -22,7 +22,7 @@ Rotates image without changing the dimensions of the image.
 ![Screenshot](img/documentation_images/rotate2/34_whitebalance.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Rotate image
 device, rotate_img = pcv.rotate(img, 10, True, device, debug='print')
@@ -33,7 +33,7 @@ device, rotate_img = pcv.rotate(img, 10, True, device, debug='print')
 ![Screenshot](img/documentation_images/rotate2/10_rotated_img.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Rotate image
 device, rotate_img = pcv.rotate(img, -10, device, False, debug='print')

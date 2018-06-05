@@ -15,9 +15,9 @@
 ![Screenshot](img/documentation_images/from_binary_image/binary_image.png)
 
 ```python
-import plantcv.roi
+from plantcv import plantcv as pcv
 
-roi_contour, roi_hierarchy = plantcv.roi.from_binary_image(bin_img=bin_img, img=rgb_img)
+roi_contour, roi_hierarchy = pcv.roi.from_binary_image(bin_img=bin_img, img=rgb_img)
 ```
 
 ![Screenshot](img/documentation_images/from_binary_image/image_with_roi.png)

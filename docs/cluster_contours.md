@@ -24,7 +24,7 @@ This function take a image with multiple contours and clusters them based on use
 ![Screenshot](img/documentation_images/cluster_contour/13_roi_mask.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # clusters them based on user input of rows and columns
 device, clusters_i, contours = pcv.cluster_contours(device, img, roi_objects, 4, 6, debug="print")

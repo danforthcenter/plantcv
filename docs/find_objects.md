@@ -26,7 +26,7 @@ Find objects within the image.
 ![Screenshot](img/documentation_images/find_objects/mask.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Identify objects (plant material) in an image, all objects regardless of hierarchy are filled (e.g. holes between leaves).
 device, id_objects, obj_hierarchy = pcv.find_objects(img, mask, device, debug="print")

@@ -3,7 +3,7 @@
 import argparse
 import numpy as np
 import os
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 
 # Parse command-line arguments

@@ -41,7 +41,7 @@ Extract color data of objects and produce pseudocolored images, can extract data
 ![Screenshot](img/documentation_images/analyze_color/original_image.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Analyze Color
     

@@ -23,7 +23,7 @@ conditions set in kernel are true.
 ![Screenshot](img/documentation_images/dilate/grayscale_image.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Perform dilation
 # Results in addition of pixels to the boundary of object

@@ -26,7 +26,7 @@ Combine objects together for downstream analysis, usually done after object filt
 ![Screenshot](img/documentation_images/object_composition/contours.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Combine objects so downstream analysis can be run on a single plant object
 device, obj, mask = pcv.object_composition(img, roi_objects, hierarchy, device, debug="print")

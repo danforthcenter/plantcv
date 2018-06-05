@@ -19,7 +19,7 @@ Identifies objects and fills objects that are less than specified size
     - [Use In PSII Tutorial](psII_tutorial.md) 
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Apply fill to a binary image that has had a median blur applied.
 # Image mask is the same binary image with median blur.

@@ -33,7 +33,7 @@ best if the pot size/position of the plant remains relatively constant.
     - Percent-Right-Bound - percentage of total area right of the bound line  
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Set Boundary Line    
 device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_vertical(img, obj, mask, 1000, device, debug='print', 'setaria_boundary_img.png')

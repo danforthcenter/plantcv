@@ -21,7 +21,7 @@ Invert a binary image. This is a wrapper for the OpenCV function [bitwise_not](h
 ![Screenshot](img/documentation_images/invert/binary_image.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Invert a binary mask.
 device, inverted_img = pcv.invert(img, device, debug="print")

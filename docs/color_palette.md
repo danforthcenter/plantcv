@@ -13,7 +13,7 @@ If one color is requested, a random color is returned. Otherwise, evenly spaced 
     - Used when a random set of colors is needed.
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Get one random color
 colors = pcv.color_palette(1)

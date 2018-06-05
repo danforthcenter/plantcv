@@ -21,7 +21,7 @@ Once this data is scaled this approach may provide some information regarding sh
 ![Screenshot](img/documentation_images/y_axis_pseudolandmarks/ypl_example_image.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 device = 1
 

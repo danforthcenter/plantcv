@@ -28,7 +28,7 @@ completely within the image.
     - [Use In PSII Tutorial](psII_tutorial.md) 
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # ROI objects allows the user to define if objects partially inside ROI are included or if objects are cut to ROI.
 device, roi_objects, hierarchy, kept_mask, obj_area = pcv.roi_objects(img, 'partial', roi, roi_hierarchy, objects, obj_hierarchy, device, debug="print")
@@ -47,7 +47,7 @@ device, roi_objects, hierarchy, kept_mask, obj_area = pcv.roi_objects(img, 'part
 ![Screenshot](img/documentation_images/roi_objects/kept_objects1.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Define region of interest in an image, there is a futher function 'ROI Objects' that allows the user to define if you want to include objects partially inside ROI or if you want to do cut objects to ROI.
 device, roi_objects, hierarchy, kept_mask, obj_area = pcv.roi_objects(img, 'cutto', roi, roi_hierarchy, objects, obj_hierarchy, device, debug="print")

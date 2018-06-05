@@ -23,7 +23,7 @@ Creates a binary image from a gray image using adaptive thresholding.
 
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Create binary image from a gray image based
 device, threshold_gaussian = pcv.adaptive_threshold(img, 255, 'gaussian','dark', device, debug="print")
@@ -34,7 +34,7 @@ device, threshold_gaussian = pcv.adaptive_threshold(img, 255, 'gaussian','dark',
 ![Screenshot](img/documentation_images/auto_threshold/gaussian_threshold.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Create binary image from a gray image based 
 device, threshold_mean = pcv.adaptive_threshold(img, 255, 'mean','dark', device, debug="print")

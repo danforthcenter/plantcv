@@ -27,7 +27,7 @@ This is a wrapper for the Opencv Function [bitwise_or](http://docs.opencv.org/2.
 ![Screenshot](img/documentation_images/logical_or/image2.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Combine two images that have had different thresholds applied to them.
 # For logical 'or' operation object pixel in either image object will be included in 'or' image.

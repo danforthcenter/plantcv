@@ -24,7 +24,7 @@ Creates a binary image from a gray image using adaptive thresholding.
 
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Create binary image from a gray image based
 device, thresholded= pcv.triangle_auto_threshold(device,img, 255,'light', xstep=10, debug="print")
@@ -36,7 +36,7 @@ device, thresholded= pcv.triangle_auto_threshold(device,img, 255,'light', xstep=
 ![Screenshot](img/documentation_images/triangle_threshold/4_triangle_thresh_img_30.0.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Create binary image from a gray image based 
 device, thresholded= pcv.triangle_auto_threshold(device,img, 255,'light', xstep=1, debug="print")

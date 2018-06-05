@@ -17,9 +17,9 @@
 ![Screenshot](img/documentation_images/circle/original_image.jpg)
 
 ```python
-import plantcv.roi
+from plantcv import plantcv as pcv
 
-roi_contour, roi_hierarchy = plantcv.roi.circle(x=200, y=225, r=75, img=rgb_img)
+roi_contour, roi_hierarchy = pcv.roi.circle(x=200, y=225, r=75, img=rgb_img)
 ```
 
 ![Screenshot](img/documentation_images/circle/image_with_roi.jpg)

@@ -30,7 +30,7 @@ The object target can be specified as dark or light.
 ![Screenshot](img/documentation_images/binary_threshold/saturation_image.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Create binary image from a gray image based on threshold values. Targeting light objects in the image.
 device, threshold_light = pcv.binary_threshold(img, 36, 255, 'light', device, debug="print")
@@ -41,7 +41,7 @@ device, threshold_light = pcv.binary_threshold(img, 36, 255, 'light', device, de
 ![Screenshot](img/documentation_images/binary_threshold/thresholded_image.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Create binary image from a gray image based on threshold values. Targeting dark objects in the image.
 device, threshold_dark = pcv.binary_threshold(img, 36, 255, 'dark', device, debug="print")

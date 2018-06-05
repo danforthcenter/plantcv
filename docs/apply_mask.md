@@ -28,7 +28,7 @@ Apply binary mask to an image.
 ![Screenshot](img/documentation_images/apply_mask/mask.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Apply binary 'white' mask over an image. 
 device, masked_image = pcv.apply_mask(img, mask, 'white', device, debug="print")
@@ -39,7 +39,7 @@ device, masked_image = pcv.apply_mask(img, mask, 'white', device, debug="print")
 ![Screenshot](img/documentation_images/apply_mask/white_masked_image.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Apply binary 'black' mask over an image.
 device, masked_image = pcv.apply_mask(img, mask, 'black', device, debug="print")

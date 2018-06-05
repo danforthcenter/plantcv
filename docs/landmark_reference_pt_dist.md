@@ -20,7 +20,7 @@ This is a function to measure the distance from user defined points to the centr
 ![Screenshot](img/documentation_images/landmark_reference_pt_dist/lrpd_example_image.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 device = 1
 

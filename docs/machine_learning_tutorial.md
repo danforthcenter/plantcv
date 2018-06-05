@@ -31,7 +31,7 @@ remaining 256 columns contain the p-value from the PDFs for each intensity value
 Once we have the `plantcv-train.py` output file, we can classify pixels in a color image in PlantCV.
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Read in a color image
 img, path, filename = pcv.readimage("color_image.png")
@@ -111,7 +111,7 @@ density functions file output by `plantcv-train.py`. For example:
 #!/usr/bin/env python
 
 import argparse
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Parse command-line arguments
 def options():

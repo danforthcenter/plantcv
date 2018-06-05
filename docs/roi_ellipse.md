@@ -19,9 +19,9 @@
 ![Screenshot](img/documentation_images/ellipse/original_image.jpg)
 
 ```python
-import plantcv.roi
+from plantcv import plantcv as pcv
 
-roi_contour, roi_hierarchy = plantcv.roi.ellipse(x=200, y=200, r1=100, r2=80, angle=0, img=rgb_img)
+roi_contour, roi_hierarchy = pcv.roi.ellipse(x=200, y=200, r1=100, r2=80, angle=0, img=rgb_img)
 ```
 
 ![Screenshot](img/documentation_images/ellipse/image_with_roi.jpg)

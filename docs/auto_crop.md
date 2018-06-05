@@ -22,7 +22,7 @@ Crops image to an object and allows user to specify image padding (if desired)
 ![Screenshot](img/documentation_images/auto_crop/2016-05-25_1031.chamber129-camera-01.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Resize image
 device, crop_img=pcv.auto_crop(device, img, id_objects[0],20,20,'black',debug)

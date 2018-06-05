@@ -23,7 +23,7 @@ This is a filtering method used to identify and highlight coarse changes in pixe
 ![Screenshot](img/documentation_images/sobel_filter/original_image.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Apply to a grayscale image
 # Filtered image will highlight areas of coarse pixel intensity change based on 1st derivative

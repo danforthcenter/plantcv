@@ -24,7 +24,7 @@ Needs a mask file which specifies area which is object is white, and background 
 ![Screenshot](img/documentation_images/watershed/543_auto_cropped.jpg)
 
 ```python
-import plantcv as pcv
+from plantcv import plantcv as pcv
 
 # Segment image with watershed function
 device, watershed_header, watershed_data,analysis_images=pcv.watershed_segmentation(device, crop_img,thresh,10,'./examples',debug='print')
