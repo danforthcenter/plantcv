@@ -13,6 +13,3 @@ plant12
 plant13
 plant14
 plant15
-plant16
-plant17
-plant18
