@@ -55,7 +55,19 @@ TEST_VIS_SMALL_PLANT = "setaria_small_plant_vis.png"
 TEST_MASK_SMALL_PLANT = "setaria_small_plant_mask.png"
 TEST_VIS_COMP_CONTOUR_SMALL_PLANT = "setaria_small_plant_composed_contours.npz"
 TEST_SAMPLED_RGB_POINTS = "sampled_rgb_points.txt"
-
+TEST_TARGET_COLOR_SPACE = "target_rgb.png"
+TEST_SOURCE_COLOR_SPACE_EQUAL = "source_rgb.png"
+TEST_SOURCE_COLOR_SPACE_UNEQUAL = "source_unequal_rgb.png"
+TEST_TARGET_MASK = "mask_gray.png"
+TEST_SOURCE_UNEQUAL = "source_unequal_mask.png"
+TEST_TARGET_MATRIX = "target_matrix.npz"
+TEST_SOURCE_MATRIX = "source_matrix_equal.npz"
+TEST_SOURCE_MATRIX_UNEQUAL = "source_matrix_unequal.npz"
+TEST_MATRIX_B = "matrix_b.npz"
+TEST_MATRIX_B_INCORRECT = "matrix_b_incorrect.npz"
+TEST_MATRIX_T = "matrix_t.npz"
+TEST_MATRIX_T_INCORRECT = "matrix_b_incorrect.npz"
+TEST_MATRIX_M = "matrix_m.npz"
 
 # ##########################
 # Tests setup function
@@ -2012,6 +2024,169 @@ def test_plantcv_roi_ellipse_out_of_frame():
     # The resulting rectangle needs to be within the dimensions of the image
     with pytest.raises(RuntimeError):
         _, _ = pcv.roi.ellipse(x=50, y=225, r1=75, r2=50, angle=0, img=rgb_img)
+
+
+# ##############################
+# Tests for the transform subpackage
+# ##############################
+
+
+def test_plantcv_transform_get_color_matrix():
+    # Read in rgb_img and gray-scale mask
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_COLOR_SPACE))
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_MASK), -1)
+    # The result should be a len(np.unique(mask))-1 x 4 matrix
+    headers, matrix = pcv.transform.get_color_matrix(rgb_img, mask)
+    assert np.shape(matrix) == ((len(np.unique(mask)))-1,4)
+
+
+def test_plantcv_transform_get_color_matrix_img():
+    # Read in two gray-scale images
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_MASK), -1)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_MASK), -1)
+    # The input for rgb_img needs to be an RGB image
+    with pytest.raises(RuntimeError):
+        _, _ = pcv.transform.get_color_matrix(rgb_img, mask)
+
+
+def test_plantcv_transform_get_color_matrix_mask():
+    # Read in two gray-scale images
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_COLOR_SPACE))
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_MASK))
+    # The input for rgb_img needs to be an RGB image
+    with pytest.raises(RuntimeError):
+        _, _ = pcv.transform.get_color_matrix(rgb_img, mask)
+
+
+def test_plantcv_transform_get_matrix_m():
+    # read in matrices
+    t_matrix_file = np.load(os.path.join(TEST_DATA, TEST_TARGET_MATRIX), encoding="latin1")
+    t_matrix = t_matrix_file['arr_0']
+    s_matrix_file = np.load(os.path.join(TEST_DATA, TEST_SOURCE_MATRIX), encoding="latin1")
+    s_matrix = s_matrix_file['arr_0']
+    # apply matrices to function
+    matrix_a, matrix_m, matrix_b = pcv.transform.get_matrix_m(t_matrix, s_matrix)
+    assert np.shape(matrix_m)[0] == np.shape(matrix_b)[1] and np.shape(matrix_m)[1] == np.shape(matrix_b)[0]
+
+
+def test_plantcv_transform_get_matrix_m_unequal_data():
+    # read in matrices
+    t_matrix_file = np.load(os.path.join(TEST_DATA, TEST_TARGET_MATRIX), encoding="latin1")
+    t_matrix = t_matrix_file['arr_0']
+    s_matrix_file = np.load(os.path.join(TEST_DATA, TEST_SOURCE_MATRIX_UNEQUAL), encoding="latin1")
+    s_matrix = s_matrix_file['arr_0']
+    # apply matrices to function
+    matrix_a, matrix_m, matrix_b = pcv.transform.get_matrix_m(t_matrix, s_matrix)
+    assert np.shape(matrix_m)[0] == np.shape(matrix_b)[1] and np.shape(matrix_m)[1] == np.shape(matrix_b)[0]
+
+
+def test_plantcv_transform_calc_transformation_matrix():
+    # read in matrices
+    matrix_m_file = np.load(os.path.join(TEST_DATA, TEST_MATRIX_M), encoding="latin1")
+    matrix_m = matrix_m_file['arr_0']
+    matrix_b_file = np.load(os.path.join(TEST_DATA, TEST_MATRIX_B), encoding="latin1")
+    matrix_b = matrix_b_file['arr_0']
+    # apply to function
+    _, matrix_t = pcv.transform.calc_transformation_matrix(matrix_m, matrix_b)
+    assert np.shape(matrix_t) == (9,9)
+
+
+def test_plantcv_transform_calc_transformation_matrix_incorrect_b():
+    # read in matrices
+    matrix_m_file = np.load(os.path.join(TEST_DATA, TEST_MATRIX_M), encoding="latin1")
+    matrix_m = matrix_m_file['arr_0']
+    matrix_b_file = np.load(os.path.join(TEST_DATA, TEST_MATRIX_B_INCORRECT), encoding="latin1")
+    matrix_b = matrix_b_file['arr_0']
+    with pytest.raises(RuntimeError):
+        _, _ = pcv.transform.calc_transformation_matrix(matrix_m, matrix_b)
+
+
+def test_plantcv_transform_calc_transformation_matrix_not_matrices():
+    # read in matrices
+    matrix_m_file = np.load(os.path.join(TEST_DATA, TEST_MATRIX_M), encoding="latin1")
+    matrix_m = matrix_m_file['arr_0']
+    matrix_b_file = np.load(os.path.join(TEST_DATA, TEST_MATRIX_B_INCORRECT), encoding="latin1")
+    matrix_b = matrix_b_file['arr_0']
+    with pytest.raises(RuntimeError):
+        _, _ = pcv.transform.calc_transformation_matrix(matrix_m[:,1], matrix_b)
+
+
+def test_plantcv_transform_apply_transformation():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform")
+    os.mkdir(cache_dir)
+    # Make image and mask directories in the cache directory
+    imgdir = os.path.join(cache_dir, "images")
+    # read in matrices
+    matrix_t_file = np.load(os.path.join(TEST_DATA, TEST_MATRIX_T), encoding="latin1")
+    matrix_t = matrix_t_file['arr_0']
+    #read in images
+    target_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_COLOR_SPACE))
+    source_img = cv2.imread(os.path.join(TEST_DATA, TEST_SOURCE_COLOR_SPACE_EQUAL))
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    pcv.params.debug_outdir = cache_dir
+    _ = pcv.transform.apply_transformation_matrix(source_img, target_img, matrix_t)
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    _ = pcv.transform.apply_transformation_matrix(source_img, target_img, matrix_t)
+    # Test with debug = None
+    pcv.params.debug = None
+    corrected_img = pcv.transform.apply_transformation_matrix(source_img, target_img, matrix_t)
+    # Assert the contours and hierarchy lists contain only the ROI
+    assert np.shape(corrected_img) == np.shape(source_img)
+
+
+def test_plantcv_transform_apply_transformation_incorrect_t():
+    # read in matrices
+    matrix_t_file = np.load(os.path.join(TEST_DATA, TEST_MATRIX_B), encoding="latin1")
+    matrix_t = matrix_t_file['arr_0']
+    #read in images
+    target_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_COLOR_SPACE))
+    source_img = cv2.imread(os.path.join(TEST_DATA, TEST_SOURCE_COLOR_SPACE_EQUAL))
+    with pytest.raises(RuntimeError):
+        _ = pcv.transform.apply_transformation_matrix(source_img, target_img, matrix_t)
+
+
+def test_plantcv_transform_apply_transformation_incorrect_img():
+    # read in matrices
+    matrix_t_file = np.load(os.path.join(TEST_DATA, TEST_MATRIX_T), encoding="latin1")
+    matrix_t = matrix_t_file['arr_0']
+    #read in images
+    target_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_COLOR_SPACE))
+    source_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_MASK), -1)
+    with pytest.raises(RuntimeError):
+        _ = pcv.transform.apply_transformation_matrix(source_img, target_img, matrix_t)
+
+
+def test_plantcv_transform_save_matrix():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform")
+    os.mkdir(cache_dir)
+    # Make image and mask directories in the cache directory
+    imgdir = os.path.join(cache_dir, "matrices")
+    # read in matrix
+    matrix_t_file = np.load(os.path.join(TEST_DATA, TEST_MATRIX_T), encoding="latin1")
+    matrix_t = matrix_t_file['arr_0']
+    # .npz filename
+    filename = "test.npz"
+    pcv.transform.save_matrix(matrix_t, filename)
+    assert os.path.exists(filename) is True
+
+
+def test_plantcv_transform_save_matrix_incorrect_filename():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform")
+    os.mkdir(cache_dir)
+    # Make image and mask directories in the cache directory
+    imgdir = os.path.join(cache_dir, "matrices")
+    # read in matrix
+    matrix_t_file = np.load(os.path.join(TEST_DATA, TEST_MATRIX_T), encoding="latin1")
+    matrix_t = matrix_t_file['arr_0']
+    # .npz filename
+    filename = "test"
+    with pytest.raises(RuntimeError):
+        pcv.transform.save_matrix(matrix_t, filename)
 
 
 # ##############################
