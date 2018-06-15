@@ -1,6 +1,7 @@
 # Color Corrections Functions
 
 import os
+import errno
 import cv2
 import numpy as np
 from plantcv.plantcv import print_image
@@ -60,7 +61,7 @@ def get_color_matrix(rgb_img, mask):
 
 
 def get_matrix_m(target_matrix, source_matrix):
-    """ Calculate Moore-Penrose inverse matrix for use in calculating matrix_t
+    """ Calculate Moore-Penrose inverse matrix for use in calculating transformation_matrix
 
     Inputs:
     target_matrix       = a 22x4 matrix containing the average red value, average green value, and average blue value
@@ -127,7 +128,7 @@ def get_matrix_m(target_matrix, source_matrix):
 
 
 def calc_transformation_matrix(matrix_m, matrix_b):
-    """ Calculates transformation matrix (matrix_t).
+    """ Calculates transformation matrix (transformation_matrix).
 
     Inputs:
     matrix_m    = a 9x22 Moore-Penrose inverse matrix
@@ -139,7 +140,7 @@ def calc_transformation_matrix(matrix_m, matrix_b):
     blue        = a 9x1 matrix of transformation coefficients
     1-t_det     = "deviance" the measure of how greatly the source image deviates from the target image's color space.
                     Two images of the same color space should have a deviance of ~0.
-    matrix_t    = a 9x9 matrix of linear, square, and cubic transformation coefficients
+    transformation_matrix    = a 9x9 matrix of linear, square, and cubic transformation coefficients
 
 
     :param matrix_m: numpy.ndarray
@@ -148,7 +149,7 @@ def calc_transformation_matrix(matrix_m, matrix_b):
     :return blue: numpy.ndarray
     :return green: numpy.ndarray
     :return 1-t_det: float
-    :return matrix_t: numpy.ndarray
+    :return transformation_matrix: numpy.ndarray
     """
     # check matrix_m and matrix_b are matrices
     if len(np.shape(matrix_b)) != 2 or len(np.shape(matrix_m)) != 2:
@@ -179,33 +180,33 @@ def calc_transformation_matrix(matrix_m, matrix_b):
     blue3 = np.matmul(matrix_m, t_b3)
 
     # concatenate each product column into 9X9 transformation matrix
-    matrix_t = np.concatenate((red, green, blue, red2, green2, blue2, red3, green3, blue3), 1)
+    transformation_matrix = np.concatenate((red, green, blue, red2, green2, blue2, red3, green3, blue3), 1)
 
     # find determinant of transformation matrix
-    t_det = np.linalg.det(matrix_t)
+    t_det = np.linalg.det(transformation_matrix)
 
-    return 1-t_det, matrix_t
+    return 1-t_det, transformation_matrix
 
 
-def apply_transformation_matrix(source_img, target_img, matrix_t):
+def apply_transformation_matrix(source_img, target_img, transformation_matrix):
     """ Apply the transformation matrix to the source_image.
 
     Inputs:
     source_img      = an RGB image to be corrected to the target color space
     target_img      = an RGB image with the target color space
-    matrix_t        = a 9x9 matrix of tranformation coefficients
+    transformation_matrix        = a 9x9 matrix of tranformation coefficients
 
     Outputs:
     corrected_img    = an RGB image in correct color space
 
     :param source_img: numpy.ndarray
     :param target_img: numpy.ndarray
-    :param matrix_t: numpy.ndarray
+    :param transformation_matrix: numpy.ndarray
     :return corrected_img: numpy.ndarray
     """
-    # check matrix_t for 9x9
-    if np.shape(matrix_t) != (9, 9):
-        fatal_error("matrix_t must be a 9x9 matrix of transformation coefficients.")
+    # check transformation_matrix for 9x9
+    if np.shape(transformation_matrix) != (9, 9):
+        fatal_error("transformation_matrix must be a 9x9 matrix of transformation coefficients.")
     # Check for RGB input
     if len(np.shape(source_img)) != 3:
         fatal_error("Source_img is not an RGB image.")
@@ -213,8 +214,8 @@ def apply_transformation_matrix(source_img, target_img, matrix_t):
     # Autoincrement the device counter
     params.device += 1
 
-    # split matrix_t
-    red, green, blue, red2, green2, blue2, red3, green3, blue3 = np.split(matrix_t, 9, 1)
+    # split transformation_matrix
+    red, green, blue, red2, green2, blue2, red3, green3, blue3 = np.split(transformation_matrix, 9, 1)
 
     # find linear, square, and cubic values of source_img color channels
     source_b, source_g, source_r = cv2.split(source_img)
@@ -308,20 +309,20 @@ def load_matrix(filename):
     return matrix
 
 
-def correct_color(target_img, target_mask, source_img, source_mask):
+def correct_color(target_img, target_mask, source_img, source_mask, output_directory):
     """Takes a target_img with preferred color_space and converts source_img to that color_space.
     Inputs:
-    target_img      = an RGB image with color chips visualized
-    source_img      = an RGB image with color chips visualized
-    target_mask     = a gray-scale image with color chips and background each represented with unique values
-    target_mask     = a gray-scale image with color chips and background each represented as unique values
-
+    target_img          = an RGB image with color chips visualized
+    source_img          = an RGB image with color chips visualized
+    target_mask         = a gray-scale image with color chips and background each represented with unique values
+    target_mask         = a gray-scale image with color chips and background each represented as unique values
+    output_directory    = a file path to which outputs will be saved
     Outputs:
     target_matrix   = saved in .npz file, a 22x4 matrix containing the average red value, average green value, and
                             average blue value for each color chip.
     source_matrix   = saved in .npz file, a 22x4 matrix containing the average red value, average green value, and
                             average blue value for each color chip.
-    matrix_t        = saved in .npz file, a 9x9 transformation matrix
+    transformation_matrix        = saved in .npz file, a 9x9 transformation matrix
 
     corrected_img   = the source_img converted to the correct color space.
 
@@ -330,28 +331,37 @@ def correct_color(target_img, target_mask, source_img, source_mask):
     :param source_img: numpy.ndarray
     :param target_mask: numpy.ndarray
     :param source_mask: numpy.ndarray
+    :param output_directory: string
     :return target_matrix: numpy.matrix
     :return source_matrix: numpy.matrix
-    :return matrix_t: numpy.matrix
+    :return transformation_matrix: numpy.matrix
     :return corrected_img: numpy.ndarray
     """
+    # check output_directory, if it does not exist, create
+    if not os.path.exists(output_directory):
+        try:
+            os.makedirs(output_directory)
+        except OSError as exc:
+            if exc.errno == errno.EEXIST and os.path.isdir(output_directory):
+                pass
+            else:
+                fatal_error("Error creating output_directory.")
 
     # get color matrices for target and source images
     target_headers, target_matrix = get_color_matrix(target_img, target_mask)
     source_headers, source_matrix = get_color_matrix(source_img, source_mask)
 
     # save target and source matrices
-    save_matrix(target_matrix, "target_matrix.npz")
-    save_matrix(source_matrix, "source_matrix.npz")
+    save_matrix(target_matrix, os.path.join(output_directory, "target_matrix.npz"))
+    save_matrix(source_matrix, os.path.join(output_directory, "source_matrix.npz"))
 
     # get matrix_m
     matrix_a, matrix_m, matrix_b = get_matrix_m(target_matrix=target_matrix, source_matrix=source_matrix)
-    # calculate matrix_t and save
-    deviance, matrix_t = calc_transformation_matrix(matrix_m, matrix_b)
-    save_matrix(matrix_t, "matrix_t.npz")
+    # calculate transformation_matrix and save
+    deviance, transformation_matrix = calc_transformation_matrix(matrix_m, matrix_b)
+    save_matrix(transformation_matrix, os.path.join(output_directory, "transformation_matrix.npz"))
 
     # apply transformation
-    corrected_img = apply_transformation_matrix(source_img, target_img, matrix_t)
+    corrected_img = apply_transformation_matrix(source_img, target_img, transformation_matrix)
 
-    return target_matrix, source_matrix, matrix_t, corrected_img
-
+    return target_matrix, source_matrix, transformation_matrix, corrected_img
