@@ -1,3 +1,4 @@
+import sys
 import cv2
 import numpy as np
 from plantcv.plantcv import print_image
@@ -5,7 +6,7 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import color_palette
 
 
-def cluster_contours(device, img, roi_objects, nrow=1, ncol=1, debug=None):
+def cluster_contours(device, img, roi_objects,roi_obj_hierarchy, nrow=1, ncol=1, debug=None):
 
     """
     This function take a image with multiple contours and clusters them based on user input of rows and columns
@@ -13,6 +14,7 @@ def cluster_contours(device, img, roi_objects, nrow=1, ncol=1, debug=None):
     Inputs:
     img                     = An RGB image array
     roi_objects             = object contours in an image that are needed to be clustered.
+    roi_obj_hierarchy       = object hierarchy
     nrow                    = number of rows to cluster (this should be the approximate  number of desired rows
                               in the entire image (even if there isn't a literal row of plants)
     ncol                    = number of columns to cluster (this should be the approximate number of desired columns
@@ -38,6 +40,9 @@ def cluster_contours(device, img, roi_objects, nrow=1, ncol=1, debug=None):
     """
 
     device += 1
+
+    sys.stderr.write(
+        'This function has been updated to include object hierarchy so object holes can be included\n')
 
     if len(np.shape(img)) == 3:
         iy, ix, iz = np.shape(img)
@@ -133,7 +138,10 @@ def cluster_contours(device, img, roi_objects, nrow=1, ncol=1, debug=None):
         rand_color = color_palette(len(coordlist))
         for i, x in enumerate(coordlist):
             for a in x:
-                cv2.drawContours(img_copy, roi_objects, a, rand_color[i], -1, lineType=8)
+                if roi_obj_hierarchy[0][a][3] > -1:
+                    pass
+                else:
+                    cv2.drawContours(img_copy, roi_objects, a, rand_color[i], -1, hierarchy=roi_obj_hierarchy)
         print_image(img_copy, (str(device) + '_clusters.png'))
 
     elif debug == 'plot':
@@ -146,7 +154,10 @@ def cluster_contours(device, img, roi_objects, nrow=1, ncol=1, debug=None):
         rand_color = color_palette(len(coordlist))
         for i, x in enumerate(coordlist):
             for a in x:
-                cv2.drawContours(img_copy, roi_objects, a, rand_color[i], -1, lineType=8)
+                if roi_obj_hierarchy[0][a][3] > -1:
+                    pass
+                else:
+                    cv2.drawContours(img_copy, roi_objects, a, rand_color[i], -1, hierarchy=roi_obj_hierarchy)
         plot_image(img_copy)
 
-    return device, grouped_contour_indexes, contours
+    return device, grouped_contour_indexes, contours, roi_obj_hierarchy
