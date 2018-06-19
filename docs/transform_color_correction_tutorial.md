@@ -32,7 +32,7 @@ To see an example of how to create a gray-scale mask of color chips see [here](#
 ##Developing a pipeline
 
 The modularity of PlantCV allows for flexible development of pipelines to fit the context and needs of users. The development of a pipeline for color correction is no different.
-Below are three potential scenarios with possible color correction pipelines. 
+Below are two potential scenarios with possible color correction pipelines. 
 
 ####**Scenario A: One Target profile, One Source profile**
 
@@ -87,7 +87,7 @@ corrected_img = pcv.transform.apply_transformation_matrix(source_img= new_source
 
 **Important Note:** The color correction submodule has been made with the capability to handle incomplete colorchecker data
 in the source image. This way if color chips have been cut off, the module will still work. Color chips do need to be consistently labeled
-from target to source. 
+from target to source. See an example of this [here](#creating-a-pipeline-with-incomplete-color-data).
 
 ####**Scenario B: One Target profile, Many Source profiles**
 
@@ -282,4 +282,43 @@ cv2.imwrite("test_mask.png", mask) #write to file.
 
     True
 
+
+## Creating a pipeline with incomplete color data
+
+```python
+from plantcv import plantcv as pcv
+import cv2
+import numpy as np
+import matplotlib
+```
+
+
+```python
+target_img = cv2.imread("target_img.png")
+source_img = cv2.imread("source2_img.png")
+target_mask = cv2.imread("test_mask.png", -1) # mask must be read in "as-is" include -1
+source_mask = cv2.imread("mask2_img.png", -1) 
+
+#.npz files containing target_matrix, source_matrix, and transformation_matrix will be saved to the output_directory file path
+output_directory = "./test1"
+```
+
+
+```python
+
+target_matrix, source_matrix, transformation_matrix, corrected_img = pcv.transform.correct_color(target_img, target_mask, source_img, source_mask, output_directory)
+```
+
+![Screenshot](img/documentation_images/color_correction_tutorial/hstack_incomplete.jpg)
+
+
+```python
+transformation_matrix = pcv.transform.load_matrix("./test1/transformation_matrix.npz") #load in transformation_matrix
+
+new_source = cv2.imread("VIS_SV_0_z1_h1_g0_e65_v500_376217_0.png") #read in new image for transformation
+
+corrected_img = pcv.transform.apply_transformation_matrix(source_img= new_source, target_img= target_img, transformation_matrix= transformation_matrix) #apply transformation
+```
+
+![Screenshot](img/documentation_images/color_correction_tutorial/hstack_incomplete_plants.jpg)
 

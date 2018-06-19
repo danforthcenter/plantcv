@@ -236,7 +236,7 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
     corrected_img = cv2.merge(bgr)
 
     #round corrected_img elements to be within range and of the correct data type
-    corrected_img = np.round(corrected_img, decimals=0)
+    corrected_img = np.rint(corrected_img)
     corrected_img[np.where(corrected_img > 255)] = 255
     corrected_img = corrected_img.astype(np.uint8)
 
@@ -348,3 +348,5 @@ def correct_color(target_img, target_mask, source_img, source_mask, output_direc
     corrected_img = apply_transformation_matrix(source_img, target_img, transformation_matrix)
 
     return target_matrix, source_matrix, transformation_matrix, corrected_img
+
+
