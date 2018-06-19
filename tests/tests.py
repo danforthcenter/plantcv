@@ -35,8 +35,10 @@ TEST_INPUT_FMAX = "FLUO_TV_max.png"
 TEST_INPUT_FMASK = "FLUO_TV_MASK.png"
 TEST_INTPUT_GREENMAG = "input_green-magenta.jpg"
 TEST_INTPUT_MULTI = "multi_ori_image.jpg"
-TEST_INPUT_MULTI_CONTOUR = "roi_objects.npz"
+TEST_INPUT_MULTI_OBJECT = "roi_objects.npz"
+TEST_INPUT_MULTI_CONTOUR = "multi_contours.npz"
 TEST_INPUT_ClUSTER_CONTOUR = "clusters_i.npz"
+TEST_INPUT_MULTI_HIERARCHY= "multi_hierarchy.npz"
 TEST_INPUT_GENOTXT = "cluster_names.txt"
 TEST_INPUT_CROPPED = 'cropped_img.jpg'
 TEST_INPUT_CROPPED_MASK = 'cropped-mask.png'
@@ -441,18 +443,18 @@ def test_plantcv_auto_crop():
     os.mkdir(cache_dir)
     # Read in test data
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
-    contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_CONTOUR), encoding="latin1")
+    contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_OBJECT), encoding="latin1")
     roi_contours = contours['arr_0']
     # Test with debug = "print"
-    _ = pcv.auto_crop(device=0, img=img1, objects=roi_contours[48], padding_x=20, padding_y=20, color='black',
+    _ = pcv.auto_crop(device=0, img=img1, objects=roi_contours[1], padding_x=20, padding_y=20, color='black',
                       debug="print")
     os.rename("1_crop_area.png", os.path.join(cache_dir, "1_crop_area.png"))
     os.rename("1_auto_cropped.png", os.path.join(cache_dir, "1_auto_cropped.png"))
     # Test with debug = "plot"
-    _ = pcv.auto_crop(device=0, img=img1, objects=roi_contours[48], padding_x=20, padding_y=20, color='black',
+    _ = pcv.auto_crop(device=0, img=img1, objects=roi_contours[1], padding_x=20, padding_y=20, color='black',
                       debug="plot")
     # Test with debug = None
-    device, cropped = pcv.auto_crop(device=0, img=img1, objects=roi_contours[48], padding_x=20, padding_y=20,
+    device, cropped = pcv.auto_crop(device=0, img=img1, objects=roi_contours[1], padding_x=20, padding_y=20,
                                     color='black', debug=None)
     x, y, z = np.shape(img1)
     x1, y1, z1 = np.shape(cropped)
@@ -498,20 +500,21 @@ def test_plantcv_cluster_contours():
     os.mkdir(cache_dir)
     # Read in test data
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
-    contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_CONTOUR), encoding="latin1")
-    roi_contours = contours['arr_0']
+    roi_objects = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_OBJECT), encoding="latin1")
+    hierachy = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_HIERARCHY), encoding="latin1")
+    objs = roi_objects['arr_0']
+    obj_hierarchy= hierachy['arr_0']
     # Test with debug = "print"
-    _ = pcv.cluster_contours(device=0, img=img1, roi_objects=roi_contours, nrow=4, ncol=6, debug="print")
+    _ = pcv.cluster_contours(device=0, img=img1, roi_objects=objs, roi_obj_hierarchy= obj_hierarchy, nrow=4, ncol=6, debug="print")
     os.rename("1_clusters.png", os.path.join(cache_dir, "1_clusters.png"))
     # Test with debug = "plot"
-    _ = pcv.cluster_contours(device=0, img=img1, roi_objects=roi_contours, nrow=4, ncol=6, debug="plot")
+    _ = pcv.cluster_contours(device=0, img=img1, roi_objects=objs, roi_obj_hierarchy= obj_hierarchy, nrow=4, ncol=6, debug="plot")
     # Test with debug = None
-    device, clusters_i, contours = pcv.cluster_contours(device=0, img=img1, roi_objects=roi_contours, nrow=4, ncol=6,
+    device, clusters_i, contours, hierachy = pcv.cluster_contours(device=0, img=img1, roi_objects=objs, roi_obj_hierarchy= obj_hierarchy, nrow=4, ncol=6,
                                                         debug=None)
-    lenori = len(roi_contours)
+    lenori = len(objs)
     lenclust = len(clusters_i)
     assert lenori > lenclust
-
 
 def test_plantcv_cluster_contours_splitimg():
     # Test cache directory
@@ -521,23 +524,27 @@ def test_plantcv_cluster_contours_splitimg():
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
     contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_CONTOUR), encoding="latin1")
     clusters = np.load(os.path.join(TEST_DATA, TEST_INPUT_ClUSTER_CONTOUR), encoding="latin1")
+    hierachy = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_HIERARCHY), encoding="latin1")
     cluster_names = os.path.join(TEST_DATA, TEST_INPUT_GENOTXT)
     roi_contours = contours['arr_0']
     cluster_contours = clusters['arr_0']
+    obj_hierarchy= hierachy['arr_0']
     # Test with debug = "print"
     _ = pcv.cluster_contour_splitimg(device=0, img=img1, grouped_contour_indexes=cluster_contours,
-                                     contours=roi_contours, outdir=cache_dir, file=None, filenames=None,
+                                     contours=roi_contours, hierarchy=obj_hierarchy, outdir=cache_dir, file=None, filenames=None,
                                      debug="print")
-    for i in range(1, 19):
+
+    for i in range(2, 20):
         os.rename(str(i) + "_clusters.png", os.path.join(cache_dir, str(i) + "_clusters.png"))
         os.rename(str(i) + "_wmasked.png", os.path.join(cache_dir, str(i) + "_wmasked.png"))
+        os.rename(str(i) + "_clusters_mask.png", os.path.join(cache_dir, str(i) + "_clusters_mask.png"))
     # Test with debug = "plot"
     _ = pcv.cluster_contour_splitimg(device=0, img=img1, grouped_contour_indexes=cluster_contours,
-                                     contours=roi_contours, outdir=None, file=None, filenames=cluster_names,
+                                     contours=roi_contours,hierarchy=obj_hierarchy, outdir=None, file=None, filenames=cluster_names,
                                      debug="plot")
     # Test with debug = None
     device, output_path = pcv.cluster_contour_splitimg(device=0, img=img1, grouped_contour_indexes=cluster_contours,
-                                                       contours=roi_contours, outdir=None, file=None,
+                                                       contours=roi_contours, hierarchy=obj_hierarchy, outdir=None, file=None,
                                                        filenames=None, debug=None)
     assert len(output_path) != 0
 
