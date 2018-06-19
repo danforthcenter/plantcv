@@ -85,6 +85,7 @@ from plantcv.plantcv.naive_bayes_classifier import naive_bayes_classifier
 from plantcv.plantcv.acute import acute
 from plantcv.plantcv.distance_transform import distance_transform
 from plantcv.plantcv import roi
+from plantcv.plantcv import transform
 
 # add new functions to end of lists
 
@@ -93,7 +94,7 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'plot_co
            'laplace_filter', 'sobel_filter', 'scharr_filter', 'hist_equalization', 'plot_hist', 'image_add',
            'image_subtract', 'erode', 'dilate', 'watershed', 'rectangle_mask', 'rgb2gray_hsv', 'rgb2gray_lab',
            'rgb2gray', 'binary_threshold', 'median_blur', 'fill', 'invert', 'logical_and', 'logical_or', 'logical_xor',
-           'find_objects', 'define_roi', 'roi_objects', 'object_composition', 'analyze_object',
+           'find_objects', 'define_roi', 'roi_objects', 'transform','object_composition', 'analyze_object',
            'analyze_bound_horizontal', 'analyze_bound_vertical', 'analyze_bound', 'analyze_color',
            'analyze_NIR_intensity', 'fluor_fvfm', 'print_results', 'resize', 'flip', 'crop_position_mask', 'get_nir',
            'adaptive_threshold', 'otsu_auto_threshold', 'report_size_marker_area', 'white_balance',

@@ -1,0 +1,244 @@
+## Correct Color
+
+Corrects the color profile of a source RGB image to the color profile of a target RGB image. This function outputs target_matrix, source_matrix, and transformation_matrix and saves them to the output directory as .npz files.
+It also outputs, corrected_img, but storage (print or plot) is determined by debug mode. 
+
+**plantcv.transform.correct_color**(*target_img, target_mask, source_img, source_mask, output_directory*)
+
+**returns** target_matrix, source_matrix, transformation_matrix, corrected_img
+
+**Important Note:** Each image must contain a reference from which color values are sampled.
+ The following example uses a 24-color Colorchecker passport.
+
+ - **Parameters:**
+    - target_img - an RGB image with color chips visualized
+    - source_img - an RGB image with color chips visualized
+    - target_mask - a gray-scale image with color chips and background each represented with unique values
+    - target_mask - a gray-scale image with color chips and background each represented as unique values
+    - output_directory - a file path to which the target_matrix, source_matrix, and transformation_matrix will be save as .npz files
+
+
+To see an example of how to create a gray-scale mask of color chips see [here](transform_color_correction_tutorial.md#creating-masks).
+
+
+**Reference Images**
+
+ Target Image
+![Screenshot](img/documentation_images/correct_color_imgs/target_img_plant.jpg)
+
+ Source Image
+ 
+![Screenshot](img/documentation_images/correct_color_imgs/source_img_plant.jpg)
+
+
+```python
+from plantcv import plantcv as pcv
+import cv2
+
+target_img = cv2.imread("target_img.png")
+source_img = cv2.imread("source1_img.png")
+target_mask = cv2.imread("mask_img.png", -1) # mask must be read in "as-is" include -1
+source_mask = cv2.imread("mask_img.png", -1) # in this case, as our images share a zoom level and colorchecker placement, the same mask is used for both the target and the source.
+output_directory = "."
+
+pcv.params.debug = 'plot'
+
+target_matrix, source_matrix, transformation_matrix, corrected_img = pcv.transform.correct_color(target_img, target_mask, source_img, source_mask, output_directory)
+
+```
+
+![Screenshot](img/documentation_images/correct_color_imgs/hstack.jpg)
+
+
+## Color Matrix
+
+Computes the average *R*, *G*, *B* values for each region in the RGB image denoted by the gray-scale mask and saves them in a matrix of n x 4, where n = the number of color chips represented in the mask.
+
+**plantcv.transform.get_color_matrix**(*rgb_img, mask*)
+
+**returns** headers, color_matrix
+
+- **Parameters**
+    - rgb_img - RGB image with color chips visualized
+    - mask - a gray-scale img with unique values for each segmented space, representing unique, discrete color chips.
+
+- **Returns**
+    - color_matrix - a *n* x 4 matrix containing the average red value, average green value, and average blue value for each color chip.
+    - headers - a list of 4 headers corresponding to the 4 columns of color_matrix respectively
+
+
+```python
+import plantcv
+import numpy as np
+
+
+rgb_img = cv2.imread("target_img.png")
+mask = cv2.imread("mask_img.png", -1) # mask must be read in "as-is" include -1
+
+
+headers, color_matrix = pcv.transform.get_color_matrix(rgb_img, mask)
+
+print headers
+print color_matrix
+```
+
+    ['chip_number', 'r_avg', 'g_avg', 'b_avg']
+    [[  10.       20.7332   33.672    92.7748]
+     [  20.      203.508    79.774    25.77  ]
+     [  30.       54.6916   34.0924   26.0352]
+     [  40.      193.2972  203.198   199.4544]
+     [  50.       40.2052   92.0536   37.222 ]
+     [  60.       36.9256   52.4976  123.6224]
+     [  70.      177.7984  103.3772   85.1672]
+     [  80.      119.4276  128.4068  126.6948]
+     [  90.      141.9036   34.0584   22.5056]
+     [ 100.      160.9764   50.3872   47.6984]
+     [ 110.       51.994    73.584   107.734 ]
+     [ 120.       65.9104   69.5172   68.482 ]
+     [ 130.      227.1652  183.1696   30.1332]
+     [ 140.       35.9472   25.4984   47.3424]
+     [ 150.       39.51     52.9624   26.3956]
+     [ 160.       32.8148   34.8512   35.5284]
+     [ 170.      146.522    55.7016   94.7452]
+     [ 180.      114.6672  155.3968   42.5688]
+     [ 190.       84.2172   88.8424  134.2356]
+     [ 200.       34.5308   90.4592  132.9108]
+     [ 210.      207.1596  128.736    28.7744]
+     [ 220.       74.632   158.8224  144.3724]]
+     
+
+## Moore-Penrose Inverse
+
+Computes the Moore-Penrose Inverse Matrix, an important step in computing the homography for color correction.
+
+**plantcv.transform.get_matrix_m**(*target_matrix, source_matrix*)
+
+**returns** matrix_a, matrix_m, matrix_b
+
+- **Parameters**
+    - target_matrix - a *n* x 4 matrix containing the average red value, average green value, and average blue value for each color chip.
+    - source_matrix - a *n* x 4 matrix containing the average red value, average green value, and average blue value for each color chip.
+
+- **Returns**
+    - matrix_a - a concatenated *n* x 9 matrix of source_matrix red, green, and blue values to the powers 1, 2, 3
+    - matrix_m - a 9 x *n* Moore-Penrose inverse matrix
+    - matrix_b - a *n* x 9 matrix of linear, quadratic, and cubic RGB values from target_img
+```python
+import plantcv
+
+matrix_a, matrix_m, matrix_b = plantcv.transform.get_matrix_m(target_matrix, source_matrix)
+
+print "Moore-Penrose Inverse Matrix: "
+print matrix_m
+
+```
+
+
+## Transformation Matrix
+
+Computes the transformation matrix for application to a source image to transform it to the target color profile.
+
+**plantcv.transform.calc_transformation_matrix**(*matrix_m, matrix_b*)
+
+**returns** deviance, transformation_matrix 
+
+- **Parameters**
+    - matrix_m - a 9 x *n* Moore-Penrose inverse matrix
+    - matrix_b - a *n* x 9 matrix of linear, quadratic, and cubic RGB values from target_img
+
+- **Returns**
+    - 1-t_det - "deviance" the measure of how greatly the source image deviates from the target image's color space. Two images of the same color space should have a deviance of ~0.
+    - transformation_matrix - a 9x9 matrix of linear, square, and cubic transformation coefficients
+
+
+```python
+import plantcv
+
+deviance, transformation_matrix = plantcv.transform.calc_transformation_matrix(matrix_m, matrix_b)
+
+```
+
+
+## Apply Transformation Matrix
+
+Applies the transformation matrix to an image. 
+
+**plantcv.transformation.apply_transformation_matrix**(*source_img, target_img, transformation_matrix*)
+
+**returns** corrected_img
+
+- **Parameters**
+    - source_img - an RGB image to be corrected to the target color space
+    - target_img - an RGB image with the target color space
+    - transformation_matrix - a 9x9 matrix of transformation coefficients
+
+- **Returns**
+    - corrected_img - an RGB image in correct color space
+    
+**Reference Images**
+
+  target_img
+  
+![Screenshot](img/documentation_images/correct_color_imgs/target_img_plant.jpg)
+    
+  source_img
+  
+![Screenshot](img/documentation_images/correct_color_imgs/source_img_plant.jpg)
+
+```python
+
+from plantcv import plantcv as pcv
+pcv.params.debug = "plot"
+
+corrected_img = pcv.transform.apply_transformation_matrix(source_img= source_img, target_img= target_img, transformation_matrix= transformation_matrix)
+
+```
+
+![Screenshot](img/documentation_images/correct_color_imgs/hstack.jpg)
+
+
+## Save Matrix
+
+Save a matrix from to '.npz' file. 
+
+**plantcv.transform.save_matrix**(*matrix, 'filename'*)
+
+**returns** NONE
+
+- **Parameters**
+    - matrix - a numpy.matrix or numpy.ndarray
+    - filename - name of file to which matrix will be saved. Must end in .npz
+    
+```python
+import plantcv
+import numpy as np
+
+
+filename = "test.npz"
+matrix = np.matrix('1 2; 3 4')
+
+plantcv.transform.save_matrix(filename)
+
+```
+
+
+## Load Matrix
+
+Load a matrix from an '.npz' file. 
+
+**plantcv.transform.load_matrix**(*'filename'*)
+
+**returns** matrix
+
+- **Parameters**
+    - matrix - an ndarray loaded from a '.npz' file
+    
+```python
+import plantcv
+
+filename = "test.npz"
+
+matrix = plantcv.transform.load_matrix(filename)
+
+```
+
