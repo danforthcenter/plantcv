@@ -27,6 +27,7 @@ pages:
     - 'Machine Learning': machine_learning_tutorial.md
     - 'Pipeline parallelization': pipeline_parallel.md
     - 'Exporting data': db-exporter.md
+    - 'Color Correction Pipeline': transform_color_correction_tutorial.md
   - 'Package plantcv':
     - 'Adaptive Threshold': adaptive_threshold.md
     - 'Analyze color': analyze_color.md
@@ -95,6 +96,8 @@ pages:
       - 'Rotate Image - Will Be Depricated': rotate.md
     - 'Shift Image': shift.md
     - 'Sobel filter': sobel_filter.md
+    - 'Transformations':
+      - 'Correct Color': transform_correct_color.md
     - 'Triangle Auto Threshold': triangle_threshold.md
     - 'Watershed Segmentation': watershed.md
     - 'White balance': white_balance.md

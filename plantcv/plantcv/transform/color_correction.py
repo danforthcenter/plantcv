@@ -135,9 +135,6 @@ def calc_transformation_matrix(matrix_m, matrix_b):
     matrix_b    = a 22x9 matrix of linear, square, and cubic rgb values from target_img
 
     Outputs:
-    red         = a 9x1 matrix of transformation coefficients
-    green       = a 9x1 matrix of transformation coefficients
-    blue        = a 9x1 matrix of transformation coefficients
     1-t_det     = "deviance" the measure of how greatly the source image deviates from the target image's color space.
                     Two images of the same color space should have a deviance of ~0.
     transformation_matrix    = a 9x9 matrix of linear, square, and cubic transformation coefficients
@@ -238,35 +235,21 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
     bgr = [b, g, r]
     corrected_img = cv2.merge(bgr)
 
+    #round corrected_img elements to be within range and of the correct data type
+    corrected_img = np.round(corrected_img, decimals=0)
+    corrected_img[np.where(corrected_img > 255)] = 255
+    corrected_img = corrected_img.astype(np.uint8)
+
     if params.debug == "print":
         # If debug is print, save the image to a file
         print_image(corrected_img, os.path.join(params.debug_outdir, str(params.device) + "_corrected.png"))
     elif params.debug == "plot":
         # If debug is plot, print a horizontal view of source_img, corrected_img, and target_img to the plotting device
-        plot_correction_comparison(source_img, corrected_img, target_img)
+        # plot horizontal comparison of source_img, corrected_img (with rounded elements) and target_img
+        plot_image(np.hstack([source_img, corrected_img, target_img]))
 
     # return corrected_img
     return corrected_img
-
-
-def plot_correction_comparison(source_img, corrected_img, target_img):
-    """ Plots a side by side comparison of source_img, corrected_img, and target_img to plotting device
-    Inputs:
-    source_img      = an RGB image to be corrected to the target color space
-    corrected_img    = an RGB image in correct color space
-    target_img      = an RGB image with the target color space
-
-    :param source_img: numpy.ndarray
-    :param corrected_img: numpy.ndarray
-    :param target_img: numpy.ndarray
-
-    """
-    # Round adjust_img elements to whole numbers <256
-    rounded = np.round(corrected_img, decimals=0)
-    rounded[np.where(rounded > 255)] = 255
-
-    # plot horizontal comparison of source_img, corrected_img (with rounded elements) and target_img
-    plot_image(np.hstack([source_img, rounded.astype(np.uint8), target_img]))
 
 
 def save_matrix(matrix, filename):
