@@ -1,0 +1,30 @@
+# .coveragerc to control coverage.py
+
+[report]
+# Regexes for lines to exclude from consideration
+exclude_lines =
+    # Have to re-enable the standard pragma
+    pragma: no cover
+
+    # versioneer functions
+    def get_keywords
+    class VersioneerConfig
+    def get_config
+    class NotThisMethod
+    LONG_VERSION_PY
+    HANDLERS
+    def register_vcs_handler
+    def run_command
+    def versions_from_parentdir
+    @register_vcs_handler
+    def git_versions_from_keywords
+    def git_pieces_from_vcs
+    def plus_or_dot
+    def render_pep440
+    def render_pep440_pre
+    def render_pep440_post
+    def render_pep440_old
+    def render_git_describe
+    def render_git_describe_long
+    def render
+    def get_versions
