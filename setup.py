@@ -7,25 +7,26 @@ https://github.com/pypa/sampleproject
 
 import sys
 import setuptools
-from setuptools.command.test import test as TestCommand
+#from setuptools.command.test import test as TestCommand
 from codecs import open
 from os import path
+import versioneer
 
 
-class PyTest(TestCommand):
-    def initialize_options(self):
-        TestCommand.initialize_options(self)
-        self.pytest_args = ["--verbose", "tests/tests.py"]
-
-    def finalize_options(self):
-        TestCommand.finalize_options(self)
-        self.test_args = []
-        self.test_suite = True
-
-    def run_tests(self):
-        import pytest
-        errno = pytest.main(self.pytest_args)
-        sys.exit(errno)
+# class PyTest(TestCommand):
+#     def initialize_options(self):
+#         TestCommand.initialize_options(self)
+#         self.pytest_args = ["--verbose", "tests/tests.py"]
+#
+#     def finalize_options(self):
+#         TestCommand.finalize_options(self)
+#         self.test_args = []
+#         self.test_suite = True
+#
+#     def run_tests(self):
+#         import pytest
+#         errno = pytest.main(self.pytest_args)
+#         sys.exit(errno)
 
 
 here = path.abspath(path.dirname(__file__))
@@ -45,7 +46,7 @@ setuptools.setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='2.1',
+    version=versioneer.get_version(),
 
     description='An image processing package for plant phenotyping.',
     long_description=long_description,
@@ -109,8 +110,9 @@ setuptools.setup(
     # extras_require={
     #     'test': ['pytest-runner', 'pytest'],
     # },
+    setup_requires=["pytest-runner"],
     tests_require=['pytest'],
-    cmdclass={'test': PyTest},
+    cmdclass=versioneer.get_cmdclass(),
 
     # If there are data files included in your packages that need to be
     # installed, specify them here.  If using Python 2.6 or less, then these

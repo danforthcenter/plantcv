@@ -89,7 +89,6 @@ from plantcv.plantcv import transform
 
 # add new functions to end of lists
 
-__version__ = 2.1
 __all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'plot_colorbar', 'apply_mask', 'readimage',
            'laplace_filter', 'sobel_filter', 'scharr_filter', 'hist_equalization', 'plot_hist', 'image_add',
            'image_subtract', 'erode', 'dilate', 'watershed', 'rectangle_mask', 'rgb2gray_hsv', 'rgb2gray_lab',
@@ -102,3 +101,7 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'plot_co
            'x_axis_pseudolandmarks', 'y_axis_pseudolandmarks', 'gaussian_blur', 'cluster_contours',
            'cluster_contour_splitimg', 'rotate_img', 'rotate', 'shift_img', 'output_mask', 'auto_crop',
            'background_subtraction', 'naive_bayes_classifier', 'acute', 'distance_transform', 'params']
+
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions
