@@ -980,20 +980,30 @@ def test_plantcv_image_add():
 
 def test_plantcv_image_subtract():
     # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_image_subtract")
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_image_sub")
     os.mkdir(cache_dir)
-    # Read in test data
+    # read in images
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    img2 = np.copy(img1)
+    img2 =np.copy(img1)
     # Test with debug = "print"
-    _ = pcv.image_subtract(img1=img1, img2=img2, device=0, debug="print")
-    os.rename("1_subtracted.png", os.path.join(cache_dir, "1_subtracted.png"))
+    pcv.params.debug = 'print'
+    _ = pcv.image_subtract(img1, img2)
+    os.rename("1_subtraction.png", os.path.join(cache_dir, "1_subtraction.png"))
     # Test with debug = "plot"
-    _ = pcv.image_subtract(img1=img1, img2=img2, device=0, debug="plot")
+    pcv.params.debug = 'plot'
+    _ = pcv.image_subtract(img1, img2)
     # Test with debug = None
-    device, subtract_img = pcv.image_subtract(img1=img1, img2=img2, device=0, debug=None)
-    assert all([i == j] for i, j in zip(np.shape(subtract_img), TEST_BINARY_DIM))
+    pcv.params.debug = None
+    new_img = pcv.image_subtract(img1, img2)
+    assert np.array_equal(new_img, np.zeros(np.shape(new_img), np.uint8))
 
+def test_plantcv_image_subtract_fail():
+    # read in images
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    img2 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY))
+    # test
+    with pytest.raises(RuntimeError):
+        new_img = pcv.image_subtract(img1, img2)
 
 def test_plantcv_invert():
     # Test cache directory
