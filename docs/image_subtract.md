@@ -1,37 +1,36 @@
 ## Image Subtract
 
-Obtain a image of the pixelwise input values within two image files. 
-This is a wrapper for the OpenCV function [subtract](http://docs.opencv.org/2.4/modules/core/doc/operations_on_arrays.html#subtract).
+This is a function is used to subtract values of one gray-scale image array from another gray-scale image array. The
+    resulting gray-scale image array has a minimum element value of zero. That is all negative values resulting from the
+    subtraction are forced to zero.
 
-**image_subtract**(*img, img2, device, debug=None*)
+**plantcv.image_subtract**(*gray_img1, gray_img2*)
 
-**returns** device, subtracted image
+**returns** new_img
 
 - **Parameters:**
-    - img - image to be analyzed
-    - img2 - image to subtract
-    - device - Counter for image processing steps
-    - debug - None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
+    - gray_img1 - a gray-scale or binary image from which gray_img2 will be subtracted
+    - gray_img2 - a gray-scale or binary image to be subtracted from gray_img1
 - **Context:**
-    - Get features that are different between images
+    - returns difference in pixel values of two images 
 - **Example use:**
     - [Use In NIR Tutorial](nir_tutorial.md)
 
-**Original grayscale image (image 1)**
+**Gray_Img1**
 
-![Screenshot](img/documentation_images/image_subtract/original_image.jpg)
+![Screenshot](img/documentation_images/image_subtract/plant_img.jpg)
 
-**Image to be subtracted (image 2)**
+**Gray_Img2**
 
-![Screenshot](img/documentation_images/image_subtract/image2.jpg)
+![Screenshot](img/documentation_images/image_subtract/background_img.jpg)
 
 ```python
 from plantcv import plantcv as pcv
 
 # Subtract image from another image. 
-device, subtracted_img = pcv.image_subtract(img, img2,  device, debug="print")
+device, subtracted_img = pcv.image_subtract(gray_img1, gray_img2)
 ```
 
-**Subtraction of image 2 from image 1**
+**Result**
 
-![Screenshot](img/documentation_images/image_subtract/subtracted.jpg)
+![Screenshot](img/documentation_images/image_subtract/result.jpg)

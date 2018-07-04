@@ -2,35 +2,41 @@
 
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
+from plantcv.plantcv import params
+from plantcv.plantcv import fatal_error
+import numpy as np
+import os
 
 
-def image_subtract(img1, img2, device, debug=None):
-    """This is a function used to subtract one image from another image (img1 - img2). The numpy subtraction function
-       '-' is used. This is a modulo operation rather than the cv2.subtract fxn which is a saturation operation.
-       ddepth = -1 specifies that the dimensions of output image will be the same as the input image.
+def image_subtract(gray_img1, gray_img2):
+    """This is a function used to subtract values of one gray-scale image array from another gray-scale image array. The
+    resulting gray-scale image array has a minimum element value of zero. That is all negative values resulting from the
+    subtraction are forced to zero.
 
     Inputs:
-    img1      = input image
-    img2      = input image used to subtract from img1
-    device    = device number. Used to count steps in the pipeline
-    debug     = None, print, or plot. Print = save to file, Plot = print to screen.
+    gray_img1   = a gray-scale or binary image from which gray_img2 will be subtracted
+    gray_img2   = a gray-scale or binary image which will be subtracted from gray_img1
 
     Returns:
-    device    = device number
-    subed_img = subtracted image
+    new_img = subtracted image
 
-    :param img1: numpy array
-    :param img2: numpy array
-    :param device: int
-    :param debug: str
-    :return device: int
-    :return subed_img: numpy array
+    :param gray_img1: numpy array
+    :param gray_img2: numpy array
+    :return new_img: numpy array
     """
 
-    subed_img = img1 - img2
-    device += 1
-    if debug == 'print':
-        print_image(subed_img, str(device) + '_subtracted' + '.png')
-    elif debug == 'plot':
-        plot_image(subed_img, cmap='gray')
-    return device, subed_img
+    params.device += 1  # increment device
+
+    # check inputs for gray-scale
+    if len(np.shape(gray_img1)) != 2 or len(np.shape(gray_img2)) != 2:
+        fatal_error("Input image is not gray-scale")
+
+    new_img = gray_img1.astype(np.float64) - gray_img2.astype(np.float64)  # subtract values
+    new_img[np.where(new_img < 0)] = 0  # force negative array values to zero
+    new_img = new_img.astype(np.uint8)  # typecast image to 8-bit image
+    # print-plot handling
+    if params.debug == 'print':
+        print_image(new_img, os.path.join(params.debug_outdir, str(params.device) + "_subtraction.png"))
+    elif params.debug == 'plot':
+        plot_image(new_img, cmap='gray')
+    return new_img  # return

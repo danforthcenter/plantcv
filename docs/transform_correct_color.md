@@ -217,7 +217,7 @@ import numpy as np
 filename = "test.npz"
 matrix = np.matrix('1 2; 3 4')
 
-plantcv.transform.save_matrix(filename)
+plantcv.transform.save_matrix(matrix, filename)
 
 ```
 
