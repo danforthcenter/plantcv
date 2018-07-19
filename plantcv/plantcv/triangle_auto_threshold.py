@@ -278,7 +278,7 @@ def triangle_auto_threshold(device, img, maxvalue, object_type, xstep=1, debug=N
         plt.plot(hist)
         plt.title('Threshold value = {t}'.format(t=autothreshval))
         plt.axis([0, 256, 0, max(hist)])
-        plt.grid('on')
+        plt.grid(True)
         fig_name_hist = str(device) + '_triangle_thresh_hist_' + str(t_val) + str(extension)
         # write the figure to current directory
         plt.savefig(fig_name_hist)
@@ -291,7 +291,7 @@ def triangle_auto_threshold(device, img, maxvalue, object_type, xstep=1, debug=N
 
         plt.plot(hist)
         plt.axis([0, 256, 0, max(hist)])
-        plt.grid('on')
+        plt.grid(True)
         plt.show()
 
     return device, t_img
