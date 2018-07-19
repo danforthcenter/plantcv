@@ -380,7 +380,7 @@ def test_plantcv_analyze_nir():
                                   filename=outfile)
     os.rename("3_nir_pseudo_plant.jpg", os.path.join(cache_dir, "3_nir_pseudo_plant.jpg"))
     os.rename("3_nir_pseudo_plant_back.jpg", os.path.join(cache_dir, "3_nir_pseudo_plant_back.jpg"))
-    os.rename("3_nir_histogram.jpg", os.path.join(cache_dir, "3_nir_histogram.jpg"))
+    os.rename("3_nir_histogram.png", os.path.join(cache_dir, "3_nir_histogram.png"))
     # Test with debug = "plot"
     _ = pcv.analyze_NIR_intensity(img=img, rgbimg=img, mask=mask, bins=256, device=0, histplot=False, debug="plot",
                                   filename=False)
