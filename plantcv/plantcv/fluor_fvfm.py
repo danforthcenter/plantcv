@@ -7,9 +7,10 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import plot_colorbar
 from plantcv.plantcv import fatal_error
+from plantcv.plantcv import params
 
 
-def fluor_fvfm(fdark, fmin, fmax, mask, device, filename, bins=1000, debug=None):
+def fluor_fvfm(fdark, fmin, fmax, mask, filename, bins=1000):
     """Analyze PSII camera images.
 
     Inputs:
@@ -17,13 +18,10 @@ def fluor_fvfm(fdark, fmin, fmax, mask, device, filename, bins=1000, debug=None)
     fmin        = 16-bit grayscale fmin image
     fmax        = 16-bit grayscale fmax image
     mask        = mask of plant (binary,single channel)
-    device      = counter for debug
     filename    = name of file
     bins        = number of bins from 0 to 65,536 (default is 1000)
-    debug       = None, print, or plot. Print = save to file, Plot = print to screen.
 
     Returns:
-    device      = device number
     hist_header = fvfm data table headers
     hist_data   = fvfm data table values
 
@@ -31,17 +29,14 @@ def fluor_fvfm(fdark, fmin, fmax, mask, device, filename, bins=1000, debug=None)
     :param fmin: numpy array
     :param fmax: numpy array
     :param mask: numpy array
-    :param device: int
     :param filename: str
     :param bins: int
-    :param debug: str
-    :return device: int
     :return hist_header: list
     :return hist_data: list
     """
 
     # Auto-increment the device counter
-    device += 1
+    params.device += 1
     # Check that fdark, fmin, and fmax are grayscale (single channel)
     if not all(len(np.shape(i)) == 2 for i in [fdark, fmin, fmax]):
         fatal_error("The fdark, fmin, and fmax images must be grayscale images.")
@@ -155,13 +150,13 @@ def fluor_fvfm(fdark, fmin, fmax, mask, device, filename, bins=1000, debug=None)
         if not os.path.isfile(path + '/' + fig_name):
             plot_colorbar(path, fig_name, 2)
 
-    if debug == 'print':
-        print_image(fmin_mask, (str(device) + '_fmin_mask.png'))
-        print_image(fmax_mask, (str(device) + '_fmax_mask.png'))
-        print_image(fv, (str(device) + '_fv_convert.png'))
-    elif debug == 'plot':
+    if params.debug == 'print':
+        print_image(fmin_mask, os.path.join(params.debug_outdir, str(params.device) + '_fmin_mask.png'))
+        print_image(fmax_mask, os.path.join(params.debug_outdir, str(params.device) + '_fmax_mask.png'))
+        print_image(fv, os.path.join(params.debug_outdir, str(params.device) + '_fv_convert.png'))
+    elif params.debug == 'plot':
         plot_image(fmin_mask, cmap='gray')
         plot_image(fmax_mask, cmap='gray')
         plot_image(fv, cmap='gray')
 
-    return device, hist_header, hist_data
+    return hist_header, hist_data

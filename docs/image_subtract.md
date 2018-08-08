@@ -27,8 +27,11 @@ This is a function is used to subtract values of one gray-scale image array from
 ```python
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
+
 # Subtract image from another image. 
-device, subtracted_img = pcv.image_subtract(gray_img1, gray_img2)
+subtracted_img = pcv.image_subtract(gray_img1, gray_img2)
 ```
 
 **Result**

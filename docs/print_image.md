@@ -2,7 +2,7 @@
 
 Write image to the file specified. This is a wrapper for the OpenCV function [imwrite](http://docs.opencv.org/modules/highgui/doc/reading_and_writing_images_and_video.html).
 
-**print_image**(*img, filename*)
+**plantcv.print_image**(*img, filename*)
 
 **returns** none
 

@@ -2,13 +2,13 @@
 
 Reads image into numpy ndarray and splits the path and image filename. This is a wrapper for the OpenCV function [imread](http://docs.opencv.org/modules/highgui/doc/reading_and_writing_images_and_video.html).
 
-**readimage**(*filename, debug=None*)
+**plantcv.readimage**(*filename*)
 
 **returns** img, path, image filename
 
 - **Parameters:**
     - filename - image file to be read (possibly including a path)
-    - debug - None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
+    
 - **Context:**
     - Reads in file to be processed
 - **Example use:**
@@ -16,5 +16,10 @@ Reads image into numpy ndarray and splits the path and image filename. This is a
 
 ```python
 from plantcv import plantcv as pcv      
+
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
+
+#read in image
 img, path, img_filename=pcv.readimage("home/user/images/test-image.png")
 ```
