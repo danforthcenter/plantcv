@@ -1,11 +1,12 @@
 # Binary image auto threshold
 
-from __future__ import division, print_function
 import cv2
+import os
 import math
 import numpy as np
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
+from plantcv.plantcv import params
 
 
 def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, valley=False, show=False, ax=None):
@@ -147,39 +148,34 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
 
 def _plot(x, mph, mpd, threshold, edge, valley, ax, ind):
     """Plot results of the detect_peaks function, see its help."""
-    try:
-        import matplotlib.pyplot as plt
-    except ImportError:
-        print('matplotlib is not available.')
-    else:
-        if ax is None:
-            _, ax = plt.subplots(1, 1, figsize=(8, 4))
+    import matplotlib.pyplot as plt
+    if ax is None:
+        _, ax = plt.subplots(1, 1, figsize=(8, 4))
 
-        ax.plot(x, 'b', lw=1)
-        if ind.size:
-            label = 'valley' if valley else 'peak'
-            label = label + 's' if ind.size > 1 else label
-            ax.plot(ind, x[ind], '+', mfc=None, mec='r', mew=2, ms=8,
-                    label='%d %s' % (ind.size, label))
-            ax.legend(loc='best', framealpha=.5, numpoints=1)
-        ax.set_xlim(-.02 * x.size, x.size * 1.02 - 1)
-        ymin, ymax = x[np.isfinite(x)].min(), x[np.isfinite(x)].max()
-        yrange = ymax - ymin if ymax > ymin else 1
-        ax.set_ylim(ymin - 0.1 * yrange, ymax + 0.1 * yrange)
-        ax.set_xlabel('Data #', fontsize=14)
-        ax.set_ylabel('Amplitude', fontsize=14)
-        mode = 'Valley detection' if valley else 'Peak detection'
-        ax.set_title("%s (mph=%s, mpd=%d, threshold=%s, edge='%s')"
-                     % (mode, str(mph), mpd, str(threshold), edge))
-        # plt.grid()
-        plt.show()
+    ax.plot(x, 'b', lw=1)
+    if ind.size:
+        label = 'valley' if valley else 'peak'
+        label = label + 's' if ind.size > 1 else label
+        ax.plot(ind, x[ind], '+', mfc=None, mec='r', mew=2, ms=8,
+                label='%d %s' % (ind.size, label))
+        ax.legend(loc='best', framealpha=.5, numpoints=1)
+    ax.set_xlim(-.02 * x.size, x.size * 1.02 - 1)
+    ymin, ymax = x[np.isfinite(x)].min(), x[np.isfinite(x)].max()
+    yrange = ymax - ymin if ymax > ymin else 1
+    ax.set_ylim(ymin - 0.1 * yrange, ymax + 0.1 * yrange)
+    ax.set_xlabel('Data #', fontsize=14)
+    ax.set_ylabel('Amplitude', fontsize=14)
+    mode = 'Valley detection' if valley else 'Peak detection'
+    ax.set_title("%s (mph=%s, mpd=%d, threshold=%s, edge='%s')"
+                 % (mode, str(mph), mpd, str(threshold), edge))
+    # plt.grid()
+    plt.show()
 
 
-def triangle_auto_threshold(device, img, maxvalue, object_type, xstep=1, debug=None):
+def triangle_auto_threshold(img, maxvalue, object_type, xstep=1):
     """Creates a binary image from a grayscaled image using Zack et al.'s (1977) thresholding.
 
     Inputs:
-    device      = device number. Used to count steps in the pipeline
     img         = img object, grayscale
     maxvalue    = value to apply above threshold (usually 255 = white)
     object_type = light or dark
@@ -187,23 +183,18 @@ def triangle_auto_threshold(device, img, maxvalue, object_type, xstep=1, debug=N
                   - If object is dark then inverse thresholding is done
     xstep       = value to move along x-axis to determine the points from which to calculate distance
                     recommended to start at 1 and change if needed)
-    debug       = True/False. If True, print image
 
     Returns:
-    device      = device number
     t_img       = the thresholded image
 
 
     :param img: numpy array
     :param maxvalue: int
     :param object_type: str
-    :param device: int
-    :param debug: bool
     :param xstep: optional int
-    :return device: int
     :return t_img: numpy array
     """
-    device += 1
+    params.device += 1
 
     # Calculate automatic threshold value based on triangle algorithm
     hist = cv2.calcHist([img], [0], None, [256], [0, 255])
@@ -215,7 +206,7 @@ def triangle_auto_threshold(device, img, maxvalue, object_type, xstep=1, debug=N
 
     # Detect peaks
     show = False
-    if debug == "plot":
+    if params.debug == "plot":
         show = True
     ind = _detect_peaks(newhist, mph=None, mpd=1, show=show)
 
@@ -265,13 +256,14 @@ def triangle_auto_threshold(device, img, maxvalue, object_type, xstep=1, debug=N
     # threshold the image based on the object type using triangle binarization
     t_val, t_img = cv2.threshold(img, autothreshval, maxvalue, obj)
 
-    if debug is not None:
+    if params.debug is not None:
         import matplotlib
         matplotlib.use('Agg', warn=False)
         from matplotlib import pyplot as plt
 
-    if debug == 'print':
-        name = str(device) + '_triangle_thresh_img_' + str(t_val) + str(extension)
+    if params.debug == 'print':
+        name = os.path.join(params.debug_outdir,
+                            str(params.device) + '_triangle_thresh_img_' + str(t_val) + str(extension))
         print_image(t_img, name)
         plt.clf()
 
@@ -279,13 +271,14 @@ def triangle_auto_threshold(device, img, maxvalue, object_type, xstep=1, debug=N
         plt.title('Threshold value = {t}'.format(t=autothreshval))
         plt.axis([0, 256, 0, max(hist)])
         plt.grid(True)
-        fig_name_hist = str(device) + '_triangle_thresh_hist_' + str(t_val) + str(extension)
+        fig_name_hist = os.path.join(params.debug_outdir,
+                                     str(params.device) + '_triangle_thresh_hist_' + str(t_val) + str(extension))
         # write the figure to current directory
         plt.savefig(fig_name_hist)
         # close pyplot plotting window
         plt.clf()
 
-    elif debug == 'plot':
+    elif params.debug == 'plot':
         print('Threshold value = {t}'.format(t=autothreshval))
         plot_image(t_img, cmap="gray")
 
@@ -294,4 +287,4 @@ def triangle_auto_threshold(device, img, maxvalue, object_type, xstep=1, debug=N
         plt.grid(True)
         plt.show()
 
-    return device, t_img
+    return t_img

@@ -2,17 +2,15 @@
 
 This is a filtering method used to identify and highlight coarse changes in pixel intensity based on the 1st derivative.
 
-**sobel_filter**(*img, dx,dy,k, device, debug=None*)
+**plantcv.sobel_filter**(*img, dx, dy, k*)
 
-**returns** device, filtered image
+**returns** filtered image
 
 - **Parameters:**
     - img - binary image object. This image will be returned after filling.
     - dx - derivative of x to analyze (0-3)
     - dy - derivative of y to analyze (0-3)
-    - k - apertures size used to calculate 2nd derivative filter, specifies the size of the kernel (must be an odd integer: 1,3,5...)
-    - device - Counter for image processing steps
-    - debug - None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None 
+    - k - apertures size used to calculate 2nd derivative filter, specifies the size of the kernel (must be an odd integer)
 - **Context:**
     - Used to define edges within and around objects
 - **Example use:**
@@ -25,10 +23,13 @@ This is a filtering method used to identify and highlight coarse changes in pixe
 ```python
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
+
 # Apply to a grayscale image
 # Filtered image will highlight areas of coarse pixel intensity change based on 1st derivative
-device, lp_img = pcv.sobel_filter(img, 1, 0, 1, device, debug="print")
-device, lp_img = pcv.sobel_filter(img, 0, 1, 1, device, debug="print")
+lp_img = pcv.sobel_filter(img, 1, 0, 1)
+lp_img = pcv.sobel_filter(img, 0, 1, 1)
 ```
 
 **Sobel filtered (x-axis)**
