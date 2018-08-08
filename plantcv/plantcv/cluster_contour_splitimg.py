@@ -6,17 +6,16 @@ from datetime import datetime
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import apply_mask
+from plantcv.plantcv import params
 
-
-def cluster_contour_splitimg(device, img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None,
-                             filenames=None, debug=None):
+def cluster_contour_splitimg(img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None,
+                             filenames=None):
 
     """
     This function takes clustered contours and splits them into multiple images, also does a check to make sure that
     the number of inputted filenames matches the number of clustered contours.
 
     Inputs:
-    device                  = Counter for image processing steps
     img                     = ideally a masked RGB image.
     grouped_contour_indexes = output of cluster_contours, indexes of clusters of contours
     contours                = contours to cluster, output of cluster_contours
@@ -26,25 +25,20 @@ def cluster_contour_splitimg(device, img, grouped_contour_indexes, contours, hie
                               output of filename from read_image function
     filenames               = input txt file with list of filenames in order from top to bottom left to right
                               (likely list of genotypes)
-    debug                   = print debugging images
 
     Returns:
-    device                  = pipeline step counter
     output_path             = array of paths to output images
 
-    :param device: int
     :param img: ndarray
     :param grouped_contour_indexes: list
     :param contours: list
     :param outdir: str
     :param file: str
     :param filenames: str
-    :param debug: str
-    :return device: int
     :return output_path: str
     """
 
-    device += 1
+    params.device += 1
 
     sys.stderr.write(
         'This function has been updated to include object hierarchy so object holes can be included\n')
@@ -148,10 +142,10 @@ def cluster_contour_splitimg(device, img, grouped_contour_indexes, contours, hie
                 print_image(mask_binary,savename1)
             output_path.append(savename)
 
-            if debug == 'print':
-                print_image(masked1, (str(device) + '_clusters.png'))
-                print_image(mask_binary, (str(device) + '_clusters_mask.png'))
-            elif debug == 'plot':
+            if params.debug == 'print':
+                print_image(masked1, os.path.join(params.debug_outdir, str(params.device) + '_clusters.png'))
+                print_image(mask_binary, os.path.join(params.debug_outdir, str(params.device) + '_clusters_mask.png'))
+            elif params.debug == 'plot':
                 if len(np.shape(masked1)) == 3:
                     plot_image(masked1)
                     plot_image(mask_binary, cmap='gray')
@@ -159,4 +153,4 @@ def cluster_contour_splitimg(device, img, grouped_contour_indexes, contours, hie
                     plot_image(masked1, cmap='gray')
                     plot_image(mask_binary, cmap='gray')
 
-    return device, output_path
+    return output_path
