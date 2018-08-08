@@ -31,7 +31,7 @@ pcv.params.debug = "plot"
 
 # Use a pre-v3 function to open an image
 # Note that pcv.params.debug is passed to the debug argument
-img, imgpath, imgname = pcv.readimage(filename="test.png", debug=pcv.params.debug)
+img, imgpath, imgname = pcv.readimage(filename="test.png")
 
 # Use a v3 function to create a region of interest
 # Note that debug is not explicitly provided but is used implicitly by the function

@@ -3,32 +3,28 @@
 
 import cv2
 import numpy as np
+import os
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
+from plantcv.plantcv import params
 
 
-def naive_bayes_classifier(img, pdf_file, device, debug=None):
+def naive_bayes_classifier(img, pdf_file):
     """Use the Naive Bayes classifier to output a plant binary mask.
 
     Inputs:
     img      = image object (NumPy ndarray), BGR colorspace
     pdf_file = filename of file containing PDFs output from the Naive Bayes training method (see plantcv-train.py)
-    device   = device number. Used to count steps in the pipeline
-    debug    = None, print, or plot. Print = save to file, Plot = print to screen.
 
     Returns:
-    device   = device number
     mask     = binary mask (ndarray)
 
     :param img: ndarray
     :param pdf_file: str
-    :param device: int
-    :param debug: str
-    :return device: int
     :return masks: dict
     """
-    device += 1
+    params.device += 1
 
     # Initialize PDF dictionary
     pdfs = {}
@@ -89,11 +85,11 @@ def naive_bayes_classifier(img, pdf_file, device, debug=None):
     # mask[np.where(plant > bg)] = 255
 
     # Print or plot the mask if debug is not None
-    if debug == "print":
+    if params.debug == "print":
         for class_name, mask in masks.items():
-            print_image(mask, (str(device) + "_naive_bayes_" + class_name + "_mask.jpg"))
-    elif debug == "plot":
+            print_image(mask, os.path.join(params.debug_outdir, str(params.device) + "_naive_bayes_" + class_name + "_mask.jpg"))
+    elif params.debug == "plot":
         for class_name, mask in masks.items():
             plot_image(mask, cmap="gray")
 
-    return device, masks
+    return masks

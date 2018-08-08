@@ -7,15 +7,14 @@ use the rotate function as an equivalent replacement. The rotate_img
 function will continue to be functional and is now a wrapper for the rotate
 function (with crop set to True) .</span>  
 
-**rotate_img**(*img, rotation_deg, device,debug=None*)
+**plantcv.rotate_img**(*img, rotation_deg*)
 
-**returns** device, image after rotation
+**returns** image after rotation
 
 - **Parameters:**
     - img - Input image
     - rotation_deg - rotation angle in degrees, should be an integer, can be a negative number, positive values move counter clockwise.
-    - device - Counter for image processing steps
-    - debug- None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
+   
 - **Context:**
     - Rotates image, sometimes it is necessary to rotate an image, especially when clustering objects.
 - **Example use:**
@@ -28,8 +27,11 @@ function (with crop set to True) .</span>
 ```python
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
+
 # Rotate image
-device, rotate_img = pcv.rotate_img(img, 10, device, debug='print')
+rotate_img = pcv.rotate_img(img, 10)
 ```
 
 **Image after rotating 10 degrees**
@@ -39,8 +41,11 @@ device, rotate_img = pcv.rotate_img(img, 10, device, debug='print')
 ```python
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
+
 # Rotate image
-device, rotate_img = pcv.rotate_img(img, -10, device, debug='print')
+rotate_img = pcv.rotate_img(img, -10)
 ```
 
 **Image after rotating -10 degrees**

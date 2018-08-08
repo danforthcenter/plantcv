@@ -2,6 +2,7 @@
 
 import cv2
 import numpy as np
+import os
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
@@ -11,17 +12,16 @@ from plantcv.plantcv import binary_threshold
 from plantcv.plantcv import define_roi
 from plantcv.plantcv import roi_objects
 from plantcv.plantcv import object_composition
+from plantcv.plantcv import params
 
 
-def report_size_marker_area(img, shape, device, debug, marker='define', x_adj=0, y_adj=0, w_adj=0, h_adj=0,
+def report_size_marker_area(img, shape, marker='define', x_adj=0, y_adj=0, w_adj=0, h_adj=0,
                             base='white', objcolor='dark', thresh_channel=None, thresh=None, filename=False):
     """Outputs numeric properties for an input object (contour or grouped contours).
 
     Inputs:
     img             = image object (most likely the original), color(RGB)
     shape           = 'rectangle', 'circle', 'ellipse'
-    device          = device number. Used to count steps in the pipeline
-    debug           = None, print, or plot. Print = save to file, Plot = print to screen.
     marker          = define or detect, if define it means you set an area, if detect it means you want to
                       detect within an area
     x_adj           = x position of shape, integer
@@ -35,15 +35,12 @@ def report_size_marker_area(img, shape, device, debug, marker='define', x_adj=0,
     filename        = name of file
 
     Returns:
-    device          = device number
     marker_header    = shape data table headers
     marker_data      = shape data table values
     analysis_images = list of output images
 
     :param img: numpy array
     :param shape: str
-    :param device: int
-    :param debug: str
     :param marker: str
     :param x_adj:int
     :param y_adj:int
@@ -55,13 +52,12 @@ def report_size_marker_area(img, shape, device, debug, marker='define', x_adj=0,
     :param thresh_channel:str
     :param thresh:int
     :param filename: str
-    :return: device: int
     :return: marker_header: str
     :return: marker_data: int
     :return: analysis_images: list
     """
 
-    device += 1
+    params.device += 1
     ori_img = np.copy(img)
     if len(np.shape(img)) == 3:
         ix, iy, iz = np.shape(img)
@@ -120,16 +116,16 @@ def report_size_marker_area(img, shape, device, debug, marker='define', x_adj=0,
     shape_contour, hierarchy = cv2.findContours(markerback, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
     cv2.drawContours(ori_img, shape_contour, -1, (255, 255, 0), 5)
     
-    if debug is 'print':
-        print_image(ori_img, (str(device) + '_marker_roi.png'))
-    elif debug is 'plot':
+    if params.debug is 'print':
+        print_image(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_marker_roi.png'))
+    elif params.debug is 'plot':
         plot_image(ori_img)
 
     if marker == 'define':
         m = cv2.moments(markerback, binaryImage=True)
         area = m['m00']
-        device, id_objects, obj_hierarchy = find_objects(img, markerback, device, debug)
-        device, obj, mask = object_composition(img, id_objects, obj_hierarchy, device, debug)
+        id_objects, obj_hierarchy = find_objects(img, markerback)
+        obj, mask = object_composition(img, id_objects, obj_hierarchy)
         center, axes, angle = cv2.fitEllipse(obj)
         major_axis = np.argmax(axes)
         minor_axis = 1 - major_axis
@@ -147,14 +143,14 @@ def report_size_marker_area(img, shape, device, debug, marker='define', x_adj=0,
                 added = cv2.add(masked, markstack)
             else:
                 added = cv2.multiply(img, background)
-            device, maskedhsv = rgb2gray_hsv(added, thresh_channel, device, debug)
-            device, masked2a_thresh = binary_threshold(maskedhsv, thresh, 255, objcolor, device, debug)
-            device, id_objects, obj_hierarchy = find_objects(added, masked2a_thresh, device, debug)
-            device, roi1, roi_hierarchy = define_roi(added, shape, device, None, 'default', debug, True, x_adj, y_adj,
+            maskedhsv = rgb2gray_hsv(added, thresh_channel)
+            masked2a_thresh = binary_threshold(maskedhsv, thresh, 255, objcolor)
+            id_objects, obj_hierarchy = find_objects(added, masked2a_thresh)
+            roi1, roi_hierarchy = define_roi(added, shape, None, 'default', True, x_adj, y_adj,
                                                      w_adj, h_adj)
-            device, roi_o, hierarchy3, kept_mask, obj_area = roi_objects(img, 'partial', roi1, roi_hierarchy,
-                                                                         id_objects, obj_hierarchy, device, debug)
-            device, obj, mask = object_composition(img, roi_o, hierarchy3, device, debug)
+            roi_o, hierarchy3, kept_mask, obj_area = roi_objects(img, 'partial', roi1, roi_hierarchy,
+                                                                         id_objects, obj_hierarchy)
+            obj, mask = object_composition(img, roi_o, hierarchy3)
 
             cv2.drawContours(ori_img, roi_o, -1, (0, 255, 0), -1, lineType=8, hierarchy=hierarchy3)
             m = cv2.moments(mask, binaryImage=True)
@@ -177,9 +173,9 @@ def report_size_marker_area(img, shape, device, debug, marker='define', x_adj=0,
         out_file = str(filename[0:-4]) + '_sizemarker.jpg'
         print_image(ori_img, out_file)
         analysis_images.append(['IMAGE', 'marker', out_file])
-    if debug is 'print':
-        print_image(ori_img, (str(device) + '_marker_shape.png'))
-    elif debug is 'plot':
+    if params.debug is 'print':
+        print_image(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_marker_shape.png'))
+    elif params.debug is 'plot':
         plot_image(ori_img)
 
     marker_header = (
@@ -198,4 +194,4 @@ def report_size_marker_area(img, shape, device, debug, marker='define', x_adj=0,
         eccentricity
     )
 
-    return device, marker_header, marker_data, analysis_images
+    return marker_header, marker_data, analysis_images

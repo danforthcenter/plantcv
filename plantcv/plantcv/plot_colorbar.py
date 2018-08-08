@@ -17,7 +17,6 @@ def plot_colorbar(outdir, filename, bins):
     import matplotlib
     matplotlib.use('Agg', warn=False)
     from matplotlib import pyplot as plt
-    from matplotlib import cm as cm
     from matplotlib import colors as colors
     from matplotlib import colorbar as colorbar
 
@@ -27,6 +26,6 @@ def plot_colorbar(outdir, filename, bins):
     valmin = -0
     valmax = (bins - 1)
     norm = colors.Normalize(vmin=valmin, vmax=valmax)
-    colorbar.ColorbarBase(ax1, cmap=cm.jet, norm=norm, orientation='horizontal')
+    colorbar.ColorbarBase(ax1, cmap="jet", norm=norm, orientation='horizontal')
     fig.savefig(fig_name, bbox_inches='tight')
     fig.clf()

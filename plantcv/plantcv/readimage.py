@@ -5,14 +5,13 @@ import cv2
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
+from plantcv.plantcv import params
 
-
-def readimage(filename, debug=None):
+def readimage(filename):
     """Read image from file.
 
     Inputs:
     filename = name of image file
-    debug    = None, print, or plot. Print = save to file, Plot = print to screen.
 
     Returns:
     img      = image object as numpy array
@@ -34,9 +33,9 @@ def readimage(filename, debug=None):
     # Split path from filename
     path, img_name = os.path.split(filename)
 
-    if debug == "print":
-        print_image(img, "input_image.png")
-    elif debug == "plot":
+    if params.debug == "print":
+        print_image(img, os.path.join(params.debug_outdir, "input_image.png"))
+    elif params.debug == "plot":
         plot_image(img)
 
     return img, path, img_name

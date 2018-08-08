@@ -3,20 +3,18 @@
 import cv2
 import numpy as np
 from plantcv.plantcv import plot_image
+from plantcv.plantcv import params
 
 
-def x_axis_pseudolandmarks(obj, mask, img, device, debug=None):
+def x_axis_pseudolandmarks(obj, mask, img):
     """Divide up object contour into 20 equidistance segments and generate landmarks for each
 
     Inputs:
     obj      = a contour of the plant object (this should be output from the object_composition.py fxn)
     mask     = this is a binary image. The object should be white and the background should be black
     img      = This is a copy of the original plant image generated using np.copy if debug is true it will be drawn on
-    device   = a counter variable
-    debug    = True/False. If True, print image
 
     Returns:
-    device   = pipeline step counter
     top      =
     bottom   =
     center_v =
@@ -24,18 +22,15 @@ def x_axis_pseudolandmarks(obj, mask, img, device, debug=None):
     :param obj: list
     :param mask: ndarray
     :param img: ndarray
-    :param device: int
-    :param debug: str
-    :return device: int
     :return top:
     :return bottom:
     :return center_v:
     """
 
     # Lets get some landmarks scanning along the x-axis
-    device += 1
+    params.device += 1
     if not np.any(obj):
-        return device, ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA')
+        return ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA')
     x, y, width, height = cv2.boundingRect(obj)
     extent = width
     # If width is greater than 21 pixels make 20 increments (5% intervals)
@@ -46,7 +41,7 @@ def x_axis_pseudolandmarks(obj, mask, img, device, debug=None):
         pts_min = []
         # Get max and min points for each of the intervals
         for i in range(1, 21):
-            if (i == 1):
+            if i == 1:
                 pt_max = x + (inc * i)
                 pt_min = x 
             else:
@@ -140,7 +135,7 @@ def x_axis_pseudolandmarks(obj, mask, img, device, debug=None):
         center_v = list(zip(x_centroids, y_centroids))
         center_v = np.array(center_v)
         center_v.shape = (20, 1, 2)
-        if debug == 'plot':
+        if params.debug == 'plot':
             img2 = np.copy(img)
             for i in top:
                 x = i[0, 0]
@@ -156,7 +151,7 @@ def x_axis_pseudolandmarks(obj, mask, img, device, debug=None):
                 cv2.circle(img2, (int(x), int(y)), 10, (0, 79, 255), -1)
             # print_image(img2, (str(device) + '_x_axis_pseudolandmarks.png'))
             plot_image(img2)
-        return device, top, bottom, center_v
+        return top, bottom, center_v
         
     if extent < 21:
         # If the width of the object is less than 20 pixels just make the object a 20 pixel rectangle
@@ -177,7 +172,7 @@ def x_axis_pseudolandmarks(obj, mask, img, device, debug=None):
         center_v = list(zip(x_coords, c_points))
         center_v = np.array(center_v)
         center_v.shape = (20, 1, 2)
-        if debug == "plot":
+        if params.debug == "plot":
             img2 = np.copy(img)
             for i in top:
                 x = i[0, 0]
@@ -193,4 +188,4 @@ def x_axis_pseudolandmarks(obj, mask, img, device, debug=None):
                 cv2.circle(img2, (int(x), int(y)), 10, (0, 79, 255), -1)
             # print_image(img2, (str(device) + '_x_axis_pseudolandmarks.png'))
             plot_image(img2)
-        return device, top, bottom, center_v
+        return top, bottom, center_v

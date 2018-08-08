@@ -3,30 +3,25 @@
 import os
 import re
 import numpy as np
+from plantcv.plantcv import params
 
 
-def get_nir(path, filename, device, debug=None):
+def get_nir(path, filename):
     """Find a corresponding NIR image from the same snapshot as the VIS image.
 
     Inputs:
     path     = path to vis image
     filename = vis image file name
-    device   = pipeline step counter
-    debug    = None, print, or plot. Print = save to file, Plot = print to screen.
 
     Returns:
-    device   = device number
     nirpath  = NIR image filename and path
 
     :param path: str
     :param filename: str
-    :param device: int
-    :param debug: str
-    :return device: int
     :return nirpath: str
     """
 
-    device += 1
+    params.device += 1
     visname = filename.split("_")
     allfiles = np.array(os.listdir(path))
     nirfiles = []
@@ -54,4 +49,4 @@ def get_nir(path, filename, device, debug=None):
                 if re.search(exangle, nsplit[2]) != None:
                     nirpath = os.path.join(str(path), str(n))
 
-    return device, nirpath
+    return nirpath

@@ -2,9 +2,9 @@
 
 Define a region of interest of the image.
 
-**define_roi**(*img, shape, device, roi=None, roi_input='default', debug=None, adjust=False, x_adj=0, y_adj=0, w_adj=0, h_adj=0*)
+**plantcv.define_roi**(*img, shape, roi=None, roi_input='default', adjust=False, x_adj=0, y_adj=0, w_adj=0, h_adj=0*)
 
-**returns** device, ROI contour, ROI hierarchy
+**returns** ROI contour, ROI hierarchy
 
 **Important Note:** In order for downstream detection of objects within a region of interest to 
 perform properly ROI must be completely contained within the image.
@@ -14,8 +14,6 @@ perform properly ROI must be completely contained within the image.
     - roi- default (None) or user input ROI image (not require to generate an ROI), object area should be white and background should be black, has not been optimized for more than one ROI yet
     - roi_input- type of file roi_base is, either 'binary', 'rgb', or 'default' (no ROI inputted)
     - shape- desired shape of final roi, either 'rectangle', 'circle' or 'ellipse', if  user inputs rectangular roi but chooses 'circle' for shape then a circle is fitted around rectangular roi (and vice versa)
-    - device- Counter for image processing steps
-    - debug- None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None 
     - adjust- either 'True' or 'False', if 'True' allows user to adjust ROI on the fly
     - x_adj- adjust center along x axis
     - y_adj- adjust center along y axis
@@ -39,9 +37,12 @@ perform properly ROI must be completely contained within the image.
 ```python
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
+
 # Define region of interest in an image, there is a futher function 'ROI Objects' that allows 
 # the user to define if you want to include objects partially inside ROI or if you want to do cut objects to ROI.
-device, roi, roi_hierarchy = define_roi(img, 'rectangle', device, roi=None, roi_input='default', debug="print", adjust=True, x_adj=0, y_adj=0, w_adj=0, h_adj=-925)
+roi, roi_hierarchy = pcv.define_roi(img, 'rectangle', roi=None, roi_input='default', adjust=True, x_adj=0, y_adj=0, w_adj=0, h_adj=-925)
 ```
 
 **Image with rectangular ROI**
@@ -51,9 +52,12 @@ device, roi, roi_hierarchy = define_roi(img, 'rectangle', device, roi=None, roi_
 ```python
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
+
 # Define region of interest in an image, there is a futher function 'ROI Objects' that allows 
 # the user to define if you want to include objects partially inside ROI or if you want to do cut objects to ROI.
-device, roi, roi_hierarchy = define_roi(img, 'circle', device, roi=None, roi_input='default', debug="print", adjust=True, x_adj=0, y_adj=0, w_adj=0, h_adj=-925)
+roi, roi_hierarchy = pcv.define_roi(img, 'circle', roi=None, roi_input='default', adjust=True, x_adj=0, y_adj=0, w_adj=0, h_adj=-925)
 ```
 
 **Image with circular ROI**
@@ -63,9 +67,12 @@ device, roi, roi_hierarchy = define_roi(img, 'circle', device, roi=None, roi_inp
 ```python
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
+
 # Define region of interest in an image, there is a futher function 'ROI Objects' that allows
 # the user to define if you want to include objects partially inside ROI or if you want to do cut objects to ROI.
-device, roi, roi_hierarchy = define_roi(img, 'ellipse', device, roi=None, roi_input='default', debug="print", adjust=True, x_adj=0, y_adj=0, w_adj=0, h_adj=-925)
+roi, roi_hierarchy = pcv.define_roi(img, 'ellipse', roi=None, roi_input='default',  adjust=True, x_adj=0, y_adj=0, w_adj=0, h_adj=-925)
 ```
 
 **Image with elliptical ROI**

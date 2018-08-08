@@ -1,33 +1,29 @@
 # RGB -> HSV -> Gray
 
 import cv2
+import os
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
+from plantcv.plantcv import params
 
 
-def rgb2gray_hsv(img, channel, device, debug=None):
+def rgb2gray_hsv(img, channel):
     """Convert an RGB color image to HSV colorspace and return a gray image (one channel).
 
     Inputs:
     img     = image object, RGB colorspace
     channel = color subchannel (h = hue, s = saturation, v = value/intensity/brightness)
-    device  = device number. Used to count steps in the pipeline
-    debug   = None, print, or plot. Print = save to file, Plot = print to screen.
 
     Returns:
-    device    = device number
     h | s | v = image from single HSV channel
 
     :param img: numpy array
     :param channel: str
-    :param device: int
-    :param debug: str
-    :return device: int
     :return channel: numpy array
     """
     # Auto-increment the device counter
-    device += 1
+    params.device += 1
 
     # The allowable channel inputs are h, s or v
     names = {"h": "hue", "s": "saturation", "v": "value"}
@@ -41,9 +37,9 @@ def rgb2gray_hsv(img, channel, device, debug=None):
     # Create a channel dictionaries for lookups by a channel name index
     channels = {"h": h, "s": s, "v": v}
 
-    if debug == "print":
-        print_image(channels[channel], str(device) + "_hsv_" + names[channel] + ".png")
-    elif debug == "plot":
+    if params.debug == "print":
+        print_image(channels[channel], os.path.join(params.debug_outdir, str(params.device) + "_hsv_" + names[channel] + ".png"))
+    elif params.debug == "plot":
         plot_image(channels[channel], cmap="gray")
 
-    return device, channels[channel]
+    return channels[channel]

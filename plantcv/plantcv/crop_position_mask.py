@@ -3,12 +3,14 @@
 import cv2
 import numpy as np
 import math
+import os
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
+from plantcv.plantcv import params
 
 
-def crop_position_mask(img, mask, device, x, y, v_pos="top", h_pos="right", debug=None):
+def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
     """Crop position mask
 
     Inputs:
@@ -18,26 +20,20 @@ def crop_position_mask(img, mask, device, x, y, v_pos="top", h_pos="right", debu
     y       = y position
     v_pos   = push from "top" or "bottom"
     h_pos   = push to "right" or "left"
-    device  = device counter
-    debug   = None, print, or plot. Print = save to file, Plot = print to screen.
 
     Returns:
-    device  = device number
     newmask = image mask
 
     :param img: numpy array
     :param mask: numpy array
-    :param device: int
     :param x: int
     :param y: int
     :param v_pos: str
     :param h_pos: str
-    :param debug: str
-    :return device: int
     :return newmask: numpy array
     """
 
-    device += 1
+    params.device += 1
 
     if x < 0 or y < 0:
         fatal_error("x and y cannot be negative numbers or non-integers")
@@ -119,9 +115,9 @@ def crop_position_mask(img, mask, device, x, y, v_pos="top", h_pos="right", debu
                 rows1 = np.zeros((r1, my), dtype=np.uint8)
                 rows2 = np.zeros((r2, my), dtype=np.uint8)
                 maskv = np.vstack((rows1, maskv, rows2))
-        if debug == 'print':
-            print_image(maskv, (str(device) + "_push-top_.png"))
-        elif debug == 'plot':
+        if params.debug == 'print':
+            print_image(maskv, os.path.join(params.debug_outdir, str(params.device) + "_push-top_.png"))
+        elif params.debug == 'plot':
             plot_image(maskv, cmap='gray')
 
     if v_pos == "bottom":
@@ -153,9 +149,9 @@ def crop_position_mask(img, mask, device, x, y, v_pos="top", h_pos="right", debu
                 rows1 = np.zeros((r1, my), dtype=np.uint8)
                 rows2 = np.zeros((r2, my), dtype=np.uint8)
                 maskv = np.vstack((rows1, maskv, rows2))
-        if debug == 'print':
-            print_image(maskv, (str(device) + "_push-bottom.png"))
-        elif debug == 'plot':
+        if params.debug == 'print':
+            print_image(maskv, os.path.join(params.debug_outdir, str(params.device) + "_push-bottom.png"))
+        elif params.debug == 'plot':
             plot_image(maskv, cmap='gray')
 
     if h_pos == "left":
@@ -188,9 +184,9 @@ def crop_position_mask(img, mask, device, x, y, v_pos="top", h_pos="right", debu
                 col1 = np.zeros((mx, c1), dtype=np.uint8)
                 col2 = np.zeros((mx, c2), dtype=np.uint8)
                 maskv = np.hstack((col1, maskv, col2))
-        if debug == 'print':
-            print_image(maskv, (str(device) + "_push-left.png"))
-        elif debug == 'plot':
+        if params.debug == 'print':
+            print_image(maskv, os.path.join(params.debug_outdir, str(params.device) + "_push-left.png"))
+        elif params.debug == 'plot':
             plot_image(maskv, cmap='gray')
 
     if h_pos == "right":
@@ -224,23 +220,23 @@ def crop_position_mask(img, mask, device, x, y, v_pos="top", h_pos="right", debu
                 col1 = np.zeros((mx, c1), dtype=np.uint8)
                 col2 = np.zeros((mx, c2), dtype=np.uint8)
                 maskv = np.hstack((col1, maskv, col2))
-        if debug == 'print':
-            print_image(maskv, (str(device) + "_push-right.png"))
-        elif debug == 'plot':
+        if params.debug == 'print':
+            print_image(maskv, os.path.join(params.debug_outdir, str(params.device) + "_push-right.png"))
+        elif params.debug == 'plot':
             plot_image(maskv, cmap='gray')
 
     newmask = np.array(maskv)
-    if debug is not None:
-        if debug == 'print':
-            print_image(newmask, (str(device) + "_newmask.png"))
-        elif debug == 'plot':
+    if params.debug is not None:
+        if params.debug == 'print':
+            print_image(newmask, os.path.join(params.debug_outdir, str(params.device) + "_newmask.png"))
+        elif params.debug == 'plot':
             plot_image(newmask, cmap='gray')
         objects, hierarchy = cv2.findContours(np.copy(newmask), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
         for i, cnt in enumerate(objects):
             cv2.drawContours(ori_img, objects, i, (255, 102, 255), -1, lineType=8, hierarchy=hierarchy)
-        if debug == 'print':
-            print_image(ori_img, (str(device) + '_mask_overlay.png'))
-        elif debug == 'plot':
+        if params.debug == 'print':
+            print_image(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_mask_overlay.png'))
+        elif params.debug == 'plot':
             plot_image(ori_img)
 
-    return device, newmask
+    return newmask
