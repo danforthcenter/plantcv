@@ -3,9 +3,9 @@
 import numpy as np
 import math
 import cv2
+from plantcv.plantcv import params
 
-
-def acute(obj, win, thresh, mask, device, debug=None):
+def acute(obj, win, thresh, mask):
     """acute: identify landmark positions within a contour for morphometric analysis
 
     Inputs:
@@ -39,7 +39,7 @@ def acute(obj, win, thresh, mask, device, debug=None):
     :return homolog_pts:
     """
 
-    device += 1
+    params.device += 1
     chain = []                                         # Create empty chain to store angle scores
     for k in list(range(len(obj))):                    # Coordinate-by-coordinate 3-point assignments
         vert = obj[k]
@@ -195,12 +195,12 @@ def acute(obj, win, thresh, mask, device, debug=None):
         start_pts = obj[SSpts]
         stop_pts = obj[TSpts]
 
-        if debug is not None:
-            return device, homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist
+        if params.debug is not None:
+            return homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist
         else:
-            return device, homolog_pts
+            return homolog_pts
     else: 
-        if debug is not None:
-            return device, [], [], [], [], [], []
+        if params.debug is not None:
+            return [], [], [], [], [], []
         else:
-            return device, []
+            return []

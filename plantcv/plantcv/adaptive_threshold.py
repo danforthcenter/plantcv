@@ -4,9 +4,9 @@ import cv2
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
+from plantcv.plantcv import params
 
-
-def adaptive_threshold(img, maxValue, thres_type, object_type, device, debug=None):
+def adaptive_threshold(img, maxValue, thres_type, object_type):
     """Creates a binary image from a grayscaled image using adaptive thresholding
 
     Inputs:
@@ -33,7 +33,7 @@ def adaptive_threshold(img, maxValue, thres_type, object_type, device, debug=Non
     :return t_img: numpy array
     """
 
-    device += 1
+    params.device += 1
 
     thres = 0
     # check to see which type of adaptive threshold to use
@@ -60,10 +60,10 @@ def adaptive_threshold(img, maxValue, thres_type, object_type, device, debug=Non
     t_img = cv2.adaptiveThreshold(img, maxValue, thres, obj, 11, 2)
 
     # print out the image if the debug is true
-    if debug == 'print':
-        name = str(device) + '_adaptive_threshold_' + thres_type + ext
+    if params.debug == 'print':
+        name = os.path.join(params.debug_outdir, str(params.device) + '_adaptive_threshold_' + thres_type + ext )
         print_image(t_img, name)
-    elif debug == 'plot':
+    elif params.debug == 'plot':
         plot_image(t_img, cmap='gray')
 
-    return device, t_img
+    return t_img

@@ -2,17 +2,15 @@
 
 Creates a binary image from a gray image using adaptive thresholding.
 
-**plantcv.adaptive_threshold(*img, maxValue, thres_type, object_type, device, debug=None*)**
+**plantcv.adaptive_threshold(*img, maxValue, thres_type, object_type*)**
 
-**returns** device, thresholded image
+**returns** thresholded image
 
 - **Parameters:**
     - img - grayscale img object
     - maxValue - value to apply above threshold (255 = white)
     - thres_type  = type of thresholding ('gaussian' or 'mean')
     - objecttype - 'light' or 'dark', is target image light or dark?
-    - device- Counter for image processing steps
-    - debug- None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
 - **Context:**
     - Used to help differentiate plant and background
     
@@ -25,8 +23,12 @@ Creates a binary image from a gray image using adaptive thresholding.
 ```python
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+
+pcv.params.debug = "print"
+
 # Create binary image from a gray image based
-device, threshold_gaussian = pcv.adaptive_threshold(img, 255, 'gaussian','dark', device, debug="print")
+threshold_gaussian = pcv.adaptive_threshold(img, 255, 'gaussian','dark')
 ```
 
 **Auto-Thresholded image (gaussian)**
@@ -36,8 +38,12 @@ device, threshold_gaussian = pcv.adaptive_threshold(img, 255, 'gaussian','dark',
 ```python
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+
+pcv.params.debug = "print"
+
 # Create binary image from a gray image based 
-device, threshold_mean = pcv.adaptive_threshold(img, 255, 'mean','dark', device, debug="print")
+threshold_mean = pcv.adaptive_threshold(img, 255, 'mean','dark')
 ```
 
 **Auto-Thresholded image (mean)**

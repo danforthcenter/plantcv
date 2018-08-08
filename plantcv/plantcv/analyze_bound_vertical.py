@@ -4,9 +4,9 @@ import cv2
 import numpy as np
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
+from plantcv.plantcv import params
 
-
-def analyze_bound_vertical(img, obj, mask, line_position, device, debug=None, filename=False):
+def analyze_bound_vertical(img, obj, mask, line_position, filename=False):
     """User-input boundary line tool
 
     Inputs:
@@ -16,12 +16,9 @@ def analyze_bound_vertical(img, obj, mask, line_position, device, debug=None, fi
     shape_header    = pass shape header data to function
     shape_data      = pass shape data so that analyze_bound data can be appended to it
     line_position   = position of boundry line (a value of 0 would draw the line through the left side of the image)
-    device          = device number. Used to count steps in the pipeline
-    debug           = None, print, or plot. Print = save to file, Plot = print to screen.
     filename        = False or image name. If defined print image.
 
     Returns:
-    device          = device number
     bound_header    = data table column headers
     bound_data      = boundary data table
     analysis_images = output image filenames
@@ -30,16 +27,13 @@ def analyze_bound_vertical(img, obj, mask, line_position, device, debug=None, fi
     :param obj: list
     :param mask: numpy array
     :param line_position: int
-    :param device: int
-    :param debug: str
     :param filename: str
-    :return device: int
     :return bound_header: tuple
     :return bound_data: tuple
     :return analysis_images: list
     """
 
-    device += 1
+    params.device += 1
     ori_img = np.copy(img)
 
     # Draw line horizontal line through bottom of image, that is adjusted to user input height
@@ -141,7 +135,7 @@ def analyze_bound_vertical(img, obj, mask, line_position, device, debug=None, fi
             print_image(ori_img, out_file)
             analysis_images = ['IMAGE', 'boundary', out_file]
 
-    if debug is not None:
+    if params.debug is not None:
         point3 = (x_coor+2, 0)
         point4 = (x_coor+2, y_coor)
         cv2.line(ori_img, point3, point4, (255, 0, 255), 5)
@@ -161,11 +155,11 @@ def analyze_bound_vertical(img, obj, mask, line_position, device, debug=None, fi
                 cv2.line(ori_img, (x_coor + 2, int(cmy)), (x_coor - width_right_bound, int(cmy)), (0, 255, 0), 3)
                 cv2.line(wback, (x_coor + 2, int(cmy)), (x_coor + width_left_bound, int(cmy)), (255, 0, 0), 3)
                 cv2.line(wback, (x_coor + 2, int(cmy)), (x_coor - width_right_bound, int(cmy)), (0, 255, 0), 3)
-        if debug == 'print':
-            print_image(wback, (str(device) + '_boundary_on_white.jpg'))
-            print_image(ori_img, (str(device) + '_boundary_on_img.jpg'))
-        if debug == 'plot':
+        if params.debug == 'print':
+            print_image(wback, os.path.join(params.debug_outdir, str(params.device) + '_boundary_on_white.jpg'))
+            print_image(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_boundary_on_img.jpg'))
+        if params.debug == 'plot':
             plot_image(wback)
             plot_image(ori_img)
 
-    return device, bound_header, bound_data, analysis_images
+    return bound_header, bound_data, analysis_images

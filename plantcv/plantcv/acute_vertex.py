@@ -5,9 +5,10 @@ import numpy as np
 import math
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
+from plantcv.plantcv import params
 
 
-def acute_vertex(obj, win, thresh, sep, img, device, debug=None):
+def acute_vertex(obj, win, thresh, sep, img):
     """acute_vertex: identify corners/acute angles of an object
 
     For each point in contour, get a point before (pre) and after (post) the point of interest,
@@ -33,7 +34,7 @@ def acute_vertex(obj, win, thresh, sep, img, device, debug=None):
     :return device: int
     :return acute: ndarray
     """
-    device += 1
+    params.device += 1
     chain = []
     if not np.any(obj):
         acute = ('NA', 'NA')
@@ -101,15 +102,15 @@ def acute_vertex(obj, win, thresh, sep, img, device, debug=None):
     #        x,y = i.ravel()
     #        cv2.circle(img2,(x,y),15,(153,0,153),-1)
     # cv2.imwrite('tip_points_centroid_and_base.png', img2)
-    if debug == 'print':
+    if params.debug == 'print':
         # Lets make a plot of these values on the
         img2 = np.copy(img)
         # Plot each of these tip points on the image
         for i in acute:
             x, y = i.ravel()
             cv2.circle(img2, (x, y), 15, (255, 204, 255), -1)
-        print_image(img2, (str(device) + '_acute_vertices.png'))
-    elif debug == 'plot':
+        print_image(img2, os.path.join(params.debug_outdir, str(params.device) + '_acute_vertices.png'))
+    elif params.debug == 'plot':
         # Lets make a plot of these values on the
         img2 = np.copy(img)
         # Plot each of these tip points on the image
@@ -122,5 +123,5 @@ def acute_vertex(obj, win, thresh, sep, img, device, debug=None):
     if flag == 1:
         acute = np.asarray(acute)
         acute = acute.reshape(1, 1, 2)
-    return device, acute
+    return acute
 # End of function

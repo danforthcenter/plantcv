@@ -4,9 +4,9 @@ import cv2
 import numpy as np
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
+from plantcv.plantcv import params
 
-
-def auto_crop(device, img, objects, padding_x=0, padding_y=0, color='black', debug=None):
+def auto_crop(img, objects, padding_x=0, padding_y=0, color='black'):
     """Resize image.
 
     Inputs:
@@ -33,7 +33,7 @@ def auto_crop(device, img, objects, padding_x=0, padding_y=0, color='black', deb
     :return cropped: numpy array
     """
 
-    device += 1
+    params.device += 1
     img_copy = np.copy(img)
 
     x, y, w, h = cv2.boundingRect(objects)
@@ -51,10 +51,10 @@ def auto_crop(device, img, objects, padding_x=0, padding_y=0, color='black', deb
 
     cropped = cv2.copyMakeBorder(crop_img, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT, value=colorval)
 
-    if debug == 'print':
-        print_image(img_copy, (str(device) + "_crop_area.png"))
-        print_image(cropped, (str(device) + "_auto_cropped.png"))
-    elif debug == 'plot':
+    if params.debug == 'print':
+        print_image(img_copy, os.path.join(params.debug_outdir, str(params.device) + "_crop_area.png"))
+        print_image(cropped, os.path.join(params.debug_outdir, str(params.device) + "_auto_cropped.png"))
+    elif params.debug == 'plot':
         if len(np.shape(img_copy)) == 3:
             plot_image(img_copy)
             plot_image(cropped)
@@ -62,4 +62,4 @@ def auto_crop(device, img, objects, padding_x=0, padding_y=0, color='black', deb
             plot_image(img_copy, cmap='gray')
             plot_image(cropped, cmap='gray')
 
-    return device, cropped
+    return cropped

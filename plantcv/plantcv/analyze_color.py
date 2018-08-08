@@ -7,10 +7,10 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import plot_colorbar
+from plantcv.plantcv import params
 
-
-def _pseudocolored_image(device, histogram, bins, img, mask, background, channel, filename, resolution,
-                         analysis_images, debug):
+def _pseudocolored_image(histogram, bins, img, mask, background, channel, filename,
+                         analysis_images):
     """Pseudocolor image.
 
     Inputs:
@@ -21,9 +21,7 @@ def _pseudocolored_image(device, histogram, bins, img, mask, background, channel
     background      = what background image?: channel image (img) or white
     channel         = color channel name
     filename        = input image filename
-    resolution      = output image resolution
     analysis_images = list of analysis image filenames
-    debug           = print or plot. Print = save to file, Plot = print to screen.
 
     Returns:
     analysis_images = list of analysis image filenames
@@ -35,7 +33,6 @@ def _pseudocolored_image(device, histogram, bins, img, mask, background, channel
     :param background: str
     :param channel: str
     :param filename: str
-    :param resolution: int
     :param analysis_images: list
     :return analysis_images: list
     """
@@ -80,16 +77,16 @@ def _pseudocolored_image(device, histogram, bins, img, mask, background, channel
     else:
         path = "."
         
-    if debug is not None:
-        if debug == 'print':
+    if params.debug is not None:
+        if params.debug == 'print':
             for key in output_imgs:
                 if output_imgs[key]["img"] is not None:
-                    print_image(output_imgs[key]["img"], (str(device) + "_" + output_imgs[key]["background"] +
+                    print_image(output_imgs[key]["img"], os.path.join(params.debug_outdir, str(params.device) + "_" + output_imgs[key]["background"] +
                                                           '_pseudocolor.jpg'))
             fig_name = 'VIS_pseudocolor_colorbar_' + str(channel) + '_channel.svg'
-            if not os.path.isfile(os.path.join(path, fig_name)):
-                plot_colorbar(path, fig_name, bins)
-        elif debug == 'plot':
+            if not os.path.isfile(os.path.join(params.debug_outdir, fig_name)):
+                plot_colorbar(os.path.join(params.debug_outdir, fig_name, bins))
+        elif params.debug == 'plot':
             for key in output_imgs:
                 if output_imgs[key]["img"] is not None:
                     plot_image(output_imgs[key]["img"])
@@ -97,16 +94,13 @@ def _pseudocolored_image(device, histogram, bins, img, mask, background, channel
     return analysis_images
 
 
-def analyze_color(img, imgname, mask, bins, device, debug=None, hist_plot_type=None, pseudo_channel='v',
-                  pseudo_bkg='img', resolution=300, filename=False):
+def analyze_color(img, mask, bins, hist_plot_type=None, pseudo_channel='v',
+                  pseudo_bkg='img', filename=False):
     """Analyze the color properties of an image object
 
     Inputs:
     img              = image
-    imgname          = name of input image
     mask             = mask made from selected contours
-    device           = device number. Used to count steps in the pipeline
-    debug            = None, print, or plot. Print = save to file, Plot = print to screen.
     hist_plot_type   = 'None', 'all', 'rgb','lab' or 'hsv'
     color_slice_type = 'None', 'rgb', 'hsv' or 'lab'
     pseudo_channel   = 'None', 'l', 'm' (green-magenta), 'y' (blue-yellow), h','s', or 'v', creates pseduocolored image
@@ -115,28 +109,23 @@ def analyze_color(img, imgname, mask, bins, device, debug=None, hist_plot_type=N
     filename         = False or image name. If defined print image
 
     Returns:
-    device           = device number
     hist_header      = color histogram data table headers
     hist_data        = color histogram data table values
     analysis_images  = list of output images
 
     :param img: numpy array
-    :param imgname: str
     :param mask: numpy array
     :param bins: int
-    :param device: int
-    :param debug: str
     :param hist_plot_type: str
     :param pseudo_channel: str
     :param pseudo_bkg: str
     :param resolution: int
     :param filename: str
-    :return device: int
     :return hist_header: list
     :return hist_data: list
     :return analysis_images: list
     """
-    device += 1
+    params.device += 1
 
     masked = cv2.bitwise_and(img, img, mask=mask)
     b, g, r = cv2.split(masked)
@@ -243,8 +232,8 @@ def analyze_color(img, imgname, mask, bins, device, debug=None, hist_plot_type=N
     analysis_images = []
 
     if pseudo_channel is not None:
-        analysis_images = _pseudocolored_image(device, norm_channels[pseudo_channel], bins, img, mask, pseudo_bkg,
-                                               pseudo_channel, filename, resolution, analysis_images, debug)
+        analysis_images = _pseudocolored_image(norm_channels[pseudo_channel], bins, img, mask, pseudo_bkg,
+                                               pseudo_channel, filename, analysis_images)
 
     if hist_plot_type is not None and filename:
         import matplotlib
@@ -262,9 +251,9 @@ def analyze_color(img, imgname, mask, bins, device, debug=None, hist_plot_type=N
         fig_name = (str(filename[0:-4]) + '_' + str(hist_plot_type) + '_hist.svg')
         plt.savefig(fig_name)
         analysis_images.append(['IMAGE', 'hist', fig_name])
-        if debug == 'print':
-            fig_name = (str(device) + '_' + str(hist_plot_type) + '_hist.svg')
+        if params.debug == 'print':
+            fig_name = os.path.join(params.debug_outdir, str(params.device) + '_' + str(hist_plot_type) + '_hist.svg')
             plt.savefig(fig_name)
         plt.clf()
 
-    return device, hist_header, hist_data, analysis_images
+    return hist_header, hist_data, analysis_images

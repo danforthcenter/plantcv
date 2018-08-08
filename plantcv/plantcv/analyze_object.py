@@ -4,37 +4,30 @@ import cv2
 import numpy as np
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
+from plantcv.plantcv import params
 
-
-def analyze_object(img, imgname, obj, mask, device, debug=None, filename=False):
+def analyze_object(img, obj, mask, device):
     """Outputs numeric properties for an input object (contour or grouped contours).
 
     Inputs:
     img             = image object (most likely the original), color(RGB)
-    imgname         = name of image file.  (No longer used; kept for compatibility)
     obj             = single or grouped contour object
     mask            = binary image to use as mask for moments analysis
-    device          = device number. Used to count steps in the pipeline
-    debug           = None, print, or plot. Print = save to file, Plot = print to screen.
     filename        = False or image name. If defined print image
 
     Returns:
-    device          = device number
     shape_header    = shape data table headers
     shape_data      = shape data table values
     analysis_images = list of output images
 
     :param img: numpy array
-    :param imgname: str
     :param obj: list
     :param mask: numpy array
-    :param device: int
-    :param debug: str
     :param filename: str
     :return:
     """
 
-    device += 1
+    params.device += 1
 
     # Valid objects can only be analyzed if they have >= 5 vertices
     if len(obj) < 5:
@@ -230,8 +223,6 @@ def analyze_object(img, imgname, obj, mask, device, debug=None, filename=False):
         cv2.line(ori_img, (tuple(caliper_transpose[caliper_length - 1])), (tuple(caliper_transpose[0])), (0, 0, 255), 5)
         cv2.circle(ori_img, (int(cmx), int(cmy)), 10, (0, 0, 255), 5)
         # Output images with convex hull, extent x and y
-        extention = filename.split('.')[-1]
-        # out_file = str(filename[0:-4]) + '_shapes.' + extention
         out_file = str(filename[0:-4]) + '_shapes.jpg'
         out_file1 = str(filename[0:-4]) + '_mask.jpg'
 
@@ -244,19 +235,19 @@ def analyze_object(img, imgname, obj, mask, device, debug=None, filename=False):
     else:
         pass
 
-    if debug is not None:
+    if params.debug is not None:
         cv2.drawContours(ori_img, obj, -1, (255, 0, 0), 5)
         cv2.drawContours(ori_img, [hull], -1, (0, 0, 255), 5)
         cv2.line(ori_img, (x, y), (x + width, y), (0, 0, 255), 5)
         cv2.line(ori_img, (int(cmx), y), (int(cmx), y + height), (0, 0, 255), 5)
         cv2.circle(ori_img, (int(cmx), int(cmy)), 10, (0, 0, 255), 5)
         cv2.line(ori_img, (tuple(caliper_transpose[caliper_length - 1])), (tuple(caliper_transpose[0])), (0, 0, 255), 5)
-        if debug == 'print':
-            print_image(ori_img, (str(device) + '_shapes.jpg'))
-        elif debug == 'plot':
+        if params.debug == 'print':
+            print_image(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_shapes.jpg'))
+        elif params.debug == 'plot':
             if len(np.shape(img)) == 3:
                 plot_image(ori_img)
             else:
                 plot_image(ori_img, cmap='gray')
 
-    return device, shape_header, shape_data, analysis_images
+    return shape_header, shape_data, analysis_images

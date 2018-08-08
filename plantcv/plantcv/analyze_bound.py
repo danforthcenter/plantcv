@@ -3,37 +3,28 @@
 import sys
 from plantcv.plantcv import analyze_bound_horizontal
 
-
-def analyze_bound(img, imgname, obj, mask, line_position, device, debug=None, filename=False):
+def analyze_bound(img, obj, mask, line_position, filename=False):
     """User-input boundary line tool
 
     Inputs:
     img             = image
-    imgname         = name of input image
     obj             = single or grouped contour object
     mask            = mask made from selected contours
     shape_header    = pass shape header data to function
     shape_data      = pass shape data so that analyze_bound data can be appended to it
     line_position   = position of boundry line (a value of 0 would draw the line through the bottom of the image)
-    device          = device number. Used to count steps in the pipeline
-    debug           = None, print, or plot. Print = save to file, Plot = print to screen.
     filename        = False or image name. If defined print image.
 
     Returns:
-    device          = device number
     bound_header    = data table column headers
     bound_data      = boundary data table
     analysis_images = output image filenames
 
     :param img: numpy array
-    :param imgname: str
     :param obj: list
     :param mask: numpy array
     :param line_position: int
-    :param device: int
-    :param debug: str
     :param filename: str
-    :return device: int
     :return bound_header: tuple
     :return bound_data: tuple
     :return analysis_images: list
@@ -43,9 +34,9 @@ def analyze_bound(img, imgname, obj, mask, line_position, device, debug=None, fi
     sys.stderr.write(
         'analyze_bound function will be depricated in the near future, please use analyze_bound_horizontal, which has the same functionality\n')
 
-    device, bound_header, bound_data, analysis_images = analyze_bound_horizontal(img, obj, mask, line_position, device, debug, filename)
+    bound_header, bound_data, analysis_images = analyze_bound_horizontal(img, obj, mask, line_position, filename)
 
-    return device, bound_header, bound_data, analysis_images
+    return bound_header, bound_data, analysis_images
 
     # device += 1
     # ori_img = np.copy(img)

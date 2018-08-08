@@ -8,9 +8,10 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import plot_colorbar
 from plantcv.plantcv import binary_threshold
 from plantcv.plantcv import apply_mask
+from plantcv.plantcv import params
 
 
-def analyze_NIR_intensity(img, rgbimg, mask, bins, device, histplot=False, debug=None, filename=False):
+def analyze_NIR_intensity(img, rgbimg, mask, bins, histplot=False, filename=False):
     """This function calculates the intensity of each pixel associated with the plant and writes the values out to
        a file. It can also print out a histogram plot of pixel intensity and a pseudocolor image of the plant.
 
@@ -19,13 +20,10 @@ def analyze_NIR_intensity(img, rgbimg, mask, bins, device, histplot=False, debug
     rgbimg      = RGB NIR image
     mask         = mask made from selected contours
     bins         = number of classes to divide spectrum into
-    device       = device number. Used to count steps in the pipeline
     histplot     = if True plots histogram of intensity values
-    debug        = None, print, or plot. Print = save to file, Plot = print to screen.
     filename     = False or image name. If defined print image
 
     Returns:
-    device       = device number
     hist_header  = NIR histogram data table headers
     hist_data    = NIR histogram data table values
     analysis_img = output image
@@ -36,15 +34,13 @@ def analyze_NIR_intensity(img, rgbimg, mask, bins, device, histplot=False, debug
     :param bins: int
     :param device: int
     :param histplot: bool
-    :param debug: str
     :param filename: str
-    :return device: int
     :return hist_header: list
     :return hist_data: list
     :return analysis_img: str
     """
 
-    device += 1
+    params.device += 1
 
     # apply plant shaped mask to image
     device, mask1 = binary_threshold(mask, 0, 255, 'light', device, None)
@@ -105,11 +101,11 @@ def analyze_NIR_intensity(img, rgbimg, mask, bins, device, histplot=False, debug
         print_image(cplant_back, fig_name_pseudo)
         analysis_img.append(['IMAGE', 'pseudo', fig_name_pseudo])
 
-    if debug is not None:
-        if debug == "print":
-            print_image(masked1, (str(device) + "_nir_pseudo_plant.jpg"))
-            print_image(cplant_back, (str(device) + "_nir_pseudo_plant_back.jpg"))
-        if debug == "plot":
+    if params.debug is not None:
+        if params.debug == "print":
+            print_image(masked1, os.path.join(params.debug_outdir, str(params.device) + "_nir_pseudo_plant.jpg"))
+            print_image(cplant_back, os.path.join(params.debug_outdir, str(params.device) + "_nir_pseudo_plant_back.jpg"))
+        if params.debug == "plot":
             plot_image(masked1)
             plot_image(cplant_back)
 
@@ -129,12 +125,12 @@ def analyze_NIR_intensity(img, rgbimg, mask, bins, device, histplot=False, debug
             fig_name_hist = (str(filename[0:-4]) + '_nir_hist.svg')
             plt.savefig(fig_name_hist)
             analysis_img.append(['IMAGE', 'hist', fig_name_hist])
-        if debug == "print":
-            plt.savefig((str(device) + "_nir_histogram.png"))
-        if debug == "plot":
+        if params.debug == "print":
+            plt.savefig(os.path.join(params.debug_outdir, str(params.device) + "_nir_histogram.png"))
+        if params.debug == "plot":
             plt.figure()
         plt.clf()
 
 
 
-    return device, hist_header, hist_data, analysis_img
+    return hist_header, hist_data, analysis_img

@@ -4,9 +4,9 @@ import cv2
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
+from plantcv.plantcv import params
 
-
-def apply_mask(img, mask, mask_color, device, debug=None):
+def apply_mask(img, mask, mask_color):
     """Apply white image mask to image, with bitwise AND operator bitwise NOT operator and ADD operator.
 
     Inputs:
@@ -29,7 +29,7 @@ def apply_mask(img, mask, mask_color, device, debug=None):
     :return masked_img: numpy array
     """
 
-    device += 1
+    params.device += 1
     if mask_color == 'white':
         # Mask image
         masked_img = cv2.bitwise_and(img, img, mask=mask)
@@ -39,17 +39,17 @@ def apply_mask(img, mask, mask_color, device, debug=None):
         white_mask = cv2.bitwise_not(masked_img, mask=mask_inv)
         # Add masked image to white background (can't just use mask_inv because that is a binary)
         white_masked = cv2.add(masked_img, white_mask)
-        if debug == 'print':
-            print_image(white_masked, (str(device) + '_wmasked.png'))
-        elif debug == 'plot':
+        if params.debug == 'print':
+            print_image(white_masked, os.path.join(params.debug_outdir, str(params.device) + '_wmasked.png'))
+        elif params.debug == 'plot':
             plot_image(white_masked)
-        return device, white_masked
+        return white_masked
     elif mask_color == 'black':
         masked_img = cv2.bitwise_and(img, img, mask=mask)
-        if debug == 'print':
-            print_image(masked_img, (str(device) + '_bmasked.png'))
-        elif debug == 'plot':
+        if params.debug == 'print':
+            print_image(masked_img, os.path.join(params.debug_outdir, str(params.device) + '_bmasked.png'))
+        elif params.debug == 'plot':
             plot_image(masked_img)
-        return device, masked_img
+        return masked_img
     else:
         fatal_error('Mask Color' + str(mask_color) + ' is not "white" or "black"!')

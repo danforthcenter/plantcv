@@ -9,18 +9,15 @@ use the analyze_bound_horizontal function as an equivalent replacement. The anal
 function will continue to be functional and is now a wrapper for the analyze_bound_horizontal
 function.</span>  
 
-**analyze_bound**(*img, imgname, obj, mask, line_position, device , debug=None, filename=False*)
+**analyze_bound**(*img, obj, mask, line_position, filename=False*)
 
-**returns** device, boundary headers, boundary data, image with boundary data
+**returns** boundary headers, boundary data, image with boundary data
 
 - **Parameters:**
     - img - image object (most likely the original), color(RGB)
-    - imgname - name of image
     - obj - single or grouped contour object
     - mask - binary mask of selected contours
     - line_position = position of boundary line (a value of 0 would draw the line through the bottom of the image)
-    - device - Counter for image processing steps
-    - debug - None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
     - filename - False or image name. If defined print image
 - **Context:**
     - Used to define a boundary line for the image, to find the height above and below as well as area above and below a boundary line.
@@ -40,8 +37,12 @@ function.</span>
 ```python
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+
+pcv.params.debug = "print"
+
 # Set Boundary Line    
-device, boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound(img, imgname, obj, mask, 950, device, debug='print', 'setaria_boundary_img.png')
+boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound(img, obj, mask, 950, 'setaria_boundary_img.png')
 ```
 
 **Boundary tool output image (y = 950)**
