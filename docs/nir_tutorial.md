@@ -71,8 +71,8 @@ def main():
     # Get options
     args = options()
     
-    if args.debug:
-    print("Debug mode turned on...")
+    pcv.params.debug=args.debug
+    pcv.params.debug_outdir=args.outdir
     
     # Read image (Note: flags=0 indicates to expect a grayscale image)
     img = cv2.imread(args.image, flags=0)
@@ -83,9 +83,6 @@ def main():
     # Read in image which is the pixelwise average of background images
     img_bkgrd = cv2.imread("background_nir_z2500.png", flags=0)
     
-    
-    # Pipeline step
-    device = 0
 ```
 
 **Figure 1.** (Top) Original image. (Bottom) Background average image.
@@ -101,12 +98,12 @@ First lets examine how efficiently we can capture the plant, then we will worry 
 
 ```python
     # Subtract the background image from the image with the plant. 
-    device, bkg_sub_img = pcv.image_subtract(img, img_bkgrd, device, args.debug)
+    bkg_sub_img = pcv.image_subtract(img, img_bkgrd)
     
     # Threshold the image of interest using the two-sided cv2.inRange function (keep what is between 50-190)
     bkg_sub_thres_img = cv2.inRange(bkg_sub_img, 50, 190)
     if args.debug:
-        cv2.imwrite('bkgrd_sub_thres.png', bkg_sub_thres_img)
+        pcv.print_image(bkg_sub_thres_img,'bkgrd_sub_thres.png')
 ```
 
 **Figure 2.** (Top) Image after subtraction of average background pixels. (Bottom) Image after two-sided thresholding applied to isolate plant material.
@@ -127,12 +124,12 @@ the amount of plant material captured, and is particularly useful if estimating 
 
 ```python
     # Laplace filtering (identify edges based on 2nd derivative)
-    device, lp_img = pcv.laplace_filter(img, 1, 1, device, args.debug)
+    lp_img = pcv.laplace_filter(img, 1, 1)
     if args.debug:
         pcv.plot_hist(lp_img, 'hist_lp')
     
     # Lapacian image sharpening, this step will enhance the darkness of the edges detected
-    device, lp_shrp_img = pcv.image_subtract(img, lp_img, device, args.debug)
+    lp_shrp_img = pcv.image_subtract(img, lp_img)
     if args.debug:
         pcv.plot_hist(lp_shrp_img, 'hist_lp_shrp')
 ```
@@ -150,18 +147,18 @@ Notice the plant is darker in this image than it was in the original image.
 ```python
     # Sobel filtering  
     # 1st derivative sobel filtering along horizontal axis, kernel = 1)
-    device, sbx_img = pcv.sobel_filter(img, 1, 0, 1, device, args.debug)
+    sbx_img = pcv.sobel_filter(img, 1, 0, 1)
     if args.debug:
         pcv.plot_hist(sbx_img, 'hist_sbx')
     
     # 1st derivative sobel filtering along vertical axis, kernel = 1)
-    device, sby_img = pcv.sobel_filter(img, 0, 1, 1, device, args.debug)
+    sby_img = pcv.sobel_filter(img, 0, 1, 1)
     if args.debug:
         pcv.plot_hist(sby_img, 'hist_sby')
     
     # Combine the effects of both x and y filters through matrix addition
     # This will capture edges identified within each plane and emphesize edges found in both images
-    device, sb_img = pcv.image_add(sbx_img, sby_img, device, args.debug)
+    sb_img = pcv.image_add(sbx_img, sby_img)
     if args.debug:
         pcv.plot_hist(sb_img, 'hist_sb_comb_img')
 ```
@@ -181,17 +178,17 @@ Combining both Sobel filters images through addition high-lights these regions w
 
 ```python
     # Use a lowpass (blurring) filter to smooth sobel image
-    device, mblur_img = pcv.median_blur(sb_img, 1, device, args.debug)
-    device, mblur_invert_img = pcv.invert(mblur_img, device, args.debug)
+    mblur_img = pcv.median_blur(sb_img, 1)
+    mblur_invert_img = pcv.invert(mblur_img)
     
     # combine the smoothed sobel image with the laplacian sharpened image
     # combines the best features of both methods as described in "Digital Image Processing" by Gonzalez and Woods pg. 169 
-    device, edge_shrp_img = pcv.image_add(mblur_invert_img, lp_shrp_img, device, args.debug)
+    edge_shrp_img = pcv.image_add(mblur_invert_img, lp_shrp_img)
     if args.debug:
         pcv.plot_hist(edge_shrp_img, 'hist_edge_shrp_img')
     
     # Perform thresholding to generate a binary image
-    device, tr_es_img = pcv.binary_threshold(edge_shrp_img, 145, 255, 'dark', device, args.debug)
+    tr_es_img = pcv.binary_threshold(edge_shrp_img, 145, 255, 'dark')
 ```
 
 **Figure 5.** From top to bottom: Median blur; Sobel filtered image after application of a median blur filter and inversion;
@@ -212,7 +209,7 @@ Increased contrast enables effective binary thresholding.
 
 ```python
     # Do erosion with a 3x3 kernel
-    device, e1_img = pcv.erode(tr_es_img, 3, 1, device, args.debug)
+    e1_img = pcv.erode(tr_es_img, 3, 1)
 ```
 
 **Figure 6.** Erosion with a 3x3 kernel.
@@ -230,7 +227,7 @@ Merging results from both the background subtraction and derivative filter metho
     device, comb_img = pcv.logical_or(e1_img, bkg_sub_thres_img, device, args.debug)
     
     # Get masked image, Essentially identify pixels corresponding to plant and keep those.
-    device, masked_erd = pcv.apply_mask(img, comb_img, 'black', device, args.debug)
+    masked_erd = pcv.apply_mask(img, comb_img, 'black')
 ```
 
 **Figure 7.** (Top) Logical join between binary images. 
@@ -248,13 +245,13 @@ Combining these methods improves our ability to capture more plant and less back
     # Need to remove the edges of the image, we did that by generating a set of rectangles to mask the edges
     # img is (254 X 320)
     # mask for the bottom of the image
-    device, masked1, box1_img, rect_contour1, hierarchy1 = pcv.rectangle_mask(img, (120,184), (215,252), device, args.debug)
+    masked1, box1_img, rect_contour1, hierarchy1 = pcv.rectangle_mask(img, (120,184), (215,252))
     # mask for the left side of the image
-    device, masked2, box2_img, rect_contour2, hierarchy2 = pcv.rectangle_mask(img, (1,1), (85,252), device, args.debug)
+    masked2, box2_img, rect_contour2, hierarchy2 = pcv.rectangle_mask(img, (1,1), (85,252))
     # mask for the right side of the image
-    device, masked3, box3_img, rect_contour3, hierarchy3 = pcv.rectangle_mask(img, (240,1), (318,252), device, args.debug)
+    masked3, box3_img, rect_contour3, hierarchy3 = pcv.rectangle_mask(img, (240,1), (318,252))
     # mask the edges
-    device, masked4, box4_img, rect_contour4, hierarchy4 = pcv.rectangle_mask(img, (1,1), (318,252), device, args.debug)
+    masked4, box4_img, rect_contour4, hierarchy4 = pcv.rectangle_mask(img, (1,1), (318,252))
 ```
 
 **Figure 8.** From top to bottom: Make a mask to hide the pot; Make a mask to hide left panel; 
@@ -273,13 +270,13 @@ Note that the top left corner has coordinate values (1,1) and these coordinate v
 
 ```python
     # combine boxes to filter the edges and car out of the photo
-    device, bx12_img = pcv.logical_or(box1_img, box2_img, device, args.debug)
-    device, bx123_img = pcv.logical_or(bx12_img, box3_img, device, args.debug)
-    device, bx1234_img = pcv.logical_or(bx123_img, box4_img, device, args.debug)
+    bx12_img = pcv.logical_or(box1_img, box2_img)
+    bx123_img = pcv.logical_or(bx12_img, box3_img)
+    bx1234_img = pcv.logical_or(bx123_img, box4_img)
     
     # invert this mask and then apply it the masked image.
-    device, inv_bx1234_img = pcv.invert(bx1234_img, device, args.debug)
-    device, edge_masked_img = pcv.apply_mask(masked_erd, inv_bx1234_img, 'black', device, args.debug)
+    inv_bx1234_img = pcv.invert(bx1234_img)
+    edge_masked_img = pcv.apply_mask(masked_erd, inv_bx1234_img, 'black')
 ```
 
 **Figure 9.** (Top) Combined background masks after inversion. (Bottom) Masked image from above after masking with background mask.
@@ -291,45 +288,28 @@ Note that the top left corner has coordinate values (1,1) and these coordinate v
 Note the plant is almost entirely isolate from the background.
 
 ```python
-    # assign the coordinates of an area of interest (rectangle around the area you expect the plant to be in)
-    device, roi_img, roi_contour, roi_hierarchy = pcv.rectangle_mask(img, (120,75), (200,184), device, args.debug)
+
+    # Identify objects
+    id_objects,obj_hierarchy = pcv.find_objects(edge_masked_img, inv_bx1234_img)
     
-    # get the coordinates of the plant from the masked object
-    plant_objects, plant_hierarchy = cv2.findContours(edge_masked_img,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+    # Define ROI
+    roi1, roi_hierarchy= pcv.roi.rectangle(x=100, y=100, h=200, w=200, img=edge_masked_img)
     
-    # Obtain the coordinates of the plant object which are partially within the area of interest
-    device, roi_objects, hierarchy5, kept_mask, obj_area = pcv.roi_objects(img, 'partial', roi_contour, roi_hierarchy, plant_objects, plant_hierarchy, device, args.debug)
-    
-    # Apply the box mask to the image to ensure no background
-    device, masked_img = pcv.apply_mask(kept_mask, inv_bx1234_img, 'black', device, args.debug)
+    # Decide which objects to keep
+    roi_objects, hierarchy5, kept_mask, obj_area = pcv.roi_objects(edge_masked_img, 'partial', roi1, roi_hierarchy, id_objects, obj_hierarchy)
+
 ```
 
 **Figure 10.** From top to bottom: Select an area where you expect the plant to be; Plant falls within area;
 Include all continuous portions within the plant that fall within the area of interest (rectangle).
 
-![Screenshot](img/tutorial_images/nir/25_roi_t.jpg)
-
 ![Screenshot](img/tutorial_images/nir/26_obj_on_img_t.jpg)
 
 ![Screenshot](img/tutorial_images/nir/27_bmasked_t.jpg)
 
-This step helps to remove any other areas of background that were not removed during any other filtering steps.
-
 ```python
-    # Get final masked image
-    device, masked_img = pcv.apply_mask(kept_mask, inv_bx1234_img, 'black', device, args.debug)
-    # Obtain a 3 dimensional representation of this grayscale image (for pseudocoloring)
-    rgb = cv2.cvtColor(img,cv2.COLOR_GRAY2RGB)
-    
-    # Generate a binary to send to the analysis function
-    device, mask = pcv.binary_threshold(masked_img, 1, 255, 'light', device, args.debug)
-    
-    # Make a copy of this mask for pseudocoloring
-    mask3d = np.copy(mask)
-    
-    # Extract coordinates of plant for pseudocoloring of plant
-    plant_objects_2, plant_hierarchy_2 = cv2.findContours(mask3d,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
-    device, o, m = pcv.object_composition(rgb, roi_objects, hierarchy5, device, args.debug)
+       rgb = cv2.cvtColor(img,cv2.COLOR_GRAY2RGB)
+       o, m = pcv.object_composition(rgb, roi_objects, hierarchy5)
 ```
 
 **Figure 11.** This is an outline of the contours of the captured plant drawn onto the original image.
@@ -346,14 +326,33 @@ Now we can perform the analysis of pixelwise signal value and object shape attri
 
 ```python
     ### Analysis ###
-    # Perform signal analysis
-    device, hist_header, hist_data, h_norm = pcv.analyze_NIR_intensity(img, args.image, mask, 256, device, args.debug, args.outdir + '/' + img_name)
-    # Perform shape analysis
-    device, shape_header, shape_data, ori_img = pcv.analyze_object(rgb, args.image, o, m, device, args.debug, args.outdir + '/' + img_name)
+      
+    outfile=False
+    if args.writeimg==True:
+        outfile=args.outdir+"/"+filename
     
-    # Print the results to STDOUT
-    pcv.print_results(args.image, hist_header, hist_data)
-    pcv.print_results(args.image, shape_header, shape_data)
+    # Perform signal analysis
+    nir_header, nir_data, nir_img = pcv.analyze_NIR_intensity(img, kept_mask, 256, args.outdir + '/' + img_name)
+    # Perform shape analysis
+    shape_header, shape_data, shape_img = pcv.analyze_object(rgb, o, m, args.outdir + '/' + img_name)
+    
+    # Write shape and nir data to results file
+    result=open(args.result,"a")
+    result.write('\t'.join(map(str,shape_header)))
+    result.write("\n")
+    result.write('\t'.join(map(str,shape_data)))
+    result.write("\n")
+    for row in shape_img:  
+        result.write('\t'.join(map(str,row)))
+        result.write("\n")
+    result.write('\t'.join(map(str,nir_header)))
+    result.write("\n")
+    result.write('\t'.join(map(str,nir_data)))
+    result.write("\n")
+    for row in nir_img:
+        result.write('\t'.join(map(str,row)))
+        result.write("\n")
+    result.close()
     
 # Call program
 if __name__ == '__main__':
@@ -368,9 +367,5 @@ Shape attributes of the plant printed on the original image; Histogram of the si
 ![Screenshot](img/tutorial_images/nir/30_shapes.jpg)
 
 ![Screenshot](img/tutorial_images/nir/31_histogram.jpg)
-
-Values are printed to STDOUT.
-Notice how part of one leaf isn't captured.
-What would you change the pipeline to fix this? Improving these pipelines is an on going project for our community.
 
 To deploy a pipeline over a full image set please see tutorial on Pipeline Parallelization [here](pipeline_parallel.md).
