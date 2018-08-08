@@ -41,6 +41,7 @@ target_mask = cv2.imread("mask_img.png", -1) # mask must be read in "as-is" incl
 source_mask = cv2.imread("mask_img.png", -1) # in this case, as our images share a zoom level and colorchecker placement, the same mask is used for both the target and the source.
 output_directory = "."
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = 'plot'
 
 target_matrix, source_matrix, transformation_matrix, corrected_img = pcv.transform.correct_color(target_img, target_mask, source_img, source_mask, output_directory)
@@ -68,8 +69,8 @@ Computes the average *R*, *G*, *B* values for each region in the RGB image denot
 
 
 ```python
-import plantcv
-import numpy as np
+from plantcv import plantcv as pcv
+import cv2
 
 
 rgb_img = cv2.imread("target_img.png")
@@ -78,8 +79,8 @@ mask = cv2.imread("mask_img.png", -1) # mask must be read in "as-is" include -1
 
 headers, color_matrix = pcv.transform.get_color_matrix(rgb_img, mask)
 
-print headers
-print color_matrix
+print(headers)
+print(color_matrix)
 ```
 
     ['chip_number', 'r_avg', 'g_avg', 'b_avg']
@@ -124,12 +125,12 @@ Computes the Moore-Penrose Inverse Matrix, an important step in computing the ho
     - matrix_m - a 9 x *n* Moore-Penrose inverse matrix
     - matrix_b - a *n* x 9 matrix of linear, quadratic, and cubic RGB values from target_img
 ```python
-import plantcv
+from plantcv import plantcv as pcv
 
-matrix_a, matrix_m, matrix_b = plantcv.transform.get_matrix_m(target_matrix, source_matrix)
+matrix_a, matrix_m, matrix_b = pcv.transform.get_matrix_m(target_matrix, source_matrix)
 
-print "Moore-Penrose Inverse Matrix: "
-print matrix_m
+print("Moore-Penrose Inverse Matrix: ")
+print(matrix_m)
 
 ```
 
@@ -152,10 +153,9 @@ Computes the transformation matrix for application to a source image to transfor
 
 
 ```python
-import plantcv
+from plantcv import plantcv as pcv
 
-deviance, transformation_matrix = plantcv.transform.calc_transformation_matrix(matrix_m, matrix_b)
-
+deviance, transformation_matrix = pcv.transform.calc_transformation_matrix(matrix_m, matrix_b)
 ```
 
 
@@ -188,9 +188,11 @@ Applies the transformation matrix to an image.
 ```python
 
 from plantcv import plantcv as pcv
+
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "plot"
 
-corrected_img = pcv.transform.apply_transformation_matrix(source_img= source_img, target_img= target_img, transformation_matrix= transformation_matrix)
+corrected_img = pcv.transform.apply_transformation_matrix(source_img=source_img, target_img=target_img, transformation_matrix=transformation_matrix)
 
 ```
 
@@ -210,14 +212,14 @@ Save a matrix from to '.npz' file.
     - filename - name of file to which matrix will be saved. Must end in .npz
     
 ```python
-import plantcv
+from plantcv import plantcv as pcv
 import numpy as np
 
 
 filename = "test.npz"
 matrix = np.matrix('1 2; 3 4')
 
-plantcv.transform.save_matrix(matrix, filename)
+pcv.transform.save_matrix(matrix, filename)
 
 ```
 
@@ -234,11 +236,9 @@ Load a matrix from an '.npz' file.
     - matrix - an ndarray loaded from a '.npz' file
     
 ```python
-import plantcv
+from plantcv import plantcv as pcv
 
 filename = "test.npz"
 
-matrix = plantcv.transform.load_matrix(filename)
-
+matrix = pcv.transform.load_matrix(filename)
 ```
-

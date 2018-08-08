@@ -130,7 +130,7 @@ def analyze_NIR_intensity(img, rgbimg, mask, bins, device, histplot=False, debug
             plt.savefig(fig_name_hist)
             analysis_img.append(['IMAGE', 'hist', fig_name_hist])
         if debug == "print":
-            plt.savefig((str(device) + "_nir_histogram.jpg"))
+            plt.savefig((str(device) + "_nir_histogram.png"))
         if debug == "plot":
             plt.figure()
         plt.clf()
