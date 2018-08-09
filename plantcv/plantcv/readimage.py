@@ -7,12 +7,12 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
 
-def readimage(filename, mode = "AS IS"):
+def readimage(filename, mode = "native"):
     """Read image from file.
 
     Inputs:
     filename = name of image file
-    mode     = mode of imread ("AS IS", "RGB", "GRAY")
+    mode     = mode of imread ("native", "rgb", "gray")
 
     Returns:
     img      = image object as numpy array
@@ -25,9 +25,9 @@ def readimage(filename, mode = "AS IS"):
     :return path: str
     :return img_name: str
     """
-    if mode.upper() == "GRAY":
+    if mode.upper() == "gray":
         img = cv2.imread(filename, 0)
-    elif mode.upper() == "RGB":
+    elif mode.upper() == "rgb":
         img = cv2.imread(filename)
     else:
         img = cv2.imread(filename, -1)
