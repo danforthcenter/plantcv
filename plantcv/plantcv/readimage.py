@@ -25,9 +25,9 @@ def readimage(filename, mode = "native"):
     :return path: str
     :return img_name: str
     """
-    if mode.upper() == "gray":
+    if mode.upper() == "GRAY":
         img = cv2.imread(filename, 0)
-    elif mode.upper() == "rgb":
+    elif mode.upper() == "RGB":
         img = cv2.imread(filename)
     else:
         img = cv2.imread(filename, -1)
