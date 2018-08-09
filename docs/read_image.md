@@ -2,12 +2,13 @@
 
 Reads image into numpy ndarray and splits the path and image filename. This is a wrapper for the OpenCV function [imread](http://docs.opencv.org/modules/highgui/doc/reading_and_writing_images_and_video.html).
 
-**plantcv.readimage**(*filename*)
+**plantcv.readimage**(*filename, mode = "AS IS"*)
 
 **returns** img, path, image filename
 
 - **Parameters:**
     - filename - image file to be read (possibly including a path)
+    - mode     - return mode of image ("AS IS," "RGB," or "GRAY"), defaults to "AS IS"
     
 - **Context:**
     - Reads in file to be processed
@@ -21,5 +22,5 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 #read in image
-img, path, img_filename=pcv.readimage("home/user/images/test-image.png")
+img, path, img_filename=pcv.readimage("home/user/images/test-image.png", "AS IS")
 ```

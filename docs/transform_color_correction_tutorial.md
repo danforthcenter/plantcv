@@ -4,7 +4,7 @@ The color correction module has been developed as a method of normalizing image-
 
 PlantCV is composed of modular functions that can be arranged (or rearranged) and adjusted quickly and easily.
 Pipelines do not need to be linear (and often are not). Please see the pipeline examples below for more details.
-Some functions have a optional debug mode that prints out the resulting image. The debug has two modes, either 'plot' or print.' If the global object, plantcv.params.debug is set to
+A global variable "debug" allows the user to print out the resulting image. The debug has two modes, either 'plot' or print.' If the global object, plantcv.params.debug is set to
 'print' then the function prints the image to a file. If using a jupyter notebook, you would set debug to 'plot' to have
 the images plot images to the screen. Debug mode allows users to visualize and optimize steps on individual test images and small test sets before pipelines are deployed over whole data-sets.
 
@@ -44,6 +44,8 @@ For situations where only one source profile is identified per target profile, o
 from plantcv import plantcv as pcv
 import cv2
 import numpy as np
+
+pcv.params.debug = "print" #set debug mode
 
 target_img = cv2.imread("target_img.png")
 source_img = cv2.imread("source1_img.png")
@@ -155,18 +157,15 @@ To deploy a pipeline over a full image set please see tutorial on Pipeline Paral
 ## Creating Masks
 
 ```python
+
 """
 
 This program illustrates how to create a gray-scale mask for use with plantcv.transform.correct_color.
 
 """
-
-%matplotlib notebook
-# Use matplotlib notebook for its added features of coordinate display and zoom
 from plantcv import plantcv as pcv
 import cv2
 import numpy as np
-from matplotlib import pyplot as plt
 
 pcv.params.debug = "plot"
 ```
@@ -181,41 +180,43 @@ pcv.plot_image(img)
 
 
 ```python
-#Using the pixel coordinate on the plotted image, designate a region of interest for a 50x50 pixel region in each color chip.
-#exclude white and black chips
-color_1, _ = pcv.roi.rectangle(img=img, x= 1150 , y= 1010 , w= 50 , h=50 ) #blue
-color_2, _ = pcv.roi.rectangle(img=img, x= 1280 , y= 1010 , w= 50 , h=50 ) #orange
-color_3, _ = pcv.roi.rectangle(img=img, x= 1420 , y= 1010 , w= 50 , h=50 ) #brown
+#Using the pixel coordinate on the plotted image, designate a region of interest for an n x n pixel region in each color chip.
 
-color_4, _ = pcv.roi.rectangle(img=img, x= 1020 , y= 1130 , w= 50 , h=50 ) #pale grey
-color_5, _ = pcv.roi.rectangle(img=img, x= 1150 , y= 1130 , w= 50 , h=50 ) #green
-color_6, _ = pcv.roi.rectangle(img=img, x= 1280 , y= 1130 , w= 50 , h=50 ) #blue
-color_7, _ = pcv.roi.rectangle(img=img, x= 1420 , y= 1130 , w= 50 , h=50 ) #light coral
+dimensions = [50,50]  #pixel ROI dimensions
 
-color_8, _ = pcv.roi.rectangle(img=img, x= 1020 , y= 1260 , w= 50 , h=50 ) #light grey
-color_9, _ = pcv.roi.rectangle(img=img, x= 1150 , y= 1260 , w= 50 , h=50 ) #red
-color_10, _ = pcv.roi.rectangle(img=img, x= 1280 , y= 1260 , w= 50 , h=50 ) #red-orange
-color_11, _ = pcv.roi.rectangle(img=img, x= 1420 , y= 1260 , w= 50 , h=50 ) #blue
+chips = []
+#Declare first row:
+chips.append(pcv.roi.rectangle(img=img, x=1020, y = 1010, w = dimensions[0], h = dimensions[1])) #white
+chips.append(pcv.roi.rectangle(img=img, x= 1150 , y= 1010 , w = dimensions[0], h = dimensions[1]))#blue
+chips.append(pcv.roi.rectangle(img=img, x= 1280 , y= 1010 , w = dimensions[0], h = dimensions[1]))#orange
+chips.append(pcv.roi.rectangle(img=img, x= 1420 , y= 1010 , w = dimensions[0], h = dimensions[1]))#brown
+    
 
-color_12, _ = pcv.roi.rectangle(img=img, x= 1020 , y= 1400 , w= 50 , h=50 ) #dark gray
-color_13, _ = pcv.roi.rectangle(img=img, x= 1150 , y= 1400 , w= 50 , h=50 ) #yellow
-color_14, _ = pcv.roi.rectangle(img=img, x= 1280 , y= 1400 , w= 50 , h=50 ) #blackberry
-color_15, _ = pcv.roi.rectangle(img=img, x= 1420 , y= 1400 , w= 50 , h=50 ) #forest
 
-color_16, _ = pcv.roi.rectangle(img=img, x= 1020 , y= 1540 , w= 50 , h=50 ) #charcoal
-color_17, _ = pcv.roi.rectangle(img=img, x= 1150 , y= 1540 , w= 50 , h=50 ) #primrose
-color_18, _ = pcv.roi.rectangle(img=img, x= 1280 , y= 1540 , w= 50 , h=50 ) #leaf green
-color_19, _ = pcv.roi.rectangle(img=img, x= 1420 , y= 1540 , w= 50 , h=50 ) #denim
+#declare y_shift
+y_shift = 135
 
-color_20, _ = pcv.roi.rectangle(img=img, x= 1150 , y= 1660 , w= 50 , h=50 ) #blue
-color_21, _ = pcv.roi.rectangle(img=img, x= 1280 , y= 1660 , w= 50 , h=50 ) #orange
-color_22, _ = pcv.roi.rectangle(img=img, x= 1420 , y= 1660 , w= 50 , h=50 ) #teal
+#declare number of total rows
+row_total = 6
+
+#declare all other rows
+for i in range(1, row_total):
+    chips.append(pcv.roi.rectangle(img=img, x=1020, y = 1010 + i*(y_shift), w = dimensions[0], h = dimensions[1]))
+    chips.append(pcv.roi.rectangle(img=img, x= 1150 , y= 1010 + i*(y_shift), w = dimensions[0], h = dimensions[1]))
+    chips.append(pcv.roi.rectangle(img=img, x= 1280 , y= 1010 + i*(y_shift), w = dimensions[0], h = dimensions[1]))
+    chips.append(pcv.roi.rectangle(img=img, x= 1420 , y= 1010 + i*(y_shift), w = dimensions[0], h = dimensions[1]))
+
 ```
 
 ![Screenshot](img/tutorial_images/colorchecker_mask/color_chip2.jpg)
 
 
 ```python
+
+#remove black and white
+del chips[0]
+del chips[19]
+
 mask = np.zeros(shape=np.shape(img)[:2], dtype = np.uint8()) # create empty mask img.
 
 print mask
@@ -234,28 +235,12 @@ print mask
 ```python
 # draw contours for each region of interest and give them unique color values.
 
-mask = cv2.drawContours(mask, color_1, -1, (1), -1)
-mask = cv2.drawContours(mask, color_2, -1, (2), -1)
-mask = cv2.drawContours(mask, color_3, -1, (3), -1)
-mask = cv2.drawContours(mask, color_4, -1, (4), -1)
-mask = cv2.drawContours(mask, color_5, -1, (5), -1)
-mask = cv2.drawContours(mask, color_6, -1, (6), -1)
-mask = cv2.drawContours(mask, color_7, -1, (7), -1)
-mask = cv2.drawContours(mask, color_8, -1, (8), -1)
-mask = cv2.drawContours(mask, color_9, -1, (9), -1)
-mask = cv2.drawContours(mask, color_10, -1, (10), -1)
-mask = cv2.drawContours(mask, color_11, -1, (11), -1)
-mask = cv2.drawContours(mask, color_12, -1, (12), -1)
-mask = cv2.drawContours(mask, color_13, -1, (13), -1)
-mask = cv2.drawContours(mask, color_14, -1, (14), -1)
-mask = cv2.drawContours(mask, color_15, -1, (15), -1)
-mask = cv2.drawContours(mask, color_16, -1, (16), -1)
-mask = cv2.drawContours(mask, color_17, -1, (17), -1)
-mask = cv2.drawContours(mask, color_18, -1, (18), -1)
-mask = cv2.drawContours(mask, color_19, -1, (19), -1)
-mask = cv2.drawContours(mask, color_20, -1, (20), -1)
-mask = cv2.drawContours(mask, color_21, -1, (21), -1)
-mask = cv2.drawContours(mask, color_22, -1, (22), -1)
+i=1
+for chip in chips:
+    print(chip)
+    mask = cv2.drawContours(mask, chip[0], -1, (i*10), -1)
+    i+=1
+
 
 pcv.plot_image(mask, cmap="gray")
 

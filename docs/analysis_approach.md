@@ -47,6 +47,7 @@ configurations to meet image processing goals so the tutorials simply examples o
 *  [VIS / NIR Dual Pipeline](vis_nir_tutorial.md)
 *  [Multi Plant Tutorial](multi-plant_tutorial.md)
 *  [Machine Learning Tutorial](machine_learning_tutorial.md)
+*  [Color Correction Tutorial](transform_color_correction_tutorial.md)
 
 ####**1. Methods of Isolating Target Objects**
 
@@ -95,7 +96,7 @@ doing a threshold on a different channel then joining the two channels with a Lo
 
 *  To further isolate an object from surrounding background a region of interest can be used to select the region of 
 the image that contains the target object. To do this you first [detect all the objects](find_objects.md) in the image, 
-then define the [region of interest](define_roi.md), then determine if the objects are  within, touching, or outside of 
+then define the [region of interest](roi_rectangle.md), then determine if the objects are  within, touching, or outside of 
 the region of interest with the [roi_objects function](roi_objects.md).
 
 #####Connecting Objects or Splitting Objects
@@ -112,7 +113,7 @@ in each sub-image. For more information on this process see the [Multi Plant Tut
     
 These are the general categories of object analysis that are available in PlantCV  
 
-*  Object shape parameters: see the [analyze_shape](analyze_shape.md) and [analyze_bound](analyze_bound.md) functions.
+*  Object shape parameters: see the [analyze_shape](analyze_shape.md) and [analyze_bound](analyze_bound_horizontal.md) functions.
 *  Object color or other signal intensity values: see the [analyze_color](analyze_color.md), 
 [analyze_NIR_intensity](analyze_NIR_intensity.md), and [fluor_fvfm](fluor_fvfm.md) functions.
 *  Object classification (For example, classification of disease symptoms, identification of organ structures 
