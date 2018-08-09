@@ -3,7 +3,7 @@
 This function takes clustered contours and splits them into multiple images, also does a check to make sure that
 the number of inputted filenames matches the number of clustered contours.
 
-**cluster_contour_splitimg**(*img, grouped_contour_indexes, contours, hierarchy, outdir, file=None, filenames=None*)
+**plantcv.cluster_contour_splitimg**(*img, grouped_contour_indexes, contours, hierarchy, outdir, file=None, filenames=None*)
 
 **returns** output_paths
 
@@ -35,7 +35,7 @@ pcv.params.debug = "print"
 
 # Cluster Contours and Split into Separate Images 
 out = './examples/'
-output_path = pcv.cluster_contour_splitimg(device, img1, clusters_i, contours, hierarchy, out, file, filenames=None)
+output_path = pcv.cluster_contour_splitimg(img1, clusters_i, contours, hierarchy, out, file, filenames=None)
 
 ```
 
