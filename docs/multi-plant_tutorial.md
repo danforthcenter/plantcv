@@ -131,7 +131,7 @@ img1=pcv.white_balance(img,roi=(400,800,200,200))
 ![Screenshot](img/tutorial_images/multi-img/2_whitebalance_roi.jpg)
 
 Rotate image slightly so that plants line up with grid (later step)
-For more information see rotate function [here](rotate.md).
+For more information see rotate function [here](rotate2.md).
 
 ```python
 
