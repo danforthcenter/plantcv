@@ -1,10 +1,12 @@
 # Binary image threshold device
 
+import os
 import cv2
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
+
 
 def binary_threshold(img, threshold, maxValue, object_type):
     """Creates a binary image from a gray image based on the threshold value.
@@ -31,14 +33,16 @@ def binary_threshold(img, threshold, maxValue, object_type):
     if object_type == 'light':
         ret, t_img = cv2.threshold(img, threshold, maxValue, cv2.THRESH_BINARY)
         if params.debug == 'print':
-            print_image(t_img, os.path.join(params.debug_outdir, str(params.device) + '_binary_threshold' + str(threshold) + '.png'))
+            print_image(t_img, os.path.join(params.debug_outdir,
+                                            str(params.device) + '_binary_threshold' + str(threshold) + '.png'))
         elif params.debug == 'plot':
             plot_image(t_img, cmap='gray')
         return t_img
     elif object_type == 'dark':
         ret, t_img = cv2.threshold(img, threshold, maxValue, cv2.THRESH_BINARY_INV)
         if params.debug == 'print':
-            print_image(t_img, os.path.join(params.debug_outdir, str(params.device) + '_binary_threshold' + str(threshold) + '_inv.png'))
+            print_image(t_img, os.path.join(params.debug_outdir,
+                                            str(params.device) + '_binary_threshold' + str(threshold) + '_inv.png'))
         elif params.debug == 'plot':
             plot_image(t_img, cmap='gray')
         return t_img

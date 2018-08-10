@@ -8,6 +8,7 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import apply_mask
 from plantcv.plantcv import params
 
+
 def cluster_contour_splitimg(img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None,
                              filenames=None):
 
@@ -32,6 +33,7 @@ def cluster_contour_splitimg(img, grouped_contour_indexes, contours, hierarchy, 
     :param img: ndarray
     :param grouped_contour_indexes: list
     :param contours: list
+    :param hierarchy: ndarray
     :param outdir: str
     :param file: str
     :param filenames: str
@@ -48,12 +50,12 @@ def cluster_contour_splitimg(img, grouped_contour_indexes, contours, hierarchy, 
     i = datetime.now()
     timenow = i.strftime('%m-%d-%Y_%H:%M:%S')
 
-    if file == None:
+    if file is None:
         filebase = timenow
     else:
         filebase = file[:-4]
 
-    if filenames == None:
+    if filenames is None:
         l = len(grouped_contour_indexes)
         namelist = []
         for x in range(0, l):
@@ -103,7 +105,7 @@ def cluster_contour_splitimg(img, grouped_contour_indexes, contours, hierarchy, 
     # create filenames
 
     group_names = []
-    group_names1= []
+    group_names1 = []
     for i, x in enumerate(namelist):
         plantname = str(filebase) + '_' + str(x) + '_p' + str(i) + '.jpg'
         maskname = str(filebase) + '_' + str(x) + '_p' + str(i) + '_mask.jpg'
@@ -115,9 +117,9 @@ def cluster_contour_splitimg(img, grouped_contour_indexes, contours, hierarchy, 
     output_path = []
 
     for y, x in enumerate(corrected_contour_indexes):
-        if outdir != None:
+        if outdir is not None:
             savename = os.path.join(str(outdir), group_names[y])
-            savename1= os.path.join(str(outdir), group_names1[y])
+            savename1 = os.path.join(str(outdir), group_names1[y])
         else:
             savename = os.path.join(".", group_names[y])
             savename1 = os.path.join(".", group_names1[y])
@@ -136,10 +138,10 @@ def cluster_contour_splitimg(img, grouped_contour_indexes, contours, hierarchy, 
             pass
         else:
             retval, mask_binary = cv2.threshold(mask_binary, 254, 255, cv2.THRESH_BINARY)
-            device, masked1 = apply_mask(masked_img, mask_binary, 'white', device, debug)
-            if outdir != None:
+            masked1 = apply_mask(masked_img, mask_binary, 'white')
+            if outdir is not None:
                 print_image(masked1, savename)
-                print_image(mask_binary,savename1)
+                print_image(mask_binary, savename1)
             output_path.append(savename)
 
             if params.debug == 'print':

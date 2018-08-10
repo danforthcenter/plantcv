@@ -1,10 +1,12 @@
 # User-Input Boundary Line
 
+import os
 import cv2
 import numpy as np
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
+
 
 def analyze_bound_vertical(img, obj, mask, line_position, filename=False):
     """User-input boundary line tool
@@ -84,7 +86,7 @@ def analyze_bound_vertical(img, obj, mask, line_position, filename=False):
             cv2.circle(wback, xy, 1, (0, 255, 0))
     right_bound_area = len(right)
     left_bound_area = len(left)
-    percent_bound_area_right= ((float(right_bound_area)) / (float(left_bound_area + right_bound_area))) * 100
+    percent_bound_area_right = ((float(right_bound_area)) / (float(left_bound_area + right_bound_area))) * 100
     percent_bound_area_left = ((float(left_bound_area)) / (float(right_bound_area + left_bound_area))) * 100
 
     bound_header = [

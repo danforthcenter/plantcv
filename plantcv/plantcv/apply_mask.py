@@ -1,10 +1,12 @@
 # Apply White or Black Background Mask
 
+import os
 import cv2
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
+
 
 def apply_mask(img, mask, mask_color):
     """Apply white image mask to image, with bitwise AND operator bitwise NOT operator and ADD operator.
@@ -13,19 +15,13 @@ def apply_mask(img, mask, mask_color):
     img        = image object, color(RGB)
     mask       = image object, binary (black background with white object)
     mask_color = white or black
-    device     = device number. Used to count steps in the pipeline
-    debug      = None, print, or plot. Print = save to file, Plot = print to screen.
 
     Returns:
-    device     = device number
     masked_img = masked image
 
     :param img: numpy array
     :param mask: numpy array
     :param mask_color: str
-    :param device: int
-    :param debug: str
-    :return device: int
     :return masked_img: numpy array
     """
 

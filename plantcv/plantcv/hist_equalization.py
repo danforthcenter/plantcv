@@ -8,6 +8,7 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 
+
 def hist_equalization(img):
     """Histogram equalization is a method to normalize the distribution of intensity values. If the image has low
        contrast it will make it easier to threshold.

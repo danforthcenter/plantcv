@@ -37,7 +37,8 @@ def rgb2gray_lab(img, channel):
     channels = {"l": l, "a": a, "b": b}
 
     if params.debug == "print":
-        print_image(channels[channel], os.path.join(params.debug_outdir, str(params.device) + "_lab_" + names[channel] + ".png"))
+        print_image(channels[channel], os.path.join(params.debug_outdir,
+                                                    str(params.device) + "_lab_" + names[channel] + ".png"))
     elif params.debug == "plot":
         plot_image(channels[channel], cmap="gray")
 

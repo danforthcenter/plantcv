@@ -1,10 +1,12 @@
 # Resize image
 
+import os
 import cv2
 import numpy as np
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
+
 
 def auto_crop(img, objects, padding_x=0, padding_y=0, color='black'):
     """Resize image.
@@ -16,20 +18,15 @@ def auto_crop(img, objects, padding_x=0, padding_y=0, color='black'):
     padding_x = padding in the x direction
     padding_y = padding in the y direction
     color     = either 'black' or 'white'
-    debug     = None, print, or plot. Print = save to file, Plot = print to screen.
 
     Returns:
-    device    = device number
     cropped   = cropped image
 
-    :param device: int
     :param img: numpy array
     :param objects: list
     :param padding_x: int
     :param padding_y: int
     :param color: str
-    :param debug: str
-    :return device: str
     :return cropped: numpy array
     """
 
@@ -41,8 +38,8 @@ def auto_crop(img, objects, padding_x=0, padding_y=0, color='black'):
 
     crop_img = img[y:y + h, x:x + w]
 
-    offsetx = int(np.rint((padding_x)))
-    offsety = int(np.rint((padding_y)))
+    offsetx = int(np.rint(padding_x))
+    offsety = int(np.rint(padding_y))
 
     if color == 'black':
         colorval = (0, 0, 0)

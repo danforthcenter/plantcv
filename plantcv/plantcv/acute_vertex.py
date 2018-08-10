@@ -1,5 +1,6 @@
 # Script to identify corners/acute angles of an object
 
+import os
 import cv2
 import numpy as np
 import math
@@ -21,24 +22,19 @@ def acute_vertex(obj, win, thresh, sep, img):
              worked well for sample image)
     sep    = the number of contour points to search within for the most acute value
     img    = the original image
-    device = a counter variable
-    debug  = True/False. If True, print image
 
     :param obj: ndarray
     :param win: int
     :param thresh: int
     :param sep: int
     :param img: ndarray
-    :param device: int
-    :param debug: str
-    :return device: int
     :return acute: ndarray
     """
     params.device += 1
     chain = []
     if not np.any(obj):
         acute = ('NA', 'NA')
-        return device, acute
+        return acute
     for i in range(len(obj) - win):
         x, y = obj[i].ravel()
         pre_x, pre_y = obj[i - win].ravel()

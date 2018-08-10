@@ -1,4 +1,4 @@
-import sys
+import os
 import cv2
 import numpy as np
 from plantcv.plantcv import print_image
@@ -6,7 +6,8 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import color_palette
 from plantcv.plantcv import params
 
-def cluster_contours(img, roi_objects,roi_obj_hierarchy, nrow=1, ncol=1):
+
+def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1):
 
     """
     This function take a image with multiple contours and clusters them based on user input of rows and columns
@@ -36,9 +37,6 @@ def cluster_contours(img, roi_objects,roi_obj_hierarchy, nrow=1, ncol=1):
 
     params.device += 1
 
-    sys.stderr.write(
-        'This function has been updated to include object hierarchy so object holes can be included\n')
-
     if len(np.shape(img)) == 3:
         iy, ix, iz = np.shape(img)
     else:
@@ -62,7 +60,7 @@ def cluster_contours(img, roi_objects,roi_obj_hierarchy, nrow=1, ncol=1):
     # categorize what bin the center of mass of each contour
 
     def digitize(a, step):
-        if isinstance(step, int) == True:
+        if isinstance(step, int) is True:
             i = step
         else:
             i = len(step)

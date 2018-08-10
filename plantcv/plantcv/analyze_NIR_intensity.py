@@ -32,7 +32,6 @@ def analyze_NIR_intensity(img, rgbimg, mask, bins, histplot=False, filename=Fals
     :param rgbimg: numpy array
     :param mask: numpy array
     :param bins: int
-    :param device: int
     :param histplot: bool
     :param filename: str
     :return hist_header: list
@@ -43,7 +42,7 @@ def analyze_NIR_intensity(img, rgbimg, mask, bins, histplot=False, filename=Fals
     params.device += 1
 
     # apply plant shaped mask to image
-    device, mask1 = binary_threshold(mask, 0, 255, 'light', device, None)
+    mask1 = binary_threshold(mask, 0, 255, 'light')
     mask1 = (mask1 / 255)
     masked = np.multiply(img, mask1)
 
@@ -88,7 +87,7 @@ def analyze_NIR_intensity(img, rgbimg, mask, bins, histplot=False, filename=Fals
 
     # mask the background and color the plant with color scheme 'jet'
     cplant = cv2.applyColorMap(rgbimg, colormap=2)
-    device, masked1 = apply_mask(cplant, mask, 'black', device, debug=None)
+    masked1 = apply_mask(cplant, mask, 'black')
     cplant_back = cv2.add(masked1, img_back1)
 
     if filename:
@@ -104,11 +103,11 @@ def analyze_NIR_intensity(img, rgbimg, mask, bins, histplot=False, filename=Fals
     if params.debug is not None:
         if params.debug == "print":
             print_image(masked1, os.path.join(params.debug_outdir, str(params.device) + "_nir_pseudo_plant.jpg"))
-            print_image(cplant_back, os.path.join(params.debug_outdir, str(params.device) + "_nir_pseudo_plant_back.jpg"))
+            print_image(cplant_back,
+                        os.path.join(params.debug_outdir, str(params.device) + "_nir_pseudo_plant_back.jpg"))
         if params.debug == "plot":
             plot_image(masked1)
             plot_image(cplant_back)
-
 
     if histplot is True:
         import matplotlib
@@ -130,7 +129,5 @@ def analyze_NIR_intensity(img, rgbimg, mask, bins, histplot=False, filename=Fals
         if params.debug == "plot":
             plt.figure()
         plt.clf()
-
-
 
     return hist_header, hist_data, analysis_img

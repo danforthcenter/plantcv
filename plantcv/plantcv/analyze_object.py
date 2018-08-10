@@ -1,12 +1,14 @@
 # Analyzes an object and outputs numeric properties
 
+import os
 import cv2
 import numpy as np
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
 
-def analyze_object(img, obj, mask, device):
+
+def analyze_object(img, obj, mask, filename=False):
     """Outputs numeric properties for an input object (contour or grouped contours).
 
     Inputs:
@@ -31,7 +33,7 @@ def analyze_object(img, obj, mask, device):
 
     # Valid objects can only be analyzed if they have >= 5 vertices
     if len(obj) < 5:
-        return device, None, None, None
+        return None, None, None
 
     ori_img = np.copy(img)
     if len(np.shape(img)) == 3:

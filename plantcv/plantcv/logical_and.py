@@ -6,6 +6,7 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
 
+
 def logical_and(img1, img2):
     """Join two images using the bitwise AND operator.
 

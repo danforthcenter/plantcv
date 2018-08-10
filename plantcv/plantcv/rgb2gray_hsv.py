@@ -38,7 +38,8 @@ def rgb2gray_hsv(img, channel):
     channels = {"h": h, "s": s, "v": v}
 
     if params.debug == "print":
-        print_image(channels[channel], os.path.join(params.debug_outdir, str(params.device) + "_hsv_" + names[channel] + ".png"))
+        print_image(channels[channel], os.path.join(params.debug_outdir,
+                                                    str(params.device) + "_hsv_" + names[channel] + ".png"))
     elif params.debug == "plot":
         plot_image(channels[channel], cmap="gray")
 

@@ -19,7 +19,6 @@ def erode(img, kernel, i):
     i      = interations, i.e. number of consecutive filtering passes
 
     Returns:
-    device = device number
     er_img = eroded image
 
     :param img: numpy array
@@ -33,7 +32,8 @@ def erode(img, kernel, i):
     er_img = cv2.erode(src=img, kernel=kernel2, iterations=i)
     params.device += 1
     if params.debug == 'print':
-        print_image(er_img, os.path.join(params.debug_outdir, str(params.device) + '_er_image_' + 'itr_' + str(i) + '.png'))
+        print_image(er_img, os.path.join(params.debug_outdir,
+                                         str(params.device) + '_er_image_' + 'itr_' + str(i) + '.png'))
     elif params.debug == 'plot':
         plot_image(er_img, cmap='gray')
     return er_img
