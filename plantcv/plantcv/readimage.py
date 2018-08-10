@@ -7,7 +7,8 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
 
-def readimage(filename, mode = "native"):
+
+def readimage(filename, mode="native"):
     """Read image from file.
 
     Inputs:

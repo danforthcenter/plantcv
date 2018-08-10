@@ -1153,7 +1153,7 @@ def test_plantcv_print_results():
     pcv.print_results(filename='not_used', header=header, data=data)
 
 
-def test_plantcv_readimage():
+def test_plantcv_readimage_native():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_readimage")
     os.mkdir(cache_dir)
@@ -1176,6 +1176,18 @@ def test_plantcv_readimage():
             assert 0
     else:
         assert 0
+
+
+def test_plantcv_readimage_grayscale():
+    pcv.params.debug = None
+    img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_GRAY), mode="gray")
+    assert len(np.shape(img)) == 2
+
+
+def test_plantcv_readimage_rgb():
+    pcv.params.debug = None
+    img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_GRAY), mode="rgb")
+    assert len(np.shape(img)) == 3
 
 
 def test_plantcv_readimage_bad_file():
@@ -1212,7 +1224,7 @@ def test_plantcv_report_size_marker_detect():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MARKER), -1)
     # ROI contour
-    roi_contour = [np.array([[[3550,  850]], [[3550, 1349]], [[4049, 1349]], [[4049,  850]]], dtype=np.int32)]
+    roi_contour = [np.array([[[3550, 850]], [[3550, 1349]], [[4049, 1349]], [[4049, 850]]], dtype=np.int32)]
     roi_hierarchy = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
 
     # Test with debug = "print"
