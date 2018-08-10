@@ -47,13 +47,11 @@ from plantcv.plantcv.logical_and import logical_and
 from plantcv.plantcv.logical_or import logical_or
 from plantcv.plantcv.logical_xor import logical_xor
 from plantcv.plantcv.find_objects import find_objects
-from plantcv.plantcv.define_roi import define_roi
 from plantcv.plantcv.roi_objects import roi_objects
 from plantcv.plantcv.object_composition import object_composition
 from plantcv.plantcv.analyze_object import analyze_object
 from plantcv.plantcv.analyze_bound_horizontal import analyze_bound_horizontal
 from plantcv.plantcv.analyze_bound_vertical import analyze_bound_vertical
-from plantcv.plantcv.analyze_bound import analyze_bound
 from plantcv.plantcv.analyze_color import analyze_color
 from plantcv.plantcv.analyze_NIR_intensity import analyze_NIR_intensity
 from plantcv.plantcv.fluor_fvfm import fluor_fvfm
@@ -76,7 +74,6 @@ from plantcv.plantcv.gaussian_blur import gaussian_blur
 from plantcv.plantcv.cluster_contours import cluster_contours
 from plantcv.plantcv.cluster_contour_splitimg import cluster_contour_splitimg
 from plantcv.plantcv.rotate import rotate
-from plantcv.plantcv.rotate_img import rotate_img
 from plantcv.plantcv.shift_img import shift_img
 from plantcv.plantcv.output_mask_ori_img import output_mask
 from plantcv.plantcv.auto_crop import auto_crop
@@ -93,13 +90,13 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'plot_co
            'laplace_filter', 'sobel_filter', 'scharr_filter', 'hist_equalization', 'plot_hist', 'image_add',
            'image_subtract', 'erode', 'dilate', 'watershed', 'rectangle_mask', 'rgb2gray_hsv', 'rgb2gray_lab',
            'rgb2gray', 'binary_threshold', 'median_blur', 'fill', 'invert', 'logical_and', 'logical_or', 'logical_xor',
-           'find_objects', 'define_roi', 'roi_objects', 'transform','object_composition', 'analyze_object',
-           'analyze_bound_horizontal', 'analyze_bound_vertical', 'analyze_bound', 'analyze_color',
+           'find_objects', 'roi_objects', 'transform','object_composition', 'analyze_object',
+           'analyze_bound_horizontal', 'analyze_bound_vertical', 'analyze_color',
            'analyze_NIR_intensity', 'fluor_fvfm', 'print_results', 'resize', 'flip', 'crop_position_mask', 'get_nir',
            'adaptive_threshold', 'otsu_auto_threshold', 'report_size_marker_area', 'white_balance',
            'triangle_auto_threshold', 'acute_vertex', 'scale_features', 'landmark_reference_pt_dist',
            'x_axis_pseudolandmarks', 'y_axis_pseudolandmarks', 'gaussian_blur', 'cluster_contours',
-           'cluster_contour_splitimg', 'rotate_img', 'rotate', 'shift_img', 'output_mask', 'auto_crop',
+           'cluster_contour_splitimg', 'rotate', 'shift_img', 'output_mask', 'auto_crop',
            'background_subtraction', 'naive_bayes_classifier', 'acute', 'distance_transform', 'params']
 
 from ._version import get_versions

@@ -1,12 +1,14 @@
 # Background Subtraction:
 # Subtracts a background image from a foreground image once.
 
+import os
 import cv2
 import numpy as np
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
+
 
 def background_subtraction(background_image, foreground_image):
     """Creates a binary image from a background subtraction of the foreground using cv2.BackgroundSubtractorMOG().
@@ -21,18 +23,12 @@ def background_subtraction(background_image, foreground_image):
     Inputs:
     background_image       = img object, RGB or binary/grayscale/single-channel
     foreground_image       = img object, RGB or binary/grayscale/single-channel
-    device                 = device number. Used to count steps in the pipeline
-    debug                  = None, print, or plot. Print = save to file, Plot = print to screen.
 
     Returns:
-    device                 = device number
     fgmask                 = background subtracted foreground image (mask)
 
     :param background_image: numpy array
     :param foreground_image: numpy array
-    :param device: int
-    :param debug: str
-    :return device: int
     :return fgmask: numpy array
     """
 

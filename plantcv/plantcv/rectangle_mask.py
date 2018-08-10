@@ -67,7 +67,7 @@ def rectangle_mask(img, p1, p2, color="black"):
         print_image(bnk, os.path.join(params.debug_outdir, str(params.device) + '_roi.png'))
 
     elif params.debug == 'plot':
-        if len(np.shape(bnk))==3:
+        if len(np.shape(bnk)) == 3:
             plot_image(bnk)
             plot_image(img1)
         else:

@@ -24,7 +24,7 @@ def _max(img, hmax, mask, x, y, h, w, type):
     cv2.rectangle(mask, (x, y), (x + w, y + h), (255, 255, 255), -1)
     mask_binary = mask[:, :, 0]
     retval, mask_binary = cv2.threshold(mask_binary, 254, 255, cv2.THRESH_BINARY)
-    _, masked = apply_mask(imgcp, mask_binary, 'black', 0, debug=None)
+    masked = apply_mask(imgcp, mask_binary, 'black')
     max1 = np.amax(masked)
     alpha = hmax / float(max1)
     corrected = np.asarray(np.where(img <= max1, np.multiply(alpha, img), hmax), type)

@@ -30,7 +30,9 @@ def laplace_filter(img, k, scale):
     lp_filtered = cv2.Laplacian(src=img, ddepth=-1, ksize=k, scale=scale)
     params.device += 1
     if params.debug == 'print':
-        print_image(lp_filtered, os.path.join(params.debug_outdir, str(params.device) + '_lp_out_k' + str(k) + '_scale' + str(scale) + '.png'))
+        print_image(lp_filtered,
+                    os.path.join(params.debug_outdir,
+                                 str(params.device) + '_lp_out_k' + str(k) + '_scale' + str(scale) + '.png'))
     elif params.debug == 'plot':
         plot_image(lp_filtered, cmap='gray')
     return lp_filtered

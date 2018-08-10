@@ -6,6 +6,7 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
 
+
 def distance_transform(img, distanceType, maskSize):
     """Creates an image where for each object pixel, a number is assigned that corresponds to the distance to the
     nearest background pixel.

@@ -26,27 +26,26 @@ def get_nir(path, filename):
     allfiles = np.array(os.listdir(path))
     nirfiles = []
 
-    targetimg = []
     cam = visname[1]
 
     if cam == "SV":
         angle = visname[2]
 
     for n in allfiles:
-        if re.search("NIR", n) != None:
+        if re.search("NIR", n) is not None:
             nirfiles.append(n)
 
     if cam == "TV":
         for n in nirfiles:
-            if re.search("TV", n) != None:
+            if re.search("TV", n) is not None:
                 nirpath = os.path.join(str(path), str(n))
 
     if cam == "SV":
         for n in nirfiles:
-            if re.search("SV", n) != None:
+            if re.search("SV", n) is not None:
                 nsplit = n.split("_")
                 exangle = '\\b' + str(angle) + '\\b'
-                if re.search(exangle, nsplit[2]) != None:
+                if re.search(exangle, nsplit[2]) is not None:
                     nirpath = os.path.join(str(path), str(n))
 
     return nirpath

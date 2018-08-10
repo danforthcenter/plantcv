@@ -9,8 +9,7 @@ from plantcv.plantcv import fatal_error
 from plantcv.plantcv import plot_colorbar
 from plantcv.plantcv import params
 
-def _pseudocolored_image(histogram, bins, img, mask, background, channel, filename,
-                         analysis_images):
+def _pseudocolored_image(histogram, bins, img, mask, background, channel, filename, analysis_images):
     """Pseudocolor image.
 
     Inputs:
@@ -85,7 +84,7 @@ def _pseudocolored_image(histogram, bins, img, mask, background, channel, filena
                                                           '_pseudocolor.jpg'))
             fig_name = 'VIS_pseudocolor_colorbar_' + str(channel) + '_channel.svg'
             if not os.path.isfile(os.path.join(params.debug_outdir, fig_name)):
-                plot_colorbar(os.path.join(params.debug_outdir, fig_name, bins))
+                plot_colorbar(path, fig_name, bins)
         elif params.debug == 'plot':
             for key in output_imgs:
                 if output_imgs[key]["img"] is not None:

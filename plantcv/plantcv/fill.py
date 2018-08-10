@@ -19,7 +19,6 @@ def fill(img, mask, size):
 
 
     Returns:
-    device = device number
     img    = image with objects filled
 
     :param img: numpy array

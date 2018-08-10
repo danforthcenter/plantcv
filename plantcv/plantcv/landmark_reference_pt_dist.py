@@ -46,7 +46,7 @@ def landmark_reference_pt_dist(points_r, centroid_r, bline_r):
     cx, cy = centroid_r
     # Check to see if points are numerical or NA
     if not isinstance(cy, numbers.Number):
-        return params.device, ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA'), \
+        return ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA'), \
                ('NA', 'NA'), ('NA', 'NA')
     # Do this for centroid
     for pt in points_r:

@@ -87,7 +87,8 @@ def naive_bayes_classifier(img, pdf_file):
     # Print or plot the mask if debug is not None
     if params.debug == "print":
         for class_name, mask in masks.items():
-            print_image(mask, os.path.join(params.debug_outdir, str(params.device) + "_naive_bayes_" + class_name + "_mask.jpg"))
+            print_image(mask, os.path.join(params.debug_outdir,
+                                           str(params.device) + "_naive_bayes_" + class_name + "_mask.jpg"))
     elif params.debug == "plot":
         for class_name, mask in masks.items():
             plot_image(mask, cmap="gray")

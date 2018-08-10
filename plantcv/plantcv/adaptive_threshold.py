@@ -1,10 +1,12 @@
 # Binary image adaptive threshold
 
+import os
 import cv2
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
+
 
 def adaptive_threshold(img, maxValue, thres_type, object_type):
     """Creates a binary image from a grayscaled image using adaptive thresholding
@@ -16,20 +18,14 @@ def adaptive_threshold(img, maxValue, thres_type, object_type):
     object_type = light or dark
                   - If object is light then standard thresholding is done
                   - If object is dark then inverse thresholding is done
-    device      = device number. Used to count steps in the pipeline
-    debug       = None, print, or plot. Print = save to file, Plot = print to screen.
 
     Returns:
-    device      = device number
     t_img       = image object as numpy array
 
     :param img: numpy array
     :param maxValue: int
     :param thres_type: str
     :param object_type: str
-    :param device: int
-    :param debug: str
-    :return device: int
     :return t_img: numpy array
     """
 
@@ -61,7 +57,7 @@ def adaptive_threshold(img, maxValue, thres_type, object_type):
 
     # print out the image if the debug is true
     if params.debug == 'print':
-        name = os.path.join(params.debug_outdir, str(params.device) + '_adaptive_threshold_' + thres_type + ext )
+        name = os.path.join(params.debug_outdir, str(params.device) + '_adaptive_threshold_' + thres_type + ext)
         print_image(t_img, name)
     elif params.debug == 'plot':
         plot_image(t_img, cmap='gray')

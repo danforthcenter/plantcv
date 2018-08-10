@@ -15,8 +15,6 @@ def acute(obj, win, thresh, mask):
     thresh      = angle score threshold to be applied for mapping out landmark
                   coordinate clusters within each contour
     mask        = binary mask used to generate contour array (necessary for ptvals)
-    device      = device number. Used to count steps in the pipeline
-    debug       = None, print, or plot. Print = save to file, Plot = print to screen.
 
     Outputs:
     homolog_pts = pseudo-landmarks selected from each landmark cluster
@@ -34,8 +32,6 @@ def acute(obj, win, thresh, mask):
     :param win: int
     :param thresh: int
     :param mask: ndarray
-    :param device: int
-    :param debug: str
     :return homolog_pts:
     """
 
