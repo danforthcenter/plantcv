@@ -4,7 +4,7 @@ Set boundary line with boundary tool, this allows the user to find the extent-y 
 above and below as well as the area above and below the boundary line. This tool functions 
 best if the pot size/position of the plant remains relatively constant.
  
-**analyze_bound_horizontal**(*img, obj, mask, line_position, filename=False*)
+**plantcv.analyze_bound_horizontal**(*img, obj, mask, line_position, filename=False*)
 
 **returns** boundary headers, boundary data, image with boundary data
 

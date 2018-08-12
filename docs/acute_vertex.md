@@ -3,7 +3,7 @@
 Perform a heuristic search for sharp angles given an object contour and user specified parameters. The acute (sharp)
 angles are often associated with object tip points. Outputs a python list of points that meet criteria specified in parameters.
 
-**acute_vertex**(*obj, window, thresh, sep, img*)
+**plantcv.acute_vertex**(*obj, window, thresh, sep, img*)
 
 **returns** list of points that meet specified criteria 
 

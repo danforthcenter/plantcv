@@ -8,7 +8,7 @@ Images must be of the same size and type.
 If not, larger image will be taken and downsampled to smaller image size.  
 If they are of different types, an error will occur.  
 
-**background_subtraction(*foreground_image, background_image*)**
+**plantcv.background_subtraction(*foreground_image, background_image*)**
 
 **returns** foreground mask
 

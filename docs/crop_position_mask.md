@@ -4,7 +4,7 @@ Takes a binary mask and positions it on another image.
 
 **plantcv.crop_position_mask**(*img, mask, x, y, v_pos="top",h_pos="right"*)
 
-**returns** device, newmask
+**returns** newmask
 
 - **Parameters:**
     - img - input image

@@ -2,9 +2,9 @@
 
 Shape analysis outputs numeric properties for an input object (contour or grouped contours), works best on grouped contours.
  
-**analyze_object**(*img, obj, mask, device*)
+**plantcv.analyze_object**(*img, obj, mask, device*)
 
-**returns** device, shape data headers, shape data, image with shape data
+**returns** shape data headers, shape data, image with shape data
 
 - **Parameters:**
     - img - image object (most likely the original), color(RGB)

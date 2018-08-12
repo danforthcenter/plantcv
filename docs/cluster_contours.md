@@ -7,11 +7,11 @@ This function take a image with multiple contours and clusters them based on use
 **returns** grouped_contour_indexes, contours, hierarchy
 
 - **Parameters:**
-    - img = image object to be masked
-    - roi_objects = object contours in an image that are needed to be clustered.
-    - roi_obj_hierarchy = object hierarchy
-    - nrow= approximate number of rows
-    - ncol= approximate number of columns
+    - img - image object to be masked
+    - roi_objects - object contours in an image that are needed to be clustered.
+    - roi_obj_hierarchy - object hierarchy
+    - nrow - approximate number of rows
+    - ncol - approximate number of columns
 - **Context:**
     - Cluster contours based on number of approximate rows and columns
 - **Example use:**

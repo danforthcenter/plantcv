@@ -7,7 +7,7 @@ Invert a binary image. This is a wrapper for the OpenCV function [bitwise_not](h
 **returns** inverted image
 
 - **Parameters:**
-    - img = image to be inverted (works best with binary image)
+    - img - image to be inverted (works best with binary image)
    
 - **Context:**
     - Invert image values. Useful for inverting an image mask.

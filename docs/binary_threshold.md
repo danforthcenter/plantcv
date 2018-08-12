@@ -3,7 +3,7 @@
 Creates a binary image from a gray image based on the threshold values. 
 The object target can be specified as dark or light.
 
-**binary_threshold(*img, threshold, maxValue, object_type*)**
+**plantcv.binary_threshold(*img, threshold, maxValue, object_type*)**
 
 **returns** thresholded image
 
