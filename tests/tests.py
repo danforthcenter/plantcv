@@ -1274,7 +1274,10 @@ def test_plantcv_report_size_marker_grayscale_input():
                                                                      roi_hierarchy=roi_hierarchy, marker='define',
                                                                      objcolor='light', thresh_channel='s', thresh=120,
                                                                      filename=False)
-    assert marker_data[1] == 2500
+    if cv2.__version__[0] == '2':
+        assert int(marker_data[1]) == 2401
+    else:
+        assert marker_data[1] == 2500
 
 
 def test_plantcv_report_size_marker_bad_marker_input():
