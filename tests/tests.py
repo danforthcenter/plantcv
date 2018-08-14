@@ -2219,7 +2219,7 @@ def test_plantcv_transform_correct_color():
     matrix_file = np.load(os.path.join(TEST_DATA, TEST_TRANSFORM1), encoding="latin1")
     matrix_compare = matrix_file['arr_0']
     # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_helper")
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_correct_color")
     os.mkdir(cache_dir)
     # Make image and mask directories in the cache directory
     imgdir = os.path.join(cache_dir, "images")
@@ -2253,7 +2253,7 @@ def test_plantcv_transform_correct_color_output_dne():
     matrix_file = np.load(os.path.join(TEST_DATA, TEST_TRANSFORM1), encoding="latin1")
     matrix_compare = matrix_file['arr_0']
     # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_helper")
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_correct_color_output_dne")
     os.mkdir(cache_dir)
     # Make image and mask directories in the cache directory
     imgdir = os.path.join(cache_dir, "images")
