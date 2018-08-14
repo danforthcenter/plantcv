@@ -273,8 +273,8 @@ def test_plantcv_analyze_bound_vertical_neg_x():
     # Test with debug="plot", line position that will trigger -x
     pcv.params.debug = "plot"
     boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_vertical(img=img, obj=object_contours,
-                                                                                 mask=mask, line_position=2454,
-                                                                                 filename=False)
+                                                                               mask=mask, line_position=2454,
+                                                                               filename=False)
     assert boundary_data[3] == 63632
 
 
@@ -287,8 +287,8 @@ def test_plantcv_analyze_bound_vertical_small_x():
     # Test with debug='plot', line position that will trigger -x, and two channel object
     pcv.params.debug = "plot"
     boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_vertical(img=img, obj=object_contours,
-                                                                                 mask=mask, line_position=1,
-                                                                                 filename=False)
+                                                                               mask=mask, line_position=1,
+                                                                               filename=False)
     assert boundary_data[3] == 0
 
 
