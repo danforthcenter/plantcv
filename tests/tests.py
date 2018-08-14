@@ -395,6 +395,20 @@ def test_plantcv_analyze_object():
     assert obj_data[1] != 0
 
 
+def test_plantcv_analyze_object_small_contour():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_object_small_contour")
+    os.mkdir(cache_dir)
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    obj_contour = [np.array([[[0, 0]], [[0, 50]], [[50, 50]], [[50, 0]]], dtype=np.int32)]
+    # Test with debug = None
+    pcv.params.debug = None
+    obj_header, obj_data, obj_images = pcv.analyze_object(img=img, obj=obj_contour, mask=mask, filename=False)
+    assert obj_data is None
+
+
 def test_plantcv_apply_mask_white():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_apply_mask_white")
