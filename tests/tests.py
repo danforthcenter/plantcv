@@ -472,6 +472,24 @@ def test_plantcv_auto_crop():
     assert x > x1
 
 
+def test_plantcv_auto_crop_grayscale_input():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_auto_crop_grayscale_input")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
+    gray_img = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
+    contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_OBJECT), encoding="latin1")
+    roi_contours = contours['arr_0']
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    cropped = pcv.auto_crop(img=gray_img, objects=roi_contours[1], padding_x=20, padding_y=20, color='white')
+    x, y = np.shape(gray_img)
+    x1, y1 = np.shape(cropped)
+    assert x > x1
+
+
 def test_plantcv_binary_threshold():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_binary_threshold")
