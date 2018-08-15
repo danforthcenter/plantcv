@@ -112,23 +112,16 @@ def analyze_object(img, obj, mask, filename=False):
         xdiff = float(caliper_max_x - caliper_mid_x)
         ydiff = float(caliper_max_y - caliper_mid_y)
 
+        # Set default values
+        slope = 1
+
         if xdiff != 0:
             slope = (float(ydiff / xdiff))
-        if xdiff == 0:
-            slope = 1
         b_line = caliper_mid_y - (slope * caliper_mid_x)
 
-        if slope == 0:
-            xintercept = 0
-            xintercept1 = 0
-            yintercept = 'none'
-            yintercept1 = 'none'
-            cv2.line(background1, (iy, caliper_mid_y), (0, caliper_mid_y), (255), 5)
-        else:
+        if slope != 0:
             xintercept = int(-b_line / slope)
             xintercept1 = int((ix - b_line) / slope)
-            yintercept = 'none'
-            yintercept1 = 'none'
             if 0 <= xintercept <= iy and 0 <= xintercept1 <= iy:
                 cv2.line(background1, (xintercept1, ix), (xintercept, 0), (255), 5)
             elif xintercept < 0 or xintercept > iy or xintercept1 < 0 or xintercept1 > iy:
@@ -148,6 +141,8 @@ def analyze_object(img, obj, mask, filename=False):
                     yintercept = int(b_line)
                     yintercept1 = int((slope * iy) + b_line)
                     cv2.line(background1, (0, yintercept), (iy, yintercept1), (255), 5)
+        else:
+            cv2.line(background1, (iy, caliper_mid_y), (0, caliper_mid_y), (255), 5)
 
         ret1, line_binary = cv2.threshold(background1, 0, 255, cv2.THRESH_BINARY)
         # print_image(line_binary,(str(device)+'_caliperfit.png'))
