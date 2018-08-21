@@ -39,7 +39,6 @@ from plantcv.plantcv.rectangle_mask import rectangle_mask
 from plantcv.plantcv.rgb2gray_hsv import rgb2gray_hsv
 from plantcv.plantcv.rgb2gray_lab import rgb2gray_lab
 from plantcv.plantcv.rgb2gray import rgb2gray
-from plantcv.plantcv.binary_threshold import binary_threshold
 from plantcv.plantcv.median_blur import median_blur
 from plantcv.plantcv.fill import fill
 from plantcv.plantcv.invert import invert
@@ -60,11 +59,8 @@ from plantcv.plantcv.resize import resize
 from plantcv.plantcv.flip import flip
 from plantcv.plantcv.crop_position_mask import crop_position_mask
 from plantcv.plantcv.get_nir import get_nir
-from plantcv.plantcv.adaptive_threshold import adaptive_threshold
-from plantcv.plantcv.otsu_auto_threshold import otsu_auto_threshold
 from plantcv.plantcv.report_size_marker_area import report_size_marker_area
 from plantcv.plantcv.white_balance import white_balance
-from plantcv.plantcv.triangle_auto_threshold import triangle_auto_threshold
 from plantcv.plantcv.acute_vertex import acute_vertex
 from plantcv.plantcv.scale_features import scale_features
 from plantcv.plantcv.landmark_reference_pt_dist import landmark_reference_pt_dist
@@ -82,6 +78,7 @@ from plantcv.plantcv.naive_bayes_classifier import naive_bayes_classifier
 from plantcv.plantcv.acute import acute
 from plantcv.plantcv.distance_transform import distance_transform
 from plantcv.plantcv import roi
+from plantcv.plantcv import threshold
 from plantcv.plantcv import transform
 
 # add new functions to end of lists
@@ -89,12 +86,11 @@ from plantcv.plantcv import transform
 __all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'plot_colorbar', 'apply_mask', 'readimage',
            'laplace_filter', 'sobel_filter', 'scharr_filter', 'hist_equalization', 'plot_hist', 'image_add',
            'image_subtract', 'erode', 'dilate', 'watershed', 'rectangle_mask', 'rgb2gray_hsv', 'rgb2gray_lab',
-           'rgb2gray', 'binary_threshold', 'median_blur', 'fill', 'invert', 'logical_and', 'logical_or', 'logical_xor',
+           'rgb2gray', 'median_blur', 'fill', 'invert', 'logical_and', 'logical_or', 'logical_xor',
            'find_objects', 'roi_objects', 'transform','object_composition', 'analyze_object',
-           'analyze_bound_horizontal', 'analyze_bound_vertical', 'analyze_color',
-           'analyze_NIR_intensity', 'fluor_fvfm', 'print_results', 'resize', 'flip', 'crop_position_mask', 'get_nir',
-           'adaptive_threshold', 'otsu_auto_threshold', 'report_size_marker_area', 'white_balance',
-           'triangle_auto_threshold', 'acute_vertex', 'scale_features', 'landmark_reference_pt_dist',
+           'analyze_bound_horizontal', 'analyze_bound_vertical', 'analyze_color', 'analyze_NIR_intensity',
+           'fluor_fvfm', 'print_results', 'resize', 'flip', 'crop_position_mask', 'get_nir', 'report_size_marker_area',
+           'white_balance', 'acute_vertex', 'scale_features', 'landmark_reference_pt_dist',
            'x_axis_pseudolandmarks', 'y_axis_pseudolandmarks', 'gaussian_blur', 'cluster_contours',
            'cluster_contour_splitimg', 'rotate', 'shift_img', 'output_mask', 'auto_crop',
            'background_subtraction', 'naive_bayes_classifier', 'acute', 'distance_transform', 'params']

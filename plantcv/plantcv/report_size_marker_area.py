@@ -8,7 +8,7 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import rgb2gray_hsv
 from plantcv.plantcv import find_objects
-from plantcv.plantcv import binary_threshold
+from plantcv.plantcv.threshold import binary as binary_threshold
 from plantcv.plantcv import roi_objects
 from plantcv.plantcv import object_composition
 from plantcv.plantcv import apply_mask

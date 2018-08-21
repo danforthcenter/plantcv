@@ -63,13 +63,14 @@ downstream image processing steps like thresholding to be the same between image
 #####Object Segmentation Approaches
 
 *  Thresholding method (auto or manual) - A single channel of an image is selected for either 
-[binary thresholding](binary_threshold.md) or auto thresholding ([adaptive](adaptive_threshold.md), or 
-[triangle](triangle_threshold.md)). For a color image, selecting a channel of an image for thresholding likely involves 
-conversion from RGB to [HSV](rgb2hsv.md) or [LAB](rgb2lab.md) colorspace, then selecting Hue, Saturation, Value, 
-Lightness, Green-Magenta, or Blue-Yellow channels. It's best to select a channel that maximizes contrast between the 
-target object and the background. When thresholding an image to segment a target object, it may not be possible to 
-isolate just the target object. Multiple thresholding steps on various channels may be necessary as well as downstream
-noise reduction steps. For an example of this approach see the [VIS Image Pipeline](vis_tutorial.md). 
+[binary thresholding](binary_threshold.md) or auto thresholding ([Gaussian](gaussian_threshold.md), 
+[mean](mean_threshold.md), [Otsu](otsu_threshold.md), or [triangle](triangle_threshold.md)). For a color image, 
+selecting a channel of an image for thresholding likely involves conversion from RGB to [HSV](rgb2hsv.md) or 
+[LAB](rgb2lab.md) colorspace, then selecting Hue, Saturation, Value, Lightness, Green-Magenta, or Blue-Yellow channels. 
+It's best to select a channel that maximizes contrast between the target object and the background. When thresholding 
+an image to segment a target object, it may not be possible to isolate just the target object. Multiple thresholding 
+steps on various channels may be necessary as well as downstream noise reduction steps. For an example of this approach 
+see the [VIS Image Pipeline](vis_tutorial.md). 
 
 *  Background subtraction method - This approach can be used if there are 'null' images (images with everything but the 
 object in them). The null image can be a single image, or an averaged background image. For more information on 

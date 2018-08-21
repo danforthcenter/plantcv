@@ -109,7 +109,7 @@ Tip: This step is often one that needs to be adjusted depending on the lighting 
 
 ```python
     # Threshold the Saturation image
-    s_thresh = pcv.binary_threshold(s, 85, 255, 'light')
+    s_thresh = pcv.threshold.binary(s, 85, 255, 'light')
 ```
 
 **Figure 3.** Thresholded saturation channel image (Figure 2). Remaining objects are in white.
@@ -140,8 +140,8 @@ This image is again thresholded and there is an optional fill step that wasn't n
     b = pcv.rgb2gray_lab(img, 'b')
     
     # Threshold the blue image
-    b_thresh = pcv.binary_threshold(b, 160, 255, 'light')
-    b_cnt = pcv.binary_threshold(b, 160, 255, 'light')
+    b_thresh = pcv.threshold.binary(b, 160, 255, 'light')
+    b_cnt = pcv.threshold.binary(b, 160, 255, 'light')
     
     # Fill small objects
     b_fill = pcv.fill(b_thresh, b_cnt, 10)
@@ -188,9 +188,9 @@ The resulting binary image is used to mask the masked image from Figure 7.
     masked_b = pcv.rgb2gray_lab(masked, 'b')
     
     # Threshold the green-magenta and blue images
-    maskeda_thresh = pcv.binary_threshold(masked_a, 115, 255, 'dark')
-    maskeda_thresh1 = pcv.binary_threshold(masked_a, 135, 255, 'light')
-    maskedb_thresh = pcv.binary_threshold(masked_b, 128, 255, 'light')
+    maskeda_thresh = pcv.threshold.binary(masked_a, 115, 255, 'dark')
+    maskeda_thresh1 = pcv.threshold.binary(masked_a, 135, 255, 'light')
+    maskedb_thresh = pcv.threshold.binary(masked_b, 128, 255, 'light')
     
     # Join the thresholded saturation and blue-yellow images (OR)
     ab1 = pcv.logical_or(maskeda_thresh, maskedb_thresh)

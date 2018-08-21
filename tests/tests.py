@@ -128,50 +128,6 @@ def test_plantcv_acute_vertex_bad_obj():
     assert all([i == j] for i, j in zip(result, [0, ("NA", "NA")]))
 
 
-def test_plantcv_adaptive_threshold():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_adaptive_threshold")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    # Read in test data
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    # Test with threshold type = "mean"
-    pcv.params.debug = None
-    _ = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="mean", object_type="light")
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="gaussian", object_type="light")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="gaussian", object_type="light")
-    # Test with debug = None
-    pcv.params.debug = None
-    binary_img = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="gaussian", object_type="light")
-    # Assert that the output image has the dimensions of the input image
-    if all([i == j] for i, j in zip(np.shape(binary_img), TEST_GRAY_DIM)):
-        # Assert that the image is binary
-        if all([i == j] for i, j in zip(np.unique(binary_img), [0, 255])):
-            assert 1
-        else:
-            assert 0
-    else:
-        assert 0
-
-
-def test_plantcv_adaptive_threshold_incorrect_threshold_type():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    with pytest.raises(RuntimeError):
-        pcv.params.debug = None
-        _ = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="gauss", object_type="light")
-
-
-def test_plantcv_adaptive_threshold_incorrect_object_type():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    with pytest.raises(RuntimeError):
-        pcv.params.debug = None
-        _ = pcv.adaptive_threshold(img=img, maxValue=255, thres_type="mean", object_type="lite")
-
-
 def test_plantcv_analyze_bound_horizontal():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_bound_horizontal")
@@ -430,9 +386,9 @@ def test_plantcv_analyze_object_longest_axis_2d():
     img[0:5, 0:5, 0] = 255
     mask = img[:, :, 0]
     obj_contour = np.array([[[45,  1]], [[45,  2]], [[45,  3]], [[45,  4]], [[46,  4]], [[47,  4]], [[48,  4]],
-                            [[48,  3]], [[48,  2]], [[48,  1]], [[47,  1]], [[46,  1]], [[ 1,  1]], [[ 1,  2]],
-                            [[ 1,  3]], [[ 1,  4]], [[ 2,  4]], [[ 3,  4]], [[ 4,  4]], [[ 4,  3]], [[ 4,  2]],
-                            [[ 4,  1]], [[ 3,  1]], [[ 2,  1]]], dtype=np.int32)
+                            [[48,  3]], [[48,  2]], [[48,  1]], [[47,  1]], [[46,  1]], [[1,  1]], [[1,  2]],
+                            [[1,  3]], [[1,  4]], [[2,  4]], [[3,  4]], [[4,  4]], [[4,  3]], [[4,  2]],
+                            [[4,  1]], [[3,  1]], [[2,  1]]], dtype=np.int32)
     # Test with debug = None
     pcv.params.debug = None
     obj_header, obj_data, obj_images = pcv.analyze_object(img=img, obj=obj_contour, mask=mask, filename=False)
@@ -557,43 +513,6 @@ def test_plantcv_auto_crop_grayscale_input():
     x, y = np.shape(gray_img)
     x1, y1 = np.shape(cropped)
     assert x > x1
-
-
-def test_plantcv_binary_threshold():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_binary_threshold")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    # Read in test data
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    # Test with object type = dark
-    pcv.params.debug = None
-    _ = pcv.binary_threshold(img=img, threshold=25, maxValue=255, object_type="dark")
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.binary_threshold(img=img, threshold=25, maxValue=255, object_type="light")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.binary_threshold(img=img, threshold=25, maxValue=255, object_type="light")
-    # Test with debug = None
-    pcv.params.debug = None
-    binary_img = pcv.binary_threshold(img=img, threshold=25, maxValue=255, object_type="light")
-    # Assert that the output image has the dimensions of the input image
-    if all([i == j] for i, j in zip(np.shape(binary_img), TEST_GRAY_DIM)):
-        # Assert that the image is binary
-        if all([i == j] for i, j in zip(np.unique(binary_img), [0, 255])):
-            assert 1
-        else:
-            assert 0
-    else:
-        assert 0
-
-
-def test_plantcv_binary_threshold_incorrect_object_type():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    with pytest.raises(RuntimeError):
-        pcv.params.debug = None
-        _ = pcv.binary_threshold(img=img, threshold=25, maxValue=255, object_type="lite")
 
 
 def test_plantcv_cluster_contours():
@@ -1171,28 +1090,6 @@ def test_plantcv_object_composition():
     assert contour_shape[1] == 1
 
 
-def test_plantcv_otsu_threshold():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_otsu_threshold")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    # Read in test data
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_GREENMAG), -1)
-    # Test with object set to light
-    pcv.params.debug = None
-    _ = pcv.otsu_auto_threshold(img=img, maxValue=255, object_type="light")
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.otsu_auto_threshold(img=img, maxValue=255, object_type='dark')
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.otsu_auto_threshold(img=img, maxValue=255, object_type='dark')
-    # Test with debug = None
-    pcv.params.debug = None
-    threshold_otsu = pcv.otsu_auto_threshold(img=img, maxValue=255, object_type='dark')
-    assert np.max(threshold_otsu) == 255
-
-
 def test_plantcv_output_mask():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_output_mask")
@@ -1658,27 +1555,6 @@ def test_plantcv_sobel_filter():
     sobel_img = pcv.sobel_filter(img=img, dx=1, dy=0, k=1)
     # Assert that the output image has the dimensions of the input image
     assert all([i == j] for i, j in zip(np.shape(sobel_img), TEST_GRAY_DIM))
-
-
-def test_plantcv_triangle_threshold():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_triangle_threshold")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    # Read in test data
-    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.triangle_auto_threshold(img=img1, maxvalue=255, object_type="light", xstep=10)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.triangle_auto_threshold(img=img1, maxvalue=255, object_type="light", xstep=10)
-    # Test with debug = None
-    pcv.params.debug = None
-    thresholded = pcv.triangle_auto_threshold(img=img1, maxvalue=255, object_type="light", xstep=10)
-    thresholdedavg = np.average(thresholded)
-    imgavg = np.average(img1)
-    assert thresholdedavg > imgavg
 
 
 def test_plantcv_watershed_segmentation():
@@ -2378,6 +2254,192 @@ def test_plantcv_transform_correct_color_output_dne():
            os.path.exists(os.path.join(output_path, "target_matrix.npz")) is True and \
            os.path.exists(os.path.join(output_path, "source_matrix.npz")) is True and \
            os.path.exists(os.path.join(output_path, "transformation_matrix.npz")) is True
+
+
+
+# ##############################
+# Tests for the threshold subpackage
+# ##############################
+def test_plantcv_threshold_binary():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_binary")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    # Test with object type = dark
+    pcv.params.debug = None
+    _ = pcv.threshold.binary(gray_img=gray_img, threshold=25, max_value=255, object_type="dark")
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.threshold.binary(gray_img=gray_img, threshold=25, max_value=255, object_type="light")
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    _ = pcv.threshold.binary(gray_img=gray_img, threshold=25, max_value=255, object_type="light")
+    # Test with debug = None
+    pcv.params.debug = None
+    binary_img = pcv.threshold.binary(gray_img=gray_img, threshold=25, max_value=255, object_type="light")
+    # Assert that the output image has the dimensions of the input image
+    if all([i == j] for i, j in zip(np.shape(binary_img), TEST_GRAY_DIM)):
+        # Assert that the image is binary
+        if all([i == j] for i, j in zip(np.unique(binary_img), [0, 255])):
+            assert 1
+        else:
+            assert 0
+    else:
+        assert 0
+
+
+def test_plantcv_threshold_binary_incorrect_object_type():
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    with pytest.raises(RuntimeError):
+        pcv.params.debug = None
+        _ = pcv.threshold.binary(gray_img=gray_img, threshold=25, max_value=255, object_type="lite")
+
+
+def test_plantcv_threshold_gaussian():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_gaussian")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    # Test with object type = dark
+    pcv.params.debug = None
+    _ = pcv.threshold.gaussian(gray_img=gray_img, max_value=255, object_type="dark")
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.threshold.gaussian(gray_img=gray_img, max_value=255, object_type="light")
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    _ = pcv.threshold.gaussian(gray_img=gray_img, max_value=255, object_type="light")
+    # Test with debug = None
+    pcv.params.debug = None
+    binary_img = pcv.threshold.gaussian(gray_img=gray_img, max_value=255, object_type="light")
+    # Assert that the output image has the dimensions of the input image
+    if all([i == j] for i, j in zip(np.shape(binary_img), TEST_GRAY_DIM)):
+        # Assert that the image is binary
+        if all([i == j] for i, j in zip(np.unique(binary_img), [0, 255])):
+            assert 1
+        else:
+            assert 0
+    else:
+        assert 0
+
+
+def test_plantcv_threshold_gaussian_incorrect_object_type():
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    with pytest.raises(RuntimeError):
+        pcv.params.debug = None
+        _ = pcv.threshold.gaussian(gray_img=gray_img, max_value=255, object_type="lite")
+
+
+def test_plantcv_threshold_mean():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_mean")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    # Test with object type = dark
+    pcv.params.debug = None
+    _ = pcv.threshold.mean(gray_img=gray_img, max_value=255, object_type="dark")
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.threshold.mean(gray_img=gray_img, max_value=255, object_type="light")
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    _ = pcv.threshold.mean(gray_img=gray_img, max_value=255, object_type="light")
+    # Test with debug = None
+    pcv.params.debug = None
+    binary_img = pcv.threshold.mean(gray_img=gray_img, max_value=255, object_type="light")
+    # Assert that the output image has the dimensions of the input image
+    if all([i == j] for i, j in zip(np.shape(binary_img), TEST_GRAY_DIM)):
+        # Assert that the image is binary
+        if all([i == j] for i, j in zip(np.unique(binary_img), [0, 255])):
+            assert 1
+        else:
+            assert 0
+    else:
+        assert 0
+
+
+def test_plantcv_threshold_mean_incorrect_object_type():
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    with pytest.raises(RuntimeError):
+        pcv.params.debug = None
+        _ = pcv.threshold.mean(gray_img=gray_img, max_value=255, object_type="lite")
+
+
+def test_plantcv_threshold_otsu():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_otsu")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_GREENMAG), -1)
+    # Test with object set to light
+    pcv.params.debug = None
+    _ = pcv.threshold.otsu(gray_img=gray_img, max_value=255, object_type="light")
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.threshold.otsu(gray_img=gray_img, max_value=255, object_type='dark')
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    _ = pcv.threshold.otsu(gray_img=gray_img, max_value=255, object_type='dark')
+    # Test with debug = None
+    pcv.params.debug = None
+    binary_img = pcv.threshold.otsu(gray_img=gray_img, max_value=255, object_type='dark')
+    # Assert that the output image has the dimensions of the input image
+    if all([i == j] for i, j in zip(np.shape(binary_img), TEST_GRAY_DIM)):
+        # Assert that the image is binary
+        if all([i == j] for i, j in zip(np.unique(binary_img), [0, 255])):
+            assert 1
+        else:
+            assert 0
+    else:
+        assert 0
+
+
+def test_plantcv_threshold_otsu_incorrect_object_type():
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    with pytest.raises(RuntimeError):
+        pcv.params.debug = None
+        _ = pcv.threshold.otsu(gray_img=gray_img, max_value=255, object_type="lite")
+
+
+def test_plantcv_threshold_triangle():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_triangle")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.threshold.triangle(gray_img=gray_img, max_value=255, object_type="light", xstep=10)
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    _ = pcv.threshold.triangle(gray_img=gray_img, max_value=255, object_type="light", xstep=10)
+    # Test with debug = None
+    pcv.params.debug = None
+    binary_img = pcv.threshold.triangle(gray_img=gray_img, max_value=255, object_type="light", xstep=10)
+    # Assert that the output image has the dimensions of the input image
+    if all([i == j] for i, j in zip(np.shape(binary_img), TEST_GRAY_DIM)):
+        # Assert that the image is binary
+        if all([i == j] for i, j in zip(np.unique(binary_img), [0, 255])):
+            assert 1
+        else:
+            assert 0
+    else:
+        assert 0
+
+
+def test_plantcv_threshold_triangle_incorrect_object_type():
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    with pytest.raises(RuntimeError):
+        pcv.params.debug = None
+        _ = pcv.threshold.triangle(gray_img=gray_img, max_value=255, object_type="lite", xstep=10)
 
 
 # ##############################

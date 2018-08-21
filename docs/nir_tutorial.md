@@ -188,7 +188,7 @@ Combining both Sobel filters images through addition high-lights these regions w
         pcv.plot_hist(edge_shrp_img, 'hist_edge_shrp_img')
     
     # Perform thresholding to generate a binary image
-    tr_es_img = pcv.binary_threshold(edge_shrp_img, 145, 255, 'dark')
+    tr_es_img = pcv.threshold.binary(edge_shrp_img, 145, 255, 'dark')
 ```
 
 **Figure 5.** From top to bottom: Median blur; Sobel filtered image after application of a median blur filter and inversion;

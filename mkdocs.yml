@@ -29,10 +29,6 @@ pages:
     - 'Exporting Data': db-exporter.md
     - 'Color Correction Pipeline': transform_color_correction_tutorial.md
   - 'Package Plantcv':
-    - 'Adaptive Threshold':
-      - 'Adaptive Threshold': adaptive_threshold.md
-      - 'Otsu Auto Threshold': otsu_threshold.md
-      - 'Triangle Auto Threshold': triangle_threshold.md
     - 'Analyze color': analyze_color.md
     - 'Analyze NIR': analyze_NIR_intensity.md
     - 'Analyze PSII': fluor_fvfm.md
@@ -40,7 +36,6 @@ pages:
     - 'Apply Mask': apply_mask.md
     - 'Auto Crop': auto_crop.md
     - 'Background Subtraction': background_subtraction.md
-    - 'Binary threshold': binary_threshold.md
     - 'Boundary Line Tool':
       -  'Horizontal Boundary Tool': analyze_bound_horizontal.md
       -  'Vertical Boundary Tool': analyze_bound_vertical.md
@@ -102,6 +97,12 @@ pages:
       - 'Filter Objects by ROI': roi_objects.md
     - 'Rotate': rotate2.md
     - 'Shift Image': shift.md
+    - 'Thresholding Methods':
+      - 'Binary threshold': binary_threshold.md
+      - 'Gaussian Adaptive Threshold': gaussian_threshold.md
+      - 'Mean Adaptive Threshold': mean_threshold.md
+      - 'Otsu Auto Threshold': otsu_threshold.md
+      - 'Triangle Auto Threshold': triangle_threshold.md
     - 'Watershed Segmentation': watershed.md
   - 'Package plantcv.learn':
     - 'Naive Bayes': naive_bayes.md

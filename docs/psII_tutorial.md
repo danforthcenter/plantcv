@@ -106,7 +106,7 @@ The [apply mask function](apply_mask.md) is then used to apply the track mask to
 ```python
     # Mask pesky track autofluor
     track1 = pcv.rgb2gray_hsv(track, 'v')
-    track_thresh = pcv.binary_threshold(track1, 0, 255, 'light')
+    track_thresh = pcv.threshold.binary(track1, 0, 255, 'light')
     track_inv = pcv.invert(track_thresh)
     track_masked = pcv.apply_mask(mask1, track_inv, 'black')
 ```
@@ -122,7 +122,7 @@ The resulting image is then thresholded with a [binary threshold](binary_thresho
 
 ```python
     # Threshold the image
-    fmax_thresh = pcv.binary_threshold(track_masked, 20, 255, 'light')
+    fmax_thresh = pcv.threshold.binary(track_masked, 20, 255, 'light')
 ```
 
 **Figure 3.** Binary threshold on masked Fmax image.

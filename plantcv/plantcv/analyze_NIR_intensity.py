@@ -6,7 +6,7 @@ import numpy as np
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import plot_colorbar
-from plantcv.plantcv import binary_threshold
+from plantcv.plantcv.threshold import binary as binary_threshold
 from plantcv.plantcv import apply_mask
 from plantcv.plantcv import params
 
