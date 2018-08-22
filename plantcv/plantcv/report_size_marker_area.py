@@ -73,7 +73,7 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
             # Convert the masked image to hue, saturation, or value
             marker_hsv = rgb2gray_hsv(img=masked, channel=thresh_channel)
             # Threshold the HSV image
-            marker_bin = binary_threshold(img=marker_hsv, threshold=thresh, maxValue=255, object_type=objcolor)
+            marker_bin = binary_threshold(gray_img=marker_hsv, threshold=thresh, max_value=255, object_type=objcolor)
             # Identify contours in the masked image
             contours, hierarchy = find_objects(img=ref_img, mask=marker_bin)
             # Filter marker contours using the input ROI
