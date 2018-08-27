@@ -12,9 +12,9 @@ def analyze_bound_vertical(img, obj, mask, line_position, filename=False):
     """User-input boundary line tool
 
     Inputs:
-    img             = image
+    img             = An RGB or grayscale image to plot the ROI on in debug mode.
     obj             = single or grouped contour object
-    mask            = mask made from selected contours
+    mask            = Binary mask made from selected contours
     shape_header    = pass shape header data to function
     shape_data      = pass shape data so that analyze_bound data can be appended to it
     line_position   = position of boundry line (a value of 0 would draw the line through the left side of the image)
@@ -25,9 +25,9 @@ def analyze_bound_vertical(img, obj, mask, line_position, filename=False):
     bound_data      = boundary data table
     analysis_images = output image filenames
 
-    :param img: numpy array
+    :param img: numpy.ndarray
     :param obj: list
-    :param mask: numpy array
+    :param mask: numpy.ndarray
     :param line_position: int
     :param filename: str
     :return bound_header: tuple
