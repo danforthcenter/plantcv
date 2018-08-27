@@ -9,6 +9,7 @@ from plantcv.plantcv import fatal_error
 from plantcv.plantcv import plot_colorbar
 from plantcv.plantcv import params
 
+
 def _pseudocolored_image(histogram, bins, img, mask, background, channel, filename, analysis_images):
     """Pseudocolor image.
 
@@ -80,8 +81,9 @@ def _pseudocolored_image(histogram, bins, img, mask, background, channel, filena
         if params.debug == 'print':
             for key in output_imgs:
                 if output_imgs[key]["img"] is not None:
-                    print_image(output_imgs[key]["img"], os.path.join(params.debug_outdir, str(params.device) + "_" + output_imgs[key]["background"] +
-                                                          '_pseudocolor.jpg'))
+                    print_image(output_imgs[key]["img"], os.path.join(params.debug_outdir, str(params.device) +
+                                                                      "_" + output_imgs[key]["background"] +
+                                                                      '_pseudocolor.jpg'))
             fig_name = 'VIS_pseudocolor_colorbar_' + str(channel) + '_channel.svg'
             if not os.path.isfile(os.path.join(params.debug_outdir, fig_name)):
                 plot_colorbar(path, fig_name, bins)
@@ -93,13 +95,13 @@ def _pseudocolored_image(histogram, bins, img, mask, background, channel, filena
     return analysis_images
 
 
-def analyze_color(img, mask, bins, hist_plot_type=None, pseudo_channel='v',
+def analyze_color(rgb_img, mask, bins, hist_plot_type=None, pseudo_channel='v',
                   pseudo_bkg='img', filename=False):
     """Analyze the color properties of an image object
 
     Inputs:
-    img              = image
-    mask             = mask made from selected contours
+    rgb_img          = RGB image data
+    mask             = Binary mask made from selected contours
     hist_plot_type   = 'None', 'all', 'rgb','lab' or 'hsv'
     color_slice_type = 'None', 'rgb', 'hsv' or 'lab'
     pseudo_channel   = 'None', 'l', 'm' (green-magenta), 'y' (blue-yellow), h','s', or 'v', creates pseduocolored image
@@ -112,13 +114,12 @@ def analyze_color(img, mask, bins, hist_plot_type=None, pseudo_channel='v',
     hist_data        = color histogram data table values
     analysis_images  = list of output images
 
-    :param img: numpy array
-    :param mask: numpy array
+    :param rgb_img: numpy.ndarray
+    :param mask: numpy.ndarray
     :param bins: int
     :param hist_plot_type: str
     :param pseudo_channel: str
     :param pseudo_bkg: str
-    :param resolution: int
     :param filename: str
     :return hist_header: list
     :return hist_data: list
@@ -126,7 +127,7 @@ def analyze_color(img, mask, bins, hist_plot_type=None, pseudo_channel='v',
     """
     params.device += 1
 
-    masked = cv2.bitwise_and(img, img, mask=mask)
+    masked = cv2.bitwise_and(rgb_img, rgb_img, mask=mask)
     b, g, r = cv2.split(masked)
     lab = cv2.cvtColor(masked, cv2.COLOR_BGR2LAB)
     l, m, y = cv2.split(lab)
@@ -231,7 +232,7 @@ def analyze_color(img, mask, bins, hist_plot_type=None, pseudo_channel='v',
     analysis_images = []
 
     if pseudo_channel is not None:
-        analysis_images = _pseudocolored_image(norm_channels[pseudo_channel], bins, img, mask, pseudo_bkg,
+        analysis_images = _pseudocolored_image(norm_channels[pseudo_channel], bins, rgb_img, mask, pseudo_bkg,
                                                pseudo_channel, filename, analysis_images)
 
     if hist_plot_type is not None and filename:
