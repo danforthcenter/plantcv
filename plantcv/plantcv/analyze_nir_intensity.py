@@ -11,14 +11,13 @@ from plantcv.plantcv import apply_mask
 from plantcv.plantcv import params
 
 
-def analyze_NIR_intensity(img, rgbimg, mask, bins, histplot=False, filename=False):
+def analyze_nir_intensity(gray_img, mask, bins, histplot=False, filename=False):
     """This function calculates the intensity of each pixel associated with the plant and writes the values out to
        a file. It can also print out a histogram plot of pixel intensity and a pseudocolor image of the plant.
 
     Inputs:
-    img          = input image original NIR image
-    rgbimg      = RGB NIR image
-    mask         = mask made from selected contours
+    gray_img     = 8- or 16-bit grayscale image data
+    mask         = Binary mask made from selected contours
     bins         = number of classes to divide spectrum into
     histplot     = if True plots histogram of intensity values
     filename     = False or image name. If defined print image
@@ -28,8 +27,7 @@ def analyze_NIR_intensity(img, rgbimg, mask, bins, histplot=False, filename=Fals
     hist_data    = NIR histogram data table values
     analysis_img = output image
 
-    :param img: numpy array
-    :param rgbimg: numpy array
+    :param gray_img: numpy array
     :param mask: numpy array
     :param bins: int
     :param histplot: bool
@@ -38,19 +36,21 @@ def analyze_NIR_intensity(img, rgbimg, mask, bins, histplot=False, filename=Fals
     :return hist_data: list
     :return analysis_img: str
     """
-
     params.device += 1
 
     # apply plant shaped mask to image
     mask1 = binary_threshold(mask, 0, 255, 'light')
     mask1 = (mask1 / 255)
-    masked = np.multiply(img, mask1)
+    masked = np.multiply(gray_img, mask1)
 
     # calculate histogram
-    if img.dtype == 'uint16':
+    if gray_img.dtype == 'uint16':
         maxval = 65536
     else:
         maxval = 256
+
+    # Make a pseudo-RGB image
+    rgbimg = cv2.cvtColor(gray_img, cv2.COLOR_GRAY2BGR)
 
     hist_nir, hist_bins = np.histogram(masked, bins, (1, maxval), False, None, None)
 

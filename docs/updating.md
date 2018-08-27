@@ -137,10 +137,10 @@ pages for more details on the input and output variable types.
     * bin_img = **plantcv.threshold.gaussian**(*gray_img, max_value, object_type="light"*)
     * bin_img = **plantcv.threshold.mean**(*gray_img, max_value, object_type="light"*)
 
-#### plantcv.analyze_NIR_intensity
+#### plantcv.analyze_nir_intensity
 
 * pre v3.0dev2: device, hist_header, hist_data, analysis_img = **plantcv.analyze_NIR_intensity**(*img, rgbimg, mask, bins, device, histplot=False, debug=None, filename=False*)
-* post v3.0dev2: hist_header, hist_data, analysis_img = **plantcv.analyze_NIR_intensity**(*img, rgbimg, mask, bins, histplot=False, filename=False*)
+* post v3.0dev2: hist_header, hist_data, analysis_img = **plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False, filename=False*)
 
 #### plantcv.analyze_bound
 

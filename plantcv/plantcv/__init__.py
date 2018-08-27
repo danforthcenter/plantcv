@@ -52,7 +52,7 @@ from plantcv.plantcv.analyze_object import analyze_object
 from plantcv.plantcv.analyze_bound_horizontal import analyze_bound_horizontal
 from plantcv.plantcv.analyze_bound_vertical import analyze_bound_vertical
 from plantcv.plantcv.analyze_color import analyze_color
-from plantcv.plantcv.analyze_NIR_intensity import analyze_NIR_intensity
+from plantcv.plantcv.analyze_nir_intensity import analyze_nir_intensity
 from plantcv.plantcv.fluor_fvfm import fluor_fvfm
 from plantcv.plantcv.print_results import print_results
 from plantcv.plantcv.resize import resize
@@ -88,7 +88,7 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'plot_co
            'image_subtract', 'erode', 'dilate', 'watershed', 'rectangle_mask', 'rgb2gray_hsv', 'rgb2gray_lab',
            'rgb2gray', 'median_blur', 'fill', 'invert', 'logical_and', 'logical_or', 'logical_xor',
            'find_objects', 'roi_objects', 'transform','object_composition', 'analyze_object',
-           'analyze_bound_horizontal', 'analyze_bound_vertical', 'analyze_color', 'analyze_NIR_intensity',
+           'analyze_bound_horizontal', 'analyze_bound_vertical', 'analyze_color', 'analyze_nir_intensity',
            'fluor_fvfm', 'print_results', 'resize', 'flip', 'crop_position_mask', 'get_nir', 'report_size_marker_area',
            'white_balance', 'acute_vertex', 'scale_features', 'landmark_reference_pt_dist',
            'x_axis_pseudolandmarks', 'y_axis_pseudolandmarks', 'gaussian_blur', 'cluster_contours',

@@ -314,15 +314,15 @@ def test_plantcv_analyze_nir():
     # Test with debug = "print"
     pcv.params.debug = "print"
     outfile = os.path.join(cache_dir, TEST_INPUT_COLOR)
-    _ = pcv.analyze_NIR_intensity(img=img, rgbimg=img, mask=mask, bins=256, histplot=True, filename=outfile)
+    _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=True, filename=outfile)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.analyze_NIR_intensity(img=img, rgbimg=img, mask=mask, bins=256, histplot=False, filename=False)
+    _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=False, filename=False)
     # Test with debug = "plot"
-    _ = pcv.analyze_NIR_intensity(img=img, rgbimg=img, mask=mask, bins=256, histplot=True, filename=False)
+    _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=True, filename=False)
     # Test with debug = None
     pcv.params.debug = None
-    hist_header, hist_data, h_norm = pcv.analyze_NIR_intensity(img=img, rgbimg=img, mask=mask, bins=256,
+    hist_header, hist_data, h_norm = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256,
                                                                histplot=False, filename=False)
     assert np.sum(hist_data[3]) == 63632
 
