@@ -2,12 +2,12 @@
 
 Extract color data of objects and produce pseudocolored images, can extract data for RGB (Red, Green, Blue), HSV (Hue, Saturation, Value) and LAB (Lightness, Green-Magenta, Blue Yellow) channels.
 
-**plantcv.analyze_color**(*img, mask, bins, hist_plot_type =None, pseudo_channel='v', pseudo_bkg='img', filename=False*)
+**plantcv.analyze_color**(*rgb_img, mask, bins, hist_plot_type =None, pseudo_channel='v', pseudo_bkg='img', filename=False*)
 
 **returns** color channel histogram headers, color channel histogram data, analysis images  
 
 - **Parameters:**  
-    - img - image object (most likely the original), color(RGB)
+    - img - RGB image data
     - mask - binary mask of selected contours
     - bins - number of color bins (0-256), if you would like to bin data, you would alter this number
     - hist_plot_type - 'None', 'all', 'rgb','lab' or 'hsv', this is the data to be printed to an SVG histogram file, however all (every channel) data is still stored to the database.
@@ -45,7 +45,7 @@ pcv.params.debug = "print"
 
 # Analyze Color
     
-color_header, color_data, analysis_images= pcv.analyze_color(img, imagename, mask, 256, None, 'v', 'img', /home/user/analyze_color.png)
+color_header, color_data, analysis_images= pcv.analyze_color(rgb_img, imagename, mask, 256, None, 'v', 'img', /home/user/analyze_color.png)
 ```
 
 **Histograms of (R, G, B), (H, S, V), and (L, A, B) color channels**
