@@ -27,9 +27,9 @@ def background_subtraction(background_image, foreground_image):
     Returns:
     fgmask                 = background subtracted foreground image (mask)
 
-    :param background_image: numpy array
-    :param foreground_image: numpy array
-    :return fgmask: numpy array
+    :param background_image: numpy.ndarray
+    :param foreground_image: numpy.ndarray
+    :return fgmask: numpy.ndarray
     """
 
     params.device += 1
