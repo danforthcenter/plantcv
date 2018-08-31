@@ -12,7 +12,7 @@ def apply_mask(rgb_img, mask, mask_color):
     """Apply white image mask to image, with bitwise AND operator bitwise NOT operator and ADD operator.
 
     Inputs:
-    img        = RGB image data
+    rgb_img    = RGB image data
     mask       = Binary mask image data
     mask_color = 'white' or 'black'
 
