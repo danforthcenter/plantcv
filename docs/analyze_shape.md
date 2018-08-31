@@ -7,7 +7,7 @@ Shape analysis outputs numeric properties for an input object (contour or groupe
 **returns** shape data headers, shape data, image with shape data
 
 - **Parameters:**
-    - img - image object (most likely the original), color(RGB)
+    - img - RGB or grayscale image data for plotting
     - obj - single or grouped contour object
     - filename - False or image name. If defined print image
 - **Context:**

@@ -351,6 +351,23 @@ def test_plantcv_analyze_object():
     assert obj_data[1] != 0
 
 
+def test_plantcv_analyze_object_grayscale_input():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_object_grayscale_input")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
+    obj_contour = contours_npz['arr_0']
+    # max_obj = max(obj_contour, key=len)
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    obj_header, obj_data, obj_images = pcv.analyze_object(img=img, obj=obj_contour, mask=mask, filename=False)
+    assert obj_data[1] != 0
+
+
 def test_plantcv_analyze_object_zero_slope():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_object_zero_slope")

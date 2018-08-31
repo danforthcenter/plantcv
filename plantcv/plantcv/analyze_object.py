@@ -12,9 +12,9 @@ def analyze_object(img, obj, mask, filename=False):
     """Outputs numeric properties for an input object (contour or grouped contours).
 
     Inputs:
-    img             = image object (most likely the original), color(RGB)
+    img             = RGB or grayscale image data for plotting
     obj             = single or grouped contour object
-    mask            = binary image to use as mask for moments analysis
+    mask            = Binary image to use as mask for moments analysis
     filename        = False or image name. If defined print image
 
     Returns:
@@ -22,11 +22,13 @@ def analyze_object(img, obj, mask, filename=False):
     shape_data      = shape data table values
     analysis_images = list of output images
 
-    :param img: numpy array
+    :param img: numpy.ndarray
     :param obj: list
-    :param mask: numpy array
+    :param mask: numpy.ndarray
     :param filename: str
-    :return:
+    :return shape_header: list
+    :return shape_data: list
+    :return analysis_images: list
     """
 
     params.device += 1
@@ -36,6 +38,10 @@ def analyze_object(img, obj, mask, filename=False):
         return None, None, None
 
     ori_img = np.copy(img)
+    # Convert grayscale images to color
+    if len(np.shape(ori_img)) == 2:
+        ori_img = cv2.cvtColor(ori_img, cv2.COLOR_GRAY2BGR)
+
     if len(np.shape(img)) == 3:
         ix, iy, iz = np.shape(img)
     else:
