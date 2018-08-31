@@ -12,7 +12,7 @@ def analyze_bound_horizontal(img, obj, mask, line_position, filename=False):
     """User-input boundary line tool
 
     Inputs:
-    img             = An RGB or grayscale image to plot the ROI on in debug mode.
+    img             = RGB or grayscale image data for plotting
     obj             = single or grouped contour object
     mask            = Binary mask made from selected contours
     line_position   = position of boundry line (a value of 0 would draw the line through the bottom of the image)

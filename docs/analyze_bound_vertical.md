@@ -9,7 +9,7 @@ best if the pot size/position of the plant remains relatively constant.
 **returns** boundary headers, boundary data, image with boundary data
 
 - **Parameters:**
-    - img - image object (most likely the original), color(RGB)
+    - img - RGB or grayscale image data for plotting
     - obj - single or grouped contour object
     - mask - binary mask of selected contours
     - line_position = position of boundary line (a value of 0 would draw the line through the left of the image)
