@@ -7,7 +7,7 @@ Crops image to an object and allows user to specify image padding (if desired)
 **returns** image after resizing
 
 - **Parameters:**
-    - img1 - Input image
+    - img1 - RGB or grayscale image data
     - object - contour of target object 
     - padding_x - padding in the x direction
     - padding_y - padding in the y direction

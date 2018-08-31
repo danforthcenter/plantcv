@@ -12,8 +12,7 @@ def auto_crop(img, objects, padding_x=0, padding_y=0, color='black'):
     """Resize image.
 
     Inputs:
-    device    = device counter
-    img       = image
+    img       = RGB or grayscale image data
     objects   = contours
     padding_x = padding in the x direction
     padding_y = padding in the y direction
@@ -22,12 +21,12 @@ def auto_crop(img, objects, padding_x=0, padding_y=0, color='black'):
     Returns:
     cropped   = cropped image
 
-    :param img: numpy array
+    :param img: numpy.ndarray
     :param objects: list
     :param padding_x: int
     :param padding_y: int
     :param color: str
-    :return cropped: numpy array
+    :return cropped: numpy.ndarray
     """
 
     params.device += 1
