@@ -192,7 +192,7 @@ pages for more details on the input and output variable types.
 #### plantcv.cluster_contour_splitimg
 
 * pre v3.0dev2: device, output_path = **plantcv.cluster_contour_splitimg**(*device, img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None, filenames=None, debug=None*)
-* post v3.0dev2: output_path = **plantcv.cluster_contour_splitimg**(*img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None, filenames=None*)
+* post v3.0dev2: output_path = **plantcv.cluster_contour_splitimg**(*rgb_img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None, filenames=None*)
 
 #### plantcv.cluster_contours
 

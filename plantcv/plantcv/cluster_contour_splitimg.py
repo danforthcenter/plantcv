@@ -9,7 +9,7 @@ from plantcv.plantcv import apply_mask
 from plantcv.plantcv import params
 
 
-def cluster_contour_splitimg(img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None,
+def cluster_contour_splitimg(rgb_img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None,
                              filenames=None):
 
     """
@@ -17,7 +17,7 @@ def cluster_contour_splitimg(img, grouped_contour_indexes, contours, hierarchy, 
     the number of inputted filenames matches the number of clustered contours.
 
     Inputs:
-    img                     = ideally a masked RGB image.
+    rgb_img                 = RGB image data
     grouped_contour_indexes = output of cluster_contours, indexes of clusters of contours
     contours                = contours to cluster, output of cluster_contours
     hierarchy               = hierarchy of contours, output of find_objects
@@ -30,10 +30,10 @@ def cluster_contour_splitimg(img, grouped_contour_indexes, contours, hierarchy, 
     Returns:
     output_path             = array of paths to output images
 
-    :param img: ndarray
+    :param rgb_img: numpy.ndarray
     :param grouped_contour_indexes: list
     :param contours: list
-    :param hierarchy: ndarray
+    :param hierarchy: numpy.ndarray
     :param outdir: str
     :param file: str
     :param filenames: str
@@ -123,9 +123,9 @@ def cluster_contour_splitimg(img, grouped_contour_indexes, contours, hierarchy, 
         else:
             savename = os.path.join(".", group_names[y])
             savename1 = os.path.join(".", group_names1[y])
-        iy, ix, iz = np.shape(img)
+        iy, ix, iz = np.shape(rgb_img)
         mask = np.zeros((iy, ix, 3), dtype=np.uint8)
-        masked_img = np.copy(img)
+        masked_img = np.copy(rgb_img)
         for a in x:
             if hierarchy[0][a][3] > -1:
                 cv2.drawContours(mask, contours, a, (0, 0, 0), -1, lineType=8, hierarchy=hierarchy)
@@ -148,11 +148,7 @@ def cluster_contour_splitimg(img, grouped_contour_indexes, contours, hierarchy, 
                 print_image(masked1, os.path.join(params.debug_outdir, str(params.device) + '_clusters.png'))
                 print_image(mask_binary, os.path.join(params.debug_outdir, str(params.device) + '_clusters_mask.png'))
             elif params.debug == 'plot':
-                if len(np.shape(masked1)) == 3:
-                    plot_image(masked1)
-                    plot_image(mask_binary, cmap='gray')
-                else:
-                    plot_image(masked1, cmap='gray')
-                    plot_image(mask_binary, cmap='gray')
+                plot_image(masked1)
+                plot_image(mask_binary, cmap='gray')
 
     return output_path
