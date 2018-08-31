@@ -2,13 +2,13 @@
 
 Apply binary mask to an image.
 
-**plantcv.apply_mask**(*img, mask, mask_color*)
+**plantcv.apply_mask**(*rgb_img, mask, mask_color*)
 
 **returns** masked image
 
 - **Parameters:**
-    - img - image object to be masked
-    - mask - binary image object (black background with white object)
+    - rgb_img - RGB image data
+    - mask - Binary mask image data
     - mask_color - 'white' or 'black'
 - **Context:**
     - Apply a binary image mask over a grayscale or RGB image. Useful for seperating plant and background materials.

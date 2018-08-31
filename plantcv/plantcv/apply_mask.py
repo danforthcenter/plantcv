@@ -8,27 +8,27 @@ from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 
 
-def apply_mask(img, mask, mask_color):
+def apply_mask(rgb_img, mask, mask_color):
     """Apply white image mask to image, with bitwise AND operator bitwise NOT operator and ADD operator.
 
     Inputs:
-    img        = image object, color(RGB)
-    mask       = image object, binary (black background with white object)
-    mask_color = white or black
+    img        = RGB image data
+    mask       = Binary mask image data
+    mask_color = 'white' or 'black'
 
     Returns:
-    masked_img = masked image
+    masked_img = masked image data
 
-    :param img: numpy array
-    :param mask: numpy array
+    :param rgb_img: numpy.ndarray
+    :param mask: numpy.ndarray
     :param mask_color: str
-    :return masked_img: numpy array
+    :return masked_img: numpy.ndarray
     """
 
     params.device += 1
     if mask_color == 'white':
         # Mask image
-        masked_img = cv2.bitwise_and(img, img, mask=mask)
+        masked_img = cv2.bitwise_and(rgb_img, rgb_img, mask=mask)
         # Create inverted mask for background
         mask_inv = cv2.bitwise_not(mask)
         # Invert the background so that it is white, but apply mask_inv so you don't white out the plant
@@ -41,7 +41,7 @@ def apply_mask(img, mask, mask_color):
             plot_image(white_masked)
         return white_masked
     elif mask_color == 'black':
-        masked_img = cv2.bitwise_and(img, img, mask=mask)
+        masked_img = cv2.bitwise_and(rgb_img, rgb_img, mask=mask)
         if params.debug == 'print':
             print_image(masked_img, os.path.join(params.debug_outdir, str(params.device) + '_bmasked.png'))
         elif params.debug == 'plot':
