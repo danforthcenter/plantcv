@@ -13,7 +13,7 @@ def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1):
     This function take a image with multiple contours and clusters them based on user input of rows and columns
 
     Inputs:
-    img                     = An RGB image array
+    img                     = RGB or grayscale image data for plotting
     roi_objects             = object contours in an image that are needed to be clustered.
     roi_obj_hierarchy       = object hierarchy
     nrow                    = number of rows to cluster (this should be the approximate  number of desired rows
@@ -27,7 +27,7 @@ def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1):
     grouped_contour_indexes = contours grouped
     contours                = All inputed contours
 
-    :param img: ndarray
+    :param img: numpy.ndarray
     :param roi_objects: list
     :param nrow: int
     :param ncol: int

@@ -558,6 +558,32 @@ def test_plantcv_cluster_contours():
     assert lenori > lenclust
 
 
+def test_plantcv_cluster_contours_grayscale_input():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_cluster_contours_grayscale_input")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), 0)
+    roi_objects = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_OBJECT), encoding="latin1")
+    hierachy = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_HIERARCHY), encoding="latin1")
+    objs = roi_objects['arr_0']
+    obj_hierarchy = hierachy['arr_0']
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.cluster_contours(img=img1, roi_objects=objs, roi_obj_hierarchy=obj_hierarchy, nrow=4, ncol=6)
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    _ = pcv.cluster_contours(img=img1, roi_objects=objs, roi_obj_hierarchy=obj_hierarchy, nrow=4, ncol=6)
+    # Test with debug = None
+    pcv.params.debug = None
+    clusters_i, contours, hierachy = pcv.cluster_contours(img=img1, roi_objects=objs, roi_obj_hierarchy=obj_hierarchy,
+                                                          nrow=4, ncol=6)
+    lenori = len(objs)
+    lenclust = len(clusters_i)
+    assert lenori > lenclust
+
+
 def test_plantcv_cluster_contours_splitimg():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_cluster_contours_splitimg")

@@ -7,7 +7,7 @@ This function take a image with multiple contours and clusters them based on use
 **returns** grouped_contour_indexes, contours, hierarchy
 
 - **Parameters:**
-    - img - image object to be masked
+    - img - RGB or grayscale image data for plotting
     - roi_objects - object contours in an image that are needed to be clustered.
     - roi_obj_hierarchy - object hierarchy
     - nrow - approximate number of rows
