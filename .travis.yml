@@ -24,12 +24,11 @@ before_install:
   - export PATH="$HOME/miniconda/bin:$PATH"
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
-#  - conda update -q conda
   - conda info -a
   # These are the packages we need
   - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
       # matplotlib is causing issues with ths configuration on Travis-CI, overriding normal defaults
-      conda create -q -c conda-forge -n test-environment --file requirements.txt python=$TRAVIS_PYTHON_VERSION opencv=2.4 coveralls matplotlib=1.5;
+      conda create -q -c conda-forge -n test-environment --file requirements.txt python=$TRAVIS_PYTHON_VERSION opencv=2.4 matplotlib=1.5 coveralls;
     else
       conda create -q -c conda-forge -n test-environment --file requirements.txt python=$TRAVIS_PYTHON_VERSION opencv=3.3 coveralls;
     fi
