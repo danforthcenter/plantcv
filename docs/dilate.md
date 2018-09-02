@@ -3,13 +3,13 @@
 Perform morphological 'dilation' filtering. Adds pixel in center of the kernel if 
 conditions set in kernel are true.
 
-**plantcv.dilate**(*img, kernel, i*)
+**plantcv.dilate**(*gray_img, kernel, i*)
 
 **returns** image after dilation
 
 - **Parameters:**
-    - img1 - Input image
-    - kernel - An odd integer that is used to build a kernel x kernel matrix using np.ones
+    - gray_img - Grayscale (usually binary) image data
+    - kernel - An odd integer that is used to build a kernel x kernel matrix using np.ones. Must be greater than 1 to have an effect
     - i - Iterations, i.e. the number of consecutive filtering passes
     
 - **Context:**

@@ -216,7 +216,7 @@ pages for more details on the input and output variable types.
 #### plantcv.dilate
 
 * pre v3.0dev2: device, dil_img = **plantcv.dilate**(*img, kernel, i, device, debug=None*)
-* post v3.0dev2: dil_img = **plantcv.dilate**(*img, kernel, i*)
+* post v3.0dev2: dil_img = **plantcv.dilate**(*gray_img, kernel, i*)
 
 #### plantcv.distance_transform
 

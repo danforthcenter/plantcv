@@ -664,13 +664,13 @@ def test_plantcv_dilate():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.dilate(img=img, kernel=5, i=1)
+    _ = pcv.dilate(gray_img=img, kernel=5, i=1)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.dilate(img=img, kernel=5, i=1)
+    _ = pcv.dilate(gray_img=img, kernel=5, i=1)
     # Test with debug = None
     pcv.params.debug = None
-    dilate_img = pcv.dilate(img=img, kernel=5, i=1)
+    dilate_img = pcv.dilate(gray_img=img, kernel=5, i=1)
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(dilate_img), TEST_BINARY_DIM)):
         # Assert that the image is binary
