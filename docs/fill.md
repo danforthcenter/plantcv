@@ -2,13 +2,12 @@
 
 Identifies objects and fills objects that are less than specified size
 
-**plantcv.fill**(*img, mask, size*)
+**plantcv.fill**(*bin_img, size*)
 
 **returns** fill_image
 
 - **Parameters:**
-    - img - binary image object. This image will be returned after filling.
-    - mask - binary image object. This image will be used to identify image objects (contours).
+    - bin_img - Binary image data
     - size - minimum object area size in pixels (integer), smaller objects will be filled
   - **Context:**
     - Used to reduce image noise
@@ -26,9 +25,8 @@ pcv.params.debug = "print"
 # Image mask is the same binary image with median blur.
 
 binary_img = pcv.median_blur(img, 5)
-mask = pcv.median_blur(img, 5)
 
-fill_image = pcv.fill(binary_img, mask, 200)
+fill_image = pcv.fill(binary_img, 200)
 ```
 
 **Binary image with median blur**

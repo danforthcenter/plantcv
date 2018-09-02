@@ -230,8 +230,8 @@ pages for more details on the input and output variable types.
 
 #### plantcv.fill
 
-* pre v3.0dev2: device, er_img = **plantcv.fill**(*img, mask, size, device, debug=None*)
-* post v3.0dev2: er_img = **plantcv.fill**(*img, mask, size*)
+* pre v3.0dev2: device, filtered_img = **plantcv.fill**(*img, mask, size, device, debug=None*)
+* post v3.0dev2: filtered_img = **plantcv.fill**(*bin_img, size*)
 
 #### plantcv.find_objects
 

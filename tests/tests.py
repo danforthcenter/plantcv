@@ -745,17 +745,28 @@ def test_plantcv_fill():
     # Test with debug = "print"
     pcv.params.debug = "print"
     mask = np.copy(img)
-    _ = pcv.fill(img=img, mask=mask, size=1)
+    _ = pcv.fill(bin_img=img, size=1)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     mask = np.copy(img)
-    _ = pcv.fill(img=img, mask=mask, size=1)
+    _ = pcv.fill(bin_img=img, size=1)
     # Test with debug = None
     pcv.params.debug = None
     mask = np.copy(img)
-    fill_img = pcv.fill(img=img, mask=mask, size=1)
+    fill_img = pcv.fill(bin_img=img, size=1)
     # Assert that the output image has the dimensions of the input image
     assert all([i == j] for i, j in zip(np.shape(fill_img), TEST_BINARY_DIM))
+
+
+def test_plantcv_fill_bad_input():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_fill_bad_input")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    with pytest.raises(RuntimeError):
+        _ = pcv.fill(bin_img=img, size=1)
 
 
 def test_plantcv_find_objects():
