@@ -5,14 +5,14 @@ sudo: false
 python:
   - "2.7"
   - "3.6"
-  - "3.7"
+#  - "3.7"
 # Allow Python3.7 tests to fail for now
-matrix:
-  allow_failures:
-    - python: "3.7"
+#matrix:
+#  allow_failures:
+#    - python: "3.7"
 # Do not have the virtualenv use system-wide site packages
 virtualenv:
-    system_site_packages: false
+  system_site_packages: false
 # command to install dependencies
 before_install:
   - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
