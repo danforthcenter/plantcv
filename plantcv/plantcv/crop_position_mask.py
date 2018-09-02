@@ -85,11 +85,9 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
     # else:
     #     ix, iy = np.shape(img)
     #     ori_img = np.dstack((img, img, img))
-    #
-    # if len(np.shape(mask)) == 3:
-    #     mx, my, mz = np.shape(mask)
-    # else:
-    #     mx, my = np.shape(mask)
+
+    # New mask shape
+    mx, my = np.shape(mask)
 
     if v_pos == "top":
         # Add rows to the top
