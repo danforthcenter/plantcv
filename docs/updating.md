@@ -221,7 +221,7 @@ pages for more details on the input and output variable types.
 #### plantcv.distance_transform
 
 * pre v3.0dev2: device, norm_image = **plantcv.distance_transform**(*img, distanceType, maskSize, device, debug=None*)
-* post v3.0dev2: norm_image = **plantcv.distance_transform**(*img, distanceType, maskSize*)
+* post v3.0dev2: norm_image = **plantcv.distance_transform**(*bin_img, distance_type, mask_size*)
 
 #### plantcv.erode
 

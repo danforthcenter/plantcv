@@ -718,13 +718,13 @@ def test_plantcv_distance_transform():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED_MASK), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.distance_transform(img=mask, distanceType=1, maskSize=3)
+    _ = pcv.distance_transform(bin_img=mask, distance_type=1, mask_size=3)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.distance_transform(img=mask, distanceType=1, maskSize=3)
+    _ = pcv.distance_transform(bin_img=mask, distance_type=1, mask_size=3)
     # Test with debug = None
     pcv.params.debug = None
-    distance_transform_img = pcv.distance_transform(img=mask, distanceType=1, maskSize=3)
+    distance_transform_img = pcv.distance_transform(bin_img=mask, distance_type=1, mask_size=3)
     # Assert that the output image has the dimensions of the input image
     assert all([i == j] for i, j in zip(np.shape(distance_transform_img), np.shape(mask)))
 
