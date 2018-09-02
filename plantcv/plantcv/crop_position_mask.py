@@ -14,8 +14,8 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
     """Crop position mask
 
     Inputs:
-    img     = image to mask
-    mask    = mask to use (must be correct size, if, not use make_resize_mask function)
+    img     = RGB or grayscale image data for plotting
+    mask    = Binary mask to use (must be correct size, if, not use make_resize_mask function)
     x       = x position
     y       = y position
     v_pos   = push from "top" or "bottom"
@@ -24,13 +24,13 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
     Returns:
     newmask = image mask
 
-    :param img: numpy array
-    :param mask: numpy array
+    :param img: numpy.ndarray
+    :param mask: numpy.ndarray
     :param x: int
     :param y: int
     :param v_pos: str
     :param h_pos: str
-    :return newmask: numpy array
+    :return newmask: numpy.ndarray
     """
 
     params.device += 1
@@ -47,8 +47,10 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
 
     if len(np.shape(img)) == 3:
         ix, iy, iz = np.shape(img)
+        ori_img = np.copy(img)
     else:
         ix, iy = np.shape(img)
+        ori_img = np.dstack((img, img, img))
 
     if len(np.shape(mask)) == 3:
         mx, my, mz = np.shape(mask)
@@ -77,17 +79,17 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
         mask = mask[0:mx, r1:my - r2]
 
     # get he sizes of the images again since you might have changed them.
-    if len(np.shape(img)) == 3:
-        ix, iy, iz = np.shape(img)
-        ori_img = np.copy(img)
-    else:
-        ix, iy = np.shape(img)
-        ori_img = np.dstack((img, img, img))
-
-    if len(np.shape(mask)) == 3:
-        mx, my, mz = np.shape(mask)
-    else:
-        mx, my = np.shape(mask)
+    # if len(np.shape(img)) == 3:
+    #     ix, iy, iz = np.shape(img)
+    #     ori_img = np.copy(img)
+    # else:
+    #     ix, iy = np.shape(img)
+    #     ori_img = np.dstack((img, img, img))
+    #
+    # if len(np.shape(mask)) == 3:
+    #     mx, my, mz = np.shape(mask)
+    # else:
+    #     mx, my = np.shape(mask)
 
     if v_pos == "top":
         # Add rows to the top

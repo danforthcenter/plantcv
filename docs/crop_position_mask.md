@@ -7,7 +7,7 @@ Takes a binary mask and positions it on another image.
 **returns** newmask
 
 - **Parameters:**
-    - img - input image
+    - img - RGB or grayscale image data for plotting
     - mask - binary image to be used as a mask
     - x - amount to push in the vertical direction
     - y - amount to push in the horizontal direction
@@ -37,7 +37,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Image not positioned (no adustment)
-cropped1= pcv.crop_position_mask(img,mask,0,0,"top","right")
+cropped1= pcv.crop_position_mask(img, mask, 0, 0, "top", "right")
 
 ```
 
