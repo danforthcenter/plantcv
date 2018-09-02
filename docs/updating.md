@@ -226,7 +226,7 @@ pages for more details on the input and output variable types.
 #### plantcv.erode
 
 * pre v3.0dev2: device, er_img = **plantcv.erode**(*img, kernel, i, device, debug=None*)
-* post v3.0dev2: er_img = **plantcv.erode**(*img, kernel, i*)
+* post v3.0dev2: er_img = **plantcv.erode**(*gray_img, kernel, i*)
 
 #### plantcv.fill
 
