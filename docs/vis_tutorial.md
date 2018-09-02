@@ -144,7 +144,7 @@ This image is again thresholded and there is an optional fill step that wasn't n
     b_cnt = pcv.threshold.binary(b, 160, 255, 'light')
     
     # Fill small objects
-    b_fill = pcv.fill(b_thresh, b_cnt, 10)
+    b_fill = pcv.fill(b_thresh, 10)
 ```
 
 **Figure 5.** (Top) Blue-yellow channel from LAB colorspace from original image (Top). (Bottom) Thresholded blue-yellow channel image.
@@ -198,7 +198,7 @@ The resulting binary image is used to mask the masked image from Figure 7.
     ab_cnt = pcv.logical_or(maskeda_thresh1)
     
     # Fill small objects
-    ab_fill = pcv.fill(ab, ab_cnt, 200)
+    ab_fill = pcv.fill(ab, 200)
     
     # Apply mask (for vis images, mask_color=white)
     masked2 = pcv.apply_mask(masked, ab_fill, 'white')
@@ -242,7 +242,7 @@ For more information on this function see [here](find_objects.md)
 
 ```python
     # Identify objects
-    id_objects,obj_hierarchy = pcv.find_objects(masked2, ab_fill)
+    id_objects, obj_hierarchy = pcv.find_objects(masked2, ab_fill)
 ```
 
 **Figure 11.** Here the objects (purple) are identified from the image from Figure 10.

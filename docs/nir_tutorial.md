@@ -332,7 +332,7 @@ Now we can perform the analysis of pixelwise signal value and object shape attri
         outfile=args.outdir+"/"+filename
     
     # Perform signal analysis
-    nir_header, nir_data, nir_img = pcv.analyze_NIR_intensity(img, kept_mask, 256, args.outdir + '/' + img_name)
+    nir_header, nir_data, nir_img = pcv.analyze_nir_intensity(img, kept_mask, 256, args.outdir + '/' + img_name)
     # Perform shape analysis
     shape_header, shape_data, shape_img = pcv.analyze_object(rgb, o, m, args.outdir + '/' + img_name)
     

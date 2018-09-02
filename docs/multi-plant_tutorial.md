@@ -197,7 +197,7 @@ Threshold green-magenta image. For more information see binary threshold functio
 #    object_type = light or dark
 #                  - If object is light then standard thresholding is done
 #                  - If object is dark then inverse thresholding is done
-img_binary = pcv.binary_threshold(a, 120, 255, 'dark')
+img_binary = pcv.threshold.binary(a, 120, 255, 'dark')
 #                                            ^
 #                                            |
 #                                           adjust this value
@@ -217,8 +217,7 @@ Fill noise. For more information on this function see [here](fill.md)
 #    img    = image object, grayscale. img will be returned after filling
 #    mask   = image object, grayscale. This image will be used to identify contours
 #    size   = minimum object area size in pixels (integer)
-mask = np.copy(img_binary)
-fill_image = pcv.fill(img_binary, mask, 100)
+fill_image = pcv.fill(img_binary, 100)
 #                                               ^
 #                                               |
 #                                               adjust this value

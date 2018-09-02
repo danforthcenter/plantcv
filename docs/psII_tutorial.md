@@ -145,8 +145,8 @@ Noise is also reduced with a [fill step](fill.md).
 
 ```python
     # Fill small objects
-    s_fill = pcv.fill(s_mblur, s_cnt, 110)
-    sfill_cnt = pcv.fill(s_mblur, s_cnt, 110)
+    s_fill = pcv.fill(s_mblur, 110)
+    sfill_cnt = pcv.fill(s_mblur, 110)
 ```
 
 **Figure 5.** Fill applied.  
@@ -217,7 +217,7 @@ along with the generated mask to calculate Fv/Fm.
         outfile=args.outdir+"/"+filename
     
     # Find shape properties, output shape image (optional)
-    shape_header, shape_data, shape_img = pcv.analyze_object(mask, args.fmax, obj, masked, args.outdir + '/' + filename)
+    shape_header, shape_data, shape_img = pcv.analyze_object(mask, obj, masked, args.outdir + '/' + filename)
     
     # Fluorescence Measurement (read in 16-bit images)
     fdark = cv2.imread(args.fdark, -1)

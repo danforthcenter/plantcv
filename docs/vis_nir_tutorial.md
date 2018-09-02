@@ -146,8 +146,8 @@ This image is again thresholded and there is an optional fill step that wasn't n
     b = pcv.rgb2gray_lab(img, 'b')
     
     # Threshold the blue image
-    b_thresh = pcv.binary_threshold(b, 129, 255, 'light')
-    b_cnt = pcv.binary_threshold(b, 19, 255, 'light')
+    b_thresh = pcv.threshold.binary(b, 129, 255, 'light')
+    b_cnt = pcv.threshold.binary(b, 19, 255, 'light')
  
 ```
 
@@ -242,13 +242,13 @@ and the Boundary tool function [here](analyze_bound_horizontal.md).
 ############### Analysis ################  
   
     # Find shape properties, output shape image (optional)
-    shape_header, shape_data, shape_img = pcv.analyze_object(img, args.image, obj, mask, args.outdir + '/' + filename)
+    shape_header, shape_data, shape_img = pcv.analyze_object(img, obj, mask, args.outdir + '/' + filename)
     
     # Shape properties relative to user boundary line (optional)
     boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_horizontal(img, obj, mask, 1680, args.outdir + '/' + filename)
     
     # Determine color properties: Histograms, Color Slices and Pseudocolored Images, output color analyzed images (optional)
-    color_header, color_data, color_img = pcv.analyze_color(img, args.image, kept_mask, 256, 'all', 'rgb', 'v', 'img', 300, args.outdir + '/' + filename)
+    color_header, color_data, color_img = pcv.analyze_color(img, kept_mask, 256, 'all', 'rgb', 'v', 'img', 300, args.outdir + '/' + filename)
     
     # Write shape and color data to results file
     result=open(args.result,"a")
@@ -333,8 +333,8 @@ newmask = pcv.crop_position_mask(nir,nmask,40,3,"top","right")
     if args.writeimg==True:
         outfile1=args.outdir+"/"+filename1
       
-    nhist_header, nhist_data, nir_imgs = pcv.analyze_NIR_intensity(nir2, filename1, nir_combinedmask, 256, False, outfile1)
-    nshape_header, nshape_data, nir_shape = pcv.analyze_object(nir2, filename1, nir_combined, nir_combinedmask, outfile1)
+    nhist_header, nhist_data, nir_imgs = pcv.analyze_nir_intensity(nir2, nir_combinedmask, 256, False, outfile1)
+    nshape_header, nshape_data, nir_shape = pcv.analyze_object(nir2, nir_combined, nir_combinedmask, outfile1)
 
 ```
 
