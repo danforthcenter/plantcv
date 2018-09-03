@@ -8,7 +8,7 @@ Note that p1 = (0,0) is the top left hand corner bottom right hand corner is p2 
 **returns** masked, binary img, contours, hierarchy 
 
 - **Parameters:**
-    - img - Input image
+    - img - RGB or grayscale image data
     - p1 - Point is the top left corner of rectangle (0,0) is top left corner
     - p2 - Point is the bottom right corner of rectangle (max-value(x),max-value(y)) is bottom right corner
     - color - "black", "gray","white", default is "black" this acts to select (mask) area from object capture (need to invert to remove)

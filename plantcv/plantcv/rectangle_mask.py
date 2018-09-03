@@ -13,7 +13,7 @@ def rectangle_mask(img, p1, p2, color="black"):
        p1 = (0,0) is the top left hand corner bottom right hand corner is p2 = (max-value(x), max-value(y)).
 
     Inputs:
-    img       = image object
+    img       = RGB or grayscale image data
     p1        = point 1
     p2        = point 2
     color     = black,white, or gray
@@ -24,12 +24,12 @@ def rectangle_mask(img, p1, p2, color="black"):
     contour   = object contour vertices
     hierarchy = contour hierarchy list
 
-    :param img: numpy array
+    :param img: numpy.ndarray
     :param p1: tuple
     :param p2: tuple
     :param color: str
-    :return masked:numpy array
-    :return bnk: numpy array
+    :return masked:numpy.ndarray
+    :return bnk: numpy.ndarray
     :return contour: list
     :return hierarchy: list
     """
