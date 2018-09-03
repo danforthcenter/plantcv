@@ -744,15 +744,12 @@ def test_plantcv_fill():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    mask = np.copy(img)
     _ = pcv.fill(bin_img=img, size=1)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    mask = np.copy(img)
     _ = pcv.fill(bin_img=img, size=1)
     # Test with debug = None
     pcv.params.debug = None
-    mask = np.copy(img)
     fill_img = pcv.fill(bin_img=img, size=1)
     # Assert that the output image has the dimensions of the input image
     assert all([i == j] for i, j in zip(np.shape(fill_img), TEST_BINARY_DIM))
@@ -1169,6 +1166,24 @@ def test_plantcv_object_composition():
     _ = pcv.object_composition(img=img, contours=object_contours, hierarchy=object_hierarchy)
     # Test with debug = None
     pcv.params.debug = None
+    contours, mask = pcv.object_composition(img=img, contours=object_contours, hierarchy=object_hierarchy)
+    # Assert that the objects have been combined
+    contour_shape = np.shape(contours)  # type: tuple
+    assert contour_shape[1] == 1
+
+
+def test_plantcv_object_composition_grayscale_input():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_object_composition_grayscale_input")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS1), encoding="latin1")
+    object_contours = contours_npz['arr_0']
+    object_hierarchy = contours_npz['arr_1']
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
     contours, mask = pcv.object_composition(img=img, contours=object_contours, hierarchy=object_hierarchy)
     # Assert that the objects have been combined
     contour_shape = np.shape(contours)  # type: tuple
