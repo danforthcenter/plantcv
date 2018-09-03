@@ -14,15 +14,15 @@ def image_subtract(gray_img1, gray_img2):
     subtraction are forced to zero.
 
     Inputs:
-    gray_img1   = a gray-scale or binary image from which gray_img2 will be subtracted
-    gray_img2   = a gray-scale or binary image which will be subtracted from gray_img1
+    gray_img1   = Grayscale image data from which gray_img2 will be subtracted
+    gray_img2   = Grayscale image data which will be subtracted from gray_img1
 
     Returns:
     new_img = subtracted image
 
-    :param gray_img1: numpy array
-    :param gray_img2: numpy array
-    :return new_img: numpy array
+    :param gray_img1: numpy.ndarray
+    :param gray_img2: numpy.ndarray
+    :return new_img: numpy.ndarray
     """
 
     params.device += 1  # increment device

@@ -9,8 +9,8 @@ This is a function is used to subtract values of one gray-scale image array from
 **returns** new_img
 
 - **Parameters:**
-    - gray_img1 - a gray-scale or binary image from which gray_img2 will be subtracted
-    - gray_img2 - a gray-scale or binary image to be subtracted from gray_img1
+    - gray_img1 - Grayscale image data from which gray_img2 will be subtracted
+    - gray_img2 - Grayscale image data to be subtracted from gray_img1
 - **Context:**
     - returns difference in pixel values of two images 
 - **Example use:**
