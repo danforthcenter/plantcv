@@ -8,8 +8,8 @@ The function is a wrapper for the OpenCV function [gaussian blur](http://docs.op
 **returns** blurred image
 
 - **Parameters:**
-    - img - img object
-    - ksize - kernel size => ksize x ksize box, e.g. (5,5) 
+    - img - RGB or grayscale image data
+    - ksize - Tuple of kernel dimensions, e.g. (5, 5)
     - sigmax - standard deviation in X direction; if 0, calculated from kernel size
     - sigmay - standard deviation in Y direction; if sigmaY is None, sigmaY is taken to equal sigmaX
 - **Context:**
