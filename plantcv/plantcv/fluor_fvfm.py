@@ -25,10 +25,10 @@ def fluor_fvfm(fdark, fmin, fmax, mask, filename, bins=1000):
     hist_header = fvfm data table headers
     hist_data   = fvfm data table values
 
-    :param fdark: numpy array
-    :param fmin: numpy array
-    :param fmax: numpy array
-    :param mask: numpy array
+    :param fdark: numpy.ndarray
+    :param fmin: numpy.ndarray
+    :param fmax: numpy.ndarray
+    :param mask: numpy.ndarray
     :param filename: str
     :param bins: int
     :return hist_header: list
