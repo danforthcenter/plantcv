@@ -937,13 +937,13 @@ def test_plantcv_image_add():
     img2 = np.copy(img1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.image_add(img1=img1, img2=img2)
+    _ = pcv.image_add(gray_img1=img1, gray_img2=img2)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.image_add(img1=img1, img2=img2)
+    _ = pcv.image_add(gray_img1=img1, gray_img2=img2)
     # Test with debug = None
     pcv.params.debug = None
-    added_img = pcv.image_add(img1=img1, img2=img2)
+    added_img = pcv.image_add(gray_img1=img1, gray_img2=img2)
     assert all([i == j] for i, j in zip(np.shape(added_img), TEST_BINARY_DIM))
 
 

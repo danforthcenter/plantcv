@@ -4,13 +4,13 @@ This is a method used to perform pixelwise addition between images.
 The numpy addition function '+' is used. This is a modulo operation rather 
 than the cv2.add fxn which is a saturation operation.
 
-**plantcv.image_add**(*img1, img2*)
+**plantcv.image_add**(*gray_img1, gray_img2*)
 
 **returns** image of the sum of both images
 
 - **Parameters:**
-    - img1 - image to add
-    - img2 - image to add
+    - gray_img1 - Grayscale image data to be added to image 2
+    - gray_img2 - Grayscale image data to be added to image 1
 - **Context:**
     - Used to combine/stack the pixelwise intensity found in two images
 - **Example use:**

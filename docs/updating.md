@@ -266,7 +266,7 @@ pages for more details on the input and output variable types.
 #### plantcv.image_add
 
 * pre v3.0dev2: device, added_img = **plantcv.image_add**(*img1, img2, device, debug=None*)
-* post v3.0dev2: added_img = **plantcv.image_add**(*img1, img2*)
+* post v3.0dev2: added_img = **plantcv.image_add**(*gray_img1, gray_img2*)
 
 #### plantcv.invert
 
