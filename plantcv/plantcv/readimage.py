@@ -22,7 +22,7 @@ def readimage(filename, mode="native"):
 
     :param filename: str
     :param mode: str
-    :return img: numpy array
+    :return img: numpy.ndarray
     :return path: str
     :return img_name: str
     """

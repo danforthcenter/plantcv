@@ -6,8 +6,8 @@ import numpy as np
 def plot_image(img, cmap=None):
     """Plot an image to the screen.
 
+    :param img: numpy.ndarray
     :param cmap: str
-    :param img: numpy array
     :return:
     """
     from matplotlib import pyplot as plt

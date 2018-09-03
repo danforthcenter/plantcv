@@ -11,7 +11,7 @@ def plot_hist(img, name=False):
     img  = image to analyze
     name = name for plot output
 
-    :param img: numpy array
+    :param img: numpy.ndarray
     :param name: str
     :return bins: list
     : return hist: list
