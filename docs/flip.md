@@ -7,7 +7,7 @@ Flips and image in either the horizontal or vertical direction
 **returns** flipped_image
 
 - **Parameters:**
-    - img - image object (numpy array)
+    - img - RGB or grayscale image data
     - direction - the direction you want the image flipped either 'horizontal' or 'vertical'
 - **Context:**
     - Used to flip images when necessary

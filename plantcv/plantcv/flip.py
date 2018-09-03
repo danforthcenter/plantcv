@@ -13,15 +13,15 @@ def flip(img, direction):
     """Flip image.
 
     Inputs:
-    img       = image to be flipped
+    img       = RGB or grayscale image data
     direction = "horizontal" or "vertical"
 
     Returns:
     vh_img    = flipped image
 
-    :param img: numpy array
+    :param img: numpy.ndarray
     :param direction: str
-    :return vh_img: numpy array
+    :return vh_img: numpy.ndarray
     """
     params.device += 1
     if direction == "vertical":
