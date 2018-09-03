@@ -141,7 +141,7 @@ def main():
     vis, path, filename = pcv.readimage(filename=args.image)
     
     # Classify each pixel as plant or background (background and system components)
-    masks = pcv.naive_bayes_classifier(img=vis, pdf_file=args.pdfs)
+    masks = pcv.naive_bayes_classifier(rgb_img=vis, pdf_file=args.pdfs)
     
     # Additional steps in the pipeline go here
 ```

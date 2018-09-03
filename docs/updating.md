@@ -303,6 +303,11 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, img_mblur = **plantcv.median_blur**(*img, ksize, device, debug=None*)
 * post v3.0dev2: img_mblur = **plantcv.median_blur**(*gray_img, ksize*)
 
+### plantcv.naive_bayes_classifier
+
+* pre v3.0dev2: device, masks = **plantcv.naive_bayes_classifier(*img, pdf_file, device, debug=None*)**
+* post v3.0dev2: masks = **plantcv.naive_bayes_classifier(*rgb_img, pdf_file*)**
+
 #### plantcv.object_composition
 
 * pre v3.0dev2: device, group, mask = **plantcv.object_composition**(*img, contours, hierarchy, device, debug=None*)

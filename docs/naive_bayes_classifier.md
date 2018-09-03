@@ -7,12 +7,12 @@ Plant (P) and Background (B), each containing the Random Variables Hue (H), Satu
 Bayes Theorem with the naive assumption that the Random Variables are independent (for convenience). Output pixels are
 labeled as plant (255) or background (0) if P(Pixel = plant) > P(Pixel = background).
 
-**plantcv.naive_bayes_classifier(*img, pdf_file*)**
+**plantcv.naive_bayes_classifier(*rgb_img, pdf_file*)**
 
 **returns** mask
 
 - **Parameters:**
-    - img - (ndarray): color image (BGR)
+    - rgb_img - RGB image data
     - pdf_file - (str): output file containing PDFs from `plantcv-train.py`
    
 - **Context:**

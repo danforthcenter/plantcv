@@ -10,17 +10,17 @@ from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 
 
-def naive_bayes_classifier(img, pdf_file):
+def naive_bayes_classifier(rgb_img, pdf_file):
     """Use the Naive Bayes classifier to output a plant binary mask.
 
     Inputs:
-    img      = image object (NumPy ndarray), BGR colorspace
+    rgb_img      = RGB image data
     pdf_file = filename of file containing PDFs output from the Naive Bayes training method (see plantcv-train.py)
 
     Returns:
-    mask     = binary mask (ndarray)
+    mask     = Dictionary of binary masks
 
-    :param img: ndarray
+    :param rgb_img: numpy.ndarray
     :param pdf_file: str
     :return masks: dict
     """
@@ -51,11 +51,11 @@ def naive_bayes_classifier(img, pdf_file):
 
     # Split the input BGR image into component channels for BGR, HSV, and LAB colorspaces
     # b, g, r = cv2.split(img)
-    h, s, v = cv2.split(cv2.cvtColor(img, cv2.COLOR_BGR2HSV))
+    h, s, v = cv2.split(cv2.cvtColor(rgb_img, cv2.COLOR_BGR2HSV))
     # l, gm, by = cv2.split(cv2.cvtColor(img, cv2.COLOR_BGR2LAB))
 
     # Calculate the dimensions of the input image
-    width, height, depth = np.shape(img)
+    width, height, depth = np.shape(rgb_img)
 
     # Initialize an empty ndarray for plant and background. These will be used to store the joint probabilities
     px_p = {}

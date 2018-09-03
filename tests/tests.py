@@ -1132,13 +1132,13 @@ def test_plantcv_naive_bayes_classifier():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.naive_bayes_classifier(img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
+    _ = pcv.naive_bayes_classifier(rgb_img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.naive_bayes_classifier(img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
+    _ = pcv.naive_bayes_classifier(rgb_img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
     # Test with debug = None
     pcv.params.debug = None
-    mask = pcv.naive_bayes_classifier(img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
+    mask = pcv.naive_bayes_classifier(rgb_img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
 
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(mask), TEST_GRAY_DIM)):
