@@ -7,20 +7,20 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
 
 
-def rgb2gray(img):
+def rgb2gray(rgb_img):
     """Convert image from RGB colorspace to Gray.
 
     Inputs:
-    img    = image object, RGB colorspace
+    rgb_img    = RGB image data
 
     Returns:
     gray   = grayscale image
 
-    :param img: numpy array
-    :return gray: numpy array
+    :param rgb_img: numpy.ndarray
+    :return gray: numpy.ndarray
     """
 
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    gray = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
     params.device += 1
     if params.debug == 'print':
         print_image(gray, os.path.join(params.debug_outdir, str(params.device) + '_gray.png'))

@@ -357,17 +357,17 @@ pages for more details on the input and output variable types.
 #### plantcv.rgb2gray
 
 * pre v3.0dev2: device, gray = **plantcv.rgb2gray**(*img, device, debug=None*)
-* post v3.0dev2: gray = **plantcv.rgb2gray**(*img*)
+* post v3.0dev2: gray = **plantcv.rgb2gray**(*rgb_img*)
 
 #### plantcv.rgb2gray_hsv
 
 * pre v3.0dev2: device, gray = **plantcv.rgb2gray_hsv**(*img, channel, device, debug=None*)
-* post v3.0dev2: gray = **plantcv.rgb2gray_hsv**(*img, channel*)
+* post v3.0dev2: gray = **plantcv.rgb2gray_hsv**(*rgb_img, channel*)
 
 #### plantcv.rgb2gray_lab
 
 * pre v3.0dev2: device, gray = **plantcv.rgb2gray_lab**(*img, channel, device, debug=None*)
-* post v3.0dev2: gray = **plantcv.rgb2gray_lab**(*img, channel*)
+* post v3.0dev2: gray = **plantcv.rgb2gray_lab**(*rgb_img, channel*)
 
 #### plantcv.roi.circle
 

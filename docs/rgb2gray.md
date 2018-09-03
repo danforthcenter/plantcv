@@ -2,12 +2,12 @@
 
 Convert image from RGB colorspace to gray-scale.
 
-**plantcv.rgb2gray**(*img*)
+**plantcv.rgb2gray**(*rgb_img*)
 
-**returns** gray-scale image 
+**returns** grayscale image 
 
 - **Parameters:**
-    - img- Image to be converted
+    - img - RGB image data
    
 - **Context:**
     - Used to help differentiate plant and background

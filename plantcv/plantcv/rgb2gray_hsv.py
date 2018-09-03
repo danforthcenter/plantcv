@@ -8,19 +8,19 @@ from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 
 
-def rgb2gray_hsv(img, channel):
+def rgb2gray_hsv(rgb_img, channel):
     """Convert an RGB color image to HSV colorspace and return a gray image (one channel).
 
     Inputs:
-    img     = image object, RGB colorspace
+    rgb_img = RGB image data
     channel = color subchannel (h = hue, s = saturation, v = value/intensity/brightness)
 
     Returns:
     h | s | v = image from single HSV channel
 
-    :param img: numpy array
+    :param rgb_img: numpy.ndarray
     :param channel: str
-    :return channel: numpy array
+    :return channel: numpy.ndarray
     """
     # Auto-increment the device counter
     params.device += 1
@@ -31,7 +31,7 @@ def rgb2gray_hsv(img, channel):
         fatal_error("Channel " + str(channel) + " is not h, s or v!")
 
     # Convert the input BGR image to HSV colorspace
-    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    hsv = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2HSV)
     # Split HSV channels
     h, s, v = cv2.split(hsv)
     # Create a channel dictionaries for lookups by a channel name index

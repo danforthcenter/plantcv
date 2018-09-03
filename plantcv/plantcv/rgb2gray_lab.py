@@ -8,19 +8,19 @@ from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 
 
-def rgb2gray_lab(img, channel):
+def rgb2gray_lab(rgb_img, channel):
     """Convert image from RGB colorspace to LAB colorspace. Returns the specified subchannel as a gray image.
 
     Inputs:
-    img       = image object, RGB colorspace
+    rgb_img   = RGB image data
     channel   = color subchannel (l = lightness, a = green-magenta, b = blue-yellow)
 
     Returns:
     l | a | b = grayscale image from one LAB color channel
 
-    :param img: numpy array
+    :param rgb_img: numpy.ndarray
     :param channel: str
-    :return channel: numpy array
+    :return channel: numpy.ndarray
     """
     # Auto-increment the device counter
     params.device += 1
@@ -30,7 +30,7 @@ def rgb2gray_lab(img, channel):
         fatal_error("Channel " + str(channel) + " is not l, a or b!")
 
     # Convert the input BGR image to LAB colorspace
-    lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
+    lab = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2LAB)
     # Split LAB channels
     l, a, b = cv2.split(lab)
     # Create a channel dictionaries for lookups by a channel name index

@@ -2,12 +2,12 @@
 
 Convert image from RGB colorspace to LAB colorspace and split the channels.
 
-**plantcv.rgb2gray_hsv**(*img, channel*)
+**plantcv.rgb2gray_hsv**(*rgb_img, channel*)
 
 **returns** split image (l, a, or b channel)
 
 - **Parameters:**
-    - img- Image to be converted
+    - img - RGB image data
     - channel - Split 'l' (lightness), 'a' (green-magenta), or 'b' (blue-yellow) channel
    
 - **Context:**

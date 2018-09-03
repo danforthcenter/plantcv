@@ -2,13 +2,13 @@
 
 Convert image from RGB colorspace to HSV colorspace and split the channels.
 
-**plantcv.rgb2gray_hsv**(*img, channel*)
+**plantcv.rgb2gray_hsv**(*rgb_img, channel*)
 
 **returns** split image (h, s, or v channel)  
 
 - **Parameters:**
-    - img- Image to be converted
-    - channel- Split 'h' (hue), 's' (saturation), or 'v' (value) channel
+    - img - RGB image data
+    - channel - Split 'h' (hue), 's' (saturation), or 'v' (value) channel
    
 - **Context:**
     - Used to help differentiate plant and background

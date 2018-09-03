@@ -1439,13 +1439,13 @@ def test_plantcv_rgb2gray_hsv():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.rgb2gray_hsv(img=img, channel="s")
+    _ = pcv.rgb2gray_hsv(rgb_img=img, channel="s")
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.rgb2gray_hsv(img=img, channel="s")
+    _ = pcv.rgb2gray_hsv(rgb_img=img, channel="s")
     # Test with debug = None
     pcv.params.debug = None
-    s = pcv.rgb2gray_hsv(img=img, channel="s")
+    s = pcv.rgb2gray_hsv(rgb_img=img, channel="s")
     # Assert that the output image has the dimensions of the input image but is only a single channel
     assert all([i == j] for i, j in zip(np.shape(s), TEST_GRAY_DIM))
 
@@ -1459,13 +1459,13 @@ def test_plantcv_rgb2gray_lab():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.rgb2gray_lab(img=img, channel='b')
+    _ = pcv.rgb2gray_lab(rgb_img=img, channel='b')
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.rgb2gray_lab(img=img, channel='b')
+    _ = pcv.rgb2gray_lab(rgb_img=img, channel='b')
     # Test with debug = None
     pcv.params.debug = None
-    b = pcv.rgb2gray_lab(img=img, channel='b')
+    b = pcv.rgb2gray_lab(rgb_img=img, channel='b')
     # Assert that the output image has the dimensions of the input image but is only a single channel
     assert all([i == j] for i, j in zip(np.shape(b), TEST_GRAY_DIM))
 
@@ -1479,13 +1479,13 @@ def test_plantcv_rgb2gray():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.rgb2gray(img=img)
+    _ = pcv.rgb2gray(rgb_img=img)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.rgb2gray(img=img)
+    _ = pcv.rgb2gray(rgb_img=img)
     # Test with debug = None
     pcv.params.debug = None
-    gray = pcv.rgb2gray(img=img)
+    gray = pcv.rgb2gray(rgb_img=img)
     # Assert that the output image has the dimensions of the input image but is only a single channel
     assert all([i == j] for i, j in zip(np.shape(gray), TEST_GRAY_DIM))
 
