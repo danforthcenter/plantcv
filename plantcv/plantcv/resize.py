@@ -12,17 +12,17 @@ def resize(img, resize_x, resize_y):
     """Resize image.
 
     Inputs:
-    img      = image to resize
+    img      = RGB or grayscale image data to resize
     resize_x = scaling factor
     resize_y = scaling factor
 
     Returns:
     reimg    = resized image
 
-    :param img: numpy array
+    :param img: numpy.ndarray
     :param resize_x: int
     :param resize_y: int
-    :return reimg: numpy array
+    :return reimg: numpy.ndarray
     """
 
     params.device += 1
@@ -35,6 +35,6 @@ def resize(img, resize_x, resize_y):
     if params.debug == 'print':
         print_image(reimg, os.path.join(params.debug_outdir, str(params.device) + "_resize1.png"))
     elif params.debug == 'plot':
-        plot_image(reimg, cmap='gray')
+        plot_image(reimg)
 
     return reimg

@@ -7,7 +7,7 @@ Resizes images, used to resize masks over other images.
 **returns** image after resizing
 
 - **Parameters:**
-    - img1 - Input image
+    - img - RGB or grayscale image to resize
     - resize_x - resize number in the x dimension (does not need to be an integer)
     - resize_y - resize number in the y dimension (does not need to be an integer)
    
