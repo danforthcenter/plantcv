@@ -7,8 +7,8 @@ Find objects within the image.
 **returns** objects, object hierarchy
 
 - **Parameters:**
-    - img - image that the objects will be overlayed
-    - mask - what is used for object detection
+    - img - RGB or grayscale image data for plotting
+    - mask - Binary mask used for detecting contours
 - **Context:**
     - Used to identify objects (plant material) in an image.
 - **Example use:**

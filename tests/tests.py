@@ -793,6 +793,24 @@ def test_plantcv_find_objects():
         assert len(contours) == 2
 
 
+def test_plantcv_find_objects_grayscale_input():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_find_objects_grayscale_input")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    contours, hierarchy = pcv.find_objects(img=img, mask=mask)
+    # Assert the correct number of contours are found
+    if cv2.__version__[0] == '2':
+        assert len(contours) == 2
+    else:
+        assert len(contours) == 2
+
+
 def test_plantcv_flip():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_flip")
