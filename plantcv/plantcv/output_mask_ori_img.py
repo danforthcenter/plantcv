@@ -21,14 +21,13 @@ def output_mask(img, mask, filename, outdir=None, mask_only=False):
     imgpath = path to image
     maskpath path to mask
 
-    :param img: array
-    :param mask: array
+    :param img: numpy.ndarray
+    :param mask: numpy.ndarray
     :param filename: str
     :param outdir: str
     :param mask_only: bool
     :return imgpath: str
     :return maskpath: str
-
     """
 
     params.device += 1
