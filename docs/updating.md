@@ -261,7 +261,7 @@ pages for more details on the input and output variable types.
 #### plantcv.hist_equalization
 
 * pre v3.0dev2: device, img_eh = **plantcv.hist_equalization**(*img, device, debug=None*)
-* post v3.0dev2: img_eh = **plantcv.hist_equalization**(*img*)
+* post v3.0dev2: img_eh = **plantcv.hist_equalization**(*gray_img*)
 
 #### plantcv.image_add
 

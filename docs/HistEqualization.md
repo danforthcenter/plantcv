@@ -3,12 +3,12 @@
 This is a method used to normalize the distribution of signal intensity values within an image. 
 If the image has low contrast it will make it easier to threshold.
 
-**plantcv.hist_equalization**(*img*)
+**plantcv.hist_equalization**(*gray_img*)
 
 **returns** normalized image
 
 - **Parameters:**
-    - img - the original 2 dimensional grayscale image for analysis.
+    - gray_img - Grayscale image data
 - **Context:**
     - Used to normalize the distribution of a signal intensity within an image.
 
