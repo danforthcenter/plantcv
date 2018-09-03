@@ -7,23 +7,23 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
 
 
-def logical_or(img1, img2):
+def logical_or(bin_img1, bin_img2):
     """Join two images using the bitwise OR operator.
 
     Inputs:
-    img1   = image object1, grayscale
-    img2   = image object2, grayscale
+    bin_img1   = Binary image data to be compared to bin_img2
+    bin_img2   = Binary image data to be compared to bin_img1
 
     Returns:
-    merged = joined image
+    merged     = joined binary image
 
-    :param img1: numpy array
-    :param img2: numpy array
-    :return merged: numpy array
+    :param bin_img1: numpy.ndarray
+    :param bin_img2: numpy.ndarray
+    :return merged: numpy.ndarray
     """
 
     params.device += 1
-    merged = cv2.bitwise_or(img1, img2)
+    merged = cv2.bitwise_or(bin_img1, bin_img2)
     if params.debug == 'print':
         print_image(merged, os.path.join(params.debug_outdir, str(params.device) + '_or_joined.png'))
     elif params.debug == 'plot':

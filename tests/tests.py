@@ -1040,19 +1040,19 @@ def test_plantcv_logical_and():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_logical_and")
     os.mkdir(cache_dir)
-    pcv.params.debug = cache_dir
+    pcv.params.debug_outdir = cache_dir
     # Read in test data
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     img2 = np.copy(img1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.logical_and(img1=img1, img2=img2)
+    _ = pcv.logical_and(bin_img1=img1, bin_img2=img2)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.logical_and(img1=img1, img2=img2)
+    _ = pcv.logical_and(bin_img1=img1, bin_img2=img2)
     # Test with debug = None
     pcv.params.debug = None
-    and_img = pcv.logical_and(img1=img1, img2=img2)
+    and_img = pcv.logical_and(bin_img1=img1, bin_img2=img2)
     assert all([i == j] for i, j in zip(np.shape(and_img), TEST_BINARY_DIM))
 
 
@@ -1066,13 +1066,13 @@ def test_plantcv_logical_or():
     img2 = np.copy(img1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.logical_or(img1=img1, img2=img2)
+    _ = pcv.logical_or(bin_img1=img1, bin_img2=img2)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.logical_or(img1=img1, img2=img2)
+    _ = pcv.logical_or(bin_img1=img1, bin_img2=img2)
     # Test with debug = None
     pcv.params.debug = None
-    or_img = pcv.logical_or(img1=img1, img2=img2)
+    or_img = pcv.logical_or(bin_img1=img1, bin_img2=img2)
     assert all([i == j] for i, j in zip(np.shape(or_img), TEST_BINARY_DIM))
 
 
@@ -1086,13 +1086,13 @@ def test_plantcv_logical_xor():
     img2 = np.copy(img1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.logical_xor(img1=img1, img2=img2)
+    _ = pcv.logical_xor(bin_img1=img1, bin_img2=img2)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.logical_xor(img1=img1, img2=img2)
+    _ = pcv.logical_xor(bin_img1=img1, bin_img2=img2)
     # Test with debug = None
     pcv.params.debug = None
-    xor_img = pcv.logical_xor(img1=img1, img2=img2)
+    xor_img = pcv.logical_xor(bin_img1=img1, bin_img2=img2)
     assert all([i == j] for i, j in zip(np.shape(xor_img), TEST_BINARY_DIM))
 
 

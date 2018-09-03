@@ -3,13 +3,13 @@
 Join two images using the bitwise XOR operator (difference between the two images). Images must be the same size. 
 This is a wrapper for the Opencv Function [bitwise_xor](https://docs.opencv.org/2.4/modules/core/doc/operations_on_arrays.html#bitwise-xor).  
 
-**logical_xor**(*img1, img2*)
+**logical_xor**(*bin_img1, bin_img2*)
 
 **returns** ='xor' image
 
 - **Parameters:**
-    - img1 - image object 1.
-    - img2 - image object 2.
+    - bin_img1 - Binary image data to be compared to bin_img2.
+    - bin_img2 - Binary image data to be compared to bin_img1.
 - **Context:**
     - Used to combine to images. Very useful when combining image channels that have been thresholded seperately.
 - **Example use:**

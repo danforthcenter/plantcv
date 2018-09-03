@@ -286,17 +286,17 @@ pages for more details on the input and output variable types.
 #### plantcv.logical_and
 
 * pre v3.0dev2: device, merged = **plantcv.logical_and**(*img1, img2, device, debug=None*)
-* post v3.0dev2: merged = **plantcv.logical_and**(*img1, img2*)
+* post v3.0dev2: merged = **plantcv.logical_and**(*bin_img1, bin_img2*)
 
 #### plantcv.logical_or
 
 * pre v3.0dev2: device, merged = **plantcv.logical_or**(*img1, img2, device, debug=None*)
-* post v3.0dev2: merged = **plantcv.logical_or**(*img1, img2*)
+* post v3.0dev2: merged = **plantcv.logical_or**(*bin_img1, bin_img2*)
 
 #### plantcv.logical_xor
 
 * pre v3.0dev2: device, merged = **plantcv.logical_xor**(*img1, img2, device, debug=None*)
-* post v3.0dev2: merged = **plantcv.logical_xor**(*img1, img2*)
+* post v3.0dev2: merged = **plantcv.logical_xor**(*bin_img1, bin_img2*)
 
 #### plantcv.median_blur
 
