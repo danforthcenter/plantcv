@@ -1105,13 +1105,13 @@ def test_plantcv_median_blur():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.median_blur(img=img, ksize=5)
+    _ = pcv.median_blur(gray_img=img, ksize=5)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.median_blur(img=img, ksize=5)
+    _ = pcv.median_blur(gray_img=img, ksize=5)
     # Test with debug = None
     pcv.params.debug = None
-    blur_img = pcv.median_blur(img=img, ksize=5)
+    blur_img = pcv.median_blur(gray_img=img, ksize=5)
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(blur_img), TEST_BINARY_DIM)):
         # Assert that the image is binary

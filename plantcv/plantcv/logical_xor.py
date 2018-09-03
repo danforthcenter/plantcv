@@ -17,9 +17,9 @@ def logical_xor(bin_img1, bin_img2):
     Returns:
     merged     = joined binary image
 
-    :param bin_img1: numpy array
-    :param bin_img2: numpy array
-    :return merged: numpy array
+    :param bin_img1: numpy.ndarray
+    :param bin_img2: numpy.ndarray
+    :return merged: numpy.ndarray
     """
 
     params.device += 1

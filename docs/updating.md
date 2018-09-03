@@ -301,7 +301,7 @@ pages for more details on the input and output variable types.
 #### plantcv.median_blur
 
 * pre v3.0dev2: device, img_mblur = **plantcv.median_blur**(*img, ksize, device, debug=None*)
-* post v3.0dev2: img_mblur = **plantcv.median_blur**(*img, ksize*)
+* post v3.0dev2: img_mblur = **plantcv.median_blur**(*gray_img, ksize*)
 
 #### plantcv.object_composition
 

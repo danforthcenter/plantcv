@@ -3,12 +3,12 @@
 Applies a median blur filter. Applies median value to central pixel within a kernel size (ksize x ksize). 
 The function is a wrapper for the OpenCV function [median blur](http://docs.opencv.org/doc/tutorials/imgproc/gausian_median_blur_bilateral_filter/gausian_median_blur_bilateral_filter.html_).  
 
-**plantcv.median_blur**(*img, ksize*)**
+**plantcv.median_blur**(*gray_img, ksize*)**
 
 **returns** blurred image
 
 - **Parameters:**
-    - img - img object
+    - gray_img - Grayscale image data
     - ksize - kernel size => ksize x ksize box, must be an odd value
    
 - **Context:**
