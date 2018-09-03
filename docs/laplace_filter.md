@@ -2,12 +2,12 @@
 
 This is a filtering method used to identify and highlight fine edges based on the 2nd derivative.
 
-**plantcv.laplace_filter**(*img, k, scale*)
+**plantcv.laplace_filter**(*gray_img, k, scale*)
 
 **returns** filtered image
 
 - **Parameters:**
-    - img - binary image object. This image will be returned after filling.
+    - gray_img - Grayscale image data
     - k - apertures size used to calculate 2nd derivative filter, specifies the size of the kernel (must be an odd integer: 1,3,5...)
     - scale - scaling factor applied (multiplied) to computed Laplacian values (scale = 1 is unscaled) 
     

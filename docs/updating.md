@@ -281,7 +281,7 @@ pages for more details on the input and output variable types.
 #### plantcv.laplace_filter
 
 * pre v3.0dev2: device, lp_filtered = **plantcv.laplace_filter**(*img, k, scale, device, debug=None*)
-* post v3.0dev2: lp_filtered = **plantcv.laplace_filter**(*img, k, scale*)
+* post v3.0dev2: lp_filtered = **plantcv.laplace_filter**(*gray_img, k, scale*)
 
 #### plantcv.logical_and
 

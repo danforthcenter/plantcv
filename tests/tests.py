@@ -1025,13 +1025,13 @@ def test_plantcv_laplace_filter():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.laplace_filter(img=img, k=1, scale=1)
+    _ = pcv.laplace_filter(gray_img=img, k=1, scale=1)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.laplace_filter(img=img, k=1, scale=1)
+    _ = pcv.laplace_filter(gray_img=img, k=1, scale=1)
     # Test with debug = None
     pcv.params.debug = None
-    lp_img = pcv.laplace_filter(img=img, k=1, scale=1)
+    lp_img = pcv.laplace_filter(gray_img=img, k=1, scale=1)
     # Assert that the output image has the dimensions of the input image
     assert all([i == j] for i, j in zip(np.shape(lp_img), TEST_GRAY_DIM))
 
