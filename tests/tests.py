@@ -985,13 +985,13 @@ def test_plantcv_invert():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.invert(img=img)
+    _ = pcv.invert(gray_img=img)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.invert(img=img)
+    _ = pcv.invert(gray_img=img)
     # Test with debug = None
     pcv.params.debug = None
-    inverted_img = pcv.invert(img=img)
+    inverted_img = pcv.invert(gray_img=img)
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(inverted_img), TEST_BINARY_DIM)):
         # Assert that the image is binary

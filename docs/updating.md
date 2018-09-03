@@ -271,7 +271,7 @@ pages for more details on the input and output variable types.
 #### plantcv.invert
 
 * pre v3.0dev2: device, img_inv = **plantcv.invert**(*img, device, debug=None*)
-* post v3.0dev2: img_inv = **plantcv.invert**(*img*)
+* post v3.0dev2: img_inv = **plantcv.invert**(*gray_img*)
 
 #### plantcv.landmark_reference_pt_dist
 

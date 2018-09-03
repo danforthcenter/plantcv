@@ -2,12 +2,12 @@
 
 Invert a binary image. This is a wrapper for the OpenCV function [bitwise_not](http://docs.opencv.org/2.4/modules/core/doc/operations_on_arrays.html#bitwise-not)
 
-**plantcv.invert**(*img*)
+**plantcv.invert**(*gray_img*)
 
 **returns** inverted image
 
 - **Parameters:**
-    - img - image to be inverted (works best with binary image)
+    - img - Grayscale image data
    
 - **Context:**
     - Invert image values. Useful for inverting an image mask.
