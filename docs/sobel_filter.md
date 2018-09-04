@@ -2,12 +2,12 @@
 
 This is a filtering method used to identify and highlight coarse changes in pixel intensity based on the 1st derivative.
 
-**plantcv.sobel_filter**(*img, dx, dy, k*)
+**plantcv.sobel_filter**(*gray_img, dx, dy, k*)
 
 **returns** filtered image
 
 - **Parameters:**
-    - img - binary image object. This image will be returned after filling.
+    - gray_img - Grayscale image data
     - dx - derivative of x to analyze (0-3)
     - dy - derivative of y to analyze (0-3)
     - k - apertures size used to calculate 2nd derivative filter, specifies the size of the kernel (must be an odd integer)

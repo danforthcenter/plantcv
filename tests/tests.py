@@ -1621,13 +1621,13 @@ def test_plantcv_scharr_filter():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     pcv.params.debug = "print"
     # Test with debug = "print"
-    _ = pcv.scharr_filter(img=img, dx=1, dy=0, scale=1)
+    _ = pcv.scharr_filter(gray_img=img, dx=1, dy=0, scale=1)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.scharr_filter(img=img, dx=1, dy=0, scale=1)
+    _ = pcv.scharr_filter(gray_img=img, dx=1, dy=0, scale=1)
     # Test with debug = None
     pcv.params.debug = None
-    scharr_img = pcv.scharr_filter(img=img, dx=1, dy=0, scale=1)
+    scharr_img = pcv.scharr_filter(gray_img=img, dx=1, dy=0, scale=1)
     # Assert that the output image has the dimensions of the input image
     assert all([i == j] for i, j in zip(np.shape(scharr_img), TEST_GRAY_DIM))
 
@@ -1669,13 +1669,13 @@ def test_plantcv_sobel_filter():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.sobel_filter(img=img, dx=1, dy=0, k=1)
+    _ = pcv.sobel_filter(gray_img=img, dx=1, dy=0, k=1)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.sobel_filter(img=img, dx=1, dy=0, k=1)
+    _ = pcv.sobel_filter(gray_img=img, dx=1, dy=0, k=1)
     # Test with debug = None
     pcv.params.debug = None
-    sobel_img = pcv.sobel_filter(img=img, dx=1, dy=0, k=1)
+    sobel_img = pcv.sobel_filter(gray_img=img, dx=1, dy=0, k=1)
     # Assert that the output image has the dimensions of the input image
     assert all([i == j] for i, j in zip(np.shape(sobel_img), TEST_GRAY_DIM))
 

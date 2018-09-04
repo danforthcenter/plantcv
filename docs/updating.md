@@ -413,7 +413,7 @@ pages for more details on the input and output variable types.
 #### plantcv.scharr_filter
 
 * pre v3.0dev2: device, sr_img = **plantcv.scharr_filter**(*img, dX, dY, scale, device, debug=None*)
-* post v3.0dev2: sr_img = **plantcv.scharr_filter**(*img, dx, dy, scale*)
+* post v3.0dev2: sr_img = **plantcv.scharr_filter**(*gray_img, dx, dy, scale*)
 
 #### plantcv.shift_img
 
@@ -423,7 +423,7 @@ pages for more details on the input and output variable types.
 #### plantcv.sobel_filter
 
 * pre v3.0dev2: device, sb_img = **plantcv.sobel_filter**(*img, dx, dy, k, device, debug=None*)
-* post v3.0dev2: sb_img = **plantcv.sobel_filter**(*img, dx, dy, k*)
+* post v3.0dev2: sb_img = **plantcv.sobel_filter**(*gray_img, dx, dy, k*)
 
 #### plantcv.threshold.binary
 
