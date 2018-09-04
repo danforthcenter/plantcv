@@ -2,26 +2,21 @@
 
 Get and record the size of a size marker or set an area as a size marker.
 
-**report_size_marker**(*img, shape, device, debug, marker='define', x_adj=0, y_adj=0, w_adj=0, h_adj=0,
-                            base='white', objcolor='dark', thresh_channel=None, thresh=None, filename=False*)
+**plantcv.report_size_marker**(*img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None,
+                            thresh=None, filename=False*)
 
-**returns** device, marker_header,marker_data,analysis_images
+**returns** marker_header, marker_data, analysis_images
 
 - **Parameters:**
-    - img             = image object (most likely the original), color(RGB)
-    - shape           = 'rectangle', 'circle', 'ellipse'
-    - device          = device number. Used to count steps in the pipeline
-    - debug           = None, print, or plot. Print = save to file, Plot = print to screen.
-    - marker          = define or detect, if define it means you set an area, if detect it means you want to detect within an area
-    - x_adj           = x position of shape, integer
-    - y_adj           = y position of shape, integer
-    - w_adj           = width
-    - h_adj           = height
-    - base            = background color 'white' is default
-    - objcolor        = object color is 'dark' or 'light'
-    - thresh_channel  = 'h', 's','v'
-    - thresh          = integer value
-    - filename        = name of file
+    - img             = An RGB or grayscale image to plot the marker object on
+    - roi_contour     = A region of interest contour (e.g. output from pcv.roi.rectangle or other methods)
+    - roi_hierarchy   = A region of interest contour hierarchy (e.g. output from pcv.roi.rectangle or other methods)
+    - marker          = 'define' or 'detect'. If define it means you set an area, if detect it means you want to
+                      detect within an area
+    - objcolor        = Object color is 'dark' or 'light' (is the marker darker or lighter than the background)
+    - thresh_channel  = 'h', 's', or 'v' for hue, saturation or value
+    - thresh          = Binary threshold value (integer)
+    - filename        = False or the name of an output image file
     
 - **Context:**
     - Allows user to add size marker data, so that shape data can be normalized between images/cameras
@@ -40,8 +35,14 @@ Get and record the size of a size marker or set an area as a size marker.
 ```python
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
+
+# Define an ROI for the marker
+roi_contour, roi_hierarchy = pcv.roi.rectangle(3550, 850, 500, 500, img1)
+
 # Detect and Measure Size Marker
-device, marker_header,marker_data,images=pcv.report_size_marker_area(img1, 'rectangle', device, debug='print', marker='detect', x_adj=3500, y_adj=600, w_adj=-100, h_adj=-1500, base='white', objcolor='light', thresh_channel='s', thresh=120, filename=False)```
+marker_header,marker_data,images = pcv.report_size_marker_area(img1, roi_contour, roi_hierarchy, marker='detect', objcolor='light', thresh_channel='s', thresh=120, filename=False)
 ```
 
 **Area selected to detect size markers**

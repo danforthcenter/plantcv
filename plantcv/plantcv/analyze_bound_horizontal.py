@@ -1,45 +1,39 @@
 # User-Input Boundary Line
 
+import os
 import cv2
 import numpy as np
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
+from plantcv.plantcv import params
 
 
-def analyze_bound_horizontal(img, obj, mask, line_position, device, debug=None, filename=False):
+def analyze_bound_horizontal(img, obj, mask, line_position, filename=False):
     """User-input boundary line tool
 
     Inputs:
-    img             = image
+    img             = RGB or grayscale image data for plotting
     obj             = single or grouped contour object
-    mask            = mask made from selected contours
-    shape_header    = pass shape header data to function
-    shape_data      = pass shape data so that analyze_bound data can be appended to it
+    mask            = Binary mask made from selected contours
     line_position   = position of boundry line (a value of 0 would draw the line through the bottom of the image)
-    device          = device number. Used to count steps in the pipeline
-    debug           = None, print, or plot. Print = save to file, Plot = print to screen.
     filename        = False or image name. If defined print image.
 
     Returns:
-    device          = device number
     bound_header    = data table column headers
     bound_data      = boundary data table
     analysis_images = output image filenames
 
-    :param img: numpy array
+    :param img: numpy.ndarray
     :param obj: list
-    :param mask: numpy array
+    :param mask: numpy.ndarray
     :param line_position: int
-    :param device: int
-    :param debug: str
     :param filename: str
-    :return device: int
     :return bound_header: tuple
     :return bound_data: tuple
     :return analysis_images: list
     """
 
-    device += 1
+    params.device += 1
     ori_img = np.copy(img)
 
     # Draw line horizontal line through bottom of image, that is adjusted to user input height
@@ -142,7 +136,7 @@ def analyze_bound_horizontal(img, obj, mask, line_position, device, debug=None, 
             print_image(ori_img, out_file)
             analysis_images = ['IMAGE', 'boundary', out_file]
 
-    if debug is not None:
+    if params.debug is not None:
         point3 = (0, y_coor - 4)
         point4 = (x_coor, y_coor - 4)
         cv2.line(ori_img, point3, point4, (255, 0, 255), 5)
@@ -162,11 +156,11 @@ def analyze_bound_horizontal(img, obj, mask, line_position, device, debug=None, 
                 cv2.line(ori_img, (int(cmx), y_coor - 2), (int(cmx), y_coor + height_below_bound), (0, 255, 0), 3)
                 cv2.line(wback, (int(cmx), y_coor - 2), (int(cmx), y_coor - height_above_bound), (255, 0, 0), 3)
                 cv2.line(wback, (int(cmx), y_coor - 2), (int(cmx), y_coor + height_below_bound), (0, 255, 0), 3)
-        if debug == 'print':
-            print_image(wback, (str(device) + '_boundary_on_white.jpg'))
-            print_image(ori_img, (str(device) + '_boundary_on_img.jpg'))
-        if debug == 'plot':
+        if params.debug == 'print':
+            print_image(wback, os.path.join(params.debug_outdir, str(params.device) + '_boundary_on_white.jpg'))
+            print_image(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_boundary_on_img.jpg'))
+        if params.debug == 'plot':
             plot_image(wback)
             plot_image(ori_img)
 
-    return device, bound_header, bound_data, analysis_images
+    return bound_header, bound_data, analysis_images

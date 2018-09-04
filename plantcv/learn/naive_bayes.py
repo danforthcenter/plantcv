@@ -139,7 +139,7 @@ def naive_bayes_multiclass(samples_file, outfile, mkplots=False):
         channels = {"hue": np.hstack(hue), "saturation": np.hstack(saturation), "value": np.hstack(value)}
         # For each channel
         for channel in channels.keys():
-            # Create a kernel density estimator for the channel values (Guassian kernel)
+            # Create a kernel density estimator for the channel values (Gaussian kernel)
             kde = stats.gaussian_kde(channels[channel])
             # Use the KDE to calculate a probability density function for the channel
             # Sample at each of the possible 8-bit values

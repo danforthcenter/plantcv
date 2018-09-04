@@ -5,16 +5,40 @@ sudo: false
 python:
   - "2.7"
   - "3.6"
-# Allow Python3 tests to fail for now
-#matrix:
-#  allow_failures:
-#    - python: "3.6"
+  - "3.7"
+# Allow Python3.7 tests to fail for now
+matrix:
+  allow_failures:
+    - python: "3.7"
 # Do not have the virtualenv use system-wide site packages
 virtualenv:
-    system_site_packages: false
+  system_site_packages: false
+
 # command to install dependencies
-before_install:
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+#before_install:
+#  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+#      wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
+#    else
+#      wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+#    fi
+#  - bash miniconda.sh -b -p $HOME/miniconda
+#  - export PATH="$HOME/miniconda/bin:$PATH"
+#  - hash -r
+#  - conda config --set always_yes yes --set changeps1 no
+#  - conda info -a
+#  # These are the packages we need
+#  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+#      # matplotlib is causing issues with ths configuration on Travis-CI, overriding normal defaults
+#      conda create -q -c conda-forge -n test-environment --file requirements.txt python=$TRAVIS_PYTHON_VERSION opencv=2.4 matplotlib=1.5 coveralls;
+#    else
+#      conda create -q -c conda-forge -n test-environment --file requirements.txt python=$TRAVIS_PYTHON_VERSION opencv=3.3 coveralls;
+#    fi
+#  - source activate test-environment
+#  - conda install coveralls matplotlib numpy pandas python-dateutil scipy scikit-image pytest
+# Install PlantCV
+install:
+  - |
+    if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
       wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
     else
       wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
@@ -23,18 +47,16 @@ before_install:
   - export PATH="$HOME/miniconda/bin:$PATH"
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
-#  - conda update -q conda
   - conda info -a
   # These are the packages we need
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
-      conda create -q -c conda-forge -n test-environment python=$TRAVIS_PYTHON_VERSION opencv=2.4;
+  - |
+    if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+    # matplotlib is causing issues with ths configuration on Travis-CI, overriding normal defaults
+      conda create -q -c conda-forge -n test-environment --file requirements.txt python=$TRAVIS_PYTHON_VERSION opencv=2.4 matplotlib=1.5 coveralls;
     else
-      conda create -q -c conda-forge -n test-environment python=$TRAVIS_PYTHON_VERSION opencv=3.3;
+      conda create -q -c conda-forge -n test-environment --file requirements.txt python=$TRAVIS_PYTHON_VERSION opencv=3.3 coveralls;
     fi
   - source activate test-environment
-  - conda install coveralls matplotlib numpy pandas python-dateutil scipy scikit-image pytest
-# Install PlantCV
-install:
   - python setup.py install
 # command to run tests
 script:

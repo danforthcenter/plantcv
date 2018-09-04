@@ -235,7 +235,7 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
     bgr = [b, g, r]
     corrected_img = cv2.merge(bgr)
 
-    #round corrected_img elements to be within range and of the correct data type
+    # round corrected_img elements to be within range and of the correct data type
     corrected_img = np.rint(corrected_img)
     corrected_img[np.where(corrected_img > 255)] = 255
     corrected_img = corrected_img.astype(np.uint8)
@@ -322,13 +322,7 @@ def correct_color(target_img, target_mask, source_img, source_mask, output_direc
     """
     # check output_directory, if it does not exist, create
     if not os.path.exists(output_directory):
-        try:
-            os.makedirs(output_directory)
-        except OSError as exc:
-            if exc.errno == errno.EEXIST and os.path.isdir(output_directory):
-                pass
-            else:
-                fatal_error("Error creating output_directory.")
+        os.mkdir(output_directory)
 
     # get color matrices for target and source images
     target_headers, target_matrix = get_color_matrix(target_img, target_mask)
@@ -348,5 +342,3 @@ def correct_color(target_img, target_mask, source_img, source_mask, output_direc
     corrected_img = apply_transformation_matrix(source_img, target_img, transformation_matrix)
 
     return target_matrix, source_matrix, transformation_matrix, corrected_img
-
-

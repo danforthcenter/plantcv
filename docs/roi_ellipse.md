@@ -21,6 +21,9 @@
 ```python
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
+
 roi_contour, roi_hierarchy = pcv.roi.ellipse(x=200, y=200, r1=100, r2=80, angle=0, img=rgb_img)
 ```
 

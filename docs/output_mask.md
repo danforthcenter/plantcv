@@ -2,22 +2,21 @@
 
 Write image and mask with the same name to the path specified (creates two folders within the path if they do not exist).
 
-**output_mask**(*device,img,mask, filename,outdir=None, mask_only=False,debug=None*)
+**plantcv.output_mask**(*img,mask, filename,outdir=None, mask_only=False*)
 
-**returns** device, imgpath, maskpath, analysis_images
+**returns** imgpath, maskpath, analysis_images
 
-**output_mask**(*device,img,mask, filename,outdir=None, mask_only=True,debug=None*)
+**plantcv.output_mask**(*img,mask, filename,outdir=None, mask_only=True*)
 
-**returns** device, maskpath, analysis_images
+**returns** maskpath, analysis_images
 
 - **Parameters:**
-    - device - pipeline step counter
     - img - original image, read in with plantcv function read_image
     - mask - binary mask image created in previous steps (single chanel)
     - filename - vis image file name (output of plantcv read_image function)
     - outdir - output directory
     - mask_only - If True, only outputs mask
-    - debug - None, print, or plot. Print = save to file, Plot = print to screen.
+    
 - **Context:**
     - This function was written to more easily create training sets for machine learning (eg. Naive Bayes Classifier)
 
@@ -25,6 +24,9 @@ Write image and mask with the same name to the path specified (creates two folde
 
 from plantcv import plantcv as pcv      
 
-device, imgpath,maskpath=pcv.output_mask(device, img, mask, 'test.png', '/home/user/images', mask_only=True, debug='print')
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
+
+imgpath,maskpath=pcv.output_mask(img, mask, 'test.png', '/home/user/images', mask_only=True)
 
 ```

@@ -3,6 +3,7 @@
 # For more information see https://github.com/lsx1980/Leaf_count
 
 import cv2
+import os
 import numpy as np
 from scipy import ndimage as ndi
 from skimage.feature import peak_local_max
@@ -11,33 +12,28 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import apply_mask
 from plantcv.plantcv import color_palette
+from plantcv.plantcv import params
 
 
-def watershed_segmentation(device, img, mask, distance=10, filename=False, debug=None):
+def watershed_segmentation(rgb_img, mask, distance=10, filename=False):
     """Uses the watershed algorithm to detect boundary of objects. Needs a marker file which specifies area which is
        object (white), background (grey), unknown area (black).
 
     Inputs:
-    device              = device number. Used to count steps in the pipeline
-    img                 = image to perform watershed on needs to be 3D (i.e. np.shape = x,y,z not np.shape = x,y)
+    rgb_img             = image to perform watershed on needs to be 3D (i.e. np.shape = x,y,z not np.shape = x,y)
     mask                = binary image, single channel, object in white and background black
     distance            = min_distance of local maximum
     filename            = if user wants to output analysis images change filenames from false
-    debug               = None, print, or plot. Print = save to file, Plot = print to screen.
 
     Returns:
-    device              = device number
     watershed_header    = shape data table headers
     watershed_data      = shape data table values
     analysis_images     = list of output images
 
-    :param device: int
-    :param img: numpy array
-    :param mask: numpy array
+    :param rgb_img: numpy.ndarray
+    :param mask: numpy.ndarray
     :param distance: int
     :param filename: str
-    :param debug: str
-    :return device: int
     :return watershed_header: list
     :return watershed_data: list
     :return analysis_images: list
@@ -54,15 +50,15 @@ def watershed_segmentation(device, img, mask, distance=10, filename=False, debug
     dist_transform1 = -dist_transform
     labels = watershed(dist_transform1, markers, mask=mask)
 
-    img1 = np.copy(img)
+    img1 = np.copy(rgb_img)
 
     for x in np.unique(labels):
         rand_color = color_palette(len(np.unique(labels)))
         img1[labels == x] = rand_color[x]
 
-    device, img2 = apply_mask(img1, mask, 'black', device, debug=None)
+    img2 = apply_mask(img1, mask, 'black')
 
-    joined = np.concatenate((img2, img), axis=1)
+    joined = np.concatenate((img2, rgb_img), axis=1)
 
     estimated_object_count = len(np.unique(markers)) - 1
 
@@ -82,11 +78,11 @@ def watershed_segmentation(device, img, mask, distance=10, filename=False, debug
         estimated_object_count
     )
 
-    if debug == 'print':
-        print_image(dist_transform, str(device) + '_watershed_dist_img.png')
-        print_image(joined, str(device) + '_watershed_img.png')
-    elif debug == 'plot':
+    if params.debug == 'print':
+        print_image(dist_transform, os.path.join(params.debug_outdir, str(params.device) + '_watershed_dist_img.png'))
+        print_image(joined, os.path.join(params.debug_outdir, str(params.device) + '_watershed_img.png'))
+    elif params.debug == 'plot':
         plot_image(dist_transform, cmap='gray')
         plot_image(joined)
 
-    return device, watershed_header, watershed_data, analysis_images
+    return watershed_header, watershed_data, analysis_images

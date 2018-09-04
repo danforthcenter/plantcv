@@ -1,66 +1,63 @@
-# RGB -> HSV -> Gray
+# Rotate an image
 
+import os
 import cv2
 import numpy as np
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
+from plantcv.plantcv import params
 
 
-def rotate(img, rotation_deg, crop, device, debug=None):
+def rotate(img, rotation_deg, crop):
     """Rotate image, sometimes it is necessary to rotate image, especially when clustering for
        multiple plants is needed.
 
     Inputs:
-    img          = image object, RGB colorspace (either single or three channel)
+    img          = RGB or grayscale image data
     rotation_deg = rotation angle in degrees, should be an integer, can be a negative number,
                    positive values move counter clockwise.
     crop         = either true or false, if true, dimensions of rotated image will be same as original image.
-    device       = device number. Used to count steps in the pipeline
-    debug        = None, print, or plot. Print = save to file, Plot = print to screen.
 
     Returns:
-    device       = device number
     rotated_img  = rotated image
 
-    :param img: numpy array
+    :param img: numpy.ndarray
     :param rotation_deg: int
-    :param device: int
-    :param debug: str
-    :return device: int
-    :return rotated_img: numpy array
+    :param crop: bool
+    :return rotated_img: numpy.ndarray
     """
-    device += 1
+    params.device += 1
 
     if len(np.shape(img)) == 3:
         iy, ix, iz = np.shape(img)
     else:
         iy, ix = np.shape(img)
 
-    M = cv2.getRotationMatrix2D((ix / 2, iy / 2), rotation_deg, 1)
+    m = cv2.getRotationMatrix2D((ix / 2, iy / 2), rotation_deg, 1)
 
-    cos = np.abs(M[0, 0])
-    sin = np.abs(M[0, 1])
+    cos = np.abs(m[0, 0])
+    sin = np.abs(m[0, 1])
 
-    if crop==False:
+    if not crop:
         # compute the new bounding dimensions of the image
-        nW = int((iy * sin) + (ix * cos))
-        nH = int((iy * cos) + (ix * sin))
+        nw = int((iy * sin) + (ix * cos))
+        nh = int((iy * cos) + (ix * sin))
 
         # adjust the rotation matrix to take into account translation
-        M[0, 2] += (nW / 2) - (ix/2)
-        M[1, 2] += (nH / 2) - (iy/2)
+        m[0, 2] += (nw / 2) - (ix / 2)
+        m[1, 2] += (nh / 2) - (iy / 2)
 
-        rotated_img =cv2.warpAffine(img, M, (nW, nH))
+        rotated_img = cv2.warpAffine(img, m, (nw, nh))
     else:
-        rotated_img = cv2.warpAffine(img, M, (ix, iy))
+        rotated_img = cv2.warpAffine(img, m, (ix, iy))
 
-    if debug == 'print':
-        print_image(rotated_img, (str(device) + '_rotated_img.png'))
+    if params.debug == 'print':
+        print_image(rotated_img, os.path.join(params.debug_outdir, str(params.device) + '_rotated_img.png'))
 
-    elif debug == 'plot':
+    elif params.debug == 'plot':
         if len(np.shape(img)) == 3:
             plot_image(rotated_img)
         else:
             plot_image(rotated_img, cmap='gray')
 
-    return device, rotated_img
+    return rotated_img

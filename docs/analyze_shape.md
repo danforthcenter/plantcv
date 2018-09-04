@@ -2,16 +2,13 @@
 
 Shape analysis outputs numeric properties for an input object (contour or grouped contours), works best on grouped contours.
  
-**analyze_object**(*img, imgname, obj, mask, device, debug=None, filename=False*)
+**plantcv.analyze_object**(*img, obj, mask, device*)
 
-**returns** device, shape data headers, shape data, image with shape data
+**returns** shape data headers, shape data, image with shape data
 
 - **Parameters:**
-    - img - image object (most likely the original), color(RGB)
-    - imgname - name of image
+    - img - RGB or grayscale image data for plotting
     - obj - single or grouped contour object
-    - device - Counter for image processing steps
-    - debug - None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None 
     - filename - False or image name. If defined print image
 - **Context:**
     - Used to output shape characteristics of an image, including height, object area, convex hull, convex hull area, perimeter, extent x, extent y, longest axis, centroid x coordinate, centroid y coordinate, in bounds QC (if object touches edge of image, image is flagged). 
@@ -46,9 +43,13 @@ Shape analysis outputs numeric properties for an input object (contour or groupe
 ```python
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+
+pcv.params.debug = "print"
+
 # Characterize object shapes
     
-device, shape_header, shape_data, shape_img = pcv.analyze_object(img, imgname, objects, mask, device, debug="print", "/home/malia/setaria_shape_img.png")
+shape_header, shape_data, shape_img = pcv.analyze_object(img, imgname, objects, mask, device, debug="print", "/home/malia/setaria_shape_img.png")
 ```
 
 **Image with identified objects**

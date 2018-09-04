@@ -8,15 +8,13 @@ Images must be of the same size and type.
 If not, larger image will be taken and downsampled to smaller image size.  
 If they are of different types, an error will occur.  
 
-**background_subtraction(*foreground_image, background_image, device, debug=None*)**
+**plantcv.background_subtraction(*foreground_image, background_image*)**
 
-**returns** device, foreground mask
+**returns** foreground mask
 
 - **Parameters**
     - foreground_image - grayscale or RGB image object
 	- background_image - grayscale or RGB image object
-	- device - Counter for image processing stops
-	- debug - None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
 - **Context:**
     - Used to extract object from foreground image containing it and background image without it.
 	- E.g. A picture of a pot and the background and a picture of the plant, pot, and same background. Preferably taken from same background.
@@ -33,8 +31,13 @@ If they are of different types, an error will occur.
 
 ```python
 from plantcv import plantcv as pcv
+
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+
+pcv.params.debug = "print"
+
 # Create a foreground mask from both images using cv2.BackgroundSubtractorMOG().
-device, fgmask = pcv.background_subtraction(foreground_image, background_image, device, debug = "print")
+fgmask = pcv.background_subtraction(foreground_image, background_image)
 ```
 
 **Foreground Mask**

@@ -1,33 +1,30 @@
 # Crop position mask
 
+import os
 import numpy as np
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
+from plantcv.plantcv import params
 
 
-def shift_img(img, device, number, side="right", debug=None):
+def shift_img(img, number, side="right"):
     """this function allows you to shift an image over without changing dimensions
 
     Inputs:
-    img     = image to mask
+    img     = RGB or grayscale image data
     number  = number of rows or columns to add
     side   = "top", "bottom", "right", "left" where to add the rows or columns to
-    device  = device counter
-    debug   = None, print, or plot. Print = save to file, Plot = print to screen.
 
     Returns:
-    device  = device number
     newmask = image mask
 
-    :param img: numpy array
-    :param device: int
+    :param img: numpy.ndarray
     :param number: int
     :param side: str
-    :param debug: str
-    :return newmask: numpy array
+    :return newmask: numpy.ndarray
     """
-    device += 1
+    params.device += 1
 
     number = number - 1
 
@@ -61,12 +58,12 @@ def shift_img(img, device, number, side="right", debug=None):
 
     if len(np.shape(img)) == 2:
         adjusted_img = adjusted_img[:,:,0]
-    if debug == 'print':
-        print_image(adjusted_img, (str(device) + "_shifted_img.png"))
-    elif debug == 'plot':
+    if params.debug == 'print':
+        print_image(adjusted_img, os.path.join(params.debug_outdir, str(params.device) + "_shifted_img.png"))
+    elif params.debug == 'plot':
         if len(np.shape(adjusted_img)) == 3:
             plot_image(adjusted_img)
         else:
             plot_image(adjusted_img, cmap='gray')
 
-    return device, adjusted_img
+    return adjusted_img

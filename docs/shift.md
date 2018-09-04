@@ -2,16 +2,14 @@
 
 Shifts image, but keeps dimensions the same
 
-**shift_img**(*img, device, number, side='right', debug=None*)
+**plantcv.shift_img**(*img, number, side='right'*)
 
-**returns** device, image after shift
+**returns** image after shift
 
 - **Parameters:**
-    - img1 - Input image
-    - device - Counter for image processing steps
+    - img - RGB or grayscale image data
     - number - number of rows or columns to add
     - side - "top", "bottom", "right", "left" where to add the rows or columns
-    - debug- None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
 - **Context:**
     - Shifts image from the specified direction.
 - **Example use:**
@@ -24,8 +22,11 @@ Shifts image, but keeps dimensions the same
 ```python
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
+
 # Shift image
-device, shifted_img = pcv.shift_img(img, device,300,"top", debug='print')
+shifted_img = pcv.shift_img(img, 300, "top")
 ```
 
 **Image after shift**

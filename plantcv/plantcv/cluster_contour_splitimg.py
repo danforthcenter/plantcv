@@ -6,18 +6,18 @@ from datetime import datetime
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import apply_mask
+from plantcv.plantcv import params
 
 
-def cluster_contour_splitimg(device, img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None,
-                             filenames=None, debug=None):
+def cluster_contour_splitimg(rgb_img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None,
+                             filenames=None):
 
     """
     This function takes clustered contours and splits them into multiple images, also does a check to make sure that
     the number of inputted filenames matches the number of clustered contours.
 
     Inputs:
-    device                  = Counter for image processing steps
-    img                     = ideally a masked RGB image.
+    rgb_img                 = RGB image data
     grouped_contour_indexes = output of cluster_contours, indexes of clusters of contours
     contours                = contours to cluster, output of cluster_contours
     hierarchy               = hierarchy of contours, output of find_objects
@@ -26,25 +26,21 @@ def cluster_contour_splitimg(device, img, grouped_contour_indexes, contours, hie
                               output of filename from read_image function
     filenames               = input txt file with list of filenames in order from top to bottom left to right
                               (likely list of genotypes)
-    debug                   = print debugging images
 
     Returns:
-    device                  = pipeline step counter
     output_path             = array of paths to output images
 
-    :param device: int
-    :param img: ndarray
+    :param rgb_img: numpy.ndarray
     :param grouped_contour_indexes: list
     :param contours: list
+    :param hierarchy: numpy.ndarray
     :param outdir: str
     :param file: str
     :param filenames: str
-    :param debug: str
-    :return device: int
     :return output_path: str
     """
 
-    device += 1
+    params.device += 1
 
     sys.stderr.write(
         'This function has been updated to include object hierarchy so object holes can be included\n')
@@ -54,12 +50,12 @@ def cluster_contour_splitimg(device, img, grouped_contour_indexes, contours, hie
     i = datetime.now()
     timenow = i.strftime('%m-%d-%Y_%H:%M:%S')
 
-    if file == None:
+    if file is None:
         filebase = timenow
     else:
         filebase = file[:-4]
 
-    if filenames == None:
+    if filenames is None:
         l = len(grouped_contour_indexes)
         namelist = []
         for x in range(0, l):
@@ -109,7 +105,7 @@ def cluster_contour_splitimg(device, img, grouped_contour_indexes, contours, hie
     # create filenames
 
     group_names = []
-    group_names1= []
+    group_names1 = []
     for i, x in enumerate(namelist):
         plantname = str(filebase) + '_' + str(x) + '_p' + str(i) + '.jpg'
         maskname = str(filebase) + '_' + str(x) + '_p' + str(i) + '_mask.jpg'
@@ -121,15 +117,15 @@ def cluster_contour_splitimg(device, img, grouped_contour_indexes, contours, hie
     output_path = []
 
     for y, x in enumerate(corrected_contour_indexes):
-        if outdir != None:
+        if outdir is not None:
             savename = os.path.join(str(outdir), group_names[y])
-            savename1= os.path.join(str(outdir), group_names1[y])
+            savename1 = os.path.join(str(outdir), group_names1[y])
         else:
             savename = os.path.join(".", group_names[y])
             savename1 = os.path.join(".", group_names1[y])
-        iy, ix, iz = np.shape(img)
+        iy, ix, iz = np.shape(rgb_img)
         mask = np.zeros((iy, ix, 3), dtype=np.uint8)
-        masked_img = np.copy(img)
+        masked_img = np.copy(rgb_img)
         for a in x:
             if hierarchy[0][a][3] > -1:
                 cv2.drawContours(mask, contours, a, (0, 0, 0), -1, lineType=8, hierarchy=hierarchy)
@@ -142,21 +138,17 @@ def cluster_contour_splitimg(device, img, grouped_contour_indexes, contours, hie
             pass
         else:
             retval, mask_binary = cv2.threshold(mask_binary, 254, 255, cv2.THRESH_BINARY)
-            device, masked1 = apply_mask(masked_img, mask_binary, 'white', device, debug)
-            if outdir != None:
+            masked1 = apply_mask(masked_img, mask_binary, 'white')
+            if outdir is not None:
                 print_image(masked1, savename)
-                print_image(mask_binary,savename1)
+                print_image(mask_binary, savename1)
             output_path.append(savename)
 
-            if debug == 'print':
-                print_image(masked1, (str(device) + '_clusters.png'))
-                print_image(mask_binary, (str(device) + '_clusters_mask.png'))
-            elif debug == 'plot':
-                if len(np.shape(masked1)) == 3:
-                    plot_image(masked1)
-                    plot_image(mask_binary, cmap='gray')
-                else:
-                    plot_image(masked1, cmap='gray')
-                    plot_image(mask_binary, cmap='gray')
+            if params.debug == 'print':
+                print_image(masked1, os.path.join(params.debug_outdir, str(params.device) + '_clusters.png'))
+                print_image(mask_binary, os.path.join(params.debug_outdir, str(params.device) + '_clusters_mask.png'))
+            elif params.debug == 'plot':
+                plot_image(masked1)
+                plot_image(mask_binary, cmap='gray')
 
-    return device, output_path
+    return output_path

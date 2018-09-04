@@ -2,14 +2,15 @@
 
 Combine objects together for downstream analysis, usually done after object filtering.
 
-**object_composition**(*img, contours, hierarchy, device, debug=None*)
+**plantcv.object_composition**(*img, contours, hierarchy*)
 
-**returns** device, grouped object, image mask
+**returns** grouped object, image mask
 
 - **Parameters:**
-    - contours- object list
-    - device- device number. Used to count steps in the pipeline
-    - debug - None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
+    - img - RGB or grayscale image data for plotting
+    - contours- Contour list
+    - Contour hierarchy NumPy array
+   
 - **Context:**
     - This function combines objects together. This is important for downstream analysis of shape characteristics, if plant objects are not combined then one plant can appear to be many different objects.
 - **Example use:**
@@ -28,8 +29,11 @@ Combine objects together for downstream analysis, usually done after object filt
 ```python
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
+
 # Combine objects so downstream analysis can be run on a single plant object
-device, obj, mask = pcv.object_composition(img, roi_objects, hierarchy, device, debug="print")
+obj, mask = pcv.object_composition(img, roi_objects, hierarchy)
 ```
 
 **Combined contours**

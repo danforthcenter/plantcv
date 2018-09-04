@@ -31,7 +31,7 @@ otherwise ~4 final output images are produced.
 
 Optional Inputs:
 
-*  **Debug Flag:** Prints an image at each step
+*  **Debug Flag:** Prints or plots (if in jupyter or have x11 forwarding on) an image at each step
 *  **Region of Interest:** The user can input their own binary region of interest or image mask 
 (for PSII images we use a premade mask to remove the screws from the image). 
 Make sure the input is the same size as your image or you will have problems.  
@@ -40,7 +40,7 @@ Sample command to run a pipeline on a single PSII image set:
 
 Always test pipelines (preferably with -D flag for debug mode) before running over a full image set.
 
-`python pipelinename.py -i1 F0-testimg.png -i2 Fmin-testimg.png -i3 Fmax-testimg.png -m track-mask.png -o ./output-images -D`
+`python pipelinename.py -i1 F0-testimg.png -i2 Fmin-testimg.png -i3 Fmax-testimg.png -m track-mask.png -o ./output-images -D 'print'`
 
 
 ### Walk Through A Sample Pipeline
@@ -78,15 +78,15 @@ def main():
     # Get options
     args = options()
     
+    pcv.params.debug=args.debug
+    pcv.params.debug_outdir=args.outdir
+    
     # Read image (converting fmax and track to 8 bit just to create a mask, use 16-bit for all the math)
     mask, path, filename = pcv.readimage(args.fmax)
     #mask = cv2.imread(args.fmax)
     track = cv2.imread(args.track)
     
     mask1, mask2, mask3= cv2.split(mask)
-    
-    # Pipeline step
-    device = 0
 
 ```
 
@@ -105,10 +105,10 @@ The [apply mask function](apply_mask.md) is then used to apply the track mask to
 
 ```python
     # Mask pesky track autofluor
-    device, track1 = pcv.rgb2gray_hsv(track, 'v', device, args.debug)
-    device, track_thresh = pcv.binary_threshold(track1, 0, 255, 'light', device, args.debug)
-    device, track_inv = pcv.invert(track_thresh, device, args.debug)
-    device, track_masked = pcv.apply_mask(mask1, track_inv, 'black', device, args.debug)
+    track1 = pcv.rgb2gray_hsv(track, 'v')
+    track_thresh = pcv.threshold.binary(track1, 0, 255, 'light')
+    track_inv = pcv.invert(track_thresh)
+    track_masked = pcv.apply_mask(mask1, track_inv, 'black')
 ```
 
 **Figure 2.** (Top) Inverted mask (white portion is kept as objects).
@@ -122,7 +122,7 @@ The resulting image is then thresholded with a [binary threshold](binary_thresho
 
 ```python
     # Threshold the image
-    device, fmax_thresh = pcv.binary_threshold(track_masked, 20, 255, 'light', device, args.debug)
+    fmax_thresh = pcv.threshold.binary(track_masked, 20, 255, 'light')
 ```
 
 **Figure 3.** Binary threshold on masked Fmax image.
@@ -133,8 +133,8 @@ Noise is reduced with a [median blur](median_blur.md)
 
 ```python
   # Median Filter
-  device, s_mblur = pcv.median_blur(fmax_thresh, 5, device, args.debug)
-  device, s_cnt = pcv.median_blur(fmax_thresh, 5, device, args.debug)
+  s_mblur = pcv.median_blur(fmax_thresh, 5)
+  s_cnt = pcv.median_blur(fmax_thresh, 5)
 ```
 
 **Figure 4.** Median blur applied.
@@ -145,8 +145,8 @@ Noise is also reduced with a [fill step](fill.md).
 
 ```python
     # Fill small objects
-    device, s_fill = pcv.fill(s_mblur, s_cnt, 110, device, args.debug)
-    device, sfill_cnt = pcv.fill(s_mblur, s_cnt, 110, device, args.debug)
+    s_fill = pcv.fill(s_mblur, 110)
+    sfill_cnt = pcv.fill(s_mblur, 110)
 ```
 
 **Figure 5.** Fill applied.  
@@ -158,18 +158,18 @@ the [Find Objects Function](find_objects.md).
 
 ```python
     # Identify objects
-    device, id_objects,obj_hierarchy = pcv.find_objects(mask, sfill_cnt, device, args.debug)
+    id_objects,obj_hierarchy = pcv.find_objects(mask, sfill_cnt)
 ```
 
 **Figure 6.** All objects found within the image are identified.
 
 ![Screenshot](img/tutorial_images/psII/06_id_objects.jpg)
 
-Next the region of interest is defined using the [Region of Interest Function](define_roi.md).   
+Next the region of interest is defined using the [Region of Interest Function](roi_rectangle.md).   
 
 ```python
     # Define ROI
-    device, roi1, roi_hierarchy = pcv.define_roi(mask, 'circle', device, None, 'default', args.debug, True, 0, 0, -50, -50)
+    roi1, roi_hierarchy = pcv.roi.rectangle(x=100, y=100, h=200, w=200, img=mask)
 ```
 
 **Figure 7.** Region of interest is drawn on the image.
@@ -181,7 +181,7 @@ Alternately the objects can be cut to the region of interest.
 
 ```python
     # Decide which objects to keep
-    device, roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(mask, 'partial', roi1, roi_hierarchy, id_objects, obj_hierarchy, device, args.debug)
+    roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(mask, 'partial', roi1, roi_hierarchy, id_objects, obj_hierarchy)
 ```
 
 **Figure 8.** Objects in the region of interest are identified (green).  
@@ -195,7 +195,7 @@ analysis to perform properly the plant objects need to be combined into one obje
 
 ```python
     # Object combine kept objects
-    device, obj, masked = pcv.object_composition(mask, roi_objects, hierarchy3, device, args.debug)
+    obj, masked = pcv.object_composition(mask, roi_objects, hierarchy3)
 ```
 
 **Figure 9.** Combined plant object outlined in blue.
@@ -212,19 +212,34 @@ along with the generated mask to calculate Fv/Fm.
 ```python
 ################ Analysis ################  
     
+    outfile=False
+    if args.writeimg==True:
+        outfile=args.outdir+"/"+filename
+    
     # Find shape properties, output shape image (optional)
-    device, shape_header, shape_data, shape_img = pcv.analyze_object(mask, args.fmax, obj, masked, device, args.debug, args.outdir + '/' + filename)
+    shape_header, shape_data, shape_img = pcv.analyze_object(mask, obj, masked, args.outdir + '/' + filename)
     
     # Fluorescence Measurement (read in 16-bit images)
     fdark = cv2.imread(args.fdark, -1)
     fmin = cv2.imread(args.fmin, -1)
     fmax = cv2.imread(args.fmax, -1)
     
-    device, fvfm_header, fvfm_data = pcv.fluor_fvfm(fdark,fmin,fmax,kept_mask, device, args.outdir+'/'+filename, 1000, args.debug)
+    fvfm_header, fvfm_data = pcv.fluor_fvfm(fdark,fmin,fmax,kept_mask, args.outdir+'/'+filename, 1000)
     
-    # Output shape and color data
-    pcv.print_results(args.fmax, shape_header, shape_data)
-    pcv.print_results(args.fmax, fvfm_header, fvfm_data)
+    # Write shape and nir data to results file
+    result=open(args.result,"a")
+    result.write('\t'.join(map(str,shape_header)))
+    result.write("\n")
+    result.write('\t'.join(map(str,shape_data)))
+    result.write("\n")
+    for row in shape_img:  
+        result.write('\t'.join(map(str,row)))
+        result.write("\n")
+    result.write('\t'.join(map(str,fvfm_header)))
+    result.write("\n")
+    result.write('\t'.join(map(str,fvfm_data)))
+    result.write("\n")
+    result.close()
   
 if __name__ == '__main__':
     main()

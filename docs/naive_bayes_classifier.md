@@ -7,15 +7,14 @@ Plant (P) and Background (B), each containing the Random Variables Hue (H), Satu
 Bayes Theorem with the naive assumption that the Random Variables are independent (for convenience). Output pixels are
 labeled as plant (255) or background (0) if P(Pixel = plant) > P(Pixel = background).
 
-**naive_bayes_classifier(*img, pdf_file, device, debug=None*)**
+**plantcv.naive_bayes_classifier(*rgb_img, pdf_file*)**
 
-**returns** device, mask
+**returns** mask
 
 - **Parameters:**
-    - img - (ndarray): color image (BGR)
+    - rgb_img - RGB image data
     - pdf_file - (str): output file containing PDFs from `plantcv-train.py`
-    - device - (int): counter for image processing steps
-    - debug - (str): None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
+   
 - **Context:**
     - Used to help differentiate plant and background
 - **Example use:**
@@ -29,8 +28,11 @@ labeled as plant (255) or background (0) if P(Pixel = plant) > P(Pixel = backgro
 ```python
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
+
 # Create binary image from a gray image based on threshold values. Targeting light objects in the image.
-device, mask = pcv.naive_bayes_classifier(img, "naive_bayes_pdfs.txt", device=0, debug="print")
+mask = pcv.naive_bayes_classifier(img, "naive_bayes_pdfs.txt")
 ```
 
 The output mask is a dictionary with the keys being the class names and the values being the corresponding binary masks.

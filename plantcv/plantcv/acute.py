@@ -3,9 +3,9 @@
 import numpy as np
 import math
 import cv2
+from plantcv.plantcv import params
 
-
-def acute(obj, win, thresh, mask, device, debug=None):
+def acute(obj, win, thresh, mask):
     """acute: identify landmark positions within a contour for morphometric analysis
 
     Inputs:
@@ -15,8 +15,6 @@ def acute(obj, win, thresh, mask, device, debug=None):
     thresh      = angle score threshold to be applied for mapping out landmark
                   coordinate clusters within each contour
     mask        = binary mask used to generate contour array (necessary for ptvals)
-    device      = device number. Used to count steps in the pipeline
-    debug       = None, print, or plot. Print = save to file, Plot = print to screen.
 
     Outputs:
     homolog_pts = pseudo-landmarks selected from each landmark cluster
@@ -34,12 +32,10 @@ def acute(obj, win, thresh, mask, device, debug=None):
     :param win: int
     :param thresh: int
     :param mask: ndarray
-    :param device: int
-    :param debug: str
     :return homolog_pts:
     """
 
-    device += 1
+    params.device += 1
     chain = []                                         # Create empty chain to store angle scores
     for k in list(range(len(obj))):                    # Coordinate-by-coordinate 3-point assignments
         vert = obj[k]
@@ -195,12 +191,12 @@ def acute(obj, win, thresh, mask, device, debug=None):
         start_pts = obj[SSpts]
         stop_pts = obj[TSpts]
 
-        if debug is not None:
-            return device, homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist
+        if params.debug is not None:
+            return homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist
         else:
-            return device, homolog_pts
+            return homolog_pts
     else: 
-        if debug is not None:
-            return device, [], [], [], [], [], []
+        if params.debug is not None:
+            return [], [], [], [], [], []
         else:
-            return device, []
+            return []

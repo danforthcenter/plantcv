@@ -2,7 +2,7 @@
 
 This is a plotting method used to examine the distribution of signal within an image.
 
-**plot_hist**(*img, 'hist_name'*)
+**plantcv.plot_hist**(*img, 'hist_name'*)
 
 **returns** bins,hist, hist plot
 

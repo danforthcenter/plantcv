@@ -2,40 +2,35 @@
 
 import cv2
 import numpy as np
+import os
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
+from plantcv.plantcv import params
 
 
-def dilate(img, kernel, i, device, debug=None):
+def dilate(gray_img, kernel, i):
     """Performs morphological 'dilation' filtering. Adds pixel to center of kernel if conditions set in kernel are true.
 
     Inputs:
-    img     = input image
-    kernel  = filtering window, you'll need to make your own using as such:
-              kernal = np.zeros((x,y), dtype=np.uint8), then fill the kernal with appropriate values
-    i       = interations, i.e. number of consecutive filtering passes
-    device  = device number. Used to count steps in the pipeline
-    debug   = None, print, or plot. Print = save to file, Plot = print to screen.
+    gray_img = Grayscale (usually binary) image data
+    kernel   = Kernel size (int). A k x k kernel will be built. Must be greater than 1 to have an effect.
+    i        = interations, i.e. number of consecutive filtering passes
 
     Returns:
-    device  = device number
     dil_img = dilated image
 
-    :param img: numpy array
-    :param kernel: numpy array
+    :param gray_img: numpy.ndarray
+    :param kernel: int
     :param i: int
-    :param device: int
-    :param debug: str
-    :return device: int
-    :return dil_img: numpy array
+    :return dil_img: numpy.ndarray
     """
 
     kernel1 = int(kernel)
     kernel2 = np.ones((kernel1, kernel1), np.uint8)
-    dil_img = cv2.dilate(src=img, kernel=kernel2, iterations=i)
-    device += 1
-    if debug == 'print':
-        print_image(dil_img, str(device) + '_dil_image_' + 'itr_' + str(i) + '.png')
-    elif debug == 'plot':
+    dil_img = cv2.dilate(src=gray_img, kernel=kernel2, iterations=i)
+    params.device += 1
+    if params.debug == 'print':
+        print_image(dil_img, os.path.join(params.debug, str(params.device) + '_dil_image_' + 'itr_' + str(i) + '.png'))
+    elif params.debug == 'plot':
         plot_image(dil_img, cmap='gray')
-    return device, dil_img
+    return dil_img

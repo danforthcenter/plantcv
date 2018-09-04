@@ -3,16 +3,15 @@
 Perform morphological 'erosion' filtering. Keeps pixel in center of the kernel if 
 conditions set in kernel are true, otherwise removes pixel.
 
-**erode**(*img, kernel, i, device, debug=None*)
+**plantcv.erode**(*gray_img, kernel, i*)
 
-**returns** device, image after erosion
+**returns** image after erosion
 
 - **Parameters:**
-    - img1 - Input image
-    - kernel - An odd integer that is used to build a kernel x kernel matrix using np.ones
+    - gray_img - Grayscale (usually binary) image data
+    - kernel - An odd integer that is used to build a kernel x kernel matrix using np.ones. Must be greater than 1 to have an effect
     - i - Iterations, i.e. the number of consecutive filtering passes
-    - device - Counter for image processing steps
-    - debug- None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
+   
 - **Context:**
     - Used to perform morphological erosion filtering. Helps remove isolated noise pixels or remove boundary of objects.
 - **Example use:**
@@ -25,9 +24,12 @@ conditions set in kernel are true, otherwise removes pixel.
 ```python
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
+
 # Perform erosion filtering
 # Results in removal of isolated pixels or boundary of object removal
-device, er_img = pcv.erosion(img, kernel, 1 device, debug='print')
+er_img = pcv.erode(img, kernel, 1)
 ```
 
 **Image after erosion**

@@ -1,18 +1,19 @@
-import sys
+import os
 import cv2
 import numpy as np
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import color_palette
+from plantcv.plantcv import params
 
 
-def cluster_contours(device, img, roi_objects,roi_obj_hierarchy, nrow=1, ncol=1, debug=None):
+def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1):
 
     """
     This function take a image with multiple contours and clusters them based on user input of rows and columns
 
     Inputs:
-    img                     = An RGB image array
+    img                     = RGB or grayscale image data for plotting
     roi_objects             = object contours in an image that are needed to be clustered.
     roi_obj_hierarchy       = object hierarchy
     nrow                    = number of rows to cluster (this should be the approximate  number of desired rows
@@ -21,28 +22,20 @@ def cluster_contours(device, img, roi_objects,roi_obj_hierarchy, nrow=1, ncol=1,
                               in the entire image (even if there isn't a literal row of plants)
     file                    = output of filename from read_image function
     filenames               = input txt file with list of filenames in order from top to bottom left to right
-    debug                   = print debugging images
 
     Returns:
-    device                  = pipeline step counter
     grouped_contour_indexes = contours grouped
     contours                = All inputed contours
 
-    :param device: int
-    :param img: ndarray
+    :param img: numpy.ndarray
     :param roi_objects: list
     :param nrow: int
     :param ncol: int
-    :param debug: str
-    :return device: int
     :return grouped_contour_indexes: list
     :return contours: list
     """
 
-    device += 1
-
-    sys.stderr.write(
-        'This function has been updated to include object hierarchy so object holes can be included\n')
+    params.device += 1
 
     if len(np.shape(img)) == 3:
         iy, ix, iz = np.shape(img)
@@ -67,7 +60,7 @@ def cluster_contours(device, img, roi_objects,roi_obj_hierarchy, nrow=1, ncol=1,
     # categorize what bin the center of mass of each contour
 
     def digitize(a, step):
-        if isinstance(step, int) == True:
+        if isinstance(step, int) is True:
             i = step
         else:
             i = len(step)
@@ -128,7 +121,7 @@ def cluster_contours(device, img, roi_objects,roi_obj_hierarchy, nrow=1, ncol=1,
 
     # Debug image is rainbow printed contours
 
-    if debug == 'print':
+    if params.debug == 'print':
         if len(np.shape(img)) == 3:
             img_copy = np.copy(img)
         else:
@@ -142,9 +135,9 @@ def cluster_contours(device, img, roi_objects,roi_obj_hierarchy, nrow=1, ncol=1,
                     pass
                 else:
                     cv2.drawContours(img_copy, roi_objects, a, rand_color[i], -1, hierarchy=roi_obj_hierarchy)
-        print_image(img_copy, (str(device) + '_clusters.png'))
+        print_image(img_copy, os.path.join(params.debug_outdir, str(params.device) + '_clusters.png'))
 
-    elif debug == 'plot':
+    elif params.debug == 'plot':
         if len(np.shape(img)) == 3:
             img_copy = np.copy(img)
         else:
@@ -160,4 +153,4 @@ def cluster_contours(device, img, roi_objects,roi_obj_hierarchy, nrow=1, ncol=1,
                     cv2.drawContours(img_copy, roi_objects, a, rand_color[i], -1, hierarchy=roi_obj_hierarchy)
         plot_image(img_copy)
 
-    return device, grouped_contour_indexes, contours, roi_obj_hierarchy
+    return grouped_contour_indexes, contours, roi_obj_hierarchy

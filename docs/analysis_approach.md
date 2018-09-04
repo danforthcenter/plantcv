@@ -47,6 +47,7 @@ configurations to meet image processing goals so the tutorials simply examples o
 *  [VIS / NIR Dual Pipeline](vis_nir_tutorial.md)
 *  [Multi Plant Tutorial](multi-plant_tutorial.md)
 *  [Machine Learning Tutorial](machine_learning_tutorial.md)
+*  [Color Correction Tutorial](transform_color_correction_tutorial.md)
 
 ####**1. Methods of Isolating Target Objects**
 
@@ -62,13 +63,14 @@ downstream image processing steps like thresholding to be the same between image
 #####Object Segmentation Approaches
 
 *  Thresholding method (auto or manual) - A single channel of an image is selected for either 
-[binary thresholding](binary_threshold.md) or auto thresholding ([adaptive](adaptive_threshold.md), or 
-[triangle](triangle_threshold.md)). For a color image, selecting a channel of an image for thresholding likely involves 
-conversion from RGB to [HSV](rgb2hsv.md) or [LAB](rgb2lab.md) colorspace, then selecting Hue, Saturation, Value, 
-Lightness, Green-Magenta, or Blue-Yellow channels. It's best to select a channel that maximizes contrast between the 
-target object and the background. When thresholding an image to segment a target object, it may not be possible to 
-isolate just the target object. Multiple thresholding steps on various channels may be necessary as well as downstream
-noise reduction steps. For an example of this approach see the [VIS Image Pipeline](vis_tutorial.md). 
+[binary thresholding](binary_threshold.md) or auto thresholding ([Gaussian](gaussian_threshold.md), 
+[mean](mean_threshold.md), [Otsu](otsu_threshold.md), or [triangle](triangle_threshold.md)). For a color image, 
+selecting a channel of an image for thresholding likely involves conversion from RGB to [HSV](rgb2hsv.md) or 
+[LAB](rgb2lab.md) colorspace, then selecting Hue, Saturation, Value, Lightness, Green-Magenta, or Blue-Yellow channels. 
+It's best to select a channel that maximizes contrast between the target object and the background. When thresholding 
+an image to segment a target object, it may not be possible to isolate just the target object. Multiple thresholding 
+steps on various channels may be necessary as well as downstream noise reduction steps. For an example of this approach 
+see the [VIS Image Pipeline](vis_tutorial.md). 
 
 *  Background subtraction method - This approach can be used if there are 'null' images (images with everything but the 
 object in them). The null image can be a single image, or an averaged background image. For more information on 
@@ -95,7 +97,7 @@ doing a threshold on a different channel then joining the two channels with a Lo
 
 *  To further isolate an object from surrounding background a region of interest can be used to select the region of 
 the image that contains the target object. To do this you first [detect all the objects](find_objects.md) in the image, 
-then define the [region of interest](define_roi.md), then determine if the objects are  within, touching, or outside of 
+then define the [region of interest](roi_rectangle.md), then determine if the objects are  within, touching, or outside of 
 the region of interest with the [roi_objects function](roi_objects.md).
 
 #####Connecting Objects or Splitting Objects
@@ -112,7 +114,7 @@ in each sub-image. For more information on this process see the [Multi Plant Tut
     
 These are the general categories of object analysis that are available in PlantCV  
 
-*  Object shape parameters: see the [analyze_shape](analyze_shape.md) and [analyze_bound](analyze_bound.md) functions.
+*  Object shape parameters: see the [analyze_shape](analyze_shape.md) and [analyze_bound](analyze_bound_horizontal.md) functions.
 *  Object color or other signal intensity values: see the [analyze_color](analyze_color.md), 
 [analyze_NIR_intensity](analyze_NIR_intensity.md), and [fluor_fvfm](fluor_fvfm.md) functions.
 *  Object classification (For example, classification of disease symptoms, identification of organ structures 

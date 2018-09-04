@@ -2,18 +2,17 @@
 
 Creates a binary image from a gray image using adaptive thresholding.
 
-**triangle_auto_threshold(*device, img, maxvalue, object_type, xstep=1, debug=None*)**
+**plantcv.threshold.triangle(*gray_img, max_value, object_type="light", xstep=1*)**
 
-**returns** device, thresholded image
+**returns** thresholded/binary image
 
 - **Parameters:**
-    - device- Counter for image processing steps
-    - img - grayscale img object
-    - maxValue - value to apply above threshold (255 = white)
-    - objecttype - 'light' or 'dark', is target image light or dark?
+    - gray_img - Grayscale image data
+    - max_value - Value to apply above threshold (255 = white)
+    - object_type - "light" or "dark" (default: "light"). If object is lighter than the background then standard 
+    thresholding is done. If object is darker than the background then inverse thresholding is done
     - xstep - value to move along x-axis to determine the points from which to calculate distance
               recommended to start at 1 and change if needed)
-    - debug- None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
 - **Context:**
     - Used to help differentiate plant and background
     
@@ -26,8 +25,11 @@ Creates a binary image from a gray image using adaptive thresholding.
 ```python
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
+
 # Create binary image from a gray image based
-device, thresholded= pcv.triangle_auto_threshold(device,img, 255,'light', xstep=10, debug="print")
+thresholded = pcv.threshold.triangle(gray_img, 255, 'light', xstep=10)
 ```
 
 **Triangle Auto-Thresholded image (xstep=10)**
@@ -38,8 +40,11 @@ device, thresholded= pcv.triangle_auto_threshold(device,img, 255,'light', xstep=
 ```python
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
+
 # Create binary image from a gray image based 
-device, thresholded= pcv.triangle_auto_threshold(device,img, 255,'light', xstep=1, debug="print")
+thresholded = pcv.threshold.triangle(gray_img, 255, 'light', xstep=1)
 ```
 
 **Triangle Auto-Thresholded image (xstep=1)**

@@ -2,15 +2,14 @@
 
 Convert image from RGB colorspace to LAB colorspace and split the channels.
 
-**rgb2gray_hsv**(*img, channel, device, debug=None*)
+**plantcv.rgb2gray_hsv**(*rgb_img, channel*)
 
-**returns** device, split image (l, a, or b channel)
+**returns** split image (l, a, or b channel)
 
 - **Parameters:**
-    - img- Image to be converted
+    - img - RGB image data
     - channel - Split 'l' (lightness), 'a' (green-magenta), or 'b' (blue-yellow) channel
-    - device - Counter for image processing steps
-    - debug - None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
+   
 - **Context:**
     - Used to help differentiate plant and background
 - **Example use:**
@@ -23,9 +22,11 @@ Convert image from RGB colorspace to LAB colorspace and split the channels.
 ```python
 from plantcv import plantcv as pcv
 
-# image converted from RGB to LAB, channels are then split. Lightness ('l') channel is outputed.
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
 
-device, l_channel=pcv.rgb2gray_lab(img, 'l', device, debug="print")
+# image converted from RGB to LAB, channels are then split. Lightness ('l') channel is outputed.
+l_channel=pcv.rgb2gray_lab(img, 'l')
 ```
 
 **Lightness channel image**
@@ -35,9 +36,11 @@ device, l_channel=pcv.rgb2gray_lab(img, 'l', device, debug="print")
 ```python
 from plantcv import plantcv as pcv
 
-# image converted from RGB to LAB, channels are then split. Green-Magenta ('a') channel is outputed.
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
 
-device, a_channel= pcv.rgb2gray_lab(img, 'a', device, debug="print")
+# image converted from RGB to LAB, channels are then split. Green-Magenta ('a') channel is outputed.
+a_channel= pcv.rgb2gray_lab(img, 'a')
 ```
 
 **Green-Magenta channel image**
@@ -47,9 +50,11 @@ device, a_channel= pcv.rgb2gray_lab(img, 'a', device, debug="print")
 ```python
 from plantcv import plantcv as pcv
 
-# image converted from RGB to Lab, channels are then split. Blue-Yellow ('b') channel is outputed.
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
 
-device, b_channel=pcv.rgb2gray_lab(img, 'b', device, debug="print")
+# image converted from RGB to Lab, channels are then split. Blue-Yellow ('b') channel is outputed.
+b_channel=pcv.rgb2gray_lab(img, 'b')
 ```
 
 **Blue-Yellow channel image**

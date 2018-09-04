@@ -7,7 +7,7 @@ Rotates image without changing the dimensions of the image.
 **returns** device, image after rotation
 
 - **Parameters:**
-    - img - Input image
+    - img - RGB or grayscale image data
     - rotation_deg - rotation angle in degrees, should be an integer, can be a negative number, positive values move counter clockwise.
     - crop - if crop is set to True, image will be cropped to original image dimensions, if set to false, the image size will be adjusted to accomodate new image dimensions.
     - device - Counter for image processing steps

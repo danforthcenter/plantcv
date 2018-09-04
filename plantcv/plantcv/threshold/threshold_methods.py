@@ -1,0 +1,460 @@
+# Threshold functions
+
+import os
+import cv2
+import math
+import numpy as np
+from plantcv.plantcv import print_image
+from plantcv.plantcv import plot_image
+from plantcv.plantcv import fatal_error
+from plantcv.plantcv import params
+
+
+# Binary threshold
+def binary(gray_img, threshold, max_value, object_type="light"):
+    """Creates a binary image from a grayscale image based on the threshold value.
+
+    Inputs:
+    gray_img     = Grayscale image data
+    threshold    = Threshold value (0-255)
+    max_value    = value to apply above threshold (usually 255 = white)
+    object_type  = "light" or "dark" (default: "light")
+                   - If object is lighter than the background then standard thresholding is done
+                   - If object is darker than the background then inverse thresholding is done
+
+    Returns:
+    bin_img      = Thresholded, binary image
+
+    :param gray_img: numpy.ndarray
+    :param threshold: int
+    :param max_value: int
+    :param object_type: str
+    :return bin_img: numpy.ndarray
+    """
+    params.device += 1
+
+    # Set the threshold method
+    threshold_method = ""
+    if object_type == "light":
+        threshold_method = cv2.THRESH_BINARY
+    elif object_type == "dark":
+        threshold_method = cv2.THRESH_BINARY_INV
+    else:
+        fatal_error('Object type ' + str(object_type) + ' is not "light" or "dark"!')
+
+    # Threshold the image
+    bin_img = _call_threshold(gray_img, threshold, max_value, threshold_method, "_binary_threshold_")
+
+    return bin_img
+
+
+# Gaussian adaptive threshold
+def gaussian(gray_img, max_value, object_type="light"):
+    """Creates a binary image from a grayscale image based on the Gaussian adaptive threshold method.
+
+    Inputs:
+    gray_img     = Grayscale image data
+    max_value    = value to apply above threshold (usually 255 = white)
+    object_type  = "light" or "dark" (default: "light")
+                   - If object is lighter than the background then standard thresholding is done
+                   - If object is darker than the background then inverse thresholding is done
+
+    Returns:
+    bin_img      = Thresholded, binary image
+
+    :param gray_img: numpy.ndarray
+    :param max_value: int
+    :param object_type: str
+    :return bin_img: numpy.ndarray
+    """
+    params.device += 1
+
+    # Set the threshold method
+    threshold_method = ""
+    if object_type == "light":
+        threshold_method = cv2.THRESH_BINARY
+    elif object_type == "dark":
+        threshold_method = cv2.THRESH_BINARY_INV
+    else:
+        fatal_error('Object type ' + str(object_type) + ' is not "light" or "dark"!')
+
+    bin_img = _call_adaptive_threshold(gray_img, max_value, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, threshold_method,
+                                       "_gaussian_threshold_")
+
+    return bin_img
+
+
+# Mean adaptive threshold
+def mean(gray_img, max_value, object_type="light"):
+    """Creates a binary image from a grayscale image based on the mean adaptive threshold method.
+
+    Inputs:
+    gray_img     = Grayscale image data
+    max_value    = value to apply above threshold (usually 255 = white)
+    object_type  = "light" or "dark" (default: "light")
+                   - If object is lighter than the background then standard thresholding is done
+                   - If object is darker than the background then inverse thresholding is done
+
+    Returns:
+    bin_img      = Thresholded, binary image
+
+    :param gray_img: numpy.ndarray
+    :param max_value: int
+    :param object_type: str
+    :return bin_img: numpy.ndarray
+    """
+    params.device += 1
+
+    # Set the threshold method
+    threshold_method = ""
+    if object_type == "light":
+        threshold_method = cv2.THRESH_BINARY
+    elif object_type == "dark":
+        threshold_method = cv2.THRESH_BINARY_INV
+    else:
+        fatal_error('Object type ' + str(object_type) + ' is not "light" or "dark"!')
+
+    bin_img = _call_adaptive_threshold(gray_img, max_value, cv2.ADAPTIVE_THRESH_MEAN_C, threshold_method,
+                                       "_mean_threshold_")
+
+    return bin_img
+
+
+# Otsu autothreshold
+def otsu(gray_img, max_value, object_type="light"):
+    """Creates a binary image from a grayscale image using Otsu's thresholding.
+
+    Inputs:
+    gray_img     = Grayscale image data
+    max_value    = value to apply above threshold (usually 255 = white)
+    object_type  = "light" or "dark" (default: "light")
+                   - If object is lighter than the background then standard thresholding is done
+                   - If object is darker than the background then inverse thresholding is done
+
+    Returns:
+    bin_img      = Thresholded, binary image
+
+    :param gray_img: numpy.ndarray
+    :param max_value: int
+    :param object_type: str
+    :return bin_img: numpy.ndarray
+    """
+    params.device += 1
+
+    # Set the threshold method
+    threshold_method = ""
+    if object_type == "light":
+        threshold_method = cv2.THRESH_BINARY + cv2.THRESH_OTSU
+    elif object_type == "dark":
+        threshold_method = cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU
+    else:
+        fatal_error('Object type ' + str(object_type) + ' is not "light" or "dark"!')
+
+    # Threshold the image
+    bin_img = _call_threshold(gray_img, 0, max_value, threshold_method, "_otsu_threshold_")
+
+    return bin_img
+
+
+# Triangle autothreshold
+def triangle(gray_img, max_value, object_type="light", xstep=1):
+    """Creates a binary image from a grayscale image using Zack et al.'s (1977) thresholding.
+
+    Inputs:
+    gray_img     = Grayscale image data
+    max_value    = value to apply above threshold (usually 255 = white)
+    object_type  = "light" or "dark" (default: "light")
+                   - If object is lighter than the background then standard thresholding is done
+                   - If object is darker than the background then inverse thresholding is done
+    xstep        = value to move along x-axis to determine the points from which to calculate distance recommended to
+                   start at 1 and change if needed)
+
+    Returns:
+    bin_img      = Thresholded, binary image
+
+    :param gray_img: numpy.ndarray
+    :param max_value: int
+    :param object_type: str
+    :param xstep: int
+    :return bin_img: numpy.ndarray
+    """
+    params.device += 1
+
+    # Calculate automatic threshold value based on triangle algorithm
+    hist = cv2.calcHist([gray_img], [0], None, [256], [0, 255])
+
+    # Make histogram one array
+    newhist = []
+    for item in hist:
+        newhist.extend(item)
+
+    # Detect peaks
+    show = False
+    if params.debug == "plot":
+        show = True
+    ind = _detect_peaks(newhist, mph=None, mpd=1, show=show)
+
+    # Find point corresponding to highest peak
+    # Find intensity value (y) of highest peak
+    max_peak_int = max(list(newhist[i] for i in ind))
+    # Find value (x) of highest peak
+    max_peak = [i for i, x in enumerate(newhist) if x == max(newhist)]
+    # Combine x,y
+    max_peak_xy = [max_peak[0], max_peak_int]
+
+    # Find final point at end of long tail
+    end_x = len(newhist) - 1
+    end_y = newhist[end_x]
+    end_xy = [end_x, end_y]
+
+    # Define the known points
+    points = [max_peak_xy, end_xy]
+    x_coords, y_coords = zip(*points)
+
+    # Get threshold value
+    peaks = []
+    dists = []
+
+    for i in range(x_coords[0], x_coords[1], xstep):
+        distance = (((x_coords[1] - x_coords[0]) * (y_coords[0] - hist[i])) -
+                    ((x_coords[0] - i) * (y_coords[1] - y_coords[0]))) / math.sqrt(
+            (float(x_coords[1]) - float(x_coords[0])) *
+            (float(x_coords[1]) - float(x_coords[0])) +
+            ((float(y_coords[1]) - float(y_coords[0])) *
+             (float(y_coords[1]) - float(y_coords[0]))))
+        peaks.append(i)
+        dists.append(distance)
+    autothresh = [peaks[x] for x in [i for i, x in enumerate(list(dists)) if x == max(list(dists))]]
+    autothreshval = autothresh[0]
+
+    # Set the threshold method
+    threshold_method = ""
+    if object_type == "light":
+        threshold_method = cv2.THRESH_BINARY + cv2.THRESH_OTSU
+    elif object_type == "dark":
+        threshold_method = cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU
+    else:
+        fatal_error('Object type ' + str(object_type) + ' is not "light" or "dark"!')
+
+    # Threshold the image
+    bin_img = _call_threshold(gray_img, autothreshval, max_value, threshold_method, "_triangle_threshold_")
+
+    # Additional figures created by this method, if debug is on
+    if params.debug is not None:
+        import matplotlib
+        matplotlib.use('Agg', warn=False)
+        from matplotlib import pyplot as plt
+        if params.debug == 'print':
+            plt.plot(hist)
+            plt.title('Threshold value = {t}'.format(t=autothreshval))
+            plt.axis([0, 256, 0, max(hist)])
+            plt.grid(True)
+            fig_name_hist = os.path.join(params.debug_outdir,
+                                         str(params.device) + '_triangle_thresh_hist_' + str(autothreshval) + ".png")
+            # write the figure to current directory
+            plt.savefig(fig_name_hist)
+            # close pyplot plotting window
+            plt.clf()
+        elif params.debug == 'plot':
+            print('Threshold value = {t}'.format(t=autothreshval))
+            plt.plot(hist)
+            plt.axis([0, 256, 0, max(hist)])
+            plt.grid(True)
+            plt.show()
+
+    return bin_img
+
+
+# Internal method for calling the OpenCV threshold function to reduce code duplication
+def _call_threshold(gray_img, threshold, max_value, threshold_method, method_name):
+    # Threshold the image
+    ret, bin_img = cv2.threshold(gray_img, threshold, max_value, threshold_method)
+
+    # Print or plot the binary image if debug is on
+    if params.debug == 'print':
+        print_image(bin_img, os.path.join(params.debug_outdir,
+                                          str(params.device) + method_name + str(threshold) + '.png'))
+    elif params.debug == 'plot':
+        plot_image(bin_img, cmap='gray')
+
+    return bin_img
+
+
+# Internal method for calling the OpenCV adaptiveThreshold function to reduce code duplication
+def _call_adaptive_threshold(gray_img, max_value, adaptive_method, threshold_method, method_name):
+    # Threshold the image
+    bin_img = cv2.adaptiveThreshold(gray_img, max_value, adaptive_method, threshold_method, 11, 2)
+
+    # Print or plot the binary image if debug is on
+    if params.debug == 'print':
+        print_image(bin_img, os.path.join(params.debug_outdir,
+                                          str(params.device) + method_name + '.png'))
+    elif params.debug == 'plot':
+        plot_image(bin_img, cmap='gray')
+
+    return bin_img
+
+
+# Internal method for detecting peaks for the triangle autothreshold method
+def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, valley=False, show=False, ax=None):
+    """Marcos Duarte, https://github.com/demotu/BMC; version 1.0.4; license MIT
+
+    Detect peaks in data based on their amplitude and other features.
+
+    Parameters
+    ----------
+    x : 1D array_like
+        data.
+    mph : {None, number}, optional (default = None)
+        detect peaks that are greater than minimum peak height.
+    mpd : positive integer, optional (default = 1)
+        detect peaks that are at least separated by minimum peak distance (in
+        number of data).
+    threshold : positive number, optional (default = 0)
+        detect peaks (valleys) that are greater (smaller) than `threshold`
+        in relation to their immediate neighbors.
+    edge : {None, 'rising', 'falling', 'both'}, optional (default = 'rising')
+        for a flat peak, keep only the rising edge ('rising'), only the
+        falling edge ('falling'), both edges ('both'), or don't detect a
+        flat peak (None).
+    kpsh : bool, optional (default = False)
+        keep peaks with same height even if they are closer than `mpd`.
+    valley : bool, optional (default = False)
+        if True (1), detect valleys (local minima) instead of peaks.
+    show : bool, optional (default = False)
+        if True (1), plot data in matplotlib figure.
+    ax : a matplotlib.axes.Axes instance, optional (default = None).
+
+    Returns
+    -------
+    ind : 1D array_like
+        indices of the peaks in `x`.
+
+    Notes
+    -----
+    The detection of valleys instead of peaks is performed internally by simply
+    negating the data: `ind_valleys = detect_peaks(-x)`
+
+    The function can handle NaN's
+
+    See this IPython Notebook [1]_.
+
+    References
+    ----------
+    .. [1] http://nbviewer.ipython.org/github/demotu/BMC/blob/master/notebooks/DetectPeaks.ipynb
+
+    Examples
+    --------
+    from detect_peaks import detect_peaks
+    x = np.random.randn(100)
+    x[60:81] = np.nan
+    # detect all peaks and plot data
+    ind = detect_peaks(x, show=True)
+    print(ind)
+
+    x = np.sin(2*np.pi*5*np.linspace(0, 1, 200)) + np.random.randn(200)/5
+    # set minimum peak height = 0 and minimum peak distance = 20
+    detect_peaks(x, mph=0, mpd=20, show=True)
+
+    x = [0, 1, 0, 2, 0, 3, 0, 2, 0, 1, 0]
+    # set minimum peak distance = 2
+    detect_peaks(x, mpd=2, show=True)
+
+    x = np.sin(2*np.pi*5*np.linspace(0, 1, 200)) + np.random.randn(200)/5
+    # detection of valleys instead of peaks
+    detect_peaks(x, mph=0, mpd=20, valley=True, show=True)
+
+    x = [0, 1, 1, 0, 1, 1, 0]
+    # detect both edges
+    detect_peaks(x, edge='both', show=True)
+
+    x = [-2, 1, -2, 2, 1, 1, 3, 0]
+    # set threshold = 2
+    detect_peaks(x, threshold = 2, show=True)
+    """
+
+    x = np.atleast_1d(x).astype('float64')
+    if x.size < 3:
+        return np.array([], dtype=int)
+    if valley:
+        x = -x
+    # find indices of all peaks
+    dx = x[1:] - x[:-1]
+    # handle NaN's
+    indnan = np.where(np.isnan(x))[0]
+    if indnan.size:
+        x[indnan] = np.inf
+        dx[np.where(np.isnan(dx))[0]] = np.inf
+    ine, ire, ife = np.array([[], [], []], dtype=int)
+    if not edge:
+        ine = np.where((np.hstack((dx, 0)) < 0) & (np.hstack((0, dx)) > 0))[0]
+    else:
+        if edge.lower() in ['rising', 'both']:
+            ire = np.where((np.hstack((dx, 0)) <= 0) & (np.hstack((0, dx)) > 0))[0]
+        if edge.lower() in ['falling', 'both']:
+            ife = np.where((np.hstack((dx, 0)) < 0) & (np.hstack((0, dx)) >= 0))[0]
+    ind = np.unique(np.hstack((ine, ire, ife)))
+    # handle NaN's
+    if ind.size and indnan.size:
+        # NaN's and values close to NaN's cannot be peaks
+        ind = ind[np.in1d(ind, np.unique(np.hstack((indnan, indnan - 1, indnan + 1))), invert=True)]
+    # first and last values of x cannot be peaks
+    if ind.size and ind[0] == 0:
+        ind = ind[1:]
+    if ind.size and ind[-1] == x.size - 1:
+        ind = ind[:-1]
+    # remove peaks < minimum peak height
+    if ind.size and mph is not None:
+        ind = ind[x[ind] >= mph]
+    # remove peaks - neighbors < threshold
+    if ind.size and threshold > 0:
+        dx = np.min(np.vstack([x[ind] - x[ind - 1], x[ind] - x[ind + 1]]), axis=0)
+        ind = np.delete(ind, np.where(dx < threshold)[0])
+    # detect small peaks closer than minimum peak distance
+    if ind.size and mpd > 1:
+        ind = ind[np.argsort(x[ind])][::-1]  # sort ind by peak height
+        idel = np.zeros(ind.size, dtype=bool)
+        for i in range(ind.size):
+            if not idel[i]:
+                # keep peaks with the same height if kpsh is True
+                idel = idel | (ind >= ind[i] - mpd) & (ind <= ind[i] + mpd) \
+                              & (x[ind[i]] > x[ind] if kpsh else True)
+                idel[i] = 0  # Keep current peak
+        # remove the small peaks and sort back the indices by their occurrence
+        ind = np.sort(ind[~idel])
+
+    if show:
+        if indnan.size:
+            x[indnan] = np.nan
+        if valley:
+            x = -x
+        _plot(x, mph, mpd, threshold, edge, valley, ax, ind)
+
+    return ind
+
+
+# Internal plotting function for the triangle autothreshold method
+def _plot(x, mph, mpd, threshold, edge, valley, ax, ind):
+    """Plot results of the detect_peaks function, see its help."""
+    import matplotlib.pyplot as plt
+    if ax is None:
+        _, ax = plt.subplots(1, 1, figsize=(8, 4))
+
+    ax.plot(x, 'b', lw=1)
+    if ind.size:
+        label = 'valley' if valley else 'peak'
+        label = label + 's' if ind.size > 1 else label
+        ax.plot(ind, x[ind], '+', mfc=None, mec='r', mew=2, ms=8,
+                label='%d %s' % (ind.size, label))
+        ax.legend(loc='best', framealpha=.5, numpoints=1)
+    ax.set_xlim(-.02 * x.size, x.size * 1.02 - 1)
+    ymin, ymax = x[np.isfinite(x)].min(), x[np.isfinite(x)].max()
+    yrange = ymax - ymin if ymax > ymin else 1
+    ax.set_ylim(ymin - 0.1 * yrange, ymax + 0.1 * yrange)
+    ax.set_xlabel('Data #', fontsize=14)
+    ax.set_ylabel('Amplitude', fontsize=14)
+    mode = 'Valley detection' if valley else 'Peak detection'
+    ax.set_title("%s (mph=%s, mpd=%d, threshold=%s, edge='%s')"
+                 % (mode, str(mph), mpd, str(threshold), edge))
+    # plt.grid()
+    plt.show()

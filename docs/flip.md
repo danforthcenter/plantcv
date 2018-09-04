@@ -2,15 +2,13 @@
 
 Flips and image in either the horizontal or vertical direction
 
-**flip**(*img, direction, device, debug=None*)
+**plantcv.flip**(*img, direction*)
 
-**returns** device, flipped_image
+**returns** flipped_image
 
 - **Parameters:**
-    - img - image object (numpy array)
+    - img - RGB or grayscale image data
     - direction - the direction you want the image flipped either 'horizontal' or 'vertical'
-    - device - Counter for image processing steps
-    - debug - None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
 - **Context:**
     - Used to flip images when necessary
 - **Example use:**
@@ -23,9 +21,11 @@ Flips and image in either the horizontal or vertical direction
 ```python
 from plantcv import plantcv as pcv
 
-# Flip Image Horizontal
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
 
-device, flipped= pcv.flip(img, 'horizontal', device, debug="print")
+# Flip Image Horizontal
+flipped= pcv.flip(img, 'horizontal')
 
 ```
 
@@ -36,9 +36,11 @@ device, flipped= pcv.flip(img, 'horizontal', device, debug="print")
 ```python
 from plantcv import plantcv as pcv
 
-# Flip Image Vertical
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
 
-device, flipped= pcv.flip(img, 'vertical', device, debug="print")
+# Flip Image Vertical
+flipped= pcv.flip(img, 'vertical')
 
 ```
 

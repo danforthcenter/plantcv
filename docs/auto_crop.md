@@ -2,18 +2,16 @@
 
 Crops image to an object and allows user to specify image padding (if desired)
 
-**auto_crop**(*device, img, objects, padding_x=0, padding_y=0, color='black',debug=None*)
+**plantcv.auto_crop**(*img, objects, padding_x=0, padding_y=0, color='black'*)
 
-**returns** device, image after resizing
+**returns** image after resizing
 
 - **Parameters:**
-    - img1 - Input image
+    - img1 - RGB or grayscale image data
     - object - contour of target object 
     - padding_x - padding in the x direction
     - padding_y - padding in the y direction
     - color - either 'black' or 'white'
-    - device - Counter for image processing steps
-    - debug- None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
 - **Context:**
     - Crops image to object
     
@@ -24,8 +22,12 @@ Crops image to an object and allows user to specify image padding (if desired)
 ```python
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+
+pcv.params.debug = "print"
+
 # Resize image
-device, crop_img=pcv.auto_crop(device, img, id_objects[0],20,20,'black',debug)
+crop_img=pcv.auto_crop(img, id_objects[0],20,20,'black')
 ```
 
 **Debug Auto Crop Images**

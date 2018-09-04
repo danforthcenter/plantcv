@@ -3,16 +3,15 @@
 Perform morphological 'dilation' filtering. Adds pixel in center of the kernel if 
 conditions set in kernel are true.
 
-**dilate**(*img, kernel, i, device, debug=None*)
+**plantcv.dilate**(*gray_img, kernel, i*)
 
-**returns** device, image after dilation
+**returns** image after dilation
 
 - **Parameters:**
-    - img1 - Input image
-    - kernel - An odd integer that is used to build a kernel x kernel matrix using np.ones
+    - gray_img - Grayscale (usually binary) image data
+    - kernel - An odd integer that is used to build a kernel x kernel matrix using np.ones. Must be greater than 1 to have an effect
     - i - Iterations, i.e. the number of consecutive filtering passes
-    - device - Counter for image processing steps
-    - debug- None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
+    
 - **Context:**
     - Used to perform morphological dilation filtering. Helps expand objects at the edges, particularly after erosion.
 - **Example use:**
@@ -25,9 +24,12 @@ conditions set in kernel are true.
 ```python
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
+
 # Perform dilation
 # Results in addition of pixels to the boundary of object
-device, dilate_img = pcv.dilate(img, kernel, 1 device, debug='print')
+dilate_img = pcv.dilate(img, kernel)
 ```
 
 **Image after dilation**

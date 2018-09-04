@@ -3,9 +3,10 @@
 import numpy as np
 import math
 import numbers
+from plantcv.plantcv import params
 
 
-def landmark_reference_pt_dist(points_r, centroid_r, bline_r, device, debug=None):
+def landmark_reference_pt_dist(points_r, centroid_r, bline_r):
     """landmark_reference_pt_dist
 
     For each point in contour, get a point before (pre) and after (post) the point of interest.
@@ -15,15 +16,10 @@ def landmark_reference_pt_dist(points_r, centroid_r, bline_r, device, debug=None
     points_r   = a set of rescaled points (basically the output of the acute_vertex fxn after the scale_features fxn)
     centroid_r = a tuple that contains the rescaled centroid coordinates
     bline_r    = a tuple that contains the rescaled boundary line - centroid coordinates
-    device     = a count variable
-    debug      = no output supported currently
 
     :param points_r: ndarray
     :param centroid_r: tuple
     :param bline_r: tuple
-    :param device: int
-    :param debug: str
-    :return device: int
     :return vert_ave_c: float
     :return hori_ave_c: float
     :return euc_ave_c: float
@@ -42,7 +38,7 @@ def landmark_reference_pt_dist(points_r, centroid_r, bline_r, device, debug=None
     #  cv2.circle(scaled_img,(int(x) + 250, int(y) + 250),15,(255,255,255),-1)
     # cv2.circle(scaled_img,(int(cmx_scaled * 1000) + 250, int(cmy_scaled * 1000) + 250),25,(0,0,255), -1)
     # cv2.circle(scaled_img,(int(blx_scaled * 1000) + 250, int(bly_scaled * 1000) + 250),25,(0,255,0), -1)
-    device += 1
+    params.device += 1
     vert_dist_c = []
     hori_dist_c = []
     euc_dist_c = []
@@ -50,7 +46,7 @@ def landmark_reference_pt_dist(points_r, centroid_r, bline_r, device, debug=None
     cx, cy = centroid_r
     # Check to see if points are numerical or NA
     if not isinstance(cy, numbers.Number):
-        return device, ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA'), \
+        return ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA'), \
                ('NA', 'NA'), ('NA', 'NA')
     # Do this for centroid
     for pt in points_r:
@@ -134,4 +130,4 @@ def landmark_reference_pt_dist(points_r, centroid_r, bline_r, device, debug=None
     # cv2.circle(scaled_img,(int(bx * 1000) + 250, int(by * 1000) + 250),25,(255,0,0), -1)
     # flipped_scaled = cv2.flip(scaled_img, 0)
     # cv2.imwrite('centroid_dist.png', flipped_scaled)
-    return device, vert_ave_c, hori_ave_c, euc_ave_c, ang_ave_c, vert_ave_b, hori_ave_b, euc_ave_b, ang_ave_b
+    return vert_ave_c, hori_ave_c, euc_ave_c, ang_ave_c, vert_ave_b, hori_ave_b, euc_ave_b, ang_ave_b

@@ -3,7 +3,7 @@
 Returns a random list of RGB color values, equally spaced across a rainbow color spectrum.
 If one color is requested, a random color is returned. Otherwise, evenly spaced colors are returned.
 
-**color_palette(*num*)**
+**plantcv.color_palette(*num*)**
 
 **returns** colors
 

@@ -33,11 +33,14 @@ Once we have the `plantcv-train.py` output file, we can classify pixels in a col
 ```python
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
+
 # Read in a color image
 img, path, filename = pcv.readimage("color_image.png")
 
 # Classify the pixels as plant or background
-device, mask = pcv.naive_bayes_classifier(img, pdf_file="naive_bayes_pdfs.txt", device=0, debug="print")
+mask = pcv.naive_bayes_classifier(img, pdf_file="naive_bayes_pdfs.txt")
 ```
 
 See the [Naive Bayes Classifier](naive_bayes_classifier.md) documentation for example input/output.
@@ -132,13 +135,13 @@ def main():
     args = options()
     
     # Initialize device counter
-    device = 0
+    pcv.params.debug = args.debug
     
     # Read in the input image
-    vis, path, filename = pcv.readimage(filename=args.image, debug=args.debug)
+    vis, path, filename = pcv.readimage(filename=args.image)
     
     # Classify each pixel as plant or background (background and system components)
-    device, masks = pcv.naive_bayes_classifier(img=vis, pdf_file=args.pdfs, device=device, debug=args.debug)
+    masks = pcv.naive_bayes_classifier(rgb_img=vis, pdf_file=args.pdfs)
     
     # Additional steps in the pipeline go here
 ```

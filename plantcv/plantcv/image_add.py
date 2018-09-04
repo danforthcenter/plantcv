@@ -1,36 +1,33 @@
 # Image addition
 
+import os
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
+from plantcv.plantcv import params
 
 
-def image_add(img1, img2, device, debug=None):
+def image_add(gray_img1, gray_img2):
+
     """This is a function used to add images. The numpy addition function '+' is used. This is a modulo operation
        rather than the cv2.add fxn which is a saturation operation. ddepth = -1 specifies that the dimensions of output
        image will be the same as the input image.
 
     Inputs:
-    img1      = input image
-    img2      = second input image
-    device    = device number. Used to count steps in the pipeline
-    debug     = None, print, or plot. Print = save to file, Plot = print to screen.
+    gray_img1      = Grayscale image data to be added to image 2
+    gray_img2      = Grayscale image data to be added to image 1
 
     Returns:
-    device    = device number
-    added_img = summed images
+    added_img      = summed images
 
-    :param img1: numpy array
-    :param img2: numpy array
-    :param device: int
-    :param debug: str
-    :return device: int
-    :return added_img: numpy array
+    :param gray_img1: numpy.ndarray
+    :param gray_img2: numpy.ndarray
+    :return added_img: numpy.ndarray
     """
 
-    added_img = img1 + img2
-    device += 1
-    if debug == 'print':
-        print_image(added_img, str(device) + '_added' + '.png')
-    elif debug == 'plot':
+    added_img = gray_img1 + gray_img2
+    params.device += 1
+    if params.debug == 'print':
+        print_image(added_img, os.path.join(params.debug_outdir, str(params.device) + '_added' + '.png'))
+    elif params.debug == 'plot':
         plot_image(added_img, cmap='gray')
-    return device, added_img
+    return added_img

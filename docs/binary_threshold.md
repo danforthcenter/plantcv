@@ -3,17 +3,16 @@
 Creates a binary image from a gray image based on the threshold values. 
 The object target can be specified as dark or light.
 
-**binary_threshold(*img, threshold, maxValue, object_type, device, debug=None*)**
+**plantcv.threshold.binary(*gray_img, threshold, max_value, object_type="light"*)**
 
-**returns** device, thresholded image
+**returns** thresholded/binary image
 
 - **Parameters:**
-    - img - grayscale img object
-    - threshold - threshold value (0-255)
-    - maxValue - value to apply above threshold (255 = white)
-    - objecttype - 'light' or 'dark', is target image light or dark?
-    - device- Counter for image processing steps
-    - debug- None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
+    - gray_img - Grayscale image data
+    - threshold - Threshold value (0-255)
+    - max_value - Value to apply above threshold (255 = white)
+    - object_type - "light" or "dark" (default: "light"). If object is lighter than the background then standard 
+    thresholding is done. If object is darker than the background then inverse thresholding is done
 - **Context:**
     - Used to help differentiate plant and background
 - **Example use:**
@@ -32,8 +31,12 @@ The object target can be specified as dark or light.
 ```python
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+
+pcv.params.debug = "print"
+
 # Create binary image from a gray image based on threshold values. Targeting light objects in the image.
-device, threshold_light = pcv.binary_threshold(img, 36, 255, 'light', device, debug="print")
+threshold_light = pcv.threshold.binary(gray_img, 36, 255, 'light')
 ```
 
 **Thresholded image**
@@ -43,8 +46,12 @@ device, threshold_light = pcv.binary_threshold(img, 36, 255, 'light', device, de
 ```python
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+
+pcv.params.debug = "print"
+
 # Create binary image from a gray image based on threshold values. Targeting dark objects in the image.
-device, threshold_dark = pcv.binary_threshold(img, 36, 255, 'dark', device, debug="print")
+threshold_dark = pcv.threshold.binary(gray_img, 36, 255, 'dark')
 ```
 
 **Thresholded image (inverse)**

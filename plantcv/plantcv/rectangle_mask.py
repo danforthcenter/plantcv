@@ -2,43 +2,39 @@
 
 import cv2
 import numpy as np
+import os
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
+from plantcv.plantcv import params
 
 
-def rectangle_mask(img, p1, p2, device, debug=None, color="black"):
+def rectangle_mask(img, p1, p2, color="black"):
     """Takes an input image and returns a binary image masked by a rectangular area denoted by p1 and p2. Note that
        p1 = (0,0) is the top left hand corner bottom right hand corner is p2 = (max-value(x), max-value(y)).
 
     Inputs:
-    img       = image object
+    img       = RGB or grayscale image data
     p1        = point 1
     p2        = point 2
-    device    = device number. Used to count steps in the pipeline
-    debug     = None, print, or plot. Print = save to file, Plot = print to screen.
     color     = black,white, or gray
 
     Returns:
-    device    = device number
     masked      = original image with masked image
     bnk       = binary image
     contour   = object contour vertices
     hierarchy = contour hierarchy list
 
-    :param img: numpy array
+    :param img: numpy.ndarray
     :param p1: tuple
     :param p2: tuple
-    :param device: int
-    :param debug: str
     :param color: str
-    :return device: int
-    :return masked:numpy array
-    :return bnk: numpy array
+    :return masked:numpy.ndarray
+    :return bnk: numpy.ndarray
     :return contour: list
     :return hierarchy: list
     """
 
-    device += 1
+    params.device += 1
     # get the dimensions of the input image
     if len(np.shape(img)) == 3:
         ix, iy, iz = np.shape(img)
@@ -67,14 +63,14 @@ def rectangle_mask(img, p1, p2, device, debug=None, color="black"):
     if color == "gray":
         cv2.drawContours(bnk, contour, 0, (192, 192, 192), -1)
         cv2.drawContours(img1, contour, 0, (192, 192, 192), -1)
-    if debug == 'print':
-        print_image(bnk, (str(device) + '_roi.png'))
+    if params.debug == 'print':
+        print_image(bnk, os.path.join(params.debug_outdir, str(params.device) + '_roi.png'))
 
-    elif debug == 'plot':
-        if len(np.shape(bnk))==3:
+    elif params.debug == 'plot':
+        if len(np.shape(bnk)) == 3:
             plot_image(bnk)
             plot_image(img1)
         else:
             plot_image(bnk, cmap="gray")
             plot_image(img1, cmap="gray")
-    return device, img1, bnk, contour, hierarchy
+    return img1, bnk, contour, hierarchy

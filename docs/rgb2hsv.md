@@ -2,15 +2,14 @@
 
 Convert image from RGB colorspace to HSV colorspace and split the channels.
 
-**rgb2gray_hsv**(*img, channel, device, debug=None*)
+**plantcv.rgb2gray_hsv**(*rgb_img, channel*)
 
-**returns** device, split image (h, s, or v channel)  
+**returns** split image (h, s, or v channel)  
 
 - **Parameters:**
-    - img- Image to be converted
-    - channel- Split 'h' (hue), 's' (saturation), or 'v' (value) channel
-    - device- Counter for image processing steps
-    - debug - None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
+    - img - RGB image data
+    - channel - Split 'h' (hue), 's' (saturation), or 'v' (value) channel
+   
 - **Context:**
     - Used to help differentiate plant and background
 - **Example use:**
@@ -24,9 +23,11 @@ Convert image from RGB colorspace to HSV colorspace and split the channels.
 ```python
 from plantcv import plantcv as pcv
 
-# image converted from RGB to HSV, channels are then split. Hue ('h') channel is outputed.
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
 
-device, h_channel=pcv.rgb2gray_hsv(img, 'h', device, debug="print")
+# image converted from RGB to HSV, channels are then split. Hue ('h') channel is outputed.
+h_channel=pcv.rgb2gray_hsv(img, 'h')
 ```
 
 **Hue channel image**
@@ -36,9 +37,11 @@ device, h_channel=pcv.rgb2gray_hsv(img, 'h', device, debug="print")
 ```python
 from plantcv import plantcv as pcv
     
-# image converted from RGB to HSV, channels are then split. Saturation ('s') channel is outputed.
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
     
-device, s_channel= pcv.rgb2gray_hsv(img, 's', device, debug="print")
+# image converted from RGB to HSV, channels are then split. Saturation ('s') channel is outputed.    
+s_channel= pcv.rgb2gray_hsv(img, 's')
 ```  
 
 **Saturation channel image**
@@ -48,9 +51,11 @@ device, s_channel= pcv.rgb2gray_hsv(img, 's', device, debug="print")
 ```python
 from plantcv import plantcv as pcv
 
-# image converted from RGB to HSV, channels are then split. Value ('v') channel is outputed.
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
 
-device, v_channel=pcv.rgb2gray_hsv(img, 'v', device, debug="print")
+# image converted from RGB to HSV, channels are then split. Value ('v') channel is outputed.
+v_channel=pcv.rgb2gray_hsv(img, 'v')
 ```  
 
 **Value channel image**

@@ -17,49 +17,55 @@ pages:
   - 'Contributing':
     - 'Contributing to PlantCV': CONTRIBUTING.md
     - 'Code of Conduct': CODE_OF_CONDUCT.md
-    - 'Adding/editing Documentation': documentation.md
+    - 'Adding/Editing Documentation': documentation.md
   - Tutorials:
     - 'VIS pipeline': vis_tutorial.md
     - 'NIR pipeline': nir_tutorial.md
     - 'PSII pipeline': psII_tutorial.md
-    - 'VIS/NIR dual pipeline': vis_nir_tutorial.md
-    - 'Multi plant pipeline': multi-plant_tutorial.md
+    - 'VIS/NIR Dual Pipeline': vis_nir_tutorial.md
+    - 'Multi Plant Pipeline': multi-plant_tutorial.md
     - 'Machine Learning': machine_learning_tutorial.md
-    - 'Pipeline parallelization': pipeline_parallel.md
-    - 'Exporting data': db-exporter.md
+    - 'Pipeline Parallelization': pipeline_parallel.md
+    - 'Exporting Data': db-exporter.md
     - 'Color Correction Pipeline': transform_color_correction_tutorial.md
-  - 'Package plantcv':
-    - 'Adaptive Threshold': adaptive_threshold.md
+  - 'Package Plantcv':
     - 'Analyze color': analyze_color.md
     - 'Analyze NIR': analyze_NIR_intensity.md
     - 'Analyze PSII': fluor_fvfm.md
-    - 'Analyze shape': analyze_shape.md
-    - 'Apply mask': apply_mask.md
+    - 'Analyze Shape': analyze_shape.md
+    - 'Apply Mask': apply_mask.md
     - 'Auto Crop': auto_crop.md
     - 'Background Subtraction': background_subtraction.md
-    - 'Binary threshold': binary_threshold.md
-    - 'Boundary line tool':
+    - 'Boundary Line Tool':
       -  'Horizontal Boundary Tool': analyze_bound_horizontal.md
       -  'Vertical Boundary Tool': analyze_bound_vertical.md
-      -  'Analyze Bound- Will Be Depricated': analyze_bound.md
     - 'Cluster Contours': cluster_contours.md
     - 'Cluster Contours and Split Images': cluster_contours_splitimg.md
-    - 'Color palette': color_palette.md
+    - 'Color Palette': color_palette.md
+    - 'Color Transformations':
+      - 'Correct Color': transform_correct_color.md
+      - 'RGB to Gray': rgb2gray.md
+      - 'RGB to LAB': rgb2lab.md
+      - 'RGB to HSV': rgb2hsv.md
+      - 'White balance': white_balance.md
     - 'Crop and Position Mask': crop_position_mask.md
     - 'Dilation': dilate.md
     - 'Distance Transform': distance_transform.md
     - 'Erosion': erode.md
-    - 'Fill objects': fill.md
-    - 'Find objects': find_objects.md
-    - 'Flip image': flip.md
+    - 'Fill Objects': fill.md
+    - 'Find Objects': find_objects.md
+    - 'Flip Image': flip.md
+    - 'Filters':
+      - 'Laplace Filter': laplace_filter.md
+      - 'Sobel Filter': sobel_filter.md
     - 'Gaussian Blur': gaussian_blur.md
-    - 'Get NIR images': get_nir.md
+    - 'Get NIR Images': get_nir.md
     - 'Erosion': erode.md
-    - 'Fill objects': fill.md
-    - 'Find objects': find_objects.md
-    - 'Histogram normalization': HistEqualization.md
-    - 'Image add': image_add.md
-    - 'Image subtract': image_subtract.md
+    - 'Fill Objects': fill.md
+    - 'Find Objects': find_objects.md
+    - 'Histogram Normalization': HistEqualization.md
+    - 'Image Add': image_add.md
+    - 'Image Subtract': image_subtract.md
     - 'Invert': invert.md
     - 'Landmark Analysis':
       - 'Acute Vertex': acute_vertex.md
@@ -67,40 +73,37 @@ pages:
       - 'y-Axis Pseudolandmarks': y_axis_pseudolandmarks.md
       - 'Scale Features': scale_features.md
       - 'Landmark Reference Point Distribution': landmark_reference_pt_dist.md
-    - 'Laplace filter': laplace_filter.md
-    - 'Logical operations-And': logical_and.md
-    - 'Logical operations-Or': logical_or.md
-    - 'Median blur': median_blur.md
-    - 'Naive Bayes classifier': naive_bayes_classifier.md
-    - 'Object composition': object_composition.md
-    - 'Otsu Auto Threshold': otsu_threshold.md
+    - 'Logical Operations':
+      - 'Logical Operations-And': logical_and.md
+      - 'Logical Operations-Or': logical_or.md
+      - 'Logical Operations-XOr': logical_xor.md
+    - 'Median Blur': median_blur.md
+    - 'Naive Bayes Classifier': naive_bayes_classifier.md
+    - 'Object Composition': object_composition.md
     - 'Output Mask': output_mask.md
-    - 'Params': params.md
-    - 'Plot histogram': plot_hist.md
-    - 'Print image': print_image.md
-    - 'Read image': read_image.md
-    - 'Rectangle mask': rectangle_mask.md
+    - 'Params (Debugging)': params.md
+    - 'Plot Histogram': plot_hist.md
+    - 'Print Image': print_image.md
+    - 'Plot Image': plot_image.md
+    - 'Read Image': read_image.md
+    - 'Rectangle Mask': rectangle_mask.md
     - 'Report Size Marker': report_size_marker.md
     - 'Resize': resize.md
-    - 'RGB to HSV': rgb2hsv.md
-    - 'RGB to LAB': rgb2lab.md
     - 'Region of Interest Tools':
-      - 'Create a circular ROI': roi_circle.md
-      - 'Create an elliptical ROI': roi_ellipse.md
-      - 'Create a rectangular ROI': roi_rectangle.md
-      - 'Create ROI from binary image': roi_from_binary_image.md
+      - 'Create a Circular ROI': roi_circle.md
+      - 'Create an Elliptical ROI': roi_ellipse.md
+      - 'Create a Rectangular ROI': roi_rectangle.md
+      - 'Create ROI from Binary Image': roi_from_binary_image.md
       - 'Filter Objects by ROI': roi_objects.md
-      - 'Define ROI - Will Be Depricated': define_roi.md
-    - 'Rotate Tools':
-      - 'Rotate': rotate2.md
-      - 'Rotate Image - Will Be Depricated': rotate.md
+    - 'Rotate': rotate2.md
     - 'Shift Image': shift.md
-    - 'Sobel filter': sobel_filter.md
-    - 'Transformations':
-      - 'Correct Color': transform_correct_color.md
-    - 'Triangle Auto Threshold': triangle_threshold.md
+    - 'Thresholding Methods':
+      - 'Binary threshold': binary_threshold.md
+      - 'Gaussian Adaptive Threshold': gaussian_threshold.md
+      - 'Mean Adaptive Threshold': mean_threshold.md
+      - 'Otsu Auto Threshold': otsu_threshold.md
+      - 'Triangle Auto Threshold': triangle_threshold.md
     - 'Watershed Segmentation': watershed.md
-    - 'White balance': white_balance.md
   - 'Package plantcv.learn':
     - 'Naive Bayes': naive_bayes.md
     - 'Naive Bayes Multiclass': naive_bayes_multiclass.md

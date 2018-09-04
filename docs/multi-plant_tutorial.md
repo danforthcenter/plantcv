@@ -2,7 +2,7 @@
 
 PlantCV is composed of modular functions that can be arranged (or rearranged) and adjusted quickly and easily.
 Pipelines do not need to be linear (and often are not). Please see pipeline example below for more details.
-Every function has a optional debug mode that prints out the resulting image. The debug has two modes, either 'plot' or print' if set to
+A global variable "debug" allows the user to print out the resulting image. The debug has two modes, either 'plot' or print' if set to
 'print' then the function prints the image out, if using a jupyter notebook, you would set debug to plot to have
 the images plot images to the screen. Debug mode allows users to visualize and optimize each step on individual test images and small test sets before pipelines are deployed over whole data-sets.
 
@@ -70,7 +70,7 @@ def options():
 
 #### Start of the Main/Customizable portion of the pipeline.
 
-The image input by the user is read in. The device variable is just a counter so that each debug image is labeled in numerical order.
+The image input by the user is read in. 
 
 ```python
 ### Main pipeline
@@ -81,10 +81,7 @@ def main():
     # Read image
     img, path, filename = pcv.readimage(args.image)
     
-    debug=args.debug 
-    
-    # Pipeline step
-    device = 0
+    params.debug=args.debug #set debug mode
 ```
 
 **Figure 1.** Original image.
@@ -118,14 +115,12 @@ For more information see white balance function [here](white_balance.md).
 # Step 2: Normalize the white color so you can later
 # compare color between images.
 # Inputs:
-# device = device number. Used to count steps in the workflow
 # img = image object, RGB colorspace
-# debug = None, print, or plot. Print = save to file, Plot = print to screen.
 # roi = region for white reference, if none uses the whole image,
 # otherwise (x position, y position, box width, box height)
 
 #white balance image based on white toughspot
-device,img1=pcv.white_balance(device,img,debug,roi=(400,800,200,200))
+img1=pcv.white_balance(img,roi=(400,800,200,200))
 
 ```
 
@@ -135,14 +130,14 @@ device,img1=pcv.white_balance(device,img,debug,roi=(400,800,200,200))
 ![Screenshot](img/tutorial_images/multi-img/2_whitebalance.jpg)
 ![Screenshot](img/tutorial_images/multi-img/2_whitebalance_roi.jpg)
 
-Rotate image slighly so that plants line up with grid (later step)
-For more information see rotate function [here](rotate.md).
+Rotate image slightly so that plants line up with grid (later step)
+For more information see rotate function [here](rotate2.md).
 
 ```python
 
 # Step 3: Rotate the image 
-    
-device, rotate_img = pcv.rotate(img1, -1, device, debug)
+rotate_img = pcv.rotate(img1, -1)
+
 ```
 
 **Figure 3.** Rotated image
@@ -160,12 +155,10 @@ For more information see shift function [here](shift.md).
 # The resulting image is the same size as the original.
 # Input:
 # img = image object
-# device = device number. Used to count steps in the workflow
 # number = integer, number of pixels to move image
 # side = direction to move from "top", "bottom", "right","left"
-# debug = None, print, or plot. Print = save to file, Plot = print to screen.
 
-device, shift1 = pcv.shift_img(img1, device, 300, 'top', debug)
+shift1 = pcv.shift_img(img1, 300, 'top')
 img1 = shift1
 
 ```
@@ -184,9 +177,7 @@ For more information see shift function [here](rgb2lab.md).
 # Inputs:
 #    img     = image object, RGB colorspace
 #    channel = color subchannel (l = lightness, a = green-magenta , b = blue-yellow)
-#    device  = device number. Used to count steps in the workflow
-#    debug   = None, print, or plot. Print = save to file, Plot = print to screen.
-device, a = pcv.rgb2gray_lab(img1, 'a', device, debug)
+a = pcv.rgb2gray_lab(img1, 'a')
 
 ```
 
@@ -206,9 +197,7 @@ Threshold green-magenta image. For more information see binary threshold functio
 #    object_type = light or dark
 #                  - If object is light then standard thresholding is done
 #                  - If object is dark then inverse thresholding is done
-#    device      = device number. Used to count steps in the pipeline
-#    debug       = None, print, or plot. Print = save to file, Plot = print to screen.
-device, img_binary = pcv.binary_threshold(a, 120, 255, 'dark', device, debug)
+img_binary = pcv.threshold.binary(a, 120, 255, 'dark')
 #                                            ^
 #                                            |
 #                                           adjust this value
@@ -228,10 +217,7 @@ Fill noise. For more information on this function see [here](fill.md)
 #    img    = image object, grayscale. img will be returned after filling
 #    mask   = image object, grayscale. This image will be used to identify contours
 #    size   = minimum object area size in pixels (integer)
-#    device = device number. Used to count steps in the pipeline
-#    debug  = None, print, or plot. Print = save to file, Plot = print to screen.
-mask = np.copy(img_binary)
-device, fill_image = pcv.fill(img_binary, mask, 100, device, debug)
+fill_image = pcv.fill(img_binary, 100)
 #                                               ^
 #                                               |
 #                                               adjust this value
@@ -251,10 +237,8 @@ Dilate binary image. For more information on this function see [here](dilate.md)
 #    img     = input image
 #    kernel  = integer
 #    i       = interations, i.e. number of consecutive filtering passes
-#    device  = device number. Used to count steps in the pipeline
-#    debug   = None, print, or plot. Print = save to file, Plot = print to screen.
 
-device, dilated = pcv.dilate(fill_image, 1, 1, device, debug)
+dilated = pcv.dilate(fill_image, 1, 1)
 
 ```
 
@@ -271,9 +255,8 @@ see [here](find_objects.md))
 # Inputs:
 #    img       = image that the objects will be overlayed
 #    mask      = what is used for object detection
-#    device    = device number.  Used to count steps in the pipeline
-#    debug     = None, print, or plot. Print = save to file, Plot = print to screen.
-device, id_objects, obj_hierarchy = pcv.find_objects(img1, dilated, device, debug)
+
+id_objects, obj_hierarchy = pcv.find_objects(img1, dilated)
 
 ```
 
@@ -281,29 +264,20 @@ device, id_objects, obj_hierarchy = pcv.find_objects(img1, dilated, device, debu
 
 ![Screenshot](img/tutorial_images/multi-img/9_id_objects.jpg)
 
-Define region of interest in the image, for more information see [here](define_roi.md).
+Define region of interest in the image, for more information see [here](roi_rectangle.md).
 
 ```python
 
 # STEP 10: Define region of interest (ROI)
 # Inputs:
-#    img       = img to overlay roi
-#    roi       = default (None) or user input ROI image, object area should be white and background should be black,
-#                has not been optimized for more than one ROI
-#    roi_input = type of file roi_base is, either 'binary', 'rgb', or 'default' (no ROI inputted)
-#    shape     = desired shape of final roi, either 'rectangle' or 'circle', if  user inputs rectangular roi but chooses
-#                'circle' for shape then a circle is fitted around rectangular roi (and vice versa)
-#    device    = device number.  Used to count steps in the pipeline
-#    debug     = None, print, or plot. Print = save to file, Plot = print to screen.
-#    adjust    = either 'True' or 'False', if 'True' allows user to adjust ROI
 #    x_adj     = adjust center along x axis
 #    y_adj     = adjust center along y axis
 #    w_adj     = adjust width
 #    h_adj     = adjust height
-device, roi, roi_hierarchy = pcv.define_roi(img1, 'rectangle', device, None, 'default', debug, True, 
-                                             10, 500, -10, -100)
-#                                            ^                ^
-#                                            |________________|
+#    img       = img to overlay roi
+roi_contour, roi_hierarchy = pcv.roi.rectangle(10, 500, -10, -100, img1)
+#                                              ^                ^
+#                                              |________________|
 #                                            adjust these four values
 
 ```
@@ -326,11 +300,8 @@ For more information see [here](roi_objects.md).
 #    roi_hierarchy  = contour of roi, output from "View and Ajust ROI" function
 #    object_contour = contours of objects, output from "Identifying Objects" fuction
 #    obj_hierarchy  = hierarchy of objects, output from "Identifying Objects" fuction
-#    device         = device number.  Used to count steps in the pipeline
-#    debug          = None, print, or plot. Print = save to file, Plot = print to screen.
-device, roi_objects, roi_obj_hierarchy, kept_mask, obj_area = pcv.roi_objects(img1, 'partial', roi, roi_hierarchy,
-                                                                           id_objects, obj_hierarchy, device,
-                                                                           debug)
+roi_objects, roi_obj_hierarchy, kept_mask, obj_area = pcv.roi_objects(img1, 'partial', roi, roi_hierarchy,
+                                                                           id_objects, obj_hierarchy)
 
 ```
 
@@ -352,11 +323,8 @@ Cluster plants based on defined grid, for more info see [here](cluster_contours.
 #    roi_objects - object contours in an image that are needed to be clustered.
 #    nrow - number of rows to cluster (this should be the approximate  number of desired rows in the entire image (even if there isn't a literal row of plants)
 #    ncol - number of columns to cluster (this should be the approximate number of desired columns in the entire image (even if there isn't a literal row of plants)
-#    file -  output of filename from read_image function
-#    filenames - input txt file with list of filenames in order from top to bottom left to right
-#    debug - print debugging images
 
-device, clusters_i, contours = pcv.cluster_contours(device, img1, roi_objects, 4, 6, debug)
+clusters_i, contours = pcv.cluster_contours(img1, roi_objects, 4, 6)
 
 ```
 
@@ -376,13 +344,12 @@ Split the images
 #    img - ideally a masked RGB image.
 #    grouped_contour_indexes - output of cluster_contours, indexes of clusters of contours
 #    contours - contours to cluster, output of cluster_contours
-plantcv
 #    filenames - input txt file with list of filenames in order from top to bottom left to right (likely list of genotypes)
 #    debug - print debugging images
     
 out = args.outdir
 names = args.names
-device, output_path = pcv.cluster_contour_splitimg(device, img1, clusters_i, contours, out, file=filename, filenames=names, debug)
+output_path = pcv.cluster_contour_splitimg(img1, clusters_i, contours, out, file=filename, filenames=names)
 
 ```
 

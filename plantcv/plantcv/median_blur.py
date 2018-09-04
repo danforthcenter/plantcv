@@ -1,35 +1,32 @@
 # Median blur device
 
 import cv2
+import os
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
+from plantcv.plantcv import params
 
 
-def median_blur(img, ksize, device, debug=None):
+def median_blur(gray_img, ksize):
     """Applies a median blur filter (applies median value to central pixel within a kernel size ksize x ksize).
 
     Inputs:
-    # img     = img object
-    # ksize   = kernel size => ksize x ksize box
-    # device  = device number. Used to count steps in the pipeline
-    # debug   = None, print, or plot. Print = save to file, Plot = print to screen.
+    gray_img  = Grayscale image data
+    ksize     = kernel size => ksize x ksize box
 
     Returns:
-    device    = device number
     img_mblur = blurred image
 
-    :param img: numpy array
+    :param gray_img: numpy.ndarray
     :param ksize: int
-    :param device: int
-    :param debug: str
-    :return device: int
-    :return img_mblur: numpy array
+    :return img_mblur: numpy.ndarray
     """
 
-    img_mblur = cv2.medianBlur(img, ksize)
-    device += 1
-    if debug == 'print':
-        print_image(img_mblur, (str(device) + '_median_blur' + str(ksize) + '.png'))
-    elif debug == 'plot':
+    img_mblur = cv2.medianBlur(gray_img, ksize)
+    params.device += 1
+    if params.debug == 'print':
+        print_image(img_mblur, os.path.join(params.debug_outdir,
+                                            str(params.device) + '_median_blur' + str(ksize) + '.png'))
+    elif params.debug == 'plot':
         plot_image(img_mblur, cmap='gray')
-    return device, img_mblur
+    return img_mblur

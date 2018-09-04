@@ -11,7 +11,7 @@ def print_image(img, filename):
     img      = image object
     filename = name of file to save image to
 
-    :param img: numpy array
+    :param img: numpy.ndarray
     :param filename: string
     :return:
     """

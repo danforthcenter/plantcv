@@ -5,17 +5,15 @@ For more information see https://github.com/lsx1980/Leaf_count.
 This function uses the watershed algorithm to detect boundry of objects. 
 Needs a mask file which specifies area which is object is white, and background is black
 
-**watershed_segmentation**(*device, img, mask, distance=10, filename=False, debug=None*)**
+**plantcv.watershed_segmentation**(*rgb_img, mask, distance=10, filename=False*)**
 
-**returns** device, watershed_header,watershed_data, analysis_images
+**returns** watershed_header, watershed_data, analysis_images
 
 - **Parameters:**
-    - device - Counter for image processing steps
-    - img - img object
+    - rgb_img - RGB image data
     - mask - binary image, single channel, object in white and background black
     - distance - min_distance of local maximum (lower values are more sensitive, and segments more objects)
     - filename - if user wants to output analysis images change filenames from false
-    - debug - None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
 - **Context:**
     - Used to segment image into parts
 
@@ -26,8 +24,11 @@ Needs a mask file which specifies area which is object is white, and background 
 ```python
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
+
 # Segment image with watershed function
-device, watershed_header, watershed_data,analysis_images=pcv.watershed_segmentation(device, crop_img,thresh,10,'./examples',debug='print')
+watershed_header, watershed_data, analysis_images = pcv.watershed_segmentation(crop_img, thresh, 10, './examples')
 
 print(watershed_header)
 print(watershed_data)

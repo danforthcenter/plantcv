@@ -3,32 +3,28 @@
 
 import cv2
 import numpy as np
+import os
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
+from plantcv.plantcv import params
 
 
-def naive_bayes_classifier(img, pdf_file, device, debug=None):
+def naive_bayes_classifier(rgb_img, pdf_file):
     """Use the Naive Bayes classifier to output a plant binary mask.
 
     Inputs:
-    img      = image object (NumPy ndarray), BGR colorspace
+    rgb_img      = RGB image data
     pdf_file = filename of file containing PDFs output from the Naive Bayes training method (see plantcv-train.py)
-    device   = device number. Used to count steps in the pipeline
-    debug    = None, print, or plot. Print = save to file, Plot = print to screen.
 
     Returns:
-    device   = device number
-    mask     = binary mask (ndarray)
+    mask     = Dictionary of binary masks
 
-    :param img: ndarray
+    :param rgb_img: numpy.ndarray
     :param pdf_file: str
-    :param device: int
-    :param debug: str
-    :return device: int
     :return masks: dict
     """
-    device += 1
+    params.device += 1
 
     # Initialize PDF dictionary
     pdfs = {}
@@ -55,11 +51,11 @@ def naive_bayes_classifier(img, pdf_file, device, debug=None):
 
     # Split the input BGR image into component channels for BGR, HSV, and LAB colorspaces
     # b, g, r = cv2.split(img)
-    h, s, v = cv2.split(cv2.cvtColor(img, cv2.COLOR_BGR2HSV))
+    h, s, v = cv2.split(cv2.cvtColor(rgb_img, cv2.COLOR_BGR2HSV))
     # l, gm, by = cv2.split(cv2.cvtColor(img, cv2.COLOR_BGR2LAB))
 
     # Calculate the dimensions of the input image
-    width, height, depth = np.shape(img)
+    width, height, depth = np.shape(rgb_img)
 
     # Initialize an empty ndarray for plant and background. These will be used to store the joint probabilities
     px_p = {}
@@ -89,11 +85,12 @@ def naive_bayes_classifier(img, pdf_file, device, debug=None):
     # mask[np.where(plant > bg)] = 255
 
     # Print or plot the mask if debug is not None
-    if debug == "print":
+    if params.debug == "print":
         for class_name, mask in masks.items():
-            print_image(mask, (str(device) + "_naive_bayes_" + class_name + "_mask.jpg"))
-    elif debug == "plot":
+            print_image(mask, os.path.join(params.debug_outdir,
+                                           str(params.device) + "_naive_bayes_" + class_name + "_mask.jpg"))
+    elif params.debug == "plot":
         for class_name, mask in masks.items():
             plot_image(mask, cmap="gray")
 
-    return device, masks
+    return masks

@@ -1,17 +1,17 @@
-## Otsu Threshold
+## Otsu Auto Threshold
 
 Creates a binary image from a gray image based on the threshold values. 
 
-**otsu_auto_threshold(*img, maxValue, object_type, device, debug=None*)**
+**plantcv.threshold.otsu(*gray_img, max_value, object_type="light"*)**
 
-**returns** device, thresholded image
+**returns** thresholded/binary image
 
 - **Parameters:**
-    - img - grayscale img object
-    - maxValue - value to apply above threshold (255 = white)
-    - objecttype - 'light' or 'dark', is target image light or dark?
-    - device- Counter for image processing steps
-    - debug- None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
+    - gray_img - Grayscale image data
+    - max_value - Value to apply above threshold (255 = white)
+    - object_type - "light" or "dark" (default: "light"). If object is lighter than the background then standard 
+    thresholding is done. If object is darker than the background then inverse thresholding is done
+   
 - **Context:**
     - Used to help differentiate plant and background
 
@@ -23,8 +23,11 @@ Creates a binary image from a gray image based on the threshold values.
 ```python
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
+
 # Create binary image from a gray image based on threshold values. Targeting light objects in the image.
-device, threshold_light = pcv.otsu_auto_threshold(img, 255, 'dark', device, debug="print")
+threshold_light = pcv.threshold.otsu(gray_img, 255, 'dark')
 ```
 
 **Thresholded image**
@@ -38,8 +41,11 @@ device, threshold_light = pcv.otsu_auto_threshold(img, 255, 'dark', device, debu
 ```python
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
+
 # Create binary image from a gray image based on threshold values. Targeting dark objects in the image.
-device, threshold_dark = pcv.otsu_auto_threshold(img1, 255, 'light', device, debug="print")
+threshold_dark = pcv.threshold.otsu(gray_img, 255, 'light')
 ```
 
 **Thresholded image (inverse)**

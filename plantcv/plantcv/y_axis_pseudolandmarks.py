@@ -3,38 +3,33 @@
 import cv2
 import numpy as np
 from plantcv.plantcv import plot_image
+from plantcv.plantcv import params
 
 
-def y_axis_pseudolandmarks(obj, mask, img, device, debug=None):
+def y_axis_pseudolandmarks(obj, mask, img):
     """Divide up object contour into 19 equidistant segments and generate landmarks for each
 
     Inputs:
     obj      = a contour of the plant object (this should be output from the object_composition.py fxn)
     mask     = this is a binary image. The object should be white and the background should be black
     img      = This is a copy of the original plant image generated using np.copy if debug is true it will be drawn on
-    device   = a counter variable
-    debug    = True/False. If True, print image
 
     Returns:
-    device   = pipeline step counter
     top      =
     bottom   =
     center_v =
 
     :param obj: list
-    :param mask: ndarray
-    :param img: ndarray
-    :param device: int
-    :param debug: str
-    :return device: int
+    :param mask: numpy.ndarray
+    :param img: numpy.ndarray
     :return left:
     :return right:
     :return center_h:
     """
     # Lets get some landmarks scanning along the y-axis
-    device += 1
+    params.device += 1
     if not np.any(obj):
-        return device, ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA')
+        return ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA')
     x, y, width, height = cv2.boundingRect(obj)
     extent = height
     # If height is greater than 21 pixels make 20 increments (5% intervals)
@@ -140,7 +135,7 @@ def y_axis_pseudolandmarks(obj, mask, img, device, debug=None):
         center_h = list(zip(x_centroids, y_centroids))
         center_h = np.array(center_h)
         center_h.shape = (20, 1, 2)
-        if debug == 'plot':
+        if params.debug == 'plot':
             img2 = np.copy(img)
             for i in left:
                 x = i[0, 0]
@@ -156,7 +151,7 @@ def y_axis_pseudolandmarks(obj, mask, img, device, debug=None):
                 cv2.circle(img2, (int(x), int(y)), 10, (0, 79, 255), -1)
             # print_image(img2, (str(device) + '_y_axis_pseudolandmarks.png'))
             plot_image(img2)
-        return device, left, right, center_h
+        return left, right, center_h
     
     if extent < 21:
         # If the length of the object is less than 20 pixels just make the object a 20 pixel rectangle
@@ -177,7 +172,7 @@ def y_axis_pseudolandmarks(obj, mask, img, device, debug=None):
         center_h = list(zip(c_points, y_coords))
         center_h = np.array(center_h)
         center_h.shape = (20, 1, 2)
-        if debug == 'plot':
+        if params.debug == 'plot':
             img2 = np.copy(img)
             for i in left:
                 x = i[0, 0]
@@ -193,4 +188,4 @@ def y_axis_pseudolandmarks(obj, mask, img, device, debug=None):
                 cv2.circle(img2, (int(x), int(y)), 10, (0, 79, 255), -1)
             # print_image(img2, (str(device) + '_y_axis_pseudolandmarks.png'))
             plot_image(img2)
-        return device, left, right, center_h
+        return left, right, center_h

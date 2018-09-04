@@ -1,14 +1,16 @@
 # Background Subtraction:
 # Subtracts a background image from a foreground image once.
 
+import os
 import cv2
 import numpy as np
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
+from plantcv.plantcv import params
 
 
-def background_subtraction(background_image, foreground_image, device, debug=None):
+def background_subtraction(background_image, foreground_image):
     """Creates a binary image from a background subtraction of the foreground using cv2.BackgroundSubtractorMOG().
     The binary image returned is a mask that should contain mostly foreground pixels.
     The background image should be the same background as the foreground image except not containing the object
@@ -21,22 +23,16 @@ def background_subtraction(background_image, foreground_image, device, debug=Non
     Inputs:
     background_image       = img object, RGB or binary/grayscale/single-channel
     foreground_image       = img object, RGB or binary/grayscale/single-channel
-    device                 = device number. Used to count steps in the pipeline
-    debug                  = None, print, or plot. Print = save to file, Plot = print to screen.
 
     Returns:
-    device                 = device number
     fgmask                 = background subtracted foreground image (mask)
 
-    :param background_image: numpy array
-    :param foreground_image: numpy array
-    :param device: int
-    :param debug: str
-    :return device: int
-    :return fgmask: numpy array
+    :param background_image: numpy.ndarray
+    :param foreground_image: numpy.ndarray
+    :return fgmask: numpy.ndarray
     """
 
-    device += 1
+    params.device += 1
     # Copying images to make sure not alter originals
     bg_img = np.copy(background_image)
     fg_img = np.copy(foreground_image)
@@ -66,9 +62,9 @@ def background_subtraction(background_image, foreground_image, device, debug=Non
     fgmask = bgsub.apply(fg_img)
 
     # Debug options
-    if debug == "print":
-        print_image(fgmask, "{0}_background_subtraction.png".format(device))
-    elif debug == "plot":
+    if params.debug == "print":
+        print_image(fgmask, os.path.join(params.debug_outdir, str(params.device) + "_background_subtraction.png"))
+    elif params.debug == "plot":
         plot_image(fgmask, cmap="gray")
     
-    return device, fgmask
+    return fgmask
