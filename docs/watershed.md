@@ -5,12 +5,12 @@ For more information see https://github.com/lsx1980/Leaf_count.
 This function uses the watershed algorithm to detect boundry of objects. 
 Needs a mask file which specifies area which is object is white, and background is black
 
-**plantcv.watershed_segmentation**(*img, mask, distance=10, filename=False*)**
+**plantcv.watershed_segmentation**(*rgb_img, mask, distance=10, filename=False*)**
 
 **returns** watershed_header, watershed_data, analysis_images
 
 - **Parameters:**
-    - img - img object
+    - rgb_img - RGB image data
     - mask - binary image, single channel, object in white and background black
     - distance - min_distance of local maximum (lower values are more sensitive, and segments more objects)
     - filename - if user wants to output analysis images change filenames from false

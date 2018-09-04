@@ -1691,13 +1691,13 @@ def test_plantcv_watershed_segmentation():
     # Test with debug = "print"
     pcv.params.debug = "print"
     outfile = os.path.join(cache_dir, TEST_INPUT_CROPPED)
-    _ = pcv.watershed_segmentation(img=img, mask=mask, distance=10, filename=outfile)
+    _ = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10, filename=outfile)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.watershed_segmentation(img=img, mask=mask, distance=10, filename=False)
+    _ = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10, filename=False)
     # Test with debug = None
     pcv.params.debug = None
-    watershed_header, watershed_data, images = pcv.watershed_segmentation(img=img, mask=mask, distance=10,
+    watershed_header, watershed_data, images = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10,
                                                                           filename=False)
     assert watershed_data[1] > 9
 

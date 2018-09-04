@@ -15,12 +15,12 @@ from plantcv.plantcv import color_palette
 from plantcv.plantcv import params
 
 
-def watershed_segmentation(img, mask, distance=10, filename=False):
+def watershed_segmentation(rgb_img, mask, distance=10, filename=False):
     """Uses the watershed algorithm to detect boundary of objects. Needs a marker file which specifies area which is
        object (white), background (grey), unknown area (black).
 
     Inputs:
-    img                 = image to perform watershed on needs to be 3D (i.e. np.shape = x,y,z not np.shape = x,y)
+    rgb_img             = image to perform watershed on needs to be 3D (i.e. np.shape = x,y,z not np.shape = x,y)
     mask                = binary image, single channel, object in white and background black
     distance            = min_distance of local maximum
     filename            = if user wants to output analysis images change filenames from false
@@ -30,8 +30,8 @@ def watershed_segmentation(img, mask, distance=10, filename=False):
     watershed_data      = shape data table values
     analysis_images     = list of output images
 
-    :param img: numpy array
-    :param mask: numpy array
+    :param rgb_img: numpy.ndarray
+    :param mask: numpy.ndarray
     :param distance: int
     :param filename: str
     :return watershed_header: list
@@ -50,7 +50,7 @@ def watershed_segmentation(img, mask, distance=10, filename=False):
     dist_transform1 = -dist_transform
     labels = watershed(dist_transform1, markers, mask=mask)
 
-    img1 = np.copy(img)
+    img1 = np.copy(rgb_img)
 
     for x in np.unique(labels):
         rand_color = color_palette(len(np.unique(labels)))
@@ -58,7 +58,7 @@ def watershed_segmentation(img, mask, distance=10, filename=False):
 
     img2 = apply_mask(img1, mask, 'black')
 
-    joined = np.concatenate((img2, img), axis=1)
+    joined = np.concatenate((img2, rgb_img), axis=1)
 
     estimated_object_count = len(np.unique(markers)) - 1
 

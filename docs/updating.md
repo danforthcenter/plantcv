@@ -494,7 +494,7 @@ pages for more details on the input and output variable types.
 #### plantcv.watershed_segmentation
 
 * pre v3.0dev2: device, watershed_header, watershed_data, analysis_images = **plantcv.watershed_segmentation**(*device, img, mask, distance=10, filename=False, debug=None*)
-* post v3.0dev2: watershed_header, watershed_data, analysis_images = **plantcv.watershed_segmentation**(*img, mask, distance=10, filename=False*)
+* post v3.0dev2: watershed_header, watershed_data, analysis_images = **plantcv.watershed_segmentation**(*rgb_img, mask, distance=10, filename=False*)
 
 #### plantcv.white_balance
 
