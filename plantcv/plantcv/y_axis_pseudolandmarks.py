@@ -20,8 +20,8 @@ def y_axis_pseudolandmarks(obj, mask, img):
     center_v =
 
     :param obj: list
-    :param mask: ndarray
-    :param img: ndarray
+    :param mask: numpy.ndarray
+    :param img: numpy.ndarray
     :return left:
     :return right:
     :return center_h:
