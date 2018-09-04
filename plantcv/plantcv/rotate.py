@@ -13,7 +13,7 @@ def rotate(img, rotation_deg, crop):
        multiple plants is needed.
 
     Inputs:
-    img          = image object, RGB colorspace (either single or three channel)
+    img          = RGB or grayscale image data
     rotation_deg = rotation angle in degrees, should be an integer, can be a negative number,
                    positive values move counter clockwise.
     crop         = either true or false, if true, dimensions of rotated image will be same as original image.
@@ -21,10 +21,10 @@ def rotate(img, rotation_deg, crop):
     Returns:
     rotated_img  = rotated image
 
-    :param img: numpy array
+    :param img: numpy.ndarray
     :param rotation_deg: int
     :param crop: bool
-    :return rotated_img: numpy array
+    :return rotated_img: numpy.ndarray
     """
     params.device += 1
 
