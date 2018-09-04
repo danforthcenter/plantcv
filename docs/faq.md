@@ -29,12 +29,11 @@ and [updating documentation](documentation.md).
     (by number and DOI)
     and publications related to specific features added
     since the initial release.
-- Q: Does PlantCV work with OpenCV 3.x?
-    - A: Not yet, but this is a major goal for future development.
-    Work towards this goal will be coordinated
-    via GitHub [issue #21](https://github.com/danforthcenter/plantcv/issues/21)
-    and/or [milestone #1](https://github.com/danforthcenter/plantcv/milestone/1).
-    <!-- Cf. duplicate, https://github.com/danforthcenter/plantcv/issues/130 -->
+- Q: What version(s) of Python and OpenCV does PlantCV work with?
+    - A: PlantCV currently works with both Python 2.7 and 3+ and OpenCV 2 and 3. Python 2.7 can be used with
+    either OpenCV 2 or 3 but Python 3 can only be used with OpenCV 3. Our recommended configuration is
+    Python 3 and OpenCV 3. In the future, Python 2 and OpenCV 2 
+    support will end but removing support is not currently on our roadmap.
 - Q: When will the next stable version of PlantCV be released?
     - A: Please see the [Milestones](https://github.com/danforthcenter/plantcv/milestones)
     page for target date estimates
