@@ -12,17 +12,17 @@ def shift_img(img, number, side="right"):
     """this function allows you to shift an image over without changing dimensions
 
     Inputs:
-    img     = image to mask
+    img     = RGB or grayscale image data
     number  = number of rows or columns to add
     side   = "top", "bottom", "right", "left" where to add the rows or columns to
 
     Returns:
     newmask = image mask
 
-    :param img: numpy array
+    :param img: numpy.ndarray
     :param number: int
     :param side: str
-    :return newmask: numpy array
+    :return newmask: numpy.ndarray
     """
     params.device += 1
 

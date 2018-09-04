@@ -7,7 +7,7 @@ Shifts image, but keeps dimensions the same
 **returns** image after shift
 
 - **Parameters:**
-    - img - Input image
+    - img - RGB or grayscale image data
     - number - number of rows or columns to add
     - side - "top", "bottom", "right", "left" where to add the rows or columns
 - **Context:**
