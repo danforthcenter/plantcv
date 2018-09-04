@@ -45,9 +45,10 @@ def white_balance(img, mode='hist', roi=None):
     Returns:
     img     = Image after exposure correction
 
-    :param img: ndarray
+    :param img: numpy.ndarray
     :param mode: str
     :param roi: list
+    :return finalcorrected: numpy.ndarray
     """
     params.device += 1
 
