@@ -11,7 +11,7 @@ or include objects that overlap with the region of interest.
 completely within the image.
 
 - **Parameters:**
-    - img = img to display kept objects
+    - img = RGB or grayscale image data to display kept objects on
     - roi_type = 'cutto' or 'partial' (include objects that are partially inside or overlapping with ROI)
     - roi_contour = contour of roi, output from "define_roi" function
     - roi_hierarchy = contour of roi, output from "define_roi" function

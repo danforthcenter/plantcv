@@ -13,7 +13,7 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
     """Find objects partially inside a region of interest or cut objects to the ROI.
 
     Inputs:
-    img            = img to display kept objects
+    img            = RGB or grayscale image data for plotting
     roi_type       = 'cutto' or 'partial' (for partially inside)
     roi_contour    = contour of roi, output from "View and Adjust ROI" function
     roi_hierarchy  = contour of roi, output from "View and Adjust ROI" function
@@ -26,15 +26,15 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
     mask           = mask image
     obj_area       = total object pixel area
 
-    :param img: numpy array
+    :param img: numpy.ndarray
     :param roi_type: str
     :param roi_contour: list
-    :param roi_hierarchy: list
+    :param roi_hierarchy: numpy.ndarray
     :param object_contour: list
-    :param obj_hierarchy: list
+    :param obj_hierarchy: numpy.ndarray
     :return kept_cnt: list
-    :return hierarchy: list
-    :return mask: numpy array
+    :return hierarchy: numpy.ndarray
+    :return mask: numpy.ndarray
     :return obj_area: int
     """
 
@@ -47,6 +47,9 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
     size = ix, iy, 3
     background = np.zeros(size, dtype=np.uint8)
     ori_img = np.copy(img)
+    # If the reference image is grayscale convert it to color
+    if len(np.shape(ori_img)) == 2:
+        ori_img = cv2.cvtColor(ori_img, cv2.COLOR_GRAY2BGR)
     w_back = background + 255
     background1 = np.zeros(size, dtype=np.uint8)
     background2 = np.zeros(size, dtype=np.uint8)
