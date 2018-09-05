@@ -4,6 +4,7 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/danforthcenter/plantcv.svg)](https://hub.docker.com/r/danforthcenter/plantcv/)
 [![GitHub release](https://img.shields.io/github/release/danforthcenter/plantcv.svg)](https://github.com/danforthcenter/plantcv/releases)
 [![license](https://img.shields.io/github/license/danforthcenter/plantcv.svg)](https://github.com/danforthcenter/plantcv/blob/master/LICENSE)
+[![Join the chat at https://gitter.im/plantcv/Lobby](https://badges.gitter.im/plantcv/Lobby.svg)](https://gitter.im/plantcv/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 # PlantCV: Plant phenotyping using computer vision
 
