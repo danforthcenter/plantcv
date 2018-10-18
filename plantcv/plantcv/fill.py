@@ -7,6 +7,7 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
+from skimage.morphology import remove_small_objects
 
 
 def fill(bin_img, size):
@@ -30,20 +31,14 @@ def fill(bin_img, size):
     if len(np.shape(bin_img)) != 2 or len(np.unique(bin_img)) != 2:
         fatal_error("Image is not binary")
 
-    # Find contours
-    contours, hierarchy = cv2.findContours(np.copy(bin_img), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
+    # Cast binary image to boolean
+    bool_img = bin_img.astype(bool)
 
-    # Make a copy of the binary image for returning
-    filtered_img = np.copy(bin_img)
+    # Find and fill contours
+    bool_img = remove_small_objects(bool_img, size)
 
-    # Loop through contours, fill contours less than or equal to size in area
-    for c, cnt in enumerate(contours):
-        # if hierarchy[0][c][0]==-1:
-        m = cv2.moments(cnt)
-        area = m['m00']
-        if area <= size:
-            # cv2.fillPoly(img, pts = cnt, color=(0,0,0))
-            cv2.drawContours(filtered_img, contours, c, (0, 0, 0), -1, lineType=8, hierarchy=hierarchy)
+    # Cast boolean image to binary and make a copy of the binary image for returning
+    filtered_img = np.copy(bool_img.astype(np.uint8) * 255)
 
     if params.debug == 'print':
         print_image(filtered_img, os.path.join(params.debug_outdir, str(params.device) + '_fill' + str(size) + '.png'))

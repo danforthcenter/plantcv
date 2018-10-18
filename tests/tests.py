@@ -744,15 +744,16 @@ def test_plantcv_fill():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.fill(bin_img=img, size=1)
+    _ = pcv.fill(bin_img=img, size=63632)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.fill(bin_img=img, size=1)
+    _ = pcv.fill(bin_img=img, size=63632)
     # Test with debug = None
     pcv.params.debug = None
-    fill_img = pcv.fill(bin_img=img, size=1)
+    fill_img = pcv.fill(bin_img=img, size=63632)
     # Assert that the output image has the dimensions of the input image
-    assert all([i == j] for i, j in zip(np.shape(fill_img), TEST_BINARY_DIM))
+    # assert all([i == j] for i, j in zip(np.shape(fill_img), TEST_BINARY_DIM))
+    assert np.sum(fill_img) == 0
 
 
 def test_plantcv_fill_bad_input():
