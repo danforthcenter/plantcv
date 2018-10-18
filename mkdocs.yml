@@ -5,7 +5,7 @@ site_author: PlantCV Development Team
 repo_url: https://github.com/danforthcenter/plantcv
 copyright: Copyright 2016, Donald Danforth Plant Science Center
 
-pages:
+nav:
 - Home: index.md
 - Documentation:
   - 'Installation': installation.md
@@ -37,8 +37,8 @@ pages:
     - 'Auto Crop': auto_crop.md
     - 'Background Subtraction': background_subtraction.md
     - 'Boundary Line Tool':
-      -  'Horizontal Boundary Tool': analyze_bound_horizontal.md
-      -  'Vertical Boundary Tool': analyze_bound_vertical.md
+      - 'Horizontal Boundary Tool': analyze_bound_horizontal.md
+      - 'Vertical Boundary Tool': analyze_bound_vertical.md
     - 'Cluster Contours': cluster_contours.md
     - 'Cluster Contours and Split Images': cluster_contours_splitimg.md
     - 'Color Palette': color_palette.md
