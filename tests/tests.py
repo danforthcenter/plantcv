@@ -1120,6 +1120,17 @@ def test_plantcv_median_blur():
         assert 0
 
 
+def test_plantcv_median_blur_bad_input():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_median_blur_bad_input")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    with pytest.raises(RuntimeError):
+        _ = pcv.median_blur(img, 5.)
+
+
 def test_plantcv_naive_bayes_classifier():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_naive_bayes_classifier")
