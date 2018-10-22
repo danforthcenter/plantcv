@@ -25,7 +25,7 @@ def median_blur(gray_img, ksize):
     """
 
     # Make sure ksize is valid
-    if type(ksize) != int and type(ksize) != tuple:
+    if type(ksize) is not int and type(ksize) is not tuple:
         fatal_error("Invalid ksize, must be integer or tuple")
 
     img_mblur = median_filter(gray_img, size=ksize)
