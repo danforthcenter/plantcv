@@ -1,7 +1,7 @@
 import pickle
-from SPICE import *
+import numpy as np
 import matplotlib.pyplot as plt
-
+from SPICE import *
 
 def main():
 
