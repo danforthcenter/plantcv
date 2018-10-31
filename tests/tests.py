@@ -72,6 +72,7 @@ TEST_TRANSFORM1 = "transformation_matrix1.npz"
 TEST_MATRIX_M1 = "matrix_m1.npz"
 TEST_MATRIX_M2 = "matrix_m2.npz"
 TEST_S1_CORRECTED = "source_corrected.png"
+TEST_SPICE = "spice_data.npz"
 
 
 # ##########################
@@ -2575,6 +2576,26 @@ def test_plantcv_threshold_triangle_incorrect_object_type():
     with pytest.raises(RuntimeError):
         pcv.params.debug = None
         _ = pcv.threshold.triangle(gray_img=gray_img, max_value=255, object_type="lite", xstep=10)
+
+
+def test_plantcv_spice_training():
+    spice = np.load(os.path.join(TEST_DATA, TEST_SPICE))
+    # In the SPICE algorithm, initialization parameters are randomized, these have a known output
+    init_endmem = spice['init_endmembers']
+    # Input data (HSI Image)
+    input_data = spice['input_data']
+    # Final data to test against
+    final_endmem = spice['final_endmembers']
+    final_prop = spice['final_proportions']
+    # Load parameters, turn off display
+    params = pcv.SPICE.SPICEParameters()
+    params.initEM = init_endmem
+    params.produceDisplay = 0
+    # Run the algorithm
+    endm, P = pcv.SPICE.SPICE(input_data, params)
+    # assert with a 0.01% tolerance, since the values are floats
+    assert np.allclose(endm, final_endmem, rtol=0.0001) and np.allclose(P, final_prop, rtol=0.0001)
+
 
 
 # ##############################
