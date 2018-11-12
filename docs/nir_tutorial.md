@@ -316,7 +316,7 @@ Include all continuous portions within the plant that fall within the area of in
 
 ![Screenshot](img/tutorial_images/nir/28_objcomp_t.jpg)
 
-Now that the plant has been sepearted from the background we can analyze the pixel composition and shape of the plant.
+Now that the plant has been separated from the background we can analyze the pixel composition and shape of the plant.
 In order to pseudocolor the plant by signal intensity the image needs to be converted from grayscale (1-dimension) to 
 pseudocolor (3-dimension). This is done by replicating the grayscale image 3X and combining them into a single 
 3-dimensional matrix (rgb = cv2.cvtColor(img,cv2.COLOR_GRAY2RGB)).
