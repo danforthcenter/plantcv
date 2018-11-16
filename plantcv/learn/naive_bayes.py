@@ -52,9 +52,9 @@ def naive_bayes(imgdir, maskdir, outfile, mkplots=False):
                         fg, bg = _split_plant_background_signal(channels[channel], mask)
 
                         # Randomly sample from the plant class (sample 10% of the pixels)
-                        fg = fg[np.random.random_integers(0, len(fg) - 1, int(len(fg) / 10))]
+                        fg = fg[np.random.randint(0, len(fg) - 1, int(len(fg) / 10))]
                         # Randomly sample from the background class the same n as the plant class
-                        bg = bg[np.random.random_integers(0, len(bg) - 1, len(fg))]
+                        bg = bg[np.random.randint(0, len(bg) - 1, len(fg))]
                         plant[channel] = np.append(plant[channel], fg)
                         background[channel] = np.append(background[channel], bg)
 
