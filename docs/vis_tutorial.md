@@ -195,7 +195,6 @@ The resulting binary image is used to mask the masked image from Figure 7.
     # Join the thresholded saturation and blue-yellow images (OR)
     ab1 = pcv.logical_or(maskeda_thresh, maskedb_thresh)
     ab = pcv.logical_or(maskeda_thresh1, ab1)
-    ab_cnt = pcv.logical_or(maskeda_thresh1)
     
     # Fill small objects
     ab_fill = pcv.fill(ab, 200)
@@ -309,7 +308,7 @@ and the Boundary tool function [here](analyze_bound_horizontal.md).
     boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_horizontal(img, obj, mask, 1680, args.outdir + '/' + filename)
     
     # Determine color properties: Histograms, Color Slices and Pseudocolored Images, output color analyzed images (optional)
-    color_header, color_data, color_img = pcv.analyze_color(img, kept_mask, 256, 'all', 'v', 'img', 300, args.outdir + '/' + filename)
+    color_header, color_data, color_img = pcv.analyze_color(img, kept_mask, 256, 'all', 'v', 'img', args.outdir + '/' + filename)
     
     # Write shape and color data to results file
     result=open(args.result,"a")

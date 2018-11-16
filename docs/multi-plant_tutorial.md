@@ -321,10 +321,11 @@ Cluster plants based on defined grid, for more info see [here](cluster_contours.
 #Inputs:
 #    img - An RGB image array
 #    roi_objects - object contours in an image that are needed to be clustered.
+#    roi_obj_hierarchy       = object hierarchy
 #    nrow - number of rows to cluster (this should be the approximate  number of desired rows in the entire image (even if there isn't a literal row of plants)
 #    ncol - number of columns to cluster (this should be the approximate number of desired columns in the entire image (even if there isn't a literal row of plants)
 
-clusters_i, contours = pcv.cluster_contours(img1, roi_objects, 4, 6)
+clusters_i, contours, hierarchies = pcv.cluster_contours(img1, roi_objects, roi_obj_hierarchy, 4, 6)
 
 ```
 
