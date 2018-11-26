@@ -69,7 +69,6 @@ from matplotlib import pyplot as plt
 from plantcv import plantcv as pcv
 
 # Set variables
-device = 0                                    # Workflow step counter
 debug = 'plot'                                # Plot debug images to the notebook
 img_file = 'input_color_img.jpg'              # Example image
 ```

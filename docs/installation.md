@@ -67,7 +67,7 @@ git clone https://github.com/danforthcenter/plantcv.git
 cd plantcv
 
 # Create an Anaconda environment named "plantcv" and automatically install the dependencies
-conda create --file requirements.txt -n plantcv -c conda-forge python=3.6 opencv=3
+conda create --file requirements.txt -n plantcv -c conda-forge python=3.6 nb_conda
 
 # Activate the plantcv environment (you will have to do this each time you start a new session)
 source activate plantcv
@@ -75,17 +75,17 @@ source activate plantcv
 # Install PlantCV
 python setup.py install
 
-# If PlantCV is installed successfully it should import without error
-python -c 'import plantcv'
+# Install OpenCV (not through conda)
+pip install opencv-python
 
-# Optionally, you can run automated tests on your system to make sure everything is working correctly
+# Install PlantCV
 python setup.py test
 ```
-
-Install optional Jupyter Notebook support.
+If you have a broken environment, you can remove it and repeat the above steps.
 
 ```bash
-conda install nb_conda
+# Remove the environment 
+conda env remove -n plantcv
 ```
 
 sqlite3 comes standard on macOS and many Linux distributions. On Windows Anaconda can be used to install the 
