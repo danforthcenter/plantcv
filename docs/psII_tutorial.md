@@ -6,7 +6,7 @@ Every function has a optional debug mode that prints out the resulting image.
 This allows users to visualize and optimize each step on individual test images and small test sets before pipelines are deployed over whole data-sets.
 
 PSII images (3 in a set; F0, Fmin, and Fmax) are captured directly following a saturating fluorescence pulse 
-(red light; 630 nm). These three PSII images can be used to calculate Fv/Fm (effciency of photosystem II) 
+(red light; 630 nm). These three PSII images can be used to calculate Fv/Fm (efficiency of photosystem II) 
 for each pixel of the plant. Unfortunately, our PSII imaging cabinet has a design flaw when capturing images 
 of plants with vertical architecture. You can read more about how we validated this flaw using our PSII 
 analysis pipelines in the [PlantCV Paper](http://dx.doi.org/10.1016/j.molp.2015.06.005). 
@@ -26,7 +26,7 @@ To run a PSII pipeline over a single PSII image set (3 images) there are 4 requi
 1.  **Image 1:** F0 (a.k.a Fdark/null) image.
 2.  **Image 2:** Fmin image.
 3.  **Image 3:** Fmax image. 
-5.  **Output directory:** If debug mode is on output images from each step are produced, 
+5.  **Output directory:** If debug mode is on, output images from each step are produced; 
 otherwise ~4 final output images are produced.
 
 Optional Inputs:
@@ -69,7 +69,7 @@ def options():
     return args
 ```
 
-The PSII pipeline first uses the Fmax image to create an image mask. Our FLU images are 16-bit grayscale, 
+The PSII pipeline first uses the Fmax image to create an image mask. Our PSII images are 16-bit grayscale, 
 but we will initially read the Fmax image in as a 8-bit color image just to create the image mask.
 
 ```python
@@ -99,7 +99,7 @@ def main():
 
 We use a premade-mask for the screws on the car that consistently give background signal, this is not required.
 The track mask is an RGB image so a single channel is selected using the [RGB to HSV](rgb2hsv.md).
-function and converted to a binary mask with a [binary threshold](http://plantcv.danforthcenter.org/pages/documentation/function_docs/binary_threshold.html).**  
+function and converted to a binary mask with a [binary threshold](https://plantcv.readthedocs.io/en/latest/binary_threshold/).**  
 The mask is [inverted](invert.md) since the screws were white in the track image.
 The [apply mask function](apply_mask.md) is then used to apply the track mask to one channel of the Fmax image (mask1). 
 

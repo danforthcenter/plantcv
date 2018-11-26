@@ -9,8 +9,7 @@ The function is a wrapper for the OpenCV function [median blur](http://docs.open
 
 - **Parameters:**
     - gray_img - Grayscale image data
-    - ksize - kernel size => ksize x ksize box, must be an odd value
-   
+    - ksize - kernel size => integer or tuple, ksize x ksize box if integer, (n, m) size box if tuple 
 - **Context:**
     - Used to reduce image noise
 - **Example use:**
