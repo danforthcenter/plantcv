@@ -8,6 +8,7 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
+from plantcv.plantcv.roi import rectangle
 
 
 def get_color_matrix(rgb_img, mask):
@@ -342,3 +343,72 @@ def correct_color(target_img, target_mask, source_img, source_mask, output_direc
     corrected_img = apply_transformation_matrix(source_img, target_img, transformation_matrix)
 
     return target_matrix, source_matrix, transformation_matrix, corrected_img
+
+
+def create_color_card_mask(rgb_img, chip_dims, start_coord, spacing, nrows, ncols, exclude=[]):
+    """Create a labeled mask for color card chips
+    Inputs:
+    rgb_img        = Input RGB image data containing a color card.
+    chip_dims      = Two-element tuple of the chip masks width and height.
+    start_coord    = Two-element tuple of the first chip mask starting x and y coordinate.
+    spacing        = Two-element tuple of the horizontal and vertical spacing between chip masks.
+    nrows          = Number of chip rows.
+    ncols          = Number of chip columns.
+    exclude        = Optional list of chips to exclude. List in largest to smallest index (e.g. [20, 0])
+
+    Returns:
+    mask           = Labeled mask of chips
+
+    :param rgb_img: numpy.ndarray
+    :param chip_dims: tuple
+    :param start_coord: tuple
+    :param spacing: tuple
+    :param nrows: int
+    :param ncols: int
+    :param exclude: list
+    :return mask: numpy.ndarray
+    """
+    # Initialize chip list
+    chips = []
+    # Store user debug
+    debug = params.debug
+    # Temporarily disable debug
+    params.debug = None
+    # Loop over each color card row
+    for i in range(0, nrows):
+        # The upper left corner is the y starting coordinate + the chip offset * the vertical spacing between chips
+        y = start_coord[1] + i * spacing[1]
+        # Loop over each column
+        for j in range(0, ncols):
+            # The upper left corner is the x starting coordinate + the chip offset * the
+            # horizontal spacing between chips
+            x = start_coord[0] + j * spacing[0]
+            # Create a chip ROI
+            chips.append(rectangle(img=rgb_img, x=x, y=y, w=chip_dims[0], h=chip_dims[1]))
+    # Remove any excluded chips
+    for chip in exclude:
+        del chips[chip]
+    # Create mask
+    mask = np.zeros(shape=np.shape(rgb_img)[:2], dtype=np.uint8())
+    # Mask label index
+    i = 1
+    # Draw labeled chip boxes on the mask
+    for chip in chips:
+        mask = cv2.drawContours(mask, chip[0], -1, (i * 10), -1)
+        i += 1
+    # Reset debug
+    params.debug = debug
+    if params.debug is not None:
+        # Create a copy of the input image for plotting
+        canvas = np.copy(rgb_img)
+        # Draw chip ROIs on the canvas image
+        for chip in chips:
+            cv2.drawContours(canvas, chip[0], -1, (255, 255, 0), 5)
+        if params.debug == "print":
+            print_image(img=canvas, filename=os.path.join(params.debug_outdir,
+                                                          str(params.device) + "_color_card_mask_rois.png"))
+            print_image(img=mask, filename=os.path.join(params.debug_outdir,
+                                                        str(params.device) + "_color_card_mask.png"))
+        elif params.debug == "plot":
+            plot_image(canvas)
+    return mask

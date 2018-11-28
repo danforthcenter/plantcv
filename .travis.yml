@@ -52,11 +52,12 @@ install:
   - |
     if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
     # matplotlib is causing issues with ths configuration on Travis-CI, overriding normal defaults
-      conda create -q -c conda-forge -n test-environment --file requirements.txt python=$TRAVIS_PYTHON_VERSION opencv=2.4 matplotlib=1.5 coveralls;
+      conda create -q -c conda-forge -n test-environment --file requirements.txt python=$TRAVIS_PYTHON_VERSION coveralls;
     else
-      conda create -q -c conda-forge -n test-environment --file requirements.txt python=$TRAVIS_PYTHON_VERSION opencv=3.3 coveralls;
+      conda create -q -c conda-forge -n test-environment --file requirements.txt python=$TRAVIS_PYTHON_VERSION coveralls;
     fi
   - source activate test-environment
+  - pip install opencv-python
   - python setup.py install
 # command to run tests
 script:
