@@ -72,13 +72,13 @@ conda create --file requirements.txt -n plantcv -c conda-forge python=3.6 nb_con
 # Activate the plantcv environment (you will have to do this each time you start a new session)
 source activate plantcv
 
-# Install PlantCV
-python setup.py install
-
 # Install OpenCV (not through conda)
 pip install opencv-python
 
 # Install PlantCV
+python setup.py install
+
+# Test PlantCV Installation
 python setup.py test
 ```
 If you have a broken environment, you can remove it and repeat the above steps.
