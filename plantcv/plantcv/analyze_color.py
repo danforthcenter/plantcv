@@ -102,6 +102,7 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None, pseudo_channel='v',
     Inputs:
     rgb_img          = RGB image data
     mask             = Binary mask made from selected contours
+    bins             = number of color bins the channel is divided into
     hist_plot_type   = 'None', 'all', 'rgb','lab' or 'hsv'
     color_slice_type = 'None', 'rgb', 'hsv' or 'lab'
     pseudo_channel   = 'None', 'l', 'm' (green-magenta), 'y' (blue-yellow), h','s', or 'v', creates pseduocolored image
