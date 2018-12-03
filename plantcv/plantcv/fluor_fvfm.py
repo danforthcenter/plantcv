@@ -111,8 +111,8 @@ def fluor_fvfm(fdark, fmin, fmax, mask, filename, bins=1000):
         from matplotlib import cm as cm
 
         # Print F-variable image
-        print_image(fv, (str(filename[0:-4]) + '_fv_img.png'))
-        print('\t'.join(map(str, ('IMAGE', 'fv', str(filename[0:-4]) + '_fv_img.png'))))
+        print_image(fv, (os.path.splitext(filename)[0] + '_fv_img.png'))
+        print('\t'.join(map(str, ('IMAGE', 'fv', os.path.splitext(filename)[0] + '_fv_img.png'))))
 
         # Create Histogram Plot, if you change the bin number you might need to change binx so that it prints
         # an appropriate number of labels
@@ -124,8 +124,8 @@ def fluor_fvfm(fdark, fmin, fmax, mask, filename, bins=1000):
         ax.set_ylabel('Plant Pixels')
         ax.text(0.05, 0.95, ('Peak Bin Value: ' + str(max_bin)), transform=ax.transAxes, verticalalignment='top')
         plt.grid()
-        plt.title('Fv/Fm of ' + str(filename[0:-4]))
-        fig_name = (str(filename[0:-4]) + '_fvfm_hist.svg')
+        plt.title('Fv/Fm of ' + os.path.splitext(filename)[0])
+        fig_name = (os.path.splitext(filename)[0] + '_fvfm_hist.svg')
         plt.savefig(fig_name)
         plt.clf()
         print('\t'.join(map(str, ('IMAGE', 'hist', fig_name))))
@@ -140,7 +140,7 @@ def fluor_fvfm(fdark, fmin, fmax, mask, filename, bins=1000):
         my_cmap = plt.get_cmap('binary_r')
         plt.imshow(background, cmap=my_cmap)
         plt.axis('off')
-        fig_name = (str(filename[0:-4]) + '_pseudo_fvfm.png')
+        fig_name = (os.path.splitext(filename)[0] + '_pseudo_fvfm.png')
         plt.savefig(fig_name, dpi=600, bbox_inches='tight')
         plt.clf()
         print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))

@@ -96,7 +96,7 @@ def analyze_nir_intensity(gray_img, mask, bins, histplot=False, filename=False):
         if not os.path.isfile(path + '/' + fig_name):
             plot_colorbar(path, fig_name, bins)
 
-        fig_name_pseudo = (str(filename[0:-4]) + '_nir_pseudo_col.jpg')
+        fig_name_pseudo = (os.path.splitext(filename)[0] + '_nir_pseudo_col.jpg')
         print_image(cplant_back, fig_name_pseudo)
         analysis_img.append(['IMAGE', 'pseudo', fig_name_pseudo])
 
@@ -121,7 +121,7 @@ def analyze_nir_intensity(gray_img, mask, bins, histplot=False, filename=False):
         plt.ylabel('Proportion of pixels (%)')
 
         if filename:
-            fig_name_hist = (str(filename[0:-4]) + '_nir_hist.svg')
+            fig_name_hist = (os.path.splitext(filename)[0] + '_nir_hist.svg')
             plt.savefig(fig_name_hist)
             analysis_img.append(['IMAGE', 'hist', fig_name_hist])
         if params.debug == "print":
