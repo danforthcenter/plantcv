@@ -69,7 +69,7 @@ def _pseudocolored_image(histogram, bins, img, mask, background, channel, filena
     if filename:
         for key in output_imgs:
             if output_imgs[key]["img"] is not None:
-                fig_name_pseudo = str(filename[0:-4]) + '_' + str(channel) + '_pseudo_on_' + \
+                fig_name_pseudo = os.path.splitext(filename)[0] + '_' + str(channel) + '_pseudo_on_' + \
                                   output_imgs[key]["background"] + '.jpg'
                 path = os.path.dirname(filename)
                 print_image(output_imgs[key]["img"], fig_name_pseudo)
@@ -249,7 +249,7 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None, pseudo_channel='v',
             plt.legend()
 
         # Print plot
-        fig_name = (str(filename[0:-4]) + '_' + str(hist_plot_type) + '_hist.svg')
+        fig_name = (os.path.splitext(filename)[0] + '_' + str(hist_plot_type) + '_hist.svg')
         plt.savefig(fig_name)
         analysis_images.append(['IMAGE', 'hist', fig_name])
         if params.debug == 'print':

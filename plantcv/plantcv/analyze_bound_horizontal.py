@@ -132,7 +132,7 @@ def analyze_bound_horizontal(img, obj, mask, line_position, filename=False):
                 cv2.line(wback, (int(cmx), y_coor - 2), (int(cmx), y_coor + height_below_bound), (0, 255, 0), 3)
         if filename:
             # Output images with boundary line, above/below bound area
-            out_file = str(filename[0:-4]) + '_boundary' + str(line_position) + '.jpg'
+            out_file = os.path.splitext(filename)[0] + '_boundary' + str(line_position) + '.jpg'
             print_image(ori_img, out_file)
             analysis_images = ['IMAGE', 'boundary', out_file]
 

@@ -64,7 +64,7 @@ def watershed_segmentation(rgb_img, mask, distance=10, filename=False):
 
     analysis_images = []
     if filename != False:
-        out_file = str(filename[0:-4]) + '_watershed.jpg'
+        out_file = os.path.splitext(filename)[0] + '_watershed.jpg'
         print_image(joined, out_file)
         analysis_images.append(['IMAGE', 'watershed', out_file])
 
