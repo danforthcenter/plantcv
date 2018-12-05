@@ -11,12 +11,12 @@ from plantcv.plantcv import apply_mask
 from plantcv.plantcv import params
 
 
-def analyze_nir_intensity(gray_img, mask, bins, histplot=False, filename=False):
+def analyze_thermal_values(array, mask, min, max, histplot=False, filename=False):
     """This function calculates the intensity of each pixel associated with the plant and writes the values out to
        a file. It can also print out a histogram plot of pixel intensity and a pseudocolor image of the plant.
 
     Inputs:
-    gray_img     = 8- or 16-bit grayscale image data
+    array     = csv
     mask         = Binary mask made from selected contours
     bins         = number of classes to divide spectrum into
     histplot     = if True plots histogram of intensity values
