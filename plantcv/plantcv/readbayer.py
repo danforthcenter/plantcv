@@ -1,4 +1,4 @@
-# Read image
+# Read image with bayer mosaic
 
 import os
 import cv2
@@ -50,7 +50,7 @@ def readbayer(filename, bayerpattern = 'BG', alg = 'default'):
             img = cv2.cvtColor(imageRaw,COLOR_BayerRG2BGR)
         elif bayerpattern.upper() == 'GR':
             img = cv2.cvtColor(imageRaw,COLOR_BayerGR2BGR)
-    elif alg.upper() == 'EDGEAWARE'
+    elif alg.upper() == 'EDGEAWARE':
         if bayerpattern.upper() == 'BG':
             img = cv2.cvtColor(imageRaw,COLOR_BayerBG2BGR_EA)
         elif bayerpattern.upper() == 'GB':
@@ -59,7 +59,7 @@ def readbayer(filename, bayerpattern = 'BG', alg = 'default'):
             img = cv2.cvtColor(imageRaw,COLOR_BayerRG2BGR_EA)
         elif bayerpattern.upper() == 'GR':
             img = cv2.cvtColor(imageRaw,COLOR_BayerGR2BGR_EA)
-    elif alg.upper() == 'VARIABLENUMBERGRADIENTS'
+    elif alg.upper() == 'VARIABLENUMBERGRADIENTS':
         if bayerpattern.upper() == 'BG':
             img = cv2.cvtColor(imageRaw,COLOR_BayerBG2BGR_VNG)
         elif bayerpattern.upper() == 'GB':
