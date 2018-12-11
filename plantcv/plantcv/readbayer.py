@@ -43,31 +43,31 @@ def readbayer(filename, bayerpattern = 'BG', alg = 'default'):
 
     if alg.upper() == 'DEFAULT':
         if bayerpattern.upper() == 'BG':
-            img = cv2.cvtColor(imageRaw,COLOR_BayerBG2BGR)
+            img = cv2.cvtColor(imageRaw,cv2.COLOR_BayerBG2BGR)
         elif bayerpattern.upper() == 'GB':
-            img = cv2.cvtColor(imageRaw,COLOR_BayerGB2BGR)
+            img = cv2.cvtColor(imageRaw,cv2.COLOR_BayerGB2BGR)
         elif bayerpattern.upper() == 'RG':
-            img = cv2.cvtColor(imageRaw,COLOR_BayerRG2BGR)
+            img = cv2.cvtColor(imageRaw,cv2.COLOR_BayerRG2BGR)
         elif bayerpattern.upper() == 'GR':
-            img = cv2.cvtColor(imageRaw,COLOR_BayerGR2BGR)
+            img = cv2.cvtColor(imageRaw,cv2.COLOR_BayerGR2BGR)
     elif alg.upper() == 'EDGEAWARE':
         if bayerpattern.upper() == 'BG':
-            img = cv2.cvtColor(imageRaw,COLOR_BayerBG2BGR_EA)
+            img = cv2.cvtColor(imageRaw,cv2.COLOR_BayerBG2BGR_EA)
         elif bayerpattern.upper() == 'GB':
-            img = cv2.cvtColor(imageRaw,COLOR_BayerGB2BGR_EA)
+            img = cv2.cvtColor(imageRaw,cv2.COLOR_BayerGB2BGR_EA)
         elif bayerpattern.upper() == 'RG':
-            img = cv2.cvtColor(imageRaw,COLOR_BayerRG2BGR_EA)
+            img = cv2.cvtColor(imageRaw,cv2.COLOR_BayerRG2BGR_EA)
         elif bayerpattern.upper() == 'GR':
-            img = cv2.cvtColor(imageRaw,COLOR_BayerGR2BGR_EA)
+            img = cv2.cvtColor(imageRaw,cv2.COLOR_BayerGR2BGR_EA)
     elif alg.upper() == 'VARIABLENUMBERGRADIENTS':
         if bayerpattern.upper() == 'BG':
-            img = cv2.cvtColor(imageRaw,COLOR_BayerBG2BGR_VNG)
+            img = cv2.cvtColor(imageRaw,cv2.COLOR_BayerBG2BGR_VNG)
         elif bayerpattern.upper() == 'GB':
-            img = cv2.cvtColor(imageRaw,COLOR_BayerGB2BGR_VNG)
+            img = cv2.cvtColor(imageRaw,cv2.COLOR_BayerGB2BGR_VNG)
         elif bayerpattern.upper() == 'RG':
-            img = cv2.cvtColor(imageRaw,COLOR_BayerRG2BGR_VNG)
+            img = cv2.cvtColor(imageRaw,cv2.COLOR_BayerRG2BGR_VNG)
         elif bayerpattern.upper() == 'GR':
-            img = cv2.cvtColor(imageRaw,COLOR_BayerGR2BGR_VNG)
+            img = cv2.cvtColor(imageRaw,cv2.COLOR_BayerGR2BGR_VNG)
 
 
     # Split path from filename
