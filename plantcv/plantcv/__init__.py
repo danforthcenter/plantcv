@@ -25,6 +25,7 @@ from plantcv.plantcv.color_palette import color_palette
 from plantcv.plantcv.plot_colorbar import plot_colorbar
 from plantcv.plantcv.apply_mask import apply_mask
 from plantcv.plantcv.readimage import readimage
+from plantcv.plantcv.readbayer import readbayer
 from plantcv.plantcv.laplace_filter import laplace_filter
 from plantcv.plantcv.sobel_filter import sobel_filter
 from plantcv.plantcv.scharr_filter import scharr_filter
