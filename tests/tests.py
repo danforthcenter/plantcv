@@ -21,6 +21,7 @@ TEST_BINARY_DIM = TEST_GRAY_DIM
 TEST_INPUT_COLOR = "input_color_img.jpg"
 TEST_INPUT_GRAY = "input_gray_img.jpg"
 TEST_INPUT_BINARY = "input_binary_img.png"
+TEST_INPUT_BAYER = "bayer_img.png"
 TEST_INPUT_ROI = "input_roi.npz"
 TEST_INPUT_CONTOURS = "input_contours.npz"
 TEST_INPUT_CONTOURS1 = "input_contours1.npz"
@@ -1303,6 +1304,117 @@ def test_plantcv_readimage_rgb():
 def test_plantcv_readimage_bad_file():
     with pytest.raises(RuntimeError):
         _ = pcv.readimage(filename=TEST_INPUT_COLOR)
+
+
+def test_plantcv_readbayer_default_bg():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_readbayer_default_bg")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _, _, _ = pcv.readbayer(filename=os.path.join(TEST_DATA, TEST_INPUT_BAYER),
+                            bayerpattern="BG", alg="default")
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    img, path, img_name = pcv.readbayer(filename=os.path.join(TEST_DATA, TEST_INPUT_BAYER),
+                                        bayerpattern="BG", alg="default")
+    assert all([i == j] for i, j in zip(np.shape(img), (335, 400, 3)))
+
+
+def test_plantcv_readbayer_default_gb():
+    # Test with debug = None
+    pcv.params.debug = None
+    img, path, img_name = pcv.readbayer(filename=os.path.join(TEST_DATA, TEST_INPUT_BAYER),
+                                        bayerpattern="GB", alg="default")
+    assert all([i == j] for i, j in zip(np.shape(img), (335, 400, 3)))
+
+
+def test_plantcv_readbayer_default_rg():
+    # Test with debug = None
+    pcv.params.debug = None
+    img, path, img_name = pcv.readbayer(filename=os.path.join(TEST_DATA, TEST_INPUT_BAYER),
+                                        bayerpattern="RG", alg="default")
+    assert all([i == j] for i, j in zip(np.shape(img), (335, 400, 3)))
+
+
+def test_plantcv_readbayer_default_gr():
+    # Test with debug = None
+    pcv.params.debug = None
+    img, path, img_name = pcv.readbayer(filename=os.path.join(TEST_DATA, TEST_INPUT_BAYER),
+                                        bayerpattern="GR", alg="default")
+    assert all([i == j] for i, j in zip(np.shape(img), (335, 400, 3)))
+
+
+def test_plantcv_readbayer_edgeaware_bg():
+    # Test with debug = None
+    pcv.params.debug = None
+    img, path, img_name = pcv.readbayer(filename=os.path.join(TEST_DATA, TEST_INPUT_BAYER),
+                                        bayerpattern="BG", alg="edgeaware")
+    assert all([i == j] for i, j in zip(np.shape(img), (335, 400, 3)))
+
+
+def test_plantcv_readbayer_edgeaware_gb():
+    # Test with debug = None
+    pcv.params.debug = None
+    img, path, img_name = pcv.readbayer(filename=os.path.join(TEST_DATA, TEST_INPUT_BAYER),
+                                        bayerpattern="GB", alg="edgeaware")
+    assert all([i == j] for i, j in zip(np.shape(img), (335, 400, 3)))
+
+
+def test_plantcv_readbayer_edgeaware_rg():
+    # Test with debug = None
+    pcv.params.debug = None
+    img, path, img_name = pcv.readbayer(filename=os.path.join(TEST_DATA, TEST_INPUT_BAYER),
+                                        bayerpattern="RG", alg="edgeaware")
+    assert all([i == j] for i, j in zip(np.shape(img), (335, 400, 3)))
+
+
+def test_plantcv_readbayer_edgeaware_gr():
+    # Test with debug = None
+    pcv.params.debug = None
+    img, path, img_name = pcv.readbayer(filename=os.path.join(TEST_DATA, TEST_INPUT_BAYER),
+                                        bayerpattern="GR", alg="edgeaware")
+    assert all([i == j] for i, j in zip(np.shape(img), (335, 400, 3)))
+
+
+def test_plantcv_readbayer_variablenumbergradients_bg():
+    # Test with debug = None
+    pcv.params.debug = None
+    img, path, img_name = pcv.readbayer(filename=os.path.join(TEST_DATA, TEST_INPUT_BAYER),
+                                        bayerpattern="BG", alg="variablenumbergradients")
+    assert all([i == j] for i, j in zip(np.shape(img), (335, 400, 3)))
+
+
+def test_plantcv_readbayer_variablenumbergradients_gb():
+    # Test with debug = None
+    pcv.params.debug = None
+    img, path, img_name = pcv.readbayer(filename=os.path.join(TEST_DATA, TEST_INPUT_BAYER),
+                                        bayerpattern="GB", alg="variablenumbergradients")
+    assert all([i == j] for i, j in zip(np.shape(img), (335, 400, 3)))
+
+
+def test_plantcv_readbayer_variablenumbergradients_rg():
+    # Test with debug = None
+    pcv.params.debug = None
+    img, path, img_name = pcv.readbayer(filename=os.path.join(TEST_DATA, TEST_INPUT_BAYER),
+                                        bayerpattern="RG", alg="variablenumbergradients")
+    assert all([i == j] for i, j in zip(np.shape(img), (335, 400, 3)))
+
+
+def test_plantcv_readbayer_variablenumbergradients_gr():
+    # Test with debug = None
+    pcv.params.debug = None
+    img, path, img_name = pcv.readbayer(filename=os.path.join(TEST_DATA, TEST_INPUT_BAYER),
+                                        bayerpattern="GR", alg="variablenumbergradients")
+    assert all([i == j] for i, j in zip(np.shape(img), (335, 400, 3)))
+
+
+def test_plantcv_readbayer_default_bad_input():
+    # Test with debug = None
+    pcv.params.debug = None
+    with pytest.raises(RuntimeError):
+        _, _, _ = pcv.readbayer(filename=os.path.join(TEST_DATA, "no-image.png"), bayerpattern="GR", alg="default")
 
 
 def test_plantcv_rectangle_mask():
