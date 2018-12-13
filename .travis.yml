@@ -37,6 +37,7 @@ virtualenv:
 #  - conda install coveralls matplotlib numpy pandas python-dateutil scipy scikit-image pytest
 # Install PlantCV
 install:
+  - apt-get install -y xvfb; /usr/bin/Xvfb :0 &
   - |
     if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
       wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
