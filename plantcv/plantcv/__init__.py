@@ -25,6 +25,7 @@ from plantcv.plantcv.color_palette import color_palette
 from plantcv.plantcv.plot_colorbar import plot_colorbar
 from plantcv.plantcv.apply_mask import apply_mask
 from plantcv.plantcv.readimage import readimage
+from plantcv.plantcv.readbayer import readbayer
 from plantcv.plantcv.laplace_filter import laplace_filter
 from plantcv.plantcv.sobel_filter import sobel_filter
 from plantcv.plantcv.scharr_filter import scharr_filter
@@ -83,7 +84,7 @@ from plantcv.plantcv import transform
 
 # add new functions to end of lists
 
-__all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'plot_colorbar', 'apply_mask', 'readimage',
+__all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'plot_colorbar', 'apply_mask', 'readimage', 'readbayer',
            'laplace_filter', 'sobel_filter', 'scharr_filter', 'hist_equalization', 'plot_hist', 'image_add',
            'image_subtract', 'erode', 'dilate', 'watershed', 'rectangle_mask', 'rgb2gray_hsv', 'rgb2gray_lab',
            'rgb2gray', 'median_blur', 'fill', 'invert', 'logical_and', 'logical_or', 'logical_xor',
