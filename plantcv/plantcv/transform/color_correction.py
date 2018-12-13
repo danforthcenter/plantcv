@@ -412,3 +412,75 @@ def create_color_card_mask(rgb_img, chip_dims, start_coord, spacing, nrows, ncol
         elif params.debug == "plot":
             plot_image(canvas)
     return mask
+
+
+def quick_color_check(target_matrix, source_matrix, num_chips):
+    """ Quickly plot target matrix values against source matrix values to determine
+    over saturated color chips or other issues.
+
+    Inputs:
+    source_matrix      = a 22x4 matrix containing the average red value, average green value, and
+                             average blue value for each color chip of the source image
+    target_matrix      = a 22x4 matrix containing the average red value, average green value, and
+                             average blue value for each color chip of the target image
+    num_chips          = number of color card chips included in the matrices (integer)
+
+    :param source_matrix: numpy.ndarray
+    :param target_matrix: numpy.ndarray
+    :param num_chips: int
+    """
+    # Imports
+    from plotnine import ggplot, geom_point, geom_smooth, theme_seaborn, facet_grid, geom_label, scale_x_continuous, \
+        scale_y_continuous, scale_color_manual, aes
+    import pandas as pd
+
+    # Extract and organize matrix info
+    tr = target_matrix[:num_chips, 1:2]
+    tg = target_matrix[:num_chips, 2:3]
+    tb = target_matrix[:num_chips, 3:4]
+    sr = source_matrix[:num_chips, 1:2]
+    sg = source_matrix[:num_chips, 2:3]
+    sb = source_matrix[:num_chips, 3:4]
+
+    # Create columns of color labels
+    red = []
+    blue = []
+    green = []
+    for i in range(num_chips):
+        red.append('red')
+        blue.append('blue')
+        green.append('green')
+
+    # Make a column of chip numbers
+    chip = np.arange(0, num_chips).reshape((num_chips, 1))
+    chips = np.row_stack((chip, chip, chip))
+
+    # Combine info
+    color_data_r = np.column_stack((sr, tr, red))
+    color_data_g = np.column_stack((sg, tg, green))
+    color_data_b = np.column_stack((sb, tb, blue))
+    all_color_data = np.row_stack((color_data_b, color_data_g, color_data_r))
+
+    # Create a dataframe with headers
+    dataset = pd.DataFrame({'source': all_color_data[:, 0], 'target': all_color_data[:, 1],
+                            'color': all_color_data[:, 2]})
+
+    # Add chip numbers to the dataframe
+    dataset['chip'] = chips
+    dataset = dataset.astype({'color': str, 'chip': str, 'target': float, 'source': float})
+
+    # Make the plot
+    p1 = ggplot(dataset, aes(x='target', y='source', color='color', label='chip')) + \
+        geom_point(show_legend=False, size=2) + \
+        geom_smooth(method='lm', size=.5, show_legend=False) + \
+        theme_seaborn() + facet_grid('.~color') + \
+        geom_label(angle=15, size=7, nudge_y=-.25, nudge_x=.5, show_legend=False) + \
+        scale_x_continuous(limits=(-5, 270)) + scale_y_continuous(limits=(-5, 275)) + \
+        scale_color_manual(values=['blue', 'green', 'red'])
+
+    # Reset debug
+    if params.debug is not None:
+        if params.debug == 'print':
+            p1.save(os.path.join(params.debug_outdir, 'color_quick_check.png'))
+        elif params.debug == 'plot':
+            print(p1)
