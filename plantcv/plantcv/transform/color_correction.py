@@ -4,8 +4,6 @@ import os
 import errno
 import cv2
 import numpy as np
-from plotnine import *
-import pandas as pd
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
@@ -431,6 +429,10 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
     :param target_matrix: numpy.ndarray
     :param num_chips: int
     """
+    # Imports
+    from plotnine import ggplot, geom_point, geom_smooth, theme_seaborn, facet_grid, geom_label, scale_x_continuous, \
+        scale_y_continuous, scale_color_manual
+    import pandas as pd
 
     # Extract and organize matrix info
     tr = target_matrix[:num_chips, 1:2]
