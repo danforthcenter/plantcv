@@ -431,7 +431,7 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
     """
     # Imports
     from plotnine import ggplot, geom_point, geom_smooth, theme_seaborn, facet_grid, geom_label, scale_x_continuous, \
-        scale_y_continuous, scale_color_manual
+        scale_y_continuous, scale_color_manual, aes
     import pandas as pd
 
     # Extract and organize matrix info
