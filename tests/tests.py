@@ -2415,6 +2415,28 @@ def test_plantcv_transform_create_color_card_mask():
                                                                    220], dtype=np.uint8)))
 
 
+def test_plantcv_transform_quick_color_check():
+    # Load target image
+    t_matrix = np.load(os.path.join(TEST_DATA, TEST_TARGET_MATRIX), encoding="latin1")
+    target_matrix = t_matrix['arr_0']
+    s_matrix = np.load(os.path.join(TEST_DATA, TEST_SOURCE1_MATRIX), encoding="latin1")
+    source_matrix = s_matrix['arr_0']
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_quick_color_check")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    pcv.transform.quick_color_check(target_matrix, source_matrix, num_chips=22)
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    pcv.transform.quick_color_check(target_matrix, source_matrix, num_chips=22)
+    #Test with debug = None
+    pcv.params.debug = None
+    pcv.transform.quick_color_check(target_matrix, source_matrix, num_chips=22)
+    assert os.path.exists(os.path.join(cache_dir, "color_quick_check.png"))
+
+
 # ##############################
 # Tests for the threshold subpackage
 # ##############################

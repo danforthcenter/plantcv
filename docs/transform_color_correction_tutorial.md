@@ -311,3 +311,41 @@ corrected_img = pcv.transform.apply_transformation_matrix(source_img= new_source
 
 ![Screenshot](img/documentation_images/color_correction_tutorial/hstack_incomplete_plants.jpg)
 
+## Checking the Color Card Chips
+
+```python
+from plantcv import plantcv as pcv
+from plotnine import *
+import numpy as np
+import pandas as pd
+
+quick_color_check(source_matrix = s_matrix, target_matrix = t_matrix, num_chips = 24)
+```
+The relationship between RGB values in the source image and the target image should be extremely linearly related.
+Plots are labeled with the chip numbers in order to help determine problematic. Black and white chips can often be fully saturated which can
+affect color transformation outcomes.
+
+![Screenshot](img/tutorial_images/colorchecker_mask/ggplot_quick_check_good.png)
+
+Plots that don't exhibit a strong linear relationship indicate problems with one or more chips in the color card. Over/under saturation of color channels can
+effect color correction. Sometimes problematic chips can be excluded when creating a mask.
+
+![Screenshot](img/tutorial_images/colorchecker_mask/ggplot_quick_check_bad.png)
+
+Using `%matplotlib notebook` in a Jupyter notebook can be used to examine which color card chips might be problematic. The zoom to rectangle tool will allow for closer examination.
+
+```python
+%matplotlib notebook
+from plantcv import plantcv as pcv
+from plotnine import *
+import numpy as np
+import pandas as pd
+
+quick_color_check(source_matrix = s_matrix, target_matrix = t_matrix, num_chips = 24)
+```
+
+![Screenshot](img/tutorial_images/colorchecker_mask/ggplot_quick_check_zoom.jpg)
+
+In the example above there are only two chips that seem to deviate from the linear pattern expected. In this case we can go back and try to exclude chips 19 and 3
+in the mask before running the pipeline again. However, in the second example there is differences in the range of values among color channels
+indicating that camera settings and/or lighting technique likely needs revision.
