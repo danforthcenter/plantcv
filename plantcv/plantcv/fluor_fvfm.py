@@ -41,8 +41,8 @@ def fluor_fvfm(fdark, fmin, fmax, mask, filename, bins=1000):
     if not all(len(np.shape(i)) == 2 for i in [fdark, fmin, fmax]):
         fatal_error("The fdark, fmin, and fmax images must be grayscale images.")
     # Check that fdark, fmin, and fmax are 16-bit images
-    if not all(i.dtype == "uint16" for i in [fdark, fmin, fmax]):
-        fatal_error("The fdark, fmin, and fmax images must be 16-bit images.")
+    # if not all(i.dtype == "uint16" for i in [fdark, fmin, fmax]):
+    #     fatal_error("The fdark, fmin, and fmax images must be 16-bit images.")
 
     # QC Fdark Image
     fdark_mask = cv2.bitwise_and(fdark, fdark, mask=mask)
