@@ -104,6 +104,8 @@ def fluor_fvfm(fdark, fmin, fmax, mask, filename, bins=1000):
         qc_fdark
     )
 
+    analysis_images = []
+
     if filename:
         import matplotlib
         matplotlib.use('Agg', warn=False)
@@ -112,7 +114,7 @@ def fluor_fvfm(fdark, fmin, fmax, mask, filename, bins=1000):
 
         # Print F-variable image
         print_image(fv, (os.path.splitext(filename)[0] + '_fv_img.png'))
-        print('\t'.join(map(str, ('IMAGE', 'fv', os.path.splitext(filename)[0] + '_fv_img.png'))))
+        analysis_images.append(['IMAGE', 'fv', os.path.splitext(filename)[0] + '_fv_img.png'])
 
         # Create Histogram Plot, if you change the bin number you might need to change binx so that it prints
         # an appropriate number of labels
@@ -128,26 +130,28 @@ def fluor_fvfm(fdark, fmin, fmax, mask, filename, bins=1000):
         fig_name = (os.path.splitext(filename)[0] + '_fvfm_hist.svg')
         plt.savefig(fig_name)
         plt.clf()
-        print('\t'.join(map(str, ('IMAGE', 'hist', fig_name))))
+        analysis_images.append(['IMAGE', 'fvfm_hist', fig_name])
 
         # Pseudocolored Fv/Fm image
-        fvfm_8bit = fvfm * 255
-        fvfm_8bit = fvfm_8bit.astype(np.uint8)
-        plt.imshow(fvfm_8bit, vmin=0, vmax=1, cmap=cm.jet_r)
-        plt.subplot(111)
-        mask_inv = cv2.bitwise_not(mask)
-        background = np.dstack((mask, mask, mask, mask_inv))
-        my_cmap = plt.get_cmap('binary_r')
-        plt.imshow(background, cmap=my_cmap)
+        plt.imshow(fvfm, vmin=0, vmax=1, cmap="viridis")
+        plt.colorbar()
+        # fvfm_8bit = fvfm * 255
+        # fvfm_8bit = fvfm_8bit.astype(np.uint8)
+        # plt.imshow(fvfm_8bit, vmin=0, vmax=1, cmap=cm.jet_r)
+        # plt.subplot(111)
+        # mask_inv = cv2.bitwise_not(mask)
+        # background = np.dstack((mask, mask, mask, mask_inv))
+        # my_cmap = plt.get_cmap('binary_r')
+        # plt.imshow(background, cmap=my_cmap)
         plt.axis('off')
         fig_name = (os.path.splitext(filename)[0] + '_pseudo_fvfm.png')
         plt.savefig(fig_name, dpi=600, bbox_inches='tight')
         plt.clf()
-        print('\t'.join(map(str, ('IMAGE', 'pseudo', fig_name))))
+        analysis_images.append(['IMAGE', 'fvfm_pseudo', fig_name])
 
         path = os.path.dirname(filename)
         fig_name = 'FvFm_pseudocolor_colorbar.svg'
-        if not os.path.isfile(path + '/' + fig_name):
+        if not os.path.isfile(os.path.join(path, fig_name)):
             plot_colorbar(path, fig_name, 2)
 
     if params.debug == 'print':
@@ -158,5 +162,6 @@ def fluor_fvfm(fdark, fmin, fmax, mask, filename, bins=1000):
         plot_image(fmin_mask, cmap='gray')
         plot_image(fmax_mask, cmap='gray')
         plot_image(fv, cmap='gray')
+        plot_image(fvfm, cmap="jet")
 
-    return hist_header, hist_data
+    return hist_header, hist_data, analysis_images
