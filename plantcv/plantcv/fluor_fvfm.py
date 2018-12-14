@@ -14,12 +14,12 @@ def fluor_fvfm(fdark, fmin, fmax, mask, filename, bins=1000):
     """Analyze PSII camera images.
 
     Inputs:
-    fdark       = 16-bit grayscale fdark image
-    fmin        = 16-bit grayscale fmin image
-    fmax        = 16-bit grayscale fmax image
-    mask        = mask of plant (binary,single channel)
+    fdark       = grayscale fdark image
+    fmin        = grayscale fmin image
+    fmax        = grayscale fmax image
+    mask        = mask of plant (binary, single channel)
     filename    = name of file
-    bins        = number of bins from 0 to 65,536 (default is 1000)
+    bins        = number of bins (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 1000)
 
     Returns:
     hist_header = fvfm data table headers
@@ -40,6 +40,10 @@ def fluor_fvfm(fdark, fmin, fmax, mask, filename, bins=1000):
     # Check that fdark, fmin, and fmax are grayscale (single channel)
     if not all(len(np.shape(i)) == 2 for i in [fdark, fmin, fmax]):
         fatal_error("The fdark, fmin, and fmax images must be grayscale images.")
+    # # Check that fdark, fmin, and fmax are the same bit
+    # if  not (all(i.dtype == "uint16" for i in [fdark, fmin, fmax]) or
+    #         (all(i.dtype == "uint8" for i in [fdark, fmin, fmax]))):
+    #     fatal_error("The fdark, fmin, and fmax images must all be the same bit depth.")
     # Check that fdark, fmin, and fmax are 16-bit images
     # if not all(i.dtype == "uint16" for i in [fdark, fmin, fmax]):
     #     fatal_error("The fdark, fmin, and fmax images must be 16-bit images.")
