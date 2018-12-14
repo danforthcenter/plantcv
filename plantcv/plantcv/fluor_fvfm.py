@@ -10,7 +10,7 @@ from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 
 
-def fluor_fvfm(fdark, fmin, fmax, mask, filename, bins=1000):
+def fluor_fvfm(fdark, fmin, fmax, mask, filename, bins=256):
     """Analyze PSII camera images.
 
     Inputs:
@@ -19,7 +19,7 @@ def fluor_fvfm(fdark, fmin, fmax, mask, filename, bins=1000):
     fmax        = grayscale fmax image
     mask        = mask of plant (binary, single channel)
     filename    = name of file
-    bins        = number of bins (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 1000)
+    bins        = number of bins (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
 
     Returns:
     hist_header = fvfm data table headers

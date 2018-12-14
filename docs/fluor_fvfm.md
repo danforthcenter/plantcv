@@ -2,7 +2,7 @@
 
 Extract Fv/Fm data of objects and produce pseudocolored images.
 
-**plantcv.fluor_fvfm**(*fdark, fmin, fmax, mask, filename, bins=1000*)
+**plantcv.fluor_fvfm**(*fdark, fmin, fmax, mask, filename, bins=256*)
 
 **returns** Fv/Fm histogram headers, Fv/Fm histogram data, PSII analysis images list
 
