@@ -1,10 +1,10 @@
-## Analyze FLU Signal
+## Analyze PSII Signal
 
 Extract Fv/Fm data of objects and produce pseudocolored images.
 
-**plantcv.fluor_fvfm**(*fdark, fmin, fmax, mask, filename, bins=1000*)
+**plantcv.fluor_fvfm**(*fdark, fmin, fmax, mask, filename, bins=256*)
 
-**returns** FLU channel histogram headers, FLU channel histogram data
+**returns** Fv/Fm histogram headers, Fv/Fm histogram data, PSII analysis images list
 
 - **Parameters:**
     - fdark - image object, grayscale
@@ -47,7 +47,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Analyze Fv/Fm    
- fvfm_header, fvfm_data = pcv.fluor_fvfm(fdark, fmin, fmax, kept_mask, filename, 1000)
+ fvfm_header, fvfm_data, fvfm_images = pcv.fluor_fvfm(fdark, fmin, fmax, kept_mask, filename, 1000)
 ```
 
 **Histogram of Fv/Fm values**

@@ -246,7 +246,7 @@ pages for more details on the input and output variable types.
 #### plantcv.fluor_fvfm
 
 * pre v3.0dev2: device, hist_header, hist_data = **plantcv.fluor_fvfm**(*fdark, fmin, fmax, mask, device, filename, bins=1000, debug=None*)
-* post v3.0dev2: hist_header, hist_data = **plantcv.fluor_fvfm**(*fdark, fmin, fmax, mask, filename, bins=1000*)
+* post v3.0dev2: hist_header, hist_data, hist_images = **plantcv.fluor_fvfm**(*fdark, fmin, fmax, mask, filename, bins=256*)
 
 #### plantcv.gaussian_blur
 

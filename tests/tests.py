@@ -855,7 +855,8 @@ def test_plantcv_fluor_fvfm():
     _ = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, filename=False, bins=1000)
     # Test with debug = None
     pcv.params.debug = None
-    fvfm_header, fvfm_data = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, filename=False, bins=1000)
+    fvfm_header, fvfm_data, fvfm_images = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, filename=False,
+                                                         bins=1000)
     assert fvfm_data[4] > 0.66
 
 

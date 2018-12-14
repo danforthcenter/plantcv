@@ -224,7 +224,7 @@ along with the generated mask to calculate Fv/Fm.
     fmin = cv2.imread(args.fmin, -1)
     fmax = cv2.imread(args.fmax, -1)
     
-    fvfm_header, fvfm_data = pcv.fluor_fvfm(fdark,fmin,fmax,kept_mask, args.outdir+'/'+filename, 1000)
+    fvfm_header, fvfm_data, fvfm_images = pcv.fluor_fvfm(fdark,fmin,fmax,kept_mask, args.outdir+'/'+filename, 1000)
     
     # Write shape and nir data to results file
     result=open(args.result,"a")
