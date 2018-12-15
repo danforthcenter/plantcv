@@ -11,7 +11,7 @@ from plantcv.plantcv import apply_mask
 from plantcv.plantcv import params
 
 
-def analyze_thermal_values(rgb_img, array, mask, histplot=False, filename=False):
+def analyze_thermal_values(rgb_img, array, mask, name,histplot=False, filename=False):
     """This extracts the thermal values of each pixel writes the values out to
        a file. It can also print out a histogram plot of pixel intensity
        and a pseudocolor image of the plant.
@@ -63,6 +63,7 @@ def analyze_thermal_values(rgb_img, array, mask, histplot=False, filename=False)
     # report histogram data
     hist_header = [
         'HEADER_HISTOGRAM',
+        'name'
         'max-temp',
         'min-temp,'
         'average-temp',
@@ -73,6 +74,7 @@ def analyze_thermal_values(rgb_img, array, mask, histplot=False, filename=False)
 
     hist_data = [
         'HISTOGRAM_DATA',
+        name,
         maxtemp,
         mintemp,
         avgtemp,

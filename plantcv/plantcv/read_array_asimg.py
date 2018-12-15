@@ -1,7 +1,6 @@
 # Read Array Data As An 8-bit Image
 
 import os
-import cv2
 import pandas as pd
 import numpy as np
 from plantcv.plantcv import fatal_error
@@ -38,8 +37,6 @@ def read_array_asimg(array,sep=','):
     
     path, array_name = os.path.split(array)
     
-    amax=np.amax(arrayvalues)
-    scaled=( arrayvalues / amax ) * 255
     scaled=np.interp(arrayvalues, (arrayvalues.min(), arrayvalues.max()), (0, 255))
     scaledimg=np.stack((scaled,scaled,scaled), axis=-1)
     scaledarrayimg=(scaledimg).astype('uint8')

@@ -80,6 +80,9 @@ from plantcv.plantcv.distance_transform import distance_transform
 from plantcv.plantcv import roi
 from plantcv.plantcv import threshold
 from plantcv.plantcv import transform
+from plantcv.plantcv import read_array_asimg
+from plantcv.plantcv import cluster_contour_mask
+from plantcv.plantcv import analyze_thermal_values
 
 # add new functions to end of lists
 
@@ -93,7 +96,8 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'plot_co
            'white_balance', 'acute_vertex', 'scale_features', 'landmark_reference_pt_dist',
            'x_axis_pseudolandmarks', 'y_axis_pseudolandmarks', 'gaussian_blur', 'cluster_contours',
            'cluster_contour_splitimg', 'rotate', 'shift_img', 'output_mask', 'auto_crop',
-           'background_subtraction', 'naive_bayes_classifier', 'acute', 'distance_transform', 'params']
+           'background_subtraction', 'naive_bayes_classifier', 'acute', 'distance_transform', 'params',
+           'read_array_asimg','cluster_contour_mask','analyze_thermal_values']
 
 from ._version import get_versions
 __version__ = get_versions()['version']
