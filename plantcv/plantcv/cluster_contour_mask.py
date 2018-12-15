@@ -1,3 +1,12 @@
+# cluster objects and split into masks
+
+import os
+import numpy as np
+from plantcv.plantcv import print_image
+from plantcv.plantcv import plot_image
+from plantcv.plantcv import params
+
+
 def cluster_contour_mask(rgb_img, clusters_i, contours, hierarchies):
     """Outputs masks for the grouped clusters. Since there can be a variable number of
     clusters/masks the output is a list of arrays.
