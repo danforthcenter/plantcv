@@ -80,9 +80,9 @@ from plantcv.plantcv.distance_transform import distance_transform
 from plantcv.plantcv import roi
 from plantcv.plantcv import threshold
 from plantcv.plantcv import transform
-from plantcv.plantcv import read_array_asimg
-from plantcv.plantcv import cluster_contour_mask
-from plantcv.plantcv import analyze_thermal_values
+from plantcv.plantcv.read_array_asimg import read_array_asimg
+from plantcv.plantcv.cluster_contour_mask import cluster_contour_mask
+from plantcv.plantcv.analyze_thermal_values import analyze_thermal_values
 
 # add new functions to end of lists
 
