@@ -8,7 +8,7 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
-from plantcv.plantcv.roi import rectangle
+from plantcv.plantcv.roi import circle
 
 
 def get_color_matrix(rgb_img, mask):
