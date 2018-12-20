@@ -136,18 +136,14 @@ def calc_transformation_matrix(matrix_m, matrix_b):
     matrix_b    = a 22x9 matrix of linear, square, and cubic rgb values from target_img
 
     Outputs:
-    color_deviance_header    = color space deviance data table headers
-    color_deviance_data      = color space deviance data table values
+    1-t_det     = "deviance" the measure of how greatly the source image deviates from the target image's color space.
+                    Two images of the same color space should have a deviance of ~0.
     transformation_matrix    = a 9x9 matrix of linear, square, and cubic transformation coefficients
 
 
     :param matrix_m: numpy.ndarray
     :param matrix_b: numpy.ndarray
-    :return red: numpy.ndarray
-    :return blue: numpy.ndarray
-    :return green: numpy.ndarray
-    :return color_deviance_header: list
-    :return color_deviance_data: list
+    :return 1-t_det: float
     :return transformation_matrix: numpy.ndarray
     """
     # check matrix_m and matrix_b are matrices
@@ -195,7 +191,7 @@ def calc_transformation_matrix(matrix_m, matrix_b):
         color_deviance
     )
 
-    return color_deviance_header, color_deviance_data, transformation_matrix
+    return 1-t_det, transformation_matrix
 
 
 def apply_transformation_matrix(source_img, target_img, transformation_matrix):

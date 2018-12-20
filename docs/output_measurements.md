@@ -61,7 +61,12 @@ Primary Key (PK) and Foreign Key (FK). Foreign Keys are used to join tables in q
 | Measurement            | Units   | Description                                                          | 
 | ---------------------- | ------- |--------------------------------------------------------------------- | 
 | estimated_object_count | none    | number of segmented objects (e.g. leaves)                            | 
- 
+
+### Calculate color correction function (features table)
+| Measurement            | Units   | Description                                                                                         |
+| ---------------------- | ------- |---------------------------------------------------------------------------------------------------- |
+| color_deviance         | none    | "deviance" the measure of how greatly the source image deviates from the target image's color space |
+
 ### Analyze color function (signal table)
 
 | Measurement            | Units   | Description                                                                                      | 

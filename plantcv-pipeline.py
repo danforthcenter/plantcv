@@ -752,6 +752,7 @@ def process_results(args):
                        'hori_ave_c', 'euc_ave_c', 'ang_ave_c', 'vert_ave_b', 'hori_ave_b', 'euc_ave_b', 'ang_ave_b',
                        'left_lmk', 'right_lmk', 'center_h_lmk', 'left_lmk_r', 'right_lmk_r', 'center_h_lmk_r',
                        'top_lmk', 'bottom_lmk', 'center_v_lmk', 'top_lmk_r', 'bottom_lmk_r', 'center_v_lmk_r']
+    color_fields = ['color_deviance']
 
     # args.features_file.write('#' + '\t'.join(map(str, feature_fields + opt_feature_fields)) + '\n')
 
@@ -769,7 +770,8 @@ def process_results(args):
         '` TEXT NOT NULL, `'.join(map(str, metadata_fields[2:])) + '` TEXT NOT NULL);')
     args.sq.execute(
         'CREATE TABLE IF NOT EXISTS `features` (`image_id` INTEGER PRIMARY KEY, `' + '` TEXT NOT NULL, `'.join(
-            map(str, feature_fields + opt_feature_fields + marker_fields + watershed_fields + landmark_fields)
+            map(str, feature_fields + opt_feature_fields + marker_fields + watershed_fields + landmark_fields +
+                color_fields)
         ) + '` TEXT NOT NULL);')
     args.sq.execute(
         'CREATE TABLE IF NOT EXISTS `analysis_images` (`image_id` INTEGER NOT NULL, `type` TEXT NOT NULL, '
@@ -797,6 +799,9 @@ def process_results(args):
                 watershed_data = {}
                 landmark = []
                 landmark_data = {}
+                color = []
+                color_data = {}
+
                 # Open results file
                 with open(os.path.join(dirpath, filename)) as results:
                     # For each line in the file
@@ -855,6 +860,13 @@ def process_results(args):
                             for i, datum in enumerate(cols):
                                 if i > 0:
                                     landmark_data[landmark[i]] = datum
+                        elif 'HEADER_COLOR_DEVIANCE' in cols[0]:
+                            color = cols
+                            color[1] = 'color_deviance'
+                        elif 'COLOR_DEVIANCE_DATA' in cols[0]:
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    color_data[color[i]] = datum
 
                 # Check to see if the image failed, if not continue
 
@@ -897,8 +909,15 @@ def process_results(args):
                             landmark_data[field] = 0
                     feature_data.update(landmark_data)
 
+                    # Color data is optional, if it's not there we need to add in placeholder data
+                    if len(color_data) == 0:
+                        for field in color_fields:
+                            color_data[field] = 0
+                    feature_data.update(color_data)
+
                     feature_table = [args.image_id]
-                    for field in feature_fields + opt_feature_fields + marker_fields + watershed_fields + landmark_fields:
+                    for field in feature_fields + opt_feature_fields + marker_fields + watershed_fields + \
+                            landmark_fields + color_fields:
                         feature_table.append(feature_data[field])
 
                     args.features_file.write('|'.join(map(str, feature_table)) + '\n')
@@ -923,7 +942,8 @@ def process_results(args):
 
                     feature_table = [args.image_id]
 
-                    for field in feature_fields + opt_feature_fields + marker_fields + watershed_fields + landmark_fields:
+                    for field in feature_fields + opt_feature_fields + marker_fields + watershed_fields + \
+                            landmark_fields + color_fields:
                         feature_table.append(0)
 
                     args.features_file.write('|'.join(map(str, feature_table)) + '\n')
