@@ -24,7 +24,8 @@ To see an example of how to create a gray-scale mask of color chips see [here](t
 **Reference Images**
 
  Target Image
-![Screenshot](img/documentation_images/correct_color_imgs/target_img_plant.jpg)
+
+![Screenshot](img/documentation_images/correct_color_imgs/target_img_plant_resize.jpg)
 
  Source Image
  
@@ -78,15 +79,15 @@ rgb_img, path, filename = pcv.readimage("target_img.png")
 
 **Image with color card**
 
-![Screenshot](img/documentation_images/correct_color_imgs/target_img_plant.png)
+![Screenshot](img/documentation_images/correct_color_imgs/target_img_plant_resize.jpg)
 
 **Image with color chip ROIs**
 
-![Screenshot](img/documentation_images/correct_color_imgs/color_card_mask_rois.png)
+![Screenshot](img/documentation_images/correct_color_imgs/color_card_mask_rois.jpg)
 
 **Color card mask**
 
-![Screenshot](img/documentation_images/correct_color_imgs/color_card_mask.png)
+![Screenshot](img/documentation_images/correct_color_imgs/color_card_mask.jpg)
 
 ## Color Matrix
 
@@ -216,7 +217,7 @@ Applies the transformation matrix to an image.
 
   target_img
   
-![Screenshot](img/documentation_images/correct_color_imgs/target_img_plant.jpg)
+![Screenshot](img/documentation_images/correct_color_imgs/target_img_plant_resize.jpg)
     
   source_img
   
