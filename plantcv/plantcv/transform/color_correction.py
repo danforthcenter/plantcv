@@ -136,8 +136,8 @@ def calc_transformation_matrix(matrix_m, matrix_b):
     matrix_b    = a 22x9 matrix of linear, square, and cubic rgb values from target_img
 
     Outputs:
-    1-t_det     = "deviance" the measure of how greatly the source image deviates from the target image's color space.
-                    Two images of the same color space should have a deviance of ~0.
+    color_deviance_header    = color space deviance data table headers
+    color_deviance_data      = color space deviance data table values
     transformation_matrix    = a 9x9 matrix of linear, square, and cubic transformation coefficients
 
 
@@ -146,7 +146,8 @@ def calc_transformation_matrix(matrix_m, matrix_b):
     :return red: numpy.ndarray
     :return blue: numpy.ndarray
     :return green: numpy.ndarray
-    :return 1-t_det: float
+    :return color_deviance_header: list
+    :return color_deviance_data: list
     :return transformation_matrix: numpy.ndarray
     """
     # check matrix_m and matrix_b are matrices
@@ -159,7 +160,7 @@ def calc_transformation_matrix(matrix_m, matrix_b):
     if np.shape(matrix_m)[0] != np.shape(matrix_b)[1] or np.shape(matrix_m)[1] != np.shape(matrix_b)[0]:
         fatal_error("Cannot multiply matrices.")
 
-    # Autoincrement the device counter
+    # autoincrement the device counter
     params.device += 1
 
     t_r, t_r2, t_r3, t_g, t_g2, t_g3, t_b, t_b2, t_b3 = np.split(matrix_b, 9, 1)
@@ -182,8 +183,19 @@ def calc_transformation_matrix(matrix_m, matrix_b):
 
     # find determinant of transformation matrix
     t_det = np.linalg.det(transformation_matrix)
+    color_deviance = 1-t_det
 
-    return 1-t_det, transformation_matrix
+    color_deviance_header = (
+        'HEADER_COLOR_DEVIANCE',
+        'color_deviance'
+    )
+
+    color_deviance_data = (
+        'COLOR_DEVIANCE_DATA',
+        color_deviance
+    )
+
+    return color_deviance_header, color_deviance_data, transformation_matrix
 
 
 def apply_transformation_matrix(source_img, target_img, transformation_matrix):
