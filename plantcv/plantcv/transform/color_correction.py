@@ -715,7 +715,7 @@ def find_color_card(img, threshold='adaptgauss', threshvalue=125, blurry=False, 
     df = df[(df['distprox'] >= 4)]
 
     # Extract the starting coordinate
-    start_coord = (df['X'].min(), df['Y'].min())
+    start_coord = (int(df['X'].min()), int(df['Y'].min()))
     # Calculate the range
     spacingx_short = (df['X'].max() - df['X'].min()) / 3
     spacingy_short = (df['Y'].max() - df['Y'].min()) / 3
@@ -725,7 +725,7 @@ def find_color_card(img, threshold='adaptgauss', threshvalue=125, blurry=False, 
     spacing_short = min(spacingx_short, spacingy_short)
     spacing_long = max(spacingx_long, spacingy_long)
     # Smaller spacing measurement might have a chip missing
-    spacing = max(spacing_short, spacing_long)
+    spacing = int(max(spacing_short, spacing_long))
     spacing = (spacing, spacing)
 
     return df, start_coord, spacing
