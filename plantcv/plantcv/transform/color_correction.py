@@ -487,7 +487,7 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
 
 
 def find_color_card(img, threshold='adaptgauss', threshvalue=125, blurry=False, background='dark'):
-    """Automatically detect a color card and output info to use in create_color_card_mask function
+    """Automatically detects a color card and output info to use in create_color_card_mask function
 
     Inputs:
     img            = Input RGB image data containing a color card.
@@ -500,6 +500,8 @@ def find_color_card(img, threshold='adaptgauss', threshvalue=125, blurry=False, 
 
     Returns:
     df             = Dataframe containing information about the filtered contours
+    start_coord    = Two element tuple of starting coordinates, location of the top left pixel detected
+    spacing        = Two element tuple of spacing between centers of chips
 
     :param img: numpy.ndarray
     :param threshold: str
@@ -507,8 +509,10 @@ def find_color_card(img, threshold='adaptgauss', threshvalue=125, blurry=False, 
     :param blurry: bool
     :param background: str
     :return df: pandas.core.frame.DataFrame
+    :return start_coord: tuple
+    :return spacing: tuple
     """
-    # Required imports
+    # Imports
     import skimage
     import pandas as pd
     from scipy.spatial.distance import squareform, pdist
@@ -612,7 +616,7 @@ def find_color_card(img, threshold='adaptgauss', threshvalue=125, blurry=False, 
     # Loop over our contours and extract data about them
     for index, c in enumerate(contours):
         # Area isn't 0, but greater than min-area and less than max-area
-        if 0 != marea[index] < marea[index] < maxarea:
+        if marea[index] != 0 and minarea < marea[index] < maxarea:
             peri = cv2.arcLength(c, True)
             approx = cv2.approxPolyDP(c, 0.15 * peri, True)
             center, wh, angle = cv2.minAreaRect(c)  # Rotated rectangle
@@ -713,10 +717,15 @@ def find_color_card(img, threshold='adaptgauss', threshvalue=125, blurry=False, 
     # Extract the starting coordinate
     start_coord = (df['X'].min(), df['Y'].min())
     # Calculate the range
-    spacingx = (df['X'].max() - df['X'].min()) / 3
-    spacingy = (df['Y'].max() - df['Y'].min()) / 3
-    # Chip spacing will be the smaller of the two since 4x6 card assumed
-    spacing = min(spacingx, spacingy)
+    spacingx_short = (df['X'].max() - df['X'].min()) / 3
+    spacingy_short = (df['Y'].max() - df['Y'].min()) / 3
+    spacingx_long = (df['X'].max() - df['X'].min()) / 5
+    spacingy_long = (df['Y'].max() - df['Y'].min()) / 5
+    # Chip spacing since 4x6 card assumed
+    spacing_short = min(spacingx_short, spacingy_short)
+    spacing_long = max(spacingx_long, spacingy_long)
+    # Smaller spacing measurement might have a chip missing
+    spacing = max(spacing_short, spacing_long)
     spacing = (spacing, spacing)
 
-    return start_coord, spacing
+    return df, start_coord, spacing
