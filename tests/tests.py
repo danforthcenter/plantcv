@@ -2513,15 +2513,15 @@ def test_plantcv_transform_create_color_card_mask():
     pcv.params.debug_outdir = cache_dir
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, chip_dims=(10, 10), start_coord=(166, 166),
+    _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=(166, 166),
                                              spacing=(21, 21), nrows=6, ncols=4, exclude=[20, 0])
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, chip_dims=(10, 10), start_coord=(166, 166),
+    _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=(166, 166),
                                              spacing=(21, 21), nrows=6, ncols=4, exclude=[20, 0])
     # Test with debug = None
     pcv.params.debug = None
-    mask = pcv.transform.create_color_card_mask(rgb_img=rgb_img, chip_dims=(10, 10), start_coord=(166, 166),
+    mask = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=(166, 166),
                                                 spacing=(21, 21), nrows=6, ncols=4, exclude=[20, 0])
     assert all([i == j] for i, j in zip(np.unique(mask), np.array([0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110,
                                                                    120, 130, 140, 150, 160, 170, 180, 190, 200, 210,

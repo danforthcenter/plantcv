@@ -8,7 +8,7 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
-from plantcv.plantcv.roi import rectangle
+from plantcv.plantcv.roi import circle
 
 
 def get_color_matrix(rgb_img, mask):
@@ -345,11 +345,11 @@ def correct_color(target_img, target_mask, source_img, source_mask, output_direc
     return target_matrix, source_matrix, transformation_matrix, corrected_img
 
 
-def create_color_card_mask(rgb_img, chip_dims, start_coord, spacing, nrows, ncols, exclude=[]):
+def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=[]):
     """Create a labeled mask for color card chips
     Inputs:
     rgb_img        = Input RGB image data containing a color card.
-    chip_dims      = Two-element tuple of the chip masks width and height.
+    radius         = Radius of color masks.
     start_coord    = Two-element tuple of the first chip mask starting x and y coordinate.
     spacing        = Two-element tuple of the horizontal and vertical spacing between chip masks.
     nrows          = Number of chip rows.
@@ -360,7 +360,7 @@ def create_color_card_mask(rgb_img, chip_dims, start_coord, spacing, nrows, ncol
     mask           = Labeled mask of chips
 
     :param rgb_img: numpy.ndarray
-    :param chip_dims: tuple
+    :param radius: int
     :param start_coord: tuple
     :param spacing: tuple
     :param nrows: int
@@ -384,7 +384,7 @@ def create_color_card_mask(rgb_img, chip_dims, start_coord, spacing, nrows, ncol
             # horizontal spacing between chips
             x = start_coord[0] + j * spacing[0]
             # Create a chip ROI
-            chips.append(rectangle(img=rgb_img, x=x, y=y, w=chip_dims[0], h=chip_dims[1]))
+            chips.append(circle(img=rgb_img, x=x, y=y, r=radius))
     # Remove any excluded chips
     for chip in exclude:
         del chips[chip]
