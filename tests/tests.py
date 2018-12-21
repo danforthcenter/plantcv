@@ -2550,6 +2550,31 @@ def test_plantcv_transform_quick_color_check():
     assert os.path.exists(os.path.join(cache_dir, "color_quick_check.png"))
 
 
+def test_plantcv_transform_find_color_card():
+    # Load target image
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_find_color_card")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    df, start, space = pcv.transform.find_color_card(img=rgb_img)
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, chip_dims=(10, 10), start_coord=start,
+                                             spacing=space, nrows=6, ncols=4, exclude=[20, 0])
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, chip_dims=(10, 10), start_coord=start,
+                                             spacing=space, nrows=6, ncols=4, exclude=[20, 0])
+    # Test with debug = None
+    pcv.params.debug = None
+    mask = pcv.transform.create_color_card_mask(rgb_img=rgb_img, chip_dims=(10, 10), start_coord=start,
+                                                spacing=space, nrows=6, ncols=4, exclude=[20, 0])
+    assert all([i == j] for i, j in zip(np.unique(mask), np.array([0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110,
+                                                                   120, 130, 140, 150, 160, 170, 180, 190, 200, 210,
+                                                                   220], dtype=np.uint8)))
+
+
 # ##############################
 # Tests for the threshold subpackage
 # ##############################
