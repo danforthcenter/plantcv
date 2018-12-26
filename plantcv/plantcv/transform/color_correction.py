@@ -548,6 +548,8 @@ def find_color_card(img, threshold='adaptgauss', threshvalue=125, blurry=False, 
         clahe = cv2.createCLAHE(clipLimit=3.25, tileGridSize=(4, 4))
         # apply CLAHE histogram expansion to find squares better with canny edge detection
         gray_img = clahe.apply(gray_img)
+    elif background != 'dark':
+        fatal_error('Background parameter ' + str(background) + ' is not "light" or "dark"!')
 
     # Thresholding
     if threshold == "otsu":
@@ -563,6 +565,8 @@ def find_color_card(img, threshold='adaptgauss', threshvalue=125, blurry=False, 
         gaussian = cv2.GaussianBlur(gray_img, (11, 11), 0)
         threshold = cv2.adaptiveThreshold(gaussian, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
                                           cv2.THRESH_BINARY_INV, 51, 2)
+    else:
+        fatal_error('Threshold ' + str(threshold) + ' is not "otsu", "normal", or "adaptgauss"!')
 
     # Apply automatic Canny edge detection using the computed median
     edges = skimage.feature.canny(threshold)
