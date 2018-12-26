@@ -1983,6 +1983,8 @@ def test_plantcv_background_subtraction():
     pcv.params.debug = None
     fgmask = pcv.background_subtraction(background_image=bg_img, foreground_image=fg_img)
     truths.append(np.sum(fgmask) > 0)
+    fgmask = pcv.background_subtraction(background_image=fg_img, foreground_image=bg_img)
+    truths.append(np.sum(fgmask) > 0)
     # The same foreground subtracted from itself should be 0
     fgmask = pcv.background_subtraction(background_image=fg_img, foreground_image=fg_img)
     truths.append(np.sum(fgmask) == 0)
