@@ -136,6 +136,7 @@ def test_plantcv_analyze_bound_horizontal():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    img_above_bound_only = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL_PLANT))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
     object_contours = contours_npz['arr_0']
@@ -143,6 +144,8 @@ def test_plantcv_analyze_bound_horizontal():
     outfile = os.path.join(TEST_TMPDIR, TEST_INPUT_COLOR)
     pcv.params.debug = "print"
     _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=300, filename=outfile)
+    _ = pcv.analyze_bound_horizontal(img=img_above_bound_only, obj=object_contours, mask=mask, line_position=300,
+                                     filename=outfile)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=300, filename=False)
@@ -256,12 +259,15 @@ def test_plantcv_analyze_color():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    img_binary = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
     outfile = os.path.join(cache_dir, TEST_INPUT_COLOR)
     _ = pcv.analyze_color(rgb_img=img, mask=mask, bins=256, hist_plot_type="all", pseudo_channel="v", pseudo_bkg="img",
                           filename=outfile)
+    _ = pcv.analyze_color(rgb_img=img_binary, mask=mask, bins=256, hist_plot_type="all", pseudo_channel="v",
+                          pseudo_bkg="img", filename=outfile)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.analyze_color(rgb_img=img, mask=mask, bins=256, hist_plot_type=None, pseudo_channel="v", pseudo_bkg="img",
@@ -490,6 +496,15 @@ def test_plantcv_apply_mask_black():
     pcv.params.debug = None
     masked_img = pcv.apply_mask(rgb_img=img, mask=mask, mask_color="black")
     assert all([i == j] for i, j in zip(np.shape(masked_img), TEST_COLOR_DIM))
+
+
+def test_plantcv_apply_mask_bad_input():
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    with pytest.raises(RuntimeError):
+        pcv.params.debug = "plot"
+        _ = pcv.apply_mask(rgb_img=img, mask=mask, mask_color="wite")
 
 
 def test_plantcv_auto_crop():
@@ -2022,12 +2037,13 @@ def test_plantcv_background_subtraction():
     truths = []
     fg_img = cv2.imread(os.path.join(TEST_DATA, TEST_FOREGROUND))
     bg_img = cv2.imread(os.path.join(TEST_DATA, TEST_BACKGROUND))
+    big_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Testing if background subtraction is actually still working.
     # This should return an array whose sum is greater than one
     pcv.params.debug = None
     fgmask = pcv.background_subtraction(background_image=bg_img, foreground_image=fg_img)
     truths.append(np.sum(fgmask) > 0)
-    fgmask = pcv.background_subtraction(background_image=fg_img, foreground_image=bg_img)
+    fgmask = pcv.background_subtraction(background_image=bg_img, foreground_image=big_img)
     truths.append(np.sum(fgmask) > 0)
     # The same foreground subtracted from itself should be 0
     fgmask = pcv.background_subtraction(background_image=fg_img, foreground_image=fg_img)
