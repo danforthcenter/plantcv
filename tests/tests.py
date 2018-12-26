@@ -63,6 +63,7 @@ TEST_TARGET_IMG = "target_img.png"
 TEST_SOURCE1_IMG = "source1_img.png"
 TEST_SOURCE2_IMG = "source2_img.png"
 TEST_TARGET_MASK = "mask_img.png"
+TEST_TARGET_IMG_COLOR_CARD = "color_card_target.png"
 TEST_SOURCE2_MASK = "mask2_img.png"
 TEST_TARGET_MATRIX = "target_matrix.npz"
 TEST_SOURCE1_MATRIX = "source1_matrix.npz"
@@ -2577,24 +2578,24 @@ def test_plantcv_transform_find_color_card():
 
 def test_plantcv_transform_find_color_card_optional_parameters():
     # Load rgb image
-    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG_COLOR_CARD))
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_find_color_card")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    df1, start1, space1 = pcv.transform.find_color_card(img=rgb_img, threshold='otsu', blurry=True, background='light')
-    # Test with threshold='otsu'
+    # Test with threshold ='normal'
+    df1, start1, space1 = pcv.transform.find_color_card(img=rgb_img, threshold='normal', blurry=True,
+                                                        background='light')
     _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=start1,
                                              spacing=space1, nrows=6, ncols=4, exclude=[20, 0])
-    # Test with threshold='normal'
-    df2, start2, space2 = pcv.transform.find_color_card(img=rgb_img, threshold='normal', blurry=True,
-                                                        background='light')
+    # Test with threshold='otsu'
+    df2, start2, space2 = pcv.transform.find_color_card(img=rgb_img, threshold='otsu', blurry=True)
     _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=start2,
                                              spacing=space2, nrows=6, ncols=4, exclude=[20, 0])
     # Test with debug = None
     pcv.params.debug = None
-    mask = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=start,
-                                                spacing=space, nrows=6, ncols=4, exclude=[20, 0])
+    mask = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=start2,
+                                                spacing=space2, nrows=6, ncols=4, exclude=[20, 0])
     assert all([i == j] for i, j in zip(np.unique(mask), np.array([0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110,
                                                                    120, 130, 140, 150, 160, 170, 180, 190, 200, 210,
                                                                    220], dtype=np.uint8)))
