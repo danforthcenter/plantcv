@@ -645,6 +645,8 @@ def test_plantcv_crop_position_mask():
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.crop_position_mask(nir, mask, x=40, y=3, v_pos="top", h_pos="right")
+    # Test with debug = "print" with bottom
+    _ = pcv.crop_position_mask(nir, mask, x=40, y=3, v_pos="bottom", h_pos="left")
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.crop_position_mask(nir, mask, x=40, y=3, v_pos="top", h_pos="right")
@@ -654,6 +656,45 @@ def test_plantcv_crop_position_mask():
     pcv.params.debug = None
     newmask = pcv.crop_position_mask(nir, mask, x=40, y=3, v_pos="top", h_pos="right")
     assert np.sum(newmask) == 641517
+
+
+def test_plantcv_crop_position_mask_color():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_crop_position_mask")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    nir, path1, filename1 = pcv.readimage(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK), -1)
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.crop_position_mask(nir, mask, x=40, y=3, v_pos="top", h_pos="right")
+    # Test with debug = "print" with bottom
+    _ = pcv.crop_position_mask(nir, mask, x=40, y=3, v_pos="bottom", h_pos="left")
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    _ = pcv.crop_position_mask(nir, mask, x=40, y=3, v_pos="top", h_pos="right")
+    # Test with debug = "plot" with bottom
+    _ = pcv.crop_position_mask(nir, mask, x=45, y=2, v_pos="bottom", h_pos="left")
+    # Test with debug = None
+    pcv.params.debug = None
+    newmask = pcv.crop_position_mask(nir, mask, x=40, y=3, v_pos="top", h_pos="right")
+    assert np.sum(newmask) == 641517
+
+
+def test_plantcv_crop_position_mask_bad_input_x():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_crop_position_mask")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    nir, path1, filename1 = pcv.readimage(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK))
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK), -1)
+    # Read in test data
+    nir, path1, filename1 = pcv.readimage(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK))
+    pcv.params.debug = None
+    with pytest.raises(RuntimeError):
+        _ = pcv.crop_position_mask(nir, mask, x=-1, y=-1, v_pos="top", h_pos="right")
 
 
 def test_plantcv_dilate():
