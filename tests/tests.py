@@ -2710,7 +2710,7 @@ def test_plantcv_threshold_triangle():
     gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.threshold.triangle(gray_img=gray_img, max_value=255, object_type="light", xstep=10)
+    _ = pcv.threshold.triangle(gray_img=gray_img, max_value=255, object_type="dark", xstep=10)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.threshold.triangle(gray_img=gray_img, max_value=255, object_type="light", xstep=10)
