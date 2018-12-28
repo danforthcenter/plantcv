@@ -1995,6 +1995,24 @@ def test_plantcv_white_balance_rgb():
     assert balancedavg != imgavg
 
 
+def test_plantcv_white_balance_bad_input():
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK), -1)
+    # Test with debug = None
+    with pytest.raises(RuntimeError):
+        pcv.params.debug = "plot"
+        _ = pcv.white_balance(img=img, mode='hist', roi=(5, 5, 5, 5, 5))
+
+
+def test_plantcv_white_balance_bad_input_int():
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK), -1)
+    # Test with debug = None
+    with pytest.raises(RuntimeError):
+        pcv.params.debug = "plot"
+        _ = pcv.white_balance(img=img, mode='hist', roi=(5., 5, 5, 5))
+
+
 def test_plantcv_x_axis_pseudolandmarks():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_VIS_SMALL))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
