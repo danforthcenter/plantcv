@@ -42,6 +42,7 @@ TEST_INPUT_MULTI_CONTOUR = "multi_contours.npz"
 TEST_INPUT_ClUSTER_CONTOUR = "clusters_i.npz"
 TEST_INPUT_MULTI_HIERARCHY = "multi_hierarchy.npz"
 TEST_INPUT_GENOTXT = "cluster_names.txt"
+TEST_INPUT_GENOTXT_TOO_MANY = "cluster_names_too_many.txt"
 TEST_INPUT_CROPPED = 'cropped_img.jpg'
 TEST_INPUT_CROPPED_MASK = 'cropped-mask.png'
 TEST_INPUT_MARKER = 'seed-image.jpg'
@@ -611,6 +612,7 @@ def test_plantcv_cluster_contours_splitimg():
     clusters = np.load(os.path.join(TEST_DATA, TEST_INPUT_ClUSTER_CONTOUR), encoding="latin1")
     hierachy = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_HIERARCHY), encoding="latin1")
     cluster_names = os.path.join(TEST_DATA, TEST_INPUT_GENOTXT)
+    cluster_names_too_many = os.path.join(TEST_DATA, TEST_INPUT_GENOTXT_TOO_MANY)
     roi_contours = contours['arr_0']
     cluster_contours = clusters['arr_0']
     obj_hierarchy = hierachy['arr_0']
@@ -618,11 +620,15 @@ def test_plantcv_cluster_contours_splitimg():
     pcv.params.debug = "print"
     _ = pcv.cluster_contour_splitimg(rgb_img=img1, grouped_contour_indexes=cluster_contours, contours=roi_contours,
                                      hierarchy=obj_hierarchy, outdir=cache_dir, file=None, filenames=None)
+    _ = pcv.cluster_contour_splitimg(rgb_img=img1, grouped_contour_indexes=cluster_contours, contours=roi_contours,
+                                     hierarchy=obj_hierarchy, outdir=cache_dir, file='multi', filenames=None)
 
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.cluster_contour_splitimg(rgb_img=img1, grouped_contour_indexes=cluster_contours, contours=roi_contours,
                                      hierarchy=obj_hierarchy, outdir=None, file=None, filenames=cluster_names)
+    _ = pcv.cluster_contour_splitimg(rgb_img=img1, grouped_contour_indexes=cluster_contours, contours=roi_contours,
+                                     hierarchy=obj_hierarchy, outdir=None, file=None, filenames=cluster_names_too_many)
     # Test with debug = None
     pcv.params.debug = None
     output_path = pcv.cluster_contour_splitimg(rgb_img=img1, grouped_contour_indexes=cluster_contours,
