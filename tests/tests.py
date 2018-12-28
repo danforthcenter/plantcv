@@ -1644,6 +1644,13 @@ def test_plantcv_rgb2gray_hsv():
     assert all([i == j] for i, j in zip(np.shape(s), TEST_GRAY_DIM))
 
 
+def test_plantcv_rgb2gray_hsv_bad_input():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    pcv.params.debug = None
+    with pytest.raises(RuntimeError):
+        _ = pcv.rgb2gray_hsv(rgb_img=img, channel="l")
+
+
 def test_plantcv_rgb2gray_lab():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_rgb2gray_lab")
@@ -1662,6 +1669,13 @@ def test_plantcv_rgb2gray_lab():
     b = pcv.rgb2gray_lab(rgb_img=img, channel='b')
     # Assert that the output image has the dimensions of the input image but is only a single channel
     assert all([i == j] for i, j in zip(np.shape(b), TEST_GRAY_DIM))
+
+
+def test_plantcv_rgb2gray_lab_bad_input():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    pcv.params.debug = None
+    with pytest.raises(RuntimeError):
+        _ = pcv.rgb2gray_lab(rgb_img=img, channel="v")
 
 
 def test_plantcv_rgb2gray():
