@@ -1883,6 +1883,14 @@ def test_plantcv_shift_img():
     assert shiftavg != imgavg
 
 
+def test_plantcv_shift_img_bad_input():
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    with pytest.raises(RuntimeError):
+        pcv.params.debug = None
+        _ = pcv.shift_img(img=img, number=-300, side="top")
+
+
 def test_plantcv_sobel_filter():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_sobel_filter")
