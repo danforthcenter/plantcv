@@ -893,9 +893,11 @@ def test_plantcv_flip():
 
 def test_plantcv_flip_bad_input():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    img_binary = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY))
     pcv.params.debug = None
     with pytest.raises(RuntimeError):
         _ = pcv.flip(img=img, direction="vert")
+        _ = pcv.flip(img=img_binary, direction="horiz")
 
 
 def test_plantcv_fluor_fvfm():
