@@ -1818,7 +1818,7 @@ def test_plantcv_scale_features():
     _ = pcv.scale_features(obj=obj_contour, mask=mask, points=TEST_ACUTE_RESULT, boundary_line=50)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.scale_features(obj=obj_contour, mask=mask, points=TEST_ACUTE_RESULT, boundary_line=50)
+    _ = pcv.scale_features(obj=obj_contour, mask=mask, points=TEST_ACUTE_RESULT, boundary_line='NA')
     # Test with debug = None
     pcv.params.debug = None
     points_rescaled, centroid_rescaled, bottomline_rescaled = pcv.scale_features(obj=obj_contour, mask=mask,
