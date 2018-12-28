@@ -931,12 +931,14 @@ def test_plantcv_gaussian_blur():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    img_color = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.gaussian_blur(img=img, ksize=(51, 51), sigmax=0, sigmay=None)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.gaussian_blur(img=img, ksize=(51, 51), sigmax=0, sigmay=None)
+    _ = pcv.gaussian_blur(img=img_color, ksize=(51, 51), sigmax=0, sigmay=None)
     # Test with debug = None
     pcv.params.debug = None
     gaussian_img = pcv.gaussian_blur(img=img, ksize=(51, 51), sigmax=0, sigmay=None)
