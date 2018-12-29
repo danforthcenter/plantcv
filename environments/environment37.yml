@@ -1,7 +1,7 @@
-# run: conda env create --file environment.yml
+# run: conda env create --file environment37.yml
 name: test-environment
 dependencies:
-  - python=2.7
+  - python=3.7
   - matplotlib>=1.5
   - numpy>=1.11
   - pandas

@@ -1,4 +1,4 @@
-# run: conda env create --file environment.yml
+# run: conda env create --file environment36.yml
 name: test-environment
 dependencies:
   - python=3.6

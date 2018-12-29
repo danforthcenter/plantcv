@@ -5,9 +5,9 @@ python:
 - '2.7'
 - '3.6'
 - '3.7'
-matrix:
-  allow_failures:
-  - python: '3.7'
+#matrix:
+#  allow_failures:
+#  - python: '3.7'
 virtualenv:
   system_site_packages: false
 before_script:
@@ -28,10 +28,11 @@ install:
 - conda info -a
 - |
   if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
-  # matplotlib is causing issues with ths configuration on Travis-CI, overriding normal defaults
-    conda env create -q -n test-environment -f environment2.yml;
-  else
-    conda env create -q -n test-environment -f environment.yml;
+    conda env create -q -n test-environment -f ./environments/environment27.yml;
+  elif [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]]; then
+    conda env create -q -n test-environment -f ./environments/environment36.yml;
+  elif [[ "$TRAVIS_PYTHON_VERSION" == "3.7" ]]; then
+    conda env create -q -n test-environment -f ./environments/environment37.yml;
   fi
 - source activate test-environment
 - python setup.py install
