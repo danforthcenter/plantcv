@@ -6,3 +6,4 @@ scipy
 scikit-image
 pytest
 plotnine
+opencv-python

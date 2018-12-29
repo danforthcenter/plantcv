@@ -35,10 +35,8 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
-try:
-    import cv2
-except ImportError:
-    raise ImportError("ERROR: OpenCV package 'cv2' not found.")
+requirements_f = open('requirements.txt', 'r')
+dependencies = [ req for req in requirements_f.readlines() ]
 
 setuptools.setup(
     name='plantcv',
@@ -82,12 +80,13 @@ setuptools.setup(
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
-        'Programming Language :: Python :: 2.7'
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.6'
     ],
 
     # What does your project relate to?
-    keywords='image processing bioinformatics',
+    keywords='plant phenotyping bioinformatics',
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
@@ -101,8 +100,7 @@ setuptools.setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=['matplotlib>=1.5', 'numpy>=1.11', 'pandas', 'python-dateutil', 'scipy', 'scikit-image',
-                      'plotnine'],
+    install_requires=dependencies,
 
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
