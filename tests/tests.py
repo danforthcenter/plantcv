@@ -1954,7 +1954,10 @@ def test_plantcv_watershed_segmentation():
     pcv.params.debug = None
     watershed_header, watershed_data, images = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10,
                                                                           filename=False)
-    assert watershed_data[1] > 9
+    if cv2.__version__[0] == 2:
+        assert watershed_data[1] > 9
+    else:
+        assert watershed_data[1] > 9
 
 
 def test_plantcv_white_balance_gray_16bit():
@@ -2141,7 +2144,10 @@ def test_plantcv_background_subtraction():
     fgmask = pcv.background_subtraction(background_image=bg_img, foreground_image=bg_img)
     truths.append(np.sum(fgmask) == 0)
     # All of these should be true for the function to pass testing.
-    assert (all(truths))
+    if cv2.__version__[0] == 2:
+        assert (all(truths))
+    else:
+        assert (all(truths))
 
 
 def test_plantcv_background_subtraction_debug():

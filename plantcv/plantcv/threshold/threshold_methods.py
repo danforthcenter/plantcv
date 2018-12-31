@@ -406,7 +406,7 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
     if ind.size and ind[-1] == x.size - 1:
         ind = ind[:-1]
 
-    # # Where this function is used has hardcorded mph=None so this will never be used
+    # # Where this function is used has hardcoded mph=None so this will never be used
     # # remove peaks < minimum peak height
     # if ind.size and mph is not None:
     #     ind = ind[x[ind] >= mph]
