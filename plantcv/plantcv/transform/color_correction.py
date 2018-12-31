@@ -494,7 +494,7 @@ def find_color_card(rgb_img, threshold='adaptgauss', threshvalue=125, blurry=Fal
     threshold      = Threshold method, either 'normal', 'otsu', or 'adaptgauss', optional (default 'adaptgauss')
     thresh_value   = Thresholding value, optional (default 125)
     blurry         = Bool (default False) if True then image sharpening applied
-    background     = Type of image background either 'dark' or 'light (default 'dark'); if 'light' then histogram
+    background     = Type of image background either 'dark' or 'light' (default 'dark'); if 'light' then histogram
                         expansion applied to better detect edges, but histogram expansion will be hindered if there
                         is a dark background
 
