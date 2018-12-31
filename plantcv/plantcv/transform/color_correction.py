@@ -486,7 +486,7 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
             print(p1)
 
 
-def find_color_card(img, threshold='adaptgauss', threshvalue=125, blurry=False, background='dark'):
+def find_color_card(rgb_img, threshold='adaptgauss', threshvalue=125, blurry=False, background='dark'):
     """Automatically detects a color card and output info to use in create_color_card_mask function
 
     Inputs:
