@@ -60,7 +60,7 @@ Automatically detects a color card's location and size. Useful in pipelines wher
 **returns** df, start_coord, spacing
 
 - **Parameters**
-    - img           = Input RGB image data containing a color card.
+    - rgb_img       = Input RGB image data containing a color card.
     - threshold     = Optional threshold method, either 'normal', 'otsu', or 'adaptgauss'.
     - threshvalue   = Optional thresholding value.
     - blurry        = Optional boolean, if True then image sharpening is applied.
