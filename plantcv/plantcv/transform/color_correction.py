@@ -526,7 +526,7 @@ def find_color_card(rgb_img, threshold='adaptgauss', threshvalue=125, blurry=Fal
     maxarea = 8000000. / 12000000. * totalpx
 
     # Create gray image for further processing
-    gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    gray_img = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
 
     # Laplacian Fourier Transform detection of blurriness
     blurfactor = cv2.Laplacian(gray_img, cv2.CV_64F).var()
