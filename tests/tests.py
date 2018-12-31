@@ -50,6 +50,7 @@ TEST_INPUT_MARKER = 'seed-image.jpg'
 TEST_FOREGROUND = "TEST_FOREGROUND.jpg"
 TEST_BACKGROUND = "TEST_BACKGROUND.jpg"
 TEST_PDFS = "naive_bayes_pdfs.txt"
+TEST_PDFS_BAD = "naive_bayes_pdfs_bad.txt"
 TEST_VIS_SMALL = "setaria_small_vis.png"
 TEST_MASK_SMALL = "setaria_small_mask.png"
 TEST_VIS_COMP_CONTOUR = "setaria_composed_contours.npz"
@@ -1239,6 +1240,14 @@ def test_plantcv_naive_bayes_classifier():
             assert 0
     else:
         assert 0
+
+
+def test_plantcv_naive_bayes_classifier_bad_input():
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    pcv.params.debug = None
+    with pytest.raises(RuntimeError):
+        _ = pcv.naive_bayes_classifier(rgb_img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS_BAD))
 
 
 def test_plantcv_object_composition():
