@@ -2606,7 +2606,7 @@ def test_plantcv_transform_find_color_card_bad_thresh_input():
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
     with pytest.raises(RuntimeError):
         pcv.params.debug = None
-        _, _, _ = pcv.transform.find_color_card(img=rgb_img, threshold='gaussian')
+        _, _, _ = pcv.transform.find_color_card(rgb_img=rgb_img, threshold='gaussian')
 
 
 def test_plantcv_transform_find_color_card_bad_background_input():
