@@ -518,7 +518,7 @@ def find_color_card(rgb_img, threshold='adaptgauss', threshvalue=125, blurry=Fal
     from scipy.spatial.distance import squareform, pdist
 
     # Get image attributes
-    height, width, channels = img.shape
+    height, width, channels = rgb_img.shape
     totalpx = float(height * width)
 
     # Minimum and maximum square size based upon 12 MP image
