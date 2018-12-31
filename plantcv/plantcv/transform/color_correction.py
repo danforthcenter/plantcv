@@ -503,7 +503,7 @@ def find_color_card(rgb_img, threshold='adaptgauss', threshvalue=125, blurry=Fal
     start_coord    = Two element tuple of starting coordinates, location of the top left pixel detected
     spacing        = Two element tuple of spacing between centers of chips
 
-    :param img: numpy.ndarray
+    :param rgb_img: numpy.ndarray
     :param threshold: str
     :param threshvalue: int
     :param blurry: bool
