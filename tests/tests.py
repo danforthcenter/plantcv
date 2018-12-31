@@ -2589,7 +2589,7 @@ def test_plantcv_transform_find_color_card_optional_parameters():
     _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=start1,
                                              spacing=space1, nrows=6, ncols=4, exclude=[20, 0])
     # Test with threshold='otsu'
-    df2, start2, space2 = pcv.transform.find_color_card(img=rgb_img, threshold='otsu', blurry=True)
+    df2, start2, space2 = pcv.transform.find_color_card(rgb_img=rgb_img, threshold='otsu', blurry=True)
     _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=start2,
                                              spacing=space2, nrows=6, ncols=4, exclude=[20, 0])
     # Test with debug = None
