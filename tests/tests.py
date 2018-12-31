@@ -882,12 +882,14 @@ def test_plantcv_flip():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    img_binary = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY))
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.flip(img=img, direction="horizontal")
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.flip(img=img, direction="vertical")
+    _ = pcv.flip(img=img_binary, direction="vertical")
     # Test with debug = None
     pcv.params.debug = None
     flipped_img = pcv.flip(img=img, direction="horizontal")
@@ -896,11 +898,9 @@ def test_plantcv_flip():
 
 def test_plantcv_flip_bad_input():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    img_binary = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY))
     pcv.params.debug = None
     with pytest.raises(RuntimeError):
         _ = pcv.flip(img=img, direction="vert")
-        _ = pcv.flip(img=img_binary, direction="horiz")
 
 
 def test_plantcv_fluor_fvfm():
