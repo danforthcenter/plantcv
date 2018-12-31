@@ -55,7 +55,7 @@ target_matrix, source_matrix, transformation_matrix, corrected_img = pcv.transfo
 
 Automatically detects a color card's location and size. Useful in pipelines where color card positioning isn't constant in all images.
 
-**plantcv.transform.find_color_card**(*img, threshold='adaptgauss', threshvalue=125, blurry=False, background='dark'*)
+**plantcv.transform.find_color_card**(*rgb_img, threshold='adaptgauss', threshvalue=125, blurry=False, background='dark'*)
 
 **returns** df, start_coord, spacing
 
