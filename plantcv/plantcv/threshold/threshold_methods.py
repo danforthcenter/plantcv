@@ -431,13 +431,12 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
     #     # remove the small peaks and sort back the indices by their occurrence
     #     ind = np.sort(ind[~idel])
 
-    # # Where this function is used has hardcoded show=False so this will never be used
-    # if show:
-    #     if indnan.size:
-    #         x[indnan] = np.nan
-    #     if valley:
-    #         x = -x
-    #     _plot(x, mph, mpd, threshold, edge, valley, ax, ind)
+    if show:
+        if indnan.size:
+            x[indnan] = np.nan
+        if valley:
+            x = -x
+        _plot(x, mph, mpd, threshold, edge, valley, ax, ind)
 
     return ind
 
