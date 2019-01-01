@@ -2,6 +2,7 @@
 
 import cv2
 import os
+import numpy as np
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
@@ -32,7 +33,7 @@ def gaussian_blur(img, ksize, sigmax=0, sigmay=None):
     if params.debug == 'print':
         print_image(img_gblur, os.path.join(params.debug_outdir, str(params.device) + '_gaussian_blur.png'))
     elif params.debug == 'plot':
-        if len(img_gblur) == 3:
+        if len(np.shape(img_gblur)) == 3:
             plot_image(img_gblur)
         else:
             plot_image(img_gblur, cmap='gray')
