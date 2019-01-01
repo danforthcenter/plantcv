@@ -484,3 +484,252 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
             p1.save(os.path.join(params.debug_outdir, 'color_quick_check.png'))
         elif params.debug == 'plot':
             print(p1)
+
+
+def find_color_card(rgb_img, threshold='adaptgauss', threshvalue=125, blurry=False, background='dark'):
+    """Automatically detects a color card and output info to use in create_color_card_mask function
+
+    Inputs:
+    rgb_img        = Input RGB image data containing a color card.
+    threshold      = Threshold method, either 'normal', 'otsu', or 'adaptgauss', optional (default 'adaptgauss')
+    threshvalue    = Thresholding value, optional (default 125)
+    blurry         = Bool (default False) if True then image sharpening applied
+    background     = Type of image background either 'dark' or 'light' (default 'dark'); if 'light' then histogram
+                        expansion applied to better detect edges, but histogram expansion will be hindered if there
+                        is a dark background
+
+    Returns:
+    df             = Dataframe containing information about the filtered contours
+    start_coord    = Two element tuple of starting coordinates, location of the top left pixel detected
+    spacing        = Two element tuple of spacing between centers of chips
+
+    :param rgb_img: numpy.ndarray
+    :param threshold: str
+    :param threshvalue: int
+    :param blurry: bool
+    :param background: str
+    :return df: pandas.core.frame.DataFrame
+    :return start_coord: tuple
+    :return spacing: tuple
+    """
+    # Imports
+    import skimage
+    import pandas as pd
+    from scipy.spatial.distance import squareform, pdist
+
+    # Get image attributes
+    height, width, channels = rgb_img.shape
+    totalpx = float(height * width)
+
+    # Minimum and maximum square size based upon 12 MP image
+    minarea = 1000. / 12000000. * totalpx
+    maxarea = 8000000. / 12000000. * totalpx
+
+    # Create gray image for further processing
+    gray_img = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
+
+    # Laplacian Fourier Transform detection of blurriness
+    blurfactor = cv2.Laplacian(gray_img, cv2.CV_64F).var()
+
+    # If image is blurry then try to deblur using kernel
+    if blurry:
+        # from https://www.packtpub.com/mapt/book/Application+Development/9781785283932/2/ch02lvl1sec22/Sharpening
+        kernel = np.array([[-1, -1, -1, -1, -1],
+                           [-1, 2, 2, 2, -1],
+                           [-1, 2, 8, 2, -1],
+                           [-1, 2, 2, 2, -1],
+                           [-1, -1, -1, -1, -1]]) / 8.0
+        # Store result back out for further processing
+        gray_img = cv2.filter2D(gray_img, -1, kernel)
+
+    # In darker samples, the expansion of the histogram hinders finding the squares due to problems with the otsu
+    # thresholding. If your image has a bright background then apply
+    if background == 'light':
+        clahe = cv2.createCLAHE(clipLimit=3.25, tileGridSize=(4, 4))
+        # apply CLAHE histogram expansion to find squares better with canny edge detection
+        gray_img = clahe.apply(gray_img)
+    elif background != 'dark':
+        fatal_error('Background parameter ' + str(background) + ' is not "light" or "dark"!')
+
+    # Thresholding
+    if threshold == "otsu":
+        # Blur slightly so defects on card squares and background patterns are less likely to be picked up
+        gaussian = cv2.GaussianBlur(gray_img, (5, 5), 0)
+        ret, threshold = cv2.threshold(gaussian, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    elif threshold == "normal":
+        # Blur slightly so defects on card squares and background patterns are less likely to be picked up
+        gaussian = cv2.GaussianBlur(gray_img, (5, 5), 0)
+        ret, threshold = cv2.threshold(gaussian, threshvalue, 255, cv2.THRESH_BINARY)
+    elif threshold == "adaptgauss":
+        # Blur slightly so defects on card squares and background patterns are less likely to be picked up
+        gaussian = cv2.GaussianBlur(gray_img, (11, 11), 0)
+        threshold = cv2.adaptiveThreshold(gaussian, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                          cv2.THRESH_BINARY_INV, 51, 2)
+    else:
+        fatal_error('Threshold ' + str(threshold) + ' is not "otsu", "normal", or "adaptgauss"!')
+
+    # Apply automatic Canny edge detection using the computed median
+    edges = skimage.feature.canny(threshold)
+    edges.dtype = 'uint8'
+
+    # Compute contours to find the squares of the card
+    _, contours, hierarchy = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    # Variable of which contour is which
+    mindex = []
+    # Variable to store moments
+    mu = []
+    # Variable to x,y coordinates in tuples
+    mc = []
+    # Variable to x coordinate as integer
+    mx = []
+    # Variable to y coordinate as integer
+    my = []
+    # Variable to store area
+    marea = []
+    # Variable to store whether something is a square (1) or not (0)
+    msquare = []
+    # Variable to store square approximation coordinates
+    msquarecoords = []
+    # Variable to store child hierarchy element
+    mchild = []
+    # Fitted rectangle height
+    mheight = []
+    # Fitted rectangle width
+    mwidth = []
+    # Ratio of height/width
+    mwhratio = []
+
+    # Extract moments from contour image
+    for x in range(0, len(contours)):
+        mu.append(cv2.moments(contours[x]))
+        marea.append(cv2.contourArea(contours[x]))
+        mchild.append(int(hierarchy[0][x][2]))
+        mindex.append(x)
+
+    # Cycle through moment data and compute location for each moment
+    for m in mu:
+        if m['m00'] != 0:  # This is the area term for a moment
+            mc.append((int(m['m10'] / m['m00']), int(m['m01']) / m['m00']))
+            mx.append(int(m['m10'] / m['m00']))
+            my.append(int(m['m01'] / m['m00']))
+        else:
+            mc.append((0, 0))
+            mx.append((0))
+            my.append((0))
+
+    # Loop over our contours and extract data about them
+    for index, c in enumerate(contours):
+        # Area isn't 0, but greater than min-area and less than max-area
+        if marea[index] != 0 and minarea < marea[index] < maxarea:
+            peri = cv2.arcLength(c, True)
+            approx = cv2.approxPolyDP(c, 0.15 * peri, True)
+            center, wh, angle = cv2.minAreaRect(c)  # Rotated rectangle
+            mwidth.append(wh[0])
+            mheight.append(wh[1])
+            mwhratio.append(wh[0] / wh[1])
+            msquare.append(len(approx))
+            # If the approx contour has 4 points then we can assume we have 4-sided objects
+            if len(approx) == 4 or 5:
+                msquarecoords.append(approx)
+            else:  # It's not square
+                msquare.append(0)
+                msquarecoords.append(0)
+        else:  # Contour has area of 0, not interesting
+            msquare.append(0)
+            msquarecoords.append(0)
+            mwidth.append(0)
+            mheight.append(0)
+            mwhratio.append(0)
+
+    # Make a pandas df from data for filtering out junk
+    locarea = {'index': mindex, 'X': mx, 'Y': my, 'width': mwidth, 'height': mheight, 'WHratio': mwhratio,
+               'Area': marea, 'square': msquare, 'child': mchild}
+    df = pd.DataFrame(locarea)
+
+    # Add calculated blur factor to output
+    df['blurriness'] = blurfactor
+
+    # Filter df for attributes that would isolate squares of reasonable size
+    df = df[(df['Area'] > minarea) & (df['Area'] < maxarea) & (df['child'] != -1) &
+            (df['square'].isin([4, 5])) & (df['WHratio'] < 1.2) & (df['WHratio'] > 0.85)]
+
+    # Filter nested squares from dataframe, was having issues with median being towards smaller nested squares
+    df = df[~(df['index'].isin(df['index'] + 1))]
+
+    # Count up squares that are within a given radius, more squares = more likelihood of them being the card
+    # Median width of square time 2.5 gives proximity radius for searching for similar squares
+    median_sq_width_px = df["width"].median()
+
+    # Squares that are within 6 widths of the current square
+    pixeldist = median_sq_width_px * 6
+    # Computes euclidean distance matrix for the x and y contour centroids
+    distmatrix = pd.DataFrame(squareform(pdist(df[['X', 'Y']])))
+    # Add up distances that are less than  ones have distance less than pixeldist pixels
+    distmatrixflat = distmatrix.apply(lambda dist: dist[dist <= pixeldist].count() - 1, axis=1)
+
+    # Append distprox summary to dataframe
+    df = df.assign(distprox=distmatrixflat.values)
+
+    # Compute how similar in area the squares are. lots of similar values indicates card
+    # isolate area measurements
+    filtered_area = df['Area']
+    # Create empty matrix for storing comparisons
+    sizecomp = np.zeros((len(filtered_area), len(filtered_area)))
+    # Double loop through all areas to compare to each other
+    for p in range(0, len(filtered_area)):
+        for o in range(0, len(filtered_area)):
+            big = max(filtered_area.iloc[p], filtered_area.iloc[o])
+            small = min(filtered_area.iloc[p], filtered_area.iloc[o])
+            pct = 100. * (small / big)
+            sizecomp[p][o] = pct
+
+    # How many comparisons given 90% square similarity
+    sizematrix = pd.DataFrame(sizecomp).apply(lambda sim: sim[sim >= 90].count() - 1, axis=1)
+
+    # Append sizeprox summary to dataframe
+    df = df.assign(sizeprox=sizematrix.values)
+
+    # Reorder dataframe for better printing
+    df = df[['index', 'X', 'Y', 'width', 'height', 'WHratio', 'Area', 'square', 'child',
+             'blurriness', 'distprox', 'sizeprox']]
+
+    # Loosely filter for size and distance (relative size to median)
+    minsqwidth = median_sq_width_px * 0.80
+    maxsqwidth = median_sq_width_px * 1.2
+    df = df[(df['distprox'] >= 5) & (df['sizeprox'] >= 5) & (df['width'] > minsqwidth) &
+            (df['width'] < maxsqwidth)]
+
+    # Filter for proximity again to root out stragglers
+    # Find and count up squares that are within given radius,
+    # more squares = more likelihood of them being the card
+    # Median width of square time 2.5 gives proximity radius for searching for similar squares
+    median_sq_width_px = df["width"].median()
+
+    # Squares that are within 6 widths of the current square
+    pixeldist = median_sq_width_px * 5
+    # Computes euclidean distance matrix for the x and y contour centroids
+    distmatrix = pd.DataFrame(squareform(pdist(df[['X', 'Y']])))
+    # Add up distances that are less than  ones have distance less than pixeldist pixels
+    distmatrixflat = distmatrix.apply(lambda dist: dist[dist <= pixeldist].count() - 1, axis=1)
+
+    # Append distprox summary to dataframe
+    df = df.assign(distprox=distmatrixflat.values)
+
+    # Filter results for distance proximity to other squares
+    df = df[(df['distprox'] >= 4)]
+
+    # Extract the starting coordinate
+    start_coord = (int(df['X'].min()), int(df['Y'].min()))
+    # Calculate the range
+    spacingx_short = (df['X'].max() - df['X'].min()) / 3
+    spacingy_short = (df['Y'].max() - df['Y'].min()) / 3
+    spacingx_long = (df['X'].max() - df['X'].min()) / 5
+    spacingy_long = (df['Y'].max() - df['Y'].min()) / 5
+    # Chip spacing since 4x6 card assumed
+    spacing_short = min(spacingx_short, spacingy_short)
+    spacing_long = max(spacingx_long, spacingy_long)
+    # Smaller spacing measurement might have a chip missing
+    spacing = int(max(spacing_short, spacing_long))
+    spacing = (spacing, spacing)
+
+    return df, start_coord, spacing
