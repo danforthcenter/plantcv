@@ -156,7 +156,7 @@ To deploy a pipeline over a full image set please see tutorial on Pipeline Paral
 
 ## Creating Masks
 
-We have added a function to semi-automate the task of creating a color card mask. See [Creating a color card mask](transform_correct_color.md#Create-a-Labeled-Color-Card-Mask).
+We have added functions to semi-automate the tasks of detecting and creating a color card mask. See [Creating a color card mask](transform_correct_color.md#Create-a-Labeled-Color-Card-Mask).
 
 Or manually create a labeled mask as described below:
 
