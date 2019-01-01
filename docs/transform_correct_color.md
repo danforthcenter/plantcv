@@ -51,6 +51,52 @@ target_matrix, source_matrix, transformation_matrix, corrected_img = pcv.transfo
 
 ![Screenshot](img/documentation_images/correct_color_imgs/hstack.jpg)
 
+## Automatically Find a Color Card
+
+Automatically detects a color card's location and size. Useful in pipelines where color card positioning isn't constant in all images.
+
+**plantcv.transform.find_color_card**(*rgb_img, threshold='adaptgauss', threshvalue=125, blurry=False, background='dark'*)
+
+**returns** df, start_coord, spacing
+
+- **Parameters**
+    - rgb_img       = Input RGB image data containing a color card.
+    - threshold     = Optional threshold method, either 'normal', 'otsu', or 'adaptgauss'.
+    - threshvalue   = Optional thresholding value.
+    - blurry        = Optional boolean, if True then image sharpening is applied.
+    - background    = Optional type of image background, either 'dark' or 'light'.
+- **Returns**
+    - df            = Dataframe of all color card chips found
+    - start_coord   = Two-element tuple of the first chip mask starting x and y coordinate. Useful in `create_color_card_mask` function.
+    - spacing       = Two-element tuple of the horizontal and vertical spacing between chip masks. Useful in `create_color_card_mask` function.
+
+**Important Note:** This function isn't entirely robust. There are a few important assumptions that must be met in order to automatically detect color cards:
+- There is only one color card in the image.
+- Color card should be 4x6 (like an X-Rite ColorChecker Passport Photo). Spacing calculations are based on 4x6 color cards. Although starting coordinates will be
+    robust for most color cards, unless an entire row or entire column of chips is missing. Missing chips may also skew spacing and can also skew starting coordinates.
+- Color card isn't tilted. The card can be vertical OR horizontal but if it is tilted there will errors in calculating spacing.
+
+```python
+from plantcv import plantcv as pcv
+rgb_img, path, filename = pcv.readimage("target_img.png")
+df, start, space = pcv.transform.find_color_card(rgb_img=rgb_img)
+
+# Use these outputs to create a labeled color card mask
+mask=pcv.transform.create_color_card_mask(rgb_img=img, start_coord=start, spacing=space, chip_dims=(10,10), ncols=6, nrows=4)
+```
+
+**Image automatically detected and masked**
+
+![Screenshot](img/documentation_images/correct_color_imgs/find_color_card.jpg)
+
+**Image with multiple color cards**
+
+![Screenshot](img/documentation_images/correct_color_imgs/multiple_color_card.jpg)
+
+**Tilted color card**
+
+![Screenshot](img/documentation_images/correct_color_imgs/tilted_color_card.jpg)
+
 ## Create a Labeled Color Card Mask
 
 Creates a uniquely labeled mask for each color chip based on user-defined positioning.
@@ -74,7 +120,6 @@ Creates a uniquely labeled mask for each color chip based on user-defined positi
 from plantcv import plantcv as pcv
 
 rgb_img, path, filename = pcv.readimage("target_img.png")
-
 ```
 
 **Image with color card**

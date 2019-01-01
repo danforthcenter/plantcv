@@ -376,8 +376,10 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
     x = np.atleast_1d(x).astype('float64')
     if x.size < 3:
         return np.array([], dtype=int)
-    if valley:
-        x = -x
+
+    # # Where this function is used it is hardcoded to use the default valley=False so this will never be used
+    # if valley:
+    #     x = -x
     # find indices of all peaks
     dx = x[1:] - x[:-1]
     # handle NaN's
@@ -403,25 +405,31 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
         ind = ind[1:]
     if ind.size and ind[-1] == x.size - 1:
         ind = ind[:-1]
-    # remove peaks < minimum peak height
-    if ind.size and mph is not None:
-        ind = ind[x[ind] >= mph]
+
+    # # Where this function is used has hardcoded mph=None so this will never be used
+    # # remove peaks < minimum peak height
+    # if ind.size and mph is not None:
+    #     ind = ind[x[ind] >= mph]
     # remove peaks - neighbors < threshold
-    if ind.size and threshold > 0:
-        dx = np.min(np.vstack([x[ind] - x[ind - 1], x[ind] - x[ind + 1]]), axis=0)
-        ind = np.delete(ind, np.where(dx < threshold)[0])
-    # detect small peaks closer than minimum peak distance
-    if ind.size and mpd > 1:
-        ind = ind[np.argsort(x[ind])][::-1]  # sort ind by peak height
-        idel = np.zeros(ind.size, dtype=bool)
-        for i in range(ind.size):
-            if not idel[i]:
-                # keep peaks with the same height if kpsh is True
-                idel = idel | (ind >= ind[i] - mpd) & (ind <= ind[i] + mpd) \
-                              & (x[ind[i]] > x[ind] if kpsh else True)
-                idel[i] = 0  # Keep current peak
-        # remove the small peaks and sort back the indices by their occurrence
-        ind = np.sort(ind[~idel])
+
+    # # Where this function is used threshold is hardcoded to the default threshold=0 so this will never be used
+    # if ind.size and threshold > 0:
+    #     dx = np.min(np.vstack([x[ind] - x[ind - 1], x[ind] - x[ind + 1]]), axis=0)
+    #     ind = np.delete(ind, np.where(dx < threshold)[0])
+
+    # # Where this function is used has hardcoded mpd=1 so this will never be used
+    # # detect small peaks closer than minimum peak distance
+    # if ind.size and mpd > 1:
+    #     ind = ind[np.argsort(x[ind])][::-1]  # sort ind by peak height
+    #     idel = np.zeros(ind.size, dtype=bool)
+    #     for i in range(ind.size):
+    #         if not idel[i]:
+    #             # keep peaks with the same height if kpsh is True
+    #             idel = idel | (ind >= ind[i] - mpd) & (ind <= ind[i] + mpd) \
+    #                           & (x[ind[i]] > x[ind] if kpsh else True)
+    #             idel[i] = 0  # Keep current peak
+    #     # remove the small peaks and sort back the indices by their occurrence
+    #     ind = np.sort(ind[~idel])
 
     if show:
         if indnan.size:
