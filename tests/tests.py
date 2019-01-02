@@ -30,6 +30,7 @@ TEST_NIR = "NIR_SV_0_z300_h1_g0_e15000_v500_93059.png"
 TEST_VIS_TV = "VIS_TV_0_z300_h1_g0_e85_v500_93054.png"
 TEST_NIR_TV = "NIR_TV_0_z300_h1_g0_e15000_v500_93059.png"
 TEST_INPUT_MASK = "input_mask.png"
+TEST_INPUT_MASK_RESIZE = "input_mask_resize.png"
 TEST_INPUT_NIR_MASK = "input_nir.png"
 TEST_INPUT_FDARK = "FLUO_TV_dark.png"
 TEST_INPUT_FDARK_LARGE = "FLUO_TV_DARK_large"
@@ -263,15 +264,12 @@ def test_plantcv_analyze_color():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    img_binary = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
     outfile = os.path.join(cache_dir, TEST_INPUT_COLOR)
     _ = pcv.analyze_color(rgb_img=img, mask=mask, bins=256, hist_plot_type="all", pseudo_channel="v", pseudo_bkg="img",
                           filename=outfile)
-    _ = pcv.analyze_color(rgb_img=img_binary, mask=mask, bins=256, hist_plot_type="all", pseudo_channel="v",
-                          pseudo_bkg="img", filename=outfile)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.analyze_color(rgb_img=img, mask=mask, bins=256, hist_plot_type=None, pseudo_channel="v", pseudo_bkg="img",
@@ -279,14 +277,20 @@ def test_plantcv_analyze_color():
     # Test with debug = "plot" and pseudo_bkg = "white"
     _ = pcv.analyze_color(rgb_img=img, mask=mask, bins=256, hist_plot_type=None, pseudo_channel="v", pseudo_bkg="white",
                           filename=False)
-    _ = pcv.analyze_color(rgb_img=img_binary, mask=mask, bins=256, hist_plot_type=None, pseudo_channel="v",
-                          pseudo_bkg="white", filename=False)
     # Test with debug = None
     pcv.params.debug = None
     color_header, color_data, analysis_images = pcv.analyze_color(rgb_img=img, mask=mask, bins=256,
                                                                   hist_plot_type=None, pseudo_channel="v",
                                                                   pseudo_bkg="img", filename=False)
     assert np.sum(color_data[3]) != 0
+
+
+def test_plantcv_analyze_color_incorrect_image():
+    img_binary = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    with pytest.raises(RuntimeError):
+        _ = pcv.analyze_color(rgb_img=img_binary, mask=mask, bins=256, hist_plot_type=None, pseudo_channel="v",
+                              pseudo_bkg="white", filename=False)
 
 
 def test_plantcv_analyze_color_incorrect_pseudo_channel():
@@ -669,9 +673,11 @@ def test_plantcv_crop_position_mask():
     # Read in test data
     nir, path1, filename1 = pcv.readimage(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK), -1)
+    mask_resize = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK_RESIZE), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.crop_position_mask(nir, mask, x=40, y=3, v_pos="top", h_pos="right")
+    _ = pcv.crop_position_mask(nir, mask_resize, x=40, y=3, v_pos="top", h_pos="right")
     # Test with debug = "print" with bottom
     _ = pcv.crop_position_mask(nir, mask, x=40, y=3, v_pos="bottom", h_pos="left")
     # Test with debug = "plot"
@@ -693,6 +699,7 @@ def test_plantcv_crop_position_mask_color():
     # Read in test data
     nir, path1, filename1 = pcv.readimage(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK), -1)
+    mask_non_binary = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK))
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.crop_position_mask(nir, mask, x=40, y=3, v_pos="top", h_pos="right")
@@ -703,6 +710,7 @@ def test_plantcv_crop_position_mask_color():
     _ = pcv.crop_position_mask(nir, mask, x=40, y=3, v_pos="top", h_pos="right")
     # Test with debug = "plot" with bottom
     _ = pcv.crop_position_mask(nir, mask, x=45, y=2, v_pos="bottom", h_pos="left")
+    _ = pcv.crop_position_mask(nir, mask_non_binary, x=45, y=2, v_pos="bottom", h_pos="left")
     # Test with debug = None
     pcv.params.debug = None
     newmask = pcv.crop_position_mask(nir, mask, x=40, y=3, v_pos="top", h_pos="right")
@@ -714,8 +722,6 @@ def test_plantcv_crop_position_mask_bad_input_x():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_crop_position_mask")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    # Read in test data
-    nir, path1, filename1 = pcv.readimage(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK), -1)
     # Read in test data
     nir, path1, filename1 = pcv.readimage(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK))
@@ -885,7 +891,7 @@ def test_plantcv_flip():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    img_binary = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY))
+    img_binary = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.flip(img=img, direction="horizontal")
@@ -1311,7 +1317,7 @@ def test_plantcv_output_mask():
     pcv.params.debug = "plot"
     _ = pcv.output_mask(img=img, mask=mask, filename='test.png', outdir=cache_dir, mask_only=False)
     _ = pcv.output_mask(img=img, mask=mask, filename='test.png', outdir=cache_dir, mask_only=True)
-    _ = pcv.output_mask(img=img_color, mask=mask, filename='test.png', outdir=cache_dir, mask_only=False)
+    _ = pcv.output_mask(img=img_color, mask=mask, filename='test.png', mask_only=False)
     # Test with debug = None
     pcv.params.debug = None
     imgpath, maskpath, analysis_images = pcv.output_mask(img=img, mask=mask, filename='test.png', outdir=cache_dir,
@@ -1517,7 +1523,7 @@ def test_plantcv_rectangle_mask():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    img_color = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), -1)
+    img_color = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.rectangle_mask(img=img, p1=(0, 0), p2=(2454, 2056), color="white")
@@ -1954,7 +1960,7 @@ def test_plantcv_watershed_segmentation():
     pcv.params.debug = None
     watershed_header, watershed_data, images = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10,
                                                                           filename=False)
-    if cv2.__version__[0] == 2:
+    if cv2.__version__[0] == '2':
         assert watershed_data[1] > 9
     else:
         assert watershed_data[1] > 9
@@ -2144,7 +2150,7 @@ def test_plantcv_background_subtraction():
     fgmask = pcv.background_subtraction(background_image=bg_img, foreground_image=bg_img)
     truths.append(np.sum(fgmask) == 0)
     # All of these should be true for the function to pass testing.
-    if cv2.__version__[0] == 2:
+    if cv2.__version__[0] == '2':
         assert (all(truths))
     else:
         assert (all(truths))

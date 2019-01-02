@@ -128,6 +128,9 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None, pseudo_channel='v',
     """
     params.device += 1
 
+    if len(np.shape(rgb_img)) < 3:
+        fatal_error("rgb_img must be an RGB image")
+
     masked = cv2.bitwise_and(rgb_img, rgb_img, mask=mask)
     b, g, r = cv2.split(masked)
     lab = cv2.cvtColor(masked, cv2.COLOR_BGR2LAB)
