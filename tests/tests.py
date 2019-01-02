@@ -100,8 +100,10 @@ def test_plantcv_acute():
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.acute(obj=obj_contour, win=5, thresh=15, mask=mask)
+    _ = pcv.acute(obj=obj_contour, win=0, thresh=15, mask=mask)
     # Test with debug = None
     pcv.params.debug = None
+    _ = pcv.acute(obj=obj_contour, win=0, thresh=15, mask=mask)
     homology_pts = pcv.acute(obj=obj_contour, win=5, thresh=15, mask=mask)
     assert all([i == j] for i, j in zip(np.shape(homology_pts), (29, 1, 2)))
 
@@ -676,11 +678,13 @@ def test_plantcv_crop_position_mask():
     # Read in test data
     nir, path1, filename1 = pcv.readimage(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK), -1)
+    mask_three_channel = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK))
     mask_resize = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK_RESIZE), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.crop_position_mask(nir, mask, x=40, y=3, v_pos="top", h_pos="right")
     _ = pcv.crop_position_mask(nir, mask_resize, x=40, y=3, v_pos="top", h_pos="right")
+    _ = pcv.crop_position_mask(nir, mask_three_channel, x=40, y=3, v_pos="top", h_pos="right")
     # Test with debug = "print" with bottom
     _ = pcv.crop_position_mask(nir, mask, x=40, y=3, v_pos="bottom", h_pos="left")
     # Test with debug = "plot"
