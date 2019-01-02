@@ -54,11 +54,7 @@ def _pseudocolored_image(histogram, bins, img, mask, background, channel, filena
         output_imgs["pseudo_on_img"]["img"] = cv2.add(cplant1, img_back3)
 
     if background == 'white' or background == 'both':
-        # Get the image size
-        if np.shape(img)[2] == 3:
-            ix, iy, iz = np.shape(img)
-        else:
-            ix, iy = np.shape(img)
+        ix, iy, iz = np.shape(img)
         size = ix, iy
         back = np.zeros(size, dtype=np.uint8)
         w_back = back + 255
