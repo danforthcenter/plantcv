@@ -1105,6 +1105,7 @@ def test_plantcv_landmark_reference_pt_dist():
                        (0.6458, 0.3472), (0.6389, 0.5208), (0.6458, 0.625)]
     centroid_rescaled = (0.4685, 0.4945)
     bottomline_rescaled = (0.4685, 0.2569)
+    _ = pcv.landmark_reference_pt_dist(points_r=[], centroid_r=('a', 'b'), bline_r=(0, 0))
     _ = pcv.landmark_reference_pt_dist(points_r=[], centroid_r=(0, 0), bline_r=(0, 0))
     results = pcv.landmark_reference_pt_dist(points_r=points_rescaled, centroid_r=centroid_rescaled,
                                              bline_r=bottomline_rescaled)
