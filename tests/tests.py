@@ -1271,6 +1271,7 @@ def test_plantcv_object_composition():
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.object_composition(img=img, contours=object_contours, hierarchy=object_hierarchy)
+    _ = pcv.object_composition(img=img, contours=[], hierarchy=object_hierarchy)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.object_composition(img=img, contours=object_contours, hierarchy=object_hierarchy)
