@@ -2072,6 +2072,7 @@ def test_plantcv_x_axis_pseudolandmarks():
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
+    _ = pcv.x_axis_pseudolandmarks(obj=np.array([[0, 0], [0, 0]]), mask=mask, img=img)
     # Test with debug = None
     pcv.params.debug = None
     top, bottom, center_v = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
@@ -2112,6 +2113,7 @@ def test_plantcv_y_axis_pseudolandmarks():
     pcv.params.debug = "plot"
     _ = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
     _ = pcv.y_axis_pseudolandmarks(obj=[], mask=mask, img=img)
+    _ = pcv.y_axis_pseudolandmarks(obj=np.array([[0, 0], [0, 0]]), mask=mask, img=img)
     # Test with debug = None
     pcv.params.debug = None
     left, right, center_h = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
