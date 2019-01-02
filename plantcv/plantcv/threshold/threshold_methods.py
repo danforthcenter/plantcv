@@ -388,13 +388,16 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
         x[indnan] = np.inf
         dx[np.where(np.isnan(dx))[0]] = np.inf
     ine, ire, ife = np.array([[], [], []], dtype=int)
-    if not edge:
-        ine = np.where((np.hstack((dx, 0)) < 0) & (np.hstack((0, dx)) > 0))[0]
-    else:
-        if edge.lower() in ['rising', 'both']:
-            ire = np.where((np.hstack((dx, 0)) <= 0) & (np.hstack((0, dx)) > 0))[0]
-        if edge.lower() in ['falling', 'both']:
-            ife = np.where((np.hstack((dx, 0)) < 0) & (np.hstack((0, dx)) >= 0))[0]
+    # # Where this function is used it is hardcoded to use the default edge='rising' so we will never have
+    # # edge=None, thus this will never be used
+    # if not edge:
+    #     ine = np.where((np.hstack((dx, 0)) < 0) & (np.hstack((0, dx)) > 0))[0]
+
+    if edge.lower() in ['rising', 'both']:
+        ire = np.where((np.hstack((dx, 0)) <= 0) & (np.hstack((0, dx)) > 0))[0]
+        # # Where this function is used it is hardcoded to use the default edge='rising' so this will never be used
+        # if edge.lower() in ['falling', 'both']:
+        #     ife = np.where((np.hstack((dx, 0)) < 0) & (np.hstack((0, dx)) >= 0))[0]
     ind = np.unique(np.hstack((ine, ire, ife)))
     # handle NaN's
     if ind.size and indnan.size:
@@ -434,8 +437,9 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
     if show:
         if indnan.size:
             x[indnan] = np.nan
-        if valley:
-            x = -x
+        # # Where this function is used it is hardcoded to use the default valley=False so this will never be used
+        # if valley:
+        #     x = -x
         _plot(x, mph, mpd, threshold, edge, valley, ax, ind)
 
     return ind
