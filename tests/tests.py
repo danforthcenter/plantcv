@@ -118,6 +118,7 @@ def test_plantcv_acute_vertex():
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img)
+    _ = pcv.acute_vertex(obj=[], win=5, thresh=15, sep=5, img=img)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img)
@@ -1100,6 +1101,7 @@ def test_plantcv_landmark_reference_pt_dist():
                        (0.6458, 0.3472), (0.6389, 0.5208), (0.6458, 0.625)]
     centroid_rescaled = (0.4685, 0.4945)
     bottomline_rescaled = (0.4685, 0.2569)
+    _ = pcv.landmark_reference_pt_dist(points_r=[], centroid_r=(0, 0), bline_r=(0, 0))
     results = pcv.landmark_reference_pt_dist(points_r=points_rescaled, centroid_r=centroid_rescaled,
                                              bline_r=bottomline_rescaled)
     assert len(results) == 8
@@ -2080,6 +2082,7 @@ def test_plantcv_x_axis_pseudolandmarks_small_obj():
     obj_contour = contours_npz['arr_0']
     # Test with debug = "plot"
     pcv.params.debug = "plot"
+    _, _, _ = pcv.x_axis_pseudolandmarks(obj=[], mask=mask, img=img)
     top, bottom, center_v = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
     assert all([all([i == j] for i, j in zip(np.shape(top), (20, 1, 2))),
                 all([i == j] for i, j in zip(np.shape(bottom), (20, 1, 2))),
@@ -2103,6 +2106,7 @@ def test_plantcv_y_axis_pseudolandmarks():
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
+    _ = pcv.y_axis_pseudolandmarks(obj=[], mask=mask, img=img)
     # Test with debug = None
     pcv.params.debug = None
     left, right, center_h = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
