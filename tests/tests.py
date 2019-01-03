@@ -706,6 +706,7 @@ def test_plantcv_crop_position_mask_color():
     # Read in test data
     nir, path1, filename1 = pcv.readimage(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK), -1)
+    mask_resize = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK_RESIZE))
     mask_non_binary = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK))
     # Test with debug = "print"
     pcv.params.debug = "print"
@@ -718,6 +719,10 @@ def test_plantcv_crop_position_mask_color():
     # Test with debug = "plot" with bottom
     _ = pcv.crop_position_mask(nir, mask, x=45, y=2, v_pos="bottom", h_pos="left")
     _ = pcv.crop_position_mask(nir, mask_non_binary, x=45, y=2, v_pos="bottom", h_pos="left")
+    _ = pcv.crop_position_mask(nir, mask_non_binary, x=45, y=2, v_pos="top", h_pos="left")
+    _ = pcv.crop_position_mask(nir, mask_non_binary, x=45, y=2, v_pos="bottom", h_pos="right")
+    _ = pcv.crop_position_mask(nir, mask_resize, x=45, y=2, v_pos="top", h_pos="left")
+
     # Test with debug = None
     pcv.params.debug = None
     newmask = pcv.crop_position_mask(nir, mask, x=40, y=3, v_pos="top", h_pos="right")
