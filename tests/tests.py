@@ -933,6 +933,7 @@ def test_plantcv_fluor_fvfm():
     pcv.params.debug = "print"
     outfile = os.path.join(cache_dir, TEST_INPUT_FMAX)
     _ = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, filename=outfile, bins=1000)
+    _ = pcv.fluor_fvfm(fdark=fdark+3000, fmin=fmin, fmax=fmax, mask=fmask, filename=outfile, bins=1000)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, filename=False, bins=1000)
