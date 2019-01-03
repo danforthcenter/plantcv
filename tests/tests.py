@@ -153,7 +153,7 @@ def test_plantcv_analyze_bound_horizontal():
     outfile = os.path.join(TEST_TMPDIR, TEST_INPUT_COLOR)
     pcv.params.debug = "print"
     _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=300, filename=outfile)
-    _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=250, filename=outfile)
+    _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=100, filename=outfile)
     _ = pcv.analyze_bound_horizontal(img=img_above_bound_only, obj=object_contours, mask=mask, line_position=300,
                                      filename=outfile)
     # Test with debug = "plot"
