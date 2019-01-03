@@ -1,12 +1,13 @@
 ## Background Subtraction
 
-Creates a binary image from a background subtraction of the foreground using cv2.BackgroundSubtractorMOG().  
+Creates a binary image from a background subtraction of the foreground using cv2.BackgroundSubtractorMOG2().
 The binary image returned is a mask that should contain mostly foreground pixels.  
 The background image should be the same background as the foreground image except not containing the object of interest.
 
 Images must be of the same size and type.  
 If not, larger image will be taken and downsampled to smaller image size.  
-If they are of different types, an error will occur.  
+If they are of different types, an error will occur.
+Requires cv2 version 3.0+
 
 **plantcv.background_subtraction(*foreground_image, background_image*)**
 
