@@ -2090,7 +2090,8 @@ def test_plantcv_x_axis_pseudolandmarks():
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
-    _ = pcv.x_axis_pseudolandmarks(obj=np.array([[0, 0], [0, 0]]), mask=mask, img=img)
+    _ = pcv.x_axis_pseudolandmarks(obj=np.array([[0, 0], [0, 0]]), mask=np.array([[0, 0], [0, 0]]), img=img)
+    _ = pcv.x_axis_pseudolandmarks(obj=(), mask=mask, img=img)
     # Test with debug = None
     pcv.params.debug = None
     top, bottom, center_v = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
@@ -2122,6 +2123,12 @@ def test_plantcv_x_axis_pseudolandmarks_bad_input():
     assert all([i == j] for i, j in zip(result, [("NA", "NA"), ("NA", "NA"), ("NA", "NA")]))
 
 
+def test_plantcv_x_axis_pseudolandmarks_bad_obj_input():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_VIS_SMALL_PLANT))
+    with pytest.raises(RuntimeError):
+        _ = pcv.x_axis_pseudolandmarks(obj=np.array([[-2, -2], [-2, -2]]), mask=np.array([[-2, -2], [-2, -2]]), img=img)
+
+
 def test_plantcv_y_axis_pseudolandmarks():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_VIS_SMALL))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
@@ -2131,7 +2138,7 @@ def test_plantcv_y_axis_pseudolandmarks():
     pcv.params.debug = "plot"
     _ = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
     _ = pcv.y_axis_pseudolandmarks(obj=[], mask=mask, img=img)
-    _ = pcv.y_axis_pseudolandmarks(obj=np.array([[0, 0], [0, 0]]), mask=mask, img=img)
+    _ = pcv.y_axis_pseudolandmarks(obj=(), mask=mask, img=img)
     # Test with debug = None
     pcv.params.debug = None
     left, right, center_h = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
@@ -2160,6 +2167,12 @@ def test_plantcv_y_axis_pseudolandmarks_bad_input():
     pcv.params.debug = None
     result = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
     assert all([i == j] for i, j in zip(result, [("NA", "NA"), ("NA", "NA"), ("NA", "NA")]))
+
+
+def test_plantcv_y_axis_pseudolandmarks_bad_obj_input():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_VIS_SMALL_PLANT))
+    with pytest.raises(RuntimeError):
+        _ = pcv.y_axis_pseudolandmarks(obj=np.array([[-2, -2], [-2, -2]]), mask=np.array([[-2, -2], [-2, -2]]), img=img)
 
 
 def test_plantcv_background_subtraction():
