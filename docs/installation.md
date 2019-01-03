@@ -15,7 +15,7 @@ PlantCV has been tested on the following systems:
 
 - Python (tested with versions 2.7 and 3.6)
     - argparse
-    - cv2 (we recommend 2.4.14+ or 3.3+)
+    - cv2 (a.k.a. OpenCV; some functions require 3.0+, we recommend 3.3+)
     - matplotlib (requires at least 1.5, works with 2+)
     - numpy (requires at least 1.11)
     - pandas
@@ -24,9 +24,6 @@ PlantCV has been tested on the following systems:
     - scikit-image
     - scipy
     - setuptools
-- OpenCV (we recommend 2.4.14+ or 3.3+)
-
-*Note: OpenCV 3 will work with either Python 2 or 3 but OpenCV 2 will only work with Python 2.*
 
 #### Optional but recommended
 
