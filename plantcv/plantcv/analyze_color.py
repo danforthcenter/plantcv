@@ -54,11 +54,7 @@ def _pseudocolored_image(histogram, bins, img, mask, background, channel, filena
         output_imgs["pseudo_on_img"]["img"] = cv2.add(cplant1, img_back3)
 
     if background == 'white' or background == 'both':
-        # Get the image size
-        if np.shape(img)[2] == 3:
-            ix, iy, iz = np.shape(img)
-        else:
-            ix, iy = np.shape(img)
+        ix, iy, iz = np.shape(img)
         size = ix, iy
         back = np.zeros(size, dtype=np.uint8)
         w_back = back + 255
@@ -127,6 +123,9 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None, pseudo_channel='v',
     :return analysis_images: list
     """
     params.device += 1
+
+    if len(np.shape(rgb_img)) < 3:
+        fatal_error("rgb_img must be an RGB image")
 
     masked = cv2.bitwise_and(rgb_img, rgb_img, mask=mask)
     b, g, r = cv2.split(masked)

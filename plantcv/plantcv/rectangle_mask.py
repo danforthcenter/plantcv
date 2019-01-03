@@ -19,7 +19,7 @@ def rectangle_mask(img, p1, p2, color="black"):
     color     = black,white, or gray
 
     Returns:
-    masked      = original image with masked image
+    masked    = original image with masked image
     bnk       = binary image
     contour   = object contour vertices
     hierarchy = contour hierarchy list
@@ -57,7 +57,7 @@ def rectangle_mask(img, p1, p2, color="black"):
         cv2.drawContours(bnk, contour, 0, (255, 255, 255), -1)
         cv2.drawContours(img1, contour, 0, (255, 255, 255), -1)
     if color == "black":
-        bnk = bnk + 255
+        bnk += 255
         cv2.drawContours(bnk, contour, 0, (0, 0, 0), -1)
         cv2.drawContours(img1, contour, 0, (0, 0, 0), -1)
     if color == "gray":
@@ -67,10 +67,6 @@ def rectangle_mask(img, p1, p2, color="black"):
         print_image(bnk, os.path.join(params.debug_outdir, str(params.device) + '_roi.png'))
 
     elif params.debug == 'plot':
-        if len(np.shape(bnk)) == 3:
-            plot_image(bnk)
-            plot_image(img1)
-        else:
-            plot_image(bnk, cmap="gray")
-            plot_image(img1, cmap="gray")
+        plot_image(bnk, cmap="gray")
+        plot_image(img1, cmap="gray")
     return img1, bnk, contour, hierarchy

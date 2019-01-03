@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
+from plantcv.plantcv import fatal_error
 
 
 def x_axis_pseudolandmarks(obj, mask, img):
@@ -166,8 +167,11 @@ def x_axis_pseudolandmarks(obj, mask, img):
         bottom = np.array(bottom)
         bottom.shape = (20, 1, 2)
         m = cv2.moments(mask, binaryImage=True)
-        # Centroid (center of mass x, center of mass y)
-        cmx, cmy = (m['m10'] / m['m00'], m['m01'] / m['m00'])
+        if m['m00'] == 0:
+            fatal_error('Check input parameters, first moment=0')
+        else:
+            # Centroid (center of mass x, center of mass y)
+            cmx, cmy = (m['m10'] / m['m00'], m['m01'] / m['m00'])
         c_points = [cmy] * 20
         center_v = list(zip(x_coords, c_points))
         center_v = np.array(center_v)

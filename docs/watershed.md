@@ -3,7 +3,8 @@
 This function is based on code contributed by Suxing Liu, Arkansas State University.
 For more information see https://github.com/lsx1980/Leaf_count. 
 This function uses the watershed algorithm to detect boundry of objects. 
-Needs a mask file which specifies area which is object is white, and background is black
+Needs a mask file which specifies area which is object is white, and background is black.
+Requires cv2 version 3.0+
 
 **plantcv.watershed_segmentation**(*rgb_img, mask, distance=10, filename=False*)**
 
