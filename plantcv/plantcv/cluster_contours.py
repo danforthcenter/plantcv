@@ -60,7 +60,7 @@ def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1):
     # categorize what bin the center of mass of each contour
 
     def digitize(a, step):
-        if isinstance(step, int) is True:
+        if isinstance(step, int):
             i = step
         else:
             i = len(step)
