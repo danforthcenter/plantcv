@@ -43,6 +43,7 @@ after_success: coveralls
 branches:
   only:
   - master
+  - /v\d+\.\d+/
 deploy:
   provider: pypi
   user: danforthcenter
