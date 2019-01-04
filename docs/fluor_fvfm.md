@@ -20,7 +20,7 @@ Extract Fv/Fm data of objects and produce pseudocolored images.
 - **Example use:**
     - [Use In PSII Tutorial](psII_tutorial.md)
     
-**Output Data Units:** 
+- **Output Data Units:**
     - Bin-number - number of bins set by user  
     - FV/FM Bins - bin values based on number of bins set by user  
     - FV/FM Histogram - histogram of FV/FM ratio values for object  

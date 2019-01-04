@@ -11,7 +11,7 @@ Write image and mask with the same name to the path specified (creates two folde
 **returns** maskpath, analysis_images
 
 - **Parameters:**
-    - img - original image, read in with plantcv function read_image
+    - img - RGB or grayscale image data, original image, read in with plantcv function read_image
     - mask - binary mask image created in previous steps (single chanel)
     - filename - vis image file name (output of plantcv read_image function)
     - outdir - output directory

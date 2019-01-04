@@ -7,7 +7,7 @@ Crops image to an object and allows user to specify image padding (if desired)
 **returns** image after resizing
 
 - **Parameters:**
-    - img1 - RGB or grayscale image data
+    - img - RGB or grayscale image data
     - object - contour of target object 
     - padding_x - padding in the x direction
     - padding_y - padding in the y direction
@@ -27,7 +27,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Resize image
-crop_img=pcv.auto_crop(img, id_objects[0],20,20,'black')
+crop_img=pcv.auto_crop(rgb_img, id_objects[0], 20, 20,'black')
 ```
 
 **Debug Auto Crop Images**

@@ -7,7 +7,7 @@ Convert image from RGB colorspace to LAB colorspace and split the channels.
 **returns** split image (l, a, or b channel)
 
 - **Parameters:**
-    - img - RGB image data
+    - rgb_img - RGB image data
     - channel - Split 'l' (lightness), 'a' (green-magenta), or 'b' (blue-yellow) channel
    
 - **Context:**
@@ -26,7 +26,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # image converted from RGB to LAB, channels are then split. Lightness ('l') channel is outputed.
-l_channel=pcv.rgb2gray_lab(img, 'l')
+l_channel=pcv.rgb2gray_lab(rgb_img, 'l')
 ```
 
 **Lightness channel image**
@@ -40,7 +40,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # image converted from RGB to LAB, channels are then split. Green-Magenta ('a') channel is outputed.
-a_channel= pcv.rgb2gray_lab(img, 'a')
+a_channel= pcv.rgb2gray_lab(rgb_img, 'a')
 ```
 
 **Green-Magenta channel image**
@@ -54,7 +54,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # image converted from RGB to Lab, channels are then split. Blue-Yellow ('b') channel is outputed.
-b_channel=pcv.rgb2gray_lab(img, 'b')
+b_channel=pcv.rgb2gray_lab(rgb_img, 'b')
 ```
 
 **Blue-Yellow channel image**

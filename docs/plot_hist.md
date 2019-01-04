@@ -7,8 +7,8 @@ This is a plotting method used to examine the distribution of signal within an i
 **returns** bins,hist, hist plot
 
 - **Parameters:**
-    - img = the original image for analysis.
-    - name = the name of the output plot
+    - img = RGB or grayscale image data, the original image for analysis.
+    - name = the name of the output plot (default: name=False)
 - **Context:**
     - Examine the distribution of the signal, this help you select a value for binary thresholding.
 - **Example use:**

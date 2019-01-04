@@ -8,8 +8,8 @@ Combine objects together for downstream analysis, usually done after object filt
 
 - **Parameters:**
     - img - RGB or grayscale image data for plotting
-    - contours- Contour list
-    - Contour hierarchy NumPy array
+    - contours - Contour list
+    - hierarchy - Contour hierarchy NumPy array
    
 - **Context:**
     - This function combines objects together. This is important for downstream analysis of shape characteristics, if plant objects are not combined then one plant can appear to be many different objects.

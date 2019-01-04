@@ -7,7 +7,7 @@ Extract color data of objects and produce pseudocolored images, can extract data
 **returns** color channel histogram headers, color channel histogram data, analysis images  
 
 - **Parameters:**  
-    - img - RGB image data
+    - rgb_img - RGB image data
     - mask - binary mask of selected contours
     - bins - number of color bins (0-256), if you would like to bin data, you would alter this number
     - hist_plot_type - 'None', 'all', 'rgb','lab' or 'hsv', this is the data to be printed to an SVG histogram file, however all (every channel) data is still stored to the database.

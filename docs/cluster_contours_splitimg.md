@@ -35,7 +35,7 @@ pcv.params.debug = "print"
 
 # Cluster Contours and Split into Separate Images 
 out = './examples/'
-output_path = pcv.cluster_contour_splitimg(img1, clusters_i, contours, hierarchy, out, file, filenames=None)
+output_path = pcv.cluster_contour_splitimg(rgb_img, clusters_i, contours, hierarchy, out, file, filenames=None)
 
 ```
 

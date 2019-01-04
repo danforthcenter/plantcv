@@ -61,10 +61,10 @@ Automatically detects a color card's location and size. Useful in pipelines wher
 
 - **Parameters**
     - rgb_img       = Input RGB image data containing a color card.
-    - threshold     = Optional threshold method, either 'normal', 'otsu', or 'adaptgauss'.
-    - threshvalue   = Optional thresholding value.
-    - blurry        = Optional boolean, if True then image sharpening is applied.
-    - background    = Optional type of image background, either 'dark' or 'light'.
+    - threshold     = Optional threshold method, either 'normal', 'otsu', or 'adaptgauss'. (default 'adaptgauss')
+    - threshvalue   = Optional thresholding value. (default threshvalue=125)
+    - blurry        = Optional boolean, if True then image sharpening is applied. (default blurry=False)
+    - background    = Optional type of image background, either 'dark' or 'light'. (default background='dark')
 - **Returns**
     - df            = Dataframe of all color card chips found
     - start_coord   = Two-element tuple of the first chip mask starting x and y coordinate. Useful in `create_color_card_mask` function.
@@ -351,5 +351,5 @@ from plotnine import *
 import numpy as np
 import pandas as pd
 
-quick_color_check(source_matrix = s_matrix, target_matrix = t_matrix, num_chips = 24)
+pcv.transform.quick_color_check(source_matrix = s_matrix, target_matrix = t_matrix, num_chips = 24)
 ```

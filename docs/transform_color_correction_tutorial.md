@@ -341,7 +341,7 @@ from plotnine import *
 import numpy as np
 import pandas as pd
 
-quick_color_check(source_matrix = s_matrix, target_matrix = t_matrix, num_chips = 24)
+pcv.transform.quick_color_check(source_matrix = s_matrix, target_matrix = t_matrix, num_chips = 24)
 ```
 
 ![Screenshot](img/tutorial_images/colorchecker_mask/ggplot_quick_check_zoom.jpg)
