@@ -1,55 +1,54 @@
+dist: xenial
 language: python
-# Switch to container-based builds
-sudo: false
-# Which versions of Python to test
+#sudo: false
 python:
-  - "2.7"
-  - "3.6"
-  - "3.7"
-# Allow Python3.7 tests to fail for now
-matrix:
-  allow_failures:
-    - python: "3.7"
-# Do not have the virtualenv use system-wide site packages
+- '2.7'
+- '3.6'
+- '3.7'
+#matrix:
+#  allow_failures:
+#  - python: '3.7'
 virtualenv:
   system_site_packages: false
-# configure a headless display to test plot generation
 before_script:
-  - "export DISPLAY=:0"
-  - "sh -e /etc/init.d/xvfb start"
-  - sleep 3 # give xvfb some time to start
-# Install PlantCV
+- export DISPLAY=:0
+- sh -e /etc/init.d/xvfb start
+- sleep 3
 install:
-  - |
-    if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
-      wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
-    else
-      wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-    fi
-  - bash miniconda.sh -b -p $HOME/miniconda
-  - export PATH="$HOME/miniconda/bin:$PATH"
-  - hash -r
-  - conda config --set always_yes yes --set changeps1 no
-  - conda info -a
-  # These are the packages we need
-  - |
-    if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
-    # matplotlib is causing issues with ths configuration on Travis-CI, overriding normal defaults
-      conda create -q -c conda-forge -n test-environment --file requirements.txt python=$TRAVIS_PYTHON_VERSION coveralls;
-    else
-      conda create -q -c conda-forge -n test-environment --file requirements.txt python=$TRAVIS_PYTHON_VERSION coveralls;
-    fi
-  - source activate test-environment
-  - pip install opencv-python
-  - python setup.py install
-# command to run tests
+- |
+  if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+    wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
+  else
+    wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+  fi
+- bash miniconda.sh -b -p $HOME/miniconda
+- export PATH="$HOME/miniconda/bin:$PATH"
+- hash -r
+- conda config --set always_yes yes --set changeps1 no
+- conda info -a
+- |
+  if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+    conda env create -q -n test-environment -f ./environments/environment27.yml;
+  elif [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]]; then
+    conda env create -q -n test-environment -f ./environments/environment36.yml;
+  elif [[ "$TRAVIS_PYTHON_VERSION" == "3.7" ]]; then
+    conda env create -q -n test-environment -f ./environments/environment37.yml;
+  fi
+- source activate test-environment
+- python setup.py install
 script:
-  - source activate test-environment
-  - coverage run --source=plantcv setup.py test
-  # - py.test -v tests/tests.py
-after_success:
-  coveralls
-# Which branches to run build tests on
+- source activate test-environment
+- coverage run --source=plantcv setup.py test
+after_success: coveralls
 branches:
   only:
-    - master
+  - master
+deploy:
+  provider: pypi
+  user: danforthcenter
+  password:
+    secure: hb7WTjIFUAFl0wjiNODCKAtHPysyigk7n8ltrDe1YLMt0tP4vUmU2ds3qyHWd+y5CZXowbZUq+k8jXNeUGxwkLQcAjzZXMe128ZNp6Raka+Zlc3bm8+s68jMpsYoLYMyTrh6YcF+OeQe8hmNloUOcFhzl2wPrx8mDeqKAjfspkv7gzBkLszQuK//8FebnmP8bbHrObxzqHYpi9aQj2THOye9ihldUhubx8BisZWApXa/KlCuBn+r/uTsXrsyGJvY07ozxkidAyEBY5xFhWI1lDCyljjlQCg72Ta+HaBQwxOOgqQ9QfwqtRS9KYygrZLDvGWHpTjF/LScq7cy/dE0pBxlH0HCMSRpFlrU0WTOMYyCPUyQF+LEy43ZYRIHayHeITklZDWrH1w6fBhyeHGhCVuJCY10Rw0UfO+67IL8o7uQ18UBbfmHoI47ynVT/R27mUDiZ4YAp5RNP7IF5qDoOSbSNouImzo0vvqCeCltb3vH/OZ/laHcxbqSsGtkxpPuWcuvIL7ud2sFatX7opKN0d2UusLWAbA1f6b1ipv0pMRE/c0bwCFzxi3b5k97ylKQMxuLHpLYooRzkSPx5dZK+1kRIznP42gsE8hjHbygGSZ2+STd1lBQTNZhzz5uNruUkjLLbrV/v+gv6J9oIc8EUbQogWJbJu7GMi40KY/5ZEQ=
+  on:
+    tags: true
+  distributions: "sdist bdist_wheel"
+  skip_existing: true
