@@ -13,26 +13,27 @@ PlantCV has been tested on the following systems:
 
 #### Required dependencies
 
-- Python (tested with versions 2.7 and 3.6)
+- Python (tested with versions 2.7, 3.6, and 3.7)
     - argparse
-    - cv2 (a.k.a. OpenCV; some functions require 3.0+, we recommend 3.3+)
+    - cv2 (a.k.a. OpenCV; some functions require 3.0+, we recommend 3.3+. We install it via the PyPI package opencv-python)
     - matplotlib (requires at least 1.5, works with 2+)
     - numpy (requires at least 1.11)
     - pandas
-    - pytest
     - python-dateutil
     - scikit-image
     - scipy
+    - plotnine
     - setuptools
+    - pytest (only used for running tests)
 
 #### Optional but recommended
 
-- Anaconda
-- Git
+- conda (Anaconda or Miniconda)
+- git
 - Jupyter
 - SQLite
 
-### Anaconda-based installation procedure
+### Conda-based installation procedure
 
 **Platforms**: Linux, macOS, Windows
 
@@ -40,21 +41,21 @@ There are a variety of options for installing PlantCV depending on your use case
 administration you can install PlantCV and the dependencies using system package management tools and administrator
 privileges (feel free to [ask](https://github.com/danforthcenter/plantcv/issues) if you get stuck).
 
-For most users we recommend installation using [Anaconda](https://www.anaconda.com/download/), a cross-platform
-package management system. Here is an overview of the process:
+For most users we recommend installation using `conda`, a cross-platform package management system. Both the 
+[Anaconda](https://www.anaconda.com/download/) or [Miniconda](https://conda.io/miniconda.html) implementations of 
+`conda` can be used. Here is an overview of the process:
 
-1. Download and install the version of [Anaconda](https://www.anaconda.com/download/) that is appropriate for your 
-system. Unless you have other reasons to, we recommend using Python 3. PlantCV is compatible with Python 2.7 but 
-eventually support for 2.7 will end.
+1. Download and install the version of `conda` that is appropriate for your system. Unless you have other reasons to, 
+we recommend using Python 3. PlantCV is compatible with Python 2.7 but eventually support for 2.7 will end.
 2. Clone or download PlantCV from GitHub. Feel free to use [GitHub Desktop](https://desktop.github.com/) or 
 command-line `git`. Git will allow you to pull updates from GitHub, but if you prefer not to use git you can download
 a zip file of the package from [GitHub](https://github.com/danforthcenter/plantcv).
 3. Create a Python environment for PlantCV that includes the Python dependencies.
 4. Install OpenCV and PlantCV.
 
-Once you have Anaconda and git/GitHub Desktop installed, clone the PlantCV repository, open a command-line terminal 
+Once you have `conda` and `git` or GitHub Desktop installed, clone the PlantCV repository, open a command-line terminal 
 application (on Windows there are other options but for this tutorial we will use the Anaconda Prompt application). In
-the examples below we use Python 3 and OpenCV 3, feel free to substitute your preferred versions.
+the examples below we use Python 3.7, feel free to use our Python 2.7 or 3.6 environment instead, or create your own.
 
 ```bash
 # Clone PlantCV if you did not use the GitHub Desktop application
@@ -63,8 +64,8 @@ git clone https://github.com/danforthcenter/plantcv.git
 # Enter the PlantCV directory (if you cloned with GitHub Desktop your path may be different than below)
 cd plantcv
 
-# Create an Anaconda environment named "plantcv" and automatically install the dependencies
-conda create --file requirements.txt -n plantcv -c conda-forge python=3.6 nb_conda
+# Create a conda environment named "plantcv" and automatically install the dependencies
+conda env create -n plantcv -f ./environments/environment37.yml
 
 # Activate the plantcv environment (you will have to do this each time you start a new session)
 source activate plantcv
@@ -72,12 +73,13 @@ source activate plantcv
 # Install OpenCV (not through conda)
 pip install opencv-python
 
+# Test PlantCV (optional)
+python setup.py test
+
 # Install PlantCV
 python setup.py install
-
-# Test PlantCV Installation
-python setup.py test
 ```
+
 If you have a broken environment, you can remove it and repeat the above steps.
 
 ```bash
@@ -85,8 +87,8 @@ If you have a broken environment, you can remove it and repeat the above steps.
 conda env remove -n plantcv
 ```
 
-sqlite3 comes standard on macOS and many Linux distributions. On Windows Anaconda can be used to install the 
-optional sqlite3 package.
+`sqlite3` comes standard on macOS and many Linux distributions. On Windows `conda` can be used to install the 
+optional `sqlite3` package.
 
 ```bash
 conda install -c blaze sqlite3
