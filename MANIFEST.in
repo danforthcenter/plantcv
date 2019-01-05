@@ -1,2 +1,3 @@
 include versioneer.py
 include plantcv/plantcv/_version.py
+include requirements.txt
