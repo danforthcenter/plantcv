@@ -117,7 +117,8 @@ bin_img = pcv.threshold.binary(gray_img, 100, 255)
 For more information, see the [Params](params.md) documentation.
 
 Below is an overview of all updates that are required to convert a pre-v3.0dev2
-function call to a post-v3.0dev2 function call. See the individual function help
+function call to a post-v3.0dev2 function call and all updates following the v3.0 release.
+See the individual function help
 pages for more details on the input and output variable types.
 
 #### plantcv.acute
@@ -302,8 +303,9 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, img_mblur = **plantcv.median_blur**(*img, ksize, device, debug=None*)
 * post v3.0dev2: img_mblur = **plantcv.median_blur**(*gray_img, ksize*)
+* post v3.0: img_blur = **plantcv.median_blur**(*gray_img, ksize*) OR img_blur = **plantcv.median_blur**(*gray_img, (ksize1, ksize2)*)
 
-### plantcv.naive_bayes_classifier
+#### plantcv.naive_bayes_classifier
 
 * pre v3.0dev2: device, masks = **plantcv.naive_bayes_classifier(*img, pdf_file, device, debug=None*)**
 * post v3.0dev2: masks = **plantcv.naive_bayes_classifier(*rgb_img, pdf_file*)**
@@ -460,10 +462,20 @@ pages for more details on the input and output variable types.
 * pre v3.0dev1: NA
 * post v3.0dev2: determinant, transformation_matrix = **plantcv.transform.calc_transformation_matrix**(*matrix_m, matrix_b*)
 
+#### plantcv.transform.create_color_card_mask
+
+* pre v3.0: NA
+* post v3.0: mask = **pcv.transform.create_color_card_mask**(*rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=[]*)
+
 #### plantcv.transform.correct_color
 
 * pre v3.0dev1: NA
 * post v3.0dev2: target_matrix, source_matrix, transformation_matrix, corrected_img = **plantcv.transform.correct_color**(*target_img, target_mask, source_img, source_mask, output_directory*)
+
+#### plantcv.transform.find_color_card
+
+* pre v3.0: NA
+* post v3.0: df, start_coord, spacing = **plantcv.transofrm.find_color_card**(*rgb_img, threshold='adaptgauss', threshvalue=125, blurry=False, background='dark'*)
 
 #### plantcv.transform.get_color_matrix
 
@@ -484,6 +496,11 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev1: NA
 * post v3.0dev2: **plantcv.transform.save_matrix**(*matrix, filename*)
+
+#### plantcv.transform.quick_color_check
+
+* pre v3.0: NA
+* post v3.0: **plantcv.transform.quick_color_check**(*target_matrix, source_matrix, num_chips*)
 
 #### plantcv.triangle_auto_threshold
 

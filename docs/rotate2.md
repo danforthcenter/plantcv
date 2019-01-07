@@ -2,7 +2,7 @@
 
 Rotates image without changing the dimensions of the image.
 
-**rotate**(*img, rotation_deg, crop, device,debug=None*)
+**rotate**(*img, rotation_deg, crop*)
 
 **returns** device, image after rotation
 
@@ -10,8 +10,6 @@ Rotates image without changing the dimensions of the image.
     - img - RGB or grayscale image data
     - rotation_deg - rotation angle in degrees, should be an integer, can be a negative number, positive values move counter clockwise.
     - crop - if crop is set to True, image will be cropped to original image dimensions, if set to false, the image size will be adjusted to accomodate new image dimensions.
-    - device - Counter for image processing steps
-    - debug- None, "print", or "plot". Print = save to file, Plot = print to screen. Default = None
 - **Context:**
     - Rotates image, sometimes it is necessary to rotate an image, especially when clustering objects.
 - **Example use:**
@@ -24,8 +22,11 @@ Rotates image without changing the dimensions of the image.
 ```python
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
+
 # Rotate image
-device, rotate_img = pcv.rotate(img, 10, True, device, debug='print')
+device, rotate_img = pcv.rotate(img, 10, True)
 ```
 
 **Image after rotating 10 degrees**
@@ -35,8 +36,11 @@ device, rotate_img = pcv.rotate(img, 10, True, device, debug='print')
 ```python
 from plantcv import plantcv as pcv
 
+# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "print"
+
 # Rotate image
-device, rotate_img = pcv.rotate(img, -10, device, False, debug='print')
+device, rotate_img = pcv.rotate(img, -10, device, False)
 ```
 
 **Image after rotating -10 degrees**

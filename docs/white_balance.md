@@ -7,7 +7,7 @@ Corrects the exposure of an image. A color standard can be specified.
 **returns** corrected_img
 
 - **Parameters:**
-    - img - image on which to perform the correction
+    - img - RGB (or grayscale, though not recommended) image data on which to perform the correction
     - mode - either 'hist' or 'max', if 'hist' method is used a histogram for the whole image or the specified ROI is calculated, and the 
     bin with the most pixels is used as a reference point to shift image values. If 'max' is used as a method, then the pixel with the maximum
     value in the whole image or the specified ROI is used as a reference point to shift image values.
