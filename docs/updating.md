@@ -138,11 +138,6 @@ pages for more details on the input and output variable types.
     * bin_img = **plantcv.threshold.gaussian**(*gray_img, max_value, object_type="light"*)
     * bin_img = **plantcv.threshold.mean**(*gray_img, max_value, object_type="light"*)
 
-#### plantcv.analyze_nir_intensity
-
-* pre v3.0dev2: device, hist_header, hist_data, analysis_img = **plantcv.analyze_NIR_intensity**(*img, rgbimg, mask, bins, device, histplot=False, debug=None, filename=False*)
-* post v3.0dev2: hist_header, hist_data, analysis_img = **plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False, filename=False*)
-
 #### plantcv.analyze_bound
 
 * pre v3.0dev2: device, bound_header, bound_data, analysis_images = **plantcv.analyze_bound**(*img, imgname, obj, mask, line_position, device, debug=None, filename=False*)
@@ -164,15 +159,20 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, hist_header, hist_data, analysis_images = **plantcv.analyze_color**(*img, imgname, mask, bins, device, debug=None, hist_plot_type=None, pseudo_channel='v', pseudo_bkg='img', resolution=300, filename=False*)
 * post v3.0dev2: hist_header, hist_data, analysis_images = **plantcv.analyze_color**(*rgb_img, mask, bins, hist_plot_type=None, pseudo_channel='v', pseudo_bkg='img', filename=False*)
 
-#### plantcv.analyze_object
-
-* pre v3.0dev2: device, shape_header, shape_data, analysis_images = **plantcv.analyze_object**(*img, imgname, obj, mask, device, debug=None, filename=False*)
-* post v3.0dev2: shape_header, shape_data, analysis_images = **plantcv.analyze_object**(*img, obj, mask, filename=False*)
-
 #### plantcv.apply_mask
 
 * pre v3.0dev2: device, masked_img = **plantcv.apply_mask**(*img, mask, mask_color, device, debug=None*)
 * post v3.0dev2: masked_img = **plantcv.apply_mask**(*rgb_img, mask, mask_color*)
+
+#### plantcv.analyze_nir_intensity
+
+* pre v3.0dev2: device, hist_header, hist_data, analysis_img = **plantcv.analyze_NIR_intensity**(*img, rgbimg, mask, bins, device, histplot=False, debug=None, filename=False*)
+* post v3.0dev2: hist_header, hist_data, analysis_img = **plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False, filename=False*)
+
+#### plantcv.analyze_object
+
+* pre v3.0dev2: device, shape_header, shape_data, analysis_images = **plantcv.analyze_object**(*img, imgname, obj, mask, device, debug=None, filename=False*)
+* post v3.0dev2: shape_header, shape_data, analysis_images = **plantcv.analyze_object**(*img, obj, mask, filename=False*)
 
 #### plantcv.auto_crop
 
@@ -199,6 +199,11 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, grouped_contour_indexes, contours, roi_obj_hierarchy = **plantcv.cluster_contours**(*device, img, roi_objects,roi_obj_hierarchy, nrow=1, ncol=1, debug=None*)
 * post v3.0dev2: grouped_contour_indexes, contours, roi_obj_hierarchy = **plantcv.cluster_contours**(*img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1*)
+
+#### plantcv.color_palette
+
+* pre v3.0: NA
+* post v3.0: colors = **plantcv.color_palette**(*num*)
 
 #### plantcv.crop_position_mask
 
@@ -269,6 +274,11 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, added_img = **plantcv.image_add**(*img1, img2, device, debug=None*)
 * post v3.0dev2: added_img = **plantcv.image_add**(*gray_img1, gray_img2*)
 
+#### plantcv.image_subtract
+
+pre v3.0: NA
+post v3.0: new_img = **plantcv.image_subtract**(*gray_img1, gray_img2*)
+
 #### plantcv.invert
 
 * pre v3.0dev2: device, img_inv = **plantcv.invert**(*img, device, debug=None*)
@@ -335,6 +345,16 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: **plantcv.plot_image**(*img, cmap=None*)
 * post v3.0dev2: **plantcv.plot_image**(*img, cmap=None*)
+
+#### plantcv.print_image
+
+* pre v3.0dev2: **plantcv.print_image**(*img, filename*)
+* post v3.0dev2: **plantcv.print_image**(*img, filename*)
+
+#### plantcv.readbayer
+
+* pre v3.0: NA
+* post v3.0: img, path, img_name = **plantcv.readbayer**(*filename, bayerpattern = 'BG', alg = 'default'*)
 
 #### plantcv.readimage
 
