@@ -11,17 +11,18 @@ This is a filtering method used to identify and highlight gradient edges/feature
 
 - **Parameters:**
     gray_img - Grayscale image data
-    dx - derivative of x to analyze (1-3)
-    dy - derivative of x to analyze (1-3)
+    dx - derivative of x to analyze (0 or 1)
+    dy - derivative of x to analyze (0 or 1)
     scale - scaling factor applied (multiplied) to computed Scharr values (scale = 1 is unscaled)
 - **Context:**
     - This is a filtering method used to identify and highlight gradient edges/features using the 1st derivative.
        Typically used to identify gradients along the x-axis (dx = 1, dy = 0) and y-axis (dx = 0, dy = 1) independently.
        Performance is quite similar to Sobel filter.
+    - Derivatives must sum to 1 (`dx+dy == 1`) in order to run
 
 **Original grayscale image**
 
-![Screenshot](img/documentation_images/sobel_filter/original_image.jpg)
+![Screenshot](img/documentation_images/scharr_filter/original_image.jpg)
 
 ```python
 from plantcv import plantcv as pcv
@@ -30,5 +31,14 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Apply to a grayscale image
-sr_img = pcv.scharr_filter(gray_img, 1, 2, 1)
+sr_img = pcv.scharr_filter(gray_img, 1, 0, 1)
+sr_img = pcv.scharr_filter(gray_img, 0, 1, 1)
 ```
+
+**Scharr filtered (x-axis)**
+
+![Screenshot](img/documentation_images/scharr_filter/scharr-x.jpg)
+
+**Scharr filtered (y-axis)**
+
+![Screenshot](img/documentation_images/scharr_filter/scharr-y.jpg)

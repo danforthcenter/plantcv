@@ -482,15 +482,15 @@ post v3.0: new_img = **plantcv.image_subtract**(*gray_img1, gray_img2*)
 * pre v3.0dev1: NA
 * post v3.0dev2: determinant, transformation_matrix = **plantcv.transform.calc_transformation_matrix**(*matrix_m, matrix_b*)
 
-#### plantcv.transform.create_color_card_mask
-
-* pre v3.0: NA
-* post v3.0: mask = **pcv.transform.create_color_card_mask**(*rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=[]*)
-
 #### plantcv.transform.correct_color
 
 * pre v3.0dev1: NA
 * post v3.0dev2: target_matrix, source_matrix, transformation_matrix, corrected_img = **plantcv.transform.correct_color**(*target_img, target_mask, source_img, source_mask, output_directory*)
+
+#### plantcv.transform.create_color_card_mask
+
+* pre v3.0: NA
+* post v3.0: mask = **pcv.transform.create_color_card_mask**(*rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=[]*)
 
 #### plantcv.transform.find_color_card
 
@@ -512,15 +512,15 @@ post v3.0: new_img = **plantcv.image_subtract**(*gray_img1, gray_img2*)
 * pre v3.0dev1: NA
 * post v3.0dev2: matrix = **plantcv.transform.load_matrix**(*filename*)
 
-#### plantcv.transform.save_matrix
-
-* pre v3.0dev1: NA
-* post v3.0dev2: **plantcv.transform.save_matrix**(*matrix, filename*)
-
 #### plantcv.transform.quick_color_check
 
 * pre v3.0: NA
 * post v3.0: **plantcv.transform.quick_color_check**(*target_matrix, source_matrix, num_chips*)
+
+#### plantcv.transform.save_matrix
+
+* pre v3.0dev1: NA
+* post v3.0dev2: **plantcv.transform.save_matrix**(*matrix, filename*)
 
 #### plantcv.triangle_auto_threshold
 

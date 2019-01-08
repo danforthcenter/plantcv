@@ -2,9 +2,9 @@
 
 PlantCV is composed of modular functions that can be arranged (or rearranged) and adjusted quickly and easily.
 Pipelines do not need to be linear (and often are not). Please see pipeline example below for more details.
-Every function has a optional debug mode that prints out the resulting image. The debug has two modes, either 'plot' or print' if set to
-'print' then the function prints the image out, if using a jupyter notebook, you would set debug to plot to have
-the images plot images to the screen. Debug mode allows users to visualize and optimize each step on individual test images and small test sets before pipelines are deployed over whole data-sets.
+Every function has a optional debug mode that prints out the resulting image. The debug has two modes, either 'plot' or 'print' if set to
+'print' then the function prints the image out, if using a Jupyter notebook, you would set debug to plot to have
+the images plot images to the screen. Debug mode allows users to visualize and optimize each step on individual test images and small test sets before pipelines are deployed over whole datasets.
 
 **Workflow**
 
@@ -19,18 +19,18 @@ To run a VIS pipeline over a single VIS image there are two required inputs:
 
 1.  **Image:** Images can be processed regardless of what type of VIS camera was used (High-throughput platform, digital camera, cell phone camera).
 Image processing will work with adjustments if images are well lit and free of background that is similar in color to plant material.  
-2.  **Output directory:** If debug mode is on output images from each step are produced, otherwise ~4 final output images are produced.
+2.  **Output directory:** If debug mode is set to 'print' output images from each step are produced, otherwise ~4 final output images are produced.
 
 Optional inputs:  
 
-*  **Result File** file to print results to
-*  **Write Image Flag** flag to write out images, otherwise no result images are printed (to save time).
-*  **Params:** parameter settings for debug and output directory for debug files
+*  **Result File:** File to print results to
+*  **Write Image Flag:** Flag to write out images, otherwise no result images are printed (to save time).
+*  **Params:** Parameter settings for debug and output directory for debug files
 *  **Region of Interest:** The user can input their own binary region of interest or image mask (make sure it is the same size as your image or you will have problems).
 
 Sample command to run a pipeline on a single image:  
 
-*  Always test pipelines (preferably with -D flag set to plot or print) before running over a full image set
+*  Always test pipelines (preferably with -D flag set to 'plot' or 'print') before running over a full image set
 
 ```
 ./pipelinename.py -i testimg.png -o ./output-images -r results.txt -w -D 'print'
@@ -63,7 +63,7 @@ def options():
 
 #### Start of the Main/Customizable portion of the pipeline.
 
-The image input by the user is read in. The device variable is just a counter so that each debug image is labeled in numerical order.
+The image input by the user is read in.
 
 ```python
 ### Main pipeline
@@ -71,8 +71,8 @@ def main():
     # Get options
     args = options()
     
-    pcv.params.debug=args.debug
-    pcv.params.debug_outdir=args.outdir
+    pcv.params.debug=args.debug #set debug mode
+    pcv.params.debug_outdir=args.outdir #set output directory
     
     # Read image
     img, path, filename = pcv.readimage(args.image)
@@ -82,33 +82,33 @@ def main():
 
 **Figure 1.** Original image.
 This particular image was captured by a digital camera, just to show that PlantCV works on images not captured on a 
-[high-throughput phenotyping system](http://www.danforthcenter.org/scientists-research/core-technologies/phenotyping) with idealized vis image capture conditions.
+[high-throughput phenotyping system](http://www.danforthcenter.org/scientists-research/core-technologies/phenotyping) with idealized VIS image capture conditions.
 
 ![Screenshot](img/tutorial_images/vis/original_image.jpg)
   
 In some pipelines (especially ones captured with a high-throughput phenotyping systems, where background is predictable) we first threshold out background.
-In this particular pipeline we do some premasking of the background. The goal is to remove as much background as possible without thresholding-out the plant.
+In this particular pipeline we do some pre-masking of the background. The goal is to remove as much background as possible without losing any information from the plant.
 In order to perform a binary threshold on an image you need to select one of the color channels H,S,V,L,A,B,R,G,B.
-Here we convert the RGB image to HSV colorspace then extract the 's' or saturation channel (see more info [here](rgb2hsv.md)), any channel can be selected based on user need.
+Here we convert the RGB image to HSV color space then extract the 's' or saturation channel (see more info [here](rgb2hsv.md)), any channel can be selected based on user need.
 If some of the plant is missed or not visible then thresholded channels may be combined (a later step).
 
 ```python
         
-    # Convert RGB to HSV and extract the Saturation channel
+    # Convert RGB to HSV and extract the saturation channel
     s = pcv.rgb2gray_hsv(img, 's')
 ```
 
-**Figure 2.** Saturation channel from original RGB image converted to HSV colorspace.
+**Figure 2.** Saturation channel from original RGB image converted to HSV color space.
 
 ![Screenshot](img/tutorial_images/vis/01_hsv_saturation.jpg)
 
 Next, the saturation channel is thresholded.
 The threshold can be on either light or dark objects in the image (see more info on threshold function [here](binary_threshold.md)).
 
-Tip: This step is often one that needs to be adjusted depending on the lighting and configurations of your camera system
+Tip: This step is often one that needs to be adjusted depending on the lighting and configurations of your camera system.
 
 ```python
-    # Threshold the Saturation image
+    # Threshold the saturation image
     s_thresh = pcv.threshold.binary(s, 85, 255, 'light')
 ```
 
@@ -116,13 +116,14 @@ Tip: This step is often one that needs to be adjusted depending on the lighting 
 
 ![Screenshot](img/tutorial_images/vis/02_binary_threshold85.jpg)
 
-Again depending on the lighting, it will be possible to remove more/less background.
+Again, depending on the lighting it will be possible to remove more/less background.
 A median blur (more info [here](median_blur.md)) can be used to remove noise.
 
-Tip: Fill and median blur type steps should be used as sparingly as possible. Depending on the plant type (esp. grasses with thin leaves that often twist) you can lose plant material with a median blur that is too harsh.
+Tip: Fill and median blur type steps should be used as sparingly as possible.
+Depending on the plant type (esp. grasses with thin leaves that often twist) you can lose plant material with a blur that is too harsh.
 
 ```python
-    # Median Filter
+    # Median Blur
     s_mblur = pcv.median_blur(s_thresh, 5)
     s_cnt = pcv.median_blur(s_thresh, 5)
 ```
@@ -132,7 +133,7 @@ Tip: Fill and median blur type steps should be used as sparingly as possible. De
 ![Screenshot](img/tutorial_images/vis/03_median_blur5.jpg)
 
 Here is where the pipeline branches.
-The original image is used again to select the blue-yellow channel from LAB colorspace (more info on the function [here](rgb2lab.md)).
+The original image is used again to select the blue-yellow channel from LAB color space (more info on the function [here](rgb2lab.md)).
 This image is again thresholded and there is an optional fill step that wasn't needed in this pipeline.
 
 ```python
@@ -147,13 +148,13 @@ This image is again thresholded and there is an optional fill step that wasn't n
     b_fill = pcv.fill(b_thresh, 10)
 ```
 
-**Figure 5.** (Top) Blue-yellow channel from LAB colorspace from original image (Top). (Bottom) Thresholded blue-yellow channel image.
+**Figure 5.** (Top) Blue-yellow channel from LAB color space from original image (Top). Thresholded blue-yellow channel image (Bottom).
 
 ![Screenshot](img/tutorial_images/vis/05_lab_blue-yellow.jpg)
 
 ![Screenshot](img/tutorial_images/vis/06_binary_threshold160.jpg)
 
-Join the binary images from Figure 4 and Figure 5 with the Logical Or function (for more info on the Logical Or function see [here](logical_or.md))
+Join the binary images from Figure 4 and Figure 5 with the logical or function (more info on the logical or function see [here](logical_or.md)).
 
 ```python
     # Join the thresholded saturation and blue-yellow images
@@ -164,11 +165,11 @@ Join the binary images from Figure 4 and Figure 5 with the Logical Or function (
 
 ![Screenshot](img/tutorial_images/vis/08_or_joined.jpg)
 
-Next, apply the binary image (Figure 6) as an image mask over the original image (For more info on mask function see [here](apply_mask.md).
-The point of this mask is really to exclude as much background with simple thresholding without leaving out plant material.
+Next, apply the binary image (Figure 6) as an image mask over the original image (more info on mask function see [here](apply_mask.md)).
+The purpose of this mask is to exclude as much background with simple thresholding without leaving out plant material.
 
 ```python
-    # Apply Mask (for vis images, mask_color=white)
+    # Apply Mask (for VIS images, mask_color=white)
     masked = pcv.apply_mask(img, bs, 'white')
 ```
 
@@ -178,8 +179,8 @@ The point of this mask is really to exclude as much background with simple thres
 
 Now we'll focus on capturing the plant in the masked image from Figure 7.
 The masked green-magenta and blue-yellow channels are extracted.
-Then the two channels are thresholded to capture different portions of the plant and the three images are joined together.
-The small objects are filled (for more info on the fill function see [here](fill.md)).
+Then the two channels are thresholded to capture different portions of the plant, and the three images are joined together.
+The small objects are filled (more info on the fill function see [here](fill.md)).
 The resulting binary image is used to mask the masked image from Figure 7.
 
 ```python
@@ -199,12 +200,12 @@ The resulting binary image is used to mask the masked image from Figure 7.
     # Fill small objects
     ab_fill = pcv.fill(ab, 200)
     
-    # Apply mask (for vis images, mask_color=white)
+    # Apply mask (for VIS images, mask_color=white)
     masked2 = pcv.apply_mask(masked, ab_fill, 'white')
 ```
 
 The sample image used had very green leaves, but often (especially with stress treatments) 
-there are yellowing or redish leaves or regions of necrosis. The different thresholded 
+there are yellowing leaves, redish leaves, or regions of necrosis. The different thresholding
 channels capture different regions of the plant, then are combined into a mask for the image 
 that was previously masked (Figure 7).
 
@@ -236,8 +237,8 @@ that was previously masked (Figure 7).
 
 ![Screenshot](img/tutorial_images/vis/19_wmasked.jpg)
 
-Now we need to identify the objects (called contours in OpenCV) within the image. 
-For more information on this function see [here](find_objects.md)
+Now we need to identify the objects (called contours in OpenCV) within the image
+(more information on this function see [here](find_objects.md)).
 
 ```python
     # Identify objects
@@ -250,7 +251,7 @@ Even the spaces within an object are colored, but will have different hierarchy 
 ![Screenshot](img/tutorial_images/vis/20_id_objects.jpg)
 
 Next the region of interest is defined (this can be made on the fly, for more information 
-see [here](roi_rectangle.md))
+see [here](roi_rectangle.md)).
 
 ```python
     # Define ROI
@@ -261,9 +262,9 @@ see [here](roi_rectangle.md))
 
 ![Screenshot](img/tutorial_images/vis/21_roi.jpg)
 
-Once the region of interest is defined you can decide to keep all of the contained 
-and overlapping with that region of interest or cut the objects to the shape of the region of interest.
-For more information see [here](roi_objects.md).
+Once the region of interest is defined you can decide to keep everything overlapping with the region of interest
+or cut the objects to the shape of the region of interest
+(more information see [here](roi_objects.md)).
 
 ```python
     # Decide which objects to keep
@@ -274,11 +275,11 @@ For more information see [here](roi_objects.md).
 
 ![Screenshot](img/tutorial_images/vis/22_obj_on_img.jpg)
 
-The isolated objects now should all be plant material. There, can however, 
-be more than one object that makes up a plant, since sometimes leaves twist 
+The isolated objects now should all be plant material. There can
+be more than one object that makes up a plant since sometimes leaves twist
 making them appear in images as separate objects. Therefore, in order for
 shape analysis to perform properly the plant objects need to be combined into 
-one object using the Combine Objects function (for more info see [here](object_composition.md)).
+one object using the combine objects function (for more info see [here](object_composition.md)).
 
 ```python
     # Object combine kept objects
@@ -289,10 +290,10 @@ one object using the Combine Objects function (for more info see [here](object_c
 
 ![Screenshot](img/tutorial_images/vis/23_objcomp.jpg)
 
-The next step is to analyze the plant object for traits such as shape, or color.
-For more info see the Shape Function [here](analyze_shape.md),
-the Color Function [here](analyze_color.md),
-and the Boundary tool function [here](analyze_bound_horizontal.md).
+The next step is to analyze the plant object for traits (such as shape or color).
+For more info see the shape function [here](analyze_shape.md),
+the color function [here](analyze_color.md),
+and the boundary tool function [here](analyze_bound_horizontal.md).
 
 ```python
 ############### Analysis ################
@@ -350,7 +351,7 @@ if __name__ == '__main__':
 
 ### Additional examples
 
-To demonstrate the importance of camera settings on pipeline construction, 
+To demonstrate the importance of camera settings on pipeline construction
 here are different species of plants captured with the same imaging setup 
 (digital camera) and processed with the same imaging pipeline as above (no settings changed).
 
