@@ -2,14 +2,14 @@
 
 PlantCV is composed of modular functions that can be arranged (or rearranged) and adjusted quickly and easily.
 Pipelines do not need to be linear (and often are not). Please see pipeline example below for more details.
-Every function has a optional debug mode that prints out the resulting image. The debug has two modes, either 'plot' or 'print' if set to
-'print' then the function prints the image out, if using a Jupyter notebook, you would set debug to plot to have
+Every function has a optional debug mode that prints out the resulting image. The debug has two modes, either 'plot' or 'print'.
+If set to 'print' then the function prints the image out, or if using a Jupyter notebook you could set debug to 'plot' to have
 the images plot images to the screen. Debug mode allows users to visualize and optimize each step on individual test images and small test sets before pipelines are deployed over whole datasets.
 
 **Workflow**
 
-1.  Optimize pipeline on individual image in debug mode.
-2.  Run pipeline on small test set (ideally that spans time and/or treatments).
+1.  Optimize pipeline on individual image with debug set to 'print' (or 'plot' if using a Jupyter notebook).
+2.  Run pipeline on small test set (that ideally spans time and/or treatments).
 3.  Re-optimize pipelines on 'problem images' after manual inspection of test set.
 4.  Deploy optimized pipeline over test set using parallelization script.
 
@@ -25,12 +25,12 @@ Optional inputs:
 
 *  **Result File:** File to print results to
 *  **Write Image Flag:** Flag to write out images, otherwise no result images are printed (to save time).
-*  **Params:** Parameter settings for debug and output directory for debug files
+*  **Debug Flag:** Prints an image at each step
 *  **Region of Interest:** The user can input their own binary region of interest or image mask (make sure it is the same size as your image or you will have problems).
 
 Sample command to run a pipeline on a single image:  
 
-*  Always test pipelines (preferably with -D flag set to 'plot' or 'print') before running over a full image set
+*  Always test pipelines (preferably with -D flag set to 'print') before running over a full image set
 
 ```
 ./pipelinename.py -i testimg.png -o ./output-images -r results.txt -w -D 'print'
@@ -148,7 +148,7 @@ This image is again thresholded and there is an optional fill step that wasn't n
     b_fill = pcv.fill(b_thresh, 10)
 ```
 
-**Figure 5.** (Top) Blue-yellow channel from LAB color space from original image (Top). Thresholded blue-yellow channel image (Bottom).
+**Figure 5.** (Top) Blue-yellow channel from LAB color space from original image. (Bottom) Thresholded blue-yellow channel image.
 
 ![Screenshot](img/tutorial_images/vis/05_lab_blue-yellow.jpg)
 
