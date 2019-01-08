@@ -2,7 +2,7 @@
 
 PlantCV is composed of modular functions that can be arranged (or rearranged) and adjusted quickly and easily.
 Pipelines do not need to be linear (and often are not). Please see pipeline example below for more details.
-Every function has a optional debug mode that prints out the resulting image. The debug has two modes, either 'plot' or 'print'.
+A global variable "debug" allows the user to print out the resulting image. The debug has two modes: either 'plot' or 'print'.
 If set to 'print' then the function prints the image out, or if using a Jupyter notebook you could set debug to 'plot' to have
 the images plot images to the screen. Debug mode allows users to visualize and optimize each step on individual test images and small test sets before pipelines are deployed over whole datasets.
 
@@ -290,10 +290,8 @@ one object using the combine objects function (for more info see [here](object_c
 
 ![Screenshot](img/tutorial_images/vis/23_objcomp.jpg)
 
-The next step is to analyze the plant object for traits (such as shape or color).
-For more info see the shape function [here](analyze_shape.md),
-the color function [here](analyze_color.md),
-and the boundary tool function [here](analyze_bound_horizontal.md).
+The next step is to analyze the plant object for traits such as [horizontal height](analyze_bound_horizontal.md),
+[shape](analyze_shape.md), or [color](analyze_color.md).
 
 ```python
 ############### Analysis ################

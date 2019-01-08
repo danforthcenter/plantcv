@@ -5,8 +5,8 @@ We hope that you can use these functions and pipelines as a starting place for y
 The goal is to provide practical examples of image processing algorithms.
 
 Pipelines do not need to be linear (and often as are not, as seen in this example).
-Every PlantCV function has a optional debug mode that prints out the resulting image.
-The debug has two modes, either 'plot' or 'print'. If set to
+A global variable "debug" allows the user to print out the resulting image.
+The debug has two modes: either 'plot' or 'print'. If set to
 'print' then the function prints the image out, or if using a Jupyter notebook you could set debug to 'plot' to have
 the images plot images to the screen. Debug mode allows users to visualize and optimize each step on individual test images
 and small test sets before pipelines are deployed over whole datasets.
@@ -36,7 +36,9 @@ Sample command to run a pipeline on a single image:
 
 Always test pipelines (preferably with -D flag set to 'print') before running over a full image set
 
-`python pipelinename.py -i /home/user/images/testimg.png -o /home/user/output-images -D 'print'`
+```
+./pipelinename.py -i /home/user/images/testimg.png -o /home/user/output-images -D 'print'
+```
 
 
 ### Walk through a sample pipeline
@@ -318,7 +320,7 @@ pseudocolor (3-dimension). This is done by replicating the grayscale image 3X an
 3-dimensional matrix (`rgb_img = cv2.cvtColor(img,cv2.COLOR_GRAY2RGB)`).
 All masks, countours, etc... need to be converted to 3-dimensions for pseudocoloring.
 
-Now we can perform the analysis of pixelwise signal value and object shape attributes.
+Now we can perform the analysis of pixelwise signal value and object [shape](analyze_shape.md) attributes.
 
 ```python
     ### Analysis ###
