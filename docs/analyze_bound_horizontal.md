@@ -13,27 +13,27 @@ best if the pot size/position of the plant remains relatively constant.
     - obj - single or grouped contour object
     - mask - binary mask of selected contours
     - line_position = position of boundary line (a value of 0 would draw the line through the bottom of the image)
-    - filename - False or image name. If defined print image
+    - filename - False (default) or image name. If defined print image
 - **Context:**
     - Used to define a boundary line for the image, to find the height above and below as well as area above and below a boundary line.
     - Could also be used as a method of flagging images about to go out-of-bounds (this QC tool will be added later)
 - **Example use:**
     - [Use In VIS Tutorial](vis_tutorial.md)
 
-**Output Data Units:** 
-    - Y-Position - Height of the bound line used for measurement (height from bottom of image), pixels (units)  
-    - Height-Above-Bound - Extent-y of object above bound line, pixels (units)  
-    - Height-Below-Bound - Extent-y of object below bound line, pixels (units)  
-    - Area-Above-Bound - area of object above bound line, pixels (units)  
-    - Area-Below-Bound - area of object below bound line, pixels (units)  
-    - Percent-Above-Bound - percentage of total area above the bound line  
+- **Output Data Units:**
+    - Y-Position - Height of the bound line used for measurement (height from bottom of image), pixels (units)
+    - Height-Above-Bound - Extent-y of object above bound line, pixels (units)
+    - Height-Below-Bound - Extent-y of object below bound line, pixels (units)
+    - Area-Above-Bound - area of object above bound line, pixels (units)
+    - Area-Below-Bound - area of object below bound line, pixels (units)
+    - Percent-Above-Bound - percentage of total area above the bound line
     - Percent-Below-Bound - percentage of total area below the bound line  
 
 ```python
+
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
-
 pcv.params.debug = "print"
 
 # Set Boundary Line    
