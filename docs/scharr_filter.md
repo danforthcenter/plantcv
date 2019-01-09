@@ -22,7 +22,7 @@ This is a filtering method used to identify and highlight gradient edges/feature
 
 **Original grayscale image**
 
-![Screenshot](img/documentation_images/scharr_filter/original_image.jpg)
+![Screenshot](img/documentation_images/scharr_filter/original_scharr_image.jpg)
 
 ```python
 from plantcv import plantcv as pcv
