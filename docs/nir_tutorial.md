@@ -34,7 +34,7 @@ Optional inputs:
 
 Sample command to run a pipeline on a single image:  
 
-Always test pipelines (preferably with -D flag set to 'print') before running over a full image set
+* Always test pipelines (preferably with -D flag set to 'print') before running over a full image set
 
 ```
 ./pipelinename.py -i /home/user/images/testimg.png -o /home/user/output-images -D 'print'
