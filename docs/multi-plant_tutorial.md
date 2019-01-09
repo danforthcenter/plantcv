@@ -311,7 +311,7 @@ roi_objects, roi_obj_hierarchy, kept_mask, obj_area = pcv.roi_objects(img1, 'par
 # clusters them based on user input of rows and columns
 
 # Inputs:
-#    img               = An RGB image 
+#    img               = An RGB image
 #    roi_objects       = object contours in an image that are needed to be clustered.
 #    roi_obj_hierarchy = object hierarchy
 #    nrow              = number of rows to cluster (this should be the approximate  number of desired rows in the entire image even if there isn't a literal row of plants)
