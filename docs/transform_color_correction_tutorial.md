@@ -4,11 +4,11 @@ The color correction module has been developed as a method of normalizing image-
 
 PlantCV is composed of modular functions that can be arranged (or rearranged) and adjusted quickly and easily.
 Pipelines do not need to be linear (and often are not). Please see the pipeline examples below for more details.
-A global variable "debug" allows the user to print out the resulting image. The debug has two modes, either 'plot' or print.' If the global object, plantcv.params.debug is set to
-'print' then the function prints the image to a file. If using a jupyter notebook, you would set debug to 'plot' to have
+A global variable "debug" allows the user to print out the resulting image. The debug has three modes: either None, 'plot', or 'print', If the global object, plantcv.params.debug is set to
+'print' then the function prints the image to a file. If using a [Jupyter](jupyter.md) notebook, you would set debug to 'plot' to have
 the images plot images to the screen. Debug mode allows users to visualize and optimize steps on individual test images and small test sets before pipelines are deployed over whole data-sets.
 
-For simple input and output, a helper function called plantcv.transform.correct_color was developed. See more information [here](transform_correct_color.md)
+For simple input and output, a helper function [plantcv.transform.correct_color](transform_correct_color.md) was developed.
 
 **Important Note:** This function has been developed with only 8 bit images in mind. Images of other bit depth are not compatible with this function.
 
@@ -26,15 +26,15 @@ To run color correction on an image, the following are needed:
 
 * A mask (gray-scale) of the source image labeled consistently with the target image's mask.
 
-To see an example of how to create a gray-scale mask of color chips see [here](#creating-masks).
+We have an example of how to [create a gray-scale mask of color chips](#creating-masks).
 
 
-##Developing a pipeline
+## Developing a pipeline
 
 The modularity of PlantCV allows for flexible development of pipelines to fit the context and needs of users. The development of a pipeline for color correction is no different.
 Below are two potential scenarios with possible color correction pipelines. 
 
-####**Scenario A: One Target profile, One Source profile**
+#### **Scenario A: One Target profile, One Source profile**
 
 For situations where only one source profile is identified per target profile, or one source profile will serve as a representation for many images, a simple pipeline can be developed to produce a transformation matrix that can be applied to the set of images congruent to the source profile.
 

@@ -3,9 +3,9 @@
 PlantCV is composed of modular functions that can be arranged (or rearranged) and adjusted quickly and easily.
 Pipelines do not need to be linear (and often are not). Please see pipeline example below for more details.
 A global variable "debug" allows the user to print out the resulting image.
-The debug has two modes: either 'plot' or 'print'. If set to
-'print' then the function prints the image out, or if using a Jupyter notebook you could set debug to 'plot' to have
-the images plot images to the screen.
+The debug has three modes: either None, 'plot', or 'print'. If set to
+'print' then the function prints the image out, or if using a [Jupyter](jupyter.md) notebook you could set debug to 'plot' to have
+the images plot to the screen.
 This allows users to visualize and optimize each step on individual test images and small test sets before pipelines are deployed over whole datasets.
 
 PSII images (3 in a set; F0, Fmin, and Fmax) are captured directly following a saturating fluorescence pulse 
@@ -34,7 +34,7 @@ otherwise ~4 final output images are produced.
 
 Optional Inputs:
 
-*  **Debug Flag:** Prints or plots (if in jupyter or have x11 forwarding on) an image at each step
+*  **Debug Flag:** Prints or plots (if in Jupyter or have x11 forwarding on) an image at each step
 *  **Region of Interest:** The user can input their own binary region of interest or image mask 
 (for PSII images we use a premade mask to remove the screws from the image). 
 Make sure the input is the same size as your image or you will have problems.  
@@ -74,7 +74,7 @@ def options():
 ```
 
 The PSII pipeline first uses the Fmax image to create an image mask. Our PSII images are 16-bit grayscale, 
-but we will initially read the Fmax image in as a 8-bit color image just to create the image mask.
+but we will initially [read](read_image.md) the Fmax image in as a 8-bit color image just to create the image mask.
 
 ```python
 ### Main pipeline
@@ -132,7 +132,7 @@ The resulting image is then thresholded with a [binary threshold](binary_thresho
 
 ![Screenshot](img/tutorial_images/psII/03_binary_threshold20.jpg)
 
-Noise is reduced with a [median blur](median_blur.md) function.
+Noise is reduced with the [median blur](median_blur.md) function.
 
 ```python
   # Median Filter
@@ -144,7 +144,7 @@ Noise is reduced with a [median blur](median_blur.md) function.
 
 ![Screenshot](img/tutorial_images/psII/04_median_blur5.jpg)
 
-Noise is also reduced with a [fill step](fill.md).  
+Noise is also reduced with the [fill](fill.md) function.
 
 ```python
     # Fill small objects
@@ -157,7 +157,7 @@ Noise is also reduced with a [fill step](fill.md).
 ![Screenshot](img/tutorial_images/psII/05_fill110.jpg)
 
 Objects (OpenCV refers to them a contours) are then identified within the image using 
-the [find objects function](find_objects.md).
+the [find objects](find_objects.md) function.
 
 ```python
     # Identify objects
@@ -168,7 +168,7 @@ the [find objects function](find_objects.md).
 
 ![Screenshot](img/tutorial_images/psII/06_id_objects.jpg)
 
-Next the region of interest is defined using the [region of interest function](roi_rectangle.md).
+Next the region of interest is defined using the [rectangular region of interest](roi_rectangle.md) function.
 
 ```python
     # Define ROI
@@ -179,7 +179,7 @@ Next the region of interest is defined using the [region of interest function](r
 
 ![Screenshot](img/tutorial_images/psII/07_roi.jpg)
 
-The objects within and overlapping are kept with the [region of interest objects function](roi_objects.md).
+The objects within and overlapping are kept with the [region of interest objects](roi_objects.md) function.
 Alternately the objects can be cut to the region of interest.
 
 ```python

@@ -12,7 +12,7 @@ We normally execute pipelines in a shell script or in in a condor job file (or d
 
 * First call the plantcv-pipeline.py script that does the parallelization
 * -d is the --directory of images
-* -p is the --pipeline that you are going to run over the images, see [VIS tutorial here](vis_tutorial.md) and [PSII tutorial here](psII_tutorial.md)
+* -p is the --pipeline that you are going to run over the images, see the [VIS tutorial](vis_tutorial.md) and [PSII tutorial](psII_tutorial.md)
 * -i is the --outdir your desired location for the output images
 * -a is the --adaptor to indicate structure to grab the metadata from, either 'filename' or the default, which is 'phenofront' (lemnatec structured output)
 * -t is the --type extension 'png' is the default or 'jpg'
@@ -105,7 +105,7 @@ In order for PlantCV to scrape all of the necessary metadata from the image file
 3. Measurement/Experiment Label
 4. Camera Label
 
-**Example Name :**
+**Example Name:**
 
 AABA002948-2014-03-14 03_29_45-Pilot_031014-VIS_TV_z3500.png
 

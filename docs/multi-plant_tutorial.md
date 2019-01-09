@@ -2,8 +2,8 @@
 
 PlantCV is composed of modular functions that can be arranged (or rearranged) and adjusted quickly and easily.
 Pipelines do not need to be linear (and often are not). Please see pipeline example below for more details.
-A global variable "debug" allows the user to print out the resulting image. The debug has two modes: either 'plot' or print'. If set to
-'print' then the function prints the image out, if using a Jupyter notebook you could set debug to 'plot' to have
+A global variable "debug" allows the user to print out the resulting image. The debug has three modes: either None, 'plot', or print'. If set to
+'print' then the function prints the image out, if using a [Jupyter](jupyter.md) notebook you could set debug to 'plot' to have
 the images plot to the screen. Debug mode allows users to visualize and optimize each step on individual test images and small test sets before pipelines
 are deployed over whole datasets.
 
@@ -73,7 +73,7 @@ def options():
 
 #### Start of the Main/Customizable portion of the pipeline.
 
-The image input by the user is read in. 
+The image input by the user is [read in](read_image.md).
 
 ```python
 ### Main pipeline
@@ -120,14 +120,17 @@ else:
 #   roi = region for white reference, if none uses the whole image,
 #         otherwise (x position, y position, box width, box height)
 
-#white balance image based on white toughspot
+# white balance image based on white toughspot
+
 img1 = pcv.white_balance(img,roi=(400,800,200,200))
 ```
 
 **Figure 2.** White balance the image so that later image processing is easier.
 
 ![Screenshot](img/tutorial_images/multi-img/2_bmasked.jpg)
+
 ![Screenshot](img/tutorial_images/multi-img/2_whitebalance.jpg)
+
 ![Screenshot](img/tutorial_images/multi-img/2_whitebalance_roi.jpg)
 
 [Rotate](rotate2.md) image slightly so that plants line up with grid (later step)
@@ -300,7 +303,9 @@ roi_objects, roi_obj_hierarchy, kept_mask, obj_area = pcv.roi_objects(img1, 'par
 **Figure 11.** Define ROI.
 
 ![Screenshot](img/tutorial_images/multi-img/11_obj_on_img.jpg)
+
 ![Screenshot](img/tutorial_images/multi-img/11_roi_mask.jpg)
+
 ![Screenshot](img/tutorial_images/multi-img/11_roi_objects.jpg)
 
 [Cluster](cluster_contours.md) plants based on defined grid.
