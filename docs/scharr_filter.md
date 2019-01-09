@@ -5,22 +5,22 @@ This is a filtering method used to identify and highlight gradient edges/feature
        Performance is quite similar to Sobel filter. Used to detect edges / changes in pixel intensity. ddepth = -1
        specifies that the dimensions of output image will be the same as the input image.
 
-**plantcv.scharr_filter**(*gray_img, dx, dy, scale*)
+**plantcv.scharr_filter**(*img, dx, dy, scale*)
 
 **returns** filtered image
 
 - **Parameters:**
-    gray_img - Grayscale image data
-    dx - derivative of x to analyze (0 or 1)
-    dy - derivative of x to analyze (0 or 1)
-    scale - scaling factor applied (multiplied) to computed Scharr values (scale = 1 is unscaled)
+    - img - RGB or grayscale image data
+    - dx - derivative of x to analyze (0 or 1)
+    - dy - derivative of x to analyze (0 or 1)
+    - scale - scaling factor applied (multiplied) to computed Scharr values (scale = 1 is unscaled)
 - **Context:**
     - This is a filtering method used to identify and highlight gradient edges/features using the 1st derivative.
        Typically used to identify gradients along the x-axis (dx = 1, dy = 0) and y-axis (dx = 0, dy = 1) independently.
        Performance is quite similar to Sobel filter.
     - Derivatives must sum to 1 (`dx+dy == 1`) in order to run
 
-**Original grayscale image**
+**Original image**
 
 ![Screenshot](img/documentation_images/scharr_filter/original_scharr_image.jpg)
 

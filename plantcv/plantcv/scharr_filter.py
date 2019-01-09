@@ -7,7 +7,7 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
 
 
-def scharr_filter(gray_img, dx, dy, scale):
+def scharr_filter(img, dx, dy, scale):
     """This is a filtering method used to identify and highlight gradient edges/features using the 1st derivative.
        Typically used to identify gradients along the x-axis (dx = 1, dy = 0) and y-axis (dx = 0, dy = 1) independently.
        Performance is quite similar to Sobel filter. Used to detect edges / changes in pixel intensity. ddepth = -1
@@ -22,14 +22,14 @@ def scharr_filter(gray_img, dx, dy, scale):
     Returns:
     sr_img   = Scharr filtered image
 
-    :param gray_img: numpy.ndarray
+    :param img: numpy.ndarray
     :param dx: int
     :param dy: int
     :param scale: int
     :return sr_img: numpy.ndarray
     """
 
-    sr_img = cv2.Scharr(src=gray_img, ddepth=-1, dx=dx, dy=dy, scale=scale)
+    sr_img = cv2.Scharr(src=img, ddepth=-1, dx=dx, dy=dy, scale=scale)
     params.device += 1
     if params.debug == 'print':
         name = os.path.join(params.debug_outdir, str(params.device))
