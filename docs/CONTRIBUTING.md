@@ -204,7 +204,7 @@ Here is a sample of a new function. Arguments should be defined.
 Generally, functions should utilize the global `debug` parameter from the [params](params.md) class.
 Users can set `pcv.params.debug `
 to None (default), "print" (to file), or "plot" (to screen if using [Jupyter](jupyter.md) notebooks or X11).
-Functions should also increment the `device` number, which is a counter for image processing steps that is autoincremented by functions that use `params`..
+Functions should also increment the `device` number, which is a counter for image processing steps that is autoincremented by functions that use `params`.
 Note that the inputs and outputs are documented with Python docstrings.
 
 ```python
