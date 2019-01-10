@@ -81,7 +81,7 @@ packages as well.
 
 Once a workflow has been developed, it needs to be converted into a pure
 Python script if the goal is to use it on many images using the PlantCV
-workflow parallelization tools (See [pipeline_parallel.md]). To make a
+workflow [parallelization](pipeline_parallel.md) tools. To make a
 Python script that is compatible with the `plantcv-pipeline.py` program,
 first use Jupyter to convert the notebook to Python. This can be done
 through the web interface, or on the command line:

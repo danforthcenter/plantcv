@@ -16,6 +16,7 @@ Identifies objects and fills objects that are less than specified size
     - [Use In PSII Tutorial](psII_tutorial.md) 
 
 ```python
+
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
@@ -29,7 +30,7 @@ binary_img = pcv.median_blur(img, 5)
 fill_image = pcv.fill(binary_img, 200)
 ```
 
-**Binary image with median blur**
+**Binary image with [median blur](median_blur.md)**
 
 ![Screenshot](img/documentation_images/fill/binary_image.jpg)
 

@@ -1,6 +1,6 @@
 ## RGB to HSV
 
-Convert image from RGB colorspace to HSV colorspace and split the channels.
+Convert image from RGB colorspace to HSV color space and split the channels.
 
 **plantcv.rgb2gray_hsv**(*rgb_img, channel*)
 
@@ -21,13 +21,14 @@ Convert image from RGB colorspace to HSV colorspace and split the channels.
 ![Screenshot](img/documentation_images/rgb2hsv/original_image.jpg)
 
 ```python
+
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # image converted from RGB to HSV, channels are then split. Hue ('h') channel is outputed.
-h_channel=pcv.rgb2gray_hsv(rgb_img, 'h')
+h_channel = pcv.rgb2gray_hsv(rgb_img, 'h')
 ```
 
 **Hue channel image**
@@ -35,13 +36,14 @@ h_channel=pcv.rgb2gray_hsv(rgb_img, 'h')
 ![Screenshot](img/documentation_images/rgb2hsv/hsv_hue.jpg)
 
 ```python
+
 from plantcv import plantcv as pcv
     
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
     
 # image converted from RGB to HSV, channels are then split. Saturation ('s') channel is outputed.    
-s_channel= pcv.rgb2gray_hsv(rgb_img, 's')
+s_channel = pcv.rgb2gray_hsv(rgb_img, 's')
 ```  
 
 **Saturation channel image**
@@ -49,13 +51,14 @@ s_channel= pcv.rgb2gray_hsv(rgb_img, 's')
 ![Screenshot](img/documentation_images/rgb2hsv/hsv_saturation.jpg)
 
 ```python
+
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # image converted from RGB to HSV, channels are then split. Value ('v') channel is outputed.
-v_channel=pcv.rgb2gray_hsv(rgb_img, 'v')
+v_channel = pcv.rgb2gray_hsv(rgb_img, 'v')
 ```  
 
 **Value channel image**

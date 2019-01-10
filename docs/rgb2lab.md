@@ -1,6 +1,6 @@
 ## RGB to LAB
 
-Convert image from RGB colorspace to LAB colorspace and split the channels.
+Convert image from RGB color space to LAB color space and split the channels.
 
 **plantcv.rgb2gray_hsv**(*rgb_img, channel*)
 
@@ -20,13 +20,14 @@ Convert image from RGB colorspace to LAB colorspace and split the channels.
 ![Screenshot](img/documentation_images/rgb2lab/original_image.jpg)
 
 ```python
+
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # image converted from RGB to LAB, channels are then split. Lightness ('l') channel is outputed.
-l_channel=pcv.rgb2gray_lab(rgb_img, 'l')
+l_channel = pcv.rgb2gray_lab(rgb_img, 'l')
 ```
 
 **Lightness channel image**
@@ -34,13 +35,14 @@ l_channel=pcv.rgb2gray_lab(rgb_img, 'l')
 ![Screenshot](img/documentation_images/rgb2lab/lab_lightness.jpg)
 
 ```python
+
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # image converted from RGB to LAB, channels are then split. Green-Magenta ('a') channel is outputed.
-a_channel= pcv.rgb2gray_lab(rgb_img, 'a')
+a_channel = pcv.rgb2gray_lab(rgb_img, 'a')
 ```
 
 **Green-Magenta channel image**
@@ -48,13 +50,14 @@ a_channel= pcv.rgb2gray_lab(rgb_img, 'a')
 ![Screenshot](img/documentation_images/rgb2lab/lab_green-magenta.jpg)
    
 ```python
+
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # image converted from RGB to Lab, channels are then split. Blue-Yellow ('b') channel is outputed.
-b_channel=pcv.rgb2gray_lab(rgb_img, 'b')
+b_channel = pcv.rgb2gray_lab(rgb_img, 'b')
 ```
 
 **Blue-Yellow channel image**

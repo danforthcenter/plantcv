@@ -11,14 +11,14 @@ It also outputs, corrected_img, but storage (print or plot) is determined by deb
  The following example uses a 24-color Colorchecker passport.
 
  - **Parameters:**
-    - target_img - an RGB image with color chips visualized
-    - source_img - an RGB image with color chips visualized
-    - target_mask - a gray-scale image with color chips and background each represented with unique values
-    - target_mask - a gray-scale image with color chips and background each represented as unique values
-    - output_directory - a file path to which the target_matrix, source_matrix, and transformation_matrix will be save as .npz files
+    - target_img       = an RGB image with color chips visualized
+    - target_mask      = a grayscale image with color chips and background each represented with unique values
+    - source_img       = an RGB image with color chips visualized
+    - source_mask      = a grayscale image with color chips and background each represented as unique values
+    - output_directory = a file path to which the target_matrix, source_matrix, and transformation_matrix will be save as .npz files
 
 
-To see an example of how to create a gray-scale mask of color chips see [here](transform_color_correction_tutorial.md#creating-masks).
+To see an example of how to create a grayscale mask of color chips see [here](transform_color_correction_tutorial.md#creating-masks).
 
 
 **Reference Images**
@@ -33,20 +33,22 @@ To see an example of how to create a gray-scale mask of color chips see [here](t
 
 
 ```python
+
 from plantcv import plantcv as pcv
 import cv2
 
 target_img = cv2.imread("target_img.png")
 source_img = cv2.imread("source1_img.png")
+
 target_mask = cv2.imread("mask_img.png", -1) # mask must be read in "as-is" include -1
 source_mask = cv2.imread("mask_img.png", -1) # in this case, as our images share a zoom level and colorchecker placement, the same mask is used for both the target and the source.
+
 output_directory = "."
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = 'plot'
 
 target_matrix, source_matrix, transformation_matrix, corrected_img = pcv.transform.correct_color(target_img, target_mask, source_img, source_mask, output_directory)
-
 ```
 
 ![Screenshot](img/documentation_images/correct_color_imgs/hstack.jpg)
@@ -61,14 +63,14 @@ Automatically detects a color card's location and size. Useful in pipelines wher
 
 - **Parameters**
     - rgb_img       = Input RGB image data containing a color card.
-    - threshold     = Optional threshold method, either 'normal', 'otsu', or 'adaptgauss'. (default 'adaptgauss')
-    - threshvalue   = Optional thresholding value. (default threshvalue=125)
-    - blurry        = Optional boolean, if True then image sharpening is applied. (default blurry=False)
-    - background    = Optional type of image background, either 'dark' or 'light'. (default background='dark')
+    - threshold     = Optional threshold method, either 'normal', 'otsu', or 'adaptgauss' (default theshold='adaptgauss')
+    - threshvalue   = Optional thresholding value (default threshvalue=125)
+    - blurry        = Optional boolean, if True then image sharpening is applied (default blurry=False)
+    - background    = Optional type of image background, either 'dark' or 'light' (default background='dark')
 - **Returns**
-    - df            = Dataframe of all color card chips found
-    - start_coord   = Two-element tuple of the first chip mask starting x and y coordinate. Useful in `create_color_card_mask` function.
-    - spacing       = Two-element tuple of the horizontal and vertical spacing between chip masks. Useful in `create_color_card_mask` function.
+    - df            = Dataframe of all color card chips found.
+    - start_coord   = Two-element tuple of the first chip mask starting x and y coordinate. Useful in [create a color card mask](#create-a-labeled-color-card-mask) function.
+    - spacing       = Two-element tuple of the horizontal and vertical spacing between chip masks. Useful in [create a color card mask](#create-a-labeled-color-card-mask) function.
 
 **Important Note:** This function isn't entirely robust. There are a few important assumptions that must be met in order to automatically detect color cards:
 - There is only one color card in the image.
@@ -77,12 +79,13 @@ Automatically detects a color card's location and size. Useful in pipelines wher
 - Color card isn't tilted. The card can be vertical OR horizontal but if it is tilted there will errors in calculating spacing.
 
 ```python
+
 from plantcv import plantcv as pcv
 rgb_img, path, filename = pcv.readimage("target_img.png")
 df, start, space = pcv.transform.find_color_card(rgb_img=rgb_img)
 
 # Use these outputs to create a labeled color card mask
-mask=pcv.transform.create_color_card_mask(rgb_img=img, start_coord=start, spacing=space, chip_dims=(10,10), ncols=6, nrows=4)
+mask = pcv.transform.create_color_card_mask(rgb_img=img, start_coord=start, spacing=space, chip_dims=(10,10), ncols=6, nrows=4)
 ```
 
 **Image automatically detected and masked**
@@ -101,7 +104,7 @@ mask=pcv.transform.create_color_card_mask(rgb_img=img, start_coord=start, spacin
 
 Creates a uniquely labeled mask for each color chip based on user-defined positioning.
 
-**plantcv.transform.create_color_card_mask**(*rgb_img, chip_dims, start_coord, spacing, nrows, ncols, exclude=[]*)
+**plantcv.transform.create_color_card_mask**(*(rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=[]*)
 
 **returns** mask
 
@@ -143,15 +146,16 @@ Computes the average *R*, *G*, *B* values for each region in the RGB image denot
 **returns** headers, color_matrix
 
 - **Parameters**
-    - rgb_img - RGB image with color chips visualized
-    - mask - a gray-scale img with unique values for each segmented space, representing unique, discrete color chips.
+    - rgb_img = RGB image with color chips visualized
+    - mask    = a gray-scale img with unique values for each segmented space, representing unique, discrete color chips.
 
 - **Returns**
-    - color_matrix - a *n* x 4 matrix containing the average red value, average green value, and average blue value for each color chip.
-    - headers - a list of 4 headers corresponding to the 4 columns of color_matrix respectively
+    - color_matrix = a *n* x 4 matrix containing the average red value, average green value, and average blue value for each color chip.
+    - headers      = a list of 4 headers corresponding to the 4 columns of color_matrix respectively
 
 
 ```python
+
 from plantcv import plantcv as pcv
 import cv2
 
@@ -164,7 +168,7 @@ headers, color_matrix = pcv.transform.get_color_matrix(rgb_img, mask)
 
 print(headers)
 print(color_matrix)
-```
+
 
     ['chip_number', 'r_avg', 'g_avg', 'b_avg']
     [[  10.       20.7332   33.672    92.7748]
@@ -189,7 +193,7 @@ print(color_matrix)
      [ 200.       34.5308   90.4592  132.9108]
      [ 210.      207.1596  128.736    28.7744]
      [ 220.       74.632   158.8224  144.3724]]
-     
+ ```
 
 ## Moore-Penrose Inverse
 
@@ -200,14 +204,16 @@ Computes the Moore-Penrose Inverse Matrix, an important step in computing the ho
 **returns** matrix_a, matrix_m, matrix_b
 
 - **Parameters**
-    - target_matrix - a *n* x 4 matrix containing the average red value, average green value, and average blue value for each color chip.
-    - source_matrix - a *n* x 4 matrix containing the average red value, average green value, and average blue value for each color chip.
+    - target_matrix = a *n* x 4 matrix containing the average red value, average green value, and average blue value for each color chip.
+    - source_matrix = a *n* x 4 matrix containing the average red value, average green value, and average blue value for each color chip.
 
 - **Returns**
-    - matrix_a - a concatenated *n* x 9 matrix of source_matrix red, green, and blue values to the powers 1, 2, 3
-    - matrix_m - a 9 x *n* Moore-Penrose inverse matrix
-    - matrix_b - a *n* x 9 matrix of linear, quadratic, and cubic RGB values from target_img
+    - matrix_a = a concatenated *n* x 9 matrix of source_matrix red, green, and blue values to the powers 1, 2, 3
+    - matrix_m = a 9 x *n* Moore-Penrose inverse matrix
+    - matrix_b = a *n* x 9 matrix of linear, quadratic, and cubic RGB values from target_img
+
 ```python
+
 from plantcv import plantcv as pcv
 
 matrix_a, matrix_m, matrix_b = pcv.transform.get_matrix_m(target_matrix, source_matrix)
@@ -227,15 +233,16 @@ Computes the transformation matrix for application to a source image to transfor
 **returns** deviance, transformation_matrix 
 
 - **Parameters**
-    - matrix_m - a 9 x *n* Moore-Penrose inverse matrix
-    - matrix_b - a *n* x 9 matrix of linear, quadratic, and cubic RGB values from target_img
+    - matrix_m = a 9 x *n* Moore-Penrose inverse matrix
+    - matrix_b = a *n* x 9 matrix of linear, quadratic, and cubic RGB values from target_img
 
 - **Returns**
-    - 1-t_det - "deviance" the measure of how greatly the source image deviates from the target image's color space. Two images of the same color space should have a deviance of ~0.
-    - transformation_matrix - a 9x9 matrix of linear, square, and cubic transformation coefficients
+    - 1-t_det               = "deviance" the measure of how greatly the source image deviates from the target image's color space. Two images of the same color space should have a deviance of ~0.
+    - transformation_matrix = a 9x9 matrix of linear, square, and cubic transformation coefficients
 
 
 ```python
+
 from plantcv import plantcv as pcv
 
 deviance, transformation_matrix = pcv.transform.calc_transformation_matrix(matrix_m, matrix_b)
@@ -251,20 +258,20 @@ Applies the transformation matrix to an image.
 **returns** corrected_img
 
 - **Parameters**
-    - source_img - an RGB image to be corrected to the target color space
-    - target_img - an RGB image with the target color space
-    - transformation_matrix - a 9x9 matrix of transformation coefficients
+    - source_img            = an RGB image to be corrected to the target color space
+    - target_img            = an RGB image with the target color space
+    - transformation_matrix = a 9x9 matrix of transformation coefficients
 
 - **Returns**
-    - corrected_img - an RGB image in correct color space
+    - corrected_img = an RGB image in correct color space
     
 **Reference Images**
 
-  target_img
+  Target Image
   
 ![Screenshot](img/documentation_images/correct_color_imgs/target_img_plant_resize.jpg)
     
-  source_img
+  Source Image
   
 ![Screenshot](img/documentation_images/correct_color_imgs/source_img_plant.jpg)
 
@@ -276,7 +283,6 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 corrected_img = pcv.transform.apply_transformation_matrix(source_img=source_img, target_img=target_img, transformation_matrix=transformation_matrix)
-
 ```
 
 ![Screenshot](img/documentation_images/correct_color_imgs/hstack.jpg)
@@ -288,13 +294,14 @@ Save a matrix from to '.npz' file.
 
 **plantcv.transform.save_matrix**(*matrix, 'filename'*)
 
-**returns** NONE
+**returns** none
 
 - **Parameters**
-    - matrix - a numpy.matrix or numpy.ndarray
-    - filename - name of file to which matrix will be saved. Must end in .npz
+    - matrix   = a numpy.matrix or numpy.ndarray
+    - filename = name of file to which matrix will be saved. Must end in .npz
     
 ```python
+
 from plantcv import plantcv as pcv
 import numpy as np
 
@@ -303,7 +310,6 @@ filename = "test.npz"
 matrix = np.matrix('1 2; 3 4')
 
 pcv.transform.save_matrix(matrix, filename)
-
 ```
 
 
@@ -316,9 +322,10 @@ Load a matrix from an '.npz' file.
 **returns** matrix
 
 - **Parameters**
-    - matrix - an ndarray loaded from a '.npz' file
+    - matrix = an ndarray loaded from a '.npz' file
     
 ```python
+
 from plantcv import plantcv as pcv
 
 filename = "test.npz"
@@ -336,16 +343,17 @@ To see an example of how to check for problematic color chips see [here](transfo
 
 **plantcv.transform.quick_color_check**(*source_matrix, target_matrix, num_chips*)
 
-**returns** NONE
+**returns** none
 
 - **Parameters**
-    - source_matrix - a 22x4 matrix containing the average red value, average green value, and
+    - source_matrix = a 22x4 matrix containing the average red value, average green value, and
                              average blue value for each color chip of the source image
-    - target_matrix - a 22x4 matrix containing the average red value, average green value, and
+    - target_matrix = a 22x4 matrix containing the average red value, average green value, and
                              average blue value for each color chip of the target image
-    - num_chips - the number of color card chips included in the matrices (integer)
+    - num_chips     = the number of color card chips included in the matrices (integer)
 
 ```python
+
 from plantcv import plantcv as pcv
 from plotnine import *
 import numpy as np

@@ -22,6 +22,7 @@ conditions set in kernel are true, otherwise removes pixel.
 ![Screenshot](img/documentation_images/erode/grayscale_image.jpg)
 
 ```python
+
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)

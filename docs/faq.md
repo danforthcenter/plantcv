@@ -102,7 +102,7 @@ via pull request.
     for breaking changes.
 - Q: Does PlantCV follow [Semantic Version Numbering](http://semver.org/)
   for stable releases?
-      - A: Not entirely.
+     - A: Not entirely.
       Major releases are mostly based on new features.
       We try to avoid changes that break compatibility
       between minor version releases.

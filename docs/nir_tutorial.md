@@ -132,9 +132,13 @@ the amount of plant material captured, and it is particularly useful if estimati
 ```python
 # Laplace filtering (identify edges based on 2nd derivative)
 lp_img = pcv.laplace_filter(img, 1, 1)
+if args.debug:
+        pcv.plot_hist(lp_img, 'hist_lp')
 
 # Lapacian image sharpening, this step will enhance the darkness of the edges detected
 lp_shrp_img = pcv.image_subtract(img, lp_img)
+if args.debug:
+        pcv.plot_hist(lp_sharp_img, 'hist_lp_sharp')
 ```
 
 **Figure 3.** (Top) Result after second derivative Laplacian filter is applied to the original grayscale image.

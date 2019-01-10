@@ -33,6 +33,7 @@ def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1):
     :param ncol: int
     :return grouped_contour_indexes: list
     :return contours: list
+    :return roi_obj_hierarchy: list
     """
 
     params.device += 1

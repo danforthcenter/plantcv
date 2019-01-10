@@ -10,7 +10,7 @@ Creates a binary image from a gray image based on the threshold values.
     - gray_img - Grayscale image data
     - max_value - Value to apply above threshold (255 = white)
     - object_type - "light" or "dark" (default: "light"). If object is lighter than the background then standard 
-    thresholding is done. If object is darker than the background then inverse thresholding is done
+    thresholding is done. If object is darker than the background then inverse thresholding is done.
    
 - **Context:**
     - Used to help differentiate plant and background

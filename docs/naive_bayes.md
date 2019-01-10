@@ -21,7 +21,7 @@ to the output file and can be used with the [naive Bayes classifier](naive_bayes
     - maskdir - (str): Path to a directory of binary mask images. Mask images must have the same name as their 
     corresponding color images.
     - outfile - (str): Name of the output text file that will store the color channel probability density functions.
-    - mkplots - (bool): Make PDF plots (True or False).
+    - mkplots - (bool): Make PDF plots, True or False (default).
 - **Context:**
     - Used to help differentiate plant and background
 - **Example use:**

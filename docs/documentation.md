@@ -9,7 +9,7 @@ new version of code is pushed to the PlantCV GitHub repository.
 
 ### Updating PlantCV documentation
 
-Follow the contribution guide (CONTRIBUTING.md) to learn how to `fork` a
+Follow the [contribution guide](CONTRIBUTING.md) to learn how to `fork` a
 copy of the PlantCV repository, edit files, and generate a `pull`
 request to merge your updates back into the main repository. Changes to
 PlantCV should generally be done in the `dev` branch, which corresponds

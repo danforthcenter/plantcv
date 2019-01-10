@@ -11,7 +11,7 @@ Apply binary mask to an image.
     - mask - Binary mask image data
     - mask_color - 'white' or 'black'
 - **Context:**
-    - Apply a binary image mask over a grayscale or RGB image. Useful for seperating plant and background materials.
+    - Apply a binary image mask over a grayscale or RGB image. Useful for separating plant and background materials.
 - **Example use:**
     - [Use In VIS Tutorial](vis_tutorial.md)
     - [Use In NIR Tutorial](nir_tutorial.md)
@@ -26,6 +26,7 @@ Apply binary mask to an image.
 ![Screenshot](img/documentation_images/apply_mask/mask.jpg)
 
 ```python
+
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
@@ -41,6 +42,7 @@ masked_image = pcv.apply_mask(img, mask, 'white')
 ![Screenshot](img/documentation_images/apply_mask/white_masked_image.jpg)
 
 ```python
+
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)

@@ -89,7 +89,7 @@ defined where input types matter (e.g. instead of just `img` it could be `rgb_im
 In PlantCV v3.0dev2 onwards, all functions were redesigned to utilize a global 
 parameters class to inherit values for standard inputs like `debug` and `device` 
 so that these values will not need to be explicitly input or output to/from each 
-function. An instance of the class `Params` as `params` is created automatically 
+function. An instance of the class [`Params`](params.md) as `params` is created automatically
 when PlantCV is imported and it can be imported to set global defaults. For example, 
 to change debug from `None` to 'plot' or 'print' you can now just add one line to 
 the top of your script or notebook to change the behavior of all subsequent function

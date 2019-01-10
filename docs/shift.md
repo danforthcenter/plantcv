@@ -8,8 +8,8 @@ Shifts image, but keeps dimensions the same
 
 - **Parameters:**
     - img - RGB or grayscale image data
-    - number - number of rows or columns to add
-    - side - "top", "bottom", "right", "left" where to add the rows or columns
+    - number - number(int) of rows or columns to add
+    - side - "top", "bottom", "right", "left" where to add the rows or columns (default: "right")
 - **Context:**
     - Shifts image from the specified direction.
 - **Example use:**
@@ -20,6 +20,7 @@ Shifts image, but keeps dimensions the same
 ![Screenshot](img/documentation_images/shift/36_whitebalance.jpg)
 
 ```python
+
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)

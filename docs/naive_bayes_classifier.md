@@ -9,7 +9,7 @@ labeled as plant (255) or background (0) if P(Pixel = plant) > P(Pixel = backgro
 
 **plantcv.naive_bayes_classifier(*rgb_img, pdf_file*)**
 
-**returns** mask
+**returns** masks
 
 - **Parameters:**
     - rgb_img - RGB image data

@@ -368,6 +368,9 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
     :param exclude: list
     :return mask: numpy.ndarray
     """
+
+    # Autoincrement the device counter
+    params.device += 1
     # Initialize chip list
     chips = []
     # Store user debug
