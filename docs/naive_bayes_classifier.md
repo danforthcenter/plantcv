@@ -9,7 +9,7 @@ labeled as plant (255) or background (0) if P(Pixel = plant) > P(Pixel = backgro
 
 **plantcv.naive_bayes_classifier(*rgb_img, pdf_file*)**
 
-**returns** mask
+**returns** masks
 
 - **Parameters:**
     - rgb_img - RGB image data
@@ -32,7 +32,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Create binary image from a gray image based on threshold values. Targeting light objects in the image.
-mask = pcv.naive_bayes_classifier(img, "naive_bayes_pdfs.txt")
+mask = pcv.naive_bayes_classifier(rgb_img, "naive_bayes_pdfs.txt")
 ```
 
 The output mask is a dictionary with the keys being the class names and the values being the corresponding binary masks.

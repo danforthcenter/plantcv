@@ -14,7 +14,7 @@ def dilate(gray_img, kernel, i):
     Inputs:
     gray_img = Grayscale (usually binary) image data
     kernel   = Kernel size (int). A k x k kernel will be built. Must be greater than 1 to have an effect.
-    i        = interations, i.e. number of consecutive filtering passes
+    i        = iterations, i.e. number of consecutive filtering passes
 
     Returns:
     dil_img = dilated image

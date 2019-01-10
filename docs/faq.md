@@ -93,6 +93,7 @@ and also to submit candidate questions and answers
 via pull request.
 
 - Q: How is PlantCV structured?
+    - A: As of v3.0 we are following semantic version numbering.
 - Q: How is PlantCV tested?
     - A: Unit tests are in the 'tests' directory
     in the root of the source tree.
@@ -102,7 +103,7 @@ via pull request.
     for breaking changes.
 - Q: Does PlantCV follow [Semantic Version Numbering](http://semver.org/)
   for stable releases?
-      - A: Not entirely.
+     - A: Not entirely.
       Major releases are mostly based on new features.
       We try to avoid changes that break compatibility
       between minor version releases.

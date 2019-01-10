@@ -13,6 +13,6 @@ dependencies:
   - coveralls
   - nb_conda
   - pip:
-    - opencv-python
+    - opencv-python<4
 channels:
   - conda-forge

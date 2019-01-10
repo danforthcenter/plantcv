@@ -22,7 +22,7 @@ user-defined classes. For more information about building the input sample file,
 - **Parameters:**
     - samples_file  - (str): Path to a text file containing a table of RGB values sampled for each feature class.
     - outfile       - (str): Name of the output text file that will store the color channel probability density functions.
-    - mkplots       - (bool): Make PDF plots (True or False).
+    - mkplots       - (bool): Make PDF plots, True or False (default).
 - **Context:**
     - Used to help differentiate two or more feature classes
 - **Example use:**

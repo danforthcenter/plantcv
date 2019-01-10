@@ -16,6 +16,8 @@ Write image to the file specified. This is a wrapper for the OpenCV function [im
     - [Use In VIS Tutorial](vis_tutorial.md)  
 
 ```python
-from plantcv import plantcv as pcv      
+
+from plantcv import plantcv as pcv
+
 pcv.print_image(img, "home/user/images/test-image.png")
 ```

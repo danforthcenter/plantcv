@@ -89,7 +89,7 @@ defined where input types matter (e.g. instead of just `img` it could be `rgb_im
 In PlantCV v3.0dev2 onwards, all functions were redesigned to utilize a global 
 parameters class to inherit values for standard inputs like `debug` and `device` 
 so that these values will not need to be explicitly input or output to/from each 
-function. An instance of the class `Params` as `params` is created automatically 
+function. An instance of the class [`Params`](params.md) as `params` is created automatically
 when PlantCV is imported and it can be imported to set global defaults. For example, 
 to change debug from `None` to 'plot' or 'print' you can now just add one line to 
 the top of your script or notebook to change the behavior of all subsequent function
@@ -117,7 +117,8 @@ bin_img = pcv.threshold.binary(gray_img, 100, 255)
 For more information, see the [Params](params.md) documentation.
 
 Below is an overview of all updates that are required to convert a pre-v3.0dev2
-function call to a post-v3.0dev2 function call. See the individual function help
+function call to a post-v3.0dev2 function call and all updates following the v3.0 release.
+See the individual function help
 pages for more details on the input and output variable types.
 
 #### plantcv.acute
@@ -136,11 +137,6 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: Deprecated, see:
     * bin_img = **plantcv.threshold.gaussian**(*gray_img, max_value, object_type="light"*)
     * bin_img = **plantcv.threshold.mean**(*gray_img, max_value, object_type="light"*)
-
-#### plantcv.analyze_nir_intensity
-
-* pre v3.0dev2: device, hist_header, hist_data, analysis_img = **plantcv.analyze_NIR_intensity**(*img, rgbimg, mask, bins, device, histplot=False, debug=None, filename=False*)
-* post v3.0dev2: hist_header, hist_data, analysis_img = **plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False, filename=False*)
 
 #### plantcv.analyze_bound
 
@@ -163,15 +159,20 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, hist_header, hist_data, analysis_images = **plantcv.analyze_color**(*img, imgname, mask, bins, device, debug=None, hist_plot_type=None, pseudo_channel='v', pseudo_bkg='img', resolution=300, filename=False*)
 * post v3.0dev2: hist_header, hist_data, analysis_images = **plantcv.analyze_color**(*rgb_img, mask, bins, hist_plot_type=None, pseudo_channel='v', pseudo_bkg='img', filename=False*)
 
-#### plantcv.analyze_object
-
-* pre v3.0dev2: device, shape_header, shape_data, analysis_images = **plantcv.analyze_object**(*img, imgname, obj, mask, device, debug=None, filename=False*)
-* post v3.0dev2: shape_header, shape_data, analysis_images = **plantcv.analyze_object**(*img, obj, mask, filename=False*)
-
 #### plantcv.apply_mask
 
 * pre v3.0dev2: device, masked_img = **plantcv.apply_mask**(*img, mask, mask_color, device, debug=None*)
 * post v3.0dev2: masked_img = **plantcv.apply_mask**(*rgb_img, mask, mask_color*)
+
+#### plantcv.analyze_nir_intensity
+
+* pre v3.0dev2: device, hist_header, hist_data, analysis_img = **plantcv.analyze_NIR_intensity**(*img, rgbimg, mask, bins, device, histplot=False, debug=None, filename=False*)
+* post v3.0dev2: hist_header, hist_data, analysis_img = **plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False, filename=False*)
+
+#### plantcv.analyze_object
+
+* pre v3.0dev2: device, shape_header, shape_data, analysis_images = **plantcv.analyze_object**(*img, imgname, obj, mask, device, debug=None, filename=False*)
+* post v3.0dev2: shape_header, shape_data, analysis_images = **plantcv.analyze_object**(*img, obj, mask, filename=False*)
 
 #### plantcv.auto_crop
 
@@ -198,6 +199,11 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, grouped_contour_indexes, contours, roi_obj_hierarchy = **plantcv.cluster_contours**(*device, img, roi_objects,roi_obj_hierarchy, nrow=1, ncol=1, debug=None*)
 * post v3.0dev2: grouped_contour_indexes, contours, roi_obj_hierarchy = **plantcv.cluster_contours**(*img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1*)
+
+#### plantcv.color_palette
+
+* pre v3.0: NA
+* post v3.0: colors = **plantcv.color_palette**(*num*)
 
 #### plantcv.crop_position_mask
 
@@ -268,6 +274,11 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, added_img = **plantcv.image_add**(*img1, img2, device, debug=None*)
 * post v3.0dev2: added_img = **plantcv.image_add**(*gray_img1, gray_img2*)
 
+#### plantcv.image_subtract
+
+pre v3.0: NA
+post v3.0: new_img = **plantcv.image_subtract**(*gray_img1, gray_img2*)
+
 #### plantcv.invert
 
 * pre v3.0dev2: device, img_inv = **plantcv.invert**(*img, device, debug=None*)
@@ -302,8 +313,9 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, img_mblur = **plantcv.median_blur**(*img, ksize, device, debug=None*)
 * post v3.0dev2: img_mblur = **plantcv.median_blur**(*gray_img, ksize*)
+* post v3.0: img_blur = **plantcv.median_blur**(*gray_img, ksize*) OR img_blur = **plantcv.median_blur**(*gray_img, (ksize1, ksize2)*)
 
-### plantcv.naive_bayes_classifier
+#### plantcv.naive_bayes_classifier
 
 * pre v3.0dev2: device, masks = **plantcv.naive_bayes_classifier(*img, pdf_file, device, debug=None*)**
 * post v3.0dev2: masks = **plantcv.naive_bayes_classifier(*rgb_img, pdf_file*)**
@@ -322,7 +334,7 @@ pages for more details on the input and output variable types.
 #### plantcv.output_mask
 
 * pre v3.0dev2: device, maskpath, analysis_images = **plantcv.output_mask**(*device, img, mask, filename, outdir=None, mask_only=False, debug=None*)
-* post v3.0dev2: maskpath, analysis_images = **plantcv.output_mask**(*img, mask, filename, outdir=None, mask_only=False*)
+* post v3.0dev2: imgpath, maskpath, analysis_images = **plantcv.output_mask**(*img, mask, filename, outdir=None, mask_only=False*)
 
 #### plantcv.plot_hist
 
@@ -333,6 +345,16 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: **plantcv.plot_image**(*img, cmap=None*)
 * post v3.0dev2: **plantcv.plot_image**(*img, cmap=None*)
+
+#### plantcv.print_image
+
+* pre v3.0dev2: **plantcv.print_image**(*img, filename*)
+* post v3.0dev2: **plantcv.print_image**(*img, filename*)
+
+#### plantcv.readbayer
+
+* pre v3.0: NA
+* post v3.0: img, path, img_name = **plantcv.readbayer**(*filename, bayerpattern = 'BG', alg = 'default'*)
 
 #### plantcv.readimage
 
@@ -465,6 +487,16 @@ pages for more details on the input and output variable types.
 * pre v3.0dev1: NA
 * post v3.0dev2: target_matrix, source_matrix, transformation_matrix, corrected_img = **plantcv.transform.correct_color**(*target_img, target_mask, source_img, source_mask, output_directory*)
 
+#### plantcv.transform.create_color_card_mask
+
+* pre v3.0: NA
+* post v3.0: mask = **pcv.transform.create_color_card_mask**(*rgb_img, radius, start_coord, spacing, nrows, ncols, exclude=[]*)
+
+#### plantcv.transform.find_color_card
+
+* pre v3.0: NA
+* post v3.0: df, start_coord, spacing = **plantcv.transofrm.find_color_card**(*rgb_img, threshold='adaptgauss', threshvalue=125, blurry=False, background='dark'*)
+
 #### plantcv.transform.get_color_matrix
 
 * pre v3.0dev1: NA
@@ -479,6 +511,11 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev1: NA
 * post v3.0dev2: matrix = **plantcv.transform.load_matrix**(*filename*)
+
+#### plantcv.transform.quick_color_check
+
+* pre v3.0: NA
+* post v3.0: **plantcv.transform.quick_color_check**(*target_matrix, source_matrix, num_chips*)
 
 #### plantcv.transform.save_matrix
 

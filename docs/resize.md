@@ -21,13 +21,14 @@ Resizes images, used to resize masks over other images.
 ![Screenshot](img/documentation_images/resize/19_flipped.jpg)
 
 ```python
+
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Resize image
-resize_img = pcv.resize(img, 0.1154905775,0.1154905775)
+resize_img = pcv.resize(img, 0.1154905775, 0.1154905775)
 ```
 
 **Image after resizing**

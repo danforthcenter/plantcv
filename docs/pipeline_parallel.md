@@ -1,9 +1,9 @@
 ## Tutorial: Pipeline Parallelization
 
-**Warning:** Pipelines should be optimized to an image test-set before running a whole data-set.
-See Pipeline Tutorial [here](vis_tutorial.md) or [here](vis_nir_tutorial.md).
-Our image download tool, which talks to a LemnaTec database system can be found [here](https://github.com/danforthcenter/pheno-data-service).
-Our download tool has a specific file structure, which may be different than yours unless you are using our tool, but we also have instructions
+**Warning:** Pipelines should be optimized to an image test-set before running a whole dataset.
+See the [VIS pipeline tutorial](vis_tutorial.md) or [VIS/NIR tutorial](vis_nir_tutorial.md).
+Our [download tool](https://github.com/danforthcenter/pheno-data-service), which talks to a LemnaTec database system,
+has a specific file structure, which may be different than yours unless you are using our tool, but we also have instructions
 to run PlantCV over a flat file directory (just keep this in mind).
 
 ### Running PlantCV over PhenoFront image data-set structure
@@ -12,15 +12,15 @@ We normally execute pipelines in a shell script or in in a condor job file (or d
 
 * First call the plantcv-pipeline.py script that does the parallelization
 * -d is the --directory of images
-* -p is the --pipeline that you are going to run over the images see [VIS tutorial here](vis_tutorial.md) and [PSII tutorial here](psII_tutorial.md)
+* -p is the --pipeline that you are going to run over the images, see the [VIS tutorial](vis_tutorial.md) and [PSII tutorial](psII_tutorial.md)
 * -i is the --outdir your desired location for the output images
 * -a is the --adaptor to indicate structure to grab the metadata from, either 'filename' or the default, which is 'phenofront' (lemnatec structured output)
 * -t is the --type extension 'png' is the default or 'jpg'
 * -l is the --deliminator for the filename, default is "_"
-* -C is the --coprocess Coprocess the specified imgtype with the imgtype specified in --match (e.g. coprocess NIR images with VIS).
+* -C is the --coprocess the specified imgtype with the imgtype specified in --match (e.g. coprocess NIR images with VIS).
 * -f is the --meta (data) format map for example the default is "imgtype_camera_frame_zoom_id"
 * -M is the --match metadata option, for example to select a certain zoom or angle. For example: 'imgtype:VIS,camera:SV,zoom:z500'
-* -D is the --dates" option, to select a certain date range of data. YYYY-MM-DD-hh-mm-ss_YYYY-MM-DD-hh-mm-ss. If the second date is excluded then the current date is assumed.
+* -D is the --dates option, to select a certain date range of data. YYYY-MM-DD-hh-mm-ss_YYYY-MM-DD-hh-mm-ss. If the second date is excluded then the current date is assumed.
 * -s is the --db, sqlite database name
 * -m is the --mask any image mask that you would like to provide
 * -T is the --threads (cpus) you would like to use.
@@ -29,12 +29,12 @@ We normally execute pipelines in a shell script or in in a condor job file (or d
 * -o is the --other_args option, used to pass non-standard options to the pipeline script. Must take the form `--other_args="--option1 value1 --option2 value2"`
 
 
-####If running as a command in a shell script
+#### If running as a command in a shell script
 
 ```bash
 #!/bin/bash
 
-#Here we are running a VIS top-view pipeline
+# Here we are running a VIS top-view pipeline
 
 time \
 /home/nfahlgren/programs/plantcv/plantcv-pipeline.py \
@@ -51,7 +51,7 @@ time \
 -w
 
 
-#Here we are running a second VIS top-view pipeline at a second zoom level
+# Here we are running a second VIS top-view pipeline at a second zoom level
 
 time \
 /home/nfahlgren/programs/plantcv/plantcv-pipeline.py \
@@ -71,9 +71,9 @@ time \
 ### Example Condor Jobfile
 
 ```
-####################
-# HTCondor job description file
-####################
+#################################
+# HTCondor job description file #
+#################################
 
 universe         = vanilla
 executable       = /home/mgehan/plantcv/plantcv-pipeline.py
@@ -105,7 +105,7 @@ In order for PlantCV to scrape all of the necessary metadata from the image file
 3. Measurement/Experiment Label
 4. Camera Label
 
-**Example Name :**
+**Example Name:**
 
 AABA002948-2014-03-14 03_29_45-Pilot_031014-VIS_TV_z3500.png
 
@@ -121,9 +121,9 @@ We normally execute pipelines as a shell script or as a condor jobfile (or dagma
 ```bash
 #!/bin/bash
 
-#Here we are running a VIS top-view pipeline over a flat directory of images
+# Here we are running a VIS top-view pipeline over a flat directory of images
 
-#Image names for this example look like this: cam1-16-08-06_16:45_el1100s1_p19.jpg
+# Image names for this example look like this: cam1-16-08-06_16:45_el1100s1_p19.jpg
 
 /home/mgehan/plantcv/plantcv-pipeline.py \
 -d /shares/mgehan_share/raw_data/raw_image/2016-08_pat-edger/data/split-round1/split-cam1 \
@@ -134,7 +134,5 @@ We normally execute pipelines as a shell script or as a condor jobfile (or dagma
 -f camera_timestamp_id_other \
 -t jpg \
 -T 16 \
--w 
-
-
+-w
 ```

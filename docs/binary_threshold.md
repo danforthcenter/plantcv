@@ -12,7 +12,7 @@ The object target can be specified as dark or light.
     - threshold - Threshold value (0-255)
     - max_value - Value to apply above threshold (255 = white)
     - object_type - "light" or "dark" (default: "light"). If object is lighter than the background then standard 
-    thresholding is done. If object is darker than the background then inverse thresholding is done
+                    thresholding is done. If object is darker than the background then inverse thresholding is done.
 - **Context:**
     - Used to help differentiate plant and background
 - **Example use:**
@@ -29,6 +29,7 @@ The object target can be specified as dark or light.
 ![Screenshot](img/documentation_images/binary_threshold/saturation_image.jpg)
 
 ```python
+
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
@@ -44,6 +45,7 @@ threshold_light = pcv.threshold.binary(gray_img, 36, 255, 'light')
 ![Screenshot](img/documentation_images/binary_threshold/thresholded_image.jpg)
 
 ```python
+
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)

@@ -26,6 +26,7 @@ completely within the image.
     - [Use In PSII Tutorial](psII_tutorial.md) 
 
 ```python
+
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
@@ -48,6 +49,7 @@ roi_objects, hierarchy, kept_mask, obj_area = pcv.roi_objects(img, 'partial', ro
 ![Screenshot](img/documentation_images/roi_objects/kept_objects1.jpg)
 
 ```python
+
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)

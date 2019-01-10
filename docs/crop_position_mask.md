@@ -2,7 +2,7 @@
 
 Takes a binary mask and positions it on another image. 
 
-**plantcv.crop_position_mask**(*img, mask, x, y, v_pos="top",h_pos="right"*)
+**plantcv.crop_position_mask**(*img, mask, x, y, v_pos="top", h_pos="right"*)
 
 **returns** newmask
 
@@ -11,8 +11,8 @@ Takes a binary mask and positions it on another image.
     - mask - binary image to be used as a mask
     - x - amount to push in the vertical direction
     - y - amount to push in the horizontal direction
-    - v_pos -push from the "top" or "bottom" in the vertical direction
-    - h_pos - push from the "right" or "left" in the horizontal direction
+    - v_pos -push from the "top" (default) or "bottom" in the vertical direction
+    - h_pos - push from the "right" (default) or "left" in the horizontal direction
    
 - **Context:**
     - This function is used to position a binary mask over another image.
@@ -31,13 +31,14 @@ Takes a binary mask and positions it on another image.
 
 
 ```python
+
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Image not positioned (no adustment)
-cropped1= pcv.crop_position_mask(img, mask, 0, 0, "top", "right")
+cropped1 = pcv.crop_position_mask(img, mask, 0, 0, "top", "right")
 
 ```
 
@@ -53,7 +54,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Image positioned
-cropped1= pcv.crop_position_mask(img,mask,40,3,"top","right")
+cropped1 = pcv.crop_position_mask(img, mask, 40, 3, "top", "right")
 
 ```
 

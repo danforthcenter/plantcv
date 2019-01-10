@@ -10,8 +10,8 @@ independent of size.
 
 - **Parameters:**
     - obj - A contour of the plant object (this should be output from the object_composition.py fxn)
-    - mask - This is a binary image. The object should be white and the background should be black
-    - img - A copy of the original image generated using np.copy if debug is true it will be drawn on
+    - mask - This is a binary image. The object should be white and the background should be black.
+    - img - A copy of the original image (RGB or grayscale) generated using np.copy
 - **Context:**
     - Used to identify a set of sixty equidistant landmarks on the vertical axis. Once scaled these can be used for shape analysis.
     
@@ -20,14 +20,15 @@ independent of size.
 ![Screenshot](img/documentation_images/y_axis_pseudolandmarks/ypl_example_image.jpg)
 
 ```python
+
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 # Identify a set of land mark points
 # Results in set of point values that may indicate tip points
-device, left, right, center_h  = pcv.y_axis_pseudolandmarks(obj, mask, img)
+left, right, center_h  = pcv.y_axis_pseudolandmarks(obj, mask, img)
 ```
 
 **Image of points selected**

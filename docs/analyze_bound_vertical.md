@@ -13,14 +13,14 @@ best if the pot size/position of the plant remains relatively constant.
     - obj - single or grouped contour object
     - mask - binary mask of selected contours
     - line_position = position of boundary line (a value of 0 would draw the line through the left of the image)
-    - filename - False or image name. If defined print image
+    - filename - False (default) or image name. If defined print image
 - **Context:**
     - Used to define a boundary line for the image, to find the width to the right and to the left as well as area to the right and to the left of a boundary line.
     - Could also be used as a method of flagging images about to go out-of-bounds
 - **Example use:**
     - [Use of horizonal companion tool in In VIS Tutorial](vis_tutorial.md)
 
-**Output Data Units:** 
+- **Output Data Units:**
     - X-Position - Position of the bound line used for measurement (from left side of image), pixels (units)  
     - Width-Left-Bound - Extent-x of object to the left of bound line, pixels (units)  
     - Width-Right-Bound - Extent-x of object to the right of bound line, pixels (units)  
@@ -30,10 +30,10 @@ best if the pot size/position of the plant remains relatively constant.
     - Percent-Right-Bound - percentage of total area right of the bound line  
 
 ```python
+
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
-
 pcv.params.debug = "print"
 
 # Set Boundary Line    

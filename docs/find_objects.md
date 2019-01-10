@@ -24,6 +24,7 @@ Find objects within the image.
 ![Screenshot](img/documentation_images/find_objects/mask.jpg)
 
 ```python
+
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)

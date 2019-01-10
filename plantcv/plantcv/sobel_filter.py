@@ -15,9 +15,9 @@ def sobel_filter(gray_img, dx, dy, k):
 
     Inputs:
     gray_img = Grayscale image data
-    dx       = derivative of x to analyze (1-3)
-    dy       = derivative of x to analyze (1-3)
-    k        = specifies the size of the kernel (must be an odd integer: 1,3,5...)
+    dx       = derivative of x to analyze
+    dy       = derivative of x to analyze
+    k        = specifies the size of the kernel (must be an odd integer: 1,3,5, ... , 31)
 
     Returns:
     sb_img   = Sobel filtered image

@@ -8,8 +8,8 @@ Reads image into numpy ndarray and splits the path and image filename. This is a
 
 - **Parameters:**
     - filename - image file to be read (possibly including a path)
-    - bayerpattern  - arrangement of the pixels. Often found by trial and error. ("BG","GB","RG","GR")
-    - alg - algorithm with which to demosaic the image. ("default","EdgeAware","VariableNumberGradients")
+    - bayerpattern  - arrangement of the pixels. Often found by trial and error. Either "BG" (default), "GB", "RG", "GR".
+    - alg - algorithm with which to demosaic the image. Either "default" (default), "EdgeAware", "VariableNumberGradients". Not case sensitive.
 
 - **Context:**
     - Reads in an image file with Bayer mosaic pixel pattern to be processed
@@ -23,5 +23,5 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 #read in image
-img, path, img_filename=pcv.readbayer("home/user/images/test-image.tiff")
+img, path, img_filename = pcv.readbayer("home/user/images/test-image.tiff")
 ```

@@ -10,8 +10,8 @@ This function take a image with multiple contours and clusters them based on use
     - img - RGB or grayscale image data for plotting
     - roi_objects - object contours in an image that are needed to be clustered.
     - roi_obj_hierarchy - object hierarchy
-    - nrow - approximate number of rows
-    - ncol - approximate number of columns
+    - nrow - approximate number of rows (default nrow=1)
+    - ncol - approximate number of columns (default ncol=1)
 - **Context:**
     - Cluster contours based on number of approximate rows and columns
 - **Example use:**
@@ -23,6 +23,7 @@ This function take a image with multiple contours and clusters them based on use
 ![Screenshot](img/documentation_images/cluster_contour/13_roi_mask.jpg)
 
 ```python
+
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
@@ -30,7 +31,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # clusters them based on user input of rows and columns
-clusters_i, contours,hierarchy = pcv.cluster_contours(img, roi_objects, roi_obj_hierarchy, 4, 6)
+clusters_i, contours, hierarchy = pcv.cluster_contours(img, roi_objects, roi_obj_hierarchy, 4, 6)
 ```
 
 **Cluster Contour Image**

@@ -13,7 +13,7 @@ Primary Key (PK) and Foreign Key (FK). Foreign Keys are used to join tables in q
 
 ## Summary of Output Measurements and Units
 
-### Analyze object function (features table)
+### [Analyze object](analyze_shape.md) function (features table)
 
 | Measurement          | Units   | Description                                                                                               | 
 | -------------------- | ------- |---------------------------------------------------------------------------------------------------------- | 
@@ -35,7 +35,7 @@ Primary Key (PK) and Foreign Key (FK). Foreign Keys are used to join tables in q
 | ellipse_angle        | degrees | degrees of rotation of the bounding ellipse major axis                                                    |
 | ellipse_eccentricity | none    | [eccentricity](https://en.wikipedia.org/wiki/Eccentricity_(mathematics)#Ellipses) of the bounding ellipse |
 
-### Analyze bound function (features table)
+### Analyze bound function (features table), either [horizontal](analyze_bound_horizontal.md) or [vertical](analyze_bound_vertical.md)
 
 | Measurement              | Units   | Description                                                          | 
 | ------------------------ | ------- |--------------------------------------------------------------------- | 
@@ -47,7 +47,7 @@ Primary Key (PK) and Foreign Key (FK). Foreign Keys are used to join tables in q
 | below_bound_area         | pixels  | area of object below the y-position                                  |
 | percent_below_bound_area | none    | percentage of total object area below the y-position                 |
 
-### Report size marker function (features table)
+### [Report size marker](report_size_marker.md) function (features table)
 
 | Measurement              | Units   | Description                                                                                               | 
 | ------------------------ | ------- |---------------------------------------------------------------------------------------------------------- | 
@@ -56,13 +56,13 @@ Primary Key (PK) and Foreign Key (FK). Foreign Keys are used to join tables in q
 | marker_minor_axis_length | pixels  | length of the minor axis of the marker bounding ellipse                                                   |
 | marker_eccentricity      | none    | [eccentricity](https://en.wikipedia.org/wiki/Eccentricity_(mathematics)#Ellipses) of the bounding ellipse |
 
-### Watershed segmentation function (features table)
+### [Watershed segmentation](watershed.md) function (features table)
 
 | Measurement            | Units   | Description                                                          | 
 | ---------------------- | ------- |--------------------------------------------------------------------- | 
 | estimated_object_count | none    | number of segmented objects (e.g. leaves)                            | 
  
-### Analyze color function (signal table)
+### [Analyze color](analyze_color.md) function (signal table)
 
 | Measurement            | Units   | Description                                                                                      | 
 | ---------------------- | ------- |------------------------------------------------------------------------------------------------- | 
@@ -71,7 +71,7 @@ Primary Key (PK) and Foreign Key (FK). Foreign Keys are used to join tables in q
 | values                 | none    | list of pixel intensity value counts per bin                                                     |
 | bin_values             | none    | list of bin intensity values                                                                     |
 
-### Analyze NIR intensity function (signal table)
+### [Analyze NIR](analyze_NIR_intensity.md) intensity function (signal table)
 
 | Measurement            | Units   | Description                                                                                      | 
 | ---------------------- | ------- |--------------------------------------------- | 

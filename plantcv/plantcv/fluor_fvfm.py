@@ -22,8 +22,9 @@ def fluor_fvfm(fdark, fmin, fmax, mask, filename, bins=256):
     bins        = number of bins (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
 
     Returns:
-    hist_header = fvfm data table headers
-    hist_data   = fvfm data table values
+    hist_header     = fvfm data table headers
+    hist_data       = fvfm data table values
+    analysis_images = pseudocolored image
 
     :param fdark: numpy.ndarray
     :param fmin: numpy.ndarray
@@ -33,6 +34,7 @@ def fluor_fvfm(fdark, fmin, fmax, mask, filename, bins=256):
     :param bins: int
     :return hist_header: list
     :return hist_data: list
+    :return analysis_images: numpy.ndarray
     """
 
     # Auto-increment the device counter

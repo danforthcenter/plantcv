@@ -28,7 +28,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Apply median blur to a binary image that has been previously thresholded.
-blur_5 = pcv.median_blur(img, 5)
+blur_5 = pcv.median_blur(gray_img, 5)
 ```
 
 **Median blur (k = 5)**
@@ -42,9 +42,9 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Apply median blur to a binary image that has been previously thresholded.
-blur_11 = pcv.median_blur(img, 11)
+blur_11 = pcv.median_blur(gray_img, (11, 11))
 ```
 
-**Median blur (k = 11)**
+**Median blur (k = (11,11))**
 
 ![Screenshot](img/documentation_images/median_blur/median_blur11.jpg)

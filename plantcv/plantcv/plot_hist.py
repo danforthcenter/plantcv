@@ -14,7 +14,7 @@ def plot_hist(img, name=False):
     :param img: numpy.ndarray
     :param name: str
     :return bins: list
-    : return hist: list
+    :return hist: list
     """
 
     import matplotlib

@@ -35,8 +35,8 @@ There are two major steps to developing an image analysis pipeline:
 object segmentation, we detail those approaches below.
 2.  Object analysis - Analysis on isolated objects, the categories of object analysis are below.
 
-We primarily use Jupyter notebooks for pipeline development, and there is more information about using Jupyter 
-notebooks [here](jupyter.md). Once a pipeline has been developed for one image, it's best to test it on other images in 
+We primarily use [Jupyter](jupyter.md) notebooks for pipeline development.
+Once a pipeline has been developed for one image, it's best to test it on other images in
 the dataset to determine how robust the pipeline will be. Example pipelines and tutorials are available and are meant 
 to demonstrate how modules can be used. Keep in mind that modules can be linked together in a variety of different 
 configurations to meet image processing goals so the tutorials simply examples of a few approaches:
@@ -66,7 +66,7 @@ downstream image processing steps like thresholding to be the same between image
 [binary thresholding](binary_threshold.md) or auto thresholding ([Gaussian](gaussian_threshold.md), 
 [mean](mean_threshold.md), [Otsu](otsu_threshold.md), or [triangle](triangle_threshold.md)). For a color image, 
 selecting a channel of an image for thresholding likely involves conversion from RGB to [HSV](rgb2hsv.md) or 
-[LAB](rgb2lab.md) colorspace, then selecting Hue, Saturation, Value, Lightness, Green-Magenta, or Blue-Yellow channels. 
+[LAB](rgb2lab.md) color space, then selecting Hue, Saturation, Value, Lightness, Green-Magenta, or Blue-Yellow channels.
 It's best to select a channel that maximizes contrast between the target object and the background. When thresholding 
 an image to segment a target object, it may not be possible to isolate just the target object. Multiple thresholding 
 steps on various channels may be necessary as well as downstream noise reduction steps. For an example of this approach 
@@ -80,18 +80,14 @@ noise reduction steps following the background subtraction method.
 *  Machine Learning (classification) methods - For these approaches, target objects can be segmented after a training 
 set is built (the training set might need to be built using background subtraction or thresholding methods). Once the 
 training set is built, the trained classifier is used to segment the features of interest. See the 
-[machine learning tutorial](machine_learning_tutorial.md) and the [naive bayes function](naive_bayes.md) for more 
+[machine learning tutorial](machine_learning_tutorial.md) and the [naive Bayes function](naive_bayes.md) for more
 information. There still may need to be noise reduction steps following machine learning-based segmentation.
 
 #####Noise Reduction 
 
 *  After a thresholding, background subtraction, or a machine learning approach for object segmentation, there will 
-likely be some 'noise' (non-target-object spots) in the image. Those can be filled in using modules like fill or blur 
-(median blur or Gaussian blur). Keep in mind that filling in noise can be a very slow step if there are too many 
-non-target objects to evaluate. If the step seems to be taking too long (longer than 30 seconds for example), then you 
-should check previous steps to see if it is possible to reduce noise further before using a fill (for example consider 
-doing a threshold on a different channel then joining the two channels with a Logical operation like an 
-['And'](logical_and.md)).
+likely be some 'noise' (non-target-object spots) in the image. Those can be filled in using modules like [fill](fill.md) or blur
+([median blur](median_blur.md) or [Gaussian blur](gaussian_blur.md)).
 
 #####Region of Interest
 
