@@ -87,11 +87,7 @@ information. There still may need to be noise reduction steps following machine 
 
 *  After a thresholding, background subtraction, or a machine learning approach for object segmentation, there will 
 likely be some 'noise' (non-target-object spots) in the image. Those can be filled in using modules like [fill](fill.md) or blur
-([median blur](median_blur.md) or [Gaussian blur](gaussian_blur.md)). Keep in mind that filling in noise can be a very slow step if there are too many
-non-target objects to evaluate. If the step seems to be taking too long (longer than 30 seconds for example), then you 
-should check previous steps to see if it is possible to reduce noise further before using a fill (for example consider 
-doing a threshold on a different channel then joining the two channels with a Logical operation like an 
-['And'](logical_and.md)).
+([median blur](median_blur.md) or [Gaussian blur](gaussian_blur.md)).
 
 #####Region of Interest
 

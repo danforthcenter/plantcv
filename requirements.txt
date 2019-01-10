@@ -6,4 +6,4 @@ scipy
 scikit-image
 pytest
 plotnine
-opencv-python
+opencv-python<4
