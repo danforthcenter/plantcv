@@ -20,6 +20,7 @@ independent of size.
 ![Screenshot](img/documentation_images/y_axis_pseudolandmarks/ypl_example_image.jpg)
 
 ```python
+
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
