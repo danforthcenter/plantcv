@@ -78,8 +78,6 @@ def main():
     
     # Read image
     img, path, filename = pcv.readimage(args.image)
-    
-    # Pipeline step
 ```
 
 **Figure 1.** Original image.

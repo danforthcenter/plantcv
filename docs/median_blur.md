@@ -1,7 +1,7 @@
 ## Median Blur
 
 Applies a median blur filter. Applies median value to central pixel within a kernel size (ksize x ksize). 
-The function is a wrapper for the OpenCV function [median blur](https://docs.opencv.org/2.4/modules/imgproc/doc/filtering.html?highlight=medianblur#medianblur).
+The function is a wrapper for the SciPy function [median filter](https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.ndimage.filters.median_filter.html).
 
 **plantcv.median_blur**(*gray_img, ksize*)**
 
