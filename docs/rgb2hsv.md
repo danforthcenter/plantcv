@@ -1,6 +1,6 @@
 ## RGB to HSV
 
-Convert image from RGB colorspace to HSV color space and split the channels.
+Convert image from RGB color space to HSV color space and split the channels.
 
 **plantcv.rgb2gray_hsv**(*rgb_img, channel*)
 

@@ -1,4 +1,4 @@
-## RGB to HSV
+## RGB to Gray
 
 Convert image from RGB color space to gray-scale.
 

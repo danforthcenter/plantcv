@@ -14,7 +14,7 @@ Resizes images, used to resize masks over other images.
 - **Context:**
     - Resizes images.
 - **Example use:**
-    - [Use In NIR-Vis Tutorial](vis_nir_tutorial.md)
+    - [Use In NIR/VIS Tutorial](vis_nir_tutorial.md)
     
 **Input image**
 

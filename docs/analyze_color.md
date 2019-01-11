@@ -19,7 +19,7 @@ Extract color data of objects and produce pseudocolored images, can extract data
     - Generates histogram of color channel data.
     - Generaes pseudocolored output image of one of the channels specified.
 - **Example use:**  
- - [Use In VIS Tutorial](vis_tutorial.md)
+    - [Use In VIS Tutorial](vis_tutorial.md)
  
 - **Output Data Units:**  
     - Red Channel - histogram of object pixel intensity values 0 (unsaturated) to 255 (saturated)  
