@@ -2,7 +2,7 @@
 
 Convert image from RGB color space to LAB color space and split the channels.
 
-**plantcv.rgb2gray_hsv**(*rgb_img, channel*)
+**plantcv.rgb2gray_lab**(*rgb_img, channel*)
 
 **returns** split image (l, a, or b channel)
 

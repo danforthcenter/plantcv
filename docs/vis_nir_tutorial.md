@@ -94,7 +94,7 @@ This particular image was captured by a digital camera, just to show that PlantC
   
 In some pipelines (especially ones captured with a high-throughput phenotyping systems, where background is predictable) we first threshold out background.
 In this particular pipeline we do some pre-masking of the background. The goal is to remove as much background as possible without losing any information from the plant.
-In order to perform a binary threshold on an image you need to select one of the color channels H,S,V,L,A,B,R,G,B.
+In order to perform a binary threshold on an image you need to select one of the color channels H, S, V, L, A, B, R, G, B.
 Here we convert the [RGB image to HSV](rgb2hsv.md) color space then extract the 's' or saturation channel, but any channel can be selected based on user need.
 If some of the plant is missed or not visible then thresholded channels may be combined (a later step).
 

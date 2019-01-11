@@ -166,7 +166,7 @@ To deploy a pipeline over a full image set please see tutorial on [pipeline para
 
 ## Creating Masks
 
-We have added functions to semi-automate the tasks of [detecting](transform_correct_color.md#automatically-find-a-color-card) and [creating a color card mask](transform_correct_color.md#create-a-labeled-lolor-lard-lask).
+We have added functions to semi-automate the tasks of [detecting](transform_correct_color.md#automatically-find-a-color-card) and [creating a color card mask](transform_correct_color.md#create-a-labeled-color-card-mask).
 
 Or manually create a labeled mask as described below:
 
