@@ -33,7 +33,44 @@ PlantCV has been tested on the following systems:
 - Jupyter
 - SQLite
 
-### Conda-based installation procedure
+### Install via a package manager
+
+Stable releases of PlantCV are available through both the Python Package Index (PyPI) and `conda` through the 
+[Bioconda channel](https://bioconda.github.io/). We plan on releasing new versions of PlantCV into both platforms on
+at least a monthly basis.
+
+#### PyPI
+
+To install from PyPI run the following in any type of virtual environment, as an administrator, or add the `--user` 
+flag if needed.
+
+```bash
+pip install plantcv
+```
+
+#### Conda
+
+To install using `conda` first install [Anaconda](https://www.anaconda.com/download/) or 
+[Miniconda](https://conda.io/miniconda.html) if you have not already. If needed, add the following channels to your
+`conda` configuration.
+
+```bash
+conda config --add channels defaults
+conda config --add channels bioconda
+conda config --add channels conda-forge
+```
+
+Then create an environment and install PlantCV.
+
+```bash
+conda create -n plantcv plantcv
+```
+
+### Manual installs
+
+You can build PlantCV from the source on GitHub if you are a developer or want the absolute latest version possible.
+
+#### Conda-based installation procedure
 
 **Platforms**: Linux, macOS, Windows
 
@@ -94,7 +131,7 @@ optional `sqlite3` package.
 conda install -c blaze sqlite3
 ```
 
-### Using PlantCV containers
+#### Using PlantCV containers
 
 **Platforms**: Linux, macOS, Windows
 
@@ -131,7 +168,7 @@ docker run -v /home/user:/data danforthcenter/plantcv \
 python /data/test-script.py -i /data/test-image.png -o /data -r /data/plantcv-results.txt
 ```
 
-### Script-based installation
+#### Script-based installation
 
 **Platforms**: Ubuntu, macOS
 
