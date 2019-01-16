@@ -66,6 +66,12 @@ Then create an environment and install PlantCV.
 conda create -n plantcv plantcv
 ```
 
+Or install PlantCV in your current environment.
+
+```bash
+conda install plantcv
+```
+
 ### Manual installs
 
 You can build PlantCV from the source on GitHub if you are a developer or want the absolute latest version possible.
@@ -92,7 +98,7 @@ a zip file of the package from [GitHub](https://github.com/danforthcenter/plantc
 
 Once you have `conda` and `git` or GitHub Desktop installed, clone the PlantCV repository, open a command-line terminal 
 application (on Windows there are other options but for this tutorial we will use the Anaconda Prompt application). In
-the examples below we use Python 3.7, feel free to use our Python 2.7 or 3.6 environment instead, or create your own.
+the example below we use an environment configuration file that is included with PlantCV.
 
 ```bash
 # Clone PlantCV if you did not use the GitHub Desktop application
@@ -102,13 +108,10 @@ git clone https://github.com/danforthcenter/plantcv.git
 cd plantcv
 
 # Create a conda environment named "plantcv" and automatically install the dependencies
-conda env create -n plantcv -f ./environments/environment37.yml
+conda env create -n plantcv -f environment.yml
 
 # Activate the plantcv environment (you will have to do this each time you start a new session)
 source activate plantcv
-
-# Install OpenCV (not through conda)
-pip install opencv-python
 
 # Test PlantCV (optional)
 python setup.py test
