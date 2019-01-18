@@ -85,7 +85,7 @@ rgb_img, path, filename = pcv.readimage("target_img.png")
 df, start, space = pcv.transform.find_color_card(rgb_img=rgb_img)
 
 # Use these outputs to create a labeled color card mask
-mask = pcv.transform.create_color_card_mask(rgb_img=img, start_coord=start, spacing=space, chip_dims=(10,10), ncols=6, nrows=4)
+mask = pcv.transform.create_color_card_mask(rgb_img=img, radius=10, start_coord=(400,600), spacing=(30,30), ncols=6, nrows=4)
 ```
 
 **Image automatically detected and masked**
@@ -123,6 +123,9 @@ Creates a uniquely labeled mask for each color chip based on user-defined positi
 from plantcv import plantcv as pcv
 
 rgb_img, path, filename = pcv.readimage("target_img.png")
+
+mask = pcv.transform.create_color_card_mask(rgb_img=img, radius=10, start_coord=(400,600), spacing=(30,30), ncols=6, nrows=4)
+
 ```
 
 **Image with color card**

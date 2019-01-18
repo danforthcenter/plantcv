@@ -1,4 +1,4 @@
-## Analyze NIR intensity
+## Analyze NIR Intensity
 
 This function calculates the intensity of each pixel associated with the plant and writes 
 the values out to a file. Can also print out a histogram plot of pixel intensity and a pseudocolor image of the plant.
@@ -11,8 +11,8 @@ the values out to a file. Can also print out a histogram plot of pixel intensity
     - gray_img - 8- or 16-bit grayscale image data
     - mask     - Binary mask made from selected contours
     - bins     - Number of class to divide spectrum into
-    - histplot - if True plots histogram of intensity values
-    - filename - Name for output images
+    - histplot - if True plots histogram of intensity values (default histplot = False)
+    - filename - Name for output images (default filename = False)
 - **Context:**
     - Used to mask rectangular regions of an image
 - **Example use:**

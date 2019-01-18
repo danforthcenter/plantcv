@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.org/danforthcenter/plantcv.svg?branch=master)](https://travis-ci.org/danforthcenter/plantcv)
 [![Coverage Status](https://coveralls.io/repos/github/danforthcenter/plantcv/badge.svg)](https://coveralls.io/github/danforthcenter/plantcv)
 [![Documentation Status](http://readthedocs.org/projects/plantcv/badge/?version=latest)](http://plantcv.readthedocs.io/en/latest/?badge=latest)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master)
 [![Docker Pulls](https://img.shields.io/docker/pulls/danforthcenter/plantcv.svg)](https://hub.docker.com/r/danforthcenter/plantcv/)
 [![GitHub release](https://img.shields.io/github/release/danforthcenter/plantcv.svg)](https://github.com/danforthcenter/plantcv/releases)
 [![license](https://img.shields.io/github/license/danforthcenter/plantcv.svg)](https://github.com/danforthcenter/plantcv/blob/master/LICENSE)
@@ -27,7 +28,8 @@ If you use PlantCV please cite us [1].
 *  Installation instructions can be found [here](http://plantcv.readthedocs.io/en/latest/installation/)
 
 *  Further documentation for PlantCV functions and use can be found at the 
-[PlantCV Read the Docs site](http://plantcv.readthedocs.io/)
+[PlantCV Read the Docs site](http://plantcv.readthedocs.io/) and we have added
+[interactive documentation](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=index.ipynb).
 
 *  Test image sets can be found on our [Data page](http://plantcv.danforthcenter.org/pages/data.html). 
 We recommend first testing with sets from the Danforth Center.

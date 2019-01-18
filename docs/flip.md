@@ -1,6 +1,6 @@
 ## Flip Image
 
-Flips and image in either the horizontal or vertical direction
+Flips an image in either the horizontal or vertical direction
 
 **plantcv.flip**(*img, direction*)
 
