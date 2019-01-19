@@ -12,7 +12,7 @@ This is a filtering method used to identify and highlight gradient edges/feature
 - **Parameters:**
     - img - RGB or grayscale image data
     - dx - derivative of x to analyze (0 or 1)
-    - dy - derivative of x to analyze (0 or 1)
+    - dy - derivative of y to analyze (0 or 1)
     - scale - scaling factor applied (multiplied) to computed Scharr values (scale = 1 is unscaled)
 - **Context:**
     - This is a filtering method used to identify and highlight gradient edges/features using the 1st derivative.

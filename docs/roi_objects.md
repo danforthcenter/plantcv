@@ -13,8 +13,8 @@ completely within the image.
 - **Parameters:**
     - img = RGB or grayscale image data to display kept objects on
     - roi_type = 'cutto' or 'partial' (include objects that are partially inside or overlapping with ROI)
-    - roi_contour = contour of roi, output from "define_roi" function
-    - roi_hierarchy = contour of roi, output from "define_roi" function
+    - roi_contour = contour of roi, output from one of the pcv.roi subpackage functions
+    - roi_hierarchy = contour of roi, output from one of the pcv.roi subpackage functions
     - object_contour = contours of objects, output from "find_objects" function 
     - obj_hierarchy = hierarchy of objects, output from "find_objects" function
     

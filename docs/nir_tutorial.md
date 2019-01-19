@@ -161,7 +161,7 @@ sbx_img = pcv.sobel_filter(img, 1, 0, 1)
 sby_img = pcv.sobel_filter(img, 0, 1, 1)
 
 # Combine the effects of both x and y filters through matrix addition
-# This will capture edges identified within each plane and emphesize edges found in both images
+# This will capture edges identified within each plane and emphasize edges found in both images
 sb_img = pcv.image_add(sbx_img, sby_img)
 ```
 
