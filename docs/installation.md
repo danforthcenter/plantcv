@@ -33,7 +33,50 @@ PlantCV has been tested on the following systems:
 - Jupyter
 - SQLite
 
-### Conda-based installation procedure
+### Install via a package manager
+
+Stable releases of PlantCV are available through both the Python Package Index (PyPI) and `conda` through the 
+[Bioconda channel](https://bioconda.github.io/). We plan on releasing new versions of PlantCV into both platforms on
+at least a monthly basis.
+
+#### PyPI
+
+To install from PyPI run the following in any type of virtual environment, as an administrator, or add the `--user` 
+flag if needed.
+
+```bash
+pip install plantcv
+```
+
+#### Conda
+
+To install using `conda` first install [Anaconda](https://www.anaconda.com/download/) or 
+[Miniconda](https://conda.io/miniconda.html) if you have not already. If needed, add the following channels to your
+`conda` configuration.
+
+```bash
+conda config --add channels defaults
+conda config --add channels bioconda
+conda config --add channels conda-forge
+```
+
+Then create an environment and install PlantCV.
+
+```bash
+conda create -n plantcv plantcv
+```
+
+Or install PlantCV in your current environment.
+
+```bash
+conda install plantcv
+```
+
+### Manual installs
+
+You can build PlantCV from the source on GitHub if you are a developer or want the absolute latest version possible.
+
+#### Conda-based installation procedure
 
 **Platforms**: Linux, macOS, Windows
 
@@ -55,7 +98,7 @@ a zip file of the package from [GitHub](https://github.com/danforthcenter/plantc
 
 Once you have `conda` and `git` or GitHub Desktop installed, clone the PlantCV repository, open a command-line terminal 
 application (on Windows there are other options but for this tutorial we will use the Anaconda Prompt application). In
-the examples below we use Python 3.7, feel free to use our Python 2.7 or 3.6 environment instead, or create your own.
+the example below we use an environment configuration file that is included with PlantCV.
 
 ```bash
 # Clone PlantCV if you did not use the GitHub Desktop application
@@ -65,13 +108,10 @@ git clone https://github.com/danforthcenter/plantcv.git
 cd plantcv
 
 # Create a conda environment named "plantcv" and automatically install the dependencies
-conda env create -n plantcv -f ./environments/environment37.yml
+conda env create -n plantcv -f environment.yml
 
 # Activate the plantcv environment (you will have to do this each time you start a new session)
 source activate plantcv
-
-# Install OpenCV (not through conda)
-pip install opencv-python
 
 # Test PlantCV (optional)
 python setup.py test
@@ -94,7 +134,7 @@ optional `sqlite3` package.
 conda install -c blaze sqlite3
 ```
 
-### Using PlantCV containers
+#### Using PlantCV containers
 
 **Platforms**: Linux, macOS, Windows
 
@@ -131,7 +171,7 @@ docker run -v /home/user:/data danforthcenter/plantcv \
 python /data/test-script.py -i /data/test-image.png -o /data -r /data/plantcv-results.txt
 ```
 
-### Script-based installation
+#### Script-based installation
 
 **Platforms**: Ubuntu, macOS
 
