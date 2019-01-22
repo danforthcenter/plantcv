@@ -276,11 +276,11 @@ def texture(gray_img, kernel, threshold, offset=3, texture_method='dissimilarity
     threshold      = Threshold value (0-255)
     offset         = Distance offsets
     texture_method = Feature of a grey level co-occurrence matrix, either
-                     ‘contrast’, ‘dissimilarity’, ‘homogeneity’, ‘ASM’, ‘energy’,
-                     or ‘correlation’. For equations of different features see
-                     http://scikit-image.org/docs/dev/api/skimage.feature.html#greycoprops
-    borders        = How the array borders are handled, either ‘reflect’,
-                     ‘constant’, ‘nearest’, ‘mirror’, or ‘wrap’
+                     'contrast', 'dissimilarity', 'homogeneity', 'ASM', 'energy',
+                     or 'correlation'.For equations of different features see
+                     scikit-image.
+    borders        = How the array borders are handled, either 'reflect',
+                     'constant', 'nearest', 'mirror', or 'wrap'
     max_value      = Value to apply above threshold (usually 255 = white)
 
 
