@@ -1,8 +1,10 @@
 # Function to scan for pseudolandmarks along the y-axis
 
 import cv2
+import os
 import numpy as np
 from plantcv.plantcv import plot_image
+from plantcv.plantcv import print_image
 from plantcv.plantcv import params
 from plantcv.plantcv import fatal_error
 
@@ -136,22 +138,25 @@ def y_axis_pseudolandmarks(obj, mask, img):
         center_h = list(zip(x_centroids, y_centroids))
         center_h = np.array(center_h)
         center_h.shape = (20, 1, 2)
+
+        img2 = np.copy(img)
+        for i in left:
+            x = i[0, 0]
+            y = i[0, 1]
+            cv2.circle(img2, (int(x), int(y)), 10, (255, 0, 0), -1)
+        for i in right:
+            x = i[0, 0]
+            y = i[0, 1]
+            cv2.circle(img2, (int(x), int(y)), 10, (255, 0, 255), -1)
+        for i in center_h:
+            x = i[0, 0]
+            y = i[0, 1]
+            cv2.circle(img2, (int(x), int(y)), 10, (0, 79, 255), -1)
+
         if params.debug == 'plot':
-            img2 = np.copy(img)
-            for i in left:
-                x = i[0, 0]
-                y = i[0, 1]
-                cv2.circle(img2, (int(x), int(y)), 10, (255, 0, 0), -1)
-            for i in right:
-                x = i[0, 0]
-                y = i[0, 1]
-                cv2.circle(img2, (int(x), int(y)), 10, (255, 0, 255), -1)
-            for i in center_h:
-                x = i[0, 0]
-                y = i[0, 1]
-                cv2.circle(img2, (int(x), int(y)), 10, (0, 79, 255), -1)
-            # print_image(img2, (str(device) + '_y_axis_pseudolandmarks.png'))
             plot_image(img2)
+        elif params.debug == 'print':
+            print_image(img2, os.path.join(params.debug_outdir, (str(params.device) + '_y_axis_pseudolandmarks.png')))
         return left, right, center_h
     
     if extent < 21:
@@ -172,24 +177,27 @@ def y_axis_pseudolandmarks(obj, mask, img):
             fatal_error('Check input parameters, first moment=0')
         else:
             cmx, cmy = (m['m10'] / m['m00'], m['m01'] / m['m00'])
-        c_points = [cmx] * 20
-        center_h = list(zip(c_points, y_coords))
-        center_h = np.array(center_h)
-        center_h.shape = (20, 1, 2)
+            c_points = [cmx] * 20
+            center_h = list(zip(c_points, y_coords))
+            center_h = np.array(center_h)
+            center_h.shape = (20, 1, 2)
+
+        img2 = np.copy(img)
+        for i in left:
+            x = i[0, 0]
+            y = i[0, 1]
+            cv2.circle(img2, (int(x), int(y)), 10, (255, 0, 0), -1)
+        for i in right:
+            x = i[0, 0]
+            y = i[0, 1]
+            cv2.circle(img2, (int(x), int(y)), 10, (255, 0, 255), -1)
+        for i in center_h:
+            x = i[0, 0]
+            y = i[0, 1]
+            cv2.circle(img2, (int(x), int(y)), 10, (0, 79, 255), -1)
+
         if params.debug == 'plot':
-            img2 = np.copy(img)
-            for i in left:
-                x = i[0, 0]
-                y = i[0, 1]
-                cv2.circle(img2, (int(x), int(y)), 10, (255, 0, 0), -1)
-            for i in right:
-                x = i[0, 0]
-                y = i[0, 1]
-                cv2.circle(img2, (int(x), int(y)), 10, (255, 0, 255), -1)
-            for i in center_h:
-                x = i[0, 0]
-                y = i[0, 1]
-                cv2.circle(img2, (int(x), int(y)), 10, (0, 79, 255), -1)
-            # print_image(img2, (str(device) + '_y_axis_pseudolandmarks.png'))
             plot_image(img2)
+        elif params.debug == 'print':
+            print_image(img2, os.path.join(params.debug_outdir, (str(params.device) + '_y_axis_pseudolandmarks.png')))
         return left, right, center_h
