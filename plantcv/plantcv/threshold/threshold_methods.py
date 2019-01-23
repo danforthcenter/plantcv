@@ -8,7 +8,8 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
-
+from skimage.feature import greycomatrix, greycoprops
+from scipy.ndimage import generic_filter
 
 # Binary threshold
 def binary(gray_img, threshold, max_value, object_type="light"):
@@ -283,7 +284,6 @@ def texture(gray_img, kernel, threshold, offset=3, texture_method='dissimilarity
                      'constant', 'nearest', 'mirror', or 'wrap'
     max_value      = Value to apply above threshold (usually 255 = white)
 
-
     Returns:
     bin_img        = Thresholded, binary image
 
@@ -296,13 +296,13 @@ def texture(gray_img, kernel, threshold, offset=3, texture_method='dissimilarity
     :param max_value: int
     :return bin_img: numpy.ndarray
     """
-    from skimage.feature import greycomatrix, greycoprops
-    from scipy.ndimage import generic_filter
 
     # Function that calculates the texture of a kernel
     def calc_texture(inputs):
         inputs = np.reshape(a=inputs, newshape=[kernel, kernel])
         inputs = inputs.astype(np.uint8)
+        # Greycomatrix takes image, distance offset, angles (in radians), symmetric, and normed
+        # http://scikit-image.org/docs/dev/api/skimage.feature.html#skimage.feature.greycomatrix
         glcm = greycomatrix(inputs, [offset], [0], 256, symmetric=True, normed=True)
         diss = greycoprops(glcm, texture_method)[0, 0]
         return diss
