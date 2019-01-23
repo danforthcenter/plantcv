@@ -8,7 +8,8 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
-
+from skimage.feature import greycomatrix, greycoprops
+from scipy.ndimage import generic_filter
 
 # Binary threshold
 def binary(gray_img, threshold, max_value, object_type="light"):
@@ -262,6 +263,58 @@ def triangle(gray_img, max_value, object_type="light", xstep=1):
             plt.grid(True)
             plt.show()
 
+    return bin_img
+
+
+def texture(gray_img, kernel, threshold, offset=3, texture_method='dissimilarity', borders='nearest',
+            max_value=255):
+    """Creates a binary image from a grayscale image using skimage texture calculation for thresholding.
+    This function is quite slow.
+
+    Inputs:
+    gray_img       = Grayscale image data
+    kernel         = Kernel size for texture measure calculation
+    threshold      = Threshold value (0-255)
+    offset         = Distance offsets
+    texture_method = Feature of a grey level co-occurrence matrix, either
+                     'contrast', 'dissimilarity', 'homogeneity', 'ASM', 'energy',
+                     or 'correlation'.For equations of different features see
+                     scikit-image.
+    borders        = How the array borders are handled, either 'reflect',
+                     'constant', 'nearest', 'mirror', or 'wrap'
+    max_value      = Value to apply above threshold (usually 255 = white)
+
+    Returns:
+    bin_img        = Thresholded, binary image
+
+    :param gray_img: numpy.ndarray
+    :param kernel: int
+    :param threshold: int
+    :param offset: int
+    :param texture_method: str
+    :param borders: str
+    :param max_value: int
+    :return bin_img: numpy.ndarray
+    """
+
+    # Function that calculates the texture of a kernel
+    def calc_texture(inputs):
+        inputs = np.reshape(a=inputs, newshape=[kernel, kernel])
+        inputs = inputs.astype(np.uint8)
+        # Greycomatrix takes image, distance offset, angles (in radians), symmetric, and normed
+        # http://scikit-image.org/docs/dev/api/skimage.feature.html#skimage.feature.greycomatrix
+        glcm = greycomatrix(inputs, [offset], [0], 256, symmetric=True, normed=True)
+        diss = greycoprops(glcm, texture_method)[0, 0]
+        return diss
+
+    # Make an array the same size as the original image
+    output = np.zeros(gray_img.shape, dtype=gray_img.dtype)
+
+    # Apply the texture function over the whole image
+    generic_filter(gray_img, calc_texture, size=kernel, output=output, mode=borders)
+
+    # Threshold so higher texture measurements stand out
+    bin_img = binary(gray_img=output, threshold=threshold, max_value=max_value, object_type='light')
     return bin_img
 
 
