@@ -20,6 +20,7 @@ TEST_GRAY_DIM = (2056, 2454)
 TEST_BINARY_DIM = TEST_GRAY_DIM
 TEST_INPUT_COLOR = "input_color_img.jpg"
 TEST_INPUT_GRAY = "input_gray_img.jpg"
+TEST_INPUT_GRAY_SMALL = "input_gray_img_small.jpg"
 TEST_INPUT_BINARY = "input_binary_img.png"
 TEST_INPUT_BAYER = "bayer_img.png"
 TEST_INPUT_ROI = "input_roi.npz"
@@ -3029,6 +3030,20 @@ def test_plantcv_threshold_triangle_incorrect_object_type():
         pcv.params.debug = None
         _ = pcv.threshold.triangle(gray_img=gray_img, max_value=255, object_type="lite", xstep=10)
 
+
+def test_plantcv_threshold_texture():
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY_SMALL), -1)
+    binary_img = pcv.threshold.texture(gray_img, kernel=6, threshold=7, offset=3, texture_method='dissimilarity',
+                                       borders='nearest', max_value=255)
+    # Assert that the output image has the dimensions of the input image
+    if all([i == j] for i, j in zip(np.shape(binary_img), TEST_GRAY_DIM)):
+        # Assert that the image is binary
+        if all([i == j] for i, j in zip(np.unique(binary_img), [0, 255])):
+            assert 1
+        else:
+            assert 0
+    else:
+        assert 0
 
 # ##############################
 # Clean up test files

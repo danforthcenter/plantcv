@@ -106,6 +106,7 @@ pages:
       - 'Mean Adaptive Threshold': mean_threshold.md
       - 'Otsu Auto Threshold': otsu_threshold.md
       - 'Triangle Auto Threshold': triangle_threshold.md
+      - 'Texture Threshold': texture_threshold.md
     - 'Watershed Segmentation': watershed.md
   - 'Package plantcv.learn':
     - 'Naive Bayes': naive_bayes.md

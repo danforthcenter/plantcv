@@ -467,6 +467,11 @@ post v3.0: new_img = **plantcv.image_subtract**(*gray_img1, gray_img2*)
 * pre v3.0dev2: NA
 * post v3.0dev2: bin_img = **plantcv.threshold.otsu**(*gray_img, max_value, object_type="light"*)
 
+#### plantcv.threshold.texture_filter
+
+* pre v3.0: NA
+* post v3.0: bin_img = **plantcv.threshold.texture_filter**(*gray_img, kernel, threshold, offset=3, texture_method='dissimilarity', borders='nearest', max_value=255*)
+
 #### plantcv.threshold.triangle
 
 * pre v3.0dev2: NA
