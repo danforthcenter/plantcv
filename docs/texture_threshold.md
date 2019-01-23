@@ -26,7 +26,7 @@ texture calculation for thresholding.
 - **Example use:**
     - [Interactive Documentation](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks%2Fthreshold.ipynb)
 
-**Original image (lightness channel**
+**Original image (lightness channel)**
 
 ![Screenshot](img/documentation_images/texture_threshold/texture_gray.jpg)
 
@@ -42,7 +42,7 @@ import cv2
 
 pcv.params.debug = "print"
 
-# Create binary image from a gray image based on texture values.
+# Create binary image of edges.
 texture_img = pcv.threshold.texture(gray_img, kernel=6, threshold=7, offset=3, texture_method='dissimilarity', borders='nearest', max_value=255)
 ```
 

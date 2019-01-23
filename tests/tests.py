@@ -564,6 +564,36 @@ def test_plantcv_auto_crop_grayscale_input():
     assert x > x1
 
 
+def test_plantcv_canny_edge_detect():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_canny_edge_detect")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.canny_edge_detect(img=img)
+    _ = pcv.canny_edge_detect(img=img, mask=mask, mask_color='white')
+    _ = pcv.canny_edge_detect(img=img, mask=mask, mask_color='black')
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    _ = pcv.canny_edge_detect(img=img)
+    # Test with debug = None
+    pcv.params.debug = None
+    edge_img = pcv.canny_edge_detect(gray_img=img, kernel=2, i=1)
+    # Assert that the output image has the dimensions of the input image
+    if all([i == j] for i, j in zip(np.shape(edge_img), TEST_BINARY_DIM)):
+        # Assert that the image is binary
+        if all([i == j] for i, j in zip(np.unique(edge_img), [0, 255])):
+            assert 1
+        else:
+            assert 0
+    else:
+        assert 0
+
+
 def test_plantcv_cluster_contours():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_cluster_contours")

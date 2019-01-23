@@ -1,9 +1,8 @@
 # Canny edge detection
 
-from plantcv.plantcv import invert
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
-from plantcv.plantcv import rgb2gray
+from plantcv.plantcv import dilate
 from plantcv.plantcv import params
 from plantcv.plantcv import fatal_error
 from skimage import feature
@@ -12,7 +11,7 @@ import cv2
 import os
 
 
-def canny_edge_detect(img, sigma=1.0, low_thresh=None, high_thresh=None,
+def canny_edge_detect(img, sigma=1.0, low_thresh=None, high_thresh=None, thickness=1,
                       mask=None, mask_color=None, use_quantiles=False):
     """Edge filter an image using the Canny algorithm.
 
@@ -23,6 +22,7 @@ def canny_edge_detect(img, sigma=1.0, low_thresh=None, high_thresh=None,
                     10% of the image's max (OPTIONAL)
     high_thresh   = Upper bound for hysteresis thresholding (linking edges). If None (default) then high_thresh is set
                     to 20% of the image's max (OPTIONAL)
+    thickness     = How thick the edges should appear, default thickness=1 (OPTIONAL)
     mask          = Mask to limit the application of Canny to a certain area, takes a binary img. (OPTIONAL)
     mask_color    = Color of the mask provided; either None (default), 'white', or 'black'
     use_quantiles = Default is False, if True then treat low_thresh and high_thresh as quantiles of the edge magnitude
@@ -36,6 +36,7 @@ def canny_edge_detect(img, sigma=1.0, low_thresh=None, high_thresh=None,
     :param sigma = float
     :param low_thresh: float
     :param high_thresh: float
+    :param thickness: int
     :param mask: numpy.ndarray
     :param mask_color: str
     :param use_quantiles: bool
@@ -56,25 +57,32 @@ def canny_edge_detect(img, sigma=1.0, low_thresh=None, high_thresh=None,
     # Check if the image is grayscale; if color img then make it grayscale
     dimensions = np.shape(img)
     if len(dimensions) == 3:
-        img = rgb2gray(img)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    # Apply mask if provided one
+    # skimage needs a bool mask
     if mask is not None:
         if mask_color == 'white':
-            mask = cv2.bitwise_not(mask)
             mask = np.array(mask, bool)
         elif mask_color == 'black':
+            mask = cv2.bitwise_not(mask)
             mask = np.array(mask, bool)
         else:
             fatal_error('Mask was provided but mask_color' + str(mask_color) + ' is not "white" or "black"!')
 
     # Run Canny edge detection on the grayscale image
-    bin_img = feature.canny(img, sigma, low_thresh, high_thresh, mask, use_quantiles)
+    bool_img = feature.canny(img, sigma, low_thresh, high_thresh, mask, use_quantiles)
 
-    # Print or plot the binary image
-    if params.debug == 'print':
-        print_image(bin_img, os.path.join(params.debug_outdir, (str(params.device) + '_canny_edge_detect.png')))
-    elif params.debug == 'plot':
-        plot_image(bin_img, cmap='gray')
+    # skimage returns a bool image so convert it
+    bin_img = np.copy(bool_img.astype(np.uint8) * 255)
+
+    # Adjust line thickness
+    if thickness != 1:
+        bin_img = dilate(bin_img, thickness, 1)
+    else:
+        # Print or plot the binary image
+        if params.debug == 'print':
+            print_image(bin_img, os.path.join(params.debug_outdir, (str(params.device) + '_canny_edge_detect.png')))
+        elif params.debug == 'plot':
+            plot_image(bin_img, cmap='gray')
 
     return bin_img
