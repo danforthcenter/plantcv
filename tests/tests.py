@@ -2095,6 +2095,8 @@ def test_plantcv_x_axis_pseudolandmarks():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR), encoding="latin1")
     obj_contour = contours_npz['arr_0']
+    pcv.params.debug = "print"
+    _ = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
@@ -2113,6 +2115,10 @@ def test_plantcv_x_axis_pseudolandmarks_small_obj():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL_PLANT), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR_SMALL_PLANT), encoding="latin1")
     obj_contour = contours_npz['arr_0']
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _, _, _ = pcv.x_axis_pseudolandmarks(obj=[], mask=mask, img=img)
+    _, _, _ = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _, _, _ = pcv.x_axis_pseudolandmarks(obj=[], mask=mask, img=img)
@@ -2142,6 +2148,8 @@ def test_plantcv_y_axis_pseudolandmarks():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR), encoding="latin1")
     obj_contour = contours_npz['arr_0']
+    pcv.params.debug = "print"
+    _ = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
@@ -2160,6 +2168,10 @@ def test_plantcv_y_axis_pseudolandmarks_small_obj():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL_PLANT), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR_SMALL_PLANT), encoding="latin1")
     obj_contour = contours_npz['arr_0']
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _, _, _ = pcv.y_axis_pseudolandmarks(obj=[], mask=mask, img=img)
+    _, _, _ = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     left, right, center_h = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
