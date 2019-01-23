@@ -2122,6 +2122,7 @@ def test_plantcv_x_axis_pseudolandmarks_small_obj():
     # Test with debug = "print"
     pcv.params.debug = "print"
     _, _, _ = pcv.x_axis_pseudolandmarks(obj=[], mask=mask, img=img)
+    _, _, _ = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _, _, _ = pcv.x_axis_pseudolandmarks(obj=[], mask=mask, img=img)
