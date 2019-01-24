@@ -570,19 +570,20 @@ def test_plantcv_canny_edge_detect():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     # Read in test data
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.canny_edge_detect(img=img)
-    _ = pcv.canny_edge_detect(img=img, mask=mask, mask_color='white')
+    _ = pcv.canny_edge_detect(img=rgb_img, mask=mask, mask_color='white')
     _ = pcv.canny_edge_detect(img=img, mask=mask, mask_color='black')
     # Test with debug = "plot"
     pcv.params.debug = "plot"
+    _ = pcv.canny_edge_detect(img=img, thickness=2)
     _ = pcv.canny_edge_detect(img=img)
     # Test with debug = None
     pcv.params.debug = None
-    edge_img = pcv.canny_edge_detect(gray_img=img, kernel=2, i=1)
+    edge_img = pcv.canny_edge_detect(img=img)
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(edge_img), TEST_BINARY_DIM)):
         # Assert that the image is binary
@@ -592,6 +593,17 @@ def test_plantcv_canny_edge_detect():
             assert 0
     else:
         assert 0
+
+
+def test_plantcv_canny_edge_detect_bad_input():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_canny_edge_detect")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    with pytest.raises(RuntimeError):
+        _ = pcv.canny_edge_detect(img=img, mask=mask)
+
 
 
 def test_plantcv_cluster_contours():
@@ -654,6 +666,7 @@ def test_plantcv_cluster_contours_splitimg():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
+    img2 = np.zeros(img1.shape)
     contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_CONTOUR), encoding="latin1")
     clusters = np.load(os.path.join(TEST_DATA, TEST_INPUT_ClUSTER_CONTOUR), encoding="latin1")
     hierachy = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_HIERARCHY), encoding="latin1")
@@ -664,6 +677,8 @@ def test_plantcv_cluster_contours_splitimg():
     obj_hierarchy = hierachy['arr_0']
     # Test with debug = "print"
     pcv.params.debug = "print"
+    _ = pcv.cluster_contour_splitimg(rgb_img=img2, grouped_contour_indexes=[], contours=[],
+                                     hierarchy=obj_hierarchy, outdir=cache_dir, file=None, filenames=None)
     _ = pcv.cluster_contour_splitimg(rgb_img=img1, grouped_contour_indexes=cluster_contours, contours=roi_contours,
                                      hierarchy=obj_hierarchy, outdir=cache_dir, file=None, filenames=None)
     _ = pcv.cluster_contour_splitimg(rgb_img=img1, grouped_contour_indexes=cluster_contours, contours=roi_contours,
@@ -2121,6 +2136,10 @@ def test_plantcv_white_balance_bad_input_int():
 
 
 def test_plantcv_x_axis_pseudolandmarks():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_x_axis_pseudolandmarks_debug")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
     img = cv2.imread(os.path.join(TEST_DATA, TEST_VIS_SMALL))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR), encoding="latin1")
@@ -2174,6 +2193,10 @@ def test_plantcv_x_axis_pseudolandmarks_bad_obj_input():
 
 
 def test_plantcv_y_axis_pseudolandmarks():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_y_axis_pseudolandmarks_debug")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
     img = cv2.imread(os.path.join(TEST_DATA, TEST_VIS_SMALL))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR), encoding="latin1")
@@ -2696,6 +2719,9 @@ def test_plantcv_transform_load_matrix():
 
 
 def test_plantcv_transform_correct_color():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform")
+    os.mkdir(cache_dir)
     # load corrected image to compare
     corrected_compare = cv2.imread(os.path.join(TEST_DATA, TEST_S1_CORRECTED))
     # load in comparison matrices
@@ -3062,6 +3088,10 @@ def test_plantcv_threshold_triangle_incorrect_object_type():
 
 
 def test_plantcv_threshold_texture():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_texture")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
     gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY_SMALL), -1)
     binary_img = pcv.threshold.texture(gray_img, kernel=6, threshold=7, offset=3, texture_method='dissimilarity',
                                        borders='nearest', max_value=255)

@@ -81,6 +81,7 @@ from plantcv.plantcv.distance_transform import distance_transform
 from plantcv.plantcv import roi
 from plantcv.plantcv import threshold
 from plantcv.plantcv import transform
+from plantcv.plantcv.canny_edge_detect import canny_edge_detect
 
 # add new functions to end of lists
 
