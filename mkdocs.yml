@@ -40,6 +40,7 @@ pages:
     - 'Boundary Line Tool':
       - 'Horizontal Boundary Tool': analyze_bound_horizontal.md
       - 'Vertical Boundary Tool': analyze_bound_vertical.md
+    - 'Canny Edge Detection': canny_edge_detect.md
     - 'Cluster Contours': cluster_contours.md
     - 'Cluster Contours and Split Images': cluster_contours_splitimg.md
     - 'Color Palette': color_palette.md
