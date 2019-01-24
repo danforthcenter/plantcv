@@ -42,7 +42,7 @@ import cv2
 
 pcv.params.debug = "print"
 
-# Create binary image of edges.
+# Create binary image from a gray image based on texture values.
 texture_img = pcv.threshold.texture(gray_img, kernel=6, threshold=7, offset=3, texture_method='dissimilarity', borders='nearest', max_value=255)
 ```
 
