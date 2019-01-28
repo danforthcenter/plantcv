@@ -2,9 +2,11 @@
 
 import os
 import numpy as np
+import cv2
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
+from plantcv.plantcv import apply_mask
 
 
 def cluster_contour_mask(rgb_img, clusters_i, contours, hierarchies):

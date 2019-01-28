@@ -11,7 +11,7 @@ from plantcv.plantcv import apply_mask
 from plantcv.plantcv import params
 
 
-def analyze_thermal_values(rgb_img, array, mask, name,histplot=False, filename=False):
+def analyze_thermal_values(rgb_img, array, mask, name,minrange,maxrange, histplot=False, filename=False):
     """This extracts the thermal values of each pixel writes the values out to
        a file. It can also print out a histogram plot of pixel intensity
        and a pseudocolor image of the plant.
@@ -45,7 +45,10 @@ def analyze_thermal_values(rgb_img, array, mask, name,histplot=False, filename=F
     masked = np.multiply(mask1, array)
     nonzero = masked[np.nonzero(masked)]
 
-    hist_therm, hist_bins = np.histogram(nonzero, range=(np.amin(array), np.amax(array)))
+    if maxrange:
+        hist_therm, hist_bins = np.histogram(nonzero, range=(minrange, maxrange))
+    else:
+        hist_therm, hist_bins = np.histogram(nonzero, range=(np.amin(array), np.amax(array)))
     maxtemp = np.amax(nonzero)
     mintemp = np.amin(nonzero)
     avgtemp = np.average(nonzero)
@@ -99,7 +102,7 @@ def analyze_thermal_values(rgb_img, array, mask, name,histplot=False, filename=F
         path = os.path.dirname(filename)
         fig_name = 'therm_pseudocolor_colorbar.svg'
         if not os.path.isfile(path + '/' + fig_name):
-            plot_colorbar(path, fig_name, bins)
+            plot_colorbar(path, fig_name, 10)
 
         fig_name_pseudo = (str(filename[0:-4]) + '_therm_pseudo_col.jpg')
         print_image(cplant_back, fig_name_pseudo)
