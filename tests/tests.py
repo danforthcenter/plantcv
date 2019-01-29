@@ -7,7 +7,6 @@ import numpy as np
 import cv2
 from plantcv import plantcv as pcv
 import plantcv.learn
-from matplotlib import pyplot as plt
 # Import matplotlib and use a null Template to block plotting to screen
 # This will let us test debug = "plot"
 import matplotlib
