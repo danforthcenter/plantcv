@@ -1,5 +1,7 @@
 dist: xenial
 language: python
+services:
+   - xvfb
 #sudo: false
 python:
 - '2.7'
@@ -11,8 +13,8 @@ python:
 #  - python: '2.7'
 virtualenv:
   system_site_packages: false
-#before_script:
-#- export DISPLAY=:0
+before_script:
+   - export DISPLAY=:0.0
 #- sh -e /etc/init.d/xvfb start
 #- sleep 3
 install:
