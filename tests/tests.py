@@ -1399,6 +1399,35 @@ def test_plantcv_print_results():
     pcv.print_results(filename='not_used', header=header, data=data)
 
 
+def test_plantcv_pseudocolor():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.pseudocolor(img=img, mask=mask)
+    _ = pcv.pseudocolor(img=img, mask=mask, min_value=10, max_value=200)
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    _ = pcv.pseudocolor(img=img, mask=mask)
+    # Test with debug = None
+    pcv.params.debug = None
+    pseudo_img = pcv.pseudocolor(img=img, mask=mask)
+    # Assert that the output image has the dimensions of the input image
+    if all([i == j] for i, j in zip(np.shape(pseudo_img), TEST_BINARY_DIM)):
+        assert 1
+    else:
+        assert 0
+
+
+def test_plantcv_pseudocolor_bad_input():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_pseudocolor")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    with pytest.raises(RuntimeError):
+        _ = pcv.pseudocolor(gray_img=img)
+
+
 def test_plantcv_readimage_native():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_readimage")
