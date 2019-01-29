@@ -26,7 +26,7 @@ texture calculation for thresholding.
 - **Example use:**
     - [Interactive Documentation](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks%2Fthreshold.ipynb)
 
-**Original image (lightness channel**
+**Original image (lightness channel)**
 
 ![Screenshot](img/documentation_images/texture_threshold/texture_gray.jpg)
 

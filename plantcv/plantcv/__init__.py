@@ -82,6 +82,7 @@ from plantcv.plantcv.pseudocolor import pseudocolor
 from plantcv.plantcv import roi
 from plantcv.plantcv import threshold
 from plantcv.plantcv import transform
+from plantcv.plantcv.canny_edge_detect import canny_edge_detect
 
 # add new functions to end of lists
 
@@ -96,6 +97,7 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'plot_co
            'x_axis_pseudolandmarks', 'y_axis_pseudolandmarks', 'gaussian_blur', 'cluster_contours',
            'cluster_contour_splitimg', 'rotate', 'shift_img', 'output_mask', 'auto_crop', 'canny_edge_detect',
            'background_subtraction', 'naive_bayes_classifier', 'acute', 'distance_transform', 'params', 'pseudocolor']
+
 
 from ._version import get_versions
 __version__ = get_versions()['version']
