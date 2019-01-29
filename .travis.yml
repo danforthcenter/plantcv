@@ -1,5 +1,7 @@
 dist: xenial
 language: python
+services:
+   - xvfb
 #sudo: false
 python:
 - '2.7'
