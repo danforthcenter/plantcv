@@ -1406,7 +1406,7 @@ def test_plantcv_pseudocolor():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.pseudocolor(gray_img=img, mask=mask, path=cache_dir)
+    _ = pcv.pseudocolor(gray_img=img, mask=None, path=cache_dir)
     _ = pcv.pseudocolor(gray_img=img, mask=mask, min_value=10, max_value=200, path=cache_dir)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
