@@ -1,4 +1,5 @@
 # Plot image to screen
+import os
 import cv2
 import numpy as np
 
@@ -10,7 +11,11 @@ def plot_image(img, cmap=None):
     :param cmap: str
     :return:
     """
-    from matplotlib import pyplot as plt
+    import matplotlib
+    if os.environ.get('DISPLAY', '') == '':
+        #print('no display found. Using non-interactive Agg backend')
+        matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
 
     dimensions = np.shape(img)
 
