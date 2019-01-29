@@ -1,13 +1,12 @@
 # Pseudocolor any grayscale image
 
-import numpy as np
 import os
+import cv2
+import numpy as np
+from plantcv.plantcv import params
 from matplotlib import pyplot as plt
-from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
-from plantcv.plantcv import params
-from plantcv.plantcv import apply_mask
 
 
 def pseudocolor(gray_img, mask=None, cmap=None, min_value=0, max_value=255, path="."):
@@ -49,21 +48,39 @@ def pseudocolor(gray_img, mask=None, cmap=None, min_value=0, max_value=255, path
     # Apply the mask if given
     if mask is not None:
         # Apply the mask
-        masked_img = apply_mask(gray_img, mask, 'black')
+        masked_img = cv2.bitwise_and(gray_img, gray_img, mask=mask)
+
         # Convert black pixels from 0 to np.nan
         masked_img = np.where(masked_img == 0, np.nan, masked_img)
+
         # Pseudocolor the image
         pseudo_img = plt.imshow(masked_img, cmap=cmap)
 
+        # Include image title
+        plt.title('Pseudocolored image')  # + os.path.splitext(filename)[0])
+
+        # Include the colorbar
+        plt.colorbar(fraction=0.033, pad=0.04)
+
+        # Print or plot if debug is turned on
+        if params.debug == 'print':
+            plt.savefig(os.path.join(path, str(params.device) + '_pseudocolored.png'))
+        elif params.debug == 'plot':
+            plot_image(pseudo_img)
     else:
-        # Map the gray image to new pseudocolored space
+        # Pseudocolor the image
         pseudo_img = plt.imshow(gray_img, cmap=cmap)
 
-    if params.debug == 'print':
-        print_image(pseudo_img, os.path.join(path, str(params.device) + '_pseudocolored.png'))
+        # Include image title
+        plt.title('Pseudocolored image')  # + os.path.splitext(filename)[0])
+
+        # Include the colorbar
         plt.colorbar(fraction=0.033, pad=0.04)
-    elif params.debug == 'plot':
-        plot_image(pseudo_img)
-        plt.colorbar(fraction=0.033, pad=0.04)
+
+        # Print or plot if debug is turned on
+        if params.debug == 'print':
+            plt.savefig(os.path.join(path, str(params.device) + '_pseudocolored.png'))
+        elif params.debug == 'plot':
+            plot_image(pseudo_img)
 
     return pseudo_img

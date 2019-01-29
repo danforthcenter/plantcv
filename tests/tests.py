@@ -7,6 +7,7 @@ import numpy as np
 import cv2
 from plantcv import plantcv as pcv
 import plantcv.learn
+from matplotlib import pyplot as plt
 # Import matplotlib and use a null Template to block plotting to screen
 # This will let us test debug = "plot"
 import matplotlib
@@ -1400,18 +1401,20 @@ def test_plantcv_print_results():
 
 
 def test_plantcv_pseudocolor():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_pseudocolor")
+    os.mkdir(cache_dir)
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.pseudocolor(img=img, mask=mask)
-    _ = pcv.pseudocolor(img=img, mask=mask, min_value=10, max_value=200)
+    _ = pcv.pseudocolor(gray_img=img, mask=mask, path=cache_dir)
+    _ = pcv.pseudocolor(gray_img=img, mask=mask, min_value=10, max_value=200, path=cache_dir)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.pseudocolor(img=img, mask=mask)
+    _ = pcv.pseudocolor(gray_img=img, mask=mask)
     # Test with debug = None
     pcv.params.debug = None
-    pseudo_img = pcv.pseudocolor(img=img, mask=mask)
+    pseudo_img = pcv.pseudocolor(gray_img=img, mask=mask)
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(pseudo_img), TEST_BINARY_DIM)):
         assert 1
@@ -2714,7 +2717,7 @@ def test_plantcv_transform_correct_color():
     # Test with debug = "print"
     pcv.params.debug = "print"
     pcv.params.debug_outdir = imgdir
-    _, _, _, _ = pcv.transform.correct_color(target_img, mask, source_img, mask, output_path)
+    _, _, _, _ = pcv.transform.correct_color(target_img, mask, source_img, mask, cache_dir)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _, _, _, _ = pcv.transform.correct_color(target_img, mask, source_img, mask, output_path)
