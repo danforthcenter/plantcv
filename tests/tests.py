@@ -11,7 +11,7 @@ import plantcv.learn
 # This will let us test debug = "plot"
 import matplotlib
 
-matplotlib.use('Template', warn=False)
+matplotlib.use('Agg', warn=False)
 
 TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 TEST_TMPDIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".cache")
@@ -1453,6 +1453,7 @@ def test_plantcv_pseudocolor():
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.pseudocolor(gray_img=img, mask=mask)
+    _ = pcv.pseudocolor(gray_img=img, mask=None)
     # Test with debug = None
     pcv.params.debug = None
     pseudo_img = pcv.pseudocolor(gray_img=img, mask=mask)
