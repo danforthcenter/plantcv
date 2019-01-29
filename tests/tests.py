@@ -11,7 +11,7 @@ import plantcv.learn
 # This will let us test debug = "plot"
 import matplotlib
 
-matplotlib.use('Template', warn=False)
+matplotlib.use('Agg', warn=False)
 
 TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 TEST_TMPDIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".cache")
