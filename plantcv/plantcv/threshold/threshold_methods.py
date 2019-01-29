@@ -501,7 +501,9 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
 # Internal plotting function for the triangle autothreshold method
 def _plot(x, mph, mpd, threshold, edge, valley, ax, ind):
     """Plot results of the detect_peaks function, see its help."""
-    import matplotlib.pyplot as plt
+    import matplotlib
+    matplotlib.use('Agg', warn=False)
+    from matplotlib import pyplot as plt
     if ax is None:
         _, ax = plt.subplots(1, 1, figsize=(8, 4))
 

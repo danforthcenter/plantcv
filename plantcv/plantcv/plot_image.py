@@ -12,10 +12,8 @@ def plot_image(img, cmap=None):
     :return:
     """
     import matplotlib
-    if os.environ.get('DISPLAY', '') == '':
-        #print('no display found. Using non-interactive Agg backend')
-        matplotlib.use('Agg')
-    import matplotlib.pyplot as plt
+    matplotlib.use('Agg', warn=False)
+    from matplotlib import pyplot as plt
 
     dimensions = np.shape(img)
 
@@ -23,9 +21,11 @@ def plot_image(img, cmap=None):
     if len(dimensions) == 3:
         plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
         plt.show()
+
     elif cmap is None and len(dimensions) == 2:
         plt.imshow(img, cmap="gray")
         plt.show()
+
     elif cmap is not None and len(dimensions) == 2:
         plt.imshow(img, cmap=cmap)
         plt.show()

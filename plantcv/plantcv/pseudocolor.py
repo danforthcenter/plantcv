@@ -4,7 +4,6 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv import params
-from matplotlib import pyplot as plt
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 
@@ -32,6 +31,10 @@ def pseudocolor(gray_img, mask=None, cmap=None, min_value=0, max_value=255, path
         :param path: str
         :return pseudo_image: numpy.ndarray
         """
+    import matplotlib
+    matplotlib.use('Agg', warn=False)
+    from matplotlib import pyplot as plt
+
     # Auto-increment the device counter
     params.device += 1
 
