@@ -13,7 +13,7 @@ pseudocolored image. Additionally, optional maximum and minimum values can be sp
     - cmap      - Custom colormap, see [here](https://matplotlib.org/tutorials/colors/colormaps.html) for tips on how to choose a colormap in Matplotlib.
     - min_value - Minimum value (optional) for range of interest
     - max_value - Maximum value (optional) for range of interest
-    - path      - Path giving location the image will get saved 
+    - path      - Path giving location the image will get saved
 - **Context:**
     - Used to pseudocolor any grayscale image to custom colormap
 - **Example use:**
