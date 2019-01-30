@@ -88,6 +88,7 @@ pages:
     - 'Plot Histogram': plot_hist.md
     - 'Print Image': print_image.md
     - 'Plot Image': plot_image.md
+    - 'Pseudocolor Image': 'pseudocolor.md'
     - 'Read Image': read_image.md
     - 'Read Bayer Raw Image': read_bayer.md
     - 'Rectangle Mask': rectangle_mask.md

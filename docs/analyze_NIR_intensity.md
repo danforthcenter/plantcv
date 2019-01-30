@@ -3,7 +3,7 @@
 This function calculates the intensity of each pixel associated with the plant and writes 
 the values out to a file. Can also print out a histogram plot of pixel intensity and a pseudocolor image of the plant.
 
-**plantcv.analyze_nir_intensity**(*rgb_img, mask, bins, hisplot=False, filename=False*)
+**plantcv.analyze_nir_intensity**(*gray_img, mask, bins, hisplot=False, filename=False*)
 
 **returns** header of histogram, histogram values, pseudocolored image
 

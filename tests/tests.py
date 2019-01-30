@@ -11,7 +11,7 @@ import plantcv.learn
 # This will let us test debug = "plot"
 import matplotlib
 
-matplotlib.use('Template', warn=False)
+matplotlib.use('Agg', warn=False)
 
 TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 TEST_TMPDIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".cache")
@@ -1441,6 +1441,38 @@ def test_plantcv_print_results():
     pcv.print_results(filename='not_used', header=header, data=data)
 
 
+def test_plantcv_pseudocolor():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_pseudocolor")
+    os.mkdir(cache_dir)
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.pseudocolor(gray_img=img, mask=None, path=cache_dir)
+    _ = pcv.pseudocolor(gray_img=img, mask=mask, min_value=10, max_value=200, path=cache_dir)
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    _ = pcv.pseudocolor(gray_img=img, mask=mask)
+    _ = pcv.pseudocolor(gray_img=img, mask=None)
+    # Test with debug = None
+    pcv.params.debug = None
+    pseudo_img = pcv.pseudocolor(gray_img=img, mask=mask)
+    # Assert that the output image has the dimensions of the input image
+    if all([i == j] for i, j in zip(np.shape(pseudo_img), TEST_BINARY_DIM)):
+        assert 1
+    else:
+        assert 0
+
+
+def test_plantcv_pseudocolor_bad_input():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_pseudocolor")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    with pytest.raises(RuntimeError):
+        _ = pcv.pseudocolor(gray_img=img)
+
+
 def test_plantcv_readimage_native():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_readimage")
@@ -2738,7 +2770,7 @@ def test_plantcv_transform_correct_color():
     # Test with debug = "print"
     pcv.params.debug = "print"
     pcv.params.debug_outdir = imgdir
-    _, _, _, _ = pcv.transform.correct_color(target_img, mask, source_img, mask, output_path)
+    _, _, _, _ = pcv.transform.correct_color(target_img, mask, source_img, mask, cache_dir)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _, _, _, _ = pcv.transform.correct_color(target_img, mask, source_img, mask, output_path)
