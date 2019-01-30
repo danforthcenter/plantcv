@@ -11,8 +11,6 @@ def plot_image(img, cmap=None):
     :param cmap: str
     :return:
     """
-    import matplotlib
-    matplotlib.use('Agg', warn=False)
     from matplotlib import pyplot as plt
 
     dimensions = np.shape(img)
