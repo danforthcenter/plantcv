@@ -171,6 +171,8 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, hist_header, hist_data, analysis_img = **plantcv.analyze_NIR_intensity**(*img, rgbimg, mask, bins, device, histplot=False, debug=None, filename=False*)
 * post v3.0dev2: hist_header, hist_data, analysis_img = **plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False, filename=False*)
+* post v3.0.5: hist_header, hist_data, nir_hist = **plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False*)
+
 
 #### plantcv.analyze_object
 

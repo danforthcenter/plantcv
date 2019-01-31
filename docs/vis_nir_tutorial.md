@@ -247,10 +247,10 @@ The next step is to analyze the plant object for traits such as [horizontal heig
 ############### Analysis ################  
   
     # Find shape properties, output shape image (optional)
-    shape_header, shape_data, shape_img = pcv.analyze_object(img, obj, mask, args.outdir + '/' + filename)
+    shape_header, shape_data, shape_img = pcv.analyze_object(img, obj, mask)
     
     # Shape properties relative to user boundary line (optional)
-    boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_horizontal(img, obj, mask, 1680, args.outdir + '/' + filename)
+    boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_horizontal(img, obj, mask, 1680)
     
     # Determine color properties: Histograms, Color Slices and Pseudocolored Images, output color analyzed images (optional)
     color_header, color_data, color_img = pcv.analyze_color(img, kept_mask, 256, 'all', 'v', 'img', args.outdir + '/' + filename)
@@ -319,12 +319,15 @@ The next step is to [get the matching NIR](get_nir.md) image, [resize](resize.md
 
 ```python
 
-    outfile1=False
-    if args.writeimg==True:
-        outfile1=args.outdir+"/"+filename1
+    nhist_header, nhist_data, nir_imgs = pcv.analyze_nir_intensity(nir2, nir_combinedmask, 256)
+    nshape_header, nshape_data, nir_hist = pcv.analyze_object(nir2, nir_combined, nir_combinedmask)
 
-    nhist_header, nhist_data, nir_imgs = pcv.analyze_nir_intensity(nir2, nir_combinedmask, 256, outfile1)
-    nshape_header, nshape_data, nir_shape = pcv.analyze_object(nir2, nir_combined, nir_combinedmask, outfile1)
+    # Plot out the NIR histogram
+    nir_hist
+
+    # Plot out the image with shape data
+    shape_image = nir_imgs[0]
+    pcv.plot_image(shape_image)
 ```
 
 **Figure 19.** NIR signal histogram.
@@ -351,7 +354,7 @@ Write co-result data out to a file.
     coresult.write("\n")
     coresult.write('\t'.join(map(str,nshape_data)))
     coresult.write("\n")
-    coresult.write('\t'.join(map(str,nir_shape)))
+    coresult.write('\t'.join(map(str,nir_imgs[0])))
     coresult.write("\n")
     coresult.close()
     

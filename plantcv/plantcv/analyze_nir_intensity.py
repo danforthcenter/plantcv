@@ -3,15 +3,15 @@
 import os
 import cv2
 import numpy as np
+import pandas as pd
+from plotnine import ggplot, aes, geom_line, scale_x_continuous
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
-from plantcv.plantcv import plot_colorbar
 from plantcv.plantcv.threshold import binary as binary_threshold
-from plantcv.plantcv import apply_mask
 from plantcv.plantcv import params
 
 
-def analyze_nir_intensity(gray_img, mask, bins, histplot=False, filename=False):
+def analyze_nir_intensity(gray_img, mask, bins, histplot=False):
     """This function calculates the intensity of each pixel associated with the plant and writes the values out to
        a file. It can also print out a histogram plot of pixel intensity and a pseudocolor image of the plant.
 
@@ -20,21 +20,19 @@ def analyze_nir_intensity(gray_img, mask, bins, histplot=False, filename=False):
     mask         = Binary mask made from selected contours
     bins         = number of classes to divide spectrum into
     histplot     = if True plots histogram of intensity values
-    filename     = False or image name. If defined print image
 
     Returns:
     hist_header  = NIR histogram data table headers
     hist_data    = NIR histogram data table values
-    analysis_img = output image
+    nir_hist     = NIR histogram image
 
     :param gray_img: numpy array
     :param mask: numpy array
     :param bins: int
     :param histplot: bool
-    :param filename: str
     :return hist_header: list
     :return hist_data: list
-    :return analysis_img: str
+    :return nir_hist: str
     """
     params.device += 1
 
@@ -78,56 +76,48 @@ def analyze_nir_intensity(gray_img, mask, bins, histplot=False, filename=False):
         hist_nir1
     ]
 
-    analysis_img = []
-
+    # No longer returning a pseudocolored image
     # make mask to select the background
-    mask_inv = cv2.bitwise_not(mask)
-    img_back = cv2.bitwise_and(rgbimg, rgbimg, mask=mask_inv)
-    img_back1 = cv2.applyColorMap(img_back, colormap=1)
+    # mask_inv = cv2.bitwise_not(mask)
+    # img_back = cv2.bitwise_and(rgbimg, rgbimg, mask=mask_inv)
+    # img_back1 = cv2.applyColorMap(img_back, colormap=1)
 
     # mask the background and color the plant with color scheme 'jet'
-    cplant = cv2.applyColorMap(rgbimg, colormap=2)
-    masked1 = apply_mask(cplant, mask, 'black')
-    cplant_back = cv2.add(masked1, img_back1)
-
-    if filename:
-        path = os.path.dirname(filename)
-        fig_name = 'NIR_pseudocolor_colorbar.svg'
-        if not os.path.isfile(path + '/' + fig_name):
-            plot_colorbar(path, fig_name, bins)
-
-        fig_name_pseudo = (os.path.splitext(filename)[0] + '_nir_pseudo_col.jpg')
-        print_image(cplant_back, fig_name_pseudo)
-        analysis_img.append(['IMAGE', 'pseudo', fig_name_pseudo])
-
+    # cplant = cv2.applyColorMap(rgbimg, colormap=2)
+    # masked1 = apply_mask(cplant, mask, 'black')
+    masked1 = cv2.bitwise_and(rgbimg, rgbimg, mask=mask)
+    # cplant_back = cv2.add(masked1, img_back1)
     if params.debug is not None:
         if params.debug == "print":
-            print_image(masked1, os.path.join(params.debug_outdir, str(params.device) + "_nir_pseudo_plant.jpg"))
-            print_image(cplant_back,
-                        os.path.join(params.debug_outdir, str(params.device) + "_nir_pseudo_plant_back.jpg"))
+            print_image(masked1, os.path.join(params.debug_outdir, str(params.device) + "_masked_nir_plant.jpg"))
         if params.debug == "plot":
             plot_image(masked1)
-            plot_image(cplant_back)
+
+    nir_hist = []
 
     if histplot is True:
-        import matplotlib
-        matplotlib.use('Agg', warn=False)
-        from matplotlib import pyplot as plt
-
+        hist_x = hist_percent
+        bin_labels = np.arange(0, bins)
+        dataset = pd.DataFrame({'Grayscale pixel intensity': bin_labels,
+                                'Proportion of pixels (%)': hist_x})
+        fig_hist = (ggplot(data=dataset,
+                           mapping=aes(x='Grayscale pixel intensity',
+                                       y='Proportion of pixels (%)'))
+                    + geom_line(color='red')
+                    + scale_x_continuous(breaks=list(range(0, bins, 25))))
         # plot hist percent
-        plt.plot(hist_percent, color='green', label='Signal Intensity')
-        plt.xlim([0, (bins - 1)])
-        plt.xlabel(('Grayscale pixel intensity (0-' + str(bins) + ")"))
-        plt.ylabel('Proportion of pixels (%)')
+        #         plt.plot(hist_percent, color='green', label='Signal Intensity')
+        #         plt.xlim([0, (bins - 1)])
+        #         plt.xlabel(('Grayscale pixel intensity (0-' + str(bins) + ")"))
+        #         plt.ylabel('Proportion of pixels (%)')
 
-        if filename:
-            fig_name_hist = (os.path.splitext(filename)[0] + '_nir_hist.svg')
-            plt.savefig(fig_name_hist)
-            analysis_img.append(['IMAGE', 'hist', fig_name_hist])
-        if params.debug == "print":
-            plt.savefig(os.path.join(params.debug_outdir, str(params.device) + "_nir_histogram.png"))
-        if params.debug == "plot":
-            plt.figure()
-        plt.clf()
+        #         fig_name_hist = (os.path.splitext(filename)[0] + '_nir_hist.svg')
+        #         plt.savefig(fig_name_hist)
+        nir_hist.append(fig_hist)
+        if params.debug is not None:
+            if params.debug == "print":
+                fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + '_nir_hist.png'))
+            if params.debug == "plot":
+                print(fig_hist)
 
-    return hist_header, hist_data, analysis_img
+    return hist_header, hist_data, nir_hist
