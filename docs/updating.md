@@ -173,6 +173,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, shape_header, shape_data, analysis_images = **plantcv.analyze_object**(*img, imgname, obj, mask, device, debug=None, filename=False*)
 * post v3.0dev2: shape_header, shape_data, analysis_images = **plantcv.analyze_object**(*img, obj, mask, filename=False*)
+* post v3.0.5: shape_header, shape_data, analysis_images = **plantcv.analyze_object**(*img, obj, mask*)
 
 #### plantcv.auto_crop
 
@@ -253,6 +254,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, hist_header, hist_data = **plantcv.fluor_fvfm**(*fdark, fmin, fmax, mask, device, filename, bins=1000, debug=None*)
 * post v3.0dev2: hist_header, hist_data, hist_images = **plantcv.fluor_fvfm**(*fdark, fmin, fmax, mask, filename, bins=256*)
+* post v3.0.5: hist_header, hist_data, analysis_images = **plantcv.fluor_fvfm**(*fdark, fmin, fmax, mask, bins=256*)
 
 #### plantcv.gaussian_blur
 
