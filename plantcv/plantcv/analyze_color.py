@@ -9,7 +9,6 @@ import pandas as pd
 from plantcv.plantcv import fatal_error
 # from plantcv.plantcv import plot_colorbar
 from plantcv.plantcv import params
-from plotnine import ggplot, aes, geom_line, scale_x_continuous, scale_color_manual
 
 
 # def _pseudocolored_image(histogram, bins, img, mask, background, channel, filename, analysis_images):
@@ -118,6 +117,7 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
     import matplotlib
     matplotlib.use('Agg', warn=False)
     # from matplotlib import pyplot as plt
+    from plotnine import ggplot, aes, geom_line, scale_x_continuous, scale_color_manual
 
     params.device += 1
 

@@ -36,7 +36,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Set Boundary Line    
-boundary_header, boundary_data, boundary_images = pcv.analyze_bound_vertical(img, obj, mask, 1000, 'setaria_boundary_img.png')
+boundary_header, boundary_data, boundary_images = pcv.analyze_bound_vertical(img, obj, mask, 1000)
 ```
 
 **Boundary tool output image (x = 1000)**
