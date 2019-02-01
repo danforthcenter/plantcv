@@ -161,6 +161,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, hist_header, hist_data, analysis_images = **plantcv.analyze_color**(*img, imgname, mask, bins, device, debug=None, hist_plot_type=None, pseudo_channel='v', pseudo_bkg='img', resolution=300, filename=False*)
 * post v3.0dev2: hist_header, hist_data, analysis_images = **plantcv.analyze_color**(*rgb_img, mask, bins, hist_plot_type=None, pseudo_channel='v', pseudo_bkg='img', filename=False*)
+* post v3.0.5: hist_header, hist_data, analysis_images = **plantcv.analyze_color**(*rgb_img, mask, bins, hist_plot_type=None*)
 
 #### plantcv.apply_mask
 
@@ -172,7 +173,6 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, hist_header, hist_data, analysis_img = **plantcv.analyze_NIR_intensity**(*img, rgbimg, mask, bins, device, histplot=False, debug=None, filename=False*)
 * post v3.0dev2: hist_header, hist_data, analysis_img = **plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False, filename=False*)
 * post v3.0.5: hist_header, hist_data, nir_hist = **plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False*)
-
 
 #### plantcv.analyze_object
 
