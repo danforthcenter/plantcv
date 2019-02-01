@@ -1,6 +1,6 @@
 ## Flip Image
 
-Flips and image in either the horizontal or vertical direction
+Flips an image in either the horizontal or vertical direction
 
 **plantcv.flip**(*img, direction*)
 
@@ -8,7 +8,7 @@ Flips and image in either the horizontal or vertical direction
 
 - **Parameters:**
     - img - RGB or grayscale image data
-    - direction - the direction you want the image flipped either 'horizontal' or 'vertical'
+    - direction - the direction you want the image flipped, either 'horizontal' or 'vertical'
 - **Context:**
     - Used to flip images when necessary
 - **Example use:**
@@ -19,6 +19,7 @@ Flips and image in either the horizontal or vertical direction
 ![Screenshot](img/documentation_images/flip/original_image.jpg)
 
 ```python
+
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
@@ -26,7 +27,6 @@ pcv.params.debug = "print"
 
 # Flip Image Horizontal
 flipped= pcv.flip(img, 'horizontal')
-
 ```
 
 **Flipped Image**
@@ -34,6 +34,7 @@ flipped= pcv.flip(img, 'horizontal')
 ![Screenshot](img/documentation_images/flip/flipped.jpg)
 
 ```python
+
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
@@ -41,7 +42,6 @@ pcv.params.debug = "print"
 
 # Flip Image Vertical
 flipped= pcv.flip(img, 'vertical')
-
 ```
 
 **Flipped Image**

@@ -28,7 +28,7 @@ pcv.params.debug = "print"
 
 # Apply to a grayscale image
 # Filtered image will highlight areas of rapid pixel intensity change
-lp_img = pcv.laplace_filter(img, 1, 1)
+lp_img = pcv.laplace_filter(gray_img, 1, 1)
 ```
 
 **Image after Laplace filter**

@@ -24,7 +24,9 @@ def scale_features(obj, mask, points, boundary_line):
     :param mask: ndarray
     :param points: ndarray
     :param boundary_line: int
-    :return:
+    :return rescaled: list
+    :return centroid_scaled: tuple
+    :return boundary_line_scaled: tuple
     """
     params.device += 1
     # Get the dimensions of the image from the binary thresholded object (mask)

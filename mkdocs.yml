@@ -59,6 +59,7 @@ pages:
     - 'Filters':
       - 'Laplace Filter': laplace_filter.md
       - 'Sobel Filter': sobel_filter.md
+      - 'Scharr Filter': scharr_filter.md
     - 'Gaussian Blur': gaussian_blur.md
     - 'Get NIR Images': get_nir.md
     - 'Erosion': erode.md
@@ -87,6 +88,7 @@ pages:
     - 'Print Image': print_image.md
     - 'Plot Image': plot_image.md
     - 'Read Image': read_image.md
+    - 'Read Bayer Raw Image': read_bayer.md
     - 'Rectangle Mask': rectangle_mask.md
     - 'Report Size Marker': report_size_marker.md
     - 'Resize': resize.md
@@ -104,6 +106,7 @@ pages:
       - 'Mean Adaptive Threshold': mean_threshold.md
       - 'Otsu Auto Threshold': otsu_threshold.md
       - 'Triangle Auto Threshold': triangle_threshold.md
+      - 'Texture Threshold': texture_threshold.md
     - 'Watershed Segmentation': watershed.md
   - 'Package plantcv.learn':
     - 'Naive Bayes': naive_bayes.md

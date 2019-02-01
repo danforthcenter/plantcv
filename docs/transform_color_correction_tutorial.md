@@ -4,11 +4,11 @@ The color correction module has been developed as a method of normalizing image-
 
 PlantCV is composed of modular functions that can be arranged (or rearranged) and adjusted quickly and easily.
 Pipelines do not need to be linear (and often are not). Please see the pipeline examples below for more details.
-A global variable "debug" allows the user to print out the resulting image. The debug has two modes, either 'plot' or print.' If the global object, plantcv.params.debug is set to
-'print' then the function prints the image to a file. If using a jupyter notebook, you would set debug to 'plot' to have
-the images plot images to the screen. Debug mode allows users to visualize and optimize steps on individual test images and small test sets before pipelines are deployed over whole data-sets.
+A global variable "debug" allows the user to print out the resulting image. The debug has three modes: either None, 'plot', or 'print', If the global object, plantcv.params.debug is set to
+'print' then the function prints the image to a file. If using a [Jupyter](jupyter.md) notebook, you would set debug to 'plot' to have
+the images plot to the screen. Debug mode allows users to visualize and optimize steps on individual test images and small test sets before pipelines are deployed over whole datasets.
 
-For simple input and output, a helper function called plantcv.transform.correct_color was developed. See more information [here](transform_correct_color.md)
+For simple input and output, a helper function [plantcv.transform.correct_color](transform_correct_color.md) was developed.
 
 **Important Note:** This function has been developed with only 8 bit images in mind. Images of other bit depth are not compatible with this function.
 
@@ -26,21 +26,23 @@ To run color correction on an image, the following are needed:
 
 * A mask (gray-scale) of the source image labeled consistently with the target image's mask.
 
-To see an example of how to create a gray-scale mask of color chips see [here](#creating-masks).
+We have an example of how to [create a gray-scale mask of color chips](#creating-masks).
 
 
-##Developing a pipeline
+## Developing a pipeline
 
 The modularity of PlantCV allows for flexible development of pipelines to fit the context and needs of users. The development of a pipeline for color correction is no different.
 Below are two potential scenarios with possible color correction pipelines. 
 
-####**Scenario A: One Target profile, One Source profile**
+### Scenario A: One Target profile, One Source profile
 
-For situations where only one source profile is identified per target profile, or one source profile will serve as a representation for many images, a simple pipeline can be developed to produce a transformation matrix that can be applied to the set of images congruent to the source profile.
+For situations where only one source profile is identified per target profile, or one source profile will serve as a representation for many images,
+a simple pipeline can be developed to produce a transformation matrix that can be applied to the set of images congruent to the source profile.
 
-**1) Read in target, source, and mask images.**
+**1) [Read](read_image.md) in target, source, and mask images.**
 
 ```python
+
 from plantcv import plantcv as pcv
 import cv2
 import numpy as np
@@ -50,29 +52,31 @@ pcv.params.debug = "print" #set debug mode
 target_img = cv2.imread("target_img.png")
 source_img = cv2.imread("source1_img.png")
 mask = cv2.imread("test_mask.png", -1) # mask must be read in "as-is" include -1
-#Since target_img and source_img have the same zoom and colorchecker position, the same mask can be used for both. 
-
+#Since target_img and source_img have the same zoom and colorchecker position, the same mask can be used for both.
 ```
+
 **2) Declare an output directory to which your target, source, and transformation matrices will be saved.**
+
 ```python
+
 #.npz files containing target_matrix, source_matrix, and transformation_matrix will be saved to the output_directory file path
 
 output_directory = "./test1"
-
 ```
 
-**3) Run the images through the plantcv.transform.correct_color function.**
+**3) Run the images through the [plantcv.transform.correct_color](transform_correct_color.md) function.**
 
 ```python
+
 target_matrix, source_matrix, transformation_matrix, corrected_img = pcv.transform.correct_color(target_img, mask, source_img, mask, output_directory)
 ```
-If you are in debug mode "plot," an horizontally stacked comparison of the source, corrected, and target images will be displayed. 
 
+If you are in debug mode "plot", a horizontally stacked comparison of the source, corrected, and target images will be displayed.
 
 ![Screenshot](img/documentation_images/color_correction_tutorial/hstack_chips.jpg)
 
-**4) Using either the returned transformation_matrix or loading the transformation_matrix from its directory, you may now apply the matrix to congruent images.**
-
+**4) Using either the returned transformation_matrix or [loading](transform_correct_color.md#load-matrix) the transformation_matrix from its directory,
+you may now [apply the matrix](transform_correct_color.md#apply-transformation-matrix) to congruent images.**
 
 ```python
 
@@ -80,58 +84,63 @@ transformation_matrix = pcv.transform.load_matrix("./test1/transformation_matrix
 
 new_source = cv2.imread("VIS_SV_0_z1_h1_g0_e65_v500_376217_0.png") #read in new image for transformation
 
-corrected_img = pcv.transform.apply_transformation_matrix(source_img= new_source, target_img= target_img, transformation_matrix= transformation_matrix) #apply transformation
-
+#apply transformation
+corrected_img = pcv.transform.apply_transformation_matrix(source_img= new_source, target_img= target_img, transformation_matrix= transformation_matrix)
 ```
 
 ![Screenshot](img/documentation_images/color_correction_tutorial/hstack_plants.jpg)
 
 
-**Important Note:** The color correction submodule has been made with the capability to handle incomplete colorchecker data
+**Important Note:** The color correction submodule has been made with the capability to handle [incomplete colorchecker data](#creating-a-pipeline-with-incomplete-color-data)
 in the source image. This way if color chips have been cut off, the module will still work. Color chips do need to be consistently labeled
-from target to source. See an example of this [here](#creating-a-pipeline-with-incomplete-color-data).
+from target to source.
 
-####**Scenario B: One Target profile, Many Source profiles**
+### Scenario B: One Target profile, Many Source profiles
 
 For situations where each source image contains a colorchecker, a pipeline may be optimized by using functions from the transform
 submodule. The target_matrix may be saved separately and referred to as needed for each source.  
 
-**1) Read in target, source, and mask images.**
+**1) [Read](read_image.md) in target, source, and mask images.**
 
 ```python
+
 target_img = cv2.imread("target_img.png")
 source_img = cv2.imread("source_img.png")
 mask = cv2.imread("mask.png", -1) # mask must be read in "as-is" include -1
 #Since target_img and source_img have the same zoom and colorchecker position, the same mask can be used for both. 
 ```
 
-**2) Save the target color matrix.**
+**2) [Save](transform_correct_color.md#save-matrix) the target color matrix.**
 
 ```python
+
 # get color matrix of target and save
 target_headers, target_matrix = pcv.transform.get_color_matrix(target_img, mask)
 pcv.transform.save_matrix(target_matrix, "target.npz")
 ```
 
-**3) Compute the source color matrix.**
+**3) [Compute](transform_correct_color.md#color-matrix) the source color matrix.**
 
 ```python
+
 #get color_matrix of source
 source_headers, source_matrix = pcv.transform.get_color_matrix(source_img, mask)
 ```
 
-**4) Get the Moore-Penrose Inverse Matrix.**
+**4) Get the [Moore-Penrose Inverse Matrix](transform_correct_color.md#moore-penrose-inverse).**
 
 ```python
+
 # matrix_a is a matrix of average rgb values for each color ship in source_img, matrix_m is a moore-penrose inverse matrix,
 # matrix_b is a matrix of average rgb values for each color ship in source_img
 
 matrix_a, matrix_m, matrix_b = pcv.transform.get_matrix_m(target_matrix= target_matrix, source_matrix= source_matrix)
 ```
 
-**5) Calculate the transformation matrix.**
+**5) Calculate the [transformation matrix](transform_correct_color.md#transformation-matrix).**
 
 ```python
+
 # deviance is the measure of how greatly the source image deviates from the target image's color space. 
 # Two images of the same color space should have a deviance of ~0.
 # transformation_matrix is a 9x9 matrix of transformation coefficients 
@@ -139,24 +148,25 @@ matrix_a, matrix_m, matrix_b = pcv.transform.get_matrix_m(target_matrix= target_
 deviance, transformation_matrix = pcv.transform.calc_transformation_matrix(matrix_m, matrix_b)
 ```
 
-**6) Apply the transformation matrix.**
+**6) [Apply](transform_correct_color.md#apply-transformation-matrix) the transformation matrix.**
 
 ```python
+
 corrected_img = pcv.transform.apply_transformation_matrix(source_img= source_img, target_img= target_img, transformation_matrix= transformation_matrix)
 ```
 
-If you are in debug mode "plot," an horizontally stacked comparison of the source, corrected, and target images will be displayed. 
+If you are in debug mode "plot", a horizontally stacked comparison of the source, corrected, and target images will be displayed.
 
 
 ![Screenshot](img/documentation_images/correct_color_imgs/hstack.jpg)
 
-To deploy a pipeline over a full image set please see tutorial on Pipeline Parallelization [here](pipeline_parallel.md).
+To deploy a pipeline over a full image set please see tutorial on [pipeline parallelization](pipeline_parallel.md).
 
 
 
 ## Creating Masks
 
-We have added a function to semi-automate the task of creating a color card mask. See [Creating a color card mask](transform_correct_color.md#Create-a-Labeled-Color-Card-Mask).
+We have added functions to semi-automate the tasks of [detecting](transform_correct_color.md#automatically-find-a-color-card) and [creating a color card mask](transform_correct_color.md#create-a-labeled-color-card-mask).
 
 Or manually create a labeled mask as described below:
 
@@ -176,6 +186,7 @@ pcv.params.debug = "plot"
 
 
 ```python
+
 img = cv2.imread("target_img.png") #read in img
 pcv.plot_image(img)
 ```
@@ -184,6 +195,7 @@ pcv.plot_image(img)
 
 
 ```python
+
 #Using the pixel coordinate on the plotted image, designate a region of interest for an n x n pixel region in each color chip.
 
 dimensions = [50,50]  #pixel ROI dimensions
@@ -237,6 +249,7 @@ print mask
 
 
 ```python
+
 # draw contours for each region of interest and give them unique color values.
 
 i=1
@@ -253,6 +266,7 @@ mask = mask*10  #multiply values in the mask for greater contrast. Exclude if de
 ![Screenshot](img/tutorial_images/colorchecker_mask/color_chip3.jpg)
 
 ```python
+
 np.unique(mask)
 ```
 
@@ -266,6 +280,7 @@ np.unique(mask)
 
 
 ```python
+
 cv2.imwrite("test_mask.png", mask) #write to file.
 ```
 
@@ -275,6 +290,7 @@ cv2.imwrite("test_mask.png", mask) #write to file.
 ## Creating a pipeline with incomplete color data
 
 ```python
+
 from plantcv import plantcv as pcv
 import cv2
 import numpy as np
@@ -283,6 +299,7 @@ import matplotlib
 
 
 ```python
+
 target_img = cv2.imread("target_img.png")
 source_img = cv2.imread("source2_img.png")
 target_mask = cv2.imread("test_mask.png", -1) # mask must be read in "as-is" include -1
@@ -302,6 +319,7 @@ target_matrix, source_matrix, transformation_matrix, corrected_img = pcv.transfo
 
 
 ```python
+
 transformation_matrix = pcv.transform.load_matrix("./test1/transformation_matrix.npz") #load in transformation_matrix
 
 new_source = cv2.imread("VIS_SV_0_z1_h1_g0_e65_v500_376217_0.png") #read in new image for transformation
@@ -311,3 +329,50 @@ corrected_img = pcv.transform.apply_transformation_matrix(source_img= new_source
 
 ![Screenshot](img/documentation_images/color_correction_tutorial/hstack_incomplete_plants.jpg)
 
+## [Checking](transform_correct_color.md#checking-a-color-card) the Color Card Chips
+
+```python
+
+from plantcv import plantcv as pcv
+from plotnine import *
+import numpy as np
+import pandas as pd
+
+quick_color_check(source_matrix = s_matrix, target_matrix = t_matrix, num_chips = 24)
+```
+
+The relationship between RGB values in the source image and the target image should be extremely linearly related.
+Plots are labeled with the chip numbers in order to help determine problematic. Black and white chips can often be fully saturated which can
+affect color transformation outcomes.
+
+**Example 1**
+
+![Screenshot](img/tutorial_images/colorchecker_mask/ggplot_quick_check_good.png)
+
+Plots that don't exhibit a strong linear relationship indicate problems with one or more chips in the color card. Over/under saturation of color channels can
+effect color correction. Sometimes problematic chips can be excluded when creating a mask.
+
+**Example 2**
+
+![Screenshot](img/tutorial_images/colorchecker_mask/ggplot_quick_check_bad.png)
+
+Using `%matplotlib notebook` in a Jupyter notebook can be used to examine which color card chips might be problematic. The zoom to rectangle tool will allow for closer examination.
+
+```python
+
+%matplotlib notebook
+from plantcv import plantcv as pcv
+from plotnine import *
+import numpy as np
+import pandas as pd
+
+pcv.transform.quick_color_check(source_matrix = s_matrix, target_matrix = t_matrix, num_chips = 24)
+```
+
+**Example 3**
+
+![Screenshot](img/tutorial_images/colorchecker_mask/ggplot_quick_check_zoom.jpg)
+
+In the example above there are only two chips that seem to deviate from the linear pattern expected. In this case we can go back and try to exclude chips 19 and 3
+in the mask before running the pipeline again. However, in the second example there is differences in the range of values among color channels
+indicating that camera settings and/or lighting technique likely needs revision in order to successfully use color correction.

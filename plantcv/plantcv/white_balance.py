@@ -55,9 +55,11 @@ def white_balance(img, mode='hist', roi=None):
     ori_img = np.copy(img)
 
     if roi is not None:
-        roiint = all(isinstance(item, int) for item in roi)
+        roiint = all(isinstance(item, (list, int)) for item in roi)
 
-        if len(roi) != 4 | roiint is False:
+        if len(roi) != 4:
+            fatal_error('If ROI is used ROI must have 4 elements as a list and all must be integers')
+        elif roiint is False:
             fatal_error('If ROI is used ROI must have 4 elements as a list and all must be integers')
     else:
         pass

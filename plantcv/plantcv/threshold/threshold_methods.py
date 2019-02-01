@@ -8,7 +8,8 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
-
+from skimage.feature import greycomatrix, greycoprops
+from scipy.ndimage import generic_filter
 
 # Binary threshold
 def binary(gray_img, threshold, max_value, object_type="light"):
@@ -265,6 +266,58 @@ def triangle(gray_img, max_value, object_type="light", xstep=1):
     return bin_img
 
 
+def texture(gray_img, kernel, threshold, offset=3, texture_method='dissimilarity', borders='nearest',
+            max_value=255):
+    """Creates a binary image from a grayscale image using skimage texture calculation for thresholding.
+    This function is quite slow.
+
+    Inputs:
+    gray_img       = Grayscale image data
+    kernel         = Kernel size for texture measure calculation
+    threshold      = Threshold value (0-255)
+    offset         = Distance offsets
+    texture_method = Feature of a grey level co-occurrence matrix, either
+                     'contrast', 'dissimilarity', 'homogeneity', 'ASM', 'energy',
+                     or 'correlation'.For equations of different features see
+                     scikit-image.
+    borders        = How the array borders are handled, either 'reflect',
+                     'constant', 'nearest', 'mirror', or 'wrap'
+    max_value      = Value to apply above threshold (usually 255 = white)
+
+    Returns:
+    bin_img        = Thresholded, binary image
+
+    :param gray_img: numpy.ndarray
+    :param kernel: int
+    :param threshold: int
+    :param offset: int
+    :param texture_method: str
+    :param borders: str
+    :param max_value: int
+    :return bin_img: numpy.ndarray
+    """
+
+    # Function that calculates the texture of a kernel
+    def calc_texture(inputs):
+        inputs = np.reshape(a=inputs, newshape=[kernel, kernel])
+        inputs = inputs.astype(np.uint8)
+        # Greycomatrix takes image, distance offset, angles (in radians), symmetric, and normed
+        # http://scikit-image.org/docs/dev/api/skimage.feature.html#skimage.feature.greycomatrix
+        glcm = greycomatrix(inputs, [offset], [0], 256, symmetric=True, normed=True)
+        diss = greycoprops(glcm, texture_method)[0, 0]
+        return diss
+
+    # Make an array the same size as the original image
+    output = np.zeros(gray_img.shape, dtype=gray_img.dtype)
+
+    # Apply the texture function over the whole image
+    generic_filter(gray_img, calc_texture, size=kernel, output=output, mode=borders)
+
+    # Threshold so higher texture measurements stand out
+    bin_img = binary(gray_img=output, threshold=threshold, max_value=max_value, object_type='light')
+    return bin_img
+
+
 # Internal method for calling the OpenCV threshold function to reduce code duplication
 def _call_threshold(gray_img, threshold, max_value, threshold_method, method_name):
     # Threshold the image
@@ -376,8 +429,10 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
     x = np.atleast_1d(x).astype('float64')
     if x.size < 3:
         return np.array([], dtype=int)
-    if valley:
-        x = -x
+
+    # # Where this function is used it is hardcoded to use the default valley=False so this will never be used
+    # if valley:
+    #     x = -x
     # find indices of all peaks
     dx = x[1:] - x[:-1]
     # handle NaN's
@@ -386,13 +441,16 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
         x[indnan] = np.inf
         dx[np.where(np.isnan(dx))[0]] = np.inf
     ine, ire, ife = np.array([[], [], []], dtype=int)
-    if not edge:
-        ine = np.where((np.hstack((dx, 0)) < 0) & (np.hstack((0, dx)) > 0))[0]
-    else:
-        if edge.lower() in ['rising', 'both']:
-            ire = np.where((np.hstack((dx, 0)) <= 0) & (np.hstack((0, dx)) > 0))[0]
-        if edge.lower() in ['falling', 'both']:
-            ife = np.where((np.hstack((dx, 0)) < 0) & (np.hstack((0, dx)) >= 0))[0]
+    # # Where this function is used it is hardcoded to use the default edge='rising' so we will never have
+    # # edge=None, thus this will never be used
+    # if not edge:
+    #     ine = np.where((np.hstack((dx, 0)) < 0) & (np.hstack((0, dx)) > 0))[0]
+
+    if edge.lower() in ['rising', 'both']:
+        ire = np.where((np.hstack((dx, 0)) <= 0) & (np.hstack((0, dx)) > 0))[0]
+        # # Where this function is used it is hardcoded to use the default edge='rising' so this will never be used
+        # if edge.lower() in ['falling', 'both']:
+        #     ife = np.where((np.hstack((dx, 0)) < 0) & (np.hstack((0, dx)) >= 0))[0]
     ind = np.unique(np.hstack((ine, ire, ife)))
     # handle NaN's
     if ind.size and indnan.size:
@@ -403,31 +461,38 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
         ind = ind[1:]
     if ind.size and ind[-1] == x.size - 1:
         ind = ind[:-1]
-    # remove peaks < minimum peak height
-    if ind.size and mph is not None:
-        ind = ind[x[ind] >= mph]
+
+    # # Where this function is used has hardcoded mph=None so this will never be used
+    # # remove peaks < minimum peak height
+    # if ind.size and mph is not None:
+    #     ind = ind[x[ind] >= mph]
     # remove peaks - neighbors < threshold
-    if ind.size and threshold > 0:
-        dx = np.min(np.vstack([x[ind] - x[ind - 1], x[ind] - x[ind + 1]]), axis=0)
-        ind = np.delete(ind, np.where(dx < threshold)[0])
-    # detect small peaks closer than minimum peak distance
-    if ind.size and mpd > 1:
-        ind = ind[np.argsort(x[ind])][::-1]  # sort ind by peak height
-        idel = np.zeros(ind.size, dtype=bool)
-        for i in range(ind.size):
-            if not idel[i]:
-                # keep peaks with the same height if kpsh is True
-                idel = idel | (ind >= ind[i] - mpd) & (ind <= ind[i] + mpd) \
-                              & (x[ind[i]] > x[ind] if kpsh else True)
-                idel[i] = 0  # Keep current peak
-        # remove the small peaks and sort back the indices by their occurrence
-        ind = np.sort(ind[~idel])
+
+    # # Where this function is used threshold is hardcoded to the default threshold=0 so this will never be used
+    # if ind.size and threshold > 0:
+    #     dx = np.min(np.vstack([x[ind] - x[ind - 1], x[ind] - x[ind + 1]]), axis=0)
+    #     ind = np.delete(ind, np.where(dx < threshold)[0])
+
+    # # Where this function is used has hardcoded mpd=1 so this will never be used
+    # # detect small peaks closer than minimum peak distance
+    # if ind.size and mpd > 1:
+    #     ind = ind[np.argsort(x[ind])][::-1]  # sort ind by peak height
+    #     idel = np.zeros(ind.size, dtype=bool)
+    #     for i in range(ind.size):
+    #         if not idel[i]:
+    #             # keep peaks with the same height if kpsh is True
+    #             idel = idel | (ind >= ind[i] - mpd) & (ind <= ind[i] + mpd) \
+    #                           & (x[ind[i]] > x[ind] if kpsh else True)
+    #             idel[i] = 0  # Keep current peak
+    #     # remove the small peaks and sort back the indices by their occurrence
+    #     ind = np.sort(ind[~idel])
 
     if show:
         if indnan.size:
             x[indnan] = np.nan
-        if valley:
-            x = -x
+        # # Where this function is used it is hardcoded to use the default valley=False so this will never be used
+        # if valley:
+        #     x = -x
         _plot(x, mph, mpd, threshold, edge, valley, ax, ind)
 
     return ind

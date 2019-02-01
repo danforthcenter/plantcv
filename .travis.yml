@@ -1,72 +1,57 @@
+dist: xenial
 language: python
-# Switch to container-based builds
-sudo: false
-# Which versions of Python to test
+#sudo: false
 python:
-  - "2.7"
-  - "3.6"
-  - "3.7"
-# Allow Python3.7 tests to fail for now
-matrix:
-  allow_failures:
-    - python: "3.7"
-# Do not have the virtualenv use system-wide site packages
+- '2.7'
+- '3.6'
+- '3.7'
+#matrix:
+#  allow_failures:
+#  - python: '3.7'
 virtualenv:
   system_site_packages: false
-
-# command to install dependencies
-#before_install:
-#  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
-#      wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
-#    else
-#      wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-#    fi
-#  - bash miniconda.sh -b -p $HOME/miniconda
-#  - export PATH="$HOME/miniconda/bin:$PATH"
-#  - hash -r
-#  - conda config --set always_yes yes --set changeps1 no
-#  - conda info -a
-#  # These are the packages we need
-#  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
-#      # matplotlib is causing issues with ths configuration on Travis-CI, overriding normal defaults
-#      conda create -q -c conda-forge -n test-environment --file requirements.txt python=$TRAVIS_PYTHON_VERSION opencv=2.4 matplotlib=1.5 coveralls;
-#    else
-#      conda create -q -c conda-forge -n test-environment --file requirements.txt python=$TRAVIS_PYTHON_VERSION opencv=3.3 coveralls;
-#    fi
-#  - source activate test-environment
-#  - conda install coveralls matplotlib numpy pandas python-dateutil scipy scikit-image pytest
-# Install PlantCV
+#before_script:
+#- export DISPLAY=:0
+#- sh -e /etc/init.d/xvfb start
+#- sleep 3
 install:
-  - |
-    if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
-      wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
-    else
-      wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-    fi
-  - bash miniconda.sh -b -p $HOME/miniconda
-  - export PATH="$HOME/miniconda/bin:$PATH"
-  - hash -r
-  - conda config --set always_yes yes --set changeps1 no
-  - conda info -a
-  # These are the packages we need
-  - |
-    if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
-    # matplotlib is causing issues with ths configuration on Travis-CI, overriding normal defaults
-      conda create -q -c conda-forge -n test-environment --file requirements.txt python=$TRAVIS_PYTHON_VERSION coveralls;
-    else
-      conda create -q -c conda-forge -n test-environment --file requirements.txt python=$TRAVIS_PYTHON_VERSION coveralls;
-    fi
-  - source activate test-environment
-  - pip install opencv-python
-  - python setup.py install
-# command to run tests
+#- |
+#  if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+#    wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
+#  else
+#    wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+#  fi
+#- bash miniconda.sh -b -p $HOME/miniconda
+#- export PATH="$HOME/miniconda/bin:$PATH"
+#- hash -r
+#- conda config --set always_yes yes --set changeps1 no
+#- conda info -a
+#- |
+#  if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+#    conda env create -q -n test-environment -f ./environments/environment27.yml;
+#  elif [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]]; then
+#    conda env create -q -n test-environment -f ./environments/environment36.yml;
+#  elif [[ "$TRAVIS_PYTHON_VERSION" == "3.7" ]]; then
+#    conda env create -q -n test-environment -f ./environments/environment37.yml;
+#  fi
+#- source activate test-environment
+- pip install -r requirements.txt
+- pip install coveralls pytest
+- python setup.py install
 script:
-  - source activate test-environment
-  - coverage run --source=plantcv setup.py test
-  # - py.test -v tests/tests.py
-after_success:
-  coveralls
-# Which branches to run build tests on
+#- source activate test-environment
+- coverage run --source=plantcv setup.py test
+after_success: coveralls
 branches:
   only:
-    - master
+  - master
+  - /v\d+\.\d+/
+deploy:
+  provider: pypi
+  user: danforthcenter
+  password:
+    secure: "Pg1tS1pVPfIrXwvd5xUFXxRoBTgAvIuZ0QTCM0iGjLz/J6o8cLZDL4X+PH3NfHV9F+VuyRCHUMzyqc8RufnPWkLl44V6BXLSH8F3wAldOocXWVp0hLLmQXzYmZ0PU+fsH1Bl85G/scXQbQGLH/pwzV1A/gk5xvtpFXTuZI8AyUQiU8gQIo2YE4WuF/fGQcy84FxQNLGAeDaxQkyrK9pRGVdej0OwptTebpH8aT35d64ZMDWJnqgX8CnVwTlVSFCGgmnZXVF6SGfBHdRyFGNGzAeSgMnOFTB8dQjwwjYkT7dNPeRNYF9KuWF47BLuh8DYTBJDex2YwFE7AMGW08tWymm6czJXKxh+ITFVJttWElm5f5QvDp7nBBQ+ng7PMQFCDj89RSLuZ/m7IbCoXsQbdAhxWsBbpiZFyBlkJa75xIf3S/cGgzBw4SqOW2l2DEjc/7CiAXQwi0hpGz2gqVrIUVJhhhEl15plPSlGgAIRoXid5QgwTdWB2CWVcaM2zfeyzd31Ch3IVINFdpq7u5YkSHSVojOjrLz2ZdtIx4GCh8sR1gYO6XVUSnAqjAK7+WMmefxCRIEIYv5Qylu/bUDn0EUruY8X/QncYEbbGHwgOFXQhHpbTxswT+c8++KoCKEF6DZ8biCk/Xi7e6ujhCElG8ExdHNaapufnXb9hAaLGo4="
+  on:
+    tags: true
+  distributions: "sdist bdist_wheel"
+  skip_existing: true

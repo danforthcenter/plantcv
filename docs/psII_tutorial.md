@@ -2,8 +2,11 @@
 
 PlantCV is composed of modular functions that can be arranged (or rearranged) and adjusted quickly and easily.
 Pipelines do not need to be linear (and often are not). Please see pipeline example below for more details.
-Every function has a optional debug mode that prints out the resulting image.
-This allows users to visualize and optimize each step on individual test images and small test sets before pipelines are deployed over whole data-sets.
+A global variable "debug" allows the user to print out the resulting image.
+The debug has three modes: either None, 'plot', or 'print'. If set to
+'print' then the function prints the image out, or if using a [Jupyter](jupyter.md) notebook you could set debug to 'plot' to have
+the images plot to the screen.
+This allows users to visualize and optimize each step on individual test images and small test sets before pipelines are deployed over whole datasets.
 
 PSII images (3 in a set; F0, Fmin, and Fmax) are captured directly following a saturating fluorescence pulse 
 (red light; 630 nm). These three PSII images can be used to calculate Fv/Fm (efficiency of photosystem II) 
@@ -14,7 +17,7 @@ However, the pipelines to analyze PSII images are functional and a sample pipeli
 
 ### Workflow
  
-1.  Optimize pipeline on a PSII image set (3 images) in debug mode.  
+1.  Optimize pipeline on individual image with debug set to 'print' (or 'plot' if using a Jupyter notebook).
 2.  Run pipeline on small test set (ideally that spans time and/or treatments).  
 3.  Re-optimize pipelines on 'problem images' after manual inspection of test set.  
 4.  Deploy optimized pipeline over test set using parallelization script.
@@ -26,22 +29,23 @@ To run a PSII pipeline over a single PSII image set (3 images) there are 4 requi
 1.  **Image 1:** F0 (a.k.a Fdark/null) image.
 2.  **Image 2:** Fmin image.
 3.  **Image 3:** Fmax image. 
-5.  **Output directory:** If debug mode is on, output images from each step are produced; 
+5.  **Output directory:** If debug mode is set to 'print' output images from each step are produced,
 otherwise ~4 final output images are produced.
 
 Optional Inputs:
 
-*  **Debug Flag:** Prints or plots (if in jupyter or have x11 forwarding on) an image at each step
+*  **Debug Flag:** Prints or plots (if in Jupyter or have x11 forwarding on) an image at each step
 *  **Region of Interest:** The user can input their own binary region of interest or image mask 
 (for PSII images we use a premade mask to remove the screws from the image). 
 Make sure the input is the same size as your image or you will have problems.  
 
 Sample command to run a pipeline on a single PSII image set:  
 
-Always test pipelines (preferably with -D flag for debug mode) before running over a full image set.
+* Always test pipelines (preferably with -D flag for debug mode) before running over a full image set.
 
-`python pipelinename.py -i1 F0-testimg.png -i2 Fmin-testimg.png -i3 Fmax-testimg.png -m track-mask.png -o ./output-images -D 'print'`
-
+```
+./pipelinename.py -i /home/user/images/testimg.png -o /home/user/output-images -D 'print'
+```
 
 ### Walk Through A Sample Pipeline
 
@@ -70,7 +74,7 @@ def options():
 ```
 
 The PSII pipeline first uses the Fmax image to create an image mask. Our PSII images are 16-bit grayscale, 
-but we will initially read the Fmax image in as a 8-bit color image just to create the image mask.
+but we will initially [read](read_image.md) the Fmax image in as a 8-bit color image just to create the image mask.
 
 ```python
 ### Main pipeline
@@ -78,28 +82,27 @@ def main():
     # Get options
     args = options()
     
-    pcv.params.debug=args.debug
-    pcv.params.debug_outdir=args.outdir
+    pcv.params.debug=args.debug #set debug mode
+    pcv.params.debug_outdir=args.outdir #set output directory
     
     # Read image (converting fmax and track to 8 bit just to create a mask, use 16-bit for all the math)
     mask, path, filename = pcv.readimage(args.fmax)
     #mask = cv2.imread(args.fmax)
     track = cv2.imread(args.track)
     
-    mask1, mask2, mask3= cv2.split(mask)
-
+    mask1, mask2, mask3 = cv2.split(mask)
 ```
 
 **Figure 1.** (Top) Fmax image that will be used to create a plant mask that will isolate the plant material in the image. 
-(Bottom) Pre-made image mask for the screws and metallic bits that are auto-fluorescent.  
+(Bottom) Premade image mask for the screws and metallic bits that are auto-fluorescent.
 
 ![Screenshot](img/tutorial_images/psII/Fmax.jpg)
 
 ![Screenshot](img/tutorial_images/psII/mask.jpg)
 
-We use a premade-mask for the screws on the car that consistently give background signal, this is not required.
-The track mask is an RGB image so a single channel is selected using the [RGB to HSV](rgb2hsv.md).
-function and converted to a binary mask with a [binary threshold](https://plantcv.readthedocs.io/en/latest/binary_threshold/).**  
+We use a premade-mask for the screws on the car that consistently give background signal, but this is not required.
+The track mask is an RGB image so a single channel is selected using the [RGB to HSV](rgb2hsv.md)
+function and converted to a binary mask with a [binary threshold](binary_threshold.md).
 The mask is [inverted](invert.md) since the screws were white in the track image.
 The [apply mask function](apply_mask.md) is then used to apply the track mask to one channel of the Fmax image (mask1). 
 
@@ -129,7 +132,7 @@ The resulting image is then thresholded with a [binary threshold](binary_thresho
 
 ![Screenshot](img/tutorial_images/psII/03_binary_threshold20.jpg)
 
-Noise is reduced with a [median blur](median_blur.md)  
+Noise is reduced with the [median blur](median_blur.md) function.
 
 ```python
   # Median Filter
@@ -141,7 +144,7 @@ Noise is reduced with a [median blur](median_blur.md)
 
 ![Screenshot](img/tutorial_images/psII/04_median_blur5.jpg)
 
-Noise is also reduced with a [fill step](fill.md).  
+Noise is also reduced with the [fill](fill.md) function.
 
 ```python
     # Fill small objects
@@ -154,7 +157,7 @@ Noise is also reduced with a [fill step](fill.md).
 ![Screenshot](img/tutorial_images/psII/05_fill110.jpg)
 
 Objects (OpenCV refers to them a contours) are then identified within the image using 
-the [Find Objects Function](find_objects.md).  
+the [find objects](find_objects.md) function.
 
 ```python
     # Identify objects
@@ -165,7 +168,7 @@ the [Find Objects Function](find_objects.md).
 
 ![Screenshot](img/tutorial_images/psII/06_id_objects.jpg)
 
-Next the region of interest is defined using the [Region of Interest Function](roi_rectangle.md).   
+Next the region of interest is defined using the [rectangular region of interest](roi_rectangle.md) function.
 
 ```python
     # Define ROI
@@ -176,7 +179,7 @@ Next the region of interest is defined using the [Region of Interest Function](r
 
 ![Screenshot](img/tutorial_images/psII/07_roi.jpg)
 
-The objects within and overlapping are kept with the [Region of Interest Objects Function](roi_objects.md).
+The objects within and overlapping are kept with the [region of interest objects](roi_objects.md) function.
 Alternately the objects can be cut to the region of interest.
 
 ```python
@@ -188,10 +191,9 @@ Alternately the objects can be cut to the region of interest.
 
 ![Screenshot](img/tutorial_images/psII/08_obj_on_img.jpg)
 
-The isolated objects now should all be plant material. There can however, be more than one object that makes up a plant, 
+The isolated objects now should all be plant material. There can be more than one object that makes up a plant,
 since sometimes leaves twist making them appear in images as separate objects. Therefore, in order for shape 
-analysis to perform properly the plant objects need to be combined into one object using the Combine Objects function
-(for more info see [here](object_composition.md)).
+analysis to perform properly the plant objects need to be combined into one object using the [combine objects](object_composition.md) function.
 
 ```python
     # Object combine kept objects
@@ -202,9 +204,7 @@ analysis to perform properly the plant objects need to be combined into one obje
 
 ![Screenshot](img/tutorial_images/psII/09_objcomp.jpg)
 
-The next step is to analyze the plant object for traits such as shape, or PSII signal.
-For more info see Shape Function [here](analyze_shape.md),
-and the PSII signal function [here](fluor_fvfm.md).
+The next step is to analyze the plant object for traits such as [shape](analyze_shape.md), or [PSII signal](fluor_fvfm.md).
 
 For the PSII signal function the 16-bit F0, Fmin, and  Fmax images are read in so that they can be used 
 along with the generated mask to calculate Fv/Fm.
@@ -224,7 +224,7 @@ along with the generated mask to calculate Fv/Fm.
     fmin = cv2.imread(args.fmin, -1)
     fmax = cv2.imread(args.fmax, -1)
     
-    fvfm_header, fvfm_data = pcv.fluor_fvfm(fdark,fmin,fmax,kept_mask, args.outdir+'/'+filename, 1000)
+    fvfm_header, fvfm_data, fvfm_images = pcv.fluor_fvfm(fdark,fmin,fmax,kept_mask, args.outdir+'/'+filename, 1000)
     
     # Write shape and nir data to results file
     result=open(args.result,"a")
@@ -253,10 +253,10 @@ if __name__ == '__main__':
 
 ![Screenshot](img/tutorial_images/psII/Fmax.jpg)
 
-**Figure 11.** (Left) Image pseudocolored by Fv/Fm values. (Right) Histogram of raw Fv/Fm values.
+**Figure 11.** (Top) Image pseudocolored by Fv/Fm values. (Bottom) Histogram of raw Fv/Fm values.
 
 ![Screenshot](img/tutorial_images/psII/10_pseudo_fvfm.jpg)
 
 ![Screenshot](img/tutorial_images/psII/11_fvfm_hist.jpg)
 
-To deploy a pipeline over a full image set please see tutorial on Pipeline Parallelization [here](pipeline_parallel.md).
+To deploy a pipeline over a full image set please see tutorial on [pipeline parallelization](pipeline_parallel.md).

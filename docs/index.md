@@ -41,6 +41,11 @@ Also see our tutorials for more detailed overviews of using PlantCV for specific
 * [Parallel Image Processing](pipeline_parallel.md)
 * [Exporting Data for Downstream Analysis](db-exporter.md)
 
+We have added interactive documentation (the link takes up to a few minutes to load so be patient please),
+so you can test out pipelines and even upload your own images to test on.
+
+* [Interactive Documentation](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=index.ipynb)
+
 If you are interested in contributing to PlantCV, please see:
 
 * [Contribution Guide](CONTRIBUTING.md)

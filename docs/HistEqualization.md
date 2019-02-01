@@ -24,7 +24,7 @@ pcv.params.debug = "print"
 
 # Examine signal distribution within an image
 # prints out an image histogram of signal within image
-he_img = pcv.HistEqualization(img)
+he_img = pcv.hist_equalization(gray_img)
 ```
 
 **Normalized image**

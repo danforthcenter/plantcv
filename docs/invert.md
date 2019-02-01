@@ -7,8 +7,7 @@ Invert a binary image. This is a wrapper for the OpenCV function [bitwise_not](h
 **returns** inverted image
 
 - **Parameters:**
-    - img - Grayscale image data
-   
+    - gray_img - Grayscale image data
 - **Context:**
     - Invert image values. Useful for inverting an image mask.
 - **Example use:**
@@ -26,7 +25,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Invert a binary mask.
-inverted_img = pcv.invert(img)
+inverted_img = pcv.invert(gray_img)
 ```
 
 **Inverted image**

@@ -13,8 +13,8 @@ completely within the image.
 - **Parameters:**
     - img = RGB or grayscale image data to display kept objects on
     - roi_type = 'cutto' or 'partial' (include objects that are partially inside or overlapping with ROI)
-    - roi_contour = contour of roi, output from "define_roi" function
-    - roi_hierarchy = contour of roi, output from "define_roi" function
+    - roi_contour = contour of roi, output from one of the pcv.roi subpackage functions
+    - roi_hierarchy = contour of roi, output from one of the pcv.roi subpackage functions
     - object_contour = contours of objects, output from "find_objects" function 
     - obj_hierarchy = hierarchy of objects, output from "find_objects" function
     
@@ -26,6 +26,7 @@ completely within the image.
     - [Use In PSII Tutorial](psII_tutorial.md) 
 
 ```python
+
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
@@ -48,6 +49,7 @@ roi_objects, hierarchy, kept_mask, obj_area = pcv.roi_objects(img, 'partial', ro
 ![Screenshot](img/documentation_images/roi_objects/kept_objects1.jpg)
 
 ```python
+
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)

@@ -10,8 +10,8 @@ The function is a wrapper for the OpenCV function [gaussian blur](http://docs.op
 - **Parameters:**
     - img - RGB or grayscale image data
     - ksize - Tuple of kernel dimensions, e.g. (5, 5)
-    - sigmax - standard deviation in X direction; if 0, calculated from kernel size
-    - sigmay - standard deviation in Y direction; if sigmaY is None, sigmaY is taken to equal sigmaX
+    - sigmax - standard deviation in X direction; if 0 (default), calculated from kernel size
+    - sigmay - standard deviation in Y direction; if sigmaY is None (default), sigmaY is taken to equal sigmaX
 - **Context:**
     - Used to reduce image noise
 
@@ -20,13 +20,14 @@ The function is a wrapper for the OpenCV function [gaussian blur](http://docs.op
 ![Screenshot](img/documentation_images/gaussian_blur/original_image.jpg)
 
 ```python
+
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Apply gaussian blur to a binary image that has been previously thresholded.
-gaussian_img = pcv.gaussian_blur(img=img1, ksize=(51,51), sigmax=0, sigmay=None)
+gaussian_img = pcv.gaussian_blur(img=img1, ksize=(51, 51), sigmax=0, sigmay=None)
 ```
 
 **Gaussian blur (ksize = (51,51))**
@@ -40,7 +41,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Apply gaussian blur to a binary image that has been previously thresholded.
-gaussian_img = pcv.gaussian_blur(img=img1, ksize=(101,101), sigmax=0, sigmay=None)
+gaussian_img = pcv.gaussian_blur(img=img1, ksize=(101, 101), sigmax=0, sigmay=None)
 ```
 
 **Gaussian blur (ksize = (101,101))**

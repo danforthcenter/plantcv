@@ -54,11 +54,7 @@ def _pseudocolored_image(histogram, bins, img, mask, background, channel, filena
         output_imgs["pseudo_on_img"]["img"] = cv2.add(cplant1, img_back3)
 
     if background == 'white' or background == 'both':
-        # Get the image size
-        if np.shape(img)[2] == 3:
-            ix, iy, iz = np.shape(img)
-        else:
-            ix, iy = np.shape(img)
+        ix, iy, iz = np.shape(img)
         size = ix, iy
         back = np.zeros(size, dtype=np.uint8)
         w_back = back + 255
@@ -69,7 +65,7 @@ def _pseudocolored_image(histogram, bins, img, mask, background, channel, filena
     if filename:
         for key in output_imgs:
             if output_imgs[key]["img"] is not None:
-                fig_name_pseudo = str(filename[0:-4]) + '_' + str(channel) + '_pseudo_on_' + \
+                fig_name_pseudo = os.path.splitext(filename)[0] + '_' + str(channel) + '_pseudo_on_' + \
                                   output_imgs[key]["background"] + '.jpg'
                 path = os.path.dirname(filename)
                 print_image(output_imgs[key]["img"], fig_name_pseudo)
@@ -102,6 +98,7 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None, pseudo_channel='v',
     Inputs:
     rgb_img          = RGB image data
     mask             = Binary mask made from selected contours
+    bins             = number of color bins the channel is divided into
     hist_plot_type   = 'None', 'all', 'rgb','lab' or 'hsv'
     color_slice_type = 'None', 'rgb', 'hsv' or 'lab'
     pseudo_channel   = 'None', 'l', 'm' (green-magenta), 'y' (blue-yellow), h','s', or 'v', creates pseduocolored image
@@ -126,6 +123,9 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None, pseudo_channel='v',
     :return analysis_images: list
     """
     params.device += 1
+
+    if len(np.shape(rgb_img)) < 3:
+        fatal_error("rgb_img must be an RGB image")
 
     masked = cv2.bitwise_and(rgb_img, rgb_img, mask=mask)
     b, g, r = cv2.split(masked)
@@ -248,7 +248,7 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None, pseudo_channel='v',
             plt.legend()
 
         # Print plot
-        fig_name = (str(filename[0:-4]) + '_' + str(hist_plot_type) + '_hist.svg')
+        fig_name = (os.path.splitext(filename)[0] + '_' + str(hist_plot_type) + '_hist.svg')
         plt.savefig(fig_name)
         analysis_images.append(['IMAGE', 'hist', fig_name])
         if params.debug == 'print':

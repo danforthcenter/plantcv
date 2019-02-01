@@ -25,6 +25,7 @@ from plantcv.plantcv.color_palette import color_palette
 from plantcv.plantcv.plot_colorbar import plot_colorbar
 from plantcv.plantcv.apply_mask import apply_mask
 from plantcv.plantcv.readimage import readimage
+from plantcv.plantcv.readbayer import readbayer
 from plantcv.plantcv.laplace_filter import laplace_filter
 from plantcv.plantcv.sobel_filter import sobel_filter
 from plantcv.plantcv.scharr_filter import scharr_filter
@@ -86,11 +87,11 @@ from plantcv.plantcv.analyze_thermal_values import analyze_thermal_values
 
 # add new functions to end of lists
 
-__all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'plot_colorbar', 'apply_mask', 'readimage',
+__all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'plot_colorbar', 'apply_mask', 'readimage', 'readbayer',
            'laplace_filter', 'sobel_filter', 'scharr_filter', 'hist_equalization', 'plot_hist', 'image_add',
            'image_subtract', 'erode', 'dilate', 'watershed', 'rectangle_mask', 'rgb2gray_hsv', 'rgb2gray_lab',
            'rgb2gray', 'median_blur', 'fill', 'invert', 'logical_and', 'logical_or', 'logical_xor',
-           'find_objects', 'roi_objects', 'transform','object_composition', 'analyze_object',
+           'find_objects', 'roi_objects', 'transform', 'object_composition', 'analyze_object',
            'analyze_bound_horizontal', 'analyze_bound_vertical', 'analyze_color', 'analyze_nir_intensity',
            'fluor_fvfm', 'print_results', 'resize', 'flip', 'crop_position_mask', 'get_nir', 'report_size_marker_area',
            'white_balance', 'acute_vertex', 'scale_features', 'landmark_reference_pt_dist',

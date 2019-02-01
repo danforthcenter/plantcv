@@ -1,7 +1,7 @@
 ## Median Blur
 
 Applies a median blur filter. Applies median value to central pixel within a kernel size (ksize x ksize). 
-The function is a wrapper for the OpenCV function [median blur](http://docs.opencv.org/doc/tutorials/imgproc/gausian_median_blur_bilateral_filter/gausian_median_blur_bilateral_filter.html_).  
+The function is a wrapper for the SciPy function [median filter](https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.ndimage.filters.median_filter.html).
 
 **plantcv.median_blur**(*gray_img, ksize*)**
 
@@ -28,7 +28,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Apply median blur to a binary image that has been previously thresholded.
-blur_5 = pcv.median_blur(img, 5)
+blur_5 = pcv.median_blur(gray_img, 5)
 ```
 
 **Median blur (k = 5)**
@@ -42,9 +42,9 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Apply median blur to a binary image that has been previously thresholded.
-blur_11 = pcv.median_blur(img, 11)
+blur_11 = pcv.median_blur(gray_img, (11, 11))
 ```
 
-**Median blur (k = 11)**
+**Median blur (k = (11,11))**
 
 ![Screenshot](img/documentation_images/median_blur/median_blur11.jpg)

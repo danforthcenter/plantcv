@@ -53,7 +53,7 @@ def cluster_contour_splitimg(rgb_img, grouped_contour_indexes, contours, hierarc
     if file is None:
         filebase = timenow
     else:
-        filebase = file[:-4]
+        filebase = os.path.splitext(file)[0]
 
     if filenames is None:
         l = len(grouped_contour_indexes)

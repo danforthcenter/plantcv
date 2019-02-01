@@ -17,13 +17,13 @@ that is found in the same directory but which contains multiple images (regex). 
  - [Use in VIS/NIR Tutorial](vis_nir_tutorial.md)
 
 ```python
+
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Get NIR image
-nir_path= pcv.get_nir("/home/images/sorghum/snapshot1", "VIS_SV_90_z300_h1_g0_e85_v500_86939.png")
-
+nir_path = pcv.get_nir("/home/images/sorghum/snapshot1", "VIS_SV_90_z300_h1_g0_e85_v500_86939.png")
 ```
 

@@ -92,7 +92,7 @@ git push
 
 #### Create a branch to do your work
 
-A good practice is to call the branch in the form of plantcv-<issue-number> 
+A good practice is to call the branch in the form of `plantcv-<issue-number>`
 followed by the title of the issue. This makes it easier to find out the
 issue you are trying to solve and helps us to understand what is done in
 the branch. Calling a branch my-work is confusing. Names of branch can
@@ -164,7 +164,7 @@ more likely we are to catch problematic pull requests). To include new functions
 aren't broken by future pull requests) we need a 'unit test' or set of 'unit tests' (if you need more than one test to 
 cover function options).
 
-Existing unit tests can be found in `tests/tests.py` as examples  
+Existing unit tests can be found in `tests/tests.py` as examples.
 The data to support unit tests can be found in `tests/data/`
 
 If you are updating existing code, make sure that the `test.py`
@@ -201,41 +201,38 @@ from . import print_image
 ```
 
 Here is a sample of a new function. Arguments should be defined.
-Generally, all PlantCV functions should include a device (integer) and
-debug (default = None) arguments. Note that the inputs and outputs
-are documented with Python docstrings.
+Generally, functions should utilize the global `debug` parameter from the [params](params.md) class.
+Users can set `pcv.params.debug `
+to None (default), "print" (to file), or "plot" (to screen if using [Jupyter](jupyter.md) notebooks or X11).
+Functions should also increment the `device` number, which is a counter for image processing steps that is autoincremented by functions that use `params`.
+Note that the inputs and outputs are documented with Python docstrings.
 
 ```python
-def new_function(img, device, debug=None):
+
+def new_function(img):
     """New function.
     
     Inputs:
     img        = description of img
-    device     = device number. Used to count steps in a workflow
-    debug      = None, print, or plot. Print = save to file, Plot = print to screen.
     
     Returns:
-    device     = device number
     returnval1 = return value 1
     
     :param img: type
-    :param device: int
-    :param debug: str
-    :return device: int
     :return returnval1: type
     """
     
     # Increment the device number by 1
-    device += 1
+    params.device += 1
 
     returnval1 = some_code_on_img(img)
     
-    if debug == 'print':
-        print_image(img, (str(device) + '_new_function.jpg'))
-    elsif debug == 'plot':
+    if params.debug == "print":
+        print_image(img, (str(params.device) + '_new_function.jpg'))
+    elif params.debug == 'plot':
         plot_image(img)
 
-    return device, returnval1
+    returnval1
 ```
 
 ### Thanks

@@ -1,7 +1,7 @@
 ## x_axis_pseudolandmarks
 
-Divide plant object into twenty equidistant bins and assign pseudolandmark points based upon their actual (not scaled) position
-Once this data is scaled this approach may provide some information regarding shape independent of size
+Divide plant object into twenty equidistant bins and assign pseudolandmark points based upon their actual (not scaled) position.
+Once this data is scaled this approach may provide some information regarding shape independent of size.
 
 **plantcv.x_axis_pseudolandmarks**(*obj, mask, img*)
 
@@ -9,8 +9,8 @@ Once this data is scaled this approach may provide some information regarding sh
 
 - **Parameters:**
     - obj - A contour of the plant object (this should be output from the object_composition.py fxn)
-    - mask - This is a binary image. The object should be white and the background should be black
-    - img - A copy of the original image generated using np.copy if debug is true it will be drawn on
+    - mask - This is a binary image. The object should be white and the background should be black.
+    - img - A copy of the original image (RGB or grayscale) generated using np.copy
 - **Context:**
     - Used to identify a set of sixty equidistant landmarks on the horizontal axis. Once scaled these can be used for shape analysis.
     
@@ -22,11 +22,11 @@ Once this data is scaled this approach may provide some information regarding sh
 from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
 
 # Identify a set of land mark points
 # Results in set of point values that may indicate tip points
-device, top, bottom, center_v = pcv.x_axis_pseudolandmarks(obj, mask, img)
+top, bottom, center_v = pcv.x_axis_pseudolandmarks(obj, mask, img)
 ```
 
 **Image of points selected**

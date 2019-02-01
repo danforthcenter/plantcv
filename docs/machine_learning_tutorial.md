@@ -2,17 +2,17 @@
 
 Machine learning methods can be used to train a trainable classifier to detect features of interest. In the tutorial
 below we describe how to train and use the first trainable classifier we have made available in PlantCV. See the 
-[Naive Bayes Classifier](naive_bayes_classifier.md) documentation for more details on the methodology.
+[naive Bayes classifier](naive_bayes_classifier.md) documentation for more details on the methodology.
 
 ### Naive Bayes
 
-The naive Bayes approach used here can be trained to label pixels as plant or background. In other words, it can be
-trained to, given a color image, output a binary image where background is labeled as black (0) and plant is labeled
+The naive Bayes approach used here can be trained to label pixels as plant or background. In other words, given a color image it can be
+trained to output a binary image where background is labeled as black (0) and plant is labeled
 as white (255). The goal is to replace the need to set [binary threshold](binary_threshold.md) values manually.
 
 To train the classifier, we need to label a relatively small set of images using a binary mask (just like above).
 We can use PlantCV to create a binary mask for a set of input images using the methods described in the 
-[VIS Tutorial](vis_tutorial.md).
+[VIS tutorial](vis_tutorial.md).
 
 For the purpose of this tutorial, we assume we are in a folder containing two subfolders, one containing original RGB
 images, and one containing black and white masks that match the set of RGB images.
@@ -25,7 +25,7 @@ plantcv-train.py naive_bayes --imgdir ./images --maskdir ./masks --outfile naive
 ```
 
 The output file from `plantcv-train.py` will contain one row for each color channel (hue, saturation, and value) for
-each class (plant and background). The first and second column are the class and channel label, respectively. The
+each class (e.g. plant and background). The first and second column are the class and channel label, respectively. The
 remaining 256 columns contain the p-value from the PDFs for each intensity value observable in an 8-bit image (0-255).
 
 Once we have the `plantcv-train.py` output file, we can classify pixels in a color image in PlantCV.
@@ -43,12 +43,12 @@ img, path, filename = pcv.readimage("color_image.png")
 mask = pcv.naive_bayes_classifier(img, pdf_file="naive_bayes_pdfs.txt")
 ```
 
-See the [Naive Bayes Classifier](naive_bayes_classifier.md) documentation for example input/output.
+See the [naive Bayes classifier](naive_bayes_classifier.md) documentation for example input/output.
 
 ### Naive Bayes Multiclass
 
 The naive Bayes multiclass approach is an extension of the naive Bayes approach described above. Just like the approach
-above it can be trained to output binary images given an input color image. Unlike the naive Bayes method above, the
+above, it can be trained to output binary images given an input color image. Unlike the naive Bayes method above, the
 naive Bayes multiclass approach can be trained to classify two or more classes, defined by the user. Additionally,
 the naive Bayes multiclass method is trained using colors sparsely sampled from images rather than the need to label all
 pixels in a given image.
@@ -88,7 +88,7 @@ nine pixels are sampled with one click but the radius is adjustable.
 ![Screenshot](img/tutorial_images/machine_learning/imagej_pixel_inspector.jpg)
 
 Once a satisfactory sample of pixels is collected, save the table as a tab-delimited text file. Like the naive Bayes
-method described above, us `plantcv-train.py` to use the pixel samples to output probability density functions (PDFs)
+method described above, use `plantcv-train.py` to use the pixel samples to output probability density functions (PDFs)
 for each class.
 
 ```
@@ -104,10 +104,10 @@ function described in the naive Bayes section above. The example image above, ps
 
 ![Screenshot](img/tutorial_images/machine_learning/classified_image.jpg)
 
-### Parallelizing image classification
+### Parallelizing Image Classification
 
 To parallelize the naive Bayes methods described above, construct a pipeline script following the guidelines in the 
-[Pipeline Parallelization tutorial](pipeline_parallel.md), but with an additional argument provided for the probability
+[pipeline parallelization tutorial](pipeline_parallel.md), but with an additional argument provided for the probability
 density functions file output by `plantcv-train.py`. For example:
 
 ```python

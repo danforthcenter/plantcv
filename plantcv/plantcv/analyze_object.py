@@ -226,8 +226,8 @@ def analyze_object(img, obj, mask, filename=False):
         cv2.line(ori_img, (tuple(caliper_transpose[caliper_length - 1])), (tuple(caliper_transpose[0])), (0, 0, 255), 5)
         cv2.circle(ori_img, (int(cmx), int(cmy)), 10, (0, 0, 255), 5)
         # Output images with convex hull, extent x and y
-        out_file = str(filename[0:-4]) + '_shapes.jpg'
-        out_file1 = str(filename[0:-4]) + '_mask.jpg'
+        out_file = os.path.splitext(filename)[0] + '_shapes.jpg'
+        out_file1 = os.path.splitext(filename)[0] + '_mask.jpg'
 
         print_image(ori_img, out_file)
         analysis_images.append(['IMAGE', 'shapes', out_file])
