@@ -6,12 +6,8 @@ import numpy as np
 import pandas as pd
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
-from plantcv.plantcv import plot_colorbar
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
-import matplotlib
-matplotlib.use('Agg', warn=False)
-from plotnine import ggplot, geom_label, aes, geom_line
 
 
 def fluor_fvfm(fdark, fmin, fmax, mask, bins=256):
@@ -38,7 +34,7 @@ def fluor_fvfm(fdark, fmin, fmax, mask, bins=256):
     import matplotlib
     matplotlib.use('Agg', warn=False)
     from matplotlib import pyplot as plt
-    # from matplotlib import cm as cm
+    from plotnine import ggplot, geom_label, aes, geom_line
 
     # Auto-increment the device counter
     params.device += 1
