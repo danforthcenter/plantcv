@@ -34,6 +34,10 @@ def analyze_nir_intensity(gray_img, mask, bins, histplot=False):
     :return hist_data: list
     :return nir_hist: str
     """
+    import matplotlib
+    matplotlib.use('Agg', warn=False)
+    # from matplotlib import pyplot as plt
+
     params.device += 1
 
     # apply plant shaped mask to image

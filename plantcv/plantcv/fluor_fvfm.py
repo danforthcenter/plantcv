@@ -33,6 +33,10 @@ def fluor_fvfm(fdark, fmin, fmax, mask, bins=256):
     :return hist_data: list
     :return analysis_images: numpy.ndarray
     """
+    import matplotlib
+    matplotlib.use('Agg', warn=False)
+    # from matplotlib import pyplot as plt
+    # from matplotlib import cm as cm
 
     # Auto-increment the device counter
     params.device += 1

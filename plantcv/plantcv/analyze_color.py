@@ -115,6 +115,10 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
     :return hist_data: list
     :return analysis_images: list
     """
+    import matplotlib
+    matplotlib.use('Agg', warn=False)
+    # from matplotlib import pyplot as plt
+
     params.device += 1
 
     if len(np.shape(rgb_img)) < 3:
