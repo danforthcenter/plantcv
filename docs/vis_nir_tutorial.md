@@ -252,9 +252,12 @@ The next step is to analyze the plant object for traits such as [horizontal heig
     # Shape properties relative to user boundary line (optional)
     boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_horizontal(img, obj, mask, 1680)
     
-    # Determine color properties: Histograms, Color Slices and Pseudocolored Images, output color analyzed images (optional)
-    color_header, color_data, color_img = pcv.analyze_color(img, kept_mask, 256, 'all', 'v', 'img', args.outdir + '/' + filename)
-    
+    # Determine color properties: Histograms, Color Slices, output color analyzed histogram (optional)
+    color_header, color_data, color_histogram = pcv.analyze_color(img, kept_mask, 256, 'all')
+
+    # Pseudocolor the grayscale image
+    pseudocolored_img = pcv.pseudocolor(gray_img=s, mask=kept_mask, cmap='jet')
+
     # Write shape and color data to results file
     result=open(args.result,"a")
     result.write('\t'.join(map(str,shape_header)))
