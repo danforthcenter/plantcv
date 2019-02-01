@@ -1,8 +1,8 @@
 # Plot colorbar for pseudocolored images
 
-# import os
+import os
 #
-# def plot_colorbar(outdir, filename, bins):
+ def plot_colorbar(outdir, filename, bins):
 #     """Plot colorbar for pseudocolored images
 #
 #     Inputs:
