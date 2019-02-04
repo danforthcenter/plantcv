@@ -3,7 +3,7 @@
 This function pseudocolors any grayscale image to custom colormap. An optional mask can leave background out in the
 pseudocolored image. Additionally, optional maximum and minimum values can be specified.
 
-**plantcv.pseudocolor**(*gray_img, mask=None, cmap=None, min_value=0, max_value=255, path="."*)
+**plantcv.pseudocolor**(*gray_img, mask=None, cmap=None, min_value=0, max_value=255, obj=None, dpi=None, axes=True, path="."*)
 
 **returns** pseudocolored image that can be saved with `pcv.print_image`
 
@@ -11,9 +11,12 @@ pseudocolored image. Additionally, optional maximum and minimum values can be sp
     - gray_img  - Grayscale image data
     - mask      - Binary mask made from selected contours
     - cmap      - Custom colormap, see [here](https://matplotlib.org/tutorials/colors/colormaps.html) for tips on how to choose a colormap in Matplotlib.
-    - min_value - Minimum value (optional) for range of interest
-    - max_value - Maximum value (optional) for range of interest
-    - path      - Path giving location the image will get saved
+    - min_value - Minimum value (optional) for range of interest.
+    - max_value - Maximum value (optional) for range of interest.
+    - obj       - Single or grouped contour object (optional), if provided the pseudocolored image gets cropped down to the region of interest.
+    - dpi       - Dots per inch for image if printed out (optional, if dpi=None then the default is set to 100 dpi).
+    - axes      - If False then x- and y-axis won't be displayed (default axes=True).
+    - path      - Path giving location the image will get saved.
 - **Context:**
     - Used to pseudocolor any grayscale image to custom colormap
 - **Example use:**
@@ -43,6 +46,10 @@ pseudo_img_masked = pcv.pseudocolor(gray_img=img, mask=mask, cmap='viridis', min
 # Save the masked and pseudocolored image
 pcv.print_image(pseudo_img_masked, 'nir_tv_z300_L1_pseudocolored.png')
 
+# Print out a pseudocolored image with cropping enabled, axes disabled, and higher dpi value.
+pcv.params.debug='print'
+pseudo_crop_no_axes = pcv.pseudocolor(gray_img=img, mask=mask, obj=obj, cmap='viridis', dpi=200, axes=False)
+
 # If a black background is preferred over white
 cmap = matplotlib.cm.viridis # or whatever you want
 cmap.set_bad("black") # or "white" of course
@@ -59,7 +66,10 @@ pseudo_img_black_bkgd = pcv.pseudocolor(gray_img=img, mask=mask, cmap=cmap)
 
 ![Screenshot](img/documentation_images/pseudocolor/pseudo_img.jpg)
 
+**Pseudocolored, Cropped, Disabled Axes Image**
+
+![Screenshot](img/documentation_images/pseudocolor/pseudo_cropped.jpg)
+
 **Pseudocolored and Masked with Black Background**
 
 ![Screenshot](img/documentation_images/pseudocolor/pseudo_black_bkgd.jpg)
-

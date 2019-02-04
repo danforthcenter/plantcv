@@ -8,7 +8,7 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 
 
-def pseudocolor(gray_img, mask=None, cmap=None, min_value=0, max_value=255, path="."):
+def pseudocolor(gray_img, mask=None, cmap=None, min_value=0, max_value=255, obj=None, dpi=None, axes=True, path="."):
     """Pseudocolor any grayscale image to custom colormap
 
         Inputs:
@@ -17,6 +17,9 @@ def pseudocolor(gray_img, mask=None, cmap=None, min_value=0, max_value=255, path
         cmap        = colormap
         min_value   = minimum value for range of interest
         max_value   = maximum value for range of interest
+        obj         = if provided, the pseudocolored image gets cropped down to the region of interst
+        dpi         = dots per inch
+        axes        = if False then x- and y-axis won't be displayed
         path        = path for location for saving the image
 
         Returns:
@@ -28,6 +31,9 @@ def pseudocolor(gray_img, mask=None, cmap=None, min_value=0, max_value=255, path
         :param min_value: int
         :param max_value: int
         :param bins: int
+        :param crop: bool
+        :param dpi: int
+        :param axes: bool
         :param path: str
         :return pseudo_image: numpy.ndarray
         """
@@ -50,6 +56,29 @@ def pseudocolor(gray_img, mask=None, cmap=None, min_value=0, max_value=255, path
 
     # Apply the mask if given
     if mask is not None:
+        if obj is not None:
+            # Copy the image
+            img_copy = np.copy(gray_img)
+            # Extract contour size
+            x, y, w, h = cv2.boundingRect(obj)
+            cv2.rectangle(img_copy, (x, y), (x + w, y + h), (0, 255, 0), 5)
+
+            # Crop down the image
+            crop_img = gray_img[y:y + h, x:x + w]
+
+            # Calculate the buffer size based on the contour size
+            offsetx = int(w / 5)
+            offsety = int(h / 5)
+
+            # Crop img including buffer
+            gray_img = cv2.copyMakeBorder(crop_img, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT,
+                                          value=(0, 0, 0))
+
+            # Crop the mask to the same size
+            crop_mask = mask[y:y + h, x:x + w]
+            mask = cv2.copyMakeBorder(crop_mask, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT,
+                                      value=(0, 0, 0))
+
         # Apply the mask
         masked_img = cv2.bitwise_and(gray_img, gray_img, mask=mask)
 
@@ -64,11 +93,17 @@ def pseudocolor(gray_img, mask=None, cmap=None, min_value=0, max_value=255, path
 
         # Include the colorbar
         plt.colorbar(fraction=0.033, pad=0.04)
+
+        # Remove axes
+        if axes is False:
+            plt.xticks([])
+            plt.yticks([])
+
         pseudo_img = plt.gcf()
 
-        # Print or plot if debug is turned on
+            # Print or plot if debug is turned on
         if params.debug == 'print':
-            plt.savefig(os.path.join(path, str(params.device) + '_pseudocolored.png'))
+            plt.savefig(os.path.join(path, str(params.device) + '_pseudocolored.png'), dpi=dpi)
         elif params.debug == 'plot':
             plot_image(pseudo_img1)
     else:
@@ -80,11 +115,17 @@ def pseudocolor(gray_img, mask=None, cmap=None, min_value=0, max_value=255, path
 
         # Include the colorbar
         plt.colorbar(fraction=0.033, pad=0.04)
+
+        # Remove axes
+        if axes is False:
+            plt.xticks([])
+            plt.yticks([])
+
         pseudo_img = plt.gcf()
 
         # Print or plot if debug is turned on
         if params.debug == 'print':
-            plt.savefig(os.path.join(path, str(params.device) + '_pseudocolored.png'))
+            plt.savefig(os.path.join(path, str(params.device) + '_pseudocolored.png'), dpi=dpi)
         elif params.debug == 'plot':
             plot_image(pseudo_img1)
 
