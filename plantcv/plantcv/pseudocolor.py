@@ -57,33 +57,35 @@ def pseudocolor(gray_img, mask=None, cmap=None, min_value=0, max_value=255, path
         masked_img = np.where(masked_img == 0, np.nan, masked_img)
 
         # Pseudocolor the image
-        pseudo_img = plt.imshow(masked_img, cmap=cmap)
+        pseudo_img1 = plt.imshow(masked_img, cmap=cmap)
 
         # Include image title
         plt.title('Pseudocolored image')  # + os.path.splitext(filename)[0])
 
         # Include the colorbar
         plt.colorbar(fraction=0.033, pad=0.04)
+        pseudo_img = plt.gcf()
 
         # Print or plot if debug is turned on
         if params.debug == 'print':
             plt.savefig(os.path.join(path, str(params.device) + '_pseudocolored.png'))
         elif params.debug == 'plot':
-            plot_image(pseudo_img)
+            plot_image(pseudo_img1)
     else:
         # Pseudocolor the image
-        pseudo_img = plt.imshow(gray_img, cmap=cmap)
+        pseudo_img1 = plt.imshow(gray_img, cmap=cmap)
 
         # Include image title
         plt.title('Pseudocolored image')  # + os.path.splitext(filename)[0])
 
         # Include the colorbar
         plt.colorbar(fraction=0.033, pad=0.04)
+        pseudo_img = plt.gcf()
 
         # Print or plot if debug is turned on
         if params.debug == 'print':
             plt.savefig(os.path.join(path, str(params.device) + '_pseudocolored.png'))
         elif params.debug == 'plot':
-            plot_image(pseudo_img)
+            plot_image(pseudo_img1)
 
     return pseudo_img

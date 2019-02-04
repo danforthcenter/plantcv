@@ -5,7 +5,7 @@ pseudocolored image. Additionally, optional maximum and minimum values can be sp
 
 **plantcv.pseudocolor**(*gray_img, mask=None, cmap=None, min_value=0, max_value=255, path="."*)
 
-**returns** pseudocolored image
+**returns** pseudocolored image that can be saved with `pcv.print_image`
 
 - **Parameters:**
     - gray_img  - Grayscale image data
@@ -42,6 +42,11 @@ pseudo_img_masked = pcv.pseudocolor(gray_img=img, mask=mask, cmap='viridis', min
 
 # Save the masked and pseudocolored image
 pcv.print_image(pseudo_img_masked, 'nir_tv_z300_L1_pseudocolored.png')
+
+# If a black background is preferred over white
+cmap = matplotlib.cm.viridis # or whatever you want
+cmap.set_bad("black") # or "white" of course
+pseudo_img_black_bkgd = pcv.pseudocolor(gray_img=img, mask=mask, cmap=cmap)
 ```
 
 
@@ -53,3 +58,8 @@ pcv.print_image(pseudo_img_masked, 'nir_tv_z300_L1_pseudocolored.png')
 **Pseudocolored and Masked Image**
 
 ![Screenshot](img/documentation_images/pseudocolor/pseudo_img.jpg)
+
+**Pseudocolored and Masked with Black Background**
+
+![Screenshot](img/documentation_images/pseudocolor/pseudo_black_bkgd.jpg)
+
