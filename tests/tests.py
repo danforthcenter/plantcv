@@ -983,7 +983,7 @@ def test_plantcv_fluor_fvfm():
     outfile = os.path.join(cache_dir, TEST_INPUT_FMAX)
     _ = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
     _, _, analysis_images = pcv.fluor_fvfm(fdark=fdark+3000, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
-    # Test under updated print and plot function 
+    # Test under updated print and plot function
     hist_img = analysis_images[1]
     pcv.print_image(hist_img, filename)
     pcv.plot_image(hist_img)

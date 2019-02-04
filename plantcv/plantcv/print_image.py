@@ -2,8 +2,6 @@
 import sys
 import cv2
 import numpy
-import matplotlib
-from plotnine import ggplot
 from plantcv.plantcv import fatal_error
 
 
@@ -18,6 +16,8 @@ def print_image(img, filename):
     :param filename: string
     :return:
     """
+    import matplotlib
+    from plotnine import ggplot
 
     # Print numpy array type images
     image_type = type(img)
