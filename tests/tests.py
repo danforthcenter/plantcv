@@ -1422,6 +1422,15 @@ def test_plantcv_plot_hist():
     assert len(hist) == 256
 
 
+def test_plantcv_plot_image_matplotlib_input():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_pseudocolor")
+    os.mkdir(cache_dir)
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    pimg = pcv.pseudocolor(gray_img=img, mask=mask, min_value=10, max_value=200, path=cache_dir)
+    with pytest.raises(RuntimeError):
+        pcv.plot_image(pimg)
+
 def test_plantcv_print_image():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_print_image")
