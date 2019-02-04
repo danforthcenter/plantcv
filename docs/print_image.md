@@ -1,6 +1,8 @@
 ## Print Image
 
-Write image to the file specified. This is a wrapper for the OpenCV function [imwrite](http://docs.opencv.org/modules/highgui/doc/reading_and_writing_images_and_video.html).
+Write image to the file specified. This is a wrapper for the OpenCV function [imwrite](http://docs.opencv.org/modules/highgui/doc/reading_and_writing_images_and_video.html)
+for numpy arrays, and can handle matplotlib Figures (like the one returned by [pcv.pseudocolor](pseudocolor.md)) and plotnine ggplots
+(like the histograms returned in [pcv.analyze_nir_intensity](analyze_NIR_intensity.md), [pcv.analyze_color](analyze_color.md), and [pcv.fluor_fvfm](fluor_fvfm.md)).
 
 **plantcv.print_image**(*img, filename*)
 

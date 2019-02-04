@@ -22,24 +22,18 @@ def print_image(img, filename):
     # Print numpy array type images
     image_type = type(img)
     if image_type == numpy.ndarray:
-        try:
-            cv2.imwrite(filename, img)
-        except:
-            fatal_error("Error writing file " + filename + ": " + str(sys.exc_info()[0]))
+        cv2.imwrite(filename, img)
 
     # Print matplotlib type images
     elif image_type == matplotlib.figure.Figure:
-        try:
-            matplotlib.use('Agg', warn=False)
-            from matplotlib import pyplot as plt
-            # fig = plt.figure()
-            img.savefig(filename)
-        except:
-            fatal_error("Error writing file " + filename + ": " + str(sys.exc_info()[0]))
+        matplotlib.use('Agg', warn=False)
+        from matplotlib import pyplot as plt
+        # fig = plt.figure()
+        img.savefig(filename)
 
     # Print ggplot type images
     elif str(image_type) == "<class 'plotnine.ggplot.ggplot'>":
-        try:
-            img.save(filename)
-        except:
-            fatal_error("Error writing file " + filename + ": " + str(sys.exc_info()[0]))
+        img.save(filename)
+
+    else:
+        fatal_error("Error writing file " + filename + ": " + str(sys.exc_info()[0]))

@@ -972,6 +972,7 @@ def test_plantcv_fluor_fvfm():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_fluor_fvfm")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
+    filename = os.path.join(cache_dir, 'plantcv_fvfm_hist.jpg')
     # Read in test data
     fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK), -1)
     fmin = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
@@ -981,7 +982,9 @@ def test_plantcv_fluor_fvfm():
     pcv.params.debug = "print"
     outfile = os.path.join(cache_dir, TEST_INPUT_FMAX)
     _ = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, filename=outfile, bins=1000)
-    _ = pcv.fluor_fvfm(fdark=fdark+3000, fmin=fmin, fmax=fmax, mask=fmask, filename=outfile, bins=1000)
+    _, _, analysis_images = pcv.fluor_fvfm(fdark=fdark+3000, fmin=fmin, fmax=fmax, mask=fmask, filename=outfile, bins=1000)
+    hist_img = analysis_images[1]
+    pcv.print_image(hist_img, filename)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, filename=False, bins=1000)
@@ -1446,10 +1449,12 @@ def test_plantcv_pseudocolor():
     os.mkdir(cache_dir)
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    filename = os.path.join(cache_dir, 'plantcv_pseudo_image.jpg')
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.pseudocolor(gray_img=img, mask=None, path=cache_dir)
-    _ = pcv.pseudocolor(gray_img=img, mask=mask, min_value=10, max_value=200, path=cache_dir)
+    pimg = pcv.pseudocolor(gray_img=img, mask=mask, min_value=10, max_value=200, path=cache_dir)
+    pcv.print_image(pimg, filename)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.pseudocolor(gray_img=img, mask=mask)
