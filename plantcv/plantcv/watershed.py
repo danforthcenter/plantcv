@@ -15,7 +15,7 @@ from plantcv.plantcv import color_palette
 from plantcv.plantcv import params
 
 
-def watershed_segmentation(rgb_img, mask, distance=10, filename=False):
+def watershed_segmentation(rgb_img, mask, distance=10):
     """Uses the watershed algorithm to detect boundary of objects. Needs a marker file which specifies area which is
        object (white), background (grey), unknown area (black).
 
@@ -64,10 +64,10 @@ def watershed_segmentation(rgb_img, mask, distance=10, filename=False):
     estimated_object_count = len(np.unique(markers)) - 1
 
     analysis_images = []
-    if filename != False:
-        out_file = os.path.splitext(filename)[0] + '_watershed.jpg'
-        print_image(joined, out_file)
-        analysis_images.append(['IMAGE', 'watershed', out_file])
+
+    out_file = os.path.join(params.debug_outdir, str(params.device) + '_watershed.jpg')
+    # print_image(joined, out_file)
+    analysis_images.append(joined)
 
     watershed_header = (
         'HEADER_WATERSHED',
