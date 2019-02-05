@@ -2042,14 +2042,13 @@ def test_plantcv_watershed_segmentation():
     # Test with debug = "print"
     pcv.params.debug = "print"
     outfile = os.path.join(cache_dir, TEST_INPUT_CROPPED)
-    _ = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10, filename=outfile)
+    _ = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10, filename=False)
+    _ = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10)
     # Test with debug = None
     pcv.params.debug = None
-    watershed_header, watershed_data, images = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10,
-                                                                          filename=False)
+    watershed_header, watershed_data, images = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10)
     if cv2.__version__[0] == '2':
         assert watershed_data[1] > 9
     else:
