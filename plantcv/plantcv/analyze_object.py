@@ -6,6 +6,7 @@ import numpy as np
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
+from plantcv.plantcv import outputs
 
 
 def analyze_object(img, obj, mask, filename=False):
@@ -238,6 +239,27 @@ def analyze_object(img, obj, mask, filename=False):
     else:
         pass
 
+    # Store into global measurements
+    if not "shapes" in outputs.measurements:
+        outputs.measurements["shapes"] = {}
+    outputs.measurements["shapes"]["area"] = area
+    outputs.measurements["shapes"]["hull-area"] = hull_area
+    outputs.measurements["shapes"]["solidity"] = solidity
+    outputs.measurements["shapes"]["perimeter"] = perimeter
+    outputs.measurements["shapes"]["width"] = width
+    outputs.measurements["shapes"]["height"] = height
+    outputs.measurements["shapes"]["caliper_length"] = caliper_length
+    outputs.measurements["shapes"]["cmx"] = cmx
+    outputs.measurements["shapes"]["cmy"] = cmy
+    outputs.measurements["shapes"]["hull_vertices"] = hull_vertices
+    outputs.measurements["shapes"]["in_bounds"] = in_bounds
+    outputs.measurements["shapes"]["ellipse_center_x"] = center[0]
+    outputs.measurements["shapes"]["ellipse_center_y"] = center[1]
+    outputs.measurements["shapes"]["major_axis_length"] = major_axis_length
+    outputs.measurements["shapes"]["minor_axis_length"] = minor_axis_length
+    outputs.measurements["shapes"]["angle"] = angle
+    outputs.measurements["shapes"]["eccentricity"] = eccentricity
+
     if params.debug is not None:
         cv2.drawContours(ori_img, obj, -1, (255, 0, 0), 5)
         cv2.drawContours(ori_img, [hull], -1, (0, 0, 255), 5)
@@ -253,4 +275,6 @@ def analyze_object(img, obj, mask, filename=False):
             else:
                 plot_image(ori_img, cmap='gray')
 
+    # Store images
+    outputs.images.append(analysis_images)
     return shape_header, shape_data, analysis_images

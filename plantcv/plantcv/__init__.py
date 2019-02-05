@@ -14,9 +14,23 @@ class Params:
         self.debug_outdir = debug_outdir
 
 
-# Initialize an instance of the Params class with default values
-# params is available when plantcv is imported
+class Outputs:
+    """PlantCV outputs class
+        Keyword arguments/parameters:
+        measurements =
+        images       =
+        :param device: int
+        :param debug: str
+        """
+    def __init__(self):
+        self.measurements = {}
+        self.images = []
+
+# Initialize an instance of the Params and Outputs class with default values
+# params and outputs are available when plantcv is imported
 params = Params()
+outputs = Outputs()
+
 
 from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.print_image import print_image

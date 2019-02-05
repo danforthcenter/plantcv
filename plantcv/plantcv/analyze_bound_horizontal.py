@@ -6,6 +6,8 @@ import numpy as np
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
+from plantcv.plantcv import outputs
+
 
 
 def analyze_bound_horizontal(img, obj, mask, line_position, filename=False):
@@ -162,5 +164,18 @@ def analyze_bound_horizontal(img, obj, mask, line_position, filename=False):
         if params.debug == 'plot':
             plot_image(wback)
             plot_image(ori_img)
+
+    # Store into global measurements
+    if not 'bound_horizontal' in outputs.measurements:
+        outputs.measurements['bound_horizontal'] = {}
+    outputs.measurements['bound_horizontal']['height_above_bound'] = height_above_bound
+    outputs.measurements['bound_horizontal']['height_below_bound'] = height_below_bound
+    outputs.measurements['bound_horizontal']['above_bound_area'] = above_bound_area
+    outputs.measurements['bound_horizontal']['percent_bound_area_above'] = percent_bound_area_above
+    outputs.measurements['bound_horizontal']['below_bound_area'] = below_bound_area
+    outputs.measurements['bound_horizontal']['percent_bound_area_below'] = percent_bound_area_below
+
+    # Store images
+    outputs.images.append(analysis_images)
 
     return bound_header, bound_data, analysis_images
