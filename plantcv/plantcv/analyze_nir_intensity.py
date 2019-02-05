@@ -9,6 +9,7 @@ from plantcv.plantcv import plot_colorbar
 from plantcv.plantcv.threshold import binary as binary_threshold
 from plantcv.plantcv import apply_mask
 from plantcv.plantcv import params
+from plantcv.plantcv import outputs
 
 
 def analyze_nir_intensity(gray_img, mask, bins, histplot=False, filename=False):
@@ -129,5 +130,15 @@ def analyze_nir_intensity(gray_img, mask, bins, histplot=False, filename=False):
         if params.debug == "plot":
             plt.figure()
         plt.clf()
+
+    # Store into global measurements
+    if not 'nir_histogram' in outputs.measurements:
+        outputs.measurements['nir_histogram'] = {}
+    outputs.measurements['nir_histogram']['bins'] = bins
+    outputs.measurements['nir_histogram']['hist_bins2'] = hist_bins2
+    outputs.measurements['nir_histogram']['hist_nir1'] = hist_nir1
+
+    # Store images
+    outputs.images.append(analysis_img)
 
     return hist_header, hist_data, analysis_img

@@ -13,6 +13,7 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import apply_mask
 from plantcv.plantcv import color_palette
 from plantcv.plantcv import params
+from plantcv.plantcv import outputs
 
 
 def watershed_segmentation(rgb_img, mask, distance=10, filename=False):
@@ -85,5 +86,13 @@ def watershed_segmentation(rgb_img, mask, distance=10, filename=False):
     elif params.debug == 'plot':
         plot_image(dist_transform, cmap='gray')
         plot_image(joined)
+
+    # Store into global measurements
+    if not 'watershed' in outputs.measurements:
+        outputs.measurements['watershed'] = {}
+    outputs.measurements['watershed']['estimated_object_count'] = estimated_object_count
+
+    # Store images
+    outputs.images.append(analysis_images)
 
     return watershed_header, watershed_data, analysis_images

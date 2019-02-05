@@ -13,6 +13,7 @@ from plantcv.plantcv import roi_objects
 from plantcv.plantcv import object_composition
 from plantcv.plantcv import apply_mask
 from plantcv.plantcv import params
+from plantcv.plantcv import outputs
 
 
 def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None,
@@ -138,5 +139,15 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
         minor_axis_length,
         eccentricity
     )
+    # Store into global measurements
+    if not 'size_marker' in outputs.measurements:
+        outputs.measurements['size_marker'] = {}
+    outputs.measurements['size_marker']['marker_area'] = marker_area
+    outputs.measurements['size_marker']['marker_major_axis_length'] = major_axis_length
+    outputs.measurements['size_marker']['marker_minor_axis_length'] = minor_axis_length
+    outputs.measurements['size_marker']['marker_eccentricity'] = eccentricity
+
+    # Store images
+    outputs.images.append(analysis_images)
 
     return marker_header, marker_data, analysis_images

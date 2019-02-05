@@ -8,6 +8,7 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import plot_colorbar
 from plantcv.plantcv import params
+from plantcv.plantcv import outputs
 
 
 def _pseudocolored_image(histogram, bins, img, mask, background, channel, filename, analysis_images):
@@ -255,5 +256,23 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None, pseudo_channel='v',
             fig_name = os.path.join(params.debug_outdir, str(params.device) + '_' + str(hist_plot_type) + '_hist.svg')
             plt.savefig(fig_name)
         plt.clf()
+
+    # Store into global measurements
+    if not 'color_histogram' in outputs.measurements:
+        outputs.measurements['color_histogram'] = {}
+    outputs.measurements['color_histogram']['bins'] = bins
+    outputs.measurements['color_histogram']['bin_values'] = bin_values
+    outputs.measurements['color_histogram']['hist_data_b'] = hist_data_b
+    outputs.measurements['color_histogram']['hist_data_g'] = hist_data_g
+    outputs.measurements['color_histogram']['hist_data_r'] = hist_data_r
+    outputs.measurements['color_histogram']['hist_data_l'] = hist_data_l
+    outputs.measurements['color_histogram']['hist_data_m'] = hist_data_m
+    outputs.measurements['color_histogram']['hist_data_y'] = hist_data_y
+    outputs.measurements['color_histogram']['hist_data_h'] = hist_data_h
+    outputs.measurements['color_histogram']['hist_data_s'] = hist_data_s
+    outputs.measurements['color_histogram']['hist_data_v'] = hist_data_v
+
+    # Store images
+    outputs.images.append(analysis_images)
 
     return hist_header, hist_data, analysis_images
