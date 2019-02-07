@@ -4,16 +4,15 @@ Set boundary line with boundary tool, this allows the user to find the extent-x 
 to the right and to the left as well as the area to the right and to the left of the set boundary line. This tool functions 
 best if the pot size/position of the plant remains relatively constant.
  
-**plantcv.analyze_bound_vertical**(*img, obj, mask, line_position, filename=False*)
+**plantcv.analyze_bound_vertical**(*img, obj, mask, line_position*)
 
-**returns** boundary headers, boundary data, image with boundary data
+**returns** boundary headers, boundary data, images with boundary data
 
 - **Parameters:**
     - img - RGB or grayscale image data for plotting
     - obj - single or grouped contour object
     - mask - binary mask of selected contours
     - line_position = position of boundary line (a value of 0 would draw the line through the left of the image)
-    - filename - False (default) or image name. If defined print image
 - **Context:**
     - Used to define a boundary line for the image, to find the width to the right and to the left as well as area to the right and to the left of a boundary line.
     - Could also be used as a method of flagging images about to go out-of-bounds
@@ -37,7 +36,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Set Boundary Line    
-boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_vertical(img, obj, mask, 1000, 'setaria_boundary_img.png')
+boundary_header, boundary_data, boundary_images = pcv.analyze_bound_vertical(img, obj, mask, 1000)
 ```
 
 **Boundary tool output image (x = 1000)**
