@@ -4,16 +4,15 @@ Set boundary line with boundary tool, this allows the user to find the extent-y 
 above and below as well as the area above and below the boundary line. This tool functions 
 best if the pot size/position of the plant remains relatively constant.
  
-**plantcv.analyze_bound_horizontal**(*img, obj, mask, line_position, filename=False*)
+**plantcv.analyze_bound_horizontal**(*img, obj, mask, line_position*)
 
-**returns** boundary headers, boundary data, image with boundary data
+**returns** boundary headers, boundary data, images with boundary data
 
 - **Parameters:**
     - img - RGB or grayscale image data for plotting
     - obj - single or grouped contour object
     - mask - binary mask of selected contours
     - line_position = position of boundary line (a value of 0 would draw the line through the bottom of the image)
-    - filename - False (default) or image name. If defined print image
 - **Context:**
     - Used to define a boundary line for the image, to find the height above and below as well as area above and below a boundary line.
     - Could also be used as a method of flagging images about to go out-of-bounds (this QC tool will be added later)
@@ -37,7 +36,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Set Boundary Line    
-boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_horizontal(img, obj, mask, 950, 'setaria_boundary_img.png')
+boundary_header, boundary_data, boundary_images = pcv.analyze_bound_horizontal(img, obj, mask, 950)
 ```
 
 **Boundary tool output image (y = 950)**

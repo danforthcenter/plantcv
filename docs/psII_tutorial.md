@@ -217,15 +217,22 @@ along with the generated mask to calculate Fv/Fm.
         outfile=args.outdir+"/"+filename
     
     # Find shape properties, output shape image (optional)
-    shape_header, shape_data, shape_img = pcv.analyze_object(mask, obj, masked, args.outdir + '/' + filename)
+    shape_header, shape_data, shape_img = pcv.analyze_object(mask, obj, masked)
     
     # Fluorescence Measurement (read in 16-bit images)
     fdark = cv2.imread(args.fdark, -1)
     fmin = cv2.imread(args.fmin, -1)
     fmax = cv2.imread(args.fmax, -1)
     
-    fvfm_header, fvfm_data, fvfm_images = pcv.fluor_fvfm(fdark,fmin,fmax,kept_mask, args.outdir+'/'+filename, 1000)
-    
+    fvfm_header, fvfm_data, fvfm_images = pcv.fluor_fvfm(fdark,fmin,fmax,kept_mask)
+
+    # Store the two images
+    fv_img = fvfm_images[0]
+    fvfm_hist = fvfm_images[1]
+
+    # Pseudocolor the Fv/Fm grayscale image that is calculated inside the fluor_fvfm function
+    pseudocolored_img = pcv.pseudocolor(gray_img=fv_img, mask=kept_mask, cmap='jet')
+
     # Write shape and nir data to results file
     result=open(args.result,"a")
     result.write('\t'.join(map(str,shape_header)))

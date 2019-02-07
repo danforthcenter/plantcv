@@ -8,14 +8,13 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
 
 
-def analyze_object(img, obj, mask, filename=False):
+def analyze_object(img, obj, mask):
     """Outputs numeric properties for an input object (contour or grouped contours).
 
     Inputs:
     img             = RGB or grayscale image data for plotting
     obj             = single or grouped contour object
     mask            = Binary image to use as mask for moments analysis
-    filename        = False or image name. If defined print image
 
     Returns:
     shape_header    = shape data table headers
@@ -25,7 +24,6 @@ def analyze_object(img, obj, mask, filename=False):
     :param img: numpy.ndarray
     :param obj: list
     :param mask: numpy.ndarray
-    :param filename: str
     :return shape_header: list
     :return shape_data: list
     :return analysis_images: list
@@ -218,7 +216,7 @@ def analyze_object(img, obj, mask, filename=False):
     analysis_images = []
 
     # Draw properties
-    if area and filename:
+    if area:
         cv2.drawContours(ori_img, obj, -1, (255, 0, 0), 5)
         cv2.drawContours(ori_img, [hull], -1, (0, 0, 255), 5)
         cv2.line(ori_img, (x, y), (x + width, y), (0, 0, 255), 5)
@@ -226,14 +224,14 @@ def analyze_object(img, obj, mask, filename=False):
         cv2.line(ori_img, (tuple(caliper_transpose[caliper_length - 1])), (tuple(caliper_transpose[0])), (0, 0, 255), 5)
         cv2.circle(ori_img, (int(cmx), int(cmy)), 10, (0, 0, 255), 5)
         # Output images with convex hull, extent x and y
-        out_file = os.path.splitext(filename)[0] + '_shapes.jpg'
-        out_file1 = os.path.splitext(filename)[0] + '_mask.jpg'
+        # out_file = os.path.splitext(filename)[0] + '_shapes.jpg'
+        # out_file1 = os.path.splitext(filename)[0] + '_mask.jpg'
 
-        print_image(ori_img, out_file)
-        analysis_images.append(['IMAGE', 'shapes', out_file])
+        # print_image(ori_img, out_file)
+        analysis_images.append(ori_img)
 
-        print_image(mask, out_file1)
-        analysis_images.append(['IMAGE', 'mask', out_file1])
+        # print_image(mask, out_file1)
+        analysis_images.append(mask)
 
     else:
         pass

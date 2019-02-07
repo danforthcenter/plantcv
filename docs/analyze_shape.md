@@ -2,15 +2,14 @@
 
 Shape analysis outputs numeric properties for an input object (contour or grouped contours), works best on grouped contours.
  
-**plantcv.analyze_object**(*img, obj, mask, filename=False*)
+**plantcv.analyze_object**(*img, obj, mask*)
 
-**returns** shape data headers, shape data, image with shape data
+**returns** shape data headers, shape data, analysis_images
 
 - **Parameters:**
     - img - RGB or grayscale image data for plotting.
     - obj - Single or grouped contour object.
     - mask - Binary image to use as mask for moments analysis.
-    - filename - False (default) or image name. If defined print image.
 - **Context:**
     - Used to output shape characteristics of an image, including height, object area, convex hull, convex hull area, perimeter, extent x, extent y, longest axis, centroid x coordinate, centroid y coordinate, in bounds QC (if object touches edge of image, image is flagged). 
 - **Example use:**
@@ -51,7 +50,11 @@ pcv.params.debug = "print"
 
 # Characterize object shapes
     
-shape_header, shape_data, shape_img = pcv.analyze_object(img, objects, mask, "/home/malia/setaria_shape_img.png")
+shape_header, shape_data, shape_images = pcv.analyze_object(img, objects, mask)
+
+# Save returned images with more specific naming
+shape_image, mask = shape_images
+pcv.print_image(shape_image, '/home/malia/setaria_shape_img.png')
 ```
 
 **Image with identified objects**
