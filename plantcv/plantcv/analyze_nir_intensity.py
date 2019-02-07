@@ -4,7 +4,6 @@ import os
 import cv2
 import numpy as np
 import pandas as pd
-matplotlib.use('Agg', warn=False)
 from plotnine import ggplot, aes, geom_line, scale_x_continuous
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
