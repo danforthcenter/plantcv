@@ -36,6 +36,7 @@ def analyze_nir_intensity(gray_img, mask, bins, histplot=False):
     """
     import matplotlib
     matplotlib.use('Agg', warn=False)
+    from plotnine import ggplot, aes, geom_line, scale_x_continuous
     # from matplotlib import pyplot as plt
 
     params.device += 1
