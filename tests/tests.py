@@ -1663,17 +1663,16 @@ def test_plantcv_report_size_marker_detect():
     pcv.params.debug = "print"
     outfile = os.path.join(cache_dir, TEST_INPUT_MARKER)
     _ = pcv.report_size_marker_area(img=img, roi_contour=roi_contour, roi_hierarchy=roi_hierarchy, marker='detect',
-                                    objcolor='light', thresh_channel='s', thresh=120, filename=outfile)
+                                    objcolor='light', thresh_channel='s', thresh=120)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.report_size_marker_area(img=img, roi_contour=roi_contour, roi_hierarchy=roi_hierarchy, marker='detect',
-                                    objcolor='light', thresh_channel='s', thresh=120, filename=False)
+                                    objcolor='light', thresh_channel='s', thresh=120)
     # Test with debug = None
     pcv.params.debug = None
     marker_header, marker_data, images = pcv.report_size_marker_area(img=img, roi_contour=roi_contour,
                                                                      roi_hierarchy=roi_hierarchy, marker='detect',
-                                                                     objcolor='light', thresh_channel='s', thresh=120,
-                                                                     filename=False)
+                                                                     objcolor='light', thresh_channel='s', thresh=120)
     assert marker_data[1] > 100
 
 
@@ -1688,8 +1687,7 @@ def test_plantcv_report_size_marker_define():
     pcv.params.debug = None
     marker_header, marker_data, images = pcv.report_size_marker_area(img=img, roi_contour=roi_contour,
                                                                      roi_hierarchy=roi_hierarchy, marker='define',
-                                                                     objcolor='light', thresh_channel='s', thresh=120,
-                                                                     filename=False)
+                                                                     objcolor='light', thresh_channel='s', thresh=120)
     assert marker_data[1] == 250000
 
 
@@ -1704,8 +1702,7 @@ def test_plantcv_report_size_marker_grayscale_input():
     pcv.params.debug = None
     marker_header, marker_data, images = pcv.report_size_marker_area(img=img, roi_contour=roi_contour,
                                                                      roi_hierarchy=roi_hierarchy, marker='define',
-                                                                     objcolor='light', thresh_channel='s', thresh=120,
-                                                                     filename=False)
+                                                                     objcolor='light', thresh_channel='s', thresh=120)
     if cv2.__version__[0] == '2':
         assert int(marker_data[1]) == 2401
     else:
@@ -1720,7 +1717,7 @@ def test_plantcv_report_size_marker_bad_marker_input():
     roi_hierarchy = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     with pytest.raises(RuntimeError):
         _ = pcv.report_size_marker_area(img=img, roi_contour=roi_contour, roi_hierarchy=roi_hierarchy, marker='none',
-                                        objcolor='light', thresh_channel='s', thresh=120, filename=False)
+                                        objcolor='light', thresh_channel='s', thresh=120)
 
 
 def test_plantcv_report_size_marker_bad_threshold_input():
@@ -1731,7 +1728,7 @@ def test_plantcv_report_size_marker_bad_threshold_input():
     roi_hierarchy = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     with pytest.raises(RuntimeError):
         _ = pcv.report_size_marker_area(img=img, roi_contour=roi_contour, roi_hierarchy=roi_hierarchy, marker='detect',
-                                        objcolor='light', thresh_channel=None, thresh=120, filename=False)
+                                        objcolor='light', thresh_channel=None, thresh=120)
 
 
 def test_plantcv_resize():
@@ -2062,14 +2059,13 @@ def test_plantcv_watershed_segmentation():
     # Test with debug = "print"
     pcv.params.debug = "print"
     outfile = os.path.join(cache_dir, TEST_INPUT_CROPPED)
-    _ = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10, filename=outfile)
+    _ = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10, filename=False)
+    _ = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10)
     # Test with debug = None
     pcv.params.debug = None
-    watershed_header, watershed_data, images = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10,
-                                                                          filename=False)
+    watershed_header, watershed_data, images = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10)
     if cv2.__version__[0] == '2':
         assert watershed_data[1] > 9
     else:

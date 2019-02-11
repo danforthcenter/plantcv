@@ -1,5 +1,7 @@
 # Print Numerical Data
 
+from plantcv.plantcv import outputs
+
 
 def print_results(filename, header, data):
     """Print result table
@@ -14,5 +16,6 @@ def print_results(filename, header, data):
     :param data: list
     :return:
     """
-    print('\t'.join(map(str, header)))
-    print('\t'.join(map(str, data)))
+    if 'bound_horizontal' in outputs.measurements:
+        print('\t'.join(map(str, header)))
+        print('\t'.join(map(str, data)))

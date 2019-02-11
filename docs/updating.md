@@ -370,6 +370,7 @@ post v3.0: new_img = **plantcv.image_subtract**(*gray_img1, gray_img2*)
 
 * pre v3.0dev2: device, marker_header, marker_data, analysis_images = **plantcv.report_size_marker_area**(*img, shape, device, debug, marker='define', x_adj=0, y_adj=0, w_adj=0, h_adj=0, base='white', objcolor='dark', thresh_channel=None, thresh=None, filename=False*)
 * post v3.0dev2: marker_header, marker_data, analysis_images = **plantcv.report_size_marker_area**(*img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None, thresh=None, filename=False*)
+* post v3.1: marker_header, marker_data, analysis_image = **plantcv.report_size_marker_area**(*img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None, thresh=None*)
 
 #### plantcv.resize
 
@@ -537,6 +538,7 @@ post v3.0: new_img = **plantcv.image_subtract**(*gray_img1, gray_img2*)
 
 * pre v3.0dev2: device, watershed_header, watershed_data, analysis_images = **plantcv.watershed_segmentation**(*device, img, mask, distance=10, filename=False, debug=None*)
 * post v3.0dev2: watershed_header, watershed_data, analysis_images = **plantcv.watershed_segmentation**(*rgb_img, mask, distance=10, filename=False*)
+* post v3.1: watershed_header, watershed_data, analysis_images = **plantcv.watershed_segmentation**(*rgb_img, mask, distance=10*)
 
 #### plantcv.white_balance
 

@@ -6,7 +6,7 @@ This function uses the watershed algorithm to detect boundary of objects.
 Needs a mask file which specifies area which is object is white, and background is black.
 Requires cv2 version 3.0+
 
-**plantcv.watershed_segmentation**(*rgb_img, mask, distance=10, filename=False*)**
+**plantcv.watershed_segmentation**(*rgb_img, mask, distance=10*)**
 
 **returns** watershed_header, watershed_data, analysis_images
 
@@ -30,7 +30,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Segment image with watershed function
-watershed_header, watershed_data, analysis_images = pcv.watershed_segmentation(crop_img, thresh, 10, './examples')
+watershed_header, watershed_data, analysis_images = pcv.watershed_segmentation(crop_img, thresh, 10)
 
 print(watershed_header)
 print(watershed_data)
