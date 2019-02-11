@@ -9,7 +9,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def analyze_bound_vertical(img, obj, mask, line_position, filename=False):
+def analyze_bound_vertical(img, obj, mask, line_position):
     """User-input boundary line tool
 
     Inputs:
@@ -18,19 +18,17 @@ def analyze_bound_vertical(img, obj, mask, line_position, filename=False):
     mask            = Binary mask made from selected contours
     shape_header    = pass shape header data to function
     shape_data      = pass shape data so that analyze_bound data can be appended to it
-    line_position   = position of boundry line (a value of 0 would draw the line through the left side of the image)
-    filename        = False or image name. If defined print image.
+    line_position   = position of boundary line (a value of 0 would draw the line through the left side of the image)
 
     Returns:
     bound_header    = data table column headers
     bound_data      = boundary data table
-    analysis_images = output image filenames
+    analysis_images = output images
 
     :param img: numpy.ndarray
     :param obj: list
     :param mask: numpy.ndarray
     :param line_position: int
-    :param filename: str
     :return bound_header: tuple
     :return bound_data: tuple
     :return analysis_images: list
@@ -132,11 +130,9 @@ def analyze_bound_vertical(img, obj, mask, line_position, filename=False):
                 cv2.line(ori_img, (x_coor + 2, int(cmy)), (x_coor - width_right_bound, int(cmy)), (0, 255, 0), 3)
                 cv2.line(wback, (x_coor + 2, int(cmy)), (x_coor + width_left_bound, int(cmy)), (255, 0, 0), 3)
                 cv2.line(wback, (x_coor + 2, int(cmy)), (x_coor - width_right_bound, int(cmy)), (0, 255, 0), 3)
-        if filename:
-            # Output images with boundary line, above/below bound area
-            out_file = os.path.splitext(filename)[0] + '_boundary' + str(line_position) + '.jpg'
-            print_image(ori_img, out_file)
-            analysis_images = ['IMAGE', 'boundary', out_file]
+        # Output images with boundary line
+        analysis_images.append(wback)
+        analysis_images.append(ori_img)
 
     if params.debug is not None:
         point3 = (x_coor+2, 0)

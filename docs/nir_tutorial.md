@@ -347,9 +347,16 @@ if args.writeimg==True:
     outfile=args.outdir+"/"+filename
 
 # Perform signal analysis
-nir_header, nir_data, nir_img = pcv.analyze_nir_intensity(img, kept_mask, 256, args.outdir + '/' + img_name)
+nir_header, nir_data, nir_hist = pcv.analyze_nir_intensity(img, kept_mask, 256)
+
+# Pseudocolor the grayscale image to a colormap
+pseudocolored_img = pcv.pseudocolor(gray_img=img, mask=kept_mask, cmap='viridis')
+
 # Perform shape analysis
-shape_header, shape_data, shape_img = pcv.analyze_object(rgb_img, o, m, args.outdir + '/' + img_name)
+shape_header, shape_data, shape_imgs = pcv.analyze_object(rgb_img, o, m)
+
+# Plot out the NIR histogram
+nir_hist
 
 # Write shape and nir data to results file
 result=open(args.result,"a")

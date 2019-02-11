@@ -1,7 +1,8 @@
 # Plot image to screen
 import os
 import cv2
-import numpy as np
+import numpy
+from plantcv.plantcv import fatal_error
 
 
 def plot_image(img, cmap=None):
@@ -11,19 +12,30 @@ def plot_image(img, cmap=None):
     :param cmap: str
     :return:
     """
+    import matplotlib
     from matplotlib import pyplot as plt
 
-    dimensions = np.shape(img)
+    image_type = type(img)
 
-    # If the image is color then OpenCV stores it as BGR, we plot it as RGB
-    if len(dimensions) == 3:
-        plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-        plt.show()
+    dimensions = numpy.shape(img)
 
-    elif cmap is None and len(dimensions) == 2:
-        plt.imshow(img, cmap="gray")
-        plt.show()
+    if image_type == numpy.ndarray:
+        # If the image is color then OpenCV stores it as BGR, we plot it as RGB
+        if len(dimensions) == 3:
+            plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+            plt.show()
 
-    elif cmap is not None and len(dimensions) == 2:
-        plt.imshow(img, cmap=cmap)
-        plt.show()
+        elif cmap is None and len(dimensions) == 2:
+            plt.imshow(img, cmap="gray")
+            plt.show()
+
+        elif cmap is not None and len(dimensions) == 2:
+            plt.imshow(img, cmap=cmap)
+            plt.show()
+
+    elif image_type == matplotlib.figure.Figure:
+        fatal_error("Error, matplotlib Figure not supported. Instead try running without plot_image.")
+
+    # Plot if the image is a plotnine ggplot image
+    elif str(image_type) == "<class 'plotnine.ggplot.ggplot'>":
+        print(img)

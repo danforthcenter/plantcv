@@ -36,7 +36,7 @@ from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.print_image import print_image
 from plantcv.plantcv.plot_image import plot_image
 from plantcv.plantcv.color_palette import color_palette
-from plantcv.plantcv.plot_colorbar import plot_colorbar
+# from plantcv.plantcv.plot_colorbar import plot_colorbar
 from plantcv.plantcv.apply_mask import apply_mask
 from plantcv.plantcv.readimage import readimage
 from plantcv.plantcv.readbayer import readbayer
@@ -100,7 +100,7 @@ from plantcv.plantcv.canny_edge_detect import canny_edge_detect
 
 # add new functions to end of lists
 
-__all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'plot_colorbar', 'apply_mask', 'readimage',
+__all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'apply_mask', 'readimage',
            'readbayer', 'laplace_filter', 'sobel_filter', 'scharr_filter', 'hist_equalization', 'plot_hist', 'erode',
            'image_add', 'image_subtract', 'dilate', 'watershed', 'rectangle_mask', 'rgb2gray_hsv', 'rgb2gray_lab',
            'rgb2gray', 'median_blur', 'fill', 'invert', 'logical_and', 'logical_or', 'logical_xor',
