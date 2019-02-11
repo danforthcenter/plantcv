@@ -228,31 +228,59 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
     ]
 
     analysis_images = []
+    dataset = pd.DataFrame({'bins': binval, 'blue': hist_data_b,
+                            'green': hist_data_g, 'red': hist_data_r,
+                            'lightness': hist_data_l, 'green-magenta': hist_data_m,
+                            'blue-yellow': hist_data_y, 'hue': hist_data_h,
+                            'saturation': hist_data_s, 'value': hist_data_v})
 
-    if pseudo_channel is not None:
-        analysis_images = _pseudocolored_image(norm_channels[pseudo_channel], bins, rgb_img, mask, pseudo_bkg,
-                                               pseudo_channel, filename, analysis_images)
+    # Make the histogram figure using plotnine
+    if hist_plot_type is not None:
+        if hist_plot_type == 'rgb':
+            df_rgb = pd.melt(dataset, id_vars=['bins'], value_vars=['blue', 'green', 'red'],
+                             var_name='Color Channel', value_name='Pixels')
+            hist_fig = (ggplot(df_rgb, aes(x='bins', y='Pixels', color='Color Channel'))
+                        + geom_line()
+                        + scale_x_continuous(breaks=list(range(0, bins, 25)))
+                        + scale_color_manual(['blue', 'green', 'red'])
+                        )
+            analysis_images.append(hist_fig)
 
-    if hist_plot_type is not None and filename:
-        import matplotlib
-        matplotlib.use('Agg', warn=False)
-        from matplotlib import pyplot as plt
+        elif hist_plot_type == 'lab':
+            df_lab = pd.melt(dataset, id_vars=['bins'],
+                             value_vars=['lightness', 'green-magenta', 'blue-yellow'],
+                             var_name='Color Channel', value_name='Pixels')
+            hist_fig = (ggplot(df_lab, aes(x='bins', y='Pixels', color='Color Channel'))
+                        + geom_line()
+                        + scale_x_continuous(breaks=list(range(0, bins, 25)))
+                        + scale_color_manual(['yellow', 'magenta', 'dimgray'])
+                        )
+            analysis_images.append(hist_fig)
 
-        # Create Histogram Plot
-        for channel in hist_types[hist_plot_type]:
-            plt.plot(histograms[channel]["hist"], color=histograms[channel]["graph_color"],
-                     label=histograms[channel]["label"])
-            plt.xlim([0, bins - 1])
-            plt.legend()
+        elif hist_plot_type == 'hsv':
+            df_hsv = pd.melt(dataset, id_vars=['bins'],
+                             value_vars=['hue', 'saturation', 'value'],
+                             var_name='Color Channel', value_name='Pixels')
+            hist_fig = (ggplot(df_hsv, aes(x='bins', y='Pixels', color='Color Channel'))
+                        + geom_line()
+                        + scale_x_continuous(breaks=list(range(0, bins, 25)))
+                        + scale_color_manual(['blueviolet', 'cyan', 'orange'])
+                        )
+            analysis_images.append(hist_fig)
 
-        # Print plot
-        fig_name = (os.path.splitext(filename)[0] + '_' + str(hist_plot_type) + '_hist.svg')
-        plt.savefig(fig_name)
-        analysis_images.append(['IMAGE', 'hist', fig_name])
-        if params.debug == 'print':
-            fig_name = os.path.join(params.debug_outdir, str(params.device) + '_' + str(hist_plot_type) + '_hist.svg')
-            plt.savefig(fig_name)
-        plt.clf()
+        elif hist_plot_type == 'all':
+            s = pd.Series(['blue', 'green', 'red', 'lightness', 'green-magenta',
+                           'blue-yellow', 'hue', 'saturation', 'value'], dtype="category")
+            color_channels = ['blue', 'yellow', 'green', 'magenta', 'blueviolet',
+                              'dimgray', 'red', 'cyan', 'orange']
+            df_all = pd.melt(dataset, id_vars=['bins'], value_vars=s, var_name='Color Channel',
+                             value_name='Pixels')
+            hist_fig = (ggplot(df_all, aes(x='bins', y='Pixels', color='Color Channel'))
+                        + geom_line()
+                        + scale_x_continuous(breaks=list(range(0, bins, 25)))
+                        + scale_color_manual(color_channels)
+                        )
+            analysis_images.append(hist_fig)
 
     # Store into global measurements
     if not 'color_histogram' in outputs.measurements:

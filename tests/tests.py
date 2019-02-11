@@ -162,6 +162,7 @@ def test_plantcv_analyze_bound_horizontal():
     pcv.params.debug = None
     boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_horizontal(img=img, obj=object_contours,
                                                                                  mask=mask, line_position=300)
+    pcv.print_results(cache_dir)
     assert boundary_data[3] == 62555
 
 
@@ -211,6 +212,7 @@ def test_plantcv_analyze_bound_vertical():
     pcv.params.debug = None
     boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_vertical(img=img, obj=object_contours,
                                                                                mask=mask, line_position=1000)
+    pcv.print_results(cache_dir)
     assert boundary_data[3] == 5016
 
 
@@ -275,6 +277,7 @@ def test_plantcv_analyze_color():
     pcv.params.debug = None
     color_header, color_data, analysis_images = pcv.analyze_color(rgb_img=img, mask=mask, bins=256,
                                                                   hist_plot_type=None)
+    pcv.print_results(cache_dir)
     assert np.sum(color_data[3]) != 0
 
 
@@ -330,6 +333,7 @@ def test_plantcv_analyze_nir():
     # Test with debug = None
     pcv.params.debug = None
     hist_header, hist_data, h_norm = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=False)
+    pcv.print_results(cache_dir)
     assert np.sum(hist_data[3]) == 63632
 
 
@@ -353,6 +357,7 @@ def test_plantcv_analyze_object():
     # Test with debug = None
     pcv.params.debug = None
     obj_header, obj_data, obj_images = pcv.analyze_object(img=img, obj=obj_contour, mask=mask)
+    pcv.print_results(cache_dir)
     assert obj_data[1] != 0
 
 
@@ -974,8 +979,8 @@ def test_plantcv_fluor_fvfm():
     _ = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
     # Test with debug = None
     pcv.params.debug = None
-    fvfm_header, fvfm_data, fvfm_images = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask,
-                                                         bins=1000)
+    fvfm_header, fvfm_data, fvfm_images = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
+    pcv.print_results(cache_dir)
     assert fvfm_data[4] > 0.66
 
 
@@ -1431,10 +1436,10 @@ def test_plantcv_print_image_bad_type():
         pcv.print_image(img=[], filename="/dev/null")
 
 
-def test_plantcv_print_results():
-    header = ['field1', 'field2', 'field3']
-    data = ['value1', 'value2', 'value3']
-    pcv.print_results(filename='not_used', header=header, data=data)
+# def test_plantcv_print_results():
+#     header = ['field1', 'field2', 'field3']
+#     data = ['value1', 'value2', 'value3']
+#     pcv.print_results(filename='not_used', header=header, data=data)
 
 
 def test_plantcv_pseudocolor():
@@ -1675,6 +1680,7 @@ def test_plantcv_report_size_marker_detect():
     marker_header, marker_data, images = pcv.report_size_marker_area(img=img, roi_contour=roi_contour,
                                                                      roi_hierarchy=roi_hierarchy, marker='detect',
                                                                      objcolor='light', thresh_channel='s', thresh=120)
+    pcv.print_results(cache_dir)
     assert marker_data[1] > 100
 
 
@@ -2068,6 +2074,7 @@ def test_plantcv_watershed_segmentation():
     # Test with debug = None
     pcv.params.debug = None
     watershed_header, watershed_data, images = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10)
+    pcv.print_results(cache_dir)
     if cv2.__version__[0] == '2':
         assert watershed_data[1] > 9
     else:
