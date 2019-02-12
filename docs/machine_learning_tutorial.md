@@ -4,6 +4,10 @@ Machine learning methods can be used to train a trainable classifier to detect f
 below we describe how to train and use the first trainable classifier we have made available in PlantCV. See the 
 [naive Bayes classifier](naive_bayes_classifier.md) documentation for more details on the methodology.
 
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/machine_learning.ipynb) Check out our interactive machine learning tutorial! 
+
+Also see [here](scripts/machine_learning_script.md) for the complete script. 
+
 ### Naive Bayes
 
 The naive Bayes approach used here can be trained to label pixels as plant or background. In other words, given a color image it can be
