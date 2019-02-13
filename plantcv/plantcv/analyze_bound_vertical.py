@@ -164,7 +164,7 @@ def analyze_bound_vertical(img, obj, mask, line_position):
     # Store into global measurements
     if not 'bound_vertical' in outputs.measurements:
         outputs.measurements['bound_vertical'] = {}
-    outputs.measurements['bound_horizontal']['vertical_line_position'] = line_position
+    outputs.measurements['bound_vertical']['vertical_line_position'] = line_position
     outputs.measurements['bound_vertical']['width_left_bound'] = width_left_bound
     outputs.measurements['bound_vertical']['width_right_bound'] = width_right_bound
     outputs.measurements['bound_vertical']['left_bound_area'] = left_bound_area
