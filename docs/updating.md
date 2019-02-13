@@ -148,7 +148,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, bound_header, bound_data, analysis_images = **plantcv.analyze_bound_horizontal**(*img, obj, mask, line_position, device, debug=None, filename=False*)
 * post v3.0dev2: bound_header, bound_data, analysis_images = **plantcv.analyze_bound_horizontal**(*img, obj, mask, line_position, filename=False*)
-* post v3.0.5: bound_header, bound_data, analysis_images = **plantcv.analyze_bound_horizontal**(*img, obj, mask, line_position*)
+* post v3.0: bound_header, bound_data, analysis_images = **plantcv.analyze_bound_horizontal**(*img, obj, mask, line_position*)
 
 #### plantcv.analyze_bound_vertical
 
@@ -161,7 +161,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, hist_header, hist_data, analysis_images = **plantcv.analyze_color**(*img, imgname, mask, bins, device, debug=None, hist_plot_type=None, pseudo_channel='v', pseudo_bkg='img', resolution=300, filename=False*)
 * post v3.0dev2: hist_header, hist_data, analysis_images = **plantcv.analyze_color**(*rgb_img, mask, bins, hist_plot_type=None, pseudo_channel='v', pseudo_bkg='img', filename=False*)
-* post v3.0.5: hist_header, hist_data, analysis_images = **plantcv.analyze_color**(*rgb_img, mask, bins, hist_plot_type=None*)
+* post v3.0: hist_header, hist_data, analysis_images = **plantcv.analyze_color**(*rgb_img, mask, bins, hist_plot_type=None*)
 
 #### plantcv.apply_mask
 
@@ -172,13 +172,13 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, hist_header, hist_data, analysis_img = **plantcv.analyze_NIR_intensity**(*img, rgbimg, mask, bins, device, histplot=False, debug=None, filename=False*)
 * post v3.0dev2: hist_header, hist_data, analysis_img = **plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False, filename=False*)
-* post v3.0.5: hist_header, hist_data, nir_hist = **plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False*)
+* post v3.0: hist_header, hist_data, nir_hist = **plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False*)
 
 #### plantcv.analyze_object
 
 * pre v3.0dev2: device, shape_header, shape_data, analysis_images = **plantcv.analyze_object**(*img, imgname, obj, mask, device, debug=None, filename=False*)
 * post v3.0dev2: shape_header, shape_data, analysis_images = **plantcv.analyze_object**(*img, obj, mask, filename=False*)
-* post v3.0.5: shape_header, shape_data, analysis_images = **plantcv.analyze_object**(*img, obj, mask*)
+* post v3.0: shape_header, shape_data, analysis_images = **plantcv.analyze_object**(*img, obj, mask*)
 
 #### plantcv.auto_crop
 
@@ -259,7 +259,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, hist_header, hist_data = **plantcv.fluor_fvfm**(*fdark, fmin, fmax, mask, device, filename, bins=1000, debug=None*)
 * post v3.0dev2: hist_header, hist_data, hist_images = **plantcv.fluor_fvfm**(*fdark, fmin, fmax, mask, filename, bins=256*)
-* post v3.0.5: hist_header, hist_data, analysis_images = **plantcv.fluor_fvfm**(*fdark, fmin, fmax, mask, bins=256*)
+* post v3.0: hist_header, hist_data, analysis_images = **plantcv.fluor_fvfm**(*fdark, fmin, fmax, mask, bins=256*)
 
 #### plantcv.gaussian_blur
 
@@ -295,6 +295,7 @@ post v3.0: new_img = **plantcv.image_subtract**(*gray_img1, gray_img2*)
 
 * pre v3.0dev2: device, vert_ave_c, hori_ave_c, euc_ave_c, ang_ave_c, vert_ave_b, hori_ave_b, euc_ave_b, ang_ave_b = **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r, device, debug=None*)
 * post v3.0dev2: vert_ave_c, hori_ave_c, euc_ave_c, ang_ave_c, vert_ave_b, hori_ave_b, euc_ave_b, ang_ave_b = **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r*)
+* post v3.2: landmark_header, landmark_data = **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r*)
 
 #### plantcv.laplace_filter
 

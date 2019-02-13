@@ -84,6 +84,7 @@ pages:
     - 'Naive Bayes Classifier': naive_bayes_classifier.md
     - 'Object Composition': object_composition.md
     - 'Output Mask': output_mask.md
+    - 'Outputs Class': outputs.md
     - 'Params (Debugging)': params.md
     - 'Plot Histogram': plot_hist.md
     - 'Print Image': print_image.md

@@ -163,6 +163,7 @@ def test_plantcv_analyze_bound_horizontal():
     boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_horizontal(img=img, obj=object_contours,
                                                                                  mask=mask, line_position=300)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    pcv.outputs.clear()
     assert boundary_data[3] == 62555
 
 
@@ -213,6 +214,7 @@ def test_plantcv_analyze_bound_vertical():
     boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_vertical(img=img, obj=object_contours,
                                                                                mask=mask, line_position=1000)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    pcv.outputs.clear()
     assert boundary_data[3] == 5016
 
 
@@ -278,6 +280,7 @@ def test_plantcv_analyze_color():
     color_header, color_data, analysis_images = pcv.analyze_color(rgb_img=img, mask=mask, bins=256,
                                                                   hist_plot_type=None)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    pcv.outputs.clear()
     assert np.sum(color_data[3]) != 0
 
 
@@ -334,6 +337,7 @@ def test_plantcv_analyze_nir():
     pcv.params.debug = None
     hist_header, hist_data, h_norm = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=False)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    pcv.outputs.clear()
     assert np.sum(hist_data[3]) == 63632
 
 
@@ -358,6 +362,7 @@ def test_plantcv_analyze_object():
     pcv.params.debug = None
     obj_header, obj_data, obj_images = pcv.analyze_object(img=img, obj=obj_contour, mask=mask)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    pcv.outputs.clear()
     assert obj_data[1] != 0
 
 
@@ -981,6 +986,7 @@ def test_plantcv_fluor_fvfm():
     pcv.params.debug = None
     fvfm_header, fvfm_data, fvfm_images = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    pcv.outputs.clear()
     assert fvfm_data[4] > 0.66
 
 
@@ -1139,6 +1145,8 @@ def test_plantcv_invert():
 
 
 def test_plantcv_landmark_reference_pt_dist():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_landmark_reference")
+    os.mkdir(cache_dir)
     points_rescaled = [(0.0139, 0.2569), (0.2361, 0.2917), (0.3542, 0.3819), (0.3542, 0.4167), (0.375, 0.4236),
                        (0.7431, 0.3681), (0.8958, 0.3542), (0.9931, 0.3125), (0.1667, 0.5139), (0.4583, 0.8889),
                        (0.4931, 0.5903), (0.3889, 0.5694), (0.4792, 0.4306), (0.2083, 0.5417), (0.3194, 0.5278),
@@ -1149,9 +1157,11 @@ def test_plantcv_landmark_reference_pt_dist():
     _ = pcv.landmark_reference_pt_dist(points_r=[], centroid_r=('a', 'b'), bline_r=(0, 0))
     _ = pcv.landmark_reference_pt_dist(points_r=[(10, 1000)], centroid_r=(10, 10), bline_r=(10, 10))
     _ = pcv.landmark_reference_pt_dist(points_r=[], centroid_r=(0, 0), bline_r=(0, 0))
-    results = pcv.landmark_reference_pt_dist(points_r=points_rescaled, centroid_r=centroid_rescaled,
+    header, landmark_data = pcv.landmark_reference_pt_dist(points_r=points_rescaled, centroid_r=centroid_rescaled,
                                              bline_r=bottomline_rescaled)
-    assert len(results) == 8
+    pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    pcv.outputs.clear()
+    assert len(landmark_data) == 9
 
 
 def test_plantcv_laplace_filter():
@@ -1436,12 +1446,6 @@ def test_plantcv_print_image_bad_type():
         pcv.print_image(img=[], filename="/dev/null")
 
 
-# def test_plantcv_print_results():
-#     header = ['field1', 'field2', 'field3']
-#     data = ['value1', 'value2', 'value3']
-#     pcv.print_results(filename='not_used', header=header, data=data)
-
-
 def test_plantcv_pseudocolor():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_pseudocolor")
     os.mkdir(cache_dir)
@@ -1681,6 +1685,7 @@ def test_plantcv_report_size_marker_detect():
                                                                      roi_hierarchy=roi_hierarchy, marker='detect',
                                                                      objcolor='light', thresh_channel='s', thresh=120)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    pcv.outputs.clear()
     assert marker_data[1] > 100
 
 
@@ -2075,6 +2080,7 @@ def test_plantcv_watershed_segmentation():
     pcv.params.debug = None
     watershed_header, watershed_data, images = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    pcv.outputs.clear()
     if cv2.__version__[0] == '2':
         assert watershed_data[1] > 9
     else:
@@ -2188,6 +2194,8 @@ def test_plantcv_x_axis_pseudolandmarks():
     # Test with debug = None
     pcv.params.debug = None
     top, bottom, center_v = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
+    pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    pcv.outputs.clear()
     assert all([all([i == j] for i, j in zip(np.shape(top), (20, 1, 2))),
                 all([i == j] for i, j in zip(np.shape(bottom), (20, 1, 2))),
                 all([i == j] for i, j in zip(np.shape(center_v), (20, 1, 2)))])
@@ -2245,6 +2253,8 @@ def test_plantcv_y_axis_pseudolandmarks():
     # Test with debug = None
     pcv.params.debug = None
     left, right, center_h = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
+    pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    pcv.outputs.clear()
     assert all([all([i == j] for i, j in zip(np.shape(left), (20, 1, 2))),
                 all([i == j] for i, j in zip(np.shape(right), (20, 1, 2))),
                 all([i == j] for i, j in zip(np.shape(center_h), (20, 1, 2)))])

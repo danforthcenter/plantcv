@@ -7,6 +7,7 @@ import math
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
+from plantcv.plantcv import outputs
 
 
 def acute_vertex(obj, win, thresh, sep, img):
@@ -119,5 +120,15 @@ def acute_vertex(obj, win, thresh, sep, img):
     if flag == 1:
         acute = np.asarray(acute)
         acute = acute.reshape(1, 1, 2)
+
+    acute_header = ["HEADER_ACUTE"]
+    acute_data = ["ACUTE_DATA"]
+    acute_data.append(acute)
+
+    # Store into global measurements
+    if not 'landmark_reference' in outputs.measurements:
+        outputs.measurements['landmark_reference'] = {}
+    outputs.measurements['landmark_reference']['tip_points'] = acute
+
     return acute
 # End of function

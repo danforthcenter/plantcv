@@ -91,7 +91,10 @@ def main():
 
     # Write shape and color data to results file
     pcv.print_results(filename=args.result)
-
+    
+    # Will will print out results again, so clear the outputs before running NIR analysis 
+    pcv.outputs.clear()
+    
     if args.coresult is not None:
         nirpath = pcv.get_nir(path,filename)
         nir, path1, filename1 = pcv.readimage(nirpath)

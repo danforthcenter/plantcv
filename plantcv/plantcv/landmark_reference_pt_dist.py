@@ -4,6 +4,7 @@ import numpy as np
 import math
 import numbers
 from plantcv.plantcv import params
+from plantcv.plantcv import outputs
 
 
 def landmark_reference_pt_dist(points_r, centroid_r, bline_r):
@@ -130,4 +131,41 @@ def landmark_reference_pt_dist(points_r, centroid_r, bline_r):
     # cv2.circle(scaled_img,(int(bx * 1000) + 250, int(by * 1000) + 250),25,(255,0,0), -1)
     # flipped_scaled = cv2.flip(scaled_img, 0)
     # cv2.imwrite('centroid_dist.png', flipped_scaled)
-    return vert_ave_c, hori_ave_c, euc_ave_c, ang_ave_c, vert_ave_b, hori_ave_b, euc_ave_b, ang_ave_b
+
+    landmark_header = [
+        'HEADER_LANDMARK',
+        'vert_ave_c',
+        'hori_ave_c',
+        'euc_ave_c',
+        'ang_ave_c',
+        'vert_ave_b',
+        'hori_ave_b',
+        'euc_ave_b',
+        'ang_ave_b'
+    ]
+
+    landmark_data = [
+        'LANDMARK_DATA',
+        vert_ave_c,
+        hori_ave_c,
+        euc_ave_c,
+        ang_ave_c,
+        vert_ave_b,
+        hori_ave_b,
+        euc_ave_b,
+        ang_ave_b
+    ]
+
+    # Store into global measurements
+    if not 'landmark_reference' in outputs.measurements:
+        outputs.measurements['landmark_reference'] = {}
+    outputs.measurements['landmark_reference']['vert_ave_c'] = vert_ave_c
+    outputs.measurements['landmark_reference']['hori_ave_c'] = hori_ave_c
+    outputs.measurements['landmark_reference']['euc_ave_c'] = euc_ave_c
+    outputs.measurements['landmark_reference']['ang_ave_c'] = ang_ave_c
+    outputs.measurements['landmark_reference']['vert_ave_b'] = vert_ave_b
+    outputs.measurements['landmark_reference']['hori_ave_b'] = hori_ave_b
+    outputs.measurements['landmark_reference']['euc_ave_b'] = euc_ave_b
+    outputs.measurements['landmark_reference']['ang_ave_b'] = ang_ave_b
+
+    return landmark_header, landmark_data

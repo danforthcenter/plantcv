@@ -1,7 +1,7 @@
 ## Print Measurement Results 
 
 An `Outputs` class has been added that automatically stores measurements collected by the following 
-function:
+functions:
 
 * `analyze_bound_horizontal`
 * `analyze_bound_vertical`

@@ -264,6 +264,9 @@ The next step is to analyze the plant object for traits such as [horizontal heig
 
     # Write shape and color data to results file
     pcv.print_results(filename=args.result)
+    
+    # Will will print out results again, so clear the outputs before running NIR analysis 
+    pcv.outputs.clear()
 ```
 
 **Figure 12.** Shape analysis output image.

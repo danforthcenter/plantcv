@@ -6,6 +6,7 @@ import numpy as np
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 from plantcv.plantcv import params
+from plantcv.plantcv import outputs
 from plantcv.plantcv import fatal_error
 
 
@@ -157,6 +158,14 @@ def x_axis_pseudolandmarks(obj, mask, img):
         elif params.debug == 'print':
             print_image(img2,
                         os.path.join(params.debug_outdir, (str(params.device) + '_x_axis_pseudolandmarks.png')))
+
+        # Store into global measurements
+        if not 'landmark_reference' in outputs.measurements:
+            outputs.measurements['landmark_reference'] = {}
+        outputs.measurements['landmark_reference']['top_lmk'] = top
+        outputs.measurements['landmark_reference']['bottom_lmk'] = bottom
+        outputs.measurements['landmark_reference']['center_v_lmk'] = center_v
+
         return top, bottom, center_v
         
     if extent < 21:
@@ -200,5 +209,12 @@ def x_axis_pseudolandmarks(obj, mask, img):
         elif params.debug == 'print':
                 print_image(img2,
                             os.path.join(params.debug_outdir, (str(params.device) + '_x_axis_pseudolandmarks.png')))
+
+        # Store into global measurements
+        if not 'landmark_reference' in outputs.measurements:
+            outputs.measurements['landmark_reference'] = {}
+        outputs.measurements['landmark_reference']['top_lmk'] = top
+        outputs.measurements['landmark_reference']['bottom_lmk'] = bottom
+        outputs.measurements['landmark_reference']['center_v_lmk'] = center_v
 
         return top, bottom, center_v

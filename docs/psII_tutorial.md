@@ -15,7 +15,7 @@ of plants with vertical architecture. You can read more about how we validated t
 analysis pipelines in the [PlantCV Paper](http://dx.doi.org/10.1016/j.molp.2015.06.005). 
 However, the pipelines to analyze PSII images are functional and a sample pipeline is outlined below.  
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/nir_tutorial.ipynb) Check out our interactive NIR tutorial! 
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/psII_tutorial.ipynb) Check out our interactive PSII tutorial! 
 
 Also see [here](scripts/psII_script.md) for the complete script. 
 

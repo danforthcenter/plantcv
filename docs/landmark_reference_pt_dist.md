@@ -4,7 +4,9 @@ This is a function to measure the distance from user defined points to the centr
  
 **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r*)
 
-**returns** ave_vertical_distance_from_centroid, ave_horizontal_distance_from_centroid, ave_euclidean_distance_from_centroid, average_angle_between_landmark_point_and_centroid, ave_vertical_distance_from_baseline, ave_horizontal_distance_from_baseline, ave_euclidean_distance_from_baseline, average_angle_between_landmark_point_and_baseline
+**returns** landmark_header, landmark_data (which contains ave_vertical_distance_from_centroid, ave_horizontal_distance_from_centroid, 
+ave_euclidean_distance_from_centroid, average_angle_between_landmark_point_and_centroid, ave_vertical_distance_from_baseline, 
+ave_horizontal_distance_from_baseline, ave_euclidean_distance_from_baseline, average_angle_between_landmark_point_and_baseline)
 
 - **Parameters:**
     - points_r - A list of tuples representing rescaled landmark points
@@ -25,7 +27,7 @@ pcv.params.debug = "print"
 
 # Identify acute vertices (tip points) of an object
 # Results in set of point values that may indicate tip points
-vert_ave_c, hori_ave_c, euc_ave_c, ang_ave_c, vert_ave_b, hori_ave_b, euc_ave_b, ang_ave_b = pcv.landmark_reference_pt_dist(points_r, centroid_r, bline_r)
+landmark_header, landmark_data = pcv.landmark_reference_pt_dist(points_r, centroid_r, bline_r)
 ```
 
 **Representation of many data points collected in two treatment blocks throughout time**
