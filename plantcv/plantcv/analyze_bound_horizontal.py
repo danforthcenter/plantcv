@@ -164,6 +164,7 @@ def analyze_bound_horizontal(img, obj, mask, line_position):
     # Store into global measurements
     if not 'bound_horizontal' in outputs.measurements:
         outputs.measurements['bound_horizontal'] = {}
+    outputs.measurements['bound_horizontal']['horizontal_line_position'] = line_position
     outputs.measurements['bound_horizontal']['height_above_bound'] = height_above_bound
     outputs.measurements['bound_horizontal']['height_below_bound'] = height_below_bound
     outputs.measurements['bound_horizontal']['above_bound_area'] = above_bound_area
