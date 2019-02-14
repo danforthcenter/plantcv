@@ -20,7 +20,7 @@ print an output text file for data analysis.
 **returns** none
 
 - **Parameters:**
-    - filename- desired name of results text file
+    - filename- Name of results text file
 - **Context:**
     - Print out a result file containing all measurements recorded by functions included in the pipeline
       for each image processed.  

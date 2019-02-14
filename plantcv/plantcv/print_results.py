@@ -37,7 +37,7 @@ def print_results(filename):
 
     # Write data from analyze_color if it was stored
     if 'color_histogram' in outputs.measurements:
-        header = ['HEADER_COLOR_HISTOGRAM']
+        header = ['HEADER_HISTOGRAM']
         data = ['HISTOGRAM_DATA']
         for k, v in outputs.measurements['color_histogram'].items():
             header.append(k)
@@ -68,7 +68,7 @@ def print_results(filename):
     # Write data from fluor_fvfm if it was stored
     if 'fvfm' in outputs.measurements:
         header = ['HEADER_HISTOGRAM']
-        data = ['FLU_DATA']
+        data = ['HISTOGRAM_DATA']
         for k, v in outputs.measurements['fvfm'].items():
             header.append(k)
             data.append(v)
