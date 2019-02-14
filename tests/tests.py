@@ -122,6 +122,7 @@ def test_plantcv_acute_vertex():
     pcv.params.debug = "print"
     _ = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img)
     _ = pcv.acute_vertex(obj=[], win=5, thresh=15, sep=5, img=img)
+    _ = pcv.acute_vertex(obj=[], win=.01, thresh=.01, sep=1, img=img)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img)
@@ -2248,6 +2249,7 @@ def test_plantcv_y_axis_pseudolandmarks():
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
+    pcv.outputs.clear()
     _ = pcv.y_axis_pseudolandmarks(obj=[], mask=mask, img=img)
     _ = pcv.y_axis_pseudolandmarks(obj=(), mask=mask, img=img)
     # Test with debug = None
@@ -2261,6 +2263,8 @@ def test_plantcv_y_axis_pseudolandmarks():
 
 
 def test_plantcv_y_axis_pseudolandmarks_small_obj():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_y_axis_pseudolandmarks_debug")
+    os.mkdir(cache_dir)
     img = cv2.imread(os.path.join(TEST_DATA, TEST_VIS_SMALL_PLANT))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL_PLANT), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR_SMALL_PLANT), encoding="latin1")
@@ -2271,18 +2275,25 @@ def test_plantcv_y_axis_pseudolandmarks_small_obj():
     _, _, _ = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
+    pcv.outputs.clear()
     left, right, center_h = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
+    pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    pcv.outputs.clear()
     assert all([all([i == j] for i, j in zip(np.shape(left), (20, 1, 2))),
                 all([i == j] for i, j in zip(np.shape(right), (20, 1, 2))),
                 all([i == j] for i, j in zip(np.shape(center_h), (20, 1, 2)))])
 
 
 def test_plantcv_y_axis_pseudolandmarks_bad_input():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_y_axis_pseudolandmarks_debug")
+    os.mkdir(cache_dir)
     img = np.array([])
     mask = np.array([])
     obj_contour = np.array([])
     pcv.params.debug = None
     result = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
+    pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    pcv.outputs.clear()
     assert all([i == j] for i, j in zip(result, [("NA", "NA"), ("NA", "NA"), ("NA", "NA")]))
 
 
