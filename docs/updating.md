@@ -418,6 +418,11 @@ post v3.0: new_img = **plantcv.image_subtract**(*gray_img1, gray_img2*)
 * pre v3.0dev1: NA
 * post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.rectangle**(*x, y, h, w, img*)
 
+#### plantcv.roi.multi
+
+* pre v3.1: NA
+* post v3.1: roi_contours, roi_hierarchies = **plantcv.roi.multi**(*img, coord, radius, spacing=None, nrows=None, ncols=None*)
+
 #### plantcv.roi_objects
 
 * pre v3.0dev2: device, kept_cnt, hierarchy, mask, obj_area = **plantcv.roi_objects**(*img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, device, debug=None*)

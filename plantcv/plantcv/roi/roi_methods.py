@@ -263,15 +263,14 @@ def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
                 rois.append(circle(img=img, x=x, y=y, r=radius))
                 # Draw the circle on the binary image
                 cv2.circle(bin_img, (x, y), radius, 255, -1)
-                # Use the binary image to create an ROI contour
+                # Make a list of contours and hierarchies
                 roi_contour.append(cv2.findContours(np.copy(bin_img), cv2.RETR_EXTERNAL,
                                                     cv2.CHAIN_APPROX_NONE)[-2:][0])
                 roi_hierarchy.append(cv2.findContours(np.copy(bin_img), cv2.RETR_EXTERNAL,
                                                       cv2.CHAIN_APPROX_NONE)[-2:][1])
+                # Create an array of contours and list of hierarchy for when debug is set to 'plot'
                 roi_contour1, roi_hierarchy1 = cv2.findContours(np.copy(bin_img), cv2.RETR_TREE,
                                                                 cv2.CHAIN_APPROX_NONE)[-2:]
-
-
 
     # User specified ROI centers
     elif (type(coord) == list) and ((nrows and ncols) is None):
@@ -281,9 +280,14 @@ def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
             rois.append(circle(img=img, x=x, y=y, r=radius))
             # Draw the circle on the binary image
             cv2.circle(bin_img, (x, y), radius, 255, -1)
-            # Use the binary image to create an ROI contour
-            roi_contour, roi_hierarchy = cv2.findContours(np.copy(bin_img), cv2.RETR_EXTERNAL,
-                                                          cv2.CHAIN_APPROX_NONE)[-2:]
+            #  Make a list of contours and hierarchies
+            roi_contour.append(cv2.findContours(np.copy(bin_img), cv2.RETR_EXTERNAL,
+                                                cv2.CHAIN_APPROX_NONE)[-2:][0])
+            roi_hierarchy.append(cv2.findContours(np.copy(bin_img), cv2.RETR_EXTERNAL,
+                                                  cv2.CHAIN_APPROX_NONE)[-2:][1])
+            # Create an array of contours and list of hierarchy for when debug is set to 'plot'
+            roi_contour1, roi_hierarchy1 = cv2.findContours(np.copy(bin_img), cv2.RETR_TREE,
+                                                            cv2.CHAIN_APPROX_NONE)[-2:]
 
     else:
         fatal_error("Function can either make a grid of ROIs (user must provide nrows, ncols, spacing, and coord) "
@@ -291,7 +295,7 @@ def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
     # Reset debug
     params.debug = debug
 
-    # Draw the ROI if requested
+    # Draw the ROIs if requested
     if params.debug is not None:
         _draw_roi(img=img, roi_contour=roi_contour1)
 

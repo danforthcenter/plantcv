@@ -20,7 +20,7 @@
 
 **Reference Image**
 
-![Screenshot](img/documentation_images/cluster_contour/13_roi_mask.jpg)
+![Screenshot](img/documentation_images/multi/original_multi_image.jpg)
 
 ```python
 
@@ -30,17 +30,19 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Make a grid of ROIs 
-rois1, roi_hierarchy1 = pcv.roi.multi(img, coord=(100,90), radius=40, spacing=(200,200), nrows=2, ncols=3)
+rois1, roi_hierarchy1 = pcv.roi.multi(img1, coord=(25,120), radius=20, spacing=(70, 70), nrows=3, ncols=6)
 
 # Specify a list of coordinates of desired ROIs 
-rois2, roi_hierarchy2 = pcv.roi.multi(img, coord= [(100,100), (300,300), (300, 100)], radius=30)
+rois1, roi_hierarchy1 = pcv.roi.multi(img1, coord=[(25,120), (165,260), (310, 260)], radius=20)
 ```
 
 **Grid of ROIs**
-![Screenshot](img/documentation_images/multi/image_with_roi_grid.jpg)
+
+![Screenshot](img/documentation_images/multi/grid_roi.jpg)
 
 **Custom list of ROIs** 
-![Screenshot](img/documentation_images/multi/image_with_roi_grid.jpg)
+
+![Screenshot](img/documentation_images/multi/custom_list_roi.jpg)
 
 ### Next steps:
 
@@ -75,6 +77,24 @@ for i in range(0, len(rois1)):
     # Clear the measurements stored globally into the Ouptuts class
     pcv.outputs.clear()
     
-# Print the image with shape analysis on each plant in the image 
+# Plot out the image with shape analysis on each plant in the image 
 pcv.plot_image(img_copy)
 ```
+**Custom list of ROIs** 
+
+![Screenshot](img/documentation_images/multi/first_plant_mask.jpg)
+
+**Custom list of ROIs** 
+
+![Screenshot](img/documentation_images/multi/first_plant_object.jpg)
+
+**Custom list of ROIs** 
+
+![Screenshot](img/documentation_images/multi/first_plant_shape.jpg)
+
+Many intermediate outputs later... 
+
+**Image with shape analysis characteristics on each plant** 
+
+![Screenshot](img/documentation_images/multi/multi_plant_shapes.jpg)
+

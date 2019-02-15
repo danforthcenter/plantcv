@@ -2540,6 +2540,24 @@ def test_plantcv_roi_ellipse_out_of_frame():
     with pytest.raises(RuntimeError):
         _, _ = pcv.roi.ellipse(x=50, y=225, r1=75, r2=50, angle=0, img=rgb_img)
 
+def test_plantcv_roi_multi():
+    # Read in test RGB image
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    _ = pcv.roi.multi(rgb_img, coord=[(25, 120), (100, 100)], radius=20)
+    # Test with debug = None
+    pcv.params.debug = None
+    rois1, roi_hierarchy1 = pcv.roi.multi(rgb_img, coord=(25, 120), radius=20, spacing=(10, 10), nrows=3, ncols=6)
+    # Assert the contours has 18 ROIs
+    assert len(rois1)==18
+
+def test_plantcv_roi_multi_bad_input():
+    # Read in test RGB image
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # The resulting rectangle needs to be within the dimensions of the image
+    with pytest.raises(RuntimeError):
+        _, _ = pcv.roi.multi(rgb_img, coord=[(25, 120), (100, 100)], radius=20, spacing=(10, 10), nrows=3, ncols=6)
 
 # ##############################
 # Tests for the transform subpackage
