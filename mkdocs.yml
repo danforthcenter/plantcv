@@ -84,11 +84,13 @@ pages:
     - 'Naive Bayes Classifier': naive_bayes_classifier.md
     - 'Object Composition': object_composition.md
     - 'Output Mask': output_mask.md
+    - 'Outputs Class': outputs.md
     - 'Params (Debugging)': params.md
     - 'Plot Histogram': plot_hist.md
     - 'Print Image': print_image.md
+    - 'Print Results': print_results.md
     - 'Plot Image': plot_image.md
-    - 'Pseudocolor Image': 'pseudocolor.md'
+    - 'Pseudocolor Image': pseudocolor.md
     - 'Read Image': read_image.md
     - 'Read Bayer Raw Image': read_bayer.md
     - 'Rectangle Mask': rectangle_mask.md

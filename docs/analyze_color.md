@@ -42,7 +42,7 @@ pcv.params.debug = "print"
 
 # Analyze Color
     
-color_header, color_data, analysis_image = pcv.analyze_color(rgb_img, mask, 256, 'all')
+color_header, color_data, analysis_images = pcv.analyze_color(rgb_img, mask, 256, 'all')
 ```
 
 **Histograms of (R, G, B), (H, S, V), and (L, A, B) color channels**

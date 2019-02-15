@@ -7,6 +7,7 @@ import math
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
+from plantcv.plantcv import outputs
 
 
 def acute_vertex(obj, win, thresh, sep, img):
@@ -49,7 +50,7 @@ def acute_vertex(obj, win, thresh, sep, img):
         P23 = np.sqrt((pre_x-post_x)*(pre_x-post_x)+(pre_y-post_y)*(pre_y-post_y))
         if (2*P12*P13) > 0.001:
             dot = (P12*P12 + P13*P13 - P23*P23)/(2*P12*P13)
-        if (2*P12*P13) < 0.001:
+        elif (2*P12*P13) < 0.001:
             dot = (P12*P12 + P13*P13 - P23*P23)/0.001
         if dot > 1:                            # If float excedes 1 prevent arcos error and force to equal 1
             dot = 1
@@ -87,9 +88,9 @@ def acute_vertex(obj, win, thresh, sep, img):
     flag = 0
     acute = obj[[out]]
     # If no points found as acute get the largest point
-    if len(acute) == 0:
-        acute = max(obj, key=cv2.contourArea)
-        flag = 1
+    # if len(acute) == 0:
+        # acute = max(obj, key=cv2.contourArea)
+        # flag = 1
     # img2 = np.copy(img)
     # cv2.circle(img2,(int(cmx),int(cmy)),30,(0,215,255),-1)
     # cv2.circle(img2,(int(cmx),int(bly)),30,(255,0,0),-1)
@@ -116,8 +117,14 @@ def acute_vertex(obj, win, thresh, sep, img):
             cv2.circle(img2, (x, y), 15, (0, 0, 255), -1)
         plot_image(img2)
     # If flag was true (no points found as acute) reformat output appropriate type
-    if flag == 1:
-        acute = np.asarray(acute)
-        acute = acute.reshape(1, 1, 2)
+    # if flag == 1:
+    #     acute = np.asarray(acute)
+    #     acute = acute.reshape(1, 1, 2)
+
+    # Store into global measurements
+    if not 'landmark_reference' in outputs.measurements:
+        outputs.measurements['landmark_reference'] = {}
+    outputs.measurements['landmark_reference']['tip_points'] = acute
+
     return acute
 # End of function

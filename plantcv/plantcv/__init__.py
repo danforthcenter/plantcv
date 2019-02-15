@@ -14,9 +14,24 @@ class Params:
         self.debug_outdir = debug_outdir
 
 
-# Initialize an instance of the Params class with default values
-# params is available when plantcv is imported
+class Outputs:
+    """PlantCV outputs class
+        """
+    def __init__(self):
+        self.measurements = {}
+        self.images = []
+
+    # Add a method to clear out the
+    def clear(self):
+        self.measurements = {}
+        self.images = []
+
+
+# Initialize an instance of the Params and Outputs class with default values
+# params and outputs are available when plantcv is imported
 params = Params()
+outputs = Outputs()
+
 
 from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.print_image import print_image
@@ -93,7 +108,7 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'apply_m
            'find_objects', 'roi_objects', 'transform', 'object_composition', 'analyze_object',
            'analyze_bound_horizontal', 'analyze_bound_vertical', 'analyze_color', 'analyze_nir_intensity',
            'fluor_fvfm', 'print_results', 'resize', 'flip', 'crop_position_mask', 'get_nir', 'report_size_marker_area',
-           'white_balance', 'acute_vertex', 'scale_features', 'landmark_reference_pt_dist',
+           'white_balance', 'acute_vertex', 'scale_features', 'landmark_reference_pt_dist', outputs,
            'x_axis_pseudolandmarks', 'y_axis_pseudolandmarks', 'gaussian_blur', 'cluster_contours',
            'cluster_contour_splitimg', 'rotate', 'shift_img', 'output_mask', 'auto_crop', 'canny_edge_detect',
            'background_subtraction', 'naive_bayes_classifier', 'acute', 'distance_transform', 'params', 'pseudocolor']

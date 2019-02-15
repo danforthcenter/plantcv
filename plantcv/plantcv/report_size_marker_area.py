@@ -13,10 +13,11 @@ from plantcv.plantcv import roi_objects
 from plantcv.plantcv import object_composition
 from plantcv.plantcv import apply_mask
 from plantcv.plantcv import params
+from plantcv.plantcv import outputs
 
 
 def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None,
-                            thresh=None, filename=False):
+                            thresh=None):
     """Detects a size marker in a specified region and reports its size and eccentricity
 
     Inputs:
@@ -28,7 +29,6 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
     objcolor        = Object color is 'dark' or 'light' (is the marker darker or lighter than the background)
     thresh_channel  = 'h', 's', or 'v' for hue, saturation or value
     thresh          = Binary threshold value (integer)
-    filename        = False or the name of an output image file
 
     Returns:
     marker_header   = Marker data table headers
@@ -42,7 +42,6 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
     :param objcolor: str
     :param thresh_channel: str
     :param thresh: int
-    :param filename: str
     :return: marker_header: list
     :return: marker_data: list
     :return: analysis_images: list
@@ -112,12 +111,11 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
     eccentricity = np.sqrt(1 - (axes[minor_axis] / axes[major_axis]) ** 2)
 
     # Make a list to store output images
-    analysis_images = []
+    analysis_image = []
     cv2.drawContours(ref_img, marker_contour, -1, (255, 0, 0), 5)
-    if filename:
-        out_file = os.path.splitext(filename)[0] + '_sizemarker.jpg'
-        print_image(ref_img, out_file)
-        analysis_images.append(['IMAGE', 'marker', out_file])
+    # out_file = os.path.splitext(filename)[0] + '_sizemarker.jpg'
+    # print_image(ref_img, out_file)
+    analysis_image.append(ref_img)
     if params.debug is 'print':
         print_image(ref_img, os.path.join(params.debug_outdir, str(params.device) + '_marker_shape.png'))
     elif params.debug is 'plot':
@@ -138,5 +136,15 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
         minor_axis_length,
         eccentricity
     )
+    # Store into global measurements
+    if not 'size_marker' in outputs.measurements:
+        outputs.measurements['size_marker'] = {}
+    outputs.measurements['size_marker']['marker_area'] = marker_area
+    outputs.measurements['size_marker']['marker_major_axis_length'] = major_axis_length
+    outputs.measurements['size_marker']['marker_minor_axis_length'] = minor_axis_length
+    outputs.measurements['size_marker']['marker_eccentricity'] = eccentricity
 
-    return marker_header, marker_data, analysis_images
+    # Store images
+    outputs.images.append(analysis_image)
+
+    return marker_header, marker_data, analysis_image

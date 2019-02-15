@@ -11,6 +11,10 @@ The debug has three modes: either None, 'plot', or 'print'. If set to
 the images plot to the screen. Debug mode allows users to visualize and optimize each step on individual test images
 and small test sets before pipelines are deployed over whole datasets.
 
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/nir_tutorial.ipynb) Check out our interactive NIR tutorial! 
+
+Also see [here](scripts/nir_script.md) for the complete script. 
+
 ### Workflow
 1.  Optimize pipeline on individual image with debug set to 'print' (or 'plot' if using a Jupyter notebook).
 2.  Run pipeline on small test set (that ideally spans time and/or treatments).
@@ -359,22 +363,7 @@ shape_header, shape_data, shape_imgs = pcv.analyze_object(rgb_img, o, m)
 nir_hist
 
 # Write shape and nir data to results file
-result=open(args.result,"a")
-result.write('\t'.join(map(str,shape_header)))
-result.write("\n")
-result.write('\t'.join(map(str,shape_data)))
-result.write("\n")
-for row in shape_img:
-    result.write('\t'.join(map(str,row)))
-    result.write("\n")
-result.write('\t'.join(map(str,nir_header)))
-result.write("\n")
-result.write('\t'.join(map(str,nir_data)))
-result.write("\n")
-for row in nir_img:
-    result.write('\t'.join(map(str,row)))
-    result.write("\n")
-result.close()
+pcv.print_results(filename=args.result)
     
 # Call program
 if __name__ == '__main__':

@@ -9,6 +9,7 @@ import pandas as pd
 from plantcv.plantcv import fatal_error
 # from plantcv.plantcv import plot_colorbar
 from plantcv.plantcv import params
+from plantcv.plantcv import outputs
 
 
 # def _pseudocolored_image(histogram, bins, img, mask, background, channel, filename, analysis_images):
@@ -226,10 +227,7 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
         hist_data_v
     ]
 
-    # if pseudo_channel is not None:
-    #         analysis_images = _pseudocolored_image(norm_channels[pseudo_channel], bins, rgb_img, mask, pseudo_bkg,
-    #                                                pseudo_channel, filename, analysis_images)
-    analysis_image = []
+    analysis_images = []
     dataset = pd.DataFrame({'bins': binval, 'blue': hist_data_b,
                             'green': hist_data_g, 'red': hist_data_r,
                             'lightness': hist_data_l, 'green-magenta': hist_data_m,
@@ -246,7 +244,7 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
                         + scale_x_continuous(breaks=list(range(0, bins, 25)))
                         + scale_color_manual(['blue', 'green', 'red'])
                         )
-            analysis_image.append(hist_fig)
+            analysis_images.append(hist_fig)
 
         elif hist_plot_type == 'lab':
             df_lab = pd.melt(dataset, id_vars=['bins'],
@@ -257,7 +255,7 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
                         + scale_x_continuous(breaks=list(range(0, bins, 25)))
                         + scale_color_manual(['yellow', 'magenta', 'dimgray'])
                         )
-            analysis_image.append(hist_fig)
+            analysis_images.append(hist_fig)
 
         elif hist_plot_type == 'hsv':
             df_hsv = pd.melt(dataset, id_vars=['bins'],
@@ -268,7 +266,7 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
                         + scale_x_continuous(breaks=list(range(0, bins, 25)))
                         + scale_color_manual(['blueviolet', 'cyan', 'orange'])
                         )
-            analysis_image.append(hist_fig)
+            analysis_images.append(hist_fig)
 
         elif hist_plot_type == 'all':
             s = pd.Series(['blue', 'green', 'red', 'lightness', 'green-magenta',
@@ -282,23 +280,24 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
                         + scale_x_continuous(breaks=list(range(0, bins, 25)))
                         + scale_color_manual(color_channels)
                         )
-            analysis_image.append(hist_fig)
+            analysis_images.append(hist_fig)
 
-            #     if hist_plot_type is not None:
-            #         # Create Histogram Plot
-            #         for channel in hist_types[hist_plot_type]:
-            #             plt.plot(histograms[channel]["hist"], color=histograms[channel]["graph_color"],
-            #                      label=histograms[channel]["label"])
-            #             plt.xlim([0, bins - 1])
-            #             plt.legend()
-            #         # Print plot
-            #         fig_name = (os.path.splitext(filename)[0] + '_' + str(hist_plot_type) + '_hist.svg')
-            #         plt.savefig(fig_name)
-            #         analysis_images.append(['IMAGE', 'hist', fig_name])
-            #         if params.debug == 'print':
-            #             fig_name = os.path.join(params.debug_outdir, str(params.device) + '_' + str(hist_plot_type)
-            #                        + '_hist.svg')
-            #             plt.savefig(fig_name)
-            #         plt.clf()
+    # Store into global measurements
+    if not 'color_histogram' in outputs.measurements:
+        outputs.measurements['color_histogram'] = {}
+    outputs.measurements['color_histogram']['bin-number'] = bins
+    outputs.measurements['color_histogram']['bin-values'] = bin_values
+    outputs.measurements['color_histogram']['blue'] = hist_data_b
+    outputs.measurements['color_histogram']['green'] = hist_data_g
+    outputs.measurements['color_histogram']['red'] = hist_data_r
+    outputs.measurements['color_histogram']['lightness'] = hist_data_l
+    outputs.measurements['color_histogram']['green-magenta'] = hist_data_m
+    outputs.measurements['color_histogram']['blue-yellow'] = hist_data_y
+    outputs.measurements['color_histogram']['hue'] = hist_data_h
+    outputs.measurements['color_histogram']['saturation'] = hist_data_s
+    outputs.measurements['color_histogram']['value'] = hist_data_v
 
-    return hist_header, hist_data, analysis_image
+    # Store images
+    outputs.images.append(analysis_images)
+
+    return hist_header, hist_data, analysis_images

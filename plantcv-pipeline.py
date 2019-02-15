@@ -743,7 +743,7 @@ def process_results(args):
                       'longest_axis', 'center-of-mass-x', 'center-of-mass-y', 'hull_vertices',
                       'in_bounds', 'ellipse_center_x', 'ellipse_center_y', 'ellipse_major_axis',
                       'ellipse_minor_axis', 'ellipse_angle', 'ellipse_eccentricity']
-    opt_feature_fields = ['y-position', 'height_above_bound', 'height_below_bound',
+    opt_feature_fields = ['horizontal_line_position', 'height_above_bound', 'height_below_bound',
                           'above_bound_area', 'percent_above_bound_area', 'below_bound_area',
                           'percent_below_bound_area']
     marker_fields = ['marker_area', 'marker_major_axis_length', 'marker_minor_axis_length', 'marker_eccentricity']
@@ -828,8 +828,6 @@ def process_results(args):
                         # If the data is of class boundary (horizontal rule), store in the boundary dictionary
                         elif 'HEADER_BOUNDARY' in cols[0]:
                             boundary = cols
-                            # Temporary hack
-                            boundary_data['y-position'] = cols[0].replace('HEADER_BOUNDARY', '')
                         elif cols[0] == 'BOUNDARY_DATA':
                             for i, datum in enumerate(cols):
                                 if i > 0:

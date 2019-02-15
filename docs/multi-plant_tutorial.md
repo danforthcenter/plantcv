@@ -16,6 +16,10 @@ The [rotation](rotate2.md) and [shift](shift.md) functions allow the image to be
 that the imaging position does not change drastically.
 Also, the clustering functions will not work properly once plants start overlapping, since contours would also start overlapping.
 
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/multi_plant_tutorial.ipynb) Check out our interactive multi-plant tutorial! 
+
+Also see [here](multi-plant_script.md) for the complete script. 
+
 **Workflow**
 
 1.  Optimize pipeline on individual image with debug set to 'print' (or 'plot' if using a Jupyter notebook).
@@ -84,7 +88,7 @@ def main():
     # Read image
     img, path, filename = pcv.readimage(args.image)
     
-    params.debug=args.debug #set debug mode
+    pcv.params.debug=args.debug #set debug mode
 ```
 
 **Figure 1.** Original image.
@@ -234,7 +238,7 @@ fill_image = pcv.fill(img_binary, 100)
 # Inputs:
 #    img    = input image
 #    kernel = integer
-#    i      = interations, i.e. number of consecutive filtering passes
+#    i      = iterations, i.e. number of consecutive filtering passes
 
 dilated = pcv.dilate(fill_image, 1, 1)
 ```

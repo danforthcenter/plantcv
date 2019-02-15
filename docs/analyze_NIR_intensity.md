@@ -5,7 +5,7 @@ the values out to a file. Can also print out a histogram plot of pixel intensity
 
 **plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False*)
 
-**returns** header of histogram, histogram data, pseudocolored image
+**returns** header of histogram, histogram data, analysis_images
 
 - **Parameters:**
     - gray_img - 8- or 16-bit grayscale image data
@@ -34,10 +34,8 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Caclulates the proportion of pixels that fall into a signal bin and writes the values to a file. Also provides a histogram of this data
-hist_header, hist_data, nir_hist  = pcv.analyze_nir_intensity(gray_img, mask, 256, histplot=True)
+hist_header, hist_data, analysis_images  = pcv.analyze_nir_intensity(gray_img, mask, 256, histplot=True)
 
-# Plot the histogram
-nir_hist
 ```
 
 
