@@ -168,9 +168,9 @@ def analyze_bound_horizontal(img, obj, mask, line_position):
     outputs.measurements['bound_horizontal']['height_above_bound'] = height_above_bound
     outputs.measurements['bound_horizontal']['height_below_bound'] = height_below_bound
     outputs.measurements['bound_horizontal']['above_bound_area'] = above_bound_area
-    outputs.measurements['bound_horizontal']['percent_bound_area_above'] = percent_bound_area_above
+    outputs.measurements['bound_horizontal']['percent_above_bound_area'] = percent_bound_area_above
     outputs.measurements['bound_horizontal']['below_bound_area'] = below_bound_area
-    outputs.measurements['bound_horizontal']['percent_bound_area_below'] = percent_bound_area_below
+    outputs.measurements['bound_horizontal']['percent_below_bound_area'] = percent_bound_area_below
 
     # Store images
     outputs.images.append(analysis_images)

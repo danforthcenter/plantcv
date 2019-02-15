@@ -246,17 +246,17 @@ def analyze_object(img, obj, mask):
     outputs.measurements["shapes"]["perimeter"] = perimeter
     outputs.measurements["shapes"]["width"] = width
     outputs.measurements["shapes"]["height"] = height
-    outputs.measurements["shapes"]["caliper_length"] = caliper_length
-    outputs.measurements["shapes"]["cmx"] = cmx
-    outputs.measurements["shapes"]["cmy"] = cmy
+    outputs.measurements["shapes"]["longest_axis"] = caliper_length
+    outputs.measurements["shapes"]["center-of-mass-x"] = cmx
+    outputs.measurements["shapes"]["center-of-mass-y"] = cmy
     outputs.measurements["shapes"]["hull_vertices"] = hull_vertices
     outputs.measurements["shapes"]["in_bounds"] = in_bounds
     outputs.measurements["shapes"]["ellipse_center_x"] = center[0]
     outputs.measurements["shapes"]["ellipse_center_y"] = center[1]
-    outputs.measurements["shapes"]["major_axis_length"] = major_axis_length
-    outputs.measurements["shapes"]["minor_axis_length"] = minor_axis_length
-    outputs.measurements["shapes"]["angle"] = angle
-    outputs.measurements["shapes"]["eccentricity"] = eccentricity
+    outputs.measurements["shapes"]["ellipse_major_axis"] = major_axis_length
+    outputs.measurements["shapes"]["ellipse_minor_axis"] = minor_axis_length
+    outputs.measurements["shapes"]["ellipse_angle"] = angle
+    outputs.measurements["shapes"]["ellipse_eccentricity"] = eccentricity
 
     if params.debug is not None:
         cv2.drawContours(ori_img, obj, -1, (255, 0, 0), 5)

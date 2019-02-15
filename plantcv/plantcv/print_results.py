@@ -18,7 +18,7 @@ def print_results(filename):
     # Write data from analyze_bound_horizontal if it was stored
     if 'bound_horizontal' in outputs.measurements:
         header = ['HEADER_BOUNDARY_H']
-        data = ['HISTOGRAM_DATA']
+        data = ['BOUNDARY_DATA']
         for k, v in outputs.measurements['bound_horizontal'].items():
             header.append(k)
             data.append(v)
@@ -28,7 +28,7 @@ def print_results(filename):
     # Write data from analyze_bound_vertical if it was stored
     if 'bound_vertical' in outputs.measurements:
         header = ['HEADER_BOUNDARY_V']
-        data = ['HISTOGRAM_DATA']
+        data = ['BOUNDARY_DATA']
         for k, v in outputs.measurements['bound_vertical'].items():
             header.append(k)
             data.append(v)

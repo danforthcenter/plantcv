@@ -168,9 +168,9 @@ def analyze_bound_vertical(img, obj, mask, line_position):
     outputs.measurements['bound_vertical']['width_left_bound'] = width_left_bound
     outputs.measurements['bound_vertical']['width_right_bound'] = width_right_bound
     outputs.measurements['bound_vertical']['left_bound_area'] = left_bound_area
-    outputs.measurements['bound_vertical']['percent_bound_area_left'] = percent_bound_area_left
+    outputs.measurements['bound_vertical']['percent_left_bound_area'] = percent_bound_area_left
     outputs.measurements['bound_vertical']['right_bound_area'] = right_bound_area
-    outputs.measurements['bound_vertical']['percent_bound_area_right'] = percent_bound_area_right
+    outputs.measurements['bound_vertical']['percent_right_bound_area'] = percent_bound_area_right
 
     # Store images
     outputs.images.append(analysis_images)

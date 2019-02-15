@@ -285,17 +285,17 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
     # Store into global measurements
     if not 'color_histogram' in outputs.measurements:
         outputs.measurements['color_histogram'] = {}
-    outputs.measurements['color_histogram']['bins'] = bins
-    outputs.measurements['color_histogram']['bin_values'] = bin_values
-    outputs.measurements['color_histogram']['hist_data_b'] = hist_data_b
-    outputs.measurements['color_histogram']['hist_data_g'] = hist_data_g
-    outputs.measurements['color_histogram']['hist_data_r'] = hist_data_r
-    outputs.measurements['color_histogram']['hist_data_l'] = hist_data_l
-    outputs.measurements['color_histogram']['hist_data_m'] = hist_data_m
-    outputs.measurements['color_histogram']['hist_data_y'] = hist_data_y
-    outputs.measurements['color_histogram']['hist_data_h'] = hist_data_h
-    outputs.measurements['color_histogram']['hist_data_s'] = hist_data_s
-    outputs.measurements['color_histogram']['hist_data_v'] = hist_data_v
+    outputs.measurements['color_histogram']['bin-number'] = bins
+    outputs.measurements['color_histogram']['bin-values'] = bin_values
+    outputs.measurements['color_histogram']['blue'] = hist_data_b
+    outputs.measurements['color_histogram']['green'] = hist_data_g
+    outputs.measurements['color_histogram']['red'] = hist_data_r
+    outputs.measurements['color_histogram']['lightness'] = hist_data_l
+    outputs.measurements['color_histogram']['green-magenta'] = hist_data_m
+    outputs.measurements['color_histogram']['blue-yellow'] = hist_data_y
+    outputs.measurements['color_histogram']['hue'] = hist_data_h
+    outputs.measurements['color_histogram']['saturation'] = hist_data_s
+    outputs.measurements['color_histogram']['value'] = hist_data_v
 
     # Store images
     outputs.images.append(analysis_images)
