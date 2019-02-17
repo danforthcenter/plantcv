@@ -8,16 +8,19 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 
 
-def pseudocolor(gray_img, mask=None, cmap=None, min_value=0, max_value=255, obj=None, dpi=None, axes=True, path="."):
+def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0, max_value=255, obj=None, dpi=None,
+                axes=True, path="."):
     """Pseudocolor any grayscale image to custom colormap
 
         Inputs:
         gray_img    = grayscale image data
         mask        = binary mask
         cmap        = colormap
+        background  = background color/type. Options are "image" (gray_img), "white", or "black".
+                      A mask must be supplied
         min_value   = minimum value for range of interest
         max_value   = maximum value for range of interest
-        obj         = if provided, the pseudocolored image gets cropped down to the region of interst
+        obj         = if provided, the pseudocolored image gets cropped down to the region of interest
         dpi         = dots per inch
         axes        = if False then x- and y-axis won't be displayed
         path        = path for location for saving the image
@@ -28,6 +31,7 @@ def pseudocolor(gray_img, mask=None, cmap=None, min_value=0, max_value=255, obj=
         :param gray_img: numpy.ndarray
         :param mask: numpy.ndarray
         :param cmap: str
+        :param background: str
         :param min_value: int
         :param max_value: int
         :param bins: int
@@ -80,13 +84,34 @@ def pseudocolor(gray_img, mask=None, cmap=None, min_value=0, max_value=255, obj=
                                       value=(0, 0, 0))
 
         # Apply the mask
-        masked_img = cv2.bitwise_and(gray_img, gray_img, mask=mask)
+        masked_img = np.ma.array(gray_img, mask=~mask.astype(np.bool))
 
-        # Convert black pixels from 0 to np.nan
-        masked_img = np.where(masked_img == 0, np.nan, masked_img)
+        # Set the background color or type
+        if background == "black":
+            # Background is all zeros
+            bkg_img = np.zeros(np.shape(gray_img), dtype=np.uint8)
+            # Use the gray cmap for the background
+            bkg_cmap = "gray"
+        elif background == "white":
+            # Background is all 255 (white)
+            bkg_img = np.zeros(np.shape(gray_img), dtype=np.uint8)
+            bkg_img += 255
+            # Use the reverse gray cmap for the background
+            bkg_cmap = "gray_r"
+        elif background == "image":
+            # Set the background to the inpute gray image
+            bkg_img = gray_img
+            # Use the gray cmap for the background
+            bkg_cmap = "gray"
+        else:
+            fatal_error(
+                "Background type {0} is not supported. Please use 'white', 'black', or 'image'.".format(background))
 
         # Pseudocolor the image
-        pseudo_img1 = plt.imshow(masked_img, cmap=cmap)
+        # Plot the background first
+        pseudo_img1 = plt.imshow(bkg_img, cmap=bkg_cmap)
+        # Overlay the masked grayscale image with the user input colormap
+        plt.imshow(masked_img, cmap=cmap)
 
         # Include image title
         plt.title('Pseudocolored image')  # + os.path.splitext(filename)[0])
