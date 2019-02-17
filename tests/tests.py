@@ -1462,13 +1462,13 @@ def test_plantcv_pseudocolor():
     pcv.print_image(pimg, filename)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.pseudocolor(gray_img=img, mask=mask)
+    _ = pcv.pseudocolor(gray_img=img, mask=mask, background="image")
     _ = pcv.pseudocolor(gray_img=img, mask=None)
-    _ = pcv.pseudocolor(gray_img=img, mask=mask, obj=obj_contour, axes=False, path=cache_dir)
+    _ = pcv.pseudocolor(gray_img=img, mask=mask, background="black", obj=obj_contour, axes=False, path=cache_dir)
     _ = pcv.pseudocolor(gray_img=img, mask=None, axes=False, path=cache_dir)
     # Test with debug = None
     pcv.params.debug = None
-    pseudo_img = pcv.pseudocolor(gray_img=img, mask=mask)
+    pseudo_img = pcv.pseudocolor(gray_img=img, mask=mask, background="white")
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(pseudo_img), TEST_BINARY_DIM)):
         assert 1
@@ -1483,6 +1483,16 @@ def test_plantcv_pseudocolor_bad_input():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     with pytest.raises(RuntimeError):
         _ = pcv.pseudocolor(gray_img=img)
+
+
+def test_plantcv_pseudocolor_bad_background():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_pseudocolor_bad_background")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    with pytest.raises(RuntimeError):
+        _ = pcv.pseudocolor(gray_img=img, mask=mask, background="pink")
 
 
 def test_plantcv_readimage_native():
