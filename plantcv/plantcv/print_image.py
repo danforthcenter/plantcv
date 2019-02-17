@@ -17,7 +17,7 @@ def print_image(img, filename):
     :return:
     """
     import matplotlib
-    from plotnine import ggplot
+    #from plotnine import ggplot
 
     # Print numpy array type images
     image_type = type(img)
@@ -26,8 +26,8 @@ def print_image(img, filename):
 
     # Print matplotlib type images
     elif image_type == matplotlib.figure.Figure:
-        matplotlib.use('Agg', warn=False)
-        from matplotlib import pyplot as plt
+        #matplotlib.use('Agg', warn=False)
+        #from matplotlib import pyplot as plt
         # fig = plt.figure()
         img.savefig(filename)
 
