@@ -4,10 +4,8 @@
 import cv2
 import numpy as np
 import pandas as pd
-# from plantcv.plantcv import print_image
-# from plantcv.plantcv import plot_image
+from plotnine import ggplot, aes, geom_line, scale_x_continuous, scale_color_manual
 from plantcv.plantcv import fatal_error
-# from plantcv.plantcv import plot_colorbar
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
@@ -115,10 +113,6 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
     :return hist_data: list
     :return analysis_images: list
     """
-    import matplotlib
-    matplotlib.use('Agg', warn=False)
-    # from matplotlib import pyplot as plt
-    from plotnine import ggplot, aes, geom_line, scale_x_continuous, scale_color_manual
 
     params.device += 1
 

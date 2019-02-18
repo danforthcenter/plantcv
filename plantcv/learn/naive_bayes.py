@@ -4,6 +4,7 @@ import os
 import cv2
 import numpy as np
 from scipy import stats
+from matplotlib import pyplot as plt
 
 
 def naive_bayes(imgdir, maskdir, outfile, mkplots=False):
@@ -181,9 +182,7 @@ def _plot_pdf(channel, outdir, **kwargs):
     :param outdir: str
     :param kwargs: dict
     """
-    import matplotlib
-    matplotlib.use("Agg", warn=False)
-    from matplotlib import pyplot as plt
+
     for class_name, pdf in kwargs.items():
         plt.plot(pdf, label=class_name)
     plt.legend(loc="best")

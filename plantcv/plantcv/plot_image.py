@@ -2,6 +2,8 @@
 import os
 import cv2
 import numpy
+import matplotlib
+from matplotlib import pyplot as plt
 from plantcv.plantcv import fatal_error
 
 
@@ -12,8 +14,6 @@ def plot_image(img, cmap=None):
     :param cmap: str
     :return:
     """
-    import matplotlib
-    from matplotlib import pyplot as plt
 
     image_type = type(img)
 

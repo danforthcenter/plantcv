@@ -4,6 +4,7 @@ import os
 import cv2
 import numpy as np
 import pandas as pd
+from plotnine import ggplot, aes, geom_line, scale_x_continuous
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv.threshold import binary as binary_threshold
@@ -34,10 +35,6 @@ def analyze_nir_intensity(gray_img, mask, bins, histplot=False):
     :return hist_data: list
     :return nir_hist: str
     """
-    import matplotlib
-    matplotlib.use('Agg', warn=False)
-    from plotnine import ggplot, aes, geom_line, scale_x_continuous
-    # from matplotlib import pyplot as plt
 
     params.device += 1
 
