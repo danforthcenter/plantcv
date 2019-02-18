@@ -2,6 +2,7 @@
 import sys
 import cv2
 import numpy
+import matplotlib
 from plantcv.plantcv import fatal_error
 
 
@@ -16,7 +17,6 @@ def print_image(img, filename):
     :param filename: string
     :return:
     """
-    import matplotlib
 
     # Print numpy array type images
     image_type = type(img)

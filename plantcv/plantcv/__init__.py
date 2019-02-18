@@ -1,3 +1,10 @@
+import os
+import matplotlib
+# If there is no display or a matplotlib backend already defined, use the non-GUI backend
+if "DISPLAY" not in os.environ or "MPLBACKEND" not in os.environ:
+    matplotlib.use("Agg")
+
+
 class Params:
     """PlantCV parameters class
     Keyword arguments/parameters:

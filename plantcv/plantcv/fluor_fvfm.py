@@ -4,6 +4,7 @@ import os
 import cv2
 import numpy as np
 import pandas as pd
+from plotnine import ggplot, geom_label, aes, geom_line
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
@@ -32,10 +33,6 @@ def fluor_fvfm(fdark, fmin, fmax, mask, bins=256):
     :return hist_data: list
     :return analysis_images: numpy.ndarray
     """
-    import matplotlib
-    matplotlib.use('Agg', warn=False)
-    from matplotlib import pyplot as plt
-    from plotnine import ggplot, geom_label, aes, geom_line
 
     # Auto-increment the device counter
     params.device += 1
