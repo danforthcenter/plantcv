@@ -9,8 +9,8 @@
     - coord          = Two-element tuple of the center of the top left object.
     - radius         = Radius of ROIs.
     - spacing        = Two-element tuple of the horizontal and vertical spacing between ROIs.
-    - nrows          = Number of chip rows.
-    - ncols          = Number of chip columns.
+    - nrows          = Number of rows in ROI layout.
+    - ncols          = Number of columns in ROI layout.
 - **Context:**
     - Used to define multiple regions of interest in the same image. Users can either specify a
       starting coordinate (`coord`), number of row and columns, and spacing to create a grid of ROIs,

@@ -214,8 +214,8 @@ def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
     coord          = Two-element tuple of the center of the top left object.
     radius         = Radius of ROIs.
     spacing        = Two-element tuple of the horizontal and vertical spacing between ROIs.
-    nrows          = Number of chip rows.
-    ncols          = Number of chip columns.
+    nrows          = Number of rows in ROI layout.
+    ncols          = Number of columns in ROI layout.
 
     Returns:
     mask           = Labeled mask ROIs
