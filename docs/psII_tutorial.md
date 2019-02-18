@@ -15,6 +15,10 @@ of plants with vertical architecture. You can read more about how we validated t
 analysis pipelines in the [PlantCV Paper](http://dx.doi.org/10.1016/j.molp.2015.06.005). 
 However, the pipelines to analyze PSII images are functional and a sample pipeline is outlined below.  
 
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/psII_tutorial.ipynb) Check out our interactive PSII tutorial! 
+
+Also see [here](scripts/psII_script.md) for the complete script. 
+
 ### Workflow
  
 1.  Optimize pipeline on individual image with debug set to 'print' (or 'plot' if using a Jupyter notebook).
@@ -234,19 +238,7 @@ along with the generated mask to calculate Fv/Fm.
     pseudocolored_img = pcv.pseudocolor(gray_img=fv_img, mask=kept_mask, cmap='jet')
 
     # Write shape and nir data to results file
-    result=open(args.result,"a")
-    result.write('\t'.join(map(str,shape_header)))
-    result.write("\n")
-    result.write('\t'.join(map(str,shape_data)))
-    result.write("\n")
-    for row in shape_img:  
-        result.write('\t'.join(map(str,row)))
-        result.write("\n")
-    result.write('\t'.join(map(str,fvfm_header)))
-    result.write("\n")
-    result.write('\t'.join(map(str,fvfm_data)))
-    result.write("\n")
-    result.close()
+    pcv.print_results(filename=args.result)
   
 if __name__ == '__main__':
     main()

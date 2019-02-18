@@ -6,6 +6,10 @@ A global variable "debug" allows the user to print out the resulting image. The 
 If set to 'print' then the function prints the image out, or if using a [Jupyter](jupyter.md) notebook you could set debug to 'plot' to have
 the images plot to the screen. Debug mode allows users to visualize and optimize each step on individual test images and small test sets before pipelines are deployed over whole datasets.
 
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/vis_tutorial.ipynb) Check out our interactive VIS tutorial! 
+
+Also see [here](scripts/vis_script.md) for the complete script. 
+
 **Workflow**
 
 1.  Optimize pipeline on individual image with debug set to 'print' (or 'plot' if using a Jupyter notebook).
@@ -56,7 +60,7 @@ def options():
     parser.add_argument("-i", "--image", help="Input image file.", required=True)
     parser.add_argument("-o", "--outdir", help="Output directory for image files.", required=False)
     parser.add_argument("-r","--result", help="result file.", required= False )
-    parser.add_argument("-w","--writeimg", help="write out images.", default=False)
+    parser.add_argument("-w","--writeimg", help="write out images.", default=False, action="store_true")
     parser.add_argument("-D", "--debug", help="can be set to 'print' or None (or 'plot' if in jupyter) prints intermediate images.", default=None)
     args = parser.parse_args()
     return args
@@ -322,22 +326,7 @@ The next step is to analyze the plant object for traits such as [horizontal heig
     pseudocolored_img = pcv.pseudocolor(gray_img=s, mask=kept_mask, cmap='jet')
 
     # Write shape and color data to results file
-    result=open(args.result,"a")
-    result.write('\t'.join(map(str,shape_header)))
-    result.write("\n")
-    result.write('\t'.join(map(str,shape_data)))
-    result.write("\n")
-    for row in shape_img:  
-        result.write('\t'.join(map(str,row)))
-        result.write("\n")
-    result.write('\t'.join(map(str,color_header)))
-    result.write("\n")
-    result.write('\t'.join(map(str,color_data)))
-    result.write("\n")
-    for row in color_img:
-        result.write('\t'.join(map(str,row)))
-        result.write("\n")
-    result.close()
+    pcv.print_results(filename=args.result)
   
 if __name__ == '__main__':
     main()

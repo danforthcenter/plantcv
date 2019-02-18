@@ -13,6 +13,7 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import apply_mask
 from plantcv.plantcv import color_palette
 from plantcv.plantcv import params
+from plantcv.plantcv import outputs
 
 
 def watershed_segmentation(rgb_img, mask, distance=10):
@@ -23,7 +24,6 @@ def watershed_segmentation(rgb_img, mask, distance=10):
     rgb_img             = image to perform watershed on needs to be 3D (i.e. np.shape = x,y,z not np.shape = x,y)
     mask                = binary image, single channel, object in white and background black
     distance            = min_distance of local maximum
-    filename            = if user wants to output analysis images change filenames from false
 
     Returns:
     watershed_header    = shape data table headers
@@ -33,7 +33,6 @@ def watershed_segmentation(rgb_img, mask, distance=10):
     :param rgb_img: numpy.ndarray
     :param mask: numpy.ndarray
     :param distance: int
-    :param filename: str
     :return watershed_header: list
     :return watershed_data: list
     :return analysis_images: list
@@ -63,11 +62,8 @@ def watershed_segmentation(rgb_img, mask, distance=10):
 
     estimated_object_count = len(np.unique(markers)) - 1
 
-    analysis_images = []
-
-    out_file = os.path.join(params.debug_outdir, str(params.device) + '_watershed.jpg')
-    # print_image(joined, out_file)
-    analysis_images.append(joined)
+    analysis_image = []
+    analysis_image.append(joined)
 
     watershed_header = (
         'HEADER_WATERSHED',
@@ -86,4 +82,12 @@ def watershed_segmentation(rgb_img, mask, distance=10):
         plot_image(dist_transform, cmap='gray')
         plot_image(joined)
 
-    return watershed_header, watershed_data, analysis_images
+    # Store into global measurements
+    if not 'watershed' in outputs.measurements:
+        outputs.measurements['watershed'] = {}
+    outputs.measurements['watershed']['estimated_object_count'] = estimated_object_count
+
+    # Store images
+    outputs.images.append(analysis_image)
+
+    return watershed_header, watershed_data, analysis_image

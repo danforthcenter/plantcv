@@ -6,6 +6,7 @@ import numpy as np
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 from plantcv.plantcv import params
+from plantcv.plantcv import outputs
 from plantcv.plantcv import fatal_error
 
 
@@ -157,6 +158,14 @@ def y_axis_pseudolandmarks(obj, mask, img):
             plot_image(img2)
         elif params.debug == 'print':
             print_image(img2, os.path.join(params.debug_outdir, (str(params.device) + '_y_axis_pseudolandmarks.png')))
+
+        # Store into global measurements
+        if not 'landmark_reference' in outputs.measurements:
+            outputs.measurements['landmark_reference'] = {}
+        outputs.measurements['landmark_reference']['left_lmk'] = left
+        outputs.measurements['landmark_reference']['right_lmk'] = right
+        outputs.measurements['landmark_reference']['center_h_lmk'] = center_h
+
         return left, right, center_h
     
     if extent < 21:
@@ -200,4 +209,12 @@ def y_axis_pseudolandmarks(obj, mask, img):
             plot_image(img2)
         elif params.debug == 'print':
             print_image(img2, os.path.join(params.debug_outdir, (str(params.device) + '_y_axis_pseudolandmarks.png')))
+
+        # Store into global measurements
+        if not 'landmark_reference' in outputs.measurements:
+            outputs.measurements['landmark_reference'] = {}
+        outputs.measurements['landmark_reference']['left_lmk'] = left
+        outputs.measurements['landmark_reference']['right_lmk'] = right
+        outputs.measurements['landmark_reference']['center_h_lmk'] = center_h
+
         return left, right, center_h

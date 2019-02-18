@@ -12,6 +12,10 @@ with similar naming scheme), then functions are used to size and place the VIS i
 This allows two workflows to be done at once and also allows plant material to be identified in low-quality images.
 We do not recommend this approach if there is a lot of plant movement between capture of NIR and VIS images.
 
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/vis_nir_tutorial.ipynb) Check out our interactive VIS/NIR tutorial! 
+
+Also see [here](scripts/vis_nir_script.md) for the complete script. 
+
 **Workflow**
 
 1.  Optimize pipeline on individual image with debug set to 'print' (or 'plot' if using a Jupyter notebook).
@@ -259,12 +263,10 @@ The next step is to analyze the plant object for traits such as [horizontal heig
     pseudocolored_img = pcv.pseudocolor(gray_img=s, mask=kept_mask, cmap='jet')
 
     # Write shape and color data to results file
-    result=open(args.result,"a")
-    result.write('\t'.join(map(str,shape_header)))
-    result.write("\n")
-    result.write('\t'.join(map(str,shape_data)))
-    result.write("\n")
-    result.close()
+    pcv.print_results(filename=args.result)
+    
+    # Will will print out results again, so clear the outputs before running NIR analysis 
+    pcv.outputs.clear()
 ```
 
 **Figure 12.** Shape analysis output image.
@@ -345,21 +347,7 @@ Write co-result data out to a file.
 
 ```python
 
-    coresult=open(args.coresult,"a")
-    coresult.write('\t'.join(map(str,nhist_header)))
-    coresult.write("\n")
-    coresult.write('\t'.join(map(str,nhist_data)))
-    coresult.write("\n")
-    for row in nir_imgs:
-      coresult.write('\t'.join(map(str,row)))
-      coresult.write("\n")
-    coresult.write('\t'.join(map(str,nshape_header)))
-    coresult.write("\n")
-    coresult.write('\t'.join(map(str,nshape_data)))
-    coresult.write("\n")
-    coresult.write('\t'.join(map(str,nir_imgs[0])))
-    coresult.write("\n")
-    coresult.close()
+    pcv.print_result(filename=args.coresult)
     
 if __name__ == '__main__':
   main()

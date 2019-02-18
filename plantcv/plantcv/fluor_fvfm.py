@@ -8,6 +8,7 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
+from plantcv.plantcv import outputs
 
 
 def fluor_fvfm(fdark, fmin, fmax, mask, bins=256):
@@ -175,5 +176,18 @@ def fluor_fvfm(fdark, fmin, fmax, mask, bins=256):
         plot_image(fmax_mask, cmap='gray')
         plot_image(fv, cmap='gray')
         print(fvfm_hist_fig)
+
+    # Store into global measurements
+    if not 'fvfm' in outputs.measurements:
+        outputs.measurements['fvfm'] = {}
+    outputs.measurements['fvfm']['bin_number'] = bins
+    outputs.measurements['fvfm']['fvfm_bins'] = np.around(midpoints, decimals=len(str(bins))).tolist()
+    outputs.measurements['fvfm']['fvfm_hist'] = fvfm_hist.tolist()
+    outputs.measurements['fvfm']['fvfm_hist_peak'] = float(max_bin)
+    outputs.measurements['fvfm']['fvfm_median'] = float(np.around(fvfm_median, decimals=4))
+    outputs.measurements['fvfm']['fdark_passed_qc'] = qc_fdark
+
+    # Store images
+    outputs.images.append(analysis_images)
 
     return hist_header, hist_data, analysis_images

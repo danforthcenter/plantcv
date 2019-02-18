@@ -46,17 +46,14 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Analyze Fv/Fm    
- fvfm_header, fvfm_data, fvfm_images = pcv.fluor_fvfm(fdark, fmin, fmax, kept_mask, 256)
+fvfm_header, fvfm_data, fvfm_images = pcv.fluor_fvfm(fdark, fmin, fmax, kept_mask, 256)
 
 # Store the two images
 fv_img=fvfm_images[0]
 fvfm_hist=fvfm_images[1]
 
-# Plot the histogram
-fvfm_hist
-
- # Pseudocolor the Fv/Fm image
- pseudo_img = pcv.pseudocolor(gray_img=fv_img, mask=kept_mask)
+# Pseudocolor the Fv/Fm image
+pseudo_img = pcv.pseudocolor(gray_img=fv_img, mask=kept_mask)
 ```
 
 **Histogram of Fv/Fm values**

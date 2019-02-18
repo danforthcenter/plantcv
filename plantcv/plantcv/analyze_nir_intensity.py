@@ -8,6 +8,7 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv.threshold import binary as binary_threshold
 from plantcv.plantcv import params
+from plantcv.plantcv import outputs
 
 
 def analyze_nir_intensity(gray_img, mask, bins, histplot=False):
@@ -97,7 +98,7 @@ def analyze_nir_intensity(gray_img, mask, bins, histplot=False):
         if params.debug == "plot":
             plot_image(masked1)
 
-    nir_hist = []
+    analysis_images = []
 
     if histplot is True:
         hist_x = hist_percent
@@ -109,19 +110,22 @@ def analyze_nir_intensity(gray_img, mask, bins, histplot=False):
                                        y='Proportion of pixels (%)'))
                     + geom_line(color='red')
                     + scale_x_continuous(breaks=list(range(0, bins, 25))))
-        # plot hist percent
-        #         plt.plot(hist_percent, color='green', label='Signal Intensity')
-        #         plt.xlim([0, (bins - 1)])
-        #         plt.xlabel(('Grayscale pixel intensity (0-' + str(bins) + ")"))
-        #         plt.ylabel('Proportion of pixels (%)')
 
-        #         fig_name_hist = (os.path.splitext(filename)[0] + '_nir_hist.svg')
-        #         plt.savefig(fig_name_hist)
-        nir_hist.append(fig_hist)
+        analysis_images.append(fig_hist)
         if params.debug is not None:
             if params.debug == "print":
                 fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + '_nir_hist.png'))
             if params.debug == "plot":
                 print(fig_hist)
 
-    return hist_header, hist_data, nir_hist
+    # Store into global measurements
+    if not 'nir_histogram' in outputs.measurements:
+        outputs.measurements['nir_histogram'] = {}
+    outputs.measurements['nir_histogram']['bin-number'] = bins
+    outputs.measurements['nir_histogram']['bin-values'] = hist_bins2
+    outputs.measurements['nir_histogram']['nir'] = hist_nir1
+
+    # Store images
+    outputs.images.append(analysis_images)
+
+    return hist_header, hist_data, analysis_images

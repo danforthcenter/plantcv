@@ -6,6 +6,7 @@ import numpy as np
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
+from plantcv.plantcv import outputs
 
 
 def analyze_bound_vertical(img, obj, mask, line_position):
@@ -159,5 +160,19 @@ def analyze_bound_vertical(img, obj, mask, line_position):
         if params.debug == 'plot':
             plot_image(wback)
             plot_image(ori_img)
+
+    # Store into global measurements
+    if not 'bound_vertical' in outputs.measurements:
+        outputs.measurements['bound_vertical'] = {}
+    outputs.measurements['bound_vertical']['vertical_line_position'] = line_position
+    outputs.measurements['bound_vertical']['width_left_bound'] = width_left_bound
+    outputs.measurements['bound_vertical']['width_right_bound'] = width_right_bound
+    outputs.measurements['bound_vertical']['left_bound_area'] = left_bound_area
+    outputs.measurements['bound_vertical']['percent_left_bound_area'] = percent_bound_area_left
+    outputs.measurements['bound_vertical']['right_bound_area'] = right_bound_area
+    outputs.measurements['bound_vertical']['percent_right_bound_area'] = percent_bound_area_right
+
+    # Store images
+    outputs.images.append(analysis_images)
 
     return bound_header, bound_data, analysis_images
