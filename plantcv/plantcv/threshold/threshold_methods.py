@@ -4,6 +4,7 @@ import os
 import cv2
 import math
 import numpy as np
+from matplotlib import pyplot as plt
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
@@ -242,9 +243,6 @@ def triangle(gray_img, max_value, object_type="light", xstep=1):
 
     # Additional figures created by this method, if debug is on
     if params.debug is not None:
-        import matplotlib
-        matplotlib.use('Agg', warn=False)
-        from matplotlib import pyplot as plt
         if params.debug == 'print':
             plt.plot(hist)
             plt.title('Threshold value = {t}'.format(t=autothreshval))
@@ -501,9 +499,6 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
 # Internal plotting function for the triangle autothreshold method
 def _plot(x, mph, mpd, threshold, edge, valley, ax, ind):
     """Plot results of the detect_peaks function, see its help."""
-    import matplotlib
-    matplotlib.use('Agg', warn=False)
-    from matplotlib import pyplot as plt
     if ax is None:
         _, ax = plt.subplots(1, 1, figsize=(8, 4))
 

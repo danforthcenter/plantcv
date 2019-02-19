@@ -2,6 +2,7 @@
 
 import cv2
 import numpy as np
+from matplotlib import pyplot as plt
 
 
 def plot_hist(img, name=False):
@@ -16,10 +17,6 @@ def plot_hist(img, name=False):
     :return bins: list
     :return hist: list
     """
-
-    import matplotlib
-    matplotlib.use('Agg', warn=False)
-    from matplotlib import pyplot as plt
 
     # get histogram
     if img.dtype == 'uint8':

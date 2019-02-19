@@ -2,6 +2,7 @@
 import sys
 import cv2
 import numpy
+import matplotlib
 from plantcv.plantcv import fatal_error
 
 
@@ -16,8 +17,6 @@ def print_image(img, filename):
     :param filename: string
     :return:
     """
-    import matplotlib
-    from plotnine import ggplot
 
     # Print numpy array type images
     image_type = type(img)
@@ -26,9 +25,6 @@ def print_image(img, filename):
 
     # Print matplotlib type images
     elif image_type == matplotlib.figure.Figure:
-        matplotlib.use('Agg', warn=False)
-        from matplotlib import pyplot as plt
-        # fig = plt.figure()
         img.savefig(filename)
 
     # Print ggplot type images

@@ -11,7 +11,7 @@ import plantcv.learn
 # This will let us test debug = "plot"
 import matplotlib
 
-matplotlib.use('Agg', warn=False)
+matplotlib.use('Template', warn=False)
 
 TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 TEST_TMPDIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".cache")
@@ -1462,13 +1462,13 @@ def test_plantcv_pseudocolor():
     pcv.print_image(pimg, filename)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.pseudocolor(gray_img=img, mask=mask)
+    _ = pcv.pseudocolor(gray_img=img, mask=mask, background="image")
     _ = pcv.pseudocolor(gray_img=img, mask=None)
-    _ = pcv.pseudocolor(gray_img=img, mask=mask, obj=obj_contour, axes=False, path=cache_dir)
+    _ = pcv.pseudocolor(gray_img=img, mask=mask, background="black", obj=obj_contour, axes=False, path=cache_dir)
     _ = pcv.pseudocolor(gray_img=img, mask=None, axes=False, path=cache_dir)
     # Test with debug = None
     pcv.params.debug = None
-    pseudo_img = pcv.pseudocolor(gray_img=img, mask=mask)
+    pseudo_img = pcv.pseudocolor(gray_img=img, mask=mask, background="white")
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(pseudo_img), TEST_BINARY_DIM)):
         assert 1
@@ -1483,6 +1483,16 @@ def test_plantcv_pseudocolor_bad_input():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     with pytest.raises(RuntimeError):
         _ = pcv.pseudocolor(gray_img=img)
+
+
+def test_plantcv_pseudocolor_bad_background():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_pseudocolor_bad_background")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    with pytest.raises(RuntimeError):
+        _ = pcv.pseudocolor(gray_img=img, mask=mask, background="pink")
 
 
 def test_plantcv_readimage_native():
@@ -2565,6 +2575,24 @@ def test_plantcv_roi_ellipse_out_of_frame():
     with pytest.raises(RuntimeError):
         _, _ = pcv.roi.ellipse(x=50, y=225, r1=75, r2=50, angle=0, img=rgb_img)
 
+def test_plantcv_roi_multi():
+    # Read in test RGB image
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    _ = pcv.roi.multi(rgb_img, coord=[(25, 120), (100, 100)], radius=20)
+    # Test with debug = None
+    pcv.params.debug = None
+    rois1, roi_hierarchy1 = pcv.roi.multi(rgb_img, coord=(25, 120), radius=20, spacing=(10, 10), nrows=3, ncols=6)
+    # Assert the contours has 18 ROIs 
+    assert len(rois1)==18
+
+def test_plantcv_roi_multi_bad_input():
+    # Read in test RGB image
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # The user must input a list of custom coordinates OR inputs to make a grid. Not both
+    with pytest.raises(RuntimeError):
+        _, _ = pcv.roi.multi(rgb_img, coord=[(25, 120), (100, 100)], radius=20, spacing=(10, 10), nrows=3, ncols=6)
 
 # ##############################
 # Tests for the transform subpackage
