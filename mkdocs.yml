@@ -29,6 +29,13 @@ pages:
     - 'Pipeline Parallelization': pipeline_parallel.md
     - 'Exporting Data': db-exporter.md
     - 'Color Correction Pipeline': transform_color_correction_tutorial.md
+    - 'Tutorial Scripts':
+        - 'VIS Tutorial Script': scripts/vis_script.md
+        - 'NIR Tutorial Script': scripts/nir_script.md
+        - 'PSII Tutorial Script': scripts/psII_script.md
+        - 'VIS/NIR Tutorial Script': scripts/vis_nir_script.md
+        - 'Multi-Plant Tutorial Script': scripts/multi-plant_script.md
+        - 'Machine Learning Tutorial Script': scripts/machine_learning_script.md
   - 'Package Plantcv':
     - 'Analyze color': analyze_color.md
     - 'Analyze NIR': analyze_NIR_intensity.md

@@ -80,8 +80,8 @@ def main():
     pcv.params.debug=args.debug #set debug mode
     pcv.params.debug_outdir=args.outdir #set output directory
     
-    # Read image
-    img, path, filename = pcv.readimage(args.image)
+    # Read image (readimage mode defaults to native but if image is RGBA then specify mode='rgb')
+    img, path, filename = pcv.readimage(args.image, mode='rgb')
 ```
 
 **Figure 1.** Original image.
