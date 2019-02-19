@@ -12,7 +12,7 @@ completely within the image.
 
 - **Parameters:**
     - img = RGB or grayscale image data to display kept objects on
-    - roi_type = 'cutto' or 'partial' (include objects that are partially inside or overlapping with ROI)
+    - roi_type = 'cutto', 'partial' (for partially inside), or 'largest' (keep only the largest contour)
     - roi_contour = contour of roi, output from one of the pcv.roi subpackage functions
     - roi_hierarchy = contour of roi, output from one of the pcv.roi subpackage functions
     - object_contour = contours of objects, output from "find_objects" function 
@@ -20,10 +20,13 @@ completely within the image.
     
 - **Context:**
     - Used to find objects within a region of interest and decide which ones to keep.
+- **Warning:** 
+    - Using `roi_type='largest` will only return the largest outer contour. All child contours are left behind. 
 - **Example use:**
     - [Use In VIS Tutorial](vis_tutorial.md)
     - [Use In NIR Tutorial](nir_tutorial.md)
     - [Use In PSII Tutorial](psII_tutorial.md) 
+
 
 ```python
 
