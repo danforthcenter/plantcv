@@ -10,7 +10,7 @@ from plantcv.plantcv import fatal_error
 
 
 def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0, max_value=255, obj=None, dpi=None,
-                axes=True, path="."):
+                axes=True, colorbar=True, path="."):
     """Pseudocolor any grayscale image to custom colormap
 
     Inputs:
@@ -23,7 +23,8 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
     max_value   = maximum value for range of interest
     obj         = if provided, the pseudocolored image gets cropped down to the region of interest
     dpi         = dots per inch
-    axes        = if False then x- and y-axis won't be displayed
+    axes        = if False then x- and y-axis won't be displayed, nor will the title
+    colorbar    = if False then colorbar won't be displayed
     path        = path for location for saving the image
 
     Returns:
@@ -110,17 +111,20 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
         # Overlay the masked grayscale image with the user input colormap
         plt.imshow(masked_img, cmap=cmap)
 
-        # Include image title
-        plt.title('Pseudocolored image')  # + os.path.splitext(filename)[0])
+        if colorbar:
+            # Include the colorbar
+            plt.colorbar(fraction=0.033, pad=0.04)
 
-        # Include the colorbar
-        plt.colorbar(fraction=0.033, pad=0.04)
 
-        # Remove axes
-        if axes is False:
+        if axes:
+            # Include image title
+            plt.title('Pseudocolored image')  # + os.path.splitext(filename)[0])
+        else:
+            # Remove axes
             plt.xticks([])
             plt.yticks([])
 
+        # Store the current figure
         pseudo_img = plt.gcf()
 
         # Print or plot if debug is turned on
@@ -135,11 +139,15 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
         # Include image title
         plt.title('Pseudocolored image')  # + os.path.splitext(filename)[0])
 
-        # Include the colorbar
-        plt.colorbar(fraction=0.033, pad=0.04)
+        if colorbar:
+            # Include the colorbar
+            plt.colorbar(fraction=0.033, pad=0.04)
 
-        # Remove axes
-        if axes is False:
+        if axes:
+            # Include image title
+            plt.title('Pseudocolored image')  # + os.path.splitext(filename)[0])
+        else:
+            # Remove axes
             plt.xticks([])
             plt.yticks([])
 

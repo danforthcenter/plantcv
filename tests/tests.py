@@ -1377,11 +1377,10 @@ def test_plantcv_output_mask():
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.output_mask(img=img, mask=mask, filename='test.png', outdir=cache_dir, mask_only=False)
-    _ = pcv.output_mask(img=img_color, mask=mask, filename='test.png', mask_only=False)
+    _ = pcv.output_mask(img=img_color, mask=mask, filename='test.png', outdir=cache_dir, mask_only=False)
     # Test with debug = None
     pcv.params.debug = None
-    imgpath, maskpath, analysis_images = pcv.output_mask(img=img, mask=mask, filename='test.png', outdir=cache_dir,
-                                                         mask_only=False)
+    imgpath, maskpath, analysis_images = pcv.output_mask(img=img, mask=mask, filename='test.png', mask_only=False)
     assert all([os.path.exists(imgpath) is True, os.path.exists(maskpath) is True])
 
 
@@ -1464,8 +1463,9 @@ def test_plantcv_pseudocolor():
     pcv.params.debug = "plot"
     _ = pcv.pseudocolor(gray_img=img, mask=mask, background="image")
     _ = pcv.pseudocolor(gray_img=img, mask=None)
-    _ = pcv.pseudocolor(gray_img=img, mask=mask, background="black", obj=obj_contour, axes=False, path=cache_dir)
-    _ = pcv.pseudocolor(gray_img=img, mask=None, axes=False, path=cache_dir)
+    _ = pcv.pseudocolor(gray_img=img, mask=mask, background="black", obj=obj_contour, axes=False, colorbar=False,
+                        path=cache_dir)
+    _ = pcv.pseudocolor(gray_img=img, mask=None, axes=False, colorbar=False, path=cache_dir)
     # Test with debug = None
     pcv.params.debug = None
     pseudo_img = pcv.pseudocolor(gray_img=img, mask=mask, background="white")
