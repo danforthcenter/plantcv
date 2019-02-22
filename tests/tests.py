@@ -1465,6 +1465,7 @@ def test_plantcv_pseudocolor():
     _ = pcv.pseudocolor(gray_img=img, mask=None)
     _ = pcv.pseudocolor(gray_img=img, mask=mask, background="black", obj=obj_contour, axes=False, colorbar=False,
                         path=cache_dir)
+    _ = pcv.pseudocolor(gray_img=img, mask=mask, background="image", obj=obj_contour)
     _ = pcv.pseudocolor(gray_img=img, mask=None, axes=False, colorbar=False, path=cache_dir)
     # Test with debug = None
     pcv.params.debug = None

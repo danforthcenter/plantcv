@@ -208,7 +208,7 @@ def _draw_roi(img, roi_contour):
 
 
 def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
-    """Create a labeled mask for color card chips
+    """Create multiple ROIs on a single image
     Inputs
     img            = Input image data.
     coord          = Two-element tuple of the center of the top left object.

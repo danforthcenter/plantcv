@@ -72,9 +72,14 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
             offsetx = int(w / 5)
             offsety = int(h / 5)
 
-            # Crop img including buffer
-            gray_img = cv2.copyMakeBorder(crop_img, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT,
-                                          value=(0, 0, 0))
+            # copyMakeBorder will make a black or white frame around the image
+            if background == "image":
+                # gray_img = gray_img[y:y + h + (2*offsety), x:x + w + (2*offsetx)]
+                gray_img = gray_img[y - offsety:y + h + offsety, x - offsetx:x + w + offsetx]
+            else:
+                # Crop img including buffer
+                gray_img = cv2.copyMakeBorder(crop_img, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT,
+                                              value=(0, 0, 0))
 
             # Crop the mask to the same size
             crop_mask = mask[y:y + h, x:x + w]
@@ -114,7 +119,6 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
         if colorbar:
             # Include the colorbar
             plt.colorbar(fraction=0.033, pad=0.04)
-
 
         if axes:
             # Include image title

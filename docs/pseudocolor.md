@@ -10,7 +10,7 @@ pseudocolored image. Additionally, optional maximum and minimum values can be sp
 - **Parameters:**
     - gray_img   - Grayscale image data
     - mask       - Binary mask made from selected contours
-    - background - background color/type. Options are "image" (gray_img), "white", or "black". A mask must be supplied.
+    - background - Background color/type. Options are "image" (gray_img), "white", or "black". A mask must be supplied.
     - cmap       - Custom colormap, see [here](https://matplotlib.org/tutorials/colors/colormaps.html) for tips on how to choose a colormap in Matplotlib.
     - min_value  - Minimum value (optional) for range of interest.
     - max_value  - Maximum value (optional) for range of interest.
@@ -58,7 +58,7 @@ pseudo_crop_no_axes = pcv.pseudocolor(gray_img=img, mask=mask, background=="whit
 # Use a black background instead
 pseudo_img_black_bkgd = pcv.pseudocolor(gray_img=img, mask=mask, background="black", cmap='viridis')
 
-simple_pseudo_img = pcv.psuedocolor(gray_img=img, mask=mask, background="image", axes=False, colorbar=False, cmap='viridis')
+simple_pseudo_img = pcv.pseudocolor(gray_img=img, mask=mask, background="image", axes=False, colorbar=False, cmap='viridis')
 
 ```
 
