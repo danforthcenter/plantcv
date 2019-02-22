@@ -12,8 +12,8 @@ pseudocolored image. Additionally, optional maximum and minimum values can be sp
     - mask       - Binary mask made from selected contours
     - background - Background color/type. Options are "image" (gray_img), "white", or "black". A mask must be supplied.
     - cmap       - Custom colormap, see [here](https://matplotlib.org/tutorials/colors/colormaps.html) for tips on how to choose a colormap in Matplotlib.
-    - min_value  - Minimum value (optional) for range of interest.
-    - max_value  - Maximum value (optional) for range of interest.
+    - min_value  - Minimum value (optional) for range of the colorbar.
+    - max_value  - Maximum value (optional) for range of the colorbar.
     - obj        - Single or grouped contour object (optional), if provided the pseudocolored image gets cropped down to the region of interest.
     - dpi        - Dots per inch for image if printed out (optional, if dpi=None then the default is set to 100 dpi).
     - axes       - If False then the title, x-axis, and y-axis won't be displayed (default axes=True).

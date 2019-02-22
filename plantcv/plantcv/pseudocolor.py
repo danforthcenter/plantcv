@@ -50,12 +50,12 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
     # Check if the image is grayscale
     if len(np.shape(gray_img)) != 2:
         fatal_error("Image must be grayscale.")
-    if max != 255:
-        # Any pixels above the max_value set to the max value
-        gray_img[gray_img > max_value] = max_value
-    if min_value != 0:
-        # Any pixels below min_value set to the min_value value
-        gray_img[gray_img < min_value] = min_value
+    # if max != 255:
+    #     # Any pixels above the max_value set to the max value
+    #     gray_img[gray_img > max_value] = max_value
+    # if min_value != 0:
+    #     # Any pixels below min_value set to the min_value value
+    #     gray_img[gray_img < min_value] = min_value
 
     # Apply the mask if given
     if mask is not None:
@@ -115,7 +115,7 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
         # Plot the background first
         pseudo_img1 = plt.imshow(bkg_img, cmap=bkg_cmap)
         # Overlay the masked grayscale image with the user input colormap
-        plt.imshow(masked_img, cmap=cmap)
+        plt.imshow(masked_img, cmap=cmap, vmin=min_value, vmax=max_value)
 
         if colorbar:
             # Include the colorbar
@@ -147,7 +147,7 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
 
     else:
         # Pseudocolor the image
-        pseudo_img1 = plt.imshow(gray_img, cmap=cmap)
+        pseudo_img1 = plt.imshow(gray_img, cmap=cmap, vmin=min_value, vmax=max_value)
 
         # Include image title
         plt.title('Pseudocolored image')  # + os.path.splitext(filename)[0])
