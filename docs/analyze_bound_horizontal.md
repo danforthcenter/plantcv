@@ -12,7 +12,7 @@ best if the pot size/position of the plant remains relatively constant.
     - img - RGB or grayscale image data for plotting
     - obj - single or grouped contour object
     - mask - binary mask of selected contours
-    - line_position = position of boundary line (a value of 0 would draw the line through the bottom of the image)
+    - line_position = position of boundary line (a value of 0 would draw the line through the top of the image)
 - **Context:**
     - Used to define a boundary line for the image, to find the height above and below as well as area above and below a boundary line.
     - Could also be used as a method of flagging images about to go out-of-bounds (this QC tool will be added later)
@@ -36,19 +36,19 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Set Boundary Line    
-boundary_header, boundary_data, boundary_images = pcv.analyze_bound_horizontal(img, obj, mask, 950)
+boundary_header, boundary_data, boundary_images = pcv.analyze_bound_horizontal(img, obj, mask, 300)
 ```
 
-**Boundary tool output image (y = 950)**
+**Boundary tool output image (y = 300)**
 
 ![Screenshot](img/documentation_images/analyze_bound_horizontal/boundary_950.jpg)
 
-Boundary line set at 950, purple line is boundary line, blue line is extent y above boundary line, 
+Boundary line set at 300, purple line is boundary line, blue line is extent y above boundary line, 
 green is area above boundary line.
 
-**Boundary tool output image (y = 330)**
+**Boundary tool output image (y = 520)**
 
 ![Screenshot](img/documentation_images/analyze_bound_horizontal/boundary_330.jpg)
 
-Boundary line set at 330, purple is boundary line, blue line is extent y above boundary line, 
+Boundary line set at 520, purple is boundary line, blue line is extent y above boundary line, 
 green line is extent y below boundary line, green is area above boundary line and red is area below boundary line.

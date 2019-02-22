@@ -155,14 +155,14 @@ def test_plantcv_analyze_bound_horizontal():
     pcv.params.debug = "print"
     _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=300)
     _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=100)
-    _ = pcv.analyze_bound_horizontal(img=img_above_bound_only, obj=object_contours, mask=mask, line_position=300)
+    _ = pcv.analyze_bound_horizontal(img=img_above_bound_only, obj=object_contours, mask=mask, line_position=1756)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=300)
+    _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=1756)
     # Test with debug = None
     pcv.params.debug = None
     boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_horizontal(img=img, obj=object_contours,
-                                                                                 mask=mask, line_position=300)
+                                                                                 mask=mask, line_position=1756)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     pcv.outputs.clear()
     assert boundary_data[3] == 62555
@@ -177,7 +177,7 @@ def test_plantcv_analyze_bound_horizontal_grayscale_image():
     # Test with a grayscale reference image and debug="plot"
     pcv.params.debug = "plot"
     boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_horizontal(img=img, obj=object_contours,
-                                                                                 mask=mask, line_position=300)
+                                                                                 mask=mask, line_position=1756)
     assert boundary_data[3] == 62555
 
 
@@ -188,7 +188,9 @@ def test_plantcv_analyze_bound_horizontal_neg_y():
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
     object_contours = contours_npz['arr_0']
     # Test with debug=None, line position that will trigger -y
-    pcv.params.debug = None
+    pcv.params.debug = "plot"
+    _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=(-1000))
+    _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=(0))
     boundary_header, boundary_data, boundary_img1 = pcv.analyze_bound_horizontal(img=img, obj=object_contours,
                                                                                  mask=mask, line_position=2056)
     assert boundary_data[3] == 63632
