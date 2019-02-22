@@ -1469,6 +1469,7 @@ def test_plantcv_pseudocolor():
     _ = pcv.pseudocolor(gray_img=img, mask=None, axes=False, colorbar=False, path=cache_dir)
     # Test with debug = None
     pcv.params.debug = None
+    _ = pcv.pseudocolor(gray_img=img, mask=None)
     pseudo_img = pcv.pseudocolor(gray_img=img, mask=mask, background="white")
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(pseudo_img), TEST_BINARY_DIM)):

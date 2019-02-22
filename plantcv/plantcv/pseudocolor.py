@@ -4,6 +4,7 @@ import os
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
+from matplotlib import *
 from plantcv.plantcv import params
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
@@ -134,8 +135,16 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
         # Print or plot if debug is turned on
         if params.debug == 'print':
             plt.savefig(os.path.join(path, str(params.device) + '_pseudocolored.png'), dpi=dpi)
+            plt.close()
         elif params.debug == 'plot':
             plot_image(pseudo_img1)
+            # Use non-blocking mode in case the function is run more than once
+            plt.show(block=False)
+        elif params.debug == None:
+            plt.clf()
+            plt.close()
+
+
     else:
         # Pseudocolor the image
         pseudo_img1 = plt.imshow(gray_img, cmap=cmap)
@@ -160,7 +169,14 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
         # Print or plot if debug is turned on
         if params.debug == 'print':
             plt.savefig(os.path.join(path, str(params.device) + '_pseudocolored.png'), dpi=dpi)
+            pseudo_img.clear()
+            plt.close()
         elif params.debug == 'plot':
             plot_image(pseudo_img1)
+            # Use non-blocking mode in case the function is run more than once
+            plt.show(block=False)
+        elif params.debug == None:
+            plt.clf()
+            plt.close()
 
     return pseudo_img
