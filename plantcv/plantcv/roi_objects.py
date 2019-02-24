@@ -1,4 +1,4 @@
-# Find Objects Partially Inside Region of Interest or Cut Objects to Region of Interest
+# not working on eroded object
 
 import cv2
 import numpy as np
@@ -14,11 +14,11 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
 
     Inputs:
     img            = RGB or grayscale image data for plotting
-    roi_type       = 'cutto' or 'partial' (for partially inside)
+    roi_type       = 'cutto', 'partial' (for partially inside), or 'largest' (keep only the largest contour)
     roi_contour    = contour of roi, output from "View and Adjust ROI" function
     roi_hierarchy  = contour of roi, output from "View and Adjust ROI" function
-    object_contour = contours of objects, output from "Identifying Objects" function
-    obj_hierarchy  = hierarchy of objects, output from "Identifying Objects" function
+    object_contour = contours of objects, output from "find_objects" function
+    obj_hierarchy  = hierarchy of objects, output from "find_objects" function
 
     Returns:
     kept_cnt       = kept contours
@@ -61,6 +61,7 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
             stack = np.vstack(cnt)
 
             keep = False
+            # Test if the contours are within the ROI
             for i in range(0, length):
                 pptest = cv2.pointPolygonTest(roi_contour[0], (stack[i][0], stack[i][1]), False)
                 if int(pptest) != -1:
@@ -82,6 +83,71 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
         cv2.drawContours(ori_img, kept_cnt, -1, (0, 255, 0), -1, lineType=8, hierarchy=hierarchy)
         cv2.drawContours(ori_img, roi_contour, -1, (255, 0, 0), 5, lineType=8, hierarchy=roi_hierarchy)
 
+    # Find the largest contour if roi_type is set to 'largest'
+    elif roi_type == 'largest':
+        # Print warning statement about this feature
+        print(
+            "Warning: roi_type='largest' will only return the largest extreme outer contour. All child contours are left behind.")
+
+        # Filter contours outside of the region of interest
+        for c, cnt in enumerate(object_contour):
+            length = (len(cnt) - 1)
+            stack = np.vstack(cnt)
+            keep = False
+            # Test if the contours are within the ROI
+            for i in range(0, length):
+                pptest = cv2.pointPolygonTest(roi_contour[0], (stack[i][0], stack[i][1]), False)
+                if int(pptest) != -1:
+                    keep = True
+            if keep:
+                # Color the "gap contours" white
+                if obj_hierarchy[0][c][3] > -1:
+                    cv2.drawContours(w_back, object_contour, c, (255, 255, 255), -1, lineType=8,
+                                     hierarchy=obj_hierarchy)
+                # Color the plant contour parts black
+                else:
+                    cv2.drawContours(w_back, object_contour, c, (0, 0, 0), -1, lineType=8, hierarchy=obj_hierarchy)
+            # If the contour isn't overlapping with the ROI, color it white
+            else:
+                cv2.drawContours(w_back, object_contour, c, (255, 255, 255), -1, lineType=8, hierarchy=obj_hierarchy)
+
+        # Draw the contours kept after filtering by ROI
+        kept = cv2.cvtColor(w_back, cv2.COLOR_RGB2GRAY)
+        kept_obj = cv2.bitwise_not(kept)
+        kept_cnt, hierarchy = cv2.findContours(kept_obj, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
+
+        # Find the index from the largest contour in the list of contours
+        largest_area = 0
+        for c, cnt in enumerate(kept_cnt):
+            area = cv2.contourArea(cnt)
+            if (area > largest_area):
+                largest_area = area
+                index = c
+
+        # Store the largest contour into a list of kept contours
+        largest_cnt = [kept_cnt[index]]
+        # Store the hierarchy of the largest contour into a list
+        largest_hierarchy = [hierarchy[0][index].tolist()]
+
+        # Make the kept hierarchies into arrays so that cv2 can use it
+        largest_hierarchy = np.array([largest_hierarchy])
+
+        # Make a new background for drawing on
+        w_back = background + 255
+
+        # Draw the largest contour
+        cv2.drawContours(w_back, largest_cnt, -1, (0, 0, 0), -1, lineType=8, hierarchy=largest_hierarchy)
+        kept = cv2.cvtColor(w_back, cv2.COLOR_RGB2GRAY)
+        kept_obj = cv2.bitwise_not(kept)
+        mask = np.copy(kept_obj)
+        # Calculate contour area
+        obj_area = cv2.countNonZero(kept_obj)
+
+        # Draw the largest contour on the original image
+        cv2.drawContours(ori_img, largest_cnt, -1, (0, 255, 0), -1, lineType=8, hierarchy=largest_hierarchy)
+        # Draw the ROI contour on the original image
+        cv2.drawContours(ori_img, roi_contour, -1, (255, 0, 0), 5, lineType=8, hierarchy=roi_hierarchy)
+
     # Allows user to cut objects to the ROI (all objects completely outside ROI will not be kept)
     elif roi_type == 'cutto':
         cv2.drawContours(background1, object_contour, -1, (255, 255, 255), -1, lineType=8, hierarchy=obj_hierarchy)
@@ -97,7 +163,7 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
         cv2.drawContours(ori_img, roi_contour, -1, (255, 0, 0), 5, lineType=8, hierarchy=roi_hierarchy)
 
     else:
-        fatal_error('ROI Type' + str(roi_type) + ' is not "cutto" or "partial"!')
+        fatal_error('ROI Type ' + str(roi_type) + ' is not "cutto", "largest", or "partial"!')
 
     if params.debug == 'print':
         print_image(w_back, os.path.join(params.debug, str(params.device) + '_roi_objects.png'))

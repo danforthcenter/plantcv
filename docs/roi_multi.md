@@ -96,5 +96,5 @@ Many intermediate outputs later...
 
 **Image with shape analysis characteristics on each plant** 
 
-![Screenshot](img/documentation_images/multi/multi_plant_shapes.jpg)
+![Screenshot](img/documentation_images/multi/multi_plants_shape.jpg)
 

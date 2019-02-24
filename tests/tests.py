@@ -1876,7 +1876,7 @@ def test_plantcv_roi_objects():
     object_hierarchy = contours_npz['arr_1']
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.roi_objects(img=img, roi_type="partial", roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
+    _ = pcv.roi_objects(img=img, roi_type="largest", roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
                         object_contour=object_contours, obj_hierarchy=object_hierarchy)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
