@@ -5,7 +5,7 @@ import cv2
 import numpy as np
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
-from plantcv.plantcv import plot_colorbar
+#from plantcv.plantcv import plot_colorbar
 from plantcv.plantcv.threshold import binary as binary_threshold
 from plantcv.plantcv import apply_mask
 from plantcv.plantcv import params
@@ -101,8 +101,8 @@ def analyze_thermal_values(rgb_img, array, mask, name,minrange,maxrange, histplo
     if filename:
         path = os.path.dirname(filename)
         fig_name = 'therm_pseudocolor_colorbar.svg'
-        if not os.path.isfile(path + '/' + fig_name):
-            plot_colorbar(path, fig_name, 10)
+        #if not os.path.isfile(path + '/' + fig_name):
+            #plot_colorbar(path, fig_name, 10)
 
         fig_name_pseudo = (str(filename[0:-4]) + '_therm_pseudo_col.jpg')
         print_image(cplant_back, fig_name_pseudo)
