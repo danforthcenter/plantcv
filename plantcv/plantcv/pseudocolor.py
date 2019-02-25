@@ -142,6 +142,8 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
             plot_image(pseudo_img1)
             # Use non-blocking mode in case the function is run more than once
             plt.show(block=False)
+        elif params.debug == None:
+            plt.show(block=False)
 
     else:
         # Pseudocolor the image
@@ -173,6 +175,7 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
             plot_image(pseudo_img1)
             # Use non-blocking mode in case the function is run more than once
             plt.show(block=False)
-
+        elif params.debug == None:
+            plt.show(block=False)
 
     return pseudo_img
