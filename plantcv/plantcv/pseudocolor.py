@@ -4,7 +4,6 @@ import os
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
-from matplotlib import *
 from plantcv.plantcv import params
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
@@ -47,6 +46,9 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
     # Auto-increment the device counter
     params.device += 1
 
+    # Make copies of the gray image
+    gray_img1 = np.copy(gray_img)
+
     # Check if the image is grayscale
     if len(np.shape(gray_img)) != 2:
         fatal_error("Image must be grayscale.")
@@ -61,7 +63,7 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
     if mask is not None:
         if obj is not None:
             # Copy the image
-            img_copy = np.copy(gray_img)
+            img_copy = np.copy(gray_img1)
             # Extract contour size
             x, y, w, h = cv2.boundingRect(obj)
             cv2.rectangle(img_copy, (x, y), (x + w, y + h), (0, 255, 0), 5)
@@ -76,11 +78,11 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
             # copyMakeBorder will make a black or white frame around the image
             if background == "image":
                 # gray_img = gray_img[y:y + h + (2*offsety), x:x + w + (2*offsetx)]
-                gray_img = gray_img[y - offsety:y + h + offsety, x - offsetx:x + w + offsetx]
+                gray_img1 = gray_img1[y - offsety:y + h + offsety, x - offsetx:x + w + offsetx]
             else:
                 # Crop img including buffer
-                gray_img = cv2.copyMakeBorder(crop_img, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT,
-                                              value=(0, 0, 0))
+                gray_img1 = cv2.copyMakeBorder(crop_img, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT,
+                                               value=(0, 0, 0))
 
             # Crop the mask to the same size
             crop_mask = mask[y:y + h, x:x + w]
@@ -88,23 +90,23 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
                                       value=(0, 0, 0))
 
         # Apply the mask
-        masked_img = np.ma.array(gray_img, mask=~mask.astype(np.bool))
+        masked_img = np.ma.array(gray_img1, mask=~mask.astype(np.bool))
 
         # Set the background color or type
         if background == "black":
             # Background is all zeros
-            bkg_img = np.zeros(np.shape(gray_img), dtype=np.uint8)
+            bkg_img = np.zeros(np.shape(gray_img1), dtype=np.uint8)
             # Use the gray cmap for the background
             bkg_cmap = "gray"
         elif background == "white":
             # Background is all 255 (white)
-            bkg_img = np.zeros(np.shape(gray_img), dtype=np.uint8)
+            bkg_img = np.zeros(np.shape(gray_img1), dtype=np.uint8)
             bkg_img += 255
             # Use the reverse gray cmap for the background
             bkg_cmap = "gray_r"
         elif background == "image":
             # Set the background to the inpute gray image
-            bkg_img = gray_img
+            bkg_img = gray_img1
             # Use the gray cmap for the background
             bkg_cmap = "gray"
         else:
@@ -147,7 +149,7 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
 
     else:
         # Pseudocolor the image
-        pseudo_img1 = plt.imshow(gray_img, cmap=cmap, vmin=min_value, vmax=max_value)
+        pseudo_img1 = plt.imshow(gray_img1, cmap=cmap, vmin=min_value, vmax=max_value)
 
         # Include image title
         plt.title('Pseudocolored image')  # + os.path.splitext(filename)[0])
