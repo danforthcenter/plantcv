@@ -359,6 +359,17 @@ post v3.0: new_img = **plantcv.image_subtract**(*gray_img1, gray_img2*)
 * pre v3.0dev2: **plantcv.print_image**(*img, filename*)
 * post v3.0dev2: **plantcv.print_image**(*img, filename*)
 
+#### plantcv.print_results
+
+* pre v3.1: NA
+* post v3.2: **plantcv.print_results**(*filename*)
+
+#### plantcv.pseudocolor
+
+* pre v3.1: NA
+* post v3.1: pseudo_img = **plantcv.pseudocolor**(*gray_img, mask=None, cmap=None, background="image", min_value=0, max_value=255, obj=None, dpi=None,
+                axes=True, colorbar=True, path="."*)
+
 #### plantcv.readbayer
 
 * pre v3.0: NA

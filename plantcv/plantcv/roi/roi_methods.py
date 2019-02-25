@@ -208,14 +208,14 @@ def _draw_roi(img, roi_contour):
 
 
 def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
-    """Create a labeled mask for color card chips
+    """Create multiple circular ROIs on a single image
     Inputs
     img            = Input image data.
-    coord          = Two-element tuple of the center of the top left object.
-    radius         = Radius of ROIs.
-    spacing        = Two-element tuple of the horizontal and vertical spacing between ROIs.
-    nrows          = Number of rows in ROI layout.
-    ncols          = Number of columns in ROI layout.
+    coord          = Two-element tuple of the center of the top left object (x,y) or a list of tuples identifying the center of each roi [(x1,y1),(x2,y2)]
+    radius         = A single radius for all ROIs.
+    spacing        = Two-element tuple of the horizontal and vertical spacing between ROIs, (x,y). Ignored if `coord` is a list and `rows` and `cols` are None.
+    nrows          = Number of rows in ROI layout. Should be missing or None if each center coordinate pair is listed.
+    ncols          = Number of columns in ROI layout. Should be missing or None if each center coordinate pair is listed.
 
     Returns:
     mask           = Labeled mask ROIs
