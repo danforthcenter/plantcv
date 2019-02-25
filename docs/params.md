@@ -18,6 +18,11 @@ Attributes are accessed as plantcv.*attribute*.
 
 **debug_outdir**: The directory to output debug images to when `plantcv.debug` = "print".
 
+**line_thickness**: The line thickness for plots created by [pcv.analyze_object](analyze_shape.md), [pcv.analyze_bound_horizontal](analyze_bound_horizontal.md).
+[pcv.analyze_bound_vertical](analyze_bound_vertical.md), [pcv.roi_objects](roi_objects.md), [pcv.object_composition](object_composition.md),
+[pcv.scale_features](scale_features.md), [pcv.x_axis_pseudolandmarks](x_axis_pseudolandmarks.md), [y_axis_pseudolandmarks](y_axis_pseudolandmarks.md),
+[pcv.acute_vertex](acute_vertex.md) and every region of interest function. Default = 5. 
+
 ### Example
 
 Updated PlantCV functions use `params` implicitly, so overriding the `params` defaults will alter the behavior of
@@ -36,4 +41,11 @@ img, imgpath, imgname = pcv.readimage(filename="test.png")
 # Use a v3 function to create a region of interest
 # Note that debug is not explicitly provided but is used implicitly by the function
 roi_contour, roi_hierarchy = pcv.roi.rectangle(x=0, y=0, h=100, w=100, img=img)
+
+# It might be preferred to have a thicker or thinner line drawn depending on the size of the image.
+# Change line thickness from the default (5) to make it thinner, and plot the rectangular ROI again,  
+# (note: this won't change the returns but instead is a purely optional preference regarding the plot in debug='print' and debug='plot') 
+pcv.params.line_thickness = 3 
+roi_contour, roi_hierarchy = pcv.roi.rectangle(x=0, y=0, h=100, w=100, img=img)
+
 ```

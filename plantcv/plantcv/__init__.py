@@ -14,11 +14,18 @@ class Params:
     :param device: int
     :param debug: str
     :param debug_outdir: str
+    :param line_thickness: numeric
+    :param line_colorL tuple
+    :param fill_color: tuple
     """
-    def __init__(self, device=0, debug=None, debug_outdir="."):
+
+    def __init__(self, device=0, debug=None, debug_outdir=".", line_thickness=5, line_color=None , fill_color=None):
         self.device = device
         self.debug = debug
         self.debug_outdir = debug_outdir
+        self.line_thickness = line_thickness
+        self.line_color = line_color
+        self.fill_color = fill_color
 
 
 class Outputs:
