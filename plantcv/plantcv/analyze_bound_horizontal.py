@@ -17,7 +17,7 @@ def analyze_bound_horizontal(img, obj, mask, line_position):
     img             = RGB or grayscale image data for plotting
     obj             = single or grouped contour object
     mask            = Binary mask made from selected contours
-    line_position   = position of boundary line (a value of 0 would draw the line through the bottom of the image)
+    line_position   = position of boundary line (a value of 0 would draw the line through the top of the image)
 
     Returns:
     bound_header    = data table column headers
@@ -45,7 +45,7 @@ def analyze_bound_horizontal(img, obj, mask, line_position):
     background = np.zeros(size, dtype=np.uint8)
     wback = (np.zeros(size1, dtype=np.uint8)) + 255
     x_coor = int(ix)
-    y_coor = int(iy) - int(line_position)
+    y_coor = line_position
     rec_corner = int(iy - 2)
     rec_point1 = (1, rec_corner)
     rec_point2 = (x_coor - 2, y_coor - 2)
