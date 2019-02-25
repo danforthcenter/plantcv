@@ -115,7 +115,7 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
 
         # Pseudocolor the image
         # Plot the background first
-        pseudo_img1 = plt.imshow(bkg_img, cmap=bkg_cmap)
+        pseudo_img1 = plt.imshow(bkg_img, cmap=bkg_cmap, vmin=min_value, vmax=max_value)
         # Overlay the masked grayscale image with the user input colormap
         plt.imshow(masked_img, cmap=cmap, vmin=min_value, vmax=max_value)
 
