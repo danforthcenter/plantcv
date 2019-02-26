@@ -81,7 +81,8 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
         obj_area = cv2.countNonZero(kept_obj)
         kept_cnt, hierarchy = cv2.findContours(kept_obj, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
         cv2.drawContours(ori_img, kept_cnt, -1, (0, 255, 0), -1, lineType=8, hierarchy=hierarchy)
-        cv2.drawContours(ori_img, roi_contour, -1, (255, 0, 0), 5, lineType=8, hierarchy=roi_hierarchy)
+        cv2.drawContours(ori_img, roi_contour, -1, (255, 0, 0), params.line_thickness, lineType=8,
+                         hierarchy=roi_hierarchy)
 
     # Find the largest contour if roi_type is set to 'largest'
     elif roi_type == 'largest':
@@ -146,7 +147,8 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
         # Draw the largest contour on the original image
         cv2.drawContours(ori_img, largest_cnt, -1, (0, 255, 0), -1, lineType=8, hierarchy=largest_hierarchy)
         # Draw the ROI contour on the original image
-        cv2.drawContours(ori_img, roi_contour, -1, (255, 0, 0), 5, lineType=8, hierarchy=roi_hierarchy)
+        cv2.drawContours(ori_img, roi_contour, -1, (255, 0, 0), params.line_thickness, lineType=8,
+                         hierarchy=roi_hierarchy)
 
     # Allows user to cut objects to the ROI (all objects completely outside ROI will not be kept)
     elif roi_type == 'cutto':
@@ -160,7 +162,8 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
         kept_cnt, hierarchy = cv2.findContours(kept_obj, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
         cv2.drawContours(w_back, kept_cnt, -1, (0, 0, 0), -1)
         cv2.drawContours(ori_img, kept_cnt, -1, (0, 255, 0), -1, lineType=8, hierarchy=hierarchy)
-        cv2.drawContours(ori_img, roi_contour, -1, (255, 0, 0), 5, lineType=8, hierarchy=roi_hierarchy)
+        cv2.drawContours(ori_img, roi_contour, -1, (255, 0, 0), params.line_thickness, lineType=8,
+                         hierarchy=roi_hierarchy)
 
     else:
         fatal_error('ROI Type ' + str(roi_type) + ' is not "cutto", "largest", or "partial"!')

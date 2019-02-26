@@ -113,23 +113,27 @@ def analyze_bound_vertical(img, obj, mask, line_position):
     if left_bound_area or right_bound_area:
         point3 = (x_coor+2, 0)
         point4 = (x_coor+2, y_coor)
-        cv2.line(ori_img, point3, point4, (255, 0, 255), 5)
-        cv2.line(wback, point3, point4, (255, 0, 255), 5)
+        cv2.line(ori_img, point3, point4, (255, 0, 255), params.line_thickness)
+        cv2.line(wback, point3, point4, (255, 0, 255), params.line_thickness)
         m = cv2.moments(mask, binaryImage=True)
         cmx, cmy = (m['m10'] / m['m00'], m['m01'] / m['m00'])
         if x_coor - x <= 0:
-            cv2.line(ori_img, (x, int(cmy)), (x + width, int(cmy)), (0, 255, 0), 3)
-            cv2.line(wback, (x, int(cmy)), (x + width, int(cmy)), (0, 255, 0), 3)
+            cv2.line(ori_img, (x, int(cmy)), (x + width, int(cmy)), (0, 255, 0), params.line_thickness)
+            cv2.line(wback, (x, int(cmy)), (x + width, int(cmy)), (0, 255, 0), params.line_thickness)
         elif x_coor - x > 0:
             width_1 = x_coor - x
             if width - width_1 <= 0:
-                cv2.line(ori_img, (x, int(cmy)), (x + width, int(cmy)), (255, 0, 0), 3)
-                cv2.line(wback, (x, int(cmy)), (x + width, int(cmy)), (255, 0, 0), 3)
+                cv2.line(ori_img, (x, int(cmy)), (x + width, int(cmy)), (255, 0, 0), params.line_thickness)
+                cv2.line(wback, (x, int(cmy)), (x + width, int(cmy)), (255, 0, 0), params.line_thickness)
             else:
-                cv2.line(ori_img, (x_coor + 2, int(cmy)), (x_coor + width_left_bound, int(cmy)), (255, 0, 0), 3)
-                cv2.line(ori_img, (x_coor + 2, int(cmy)), (x_coor - width_right_bound, int(cmy)), (0, 255, 0), 3)
-                cv2.line(wback, (x_coor + 2, int(cmy)), (x_coor + width_left_bound, int(cmy)), (255, 0, 0), 3)
-                cv2.line(wback, (x_coor + 2, int(cmy)), (x_coor - width_right_bound, int(cmy)), (0, 255, 0), 3)
+                cv2.line(ori_img, (x_coor + 2, int(cmy)), (x_coor + width_left_bound, int(cmy)), (255, 0, 0),
+                         params.line_thickness)
+                cv2.line(ori_img, (x_coor + 2, int(cmy)), (x_coor - width_right_bound, int(cmy)), (0, 255, 0),
+                         params.line_thickness)
+                cv2.line(wback, (x_coor + 2, int(cmy)), (x_coor + width_left_bound, int(cmy)), (255, 0, 0),
+                         params.line_thickness)
+                cv2.line(wback, (x_coor + 2, int(cmy)), (x_coor - width_right_bound, int(cmy)), (0, 255, 0),
+                         params.line_thickness)
         # Output images with boundary line
         analysis_images.append(wback)
         analysis_images.append(ori_img)
@@ -137,23 +141,27 @@ def analyze_bound_vertical(img, obj, mask, line_position):
     if params.debug is not None:
         point3 = (x_coor+2, 0)
         point4 = (x_coor+2, y_coor)
-        cv2.line(ori_img, point3, point4, (255, 0, 255), 5)
-        cv2.line(wback, point3, point4, (255, 0, 255), 5)
+        cv2.line(ori_img, point3, point4, (255, 0, 255), params.line_thickness)
+        cv2.line(wback, point3, point4, (255, 0, 255), params.line_thickness)
         m = cv2.moments(mask, binaryImage=True)
         cmx, cmy = (m['m10'] / m['m00'], m['m01'] / m['m00'])
         if x_coor - x <= 0:
-            cv2.line(ori_img, (x, int(cmy)), (x + width, int(cmy)), (0, 255, 0), 3)
-            cv2.line(wback, (x, int(cmy)), (x + width, int(cmy)), (0, 255, 0), 3)
+            cv2.line(ori_img, (x, int(cmy)), (x + width, int(cmy)), (0, 255, 0), params.line_thickness)
+            cv2.line(wback, (x, int(cmy)), (x + width, int(cmy)), (0, 255, 0), params.line_thickness)
         elif x_coor - x > 0:
             width_1 = x_coor - x
             if width - width_1 <= 0:
-                cv2.line(ori_img, (x, int(cmy)), (x + width, int(cmy)), (255, 0, 0), 3)
-                cv2.line(wback, (x, int(cmy)), (x + width, int(cmy)), (255, 0, 0), 3)
+                cv2.line(ori_img, (x, int(cmy)), (x + width, int(cmy)), (255, 0, 0), params.line_thickness)
+                cv2.line(wback, (x, int(cmy)), (x + width, int(cmy)), (255, 0, 0), params.line_thickness)
             else:
-                cv2.line(ori_img, (x_coor + 2, int(cmy)), (x_coor + width_left_bound, int(cmy)), (255, 0, 0), 3)
-                cv2.line(ori_img, (x_coor + 2, int(cmy)), (x_coor - width_right_bound, int(cmy)), (0, 255, 0), 3)
-                cv2.line(wback, (x_coor + 2, int(cmy)), (x_coor + width_left_bound, int(cmy)), (255, 0, 0), 3)
-                cv2.line(wback, (x_coor + 2, int(cmy)), (x_coor - width_right_bound, int(cmy)), (0, 255, 0), 3)
+                cv2.line(ori_img, (x_coor + 2, int(cmy)), (x_coor + width_left_bound, int(cmy)), (255, 0, 0),
+                         params.line_thickness)
+                cv2.line(ori_img, (x_coor + 2, int(cmy)), (x_coor - width_right_bound, int(cmy)), (0, 255, 0),
+                         params.line_thickness)
+                cv2.line(wback, (x_coor + 2, int(cmy)), (x_coor + width_left_bound, int(cmy)), (255, 0, 0),
+                         params.line_thickness)
+                cv2.line(wback, (x_coor + 2, int(cmy)), (x_coor - width_right_bound, int(cmy)), (0, 255, 0),
+                         params.line_thickness)
         if params.debug == 'print':
             print_image(wback, os.path.join(params.debug_outdir, str(params.device) + '_boundary_on_white.jpg'))
             print_image(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_boundary_on_img.jpg'))

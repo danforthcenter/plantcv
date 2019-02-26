@@ -105,7 +105,7 @@ def acute_vertex(obj, win, thresh, sep, img):
         # Plot each of these tip points on the image
         for i in acute:
             x, y = i.ravel()
-            cv2.circle(img2, (x, y), 15, (255, 204, 255), -1)
+            cv2.circle(img2, (x, y), params.line_thickness, (255, 204, 255), -1)
         print_image(img2, os.path.join(params.debug_outdir, str(params.device) + '_acute_vertices.png'))
     elif params.debug == 'plot':
         # Lets make a plot of these values on the
@@ -114,7 +114,7 @@ def acute_vertex(obj, win, thresh, sep, img):
         for i in acute:
             x, y = i.ravel()
             # cv2.circle(img2,(x,y),15,(255,204,255),-1)
-            cv2.circle(img2, (x, y), 15, (0, 0, 255), -1)
+            cv2.circle(img2, (x, y), params.line_thickness, (0, 0, 255), -1)
         plot_image(img2)
     # If flag was true (no points found as acute) reformat output appropriate type
     # if flag == 1:

@@ -44,7 +44,7 @@ Also see our tutorials for more detailed overviews of using PlantCV for specific
 We have added interactive documentation (the link takes up to a few minutes to load so be patient please),
 so you can test out pipelines and even upload your own images to test on.
 
-* [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/vis_tutorial.ipynb) Check out our interactive VIS tutorial! 
+* [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=index.ipynb) Check out our interactive tutorials! 
 
 If you are interested in contributing to PlantCV, please see:
 
