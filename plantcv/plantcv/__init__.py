@@ -15,7 +15,7 @@ class Params:
     :param debug: str
     :param debug_outdir: str
     :param line_thickness: numeric
-    :param line_colorL tuple
+    :param line_color: tuple
     :param fill_color: tuple
     """
 
