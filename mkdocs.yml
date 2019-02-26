@@ -116,6 +116,8 @@ pages:
   - 'Package plantcv.learn':
     - 'Naive Bayes': naive_bayes.md
     - 'Naive Bayes Multiclass': naive_bayes_multiclass.md
+  - 'Add-on Packages':
+    - 'Hyperspectral': https://plantcv.readthedocs.io/projects/hyperspectral
 markdown_extensions:
   - toc:
       permalink: True

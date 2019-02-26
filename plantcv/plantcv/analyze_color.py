@@ -1,6 +1,6 @@
 # Analyze Color of Object
 
-# import os
+import os
 import cv2
 import numpy as np
 import pandas as pd
@@ -275,6 +275,12 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
                         + scale_color_manual(color_channels)
                         )
             analysis_images.append(hist_fig)
+
+    # Plot or print the histogram
+    if params.debug == 'print':
+        hist_fig.save(os.path.join(params.debug_outdir, str(params.device) + '_analyze_color_hist.png'))
+    elif params.debug == 'plot':
+        print(hist_fig)
 
     # Store into global measurements
     if not 'color_histogram' in outputs.measurements:
