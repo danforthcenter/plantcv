@@ -11,7 +11,7 @@ Crops image to an object and allows user to specify image padding (if desired)
     - object - contour of target object 
     - padding_x - padding in the x direction (default padding_x=0)
     - padding_y - padding in the y direction (default padding_x=0)
-    - color - either 'black' (default) or 'white'
+    - color - either 'black' (default), 'white', or 'image'
 - **Context:**
     - Crops image to object
     
