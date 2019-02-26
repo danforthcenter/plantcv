@@ -40,12 +40,19 @@ img, imgpath, imgname = pcv.readimage(filename="test.png")
 
 # Use a v3 function to create a region of interest
 # Note that debug is not explicitly provided but is used implicitly by the function
-roi_contour, roi_hierarchy = pcv.roi.rectangle(x=0, y=0, h=100, w=100, img=img)
+roi_contour, roi_hierarchy = pcv.roi.rectangle(x=100, y=100, h=200, w=200, img=img)
 
 # It might be preferred to have a thicker or thinner line drawn depending on the size of the image.
 # Change line thickness from the default (5) to make it thinner, and plot the rectangular ROI again,  
 # (note: this won't change the returns but instead is a purely optional preference regarding the plot in debug='print' and debug='plot') 
 pcv.params.line_thickness = 3 
-roi_contour, roi_hierarchy = pcv.roi.rectangle(x=0, y=0, h=100, w=100, img=img)
+roi_contour, roi_hierarchy = pcv.roi.rectangle(x=100, y=100, h=200, w=200, img=img)
 
 ```
+*Default Thickness (5)*
+
+![Screenshot](img/documentation_images/params/default_thickness.jpg)
+
+*pcv.params.line_thickness = 3*
+
+![Screenshot](img/documentation_images/params/thickness3.jpg)
