@@ -198,7 +198,7 @@ def _draw_roi(img, roi_contour):
     if len(np.shape(ref_img)) == 2:
         ref_img = cv2.cvtColor(ref_img, cv2.COLOR_GRAY2BGR)
     # Draw the contour on the reference image
-    cv2.drawContours(ref_img, roi_contour, -1, (255, 0, 0), 5)
+    cv2.drawContours(ref_img, roi_contour, -1, (255, 0, 0), params.line_thickness)
     if params.debug == "print":
         # If debug is print, save the image to a file
         print_image(ref_img, os.path.join(params.debug_outdir, str(params.device) + "_roi.png"))
