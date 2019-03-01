@@ -26,7 +26,7 @@ def get_nir(path, filename):
     allfiles = np.array(os.listdir(path))
     nirfiles = []
 
-    cam = visname[1]
+    cam = visname[1].upper()
 
     if cam == "SV":
         angle = visname[2]

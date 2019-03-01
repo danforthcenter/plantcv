@@ -55,7 +55,7 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
     background2 = np.zeros(size, dtype=np.uint8)
 
     # Allows user to find all objects that are completely inside or overlapping with ROI
-    if roi_type == 'partial':
+    if roi_type.upper() == 'PARTIAL':
         for c, cnt in enumerate(object_contour):
             length = (len(cnt) - 1)
             stack = np.vstack(cnt)
@@ -85,7 +85,7 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
                          hierarchy=roi_hierarchy)
 
     # Find the largest contour if roi_type is set to 'largest'
-    elif roi_type == 'largest':
+    elif roi_type.upper() == 'LARGEST':
         # Print warning statement about this feature
         print(
             "Warning: roi_type='largest' will only return the largest extreme outer contour. All child contours are left behind.")
@@ -151,7 +151,7 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
                          hierarchy=roi_hierarchy)
 
     # Allows user to cut objects to the ROI (all objects completely outside ROI will not be kept)
-    elif roi_type == 'cutto':
+    elif roi_type.upper() == 'CUTTO':
         cv2.drawContours(background1, object_contour, -1, (255, 255, 255), -1, lineType=8, hierarchy=obj_hierarchy)
         roi_points = np.vstack(roi_contour[0])
         cv2.fillPoly(background2, [roi_points], (255, 255, 255))
