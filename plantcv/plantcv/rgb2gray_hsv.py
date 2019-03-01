@@ -27,6 +27,7 @@ def rgb2gray_hsv(rgb_img, channel):
 
     # The allowable channel inputs are h, s or v
     names = {"h": "hue", "s": "saturation", "v": "value"}
+    channel = channel.lower()
     if channel not in names:
         fatal_error("Channel " + str(channel) + " is not h, s or v!")
 
