@@ -532,7 +532,7 @@ def test_plantcv_auto_crop():
     _ = pcv.auto_crop(img=img1, objects=roi_contours[1], padding_x=20, padding_y=20, color='black')
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.auto_crop(img=img1, objects=roi_contours[1], padding_x=20, padding_y=20, color='black')
+    _ = pcv.auto_crop(img=img1, objects=roi_contours[1], padding_x=20, padding_y=20, color='image')
     # Test with debug = None
     pcv.params.debug = None
     cropped = pcv.auto_crop(img=img1, objects=roi_contours[1], padding_x=20, padding_y=20, color='black')
