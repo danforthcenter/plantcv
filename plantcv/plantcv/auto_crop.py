@@ -16,7 +16,7 @@ def auto_crop(img, objects, padding_x=0, padding_y=0, color='black'):
     objects   = contours
     padding_x = padding in the x direction
     padding_y = padding in the y direction
-    color     = either 'black' or 'white'
+    color     = either 'black', 'white', or 'image'
 
     Returns:
     cropped   = cropped image
@@ -31,6 +31,7 @@ def auto_crop(img, objects, padding_x=0, padding_y=0, color='black'):
 
     params.device += 1
     img_copy = np.copy(img)
+    img_copy2 = np.copy(img)
 
     x, y, w, h = cv2.boundingRect(objects)
     cv2.rectangle(img_copy, (x, y), (x + w, y + h), (0, 255, 0), 5)
@@ -44,8 +45,10 @@ def auto_crop(img, objects, padding_x=0, padding_y=0, color='black'):
         colorval = (0, 0, 0)
     elif color.upper() == 'WHITE':
         colorval = (255, 255, 255)
-
-    cropped = cv2.copyMakeBorder(crop_img, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT, value=colorval)
+        cropped = cv2.copyMakeBorder(crop_img, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT, value=colorval)
+    elif color.upper() == 'IMAGE':
+        # If padding is the image, crop the image with a buffer rather than cropping and adding a buffer
+        cropped = img_copy2[y - offsety:y + h + offsety, x - offsetx:x + w + offsetx]
 
     if params.debug == 'print':
         print_image(img_copy, os.path.join(params.debug_outdir, str(params.device) + "_crop_area.png"))
