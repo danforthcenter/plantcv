@@ -43,6 +43,7 @@ def auto_crop(img, objects, padding_x=0, padding_y=0, color='black'):
 
     if color.upper() == 'BLACK':
         colorval = (0, 0, 0)
+        cropped = cv2.copyMakeBorder(crop_img, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT, value=colorval)
     elif color.upper() == 'WHITE':
         colorval = (255, 255, 255)
         cropped = cv2.copyMakeBorder(crop_img, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT, value=colorval)
