@@ -123,6 +123,7 @@ def test_plantcv_acute_vertex():
     _ = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img)
     _ = pcv.acute_vertex(obj=[], win=5, thresh=15, sep=5, img=img)
     _ = pcv.acute_vertex(obj=[], win=.01, thresh=.01, sep=1, img=img)
+    _ = pcv.acute_vertex(obj=np.vstack(np.array([[192, 105]])), win=0, thresh=.01, sep=1, img=img)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img)
@@ -1422,9 +1423,10 @@ def test_plantcv_plot_hist():
 def test_plantcv_plot_image_matplotlib_input():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_pseudocolor")
     os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    pimg = pcv.pseudocolor(gray_img=img, mask=mask, min_value=10, max_value=200, path=cache_dir)
+    pimg = pcv.pseudocolor(gray_img=img, mask=mask, min_value=10, max_value=200)
     with pytest.raises(RuntimeError):
         pcv.plot_image(pimg)
 
@@ -1449,6 +1451,7 @@ def test_plantcv_print_image_bad_type():
 def test_plantcv_pseudocolor():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_pseudocolor")
     os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
@@ -1456,17 +1459,18 @@ def test_plantcv_pseudocolor():
     filename = os.path.join(cache_dir, 'plantcv_pseudo_image.jpg')
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.pseudocolor(gray_img=img, mask=None, path=cache_dir)
-    pimg = pcv.pseudocolor(gray_img=img, mask=mask, min_value=10, max_value=200, path=cache_dir)
+    _ = pcv.pseudocolor(gray_img=img, mask=None)
+    _ = pcv.pseudocolor(gray_img=img, mask=None)
+
+    pimg = pcv.pseudocolor(gray_img=img, mask=mask, min_value=10, max_value=200)
     pcv.print_image(pimg, filename)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.pseudocolor(gray_img=img, mask=mask, background="image")
     _ = pcv.pseudocolor(gray_img=img, mask=None)
-    _ = pcv.pseudocolor(gray_img=img, mask=mask, background="black", obj=obj_contour, axes=False, colorbar=False,
-                        path=cache_dir)
+    _ = pcv.pseudocolor(gray_img=img, mask=mask, background="black", obj=obj_contour, axes=False, colorbar=False)
     _ = pcv.pseudocolor(gray_img=img, mask=mask, background="image", obj=obj_contour)
-    _ = pcv.pseudocolor(gray_img=img, mask=None, axes=False, colorbar=False, path=cache_dir)
+    _ = pcv.pseudocolor(gray_img=img, mask=None, axes=False, colorbar=False)
     # Test with debug = None
     pcv.params.debug = None
     _ = pcv.pseudocolor(gray_img=img, mask=None)
