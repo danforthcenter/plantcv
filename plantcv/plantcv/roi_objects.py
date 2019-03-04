@@ -55,7 +55,7 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
     background2 = np.zeros(size, dtype=np.uint8)
 
     # Allows user to find all objects that are completely inside or overlapping with ROI
-    if roi_type == 'partial':
+    if roi_type.upper() == 'PARTIAL':
         for c, cnt in enumerate(object_contour):
             length = (len(cnt) - 1)
             stack = np.vstack(cnt)
@@ -81,10 +81,11 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
         obj_area = cv2.countNonZero(kept_obj)
         kept_cnt, hierarchy = cv2.findContours(kept_obj, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
         cv2.drawContours(ori_img, kept_cnt, -1, (0, 255, 0), -1, lineType=8, hierarchy=hierarchy)
-        cv2.drawContours(ori_img, roi_contour, -1, (255, 0, 0), 5, lineType=8, hierarchy=roi_hierarchy)
+        cv2.drawContours(ori_img, roi_contour, -1, (255, 0, 0), params.line_thickness, lineType=8,
+                         hierarchy=roi_hierarchy)
 
     # Find the largest contour if roi_type is set to 'largest'
-    elif roi_type == 'largest':
+    elif roi_type.upper() == 'LARGEST':
         # Print warning statement about this feature
         print(
             "Warning: roi_type='largest' will only return the largest extreme outer contour. All child contours are left behind.")
@@ -146,10 +147,11 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
         # Draw the largest contour on the original image
         cv2.drawContours(ori_img, largest_cnt, -1, (0, 255, 0), -1, lineType=8, hierarchy=largest_hierarchy)
         # Draw the ROI contour on the original image
-        cv2.drawContours(ori_img, roi_contour, -1, (255, 0, 0), 5, lineType=8, hierarchy=roi_hierarchy)
+        cv2.drawContours(ori_img, roi_contour, -1, (255, 0, 0), params.line_thickness, lineType=8,
+                         hierarchy=roi_hierarchy)
 
     # Allows user to cut objects to the ROI (all objects completely outside ROI will not be kept)
-    elif roi_type == 'cutto':
+    elif roi_type.upper() == 'CUTTO':
         cv2.drawContours(background1, object_contour, -1, (255, 255, 255), -1, lineType=8, hierarchy=obj_hierarchy)
         roi_points = np.vstack(roi_contour[0])
         cv2.fillPoly(background2, [roi_points], (255, 255, 255))
@@ -160,7 +162,8 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
         kept_cnt, hierarchy = cv2.findContours(kept_obj, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
         cv2.drawContours(w_back, kept_cnt, -1, (0, 0, 0), -1)
         cv2.drawContours(ori_img, kept_cnt, -1, (0, 255, 0), -1, lineType=8, hierarchy=hierarchy)
-        cv2.drawContours(ori_img, roi_contour, -1, (255, 0, 0), 5, lineType=8, hierarchy=roi_hierarchy)
+        cv2.drawContours(ori_img, roi_contour, -1, (255, 0, 0), params.line_thickness, lineType=8,
+                         hierarchy=roi_hierarchy)
 
     else:
         fatal_error('ROI Type ' + str(roi_type) + ' is not "cutto", "largest", or "partial"!')

@@ -64,7 +64,7 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
     marker_contour = []
 
     # If the marker type is "detect" then we will use the ROI to isolate marker contours from the input image
-    if marker == 'detect':
+    if marker.upper() == 'DETECT':
         # We need to convert the input image into an one of the HSV channels and then threshold it
         if thresh_channel is not None and thresh is not None:
             # Mask the input image
@@ -87,7 +87,7 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
                                                              hierarchy=kept_hierarchy)
         else:
             fatal_error('thresh_channel and thresh must be defined in detect mode')
-    elif marker == "define":
+    elif marker.upper() == "DEFINE":
         # Identify contours in the masked image
         contours, hierarchy = find_objects(img=ref_img, mask=roi_mask)
         # If there are more than one contour detected, combine them into one

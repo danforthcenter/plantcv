@@ -3,6 +3,7 @@
 import cv2
 import numpy as np
 import os
+from plantcv.plantcv import fatal_error
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
@@ -53,16 +54,19 @@ def rectangle_mask(img, p1, p2, color="black"):
     # thickness = -1. Note that you should only print the first contour (contour[0]) if you want to fill with
     # thickness = -1. otherwise two rectangles will be drawn and the space between them will get filled
 
-    if color == "white":
+    if color.upper() == "WHITE":
         cv2.drawContours(bnk, contour, 0, (255, 255, 255), -1)
         cv2.drawContours(img1, contour, 0, (255, 255, 255), -1)
-    if color == "black":
+    elif color.upper() == "BLACK":
         bnk += 255
         cv2.drawContours(bnk, contour, 0, (0, 0, 0), -1)
         cv2.drawContours(img1, contour, 0, (0, 0, 0), -1)
-    if color == "gray":
+    elif color.upper() == "GRAY" or color.upper() == "GREY":
         cv2.drawContours(bnk, contour, 0, (192, 192, 192), -1)
         cv2.drawContours(img1, contour, 0, (192, 192, 192), -1)
+    else:
+        fatal_error(str(color) + " is not a valid color, must be 'white', 'black', or 'gray'.")
+
     if params.debug == 'print':
         print_image(bnk, os.path.join(params.debug_outdir, str(params.device) + '_roi.png'))
 

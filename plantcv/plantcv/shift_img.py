@@ -39,19 +39,19 @@ def shift_img(img, number, side="right"):
         ix, iy = np.shape(img)
         ori_img = np.dstack((img, img, img))
 
-    if side == "top":
+    if side.upper() == "TOP":
         top = np.zeros((number, iy, 3), dtype=np.uint8)
         adjust = ix - number
         adjusted_img = np.vstack((top, ori_img[0:adjust, 0:]))
 
-    if side == 'bottom':
+    if side.upper() == 'BOTTOM':
         bottom = np.zeros((number, iy, 3), dtype=np.uint8)
         adjusted_img = np.vstack((ori_img[number:, 0:], bottom))
 
-    if side == 'right':
+    if side.upper() == 'RIGHT':
         right = np.zeros((ix, number, 3), dtype=np.uint8)
         adjusted_img = np.hstack((ori_img[0:, number:], right))
-    if side == 'left':
+    if side.upper() == 'LEFT':
         left = np.zeros((ix, number, 3), dtype=np.uint8)
         adjust = iy - number
         adjusted_img = np.hstack((left, ori_img[0:, 0:adjust]))

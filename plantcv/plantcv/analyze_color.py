@@ -1,6 +1,6 @@
 # Analyze Color of Object
 
-# import os
+import os
 import cv2
 import numpy as np
 import pandas as pd
@@ -230,7 +230,7 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
 
     # Make the histogram figure using plotnine
     if hist_plot_type is not None:
-        if hist_plot_type == 'rgb':
+        if hist_plot_type.upper() == 'RGB':
             df_rgb = pd.melt(dataset, id_vars=['bins'], value_vars=['blue', 'green', 'red'],
                              var_name='Color Channel', value_name='Pixels')
             hist_fig = (ggplot(df_rgb, aes(x='bins', y='Pixels', color='Color Channel'))
@@ -240,7 +240,7 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
                         )
             analysis_images.append(hist_fig)
 
-        elif hist_plot_type == 'lab':
+        elif hist_plot_type.upper() == 'LAB':
             df_lab = pd.melt(dataset, id_vars=['bins'],
                              value_vars=['lightness', 'green-magenta', 'blue-yellow'],
                              var_name='Color Channel', value_name='Pixels')
@@ -251,7 +251,7 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
                         )
             analysis_images.append(hist_fig)
 
-        elif hist_plot_type == 'hsv':
+        elif hist_plot_type.upper() == 'HSV':
             df_hsv = pd.melt(dataset, id_vars=['bins'],
                              value_vars=['hue', 'saturation', 'value'],
                              var_name='Color Channel', value_name='Pixels')
@@ -262,7 +262,7 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
                         )
             analysis_images.append(hist_fig)
 
-        elif hist_plot_type == 'all':
+        elif hist_plot_type.upper() == 'ALL':
             s = pd.Series(['blue', 'green', 'red', 'lightness', 'green-magenta',
                            'blue-yellow', 'hue', 'saturation', 'value'], dtype="category")
             color_channels = ['blue', 'yellow', 'green', 'magenta', 'blueviolet',
@@ -275,6 +275,12 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
                         + scale_color_manual(color_channels)
                         )
             analysis_images.append(hist_fig)
+
+    # Plot or print the histogram
+    if params.debug == 'print':
+        hist_fig.save(os.path.join(params.debug_outdir, str(params.device) + '_analyze_color_hist.png'))
+    elif params.debug == 'plot':
+        print(hist_fig)
 
     # Store into global measurements
     if not 'color_histogram' in outputs.measurements:

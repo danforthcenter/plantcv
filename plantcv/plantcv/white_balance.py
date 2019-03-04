@@ -96,11 +96,11 @@ def white_balance(img, mode='hist', roi=None):
         c1 = img[:, :, 0]
         c2 = img[:, :, 1]
         c3 = img[:, :, 2]
-        if mode == 'hist':
+        if mode.upper() == 'HIST':
             channel1 = _hist(c1, hmax, x, y, h, w, type)
             channel2 = _hist(c2, hmax, x, y, h, w, type)
             channel3 = _hist(c3, hmax, x, y, h, w, type)
-        else:
+        elif mode.upper() == 'MAX':
             channel1 = _max(c1, hmax, mask, x, y, h, w, type)
             channel2 = _max(c2, hmax, mask, x, y, h, w, type)
             channel3 = _max(c3, hmax, mask, x, y, h, w, type)
@@ -109,9 +109,9 @@ def white_balance(img, mode='hist', roi=None):
 
     else:
         cv2.rectangle(ori_img, (x, y), (x + w, y + h), (255, 255, 255), 3)
-        if mode == 'hist':
+        if mode.upper() == 'HIST':
             finalcorrected = _hist(img, hmax, x, y, h, w, type)
-        elif mode == 'max':
+        elif mode.upper() == 'MAX':
             finalcorrected = _max(img, hmax, mask, x, y, h, w, type)
 
     if params.debug == 'print':

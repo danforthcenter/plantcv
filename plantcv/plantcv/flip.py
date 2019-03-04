@@ -24,9 +24,9 @@ def flip(img, direction):
     :return vh_img: numpy.ndarray
     """
     params.device += 1
-    if direction == "vertical":
+    if direction.upper() == "VERTICAL":
         vh_img = cv2.flip(img, 1)
-    elif direction == "horizontal":
+    elif direction.upper() == "HORIZONTAL":
         vh_img = cv2.flip(img, 0)
     else:
         fatal_error(str(direction) + " is not a valid direction, must be horizontal or vertical")

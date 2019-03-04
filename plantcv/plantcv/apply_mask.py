@@ -26,7 +26,7 @@ def apply_mask(rgb_img, mask, mask_color):
     """
 
     params.device += 1
-    if mask_color == 'white':
+    if mask_color.upper() == 'WHITE':
         # Mask image
         masked_img = cv2.bitwise_and(rgb_img, rgb_img, mask=mask)
         # Create inverted mask for background
@@ -40,7 +40,7 @@ def apply_mask(rgb_img, mask, mask_color):
         elif params.debug == 'plot':
             plot_image(white_masked)
         return white_masked
-    elif mask_color == 'black':
+    elif mask_color.upper() == 'BLACK':
         masked_img = cv2.bitwise_and(rgb_img, rgb_img, mask=mask)
         if params.debug == 'print':
             print_image(masked_img, os.path.join(params.debug_outdir, str(params.device) + '_bmasked.png'))
@@ -48,4 +48,4 @@ def apply_mask(rgb_img, mask, mask_color):
             plot_image(masked_img)
         return masked_img
     else:
-        fatal_error('Mask Color' + str(mask_color) + ' is not "white" or "black"!')
+        fatal_error('Mask Color ' + str(mask_color) + ' is not "white" or "black"!')

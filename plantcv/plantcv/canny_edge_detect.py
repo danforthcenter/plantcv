@@ -61,13 +61,13 @@ def canny_edge_detect(img, sigma=1.0, low_thresh=None, high_thresh=None, thickne
 
     # skimage needs a bool mask
     if mask is not None:
-        if mask_color == 'white':
+        if mask_color.upper() == 'WHITE':
             mask = np.array(mask, bool)
-        elif mask_color == 'black':
+        elif mask_color.upper() == 'BLACK':
             mask = cv2.bitwise_not(mask)
             mask = np.array(mask, bool)
         else:
-            fatal_error('Mask was provided but mask_color' + str(mask_color) + ' is not "white" or "black"!')
+            fatal_error('Mask was provided but mask_color ' + str(mask_color) + ' is not "white" or "black"!')
 
     # Run Canny edge detection on the grayscale image
     bool_img = feature.canny(img, sigma, low_thresh, high_thresh, mask, use_quantiles)

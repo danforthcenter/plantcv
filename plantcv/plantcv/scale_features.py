@@ -79,9 +79,11 @@ def scale_features(obj, mask, points, boundary_line):
         # (+250 helps center the object in the middle of the blank image)
         for i in plotter:
             x, y = i.ravel()
-            cv2.circle(scaled_img, (int(x) + 250, int(y) + 250), 15, (255, 255, 255), -1)
-        cv2.circle(scaled_img, (int(cmx_scaled * 1000) + 250, int(cmy_scaled * 1000) + 250), 25, (0, 0, 255), -1)
-        cv2.circle(scaled_img, (int(blx_scaled * 1000) + 250, int(bly_scaled * 1000) + 250), 25, (0, 255, 0), -1)
+            cv2.circle(scaled_img, (int(x) + 250, int(y) + 250), params.line_thickness, (255, 255, 255), -1)
+        cv2.circle(scaled_img, (int(cmx_scaled * 1000) + 250, int(cmy_scaled * 1000) + 250), params.line_thickness,
+                   (0, 0, 255), -1)
+        cv2.circle(scaled_img, (int(blx_scaled * 1000) + 250, int(bly_scaled * 1000) + 250), params.line_thickness,
+                   (0, 255, 0), -1)
         # Because the coordinates increase as you go down and to the right on the
         # image you need to flip the object around the x-axis
         flipped_scaled = cv2.flip(scaled_img, 0)
@@ -97,9 +99,11 @@ def scale_features(obj, mask, points, boundary_line):
         # the object in the middle of the blank image)
         for i in plotter:
             x, y = i.ravel()
-            cv2.circle(scaled_img, (int(x) + 250, int(y) + 250), 15, (255, 255, 255), -1)
-        cv2.circle(scaled_img, (int(cmx_scaled * 1000) + 250, int(cmy_scaled * 1000) + 250), 25, (0, 0, 255), -1)
-        cv2.circle(scaled_img, (int(blx_scaled * 1000) + 250, int(bly_scaled * 1000) + 250), 25, (0, 255, 0), -1)
+            cv2.circle(scaled_img, (int(x) + 250, int(y) + 250), params.line_thickness, (255, 255, 255), -1)
+        cv2.circle(scaled_img, (int(cmx_scaled * 1000) + 250, int(cmy_scaled * 1000) + 250), params.line_thickness,
+                   (0, 0, 255), -1)
+        cv2.circle(scaled_img, (int(blx_scaled * 1000) + 250, int(bly_scaled * 1000) + 250), params.line_thickness,
+                   (0, 255, 0), -1)
         # Because the coordinates increase as you go down and to the right on the
         # image you need to flip the object around the x-axis
         flipped_scaled = cv2.flip(scaled_img, 0)

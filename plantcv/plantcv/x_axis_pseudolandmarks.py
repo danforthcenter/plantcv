@@ -144,15 +144,15 @@ def x_axis_pseudolandmarks(obj, mask, img):
         for i in top:
             x = i[0, 0]
             y = i[0, 1]
-            cv2.circle(img2, (int(x), int(y)), 10, (255, 0, 0), -1)
+            cv2.circle(img2, (int(x), int(y)), params.line_thickness, (255, 0, 0), -1)
         for i in bottom:
             x = i[0, 0]
             y = i[0, 1]
-            cv2.circle(img2, (int(x), int(y)), 10, (255, 0, 255), -1)
+            cv2.circle(img2, (int(x), int(y)), params.line_thickness, (255, 0, 255), -1)
         for i in center_v:
             x = i[0, 0]
             y = i[0, 1]
-            cv2.circle(img2, (int(x), int(y)), 10, (0, 79, 255), -1)
+            cv2.circle(img2, (int(x), int(y)), params.line_thickness, (0, 79, 255), -1)
         if params.debug == 'plot':
             plot_image(img2)
         elif params.debug == 'print':
@@ -195,15 +195,15 @@ def x_axis_pseudolandmarks(obj, mask, img):
         for i in top:
             x = i[0, 0]
             y = i[0, 1]
-            cv2.circle(img2, (int(x), int(y)), 10, (255, 0, 0), -1)
+            cv2.circle(img2, (int(x), int(y)), params.line_thickness, (255, 0, 0), -1)
         for i in bottom:
             x = i[0, 0]
             y = i[0, 1]
-            cv2.circle(img2, (int(x), int(y)), 10, (255, 0, 255), -1)
+            cv2.circle(img2, (int(x), int(y)), params.line_thickness, (255, 0, 255), -1)
         for i in center_v:
             x = i[0, 0]
             y = i[0, 1]
-            cv2.circle(img2, (int(x), int(y)), 10, (0, 79, 255), -1)
+            cv2.circle(img2, (int(x), int(y)), params.line_thickness, (0, 79, 255), -1)
         if params.debug == 'plot':
                 plot_image(img2)
         elif params.debug == 'print':
