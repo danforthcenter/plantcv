@@ -123,7 +123,6 @@ def test_plantcv_acute_vertex():
     _ = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img)
     _ = pcv.acute_vertex(obj=[], win=5, thresh=15, sep=5, img=img)
     _ = pcv.acute_vertex(obj=[], win=.01, thresh=.01, sep=1, img=img)
-    _ = pcv.acute_vertex(obj=np.vstack(np.array([[192, 105]])), win=0, thresh=.01, sep=1, img=img)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img)
@@ -672,6 +671,8 @@ def test_plantcv_cluster_contours_splitimg():
     pcv.params.debug = "print"
     _ = pcv.cluster_contour_splitimg(rgb_img=img1, grouped_contour_indexes=cluster_contours, contours=roi_contours,
                                      hierarchy=obj_hierarchy, outdir=cache_dir, file=None, filenames=None)
+    _ = pcv.cluster_contour_splitimg(rgb_img=img1, grouped_contour_indexes=[[0]], contours=[],
+                                     hierarchy=np.array([[[ 1, -1, -1, -1]]]))
     _ = pcv.cluster_contour_splitimg(rgb_img=img1, grouped_contour_indexes=cluster_contours, contours=roi_contours,
                                      hierarchy=obj_hierarchy, outdir=cache_dir, file='multi', filenames=None)
 

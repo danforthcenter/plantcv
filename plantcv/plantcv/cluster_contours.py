@@ -61,10 +61,11 @@ def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1):
     # categorize what bin the center of mass of each contour
 
     def digitize(a, step):
-        if isinstance(step, int):
-            i = step
-        else:
-            i = len(step)
+        # The way cbreaks and rbreaks are calculated, step will never be an integer
+        # if isinstance(step, int):
+        #     i = step
+        # else:
+        i = len(step)
         for x in range(0, i):
             if x == 0:
                 if a >= 0 and a < step[x + 1]:
