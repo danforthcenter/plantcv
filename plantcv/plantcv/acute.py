@@ -117,11 +117,13 @@ def acute(obj, win, thresh, mask):
         if len(isle) > 1:
             if (isle[0][0] == 0) & (isle[-1][-1] == (len(chain)-1)):
                 print('Fusing contour edges')
-                island = range(-(len(chain)-isle[-1][0]), 0)+isle[0]  # Fuse overlapping ends of contour
+
+                # Cannot add a range and a list (or int)
+                # island = range(-(len(chain)-isle[-1][0]), 0)+isle[0]  # Fuse overlapping ends of contour
                 # Delete islands to be spliced if start-end fusion required
                 del isle[0]
                 del isle[-1]
-                isle.insert(0, island)      # Prepend island to isle
+                # isle.insert(0, island)      # Prepend island to isle
         else:
             print('Microcontour...')
 

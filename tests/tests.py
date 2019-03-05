@@ -66,6 +66,7 @@ TEST_VIS_COMP_CONTOUR_SMALL_PLANT = "setaria_small_plant_composed_contours.npz"
 TEST_SAMPLED_RGB_POINTS = "sampled_rgb_points.txt"
 TEST_TARGET_IMG = "target_img.png"
 TEST_TARGET_IMG_WITH_HEXAGON = "target_img_w_hexagon.png"
+TEST_TARGET_IMG_TRIANGLE = "target_img copy.png"
 TEST_SOURCE1_IMG = "source1_img.png"
 TEST_SOURCE2_IMG = "source2_img.png"
 TEST_TARGET_MASK = "mask_img.png"
@@ -102,8 +103,12 @@ def test_plantcv_acute():
     pcv.params.debug = "print"
     _ = pcv.acute(obj=obj_contour, win=5, thresh=15, mask=mask)
     _ = pcv.acute(obj=obj_contour, win=0, thresh=15, mask=mask)
+    _ = pcv.acute(obj=np.array(([[213,190]],[[83,61]],[[149,246]])), win=84, thresh=192, mask=mask)
+    _ = pcv.acute(obj=np.array(([[3, 29]], [[31, 102]], [[161, 63]])), win = 148, thresh = 56, mask = mask)
+    _ = pcv.acute(obj=np.array(([[103, 154]], [[27, 227]], [[152, 83]])), win = 35, thresh = 0, mask = mask)
     # Test with debug = None
     pcv.params.debug = None
+    _ = pcv.acute(obj=np.array(([[103, 154]], [[27, 227]], [[152, 83]])), win=35, thresh=0, mask=mask)
     _ = pcv.acute(obj=obj_contour, win=0, thresh=15, mask=mask)
     homology_pts = pcv.acute(obj=obj_contour, win=5, thresh=15, mask=mask)
     assert all([i == j] for i, j in zip(np.shape(homology_pts), (29, 1, 2)))
@@ -2258,6 +2263,9 @@ def test_plantcv_x_axis_pseudolandmarks():
     pcv.params.debug = "plot"
     _ = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
     _ = pcv.x_axis_pseudolandmarks(obj=np.array([[0, 0], [0, 0]]), mask=np.array([[0, 0], [0, 0]]), img=img)
+    _ = pcv.x_axis_pseudolandmarks(obj = np.array(([[89,222]],[[252,39]],[[89,207]])),
+                                   mask = np.array(([[42, 161]], [[2, 47]], [[211, 222]])), img=img)
+
     _ = pcv.x_axis_pseudolandmarks(obj=(), mask=mask, img=img)
     # Test with debug = None
     pcv.params.debug = None
@@ -2319,6 +2327,10 @@ def test_plantcv_y_axis_pseudolandmarks():
     pcv.outputs.clear()
     _ = pcv.y_axis_pseudolandmarks(obj=[], mask=mask, img=img)
     _ = pcv.y_axis_pseudolandmarks(obj=(), mask=mask, img=img)
+    _ = pcv.y_axis_pseudolandmarks(obj=np.array(([[89, 222]], [[252, 39]], [[89, 207]])),
+                                   mask=np.array(([[42, 161]], [[2, 47]], [[211, 222]])), img=img)
+    _ = pcv.y_axis_pseudolandmarks(obj=np.array(([[21, 11]], [[159, 155]], [[237, 11]])),
+                                   mask=np.array(([[38, 54]], [[144, 169]], [[81, 137]])), img=img)
     # Test with debug = None
     pcv.params.debug = None
     left, right, center_h = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
@@ -2977,13 +2989,11 @@ def test_plantcv_transform_quick_color_check():
 def test_plantcv_transform_find_color_card():
     # Load rgb image
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
-    img_w_hexagon = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG_COLOR_CARD))
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_find_color_card")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     df, start, space = pcv.transform.find_color_card(rgb_img=rgb_img, threshold='adaptgauss', blurry=False)
-    _, _, _ = pcv.transform.find_color_card(rgb_img=img_w_hexagon, threshold='adaptgauss', blurry=False)
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=start,
