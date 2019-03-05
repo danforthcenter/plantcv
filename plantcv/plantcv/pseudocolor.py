@@ -10,22 +10,22 @@ from plantcv.plantcv import fatal_error
 
 
 def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0, max_value=255, obj=None, dpi=None,
-                axes=True, colorbar=True, path="."):
+                axes=True, colorbar=True):
     """Pseudocolor any grayscale image to custom colormap
 
     Inputs:
     gray_img    = grayscale image data
     mask        = binary mask
     cmap        = colormap
-    background  = background color/type. Options are "image" (gray_img), "white", or "black".
-                  A mask must be supplied
+    background  = background color/type, options are "image" (gray_img), "white", or "black"
+                  (a mask must be supplied)
     min_value   = minimum value for range of interest
     max_value   = maximum value for range of interest
     obj         = if provided, the pseudocolored image gets cropped down to the region of interest
-    dpi         = dots per inch
+    dpi         = dots per inch, (optional, if dpi=None then the matplotlib default is used, 100 dpi)
     axes        = if False then x- and y-axis won't be displayed, nor will the title
     colorbar    = if False then colorbar won't be displayed
-    path        = path for location for saving the image
+    path        = location for saving the image
 
     Returns:
     pseudo_image = pseudocolored image
@@ -52,12 +52,6 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
     # Check if the image is grayscale
     if len(np.shape(gray_img)) != 2:
         fatal_error("Image must be grayscale.")
-    # if max != 255:
-    #     # Any pixels above the max_value set to the max value
-    #     gray_img[gray_img > max_value] = max_value
-    # if min_value != 0:
-    #     # Any pixels below min_value set to the min_value value
-    #     gray_img[gray_img < min_value] = min_value
 
     # Apply the mask if given
     if mask is not None:
@@ -75,16 +69,14 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
             offsetx = int(w / 5)
             offsety = int(h / 5)
 
-            # copyMakeBorder will make a black or white frame around the image
             if background == "image":
-                # gray_img = gray_img[y:y + h + (2*offsety), x:x + w + (2*offsetx)]
                 gray_img1 = gray_img1[y - offsety:y + h + offsety, x - offsetx:x + w + offsetx]
             else:
                 # Crop img including buffer
                 gray_img1 = cv2.copyMakeBorder(crop_img, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT,
                                                value=(0, 0, 0))
 
-            # Crop the mask to the same size
+            # Crop the mask to the same size as the image
             crop_mask = mask[y:y + h, x:x + w]
             mask = cv2.copyMakeBorder(crop_mask, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT,
                                       value=(0, 0, 0))
@@ -102,30 +94,26 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
             # Background is all 255 (white)
             bkg_img = np.zeros(np.shape(gray_img1), dtype=np.uint8)
             bkg_img += 255
-            # Use the reverse gray cmap for the background
-            bkg_cmap = "gray_r"
+            bkg_cmap = "gray"
         elif background == "image":
-            # Set the background to the inpute gray image
+            # Set the background to the input gray image
             bkg_img = gray_img1
-            # Use the gray cmap for the background
             bkg_cmap = "gray"
         else:
             fatal_error(
                 "Background type {0} is not supported. Please use 'white', 'black', or 'image'.".format(background))
 
-        # Pseudocolor the image
-        # Plot the background first
+        # Pseudocolor the image, plot the background first
         pseudo_img1 = plt.imshow(bkg_img, cmap=bkg_cmap, vmin=min_value, vmax=max_value)
         # Overlay the masked grayscale image with the user input colormap
         plt.imshow(masked_img, cmap=cmap, vmin=min_value, vmax=max_value)
 
         if colorbar:
-            # Include the colorbar
             plt.colorbar(fraction=0.033, pad=0.04)
 
         if axes:
             # Include image title
-            plt.title('Pseudocolored image')  # + os.path.splitext(filename)[0])
+            plt.title('Pseudocolored image')
         else:
             # Remove axes
             plt.xticks([])
@@ -136,7 +124,7 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
 
         # Print or plot if debug is turned on
         if params.debug == 'print':
-            plt.savefig(os.path.join(path, str(params.device) + '_pseudocolored.png'), dpi=dpi)
+            plt.savefig(os.path.join(params.debug_outdir, str(params.device) + '_pseudocolored.png'), dpi=dpi)
             plt.close()
         elif params.debug == 'plot':
             plot_image(pseudo_img1)
@@ -149,9 +137,6 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
         # Pseudocolor the image
         pseudo_img1 = plt.imshow(gray_img1, cmap=cmap, vmin=min_value, vmax=max_value)
 
-        # Include image title
-        plt.title('Pseudocolored image')  # + os.path.splitext(filename)[0])
-
         if colorbar:
             # Include the colorbar
             plt.colorbar(fraction=0.033, pad=0.04)
@@ -168,7 +153,7 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
 
         # Print or plot if debug is turned on
         if params.debug == 'print':
-            plt.savefig(os.path.join(path, str(params.device) + '_pseudocolored.png'), dpi=dpi)
+            plt.savefig(os.path.join(params.debug_outdir, str(params.device) + '_pseudocolored.png'), dpi=dpi)
             pseudo_img.clear()
             plt.close()
         elif params.debug == 'plot':

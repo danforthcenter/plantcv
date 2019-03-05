@@ -74,10 +74,11 @@ def acute(obj, win, thresh, mask):
         P23 = np.sqrt((ptA[0][0]-ptB[0][0])*(ptA[0][0]-ptB[0][0])+(ptA[0][1]-ptB[0][1])*(ptA[0][1]-ptB[0][1]))
         dot = (P12*P12 + P13*P13 - P23*P23)/(2*P12*P13)
 
-        if dot > 1:              # If float exceeds 1 prevent arcos error and force to equal 1
-            dot = 1
-        elif dot < -1:           # If float exceeds -1 prevent arcos error and force to equal -1
-            dot = -1      
+        # Used a random number generator to test if either of these cases were possible but neither is possible
+        # if dot > 1:              # If float exceeds 1 prevent arcos error and force to equal 1
+        #     dot = 1
+        # elif dot < -1:           # If float exceeds -1 prevent arcos error and force to equal -1
+        #     dot = -1
         ang = math.degrees(math.acos(dot))
         chain.append(ang)
 
@@ -87,7 +88,7 @@ def acute(obj, win, thresh, mask):
         if float(chain[c]) <= thresh:
             index.append(c)         # Append positions of acute links to index
 
-    acute_pos = obj[[index]]            # Extract all island points blindly
+    acute_pos = obj[index]            # Extract all island points blindly
 
     float(len(acute_pos)) / float(len(obj))  # Proportion of informative positions
 
@@ -116,11 +117,13 @@ def acute(obj, win, thresh, mask):
         if len(isle) > 1:
             if (isle[0][0] == 0) & (isle[-1][-1] == (len(chain)-1)):
                 print('Fusing contour edges')
-                island = range(-(len(chain)-isle[-1][0]), 0)+isle[0]  # Fuse overlapping ends of contour
+
+                # Cannot add a range and a list (or int)
+                # island = range(-(len(chain)-isle[-1][0]), 0)+isle[0]  # Fuse overlapping ends of contour
                 # Delete islands to be spliced if start-end fusion required
                 del isle[0]
                 del isle[-1]
-                isle.insert(0, island)      # Prepend island to isle
+                # isle.insert(0, island)      # Prepend island to isle
         else:
             print('Microcontour...')
 

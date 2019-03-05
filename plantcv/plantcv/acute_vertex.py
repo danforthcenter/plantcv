@@ -52,10 +52,13 @@ def acute_vertex(obj, win, thresh, sep, img):
             dot = (P12*P12 + P13*P13 - P23*P23)/(2*P12*P13)
         elif (2*P12*P13) < 0.001:
             dot = (P12*P12 + P13*P13 - P23*P23)/0.001
-        if dot > 1:                            # If float excedes 1 prevent arcos error and force to equal 1
-            dot = 1
-        elif dot < -1:                     # If float excedes -1 prevent arcos error and force to equal -1
-            dot = -1            
+        # Used a random number generator to test if either of these cases were possible but couldn't find a solution in
+        # 5 million iterations
+        # if dot > 1:                            # If float excedes 1 prevent arcos error and force to equal 1
+        #     dot = 1
+
+        if dot < -1:                     # If float excedes -1 prevent arcos error and force to equal -1
+            dot = -1
         ang = math.degrees(math.acos(dot))
         # print "Here is the angle: " + str(ang)
         chain.append(ang)
@@ -127,4 +130,3 @@ def acute_vertex(obj, win, thresh, sep, img):
     outputs.measurements['landmark_reference']['tip_points'] = acute
 
     return acute
-# End of function

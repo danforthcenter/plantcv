@@ -425,8 +425,10 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
     """
 
     x = np.atleast_1d(x).astype('float64')
-    if x.size < 3:
-        return np.array([], dtype=int)
+
+    # It is always the case that x.size=256 since 256 hardcoded in line 186 -> cv2.calcHist([gray_img], [0], None, [256], [0, 255])
+    # if x.size < 3:
+    #     return np.array([], dtype=int)
 
     # # Where this function is used it is hardcoded to use the default valley=False so this will never be used
     # if valley:
@@ -435,9 +437,11 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
     dx = x[1:] - x[:-1]
     # handle NaN's
     indnan = np.where(np.isnan(x))[0]
-    if indnan.size:
-        x[indnan] = np.inf
-        dx[np.where(np.isnan(dx))[0]] = np.inf
+
+    # x will never contain NaN since calcHist will never return NaN
+    # if indnan.size:
+    #     x[indnan] = np.inf
+    #     dx[np.where(np.isnan(dx))[0]] = np.inf
     ine, ire, ife = np.array([[], [], []], dtype=int)
     # # Where this function is used it is hardcoded to use the default edge='rising' so we will never have
     # # edge=None, thus this will never be used
@@ -450,10 +454,10 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
         # if edge.lower() in ['falling', 'both']:
         #     ife = np.where((np.hstack((dx, 0)) < 0) & (np.hstack((0, dx)) >= 0))[0]
     ind = np.unique(np.hstack((ine, ire, ife)))
-    # handle NaN's
-    if ind.size and indnan.size:
-        # NaN's and values close to NaN's cannot be peaks
-        ind = ind[np.in1d(ind, np.unique(np.hstack((indnan, indnan - 1, indnan + 1))), invert=True)]
+    # x will never contain NaN since calcHist will never return NaN
+    # if ind.size and indnan.size:
+    #     # NaN's and values close to NaN's cannot be peaks
+    #     ind = ind[np.in1d(ind, np.unique(np.hstack((indnan, indnan - 1, indnan + 1))), invert=True)]
     # first and last values of x cannot be peaks
     if ind.size and ind[0] == 0:
         ind = ind[1:]
@@ -486,8 +490,9 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
     #     ind = np.sort(ind[~idel])
 
     if show:
-        if indnan.size:
-            x[indnan] = np.nan
+        # x will never contain NaN since calcHist will never return NaN
+        # if indnan.size:
+        #     x[indnan] = np.nan
         # # Where this function is used it is hardcoded to use the default valley=False so this will never be used
         # if valley:
         #     x = -x

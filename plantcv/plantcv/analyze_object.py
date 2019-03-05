@@ -130,22 +130,23 @@ def analyze_object(img, obj, mask):
             if 0 <= xintercept <= iy and 0 <= xintercept1 <= iy:
                 cv2.line(background1, (xintercept1, ix), (xintercept, 0), (255), params.line_thickness)
             elif xintercept < 0 or xintercept > iy or xintercept1 < 0 or xintercept1 > iy:
-                if xintercept < 0 and 0 <= xintercept1 <= iy:
-                    yintercept = int(b_line)
-                    cv2.line(background1, (0, yintercept), (xintercept1, ix), (255), params.line_thickness)
-                elif xintercept > iy and 0 <= xintercept1 <= iy:
-                    yintercept1 = int((slope * iy) + b_line)
-                    cv2.line(background1, (iy, yintercept1), (xintercept1, ix), (255), params.line_thickness)
-                elif 0 <= xintercept <= iy and xintercept1 < 0:
-                    yintercept = int(b_line)
-                    cv2.line(background1, (0, yintercept), (xintercept, 0), (255), params.line_thickness)
-                elif 0 <= xintercept <= iy and xintercept1 > iy:
-                    yintercept1 = int((slope * iy) + b_line)
-                    cv2.line(background1, (iy, yintercept1), (xintercept, 0), (255), params.line_thickness)
-                else:
-                    yintercept = int(b_line)
-                    yintercept1 = int((slope * iy) + b_line)
-                    cv2.line(background1, (0, yintercept), (iy, yintercept1), (255), params.line_thickness)
+                # Used a random number generator to test if either of these cases were possible but neither is possible
+                # if xintercept < 0 and 0 <= xintercept1 <= iy:
+                #     yintercept = int(b_line)
+                #     cv2.line(background1, (0, yintercept), (xintercept1, ix), (255), 5)
+                # elif xintercept > iy and 0 <= xintercept1 <= iy:
+                #     yintercept1 = int((slope * iy) + b_line)
+                #     cv2.line(background1, (iy, yintercept1), (xintercept1, ix), (255), 5)
+                # elif 0 <= xintercept <= iy and xintercept1 < 0:
+                #     yintercept = int(b_line)
+                #     cv2.line(background1, (0, yintercept), (xintercept, 0), (255), 5)
+                # elif 0 <= xintercept <= iy and xintercept1 > iy:
+                #     yintercept1 = int((slope * iy) + b_line)
+                #     cv2.line(background1, (iy, yintercept1), (xintercept, 0), (255), 5)
+                # else:
+                yintercept = int(b_line)
+                yintercept1 = int((slope * iy) + b_line)
+                cv2.line(background1, (0, yintercept), (iy, yintercept1), (255), 5)
         else:
             cv2.line(background1, (iy, caliper_mid_y), (0, caliper_mid_y), (255), params.line_thickness)
 

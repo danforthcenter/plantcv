@@ -1,9 +1,10 @@
 ## Pseudocolor any Grayscale Image
 
 This function pseudocolors any grayscale image to custom colormap. An optional mask can leave background out in the
-pseudocolored image. Additionally, optional maximum and minimum values can be specified.
+pseudocolored image. Additionally, optional maximum and minimum values can be specified. When `pcv.params.debug='print'` 
+then the image gets saved to `pcv.params.debug_outdir`. 
 
-**plantcv.pseudocolor**(*gray_img, mask=None, background="image", cmap=None, min_value=0, max_value=255, obj=None, dpi=None, axes=True, colorbar=True, path="."*)
+**plantcv.pseudocolor**(*gray_img, mask=None, background="image", cmap=None, min_value=0, max_value=255, obj=None, dpi=None, axes=True, colorbar=True*)
 
 **returns** pseudocolored image that can be saved with `pcv.print_image`
 
@@ -18,7 +19,6 @@ pseudocolored image. Additionally, optional maximum and minimum values can be sp
     - dpi        - Dots per inch for image if printed out (optional, if dpi=None then the default is set to 100 dpi).
     - axes       - If False then the title, x-axis, and y-axis won't be displayed (default axes=True).
     - colorbar   - If False then the colorbar won't be displayed (default colorbar=True)
-    - path       - Path giving location the image will get saved.
 - **Context:**
     - Used to pseudocolor any grayscale image to custom colormap
 - **Example use:**
@@ -40,10 +40,10 @@ from plantcv import plantcv as pcv
 pcv.params.debug='plot'
 
 # Pseudocolor an image with 'viridis' colormad
-pseudo_img = pcv.pseudocolor(gray_img=img, mask=None, cmap='viridis', min_value=0, max_value=255, path='.')
+pseudo_img = pcv.pseudocolor(gray_img=img, mask=None, cmap='viridis', min_value=0, max_value=255)
 
 # Pseudocolor the same image but include the mask and limit the range of values
-pseudo_img_masked = pcv.pseudocolor(gray_img=img, mask=mask, background="white", cmap='viridis', min_value=30, max_value=200, path='.')
+pseudo_img_masked = pcv.pseudocolor(gray_img=img, mask=mask, background="white", cmap='viridis', min_value=30, max_value=200)
 
 # Save the masked and pseudocolored image
 pcv.print_image(pseudo_img_masked, 'nir_tv_z300_L1_pseudocolored.png')
@@ -67,18 +67,19 @@ simple_pseudo_img = pcv.pseudocolor(gray_img=img, mask=mask, background="image",
 
 ![Screenshot](img/documentation_images/pseudocolor/pseudo_nomask.jpg)
 
-**Pseudocolored and Masked Image**
+**Pseudocolored, background="white"**
 
 ![Screenshot](img/documentation_images/pseudocolor/pseudo_img.jpg)
 
-**Pseudocolored, Plotted on Input Image**
+**Pseudocolored, background="image"**
+
 ![Screenshot](img/documentation_images/pseudocolor/pseudo_onimage.jpg)
 
 **Pseudocolored, Cropped, Disabled Axes Image**
 
 ![Screenshot](img/documentation_images/pseudocolor/pseudo_cropped.jpg)
 
-**Pseudocolored and Masked with Black Background**
+**Pseudocolored, background="black"**
 
 ![Screenshot](img/documentation_images/pseudocolor/pseudo_black_bkgd.jpg)
 
