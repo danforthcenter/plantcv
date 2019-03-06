@@ -571,6 +571,17 @@ def test_plantcv_auto_crop_grayscale_input():
     assert x > x1
 
 
+def test_plantcv_auto_crop_bad_input():
+    # Read in test data
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
+    gray_img = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
+    contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_OBJECT), encoding="latin1")
+    roi_contours = contours['arr_0']
+    with pytest.raises(RuntimeError):
+        pcv.params.debug = "plot"
+        _ = pcv.auto_crop(img=gray_img, objects=roi_contours[1], padding_x=20, padding_y=20, color='wite')
+
+
 def test_plantcv_canny_edge_detect():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_canny_edge_detect")

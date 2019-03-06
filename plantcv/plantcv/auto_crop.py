@@ -6,6 +6,7 @@ import numpy as np
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
+from plantcv.plantcv import fatal_error
 
 
 def auto_crop(img, objects, padding_x=0, padding_y=0, color='black'):
@@ -50,6 +51,8 @@ def auto_crop(img, objects, padding_x=0, padding_y=0, color='black'):
     elif color.upper() == 'IMAGE':
         # If padding is the image, crop the image with a buffer rather than cropping and adding a buffer
         cropped = img_copy2[y - offsety:y + h + offsety, x - offsetx:x + w + offsetx]
+    else:
+        fatal_error('Color was provided but ' + str(color) + ' is not "white", "black", or "image"!')
 
     if params.debug == 'print':
         print_image(img_copy, os.path.join(params.debug_outdir, str(params.device) + "_crop_area.png"))
