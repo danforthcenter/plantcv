@@ -69,7 +69,7 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
             offsetx = int(w / 5)
             offsety = int(h / 5)
 
-            if background == "image":
+            if background.upper() == "IMAGE":
                 gray_img1 = gray_img1[y - offsety:y + h + offsety, x - offsetx:x + w + offsetx]
             else:
                 # Crop img including buffer
@@ -85,17 +85,17 @@ def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0,
         masked_img = np.ma.array(gray_img1, mask=~mask.astype(np.bool))
 
         # Set the background color or type
-        if background == "black":
+        if background.upper() == "BLACK":
             # Background is all zeros
             bkg_img = np.zeros(np.shape(gray_img1), dtype=np.uint8)
             # Use the gray cmap for the background
             bkg_cmap = "gray"
-        elif background == "white":
+        elif background.upper() == "WHITE":
             # Background is all 255 (white)
             bkg_img = np.zeros(np.shape(gray_img1), dtype=np.uint8)
             bkg_img += 255
             bkg_cmap = "gray"
-        elif background == "image":
+        elif background.upper() == "IMAGE":
             # Set the background to the input gray image
             bkg_img = gray_img1
             bkg_cmap = "gray"
