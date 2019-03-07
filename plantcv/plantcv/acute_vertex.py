@@ -10,25 +10,25 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def acute_vertex(obj, win, thresh, sep, img):
+def acute_vertex(img, obj, win, thresh, sep):
     """acute_vertex: identify corners/acute angles of an object
 
     For each point in contour, get a point before (pre) and after (post) the point of interest,
     calculate the angle between the pre and post point.
 
     Inputs:
+    img    = the original image
     obj    = a contour of the plant object (this should be output from the object_composition.py fxn)
     win    = win argument specifies the pre and post point distances (a value of 30 worked well for a sample image)
     thresh = an threshold to set for acuteness; keep points with an angle more acute than the threshold (a value of 15
              worked well for sample image)
     sep    = the number of contour points to search within for the most acute value
-    img    = the original image
 
+    :param img: ndarray
     :param obj: ndarray
     :param win: int
     :param thresh: int
     :param sep: int
-    :param img: ndarray
     :return acute: ndarray
     """
     params.device += 1

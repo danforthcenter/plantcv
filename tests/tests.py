@@ -541,13 +541,13 @@ def test_plantcv_auto_crop():
     roi_contours = contours['arr_0']
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.auto_crop(img=img1, objects=roi_contours[1], padding_x=20, padding_y=20, color='black')
+    _ = pcv.auto_crop(img=img1, obj=roi_contours[1], padding_x=20, padding_y=20, color='black')
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.auto_crop(img=img1, objects=roi_contours[1], padding_x=20, padding_y=20, color='image')
+    _ = pcv.auto_crop(img=img1, obj=roi_contours[1], padding_x=20, padding_y=20, color='image')
     # Test with debug = None
     pcv.params.debug = None
-    cropped = pcv.auto_crop(img=img1, objects=roi_contours[1], padding_x=20, padding_y=20, color='black')
+    cropped = pcv.auto_crop(img=img1, obj=roi_contours[1], padding_x=20, padding_y=20, color='black')
     x, y, z = np.shape(img1)
     x1, y1, z1 = np.shape(cropped)
     assert x > x1
@@ -565,7 +565,7 @@ def test_plantcv_auto_crop_grayscale_input():
     roi_contours = contours['arr_0']
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    cropped = pcv.auto_crop(img=gray_img, objects=roi_contours[1], padding_x=20, padding_y=20, color='white')
+    cropped = pcv.auto_crop(img=gray_img, obj=roi_contours[1], padding_x=20, padding_y=20, color='white')
     x, y = np.shape(gray_img)
     x1, y1 = np.shape(cropped)
     assert x > x1
@@ -579,7 +579,7 @@ def test_plantcv_auto_crop_bad_input():
     roi_contours = contours['arr_0']
     with pytest.raises(RuntimeError):
         pcv.params.debug = "plot"
-        _ = pcv.auto_crop(img=gray_img, objects=roi_contours[1], padding_x=20, padding_y=20, color='wite')
+        _ = pcv.auto_crop(img=gray_img, obj=roi_contours[1], padding_x=20, padding_y=20, color='wite')
 
 
 def test_plantcv_canny_edge_detect():
@@ -839,13 +839,13 @@ def test_plantcv_dilate():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.dilate(gray_img=img, kernel=5, i=1)
+    _ = pcv.dilate(gray_img=img, ksize=5, i=1)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.dilate(gray_img=img, kernel=5, i=1)
+    _ = pcv.dilate(gray_img=img, ksize=5, i=1)
     # Test with debug = None
     pcv.params.debug = None
-    dilate_img = pcv.dilate(gray_img=img, kernel=5, i=1)
+    dilate_img = pcv.dilate(gray_img=img, ksize=5, i=1)
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(dilate_img), TEST_BINARY_DIM)):
         # Assert that the image is binary
@@ -866,13 +866,13 @@ def test_plantcv_erode():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.erode(gray_img=img, kernel=5, i=1)
+    _ = pcv.erode(gray_img=img, ksize=5, i=1)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.erode(gray_img=img, kernel=5, i=1)
+    _ = pcv.erode(gray_img=img, ksize=5, i=1)
     # Test with debug = None
     pcv.params.debug = None
-    erode_img = pcv.erode(gray_img=img, kernel=5, i=1)
+    erode_img = pcv.erode(gray_img=img, ksize=5, i=1)
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(erode_img), TEST_BINARY_DIM)):
         # Assert that the image is binary
@@ -1062,14 +1062,14 @@ def test_plantcv_gaussian_blur():
     img_color = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.gaussian_blur(img=img, ksize=(51, 51), sigmax=0, sigmay=None)
+    _ = pcv.gaussian_blur(img=img, ksize=(51, 51), sigma_x=0, sigma_y=None)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.gaussian_blur(img=img, ksize=(51, 51), sigmax=0, sigmay=None)
-    _ = pcv.gaussian_blur(img=img_color, ksize=(51, 51), sigmax=0, sigmay=None)
+    _ = pcv.gaussian_blur(img=img, ksize=(51, 51), sigma_x=0, sigma_y=None)
+    _ = pcv.gaussian_blur(img=img_color, ksize=(51, 51), sigma_x=0, sigma_y=None)
     # Test with debug = None
     pcv.params.debug = None
-    gaussian_img = pcv.gaussian_blur(img=img, ksize=(51, 51), sigmax=0, sigmay=None)
+    gaussian_img = pcv.gaussian_blur(img=img, ksize=(51, 51), sigma_x=0, sigma_y=None)
     imgavg = np.average(img)
     gavg = np.average(gaussian_img)
     assert gavg != imgavg
@@ -1226,13 +1226,13 @@ def test_plantcv_laplace_filter():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.laplace_filter(gray_img=img, k=1, scale=1)
+    _ = pcv.laplace_filter(gray_img=img, ksize=1, scale=1)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.laplace_filter(gray_img=img, k=1, scale=1)
+    _ = pcv.laplace_filter(gray_img=img, ksize=1, scale=1)
     # Test with debug = None
     pcv.params.debug = None
-    lp_img = pcv.laplace_filter(gray_img=img, k=1, scale=1)
+    lp_img = pcv.laplace_filter(gray_img=img, ksize=1, scale=1)
     # Assert that the output image has the dimensions of the input image
     assert all([i == j] for i, j in zip(np.shape(lp_img), TEST_GRAY_DIM))
 
@@ -1579,6 +1579,7 @@ def test_plantcv_readimage_native():
 
 def test_plantcv_readimage_grayscale():
     pcv.params.debug = None
+    img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_GRAY), mode="grey")
     img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_GRAY), mode="gray")
     assert len(np.shape(img)) == 2
 
@@ -2049,15 +2050,15 @@ def test_plantcv_scale_features():
     obj_contour = contours_npz['arr_0']
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.scale_features(obj=obj_contour, mask=mask, points=TEST_ACUTE_RESULT, boundary_line=50)
+    _ = pcv.scale_features(obj=obj_contour, mask=mask, points=TEST_ACUTE_RESULT, line_position=50)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.scale_features(obj=obj_contour, mask=mask, points=TEST_ACUTE_RESULT, boundary_line='NA')
+    _ = pcv.scale_features(obj=obj_contour, mask=mask, points=TEST_ACUTE_RESULT, line_position='NA')
     # Test with debug = None
     pcv.params.debug = None
     points_rescaled, centroid_rescaled, bottomline_rescaled = pcv.scale_features(obj=obj_contour, mask=mask,
                                                                                  points=TEST_ACUTE_RESULT,
-                                                                                 boundary_line=50)
+                                                                                 line_position=50)
     assert len(points_rescaled) == 23
 
 
@@ -2065,7 +2066,7 @@ def test_plantcv_scale_features_bad_input():
     mask = np.array([])
     obj_contour = np.array([])
     pcv.params.debug = None
-    result = pcv.scale_features(obj=obj_contour, mask=mask, points=TEST_ACUTE_RESULT, boundary_line=50)
+    result = pcv.scale_features(obj=obj_contour, mask=mask, points=TEST_ACUTE_RESULT, line_position=50)
     assert all([i == j] for i, j in zip(result, [("NA", "NA"), ("NA", "NA"), ("NA", "NA")]))
 
 
@@ -2125,6 +2126,14 @@ def test_plantcv_shift_img_bad_input():
         _ = pcv.shift_img(img=img, number=-300, side="top")
 
 
+def test_plantcv_shift_img_bad_side_input():
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    with pytest.raises(RuntimeError):
+        pcv.params.debug = None
+        _ = pcv.shift_img(img=img, number=300, side="starboard")
+
+
 def test_plantcv_sobel_filter():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_sobel_filter")
@@ -2134,13 +2143,13 @@ def test_plantcv_sobel_filter():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.sobel_filter(gray_img=img, dx=1, dy=0, k=1)
+    _ = pcv.sobel_filter(gray_img=img, dx=1, dy=0, ksize=1)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.sobel_filter(gray_img=img, dx=1, dy=0, k=1)
+    _ = pcv.sobel_filter(gray_img=img, dx=1, dy=0, ksize=1)
     # Test with debug = None
     pcv.params.debug = None
-    sobel_img = pcv.sobel_filter(gray_img=img, dx=1, dy=0, k=1)
+    sobel_img = pcv.sobel_filter(gray_img=img, dx=1, dy=0, ksize=1)
     # Assert that the output image has the dimensions of the input image
     assert all([i == j] for i, j in zip(np.shape(sobel_img), TEST_GRAY_DIM))
 
@@ -2248,6 +2257,15 @@ def test_plantcv_white_balance_bad_input():
     with pytest.raises(RuntimeError):
         pcv.params.debug = "plot"
         _ = pcv.white_balance(img=img, mode='hist', roi=(5, 5, 5, 5, 5))
+
+
+def test_plantcv_white_balance_bad_mode_input():
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MARKER))
+    # Test with debug = None
+    with pytest.raises(RuntimeError):
+        pcv.params.debug = "plot"
+        _ = pcv.white_balance(img=img, mode='histogram', roi=(5, 5, 80, 80))
 
 
 def test_plantcv_white_balance_bad_input_int():
@@ -3254,7 +3272,7 @@ def test_plantcv_threshold_texture():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY_SMALL), -1)
-    binary_img = pcv.threshold.texture(gray_img, kernel=6, threshold=7, offset=3, texture_method='dissimilarity',
+    binary_img = pcv.threshold.texture(gray_img, ksize=6, threshold=7, offset=3, texture_method='dissimilarity',
                                        borders='nearest', max_value=255)
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(binary_img), TEST_GRAY_DIM)):

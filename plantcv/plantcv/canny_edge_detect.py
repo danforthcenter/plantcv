@@ -11,19 +11,19 @@ import cv2
 import os
 
 
-def canny_edge_detect(img, sigma=1.0, low_thresh=None, high_thresh=None, thickness=1,
-                      mask=None, mask_color=None, use_quantiles=False):
+def canny_edge_detect(img, mask = None, sigma=1.0, low_thresh=None, high_thresh=None, thickness=1,
+                      mask_color=None, use_quantiles=False):
     """Edge filter an image using the Canny algorithm.
 
     Inputs:
     img           = RGB or grayscale image data
+    mask          = Mask to limit the application of Canny to a certain area, takes a binary img. (OPTIONAL)
     sigma         = Standard deviation of the Gaussian filter
     low_thresh    = Lower bound for hysteresis thresholding (linking edges). If None (default) then low_thresh is set to
                     10% of the image's max (OPTIONAL)
     high_thresh   = Upper bound for hysteresis thresholding (linking edges). If None (default) then high_thresh is set
                     to 20% of the image's max (OPTIONAL)
     thickness     = How thick the edges should appear, default thickness=1 (OPTIONAL)
-    mask          = Mask to limit the application of Canny to a certain area, takes a binary img. (OPTIONAL)
     mask_color    = Color of the mask provided; either None (default), 'white', or 'black'
     use_quantiles = Default is False, if True then treat low_thresh and high_thresh as quantiles of the edge magnitude
                     image, rather than the absolute edge magnitude values. If True then thresholds range is [0,1].
@@ -33,11 +33,11 @@ def canny_edge_detect(img, sigma=1.0, low_thresh=None, high_thresh=None, thickne
     bin_img      = Thresholded, binary image
 
     :param img: numpy.ndarray
+    :param mask: numpy.ndarray
     :param sigma = float
     :param low_thresh: float
     :param high_thresh: float
     :param thickness: int
-    :param mask: numpy.ndarray
     :param mask_color: str
     :param use_quantiles: bool
     :return bin_img: numpy.ndarray

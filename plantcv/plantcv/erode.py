@@ -8,25 +8,25 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
 
 
-def erode(gray_img, kernel, i):
+def erode(gray_img, ksize, i):
     """Perform morphological 'erosion' filtering. Keeps pixel in center of the kernel if conditions set in kernel are
        true, otherwise removes pixel.
 
     Inputs:
     gray_img = Grayscale (usually binary) image data
-    kernel   = Kernel size (int). A k x k kernel will be built. Must be greater than 1 to have an effect.
+    ksize   = Kernel size (int). A ksize x ksize kernel will be built. Must be greater than 1 to have an effect.
     i        = interations, i.e. number of consecutive filtering passes
 
     Returns:
     er_img = eroded image
 
     :param gray_img: numpy.ndarray
-    :param kernel: int
+    :param ksize: int
     :param i: int
     :return er_img: numpy.ndarray
     """
 
-    kernel1 = int(kernel)
+    kernel1 = int(ksize)
     kernel2 = np.ones((kernel1, kernel1), np.uint8)
     er_img = cv2.erode(src=gray_img, kernel=kernel2, iterations=i)
     params.device += 1

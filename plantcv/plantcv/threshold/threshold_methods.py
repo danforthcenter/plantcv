@@ -37,9 +37,9 @@ def binary(gray_img, threshold, max_value, object_type="light"):
 
     # Set the threshold method
     threshold_method = ""
-    if object_type == "light":
+    if object_type.upper() == "LIGHT":
         threshold_method = cv2.THRESH_BINARY
-    elif object_type == "dark":
+    elif object_type.upper() == "DARK":
         threshold_method = cv2.THRESH_BINARY_INV
     else:
         fatal_error('Object type ' + str(object_type) + ' is not "light" or "dark"!')
@@ -73,9 +73,9 @@ def gaussian(gray_img, max_value, object_type="light"):
 
     # Set the threshold method
     threshold_method = ""
-    if object_type == "light":
+    if object_type.upper() == "LIGHT":
         threshold_method = cv2.THRESH_BINARY
-    elif object_type == "dark":
+    elif object_type.upper() == "DARK":
         threshold_method = cv2.THRESH_BINARY_INV
     else:
         fatal_error('Object type ' + str(object_type) + ' is not "light" or "dark"!')
@@ -109,9 +109,9 @@ def mean(gray_img, max_value, object_type="light"):
 
     # Set the threshold method
     threshold_method = ""
-    if object_type == "light":
+    if object_type.upper() == "LIGHT":
         threshold_method = cv2.THRESH_BINARY
-    elif object_type == "dark":
+    elif object_type.upper() == "DARK":
         threshold_method = cv2.THRESH_BINARY_INV
     else:
         fatal_error('Object type ' + str(object_type) + ' is not "light" or "dark"!')
@@ -145,9 +145,9 @@ def otsu(gray_img, max_value, object_type="light"):
 
     # Set the threshold method
     threshold_method = ""
-    if object_type == "light":
+    if object_type.upper() == "LIGHT":
         threshold_method = cv2.THRESH_BINARY + cv2.THRESH_OTSU
-    elif object_type == "dark":
+    elif object_type.upper() == "DARK":
         threshold_method = cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU
     else:
         fatal_error('Object type ' + str(object_type) + ' is not "light" or "dark"!')
@@ -231,9 +231,9 @@ def triangle(gray_img, max_value, object_type="light", xstep=1):
 
     # Set the threshold method
     threshold_method = ""
-    if object_type == "light":
+    if object_type.upper() == "LIGHT":
         threshold_method = cv2.THRESH_BINARY + cv2.THRESH_OTSU
-    elif object_type == "dark":
+    elif object_type.upper() == "DARK":
         threshold_method = cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU
     else:
         fatal_error('Object type ' + str(object_type) + ' is not "light" or "dark"!')
@@ -264,14 +264,14 @@ def triangle(gray_img, max_value, object_type="light", xstep=1):
     return bin_img
 
 
-def texture(gray_img, kernel, threshold, offset=3, texture_method='dissimilarity', borders='nearest',
+def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity', borders='nearest',
             max_value=255):
     """Creates a binary image from a grayscale image using skimage texture calculation for thresholding.
     This function is quite slow.
 
     Inputs:
     gray_img       = Grayscale image data
-    kernel         = Kernel size for texture measure calculation
+    ksize          = Kernel size for texture measure calculation
     threshold      = Threshold value (0-255)
     offset         = Distance offsets
     texture_method = Feature of a grey level co-occurrence matrix, either
@@ -286,7 +286,7 @@ def texture(gray_img, kernel, threshold, offset=3, texture_method='dissimilarity
     bin_img        = Thresholded, binary image
 
     :param gray_img: numpy.ndarray
-    :param kernel: int
+    :param ksize: int
     :param threshold: int
     :param offset: int
     :param texture_method: str
@@ -297,7 +297,7 @@ def texture(gray_img, kernel, threshold, offset=3, texture_method='dissimilarity
 
     # Function that calculates the texture of a kernel
     def calc_texture(inputs):
-        inputs = np.reshape(a=inputs, newshape=[kernel, kernel])
+        inputs = np.reshape(a=inputs, newshape=[ksize, ksize])
         inputs = inputs.astype(np.uint8)
         # Greycomatrix takes image, distance offset, angles (in radians), symmetric, and normed
         # http://scikit-image.org/docs/dev/api/skimage.feature.html#skimage.feature.greycomatrix
@@ -309,7 +309,7 @@ def texture(gray_img, kernel, threshold, offset=3, texture_method='dissimilarity
     output = np.zeros(gray_img.shape, dtype=gray_img.dtype)
 
     # Apply the texture function over the whole image
-    generic_filter(gray_img, calc_texture, size=kernel, output=output, mode=borders)
+    generic_filter(gray_img, calc_texture, size=ksize, output=output, mode=borders)
 
     # Threshold so higher texture measurements stand out
     bin_img = binary(gray_img=output, threshold=threshold, max_value=max_value, object_type='light')
