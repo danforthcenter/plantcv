@@ -10,22 +10,22 @@ from plantcv.plantcv import outputs
 from plantcv.plantcv import fatal_error
 
 
-def y_axis_pseudolandmarks(obj, mask, img):
+def y_axis_pseudolandmarks(img, obj, mask):
     """Divide up object contour into 19 equidistant segments and generate landmarks for each
 
     Inputs:
+    img      = This is a copy of the original plant image generated using np.copy if debug is true it will be drawn on
     obj      = a contour of the plant object (this should be output from the object_composition.py fxn)
     mask     = this is a binary image. The object should be white and the background should be black
-    img      = This is a copy of the original plant image generated using np.copy if debug is true it will be drawn on
 
     Returns:
     top      =
     bottom   =
     center_v =
 
+    :param img: numpy.ndarray
     :param obj: list
     :param mask: numpy.ndarray
-    :param img: numpy.ndarray
     :return left:
     :return right:
     :return center_h:

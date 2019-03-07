@@ -3,7 +3,7 @@
 This is a function to to transform the coordiantes of landmark points onto a common scale (0-1.0)
 Scaling is used to remove the influence of size on shape parameters. Returns a list of tuples.
 
-**plantcv.scale_features**(*obj, mask, points, boundary_line*)
+**plantcv.scale_features**(*obj, mask, points, line_position*)
 
 **returns** rescaled landmark points, a rescaled centroid point, a rescaled baseline point
 
@@ -11,7 +11,7 @@ Scaling is used to remove the influence of size on shape parameters. Returns a l
     - obj - A contour of the plant object (this should be output from the object_composition.py fxn)
     - mask - This is a binary image. The object should be white and the background should be black
     - points - A set of landmark points to be rescaled given the centroid of the object
-    - boundary_line - A vertical coordinate (int) that denotes the height of the plant pot, the coordinates of this reference point is also rescaled
+    - line_position - A vertical coordinate (int) that denotes the height of the plant pot, the coordinates of this reference point is also rescaled
 - **Context:**
     - Used to rescale the point coordinates of landmark points, including centroid and boundary line
     

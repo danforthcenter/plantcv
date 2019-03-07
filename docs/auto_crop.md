@@ -2,13 +2,13 @@
 
 Crops image to an object and allows user to specify image padding (if desired)
 
-**plantcv.auto_crop**(*img, objects, padding_x=0, padding_y=0, color='black'*)
+**plantcv.auto_crop**(*img, obj, padding_x=0, padding_y=0, color='black'*)
 
 **returns** image after resizing
 
 - **Parameters:**
     - img - RGB or grayscale image data
-    - object - contour of target object 
+    - obj - contour of target object 
     - padding_x - padding in the x direction (default padding_x=0)
     - padding_y - padding in the y direction (default padding_x=0)
     - color - either 'black' (default), 'white', or 'image'

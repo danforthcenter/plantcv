@@ -125,11 +125,13 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist = **plantcv.acute**(*obj, win, thresh, mask, device, debug=None*)
 * post v3.0dev2: homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist = **plantcv.acute**(*obj, win, thresh, mask*)
+* post v3.2: homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist = **plantcv.acute**(*obj, mask, win, thresh*)
 
 #### plantcv.acute_vertex
 
 * pre v3.0dev2: device, acute = **plantcv.acute_vertex**(*obj, win, thresh, sep, img, device, debug=None*)
 * post v3.0dev2: acute = **plantcv.acute_vertex**(*obj, win, thresh, sep, img*)
+* post v3.2: acute = **plantcv.acute_vertex**(*img, obj, win, thresh, sep*)
 
 #### plantcv.adaptive_threshold
 
@@ -184,6 +186,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, cropped = **plantcv.auto_crop**(*device, img, objects, padding_x=0, padding_y=0, color='black', debug=None*)
 * post v3.0dev2: cropped = **plantcv.auto_crop**(*img, objects, padding_x=0, padding_y=0, color='black'*)
+* post v3.2: cropped = **plantcv.auto_crop**(*img, obj, padding_x=0, padding_y=0, color='black*) 
 
 #### plantcv.background_subtraction
 
@@ -195,6 +198,11 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, bin_img = **plantcv.binary_threshold**(*img, threshold, maxValue, object_type, device, debug=None*)
 * post v3.0dev2: Deprecated, see:
     * bin_img = **plantcv.threshold.binary**(*gray_img, threshold, max_value, object_type="light"*)
+    
+#### plantcv.canny_edge_detect
+
+** pre v3.2: NA
+** post v3.2: bin_img = **plantcv.canny_edge_detect**(*img, mask = None, sigma=1.0, low_thresh=None, high_thresh=None, thickness=1, mask_color=None, use_quantiles=False*)
 
 #### plantcv.cluster_contour_splitimg
 
@@ -220,15 +228,16 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, contour, hierarchy = **plantcv.define_roi**(*img, shape, device, roi=None, roi_input='default', debug=None, adjust=False, x_adj=0, y_adj=0, w_adj=0, h_adj=0*)
 * post v3.0dev2: Deprecated, see:
-    * roi_contour, roi_hierarchy = **plantcv.roi.circle**(*x, y, r, img*)
-    * roi_contour, roi_hierarchy = **plantcv.roi.ellipse**(*x, y, r1, r2, angle, img*)
-    * roi_contour, roi_hierarchy = **plantcv.roi.from_binary_image**(*bin_img, img*)
-    * roi_contour, roi_hierarchy = **plantcv.roi.rectangle**(*x, y, h, w, img*)
+    * roi_contour, roi_hierarchy = **plantcv.roi.circle**(*img, x, y, r*)
+    * roi_contour, roi_hierarchy = **plantcv.roi.ellipse**(*img, x, y, r1, r2, angle*)
+    * roi_contour, roi_hierarchy = **plantcv.roi.from_binary_image**(*img, bin_img*)
+    * roi_contour, roi_hierarchy = **plantcv.roi.rectangle**(*img, x, y, h, w*)
 
 #### plantcv.dilate
 
 * pre v3.0dev2: device, dil_img = **plantcv.dilate**(*img, kernel, i, device, debug=None*)
 * post v3.0dev2: dil_img = **plantcv.dilate**(*gray_img, kernel, i*)
+* post v3.2: dil_img = **plantcv.dilate**(*gray_img, ksize, i*)
 
 #### plantcv.distance_transform
 
@@ -239,6 +248,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, er_img = **plantcv.erode**(*img, kernel, i, device, debug=None*)
 * post v3.0dev2: er_img = **plantcv.erode**(*gray_img, kernel, i*)
+* post v3.2: er_img = **plantcv.erode**(*gray_img, ksize, i*)
 
 #### plantcv.fill
 
@@ -265,6 +275,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, img_gblur = **plantcv.gaussian_blur**(*device, img, ksize, sigmax=0, sigmay=None, debug=None*)
 * post v3.0dev2: img_gblur = **plantcv.gaussian_blur**(*img, ksize, sigmax=0, sigmay=None*)
+* post v3.2: img_gblur = **plantcv.gaussian_blur**(*img, ksize, sigma_x=0, sigma_y=None*)
 
 #### plantcv.get_nir
 
@@ -301,6 +312,7 @@ post v3.0: new_img = **plantcv.image_subtract**(*gray_img1, gray_img2*)
 
 * pre v3.0dev2: device, lp_filtered = **plantcv.laplace_filter**(*img, k, scale, device, debug=None*)
 * post v3.0dev2: lp_filtered = **plantcv.laplace_filter**(*gray_img, k, scale*)
+* post v3.2: lp_filtered = **plantcv.laplace_filter**(*gray_img, ksize, scale*)
 
 #### plantcv.logical_and
 
@@ -321,7 +333,7 @@ post v3.0: new_img = **plantcv.image_subtract**(*gray_img1, gray_img2*)
 
 * pre v3.0dev2: device, img_mblur = **plantcv.median_blur**(*img, ksize, device, debug=None*)
 * post v3.0dev2: img_mblur = **plantcv.median_blur**(*gray_img, ksize*)
-* post v3.0: img_blur = **plantcv.median_blur**(*gray_img, ksize*) OR img_blur = **plantcv.median_blur**(*gray_img, (ksize1, ksize2)*)
+* post v3.2: img_blur = **plantcv.median_blur**(*gray_img, ksize*) OR img_blur = **plantcv.median_blur**(*gray_img, (ksize1, ksize2)*)
 
 #### plantcv.naive_bayes_classifier
 
@@ -367,8 +379,7 @@ post v3.0: new_img = **plantcv.image_subtract**(*gray_img1, gray_img2*)
 #### plantcv.pseudocolor
 
 * pre v3.1: NA
-* post v3.1: pseudo_img = **plantcv.pseudocolor**(*gray_img, mask=None, cmap=None, background="image", min_value=0, max_value=255, obj=None, dpi=None,
-                axes=True, colorbar=True, path="."*)
+* post v3.1: pseudo_img = **plantcv.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, dpi=None, axes=True, colorbar=True*)
 
 #### plantcv.readbayer
 
@@ -414,22 +425,22 @@ post v3.0: new_img = **plantcv.image_subtract**(*gray_img1, gray_img2*)
 #### plantcv.roi.circle
 
 * pre v3.0dev1: NA
-* post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.circle**(*x, y, r, img*)
+* post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.circle**(*img, x, y, r*)
 
 #### plantcv.roi.ellipse
 
 * pre v3.0dev1: NA
-* post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.ellipse**(*x, y, r1, r2, angle, img*)
+* post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.ellipse**(*img, x, y, r1, r2, angle*)
 
 #### plantcv.roi.from_binary_image
 
 * pre v3.0dev1: NA
-* post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.from_binary_image**(*bin_img, img*)
+* post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.from_binary_image**(*img, bin_img*)
 
 #### plantcv.roi.rectangle
 
 * pre v3.0dev1: NA
-* post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.rectangle**(*x, y, h, w, img*)
+* post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.rectangle**(*img, x, y, h, w*)
 
 #### plantcv.roi.multi
 
@@ -456,6 +467,7 @@ post v3.0: new_img = **plantcv.image_subtract**(*gray_img1, gray_img2*)
 
 * pre v3.0dev2: device, rescaled, centroid_scaled, boundary_line_scaled = **plantcv.scale_features**(*obj, mask, points, boundary_line, device, debug=None*)
 * post v3.0dev2: rescaled, centroid_scaled, boundary_line_scaled = **plantcv.scale_features**(*obj, mask, points, boundary_line*)
+* post v3.2: rescaled, centroid_scaled, boundary_line_scaled = **plantcv.scale_features**(*obj, mask, points, line_position*)
 
 #### plantcv.scharr_filter
 
@@ -471,6 +483,7 @@ post v3.0: new_img = **plantcv.image_subtract**(*gray_img1, gray_img2*)
 
 * pre v3.0dev2: device, sb_img = **plantcv.sobel_filter**(*img, dx, dy, k, device, debug=None*)
 * post v3.0dev2: sb_img = **plantcv.sobel_filter**(*gray_img, dx, dy, k*)
+* post v3.2: sb_img = **plantcv.sobel_filer**(*gray_img, dx, dy, ksize*)
 
 #### plantcv.threshold.binary
 
@@ -495,7 +508,7 @@ post v3.0: new_img = **plantcv.image_subtract**(*gray_img1, gray_img2*)
 #### plantcv.threshold.texture_filter
 
 * pre v3.0: NA
-* post v3.0: bin_img = **plantcv.threshold.texture_filter**(*gray_img, kernel, threshold, offset=3, texture_method='dissimilarity', borders='nearest', max_value=255*)
+* post v3.0: bin_img = **plantcv.threshold.texture_filter**(*gray_img, ksize, threshold, offset=3, texture_method='dissimilarity', borders='nearest', max_value=255*)
 
 #### plantcv.threshold.triangle
 
@@ -573,8 +586,10 @@ post v3.0: new_img = **plantcv.image_subtract**(*gray_img1, gray_img2*)
 
 * pre v3.0dev2: device, top, bottom, center_v = **plantcv.x_axis_pseudolandmarks**(*obj, mask, img, device, debug=None*)
 * post v3.0dev2: top, bottom, center_v = **plantcv.x_axis_pseudolandmarks**(*obj, mask, img*)
+* post v3.2: top, bottom, center_v = **plantcv.x_axis_pseudolandmarks**(*img, obj, mask*)
 
 #### plantcv.y_axis_pseudolandmarks
 
 * pre v3.0dev2: device, left, right, center_h = **plantcv.y_axis_pseudolandmarks**(*obj, mask, img, device, debug=None*)
 * post v3.0dev2: left, right, center_h = **plantcv.y_axis_pseudolandmarks**(*obj, mask, img*)
+* post v3.2: left, right, center_h = **plantcv.y_axis_pseudolandmarks**(*img, obj, mask*)

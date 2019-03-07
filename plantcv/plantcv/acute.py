@@ -5,16 +5,17 @@ import math
 import cv2
 from plantcv.plantcv import params
 
-def acute(obj, win, thresh, mask):
+def acute(obj, mask, win, thresh):
     """acute: identify landmark positions within a contour for morphometric analysis
 
     Inputs:
     obj         = An opencv contour array of interest to be scanned for landmarks
+    mask        = binary mask used to generate contour array (necessary for ptvals)
     win         = maximum cumulative pixel distance window for calculating angle
                   score; 1 cm in pixels often works well
     thresh      = angle score threshold to be applied for mapping out landmark
                   coordinate clusters within each contour
-    mask        = binary mask used to generate contour array (necessary for ptvals)
+
 
     Outputs:
     homolog_pts = pseudo-landmarks selected from each landmark cluster
@@ -29,9 +30,9 @@ def acute(obj, win, thresh, mask):
                   in troubleshooting.
 
     :param obj: ndarray
+    :param mask: ndarray
     :param win: int
     :param thresh: int
-    :param mask: ndarray
     :return homolog_pts:
     """
 

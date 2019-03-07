@@ -9,37 +9,35 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 
 
-def pseudocolor(gray_img, mask=None, cmap=None, background="image", min_value=0, max_value=255, obj=None, dpi=None,
+def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, dpi=None,
                 axes=True, colorbar=True):
     """Pseudocolor any grayscale image to custom colormap
 
     Inputs:
     gray_img    = grayscale image data
+    obj         = if provided, the pseudocolored image gets cropped down to the region of interest
     mask        = binary mask
     cmap        = colormap
     background  = background color/type, options are "image" (gray_img), "white", or "black"
                   (a mask must be supplied)
     min_value   = minimum value for range of interest
     max_value   = maximum value for range of interest
-    obj         = if provided, the pseudocolored image gets cropped down to the region of interest
     dpi         = dots per inch, (optional, if dpi=None then the matplotlib default is used, 100 dpi)
     axes        = if False then x- and y-axis won't be displayed, nor will the title
     colorbar    = if False then colorbar won't be displayed
-    path        = location for saving the image
 
     Returns:
     pseudo_image = pseudocolored image
 
     :param gray_img: numpy.ndarray
+    :param obj: numpy.ndarray
     :param mask: numpy.ndarray
     :param cmap: str
     :param background: str
     :param min_value: numeric
     :param max_value: numeric
-    :param obj: numpy.ndarray
     :param dpi: int
     :param axes: bool
-    :param path: str
     :return pseudo_image: numpy.ndarray
     """
 
