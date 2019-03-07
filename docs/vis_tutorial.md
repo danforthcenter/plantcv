@@ -265,7 +265,7 @@ Next a [rectangular region of interest](roi_rectangle.md) is defined (this can b
 ```python
 
     # Define ROI
-    roi1, roi_hierarchy= pcv.roi.rectangle(x=100, y=100, h=200, w=200, img=masked2)
+    roi1, roi_hierarchy= pcv.roi.rectangle(img=masked2, x=100, y=100, h=200, w=200)
 ```
 
 **Figure 12.** Region of interest drawn onto image. 

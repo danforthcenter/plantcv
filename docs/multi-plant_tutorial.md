@@ -178,7 +178,7 @@ Convert the image from [RGB to LAB](rgb2lab.md) and select single color channel 
 # STEP 5: Convert image from RGB colorspace to LAB colorspace
 # Keep only the green-magenta channel (grayscale)
 # Inputs:
-#    img     = image object, RGB colorspace
+#    rgb_img = image object, RGB colorspace
 #    channel = color subchannel ('l' = lightness, 'a' = green-magenta , 'b' = blue-yellow)
 
 a = pcv.rgb2gray_lab(img1, 'a')
@@ -194,7 +194,7 @@ Use the [binary threshold](binary_threshold.md) function to threshold green-mage
 
 # STEP 6: Set a binary threshold on the saturation channel image
 # Inputs:
-#    img         = img object, grayscale
+#    gray_img    = img object, grayscale
 #    threshold   = threshold value (0-255)
 #    maxValue    = value to apply above threshold (usually 255 = white)
 #    object_type = light or dark
@@ -217,8 +217,8 @@ img_binary = pcv.threshold.binary(a, 120, 255, 'dark')
 
 # STEP 7: Fill in small objects (speckles)
 # Inputs:
-#    img  = image object, grayscale. img will be returned after filling
-#    size = minimum object area size in pixels (integer)
+#    bin_img  = image object, grayscale. img will be returned after filling
+#    size     = minimum object area size in pixels (integer)
 
 fill_image = pcv.fill(img_binary, 100)
 #                                  ^
@@ -236,9 +236,9 @@ fill_image = pcv.fill(img_binary, 100)
 
 # STEP 8: Dilate so that you don't lose leaves (just in case)
 # Inputs:
-#    img    = input image
-#    kernel = integer
-#    i      = iterations, i.e. number of consecutive filtering passes
+#    gray_img = input image
+#    ksize    = kernel size, integer
+#    i        = iterations, i.e. number of consecutive filtering passes
 
 dilated = pcv.dilate(fill_image, 1, 1)
 ```
@@ -269,17 +269,17 @@ Define a [rectangular region of interest](roi_rectangle.md) in the image.
 
 # STEP 10: Define region of interest (ROI)
 # Inputs:
+#    img       = img to overlay roi
 #    x_adj     = adjust center along x axis
 #    y_adj     = adjust center along y axis
 #    w_adj     = adjust width
 #    h_adj     = adjust height
-#    img       = img to overlay roi
-# roi_contour, roi_hierarchy = pcv.roi.rectangle(10, 500, -10, -100, img1)
-#                                                ^                ^
-#                                                |________________|
+# roi_contour, roi_hierarchy = pcv.roi.rectangle(img1, 10, 500, -10, -100)
+#                                                      ^                ^
+#                                                      |________________|
 #                                            adjust these four values
 
-roi_contour, roi_hierarchy = pcv.roi.rectangle(10, 500, -10, -100, img1)
+roi_contour, roi_hierarchy = pcv.roi.rectangle(img1, 10, 500, -10, -100)
 ```
 
 **Figure 10.** Define ROI.
@@ -320,7 +320,7 @@ roi_objects, roi_obj_hierarchy, kept_mask, obj_area = pcv.roi_objects(img1, 'par
 # clusters them based on user input of rows and columns
 
 # Inputs:
-#    img               = An RGB image
+#    img               = An RGB or grayscale image
 #    roi_objects       = object contours in an image that are needed to be clustered.
 #    roi_obj_hierarchy = object hierarchy
 #    nrow              = number of rows to cluster (this should be the approximate  number of desired rows in the entire image even if there isn't a literal row of plants)
@@ -528,17 +528,17 @@ def main():
     
     # STEP 10: Define region of interest (ROI)
     # Inputs:
+    #    img       = img to overlay roi
     #    x_adj     = adjust center along x axis
     #    y_adj     = adjust center along y axis
     #    w_adj     = adjust width
     #    h_adj     = adjust height
-    #    img       = img to overlay roi
-    # roi_contour, roi_hierarchy = pcv.roi.rectangle(10, 500, -10, -100, img1)
-    #                                                ^                ^
-    #                                                |________________|
+    # roi_contour, roi_hierarchy = pcv.roi.rectangle(img1, 10, 500, -10, -100)
+    #                                                      ^                ^
+    #                                                      |________________|
     #                                            adjust these four values
     
-    roi_contour, roi_hierarchy = pcv.roi.rectangle(10, 500, -10, -100, img1)
+    roi_contour, roi_hierarchy = pcv.roi.rectangle(img1, 10, 500, -10, -100)
     
     # STEP 11: Keep objects that overlap with the ROI
     # Inputs:
