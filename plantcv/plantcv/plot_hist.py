@@ -1,52 +1,85 @@
 # Plot histogram
 
 import cv2
+import os
 import numpy as np
-from matplotlib import pyplot as plt
+from plantcv.plantcv.threshold import binary as binary_threshold
+from plantcv.plantcv import params
+import pandas as pd
+from plotnine import ggplot, aes, geom_line, scale_x_continuous
 
 
-def plot_hist(img, name=False):
-    """Plot a histogram using the pyplot library.
+
+def plot_hist(gray_img, mask=None, bins=256):
+    """Plot a histogram using ggplot.
 
     Inputs:
-    img  = image to analyze
-    name = name for plot output
+    gray_img = image to analyze
+    mask     = binary mask made from selected contours
+    bins     = number of classes to divide spectrum into
 
-    :param img: numpy.ndarray
-    :param name: str
+    :param gray_img: numpy.ndarray
+    :param mask: numpy.ndarray
+    :param bins: int
     :return bins: list
     :return hist: list
+    :return fig_hist: ggplot
     """
 
-    # get histogram
-    if img.dtype == 'uint8':
-        hist = cv2.calcHist([img], [0], None, [256], [0, 255])
-        bins = range(0, 256, 1)
-
-        if name is not False:
-            # open pyplot plotting window using hist data
-            plt.plot(hist)
-            # set range of x-axis
-            xaxis = plt.xlim([0, 255])
-            fig_name = name + '.png'
-            # write the figure to current directory
-            plt.savefig(fig_name)
-            # close pyplot plotting window
-            plt.clf()
-
+    params.device += 1
+    debug = params.debug
+    # Apply mask if one is supplied
+    if mask is not None:
+        # apply plant shaped mask to image
+        params.debug=None
+        mask1 = binary_threshold(mask, 0, 255, 'light')
+        mask1 = (mask1 / 255)
+        masked = np.multiply(gray_img, mask1)
     else:
-        hist, bins = np.histogram(img, bins='auto')
+        masked = gray_img
 
-        if name is not False:
-            # open pyplot plotting window using hist data
-            plt.plot(bins[:-1], hist)
-            plt.xticks(bins[:-1], rotation='vertical', fontsize=4)
-            # set range of x-axis
-            # xaxis = plt.xlim([0, bins.max()])
-            fig_name = name + '.png'
-            # write the figure to current directory
-            plt.savefig(fig_name)
-            # close pyplot plotting window
-            plt.clf()
+    if gray_img.dtype == 'uint16':
+        maxval = 65536
+    else:
+        maxval = 256
 
-    return bins, hist
+    # Store histogram data
+    hist_gray_data, hist_bins = np.histogram(masked, bins, (1, maxval), False, None, None)
+    hist_bins1 = hist_bins[:-1]
+    hist_bins2 = [l for l in hist_bins1]
+    hist_gray = [l for l in hist_gray_data]
+    # make hist percentage for plotting
+    pixels = cv2.countNonZero(masked)
+    hist_percent = (hist_gray_data / float(pixels)) * 100
+
+    # report histogram data
+    hist_header = [
+        'HEADER_HISTOGRAM',
+        'bin-number',
+        'bin-values',
+        'gray_img'
+    ]
+
+    hist_data = [
+        'HISTOGRAM_DATA',
+        bins,
+        hist_bins2,
+        hist_gray
+    ]
+    hist_x = hist_percent
+    bin_labels = np.arange(0, bins)
+    dataset = pd.DataFrame({'Grayscale pixel intensity': bin_labels,
+                            'Proportion of pixels (%)': hist_x})
+    fig_hist = (ggplot(data=dataset,
+                       mapping=aes(x='Grayscale pixel intensity',
+                                   y='Proportion of pixels (%)'))
+                + geom_line(color='red')
+                + scale_x_continuous(breaks=list(range(0, bins, 25))))
+    params.debug=debug
+    if params.debug is not None:
+        if params.debug == "print":
+            fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + '_hist.png'))
+        if params.debug == "plot":
+            print(fig_hist)
+
+    return hist_header, hist_data, fig_hist

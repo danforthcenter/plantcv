@@ -23,9 +23,9 @@ def analyze_nir_intensity(gray_img, mask, bins, histplot=False):
     histplot     = if True plots histogram of intensity values
 
     Returns:
-    hist_header  = NIR histogram data table headers
-    hist_data    = NIR histogram data table values
-    nir_hist     = NIR histogram image
+    hist_header     = NIR histogram data table headers
+    hist_data       = NIR histogram data table values
+    analysis_images = NIR histogram image
 
     :param gray_img: numpy array
     :param mask: numpy array
@@ -33,7 +33,7 @@ def analyze_nir_intensity(gray_img, mask, bins, histplot=False):
     :param histplot: bool
     :return hist_header: list
     :return hist_data: list
-    :return nir_hist: str
+    :return analysis_images: list
     """
 
     params.device += 1
@@ -109,11 +109,10 @@ def analyze_nir_intensity(gray_img, mask, bins, histplot=False):
                     + scale_x_continuous(breaks=list(range(0, bins, 25))))
 
         analysis_images.append(fig_hist)
-        if params.debug is not None:
-            if params.debug == "print":
-                fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + '_nir_hist.png'))
-            if params.debug == "plot":
-                print(fig_hist)
+        if params.debug == "print":
+            fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + '_nir_hist.png'))
+        elif params.debug == "plot":
+            print(fig_hist)
 
     # Store into global measurements
     if not 'nir_histogram' in outputs.measurements:
