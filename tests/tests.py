@@ -637,7 +637,7 @@ def test_plantcv_cluster_contours():
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.cluster_contours(img=img1, roi_objects=objs, roi_obj_hierarchy=obj_hierarchy, nrow=4, ncol=6)
-    _ = pcv.cluster_contours(img=img1, roi_objects=objs, roi_obj_hierarchy=obj_hierarchy)
+    _ = pcv.cluster_contours(img=img1, roi_objects=objs, roi_obj_hierarchy=obj_hierarchy, show_grid=True)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.cluster_contours(img=img1, roi_objects=objs, roi_obj_hierarchy=obj_hierarchy, nrow=4, ncol=6)
