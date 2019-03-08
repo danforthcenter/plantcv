@@ -186,7 +186,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, cropped = **plantcv.auto_crop**(*device, img, objects, padding_x=0, padding_y=0, color='black', debug=None*)
 * post v3.0dev2: cropped = **plantcv.auto_crop**(*img, objects, padding_x=0, padding_y=0, color='black'*)
-* post v3.2: cropped = **plantcv.auto_crop**(*img, obj, padding_x=0, padding_y=0, color='black*) 
+* post v3.2: cropped = **plantcv.auto_crop**(*img, obj, padding_x=0, padding_y=0, color='black'*) 
 
 #### plantcv.background_subtraction
 
@@ -202,7 +202,7 @@ pages for more details on the input and output variable types.
 #### plantcv.canny_edge_detect
 
 ** pre v3.2: NA
-** post v3.2: bin_img = **plantcv.canny_edge_detect**(*img, mask = None, sigma=1.0, low_thresh=None, high_thresh=None, thickness=1, mask_color=None, use_quantiles=False*)
+** post v3.2: bin_img = **plantcv.canny_edge_detect**(*img, mask=None, sigma=1.0, low_thresh=None, high_thresh=None, thickness=1, mask_color=None, use_quantiles=False*)
 
 #### plantcv.cluster_contour_splitimg
 
@@ -213,6 +213,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, grouped_contour_indexes, contours, roi_obj_hierarchy = **plantcv.cluster_contours**(*device, img, roi_objects,roi_obj_hierarchy, nrow=1, ncol=1, debug=None*)
 * post v3.0dev2: grouped_contour_indexes, contours, roi_obj_hierarchy = **plantcv.cluster_contours**(*img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1*)
+* post v3.2: grouped_contour_indexes, contours, roi_obj_hierarchy = **plantcv.cluster_contours**(*img, roi_objects, roi_object_hierarchy, nrow=1, ncol=1, show_grid=False*)
 
 #### plantcv.color_palette
 
@@ -360,6 +361,7 @@ post v3.0: new_img = **plantcv.image_subtract**(*gray_img1, gray_img2*)
 
 * pre v3.0dev2: bins, hist = **plantcv.plot_hist**(*img, name=False*)
 * post v3.0dev2: bins, hist = **plantcv.plot_hist**(*img, name=False*)
+* post v3.2: header, hist_data, hist_figure = **pcv.plot_hist**(*gray_img, mask=None, bins=256*)
 
 #### plantcv.plot_image
 
@@ -538,7 +540,7 @@ post v3.0: new_img = **plantcv.image_subtract**(*gray_img1, gray_img2*)
 #### plantcv.transform.find_color_card
 
 * pre v3.0: NA
-* post v3.0: df, start_coord, spacing = **plantcv.transofrm.find_color_card**(*rgb_img, threshold='adaptgauss', threshvalue=125, blurry=False, background='dark'*)
+* post v3.0: df, start_coord, spacing = **plantcv.transform.find_color_card**(*rgb_img, threshold='adaptgauss', threshvalue=125, blurry=False, background='dark'*)
 
 #### plantcv.transform.get_color_matrix
 
