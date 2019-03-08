@@ -361,7 +361,7 @@ post v3.0: new_img = **plantcv.image_subtract**(*gray_img1, gray_img2*)
 
 * pre v3.0dev2: bins, hist = **plantcv.plot_hist**(*img, name=False*)
 * post v3.0dev2: bins, hist = **plantcv.plot_hist**(*img, name=False*)
-* post v3.2: header, hist_data, hist_figure = **pcv.plot_hist**(*gray_img, mask=None, bins=256*)
+* post v3.2: hist_header, hist_data, fig_hist = **plantcv.plot_hist**(*gray_img, mask=None, bins=256*)
 
 #### plantcv.plot_image
 

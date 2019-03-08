@@ -207,7 +207,7 @@ Next, a [rectangular region of interest](roi_rectangle.md) is defined (this can 
 ```python
 
     # Define ROI
-    roi1, roi_hierarchy= pcv.roi.rectangle(600,450,-600,-700, img)
+    roi1, roi_hierarchy= pcv.roi.rectangle(img,600,450,-600,-700)
 ```
 
 **Figure 9.** Region of interest drawn onto image. 
@@ -350,7 +350,7 @@ Write co-result data out to a file.
     pcv.print_result(filename=args.coresult)
     
 if __name__ == '__main__':
-  main()
+    main()
 ```
 
 To deploy a pipeline over a full image set please see tutorial on 
@@ -426,7 +426,7 @@ def main():
     id_objects,obj_hierarchy = pcv.find_objects(masked, bs)
 
     # Define ROI
-    roi1, roi_hierarchy= pcv.roi.rectangle(600,450,-600,-700, img)
+    roi1, roi_hierarchy= pcv.roi.rectangle(img,600,450,-600,-700)
 
     # Decide which objects to keep
     roi_objects, hierarchy, kept_mask, obj_area = pcv.roi_objects(img,'partial',roi1,roi_hierarchy,id_objects,obj_hierarchy)

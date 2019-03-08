@@ -1462,13 +1462,15 @@ def test_plantcv_plot_hist():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_plot_hist")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    # Test in 16-bit image mode
-    img16bit = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK), -1)
-    _ = pcv.plot_hist(img=img16bit, name=os.path.join(cache_dir, "hist_nir_uint16"))
-    # Test in 8-bit image mode
-    img8bit = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), -1)
-    bins, hist = pcv.plot_hist(img=img8bit, name=os.path.join(cache_dir, "hist_rgb_uint8"))
-    assert len(hist) == 256
+    # Test in print mode
+    pcv.params.debug = "print"
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    _ = pcv.plot_hist(gray_img=np.uint16(img), mask=mask, bins=200)
+    # Test in plot mode
+    pcv.params.debug = "plot"
+    hist_header, hist_data, fig_hist = pcv.plot_hist(gray_img=img)
+    assert np.sum(hist_data[3]) != 0
 
 
 def test_plantcv_plot_image_matplotlib_input():

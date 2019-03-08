@@ -67,7 +67,7 @@ for i in range(0, len(rois1)):
     plant_contour, plant_mask = pcv.object_composition(img=img, contours=filtered_contours, hierarchy=filtered_hierarchy)        
     
     # Analyze the shape of each plant 
-    shape_data_headers, shape_data, analysis_images = pcv.analyze_object(img=img_copy, obj=obj, mask=img_mask)
+    shape_data_headers, shape_data, analysis_images = pcv.analyze_object(img=img_copy, obj=plant_contour, mask=plant_mask)
     
     # Save the image with shape characteristics 
     img_copy = analysis_images[0]

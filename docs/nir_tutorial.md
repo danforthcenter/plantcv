@@ -136,13 +136,13 @@ the amount of plant material captured, and it is particularly useful if estimati
 ```python
 # Laplace filtering (identify edges based on 2nd derivative)
 lp_img = pcv.laplace_filter(img, 1, 1)
-if args.debug:
-        pcv.plot_hist(lp_img, 'hist_lp')
+# Plot histogram of grayscale values 
+pcv.plot_hist(lp_img)
 
 # Lapacian image sharpening, this step will enhance the darkness of the edges detected
 lp_shrp_img = pcv.image_subtract(img, lp_img)
-if args.debug:
-        pcv.plot_hist(lp_sharp_img, 'hist_lp_sharp')
+# Plot histogram of grayscale values, this helps to determine thresholding value 
+pcv.plot_hist(lp_sharp_img)
 ```
 
 **Figure 3.** (Top) Result after second derivative Laplacian filter is applied to the original grayscale image.
@@ -439,13 +439,11 @@ def main():
     
     # Laplace filtering (identify edges based on 2nd derivative)
     lp_img = pcv.laplace_filter(img, 1, 1)
-    if args.debug:
-            pcv.plot_hist(lp_img, 'hist_lp')
+    pcv.plot_hist(lp_img)
     
     # Lapacian image sharpening, this step will enhance the darkness of the edges detected
     lp_shrp_img = pcv.image_subtract(img, lp_img)
-    if args.debug:
-            pcv.plot_hist(lp_shrp_img, 'hist_lp_sharp')
+    pcv.plot_hist(lp_shrp_img)
     
     # Sobel filtering
     # 1st derivative sobel filtering along horizontal axis, kernel = 1)
