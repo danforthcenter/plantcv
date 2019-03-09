@@ -1,9 +1,11 @@
 language: python
+group: travis_latest
 dist: xenial
 matrix:
   include:
   - os: linux
   - os: osx
+    python: 3.7
 #sudo: false
 python:
 - '2.7'
