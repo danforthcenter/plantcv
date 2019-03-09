@@ -1,4 +1,8 @@
-dist: xenial
+matrix:
+  include:
+    - os: linux
+      dist: xenial
+    - os: osx
 language: python
 #sudo: false
 python:
