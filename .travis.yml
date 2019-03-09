@@ -1,9 +1,9 @@
+language: python
+dist: xenial
 matrix:
   include:
-    - os: linux
-      dist: xenial
-    - os: osx
-language: python
+  - os: linux
+  - os: osx
 #sudo: false
 python:
 - '2.7'
