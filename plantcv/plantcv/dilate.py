@@ -25,6 +25,9 @@ def dilate(gray_img, ksize, i):
     :return dil_img: numpy.ndarray
     """
 
+    if ksize <= 1:
+        raise ValueError('ksize needs to be greater than 1 for the function to have an effect')
+
     kernel1 = int(ksize)
     kernel2 = np.ones((kernel1, kernel1), np.uint8)
     dil_img = cv2.dilate(src=gray_img, kernel=kernel2, iterations=i)
