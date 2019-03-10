@@ -35,7 +35,7 @@ def erode(gray_img, ksize, i):
     params.device += 1
     if params.debug == 'print':
         print_image(er_img, os.path.join(params.debug_outdir,
-                                         str(params.device) + '_er_image_' + 'itr_' + str(i) + '.png'))
+                                         str(params.device) + '_er_image' + str(ksize) + '_itr_' + str(i) + '.png'))
     elif params.debug == 'plot':
         plot_image(er_img, cmap='gray')
     return er_img
