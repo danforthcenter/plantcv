@@ -14,7 +14,7 @@ def plot_hist(gray_img, mask=None, bins=256):
     """Plot a histogram using ggplot.
 
     Inputs:
-    gray_img = image to analyze
+    gray_img = grayscale image to analyze
     mask     = binary mask made from selected contours
     bins     = number of classes to divide spectrum into
 

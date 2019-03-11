@@ -25,12 +25,15 @@ def dilate(gray_img, ksize, i):
     :return dil_img: numpy.ndarray
     """
 
+    if ksize <= 1:
+        raise ValueError('ksize needs to be greater than 1 for the function to have an effect')
+
     kernel1 = int(ksize)
     kernel2 = np.ones((kernel1, kernel1), np.uint8)
     dil_img = cv2.dilate(src=gray_img, kernel=kernel2, iterations=i)
     params.device += 1
     if params.debug == 'print':
-        print_image(dil_img, os.path.join(params.debug, str(params.device) + '_dil_image_' + 'itr_' + str(i) + '.png'))
+        print_image(dil_img, os.path.join(params.debug_outdir, str(params.device) + '_dil_image' + str(ksize) + '_itr_' + str(i) + '.png'))
     elif params.debug == 'plot':
         plot_image(dil_img, cmap='gray')
     return dil_img

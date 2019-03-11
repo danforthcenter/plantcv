@@ -26,13 +26,16 @@ def erode(gray_img, ksize, i):
     :return er_img: numpy.ndarray
     """
 
+    if ksize <= 1:
+        raise ValueError('ksize needs to be greater than 1 for the function to have an effect')
+
     kernel1 = int(ksize)
     kernel2 = np.ones((kernel1, kernel1), np.uint8)
     er_img = cv2.erode(src=gray_img, kernel=kernel2, iterations=i)
     params.device += 1
     if params.debug == 'print':
         print_image(er_img, os.path.join(params.debug_outdir,
-                                         str(params.device) + '_er_image_' + 'itr_' + str(i) + '.png'))
+                                         str(params.device) + '_er_image' + str(ksize) + '_itr_' + str(i) + '.png'))
     elif params.debug == 'plot':
         plot_image(er_img, cmap='gray')
     return er_img
