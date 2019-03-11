@@ -857,6 +857,15 @@ def test_plantcv_dilate():
         assert 0
 
 
+def test_plantcv_dilate_small_k():
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    # Test with debug = None
+    pcv.params.debug = None
+    with pytest.raises(ValueError):
+        _ = pcv.dilate(img, 1, 1)
+
+
 def test_plantcv_erode():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_erode")
@@ -882,6 +891,15 @@ def test_plantcv_erode():
             assert 0
     else:
         assert 0
+
+
+def test_plantcv_erode_small_k():
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    # Test with debug = None
+    pcv.params.debug = None
+    with pytest.raises(ValueError):
+        _ = pcv.erode(img, 1, 1)
 
 
 def test_plantcv_distance_transform():
