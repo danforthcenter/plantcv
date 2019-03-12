@@ -1,6 +1,6 @@
 ## Create an elliptical Region of Interest (ROI)
 
-**plantcv.roi.ellipse**(*x, y, r1, r2, angle, img*)
+**plantcv.roi.ellipse**(*img, x, y, r1, r2, angle*)
 
 **returns** roi_contour, roi_hierarchy
 

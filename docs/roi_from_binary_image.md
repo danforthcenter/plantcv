@@ -1,6 +1,6 @@
 ## Create a Region of Interest (ROI) from a binary image
 
-**plantcv.roi.from_binary_image**(*bin_img, img*)
+**plantcv.roi.from_binary_image**(*img, bin_img*)
 
 **returns** roi_contour, roi_hierarchy
 

@@ -1,6 +1,6 @@
 ## Create a rectangular Region of Interest (ROI)
 
-**plantcv.roi.rectangle**(*x, y, h, w, img*)
+**plantcv.roi.rectangle**(*img, x, y, h, w*)
 
 **returns** roi_contour, roi_hierarchy
 

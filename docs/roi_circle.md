@@ -1,6 +1,6 @@
 ## Create a circular Region of Interest (ROI)
 
-**plantcv.roi.circle**(*x, y, r, img*)
+**plantcv.roi.circle**(*img, x, y, r*)
 
 **returns** roi_contour, roi_hierarchy
 
