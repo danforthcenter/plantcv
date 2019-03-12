@@ -187,10 +187,11 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
             analysis_images.append(hist_fig)
 
     # Plot or print the histogram
-    if params.debug == 'print':
-        hist_fig.save(os.path.join(params.debug_outdir, str(params.device) + '_analyze_color_hist.png'))
-    elif params.debug == 'plot':
-        print(hist_fig)
+    if hist_plot_type is not None:
+        if params.debug == 'print':
+            hist_fig.save(os.path.join(params.debug_outdir, str(params.device) + '_analyze_color_hist.png'))
+        elif params.debug == 'plot':
+            print(hist_fig)
 
     # Store into global measurements
     if not 'color_histogram' in outputs.measurements:

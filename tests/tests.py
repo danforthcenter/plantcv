@@ -276,11 +276,14 @@ def test_plantcv_analyze_color():
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.analyze_color(rgb_img=img, mask=mask, bins=256, hist_plot_type="all")
+    _ = pcv.analyze_color(rgb_img=img, mask=mask, bins=256, hist_plot_type=None)
+
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.analyze_color(rgb_img=img, mask=mask, bins=256, hist_plot_type='rgb')
     _ = pcv.analyze_color(rgb_img=img, mask=mask, bins=256, hist_plot_type='lab')
     _ = pcv.analyze_color(rgb_img=img, mask=mask, bins=256, hist_plot_type='hsv')
+    _ = pcv.analyze_color(rgb_img=img, mask=mask, bins=256, hist_plot_type=None)
 
     # Test with debug = None
     pcv.params.debug = None
@@ -1473,6 +1476,54 @@ def test_plantcv_output_mask_true():
     imgpath, maskpath, analysis_images = pcv.output_mask(img=img, mask=mask, filename='test.png', outdir=cache_dir,
                                                         mask_only=False)
     assert all([os.path.exists(imgpath) is True, os.path.exists(maskpath) is True])
+
+
+def test_plantcv_plot_classes():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_naive_bayes_classifier")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    mask = pcv.naive_bayes_classifier(rgb_img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
+    _ = pcv.plot_classes(classes=[mask['plant'], mask['background']],
+                         colors=[(0,0,0), (1,1,1)])
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    _ = pcv.plot_classes(classes=[mask['plant'], mask['background']],
+                         colors=[(0, 0, 0), (1, 1, 1)])
+    # Test with debug = None
+    pcv.params.debug = None
+    colored_img = pcv.plot_classes(classes=[mask['plant'], mask['background']],
+                         colors=['red', 'blue'])
+    # Assert that the output image has the dimensions of the input image
+    assert not np.average(colored_img) == 0
+
+def test_plantcv_plot_classes_bad_input_empty():
+    with pytest.raises(RuntimeError):
+        _ = pcv.plot_classes(classes=[], colors=[])
+
+def test_plantcv_plot_classes_bad_input_mismatch_number():
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    mask = pcv.naive_bayes_classifier(rgb_img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
+    with pytest.raises(RuntimeError):
+        _ = pcv.plot_classes(classes=[mask['plant'], mask['background']], colors=['red', 'green', 'blue'])
+
+
+def test_plantcv_plot_classes_bad_input_mismatch_type():
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    mask = pcv.naive_bayes_classifier(rgb_img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
+    with pytest.raises(RuntimeError):
+        _ = pcv.plot_classes(classes=[mask['plant'], mask['background']], colors=['red', (0,0,0)])
+
 
 
 def test_plantcv_plot_hist():

@@ -30,10 +30,10 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Make a grid of ROIs 
-rois1, roi_hierarchy1 = pcv.roi.multi(img1, coord=(25,120), radius=20, spacing=(70, 70), nrows=3, ncols=6)
+rois1, roi_hierarchy1 = pcv.roi.multi(img=img1, coord=(25,120), radius=20, spacing=(70, 70), nrows=3, ncols=6)
 
 # Specify a list of coordinates of desired ROIs 
-rois2, roi_hierarchy2 = pcv.roi.multi(img1, coord=[(25,120), (165,260), (310, 260)], radius=20)
+rois2, roi_hierarchy2 = pcv.roi.multi(img=img1, coord=[(25,120), (165,260), (310, 260)], radius=20)
 ```
 
 **Grid of ROIs**

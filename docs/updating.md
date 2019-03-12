@@ -201,8 +201,8 @@ pages for more details on the input and output variable types.
     
 #### plantcv.canny_edge_detect
 
-** pre v3.2: NA
-** post v3.2: bin_img = **plantcv.canny_edge_detect**(*img, mask=None, sigma=1.0, low_thresh=None, high_thresh=None, thickness=1, mask_color=None, use_quantiles=False*)
+* pre v3.2: NA
+* post v3.2: bin_img = **plantcv.canny_edge_detect**(*img, mask=None, sigma=1.0, low_thresh=None, high_thresh=None, thickness=1, mask_color=None, use_quantiles=False*)
 
 #### plantcv.cluster_contour_splitimg
 
@@ -295,8 +295,8 @@ pages for more details on the input and output variable types.
 
 #### plantcv.image_subtract
 
-pre v3.0: NA
-post v3.0: new_img = **plantcv.image_subtract**(*gray_img1, gray_img2*)
+* pre v3.0: NA
+* post v3.0: new_img = **plantcv.image_subtract**(*gray_img1, gray_img2*)
 
 #### plantcv.invert
 
@@ -363,6 +363,11 @@ post v3.0: new_img = **plantcv.image_subtract**(*gray_img1, gray_img2*)
 * post v3.0dev2: bins, hist = **plantcv.plot_hist**(*img, name=False*)
 * post v3.2: hist_header, hist_data, fig_hist = **plantcv.plot_hist**(*gray_img, mask=None, bins=256*)
 
+#### plantcv.plot_classes 
+
+* pre v3.2: NA
+* post v3.2: colored_img = pcv.plot_classes(classes, colors)
+
 #### plantcv.plot_image
 
 * pre v3.0dev2: **plantcv.plot_image**(*img, cmap=None*)
@@ -376,7 +381,7 @@ post v3.0: new_img = **plantcv.image_subtract**(*gray_img1, gray_img2*)
 #### plantcv.print_results
 
 * pre v3.1: NA
-* post v3.2: **plantcv.print_results**(*filename*)
+* post v3.1: **plantcv.print_results**(*filename*)
 
 #### plantcv.pseudocolor
 
@@ -427,22 +432,26 @@ post v3.0: new_img = **plantcv.image_subtract**(*gray_img1, gray_img2*)
 #### plantcv.roi.circle
 
 * pre v3.0dev1: NA
-* post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.circle**(*img, x, y, r*)
+* post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.circle**(*x, y, r, img*)
+* post v3.2: roi_contour, roi_hierarchy = **plantcv.roi.circle**(*img, x, y, r*)
 
 #### plantcv.roi.ellipse
 
 * pre v3.0dev1: NA
-* post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.ellipse**(*img, x, y, r1, r2, angle*)
+* post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.ellipse**(*x, y, r1, r2, angle, img*)
+* post v3.2: roi_contour, roi_hierarchy = **plantcv.roi.ellipse**(*img, x, y, r1, r2, angle*)
 
 #### plantcv.roi.from_binary_image
 
 * pre v3.0dev1: NA
-* post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.from_binary_image**(*img, bin_img*)
+* post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.from_binary_image**(*bin_img, img*)
+* post v3.2: roi_contour, roi_hierarchy = **plantcv.roi.from_binary**(*img, bin_img*)
 
 #### plantcv.roi.rectangle
 
 * pre v3.0dev1: NA
-* post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.rectangle**(*img, x, y, h, w*)
+* post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.rectangle**(*x, y, h, w, img*)
+* post v3.2: roi_contour, roi_hierarchy = **plantcv.roi.rectangle**(*img, x, y, h, w*)
 
 #### plantcv.roi.multi
 

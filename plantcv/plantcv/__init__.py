@@ -108,10 +108,12 @@ from plantcv.plantcv.naive_bayes_classifier import naive_bayes_classifier
 from plantcv.plantcv.acute import acute
 from plantcv.plantcv.distance_transform import distance_transform
 from plantcv.plantcv.pseudocolor import pseudocolor
+from plantcv.plantcv.canny_edge_detect import canny_edge_detect
+from plantcv.plantcv.plot_classes import plot_classes
 from plantcv.plantcv import roi
 from plantcv.plantcv import threshold
 from plantcv.plantcv import transform
-from plantcv.plantcv.canny_edge_detect import canny_edge_detect
+
 
 # add new functions to end of lists
 
@@ -122,7 +124,7 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'apply_m
            'find_objects', 'roi_objects', 'transform', 'object_composition', 'analyze_object',
            'analyze_bound_horizontal', 'analyze_bound_vertical', 'analyze_color', 'analyze_nir_intensity',
            'fluor_fvfm', 'print_results', 'resize', 'flip', 'crop_position_mask', 'get_nir', 'report_size_marker_area',
-           'white_balance', 'acute_vertex', 'scale_features', 'landmark_reference_pt_dist', outputs,
+           'white_balance', 'acute_vertex', 'scale_features', 'landmark_reference_pt_dist', 'outputs', 'plot_classes'
            'x_axis_pseudolandmarks', 'y_axis_pseudolandmarks', 'gaussian_blur', 'cluster_contours',
            'cluster_contour_splitimg', 'rotate', 'shift_img', 'output_mask', 'auto_crop', 'canny_edge_detect',
            'background_subtraction', 'naive_bayes_classifier', 'acute', 'distance_transform', 'params', 'pseudocolor']

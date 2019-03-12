@@ -9,7 +9,7 @@ This is a plotting method used to examine the distribution of signal within an i
 - **Parameters:**
     - gray_img - Grayscale image data, the original image for analysis.
     - mask - Optional binary mask made from selected contours (default mask=None)
-    - bins - Number of class to divide spectrum into
+    - bins - Number of class to divide spectrum into (default bins=256)
 - **Context:**
     - Examine the distribution of the signal, this helps you select a value for binary thresholding.
 - **Example use:**

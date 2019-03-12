@@ -19,16 +19,16 @@ def x_axis_pseudolandmarks(img, obj, mask):
     mask     = this is a binary image. The object should be white and the background should be black
 
     Returns:
-    top      =
-    bottom   =
-    center_v =
+    top      = List of landmark points within 'top' portion
+    bottom   = List of landmark points within the 'bottom' portion
+    center_v = List of landmark points within the middle portion
 
     :param img: numpy.ndarray
     :param obj: list
     :param mask: numpy.ndarray
-    :return top:
-    :return bottom:
-    :return center_v:
+    :return top: list
+    :return bottom: list
+    :return center_v: list
     """
 
     # Lets get some landmarks scanning along the x-axis

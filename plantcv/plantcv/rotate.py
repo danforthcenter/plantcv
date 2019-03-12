@@ -14,7 +14,7 @@ def rotate(img, rotation_deg, crop):
 
     Inputs:
     img          = RGB or grayscale image data
-    rotation_deg = rotation angle in degrees, should be an integer, can be a negative number,
+    rotation_deg = rotation angle in degrees, can be a negative number,
                    positive values move counter clockwise.
     crop         = either true or false, if true, dimensions of rotated image will be same as original image.
 
@@ -22,7 +22,7 @@ def rotate(img, rotation_deg, crop):
     rotated_img  = rotated image
 
     :param img: numpy.ndarray
-    :param rotation_deg: int
+    :param rotation_deg: double
     :param crop: bool
     :return rotated_img: numpy.ndarray
     """
@@ -52,7 +52,7 @@ def rotate(img, rotation_deg, crop):
         rotated_img = cv2.warpAffine(img, m, (ix, iy))
 
     if params.debug == 'print':
-        print_image(rotated_img, os.path.join(params.debug_outdir, str(params.device) + '_rotated_img.png'))
+        print_image(rotated_img, os.path.join(params.debug_outdir, str(params.device) + str(rotation_deg) + '_rotated_img.png'))
 
     elif params.debug == 'plot':
         if len(np.shape(img)) == 3:

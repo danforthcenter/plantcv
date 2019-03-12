@@ -55,13 +55,7 @@ Sample command to run a pipeline on a single image:
 ```python
 #!/usr/bin/python
 
-import sys, traceback
-import cv2
-import os
-import re
 import numpy as np
-import argparse
-import string
 from plantcv import plantcv as pcv
 
 ### Parse command-line arguments
@@ -196,8 +190,8 @@ Use the [binary threshold](binary_threshold.md) function to threshold green-mage
 # Inputs:
 #    gray_img    = img object, grayscale
 #    threshold   = threshold value (0-255)
-#    maxValue    = value to apply above threshold (usually 255 = white)
-#    object_type = light or dark
+#    max_value   = value to apply above threshold (usually 255 = white)
+#    object_type = 'light' or 'dark'
 #       - If object is light then standard thresholding is done
 #       - If object is dark then inverse thresholding is done
 

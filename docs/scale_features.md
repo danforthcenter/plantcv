@@ -28,7 +28,7 @@ pcv.params.debug = "print"
 
 # Identify acute vertices (tip points) of an object
 # Results in set of point values that may indicate tip points
-points_rescaled, centroid_rescaled, bottomline_rescaled = pcv.scale_features(obj, mask, landmark_points, boundary_line)
+points_rescaled, centroid_rescaled, bottomline_rescaled = pcv.scale_features(obj, mask, landmark_points, boundary_line_position)
 ```
 
 **Image of rescaled points in white, centroid is in gold and centroid at pot base is in blue**
