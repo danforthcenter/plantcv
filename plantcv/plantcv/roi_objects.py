@@ -125,10 +125,10 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
         # Store the hierarchy of the largest contour into a list
         largest_hierarchy = [kept_hierarchy[0][index]]
 
-        # Find the index of the first child of the largest contour
-        child_index = largest_hierarchy[0][2]
-        largest_cnt.append(kept_cnt[child_index])
-        largest_hierarchy.append(kept_hierarchy[0][child_index])
+        # # Find the index of the first child of the largest contour
+        # child_index = largest_hierarchy[0][2]
+        # largest_cnt.append(kept_cnt[child_index])
+        # largest_hierarchy.append(kept_hierarchy[0][child_index])
 
         # Iterate through contours to find children of the largest contour
         i = 0
@@ -141,6 +141,7 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
         largest_hierarchy = np.array([largest_hierarchy])
 
         # Overwrite w_back and mask so it only has the largest contour
+        w_back = background + 255
         i=2
         for i, cnt in enumerate(largest_cnt):
             # print(cnt)
