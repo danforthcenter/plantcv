@@ -84,9 +84,6 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
 
     # Find the largest contour if roi_type is set to 'largest'
     elif roi_type.upper() == 'LARGEST':
-        # Print warning statement about this feature
-        print(
-            "Warning: roi_type='largest' will only return the largest contour and its immediate children.")
 
         # Filter contours outside of the region of interest
         for c, cnt in enumerate(object_contour):
@@ -124,6 +121,7 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
 
         # Store the largest contour as a list
         largest_cnt = [kept_cnt[index]]
+
         # Store the hierarchy of the largest contour into a list
         largest_hierarchy = [kept_hierarchy[0][index]]
 
@@ -142,7 +140,6 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
         # Make the kept hierarchies into an array so that cv2 can use it
         largest_hierarchy = np.array([largest_hierarchy])
 
-        # w_back2 = background + 255
         # Overwrite w_back and mask so it only has the largest contour
         i=2
         for i, cnt in enumerate(largest_cnt):
@@ -159,6 +156,7 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
 
         # Overwrite the mask with only pixels that are inside ROI and of the largest (and children) ROI
         kept = cv2.cvtColor(w_back, cv2.COLOR_BGR2GRAY)
+        kept[kept==0] = 255 # Within ROI but not part of largest
         kept[kept!=255] = 0 #I hope this is always true. this section was very goofy
         kept_obj = cv2.bitwise_not(kept)
         mask = np.copy(kept_obj)
@@ -170,7 +168,6 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
         g_back = background.copy()
         g_back[:,:,1] = g_back[:,:,1] + 255
         g_back[mask_inv.astype('bool')] = 0
-        # pcv.plot_image(g_mask)
 
         # Mask image to remove
         masked_img = cv2.bitwise_and(ori_img, ori_img, mask=mask_inv)
@@ -179,8 +176,8 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
         ori_img = cv2.add(masked_img, g_back)
 
         # Draw ROI onto original image with contours
+        kept_cnt, kept_hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
         cv2.drawContours(ori_img, roi_contour, -1, (255, 0, 0), 5, lineType=8, hierarchy=roi_hierarchy)
-        # plot_image(ori_img)
 
         # Compute object area
         obj_area = cv2.countNonZero(mask)
@@ -204,13 +201,12 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
         fatal_error('ROI Type ' + str(roi_type) + ' is not "cutto", "largest", or "partial"!')
 
     if params.debug == 'print':
-        print_image(w_back, os.path.join(params.debug, str(params.device) + '_roi_objects.png'))
-        print_image(ori_img, os.path.join(params.debug, str(params.device) + '_obj_on_img.png'))
-        print_image(mask, os.path.join(params.debug, str(params.device) + '_roi_mask.png'))
+        print_image(w_back, os.path.join(params.debug_outdir, str(params.device) + '_roi_objects.png'))
+        print_image(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_obj_on_img.png'))
+        print_image(mask, os.path.join(params.debug_outdir, str(params.device) + '_roi_mask.png'))
     elif params.debug == 'plot':
         plot_image(w_back)
         plot_image(ori_img)
         plot_image(mask, cmap='gray')
-        # print ('Object Area=', obj_area)
 
     return kept_cnt, kept_hierarchy, mask, obj_area
