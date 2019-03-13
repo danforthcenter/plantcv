@@ -91,7 +91,6 @@ def main():
     
     # Read image (converting fmax and track to 8 bit just to create a mask, use 16-bit for all the math)
     mask, path, filename = pcv.readimage(args.fmax)
-    #mask = cv2.imread(args.fmax)
     track = cv2.imread(args.track)
     
     mask1, mask2, mask3 = cv2.split(mask)
@@ -176,7 +175,7 @@ Next the region of interest is defined using the [rectangular region of interest
 
 ```python
     # Define ROI
-    roi1, roi_hierarchy = pcv.roi.rectangle(x=100, y=100, h=200, w=200, img=mask)
+    roi1, roi_hierarchy = pcv.roi.rectangle(img=mask, x=100, y=100, h=200, w=200)
 ```
 
 **Figure 7.** Region of interest is drawn on the image.
@@ -235,7 +234,7 @@ along with the generated mask to calculate Fv/Fm.
     fvfm_hist = fvfm_images[1]
 
     # Pseudocolor the Fv/Fm grayscale image that is calculated inside the fluor_fvfm function
-    pseudocolored_img = pcv.pseudocolor(gray_img=fv_img, mask=kept_mask, cmap='jet')
+    pseudocolored_img = pcv.visualize.pseudocolor(gray_img=fv_img, mask=kept_mask, cmap='jet')
 
     # Write shape and nir data to results file
     pcv.print_results(filename=args.result)
@@ -329,7 +328,7 @@ def main():
     id_objects,obj_hierarchy = pcv.find_objects(mask, sfill_cnt)
 
     # Define ROI
-    roi1, roi_hierarchy = pcv.roi.rectangle(x=100, y=100, h=200, w=200, img=mask)
+    roi1, roi_hierarchy = pcv.roi.rectangle(img=mask, x=100, y=100, h=200, w=200)
 
     # Decide which objects to keep
     roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(mask, 'partial', roi1, roi_hierarchy, id_objects, obj_hierarchy)
@@ -358,7 +357,7 @@ def main():
     fvfm_hist = fvfm_images[1]
 
     # Pseudocolor the Fv/Fm grayscale image that is calculated inside the fluor_fvfm function
-    pseudocolored_img = pcv.pseudocolor(gray_img=fv_img, mask=kept_mask, cmap='jet')
+    pseudocolored_img = pcv.visualize.pseudocolor(gray_img=fv_img, mask=kept_mask, cmap='jet')
 
     # Write shape and nir data to results file
     pcv.print_results(filename=args.result)

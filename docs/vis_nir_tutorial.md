@@ -103,7 +103,6 @@ Here we convert the [RGB image to HSV](rgb2hsv.md) color space then extract the 
 If some of the plant is missed or not visible then thresholded channels may be combined (a later step).
 
 ```python    
-
     # Convert RGB to HSV and extract the saturation channel
     s = pcv.rgb2gray_hsv(img, 's')
 ```
@@ -118,7 +117,6 @@ A [binary threshold](binary_threshold.md) can be performed on either light or da
 Tip: This step is often one that needs to be adjusted depending on the lighting and configurations of your camera system
 
 ```python
-
     # Threshold the Saturation image
     s_thresh = pcv.threshold.binary(s, 30, 255, 'light')
 ```
@@ -134,7 +132,6 @@ Tip: Fill and median blur type steps should be used as sparingly as possible. De
 you can lose plant material with a median blur that is too harsh.
 
 ```python
-
     # Median Blur
     s_mblur = pcv.median_blur(s_thresh, 5)
     s_cnt = pcv.median_blur(s_thresh, 5)
@@ -149,7 +146,6 @@ We convert the [RGB image to LAB](rgb2lab.md) color space and extract the blue-y
 This image is again thresholded and there is an optional [fill](fill.md) step that wasn't needed in this pipeline.
 
 ```python
-
     # Convert RGB to LAB and extract the blue channel
     b = pcv.rgb2gray_lab(img, 'b')
     
@@ -167,7 +163,6 @@ This image is again thresholded and there is an optional [fill](fill.md) step th
 Join the binary images from Figure 4 and Figure 5 with the [logical and](logical_and.md) function.
 
 ```python
-
     # Join the thresholded saturation and blue-yellow images
     bs = pcv.logical_and(s_mblur, b_cnt)
 ```
@@ -180,7 +175,6 @@ Next, apply the binary image (Figure 6) as an image [mask](apply_mask.md) over t
 The purpose of this mask is to exclude as much background with simple thresholding without leaving out plant material.
 
 ```python
-
     # Apply Mask (for VIS images, mask_color=white)
     masked = pcv.apply_mask(img, bs, 'white')
 ```
@@ -192,7 +186,6 @@ The purpose of this mask is to exclude as much background with simple thresholdi
 Now we need to [identify the objects](find_objects.md) (called contours in OpenCV) within the image.
 
 ```python
-
     # Identify objects
     id_objects,obj_hierarchy = pcv.find_objects(masked, bs)
 ```
@@ -205,7 +198,6 @@ Even the spaces within an object are colored, but will have different hierarchy 
 Next, a [rectangular region of interest](roi_rectangle.md) is defined (this can be made on the fly).
 
 ```python
-
     # Define ROI
     roi1, roi_hierarchy= pcv.roi.rectangle(img,600,450,-600,-700)
 ```
@@ -218,7 +210,6 @@ Once the region of interest is defined you can decide to keep everything overlap
 or cut the objects to the shape of the [region of interest](roi_objects.md).
 
 ```python
-
     # Decide which objects to keep
     roi_objects, hierarchy, kept_mask, obj_area = pcv.roi_objects(img,'partial',roi1,roi_hierarchy,id_objects,obj_hierarchy)
 ```
@@ -234,7 +225,6 @@ shape analysis to perform properly the plant objects need to be combined into
 one object using the [combine objects](object_composition.md) function.
 
 ```python
-
     # Object combine kept objects
     obj, mask = pcv.object_composition(img, roi_objects, hierarchy)
 ```
@@ -260,7 +250,7 @@ The next step is to analyze the plant object for traits such as [horizontal heig
     color_header, color_data, color_histogram = pcv.analyze_color(img, kept_mask, 256, 'all')
 
     # Pseudocolor the grayscale image
-    pseudocolored_img = pcv.pseudocolor(gray_img=s, mask=kept_mask, cmap='jet')
+    pseudocolored_img = pcv.visualize.pseudocolor(gray_img=s, mask=kept_mask, cmap='jet')
 
     # Write shape and color data to results file
     pcv.print_results(filename=args.result)
@@ -284,7 +274,6 @@ The next step is to analyze the plant object for traits such as [horizontal heig
 The next step is to [get the matching NIR](get_nir.md) image, [resize](resize.md), and place the VIS [mask](crop_position_mask.md) over it.
 
 ```python
-
     if args.coresult is not None:
         nirpath = pcv.get_nir(path,filename)
         nir, path1, filename1 = pcv.readimage(nirpath)
@@ -304,7 +293,6 @@ The next step is to [get the matching NIR](get_nir.md) image, [resize](resize.md
 ![Screenshot](img/tutorial_images/vis-nir/18_mask_overlay.jpg)
 
 ```python
-
     nir_objects, nir_hierarchy = pcv.find_objects(nir, newmask)
 ```
 
@@ -313,7 +301,6 @@ The next step is to [get the matching NIR](get_nir.md) image, [resize](resize.md
 ![Screenshot](img/tutorial_images/vis-nir/19_id_objects.jpg)
 
 ```python
-    
     #combine objects
     nir_combined, nir_combinedmask = pcv.object_composition(nir, nir_objects, nir_hierarchy)
 ```
@@ -323,7 +310,6 @@ The next step is to [get the matching NIR](get_nir.md) image, [resize](resize.md
 ![Screenshot](img/tutorial_images/vis-nir/20_objcomp_mask.jpg)
 
 ```python
-
     nhist_header, nhist_data, nir_imgs = pcv.analyze_nir_intensity(nir2, nir_combinedmask, 256)
     nshape_header, nshape_data, nir_hist = pcv.analyze_object(nir2, nir_combined, nir_combinedmask)
 
@@ -346,7 +332,6 @@ The next step is to [get the matching NIR](get_nir.md) image, [resize](resize.md
 Write co-result data out to a file.
 
 ```python
-
     pcv.print_result(filename=args.coresult)
     
 if __name__ == '__main__':
@@ -446,7 +431,7 @@ def main():
     color_header, color_data, color_histogram = pcv.analyze_color(img, kept_mask, 256, 'all')
 
     # Pseudocolor the grayscale image
-    pseudocolored_img = pcv.pseudocolor(gray_img=s, mask=kept_mask, cmap='jet')
+    pseudocolored_img = pcv.visualize.pseudocolor(gray_img=s, mask=kept_mask, cmap='jet')
 
     # Write shape and color data to results file
     pcv.print_results(filename=args.result)

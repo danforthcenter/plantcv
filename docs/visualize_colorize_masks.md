@@ -2,12 +2,12 @@
 
 This is a plotting method used to color masks.
 
-**plantcv.plot_classes**(*classes, colors*)
+**plantcv.visualize.colorize_masks**(*masks, colors*)
 
 **returns** colored_img
 
 - **Parameters:**
-    - classes - A list of masks to plot
+    - masks - A list of masks to plot
     - colors - A list of colors used to plot the given classes. Users can provide a list of strings from the 36 colors listed below, or list tuples.
 - **Context:**
     - This function was written to allow users to plot masks returned by [naive bayes multiclass](naive_bayes_multiclass.md) but can be used with any mask. 
@@ -31,8 +31,8 @@ from plantcv import plantcv as pcv
 mask = pcv.naive_bayes_classifier(img, pdf_file="machine_learning.txt")
 
 # Plot each class with it's own color 
-plotted = pcv.plot_classes(classes=[mask['plant'], mask['pustule'], mask['background'], mask['chlorosis']], 
-                           colors=['green', 'red', 'gray', 'gold'])
+plotted = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['pustule'], mask['background'], mask['chlorosis']], 
+                                       colors=['green', 'red', 'gray', 'gold'])
 ```
 
 **Masks:** (from top to bottom) plant, chlorosis, pustule, background

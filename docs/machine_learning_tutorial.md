@@ -104,7 +104,7 @@ each class. The first and second column are the class and channel label, respect
 remaining 256 columns contain the p-value from the PDFs for each intensity value observable in an 8-bit image (0-255).
 
 Once we have the `plantcv-train.py` output file, we can classify pixels in a color image in PlantCV using the same
-function described in the naive Bayes section above. A plotting function [pcv.plot_classes](plot_classes.md) 
+function described in the naive Bayes section above. A plotting function [pcv.visualize.colorize_masks](visualize_colorize_masks.md) 
 allows users to choose colors for each class.
 
 ![Screenshot](img/tutorial_images/machine_learning/classified_image.jpg)
@@ -147,8 +147,8 @@ def main():
     
     # Classify each pixel as plant or background (background and system components)
     masks = pcv.naive_bayes_classifier(rgb_img=vis, pdf_file=args.pdfs)
-    colored_img = pcv.plot_classes(classes=[masks['plant'], masks['pustule'], masks['background'], masks['chlorosis']], 
-                                   colors=['green', 'red', 'black', 'blue'])
+    colored_img = pcv.visualize.colorize_masks(masks=[masks['plant'], masks['pustule'], masks['background'], masks['chlorosis']], 
+                                               colors=['green', 'red', 'black', 'blue'])
     # Additional steps in the pipeline go here
 ```
 
@@ -213,7 +213,8 @@ def main():
     
     # Classify each pixel as plant or background (background and system components)
     masks = pcv.naive_bayes_classifier(rgb_img=vis, pdf_file=args.pdfs)
-    
+    colored_img = pcv.visualize.colorize_masks(masks=[masks['plant'], masks['pustule'], masks['background'], masks['chlorosis']], 
+                                               colors=['green', 'red', 'black', 'blue'])
     # Additional steps in the pipeline go here
     
 # Call program

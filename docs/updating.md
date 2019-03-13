@@ -361,12 +361,8 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: bins, hist = **plantcv.plot_hist**(*img, name=False*)
 * post v3.0dev2: bins, hist = **plantcv.plot_hist**(*img, name=False*)
-* post v3.2: hist_header, hist_data, fig_hist = **plantcv.plot_hist**(*gray_img, mask=None, bins=256*)
-
-#### plantcv.plot_classes 
-
-* pre v3.2: NA
-* post v3.2: colored_img = pcv.plot_classes(classes, colors)
+* post v3.2: Deprecated, see:
+    * hist_header, hist_data, fig_hist = **plantcv.visualize.histogram**(*gray_img, mask=None, bins=256*)
 
 #### plantcv.plot_image
 
@@ -387,6 +383,8 @@ pages for more details on the input and output variable types.
 
 * pre v3.1: NA
 * post v3.1: pseudo_img = **plantcv.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, dpi=None, axes=True, colorbar=True*)
+* post v3.2: Deprecated, see:
+    * pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, dpi=None, axes=True, colorbar=True*)
 
 #### plantcv.readbayer
 
@@ -581,6 +579,21 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, bin_img = **plantcv.triangle_auto_threshold**(*device, img, maxvalue, object_type, xstep=1, debug=None*)
 * post v3.0dev2: Deprecated, see:
     * bin_img = **plantcv.threshold.triangle**(*gray_img, max_value, object_type="light", xstep=1*)
+
+#### plantcv.visualize.colorize_masks 
+
+* pre v3.2: NA
+* post v3.2: colored_img = pcv.visualize.colorize_masks(classes, colors)
+
+#### plantcv.visualize.histogram
+
+* pre v3.2: bins, hist = **plantcv.plot_hist**(*img, name=False*)
+* post v3.2: hist_header, hist_data, fig_hist = **plantcv.visualize.histogram**(*gray_img, mask=None, bins=256*)
+
+#### plantcv.visualize.pseudocolor
+
+* pre v3.2: pseudo_img = **plantcv.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, dpi=None, axes=True, colorbar=True*)
+* post v3.2: pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, dpi=None, axes=True, colorbar=True*)
 
 #### plantcv.watershed_segmentation
 

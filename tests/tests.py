@@ -309,24 +309,6 @@ def test_plantcv_analyze_color_bad_hist_type():
         _ = pcv.analyze_color(rgb_img=img, mask=mask, bins=256, hist_plot_type='bgr')
 
 
-# def test_plantcv_analyze_color_incorrect_pseudo_channel():
-#     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-#     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-#     with pytest.raises(RuntimeError):
-#         pcv.params.debug = "plot"
-#         _ = pcv.analyze_color(rgb_img=img, mask=mask, bins=256, hist_plot_type=None, pseudo_channel="x",
-#                               pseudo_bkg="white", filename=False)
-#
-#
-# def test_plantcv_analyze_color_incorrect_pseudo_background():
-#     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-#     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-#     with pytest.raises(RuntimeError):
-#         pcv.params.debug = "plot"
-#         _ = pcv.analyze_color(rgb_img=img, mask=mask, bins=256, hist_plot_type=None, pseudo_channel="v",
-#                               pseudo_bkg="black", filename=False)
-
-
 def test_plantcv_analyze_color_incorrect_hist_plot_type():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
@@ -623,7 +605,7 @@ def test_plantcv_canny_edge_detect_bad_input():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     with pytest.raises(RuntimeError):
-        edge_img = pcv.canny_edge_detect(img=img, mask=mask, mask_color="gray")
+        _ = pcv.canny_edge_detect(img=img, mask=mask, mask_color="gray")
 
 
 def test_plantcv_cluster_contours():
@@ -1478,77 +1460,13 @@ def test_plantcv_output_mask_true():
     assert all([os.path.exists(imgpath) is True, os.path.exists(maskpath) is True])
 
 
-def test_plantcv_plot_classes():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_naive_bayes_classifier")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    # Read in test data
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    mask = pcv.naive_bayes_classifier(rgb_img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
-    _ = pcv.plot_classes(classes=[mask['plant'], mask['background']],
-                         colors=[(0,0,0), (1,1,1)])
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.plot_classes(classes=[mask['plant'], mask['background']],
-                         colors=[(0, 0, 0), (1, 1, 1)])
-    # Test with debug = None
-    pcv.params.debug = None
-    colored_img = pcv.plot_classes(classes=[mask['plant'], mask['background']],
-                         colors=['red', 'blue'])
-    # Assert that the output image has the dimensions of the input image
-    assert not np.average(colored_img) == 0
-
-def test_plantcv_plot_classes_bad_input_empty():
-    with pytest.raises(RuntimeError):
-        _ = pcv.plot_classes(classes=[], colors=[])
-
-def test_plantcv_plot_classes_bad_input_mismatch_number():
-    # Read in test data
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    mask = pcv.naive_bayes_classifier(rgb_img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
-    with pytest.raises(RuntimeError):
-        _ = pcv.plot_classes(classes=[mask['plant'], mask['background']], colors=['red', 'green', 'blue'])
-
-
-def test_plantcv_plot_classes_bad_input_mismatch_type():
-    # Read in test data
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    mask = pcv.naive_bayes_classifier(rgb_img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
-    with pytest.raises(RuntimeError):
-        _ = pcv.plot_classes(classes=[mask['plant'], mask['background']], colors=['red', (0,0,0)])
-
-
-
-def test_plantcv_plot_hist():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_plot_hist")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    # Test in print mode
-    pcv.params.debug = "print"
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    _ = pcv.plot_hist(gray_img=np.uint16(img), mask=mask, bins=200)
-    # Test in plot mode
-    pcv.params.debug = "plot"
-    hist_header, hist_data, fig_hist = pcv.plot_hist(gray_img=img)
-    assert np.sum(hist_data[3]) != 0
-
-
 def test_plantcv_plot_image_matplotlib_input():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_pseudocolor")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    pimg = pcv.pseudocolor(gray_img=img, mask=mask, min_value=10, max_value=200)
+    pimg = pcv.visualize.pseudocolor(gray_img=img, mask=mask, min_value=10, max_value=200)
     with pytest.raises(RuntimeError):
         pcv.plot_image(pimg)
 
@@ -1568,59 +1486,6 @@ def test_plantcv_print_image():
 def test_plantcv_print_image_bad_type():
     with pytest.raises(RuntimeError):
         pcv.print_image(img=[], filename="/dev/null")
-
-
-def test_plantcv_pseudocolor():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_pseudocolor")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
-    obj_contour = contours_npz['arr_0']
-    filename = os.path.join(cache_dir, 'plantcv_pseudo_image.jpg')
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.pseudocolor(gray_img=img, mask=None)
-    _ = pcv.pseudocolor(gray_img=img, mask=None)
-
-    pimg = pcv.pseudocolor(gray_img=img, mask=mask, min_value=10, max_value=200)
-    pcv.print_image(pimg, filename)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.pseudocolor(gray_img=img, mask=mask, background="image")
-    _ = pcv.pseudocolor(gray_img=img, mask=None)
-    _ = pcv.pseudocolor(gray_img=img, mask=mask, background="black", obj=obj_contour, axes=False, colorbar=False)
-    _ = pcv.pseudocolor(gray_img=img, mask=mask, background="image", obj=obj_contour)
-    _ = pcv.pseudocolor(gray_img=img, mask=None, axes=False, colorbar=False)
-    # Test with debug = None
-    pcv.params.debug = None
-    _ = pcv.pseudocolor(gray_img=img, mask=None)
-    pseudo_img = pcv.pseudocolor(gray_img=img, mask=mask, background="white")
-    # Assert that the output image has the dimensions of the input image
-    if all([i == j] for i, j in zip(np.shape(pseudo_img), TEST_BINARY_DIM)):
-        assert 1
-    else:
-        assert 0
-
-
-def test_plantcv_pseudocolor_bad_input():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_pseudocolor")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    with pytest.raises(RuntimeError):
-        _ = pcv.pseudocolor(gray_img=img)
-
-
-def test_plantcv_pseudocolor_bad_background():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_pseudocolor_bad_background")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    with pytest.raises(RuntimeError):
-        _ = pcv.pseudocolor(gray_img=img, mask=mask, background="pink")
 
 
 def test_plantcv_readimage_native():
@@ -1812,7 +1677,6 @@ def test_plantcv_rectangle_mask_bad_input():
     pcv.params.debug = None
     with pytest.raises(RuntimeError):
         masked, hist, contour, hier = pcv.rectangle_mask(img=img, p1=(0, 0), p2=(2454, 2056), color="whit")
-
 
 
 def test_plantcv_report_size_marker_detect():
@@ -2550,8 +2414,6 @@ def test_plantcv_background_subtraction_different_sizes():
 # ##############################
 # Tests for the learn subpackage
 # ##############################
-
-
 def test_plantcv_learn_naive_bayes():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_learn_naive_bayes")
@@ -2586,7 +2448,6 @@ def test_plantcv_learn_naive_bayes_multiclass():
 # ##############################
 # Tests for the roi subpackage
 # ##############################
-
 def test_plantcv_roi_from_binary_image():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_roi_from_binary_image")
@@ -2744,6 +2605,7 @@ def test_plantcv_roi_ellipse_out_of_frame():
     with pytest.raises(RuntimeError):
         _, _ = pcv.roi.ellipse(x=50, y=225, r1=75, r2=50, angle=0, img=rgb_img)
 
+
 def test_plantcv_roi_multi():
     # Read in test RGB image
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
@@ -2756,6 +2618,7 @@ def test_plantcv_roi_multi():
     # Assert the contours has 18 ROIs 
     assert len(rois1)==18
 
+
 def test_plantcv_roi_multi_bad_input():
     # Read in test RGB image
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
@@ -2763,11 +2626,10 @@ def test_plantcv_roi_multi_bad_input():
     with pytest.raises(RuntimeError):
         _, _ = pcv.roi.multi(rgb_img, coord=[(25, 120), (100, 100)], radius=20, spacing=(10, 10), nrows=3, ncols=6)
 
+
 # ##############################
 # Tests for the transform subpackage
 # ##############################
-
-
 def test_plantcv_transform_get_color_matrix():
     # load in target_matrix
     matrix_file = np.load(os.path.join(TEST_DATA, TEST_TARGET_MATRIX), encoding="latin1")
@@ -3354,6 +3216,128 @@ def test_plantcv_threshold_texture():
             assert 0
     else:
         assert 0
+
+
+# ###################################
+# Tests for the visualize subpackage
+# ###################################
+def test_plantcv_visualize_pseudocolor():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_pseudocolor")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
+    obj_contour = contours_npz['arr_0']
+    filename = os.path.join(cache_dir, 'plantcv_pseudo_image.jpg')
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.visualize.pseudocolor(gray_img=img, mask=None)
+    _ = pcv.visualize.pseudocolor(gray_img=img, mask=None)
+
+    pimg = pcv.visualize.pseudocolor(gray_img=img, mask=mask, min_value=10, max_value=200)
+    pcv.print_image(pimg, filename)
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="image")
+    _ = pcv.visualize.pseudocolor(gray_img=img, mask=None)
+    _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="black", obj=obj_contour, axes=False, colorbar=False)
+    _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="image", obj=obj_contour)
+    _ = pcv.visualize.pseudocolor(gray_img=img, mask=None, axes=False, colorbar=False)
+    # Test with debug = None
+    pcv.params.debug = None
+    _ = pcv.visualize.pseudocolor(gray_img=img, mask=None)
+    pseudo_img = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="white")
+    # Assert that the output image has the dimensions of the input image
+    if all([i == j] for i, j in zip(np.shape(pseudo_img), TEST_BINARY_DIM)):
+        assert 1
+    else:
+        assert 0
+
+
+def test_plantcv_visualize_pseudocolor_bad_input():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_pseudocolor")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    with pytest.raises(RuntimeError):
+        _ = pcv.visualize.pseudocolor(gray_img=img)
+
+
+def test_plantcv_visualize_pseudocolor_bad_background():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_pseudocolor_bad_background")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    with pytest.raises(RuntimeError):
+        _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="pink")
+
+
+def test_plantcv_visualize_colorize_masks():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_naive_bayes_classifier")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    mask = pcv.naive_bayes_classifier(rgb_img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
+    _ = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']],
+                         colors=[(0,0,0), (1,1,1)])
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    _ = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']],
+                         colors=[(0, 0, 0), (1, 1, 1)])
+    # Test with debug = None
+    pcv.params.debug = None
+    colored_img = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']],
+                         colors=['red', 'blue'])
+    # Assert that the output image has the dimensions of the input image
+    assert not np.average(colored_img) == 0
+
+
+def test_plantcv_visualize_colorize_masks_bad_input_empty():
+    with pytest.raises(RuntimeError):
+        _ = pcv.visualize.colorize_masks(masks=[], colors=[])
+
+
+def test_plantcv_visualize_colorize_masks_bad_input_mismatch_number():
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    mask = pcv.naive_bayes_classifier(rgb_img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
+    with pytest.raises(RuntimeError):
+        _ = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']], colors=['red', 'green', 'blue'])
+
+
+def test_plantcv_visualize_colorize_masks_bad_input_mismatch_type():
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    mask = pcv.naive_bayes_classifier(rgb_img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
+    with pytest.raises(RuntimeError):
+        _ = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']], colors=['red', (0,0,0)])
+
+
+def test_plantcv_visualize_histogram():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_plot_hist")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Test in print mode
+    pcv.params.debug = "print"
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    _ = pcv.visualize.histogram(gray_img=np.uint16(img), mask=mask, bins=200)
+    # Test in plot mode
+    pcv.params.debug = "plot"
+    hist_header, hist_data, fig_hist = pcv.visualize.histogram(gray_img=img)
+    assert np.sum(hist_data[3]) != 0
+
 
 # ##############################
 # Clean up test files

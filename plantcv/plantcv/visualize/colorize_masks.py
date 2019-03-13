@@ -1,28 +1,31 @@
 import os
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import params
 import cv2
 import numpy as np
+from plantcv.plantcv import params
+from plantcv.plantcv import print_image
+from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 
 
-def plot_classes(classes, colors):
+def colorize_masks(masks, colors):
     """Plot masks with different colors
+    Inputs:
+        masks    = list of masks to colorize
+        colors   = list of colors (either keys from the color_dict or a list of custom tuples)
 
-        :param classes: list
+        :param masks: list
         :param colors: list
         :return colored_img: ndarray
         """
 
     # Users must enter the exact same number of colors as classes they'd like to color
-    num_classes = len(classes)
+    num_classes = len(masks)
     num_colors = len(colors)
     if not num_classes == num_colors:
         fatal_error("The number of colors provided doesn't match the number of class masks provided.")
 
     # Check to make sure user provided at least one mask and color
-    if len(colors) == 0 or len(classes) == 0:
+    if len(colors) == 0 or len(masks) == 0:
         fatal_error("At least one class mask and color must be provided.")
 
     # Dictionary of colors and the BGR values, based on some of the colors listed here:
@@ -37,20 +40,20 @@ def plot_classes(classes, colors):
     (143,238,143), 'sea green': (77,141,46), 'dark red': (0,0,141), 'pink': (204,192,255), 'dark yellow': (0,205,255),
     'green': (0,255,0)}
 
-    ix, iy = np.shape(classes[0])
+    ix, iy = np.shape(masks[0])
     colored_img = np.zeros((ix,iy,3), dtype=np.uint8)
     # Assign pixels to the selected color
     if all(isinstance(x, str) for x in colors):
-        for i in range(0, len(classes)):
-            mask = np.copy(classes[i])
+        for i in range(0, len(masks)):
+            mask = np.copy(masks[i])
             mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
-            mask[classes[i] > 0] = color_dict[colors[i]]
+            mask[masks[i] > 0] = color_dict[colors[i]]
             colored_img = colored_img + mask
     elif all(isinstance(x, tuple) for x in colors):
-        for i in range(0, len(classes)):
-            mask = np.copy(classes[i])
+        for i in range(0, len(masks)):
+            mask = np.copy(masks[i])
             mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
-            mask[classes[i] > 0] = colors[i]
+            mask[masks[i] > 0] = colors[i]
             colored_img = colored_img + mask
     else:
         fatal_error("All elements of the 'colors' list must be the same type (all str or all tuples)")
