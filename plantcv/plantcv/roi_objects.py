@@ -204,9 +204,9 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
         fatal_error('ROI Type ' + str(roi_type) + ' is not "cutto", "largest", or "partial"!')
 
     if params.debug == 'print':
-        print_image(w_back, os.path.join(params.debug, str(params.device) + '_roi_objects.png'))
-        print_image(ori_img, os.path.join(params.debug, str(params.device) + '_obj_on_img.png'))
-        print_image(mask, os.path.join(params.debug, str(params.device) + '_roi_mask.png'))
+        print_image(w_back, os.path.join(params.debug_outdir, str(params.device) + '_roi_objects.png'))
+        print_image(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_obj_on_img.png'))
+        print_image(mask, os.path.join(params.debug_outdir, str(params.device) + '_roi_mask.png'))
     elif params.debug == 'plot':
         plot_image(w_back)
         plot_image(ori_img)
