@@ -17,7 +17,7 @@ This is a plotting method used to color masks.
 
 **Named Colors**
 
-![Screenshot](img/documentation_images/plot_classes/available_colors.jpg)
+![Screenshot](img/documentation_images/colorize_masks/available_colors.jpg)
 
 **Original image**
 
@@ -37,15 +37,15 @@ plotted = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['pustule'], ma
 
 **Masks:** (from top to bottom) plant, chlorosis, pustule, background
 
-![Screenshot](img/documentation_images/plot_classes/plant.jpg)
+![Screenshot](img/documentation_images/colorize_masks/plant.jpg)
 
-![Screenshot](img/documentation_images/plot_classes/chlorosis.jpg)
+![Screenshot](img/documentation_images/colorize_masks/chlorosis.jpg)
 
-![Screenshot](img/documentation_images/plot_classes/pustule.jpg)
+![Screenshot](img/documentation_images/colorize_masks/pustule.jpg)
 
-![Screenshot](img/documentation_images/plot_classes/background.jpg)
+![Screenshot](img/documentation_images/colorize_masks/background.jpg)
 
 
 **Plot with Colored Masks**
 
-![Screenshot](img/documentation_images/plot_classes/colored_classes.jpg)
+![Screenshot](img/documentation_images/colorize_masks/colored_classes.jpg)

@@ -17,11 +17,11 @@ This is a plotting method used to examine the distribution of signal within an i
 
 **Grayscale image**
 
-![Screenshot](img/documentation_images/plot_hist/01_hsv_saturation.jpg) 
+![Screenshot](img/documentation_images/histogram/01_hsv_saturation.jpg) 
 
 **Mask**
 
-![Screenshot](img/documentation_images/plot_hist/mask.jpg)
+![Screenshot](img/documentation_images/histogram/mask.jpg)
 
 ```python
 
@@ -34,4 +34,4 @@ header, hist_data, hist_figure = pcv.visualize.histogram(gray_img, mask=mask, bi
 
 **Histogram of signal intensity**
 
-![Screenshot](img/documentation_images/plot_hist/hist.jpg) 
+![Screenshot](img/documentation_images/histogram/hist.jpg) 
