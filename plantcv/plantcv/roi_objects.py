@@ -127,11 +127,6 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
         # Store the hierarchy of the largest contour into a list
         largest_hierarchy = [kept_hierarchy[0][index]]
 
-        # # Find the index of the first child of the largest contour
-        # child_index = largest_hierarchy[0][2]
-        # largest_cnt.append(kept_cnt[child_index])
-        # largest_hierarchy.append(kept_hierarchy[0][child_index])
-
         # Iterate through contours to find children of the largest contour
         i = 0
         for i,khi in enumerate(kept_hierarchy[0]):
@@ -153,9 +148,6 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
                 color = (255, 255, 255)
                 # print(i)
             cv2.drawContours(w_back, largest_cnt, i, color, -1, lineType=8, hierarchy=largest_hierarchy, maxLevel=0)
-
-        # assign common name for output
-        kept_hierarchy = largest_hierarchy
 
         # Overwrite the mask with only pixels that are inside ROI and of the largest (and children) ROI
         kept = cv2.cvtColor(w_back, cv2.COLOR_BGR2GRAY)
@@ -180,7 +172,9 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
 
         # Draw ROI onto original image with contours
         cv2.drawContours(ori_img, roi_contour, -1, (255, 0, 0), 5, lineType=8, hierarchy=roi_hierarchy)
-        # plot_image(ori_img)
+
+        #Refind contours and hierarchy from new mask so they are easier to work with downstream
+        kept_cnt, kept_hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
 
         # Compute object area
         obj_area = cv2.countNonZero(mask)
