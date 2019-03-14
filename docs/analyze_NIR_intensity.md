@@ -47,5 +47,5 @@ hist_header, hist_data, analysis_images  = pcv.analyze_nir_intensity(gray_img, m
 
 ![Screenshot](img/documentation_images/analyze_NIR_intensity/shapes.jpg)
 
-**Note:** The grayscale input image and object mask can be used with the [pcv.pseudocolor](pseudocolor.md) function
+**Note:** The grayscale input image and object mask can be used with the [pcv.visualize.pseudocolor](visualize_pseudocolor.md) function
 which allows the user to pick a colormap for plotting.

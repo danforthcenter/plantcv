@@ -21,14 +21,8 @@ def landmark_reference_pt_dist(points_r, centroid_r, bline_r):
     :param points_r: ndarray
     :param centroid_r: tuple
     :param bline_r: tuple
-    :return vert_ave_c: float
-    :return hori_ave_c: float
-    :return euc_ave_c: float
-    :return ang_ave_c: float
-    :return vert_ave_b: float
-    :return hori_ave_b: float
-    :return euc_ave_b: float
-    :return ang_ave_b: float
+    :return landmark_header: list
+    :return landmark_data: list
     """
 
     # scaled_img = np.zeros((1500,1500,3), np.uint8)

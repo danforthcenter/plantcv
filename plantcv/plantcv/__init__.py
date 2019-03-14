@@ -59,7 +59,6 @@ from plantcv.plantcv.laplace_filter import laplace_filter
 from plantcv.plantcv.sobel_filter import sobel_filter
 from plantcv.plantcv.scharr_filter import scharr_filter
 from plantcv.plantcv.hist_equalization import hist_equalization
-from plantcv.plantcv.plot_hist import plot_hist
 from plantcv.plantcv.image_add import image_add
 from plantcv.plantcv.image_subtract import image_subtract
 from plantcv.plantcv.erode import erode
@@ -107,25 +106,26 @@ from plantcv.plantcv.background_subtraction import background_subtraction
 from plantcv.plantcv.naive_bayes_classifier import naive_bayes_classifier
 from plantcv.plantcv.acute import acute
 from plantcv.plantcv.distance_transform import distance_transform
-from plantcv.plantcv.pseudocolor import pseudocolor
+from plantcv.plantcv.canny_edge_detect import canny_edge_detect
 from plantcv.plantcv import roi
 from plantcv.plantcv import threshold
 from plantcv.plantcv import transform
-from plantcv.plantcv.canny_edge_detect import canny_edge_detect
+from plantcv.plantcv import visualize
+
 
 # add new functions to end of lists
 
 __all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'apply_mask', 'readimage',
-           'readbayer', 'laplace_filter', 'sobel_filter', 'scharr_filter', 'hist_equalization', 'plot_hist', 'erode',
+           'readbayer', 'laplace_filter', 'sobel_filter', 'scharr_filter', 'hist_equalization', 'erode',
            'image_add', 'image_subtract', 'dilate', 'watershed', 'rectangle_mask', 'rgb2gray_hsv', 'rgb2gray_lab',
            'rgb2gray', 'median_blur', 'fill', 'invert', 'logical_and', 'logical_or', 'logical_xor',
            'find_objects', 'roi_objects', 'transform', 'object_composition', 'analyze_object',
            'analyze_bound_horizontal', 'analyze_bound_vertical', 'analyze_color', 'analyze_nir_intensity',
            'fluor_fvfm', 'print_results', 'resize', 'flip', 'crop_position_mask', 'get_nir', 'report_size_marker_area',
-           'white_balance', 'acute_vertex', 'scale_features', 'landmark_reference_pt_dist', outputs,
-           'x_axis_pseudolandmarks', 'y_axis_pseudolandmarks', 'gaussian_blur', 'cluster_contours',
+           'white_balance', 'acute_vertex', 'scale_features', 'landmark_reference_pt_dist', 'outputs',
+           'x_axis_pseudolandmarks', 'y_axis_pseudolandmarks', 'gaussian_blur', 'cluster_contours', 'visualize'
            'cluster_contour_splitimg', 'rotate', 'shift_img', 'output_mask', 'auto_crop', 'canny_edge_detect',
-           'background_subtraction', 'naive_bayes_classifier', 'acute', 'distance_transform', 'params', 'pseudocolor']
+           'background_subtraction', 'naive_bayes_classifier', 'acute', 'distance_transform', 'params']
 
 
 from ._version import get_versions

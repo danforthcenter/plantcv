@@ -19,16 +19,16 @@ def y_axis_pseudolandmarks(img, obj, mask):
     mask     = this is a binary image. The object should be white and the background should be black
 
     Returns:
-    top      =
-    bottom   =
-    center_v =
+    left      = List of landmarks within the left side
+    right   = List of landmarks within the right side
+    center_h = List of landmarks within the center
 
     :param img: numpy.ndarray
     :param obj: list
     :param mask: numpy.ndarray
-    :return left:
-    :return right:
-    :return center_h:
+    :return left: list
+    :return right: list
+    :return center_h: list
     """
     # Lets get some landmarks scanning along the y-axis
     params.device += 1

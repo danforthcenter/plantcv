@@ -146,7 +146,7 @@ def ellipse(img, x, y, r1, r2, angle):
     y             = The y-coordinate of the center of the ellipse.
     r1            = The radius of the major axis.
     r2            = The radius of the minor axis.
-    angle         = The angle of rotation of the major axis.
+    angle         = The angle of rotation in degrees of the major axis.
 
     Outputs:
     roi_contour   = An ROI set of points (contour).
@@ -157,7 +157,7 @@ def ellipse(img, x, y, r1, r2, angle):
     :param y: int
     :param r1: int
     :param r2: int
-    :param angle: int
+    :param angle: double
     :return roi_contour: list
     :return roi_hierarchy: numpy.ndarray
     """

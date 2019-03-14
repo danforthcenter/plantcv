@@ -10,7 +10,7 @@ from plotnine import ggplot, aes, geom_line, scale_x_continuous
 
 
 
-def plot_hist(gray_img, mask=None, bins=256):
+def histogram(gray_img, mask=None, bins=256):
     """Plot a histogram using ggplot.
 
     Inputs:
