@@ -3313,14 +3313,14 @@ def test_plantcv_visualize_colorize_masks_bad_input_mismatch_number():
         _ = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']], colors=['red', 'green', 'blue'])
 
 
-def test_plantcv_visualize_colorize_masks_bad_input_mismatch_type():
+def test_plantcv_visualize_colorize_masks_bad_color_input():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
     pcv.params.debug = "print"
     mask = pcv.naive_bayes_classifier(rgb_img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
     with pytest.raises(RuntimeError):
-        _ = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']], colors=['red', (0,0,0)])
+        _ = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']], colors=['red', 1.123])
 
 
 def test_plantcv_visualize_histogram():
