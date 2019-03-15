@@ -3332,7 +3332,7 @@ def test_plantcv_visualize_histogram():
     pcv.params.debug = "print"
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    _ = pcv.visualize.histogram(gray_img=np.uint16(img), mask=mask, bins=200)
+    _ = pcv.visualize.histogram(gray_img=np.uint16(img), mask=mask, bins=200, title='Include Title')
     # Test in plot mode
     pcv.params.debug = "plot"
     hist_header, hist_data, fig_hist = pcv.visualize.histogram(gray_img=img)
