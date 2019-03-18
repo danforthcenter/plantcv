@@ -43,20 +43,18 @@ def colorize_masks(masks, colors):
     ix, iy = np.shape(masks[0])
     colored_img = np.zeros((ix,iy,3), dtype=np.uint8)
     # Assign pixels to the selected color
-    if all(isinstance(x, str) for x in colors):
-        for i in range(0, len(masks)):
-            mask = np.copy(masks[i])
-            mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
-            mask[masks[i] > 0] = color_dict[colors[i]]
-            colored_img = colored_img + mask
-    elif all(isinstance(x, tuple) for x in colors):
-        for i in range(0, len(masks)):
-            mask = np.copy(masks[i])
-            mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
+
+    for i in range(0, len(masks)):
+        mask = np.copy(masks[i])
+        mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
+        if isinstance(colors[i], tuple):
             mask[masks[i] > 0] = colors[i]
-            colored_img = colored_img + mask
-    else:
-        fatal_error("All elements of the 'colors' list must be the same type (all str or all tuples)")
+        elif isinstance(colors[i], str):
+            mask[masks[i] > 0] = color_dict[colors[i]]
+        else:
+            fatal_error("All elements of the 'colors' list must be either str or tuple")
+        colored_img = colored_img + mask
+
 
     if params.debug == 'print':
         print_image(colored_img, os.path.join(params.debug_outdir, str(params.device) + '_classes_plot.png'))

@@ -589,6 +589,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.2: bins, hist = **plantcv.plot_hist**(*img, name=False*)
 * post v3.2: hist_header, hist_data, fig_hist = **plantcv.visualize.histogram**(*gray_img, mask=None, bins=256*)
+* post v3.3: hist_header, hist_data, fig_hist = **plantcv.visualize.histogram**(*gray_img, mask=None, bins=256, color='red', title=None*)
 
 #### plantcv.visualize.pseudocolor
 
