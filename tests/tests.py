@@ -81,6 +81,7 @@ TEST_TRANSFORM1 = "transformation_matrix1.npz"
 TEST_MATRIX_M1 = "matrix_m1.npz"
 TEST_MATRIX_M2 = "matrix_m2.npz"
 TEST_S1_CORRECTED = "source_corrected.png"
+TEST_CLOSING_IMG = "closing_bin_img.png"
 
 
 # ##########################
@@ -606,6 +607,34 @@ def test_plantcv_canny_edge_detect_bad_input():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     with pytest.raises(RuntimeError):
         _ = pcv.canny_edge_detect(img=img, mask=mask, mask_color="gray")
+
+
+def test_plantcv_closing():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_closing")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
+    gray_img = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
+    bin_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    result_img = cv2.imread(os.path.join(TEST_DATA, TEST_CLOSING_IMG), -2)
+    # Test with debug=None
+    pcv.params.debug = None
+    _ = pcv.closing(gray_img)
+    # Test with debug='plot'
+    pcv.params.debug = 'plot'
+    _ = pcv.closing(bin_img)
+    # Test with debug='print'
+    pcv.params.debug = 'print'
+    filtered_img = pcv.closing(bin_img)
+    assert np.sum(filtered_img) == 16261860
+
+
+def test_plantcv_closing_bad_input():
+    # Read in test data
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
+    with pytest.raises(RuntimeError):
+        _ = pcv.closing(rgb_img)
 
 
 def test_plantcv_cluster_contours():
@@ -1415,6 +1444,33 @@ def test_plantcv_object_composition_grayscale_input():
     # Assert that the objects have been combined
     contour_shape = np.shape(contours)  # type: tuple
     assert contour_shape[1] == 1
+
+
+def test_plantcv_opening():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_closing")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
+    gray_img = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
+    bin_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    # Test with debug=None
+    pcv.params.debug = None
+    _ = pcv.opening(gray_img)
+    # Test with debug='plot'
+    pcv.params.debug = 'plot'
+    _ = pcv.opening(bin_img)
+    # Test with debug='print'
+    pcv.params.debug = 'print'
+    filtered_img = pcv.opening(bin_img)
+    assert np.sum(filtered_img) == 16184595
+
+
+def test_plantcv_opening_bad_input():
+    # Read in test data
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
+    with pytest.raises(RuntimeError):
+        _ = pcv.opening(rgb_img)
 
 
 def test_plantcv_output_mask():

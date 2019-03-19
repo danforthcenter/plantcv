@@ -204,6 +204,11 @@ pages for more details on the input and output variable types.
 * pre v3.2: NA
 * post v3.2: bin_img = **plantcv.canny_edge_detect**(*img, mask=None, sigma=1.0, low_thresh=None, high_thresh=None, thickness=1, mask_color=None, use_quantiles=False*)
 
+#### plantcv.closing
+
+* pre v3.3: NA
+* post v3.3: filtered_img = **plantcv.closing**(*gray_img, kernel=None*)
+
 #### plantcv.cluster_contour_splitimg
 
 * pre v3.0dev2: device, output_path = **plantcv.cluster_contour_splitimg**(*device, img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None, filenames=None, debug=None*)
@@ -345,6 +350,11 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, group, mask = **plantcv.object_composition**(*img, contours, hierarchy, device, debug=None*)
 * post v3.0dev2: group, mask = **plantcv.object_composition**(*img, contours, hierarchy*)
+
+#### plantcv.opening
+
+* pre v3.3: NA
+* post v3.3: filtered_img = **plantcv.opening**(*gray_img, kernel=None*)
 
 #### plantcv.otsu_auto_threshold
 
