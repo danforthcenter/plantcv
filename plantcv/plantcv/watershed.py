@@ -37,7 +37,7 @@ def watershed_segmentation(rgb_img, mask, distance=10):
     :return watershed_data: list
     :return analysis_images: list
     """
-
+    params.device += 1
     # # Will be depricating opencv version 2
     # if cv2.__version__[0] == '2':
     #     dist_transform = cv2.distanceTransform(mask, cv2.cv.CV_DIST_L2, maskSize=0)

@@ -81,7 +81,6 @@ TEST_TRANSFORM1 = "transformation_matrix1.npz"
 TEST_MATRIX_M1 = "matrix_m1.npz"
 TEST_MATRIX_M2 = "matrix_m2.npz"
 TEST_S1_CORRECTED = "source_corrected.png"
-TEST_CLOSING_IMG = "closing_bin_img.png"
 
 
 # ##########################
@@ -617,13 +616,12 @@ def test_plantcv_closing():
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
     gray_img = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
     bin_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    result_img = cv2.imread(os.path.join(TEST_DATA, TEST_CLOSING_IMG), -2)
     # Test with debug=None
     pcv.params.debug = None
     _ = pcv.closing(gray_img)
     # Test with debug='plot'
     pcv.params.debug = 'plot'
-    _ = pcv.closing(bin_img)
+    _ = pcv.closing(bin_img, np.ones((4, 4), np.uint8))
     # Test with debug='print'
     pcv.params.debug = 'print'
     filtered_img = pcv.closing(bin_img)
@@ -1459,7 +1457,7 @@ def test_plantcv_opening():
     _ = pcv.opening(gray_img)
     # Test with debug='plot'
     pcv.params.debug = 'plot'
-    _ = pcv.opening(bin_img)
+    _ = pcv.opening(bin_img, np.ones((4, 4), np.uint8))
     # Test with debug='print'
     pcv.params.debug = 'print'
     filtered_img = pcv.opening(bin_img)
