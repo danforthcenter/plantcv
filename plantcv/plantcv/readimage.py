@@ -2,6 +2,7 @@
 
 import os
 import cv2
+import numpy as np
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
@@ -13,7 +14,7 @@ def readimage(filename, mode="native"):
 
     Inputs:
     filename = name of image file
-    mode     = mode of imread ("native", "rgb", "gray")
+    mode     = mode of imread ("native", "rgb", "rgba", "gray")
 
     Returns:
     img      = image object as numpy array
@@ -30,8 +31,14 @@ def readimage(filename, mode="native"):
         img = cv2.imread(filename, 0)
     elif mode.upper() == "RGB":
         img = cv2.imread(filename)
+    elif mode.upper() == "RGBA":
+        img = cv2.imread(filename, -1)
     else:
         img = cv2.imread(filename, -1)
+
+    # Default to drop alpha channel if user doesn't specify 'rgba'
+    if len(np.shape(img))==3 and np.shape(img)[2] == 4 and mode.upper() == "NATIVE":
+        img = cv2.imread(filename)
 
     if img is None:
         fatal_error("Failed to open " + filename)

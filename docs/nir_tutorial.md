@@ -109,10 +109,8 @@ We start by [subtracting](image_subtract.md) the background.
 # Subtract the background image from the image with the plant.
 bkg_sub_img = pcv.image_subtract(img, img_bkgrd)
     
-# Threshold the image of interest using the two-sided cv2.inRange function (keep what is between 50-190)
-kg_sub_thres_img = cv2.inRange(bkg_sub_img, 50, 190)
-if args.debug: #since we are using an OpenCV function we need to make it print
-    pcv.print_image(bkg_sub_thres_img,'bkgrd_sub_thres.png')
+# Threshold the image of interest using the two-sided custom range function (keep what is between 50-190)
+kg_sub_thres_img = pcv.threshold.custom_range(bkg_sub_img, [50], [190], 'gray')
 ```
 
 **Figure 2.** (Top) Image after subtraction of average background pixels. (Bottom) Image after two-sided thresholding applied to isolate plant material.
@@ -432,10 +430,8 @@ def main():
     # Subtract the background image from the image with the plant.
     bkg_sub_img = pcv.image_subtract(img, img_bkgrd)
         
-    # Threshold the image of interest using the two-sided cv2.inRange function (keep what is between 50-190)
-    bkg_sub_thres_img = cv2.inRange(bkg_sub_img, 50, 190)
-    if args.debug: #since we are using an OpenCV function we need to make it print
-        pcv.print_image(bkg_sub_thres_img,'bkgrd_sub_thres.png')
+    # Threshold the image of interest using the two-sided custom range function (keep what is between 50-190)
+    kg_sub_thres_img = pcv.threshold.custom_range(bkg_sub_img, [50], [190], 'gray')
     
     # Laplace filtering (identify edges based on 2nd derivative)
     lp_img = pcv.laplace_filter(img, 1, 1)
