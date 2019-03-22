@@ -30,6 +30,7 @@ pcv.params.debug = "print"
 img, path, filename = pcv.readimage("rgb_example_img.jpg")
 
 # Create masked image from a color image based RGB color-space and threshold values. 
+# for lower and upper_thresh list as: thresh = [red_thresh, green_thresh, blue_thresh]
 
 mask, masked_img = pcv.threshold.custom_range(rgb_img=img, lower_thresh=[10,10,10], upper_thresh=[100,255,100], channel='RGB')
 ```
@@ -58,6 +59,8 @@ pcv.params.debug = "print"
 img, path, filename = pcv.readimage("hsv_example_img.jpg")
 
 # Create masked image from a color image based HSV color-space and threshold values. 
+# for lower and upper_thresh list as: thresh = [hue_thresh, saturation_thresh, value_thresh]
+
 
 mask, masked_img = pcv.threshold.custom_range(rgb_img=img, lower_thresh=[30,65,20], upper_thresh=[70,255,220], channel='HSV')
 ```
@@ -87,6 +90,8 @@ pcv.params.debug = "print"
 img, path, filename = pcv.readimage("lab_example_img.jpg")
 
 # Create masked image from a color image based LAB color-space and threshold values.
+# for lower and upper_thresh list as: thresh = [L_thresh, A_thresh, B_thresh]
+
  
 mask, masked_img = pcv.threshold.custom_range(rgb_img=img, lower_thresh=[0,0,158], upper_thresh=[255,255,255], channel='LAB')
 ```
