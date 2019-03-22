@@ -84,6 +84,9 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
 
     # Find the largest contour if roi_type is set to 'largest'
     elif roi_type.upper() == 'LARGEST':
+        # Print warning statement about this feature
+        print(
+        "Warning: roi_type='largest' will only return the largest contour and its immediate children. Other subcontours will be dropped.")
 
         # Filter contours outside of the region of interest
         for c, cnt in enumerate(object_contour):
