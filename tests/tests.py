@@ -22,6 +22,8 @@ TEST_INPUT_COLOR = "input_color_img.jpg"
 TEST_INPUT_GRAY = "input_gray_img.jpg"
 TEST_INPUT_GRAY_SMALL = "input_gray_img_small.jpg"
 TEST_INPUT_BINARY = "input_binary_img.png"
+# Image from http://www.libpng.org/pub/png/png-OwlAlpha.html
+# This image may be used, edited and reproduced freely.
 TEST_INPUT_RGBA = "input_rgba.png"
 TEST_INPUT_BAYER = "bayer_img.png"
 TEST_INPUT_ROI = "input_roi.npz"
