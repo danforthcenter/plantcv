@@ -8,10 +8,14 @@ Reads image into numpy ndarray and splits the path and image filename. This is a
 
 - **Parameters:**
     - filename - image file to be read (possibly including a path)
-    - mode     - return mode of image ("native," "rgb," or "gray"), defaults to "native"
+    - mode     - return mode of image ("native," "rgb,", "rgba", or "gray"), defaults to "native"
     
 - **Context:**
     - Reads in file to be processed
+- **Note:**
+    - In most cases, the alpha channel in RGBA image data is unused (and causes issue when used as RGB image data),
+    so unless specificed as `mode='rgba'` the `pcv.readimage()` function will read RGBA data in as an RGB image under
+    default settings (`mode='native'`). However, if the alpha channel is needed users can specify `mode='rgba'`. 
 - **Example use:**
     - [Use In VIS Tutorial](vis_tutorial.md) 
 

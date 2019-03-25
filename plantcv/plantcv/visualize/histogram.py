@@ -48,7 +48,7 @@ def histogram(gray_img, mask=None, bins=256, color='red', title=None):
         maxval = 256
 
     # Store histogram data
-    hist_gray_data, hist_bins = np.histogram(masked, bins, (1, maxval), False, None, None)
+    hist_gray_data, hist_bins = np.histogram(masked, bins, (1, maxval))
     hist_bins1 = hist_bins[:-1]
     hist_bins2 = [l for l in hist_bins1]
     hist_gray = [l for l in hist_gray_data]

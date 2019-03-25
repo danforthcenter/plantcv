@@ -41,6 +41,7 @@ nav:
       - 'Horizontal Boundary Tool': analyze_bound_horizontal.md
       - 'Vertical Boundary Tool': analyze_bound_vertical.md
     - 'Canny Edge Detection': canny_edge_detect.md
+    - 'Closing': closing.md
     - 'Cluster Contours': cluster_contours.md
     - 'Cluster Contours and Split Images': cluster_contours_splitimg.md
     - 'Color Palette': color_palette.md
@@ -83,6 +84,7 @@ nav:
     - 'Median Blur': median_blur.md
     - 'Naive Bayes Classifier': naive_bayes_classifier.md
     - 'Object Composition': object_composition.md
+    - 'Opening': opening.md
     - 'Output Mask': output_mask.md
     - 'Outputs Class': outputs.md
     - 'Params (Debugging)': params.md
@@ -104,7 +106,8 @@ nav:
     - 'Rotate': rotate2.md
     - 'Shift Image': shift.md
     - 'Thresholding Methods':
-      - 'Binary threshold': binary_threshold.md
+      - 'Binary Threshold': binary_threshold.md
+      - 'Custom Range Threshold': custom_range_threshold.md
       - 'Gaussian Adaptive Threshold': gaussian_threshold.md
       - 'Mean Adaptive Threshold': mean_threshold.md
       - 'Otsu Auto Threshold': otsu_threshold.md

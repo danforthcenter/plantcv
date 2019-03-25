@@ -351,7 +351,7 @@ pcv.params.debug = "print"
 out = args.outdir
 names = args.names
 
-output_path = pcv.cluster_contour_splitimg(img1, clusters_i, contours, hierarchies, out, file=filename, filenames=names)
+output_path, imgs, masks = pcv.cluster_contour_splitimg(img1, clusters_i, contours, hierarchies, out, file=filename, filenames=names)
 ```
 
 **Figure 13.** Split image based on clustering.
