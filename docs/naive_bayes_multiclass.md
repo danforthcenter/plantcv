@@ -13,7 +13,8 @@ Gaussian kernel is used to estimate the Probability Density Function (PDF) for e
 channels for the two or more input classes. The PDFs, sampled at each of the possible 8-bit (256) intensity values are 
 written to the output file and can be used with the [naive Bayes classifier](naive_bayes_classifier.md) to segment the
 user-defined classes. For more information about building the input sample file, see the 
-[Machine Learning Tutorial](machine_learning_tutorial.md).
+[Machine Learning Tutorial](machine_learning_tutorial.md). Once a mask has been created for each class, a figure can 
+be created with [pcv.visualize.colorize_masks](visualize_colorize_masks.md). 
 
 **naive_bayes_multiclass(*samples_file, outfile, mkplots=False*)**
 

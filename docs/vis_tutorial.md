@@ -96,8 +96,7 @@ In order to perform a binary threshold on an image you need to select one of the
 Here we convert the [RGB image to HSV](rgb2hsv.md) color space then extract the 's' or saturation channel, but any channel can be selected based on user need.
 If some of the plant is missed or not visible then thresholded channels may be combined (a later step).
 
-```python
-        
+```python        
     # Convert RGB to HSV and extract the saturation channel
     s = pcv.rgb2gray_hsv(img, 's')
 ```
@@ -112,7 +111,6 @@ The [threshold](binary_threshold.md) can be on either light or dark objects in t
 Tip: This step is often one that needs to be adjusted depending on the lighting and configurations of your camera system.
 
 ```python
-
     # Threshold the saturation image
     s_thresh = pcv.threshold.binary(s, 85, 255, 'light')
 ```
@@ -128,7 +126,6 @@ Tip: Fill and median blur type steps should be used as sparingly as possible.
 Depending on the plant type (esp. grasses with thin leaves that often twist) you can lose plant material with a blur that is too harsh.
 
 ```python
-
     # Median Blur
     s_mblur = pcv.median_blur(s_thresh, 5)
     s_cnt = pcv.median_blur(s_thresh, 5)
@@ -143,7 +140,6 @@ The original image is converted from an [RGB image to LAB](rgb2lab.md) color spa
 This image is again thresholded and there is an optional [fill](fill.md) step that wasn't needed in this pipeline.
 
 ```python
-
     # Convert RGB to LAB and extract the Blue channel
     b = pcv.rgb2gray_lab(img, 'b')
     
@@ -151,7 +147,7 @@ This image is again thresholded and there is an optional [fill](fill.md) step th
     b_thresh = pcv.threshold.binary(b, 160, 255, 'light')
     b_cnt = pcv.threshold.binary(b, 160, 255, 'light')
     
-    # Fill small objects
+    # Fill small objects (optional)
     #b_fill = pcv.fill(b_thresh, 10)
 ```
 
@@ -164,7 +160,6 @@ This image is again thresholded and there is an optional [fill](fill.md) step th
 Join the binary images from Figure 4 and Figure 5 with the [logical or](logical_or.md) function.
 
 ```python
-
     # Join the thresholded saturation and blue-yellow images
     bs = pcv.logical_or(s_mblur, b_cnt)
 ```
@@ -177,7 +172,6 @@ Next, apply the binary image (Figure 6) as an image [mask](apply_mask.md) over t
 The purpose of this mask is to exclude as much background with simple thresholding without leaving out plant material.
 
 ```python
-
     # Apply Mask (for VIS images, mask_color=white)
     masked = pcv.apply_mask(img, bs, 'white')
 ```
@@ -193,7 +187,6 @@ The small objects are [filled](fill.md).
 The resulting binary image is used to mask the masked image from Figure 7.
 
 ```python
-
     # Convert RGB to LAB and extract the Green-Magenta and Blue-Yellow channels
     masked_a = pcv.rgb2gray_lab(masked, 'a')
     masked_b = pcv.rgb2gray_lab(masked, 'b')
@@ -250,7 +243,6 @@ that was previously masked (Figure 7).
 Now we need to [identify the objects](find_objects.md) (called contours in OpenCV) within the image.
 
 ```python
-
     # Identify objects
     id_objects, obj_hierarchy = pcv.find_objects(masked2, ab_fill)
 ```
@@ -263,7 +255,6 @@ Even the spaces within an object are colored, but will have different hierarchy 
 Next a [rectangular region of interest](roi_rectangle.md) is defined (this can be made on the fly).
 
 ```python
-
     # Define ROI
     roi1, roi_hierarchy= pcv.roi.rectangle(img=masked2, x=100, y=100, h=200, w=200)
 ```
@@ -277,7 +268,6 @@ or cut the objects to the shape of the region of interest.
 
 
 ```python
-
     # Decide which objects to keep
     roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(img, 'partial', roi1, roi_hierarchy, id_objects, obj_hierarchy)
 ```
@@ -293,7 +283,6 @@ shape analysis to perform properly the plant objects need to be combined into
 one object using the [combine objects](object_composition.md) function.
 
 ```python
-
     # Object combine kept objects
     obj, mask = pcv.object_composition(img, roi_objects, hierarchy3)
 ```
@@ -306,7 +295,6 @@ The next step is to analyze the plant object for traits such as [horizontal heig
 [shape](analyze_shape.md), or [color](analyze_color.md).
 
 ```python
-
 ############### Analysis ################
   
     outfile=False
@@ -323,7 +311,7 @@ The next step is to analyze the plant object for traits such as [horizontal heig
     color_header, color_data, color_histogram = pcv.analyze_color(img, kept_mask, 256, 'all')
 
     # Pseudocolor the grayscale image
-    pseudocolored_img = pcv.pseudocolor(gray_img=s, mask=kept_mask, cmap='jet')
+    pseudocolored_img = pcv.visualize.pseudocolor(gray_img=s, mask=kept_mask, cmap='jet')
 
     # Write shape and color data to results file
     pcv.print_results(filename=args.result)
@@ -477,7 +465,7 @@ def main():
     id_objects, obj_hierarchy = pcv.find_objects(masked2, ab_fill)
 
     # Define ROI
-    roi1, roi_hierarchy= pcv.roi.rectangle(x=100, y=100, h=200, w=200, img=masked2)
+    roi1, roi_hierarchy= pcv.roi.rectangle(img=masked2, x=100, y=100, h=200, w=200)
 
     # Decide which objects to keep
     roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(img, 'partial', roi1, roi_hierarchy, id_objects, obj_hierarchy)
@@ -501,7 +489,7 @@ def main():
     color_header, color_data, color_histogram = pcv.analyze_color(img, kept_mask, 256, 'all')
 
     # Pseudocolor the grayscale image
-    pseudocolored_img = pcv.pseudocolor(gray_img=s, mask=kept_mask, cmap='jet')
+    pseudocolored_img = pcv.visualize.pseudocolor(gray_img=s, mask=kept_mask, cmap='jet')
 
     # Write shape and color data to results file
     pcv.print_results(filename=args.result)

@@ -86,11 +86,9 @@ nav:
     - 'Output Mask': output_mask.md
     - 'Outputs Class': outputs.md
     - 'Params (Debugging)': params.md
-    - 'Plot Histogram': plot_hist.md
     - 'Print Image': print_image.md
     - 'Print Results': print_results.md
     - 'Plot Image': plot_image.md
-    - 'Pseudocolor Image': pseudocolor.md
     - 'Read Image': read_image.md
     - 'Read Bayer Raw Image': read_bayer.md
     - 'Rectangle Mask': rectangle_mask.md
@@ -112,6 +110,10 @@ nav:
       - 'Otsu Auto Threshold': otsu_threshold.md
       - 'Triangle Auto Threshold': triangle_threshold.md
       - 'Texture Threshold': texture_threshold.md
+    - 'Visualization Methods':
+        - 'Colorize Masks': visualize_colorize_masks.md
+        - 'Histogram': visualize_histogram.md
+        - 'Pseudocolor': visualize_pseudocolor.md
     - 'Watershed Segmentation': watershed.md
   - 'Package plantcv.learn':
     - 'Naive Bayes': naive_bayes.md

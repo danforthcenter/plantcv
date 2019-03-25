@@ -55,13 +55,7 @@ Sample command to run a pipeline on a single image:
 ```python
 #!/usr/bin/python
 
-import sys, traceback
-import cv2
-import os
-import re
 import numpy as np
-import argparse
-import string
 from plantcv import plantcv as pcv
 
 ### Parse command-line arguments
@@ -196,8 +190,8 @@ Use the [binary threshold](binary_threshold.md) function to threshold green-mage
 # Inputs:
 #    gray_img    = img object, grayscale
 #    threshold   = threshold value (0-255)
-#    maxValue    = value to apply above threshold (usually 255 = white)
-#    object_type = light or dark
+#    max_value   = value to apply above threshold (usually 255 = white)
+#    object_type = 'light' or 'dark'
 #       - If object is light then standard thresholding is done
 #       - If object is dark then inverse thresholding is done
 
@@ -294,7 +288,7 @@ Alternately the objects can be cut to the region of interest.
 # STEP 11: Keep objects that overlap with the ROI
 # Inputs:
 #    img            = img to display kept objects
-#    roi_type       = 'cutto' or 'partial' (for partially inside)
+#    roi_type       = 'cutto', 'partial' (for partially inside), 'largest' (keep largest contour only)
 #    roi_contour    = contour of roi, output from "View and Ajust ROI" function
 #    roi_hierarchy  = contour of roi, output from "View and Ajust ROI" function
 #    object_contour = contours of objects, output from "Identifying Objects" fuction
@@ -493,7 +487,7 @@ def main():
     # Inputs:
     #    img         = img object, grayscale
     #    threshold   = threshold value (0-255)
-    #    maxValue    = value to apply above threshold (usually 255 = white)
+    #    max_value   = value to apply above threshold (usually 255 = white)
     #    object_type = light or dark
     #       - If object is light then standard thresholding is done
     #       - If object is dark then inverse thresholding is done
@@ -516,7 +510,7 @@ def main():
     # STEP 8: Dilate so that you don't lose leaves (just in case)
     # Inputs:
     #    img    = input image
-    #    kernel = integer
+    #    ksize  = kernel size
     #    i      = iterations, i.e. number of consecutive filtering passes
     
     dilated = pcv.dilate(fill_image, 1, 1)
@@ -545,7 +539,7 @@ def main():
     # STEP 11: Keep objects that overlap with the ROI
     # Inputs:
     #    img            = img to display kept objects
-    #    roi_type       = 'cutto' or 'partial' (for partially inside)
+    #    roi_type       = 'cutto', 'partial' (for partially inside), or 'largest' (keep only largest contour)
     #    roi_contour    = contour of roi, output from "View and Ajust ROI" function
     #    roi_hierarchy  = contour of roi, output from "View and Ajust ROI" function
     #    object_contour = contours of objects, output from "Identifying Objects" fuction

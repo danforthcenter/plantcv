@@ -137,12 +137,12 @@ the amount of plant material captured, and it is particularly useful if estimati
 # Laplace filtering (identify edges based on 2nd derivative)
 lp_img = pcv.laplace_filter(img, 1, 1)
 # Plot histogram of grayscale values 
-pcv.plot_hist(lp_img)
+pcv.visualize.histogram(lp_img)
 
 # Lapacian image sharpening, this step will enhance the darkness of the edges detected
 lp_shrp_img = pcv.image_subtract(img, lp_img)
 # Plot histogram of grayscale values, this helps to determine thresholding value 
-pcv.plot_hist(lp_sharp_img)
+pcv.visualize.histogram(lp_sharp_img)
 ```
 
 **Figure 3.** (Top) Result after second derivative Laplacian filter is applied to the original grayscale image.
@@ -218,7 +218,7 @@ Increased contrast enables effective binary thresholding.
 Next, we [erode](erode.md) the image to reduce noise.
 
 ```python
-# Do erosion with a 3x3 kernel
+# Do erosion with a 3x3 kernel (ksize=3)
 e1_img = pcv.erode(tr_es_img, 3, 1)
 ```
 
@@ -311,7 +311,7 @@ within the ROI.
 id_objects,obj_hierarchy = pcv.find_objects(edge_masked_img, inv_bx1234_img)
 
 # Define ROI
-roi1, roi_hierarchy= pcv.roi.rectangle(x=100, y=100, h=200, w=200, img=edge_masked_img)
+roi1, roi_hierarchy= pcv.roi.rectangle(img=edge_masked_img, x=100, y=100, h=200, w=200)
 
 # Decide which objects to keep
 roi_objects, hierarchy5, kept_mask, obj_area = pcv.roi_objects(edge_masked_img, 'partial', roi1, roi_hierarchy, id_objects, obj_hierarchy)
@@ -327,7 +327,7 @@ roi_objects, hierarchy5, kept_mask, obj_area = pcv.roi_objects(edge_masked_img, 
 We can use the [object composition](object_composition.md) function to outline the plant.
 
 ```python
-rgb_img = cv2.cvtColor(img,cv2.COLOR_GRAY2RGB)
+rgb_img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
 o, m = pcv.object_composition(rgb_img, roi_objects, hierarchy5)
 ```
 
@@ -354,7 +354,7 @@ if args.writeimg==True:
 nir_header, nir_data, nir_hist = pcv.analyze_nir_intensity(img, kept_mask, 256)
 
 # Pseudocolor the grayscale image to a colormap
-pseudocolored_img = pcv.pseudocolor(gray_img=img, mask=kept_mask, cmap='viridis')
+pseudocolored_img = pcv.visualize.pseudocolor(gray_img=img, mask=kept_mask, cmap='viridis')
 
 # Perform shape analysis
 shape_header, shape_data, shape_imgs = pcv.analyze_object(rgb_img, o, m)
@@ -439,11 +439,11 @@ def main():
     
     # Laplace filtering (identify edges based on 2nd derivative)
     lp_img = pcv.laplace_filter(img, 1, 1)
-    pcv.plot_hist(lp_img)
+    pcv.visualize.histogram(lp_img)
     
     # Lapacian image sharpening, this step will enhance the darkness of the edges detected
     lp_shrp_img = pcv.image_subtract(img, lp_img)
-    pcv.plot_hist(lp_shrp_img)
+    pcv.visualize.histogram(lp_shrp_img)
     
     # Sobel filtering
     # 1st derivative sobel filtering along horizontal axis, kernel = 1)
@@ -501,7 +501,7 @@ def main():
     id_objects,obj_hierarchy = pcv.find_objects(edge_masked_img, inv_bx1234_img)
     
     # Define ROI
-    roi1, roi_hierarchy= pcv.roi.rectangle(x=100, y=100, h=200, w=200, img=edge_masked_img)
+    roi1, roi_hierarchy= pcv.roi.rectangle(img=edge_masked_img, x=100, y=100, h=200, w=200)
     
     # Decide which objects to keep
     roi_objects, hierarchy5, kept_mask, obj_area = pcv.roi_objects(edge_masked_img, 'partial', roi1, roi_hierarchy, id_objects, obj_hierarchy)
@@ -519,7 +519,7 @@ def main():
     nir_header, nir_data, nir_hist = pcv.analyze_nir_intensity(img, kept_mask, 256)
     
     # Pseudocolor the grayscale image to a colormap
-    pseudocolored_img = pcv.pseudocolor(gray_img=img, mask=kept_mask, cmap='viridis')
+    pseudocolored_img = pcv.visualize.pseudocolor(gray_img=img, mask=kept_mask, cmap='viridis')
     
     # Perform shape analysis
     shape_header, shape_data, shape_imgs = pcv.analyze_object(rgb_img, o, m)

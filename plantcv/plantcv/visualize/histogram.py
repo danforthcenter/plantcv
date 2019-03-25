@@ -6,21 +6,25 @@ import numpy as np
 from plantcv.plantcv.threshold import binary as binary_threshold
 from plantcv.plantcv import params
 import pandas as pd
-from plotnine import ggplot, aes, geom_line, scale_x_continuous
+from plotnine import ggplot, aes, geom_line, scale_x_continuous, labels
 
 
 
-def plot_hist(gray_img, mask=None, bins=256):
+def histogram(gray_img, mask=None, bins=256, color='red', title=None):
     """Plot a histogram using ggplot.
 
     Inputs:
     gray_img = grayscale image to analyze
     mask     = binary mask made from selected contours
     bins     = number of classes to divide spectrum into
+    color    = color of the line drawn
+    title    = custom title for the plot gets drawn if title is not None
 
     :param gray_img: numpy.ndarray
     :param mask: numpy.ndarray
     :param bins: int
+    :param color: str
+    :param title: str
     :return bins: list
     :return hist: list
     :return fig_hist: ggplot
@@ -70,11 +74,19 @@ def plot_hist(gray_img, mask=None, bins=256):
     bin_labels = np.arange(0, bins)
     dataset = pd.DataFrame({'Grayscale pixel intensity': bin_labels,
                             'Proportion of pixels (%)': hist_x})
-    fig_hist = (ggplot(data=dataset,
-                       mapping=aes(x='Grayscale pixel intensity',
-                                   y='Proportion of pixels (%)'))
-                + geom_line(color='red')
-                + scale_x_continuous(breaks=list(range(0, bins, 25))))
+    if title is None:
+        fig_hist = (ggplot(data=dataset,
+                           mapping=aes(x='Grayscale pixel intensity',
+                                       y='Proportion of pixels (%)'))
+                    + geom_line(color=color)
+                    + scale_x_continuous(breaks=list(range(0, bins, 25))))
+    elif title is not None:
+        fig_hist = (ggplot(data=dataset,
+                           mapping=aes(x='Grayscale pixel intensity',
+                                       y='Proportion of pixels (%)'))
+                    + geom_line(color=color)
+                    + scale_x_continuous(breaks=list(range(0, bins, 25)))
+                    + labels.ggtitle(title))
     params.debug=debug
     if params.debug is not None:
         if params.debug == "print":

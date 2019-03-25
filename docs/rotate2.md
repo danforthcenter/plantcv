@@ -8,7 +8,7 @@ Rotates image without changing the dimensions of the image.
 
 - **Parameters:**
     - img - RGB or grayscale image data
-    - rotation_deg - rotation angle in degrees, should be an integer, can be a negative number, positive values move counter clockwise.
+    - rotation_deg - rotation angle in degrees, can be a negative number, positive values move counter clockwise.
     - crop - if crop is set to True, image will be cropped to original image dimensions, if set to False, the image size will be adjusted to accommodate new image dimensions.
 - **Context:**
     - Rotates image, sometimes it is necessary to rotate an image, especially when clustering objects.

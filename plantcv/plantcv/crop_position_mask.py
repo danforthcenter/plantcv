@@ -116,7 +116,7 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
                 rows2 = np.zeros((r2, my), dtype=np.uint8)
                 maskv = np.vstack((rows1, maskv, rows2))
         if params.debug == 'print':
-            print_image(maskv, os.path.join(params.debug_outdir, str(params.device) + "_push-top_.png"))
+            print_image(maskv, os.path.join(params.debug_outdir, str(params.device) + "_push-top.png"))
         elif params.debug == 'plot':
             plot_image(maskv, cmap='gray')
 
