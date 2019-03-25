@@ -85,8 +85,8 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
     # Find the largest contour if roi_type is set to 'largest'
     elif roi_type.upper() == 'LARGEST':
         # Print warning statement about this feature
-        print(
-        "Warning: roi_type='largest' will only return the largest contour and its immediate children. Other subcontours will be dropped.")
+        print("Warning: roi_type='largest' will only return the largest contour and its immediate children. Other "
+              "subcontours will be dropped.")
 
         # Filter contours outside of the region of interest
         for c, cnt in enumerate(object_contour):
@@ -118,7 +118,7 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
         largest_area = 0
         for c, cnt in enumerate(kept_cnt):
             area = cv2.contourArea(cnt)
-            if (area > largest_area):
+            if area > largest_area:
                 largest_area = area
                 index = c
 
@@ -129,9 +129,8 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
         largest_hierarchy = [kept_hierarchy[0][index]]
 
         # Iterate through contours to find children of the largest contour
-        i = 0
-        for i,khi in enumerate(kept_hierarchy[0]):
-            if khi[3] == index: #is the parent equal to the largest contour?
+        for i, khi in enumerate(kept_hierarchy[0]):
+            if khi[3] == index:  # is the parent equal to the largest contour?
                 largest_hierarchy.append(khi)
                 largest_cnt.append(kept_cnt[i])
 
@@ -140,7 +139,6 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
 
         # Overwrite w_back and mask so it only has the largest contour
         w_back = background + 255
-        i=2
         for i, cnt in enumerate(largest_cnt):
             # print(cnt)
             if i == 0:
@@ -152,7 +150,9 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
 
         # Overwrite the mask with only pixels that are inside ROI and of the largest (and children) ROI
         kept = cv2.cvtColor(w_back, cv2.COLOR_BGR2GRAY)
-        kept[kept!=255] = 0 #I hope this is always true. this section was very goofy. "kept" always contained two values 255 and e.g. 100. but not 0s.
+        # I hope this is always true. this section was very goofy. "kept" always contained two values 255 and e.g.
+        # 100. but not 0s.
+        kept[kept != 255] = 0
         kept_obj = cv2.bitwise_not(kept)
         mask = np.copy(kept_obj)
 
@@ -161,7 +161,7 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
 
         # Create green "mask" of plant contour
         g_back = background.copy()
-        g_back[:,:,1] = g_back[:,:,1] + 255
+        g_back[:, :, 1] = g_back[:, :, 1] + 255
         g_back[mask_inv.astype('bool')] = 0
 
         # Mask image to remove
@@ -170,7 +170,7 @@ def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_h
         # Add green mask to real background with white plant
         ori_img = cv2.add(masked_img, g_back)
 
-        #Refind contours and hierarchy from new mask so they are easier to work with downstream
+        # Refind contours and hierarchy from new mask so they are easier to work with downstream
         kept_cnt, kept_hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
 
         # Draw ROI onto original image with contours
