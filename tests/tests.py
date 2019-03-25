@@ -22,6 +22,9 @@ TEST_INPUT_COLOR = "input_color_img.jpg"
 TEST_INPUT_GRAY = "input_gray_img.jpg"
 TEST_INPUT_GRAY_SMALL = "input_gray_img_small.jpg"
 TEST_INPUT_BINARY = "input_binary_img.png"
+# Image from http://www.libpng.org/pub/png/png-OwlAlpha.html
+# This image may be used, edited and reproduced freely.
+TEST_INPUT_RGBA = "input_rgba.png"
 TEST_INPUT_BAYER = "bayer_img.png"
 TEST_INPUT_ROI = "input_roi.npz"
 TEST_INPUT_CONTOURS = "input_contours.npz"
@@ -750,7 +753,7 @@ def test_plantcv_crop_position_mask():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     # Read in test data
-    nir, path1, filename1 = pcv.readimage(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK))
+    nir, path1, filename1 = pcv.readimage(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK), 'gray')
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK), -1)
     mask_three_channel = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK))
     mask_resize = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK_RESIZE), -1)
@@ -778,7 +781,7 @@ def test_plantcv_crop_position_mask_color():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     # Read in test data
-    nir, path1, filename1 = pcv.readimage(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    nir, path1, filename1 = pcv.readimage(os.path.join(TEST_DATA, TEST_INPUT_COLOR), mode='native')
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK), -1)
     mask_resize = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK_RESIZE))
     mask_non_binary = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK))
@@ -1549,12 +1552,12 @@ def test_plantcv_readimage_native():
     pcv.params.debug_outdir = cache_dir
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    _ = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_COLOR), mode='rgba')
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     pcv.params.debug = None
-    img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_COLOR), mode='native')
     # Assert that the image name returned equals the name of the input image
     # Assert that the path of the image returned equals the path of the input image
     # Assert that the dimensions of the returned image equals the expected dimensions
@@ -1569,7 +1572,7 @@ def test_plantcv_readimage_native():
 
 def test_plantcv_readimage_grayscale():
     pcv.params.debug = None
-    img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_GRAY), mode="grey")
+    _, _, _ = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_GRAY), mode="grey")
     img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_GRAY), mode="gray")
     assert len(np.shape(img)) == 2
 
@@ -1578,6 +1581,12 @@ def test_plantcv_readimage_rgb():
     pcv.params.debug = None
     img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_GRAY), mode="rgb")
     assert len(np.shape(img)) == 3
+
+
+def test_plantcv_readimage_rgba_as_rgb():
+    pcv.params.debug = None
+    img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_RGBA), mode="native")
+    assert np.shape(img)[2] == 3
 
 
 def test_plantcv_readimage_bad_file():
@@ -3217,6 +3226,92 @@ def test_plantcv_threshold_otsu_incorrect_object_type():
     with pytest.raises(RuntimeError):
         pcv.params.debug = None
         _ = pcv.threshold.otsu(gray_img=gray_img, max_value=255, object_type="lite")
+
+
+def test_plantcv_threshold_custom_range():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_range")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    # Test with debug = "print"
+    pcv.params.debug = 'print'
+    # Test channel='gray'
+    _, _ = pcv.threshold.custom_range(img, lower_thresh=[0], upper_thresh=[255], channel='gray')
+    _, _ = pcv.threshold.custom_range(gray_img, lower_thresh=[0], upper_thresh=[255], channel='gray')
+    # Test channel='HSV'
+    _, _ = pcv.threshold.custom_range(img, lower_thresh=[0,0,0], upper_thresh=[255,255,255], channel='HSV')
+    # Test channel='LAB'
+    _, _ = pcv.threshold.custom_range(img, lower_thresh=[0,0,0], upper_thresh=[255,255,255], channel='LAB')
+    pcv.params.debug='plot'
+    # Test channel='RGB'
+    mask, binary_img = pcv.threshold.custom_range(img, lower_thresh=[0,0,0], upper_thresh=[255,255,255], channel='RGB')
+    # Assert that the output image has the dimensions of the input image
+    if all([i == j] for i, j in zip(np.shape(binary_img), TEST_GRAY_DIM)):
+        # Assert that the image is binary
+        if all([i == j] for i, j in zip(np.unique(binary_img), [0, 255])):
+            assert 1
+        else:
+            assert 0
+    else:
+        assert 0
+
+
+def test_plantcv_threshold_custom_range_bad_input_HSV():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_range")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    with pytest.raises(RuntimeError):
+        _, _ = pcv.threshold.custom_range(img, lower_thresh=[0,0], upper_thresh=[2,2,2,2], channel='HSV')
+
+
+def test_plantcv_threshold_custom_range_bad_input_RGB():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_range")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    with pytest.raises(RuntimeError):
+        _, _ = pcv.threshold.custom_range(img, lower_thresh=[0,0], upper_thresh=[2,2,2,2], channel='RGB')
+
+
+def test_plantcv_threshold_custom_range_bad_input_LAB():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_range")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    with pytest.raises(RuntimeError):
+        _, _ = pcv.threshold.custom_range(img, lower_thresh=[0,0], upper_thresh=[2,2,2], channel='LAB')
+
+
+def test_plantcv_threshold_custom_range_bad_input_gray():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_range")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    with pytest.raises(RuntimeError):
+        _, _ = pcv.threshold.custom_range(img, lower_thresh=[0,0], upper_thresh=[2], channel='gray')
+
+
+def test_plantcv_threshold_custom_range_bad_input_channel():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_range")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    with pytest.raises(RuntimeError):
+        _, _ = pcv.threshold.custom_range(img, lower_thresh=[0], upper_thresh=[2], channel='CMYK')
 
 
 def test_plantcv_threshold_triangle():

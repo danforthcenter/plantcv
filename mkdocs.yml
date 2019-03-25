@@ -106,7 +106,8 @@ nav:
     - 'Rotate': rotate2.md
     - 'Shift Image': shift.md
     - 'Thresholding Methods':
-      - 'Binary threshold': binary_threshold.md
+      - 'Binary Threshold': binary_threshold.md
+      - 'Custom Range Threshold': custom_range_threshold.md
       - 'Gaussian Adaptive Threshold': gaussian_threshold.md
       - 'Mean Adaptive Threshold': mean_threshold.md
       - 'Otsu Auto Threshold': otsu_threshold.md
