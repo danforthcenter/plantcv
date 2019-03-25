@@ -115,6 +115,8 @@ def cluster_contour_splitimg(rgb_img, grouped_contour_indexes, contours, hierarc
     # split image
 
     output_path = []
+    output_imgs = []
+    output_masks = []
 
     for y, x in enumerate(corrected_contour_indexes):
         if outdir is not None:
@@ -139,6 +141,8 @@ def cluster_contour_splitimg(rgb_img, grouped_contour_indexes, contours, hierarc
         else:
             retval, mask_binary = cv2.threshold(mask_binary, 254, 255, cv2.THRESH_BINARY)
             masked1 = apply_mask(masked_img, mask_binary, 'white')
+            output_imgs.append(masked1)
+            output_masks.append(mask_binary)
             if outdir is not None:
                 print_image(masked1, savename)
                 print_image(mask_binary, savename1)
@@ -151,4 +155,4 @@ def cluster_contour_splitimg(rgb_img, grouped_contour_indexes, contours, hierarc
                 plot_image(masked1)
                 plot_image(mask_binary, cmap='gray')
 
-    return output_path
+    return output_path, output_imgs, output_masks

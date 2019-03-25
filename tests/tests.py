@@ -611,6 +611,33 @@ def test_plantcv_canny_edge_detect_bad_input():
         _ = pcv.canny_edge_detect(img=img, mask=mask, mask_color="gray")
 
 
+def test_plantcv_closing():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_closing")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
+    gray_img = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
+    bin_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    # Test with debug=None
+    pcv.params.debug = None
+    _ = pcv.closing(gray_img)
+    # Test with debug='plot'
+    pcv.params.debug = 'plot'
+    _ = pcv.closing(bin_img, np.ones((4, 4), np.uint8))
+    # Test with debug='print'
+    pcv.params.debug = 'print'
+    filtered_img = pcv.closing(bin_img)
+    assert np.sum(filtered_img) == 16261860
+
+
+def test_plantcv_closing_bad_input():
+    # Read in test data
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
+    with pytest.raises(RuntimeError):
+        _ = pcv.closing(rgb_img)
+
+
 def test_plantcv_cluster_contours():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_cluster_contours")
@@ -681,22 +708,22 @@ def test_plantcv_cluster_contours_splitimg():
     obj_hierarchy = hierachy['arr_0']
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.cluster_contour_splitimg(rgb_img=img1, grouped_contour_indexes=cluster_contours, contours=roi_contours,
+    _, _, _ = pcv.cluster_contour_splitimg(rgb_img=img1, grouped_contour_indexes=cluster_contours, contours=roi_contours,
                                      hierarchy=obj_hierarchy, outdir=cache_dir, file=None, filenames=None)
-    _ = pcv.cluster_contour_splitimg(rgb_img=img1, grouped_contour_indexes=[[0]], contours=[],
+    _, _, _ = pcv.cluster_contour_splitimg(rgb_img=img1, grouped_contour_indexes=[[0]], contours=[],
                                      hierarchy=np.array([[[ 1, -1, -1, -1]]]))
-    _ = pcv.cluster_contour_splitimg(rgb_img=img1, grouped_contour_indexes=cluster_contours, contours=roi_contours,
+    _, _, _ = pcv.cluster_contour_splitimg(rgb_img=img1, grouped_contour_indexes=cluster_contours, contours=roi_contours,
                                      hierarchy=obj_hierarchy, outdir=cache_dir, file='multi', filenames=None)
 
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.cluster_contour_splitimg(rgb_img=img1, grouped_contour_indexes=cluster_contours, contours=roi_contours,
+    _, _, _ = pcv.cluster_contour_splitimg(rgb_img=img1, grouped_contour_indexes=cluster_contours, contours=roi_contours,
                                      hierarchy=obj_hierarchy, outdir=None, file=None, filenames=cluster_names)
-    _ = pcv.cluster_contour_splitimg(rgb_img=img1, grouped_contour_indexes=cluster_contours, contours=roi_contours,
+    _, _, _ = pcv.cluster_contour_splitimg(rgb_img=img1, grouped_contour_indexes=cluster_contours, contours=roi_contours,
                                      hierarchy=obj_hierarchy, outdir=None, file=None, filenames=cluster_names_too_many)
     # Test with debug = None
     pcv.params.debug = None
-    output_path = pcv.cluster_contour_splitimg(rgb_img=img1, grouped_contour_indexes=cluster_contours,
+    output_path, imgs, masks = pcv.cluster_contour_splitimg(rgb_img=img1, grouped_contour_indexes=cluster_contours,
                                                contours=roi_contours, hierarchy=obj_hierarchy, outdir=None, file=None,
                                                filenames=None)
     assert len(output_path) != 0
@@ -1418,6 +1445,33 @@ def test_plantcv_object_composition_grayscale_input():
     # Assert that the objects have been combined
     contour_shape = np.shape(contours)  # type: tuple
     assert contour_shape[1] == 1
+
+
+def test_plantcv_opening():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_closing")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
+    gray_img = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
+    bin_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    # Test with debug=None
+    pcv.params.debug = None
+    _ = pcv.opening(gray_img)
+    # Test with debug='plot'
+    pcv.params.debug = 'plot'
+    _ = pcv.opening(bin_img, np.ones((4, 4), np.uint8))
+    # Test with debug='print'
+    pcv.params.debug = 'print'
+    filtered_img = pcv.opening(bin_img)
+    assert np.sum(filtered_img) == 16184595
+
+
+def test_plantcv_opening_bad_input():
+    # Read in test data
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
+    with pytest.raises(RuntimeError):
+        _ = pcv.opening(rgb_img)
 
 
 def test_plantcv_output_mask():
