@@ -1,5 +1,3 @@
-# Analyze Color of Object
-
 import os , cv2, statistics
 import numpy as np
 import pandas as pd
@@ -9,8 +7,6 @@ from plotnine import ggplot, aes, geom_line, scale_x_continuous, scale_color_man
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
-
-
 
 
 def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
@@ -58,21 +54,12 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
                      }
 
     # Histogram plot types
-    hist_types = {"all": ("b", "g", "r", "l", "m", "y", "h", "s", "v"),
-                  "rgb": ("b", "g", "r"),
-                  "lab": ("l", "m", "y"),
-                  "hsv": ("h", "s", "v")}
+    hist_types = {"ALL": ("b", "g", "r", "l", "m", "y", "h", "s", "v"),
+                  "RGB": ("b", "g", "r"),
+                  "LAB": ("l", "m", "y"),
+                  "HSV": ("h", "s", "v")}
 
-    # # If the user-input pseudo_channel is not None and is not found in the list of accepted channels, exit
-    # if pseudo_channel is not None and pseudo_channel not in norm_channels:
-    #     fatal_error("Pseudocolor channel was " + str(pseudo_channel) +
-    #                 ', but can only be one of the following: None, "l", "m", "y", "h", "s" or "v"!')
-    # # If the user-input pseudocolored image background is not in the accepted input list, exit
-    # if pseudo_bkg not in ["white", "img", "both"]:
-    #     fatal_error("The pseudocolored image background was " + str(pseudo_bkg) +
-    #                 ', but can only be one of the following: "white", "img", or "both"!')
-    # # If the user-input histogram color-channel plot type is not in the list of accepted channels, exit
-    if hist_plot_type is not None and hist_plot_type not in hist_types:
+    if hist_plot_type is not None and hist_plot_type.upper() not in hist_types:
         fatal_error("The histogram plot type was " + str(hist_plot_type) +
                     ', but can only be one of the following: None, "all", "rgb", "lab", or "hsv"!')
     histograms = {
@@ -180,7 +167,6 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
                         + scale_color_manual(['blueviolet', 'cyan', 'orange'])
                         )
             analysis_images.append(hist_fig)
-            
 
         elif hist_plot_type.upper() == 'ALL':
             s = pd.Series(['blue', 'green', 'red', 'lightness', 'green-magenta',
@@ -201,7 +187,6 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
     
     # produces a dictionary with hue as key, and frequency as values.
     c = Counter(h)
-    
     # remove background colour 
     del c[0]
 
@@ -224,15 +209,17 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
     #calculate relevant statistics 
     circular_mean = stats.circmean(temp_hue_list_hsv, 180)
     circular_std = stats.circstd(temp_hue_list_hsv, 180) # assumes samples are in the range [low to high] which they are
+
     median = statistics.median(temp_hue_list_hsv)
 
-    
+    stats_dict = {'mean': circular_mean, 'std' : circular_std, 'median': median}
 
     # Plot or print the histogram
-    if params.debug == 'print':
-        hist_fig.save(os.path.join(params.debug_outdir, str(params.device) + '_analyze_color_hist.png'))
-    elif params.debug == 'plot':
-        print(hist_fig)
+    if hist_plot_type is not None:
+        if params.debug == 'print':
+            hist_fig.save(os.path.join(params.debug_outdir, str(params.device) + '_analyze_color_hist.png'))
+        elif params.debug == 'plot':
+            print(hist_fig)
 
     # Store into global measurements
     if not 'color_histogram' in outputs.measurements:
