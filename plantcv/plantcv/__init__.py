@@ -111,6 +111,7 @@ from plantcv.plantcv import roi
 from plantcv.plantcv import threshold
 from plantcv.plantcv import transform
 from plantcv.plantcv import visualize
+from plantcv.plantcv import morphology
 
 
 # add new functions to end of lists
@@ -119,7 +120,7 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'apply_m
            'readbayer', 'laplace_filter', 'sobel_filter', 'scharr_filter', 'hist_equalization', 'erode',
            'image_add', 'image_subtract', 'dilate', 'watershed', 'rectangle_mask', 'rgb2gray_hsv', 'rgb2gray_lab',
            'rgb2gray', 'median_blur', 'fill', 'invert', 'logical_and', 'logical_or', 'logical_xor',
-           'find_objects', 'roi_objects', 'transform', 'object_composition', 'analyze_object',
+           'find_objects', 'roi_objects', 'transform', 'object_composition', 'analyze_object', 'morphology',
            'analyze_bound_horizontal', 'analyze_bound_vertical', 'analyze_color', 'analyze_nir_intensity',
            'fluor_fvfm', 'print_results', 'resize', 'flip', 'crop_position_mask', 'get_nir', 'report_size_marker_area',
            'white_balance', 'acute_vertex', 'scale_features', 'landmark_reference_pt_dist', 'outputs',

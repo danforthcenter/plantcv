@@ -23,15 +23,13 @@ def find_tips(skel_img):
     :return tip_img: numpy.ndarray
     """
 
-    # Check to make sure
-
-    endpoint1 = np.array([[0, 0, 0],
-                          [0, 1, 0],
-                          [0, 1, 0]])
-
-    endpoint2 = np.array([[0, 0, 0],
-                          [0, 1, 0],
-                          [0, 0, 1]])
+    # 1 values line up with 255s, while the -1s line up with 0s (0s correspond to don’t care)
+    endpoint1 = np.array([[-1, -1, -1],
+                          [-1,  1, -1],
+                          [-1,  1, -1]])
+    endpoint2 = np.array([[-1, -1, -1],
+                          [-1,  1, -1],
+                          [-1, -1,  1]])
 
     endpoint3 = np.rot90(endpoint1)
     endpoint4 = np.rot90(endpoint2)
@@ -43,8 +41,9 @@ def find_tips(skel_img):
     endpoints = [endpoint1, endpoint2, endpoint3, endpoint4, endpoint5, endpoint6, endpoint7, endpoint8]
     tip_img = np.zeros(skel_img.shape, dtype=int)
     for endpoint in endpoints:
-        tip_img += cv2.morphologyEx(skel_img, op=cv2.MORPH_HITMISS, kernel=endpoint,
-                                       borderType=cv2.BORDER_CONSTANT, borderValue=0)
+        tip_img = np.logical_or(cv2.morphologyEx(skel_img, op=cv2.MORPH_HITMISS, kernel=endpoint,
+                                                 borderType=cv2.BORDER_CONSTANT, borderValue=0), tip_img)
+    tip_img = tip_img.astype(np.uint8) * 255
 
     params.device += 1
 

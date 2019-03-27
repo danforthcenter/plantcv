@@ -8,7 +8,7 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 
 
-def branchedPoints(skel_img):
+def find_branch_pts(skel_img):
     """
     The branching function was inspired by Jean-Patrick Pommier: https://gist.github.com/jeanpat/5712699
     Inputs:
@@ -22,12 +22,13 @@ def branchedPoints(skel_img):
     """
 
     # T like branch points
-    t1 = np.array([[2, 1, 2],
-                   [1, 1, 1],
-                   [2, 2, 2]])
-    t2 = np.array([[1, 2, 1],
-                   [2, 1, 2],
-                   [1, 2, 2]])
+    # 1 values line up with 255s, while the -1s line up with 0s (0s correspond to don’t care)
+    t1 = np.array([[-1,  1, -1],
+                   [ 1,  1,  1],
+                   [-1, -1, -1]])
+    t2 = np.array([[ 1, -1,  1],
+                   [-1,  1, -1],
+                   [ 1, -1, -1]])
     t3 = np.rot90(t1)
     t4 = np.rot90(t2)
     t5 = np.rot90(t3)
@@ -37,12 +38,12 @@ def branchedPoints(skel_img):
     t = [t1, t2, t3, t4, t5, t6, t7, t8]
 
     # Y like branch points
-    y1 = np.array([[1, 0, 1],
-                   [0, 1, 0],
-                   [2, 1, 2]])
-    y2 = np.array([[0, 1, 0],
-                   [1, 1, 2],
-                   [0, 2, 1]])
+    y1 = np.array([[ 1, -1,  1],
+                   [-1,  1, -1],
+                   [ 0,  1,  0]])
+    y2 = np.array([[-1,  1, -1],
+                   [ 1,  1,  0],
+                   [-1,  0,  1]])
     y3 = np.rot90(y1)
     y4 = np.rot90(y2)
     y5 = np.rot90(y3)
@@ -55,12 +56,12 @@ def branchedPoints(skel_img):
 
     # Store branch points
     for y_array in y:
-        branch_img += cv2.morphologyEx(skel_img, op=cv2.MORPH_HITMISS, kernel=y_array,
-                                       borderType=cv2.BORDER_CONSTANT, borderValue=0)
+        branch_img = np.logical_or(cv2.morphologyEx(skel_img, op=cv2.MORPH_HITMISS, kernel=y_array,
+                                                    borderType=cv2.BORDER_CONSTANT, borderValue=0), branch_img)
     for t_array in t:
-        branch_img += cv2.morphologyEx(skel_img, op=cv2.MORPH_HITMISS, kernel=t_array,
-                                       borderType=cv2.BORDER_CONSTANT, borderValue=0)
-
+        branch_img = np.logical_or(cv2.morphologyEx(skel_img, op=cv2.MORPH_HITMISS, kernel=t_array,
+                                                    borderType=cv2.BORDER_CONSTANT, borderValue=0), branch_img)
+    branch_img = branch_img.astype(np.uint8) * 255
     params.device += 1
     if params.debug == 'print':
         print_image(branch_img, os.path.join(params.debug_outdir, str(params.device) + '_skeleton_branches.png'))

@@ -10,7 +10,7 @@ from plantcv.plantcv import find_objects
 from plantcv.plantcv.morphology import find_tips
 
 
-def pruning(skel_img, size):
+def prune(skel_img, size):
     """
     The pruning function was written by Jean-Patrick Pommier: https://gist.github.com/jeanpat/5712699
     Iteratively remove endpoints (tips) from a skeletonized image. "Prunes" barbs off a skeleton.
