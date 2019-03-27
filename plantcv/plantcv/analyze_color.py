@@ -16,10 +16,12 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
     mask             = Binary mask made from selected contours
     bins             = number of color bins the channel is divided into
     hist_plot_type   = 'None', 'all', 'rgb','lab' or 'hsv'
+    
     Returns:
     hist_header      = color histogram data table headers
     hist_data        = color histogram data table values
     analysis_image   = histogram output
+    
     :param rgb_img: numpy.ndarray
     :param mask: numpy.ndarray
     :param bins: int
