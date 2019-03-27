@@ -61,7 +61,8 @@ def find_branch_pts(skel_img):
     for t_array in t:
         branch_img = np.logical_or(cv2.morphologyEx(skel_img, op=cv2.MORPH_HITMISS, kernel=t_array,
                                                     borderType=cv2.BORDER_CONSTANT, borderValue=0), branch_img)
-    branch_img = branch_img.astype(np.uint8) * 255
+    # Switch type to uint8 rather than bool
+    branch_img = (branch_img*255).astype(np.uint8)
     params.device += 1
     if params.debug == 'print':
         print_image(branch_img, os.path.join(params.debug_outdir, str(params.device) + '_skeleton_branches.png'))
