@@ -290,7 +290,7 @@ def test_plantcv_analyze_color():
 
     # Test with debug = None
     pcv.params.debug = None
-    color_header, color_data, _, _ _ = pcv.analyze_color(rgb_img=img, mask=mask,
+    color_header, color_data, stat_header, stats, imgs = pcv.analyze_color(rgb_img=img, mask=mask,
                                                                                            bins=256,hist_plot_type=None)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     pcv.outputs.clear()
