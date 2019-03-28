@@ -1,4 +1,4 @@
-import os , cv2, statistics
+import os , cv2
 import numpy as np
 import pandas as pd
 from collections import Counter
@@ -212,10 +212,22 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
     circular_mean = stats.circmean(temp_hue_list_hsv, 180)
     circular_std = stats.circstd(temp_hue_list_hsv, 180) # assumes samples are in the range [low to high] which they are
 
-    median = statistics.median(temp_hue_list_hsv)
+    median = np.median(temp_hue_list_hsv)
 
     stats_dict = {'mean': circular_mean, 'std' : circular_std, 'median': median}
+    color_stats_header = [
+        'HEADER_COLOR_STATS',
+        'circular_mean',
+        'circular_std',
+        'median'
+    ]
 
+    color_stats_data = [
+        'COLOR_STATS_DATA',
+        circular_mean,
+        circular_std,
+        median
+    ]
     # Plot or print the histogram
     if hist_plot_type is not None:
         if params.debug == 'print':
@@ -247,4 +259,4 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
     # Store images
     outputs.images.append(analysis_images)
 
-    return hist_header, hist_data, analysis_images
+    return hist_header, hist_data, color_stats_header, color_stats_data, analysis_images
