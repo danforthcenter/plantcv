@@ -18,16 +18,16 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
     hist_plot_type   = 'None', 'all', 'rgb','lab' or 'hsv'
     
     Returns:
-    hist_header      = color histogram data table headers
-    hist_data        = color histogram data table values
+    color_header     = color histogram data table headers
+    color_data       = color histogram data table values
     analysis_image   = histogram output
     
     :param rgb_img: numpy.ndarray
     :param mask: numpy.ndarray
     :param bins: int
     :param hist_plot_type: str
-    :return hist_header: list
-    :return hist_data: list
+    :return color_header: list
+    :return color_data: list
     :return analysis_images: list
     """
 
@@ -98,37 +98,6 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
     binval = np.arange(0, bins)
     bin_values = [l for l in binval]
 
-    # Store Color Histogram Data
-    hist_header = [
-        'HEADER_HISTOGRAM',
-        'bin-number',
-        'bin-values',
-        'blue',
-        'green',
-        'red',
-        'lightness',
-        'green-magenta',
-        'blue-yellow',
-        'hue',
-        'saturation',
-        'value'
-    ]
-
-    hist_data = [
-        'HISTOGRAM_DATA',
-        bins,
-        bin_values,
-        hist_data_b,
-        hist_data_g,
-        hist_data_r,
-        hist_data_l,
-        hist_data_m,
-        hist_data_y,
-        hist_data_h,
-        hist_data_s,
-        hist_data_v
-    ]
-
     analysis_images = []
     dataset = pd.DataFrame({'bins': binval, 'blue': hist_data_b,
                             'green': hist_data_g, 'red': hist_data_r,
@@ -195,7 +164,6 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
     # sort the dictionary in order 
     ordered = dict(sorted(c.items(), key=lambda t: t[0]))
 
-
     # loop adds the hue to a list for the frequency of each hue
     temp_hue_list_hsv = []
     for i in range(len(ordered)):
@@ -207,27 +175,52 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
 
             j += 1
 
-
     #calculate relevant statistics 
     circular_mean = stats.circmean(temp_hue_list_hsv, 180)
     circular_std = stats.circstd(temp_hue_list_hsv, 180) # assumes samples are in the range [low to high] which they are
 
     median = np.median(temp_hue_list_hsv)
 
-    stats_dict = {'mean': circular_mean, 'std' : circular_std, 'median': median}
-    color_stats_header = [
-        'HEADER_COLOR_STATS',
+    # Store Color Histogram Data
+    color_header = [
+        'HEADER_COLOR',
+        'bin-number',
+        'bin-values',
+        'blue',
+        'green',
+        'red',
+        'lightness',
+        'green-magenta',
+        'blue-yellow',
+        'hue',
+        'saturation',
+        'value',
         'circular_mean',
         'circular_std',
         'median'
     ]
 
-    color_stats_data = [
-        'COLOR_STATS_DATA',
+    color_data = [
+        'COLOR_DATA',
+        bins,
+        bin_values,
+        hist_data_b,
+        hist_data_g,
+        hist_data_r,
+        hist_data_l,
+        hist_data_m,
+        hist_data_y,
+        hist_data_h,
+        hist_data_s,
+        hist_data_v,
         circular_mean,
         circular_std,
         median
     ]
+
+    # Store into lists instead for pipeline and print_results
+    # stats_dict = {'mean': circular_mean, 'std' : circular_std, 'median': median}
+
     # Plot or print the histogram
     if hist_plot_type is not None:
         if params.debug == 'print':
@@ -236,27 +229,24 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
             print(hist_fig)
 
     # Store into global measurements
-    if not 'color_histogram' in outputs.measurements:
-        outputs.measurements['color_histogram'] = {}
-    outputs.measurements['color_histogram']['bin-number'] = bins
-    outputs.measurements['color_histogram']['bin-values'] = bin_values
-    outputs.measurements['color_histogram']['blue'] = hist_data_b
-    outputs.measurements['color_histogram']['green'] = hist_data_g
-    outputs.measurements['color_histogram']['red'] = hist_data_r
-    outputs.measurements['color_histogram']['lightness'] = hist_data_l
-    outputs.measurements['color_histogram']['green-magenta'] = hist_data_m
-    outputs.measurements['color_histogram']['blue-yellow'] = hist_data_y
-    outputs.measurements['color_histogram']['hue'] = hist_data_h
-    outputs.measurements['color_histogram']['saturation'] = hist_data_s
-    outputs.measurements['color_histogram']['value'] = hist_data_v
-    
-    if not 'color_statistics' in outputs.measurements:
-        outputs.measurements['color_statistics'] = {}
-    outputs.measurements['color_statistics']['mean'] = circular_mean
-    outputs.measurements['color_statistics']['standard-deviation'] = circular_std
-    outputs.measurements['color_statistics']['median'] = median
+    if not 'color_data' in outputs.measurements:
+        outputs.measurements['color_data'] = {}
+    outputs.measurements['color_data']['bin-number'] = bins
+    outputs.measurements['color_data']['bin-values'] = bin_values
+    outputs.measurements['color_data']['blue'] = hist_data_b
+    outputs.measurements['color_data']['green'] = hist_data_g
+    outputs.measurements['color_data']['red'] = hist_data_r
+    outputs.measurements['color_data']['lightness'] = hist_data_l
+    outputs.measurements['color_data']['green-magenta'] = hist_data_m
+    outputs.measurements['color_data']['blue-yellow'] = hist_data_y
+    outputs.measurements['color_data']['hue'] = hist_data_h
+    outputs.measurements['color_data']['saturation'] = hist_data_s
+    outputs.measurements['color_data']['value'] = hist_data_v
+    outputs.measurements['color_data']['mean'] = circular_mean
+    outputs.measurements['color_data']['standard-deviation'] = circular_std
+    outputs.measurements['color_data']['median'] = median
 
     # Store images
     outputs.images.append(analysis_images)
 
-    return hist_header, hist_data, color_stats_header, color_stats_data, analysis_images
+    return color_header, color_data, analysis_images

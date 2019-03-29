@@ -756,7 +756,7 @@ def process_results(args):
     # args.features_file.write('#' + '\t'.join(map(str, feature_fields + opt_feature_fields)) + '\n')
 
     # Signal channel data table
-    signal_fields = ['bin-number', 'channel_name', 'values', 'bin_values']
+    signal_fields = ['bin-number', 'channel_name', 'values', 'bin_values', 'circular_mean', 'circular_std', 'median']
 
     # bin-number	blue	green	red	lightness	green-magenta	blue-yellow	hue	saturation	value
 
@@ -819,9 +819,9 @@ def process_results(args):
                                 if i > 0:
                                     feature_data[features[i]] = datum
                         # If the data is of class histogram/signal, store in the signal dictionary
-                        elif cols[0] == 'HEADER_HISTOGRAM':
+                        elif cols[0] == 'HEADER_COLOR':
                             signal = cols
-                        elif cols[0] == 'HISTOGRAM_DATA':
+                        elif cols[0] == 'COLOR_DATA':
                             for i, datum in enumerate(cols):
                                 if i > 0:
                                     signal_data[signal[i]] = datum

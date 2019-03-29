@@ -36,20 +36,10 @@ def print_results(filename):
         result.write('\t'.join(map(str, data)) + '\n')
 
     # Write data from analyze_color if it was stored
-    if 'color_histogram' in outputs.measurements:
-        header = ['HEADER_HISTOGRAM']
-        data = ['HISTOGRAM_DATA']
-        for k, v in outputs.measurements['color_histogram'].items():
-            header.append(k)
-            data.append(v)
-        result.write('\t'.join(map(str, header)) + '\n')
-        result.write('\t'.join(map(str, data)) + '\n')
-
-    # Write color statistics data from analyze_color if it was stored
-    if 'color_statistics' in outputs.measurements:
-        header = ['HEADER_COLOR_STATS']
-        data = ['COLOR_STATS_DATA']
-        for k, v in outputs.measurements['color_statistics'].items():
+    if 'color_data' in outputs.measurements:
+        header = ['HEADER_COLOR']
+        data = ['COLOR_DATA']
+        for k, v in outputs.measurements['color_data'].items():
             header.append(k)
             data.append(v)
         result.write('\t'.join(map(str, header)) + '\n')
