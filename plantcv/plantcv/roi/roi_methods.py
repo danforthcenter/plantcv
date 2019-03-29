@@ -218,7 +218,8 @@ def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
     ncols          = Number of columns in ROI layout. Should be missing or None if each center coordinate pair is listed.
 
     Returns:
-    mask           = Labeled mask ROIs
+    roi_contour           = list of roi contours
+    roi_hierarchy         = list of roi hierarchies
 
     :param img: numpy.ndarray
     :param coord: tuple, list
