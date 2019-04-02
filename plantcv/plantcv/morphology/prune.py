@@ -37,7 +37,7 @@ def prune(skel_img, size):
     mask_skel = (pruned_img * 255).astype(np.uint8)
     objects, hierarchies = find_objects(mask_skel, mask_skel)
     if not len(objects) == 1:
-        print("Warning: Multiple objects and pruning will further separate the difference pieces.")
+        print("Warning: Multiple objects detected and pruning will further separate the difference pieces.")
 
     for i in range(0, size):
         endpoints = find_tips(pruned_img)

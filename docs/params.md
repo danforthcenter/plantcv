@@ -44,7 +44,7 @@ roi_contour, roi_hierarchy = pcv.roi.rectangle(x=100, y=100, h=200, w=200, img=i
 
 # It might be preferred to have a thicker or thinner line drawn depending on the size of the image.
 # Change line thickness from the default (5) to make it thinner, and plot the rectangular ROI again,  
-# (note: this won't change the returns but instead is a purely optional preference regarding the plot in debug='print' and debug='plot') 
+# (note: this won't change the returns for most functions but instead is a purely optional preference regarding the plot in debug='print' and debug='plot') 
 pcv.params.line_thickness = 3 
 roi_contour, roi_hierarchy = pcv.roi.rectangle(x=100, y=100, h=200, w=200, img=img)
 

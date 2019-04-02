@@ -2447,6 +2447,69 @@ def test_plantcv_learn_naive_bayes_multiclass():
 # ####################################
 # Tests for the morphology subpackage
 # ####################################
+def test_plantcv_morphology_check_cycles():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_branches")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    pcv.params.debug="print"
+    _ = pcv.morphology.check_cycles(mask)
+    pcv.params.debug="plot"
+    _ = pcv.morphology.check_cycles(mask)
+    pcv.params.debug = None
+    num_cycles, cycle_img = pcv.morphology.check_cycles(mask)
+    assert num_cycles == 1
+
+
+def test_plantcv_morphology_find_branch_pts():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_branches")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    pcv.params.debug="print"
+    skeleton = pcv.morphology.skeletonize(mask=mask)
+    _ = pcv.morphology.find_branch_pts(skel_img=skeleton)
+    pcv.params.debug="plot"
+    _ = pcv.morphology.find_branch_pts(skel_img=skeleton)
+    pcv.params.debug=None
+    branches = pcv.morphology.find_branch_pts(skel_img=skeleton)
+    assert np.sum(branches) == 9435
+
+
+def test_plantcv_morphology_find_tips():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_tips")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    pcv.params.debug="print"
+    skeleton = pcv.morphology.skeletonize(mask=mask)
+    _ = pcv.morphology.find_tips(skel_img=skeleton)
+    pcv.params.debug="plot"
+    _ = pcv.morphology.find_tips(skel_img=skeleton)
+    pcv.params.debug=None
+    tips = pcv.morphology.find_tips(skel_img=skeleton)
+    assert np.sum(tips) == 9435
+
+
+def test_plantcv_morphology_prune():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_pruned")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    pcv.params.debug="print"
+    skeleton = pcv.morphology.skeletonize(mask=mask)
+    _ = pcv.morphology.prune(skel_img=skeleton, size=1)
+    pcv.params.debug="plot"
+    _ = pcv.morphology.prune(skel_img=skeleton, size=1)
+    pcv.params.debug=None
+    pruned_img = pcv.morphology.prune(skel_img=skeleton, size=3)
+    assert np.sum(pruned_img) < np.sum(skeleton)
+
+
 def test_plantcv_morphology_skeletonize():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_skeletonize")
@@ -2468,54 +2531,6 @@ def test_plantcv_morphology_skeletonize():
             assert 0
     else:
         assert 0
-
-
-def test_plantcv_morphology_find_tips():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_tips")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    pcv.params.debug="print"
-    skeleton = pcv.morphology.skeletonize(mask=mask)
-    _ = pcv.morphology.find_tips(skel_img=skeleton)
-    pcv.params.debug="plot"
-    _ = pcv.morphology.find_tips(skel_img=skeleton)
-    pcv.params.debug=None
-    tips = pcv.morphology.find_tips(skel_img=skeleton)
-    assert np.sum(tips) == 9435
-
-
-def test_plantcv_morphology_find_branch_pts():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_branches")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    pcv.params.debug="print"
-    skeleton = pcv.morphology.skeletonize(mask=mask)
-    _ = pcv.morphology.find_branch_pts(skel_img=skeleton)
-    pcv.params.debug="plot"
-    _ = pcv.morphology.find_branch_pts(skel_img=skeleton)
-    pcv.params.debug=None
-    branches = pcv.morphology.find_branch_pts(skel_img=skeleton)
-    assert np.sum(branches) == 9435
-
-
-def test_plantcv_morphology_prune():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_pruned")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    pcv.params.debug="print"
-    skeleton = pcv.morphology.skeletonize(mask=mask)
-    _ = pcv.morphology.prune(skel_img=skeleton, size=1)
-    pcv.params.debug="plot"
-    _ = pcv.morphology.prune(skel_img=skeleton, size=1)
-    pcv.params.debug=None
-    pruned_img = pcv.morphology.prune(skel_img=skeleton, size=3)
-    assert np.sum(pruned_img) < np.sum(skeleton)
 
 
 # ##############################

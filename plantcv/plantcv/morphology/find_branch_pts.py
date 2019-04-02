@@ -4,6 +4,8 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv import params
+from plantcv.plantcv import dilate
+from plantcv.plantcv import find_objects
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 
@@ -63,10 +65,21 @@ def find_branch_pts(skel_img):
                                                     borderType=cv2.BORDER_CONSTANT, borderValue=0), branch_img)
     # Switch type to uint8 rather than bool
     branch_img = (branch_img*255).astype(np.uint8)
+
+    # Make debugging image
+    branch_objects, _ = find_objects(branch_img, branch_img)
+    skel_copy = np.copy(skel_img)
+    dilated_skel = dilate(skel_copy, params.line_thickness, 1)
+    branch_plot = cv2.cvtColor(dilated_skel, cv2.COLOR_GRAY2RGB)
+    for i in branch_objects:
+        x, y = i.ravel()
+        cv2.circle(branch_plot, (x, y), params.line_thickness, (255, 0, 255), -1)
+
     params.device += 1
+
     if params.debug == 'print':
-        print_image(branch_img, os.path.join(params.debug_outdir, str(params.device) + '_skeleton_branches.png'))
+        print_image(branch_plot, os.path.join(params.debug_outdir, str(params.device) + '_skeleton_branches.png'))
     elif params.debug == 'plot':
-        plot_image(branch_img, cmap='gray')
+        plot_image(branch_plot, cmap='gray')
 
     return branch_img
