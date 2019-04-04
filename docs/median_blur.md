@@ -24,11 +24,13 @@ The function is a wrapper for the SciPy function [median filter](https://docs.sc
 ```python
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Apply median blur to a binary image that has been previously thresholded.
 blur_5 = pcv.median_blur(gray_img, 5)
+
 ```
 
 **Median blur (ksize = 5)**
@@ -38,11 +40,13 @@ blur_5 = pcv.median_blur(gray_img, 5)
 ```python
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Apply median blur to a binary image that has been previously thresholded.
 blur_11 = pcv.median_blur(gray_img, (11, 11))
+
 ```
 
 **Median blur (ksize = (11,11))**

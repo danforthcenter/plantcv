@@ -29,12 +29,14 @@ Apply binary mask to an image.
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 
 pcv.params.debug = "print"
 
 # Apply binary 'white' mask over an image. 
 masked_image = pcv.apply_mask(img, mask, 'white')
+
 ```
 
 **White-masked image**
@@ -45,12 +47,14 @@ masked_image = pcv.apply_mask(img, mask, 'white')
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 
 pcv.params.debug = "print"
 
 # Apply binary 'black' mask over an image.
 masked_image = pcv.apply_mask(img, mask, 'black')
+
 ```
   
 **Black-masked image**

@@ -36,13 +36,15 @@ Extract color data of objects and produce pseudocolored images, can extract data
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 
 pcv.params.debug = "print"
 
 # Analyze Color
     
-color_header, color_data, analysis_images = pcv.analyze_color(rgb_img, mask, 256, 'all')
+color_header, color_data, hist_img = pcv.analyze_color(rgb_img, mask, 256, 'all')
+
 ```
 
 **Histograms of (R, G, B), (H, S, V), and (L, A, B) color channels**

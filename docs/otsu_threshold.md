@@ -23,11 +23,14 @@ Creates a binary image from a gray image based on the threshold values.
 ```python
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
-# Create binary image from a gray image based on threshold values. Targeting light objects in the image.
+# Create binary image from a gray image based on threshold values. 
+# Targeting light objects in the image.
 threshold_light = pcv.threshold.otsu(gray_img, 255, 'dark')
+
 ```
 
 **Thresholded image**
@@ -41,11 +44,14 @@ threshold_light = pcv.threshold.otsu(gray_img, 255, 'dark')
 ```python
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
-# Create binary image from a gray image based on threshold values. Targeting dark objects in the image.
+# Create binary image from a gray image based on threshold values. 
+# Targeting dark objects in the image.
 threshold_dark = pcv.threshold.otsu(gray_img, 255, 'light')
+
 ```
 
 **Thresholded image (inverse)**

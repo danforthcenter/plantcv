@@ -32,12 +32,15 @@ The object target can be specified as dark or light.
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 
 pcv.params.debug = "print"
 
-# Create binary image from a gray image based on threshold values. Targeting light objects in the image.
+# Create binary image from a gray image based on threshold values, 
+# targeting light objects in the image.
 threshold_light = pcv.threshold.binary(gray_img, 36, 255, 'light')
+
 ```
 
 **Thresholded image**
@@ -48,12 +51,15 @@ threshold_light = pcv.threshold.binary(gray_img, 36, 255, 'light')
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 
 pcv.params.debug = "print"
 
-# Create binary image from a gray image based on threshold values. Targeting dark objects in the image.
+# Create binary image from a gray image based on threshold values, 
+# targeting dark objects in the image.
 threshold_dark = pcv.threshold.binary(gray_img, 36, 255, 'dark')
+
 ```
 
 **Thresholded image (inverse)**

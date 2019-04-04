@@ -34,6 +34,7 @@ watershed_header, watershed_data, analysis_images = pcv.watershed_segmentation(c
 
 print(watershed_header)
 print(watershed_data)
+
 ```
 
 **Watershed Segmentation**
@@ -44,4 +45,5 @@ print(watershed_data)
 
 ('HEADER_WATERSHED', 'estimated_object_count')  
 ('WATERSHED_DATA', 10)
+
 ```

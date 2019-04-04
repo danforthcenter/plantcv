@@ -17,7 +17,8 @@
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "plot"
 
 branch_points_img = pcv.morphology.find_branch_pts(skel_img=skeleton)

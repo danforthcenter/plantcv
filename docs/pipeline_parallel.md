@@ -65,7 +65,8 @@ time \
 -M imgtype:VIS,camera:TV,zoom:z1000 \
 -C NIR \
 -T 10 \
--w
+-w 
+
 ```
 
 ### Example Condor Jobfile
@@ -89,6 +90,7 @@ getenv           = true
 ####################
 
 queue
+
 ```
 
 ### Running PlantCV pipelines over a flat directory of images
@@ -135,4 +137,5 @@ We normally execute pipelines as a shell script or as a condor jobfile (or dagma
 -t jpg \
 -T 16 \
 -w
+
 ```

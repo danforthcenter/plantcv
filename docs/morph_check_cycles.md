@@ -17,12 +17,15 @@
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
-# the cycle_img created for debugging purposes allows for line thickness adjustments with 
-# the global line thickness parameter. Try setting pcv.params.line_thickness = 8 for thicker lines (default 5)
+# The cycle_img created for debugging purposes allows for line thickness 
+# adjustments with the global line thickness parameter. Try setting 
+# pcv.params.line_thickness = 8 for thicker lines (default 5)
 num_cycles, cycle_img = pcv.morphology.check_cycles(skel_img=skeleton)
+
 ```
 
 ![Screenshot](img/documentation_images/check_cycles/plot_cycles.jpg)

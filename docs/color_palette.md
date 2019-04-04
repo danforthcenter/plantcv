@@ -25,4 +25,5 @@ print(colors)
 colors = pcv.color_palette(5)
 print(colors)
 [(0, 0, 255), (0, 255, 205), (100, 255, 0), (255, 106, 0), (255, 0, 199)]
+
 ```

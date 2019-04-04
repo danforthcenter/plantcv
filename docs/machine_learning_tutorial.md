@@ -26,6 +26,7 @@ and background.
 
 ```
 plantcv-train.py naive_bayes --imgdir ./images --maskdir ./masks --outfile naive_bayes_pdfs.txt --plots
+
 ```
 
 The output file from `plantcv-train.py` will contain one row for each color channel (hue, saturation, and value) for
@@ -37,7 +38,8 @@ Once we have the `plantcv-train.py` output file, we can classify pixels in a col
 ```python
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Read in a color image
@@ -45,6 +47,7 @@ img, path, filename = pcv.readimage("color_image.png")
 
 # Classify the pixels as plant or background
 mask = pcv.naive_bayes_classifier(img, pdf_file="naive_bayes_pdfs.txt")
+
 ```
 
 See the [naive Bayes classifier](naive_bayes_classifier.md) documentation for example input/output.
@@ -97,6 +100,7 @@ for each class.
 
 ```
 plantcv-train.py naive_bayes_multiclass --file pixel_samples.txt --outfile naive_bayes_pdfs.txt --plots
+
 ```
 
 The output file from `plantcv-train.py` will contain one row for each color channel (hue, saturation, and value) for
@@ -150,6 +154,7 @@ def main():
     colored_img = pcv.visualize.colorize_masks(masks=[masks['plant'], masks['pustule'], masks['background'], masks['chlorosis']], 
                                                colors=['green', 'red', 'black', 'blue'])
     # Additional steps in the pipeline go here
+    
 ```
 
 Then run `plantcv-pipeline.py` with options set based on the input images, but where the naive Bayes PDF file is input
@@ -164,6 +169,7 @@ plantcv-pipeline.py \
 --meta imgtype_camera_timestamp \
 --create \
 --other_args="--pdfs naive_bayes_pdfs.txt"
+
 ```
 
 ## Machine Learning Script 
@@ -173,6 +179,7 @@ plantcv-pipeline.py \
 # functions (PDFs) for plant and background.
 
 # plantcv-train.py naive_bayes --imgdir ./images --maskdir ./masks --outfile naive_bayes_pdfs.txt --plots
+
 ```
 
 The output file from `plantcv-train.py` will contain one row for each color channel (hue, saturation, and value) for
@@ -220,6 +227,7 @@ def main():
 # Call program
 if __name__ == '__main__':
     main()
+    
 ```
 
 *  Always test pipelines (preferably with -D flag set to 'print') before running over a full image set
@@ -236,4 +244,5 @@ plantcv-pipeline.py \
 --meta imgtype_camera_timestamp \
 --create \
 --other_args="--pdfs naive_bayes_pdfs.txt"
+
 ```

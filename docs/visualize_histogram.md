@@ -32,6 +32,7 @@ from plantcv import plantcv as pcv
 # Examine signal distribution within an image
 # prints out an image histogram of signal within image
 header, hist_data, hist_figure = pcv.visualize.histogram(gray_img, mask=mask, bins=256, color='red', title=None)
+
 ```
 
 **Histogram of signal intensity**

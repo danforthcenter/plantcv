@@ -27,11 +27,14 @@ Find objects within the image.
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
-# Identify objects (plant material) in an image, all objects regardless of hierarchy are filled (e.g. holes between leaves).
+# Identify objects (plant material) in an image, all objects regardless of 
+# hierarchy are filled (e.g. holes between leaves).
 id_objects, obj_hierarchy = pcv.find_objects(img, mask)
+
 ```
 
 **Image with contours highlighted**

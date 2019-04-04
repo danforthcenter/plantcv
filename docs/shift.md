@@ -23,11 +23,13 @@ Shifts image, but keeps dimensions the same
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Shift image
 shifted_img = pcv.shift_img(img, 300, "top")
+
 ```
 
 **Image after shift**

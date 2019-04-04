@@ -17,10 +17,12 @@
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 skeleton = pcv.morphology.skeletonize(mask=plant_mask)
+
 ```
 
 ![Screenshot](img/documentation_images/skeletonize/skeleton_image.jpg)

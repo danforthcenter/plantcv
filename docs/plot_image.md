@@ -19,4 +19,5 @@ Open the image in a window or plot in a Jupyter notebook using [matplotlib](http
 
 from plantcv import plantcv as pcv      
 pcv.plot_image(img)
+
 ```

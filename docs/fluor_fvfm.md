@@ -42,7 +42,8 @@ Extract Fv/Fm data of objects.
 ```python
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Analyze Fv/Fm    
@@ -54,6 +55,7 @@ fvfm_hist=fvfm_images[1]
 
 # Pseudocolor the Fv/Fm image
 pseudo_img = pcv.pseudocolor(gray_img=fv_img, mask=kept_mask)
+
 ```
 
 **Histogram of Fv/Fm values**

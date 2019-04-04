@@ -24,13 +24,15 @@ angles are often associated with object tip points. Outputs a python list of poi
 ```python
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 
 pcv.params.debug = "print"
 
 # Identify acute vertices (tip points) of an object
 # Results in set of point values that may indicate tip points
 list_of_acute_points = pcv.acute_vertex(img, obj, 30, 15, 100)
+
 ```
 
 **Image of points selected**

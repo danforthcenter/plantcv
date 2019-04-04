@@ -21,12 +21,14 @@ Once this data is scaled this approach may provide some information regarding sh
 ```python
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "plot"
 
 # Identify a set of land mark points
 # Results in set of point values that may indicate tip points
 top, bottom, center_v = pcv.x_axis_pseudolandmarks(img, obj, mask)
+
 ```
 
 **Image of points selected**

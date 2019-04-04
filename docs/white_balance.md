@@ -30,6 +30,7 @@ pcv.params.debug = "print"
 
 # Corrects image based on color standard and stores output as corrected_img
 corrected_img = pcv.white_balance(img, mode='hist', roi=(5, 5, 80, 80))
+
 ```
 
 

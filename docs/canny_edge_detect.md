@@ -33,8 +33,8 @@ Creates a binary image from an RGB or grayscale image using a Canny filter from 
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
-
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Create binary image of edges.
@@ -44,10 +44,12 @@ edges = pcv.canny_edge_detect(img)
 edges2 = pcv.canny_edge_detect(img=img, sigma=0.1)
 
 # Create a mask
-masked, bin_img, rect_contour, hierarchy = pcv.rectangle_mask(img, (100,150), (300,325), 'black')
+masked, bin_img, rect_contour, hierarchy = pcv.rectangle_mask(img, (100,150), 
+                                                              (300,325), 'black')
 
 # Find edges within a mask
 edges3 = pcv.canny_edge_detect(img=img, mask=bin_img, mask_color='black')
+
 ```
 
 

@@ -36,4 +36,5 @@ img, path, img_filename = pcv.readimage("home/user/images/test-image.png")
 ######### Pipeline steps here 
 
 pcv.print_results(filename='test_pipeline_results.txt')
+
 ```

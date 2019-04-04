@@ -34,12 +34,16 @@ texture calculation for thresholding.
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 
 pcv.params.debug = "print"
 
 # Create binary image from a gray image based on texture values.
-texture_img = pcv.threshold.texture(gray_img, ksize=6, threshold=7, offset=3, texture_method='dissimilarity', borders='nearest', max_value=255)
+texture_img = pcv.threshold.texture(gray_img, ksize=6, threshold=7, offset=3, 
+                                    texture_method='dissimilarity', borders='nearest', 
+                                    max_value=255)
+                                    
 ```
 
 **Thresholded image**

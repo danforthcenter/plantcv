@@ -46,6 +46,7 @@ Sample command to run a pipeline on a single image:
 
 ```
 ./pipelinename.py -i multi-plant-img.png -o ./output-images -n names.txt -D 'print'
+
 ```
 
 ### Walk Through A Sample Pipeline
@@ -67,6 +68,7 @@ def options():
     parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.", action=None)
     args = parser.parse_args()
     return args
+    
 ```
 
 #### Start of the Main/Customizable portion of the pipeline.
@@ -83,6 +85,7 @@ def main():
     img, path, filename = pcv.readimage(args.image)
     
     pcv.params.debug=args.debug #set debug mode
+    
 ```
 
 **Figure 1.** Original image.
@@ -105,6 +108,7 @@ if np.average(img) < 50:
     pcv.fatal_error("Night Image")
 else:
     pass
+    
 ```
 
 [White balance](white_balance.md) the image so that color can be compared across images and so that image processing can be the same between images (ideally).
@@ -121,6 +125,7 @@ else:
 # white balance image based on white toughspot
 
 img1 = pcv.white_balance(img,roi=(400,800,200,200))
+
 ```
 
 **Figure 2.** White balance the image so that later image processing is easier.
@@ -138,6 +143,7 @@ img1 = pcv.white_balance(img,roi=(400,800,200,200))
 # STEP 3: Rotate the image
 
 rotate_img = pcv.rotate(img1, -1)
+
 ```
 
 **Figure 3.** Rotated image
@@ -159,6 +165,7 @@ rotate_img = pcv.rotate(img1, -1)
 
 shift1 = pcv.shift_img(img1, 300, 'top')
 img1 = shift1
+
 ```
 
 **Figure 4.** Shifted image
@@ -176,6 +183,7 @@ Convert the image from [RGB to LAB](rgb2lab.md) and select single color channel 
 #    channel = color subchannel ('l' = lightness, 'a' = green-magenta , 'b' = blue-yellow)
 
 a = pcv.rgb2gray_lab(img1, 'a')
+
 ```
 
 **Figure 5.** Green-magenta channel from LAB color space from original image.
@@ -199,6 +207,7 @@ img_binary = pcv.threshold.binary(a, 120, 255, 'dark')
 #                                     ^
 #                                     |
 #                                 adjust this value
+
 ```
 
 **Figure 6.** Thresholded image.
@@ -218,6 +227,7 @@ fill_image = pcv.fill(img_binary, 100)
 #                                  ^
 #                                  |
 #                         adjust this value
+
 ```
 
 **Figure 7.** Fill noise.
@@ -235,6 +245,7 @@ fill_image = pcv.fill(img_binary, 100)
 #    i        = iterations, i.e. number of consecutive filtering passes
 
 dilated = pcv.dilate(fill_image, 1, 1)
+
 ```
 
 **Figure 8.** Dilated image.
@@ -251,6 +262,7 @@ dilated = pcv.dilate(fill_image, 1, 1)
 #    mask = what is used for object detection
 
 id_objects, obj_hierarchy = pcv.find_objects(img1, dilated)
+
 ```
 
 **Figure 9.** Identified objects. 
@@ -274,6 +286,7 @@ Define a [rectangular region of interest](roi_rectangle.md) in the image.
 #                                            adjust these four values
 
 roi_contour, roi_hierarchy = pcv.roi.rectangle(img1, 10, 500, -10, -100)
+
 ```
 
 **Figure 10.** Define ROI.
@@ -296,6 +309,7 @@ Alternately the objects can be cut to the region of interest.
 
 roi_objects, roi_obj_hierarchy, kept_mask, obj_area = pcv.roi_objects(img1, 'partial', roi_contour, roi_hierarchy,
                                                                       id_objects, obj_hierarchy)
+                                                                      
 ```
 
 **Figure 11.** Define ROI.
@@ -323,6 +337,7 @@ roi_objects, roi_obj_hierarchy, kept_mask, obj_area = pcv.roi_objects(img1, 'par
 
 
 clusters_i, contours, hierarchies = pcv.cluster_contours(img1, roi_objects, roi_obj_hierarchy, 4, 6)
+
 ```
 
 **Figure 12.** Cluster contours
@@ -352,6 +367,7 @@ out = args.outdir
 names = args.names
 
 output_path = pcv.cluster_contour_splitimg(img1, clusters_i, contours, hierarchies, out, file=filename, filenames=names)
+
 ```
 
 **Figure 13.** Split image based on clustering.
@@ -400,6 +416,7 @@ In the terminal:
 
 ```
 ./pipelinename.py -i multi-plant-img.png -o ./output-images -n names.txt -D 'print'
+
 ```
 
 *  Always test pipelines (preferably with -D flag set to 'print') before running over a full image set
@@ -584,4 +601,5 @@ def main():
 # Call program
 if __name__ == '__main__':
     main()
+    
 ``` 

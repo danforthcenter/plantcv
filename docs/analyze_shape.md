@@ -44,7 +44,8 @@ Shape analysis outputs numeric properties for an input object (contour or groupe
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 
 pcv.params.debug = "print"
 
@@ -55,6 +56,7 @@ shape_header, shape_data, shape_images = pcv.analyze_object(img, objects, mask)
 # Save returned images with more specific naming
 shape_image, mask = shape_images
 pcv.print_image(shape_image, '/home/malia/setaria_shape_img.png')
+
 ```
 
 **Image with identified objects**

@@ -22,11 +22,13 @@ Flips an image in either the horizontal or vertical direction
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Flip Image Horizontal
 flipped= pcv.flip(img, 'horizontal')
+
 ```
 
 **Flipped Image**
@@ -37,11 +39,13 @@ flipped= pcv.flip(img, 'horizontal')
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Flip Image Vertical
 flipped= pcv.flip(img, 'vertical')
+
 ```
 
 **Flipped Image**

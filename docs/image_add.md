@@ -27,12 +27,14 @@ than the cv2.add fxn which is a saturation operation.
 ```python
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Add two images together
 # Results to combine/stack the pixelwise intensity found in two images
 sum_img = pcv.image_add(img1, img2)
+
 ```
 
 **Sum of images 1 and 2**
