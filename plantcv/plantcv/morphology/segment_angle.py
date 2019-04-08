@@ -9,7 +9,7 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import color_palette
 
 
-def segment_angles(segmented_img, objects):
+def segment_angle(segmented_img, objects):
     """ Segment a skeleton image into pieces and gather measurements per segment
 
         Inputs:
@@ -24,8 +24,8 @@ def segment_angles(segmented_img, objects):
         :param objects: list
         :return labeled_img: numpy.ndarray
         :return leaf_angles: list
-
         """
+
     label_coord_x = []
     label_coord_y = []
     degrees_angles = []
@@ -38,11 +38,11 @@ def segment_angles(segmented_img, objects):
     for i, cnt in enumerate(objects):
         # Find line fit to each segment
         [vx, vy, x, y] = cv2.fitLine(objects[i], cv2.DIST_L2, 0, 0.01, 0.01)
-        left_pt = int((-x * vy / vx) + y)
-        right_pt = int(((cols - x) * vy / vx) + y)
+        left_list = int((-x * vy / vx) + y)
+        right_list = int(((cols - x) * vy / vx) + y)
 
         # Draw slope lines
-        cv2.line(labeled_img, (cols - 1, right_pt), (0, left_pt), rand_color[i], 1)
+        cv2.line(labeled_img, (cols - 1, right_list), (0, left_list), rand_color[i], 1)
 
         # Store coordinates for labels
         label_coord_x.append(objects[i][0][0][0])
@@ -64,7 +64,7 @@ def segment_angles(segmented_img, objects):
     params.device += 1
 
     if params.debug == 'print':
-        print_image(labeled_img, os.path.join(params.debug_outdir, str(params.device) + '_segmented_angles.png'))
+        print_image(labeled_img, os.path.join(params.debug_outdir, str(params.device) + '_segment_angles.png'))
     elif params.debug == 'plot':
         plot_image(labeled_img)
 

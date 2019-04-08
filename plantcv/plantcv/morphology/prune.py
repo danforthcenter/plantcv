@@ -34,11 +34,11 @@ def prune(skel_img, size):
     pruned_img = skel_img.copy()
 
     # Check to see if the skeleton has multiple objects
-    mask_skel = pruned_img.astype(np.uint8) * 255
-    objects, _ = find_objects(mask_skel, mask_skel)
+    objects, _ = find_objects(pruned_img, pruned_img)
     if not len(objects) == 1:
-        print("Warning: Multiple objects detected and pruning will further separate the difference pieces.")
+        print("Warning: Multiple objects detected! Pruning will further separate the difference pieces.")
 
+    # Iteratively remove endpoints (tips) from a skeleton
     for i in range(0, size):
         endpoints = find_tips(pruned_img)
         pruned_img = image_subtract(pruned_img, endpoints)

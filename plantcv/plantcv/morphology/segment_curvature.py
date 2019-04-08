@@ -1,4 +1,4 @@
-# Find euclidean lenghts of skeleton segments
+# Find curvature measure of skeleton segments
 
 import os
 import cv2
@@ -6,47 +6,49 @@ import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
-from plantcv.plantcv import fatal_error
 from plantcv.plantcv import find_objects
 from plantcv.plantcv import color_palette
-from scipy.spatial.distance import euclidean
 from plantcv.plantcv.morphology import find_tips
+from plantcv.plantcv.morphology import segment_path_length
+from plantcv.plantcv.morphology import segment_euclidean_length
 
 
-
-def segment_euclidean_length(segmented_img, objects, hierarchies):
-    """ Use segmented skeleton image to gather measurements per segment
+def segment_curvature(segmented_img, objects, hierarchies):
+    """ Calculate segment curvature as defined by the ratio between geodesic and euclidean distance.
+        Measurement of two-dimensional tortuosity.
 
         Inputs:
-        segmented_img = Segmented image to plot lengths on
-        objects       = List of contours
-        hierarchy = Contour hierarchy NumPy array
+        segmented_img     = Segmented image to plot lengths on
+        objects           = List of contours
+        hierarchy         = Contour hierarchy NumPy array
 
         Returns:
-        labeled_img   = Segmented debugging image with lengths labeled
-        leaf_lengths  = List of leaf lengths
+        labeled_img       = Segmented debugging image with lengths labeled
+        segment_curvature = List of segment curvature measurements
 
         :param segmented_img: numpy.ndarray
         :param objects: list
         :param hierarchy: numpy.ndarray
         :return labeled_img: numpy.ndarray
-        :return segment_lengths: list
+        :return segment_curvature: list
 
         """
     # Store debug
     debug = params.debug
     params.debug = None
 
-    x_list = []
-    y_list = []
-    segment_lengths = []
+    label_coord_x = []
+    label_coord_y = []
+
+    _, eu_lengths = segment_euclidean_length(segmented_img, objects, hierarchies)
+    labeled_img, path_lengths = segment_path_length(segmented_img, objects)
+    curvature_measure = [x/y for x, y in zip(path_lengths, eu_lengths)]
     rand_color = color_palette(len(objects))
-    labeled_img = segmented_img.copy()
 
     for i, cnt in enumerate(objects):
         # Store coordinates for labels
-        x_list.append(objects[i][0][0][0])
-        y_list.append(objects[i][0][0][1])
+        label_coord_x.append(objects[i][0][0][0])
+        label_coord_y.append(objects[i][0][0][1])
 
         # Draw segments one by one to group segment tips together
         finding_tips_img = np.zeros(segmented_img.shape[:2], np.uint8)
@@ -55,8 +57,7 @@ def segment_euclidean_length(segmented_img, objects, hierarchies):
         segment_tips = find_tips(finding_tips_img)
         tip_objects, tip_hierarchies = find_objects(segment_tips, segment_tips)
         points = []
-        if not len(tip_objects) == 2:
-            fatal_error("Too many tips found per segment, try pruning again")
+
         for t in tip_objects:
             # Gather pairs of coordinates
             x, y = t.ravel()
@@ -66,15 +67,12 @@ def segment_euclidean_length(segmented_img, objects, hierarchies):
         # Draw euclidean distance lines
         cv2.line(labeled_img, points[0], points[1], rand_color[i], 1)
 
-        # Calculate euclidean distance between tips of each contour
-        segment_lengths.append(euclidean(points[0], points[1]))
+    for i, cnt in enumerate(objects):
+        # Calculate geodesic distance
 
-
-    # Put labels of length
-    for c, value in enumerate(segment_lengths):
-        text = "id:{} length:{:.1f}".format(c, value)
-        w = x_list[c]
-        h = y_list[c]
+        text = "id:{} curvature:{:.1f}".format(i, curvature_measure[i])
+        w = label_coord_x[i]
+        h = label_coord_y[i]
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=.4,
                     color=(255, 255, 255), thickness=1)
 
@@ -85,8 +83,8 @@ def segment_euclidean_length(segmented_img, objects, hierarchies):
     params.device += 1
 
     if params.debug == 'print':
-        print_image(labeled_img, os.path.join(params.debug_outdir, str(params.device) + '_segment_eu_lengths.png'))
+        print_image(labeled_img, os.path.join(params.debug_outdir, str(params.device) + '_segment_curvature.png'))
     elif params.debug == 'plot':
         plot_image(labeled_img)
 
-    return labeled_img, segment_lengths
+    return labeled_img, curvature_measure

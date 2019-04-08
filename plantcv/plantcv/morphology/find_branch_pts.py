@@ -27,7 +27,7 @@ def find_branch_pts(skel_img):
     debug = params.debug
     params.debug = None
 
-    # 1 values line up with 255s, while the -1s line up with 0s (0s correspond to don’t care)
+    # In a kernel: 1 values line up with 255s, -1s line up with 0s, and 0s correspond to don’t care
     # T like branch points
     t1 = np.array([[-1,  1, -1],
                    [ 1,  1,  1],
@@ -76,7 +76,7 @@ def find_branch_pts(skel_img):
     dilated_skel = dilate(skel_copy, params.line_thickness, 1)
     branch_plot = cv2.cvtColor(dilated_skel, cv2.COLOR_GRAY2RGB)
     for i in branch_objects:
-        x, y = i.ravel()
+        x, y = i.ravel()[:2]
         cv2.circle(branch_plot, (x, y), params.line_thickness, (255, 0, 255), -1)
 
     # Reset debug mode

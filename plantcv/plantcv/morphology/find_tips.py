@@ -28,7 +28,7 @@ def find_tips(skel_img):
     debug = params.debug
     params.debug = None
 
-    # 1 values line up with 255s, while the -1s line up with 0s (0s correspond to don’t care)
+    # In a kernel: 1 values line up with 255s, -1s line up with 0s, and 0s correspond to don’t care
     endpoint1 = np.array([[-1, -1, -1],
                           [-1,  1, -1],
                           [ 0,  1,  0]])
@@ -56,7 +56,8 @@ def find_tips(skel_img):
     dilated_skel = dilate(skel_copy, params.line_thickness, 1)
     tip_plot = cv2.cvtColor(dilated_skel, cv2.COLOR_GRAY2RGB)
     for i in tip_objects:
-        x, y = i.ravel()
+        cnt = i.ravel()
+        x, y = cnt[:2]
         cv2.circle(tip_plot, (x, y), params.line_thickness, (0, 255, 0), -1)
 
     #Reset debug mode
