@@ -12,17 +12,17 @@ from plantcv.plantcv import image_subtract
 from plantcv.plantcv.morphology import find_branch_pts
 
 
-def segment_skeleton(skel_img):
+def segment_skeleton(skel_img, mask=None):
     """ Segment a skeleton image into pieces and gather measurements per segment
 
         Inputs:
         skel_img      = Skeletonized image
-        measurement   = Type of measurement, either "length", "angle", or None.
+        mask          = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
 
         Returns:
         segmented_img = Segmented debugging image
-        objects   = list of contours
-        hierarchy = contour hierarchy list
+        objects       = list of contours
+        hierarchy     = contour hierarchy list
 
         :param skel_img: numpy.ndarray
         :param measurement: str
@@ -35,9 +35,6 @@ def segment_skeleton(skel_img):
     debug = params.debug
     params.debug = None
 
-    segmented_img = skel_img.copy()
-    segmented_img = cv2.cvtColor(segmented_img, cv2.COLOR_GRAY2RGB)
-
     # Find branch points
     bp = find_branch_pts(skel_img)
     bp = dilate(bp, 3, 1)
@@ -48,6 +45,13 @@ def segment_skeleton(skel_img):
 
     # Color each segment a different color
     rand_color = color_palette(len(segment_objects))
+
+    if mask is None:
+        segmented_img = skel_img.copy()
+    else:
+        segmented_img = mask.copy()
+
+    segmented_img = cv2.cvtColor(segmented_img, cv2.COLOR_GRAY2RGB)
     for i, cnt in enumerate(segment_objects):
         cv2.drawContours(segmented_img, segment_objects, i, rand_color[i], params.line_thickness, lineType=8,
                          hierarchy=segment_hierarchies)

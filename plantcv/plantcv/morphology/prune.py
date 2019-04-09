@@ -1,6 +1,7 @@
 # Prune barbs off skeleton image
 
 import os
+import cv2
 import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import plot_image
@@ -43,6 +44,16 @@ def prune(skel_img, size):
         endpoints = find_tips(pruned_img)
         pruned_img = image_subtract(pruned_img, endpoints)
 
+    # Make debugging image
+    pruned_plot = np.zeros(skel_img.shape[:2], np.uint8)
+    pruned_plot = cv2.cvtColor(pruned_plot, cv2.COLOR_GRAY2RGB)
+    skel_obj, skel_hierarchy = find_objects(skel_img, skel_img)
+    pruned_obj, pruned_hierarchy = find_objects(pruned_img, pruned_img)
+    cv2.drawContours(pruned_plot, skel_obj, -1, (0, 0, 255), params.line_thickness,
+                     lineType=8, hierarchy=skel_hierarchy)
+    cv2.drawContours(pruned_plot, pruned_obj, -1, (255, 255, 255), params.line_thickness,
+                     lineType=8, hierarchy=pruned_hierarchy)
+
     # Reset debug mode
     params.debug = debug
 
@@ -50,7 +61,10 @@ def prune(skel_img, size):
 
     if params.debug == 'print':
         print_image(pruned_img, os.path.join(params.debug_outdir, str(params.device) + '_pruned.png'))
+        print_image(pruned_plot, os.path.join(params.debug_outdir, str(params.device) + '_pruned_debug.png'))
+
     elif params.debug == 'plot':
         plot_image(pruned_img, cmap='gray')
+        plot_image(pruned_plot)
 
     return pruned_img

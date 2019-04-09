@@ -10,13 +10,14 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import find_objects
 
 
-def find_tips(skel_img):
+def find_tips(skel_img, mask=None):
     """
     The endpoints function was inspired by Jean-Patrick Pommier: https://gist.github.com/jeanpat/5712699
     Find tips in skeletonized image.
 
     Inputs:
     skel_img    = Skeletonized image
+    mask        = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
 
     Returns:
     tip_img   = Image with just tips, rest 0
@@ -49,18 +50,27 @@ def find_tips(skel_img):
         tip_img = np.logical_or(cv2.morphologyEx(skel_img, op=cv2.MORPH_HITMISS, kernel=endpoint,
                                                  borderType=cv2.BORDER_CONSTANT, borderValue=0), tip_img)
     tip_img = tip_img.astype(np.uint8) * 255
-
-    # Make debugging image
     tip_objects, _ = find_objects(tip_img, tip_img)
     skel_copy = skel_img.copy()
-    dilated_skel = dilate(skel_copy, params.line_thickness, 1)
-    tip_plot = cv2.cvtColor(dilated_skel, cv2.COLOR_GRAY2RGB)
+
+    if mask is None:
+        # Make debugging image
+        dilated_skel = dilate(skel_copy, params.line_thickness, 1)
+        tip_plot = cv2.cvtColor(dilated_skel, cv2.COLOR_GRAY2RGB)
+
+    else:
+        # Make debugging image on mask
+        mask_copy = mask.copy()
+        tip_plot = cv2.cvtColor(mask_copy, cv2.COLOR_GRAY2RGB)
+        skel_obj, skel_hier = find_objects(skel_copy, skel_copy)
+        cv2.drawContours(tip_plot, skel_obj, -1, (150, 150, 150), params.line_thickness,
+                         lineType=8, hierarchy=skel_hier)
+
     for i in tip_objects:
-        cnt = i.ravel()
-        x, y = cnt[:2]
+        x, y = i.ravel()[:2]
         cv2.circle(tip_plot, (x, y), params.line_thickness, (0, 255, 0), -1)
 
-    #Reset debug mode
+    # Reset debug mode
     params.debug = debug
 
     params.device += 1

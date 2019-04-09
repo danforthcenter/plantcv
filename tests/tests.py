@@ -2470,7 +2470,7 @@ def test_plantcv_morphology_find_branch_pts():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     pcv.params.debug = "print"
     skeleton = pcv.morphology.skeletonize(mask=mask)
-    _ = pcv.morphology.find_branch_pts(skel_img=skeleton)
+    _ = pcv.morphology.find_branch_pts(skel_img=skeleton, mask=mask)
     pcv.params.debug = "plot"
     _ = pcv.morphology.find_branch_pts(skel_img=skeleton)
     pcv.params.debug = None
@@ -2486,7 +2486,7 @@ def test_plantcv_morphology_find_tips():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     pcv.params.debug = "print"
     skeleton = pcv.morphology.skeletonize(mask=mask)
-    _ = pcv.morphology.find_tips(skel_img=skeleton)
+    _ = pcv.morphology.find_tips(skel_img=skeleton, mask=mask)
     pcv.params.debug = "plot"
     _ = pcv.morphology.find_tips(skel_img=skeleton)
     pcv.params.debug = None
@@ -2534,7 +2534,7 @@ def test_plantcv_morphology_segment_skeleton():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     skel = pcv.morphology.skeletonize(mask=mask)
     pcv.params.debug = "print"
-    _ = pcv.morphology.segment_skeleton(skel_img=skel)
+    _ = pcv.morphology.segment_skeleton(skel_img=skel, mask=mask)
     pcv.params.debug = "plot"
     segmented_img, segment_objects, segment_hierarchies = pcv.morphology.segment_skeleton(skel_img=skel)
     assert len(segment_objects) == 73
@@ -2556,6 +2556,19 @@ def test_plantcv_morphology_segment_angles():
     assert len(degrees_angles) == 31
 
 
+def test_plantcv_morphology_segment_angles_overflow():
+    # Don't prune, would usually give overflow error without extra if statement in segment_angle
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_angles")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    skel = pcv.morphology.skeletonize(mask=mask)
+    segmented_img, segment_objects, _ = pcv.morphology.segment_skeleton(skel_img=skel)
+    labeled_img, degrees_angles = pcv.morphology.segment_angle(segmented_img, segment_objects)
+    assert len(degrees_angles) == 73
+
+
 def test_plantcv_morphology_segment_euclidean_length():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_eu_length")
@@ -2566,7 +2579,7 @@ def test_plantcv_morphology_segment_euclidean_length():
     pruned_skel = pcv.morphology.prune(skel_img=skel, size=40)
     pcv.params.debug = "print"
     segmented_img, segment_objects, segment_hierarchies = pcv.morphology.segment_skeleton(skel_img=pruned_skel)
-    _ = pcv.morphology.segment_euclidean_length(segmented_img, segment_objects, segment_hierarchies)
+    _ = pcv.morphology.segment_euclidean_length(segmented_img, segment_objects, segment_hierarchies, mask)
     pcv.params.debug = "plot"
     labeled_img, lengths = pcv.morphology.segment_euclidean_length(segmented_img, segment_objects, segment_hierarchies)
     assert len(lengths) == 22

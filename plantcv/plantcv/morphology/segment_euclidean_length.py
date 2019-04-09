@@ -14,13 +14,14 @@ from plantcv.plantcv.morphology import find_tips
 
 
 
-def segment_euclidean_length(segmented_img, objects, hierarchies):
+def segment_euclidean_length(segmented_img, objects, hierarchies, mask=None):
     """ Use segmented skeleton image to gather measurements per segment
 
         Inputs:
         segmented_img = Segmented image to plot lengths on
         objects       = List of contours
-        hierarchy = Contour hierarchy NumPy array
+        hierarchy     = Contour hierarchy NumPy array
+        mask          = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
 
         Returns:
         labeled_img   = Segmented debugging image with lengths labeled
@@ -41,7 +42,11 @@ def segment_euclidean_length(segmented_img, objects, hierarchies):
     y_list = []
     segment_lengths = []
     rand_color = color_palette(len(objects))
-    labeled_img = segmented_img.copy()
+
+    if mask is None:
+        labeled_img = segmented_img.copy()
+    else:
+        labeled_img = mask.copy()
 
     for i, cnt in enumerate(objects):
         # Store coordinates for labels
@@ -76,7 +81,7 @@ def segment_euclidean_length(segmented_img, objects, hierarchies):
         w = x_list[c]
         h = y_list[c]
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=.4,
-                    color=(255, 255, 255), thickness=1)
+                    color=(150, 150, 150), thickness=1)
 
     # Reset debug mode
     params.debug = debug

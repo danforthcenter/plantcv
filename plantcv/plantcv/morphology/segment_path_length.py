@@ -43,7 +43,7 @@ def segment_path_length(segmented_img, objects):
         w = label_coord_x[c]
         h = label_coord_y[c]
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=.4,
-                    color=(255, 255, 255), thickness=1)
+                    color=(150, 150, 150), thickness=1)
 
     # Auto-increment device
     params.device += 1

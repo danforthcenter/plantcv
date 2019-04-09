@@ -38,18 +38,22 @@ def segment_angle(segmented_img, objects):
     for i, cnt in enumerate(objects):
         # Find line fit to each segment
         [vx, vy, x, y] = cv2.fitLine(objects[i], cv2.DIST_L2, 0, 0.01, 0.01)
-        left_list = int((-x * vy / vx) + y)
-        right_list = int(((cols - x) * vy / vx) + y)
+        slope = -vy / vx
+        left_list = int((x * slope) + y)
+        right_list = int(((x - cols) * slope) + y)
 
-        # Draw slope lines
-        cv2.line(labeled_img, (cols - 1, right_list), (0, left_list), rand_color[i], 1)
+        # Check to avoid Overflow error while trying to plot lines with slopes too large
+        if slope > 1000000 or slope < -1000000:
+            print("Slope of contour with ID#", i, "is", slope, "and cannot be plotted.")
+        else:
+            # Draw slope lines
+            cv2.line(labeled_img, (cols - 1, right_list), (0, left_list), rand_color[i], 1)
 
         # Store coordinates for labels
         label_coord_x.append(objects[i][0][0][0])
         label_coord_y.append(objects[i][0][0][1])
 
         # Calculate degrees from slopes
-        slope = -vy / vx
         degrees_angles.append(np.arctan(slope[0]) * 180 / np.pi)
 
     for i, cnt in enumerate(objects):
@@ -58,7 +62,7 @@ def segment_angle(segmented_img, objects):
         h = label_coord_y[i]
         text = "{:.2f}".format(degrees_angles[i])
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                    fontScale=.4, color=(255, 255, 255), thickness=1)
+                    fontScale=.4, color=(150, 150, 150), thickness=1)
 
     # Auto-increment device
     params.device += 1

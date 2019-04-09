@@ -54,7 +54,7 @@ def analyze_object(img, obj, mask):
     # Check is object is touching image boundaries (QC)
     frame_background = np.zeros(size1, dtype=np.uint8)
     frame = frame_background + 1
-    frame_contour, frame_heirarchy = cv2.findContours(frame, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
+    frame_contour, frame_hierarchy = cv2.findContours(frame, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
     ptest = []
     vobj = np.vstack(obj)
     for i, c in enumerate(vobj):

@@ -251,7 +251,7 @@ def triangle(gray_img, max_value, object_type="light", xstep=1):
             fig_name_hist = os.path.join(params.debug_outdir,
                                          str(params.device) + '_triangle_thresh_hist_' + str(autothreshval) + ".png")
             # write the figure to current directory
-            plt.savefig(fig_name_hist)
+            plt.savefig(fig_name_hist, dpi=params.dpi)
             # close pyplot plotting window
             plt.clf()
         elif params.debug == 'plot':

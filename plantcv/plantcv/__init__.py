@@ -19,13 +19,13 @@ class Params:
     :param fill_color: tuple
     """
 
-    def __init__(self, device=0, debug=None, debug_outdir=".", line_thickness=5, line_color=None , fill_color=None):
+    def __init__(self, device=0, debug=None, debug_outdir=".", line_thickness=5, line_color=None , dpi=None):
         self.device = device
         self.debug = debug
         self.debug_outdir = debug_outdir
         self.line_thickness = line_thickness
         self.line_color = line_color
-        self.fill_color = fill_color
+        self.dpi = dpi
 
 
 class Outputs:

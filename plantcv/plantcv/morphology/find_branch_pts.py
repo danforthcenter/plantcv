@@ -10,14 +10,15 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import find_objects
 
 
-def find_branch_pts(skel_img):
+def find_branch_pts(skel_img, mask=None):
     """
     The branching function was inspired by Jean-Patrick Pommier: https://gist.github.com/jeanpat/5712699
     Inputs:
     skel_img    = Skeletonized image
+    mask        = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
 
     Returns:
-    branch_img   = Image with just branch points, rest 0
+    branch_img  = Image with just branch points, rest 0
 
     :param skel_img: numpy.ndarray
     :return branch_pts_img: numpy.ndarray
@@ -41,7 +42,6 @@ def find_branch_pts(skel_img):
     t6 = np.rot90(t4)
     t7 = np.rot90(t5)
     t8 = np.rot90(t6)
-    t = [t1, t2, t3, t4, t5, t6, t7, t8]
 
     # Y like branch points
     y1 = np.array([[ 1, -1,  1],
@@ -56,32 +56,40 @@ def find_branch_pts(skel_img):
     y6 = np.rot90(y4)
     y7 = np.rot90(y5)
     y8 = np.rot90(y6)
-    y = [y1, y2, y3, y4, y5, y6, y7, y8]
+    kernels = [t1, t2, t3, t4, t5, t6, t7, t8, y1, y2, y3, y4, y5, y6, y7, y8]
 
     branch_pts_img = np.zeros(skel_img.shape[:2], dtype=int)
 
     # Store branch points
-    for y_array in y:
-        branch_pts_img = np.logical_or(cv2.morphologyEx(skel_img, op=cv2.MORPH_HITMISS, kernel=y_array,
-                                                    borderType=cv2.BORDER_CONSTANT, borderValue=0), branch_pts_img)
-    for t_array in t:
-        branch_pts_img = np.logical_or(cv2.morphologyEx(skel_img, op=cv2.MORPH_HITMISS, kernel=t_array,
-                                                    borderType=cv2.BORDER_CONSTANT, borderValue=0), branch_pts_img)
+    for kernel in kernels:
+        branch_pts_img = np.logical_or(cv2.morphologyEx(skel_img, op=cv2.MORPH_HITMISS, kernel=kernel,
+                                                        borderType=cv2.BORDER_CONSTANT, borderValue=0), branch_pts_img)
+
     # Switch type to uint8 rather than bool
     branch_pts_img = branch_pts_img.astype(np.uint8) * 255
 
-    # Make debugging image
-    branch_objects, _ = find_objects(branch_pts_img, branch_pts_img)
+
     skel_copy = skel_img.copy()
-    dilated_skel = dilate(skel_copy, params.line_thickness, 1)
-    branch_plot = cv2.cvtColor(dilated_skel, cv2.COLOR_GRAY2RGB)
+
+    # Make debugging image
+    if mask is None:
+        dilated_skel = dilate(skel_copy, params.line_thickness, 1)
+        branch_plot = cv2.cvtColor(dilated_skel, cv2.COLOR_GRAY2RGB)
+    else:
+        # Make debugging image on mask
+        mask_copy = mask.copy()
+        branch_plot = cv2.cvtColor(mask_copy, cv2.COLOR_GRAY2RGB)
+        skel_obj, skel_hier = find_objects(skel_copy, skel_copy)
+        cv2.drawContours(branch_plot, skel_obj, -1, (150, 150, 150), params.line_thickness,
+                         lineType=8, hierarchy=skel_hier)
+
+    branch_objects, _ = find_objects(branch_pts_img, branch_pts_img)
     for i in branch_objects:
         x, y = i.ravel()[:2]
         cv2.circle(branch_plot, (x, y), params.line_thickness, (255, 0, 255), -1)
-
-    # Reset debug mode
     params.debug = debug
 
+    # Reset debug mode
     params.device += 1
 
     if params.debug == 'print':
@@ -90,3 +98,4 @@ def find_branch_pts(skel_img):
         plot_image(branch_plot)
 
     return branch_pts_img
+
