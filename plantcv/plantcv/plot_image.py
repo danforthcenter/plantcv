@@ -3,6 +3,7 @@ import os
 import cv2
 import numpy
 import matplotlib
+from plantcv.plantcv import params
 from matplotlib import pyplot as plt
 from plantcv.plantcv import fatal_error
 
@@ -22,6 +23,7 @@ def plot_image(img, cmap=None):
     if image_type == numpy.ndarray:
         # If the image is color then OpenCV stores it as BGR, we plot it as RGB
         if len(dimensions) == 3:
+            matplotlib.rcParams['figure.dpi'] = params.dpi
             plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
             plt.show()
 

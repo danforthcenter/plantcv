@@ -12,7 +12,7 @@ from plantcv.plantcv import find_objects
 
 def find_tips(skel_img, mask=None):
     """
-    The endpoints function was inspired by Jean-Patrick Pommier: https://gist.github.com/jeanpat/5712699
+    The endpoints algorithm was inspired by Jean-Patrick Pommier: https://gist.github.com/jeanpat/5712699
     Find tips in skeletonized image.
 
     Inputs:
@@ -51,18 +51,17 @@ def find_tips(skel_img, mask=None):
                                                  borderType=cv2.BORDER_CONSTANT, borderValue=0), tip_img)
     tip_img = tip_img.astype(np.uint8) * 255
     tip_objects, _ = find_objects(tip_img, tip_img)
-    skel_copy = skel_img.copy()
 
     if mask is None:
         # Make debugging image
-        dilated_skel = dilate(skel_copy, params.line_thickness, 1)
+        dilated_skel = dilate(skel_img, params.line_thickness, 1)
         tip_plot = cv2.cvtColor(dilated_skel, cv2.COLOR_GRAY2RGB)
 
     else:
         # Make debugging image on mask
         mask_copy = mask.copy()
         tip_plot = cv2.cvtColor(mask_copy, cv2.COLOR_GRAY2RGB)
-        skel_obj, skel_hier = find_objects(skel_copy, skel_copy)
+        skel_obj, skel_hier = find_objects(skel_img, skel_img)
         cv2.drawContours(tip_plot, skel_obj, -1, (150, 150, 150), params.line_thickness,
                          lineType=8, hierarchy=skel_hier)
 
@@ -72,7 +71,7 @@ def find_tips(skel_img, mask=None):
 
     # Reset debug mode
     params.debug = debug
-
+    # Auto-increment device
     params.device += 1
 
     if params.debug == 'print':

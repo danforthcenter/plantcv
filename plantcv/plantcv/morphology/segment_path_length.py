@@ -1,4 +1,4 @@
-# Find geodesic lenghts of skeleton segments
+# Find geodesic lengths of skeleton segments
 
 import os
 import cv2

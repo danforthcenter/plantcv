@@ -1,4 +1,4 @@
-# Find euclidean lenghts of skeleton segments
+# Find euclidean lengths of skeleton segments
 
 import os
 import cv2
@@ -15,7 +15,7 @@ from plantcv.plantcv.morphology import find_tips
 
 
 def segment_euclidean_length(segmented_img, objects, hierarchies, mask=None):
-    """ Use segmented skeleton image to gather measurements per segment
+    """ Use segmented skeleton image to gather euclidean length measurements per segment
 
         Inputs:
         segmented_img = Segmented image to plot lengths on
@@ -30,6 +30,7 @@ def segment_euclidean_length(segmented_img, objects, hierarchies, mask=None):
         :param segmented_img: numpy.ndarray
         :param objects: list
         :param hierarchy: numpy.ndarray
+        :param mask: numpy.ndarray
         :return labeled_img: numpy.ndarray
         :return segment_lengths: list
 
@@ -85,7 +86,6 @@ def segment_euclidean_length(segmented_img, objects, hierarchies, mask=None):
 
     # Reset debug mode
     params.debug = debug
-
     # Auto-increment device
     params.device += 1
 

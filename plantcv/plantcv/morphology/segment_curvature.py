@@ -69,7 +69,6 @@ def segment_curvature(segmented_img, objects, hierarchies):
 
     for i, cnt in enumerate(objects):
         # Calculate geodesic distance
-
         text = "id:{} curvature:{:.1f}".format(i, curvature_measure[i])
         w = label_coord_x[i]
         h = label_coord_y[i]
@@ -78,7 +77,6 @@ def segment_curvature(segmented_img, objects, hierarchies):
 
     # Reset debug mode
     params.debug = debug
-
     # Auto-increment device
     params.device += 1
 

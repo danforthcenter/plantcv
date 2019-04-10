@@ -15,16 +15,14 @@ class Params:
     :param debug: str
     :param debug_outdir: str
     :param line_thickness: numeric
-    :param line_color: tuple
-    :param fill_color: tuple
+    :param dpi: int
     """
 
-    def __init__(self, device=0, debug=None, debug_outdir=".", line_thickness=5, line_color=None , dpi=None):
+    def __init__(self, device=0, debug=None, debug_outdir=".", line_thickness=5, dpi=100):
         self.device = device
         self.debug = debug
         self.debug_outdir = debug_outdir
         self.line_thickness = line_thickness
-        self.line_color = line_color
         self.dpi = dpi
 
 
@@ -51,7 +49,6 @@ from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.print_image import print_image
 from plantcv.plantcv.plot_image import plot_image
 from plantcv.plantcv.color_palette import color_palette
-# from plantcv.plantcv.plot_colorbar import plot_colorbar
 from plantcv.plantcv.apply_mask import apply_mask
 from plantcv.plantcv.readimage import readimage
 from plantcv.plantcv.readbayer import readbayer

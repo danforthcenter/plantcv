@@ -13,16 +13,17 @@ from plantcv.plantcv import color_palette
 
 
 def check_cycles(skel_img):
-    """
-    The branching function was inspired by Jean-Patrick Pommier: https://gist.github.com/jeanpat/5712699
+    """ Check for cycles in a skeleton image
     Inputs:
     skel_img    = Skeletonized image
 
     Returns:
     num_cycles  = Number of cycles found
+    cycle+img   = Image with cycles colored in
 
     :param skel_img: numpy.ndarray
     :return num_cycles: int
+    :return cycle_img: numpy.ndarray
     """
 
     # Store debug
@@ -60,7 +61,6 @@ def check_cycles(skel_img):
 
     # Reset debug mode
     params.debug = debug
-
     # Auto-increment device
     params.device += 1
 

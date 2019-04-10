@@ -17,7 +17,7 @@ def skeletonize(mask):
     Returns:
     skeleton   = skeleton image
 
-    :param bin_img: numpy.ndarray
+    :param mask: numpy.ndarray
     :return skeleton: numpy.ndarray
     """
     # Store debug
@@ -27,13 +27,12 @@ def skeletonize(mask):
     # Convert mask to boolean image, rather than 0 and 255 for skimage to use it
     skeleton = skmorph.skeletonize(mask.astype(bool))
 
-    # Auto-increment device
-    params.device += 1
-
     skeleton = skeleton.astype(np.uint8) * 255
 
     # Reset debug mode
     params.debug = debug
+    # Auto-increment device
+    params.device += 1
 
     if params.debug == 'print':
         print_image(skeleton, os.path.join(params.debug_outdir, str(params.device) + '_skeleton.png'))

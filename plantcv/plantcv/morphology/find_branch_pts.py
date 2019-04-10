@@ -12,13 +12,13 @@ from plantcv.plantcv import find_objects
 
 def find_branch_pts(skel_img, mask=None):
     """
-    The branching function was inspired by Jean-Patrick Pommier: https://gist.github.com/jeanpat/5712699
+    The branching algorithm was inspired by Jean-Patrick Pommier: https://gist.github.com/jeanpat/5712699
     Inputs:
     skel_img    = Skeletonized image
     mask        = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
 
     Returns:
-    branch_img  = Image with just branch points, rest 0
+    branch_pts_img = Image with just branch points, rest 0
 
     :param skel_img: numpy.ndarray
     :return branch_pts_img: numpy.ndarray
@@ -68,28 +68,26 @@ def find_branch_pts(skel_img, mask=None):
     # Switch type to uint8 rather than bool
     branch_pts_img = branch_pts_img.astype(np.uint8) * 255
 
-
-    skel_copy = skel_img.copy()
-
     # Make debugging image
     if mask is None:
-        dilated_skel = dilate(skel_copy, params.line_thickness, 1)
+        dilated_skel = dilate(skel_img, params.line_thickness, 1)
         branch_plot = cv2.cvtColor(dilated_skel, cv2.COLOR_GRAY2RGB)
     else:
         # Make debugging image on mask
         mask_copy = mask.copy()
         branch_plot = cv2.cvtColor(mask_copy, cv2.COLOR_GRAY2RGB)
-        skel_obj, skel_hier = find_objects(skel_copy, skel_copy)
-        cv2.drawContours(branch_plot, skel_obj, -1, (150, 150, 150), params.line_thickness,
-                         lineType=8, hierarchy=skel_hier)
+        skel_obj, skel_hier = find_objects(skel_img, skel_img)
+        cv2.drawContours(branch_plot, skel_obj, -1, (150, 150, 150), params.line_thickness, lineType=8,
+                         hierarchy=skel_hier)
 
     branch_objects, _ = find_objects(branch_pts_img, branch_pts_img)
     for i in branch_objects:
         x, y = i.ravel()[:2]
         cv2.circle(branch_plot, (x, y), params.line_thickness, (255, 0, 255), -1)
-    params.debug = debug
 
     # Reset debug mode
+    params.debug = debug
+    # Auto-increment device
     params.device += 1
 
     if params.debug == 'print':
@@ -98,4 +96,3 @@ def find_branch_pts(skel_img, mask=None):
         plot_image(branch_plot)
 
     return branch_pts_img
-

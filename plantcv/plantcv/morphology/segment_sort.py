@@ -94,7 +94,6 @@ def segment_sort(skel_img, objects, hierarchies):
 
     # Reset debug mode
     params.debug = debug
-
     # Auto-increment device
     params.device += 1
 

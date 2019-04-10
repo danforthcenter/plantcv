@@ -49,6 +49,8 @@ TEST_INPUT_GENOTXT_TOO_MANY = "cluster_names_too_many.txt"
 TEST_INPUT_CROPPED = 'cropped_img.jpg'
 TEST_INPUT_CROPPED_MASK = 'cropped-mask.png'
 TEST_INPUT_MARKER = 'seed-image.jpg'
+TEST_INPUT_SKELETON = 'input_skeleton.png'
+TEST_INPUT_SKELETON_PRUNED = 'input_pruned_skeleton.png'
 TEST_FOREGROUND = "TEST_FOREGROUND.jpg"
 TEST_BACKGROUND = "TEST_BACKGROUND.jpg"
 TEST_PDFS = "naive_bayes_pdfs.txt"
@@ -81,6 +83,8 @@ TEST_TRANSFORM1 = "transformation_matrix1.npz"
 TEST_MATRIX_M1 = "matrix_m1.npz"
 TEST_MATRIX_M2 = "matrix_m2.npz"
 TEST_S1_CORRECTED = "source_corrected.png"
+TEST_SKELETON_OBJECTS = "skeleton_objects.npz"
+TEST_SKELETON_HIERARCHIES = "skeleton_hierarchies.npz"
 
 
 # ##########################
@@ -616,9 +620,9 @@ def test_plantcv_cluster_contours():
     # Read in test data
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
     roi_objects = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_OBJECT), encoding="latin1")
-    hierachy = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_HIERARCHY), encoding="latin1")
+    hierarchy = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_HIERARCHY), encoding="latin1")
     objs = roi_objects['arr_0']
-    obj_hierarchy = hierachy['arr_0']
+    obj_hierarchy = hierarchy['arr_0']
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.cluster_contours(img=img1, roi_objects=objs, roi_obj_hierarchy=obj_hierarchy, nrow=4, ncol=6)
@@ -628,7 +632,7 @@ def test_plantcv_cluster_contours():
     _ = pcv.cluster_contours(img=img1, roi_objects=objs, roi_obj_hierarchy=obj_hierarchy, nrow=4, ncol=6)
     # Test with debug = None
     pcv.params.debug = None
-    clusters_i, contours, hierachy = pcv.cluster_contours(img=img1, roi_objects=objs, roi_obj_hierarchy=obj_hierarchy,
+    clusters_i, contours, hierarchy = pcv.cluster_contours(img=img1, roi_objects=objs, roi_obj_hierarchy=obj_hierarchy,
                                                           nrow=4, ncol=6)
     lenori = len(objs)
     lenclust = len(clusters_i)
@@ -2468,8 +2472,8 @@ def test_plantcv_morphology_find_branch_pts():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
     pcv.params.debug = "print"
-    skeleton = pcv.morphology.skeletonize(mask=mask)
     _ = pcv.morphology.find_branch_pts(skel_img=skeleton, mask=mask)
     pcv.params.debug = "plot"
     _ = pcv.morphology.find_branch_pts(skel_img=skeleton)
@@ -2484,8 +2488,8 @@ def test_plantcv_morphology_find_tips():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
     pcv.params.debug = "print"
-    skeleton = pcv.morphology.skeletonize(mask=mask)
     _ = pcv.morphology.find_tips(skel_img=skeleton, mask=mask)
     pcv.params.debug = "plot"
     _ = pcv.morphology.find_tips(skel_img=skeleton)
@@ -2499,11 +2503,9 @@ def test_plantcv_morphology_segment_curvature():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_curvature")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
     pcv.params.debug = "print"
-    skeleton = pcv.morphology.skeletonize(mask=mask)
-    pruned_skel = pcv.morphology.prune(skel_img=skeleton, size=40)
-    segmented_img, seg_objects, seg_hierarchies = pcv.morphology.segment_skeleton(skel_img=pruned_skel)
+    segmented_img, seg_objects, seg_hierarchies = pcv.morphology.segment_skeleton(skel_img=skeleton)
     _ = pcv.morphology.segment_curvature(segmented_img, seg_objects, seg_hierarchies)
     pcv.params.debug = "plot"
     _, curvature_measure = pcv.morphology.segment_curvature(segmented_img, seg_objects, seg_hierarchies)
@@ -2515,9 +2517,8 @@ def test_plantcv_morphology_prune():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_pruned")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
     pcv.params.debug = "print"
-    skeleton = pcv.morphology.skeletonize(mask=mask)
     _ = pcv.morphology.prune(skel_img=skeleton, size=1)
     pcv.params.debug = "plot"
     _ = pcv.morphology.prune(skel_img=skeleton, size=1)
@@ -2532,11 +2533,11 @@ def test_plantcv_morphology_segment_skeleton():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    skel = pcv.morphology.skeletonize(mask=mask)
+    skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
     pcv.params.debug = "print"
-    _ = pcv.morphology.segment_skeleton(skel_img=skel, mask=mask)
+    _ = pcv.morphology.segment_skeleton(skel_img=skeleton, mask=mask)
     pcv.params.debug = "plot"
-    segmented_img, segment_objects, segment_hierarchies = pcv.morphology.segment_skeleton(skel_img=skel)
+    segmented_img, segment_objects, segment_hierarchies = pcv.morphology.segment_skeleton(skel_img=skeleton)
     assert len(segment_objects) == 73
 
 
@@ -2545,15 +2546,13 @@ def test_plantcv_morphology_segment_angles():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_angles")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    skel = pcv.morphology.skeletonize(mask=mask)
-    pruned_skel = pcv.morphology.prune(skel_img=skel, size=20)
+    skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
     pcv.params.debug = "print"
-    segmented_img, segment_objects, _ = pcv.morphology.segment_skeleton(skel_img=pruned_skel)
+    segmented_img, segment_objects, _ = pcv.morphology.segment_skeleton(skel_img=skeleton)
     _ = pcv.morphology.segment_angle(segmented_img=segmented_img, objects=segment_objects)
     pcv.params.debug = "plot"
     labeled_img, degrees_angles = pcv.morphology.segment_angle(segmented_img, segment_objects)
-    assert len(degrees_angles) == 31
+    assert len(degrees_angles) == 22
 
 
 def test_plantcv_morphology_segment_angles_overflow():
@@ -2562,9 +2561,8 @@ def test_plantcv_morphology_segment_angles_overflow():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_angles")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    skel = pcv.morphology.skeletonize(mask=mask)
-    segmented_img, segment_objects, _ = pcv.morphology.segment_skeleton(skel_img=skel)
+    skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
+    segmented_img, segment_objects, _ = pcv.morphology.segment_skeleton(skel_img=skeleton)
     labeled_img, degrees_angles = pcv.morphology.segment_angle(segmented_img, segment_objects)
     assert len(degrees_angles) == 73
 
@@ -2575,10 +2573,9 @@ def test_plantcv_morphology_segment_euclidean_length():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    skel = pcv.morphology.skeletonize(mask=mask)
-    pruned_skel = pcv.morphology.prune(skel_img=skel, size=40)
+    skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
     pcv.params.debug = "print"
-    segmented_img, segment_objects, segment_hierarchies = pcv.morphology.segment_skeleton(skel_img=pruned_skel)
+    segmented_img, segment_objects, segment_hierarchies = pcv.morphology.segment_skeleton(skel_img=skeleton)
     _ = pcv.morphology.segment_euclidean_length(segmented_img, segment_objects, segment_hierarchies, mask)
     pcv.params.debug = "plot"
     labeled_img, lengths = pcv.morphology.segment_euclidean_length(segmented_img, segment_objects, segment_hierarchies)
@@ -2599,11 +2596,9 @@ def test_plantcv_morphology_segment_path_length():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_path_length")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    skel = pcv.morphology.skeletonize(mask=mask)
-    pruned_skel = pcv.morphology.prune(skel_img=skel, size=40)
+    skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
     pcv.params.debug = "print"
-    segmented_img, segment_objects, segment_hierarchies = pcv.morphology.segment_skeleton(skel_img=pruned_skel)
+    segmented_img, segment_objects, segment_hierarchies = pcv.morphology.segment_skeleton(skel_img=skeleton)
     _ = pcv.morphology.segment_path_length(segmented_img, segment_objects)
     pcv.params.debug = "plot"
     labeled_img, lengths = pcv.morphology.segment_path_length(segmented_img, segment_objects)
@@ -2616,21 +2611,14 @@ def test_plantcv_morphology_skeletonize():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    input_skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
     pcv.params.debug="print"
     _ = pcv.morphology.skeletonize(mask=mask)
     pcv.params.debug="plot"
     _ = pcv.morphology.skeletonize(mask=mask)
     pcv.params.debug=None
     skeleton = pcv.morphology.skeletonize(mask=mask)
-    # Assert that the output image has the dimensions of the input image
-    if all([i == j] for i, j in zip(np.shape(skeleton), TEST_GRAY_DIM)):
-        # Assert that the image is binary
-        if all([i == j] for i, j in zip(np.unique(skeleton), [0, 255])):
-            assert 1
-        else:
-            assert 0
-    else:
-        assert 0
+    assert (skeleton == input_skeleton).all()
 
 
 def test_plantcv_morphology_segment_sort():
@@ -2638,15 +2626,31 @@ def test_plantcv_morphology_segment_sort():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_sort")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    skel = pcv.morphology.skeletonize(mask=mask)
-    segmented_img, seg_objects, seg_hierarchies = pcv.morphology.segment_skeleton(skel_img=skel)
+    skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
+    segmented_img, seg_objects, seg_hierarchies = pcv.morphology.segment_skeleton(skel_img=skeleton)
     pcv.params.debug = "print"
-    _ = pcv.morphology.segment_sort(skel, seg_objects, seg_hierarchies)
+    _ = pcv.morphology.segment_sort(skeleton, seg_objects, seg_hierarchies)
     pcv.params.debug = "plot"
-    leaf_obj, leaf_hier, stem_obj, stem_hier = pcv.morphology.segment_sort(skel, seg_objects, seg_hierarchies)
+    leaf_obj, leaf_hier, stem_obj, stem_hier = pcv.morphology.segment_sort(skeleton, seg_objects, seg_hierarchies)
     assert len(leaf_obj) == 37
 
+
+def test_plantcv_morphology_segment_tangent_angle():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_tangent_angle")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    skel = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
+    objects = np.load(os.path.join(TEST_DATA, TEST_SKELETON_OBJECTS), encoding="latin1")
+    hierarchies = np.load(os.path.join(TEST_DATA, TEST_SKELETON_HIERARCHIES), encoding="latin1")
+    objs = objects['arr_0']
+    obj_hierarchy = hierarchies['arr_0']
+    pcv.params.debug = "print"
+    _ = pcv.morphology.segment_tangent_angle(skel, objs, obj_hierarchy, 20, mask=mask)
+    pcv.params.debug = "plot"
+    intersection_angles = pcv.morphology.segment_tangent_angle(skel, objs, obj_hierarchy, 5)
+    assert len(intersection_angles) == 58
 
 # ##############################
 # Tests for the roi subpackage

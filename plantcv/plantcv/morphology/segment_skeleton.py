@@ -38,8 +38,10 @@ def segment_skeleton(skel_img, mask=None):
     # Find branch points
     bp = find_branch_pts(skel_img)
     bp = dilate(bp, 3, 1)
+
     # Subtract from the skeleton so that leaves are no longer connected
     segments = image_subtract(skel_img, bp)
+
     # Gather contours of leaves
     segment_objects, segment_hierarchies = find_objects(segments, segments)
 
@@ -56,8 +58,8 @@ def segment_skeleton(skel_img, mask=None):
         cv2.drawContours(segmented_img, segment_objects, i, rand_color[i], params.line_thickness, lineType=8,
                          hierarchy=segment_hierarchies)
 
+    # Reset debug mode
     params.debug = debug
-
     # Auto-increment device
     params.device += 1
 

@@ -10,25 +10,25 @@ from plantcv.plantcv import color_palette
 
 
 def segment_angle(segmented_img, objects):
-    """ Segment a skeleton image into pieces and gather measurements per segment
+    """ Calculate angle of segments (in degrees) by fitting a linear regression line to segments.
 
         Inputs:
-        segmented_img = Segmented image to plot lengths on
-        objects       = List of contours
+        segmented_img  = Segmented image to plot lengths on
+        objects        = List of contours
 
         Returns:
-        labeled_img   = Segmented debugging image with angles labeled
-        leaf_angles   = List of leaf lengths
+        labeled_img    = Segmented debugging image with angles labeled
+        segment_angles = List of segment angles in degrees
 
         :param segmented_img: numpy.ndarray
         :param objects: list
         :return labeled_img: numpy.ndarray
-        :return leaf_angles: list
+        :return segment_angles: list
         """
 
     label_coord_x = []
     label_coord_y = []
-    degrees_angles = []
+    segment_angles = []
     rows, cols = segmented_img.shape[:2]
 
     labeled_img = segmented_img.copy()
@@ -44,7 +44,7 @@ def segment_angle(segmented_img, objects):
 
         # Check to avoid Overflow error while trying to plot lines with slopes too large
         if slope > 1000000 or slope < -1000000:
-            print("Slope of contour with ID#", i, "is", slope, "and cannot be plotted.")
+            print("Slope of contour with ID #", i, "is", slope, "and cannot be plotted.")
         else:
             # Draw slope lines
             cv2.line(labeled_img, (cols - 1, right_list), (0, left_list), rand_color[i], 1)
@@ -54,13 +54,13 @@ def segment_angle(segmented_img, objects):
         label_coord_y.append(objects[i][0][0][1])
 
         # Calculate degrees from slopes
-        degrees_angles.append(np.arctan(slope[0]) * 180 / np.pi)
+        segment_angles.append(np.arctan(slope[0]) * 180 / np.pi)
 
     for i, cnt in enumerate(objects):
         # Label slope lines
         w = label_coord_x[i]
         h = label_coord_y[i]
-        text = "{:.2f}".format(degrees_angles[i])
+        text = "{:.2f}".format(segment_angles[i])
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                     fontScale=.4, color=(150, 150, 150), thickness=1)
 
@@ -72,4 +72,4 @@ def segment_angle(segmented_img, objects):
     elif params.debug == 'plot':
         plot_image(labeled_img)
 
-    return labeled_img, degrees_angles
+    return labeled_img, segment_angles

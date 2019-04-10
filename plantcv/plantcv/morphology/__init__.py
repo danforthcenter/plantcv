@@ -9,6 +9,8 @@ from plantcv.plantcv.morphology.segment_path_length import segment_path_length
 from plantcv.plantcv.morphology.segment_euclidean_length import segment_euclidean_length
 from plantcv.plantcv.morphology.segment_curvature import segment_curvature
 from plantcv.plantcv.morphology.segment_sort import segment_sort
+from plantcv.plantcv.morphology.segment_tangent_angle import segment_tangent_angle
 
 __all__ = ["find_branch_pts", "find_tips", "prune", "skeletonize", "check_cycles", "segment_skeleton", "segment_angle",
-           "segment_path_length", "segment_euclidean_length", "segment_curvature", "segment_sort"]
+           "segment_path_length", "segment_euclidean_length", "segment_curvature", "segment_sort",
+           "segment_tangent_angle"]
