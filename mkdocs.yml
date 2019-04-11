@@ -82,11 +82,11 @@ nav:
       - 'Logical Operations-XOr': logical_xor.md
     - 'Median Blur': median_blur.md
     - 'Morphology Functions'"
-      - 'Check Cycles': morph_check_cycles.md
+      - 'Check Cycles': check_cycles.md
       - 'Find Branches': morph_find_branches.md
-      - 'Find Tips': morph_find_tips.md
-      - 'Prune': morph_prune.md
-      - 'Skeletonize': morph_skeletonize.md
+      - 'Find Tips': find_tips.md
+      - 'Prune': prune.md
+      - 'Skeletonize': skeletonize.md
     - 'Naive Bayes Classifier': naive_bayes_classifier.md
     - 'Object Composition': object_composition.md
     - 'Output Mask': output_mask.md

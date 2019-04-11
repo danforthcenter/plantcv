@@ -13,7 +13,7 @@ from plantcv.plantcv.morphology import find_branch_pts
 
 
 def segment_skeleton(skel_img, mask=None):
-    """ Segment a skeleton image into pieces and gather measurements per segment
+    """ Segment a skeleton image into pieces
 
         Inputs:
         skel_img      = Skeletonized image

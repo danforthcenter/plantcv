@@ -19,7 +19,7 @@ def check_cycles(skel_img):
 
     Returns:
     num_cycles  = Number of cycles found
-    cycle+img   = Image with cycles colored in
+    cycle_img   = Image with cycles identified
 
     :param skel_img: numpy.ndarray
     :return num_cycles: int

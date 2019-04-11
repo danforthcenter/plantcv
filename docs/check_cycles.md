@@ -5,7 +5,7 @@
 **returns** Number of cycles found, debugging cycle image 
 
 - **Parameters:**
-    - skel_img - Skeleton image (output from [plantcv.morphology.skeletonize](morph_skeletonize.md))
+    - skel_img - Skeleton image (output from [plantcv.morphology.skeletonize](skeletonize.md))
 - **Context:**
     - Identifies cycles in a skeleton image
 

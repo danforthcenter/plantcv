@@ -10,13 +10,14 @@ from plantcv.plantcv import find_objects
 from plantcv.plantcv.morphology import find_tips
 
 
-def segment_sort(skel_img, objects, hierarchies):
+def segment_sort(skel_img, objects, hierarchies, mask=None):
     """ Calculate segment curvature as defined by the ratio between geodesic and euclidean distance
 
         Inputs:
         skel_img          = Skeletonized image
         objects           = List of contours
         hierarchy         = Contour hierarchy NumPy array
+        mask              = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
 
         Returns:
         labeled_img       = Segmented debugging image with lengths labeled
@@ -29,6 +30,7 @@ def segment_sort(skel_img, objects, hierarchies):
         :param objects: list
         :param hierarchy: numpy.ndarray
         :param labeled_img: numpy.ndarray
+        :param mask: numpy.ndarray
         :return leaf_objects: list
         :return leaf_hierarchies: numpy.ndarray
         :return other_objects: list
@@ -42,7 +44,11 @@ def segment_sort(skel_img, objects, hierarchies):
     leaf_hierarchies = []
     other_objects = []
     other_hierarchies = []
-    labeled_img = np.zeros(skel_img.shape[:2], np.uint8)
+
+    if mask is None:
+        labeled_img = np.zeros(skel_img.shape[:2], np.uint8)
+    else:
+        labeled_img = mask.copy()
 
     tips = find_tips(skel_img)
     tip_objects, tip_hierarchies = find_objects(tips, tips)
@@ -67,12 +73,19 @@ def segment_sort(skel_img, objects, hierarchies):
             cnt_as_tuples.append((x_coord, y_coord))
             count += 1
 
-        for tip_tups in tip_tuples:
-            # If a tip is inside the list of contour tuples then it is a leaf segment
-            if tip_tups in cnt_as_tuples:
-                leaf_objects.append(cnt)
-                leaf_hierarchies.append(hierarchies[0][i])
-                is_leaf = True
+        # The first contour is the base, and while it contains a tip, it isn't a leaf
+        if i == 0:
+            other_objects.append(cnt)
+            other_hierarchies.append(hierarchies[0][i])
+
+        # Sort segments
+        else:
+            for tip_tups in tip_tuples:
+                # If a tip is inside the list of contour tuples then it is a leaf segment
+                if tip_tups in cnt_as_tuples:
+                    leaf_objects.append(cnt)
+                    leaf_hierarchies.append(hierarchies[0][i])
+                    is_leaf = True
 
         # If none of the tip tuples are inside the contour, then it isn't a leaf segment
         if is_leaf == False:

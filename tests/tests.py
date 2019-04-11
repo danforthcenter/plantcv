@@ -2629,10 +2629,10 @@ def test_plantcv_morphology_segment_sort():
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
     segmented_img, seg_objects, seg_hierarchies = pcv.morphology.segment_skeleton(skel_img=skeleton)
     pcv.params.debug = "print"
-    _ = pcv.morphology.segment_sort(skeleton, seg_objects, seg_hierarchies)
+    _ = pcv.morphology.segment_sort(skeleton, seg_objects, seg_hierarchies, mask=skeleton)
     pcv.params.debug = "plot"
     leaf_obj, leaf_hier, stem_obj, stem_hier = pcv.morphology.segment_sort(skeleton, seg_objects, seg_hierarchies)
-    assert len(leaf_obj) == 37
+    assert len(leaf_obj) == 36
 
 
 def test_plantcv_morphology_segment_tangent_angle():
