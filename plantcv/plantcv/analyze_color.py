@@ -1,7 +1,6 @@
 import os , cv2
 import numpy as np
 import pandas as pd
-from collections import Counter
 from scipy import stats
 from plotnine import ggplot, aes, geom_line, scale_x_continuous, scale_color_manual
 from plantcv.plantcv import fatal_error
@@ -140,38 +139,21 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
                         + scale_color_manual(color_channels)
                         )
             analysis_images.append(hist_fig)
-            
-    #flatten so that it is hashable
-    h = h.flatten(order = 'C')
-    
-    # produces a dictionary with hue as key, and frequency as values.
-    c = Counter(h)
-    # remove background colour 
-    del c[0]
 
-    # sort the dictionary in order 
-    ordered = dict(sorted(c.items(), key=lambda t: t[0]))
+    # Hue values of zero are red but are also the value for pixels where hue is undefined
+    # The hue value of a pixel will be undefined when the color values are saturated
+    # Therefore, hue values of zero are excluded from the calculations below
 
-    # loop adds the hue to a list for the frequency of each hue
-    temp_hue_list_hsv = []
-    for i in range(len(ordered)):
+    # Calculate the median encoded hue value
+    hue_median = np.median(h[np.where(h > 0)])
 
-        j = 0
-
-        while j < list(ordered.values())[i]:
-            temp_hue_list_hsv.append(list(ordered.keys())[i])
-
-            j += 1
-
-    #calculate relevant statistics 
-    circular_mean = stats.circmean(temp_hue_list_hsv, 180)
-    circular_std = stats.circstd(temp_hue_list_hsv, 180) # assumes samples are in the range [low to high] which they are
-
-    median = np.median(temp_hue_list_hsv)
+    # Calculate the circular mean and standard deviation of the encoded hue values
+    hue_circular_mean = stats.circmean(h[np.where(h > 0)], high=179, low=0)
+    hue_circular_std = stats.circstd(h[np.where(h > 0)], high=179, low=0)
 
     # Store Color Histogram Data
     color_header = [
-        'HEADER_COLOR',
+        'HEADER_HISTOGRAM',
         'bin-number',
         'bin-values',
         'blue',
@@ -183,13 +165,13 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
         'hue',
         'saturation',
         'value',
-        'circular_mean',
-        'circular_std',
-        'median'
+        'hue_circular_mean',
+        'hue_circular_std',
+        'hue_median'
     ]
 
     color_data = [
-        'COLOR_DATA',
+        'HISTOGRAM_DATA',
         256,
         bin_values,
         histograms["b"]["hist"],
@@ -201,9 +183,9 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
         histograms["h"]["hist"],
         histograms["s"]["hist"],
         histograms["v"]["hist"],
-        circular_mean,
-        circular_std,
-        median
+        hue_circular_mean,
+        hue_circular_std,
+        hue_median
     ]
 
     # Store into lists instead for pipeline and print_results
@@ -230,9 +212,9 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
     outputs.measurements['color_data']['hue'] = histograms["h"]["hist"]
     outputs.measurements['color_data']['saturation'] = histograms["s"]["hist"]
     outputs.measurements['color_data']['value'] = histograms["v"]["hist"]
-    outputs.measurements['color_data']['mean'] = circular_mean
-    outputs.measurements['color_data']['standard-deviation'] = circular_std
-    outputs.measurements['color_data']['median'] = median
+    outputs.measurements['color_data']['hue_circular_mean'] = hue_circular_mean
+    outputs.measurements['color_data']['hue_circular_std'] = hue_circular_std
+    outputs.measurements['color_data']['hue_median'] = hue_median
 
     # Store images
     outputs.images.append(analysis_images)

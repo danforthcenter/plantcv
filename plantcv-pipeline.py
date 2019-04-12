@@ -746,6 +746,7 @@ def process_results(args):
     opt_feature_fields = ['horizontal_line_position', 'height_above_bound', 'height_below_bound',
                           'above_bound_area', 'percent_above_bound_area', 'below_bound_area',
                           'percent_below_bound_area']
+    hue_feature_fields = ['hue_circular_mean', 'hue_circular_std', 'hue_median']
     marker_fields = ['marker_area', 'marker_major_axis_length', 'marker_minor_axis_length', 'marker_eccentricity']
     watershed_fields = ['estimated_object_count']
     landmark_fields = ['tip_points', 'tip_points_r', 'centroid_r', 'baseline_r', 'tip_number', 'vert_ave_c',
@@ -756,7 +757,7 @@ def process_results(args):
     # args.features_file.write('#' + '\t'.join(map(str, feature_fields + opt_feature_fields)) + '\n')
 
     # Signal channel data table
-    signal_fields = ['bin-number', 'channel_name', 'values', 'bin_values', 'circular_mean', 'circular_std', 'median']
+    signal_fields = ['bin-number', 'channel_name', 'values', 'bin_values']
 
     # bin-number	blue	green	red	lightness	green-magenta	blue-yellow	hue	saturation	value
 
@@ -769,7 +770,7 @@ def process_results(args):
         '` TEXT NOT NULL, `'.join(map(str, metadata_fields[2:])) + '` TEXT NOT NULL);')
     args.sq.execute(
         'CREATE TABLE IF NOT EXISTS `features` (`image_id` INTEGER PRIMARY KEY, `' + '` TEXT NOT NULL, `'.join(
-            map(str, feature_fields + opt_feature_fields + marker_fields + watershed_fields + landmark_fields)
+            map(str, feature_fields + opt_feature_fields + marker_fields + watershed_fields + landmark_fields + hue_feature_fields)
         ) + '` TEXT NOT NULL);')
     args.sq.execute(
         'CREATE TABLE IF NOT EXISTS `analysis_images` (`image_id` INTEGER NOT NULL, `type` TEXT NOT NULL, '
@@ -819,9 +820,9 @@ def process_results(args):
                                 if i > 0:
                                     feature_data[features[i]] = datum
                         # If the data is of class histogram/signal, store in the signal dictionary
-                        elif cols[0] == 'HEADER_COLOR':
+                        elif cols[0] == 'HEADER_HISTOGRAM':
                             signal = cols
-                        elif cols[0] == 'COLOR_DATA':
+                        elif cols[0] == 'HISTOGRAM_DATA':
                             for i, datum in enumerate(cols):
                                 if i > 0:
                                     signal_data[signal[i]] = datum
@@ -899,7 +900,7 @@ def process_results(args):
                     for field in feature_fields + opt_feature_fields + marker_fields + watershed_fields + landmark_fields:
                         feature_table.append(feature_data[field])
 
-                    args.features_file.write('|'.join(map(str, feature_table)) + '\n')
+
 
                     # Print the analysis image data to the aggregate output file
                     for img_type in images:
@@ -908,12 +909,16 @@ def process_results(args):
 
                     # Print the image signal data to the aggregate output file
                     for key in signal_data.keys():
-                        if key != 'bin-number' and key != 'bin-values':
+                        if key == 'hue_circular_mean' or key == 'hue_circular_std' or key == 'hue_median':
+                            feature_table.append(signal_data[key])
+                        elif key != 'bin-number' and key != 'bin-values':
                             signal_data[key] = signal_data[key].replace('[', '')
                             signal_data[key] = signal_data[key].replace(']', '')
                             signal_table = [args.image_id, signal_data['bin-number'], key, signal_data[key],
                                             signal_data['bin-values']]
                             args.signal_file.write('|'.join(map(str, signal_table)) + '\n')
+
+                    args.features_file.write('|'.join(map(str, feature_table)) + '\n')
                 else:
                     args.fail_log.write('|'.join(map(str, meta_table)) + '\n')
 
