@@ -52,7 +52,7 @@ def analyze_nir_intensity(gray_img, mask, bins, histplot=False):
     # Make a pseudo-RGB image
     rgbimg = cv2.cvtColor(gray_img, cv2.COLOR_GRAY2BGR)
 
-    hist_nir, hist_bins = np.histogram(masked, bins, (1, maxval), False, None, None)
+    hist_nir, hist_bins = np.histogram(masked, bins, (1, maxval))
 
     hist_bins1 = hist_bins[:-1]
     hist_bins2 = [l for l in hist_bins1]

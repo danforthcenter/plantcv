@@ -5,7 +5,7 @@ the number of inputted filenames matches the number of clustered contours.
 
 **plantcv.cluster_contour_splitimg**(*rgb_img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None, filenames=None*)
 
-**returns** output_paths
+**returns** output_paths, output_imgs, output_masks
 
 - **Parameters:**
     - rgb_img - RGB image data
@@ -39,8 +39,9 @@ pcv.params.debug = "print"
 # Cluster Contours and Split into Separate Images
 
 out = './examples/'
-output_path = pcv.cluster_contour_splitimg(rgb_img, clusters_i, contours, 
-                                           hierarchy, out, file, filenames=None)
+output_path, imgs, masks = pcv.cluster_contour_splitimg(rgb_img, clusters_i, contours, 
+                                                        hierarchy, out, file, 
+                                                        filenames=None)
                                            
 ```
 
