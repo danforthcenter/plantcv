@@ -3,8 +3,8 @@
 import os
 import cv2
 import numpy as np
+import pandas as pd
 from plantcv.plantcv import params
-from plantcv.plantcv import dilate
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 from plantcv.plantcv import find_objects
@@ -29,13 +29,13 @@ def _slope_to_intesect_angle(m1, m2):
     return angle
 
 
-def segment_tangent_angle(skel_img, objects, hierarchies, size, mask=None):
+def segment_tangent_angle(segmented_img, objects, hierarchies, size):
     """ Find 'tangent' angles in degrees of skeleton segments. Use `size` pixels on either end of
         each segment to find a linear regression line, and calculate angle between the two lines
         drawn per segment.
 
         Inputs:
-        skel_img  = Skeletonized image
+        segmented_img  = Segmented image to plot slope lines and intersection angles on
         objects   = List of contours
         hierarchy = Contour hierarchy NumPy array
         size      = Size of ends used to calculate "tangent" lines
@@ -43,6 +43,7 @@ def segment_tangent_angle(skel_img, objects, hierarchies, size, mask=None):
 
 
         Returns:
+        labeled_img    = Segmented debugging image with angles labeled
         intersection_angles = List of leaf lengths
 
         :param segmented_img: numpy.ndarray
@@ -50,59 +51,76 @@ def segment_tangent_angle(skel_img, objects, hierarchies, size, mask=None):
         :param hierarchies: numpy.ndarray
         :param size: int
         :param mask: numpy.ndarray
+        :return labeled_img: numpy.ndarray
         :return intersection_angles: list
         """
     # Store debug
     debug = params.debug
     params.debug = None
 
+    labeled_img = segmented_img.copy()
     intersection_angles = []
-    rows, cols = skel_img.shape[:2]
+    label_coord_x = []
+    label_coord_y = []
+
     rand_color = color_palette(len(objects))
 
-    # Plot debugging image on mask if provided.
-    if mask is None:
-        dilated_skel = dilate(skel_img, 2, 1)
-        labeled_img = cv2.cvtColor(dilated_skel, cv2.COLOR_GRAY2RGB)
-    else:
-        mask_copy = mask.copy()
-        labeled_img = cv2.cvtColor(mask_copy, cv2.COLOR_GRAY2RGB)
-        skel_obj, skel_hier = find_objects(skel_img, skel_img)
-        cv2.drawContours(labeled_img, skel_obj, -1, (150, 150, 150), 2, lineType=8, hierarchy=skel_hier)
-
     for i, cnt in enumerate(objects):
-        find_tangents = np.zeros(skel_img.shape[:2], np.uint8)
-        cv2.drawContours(find_tangents, objects, i, 255, 1, lineType=8, hierarchy=hierarchies)
+        find_tangents = np.zeros(segmented_img.shape[:2], np.uint8)
+        cv2.drawContours(find_tangents, objects, i, 255, 1, lineType=8,
+                         hierarchy=hierarchies)
+        cv2.drawContours(labeled_img, objects, i, rand_color[i], params.line_thickness, lineType=8,
+                         hierarchy=hierarchies)
         pruned_segment = prune(find_tangents, size)
-
-        # Remove center of segments and leave both ends
-        segment_ends = find_tangents-pruned_segment
-        segment_end_objs, segment_end_hierarchy = find_objects(segment_ends, segment_ends)
+        segment_ends = find_tangents - pruned_segment
+        segment_end_obj, segment_end_hierarchy = find_objects(segment_ends, segment_ends)
         slopes = []
+        for j, obj in enumerate(segment_end_obj):
+            # Find bounds for regression lines to get drawn
+            rect = cv2.minAreaRect(cnt)
+            pts = cv2.boxPoints(rect)
+            df = pd.DataFrame(pts, columns=('x', 'y'))
+            x_max = int(df['x'].max())
+            x_min = int(df['x'].min())
 
-        for j, obj in enumerate(segment_end_objs):
-            # Find slope of each tip
+            # Find line fit to each segment
             [vx, vy, x, y] = cv2.fitLine(obj, cv2.DIST_L2, 0, 0.01, 0.01)
             slope = -vy / vx
-            left_list = int((x * slope) + y)
-            right_list = int(((x - cols) * slope) + y)
+            left_list = int(((x - x_min) * slope) + y)
+            right_list = int(((x - x_max) * slope) + y)
             slopes.append(slope)
 
-            # Check to avoid Overflow error while trying to plot lines with slopes too large
             if slope > 1000000 or slope < -1000000:
-                print("Warning: Slope of line tangent with contour with ID #", i, "is", slope, "and cannot be plotted.")
+                print("Slope of contour with ID#", i, "is", slope, "and cannot be plotted.")
             else:
                 # Draw slope lines
-                cv2.line(labeled_img, (cols - 1, right_list), (0, left_list), rand_color[i], 1)
+                cv2.line(labeled_img, (x_max - 1, right_list), (x_min, left_list), rand_color[i], 1)
 
         if len(slopes) < 2:
             # If size*2>len(obj) then pruning will remove the segment completely, and
             # makes segment_end_objs contain just one contour.
-            print("Warning: Size too large, contour with ID #", i, "got pruned away completely.")
+            print("Size too large, contour with ID#", i, "got pruned away completely.")
+            intersection_angles.append("NA")
         else:
-            slope1 = slopes[0]
-            slope2 = slopes[1]
-            intersection_angles.append(_slope_to_intesect_angle(slope1, slope2))
+            # Calculate intersection angles
+            slope1 = slopes[0][0]
+            slope2 = slopes[1][0]
+            intersection_angle = _slope_to_intesect_angle(slope1, slope2)
+            intersection_angles.append(intersection_angle)
+
+        # Store coordinates for labels
+        label_coord_x.append(objects[i][0][0][0])
+        label_coord_y.append(objects[i][0][0][1])
+    for i, cnt in enumerate(objects):
+        # Label slope lines
+        w = label_coord_x[i]
+        h = label_coord_y[i]
+        if type(intersection_angles[i]) is str:
+            text = "{}".format(intersection_angles[i])
+        else:
+            text = "{:.2f}".format(intersection_angles[i])
+        cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                    fontScale=.55, color=(150, 150, 150), thickness=2)
 
     # Reset debug mode
     params.debug = debug
@@ -114,4 +132,4 @@ def segment_tangent_angle(skel_img, objects, hierarchies, size, mask=None):
     elif params.debug == 'plot':
         plot_image(labeled_img)
 
-    return intersection_angles
+    return labeled_img, intersection_angles

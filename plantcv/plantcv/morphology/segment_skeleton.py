@@ -25,7 +25,7 @@ def segment_skeleton(skel_img, mask=None):
         hierarchy     = contour hierarchy list
 
         :param skel_img: numpy.ndarray
-        :param measurement: str
+        :param mask: numpy.ndarray
         :return segmented_img: numpy.ndarray
         :return segment_objects: list
         "return segment_hierarchies: numpy.ndarray

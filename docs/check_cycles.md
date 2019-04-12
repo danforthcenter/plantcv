@@ -1,6 +1,6 @@
 ## Check for Cycles
 
-**plantcv.morphology.*check_cycles*(*skel_img*)
+**plantcv.morphology.check_cycles**(*skel_img*)
 
 **returns** Number of cycles found, debugging cycle image 
 

@@ -2576,7 +2576,7 @@ def test_plantcv_morphology_segment_euclidean_length():
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
     pcv.params.debug = "print"
     segmented_img, segment_objects, segment_hierarchies = pcv.morphology.segment_skeleton(skel_img=skeleton)
-    _ = pcv.morphology.segment_euclidean_length(segmented_img, segment_objects, segment_hierarchies, mask)
+    _ = pcv.morphology.segment_euclidean_length(segmented_img, segment_objects, segment_hierarchies)
     pcv.params.debug = "plot"
     labeled_img, lengths = pcv.morphology.segment_euclidean_length(segmented_img, segment_objects, segment_hierarchies)
     assert len(lengths) == 22
@@ -2640,17 +2640,34 @@ def test_plantcv_morphology_segment_tangent_angle():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_tangent_angle")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     skel = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
     objects = np.load(os.path.join(TEST_DATA, TEST_SKELETON_OBJECTS), encoding="latin1")
     hierarchies = np.load(os.path.join(TEST_DATA, TEST_SKELETON_HIERARCHIES), encoding="latin1")
     objs = objects['arr_0']
     obj_hierarchy = hierarchies['arr_0']
     pcv.params.debug = "print"
-    _ = pcv.morphology.segment_tangent_angle(skel, objs, obj_hierarchy, 20, mask=mask)
+    _ = pcv.morphology.segment_tangent_angle(skel, objs, obj_hierarchy, 5)
     pcv.params.debug = "plot"
-    intersection_angles = pcv.morphology.segment_tangent_angle(skel, objs, obj_hierarchy, 5)
-    assert len(intersection_angles) == 58
+    intersection_angles = pcv.morphology.segment_tangent_angle(skel, objs, obj_hierarchy, 2)
+    assert len(intersection_angles) == 2
+
+
+def test_plantcv_morphology_segment_id():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_tangent_angle")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    skel = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
+    objects = np.load(os.path.join(TEST_DATA, TEST_SKELETON_OBJECTS), encoding="latin1")
+    hierarchies = np.load(os.path.join(TEST_DATA, TEST_SKELETON_HIERARCHIES), encoding="latin1")
+    objs = objects['arr_0']
+    obj_hierarchy = hierarchies['arr_0']
+    pcv.params.debug = "print"
+    _ = pcv.morphology.segment_id(skel, objs, obj_hierarchy)
+    pcv.params.debug = "plot"
+    _, labeled_img = pcv.morphology.segment_id(skel, objs, obj_hierarchy, mask=skel)
+    assert np.sum(labeled_img) > np.sum(skel)
+
 
 # ##############################
 # Tests for the roi subpackage

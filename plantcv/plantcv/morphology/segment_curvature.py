@@ -69,7 +69,7 @@ def segment_curvature(segmented_img, objects, hierarchies):
 
     for i, cnt in enumerate(objects):
         # Calculate geodesic distance
-        text = "id:{} curvature:{:.1f}".format(i, curvature_measure[i])
+        text = "{:.3f}".format(curvature_measure[i])
         w = label_coord_x[i]
         h = label_coord_y[i]
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=.4,

@@ -12,9 +12,6 @@
 - **Important Note:**
     - The function prunes all tips of a skeletonized image, and should be used as sparingly as possible since leaves will also get trimmed. 
 
-**Reference Image**
-
-![Screenshot](img/documentation_images/prune/skeleton_image.jpg)
 
 ```python
 
@@ -23,10 +20,12 @@ from plantcv import plantcv as pcv
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
+
 # The image created for debugging purposes allows for line thickness 
 # adjustments with the global line thickness parameter. Try setting 
 # pcv.params.line_thickness = 3 for thinner lines (default 5)
 pcv.params.line_thickness = 3 
+
 pruned_skeleton = pcv.morphology.prune(skel_img=skeleton, size=14)
 
 ```
