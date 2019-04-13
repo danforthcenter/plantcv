@@ -1491,7 +1491,8 @@ def test_plantcv_output_mask():
     _ = pcv.output_mask(img=img_color, mask=mask, filename='test.png', outdir=cache_dir, mask_only=False)
     # Test with debug = None
     pcv.params.debug = None
-    imgpath, maskpath, analysis_images = pcv.output_mask(img=img, mask=mask, filename='test.png', mask_only=False)
+    imgpath, maskpath, analysis_images = pcv.output_mask(img=img, mask=mask, filename='test.png',
+                                                         outdir=cache_dir, mask_only=False)
     assert all([os.path.exists(imgpath) is True, os.path.exists(maskpath) is True])
 
 
