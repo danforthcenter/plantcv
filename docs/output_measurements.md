@@ -66,16 +66,17 @@ Primary Key (PK) and Foreign Key (FK). Foreign Keys are used to join tables in q
 
 | Measurement            | Units   | Description                                                                                      | 
 | ---------------------- | ------- |------------------------------------------------------------------------------------------------- | 
-| bin-number             | none    | number of histogram bins (e.g. 256/8-bit)                                                        |
 | channel_name           | none    | possible values: red, green, blue, hue, saturation, value, lightness, green-magenta, blue-yellow |
-| values                 | none    | list of pixel intensity value counts per bin                                                     |
-| bin_values             | none    | list of bin intensity values                                                                     |
+| frequency              | none    | list of pixel counts per signal value                                                            |
+| signal_values          | none    | list of channel signal range values (bins)                                                       |
+| hue_circular_mean      | degrees | Circular mean of the hue values (0-359 degrees)                                                  |
+| hue_circular_std       | degrees | Standard deviation of the circular mean of the hue values                                        |
+| hue_median             | degrees | Median hue value (0-359 degrees)                                                                 |
 
 ### [Analyze NIR](analyze_NIR_intensity.md) intensity function (signal table)
 
-| Measurement            | Units   | Description                                                                                      | 
+| Measurement            | Units   | Description                                  | 
 | ---------------------- | ------- |--------------------------------------------- | 
-| bin-number             | none    | number of histogram bins (e.g. 256/8-bit)    |
 | channel_name           | none    | possible values: nir                         |
-| values                 | none    | list of pixel intensity value counts per bin |
-| bin_values             | none    | list of bin intensity values                 |
+| frequency              | none    | list of pixel counts per NIR signal value    |
+| signal_values          | none    | list of signal range values (bins)           |
