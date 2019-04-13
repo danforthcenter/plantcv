@@ -757,9 +757,7 @@ def process_results(args):
     # args.features_file.write('#' + '\t'.join(map(str, feature_fields + opt_feature_fields)) + '\n')
 
     # Signal channel data table
-    signal_fields = ['bin-number', 'channel_name', 'values', 'bin_values']
-
-    # bin-number	blue	green	red	lightness	green-magenta	blue-yellow	hue	saturation	value
+    signal_fields = ['channel_name', 'frequency', 'signal_values']
 
     # Initialize the database with the schema template if create is true
     args.sq.execute(
@@ -789,7 +787,7 @@ def process_results(args):
                 features = []
                 feature_data = {}
                 signal = []
-                signal_data = {}
+                signal_data = []
                 boundary = []
                 boundary_data = {}
                 marker = []
@@ -798,6 +796,8 @@ def process_results(args):
                 watershed_data = {}
                 landmark = []
                 landmark_data = {}
+                hue = []
+                hue_data = {}
                 # Open results file
                 with open(os.path.join(dirpath, filename)) as results:
                     # For each line in the file
@@ -823,9 +823,18 @@ def process_results(args):
                         elif cols[0] == 'HEADER_HISTOGRAM':
                             signal = cols
                         elif cols[0] == 'HISTOGRAM_DATA':
+                            signal_measurements = {}
                             for i, datum in enumerate(cols):
                                 if i > 0:
-                                    signal_data[signal[i]] = datum
+                                    signal_measurements[signal[i]] = datum
+                            signal_data.append(signal_measurements)
+                        # If the data is of the class color features, store in the hue features dictinoary
+                        elif cols[0] == 'HEADER_COLOR_FEATURES':
+                            hue = cols
+                        elif cols[0] == 'COLOR_FEATURES_DATA':
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    hue_data[hue[i]] = datum
                         # If the data is of class boundary (horizontal rule), store in the boundary dictionary
                         elif 'HEADER_BOUNDARY' in cols[0]:
                             boundary = cols
@@ -872,35 +881,40 @@ def process_results(args):
                     # Print the image feature data to the aggregate output file
                     feature_data['image_id'] = args.image_id
 
-                    # Boundary data is optional, if it's not there we need to add in placeholder data
+                    # Boundary data are optional, if it's not there we need to add in placeholder data
                     if len(boundary_data) == 0:
                         for field in opt_feature_fields:
                             boundary_data[field] = 0
                     feature_data.update(boundary_data)
 
-                    # Marker data is optional, if it's not there we need to add in placeholder data
+                    # Marker data are optional, if it's not there we need to add in placeholder data
                     if len(marker_data) == 0:
                         for field in marker_fields:
                             marker_data[field] = 0
                     feature_data.update(marker_data)
 
-                    # Watershed data is optional, if it's not there we need to add in placeholder data
+                    # Watershed data are optional, if it's not there we need to add in placeholder data
                     if len(watershed_data) == 0:
                         for field in watershed_fields:
                             watershed_data[field] = 0
                     feature_data.update(watershed_data)
 
-                    # Landmark data is optional, if it's not there we need to add in placeholder data
+                    # Landmark data are optional, if it's not there we need to add in placeholder data
                     if len(landmark_data) == 0:
                         for field in landmark_fields:
                             landmark_data[field] = 0
                     feature_data.update(landmark_data)
 
+                    # Hue feature data are optional, if it's not there we need to add in placeholder data
+                    if len(hue_data) == 0:
+                        for field in hue_feature_fields:
+                            hue_data[field] = 0
+                    feature_data.update(hue_data)
+
                     feature_table = [args.image_id]
-                    for field in feature_fields + opt_feature_fields + marker_fields + watershed_fields + landmark_fields:
+                    for field in feature_fields + opt_feature_fields + marker_fields + watershed_fields + landmark_fields + hue_feature_fields:
                         feature_table.append(feature_data[field])
-
-
+                    args.features_file.write('|'.join(map(str, feature_table)) + '\n')
 
                     # Print the analysis image data to the aggregate output file
                     for img_type in images:
@@ -908,17 +922,14 @@ def process_results(args):
                             '|'.join(map(str, (args.image_id, img_type, images[img_type]))) + '\n')
 
                     # Print the image signal data to the aggregate output file
-                    for key in signal_data.keys():
-                        if key == 'hue_circular_mean' or key == 'hue_circular_std' or key == 'hue_median':
-                            feature_table.append(signal_data[key])
-                        elif key != 'bin-number' and key != 'bin-values':
-                            signal_data[key] = signal_data[key].replace('[', '')
-                            signal_data[key] = signal_data[key].replace(']', '')
-                            signal_table = [args.image_id, signal_data['bin-number'], key, signal_data[key],
-                                            signal_data['bin-values']]
-                            args.signal_file.write('|'.join(map(str, signal_table)) + '\n')
+                    for channel in signal_data:
+                        signal_table = [args.image_id]
+                        for key in signal_fields:
+                            channel[key] = channel[key].replace('[', '')
+                            channel[key] = channel[key].replace(']', '')
+                            signal_table.append(channel[key])
+                        args.signal_file.write('|'.join(map(str, signal_table)) + '\n')
 
-                    args.features_file.write('|'.join(map(str, feature_table)) + '\n')
                 else:
                     args.fail_log.write('|'.join(map(str, meta_table)) + '\n')
 
@@ -926,7 +937,7 @@ def process_results(args):
 
                     feature_table = [args.image_id]
 
-                    for field in feature_fields + opt_feature_fields + marker_fields + watershed_fields + landmark_fields:
+                    for field in feature_fields + opt_feature_fields + marker_fields + watershed_fields + landmark_fields + hue_feature_fields:
                         feature_table.append(0)
 
                     args.features_file.write('|'.join(map(str, feature_table)) + '\n')
@@ -953,6 +964,7 @@ def check_date_range(args, img_time):
     else:
         return True
 ###########################################
+
 
 if __name__ == '__main__':
     main()

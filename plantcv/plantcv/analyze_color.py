@@ -1,4 +1,5 @@
-import os , cv2
+import os
+import cv2
 import numpy as np
 import pandas as pd
 from scipy import stats
@@ -80,7 +81,7 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
               "hist": [l[0] for l in cv2.calcHist([channels["v"]], [0], mask, [256], [0, 255])]}
     }
 
-    # Create list of bin labels
+    # Create list of bin labels for 8-bit data
     binval = np.arange(0, 256)
     bin_values = [l for l in binval]
 
@@ -144,12 +145,14 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
     # The hue value of a pixel will be undefined when the color values are saturated
     # Therefore, hue values of zero are excluded from the calculations below
 
-    # Calculate the median encoded hue value
-    hue_median = np.median(h[np.where(h > 0)])
+    # Calculate the median hue value
+    # The median is rescaled from the encoded 0-179 range to the 0-359 degree range
+    hue_median = np.median(h[np.where(h > 0)]) * 2
 
     # Calculate the circular mean and standard deviation of the encoded hue values
-    hue_circular_mean = stats.circmean(h[np.where(h > 0)], high=179, low=0)
-    hue_circular_std = stats.circstd(h[np.where(h > 0)], high=179, low=0)
+    # The mean and standard-deviation are rescaled from the encoded 0-179 range to the 0-359 degree range
+    hue_circular_mean = stats.circmean(h[np.where(h > 0)], high=179, low=0) * 2
+    hue_circular_std = stats.circstd(h[np.where(h > 0)], high=179, low=0) * 2
 
     # Store Color Histogram Data
     color_header = [
@@ -199,22 +202,47 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
             print(hist_fig)
 
     # Store into global measurements
-    if not 'color_data' in outputs.measurements:
-        outputs.measurements['color_data'] = {}
-    outputs.measurements['color_data']['bin-number'] = 256
-    outputs.measurements['color_data']['bin-values'] = bin_values
-    outputs.measurements['color_data']['blue'] = histograms["b"]["hist"]
-    outputs.measurements['color_data']['green'] = histograms["g"]["hist"]
-    outputs.measurements['color_data']['red'] = histograms["r"]["hist"]
-    outputs.measurements['color_data']['lightness'] = histograms["l"]["hist"]
-    outputs.measurements['color_data']['green-magenta'] = histograms["m"]["hist"]
-    outputs.measurements['color_data']['blue-yellow'] = histograms["y"]["hist"]
-    outputs.measurements['color_data']['hue'] = histograms["h"]["hist"]
-    outputs.measurements['color_data']['saturation'] = histograms["s"]["hist"]
-    outputs.measurements['color_data']['value'] = histograms["v"]["hist"]
-    outputs.measurements['color_data']['hue_circular_mean'] = hue_circular_mean
-    outputs.measurements['color_data']['hue_circular_std'] = hue_circular_std
-    outputs.measurements['color_data']['hue_median'] = hue_median
+    # RGB signal values are in an unsigned 8-bit scale of 0-255
+    rgb_values = [i for i in range(0, 256)]
+    # Hue values are in a 0-359 degree scale, every 2 degrees at the midpoint of the interval
+    hue_values = [i * 2 + 1 for i in range(0, 180)]
+    # Percentage values on a 0-100 scale (lightness, saturation, and value)
+    percent_values = [round((i / 255) * 100, 2) for i in range(0, 256)]
+    # Diverging values on a -128 to 127 scale (green-magenta and blue-yellow)
+    diverging_values = [i for i in range(-128, 128)]
+    outputs.measurements['color_data'] = {
+        'histograms': {
+            'blue': {'signal_values': rgb_values, 'frequency': histograms["b"]["hist"]},
+            'green': {'signal_values': rgb_values, 'frequency': histograms["g"]["hist"]},
+            'red': {'signal_values': rgb_values, 'frequency': histograms["r"]["hist"]},
+            'lightness': {'signal_values': percent_values, 'frequency': histograms["l"]["hist"]},
+            'green-magenta': {'signal_values': diverging_values, 'frequency': histograms["m"]["hist"]},
+            'blue-yellow': {'signal_values': diverging_values, 'frequency': histograms["y"]["hist"]},
+            'hue': {'signal_values': hue_values, 'frequency': histograms["h"]["hist"]},
+            'saturation': {'signal_values': percent_values, 'frequency': histograms["s"]["hist"]},
+            'value': {'signal_values': percent_values, 'frequency': histograms["v"]["hist"]}
+        },
+        'color_features': {
+            'hue_circular_mean': hue_circular_mean,
+            'hue_circular_std': hue_circular_std,
+            'hue_median': hue_median
+        }
+    }
+
+    # outputs.measurements['color_data']['bin-number'] = 256
+    # outputs.measurements['color_data']['bin-values'] = bin_values
+    # outputs.measurements['color_data']['blue'] = histograms["b"]["hist"]
+    # outputs.measurements['color_data']['green'] = histograms["g"]["hist"]
+    # outputs.measurements['color_data']['red'] = histograms["r"]["hist"]
+    # outputs.measurements['color_data']['lightness'] = histograms["l"]["hist"]
+    # outputs.measurements['color_data']['green-magenta'] = histograms["m"]["hist"]
+    # outputs.measurements['color_data']['blue-yellow'] = histograms["y"]["hist"]
+    # outputs.measurements['color_data']['hue'] = histograms["h"]["hist"]
+    # outputs.measurements['color_data']['saturation'] = histograms["s"]["hist"]
+    # outputs.measurements['color_data']['value'] = histograms["v"]["hist"]
+    # outputs.measurements['color_data']['hue_circular_mean'] = hue_circular_mean
+    # outputs.measurements['color_data']['hue_circular_std'] = hue_circular_std
+    # outputs.measurements['color_data']['hue_median'] = hue_median
 
     # Store images
     outputs.images.append(analysis_images)

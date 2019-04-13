@@ -37,18 +37,28 @@ def print_results(filename):
 
     # Write data from analyze_color if it was stored
     if 'color_data' in outputs.measurements:
-        header = ['HEADER_HISTOGRAM']
-        data = ['HISTOGRAM_DATA']
-        for k, v in outputs.measurements['color_data'].items():
-            header.append(k)
-            data.append(v)
-        result.write('\t'.join(map(str, header)) + '\n')
-        result.write('\t'.join(map(str, data)) + '\n')
+        if 'color_features' in outputs.measurements['color_data']:
+            header = ['HEADER_COLOR_FEATURES']
+            data = ['COLOR_FEATURES_DATA']
+            for k, v in outputs.measurements['color_data']['color_features'].items():
+                header.append(k)
+                data.append(v)
+            result.write('\t'.join(map(str, header)) + '\n')
+            result.write('\t'.join(map(str, data)) + '\n')
+        if 'histograms' in outputs.measurements['color_data']:
+            for channel in outputs.measurements['color_data']['histograms']:
+                header = ['HEADER_HISTOGRAM', 'channel_name']
+                data = ['HISTOGRAM_DATA', channel]
+                for k, v in outputs.measurements['color_data']['histograms'][channel].items():
+                    header.append(k)
+                    data.append(v)
+                result.write('\t'.join(map(str, header)) + '\n')
+                result.write('\t'.join(map(str, data)) + '\n')
 
     # Write data from analyze_nir_intensity if it was stored
     if 'nir_histogram' in outputs.measurements:
-        header = ['HEADER_HISTOGRAM']
-        data = ['HISTOGRAM_DATA']
+        header = ['HEADER_HISTOGRAM', 'channel_name']
+        data = ['HISTOGRAM_DATA', 'nir']
         for k, v in outputs.measurements['nir_histogram'].items():
             header.append(k)
             data.append(v)
