@@ -39,8 +39,6 @@ def segment_tangent_angle(segmented_img, objects, hierarchies, size):
         objects   = List of contours
         hierarchy = Contour hierarchy NumPy array
         size      = Size of ends used to calculate "tangent" lines
-        mask      = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
-
 
         Returns:
         labeled_img    = Segmented debugging image with angles labeled
@@ -50,7 +48,6 @@ def segment_tangent_angle(segmented_img, objects, hierarchies, size):
         :param objects: list
         :param hierarchies: numpy.ndarray
         :param size: int
-        :param mask: numpy.ndarray
         :return labeled_img: numpy.ndarray
         :return intersection_angles: list
         """

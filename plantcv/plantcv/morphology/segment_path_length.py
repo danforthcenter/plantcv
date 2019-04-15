@@ -8,7 +8,7 @@ from plantcv.plantcv import print_image
 
 
 def segment_path_length(segmented_img, objects):
-    """ Segment a skeleton image into pieces and gather measurements per segment
+    """ Use segments to calculate geodesic distance per segment
 
         Inputs:
         segmented_img = Segmented image to plot lengths on
