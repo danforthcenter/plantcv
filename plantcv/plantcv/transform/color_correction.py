@@ -730,7 +730,7 @@ def find_color_card(rgb_img, threshold='adaptgauss', threshvalue=125, blurry=Fal
     df = df.dropna(subset=['Y'])
 
     print(df)
-    if df['X'].min().isnull() or df['Y'].min.isnull():
+    if df['X'].min() is np.nan or df['Y'].min() is np.nan:
         fatal_error('No color card found under current parameters')
     else:
         # Extract the starting coordinate
