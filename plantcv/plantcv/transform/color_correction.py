@@ -717,17 +717,17 @@ def find_color_card(rgb_img, threshold='adaptgauss', threshvalue=125, blurry=Fal
 
     # Append distprox summary to dataframe
     df = df.assign(distprox=distmatrixflat.values)
+    print(df)
 
     # Filter results for distance proximity to other squares
     df = df[(df['distprox'] >= 4)]
-
+    print(df)
     # Remove all not numeric values use to_numeric with parameter, errors='coerce' - it replace non numeric to NaNs:
     df['X'] = pd.to_numeric(df['X'], errors='coerce')
     df['Y'] = pd.to_numeric(df['Y'], errors='coerce')
 
     # Remove NaN
-    df = df.dropna(subset=['X'])
-    df = df.dropna(subset=['Y'])
+    df = df.dropna()
 
     print(df)
 
