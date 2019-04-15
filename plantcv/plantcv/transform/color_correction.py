@@ -695,13 +695,13 @@ def find_color_card(rgb_img, threshold='adaptgauss', threshvalue=125, blurry=Fal
     # Reorder dataframe for better printing
     df = df[['index', 'X', 'Y', 'width', 'height', 'WHratio', 'Area', 'square', 'child',
              'blurriness', 'distprox', 'sizeprox']]
-
+    print(df)
     # Loosely filter for size and distance (relative size to median)
     minsqwidth = median_sq_width_px * 0.80
     maxsqwidth = median_sq_width_px * 1.2
     df = df[(df['distprox'] >= 5) & (df['sizeprox'] >= 5) & (df['width'] > minsqwidth) &
             (df['width'] < maxsqwidth)]
-    print(df)
+    
     # Filter for proximity again to root out stragglers
     # Find and count up squares that are within given radius,
     # more squares = more likelihood of them being the card
@@ -717,7 +717,6 @@ def find_color_card(rgb_img, threshold='adaptgauss', threshvalue=125, blurry=Fal
 
     # Append distprox summary to dataframe
     df = df.assign(distprox=distmatrixflat.values)
-    print(df)
 
     # Filter results for distance proximity to other squares
     df = df[(df['distprox'] >= 4)]
