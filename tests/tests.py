@@ -3014,13 +3014,10 @@ def test_plantcv_transform_quick_color_check():
 def test_plantcv_transform_find_color_card():
     # Load rgb image
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
-    rgb_img2 = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG_WITH_HEXAGON))
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_find_color_card")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    _ = pcv.transform.find_color_card(rgb_img=rgb_img2, threshold_type='adaptgauss', blurry=False)
-
     df, start, space = pcv.transform.find_color_card(rgb_img=rgb_img, threshold_type='adaptgauss', blurry=False)
     # Test with debug = "print"
     pcv.params.debug = "print"
