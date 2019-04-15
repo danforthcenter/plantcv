@@ -721,10 +721,13 @@ def find_color_card(rgb_img, threshold='adaptgauss', threshvalue=125, blurry=Fal
     # Filter results for distance proximity to other squares
     df = df[(df['distprox'] >= 4)]
 
-    #Remove all not numeric values use to_numeric with parameter, errors='coerce' - it replace non numeric to NaNs:
-
+    # Remove all not numeric values use to_numeric with parameter, errors='coerce' - it replace non numeric to NaNs:
     df['X'] = pd.to_numeric(df['X'], errors='coerce')
     df['Y'] = pd.to_numeric(df['Y'], errors='coerce')
+
+    # Remove NaN
+    df = df.dropna(subset=['X'])
+    df = df.dropna(subset=['Y'])
 
     # Extract the starting coordinate
     start_coord = (int(df['X'].min()), int(df['Y'].min()))
