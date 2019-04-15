@@ -577,7 +577,7 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
     print(edges)
     # Compute contours to find the squares of the card
     edges = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
-    contours, hierarchy = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    _, contours, hierarchy = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     print(contours)
     # Variable of which contour is which
     mindex = []
@@ -633,6 +633,7 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
             mheight.append(wh[1])
             mwhratio.append(wh[0] / wh[1])
             msquare.append(len(approx))
+            print(approx)
             # If the approx contour has 4 points then we can assume we have 4-sided objects
             if len(approx) == 4 or 5:
                 msquarecoords.append(approx)
