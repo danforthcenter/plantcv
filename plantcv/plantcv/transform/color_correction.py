@@ -574,10 +574,9 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
     # Apply automatic Canny edge detection using the computed median
     edges = skimage.feature.canny(threshold)
     edges.dtype = 'uint8'
-    print(edges)
+
     # Compute contours to find the squares of the card
-    _, contours, hierarchy = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    print(contours)
+    contours, hierarchy = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[-2:]
     # Variable of which contour is which
     mindex = []
     # Variable to store moments
@@ -632,7 +631,6 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
             mheight.append(wh[1])
             mwhratio.append(wh[0] / wh[1])
             msquare.append(len(approx))
-            print(approx)
             # If the approx contour has 4 points then we can assume we have 4-sided objects
             if len(approx) == 4 or 5:
                 msquarecoords.append(approx)
@@ -653,7 +651,7 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
 
     # Add calculated blur factor to output
     df['blurriness'] = blurfactor
-    print(df)
+
     # Filter df for attributes that would isolate squares of reasonable size
     df = df[(df['Area'] > minarea) & (df['Area'] < maxarea) & (df['child'] != -1) &
             (df['square'].isin([4, 5])) & (df['WHratio'] < 1.2) & (df['WHratio'] > 0.85)]
@@ -697,7 +695,7 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
     # Reorder dataframe for better printing
     df = df[['index', 'X', 'Y', 'width', 'height', 'WHratio', 'Area', 'square', 'child',
              'blurriness', 'distprox', 'sizeprox']]
-    print(df)
+
     # Loosely filter for size and distance (relative size to median)
     minsqwidth = median_sq_width_px * 0.80
     maxsqwidth = median_sq_width_px * 1.2
