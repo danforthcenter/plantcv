@@ -3,6 +3,6 @@ numpy>=1.11,<1.16
 pandas
 python-dateutil
 scipy
-scikit-image
+scikit-image<0.15
 plotnine
 opencv-python<4

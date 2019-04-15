@@ -489,7 +489,7 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
             print(p1)
 
 
-def find_color_card(rgb_img, threshold='adaptgauss', threshvalue=125, blurry=False, background='dark'):
+def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark'):
     """Automatically detects a color card and output info to use in create_color_card_mask function
 
     Inputs:
@@ -555,28 +555,28 @@ def find_color_card(rgb_img, threshold='adaptgauss', threshvalue=125, blurry=Fal
         fatal_error('Background parameter ' + str(background) + ' is not "light" or "dark"!')
 
     # Thresholding
-    if threshold == "otsu":
+    if threshold_type == "otsu":
         # Blur slightly so defects on card squares and background patterns are less likely to be picked up
         gaussian = cv2.GaussianBlur(gray_img, (5, 5), 0)
         ret, threshold = cv2.threshold(gaussian, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    elif threshold == "normal":
+    elif threshold_type == "normal":
         # Blur slightly so defects on card squares and background patterns are less likely to be picked up
         gaussian = cv2.GaussianBlur(gray_img, (5, 5), 0)
         ret, threshold = cv2.threshold(gaussian, threshvalue, 255, cv2.THRESH_BINARY)
-    elif threshold == "adaptgauss":
+    elif threshold_type == "adaptgauss":
         # Blur slightly so defects on card squares and background patterns are less likely to be picked up
         gaussian = cv2.GaussianBlur(gray_img, (11, 11), 0)
         threshold = cv2.adaptiveThreshold(gaussian, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
                                           cv2.THRESH_BINARY_INV, 51, 2)
     else:
-        fatal_error('Threshold ' + str(threshold) + ' is not "otsu", "normal", or "adaptgauss"!')
+        fatal_error('Threshold ' + str(threshold_type) + ' is not "otsu", "normal", or "adaptgauss"!')
 
     # Apply automatic Canny edge detection using the computed median
     edges = skimage.feature.canny(threshold)
     edges.dtype = 'uint8'
 
     # Compute contours to find the squares of the card
-    _, contours, hierarchy = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[-2:]
     # Variable of which contour is which
     mindex = []
     # Variable to store moments
@@ -625,7 +625,7 @@ def find_color_card(rgb_img, threshold='adaptgauss', threshvalue=125, blurry=Fal
         # Area isn't 0, but greater than min-area and less than max-area
         if marea[index] != 0 and minarea < marea[index] < maxarea:
             peri = cv2.arcLength(c, True)
-            approx = cv2.approxPolyDP(c, 0.15 * peri, True)
+            approx = cv2.approxPolyDP(c, 0.1 * peri, True)
             center, wh, angle = cv2.minAreaRect(c)  # Rotated rectangle
             mwidth.append(wh[0])
             mheight.append(wh[1])
@@ -720,19 +720,31 @@ def find_color_card(rgb_img, threshold='adaptgauss', threshvalue=125, blurry=Fal
 
     # Filter results for distance proximity to other squares
     df = df[(df['distprox'] >= 4)]
+    # Remove all not numeric values use to_numeric with parameter, errors='coerce' - it replace non numeric to NaNs:
+    df['X'] = pd.to_numeric(df['X'], errors='coerce')
+    df['Y'] = pd.to_numeric(df['Y'], errors='coerce')
 
-    # Extract the starting coordinate
-    start_coord = (int(df['X'].min()), int(df['Y'].min()))
-    # Calculate the range
-    spacingx_short = (df['X'].max() - df['X'].min()) / 3
-    spacingy_short = (df['Y'].max() - df['Y'].min()) / 3
-    spacingx_long = (df['X'].max() - df['X'].min()) / 5
-    spacingy_long = (df['Y'].max() - df['Y'].min()) / 5
-    # Chip spacing since 4x6 card assumed
-    spacing_short = min(spacingx_short, spacingy_short)
-    spacing_long = max(spacingx_long, spacingy_long)
-    # Smaller spacing measurement might have a chip missing
-    spacing = int(max(spacing_short, spacing_long))
-    spacing = (spacing, spacing)
+    # Remove NaN
+    df = df.dropna()
+
+
+    if df['X'].min() is np.nan or df['Y'].min() is np.nan:
+        fatal_error('No color card found under current parameters')
+    else:
+        # Extract the starting coordinate
+        start_coord = (df['X'].min(), df['Y'].min())
+
+        # start_coord = (int(df['X'].min()), int(df['Y'].min()))
+        # Calculate the range
+        spacingx_short = (df['X'].max() - df['X'].min()) / 3
+        spacingy_short = (df['Y'].max() - df['Y'].min()) / 3
+        spacingx_long = (df['X'].max() - df['X'].min()) / 5
+        spacingy_long = (df['Y'].max() - df['Y'].min()) / 5
+        # Chip spacing since 4x6 card assumed
+        spacing_short = min(spacingx_short, spacingy_short)
+        spacing_long = max(spacingx_long, spacingy_long)
+        # Smaller spacing measurement might have a chip missing
+        spacing = int(max(spacing_short, spacing_long))
+        spacing = (spacing, spacing)
 
     return df, start_coord, spacing

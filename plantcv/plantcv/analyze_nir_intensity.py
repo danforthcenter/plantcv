@@ -55,7 +55,7 @@ def analyze_nir_intensity(gray_img, mask, bins, histplot=False):
     hist_nir, hist_bins = np.histogram(masked, bins, (1, maxval))
 
     hist_bins1 = hist_bins[:-1]
-    hist_bins2 = [l for l in hist_bins1]
+    hist_bins2 = [round(l, 2) for l in hist_bins1]
 
     hist_nir1 = [l for l in hist_nir]
 
@@ -117,9 +117,8 @@ def analyze_nir_intensity(gray_img, mask, bins, histplot=False):
     # Store into global measurements
     if not 'nir_histogram' in outputs.measurements:
         outputs.measurements['nir_histogram'] = {}
-    outputs.measurements['nir_histogram']['bin-number'] = bins
-    outputs.measurements['nir_histogram']['bin-values'] = hist_bins2
-    outputs.measurements['nir_histogram']['nir'] = hist_nir1
+    outputs.measurements['nir_histogram']['signal_values'] = hist_bins2
+    outputs.measurements['nir_histogram']['frequency'] = hist_nir1
 
     # Store images
     outputs.images.append(analysis_images)
