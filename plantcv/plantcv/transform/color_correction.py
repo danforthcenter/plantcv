@@ -489,7 +489,7 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
             print(p1)
 
 
-def find_color_card(rgb_img, threshold='adaptgauss', threshvalue=125, blurry=False, background='dark'):
+def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark'):
     """Automatically detects a color card and output info to use in create_color_card_mask function
 
     Inputs:
@@ -555,21 +555,21 @@ def find_color_card(rgb_img, threshold='adaptgauss', threshvalue=125, blurry=Fal
         fatal_error('Background parameter ' + str(background) + ' is not "light" or "dark"!')
 
     # Thresholding
-    if threshold == "otsu":
+    if threshold_type == "otsu":
         # Blur slightly so defects on card squares and background patterns are less likely to be picked up
         gaussian = cv2.GaussianBlur(gray_img, (5, 5), 0)
         ret, threshold = cv2.threshold(gaussian, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    elif threshold == "normal":
+    elif threshold_type == "normal":
         # Blur slightly so defects on card squares and background patterns are less likely to be picked up
         gaussian = cv2.GaussianBlur(gray_img, (5, 5), 0)
         ret, threshold = cv2.threshold(gaussian, threshvalue, 255, cv2.THRESH_BINARY)
-    elif threshold == "adaptgauss":
+    elif threshold_type == "adaptgauss":
         # Blur slightly so defects on card squares and background patterns are less likely to be picked up
         gaussian = cv2.GaussianBlur(gray_img, (11, 11), 0)
         threshold = cv2.adaptiveThreshold(gaussian, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
                                           cv2.THRESH_BINARY_INV, 51, 2)
     else:
-        fatal_error('Threshold ' + str(threshold) + ' is not "otsu", "normal", or "adaptgauss"!')
+        fatal_error('Threshold ' + str(threshold_type) + ' is not "otsu", "normal", or "adaptgauss"!')
 
     # Apply automatic Canny edge detection using the computed median
     edges = skimage.feature.canny(threshold)
@@ -651,7 +651,7 @@ def find_color_card(rgb_img, threshold='adaptgauss', threshvalue=125, blurry=Fal
 
     # Add calculated blur factor to output
     df['blurriness'] = blurfactor
-
+    print(df)
     # Filter df for attributes that would isolate squares of reasonable size
     df = df[(df['Area'] > minarea) & (df['Area'] < maxarea) & (df['child'] != -1) &
             (df['square'].isin([4, 5])) & (df['WHratio'] < 1.2) & (df['WHratio'] > 0.85)]
