@@ -560,6 +560,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0: NA
 * post v3.0: df, start_coord, spacing = **plantcv.transform.find_color_card**(*rgb_img, threshold='adaptgauss', threshvalue=125, blurry=False, background='dark'*)
+* post v3.3: df, start_coord, spacing = **plantcv.transform.find_color_card**(*rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark'*)
 
 #### plantcv.transform.get_color_matrix
 

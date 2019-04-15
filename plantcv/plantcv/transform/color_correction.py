@@ -625,7 +625,7 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
         # Area isn't 0, but greater than min-area and less than max-area
         if marea[index] != 0 and minarea < marea[index] < maxarea:
             peri = cv2.arcLength(c, True)
-            approx = cv2.approxPolyDP(c, 0.15 * peri, True)
+            approx = cv2.approxPolyDP(c, 0.1 * peri, True)
             center, wh, angle = cv2.minAreaRect(c)  # Rotated rectangle
             mwidth.append(wh[0])
             mheight.append(wh[1])
