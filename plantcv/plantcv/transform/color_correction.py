@@ -701,7 +701,7 @@ def find_color_card(rgb_img, threshold='adaptgauss', threshvalue=125, blurry=Fal
     maxsqwidth = median_sq_width_px * 1.2
     df = df[(df['distprox'] >= 5) & (df['sizeprox'] >= 5) & (df['width'] > minsqwidth) &
             (df['width'] < maxsqwidth)]
-
+    print(df)
     # Filter for proximity again to root out stragglers
     # Find and count up squares that are within given radius,
     # more squares = more likelihood of them being the card
@@ -721,7 +721,6 @@ def find_color_card(rgb_img, threshold='adaptgauss', threshvalue=125, blurry=Fal
 
     # Filter results for distance proximity to other squares
     df = df[(df['distprox'] >= 4)]
-    print(df)
     # Remove all not numeric values use to_numeric with parameter, errors='coerce' - it replace non numeric to NaNs:
     df['X'] = pd.to_numeric(df['X'], errors='coerce')
     df['Y'] = pd.to_numeric(df['Y'], errors='coerce')
@@ -729,7 +728,6 @@ def find_color_card(rgb_img, threshold='adaptgauss', threshvalue=125, blurry=Fal
     # Remove NaN
     df = df.dropna()
 
-    print(df)
 
     # if df['X'].min() is np.nan or df['Y'].min() is np.nan:
     #     fatal_error('No color card found under current parameters')
