@@ -730,21 +730,24 @@ def find_color_card(rgb_img, threshold='adaptgauss', threshvalue=125, blurry=Fal
     df = df.dropna(subset=['Y'])
 
     print(df)
-    if df['X'].min() is np.nan or df['Y'].min() is np.nan:
-        fatal_error('No color card found under current parameters')
-    else:
+
+    # if df['X'].min() is np.nan or df['Y'].min() is np.nan:
+    #     fatal_error('No color card found under current parameters')
+    # else:
         # Extract the starting coordinate
-        start_coord = (int(df['X'].min()), int(df['Y'].min()))
-        # Calculate the range
-        spacingx_short = (df['X'].max() - df['X'].min()) / 3
-        spacingy_short = (df['Y'].max() - df['Y'].min()) / 3
-        spacingx_long = (df['X'].max() - df['X'].min()) / 5
-        spacingy_long = (df['Y'].max() - df['Y'].min()) / 5
-        # Chip spacing since 4x6 card assumed
-        spacing_short = min(spacingx_short, spacingy_short)
-        spacing_long = max(spacingx_long, spacingy_long)
-        # Smaller spacing measurement might have a chip missing
-        spacing = int(max(spacing_short, spacing_long))
-        spacing = (spacing, spacing)
+    start_coord = (df['X'].min(), df['Y'].min())
+
+    # start_coord = (int(df['X'].min()), int(df['Y'].min()))
+    # Calculate the range
+    spacingx_short = (df['X'].max() - df['X'].min()) / 3
+    spacingy_short = (df['Y'].max() - df['Y'].min()) / 3
+    spacingx_long = (df['X'].max() - df['X'].min()) / 5
+    spacingy_long = (df['Y'].max() - df['Y'].min()) / 5
+    # Chip spacing since 4x6 card assumed
+    spacing_short = min(spacingx_short, spacingy_short)
+    spacing_long = max(spacingx_long, spacingy_long)
+    # Smaller spacing measurement might have a chip missing
+    spacing = int(max(spacing_short, spacing_long))
+    spacing = (spacing, spacing)
 
     return df, start_coord, spacing
