@@ -3018,7 +3018,7 @@ def test_plantcv_transform_find_color_card():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_find_color_card")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    df, start, space = pcv.transform.find_color_card(rgb_img=rgb_img, threshold='adaptgauss', blurry=False)
+    df, start, space = pcv.transform.find_color_card(rgb_img=rgb_img, threshold_type='adaptgauss', blurry=False)
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=start,
@@ -3044,7 +3044,7 @@ def test_plantcv_transform_find_color_card_optional_parameters():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     # Test with threshold ='normal'
-    df1, start1, space1 = pcv.transform.find_color_card(rgb_img=rgb_img, threshold='normal', blurry=True,
+    df1, start1, space1 = pcv.transform.find_color_card(rgb_img=rgb_img, threshold_type='normal', blurry=True,
                                                         background='light')
     _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=start1,
                                              spacing=space1, nrows=6, ncols=4, exclude=[20, 0])
@@ -3066,7 +3066,7 @@ def test_plantcv_transform_find_color_card_bad_thresh_input():
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
     with pytest.raises(RuntimeError):
         pcv.params.debug = None
-        _, _, _ = pcv.transform.find_color_card(rgb_img=rgb_img, threshold='gaussian')
+        _, _, _ = pcv.transform.find_color_card(rgb_img=rgb_img, threshold_type='gaussian')
 
 
 def test_plantcv_transform_find_color_card_bad_background_input():
