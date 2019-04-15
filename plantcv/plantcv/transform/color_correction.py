@@ -576,7 +576,8 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
     edges.dtype = 'uint8'
 
     # Compute contours to find the squares of the card
-    _, contours, hierarchy = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    print(contours)
     # Variable of which contour is which
     mindex = []
     # Variable to store moments
