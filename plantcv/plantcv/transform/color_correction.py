@@ -701,7 +701,7 @@ def find_color_card(rgb_img, threshold='adaptgauss', threshvalue=125, blurry=Fal
     maxsqwidth = median_sq_width_px * 1.2
     df = df[(df['distprox'] >= 5) & (df['sizeprox'] >= 5) & (df['width'] > minsqwidth) &
             (df['width'] < maxsqwidth)]
-    
+
     # Filter for proximity again to root out stragglers
     # Find and count up squares that are within given radius,
     # more squares = more likelihood of them being the card
