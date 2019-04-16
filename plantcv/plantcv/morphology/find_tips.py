@@ -29,7 +29,7 @@ def find_tips(skel_img, mask=None):
     debug = params.debug
     params.debug = None
 
-    # In a kernel: 1 values line up with 255s, -1s line up with 0s, and 0s correspond to don’t care
+    # In a kernel: 1 values line up with 255s, -1s line up with 0s, and 0s correspond to dont care
     endpoint1 = np.array([[-1, -1, -1],
                           [-1,  1, -1],
                           [ 0,  1,  0]])
