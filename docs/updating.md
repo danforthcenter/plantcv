@@ -164,6 +164,7 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, hist_header, hist_data, analysis_images = **plantcv.analyze_color**(*img, imgname, mask, bins, device, debug=None, hist_plot_type=None, pseudo_channel='v', pseudo_bkg='img', resolution=300, filename=False*)
 * post v3.0dev2: hist_header, hist_data, analysis_images = **plantcv.analyze_color**(*rgb_img, mask, bins, hist_plot_type=None, pseudo_channel='v', pseudo_bkg='img', filename=False*)
 * post v3.0: hist_header, hist_data, analysis_images = **plantcv.analyze_color**(*rgb_img, mask, bins, hist_plot_type=None*)
+* post v3.3: color_header, color_data, analysis_images = **plantcv.analyze_color**(*rgb_img, mask, hist_plot_type=None*)
 
 #### plantcv.apply_mask
 
@@ -559,6 +560,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0: NA
 * post v3.0: df, start_coord, spacing = **plantcv.transform.find_color_card**(*rgb_img, threshold='adaptgauss', threshvalue=125, blurry=False, background='dark'*)
+* post v3.3: df, start_coord, spacing = **plantcv.transform.find_color_card**(*rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark'*)
 
 #### plantcv.transform.get_color_matrix
 

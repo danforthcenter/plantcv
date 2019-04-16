@@ -282,20 +282,19 @@ def test_plantcv_analyze_color():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.analyze_color(rgb_img=img, mask=mask, bins=256, hist_plot_type="all")
-    _ = pcv.analyze_color(rgb_img=img, mask=mask, bins=256, hist_plot_type=None)
+    _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type="all")
+    _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type=None)
 
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.analyze_color(rgb_img=img, mask=mask, bins=256, hist_plot_type='rgb')
-    _ = pcv.analyze_color(rgb_img=img, mask=mask, bins=256, hist_plot_type='lab')
-    _ = pcv.analyze_color(rgb_img=img, mask=mask, bins=256, hist_plot_type='hsv')
-    _ = pcv.analyze_color(rgb_img=img, mask=mask, bins=256, hist_plot_type=None)
+    _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='rgb')
+    _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='lab')
+    _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='hsv')
+    _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type=None)
 
     # Test with debug = None
     pcv.params.debug = None
-    color_header, color_data, analysis_images = pcv.analyze_color(rgb_img=img, mask=mask, bins=256,
-                                                                  hist_plot_type=None)
+    color_header, color_data, imgs = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type=None)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     pcv.outputs.clear()
     assert np.sum(color_data[3]) != 0
@@ -305,7 +304,7 @@ def test_plantcv_analyze_color_incorrect_image():
     img_binary = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     with pytest.raises(RuntimeError):
-        _ = pcv.analyze_color(rgb_img=img_binary, mask=mask, bins=256, hist_plot_type=None)
+        _ = pcv.analyze_color(rgb_img=img_binary, mask=mask, hist_plot_type=None)
 
 
 def test_plantcv_analyze_color_bad_hist_type():
@@ -313,7 +312,7 @@ def test_plantcv_analyze_color_bad_hist_type():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     pcv.params.debug = "plot"
     with pytest.raises(RuntimeError):
-        _ = pcv.analyze_color(rgb_img=img, mask=mask, bins=256, hist_plot_type='bgr')
+        _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='bgr')
 
 
 def test_plantcv_analyze_color_incorrect_hist_plot_type():
@@ -321,7 +320,7 @@ def test_plantcv_analyze_color_incorrect_hist_plot_type():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     with pytest.raises(RuntimeError):
         pcv.params.debug = "plot"
-        _ = pcv.analyze_color(rgb_img=img, mask=mask, bins=256, hist_plot_type="bgr")
+        _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type="bgr")
 
 
 def test_plantcv_analyze_nir():
@@ -1496,7 +1495,8 @@ def test_plantcv_output_mask():
     _ = pcv.output_mask(img=img_color, mask=mask, filename='test.png', outdir=cache_dir, mask_only=False)
     # Test with debug = None
     pcv.params.debug = None
-    imgpath, maskpath, analysis_images = pcv.output_mask(img=img, mask=mask, filename='test.png', mask_only=False)
+    imgpath, maskpath, analysis_images = pcv.output_mask(img=img, mask=mask, filename='test.png',
+                                                         outdir=cache_dir, mask_only=False)
     assert all([os.path.exists(imgpath) is True, os.path.exists(maskpath) is True])
 
 
@@ -3257,7 +3257,7 @@ def test_plantcv_transform_find_color_card():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_find_color_card")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    df, start, space = pcv.transform.find_color_card(rgb_img=rgb_img, threshold='adaptgauss', blurry=False)
+    df, start, space = pcv.transform.find_color_card(rgb_img=rgb_img, threshold_type='adaptgauss', blurry=False)
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=start,
@@ -3283,12 +3283,12 @@ def test_plantcv_transform_find_color_card_optional_parameters():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     # Test with threshold ='normal'
-    df1, start1, space1 = pcv.transform.find_color_card(rgb_img=rgb_img, threshold='normal', blurry=True,
+    df1, start1, space1 = pcv.transform.find_color_card(rgb_img=rgb_img, threshold_type='normal', blurry=True,
                                                         background='light')
     _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=start1,
                                              spacing=space1, nrows=6, ncols=4, exclude=[20, 0])
     # Test with threshold='otsu'
-    df2, start2, space2 = pcv.transform.find_color_card(rgb_img=rgb_img, threshold='otsu', blurry=True)
+    df2, start2, space2 = pcv.transform.find_color_card(rgb_img=rgb_img, threshold_type='otsu', blurry=True)
     _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=start2,
                                              spacing=space2, nrows=6, ncols=4, exclude=[20, 0])
     # Test with debug = None
@@ -3305,7 +3305,7 @@ def test_plantcv_transform_find_color_card_bad_thresh_input():
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
     with pytest.raises(RuntimeError):
         pcv.params.debug = None
-        _, _, _ = pcv.transform.find_color_card(rgb_img=rgb_img, threshold='gaussian')
+        _, _, _ = pcv.transform.find_color_card(rgb_img=rgb_img, threshold_type='gaussian')
 
 
 def test_plantcv_transform_find_color_card_bad_background_input():
@@ -3314,6 +3314,14 @@ def test_plantcv_transform_find_color_card_bad_background_input():
     with pytest.raises(RuntimeError):
         pcv.params.debug = None
         _, _, _ = pcv.transform.find_color_card(rgb_img=rgb_img, background='lite')
+
+
+def test_plantcv_transform_find_color_card_bad_colorcard():
+    # Load rgb image
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG_WITH_HEXAGON))
+    with pytest.raises(RuntimeError):
+        pcv.params.debug = None
+        _, _, _ = pcv.transform.find_color_card(rgb_img=rgb_img)
 
 
 # ##############################
