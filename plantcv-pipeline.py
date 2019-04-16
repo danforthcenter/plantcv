@@ -752,6 +752,8 @@ def process_results(args):
                        'hori_ave_c', 'euc_ave_c', 'ang_ave_c', 'vert_ave_b', 'hori_ave_b', 'euc_ave_b', 'ang_ave_b',
                        'left_lmk', 'right_lmk', 'center_h_lmk', 'left_lmk_r', 'right_lmk_r', 'center_h_lmk_r',
                        'top_lmk', 'bottom_lmk', 'center_v_lmk', 'top_lmk_r', 'bottom_lmk_r', 'center_v_lmk_r']
+    morphology_fields = ['num_cycles', 'segment_angles', 'segment_curvature',
+                          'segment_eu_lengths', 'segment_tan_angles', 'segment_path_lengths']
 
     # args.features_file.write('#' + '\t'.join(map(str, feature_fields + opt_feature_fields)) + '\n')
 
@@ -797,6 +799,8 @@ def process_results(args):
                 watershed_data = {}
                 landmark = []
                 landmark_data = {}
+                morphology_data = {}
+
                 # Open results file
                 with open(os.path.join(dirpath, filename)) as results:
                     # For each line in the file
@@ -853,6 +857,36 @@ def process_results(args):
                             for i, datum in enumerate(cols):
                                 if i > 0:
                                     landmark_data[landmark[i]] = datum
+                        # Morphology sub-package data
+                        elif cols[0] == 'CYCLE_DATA':
+                            morphology_data['num_cycles'] = cols[1]
+
+                        elif cols[0] == 'ANGLE_DATA':
+                            morphology_data['segment_angles'] = []
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    morphology_data['segment_angles'].append(datum)
+
+                        elif cols[0] == 'CURVATURE_DATA':
+                            morphology_data['segment_curvature'] = []
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    morphology_data['segment_curvature'].append(datum)
+                        elif cols[0] == 'EU_LENGTH_DATA':
+                            morphology_data['segment_eu_lengths'] = []
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    morphology_data['segment_eu_lengths'].append(datum)
+                        elif cols[0] == 'PATH_LENGTH_DATA':
+                            morphology_data['segment_path_lengths'] = []
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    morphology_data['segment_path_lengths'].append(datum)
+                        elif cols[0] == 'TAN_ANGLE_DATA':
+                            morphology_data['segment_tan_angles'] = []
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    morphology_data['segment_tan_angles'].append(datum)
 
                 # Check to see if the image failed, if not continue
 
@@ -895,8 +929,15 @@ def process_results(args):
                             landmark_data[field] = 0
                     feature_data.update(landmark_data)
 
+                    # Morphology data is optional, if it's not there we need to add in the placeholder data
+                    if len(morphology_data) == 0:
+                        for field in morphology_fields:
+                            morphology_data[field] = 0
+                    feature_data.update(morphology_data)
+
                     feature_table = [args.image_id]
-                    for field in feature_fields + opt_feature_fields + marker_fields + watershed_fields + landmark_fields:
+                    for field in feature_fields + opt_feature_fields + marker_fields + watershed_fields + \
+                                 landmark_fields + morphology_fields:
                         feature_table.append(feature_data[field])
 
                     args.features_file.write('|'.join(map(str, feature_table)) + '\n')
@@ -921,7 +962,8 @@ def process_results(args):
 
                     feature_table = [args.image_id]
 
-                    for field in feature_fields + opt_feature_fields + marker_fields + watershed_fields + landmark_fields:
+                    for field in feature_fields + opt_feature_fields + marker_fields + watershed_fields + \
+                                 landmark_fields + morphology_fields:
                         feature_table.append(0)
 
                     args.features_file.write('|'.join(map(str, feature_table)) + '\n')

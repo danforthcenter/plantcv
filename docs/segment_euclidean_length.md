@@ -2,7 +2,7 @@
 
 **plantcv.morphology.segment_euclidean_length**(*segmented_img, objects, hierarchies*)
 
-**returns** Labeled image, list of segment euclidean lengths 
+**returns** euclidean length data headers, euclidean length data values, labeled image 
 
 - **Parameters:**
     - segmented_img - Segmented image (output either from [plantcv.morphology.segment_skeleton](segment_skeleton.md)
@@ -28,9 +28,9 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
-labeled_img, eu_lengths = pcv.morphology.segment_euclidean_length(segmented_img=segmented_img, 
-                                                                  objects=obj,
-                                                                  hierarchies=hier)
+eu_header, eu_lengths, labeled_img = pcv.morphology.segment_euclidean_length(segmented_img=segmented_img, 
+                                                                             objects=obj,
+                                                                             hierarchies=hier)
 
 ```
 

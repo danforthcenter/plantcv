@@ -105,4 +105,54 @@ def print_results(filename):
         result.write('\t'.join(map(str, header)) + '\n')
         result.write('\t'.join(map(str, data)) + '\n')
 
+    # Write data from morphology functions if it was stored
+    if 'morphology_data' in outputs.measurements:
+        if 'num_cycles' in outputs.measurements['morphology_data']:
+            header = ['HEADER_CYCLE', 'num_cycles']
+            data = ['CYCLE_DATA']
+            v = outputs.measurements['morphology_data']['num_cycles']
+            data.append(v)
+            result.write('\t'.join(map(str, header)) + '\n')
+            result.write('\t'.join(map(str, data)) + '\n')
+        if 'segment_angles' in outputs.measurements['morphology_data']:
+            header = ['HEADER_ANGLE']
+            data = ['ANGLE_DATA']
+            for k, v in enumerate(outputs.measurements['morphology_data']['segment_angles']):
+                header.append(k)
+                data.append(v)
+            result.write('\t'.join(map(str, header)) + '\n')
+            result.write('\t'.join(map(str, data)) + '\n')
+        if 'segment_curvature' in outputs.measurements['morphology_data']:
+            header = ['HEADER_CURVATURE']
+            data = ['CURVATURE_DATA']
+            for k, v in enumerate(outputs.measurements['morphology_data']['segment_curvature']):
+                header.append(k)
+                data.append(v)
+            result.write('\t'.join(map(str, header)) + '\n')
+            result.write('\t'.join(map(str, data)) + '\n')
+        if 'segment_eu_lengths' in outputs.measurements['morphology_data']:
+            header = ['HEADER_EU_LENGTH']
+            data = ['EU_LENGTH_DATA']
+            for k, v in enumerate(outputs.measurements['morphology_data']['segment_eu_lengths']):
+                header.append(k)
+                data.append(v)
+            result.write('\t'.join(map(str, header)) + '\n')
+            result.write('\t'.join(map(str, data)) + '\n')
+        if 'segment_path_lengths' in outputs.measurements['morphology_data']:
+            header = ['HEADER_PATH_LENGTH']
+            data = ['PATH_LENGTH_DATA']
+            for k, v in enumerate(outputs.measurements['morphology_data']['segment_path_lengths']):
+                header.append(k)
+                data.append(v)
+            result.write('\t'.join(map(str, header)) + '\n')
+            result.write('\t'.join(map(str, data)) + '\n')
+        if 'segment_tan_angles' in outputs.measurements['morphology_data']:
+            header = ['HEADER_TAN_ANGLE']
+            data = ['TAN_ANGLE_DATA']
+            for k, v in enumerate(outputs.measurements['morphology_data']['segment_tan_angles']):
+                header.append(k)
+                data.append(v)
+            result.write('\t'.join(map(str, header)) + '\n')
+            result.write('\t'.join(map(str, data)) + '\n')
+
     result.close()

@@ -2,7 +2,7 @@
 
 **plantcv.morphology.segment_tangent_angle**(*segmented_img, objects, hierarchies, size*)
 
-**returns** Labeled image, list of segment tangent intersection angles 
+**returns** segment tangent angle data headers, segment tangent angle data values, labeled image 
 
 - **Parameters:**
     - segmented_img - Segmented image (output either from [plantcv.morphology.segment_skeleton](segment_skeleton.md)
@@ -35,9 +35,10 @@ pcv.params.debug = "print"
 # Adjust line thickness with the global line thickness parameter (default = 5)
 pcv.params.line_thickness = 3 
 
-labeled_img, tan_angles = pcv.morphology.segment_tangent_angle(segmented_img=leaves_segment, 
-                                                               objects=leaf_obj,
-                                                               hierarchies=leaf_hier, size=15)
+tan_header, tan_angles, labeled_img = pcv.morphology.segment_tangent_angle(segmented_img=leaves_segment, 
+                                                                           objects=leaf_obj,
+                                                                           hierarchies=leaf_hier, 
+                                                                           size=15)
 
 ```
 

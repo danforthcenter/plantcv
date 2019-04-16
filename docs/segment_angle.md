@@ -2,7 +2,7 @@
 
 **plantcv.morphology.segment_angle**(*segmented_img, objects*)
 
-**returns** Labeled image, list of segment angles 
+**returns** segment angle headers, segment angle data, labeled image   
 
 - **Parameters:**
     - segmented_img - Segmented image (output either from [plantcv.morphology.segment_skeleton](segment_skeleton.md)
@@ -26,7 +26,7 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
-labeled_img, segment_angles = pcv.morphology.segment_angle(segmented_img=segmented_img, objects=obj)
+angle_header, segment_angles, labeled_img = pcv.morphology.segment_angle(segmented_img=segmented_img, objects=obj)
 
 ```
 

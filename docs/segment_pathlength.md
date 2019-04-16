@@ -2,7 +2,7 @@
 
 **plantcv.morphology.segment_path_length**(*segmented_img, objects*)
 
-**returns** Labeled image, list of segment lengths 
+**returns** segment path length data headers, path length data values, labeled_image  
 
 - **Parameters:**
     - segmented_img - Segmented image (output either from [plantcv.morphology.segment_skeleton](segment_skeleton.md)
@@ -26,8 +26,8 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
-labeled_img, segment_lengths = pcv.morphology.segment_path_length(segmented_img=segmented_img, 
-                                                                  objects=obj)
+length_header, segment_lengths, labeled_img = pcv.morphology.segment_path_length(segmented_img=segmented_img, 
+                                                                                 objects=obj)
 
 ```
 

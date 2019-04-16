@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 import pandas as pd
 from plantcv.plantcv import params
+from plantcv.plantcv import outputs
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 from plantcv.plantcv import color_palette
@@ -18,13 +19,16 @@ def segment_angle(segmented_img, objects):
         objects        = List of contours
 
         Returns:
+        angle_header   = Segment angle data header
+        angle_data     = Segment angle data values
         labeled_img    = Segmented debugging image with angles labeled
-        segment_angles = List of segment angles in degrees
+
 
         :param segmented_img: numpy.ndarray
         :param objects: list
         :return labeled_img: numpy.ndarray
-        :return segment_angles: list
+        :return angle_header: list
+        :return angle_data: list
         """
 
     label_coord_x = []
@@ -62,6 +66,8 @@ def segment_angle(segmented_img, objects):
         # Calculate degrees from slopes
         segment_angles.append(np.arctan(slope[0]) * 180 / np.pi)
 
+    angle_header = ['HEADER_ANGLE']
+    angle_data = ['ANGLE_DATA']
     for i, cnt in enumerate(objects):
         # Label slope lines
         w = label_coord_x[i]
@@ -69,6 +75,13 @@ def segment_angle(segmented_img, objects):
         text = "{:.2f}".format(segment_angles[i])
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                     fontScale=.55, color=(150, 150, 150), thickness=2)
+        segment_label = "ID" + str(i)
+        angle_header.append(segment_label)
+    angle_data.extend(segment_angles)
+
+    if 'morphology_data' not in outputs.measurements:
+        outputs.measurements['morphology_data'] = {}
+    outputs.measurements['morphology_data']['segment_angles'] = segment_angles
 
     # Auto-increment device
     params.device += 1
@@ -78,4 +91,4 @@ def segment_angle(segmented_img, objects):
     elif params.debug == 'plot':
         plot_image(labeled_img)
 
-    return labeled_img, segment_angles
+    return angle_header, angle_data, labeled_img

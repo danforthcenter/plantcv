@@ -4,6 +4,7 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv import params
+from plantcv.plantcv import outputs
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 from plantcv.plantcv import fatal_error
@@ -23,14 +24,16 @@ def segment_euclidean_length(segmented_img, objects, hierarchies):
         hierarchy     = Contour hierarchy NumPy array
 
         Returns:
-        labeled_img   = Segmented debugging image with lengths labeled
-        leaf_lengths  = List of leaf lengths
+        eu_length_header = Segment euclidean length data header
+        eu_length_data   = Segment euclidean length data values
+        labeled_img      = Segmented debugging image with lengths labeled
 
         :param segmented_img: numpy.ndarray
         :param objects: list
         :param hierarchy: numpy.ndarray
         :return labeled_img: numpy.ndarray
-        :return segment_lengths: list
+        :return eu_length_header: list
+        :return eu_length_data: list
 
         """
     # Store debug
@@ -71,7 +74,8 @@ def segment_euclidean_length(segmented_img, objects, hierarchies):
         # Calculate euclidean distance between tips of each contour
         segment_lengths.append(euclidean(points[0], points[1]))
 
-
+    eu_length_header = ['HEADER_EU_LENGTH']
+    eu_length_data = ['EU_LENGTH_DATA']
     # Put labels of length
     for c, value in enumerate(segment_lengths):
         text = "{:.2f}".format(value)
@@ -79,6 +83,13 @@ def segment_euclidean_length(segmented_img, objects, hierarchies):
         h = y_list[c]
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=.4,
                     color=(150, 150, 150), thickness=1)
+        segment_label = "ID" + str(c)
+        eu_length_header.append(segment_label)
+        eu_length_data.append(segment_lengths[c])
+
+    if 'morphology_data' not in outputs.measurements:
+        outputs.measurements['morphology_data'] = {}
+    outputs.measurements['morphology_data']['segment_eu_lengths'] = segment_lengths
 
     # Reset debug mode
     params.debug = debug
@@ -90,4 +101,4 @@ def segment_euclidean_length(segmented_img, objects, hierarchies):
     elif params.debug == 'plot':
         plot_image(labeled_img)
 
-    return labeled_img, segment_lengths
+    return eu_length_header, eu_length_data, labeled_img

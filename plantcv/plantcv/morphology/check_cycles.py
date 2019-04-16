@@ -6,6 +6,7 @@ import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import erode
 from plantcv.plantcv import dilate
+from plantcv.plantcv import outputs
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 from plantcv.plantcv import find_objects
@@ -15,14 +16,16 @@ from plantcv.plantcv import color_palette
 def check_cycles(skel_img):
     """ Check for cycles in a skeleton image
     Inputs:
-    skel_img    = Skeletonized image
+    skel_img     = Skeletonized image
 
     Returns:
-    num_cycles  = Number of cycles found
-    cycle_img   = Image with cycles identified
+    cycle_header = Cycle data table headers
+    cycle_data   = Cycle data table values
+    cycle_img    = Image with cycles identified
 
     :param skel_img: numpy.ndarray
-    :return num_cycles: int
+    :return cycle_header: list
+    :return cycle_data: list
     :return cycle_img: numpy.ndarray
     """
 
@@ -59,6 +62,13 @@ def check_cycles(skel_img):
         cv2.drawContours(cycle_img, cycle_objects, i, rand_color[i], params.line_thickness, lineType=8,
                          hierarchy=cycle_hierarchies)
 
+    # Store Cycle Data
+    cycle_header = ['HEADER_CYCLE', 'num_cycles']
+    cycle_data = ['CYCLE_DATA', num_cycles]
+    if 'morphology_data' not in outputs.measurements:
+        outputs.measurements['morphology_data'] = {}
+    outputs.measurements['morphology_data']['num_cycles'] = num_cycles
+
     # Reset debug mode
     params.debug = debug
     # Auto-increment device
@@ -69,4 +79,4 @@ def check_cycles(skel_img):
     elif params.debug == 'plot':
         plot_image(cycle_img)
 
-    return num_cycles, cycle_img
+    return cycle_header, cycle_data, cycle_img

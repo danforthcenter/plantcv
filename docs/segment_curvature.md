@@ -2,7 +2,7 @@
 
 **plantcv.morphology.segment_curvature**(*segmented_img, objects, hierarchies*)
 
-**returns** Labeled image, list of segment angles 
+**returns** segment curvature headers, list of segment curvatures, labeled image 
 
 - **Parameters:**
     - segmented_img - Segmented image (output either from [plantcv.morphology.segment_skeleton](segment_skeleton.md)
@@ -25,13 +25,13 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
-labeled_img, segment_curvature = pcv.morphology.segment_curvature(segmented_img=segmented_img, 
-                                                                  objects=obj,
-                                                                  hierarchies=hier)
+curve_header, segment_curvature, labeled_img = pcv.morphology.segment_curvature(segmented_img=segmented_img, 
+                                                                                objects=obj,
+                                                                                hierarchies=hier)
 # Pass just leaf objects and hierarchies (output from pcv.morphology.segment_sort) 
-labeled_img2, leaf_curvature = pcv.morphology.segment_curvature(segmented_img=leaf_segmented,
-                                                                objects=leaf_obj,
-                                                                hierarchies=leaf_hier)
+curve_header2, leaf_curvature, labeled_img2 = pcv.morphology.segment_curvature(segmented_img=leaf_segmented,
+                                                                               objects=leaf_obj,
+                                                                               hierarchies=leaf_hier)
 
 ```
 
