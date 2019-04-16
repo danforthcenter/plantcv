@@ -770,7 +770,7 @@ def process_results(args):
         '` TEXT NOT NULL, `'.join(map(str, metadata_fields[2:])) + '` TEXT NOT NULL);')
     args.sq.execute(
         'CREATE TABLE IF NOT EXISTS `features` (`image_id` INTEGER PRIMARY KEY, `' + '` TEXT NOT NULL, `'.join(
-            map(str, feature_fields + opt_feature_fields + marker_fields + watershed_fields + landmark_fields + hue_feature_fields)
+            map(str, feature_fields + opt_feature_fields + marker_fields + watershed_fields + landmark_fields + hue_feature_fields + morphology_fields)
         ) + '` TEXT NOT NULL);')
     args.sq.execute(
         'CREATE TABLE IF NOT EXISTS `analysis_images` (`image_id` INTEGER NOT NULL, `type` TEXT NOT NULL, '
