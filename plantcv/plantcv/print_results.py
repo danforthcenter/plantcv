@@ -164,5 +164,13 @@ def print_results(filename):
                 data.append(v)
             result.write('\t'.join(map(str, header)) + '\n')
             result.write('\t'.join(map(str, data)) + '\n')
+        if 'segment_insertion_angles' in outputs.measurements['morphology_data']:
+            header = ['HEADER_INSERTION_ANGLE']
+            data = ['INSERTION_ANGLE_DATA']
+            for k, v in enumerate(outputs.measurements['morphology_data']['segment_insertion_angles']):
+                header.append(k)
+                data.append(v)
+            result.write('\t'.join(map(str, header)) + '\n')
+            result.write('\t'.join(map(str, data)) + '\n')
 
     result.close()

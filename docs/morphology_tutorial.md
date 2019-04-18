@@ -248,8 +248,8 @@ For this tutorial we assume leaves are the objects of interest, and just pass th
 #   segmented_img = Segmented image to plot lengths on
 #   objects       = List of contours
 
-labeled_img, segment_lengths = pcv.morphology.segment_path_length(segmented_img=segmented_img, 
-                                                                  objects=leaf_obj)
+length_header, segment_lengths, labeled_img  = pcv.morphology.segment_path_length(segmented_img=segmented_img, 
+                                                                                  objects=leaf_obj)
 
 ```
 
@@ -269,9 +269,9 @@ passed into the function.
 #   objects       = List of contours
 #   hierarchy     = Contour hierarchy NumPy array
 
-labeled_img_eu, eu_lengths = pcv.morphology.segment_euclidean_length(segmented_img=segmented_img, 
-                                                                     objects=leaf_obj,
-                                                                     hierarchy=leaf_hier)
+eu_header, eu_lengths, labeled_img = pcv.morphology.segment_euclidean_length(segmented_img=segmented_img, 
+                                                                             objects=leaf_obj,
+                                                                             hierarchy=leaf_hier)
 
 ```
 
@@ -291,9 +291,9 @@ euclidean distance of each segment passed to the function.
 #   objects       = List of contours
 #   hierarchy     = Contour hierarchy NumPy array
 
-labeled_img_cu, curvatures = pcv.morphology.segment_curvature(segmented_img=segmented_img, 
-                                                              objects=leaf_obj,
-                                                              hierarchy=leaf_hier)
+curve_header, curvature, labeled_img = pcv.morphology.segment_curvature(segmented_img=segmented_img, 
+                                                                        objects=leaf_obj,
+                                                                        hierarchy=leaf_hier)
 
 ```
 
@@ -314,8 +314,8 @@ is a straight line while larger values indicate the segment has more curvature.
 #   segmented_img = Segmented image to plot angles on
 #   objects       = List of contours
 
-labeled_angles, leaf_angles = pcv.morphology.segment_angle(segmented_img=segmented_img, 
-                                                           objects=leaf_obj)
+angle_header, segment_angles, labeled_img = pcv.morphology.segment_angle(segmented_img=segmented_img, 
+                                                                         objects=leaf_obj)
 
 ```
 
@@ -336,10 +336,10 @@ by fitting a linear regression line to each segment.
 #   hierarchy     = Contour hierarchy NumPy array
 #   size          = Size of ends used to calculate "tangent" lines
 
-labeled_tanangles, tan_angles = pcv.morphology.segment_tangent_angle(segmented_img=segmented_img, 
-                                                                     objects=leaf_obj, 
-                                                                     hierarchy=leaf_hier,
-                                                                     size=15)
+tan_header, tan_angles, labeled_img = pcv.morphology.segment_tangent_angle(segmented_img=segmented_img, 
+                                                                           objects=leaf_obj, 
+                                                                           hierarchy=leaf_hier,
+                                                                           size=15)
 
 ```
 
@@ -351,6 +351,36 @@ between those two lines. Very rigid leaves will have tangent line intersection a
 leaves that are more "floppy" will have smaller angles. 
 
 ![Screenshot](img/tutorial_images/morphology/tangent_angle_img.jpg)
+
+```python
+    
+# Measure the leaf insertion angles      
+
+# Inputs:
+#   skel_img         = Skeletonize image 
+#   segmented_img    = Segmented image to plot insertion angles on
+#   leaf_objects     = List of leaf contours
+#   leaf_hierarchies = Leaf contour hierarchy NumPy array
+#   stem_objects     = List of stem objects 
+#   size             = Size of the inner portion of each leaf to find a linear regression line
+
+insert_header, insert_angles, labeled_img = pcv.morphology.segment_insertion_angle(skel_img=skeleton,
+                                                                                   segmented_img=segmented_img, 
+                                                                                   leaf_objects=leaf_obj, 
+                                                                                   leaf_hierarchies=leaf_hier,
+                                                                                   stem_objects=stem_obj,
+                                                                                   size=20)
+
+```
+
+**Figure 17.** Find Leaf Insertion Angles
+
+The [plantcv.morphology.segment_insertion_angle](segment_insertion_angle.md) function aims to measure 
+leaf insertion angle. By fitting lines to the innermost part of a leaf and the stem, leaves that grow straight 
+out from a stem will have larger insertion angles than those that grow upward. 
+
+![Screenshot](img/tutorial_images/morphology/insertion_angle_img.jpg)
+
 
 To deploy a pipeline over a full image set please see tutorial on 
 [pipeline parallelization](pipeline_parallel.md).
@@ -403,33 +433,43 @@ seg_img, edge_objects, edge_hierarchies = pcv.morphology.segment_skeleton(skel_i
     
 # Sort segments into leaf objects and stem objects  
 leaf_obj, leaf_hier, stem_obj, stem_hier = pcv.morphology.segment_sort(skel_img=skeleton, objects=edge_objects,
-                                           hierarchy=edge_hierarchies, mask=cropped_mask)
+                                                                       hierarchy=edge_hierarchies, 
+                                                                       mask=cropped_mask)
     
 # Identify segments     
 segmented_img, labeled_img = pcv.morphology.segment_id(skel_img=skeleton, objects=leaf_obj,
                                                        hierarchy=leaf_hier, mask=cropped_mask)
     
 # Measure path lengths of segments     
-labeled_img, segment_lengths = pcv.morphology.segment_path_length(segmented_img=segmented_img, 
-                                                                  objects=leaf_obj)
+length_header, segment_lengths, labeled_img2 = pcv.morphology.segment_path_length(segmented_img=segmented_img, 
+                                                                                  objects=leaf_obj)
     
 # Measure euclidean distance of segments      
-labeled_img_eu, eu_lengths = pcv.morphology.segment_euclidean_length(segmented_img=segmented_img, 
-                                                                     objects=leaf_obj,
-                                                                     hierarchy=leaf_hier)
+eu_header, eu_lengths, labeled_img3 = pcv.morphology.segment_euclidean_length(segmented_img=segmented_img, 
+                                                                              objects=leaf_obj,
+                                                                              hierarchy=leaf_hier)
    
 # Measure curvature of segments      
-labeled_img_cu, curvatures = pcv.morphology.segment_curvature(segmented_img=segmented_img, 
-                                                              objects=leaf_obj,
-                                                              hierarchy=leaf_hier)
+curve_header, curvature, labeled_img4 = pcv.morphology.segment_curvature(segmented_img=segmented_img, 
+                                                                         objects=leaf_obj,
+                                                                         hierarchy=leaf_hier)
     
 # Measure the angle of segments      
-labeled_angles, leaf_angles = pcv.morphology.segment_angle(segmented_img=segmented_img, 
-                                                           objects=leaf_obj)
+angle_header, segment_angles, labeled_img5 = pcv.morphology.segment_angle(segmented_img=segmented_img, 
+                                                                          objects=leaf_obj)
 
 # Measure the tangent angles of segments      
-labeled_tanangles, tan_angles = pcv.morphology.segment_tangent_angle(segmented_img=segmented_img, 
-                                                                     objects=leaf_obj, 
-                                                                     hierarchy=leaf_hier,
-                                                                     size=15)
+tan_header, tan_angles, labeled_img6 = pcv.morphology.segment_tangent_angle(segmented_img=segmented_img, 
+                                                                            objects=leaf_obj, 
+                                                                            hierarchy=leaf_hier,
+                                                                            size=15)
+                                                                     
+# Measure the leaf insertion angles      
+insert_header, insert_angles, labeled_img7 = pcv.morphology.segment_insertion_angle(skel_img=skeleton,
+                                                                                    segmented_img=segmented_img, 
+                                                                                    leaf_objects=leaf_obj, 
+                                                                                    leaf_hierarchies=leaf_hier,
+                                                                                    stem_objects=stem_obj,
+                                                                                    size=20)
+
 ``` 
