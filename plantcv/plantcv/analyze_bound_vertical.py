@@ -77,8 +77,8 @@ def analyze_bound_vertical(img, obj, mask, line_position):
         pptest = cv2.pointPolygonTest(right_contour[0], xy, measureDist=False)
         if pptest == 1:
             left.append(xy)
-            cv2.circle(ori_img, xy, 1, (0, 0, 255))
-            cv2.circle(wback, xy, 1, (0, 0, 255))
+            cv2.circle(ori_img, xy, 1, (155, 0, 255))
+            cv2.circle(wback, xy, 1, (155, 0, 255))
         else:
             right.append(xy)
             cv2.circle(ori_img, xy, 1, (0, 255, 0))

@@ -54,7 +54,7 @@ def analyze_object(img, obj, mask):
     # Check is object is touching image boundaries (QC)
     frame_background = np.zeros(size1, dtype=np.uint8)
     frame = frame_background + 1
-    frame_contour, frame_heirarchy = cv2.findContours(frame, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
+    frame_contour, frame_hierarchy = cv2.findContours(frame, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
     ptest = []
     vobj = np.vstack(obj)
     for i, c in enumerate(vobj):
@@ -220,12 +220,12 @@ def analyze_object(img, obj, mask):
     # Draw properties
     if area:
         cv2.drawContours(ori_img, obj, -1, (255, 0, 0), params.line_thickness)
-        cv2.drawContours(ori_img, [hull], -1, (0, 0, 255), params.line_thickness)
-        cv2.line(ori_img, (x, y), (x + width, y), (0, 0, 255), params.line_thickness)
-        cv2.line(ori_img, (int(cmx), y), (int(cmx), y + height), (0, 0, 255), params.line_thickness)
-        cv2.line(ori_img, (tuple(caliper_transpose[caliper_length - 1])), (tuple(caliper_transpose[0])), (0, 0, 255),
+        cv2.drawContours(ori_img, [hull], -1, (255, 0, 255), params.line_thickness)
+        cv2.line(ori_img, (x, y), (x + width, y), (255, 0, 255), params.line_thickness)
+        cv2.line(ori_img, (int(cmx), y), (int(cmx), y + height), (255, 0, 255), params.line_thickness)
+        cv2.line(ori_img, (tuple(caliper_transpose[caliper_length - 1])), (tuple(caliper_transpose[0])), (255, 0, 255),
                  params.line_thickness)
-        cv2.circle(ori_img, (int(cmx), int(cmy)), 10, (0, 0, 255), params.line_thickness)
+        cv2.circle(ori_img, (int(cmx), int(cmy)), 10, (255, 0, 255), params.line_thickness)
         # Output images with convex hull, extent x and y
         # out_file = os.path.splitext(filename)[0] + '_shapes.jpg'
         # out_file1 = os.path.splitext(filename)[0] + '_mask.jpg'
@@ -262,11 +262,11 @@ def analyze_object(img, obj, mask):
 
     if params.debug is not None:
         cv2.drawContours(ori_img, obj, -1, (255, 0, 0), params.line_thickness)
-        cv2.drawContours(ori_img, [hull], -1, (0, 0, 255), params.line_thickness)
-        cv2.line(ori_img, (x, y), (x + width, y), (0, 0, 255), params.line_thickness)
-        cv2.line(ori_img, (int(cmx), y), (int(cmx), y + height), (0, 0, 255), params.line_thickness)
-        cv2.circle(ori_img, (int(cmx), int(cmy)), 10, (0, 0, 255), params.line_thickness)
-        cv2.line(ori_img, (tuple(caliper_transpose[caliper_length - 1])), (tuple(caliper_transpose[0])), (0, 0, 255),
+        cv2.drawContours(ori_img, [hull], -1, (255, 0, 255), params.line_thickness)
+        cv2.line(ori_img, (x, y), (x + width, y), (255, 0, 255), params.line_thickness)
+        cv2.line(ori_img, (int(cmx), y), (int(cmx), y + height), (255, 0, 255), params.line_thickness)
+        cv2.circle(ori_img, (int(cmx), int(cmy)), 10, (255, 0, 255), params.line_thickness)
+        cv2.line(ori_img, (tuple(caliper_transpose[caliper_length - 1])), (tuple(caliper_transpose[0])), (255, 0, 255),
                  params.line_thickness)
         if params.debug == 'print':
             print_image(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_shapes.jpg'))

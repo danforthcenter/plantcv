@@ -531,7 +531,8 @@ def test_plantcv_auto_crop():
     _ = pcv.auto_crop(img=img1, obj=roi_contours[1], padding_x=20, padding_y=20, color='black')
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.auto_crop(img=img1, obj=roi_contours[1], padding_x=20, padding_y=20, color='image')
+    _ = pcv.auto_crop(img=img1, obj=roi_contours[1], color='image')
+    _ = pcv.auto_crop(img=img1, obj=roi_contours[1], padding_x=2000, padding_y=2000, color='image')
     # Test with debug = None
     pcv.params.debug = None
     cropped = pcv.auto_crop(img=img1, obj=roi_contours[1], padding_x=20, padding_y=20, color='black')
@@ -1488,7 +1489,7 @@ def test_plantcv_output_mask():
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.output_mask(img=img, mask=mask, filename='test.png', outdir=cache_dir, mask_only=False)
-    _ = pcv.output_mask(img=img_color, mask=mask, filename='test.png', outdir=cache_dir, mask_only=False)
+    _ = pcv.output_mask(img=img_color, mask=mask, filename='test.png', outdir=None, mask_only=False)
     # Test with debug = None
     pcv.params.debug = None
     imgpath, maskpath, analysis_images = pcv.output_mask(img=img, mask=mask, filename='test.png',

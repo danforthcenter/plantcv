@@ -77,8 +77,8 @@ def analyze_bound_horizontal(img, obj, mask, line_position):
         pptest = cv2.pointPolygonTest(below_contour[0], xy, measureDist=False)
         if pptest == 1:
             below.append(xy)
-            cv2.circle(ori_img, xy, 1, (0, 0, 255))
-            cv2.circle(wback, xy, 1, (0, 0, 255))
+            cv2.circle(ori_img, xy, 1, (155, 0, 255))
+            cv2.circle(wback, xy, 1, (155, 0, 255))
         else:
             above.append(xy)
             cv2.circle(ori_img, xy, 1, (0, 255, 0))
