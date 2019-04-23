@@ -1,6 +1,6 @@
 ## Print Measurement Results 
 
-An `Outputs` class has been added that automatically stores measurements collected by the following 
+An [Outputs](outputs.md) class has been added that automatically stores measurements collected by the following 
 functions:
 
 * `analyze_bound_horizontal`
@@ -12,8 +12,11 @@ functions:
 * `report_size_marker_area`
 * `watershed`
 
+Users can also add measurements to the `Outputs` class with the `pcv.outputs.add_measurement` method.
+
+
 The `print_results` function will take the measurements stored when running any (or all) of these functions, format, and 
-print an output text file for data analysis. 
+print an output .json file for data analysis. 
 
 **plantcv.print_results**(*filename*)
 

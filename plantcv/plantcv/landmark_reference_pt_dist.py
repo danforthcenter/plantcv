@@ -21,8 +21,6 @@ def landmark_reference_pt_dist(points_r, centroid_r, bline_r):
     :param points_r: ndarray
     :param centroid_r: tuple
     :param bline_r: tuple
-    :return landmark_header: list
-    :return landmark_data: list
     """
 
     # scaled_img = np.zeros((1500,1500,3), np.uint8)
@@ -129,40 +127,27 @@ def landmark_reference_pt_dist(points_r, centroid_r, bline_r):
     # flipped_scaled = cv2.flip(scaled_img, 0)
     # cv2.imwrite('centroid_dist.png', flipped_scaled)
 
-    landmark_header = [
-        'HEADER_LANDMARK',
-        'vert_ave_c',
-        'hori_ave_c',
-        'euc_ave_c',
-        'ang_ave_c',
-        'vert_ave_b',
-        'hori_ave_b',
-        'euc_ave_b',
-        'ang_ave_b'
-    ]
-
-    landmark_data = [
-        'LANDMARK_DATA',
-        vert_ave_c,
-        hori_ave_c,
-        euc_ave_c,
-        ang_ave_c,
-        vert_ave_b,
-        hori_ave_b,
-        euc_ave_b,
-        ang_ave_b
-    ]
-
-    # Store into global measurements
-    if not 'landmark_reference' in outputs.measurements:
-        outputs.measurements['landmark_reference'] = {}
-    outputs.measurements['landmark_reference']['vert_ave_c'] = vert_ave_c
-    outputs.measurements['landmark_reference']['hori_ave_c'] = hori_ave_c
-    outputs.measurements['landmark_reference']['euc_ave_c'] = euc_ave_c
-    outputs.measurements['landmark_reference']['ang_ave_c'] = ang_ave_c
-    outputs.measurements['landmark_reference']['vert_ave_b'] = vert_ave_b
-    outputs.measurements['landmark_reference']['hori_ave_b'] = hori_ave_b
-    outputs.measurements['landmark_reference']['euc_ave_b'] = euc_ave_b
-    outputs.measurements['landmark_reference']['ang_ave_b'] = ang_ave_b
-
-    return landmark_header, landmark_data
+    outputs.add_measurement(variable='vert_ave_c', trait='average vertical distance from centroid',
+                            method='plantcv.plantcv.landmark_reference_pt_dist', scale='pixels', datatype=float,
+                            value=vert_ave_c, label='pixels')
+    outputs.add_measurement(variable='hori_ave_c', trait='average horizontal distance from centeroid',
+                            method='plantcv.plantcv.landmark_reference_pt_dist', scale='pixels', datatype=float,
+                            value=hori_ave_c, label='pixels')
+    outputs.add_measurement(variable='euc_ave_c', trait='average euclidean distance from centroid',
+                            method='plantcv.plantcv.landmark_reference_pt_dist', scale='pixels', datatype=float,
+                            value=euc_ave_c, label='pixels')
+    outputs.add_measurement(variable='ang_ave_c', trait='average angle between landmark point and centroid',
+                            method='plantcv.plantcv.landmark_reference_pt_dist', scale='pixels', datatype=float,
+                            value=ang_ave_c, label='pixels')
+    outputs.add_measurement(variable='vert_ave_b', trait='average vertical distance from baseline',
+                            method='plantcv.plantcv.landmark_reference_pt_dist', scale='pixels', datatype=float,
+                            value=vert_ave_b, label='pixels')
+    outputs.add_measurement(variable='hori_ave_b', trait='average horizontal distance from baseline',
+                            method='plantcv.plantcv.landmark_reference_pt_dist', scale='pixels', datatype=float,
+                            value=hori_ave_b, label='pixels')
+    outputs.add_measurement(variable='euc_ave_b', trait='average euclidean distance from baseline',
+                            method='plantcv.plantcv.landmark_reference_pt_dist', scale='pixels', datatype=float,
+                            value=euc_ave_b, label='pixels')
+    outputs.add_measurement(variable='ang_ave_b', trait='average angle between landmark point and baseline',
+                            method='plantcv.plantcv.landmark_reference_pt_dist', scale='pixels', datatype=float,
+                            value=ang_ave_b, label='pixels')

@@ -4,20 +4,24 @@ Shape analysis outputs numeric properties for an input object (contour or groupe
  
 **plantcv.analyze_object**(*img, obj, mask*)
 
-**returns** shape data headers, shape data, analysis_images
+**returns** analysis_images
 
 - **Parameters:**
     - img - RGB or grayscale image data for plotting.
     - obj - Single or grouped contour object.
     - mask - Binary image to use as mask for moments analysis.
 - **Context:**
-    - Used to output shape characteristics of an image, including height, object area, convex hull, convex hull area, perimeter, extent x, extent y, longest axis, centroid x coordinate, centroid y coordinate, in bounds QC (if object touches edge of image, image is flagged). 
+    - Used to output shape characteristics of an image, including height, object area, convex hull, convex hull area, 
+    perimeter, extent x, extent y, longest axis, centroid x coordinate, centroid y coordinate, in bounds QC (if object 
+    touches edge of image, image is flagged). 
+    - Data automatically gets stored into the [Outputs class](outputs.md). Users can look at the data collected at any point during 
+    the workflow by using [pcv.print_results](print_results.md) which prints all stored data to a .json file.
 - **Example use:**
     - [Use In VIS Tutorial](vis_tutorial.md)
     - [Use In NIR Tutorial](nir_tutorial.md)
     - [Use In PSII Tutorial](psII_tutorial.md) 
     
-- **Output Data Units:**
+- **Units of Data Stored:**
     - Object Area - object area, pixels (units)
     - Convex-Hull Area - area of convex-hull, pixels (units)
     - Solidity - Ratio, object area divided by convex hull area.
@@ -50,11 +54,12 @@ pcv.params.debug = "print"
 
 # Characterize object shapes
     
-shape_header, shape_data, shape_images = pcv.analyze_object(img, objects, mask)
+shape_images = pcv.analyze_object(img, objects, mask)
 
 # Save returned images with more specific naming
 shape_image, mask = shape_images
 pcv.print_image(shape_image, '/home/malia/setaria_shape_img.png')
+
 ```
 
 **Image with identified objects**

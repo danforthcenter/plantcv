@@ -26,7 +26,7 @@ Primary Key (PK) and Foreign Key (FK). Foreign Keys are used to join tables in q
 | longest_axis         | pixels  | longest path between convex hull vertices through the center of mass                                      |
 | center-of-mass-x     | none    | x-axis coordinate of the object center of mass                                                            |
 | center-of-mass-y     | none    | y-axis coordinate of the object center of mass                                                            |
-| hull_vertices        | none    | number of convex hul vertices                                                                             |
+| hull_vertices        | none    | number of convex hull vertices                                                                             |
 | in_bounds            | none    | true of false (false if the object is touching the border of the image)                                   |
 | ellipse_center_x     | none    | x-axis coordinate of the center of the minimum bounding ellipse                                           |
 | ellipse_center_y     | none    | y-axis coordinate of the center of the minimum bounding ellipse                                           |

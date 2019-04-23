@@ -31,8 +31,6 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
     thresh          = Binary threshold value (integer)
 
     Returns:
-    marker_header   = Marker data table headers
-    marker_data     = Marker data table values
     analysis_images = List of output images
 
     :param img: numpy.ndarray
@@ -42,8 +40,6 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
     :param objcolor: str
     :param thresh_channel: str
     :param thresh: int
-    :return: marker_header: list
-    :return: marker_data: list
     :return: analysis_images: list
     """
 
@@ -121,30 +117,20 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
     elif params.debug is 'plot':
         plot_image(ref_img)
 
-    marker_header = (
-        'HEADER_MARKER',
-        'marker_area',
-        'marker_major_axis_length',
-        'marker_minor_axis_length',
-        'marker_eccentricity'
-    )
-
-    marker_data = (
-        'MARKER_DATA',
-        marker_area,
-        major_axis_length,
-        minor_axis_length,
-        eccentricity
-    )
-    # Store into global measurements
-    if not 'size_marker' in outputs.measurements:
-        outputs.measurements['size_marker'] = {}
-    outputs.measurements['size_marker']['marker_area'] = marker_area
-    outputs.measurements['size_marker']['marker_major_axis_length'] = major_axis_length
-    outputs.measurements['size_marker']['marker_minor_axis_length'] = minor_axis_length
-    outputs.measurements['size_marker']['marker_eccentricity'] = eccentricity
+    outputs.add_measurement(variable='marker_area', trait='area of reference object (marker)',
+                            method='plantcv.plantcv.report_size_marker_area', scale='pixels', datatype=int,
+                            value=marker_area, label='pixels')
+    outputs.add_measurement(variable='marker_major_axis_length', trait='length of major axis of marker bounding ellipse',
+                            method='plantcv.plantcv.report_size_marker_area', scale='pixels', datatype=int,
+                            value=major_axis_length, label='pixels')
+    outputs.add_measurement(variable='marker_minor_axis_length', trait='length of minor axis of marker bounding ellipse',
+                            method='plantcv.plantcv.report_size_marker_area', scale='pixels', datatype=int,
+                            value=minor_axis_length, label='pixels')
+    outputs.add_measurement(variable='marker_eccentricity', trait='eccentricity of the bounding ellipse',
+                            method='plantcv.plantcv.report_size_marker_area', scale='none', datatype=float,
+                            value=eccentricity, label='none')
 
     # Store images
     outputs.images.append(analysis_image)
 
-    return marker_header, marker_data, analysis_image
+    return analysis_image

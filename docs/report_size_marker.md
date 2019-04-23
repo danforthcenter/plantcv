@@ -5,7 +5,7 @@ Get and record the size of a size marker or set an area as a size marker.
 **plantcv.report_size_marker_area**(*img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None,
                             thresh=None*)
 
-**returns** marker_header, marker_data, analysis_image
+**returns** analysis_image
 
 - **Parameters:**
     - img             = An RGB or grayscale image to plot the marker object on
@@ -19,8 +19,10 @@ Get and record the size of a size marker or set an area as a size marker.
 
 - **Context:**
     - Allows user to add size marker data, so that shape data can be normalized between images/cameras
+    - Data automatically gets stored into the [Outputs class](outputs.md). Users can look at the data collected at any point during 
+    the workflow by using [pcv.print_results](print_results.md) which prints all stored data to a .json file.
 
-- **Output Data Units:**
+- **Units of Stored Data:**
     - Marker-Area - area of marker, pixels (units)
     - Marker Bounding Ellipse Major Axis - length of major axis of bounding ellipse, pixels (units)
     - Marker Bounding Ellipse Minor Axis - length of minor axis of bounding ellipse, pixels (units)
@@ -42,7 +44,8 @@ pcv.params.debug = "print"
 roi_contour, roi_hierarchy = pcv.roi.rectangle(3550, 850, 500, 500, img1)
 
 # Detect and Measure Size Marker
-marker_header, marker_data, image = pcv.report_size_marker_area(img1, roi_contour, roi_hierarchy, marker='detect', objcolor='light', thresh_channel='s', thresh=120)
+image = pcv.report_size_marker_area(img1, roi_contour, roi_hierarchy, marker='detect', objcolor='light', thresh_channel='s', thresh=120)
+
 ```
 
 **Area selected to detect size markers**

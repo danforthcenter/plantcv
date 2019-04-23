@@ -4,6 +4,7 @@ import matplotlib
 if "DISPLAY" not in os.environ and "MPLBACKEND" not in os.environ:
     matplotlib.use("Agg")
 
+observations = {}
 
 class Params:
     """PlantCV parameters class
@@ -34,11 +35,32 @@ class Outputs:
     def __init__(self):
         self.measurements = {}
         self.images = []
+        self.observations = {}
 
-    # Add a method to clear out the
+        # Add a method to clear measurements
     def clear(self):
         self.measurements = {}
         self.images = []
+        self.observations = {}
+
+    # Method to add measurement to outputs
+    def add_measurement(self, variable, trait, method, scale, datatype, value, label):
+        self.variable = variable
+        self.trait = trait
+        self.method = method
+        self.scale = scale
+        self.datatype = datatype
+        self.value = value
+        self.label = label
+
+        self.observations[variable] = {
+            "trait": trait,
+            "method": method,
+            "scale": scale,
+            "datatype": str(datatype),
+            "value": value,
+            "label": label
+        }
 
 
 # Initialize an instance of the Params and Outputs class with default values

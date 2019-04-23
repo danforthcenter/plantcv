@@ -26,15 +26,11 @@ def watershed_segmentation(rgb_img, mask, distance=10):
     distance            = min_distance of local maximum
 
     Returns:
-    watershed_header    = shape data table headers
-    watershed_data      = shape data table values
     analysis_images     = list of output images
 
     :param rgb_img: numpy.ndarray
     :param mask: numpy.ndarray
     :param distance: int
-    :return watershed_header: list
-    :return watershed_data: list
     :return analysis_images: list
     """
     params.device += 1
@@ -65,16 +61,6 @@ def watershed_segmentation(rgb_img, mask, distance=10):
     analysis_image = []
     analysis_image.append(joined)
 
-    watershed_header = (
-        'HEADER_WATERSHED',
-        'estimated_object_count'
-    )
-
-    watershed_data = (
-        'WATERSHED_DATA',
-        estimated_object_count
-    )
-
     if params.debug == 'print':
         print_image(dist_transform, os.path.join(params.debug_outdir, str(params.device) + '_watershed_dist_img.png'))
         print_image(joined, os.path.join(params.debug_outdir, str(params.device) + '_watershed_img.png'))
@@ -82,12 +68,11 @@ def watershed_segmentation(rgb_img, mask, distance=10):
         plot_image(dist_transform, cmap='gray')
         plot_image(joined)
 
-    # Store into global measurements
-    if not 'watershed' in outputs.measurements:
-        outputs.measurements['watershed'] = {}
-    outputs.measurements['watershed']['estimated_object_count'] = estimated_object_count
+    outputs.add_measurement(variable='estimated_object_count', trait='number of segmented objects (e.g. leaves)',
+                            method='plantcv.plantcv.watershed', scale='none', datatype=int,
+                            value=estimated_object_count, label='none')
 
     # Store images
     outputs.images.append(analysis_image)
 
-    return watershed_header, watershed_data, analysis_image
+    return analysis_image

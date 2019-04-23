@@ -20,16 +20,12 @@ def analyze_bound_horizontal(img, obj, mask, line_position):
     line_position   = position of boundary line (a value of 0 would draw the line through the top of the image)
 
     Returns:
-    bound_header    = data table column headers
-    bound_data      = boundary data table
     analysis_images = list of output images
 
     :param img: numpy.ndarray
     :param obj: list
     :param mask: numpy.ndarray
     :param line_position: int
-    :return bound_header: tuple
-    :return bound_data: tuple
     :return analysis_images: list
     """
 
@@ -87,26 +83,6 @@ def analyze_bound_horizontal(img, obj, mask, line_position):
     below_bound_area = len(below)
     percent_bound_area_above = ((float(above_bound_area)) / (float(above_bound_area + below_bound_area))) * 100
     percent_bound_area_below = ((float(below_bound_area)) / (float(above_bound_area + below_bound_area))) * 100
-
-    bound_header = [
-        'HEADER_BOUNDARY' + str(line_position),
-        'height_above_bound',
-        'height_below_bound',
-        'above_bound_area',
-        'percent_above_bound_area',
-        'below_bound_area',
-        'percent_below_bound_area'
-    ]
-
-    bound_data = [
-        'BOUNDARY_DATA',
-        height_above_bound,
-        height_below_bound,
-        above_bound_area,
-        percent_bound_area_above,
-        below_bound_area,
-        percent_bound_area_below
-    ]
 
     analysis_images = []
 
@@ -169,18 +145,29 @@ def analyze_bound_horizontal(img, obj, mask, line_position):
             plot_image(wback)
             plot_image(ori_img)
 
-    # Store into global measurements
-    if not 'bound_horizontal' in outputs.measurements:
-        outputs.measurements['bound_horizontal'] = {}
-    outputs.measurements['bound_horizontal']['horizontal_line_position'] = line_position
-    outputs.measurements['bound_horizontal']['height_above_bound'] = height_above_bound
-    outputs.measurements['bound_horizontal']['height_below_bound'] = height_below_bound
-    outputs.measurements['bound_horizontal']['above_bound_area'] = above_bound_area
-    outputs.measurements['bound_horizontal']['percent_above_bound_area'] = percent_bound_area_above
-    outputs.measurements['bound_horizontal']['below_bound_area'] = below_bound_area
-    outputs.measurements['bound_horizontal']['percent_below_bound_area'] = percent_bound_area_below
+    outputs.add_measurement(variable='horizontal_line_position', trait='horizontal_line_position',
+                            method='plantcv.plantcv.analyze_bound_horizontal', scale='none', datatype=int,
+                            value=line_position, label='none')
+    outputs.add_measurement(variable='height_above_bound', trait='height_above_bound',
+                            method='plantcv.plantcv.analyze_bound_horizontal', scale='pixels', datatype=int,
+                            value=height_above_bound, label='pixels')
+    outputs.add_measurement(variable='height_below_bound', trait='height_below_bound',
+                            method='plantcv.plantcv.analyze_bound_horizontal', scale='pixels', datatype=int,
+                            value=height_below_bound, label='pixels')
+    outputs.add_measurement(variable='above_bound_area', trait='above_bound_area',
+                            method='plantcv.plantcv.analyze_bound_horizontal', scale='pixels', datatype=int,
+                            value=above_bound_area, label='pixels')
+    outputs.add_measurement(variable='percent_above_bound_area', trait='percent_above_bound_area',
+                            method='plantcv.plantcv.analyze_bound_horizontal', scale='none', datatype=float,
+                            value=percent_bound_area_above, label='none')
+    outputs.add_measurement(variable='below_bound_area', trait='below_bound_area',
+                            method='plantcv.plantcv.analyze_bound_horizontal', scale='pixels', datatype=int,
+                            value=below_bound_area, label='pixels')
+    outputs.add_measurement(variable='percent_bound_area_below', trait='percent_bound_area_below',
+                            method='plantcv.plantcv.analyze_bound_horizontal', scale='none', datatype=float,
+                            value=percent_bound_area_below, label='none')
 
     # Store images
     outputs.images.append(analysis_images)
 
-    return bound_header, bound_data, analysis_images
+    return analysis_images

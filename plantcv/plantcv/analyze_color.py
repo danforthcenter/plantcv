@@ -17,15 +17,11 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
     hist_plot_type   = 'None', 'all', 'rgb','lab' or 'hsv'
     
     Returns:
-    color_header     = color histogram data table headers
-    color_data       = color histogram data table values
     analysis_image   = histogram output
     
     :param rgb_img: numpy.ndarray
     :param mask: numpy.ndarray
     :param hist_plot_type: str
-    :return color_header: list
-    :return color_data: list
     :return analysis_images: list
     """
 
@@ -62,23 +58,23 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
     # Store histograms, plotting colors, and plotting labels
     histograms = {
         "b": {"label": "blue", "graph_color": "blue",
-              "hist": [l[0] for l in cv2.calcHist([channels["b"]], [0], mask, [256], [0, 255])]},
+              "hist": [float(l[0]) for l in cv2.calcHist([channels["b"]], [0], mask, [256], [0, 255])]},
         "g": {"label": "green", "graph_color": "forestgreen",
-              "hist": [l[0] for l in cv2.calcHist([channels["g"]], [0], mask, [256], [0, 255])]},
+              "hist": [float(l[0]) for l in cv2.calcHist([channels["g"]], [0], mask, [256], [0, 255])]},
         "r": {"label": "red", "graph_color": "red",
-              "hist": [l[0] for l in cv2.calcHist([channels["r"]], [0], mask, [256], [0, 255])]},
+              "hist": [float(l[0]) for l in cv2.calcHist([channels["r"]], [0], mask, [256], [0, 255])]},
         "l": {"label": "lightness", "graph_color": "dimgray",
-              "hist": [l[0] for l in cv2.calcHist([channels["l"]], [0], mask, [256], [0, 255])]},
+              "hist": [float(l[0]) for l in cv2.calcHist([channels["l"]], [0], mask, [256], [0, 255])]},
         "m": {"label": "green-magenta", "graph_color": "magenta",
-              "hist": [l[0] for l in cv2.calcHist([channels["m"]], [0], mask, [256], [0, 255])]},
+              "hist": [float(l[0]) for l in cv2.calcHist([channels["m"]], [0], mask, [256], [0, 255])]},
         "y": {"label": "blue-yellow", "graph_color": "yellow",
-              "hist": [l[0] for l in cv2.calcHist([channels["y"]], [0], mask, [256], [0, 255])]},
+              "hist": [float(l[0]) for l in cv2.calcHist([channels["y"]], [0], mask, [256], [0, 255])]},
         "h": {"label": "hue", "graph_color": "blueviolet",
-              "hist": [l[0] for l in cv2.calcHist([channels["h"]], [0], mask, [256], [0, 255])]},
+              "hist": [float(l[0]) for l in cv2.calcHist([channels["h"]], [0], mask, [256], [0, 255])]},
         "s": {"label": "saturation", "graph_color": "cyan",
-              "hist": [l[0] for l in cv2.calcHist([channels["s"]], [0], mask, [256], [0, 255])]},
+              "hist": [float(l[0]) for l in cv2.calcHist([channels["s"]], [0], mask, [256], [0, 255])]},
         "v": {"label": "value", "graph_color": "orange",
-              "hist": [l[0] for l in cv2.calcHist([channels["v"]], [0], mask, [256], [0, 255])]}
+              "hist": [float(l[0]) for l in cv2.calcHist([channels["v"]], [0], mask, [256], [0, 255])]}
     }
 
     # Create list of bin labels for 8-bit data
@@ -154,43 +150,6 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
     hue_circular_mean = stats.circmean(h[np.where(h > 0)], high=179, low=0) * 2
     hue_circular_std = stats.circstd(h[np.where(h > 0)], high=179, low=0) * 2
 
-    # Store Color Histogram Data
-    color_header = [
-        'HEADER_HISTOGRAM',
-        'bin-number',
-        'bin-values',
-        'blue',
-        'green',
-        'red',
-        'lightness',
-        'green-magenta',
-        'blue-yellow',
-        'hue',
-        'saturation',
-        'value',
-        'hue_circular_mean',
-        'hue_circular_std',
-        'hue_median'
-    ]
-
-    color_data = [
-        'HISTOGRAM_DATA',
-        256,
-        bin_values,
-        histograms["b"]["hist"],
-        histograms["g"]["hist"],
-        histograms["r"]["hist"],
-        histograms["l"]["hist"],
-        histograms["m"]["hist"],
-        histograms["y"]["hist"],
-        histograms["h"]["hist"],
-        histograms["s"]["hist"],
-        histograms["v"]["hist"],
-        hue_circular_mean,
-        hue_circular_std,
-        hue_median
-    ]
-
     # Store into lists instead for pipeline and print_results
     # stats_dict = {'mean': circular_mean, 'std' : circular_std, 'median': median}
 
@@ -210,41 +169,62 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
     percent_values = [round((i / 255) * 100, 2) for i in range(0, 256)]
     # Diverging values on a -128 to 127 scale (green-magenta and blue-yellow)
     diverging_values = [i for i in range(-128, 128)]
-    outputs.measurements['color_data'] = {
-        'histograms': {
-            'blue': {'signal_values': rgb_values, 'frequency': histograms["b"]["hist"]},
-            'green': {'signal_values': rgb_values, 'frequency': histograms["g"]["hist"]},
-            'red': {'signal_values': rgb_values, 'frequency': histograms["r"]["hist"]},
-            'lightness': {'signal_values': percent_values, 'frequency': histograms["l"]["hist"]},
-            'green-magenta': {'signal_values': diverging_values, 'frequency': histograms["m"]["hist"]},
-            'blue-yellow': {'signal_values': diverging_values, 'frequency': histograms["y"]["hist"]},
-            'hue': {'signal_values': hue_values, 'frequency': histograms["h"]["hist"]},
-            'saturation': {'signal_values': percent_values, 'frequency': histograms["s"]["hist"]},
-            'value': {'signal_values': percent_values, 'frequency': histograms["v"]["hist"]}
-        },
-        'color_features': {
-            'hue_circular_mean': hue_circular_mean,
-            'hue_circular_std': hue_circular_std,
-            'hue_median': hue_median
-        }
-    }
-
-    # outputs.measurements['color_data']['bin-number'] = 256
-    # outputs.measurements['color_data']['bin-values'] = bin_values
-    # outputs.measurements['color_data']['blue'] = histograms["b"]["hist"]
-    # outputs.measurements['color_data']['green'] = histograms["g"]["hist"]
-    # outputs.measurements['color_data']['red'] = histograms["r"]["hist"]
-    # outputs.measurements['color_data']['lightness'] = histograms["l"]["hist"]
-    # outputs.measurements['color_data']['green-magenta'] = histograms["m"]["hist"]
-    # outputs.measurements['color_data']['blue-yellow'] = histograms["y"]["hist"]
-    # outputs.measurements['color_data']['hue'] = histograms["h"]["hist"]
-    # outputs.measurements['color_data']['saturation'] = histograms["s"]["hist"]
-    # outputs.measurements['color_data']['value'] = histograms["v"]["hist"]
-    # outputs.measurements['color_data']['hue_circular_mean'] = hue_circular_mean
-    # outputs.measurements['color_data']['hue_circular_std'] = hue_circular_std
-    # outputs.measurements['color_data']['hue_median'] = hue_median
+    # outputs.measurements['color_data'] = {
+    #     'histograms': {
+    #         'blue': {'signal_values': rgb_values, 'frequency': histograms["b"]["hist"]},
+    #         'green': {'signal_values': rgb_values, 'frequency': histograms["g"]["hist"]},
+    #         'red': {'signal_values': rgb_values, 'frequency': histograms["r"]["hist"]},
+    #         'lightness': {'signal_values': percent_values, 'frequency': histograms["l"]["hist"]},
+    #         'green-magenta': {'signal_values': diverging_values, 'frequency': histograms["m"]["hist"]},
+    #         'blue-yellow': {'signal_values': diverging_values, 'frequency': histograms["y"]["hist"]},
+    #         'hue': {'signal_values': hue_values, 'frequency': histograms["h"]["hist"]},
+    #         'saturation': {'signal_values': percent_values, 'frequency': histograms["s"]["hist"]},
+    #         'value': {'signal_values': percent_values, 'frequency': histograms["v"]["hist"]}
+    #     },
+    #     'color_features': {
+    #         'hue_circular_mean': hue_circular_mean,
+    #         'hue_circular_std': hue_circular_std,
+    #         'hue_median': hue_median
+    #     }
+    # }
+    outputs.add_measurement(variable='blue', trait='blue',
+                            method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                            value=histograms["b"]["hist"], label=rgb_values)
+    outputs.add_measurement(variable='green', trait='green',
+                            method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                            value=histograms["g"]["hist"], label=rgb_values)
+    outputs.add_measurement(variable='red', trait='red',
+                            method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                            value=histograms["r"]["hist"], label=rgb_values)
+    outputs.add_measurement(variable='lightness', trait='lightness',
+                            method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                            value=histograms["l"]["hist"], label=percent_values)
+    outputs.add_measurement(variable='green-magenta', trait='green-magenta',
+                            method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                            value=histograms["m"]["hist"], label=diverging_values)
+    outputs.add_measurement(variable='blue-yellow', trait='blue-yellow',
+                            method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                            value=histograms["y"]["hist"], label=diverging_values)
+    outputs.add_measurement(variable='hue', trait='hue',
+                            method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                            value=histograms["h"]["hist"], label=hue_values)
+    outputs.add_measurement(variable='saturation', trait='saturation',
+                            method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                            value=histograms["s"]["hist"], label=percent_values)
+    outputs.add_measurement(variable='value', trait='value',
+                            method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                            value=histograms["v"]["hist"], label=percent_values)
+    outputs.add_measurement(variable='hue_circular_mean', trait='hue_circular_mean',
+                            method='plantcv.plantcv.analyze_color', scale='degrees', datatype=float,
+                            value=hue_circular_mean, label='degrees')
+    outputs.add_measurement(variable='hue_circular_std', trait='hue_circular_std',
+                            method='plantcv.plantcv.analyze_color', scale='degrees', datatype=float,
+                            value=hue_median, label='degrees')
+    outputs.add_measurement(variable='hue_median', trait='hue_median',
+                            method='plantcv.plantcv.analyze_color', scale='degrees', datatype=float,
+                            value=hue_median, label='degrees')
 
     # Store images
     outputs.images.append(analysis_images)
 
-    return color_header, color_data, analysis_images
+    return analysis_images

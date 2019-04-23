@@ -25,12 +25,14 @@ Methods are accessed as plantcv.outputs.*method*.
 
 **clear**: Clears the contents of both measurements and image 
 
+**add_measurement**: Add new measurement or other information 
+
 - **Example use:**
     - [Use In VIS/NIR Tutorial](vis_nir_tutorial.md)
 
-### Example
+### Examples
 
-```
+```python
 from plantcv import plantcv as pcv
 
 ######## Pipeline steps here ########
@@ -51,4 +53,27 @@ nshape_header, nshape_data, nir_hist = pcv.analyze_object(nir2, nir_combined, ni
 
 # Write the NIR and shape data to a file 
 pcv.print_results(filename=args.coresult)
+
+```
+
+```python
+import numpy as np
+from plantcv import plantcv as pcv
+
+# Use Naive-Bayes to make masks for each classes 
+mask = pcv.naive_bayes_classifier(img, pdf_file="naive_bayes_pdfs.txt")
+
+# Calculate percent of the plant found to be diseased 
+sick_plant = np.count_nonzero(mask['diseased'])
+healthy_plant = np.count_nonzero(mask['plant'])
+percent_diseased = sick_plant / (sick_plant + healthy_plant)
+
+# Create a new measurement
+pcv.outputs.add_measurement(variable='percent_diseased', trait='percent of plant detected to be diseased',
+                            method='ratio of pixels', scale='percent', datatype=float,
+                            value=percent_diseased, label='percent')
+
+# Write custom data to results file
+pcv.print_results(filename=args.result)
+
 ```

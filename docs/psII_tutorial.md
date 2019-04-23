@@ -49,6 +49,7 @@ Sample command to run a pipeline on a single PSII image set:
 
 ```
 ./pipelinename.py -i /home/user/images/testimg.png -o /home/user/output-images -D 'print'
+
 ```
 
 ### Walk Through A Sample Pipeline
@@ -75,6 +76,7 @@ def options():
     parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.", action="store_true")
     args = parser.parse_args()
     return args
+    
 ```
 
 The PSII pipeline first uses the Fmax image to create an image mask. Our PSII images are 16-bit grayscale, 
@@ -94,6 +96,7 @@ def main():
     track = cv2.imread(args.track)
     
     mask1, mask2, mask3 = cv2.split(mask)
+    
 ```
 
 **Figure 1.** (Top) Fmax image that will be used to create a plant mask that will isolate the plant material in the image. 
@@ -115,6 +118,7 @@ The [apply mask function](apply_mask.md) is then used to apply the track mask to
     track_thresh = pcv.threshold.binary(track1, 0, 255, 'light')
     track_inv = pcv.invert(track_thresh)
     track_masked = pcv.apply_mask(mask1, track_inv, 'black')
+    
 ```
 
 **Figure 2.** (Top) Inverted mask (white portion is kept as objects).
@@ -129,6 +133,7 @@ The resulting image is then thresholded with a [binary threshold](binary_thresho
 ```python
     # Threshold the image
     fmax_thresh = pcv.threshold.binary(track_masked, 20, 255, 'light')
+    
 ```
 
 **Figure 3.** Binary threshold on masked Fmax image.
@@ -141,6 +146,7 @@ Noise is reduced with the [median blur](median_blur.md) function.
   # Median Filter
   s_mblur = pcv.median_blur(fmax_thresh, 5)
   s_cnt = pcv.median_blur(fmax_thresh, 5)
+  
 ```
 
 **Figure 4.** Median blur applied.
@@ -153,6 +159,7 @@ Noise is also reduced with the [fill](fill.md) function.
     # Fill small objects
     s_fill = pcv.fill(s_mblur, 110)
     sfill_cnt = pcv.fill(s_mblur, 110)
+    
 ```
 
 **Figure 5.** Fill applied.  
@@ -165,6 +172,7 @@ the [find objects](find_objects.md) function.
 ```python
     # Identify objects
     id_objects,obj_hierarchy = pcv.find_objects(mask, sfill_cnt)
+    
 ```
 
 **Figure 6.** All objects found within the image are identified.
@@ -176,6 +184,7 @@ Next the region of interest is defined using the [rectangular region of interest
 ```python
     # Define ROI
     roi1, roi_hierarchy = pcv.roi.rectangle(img=mask, x=100, y=100, h=200, w=200)
+    
 ```
 
 **Figure 7.** Region of interest is drawn on the image.
@@ -188,6 +197,7 @@ Alternately the objects can be cut to the region of interest.
 ```python
     # Decide which objects to keep
     roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(mask, 'partial', roi1, roi_hierarchy, id_objects, obj_hierarchy)
+    
 ```
 
 **Figure 8.** Objects in the region of interest are identified (green).  
@@ -201,6 +211,7 @@ analysis to perform properly the plant objects need to be combined into one obje
 ```python
     # Object combine kept objects
     obj, masked = pcv.object_composition(mask, roi_objects, hierarchy3)
+    
 ```
 
 **Figure 9.** Combined plant object outlined in blue.
@@ -220,14 +231,14 @@ along with the generated mask to calculate Fv/Fm.
         outfile=args.outdir+"/"+filename
     
     # Find shape properties, output shape image (optional)
-    shape_header, shape_data, shape_img = pcv.analyze_object(mask, obj, masked)
+    shape_img = pcv.analyze_object(mask, obj, masked)
     
     # Fluorescence Measurement (read in 16-bit images)
     fdark = cv2.imread(args.fdark, -1)
     fmin = cv2.imread(args.fmin, -1)
     fmax = cv2.imread(args.fmax, -1)
     
-    fvfm_header, fvfm_data, fvfm_images = pcv.fluor_fvfm(fdark,fmin,fmax,kept_mask)
+    fvfm_images = pcv.fluor_fvfm(fdark,fmin,fmax,kept_mask)
 
     # Store the two images
     fv_img = fvfm_images[0]
@@ -241,6 +252,7 @@ along with the generated mask to calculate Fv/Fm.
   
 if __name__ == '__main__':
     main()
+    
 ```
 
 **Figure 10.** Input images from top to bottom: F0 (null image also known as Fdark); Fmin image; Fmax image.
@@ -343,14 +355,14 @@ def main():
         outfile=args.outdir+"/"+filename
     
     # Find shape properties, output shape image (optional)
-    shape_header, shape_data, shape_img = pcv.analyze_object(mask, obj, masked)
+    shape_img = pcv.analyze_object(mask, obj, masked)
     
     # Fluorescence Measurement (read in 16-bit images)
     fdark = cv2.imread(args.fdark, -1)
     fmin = cv2.imread(args.fmin, -1)
     fmax = cv2.imread(args.fmax, -1)
     
-    fvfm_header, fvfm_data, fvfm_images = pcv.fluor_fvfm(fdark,fmin,fmax,kept_mask)
+    fvfm_images = pcv.fluor_fvfm(fdark,fmin,fmax,kept_mask)
 
     # Store the two images
     fv_img = fvfm_images[0]
@@ -364,4 +376,5 @@ def main():
   
 if __name__ == '__main__':
     main()
+    
 ```

@@ -3,17 +3,19 @@
 This function calculates the intensity of each pixel associated with the plant and writes 
 the values out to a file. Can also print out a histogram plot of pixel intensity.
 
-**plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False*)
+**plantcv.analyze_nir_intensity**(*gray_img, mask, bins=256, histplot=False*)
 
-**returns** header of histogram, histogram data, analysis_images
+**returns** analysis_images
 
 - **Parameters:**
     - gray_img - 8- or 16-bit grayscale image data
     - mask     - Binary mask made from selected contours
-    - bins     - Number of class to divide spectrum into
+    - bins     - Number of class to divide spectrum into (default bins = 256)
     - histplot - If True plots histogram of intensity values (default histplot = False)
 - **Context:**
     - Used to mask rectangular regions of an image
+    - Data automatically gets stored into the [Outputs class](outputs.md). Users can look at the data collected at any point during 
+    the workflow by using [pcv.print_results](print_results.md) which prints all stored data to a .json file.
 - **Example use:**
     - [Use In NIR Tutorial](nir_tutorial.md)
     
@@ -34,7 +36,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Caclulates the proportion of pixels that fall into a signal bin and writes the values to a file. Also provides a histogram of this data
-hist_header, hist_data, analysis_images  = pcv.analyze_nir_intensity(gray_img, mask, 256, histplot=True)
+analysis_images  = pcv.analyze_nir_intensity(gray_img, mask, 256, histplot=True)
 
 ```
 

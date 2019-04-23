@@ -33,6 +33,7 @@ pcv.params.debug = "print"
 
 # Create binary image from a gray image based on threshold values. Targeting light objects in the image.
 mask = pcv.naive_bayes_classifier(rgb_img, "naive_bayes_pdfs.txt")
+
 ```
 
 The output mask is a dictionary with the keys being the class names and the values being the corresponding binary masks.
