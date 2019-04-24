@@ -31,7 +31,9 @@ class Params:
 
 class Outputs:
     """PlantCV outputs class
-        """
+
+    """
+
     def __init__(self):
         self.measurements = {}
         self.images = []
@@ -45,6 +47,29 @@ class Outputs:
 
     # Method to add measurement to outputs
     def add_measurement(self, variable, trait, method, scale, datatype, value, label):
+        """
+        Keyword arguments/parameters:
+        variable     = A local unique identifier of a variable, e.g. a short name, that is a key linking the definitions of
+                       variables with observations.
+        trait        = A name of the trait mapped to an external ontology; if there is no exact mapping, an informative
+                       description of the trait.
+        method       = A name of the measurement method mapped to an external ontology; if there is no exact mapping, an
+                       informative description of the measurement procedure
+        scale        = Units of the measurement or scale in which the observations are expressed; if possible, standard
+                       units and scales should be used and mapped to existing ontologies; in the case of non-standard scale
+                       a full explanation should be given
+        datatype     = The type of data to be stored, e.g. 'int', 'float', 'str', 'list', etc.
+        value        = The data itself
+        label        = The label for each value (most useful when the data is a frequency table as in hue, or other tables)
+
+        :param variable: str
+        :param trait: str
+        :param method: str
+        :param scale: str
+        :param datatype: type
+        :param value:
+        :param label:
+        """
         self.variable = variable
         self.trait = trait
         self.method = method
