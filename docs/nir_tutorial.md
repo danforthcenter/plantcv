@@ -112,7 +112,7 @@ We start by [subtracting](image_subtract.md) the background.
 bkg_sub_img = pcv.image_subtract(img, img_bkgrd)
     
 # Threshold the image of interest using the two-sided custom range function (keep what is between 50-190)
-kg_sub_thres_img = pcv.threshold.custom_range(bkg_sub_img, [50], [190], 'gray')
+bkg_sub_thres_img = pcv.threshold.custom_range(bkg_sub_img, [50], [190], 'gray')
 
 ```
 
@@ -444,7 +444,7 @@ def main():
     bkg_sub_img = pcv.image_subtract(img, img_bkgrd)
         
     # Threshold the image of interest using the two-sided custom range function (keep what is between 50-190)
-    kg_sub_thres_img = pcv.threshold.custom_range(bkg_sub_img, [50], [190], 'gray')
+    bkg_sub_thres_img = pcv.threshold.custom_range(bkg_sub_img, [50], [190], 'gray')
     
     # Laplace filtering (identify edges based on 2nd derivative)
     lp_img = pcv.laplace_filter(img, 1, 1)
