@@ -753,7 +753,7 @@ def process_results(args):
                        'hori_ave_c', 'euc_ave_c', 'ang_ave_c', 'vert_ave_b', 'hori_ave_b', 'euc_ave_b', 'ang_ave_b',
                        'left_lmk', 'right_lmk', 'center_h_lmk', 'left_lmk_r', 'right_lmk_r', 'center_h_lmk_r',
                        'top_lmk', 'bottom_lmk', 'center_v_lmk', 'top_lmk_r', 'bottom_lmk_r', 'center_v_lmk_r']
-    morphology_fields = ['num_cycles', 'segment_angles', 'segment_curvature',
+    morphology_fields = ['num_cycles', 'segment_angles', 'segment_curvature', 'segment_insertion_angles'
                           'segment_eu_lengths', 'segment_tan_angles', 'segment_path_lengths']
 
     # args.features_file.write('#' + '\t'.join(map(str, feature_fields + opt_feature_fields)) + '\n')
@@ -897,6 +897,11 @@ def process_results(args):
                             for i, datum in enumerate(cols):
                                 if i > 0:
                                     morphology_data['segment_tan_angles'].append(datum)
+                        elif cols[0] == 'INSERTION_ANGLE_DATA':
+                            morphology_data['segment_insertion_angles'] = []
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    morphology_data['segment_insertion_angles'].append(datum)
 
                 # Check to see if the image failed, if not continue
 
