@@ -1,5 +1,7 @@
 ## Prune
 
+Prune/trim tips off a skeletonized image. 
+
 **plantcv.morphology.*prune*(*skel_img, size*)
 
 **returns** Pruned skeleton image 

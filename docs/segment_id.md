@@ -1,5 +1,7 @@
 ## Identify Segments
 
+Label segments with their ID numbers. 
+
 **plantcv.morphology.segment_id**(*skel_img, objects, hierarchies, mask=None*)
 
 **returns** Segmented image, labeled image with segment ID's 

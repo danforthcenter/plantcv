@@ -1,4 +1,6 @@
-## Measure Angles of Segments  
+## Measure Segment Angles
+
+Measure angles of segments. 
 
 **plantcv.morphology.segment_angle**(*segmented_img, objects*)
 

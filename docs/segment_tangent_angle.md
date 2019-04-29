@@ -1,5 +1,7 @@
 ## Measure Tangent Angles of Segments  
 
+Measure tangent angles of segments as a way to quantify leaf behavior. 
+
 **plantcv.morphology.segment_tangent_angle**(*segmented_img, objects, hierarchies, size*)
 
 **returns** segment tangent angle data headers, segment tangent angle data values, labeled image 

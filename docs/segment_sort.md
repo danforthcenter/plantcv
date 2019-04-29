@@ -1,5 +1,7 @@
 ## Sort Segments
 
+Sort segments from a skeletonized image into two categories: leaf objects and other objects. 
+
 **plantcv.morphology.segment_sort**(*skel_img, objects, hierarchies, mask=None*)
 
 **returns** Leaf segment objects, leaf segment object hierarchies, other segment objects, other segment object hierarchies 

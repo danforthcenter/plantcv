@@ -1,4 +1,6 @@
-## Measure Leaf Insertion Angles  
+## Segment Insertion Angles  
+
+Measure leaf insertion angles. 
 
 **plantcv.morphology.segment_insertion_angle**(*skel_img, segmented_img, leaf_objects, leaf_hierarchies, stem_objects, size*)
 

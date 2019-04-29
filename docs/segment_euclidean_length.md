@@ -1,5 +1,7 @@
 ## Measure Euclidean Distance of Segments  
 
+Measure Euclidean distance of segments.
+
 **plantcv.morphology.segment_euclidean_length**(*segmented_img, objects, hierarchies*)
 
 **returns** euclidean length data headers, euclidean length data values, labeled image 

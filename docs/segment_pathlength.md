@@ -1,4 +1,6 @@
-## Measure Path Length of Segments  
+## Measure Path Length of Segments 
+
+Measure the geodesic distance of segments. 
 
 **plantcv.morphology.segment_path_length**(*segmented_img, objects*)
 

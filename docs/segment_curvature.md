@@ -1,4 +1,6 @@
-## Measure Curvature of Segments  
+## Segment Curvature
+
+Measure the curvature of segments.   
 
 **plantcv.morphology.segment_curvature**(*segmented_img, objects, hierarchies*)
 

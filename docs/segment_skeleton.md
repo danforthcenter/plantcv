@@ -1,6 +1,8 @@
 ## Segment a Skeleton 
 
-**plantcv.morphology.segment_skeleton**(*segmented_img, mask=None*)
+Turn a skeletonized image into separate pieces. 
+
+**plantcv.morphology.segment_skeleton**(*skel_img, mask=None*)
 
 **returns** Segmented image, segment objects, segment object hierarchies
 

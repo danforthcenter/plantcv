@@ -1,6 +1,8 @@
 ## Create a Skeleton 
 
-**plantcv.morphology.**(**)
+Skeletonizing takes a mask and reduces it to a 1 pixel wide representation while retaining the structure. 
+
+**plantcv.morphology.**(*mask*)
 
 **returns** Binary skeleton (1 pixel wide representation)
 

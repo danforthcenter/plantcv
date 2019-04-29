@@ -1,5 +1,7 @@
 ## Check for Cycles
 
+Check for cycles within a skeletonized image. 
+
 **plantcv.morphology.check_cycles**(*skel_img*)
 
 **returns** cycle data headers, cycle data values, debugging cycle image
