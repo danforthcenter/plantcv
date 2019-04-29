@@ -12,15 +12,16 @@ import re
 from subprocess import call
 import mimetypes
 from plantcv.plantcv import outputs
+import json
 
 
 # Parse command-line arguments
 ###########################################
 def options():
     """Parse command line options.
-    
+
     Args:
-    
+
     Returns:
         argparse object.
     Raises:
@@ -167,7 +168,6 @@ def options():
 
     if (args.coprocess is not None) and ('imgtype' not in args.imgtype):
         raise ValueError("When the coprocess imgtype is defined, imgtype must be included in match.")
-
     return args
 
 
@@ -177,13 +177,13 @@ def options():
 ###########################################
 def main():
     """Main program.
-      
+
     Args:
-    
+
     Returns:
-    
+
     Raises:
-  
+
     """
 
     # Get options
@@ -214,10 +214,10 @@ def main():
 
     # Open intermediate database files
     runinfo_file = file_writer(prefix + '_runinfo.tab')
-    args.metadata_file = file_writer(prefix + '_metadata.tab')
+    # args.metadata_file = file_writer(prefix + '_metadata.tab')
     args.analysis_images_file = file_writer(prefix + '_analysis_images.tab')
-    args.features_file = file_writer(prefix + '_features.tab')
-    args.signal_file = file_writer(prefix + '_signal.tab')
+    # args.features_file = file_writer(prefix + '_features.tab')
+    # args.signal_file = file_writer(prefix + '_signal.tab')
 
     # Database setup
     ###########################################
@@ -279,9 +279,9 @@ def main():
     # Cleanup
     ###########################################
     runinfo_file.close()
-    args.metadata_file.close()
-    args.features_file.close()
-    args.signal_file.close()
+    # args.metadata_file.close()
+    # args.features_file.close()
+    # args.signal_file.close()
     args.analysis_images_file.close()
     args.fail_log.close()
     args.error_log.close()
@@ -291,10 +291,10 @@ def main():
     # Load database
     ###########################################
     call(["sqlite3", args.db, '.import ' + runinfo_file.name + ' runinfo'])
-    call(["sqlite3", args.db, '.import ' + args.metadata_file.name + ' metadata'])
-    call(["sqlite3", args.db, '.import ' + args.features_file.name + ' features'])
+    # call(["sqlite3", args.db, '.import ' + args.metadata_file.name + ' metadata'])
+    # call(["sqlite3", args.db, '.import ' + args.features_file.name + ' features'])
     call(["sqlite3", args.db, '.import ' + args.analysis_images_file.name + ' analysis_images'])
-    call(["sqlite3", args.db, '.import ' + args.signal_file.name + ' signal'])
+    # call(["sqlite3", args.db, '.import ' + args.signal_file.name + ' signal'])
     ###########################################
 
 
@@ -305,7 +305,7 @@ def main():
 def file_writer(filename):
     """
     Open a file for writing.
-  
+
     Args:
         filename: (string) the name of the path/file to open for writing.
     Returns:
@@ -327,13 +327,13 @@ def file_writer(filename):
 def exit_message(message):
     """
     Print error message and exit program.
-  
+
     Args:
         message: (string) the error message to print.
     Returns:
-    
+
     Raises:
-  
+
     """
     sys.exit(message)
 
@@ -345,14 +345,14 @@ def exit_message(message):
 def dict_factory(cursor, row):
     """
     Replace the row_factory result constructor with a dictionary constructor.
-  
+
     Args:
         cursor: (object) the sqlite3 database cursor object.
         row: (list) a result list.
     Returns:
         d: (dictionary) sqlite3 results dictionary.
     Raises:
-  
+
     """
     d = {}
     for idx, col in enumerate(cursor.description):
@@ -368,7 +368,7 @@ def db_connect(args):
     """
     Connect to the output database, initialize if requested.
     Currently supports SQLite3.
-  
+
     Args:
         args: (object) argsparse object.
     Returns:
@@ -429,7 +429,7 @@ def db_connect(args):
 def filename_parser(args):
     """
     Reads metadata from file names.
-  
+
     Args:
         args: (object) argparse object.
     Returns:
@@ -495,13 +495,13 @@ def filename_parser(args):
 def phenofront_parser(args):
     """
     Reads metadata in PhenoFront format.
-  
+
     Args:
         args: (object) argparse object.
     Returns:
         meta: image metadata object.
     Raises:
-    
+
     """
     # Metadata data structure
     meta = {}
@@ -617,6 +617,7 @@ def phenofront_parser(args):
 
     return args, meta
 
+
 ###########################################
 
 
@@ -639,6 +640,7 @@ def exe_multiproc(jobs, cpus):
         p.join()
         raise ValueError("Execution terminated by user\n")
 
+
 ###########################################
 
 
@@ -647,14 +649,14 @@ def exe_multiproc(jobs, cpus):
 def job_builder(args, meta):
     """
     Build a list of image processing jobs.
-  
+
     Args:
         args: (object) argparse object.
         meta: metadata data structure.
     Returns:
-    
+
     Raises:
-    
+
     """
     # Overall job stack. List  of jobs
     jobs = []
@@ -691,20 +693,25 @@ def job_builder(args, meta):
                 coout.write('\t'.join(map(str, ("META", m, coimg[m]))) + '\n')
 
         # Create an output file to store the image processing results and populate with metadata
-        outfile = file_writer(os.path.join(".", args.jobdir, img + ".txt"))
-        outfile.write('\t'.join(map(str, ("META", "image", os.path.join(meta[img]['path'], img)))) + '\n')
-        # Valid metadata
-        for m in list(args.valid_meta.keys()):
-            outfile.write('\t'.join(map(str, ("META", m, meta[img][m]))) + '\n')
-
+        # outfile = file_writer(os.path.join(args.outdir, img + ".txt"))
+        # outfile.write('\t'.join(map(str, ("META", "image", os.path.join(meta[img]['path'], img)))) + '\n')
+        # # Valid metadata
+        # for m in list(args.valid_meta.keys()):
+        #     outfile.write('\t'.join(map(str, ("META", m, meta[img][m]))) + '\n')
+        # json.dump(meta[img], outfile)
+        # outfile.close()
+        with open(os.path.join(args.outdir, img + ".txt"), mode='w') as outfile:
+            outfile.write('\t'.join(map(str, ("META", "image", os.path.join(meta[img]['path'], img)))) + '\n')
+            # Valid metadata
+            for m in list(args.valid_meta.keys()):
+                outfile.write('\t'.join(map(str, ("META", m, meta[img][m]))) + '\n')
         outfile.close()
-
         # Build job
         job_parts = ["python", args.pipeline, "--image", os.path.join(meta[img]['path'], img),
-                     "--outdir", args.outdir, "--result", os.path.join(args.jobdir, img) + ".txt"]
+                     "--outdir", args.outdir, "--result", os.path.join(args.outdir, img) + ".txt"]
         # Add job to list
         if args.coprocess is not None and ('coimg' in meta[img]):
-            job_parts = job_parts + ["--coresult", os.path.join(args.jobdir, meta[img]['coimg']) + ".txt"]
+            job_parts = job_parts + ["--coresult", os.path.join(args.outdir, meta[img]['coimg']) + ".txt"]
         if args.writeimg:
             job_parts.append("--writeimg")
         if args.other_args:
@@ -713,6 +720,8 @@ def job_builder(args, meta):
             job_parts = job_parts + other_args
         jobs.append(job_parts)
 
+        # with open(os.path.join(args.outdir, img) + ".txt", 'w') as metafile:
+        #     json.dump(meta, metafile)
     return jobs
 
 
@@ -724,13 +733,13 @@ def process_results(args):
     """
     Get results from individual files.
     Parse the results and recompile for SQLite.
-  
+
     Args:
         args: (object) argparse object.
     Returns:
-    
+
     Raises:
-    
+
     """
 
     # Metadata table
@@ -813,58 +822,58 @@ def process_results(args):
                         # If the data is of class image, store in the image dictionary
                         elif cols[0] == 'IMAGE':
                             images[cols[1]] = cols[2]
-                    meta['observations'] = outputs.observations
-                        # # If the data is of class shapes, store in the shapes dictionary
-                        # elif cols[0] == 'HEADER_SHAPES':
-                        #     features = cols
-                        # elif cols[0] == 'SHAPES_DATA':
-                        #     for i, datum in enumerate(cols):
-                        #         if i > 0:
-                        #             feature_data[features[i]] = datum
-                        # # If the data is of class histogram/signal, store in the signal dictionary
-                        # elif cols[0] == 'HEADER_HISTOGRAM':
-                        #     signal = cols
-                        # elif cols[0] == 'HISTOGRAM_DATA':
-                        #     signal_measurements = {}
-                        #     for i, datum in enumerate(cols):
-                        #         if i > 0:
-                        #             signal_measurements[signal[i]] = datum
-                        #     signal_data.append(signal_measurements)
-                        # # If the data is of the class color features, store in the hue features dictinoary
-                        # elif cols[0] == 'HEADER_COLOR_FEATURES':
-                        #     hue = cols
-                        # elif cols[0] == 'COLOR_FEATURES_DATA':
-                        #     for i, datum in enumerate(cols):
-                        #         if i > 0:
-                        #             hue_data[hue[i]] = datum
-                        # # If the data is of class boundary (horizontal rule), store in the boundary dictionary
-                        # elif 'HEADER_BOUNDARY' in cols[0]:
-                        #     boundary = cols
-                        # elif cols[0] == 'BOUNDARY_DATA':
-                        #     for i, datum in enumerate(cols):
-                        #         if i > 0:
-                        #             boundary_data[boundary[i]] = datum
-                        # elif 'HEADER_MARKER' in cols[0]:
-                        #     marker = cols
-                        #     # Temporary hack
-                        #     marker[1] = 'marker_area'
-                        # elif 'MARKER_DATA' in cols[0]:
-                        #     for i, datum in enumerate(cols):
-                        #         if i > 0:
-                        #             marker_data[marker[i]] = datum
-                        # elif 'HEADER_WATERSHED' in cols[0]:
-                        #     watershed = cols
-                        #     watershed[1] = 'estimated_object_count'
-                        # elif 'WATERSHED_DATA' in cols[0]:
-                        #     for i, datum in enumerate(cols):
-                        #         if i > 0:
-                        #             watershed_data[watershed[i]] = datum
-                        # elif 'HEADER_LANDMARK' in cols[0]:
-                        #     landmark = cols
-                        # elif 'LANDMARK_DATA' in cols[0]:
-                        #     for i, datum in enumerate(cols):
-                        #         if i > 0:
-                        #             landmark_data[landmark[i]] = datum
+
+                    # # If the data is of class shapes, store in the shapes dictionary
+                    # elif cols[0] == 'HEADER_SHAPES':
+                    #     features = cols
+                    # elif cols[0] == 'SHAPES_DATA':
+                    #     for i, datum in enumerate(cols):
+                    #         if i > 0:
+                    #             feature_data[features[i]] = datum
+                    # # If the data is of class histogram/signal, store in the signal dictionary
+                    # elif cols[0] == 'HEADER_HISTOGRAM':
+                    #     signal = cols
+                    # elif cols[0] == 'HISTOGRAM_DATA':
+                    #     signal_measurements = {}
+                    #     for i, datum in enumerate(cols):
+                    #         if i > 0:
+                    #             signal_measurements[signal[i]] = datum
+                    #     signal_data.append(signal_measurements)
+                    # # If the data is of the class color features, store in the hue features dictinoary
+                    # elif cols[0] == 'HEADER_COLOR_FEATURES':
+                    #     hue = cols
+                    # elif cols[0] == 'COLOR_FEATURES_DATA':
+                    #     for i, datum in enumerate(cols):
+                    #         if i > 0:
+                    #             hue_data[hue[i]] = datum
+                    # # If the data is of class boundary (horizontal rule), store in the boundary dictionary
+                    # elif 'HEADER_BOUNDARY' in cols[0]:
+                    #     boundary = cols
+                    # elif cols[0] == 'BOUNDARY_DATA':
+                    #     for i, datum in enumerate(cols):
+                    #         if i > 0:
+                    #             boundary_data[boundary[i]] = datum
+                    # elif 'HEADER_MARKER' in cols[0]:
+                    #     marker = cols
+                    #     # Temporary hack
+                    #     marker[1] = 'marker_area'
+                    # elif 'MARKER_DATA' in cols[0]:
+                    #     for i, datum in enumerate(cols):
+                    #         if i > 0:
+                    #             marker_data[marker[i]] = datum
+                    # elif 'HEADER_WATERSHED' in cols[0]:
+                    #     watershed = cols
+                    #     watershed[1] = 'estimated_object_count'
+                    # elif 'WATERSHED_DATA' in cols[0]:
+                    #     for i, datum in enumerate(cols):
+                    #         if i > 0:
+                    #             watershed_data[watershed[i]] = datum
+                    # elif 'HEADER_LANDMARK' in cols[0]:
+                    #     landmark = cols
+                    # elif 'LANDMARK_DATA' in cols[0]:
+                    #     for i, datum in enumerate(cols):
+                    #         if i > 0:
+                    #             landmark_data[landmark[i]] = datum
 
                 # Check to see if the image failed, if not continue
 
@@ -951,7 +960,6 @@ def process_results(args):
 ###########################################
 def check_date_range(args, img_time):
     """Check image time versus included date range
-
     :param args: (object) argparse object.
     :param img_time: date-time string
     :return: boolean
@@ -965,6 +973,8 @@ def check_date_range(args, img_time):
         return False
     else:
         return True
+
+
 ###########################################
 
 

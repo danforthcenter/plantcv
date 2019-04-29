@@ -1,6 +1,7 @@
 # Print Numerical Data
 
 import json
+import csv
 from plantcv.plantcv import outputs
 
 
@@ -16,107 +17,45 @@ def print_results(filename):
     # Open a new text file
     # result = open(filename, "a")
 
-    with open(filename, 'w') as outfile:
-        json.dump(outputs.observations, outfile)
+    # with open(filename, 'a') as outfile:
+    #     json.dump(outputs.observations, outfile)
 
-    # # Write data from analyze_bound_horizontal if it was stored
-    # if 'bound_horizontal' in outputs.measurements:
-    #     header = ['HEADER_BOUNDARY_H']
-    #     data = ['BOUNDARY_DATA']
-    #     for k, v in outputs.measurements['bound_horizontal'].items():
-    #         header.append(k)
-    #         data.append(v)
-    #     result.write('\t'.join(map(str, header)) + '\n')
-    #     result.write('\t'.join(map(str, data)) + '\n')
+
+    # hierarchical_data = {}
+    # with open(filename) as feedsjson:
+    #     feeds = json.load(feedsjson)
     #
-    # # Write data from analyze_bound_vertical if it was stored
-    # if 'bound_vertical' in outputs.measurements:
-    #     header = ['HEADER_BOUNDARY_V']
-    #     data = ['BOUNDARY_DATA']
-    #     for k, v in outputs.measurements['bound_vertical'].items():
-    #         header.append(k)
-    #         data.append(v)
-    #     result.write('\t'.join(map(str, header)) + '\n')
-    #     result.write('\t'.join(map(str, data)) + '\n')
+    # hierarchical_data["metadata"] = feeds
+    # hierarchical_data["observations"] = outputs.observations
+    # with open(filename, mode='w') as f:
+    #     json.dump(hierarchical_data, filename)
+
+
+    # with open(filename) as feedsjson:
+    #     feeds = json.load(feedsjson)
     #
-    # # Write data from analyze_color if it was stored
-    # if 'color_data' in outputs.measurements:
-    #     if 'color_features' in outputs.measurements['color_data']:
-    #         header = ['HEADER_COLOR_FEATURES']
-    #         data = ['COLOR_FEATURES_DATA']
-    #         for k, v in outputs.measurements['color_data']['color_features'].items():
-    #             header.append(k)
-    #             data.append(v)
-    #         result.write('\t'.join(map(str, header)) + '\n')
-    #         result.write('\t'.join(map(str, data)) + '\n')
-    #     if 'histograms' in outputs.measurements['color_data']:
-    #         for channel in outputs.measurements['color_data']['histograms']:
-    #             header = ['HEADER_HISTOGRAM', 'channel_name']
-    #             data = ['HISTOGRAM_DATA', channel]
-    #             for k, v in outputs.measurements['color_data']['histograms'][channel].items():
-    #                 header.append(k)
-    #                 data.append(v)
-    #             result.write('\t'.join(map(str, header)) + '\n')
-    #             result.write('\t'.join(map(str, data)) + '\n')
     #
-    # # Write data from analyze_nir_intensity if it was stored
-    # if 'nir_histogram' in outputs.measurements:
-    #     header = ['HEADER_HISTOGRAM', 'channel_name']
-    #     data = ['HISTOGRAM_DATA', 'nir']
-    #     for k, v in outputs.measurements['nir_histogram'].items():
-    #         header.append(k)
-    #         data.append(v)
-    #     result.write('\t'.join(map(str, header)) + '\n')
-    #     result.write('\t'.join(map(str, data)) + '\n')
+    # feeds.update({'observations' : outputs.observations})
+    # with open(filename, mode='w') as f:
+    #     f.write(json.dumps(feeds, indent=2))
+
+
+    meta_data = []
+
+    with open(filename, 'r') as f:
+        reader = csv.reader(f, dialect='excel', delimiter='\t')
+        for row in reader:
+            meta_data.append(row)
+
+    hierarchical_data = {}
+    hierarchical_data['metadata'] = {}
+    hierarchical_data['observations'] = outputs.observations
+
+    for i, item in enumerate(meta_data):
+        if item[0] == "META":
+            hierarchical_data['metadata'][item[1]] = item[2]
+
+    with open(filename, mode='w') as f:
+        json.dump(hierarchical_data, filename)
     #
-    # # Write data from analyze_object if it was stored
-    # if 'shapes' in outputs.measurements:
-    #     header = ['HEADER_SHAPES']
-    #     data = ['SHAPES_DATA']
-    #     for k, v in outputs.measurements['shapes'].items():
-    #         header.append(k)
-    #         data.append(v)
-    #     result.write('\t'.join(map(str, header)) + '\n')
-    #     result.write('\t'.join(map(str, data)) + '\n')
-    #
-    # # Write data from fluor_fvfm if it was stored
-    # if 'fvfm' in outputs.measurements:
-    #     header = ['HEADER_HISTOGRAM']
-    #     data = ['HISTOGRAM_DATA']
-    #     for k, v in outputs.measurements['fvfm'].items():
-    #         header.append(k)
-    #         data.append(v)
-    #     result.write('\t'.join(map(str, header)) + '\n')
-    #     result.write('\t'.join(map(str, data)) + '\n')
-    #
-    # # Write data from landmark_reference, acute_vertex, scale_features if it was stored
-    # if 'landmark_reference' in outputs.measurements:
-    #     header = ['HEADER_LANDMARK']
-    #     data = ['LANDMARK_DATA']
-    #     for k, v in outputs.measurements['landmark_reference'].items():
-    #         header.append(k)
-    #         data.append(v)
-    #     result.write('\t'.join(map(str, header)) + '\n')
-    #     result.write('\t'.join(map(str, data)) + '\n')
-    #
-    # # Write data from report_size_marker if it was stored
-    # if 'size_marker' in outputs.measurements:
-    #     header = ['HEADER_MARKER']
-    #     data = ['MARKER_DATA']
-    #     for k, v in outputs.measurements['size_marker'].items():
-    #         header.append(k)
-    #         data.append(v)
-    #     result.write('\t'.join(map(str, header)) + '\n')
-    #     result.write('\t'.join(map(str, data)) + '\n')
-    #
-    # # Write data from watershed if it was stored
-    # if 'watershed' in outputs.measurements:
-    #     header = ['HEADER_WATERSHED']
-    #     data = ['WATERSHED_DATA']
-    #     for k, v in outputs.measurements['watershed'].items():
-    #         header.append(k)
-    #         data.append(v)
-    #     result.write('\t'.join(map(str, header)) + '\n')
-    #     result.write('\t'.join(map(str, data)) + '\n')
-    #
-    # result.close()
+    # filename.close()
