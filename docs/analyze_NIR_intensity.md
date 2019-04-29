@@ -29,13 +29,16 @@ the values out to a file. Can also print out a histogram plot of pixel intensity
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 
 pcv.params.debug = "print"
 
-# Caclulates the proportion of pixels that fall into a signal bin and writes the values to a file. Also provides a histogram of this data
-hist_header, hist_data, analysis_images  = pcv.analyze_nir_intensity(gray_img, mask, 256, histplot=True)
-
+# Caclulates the proportion of pixels that fall into a signal bin and writes the values to a file. 
+# Also provides a histogram of this data
+hist_header, hist_data, analysis_images  = pcv.analyze_nir_intensity(gray_img, mask, 
+                                                                     256, histplot=True)
+                                                                     
 ```
 
 

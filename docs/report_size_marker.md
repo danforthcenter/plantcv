@@ -35,14 +35,18 @@ Get and record the size of a size marker or set an area as a size marker.
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Define an ROI for the marker
 roi_contour, roi_hierarchy = pcv.roi.rectangle(3550, 850, 500, 500, img1)
 
 # Detect and Measure Size Marker
-marker_header, marker_data, image = pcv.report_size_marker_area(img1, roi_contour, roi_hierarchy, marker='detect', objcolor='light', thresh_channel='s', thresh=120)
+marker_header, marker_data, image = pcv.report_size_marker_area(img1, roi_contour, roi_hierarchy, 
+                                                                marker='detect', objcolor='light', 
+                                                                thresh_channel='s', thresh=120)
+
 ```
 
 **Area selected to detect size markers**

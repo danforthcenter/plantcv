@@ -27,4 +27,5 @@ are missing, and average signal data (by timestamp) Requires a PlantCV SQLite da
 
 ```
 ~/plantcv/utils/db-exporter-pcv2.py -d ~/plantcv.db.sqlite3 -o test-db.csv -f 'filter' -a 3 -i 'BOTH' -s True -n True -v True -D
+
 ```

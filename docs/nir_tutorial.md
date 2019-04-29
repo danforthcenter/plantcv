@@ -42,6 +42,7 @@ Sample command to run a pipeline on a single image:
 
 ```
 ./pipelinename.py -i /home/user/images/testimg.png -o /home/user/output-images -D 'print'
+
 ```
 
 
@@ -66,6 +67,7 @@ def options():
     parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.", action="store_true")
     args = parser.parse_args()
     return args
+    
 ```
 
 #### Start of the Main/Customizable portion of the pipeline.
@@ -91,6 +93,7 @@ def main():
     
     # Read in image which is the pixelwise average of background images
     img_bkgrd = cv2.imread("background_nir_z2500.png", flags=0)
+    
 ```
 
 **Figure 1.** (Top) Original image. (Bottom) Background average image.
@@ -141,6 +144,7 @@ pcv.visualize.histogram(lp_img)
 lp_shrp_img = pcv.image_subtract(img, lp_img)
 # Plot histogram of grayscale values, this helps to determine thresholding value 
 pcv.visualize.histogram(lp_sharp_img)
+
 ```
 
 **Figure 3.** (Top) Result after second derivative Laplacian filter is applied to the original grayscale image.
@@ -165,6 +169,7 @@ sby_img = pcv.sobel_filter(img, 0, 1, 1)
 # Combine the effects of both x and y filters through matrix addition
 # This will capture edges identified within each plane and emphasize edges found in both images
 sb_img = pcv.image_add(sbx_img, sby_img)
+
 ```
 
 **Figure 4.** From top to bottom: Result after first derivative Sobel filter is applied to the x-axis of the original image;
@@ -194,6 +199,7 @@ edge_shrp_img = pcv.image_add(mblur_invert_img, lp_shrp_img)
 
 # Perform thresholding to generate a binary image
 tr_es_img = pcv.threshold.binary(edge_shrp_img, 145, 255, 'dark')
+
 ```
 
 **Figure 5.** From top to bottom: Median blur;
@@ -218,6 +224,7 @@ Next, we [erode](erode.md) the image to reduce noise.
 ```python
 # Do erosion with a 3x3 kernel (ksize=3)
 e1_img = pcv.erode(tr_es_img, 3, 1)
+
 ```
 
 **Figure 6.** Erosion with a 3x3 kernel.
@@ -237,6 +244,7 @@ comb_img = pcv.logical_or(e1_img, bkg_sub_thres_img)
 
 # Get masked image, Essentially identify pixels corresponding to plant and keep those.
 masked_erd = pcv.apply_mask(img, comb_img, 'black')
+
 ```
 
 **Figure 7.** (Top) Logical join between binary images.
@@ -263,6 +271,7 @@ masked2, box2_img, rect_contour2, hierarchy2 = pcv.rectangle_mask(img, (1,1), (8
 masked3, box3_img, rect_contour3, hierarchy3 = pcv.rectangle_mask(img, (240,1), (318,252))
 # mask the edges
 masked4, box4_img, rect_contour4, hierarchy4 = pcv.rectangle_mask(img, (1,1), (318,252))
+
 ```
 
 **Figure 8.** Use rectangle masks to remove parts of the image.
@@ -291,6 +300,7 @@ bx1234_img = pcv.logical_or(bx123_img, box4_img)
 # invert this mask and then apply it the masked image.
 inv_bx1234_img = pcv.invert(bx1234_img)
 edge_masked_img = pcv.apply_mask(masked_erd, inv_bx1234_img, 'black')
+
 ```
 
 **Figure 9.** (Top) Combined background masks after inversion. (Bottom) Masked image from above after masking with background mask.
@@ -313,6 +323,7 @@ roi1, roi_hierarchy= pcv.roi.rectangle(img=edge_masked_img, x=100, y=100, h=200,
 
 # Decide which objects to keep
 roi_objects, hierarchy5, kept_mask, obj_area = pcv.roi_objects(edge_masked_img, 'partial', roi1, roi_hierarchy, id_objects, obj_hierarchy)
+
 ```
 
 **Figure 10.** (Top) Select an area where you expect the plant to be.
@@ -327,6 +338,7 @@ We can use the [object composition](object_composition.md) function to outline t
 ```python
 rgb_img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
 o, m = pcv.object_composition(rgb_img, roi_objects, hierarchy5)
+
 ```
 
 **Figure 11.** This is an outline of the contours of the captured plant drawn onto the original image.
@@ -366,6 +378,7 @@ pcv.print_results(filename=args.result)
 # Call program
 if __name__ == '__main__':
     main()
+    
 ```
 
 **Figure 12.** From top to bottom: A image of the object pseudocolored by signal intensity (darker green is more black, yellow is more white); 
@@ -385,6 +398,7 @@ In the terminal:
 
 ```
 ./pipelinename.py -i /home/user/images/testimg.png -o /home/user/output-images -D 'print'
+
 ```
 
 *  Always test pipelines (preferably with -D flag set to 'print') before running over a full image set
@@ -526,4 +540,5 @@ def main():
 # Call program
 if __name__ == '__main__':
     main()
+    
 ```

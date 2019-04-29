@@ -37,6 +37,7 @@ Also see our tutorials for more detailed overviews of using PlantCV for specific
 * [PSII Image Processing](psII_tutorial.md)
 * [VIS / NIR Dual Pipelines](vis_nir_tutorial.md)
 * [Multi Plant Image Processing](multi-plant_tutorial.md)
+* [Morphology Package](morphology_tutorial.md) 
 * [Machine Learning Tutorial](machine_learning_tutorial.md)
 * [Parallel Image Processing](pipeline_parallel.md)
 * [Exporting Data for Downstream Analysis](db-exporter.md)
@@ -44,7 +45,11 @@ Also see our tutorials for more detailed overviews of using PlantCV for specific
 We have added interactive documentation (the link takes up to a few minutes to load so be patient please),
 so you can test out pipelines and even upload your own images to test on.
 
+## Interactive Tutorials 
+
 * [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=index.ipynb) Check out our interactive tutorials! 
+
+## Contributing 
 
 If you are interested in contributing to PlantCV, please see:
 

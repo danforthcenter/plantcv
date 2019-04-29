@@ -71,6 +71,7 @@ from plantcv import plantcv as pcv
 # Set variables
 debug = 'plot'                                # Plot debug images to the notebook
 img_file = 'input_color_img.jpg'              # Example image
+
 ```
 
 Not all of these imports are required, this is just to demonstrate that
@@ -108,6 +109,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+    
 ```
 
 Add a function for parsing command line options using [argparse](https://docs.python.org/2.7/library/argparse.html).
@@ -125,6 +127,7 @@ def options():
     parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.")
     args = parser.parse_args()
     return args
+    
 ```
 
 If the script analyzes two images using co-processing, the options
@@ -141,6 +144,7 @@ def options():
     parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.")
     args = parser.parse_args()
     return args
+    
 ```
 
 Within the `main` function, call the `options` function to get the
@@ -156,6 +160,7 @@ def main():
     device = 0
     debug = args.debug        # Replace the hard-coded debug with the debug flag
     img_file = args.image     # Replace the hard-coded input image with image flag
+    
 ```
 
 Make any other alterations as necessary after testing. Based on the
@@ -193,4 +198,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+    
 ```

@@ -22,12 +22,15 @@ ave_horizontal_distance_from_baseline, ave_euclidean_distance_from_baseline, ave
 ```python
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Identify acute vertices (tip points) of an object
 # Results in set of point values that may indicate tip points
-landmark_header, landmark_data = pcv.landmark_reference_pt_dist(points_r, centroid_r, bline_r)
+landmark_header, landmark_data = pcv.landmark_reference_pt_dist(points_r, centroid_r, 
+                                                                bline_r)
+
 ```
 
 **Representation of many data points collected in two treatment blocks throughout time**

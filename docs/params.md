@@ -18,10 +18,14 @@ Attributes are accessed as plantcv.*attribute*.
 
 **debug_outdir**: The directory to output debug images to when `plantcv.debug` = "print".
 
-**line_thickness**: The line thickness for plots created by [pcv.analyze_object](analyze_shape.md), [pcv.analyze_bound_horizontal](analyze_bound_horizontal.md).
-[pcv.analyze_bound_vertical](analyze_bound_vertical.md), [pcv.roi_objects](roi_objects.md), [pcv.object_composition](object_composition.md),
-[pcv.scale_features](scale_features.md), [pcv.x_axis_pseudolandmarks](x_axis_pseudolandmarks.md), [y_axis_pseudolandmarks](y_axis_pseudolandmarks.md),
-[pcv.acute_vertex](acute_vertex.md) and every region of interest function. Default = 5. 
+**line_thickness**: The line thickness for plots created by [plantcv.analyze_object](analyze_shape.md), [plantcv.analyze_bound_horizontal](analyze_bound_horizontal.md).
+[plantcv.analyze_bound_vertical](analyze_bound_vertical.md), [plantcv.roi_objects](roi_objects.md), [plantcv.object_composition](object_composition.md),
+[plantcv.scale_features](scale_features.md), [plantcv.x_axis_pseudolandmarks](x_axis_pseudolandmarks.md), [plantcv.y_axis_pseudolandmarks](y_axis_pseudolandmarks.md),
+[plantcv.acute_vertex](acute_vertex.md), [plantcv.morphology.prune](prune.md), [plantcv.morphology.find_branch_pts](find_branch_pts.md), [plantcv.morphology.check_cycles](check_cycles.md),
+ [plantcv.morphology.find_tips](find_tips.md), [plantcv.morphology.segment_skeleton](segment_skeleton.md), [plantcv.morphology.segment_tangent_angle](segment_tangent_angle.md),
+ [plantcv.morphology.segment_id](segment_id.md), and every region of interest function. Default = 5. 
+
+**dpi**: Dots per inch for plotting debugging images. 
 
 ### Example
 
@@ -44,7 +48,7 @@ roi_contour, roi_hierarchy = pcv.roi.rectangle(x=100, y=100, h=200, w=200, img=i
 
 # It might be preferred to have a thicker or thinner line drawn depending on the size of the image.
 # Change line thickness from the default (5) to make it thinner, and plot the rectangular ROI again,  
-# (note: this won't change the returns but instead is a purely optional preference regarding the plot in debug='print' and debug='plot') 
+# (note: this won't change the returns for most functions but instead is a purely optional preference regarding the plot in debug='print' and debug='plot') 
 pcv.params.line_thickness = 3 
 roi_contour, roi_hierarchy = pcv.roi.rectangle(x=100, y=100, h=200, w=200, img=img)
 

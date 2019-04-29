@@ -19,7 +19,8 @@ Identifies objects and fills objects that are less than specified size
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Apply fill to a binary image that has had a median blur applied.
@@ -28,6 +29,7 @@ pcv.params.debug = "print"
 binary_img = pcv.median_blur(img, 5)
 
 fill_image = pcv.fill(binary_img, 200)
+
 ```
 
 **Binary image with [median blur](median_blur.md)**

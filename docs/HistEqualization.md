@@ -19,12 +19,14 @@ If the image has low contrast it will make it easier to threshold.
 ```python
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Examine signal distribution within an image
 # prints out an image histogram of signal within image
 he_img = pcv.hist_equalization(gray_img)
+
 ```
 
 **Normalized image**

@@ -45,6 +45,7 @@ Sample command to run a pipeline on a single image:
 
 ```
 ./pipelinename.py -i testimg.png -o ./output-images -r results.txt -w -D 'print'
+
 ```
 
 ### Walk Through A Sample Pipeline
@@ -71,6 +72,7 @@ def options():
     parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.", default=None)
     args = parser.parse_args()
     return args
+    
 ```
 
 #### Start of the Main/Customizable portion of the pipeline.
@@ -88,6 +90,7 @@ def main():
     
     # Read image
     img, path, filename = pcv.readimage(args.image)
+    
 ```
 
 **Figure 1.** Original image.
@@ -105,6 +108,7 @@ If some of the plant is missed or not visible then thresholded channels may be c
 ```python    
     # Convert RGB to HSV and extract the saturation channel
     s = pcv.rgb2gray_hsv(img, 's')
+    
 ```
 
 **Figure 2.** Saturation channel from original RGB image converted to HSV color space.
@@ -119,6 +123,7 @@ Tip: This step is often one that needs to be adjusted depending on the lighting 
 ```python
     # Threshold the Saturation image
     s_thresh = pcv.threshold.binary(s, 30, 255, 'light')
+    
 ```
 
 **Figure 3.** Thresholded saturation channel image (Figure 2). Remaining objects are in white.
@@ -135,6 +140,7 @@ you can lose plant material with a median blur that is too harsh.
     # Median Blur
     s_mblur = pcv.median_blur(s_thresh, 5)
     s_cnt = pcv.median_blur(s_thresh, 5)
+    
 ```
 
 **Figure 4.** Thresholded saturation channel image with median blur.
@@ -152,6 +158,7 @@ This image is again thresholded and there is an optional [fill](fill.md) step th
     # Threshold the blue image
     b_thresh = pcv.threshold.binary(b, 129, 255, 'light')
     b_cnt = pcv.threshold.binary(b, 19, 255, 'light')
+    
 ```
 
 **Figure 5.** (Top) Blue-yellow channel from LAB color space from original image. (Bottom) Thresholded blue-yellow channel image.
@@ -165,6 +172,7 @@ Join the binary images from Figure 4 and Figure 5 with the [logical and](logical
 ```python
     # Join the thresholded saturation and blue-yellow images
     bs = pcv.logical_and(s_mblur, b_cnt)
+    
 ```
 
 **Figure 6.** Joined binary images (Figure 4 and Figure 5).
@@ -177,6 +185,7 @@ The purpose of this mask is to exclude as much background with simple thresholdi
 ```python
     # Apply Mask (for VIS images, mask_color=white)
     masked = pcv.apply_mask(img, bs, 'white')
+    
 ```
 
 **Figure 7.** Masked image with background removed.
@@ -188,6 +197,7 @@ Now we need to [identify the objects](find_objects.md) (called contours in OpenC
 ```python
     # Identify objects
     id_objects,obj_hierarchy = pcv.find_objects(masked, bs)
+    
 ```
 
 **Figure 8.** Here the objects (purple) are identified from the image from Figure 10.
@@ -200,6 +210,7 @@ Next, a [rectangular region of interest](roi_rectangle.md) is defined (this can 
 ```python
     # Define ROI
     roi1, roi_hierarchy= pcv.roi.rectangle(img,600,450,-600,-700)
+    
 ```
 
 **Figure 9.** Region of interest drawn onto image. 
@@ -212,6 +223,7 @@ or cut the objects to the shape of the [region of interest](roi_objects.md).
 ```python
     # Decide which objects to keep
     roi_objects, hierarchy, kept_mask, obj_area = pcv.roi_objects(img,'partial',roi1,roi_hierarchy,id_objects,obj_hierarchy)
+
 ```
 
 **Figure 10.** Kept objects (green) drawn onto image.
@@ -227,6 +239,7 @@ one object using the [combine objects](object_composition.md) function.
 ```python
     # Object combine kept objects
     obj, mask = pcv.object_composition(img, roi_objects, hierarchy)
+    
 ```
 
 **Figure 11.** Outline (blue) of combined objects on the image. 
@@ -257,6 +270,7 @@ The next step is to analyze the plant object for traits such as [horizontal heig
     
     # Will will print out results again, so clear the outputs before running NIR analysis 
     pcv.outputs.clear()
+    
 ```
 
 **Figure 12.** Shape analysis output image.
@@ -282,6 +296,7 @@ The next step is to [get the matching NIR](get_nir.md) image, [resize](resize.md
     nmask = pcv.resize(mask, 0.28,0.28)
 
     newmask = pcv.crop_position_mask(nir,nmask,40,3,"top","right")
+    
 ```
 
 **Figure 15.** Resized image.
@@ -294,6 +309,7 @@ The next step is to [get the matching NIR](get_nir.md) image, [resize](resize.md
 
 ```python
     nir_objects, nir_hierarchy = pcv.find_objects(nir, newmask)
+    
 ```
 
 **Figure 17.** Find objects.
@@ -303,6 +319,7 @@ The next step is to [get the matching NIR](get_nir.md) image, [resize](resize.md
 ```python
     #combine objects
     nir_combined, nir_combinedmask = pcv.object_composition(nir, nir_objects, nir_hierarchy)
+    
 ```
 
 **Figure 18.** Combine objects.
@@ -319,6 +336,7 @@ The next step is to [get the matching NIR](get_nir.md) image, [resize](resize.md
     # Plot out the image with shape data
     shape_image = nir_imgs[0]
     pcv.plot_image(shape_image)
+    
 ```
 
 **Figure 19.** NIR signal histogram.
@@ -336,6 +354,7 @@ Write co-result data out to a file.
     
 if __name__ == '__main__':
     main()
+    
 ```
 
 To deploy a pipeline over a full image set please see tutorial on 
@@ -346,6 +365,7 @@ In the terminal:
 
 ```
 ./pipelinename.py -i testimg.png -o ./output-images -r results.txt -w -D 'print'
+
 ```
 
 *  Always test pipelines (preferably with -D flag set to 'print') before running over a full image set
@@ -464,4 +484,5 @@ def main():
     
 if __name__ == '__main__':
   main()
+  
 ```

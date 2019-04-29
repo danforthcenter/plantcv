@@ -29,11 +29,13 @@ Combine objects together for downstream analysis, usually done after object filt
 ```python
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Combine objects so downstream analysis can be run on a single plant object
 obj, mask = pcv.object_composition(img, roi_objects, hierarchy)
+
 ```
 
 **Combined contours**

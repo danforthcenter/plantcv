@@ -23,11 +23,13 @@ Rotates image without changing the dimensions of the image.
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Rotate image
 device, rotate_img = pcv.rotate(img, 10, True)
+
 ```
 
 **Image after rotating 10 degrees**
@@ -38,11 +40,13 @@ device, rotate_img = pcv.rotate(img, 10, True)
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Rotate image
 rotate_img = pcv.rotate(img, -10, False)
+
 ```
 
 **Image after rotating -10 degrees**

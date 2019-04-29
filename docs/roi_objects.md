@@ -32,11 +32,14 @@ completely within the image.
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # ROI objects allows the user to define if objects partially inside ROI are included or if objects are cut to ROI.
-roi_objects, hierarchy, kept_mask, obj_area = pcv.roi_objects(img, 'partial', roi, roi_hierarchy, objects, obj_hierarchy)
+roi_objects, hierarchy, kept_mask, obj_area = pcv.roi_objects(img, 'partial', roi, roi_hierarchy, 
+                                                              objects, obj_hierarchy)
+
 ```
 
 **Object (green) that is identified as partially inside ROI**

@@ -23,12 +23,14 @@ This is a filtering method used to identify and highlight fine edges based on th
 ```python
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Apply to a grayscale image
 # Filtered image will highlight areas of rapid pixel intensity change
 lp_img = pcv.laplace_filter(gray_img, 1, 1)
+
 ```
 
 **Image after Laplace filter**

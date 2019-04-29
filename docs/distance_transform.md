@@ -23,12 +23,14 @@ Perform distance transform on binary image
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Perform dilation
 # Results in addition of pixels to the boundary of object
 distance_transform_img = pcv.distance_transform(mask, 1, 3)
+
 ```
 
 **Image after distance transform**

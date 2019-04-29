@@ -82,6 +82,20 @@ nav:
       - 'Logical Operations-Or': logical_or.md
       - 'Logical Operations-XOr': logical_xor.md
     - 'Median Blur': median_blur.md
+    - 'Morphology Functions':
+      - 'Check Cycles': check_cycles.md
+      - 'Find Branches': morph_find_branches.md
+      - 'Find Tips': find_tips.md
+      - 'Prune': prune.md
+      - 'Segment Angles': segment_angles.md
+      - 'Segment Curvature': segment_curvature.md
+      - 'Segment Euclidean Length': segment_euclidean_length.md
+      - 'Segment ID': segment_id.md
+      - 'Segment Path Length': segment_pathlength.md
+      - 'Segment Skeleton': segment_skeleton.md
+      - 'Segment Sort': segment_sort.md
+      - 'Segment Tangent Angle': segment_tangent_angle.md
+      - 'Skeletonize': skeletonize.md
     - 'Naive Bayes Classifier': naive_bayes_classifier.md
     - 'Object Composition': object_composition.md
     - 'Opening': opening.md

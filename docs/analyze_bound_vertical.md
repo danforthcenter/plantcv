@@ -32,11 +32,13 @@ best if the pot size/position of the plant remains relatively constant.
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Set Boundary Line    
-boundary_header, boundary_data, boundary_images = pcv.analyze_bound_vertical(img, obj, mask, 1000)
+bound_header, bound_data, bound_images = pcv.analyze_bound_vertical(img, obj, mask, 1000)
+
 ```
 
 **Boundary tool output image (x = 1000)**

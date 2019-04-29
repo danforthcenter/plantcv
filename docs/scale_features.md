@@ -23,12 +23,15 @@ Scaling is used to remove the influence of size on shape parameters. Returns a l
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Identify acute vertices (tip points) of an object
 # Results in set of point values that may indicate tip points
-points_rescaled, centroid_rescaled, bottomline_rescaled = pcv.scale_features(obj, mask, landmark_points, boundary_line_position)
+points_rescaled, centroid_rescaled, base_rescaled = pcv.scale_features(obj, mask, landmark_points, 
+                                                                       boundary_line_position)
+                                                                       
 ```
 
 **Image of rescaled points in white, centroid is in gold and centroid at pot base is in blue**

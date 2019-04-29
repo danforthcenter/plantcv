@@ -20,9 +20,11 @@ Write image and mask with the same name to the path specified (creates two folde
 
 from plantcv import plantcv as pcv      
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
-maskpath, analysis_images = pcv.output_mask(img, mask, 'test.png', '/home/user/images', mask_only=True)
+maskpath, analysis_images = pcv.output_mask(img, mask, 'test.png', 
+                                            '/home/user/images', mask_only=True)
 
 ```

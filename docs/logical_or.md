@@ -28,12 +28,15 @@ This is a wrapper for the Opencv Function [bitwise_or](http://docs.opencv.org/2.
 ```python
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Combine two images that have had different thresholds applied to them.
-# For logical 'or' operation object pixel in either image object will be included in 'or' image.
+# For logical 'or' operation object pixel in either image object 
+# will be included in 'or' image.
 ab = pcv.logical_or(maskeda_thresh, maskedb_thresh)
+
 ```
 
 **Combined image**
