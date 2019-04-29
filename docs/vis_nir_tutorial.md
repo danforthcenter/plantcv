@@ -45,6 +45,7 @@ Sample command to run a pipeline on a single image:
 
 ```
 ./pipelinename.py -i testimg.png -o ./output-images -r results.txt -w -D 'print'
+
 ```
 
 ### Walk Through A Sample Pipeline
@@ -364,6 +365,7 @@ In the terminal:
 
 ```
 ./pipelinename.py -i testimg.png -o ./output-images -r results.txt -w -D 'print'
+
 ```
 
 *  Always test pipelines (preferably with -D flag set to 'print') before running over a full image set

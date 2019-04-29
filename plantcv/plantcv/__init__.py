@@ -16,17 +16,15 @@ class Params:
     :param debug: str
     :param debug_outdir: str
     :param line_thickness: numeric
-    :param line_color: tuple
-    :param fill_color: tuple
+    :param dpi: int
     """
 
-    def __init__(self, device=0, debug=None, debug_outdir=".", line_thickness=5, line_color=None , fill_color=None):
+    def __init__(self, device=0, debug=None, debug_outdir=".", line_thickness=5, dpi=100):
         self.device = device
         self.debug = debug
         self.debug_outdir = debug_outdir
         self.line_thickness = line_thickness
-        self.line_color = line_color
-        self.fill_color = fill_color
+        self.dpi = dpi
 
 
 class Outputs:
@@ -98,7 +96,6 @@ from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.print_image import print_image
 from plantcv.plantcv.plot_image import plot_image
 from plantcv.plantcv.color_palette import color_palette
-# from plantcv.plantcv.plot_colorbar import plot_colorbar
 from plantcv.plantcv.apply_mask import apply_mask
 from plantcv.plantcv.readimage import readimage
 from plantcv.plantcv.readbayer import readbayer
@@ -160,6 +157,7 @@ from plantcv.plantcv import roi
 from plantcv.plantcv import threshold
 from plantcv.plantcv import transform
 from plantcv.plantcv import visualize
+from plantcv.plantcv import morphology
 
 
 # add new functions to end of lists
@@ -168,7 +166,7 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'apply_m
            'readbayer', 'laplace_filter', 'sobel_filter', 'scharr_filter', 'hist_equalization', 'erode',
            'image_add', 'image_subtract', 'dilate', 'watershed', 'rectangle_mask', 'rgb2gray_hsv', 'rgb2gray_lab',
            'rgb2gray', 'median_blur', 'fill', 'invert', 'logical_and', 'logical_or', 'logical_xor',
-           'find_objects', 'roi_objects', 'transform', 'object_composition', 'analyze_object',
+           'find_objects', 'roi_objects', 'transform', 'object_composition', 'analyze_object', 'morphology',
            'analyze_bound_horizontal', 'analyze_bound_vertical', 'analyze_color', 'analyze_nir_intensity',
            'fluor_fvfm', 'print_results', 'resize', 'flip', 'crop_position_mask', 'get_nir', 'report_size_marker_area',
            'white_balance', 'acute_vertex', 'scale_features', 'landmark_reference_pt_dist', 'outputs',

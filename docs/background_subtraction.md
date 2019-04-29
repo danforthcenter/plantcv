@@ -35,12 +35,14 @@ Requires cv2 version 3.0+
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 
 pcv.params.debug = "print"
 
-# Create a foreground mask from both images using cv2.BackgroundSubtractorMOG2().
+# Create a foreground mask from both images 
 fgmask = pcv.background_subtraction(foreground_image, background_image)
+
 ```
 
 **Foreground Mask**

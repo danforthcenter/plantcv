@@ -19,9 +19,11 @@ Reads image into numpy ndarray and splits the path and image filename. This is a
 ```python
 from plantcv import plantcv as pcv      
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 #read in image
 img, path, img_filename = pcv.readbayer("home/user/images/test-image.tiff")
+
 ```

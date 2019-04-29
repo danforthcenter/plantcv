@@ -748,21 +748,23 @@ def process_results(args):
     metadata_fields.append("image")
     # args.metadata_file.write('#' + '\t'.join(map(str, metadata_fields)) + '\n')
 
-    # # Feature data table
-    # feature_fields = ['area', 'hull-area', 'solidity', 'perimeter', 'width', 'height',
-    #                   'longest_axis', 'center-of-mass-x', 'center-of-mass-y', 'hull_vertices',
-    #                   'in_bounds', 'ellipse_center_x', 'ellipse_center_y', 'ellipse_major_axis',
-    #                   'ellipse_minor_axis', 'ellipse_angle', 'ellipse_eccentricity']
-    # opt_feature_fields = ['horizontal_line_position', 'height_above_bound', 'height_below_bound',
-    #                       'above_bound_area', 'percent_above_bound_area', 'below_bound_area',
-    #                       'percent_below_bound_area']
-    # hue_feature_fields = ['hue_circular_mean', 'hue_circular_std', 'hue_median']
-    # marker_fields = ['marker_area', 'marker_major_axis_length', 'marker_minor_axis_length', 'marker_eccentricity']
-    # watershed_fields = ['estimated_object_count']
-    # landmark_fields = ['tip_points', 'tip_points_r', 'centroid_r', 'baseline_r', 'tip_number', 'vert_ave_c',
-    #                    'hori_ave_c', 'euc_ave_c', 'ang_ave_c', 'vert_ave_b', 'hori_ave_b', 'euc_ave_b', 'ang_ave_b',
-    #                    'left_lmk', 'right_lmk', 'center_h_lmk', 'left_lmk_r', 'right_lmk_r', 'center_h_lmk_r',
-    #                    'top_lmk', 'bottom_lmk', 'center_v_lmk', 'top_lmk_r', 'bottom_lmk_r', 'center_v_lmk_r']
+    # Feature data table
+    feature_fields = ['area', 'hull-area', 'solidity', 'perimeter', 'width', 'height',
+                      'longest_axis', 'center-of-mass-x', 'center-of-mass-y', 'hull_vertices',
+                      'in_bounds', 'ellipse_center_x', 'ellipse_center_y', 'ellipse_major_axis',
+                      'ellipse_minor_axis', 'ellipse_angle', 'ellipse_eccentricity']
+    opt_feature_fields = ['horizontal_line_position', 'height_above_bound', 'height_below_bound',
+                          'above_bound_area', 'percent_above_bound_area', 'below_bound_area',
+                          'percent_below_bound_area']
+    hue_feature_fields = ['hue_circular_mean', 'hue_circular_std', 'hue_median']
+    marker_fields = ['marker_area', 'marker_major_axis_length', 'marker_minor_axis_length', 'marker_eccentricity']
+    watershed_fields = ['estimated_object_count']
+    landmark_fields = ['tip_points', 'tip_points_r', 'centroid_r', 'baseline_r', 'tip_number', 'vert_ave_c',
+                       'hori_ave_c', 'euc_ave_c', 'ang_ave_c', 'vert_ave_b', 'hori_ave_b', 'euc_ave_b', 'ang_ave_b',
+                       'left_lmk', 'right_lmk', 'center_h_lmk', 'left_lmk_r', 'right_lmk_r', 'center_h_lmk_r',
+                       'top_lmk', 'bottom_lmk', 'center_v_lmk', 'top_lmk_r', 'bottom_lmk_r', 'center_v_lmk_r']
+    morphology_fields = ['num_cycles', 'segment_angles', 'segment_curvature', 'segment_insertion_angles'
+                          'segment_eu_lengths', 'segment_tan_angles', 'segment_path_lengths']
 
     # args.features_file.write('#' + '\t'.join(map(str, feature_fields + opt_feature_fields)) + '\n')
 
@@ -776,10 +778,10 @@ def process_results(args):
     args.sq.execute(
         'CREATE TABLE IF NOT EXISTS `metadata` (`image_id` INTEGER PRIMARY KEY, `run_id` INTEGER NOT NULL, `' +
         '` TEXT NOT NULL, `'.join(map(str, metadata_fields[2:])) + '` TEXT NOT NULL);')
-    # args.sq.execute(
-    #     'CREATE TABLE IF NOT EXISTS `features` (`image_id` INTEGER PRIMARY KEY, `' + '` TEXT NOT NULL, `'.join(
-    #         map(str, feature_fields + opt_feature_fields + marker_fields + watershed_fields + landmark_fields + hue_feature_fields)
-    #     ) + '` TEXT NOT NULL);')
+    args.sq.execute(
+        'CREATE TABLE IF NOT EXISTS `features` (`image_id` INTEGER PRIMARY KEY, `' + '` TEXT NOT NULL, `'.join(
+            map(str, feature_fields + opt_feature_fields + marker_fields + watershed_fields + landmark_fields + hue_feature_fields + morphology_fields)
+        ) + '` TEXT NOT NULL);')
     args.sq.execute(
         'CREATE TABLE IF NOT EXISTS `analysis_images` (`image_id` INTEGER NOT NULL, `type` TEXT NOT NULL, '
         '`image_path` TEXT NOT NULL);')
@@ -794,20 +796,22 @@ def process_results(args):
             if 'text/plain' in mimetypes.guess_type(filename):
                 meta = {}
                 images = {}
-                # features = []
-                # feature_data = {}
-                # signal = []
-                # signal_data = []
-                # boundary = []
-                # boundary_data = {}
-                # marker = []
-                # marker_data = {}
-                # watershed = []
-                # watershed_data = {}
-                # landmark = []
-                # landmark_data = {}
-                # hue = []
-                # hue_data = {}
+                features = []
+                feature_data = {}
+                signal = []
+                signal_data = []
+                boundary = []
+                boundary_data = {}
+                marker = []
+                marker_data = {}
+                watershed = []
+                watershed_data = {}
+                landmark = []
+                landmark_data = {}
+                hue = []
+                hue_data = {}
+                morphology_data = {}
+
                 # Open results file
                 with open(os.path.join(dirpath, filename)) as results:
                     # For each line in the file
@@ -822,58 +826,92 @@ def process_results(args):
                         # If the data is of class image, store in the image dictionary
                         elif cols[0] == 'IMAGE':
                             images[cols[1]] = cols[2]
+                        # If the data is of class shapes, store in the shapes dictionary
+                        elif cols[0] == 'HEADER_SHAPES':
+                            features = cols
+                        elif cols[0] == 'SHAPES_DATA':
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    feature_data[features[i]] = datum
+                        # If the data is of class histogram/signal, store in the signal dictionary
+                        elif cols[0] == 'HEADER_HISTOGRAM':
+                            signal = cols
+                        elif cols[0] == 'HISTOGRAM_DATA':
+                            signal_measurements = {}
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    signal_measurements[signal[i]] = datum
+                            signal_data.append(signal_measurements)
+                        # If the data is of the class color features, store in the hue features dictinoary
+                        elif cols[0] == 'HEADER_COLOR_FEATURES':
+                            hue = cols
+                        elif cols[0] == 'COLOR_FEATURES_DATA':
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    hue_data[hue[i]] = datum
+                        # If the data is of class boundary (horizontal rule), store in the boundary dictionary
+                        elif 'HEADER_BOUNDARY' in cols[0]:
+                            boundary = cols
+                        elif cols[0] == 'BOUNDARY_DATA':
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    boundary_data[boundary[i]] = datum
+                        elif 'HEADER_MARKER' in cols[0]:
+                            marker = cols
+                            # Temporary hack
+                            marker[1] = 'marker_area'
+                        elif 'MARKER_DATA' in cols[0]:
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    marker_data[marker[i]] = datum
+                        elif 'HEADER_WATERSHED' in cols[0]:
+                            watershed = cols
+                            watershed[1] = 'estimated_object_count'
+                        elif 'WATERSHED_DATA' in cols[0]:
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    watershed_data[watershed[i]] = datum
+                        elif 'HEADER_LANDMARK' in cols[0]:
+                            landmark = cols
+                        elif 'LANDMARK_DATA' in cols[0]:
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    landmark_data[landmark[i]] = datum
+                        # Morphology sub-package data
+                        elif cols[0] == 'CYCLE_DATA':
+                            morphology_data['num_cycles'] = cols[1]
 
-                    # # If the data is of class shapes, store in the shapes dictionary
-                    # elif cols[0] == 'HEADER_SHAPES':
-                    #     features = cols
-                    # elif cols[0] == 'SHAPES_DATA':
-                    #     for i, datum in enumerate(cols):
-                    #         if i > 0:
-                    #             feature_data[features[i]] = datum
-                    # # If the data is of class histogram/signal, store in the signal dictionary
-                    # elif cols[0] == 'HEADER_HISTOGRAM':
-                    #     signal = cols
-                    # elif cols[0] == 'HISTOGRAM_DATA':
-                    #     signal_measurements = {}
-                    #     for i, datum in enumerate(cols):
-                    #         if i > 0:
-                    #             signal_measurements[signal[i]] = datum
-                    #     signal_data.append(signal_measurements)
-                    # # If the data is of the class color features, store in the hue features dictinoary
-                    # elif cols[0] == 'HEADER_COLOR_FEATURES':
-                    #     hue = cols
-                    # elif cols[0] == 'COLOR_FEATURES_DATA':
-                    #     for i, datum in enumerate(cols):
-                    #         if i > 0:
-                    #             hue_data[hue[i]] = datum
-                    # # If the data is of class boundary (horizontal rule), store in the boundary dictionary
-                    # elif 'HEADER_BOUNDARY' in cols[0]:
-                    #     boundary = cols
-                    # elif cols[0] == 'BOUNDARY_DATA':
-                    #     for i, datum in enumerate(cols):
-                    #         if i > 0:
-                    #             boundary_data[boundary[i]] = datum
-                    # elif 'HEADER_MARKER' in cols[0]:
-                    #     marker = cols
-                    #     # Temporary hack
-                    #     marker[1] = 'marker_area'
-                    # elif 'MARKER_DATA' in cols[0]:
-                    #     for i, datum in enumerate(cols):
-                    #         if i > 0:
-                    #             marker_data[marker[i]] = datum
-                    # elif 'HEADER_WATERSHED' in cols[0]:
-                    #     watershed = cols
-                    #     watershed[1] = 'estimated_object_count'
-                    # elif 'WATERSHED_DATA' in cols[0]:
-                    #     for i, datum in enumerate(cols):
-                    #         if i > 0:
-                    #             watershed_data[watershed[i]] = datum
-                    # elif 'HEADER_LANDMARK' in cols[0]:
-                    #     landmark = cols
-                    # elif 'LANDMARK_DATA' in cols[0]:
-                    #     for i, datum in enumerate(cols):
-                    #         if i > 0:
-                    #             landmark_data[landmark[i]] = datum
+                        elif cols[0] == 'ANGLE_DATA':
+                            morphology_data['segment_angles'] = []
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    morphology_data['segment_angles'].append(datum)
+
+                        elif cols[0] == 'CURVATURE_DATA':
+                            morphology_data['segment_curvature'] = []
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    morphology_data['segment_curvature'].append(datum)
+                        elif cols[0] == 'EU_LENGTH_DATA':
+                            morphology_data['segment_eu_lengths'] = []
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    morphology_data['segment_eu_lengths'].append(datum)
+                        elif cols[0] == 'PATH_LENGTH_DATA':
+                            morphology_data['segment_path_lengths'] = []
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    morphology_data['segment_path_lengths'].append(datum)
+                        elif cols[0] == 'TAN_ANGLE_DATA':
+                            morphology_data['segment_tan_angles'] = []
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    morphology_data['segment_tan_angles'].append(datum)
+                        elif cols[0] == 'INSERTION_ANGLE_DATA':
+                            morphology_data['segment_insertion_angles'] = []
+                            for i, datum in enumerate(cols):
+                                if i > 0:
+                                    morphology_data['segment_insertion_angles'].append(datum)
 
                 # Check to see if the image failed, if not continue
 
@@ -881,77 +919,85 @@ def process_results(args):
                 args.image_id += 1
                 meta['image_id'] = args.image_id
                 meta['run_id'] = args.run_id
-                meta['observations'] = outputs.observations
-                # meta_table = []
-                # for field in metadata_fields:
-                #     meta_table.append(meta[field])
-                #
-                # if len(feature_data) != 0:
-                #     args.metadata_file.write('|'.join(map(str, meta_table)) + '\n')
-                #
-                #     # Print the image feature data to the aggregate output file
-                #     feature_data['image_id'] = args.image_id
-                #
-                #     # Boundary data are optional, if it's not there we need to add in placeholder data
-                #     if len(boundary_data) == 0:
-                #         for field in opt_feature_fields:
-                #             boundary_data[field] = 0
-                #     feature_data.update(boundary_data)
-                #
-                #     # Marker data are optional, if it's not there we need to add in placeholder data
-                #     if len(marker_data) == 0:
-                #         for field in marker_fields:
-                #             marker_data[field] = 0
-                #     feature_data.update(marker_data)
-                #
-                #     # Watershed data are optional, if it's not there we need to add in placeholder data
-                #     if len(watershed_data) == 0:
-                #         for field in watershed_fields:
-                #             watershed_data[field] = 0
-                #     feature_data.update(watershed_data)
-                #
-                #     # Landmark data are optional, if it's not there we need to add in placeholder data
-                #     if len(landmark_data) == 0:
-                #         for field in landmark_fields:
-                #             landmark_data[field] = 0
-                #     feature_data.update(landmark_data)
-                #
-                #     # Hue feature data are optional, if it's not there we need to add in placeholder data
-                #     if len(hue_data) == 0:
-                #         for field in hue_feature_fields:
-                #             hue_data[field] = 0
-                #     feature_data.update(hue_data)
-                #
-                #     feature_table = [args.image_id]
-                #     for field in feature_fields + opt_feature_fields + marker_fields + watershed_fields + landmark_fields + hue_feature_fields:
-                #         feature_table.append(feature_data[field])
-                #     args.features_file.write('|'.join(map(str, feature_table)) + '\n')
-                #
-                #     # Print the analysis image data to the aggregate output file
-                #     for img_type in images:
-                #         args.analysis_images_file.write(
-                #             '|'.join(map(str, (args.image_id, img_type, images[img_type]))) + '\n')
-                #
-                #     # Print the image signal data to the aggregate output file
-                #     for channel in signal_data:
-                #         signal_table = [args.image_id]
-                #         for key in signal_fields:
-                #             channel[key] = channel[key].replace('[', '')
-                #             channel[key] = channel[key].replace(']', '')
-                #             signal_table.append(channel[key])
-                #         args.signal_file.write('|'.join(map(str, signal_table)) + '\n')
-                #
-                # else:
-                #     args.fail_log.write('|'.join(map(str, meta_table)) + '\n')
-                #
-                #     args.metadata_file.write('|'.join(map(str, meta_table)) + '\n')
-                #
-                #     feature_table = [args.image_id]
-                #
-                #     for field in feature_fields + opt_feature_fields + marker_fields + watershed_fields + landmark_fields + hue_feature_fields:
-                #         feature_table.append(0)
-                #
-                #     args.features_file.write('|'.join(map(str, feature_table)) + '\n')
+
+                meta_table = []
+                for field in metadata_fields:
+                    meta_table.append(meta[field])
+
+                if len(feature_data) != 0:
+                    args.metadata_file.write('|'.join(map(str, meta_table)) + '\n')
+
+                    # Print the image feature data to the aggregate output file
+                    feature_data['image_id'] = args.image_id
+
+                    # Boundary data are optional, if it's not there we need to add in placeholder data
+                    if len(boundary_data) == 0:
+                        for field in opt_feature_fields:
+                            boundary_data[field] = 0
+                    feature_data.update(boundary_data)
+
+                    # Marker data are optional, if it's not there we need to add in placeholder data
+                    if len(marker_data) == 0:
+                        for field in marker_fields:
+                            marker_data[field] = 0
+                    feature_data.update(marker_data)
+
+                    # Watershed data are optional, if it's not there we need to add in placeholder data
+                    if len(watershed_data) == 0:
+                        for field in watershed_fields:
+                            watershed_data[field] = 0
+                    feature_data.update(watershed_data)
+
+                    # Landmark data are optional, if it's not there we need to add in placeholder data
+                    if len(landmark_data) == 0:
+                        for field in landmark_fields:
+                            landmark_data[field] = 0
+                    feature_data.update(landmark_data)
+
+                    # Hue feature data are optional, if it's not there we need to add in placeholder data
+                    if len(hue_data) == 0:
+                        for field in hue_feature_fields:
+                            hue_data[field] = 0
+                    feature_data.update(hue_data)
+                    
+                    # Morphology data is optional, if it's not there we need to add in the placeholder data
+                    if len(morphology_data) == 0:
+                        for field in morphology_fields:
+                            morphology_data[field] = 0
+                    feature_data.update(morphology_data)
+
+                    feature_table = [args.image_id]
+                    for field in feature_fields + opt_feature_fields + marker_fields + watershed_fields + \
+                                 landmark_fields + morphology_fields + hue_feature_fields:
+                        feature_table.append(feature_data[field])
+                    args.features_file.write('|'.join(map(str, feature_table)) + '\n')
+
+                    # Print the analysis image data to the aggregate output file
+                    for img_type in images:
+                        args.analysis_images_file.write(
+                            '|'.join(map(str, (args.image_id, img_type, images[img_type]))) + '\n')
+
+                    # Print the image signal data to the aggregate output file
+                    for channel in signal_data:
+                        signal_table = [args.image_id]
+                        for key in signal_fields:
+                            channel[key] = channel[key].replace('[', '')
+                            channel[key] = channel[key].replace(']', '')
+                            signal_table.append(channel[key])
+                        args.signal_file.write('|'.join(map(str, signal_table)) + '\n')
+
+                else:
+                    args.fail_log.write('|'.join(map(str, meta_table)) + '\n')
+
+                    args.metadata_file.write('|'.join(map(str, meta_table)) + '\n')
+
+                    feature_table = [args.image_id]
+
+                    for field in feature_fields + opt_feature_fields + marker_fields + watershed_fields + \
+                                 landmark_fields + morphology_fields + hue_feature_fields:
+                        feature_table.append(0)
+
+                    args.features_file.write('|'.join(map(str, feature_table)) + '\n')
 
 ###########################################
 

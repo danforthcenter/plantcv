@@ -57,6 +57,7 @@ Sample command to run a pipeline on a single image:
 #!/usr/bin/python
 
 import numpy as np
+import argparse 
 from plantcv import plantcv as pcv
 
 ### Parse command-line arguments
@@ -412,10 +413,12 @@ To deploy a pipeline over a full image set please see tutorial on
 [pipeline parallelization](pipeline_parallel.md).
 
 ## Multi Plant Script
+
 In the terminal:
 
 ```
 ./pipelinename.py -i multi-plant-img.png -o ./output-images -n names.txt -D 'print'
+
 ```
 
 *  Always test pipelines (preferably with -D flag set to 'print') before running over a full image set

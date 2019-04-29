@@ -349,6 +349,71 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: img_mblur = **plantcv.median_blur**(*gray_img, ksize*)
 * post v3.2: img_blur = **plantcv.median_blur**(*gray_img, ksize*) OR img_blur = **plantcv.median_blur**(*gray_img, (ksize1, ksize2)*)
 
+#### plantcv.morphology.check_cycles
+
+* pre v3.3: NA
+* post v3.3: cycle_header, cycle_data, cycle_img = **plantcv.morphology.check_cycles**(*skel_img*)
+
+#### plantcv.morphology.find_branch_pts
+
+* pre v3.3: NA
+* post v3.3: branch_pts_img = **plantcv.morphology.find_branch_pts**(*skel_img, mask=None*)
+
+#### plantcv.morphology.find_tips
+
+* pre v3.3: NA
+* post v3.3: tip_img = **plantcv.morphology.find_tips**(*skel_img, mask=None*) 
+
+#### plantcv.morphology.prune
+
+* pre v3.3: NA
+* post v3.3: pruned_img = **plantcv.morphology.prune**(*skel_img, size*) 
+
+#### plantcv.morphology.segment_angle
+
+* pre v3.3: NA
+* post v3.3: angle_header, angle_data, labeled_img = **plantcv.morphology.segment_angle**(*segmented_img, objects*) 
+
+#### plantcv.morphology.curvature
+
+* pre v3.3: NA
+* post v3.3: curvature_header, curvature_data, labeled_img = **plantcv.morphology.segment_curvature**(*segmented_img, objects, hierarchies*)
+
+#### plantcv.morphology.segment_euclidean_length
+
+* pre v3.3: NA
+* post v3.3: eu_length_header, eu_length_data, labeled_img = **plantcv.morphology.segment_euclidean_length**(*segmented_img, objects, hierarchies*) 
+
+#### plantcv.morphology.segment_id
+
+* pre v3.3: NA
+* post v3.3: segmented_img, labeled_img = **plantcv.morphology.segment_id**(*skel_img, objects, hierarchies, mask=None*) 
+
+#### plantcv.morphology.segment_path_length 
+
+* pre v3.3: NA
+* post v3.3: path_length_header, path_length_data, labeled_img = **plantcv.morphology.segment_path_length**(*segmented_img, objects*)
+
+#### plantcv.morphology.segment_skeleton
+
+* pre v3.3: NA
+* post v3.3: segmented_img, segment_objects, segment_hierarchies = **plantcv.morphology.segment_skeleton**(*skel_img, mask=None*) 
+
+#### plantcv.morphology.segment_sort
+
+* pre v3.3: NA
+* post v3.3: leaf_objects, leaf_hierarchies, other_objects, other_hierarchies = **plantcv.morphology.segment_sort**(*skel_img, objects, hierarchies, mask=None*)
+
+#### plantcv.morphology.segment_tangent_angle
+
+* pre v3.3: NA
+* post v3.3: tan_angle_header, tan_angle_data, labeled_img = **plantcv.morphology.segment_tangent_angle**(*segmented_img, objects, hierarchies, size*)
+
+#### plantcv.morphology.skeletontize
+
+* pre v3.3: NA
+* post v3.3: skeleton = **plantcv.morphology.skeletonize**(*mask*) 
+
 #### plantcv.naive_bayes_classifier
 
 * pre v3.0dev2: device, masks = **plantcv.naive_bayes_classifier(*img, pdf_file, device, debug=None*)**
@@ -402,7 +467,7 @@ pages for more details on the input and output variable types.
 * pre v3.1: NA
 * post v3.1: pseudo_img = **plantcv.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, dpi=None, axes=True, colorbar=True*)
 * post v3.2: Deprecated, see:
-    * pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, dpi=None, axes=True, colorbar=True*)
+    * pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, axes=True, colorbar=True*)
 
 #### plantcv.readbayer
 
@@ -615,6 +680,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.2: pseudo_img = **plantcv.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, dpi=None, axes=True, colorbar=True*)
 * post v3.2: pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, dpi=None, axes=True, colorbar=True*)
+* post v3.3: pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, axes=True, colorbar=True*)
 
 #### plantcv.watershed_segmentation
 

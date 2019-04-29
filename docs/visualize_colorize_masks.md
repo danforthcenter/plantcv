@@ -33,6 +33,7 @@ mask = pcv.naive_bayes_classifier(img, pdf_file="machine_learning.txt")
 # Plot each class with it's own color 
 plotted = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['pustule'], mask['background'], mask['chlorosis']], 
                                        colors=['green', 'red', 'gray', 'gold'])
+                                       
 ```
 
 **Masks:** (from top to bottom) plant, chlorosis, pustule, background

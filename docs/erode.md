@@ -25,12 +25,14 @@ conditions set in kernel are true, otherwise removes pixel.
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Perform erosion filtering
 # Results in removal of isolated pixels or boundary of object removal
 er_img = pcv.erode(gray_img, ksize, 1)
+
 ```
 
 **Image after erosion**

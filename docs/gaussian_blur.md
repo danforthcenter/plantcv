@@ -23,11 +23,13 @@ The function is a wrapper for the OpenCV function [gaussian blur](http://docs.op
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Apply gaussian blur to a binary image that has been previously thresholded.
 gaussian_img = pcv.gaussian_blur(img=img1, ksize=(51, 51), sigma_x=0, sigma_y=None)
+
 ```
 
 **Gaussian blur (ksize = (51,51))**
@@ -37,11 +39,13 @@ gaussian_img = pcv.gaussian_blur(img=img1, ksize=(51, 51), sigma_x=0, sigma_y=No
 ```python
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Apply gaussian blur to a binary image that has been previously thresholded.
 gaussian_img = pcv.gaussian_blur(img=img1, ksize=(101, 101), sigma_x=0, sigma_y=None)
+
 ```
 
 **Gaussian blur (ksize = (101,101))**

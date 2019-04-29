@@ -9,7 +9,7 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 
 
-def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, dpi=None,
+def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255,
                 axes=True, colorbar=True):
     """Pseudocolor any grayscale image to custom colormap
 
@@ -22,7 +22,6 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
                   (a mask must be supplied)
     min_value   = minimum value for range of interest
     max_value   = maximum value for range of interest
-    dpi         = dots per inch, (optional, if dpi=None then the matplotlib default is used, 100 dpi)
     axes        = if False then x- and y-axis won't be displayed, nor will the title
     colorbar    = if False then colorbar won't be displayed
 
@@ -122,7 +121,7 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
 
         # Print or plot if debug is turned on
         if params.debug == 'print':
-            plt.savefig(os.path.join(params.debug_outdir, str(params.device) + '_pseudocolored.png'), dpi=dpi)
+            plt.savefig(os.path.join(params.debug_outdir, str(params.device) + '_pseudocolored.png'), dpi=params.dpi)
             plt.close()
         elif params.debug == 'plot':
             plot_image(pseudo_img1)
@@ -151,7 +150,7 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
 
         # Print or plot if debug is turned on
         if params.debug == 'print':
-            plt.savefig(os.path.join(params.debug_outdir, str(params.device) + '_pseudocolored.png'), dpi=dpi)
+            plt.savefig(os.path.join(params.debug_outdir, str(params.device) + '_pseudocolored.png'), dpi=params.dpi)
             pseudo_img.clear()
             plt.close()
         elif params.debug == 'plot':

@@ -3,6 +3,7 @@ import sys
 import cv2
 import numpy
 import matplotlib
+from plantcv.plantcv import params
 from plantcv.plantcv import fatal_error
 
 
@@ -21,11 +22,12 @@ def print_image(img, filename):
     # Print numpy array type images
     image_type = type(img)
     if image_type == numpy.ndarray:
+        matplotlib.rcParams['figure.dpi'] = params.dpi
         cv2.imwrite(filename, img)
 
     # Print matplotlib type images
     elif image_type == matplotlib.figure.Figure:
-        img.savefig(filename)
+        img.savefig(filename, dpi=params.dpi)
 
     # Print ggplot type images
     elif str(image_type) == "<class 'plotnine.ggplot.ggplot'>":

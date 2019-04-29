@@ -143,10 +143,10 @@ The resulting image is then thresholded with a [binary threshold](binary_thresho
 Noise is reduced with the [median blur](median_blur.md) function.
 
 ```python
-  # Median Filter
-  s_mblur = pcv.median_blur(fmax_thresh, 5)
-  s_cnt = pcv.median_blur(fmax_thresh, 5)
-  
+    # Median Filter
+    s_mblur = pcv.median_blur(fmax_thresh, 5)
+    s_cnt = pcv.median_blur(fmax_thresh, 5)
+    
 ```
 
 **Figure 4.** Median blur applied.
@@ -277,6 +277,7 @@ In the terminal:
 
 ```
 ./pipelinename.py -i /home/user/images/testimg.png -o /home/user/output-images -D 'print'
+
 ```
 
 * Always test pipelines (preferably with -D flag for debug mode) before running over a full image set.

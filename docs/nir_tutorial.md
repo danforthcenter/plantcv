@@ -42,6 +42,7 @@ Sample command to run a pipeline on a single image:
 
 ```
 ./pipelinename.py -i /home/user/images/testimg.png -o /home/user/output-images -D 'print'
+
 ```
 
 
@@ -398,6 +399,7 @@ In the terminal:
 
 ```
 ./pipelinename.py -i /home/user/images/testimg.png -o /home/user/output-images -D 'print'
+
 ```
 
 *  Always test pipelines (preferably with -D flag set to 'print') before running over a full image set

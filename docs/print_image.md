@@ -23,4 +23,5 @@ for numpy arrays, and can handle matplotlib Figures (like the one returned by [p
 from plantcv import plantcv as pcv
 
 pcv.print_image(img, "home/user/images/test-image.png")
+
 ```

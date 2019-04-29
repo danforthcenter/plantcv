@@ -49,6 +49,7 @@ output_directory = "."
 pcv.params.debug = 'plot'
 
 target_matrix, source_matrix, transformation_matrix, corrected_img = pcv.transform.correct_color(target_img, target_mask, source_img, source_mask, output_directory)
+
 ```
 
 ![Screenshot](img/documentation_images/correct_color_imgs/hstack.jpg)
@@ -86,6 +87,7 @@ df, start, space = pcv.transform.find_color_card(rgb_img=rgb_img)
 
 # Use these outputs to create a labeled color card mask
 mask = pcv.transform.create_color_card_mask(rgb_img=img, radius=10, start_coord=(400,600), spacing=(30,30), ncols=6, nrows=4)
+
 ```
 
 **Image automatically detected and masked**
@@ -196,6 +198,7 @@ print(color_matrix)
      [ 200.       34.5308   90.4592  132.9108]
      [ 210.      207.1596  128.736    28.7744]
      [ 220.       74.632   158.8224  144.3724]]
+     
  ```
 
 ## Moore-Penrose Inverse
@@ -249,6 +252,7 @@ Computes the transformation matrix for application to a source image to transfor
 from plantcv import plantcv as pcv
 
 deviance, transformation_matrix = pcv.transform.calc_transformation_matrix(matrix_m, matrix_b)
+
 ```
 
 
@@ -286,6 +290,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 corrected_img = pcv.transform.apply_transformation_matrix(source_img=source_img, target_img=target_img, transformation_matrix=transformation_matrix)
+
 ```
 
 ![Screenshot](img/documentation_images/correct_color_imgs/hstack.jpg)
@@ -313,6 +318,7 @@ filename = "test.npz"
 matrix = np.matrix('1 2; 3 4')
 
 pcv.transform.save_matrix(matrix, filename)
+
 ```
 
 
@@ -334,6 +340,7 @@ from plantcv import plantcv as pcv
 filename = "test.npz"
 
 matrix = pcv.transform.load_matrix(filename)
+
 ```
 
 ## Checking a Color Card
@@ -359,8 +366,7 @@ To see an example of how to check for problematic color chips see [here](transfo
 
 from plantcv import plantcv as pcv
 from plotnine import *
-import numpy as np
-import pandas as pd
 
 pcv.transform.quick_color_check(source_matrix = s_matrix, target_matrix = t_matrix, num_chips = 24)
+
 ```

@@ -20,10 +20,12 @@
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 roi_contour, roi_hierarchy = pcv.roi.circle(img=rgb_img, x=200, y=225, r=75)
+
 ```
 
 ![Screenshot](img/documentation_images/circle/image_with_roi.jpg)

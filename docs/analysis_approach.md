@@ -46,6 +46,7 @@ configurations to meet image processing goals so the tutorials simply examples o
 *  [PSII Pipeline](psII_tutorial.md)
 *  [VIS / NIR Dual Pipeline](vis_nir_tutorial.md)
 *  [Multi Plant Tutorial](multi-plant_tutorial.md)
+*  [Morphology Tutorial](morphology_tutorial.md) 
 *  [Machine Learning Tutorial](machine_learning_tutorial.md)
 *  [Color Correction Tutorial](transform_color_correction_tutorial.md)
 

@@ -27,13 +27,18 @@ This function take a image with multiple contours and clusters them based on use
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 
 pcv.params.debug = "print"
 
 # clusters them based on user input of rows and columns
-clusters_i, contours, hierarchy = pcv.cluster_contours(img, roi_objects, roi_obj_hierarchy, 4, 6)
-clusters_i, contours, hierarchy = pcv.cluster_contours(img, roi_objects, roi_obj_hierarchy, 4, 6, show_grid=True)
+clusters_i, contours, hierarchy = pcv.cluster_contours(img, roi_objects, 
+                                                       roi_obj_hierarchy, 4, 6)
+clusters_i, contours, hierarchy = pcv.cluster_contours(img, roi_objects, 
+                                                       roi_obj_hierarchy, 
+                                                       4, 6, show_grid=True)
+
 ```
 
 **Cluster Contour Image**
@@ -43,4 +48,3 @@ clusters_i, contours, hierarchy = pcv.cluster_contours(img, roi_objects, roi_obj
 **Cluster Contour Image with Grid**
 
 ![Screenshot](img/documentation_images/cluster_contour/show_grid.jpg)
-
