@@ -24,8 +24,6 @@ def segment_curvature(segmented_img, objects, hierarchies):
         hierarchy         = Contour hierarchy NumPy array
 
         Returns:
-        curvature_header   = Segment curvature data header
-        curvature_data     = Segment curvature data values
         labeled_img        = Segmented debugging image with curvature labeled
 
 
@@ -33,8 +31,6 @@ def segment_curvature(segmented_img, objects, hierarchies):
         :param objects: list
         :param hierarchy: numpy.ndarray
         :return labeled_img: numpy.ndarray
-        :return curvature_header: list
-        :return curvature_data: list
 
         """
     # Store debug
@@ -44,10 +40,10 @@ def segment_curvature(segmented_img, objects, hierarchies):
     label_coord_x = []
     label_coord_y = []
 
-    _, eu_lengths, _ = segment_euclidean_length(segmented_img, objects, hierarchies)
-    _, path_lengths, labeled_img = segment_path_length(segmented_img, objects)
-    del eu_lengths[0]
-    del path_lengths[0]
+    _ = segment_euclidean_length(segmented_img, objects, hierarchies)
+    labeled_img = segment_path_length(segmented_img, objects)
+    eu_lengths = outputs.observations['segment_eu_length']['value']
+    path_lengths = outputs.observations['segment_path_length']['value']
     curvature_measure = [x/y for x, y in zip(path_lengths, eu_lengths)]
     rand_color = color_palette(len(objects))
 
@@ -73,8 +69,7 @@ def segment_curvature(segmented_img, objects, hierarchies):
         # Draw euclidean distance lines
         cv2.line(labeled_img, points[0], points[1], rand_color[i], 1)
 
-    curvature_header = ['HEADER_CURVATURE']
-    curvature_data = ['CURVATURE_DATA']
+    segment_ids = []
     for i, cnt in enumerate(objects):
         # Calculate geodesic distance
         text = "{:.3f}".format(curvature_measure[i])
@@ -83,10 +78,11 @@ def segment_curvature(segmented_img, objects, hierarchies):
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=.4,
                     color=(150, 150, 150), thickness=1)
         segment_label = "ID" + str(i)
-        curvature_header.append(segment_label)
-        curvature_data.append(curvature_measure[i])
+        segment_ids.append(i)
 
-    outputs.measurements['morphology_data']['segment_curvature'] = curvature_measure
+    outputs.add_measurement(variable='segment_curvature', trait='segment_curvature',
+                            method='plantcv.plantcv.morphology.segment_curvature', scale='none', datatype=list,
+                            value=curvature_measure, label=segment_ids)
 
     # Reset debug mode
     params.debug = debug
@@ -98,4 +94,4 @@ def segment_curvature(segmented_img, objects, hierarchies):
     elif params.debug == 'plot':
         plot_image(labeled_img)
 
-    return curvature_header, curvature_data, labeled_img
+    return labeled_img

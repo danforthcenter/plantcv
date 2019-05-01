@@ -4,7 +4,7 @@ Measure leaf insertion angles.
 
 **plantcv.morphology.segment_insertion_angle**(*skel_img, segmented_img, leaf_objects, leaf_hierarchies, stem_objects, size*)
 
-**returns** insertion angle data headers, insertion angle data values, labeled image 
+**returns** labeled image 
 
 - **Parameters:**
     - skel_img - Skeletonize image (output from [plantcv.morphology.skeletonize](skeletonize.md)). 
@@ -17,7 +17,7 @@ Measure leaf insertion angles.
 - **Context:**
     - Find "tangent" angles to leaf insertion points in degrees of skeleton segments compared to the stem angle. 
       Use `size` pixels of the inner portion of each leaf to find a linear regression line, and calculate angle between insertion
-      angle and the stem.       
+      angle and the stem. Insertion angles are automatically stored in the [outputs class](outputs.md).        
 
 **Reference Image:** segmented_img 
 
@@ -35,12 +35,12 @@ pcv.params.debug = "print"
 # Adjust line thickness with the global line thickness parameter (default = 5)
 pcv.params.line_thickness = 3 
 
-header, insertion_angles, labeled_img = pcv.morphology.segment_insertion_angle(skel_img=skeleton,
-                                                                               segmented_img=leaves_segment, 
-                                                                               leaf_objects=leaf_obj,
-                                                                               leaf_hierarchies=leaf_hier, 
-                                                                               stem_objects=stem_objs,
-                                                                               size=20)
+labeled_img = pcv.morphology.segment_insertion_angle(skel_img=skeleton,
+                                                     segmented_img=leaves_segment, 
+                                                     leaf_objects=leaf_obj,
+                                                     leaf_hierarchies=leaf_hier, 
+                                                     stem_objects=stem_objs,
+                                                     size=20)
 
 ```
 

@@ -31,8 +31,6 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, leaf_hierarch
         size             = Size of inner leaf used to calculate slope lines
 
         Returns:
-        insertion_angle_header = Leaf insertion angle headers
-        insertion_angle_data   = Leaf insertion angle values
         labeled_img            = Debugging image with angles labeled
 
         :param skel_img: numpy.ndarray
@@ -41,8 +39,6 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, leaf_hierarch
         :param leaf_hierarchies: numpy.ndarray
         :param stem_objects: list
         :param size: int
-        :return insertion_angle_header: list
-        :return insertion_angle_data: list
         :return labeled_img: numpy.ndarray
         """
 
@@ -159,8 +155,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, leaf_hierarch
             intersection_angle = 180 - intersection_angle
         intersection_angles.append(intersection_angle)
 
-    insertion_angle_header = ['HEADER_INSERTION_ANGLE']
-    insertion_angle_data = ['INSERTION_ANGLE_DATA']
+    segment_ids = []
 
     for i, cnt in enumerate(insertion_segments):
         # Label slope lines
@@ -170,12 +165,11 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, leaf_hierarch
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                     fontScale=.55, color=(150, 150, 150), thickness=2)
         segment_label = "ID" + str(i)
-        insertion_angle_header.append(segment_label)
-    insertion_angle_data.extend(intersection_angles)
+        segment_ids.append(i)
 
-    if 'morphology_data' not in outputs.measurements:
-        outputs.measurements['morphology_data'] = {}
-    outputs.measurements['morphology_data']['segment_insertion_angles'] = intersection_angles
+    outputs.add_measurement(variable='segment_insertion_angle', trait='segment_insertion_angle',
+                            method='plantcv.plantcv.morphology.segment_insertion_angle', scale='degrees', datatype=list,
+                            value=intersection_angles, label=segment_ids)
 
     # Reset debug mode
     params.debug = debug
@@ -188,4 +182,4 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, leaf_hierarch
     elif params.debug == 'plot':
         plot_image(labeled_img)
 
-    return insertion_angle_header, insertion_angle_data, labeled_img
+    return labeled_img

@@ -19,16 +19,12 @@ def segment_angle(segmented_img, objects):
         objects        = List of contours
 
         Returns:
-        angle_header   = Segment angle data header
-        angle_data     = Segment angle data values
         labeled_img    = Segmented debugging image with angles labeled
 
 
         :param segmented_img: numpy.ndarray
         :param objects: list
         :return labeled_img: numpy.ndarray
-        :return angle_header: list
-        :return angle_data: list
         """
 
     label_coord_x = []
@@ -66,8 +62,7 @@ def segment_angle(segmented_img, objects):
         # Calculate degrees from slopes
         segment_angles.append(np.arctan(slope[0]) * 180 / np.pi)
 
-    angle_header = ['HEADER_ANGLE']
-    angle_data = ['ANGLE_DATA']
+    segment_ids = []
     for i, cnt in enumerate(objects):
         # Label slope lines
         w = label_coord_x[i]
@@ -76,12 +71,11 @@ def segment_angle(segmented_img, objects):
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                     fontScale=.55, color=(150, 150, 150), thickness=2)
         segment_label = "ID" + str(i)
-        angle_header.append(segment_label)
-    angle_data.extend(segment_angles)
+        segment_ids.append(i)
 
-    if 'morphology_data' not in outputs.measurements:
-        outputs.measurements['morphology_data'] = {}
-    outputs.measurements['morphology_data']['segment_angles'] = segment_angles
+    outputs.add_measurement(variable='segment_angles', trait='segment_angles',
+                            method='plantcv.plantcv.morphology.segment_angles', scale='degrees', datatype=list,
+                            value=segment_angles, label=segment_ids)
 
     # Auto-increment device
     params.device += 1
@@ -91,4 +85,4 @@ def segment_angle(segmented_img, objects):
     elif params.debug == 'plot':
         plot_image(labeled_img)
 
-    return angle_header, angle_data, labeled_img
+    return labeled_img

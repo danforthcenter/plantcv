@@ -4,7 +4,7 @@ Measure angles of segments.
 
 **plantcv.morphology.segment_angle**(*segmented_img, objects*)
 
-**returns** segment angle headers, segment angle data, labeled image   
+**returns** labeled image   
 
 - **Parameters:**
     - segmented_img - Segmented image (output either from [plantcv.morphology.segment_skeleton](segment_skeleton.md)
@@ -13,7 +13,8 @@ Measure angles of segments.
     [plantcv.morphology.segment_sort](segment_sort.md)).
 - **Context:**
     - Calculates angles of segments (in degrees) by fitting a linear regression line to each segment. Users can pass only 
-    leaf objects (returned from [plantcv.morphology.segment_sort](segment_sort.md)) to only collect angles of leaves.
+    leaf objects (returned from [plantcv.morphology.segment_sort](segment_sort.md)) to only collect angles of leaves. 
+    The measure of angles automatically gets stored in the [outputs class](outputs.md). 
 
 **Reference Image:** segmented_img 
 
@@ -28,7 +29,7 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
-angle_header, segment_angles, labeled_img = pcv.morphology.segment_angle(segmented_img=segmented_img, objects=obj)
+labeled_img = pcv.morphology.segment_angle(segmented_img=segmented_img, objects=obj)
 
 ```
 

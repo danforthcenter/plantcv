@@ -14,6 +14,13 @@ functions:
 * `analyze_object`
 * `fluor_fvfm`
 * `report_size_marker_area`
+* `morphology.check_cycles`
+* `morphology.segment_angle`
+* `morphology.segment_curvature`
+* `morphology.euclidean_length`
+* `morphology.segment_insertion_angle`
+* `morphology.segment_path_length`
+* `morphology.segment_tangent_angle` 
 * `watershed`
 
 An instance of `Outputs` is created on import automatically as `plantcv.outputs`. The function 
@@ -44,7 +51,10 @@ from plantcv import plantcv as pcv
 ######## workflow steps here ########
 
 # Find shape properties, output shape image (optional)
-shape_header, shape_data, shape_img = pcv.analyze_object(img, obj, mask)
+shape_img = pcv.analyze_object(img, obj, mask)
+
+# Look at object area data without writing to a file 
+plant_area = pcv.outputs.observations['pixel_area']['value']
 
 # Write shape data to results file
 pcv.print_results(filename=args.result)
@@ -54,8 +64,8 @@ pcv.outputs.clear()
 
 ######## More workflow steps here ########
 
-nhist_header, nhist_data, nir_imgs = pcv.analyze_nir_intensity(nir2, nir_combinedmask, 256)
-nshape_header, nshape_data, nir_hist = pcv.analyze_object(nir2, nir_combined, nir_combinedmask)
+nir_imgs = pcv.analyze_nir_intensity(nir2, nir_combinedmask, 256)
+shape_img = pcv.analyze_object(nir2, nir_combined, nir_combinedmask)
 
 # Write the NIR and shape data to a file 
 pcv.print_results(filename=args.coresult)

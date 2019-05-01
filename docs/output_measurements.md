@@ -80,3 +80,16 @@ Primary Key (PK) and Foreign Key (FK). Foreign Keys are used to join tables in q
 | channel_name           | none    | possible values: nir                         |
 | frequency              | none    | list of pixel counts per NIR signal value    |
 | signal_values          | none    | list of signal range values (bins)           |
+
+
+### [Morphology](morphology_tutorial.md) functions
+
+| Measurement              | Units   | Description                                                              | 
+| ------------------------ | ------- |------------------------------------------------------------------------- | 
+| num_cycles               | none    | number of cycles identified in a skeleton image                          | 
+| segment_angles           | degrees | angles of segments found by fitting a linear regression line to segments | 
+| segment_curvature        | none    | segment curvatures (the ratio between geodesic and euclidean distance)   |
+| segment_eu_length        | pixels  | segment euclidean lengths                                                |
+| segment_insertion_angle  | degrees | leaf insertion angles of skeleton segments (angle between stem and leaf) |
+| segment_path_length      | pixels  | segment geodesic distances                                               |
+| segment_tangent_angle    | degrees | angles between tangent lines drawn to each end of segments               |

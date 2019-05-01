@@ -42,8 +42,6 @@ def segment_tangent_angle(segmented_img, objects, hierarchies, size):
         size      = Size of ends used to calculate "tangent" lines
 
         Returns:
-        tan_angle_header = Segment tangent angle headers
-        tan_angle_data   = Segment tangent angle values
         labeled_img    = Segmented debugging image with angles labeled
 
         :param segmented_img: numpy.ndarray
@@ -51,8 +49,6 @@ def segment_tangent_angle(segmented_img, objects, hierarchies, size):
         :param hierarchies: numpy.ndarray
         :param size: int
         :return labeled_img: numpy.ndarray
-        :return tan_angle_header: list
-        :return tan_angle_data: data
         """
     # Store debug
     debug = params.debug
@@ -112,8 +108,7 @@ def segment_tangent_angle(segmented_img, objects, hierarchies, size):
         label_coord_x.append(objects[i][0][0][0])
         label_coord_y.append(objects[i][0][0][1])
 
-    tan_angle_header = ['HEADER_TAN_ANGLE']
-    tan_angle_data = ['TAN_ANGLE_DATA']
+    segment_ids = []
     for i, cnt in enumerate(objects):
         # Label slope lines
         w = label_coord_x[i]
@@ -125,12 +120,11 @@ def segment_tangent_angle(segmented_img, objects, hierarchies, size):
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                     fontScale=.55, color=(150, 150, 150), thickness=2)
         segment_label = "ID" + str(i)
-        tan_angle_header.append(segment_label)
-    tan_angle_data.extend(intersection_angles)
+        segment_ids.append(i)
 
-    if 'morphology_data' not in outputs.measurements:
-        outputs.measurements['morphology_data'] = {}
-    outputs.measurements['morphology_data']['segment_tan_angles'] = intersection_angles
+    outputs.add_measurement(variable='segment_tangent_angle', trait='segment_tangent_angle',
+                            method='plantcv.plantcv.morphology.segment_tangent_angle', scale='degrees', datatype=list,
+                            value=intersection_angles, label=segment_ids)
 
     # Reset debug mode
     params.debug = debug
@@ -142,4 +136,4 @@ def segment_tangent_angle(segmented_img, objects, hierarchies, size):
     elif params.debug == 'plot':
         plot_image(labeled_img)
 
-    return tan_angle_header, tan_angle_data, labeled_img
+    return labeled_img

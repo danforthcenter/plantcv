@@ -352,7 +352,7 @@ pages for more details on the input and output variable types.
 #### plantcv.morphology.check_cycles
 
 * pre v3.3: NA
-* post v3.3: cycle_header, cycle_data, cycle_img = **plantcv.morphology.check_cycles**(*skel_img*)
+* post v3.3: cycle_img = **plantcv.morphology.check_cycles**(*skel_img*)
 
 #### plantcv.morphology.find_branch_pts
 
@@ -372,17 +372,17 @@ pages for more details on the input and output variable types.
 #### plantcv.morphology.segment_angle
 
 * pre v3.3: NA
-* post v3.3: angle_header, angle_data, labeled_img = **plantcv.morphology.segment_angle**(*segmented_img, objects*) 
+* post v3.3: labeled_img = **plantcv.morphology.segment_angle**(*segmented_img, objects*) 
 
 #### plantcv.morphology.curvature
 
 * pre v3.3: NA
-* post v3.3: curvature_header, curvature_data, labeled_img = **plantcv.morphology.segment_curvature**(*segmented_img, objects, hierarchies*)
+* post v3.3: labeled_img = **plantcv.morphology.segment_curvature**(*segmented_img, objects, hierarchies*)
 
 #### plantcv.morphology.segment_euclidean_length
 
 * pre v3.3: NA
-* post v3.3: eu_length_header, eu_length_data, labeled_img = **plantcv.morphology.segment_euclidean_length**(*segmented_img, objects, hierarchies*) 
+* post v3.3: labeled_img = **plantcv.morphology.segment_euclidean_length**(*segmented_img, objects, hierarchies*) 
 
 #### plantcv.morphology.segment_id
 
@@ -392,7 +392,7 @@ pages for more details on the input and output variable types.
 #### plantcv.morphology.segment_path_length 
 
 * pre v3.3: NA
-* post v3.3: path_length_header, path_length_data, labeled_img = **plantcv.morphology.segment_path_length**(*segmented_img, objects*)
+* post v3.3: labeled_img = **plantcv.morphology.segment_path_length**(*segmented_img, objects*)
 
 #### plantcv.morphology.segment_skeleton
 
@@ -407,7 +407,7 @@ pages for more details on the input and output variable types.
 #### plantcv.morphology.segment_tangent_angle
 
 * pre v3.3: NA
-* post v3.3: tan_angle_header, tan_angle_data, labeled_img = **plantcv.morphology.segment_tangent_angle**(*segmented_img, objects, hierarchies, size*)
+* post v3.3: labeled_img = **plantcv.morphology.segment_tangent_angle**(*segmented_img, objects, hierarchies, size*)
 
 #### plantcv.morphology.skeletontize
 
