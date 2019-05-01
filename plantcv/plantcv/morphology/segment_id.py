@@ -57,7 +57,7 @@ def segment_id(skel_img, objects, hierarchies, mask=None):
         h = label_coord_y[i]
         text = "ID:{}".format(i)
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                    fontScale=.65, color=rand_color[i], thickness=2)
+                    fontScale=params.text_size, color=rand_color[i], thickness=2)
     # Auto-increment device
     params.device += 1
 

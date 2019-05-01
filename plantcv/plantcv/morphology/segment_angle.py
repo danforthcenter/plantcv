@@ -69,7 +69,7 @@ def segment_angle(segmented_img, objects):
         h = label_coord_y[i]
         text = "{:.2f}".format(segment_angles[i])
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                    fontScale=.55, color=(150, 150, 150), thickness=2)
+                    fontScale=params.text_size, color=(150, 150, 150), thickness=2)
         segment_label = "ID" + str(i)
         segment_ids.append(i)
 

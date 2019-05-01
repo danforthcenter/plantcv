@@ -146,7 +146,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, leaf_hierarch
         if slope > 1000000 or slope < -1000000:
             print("Slope of contour with ID#", t, "is", slope, "and cannot be plotted.")
         else:
-            cv2.line(labeled_img, (cols - 1, right_list), (0, left_list), rand_color[t], 1)
+            cv2.line(labeled_img, (cols - 1, right_list), (0, left_list), (150, 150, 150), 1)
 
         # Store intersection angles between insertion segment and stem line
         intersection_angle = _slope_to_intesect_angle(slope[0], stem_slope)
@@ -163,7 +163,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, leaf_hierarch
         h = label_coord_y[i]
         text = "{:.2f}".format(intersection_angles[i])
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                    fontScale=.55, color=(150, 150, 150), thickness=2)
+                    fontScale=params.text_size, color=(150, 150, 150), thickness=2)
         segment_label = "ID" + str(i)
         segment_ids.append(i)
 

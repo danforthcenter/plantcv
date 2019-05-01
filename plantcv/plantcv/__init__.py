@@ -17,14 +17,16 @@ class Params:
     :param debug_outdir: str
     :param line_thickness: numeric
     :param dpi: int
+    :param text_size: float
     """
 
-    def __init__(self, device=0, debug=None, debug_outdir=".", line_thickness=5, dpi=100):
+    def __init__(self, device=0, debug=None, debug_outdir=".", line_thickness=5, dpi=100, text_size=0.55):
         self.device = device
         self.debug = debug
         self.debug_outdir = debug_outdir
         self.line_thickness = line_thickness
         self.dpi = dpi
+        self.text_size = text_size
 
 
 class Outputs:

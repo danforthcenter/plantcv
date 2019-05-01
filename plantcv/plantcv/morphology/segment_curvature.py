@@ -75,8 +75,8 @@ def segment_curvature(segmented_img, objects, hierarchies):
         text = "{:.3f}".format(curvature_measure[i])
         w = label_coord_x[i]
         h = label_coord_y[i]
-        cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=.4,
-                    color=(150, 150, 150), thickness=1)
+        cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                    fontScale=params.text_size, color=(150, 150, 150), thickness=1)
         segment_label = "ID" + str(i)
         segment_ids.append(i)
 
