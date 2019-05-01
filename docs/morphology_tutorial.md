@@ -1,10 +1,10 @@
 ## Tutorial: Morphology Functions 
 
 PlantCV is composed of modular functions that can be arranged (or rearranged) and adjusted quickly and easily.
-Pipelines do not need to be linear (and often are not). Please see pipeline example below for more details.
+Workflows do not need to be linear (and often are not). Please see Workflow example below for more details.
 A global variable "debug" allows the user to print out the resulting image. The debug has three modes: either None, 'plot', or print'. If set to
 'print' then the function prints the image out, if using a [Jupyter](jupyter.md) notebook you could set debug to 'plot' to have
-the images plot to the screen. Debug mode allows users to visualize and optimize each step on individual test images and small test sets before pipelines
+the images plot to the screen. Debug mode allows users to visualize and optimize each step on individual test images and small test sets before workflows
 are deployed over whole datasets.
 
 Morphology sub-package functions can be used once a binary mask has been created (see the [VIS tutorial](vis_tutorial.md) and the [VIS/NIR tutorial](vis_nir_tutorial.md)
@@ -18,14 +18,14 @@ Also see [here](#morphology-script) for the complete script.
 
 **Workflow**
 
-1.  Optimize pipeline on individual image with debug set to 'print' (or 'plot' if using a Jupyter notebook).
-2.  Run pipeline on small test set (ideally that spans time and/or treatments).
-3.  Re-optimize pipelines on 'problem images' after manual inspection of test set.
-4.  Deploy optimized pipeline over test set using parallelization script.
+1.  Optimize workflow on individual image with debug set to 'print' (or 'plot' if using a Jupyter notebook).
+2.  Run workflow on small test set (ideally that spans time and/or treatments).
+3.  Re-optimize workflows on 'problem images' after manual inspection of test set.
+4.  Deploy optimized workflow over test set using parallelization script.
 
-**Running A Pipeline**
+**Running A Workflow**
 
-To run a morphology pipeline over a single VIS image there are two required inputs:
+To run a morphology workflow over a single VIS image there are two required inputs:
 
 1.  **Mask:** Images can be processed regardless of what type of VIS camera was used (high-throughput platform, digital camera, cell phone camera).
 Image processing will work with adjustments if images are well lit and free of background that is similar in color to plant material. Once background is 
@@ -39,16 +39,16 @@ Optional inputs:
 *  **Debug Flag:** Prints an image at each step
 *  **Region of Interest:** The user can input their own binary region of interest or image mask (make sure it is the same size as your image or you will have problems).
 
-Sample command to run a pipeline on a single image:  
+Sample command to run a workflow on a single image:  
 
-*  Always test pipelines (preferably with -D 'print' option for debug mode) before running over a full image set
+*  Always test workflows (preferably with -D 'print' option for debug mode) before running over a full image set
 
 ```
-./pipelinename.py -i testimg.png -o ./output-images -r results.txt -w -D 'print'
+./workflowname.py -i testimg.png -o ./output-images -r results.txt -w -D 'print'
 
 ``` 
 
-#### Start of the Morphology portion of the pipeline.
+#### Start of the Morphology portion of the workflow.
 
 **Figure 1.** Original image.
 
@@ -382,19 +382,19 @@ out from a stem will have larger insertion angles than those that grow upward.
 ![Screenshot](img/tutorial_images/morphology/insertion_angle_img.jpg)
 
 
-To deploy a pipeline over a full image set please see tutorial on 
-[pipeline parallelization](pipeline_parallel.md).
+To deploy a workflow over a full image set please see tutorial on 
+[workflow parallelization](pipeline_parallel.md).
 
 ## Morphology Script 
 
 In the terminal:
 
 ```
-./pipelinename.py -i testimg.png -o ./output-images -r results.txt -w -D 'print'
+./workflowname.py -i testimg.png -o ./output-images -r results.txt -w -D 'print'
 
 ``` 
 
-*  Always test pipelines (preferably with -D flag set to 'print') before running over a full image set
+*  Always test workflows (preferably with -D flag set to 'print') before running over a full image set
 
 Python script: 
 

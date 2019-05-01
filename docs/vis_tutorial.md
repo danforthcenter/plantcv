@@ -1,10 +1,10 @@
-## Tutorial: VIS Image Pipeline
+## Tutorial: VIS Image Workflow
 
 PlantCV is composed of modular functions that can be arranged (or rearranged) and adjusted quickly and easily.
-Pipelines do not need to be linear (and often are not). Please see pipeline example below for more details.
+Workflows do not need to be linear (and often are not). Please see workflow example below for more details.
 A global variable "debug" allows the user to print out the resulting image. The debug has three modes: either None, 'plot', or 'print'.
 If set to 'print' then the function prints the image out, or if using a [Jupyter](jupyter.md) notebook you could set debug to 'plot' to have
-the images plot to the screen. Debug mode allows users to visualize and optimize each step on individual test images and small test sets before pipelines are deployed over whole datasets.
+the images plot to the screen. Debug mode allows users to visualize and optimize each step on individual test images and small test sets before workflows are deployed over whole datasets.
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/vis_tutorial.ipynb) Check out our interactive VIS tutorial! 
 
@@ -12,14 +12,14 @@ Also see [here](#vis-script) for the complete script.
 
 **Workflow**
 
-1.  Optimize pipeline on individual image with debug set to 'print' (or 'plot' if using a Jupyter notebook).
-2.  Run pipeline on small test set (that ideally spans time and/or treatments).
-3.  Re-optimize pipelines on 'problem images' after manual inspection of test set.
-4.  Deploy optimized pipeline over test set using parallelization script.
+1.  Optimize workflow on individual image with debug set to 'print' (or 'plot' if using a Jupyter notebook).
+2.  Run workflow on small test set (that ideally spans time and/or treatments).
+3.  Re-optimize workflows on 'problem images' after manual inspection of test set.
+4.  Deploy optimized workflow over test set using parallelization script.
 
-**Running A Pipeline**
+**Running A Workflow**
 
-To run a VIS pipeline over a single VIS image there are two required inputs:
+To run a VIS workflow over a single VIS image there are two required inputs:
 
 1.  **Image:** Images can be processed regardless of what type of VIS camera was used (high-throughput platform, digital camera, cell phone camera).
 Image processing will work with adjustments if images are well lit and free of background that is similar in color to plant material.  
@@ -32,18 +32,18 @@ Image processing will work with adjustments if images are well lit and free of b
 *  **Debug Flag:** Prints an image at each step
 *  **Region of Interest:** The user can input their own binary region of interest or image mask (make sure it is the same size as your image or you will have problems).
 
-Sample command to run a pipeline on a single image:  
+Sample command to run a workflow on a single image:  
 
-*  Always test pipelines (preferably with -D flag set to 'print') before running over a full image set
-
-```
-./pipelinename.py -i testimg.png -o ./output-images -r results.txt -w -D 'print'
+*  Always test workflows (preferably with -D flag set to 'print') before running over a full image set
 
 ```
+./workflowname.py -i testimg.png -o ./output-images -r results.txt -w -D 'print'
 
-### Walk Through A Sample Pipeline
+```
 
-#### Pipelines start by importing necessary packages, and by defining user inputs.
+### Walk Through A Sample Workflow
+
+#### Workflows start by importing necessary packages, and by defining user inputs.
 
 ```python
 
@@ -68,13 +68,13 @@ def options():
     
 ```
 
-#### Start of the Main/Customizable portion of the pipeline.
+#### Start of the Main/Customizable portion of the workflow.
 
 The image input by the user is [read in](read_image.md).
 
 ```python
 
-### Main pipeline
+### Main workflow
 def main():
     # Get options
     args = options()
@@ -93,8 +93,8 @@ This particular image was captured by a digital camera, just to show that PlantC
 
 ![Screenshot](img/tutorial_images/vis/original_image.jpg)
   
-In some pipelines (especially ones captured with a high-throughput phenotyping systems, where background is predictable) we first threshold out background.
-In this particular pipeline we do some pre-masking of the background. The goal is to remove as much background as possible without losing any information from the plant.
+In some workflows (especially ones captured with a high-throughput phenotyping systems, where background is predictable) we first threshold out background.
+In this particular workflow we do some pre-masking of the background. The goal is to remove as much background as possible without losing any information from the plant.
 In order to perform a binary threshold on an image you need to select one of the color channels H,S,V,L,A,B,R,G,B.
 Here we convert the [RGB image to HSV](rgb2hsv.md) color space then extract the 's' or saturation channel, but any channel can be selected based on user need.
 If some of the plant is missed or not visible then thresholded channels may be combined (a later step).
@@ -141,9 +141,9 @@ Depending on the plant type (esp. grasses with thin leaves that often twist) you
 
 ![Screenshot](img/tutorial_images/vis/03_median_blur5.jpg)
 
-Here is where the pipeline branches.
+Here is where the workflow branches.
 The original image is converted from an [RGB image to LAB](rgb2lab.md) color space and we extract blue-yellow channel.
-This image is again thresholded and there is an optional [fill](fill.md) step that wasn't needed in this pipeline.
+This image is again thresholded and there is an optional [fill](fill.md) step that wasn't needed in this workflow.
 
 ```python
     # Convert RGB to LAB and extract the Blue channel
@@ -353,9 +353,9 @@ if __name__ == '__main__':
 
 ### Additional examples
 
-To demonstrate the importance of camera settings on pipeline construction
+To demonstrate the importance of camera settings on workflow construction
 here are different species of plants captured with the same imaging setup 
-(digital camera) and processed with the same imaging pipeline as above (no settings changed).
+(digital camera) and processed with the same imaging workflow as above (no settings changed).
 
 **Figure 19.** Output images from Cassava trait analysis. (From top to bottom) Original image, shape output image, boundary line output image, pseudocolored image (based on value channel), histogram of color values for each plant pixel.
 
@@ -381,18 +381,18 @@ here are different species of plants captured with the same imaging setup
 
 
 
-To deploy a pipeline over a full image set please see tutorial on 
-[pipeline parallelization](pipeline_parallel.md).
+To deploy a workflow over a full image set please see tutorial on 
+[workflow parallelization](pipeline_parallel.md).
 
 
 ## VIS Script
 In the terminal:
 
 ```
-./pipelinename.py -i testimg.png -o ./output-images -r results.txt -w -D 'print'
+./workflowname.py -i testimg.png -o ./output-images -r results.txt -w -D 'print'
 
 ```
-*  Always test pipelines (preferably with -D flag set to 'print') before running over a full image set
+*  Always test workflows (preferably with -D flag set to 'print') before running over a full image set
 
 Python script: 
 
@@ -419,9 +419,9 @@ def options():
     args = parser.parse_args()
     return args
 
-#### Start of the Main/Customizable portion of the pipeline.
+#### Start of the Main/Customizable portion of the workflow.
 
-### Main pipeline
+### Main workflow
 def main():
     # Get options
     args = options()

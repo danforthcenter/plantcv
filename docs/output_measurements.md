@@ -1,8 +1,8 @@
 ## Organization of PlantCV Outputs
 
 During [parallel processing](pipeline_parallel.md), outputs from PlantCV analysis functions are collected into an 
-SQLite database. The database is used to collect information about each PlantCV pipeline command that is used in
-conjunction with the database (runinfo table), image metadata (metadata table), object size and shape measurements 
+JSON database. The database is used to collect information about each PlantCV workflow command that is used in
+conjunction with the image metadata (metadata table), object size and shape measurements 
 (features table), object color or intensity measurements (signal table), and output image paths (analysis_images table).
 The database structure is updated as new features are added. The current schema is shown below.
 

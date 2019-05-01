@@ -10,7 +10,449 @@ import plantcv.learn
 # Import matplotlib and use a null Template to block plotting to screen
 # This will let us test debug = "plot"
 import matplotlib
+import plantcv.parallel
 
+PARALLEL_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "parallel_data")
+TEST_TMPDIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".cache")
+TEST_IMG_DIR = "images"
+TEST_IMG_DIR2 = "images_w_date"
+TEST_SNAPSHOT_DIR = "snapshots"
+TEST_PIPELINE = os.path.join(PARALLEL_TEST_DATA, "plantcv-script.py")
+META_FIELDS = {"imgtype": 0, "camera": 1, "frame": 2, "zoom": 3, "lifter": 4, "gain": 5, "exposure": 6, "id": 7}
+VALID_META = {
+    # Camera settings
+    'camera': 'none',
+    'imgtype': 'none',
+    'zoom': 'none',
+    'exposure': 'none',
+    'gain': 'none',
+    'frame': 'none',
+    'lifter': 'none',
+    # Date-Time
+    'timestamp': None,
+    # Sample attributes
+    'id': 'none',
+    'plantbarcode': 'none',
+    'treatment': 'none',
+    'cartag': 'none',
+    # Experiment attributes
+    'measurementlabel': 'none',
+    # Other
+    'other': 'none'
+}
+METADATA_COPROCESS = {
+    'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
+        'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383'),
+        'camera': 'SV',
+        'imgtype': 'VIS',
+        'zoom': 'z1',
+        'exposure': 'e82',
+        'gain': 'g0',
+        'frame': '0',
+        'lifter': 'h1',
+        'timestamp': '2014-10-22 17:49:35.187',
+        'id': '117770',
+        'plantbarcode': 'Ca031AA010564',
+        'treatment': 'none',
+        'cartag': '2143',
+        'measurementlabel': 'C002ch_092214_biomass',
+        'other': 'none',
+        'coimg': 'NIR_SV_0_z1_h1_g0_e65_117779.jpg'
+    },
+    'NIR_SV_0_z1_h1_g0_e65_117779.jpg': {
+        'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383'),
+        'camera': 'SV',
+        'imgtype': 'NIR',
+        'zoom': 'z1',
+        'exposure': 'e65',
+        'gain': 'g0',
+        'frame': '0',
+        'lifter': 'h1',
+        'timestamp': '2014-10-22 17:49:35.187',
+        'id': '117779',
+        'plantbarcode': 'Ca031AA010564',
+        'treatment': 'none',
+        'cartag': '2143',
+        'measurementlabel': 'C002ch_092214_biomass',
+        'other': 'none'
+    }
+}
+METADATA_VIS_ONLY = {
+    'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
+        'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383'),
+        'camera': 'SV',
+        'imgtype': 'VIS',
+        'zoom': 'z1',
+        'exposure': 'e82',
+        'gain': 'g0',
+        'frame': '0',
+        'lifter': 'h1',
+        'timestamp': '2014-10-22 17:49:35.187',
+        'id': '117770',
+        'plantbarcode': 'Ca031AA010564',
+        'treatment': 'none',
+        'cartag': '2143',
+        'measurementlabel': 'C002ch_092214_biomass',
+        'other': 'none'
+    }
+}
+METADATA_NIR_ONLY = {
+        'NIR_SV_0_z1_h1_g0_e65_117779.jpg': {
+        'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383'),
+        'camera': 'SV',
+        'imgtype': 'NIR',
+        'zoom': 'z1',
+        'exposure': 'e65',
+        'gain': 'g0',
+        'frame': '0',
+        'lifter': 'h1',
+        'timestamp': '2014-10-22 17:49:35.187',
+        'id': '117779',
+        'plantbarcode': 'Ca031AA010564',
+        'treatment': 'none',
+        'cartag': '2143',
+        'measurementlabel': 'C002ch_092214_biomass',
+        'other': 'none'
+    }
+}
+
+# ##########################
+# Tests setup function
+# ##########################
+def setup_function():
+    if not os.path.exists(TEST_TMPDIR):
+        os.mkdir(TEST_TMPDIR)
+
+
+# ##############################
+# Tests for the parallel subpackage
+# ##############################
+
+
+def test_plantcv_parallel_metadata_parser_snapshots():
+    data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
+    meta_filters = {"imgtype": "VIS"}
+    start_date = 1413936000
+    end_date = 1414022400
+    error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
+    jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      start_date=start_date, end_date=end_date, error_log=error_log,
+                                                      delimiter="_", file_type="jpg", coprocess="NIR")
+    assert meta == METADATA_COPROCESS
+
+
+def test_plantcv_parallel_metadata_parser_snapshots_coimg():
+    data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
+    meta_filters = {"imgtype": "VIS"}
+    start_date = 1413936000
+    end_date = 1414022400
+    error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
+    jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      start_date=start_date, end_date=end_date, error_log=error_log,
+                                                      delimiter="_", file_type="jpg", coprocess="FAKE")
+    assert meta == METADATA_VIS_ONLY
+
+
+def test_plantcv_parallel_metadata_parser_images():
+    data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR)
+    meta_filters = {"imgtype": "VIS"}
+    start_date = 1413936000
+    end_date = 1414022400
+    error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
+    jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      start_date=start_date, end_date=end_date, error_log=error_log,
+                                                      delimiter="_", file_type="jpg", coprocess=None)
+    expected = {
+        'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
+            'path': os.path.join(PARALLEL_TEST_DATA, 'images'),
+            'camera': 'SV',
+            'imgtype': 'VIS',
+            'zoom': 'z1',
+            'exposure': 'e82',
+            'gain': 'g0',
+            'frame': '0',
+            'lifter': 'h1',
+            'timestamp': None,
+            'id': '117770',
+            'plantbarcode': 'none',
+            'treatment': 'none',
+            'cartag': 'none',
+            'measurementlabel': 'none',
+            'other': 'none'}
+    }
+    assert meta == expected
+
+
+def test_plantcv_parallel_metadata_parser_images_outside_daterange():
+    data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR2)
+    meta_filters = {"imgtype": "VIS"}
+    start_date = 10
+    end_date = 10
+    meta_fields = {"imgtype": 0, "camera": 1, "frame": 2, "zoom": 3, "lifter": 4, "gain": 5, "exposure": 6,
+                   "timestamp": 7}
+    error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
+    jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=meta_fields,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      start_date=start_date, end_date=end_date, error_log=error_log,
+                                                      delimiter="_", file_type="jpg", coprocess=None)
+    assert meta == {}
+
+
+def test_plantcv_parallel_metadata_parser_snapshot_outside_daterange():
+    data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
+    meta_filters = {"imgtype": "VIS"}
+    start_date = 10
+    end_date = 10
+    error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
+    jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      start_date=start_date, end_date=end_date, error_log=error_log,
+                                                      delimiter="_", file_type="jpg", coprocess=None)
+
+    assert meta == {}
+
+
+def test_plantcv_parallel_metadata_parser_fail_images():
+    data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
+    meta_filters = {"cartag": "VIS"}
+    start_date = 10
+    end_date = 10
+    error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
+    jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      start_date=start_date, end_date=end_date, error_log=error_log,
+                                                      delimiter="_", file_type="jpg", coprocess="NIR")
+    expected = {
+        'NIR_SV_0_z1_h1_g0_e65_117779.jpg': {
+        'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383'),
+        'camera': 'SV',
+        'imgtype': 'NIR',
+        'zoom': 'z1',
+        'exposure': 'e65',
+        'gain': 'g0',
+        'frame': '0',
+        'lifter': 'h1',
+        'timestamp': '2014-10-22 17:49:35.187',
+        'id': '117779',
+        'plantbarcode': 'Ca031AA010564',
+        'treatment': 'none',
+        'cartag': '2143',
+        'measurementlabel': 'C002ch_092214_biomass',
+        'other': 'none'}
+    }
+
+    assert meta == METADATA_NIR_ONLY
+
+
+def test_plantcv_parallel_metadata_parser_images_no_frame():
+    data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
+    meta_fields = {"imgtype": 0, "camera": 1, "X": 2, "zoom": 3, "lifter": 4, "gain": 5, "exposure": 6, "id": 7}
+    meta_filters = {"imgtype": "VIS"}
+    start_date = 1413936000
+    end_date = 1414022400
+    error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
+    jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=meta_fields,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      start_date=start_date, end_date=end_date, error_log=error_log,
+                                                      delimiter="_", file_type="jpg", coprocess="NIR")
+    assert meta == {
+    'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
+        'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383'),
+        'camera': 'SV',
+        'imgtype': 'VIS',
+        'zoom': 'z1',
+        'exposure': 'e82',
+        'gain': 'g0',
+        'frame': 'none',
+        'lifter': 'h1',
+        'timestamp': '2014-10-22 17:49:35.187',
+        'id': '117770',
+        'plantbarcode': 'Ca031AA010564',
+        'treatment': 'none',
+        'cartag': '2143',
+        'measurementlabel': 'C002ch_092214_biomass',
+        'other': 'none',
+        'coimg': 'NIR_SV_0_z1_h1_g0_e65_117779.jpg'
+    },
+    'NIR_SV_0_z1_h1_g0_e65_117779.jpg': {
+        'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383'),
+        'camera': 'SV',
+        'imgtype': 'NIR',
+        'zoom': 'z1',
+        'exposure': 'e65',
+        'gain': 'g0',
+        'frame': 'none',
+        'lifter': 'h1',
+        'timestamp': '2014-10-22 17:49:35.187',
+        'id': '117779',
+        'plantbarcode': 'Ca031AA010564',
+        'treatment': 'none',
+        'cartag': '2143',
+        'measurementlabel': 'C002ch_092214_biomass',
+        'other': 'none'
+    }
+}
+
+
+def test_plantcv_parallel_metadata_parser_images_no_camera():
+    data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
+    meta_fields = {"imgtype": 0, "X": 1, "frame": 2, "zoom": 3, "lifter": 4, "gain": 5, "exposure": 6, "id": 7}
+    meta_filters = {"imgtype": "VIS"}
+    start_date = 1413936000
+    end_date = 1414022400
+    error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
+    jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=meta_fields,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      start_date=start_date, end_date=end_date, error_log=error_log,
+                                                      delimiter="_", file_type="jpg", coprocess="NIR")
+    assert meta == {
+    'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
+        'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383'),
+        'camera': 'none',
+        'imgtype': 'VIS',
+        'zoom': 'z1',
+        'exposure': 'e82',
+        'gain': 'g0',
+        'frame': '0',
+        'lifter': 'h1',
+        'timestamp': '2014-10-22 17:49:35.187',
+        'id': '117770',
+        'plantbarcode': 'Ca031AA010564',
+        'treatment': 'none',
+        'cartag': '2143',
+        'measurementlabel': 'C002ch_092214_biomass',
+        'other': 'none',
+        'coimg': 'NIR_SV_0_z1_h1_g0_e65_117779.jpg'
+    },
+    'NIR_SV_0_z1_h1_g0_e65_117779.jpg': {
+        'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383'),
+        'camera': 'none',
+        'imgtype': 'NIR',
+        'zoom': 'z1',
+        'exposure': 'e65',
+        'gain': 'g0',
+        'frame': '0',
+        'lifter': 'h1',
+        'timestamp': '2014-10-22 17:49:35.187',
+        'id': '117779',
+        'plantbarcode': 'Ca031AA010564',
+        'treatment': 'none',
+        'cartag': '2143',
+        'measurementlabel': 'C002ch_092214_biomass',
+        'other': 'none'
+    }
+}
+
+
+def test_plantcv_parallel_job_builder_single_image():
+    jobs = plantcv.parallel.job_builder(meta=METADATA_VIS_ONLY, valid_meta=VALID_META, workflow=TEST_PIPELINE,
+                                        job_dir=TEST_TMPDIR, out_dir=TEST_TMPDIR, coprocess=None,
+                                        other_args="--other on", writeimg=True)
+
+    image_name = list(METADATA_VIS_ONLY.keys())[0]
+    image_path = os.path.join(METADATA_VIS_ONLY[image_name]['path'], image_name)
+    result_file = os.path.join(TEST_TMPDIR, image_name + '.txt')
+
+    expected = ['python', TEST_PIPELINE, '--image', image_path, '--outdir', TEST_TMPDIR, '--result', result_file,
+                '--writeimg', '--other', 'on']
+
+    if len(expected) != len(jobs[0]):
+        assert False
+    else:
+        assert all([i == j] for i, j in zip(jobs[0], expected))
+
+
+def test_plantcv_parallel_job_builder_coprocess():
+    jobs = plantcv.parallel.job_builder(meta=METADATA_COPROCESS, valid_meta=VALID_META, workflow=TEST_PIPELINE,
+                                        job_dir=TEST_TMPDIR, out_dir=TEST_TMPDIR, coprocess='NIR',
+                                        other_args="--other on", writeimg=True)
+
+    img_names = list(METADATA_COPROCESS.keys())
+    vis_name = img_names[0]
+    vis_path = os.path.join(METADATA_COPROCESS[vis_name]['path'], vis_name)
+    result_file = os.path.join(TEST_TMPDIR, vis_name + '.txt')
+    nir_name = img_names[1]
+    coresult_file = os.path.join(TEST_TMPDIR, nir_name + '.txt')
+
+    expected = ['python', TEST_PIPELINE, '--image', vis_path, '--outdir', TEST_TMPDIR, '--result', result_file,
+                '--coresult', coresult_file, '--writeimg', '--other', 'on']
+
+    if len(expected) != len(jobs[0]):
+        assert False
+    else:
+        assert all([i == j] for i, j in zip(jobs[0], expected))
+
+
+def test_plantcv_parallel_multiprocess():
+    image_name = list(METADATA_VIS_ONLY.keys())[0]
+    image_path = os.path.join(METADATA_VIS_ONLY[image_name]['path'], image_name)
+    result_file = os.path.join(TEST_TMPDIR, image_name + '.txt')
+    jobs = [['python', TEST_PIPELINE, '--image', image_path, '--outdir', TEST_TMPDIR, '--result', result_file,
+            '--writeimg', '--other', 'on']]
+    plantcv.parallel.multiprocess(jobs, 1)
+    assert os.path.exists(result_file)
+
+
+def test_plantcv_parallel_process_results():
+    # Open log files
+    fail_log = open(os.path.join(TEST_TMPDIR, 'test_failed_images.log'), 'w')
+    signal_file = open(os.path.join(TEST_TMPDIR, 'test_signal.tab'), 'w')
+    metadata_file = open(os.path.join(TEST_TMPDIR, 'test_metadata.tab'), 'w')
+    analysis_images_file = open(os.path.join(TEST_TMPDIR, 'test_analysis_images.tab'), 'w')
+    # SQLite filename in the test cache directory
+    #db = os.path.join(TEST_TMPDIR, TEST_SQLITE_DB)
+    # Populate database
+    #call(["sqlite3", db, '.read ' + os.path.join(TEST_DATA, TEST_SQLITE_DATA)])
+    # Create a new SQLite database
+    #run_id, image_id, sq = plantcv.parallel.db_connect(db=db, create=True)
+    plantcv.parallel.process_results(valid_meta=VALID_META, job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
+                                     json_file=os.path.join(PARALLEL_TEST_DATA, 'results/good.json'))
+
+
+def test_plantcv_parallel_process_results_new_output():
+    # Open log files
+    fail_log = open(os.path.join(TEST_TMPDIR, 'test_failed_images.log'), 'w')
+    signal_file = open(os.path.join(TEST_TMPDIR, 'test_signal.tab'), 'w')
+    metadata_file = open(os.path.join(TEST_TMPDIR, 'test_metadata.tab'), 'w')
+    analysis_images_file = open(os.path.join(TEST_TMPDIR, 'test_analysis_images.tab'), 'w')
+    # SQLite filename in the test cache directory
+    #db = os.path.join(TEST_TMPDIR, TEST_SQLITE_DB)
+    # Populate database
+    #call(["sqlite3", db, '.read ' + os.path.join(TEST_DATA, TEST_SQLITE_DATA)])
+    # Create a new SQLite database
+    #run_id, image_id, sq = plantcv.parallel.db_connect(db=db, create=True)
+    plantcv.parallel.process_results(valid_meta=VALID_META, job_dir=os.path.join(PARALLEL_TEST_DATA, "snapshots"),
+                                     json_file=os.path.join(TEST_TMPDIR, 'test_features.tab'))
+
+
+def test_plantcv_parallel_process_results_valid_json():
+    # Test when the file is a valid json file but doesn't contain expected keys
+    # Open log files
+    fail_log = open(os.path.join(TEST_TMPDIR, 'test_failed_images.log'), 'w')
+    signal_file = open(os.path.join(TEST_TMPDIR, 'test_signal.tab'), 'w')
+    metadata_file = open(os.path.join(TEST_TMPDIR, 'test_metadata.tab'), 'w')
+    analysis_images_file = open(os.path.join(TEST_TMPDIR, 'test_analysis_images.tab'), 'w')
+    with pytest.raises(RuntimeError):
+        plantcv.parallel.process_results(valid_meta=VALID_META, job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
+                                         json_file=os.path.join(PARALLEL_TEST_DATA, "bad_results/valid.json"))
+
+
+def test_plantcv_parallel_process_results_invalid_json():
+    # Open log files
+    fail_log = open(os.path.join(TEST_TMPDIR, 'test_failed_images.log'), 'w')
+    signal_file = open(os.path.join(TEST_TMPDIR, 'test_signal.tab'), 'w')
+    metadata_file = open(os.path.join(TEST_TMPDIR, 'test_metadata.tab'), 'w')
+    analysis_images_file = open(os.path.join(TEST_TMPDIR, 'test_analysis_images.tab'), 'w')
+    with pytest.raises(RuntimeError):
+        plantcv.parallel.process_results(valid_meta=VALID_META, job_dir=os.path.join(PARALLEL_TEST_DATA, "snapshots"),
+                                         json_file=os.path.join(PARALLEL_TEST_DATA, "bad_results/invalid.txt"))
+
+
+#####################################################################################################################
+############################################ PLANTCV MAIN PACKAGE ###################################################
 matplotlib.use('Template', warn=False)
 
 TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
@@ -174,7 +616,7 @@ def test_plantcv_analyze_bound_horizontal():
     # Test with debug = None
     pcv.params.debug = None
     boundary_img1 = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=1756)
-    pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    pcv.print_results(os.path.join(TEST_DATA, "data_results.txt"))
     assert len(pcv.outputs.observations) == 7
     pcv.outputs.clear()
 

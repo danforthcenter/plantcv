@@ -25,7 +25,7 @@ print an output .json file for data analysis.
 - **Parameters:**
     - filename- Name of results text file
 - **Context:**
-    - Print out a result file containing all measurements recorded by functions included in the pipeline
+    - Print out a result file containing all measurements recorded by functions included in the workflow
       for each image processed.  
 - **Example use:**
     - [Use In VIS Tutorial](vis_tutorial.md)  
@@ -36,8 +36,8 @@ from plantcv import plantcv as pcv
 # Read in image
 img, path, img_filename = pcv.readimage("home/user/images/test-image.png")
 
-######### Pipeline steps here 
+######### Workflow steps here 
 
-pcv.print_results(filename='test_pipeline_results.txt')
+pcv.print_results(filename='test_workflow_results.txt')
 
 ```

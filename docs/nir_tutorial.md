@@ -1,54 +1,54 @@
-## Tutorial: NIR Image Pipeline
+## Tutorial: NIR Image Workflow
 
 PlantCV is composed of modular functions that can be arranged (or rearranged) and adjusted quickly and easily. 
-We hope that you can use these functions and pipelines as a starting place for your project. 
+We hope that you can use these functions and workflows as a starting place for your project. 
 The goal is to provide practical examples of image processing algorithms.
 
-Pipelines do not need to be linear (and often as are not, as seen in this example).
+Workflows do not need to be linear (and often as are not, as seen in this example).
 A global variable "debug" allows the user to print out the resulting image.
 The debug has three modes: either None, 'plot', or 'print'. If set to
 'print' then the function prints the image out, or if using a [Jupyter](jupyter.md) notebook you could set debug to 'plot' to have
 the images plot to the screen. Debug mode allows users to visualize and optimize each step on individual test images
-and small test sets before pipelines are deployed over whole datasets.
+and small test sets before workflows are deployed over whole datasets.
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/nir_tutorial.ipynb) Check out our interactive NIR tutorial! 
 
 Also see [here](#nir-script) for the complete script. 
 
 ### Workflow
-1.  Optimize pipeline on individual image with debug set to 'print' (or 'plot' if using a Jupyter notebook).
-2.  Run pipeline on small test set (that ideally spans time and/or treatments).
-3.  Re-optimize pipelines on 'problem images' after manual inspection of test set.
-4.  Deploy optimized pipeline over test set using parallelization script.
+1.  Optimize workflow on individual image with debug set to 'print' (or 'plot' if using a Jupyter notebook).
+2.  Run workflow on small test set (that ideally spans time and/or treatments).
+3.  Re-optimize workflows on 'problem images' after manual inspection of test set.
+4.  Deploy optimized workflow over test set using parallelization script.
 
-### Running A Pipeline
+### Running A Workflow
 
-To run a NIR pipeline over a single NIR image there are three required inputs:
+To run a NIR Workflow over a single NIR image there are three required inputs:
 
 1.  **Image:** NIR images are grayscale matrices (1 signal dimension).
 In principle, image processing will work on any grayscale image with adjustments if images are well lit and
 there is appreciable contrast difference between the object of interest and the background.
 2.  **Output directory:** If debug mode is set to 'print' output images from each intermediate step are produced.
-3.  **Image of estimated background:** Right now this is hardcoded into the pipeline (different background at each zoom level) and not implemented as an argument.
+3.  **Image of estimated background:** Right now this is hardcoded into the Workflow (different background at each zoom level) and not implemented as an argument.
 
 Optional inputs:  
 
 *  **Debug Flag:** Prints an image at each step
 *  **Region of Interest:** The user can input their own binary region of interest or image mask (make sure it is the same size as your image or you will have problems).
 
-Sample command to run a pipeline on a single image:  
+Sample command to run a Workflow on a single image:  
 
-*  Always test pipelines (preferably with -D flag set to 'print') before running over a full image set
-
-```
-./pipelinename.py -i /home/user/images/testimg.png -o /home/user/output-images -D 'print'
+*  Always test Workflows (preferably with -D flag set to 'print') before running over a full image set
 
 ```
+./Workflowname.py -i /home/user/images/testimg.png -o /home/user/output-images -D 'print'
+
+```
 
 
-### Walk through a sample pipeline
+### Walk through a sample Workflow
 
-#### Pipelines start by importing necessary packages, and by defining user inputs.
+#### Workflows start by importing necessary packages, and by defining user inputs.
 
 ```python
 #!/usr/bin/python
@@ -70,14 +70,14 @@ def options():
     
 ```
 
-#### Start of the Main/Customizable portion of the pipeline.
+#### Start of the Main/Customizable portion of the Workflow.
 
 The image selected by the -i flag is [read](read_image.md) in.
 
 Lets start by using a background subtraction approach to object identification
 
 ```python
-### Main pipeline
+### Main Workflow
 def main():
     # Get options
     args = options()
@@ -391,18 +391,18 @@ Shape attributes of the plant printed on the original image; Histogram of the si
 
 ![Screenshot](img/tutorial_images/nir/31_histogram.jpg)
 
-To deploy a pipeline over a full image set please see tutorial on [pipeline parallelization](pipeline_parallel.md).
+To deploy a Workflow over a full image set please see tutorial on [Workflow parallelization](pipeline_parallel.md).
 
 ## NIR Script 
 
 In the terminal:
 
 ```
-./pipelinename.py -i /home/user/images/testimg.png -o /home/user/output-images -D 'print'
+./Workflowname.py -i /home/user/images/testimg.png -o /home/user/output-images -D 'print'
 
 ```
 
-*  Always test pipelines (preferably with -D flag set to 'print') before running over a full image set
+*  Always test Workflows (preferably with -D flag set to 'print') before running over a full image set
 
 Python script: 
 
@@ -425,7 +425,7 @@ def options():
     args = parser.parse_args()
     return args
 
-### Main pipeline
+### Main Workflow
 def main():
     # Get options
     args = options()
