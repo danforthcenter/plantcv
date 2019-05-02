@@ -29,6 +29,7 @@ nav:
     - 'Workflow Parallelization': pipeline_parallel.md
     - 'Exporting Data': db-exporter.md
     - 'Color Correction Workflow': transform_color_correction_tutorial.md
+    - 'Morphology Workflow': morphology_tutorial.md
   - 'Package Plantcv':
     - 'Analyze color': analyze_color.md
     - 'Analyze NIR': analyze_NIR_intensity.md

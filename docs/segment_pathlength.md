@@ -13,7 +13,7 @@ Measure the geodesic distance of segments.
     [plantcv.morphology.segment_sort](segment_sort.md)).
 - **Context:**
     - Calculates the geodesic distance of each segment. Users can pass only 
-    leaf objects (returned from [plantcv.morphology.segment_sort](segment_sort.md)) to only collect lengths of leaves.
+    leaf objects (returned from [plantcv.morphology.segment_sort](segment_sort.md)) to only collect lengths of leaves only.
     Path lengths are automatically stored to the [outputs class](outputs.md).
 
 **Reference Image:** segmented_img 

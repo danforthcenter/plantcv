@@ -9,12 +9,12 @@ Measure the curvature of segments.
 - **Parameters:**
     - segmented_img - Segmented image (output either from [plantcv.morphology.segment_skeleton](segment_skeleton.md)
     or [plantcv.morphology.segment_id](segment_id.md)), used for creating the labeled image. 
-    - objects - Segment objects (output from either [plantcv.morphology.segment_sort](segment_skeleton.md) or
+    - objects - Segment objects (output from either [plantcv.morphology.segment_skeleton](segment_skeleton.md) or
     [plantcv.morphology.segment_sort](segment_sort.md)).
     - hierarchies - Hierarchies of segment objects (output from either [plantcv.morphology.segment_skeleton](segment_skeleton.md) or
     [plantcv.morphology.segment_sort](segment_sort.md)).
 - **Context:**
-    - Calculates curvature of segments by taking the ratio of the geodesic distance ([plantcv.morphology.segment_path_length](segment_path_length.md))
+    - Calculates curvature of segments by taking the ratio of the geodesic distance ([plantcv.morphology.segment_path_length](segment_pathlength.md))
     over the euclidean distance [plantcv.morphology.segment_euclidean_length](segment_euclidean_length.md)). Measurement of two-dimensional tortuosity.
     Values closer to 1 indicate that a segment is a straight line while larger values indicate the segment has more curvature.
     Users can pass only leaf objects (returned from [plantcv.morphology.segment_sort](segment_sort.md)) to only collect curvature of leaves. The 

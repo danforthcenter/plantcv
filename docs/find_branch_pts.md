@@ -1,12 +1,14 @@
 ## Find Branch/Junction Points 
 
-**plantcv.morphology.*find_branch_pts*(*skel_img, mask=None*)
+Find branch/junction points in a skeletonized image. 
+
+**plantcv.morphology.find_branch_pts**(*skel_img, mask=None*)
 
 **returns** Binary mask of branch points 
 
 - **Parameters:**
     - skel_img - Skeleton image (output from [plantcv.morphology.skeletonize](skeletonize.md))
-    - mask - Binary mask used for debugging (optional). If provided the debug image will be overlaid on the mask.
+    - mask - Binary mask used for debugging image (optional). If provided the debug image will be overlaid on the mask.
 - **Context:**
     - Identifies branch/junction points in a skeleton image
 

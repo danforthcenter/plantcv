@@ -9,10 +9,10 @@ Measure leaf insertion angles.
 - **Parameters:**
     - skel_img - Skeletonize image (output from [plantcv.morphology.skeletonize](skeletonize.md)). 
     - segmented_img - Segmented image (output either from [plantcv.morphology.segment_skeleton](segment_skeleton.md)
-    or [plantcv.morphology.segment_id](segment_id.md)), used for creating the labeled image. 
+    or [plantcv.morphology.segment_id](segment_id.md)), used for creating the labeled debugging image. 
     - leaf_objects - Leaf segment objects (output from [plantcv.morphology.segment_sort](segment_sort.md)).
     - leaf_hierarchies - Hierarchies of leaf segment objects (output from [plantcv.morphology.segment_sort](segment_sort.md)).
-    - stemObjects - Stem segment objects (output from [plantcv.morphology.segment_sort](segment_sort.md)).
+    - stem_objects - Stem segment objects (output from [plantcv.morphology.segment_sort](segment_sort.md)).
     - size - Size of ends (number of pixels) used to calculate insertion point "tangent" lines
 - **Context:**
     - Find "tangent" angles to leaf insertion points in degrees of skeleton segments compared to the stem angle. 

@@ -11,7 +11,7 @@ Measure Euclidean distance of segments.
     or [plantcv.morphology.segment_id](segment_id.md)), used for creating the labeled image. 
     - objects - Segment objects (output from either [plantcv.morphology.segment_skeleton](segment_skeleton.md) or
     [plantcv.morphology.segment_sort](segment_sort.md)).
-    - hierarchies - Hierarchies of segment objects (output from either [plantcv.morphology.segment_sort](segment_skeleton.md) or
+    - hierarchies - Hierarchies of segment objects (output from either [plantcv.morphology.segment_skeleton](segment_skeleton.md) or
     [plantcv.morphology.segment_sort](segment_sort.md)).
 - **Context:**
     - Calculates the euclidean distance of each segment. Users can pass only 
