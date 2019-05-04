@@ -4153,5 +4153,5 @@ def test_plantcv_visualize_histogram():
 # ##############################
 # Clean up test files
 # ##############################
-# def teardown_function():
-#     shutil.rmtree(TEST_TMPDIR)
+def teardown_function():
+    shutil.rmtree(TEST_TMPDIR)
