@@ -3,6 +3,7 @@
 import pytest
 import os
 import shutil
+import filecmp
 import numpy as np
 import cv2
 from plantcv import plantcv as pcv
@@ -380,26 +381,45 @@ def test_plantcv_parallel_multiprocess():
 
 
 def test_plantcv_parallel_process_results():
+    # Create a test tmp directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_process_results")
+    os.mkdir(cache_dir)
     plantcv.parallel.process_results(valid_meta=VALID_META, job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
-                                     json_file=os.path.join(PARALLEL_TEST_DATA, 'results/good.json'))
+                                     json_file=os.path.join(cache_dir, 'appended_results.json'))
+    plantcv.parallel.process_results(valid_meta=VALID_META, job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
+                                     json_file=os.path.join(cache_dir, 'appended_results.json'))
+    # Assert that the output JSON file matches the expected output JSON file
+    assert filecmp.cmp(os.path.join(PARALLEL_TEST_DATA, "appended_results.json"),
+                       os.path.join(cache_dir, "appended_results.json"))
 
 
 def test_plantcv_parallel_process_results_new_output():
-    plantcv.parallel.process_results(valid_meta=VALID_META, job_dir=os.path.join(PARALLEL_TEST_DATA, "snapshots"),
-                                     json_file=os.path.join(TEST_TMPDIR, 'test_features.tab'))
+    # Create a test tmp directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_process_results_new_output")
+    os.mkdir(cache_dir)
+    plantcv.parallel.process_results(valid_meta=VALID_META, job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
+                                     json_file=os.path.join(cache_dir, 'new_result.json'))
+
+    # Assert output matches expected values
+    assert filecmp.cmp(os.path.join(PARALLEL_TEST_DATA, "new_result.json"), os.path.join(cache_dir, "new_result.json"))
 
 
 def test_plantcv_parallel_process_results_valid_json():
     # Test when the file is a valid json file but doesn't contain expected keys
     with pytest.raises(RuntimeError):
         plantcv.parallel.process_results(valid_meta=VALID_META, job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
-                                         json_file=os.path.join(PARALLEL_TEST_DATA, "bad_results/valid.json"))
+                                         json_file=os.path.join(PARALLEL_TEST_DATA, "valid.json"))
 
 
 def test_plantcv_parallel_process_results_invalid_json():
+    # Create a test tmp directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_process_results_invalid_json")
+    os.mkdir(cache_dir)
+    # Move the test data to the tmp directory
+    shutil.copytree(os.path.join(PARALLEL_TEST_DATA, "bad_results"), os.path.join(cache_dir, "bad_results"))
     with pytest.raises(RuntimeError):
-        plantcv.parallel.process_results(valid_meta=VALID_META, job_dir=os.path.join(PARALLEL_TEST_DATA, "snapshots"),
-                                         json_file=os.path.join(PARALLEL_TEST_DATA, "bad_results/invalid.txt"))
+        plantcv.parallel.process_results(valid_meta=VALID_META, job_dir=os.path.join(cache_dir, "bad_results"),
+                                         json_file=os.path.join(cache_dir, "bad_results", "invalid.txt"))
 
 
 # ####################################################################################################################
@@ -558,7 +578,9 @@ def test_plantcv_analyze_bound_horizontal():
     # Test with debug = None
     pcv.params.debug = None
     _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=1756)
-    pcv.print_results(os.path.join(TEST_DATA, "data_results.txt"))
+    # Copy a test file to the cache directory
+    shutil.copyfile(os.path.join(TEST_DATA, "data_results.txt"), os.path.join(cache_dir, "data_results.txt"))
+    pcv.print_results(os.path.join(cache_dir, "data_results.txt"))
     assert len(pcv.outputs.observations) == 7
     pcv.outputs.clear()
 
@@ -1875,6 +1897,9 @@ def test_plantcv_output_mask():
     pcv.params.debug = "plot"
     _ = pcv.output_mask(img=img, mask=mask, filename='test.png', outdir=cache_dir, mask_only=False)
     _ = pcv.output_mask(img=img_color, mask=mask, filename='test.png', outdir=None, mask_only=False)
+    # Remove tmp files in working direcctory
+    shutil.rmtree("ori-images")
+    shutil.rmtree("mask-images")
     # Test with debug = None
     pcv.params.debug = None
     imgpath, maskpath, analysis_images = pcv.output_mask(img=img, mask=mask, filename='test.png',
@@ -4128,5 +4153,5 @@ def test_plantcv_visualize_histogram():
 # ##############################
 # Clean up test files
 # ##############################
-def teardown_function():
-    shutil.rmtree(TEST_TMPDIR)
+# def teardown_function():
+#     shutil.rmtree(TEST_TMPDIR)
