@@ -3,7 +3,7 @@
 import pytest
 import os
 import shutil
-import filecmp
+import json
 import numpy as np
 import cv2
 from plantcv import plantcv as pcv
@@ -389,8 +389,13 @@ def test_plantcv_parallel_process_results():
     plantcv.parallel.process_results(valid_meta=VALID_META, job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
                                      json_file=os.path.join(cache_dir, 'appended_results.json'))
     # Assert that the output JSON file matches the expected output JSON file
-    assert filecmp.cmp(os.path.join(PARALLEL_TEST_DATA, "appended_results.json"),
-                       os.path.join(cache_dir, "appended_results.json"))
+    result_file = open(os.path.join(cache_dir, "appended_results.json"), "r")
+    results = json.load(result_file)
+    result_file.close()
+    expected_file = open(os.path.join(PARALLEL_TEST_DATA, "appended_results.json"))
+    expected = json.load(expected_file)
+    expected_file.close()
+    assert results == expected
 
 
 def test_plantcv_parallel_process_results_new_output():
@@ -399,9 +404,14 @@ def test_plantcv_parallel_process_results_new_output():
     os.mkdir(cache_dir)
     plantcv.parallel.process_results(valid_meta=VALID_META, job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
                                      json_file=os.path.join(cache_dir, 'new_result.json'))
-
     # Assert output matches expected values
-    assert filecmp.cmp(os.path.join(PARALLEL_TEST_DATA, "new_result.json"), os.path.join(cache_dir, "new_result.json"))
+    result_file = open(os.path.join(cache_dir, "new_result.json"), "r")
+    results = json.load(result_file)
+    result_file.close()
+    expected_file = open(os.path.join(PARALLEL_TEST_DATA, "new_result.json"))
+    expected = json.load(expected_file)
+    expected_file.close()
+    assert results == expected
 
 
 def test_plantcv_parallel_process_results_valid_json():
