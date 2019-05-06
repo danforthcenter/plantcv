@@ -85,13 +85,14 @@ nav:
     - 'Median Blur': median_blur.md
     - 'Morphology Functions':
       - 'Check Cycles': check_cycles.md
-      - 'Find Branches': morph_find_branches.md
+      - 'Find Branches': find_branch_pts.md
       - 'Find Tips': find_tips.md
       - 'Prune': prune.md
-      - 'Segment Angles': segment_angles.md
+      - 'Segment Angles': segment_angle.md
       - 'Segment Curvature': segment_curvature.md
       - 'Segment Euclidean Length': segment_euclidean_length.md
       - 'Segment ID': segment_id.md
+      - 'Segment Insertion Angle': segment_insertion_angle.md
       - 'Segment Path Length': segment_pathlength.md
       - 'Segment Skeleton': segment_skeleton.md
       - 'Segment Sort': segment_sort.md

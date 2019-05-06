@@ -321,7 +321,7 @@ angle_header, segment_angles, labeled_img = pcv.morphology.segment_angle(segment
 
 **Figure 15.** Find Leaf Angles
 
-The [plantcv.morphology.segment_angles](segment_angles.md) function calculates angles of segments (in degrees) 
+The [plantcv.morphology.segment_angles](segment_angle.md) function calculates angles of segments (in degrees) 
 by fitting a linear regression line to each segment. 
 
 ![Screenshot](img/tutorial_images/morphology/labeled_angles.jpg)
