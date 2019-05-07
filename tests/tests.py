@@ -2765,6 +2765,35 @@ def test_plantcv_morphology_segment_insertion_angle():
     assert len(insert_angles) == 15
 
 
+def test_plantcv_morphology_segment_combine():
+    skel = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
+    segmented_img, seg_objects, seg_hierarchies = pcv.morphology.segment_skeleton(skel_img=skel)
+    pcv.params.debug = "plot"
+    # Test with list of IDs input
+    _, new_objects = pcv.morphology.segment_combine([0,1], seg_objects, skel)
+    assert len(new_objects) + 1 == len(seg_objects)
+
+
+def test_plantcv_morphology_segment_combine_lists():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    skel = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
+    segmented_img, seg_objects, seg_hierarchies = pcv.morphology.segment_skeleton(skel_img=skel)
+    pcv.params.debug = "print"
+    # Test with list of lists input
+    _, new_objects = pcv.morphology.segment_combine([[0,1,2], [3,4]], seg_objects, skel)
+    assert len(new_objects) + 3 == len(seg_objects)
+
+
+def test_plantcv_morphology_segment_combine_bad_input():
+    skel = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
+    segmented_img, seg_objects, seg_hierarchies = pcv.morphology.segment_skeleton(skel_img=skel)
+    pcv.params.debug = "plot"
+    with pytest.raises(RuntimeError):
+        _, new_objects = pcv.morphology.segment_combine([0.5, 1.5], seg_objects, skel)
+
 # ##############################
 # Tests for the roi subpackage
 # ##############################
