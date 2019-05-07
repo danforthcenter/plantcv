@@ -43,7 +43,7 @@ def segment_skeleton(skel_img, mask=None):
     segments = image_subtract(skel_img, bp)
 
     # Gather contours of leaves
-    segment_objects, segment_hierarchies = find_objects(segments, segments)
+    segment_objects, _ = find_objects(segments, segments)
 
     # Color each segment a different color
     rand_color = color_palette(len(segment_objects))
@@ -55,8 +55,7 @@ def segment_skeleton(skel_img, mask=None):
 
     segmented_img = cv2.cvtColor(segmented_img, cv2.COLOR_GRAY2RGB)
     for i, cnt in enumerate(segment_objects):
-        cv2.drawContours(segmented_img, segment_objects, i, rand_color[i], params.line_thickness, lineType=8,
-                         hierarchy=segment_hierarchies)
+        cv2.drawContours(segmented_img, segment_objects, i, rand_color[i], params.line_thickness, lineType=8)
 
     # Reset debug mode
     params.debug = debug
@@ -68,4 +67,4 @@ def segment_skeleton(skel_img, mask=None):
     elif params.debug == 'plot':
         plot_image(segmented_img)
 
-    return segmented_img, segment_objects, segment_hierarchies
+    return segmented_img, segment_objects

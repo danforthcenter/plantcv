@@ -2,7 +2,7 @@
 
 Measure leaf insertion angles. 
 
-**plantcv.morphology.segment_insertion_angle**(*skel_img, segmented_img, leaf_objects, leaf_hierarchies, stem_objects, size*)
+**plantcv.morphology.segment_insertion_angle**(*skel_img, segmented_img, leaf_objects, stem_objects, size*)
 
 **returns** labeled image 
 
@@ -11,7 +11,6 @@ Measure leaf insertion angles.
     - segmented_img - Segmented image (output either from [plantcv.morphology.segment_skeleton](segment_skeleton.md)
     or [plantcv.morphology.segment_id](segment_id.md)), used for creating the labeled debugging image. 
     - leaf_objects - Leaf segment objects (output from [plantcv.morphology.segment_sort](segment_sort.md)).
-    - leaf_hierarchies - Hierarchies of leaf segment objects (output from [plantcv.morphology.segment_sort](segment_sort.md)).
     - stem_objects - Stem segment objects (output from [plantcv.morphology.segment_sort](segment_sort.md)).
     - size - Size of ends (number of pixels) used to calculate insertion point "tangent" lines
 - **Context:**
@@ -38,7 +37,6 @@ pcv.params.line_thickness = 3
 labeled_img = pcv.morphology.segment_insertion_angle(skel_img=skeleton,
                                                      segmented_img=leaves_segment, 
                                                      leaf_objects=leaf_obj,
-                                                     leaf_hierarchies=leaf_hier, 
                                                      stem_objects=stem_objs,
                                                      size=20)
 

@@ -10,40 +10,32 @@ from plantcv.plantcv import find_objects
 from plantcv.plantcv.morphology import find_tips
 
 
-def segment_sort(skel_img, objects, hierarchies, mask=None):
+def segment_sort(skel_img, objects, mask=None):
     """ Calculate segment curvature as defined by the ratio between geodesic and euclidean distance
 
         Inputs:
         skel_img          = Skeletonized image
         objects           = List of contours
-        hierarchy         = Contour hierarchy NumPy array
         mask              = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
 
         Returns:
         labeled_img       = Segmented debugging image with lengths labeled
-        leaf_objects      = List of leaf segments
-        leaf_hierarchies  = Contour hierarchy NumPy array
-        other_objects     = List of other objects (stem)
-        other_hierarchies = Contour hierarchy NumPy array
+        secondary_objects = List of secondary segments (leaf)
+        primary_objects   = List of primary objects (stem)
 
         :param skel_img: numpy.ndarray
         :param objects: list
-        :param hierarchy: numpy.ndarray
         :param labeled_img: numpy.ndarray
         :param mask: numpy.ndarray
-        :return leaf_objects: list
-        :return leaf_hierarchies: numpy.ndarray
+        :return secondary_objects: list
         :return other_objects: list
-        :return other_hierarchies: numpy.ndarray
         """
     # Store debug
     debug = params.debug
     params.debug = None
 
-    leaf_objects = []
-    leaf_hierarchies = []
-    other_objects = []
-    other_hierarchies = []
+    secondary_objects = []
+    primary_objects = []
 
     if mask is None:
         labeled_img = np.zeros(skel_img.shape[:2], np.uint8)
@@ -75,35 +67,26 @@ def segment_sort(skel_img, objects, hierarchies, mask=None):
 
         # The first contour is the base, and while it contains a tip, it isn't a leaf
         if i == 0:
-            other_objects.append(cnt)
-            other_hierarchies.append(hierarchies[0][i])
+            primary_objects.append(cnt)
 
         # Sort segments
         else:
             for tip_tups in tip_tuples:
                 # If a tip is inside the list of contour tuples then it is a leaf segment
                 if tip_tups in cnt_as_tuples:
-                    leaf_objects.append(cnt)
-                    leaf_hierarchies.append(hierarchies[0][i])
+                    secondary_objects.append(cnt)
                     is_leaf = True
 
         # If none of the tip tuples are inside the contour, then it isn't a leaf segment
         if is_leaf == False:
-            other_objects.append(cnt)
-            other_hierarchies.append(hierarchies[0][i])
-
-    # Format list of hierarchies so that cv2 can use them
-    leaf_hierarchies = np.array([leaf_hierarchies])
-    other_hierarchies = np.array([other_hierarchies])
+            primary_objects.append(cnt)
 
     # Plot segments where green segments are leaf objects and fuschia are other objects
     labeled_img = cv2.cvtColor(labeled_img, cv2.COLOR_GRAY2RGB)
-    for i, cnt in enumerate(other_objects):
-        cv2.drawContours(labeled_img, other_objects, i, (255, 0, 255), params.line_thickness,
-                         lineType=8, hierarchy=other_hierarchies)
-    for i, cnt in enumerate(leaf_objects):
-        cv2.drawContours(labeled_img, leaf_objects, i, (0, 255, 0), params.line_thickness,
-                         lineType=8, hierarchy=leaf_hierarchies)
+    for i, cnt in enumerate(primary_objects):
+        cv2.drawContours(labeled_img, primary_objects, i, (255, 0, 255), params.line_thickness, lineType=8)
+    for i, cnt in enumerate(secondary_objects):
+        cv2.drawContours(labeled_img, secondary_objects, i, (0, 255, 0), params.line_thickness, lineType=8)
 
     # Reset debug mode
     params.debug = debug
@@ -115,4 +98,4 @@ def segment_sort(skel_img, objects, hierarchies, mask=None):
     elif params.debug == 'plot':
         plot_image(labeled_img)
 
-    return leaf_objects, leaf_hierarchies, other_objects, other_hierarchies
+    return secondary_objects, primary_objects

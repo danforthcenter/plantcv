@@ -30,7 +30,7 @@ def _slope_to_intesect_angle(m1, m2):
     return angle
 
 
-def segment_tangent_angle(segmented_img, objects, hierarchies, size):
+def segment_tangent_angle(segmented_img, objects, size):
     """ Find 'tangent' angles in degrees of skeleton segments. Use `size` pixels on either end of
         each segment to find a linear regression line, and calculate angle between the two lines
         drawn per segment.
@@ -38,7 +38,6 @@ def segment_tangent_angle(segmented_img, objects, hierarchies, size):
         Inputs:
         segmented_img  = Segmented image to plot slope lines and intersection angles on
         objects   = List of contours
-        hierarchy = Contour hierarchy NumPy array
         size      = Size of ends used to calculate "tangent" lines
 
         Returns:
@@ -46,7 +45,6 @@ def segment_tangent_angle(segmented_img, objects, hierarchies, size):
 
         :param segmented_img: numpy.ndarray
         :param objects: list
-        :param hierarchies: numpy.ndarray
         :param size: int
         :return labeled_img: numpy.ndarray
         """
@@ -63,10 +61,8 @@ def segment_tangent_angle(segmented_img, objects, hierarchies, size):
 
     for i, cnt in enumerate(objects):
         find_tangents = np.zeros(segmented_img.shape[:2], np.uint8)
-        cv2.drawContours(find_tangents, objects, i, 255, 1, lineType=8,
-                         hierarchy=hierarchies)
-        cv2.drawContours(labeled_img, objects, i, rand_color[i], params.line_thickness, lineType=8,
-                         hierarchy=hierarchies)
+        cv2.drawContours(find_tangents, objects, i, 255, 1, lineType=8)
+        cv2.drawContours(labeled_img, objects, i, rand_color[i], params.line_thickness, lineType=8)
         pruned_segment = prune(find_tangents, size)
         segment_ends = find_tangents - pruned_segment
         segment_end_obj, segment_end_hierarchy = find_objects(segment_ends, segment_ends)

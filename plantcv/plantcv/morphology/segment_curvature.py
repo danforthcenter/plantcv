@@ -14,14 +14,13 @@ from plantcv.plantcv.morphology import segment_path_length
 from plantcv.plantcv.morphology import segment_euclidean_length
 
 
-def segment_curvature(segmented_img, objects, hierarchies):
+def segment_curvature(segmented_img, objects):
     """ Calculate segment curvature as defined by the ratio between geodesic and euclidean distance.
         Measurement of two-dimensional tortuosity.
 
         Inputs:
         segmented_img     = Segmented image to plot lengths on
         objects           = List of contours
-        hierarchy         = Contour hierarchy NumPy array
 
         Returns:
         labeled_img        = Segmented debugging image with curvature labeled
@@ -29,7 +28,6 @@ def segment_curvature(segmented_img, objects, hierarchies):
 
         :param segmented_img: numpy.ndarray
         :param objects: list
-        :param hierarchy: numpy.ndarray
         :return labeled_img: numpy.ndarray
 
         """
@@ -40,7 +38,7 @@ def segment_curvature(segmented_img, objects, hierarchies):
     label_coord_x = []
     label_coord_y = []
 
-    _ = segment_euclidean_length(segmented_img, objects, hierarchies)
+    _ = segment_euclidean_length(segmented_img, objects)
     labeled_img = segment_path_length(segmented_img, objects)
     eu_lengths = outputs.observations['segment_eu_length']['value']
     path_lengths = outputs.observations['segment_path_length']['value']
@@ -54,8 +52,7 @@ def segment_curvature(segmented_img, objects, hierarchies):
 
         # Draw segments one by one to group segment tips together
         finding_tips_img = np.zeros(segmented_img.shape[:2], np.uint8)
-        cv2.drawContours(finding_tips_img, objects, i, (255, 255, 255), 1, lineType=8,
-                         hierarchy=hierarchies)
+        cv2.drawContours(finding_tips_img, objects, i, (255, 255, 255), 1, lineType=8)
         segment_tips = find_tips(finding_tips_img)
         tip_objects, tip_hierarchies = find_objects(segment_tips, segment_tips)
         points = []
