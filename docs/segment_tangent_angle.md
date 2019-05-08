@@ -2,7 +2,7 @@
 
 Measure tangent angles of segments as a way to quantify leaf behavior. 
 
-**plantcv.morphology.segment_tangent_angle**(*segmented_img, objects, hierarchies, size*)
+**plantcv.morphology.segment_tangent_angle**(*segmented_img, objects, size*)
 
 **returns** labeled image 
 
@@ -10,8 +10,6 @@ Measure tangent angles of segments as a way to quantify leaf behavior.
     - segmented_img - Segmented image (output either from [plantcv.morphology.segment_skeleton](segment_skeleton.md)
     or [plantcv.morphology.segment_id](segment_id.md)), used for creating the labeled image. 
     - objects - Segment objects (output from either [plantcv.morphology.segment_skeleton](segment_skeleton.md) or
-    [plantcv.morphology.segment_sort](segment_sort.md)).
-    - hierarchies - Hierarchies of segment objects (output from either [plantcv.morphology.segment_skeleton](segment_skeleton.md) or
     [plantcv.morphology.segment_sort](segment_sort.md)).
     - size - Size of ends (number of pixels) used to calculate "tangent" lines
 - **Context:**
@@ -39,7 +37,6 @@ pcv.params.line_thickness = 3
 
 labeled_img = pcv.morphology.segment_tangent_angle(segmented_img=leaves_segment, 
                                                    objects=leaf_obj,
-                                                   hierarchies=leaf_hier, 
                                                    size=15)
 
 ```

@@ -2,7 +2,7 @@
 
 Measure Euclidean distance of segments.
 
-**plantcv.morphology.segment_euclidean_length**(*segmented_img, objects, hierarchies*)
+**plantcv.morphology.segment_euclidean_length**(*segmented_img, objects*)
 
 **returns** labeled image 
 
@@ -10,8 +10,6 @@ Measure Euclidean distance of segments.
     - segmented_img - Segmented image (output either from [plantcv.morphology.segment_skeleton](segment_skeleton.md)
     or [plantcv.morphology.segment_id](segment_id.md)), used for creating the labeled image. 
     - objects - Segment objects (output from either [plantcv.morphology.segment_skeleton](segment_skeleton.md) or
-    [plantcv.morphology.segment_sort](segment_sort.md)).
-    - hierarchies - Hierarchies of segment objects (output from either [plantcv.morphology.segment_skeleton](segment_skeleton.md) or
     [plantcv.morphology.segment_sort](segment_sort.md)).
 - **Context:**
     - Calculates the euclidean distance of each segment. Users can pass only 
@@ -32,8 +30,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 labeled_img = pcv.morphology.segment_euclidean_length(segmented_img=segmented_img, 
-                                                      objects=obj,
-                                                      hierarchies=hier)
+                                                      objects=obj)
 
 ```
 

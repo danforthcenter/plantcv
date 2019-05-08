@@ -8,13 +8,12 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import params
 
 
-def segment_id(skel_img, objects, hierarchies, mask=None):
+def segment_id(skel_img, objects, mask=None):
     """ Plot segment ID's
 
             Inputs:
             skel_img      = Skeletonized image
             objects       = List of contours
-            hierarchy     = Contour hierarchy NumPy array
             mask          = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
 
             Returns:
@@ -23,7 +22,6 @@ def segment_id(skel_img, objects, hierarchies, mask=None):
 
             :param skel_img: numpy.ndarray
             :param objects: list
-            :param hierarchies: numpy.ndarray
             :param mask: numpy.ndarray
             :return segmented_img: numpy.ndarray
             :return labeled_img: numpy.ndarray
@@ -43,8 +41,7 @@ def segment_id(skel_img, objects, hierarchies, mask=None):
 
     # Plot all segment contours
     for i, cnt in enumerate(objects):
-        cv2.drawContours(segmented_img, objects, i, rand_color[i], params.line_thickness, lineType=8,
-                         hierarchy=hierarchies)
+        cv2.drawContours(segmented_img, objects, i, rand_color[i], params.line_thickness, lineType=8)
         # Store coordinates for labels
         label_coord_x.append(objects[i][0][0][0])
         label_coord_y.append(objects[i][0][0][1])

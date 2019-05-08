@@ -17,7 +17,7 @@ from plantcv.plantcv.morphology import find_branch_pts
 from plantcv.plantcv.morphology.segment_tangent_angle import _slope_to_intesect_angle
 
 
-def segment_insertion_angle(skel_img, segmented_img, leaf_objects, leaf_hierarchies, stem_objects, size):
+def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects, size):
     """ Find leaf insertion angles in degrees of skeleton segments. Fit a linear regression line to the stem.
         Use `size` pixels on  the portion of leaf next to the stem find a linear regression line,
         and calculate angle between the two lines per leaf object.
@@ -26,7 +26,6 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, leaf_hierarch
         skel_img         = Skeletonized image
         segmented_img    = Segmented image to plot slope lines and intersection angles on
         leaf_objects     = List of leaf segments
-        leaf_hierarchies = Leaf contour hierarchy NumPy array
         stem_objects     = List of stem segments
         size             = Size of inner leaf used to calculate slope lines
 
@@ -36,7 +35,6 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, leaf_hierarch
         :param skel_img: numpy.ndarray
         :param segmented_img: numpy.ndarray
         :param leaf_objects: list
-        :param leaf_hierarchies: numpy.ndarray
         :param stem_objects: list
         :param size: int
         :return labeled_img: numpy.ndarray
@@ -67,9 +65,8 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, leaf_hierarch
     for i, cnt in enumerate(leaf_objects):
         # Draw leaf objects
         find_segment_tangents = np.zeros(segmented_img.shape[:2], np.uint8)
-        cv2.drawContours(find_segment_tangents, leaf_objects, i, 255, 1, lineType=8, hierarchy=leaf_hierarchies)
-        cv2.drawContours(labeled_img, leaf_objects, i, rand_color[i], params.line_thickness, lineType=8,
-                         hierarchy=leaf_hierarchies)
+        cv2.drawContours(find_segment_tangents, leaf_objects, i, 255, 1, lineType=8)
+        cv2.drawContours(labeled_img, leaf_objects, i, rand_color[i], params.line_thickness, lineType=8)
 
         # Prune back ends of leaves
         pruned_segment = prune(find_segment_tangents, size)

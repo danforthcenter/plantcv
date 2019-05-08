@@ -377,17 +377,17 @@ pages for more details on the input and output variable types.
 #### plantcv.morphology.curvature
 
 * pre v3.3: NA
-* post v3.3: labeled_img = **plantcv.morphology.segment_curvature**(*segmented_img, objects, hierarchies*)
+* post v3.3: labeled_img = **plantcv.morphology.segment_curvature**(*segmented_img, objects*)
 
 #### plantcv.morphology.segment_euclidean_length
 
 * pre v3.3: NA
-* post v3.3: labeled_img = **plantcv.morphology.segment_euclidean_length**(*segmented_img, objects, hierarchies*) 
+* post v3.3: labeled_img = **plantcv.morphology.segment_euclidean_length**(*segmented_img, objects*) 
 
 #### plantcv.morphology.segment_id
 
 * pre v3.3: NA
-* post v3.3: segmented_img, labeled_img = **plantcv.morphology.segment_id**(*skel_img, objects, hierarchies, mask=None*) 
+* post v3.3: segmented_img, labeled_img = **plantcv.morphology.segment_id**(*skel_img, objects, mask=None*) 
 
 #### plantcv.morphology.segment_path_length 
 
@@ -397,17 +397,17 @@ pages for more details on the input and output variable types.
 #### plantcv.morphology.segment_skeleton
 
 * pre v3.3: NA
-* post v3.3: segmented_img, segment_objects, segment_hierarchies = **plantcv.morphology.segment_skeleton**(*skel_img, mask=None*) 
+* post v3.3: segmented_img, segment_objects = **plantcv.morphology.segment_skeleton**(*skel_img, mask=None*) 
 
 #### plantcv.morphology.segment_sort
 
 * pre v3.3: NA
-* post v3.3: leaf_objects, leaf_hierarchies, other_objects, other_hierarchies = **plantcv.morphology.segment_sort**(*skel_img, objects, hierarchies, mask=None*)
+* post v3.3: secondary_objects, primary_objects = **plantcv.morphology.segment_sort**(*skel_img, objects, mask=None*)
 
 #### plantcv.morphology.segment_tangent_angle
 
 * pre v3.3: NA
-* post v3.3: labeled_img = **plantcv.morphology.segment_tangent_angle**(*segmented_img, objects, hierarchies, size*)
+* post v3.3: labeled_img = **plantcv.morphology.segment_tangent_angle**(*segmented_img, objects, size*)
 
 #### plantcv.morphology.skeletontize
 

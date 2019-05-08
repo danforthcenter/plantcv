@@ -2,7 +2,7 @@
 
 Measure the curvature of segments.   
 
-**plantcv.morphology.segment_curvature**(*segmented_img, objects, hierarchies*)
+**plantcv.morphology.segment_curvature**(*segmented_img, objects*)
 
 **returns** labeled image 
 
@@ -10,8 +10,6 @@ Measure the curvature of segments.
     - segmented_img - Segmented image (output either from [plantcv.morphology.segment_skeleton](segment_skeleton.md)
     or [plantcv.morphology.segment_id](segment_id.md)), used for creating the labeled image. 
     - objects - Segment objects (output from either [plantcv.morphology.segment_skeleton](segment_skeleton.md) or
-    [plantcv.morphology.segment_sort](segment_sort.md)).
-    - hierarchies - Hierarchies of segment objects (output from either [plantcv.morphology.segment_skeleton](segment_skeleton.md) or
     [plantcv.morphology.segment_sort](segment_sort.md)).
 - **Context:**
     - Calculates curvature of segments by taking the ratio of the geodesic distance ([plantcv.morphology.segment_path_length](segment_pathlength.md))
@@ -29,12 +27,10 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 labeled_img = pcv.morphology.segment_curvature(segmented_img=segmented_img, 
-                                               objects=obj,
-                                               hierarchies=hier)
+                                               objects=obj)
 # Pass just leaf objects and hierarchies (output from pcv.morphology.segment_sort) 
 labeled_img2 = pcv.morphology.segment_curvature(segmented_img=leaf_segmented,
-                                                objects=leaf_obj,
-                                                hierarchies=leaf_hier)
+                                                objects=leaf_obj)
 
 ```
 

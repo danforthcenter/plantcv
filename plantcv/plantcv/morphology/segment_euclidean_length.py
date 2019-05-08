@@ -15,20 +15,18 @@ from plantcv.plantcv.morphology import find_tips
 
 
 
-def segment_euclidean_length(segmented_img, objects, hierarchies):
+def segment_euclidean_length(segmented_img, objects):
     """ Use segmented skeleton image to gather euclidean length measurements per segment
 
         Inputs:
         segmented_img = Segmented image to plot lengths on
         objects       = List of contours
-        hierarchy     = Contour hierarchy NumPy array
 
         Returns:
         labeled_img      = Segmented debugging image with lengths labeled
 
         :param segmented_img: numpy.ndarray
         :param objects: list
-        :param hierarchy: numpy.ndarray
         :return labeled_img: numpy.ndarray
 
         """
@@ -51,8 +49,7 @@ def segment_euclidean_length(segmented_img, objects, hierarchies):
 
         # Draw segments one by one to group segment tips together
         finding_tips_img = np.zeros(segmented_img.shape[:2], np.uint8)
-        cv2.drawContours(finding_tips_img, objects, i, (255, 255, 255), 1, lineType=8,
-                         hierarchy=hierarchies)
+        cv2.drawContours(finding_tips_img, objects, i, (255, 255, 255), 1, lineType=8)
         segment_tips = find_tips(finding_tips_img)
         tip_objects, tip_hierarchies = find_objects(segment_tips, segment_tips)
         points = []

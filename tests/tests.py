@@ -2933,12 +2933,12 @@ def test_plantcv_morphology_segment_curvature():
     pcv.params.debug_outdir = cache_dir
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
     pcv.params.debug = "print"
-    segmented_img, seg_objects, seg_hierarchies = pcv.morphology.segment_skeleton(skel_img=skeleton)
+    segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
     pcv.outputs.clear()
-    _ = pcv.morphology.segment_curvature(segmented_img, seg_objects, seg_hierarchies)
+    _ = pcv.morphology.segment_curvature(segmented_img, seg_objects)
     pcv.params.debug = "plot"
     pcv.outputs.clear()
-    curvature_img = pcv.morphology.segment_curvature(segmented_img, seg_objects, seg_hierarchies)
+    curvature_img = pcv.morphology.segment_curvature(segmented_img, seg_objects)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     pcv.outputs.clear()
     assert len(np.unique(curvature_img)) == 24
@@ -3018,7 +3018,7 @@ def test_plantcv_morphology_segment_skeleton():
     pcv.params.debug = "print"
     _ = pcv.morphology.segment_skeleton(skel_img=skeleton, mask=mask)
     pcv.params.debug = "plot"
-    segmented_img, segment_objects, segment_hierarchies = pcv.morphology.segment_skeleton(skel_img=skeleton)
+    segmented_img, segment_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
     assert len(segment_objects) == 73
 
 
@@ -3029,7 +3029,7 @@ def test_plantcv_morphology_segment_angles():
     pcv.params.debug_outdir = cache_dir
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
     pcv.params.debug = "print"
-    segmented_img, segment_objects, _ = pcv.morphology.segment_skeleton(skel_img=skeleton)
+    segmented_img, segment_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
     _ = pcv.morphology.segment_angle(segmented_img=segmented_img, objects=segment_objects)
     pcv.params.debug = "plot"
     angle_img = pcv.morphology.segment_angle(segmented_img, segment_objects)
@@ -3045,7 +3045,7 @@ def test_plantcv_morphology_segment_angles_overflow():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
-    segmented_img, segment_objects, _ = pcv.morphology.segment_skeleton(skel_img=skeleton)
+    segmented_img, segment_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
     angle_img = pcv.morphology.segment_angle(segmented_img, segment_objects)
     pcv.outputs.clear()
     assert len(np.unique(angle_img)) == 74
@@ -3058,10 +3058,10 @@ def test_plantcv_morphology_segment_euclidean_length():
     pcv.params.debug_outdir = cache_dir
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
     pcv.params.debug = "print"
-    segmented_img, segment_objects, segment_hierarchies = pcv.morphology.segment_skeleton(skel_img=skeleton)
-    _ = pcv.morphology.segment_euclidean_length(segmented_img, segment_objects, segment_hierarchies)
+    segmented_img, segment_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
+    _ = pcv.morphology.segment_euclidean_length(segmented_img, segment_objects)
     pcv.params.debug = "plot"
-    length_img = pcv.morphology.segment_euclidean_length(segmented_img, segment_objects, segment_hierarchies)
+    length_img = pcv.morphology.segment_euclidean_length(segmented_img, segment_objects)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     pcv.outputs.clear()
     assert len(np.unique(length_img)) == 24
@@ -3071,9 +3071,9 @@ def test_plantcv_morphology_segment_euclidean_length_bad_input():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     skel = pcv.morphology.skeletonize(mask=mask)
     pcv.params.debug = None
-    segmented_img, segment_objects, segment_hierarchies = pcv.morphology.segment_skeleton(skel_img=skel)
+    segmented_img, segment_objects = pcv.morphology.segment_skeleton(skel_img=skel)
     with pytest.raises(RuntimeError):
-        _ = pcv.morphology.segment_euclidean_length(segmented_img, segment_objects, segment_hierarchies)
+        _ = pcv.morphology.segment_euclidean_length(segmented_img, segment_objects)
 
 
 def test_plantcv_morphology_segment_path_length():
@@ -3083,7 +3083,7 @@ def test_plantcv_morphology_segment_path_length():
     pcv.params.debug_outdir = cache_dir
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
     pcv.params.debug = "print"
-    segmented_img, segment_objects, segment_hierarchies = pcv.morphology.segment_skeleton(skel_img=skeleton)
+    segmented_img, segment_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
     _ = pcv.morphology.segment_path_length(segmented_img, segment_objects)
     pcv.params.debug = "plot"
     length_img = pcv.morphology.segment_path_length(segmented_img, segment_objects)
@@ -3114,11 +3114,11 @@ def test_plantcv_morphology_segment_sort():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
-    segmented_img, seg_objects, seg_hierarchies = pcv.morphology.segment_skeleton(skel_img=skeleton)
+    segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
     pcv.params.debug = "print"
-    _ = pcv.morphology.segment_sort(skeleton, seg_objects, seg_hierarchies, mask=skeleton)
+    _ = pcv.morphology.segment_sort(skeleton, seg_objects, mask=skeleton)
     pcv.params.debug = "plot"
-    leaf_obj, leaf_hier, stem_obj, stem_hier = pcv.morphology.segment_sort(skeleton, seg_objects, seg_hierarchies)
+    leaf_obj, stem_obj = pcv.morphology.segment_sort(skeleton, seg_objects)
     assert len(leaf_obj) == 36
 
 
@@ -3129,13 +3129,11 @@ def test_plantcv_morphology_segment_tangent_angle():
     pcv.params.debug_outdir = cache_dir
     skel = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
     objects = np.load(os.path.join(TEST_DATA, TEST_SKELETON_OBJECTS), encoding="latin1")
-    hierarchies = np.load(os.path.join(TEST_DATA, TEST_SKELETON_HIERARCHIES), encoding="latin1")
     objs = objects['arr_0']
-    obj_hierarchy = hierarchies['arr_0']
     pcv.params.debug = "print"
-    _ = pcv.morphology.segment_tangent_angle(skel, objs, obj_hierarchy, 2)
+    _ = pcv.morphology.segment_tangent_angle(skel, objs, 2)
     pcv.params.debug = "plot"
-    intersection_angles = pcv.morphology.segment_tangent_angle(skel, objs, obj_hierarchy, 2)
+    intersection_angles = pcv.morphology.segment_tangent_angle(skel, objs, 2)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     pcv.outputs.clear()
     assert len(np.unique(intersection_angles)) == 18
@@ -3148,13 +3146,11 @@ def test_plantcv_morphology_segment_id():
     pcv.params.debug_outdir = cache_dir
     skel = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
     objects = np.load(os.path.join(TEST_DATA, TEST_SKELETON_OBJECTS), encoding="latin1")
-    hierarchies = np.load(os.path.join(TEST_DATA, TEST_SKELETON_HIERARCHIES), encoding="latin1")
     objs = objects['arr_0']
-    obj_hierarchy = hierarchies['arr_0']
     pcv.params.debug = "print"
-    _ = pcv.morphology.segment_id(skel, objs, obj_hierarchy)
+    _ = pcv.morphology.segment_id(skel, objs)
     pcv.params.debug = "plot"
-    _, labeled_img = pcv.morphology.segment_id(skel, objs, obj_hierarchy, mask=skel)
+    _, labeled_img = pcv.morphology.segment_id(skel, objs, mask=skel)
     assert np.sum(labeled_img) > np.sum(skel)
 
 
@@ -3165,12 +3161,12 @@ def test_plantcv_morphology_segment_insertion_angle():
     pcv.params.debug_outdir = cache_dir
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
     pruned = pcv.morphology.prune(skel_img=skeleton, size=5)
-    segmented_img, seg_objects, seg_hierarchies = pcv.morphology.segment_skeleton(skel_img=pruned)
-    leaf_obj, leaf_hier, stem_obj, _ = pcv.morphology.segment_sort(pruned, seg_objects, seg_hierarchies)
+    segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=pruned)
+    leaf_obj, stem_obj = pcv.morphology.segment_sort(pruned, seg_objects)
     pcv.params.debug = "plot"
-    _ = pcv.morphology.segment_insertion_angle(pruned, segmented_img, leaf_obj, leaf_hier, stem_obj, 3)
+    _ = pcv.morphology.segment_insertion_angle(pruned, segmented_img, leaf_obj, stem_obj, 3)
     pcv.params.debug = "print"
-    insert_angles = pcv.morphology.segment_insertion_angle(pruned, segmented_img, leaf_obj, leaf_hier, stem_obj, 10)
+    insert_angles = pcv.morphology.segment_insertion_angle(pruned, segmented_img, leaf_obj, stem_obj, 10)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     pcv.outputs.clear()
     assert len(np.unique(insert_angles)) == 47

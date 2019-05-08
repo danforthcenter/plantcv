@@ -2,15 +2,13 @@
 
 Label segments with their ID numbers. 
 
-**plantcv.morphology.segment_id**(*skel_img, objects, hierarchies, mask=None*)
+**plantcv.morphology.segment_id**(*skel_img, objects, mask=None*)
 
 **returns** Segmented image, labeled image with segment ID's 
 
 - **Parameters:**
     - skel_img - Skeleton image (output from [plantcv.morphology.skeletonize](skeletonize.md))
     - objects - Segment objects (output from either [plantcv.morphology.segment_skeleton](segment_skeleton.md) or
-    [plantcv.morphology.segment_sort](segment_sort.md)).
-    - hierarchies - Hierarchies of segment objects (output from either [plantcv.morphology.segment_skeleton](segment_skeleton.md) or
     [plantcv.morphology.segment_sort](segment_sort.md)).
     - mask - Binary mask for plotting. If provided, segmented and labeled image will be overlaid on the mask (optional).
 - **Context:**
@@ -35,11 +33,12 @@ pcv.params.debug = "print"
 # Adjust line thickness with the global line thickness parameter (default = 5)
 pcv.params.line_thickness = 3 
 
-segmented_img, labeled_img = pcv.morphology.segment_id(skel_img=skeleton, objects=obj, 
+segmented_img, labeled_img = pcv.morphology.segment_id(skel_img=skeleton, 
                                                        hierarchies=hier)
 
-segmented_img, leaves_labeled = pcv.morphology.segment_id(skel_img=skeleton, objects=leaf_obj,
-                                                          hierarchies=leaf_hier, mask=plant_mask)
+segmented_img, leaves_labeled = pcv.morphology.segment_id(skel_img=skeleton, 
+                                                          objects=leaf_obj,
+                                                          mask=plant_mask)
 
 ```
 
