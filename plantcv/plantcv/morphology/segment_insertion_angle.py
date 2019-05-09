@@ -30,7 +30,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
         size             = Size of inner leaf used to calculate slope lines
 
         Returns:
-        labeled_img            = Debugging image with angles labeled
+        labeled_img      = Debugging image with angles labeled
 
         :param skel_img: numpy.ndarray
         :param segmented_img: numpy.ndarray
@@ -52,6 +52,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     intersection_angles = []
     label_coord_x = []
     label_coord_y = []
+    valid_segment = []
 
     # Create a list of tip tuples to use for sorting
     tips = find_tips(skel_img)
@@ -66,7 +67,6 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
         # Draw leaf objects
         find_segment_tangents = np.zeros(segmented_img.shape[:2], np.uint8)
         cv2.drawContours(find_segment_tangents, leaf_objects, i, 255, 1, lineType=8)
-        cv2.drawContours(labeled_img, leaf_objects, i, rand_color[i], params.line_thickness, lineType=8)
 
         # Prune back ends of leaves
         pruned_segment = prune(find_segment_tangents, size)
@@ -79,6 +79,9 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
         if not len(segment_end_obj) == 2:
             print("Size too large, contour with ID#", i, "got pruned away completely.")
         else:
+            # The contour can have insertion angle calculated
+            valid_segment.append(cnt)
+
             # Determine if a segment is leaf end or leaf insertion segment
             for j, obj in enumerate(segment_end_obj):
 
@@ -105,9 +108,15 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
                     insertion_segments.append(segment_end_obj[j])
                     insertion_hierarchies.append(segment_end_hierarchy[0][j])
 
-        # Store coordinates for labels
-        label_coord_x.append(leaf_objects[i][0][0][0])
+            # Store coordinates for labels
+            label_coord_x.append(leaf_objects[i][0][0][0])
+            label_coord_y.append(leaf_objects[i][0][0][1])
         label_coord_y.append(leaf_objects[i][0][0][1])
+
+    rand_color = color_palette(len(valid_segment))
+
+    for i, cnt in enumerate(valid_segment):
+        cv2.drawContours(labeled_img, valid_segment, i, rand_color[i], params.line_thickness, lineType=8)
 
     # Plot stem segments
     stem_img = np.zeros(segmented_img.shape[:2], np.uint8)
@@ -143,7 +152,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
         if slope > 1000000 or slope < -1000000:
             print("Slope of contour with ID#", t, "is", slope, "and cannot be plotted.")
         else:
-            cv2.line(labeled_img, (cols - 1, right_list), (0, left_list), (150, 150, 150), 1)
+            cv2.line(labeled_img, (cols - 1, right_list), (0, left_list), rand_color[t], 1)
 
         # Store intersection angles between insertion segment and stem line
         intersection_angle = _slope_to_intesect_angle(slope[0], stem_slope)

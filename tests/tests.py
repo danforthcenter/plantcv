@@ -3169,7 +3169,7 @@ def test_plantcv_morphology_segment_insertion_angle():
     insert_angles = pcv.morphology.segment_insertion_angle(pruned, segmented_img, leaf_obj, stem_obj, 10)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     pcv.outputs.clear()
-    assert len(np.unique(insert_angles)) == 47
+    assert len(np.unique(insert_angles)) == 41
 
 
 # ##############################
