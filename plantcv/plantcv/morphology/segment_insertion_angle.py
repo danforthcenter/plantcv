@@ -8,6 +8,7 @@ from plantcv.plantcv import dilate
 from plantcv.plantcv import closing
 from plantcv.plantcv import outputs
 from plantcv.plantcv import plot_image
+from plantcv.plantcv import fatal_error
 from plantcv.plantcv import print_image
 from plantcv.plantcv import find_objects
 from plantcv.plantcv import color_palette
@@ -127,10 +128,15 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     combined_stem, combined_stem_hier = find_objects(stem_img, stem_img)
 
     # Make sure stem objects are a single contour
-    while len(combined_stem) > 1:
+    loop_count=0
+    while len(combined_stem) > 1 and loop_count<50:
+        loop_count += 1
         stem_img = dilate(stem_img, 2, 1)
         stem_img = closing(stem_img)
         combined_stem, combined_stem_hier = find_objects(stem_img, stem_img)
+
+    if loop_count == 50:
+        fatal_error('Unable to combine stem objects.')
 
     # Find slope of the stem
     [vx, vy, x, y] = cv2.fitLine(combined_stem[0], cv2.DIST_L2, 0, 0.01, 0.01)
@@ -169,7 +175,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
         h = label_coord_y[i]
         text = "{:.2f}".format(intersection_angles[i])
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                    fontScale=params.text_size, color=(150, 150, 150), thickness=2)
+                    fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
         segment_label = "ID" + str(i)
         segment_ids.append(i)
 

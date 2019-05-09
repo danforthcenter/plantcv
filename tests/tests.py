@@ -3172,6 +3172,20 @@ def test_plantcv_morphology_segment_insertion_angle():
     assert len(np.unique(insert_angles)) == 41
 
 
+def test_plantcv_morphology_segment_insertion_angle_bad_stem():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
+    pruned = pcv.morphology.prune(skel_img=skeleton, size=5)
+    segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=pruned)
+    leaf_obj, stem_obj = pcv.morphology.segment_sort(pruned, seg_objects)
+    stem_obj = [leaf_obj[0], leaf_obj[10]]
+    with pytest.raises(RuntimeError):
+        _ = pcv.morphology.segment_insertion_angle(pruned, segmented_img, leaf_obj, stem_obj, 10)
+
+
 # ##############################
 # Tests for the roi subpackage
 # ##############################

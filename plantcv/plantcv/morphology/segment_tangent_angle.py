@@ -114,7 +114,7 @@ def segment_tangent_angle(segmented_img, objects, size):
         else:
             text = "{:.2f}".format(intersection_angles[i])
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                    fontScale=params.text_size, color=(150, 150, 150), thickness=2)
+                    fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
         segment_label = "ID" + str(i)
         segment_ids.append(i)
 

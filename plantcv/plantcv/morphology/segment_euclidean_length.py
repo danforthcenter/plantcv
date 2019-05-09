@@ -74,7 +74,7 @@ def segment_euclidean_length(segmented_img, objects):
         w = x_list[c]
         h = y_list[c]
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                    fontScale=params.text_size, color=(150, 150, 150), thickness=1)
+                    fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
         segment_label = "ID" + str(c)
         segment_ids.append(c)
 
