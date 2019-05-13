@@ -45,7 +45,7 @@ def find_branch_pts(skel_img, mask=None):
 
     # Y like branch points
     y1 = np.array([[ 1, -1,  1],
-                   [-1,  1, -1],
+                   [ 0,  1,  0],
                    [ 0,  1,  0]])
     y2 = np.array([[-1,  1, -1],
                    [ 1,  1,  0],

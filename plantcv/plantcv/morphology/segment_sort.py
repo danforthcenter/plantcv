@@ -77,9 +77,9 @@ def segment_sort(skel_img, objects, mask=None):
                     secondary_objects.append(cnt)
                     is_leaf = True
 
-        # If none of the tip tuples are inside the contour, then it isn't a leaf segment
-        if is_leaf == False:
-            primary_objects.append(cnt)
+            # If none of the tip tuples are inside the contour, then it isn't a leaf segment
+            if is_leaf == False:
+                primary_objects.append(cnt)
 
     # Plot segments where green segments are leaf objects and fuschia are other objects
     labeled_img = cv2.cvtColor(labeled_img, cv2.COLOR_GRAY2RGB)
