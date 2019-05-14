@@ -40,11 +40,11 @@ def segment_path_length(segmented_img, objects):
 
     # Put labels of length
     for c, value in enumerate(segment_lengths):
-        text = "{:.2f}".format(c, value)
+        text = "{:.2f}".format(value)
         w = label_coord_x[c]
         h = label_coord_y[c]
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                    fontScale=params.text_size, color=(150, 150, 150), thickness=1)
+                    fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
         segment_label = "ID" + str(c)
         segment_ids.append(c)
 
