@@ -41,8 +41,8 @@ TEST_INPUT_FDARK_LARGE = "FLUO_TV_DARK_large"
 TEST_INPUT_FMIN = "FLUO_TV_min.png"
 TEST_INPUT_FMAX = "FLUO_TV_max.png"
 TEST_INPUT_FMASK = "FLUO_TV_MASK.png"
-TEST_INTPUT_GREENMAG = "input_green-magenta.jpg"
-TEST_INTPUT_MULTI = "multi_ori_image.jpg"
+TEST_INPUT_GREENMAG = "input_green-magenta.jpg"
+TEST_INPUT_MULTI = "multi_ori_image.jpg"
 TEST_INPUT_MULTI_OBJECT = "roi_objects.npz"
 TEST_INPUT_MULTI_CONTOUR = "multi_contours.npz"
 TEST_INPUT_ClUSTER_CONTOUR = "clusters_i.npz"
@@ -527,7 +527,7 @@ def test_plantcv_auto_crop():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     # Read in test data
-    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI), -1)
     contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_OBJECT), encoding="latin1")
     roi_contours = contours['arr_0']
     # Test with debug = "print"
@@ -550,7 +550,7 @@ def test_plantcv_auto_crop_grayscale_input():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     # Read in test data
-    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI), -1)
     gray_img = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
     contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_OBJECT), encoding="latin1")
     roi_contours = contours['arr_0']
@@ -564,7 +564,7 @@ def test_plantcv_auto_crop_grayscale_input():
 
 def test_plantcv_auto_crop_bad_input():
     # Read in test data
-    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI), -1)
     gray_img = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
     contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_OBJECT), encoding="latin1")
     roi_contours = contours['arr_0']
@@ -619,7 +619,7 @@ def test_plantcv_closing():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     # Read in test data
-    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI), -1)
     gray_img = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
     bin_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug=None
@@ -636,7 +636,7 @@ def test_plantcv_closing():
 
 def test_plantcv_closing_bad_input():
     # Read in test data
-    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI), -1)
     with pytest.raises(RuntimeError):
         _ = pcv.closing(rgb_img)
 
@@ -647,7 +647,7 @@ def test_plantcv_cluster_contours():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     # Read in test data
-    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI), -1)
     roi_objects = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_OBJECT), encoding="latin1")
     hierarchy = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_HIERARCHY), encoding="latin1")
     objs = roi_objects['arr_0']
@@ -674,7 +674,7 @@ def test_plantcv_cluster_contours_grayscale_input():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     # Read in test data
-    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), 0)
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI), 0)
     roi_objects = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_OBJECT), encoding="latin1")
     hierachy = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_HIERARCHY), encoding="latin1")
     objs = roi_objects['arr_0']
@@ -700,7 +700,7 @@ def test_plantcv_cluster_contours_splitimg():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     # Read in test data
-    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI), -1)
     contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_CONTOUR), encoding="latin1")
     clusters = np.load(os.path.join(TEST_DATA, TEST_INPUT_ClUSTER_CONTOUR), encoding="latin1")
     hierachy = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_HIERARCHY), encoding="latin1")
@@ -1455,7 +1455,7 @@ def test_plantcv_opening():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     # Read in test data
-    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI), -1)
     gray_img = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
     bin_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug=None
@@ -1472,7 +1472,7 @@ def test_plantcv_opening():
 
 def test_plantcv_opening_bad_input():
     # Read in test data
-    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_MULTI), -1)
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI), -1)
     with pytest.raises(RuntimeError):
         _ = pcv.opening(rgb_img)
 
@@ -2935,7 +2935,7 @@ def test_plantcv_roi_multi():
     # Test with debug = None
     pcv.params.debug = None
     rois1, roi_hierarchy1 = pcv.roi.multi(rgb_img, coord=(25, 120), radius=20, spacing=(10, 10), nrows=3, ncols=6)
-    # Assert the contours has 18 ROIs 
+    # Assert the contours has 18 ROIs
     assert len(rois1)==18
 
 
@@ -3462,7 +3462,7 @@ def test_plantcv_threshold_otsu():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     # Read in test data
-    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INTPUT_GREENMAG), -1)
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GREENMAG), -1)
     # Test with object set to light
     pcv.params.debug = None
     _ = pcv.threshold.otsu(gray_img=gray_img, max_value=255, object_type="light")
