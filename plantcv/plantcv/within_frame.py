@@ -20,7 +20,7 @@ def within_frame(mask, obj):
     # Check if object is touching image boundaries (QC)
 
     if len(np.shape(mask)) > 2:
-        fatal_error("mask should be a single channel 2-d array such as a binary or greyscale image.)
+        fatal_error("mask should be a single channel 2-d array such as a binary or greyscale image.")
 
     ix, iy = np.shape(mask)
     size1 = ix, iy
