@@ -1,26 +1,28 @@
 import cv2 as cv2
 import numpy as np
 
-def within_frame(img, obj):
+def within_frame(mask, obj):
     '''
-    This function tests whether the plant object is completely in the field of view
+    This function tests whether the plant object touches the edge of the image, i.e. it is completely in the field of view
     Input:
-    img - an image with the bounds you are interested in
-    obj - a single object, preferably after calling pcv.image_composition(), that is from within `img`
+    mask = a single channel image (i.e. binary or greyscale) that contains the object
+    obj = a single object, preferably after calling pcv.image_composition(), that is from `mask`
 
     Returns:
-    in_bounds - a boolean (True or False) whether the object touches the edge of the image
+    in_bounds = a boolean (True or False) indicating that the object does not touch the edge of the image
 
-    :param img: numpy.ndarray
+    :param mask: numpy.ndarray
     :param obj: str
-    :return in_bounds: boolean
+    :return in_bounds: bool
 
     '''
+
     # Check if object is touching image boundaries (QC)
-    if len(np.shape(img)) == 3:
-        ix, iy, iz = np.shape(img)
-    else:
-        ix, iy = np.shape(img)
+
+    if len(np.shape(mask)) > 2:
+        fatal_error("mask should be a single channel 2-d array such as a binary or greyscale image.)
+
+    ix, iy = np.shape(mask)
     size1 = ix, iy
     frame_background = np.zeros(size1, dtype=np.uint8)
     frame = frame_background + 1

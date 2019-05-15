@@ -1451,18 +1451,22 @@ def test_plantcv_object_composition_grayscale_input():
 
 def test_plantcv_within_frame():
     # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_object_composition_grayscale_input")
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_within_frame")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     # Read in test data
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
-    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS1), encoding="latin1")
-    object_contours = contours_npz['arr_0']
-    object_hierarchy = contours_npz['arr_1']
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI), -1)
+    contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_OBJECT), encoding="latin1")
+    roi_contours = contours['arr_0']
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.within_frame(img=img1, obj=roi_contours[1])
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    contours, mask = pcv.object_composition(img=img, contours=object_contours, hierarchy=object_hierarchy)
-    in_bounds  = pcv.within_frame(img=img, obj=contours)
+    _ = pcv.within_frame(img=img1, obj=roi_contours[1])
+    # Test with debug = None
+    pcv.params.debug = None
+    in_bounds = pcv.within_frame(img=img1, obj=roi_contours[1])
     assert(in_bounds is True or in_bounds is False)
 
 
