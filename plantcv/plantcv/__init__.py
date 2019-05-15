@@ -106,6 +106,7 @@ from plantcv.plantcv.distance_transform import distance_transform
 from plantcv.plantcv.canny_edge_detect import canny_edge_detect
 from plantcv.plantcv.opening import opening
 from plantcv.plantcv.closing import closing
+from plantcv.plantcv.within_frame import within_frame
 from plantcv.plantcv import roi
 from plantcv.plantcv import threshold
 from plantcv.plantcv import transform
@@ -126,7 +127,7 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'apply_m
            'x_axis_pseudolandmarks', 'y_axis_pseudolandmarks', 'gaussian_blur', 'cluster_contours', 'visualize',
            'cluster_contour_splitimg', 'rotate', 'shift_img', 'output_mask', 'auto_crop', 'canny_edge_detect',
            'background_subtraction', 'naive_bayes_classifier', 'acute', 'distance_transform', 'params', 'opening',
-           'closing']
+           'closing','within_frame']
 
 
 from ._version import get_versions
