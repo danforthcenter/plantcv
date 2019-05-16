@@ -1,6 +1,6 @@
 ## Check whether an object is completely within an image
 
-This function tests whether an object (defined as any nonzero pixels) falls completely within the bounds of an image or if it touches the edge.
+This function tests whether an object (defined as nonzero pixels in a mask) falls completely within the bounds of an image or if it touches the edge.
 
 **plantcv.within_frame**(*mask*)
 
