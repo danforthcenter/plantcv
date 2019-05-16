@@ -6,7 +6,7 @@ def within_frame(mask):
     '''
     This function tests whether the plant touches the edge of the image, i.e. it is completely in the field of view.
     Input:
-    mask = a binary image
+    mask = a greyscale or binary image
 
     Returns:
     in_bounds = a boolean (True or False) confirming that the object does not touch the edge of the image
