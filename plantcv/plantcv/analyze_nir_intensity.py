@@ -97,7 +97,7 @@ def analyze_nir_intensity(gray_img, mask, bins=256, histplot=False):
 
     print(type(hist_nir1))
     print(type(hist_bins2))
-    outputs.add_measurement(variable='nir_frequency', trait='nir_frequency',
+    outputs.add_measurement(variable='nir_frequencies', trait='near-infrared frequencies',
                             method='plantcv.plantcv.analyze_nir_intensity', scale='frequency', datatype=list,
                             value=hist_nir1, label=hist_bins2)
 

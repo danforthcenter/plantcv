@@ -78,7 +78,7 @@ def segment_euclidean_length(segmented_img, objects):
         segment_label = "ID" + str(c)
         segment_ids.append(c)
 
-    outputs.add_measurement(variable='segment_eu_length', trait='segment_eu_length',
+    outputs.add_measurement(variable='segment_eu_length', trait='segment euclidean length',
                             method='plantcv.plantcv.morphology.segment_euclidean_length', scale='pixels', datatype=list,
                             value=segment_lengths, label=segment_ids)
 

@@ -192,58 +192,51 @@ def analyze_object(img, obj, mask):
     else:
         pass
 
-    outputs.add_measurement(variable='pixel_area', trait='area',
+    outputs.add_measurement(variable='area', trait='area',
                             method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
                             value=area, label='pixels')
-    outputs.add_measurement(variable='area', trait='convex hull area',
+    outputs.add_measurement(variable='convex_hull_area', trait='convex hull area',
                             method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
                             value=hull_area, label='pixels')
-    outputs.add_measurement(variable='solidity', trait='object area divided by convex hull area',
+    outputs.add_measurement(variable='solidity', trait='solidity',
                             method='plantcv.plantcv.analyze_object', scale='none', datatype=float,
                             value=solidity, label='none')
-    outputs.add_measurement(variable='perimeter', trait='object perimeter length',
+    outputs.add_measurement(variable='perimeter', trait='perimeter',
                             method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
                             value=perimeter, label='pixels')
-    outputs.add_measurement(variable='width', trait='maximum object width',
+    outputs.add_measurement(variable='width', trait='width',
                             method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
                             value=width, label='pixels')
-    outputs.add_measurement(variable='height', trait='maximum object width',
+    outputs.add_measurement(variable='height', trait='height',
                             method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
                             value=height, label='pixels')
-    outputs.add_measurement(variable='longest_axis', trait='longest path between convex hull vertices through the '
-                                                           'center of mass',
+    outputs.add_measurement(variable='longest_path', trait='longest path',
                             method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
                             value=caliper_length, label='pixels')
-    outputs.add_measurement(variable='center-of-mass-x', trait='x-axis coordinate of the object center of mass',
-                            method='plantcv.plantcv.analyze_object', scale='none', datatype=int,
-                            value=cmx, label='none')
-    outputs.add_measurement(variable='center-of-mass-y', trait='y-axis coordinate of the object center of mass',
-                            method='plantcv.plantcv.analyze_object', scale='none', datatype=int,
-                            value=cmy, label='none')
-    outputs.add_measurement(variable='hull_vertices', trait='number of convex hull vertices',
+    outputs.add_measurement(variable='center_of_mass', trait='center of mass',
+                            method='plantcv.plantcv.analyze_object', scale='none', datatype=tuple,
+                            value=(cmx, cmy), label='none')
+    outputs.add_measurement(variable='convex_hull_vertices', trait='convex hull vertices',
                             method='plantcv.plantcv.analyze_object', scale='none', datatype=int,
                             value=hull_vertices, label='none')
-    outputs.add_measurement(variable='in_bounds', trait='is the object touching the border of the image',
+    outputs.add_measurement(variable='object_in_frame', trait='object in frame',
                             method='plantcv.plantcv.analyze_object', scale='none', datatype=bool,
                             value=in_bounds, label='none')
-    outputs.add_measurement(variable='ellipse_center_x', trait='x-axis coord of center of the minimum bounding ellipse',
-                            method='plantcv.plantcv.analyze_object', scale='none', datatype=int,
-                            value=center[0], label='none')
-    outputs.add_measurement(variable='ellipse_center_y', trait='y-axis coord of center of the minimum bounding ellipse',
-                            method='plantcv.plantcv.analyze_object', scale='none', datatype=int,
-                            value=center[1], label='none')
-    outputs.add_measurement(variable='ellipse_major_axis', trait='length of major axis of the minimum bounding ellipse',
+    outputs.add_measurement(variable='ellipse_center', trait='ellipse center',
+                            method='plantcv.plantcv.analyze_object', scale='none', datatype=tuple,
+                            value=(center[0], center[1]), label='none')
+    outputs.add_measurement(variable='ellipse_major_axis', trait='ellipse major axis length',
                             method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
                             value=major_axis_length, label='pixels')
-    outputs.add_measurement(variable='ellipse_minor_axis', trait='length of minor axis of the minimum bounding ellipse',
+    outputs.add_measurement(variable='ellipse_minor_axis', trait='ellipse minor axis length',
                             method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
                             value=minor_axis_length, label='pixels')
-    outputs.add_measurement(variable='ellipse_angle', trait='degrees of rotation of the bounding ellipse major axis',
+    outputs.add_measurement(variable='ellipse_angle', trait='ellipse major axis angle',
                             method='plantcv.plantcv.analyze_object', scale='degrees', datatype=float,
                             value=float(angle), label='degrees')
-    outputs.add_measurement(variable='ellipse_eccentricity', trait='eccentricity of the bounding ellipse',
-                            method='plantcv.plantcv.analyze_object', scale='degrees', datatype=float,
-                            value=float(eccentricity), label='degrees')
+    outputs.add_measurement(variable='ellipse_eccentricity', trait='ellipse eccentricity',
+                            method='plantcv.plantcv.analyze_object', scale='none', datatype=float,
+                            value=float(eccentricity), label='none')
 
     if params.debug is not None:
         cv2.drawContours(ori_img, obj, -1, (255, 0, 0), params.line_thickness)

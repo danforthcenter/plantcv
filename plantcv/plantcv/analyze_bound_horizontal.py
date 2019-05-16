@@ -145,25 +145,25 @@ def analyze_bound_horizontal(img, obj, mask, line_position):
             plot_image(wback)
             plot_image(ori_img)
 
-    outputs.add_measurement(variable='horizontal_line_position', trait='horizontal_line_position',
+    outputs.add_measurement(variable='horizontal_reference_position', trait='horizontal reference position',
                             method='plantcv.plantcv.analyze_bound_horizontal', scale='none', datatype=int,
                             value=line_position, label='none')
-    outputs.add_measurement(variable='height_above_bound', trait='height_above_bound',
+    outputs.add_measurement(variable='height_above_reference', trait='height above reference',
                             method='plantcv.plantcv.analyze_bound_horizontal', scale='pixels', datatype=int,
                             value=height_above_bound, label='pixels')
-    outputs.add_measurement(variable='height_below_bound', trait='height_below_bound',
+    outputs.add_measurement(variable='height_below_reference', trait='height_below_reference',
                             method='plantcv.plantcv.analyze_bound_horizontal', scale='pixels', datatype=int,
                             value=height_below_bound, label='pixels')
-    outputs.add_measurement(variable='above_bound_area', trait='above_bound_area',
+    outputs.add_measurement(variable='area_above_reference', trait='area above reference',
                             method='plantcv.plantcv.analyze_bound_horizontal', scale='pixels', datatype=int,
                             value=above_bound_area, label='pixels')
-    outputs.add_measurement(variable='percent_above_bound_area', trait='percent_above_bound_area',
+    outputs.add_measurement(variable='percent_area_above_reference', trait='percent area above reference',
                             method='plantcv.plantcv.analyze_bound_horizontal', scale='none', datatype=float,
                             value=percent_bound_area_above, label='none')
-    outputs.add_measurement(variable='below_bound_area', trait='below_bound_area',
+    outputs.add_measurement(variable='area_below_reference', trait='area below reference',
                             method='plantcv.plantcv.analyze_bound_horizontal', scale='pixels', datatype=int,
                             value=below_bound_area, label='pixels')
-    outputs.add_measurement(variable='percent_bound_area_below', trait='percent_bound_area_below',
+    outputs.add_measurement(variable='percent_area_below_reference', trait='percent area below reference',
                             method='plantcv.plantcv.analyze_bound_horizontal', scale='none', datatype=float,
                             value=percent_bound_area_below, label='none')
 

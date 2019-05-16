@@ -36,6 +36,15 @@ def y_axis_pseudolandmarks(img, obj, mask):
         return ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA')
     x, y, width, height = cv2.boundingRect(obj)
     extent = height
+
+    # Outputs
+    left = []
+    right = []
+    center_h = []
+    left_list = []
+    right_list = []
+    center_h_list = []
+
     # If height is greater than 21 pixels make 20 increments (5% intervals)
     if extent >= 21:
         inc = int(extent / 21)
@@ -158,17 +167,7 @@ def y_axis_pseudolandmarks(img, obj, mask):
             plot_image(img2)
         elif params.debug == 'print':
             print_image(img2, os.path.join(params.debug_outdir, (str(params.device) + '_y_axis_pseudolandmarks.png')))
-
-        # Store into global measurements
-        if not 'landmark_reference' in outputs.measurements:
-            outputs.measurements['landmark_reference'] = {}
-        outputs.measurements['landmark_reference']['left_lmk'] = left
-        outputs.measurements['landmark_reference']['right_lmk'] = right
-        outputs.measurements['landmark_reference']['center_h_lmk'] = center_h
-
-        return left, right, center_h
-    
-    if extent < 21:
+    elif extent < 21:
         # If the length of the object is less than 20 pixels just make the object a 20 pixel rectangle
         x, y, width, height = cv2.boundingRect(obj)
         y_coords = list(range(y, y + 20))
@@ -210,11 +209,22 @@ def y_axis_pseudolandmarks(img, obj, mask):
         elif params.debug == 'print':
             print_image(img2, os.path.join(params.debug_outdir, (str(params.device) + '_y_axis_pseudolandmarks.png')))
 
-        # Store into global measurements
-        if not 'landmark_reference' in outputs.measurements:
-            outputs.measurements['landmark_reference'] = {}
-        outputs.measurements['landmark_reference']['left_lmk'] = left
-        outputs.measurements['landmark_reference']['right_lmk'] = right
-        outputs.measurements['landmark_reference']['center_h_lmk'] = center_h
+    # Store into global measurements
+    for pt in left:
+        left_list.append(pt[0].tolist())
+    for pt in right:
+        right_list.append(pt[0].tolist())
+    for pt in center_h:
+        center_h_list.append(pt[0].tolist())
 
-        return left, right, center_h
+    outputs.add_measurement(variable='left_lmk', trait='left landmark coordinates',
+                            method='plantcv.plantcv.x_axis_pseudolandmarks', scale='none', datatype=list,
+                            value=left_list, label='none')
+    outputs.add_measurement(variable='right_lmk', trait='right landmark coordinates',
+                            method='plantcv.plantcv.x_axis_pseudolandmarks', scale='none', datatype=list,
+                            value=right_list, label='none')
+    outputs.add_measurement(variable='center_h_lmk', trait='center horizontal landmark coordinates',
+                            method='plantcv.plantcv.x_axis_pseudolandmarks', scale='none', datatype=list,
+                            value=center_h_list, label='none')
+
+    return left, right, center_h

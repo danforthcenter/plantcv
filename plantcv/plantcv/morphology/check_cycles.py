@@ -59,7 +59,7 @@ def check_cycles(skel_img):
                          hierarchy=cycle_hierarchies)
 
     # Store Cycle Data
-    outputs.add_measurement(variable='num_cycles', trait='num_cycles',
+    outputs.add_measurement(variable='num_cycles', trait='number of cycles',
                             method='plantcv.plantcv.morphology.check_cycles', scale='none', datatype=int,
                             value=num_cycles, label='none')
 

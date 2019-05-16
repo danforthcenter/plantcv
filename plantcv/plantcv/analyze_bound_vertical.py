@@ -145,25 +145,25 @@ def analyze_bound_vertical(img, obj, mask, line_position):
             plot_image(wback)
             plot_image(ori_img)
 
-    outputs.add_measurement(variable='vertical_line_position', trait='vertical_line_position',
+    outputs.add_measurement(variable='vertical_reference_position', trait='vertical reference position',
                             method='plantcv.plantcv.analyze_bound_vertical', scale='none', datatype=int,
                             value=line_position, label='none')
-    outputs.add_measurement(variable='width_left_bound', trait='width_left_bound',
+    outputs.add_measurement(variable='width_left_reference', trait='width left of reference',
                             method='plantcv.plantcv.analyze_bound_vertical', scale='pixels', datatype=int,
                             value=width_left_bound, label='pixels')
-    outputs.add_measurement(variable='width_right_bound', trait='width_right_bound',
+    outputs.add_measurement(variable='width_right_reference', trait='width right of reference',
                             method='plantcv.plantcv.analyze_bound_vertical', scale='pixels', datatype=int,
                             value=width_right_bound, label='pixels')
-    outputs.add_measurement(variable='left_bound_area', trait='left_bound_area',
+    outputs.add_measurement(variable='area_left_reference', trait='area left of reference',
                             method='plantcv.plantcv.analyze_bound_vertical', scale='pixels', datatype=int,
                             value=left_bound_area, label='pixels')
-    outputs.add_measurement(variable='percent_left_bound_area', trait='percent_left_bound_area',
+    outputs.add_measurement(variable='percent_area_left_reference', trait='percent area left of reference',
                             method='plantcv.plantcv.analyze_bound_vertical', scale='none', datatype=float,
                             value=percent_bound_area_left, label='none')
-    outputs.add_measurement(variable='right_bound_area', trait='right_bound_area',
+    outputs.add_measurement(variable='area_right_reference', trait='area right of reference',
                             method='plantcv.plantcv.analyze_bound_vertical', scale='pixels', datatype=int,
                             value=right_bound_area, label='pixels')
-    outputs.add_measurement(variable='percent_right_bound_area', trait='percent_right_bound_area',
+    outputs.add_measurement(variable='percent_area_right_reference', trait='percent area right of reference',
                             method='plantcv.plantcv.analyze_bound_vertical', scale='none', datatype=float,
                             value=percent_bound_area_right, label='none')
 

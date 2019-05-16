@@ -68,7 +68,7 @@ def watershed_segmentation(rgb_img, mask, distance=10):
         plot_image(dist_transform, cmap='gray')
         plot_image(joined)
 
-    outputs.add_measurement(variable='estimated_object_count', trait='number of segmented objects (e.g. leaves)',
+    outputs.add_measurement(variable='estimated_object_count', trait='estimated object count',
                             method='plantcv.plantcv.watershed', scale='none', datatype=int,
                             value=estimated_object_count, label='none')
 

@@ -187,40 +187,40 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
     #         'hue_median': hue_median
     #     }
     # }
-    outputs.add_measurement(variable='blue', trait='blue',
+    outputs.add_measurement(variable='blue_frequencies', trait='blue frequencies',
                             method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
                             value=histograms["b"]["hist"], label=rgb_values)
-    outputs.add_measurement(variable='green', trait='green',
+    outputs.add_measurement(variable='green_frequencies', trait='green frequencies',
                             method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
                             value=histograms["g"]["hist"], label=rgb_values)
-    outputs.add_measurement(variable='red', trait='red',
+    outputs.add_measurement(variable='red_frequencies', trait='red frequencies',
                             method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
                             value=histograms["r"]["hist"], label=rgb_values)
-    outputs.add_measurement(variable='lightness', trait='lightness',
+    outputs.add_measurement(variable='lightness_frequencies', trait='lightness frequencies',
                             method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
                             value=histograms["l"]["hist"], label=percent_values)
-    outputs.add_measurement(variable='green-magenta', trait='green-magenta',
+    outputs.add_measurement(variable='green-magenta_frequencies', trait='green-magenta frequencies',
                             method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
                             value=histograms["m"]["hist"], label=diverging_values)
-    outputs.add_measurement(variable='blue-yellow', trait='blue-yellow',
+    outputs.add_measurement(variable='blue-yellow_frequencies', trait='blue-yellow frequencies',
                             method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
                             value=histograms["y"]["hist"], label=diverging_values)
-    outputs.add_measurement(variable='hue', trait='hue',
+    outputs.add_measurement(variable='hue_frequencies', trait='hue frequencies',
                             method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
                             value=histograms["h"]["hist"], label=hue_values)
-    outputs.add_measurement(variable='saturation', trait='saturation',
+    outputs.add_measurement(variable='saturation_frequencies', trait='saturation frequencies',
                             method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
                             value=histograms["s"]["hist"], label=percent_values)
-    outputs.add_measurement(variable='value', trait='value',
+    outputs.add_measurement(variable='value_frequencies', trait='value frequencies',
                             method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
                             value=histograms["v"]["hist"], label=percent_values)
-    outputs.add_measurement(variable='hue_circular_mean', trait='hue_circular_mean',
+    outputs.add_measurement(variable='hue_circular_mean', trait='hue circular mean',
                             method='plantcv.plantcv.analyze_color', scale='degrees', datatype=float,
                             value=hue_circular_mean, label='degrees')
-    outputs.add_measurement(variable='hue_circular_std', trait='hue_circular_std',
+    outputs.add_measurement(variable='hue_circular_std', trait='hue circular standard deviation',
                             method='plantcv.plantcv.analyze_color', scale='degrees', datatype=float,
                             value=hue_median, label='degrees')
-    outputs.add_measurement(variable='hue_median', trait='hue_median',
+    outputs.add_measurement(variable='hue_median', trait='hue median',
                             method='plantcv.plantcv.analyze_color', scale='degrees', datatype=float,
                             value=hue_median, label='degrees')
 

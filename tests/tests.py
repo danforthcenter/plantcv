@@ -556,6 +556,7 @@ def test_plantcv_acute_vertex():
     pcv.params.debug = None
     acute = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img)
     assert all([i == j] for i, j in zip(np.shape(acute), np.shape(TEST_ACUTE_RESULT)))
+    pcv.outputs.clear()
 
 
 def test_plantcv_acute_vertex_bad_obj():
@@ -564,6 +565,7 @@ def test_plantcv_acute_vertex_bad_obj():
     pcv.params.debug = None
     result = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img)
     assert all([i == j] for i, j in zip(result, [0, ("NA", "NA")]))
+    pcv.outputs.clear()
 
 
 def test_plantcv_analyze_bound_horizontal():
