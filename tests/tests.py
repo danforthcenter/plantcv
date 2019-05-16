@@ -776,7 +776,7 @@ def test_plantcv_crop_position_mask():
     # Test with debug = None
     pcv.params.debug = None
     newmask = pcv.crop_position_mask(nir, mask, x=40, y=3, v_pos="top", h_pos="right")
-    assert np.sum(newmask) == 641517
+    assert np.sum(newmask) == 707115
 
 
 def test_plantcv_crop_position_mask_color():
@@ -807,7 +807,7 @@ def test_plantcv_crop_position_mask_color():
     # Test with debug = None
     pcv.params.debug = None
     newmask = pcv.crop_position_mask(nir, mask, x=40, y=3, v_pos="top", h_pos="right")
-    assert np.sum(newmask) == 641517
+    assert np.sum(newmask) == 707115
 
 
 def test_plantcv_crop_position_mask_bad_input_x():
