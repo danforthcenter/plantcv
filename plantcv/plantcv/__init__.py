@@ -74,6 +74,7 @@ from plantcv.plantcv.logical_xor import logical_xor
 from plantcv.plantcv.find_objects import find_objects
 from plantcv.plantcv.roi_objects import roi_objects
 from plantcv.plantcv.object_composition import object_composition
+from plantcv.plantcv.within_frame import within_frame
 from plantcv.plantcv.analyze_object import analyze_object
 from plantcv.plantcv.analyze_bound_horizontal import analyze_bound_horizontal
 from plantcv.plantcv.analyze_bound_vertical import analyze_bound_vertical
@@ -106,7 +107,6 @@ from plantcv.plantcv.distance_transform import distance_transform
 from plantcv.plantcv.canny_edge_detect import canny_edge_detect
 from plantcv.plantcv.opening import opening
 from plantcv.plantcv.closing import closing
-from plantcv.plantcv.within_frame import within_frame
 from plantcv.plantcv import roi
 from plantcv.plantcv import threshold
 from plantcv.plantcv import transform

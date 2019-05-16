@@ -53,7 +53,7 @@ def analyze_object(img, obj, mask):
     background2 = np.zeros(size1, dtype=np.uint8)
 
     # Check is object is touching image boundaries (QC)
-    in_bounds = within_frame.within_frame(mask)
+    in_bounds = within_frame(mask)
 
     # Convex Hull
     hull = cv2.convexHull(obj)
