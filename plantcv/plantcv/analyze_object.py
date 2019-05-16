@@ -7,6 +7,7 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
+from plantcv.plantcv import within_frame
 
 
 def analyze_object(img, obj, mask):
@@ -15,7 +16,7 @@ def analyze_object(img, obj, mask):
     Inputs:
     img             = RGB or grayscale image data for plotting
     obj             = single or grouped contour object
-    mask            = Binary image to use as mask for moments analysis
+    mask            = Binary image to use as mask
 
     Returns:
     shape_header    = shape data table headers
@@ -52,16 +53,7 @@ def analyze_object(img, obj, mask):
     background2 = np.zeros(size1, dtype=np.uint8)
 
     # Check is object is touching image boundaries (QC)
-    frame_background = np.zeros(size1, dtype=np.uint8)
-    frame = frame_background + 1
-    frame_contour, frame_hierarchy = cv2.findContours(frame, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
-    ptest = []
-    vobj = np.vstack(obj)
-    for i, c in enumerate(vobj):
-        xy = tuple(c)
-        pptest = cv2.pointPolygonTest(frame_contour[0], xy, measureDist=False)
-        ptest.append(pptest)
-    in_bounds = all(c == 1 for c in ptest)
+    in_bounds = within_frame.within_frame(mask)
 
     # Convex Hull
     hull = cv2.convexHull(obj)

@@ -1,38 +1,40 @@
 import cv2 as cv2
 import numpy as np
+from plantcv.plantcv import fatal_error
 
-def within_frame(mask, obj):
+def within_frame(mask):
     '''
-    This function tests whether the plant object touches the edge of the image, i.e. it is completely in the field of view
+    This function tests whether the plant touches the edge of the image, i.e. it is completely in the field of view.
     Input:
-    mask = a single channel image (i.e. binary or greyscale) that contains the object
-    obj = a single object, preferably after calling pcv.image_composition(), that is from `mask`
+    mask = a binary image
 
     Returns:
-    in_bounds = a boolean (True or False) indicating that the object does not touch the edge of the image
+    in_bounds = a boolean (True or False) confirming that the object does not touch the edge of the image
 
     :param mask: numpy.ndarray
-    :param obj: str
     :return in_bounds: bool
 
     '''
 
     # Check if object is touching image boundaries (QC)
-
     if len(np.shape(mask)) > 2:
-        fatal_error("mask should be a single channel 2-d array such as a binary or greyscale image.")
+        fatal_error("Mask should be a greyscale image of 0 and nonzero values.")
 
-    ix, iy = np.shape(mask)
-    size1 = ix, iy
-    frame_background = np.zeros(size1, dtype=np.uint8)
-    frame = frame_background + 1
-    frame_contour, frame_hierarchy = cv2.findContours(frame, cv2.RETR_TREE,  cv2.CHAIN_APPROX_NONE)[-2:]
-    ptest = []
-    vobj = np.vstack(obj)
-    for i, c in enumerate(vobj):
-        xy = tuple(c)
-        pptest = cv2.pointPolygonTest(frame_contour[0], xy, measureDist=False)
-        ptest.append(pptest)
-    in_bounds = all(c == 1 for c in ptest)
+    # First column
+    first_col = mask[:, 0]
+
+    # Last column
+    last_col = mask[:, -1]
+
+    # First row
+    first_row = mask[0, :]
+
+    # Last row
+    last_row = mask[-1, :]
+
+    edges = np.concatenate([first_col, last_col, first_row, last_row])
+
+    out_of_bounds = bool(np.count_nonzero(edges))
+    in_bounds = not out_of_bounds
 
     return(in_bounds)

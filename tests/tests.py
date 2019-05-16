@@ -34,6 +34,7 @@ TEST_NIR = "NIR_SV_0_z300_h1_g0_e15000_v500_93059.png"
 TEST_VIS_TV = "VIS_TV_0_z300_h1_g0_e85_v500_93054.png"
 TEST_NIR_TV = "NIR_TV_0_z300_h1_g0_e15000_v500_93059.png"
 TEST_INPUT_MASK = "input_mask.png"
+TEST_INPUT_MASK_OOB = "mask_outbounds.png"
 TEST_INPUT_MASK_RESIZE = "input_mask_resize.png"
 TEST_INPUT_NIR_MASK = "input_nir.png"
 TEST_INPUT_FDARK = "FLUO_TV_dark.png"
@@ -1455,19 +1456,11 @@ def test_plantcv_within_frame():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     # Read in test data
-    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI), -1)
-    contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_OBJECT), encoding="latin1")
-    roi_contours = contours['arr_0']
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.within_frame(img=img1, obj=roi_contours[1])
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.within_frame(img=img1, obj=roi_contours[1])
-    # Test with debug = None
-    pcv.params.debug = None
-    in_bounds = pcv.within_frame(img=img1, obj=roi_contours[1])
-    assert(in_bounds is True or in_bounds is False)
+    mask_ib = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK), -1)
+    mask_oob = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK_OOB), -1)
+    in_bounds_ib = pcv.within_frame(mask = mask_ib)
+    in_bounds_oob = pcv.within_frame(mask = mask_oob)
+    assert(in_bounds_ib is True and in_bounds_oob is False)
 
 
 
