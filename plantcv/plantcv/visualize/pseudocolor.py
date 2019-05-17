@@ -15,15 +15,14 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
 
     Inputs:
     gray_img    = grayscale image data
-    obj         = if provided, the pseudocolored image gets cropped down to the region of interest
-    mask        = binary mask
-    cmap        = colormap
-    background  = background color/type, options are "image" (gray_img), "white", or "black"
-                  (a mask must be supplied)
-    min_value   = minimum value for range of interest
-    max_value   = maximum value for range of interest
-    axes        = if False then x- and y-axis won't be displayed, nor will the title
-    colorbar    = if False then colorbar won't be displayed
+    obj         = (optional) if provided as a plant object, the pseudocolored image gets cropped down to the region of interest with a 20% buffer. if provided as a rectangle, the size of the rectangle is used asis.
+    mask        = (optional) binary mask
+    cmap        = (optional) colormap. default is the matplotlib default, viridis
+    background  = (optional) background color/type, options are "image" (gray_img), "white", or "black" (requires a mask)
+    min_value   = (optional) minimum value for range of interest. default = 0
+    max_value   = (optional) maximum value for range of interest. default = 255
+    axes        = (optional) if False then x- and y-axis won't be displayed, nor will the title. default = True
+    colorbar    = (optional) if False then colorbar won't be displayed. default = True
 
     Returns:
     pseudo_image = pseudocolored image
@@ -62,9 +61,17 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
             # Crop down the image
             crop_img = gray_img[y:y + h, x:x + w]
 
-            # Calculate the buffer size based on the contour size
-            offsetx = int(w / 5)
-            offsety = int(h / 5)
+            # Setup a buffer around the bounding box of obj
+            # If obj is already a rectangle than we assume the user wants to use this size and the buffer = 0
+            peri = cv2.arcLength(obj, True)
+            approx = cv2.approxPolyDP(obj, 0.01 * peri, True)
+            if len(approx) == 4:
+                offsetx = 0
+                offsety = 0
+            else:
+                # Calculate the buffer size based on the contour size
+                offsetx = int(w / 5)
+                offsety = int(h / 5)
 
             if background.upper() == "IMAGE":
                 gray_img1 = gray_img1[y - offsety:y + h + offsety, x - offsetx:x + w + offsetx]
