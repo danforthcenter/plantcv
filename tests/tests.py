@@ -1463,6 +1463,16 @@ def test_plantcv_within_frame():
     assert(in_bounds_ib is True and in_bounds_oob is False)
 
 
+def test_plantcv_within_frame_bad_input():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_within_frame")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    grayscale_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
+    with pytest.raises(RuntimeError):
+        _ = pcv.within_frame(grayscale_img)
+
 
 def test_plantcv_opening():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_closing")
