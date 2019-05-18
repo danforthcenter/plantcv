@@ -217,13 +217,13 @@ def x_axis_pseudolandmarks(img, obj, mask):
     for pt in center_v:
         center_v_list.append(pt[0].tolist())
 
-    outputs.add_measurement(variable='top_lmk', trait='top landmark coordinates',
+    outputs.add_observation(variable='top_lmk', trait='top landmark coordinates',
                             method='plantcv.plantcv.x_axis_pseudolandmarks', scale='none', datatype=list,
                             value=top_list, label='none')
-    outputs.add_measurement(variable='bottom_lmk', trait='bottom landmark coordinates',
+    outputs.add_observation(variable='bottom_lmk', trait='bottom landmark coordinates',
                             method='plantcv.plantcv.x_axis_pseudolandmarks', scale='none', datatype=list,
                             value=bottom_list, label='none')
-    outputs.add_measurement(variable='center_v_lmk', trait='center vertical landmark coordinates',
+    outputs.add_observation(variable='center_v_lmk', trait='center vertical landmark coordinates',
                             method='plantcv.plantcv.x_axis_pseudolandmarks', scale='none', datatype=list,
                             value=center_v_list, label='none')
 

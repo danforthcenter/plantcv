@@ -77,7 +77,7 @@ def segment_curvature(segmented_img, objects):
         segment_label = "ID" + str(i)
         segment_ids.append(i)
 
-    outputs.add_measurement(variable='segment_curvature', trait='segment curvature',
+    outputs.add_observation(variable='segment_curvature', trait='segment curvature',
                             method='plantcv.plantcv.morphology.segment_curvature', scale='none', datatype=list,
                             value=curvature_measure, label=segment_ids)
 

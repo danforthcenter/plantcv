@@ -73,7 +73,7 @@ def segment_angle(segmented_img, objects):
         segment_label = "ID" + str(i)
         segment_ids.append(i)
 
-    outputs.add_measurement(variable='segment_angle', trait='segment angle',
+    outputs.add_observation(variable='segment_angle', trait='segment angle',
                             method='plantcv.plantcv.morphology.segment_angle', scale='degrees', datatype=list,
                             value=segment_angles, label=segment_ids)
 

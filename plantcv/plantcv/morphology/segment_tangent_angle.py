@@ -118,7 +118,7 @@ def segment_tangent_angle(segmented_img, objects, size):
         segment_label = "ID" + str(i)
         segment_ids.append(i)
 
-    outputs.add_measurement(variable='segment_tangent_angle', trait='segment tangent angle',
+    outputs.add_observation(variable='segment_tangent_angle', trait='segment tangent angle',
                             method='plantcv.plantcv.morphology.segment_tangent_angle', scale='degrees', datatype=list,
                             value=intersection_angles, label=segment_ids)
 

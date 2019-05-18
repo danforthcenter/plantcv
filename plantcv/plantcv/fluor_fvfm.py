@@ -148,16 +148,16 @@ def fluor_fvfm(fdark, fmin, fmax, mask, bins=256):
         plot_image(fv, cmap='gray')
         print(fvfm_hist_fig)
 
-    outputs.add_measurement(variable='fvfm_hist', trait='histogram of FV/FM ratio values for object',
+    outputs.add_observation(variable='fvfm_hist', trait='histogram of FV/FM ratio values for object',
                             method='plantcv.plantcv.fluor_fvfm', scale='none', datatype=list,
                             value=fvfm_hist.tolist(), label=np.around(midpoints, decimals=len(str(bins))).tolist())
-    outputs.add_measurement(variable='fvfm_hist_peak', trait='bin value of histogram peak (greatest number of pixels)',
+    outputs.add_observation(variable='fvfm_hist_peak', trait='bin value of histogram peak (greatest number of pixels)',
                             method='plantcv.plantcv.fluor_fvfm', scale='none', datatype=float,
                             value=float(max_bin), label='none')
-    outputs.add_measurement(variable='fvfm_median', trait='bin value of histogram median',
+    outputs.add_observation(variable='fvfm_median', trait='bin value of histogram median',
                             method='plantcv.plantcv.fluor_fvfm', scale='none', datatype=float,
                             value=float(np.around(fvfm_median, decimals=4)), label='none')
-    outputs.add_measurement(variable='fdark_passed_qc', trait='DCheck (True or False) to determine if Fdark image does '
+    outputs.add_observation(variable='fdark_passed_qc', trait='DCheck (True or False) to determine if Fdark image does '
                                                               'not have pixel intensity values above 2000',
                             method='plantcv.plantcv.fluor_fvfm', scale='none', datatype=bool,
                             value=qc_fdark, label='none')

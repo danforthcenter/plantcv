@@ -12,7 +12,7 @@ functions:
 * `report_size_marker_area`
 * `watershed`
 
-Users can also add measurements to the `Outputs` class with the `pcv.outputs.add_measurement` method.
+Users can also add measurements to the `Outputs` class with the `pcv.outputs.add_observation` method.
 
 
 The `print_results` function will take the measurements stored when running any (or all) of these functions, format, and 

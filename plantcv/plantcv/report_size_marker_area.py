@@ -117,16 +117,16 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
     elif params.debug is 'plot':
         plot_image(ref_img)
 
-    outputs.add_measurement(variable='marker_area', trait='marker area',
+    outputs.add_observation(variable='marker_area', trait='marker area',
                             method='plantcv.plantcv.report_size_marker_area', scale='pixels', datatype=int,
                             value=marker_area, label='pixels')
-    outputs.add_measurement(variable='marker_ellipse_major_axis', trait='marker ellipse major axis length',
+    outputs.add_observation(variable='marker_ellipse_major_axis', trait='marker ellipse major axis length',
                             method='plantcv.plantcv.report_size_marker_area', scale='pixels', datatype=int,
                             value=major_axis_length, label='pixels')
-    outputs.add_measurement(variable='marker_ellipse_minor_axis', trait='marker ellipse minor axis length',
+    outputs.add_observation(variable='marker_ellipse_minor_axis', trait='marker ellipse minor axis length',
                             method='plantcv.plantcv.report_size_marker_area', scale='pixels', datatype=int,
                             value=minor_axis_length, label='pixels')
-    outputs.add_measurement(variable='marker_ellipse_eccentricity', trait='marker ellipse eccentricity',
+    outputs.add_observation(variable='marker_ellipse_eccentricity', trait='marker ellipse eccentricity',
                             method='plantcv.plantcv.report_size_marker_area', scale='none', datatype=float,
                             value=eccentricity, label='none')
 

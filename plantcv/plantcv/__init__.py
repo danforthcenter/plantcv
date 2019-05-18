@@ -47,8 +47,8 @@ class Outputs:
         self.images = []
         self.observations = {}
 
-    # Method to add measurement to outputs
-    def add_measurement(self, variable, trait, method, scale, datatype, value, label):
+    # Method to add observation to outputs
+    def add_observation(self, variable, trait, method, scale, datatype, value, label):
         """
         Keyword arguments/parameters:
         variable     = A local unique identifier of a variable, e.g. a short name, that is a key linking the definitions of

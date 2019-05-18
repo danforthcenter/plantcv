@@ -179,7 +179,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
         segment_label = "ID" + str(i)
         segment_ids.append(i)
 
-    outputs.add_measurement(variable='segment_insertion_angle', trait='segment insertion angle',
+    outputs.add_observation(variable='segment_insertion_angle', trait='segment insertion angle',
                             method='plantcv.plantcv.morphology.segment_insertion_angle', scale='degrees', datatype=list,
                             value=intersection_angles, label=segment_ids)
 

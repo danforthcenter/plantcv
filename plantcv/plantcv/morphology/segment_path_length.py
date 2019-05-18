@@ -48,7 +48,7 @@ def segment_path_length(segmented_img, objects):
         segment_label = "ID" + str(c)
         segment_ids.append(c)
 
-    outputs.add_measurement(variable='segment_path_length', trait='segment path length',
+    outputs.add_observation(variable='segment_path_length', trait='segment path length',
                             method='plantcv.plantcv.morphology.segment_path_length', scale='pixels', datatype=list,
                             value=segment_lengths, label=segment_ids)
 

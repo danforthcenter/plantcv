@@ -128,7 +128,7 @@ def acute_vertex(img, obj, win, thresh, sep):
     #     acute = acute.reshape(1, 1, 2)
 
     # Store into global measurements
-    outputs.add_measurement(variable='tip_coordinates', trait='tip coordinates',
+    outputs.add_observation(variable='tip_coordinates', trait='tip coordinates',
                             method='plantcv.plantcv.acute_vertex', scale='none', datatype=list,
                             value=acute_points, label='none')
 

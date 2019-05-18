@@ -127,27 +127,27 @@ def landmark_reference_pt_dist(points_r, centroid_r, bline_r):
     # flipped_scaled = cv2.flip(scaled_img, 0)
     # cv2.imwrite('centroid_dist.png', flipped_scaled)
 
-    outputs.add_measurement(variable='vert_ave_c', trait='average vertical distance from centroid',
+    outputs.add_observation(variable='vert_ave_c', trait='average vertical distance from centroid',
                             method='plantcv.plantcv.landmark_reference_pt_dist', scale='pixels', datatype=float,
                             value=vert_ave_c, label='pixels')
-    outputs.add_measurement(variable='hori_ave_c', trait='average horizontal distance from centeroid',
+    outputs.add_observation(variable='hori_ave_c', trait='average horizontal distance from centeroid',
                             method='plantcv.plantcv.landmark_reference_pt_dist', scale='pixels', datatype=float,
                             value=hori_ave_c, label='pixels')
-    outputs.add_measurement(variable='euc_ave_c', trait='average euclidean distance from centroid',
+    outputs.add_observation(variable='euc_ave_c', trait='average euclidean distance from centroid',
                             method='plantcv.plantcv.landmark_reference_pt_dist', scale='pixels', datatype=float,
                             value=euc_ave_c, label='pixels')
-    outputs.add_measurement(variable='ang_ave_c', trait='average angle between landmark point and centroid',
+    outputs.add_observation(variable='ang_ave_c', trait='average angle between landmark point and centroid',
                             method='plantcv.plantcv.landmark_reference_pt_dist', scale='degrees', datatype=float,
                             value=ang_ave_c, label='degrees')
-    outputs.add_measurement(variable='vert_ave_b', trait='average vertical distance from baseline',
+    outputs.add_observation(variable='vert_ave_b', trait='average vertical distance from baseline',
                             method='plantcv.plantcv.landmark_reference_pt_dist', scale='pixels', datatype=float,
                             value=vert_ave_b, label='pixels')
-    outputs.add_measurement(variable='hori_ave_b', trait='average horizontal distance from baseline',
+    outputs.add_observation(variable='hori_ave_b', trait='average horizontal distance from baseline',
                             method='plantcv.plantcv.landmark_reference_pt_dist', scale='pixels', datatype=float,
                             value=hori_ave_b, label='pixels')
-    outputs.add_measurement(variable='euc_ave_b', trait='average euclidean distance from baseline',
+    outputs.add_observation(variable='euc_ave_b', trait='average euclidean distance from baseline',
                             method='plantcv.plantcv.landmark_reference_pt_dist', scale='pixels', datatype=float,
                             value=euc_ave_b, label='pixels')
-    outputs.add_measurement(variable='ang_ave_b', trait='average angle between landmark point and baseline',
+    outputs.add_observation(variable='ang_ave_b', trait='average angle between landmark point and baseline',
                             method='plantcv.plantcv.landmark_reference_pt_dist', scale='degrees', datatype=float,
                             value=ang_ave_b, label='degrees')

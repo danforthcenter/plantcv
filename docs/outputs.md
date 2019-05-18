@@ -32,7 +32,7 @@ Methods are accessed as plantcv.outputs.*method*.
 
 **clear**: Clears the contents of both measurements and image 
 
-**add_measurement**: Add new measurement or other information
+**add_observation**: Add new measurement or other information
 * variable: A local unique identifier of a variable, e.g. a short name, that is a key linking the definitions of variables with observations.
 * trait: A name of the trait mapped to an external ontology; if there is no exact mapping, an informative description of the trait.
 * method: A name of the measurement method mapped to an external ontology; if there is no exact mapping, an informative description of the measurement procedure.
@@ -85,7 +85,7 @@ healthy_plant = np.count_nonzero(mask['plant'])
 percent_diseased = sick_plant / (sick_plant + healthy_plant)
 
 # Create a new measurement
-pcv.outputs.add_measurement(variable='percent_diseased', trait='percent of plant detected to be diseased',
+pcv.outputs.add_observation(variable='percent_diseased', trait='percent of plant detected to be diseased',
                             method='ratio of pixels', scale='percent', datatype=float,
                             value=percent_diseased, label='percent')
 

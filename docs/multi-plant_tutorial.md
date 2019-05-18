@@ -142,8 +142,14 @@ img1 = pcv.white_balance(img,roi=(400,800,200,200))
 ```python
 
 # STEP 3: Rotate the image
+# Inputs:
+#   img = image object, RGB color space
+#   rotation_deg = Rotation angle in degrees, can be negative, positive values 
+#                  will move counter-clockwise 
+#   crop = If True then image will be cropped to original image dimensions, if False
+#          the image size will be adjusted to accommodate new image dimensions 
 
-rotate_img = pcv.rotate(img1, -1)
+rotate_img = pcv.rotate(img1, -1, False)
 
 ```
 
@@ -479,8 +485,15 @@ def main():
     img1 = pcv.white_balance(img,roi=(400,800,200,200))
     
     # STEP 3: Rotate the image
+    # Inputs:
+    #   img = image object, RGB color space
+    #   rotation_deg = Rotation angle in degrees, can be negative, positive values 
+    #                  will move counter-clockwise 
+    #   crop = If True then image will be cropped to original image dimensions, if False
+    #          the image size will be adjusted to accommodate new image dimensions 
+
     
-    rotate_img = pcv.rotate(img1, -1)
+    rotate_img = pcv.rotate(img1, -1, False)
     
     # STEP 4: Shift image. This step is important for clustering later on.
     # For this image it also allows you to push the green raspberry pi camera
