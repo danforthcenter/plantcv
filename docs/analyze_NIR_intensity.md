@@ -18,10 +18,7 @@ the values out to a file. Can also print out a histogram plot of pixel intensity
     the workflow by using [pcv.print_results](print_results.md) which prints all stored data to a .json file.
 - **Example use:**
     - [Use In NIR Tutorial](nir_tutorial.md)
-    
-- **Output Data Units:**
-    - Bins - bin values based on number of bins set by user  
-    - Signal Histogram - histogram of object pixel intensity values 0 (unsaturated) to 255 (saturated)     
+- **Output data stored:** [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 **Original grayscale image**
 

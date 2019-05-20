@@ -19,6 +19,7 @@ Requires cv2 version 3.0+
     - Used to segment image into parts
     - Data automatically gets stored into the [Outputs class](outputs.md). Users can look at the data collected at any point during 
     the workflow by using [pcv.print_results](print_results.md) which prints all stored data to a .json file.
+- **Output data stored:** [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 **Original image**
 

@@ -17,6 +17,7 @@ Measure the curvature of segments.
     Values closer to 1 indicate that a segment is a straight line while larger values indicate the segment has more curvature.
     Users can pass only leaf objects (returned from [plantcv.morphology.segment_sort](segment_sort.md)) to only collect curvature of leaves. The 
     measurements automatically get stored to the [outputs class](outputs.md). 
+- **Output data stored:** [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 ```python
 

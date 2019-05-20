@@ -19,15 +19,7 @@ best if the pot size/position of the plant remains relatively constant.
     the workflow by using [pcv.print_results](print_results.md) which prints all stored data to a .json file. 
 - **Example use:**
     - [Use In VIS Tutorial](vis_tutorial.md)
-
-- **Units of Data Stored:** 
-    - Y-Position - Height of the bound line used for measurement (height from bottom of image), pixels (units)
-    - Height-Above-Bound - Extent-y of object above bound line, pixels (units)
-    - Height-Below-Bound - Extent-y of object below bound line, pixels (units)
-    - Area-Above-Bound - area of object above bound line, pixels (units)
-    - Area-Below-Bound - area of object below bound line, pixels (units)
-    - Percent-Above-Bound - percentage of total area above the bound line
-    - Percent-Below-Bound - percentage of total area below the bound line  
+- **Output data stored:** [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 ```python
 

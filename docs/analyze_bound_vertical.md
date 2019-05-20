@@ -19,15 +19,7 @@ best if the pot size/position of the plant remains relatively constant.
     the workflow by using [pcv.print_results](print_results.md) which prints all stored data to a .json file.
 - **Example use:**
     - [Use of horizontal companion tool in In VIS Tutorial](vis_tutorial.md)
-
-- **Units of Stored Data:**
-    - X-Position - Position of the bound line used for measurement (from left side of image), pixels (units)  
-    - Width-Left-Bound - Extent-x of object to the left of bound line, pixels (units)  
-    - Width-Right-Bound - Extent-x of object to the right of bound line, pixels (units)  
-    - Area-Left-Bound - area of object to the left of bound line, pixels (units)  
-    - Area-Right-Bound - area of object to the right of bound line, pixels (units)  
-    - Percent-left-Bound - percentage of total area left of the bound line  
-    - Percent-Right-Bound - percentage of total area right of the bound line  
+- **Output data stored:** [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 ```python
 

@@ -20,14 +20,7 @@ Extract Fv/Fm data of objects.
     the workflow by using [pcv.print_results](print_results.md) which prints all stored data to a .json file.
 - **Example use:**
     - [Use In PSII Tutorial](psII_tutorial.md)
-    
-- **Units of Data Stored:**
-    - Bin-number - number of bins set by user  
-    - FV/FM Bins - bin values based on number of bins set by user  
-    - FV/FM Histogram - histogram of FV/FM ratio values for object  
-    - FV/FM Histogram Peak - bin value of histogram peak (greatest number of pixels)  
-    - FV/FM Median - bin value of histogram median  
-    - F-Dark Passed QC - Check (True or False) to determine if Fdark image does not have pixel intensity values above 2000. 
+- **Output data stored:** [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 **Fdark image**
 

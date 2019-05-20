@@ -14,6 +14,7 @@ This is a function to measure the distance from user defined points to the centr
     - Used to estimate the distance and angles of landmark points relative to shape reference landmarks (centroid and pot height aka baseline)
     - Data automatically gets stored into the [Outputs class](outputs.md). Users can look at the data collected at any point during 
     the workflow by using [pcv.print_results](print_results.md) which prints all stored data to a .json file.
+- **Output data stored:** [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 **Input rescaled points, centroid and baseline points**
 

@@ -17,7 +17,7 @@ Measure tangent angles of segments as a way to quantify leaf behavior.
       each segment to find a linear regression line, and calculate angle between the two lines
       drawn per segment. Users can pass only leaf objects (returned from [plantcv.morphology.segment_sort](segment_sort.md)) 
       to only collect angles of leaves. Tangent angles are automatically stored to the [outputs class](outputs.md). 
-      
+- **Output data stored:** [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 **Reference Image:** segmented image 
 
