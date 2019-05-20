@@ -20,15 +20,16 @@ nav:
     - 'Code of Conduct': CODE_OF_CONDUCT.md
     - 'Adding/Editing Documentation': documentation.md
   - Tutorials:
-    - 'VIS pipeline': vis_tutorial.md
-    - 'NIR pipeline': nir_tutorial.md
-    - 'PSII pipeline': psII_tutorial.md
-    - 'VIS/NIR Dual Pipeline': vis_nir_tutorial.md
-    - 'Multi Plant Pipeline': multi-plant_tutorial.md
+    - 'VIS Workflow': vis_tutorial.md
+    - 'NIR Workflow': nir_tutorial.md
+    - 'PSII Workflow': psII_tutorial.md
+    - 'VIS/NIR Dual Workflow': vis_nir_tutorial.md
+    - 'Multi Plant Workflow': multi-plant_tutorial.md
     - 'Machine Learning': machine_learning_tutorial.md
-    - 'Pipeline Parallelization': pipeline_parallel.md
+    - 'Workflow Parallelization': pipeline_parallel.md
     - 'Exporting Data': db-exporter.md
-    - 'Color Correction Pipeline': transform_color_correction_tutorial.md
+    - 'Color Correction Workflow': transform_color_correction_tutorial.md
+    - 'Morphology Workflow': morphology_tutorial.md
   - 'Package Plantcv':
     - 'Analyze color': analyze_color.md
     - 'Analyze NIR': analyze_NIR_intensity.md
@@ -84,13 +85,14 @@ nav:
     - 'Median Blur': median_blur.md
     - 'Morphology Functions':
       - 'Check Cycles': check_cycles.md
-      - 'Find Branches': morph_find_branches.md
+      - 'Find Branches': find_branch_pts.md
       - 'Find Tips': find_tips.md
       - 'Prune': prune.md
-      - 'Segment Angles': segment_angles.md
+      - 'Segment Angles': segment_angle.md
       - 'Segment Curvature': segment_curvature.md
       - 'Segment Euclidean Length': segment_euclidean_length.md
       - 'Segment ID': segment_id.md
+      - 'Segment Insertion Angle': segment_insertion_angle.md
       - 'Segment Path Length': segment_pathlength.md
       - 'Segment Skeleton': segment_skeleton.md
       - 'Segment Sort': segment_sort.md

@@ -30,7 +30,7 @@ def _slope_to_intesect_angle(m1, m2):
     return angle
 
 
-def segment_tangent_angle(segmented_img, objects, hierarchies, size):
+def segment_tangent_angle(segmented_img, objects, size):
     """ Find 'tangent' angles in degrees of skeleton segments. Use `size` pixels on either end of
         each segment to find a linear regression line, and calculate angle between the two lines
         drawn per segment.
@@ -38,21 +38,15 @@ def segment_tangent_angle(segmented_img, objects, hierarchies, size):
         Inputs:
         segmented_img  = Segmented image to plot slope lines and intersection angles on
         objects   = List of contours
-        hierarchy = Contour hierarchy NumPy array
         size      = Size of ends used to calculate "tangent" lines
 
         Returns:
-        tan_angle_header = Segment tangent angle headers
-        tan_angle_data   = Segment tangent angle values
         labeled_img    = Segmented debugging image with angles labeled
 
         :param segmented_img: numpy.ndarray
         :param objects: list
-        :param hierarchies: numpy.ndarray
         :param size: int
         :return labeled_img: numpy.ndarray
-        :return tan_angle_header: list
-        :return tan_angle_data: data
         """
     # Store debug
     debug = params.debug
@@ -67,10 +61,8 @@ def segment_tangent_angle(segmented_img, objects, hierarchies, size):
 
     for i, cnt in enumerate(objects):
         find_tangents = np.zeros(segmented_img.shape[:2], np.uint8)
-        cv2.drawContours(find_tangents, objects, i, 255, 1, lineType=8,
-                         hierarchy=hierarchies)
-        cv2.drawContours(labeled_img, objects, i, rand_color[i], params.line_thickness, lineType=8,
-                         hierarchy=hierarchies)
+        cv2.drawContours(find_tangents, objects, i, 255, 1, lineType=8)
+        cv2.drawContours(labeled_img, objects, i, rand_color[i], params.line_thickness, lineType=8)
         pruned_segment = prune(find_tangents, size)
         segment_ends = find_tangents - pruned_segment
         segment_end_obj, segment_end_hierarchy = find_objects(segment_ends, segment_ends)
@@ -112,8 +104,7 @@ def segment_tangent_angle(segmented_img, objects, hierarchies, size):
         label_coord_x.append(objects[i][0][0][0])
         label_coord_y.append(objects[i][0][0][1])
 
-    tan_angle_header = ['HEADER_TAN_ANGLE']
-    tan_angle_data = ['TAN_ANGLE_DATA']
+    segment_ids = []
     for i, cnt in enumerate(objects):
         # Label slope lines
         w = label_coord_x[i]
@@ -123,14 +114,13 @@ def segment_tangent_angle(segmented_img, objects, hierarchies, size):
         else:
             text = "{:.2f}".format(intersection_angles[i])
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                    fontScale=.55, color=(150, 150, 150), thickness=2)
+                    fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
         segment_label = "ID" + str(i)
-        tan_angle_header.append(segment_label)
-    tan_angle_data.extend(intersection_angles)
+        segment_ids.append(i)
 
-    if 'morphology_data' not in outputs.measurements:
-        outputs.measurements['morphology_data'] = {}
-    outputs.measurements['morphology_data']['segment_tan_angles'] = intersection_angles
+    outputs.add_observation(variable='segment_tangent_angle', trait='segment tangent angle',
+                            method='plantcv.plantcv.morphology.segment_tangent_angle', scale='degrees', datatype=list,
+                            value=intersection_angles, label=segment_ids)
 
     # Reset debug mode
     params.debug = debug
@@ -142,4 +132,4 @@ def segment_tangent_angle(segmented_img, objects, hierarchies, size):
     elif params.debug == 'plot':
         plot_image(labeled_img)
 
-    return tan_angle_header, tan_angle_data, labeled_img
+    return labeled_img

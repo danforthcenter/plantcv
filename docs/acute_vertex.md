@@ -13,9 +13,9 @@ angles are often associated with object tip points. Outputs a python list of poi
     - window - The pre and post point distances on which to calculate angle of focal point (a value of 30 worked well for a sample image) on which to calculate the angle
     - thresh - Threshold to set for acuteness; keep points with an angle more acute than the threshold (a value of 15 worked well for sample image)
     - sep - The number of contour points to search within for the most acute value
-
 - **Context:**
     - Used to identify tip points based upon the angle between focal pixel and reference points on contour. 
+- **Output data stored:** [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
     
 **Input plant contour**
 

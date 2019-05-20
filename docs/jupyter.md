@@ -83,7 +83,7 @@ packages as well.
 Once a workflow has been developed, it needs to be converted into a pure
 Python script if the goal is to use it on many images using the PlantCV
 workflow [parallelization](pipeline_parallel.md) tools. To make a
-Python script that is compatible with the `plantcv-pipeline.py` program,
+Python script that is compatible with the `plantcv-workflow.py` program,
 first use Jupyter to convert the notebook to Python. This can be done
 through the web interface, or on the command line:
 
@@ -113,7 +113,7 @@ if __name__ == '__main__':
 ```
 
 Add a function for parsing command line options using [argparse](https://docs.python.org/2.7/library/argparse.html).
-The `plantcv-pipeline.py` script requires a few command-line arguments for
+The `plantcv-workflow.py` script requires a few command-line arguments for
 workflow scripts to work properly. If the script analyzes a single image
 the options minimally should look like the following:
 

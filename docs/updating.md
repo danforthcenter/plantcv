@@ -144,27 +144,28 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, bound_header, bound_data, analysis_images = **plantcv.analyze_bound**(*img, imgname, obj, mask, line_position, device, debug=None, filename=False*)
 * post v3.0dev2: Deprecated, see:
-    * bound_header, bound_data, analysis_images = **plantcv.analyze_bound_horizontal**(*img, obj, mask, line_position, filename=False*)
+    * analysis_images = **plantcv.analyze_bound_horizontal**(*img, obj, mask, line_position, filename=False*)
 
 #### plantcv.analyze_bound_horizontal
 
 * pre v3.0dev2: device, bound_header, bound_data, analysis_images = **plantcv.analyze_bound_horizontal**(*img, obj, mask, line_position, device, debug=None, filename=False*)
 * post v3.0dev2: bound_header, bound_data, analysis_images = **plantcv.analyze_bound_horizontal**(*img, obj, mask, line_position, filename=False*)
 * post v3.0: bound_header, bound_data, analysis_images = **plantcv.analyze_bound_horizontal**(*img, obj, mask, line_position*)
+* post v3.3: analysis_images = **plantcv.analyze_bound_horizontal**(*img, obj, mask, line_position*)
 
 #### plantcv.analyze_bound_vertical
 
 * pre v3.0dev2: device, bound_header, bound_data, analysis_images = **plantcv.analyze_bound_vertical**(*img, obj, mask, line_position, device, debug=None, filename=False*)
 * post v3.0dev2: bound_header, bound_data, analysis_images = **plantcv.analyze_bound_vertical**(*img, obj, mask, line_position, filename=False*)
 * post v3.0.5: bound_header, bound_data, analysis_images = **plantcv.analyze_bound_vertical**(*img, obj, mask, line_position*)
-
+* post v3.3: analysis_images = **plantcv.analyze_bound_vertical**(*img, obj, mask, line_position*)
 
 #### plantcv.analyze_color
 
 * pre v3.0dev2: device, hist_header, hist_data, analysis_images = **plantcv.analyze_color**(*img, imgname, mask, bins, device, debug=None, hist_plot_type=None, pseudo_channel='v', pseudo_bkg='img', resolution=300, filename=False*)
 * post v3.0dev2: hist_header, hist_data, analysis_images = **plantcv.analyze_color**(*rgb_img, mask, bins, hist_plot_type=None, pseudo_channel='v', pseudo_bkg='img', filename=False*)
 * post v3.0: hist_header, hist_data, analysis_images = **plantcv.analyze_color**(*rgb_img, mask, bins, hist_plot_type=None*)
-* post v3.3: color_header, color_data, analysis_images = **plantcv.analyze_color**(*rgb_img, mask, hist_plot_type=None*)
+* post v3.3: analysis_images = **plantcv.analyze_color**(*rgb_img, mask, hist_plot_type=None*)
 
 #### plantcv.apply_mask
 
@@ -176,12 +177,14 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, hist_header, hist_data, analysis_img = **plantcv.analyze_NIR_intensity**(*img, rgbimg, mask, bins, device, histplot=False, debug=None, filename=False*)
 * post v3.0dev2: hist_header, hist_data, analysis_img = **plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False, filename=False*)
 * post v3.0: hist_header, hist_data, nir_hist = **plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False*)
+* post v3.3: nir_hist = **plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False*)
 
 #### plantcv.analyze_object
 
 * pre v3.0dev2: device, shape_header, shape_data, analysis_images = **plantcv.analyze_object**(*img, imgname, obj, mask, device, debug=None, filename=False*)
 * post v3.0dev2: shape_header, shape_data, analysis_images = **plantcv.analyze_object**(*img, obj, mask, filename=False*)
 * post v3.0: shape_header, shape_data, analysis_images = **plantcv.analyze_object**(*img, obj, mask*)
+* post v3.3: analysis_images = **plantcv.analyze_object**(*img, obj, mask*)
 
 #### plantcv.auto_crop
 
@@ -278,6 +281,8 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, hist_header, hist_data = **plantcv.fluor_fvfm**(*fdark, fmin, fmax, mask, device, filename, bins=1000, debug=None*)
 * post v3.0dev2: hist_header, hist_data, hist_images = **plantcv.fluor_fvfm**(*fdark, fmin, fmax, mask, filename, bins=256*)
 * post v3.0: hist_header, hist_data, analysis_images = **plantcv.fluor_fvfm**(*fdark, fmin, fmax, mask, bins=256*)
+* post v3.3: analysis_images = **plantcv.fluor_fvfm**(*fdark, fmin, fmax, mask, bins=256*)
+
 
 #### plantcv.gaussian_blur
 
@@ -315,6 +320,7 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, vert_ave_c, hori_ave_c, euc_ave_c, ang_ave_c, vert_ave_b, hori_ave_b, euc_ave_b, ang_ave_b = **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r, device, debug=None*)
 * post v3.0dev2: vert_ave_c, hori_ave_c, euc_ave_c, ang_ave_c, vert_ave_b, hori_ave_b, euc_ave_b, ang_ave_b = **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r*)
 * post v3.2: landmark_header, landmark_data = **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r*)
+* post v3.3: **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r*)
 
 #### plantcv.laplace_filter
 
@@ -346,7 +352,7 @@ pages for more details on the input and output variable types.
 #### plantcv.morphology.check_cycles
 
 * pre v3.3: NA
-* post v3.3: cycle_header, cycle_data, cycle_img = **plantcv.morphology.check_cycles**(*skel_img*)
+* post v3.3: cycle_img = **plantcv.morphology.check_cycles**(*skel_img*)
 
 #### plantcv.morphology.find_branch_pts
 
@@ -366,42 +372,42 @@ pages for more details on the input and output variable types.
 #### plantcv.morphology.segment_angle
 
 * pre v3.3: NA
-* post v3.3: angle_header, angle_data, labeled_img = **plantcv.morphology.segment_angle**(*segmented_img, objects*) 
+* post v3.3: labeled_img = **plantcv.morphology.segment_angle**(*segmented_img, objects*) 
 
 #### plantcv.morphology.curvature
 
 * pre v3.3: NA
-* post v3.3: curvature_header, curvature_data, labeled_img = **plantcv.morphology.segment_curvature**(*segmented_img, objects, hierarchies*)
+* post v3.3: labeled_img = **plantcv.morphology.segment_curvature**(*segmented_img, objects*)
 
 #### plantcv.morphology.segment_euclidean_length
 
 * pre v3.3: NA
-* post v3.3: eu_length_header, eu_length_data, labeled_img = **plantcv.morphology.segment_euclidean_length**(*segmented_img, objects, hierarchies*) 
+* post v3.3: labeled_img = **plantcv.morphology.segment_euclidean_length**(*segmented_img, objects*) 
 
 #### plantcv.morphology.segment_id
 
 * pre v3.3: NA
-* post v3.3: segmented_img, labeled_img = **plantcv.morphology.segment_id**(*skel_img, objects, hierarchies, mask=None*) 
+* post v3.3: segmented_img, labeled_img = **plantcv.morphology.segment_id**(*skel_img, objects, mask=None*) 
 
 #### plantcv.morphology.segment_path_length 
 
 * pre v3.3: NA
-* post v3.3: path_length_header, path_length_data, labeled_img = **plantcv.morphology.segment_path_length**(*segmented_img, objects*)
+* post v3.3: labeled_img = **plantcv.morphology.segment_path_length**(*segmented_img, objects*)
 
 #### plantcv.morphology.segment_skeleton
 
 * pre v3.3: NA
-* post v3.3: segmented_img, segment_objects, segment_hierarchies = **plantcv.morphology.segment_skeleton**(*skel_img, mask=None*) 
+* post v3.3: segmented_img, segment_objects = **plantcv.morphology.segment_skeleton**(*skel_img, mask=None*) 
 
 #### plantcv.morphology.segment_sort
 
 * pre v3.3: NA
-* post v3.3: leaf_objects, leaf_hierarchies, other_objects, other_hierarchies = **plantcv.morphology.segment_sort**(*skel_img, objects, hierarchies, mask=None*)
+* post v3.3: secondary_objects, primary_objects = **plantcv.morphology.segment_sort**(*skel_img, objects, mask=None*)
 
 #### plantcv.morphology.segment_tangent_angle
 
 * pre v3.3: NA
-* post v3.3: tan_angle_header, tan_angle_data, labeled_img = **plantcv.morphology.segment_tangent_angle**(*segmented_img, objects, hierarchies, size*)
+* post v3.3: labeled_img = **plantcv.morphology.segment_tangent_angle**(*segmented_img, objects, size*)
 
 #### plantcv.morphology.skeletontize
 
@@ -483,6 +489,7 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, marker_header, marker_data, analysis_images = **plantcv.report_size_marker_area**(*img, shape, device, debug, marker='define', x_adj=0, y_adj=0, w_adj=0, h_adj=0, base='white', objcolor='dark', thresh_channel=None, thresh=None, filename=False*)
 * post v3.0dev2: marker_header, marker_data, analysis_images = **plantcv.report_size_marker_area**(*img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None, thresh=None, filename=False*)
 * post v3.1: marker_header, marker_data, analysis_image = **plantcv.report_size_marker_area**(*img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None, thresh=None*)
+* post v3.3: analysis_image = **plantcv.report_size_marker_area**(*img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None, thresh=None*)
 
 #### plantcv.resize
 
@@ -680,6 +687,7 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, watershed_header, watershed_data, analysis_images = **plantcv.watershed_segmentation**(*device, img, mask, distance=10, filename=False, debug=None*)
 * post v3.0dev2: watershed_header, watershed_data, analysis_images = **plantcv.watershed_segmentation**(*rgb_img, mask, distance=10, filename=False*)
 * post v3.1: watershed_header, watershed_data, analysis_images = **plantcv.watershed_segmentation**(*rgb_img, mask, distance=10*)
+* post v3.3: analysis_images = **plantcv.watershed_segmentation**(*rgb_img, mask, distance=10*)
 
 #### plantcv.white_balance
 

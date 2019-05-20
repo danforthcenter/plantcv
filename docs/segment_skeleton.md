@@ -4,7 +4,7 @@ Turn a skeletonized image into separate pieces.
 
 **plantcv.morphology.segment_skeleton**(*skel_img, mask=None*)
 
-**returns** Segmented image, segment objects, segment object hierarchies
+**returns** Segmented image, segment objects
 
 - **Parameters:**
     - skel_img - Skeleton image (output from [plantcv.morphology.skeletonize](skeletonize.md))
@@ -32,10 +32,10 @@ pcv.params.debug = "print"
 # will look different.
 pcv.params.line_thickness = 3 
 
-segmented_img, obj, hier = pcv.morphology.segment_skeleton(skel_img=skeleton)
+segmented_img, obj = pcv.morphology.segment_skeleton(skel_img=skeleton)
 
-segmented_img2, obj, hier = pcv.morphology.segment_skeleton(skel_img=skeleton, 
-                                                           mask=plant_mask)
+segmented_img2, obj = pcv.morphology.segment_skeleton(skel_img=skeleton, 
+                                                      mask=plant_mask)
 
 ```
 

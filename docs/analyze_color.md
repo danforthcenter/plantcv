@@ -4,7 +4,7 @@ Extract color data of objects and produce pseudocolored images, can extract data
 
 **plantcv.analyze_color**(*rgb_img, mask, hist_plot_type=None*)
 
-**returns** color data headers, color data, data analysis images  
+**returns** data analysis images  
 
 - **Parameters:**  
     - rgb_img - RGB image data
@@ -12,20 +12,12 @@ Extract color data of objects and produce pseudocolored images, can extract data
     - hist_plot_type - None (default), 'all', 'rgb','lab' or 'hsv', this is the data to be printed to an SVG histogram file, however all (every channel) data is still stored to the database.
 - **Context:**
     - Used to extract color data from RGB, LAB, and HSV color channels.
-    - Generates histogram of color channel data.
+    - Generates histogram of color channel data. Data automatically gets stored into the [Outputs class](outputs.md). 
+    Users can look at the data collected at any point during 
+    the workflow by using [pcv.print_results](print_results.md) which prints all stored data to a .json file.
 - **Example use:**
     - [Use In VIS Tutorial](vis_tutorial.md)
- 
-- **Output Data Units:**  
-    - Red Channel - histogram of object pixel intensity values 0 (unsaturated) to 255 (saturated)  
-    - Green Channel - histogram of object pixel intensity values 0 (unsaturated) to 255 (saturated)  
-    - Blue Channel - histogram of object pixel intensity values 0 (unsaturated) to 255 (saturated)  
-    - Hue Channel - histogram of object hue values 0 to 359 degrees
-    - Saturation Channel - histogram of object pixel saturation values 0 (unsaturated) to 100% (saturated)
-    - Value Channel - histogram of object pixel value/lightness values 0 (black) to 100% (bright)  
-    - Lightness Channel - histogram of object pixel lightness values 0 (black) to 100% (bright)  
-    - Green-Magenta Channel - histogram of object pixel green-magenta color component values -128 (green) to 127 (magenta)  
-    - Blue-Yellow Channel - histogram of object pixel blue-yellow color component values -128 (blue) to 127 (yellow)  
+- **Output data stored:** [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 **Original image**
 
@@ -42,7 +34,8 @@ pcv.params.debug = "print"
 
 # Analyze Color
     
-color_header, color_data, analysis_images = pcv.analyze_color(rgb_img, mask, 'all')
+analysis_images = pcv.analyze_color(rgb_img, mask, 'all')
+
 ```
 
 **Histograms of (R, G, B), (H, S, V), and (L, A, B) color channels**

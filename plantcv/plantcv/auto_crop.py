@@ -34,6 +34,9 @@ def auto_crop(img, obj, padding_x=0, padding_y=0, color='black'):
     img_copy = np.copy(img)
     img_copy2 = np.copy(img)
 
+    # Get the height and width of the reference image
+    height, width = np.shape(img)[:2]
+
     x, y, w, h = cv2.boundingRect(obj)
     cv2.rectangle(img_copy, (x, y), (x + w, y + h), (0, 255, 0), 5)
 
@@ -49,8 +52,12 @@ def auto_crop(img, obj, padding_x=0, padding_y=0, color='black'):
         colorval = (255, 255, 255)
         cropped = cv2.copyMakeBorder(crop_img, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT, value=colorval)
     elif color.upper() == 'IMAGE':
-        # If padding is the image, crop the image with a buffer rather than cropping and adding a buffer
-        cropped = img_copy2[y - offsety:y + h + offsety, x - offsetx:x + w + offsetx]
+        # Check whether the ROI is correctly bounded inside the image
+        if x - offsetx < 0 or y - offsety < 0 or x + w + offsetx > width or y + h + offsety > height:
+            cropped = img_copy2[y - offsety:y + h + offsety, x - offsetx:x + w + offsetx]
+        else:
+            # If padding is the image, crop the image with a buffer rather than cropping and adding a buffer
+            cropped = img_copy2[y:y + h, x:x + w]
     else:
         fatal_error('Color was provided but ' + str(color) + ' is not "white", "black", or "image"!')
 

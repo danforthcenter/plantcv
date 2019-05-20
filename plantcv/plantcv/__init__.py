@@ -4,6 +4,7 @@ import matplotlib
 if "DISPLAY" not in os.environ and "MPLBACKEND" not in os.environ:
     matplotlib.use("Agg")
 
+observations = {}
 
 class Params:
     """PlantCV parameters class
@@ -16,27 +17,77 @@ class Params:
     :param debug_outdir: str
     :param line_thickness: numeric
     :param dpi: int
+    :param text_size: float
     """
 
-    def __init__(self, device=0, debug=None, debug_outdir=".", line_thickness=5, dpi=100):
+    def __init__(self, device=0, debug=None, debug_outdir=".", line_thickness=5, dpi=100, text_size=0.55,
+                 text_thickness=2):
         self.device = device
         self.debug = debug
         self.debug_outdir = debug_outdir
         self.line_thickness = line_thickness
         self.dpi = dpi
+        self.text_size = text_size
+        self.text_thickness = text_thickness
 
 
 class Outputs:
     """PlantCV outputs class
-        """
+
+    """
+
     def __init__(self):
         self.measurements = {}
         self.images = []
+        self.observations = {}
 
-    # Add a method to clear out the
+        # Add a method to clear measurements
     def clear(self):
         self.measurements = {}
         self.images = []
+        self.observations = {}
+
+    # Method to add observation to outputs
+    def add_observation(self, variable, trait, method, scale, datatype, value, label):
+        """
+        Keyword arguments/parameters:
+        variable     = A local unique identifier of a variable, e.g. a short name, that is a key linking the definitions of
+                       variables with observations.
+        trait        = A name of the trait mapped to an external ontology; if there is no exact mapping, an informative
+                       description of the trait.
+        method       = A name of the measurement method mapped to an external ontology; if there is no exact mapping, an
+                       informative description of the measurement procedure
+        scale        = Units of the measurement or scale in which the observations are expressed; if possible, standard
+                       units and scales should be used and mapped to existing ontologies; in the case of non-standard scale
+                       a full explanation should be given
+        datatype     = The type of data to be stored, e.g. 'int', 'float', 'str', 'list', etc.
+        value        = The data itself
+        label        = The label for each value (most useful when the data is a frequency table as in hue, or other tables)
+
+        :param variable: str
+        :param trait: str
+        :param method: str
+        :param scale: str
+        :param datatype: type
+        :param value:
+        :param label:
+        """
+        self.variable = variable
+        self.trait = trait
+        self.method = method
+        self.scale = scale
+        self.datatype = datatype
+        self.value = value
+        self.label = label
+
+        self.observations[variable] = {
+            "trait": trait,
+            "method": method,
+            "scale": scale,
+            "datatype": str(datatype),
+            "value": value,
+            "label": label
+        }
 
 
 # Initialize an instance of the Params and Outputs class with default values
