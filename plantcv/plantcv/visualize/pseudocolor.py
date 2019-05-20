@@ -10,7 +10,7 @@ from plantcv.plantcv import fatal_error
 
 
 def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255,
-                axes=True, colorbar=True):
+                axes=True, colorbar=True, padding="auto"):
     """Pseudocolor any grayscale image to custom colormap
 
     Inputs:
@@ -23,6 +23,7 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
     max_value   = (optional) maximum value for range of interest. default = 255
     axes        = (optional) if False then x- and y-axis won't be displayed, nor will the title. default = True
     colorbar    = (optional) if False then colorbar won't be displayed. default = True
+    padding     = (optional) if "auto" then cropping to
 
     Returns:
     pseudo_image = pseudocolored image
@@ -36,6 +37,7 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
     :param max_value: numeric
     :param dpi: int
     :param axes: bool
+    :param padding: str, int
     :return pseudo_image: numpy.ndarray
     """
 
@@ -65,13 +67,16 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
             # If obj is already a rectangle than we assume the user wants to use this size and the buffer = 0
             peri = cv2.arcLength(obj, True)
             approx = cv2.approxPolyDP(obj, 0.01 * peri, True)
-            if len(approx) == 4:
-                offsetx = 0
-                offsety = 0
-            else:
+            if type(padding) is int:
+                # Calculate the buffer size based on the contour size
+                offsetx = padding
+                offsety = padding
+            elif type(padding) is str and padding.upper() == "AUTO":
                 # Calculate the buffer size based on the contour size
                 offsetx = int(w / 5)
                 offsety = int(h / 5)
+            else:
+                fatal_error("Padding must either be 'auto' or an integer.")
 
             if background.upper() == "IMAGE":
                 gray_img1 = gray_img1[y - offsety:y + h + offsety, x - offsetx:x + w + offsetx]
