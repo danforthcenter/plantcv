@@ -5,7 +5,7 @@ pseudocolored image. Additionally, optional maximum and minimum values can be sp
 then the image gets saved to `pcv.params.debug_outdir`, and`pcv.params.dpi` can be set for the image that gets saved. If
 unaltered, the  matplotlib default is 100 pixels per inch.
 
-**plantcv.visualize.pseudocolor**(*gray_img, obj=None, objpadding=(0,0), mask=None, background="image", cmap=None, min_value=0, max_value=255, axes=True, colorbar=True*)
+**plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, background="image", cmap=None, min_value=0, max_value=255, axes=True, colorbar=True, padding='auto'*)
 
 **returns** pseudocolored image (that can be saved with `pcv.print_image`)
 
@@ -20,6 +20,8 @@ unaltered, the  matplotlib default is 100 pixels per inch.
     - max_value  - Maximum value (optional) for range of the colorbar.
     - axes       - If False then the title, x-axis, and y-axis won't be displayed (default axes=True).
     - colorbar   - If False then the colorbar won't be displayed (default colorbar=True)
+    - padding    - if "auto" (default) and an obj is supplied, then the image is cropped to an extent 20% larger in each dimension than the object. An single integer is also accepted to define the padding as a percent increase in each dimension of the object extent
+
 - **Context:**
     - Used to pseudocolor any grayscale image to custom colormap
 - **Example use:**
@@ -58,9 +60,9 @@ pseudo_img_on_input = pcv.visualize.pseudocolor(gray_img=img, obj=None, mask=mas
 
 # Print out a pseudocolored image with cropping enabled, axes disabled.
 pcv.params.debug='print'
-pseudo_crop_no_axes = pcv.visualize.pseudocolor(gray_img=img, obj=obj, objpadding=(.2,.2),  mask=mask,
+pseudo_crop_no_axes = pcv.visualize.pseudocolor(gray_img=img, obj=obj,  mask=mask,
                                                 background="white", cmap='viridis',
-                                                axes=False)
+                                                axes=False, padding = 20)
 
 # Use a black background instead
 pseudo_img_black_bkgd = pcv.visualize.pseudocolor(gray_img=img, obj=None, mask=mask,

@@ -24,7 +24,7 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
     max_value   = (optional) maximum value for range of interest. default = 255
     axes        = (optional) if False then x- and y-axis won't be displayed, nor will the title. default = True
     colorbar    = (optional) if False then colorbar won't be displayed. default = True
-    padding     = (optional) if "auto" then the image is cropped with a 20% increase in extent in each dimension. An single integer is also accepted to define the padding as a percent increase of each dimention of the object extent
+    padding     = (optional) if "auto" (default) and an obj is supplied, then the image is cropped to an extent 20% larger in each dimension than the object. An single integer is also accepted to define the padding as a percent increase in each dimension of the object extent
 
     Returns:
     pseudo_image = pseudocolored image
