@@ -125,6 +125,7 @@ from plantcv.plantcv.logical_xor import logical_xor
 from plantcv.plantcv.find_objects import find_objects
 from plantcv.plantcv.roi_objects import roi_objects
 from plantcv.plantcv.object_composition import object_composition
+from plantcv.plantcv.within_frame import within_frame
 from plantcv.plantcv.analyze_object import analyze_object
 from plantcv.plantcv.analyze_bound_horizontal import analyze_bound_horizontal
 from plantcv.plantcv.analyze_bound_vertical import analyze_bound_vertical
@@ -177,7 +178,7 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'apply_m
            'x_axis_pseudolandmarks', 'y_axis_pseudolandmarks', 'gaussian_blur', 'cluster_contours', 'visualize',
            'cluster_contour_splitimg', 'rotate', 'shift_img', 'output_mask', 'auto_crop', 'canny_edge_detect',
            'background_subtraction', 'naive_bayes_classifier', 'acute', 'distance_transform', 'params', 'opening',
-           'closing']
+           'closing','within_frame']
 
 
 from ._version import get_versions
