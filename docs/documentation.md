@@ -40,7 +40,7 @@ pages:
   - Installation: installation.md
   - 'New general documentation': new_doc.md
   - Tutorials:
-    - 'VIS pipeline': vis_tutorial.md
+    - 'VIS workflow': vis_tutorial.md
     - 'New tutorial': new_tutorial.md
   - Library:
     - 'Analyze color': analyze_color.md

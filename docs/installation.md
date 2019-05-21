@@ -237,8 +237,8 @@ You will be given the following error:
 `libdc1394 error: Failed to initialize libdc1394`
 
 libdc1394 allows a program to interface with cameras that work on the ieee1394 standard(firewire).
-Due to no option to enable USB access in the Cloud9 workspace this error will keep occuring when running a pipeline.
-This error will have no effect on the output of your pipelines and can continue working despite the warning.
+Due to no option to enable USB access in the Cloud9 workspace this error will keep occuring when running a workflow.
+This error will have no effect on the output of your workflows and can continue working despite the warning.
 
 To temporarily remove the driver and error use:
 

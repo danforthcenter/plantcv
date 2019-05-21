@@ -4,9 +4,7 @@ This is a function to measure the distance from user defined points to the centr
  
 **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r*)
 
-**returns** landmark_header, landmark_data (which contains ave_vertical_distance_from_centroid, ave_horizontal_distance_from_centroid, 
-ave_euclidean_distance_from_centroid, average_angle_between_landmark_point_and_centroid, ave_vertical_distance_from_baseline, 
-ave_horizontal_distance_from_baseline, ave_euclidean_distance_from_baseline, average_angle_between_landmark_point_and_baseline)
+**returns** none
 
 - **Parameters:**
     - points_r - A list of tuples representing rescaled landmark points
@@ -14,6 +12,9 @@ ave_horizontal_distance_from_baseline, ave_euclidean_distance_from_baseline, ave
     - bline_r - A tuple representing the rescaled baseline point
 - **Context:**
     - Used to estimate the distance and angles of landmark points relative to shape reference landmarks (centroid and pot height aka baseline)
+    - Data automatically gets stored into the [Outputs class](outputs.md). Users can look at the data collected at any point during 
+    the workflow by using [pcv.print_results](print_results.md) which prints all stored data to a .json file.
+- **Output data stored:** [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 **Input rescaled points, centroid and baseline points**
 
@@ -28,8 +29,7 @@ pcv.params.debug = "print"
 
 # Identify acute vertices (tip points) of an object
 # Results in set of point values that may indicate tip points
-landmark_header, landmark_data = pcv.landmark_reference_pt_dist(points_r, centroid_r, 
-                                                                bline_r)
+pcv.landmark_reference_pt_dist(points_r, centroid_r, bline_r)
 
 ```
 

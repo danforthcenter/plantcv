@@ -2,7 +2,7 @@
 
 Skeletonizing takes a mask and reduces it to a 1 pixel wide representation while retaining the structure. 
 
-**plantcv.morphology.**(*mask*)
+**plantcv.morphology.skeletonize**(*mask*)
 
 **returns** Binary skeleton (1 pixel wide representation)
 

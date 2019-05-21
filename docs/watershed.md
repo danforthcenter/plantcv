@@ -8,7 +8,7 @@ Requires cv2 version 3.0+
 
 **plantcv.watershed_segmentation**(*rgb_img, mask, distance=10*)**
 
-**returns** watershed_header, watershed_data, analysis_images
+**returns** analysis_images
 
 - **Parameters:**
     - rgb_img - RGB image data
@@ -17,6 +17,9 @@ Requires cv2 version 3.0+
     - filename - if user wants to output analysis images change filenames from False (default)
 - **Context:**
     - Used to segment image into parts
+    - Data automatically gets stored into the [Outputs class](outputs.md). Users can look at the data collected at any point during 
+    the workflow by using [pcv.print_results](print_results.md) which prints all stored data to a .json file.
+- **Output data stored:** [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 **Original image**
 
@@ -30,20 +33,10 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Segment image with watershed function
-watershed_header, watershed_data, analysis_images = pcv.watershed_segmentation(crop_img, thresh, 10)
-
-print(watershed_header)
-print(watershed_data)
+analysis_images = pcv.watershed_segmentation(crop_img, thresh, 10)
 
 ```
 
 **Watershed Segmentation**
 
 ![Screenshot](img/documentation_images/watershed/watershed.jpg)
-
-```python
-
-('HEADER_WATERSHED', 'estimated_object_count')  
-('WATERSHED_DATA', 10)
-
-```

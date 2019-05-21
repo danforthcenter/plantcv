@@ -19,15 +19,11 @@ def analyze_object(img, obj, mask):
     mask            = Binary image to use as mask
 
     Returns:
-    shape_header    = shape data table headers
-    shape_data      = shape data table values
     analysis_images = list of output images
 
     :param img: numpy.ndarray
     :param obj: list
     :param mask: numpy.ndarray
-    :return shape_header: list
-    :return shape_data: list
     :return analysis_images: list
     """
 
@@ -77,14 +73,14 @@ def analyze_object(img, obj, mask):
         # x and y position (bottom left?) and extent x (width) and extent y (height)
         x, y, width, height = cv2.boundingRect(obj)
         # Centroid (center of mass x, center of mass y)
-        cmx, cmy = (m['m10'] / m['m00'], m['m01'] / m['m00'])
+        cmx, cmy = (float(m['m10'] / m['m00']), float(m['m01'] / m['m00']))
         # Ellipse
         center, axes, angle = cv2.fitEllipse(obj)
         major_axis = np.argmax(axes)
         minor_axis = 1 - major_axis
-        major_axis_length = axes[major_axis]
-        minor_axis_length = axes[minor_axis]
-        eccentricity = np.sqrt(1 - (axes[minor_axis] / axes[major_axis]) ** 2)
+        major_axis_length = float(axes[major_axis])
+        minor_axis_length = float(axes[minor_axis])
+        eccentricity = float(np.sqrt(1 - (axes[minor_axis] / axes[major_axis]) ** 2))
 
         # Longest Axis: line through center of mass and point on the convex hull that is furthest away
         cv2.circle(background, (int(cmx), int(cmy)), 4, (255, 255, 255), -1)
@@ -164,60 +160,17 @@ def analyze_object(img, obj, mask):
     # else:
     #  hull_area, solidity, perimeter, width, height, cmx, cmy = 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND'
 
-    # Store Shape Data
-    shape_header = [
-        'HEADER_SHAPES',
-        'area',
-        'hull-area',
-        'solidity',
-        'perimeter',
-        'width',
-        'height',
-        'longest_axis',
-        'center-of-mass-x',
-        'center-of-mass-y',
-        'hull_vertices',
-        'in_bounds',
-        'ellipse_center_x',
-        'ellipse_center_y',
-        'ellipse_major_axis',
-        'ellipse_minor_axis',
-        'ellipse_angle',
-        'ellipse_eccentricity'
-    ]
-
-    shape_data = [
-        'SHAPES_DATA',
-        area,
-        hull_area,
-        solidity,
-        perimeter,
-        width,
-        height,
-        caliper_length,
-        cmx,
-        cmy,
-        hull_vertices,
-        in_bounds,
-        center[0],
-        center[1],
-        major_axis_length,
-        minor_axis_length,
-        angle,
-        eccentricity
-    ]
-
     analysis_images = []
 
     # Draw properties
     if area:
         cv2.drawContours(ori_img, obj, -1, (255, 0, 0), params.line_thickness)
-        cv2.drawContours(ori_img, [hull], -1, (0, 0, 255), params.line_thickness)
-        cv2.line(ori_img, (x, y), (x + width, y), (0, 0, 255), params.line_thickness)
-        cv2.line(ori_img, (int(cmx), y), (int(cmx), y + height), (0, 0, 255), params.line_thickness)
-        cv2.line(ori_img, (tuple(caliper_transpose[caliper_length - 1])), (tuple(caliper_transpose[0])), (0, 0, 255),
+        cv2.drawContours(ori_img, [hull], -1, (255, 0, 255), params.line_thickness)
+        cv2.line(ori_img, (x, y), (x + width, y), (255, 0, 255), params.line_thickness)
+        cv2.line(ori_img, (int(cmx), y), (int(cmx), y + height), (255, 0, 255), params.line_thickness)
+        cv2.line(ori_img, (tuple(caliper_transpose[caliper_length - 1])), (tuple(caliper_transpose[0])), (255, 0, 255),
                  params.line_thickness)
-        cv2.circle(ori_img, (int(cmx), int(cmy)), 10, (0, 0, 255), params.line_thickness)
+        cv2.circle(ori_img, (int(cmx), int(cmy)), 10, (255, 0, 255), params.line_thickness)
         # Output images with convex hull, extent x and y
         # out_file = os.path.splitext(filename)[0] + '_shapes.jpg'
         # out_file1 = os.path.splitext(filename)[0] + '_mask.jpg'
@@ -231,34 +184,59 @@ def analyze_object(img, obj, mask):
     else:
         pass
 
-    # Store into global measurements
-    if not "shapes" in outputs.measurements:
-        outputs.measurements["shapes"] = {}
-    outputs.measurements["shapes"]["area"] = area
-    outputs.measurements["shapes"]["hull-area"] = hull_area
-    outputs.measurements["shapes"]["solidity"] = solidity
-    outputs.measurements["shapes"]["perimeter"] = perimeter
-    outputs.measurements["shapes"]["width"] = width
-    outputs.measurements["shapes"]["height"] = height
-    outputs.measurements["shapes"]["longest_axis"] = caliper_length
-    outputs.measurements["shapes"]["center-of-mass-x"] = cmx
-    outputs.measurements["shapes"]["center-of-mass-y"] = cmy
-    outputs.measurements["shapes"]["hull_vertices"] = hull_vertices
-    outputs.measurements["shapes"]["in_bounds"] = in_bounds
-    outputs.measurements["shapes"]["ellipse_center_x"] = center[0]
-    outputs.measurements["shapes"]["ellipse_center_y"] = center[1]
-    outputs.measurements["shapes"]["ellipse_major_axis"] = major_axis_length
-    outputs.measurements["shapes"]["ellipse_minor_axis"] = minor_axis_length
-    outputs.measurements["shapes"]["ellipse_angle"] = angle
-    outputs.measurements["shapes"]["ellipse_eccentricity"] = eccentricity
+    outputs.add_observation(variable='area', trait='area',
+                            method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
+                            value=area, label='pixels')
+    outputs.add_observation(variable='convex_hull_area', trait='convex hull area',
+                            method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
+                            value=hull_area, label='pixels')
+    outputs.add_observation(variable='solidity', trait='solidity',
+                            method='plantcv.plantcv.analyze_object', scale='none', datatype=float,
+                            value=solidity, label='none')
+    outputs.add_observation(variable='perimeter', trait='perimeter',
+                            method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
+                            value=perimeter, label='pixels')
+    outputs.add_observation(variable='width', trait='width',
+                            method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
+                            value=width, label='pixels')
+    outputs.add_observation(variable='height', trait='height',
+                            method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
+                            value=height, label='pixels')
+    outputs.add_observation(variable='longest_path', trait='longest path',
+                            method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
+                            value=caliper_length, label='pixels')
+    outputs.add_observation(variable='center_of_mass', trait='center of mass',
+                            method='plantcv.plantcv.analyze_object', scale='none', datatype=tuple,
+                            value=(cmx, cmy), label='none')
+    outputs.add_observation(variable='convex_hull_vertices', trait='convex hull vertices',
+                            method='plantcv.plantcv.analyze_object', scale='none', datatype=int,
+                            value=hull_vertices, label='none')
+    outputs.add_observation(variable='object_in_frame', trait='object in frame',
+                            method='plantcv.plantcv.analyze_object', scale='none', datatype=bool,
+                            value=in_bounds, label='none')
+    outputs.add_observation(variable='ellipse_center', trait='ellipse center',
+                            method='plantcv.plantcv.analyze_object', scale='none', datatype=tuple,
+                            value=(center[0], center[1]), label='none')
+    outputs.add_observation(variable='ellipse_major_axis', trait='ellipse major axis length',
+                            method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
+                            value=major_axis_length, label='pixels')
+    outputs.add_observation(variable='ellipse_minor_axis', trait='ellipse minor axis length',
+                            method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
+                            value=minor_axis_length, label='pixels')
+    outputs.add_observation(variable='ellipse_angle', trait='ellipse major axis angle',
+                            method='plantcv.plantcv.analyze_object', scale='degrees', datatype=float,
+                            value=float(angle), label='degrees')
+    outputs.add_observation(variable='ellipse_eccentricity', trait='ellipse eccentricity',
+                            method='plantcv.plantcv.analyze_object', scale='none', datatype=float,
+                            value=float(eccentricity), label='none')
 
     if params.debug is not None:
         cv2.drawContours(ori_img, obj, -1, (255, 0, 0), params.line_thickness)
-        cv2.drawContours(ori_img, [hull], -1, (0, 0, 255), params.line_thickness)
-        cv2.line(ori_img, (x, y), (x + width, y), (0, 0, 255), params.line_thickness)
-        cv2.line(ori_img, (int(cmx), y), (int(cmx), y + height), (0, 0, 255), params.line_thickness)
-        cv2.circle(ori_img, (int(cmx), int(cmy)), 10, (0, 0, 255), params.line_thickness)
-        cv2.line(ori_img, (tuple(caliper_transpose[caliper_length - 1])), (tuple(caliper_transpose[0])), (0, 0, 255),
+        cv2.drawContours(ori_img, [hull], -1, (255, 0, 255), params.line_thickness)
+        cv2.line(ori_img, (x, y), (x + width, y), (255, 0, 255), params.line_thickness)
+        cv2.line(ori_img, (int(cmx), y), (int(cmx), y + height), (255, 0, 255), params.line_thickness)
+        cv2.circle(ori_img, (int(cmx), int(cmy)), 10, (255, 0, 255), params.line_thickness)
+        cv2.line(ori_img, (tuple(caliper_transpose[caliper_length - 1])), (tuple(caliper_transpose[0])), (255, 0, 255),
                  params.line_thickness)
         if params.debug == 'print':
             print_image(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_shapes.jpg'))
@@ -270,4 +248,4 @@ def analyze_object(img, obj, mask):
 
     # Store images
     outputs.images.append(analysis_images)
-    return shape_header, shape_data, analysis_images
+    return analysis_images

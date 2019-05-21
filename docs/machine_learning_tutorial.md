@@ -115,8 +115,8 @@ allows users to choose colors for each class.
 
 ### Parallelizing Image Classification
 
-To parallelize the naive Bayes methods described above, construct a pipeline script following the guidelines in the 
-[pipeline parallelization tutorial](pipeline_parallel.md), but with an additional argument provided for the probability
+To parallelize the naive Bayes methods described above, construct a workflow script following the guidelines in the 
+[workflow parallelization tutorial](pipeline_parallel.md), but with an additional argument provided for the probability
 density functions file output by `plantcv-train.py`. For example:
 
 ```python
@@ -153,17 +153,17 @@ def main():
     masks = pcv.naive_bayes_classifier(rgb_img=vis, pdf_file=args.pdfs)
     colored_img = pcv.visualize.colorize_masks(masks=[masks['plant'], masks['pustule'], masks['background'], masks['chlorosis']], 
                                                colors=['green', 'red', 'black', 'blue'])
-    # Additional steps in the pipeline go here
+    # Additional steps in the workflow go here
     
 ```
 
-Then run `plantcv-pipeline.py` with options set based on the input images, but where the naive Bayes PDF file is input
+Then run `plantcv-workflow.py` with options set based on the input images, but where the naive Bayes PDF file is input
 using the `--other_args` flag, for example:
 
 ```bash
-plantcv-pipeline.py \
+plantcv-workflow.py \
 --dir ./my-images \
---pipeline my-naive-bayes-script.py \
+--workflow my-naive-bayes-script.py \
 --db my-db.sqlite3 \
 --outdir . \
 --meta imgtype_camera_timestamp \
@@ -222,7 +222,7 @@ def main():
     masks = pcv.naive_bayes_classifier(rgb_img=vis, pdf_file=args.pdfs)
     colored_img = pcv.visualize.colorize_masks(masks=[masks['plant'], masks['pustule'], masks['background'], masks['chlorosis']], 
                                                colors=['green', 'red', 'black', 'blue'])
-    # Additional steps in the pipeline go here
+    # Additional steps in the workflow go here
     
 # Call program
 if __name__ == '__main__':
@@ -230,15 +230,15 @@ if __name__ == '__main__':
     
 ```
 
-*  Always test pipelines (preferably with -D flag set to 'print') before running over a full image set
+*  Always test workflows (preferably with -D flag set to 'print') before running over a full image set
 
-Then run `plantcv-pipeline.py` with options set based on the input images, but where the naive Bayes PDF file is input
+Then run `plantcv-workflow.py` with options set based on the input images, but where the naive Bayes PDF file is input
 using the `--other_args` flag, for example:
 
 ```bash
-plantcv-pipeline.py \
+plantcv-workflow.py \
 --dir ./my-images \
---pipeline my-naive-bayes-script.py \
+--workflow my-naive-bayes-script.py \
 --db my-db.sqlite3 \
 --outdir . \
 --meta imgtype_camera_timestamp \
