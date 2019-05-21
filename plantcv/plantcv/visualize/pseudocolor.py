@@ -9,8 +9,8 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 
 
-def pseudocolor(gray_img, obj=None, objpadding=(0,0), mask=None, cmap=None, background="image", min_value=0, max_value=255,
-                axes=True, colorbar=True):
+def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255,
+                axes=True, colorbar=True, padding="auto"):
     """Pseudocolor any grayscale image to custom colormap
 
     Inputs:
@@ -24,13 +24,13 @@ def pseudocolor(gray_img, obj=None, objpadding=(0,0), mask=None, cmap=None, back
     max_value   = (optional) maximum value for range of interest. default = 255
     axes        = (optional) if False then x- and y-axis won't be displayed, nor will the title. default = True
     colorbar    = (optional) if False then colorbar won't be displayed. default = True
+    padding     = (optional) if "auto" then the image is cropped with a 20% increase in extent in each dimension. An single integer is also accepted to define the padding as a percent increase of each dimention of the object extent
 
     Returns:
     pseudo_image = pseudocolored image
 
     :param gray_img: numpy.ndarray
     :param obj: numpy.ndarray
-    :param objpadding: list
     :param mask: numpy.ndarray
     :param cmap: str
     :param background: str
@@ -38,6 +38,7 @@ def pseudocolor(gray_img, obj=None, objpadding=(0,0), mask=None, cmap=None, back
     :param max_value: numeric
     :param dpi: int
     :param axes: bool
+    :param padding: str, int
     :return pseudo_image: numpy.ndarray
     """
 
@@ -64,12 +65,16 @@ def pseudocolor(gray_img, obj=None, objpadding=(0,0), mask=None, cmap=None, back
             crop_img = gray_img[y:y + h, x:x + w]
 
             # Setup a buffer around the bounding box of obj
-            offsetx = objpadding[0]
-            offsety = objpadding[1]
-
-            # Calculate the buffer size based on the contour size
-            offsetx = int(w * offsetx)
-            offsety = int(h * offsety)
+            if type(padding) is int:
+                # Calculate the buffer size based on the contour size
+                offsetx = int(w * padding/100)
+                offsety = int(w * padding/100)
+            elif type(padding) is str and padding.upper() == "AUTO":
+                # Calculate the buffer size based on the contour size
+                offsetx = int(w / 5)
+                offsety = int(h / 5)
+            else:
+                fatal_error("Padding must either be 'auto' or an integer.")
 
             if background.upper() == "IMAGE":
                 gray_img1 = gray_img1[y - offsety:y + h + offsety, x - offsetx:x + w + offsetx]
