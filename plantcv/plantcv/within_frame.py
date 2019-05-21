@@ -1,9 +1,9 @@
-import cv2 as cv2
 import numpy as np
 from plantcv.plantcv import fatal_error
 
+
 def within_frame(mask):
-    '''
+    """
     This function tests whether the plant touches the edge of the image, i.e. it is completely in the field of view.
     Input:
     mask = a binary image of 0 and nonzero values
@@ -14,7 +14,7 @@ def within_frame(mask):
     :param mask: numpy.ndarray
     :return in_bounds: bool
 
-    '''
+    """
 
     # Check if object is touching image boundaries (QC)
     if len(np.shape(mask)) > 2 or len(np.unique(mask)) > 2:
@@ -37,4 +37,4 @@ def within_frame(mask):
     out_of_bounds = bool(np.count_nonzero(edges))
     in_bounds = not out_of_bounds
 
-    return(in_bounds)
+    return in_bounds
