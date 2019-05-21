@@ -694,6 +694,11 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, finalcorrected = **plantcv.white_balance**(*device, img, mode='hist',debug=None, roi=None*)
 * post v3.0dev2: finalcorrected = **plantcv.white_balance**(*img, mode='hist', roi=None*)
 
+#### plantcv.within_frame
+
+* pre v3.3: NA
+* post v3.3: in_bounds = **plantcv.within_frame**(*mask*)
+
 #### plantcv.x_axis_pseudolandmarks
 
 * pre v3.0dev2: device, top, bottom, center_v = **plantcv.x_axis_pseudolandmarks**(*obj, mask, img, device, debug=None*)
