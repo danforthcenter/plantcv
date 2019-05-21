@@ -9,13 +9,14 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 
 
-def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255,
+def pseudocolor(gray_img, obj=None, objpadding=(0,0), mask=None, cmap=None, background="image", min_value=0, max_value=255,
                 axes=True, colorbar=True):
     """Pseudocolor any grayscale image to custom colormap
 
     Inputs:
     gray_img    = grayscale image data
-    obj         = (optional) if provided as a plant object, the pseudocolored image gets cropped down to the region of interest with a 20% buffer. if provided as a rectangle, the size of the rectangle is used asis.
+    obj         = (optional) if provided, the pseudocolored image gets cropped down to the region of interest
+    objpadding  = (optional) buffers the extents of the obj to enlarge the area that is cropped. Expects a tuple (x,y) is used as a percent increase in each direction. default is (0,0). (0.5,0.5) is a 50% increase in size.
     mask        = (optional) binary mask
     cmap        = (optional) colormap. default is the matplotlib default, viridis
     background  = (optional) background color/type, options are "image" (gray_img), "white", or "black" (requires a mask)
@@ -29,6 +30,7 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
 
     :param gray_img: numpy.ndarray
     :param obj: numpy.ndarray
+    :param objpadding: list
     :param mask: numpy.ndarray
     :param cmap: str
     :param background: str
@@ -62,16 +64,12 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
             crop_img = gray_img[y:y + h, x:x + w]
 
             # Setup a buffer around the bounding box of obj
-            # If obj is already a rectangle than we assume the user wants to use this size and the buffer = 0
-            peri = cv2.arcLength(obj, True)
-            approx = cv2.approxPolyDP(obj, 0.01 * peri, True)
-            if len(approx) == 4:
-                offsetx = 0
-                offsety = 0
-            else:
-                # Calculate the buffer size based on the contour size
-                offsetx = int(w / 5)
-                offsety = int(h / 5)
+            offsetx = objpadding[0]
+            offsety = objpadding[1]
+
+            # Calculate the buffer size based on the contour size
+            offsetx = int(w * offsetx)
+            offsety = int(h * offsety)
 
             if background.upper() == "IMAGE":
                 gray_img1 = gray_img1[y - offsety:y + h + offsety, x - offsetx:x + w + offsetx]

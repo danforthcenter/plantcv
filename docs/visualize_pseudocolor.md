@@ -5,13 +5,14 @@ pseudocolored image. Additionally, optional maximum and minimum values can be sp
 then the image gets saved to `pcv.params.debug_outdir`, and`pcv.params.dpi` can be set for the image that gets saved. If
 unaltered, the  matplotlib default is 100 pixels per inch.
 
-**plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, background="image", cmap=None, min_value=0, max_value=255, axes=True, colorbar=True*)
+**plantcv.visualize.pseudocolor**(*gray_img, obj=None, objpadding=(0,0), mask=None, background="image", cmap=None, min_value=0, max_value=255, axes=True, colorbar=True*)
 
 **returns** pseudocolored image (that can be saved with `pcv.print_image`)
 
 - **Parameters:**
     - gray_img   - Grayscale image data
-    - obj        - Single or grouped contour object (optional), if a plant object is provided the pseudocolored image gets cropped down to the region of interest plus a 20%. If a rectangular object is provided, the size of the object is used asis.
+    - obj        - (optional) if provided, the pseudocolored image gets cropped down to the region of interest.
+    - objpadding - buffer around the obj to enlarge the area that is cropped. Expects a tuple (x,y) and is used as a percent increase in each direction. default is (0,0). (0.5,0.5) is a 50% increase in each dimension.
     - mask       - Binary mask made from selected contours
     - background - Background color/type. Options are "image" (gray_img), "white", or "black". A mask must be supplied.
     - cmap       - Custom colormap, see [here](https://matplotlib.org/tutorials/colors/colormaps.html) for tips on how to choose a colormap in Matplotlib.
@@ -57,7 +58,7 @@ pseudo_img_on_input = pcv.visualize.pseudocolor(gray_img=img, obj=None, mask=mas
 
 # Print out a pseudocolored image with cropping enabled, axes disabled.
 pcv.params.debug='print'
-pseudo_crop_no_axes = pcv.visualize.pseudocolor(gray_img=img, obj=obj, mask=mask,
+pseudo_crop_no_axes = pcv.visualize.pseudocolor(gray_img=img, obj=obj, objpadding=(.2,.2),  mask=mask,
                                                 background="white", cmap='viridis',
                                                 axes=False)
 
