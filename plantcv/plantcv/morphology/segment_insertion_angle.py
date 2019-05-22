@@ -8,6 +8,7 @@ from plantcv.plantcv import dilate
 from plantcv.plantcv import closing
 from plantcv.plantcv import outputs
 from plantcv.plantcv import plot_image
+from plantcv.plantcv import fatal_error
 from plantcv.plantcv import print_image
 from plantcv.plantcv import find_objects
 from plantcv.plantcv import color_palette
@@ -17,7 +18,7 @@ from plantcv.plantcv.morphology import find_branch_pts
 from plantcv.plantcv.morphology.segment_tangent_angle import _slope_to_intesect_angle
 
 
-def segment_insertion_angle(skel_img, segmented_img, leaf_objects, leaf_hierarchies, stem_objects, size):
+def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects, size):
     """ Find leaf insertion angles in degrees of skeleton segments. Fit a linear regression line to the stem.
         Use `size` pixels on  the portion of leaf next to the stem find a linear regression line,
         and calculate angle between the two lines per leaf object.
@@ -26,23 +27,17 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, leaf_hierarch
         skel_img         = Skeletonized image
         segmented_img    = Segmented image to plot slope lines and intersection angles on
         leaf_objects     = List of leaf segments
-        leaf_hierarchies = Leaf contour hierarchy NumPy array
         stem_objects     = List of stem segments
         size             = Size of inner leaf used to calculate slope lines
 
         Returns:
-        insertion_angle_header = Leaf insertion angle headers
-        insertion_angle_data   = Leaf insertion angle values
-        labeled_img            = Debugging image with angles labeled
+        labeled_img      = Debugging image with angles labeled
 
         :param skel_img: numpy.ndarray
         :param segmented_img: numpy.ndarray
         :param leaf_objects: list
-        :param leaf_hierarchies: numpy.ndarray
         :param stem_objects: list
         :param size: int
-        :return insertion_angle_header: list
-        :return insertion_angle_data: list
         :return labeled_img: numpy.ndarray
         """
 
@@ -58,6 +53,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, leaf_hierarch
     intersection_angles = []
     label_coord_x = []
     label_coord_y = []
+    valid_segment = []
 
     # Create a list of tip tuples to use for sorting
     tips = find_tips(skel_img)
@@ -71,9 +67,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, leaf_hierarch
     for i, cnt in enumerate(leaf_objects):
         # Draw leaf objects
         find_segment_tangents = np.zeros(segmented_img.shape[:2], np.uint8)
-        cv2.drawContours(find_segment_tangents, leaf_objects, i, 255, 1, lineType=8, hierarchy=leaf_hierarchies)
-        cv2.drawContours(labeled_img, leaf_objects, i, rand_color[i], params.line_thickness, lineType=8,
-                         hierarchy=leaf_hierarchies)
+        cv2.drawContours(find_segment_tangents, leaf_objects, i, 255, 1, lineType=8)
 
         # Prune back ends of leaves
         pruned_segment = prune(find_segment_tangents, size)
@@ -86,6 +80,9 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, leaf_hierarch
         if not len(segment_end_obj) == 2:
             print("Size too large, contour with ID#", i, "got pruned away completely.")
         else:
+            # The contour can have insertion angle calculated
+            valid_segment.append(cnt)
+
             # Determine if a segment is leaf end or leaf insertion segment
             for j, obj in enumerate(segment_end_obj):
 
@@ -112,9 +109,15 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, leaf_hierarch
                     insertion_segments.append(segment_end_obj[j])
                     insertion_hierarchies.append(segment_end_hierarchy[0][j])
 
-        # Store coordinates for labels
-        label_coord_x.append(leaf_objects[i][0][0][0])
+            # Store coordinates for labels
+            label_coord_x.append(leaf_objects[i][0][0][0])
+            label_coord_y.append(leaf_objects[i][0][0][1])
         label_coord_y.append(leaf_objects[i][0][0][1])
+
+    rand_color = color_palette(len(valid_segment))
+
+    for i, cnt in enumerate(valid_segment):
+        cv2.drawContours(labeled_img, valid_segment, i, rand_color[i], params.line_thickness, lineType=8)
 
     # Plot stem segments
     stem_img = np.zeros(segmented_img.shape[:2], np.uint8)
@@ -125,10 +128,15 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, leaf_hierarch
     combined_stem, combined_stem_hier = find_objects(stem_img, stem_img)
 
     # Make sure stem objects are a single contour
-    while len(combined_stem) > 1:
+    loop_count=0
+    while len(combined_stem) > 1 and loop_count<50:
+        loop_count += 1
         stem_img = dilate(stem_img, 2, 1)
         stem_img = closing(stem_img)
         combined_stem, combined_stem_hier = find_objects(stem_img, stem_img)
+
+    if loop_count == 50:
+        fatal_error('Unable to combine stem objects.')
 
     # Find slope of the stem
     [vx, vy, x, y] = cv2.fitLine(combined_stem[0], cv2.DIST_L2, 0, 0.01, 0.01)
@@ -159,8 +167,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, leaf_hierarch
             intersection_angle = 180 - intersection_angle
         intersection_angles.append(intersection_angle)
 
-    insertion_angle_header = ['HEADER_INSERTION_ANGLE']
-    insertion_angle_data = ['INSERTION_ANGLE_DATA']
+    segment_ids = []
 
     for i, cnt in enumerate(insertion_segments):
         # Label slope lines
@@ -168,14 +175,13 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, leaf_hierarch
         h = label_coord_y[i]
         text = "{:.2f}".format(intersection_angles[i])
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                    fontScale=.55, color=(150, 150, 150), thickness=2)
+                    fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
         segment_label = "ID" + str(i)
-        insertion_angle_header.append(segment_label)
-    insertion_angle_data.extend(intersection_angles)
+        segment_ids.append(i)
 
-    if 'morphology_data' not in outputs.measurements:
-        outputs.measurements['morphology_data'] = {}
-    outputs.measurements['morphology_data']['segment_insertion_angles'] = intersection_angles
+    outputs.add_observation(variable='segment_insertion_angle', trait='segment insertion angle',
+                            method='plantcv.plantcv.morphology.segment_insertion_angle', scale='degrees', datatype=list,
+                            value=intersection_angles, label=segment_ids)
 
     # Reset debug mode
     params.debug = debug
@@ -188,4 +194,4 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, leaf_hierarch
     elif params.debug == 'plot':
         plot_image(labeled_img)
 
-    return insertion_angle_header, insertion_angle_data, labeled_img
+    return labeled_img

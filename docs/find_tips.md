@@ -1,6 +1,8 @@
 ## Find Endpoints/Tips
 
-**plantcv.morphology.*find_tips*(*skel_img, mask=None*)
+Find endpoints of a skeletonized image.
+
+**plantcv.morphology.find_tips**(*skel_img, mask=None*)
 
 **returns** Binary mask of endpoints 
 

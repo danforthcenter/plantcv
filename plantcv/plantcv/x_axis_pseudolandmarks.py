@@ -37,6 +37,15 @@ def x_axis_pseudolandmarks(img, obj, mask):
         return ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA')
     x, y, width, height = cv2.boundingRect(obj)
     extent = width
+
+    # Outputs
+    top = []
+    bottom = []
+    center_v = []
+    top_list = []
+    bottom_list = []
+    center_v_list = []
+
     # If width is greater than 21 pixels make 20 increments (5% intervals)
     if extent >= 21:
         inc = int(extent / 21)
@@ -158,17 +167,7 @@ def x_axis_pseudolandmarks(img, obj, mask):
         elif params.debug == 'print':
             print_image(img2,
                         os.path.join(params.debug_outdir, (str(params.device) + '_x_axis_pseudolandmarks.png')))
-
-        # Store into global measurements
-        if not 'landmark_reference' in outputs.measurements:
-            outputs.measurements['landmark_reference'] = {}
-        outputs.measurements['landmark_reference']['top_lmk'] = top
-        outputs.measurements['landmark_reference']['bottom_lmk'] = bottom
-        outputs.measurements['landmark_reference']['center_v_lmk'] = center_v
-
-        return top, bottom, center_v
-        
-    if extent < 21:
+    elif extent < 21:
         # If the width of the object is less than 20 pixels just make the object a 20 pixel rectangle
         x, y, width, height = cv2.boundingRect(obj)
         x_coords = list(range(x, x + 20))
@@ -210,11 +209,22 @@ def x_axis_pseudolandmarks(img, obj, mask):
                 print_image(img2,
                             os.path.join(params.debug_outdir, (str(params.device) + '_x_axis_pseudolandmarks.png')))
 
-        # Store into global measurements
-        if not 'landmark_reference' in outputs.measurements:
-            outputs.measurements['landmark_reference'] = {}
-        outputs.measurements['landmark_reference']['top_lmk'] = top
-        outputs.measurements['landmark_reference']['bottom_lmk'] = bottom
-        outputs.measurements['landmark_reference']['center_v_lmk'] = center_v
+    # Store into global measurements
+    for pt in top:
+        top_list.append(pt[0].tolist())
+    for pt in bottom:
+        bottom_list.append(pt[0].tolist())
+    for pt in center_v:
+        center_v_list.append(pt[0].tolist())
 
-        return top, bottom, center_v
+    outputs.add_observation(variable='top_lmk', trait='top landmark coordinates',
+                            method='plantcv.plantcv.x_axis_pseudolandmarks', scale='none', datatype=list,
+                            value=top_list, label='none')
+    outputs.add_observation(variable='bottom_lmk', trait='bottom landmark coordinates',
+                            method='plantcv.plantcv.x_axis_pseudolandmarks', scale='none', datatype=list,
+                            value=bottom_list, label='none')
+    outputs.add_observation(variable='center_v_lmk', trait='center vertical landmark coordinates',
+                            method='plantcv.plantcv.x_axis_pseudolandmarks', scale='none', datatype=list,
+                            value=center_v_list, label='none')
+
+    return top, bottom, center_v

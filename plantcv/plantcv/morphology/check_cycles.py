@@ -19,13 +19,9 @@ def check_cycles(skel_img):
     skel_img     = Skeletonized image
 
     Returns:
-    cycle_header = Cycle data table headers
-    cycle_data   = Cycle data table values
     cycle_img    = Image with cycles identified
 
     :param skel_img: numpy.ndarray
-    :return cycle_header: list
-    :return cycle_data: list
     :return cycle_img: numpy.ndarray
     """
 
@@ -63,11 +59,9 @@ def check_cycles(skel_img):
                          hierarchy=cycle_hierarchies)
 
     # Store Cycle Data
-    cycle_header = ['HEADER_CYCLE', 'num_cycles']
-    cycle_data = ['CYCLE_DATA', num_cycles]
-    if 'morphology_data' not in outputs.measurements:
-        outputs.measurements['morphology_data'] = {}
-    outputs.measurements['morphology_data']['num_cycles'] = num_cycles
+    outputs.add_observation(variable='num_cycles', trait='number of cycles',
+                            method='plantcv.plantcv.morphology.check_cycles', scale='none', datatype=int,
+                            value=num_cycles, label='none')
 
     # Reset debug mode
     params.debug = debug
@@ -79,4 +73,4 @@ def check_cycles(skel_img):
     elif params.debug == 'plot':
         plot_image(cycle_img)
 
-    return cycle_header, cycle_data, cycle_img
+    return cycle_img

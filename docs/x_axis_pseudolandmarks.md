@@ -13,7 +13,8 @@ Once this data is scaled this approach may provide some information regarding sh
     - mask - This is a binary image. The object should be white and the background should be black.
 - **Context:**
     - Used to identify a set of sixty equidistant landmarks on the horizontal axis. Once scaled these can be used for shape analysis.
-    
+- **Output data stored:** [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
+
 **Input object contour and image**
 
 ![Screenshot](img/documentation_images/x_axis_pseudolandmarks/xpl_example_image.jpg)

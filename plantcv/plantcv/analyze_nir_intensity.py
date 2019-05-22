@@ -12,7 +12,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def analyze_nir_intensity(gray_img, mask, bins, histplot=False):
+def analyze_nir_intensity(gray_img, mask, bins=256, histplot=False):
     """This function calculates the intensity of each pixel associated with the plant and writes the values out to
        a file. It can also print out a histogram plot of pixel intensity and a pseudocolor image of the plant.
 
@@ -23,16 +23,12 @@ def analyze_nir_intensity(gray_img, mask, bins, histplot=False):
     histplot     = if True plots histogram of intensity values
 
     Returns:
-    hist_header     = NIR histogram data table headers
-    hist_data       = NIR histogram data table values
     analysis_images = NIR histogram image
 
     :param gray_img: numpy array
     :param mask: numpy array
     :param bins: int
     :param histplot: bool
-    :return hist_header: list
-    :return hist_data: list
     :return analysis_images: list
     """
 
@@ -55,28 +51,13 @@ def analyze_nir_intensity(gray_img, mask, bins, histplot=False):
     hist_nir, hist_bins = np.histogram(masked, bins, (1, maxval))
 
     hist_bins1 = hist_bins[:-1]
-    hist_bins2 = [round(l, 2) for l in hist_bins1]
+    hist_bins2 = [float(round(l, 2)) for l in hist_bins1]
 
-    hist_nir1 = [l for l in hist_nir]
+    hist_nir1 = [float(l) for l in hist_nir]
 
     # make hist percentage for plotting
     pixels = cv2.countNonZero(mask1)
     hist_percent = (hist_nir / float(pixels)) * 100
-
-    # report histogram data
-    hist_header = [
-        'HEADER_HISTOGRAM',
-        'bin-number',
-        'bin-values',
-        'nir'
-    ]
-
-    hist_data = [
-        'HISTOGRAM_DATA',
-        bins,
-        hist_bins2,
-        hist_nir1
-    ]
 
     # No longer returning a pseudocolored image
     # make mask to select the background
@@ -114,13 +95,11 @@ def analyze_nir_intensity(gray_img, mask, bins, histplot=False):
         elif params.debug == "plot":
             print(fig_hist)
 
-    # Store into global measurements
-    if not 'nir_histogram' in outputs.measurements:
-        outputs.measurements['nir_histogram'] = {}
-    outputs.measurements['nir_histogram']['signal_values'] = hist_bins2
-    outputs.measurements['nir_histogram']['frequency'] = hist_nir1
+    outputs.add_observation(variable='nir_frequencies', trait='near-infrared frequencies',
+                            method='plantcv.plantcv.analyze_nir_intensity', scale='frequency', datatype=list,
+                            value=hist_nir1, label=hist_bins2)
 
     # Store images
     outputs.images.append(analysis_images)
 
-    return hist_header, hist_data, analysis_images
+    return analysis_images
