@@ -36,7 +36,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Define an ROI for the marker
-roi_contour, roi_hierarchy = pcv.roi.rectangle(3550, 850, 500, 500, img1)
+roi_contour, roi_hierarchy = pcv.roi.rectangle(img1, 3550, 850, 500, 500)
 
 # Detect and Measure Size Marker
 image = pcv.report_size_marker_area(img1, roi_contour, roi_hierarchy, marker='detect', objcolor='light', thresh_channel='s', thresh=120)
