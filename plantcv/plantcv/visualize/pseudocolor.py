@@ -24,7 +24,7 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
     max_value   = (optional) maximum value for range of interest. default = 255
     axes        = (optional) if False then x- and y-axis won't be displayed, nor will the title. default = True
     colorbar    = (optional) if False then colorbar won't be displayed. default = True
-    padding     = (optional) if "auto" (default) and an obj is supplied, then the image is cropped to an extent 20% larger in each dimension than the object. An single integer is also accepted to define the padding as a percent increase in each dimension of the object extent
+    padding     = (optional) if "auto" (default) and an obj is supplied, then the image is cropped to an extent 20% larger in each dimension than the object. An single integer is also accepted to define the padding in pixels
 
     Returns:
     pseudo_image = pseudocolored image
@@ -66,9 +66,8 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
 
             # Setup a buffer around the bounding box of obj
             if type(padding) is int:
-                # Calculate the buffer size based on the contour size
-                offsetx = int(w * padding/100)
-                offsety = int(w * padding/100)
+                offsetx = padding
+                offsetY = padding
             elif type(padding) is str and padding.upper() == "AUTO":
                 # Calculate the buffer size based on the contour size
                 offsetx = int(w / 5)

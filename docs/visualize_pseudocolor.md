@@ -20,7 +20,7 @@ unaltered, the  matplotlib default is 100 pixels per inch.
     - max_value  - Maximum value (optional) for range of the colorbar.
     - axes       - If False then the title, x-axis, and y-axis won't be displayed (default axes=True).
     - colorbar   - If False then the colorbar won't be displayed (default colorbar=True)
-    - padding    - if "auto" (default) and an obj is supplied, then the image is cropped to an extent 20% larger in each dimension than the object. An single integer is also accepted to define the padding as a percent increase in each dimension of the object extent
+    - padding    - if "auto" (default) and an obj is supplied, then the image is cropped to an extent 20% larger in each dimension than the object. A single integer is also accepted to define the padding in pixels.
 
 - **Context:**
     - Used to pseudocolor any grayscale image to custom colormap
@@ -62,7 +62,7 @@ pseudo_img_on_input = pcv.visualize.pseudocolor(gray_img=img, obj=None, mask=mas
 pcv.params.debug='print'
 pseudo_crop_no_axes = pcv.visualize.pseudocolor(gray_img=img, obj=obj,  mask=mask,
                                                 background="white", cmap='viridis',
-                                                axes=False, padding = 20)
+                                                axes=False, padding = 'auto')
 
 # Use a black background instead
 pseudo_img_black_bkgd = pcv.visualize.pseudocolor(gray_img=img, obj=None, mask=mask,
