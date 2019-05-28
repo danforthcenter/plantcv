@@ -166,7 +166,7 @@ easier to see what the function is returning. This example shows the output when
 
 ![Screenshot](img/tutorial_images/morphology/tips_debug.jpg)
 
- ```python
+```python
 
 # Adjust line thickness with the global line thickness parameter (default = 5),
 # and provide binary mask of the plant for debugging. NOTE: the objects and
