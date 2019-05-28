@@ -5,7 +5,7 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/danforthcenter/plantcv.svg)](https://hub.docker.com/r/danforthcenter/plantcv/)
 [![GitHub release](https://img.shields.io/github/release/danforthcenter/plantcv.svg)](https://github.com/danforthcenter/plantcv/releases)
 [![PyPI version](https://badge.fury.io/py/plantcv.svg)](https://badge.fury.io/py/plantcv)
-[![Anaconda-Server Badge](https://anaconda.org/bioconda/plantcv/badges/version.svg)](https://anaconda.org/bioconda/plantcv)
+![Conda](https://img.shields.io/conda/v/bioconda/plantcv.svg)
 [![license](https://img.shields.io/github/license/danforthcenter/plantcv.svg)](https://github.com/danforthcenter/plantcv/blob/master/LICENSE)
 
 # PlantCV: Plant phenotyping using computer vision
