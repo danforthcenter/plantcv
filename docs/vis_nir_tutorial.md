@@ -54,6 +54,7 @@ Sample command to run a workflow on a single image:
 
 ```python
 #!/usr/bin/python
+import os
 import sys, traceback
 import cv2
 import numpy as np
@@ -251,7 +252,7 @@ The next step is to analyze the plant object for traits such as [horizontal heig
 
 ```python
 
-############### Analysis ################  
+    ############### Analysis ################  
   
     # Find shape properties, output shape image (optional)
     shape_img = pcv.analyze_object(img, obj, mask)
@@ -330,12 +331,12 @@ The next step is to [get the matching NIR](get_nir.md) image, [resize](resize.md
     nir_imgs = pcv.analyze_nir_intensity(nir2, nir_combinedmask, 256)
     nshape_img = pcv.analyze_object(nir2, nir_combined, nir_combinedmask)
 
-    # Plot out the NIR histogram
-    nir_hist
+    # Save out the NIR histogram
+    pcv.print_image(nir_imgs[0], os.path.join(pcv.params.debug_outdir, 'nirhist.png'))
 
-    # Plot out the image with shape data
+    # Save out the image with shape data
     shape_image = nshape_img[0]
-    pcv.plot_image(shape_image)
+    pcv.print_image(shape_image, os.path.join(pcv.params.debug_outdir, 'shape.png'))
     
 ```
 
@@ -374,6 +375,7 @@ Python script:
 
 ```python
 #!/usr/bin/python
+import os
 import sys, traceback
 import cv2
 import numpy as np
@@ -439,7 +441,7 @@ def main():
     # Object combine kept objects
     obj, mask = pcv.object_composition(img, roi_objects, hierarchy)
 
-############### Analysis ################  
+    ############### Analysis ################  
   
     # Find shape properties, output shape image (optional)
     shape_img = pcv.analyze_object(img, obj, mask)
@@ -476,10 +478,14 @@ def main():
     nir_imgs = pcv.analyze_nir_intensity(nir2, nir_combinedmask, 256)
     shape_images = pcv.analyze_object(nir2, nir_combined, nir_combinedmask)
 
-    # Plot out the image with shape data
-    shape_image = shape_images[0]
-    pcv.plot_image(shape_image)
+    # Save out the NIR histogram
+    pcv.print_image(nir_imgs[0], os.path.join(pcv.params.debug_outdir, 'nirhist.png'))
 
+    # Save out the image with shape data
+    shape_image = shape_images[0]
+    pcv.print_image(shape_image, os.path.join(pcv.params.debug_outdir, 'shape.png'))
+
+    # Save data to coresult file 
     pcv.print_results(filename=args.coresult)
     
 if __name__ == '__main__':

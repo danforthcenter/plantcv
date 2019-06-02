@@ -37,9 +37,10 @@ def segment_curvature(segmented_img, objects):
 
     label_coord_x = []
     label_coord_y = []
+    labeled_img = segmented_img.copy()
 
     _ = segment_euclidean_length(segmented_img, objects)
-    labeled_img = segment_path_length(segmented_img, objects)
+    _ = segment_path_length(segmented_img, objects)
     eu_lengths = outputs.observations['segment_eu_length']['value']
     path_lengths = outputs.observations['segment_path_length']['value']
     curvature_measure = [x/y for x, y in zip(path_lengths, eu_lengths)]

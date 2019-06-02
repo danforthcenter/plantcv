@@ -416,6 +416,7 @@ Python script:
 ```python
 
 from plantcv import plantcv as pcv
+import argparse
 import cv2
 import numpy as np
 
@@ -531,7 +532,7 @@ def main():
     
     mask = np.zeros(shape=np.shape(img)[:2], dtype = np.uint8()) # create empty mask img.
     
-    print mask
+    print(mask)
     
     # draw contours for each region of interest and give them unique color values.
     
