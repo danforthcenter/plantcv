@@ -122,6 +122,7 @@ density functions file output by `plantcv-train.py`. For example:
 ```python
 #!/usr/bin/env python
 
+import os 
 import argparse
 from plantcv import plantcv as pcv
 
@@ -153,6 +154,10 @@ def main():
     masks = pcv.naive_bayes_classifier(rgb_img=vis, pdf_file=args.pdfs)
     colored_img = pcv.visualize.colorize_masks(masks=[masks['plant'], masks['pustule'], masks['background'], masks['chlorosis']], 
                                                colors=['green', 'red', 'black', 'blue'])
+                                               
+    # Print out the colorized figure that got created 
+    pcv.print_image(colored_img, os.path.join(args.outdir, filename))
+    
     # Additional steps in the workflow go here
     
 ```
@@ -191,6 +196,7 @@ Once we have the `plantcv-train.py` output file, we can classify pixels in a col
 ```python
 #!/usr/bin/env python
 
+import os 
 import argparse
 from plantcv import plantcv as pcv
 
@@ -222,6 +228,10 @@ def main():
     masks = pcv.naive_bayes_classifier(rgb_img=vis, pdf_file=args.pdfs)
     colored_img = pcv.visualize.colorize_masks(masks=[masks['plant'], masks['pustule'], masks['background'], masks['chlorosis']], 
                                                colors=['green', 'red', 'black', 'blue'])
+                                               
+    # Print out the colorized figure that got created 
+    pcv.print_image(colored_img, os.path.join(args.outdir, filename))
+    
     # Additional steps in the workflow go here
     
 # Call program

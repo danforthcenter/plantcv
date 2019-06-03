@@ -53,10 +53,11 @@ def check_cycles(skel_img):
     cycle_img = skel_img.copy()
     cycle_img = dilate(cycle_img, params.line_thickness, 1)
     cycle_img = cv2.cvtColor(cycle_img, cv2.COLOR_GRAY2RGB)
-    rand_color = color_palette(num_cycles)
-    for i, cnt in enumerate(cycle_objects):
-        cv2.drawContours(cycle_img, cycle_objects, i, rand_color[i], params.line_thickness, lineType=8,
-                         hierarchy=cycle_hierarchies)
+    if num_cycles > 0:
+        rand_color = color_palette(num_cycles)
+        for i, cnt in enumerate(cycle_objects):
+            cv2.drawContours(cycle_img, cycle_objects, i, rand_color[i], params.line_thickness, lineType=8,
+                             hierarchy=cycle_hierarchies)
 
     # Store Cycle Data
     outputs.add_observation(variable='num_cycles', trait='number of cycles',

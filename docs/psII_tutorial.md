@@ -349,7 +349,7 @@ def main():
     # Object combine kept objects
     obj, masked = pcv.object_composition(mask, roi_objects, hierarchy3)
 
-################ Analysis ################  
+    ################ Analysis ################  
     
     outfile=False
     if args.writeimg==True:

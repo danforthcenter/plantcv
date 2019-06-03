@@ -112,7 +112,6 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
             # Store coordinates for labels
             label_coord_x.append(leaf_objects[i][0][0][0])
             label_coord_y.append(leaf_objects[i][0][0][1])
-        label_coord_y.append(leaf_objects[i][0][0][1])
 
     rand_color = color_palette(len(valid_segment))
 
