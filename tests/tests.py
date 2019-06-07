@@ -1397,6 +1397,35 @@ def test_plantcv_fill_bad_input():
         _ = pcv.fill(bin_img=img, size=1)
 
 
+def test_plantcv_fill_holes():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_fill_holes")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.fill_holes(bin_img=img)
+    pcv.params.debug = "plot"
+    _ = pcv.fill_holes(bin_img=img)
+    # Test with debug = None
+    pcv.params.debug = None
+    fill_img = pcv.fill_holes(bin_img=img)
+    assert np.sum(fill_img) > np.sum(img)
+
+
+def test_plantcv_fill_holes_bad_input():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_fill_holes_bad_input")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    with pytest.raises(RuntimeError):
+        _ = pcv.fill_holes(bin_img=img)
+
+
 def test_plantcv_find_objects():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_find_objects")

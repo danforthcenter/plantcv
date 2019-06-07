@@ -266,6 +266,11 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, filtered_img = **plantcv.fill**(*img, mask, size, device, debug=None*)
 * post v3.0dev2: filtered_img = **plantcv.fill**(*bin_img, size*)
 
+#### plantcv.fill_holes
+
+* pre v3.3: NA
+* post v3.3: filtered_img = **plantcv.fill**(*bin_img*)
+
 #### plantcv.find_objects
 
 * pre v3.0dev2: device, objects, hierarchy = **plantcv.find_objects**(*img, mask, device, debug=None*)
