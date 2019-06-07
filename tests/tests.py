@@ -2389,21 +2389,21 @@ def test_plantcv_roi_objects():
     object_hierarchy = contours_npz['arr_1']
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.roi_objects(img=img, roi_type="largest", roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
-                        object_contour=object_contours, obj_hierarchy=object_hierarchy)
+    _ = pcv.roi_objects(img=img, roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
+                        object_contour=object_contours, obj_hierarchy=object_hierarchy, roi_type="largest")
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.roi_objects(img=img, roi_type="partial", roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
-                        object_contour=object_contours, obj_hierarchy=object_hierarchy)
+    _ = pcv.roi_objects(img=img, roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
+                        object_contour=object_contours, obj_hierarchy=object_hierarchy, roi_type="partial")
     # Test with debug = None and roi_type = cutto
     pcv.params.debug = None
-    _ = pcv.roi_objects(img=img, roi_type="cutto", roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
-                        object_contour=object_contours, obj_hierarchy=object_hierarchy)
+    _ = pcv.roi_objects(img=img, roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
+                        object_contour=object_contours, obj_hierarchy=object_hierarchy, roi_type="cutto")
     # Test with debug = None
-    kept_contours, kept_hierarchy, mask, area = pcv.roi_objects(img=img, roi_type="partial", roi_contour=roi_contour,
+    kept_contours, kept_hierarchy, mask, area = pcv.roi_objects(img=img, roi_contour=roi_contour,
                                                                 roi_hierarchy=roi_hierarchy,
                                                                 object_contour=object_contours,
-                                                                obj_hierarchy=object_hierarchy)
+                                                                obj_hierarchy=object_hierarchy, roi_type="partial")
     # Assert that the contours were filtered as expected
     assert len(kept_contours) == 1046
 

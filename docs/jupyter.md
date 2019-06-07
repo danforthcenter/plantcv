@@ -69,7 +69,7 @@ from matplotlib import pyplot as plt
 from plantcv import plantcv as pcv
 
 # Set variables
-debug = 'plot'                                # Plot debug images to the notebook
+pcv.params.debug = 'plot'                     # Plot debug images to the notebook
 img_file = 'input_color_img.jpg'              # Example image
 
 ```
@@ -105,6 +105,7 @@ the remaining code within main, for example:
 
 ```python
 def main():
+    
     # all the code from Jupyter
 
 if __name__ == '__main__':
@@ -157,9 +158,8 @@ def main():
     args = options()
     
     # Set variables
-    device = 0
-    debug = args.debug        # Replace the hard-coded debug with the debug flag
-    img_file = args.image     # Replace the hard-coded input image with image flag
+    pcv.params.debug = args.debug     # Replace the hard-coded debug with the debug flag
+    img_file = args.image             # Replace the hard-coded input image with image flag
     
 ```
 
@@ -190,13 +190,29 @@ def main():
     args = options()
     
     # Set variables
-    device = 0
-    debug = args.debug        # Replace the hard-coded debug with the debug flag
+    pcv.params.debug = args.debug        # Replace the hard-coded debug with the debug flag
     img_file = args.image     # Replace the hard-coded input image with image flag
     
-    # More code from Jupyter
+    # Put workflow 
+    # steps from 
+    # Jupyter here
+    
+    # Print data that gets collected into the Outputs 
+    pcv.print_results(args.result)
 
 if __name__ == '__main__':
     main()
     
 ```
+
+There are examples of full Python scripts found at the bottom of each tutorial.
+
+*  [VIS Image Workflow](vis_tutorial.md)
+*  [NIR Image Workflow](nir_tutorial.md)
+*  [PSII Workflow](psII_tutorial.md)
+*  [VIS / NIR Dual Workflow](vis_nir_tutorial.md)
+*  [Multi Plant Tutorial](multi-plant_tutorial.md)
+*  [Morphology Tutorial](morphology_tutorial.md) 
+*  [Machine Learning Tutorial](machine_learning_tutorial.md)
+*  [Color Correction Tutorial](transform_color_correction_tutorial.md)
+*  [Morphology Tutorial](morphology_tutorial.md) 
