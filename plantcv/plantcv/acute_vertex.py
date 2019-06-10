@@ -90,6 +90,9 @@ def acute_vertex(img, obj, win, thresh, sep):
     # Store the points in the variable acute
     flag = 0
     acute = obj[[out]]
+    acute_points = []
+    for pt in acute:
+        acute_points.append(pt[0].tolist())
     # If no points found as acute get the largest point
     # if len(acute) == 0:
         # acute = max(obj, key=cv2.contourArea)
@@ -117,7 +120,7 @@ def acute_vertex(img, obj, win, thresh, sep):
         for i in acute:
             x, y = i.ravel()
             # cv2.circle(img2,(x,y),15,(255,204,255),-1)
-            cv2.circle(img2, (x, y), params.line_thickness, (0, 0, 255), -1)
+            cv2.circle(img2, (x, y), params.line_thickness, (255, 0, 255), -1)
         plot_image(img2)
     # If flag was true (no points found as acute) reformat output appropriate type
     # if flag == 1:
@@ -125,8 +128,8 @@ def acute_vertex(img, obj, win, thresh, sep):
     #     acute = acute.reshape(1, 1, 2)
 
     # Store into global measurements
-    if not 'landmark_reference' in outputs.measurements:
-        outputs.measurements['landmark_reference'] = {}
-    outputs.measurements['landmark_reference']['tip_points'] = acute
+    outputs.add_observation(variable='tip_coordinates', trait='tip coordinates',
+                            method='plantcv.plantcv.acute_vertex', scale='none', datatype=list,
+                            value=acute_points, label='none')
 
     return acute

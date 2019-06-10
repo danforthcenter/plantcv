@@ -1,19 +1,19 @@
-## Tutorial: PSII Image Pipeline
+## Tutorial: PSII Image Workflow
 
 PlantCV is composed of modular functions that can be arranged (or rearranged) and adjusted quickly and easily.
-Pipelines do not need to be linear (and often are not). Please see pipeline example below for more details.
+Workflows do not need to be linear (and often are not). Please see workflow example below for more details.
 A global variable "debug" allows the user to print out the resulting image.
 The debug has three modes: either None, 'plot', or 'print'. If set to
 'print' then the function prints the image out, or if using a [Jupyter](jupyter.md) notebook you could set debug to 'plot' to have
 the images plot to the screen.
-This allows users to visualize and optimize each step on individual test images and small test sets before pipelines are deployed over whole datasets.
+This allows users to visualize and optimize each step on individual test images and small test sets before workflows are deployed over whole datasets.
 
 PSII images (3 in a set; F0, Fmin, and Fmax) are captured directly following a saturating fluorescence pulse 
 (red light; 630 nm). These three PSII images can be used to calculate Fv/Fm (efficiency of photosystem II) 
 for each pixel of the plant. Unfortunately, our PSII imaging cabinet has a design flaw when capturing images 
 of plants with vertical architecture. You can read more about how we validated this flaw using our PSII 
-analysis pipelines in the [PlantCV Paper](http://dx.doi.org/10.1016/j.molp.2015.06.005). 
-However, the pipelines to analyze PSII images are functional and a sample pipeline is outlined below.  
+analysis workflows in the [PlantCV Paper](http://dx.doi.org/10.1016/j.molp.2015.06.005). 
+However, the workflows to analyze PSII images are functional and a sample workflow is outlined below.  
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/psII_tutorial.ipynb) Check out our interactive PSII tutorial! 
 
@@ -21,14 +21,14 @@ Also see [here](#psii-script) for the complete script.
 
 ### Workflow
  
-1.  Optimize pipeline on individual image with debug set to 'print' (or 'plot' if using a Jupyter notebook).
-2.  Run pipeline on small test set (ideally that spans time and/or treatments).  
-3.  Re-optimize pipelines on 'problem images' after manual inspection of test set.  
-4.  Deploy optimized pipeline over test set using parallelization script.
+1.  Optimize workflow on individual image with debug set to 'print' (or 'plot' if using a Jupyter notebook).
+2.  Run workflow on small test set (ideally that spans time and/or treatments).  
+3.  Re-optimize workflows on 'problem images' after manual inspection of test set.  
+4.  Deploy optimized workflow over test set using parallelization script.
 
-### Running A Pipeline
+### Running A Workflow
 
-To run a PSII pipeline over a single PSII image set (3 images) there are 4 required inputs:
+To run a PSII workflow over a single PSII image set (3 images) there are 4 required inputs:
 
 1.  **Image 1:** F0 (a.k.a Fdark/null) image.
 2.  **Image 2:** Fmin image.
@@ -43,18 +43,18 @@ Optional Inputs:
 (for PSII images we use a premade mask to remove the screws from the image). 
 Make sure the input is the same size as your image or you will have problems.  
 
-Sample command to run a pipeline on a single PSII image set:  
+Sample command to run a workflow on a single PSII image set:  
 
-* Always test pipelines (preferably with -D flag for debug mode) before running over a full image set.
-
-```
-./pipelinename.py -i /home/user/images/testimg.png -o /home/user/output-images -D 'print'
+* Always test workflows (preferably with -D flag for debug mode) before running over a full image set.
 
 ```
+./workflowname.py -i /home/user/images/testimg.png -o /home/user/output-images -D 'print'
 
-### Walk Through A Sample Pipeline
+```
 
-Pipelines start by importing necessary packages, and by defining user inputs.
+### Walk Through A Sample Workflow
+
+Workflows start by importing necessary packages, and by defining user inputs.
 
 ```python
 #!/usr/bin/python
@@ -79,11 +79,11 @@ def options():
     
 ```
 
-The PSII pipeline first uses the Fmax image to create an image mask. Our PSII images are 16-bit grayscale, 
+The PSII workflow first uses the Fmax image to create an image mask. Our PSII images are 16-bit grayscale, 
 but we will initially [read](read_image.md) the Fmax image in as a 8-bit color image just to create the image mask.
 
 ```python
-### Main pipeline
+### Main workflow
 def main():
     # Get options
     args = options()
@@ -133,7 +133,7 @@ The resulting image is then thresholded with a [binary threshold](binary_thresho
 ```python
     # Threshold the image
     fmax_thresh = pcv.threshold.binary(track_masked, 20, 255, 'light')
-        
+    
 ```
 
 **Figure 3.** Binary threshold on masked Fmax image.
@@ -231,14 +231,14 @@ along with the generated mask to calculate Fv/Fm.
         outfile=args.outdir+"/"+filename
     
     # Find shape properties, output shape image (optional)
-    shape_header, shape_data, shape_img = pcv.analyze_object(mask, obj, masked)
+    shape_img = pcv.analyze_object(mask, obj, masked)
     
     # Fluorescence Measurement (read in 16-bit images)
     fdark = cv2.imread(args.fdark, -1)
     fmin = cv2.imread(args.fmin, -1)
     fmax = cv2.imread(args.fmax, -1)
     
-    fvfm_header, fvfm_data, fvfm_images = pcv.fluor_fvfm(fdark,fmin,fmax,kept_mask)
+    fvfm_images = pcv.fluor_fvfm(fdark,fmin,fmax,kept_mask)
 
     # Store the two images
     fv_img = fvfm_images[0]
@@ -269,18 +269,18 @@ if __name__ == '__main__':
 
 ![Screenshot](img/tutorial_images/psII/11_fvfm_hist.jpg)
 
-To deploy a pipeline over a full image set please see tutorial on [pipeline parallelization](pipeline_parallel.md).
+To deploy a workflow over a full image set please see tutorial on [workflow parallelization](pipeline_parallel.md).
 
 ## PSII Script
 
 In the terminal:
 
 ```
-./pipelinename.py -i /home/user/images/testimg.png -o /home/user/output-images -D 'print'
+./workflowname.py -i /home/user/images/testimg.png -o /home/user/output-images -D 'print'
 
 ```
 
-* Always test pipelines (preferably with -D flag for debug mode) before running over a full image set.
+* Always test workflows (preferably with -D flag for debug mode) before running over a full image set.
 
 Python script:
 
@@ -305,7 +305,7 @@ def options():
     args = parser.parse_args()
     return args
 
-### Main pipeline
+### Main workflow
 def main():
     # Get options
     args = options()
@@ -349,21 +349,21 @@ def main():
     # Object combine kept objects
     obj, masked = pcv.object_composition(mask, roi_objects, hierarchy3)
 
-################ Analysis ################  
+    ################ Analysis ################  
     
     outfile=False
     if args.writeimg==True:
         outfile=args.outdir+"/"+filename
     
     # Find shape properties, output shape image (optional)
-    shape_header, shape_data, shape_img = pcv.analyze_object(mask, obj, masked)
+    shape_img = pcv.analyze_object(mask, obj, masked)
     
     # Fluorescence Measurement (read in 16-bit images)
     fdark = cv2.imread(args.fdark, -1)
     fmin = cv2.imread(args.fmin, -1)
     fmax = cv2.imread(args.fmax, -1)
     
-    fvfm_header, fvfm_data, fvfm_images = pcv.fluor_fvfm(fdark,fmin,fmax,kept_mask)
+    fvfm_images = pcv.fluor_fvfm(fdark,fmin,fmax,kept_mask)
 
     # Store the two images
     fv_img = fvfm_images[0]

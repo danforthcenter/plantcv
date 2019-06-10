@@ -2,18 +2,19 @@
 
 Sort segments from a skeletonized image into two categories: leaf objects and other objects. 
 
-**plantcv.morphology.segment_sort**(*skel_img, objects, hierarchies, mask=None*)
+**plantcv.morphology.segment_sort**(*skel_img, objects, mask=None*)
 
-**returns** Leaf segment objects, leaf segment object hierarchies, other segment objects, other segment object hierarchies 
+**returns** Secondary objects, primary objects
 
 - **Parameters:**
     - skel_img - Skeleton image (output from [plantcv.morphology.skeletonize](skeletonize.md))
     - objects - Segment objects (output from [plantcv.morphology.segment_skeleton](segment_skeleton.md))
-    - hierarchies - Segment object hierarchies (output from [plantcv.morphology.segment_skeleton](segment_skeleton.md))
     - mask - Binary mask for debugging. If provided, debug image will be overlaid on the mask.
 - **Context:**
-    - Sorts skeleton segments into two categories: leaf segments and other segments. Leaf segments get 
-    colored green and other segments get colored fuschia. 
+    - Sorts skeleton segments into two categories: primary and secondary segments. Segments get classified as primary 
+    if both end points of the segment coincide with branch points. Segments get classified as secondary if at least one of their
+    endpoints coincide with a tip. By this classification method in the example below primary segments are stem and secondary 
+    segments are leaves. Secondary segments get colored green and primary segments get colored fuschia. 
 
 **Reference Images**
 
@@ -34,14 +35,14 @@ pcv.params.debug = "print"
 # hierarchies returned will be exactly the same but the debugging image will look different.
 pcv.params.line_thickness = 3 
 
-leaf_obj, leaf_hier, other_obj, other_hier = pcv.morphology.segment_sort(skel_img=skeleton,
-                                                                         objects=obj,
-                                                                         hierarchies=hier)
+leaf_obj, other_obj = pcv.morphology.segment_sort(skel_img=skeleton,
+                                                  objects=obj,
+                                                  hierarchies=hier)
 
-leaf_obj, leaf_hier, other_obj, other_hier = pcv.morphology.segment_sort(skel_img=skeleton,
-                                                                         objects=obj,
-                                                                         hierarchies=hier, 
-                                                                         mask=plant_mask)
+leaf_obj, other_obj = pcv.morphology.segment_sort(skel_img=skeleton,
+                                                  objects=obj,
+                                                  hierarchies=hier, 
+                                                  mask=plant_mask)
 
 ```
 

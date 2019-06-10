@@ -81,7 +81,7 @@ def scale_features(obj, mask, points, line_position):
             x, y = i.ravel()
             cv2.circle(scaled_img, (int(x) + 250, int(y) + 250), params.line_thickness, (255, 255, 255), -1)
         cv2.circle(scaled_img, (int(cmx_scaled * 1000) + 250, int(cmy_scaled * 1000) + 250), params.line_thickness,
-                   (0, 0, 255), -1)
+                   (255, 0, 255), -1)
         cv2.circle(scaled_img, (int(blx_scaled * 1000) + 250, int(bly_scaled * 1000) + 250), params.line_thickness,
                    (0, 255, 0), -1)
         # Because the coordinates increase as you go down and to the right on the
@@ -101,7 +101,7 @@ def scale_features(obj, mask, points, line_position):
             x, y = i.ravel()
             cv2.circle(scaled_img, (int(x) + 250, int(y) + 250), params.line_thickness, (255, 255, 255), -1)
         cv2.circle(scaled_img, (int(cmx_scaled * 1000) + 250, int(cmy_scaled * 1000) + 250), params.line_thickness,
-                   (0, 0, 255), -1)
+                   (255, 0, 255), -1)
         cv2.circle(scaled_img, (int(blx_scaled * 1000) + 250, int(bly_scaled * 1000) + 250), params.line_thickness,
                    (0, 255, 0), -1)
         # Because the coordinates increase as you go down and to the right on the

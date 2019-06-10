@@ -6,7 +6,7 @@ best if the pot size/position of the plant remains relatively constant.
  
 **plantcv.analyze_bound_vertical**(*img, obj, mask, line_position*)
 
-**returns** boundary headers, boundary data, images with boundary data
+**returns** images with boundary data
 
 - **Parameters:**
     - img - RGB or grayscale image data for plotting
@@ -15,18 +15,11 @@ best if the pot size/position of the plant remains relatively constant.
     - line_position = position of boundary line (a value of 0 would draw the line through the left of the image)
 - **Context:**
     - Used to define a boundary line for the image, to find the width to the right and to the left as well as area to the right and to the left of a boundary line.
-    - Could also be used as a method of flagging images about to go out-of-bounds
+    - Data automatically gets stored into the [Outputs class](outputs.md). Users can look at the data collected at any point during 
+    the workflow by using [pcv.print_results](print_results.md) which prints all stored data to a .json file.
 - **Example use:**
-    - [Use of horizonal companion tool in In VIS Tutorial](vis_tutorial.md)
-
-- **Output Data Units:**
-    - X-Position - Position of the bound line used for measurement (from left side of image), pixels (units)  
-    - Width-Left-Bound - Extent-x of object to the left of bound line, pixels (units)  
-    - Width-Right-Bound - Extent-x of object to the right of bound line, pixels (units)  
-    - Area-Left-Bound - area of object to the left of bound line, pixels (units)  
-    - Area-Right-Bound - area of object to the right of bound line, pixels (units)  
-    - Percent-left-Bound - percentage of total area left of the bound line  
-    - Percent-Right-Bound - percentage of total area right of the bound line  
+    - [Use of horizontal companion tool in In VIS Tutorial](vis_tutorial.md)
+- **Output data stored:** [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 ```python
 
@@ -37,7 +30,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Set Boundary Line    
-bound_header, bound_data, bound_images = pcv.analyze_bound_vertical(img, obj, mask, 1000)
+boundary_images = pcv.analyze_bound_vertical(img, obj, mask, 1000)
 
 ```
 

@@ -13,7 +13,7 @@ for numpy arrays, and can handle matplotlib Figures (like the one returned by [p
     - img- image object
     - filename- desired name of image file, supported extensions are PNG, JPG, and TIFF
 - **Context:**
-    - Often used to debug new image processing pipelines
+    - Often used to debug new image processing workflows
     - Used to write out final results images  
 - **Example use:**
     - [Use In VIS Tutorial](vis_tutorial.md)  

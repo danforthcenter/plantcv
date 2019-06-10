@@ -1,31 +1,31 @@
 ## Tutorial: Morphology Functions 
 
 PlantCV is composed of modular functions that can be arranged (or rearranged) and adjusted quickly and easily.
-Pipelines do not need to be linear (and often are not). Please see pipeline example below for more details.
+Workflows do not need to be linear (and often are not). Please see Workflow example below for more details.
 A global variable "debug" allows the user to print out the resulting image. The debug has three modes: either None, 'plot', or print'. If set to
 'print' then the function prints the image out, if using a [Jupyter](jupyter.md) notebook you could set debug to 'plot' to have
-the images plot to the screen. Debug mode allows users to visualize and optimize each step on individual test images and small test sets before pipelines
+the images plot to the screen. Debug mode allows users to visualize and optimize each step on individual test images and small test sets before workflows
 are deployed over whole datasets.
 
 Morphology sub-package functions can be used once a binary mask has been created (see the [VIS tutorial](vis_tutorial.md) and the [VIS/NIR tutorial](vis_nir_tutorial.md)
-for examples of masking background. This tutorial will start with a binary mask (after object segmentation has been completed) but in a complete 
+for examples of masking background). This tutorial will start with a binary mask (after object segmentation has been completed) but in a complete 
 workflow users will need to use other functions to achieve plant isolation. Morphology functions are intended to be one type of object analysis. These functions 
 can potentially return information about leaf length, leaf angle, and leaf curvature.
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/multi_plant_tutorial.ipynb) Check out our interactive morphology tutorial! 
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/morphology_tutorial.ipynb) Check out our interactive morphology tutorial! 
 
 Also see [here](#morphology-script) for the complete script. 
 
 **Workflow**
 
-1.  Optimize pipeline on individual image with debug set to 'print' (or 'plot' if using a Jupyter notebook).
-2.  Run pipeline on small test set (ideally that spans time and/or treatments).
-3.  Re-optimize pipelines on 'problem images' after manual inspection of test set.
-4.  Deploy optimized pipeline over test set using parallelization script.
+1.  Optimize workflow on individual image with debug set to 'print' (or 'plot' if using a Jupyter notebook).
+2.  Run workflow on small test set (ideally that spans time and/or treatments).
+3.  Re-optimize workflows on 'problem images' after manual inspection of test set.
+4.  Deploy optimized workflow over test set using parallelization script.
 
-**Running A Pipeline**
+**Running A Workflow**
 
-To run a morphology pipeline over a single VIS image there are two required inputs:
+To run a morphology workflow over a single VIS image there are two required inputs:
 
 1.  **Mask:** Images can be processed regardless of what type of VIS camera was used (high-throughput platform, digital camera, cell phone camera).
 Image processing will work with adjustments if images are well lit and free of background that is similar in color to plant material. Once background is 
@@ -39,16 +39,39 @@ Optional inputs:
 *  **Debug Flag:** Prints an image at each step
 *  **Region of Interest:** The user can input their own binary region of interest or image mask (make sure it is the same size as your image or you will have problems).
 
-Sample command to run a pipeline on a single image:  
+Sample command to run a workflow on a single image:  
 
-*  Always test pipelines (preferably with -D 'print' option for debug mode) before running over a full image set
+*  Always test workflows (preferably with -D 'print' option for debug mode) before running over a full image set
 
 ```
-./pipelinename.py -i testimg.png -o ./output-images -r results.txt -w -D 'print'
+./workflowname.py -i testimg.png -o ./output-images -r results.txt -w -D 'print'
 
 ``` 
 
-#### Start of the Morphology portion of the pipeline.
+##### Workflows start by importing necessary packages, and by defining user inputs.
+
+```python
+
+#!/usr/bin/python
+import sys, traceback
+import cv2
+import numpy as np
+import argparse
+import string
+from plantcv import plantcv as pcv
+
+### Parse command-line arguments
+def options():
+    parser = argparse.ArgumentParser(description="Imaging processing with opencv")
+    parser.add_argument("-i", "--image", help="Input image file.", required=True)
+    parser.add_argument("-o", "--outdir", help="Output directory for image files.", required=False)
+    parser.add_argument("-r","--result", help="result file.", required= False )
+    parser.add_argument("-w","--writeimg", help="write out images.", default=False, action="store_true")
+    parser.add_argument("-D", "--debug", help="can be set to 'print' or None (or 'plot' if in jupyter) prints intermediate images.", default=None)
+    args = parser.parse_args()
+    return args
+    
+```
 
 **Figure 1.** Original image.
 
@@ -65,17 +88,26 @@ PlantCV function that can sometimes mask images in a single step is [plantcv.thr
 
 ![Screenshot](img/tutorial_images/morphology/mask.jpg)
 
+#### Start of the Morphology portion of the workflow.
+
 ```python
-from plantcv import plantcv as pcv
+### Main workflow
+def main():
+    # Get options
+    args = options()
+    
+    pcv.params.debug=args.debug #set debug mode
+    pcv.params.debug_outdir=args.outdir #set output directory
+    
+    ########################################
+    ## Segmentation Steps Here      
+    ########################################
 
-# Turn on plotting for debugging 
-pcv.params.debug = "plot"
-
-# Read in the previously created image mask 
-mask, path, filename = pcv.readimage("plant_mask.png")
-
-# Crop the mask 
-cropped_mask = mask[1150:1750, 900:1550]
+    # We skip to reading in the previously created image mask 
+    mask, path, filename = pcv.readimage("plant_mask.png")
+    
+    # Crop the mask 
+    cropped_mask = mask[1150:1750, 900:1550]
 
 ```
 
@@ -88,12 +120,12 @@ To better see details in this tutorial we cropped the image so there is less bla
 
 ```python
     
-# Skeletonize the mask 
-
-# Inputs:
-#   mask = Binary image data
-
-skeleton = pcv.morphology.skeletonize(mask=cropped_mask)
+    # Skeletonize the mask 
+    
+    # Inputs:
+    #   mask = Binary image data
+    
+    skeleton = pcv.morphology.skeletonize(mask=cropped_mask)
 
 ```
 
@@ -105,13 +137,13 @@ skeleton = pcv.morphology.skeletonize(mask=cropped_mask)
 
 ```python
     
-# Prune the skeleton  
-
-# Inputs:
-#   skel_img = Skeletonized image
-#   size     = Size to get pruned off each branch
-
-img1 = pcv.morphology.prune(skel_img=skeleton, size=10)
+    # Prune the skeleton  
+    
+    # Inputs:
+    #   skel_img = Skeletonized image
+    #   size     = Size to get pruned off each branch
+    
+    img1 = pcv.morphology.prune(skel_img=skeleton, size=10)
 
 ```
 
@@ -125,13 +157,13 @@ off. The function prunes *all* tips of a skeletonized image, and should be used 
 
 ```python
     
-# Identify branch points   
-
-# Inputs:
-#   skel_img = Skeletonized image
-#   mask     = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
-
-branch_pts_mask = pcv.morphology.find_branch_pts(skel_img=skeleton, mask=cropped_mask)
+    # Identify branch points   
+    
+    # Inputs:
+    #   skel_img = Skeletonized image
+    #   mask     = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
+    
+    branch_pts_mask = pcv.morphology.find_branch_pts(skel_img=skeleton, mask=cropped_mask)
 
 ```
 
@@ -147,13 +179,13 @@ to remove all barbs.
 
 ```python
     
-# Identify tip points   
-
-# Inputs:
-#   skel_img = Skeletonized image
-#   mask     = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
-
-tip_pts_mask = pcv.morphology.find_tips(skel_img=skeleton, mask=None)
+    # Identify tip points   
+    
+    # Inputs:
+    #   skel_img = Skeletonized image
+    #   mask     = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
+    
+    tip_pts_mask = pcv.morphology.find_tips(skel_img=skeleton, mask=None)
 
 ```
 
@@ -166,21 +198,22 @@ easier to see what the function is returning. This example shows the output when
 
 ![Screenshot](img/tutorial_images/morphology/tips_debug.jpg)
 
- ```python
- 
-# Adjust line thickness with the global line thickness parameter (default = 5),
-# and provide binary mask of the plant for debugging. NOTE: the objects and
-# hierarchies returned will be exactly the same but the debugging image (segmented_img)
-# will look different.
-pcv.params.line_thickness = 3 
+```python
 
-# Segment a skeleton into pieces   
-
-# Inputs:
-#   skel_img = Skeletonized image
-#   mask     = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
-
-seg_img, edge_objects, edge_hierarchies = pcv.morphology.segment_skeleton(skel_img=skeleton, mask=cropped_mask)
+    # Adjust line thickness with the global line thickness parameter (default = 5),
+    # and provide binary mask of the plant for debugging. NOTE: the objects and
+    # hierarchies returned will be exactly the same but the debugging image (segmented_img)
+    # will look different.
+    pcv.params.line_thickness = 3 
+    
+    # Segment a skeleton into pieces   
+    
+    # Inputs:
+    #   skel_img = Skeletonized image
+    #   mask     = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
+    
+    seg_img, edge_objects = pcv.morphology.segment_skeleton(skel_img=skeleton, 
+                                                            mask=cropped_mask)
 
 ```
 
@@ -194,16 +227,16 @@ no effect on the objects and hierarchies returned.
 
 ```python
     
-# Sort segments into leaf objects and stem objects  
-  
-# Inputs:
-#   skel_img  = Skeletonized image
-#   objects   = List of contours
-#   hierarchy = Contour hierarchy NumPy array
-#   mask      = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
-
-leaf_obj, leaf_hier, stem_obj, stem_hier = pcv.morphology.segment_sort(skel_img=skeleton, objects=edge_objects,
-                                           hierarchy=edge_hierarchies, mask=cropped_mask)
+    # Sort segments into leaf objects and stem objects  
+      
+    # Inputs:
+    #   skel_img  = Skeletonized image
+    #   objects   = List of contours
+    #   mask      = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
+    
+    leaf_obj, stem_obj = pcv.morphology.segment_sort(skel_img=skeleton, 
+                                                     objects=edge_objects,
+                                                     mask=cropped_mask)
 
 ```
 
@@ -217,16 +250,16 @@ sorted into the leaf category as green while the rest of the segments are fuschi
 
 ```python
     
-# Identify segments     
-
-# Inputs:
-#   skel_img  = Skeletonized image
-#   objects   = List of contours
-#   hierarchy = Contour hierarchy NumPy array
-#   mask      = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
-
-segmented_img, labeled_img = pcv.morphology.segment_id(skel_img=skeleton, objects=leaf_obj,
-                                                       hierarchy=leaf_hier, mask=cropped_mask)
+    # Identify segments     
+    
+    # Inputs:
+    #   skel_img  = Skeletonized image
+    #   objects   = List of contours
+    #   mask      = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
+    
+    segmented_img, labeled_img = pcv.morphology.segment_id(skel_img=skeleton,
+                                                           objects=leaf_obj,
+                                                           mask=cropped_mask)
 
 ```
 
@@ -242,14 +275,14 @@ For this tutorial we assume leaves are the objects of interest, and just pass th
 
 ```python
     
-# Measure path lengths of segments     
-
-# Inputs:
-#   segmented_img = Segmented image to plot lengths on
-#   objects       = List of contours
-
-length_header, segment_lengths, labeled_img  = pcv.morphology.segment_path_length(segmented_img=segmented_img, 
-                                                                                  objects=leaf_obj)
+    # Measure path lengths of segments     
+    
+    # Inputs:
+    #   segmented_img = Segmented image to plot lengths on
+    #   objects       = List of contours
+    
+    labeled_img  = pcv.morphology.segment_path_length(segmented_img=segmented_img, 
+                                                      objects=leaf_obj)
 
 ```
 
@@ -262,16 +295,14 @@ passed into the function.
 
 ```python
     
-# Measure euclidean distance of segments      
-
-# Inputs:
-#   segmented_img = Segmented image to plot lengths on
-#   objects       = List of contours
-#   hierarchy     = Contour hierarchy NumPy array
-
-eu_header, eu_lengths, labeled_img = pcv.morphology.segment_euclidean_length(segmented_img=segmented_img, 
-                                                                             objects=leaf_obj,
-                                                                             hierarchy=leaf_hier)
+    # Measure euclidean distance of segments      
+    
+    # Inputs:
+    #   segmented_img = Segmented image to plot lengths on
+    #   objects       = List of contours
+    
+    labeled_img = pcv.morphology.segment_euclidean_length(segmented_img=segmented_img, 
+                                                          objects=leaf_obj)
 
 ```
 
@@ -284,16 +315,14 @@ euclidean distance of each segment passed to the function.
 
 ```python
     
-# Measure curvature of segments      
-
-# Inputs:
-#   segmented_img = Segmented image to plot curvature on
-#   objects       = List of contours
-#   hierarchy     = Contour hierarchy NumPy array
-
-curve_header, curvature, labeled_img = pcv.morphology.segment_curvature(segmented_img=segmented_img, 
-                                                                        objects=leaf_obj,
-                                                                        hierarchy=leaf_hier)
+    # Measure curvature of segments      
+    
+    # Inputs:
+    #   segmented_img = Segmented image to plot curvature on
+    #   objects       = List of contours
+    
+    labeled_img = pcv.morphology.segment_curvature(segmented_img=segmented_img, 
+                                                   objects=leaf_obj)
 
 ```
 
@@ -308,38 +337,35 @@ is a straight line while larger values indicate the segment has more curvature.
 
 ```python
     
-# Measure the angle of segments      
-
-# Inputs:
-#   segmented_img = Segmented image to plot angles on
-#   objects       = List of contours
-
-angle_header, segment_angles, labeled_img = pcv.morphology.segment_angle(segmented_img=segmented_img, 
-                                                                         objects=leaf_obj)
+    # Measure the angle of segments      
+    
+    # Inputs:
+    #   segmented_img = Segmented image to plot angles on
+    #   objects       = List of contours
+    
+    labeled_img = pcv.morphology.segment_angle(segmented_img=segmented_img, 
+                                               objects=leaf_obj)
 
 ```
 
 **Figure 15.** Find Leaf Angles
 
-The [plantcv.morphology.segment_angles](segment_angles.md) function calculates angles of segments (in degrees) 
+The [plantcv.morphology.segment_angles](segment_angle.md) function calculates angles of segments (in degrees) 
 by fitting a linear regression line to each segment. 
 
 ![Screenshot](img/tutorial_images/morphology/labeled_angles.jpg)
 
 ```python
     
-# Measure the tangent angles of segments      
-
-# Inputs:
-#   segmented_img = Segmented image to plot tangent angles on
-#   objects       = List of contours
-#   hierarchy     = Contour hierarchy NumPy array
-#   size          = Size of ends used to calculate "tangent" lines
-
-tan_header, tan_angles, labeled_img = pcv.morphology.segment_tangent_angle(segmented_img=segmented_img, 
-                                                                           objects=leaf_obj, 
-                                                                           hierarchy=leaf_hier,
-                                                                           size=15)
+    # Measure the tangent angles of segments      
+    
+    # Inputs:
+    #   segmented_img = Segmented image to plot tangent angles on
+    #   objects       = List of contours
+    #   size          = Size of ends used to calculate "tangent" lines
+    
+    labeled_img = pcv.morphology.segment_tangent_angle(segmented_img=segmented_img, 
+                                                       objects=leaf_obj, size=15)
 
 ```
 
@@ -354,22 +380,20 @@ leaves that are more "floppy" will have smaller angles.
 
 ```python
     
-# Measure the leaf insertion angles      
-
-# Inputs:
-#   skel_img         = Skeletonize image 
-#   segmented_img    = Segmented image to plot insertion angles on
-#   leaf_objects     = List of leaf contours
-#   leaf_hierarchies = Leaf contour hierarchy NumPy array
-#   stem_objects     = List of stem objects 
-#   size             = Size of the inner portion of each leaf to find a linear regression line
-
-insert_header, insert_angles, labeled_img = pcv.morphology.segment_insertion_angle(skel_img=skeleton,
-                                                                                   segmented_img=segmented_img, 
-                                                                                   leaf_objects=leaf_obj, 
-                                                                                   leaf_hierarchies=leaf_hier,
-                                                                                   stem_objects=stem_obj,
-                                                                                   size=20)
+    # Measure the leaf insertion angles      
+    
+    # Inputs:
+    #   skel_img         = Skeletonize image 
+    #   segmented_img    = Segmented image to plot insertion angles on
+    #   leaf_objects     = List of leaf contours
+    #   stem_objects     = List of stem objects 
+    #   size             = Size of the inner portion of each leaf to find a linear regression line
+    
+    labeled_img = pcv.morphology.segment_insertion_angle(skel_img=skeleton,
+                                                         segmented_img=segmented_img, 
+                                                         leaf_objects=leaf_obj, 
+                                                         stem_objects=stem_obj,
+                                                         size=20)
 
 ```
 
@@ -382,94 +406,126 @@ out from a stem will have larger insertion angles than those that grow upward.
 ![Screenshot](img/tutorial_images/morphology/insertion_angle_img.jpg)
 
 
-To deploy a pipeline over a full image set please see tutorial on 
-[pipeline parallelization](pipeline_parallel.md).
+To deploy a workflow over a full image set please see tutorial on 
+[workflow parallelization](pipeline_parallel.md).
 
 ## Morphology Script 
 
 In the terminal:
 
 ```
-./pipelinename.py -i testimg.png -o ./output-images -r results.txt -w -D 'print'
+./workflowname.py -i testimg.png -o ./output-images -r results.txt -w -D 'print'
 
 ``` 
 
-*  Always test pipelines (preferably with -D flag set to 'print') before running over a full image set
+*  Always test workflows (preferably with -D flag set to 'print') before running over a full image set
 
 Python script: 
 
 ```python
+# !/usr/bin/python
+import sys, traceback
+import cv2
+import numpy as np
+import argparse
+import string
 from plantcv import plantcv as pcv
 
-# Turn on plotting for debugging 
-pcv.params.debug = "plot"
 
-# Read in the previously created image mask 
-mask, path, filename = pcv.readimage("plant_mask.png")
+### Parse command-line arguments
+def options():
+    parser = argparse.ArgumentParser(description="Imaging processing with opencv")
+    parser.add_argument("-i", "--image", help="Input image file.", required=True)
+    parser.add_argument("-o", "--outdir", help="Output directory for image files.", required=False)
+    parser.add_argument("-r", "--result", help="result file.", required=False)
+    parser.add_argument("-w", "--writeimg", help="write out images.", default=False, action="store_true")
+    parser.add_argument("-D", "--debug",
+                        help="can be set to 'print' or None (or 'plot' if in jupyter) prints intermediate images.",
+                        default=None)
+    args = parser.parse_args()
+    return args
 
-# Crop the mask 
-cropped_mask = mask[1150:1750, 900:1550]
+#### Start of the Main/Customizable portion of the workflow.
 
-# Skeletonize the mask 
-skeleton = pcv.morphology.skeletonize(mask=cropped_mask)
-    
-# Prune the skeleton  
-img1 = pcv.morphology.prune(skel_img=skeleton, size=10)
-    
-# Identify branch points   
-branch_pts_mask = pcv.morphology.find_branch_pts(skel_img=skeleton, mask=cropped_mask)
-    
-# Identify tip points   
-tip_pts_mask = pcv.morphology.find_tips(skel_img=skeleton, mask=None)
- 
-# Adjust line thickness with the global line thickness parameter (default = 5),
-# and provide binary mask of the plant for debugging. NOTE: the objects and
-# hierarchies returned will be exactly the same but the debugging image (segmented_img)
-# will look different.
-pcv.params.line_thickness = 3 
+### Main workflow
+def main():
+    # Get options
+    args = options()
 
-# Segment a skeleton into pieces   
-seg_img, edge_objects, edge_hierarchies = pcv.morphology.segment_skeleton(skel_img=skeleton, mask=cropped_mask)
+    pcv.params.debug = args.debug  # set debug mode
+    pcv.params.debug_outdir = args.outdir  # set output directory
     
-# Sort segments into leaf objects and stem objects  
-leaf_obj, leaf_hier, stem_obj, stem_hier = pcv.morphology.segment_sort(skel_img=skeleton, objects=edge_objects,
-                                                                       hierarchy=edge_hierarchies, 
-                                                                       mask=cropped_mask)
+    ########################################
+    ## Segmentation Steps Here      
+    ########################################
     
-# Identify segments     
-segmented_img, labeled_img = pcv.morphology.segment_id(skel_img=skeleton, objects=leaf_obj,
-                                                       hierarchy=leaf_hier, mask=cropped_mask)
-    
-# Measure path lengths of segments     
-length_header, segment_lengths, labeled_img2 = pcv.morphology.segment_path_length(segmented_img=segmented_img, 
-                                                                                  objects=leaf_obj)
-    
-# Measure euclidean distance of segments      
-eu_header, eu_lengths, labeled_img3 = pcv.morphology.segment_euclidean_length(segmented_img=segmented_img, 
-                                                                              objects=leaf_obj,
-                                                                              hierarchy=leaf_hier)
-   
-# Measure curvature of segments      
-curve_header, curvature, labeled_img4 = pcv.morphology.segment_curvature(segmented_img=segmented_img, 
-                                                                         objects=leaf_obj,
-                                                                         hierarchy=leaf_hier)
-    
-# Measure the angle of segments      
-angle_header, segment_angles, labeled_img5 = pcv.morphology.segment_angle(segmented_img=segmented_img, 
-                                                                          objects=leaf_obj)
 
-# Measure the tangent angles of segments      
-tan_header, tan_angles, labeled_img6 = pcv.morphology.segment_tangent_angle(segmented_img=segmented_img, 
-                                                                            objects=leaf_obj, 
-                                                                            hierarchy=leaf_hier,
-                                                                            size=15)
-                                                                     
-# Measure the leaf insertion angles      
-insert_header, insert_angles, labeled_img7 = pcv.morphology.segment_insertion_angle(skel_img=skeleton,
-                                                                                    segmented_img=segmented_img, 
-                                                                                    leaf_objects=leaf_obj, 
-                                                                                    leaf_hierarchies=leaf_hier,
-                                                                                    stem_objects=stem_obj,
-                                                                                    size=20)
 
+    # # Read in the previously created image mask 
+    # mask, path, filename = pcv.readimage("plant_mask.png")
+
+    # Crop the mask 
+    cropped_mask = mask[1150:1750, 900:1550]
+    
+    # Skeletonize the mask 
+    skeleton = pcv.morphology.skeletonize(mask=cropped_mask)
+        
+    # Prune the skeleton  
+    img1 = pcv.morphology.prune(skel_img=skeleton, size=10)
+        
+    # Identify branch points   
+    branch_pts_mask = pcv.morphology.find_branch_pts(skel_img=skeleton, mask=cropped_mask)
+        
+    # Identify tip points   
+    tip_pts_mask = pcv.morphology.find_tips(skel_img=skeleton, mask=None)
+     
+    # Adjust line thickness with the global line thickness parameter (default = 5),
+    # and provide binary mask of the plant for debugging. NOTE: the objects and
+    # hierarchies returned will be exactly the same but the debugging image (segmented_img)
+    # will look different.
+    pcv.params.line_thickness = 3 
+    
+    # Segment a skeleton into pieces   
+    seg_img, edge_objects = pcv.morphology.segment_skeleton(skel_img=skeleton, mask=cropped_mask)
+        
+    # Sort segments into leaf objects and stem objects  
+    leaf_obj, stem_obj = pcv.morphology.segment_sort(skel_img=skeleton, objects=edge_objects,
+                                                     mask=cropped_mask)
+        
+    # Identify segments     
+    segmented_img, labeled_img = pcv.morphology.segment_id(skel_img=skeleton, objects=leaf_obj,
+                                                           mask=cropped_mask)
+        
+    # Measure path lengths of segments     
+    labeled_img2 = pcv.morphology.segment_path_length(segmented_img=segmented_img, 
+                                                      objects=leaf_obj)
+        
+    # Measure euclidean distance of segments      
+    labeled_img3 = pcv.morphology.segment_euclidean_length(segmented_img=segmented_img, 
+                                                           objects=leaf_obj)
+       
+    # Measure curvature of segments      
+    labeled_img4 = pcv.morphology.segment_curvature(segmented_img=segmented_img, 
+                                                    objects=leaf_obj)
+        
+    # Measure the angle of segments      
+    labeled_img5 = pcv.morphology.segment_angle(segmented_img=segmented_img, objects=leaf_obj)
+    
+    # Measure the tangent angles of segments      
+    labeled_img6 = pcv.morphology.segment_tangent_angle(segmented_img=segmented_img, 
+                                                        objects=leaf_obj, size=15)
+                                                                         
+    # Measure the leaf insertion angles      
+    labeled_img7 = pcv.morphology.segment_insertion_angle(skel_img=skeleton,
+                                                          segmented_img=segmented_img, 
+                                                          leaf_objects=leaf_obj, 
+                                                          stem_objects=stem_obj,
+                                                          size=20)
+                                                          
+                                                          
+    # Write out data collected about angles and lengths                                                       
+    pcv.print_results(filename=args.result)
+
+if __name__ == '__main__':
+    main()
 ``` 

@@ -4,7 +4,7 @@
 
 [PlantCV](http://plantcv.danforthcenter.org) is composed of modular functions in order to be applicable to a 
 variety of plant types and imaging systems. In the following documentation we will describe use of each function and 
-provide tutorials on how each function is used in the context of an overall image-processing pipeline. The initial 
+provide tutorials on how each function is used in the context of an overall image-processing workflow. The initial 
 releases of PlantCV have been designed for processing images from visible spectrum cameras ('VIS'), near-infrared 
 cameras ('NIR'), and excitation imaging fluorometers ('PSII'; see note below). Development of PlantCV is 
 ongoing---we encourage input from the greater plant phenomics community. Please post questions and comments on the 
@@ -35,7 +35,7 @@ Also see our tutorials for more detailed overviews of using PlantCV for specific
 * [VIS/RGB Image Processing](vis_tutorial.md)
 * [Near-Infrared Image Processing](nir_tutorial.md)
 * [PSII Image Processing](psII_tutorial.md)
-* [VIS / NIR Dual Pipelines](vis_nir_tutorial.md)
+* [VIS / NIR Dual Workflows](vis_nir_tutorial.md)
 * [Multi Plant Image Processing](multi-plant_tutorial.md)
 * [Morphology Package](morphology_tutorial.md) 
 * [Machine Learning Tutorial](machine_learning_tutorial.md)
@@ -43,7 +43,7 @@ Also see our tutorials for more detailed overviews of using PlantCV for specific
 * [Exporting Data for Downstream Analysis](db-exporter.md)
 
 We have added interactive documentation (the link takes up to a few minutes to load so be patient please),
-so you can test out pipelines and even upload your own images to test on.
+so you can test out workflows and even upload your own images to test on.
 
 ## Interactive Tutorials 
 

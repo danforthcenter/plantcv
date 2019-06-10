@@ -21,16 +21,12 @@ def fluor_fvfm(fdark, fmin, fmax, mask, bins=256):
     mask        = mask of plant (binary, single channel)
     bins        = number of bins (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
     Returns:
-    hist_header     = fvfm data table headers
-    hist_data       = fvfm data table values
     analysis_images = list of images (fv image and fvfm histogram image)
     :param fdark: numpy.ndarray
     :param fmin: numpy.ndarray
     :param fmax: numpy.ndarray
     :param mask: numpy.ndarray
     :param bins: int
-    :return hist_header: list
-    :return hist_data: list
     :return analysis_images: numpy.ndarray
     """
 
@@ -87,28 +83,6 @@ def fluor_fvfm(fdark, fmin, fmax, mask, bins=256):
 
     # Calculate which non-zero bin has the maximum Fv/Fm value
     max_bin = midpoints[np.argmax(fvfm_hist)]
-
-    # Store Fluorescence Histogram Data
-    hist_header = (
-        'HEADER_HISTOGRAM',
-        'bin-number',
-        'fvfm_bins',
-        'fvfm_hist',
-        'fvfm_hist_peak',
-        'fvfm_median',
-        'fdark_passed_qc'
-    )
-
-    hist_data = (
-        'FLU_DATA',
-        bins,
-        np.around(midpoints, decimals=len(str(bins))).tolist(),
-        fvfm_hist.tolist(),
-        float(max_bin),
-        float(np.around(fvfm_median, decimals=4)),
-        qc_fdark
-    )
-
 
     # Print F-variable image
     # print_image(fv, (os.path.splitext(filename)[0] + '_fv_img.png'))
@@ -174,17 +148,20 @@ def fluor_fvfm(fdark, fmin, fmax, mask, bins=256):
         plot_image(fv, cmap='gray')
         print(fvfm_hist_fig)
 
-    # Store into global measurements
-    if not 'fvfm' in outputs.measurements:
-        outputs.measurements['fvfm'] = {}
-    outputs.measurements['fvfm']['bin_number'] = bins
-    outputs.measurements['fvfm']['fvfm_bins'] = np.around(midpoints, decimals=len(str(bins))).tolist()
-    outputs.measurements['fvfm']['fvfm_hist'] = fvfm_hist.tolist()
-    outputs.measurements['fvfm']['fvfm_hist_peak'] = float(max_bin)
-    outputs.measurements['fvfm']['fvfm_median'] = float(np.around(fvfm_median, decimals=4))
-    outputs.measurements['fvfm']['fdark_passed_qc'] = qc_fdark
+    outputs.add_observation(variable='fvfm_hist', trait='Fv/Fm frequencies',
+                            method='plantcv.plantcv.fluor_fvfm', scale='none', datatype=list,
+                            value=fvfm_hist.tolist(), label=np.around(midpoints, decimals=len(str(bins))).tolist())
+    outputs.add_observation(variable='fvfm_hist_peak', trait='peak Fv/Fm value',
+                            method='plantcv.plantcv.fluor_fvfm', scale='none', datatype=float,
+                            value=float(max_bin), label='none')
+    outputs.add_observation(variable='fvfm_median', trait='Fv/Fm median',
+                            method='plantcv.plantcv.fluor_fvfm', scale='none', datatype=float,
+                            value=float(np.around(fvfm_median, decimals=4)), label='none')
+    outputs.add_observation(variable='fdark_passed_qc', trait='Fdark passed QC',
+                            method='plantcv.plantcv.fluor_fvfm', scale='none', datatype=bool,
+                            value=qc_fdark, label='none')
 
     # Store images
     outputs.images.append(analysis_images)
 
-    return hist_header, hist_data, analysis_images
+    return analysis_images
