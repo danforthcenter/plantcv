@@ -84,7 +84,7 @@ output           = $(Cluster).$(Process).out
 error            = $(Cluster).$(Process).error
 request_cpus     = 16
 notification     = always
-nice_user        =False
+nice_user        = False
 accounting_group = $ENV(CONDOR_GROUP)
 getenv           = true
 ####################

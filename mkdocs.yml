@@ -67,6 +67,7 @@ nav:
     - 'Get NIR Images': get_nir.md
     - 'Erosion': erode.md
     - 'Fill Objects': fill.md
+    - 'Fill Holes': fill_holes.md
     - 'Find Objects': find_objects.md
     - 'Histogram Normalization': HistEqualization.md
     - 'Image Add': image_add.md
