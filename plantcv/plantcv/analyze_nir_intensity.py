@@ -37,7 +37,7 @@ def analyze_nir_intensity(gray_img, mask, bins=256, histplot=False):
     # apply plant shaped mask to image
     mask1 = binary_threshold(mask, 0, 255, 'light')
     mask1 = (mask1 / 255)
-    masked = np.multiply(gray_img, mask1)
+    # masked = np.multiply(gray_img, mask1)
 
     # calculate histogram
     if gray_img.dtype == 'uint16':
@@ -48,16 +48,19 @@ def analyze_nir_intensity(gray_img, mask, bins=256, histplot=False):
     # Make a pseudo-RGB image
     rgbimg = cv2.cvtColor(gray_img, cv2.COLOR_GRAY2BGR)
 
-    hist_nir, hist_bins = np.histogram(masked, bins, (1, maxval))
-
-    hist_bins1 = hist_bins[:-1]
-    hist_bins2 = [float(round(l, 2)) for l in hist_bins1]
-
-    hist_nir1 = [float(l) for l in hist_nir]
+    # Calculate histogram
+    hist_nir = [float(l[0]) for l in cv2.calcHist([gray_img], [0], mask, [bins], [0, maxval])]
+    # Create list of bin labels
+    bin_width = maxval / float(bins)
+    b = 0
+    bin_labels = [float(b)]
+    for i in range(bins - 1):
+        b += bin_width
+        bin_labels.append(b)
 
     # make hist percentage for plotting
     pixels = cv2.countNonZero(mask1)
-    hist_percent = (hist_nir / float(pixels)) * 100
+    hist_percent = [(p / float(pixels)) * 100 for p in hist_nir]
 
     # No longer returning a pseudocolored image
     # make mask to select the background
@@ -80,14 +83,14 @@ def analyze_nir_intensity(gray_img, mask, bins=256, histplot=False):
 
     if histplot is True:
         hist_x = hist_percent
-        bin_labels = np.arange(0, bins)
+        # bin_labels = np.arange(0, bins)
         dataset = pd.DataFrame({'Grayscale pixel intensity': bin_labels,
                                 'Proportion of pixels (%)': hist_x})
         fig_hist = (ggplot(data=dataset,
                            mapping=aes(x='Grayscale pixel intensity',
                                        y='Proportion of pixels (%)'))
                     + geom_line(color='red')
-                    + scale_x_continuous(breaks=list(range(0, bins, 25))))
+                    + scale_x_continuous(breaks=list(range(0, maxval, 25))))
 
         analysis_images.append(fig_hist)
         if params.debug == "print":
@@ -97,7 +100,7 @@ def analyze_nir_intensity(gray_img, mask, bins=256, histplot=False):
 
     outputs.add_observation(variable='nir_frequencies', trait='near-infrared frequencies',
                             method='plantcv.plantcv.analyze_nir_intensity', scale='frequency', datatype=list,
-                            value=hist_nir1, label=hist_bins2)
+                            value=hist_nir, label=bin_labels)
 
     # Store images
     outputs.images.append(analysis_images)
