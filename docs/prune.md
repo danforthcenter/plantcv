@@ -1,18 +1,18 @@
 ## Prune
 
-Prune/trim tips off a skeletonized image. 
+Prune barbs off a skeletonized image. 
 
 **plantcv.morphology.prune**(*skel_img, size*)
 
-**returns** Pruned skeleton image 
+**returns** Pruned skeleton image, segmented image, segment objects
 
 - **Parameters:**
     - skel_img - Skeleton image (output from [plantcv.morphology.skeletonize](skeletonize.md))
-    - size - How many pixels to trim off 
+    - size - Pieces of skeleton smaller than `size` should get removed  
 - **Context:**
     - Iteratively remove endpoints (tips) from a skeletonized image. This "prunes" spurious branches/barbs off a skeleton.
 - **Important Note:**
-    - The function prunes all tips of a skeletonized image, and should be used as sparingly as possible since leaves will also get trimmed. 
+    - The function prunes barbs that are `size` pixels or smaller from a skeleton image. 
 
 
 ```python
@@ -28,7 +28,7 @@ pcv.params.debug = "print"
 # pcv.params.line_thickness = 3 for thinner lines (default 5)
 pcv.params.line_thickness = 3 
 
-pruned_skeleton = pcv.morphology.prune(skel_img=skeleton, size=14)
+pruned_skeleton, segmented_img, segment_objects = pcv.morphology.prune(skel_img=skeleton, size=14)
 
 ```
 *Pruned Image (image getting returned)*

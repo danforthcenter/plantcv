@@ -12,7 +12,7 @@ from plantcv.plantcv import fatal_error
 from plantcv.plantcv import print_image
 from plantcv.plantcv import find_objects
 from plantcv.plantcv import color_palette
-from plantcv.plantcv.morphology import prune
+from plantcv.plantcv.morphology import _iterative_prune
 from plantcv.plantcv.morphology import find_tips
 from plantcv.plantcv.morphology import find_branch_pts
 from plantcv.plantcv.morphology.segment_tangent_angle import _slope_to_intesect_angle
@@ -70,7 +70,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
         cv2.drawContours(find_segment_tangents, leaf_objects, i, 255, 1, lineType=8)
 
         # Prune back ends of leaves
-        pruned_segment = prune(find_segment_tangents, size)
+        pruned_segment = _iterative_prune(find_segment_tangents, size)
 
         # Segment ends are the portions pruned off
         segment_ends = find_segment_tangents - pruned_segment

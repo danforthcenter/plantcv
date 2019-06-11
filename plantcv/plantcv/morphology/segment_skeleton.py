@@ -20,9 +20,9 @@ def segment_skeleton(skel_img, mask=None):
         mask          = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
 
         Returns:
-        segmented_img = Segmented debugging image
-        objects       = list of contours
-        hierarchy     = contour hierarchy list
+        segmented_img       = Segmented debugging image
+        segment_objects     = list of contours
+        segment_hierarchies = contour hierarchy list
 
         :param skel_img: numpy.ndarray
         :param mask: numpy.ndarray
