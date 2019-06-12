@@ -5,7 +5,6 @@ import sys
 import argparse
 import time
 import datetime
-from subprocess import call
 import plantcv.parallel as pcvp
 
 
