@@ -6,15 +6,13 @@ from plantcv.plantcv import fatal_error
 
 # Process results. Parse individual image output files.
 ###########################################
-def process_results(valid_meta, job_dir, json_file):
+def process_results(job_dir, json_file):
     """Get results from individual files. Parse the results and recompile for SQLite.
 
     Args:
-        valid_meta:           Dictionary of valid metadata keys.
         job_dir:              Intermediate file output directory.
         json_file:            Json data table filehandle object.
 
-    :param valid_meta: dict
     :param job_dir: str
     :param json_file: obj
     """

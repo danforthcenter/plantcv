@@ -384,9 +384,9 @@ def test_plantcv_parallel_process_results():
     # Create a test tmp directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_process_results")
     os.mkdir(cache_dir)
-    plantcv.parallel.process_results(valid_meta=VALID_META, job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
+    plantcv.parallel.process_results(job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
                                      json_file=os.path.join(cache_dir, 'appended_results.json'))
-    plantcv.parallel.process_results(valid_meta=VALID_META, job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
+    plantcv.parallel.process_results(job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
                                      json_file=os.path.join(cache_dir, 'appended_results.json'))
     # Assert that the output JSON file matches the expected output JSON file
     result_file = open(os.path.join(cache_dir, "appended_results.json"), "r")
@@ -402,7 +402,7 @@ def test_plantcv_parallel_process_results_new_output():
     # Create a test tmp directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_process_results_new_output")
     os.mkdir(cache_dir)
-    plantcv.parallel.process_results(valid_meta=VALID_META, job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
+    plantcv.parallel.process_results(job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
                                      json_file=os.path.join(cache_dir, 'new_result.json'))
     # Assert output matches expected values
     result_file = open(os.path.join(cache_dir, "new_result.json"), "r")
@@ -417,7 +417,7 @@ def test_plantcv_parallel_process_results_new_output():
 def test_plantcv_parallel_process_results_valid_json():
     # Test when the file is a valid json file but doesn't contain expected keys
     with pytest.raises(RuntimeError):
-        plantcv.parallel.process_results(valid_meta=VALID_META, job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
+        plantcv.parallel.process_results(job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
                                          json_file=os.path.join(PARALLEL_TEST_DATA, "valid.json"))
 
 
@@ -428,7 +428,7 @@ def test_plantcv_parallel_process_results_invalid_json():
     # Move the test data to the tmp directory
     shutil.copytree(os.path.join(PARALLEL_TEST_DATA, "bad_results"), os.path.join(cache_dir, "bad_results"))
     with pytest.raises(RuntimeError):
-        plantcv.parallel.process_results(valid_meta=VALID_META, job_dir=os.path.join(cache_dir, "bad_results"),
+        plantcv.parallel.process_results(job_dir=os.path.join(cache_dir, "bad_results"),
                                          json_file=os.path.join(cache_dir, "bad_results", "invalid.txt"))
 
 

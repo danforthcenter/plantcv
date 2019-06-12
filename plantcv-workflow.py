@@ -244,7 +244,7 @@ def main():
     # Process results start time
     process_results_start_time = time.time()
     print("Processing results... ", file=sys.stderr)
-    pcvp.process_results(valid_meta=args.valid_meta, job_dir=args.jobdir, json_file=args.json)
+    pcvp.process_results(job_dir=args.jobdir, json_file=args.json)
     # Process results clock time
     process_results_clock_time = time.time() - process_results_start_time
     print("took " + str(process_results_clock_time) + '\n', file=sys.stderr)
