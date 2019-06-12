@@ -49,6 +49,7 @@ configurations to meet image processing goals so the tutorials simply examples o
 *  [Morphology Tutorial](morphology_tutorial.md) 
 *  [Machine Learning Tutorial](machine_learning_tutorial.md)
 *  [Color Correction Tutorial](transform_color_correction_tutorial.md)
+*  [Morphology Tutorial](morphology_tutorial.md) 
 
 ####**1. Methods of Isolating Target Objects**
 

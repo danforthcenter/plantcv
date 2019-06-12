@@ -44,4 +44,7 @@ analysis_images = pcv.analyze_color(rgb_img, mask, 'all')
 
 **Pseudocolored value-channel image**
 
+**Note:** The grayscale input image (e.g. value-channel) and object mask can be used with the [pcv.visualize.pseudocolor](visualize_pseudocolor.md) function
+which allows the user to pick a colormap for plotting.
+
 ![Screenshot](img/documentation_images/analyze_color/pseudocolored_value_image.jpg)

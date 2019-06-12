@@ -42,6 +42,9 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
     :param thresh: int
     :return: analysis_images: list
     """
+    # Store debug
+    debug = params.debug
+    params.debug = None
 
     params.device += 1
     # Make a copy of the reference image
@@ -112,6 +115,10 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
     # out_file = os.path.splitext(filename)[0] + '_sizemarker.jpg'
     # print_image(ref_img, out_file)
     analysis_image.append(ref_img)
+
+    # Reset debug mode
+    params.debug = debug
+    
     if params.debug is 'print':
         print_image(ref_img, os.path.join(params.debug_outdir, str(params.device) + '_marker_shape.png'))
     elif params.debug is 'plot':
