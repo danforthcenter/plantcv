@@ -3028,9 +3028,29 @@ def test_plantcv_morphology_prune():
     pcv.params.debug = "print"
     _ = pcv.morphology.prune(skel_img=skeleton, size=1)
     pcv.params.debug = "plot"
-    _ = pcv.morphology.prune(skel_img=skeleton, size=1)
+    _ = pcv.morphology.prune(skel_img=skeleton, size=1, mask=skeleton)
     pcv.params.debug = None
     pruned_img, _, _ = pcv.morphology.prune(skel_img=skeleton, size=3)
+    assert np.sum(pruned_img) < np.sum(skeleton)
+
+
+def test_plantcv_morphology_prune_size0():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_pruned")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
+    pruned_img, _, _ = pcv.morphology.prune(skel_img=skeleton, size=0)
+    assert np.sum(pruned_img) == np.sum(skeleton)
+
+
+def test_plantcv_morphology_iterative_prune():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_pruned")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
+    pruned_img = pcv.morphology._iterative_prune(skel_img=skeleton, size=3)
     assert np.sum(pruned_img) < np.sum(skeleton)
 
 

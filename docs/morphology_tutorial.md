@@ -136,24 +136,36 @@ To better see details in this tutorial we cropped the image so there is less bla
 ![Screenshot](img/tutorial_images/morphology/skeleton_image.jpg)
 
 ```python
+    # Adjust line thickness with the global line thickness parameter (default = 5),
+    # and provide binary mask of the plant for debugging. NOTE: the objects and
+    # hierarchies returned will be exactly the same but the debugging image (segmented_img)
+    # will look different.
+    pcv.params.line_thickness = 3 
     
     # Prune the skeleton  
     
     # Inputs:
     #   skel_img = Skeletonized image
-    #   size     = Size to get pruned off each branch
+    #   size     = Pieces of skeleton smaller than `size` should get removed. (Optional) Default `size=0`. 
+    #   mask     = Binary mask for debugging (optional). If provided, debug images will be overlaid on the mask.
     
-    img1 = pcv.morphology.prune(skel_img=skeleton, size=10)
+    pruned, seg_img, edge_objects = pcv.morphology.prune(skel_img=skeleton, size=0, mask=cropped_mask)
 
 ```
 
- **Figure 4.** Pruned image
+ **Figure 4, 5, & 6.** Pruned image
  
-Generally, skeletonized images will have barbs, representing the width, that need to get pruned off. See [plantcv.morphology.prune](prune.md) 
-for an example. The function returns a pruned skeleton but the image that gets plot for debugging shows the portions of skeleton that get pruned 
-off. The function prunes *all* tips of a skeletonized image, and should be used as sparingly as possible since leaves will also get trimmed.
+Generally, skeletonized images will have barbs, representing the width, that need to get pruned off. Mask quality is highly influential in the 
+ number of barbs present after skeletonizing. See [plantcv.morphology.prune](prune.md) for an example. 
+ The function returns a pruned skeleton but the image that gets plot for debugging shows the portions of skeleton that get pruned 
+off. The function prunes only secondary segments; primary segments that are smaller than `size` pixels long will not get removed with pruning. 
 
-![Screenshot](img/tutorial_images/morphology/pruned_skeleton.jpg)
+![Screenshot](img/tutorial_images/morphology/skeleton_image.jpg)
+
+![Screenshot](img/tutorial_images/morphology/pruned_debug_img_mask_tutorial.jpg)
+
+![Screenshot](img/tutorial_images/morphology/pruned_segmented_img_mask_tutorial.jpg)
+
 
 ```python
     
@@ -167,7 +179,7 @@ off. The function prunes *all* tips of a skeletonized image, and should be used 
 
 ```
 
-**Figure 5 and 6.** Branch Points 
+**Figure 7 and 8.** Branch Points 
 
 The [plantcv.morphology.find_branch_pts](find_branch_pts.md) function returns a binary mask, where the white pixels are the branch points identified,
 but while debug mode is on it plots out an image to verify the function is working properly. This can help a user decide is more pruning needs to be done
@@ -189,7 +201,7 @@ to remove all barbs.
 
 ```
 
-**Figure 7 and 8.** Tip Points
+**Figure 9 and 10.** Tip Points
 
 The [plantcv.morphology.find_tips](find_tips.md) function also returns a binary mask of tip points identified, but will plot a debugging image that is 
 easier to see what the function is returning. This example shows the output when no mask if provided to the function. 
@@ -197,33 +209,6 @@ easier to see what the function is returning. This example shows the output when
 ![Screenshot](img/tutorial_images/morphology/tip_pts.jpg)
 
 ![Screenshot](img/tutorial_images/morphology/tips_debug.jpg)
-
-```python
-
-    # Adjust line thickness with the global line thickness parameter (default = 5),
-    # and provide binary mask of the plant for debugging. NOTE: the objects and
-    # hierarchies returned will be exactly the same but the debugging image (segmented_img)
-    # will look different.
-    pcv.params.line_thickness = 3 
-    
-    # Segment a skeleton into pieces   
-    
-    # Inputs:
-    #   skel_img = Skeletonized image
-    #   mask     = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
-    
-    seg_img, edge_objects = pcv.morphology.segment_skeleton(skel_img=skeleton, 
-                                                            mask=cropped_mask)
-
-```
-
-**Figure 9.** Segmented Skeleton 
-
-The [plantcv.morphology.segment_skeleton](segment_skeleton.md) function returns a debugging image as well as a list of objects and the corresponding 
-hierarchies of the objects to be used in downstream functions. Again, a mask can be provided for the debugging image produced, although this will have 
-no effect on the objects and hierarchies returned. 
-
-![Screenshot](img/tutorial_images/morphology/segmented_img_mask.jpg)
 
 ```python
     
@@ -240,7 +225,7 @@ no effect on the objects and hierarchies returned.
 
 ```
 
-**Figure 10.** Sorted Segments
+**Figure 11.** Sorted Segments
 
 The [plantcv.morphology.segment_sort](segment_sort.md) function sorts pieces of the skeleton into leaf and "other". It returns the leaf objects separate from 
 the stem objects, and their corresponding hierarchies. The debugging image produced when [plantcv.params.debug](params.md) is turned on plots all segments
@@ -263,7 +248,7 @@ sorted into the leaf category as green while the rest of the segments are fuschi
 
 ```
 
-**Figure 11.** Identify Segments
+**Figure 12.** Identify Segments
 
 All PlantCV functions in the morphology sub-package will perform analysis on objects in the same order each time. 
 While there isn't currently a method for tracking leaves over time, or identifying specific leaves (we encourage you to 
@@ -286,7 +271,7 @@ For this tutorial we assume leaves are the objects of interest, and just pass th
 
 ```
 
-**Figure 12.** Find Leaf Path Lengths 
+**Figure 13.** Find Leaf Path Lengths 
 
 With the [plantcv.morphology.segment_path_length](segment_pathlength.md) function we find the geodesic distance of each segment
 passed into the function. 
@@ -306,7 +291,7 @@ passed into the function.
 
 ```
 
-**Figure 13.** Find Leaf Euclidean Distance 
+**Figure 14.** Find Leaf Euclidean Distance 
 
 With the [plantcv.morphology.segment_euclidean_length](segment_euclidean_length.md) function we find the 
 euclidean distance of each segment passed to the function. 
@@ -326,7 +311,7 @@ euclidean distance of each segment passed to the function.
 
 ```
 
-**Figure 14.** Find Leaf Curvature
+**Figure 15.** Find Leaf Curvature
 
 With the [plantcv.morphology.segment_curvature](segment_curvature.md) function we find the 
 ratio of the geodesic distance and euclidean distance of each segment passed to the function. 
@@ -348,7 +333,7 @@ is a straight line while larger values indicate the segment has more curvature.
 
 ```
 
-**Figure 15.** Find Leaf Angles
+**Figure 16.** Find Leaf Angles
 
 The [plantcv.morphology.segment_angles](segment_angle.md) function calculates angles of segments (in degrees) 
 by fitting a linear regression line to each segment. 
@@ -369,7 +354,7 @@ by fitting a linear regression line to each segment.
 
 ```
 
-**Figure 16.** Find Leaf Tangent Angles 
+**Figure 17.** Find Leaf Tangent Angles 
 
 The [plantcv.morphology.segment_tangent_angle](segment_tangent_angle.md) function aims to measure a segment
 curvature in different way. By fitting lines to either end of segment tips, and measuring the intersection angle 
@@ -397,7 +382,7 @@ leaves that are more "floppy" will have smaller angles.
 
 ```
 
-**Figure 17.** Find Leaf Insertion Angles
+**Figure 18.** Find Leaf Insertion Angles
 
 The [plantcv.morphology.segment_insertion_angle](segment_insertion_angle.md) function aims to measure 
 leaf insertion angle. By fitting lines to the innermost part of a leaf and the stem, leaves that grow straight 
@@ -459,8 +444,6 @@ def main():
     ## Segmentation Steps Here      
     ########################################
     
-
-
     # # Read in the previously created image mask 
     # mask, path, filename = pcv.readimage("plant_mask.png")
 
@@ -469,25 +452,22 @@ def main():
     
     # Skeletonize the mask 
     skeleton = pcv.morphology.skeletonize(mask=cropped_mask)
-        
+    
+    # Adjust line thickness with the global line thickness parameter (default = 5),
+    # and provide binary mask of the plant for debugging. NOTE: the objects and
+    # hierarchies returned will be exactly the same but the debugging image (segmented_img)
+    # will look different.
+    pcv.params.line_thickness = 3         
+    
     # Prune the skeleton  
-    img1 = pcv.morphology.prune(skel_img=skeleton, size=10)
+    pruned, seg_img, edge_objects = pcv.morphology.prune(skel_img=skeleton, size=0, mask=cropped_mask)
         
     # Identify branch points   
     branch_pts_mask = pcv.morphology.find_branch_pts(skel_img=skeleton, mask=cropped_mask)
         
     # Identify tip points   
     tip_pts_mask = pcv.morphology.find_tips(skel_img=skeleton, mask=None)
-     
-    # Adjust line thickness with the global line thickness parameter (default = 5),
-    # and provide binary mask of the plant for debugging. NOTE: the objects and
-    # hierarchies returned will be exactly the same but the debugging image (segmented_img)
-    # will look different.
-    pcv.params.line_thickness = 3 
     
-    # Segment a skeleton into pieces   
-    seg_img, edge_objects = pcv.morphology.segment_skeleton(skel_img=skeleton, mask=cropped_mask)
-        
     # Sort segments into leaf objects and stem objects  
     leaf_obj, stem_obj = pcv.morphology.segment_sort(skel_img=skeleton, objects=edge_objects,
                                                      mask=cropped_mask)

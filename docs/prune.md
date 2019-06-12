@@ -1,18 +1,19 @@
 ## Prune
 
-Prune barbs off a skeletonized image. 
+Prune barbs off a skeletonized image and turn a skeletonized image into separate pieces. 
 
-**plantcv.morphology.prune**(*skel_img, size*)
+**plantcv.morphology.prune**(*skel_img, size=0, mask=None*)
 
 **returns** Pruned skeleton image, segmented image, segment objects
 
 - **Parameters:**
     - skel_img - Skeleton image (output from [plantcv.morphology.skeletonize](skeletonize.md))
-    - size - Pieces of skeleton smaller than `size` should get removed  
+    - size - Pieces of skeleton smaller than `size` should get removed.(Optional) Default `size=0`. 
+    - mask - Binary mask for debugging (optional). If provided, debug images will be overlaid on the mask.
 - **Context:**
-    - Iteratively remove endpoints (tips) from a skeletonized image. This "prunes" spurious branches/barbs off a skeleton.
-- **Important Note:**
-    - The function prunes barbs that are `size` pixels or smaller from a skeleton image. 
+    - This "prunes" spurious branches/barbs off a skeleton. The function prunes barbs that are `size` 
+    pixels or smaller from a skeleton image. If the default `size=0` is
+    used, the pruned skeleton will be identical to the input skeleton image. 
 
 
 ```python
@@ -21,21 +22,55 @@ from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
+pcv.params.debug = "plot"
+
+pruned_skeleton, segmented_img, segment_objects = pcv.morphology.prune(skel_img=skeleton, size=70)
+
+```
+
+*Skeleton before pruning*
+
+![Screenshot](img/documentation_images/prune/skeleton_img.jpg)
+
+*Pruned Skeleton (image getting returned)*
+
+![Screenshot](img/documentation_images/prune/pruned_skeleton_img.jpg)
+
+*Debugging Image*
+
+![Screenshot](img/documentation_images/prune/pruned_debug_img.jpg)
+
+*Segmented Skeleton (image getting returned)*
+
+![Screenshot](img/documentation_images/prune/pruned_segmented_img.jpg)
+
+```python
+
+from plantcv import plantcv as pcv
+
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
+pcv.params.debug = "plot"
 
 # The image created for debugging purposes allows for line thickness 
 # adjustments with the global line thickness parameter. Try setting 
 # pcv.params.line_thickness = 3 for thinner lines (default 5)
 pcv.params.line_thickness = 3 
 
-pruned_skeleton, segmented_img, segment_objects = pcv.morphology.prune(skel_img=skeleton, size=14)
+pruned_skeleton, segmented_img, segment_objects = pcv.morphology.prune(skel_img=skeleton, 
+                                                                       size=70, 
+                                                                       mask=plant_mask)
 
 ```
-*Pruned Image (image getting returned)*
 
-![Screenshot](img/documentation_images/prune/pruned_skeleton.jpg)
+*Pruned Skeleton (image getting returned)*
 
-*Debugging Image*
+![Screenshot](img/documentation_images/prune/pruned_skeleton_img.jpg)
 
-![Screenshot](img/documentation_images/prune/debugging_pruned_image.jpg)
+*Debugging Image with Mask*
 
+![Screenshot](img/documentation_images/prune/pruned_debug_img_mask.jpg)
+
+*Segmented Skeleton with Mask (image getting returned)*
+
+![Screenshot](img/documentation_images/prune/pruned_segmented_img_mask.jpg)
