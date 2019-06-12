@@ -49,7 +49,7 @@ def options():
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
         sys.exit(1)
-    
+
     # Parse command-line options
     args = parser.parse_args()
     # Execute the selected training method
