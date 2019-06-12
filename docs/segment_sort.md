@@ -8,7 +8,7 @@ Sort segments from a skeletonized image into two categories: leaf objects and ot
 
 - **Parameters:**
     - skel_img - Skeleton image (output from [plantcv.morphology.skeletonize](skeletonize.md))
-    - objects - Segment objects (output from [plantcv.morphology.segment_skeleton](segment_skeleton.md))
+    - objects - Segment objects (output from [plantcv.morphology.prune](prune.md), or [plantcv.morphology.segment_skeleton](segment_skeleton.md))
     - mask - Binary mask for debugging. If provided, debug image will be overlaid on the mask.
 - **Context:**
     - Sorts skeleton segments into two categories: primary and secondary segments. Segments get classified as primary 
@@ -30,9 +30,7 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
-# Adjust line thickness with the global line thickness parameter (default = 5),
-# and provide binary mask of the plant for debugging. NOTE: the objects and
-# hierarchies returned will be exactly the same but the debugging image will look different.
+# Adjust line thickness with the global line thickness parameter (default = 5)
 pcv.params.line_thickness = 3 
 
 leaf_obj, other_obj = pcv.morphology.segment_sort(skel_img=skeleton,
