@@ -32,7 +32,7 @@ def segment_combine(segment_list, objects, mask):
             """
     label_coord_x = []
     label_coord_y = []
-    all_objects = list.copy(objects)
+    all_objects = objects[:]
 
     # If user provides a single list of objects to combine
     if type(segment_list[0]) is int:
