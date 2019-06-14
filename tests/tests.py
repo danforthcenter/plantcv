@@ -4261,7 +4261,7 @@ def test_plantcv_utils_json2csv():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_json2csv")
     os.mkdir(cache_dir)
-    plantcv.utils.json2csv(json_file=os.path.join(PARALLEL_TEST_DATA, "new_result.json"),
+    plantcv.utils.json2csv(json_file=os.path.join(TEST_DATA, "merged_output.json"),
                            csv_file=os.path.join(cache_dir, "exports"))
     assert all([os.path.exists(os.path.join(cache_dir, "exports-single-value-traits.csv")),
                 os.path.exists(os.path.join(cache_dir, "exports-multi-value-traits.csv"))])
@@ -4272,7 +4272,7 @@ def test_plantcv_utils_json2csv_no_json():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_json2csv_no_json")
     os.mkdir(cache_dir)
     with pytest.raises(IOError):
-        plantcv.utils.json2csv(json_file=os.path.join(PARALLEL_TEST_DATA, "not_a_file.json"),
+        plantcv.utils.json2csv(json_file=os.path.join(TEST_DATA, "not_a_file.json"),
                                csv_file=os.path.join(cache_dir, "exports"))
 
 
