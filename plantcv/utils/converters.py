@@ -72,8 +72,6 @@ def json2csv(json_file, csv_file):
                 else:
                     csv.write(",".join(map(str, meta_row + [var, "NA", "NA"])) + "\n")
         csv.close()
-
-
     else:
         # If the file does not exist raise an error
         raise IOError("File does not exist: {0}".format(json_file))

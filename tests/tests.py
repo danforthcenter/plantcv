@@ -8,10 +8,11 @@ import numpy as np
 import cv2
 from plantcv import plantcv as pcv
 import plantcv.learn
+import plantcv.parallel
+import plantcv.utils
 # Import matplotlib and use a null Template to block plotting to screen
 # This will let us test debug = "plot"
 import matplotlib
-import plantcv.parallel
 
 PARALLEL_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "parallel_data")
 TEST_TMPDIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".cache")
@@ -4251,6 +4252,37 @@ def test_plantcv_visualize_histogram():
     pcv.params.debug = "plot"
     hist_header, hist_data, fig_hist = pcv.visualize.histogram(gray_img=img)
     assert np.sum(hist_data[3]) != 0
+
+
+# ##############################
+# Tests for the utils subpackage
+# ##############################
+def test_plantcv_utils_json2csv():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_json2csv")
+    os.mkdir(cache_dir)
+    plantcv.utils.json2csv(json_file=os.path.join(PARALLEL_TEST_DATA, "new_result.json"),
+                           csv_file=os.path.join(cache_dir, "exports"))
+    assert all([os.path.exists(os.path.join(cache_dir, "exports-single-value-traits.csv")),
+                os.path.exists(os.path.join(cache_dir, "exports-multi-value-traits.csv"))])
+
+
+def test_plantcv_utils_json2csv_no_json():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_json2csv_no_json")
+    os.mkdir(cache_dir)
+    with pytest.raises(IOError):
+        plantcv.utils.json2csv(json_file=os.path.join(PARALLEL_TEST_DATA, "not_a_file.json"),
+                               csv_file=os.path.join(cache_dir, "exports"))
+
+
+def test_plantcv_utils_json2csv_bad_json():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_json2csv_bad_json")
+    os.mkdir(cache_dir)
+    with pytest.raises(ValueError):
+        plantcv.utils.json2csv(json_file=os.path.join(PARALLEL_TEST_DATA, "bad_results", "invalid.txt"),
+                               csv_file=os.path.join(cache_dir, "exports"))
 
 
 # ##############################
