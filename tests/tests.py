@@ -22,25 +22,82 @@ TEST_PIPELINE = os.path.join(PARALLEL_TEST_DATA, "plantcv-script.py")
 META_FIELDS = {"imgtype": 0, "camera": 1, "frame": 2, "zoom": 3, "lifter": 4, "gain": 5, "exposure": 6, "id": 7}
 VALID_META = {
     # Camera settings
-    'camera': 'none',
-    'imgtype': 'none',
-    'zoom': 'none',
-    'exposure': 'none',
-    'gain': 'none',
-    'frame': 'none',
-    'lifter': 'none',
+    "camera": {
+        "label": "camera identifier",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
+    "imgtype": {
+        "label": "image type",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
+    "zoom": {
+        "label": "camera zoom setting",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
+    "exposure": {
+        "label": "camera exposure setting",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
+    "gain": {
+        "label": "camera gain setting",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
+    "frame": {
+        "label": "image series frame identifier",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
+    "lifter": {
+        "label": "imaging platform height setting",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
     # Date-Time
-    'timestamp': None,
+    "timestamp": {
+        "label": "datetime of image",
+        "datatype": "<class 'datetime.datetime'>",
+        "value": None
+    },
     # Sample attributes
-    'id': 'none',
-    'plantbarcode': 'none',
-    'treatment': 'none',
-    'cartag': 'none',
+    "id": {
+        "label": "image identifier",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
+    "plantbarcode": {
+        "label": "plant barcode identifier",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
+    "treatment": {
+        "label": "treatment identifier",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
+    "cartag": {
+        "label": "plant carrier identifier",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
     # Experiment attributes
-    'measurementlabel': 'none',
+    "measurementlabel": {
+        "label": "experiment identifier",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
     # Other
-    'other': 'none'
+    "other": {
+        "label": "other identifier",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    }
 }
+
 METADATA_COPROCESS = {
     'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
         'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383'),

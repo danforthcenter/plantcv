@@ -32,24 +32,80 @@ def options():
     # Values are default values in the event the metadata is missing
     valid_meta = {
         # Camera settings
-        'camera': 'none',
-        'imgtype': 'none',
-        'zoom': 'none',
-        'exposure': 'none',
-        'gain': 'none',
-        'frame': 'none',
-        'lifter': 'none',
+        "camera": {
+            "label": "camera identifier",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "imgtype": {
+            "label": "image type",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "zoom": {
+            "label": "camera zoom setting",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "exposure": {
+            "label": "camera exposure setting",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "gain": {
+            "label": "camera gain setting",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "frame": {
+            "label": "image series frame identifier",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "lifter": {
+            "label": "imaging platform height setting",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
         # Date-Time
-        'timestamp': None,
+        "timestamp": {
+            "label": "datetime of image",
+            "datatype": "<class 'datetime.datetime'>",
+            "value": None
+        },
         # Sample attributes
-        'id': 'none',
-        'plantbarcode': 'none',
-        'treatment': 'none',
-        'cartag': 'none',
+        "id": {
+            "label": "image identifier",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "plantbarcode": {
+            "label": "plant barcode identifier",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "treatment": {
+            "label": "treatment identifier",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "cartag": {
+            "label": "plant carrier identifier",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
         # Experiment attributes
-        'measurementlabel': 'none',
+        "measurementlabel": {
+            "label": "experiment identifier",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
         # Other
-        'other': 'none'
+        "other": {
+            "label": "other identifier",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        }
     }
     parser = argparse.ArgumentParser(description='Parallel imaging processing with PlantCV.',
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)

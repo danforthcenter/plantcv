@@ -111,7 +111,7 @@ def metadata_parser(data_dir, meta_fields, valid_meta, meta_filters, start_date,
                                 img_meta[field] = meta_value
                             # Or use the default value
                             else:
-                                img_meta[field] = valid_meta[field]
+                                img_meta[field] = valid_meta[field]["value"]
 
                         if start_date and end_date and img_meta['timestamp'] is not None:
                             in_date_range = _check_date_range(start_date, end_date, img_meta['timestamp'])
@@ -188,7 +188,7 @@ def metadata_parser(data_dir, meta_fields, valid_meta, meta_filters, start_date,
                             img_meta[field] = meta_value
                         # Or use the default value
                         else:
-                            img_meta[field] = valid_meta[field]
+                            img_meta[field] = valid_meta[field]["value"]
 
                     if start_date and end_date and img_meta['timestamp'] is not None:
                         in_date_range = _check_date_range(start_date, end_date, img_meta['timestamp'])

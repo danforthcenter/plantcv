@@ -3,6 +3,7 @@ import os
 import sys
 import re
 import json
+from copy import deepcopy
 
 
 # Build job list
@@ -60,8 +61,8 @@ def job_builder(meta, valid_meta, workflow, job_dir, out_dir, coprocess=None, ot
     # For each image
     for img in images:
         # Create JSON templates for each image
-        img_meta = {"metadata": {}, "observations": {}}
-        coimg_meta = {"metadata": {}, "observations": {}}
+        img_meta = {"metadata": deepcopy(valid_meta), "observations": {}}
+        coimg_meta = {"metadata": deepcopy(valid_meta), "observations": {}}
 
         # If there is an image co-processed with the image
         if (coprocess is not None) and ('coimg' in meta[img]):
@@ -69,20 +70,28 @@ def job_builder(meta, valid_meta, workflow, job_dir, out_dir, coprocess=None, ot
             coimg = meta[meta[img]['coimg']]
             coout = open(os.path.join(".", job_dir, meta[img]["coimg"] + ".txt"), 'w')
             # Store metadata in JSON
-            coimg_meta["metadata"]["image"] = os.path.join(coimg['path'], meta[img]['coimg'])
+            coimg_meta["metadata"]["image"] = {
+                "label": "image file",
+                "datatype": "<class 'str'>",
+                "value": os.path.join(coimg['path'], meta[img]['coimg'])
+            }
             # Valid metadata
             for m in list(valid_meta.keys()):
-                coimg_meta["metadata"][m] = coimg[m]
+                coimg_meta["metadata"][m]["value"] = coimg[m]
             json.dump(coimg_meta, coout)
             coout.close()
 
         # Create an output file to store the image processing results and populate with metadata
         outfile = open(os.path.join(".", job_dir, img + ".txt"), 'w')
         # Store metadata in JSON
-        img_meta["metadata"]["image"] = os.path.join(meta[img]['path'], img)
+        img_meta["metadata"]["image"] = {
+                "label": "image file",
+                "datatype": "<class 'str'>",
+                "value": os.path.join(meta[img]['path'], img)
+            }
         # Valid metadata
         for m in list(valid_meta.keys()):
-            img_meta["metadata"][m] = meta[img][m]
+            img_meta["metadata"][m]["value"] = meta[img][m]
         json.dump(img_meta, outfile)
 
         outfile.close()
