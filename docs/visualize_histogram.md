@@ -12,8 +12,10 @@ This is a plotting method used to examine the distribution of signal within an i
     - bins - Number of class to divide spectrum into (default bins=256)
     - color - The color of the line plot in the histogram (default color='red'). Users can input and color that is accepted by [plotnine ggplot](https://plotnine.readthedocs.io/en/stable/generated/plotnine.ggplot.html#plotnine.ggplot).
     - title - The title for the histogram (default title=None) 
+    
 **Context:**
     - Examine the distribution of the signal, this can help select a value for binary thresholding.
+    
 - **Example use:**
     - [Use In NIR Tutorial](nir_tutorial.md)
 

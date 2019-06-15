@@ -6,13 +6,13 @@ dependencies:
   - numpy>=1.11
   - pandas
   - python-dateutil
-  - scipy
+  - scipy < 1.3
   - scikit-image<0.15
   - pytest
   - plotnine
   - coveralls
   - nb_conda
   - pip:
-    - opencv-python<4
+    - opencv-python<4, >=3.4
 channels:
   - conda-forge

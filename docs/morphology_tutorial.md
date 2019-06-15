@@ -151,7 +151,7 @@ To better see details in this tutorial we cropped the image so there is less bla
  
 Generally, skeletonized images will have barbs, representing the width, that need to get pruned off. See [plantcv.morphology.prune](prune.md) 
 for an example. The function returns a pruned skeleton but the image that gets plot for debugging shows the portions of skeleton that get pruned 
-off. The function prunes *all* tips of a skeletonized image, and should be used as sparingly as possible since leaves will also get trimmed.
+off. The function prunes all tips of a skeletonized image, and should be used as sparingly as possible since leaves will also get trimmed.
 
 ![Screenshot](img/tutorial_images/morphology/pruned_skeleton.jpg)
 

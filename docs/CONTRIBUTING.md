@@ -25,6 +25,7 @@ If you need any help, please contact us.
     assuming one does not already exist.
 	- Clearly describe the issue including steps to reproduce when it is a bug.
 	- Make sure you fill in the earliest version that you know has the issue.
+	- Where applicable, provide the full workflow prior to the error and the image getting analyzed. 
 
 ## Contributing Text or Code
 
@@ -195,9 +196,12 @@ Start code with import of modules, for example:
 # Import external packages
 import numpy as np
 import cv2
+import os
 
 # Import functions from within plantcv
-from . import print_image
+from plantcv.plantcv import params 
+from plantcv.plantcv import plot_image
+from plantcv.plantcv import print_image
 ```
 
 Here is a sample of a new function. Arguments should be defined.
@@ -228,7 +232,7 @@ def new_function(img):
     returnval1 = some_code_on_img(img)
     
     if params.debug == "print":
-        print_image(img, (str(params.device) + '_new_function.jpg'))
+        print_image(img, os.path.join(params.debug_outdir, str(params.device) + '_new_function.jpg'))
     elif params.debug == 'plot':
         plot_image(img)
 
