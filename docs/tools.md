@@ -32,6 +32,7 @@ Subcommands:
                                              class.
             -o OUTFILE, --outfile OUTFILE    Trained classifier output filename.
             -p, --plots                      Make output plots.
+
 ```
 
 ### PlantCV utilities
@@ -51,6 +52,7 @@ optional arguments:
   -h, --help            show this help message and exit
   -j JSON, --json JSON  Input PlantCV JSON filename.
   -c CSV, --csv CSV     Output CSV filename prefix.
+
 ```
 
 The input JSON file is generally created by running `plantcv-workflow.py`, although there are some advanced scenarios
@@ -122,4 +124,5 @@ optional arguments:
   -o OTHER_ARGS, --other_args OTHER_ARGS
                         Other arguments to pass to the workflow script.
                         (default: None)
+
 ```
