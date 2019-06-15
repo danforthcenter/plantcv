@@ -4281,7 +4281,7 @@ def test_plantcv_utils_json2csv_bad_json():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_json2csv_bad_json")
     os.mkdir(cache_dir)
     with pytest.raises(ValueError):
-        plantcv.utils.json2csv(json_file=os.path.join(PARALLEL_TEST_DATA, "bad_results", "invalid.txt"),
+        plantcv.utils.json2csv(json_file=os.path.join(TEST_DATA, "incorrect_json_data.txt"),
                                csv_file=os.path.join(cache_dir, "exports"))
 
 
