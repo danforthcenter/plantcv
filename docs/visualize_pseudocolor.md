@@ -61,7 +61,7 @@ pseudo_img_on_input = pcv.visualize.pseudocolor(gray_img=img, obj=None, mask=mas
 pcv.params.debug='print'
 pseudo_crop_no_axes = pcv.visualize.pseudocolor(gray_img=img, obj=obj,  mask=mask,
                                                 background="white", cmap='viridis',
-                                                axes=False, padding = 'auto')
+                                                axes=False, obj_padding = 'auto')
 
 # Use a black background instead
 pseudo_img_black_bkgd = pcv.visualize.pseudocolor(gray_img=img, obj=None, mask=mask,
