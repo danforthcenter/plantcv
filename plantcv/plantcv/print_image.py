@@ -34,4 +34,5 @@ def print_image(img, filename):
         img.save(filename)
 
     else:
-        fatal_error("Error writing file " + filename + ": " + str(sys.exc_info()[0]))
+        fatal_error("Error writing file " + filename + ": input img is " + str(type(img))+ ", not a numpy.ndarray, " +
+                    "matplotlib.figure, or plotnine.ggplot and cannot get saved out with print_image.")

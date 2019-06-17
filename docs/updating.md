@@ -373,6 +373,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.3: NA
 * post v3.3: pruned_img = **plantcv.morphology.prune**(*skel_img, size*) 
+* post v3.4: pruned_skeleton, segmented_img, segment_objects = **plantcv.morphology.prune**(*skel_img, size=0, mask=None*) 
 
 #### plantcv.morphology.segment_angle
 
