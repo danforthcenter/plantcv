@@ -10,7 +10,7 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 from plantcv.plantcv import find_objects
 from plantcv.plantcv import color_palette
-from plantcv.plantcv.morphology import prune
+from plantcv.plantcv.morphology import _iterative_prune
 
 def _slope_to_intesect_angle(m1, m2):
     """ Calculate intersections angle (in degrees) from the slope of two lines
@@ -63,7 +63,7 @@ def segment_tangent_angle(segmented_img, objects, size):
         find_tangents = np.zeros(segmented_img.shape[:2], np.uint8)
         cv2.drawContours(find_tangents, objects, i, 255, 1, lineType=8)
         cv2.drawContours(labeled_img, objects, i, rand_color[i], params.line_thickness, lineType=8)
-        pruned_segment = prune(find_tangents, size)
+        pruned_segment = _iterative_prune(find_tangents, size)
         segment_ends = find_tangents - pruned_segment
         segment_end_obj, segment_end_hierarchy = find_objects(segment_ends, segment_ends)
         slopes = []
