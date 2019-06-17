@@ -136,11 +136,13 @@ nav:
         - 'Histogram': visualize_histogram.md
         - 'Pseudocolor': visualize_pseudocolor.md
     - 'Watershed Segmentation': watershed.md
+    - 'Within Frame': within_frame.md
   - 'Package plantcv.learn':
     - 'Naive Bayes': naive_bayes.md
     - 'Naive Bayes Multiclass': naive_bayes_multiclass.md
   - 'Add-on Packages':
     - 'Hyperspectral': https://plantcv.readthedocs.io/projects/hyperspectral
+  - 'Accessory tools': tools.md
 markdown_extensions:
   - toc:
       permalink: True

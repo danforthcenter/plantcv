@@ -6,15 +6,13 @@ from plantcv.plantcv import fatal_error
 
 # Process results. Parse individual image output files.
 ###########################################
-def process_results(valid_meta, job_dir, json_file):
+def process_results(job_dir, json_file):
     """Get results from individual files. Parse the results and recompile for SQLite.
 
     Args:
-        valid_meta:           Dictionary of valid metadata keys.
         job_dir:              Intermediate file output directory.
         json_file:            Json data table filehandle object.
 
-    :param valid_meta: dict
     :param job_dir: str
     :param json_file: obj
     """
@@ -43,10 +41,11 @@ def process_results(valid_meta, job_dir, json_file):
                     data["entities"].append(obs)
                     # Keep track of all metadata variables stored
                     for vars in obs["metadata"].keys():
-                        data["variables"][vars] = 1
+                        data["variables"][vars] = {"category": "metadata", "datatype": "<class 'str'>"}
                     # Keep track of all observations variables stored
                     for othervars in obs["observations"].keys():
-                        data["variables"][othervars] = 1
+                        data["variables"][othervars] = {"category": "observations",
+                                                        "datatype": obs["observations"][othervars]["datatype"]}
 
     # Write out json file with info from all images
     with open(json_file, 'w') as datafile:

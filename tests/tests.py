@@ -8,10 +8,11 @@ import numpy as np
 import cv2
 from plantcv import plantcv as pcv
 import plantcv.learn
+import plantcv.parallel
+import plantcv.utils
 # Import matplotlib and use a null Template to block plotting to screen
 # This will let us test debug = "plot"
 import matplotlib
-import plantcv.parallel
 
 PARALLEL_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "parallel_data")
 TEST_TMPDIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".cache")
@@ -22,25 +23,82 @@ TEST_PIPELINE = os.path.join(PARALLEL_TEST_DATA, "plantcv-script.py")
 META_FIELDS = {"imgtype": 0, "camera": 1, "frame": 2, "zoom": 3, "lifter": 4, "gain": 5, "exposure": 6, "id": 7}
 VALID_META = {
     # Camera settings
-    'camera': 'none',
-    'imgtype': 'none',
-    'zoom': 'none',
-    'exposure': 'none',
-    'gain': 'none',
-    'frame': 'none',
-    'lifter': 'none',
+    "camera": {
+        "label": "camera identifier",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
+    "imgtype": {
+        "label": "image type",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
+    "zoom": {
+        "label": "camera zoom setting",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
+    "exposure": {
+        "label": "camera exposure setting",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
+    "gain": {
+        "label": "camera gain setting",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
+    "frame": {
+        "label": "image series frame identifier",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
+    "lifter": {
+        "label": "imaging platform height setting",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
     # Date-Time
-    'timestamp': None,
+    "timestamp": {
+        "label": "datetime of image",
+        "datatype": "<class 'datetime.datetime'>",
+        "value": None
+    },
     # Sample attributes
-    'id': 'none',
-    'plantbarcode': 'none',
-    'treatment': 'none',
-    'cartag': 'none',
+    "id": {
+        "label": "image identifier",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
+    "plantbarcode": {
+        "label": "plant barcode identifier",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
+    "treatment": {
+        "label": "treatment identifier",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
+    "cartag": {
+        "label": "plant carrier identifier",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
     # Experiment attributes
-    'measurementlabel': 'none',
+    "measurementlabel": {
+        "label": "experiment identifier",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
     # Other
-    'other': 'none'
+    "other": {
+        "label": "other identifier",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    }
 }
+
 METADATA_COPROCESS = {
     'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
         'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383'),
@@ -384,9 +442,9 @@ def test_plantcv_parallel_process_results():
     # Create a test tmp directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_process_results")
     os.mkdir(cache_dir)
-    plantcv.parallel.process_results(valid_meta=VALID_META, job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
+    plantcv.parallel.process_results(job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
                                      json_file=os.path.join(cache_dir, 'appended_results.json'))
-    plantcv.parallel.process_results(valid_meta=VALID_META, job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
+    plantcv.parallel.process_results(job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
                                      json_file=os.path.join(cache_dir, 'appended_results.json'))
     # Assert that the output JSON file matches the expected output JSON file
     result_file = open(os.path.join(cache_dir, "appended_results.json"), "r")
@@ -402,7 +460,7 @@ def test_plantcv_parallel_process_results_new_output():
     # Create a test tmp directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_process_results_new_output")
     os.mkdir(cache_dir)
-    plantcv.parallel.process_results(valid_meta=VALID_META, job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
+    plantcv.parallel.process_results(job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
                                      json_file=os.path.join(cache_dir, 'new_result.json'))
     # Assert output matches expected values
     result_file = open(os.path.join(cache_dir, "new_result.json"), "r")
@@ -417,7 +475,7 @@ def test_plantcv_parallel_process_results_new_output():
 def test_plantcv_parallel_process_results_valid_json():
     # Test when the file is a valid json file but doesn't contain expected keys
     with pytest.raises(RuntimeError):
-        plantcv.parallel.process_results(valid_meta=VALID_META, job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
+        plantcv.parallel.process_results(job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
                                          json_file=os.path.join(PARALLEL_TEST_DATA, "valid.json"))
 
 
@@ -428,7 +486,7 @@ def test_plantcv_parallel_process_results_invalid_json():
     # Move the test data to the tmp directory
     shutil.copytree(os.path.join(PARALLEL_TEST_DATA, "bad_results"), os.path.join(cache_dir, "bad_results"))
     with pytest.raises(RuntimeError):
-        plantcv.parallel.process_results(valid_meta=VALID_META, job_dir=os.path.join(cache_dir, "bad_results"),
+        plantcv.parallel.process_results(job_dir=os.path.join(cache_dir, "bad_results"),
                                          json_file=os.path.join(cache_dir, "bad_results", "invalid.txt"))
 
 
@@ -4272,6 +4330,37 @@ def test_plantcv_visualize_histogram():
     pcv.params.debug = "plot"
     hist_header, hist_data, fig_hist = pcv.visualize.histogram(gray_img=img)
     assert np.sum(hist_data[3]) != 0
+
+
+# ##############################
+# Tests for the utils subpackage
+# ##############################
+def test_plantcv_utils_json2csv():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_json2csv")
+    os.mkdir(cache_dir)
+    plantcv.utils.json2csv(json_file=os.path.join(TEST_DATA, "merged_output.json"),
+                           csv_file=os.path.join(cache_dir, "exports"))
+    assert all([os.path.exists(os.path.join(cache_dir, "exports-single-value-traits.csv")),
+                os.path.exists(os.path.join(cache_dir, "exports-multi-value-traits.csv"))])
+
+
+def test_plantcv_utils_json2csv_no_json():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_json2csv_no_json")
+    os.mkdir(cache_dir)
+    with pytest.raises(IOError):
+        plantcv.utils.json2csv(json_file=os.path.join(TEST_DATA, "not_a_file.json"),
+                               csv_file=os.path.join(cache_dir, "exports"))
+
+
+def test_plantcv_utils_json2csv_bad_json():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_json2csv_bad_json")
+    os.mkdir(cache_dir)
+    with pytest.raises(ValueError):
+        plantcv.utils.json2csv(json_file=os.path.join(TEST_DATA, "incorrect_json_data.txt"),
+                               csv_file=os.path.join(cache_dir, "exports"))
 
 
 # ##############################

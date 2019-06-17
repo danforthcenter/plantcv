@@ -22,41 +22,72 @@ Example (abbreviated) JSON data:
 ```json
 {
     "variables": {
-        "image": 1,
-        "camera": 1,
-        "imgtype": 1,
-        "zoom": 1,
-        "exposure": 1,
-        "gain": 1,
-        "frame": 1,
-        "lifter": 1,
-        "timestamp": 1,
-        "id": 1,
-        "plantbarcode": 1,
-        "treatment": 1,
-        "cartag": 1,
-        "measurementlabel": 1,
-        "other": 1,
-        "pixel_area": 1
+        "camera": {
+            "category": "metadata",
+            "datatype": "<class 'str'>"
+        },
+        "imgtype": {
+            "category": "metadata",
+            "datatype": "<class 'str'>"
+        },
+        "timestamp": {
+            "category": "metadata",
+            "datatype": "<class 'str'>"
+        },
+        "plantbarcode": {
+            "category": "metadata",
+            "datatype": "<class 'str'>"
+        },
+        "treatment": {
+            "category": "metadata",
+            "datatype": "<class 'str'>"
+        },
+        "image": {
+            "category": "metadata",
+            "datatype": "<class 'str'>"
+        },
+        "area": {
+            "category": "observations",
+            "datatype": "<class 'int'>"
+        },
+        "convex_hull_area": {
+            "category": "observations",
+            "datatype": "<class 'list'>"
+        }
     },
     "entities": [
         {
             "metadata": {
-                "image": "./images/snapshot57393/VIS_SV_90_z1_h1_g0_e82_117872.png",
-                "camera": "SV",
-                "imgtype": "VIS",
-                "zoom": "z1",
-                "exposure": "e82",
-                "gain": "g0",
-                "frame": "90",
-                "lifter": "h1",
-                "timestamp": "2014-10-22 17:59:23.046",
-                "id": "117872",
-                "plantbarcode": "Ca002AA010557",
-                "treatment": "none",
-                "cartag": "1663",
-                "measurementlabel": "C002ch_092214_biomass",
-                "other": "none"
+                "camera": {
+                    "label": "camera identifier",
+                    "datatype": "<class 'str'>",
+                    "value": "SV"
+                },
+                "imgtype": {
+                    "label": "image type",
+                    "datatype": "<class 'str'>",
+                    "value": "VIS"
+                },
+                "timestamp": {
+                    "label": "datetime of image",
+                    "datatype": "<class 'datetime.datetime'>",
+                    "value": "2014-10-22 17:59:23.046"
+                },
+                "plantbarcode": {
+                    "label": "plant barcode identifier",
+                    "datatype": "<class 'str'>",
+                    "value": "Ca002AA010557"
+                },
+                "treatment": {
+                    "label": "treatment identifier",
+                    "datatype": "<class 'str'>",
+                    "value": "none"
+                },
+                "image": {
+                    "label": "image file",
+                    "datatype": "<class 'str'>",
+                    "value": "./images/snapshot57393/VIS_SV_0_z1_h1_g0_e65_117881.png"
+                }
             },
             "observations": {
                 "pixel_area": {
@@ -80,6 +111,9 @@ Example (abbreviated) JSON data:
     ]
 }
 ```
+
+Data in this structure can be converted to tables for downstream analysis using the provided script 
+`plantcv-utils.py json2csv`, see [Accessory Tools](tools.md) for more details.
 
 ## Summary of Output Metadata
 
