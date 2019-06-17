@@ -10,7 +10,7 @@ from plantcv.plantcv import fatal_error
 
 
 def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255,
-                axes=True, colorbar=True, padding="auto"):
+                axes=True, colorbar=True, obj_padding="auto"):
     """Pseudocolor any grayscale image to custom colormap
 
     Inputs:
