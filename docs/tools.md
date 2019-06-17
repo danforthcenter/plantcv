@@ -17,7 +17,7 @@ Subcommands:
         usage: plantcv-train.py naive_bayes [-h] -i IMGDIR -b MASKDIR -o OUTFILE [-p]
         
         optional arguments:
-            -h, --help                       show this help message and exit
+            -h, --help                       Show this help message and exit
             -i IMGDIR, --imgdir IMGDIR       Input directory containing images.
             -b MASKDIR, --maskdir MASKDIR    Input directory containing black/white masks.
             -o OUTFILE, --outfile OUTFILE    Trained classifier output filename.
@@ -27,7 +27,7 @@ Subcommands:
         usage: plantcv-train.py naive_bayes_multiclass [-h] -f FILE -o OUTFILE [-p]
         
         optional arguments:
-            -h, --help                       show this help message and exit
+            -h, --help                       Show this help message and exit
             -f FILE, --file FILE             Input file containing a table of pixel RGB values sampled for each input 
                                              class.
             -o OUTFILE, --outfile OUTFILE    Trained classifier output filename.
@@ -49,7 +49,7 @@ CSV-formatted tables for downstream analysis in [R](https://www.r-project.org/),
 usage: plantcv-utils.py json2csv [-h] -j JSON -c CSV
 
 optional arguments:
-  -h, --help            show this help message and exit
+  -h, --help            Show this help message and exit
   -j JSON, --json JSON  Input PlantCV JSON filename.
   -c CSV, --csv CSV     Output CSV filename prefix.
 
@@ -78,8 +78,10 @@ usage: plantcv-workflow.py [-h] -d DIR [-a ADAPTOR] -p WORKFLOW -j JSON
 Parallel imaging processing with PlantCV.
 
 optional arguments:
-  -h, --help            show this help message and exit
-  -d DIR, --dir DIR     Input directory containing images or snapshots.
+  -h, --help            
+                        Show this help message and exit
+  -d DIR, --dir DIR     
+                        Input directory containing images or snapshots.
                         (default: None)
   -a ADAPTOR, --adaptor ADAPTOR
                         Image metadata reader adaptor. PhenoFront metadata is
@@ -89,23 +91,28 @@ optional arguments:
                         (default: phenofront)
   -p WORKFLOW, --workflow WORKFLOW
                         Workflow script file. (default: None)
-  -j JSON, --json JSON  Output database file name. (default: None)
+  -j JSON, --json JSON  
+                        Output database file name. (default: None)
   -i OUTDIR, --outdir OUTDIR
                         Output directory for images. Not required by all
                         workflows. (default: .)
-  -T CPU, --cpu CPU     Number of CPU to use. (default: 1)
-  -c, --create          will overwrite an existing databaseWarning: activating
+  -T CPU, --cpu CPU     
+                        Number of CPU to use. (default: 1)
+  -c, --create          
+                        Will overwrite an existing database. Warning: activating
                         this option will delete an existing database!
                         (default: False)
   -D DATES, --dates DATES
                         Date range. Format: YYYY-MM-DD-hh-mm-ss_YYYY-MM-DD-hh-
                         mm-ss. If the second date is excluded then the current
                         date is assumed. (default: None)
-  -t TYPE, --type TYPE  Image format type (extension). (default: png)
+  -t TYPE, --type TYPE  
+                        Image format type (extension). (default: png)
   -l DELIMITER, --delimiter DELIMITER
                         Image file name metadata delimiter character.
                         (default: _)
-  -f META, --meta META  Image file name metadata format. List valid metadata
+  -f META, --meta META  
+                        Image file name metadata format. List valid metadata
                         fields separated by the delimiter (-l/--delimiter).
                         Valid metadata fields are: camera, imgtype, zoom,
                         exposure, gain, frame, lifter, timestamp, id,
@@ -120,7 +127,8 @@ optional arguments:
                         Coprocess the specified imgtype with the imgtype
                         specified in --match (e.g. coprocess NIR images with
                         VIS). (default: None)
-  -w, --writeimg        Include analysis images in output. (default: False)
+  -w, --writeimg        
+                        Include analysis images in output. (default: False)
   -o OTHER_ARGS, --other_args OTHER_ARGS
                         Other arguments to pass to the workflow script.
                         (default: None)
