@@ -939,7 +939,7 @@ def test_plantcv_analyze_object_small_contour():
     # Test with debug = None
     pcv.params.debug = None
     obj_images = pcv.analyze_object(img=img, obj=obj_contour, mask=mask)
-    assert len(obj_images) != 0
+    assert obj_images is None
 
 
 def test_plantcv_apply_mask_white():
@@ -4235,7 +4235,7 @@ def test_plantcv_visualize_pseudocolor():
     _ = pcv.visualize.pseudocolor(gray_img=img, mask=None)
     _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="black", obj=obj_contour, axes=False,
                                   colorbar=False)
-    _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="image", obj=obj_contour)
+    _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="image", obj=obj_contour, obj_padding=15)
     _ = pcv.visualize.pseudocolor(gray_img=img, mask=None, axes=False, colorbar=False)
     # Test with debug = None
     pcv.params.debug = None
@@ -4265,6 +4265,18 @@ def test_plantcv_visualize_pseudocolor_bad_background():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="pink")
+
+
+def test_plantcv_visualize_pseudocolor_bad_padding():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_pseudocolor_bad_background")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
+    obj_contour = contours_npz['arr_0']
+    with pytest.raises(RuntimeError):
+        _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, obj=obj_contour, obj_padding="pink")
 
 
 def test_plantcv_visualize_colorize_masks():

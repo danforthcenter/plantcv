@@ -10,20 +10,23 @@ from plantcv.plantcv import fatal_error
 
 
 def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255,
-                axes=True, colorbar=True):
+                axes=True, colorbar=True, obj_padding="auto"):
     """Pseudocolor any grayscale image to custom colormap
 
     Inputs:
-    gray_img    = grayscale image data
-    obj         = if provided, the pseudocolored image gets cropped down to the region of interest
-    mask        = binary mask
-    cmap        = colormap
-    background  = background color/type, options are "image" (gray_img), "white", or "black"
-                  (a mask must be supplied)
-    min_value   = minimum value for range of interest
-    max_value   = maximum value for range of interest
-    axes        = if False then x- and y-axis won't be displayed, nor will the title
-    colorbar    = if False then colorbar won't be displayed
+    gray_img    = grayscale image dataROI or plant contour object. If provided, the pseudocolored image gets cropped
+                  down to the region of interest.if provided, the pseudocolored image gets cropped down to the region
+                  of interest
+    mask        = (optional) binary mask
+    cmap        = (optional) colormap. default is the matplotlib default, viridis
+    background  = (optional) background color/type, options are "image" (gray_img), "white", or "black" (requires a mask)
+    min_value   = (optional) minimum value for range of interest. default = 0
+    max_value   = (optional) maximum value for range of interest. default = 255
+    axes        = (optional) if False then x- and y-axis won't be displayed, nor will the title. default = True
+    colorbar    = (optional) if False then colorbar won't be displayed. default = True
+    obj_padding = (optional) if "auto" (default) and an obj is supplied, then the image is cropped to an extent 20%
+                  larger in each dimension than the object. An single integer is also accepted to define the padding
+                  in pixels
 
     Returns:
     pseudo_image = pseudocolored image
@@ -37,6 +40,7 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
     :param max_value: numeric
     :param dpi: int
     :param axes: bool
+    :param obj_padding: str, int
     :return pseudo_image: numpy.ndarray
     """
 
@@ -62,9 +66,16 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
             # Crop down the image
             crop_img = gray_img[y:y + h, x:x + w]
 
-            # Calculate the buffer size based on the contour size
-            offsetx = int(w / 5)
-            offsety = int(h / 5)
+            # Setup a buffer around the bounding box of obj
+            if type(obj_padding) is int:
+                offsetx = obj_padding
+                offsety = obj_padding
+            elif type(obj_padding) is str and obj_padding.upper() == "AUTO":
+                # Calculate the buffer size based on the contour size
+                offsetx = int(w / 5)
+                offsety = int(h / 5)
+            else:
+                fatal_error("Padding must either be 'auto' or an integer.")
 
             if background.upper() == "IMAGE":
                 gray_img1 = gray_img1[y - offsety:y + h + offsety, x - offsetx:x + w + offsetx]
