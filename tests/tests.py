@@ -939,7 +939,7 @@ def test_plantcv_analyze_object_small_contour():
     # Test with debug = None
     pcv.params.debug = None
     obj_images = pcv.analyze_object(img=img, obj=obj_contour, mask=mask)
-    assert len(obj_images) != 0
+    assert obj_images is None
 
 
 def test_plantcv_apply_mask_white():
