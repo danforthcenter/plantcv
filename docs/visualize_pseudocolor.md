@@ -11,7 +11,7 @@ unaltered, the  matplotlib default is 100 pixels per inch.
 
 - **Parameters:**
     - gray_img   - Grayscale image data
-    - obj        - (optional) if provided, the pseudocolored image gets cropped down to the region of interest.
+    - obj        - ROI or plant contour object (optional) if provided, the pseudocolored image gets cropped down to the region of interest.
     - mask       - Binary mask made from selected contours
     - background - Background color/type. Options are "image" (gray_img), "white", or "black". A mask must be supplied.
     - cmap       - Custom colormap, see [here](https://matplotlib.org/tutorials/colors/colormaps.html) for tips on how to choose a colormap in Matplotlib.
@@ -59,7 +59,7 @@ pseudo_img_on_input = pcv.visualize.pseudocolor(gray_img=img, obj=None, mask=mas
 
 # Print out a pseudocolored image with cropping enabled, axes disabled.
 pcv.params.debug='print'
-pseudo_crop_no_axes = pcv.visualize.pseudocolor(gray_img=img, obj=obj,  mask=mask,
+pseudo_crop_no_axes = pcv.visualize.pseudocolor(gray_img=img, obj=obj, mask=mask,
                                                 background="white", cmap='viridis',
                                                 axes=False, obj_padding = 'auto')
 
