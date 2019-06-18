@@ -4099,7 +4099,7 @@ def test_plantcv_visualize_pseudocolor():
     _ = pcv.visualize.pseudocolor(gray_img=img, mask=None)
     _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="black", obj=obj_contour, axes=False,
                                   colorbar=False)
-    _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="image", obj=obj_contour, padding=15)
+    _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="image", obj=obj_contour, obj_padding=15)
     _ = pcv.visualize.pseudocolor(gray_img=img, mask=None, axes=False, colorbar=False)
     # Test with debug = None
     pcv.params.debug = None
@@ -4140,7 +4140,7 @@ def test_plantcv_visualize_pseudocolor_bad_padding():
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
     obj_contour = contours_npz['arr_0']
     with pytest.raises(RuntimeError):
-        _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, obj=obj_contour, padding="pink")
+        _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, obj=obj_contour, obj_padding="pink")
 
 
 def test_plantcv_visualize_colorize_masks():
