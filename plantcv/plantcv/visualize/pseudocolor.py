@@ -64,10 +64,10 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
             crop_img = gray_img[y:y + h, x:x + w]
 
             # Setup a buffer around the bounding box of obj
-            if type(padding) is int:
-                offsetx = padding
-                offsety = padding
-            elif type(padding) is str and padding.upper() == "AUTO":
+            if type(obj_padding) is int:
+                offsetx = obj_padding
+                offsety = obj_padding
+            elif type(obj_padding) is str and obj_padding.upper() == "AUTO":
                 # Calculate the buffer size based on the contour size
                 offsetx = int(w / 5)
                 offsety = int(h / 5)
