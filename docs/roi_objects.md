@@ -3,7 +3,7 @@
 Find objects within a region of interest, either cut those objects to the region of interest 
 or include objects that overlap with the region of interest.
 
-**plantcv.roi_objects**(*img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, roi_type*)
+**plantcv.roi_objects**(*img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, roi_type='partial'*)
 
 **returns** kept objects, object hierarchy, object mask, object area
 
@@ -16,7 +16,7 @@ completely within the image.
     - roi_hierarchy = contour of roi, output from one of the pcv.roi subpackage functions
     - object_contour = contours of objects, output from "find_objects" function 
     - obj_hierarchy = hierarchy of objects, output from "find_objects" function
-    - roi_type = 'cutto', 'partial' (for partially inside, default), or 'largest' (keep only the largest contour)
+    - roi_type = 'partial' (for partially inside, default), 'cutto', or 'largest' (keep only the largest contour)
     
 - **Context:**
     - Used to find objects within a region of interest and decide which ones to keep.
