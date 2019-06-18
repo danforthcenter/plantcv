@@ -5,14 +5,13 @@ pseudocolored image. Additionally, optional maximum and minimum values can be sp
 then the image gets saved to `pcv.params.debug_outdir`, and`pcv.params.dpi` can be set for the image that gets saved. If
 unaltered, the  matplotlib default is 100 pixels per inch.
 
-**plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, background="image", cmap=None, min_value=0, max_value=255, axes=True, colorbar=True, padding='auto'*)
+**plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, background="image", cmap=None, min_value=0, max_value=255, axes=True, colorbar=True, obj_padding='auto'*)
 
 **returns** pseudocolored image (that can be saved with `pcv.print_image`)
 
 - **Parameters:**
     - gray_img   - Grayscale image data
     - obj        - (optional) if provided, the pseudocolored image gets cropped down to the region of interest.
-    - objpadding - buffer around the obj to enlarge the area that is cropped. Expects a tuple (x,y) and is used as a percent increase in each direction. default is (0,0). (0.5,0.5) is a 50% increase in each dimension.
     - mask       - Binary mask made from selected contours
     - background - Background color/type. Options are "image" (gray_img), "white", or "black". A mask must be supplied.
     - cmap       - Custom colormap, see [here](https://matplotlib.org/tutorials/colors/colormaps.html) for tips on how to choose a colormap in Matplotlib.
@@ -20,7 +19,7 @@ unaltered, the  matplotlib default is 100 pixels per inch.
     - max_value  - Maximum value (optional) for range of the colorbar.
     - axes       - If False then the title, x-axis, and y-axis won't be displayed (default axes=True).
     - colorbar   - If False then the colorbar won't be displayed (default colorbar=True)
-    - padding    - if "auto" (default) and an obj is supplied, then the image is cropped to an extent 20% larger in each dimension than the object. A single integer is also accepted to define the padding in pixels.
+    - obj_padding    - if "auto" (default) and an obj is supplied, then the image is cropped to an extent 20% larger in each dimension than the object. A single integer is also accepted to define the padding in pixels.
 
 - **Context:**
     - Used to pseudocolor any grayscale image to custom colormap
@@ -62,7 +61,7 @@ pseudo_img_on_input = pcv.visualize.pseudocolor(gray_img=img, obj=None, mask=mas
 pcv.params.debug='print'
 pseudo_crop_no_axes = pcv.visualize.pseudocolor(gray_img=img, obj=obj,  mask=mask,
                                                 background="white", cmap='viridis',
-                                                axes=False, padding = 'auto')
+                                                axes=False, obj_padding = 'auto')
 
 # Use a black background instead
 pseudo_img_black_bkgd = pcv.visualize.pseudocolor(gray_img=img, obj=None, mask=mask,

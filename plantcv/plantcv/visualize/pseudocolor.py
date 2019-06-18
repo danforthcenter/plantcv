@@ -10,13 +10,12 @@ from plantcv.plantcv import fatal_error
 
 
 def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255,
-                axes=True, colorbar=True, padding="auto"):
+                axes=True, colorbar=True, obj_padding="auto"):
     """Pseudocolor any grayscale image to custom colormap
 
     Inputs:
     gray_img    = grayscale image data
     obj         = (optional) if provided, the pseudocolored image gets cropped down to the region of interest
-    objpadding  = (optional) buffers the extents of the obj to enlarge the area that is cropped. Expects a tuple (x,y) is used as a percent increase in each direction. default is (0,0). (0.5,0.5) is a 50% increase in size.
     mask        = (optional) binary mask
     cmap        = (optional) colormap. default is the matplotlib default, viridis
     background  = (optional) background color/type, options are "image" (gray_img), "white", or "black" (requires a mask)
@@ -24,7 +23,7 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
     max_value   = (optional) maximum value for range of interest. default = 255
     axes        = (optional) if False then x- and y-axis won't be displayed, nor will the title. default = True
     colorbar    = (optional) if False then colorbar won't be displayed. default = True
-    padding     = (optional) if "auto" (default) and an obj is supplied, then the image is cropped to an extent 20% larger in each dimension than the object. An single integer is also accepted to define the padding in pixels
+    obj_padding = (optional) if "auto" (default) and an obj is supplied, then the image is cropped to an extent 20% larger in each dimension than the object. An single integer is also accepted to define the padding in pixels
 
     Returns:
     pseudo_image = pseudocolored image
@@ -38,7 +37,7 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
     :param max_value: numeric
     :param dpi: int
     :param axes: bool
-    :param padding: str, int
+    :param obj_padding: str, int
     :return pseudo_image: numpy.ndarray
     """
 
