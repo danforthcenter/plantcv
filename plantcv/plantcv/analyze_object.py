@@ -31,7 +31,7 @@ def analyze_object(img, obj, mask):
 
     # Valid objects can only be analyzed if they have >= 5 vertices
     if len(obj) < 5:
-        return None, None, None
+        return None
 
     ori_img = np.copy(img)
     # Convert grayscale images to color

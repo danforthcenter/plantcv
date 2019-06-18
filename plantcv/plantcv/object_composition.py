@@ -46,7 +46,8 @@ def object_composition(img, contours, hierarchy):
 
     ids = np.where(stack == 1)[0]
     if len(ids) > 0:
-        group = np.vstack(contours[i] for i in ids)
+        contour_list = [contours[i] for i in ids]
+        group = np.vstack(contour_list)
         cv2.drawContours(mask, contours, -1, 255, -1, hierarchy=hierarchy)
 
         if params.debug is not None:
