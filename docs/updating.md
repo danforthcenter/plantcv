@@ -266,6 +266,11 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, filtered_img = **plantcv.fill**(*img, mask, size, device, debug=None*)
 * post v3.0dev2: filtered_img = **plantcv.fill**(*bin_img, size*)
 
+#### plantcv.fill_holes
+
+* pre v3.3: NA
+* post v3.3: filtered_img = **plantcv.fill**(*bin_img*)
+
 #### plantcv.find_objects
 
 * pre v3.0dev2: device, objects, hierarchy = **plantcv.find_objects**(*img, mask, device, debug=None*)
@@ -368,6 +373,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.3: NA
 * post v3.3: pruned_img = **plantcv.morphology.prune**(*skel_img, size*) 
+* post v3.4: pruned_skeleton, segmented_img, segment_objects = **plantcv.morphology.prune**(*skel_img, size=0, mask=None*) 
 
 #### plantcv.morphology.segment_angle
 
@@ -544,6 +550,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, kept_cnt, hierarchy, mask, obj_area = **plantcv.roi_objects**(*img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, device, debug=None*)
 * post v3.0dev2: kept_cnt, hierarchy, mask, obj_area = **plantcv.roi_objects**(*img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_hierarchy*)
+* post v3.3: kept_cnt, hierarchy, mask, obj_area = **plantcv.roi_objects**(*img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy,roi_type='partial'*)
 
 #### plantcv.rotate
 

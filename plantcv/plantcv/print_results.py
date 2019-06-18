@@ -16,22 +16,12 @@ def print_results(filename):
     :return:
     """
 
-    # READ METADATA TEMP FILE AND ADD MEASUREMENTS TO META DATA DICTIONARY
-    meta_data = []
-
-    hierarchical_data = {}
-    hierarchical_data['metadata'] = {}
-    hierarchical_data['observations'] = outputs.observations
-
-    exists = os.path.isfile(filename)
-    if exists:
+    if os.path.isfile(filename):
         with open(filename, 'r') as f:
-            reader = csv.reader(f, dialect='excel', delimiter='\t')
-            for row in reader:
-                meta_data.append(row)
-        for i, item in enumerate(meta_data):
-            if item[0] == "META":
-                hierarchical_data['metadata'][item[1]] = item[2]
+            hierarchical_data = json.load(f)
+            hierarchical_data["observations"] = outputs.observations
+    else:
+        hierarchical_data = {"metadata": {}, "observations": outputs.observations}
 
     with open(filename, mode='w') as f:
         json.dump(hierarchical_data, f)

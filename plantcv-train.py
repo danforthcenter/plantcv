@@ -45,6 +45,11 @@ def options():
     nbm_cmd.add_argument("-p", "--plots", help="Make output plots.", default=False, action="store_true")
     nbm_cmd.set_defaults(func=run_naive_bayes_multiclass)
 
+    # If no arguments are given, print the help menu
+    if len(sys.argv) == 1:
+        parser.print_help(sys.stderr)
+        sys.exit(1)
+
     # Parse command-line options
     args = parser.parse_args()
     # Execute the selected training method

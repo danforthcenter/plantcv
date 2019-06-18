@@ -67,6 +67,7 @@ nav:
     - 'Get NIR Images': get_nir.md
     - 'Erosion': erode.md
     - 'Fill Objects': fill.md
+    - 'Fill Holes': fill_holes.md
     - 'Find Objects': find_objects.md
     - 'Histogram Normalization': HistEqualization.md
     - 'Image Add': image_add.md
@@ -89,6 +90,7 @@ nav:
       - 'Find Tips': find_tips.md
       - 'Prune': prune.md
       - 'Segment Angles': segment_angle.md
+      - 'Combine Segments': segment_combine.md
       - 'Segment Curvature': segment_curvature.md
       - 'Segment Euclidean Length': segment_euclidean_length.md
       - 'Segment ID': segment_id.md
@@ -134,11 +136,13 @@ nav:
         - 'Histogram': visualize_histogram.md
         - 'Pseudocolor': visualize_pseudocolor.md
     - 'Watershed Segmentation': watershed.md
+    - 'Within Frame': within_frame.md
   - 'Package plantcv.learn':
     - 'Naive Bayes': naive_bayes.md
     - 'Naive Bayes Multiclass': naive_bayes_multiclass.md
   - 'Add-on Packages':
     - 'Hyperspectral': https://plantcv.readthedocs.io/projects/hyperspectral
+  - 'Accessory tools': tools.md
 markdown_extensions:
   - toc:
       permalink: True

@@ -10,7 +10,7 @@ the images plot to the screen. Debug mode allows users to visualize and optimize
 
 For simple input and output, a helper function [plantcv.transform.correct_color](transform_correct_color.md) was developed.
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/nir_tutorial.ipynb) Check out our interactive NIR tutorial! 
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/color_correct_tutorial.ipynb) Check out our interactive Color Correction tutorial! 
 
 Also see [here](#color-correction-script) for the complete script. 
 

@@ -84,8 +84,7 @@ output           = $(Cluster).$(Process).out
 error            = $(Cluster).$(Process).error
 request_cpus     = 16
 notification     = always
-nice_user        =False
-accounting_group = $ENV(CONDOR_GROUP)
+nice_user        = False
 getenv           = true
 ####################
 
@@ -139,3 +138,11 @@ We normally execute workflows as a shell script or as a condor jobfile (or dagma
 -w
 
 ```
+
+### Convert the output JSON file into CSV tables
+
+```bash
+plantcv-utils.py json2csv -j output.json -c result-table
+```
+
+See [Accessory Tools](tools.md) for more information.

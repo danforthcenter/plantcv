@@ -9,23 +9,33 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import find_objects
 from plantcv.plantcv import image_subtract
 from plantcv.plantcv.morphology import find_tips
+from plantcv.plantcv.morphology import segment_sort
+from plantcv.plantcv.morphology import segment_skeleton
 
 
-def prune(skel_img, size):
+def prune(skel_img, size=0, mask=None):
     """
-    The pruning algorithm was inspired by Jean-Patrick Pommier: https://gist.github.com/jeanpat/5712699
-    Iteratively remove endpoints (tips) from a skeletonized image. "Prunes" barbs off a skeleton.
+    The pruning algorithm proposed by https://github.com/karnoldbio
+    Segments a skeleton into discrete pieces, prunes off all segments less than or
+    equal to user specified size. Returns the remaining objects as a list and the
+    pruned skeleton.
 
     Inputs:
     skel_img    = Skeletonized image
     size        = Size to get pruned off each branch
+    mask        = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
 
     Returns:
-    pruned_img  = Pruned image
+    pruned_img      = Pruned image
+    segmented_img   = Segmented debugging image
+    segment_objects = List of contours
 
     :param skel_img: numpy.ndarray
     :param size: int
+    :param mask: numpy.ndarray
     :return pruned_img: numpy.ndarray
+    :return segmented_img: numpy.ndarray
+    :return segment_objects: list
 
     """
     # Store debug
@@ -35,24 +45,47 @@ def prune(skel_img, size):
     pruned_img = skel_img.copy()
 
     # Check to see if the skeleton has multiple objects
-    objects, _ = find_objects(pruned_img, pruned_img)
-    if not len(objects) == 1:
+    skel_objects, _ = find_objects(skel_img, skel_img)
+    if not len(skel_objects) == 1:
         print("Warning: Multiple objects detected! Pruning will further separate the difference pieces.")
 
-    # Iteratively remove endpoints (tips) from a skeleton
-    for i in range(0, size):
+    _, objects = segment_skeleton(skel_img)
+    kept_segments = []
+    removed_segments = []
+
+    if size>0:
+        # If size>0 then check for segments that are smaller than size pixels long
+
+
+        # Sort through segments since we don't want to remove primary segments
+        secondary_objects, primary_objects = segment_sort(skel_img, objects)
+
+        # Keep segments longer than specified size
+        for i in range(0, len(secondary_objects)):
+            if len(secondary_objects[i]) > size:
+                kept_segments.append(secondary_objects[i])
+            else:
+                removed_segments.append(secondary_objects[i])
+
+        # Draw the contours that got removed
+        removed_barbs = np.zeros(skel_img.shape[:2], np.uint8)
+        cv2.drawContours(removed_barbs, removed_segments, -1, 255, 1,
+                         lineType=8)
+        # Subtract all short segments from the skeleton image
+        pruned_img = image_subtract(pruned_img, removed_barbs)
+        # Prune off one more pixel to account for the gaps while using segment_skeleton
         endpoints = find_tips(pruned_img)
         pruned_img = image_subtract(pruned_img, endpoints)
 
     # Make debugging image
-    pruned_plot = np.zeros(skel_img.shape[:2], np.uint8)
+    if mask is None:
+        pruned_plot = np.zeros(skel_img.shape[:2], np.uint8)
+    else:
+        pruned_plot = mask.copy()
     pruned_plot = cv2.cvtColor(pruned_plot, cv2.COLOR_GRAY2RGB)
-    skel_obj, skel_hierarchy = find_objects(skel_img, skel_img)
     pruned_obj, pruned_hierarchy = find_objects(pruned_img, pruned_img)
-    cv2.drawContours(pruned_plot, skel_obj, -1, (0, 0, 255), params.line_thickness,
-                     lineType=8, hierarchy=skel_hierarchy)
-    cv2.drawContours(pruned_plot, pruned_obj, -1, (255, 255, 255), params.line_thickness,
-                     lineType=8, hierarchy=pruned_hierarchy)
+    cv2.drawContours(pruned_plot, removed_segments, -1, (0, 0, 255), params.line_thickness, lineType=8)
+    cv2.drawContours(pruned_plot, pruned_obj, -1, (150, 150, 150), params.line_thickness, lineType=8)
 
     # Reset debug mode
     params.debug = debug
@@ -67,4 +100,7 @@ def prune(skel_img, size):
         plot_image(pruned_img, cmap='gray')
         plot_image(pruned_plot)
 
-    return pruned_img
+    # Segment the pruned skeleton
+    segmented_img, segment_objects = segment_skeleton(pruned_img, mask)
+
+    return pruned_img, segmented_img, segment_objects

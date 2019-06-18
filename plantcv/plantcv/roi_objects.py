@@ -7,16 +7,16 @@ from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 
 
-def roi_objects(img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_hierarchy):
+def roi_objects(img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, roi_type="partial"):
     """Find objects partially inside a region of interest or cut objects to the ROI.
 
     Inputs:
     img            = RGB or grayscale image data for plotting
-    roi_type       = 'cutto', 'partial' (for partially inside), or 'largest' (keep only the largest contour)
     roi_contour    = contour of roi, output from "View and Adjust ROI" function
     roi_hierarchy  = contour of roi, output from "View and Adjust ROI" function
     object_contour = contours of objects, output from "find_objects" function
     obj_hierarchy  = hierarchy of objects, output from "find_objects" function
+    roi_type       = 'cutto', 'partial' (for partially inside, default), or 'largest' (keep only the largest contour)
 
     Returns:
     kept_cnt       = kept contours

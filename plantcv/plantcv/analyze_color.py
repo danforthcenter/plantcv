@@ -207,7 +207,7 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
                             value=histograms["y"]["hist"], label=diverging_values)
     outputs.add_observation(variable='hue_frequencies', trait='hue frequencies',
                             method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
-                            value=histograms["h"]["hist"], label=hue_values)
+                            value=histograms["h"]["hist"][0:180], label=hue_values)
     outputs.add_observation(variable='saturation_frequencies', trait='saturation frequencies',
                             method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
                             value=histograms["s"]["hist"], label=percent_values)

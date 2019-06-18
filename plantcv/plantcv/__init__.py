@@ -163,6 +163,7 @@ from plantcv.plantcv import threshold
 from plantcv.plantcv import transform
 from plantcv.plantcv import visualize
 from plantcv.plantcv import morphology
+from plantcv.plantcv.fill_holes import fill_holes
 
 
 # add new functions to end of lists
@@ -178,7 +179,7 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'apply_m
            'x_axis_pseudolandmarks', 'y_axis_pseudolandmarks', 'gaussian_blur', 'cluster_contours', 'visualize',
            'cluster_contour_splitimg', 'rotate', 'shift_img', 'output_mask', 'auto_crop', 'canny_edge_detect',
            'background_subtraction', 'naive_bayes_classifier', 'acute', 'distance_transform', 'params', 'opening',
-           'closing','within_frame']
+           'closing','within_frame', 'fill_holes']
 
 
 from ._version import get_versions

@@ -8,10 +8,11 @@ import numpy as np
 import cv2
 from plantcv import plantcv as pcv
 import plantcv.learn
+import plantcv.parallel
+import plantcv.utils
 # Import matplotlib and use a null Template to block plotting to screen
 # This will let us test debug = "plot"
 import matplotlib
-import plantcv.parallel
 
 PARALLEL_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "parallel_data")
 TEST_TMPDIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".cache")
@@ -22,25 +23,82 @@ TEST_PIPELINE = os.path.join(PARALLEL_TEST_DATA, "plantcv-script.py")
 META_FIELDS = {"imgtype": 0, "camera": 1, "frame": 2, "zoom": 3, "lifter": 4, "gain": 5, "exposure": 6, "id": 7}
 VALID_META = {
     # Camera settings
-    'camera': 'none',
-    'imgtype': 'none',
-    'zoom': 'none',
-    'exposure': 'none',
-    'gain': 'none',
-    'frame': 'none',
-    'lifter': 'none',
+    "camera": {
+        "label": "camera identifier",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
+    "imgtype": {
+        "label": "image type",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
+    "zoom": {
+        "label": "camera zoom setting",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
+    "exposure": {
+        "label": "camera exposure setting",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
+    "gain": {
+        "label": "camera gain setting",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
+    "frame": {
+        "label": "image series frame identifier",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
+    "lifter": {
+        "label": "imaging platform height setting",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
     # Date-Time
-    'timestamp': None,
+    "timestamp": {
+        "label": "datetime of image",
+        "datatype": "<class 'datetime.datetime'>",
+        "value": None
+    },
     # Sample attributes
-    'id': 'none',
-    'plantbarcode': 'none',
-    'treatment': 'none',
-    'cartag': 'none',
+    "id": {
+        "label": "image identifier",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
+    "plantbarcode": {
+        "label": "plant barcode identifier",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
+    "treatment": {
+        "label": "treatment identifier",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
+    "cartag": {
+        "label": "plant carrier identifier",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
     # Experiment attributes
-    'measurementlabel': 'none',
+    "measurementlabel": {
+        "label": "experiment identifier",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    },
     # Other
-    'other': 'none'
+    "other": {
+        "label": "other identifier",
+        "datatype": "<class 'str'>",
+        "value": "none"
+    }
 }
+
 METADATA_COPROCESS = {
     'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
         'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383'),
@@ -384,9 +442,9 @@ def test_plantcv_parallel_process_results():
     # Create a test tmp directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_process_results")
     os.mkdir(cache_dir)
-    plantcv.parallel.process_results(valid_meta=VALID_META, job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
+    plantcv.parallel.process_results(job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
                                      json_file=os.path.join(cache_dir, 'appended_results.json'))
-    plantcv.parallel.process_results(valid_meta=VALID_META, job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
+    plantcv.parallel.process_results(job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
                                      json_file=os.path.join(cache_dir, 'appended_results.json'))
     # Assert that the output JSON file matches the expected output JSON file
     result_file = open(os.path.join(cache_dir, "appended_results.json"), "r")
@@ -402,7 +460,7 @@ def test_plantcv_parallel_process_results_new_output():
     # Create a test tmp directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_process_results_new_output")
     os.mkdir(cache_dir)
-    plantcv.parallel.process_results(valid_meta=VALID_META, job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
+    plantcv.parallel.process_results(job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
                                      json_file=os.path.join(cache_dir, 'new_result.json'))
     # Assert output matches expected values
     result_file = open(os.path.join(cache_dir, "new_result.json"), "r")
@@ -417,7 +475,7 @@ def test_plantcv_parallel_process_results_new_output():
 def test_plantcv_parallel_process_results_valid_json():
     # Test when the file is a valid json file but doesn't contain expected keys
     with pytest.raises(RuntimeError):
-        plantcv.parallel.process_results(valid_meta=VALID_META, job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
+        plantcv.parallel.process_results(job_dir=os.path.join(PARALLEL_TEST_DATA, "results"),
                                          json_file=os.path.join(PARALLEL_TEST_DATA, "valid.json"))
 
 
@@ -428,7 +486,7 @@ def test_plantcv_parallel_process_results_invalid_json():
     # Move the test data to the tmp directory
     shutil.copytree(os.path.join(PARALLEL_TEST_DATA, "bad_results"), os.path.join(cache_dir, "bad_results"))
     with pytest.raises(RuntimeError):
-        plantcv.parallel.process_results(valid_meta=VALID_META, job_dir=os.path.join(cache_dir, "bad_results"),
+        plantcv.parallel.process_results(job_dir=os.path.join(cache_dir, "bad_results"),
                                          json_file=os.path.join(cache_dir, "bad_results", "invalid.txt"))
 
 
@@ -1395,6 +1453,35 @@ def test_plantcv_fill_bad_input():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     with pytest.raises(RuntimeError):
         _ = pcv.fill(bin_img=img, size=1)
+
+
+def test_plantcv_fill_holes():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_fill_holes")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.fill_holes(bin_img=img)
+    pcv.params.debug = "plot"
+    _ = pcv.fill_holes(bin_img=img)
+    # Test with debug = None
+    pcv.params.debug = None
+    fill_img = pcv.fill_holes(bin_img=img)
+    assert np.sum(fill_img) > np.sum(img)
+
+
+def test_plantcv_fill_holes_bad_input():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_fill_holes_bad_input")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    with pytest.raises(RuntimeError):
+        _ = pcv.fill_holes(bin_img=img)
 
 
 def test_plantcv_find_objects():
@@ -2389,21 +2476,21 @@ def test_plantcv_roi_objects():
     object_hierarchy = contours_npz['arr_1']
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.roi_objects(img=img, roi_type="largest", roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
-                        object_contour=object_contours, obj_hierarchy=object_hierarchy)
+    _ = pcv.roi_objects(img=img, roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
+                        object_contour=object_contours, obj_hierarchy=object_hierarchy, roi_type="largest")
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.roi_objects(img=img, roi_type="partial", roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
-                        object_contour=object_contours, obj_hierarchy=object_hierarchy)
+    _ = pcv.roi_objects(img=img, roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
+                        object_contour=object_contours, obj_hierarchy=object_hierarchy, roi_type="partial")
     # Test with debug = None and roi_type = cutto
     pcv.params.debug = None
-    _ = pcv.roi_objects(img=img, roi_type="cutto", roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
-                        object_contour=object_contours, obj_hierarchy=object_hierarchy)
+    _ = pcv.roi_objects(img=img, roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
+                        object_contour=object_contours, obj_hierarchy=object_hierarchy, roi_type="cutto")
     # Test with debug = None
-    kept_contours, kept_hierarchy, mask, area = pcv.roi_objects(img=img, roi_type="partial", roi_contour=roi_contour,
+    kept_contours, kept_hierarchy, mask, area = pcv.roi_objects(img=img, roi_contour=roi_contour,
                                                                 roi_hierarchy=roi_hierarchy,
                                                                 object_contour=object_contours,
-                                                                obj_hierarchy=object_hierarchy)
+                                                                obj_hierarchy=object_hierarchy, roi_type="partial")
     # Assert that the contours were filtered as expected
     assert len(kept_contours) == 1046
 
@@ -3028,9 +3115,29 @@ def test_plantcv_morphology_prune():
     pcv.params.debug = "print"
     _ = pcv.morphology.prune(skel_img=skeleton, size=1)
     pcv.params.debug = "plot"
-    _ = pcv.morphology.prune(skel_img=skeleton, size=1)
+    _ = pcv.morphology.prune(skel_img=skeleton, size=1, mask=skeleton)
     pcv.params.debug = None
-    pruned_img = pcv.morphology.prune(skel_img=skeleton, size=3)
+    pruned_img, _, _ = pcv.morphology.prune(skel_img=skeleton, size=3)
+    assert np.sum(pruned_img) < np.sum(skeleton)
+
+
+def test_plantcv_morphology_prune_size0():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_pruned")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
+    pruned_img, _, _ = pcv.morphology.prune(skel_img=skeleton, size=0)
+    assert np.sum(pruned_img) == np.sum(skeleton)
+
+
+def test_plantcv_morphology_iterative_prune():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_pruned")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
+    pruned_img = pcv.morphology._iterative_prune(skel_img=skeleton, size=3)
     assert np.sum(pruned_img) < np.sum(skeleton)
 
 
@@ -3186,7 +3293,7 @@ def test_plantcv_morphology_segment_insertion_angle():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
-    pruned = pcv.morphology.prune(skel_img=skeleton, size=5)
+    pruned,_,_ = pcv.morphology.prune(skel_img=skeleton, size=5)
     segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=pruned)
     leaf_obj, stem_obj = pcv.morphology.segment_sort(pruned, seg_objects)
     pcv.params.debug = "plot"
@@ -3195,7 +3302,7 @@ def test_plantcv_morphology_segment_insertion_angle():
     insert_angles = pcv.morphology.segment_insertion_angle(pruned, segmented_img, leaf_obj, stem_obj, 10)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     pcv.outputs.clear()
-    assert len(np.unique(insert_angles)) == 41
+    assert len(np.unique(insert_angles)) == 44
 
 
 def test_plantcv_morphology_segment_insertion_angle_bad_stem():
@@ -3204,13 +3311,42 @@ def test_plantcv_morphology_segment_insertion_angle_bad_stem():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
-    pruned = pcv.morphology.prune(skel_img=skeleton, size=5)
+    pruned, _, _ = pcv.morphology.prune(skel_img=skeleton, size=5)
     segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=pruned)
     leaf_obj, stem_obj = pcv.morphology.segment_sort(pruned, seg_objects)
     stem_obj = [leaf_obj[0], leaf_obj[10]]
     with pytest.raises(RuntimeError):
         _ = pcv.morphology.segment_insertion_angle(pruned, segmented_img, leaf_obj, stem_obj, 10)
 
+
+def test_plantcv_morphology_segment_combine():
+    skel = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
+    segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=skel)
+    pcv.params.debug = "plot"
+    # Test with list of IDs input
+    _, new_objects = pcv.morphology.segment_combine([0,1], seg_objects, skel)
+    assert len(new_objects) + 1 == len(seg_objects)
+
+
+def test_plantcv_morphology_segment_combine_lists():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    skel = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
+    segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=skel)
+    pcv.params.debug = "print"
+    # Test with list of lists input
+    _, new_objects = pcv.morphology.segment_combine([[0,1,2], [3,4]], seg_objects, skel)
+    assert len(new_objects) + 3 == len(seg_objects)
+
+
+def test_plantcv_morphology_segment_combine_bad_input():
+    skel = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
+    segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=skel)
+    pcv.params.debug = "plot"
+    with pytest.raises(RuntimeError):
+        _, new_objects = pcv.morphology.segment_combine([0.5, 1.5], seg_objects, skel)
 
 # ##############################
 # Tests for the roi subpackage
@@ -4206,6 +4342,37 @@ def test_plantcv_visualize_histogram():
     pcv.params.debug = "plot"
     hist_header, hist_data, fig_hist = pcv.visualize.histogram(gray_img=img)
     assert np.sum(hist_data[3]) != 0
+
+
+# ##############################
+# Tests for the utils subpackage
+# ##############################
+def test_plantcv_utils_json2csv():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_json2csv")
+    os.mkdir(cache_dir)
+    plantcv.utils.json2csv(json_file=os.path.join(TEST_DATA, "merged_output.json"),
+                           csv_file=os.path.join(cache_dir, "exports"))
+    assert all([os.path.exists(os.path.join(cache_dir, "exports-single-value-traits.csv")),
+                os.path.exists(os.path.join(cache_dir, "exports-multi-value-traits.csv"))])
+
+
+def test_plantcv_utils_json2csv_no_json():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_json2csv_no_json")
+    os.mkdir(cache_dir)
+    with pytest.raises(IOError):
+        plantcv.utils.json2csv(json_file=os.path.join(TEST_DATA, "not_a_file.json"),
+                               csv_file=os.path.join(cache_dir, "exports"))
+
+
+def test_plantcv_utils_json2csv_bad_json():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_json2csv_bad_json")
+    os.mkdir(cache_dir)
+    with pytest.raises(ValueError):
+        plantcv.utils.json2csv(json_file=os.path.join(TEST_DATA, "incorrect_json_data.txt"),
+                               csv_file=os.path.join(cache_dir, "exports"))
 
 
 # ##############################
