@@ -105,9 +105,9 @@ def job_builder(meta, valid_meta, workflow, job_dir, out_dir, coprocess=None, ot
         if writeimg:
             job_parts.append("--writeimg")
         if other_args:
-            other_args1 = re.sub("'", "", other_args)
-            other_args = other_args1.split(" ")
-            job_parts = job_parts + other_args
+            other_args_copy = re.sub("'", "", other_args)
+            other_args_copy = other_args_copy.split(" ")
+            job_parts = job_parts + other_args_copy
         jobs.append(job_parts)
 
     return jobs
