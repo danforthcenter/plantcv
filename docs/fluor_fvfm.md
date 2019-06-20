@@ -4,7 +4,7 @@ Extract Fv/Fm data of objects.
 
 **plantcv.fluor_fvfm**(*fdark, fmin, fmax, mask, bins=256*)
 
-**returns** Fv/Fm histogram headers, Fv/Fm histogram data, PSII analysis images (Fv image, Fv/Fm histogram)
+**returns** PSII analysis images (Fv image, Fv/Fm histogram)
 
 - **Parameters:**
     - fdark - image object, grayscale
@@ -16,16 +16,11 @@ Extract Fv/Fm data of objects.
     - Used to extract fv/fm per identified plant pixel.
     - Generates histogram of fv/fm data.
     - Generates fv/fm image.
+    - Data automatically gets stored into the [Outputs class](outputs.md). Users can look at the data collected at any point during 
+    the workflow by using [pcv.print_results](print_results.md) which prints all stored data to a .json file.
 - **Example use:**
     - [Use In PSII Tutorial](psII_tutorial.md)
-    
-- **Output Data Units:**
-    - Bin-number - number of bins set by user  
-    - FV/FM Bins - bin values based on number of bins set by user  
-    - FV/FM Histogram - histogram of FV/FM ratio values for object  
-    - FV/FM Histogram Peak - bin value of histogram peak (greatest number of pixels)  
-    - FV/FM Median - bin value of histogram median  
-    - F-Dark Passed QC - Check (True or False) to determine if Fdark image does not have pixel intensity values above 2000. 
+- **Output data stored:** [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 **Fdark image**
 
@@ -42,18 +37,20 @@ Extract Fv/Fm data of objects.
 ```python
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Analyze Fv/Fm    
-fvfm_header, fvfm_data, fvfm_images = pcv.fluor_fvfm(fdark, fmin, fmax, kept_mask, 256)
+fvfm_images = pcv.fluor_fvfm(fdark, fmin, fmax, kept_mask, 256)
 
 # Store the two images
-fv_img=fvfm_images[0]
-fvfm_hist=fvfm_images[1]
+fv_im g= fvfm_images[0]
+fvfm_his = fvfm_images[1]
 
 # Pseudocolor the Fv/Fm image
 pseudo_img = pcv.pseudocolor(gray_img=fv_img, mask=kept_mask)
+
 ```
 
 **Histogram of Fv/Fm values**
@@ -64,5 +61,5 @@ pseudo_img = pcv.pseudocolor(gray_img=fv_img, mask=kept_mask)
 
 ![Screenshot](img/documentation_images/pseudocolor/pseudo_img.jpg)
 
-The grayscale Fv/Fm image (returned to analysis_image) can be used with the [pcv.pseudocolor](pseudocolor.md) function
+The grayscale Fv/Fm image (returned to analysis_image) can be used with the [pcv.visualize.pseudocolor](visualize_pseudocolor.md) function
 which allows the user to pick a colormap for plotting.

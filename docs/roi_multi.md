@@ -26,14 +26,18 @@
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Make a grid of ROIs 
-rois1, roi_hierarchy1 = pcv.roi.multi(img1, coord=(25,120), radius=20, spacing=(70, 70), nrows=3, ncols=6)
+rois1, roi_hierarchy1 = pcv.roi.multi(img=img1, coord=(25,120), radius=20, 
+                                      spacing=(70, 70), nrows=3, ncols=6)
 
 # Specify a list of coordinates of desired ROIs 
-rois2, roi_hierarchy2 = pcv.roi.multi(img1, coord=[(25,120), (165,260), (310, 260)], radius=20)
+rois2, roi_hierarchy2 = pcv.roi.multi(img=img1, coord=[(25,120), (165,260), (310, 260)], 
+                                      radius=20)
+                                      
 ```
 
 **Grid of ROIs**
@@ -67,7 +71,7 @@ for i in range(0, len(rois1)):
     plant_contour, plant_mask = pcv.object_composition(img=img, contours=filtered_contours, hierarchy=filtered_hierarchy)        
     
     # Analyze the shape of each plant 
-    shape_data_headers, shape_data, analysis_images = pcv.analyze_object(img=img_copy, obj=obj, mask=img_mask)
+    shape_data_headers, shape_data, analysis_images = pcv.analyze_object(img=img_copy, obj=plant_contour, mask=plant_mask)
     
     # Save the image with shape characteristics 
     img_copy = analysis_images[0]

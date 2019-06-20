@@ -10,25 +10,25 @@ from plantcv.plantcv import outputs
 from plantcv.plantcv import fatal_error
 
 
-def y_axis_pseudolandmarks(obj, mask, img):
+def y_axis_pseudolandmarks(img, obj, mask):
     """Divide up object contour into 19 equidistant segments and generate landmarks for each
 
     Inputs:
+    img      = This is a copy of the original plant image generated using np.copy if debug is true it will be drawn on
     obj      = a contour of the plant object (this should be output from the object_composition.py fxn)
     mask     = this is a binary image. The object should be white and the background should be black
-    img      = This is a copy of the original plant image generated using np.copy if debug is true it will be drawn on
 
     Returns:
-    top      =
-    bottom   =
-    center_v =
+    left      = List of landmarks within the left side
+    right   = List of landmarks within the right side
+    center_h = List of landmarks within the center
 
+    :param img: numpy.ndarray
     :param obj: list
     :param mask: numpy.ndarray
-    :param img: numpy.ndarray
-    :return left:
-    :return right:
-    :return center_h:
+    :return left: list
+    :return right: list
+    :return center_h: list
     """
     # Lets get some landmarks scanning along the y-axis
     params.device += 1
@@ -36,6 +36,15 @@ def y_axis_pseudolandmarks(obj, mask, img):
         return ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA')
     x, y, width, height = cv2.boundingRect(obj)
     extent = height
+
+    # Outputs
+    left = []
+    right = []
+    center_h = []
+    left_list = []
+    right_list = []
+    center_h_list = []
+
     # If height is greater than 21 pixels make 20 increments (5% intervals)
     if extent >= 21:
         inc = int(extent / 21)
@@ -144,31 +153,21 @@ def y_axis_pseudolandmarks(obj, mask, img):
         for i in left:
             x = i[0, 0]
             y = i[0, 1]
-            cv2.circle(img2, (int(x), int(y)), 10, (255, 0, 0), -1)
+            cv2.circle(img2, (int(x), int(y)), params.line_thickness, (255, 0, 0), -1)
         for i in right:
             x = i[0, 0]
             y = i[0, 1]
-            cv2.circle(img2, (int(x), int(y)), 10, (255, 0, 255), -1)
+            cv2.circle(img2, (int(x), int(y)), params.line_thickness, (255, 0, 255), -1)
         for i in center_h:
             x = i[0, 0]
             y = i[0, 1]
-            cv2.circle(img2, (int(x), int(y)), 10, (0, 79, 255), -1)
+            cv2.circle(img2, (int(x), int(y)), params.line_thickness, (0, 79, 255), -1)
 
         if params.debug == 'plot':
             plot_image(img2)
         elif params.debug == 'print':
             print_image(img2, os.path.join(params.debug_outdir, (str(params.device) + '_y_axis_pseudolandmarks.png')))
-
-        # Store into global measurements
-        if not 'landmark_reference' in outputs.measurements:
-            outputs.measurements['landmark_reference'] = {}
-        outputs.measurements['landmark_reference']['left_lmk'] = left
-        outputs.measurements['landmark_reference']['right_lmk'] = right
-        outputs.measurements['landmark_reference']['center_h_lmk'] = center_h
-
-        return left, right, center_h
-    
-    if extent < 21:
+    elif extent < 21:
         # If the length of the object is less than 20 pixels just make the object a 20 pixel rectangle
         x, y, width, height = cv2.boundingRect(obj)
         y_coords = list(range(y, y + 20))
@@ -195,26 +194,37 @@ def y_axis_pseudolandmarks(obj, mask, img):
         for i in left:
             x = i[0, 0]
             y = i[0, 1]
-            cv2.circle(img2, (int(x), int(y)), 10, (255, 0, 0), -1)
+            cv2.circle(img2, (int(x), int(y)), params.line_thickness, (255, 0, 0), -1)
         for i in right:
             x = i[0, 0]
             y = i[0, 1]
-            cv2.circle(img2, (int(x), int(y)), 10, (255, 0, 255), -1)
+            cv2.circle(img2, (int(x), int(y)), params.line_thickness, (255, 0, 255), -1)
         for i in center_h:
             x = i[0, 0]
             y = i[0, 1]
-            cv2.circle(img2, (int(x), int(y)), 10, (0, 79, 255), -1)
+            cv2.circle(img2, (int(x), int(y)), params.line_thickness, (0, 79, 255), -1)
         # print_image(img2, (str(device) + '_y_axis_pseudolandmarks.png'))
         if params.debug == 'plot':
             plot_image(img2)
         elif params.debug == 'print':
             print_image(img2, os.path.join(params.debug_outdir, (str(params.device) + '_y_axis_pseudolandmarks.png')))
 
-        # Store into global measurements
-        if not 'landmark_reference' in outputs.measurements:
-            outputs.measurements['landmark_reference'] = {}
-        outputs.measurements['landmark_reference']['left_lmk'] = left
-        outputs.measurements['landmark_reference']['right_lmk'] = right
-        outputs.measurements['landmark_reference']['center_h_lmk'] = center_h
+    # Store into global measurements
+    for pt in left:
+        left_list.append(pt[0].tolist())
+    for pt in right:
+        right_list.append(pt[0].tolist())
+    for pt in center_h:
+        center_h_list.append(pt[0].tolist())
 
-        return left, right, center_h
+    outputs.add_observation(variable='left_lmk', trait='left landmark coordinates',
+                            method='plantcv.plantcv.x_axis_pseudolandmarks', scale='none', datatype=list,
+                            value=left_list, label='none')
+    outputs.add_observation(variable='right_lmk', trait='right landmark coordinates',
+                            method='plantcv.plantcv.x_axis_pseudolandmarks', scale='none', datatype=list,
+                            value=right_list, label='none')
+    outputs.add_observation(variable='center_h_lmk', trait='center horizontal landmark coordinates',
+                            method='plantcv.plantcv.x_axis_pseudolandmarks', scale='none', datatype=list,
+                            value=center_h_list, label='none')
+
+    return left, right, center_h

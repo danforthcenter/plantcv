@@ -26,6 +26,7 @@ def rgb2gray_lab(rgb_img, channel):
     params.device += 1
     # The allowable channel inputs are l, a or b
     names = {"l": "lightness", "a": "green-magenta", "b": "blue-yellow"}
+    channel = channel.lower()
     if channel not in names:
         fatal_error("Channel " + str(channel) + " is not l, a or b!")
 

@@ -27,27 +27,29 @@ increase contrast (blue material for example).
 *  If you are going to image more than one plant in an image, how long before the plants overlap each other? Is this 
 long enough for the trait you are interested in?
 
-###**Developing Image Processing Workflows (Pipeline Development)**
+###**Developing Image Processing Workflows (Workflow Development)**
 
-There are two major steps to developing an image analysis pipeline:
+There are two major steps to developing an image analysis workflow:
 
 1.  Object segmentation (detection/isolation) - This is likely a multi-step process. There are many ways to approach 
 object segmentation, we detail those approaches below.
 2.  Object analysis - Analysis on isolated objects, the categories of object analysis are below.
 
-We primarily use [Jupyter](jupyter.md) notebooks for pipeline development.
-Once a pipeline has been developed for one image, it's best to test it on other images in
-the dataset to determine how robust the pipeline will be. Example pipelines and tutorials are available and are meant 
+We primarily use [Jupyter](jupyter.md) notebooks for workflow development.
+Once a workflow has been developed for one image, it's best to test it on other images in
+the dataset to determine how robust the workflow will be. Example workflows and tutorials are available and are meant 
 to demonstrate how modules can be used. Keep in mind that modules can be linked together in a variety of different 
 configurations to meet image processing goals so the tutorials simply examples of a few approaches:
 
-*  [VIS Image Pipeline](vis_tutorial.md)
-*  [NIR Image Pipeline](nir_tutorial.md)
-*  [PSII Pipeline](psII_tutorial.md)
-*  [VIS / NIR Dual Pipeline](vis_nir_tutorial.md)
+*  [VIS Image Workflow](vis_tutorial.md)
+*  [NIR Image Workflow](nir_tutorial.md)
+*  [PSII Workflow](psII_tutorial.md)
+*  [VIS / NIR Dual Workflow](vis_nir_tutorial.md)
 *  [Multi Plant Tutorial](multi-plant_tutorial.md)
+*  [Morphology Tutorial](morphology_tutorial.md) 
 *  [Machine Learning Tutorial](machine_learning_tutorial.md)
 *  [Color Correction Tutorial](transform_color_correction_tutorial.md)
+*  [Morphology Tutorial](morphology_tutorial.md) 
 
 ####**1. Methods of Isolating Target Objects**
 
@@ -70,7 +72,7 @@ selecting a channel of an image for thresholding likely involves conversion from
 It's best to select a channel that maximizes contrast between the target object and the background. When thresholding 
 an image to segment a target object, it may not be possible to isolate just the target object. Multiple thresholding 
 steps on various channels may be necessary as well as downstream noise reduction steps. For an example of this approach 
-see the [VIS Image Pipeline](vis_tutorial.md). 
+see the [VIS Image Workflow](vis_tutorial.md). 
 
 *  Background subtraction method - This approach can be used if there are 'null' images (images with everything but the 
 object in them). The null image can be a single image, or an averaged background image. For more information on 
@@ -119,13 +121,13 @@ These are the general categories of object analysis that are available in PlantC
 For a detailed list of types of PlantCV measurement outputs see 
 ['Summary of Output Measurements'](output_measurements.md).
 
-### Parallelizing Pipelines
+### Parallelizing Workflows
 
-*  Once a satisfactory pipeline has been developed and tested, the next step is to translate it from a Jupyter notebook 
+*  Once a satisfactory workflow has been developed and tested, the next step is to translate it from a Jupyter notebook 
 to a Python script. For detailed instructions see the 
 [Using Jupyter Notebooks](jupyter.md) page. 
 *  Once the Jupyter notebook has been translated to a Python script (and tested!) the next step is to parallelize that 
-script over a set of images. To do this follow the [pipeline parallelization instructions](pipeline_parallel.md). 
+script over a set of images. To do this follow the [workflow parallelization instructions](pipeline_parallel.md). 
  
 ### Troubleshooting
 

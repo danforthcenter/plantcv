@@ -1,0 +1,1 @@
+{"metadata": {"image": "/home/nfahlgren/data/camelina/images/level1/TK002_C_041117/snapshot128179/VIS_SV_0_z1_h1_g0_e82_217394_0.png", "camera": "SV", "imgtype": "VIS", "zoom": "z1", "exposure": "e82", "gain": "g0", "frame": 0, "lifter": "h1", "timestamp": "2017-05-04 09:02:34", "id": 217394}, "observations": {}}

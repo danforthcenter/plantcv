@@ -10,25 +10,25 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def acute_vertex(obj, win, thresh, sep, img):
+def acute_vertex(img, obj, win, thresh, sep):
     """acute_vertex: identify corners/acute angles of an object
 
     For each point in contour, get a point before (pre) and after (post) the point of interest,
     calculate the angle between the pre and post point.
 
     Inputs:
+    img    = the original image
     obj    = a contour of the plant object (this should be output from the object_composition.py fxn)
     win    = win argument specifies the pre and post point distances (a value of 30 worked well for a sample image)
     thresh = an threshold to set for acuteness; keep points with an angle more acute than the threshold (a value of 15
              worked well for sample image)
     sep    = the number of contour points to search within for the most acute value
-    img    = the original image
 
+    :param img: ndarray
     :param obj: ndarray
     :param win: int
     :param thresh: int
     :param sep: int
-    :param img: ndarray
     :return acute: ndarray
     """
     params.device += 1
@@ -52,10 +52,13 @@ def acute_vertex(obj, win, thresh, sep, img):
             dot = (P12*P12 + P13*P13 - P23*P23)/(2*P12*P13)
         elif (2*P12*P13) < 0.001:
             dot = (P12*P12 + P13*P13 - P23*P23)/0.001
-        if dot > 1:                            # If float excedes 1 prevent arcos error and force to equal 1
-            dot = 1
-        elif dot < -1:                     # If float excedes -1 prevent arcos error and force to equal -1
-            dot = -1            
+        # Used a random number generator to test if either of these cases were possible but couldn't find a solution in
+        # 5 million iterations
+        # if dot > 1:                            # If float excedes 1 prevent arcos error and force to equal 1
+        #     dot = 1
+
+        if dot < -1:                     # If float excedes -1 prevent arcos error and force to equal -1
+            dot = -1
         ang = math.degrees(math.acos(dot))
         # print "Here is the angle: " + str(ang)
         chain.append(ang)
@@ -87,6 +90,9 @@ def acute_vertex(obj, win, thresh, sep, img):
     # Store the points in the variable acute
     flag = 0
     acute = obj[[out]]
+    acute_points = []
+    for pt in acute:
+        acute_points.append(pt[0].tolist())
     # If no points found as acute get the largest point
     # if len(acute) == 0:
         # acute = max(obj, key=cv2.contourArea)
@@ -105,7 +111,7 @@ def acute_vertex(obj, win, thresh, sep, img):
         # Plot each of these tip points on the image
         for i in acute:
             x, y = i.ravel()
-            cv2.circle(img2, (x, y), 15, (255, 204, 255), -1)
+            cv2.circle(img2, (x, y), params.line_thickness, (255, 204, 255), -1)
         print_image(img2, os.path.join(params.debug_outdir, str(params.device) + '_acute_vertices.png'))
     elif params.debug == 'plot':
         # Lets make a plot of these values on the
@@ -114,7 +120,7 @@ def acute_vertex(obj, win, thresh, sep, img):
         for i in acute:
             x, y = i.ravel()
             # cv2.circle(img2,(x,y),15,(255,204,255),-1)
-            cv2.circle(img2, (x, y), 15, (0, 0, 255), -1)
+            cv2.circle(img2, (x, y), params.line_thickness, (255, 0, 255), -1)
         plot_image(img2)
     # If flag was true (no points found as acute) reformat output appropriate type
     # if flag == 1:
@@ -122,9 +128,8 @@ def acute_vertex(obj, win, thresh, sep, img):
     #     acute = acute.reshape(1, 1, 2)
 
     # Store into global measurements
-    if not 'landmark_reference' in outputs.measurements:
-        outputs.measurements['landmark_reference'] = {}
-    outputs.measurements['landmark_reference']['tip_points'] = acute
+    outputs.add_observation(variable='tip_coordinates', trait='tip coordinates',
+                            method='plantcv.plantcv.acute_vertex', scale='none', datatype=list,
+                            value=acute_points, label='none')
 
     return acute
-# End of function

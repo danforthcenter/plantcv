@@ -89,7 +89,7 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
     # New mask shape
     mx, my = np.shape(mask)
 
-    if v_pos == "top":
+    if v_pos.upper() == "TOP":
         # Add rows to the top
         top = np.zeros((x, my), dtype=np.uint8)
 
@@ -116,11 +116,11 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
                 rows2 = np.zeros((r2, my), dtype=np.uint8)
                 maskv = np.vstack((rows1, maskv, rows2))
         if params.debug == 'print':
-            print_image(maskv, os.path.join(params.debug_outdir, str(params.device) + "_push-top_.png"))
+            print_image(maskv, os.path.join(params.debug_outdir, str(params.device) + "_push-top.png"))
         elif params.debug == 'plot':
             plot_image(maskv, cmap='gray')
 
-    if v_pos == "bottom":
+    elif v_pos.upper() == "BOTTOM":
         # Add rows to the bottom
         bottom = np.zeros((x, my), dtype=np.uint8)
 
@@ -155,7 +155,10 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
         elif params.debug == 'plot':
             plot_image(maskv, cmap='gray')
 
-    if h_pos == "left":
+    else:
+        fatal_error(str(v_pos) + ' is not valid, must be "top" or "bottom"!')
+
+    if h_pos.upper() == "LEFT":
         # # In line 57 the mask is spliced, so there will never be a case where 'maskv' will have a 3rd dimension
         # if len(np.shape(maskv)) == 3:
         #     mx, my, mz = np.shape(maskv)
@@ -192,7 +195,7 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
         elif params.debug == 'plot':
             plot_image(maskv, cmap='gray')
 
-    if h_pos == "right":
+    elif h_pos.upper() == "RIGHT":
         # # In line 57 the mask is spliced, so there will never be a case where 'maskv' will have a 3rd dimension
         # if len(np.shape(maskv)) == 3:
         #     mx, my, mz = np.shape(maskv)
@@ -229,6 +232,9 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
             print_image(maskv, os.path.join(params.debug_outdir, str(params.device) + "_push-right.png"))
         elif params.debug == 'plot':
             plot_image(maskv, cmap='gray')
+
+    else:
+        fatal_error(str(h_pos) + ' is not valid, must be "left" or "right"!')
 
     newmask = np.array(maskv)
     if params.debug is not None:

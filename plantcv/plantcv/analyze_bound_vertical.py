@@ -21,16 +21,12 @@ def analyze_bound_vertical(img, obj, mask, line_position):
     line_position   = position of boundary line (a value of 0 would draw the line through the left side of the image)
 
     Returns:
-    bound_header    = data table column headers
-    bound_data      = boundary data table
     analysis_images = output images
 
     :param img: numpy.ndarray
     :param obj: list
     :param mask: numpy.ndarray
     :param line_position: int
-    :return bound_header: tuple
-    :return bound_data: tuple
     :return analysis_images: list
     """
 
@@ -77,8 +73,8 @@ def analyze_bound_vertical(img, obj, mask, line_position):
         pptest = cv2.pointPolygonTest(right_contour[0], xy, measureDist=False)
         if pptest == 1:
             left.append(xy)
-            cv2.circle(ori_img, xy, 1, (0, 0, 255))
-            cv2.circle(wback, xy, 1, (0, 0, 255))
+            cv2.circle(ori_img, xy, 1, (155, 0, 255))
+            cv2.circle(wback, xy, 1, (155, 0, 255))
         else:
             right.append(xy)
             cv2.circle(ori_img, xy, 1, (0, 255, 0))
@@ -88,48 +84,32 @@ def analyze_bound_vertical(img, obj, mask, line_position):
     percent_bound_area_right = ((float(right_bound_area)) / (float(left_bound_area + right_bound_area))) * 100
     percent_bound_area_left = ((float(left_bound_area)) / (float(right_bound_area + left_bound_area))) * 100
 
-    bound_header = [
-        'HEADER_BOUNDARY' + str(line_position),
-        'width_left_bound',
-        'width_right_bound',
-        'left_bound_area',
-        'percent_left_bound_area',
-        'right_bound_area',
-        'percent_right_bound_area'
-    ]
-
-    bound_data = [
-        'BOUNDARY_DATA',
-        width_left_bound,
-        width_right_bound,
-        left_bound_area,
-        percent_bound_area_left,
-        right_bound_area,
-        percent_bound_area_right
-    ]
-
     analysis_images = []
 
     if left_bound_area or right_bound_area:
         point3 = (x_coor+2, 0)
         point4 = (x_coor+2, y_coor)
-        cv2.line(ori_img, point3, point4, (255, 0, 255), 5)
-        cv2.line(wback, point3, point4, (255, 0, 255), 5)
+        cv2.line(ori_img, point3, point4, (255, 0, 255), params.line_thickness)
+        cv2.line(wback, point3, point4, (255, 0, 255), params.line_thickness)
         m = cv2.moments(mask, binaryImage=True)
         cmx, cmy = (m['m10'] / m['m00'], m['m01'] / m['m00'])
         if x_coor - x <= 0:
-            cv2.line(ori_img, (x, int(cmy)), (x + width, int(cmy)), (0, 255, 0), 3)
-            cv2.line(wback, (x, int(cmy)), (x + width, int(cmy)), (0, 255, 0), 3)
+            cv2.line(ori_img, (x, int(cmy)), (x + width, int(cmy)), (0, 255, 0), params.line_thickness)
+            cv2.line(wback, (x, int(cmy)), (x + width, int(cmy)), (0, 255, 0), params.line_thickness)
         elif x_coor - x > 0:
             width_1 = x_coor - x
             if width - width_1 <= 0:
-                cv2.line(ori_img, (x, int(cmy)), (x + width, int(cmy)), (255, 0, 0), 3)
-                cv2.line(wback, (x, int(cmy)), (x + width, int(cmy)), (255, 0, 0), 3)
+                cv2.line(ori_img, (x, int(cmy)), (x + width, int(cmy)), (255, 0, 0), params.line_thickness)
+                cv2.line(wback, (x, int(cmy)), (x + width, int(cmy)), (255, 0, 0), params.line_thickness)
             else:
-                cv2.line(ori_img, (x_coor + 2, int(cmy)), (x_coor + width_left_bound, int(cmy)), (255, 0, 0), 3)
-                cv2.line(ori_img, (x_coor + 2, int(cmy)), (x_coor - width_right_bound, int(cmy)), (0, 255, 0), 3)
-                cv2.line(wback, (x_coor + 2, int(cmy)), (x_coor + width_left_bound, int(cmy)), (255, 0, 0), 3)
-                cv2.line(wback, (x_coor + 2, int(cmy)), (x_coor - width_right_bound, int(cmy)), (0, 255, 0), 3)
+                cv2.line(ori_img, (x_coor + 2, int(cmy)), (x_coor + width_left_bound, int(cmy)), (255, 0, 0),
+                         params.line_thickness)
+                cv2.line(ori_img, (x_coor + 2, int(cmy)), (x_coor - width_right_bound, int(cmy)), (0, 255, 0),
+                         params.line_thickness)
+                cv2.line(wback, (x_coor + 2, int(cmy)), (x_coor + width_left_bound, int(cmy)), (255, 0, 0),
+                         params.line_thickness)
+                cv2.line(wback, (x_coor + 2, int(cmy)), (x_coor - width_right_bound, int(cmy)), (0, 255, 0),
+                         params.line_thickness)
         # Output images with boundary line
         analysis_images.append(wback)
         analysis_images.append(ori_img)
@@ -137,23 +117,27 @@ def analyze_bound_vertical(img, obj, mask, line_position):
     if params.debug is not None:
         point3 = (x_coor+2, 0)
         point4 = (x_coor+2, y_coor)
-        cv2.line(ori_img, point3, point4, (255, 0, 255), 5)
-        cv2.line(wback, point3, point4, (255, 0, 255), 5)
+        cv2.line(ori_img, point3, point4, (255, 0, 255), params.line_thickness)
+        cv2.line(wback, point3, point4, (255, 0, 255), params.line_thickness)
         m = cv2.moments(mask, binaryImage=True)
         cmx, cmy = (m['m10'] / m['m00'], m['m01'] / m['m00'])
         if x_coor - x <= 0:
-            cv2.line(ori_img, (x, int(cmy)), (x + width, int(cmy)), (0, 255, 0), 3)
-            cv2.line(wback, (x, int(cmy)), (x + width, int(cmy)), (0, 255, 0), 3)
+            cv2.line(ori_img, (x, int(cmy)), (x + width, int(cmy)), (0, 255, 0), params.line_thickness)
+            cv2.line(wback, (x, int(cmy)), (x + width, int(cmy)), (0, 255, 0), params.line_thickness)
         elif x_coor - x > 0:
             width_1 = x_coor - x
             if width - width_1 <= 0:
-                cv2.line(ori_img, (x, int(cmy)), (x + width, int(cmy)), (255, 0, 0), 3)
-                cv2.line(wback, (x, int(cmy)), (x + width, int(cmy)), (255, 0, 0), 3)
+                cv2.line(ori_img, (x, int(cmy)), (x + width, int(cmy)), (255, 0, 0), params.line_thickness)
+                cv2.line(wback, (x, int(cmy)), (x + width, int(cmy)), (255, 0, 0), params.line_thickness)
             else:
-                cv2.line(ori_img, (x_coor + 2, int(cmy)), (x_coor + width_left_bound, int(cmy)), (255, 0, 0), 3)
-                cv2.line(ori_img, (x_coor + 2, int(cmy)), (x_coor - width_right_bound, int(cmy)), (0, 255, 0), 3)
-                cv2.line(wback, (x_coor + 2, int(cmy)), (x_coor + width_left_bound, int(cmy)), (255, 0, 0), 3)
-                cv2.line(wback, (x_coor + 2, int(cmy)), (x_coor - width_right_bound, int(cmy)), (0, 255, 0), 3)
+                cv2.line(ori_img, (x_coor + 2, int(cmy)), (x_coor + width_left_bound, int(cmy)), (255, 0, 0),
+                         params.line_thickness)
+                cv2.line(ori_img, (x_coor + 2, int(cmy)), (x_coor - width_right_bound, int(cmy)), (0, 255, 0),
+                         params.line_thickness)
+                cv2.line(wback, (x_coor + 2, int(cmy)), (x_coor + width_left_bound, int(cmy)), (255, 0, 0),
+                         params.line_thickness)
+                cv2.line(wback, (x_coor + 2, int(cmy)), (x_coor - width_right_bound, int(cmy)), (0, 255, 0),
+                         params.line_thickness)
         if params.debug == 'print':
             print_image(wback, os.path.join(params.debug_outdir, str(params.device) + '_boundary_on_white.jpg'))
             print_image(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_boundary_on_img.jpg'))
@@ -161,18 +145,29 @@ def analyze_bound_vertical(img, obj, mask, line_position):
             plot_image(wback)
             plot_image(ori_img)
 
-    # Store into global measurements
-    if not 'bound_vertical' in outputs.measurements:
-        outputs.measurements['bound_vertical'] = {}
-    outputs.measurements['bound_vertical']['vertical_line_position'] = line_position
-    outputs.measurements['bound_vertical']['width_left_bound'] = width_left_bound
-    outputs.measurements['bound_vertical']['width_right_bound'] = width_right_bound
-    outputs.measurements['bound_vertical']['left_bound_area'] = left_bound_area
-    outputs.measurements['bound_vertical']['percent_left_bound_area'] = percent_bound_area_left
-    outputs.measurements['bound_vertical']['right_bound_area'] = right_bound_area
-    outputs.measurements['bound_vertical']['percent_right_bound_area'] = percent_bound_area_right
+    outputs.add_observation(variable='vertical_reference_position', trait='vertical reference position',
+                            method='plantcv.plantcv.analyze_bound_vertical', scale='none', datatype=int,
+                            value=line_position, label='none')
+    outputs.add_observation(variable='width_left_reference', trait='width left of reference',
+                            method='plantcv.plantcv.analyze_bound_vertical', scale='pixels', datatype=int,
+                            value=width_left_bound, label='pixels')
+    outputs.add_observation(variable='width_right_reference', trait='width right of reference',
+                            method='plantcv.plantcv.analyze_bound_vertical', scale='pixels', datatype=int,
+                            value=width_right_bound, label='pixels')
+    outputs.add_observation(variable='area_left_reference', trait='area left of reference',
+                            method='plantcv.plantcv.analyze_bound_vertical', scale='pixels', datatype=int,
+                            value=left_bound_area, label='pixels')
+    outputs.add_observation(variable='percent_area_left_reference', trait='percent area left of reference',
+                            method='plantcv.plantcv.analyze_bound_vertical', scale='none', datatype=float,
+                            value=percent_bound_area_left, label='none')
+    outputs.add_observation(variable='area_right_reference', trait='area right of reference',
+                            method='plantcv.plantcv.analyze_bound_vertical', scale='pixels', datatype=int,
+                            value=right_bound_area, label='pixels')
+    outputs.add_observation(variable='percent_area_right_reference', trait='percent area right of reference',
+                            method='plantcv.plantcv.analyze_bound_vertical', scale='none', datatype=float,
+                            value=percent_bound_area_right, label='none')
 
     # Store images
     outputs.images.append(analysis_images)
 
-    return bound_header, bound_data, analysis_images
+    return analysis_images

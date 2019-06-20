@@ -8,7 +8,7 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import params
 
 
-def scale_features(obj, mask, points, boundary_line):
+def scale_features(obj, mask, points, line_position):
     """scale_features: returns feature scaled points
 
     This is a function to transform the coordinates of landmark points onto a common scale (0 - 1.0).
@@ -17,13 +17,13 @@ def scale_features(obj, mask, points, boundary_line):
     obj           = a contour of the plant object (this should be output from the object_composition.py fxn)
     mask          = this is a binary image. The object should be white and the background should be black
     points        = the points to scale
-    boundary_line = A vertical coordinate that denotes the height of the plant pot, the coordinates of this reference
+    line_position = A vertical coordinate that denotes the height of the plant pot, the coordinates of this reference
                     point is also rescaled
 
     :param obj: ndarray
     :param mask: ndarray
     :param points: ndarray
-    :param boundary_line: int
+    :param line_position: int
     :return rescaled: list
     :return centroid_scaled: tuple
     :return boundary_line_scaled: tuple
@@ -40,9 +40,9 @@ def scale_features(obj, mask, points, boundary_line):
     m = cv2.moments(mask, binaryImage=True)
     cmx, cmy = (m['m10'] / m['m00'], m['m01'] / m['m00'])
     # Convert the boundary line position (top of the pot) into a coordinate on the image
-    if boundary_line != 'NA':
-        line_position = int(iy) - int(boundary_line)
-        bly = line_position
+    if line_position != 'NA':
+        line_pos = int(iy) - int(line_position)
+        bly = line_pos
     else:
         bly = cmy
     blx = cmx
@@ -79,9 +79,11 @@ def scale_features(obj, mask, points, boundary_line):
         # (+250 helps center the object in the middle of the blank image)
         for i in plotter:
             x, y = i.ravel()
-            cv2.circle(scaled_img, (int(x) + 250, int(y) + 250), 15, (255, 255, 255), -1)
-        cv2.circle(scaled_img, (int(cmx_scaled * 1000) + 250, int(cmy_scaled * 1000) + 250), 25, (0, 0, 255), -1)
-        cv2.circle(scaled_img, (int(blx_scaled * 1000) + 250, int(bly_scaled * 1000) + 250), 25, (0, 255, 0), -1)
+            cv2.circle(scaled_img, (int(x) + 250, int(y) + 250), params.line_thickness, (255, 255, 255), -1)
+        cv2.circle(scaled_img, (int(cmx_scaled * 1000) + 250, int(cmy_scaled * 1000) + 250), params.line_thickness,
+                   (255, 0, 255), -1)
+        cv2.circle(scaled_img, (int(blx_scaled * 1000) + 250, int(bly_scaled * 1000) + 250), params.line_thickness,
+                   (0, 255, 0), -1)
         # Because the coordinates increase as you go down and to the right on the
         # image you need to flip the object around the x-axis
         flipped_scaled = cv2.flip(scaled_img, 0)
@@ -97,9 +99,11 @@ def scale_features(obj, mask, points, boundary_line):
         # the object in the middle of the blank image)
         for i in plotter:
             x, y = i.ravel()
-            cv2.circle(scaled_img, (int(x) + 250, int(y) + 250), 15, (255, 255, 255), -1)
-        cv2.circle(scaled_img, (int(cmx_scaled * 1000) + 250, int(cmy_scaled * 1000) + 250), 25, (0, 0, 255), -1)
-        cv2.circle(scaled_img, (int(blx_scaled * 1000) + 250, int(bly_scaled * 1000) + 250), 25, (0, 255, 0), -1)
+            cv2.circle(scaled_img, (int(x) + 250, int(y) + 250), params.line_thickness, (255, 255, 255), -1)
+        cv2.circle(scaled_img, (int(cmx_scaled * 1000) + 250, int(cmy_scaled * 1000) + 250), params.line_thickness,
+                   (255, 0, 255), -1)
+        cv2.circle(scaled_img, (int(blx_scaled * 1000) + 250, int(bly_scaled * 1000) + 250), params.line_thickness,
+                   (0, 255, 0), -1)
         # Because the coordinates increase as you go down and to the right on the
         # image you need to flip the object around the x-axis
         flipped_scaled = cv2.flip(scaled_img, 0)

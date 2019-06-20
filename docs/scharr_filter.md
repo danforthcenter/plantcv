@@ -28,12 +28,14 @@ This is a filtering method used to identify and highlight gradient edges/feature
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Apply to a grayscale image
 sr_x_img = pcv.scharr_filter(gray_img, 1, 0, 1)
 sr_y_img = pcv.scharr_filter(gray_img, 0, 1, 1)
+
 ```
 
 **Scharr filtered (x-axis)**

@@ -21,14 +21,6 @@ def landmark_reference_pt_dist(points_r, centroid_r, bline_r):
     :param points_r: ndarray
     :param centroid_r: tuple
     :param bline_r: tuple
-    :return vert_ave_c: float
-    :return hori_ave_c: float
-    :return euc_ave_c: float
-    :return ang_ave_c: float
-    :return vert_ave_b: float
-    :return hori_ave_b: float
-    :return euc_ave_b: float
-    :return ang_ave_b: float
     """
 
     # scaled_img = np.zeros((1500,1500,3), np.uint8)
@@ -70,10 +62,11 @@ def landmark_reference_pt_dist(points_r, centroid_r, bline_r):
         #                                                                 int((y*1000)+250)), (0,165,255), 5)
         # a = (h*h + v*v - e*e)/(2*h*v)
         a = (h * h + e * e - v * v) / (2 * h * e)
-        if a > 1:              # If float excedes 1 prevent arcos error and force to equal 1
-            a = 1
-        elif a < -1:           # If float excedes -1 prevent arcos error and force to equal -1
-            a = -1
+        # Used a random number generator to test if either of these cases were possible but neither is possible
+        # if a > 1:              # If float excedes 1 prevent arcos error and force to equal 1
+        #     a = 1
+        # elif a < -1:           # If float excedes -1 prevent arcos error and force to equal -1
+        #     a = -1
         ang = abs(math.degrees(math.acos(a)))
         if v < 0:
             ang = ang * -1
@@ -111,10 +104,12 @@ def landmark_reference_pt_dist(points_r, centroid_r, bline_r):
         #                                                                 int((y*1000)+250)), (255,178,102), 5)
         # a = (h*h + v*v - e*e)/(2*h*v)
         a = (h * h + e * e - v * v) / (2 * h * e)
-        if a > 1:              # If float excedes 1 prevent arcos error and force to equal 1
-            a = 1
-        elif a < -1:           # If float excedes -1 prevent arcos error and force to equal -1
-            a = -1
+
+        # Used a random number generator to test if either of these cases were possible but neither is possible
+        # if a > 1:              # If float excedes 1 prevent arcos error and force to equal 1
+        #     a = 1
+        # elif a < -1:           # If float excedes -1 prevent arcos error and force to equal -1
+        #     a = -1
         ang = abs(math.degrees(math.acos(a)))
         if v < 0:
             ang = ang * -1
@@ -132,40 +127,27 @@ def landmark_reference_pt_dist(points_r, centroid_r, bline_r):
     # flipped_scaled = cv2.flip(scaled_img, 0)
     # cv2.imwrite('centroid_dist.png', flipped_scaled)
 
-    landmark_header = [
-        'HEADER_LANDMARK',
-        'vert_ave_c',
-        'hori_ave_c',
-        'euc_ave_c',
-        'ang_ave_c',
-        'vert_ave_b',
-        'hori_ave_b',
-        'euc_ave_b',
-        'ang_ave_b'
-    ]
-
-    landmark_data = [
-        'LANDMARK_DATA',
-        vert_ave_c,
-        hori_ave_c,
-        euc_ave_c,
-        ang_ave_c,
-        vert_ave_b,
-        hori_ave_b,
-        euc_ave_b,
-        ang_ave_b
-    ]
-
-    # Store into global measurements
-    if not 'landmark_reference' in outputs.measurements:
-        outputs.measurements['landmark_reference'] = {}
-    outputs.measurements['landmark_reference']['vert_ave_c'] = vert_ave_c
-    outputs.measurements['landmark_reference']['hori_ave_c'] = hori_ave_c
-    outputs.measurements['landmark_reference']['euc_ave_c'] = euc_ave_c
-    outputs.measurements['landmark_reference']['ang_ave_c'] = ang_ave_c
-    outputs.measurements['landmark_reference']['vert_ave_b'] = vert_ave_b
-    outputs.measurements['landmark_reference']['hori_ave_b'] = hori_ave_b
-    outputs.measurements['landmark_reference']['euc_ave_b'] = euc_ave_b
-    outputs.measurements['landmark_reference']['ang_ave_b'] = ang_ave_b
-
-    return landmark_header, landmark_data
+    outputs.add_observation(variable='vert_ave_c', trait='average vertical distance from centroid',
+                            method='plantcv.plantcv.landmark_reference_pt_dist', scale='pixels', datatype=float,
+                            value=vert_ave_c, label='pixels')
+    outputs.add_observation(variable='hori_ave_c', trait='average horizontal distance from centeroid',
+                            method='plantcv.plantcv.landmark_reference_pt_dist', scale='pixels', datatype=float,
+                            value=hori_ave_c, label='pixels')
+    outputs.add_observation(variable='euc_ave_c', trait='average euclidean distance from centroid',
+                            method='plantcv.plantcv.landmark_reference_pt_dist', scale='pixels', datatype=float,
+                            value=euc_ave_c, label='pixels')
+    outputs.add_observation(variable='ang_ave_c', trait='average angle between landmark point and centroid',
+                            method='plantcv.plantcv.landmark_reference_pt_dist', scale='degrees', datatype=float,
+                            value=ang_ave_c, label='degrees')
+    outputs.add_observation(variable='vert_ave_b', trait='average vertical distance from baseline',
+                            method='plantcv.plantcv.landmark_reference_pt_dist', scale='pixels', datatype=float,
+                            value=vert_ave_b, label='pixels')
+    outputs.add_observation(variable='hori_ave_b', trait='average horizontal distance from baseline',
+                            method='plantcv.plantcv.landmark_reference_pt_dist', scale='pixels', datatype=float,
+                            value=hori_ave_b, label='pixels')
+    outputs.add_observation(variable='euc_ave_b', trait='average euclidean distance from baseline',
+                            method='plantcv.plantcv.landmark_reference_pt_dist', scale='pixels', datatype=float,
+                            value=euc_ave_b, label='pixels')
+    outputs.add_observation(variable='ang_ave_b', trait='average angle between landmark point and baseline',
+                            method='plantcv.plantcv.landmark_reference_pt_dist', scale='degrees', datatype=float,
+                            value=ang_ave_b, label='degrees')

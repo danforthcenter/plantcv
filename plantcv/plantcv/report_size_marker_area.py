@@ -31,8 +31,6 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
     thresh          = Binary threshold value (integer)
 
     Returns:
-    marker_header   = Marker data table headers
-    marker_data     = Marker data table values
     analysis_images = List of output images
 
     :param img: numpy.ndarray
@@ -42,10 +40,11 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
     :param objcolor: str
     :param thresh_channel: str
     :param thresh: int
-    :return: marker_header: list
-    :return: marker_data: list
     :return: analysis_images: list
     """
+    # Store debug
+    debug = params.debug
+    params.debug = None
 
     params.device += 1
     # Make a copy of the reference image
@@ -64,7 +63,7 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
     marker_contour = []
 
     # If the marker type is "detect" then we will use the ROI to isolate marker contours from the input image
-    if marker == 'detect':
+    if marker.upper() == 'DETECT':
         # We need to convert the input image into an one of the HSV channels and then threshold it
         if thresh_channel is not None and thresh is not None:
             # Mask the input image
@@ -87,7 +86,7 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
                                                              hierarchy=kept_hierarchy)
         else:
             fatal_error('thresh_channel and thresh must be defined in detect mode')
-    elif marker == "define":
+    elif marker.upper() == "DEFINE":
         # Identify contours in the masked image
         contours, hierarchy = find_objects(img=ref_img, mask=roi_mask)
         # If there are more than one contour detected, combine them into one
@@ -116,35 +115,29 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
     # out_file = os.path.splitext(filename)[0] + '_sizemarker.jpg'
     # print_image(ref_img, out_file)
     analysis_image.append(ref_img)
+
+    # Reset debug mode
+    params.debug = debug
+    
     if params.debug is 'print':
         print_image(ref_img, os.path.join(params.debug_outdir, str(params.device) + '_marker_shape.png'))
     elif params.debug is 'plot':
         plot_image(ref_img)
 
-    marker_header = (
-        'HEADER_MARKER',
-        'marker_area',
-        'marker_major_axis_length',
-        'marker_minor_axis_length',
-        'marker_eccentricity'
-    )
-
-    marker_data = (
-        'MARKER_DATA',
-        marker_area,
-        major_axis_length,
-        minor_axis_length,
-        eccentricity
-    )
-    # Store into global measurements
-    if not 'size_marker' in outputs.measurements:
-        outputs.measurements['size_marker'] = {}
-    outputs.measurements['size_marker']['marker_area'] = marker_area
-    outputs.measurements['size_marker']['marker_major_axis_length'] = major_axis_length
-    outputs.measurements['size_marker']['marker_minor_axis_length'] = minor_axis_length
-    outputs.measurements['size_marker']['marker_eccentricity'] = eccentricity
+    outputs.add_observation(variable='marker_area', trait='marker area',
+                            method='plantcv.plantcv.report_size_marker_area', scale='pixels', datatype=int,
+                            value=marker_area, label='pixels')
+    outputs.add_observation(variable='marker_ellipse_major_axis', trait='marker ellipse major axis length',
+                            method='plantcv.plantcv.report_size_marker_area', scale='pixels', datatype=int,
+                            value=major_axis_length, label='pixels')
+    outputs.add_observation(variable='marker_ellipse_minor_axis', trait='marker ellipse minor axis length',
+                            method='plantcv.plantcv.report_size_marker_area', scale='pixels', datatype=int,
+                            value=minor_axis_length, label='pixels')
+    outputs.add_observation(variable='marker_ellipse_eccentricity', trait='marker ellipse eccentricity',
+                            method='plantcv.plantcv.report_size_marker_area', scale='none', datatype=float,
+                            value=eccentricity, label='none')
 
     # Store images
     outputs.images.append(analysis_image)
 
-    return marker_header, marker_data, analysis_image
+    return analysis_image

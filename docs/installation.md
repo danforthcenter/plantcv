@@ -118,6 +118,7 @@ python setup.py test
 
 # Install PlantCV
 python setup.py install
+
 ```
 
 If you have a broken environment, you can remove it and repeat the above steps.
@@ -153,6 +154,7 @@ docker pull danforthcenter/plantcv
 
 # A simple command to demonstrate it works (nothing returned if import is successful)
 docker run danforthcenter/plantcv python -c 'import plantcv'
+
 ```
 
 To analyze data with the PlantCV Docker container you will need to map a local folder that contains your inputs into
@@ -169,6 +171,7 @@ called `test-image.png`. The `test-script.py` in this case would be a script lik
 # Analyzing data using the PlantCV docker image
 docker run -v /home/user:/data danforthcenter/plantcv \
 python /data/test-script.py -i /data/test-image.png -o /data -r /data/plantcv-results.txt
+
 ```
 
 #### Script-based installation
@@ -234,8 +237,8 @@ You will be given the following error:
 `libdc1394 error: Failed to initialize libdc1394`
 
 libdc1394 allows a program to interface with cameras that work on the ieee1394 standard(firewire).
-Due to no option to enable USB access in the Cloud9 workspace this error will keep occuring when running a pipeline.
-This error will have no effect on the output of your pipelines and can continue working despite the warning.
+Due to no option to enable USB access in the Cloud9 workspace this error will keep occuring when running a workflow.
+This error will have no effect on the output of your workflows and can continue working despite the warning.
 
 To temporarily remove the driver and error use:
 

@@ -1,0 +1,6 @@
+experiment,id,plant barcode,car tag,timestamp,weight before,weight after,water amount,completed,measurement label,tag,tiles
+Phenotyping3_14Aug03,57383,Ca031AA010564,2143,2014-10-22 17:49:35.187,-1.0,-1.0,-1.0,true,C002ch_092214_biomass,,VIS_SV_0_z1_h1_g0_e82_117770;NIR_SV_0_z1_h1_g0_e65_117779;
+Phenotyping3_14Aug03,57383,Ca031AA010564,2143,2014-10-22 17:49:35.187,-1.0,-1.0,-1.0,true,C002ch_092214_biomass,,NIR_SV_0_z1_h1_g0_e82_117770;NIR_SV_0_z1_h1_g0_e65_117779;
+Phenotyping4_14Aug03,57382,Ca031AA010564,2143,2014-10-22 17:49:35.187,-1.0,-1.0,-1.0,true,C002ch_092214_biomass,,;;
+Phenotyping4_14Aug03,57382,Ca031AA010564,2143,2013-10-22 17:49:35.187,-1.0,-1.0,-1.0,true,C002ch_092214_biomass,,VIS_SV_0_z1_h1_g0_e82_117771;;
+Phenotyping2,178541,Ca002AA009818,1268,2014-09-22 14:52:54.921,626.0,630.0,9.0,true,C002ch_092214,,

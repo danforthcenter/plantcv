@@ -24,11 +24,14 @@ Convert image from RGB color space to HSV color space and split the channels.
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
-# image converted from RGB to HSV, channels are then split. Hue ('h') channel is outputed.
+# image converted from RGB to HSV, channels are then split. 
+# Hue ('h') channel is outputed.
 h_channel = pcv.rgb2gray_hsv(rgb_img, 'h')
+
 ```
 
 **Hue channel image**
@@ -39,11 +42,14 @@ h_channel = pcv.rgb2gray_hsv(rgb_img, 'h')
 
 from plantcv import plantcv as pcv
     
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
     
-# image converted from RGB to HSV, channels are then split. Saturation ('s') channel is outputed.    
+# image converted from RGB to HSV, channels are then split. 
+# Saturation ('s') channel is outputed.    
 s_channel = pcv.rgb2gray_hsv(rgb_img, 's')
+
 ```  
 
 **Saturation channel image**
@@ -54,11 +60,14 @@ s_channel = pcv.rgb2gray_hsv(rgb_img, 's')
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
-# image converted from RGB to HSV, channels are then split. Value ('v') channel is outputed.
+# image converted from RGB to HSV, channels are then split. 
+# Value ('v') channel is outputed.
 v_channel = pcv.rgb2gray_hsv(rgb_img, 'v')
+
 ```  
 
 **Value channel image**

@@ -6,7 +6,7 @@ repo_url: https://github.com/danforthcenter/plantcv
 copyright: Copyright 2016, Donald Danforth Plant Science Center
 theme: readthedocs
 
-pages:
+nav:
 - Home: index.md
 - Documentation:
   - 'Installation': installation.md
@@ -20,15 +20,16 @@ pages:
     - 'Code of Conduct': CODE_OF_CONDUCT.md
     - 'Adding/Editing Documentation': documentation.md
   - Tutorials:
-    - 'VIS pipeline': vis_tutorial.md
-    - 'NIR pipeline': nir_tutorial.md
-    - 'PSII pipeline': psII_tutorial.md
-    - 'VIS/NIR Dual Pipeline': vis_nir_tutorial.md
-    - 'Multi Plant Pipeline': multi-plant_tutorial.md
+    - 'VIS Workflow': vis_tutorial.md
+    - 'NIR Workflow': nir_tutorial.md
+    - 'PSII Workflow': psII_tutorial.md
+    - 'VIS/NIR Dual Workflow': vis_nir_tutorial.md
+    - 'Multi Plant Workflow': multi-plant_tutorial.md
     - 'Machine Learning': machine_learning_tutorial.md
-    - 'Pipeline Parallelization': pipeline_parallel.md
+    - 'Workflow Parallelization': pipeline_parallel.md
     - 'Exporting Data': db-exporter.md
-    - 'Color Correction Pipeline': transform_color_correction_tutorial.md
+    - 'Color Correction Workflow': transform_color_correction_tutorial.md
+    - 'Morphology Workflow': morphology_tutorial.md
   - 'Package Plantcv':
     - 'Analyze color': analyze_color.md
     - 'Analyze NIR': analyze_NIR_intensity.md
@@ -41,6 +42,7 @@ pages:
       - 'Horizontal Boundary Tool': analyze_bound_horizontal.md
       - 'Vertical Boundary Tool': analyze_bound_vertical.md
     - 'Canny Edge Detection': canny_edge_detect.md
+    - 'Closing': closing.md
     - 'Cluster Contours': cluster_contours.md
     - 'Cluster Contours and Split Images': cluster_contours_splitimg.md
     - 'Color Palette': color_palette.md
@@ -65,6 +67,7 @@ pages:
     - 'Get NIR Images': get_nir.md
     - 'Erosion': erode.md
     - 'Fill Objects': fill.md
+    - 'Fill Holes': fill_holes.md
     - 'Find Objects': find_objects.md
     - 'Histogram Normalization': HistEqualization.md
     - 'Image Add': image_add.md
@@ -81,16 +84,31 @@ pages:
       - 'Logical Operations-Or': logical_or.md
       - 'Logical Operations-XOr': logical_xor.md
     - 'Median Blur': median_blur.md
+    - 'Morphology Functions':
+      - 'Check Cycles': check_cycles.md
+      - 'Find Branches': find_branch_pts.md
+      - 'Find Tips': find_tips.md
+      - 'Prune': prune.md
+      - 'Segment Angles': segment_angle.md
+      - 'Combine Segments': segment_combine.md
+      - 'Segment Curvature': segment_curvature.md
+      - 'Segment Euclidean Length': segment_euclidean_length.md
+      - 'Segment ID': segment_id.md
+      - 'Segment Insertion Angle': segment_insertion_angle.md
+      - 'Segment Path Length': segment_pathlength.md
+      - 'Segment Skeleton': segment_skeleton.md
+      - 'Segment Sort': segment_sort.md
+      - 'Segment Tangent Angle': segment_tangent_angle.md
+      - 'Skeletonize': skeletonize.md
     - 'Naive Bayes Classifier': naive_bayes_classifier.md
     - 'Object Composition': object_composition.md
+    - 'Opening': opening.md
     - 'Output Mask': output_mask.md
     - 'Outputs Class': outputs.md
     - 'Params (Debugging)': params.md
-    - 'Plot Histogram': plot_hist.md
     - 'Print Image': print_image.md
     - 'Print Results': print_results.md
     - 'Plot Image': plot_image.md
-    - 'Pseudocolor Image': pseudocolor.md
     - 'Read Image': read_image.md
     - 'Read Bayer Raw Image': read_bayer.md
     - 'Rectangle Mask': rectangle_mask.md
@@ -106,16 +124,25 @@ pages:
     - 'Rotate': rotate2.md
     - 'Shift Image': shift.md
     - 'Thresholding Methods':
-      - 'Binary threshold': binary_threshold.md
+      - 'Binary Threshold': binary_threshold.md
+      - 'Custom Range Threshold': custom_range_threshold.md
       - 'Gaussian Adaptive Threshold': gaussian_threshold.md
       - 'Mean Adaptive Threshold': mean_threshold.md
       - 'Otsu Auto Threshold': otsu_threshold.md
       - 'Triangle Auto Threshold': triangle_threshold.md
       - 'Texture Threshold': texture_threshold.md
+    - 'Visualization Methods':
+        - 'Colorize Masks': visualize_colorize_masks.md
+        - 'Histogram': visualize_histogram.md
+        - 'Pseudocolor': visualize_pseudocolor.md
     - 'Watershed Segmentation': watershed.md
+    - 'Within Frame': within_frame.md
   - 'Package plantcv.learn':
     - 'Naive Bayes': naive_bayes.md
     - 'Naive Bayes Multiclass': naive_bayes_multiclass.md
+  - 'Add-on Packages':
+    - 'Hyperspectral': https://plantcv.readthedocs.io/projects/hyperspectral
+  - 'Accessory tools': tools.md
 markdown_extensions:
   - toc:
       permalink: True

@@ -1,15 +1,15 @@
 ## Create a rectangular Region of Interest (ROI)
 
-**plantcv.roi.rectangle**(*x, y, h, w, img*)
+**plantcv.roi.rectangle**(*img, x, y, h, w*)
 
 **returns** roi_contour, roi_hierarchy
 
 - **Parameters:**
+    - img - An RGB or grayscale image to plot the ROI on in debug mode.
     - x - The x-coordinate of the upper left corner of the rectangle.
     - y - The y-coordinate of the upper left corner of the rectangle.
     - h - The height of the rectangle.
     - w - The width of the rectangle.
-    - img - An RGB or grayscale image to plot the ROI on in debug mode.
 - **Context:**
     - Used to define a region of interest in the image.
 
@@ -21,10 +21,12 @@
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
-roi_contour, roi_hierarchy = pcv.roi.rectangle(x=100, y=100, h=200, w=200, img=rgb_img)
+roi_contour, roi_hierarchy = pcv.roi.rectangle(img=rgb_img, x=100, y=100, h=200, w=200)
+
 ```
 
 ![Screenshot](img/documentation_images/rectangle/image_with_roi.jpg)

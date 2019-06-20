@@ -69,8 +69,9 @@ from matplotlib import pyplot as plt
 from plantcv import plantcv as pcv
 
 # Set variables
-debug = 'plot'                                # Plot debug images to the notebook
+pcv.params.debug = 'plot'                     # Plot debug images to the notebook
 img_file = 'input_color_img.jpg'              # Example image
+
 ```
 
 Not all of these imports are required, this is just to demonstrate that
@@ -82,7 +83,7 @@ packages as well.
 Once a workflow has been developed, it needs to be converted into a pure
 Python script if the goal is to use it on many images using the PlantCV
 workflow [parallelization](pipeline_parallel.md) tools. To make a
-Python script that is compatible with the `plantcv-pipeline.py` program,
+Python script that is compatible with the `plantcv-workflow.py` program,
 first use Jupyter to convert the notebook to Python. This can be done
 through the web interface, or on the command line:
 
@@ -104,14 +105,16 @@ the remaining code within main, for example:
 
 ```python
 def main():
+    
     # all the code from Jupyter
 
 if __name__ == '__main__':
     main()
+    
 ```
 
 Add a function for parsing command line options using [argparse](https://docs.python.org/2.7/library/argparse.html).
-The `plantcv-pipeline.py` script requires a few command-line arguments for
+The `plantcv-workflow.py` script requires a few command-line arguments for
 workflow scripts to work properly. If the script analyzes a single image
 the options minimally should look like the following:
 
@@ -125,6 +128,7 @@ def options():
     parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.")
     args = parser.parse_args()
     return args
+    
 ```
 
 If the script analyzes two images using co-processing, the options
@@ -141,6 +145,7 @@ def options():
     parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.")
     args = parser.parse_args()
     return args
+    
 ```
 
 Within the `main` function, call the `options` function to get the
@@ -153,9 +158,9 @@ def main():
     args = options()
     
     # Set variables
-    device = 0
-    debug = args.debug        # Replace the hard-coded debug with the debug flag
-    img_file = args.image     # Replace the hard-coded input image with image flag
+    pcv.params.debug = args.debug     # Replace the hard-coded debug with the debug flag
+    img_file = args.image             # Replace the hard-coded input image with image flag
+    
 ```
 
 Make any other alterations as necessary after testing. Based on the
@@ -185,12 +190,29 @@ def main():
     args = options()
     
     # Set variables
-    device = 0
-    debug = args.debug        # Replace the hard-coded debug with the debug flag
+    pcv.params.debug = args.debug        # Replace the hard-coded debug with the debug flag
     img_file = args.image     # Replace the hard-coded input image with image flag
     
-    # More code from Jupyter
+    # Put workflow 
+    # steps from 
+    # Jupyter here
+    
+    # Print data that gets collected into the Outputs 
+    pcv.print_results(args.result)
 
 if __name__ == '__main__':
     main()
+    
 ```
+
+There are examples of full Python scripts found at the bottom of each tutorial.
+
+*  [VIS Image Workflow](vis_tutorial.md)
+*  [NIR Image Workflow](nir_tutorial.md)
+*  [PSII Workflow](psII_tutorial.md)
+*  [VIS / NIR Dual Workflow](vis_nir_tutorial.md)
+*  [Multi Plant Tutorial](multi-plant_tutorial.md)
+*  [Morphology Tutorial](morphology_tutorial.md) 
+*  [Machine Learning Tutorial](machine_learning_tutorial.md)
+*  [Color Correction Tutorial](transform_color_correction_tutorial.md)
+*  [Morphology Tutorial](morphology_tutorial.md) 

@@ -5,7 +5,7 @@ the number of inputted filenames matches the number of clustered contours.
 
 **plantcv.cluster_contour_splitimg**(*rgb_img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None, filenames=None*)
 
-**returns** output_paths
+**returns** output_paths, output_imgs, output_masks
 
 - **Parameters:**
     - rgb_img - RGB image data
@@ -31,14 +31,18 @@ the number of inputted filenames matches the number of clustered contours.
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 
 pcv.params.debug = "print"
 
 # Cluster Contours and Split into Separate Images
 
 out = './examples/'
-output_path = pcv.cluster_contour_splitimg(rgb_img, clusters_i, contours, hierarchy, out, file, filenames=None)
+output_path, imgs, masks = pcv.cluster_contour_splitimg(rgb_img, clusters_i, contours, 
+                                                        hierarchy, out, file, 
+                                                        filenames=None)
+                                           
 ```
 
 **Split the Clusters into Separate Images (example of a few images)**

@@ -24,11 +24,14 @@ Note that p1 = (0,0) is the top left hand corner bottom right hand corner is p2 
 ```python
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Makes a rectangle area that will be treated as a mask
-masked, binary, contours, hierarchy = pcv.rectangle_mask(img, (0,0), (75,252), color="black")
+masked, binary, contours, hierarchy = pcv.rectangle_mask(img, (0,0), (75,252), 
+                                                         color="black")
+                                                         
 ```
 
 **Region of interest**

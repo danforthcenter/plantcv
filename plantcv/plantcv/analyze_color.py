@@ -1,116 +1,27 @@
-# Analyze Color of Object
-
-# import os
+import os
 import cv2
 import numpy as np
 import pandas as pd
+from scipy import stats
 from plotnine import ggplot, aes, geom_line, scale_x_continuous, scale_color_manual
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-# def _pseudocolored_image(histogram, bins, img, mask, background, channel, filename, analysis_images):
-#     """Pseudocolor image.
-
-#     Inputs:
-#     histogram       = a normalized histogram of color values from one color channel
-#     bins            = number of color bins the channel is divided into
-#     img             = input image
-#     mask            = binary mask image
-#     background      = what background image?: channel image (img) or white
-#     channel         = color channel name
-#     filename        = input image filename
-#     analysis_images = list of analysis image filenames
-
-#     Returns:
-#     analysis_images = list of analysis image filenames
-
-#     :param histogram: list
-#     :param bins: int
-#     :param img: numpy array
-#     :param mask: numpy array
-#     :param background: str
-#     :param channel: str
-#     :param filename: str
-#     :param analysis_images: list
-#     :return analysis_images: list
-#     """
-#     mask_inv = cv2.bitwise_not(mask)
-
-#     cplant = cv2.applyColorMap(histogram, colormap=2)
-#     cplant1 = cv2.bitwise_and(cplant, cplant, mask=mask)
-
-#     output_imgs = {"pseudo_on_img": {"background": "img", "img": None},
-#                    "pseudo_on_white": {"background": "white", "img": None}}
-
-#     if background == 'img' or background == 'both':
-#         # mask the background and color the plant with color scheme 'jet'
-#         img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-#         img_back = cv2.bitwise_and(img_gray, img_gray, mask=mask_inv)
-#         img_back3 = np.dstack((img_back, img_back, img_back))
-
-#         output_imgs["pseudo_on_img"]["img"] = cv2.add(cplant1, img_back3)
-
-#     if background == 'white' or background == 'both':
-#         ix, iy, iz = np.shape(img)
-#         size = ix, iy
-#         back = np.zeros(size, dtype=np.uint8)
-#         w_back = back + 255
-#         w_back3 = np.dstack((w_back, w_back, w_back))
-#         img_back3 = cv2.bitwise_and(w_back3, w_back3, mask=mask_inv)
-#         output_imgs["pseudo_on_white"]["img"] = cv2.add(cplant1, img_back3)
-
-#     if filename:
-#         for key in output_imgs:
-#             if output_imgs[key]["img"] is not None:
-#                 fig_name_pseudo = os.path.splitext(filename)[0] + '_' + str(channel) + '_pseudo_on_' + \
-#                                   output_imgs[key]["background"] + '.jpg'
-#                 path = os.path.dirname(filename)
-#                 print_image(output_imgs[key]["img"], fig_name_pseudo)
-#                 analysis_images.append(['IMAGE', 'pseudo', fig_name_pseudo])
-#     else:
-#         path = "."
-
-#     if params.debug is not None:
-#         if params.debug == 'print':
-#             for key in output_imgs:
-#                 if output_imgs[key]["img"] is not None:
-#                     print_image(output_imgs[key]["img"], os.path.join(params.debug_outdir, str(params.device) +
-#                                                                       "_" + output_imgs[key]["background"] +
-#                                                                       '_pseudocolor.jpg'))
-#             fig_name = 'VIS_pseudocolor_colorbar_' + str(channel) + '_channel.svg'
-#             if not os.path.isfile(os.path.join(params.debug_outdir, fig_name)):
-#                 plot_colorbar(path, fig_name, bins)
-#         elif params.debug == 'plot':
-#             for key in output_imgs:
-#                 if output_imgs[key]["img"] is not None:
-#                     plot_image(output_imgs[key]["img"])
-
-#     return analysis_images
-
-
-def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
+def analyze_color(rgb_img, mask, hist_plot_type=None):
     """Analyze the color properties of an image object
-
     Inputs:
     rgb_img          = RGB image data
     mask             = Binary mask made from selected contours
-    bins             = number of color bins the channel is divided into
     hist_plot_type   = 'None', 'all', 'rgb','lab' or 'hsv'
-
+    
     Returns:
-    hist_header      = color histogram data table headers
-    hist_data        = color histogram data table values
     analysis_image   = histogram output
-
+    
     :param rgb_img: numpy.ndarray
     :param mask: numpy.ndarray
-    :param bins: int
     :param hist_plot_type: str
-    :return hist_header: list
-    :return hist_data: list
     :return analysis_images: list
     """
 
@@ -119,150 +30,100 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
     if len(np.shape(rgb_img)) < 3:
         fatal_error("rgb_img must be an RGB image")
 
+    # Mask the input image
     masked = cv2.bitwise_and(rgb_img, rgb_img, mask=mask)
+    # Extract the blue, green, and red channels
     b, g, r = cv2.split(masked)
+    # Convert the BGR image to LAB
     lab = cv2.cvtColor(masked, cv2.COLOR_BGR2LAB)
+    # Extract the lightness, green-magenta, and blue-yellow channels
     l, m, y = cv2.split(lab)
+    # Convert the BGR image to HSV
     hsv = cv2.cvtColor(masked, cv2.COLOR_BGR2HSV)
+    # Extract the hue, saturation, and value channels
     h, s, v = cv2.split(hsv)
 
     # Color channel dictionary
-    norm_channels = {"b": np.divide(b, (256 / bins)).astype(np.uint8),
-                     "g": np.divide(g, (256 / bins)).astype(np.uint8),
-                     "r": np.divide(r, (256 / bins)).astype(np.uint8),
-                     "l": np.divide(l, (256 / bins)).astype(np.uint8),
-                     "m": np.divide(m, (256 / bins)).astype(np.uint8),
-                     "y": np.divide(y, (256 / bins)).astype(np.uint8),
-                     "h": np.divide(h, (256 / bins)).astype(np.uint8),
-                     "s": np.divide(s, (256 / bins)).astype(np.uint8),
-                     "v": np.divide(v, (256 / bins)).astype(np.uint8)
-                     }
+    channels = {"b": b, "g": g, "r": r, "l": l, "m": m, "y": y, "h": h, "s": s, "v": v}
 
     # Histogram plot types
-    hist_types = {"all": ("b", "g", "r", "l", "m", "y", "h", "s", "v"),
-                  "rgb": ("b", "g", "r"),
-                  "lab": ("l", "m", "y"),
-                  "hsv": ("h", "s", "v")}
+    hist_types = {"ALL": ("b", "g", "r", "l", "m", "y", "h", "s", "v"),
+                  "RGB": ("b", "g", "r"),
+                  "LAB": ("l", "m", "y"),
+                  "HSV": ("h", "s", "v")}
 
-    # # If the user-input pseudo_channel is not None and is not found in the list of accepted channels, exit
-    # if pseudo_channel is not None and pseudo_channel not in norm_channels:
-    #     fatal_error("Pseudocolor channel was " + str(pseudo_channel) +
-    #                 ', but can only be one of the following: None, "l", "m", "y", "h", "s" or "v"!')
-    # # If the user-input pseudocolored image background is not in the accepted input list, exit
-    # if pseudo_bkg not in ["white", "img", "both"]:
-    #     fatal_error("The pseudocolored image background was " + str(pseudo_bkg) +
-    #                 ', but can only be one of the following: "white", "img", or "both"!')
-    # # If the user-input histogram color-channel plot type is not in the list of accepted channels, exit
-    if hist_plot_type is not None and hist_plot_type not in hist_types:
+    if hist_plot_type is not None and hist_plot_type.upper() not in hist_types:
         fatal_error("The histogram plot type was " + str(hist_plot_type) +
                     ', but can only be one of the following: None, "all", "rgb", "lab", or "hsv"!')
+    # Store histograms, plotting colors, and plotting labels
     histograms = {
         "b": {"label": "blue", "graph_color": "blue",
-              "hist": cv2.calcHist([norm_channels["b"]], [0], mask, [bins], [0, (bins - 1)])},
+              "hist": [float(l[0]) for l in cv2.calcHist([channels["b"]], [0], mask, [256], [0, 255])]},
         "g": {"label": "green", "graph_color": "forestgreen",
-              "hist": cv2.calcHist([norm_channels["g"]], [0], mask, [bins], [0, (bins - 1)])},
+              "hist": [float(l[0]) for l in cv2.calcHist([channels["g"]], [0], mask, [256], [0, 255])]},
         "r": {"label": "red", "graph_color": "red",
-              "hist": cv2.calcHist([norm_channels["r"]], [0], mask, [bins], [0, (bins - 1)])},
+              "hist": [float(l[0]) for l in cv2.calcHist([channels["r"]], [0], mask, [256], [0, 255])]},
         "l": {"label": "lightness", "graph_color": "dimgray",
-              "hist": cv2.calcHist([norm_channels["l"]], [0], mask, [bins], [0, (bins - 1)])},
+              "hist": [float(l[0]) for l in cv2.calcHist([channels["l"]], [0], mask, [256], [0, 255])]},
         "m": {"label": "green-magenta", "graph_color": "magenta",
-              "hist": cv2.calcHist([norm_channels["m"]], [0], mask, [bins], [0, (bins - 1)])},
+              "hist": [float(l[0]) for l in cv2.calcHist([channels["m"]], [0], mask, [256], [0, 255])]},
         "y": {"label": "blue-yellow", "graph_color": "yellow",
-              "hist": cv2.calcHist([norm_channels["y"]], [0], mask, [bins], [0, (bins - 1)])},
+              "hist": [float(l[0]) for l in cv2.calcHist([channels["y"]], [0], mask, [256], [0, 255])]},
         "h": {"label": "hue", "graph_color": "blueviolet",
-              "hist": cv2.calcHist([norm_channels["h"]], [0], mask, [bins], [0, (bins - 1)])},
+              "hist": [float(l[0]) for l in cv2.calcHist([channels["h"]], [0], mask, [256], [0, 255])]},
         "s": {"label": "saturation", "graph_color": "cyan",
-              "hist": cv2.calcHist([norm_channels["s"]], [0], mask, [bins], [0, (bins - 1)])},
+              "hist": [float(l[0]) for l in cv2.calcHist([channels["s"]], [0], mask, [256], [0, 255])]},
         "v": {"label": "value", "graph_color": "orange",
-              "hist": cv2.calcHist([norm_channels["v"]], [0], mask, [bins], [0, (bins - 1)])}
+              "hist": [float(l[0]) for l in cv2.calcHist([channels["v"]], [0], mask, [256], [0, 255])]}
     }
 
-    hist_data_b = [l[0] for l in histograms["b"]["hist"]]
-    hist_data_g = [l[0] for l in histograms["g"]["hist"]]
-    hist_data_r = [l[0] for l in histograms["r"]["hist"]]
-    hist_data_l = [l[0] for l in histograms["l"]["hist"]]
-    hist_data_m = [l[0] for l in histograms["m"]["hist"]]
-    hist_data_y = [l[0] for l in histograms["y"]["hist"]]
-    hist_data_h = [l[0] for l in histograms["h"]["hist"]]
-    hist_data_s = [l[0] for l in histograms["s"]["hist"]]
-    hist_data_v = [l[0] for l in histograms["v"]["hist"]]
-
-    binval = np.arange(0, bins)
+    # Create list of bin labels for 8-bit data
+    binval = np.arange(0, 256)
     bin_values = [l for l in binval]
 
-    # Store Color Histogram Data
-    hist_header = [
-        'HEADER_HISTOGRAM',
-        'bin-number',
-        'bin-values',
-        'blue',
-        'green',
-        'red',
-        'lightness',
-        'green-magenta',
-        'blue-yellow',
-        'hue',
-        'saturation',
-        'value'
-    ]
-
-    hist_data = [
-        'HISTOGRAM_DATA',
-        bins,
-        bin_values,
-        hist_data_b,
-        hist_data_g,
-        hist_data_r,
-        hist_data_l,
-        hist_data_m,
-        hist_data_y,
-        hist_data_h,
-        hist_data_s,
-        hist_data_v
-    ]
-
     analysis_images = []
-    dataset = pd.DataFrame({'bins': binval, 'blue': hist_data_b,
-                            'green': hist_data_g, 'red': hist_data_r,
-                            'lightness': hist_data_l, 'green-magenta': hist_data_m,
-                            'blue-yellow': hist_data_y, 'hue': hist_data_h,
-                            'saturation': hist_data_s, 'value': hist_data_v})
+    # Create a dataframe of bin labels and histogram data
+    dataset = pd.DataFrame({'bins': binval, 'blue': histograms["b"]["hist"],
+                            'green': histograms["g"]["hist"], 'red': histograms["r"]["hist"],
+                            'lightness': histograms["l"]["hist"], 'green-magenta': histograms["m"]["hist"],
+                            'blue-yellow': histograms["y"]["hist"], 'hue': histograms["h"]["hist"],
+                            'saturation': histograms["s"]["hist"], 'value': histograms["v"]["hist"]})
 
     # Make the histogram figure using plotnine
     if hist_plot_type is not None:
-        if hist_plot_type == 'rgb':
+        if hist_plot_type.upper() == 'RGB':
             df_rgb = pd.melt(dataset, id_vars=['bins'], value_vars=['blue', 'green', 'red'],
                              var_name='Color Channel', value_name='Pixels')
             hist_fig = (ggplot(df_rgb, aes(x='bins', y='Pixels', color='Color Channel'))
                         + geom_line()
-                        + scale_x_continuous(breaks=list(range(0, bins, 25)))
+                        + scale_x_continuous(breaks=list(range(0, 256, 25)))
                         + scale_color_manual(['blue', 'green', 'red'])
                         )
             analysis_images.append(hist_fig)
 
-        elif hist_plot_type == 'lab':
+        elif hist_plot_type.upper() == 'LAB':
             df_lab = pd.melt(dataset, id_vars=['bins'],
                              value_vars=['lightness', 'green-magenta', 'blue-yellow'],
                              var_name='Color Channel', value_name='Pixels')
             hist_fig = (ggplot(df_lab, aes(x='bins', y='Pixels', color='Color Channel'))
                         + geom_line()
-                        + scale_x_continuous(breaks=list(range(0, bins, 25)))
+                        + scale_x_continuous(breaks=list(range(0, 256, 25)))
                         + scale_color_manual(['yellow', 'magenta', 'dimgray'])
                         )
             analysis_images.append(hist_fig)
 
-        elif hist_plot_type == 'hsv':
+        elif hist_plot_type.upper() == 'HSV':
             df_hsv = pd.melt(dataset, id_vars=['bins'],
                              value_vars=['hue', 'saturation', 'value'],
                              var_name='Color Channel', value_name='Pixels')
             hist_fig = (ggplot(df_hsv, aes(x='bins', y='Pixels', color='Color Channel'))
                         + geom_line()
-                        + scale_x_continuous(breaks=list(range(0, bins, 25)))
+                        + scale_x_continuous(breaks=list(range(0, 256, 25)))
                         + scale_color_manual(['blueviolet', 'cyan', 'orange'])
                         )
             analysis_images.append(hist_fig)
 
-        elif hist_plot_type == 'all':
+        elif hist_plot_type.upper() == 'ALL':
             s = pd.Series(['blue', 'green', 'red', 'lightness', 'green-magenta',
                            'blue-yellow', 'hue', 'saturation', 'value'], dtype="category")
             color_channels = ['blue', 'yellow', 'green', 'magenta', 'blueviolet',
@@ -271,27 +132,99 @@ def analyze_color(rgb_img, mask, bins, hist_plot_type=None):
                              value_name='Pixels')
             hist_fig = (ggplot(df_all, aes(x='bins', y='Pixels', color='Color Channel'))
                         + geom_line()
-                        + scale_x_continuous(breaks=list(range(0, bins, 25)))
+                        + scale_x_continuous(breaks=list(range(0, 256, 25)))
                         + scale_color_manual(color_channels)
                         )
             analysis_images.append(hist_fig)
 
+    # Hue values of zero are red but are also the value for pixels where hue is undefined
+    # The hue value of a pixel will be undefined when the color values are saturated
+    # Therefore, hue values of zero are excluded from the calculations below
+
+    # Calculate the median hue value
+    # The median is rescaled from the encoded 0-179 range to the 0-359 degree range
+    hue_median = np.median(h[np.where(h > 0)]) * 2
+
+    # Calculate the circular mean and standard deviation of the encoded hue values
+    # The mean and standard-deviation are rescaled from the encoded 0-179 range to the 0-359 degree range
+    hue_circular_mean = stats.circmean(h[np.where(h > 0)], high=179, low=0) * 2
+    hue_circular_std = stats.circstd(h[np.where(h > 0)], high=179, low=0) * 2
+
+    # Store into lists instead for pipeline and print_results
+    # stats_dict = {'mean': circular_mean, 'std' : circular_std, 'median': median}
+
+    # Plot or print the histogram
+    if hist_plot_type is not None:
+        if params.debug == 'print':
+            hist_fig.save(os.path.join(params.debug_outdir, str(params.device) + '_analyze_color_hist.png'))
+        elif params.debug == 'plot':
+            print(hist_fig)
+
     # Store into global measurements
-    if not 'color_histogram' in outputs.measurements:
-        outputs.measurements['color_histogram'] = {}
-    outputs.measurements['color_histogram']['bin-number'] = bins
-    outputs.measurements['color_histogram']['bin-values'] = bin_values
-    outputs.measurements['color_histogram']['blue'] = hist_data_b
-    outputs.measurements['color_histogram']['green'] = hist_data_g
-    outputs.measurements['color_histogram']['red'] = hist_data_r
-    outputs.measurements['color_histogram']['lightness'] = hist_data_l
-    outputs.measurements['color_histogram']['green-magenta'] = hist_data_m
-    outputs.measurements['color_histogram']['blue-yellow'] = hist_data_y
-    outputs.measurements['color_histogram']['hue'] = hist_data_h
-    outputs.measurements['color_histogram']['saturation'] = hist_data_s
-    outputs.measurements['color_histogram']['value'] = hist_data_v
+    # RGB signal values are in an unsigned 8-bit scale of 0-255
+    rgb_values = [i for i in range(0, 256)]
+    # Hue values are in a 0-359 degree scale, every 2 degrees at the midpoint of the interval
+    hue_values = [i * 2 + 1 for i in range(0, 180)]
+    # Percentage values on a 0-100 scale (lightness, saturation, and value)
+    percent_values = [round((i / 255) * 100, 2) for i in range(0, 256)]
+    # Diverging values on a -128 to 127 scale (green-magenta and blue-yellow)
+    diverging_values = [i for i in range(-128, 128)]
+    # outputs.measurements['color_data'] = {
+    #     'histograms': {
+    #         'blue': {'signal_values': rgb_values, 'frequency': histograms["b"]["hist"]},
+    #         'green': {'signal_values': rgb_values, 'frequency': histograms["g"]["hist"]},
+    #         'red': {'signal_values': rgb_values, 'frequency': histograms["r"]["hist"]},
+    #         'lightness': {'signal_values': percent_values, 'frequency': histograms["l"]["hist"]},
+    #         'green-magenta': {'signal_values': diverging_values, 'frequency': histograms["m"]["hist"]},
+    #         'blue-yellow': {'signal_values': diverging_values, 'frequency': histograms["y"]["hist"]},
+    #         'hue': {'signal_values': hue_values, 'frequency': histograms["h"]["hist"]},
+    #         'saturation': {'signal_values': percent_values, 'frequency': histograms["s"]["hist"]},
+    #         'value': {'signal_values': percent_values, 'frequency': histograms["v"]["hist"]}
+    #     },
+    #     'color_features': {
+    #         'hue_circular_mean': hue_circular_mean,
+    #         'hue_circular_std': hue_circular_std,
+    #         'hue_median': hue_median
+    #     }
+    # }
+    outputs.add_observation(variable='blue_frequencies', trait='blue frequencies',
+                            method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                            value=histograms["b"]["hist"], label=rgb_values)
+    outputs.add_observation(variable='green_frequencies', trait='green frequencies',
+                            method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                            value=histograms["g"]["hist"], label=rgb_values)
+    outputs.add_observation(variable='red_frequencies', trait='red frequencies',
+                            method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                            value=histograms["r"]["hist"], label=rgb_values)
+    outputs.add_observation(variable='lightness_frequencies', trait='lightness frequencies',
+                            method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                            value=histograms["l"]["hist"], label=percent_values)
+    outputs.add_observation(variable='green-magenta_frequencies', trait='green-magenta frequencies',
+                            method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                            value=histograms["m"]["hist"], label=diverging_values)
+    outputs.add_observation(variable='blue-yellow_frequencies', trait='blue-yellow frequencies',
+                            method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                            value=histograms["y"]["hist"], label=diverging_values)
+    outputs.add_observation(variable='hue_frequencies', trait='hue frequencies',
+                            method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                            value=histograms["h"]["hist"][0:180], label=hue_values)
+    outputs.add_observation(variable='saturation_frequencies', trait='saturation frequencies',
+                            method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                            value=histograms["s"]["hist"], label=percent_values)
+    outputs.add_observation(variable='value_frequencies', trait='value frequencies',
+                            method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                            value=histograms["v"]["hist"], label=percent_values)
+    outputs.add_observation(variable='hue_circular_mean', trait='hue circular mean',
+                            method='plantcv.plantcv.analyze_color', scale='degrees', datatype=float,
+                            value=hue_circular_mean, label='degrees')
+    outputs.add_observation(variable='hue_circular_std', trait='hue circular standard deviation',
+                            method='plantcv.plantcv.analyze_color', scale='degrees', datatype=float,
+                            value=hue_median, label='degrees')
+    outputs.add_observation(variable='hue_median', trait='hue median',
+                            method='plantcv.plantcv.analyze_color', scale='degrees', datatype=float,
+                            value=hue_median, label='degrees')
 
     # Store images
     outputs.images.append(analysis_images)
 
-    return hist_header, hist_data, analysis_images
+    return analysis_images

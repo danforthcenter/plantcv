@@ -26,6 +26,7 @@ and background.
 
 ```
 plantcv-train.py naive_bayes --imgdir ./images --maskdir ./masks --outfile naive_bayes_pdfs.txt --plots
+
 ```
 
 The output file from `plantcv-train.py` will contain one row for each color channel (hue, saturation, and value) for
@@ -37,7 +38,8 @@ Once we have the `plantcv-train.py` output file, we can classify pixels in a col
 ```python
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
 # Read in a color image
@@ -45,6 +47,7 @@ img, path, filename = pcv.readimage("color_image.png")
 
 # Classify the pixels as plant or background
 mask = pcv.naive_bayes_classifier(img, pdf_file="naive_bayes_pdfs.txt")
+
 ```
 
 See the [naive Bayes classifier](naive_bayes_classifier.md) documentation for example input/output.
@@ -97,6 +100,7 @@ for each class.
 
 ```
 plantcv-train.py naive_bayes_multiclass --file pixel_samples.txt --outfile naive_bayes_pdfs.txt --plots
+
 ```
 
 The output file from `plantcv-train.py` will contain one row for each color channel (hue, saturation, and value) for
@@ -104,19 +108,21 @@ each class. The first and second column are the class and channel label, respect
 remaining 256 columns contain the p-value from the PDFs for each intensity value observable in an 8-bit image (0-255).
 
 Once we have the `plantcv-train.py` output file, we can classify pixels in a color image in PlantCV using the same
-function described in the naive Bayes section above. The example image above, pseudocolored by class is shown below:
+function described in the naive Bayes section above. A plotting function [pcv.visualize.colorize_masks](visualize_colorize_masks.md) 
+allows users to choose colors for each class.
 
 ![Screenshot](img/tutorial_images/machine_learning/classified_image.jpg)
 
 ### Parallelizing Image Classification
 
-To parallelize the naive Bayes methods described above, construct a pipeline script following the guidelines in the 
-[pipeline parallelization tutorial](pipeline_parallel.md), but with an additional argument provided for the probability
+To parallelize the naive Bayes methods described above, construct a workflow script following the guidelines in the 
+[workflow parallelization tutorial](pipeline_parallel.md), but with an additional argument provided for the probability
 density functions file output by `plantcv-train.py`. For example:
 
 ```python
 #!/usr/bin/env python
 
+import os 
 import argparse
 from plantcv import plantcv as pcv
 
@@ -146,22 +152,29 @@ def main():
     
     # Classify each pixel as plant or background (background and system components)
     masks = pcv.naive_bayes_classifier(rgb_img=vis, pdf_file=args.pdfs)
+    colored_img = pcv.visualize.colorize_masks(masks=[masks['plant'], masks['pustule'], masks['background'], masks['chlorosis']], 
+                                               colors=['green', 'red', 'black', 'blue'])
+                                               
+    # Print out the colorized figure that got created 
+    pcv.print_image(colored_img, os.path.join(args.outdir, filename))
     
-    # Additional steps in the pipeline go here
+    # Additional steps in the workflow go here
+    
 ```
 
-Then run `plantcv-pipeline.py` with options set based on the input images, but where the naive Bayes PDF file is input
+Then run `plantcv-workflow.py` with options set based on the input images, but where the naive Bayes PDF file is input
 using the `--other_args` flag, for example:
 
 ```bash
-plantcv-pipeline.py \
+plantcv-workflow.py \
 --dir ./my-images \
---pipeline my-naive-bayes-script.py \
+--workflow my-naive-bayes-script.py \
 --db my-db.sqlite3 \
 --outdir . \
 --meta imgtype_camera_timestamp \
 --create \
 --other_args="--pdfs naive_bayes_pdfs.txt"
+
 ```
 
 ## Machine Learning Script 
@@ -171,6 +184,7 @@ plantcv-pipeline.py \
 # functions (PDFs) for plant and background.
 
 # plantcv-train.py naive_bayes --imgdir ./images --maskdir ./masks --outfile naive_bayes_pdfs.txt --plots
+
 ```
 
 The output file from `plantcv-train.py` will contain one row for each color channel (hue, saturation, and value) for
@@ -182,6 +196,7 @@ Once we have the `plantcv-train.py` output file, we can classify pixels in a col
 ```python
 #!/usr/bin/env python
 
+import os 
 import argparse
 from plantcv import plantcv as pcv
 
@@ -211,26 +226,33 @@ def main():
     
     # Classify each pixel as plant or background (background and system components)
     masks = pcv.naive_bayes_classifier(rgb_img=vis, pdf_file=args.pdfs)
+    colored_img = pcv.visualize.colorize_masks(masks=[masks['plant'], masks['pustule'], masks['background'], masks['chlorosis']], 
+                                               colors=['green', 'red', 'black', 'blue'])
+                                               
+    # Print out the colorized figure that got created 
+    pcv.print_image(colored_img, os.path.join(args.outdir, filename))
     
-    # Additional steps in the pipeline go here
+    # Additional steps in the workflow go here
     
 # Call program
 if __name__ == '__main__':
     main()
+    
 ```
 
-*  Always test pipelines (preferably with -D flag set to 'print') before running over a full image set
+*  Always test workflows (preferably with -D flag set to 'print') before running over a full image set
 
-Then run `plantcv-pipeline.py` with options set based on the input images, but where the naive Bayes PDF file is input
+Then run `plantcv-workflow.py` with options set based on the input images, but where the naive Bayes PDF file is input
 using the `--other_args` flag, for example:
 
 ```bash
-plantcv-pipeline.py \
+plantcv-workflow.py \
 --dir ./my-images \
---pipeline my-naive-bayes-script.py \
+--workflow my-naive-bayes-script.py \
 --db my-db.sqlite3 \
 --outdir . \
 --meta imgtype_camera_timestamp \
 --create \
 --other_args="--pdfs naive_bayes_pdfs.txt"
+
 ```
