@@ -196,7 +196,7 @@ Alternately the objects can be cut to the region of interest.
 
 ```python
     # Decide which objects to keep
-    roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(mask, 'partial', roi1, roi_hierarchy, id_objects, obj_hierarchy)
+    roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(mask, roi1, roi_hierarchy, id_objects, obj_hierarchy, 'partial')
     
 ```
 
@@ -344,7 +344,7 @@ def main():
     roi1, roi_hierarchy = pcv.roi.rectangle(img=mask, x=100, y=100, h=200, w=200)
 
     # Decide which objects to keep
-    roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(mask, 'partial', roi1, roi_hierarchy, id_objects, obj_hierarchy)
+    roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(mask, roi1, roi_hierarchy, id_objects, obj_hierarchy, 'partial')
 
     # Object combine kept objects
     obj, masked = pcv.object_composition(mask, roi_objects, hierarchy3)
