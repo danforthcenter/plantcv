@@ -942,6 +942,13 @@ def test_plantcv_analyze_object_small_contour():
     assert obj_images is None
 
 
+def test_plantcv_analyze_thermal_values():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_thermal_values")
+    os.mkdir(cache_dir)
+
+
+
 def test_plantcv_apply_mask_white():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_apply_mask_white")

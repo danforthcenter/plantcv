@@ -3,15 +3,18 @@
 import os
 import cv2
 import numpy as np
+import pandas as pd
+from plantcv.plantcv import outputs
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 #from plantcv.plantcv import plot_colorbar
 from plantcv.plantcv.threshold import binary as binary_threshold
+from plotnine import ggplot, aes, geom_line, scale_x_continuous
 from plantcv.plantcv import apply_mask
 from plantcv.plantcv import params
 
 
-def analyze_thermal_values(rgb_img, array, mask, name,minrange,maxrange, histplot=False, filename=False):
+def analyze_thermal_values(rgb_img, array, mask, minrange, maxrange, histplot=False):
     """This extracts the thermal values of each pixel writes the values out to
        a file. It can also print out a histogram plot of pixel intensity
        and a pseudocolor image of the plant.
@@ -21,7 +24,6 @@ def analyze_thermal_values(rgb_img, array, mask, name,minrange,maxrange, histplo
     array        = numpy array of thermal values
     mask         = Binary mask made from selected contours
     histplot     = if True plots histogram of intensity values
-    filename     = False or image name. If defined print image
 
     Returns:
     hist_header  = thermal histogram data table headers
@@ -32,9 +34,6 @@ def analyze_thermal_values(rgb_img, array, mask, name,minrange,maxrange, histplo
     :param array: numpy array
     :param mask: numpy array
     :param histplot: bool
-    :param filename: str
-    :return hist_header: list
-    :return hist_data: list
     :return analysis_img: str
     """
     params.device += 1
@@ -63,29 +62,22 @@ def analyze_thermal_values(rgb_img, array, mask, name,minrange,maxrange, histplo
     pixels = cv2.countNonZero(mask1)
     hist_percent = (hist_therm / float(pixels)) * 100
 
-    # report histogram data
-    hist_header = [
-        'HEADER_HISTOGRAM',
-        'name'
-        'max-temp',
-        'min-temp,'
-        'average-temp',
-        'median-temp',
-        'bin-values',
-        'thermal'
-    ]
-
-    hist_data = [
-        'HISTOGRAM_DATA',
-        name,
-        maxtemp,
-        mintemp,
-        avgtemp,
-        mediantemp,
-        hist_bins2,
-        hist_therm1
-    ]
-
+    # Store data into outputs class
+    outputs.add_observation(variable='max_temp', trait='maximum temperature',
+                            method='plantcv.plantcv.analyze_thermal_values', scale='degrees', datatype=int,
+                            value=maxtemp, label='degrees')
+    outputs.add_observation(variable='min_temp', trait='minimum temperature',
+                            method='plantcv.plantcv.analyze_thermal_values', scale='degrees', datatype=int,
+                            value=mintemp, label='degrees')
+    outputs.add_observation(variable='average_temp', trait='average temperature',
+                            method='plantcv.plantcv.analyze_thermal_values', scale='degrees', datatype=int,
+                            value=avgtemp, label='degrees')
+    outputs.add_observation(variable='median', trait='median temperature',
+                            method='plantcv.plantcv.analyze_thermal_values', scale='degrees', datatype=int,
+                            value=mediantemp, label='degrees')
+    outputs.add_observation(variable='thermal_frequencies', trait='thermal frequencies',
+                            method='plantcv.plantcv.analyze_thermal_values', scale='frequency', datatype=list,
+                            value=hist_therm1, label=hist_bins2)
     analysis_img = []
 
     # make mask to select the background
@@ -97,16 +89,7 @@ def analyze_thermal_values(rgb_img, array, mask, name,minrange,maxrange, histplo
     cplant = cv2.applyColorMap(rgb_img, colormap=2)
     masked1 = apply_mask(cplant, mask, 'black')
     cplant_back = cv2.add(masked1, img_back1)
-
-    if filename:
-        path = os.path.dirname(filename)
-        fig_name = 'therm_pseudocolor_colorbar.svg'
-        #if not os.path.isfile(path + '/' + fig_name):
-            #plot_colorbar(path, fig_name, 10)
-
-        fig_name_pseudo = (str(filename[0:-4]) + '_therm_pseudo_col.jpg')
-        print_image(cplant_back, fig_name_pseudo)
-        analysis_img.append(['IMAGE', 'pseudo', fig_name_pseudo])
+    analysis_img.append(cplant_back)
 
     if params.debug is not None:
         if params.debug == "print":
@@ -118,24 +101,18 @@ def analyze_thermal_values(rgb_img, array, mask, name,minrange,maxrange, histplo
             plot_image(cplant_back)
 
     if histplot is True:
-        import matplotlib
-        matplotlib.use('Agg', warn=False)
-        from matplotlib import pyplot as plt
+        dataset = pd.DataFrame({'Signal intensity': hist_bins2,
+                                'Proportion of pixels (%)': hist_therm1})
+        fig_hist = (ggplot(data=dataset,
+                           mapping=aes(x='Tempurature C',
+                                       y='Proportion of pixels (%)'))
+                    + geom_line(color='green')
+                    + scale_x_continuous(breaks=list(range(0, maxtemp, 25))))
 
-        # plot hist percent
-        plt.plot(hist_percent, color='green', label='Signal Intensity')
-        plt.xticks(np.arange(10), hist_bins2, rotation=90)
-        plt.xlabel(('Tempurature C'))
-        plt.ylabel('Proportion of pixels (%)')
-
-        if filename:
-            fig_name_hist = (str(filename[0:-4]) + '_therm_hist.svg')
-            plt.savefig(fig_name_hist)
-            analysis_img.append(['IMAGE', 'hist', fig_name_hist])
+        analysis_img.append(fig_hist)
         if params.debug == "print":
-            plt.savefig(os.path.join(params.debug_outdir, str(params.device) + "_therm_histogram.png"))
-        if params.debug == "plot":
-            plt.figure()
-        plt.clf()
+            fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + '_nir_hist.png'))
+        elif params.debug == "plot":
+            print(fig_hist)
 
-    return hist_header, hist_data, analysis_img
+    return analysis_img
