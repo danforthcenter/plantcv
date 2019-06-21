@@ -528,6 +528,10 @@ TEST_INPUT_MULTI_OBJECT = "roi_objects.npz"
 TEST_INPUT_MULTI_CONTOUR = "multi_contours.npz"
 TEST_INPUT_ClUSTER_CONTOUR = "clusters_i.npz"
 TEST_INPUT_MULTI_HIERARCHY = "multi_hierarchy.npz"
+TEST_INPUT_VISUALIZE_CONTOUR = "roi_objects_visualize.npz"
+TEST_INPUT_VISUALIZE_HIERARCHY = "roi_obj_hierarchy_visualize.npz"
+TEST_INPUT_VISUALIZE_CLUSTERS = "clusters_i_visualize.npz"
+TEST_INPUT_VISUALIZE_BACKGROUND = "visualize_background_img.png"
 TEST_INPUT_GENOTXT = "cluster_names.txt"
 TEST_INPUT_GENOTXT_TOO_MANY = "cluster_names_too_many.txt"
 TEST_INPUT_CROPPED = 'cropped_img.jpg'
@@ -665,10 +669,14 @@ def test_plantcv_analyze_bound_horizontal_grayscale_image():
     # Test with a grayscale reference image and debug="plot"
     pcv.params.debug = "plot"
     boundary_img1 = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=1756)
-    assert len(boundary_img1) == 2
+    assert len(np.shape(boundary_img1)) == 3
 
 
 def test_plantcv_analyze_bound_horizontal_neg_y():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_bound_horizontal")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
@@ -679,7 +687,10 @@ def test_plantcv_analyze_bound_horizontal_neg_y():
     _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=-1000)
     _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=0)
     boundary_img1 = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=2056)
-    assert len(boundary_img1) == 2
+    shutil.copyfile(os.path.join(TEST_DATA, "data_results.txt"), os.path.join(cache_dir, "data_results.txt"))
+    pcv.print_results(os.path.join(cache_dir, "data_results.txt"))
+    assert pcv.outputs.observations['height_above_reference']['value'] == 713
+    pcv.outputs.clear()
 
 
 def test_plantcv_analyze_bound_vertical():
@@ -702,11 +713,15 @@ def test_plantcv_analyze_bound_vertical():
     pcv.params.debug = None
     boundary_img1 = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=1000)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    assert pcv.outputs.observations['width_left_reference']['value'] == 94
     pcv.outputs.clear()
-    assert len(boundary_img1) == 2
 
 
 def test_plantcv_analyze_bound_vertical_grayscale_image():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_bound_vertical")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
@@ -715,10 +730,16 @@ def test_plantcv_analyze_bound_vertical_grayscale_image():
     # Test with a grayscale reference image and debug="plot"
     pcv.params.debug = "plot"
     boundary_img1 = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=1000)
-    assert len(boundary_img1) == 2
+    pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    assert pcv.outputs.observations['width_left_reference']['value'] == 94
+    pcv.outputs.clear()
 
 
 def test_plantcv_analyze_bound_vertical_neg_x():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_bound_vertical")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
@@ -727,10 +748,16 @@ def test_plantcv_analyze_bound_vertical_neg_x():
     # Test with debug="plot", line position that will trigger -x
     pcv.params.debug = "plot"
     boundary_img1 = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=2454)
-    assert len(boundary_img1) == 2
+    pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    assert pcv.outputs.observations['width_left_reference']['value'] == 441
+    pcv.outputs.clear()
 
 
 def test_plantcv_analyze_bound_vertical_small_x():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_bound_vertical")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
@@ -739,8 +766,9 @@ def test_plantcv_analyze_bound_vertical_small_x():
     # Test with debug='plot', line position that will trigger -x, and two channel object
     pcv.params.debug = "plot"
     boundary_img1 = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=1)
-    assert len(boundary_img1) == 2
-
+    pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    assert pcv.outputs.observations['width_right_reference']['value'] == 441
+    pcv.outputs.clear()
 
 def test_plantcv_analyze_color():
     # Test cache directory
@@ -766,8 +794,8 @@ def test_plantcv_analyze_color():
     pcv.params.debug = None
     imgs = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='rgb')
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    assert pcv.outputs.observations['hue_median']['value'] == 84.0
     pcv.outputs.clear()
-    assert len(imgs) != 0
 
 
 def test_plantcv_analyze_color_incorrect_image():
@@ -813,8 +841,8 @@ def test_plantcv_analyze_nir():
     pcv.params.debug = None
     h_norm = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=False)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    assert len(pcv.outputs.observations['nir_frequencies']['value']) == 256
     pcv.outputs.clear()
-    assert len(h_norm) != 1
 
 
 def test_plantcv_analyze_object():
@@ -4342,6 +4370,31 @@ def test_plantcv_visualize_histogram():
     pcv.params.debug = "plot"
     hist_header, hist_data, fig_hist = pcv.visualize.histogram(gray_img=img)
     assert np.sum(hist_data[3]) != 0
+
+
+def test_plantcv_visualize_clustered_contours():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_plot_hist")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_VISUALIZE_BACKGROUND), -1)
+    roi_objects = np.load(os.path.join(TEST_DATA, TEST_INPUT_VISUALIZE_CONTOUR), encoding="latin1")
+    hierarchy = np.load(os.path.join(TEST_DATA, TEST_INPUT_VISUALIZE_HIERARCHY), encoding="latin1")
+    cluster_i = np.load(os.path.join(TEST_DATA, TEST_INPUT_VISUALIZE_CLUSTERS), encoding="latin1")
+    objs = roi_objects['arr_0']
+    obj_hierarchy = hierarchy['arr_0']
+    cluster = cluster_i['arr_0']
+    # Test in print mode
+    pcv.params.debug = "print"
+    _ = pcv.visualize.clustered_contours(img=img, grouped_contour_indices=cluster, roi_objects=objs,
+                                         roi_obj_hierarchy=obj_hierarchy, nrow=2, ncol=2)
+    # Test in plot mode
+    pcv.params.debug = "plot"
+    cluster_img = pcv.visualize.clustered_contours(img=img1, grouped_contour_indices=cluster, roi_objects=objs,
+                                         roi_obj_hierarchy=obj_hierarchy)
+    assert len(np.unique(cluster_img)) == 37
 
 
 # ##############################

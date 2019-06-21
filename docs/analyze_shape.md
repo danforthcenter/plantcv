@@ -4,7 +4,7 @@ Shape analysis outputs numeric properties for an input object (contour or groupe
  
 **plantcv.analyze_object**(*img, obj, mask*)
 
-**returns** analysis_images
+**returns** analysis_image
 
 - **Parameters:**
     - img - RGB or grayscale image data for plotting.
@@ -37,10 +37,9 @@ pcv.params.debug = "print"
 
 # Characterize object shapes
     
-shape_images = pcv.analyze_object(img, objects, mask)
+shape_image = pcv.analyze_object(img, objects, mask)
 
 # Save returned images with more specific naming
-shape_image, mask = shape_images
 pcv.print_image(shape_image, '/home/malia/setaria_shape_img.png')
 
 ```

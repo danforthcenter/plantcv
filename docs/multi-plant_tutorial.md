@@ -308,14 +308,14 @@ Alternately the objects can be cut to the region of interest.
     # STEP 11: Keep objects that overlap with the ROI
     # Inputs:
     #    img            = img to display kept objects
-    #    roi_type       = 'cutto', 'partial' (for partially inside), 'largest' (keep largest contour only)
-    #    roi_contour    = contour of roi, output from "View and Ajust ROI" function
-    #    roi_hierarchy  = contour of roi, output from "View and Ajust ROI" function
-    #    object_contour = contours of objects, output from "Identifying Objects" fuction
-    #    obj_hierarchy  = hierarchy of objects, output from "Identifying Objects" fuction
+    #    roi_contour    = contour of roi, output from any ROI function
+    #    roi_hierarchy  = contour of roi, output from any ROI function
+    #    object_contour = contours of objects, output from "Identifying Objects" function
+    #    obj_hierarchy  = hierarchy of objects, output from "Identifying Objects" function
+    #    roi_type       = 'partial' (default, for partially inside), 'cutto', or 'largest' (keep only largest contour)
     
-    roi_objects, roi_obj_hierarchy, kept_mask, obj_area = pcv.roi_objects(img1, 'partial', roi_contour, roi_hierarchy,
-                                                                          id_objects, obj_hierarchy)
+    roi_objects, roi_obj_hierarchy, kept_mask, obj_area = pcv.roi_objects(img1, roi_contour, roi_hierarchy,
+                                                                          id_objects, obj_hierarchy, 'partial')
                                                                       
 ```
 
@@ -327,7 +327,9 @@ Alternately the objects can be cut to the region of interest.
 
 ![Screenshot](img/tutorial_images/multi-img/11_roi_objects.jpg)
 
-[Cluster](cluster_contours.md) plants based on defined grid.
+[Cluster](cluster_contours.md) plants based on defined grid. Optionally, users can add a visualization 
+step to more clearly see which contours get clustered together. See the documentation for [pcv.visualze.clustered_contours](visualize_clustered_contours.md) 
+for an example. 
 
 ```python
 
@@ -571,14 +573,14 @@ def main():
     # STEP 11: Keep objects that overlap with the ROI
     # Inputs:
     #    img            = img to display kept objects
-    #    roi_type       = 'cutto', 'partial' (for partially inside), or 'largest' (keep only largest contour)
-    #    roi_contour    = contour of roi, output from "View and Ajust ROI" function
-    #    roi_hierarchy  = contour of roi, output from "View and Ajust ROI" function
-    #    object_contour = contours of objects, output from "Identifying Objects" fuction
-    #    obj_hierarchy  = hierarchy of objects, output from "Identifying Objects" fuction
+    #    roi_contour    = contour of roi, output from any ROI function
+    #    roi_hierarchy  = contour of roi, output from any ROI function
+    #    object_contour = contours of objects, output from "Identifying Objects" function
+    #    obj_hierarchy  = hierarchy of objects, output from "Identifying Objects" function
+    #    roi_type       = 'partial' (default, for partially inside), 'cutto', or 'largest' (keep only largest contour)
     
-    roi_objects, roi_obj_hierarchy, kept_mask, obj_area = pcv.roi_objects(img1, 'partial', roi_contour, roi_hierarchy,
-                                                                          id_objects, obj_hierarchy)
+    roi_objects, roi_obj_hierarchy, kept_mask, obj_area = pcv.roi_objects(img1, roi_contour, roi_hierarchy,
+                                                                          id_objects, obj_hierarchy, 'partial')
     
     # STEP 12: This function take a image with multiple contours and
     # clusters them based on user input of rows and columns

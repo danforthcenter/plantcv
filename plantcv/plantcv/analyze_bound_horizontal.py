@@ -170,4 +170,4 @@ def analyze_bound_horizontal(img, obj, mask, line_position):
     # Store images
     outputs.images.append(analysis_images)
 
-    return analysis_images
+    return ori_img

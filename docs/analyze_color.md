@@ -4,7 +4,7 @@ Extract color data of objects and produce pseudocolored images, can extract data
 
 **plantcv.analyze_color**(*rgb_img, mask, hist_plot_type=None*)
 
-**returns** data analysis images  
+**returns** Histogram image (if hist_plot_type is not `None`, otherwise returns `None` object)   
 
 - **Parameters:**  
     - rgb_img - RGB image data
@@ -34,7 +34,7 @@ pcv.params.debug = "print"
 
 # Analyze Color
     
-analysis_images = pcv.analyze_color(rgb_img, mask, 'all')
+analysis_image = pcv.analyze_color(rgb_img, mask, 'all')
 
 ```
 
