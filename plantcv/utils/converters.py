@@ -64,11 +64,12 @@ def json2csv(json_file, csv_file):
             for var in multi_vars:
                 obs = entity[data["variables"][var]["category"]]
                 if var in obs:
-                    for i in range(0, len(obs[var]["value"])):
-                        row = [var]
-                        row.append(obs[var]["value"][i])
-                        row.append(obs[var]["label"][i])
-                        csv.write(",".join(map(str, meta_row + row)) + "\n")
+                    if obs[var]["label"] != "none":
+                        for i in range(0, len(obs[var]["value"])):
+                            row = [var]
+                            row.append(obs[var]["value"][i])
+                            row.append(obs[var]["label"][i])
+                            csv.write(",".join(map(str, meta_row + row)) + "\n")
                 else:
                     csv.write(",".join(map(str, meta_row + [var, "NA", "NA"])) + "\n")
         csv.close()
