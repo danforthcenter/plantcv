@@ -34,6 +34,10 @@ def watershed_segmentation(rgb_img, mask, distance=10):
     :return analysis_images: list
     """
     params.device += 1
+
+    # Store debug mode
+    debug = params.debug
+    params.debug = None
     # # Will be depricating opencv version 2
     # if cv2.__version__[0] == '2':
     #     dist_transform = cv2.distanceTransform(mask, cv2.cv.CV_DIST_L2, maskSize=0)
@@ -58,9 +62,8 @@ def watershed_segmentation(rgb_img, mask, distance=10):
 
     estimated_object_count = len(np.unique(markers)) - 1
 
-    analysis_image = []
-    analysis_image.append(joined)
-
+    # Reset debug mode
+    params.debug = debug
     if params.debug == 'print':
         print_image(dist_transform, os.path.join(params.debug_outdir, str(params.device) + '_watershed_dist_img.png'))
         print_image(joined, os.path.join(params.debug_outdir, str(params.device) + '_watershed_img.png'))
@@ -73,6 +76,6 @@ def watershed_segmentation(rgb_img, mask, distance=10):
                             value=estimated_object_count, label='none')
 
     # Store images
-    outputs.images.append(analysis_image)
+    outputs.images.append([dist_transform, joined])
 
-    return analysis_image
+    return joined

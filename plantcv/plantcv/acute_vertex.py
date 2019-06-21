@@ -105,22 +105,17 @@ def acute_vertex(img, obj, win, thresh, sep):
     #        x,y = i.ravel()
     #        cv2.circle(img2,(x,y),15,(153,0,153),-1)
     # cv2.imwrite('tip_points_centroid_and_base.png', img2)
+    # Lets make a plot of these values on the
+    img2 = np.copy(img)
+    # Plot each of these tip points on the image
+    for i in acute:
+        x, y = i.ravel()
+        # cv2.circle(img2,(x,y),15,(255,204,255),-1)
+        cv2.circle(img2, (x, y), params.line_thickness, (255, 0, 255), -1)
+
     if params.debug == 'print':
-        # Lets make a plot of these values on the
-        img2 = np.copy(img)
-        # Plot each of these tip points on the image
-        for i in acute:
-            x, y = i.ravel()
-            cv2.circle(img2, (x, y), params.line_thickness, (255, 204, 255), -1)
         print_image(img2, os.path.join(params.debug_outdir, str(params.device) + '_acute_vertices.png'))
     elif params.debug == 'plot':
-        # Lets make a plot of these values on the
-        img2 = np.copy(img)
-        # Plot each of these tip points on the image
-        for i in acute:
-            x, y = i.ravel()
-            # cv2.circle(img2,(x,y),15,(255,204,255),-1)
-            cv2.circle(img2, (x, y), params.line_thickness, (255, 0, 255), -1)
         plot_image(img2)
     # If flag was true (no points found as acute) reformat output appropriate type
     # if flag == 1:
@@ -132,4 +127,4 @@ def acute_vertex(img, obj, win, thresh, sep):
                             method='plantcv.plantcv.acute_vertex', scale='none', datatype=list,
                             value=acute_points, label='none')
 
-    return acute
+    return acute, img2

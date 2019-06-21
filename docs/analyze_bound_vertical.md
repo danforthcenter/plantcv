@@ -6,7 +6,7 @@ best if the pot size/position of the plant remains relatively constant.
  
 **plantcv.analyze_bound_vertical**(*img, obj, mask, line_position*)
 
-**returns** images with boundary data
+**returns** image with boundary data
 
 - **Parameters:**
     - img - RGB or grayscale image data for plotting
@@ -30,7 +30,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Set Boundary Line    
-boundary_images = pcv.analyze_bound_vertical(img, obj, mask, 1000)
+boundary_image = pcv.analyze_bound_vertical(img, obj, mask, 1000)
 
 ```
 
