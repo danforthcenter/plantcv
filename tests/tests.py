@@ -990,10 +990,10 @@ def test_plantcv_analyze_nir():
     _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=True)
     # Test with debug = None
     pcv.params.debug = None
-    h_norm = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=False)
+    h_norm = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=True)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     pcv.outputs.clear()
-    assert len(h_norm) != 1
+    assert str(type(h_norm)) == "<class 'plotnine.ggplot.ggplot'>"
 
 
 def test_plantcv_analyze_thermal_values():
