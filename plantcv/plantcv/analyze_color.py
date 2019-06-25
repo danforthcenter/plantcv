@@ -81,7 +81,7 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
     binval = np.arange(0, 256)
     bin_values = [l for l in binval]
 
-    analysis_images = []
+    analysis_image = None
     # Create a dataframe of bin labels and histogram data
     dataset = pd.DataFrame({'bins': binval, 'blue': histograms["b"]["hist"],
                             'green': histograms["g"]["hist"], 'red': histograms["r"]["hist"],
@@ -99,7 +99,6 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
                         + scale_x_continuous(breaks=list(range(0, 256, 25)))
                         + scale_color_manual(['blue', 'green', 'red'])
                         )
-            analysis_images.append(hist_fig)
 
         elif hist_plot_type.upper() == 'LAB':
             df_lab = pd.melt(dataset, id_vars=['bins'],
@@ -110,7 +109,6 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
                         + scale_x_continuous(breaks=list(range(0, 256, 25)))
                         + scale_color_manual(['yellow', 'magenta', 'dimgray'])
                         )
-            analysis_images.append(hist_fig)
 
         elif hist_plot_type.upper() == 'HSV':
             df_hsv = pd.melt(dataset, id_vars=['bins'],
@@ -121,7 +119,6 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
                         + scale_x_continuous(breaks=list(range(0, 256, 25)))
                         + scale_color_manual(['blueviolet', 'cyan', 'orange'])
                         )
-            analysis_images.append(hist_fig)
 
         elif hist_plot_type.upper() == 'ALL':
             s = pd.Series(['blue', 'green', 'red', 'lightness', 'green-magenta',
@@ -135,8 +132,7 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
                         + scale_x_continuous(breaks=list(range(0, 256, 25)))
                         + scale_color_manual(color_channels)
                         )
-            analysis_images.append(hist_fig)
-
+        analysis_image = hist_fig
     # Hue values of zero are red but are also the value for pixels where hue is undefined
     # The hue value of a pixel will be undefined when the color values are saturated
     # Therefore, hue values of zero are excluded from the calculations below
@@ -225,6 +221,6 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
                             value=hue_median, label='degrees')
 
     # Store images
-    outputs.images.append(analysis_images)
+    outputs.images.append([analysis_image])
 
-    return analysis_images
+    return analysis_image

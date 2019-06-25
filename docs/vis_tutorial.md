@@ -281,7 +281,7 @@ or cut the objects to the shape of the region of interest.
 
 ```python
     # Decide which objects to keep
-    roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(img, 'partial', roi1, roi_hierarchy, id_objects, obj_hierarchy)
+    roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(img, roi1, roi_hierarchy, id_objects, obj_hierarchy, 'partial')
     
 ```
 
@@ -484,7 +484,7 @@ def main():
     roi1, roi_hierarchy= pcv.roi.rectangle(img=masked2, x=100, y=100, h=200, w=200)
 
     # Decide which objects to keep
-    roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(img, 'partial', roi1, roi_hierarchy, id_objects, obj_hierarchy)
+    roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(img, roi1, roi_hierarchy, id_objects, obj_hierarchy, 'partial')
 
     # Object combine kept objects
     obj, mask = pcv.object_composition(img, roi_objects, hierarchy3)

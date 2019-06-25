@@ -248,4 +248,4 @@ def analyze_object(img, obj, mask):
 
     # Store images
     outputs.images.append(analysis_images)
-    return analysis_images
+    return ori_img
