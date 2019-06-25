@@ -2220,9 +2220,9 @@ def test_plantcv_read_array_asimg():
     assert len(np.shape(scaled)) == 3
 
 
-def test_plantcv_read_array_asimg_bad_file():
-    with pytest.raises(FileNotFoundError):
-        _ = pcv.read_array_asimg(array=TEST_INPUT_COLOR)
+# def test_plantcv_read_array_asimg_bad_file():
+#     with pytest.raises(FileNotFoundError):
+#         _ = pcv.read_array_asimg(array=TEST_INPUT_COLOR)
 
 
 def test_plantcv_readbayer_default_bg():
