@@ -16,7 +16,6 @@ def analyze_thermal_values(thermal_array, mask, histplot=False):
        and a pseudocolor image of the plant.
 
     Inputs:
-    rgb_img      = rgb image to create pseudocolored img
     array        = numpy array of thermal values
     mask         = Binary mask made from selected contours
     histplot     = if True plots histogram of intensity values
@@ -24,7 +23,6 @@ def analyze_thermal_values(thermal_array, mask, histplot=False):
     Returns:
     analysis_img = output image
 
-    :param rgb_img: numpy array
     :param array: numpy array
     :param mask: numpy array
     :param histplot: bool
@@ -74,7 +72,7 @@ def analyze_thermal_values(thermal_array, mask, histplot=False):
     outputs.add_observation(variable='average_temp', trait='average temperature',
                             method='plantcv.plantcv.analyze_thermal_values', scale='degrees', datatype=int,
                             value=avgtemp, label='degrees')
-    outputs.add_observation(variable='median', trait='median temperature',
+    outputs.add_observation(variable='median_temp', trait='median temperature',
                             method='plantcv.plantcv.analyze_thermal_values', scale='degrees', datatype=int,
                             value=mediantemp, label='degrees')
     outputs.add_observation(variable='thermal_frequencies', trait='thermal frequencies',

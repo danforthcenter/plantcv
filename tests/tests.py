@@ -569,6 +569,9 @@ TEST_MATRIX_M2 = "matrix_m2.npz"
 TEST_S1_CORRECTED = "source_corrected.png"
 TEST_SKELETON_OBJECTS = "skeleton_objects.npz"
 TEST_SKELETON_HIERARCHIES = "skeleton_hierarchies.npz"
+TEST_THERMAL_ARRAY = "thermal_img.npz"
+TEST_THERMAL_IMG_MASK = "thermal_img_mask.png"
+TEST_INPUT_THERMAL_CSV = "FLIR2600.csv"
 
 
 # ##########################
@@ -941,12 +944,47 @@ def test_plantcv_analyze_object_small_contour():
     obj_images = pcv.analyze_object(img=img, obj=obj_contour, mask=mask)
     assert obj_images is None
 
+def test_plantcv_analyze_nir():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_nir")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.analyze_nir_intensity(gray_img=np.uint16(img), mask=mask, bins=256, histplot=True)
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=False)
+    # Test with debug = "plot"
+    _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=True)
+    # Test with debug = None
+    pcv.params.debug = None
+    h_norm = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=False)
+    pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    pcv.outputs.clear()
+    assert len(h_norm) != 1
+
 
 def test_plantcv_analyze_thermal_values():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_thermal_values")
     os.mkdir(cache_dir)
-
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    #img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_THERMAL_IMG_MASK), -1)
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_THERMAL_ARRAY), encoding="latin1")
+    img = contours_npz['arr_0']
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.analyze_thermal_values(thermal_array=img, mask=mask, histplot=True)
+    pcv.params.debug = "plot"
+    thermal_hist = pcv.analyze_thermal_values(thermal_array=img, mask=mask, histplot=True)
+    pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    assert thermal_hist is not None and pcv.outputs.observations['median_temp']['value'] == 33.20922
 
 
 def test_plantcv_apply_mask_white():
@@ -2131,9 +2169,32 @@ def test_plantcv_readimage_rgba_as_rgb():
     assert np.shape(img)[2] == 3
 
 
+def test_plantcv_readimage_flir():
+    pcv.params.debug = None
+    img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_THERMAL_CSV), mode="flir")
+    assert len(np.shape(img)) == 2
+
+
 def test_plantcv_readimage_bad_file():
     with pytest.raises(RuntimeError):
         _ = pcv.readimage(filename=TEST_INPUT_COLOR)
+
+
+def test_plantcv_read_array_asimg():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_read_array_asimg")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = 'print'
+    _ = pcv.read_array_asimg(array=os.path.join(TEST_DATA, TEST_INPUT_THERMAL_CSV))
+    pcv.params.debug = 'plot'
+    arrayvalues, scaled, path, array_name = pcv.read_array_asimg(array=os.path.join(TEST_DATA, TEST_INPUT_THERMAL_CSV))
+    assert len(np.shape(scaled)) == 3
+
+
+def test_plantcv_read_array_asimg_bad_file():
+    with pytest.raises(FileNotFoundError):
+        _ = pcv.read_array_asimg(array=TEST_INPUT_COLOR)
 
 
 def test_plantcv_readbayer_default_bg():

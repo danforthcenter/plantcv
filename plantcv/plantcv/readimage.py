@@ -3,6 +3,7 @@
 import os
 import cv2
 import numpy as np
+import pandas as pd
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
@@ -14,7 +15,7 @@ def readimage(filename, mode="native"):
 
     Inputs:
     filename = name of image file
-    mode     = mode of imread ("native", "rgb", "rgba", "gray")
+    mode     = mode of imread ("native", "rgb", "rgba", "gray", "flir")
 
     Returns:
     img      = image object as numpy array
@@ -33,6 +34,9 @@ def readimage(filename, mode="native"):
         img = cv2.imread(filename)
     elif mode.upper() == "RGBA":
         img = cv2.imread(filename, -1)
+    elif mode.upper() == "FLIR":
+        inputarray = pd.read_csv(filename, sep=',', header=None)
+        img = inputarray.values
     else:
         img = cv2.imread(filename, -1)
 

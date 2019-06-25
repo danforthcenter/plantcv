@@ -1,7 +1,7 @@
 ## Analyze NIR Intensity
 
 This function calculates the intensity of each pixel associated with the plant and writes 
-the values out to a file. Can also print out a histogram plot of pixel intensity.
+the values out to the [Outputs class](outputs.md). Can also return/plot/print out a histogram plot of pixel intensity.
 
 **plantcv.analyze_nir_intensity**(*gray_img, mask, bins=256, histplot=False*)
 
@@ -13,7 +13,6 @@ the values out to a file. Can also print out a histogram plot of pixel intensity
     - bins     - Number of class to divide spectrum into (default bins = 256)
     - histplot - If True plots histogram of intensity values (default histplot = False)
 - **Context:**
-    - Used to mask rectangular regions of an image
     - Data automatically gets stored into the [Outputs class](outputs.md). Users can look at the data collected at any point during 
     the workflow by using [pcv.print_results](print_results.md) which prints all stored data to a .json file.
 - **Example use:**
@@ -42,10 +41,6 @@ analysis_images  = pcv.analyze_nir_intensity(gray_img, mask, 256, histplot=True)
 **NIR signal histogram**
 
 ![Screenshot](img/documentation_images/analyze_NIR_intensity/nir_histogram.jpg)
-
-**Image with shape characteristics**
-
-![Screenshot](img/documentation_images/analyze_NIR_intensity/shapes.jpg)
 
 **Note:** The grayscale input image and object mask can be used with the [pcv.visualize.pseudocolor](visualize_pseudocolor.md) function
 which allows the user to pick a colormap for plotting.

@@ -29,12 +29,12 @@ def read_array_asimg(array,sep=','):
     """
     params.device += 1
     
-    if array is None:
-        fatal_error("Failed to open " + array)
-    
     inputarray=pd.read_csv(array, sep=sep,header=None)
-    arrayvalues=inputarray.values    
-    
+    arrayvalues=inputarray.values
+
+    if inputarray is None:
+        fatal_error("Failed to open " + array)
+
     path, array_name = os.path.split(array)
     
     scaled=np.interp(arrayvalues, (arrayvalues.min(), arrayvalues.max()), (0, 255))
