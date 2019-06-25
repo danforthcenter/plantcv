@@ -22,7 +22,7 @@ def print_image(img, filename):
     # Print numpy array type images
     image_type = type(img)
     if image_type == numpy.ndarray:
-        matplotlib.rcParams['figure.dpi'] = params.dpi
+        #matplotlib.rcParams['figure.dpi'] = params.dpi
         cv2.imwrite(filename, img)
 
     # Print matplotlib type images
