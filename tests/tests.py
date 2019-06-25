@@ -3091,7 +3091,6 @@ def test_plantcv_morphology_check_cycles():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    pcv.params.line_thickness=10
     pcv.params.debug = "print"
     _ = pcv.morphology.check_cycles(mask)
     pcv.params.debug = "plot"
