@@ -32,8 +32,9 @@ def read_array_asimg(array,sep=','):
     inputarray=pd.read_csv(array, sep=sep,header=None)
     arrayvalues=inputarray.values
 
-    if inputarray is None:
-        fatal_error("Failed to open " + array)
+    # Raises a FileNotFoundError rather than a runtime error
+    # if inputarray is None:
+    #     fatal_error("Failed to open " + array)
 
     path, array_name = os.path.split(array)
     
