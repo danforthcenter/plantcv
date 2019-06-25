@@ -329,7 +329,7 @@ within the ROI.
     roi1, roi_hierarchy= pcv.roi.rectangle(img=edge_masked_img, x=100, y=100, h=200, w=200)
     
     # Decide which objects to keep
-    roi_objects, hierarchy5, kept_mask, obj_area = pcv.roi_objects(edge_masked_img, 'partial', roi1, roi_hierarchy, id_objects, obj_hierarchy)
+    roi_objects, hierarchy5, kept_mask, obj_area = pcv.roi_objects(edge_masked_img, roi1, roi_hierarchy, id_objects, obj_hierarchy, 'partial')
 
 ```
 
@@ -521,7 +521,7 @@ def main():
     roi1, roi_hierarchy= pcv.roi.rectangle(img=edge_masked_img, x=100, y=100, h=200, w=200)
     
     # Decide which objects to keep
-    roi_objects, hierarchy5, kept_mask, obj_area = pcv.roi_objects(edge_masked_img, 'partial', roi1, roi_hierarchy, id_objects, obj_hierarchy)
+    roi_objects, hierarchy5, kept_mask, obj_area = pcv.roi_objects(edge_masked_img, roi1, roi_hierarchy, id_objects, obj_hierarchy, 'partial')
     
     rgb_img = cv2.cvtColor(img,cv2.COLOR_GRAY2RGB)
     o, m = pcv.object_composition(rgb_img, roi_objects, hierarchy5)

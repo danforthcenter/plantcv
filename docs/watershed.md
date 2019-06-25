@@ -33,7 +33,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Segment image with watershed function
-analysis_images = pcv.watershed_segmentation(crop_img, thresh, 10)
+analysis_image = pcv.watershed_segmentation(crop_img, thresh, 10)
 
 ```
 

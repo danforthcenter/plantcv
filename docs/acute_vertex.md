@@ -5,7 +5,7 @@ angles are often associated with object tip points. Outputs a python list of poi
 
 **plantcv.acute_vertex**(*img, obj, window, thresh, sep*)
 
-**returns** list of points that meet specified criteria 
+**returns** list of points that meet specified criteria, image with points selected
 
 - **Parameters:**
     - img - A copy of the original image
@@ -31,7 +31,7 @@ pcv.params.debug = "print"
 
 # Identify acute vertices (tip points) of an object
 # Results in set of point values that may indicate tip points
-list_of_acute_points = pcv.acute_vertex(img, obj, 30, 15, 100)
+list_of_acute_points, points_img = pcv.acute_vertex(img, obj, 30, 15, 100)
 
 ```
 

@@ -79,7 +79,7 @@ def analyze_nir_intensity(gray_img, mask, bins=256, histplot=False):
         if params.debug == "plot":
             plot_image(masked1)
 
-    analysis_images = []
+    analysis_image = None
 
     if histplot is True:
         hist_x = hist_percent
@@ -92,7 +92,7 @@ def analyze_nir_intensity(gray_img, mask, bins=256, histplot=False):
                     + geom_line(color='red')
                     + scale_x_continuous(breaks=list(range(0, maxval, 25))))
 
-        analysis_images.append(fig_hist)
+        analysis_image = fig_hist
         if params.debug == "print":
             fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + '_nir_hist.png'))
         elif params.debug == "plot":
@@ -103,6 +103,6 @@ def analyze_nir_intensity(gray_img, mask, bins=256, histplot=False):
                             value=hist_nir, label=bin_labels)
 
     # Store images
-    outputs.images.append(analysis_images)
+    outputs.images.append(analysis_image)
 
-    return analysis_images
+    return analysis_image
