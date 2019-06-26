@@ -8,7 +8,7 @@ Requires cv2 version 3.0+
 
 **plantcv.watershed_segmentation**(*rgb_img, mask, distance=10*)**
 
-**returns** analysis_images
+**returns** analysis_image
 
 - **Parameters:**
     - rgb_img - RGB image data

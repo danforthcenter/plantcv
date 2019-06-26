@@ -4436,8 +4436,8 @@ def test_plantcv_visualize_histogram():
     _ = pcv.visualize.histogram(gray_img=np.uint16(img), mask=mask, bins=200, title='Include Title')
     # Test in plot mode
     pcv.params.debug = "plot"
-    hist_header, hist_data, fig_hist = pcv.visualize.histogram(gray_img=img)
-    assert np.sum(hist_data[3]) != 0
+    fig_hist = pcv.visualize.histogram(gray_img=img)
+    assert str(type(fig_hist)) == "<class 'plotnine.ggplot.ggplot'>"
 
 
 def test_plantcv_visualize_clustered_contours():

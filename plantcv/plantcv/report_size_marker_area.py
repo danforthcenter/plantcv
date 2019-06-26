@@ -109,12 +109,8 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
     # Calculate the bounding ellipse eccentricity
     eccentricity = np.sqrt(1 - (axes[minor_axis] / axes[major_axis]) ** 2)
 
-    # Make a list to store output images
-    analysis_image = []
     cv2.drawContours(ref_img, marker_contour, -1, (255, 0, 0), 5)
-    # out_file = os.path.splitext(filename)[0] + '_sizemarker.jpg'
-    # print_image(ref_img, out_file)
-    analysis_image.append(ref_img)
+    analysis_image = ref_img
 
     # Reset debug mode
     params.debug = debug

@@ -35,6 +35,7 @@ nav:
     - 'Analyze NIR': analyze_NIR_intensity.md
     - 'Analyze PSII': fluor_fvfm.md
     - 'Analyze Shape': analyze_shape.md
+    - 'Analyze Thermal': analyze_thermal_values.md
     - 'Apply Mask': apply_mask.md
     - 'Auto Crop': auto_crop.md
     - 'Background Subtraction': background_subtraction.md

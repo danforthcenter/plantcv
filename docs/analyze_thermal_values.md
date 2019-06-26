@@ -5,7 +5,7 @@ the values out to a file. Can also print out a histogram of pixel intensity.
 
 **plantcv.analyze_thermal_values**(*thermal_array, mask, histplot=False*)
 
-**returns** analysis_images
+**returns** thermal histogram (if `histplot=True`, otherwise returns None object)
 
 - **Parameters:**
     - thermal_array - Numpy array of thermal values (read in with [pcv.readimage](read_image.md) with `mode='flir'`)
