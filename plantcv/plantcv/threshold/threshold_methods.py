@@ -466,6 +466,9 @@ def _call_threshold(gray_img, threshold, max_value, threshold_method, method_nam
     # Threshold the image
     ret, bin_img = cv2.threshold(gray_img, threshold, max_value, threshold_method)
 
+    if bin_img.dtype != 'uint16'
+        bin_img = np.uint8(bin_img)
+
     # Print or plot the binary image if debug is on
     if params.debug == 'print':
         print_image(bin_img, os.path.join(params.debug_outdir,
