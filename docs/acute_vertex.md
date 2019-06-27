@@ -16,7 +16,7 @@ angles are often associated with object tip points. Outputs a python list of poi
 - **Context:**
     - Used to identify tip points based upon the angle between focal pixel and reference points on contour. 
 - **Output data stored:** Data ('tip_coordinates') automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
-    These data can always get accessed during a workflow (example below). [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
+    These data can always get accessed during a workflow (example below). For more detail about data output see [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
     
 **Input plant contour**
 

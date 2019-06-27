@@ -11,7 +11,7 @@ Check for cycles within a skeletonized image.
 - **Context:**
     - Identifies cycles in a skeleton image. 
 - **Output data stored:** Data ('num_cycles') automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
-    These data can always get accessed during a workflow (example below). [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
+    These data can always get accessed during a workflow (example below). For more detail about data output see [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
     
 
 **Reference Image**

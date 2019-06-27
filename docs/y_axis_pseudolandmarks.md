@@ -15,7 +15,7 @@ independent of size.
 - **Context:**
     - Used to identify a set of sixty equidistant landmarks on the vertical axis. Once scaled these can be used for shape analysis.
 - **Output data stored:** Data ('left_lmk', 'right_lmk', 'center_h_lmk') automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
-    These data can always get accessed during a workflow (example below). [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
+    These data can always get accessed during a workflow (example below). For more detail about data output see [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 **Input object contour and image**
 

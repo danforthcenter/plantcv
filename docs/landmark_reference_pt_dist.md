@@ -1,6 +1,8 @@
 ## Landmark_reference_pt_dist
 
-This is a function to measure the distance from user defined points to the centroid and a point defined by the centroid coordinate along the x-axis and baseline coordinate (top of pot) along the y-axis. Calculating the vertical distance between leaf tip points to the centroid of the plant object in side-view images may provide a proxy measure of turgor pressure.
+This is a function to measure the distance from user defined points to the centroid and a point defined by the centroid coordinate 
+along the x-axis and baseline coordinate (top of pot) along the y-axis. Calculating the vertical distance between leaf tip points 
+to the centroid of the plant object in side-view images may provide a proxy measure of turgor pressure.
  
 **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r*)
 
@@ -14,7 +16,7 @@ This is a function to measure the distance from user defined points to the centr
     - Used to estimate the distance and angles of landmark points relative to shape reference landmarks (centroid and pot height aka baseline)
 - **Output data stored:** Data ('vert_ave_c', 'hori_ave_c', 'euc_ave_c', 'ang_ave_c', 'vert_ave_b', 'hori_ave_b', 'euc_ave_b',
     'ang_ave_b') automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
-    These data can always get accessed during a workflow (example below). [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
+    These data can always get accessed during a workflow (example below). For more detail about data output see [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
     
 **Input rescaled points, centroid and baseline points**
 

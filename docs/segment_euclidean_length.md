@@ -15,9 +15,8 @@ Measure Euclidean distance of segments.
 - **Context:**
     - Calculates the euclidean distance of each segment. Users can pass only 
     leaf objects (returned from [plantcv.morphology.segment_sort](segment_sort.md)) to only collect lengths of leaves.
-    Distances are automatically stored to the [outputs class](outputs.md). 
 - **Output data stored:** Data ('segment_eu_length') automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
-    These data can always get accessed during a workflow (example below). [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
+    These data can always get accessed during a workflow (example below). For more detail about data output see [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 **Reference Image:** segmented_img
 

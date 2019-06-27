@@ -17,9 +17,9 @@ Measure leaf insertion angles.
 - **Context:**
     - Find "tangent" angles to leaf insertion points in degrees of skeleton segments compared to the stem angle. 
       Use `size` pixels of the inner portion of each leaf to find a linear regression line, and calculate angle between insertion
-      angle and the stem. Insertion angles are automatically stored in the [outputs class](outputs.md).        
+      angle and the stem.        
 - **Output data stored:** Data ('segment_insertion_angle') automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
-    These data can always get accessed during a workflow (example below). [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
+    These data can always get accessed during a workflow (example below). For more detail about data output see [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 **Reference Image:** segmented_img 
 

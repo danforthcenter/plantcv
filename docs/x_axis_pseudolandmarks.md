@@ -1,4 +1,4 @@
-## x_axis_pseudolandmarks
+## X-axis Pseudolandmarks
 
 Divide plant object into twenty equidistant bins and assign pseudolandmark points based upon their actual (not scaled) position.
 Once this data is scaled this approach may provide some information regarding shape independent of size.
@@ -14,7 +14,7 @@ Once this data is scaled this approach may provide some information regarding sh
 - **Context:**
     - Used to identify a set of sixty equidistant landmarks on the horizontal axis. Once scaled these can be used for shape analysis.
 - **Output data stored:** Data ('top_lmk', 'bottom_lmk', 'center_v_lmk') automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
-    These data can always get accessed during a workflow (example below). [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
+    These data can always get accessed during a workflow (example below). For more detail about data output see [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 **Input object contour and image**
 
 ![Screenshot](img/documentation_images/x_axis_pseudolandmarks/xpl_example_image.jpg)

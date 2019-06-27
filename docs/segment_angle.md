@@ -14,9 +14,8 @@ Measure angles of segments.
 - **Context:**
     - Calculates angles of segments (in degrees) by fitting a linear regression line to each segment. Users can pass only 
     leaf objects (returned from [plantcv.morphology.segment_sort](segment_sort.md)) to only collect angles of leaves. 
-    The measure of angles automatically gets stored in the [outputs class](outputs.md). 
 - **Output data stored:** Data ('segment_angle') automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
-    These data can always get accessed during a workflow (example below). [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
+    These data can always get accessed during a workflow (example below). For more detail about data output see [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 **Reference Image:** segmented_img 
 
