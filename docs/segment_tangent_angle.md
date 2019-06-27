@@ -18,7 +18,8 @@ Measure tangent angles of segments as a way to quantify leaf behavior.
       each segment to find a linear regression line, and calculate angle between the two lines
       drawn per segment. Users can pass only leaf objects (returned from [plantcv.morphology.segment_sort](segment_sort.md)) 
       to only collect angles of leaves. Tangent angles are automatically stored to the [outputs class](outputs.md). 
-- **Output data stored:** [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
+- **Output data stored:** Data ('segment_tangent_angle') automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
+    These data can always get accessed during a workflow (example below). [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 **Reference Image:** segmented image 
 
@@ -39,6 +40,9 @@ pcv.params.line_thickness = 3
 labeled_img = pcv.morphology.segment_tangent_angle(segmented_img=leaves_segment, 
                                                    objects=leaf_obj,
                                                    size=15)
+
+# Access data stored out from acute_vertex
+leaf_tangent_angles = pcv.outputs.observations['segment_tangent_angle']['value']
 
 ```
 

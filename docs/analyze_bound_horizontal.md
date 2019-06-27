@@ -15,11 +15,11 @@ best if the pot size/position of the plant remains relatively constant.
     - line_position = position of boundary line (a value of 0 would draw the line through the top of the image)
 - **Context:**
     - Used to define a boundary line for the image, to find the height above and below as well as area above and below a boundary line.
-    - Data automatically gets stored into the [Outputs class](outputs.md). Users can look at the data collected at any point during 
-    the workflow by using [pcv.print_results](print_results.md) which prints all stored data to a .json file. 
 - **Example use:**
     - [Use In VIS Tutorial](vis_tutorial.md)
-- **Output data stored:** [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
+- **Output data stored:** Data ('horizontal_reference_position', 'height_above_reference', 'height_below_reference', 'area_above_reference', 'percent_area_above_reference',
+    'area_below_reference', 'percent_area_below_reference') automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
+    These data can always get accessed during a workflow (example below). [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 ```python
 
@@ -31,6 +31,9 @@ pcv.params.debug = "print"
 
 # Set Boundary Line    
 boundary_image = pcv.analyze_bound_horizontal(img, obj, mask, 300)
+
+# Access data stored out from analyze_bound_horizontal
+percent_area_below_reference = pcv.outputs.observations['percent_area_below_reference']['value']
 
 ```
 

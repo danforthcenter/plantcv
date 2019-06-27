@@ -15,7 +15,8 @@ angles are often associated with object tip points. Outputs a python list of poi
     - sep - The number of contour points to search within for the most acute value
 - **Context:**
     - Used to identify tip points based upon the angle between focal pixel and reference points on contour. 
-- **Output data stored:** [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
+- **Output data stored:** Data ('tip_coordinates') automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
+    These data can always get accessed during a workflow (example below). [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
     
 **Input plant contour**
 
@@ -32,7 +33,10 @@ pcv.params.debug = "print"
 # Identify acute vertices (tip points) of an object
 # Results in set of point values that may indicate tip points
 list_of_acute_points, points_img = pcv.acute_vertex(img, obj, 30, 15, 100)
-
+`
+# Access data stored out from acute_vertex
+vertices = pcv.outputs.observations['tip_coordinates']['value']
+`
 ```
 
 **Image of points selected**

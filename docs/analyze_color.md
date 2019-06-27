@@ -12,12 +12,13 @@ Extract color data of objects and produce pseudocolored images, can extract data
     - hist_plot_type - None (default), 'all', 'rgb','lab' or 'hsv', this is the data to be printed to an SVG histogram file, however all (every channel) data is still stored to the database.
 - **Context:**
     - Used to extract color data from RGB, LAB, and HSV color channels.
-    - Generates histogram of color channel data. Data automatically gets stored into the [Outputs class](outputs.md). 
-    Users can look at the data collected at any point during 
-    the workflow by using [pcv.print_results](print_results.md) which prints all stored data to a .json file.
+    - Generates histogram of color channel data. 
 - **Example use:**
     - [Use In VIS Tutorial](vis_tutorial.md)
-- **Output data stored:** [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
+- **Output data stored:**  Data ('blue_frequencies', 'green_frequencies', 'red_frequencies', 'lightness_frequencies', 'green-magenta_frequencies', 
+    'blue-yellow_frequencies', 'hue_frequencies', 'saturation_frequencies', 'value_frequencies', 'hue_circular_mean', 'hue_circular_std', 'hue_median') 
+    automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
+    These data can always get accessed during a workflow (example below). [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 **Original image**
 
@@ -35,6 +36,9 @@ pcv.params.debug = "print"
 # Analyze Color
     
 analysis_image = pcv.analyze_color(rgb_img, mask, 'all')
+
+# Access data stored out from analyze_color
+hue_circular_mean = pcv.outputs.observations['hue_circular_mean']['value']
 
 ```
 

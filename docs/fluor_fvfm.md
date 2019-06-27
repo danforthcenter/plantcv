@@ -16,11 +16,10 @@ Extract Fv/Fm data of objects.
     - Used to extract fv/fm per identified plant pixel.
     - Generates histogram of fv/fm data.
     - Generates fv/fm image.
-    - Data automatically gets stored into the [Outputs class](outputs.md). Users can look at the data collected at any point during 
-    the workflow by using [pcv.print_results](print_results.md) which prints all stored data to a .json file.
 - **Example use:**
     - [Use In PSII Tutorial](psII_tutorial.md)
-- **Output data stored:** [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
+- **Output data stored:** Data ('fvfm_hist', 'fvfm_hist_peak', 'fvfm_median', 'fdark_passed_qc') automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
+    These data can always get accessed during a workflow (example below). [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 **Fdark image**
 
@@ -43,6 +42,9 @@ pcv.params.debug = "print"
 
 # Analyze Fv/Fm    
 fvfm_images = pcv.fluor_fvfm(fdark, fmin, fmax, kept_mask, 256)
+
+# Access data stored out from fluor_fvfm
+fvfm_median = pcv.outputs.observations['fvfm_median']['value']
 
 # Store the two images
 fv_im g= fvfm_images[0]

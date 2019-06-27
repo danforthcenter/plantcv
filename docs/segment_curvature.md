@@ -18,7 +18,8 @@ Measure the curvature of segments.
     Values closer to 1 indicate that a segment is a straight line while larger values indicate the segment has more curvature.
     Users can pass only leaf objects (returned from [plantcv.morphology.segment_sort](segment_sort.md)) to only collect curvature of leaves. The 
     measurements automatically get stored to the [outputs class](outputs.md). 
-- **Output data stored:** [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
+- **Output data stored:** Data ('segment_curvature') automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
+    These data can always get accessed during a workflow (example below). [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 ```python
 
@@ -33,6 +34,9 @@ labeled_img = pcv.morphology.segment_curvature(segmented_img=segmented_img,
 # Pass just leaf objects and hierarchies (output from pcv.morphology.segment_sort) 
 labeled_img2 = pcv.morphology.segment_curvature(segmented_img=leaf_segmented,
                                                 objects=leaf_obj)
+
+# Access data stored out from segment_curvature
+segment_curvatures = pcv.outputs.observations['segment_curvature']['value']
 
 ```
 
