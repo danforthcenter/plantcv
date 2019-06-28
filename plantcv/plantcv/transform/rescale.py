@@ -27,7 +27,7 @@ def rescale(gray_img, min_value=0, max_value=255):
     if len(np.shape(gray_img)) != 2:
         fatal_error("Image is not grayscale")
 
-    rescaled_img = np.interp(gray_img, (gray_img.min(), gray_img.max()), (0, 255))
+    rescaled_img = np.interp(gray_img, (gray_img.min(), gray_img.max()), (min_value, max_value))
     rescaled_img = (rescaled_img).astype('uint8')
 
     if params.debug == 'print':
