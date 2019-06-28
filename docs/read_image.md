@@ -8,7 +8,7 @@ Reads image into numpy ndarray and splits the path and image filename. This is a
 
 - **Parameters:**
     - filename - image file to be read (possibly including a path)
-    - mode     - return mode of image ("native," "rgb,", "rgba", "flir", or "gray"), defaults to "native"
+    - mode     - return mode of image ("native," "rgb,", "rgba", "csv", or "gray"), defaults to "native"
     
 - **Context:**
     - Reads in file to be processed
@@ -16,8 +16,8 @@ Reads image into numpy ndarray and splits the path and image filename. This is a
     - In most cases, the alpha channel in RGBA image data is unused (and causes issue when used as RGB image data),
     so unless specificed as `mode='rgba'` the `pcv.readimage()` function will read RGBA data in as an RGB image under
     default settings (`mode='native'`). However, if the alpha channel is needed users can specify `mode='rgba'`. 
-    FLIR data can be read in with `mode='flir'` so that thermal data can be used in downstream analysis, 
-    such as [pcv.analyze_thermal_values](analyze_thermal_values.md) 
+    Comma separated data can be read in with `mode='csv'` so that, for example, [thermal](thermal_tutorial.md) data c
+    an be used in downstream analysis, such as [pcv.analyze_thermal_values](analyze_thermal_values.md) 
 - **Example use:**
     - [Use In VIS Tutorial](vis_tutorial.md) 
 

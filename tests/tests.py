@@ -2197,9 +2197,9 @@ def test_plantcv_readimage_rgba_as_rgb():
     assert np.shape(img)[2] == 3
 
 
-def test_plantcv_readimage_flir():
+def test_plantcv_readimage_csv():
     pcv.params.debug = None
-    img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_THERMAL_CSV), mode="flir")
+    img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_THERMAL_CSV), mode="csv")
     assert len(np.shape(img)) == 2
 
 

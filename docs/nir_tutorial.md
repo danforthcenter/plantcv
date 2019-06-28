@@ -353,9 +353,8 @@ We can use the [object composition](object_composition.md) function to outline t
 ![Screenshot](img/tutorial_images/nir/28_objcomp_t.jpg)
 
 Now that the plant has been separated from the background we can analyze the pixel composition and shape of the plant.
-In order to pseudocolor the plant by signal intensity the image needs to be converted from grayscale (1-dimension) to 
-pseudocolor (3-dimension). This is done by replicating the grayscale image 3X and combining them into a single 
-3-dimensional matrix (`rgb_img = cv2.cvtColor(img,cv2.COLOR_GRAY2RGB)`).
+To [pseudocolor](visualize_pseudocolor.md) a plant by pixel intensity can take very few parameters but offers a lot 
+of customization since it is intended to just make figures. 
 All masks, countours, etc... need to be converted to 3-dimensions for pseudocoloring.
 
 Now we can perform the [analysis of pixelwise signal value](analyze_NIR_intensity.md) and object [shape](analyze_shape.md) attributes.

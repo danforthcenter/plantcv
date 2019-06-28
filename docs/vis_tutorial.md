@@ -110,7 +110,7 @@ If some of the plant is missed or not visible then thresholded channels may be c
 ![Screenshot](img/tutorial_images/vis/01_hsv_saturation.jpg)
 
 Next, the saturation channel is thresholded.
-The [threshold](binary_threshold.md) can be on either light or dark objects in the image).
+The [threshold](binary_threshold.md) can be on either light or dark objects in the image.
 
 Tip: This step is often one that needs to be adjusted depending on the lighting and configurations of your camera system.
 
