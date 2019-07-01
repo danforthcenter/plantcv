@@ -73,9 +73,6 @@ def prune(skel_img, size=0, mask=None):
                          lineType=8)
         # Subtract all short segments from the skeleton image
         pruned_img = image_subtract(pruned_img, removed_barbs)
-        # Prune off one more pixel to account for the gaps while using segment_skeleton
-        endpoints = find_tips(pruned_img)
-        pruned_img = image_subtract(pruned_img, endpoints)
 
     # Make debugging image
     if mask is None:
