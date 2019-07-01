@@ -6,7 +6,7 @@ import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
-from plantcv.plantcv import find_objects
+from plantcv.plantcv import logical_and
 from plantcv.plantcv.morphology import find_tips
 
 
@@ -42,28 +42,14 @@ def segment_sort(skel_img, objects, mask=None):
     else:
         labeled_img = mask.copy()
 
-    tips = find_tips(skel_img)
-    tip_objects, tip_hierarchies = find_objects(tips, tips)
-
-
-    # Create a list of tip tuples
-    tip_tuples = []
-    for i, cnt in enumerate(tip_objects):
-        tip_tuples.append((cnt[0][0][0], cnt[0][0][1]))
+    tips_img = find_tips(skel_img)
 
     # Loop through segment contours
     for i, cnt in enumerate(objects):
+        segment_plot = np.zeros(skel_img.shape[:2], np.uint8)
+        cv2.drawContours(segment_plot, objects, i, 255, 1, lineType=8)
         is_leaf = False
-        cnt_as_tuples = []
-        num_pixels = len(cnt)
-        count = 0
-
-        # Turn each contour into a list of tuples (can't search for list of coords, so reformat)
-        while num_pixels > count:
-            x_coord = cnt[count][0][0]
-            y_coord = cnt[count][0][1]
-            cnt_as_tuples.append((x_coord, y_coord))
-            count += 1
+        overlap_img = logical_and(segment_plot, tips_img)
 
         # The first contour is the base, and while it contains a tip, it isn't a leaf
         if i == 0:
@@ -71,14 +57,11 @@ def segment_sort(skel_img, objects, mask=None):
 
         # Sort segments
         else:
-            for tip_tups in tip_tuples:
-                # If a tip is inside the list of contour tuples then it is a leaf segment
-                if tip_tups in cnt_as_tuples:
-                    secondary_objects.append(cnt)
-                    is_leaf = True
 
-            # If none of the tip tuples are inside the contour, then it isn't a leaf segment
-            if is_leaf == False:
+            if np.sum(overlap_img) > 0:
+                secondary_objects.append(cnt)
+                is_leaf = True
+            else:
                 primary_objects.append(cnt)
 
     # Plot segments where green segments are leaf objects and fuschia are other objects
