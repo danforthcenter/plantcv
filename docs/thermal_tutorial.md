@@ -6,7 +6,7 @@ A global variable "debug" allows the user to print out the resulting image. The 
 If set to 'print' then the function prints the image out, or if using a [Jupyter](jupyter.md) notebook you could set debug to 'plot' to have
 the images plot to the screen. Debug mode allows users to visualize and optimize each step on individual test images and small test sets before workflows are deployed over whole datasets.
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/vis_tutorial.ipynb) Check out our interactive thermal tutorial! 
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/thermal.ipynb) Check out our interactive thermal tutorial! 
 
 Also see [here](#thermal-script) for the complete script. 
 
@@ -135,7 +135,7 @@ The [threshold](binary_threshold.md) can be on either light or dark objects in t
     #   max_value - Value to apply above threshold (255 = white) 
     #   object_type - 'light' (default) or 'dark'. If the object is lighter than the background then standard 
     #                 threshold is done. If the object is darker than the background then inverse thresholding is done. 
-    bin_mask = pcv.binary(gray_img=thermal_data, threshold=35, max_value=255, object_type='dark')
+    bin_mask = pcv.threshold.binary(gray_img=thermal_data, threshold=35, max_value=255, object_type='dark')
 
 ```
 

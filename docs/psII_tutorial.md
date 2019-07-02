@@ -114,10 +114,29 @@ The [apply mask function](apply_mask.md) is then used to apply the track mask to
 
 ```python
     # Mask pesky track autofluor
-    track1 = pcv.rgb2gray_hsv(track, 'v')
-    track_thresh = pcv.threshold.binary(track1, 0, 255, 'light')
-    track_inv = pcv.invert(track_thresh)
-    track_masked = pcv.apply_mask(mask1, track_inv, 'black')
+    
+    # Inputs:
+    #   rgb_img - RGB image data 
+    #   channel - Split 'h' (hue), 's' (saturation), or 'v' (value) channel 
+    track1 = pcv.rgb2gray_hsv(rgb_img=track, channel='v')
+    
+    # Inputs:
+    #   gray_img - Grayscale image data 
+    #   threshold- Threshold value (between 0-255)
+    #   max_value - Value to apply above threshold (255 = white) 
+    #   object_type - 'light' (default) or 'dark'. If the object is lighter than the background then standard threshold is done.
+    #                 If the object is darker than the background then inverse thresholding is done. 
+    track_thresh = pcv.threshold.binary(gray_img=track1, threshold=0, max_value=255, object_type='light')
+    
+    # Inputs:
+    #   gray_img - Grayscale image data 
+    track_inv = pcv.invert(gray_img=track_thresh)
+
+    # Inputs: 
+    #   rgb_img - RGB image data 
+    #   mask - Binary mask image data 
+    #   mask_color - 'black' or 'white'
+    track_masked = pcv.apply_mask(rgb_img=mask1, mask=track_inv, mask_color='black')
     
 ```
 
@@ -132,8 +151,8 @@ The resulting image is then thresholded with a [binary threshold](binary_thresho
 
 ```python
     # Threshold the image
-    fmax_thresh = pcv.threshold.binary(track_masked, 20, 255, 'light')
-    
+    fmax_thresh = pcv.threshold.binary(gray_img=track_masked, threshold=20, max_value=255, 
+                                       object_type='light')    
 ```
 
 **Figure 3.** Binary threshold on masked Fmax image.
@@ -144,8 +163,13 @@ Noise is reduced with the [median blur](median_blur.md) function.
 
 ```python
     # Median Filter
-    s_mblur = pcv.median_blur(fmax_thresh, 5)
-    s_cnt = pcv.median_blur(fmax_thresh, 5)
+    
+    # Inputs:
+    #   gray_img - Grayscale image data 
+    #   ksize - Kernel size. Integer or tuple; (ksize, ksize) box if integer is input, 
+    #           (n, m) size box if tuple is given.
+    s_mblur = pcv.median_blur(gray_img=fmax_thresh, ksize=5)
+    s_cnt = pcv.median_blur(gray_img=fmax_thresh, ksize=5)
     
 ```
 
@@ -157,8 +181,12 @@ Noise is also reduced with the [fill](fill.md) function.
 
 ```python
     # Fill small objects
-    s_fill = pcv.fill(s_mblur, 110)
-    sfill_cnt = pcv.fill(s_mblur, 110)
+    
+    # Inputs:
+    #   bin_img - Binary image data 
+    #   size - Minimum object area size in pixels (integer), smaller objects get filled in. 
+    s_fill = pcv.fill(bin_img=s_mblur, size=110)
+    sfill_cnt = pcv.fill(bin_img=s_mblur, size=110)
     
 ```
 
@@ -171,7 +199,11 @@ the [find objects](find_objects.md) function.
 
 ```python
     # Identify objects
-    id_objects,obj_hierarchy = pcv.find_objects(mask, sfill_cnt)
+    
+    # Inputs:
+    #   img - RGB or grayscale image data for plotting
+    #   mask - Binary mask used for detecting contours
+    id_objects,obj_hierarchy = pcv.find_objects(img=mask, mask=sfill_cnt)
     
 ```
 
@@ -183,6 +215,13 @@ Next the region of interest is defined using the [rectangular region of interest
 
 ```python
     # Define ROI
+    
+    # Inputs: 
+    #   img - RGB or grayscale image to plot the ROI on 
+    #   x - The x-coordinate of the upper left corner of the rectangle 
+    #   y - The y-coordinate of the upper left corner of the rectangle 
+    #   h - The height of the rectangle 
+    #   w - The width of the rectangle 
     roi1, roi_hierarchy = pcv.roi.rectangle(img=mask, x=100, y=100, h=200, w=200)
     
 ```
@@ -196,7 +235,20 @@ Alternately the objects can be cut to the region of interest.
 
 ```python
     # Decide which objects to keep
-    roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(mask, roi1, roi_hierarchy, id_objects, obj_hierarchy, 'partial')
+    
+    # Inputs:
+    #    img            = img to display kept objects
+    #    roi_contour    = contour of roi, output from any ROI function
+    #    roi_hierarchy  = contour of roi, output from any ROI function
+    #    object_contour = contours of objects, output from pcv.find_objects function
+    #    obj_hierarchy  = hierarchy of objects, output from pcv.find_objects function
+    #    roi_type       = 'partial' (default, for partially inside), 'cutto', or 
+    #    'largest' (keep only largest contour)
+    roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(img=mask, roi_contour=roi1, 
+                                                               roi_hierarchy=roi_hierarchy, 
+                                                               object_contour=id_objects, 
+                                                               obj_hierarchy=obj_hierarchy, 
+                                                               roi_type='partial')
     
 ```
 
@@ -210,7 +262,12 @@ analysis to perform properly the plant objects need to be combined into one obje
 
 ```python
     # Object combine kept objects
-    obj, masked = pcv.object_composition(mask, roi_objects, hierarchy3)
+    
+    # Inputs:
+    #   img - RGB or grayscale image data for plotting 
+    #   contours - Contour list 
+    #   hierarchy - Contour hierarchy array 
+    obj, masked = pcv.object_composition(img=mask, contours=roi_objects, hierarchy=hierarchy3)
     
 ```
 
@@ -231,20 +288,44 @@ along with the generated mask to calculate Fv/Fm.
         outfile=args.outdir+"/"+filename
     
     # Find shape properties, output shape image (optional)
-    shape_img = pcv.analyze_object(mask, obj, masked)
+    
+    # Inputs:
+    #   img - RGB or grayscale image data 
+    #   obj- Single or grouped contour object
+    #   mask - Binary image mask to use as mask for moments analysis 
+    shape_img = pcv.analyze_object(img=mask, obj=obj, mask=masked)
     
     # Fluorescence Measurement (read in 16-bit images)
     fdark = cv2.imread(args.fdark, -1)
     fmin = cv2.imread(args.fmin, -1)
     fmax = cv2.imread(args.fmax, -1)
     
-    fvfm_images = pcv.fluor_fvfm(fdark,fmin,fmax,kept_mask)
+    
+    # Inputs:
+    #   fdark - Grayscale image 
+    #   fmin - Grayscale image 
+    #   fmax - Grayscale image 
+    #   mask - Binary mask of selected contours 
+    #   bins - Number of grayscale bins (0-256 for 8-bit img, 0-65536 for 16-bit). Default bins = 256
+    fvfm_images = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=kept_mask, bins=256)
 
     # Store the two images
     fv_img = fvfm_images[0]
     fvfm_hist = fvfm_images[1]
 
     # Pseudocolor the Fv/Fm grayscale image that is calculated inside the fluor_fvfm function
+    
+    # Inputs:
+    #     gray_img - Grayscale image data
+    #     obj - Single or grouped contour object (optional), if provided the pseudocolored image gets cropped down to the region of interest.
+    #     mask - Binary mask (optional) 
+    #     background - Background color/type. Options are "image" (gray_img), "white", or "black". A mask must be supplied.
+    #     cmap - Colormap (https://matplotlib.org/tutorials/colors/colormaps.html)
+    #     min_value - Minimum value for range of interest
+    #     max_value - Maximum value for range of interest
+    #     dpi - Dots per inch for image if printed out (optional, if dpi=None then the default is set to 100 dpi).
+    #     axes - If False then the title, x-axis, and y-axis won't be displayed (default axes=True).
+    #     colorbar - If False then the colorbar won't be displayed (default colorbar=True)
     pseudocolored_img = pcv.visualize.pseudocolor(gray_img=fv_img, mask=kept_mask, cmap='jet')
 
     # Write shape and nir data to results file
@@ -321,34 +402,38 @@ def main():
     mask1, mask2, mask3 = cv2.split(mask)
 
     # Mask pesky track autofluor
-    track1 = pcv.rgb2gray_hsv(track, 'v')
-    track_thresh = pcv.threshold.binary(track1, 0, 255, 'light')
-    track_inv = pcv.invert(track_thresh)
-    track_masked = pcv.apply_mask(mask1, track_inv, 'black')
+    track1 = pcv.rgb2gray_hsv(rgb_img=track, channel='v')
+    track_thresh = pcv.threshold.binary(gray_img=track1, threshold=0, max_value=255, object_type='light')
+    track_inv = pcv.invert(gray_img=track_thresh)
+    track_masked = pcv.apply_mask(rgb_img=mask1, mask=track_inv, mask_color='black')
 
     # Threshold the image
-    fmax_thresh = pcv.threshold.binary(track_masked, 20, 255, 'light')
+    fmax_thresh = pcv.threshold.binary(gray_img=track_masked, threshold=20, max_value=255, 
+                                   object_type='light')
 
     # Median Filter
-    s_mblur = pcv.median_blur(fmax_thresh, 5)
-    s_cnt = pcv.median_blur(fmax_thresh, 5)
+    s_mblur = pcv.median_blur(gray_img=fmax_thresh, ksize=5)
+    s_cnt = pcv.median_blur(gray_img=fmax_thresh, ksize=5)
 
     # Fill small objects
-    s_fill = pcv.fill(s_mblur, 110)
-    sfill_cnt = pcv.fill(s_mblur, 110)
+    s_fill = pcv.fill(bin_img=s_mblur, size=110)
+    sfill_cnt = pcv.fill(bin_img=s_mblur, size=110)
 
     # Identify objects
-    id_objects,obj_hierarchy = pcv.find_objects(mask, sfill_cnt)
+    id_objects,obj_hierarchy = pcv.find_objects(img=mask, mask=sfill_cnt)
 
     # Define ROI
     roi1, roi_hierarchy = pcv.roi.rectangle(img=mask, x=100, y=100, h=200, w=200)
 
     # Decide which objects to keep
-    roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(mask, roi1, roi_hierarchy, id_objects, obj_hierarchy, 'partial')
-
+    roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(img=mask, roi_contour=roi1, 
+                                                               roi_hierarchy=roi_hierarchy, 
+                                                               object_contour=id_objects, 
+                                                               obj_hierarchy=obj_hierarchy, 
+                                                               roi_type='partial')
     # Object combine kept objects
-    obj, masked = pcv.object_composition(mask, roi_objects, hierarchy3)
-
+    obj, masked = pcv.object_composition(img=mask, contours=roi_objects, hierarchy=hierarchy3)
+    
     ################ Analysis ################  
     
     outfile=False
@@ -356,14 +441,14 @@ def main():
         outfile=args.outdir+"/"+filename
     
     # Find shape properties, output shape image (optional)
-    shape_img = pcv.analyze_object(mask, obj, masked)
+    shape_img = pcv.analyze_object(img=mask, obj=obj, mask=masked)
     
     # Fluorescence Measurement (read in 16-bit images)
     fdark = cv2.imread(args.fdark, -1)
     fmin = cv2.imread(args.fmin, -1)
     fmax = cv2.imread(args.fmax, -1)
     
-    fvfm_images = pcv.fluor_fvfm(fdark,fmin,fmax,kept_mask)
+    fvfm_images = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=kept_mask, bins=256)
 
     # Store the two images
     fv_img = fvfm_images[0]
