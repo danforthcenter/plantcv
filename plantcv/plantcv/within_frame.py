@@ -1,5 +1,6 @@
 import numpy as np
 from plantcv.plantcv import fatal_error
+from plantcv.plantcv import outputs
 
 
 def within_frame(mask):
@@ -36,5 +37,9 @@ def within_frame(mask):
 
     out_of_bounds = bool(np.count_nonzero(edges))
     in_bounds = not out_of_bounds
+
+    outputs.add_observation(variable='in_bounds', trait='whether the plant goes out of bounds ',
+                            method='plantcv.plantcv.within_frame', scale='none', datatype=bool,
+                            value=in_bounds, label='none')
 
     return in_bounds

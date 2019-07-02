@@ -18,6 +18,8 @@ def clustered_contours(img, grouped_contour_indices, roi_objects, roi_obj_hierar
     grouped_contour_indices = Indices for grouping contours
     roi_objects             = object contours in an image that are needed to be clustered.
     roi_obj_hierarchy       = object hierarchy
+    nrow                    = Optional, number of rows. If changed from default, grid gets plot.
+    ncol                    = Optional, number of columns. If changed from default, grid gets plot.
 
     Returns:
     clustered_image         = Labeled clusters image
@@ -26,6 +28,8 @@ def clustered_contours(img, grouped_contour_indices, roi_objects, roi_obj_hierar
     :param grouped_contour_indices: list
     :param roi_objects: list
     :param roi_obj_hierarchy: numpy.ndarray
+    :param nrow: int
+    :param ncol: int
 
     :return clustered_image: numpy.ndarray
     """
