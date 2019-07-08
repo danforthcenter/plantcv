@@ -15,7 +15,7 @@ the values out to a file. Can also print out a histogram of pixel intensity.
     - Data about image temperature within a masked region. 
 - **Example use:**
     - Below
-- **Output data stored:** Data ('max_temp', 'min_temp', 'average_temp', 'median_temp', 'thermal_frequencies') automatically gets stored to the 
+- **Output data stored:** Data ('max_temp', 'min_temp', 'mean_temp', 'median_temp', 'thermal_frequencies') automatically gets stored to the 
     [`Outputs` class](outputs.md) when this function is ran. 
     These data can always get accessed during a workflow (example below). For more detail about data output see [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 

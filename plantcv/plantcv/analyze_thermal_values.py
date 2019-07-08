@@ -64,16 +64,16 @@ def analyze_thermal_values(thermal_array, mask, histplot=False):
 
     # Store data into outputs class
     outputs.add_observation(variable='max_temp', trait='maximum temperature',
-                            method='plantcv.plantcv.analyze_thermal_values', scale='degrees', datatype=int,
+                            method='plantcv.plantcv.analyze_thermal_values', scale='degrees', datatype=float,
                             value=maxtemp, label='degrees')
     outputs.add_observation(variable='min_temp', trait='minimum temperature',
-                            method='plantcv.plantcv.analyze_thermal_values', scale='degrees', datatype=int,
+                            method='plantcv.plantcv.analyze_thermal_values', scale='degrees', datatype=float,
                             value=mintemp, label='degrees')
-    outputs.add_observation(variable='average_temp', trait='average temperature',
-                            method='plantcv.plantcv.analyze_thermal_values', scale='degrees', datatype=int,
+    outputs.add_observation(variable='mean_temp', trait='mean temperature',
+                            method='plantcv.plantcv.analyze_thermal_values', scale='degrees', datatype=float,
                             value=avgtemp, label='degrees')
     outputs.add_observation(variable='median_temp', trait='median temperature',
-                            method='plantcv.plantcv.analyze_thermal_values', scale='degrees', datatype=int,
+                            method='plantcv.plantcv.analyze_thermal_values', scale='degrees', datatype=float,
                             value=mediantemp, label='degrees')
     outputs.add_observation(variable='thermal_frequencies', trait='thermal frequencies',
                             method='plantcv.plantcv.analyze_thermal_values', scale='frequency', datatype=list,
