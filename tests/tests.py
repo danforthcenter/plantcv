@@ -3149,8 +3149,8 @@ def test_plantcv_morphology_segment_curvature():
     pcv.outputs.clear()
     curvature_img = pcv.morphology.segment_curvature(segmented_img, seg_objects)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    assert len(pcv.outputs.observations['segment_curvature']['value']) == 22
     pcv.outputs.clear()
-    assert len(np.unique(curvature_img)) == 24
 
 
 def test_plantcv_morphology_check_cycles():
@@ -3166,8 +3166,8 @@ def test_plantcv_morphology_check_cycles():
     pcv.params.debug = None
     cycle_img = pcv.morphology.check_cycles(mask)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    assert pcv.outputs.observations['num_cycles']['value'] == 1
     pcv.outputs.clear()
-    assert len(np.unique(cycle_img)) == 3
 
 
 def test_plantcv_morphology_find_branch_pts():
@@ -3251,7 +3251,7 @@ def test_plantcv_morphology_segment_skeleton():
     assert len(segment_objects) == 73
 
 
-def test_plantcv_morphology_segment_angles():
+def test_plantcv_morphology_segment_angle():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_angles")
     os.mkdir(cache_dir)
@@ -3263,11 +3263,11 @@ def test_plantcv_morphology_segment_angles():
     pcv.params.debug = "plot"
     angle_img = pcv.morphology.segment_angle(segmented_img, segment_objects)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    assert len(pcv.outputs.observations['segment_angle']['value']) == 22
     pcv.outputs.clear()
-    assert len(np.unique(angle_img)) == 24
 
 
-def test_plantcv_morphology_segment_angles_overflow():
+def test_plantcv_morphology_segment_angle_overflow():
     # Don't prune, would usually give overflow error without extra if statement in segment_angle
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_angles")
@@ -3276,8 +3276,8 @@ def test_plantcv_morphology_segment_angles_overflow():
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
     segmented_img, segment_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
     angle_img = pcv.morphology.segment_angle(segmented_img, segment_objects)
+    assert len(pcv.outputs.observations['segment_angle']['value']) == 73
     pcv.outputs.clear()
-    assert len(np.unique(angle_img)) == 74
 
 
 def test_plantcv_morphology_segment_euclidean_length():
@@ -3292,8 +3292,8 @@ def test_plantcv_morphology_segment_euclidean_length():
     pcv.params.debug = "plot"
     length_img = pcv.morphology.segment_euclidean_length(segmented_img, segment_objects)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    assert len(pcv.outputs.observations['segment_eu_length']['value']) == 22
     pcv.outputs.clear()
-    assert len(np.unique(length_img)) == 24
 
 
 def test_plantcv_morphology_segment_euclidean_length_bad_input():
@@ -3317,8 +3317,8 @@ def test_plantcv_morphology_segment_path_length():
     pcv.params.debug = "plot"
     length_img = pcv.morphology.segment_path_length(segmented_img, segment_objects)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    assert len(pcv.outputs.observations['segment_path_length']['value']) == 22
     pcv.outputs.clear()
-    assert len(np.unique(length_img)) == 24
 
 
 def test_plantcv_morphology_skeletonize():
@@ -3364,8 +3364,8 @@ def test_plantcv_morphology_segment_tangent_angle():
     pcv.params.debug = "plot"
     intersection_angles = pcv.morphology.segment_tangent_angle(skel, objs, 2)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    assert len(pcv.outputs.observations['segment_tangent_angle']['value']) == 16
     pcv.outputs.clear()
-    assert len(np.unique(intersection_angles)) == 18
 
 
 def test_plantcv_morphology_segment_id():
@@ -3397,8 +3397,8 @@ def test_plantcv_morphology_segment_insertion_angle():
     pcv.params.debug = "print"
     insert_angles = pcv.morphology.segment_insertion_angle(pruned, segmented_img, leaf_obj, stem_obj, 10)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    assert len(pcv.outputs.observations['segment_insertion_angle']['value']) == 32
     pcv.outputs.clear()
-    assert len(np.unique(insert_angles)) == 34
 
 
 def test_plantcv_morphology_segment_insertion_angle_bad_stem():
