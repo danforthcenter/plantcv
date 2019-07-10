@@ -3364,7 +3364,7 @@ def test_plantcv_morphology_segment_tangent_angle():
     pcv.params.debug = "plot"
     intersection_angles = pcv.morphology.segment_tangent_angle(skel, objs, 2)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
-    assert len(pcv.outputs.observations['segment_tangent_angle']['value']) == 16
+    assert len(pcv.outputs.observations['segment_tangent_angle']['value']) == 73
     pcv.outputs.clear()
 
 
@@ -3397,7 +3397,7 @@ def test_plantcv_morphology_segment_insertion_angle():
     pcv.params.debug = "print"
     insert_angles = pcv.morphology.segment_insertion_angle(pruned, segmented_img, leaf_obj, stem_obj, 10)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
-    assert len(pcv.outputs.observations['segment_insertion_angle']['value']) == 32
+    assert len(pcv.outputs.observations['segment_insertion_angle']['value']) == 14
     pcv.outputs.clear()
 
 
