@@ -4,7 +4,7 @@ This is a plotting method used to examine the distribution of signal within an i
 
 **plantcv.visualize.histogram**(*gray_img, mask=None, bins=256, color='red', title=None*)
 
-**returns** hist_header, hist_data, fig_hist
+**returns** fig_hist
 
 - **Parameters:**
     - gray_img - Grayscale image data, the original image for analysis.
@@ -33,7 +33,7 @@ from plantcv import plantcv as pcv
 
 # Examine signal distribution within an image
 # prints out an image histogram of signal within image
-header, hist_data, hist_figure = pcv.visualize.histogram(gray_img, mask=mask, bins=256, color='red', title=None)
+hist_figure = pcv.visualize.histogram(gray_img, mask=mask, bins=256, color='red', title=None)
 
 ```
 

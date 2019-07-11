@@ -3,7 +3,7 @@
 Creates a binary image (mask) and a masked image from an RGB image based on the user defined threshold values. 
 The threshold color-spaces that can be used are grayscale, RGB, HSV, or LAB.
 
-**plantcv.threshold.custom_range(*rgb_img, lower_thresh, upper_thresh, channel='RGB'*)**
+**plantcv.threshold.custom_range**(*rgb_img, lower_thresh, upper_thresh, channel='RGB'*)
 
 **returns** mask, masked_img
 

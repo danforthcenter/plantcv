@@ -18,9 +18,10 @@ Get and record the size of a size marker or set an area as a size marker.
     - thresh          = Binary threshold value (integer), default set to None.
 - **Context:**
     - Allows user to add size marker data, so that shape data can be normalized between images/cameras
-    - Data automatically gets stored into the [Outputs class](outputs.md). Users can look at the data collected at any point during 
-    the workflow by using [pcv.print_results](print_results.md) which prints all stored data to a .json file.
-- **Output data stored:** [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
+- **Output data stored:** Data ('marker_area', 'marker_ellipse_major_axis', 'marker_ellipse_minor_axis', 'marker_ellipse_eccentricity') 
+    automatically gets stored to the 
+    [`Outputs` class](outputs.md) when this function is ran. 
+    These data can always get accessed during a workflow (example below). [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 **Object (green) that is identified as partially inside ROI**
 
@@ -40,6 +41,9 @@ roi_contour, roi_hierarchy = pcv.roi.rectangle(img1, 3550, 850, 500, 500)
 
 # Detect and Measure Size Marker
 image = pcv.report_size_marker_area(img1, roi_contour, roi_hierarchy, marker='detect', objcolor='light', thresh_channel='s', thresh=120)
+
+# Access data stored out from report_size_marker_area
+marker_area = pcv.outputs.observations['marker_area']['value']
 
 ```
 

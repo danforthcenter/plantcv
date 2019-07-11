@@ -29,7 +29,7 @@ def analyze_nir_intensity(gray_img, mask, bins=256, histplot=False):
     :param mask: numpy array
     :param bins: int
     :param histplot: bool
-    :return analysis_images: list
+    :return analysis_images: plotnine ggplot
     """
 
     params.device += 1

@@ -25,8 +25,6 @@ def histogram(gray_img, mask=None, bins=256, color='red', title=None):
     :param bins: int
     :param color: str
     :param title: str
-    :return bins: list
-    :return hist: list
     :return fig_hist: ggplot
     """
 
@@ -56,20 +54,6 @@ def histogram(gray_img, mask=None, bins=256, color='red', title=None):
     pixels = cv2.countNonZero(masked)
     hist_percent = (hist_gray_data / float(pixels)) * 100
 
-    # report histogram data
-    hist_header = [
-        'HEADER_HISTOGRAM',
-        'bin-number',
-        'bin-values',
-        'gray_img'
-    ]
-
-    hist_data = [
-        'HISTOGRAM_DATA',
-        bins,
-        hist_bins2,
-        hist_gray
-    ]
     hist_x = hist_percent
     bin_labels = np.arange(0, bins)
     dataset = pd.DataFrame({'Grayscale pixel intensity': bin_labels,
@@ -94,4 +78,4 @@ def histogram(gray_img, mask=None, bins=256, color='red', title=None):
         if params.debug == "plot":
             print(fig_hist)
 
-    return hist_header, hist_data, fig_hist
+    return fig_hist

@@ -76,7 +76,17 @@ output_directory = "./test1"
 
 ```python
 
-target_matrix, source_matrix, transformation_matrix, corrected_img = pcv.transform.correct_color(target_img, mask, source_img, mask, output_directory)
+# Inputs:
+#   target_img - RGB image with color chips
+#   target_mask - Grayscale image with color chips and background each represented with unique values 
+#   source_img - RGB image with color chips 
+#   source_mask - Grayscale image with color chips and background each represented with unique values 
+#   output_directory - File path to which the target_matrix, source_matrix, and tranformation_matrix will be saved
+target_matrix, source_matrix, transformation_matrix, corrected_img = pcv.transform.correct_color(target_img=target_img, 
+                                                                                                 target_mask=mask, 
+                                                                                                 source_img=source_img, 
+                                                                                                 source_mask=mask, 
+                                                                                                 output_directory=output_directory)
 
 ```
 
@@ -88,12 +98,18 @@ If you are in debug mode "plot", a horizontally stacked comparison of the source
 you may now [apply the matrix](transform_correct_color.md#apply-transformation-matrix) to congruent images.**
 
 ```python
-
-transformation_matrix = pcv.transform.load_matrix("./test1/transformation_matrix.npz") #load in transformation_matrix
+# Inputs:
+#   filename - .npz file to which a numpy.matrix or numpy.ndarray is saved
+transformation_matrix = pcv.transform.load_matrix(filename="./test1/transformation_matrix.npz") #load in transformation_matrix
 
 new_source = cv2.imread("VIS_SV_0_z1_h1_g0_e65_v500_376217_0.png") #read in new image for transformation
 
 #apply transformation
+
+# Inputs:
+#   source_img - an RGB image to be corrected to the target color space
+#   target_img - an RGB image with the target color space
+#   transformation_matrix - a 9x9 matrix of tranformation coefficients
 corrected_img = pcv.transform.apply_transformation_matrix(source_img= new_source, target_img= target_img, transformation_matrix= transformation_matrix)
 
 ```
@@ -126,8 +142,17 @@ mask = cv2.imread("mask.png", -1) # mask must be read in "as-is" include -1
 ```python
 
 # get color matrix of target and save
-target_headers, target_matrix = pcv.transform.get_color_matrix(target_img, mask)
-pcv.transform.save_matrix(target_matrix, "target.npz")
+
+# Inputs:
+#   rgb_img - RGB image with color chips visualized
+#   mask - a gray-scale img with unique values for each segmented space, 
+#          representing unique, discrete color chips.
+target_headers, target_matrix = pcv.transform.get_color_matrix(rgb_img=target_img, mask=mask)
+
+# Inputs:
+#   matrix - a numpy.matrix
+#   filename - name of file to which matrix will be saved. Must end in .npz
+pcv.transform.save_matrix(matrix=target_matrix, filename="target.npz")
 
 ```
 
@@ -136,7 +161,7 @@ pcv.transform.save_matrix(target_matrix, "target.npz")
 ```python
 
 #get color_matrix of source
-source_headers, source_matrix = pcv.transform.get_color_matrix(source_img, mask)
+source_headers, source_matrix = pcv.transform.get_color_matrix(rgb_img=source_img, mask=mask)
 
 ```
 
@@ -159,7 +184,10 @@ matrix_a, matrix_m, matrix_b = pcv.transform.get_matrix_m(target_matrix= target_
 # Two images of the same color space should have a deviance of ~0.
 # transformation_matrix is a 9x9 matrix of transformation coefficients 
 
-deviance, transformation_matrix = pcv.transform.calc_transformation_matrix(matrix_m, matrix_b)
+# Inputs: 
+#   matrix_m - a 9x22 Moore-Penrose inverse matrix
+#   matrix_b - a 22x9 matrix of linear, square, and cubic rgb values from target_img
+deviance, transformation_matrix = pcv.transform.calc_transformation_matrix(matrix_m=matrix_m, matrix_b=matrix_b)
 
 ```
 
@@ -220,6 +248,13 @@ dimensions = [50,50]  #pixel ROI dimensions
 
 chips = []
 #Declare first row:
+
+# Inputs: 
+#   img - RGB or grayscale image to plot the ROI on 
+#   x - The x-coordinate of the upper left corner of the rectangle 
+#   y - The y-coordinate of the upper left corner of the rectangle 
+#   h - The height of the rectangle 
+#   w - The width of the rectangle 
 chips.append(pcv.roi.rectangle(img=img, x=1020, y = 1010, w = dimensions[0], h = dimensions[1])) #white
 chips.append(pcv.roi.rectangle(img=img, x= 1150 , y= 1010 , w = dimensions[0], h = dimensions[1]))#blue
 chips.append(pcv.roi.rectangle(img=img, x= 1280 , y= 1010 , w = dimensions[0], h = dimensions[1]))#orange
@@ -363,7 +398,13 @@ corrected_img = pcv.transform.apply_transformation_matrix(source_img= new_source
 from plantcv import plantcv as pcv
 from plotnine import *
 
-pcv.transform.quick_color_check(source_matrix = s_matrix, target_matrix = t_matrix, num_chips = 24)
+# Inputs: 
+#   source_matrix - A matrix containing the average red value, green value, blue value 
+#                   for each color chip of the source image (comes from the output of 
+#                   pcv.transform.correct_color function)
+#   target_matrix - Matrix of color values for each color chip of the target image 
+#   num_chips - The number of color card chips included in the matrices
+pcv.transform.quick_color_check(source_matrix=s_matrix, target_matrix=t_matrix, num_chips=24)
 
 ```
 
@@ -390,7 +431,7 @@ Using `%matplotlib notebook` in a Jupyter notebook can be used to examine which 
 from plantcv import plantcv as pcv
 from plotnine import *
 
-pcv.transform.quick_color_check(source_matrix = s_matrix, target_matrix = t_matrix, num_chips = 24)
+pcv.transform.quick_color_check(source_matrix=s_matrix, target_matrix=t_matrix, num_chips=24)
 
 ```
 
@@ -570,7 +611,7 @@ def main():
     
     new_source = cv2.imread("VIS_SV_0_z1_h1_g0_e65_v500_376217_0.png") #read in new image for transformation
     
-    corrected_img = pcv.transform.apply_transformation_matrix(source_img= new_source, target_img= target_img, transformation_matrix= transformation_matrix) #apply transformation
+    corrected_img = pcv.transform.apply_transformation_matrix(source_img=new_source, target_img=target_img, transformation_matrix=transformation_matrix) #apply transformation
 
 if __name__ == '__main__':
     main()

@@ -15,11 +15,11 @@ best if the pot size/position of the plant remains relatively constant.
     - line_position = position of boundary line (a value of 0 would draw the line through the left of the image)
 - **Context:**
     - Used to define a boundary line for the image, to find the width to the right and to the left as well as area to the right and to the left of a boundary line.
-    - Data automatically gets stored into the [Outputs class](outputs.md). Users can look at the data collected at any point during 
-    the workflow by using [pcv.print_results](print_results.md) which prints all stored data to a .json file.
 - **Example use:**
     - [Use of horizontal companion tool in In VIS Tutorial](vis_tutorial.md)
-- **Output data stored:** [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
+- **Output data stored:** Data ('vertical_reference_position', 'width_left_reference', 'width_right_reference', 'area_left_reference', 'percent_area_left_reference',
+    'area_right_reference', 'percent_area_right_reference') automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
+    These data can always get accessed during a workflow (example below). For more detail about data output see [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 ```python
 
@@ -31,6 +31,9 @@ pcv.params.debug = "print"
 
 # Set Boundary Line    
 boundary_image = pcv.analyze_bound_vertical(img, obj, mask, 1000)
+
+# Access data stored out from analyze_bound_vertical
+area_right_reference = pcv.outputs.observations['area_right_reference']['value']
 
 ```
 

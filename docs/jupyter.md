@@ -15,14 +15,18 @@ required running scripts with debug mode enabled so that intermediate
 output images would be created for each step. In the latest versions
 of PlantCV, analysis workflow scripts can be developed in Jupyter
 Notebooks so that the input and output images of each step in a workflow
-can be visualized instantly within the notebook.
+can be visualized instantly within the notebook. 
 
 **Example of PlantCV running in Jupyter**
 
 ![Screenshot](img/documentation_images/jupyter/jupyter_screenshot.jpg)
 
 PlantCV is automatically set up to run in Jupyter Notebook but there
-are a couple of considerations.
+are a couple of considerations. Jupyter must be opened within the PlantCV 
+environment. For example, launch Jupyter from the command line from within
+a PlantCV environment with `jupyter notebook`, launch Jupyter from the 
+Anaconda Navigator (if installed with conda) from within the PlantCV environment, 
+etc. 
 
 First, if PlantCV is installed in the global Python search path, you can
 import the PlantCV library like normal:

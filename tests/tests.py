@@ -573,6 +573,9 @@ TEST_MATRIX_M2 = "matrix_m2.npz"
 TEST_S1_CORRECTED = "source_corrected.png"
 TEST_SKELETON_OBJECTS = "skeleton_objects.npz"
 TEST_SKELETON_HIERARCHIES = "skeleton_hierarchies.npz"
+TEST_THERMAL_ARRAY = "thermal_img.npz"
+TEST_THERMAL_IMG_MASK = "thermal_img_mask.png"
+TEST_INPUT_THERMAL_CSV = "FLIR2600.csv"
 
 
 # ##########################
@@ -839,7 +842,7 @@ def test_plantcv_analyze_nir():
     _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=True)
     # Test with debug = None
     pcv.params.debug = None
-    h_norm = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=False)
+    h_norm = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=True)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert len(pcv.outputs.observations['nir_frequencies']['value']) == 256
     pcv.outputs.clear()
@@ -968,6 +971,48 @@ def test_plantcv_analyze_object_small_contour():
     pcv.params.debug = None
     obj_images = pcv.analyze_object(img=img, obj=obj_contour, mask=mask)
     assert obj_images is None
+
+def test_plantcv_analyze_nir():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_nir")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.analyze_nir_intensity(gray_img=np.uint16(img), mask=mask, bins=256, histplot=True)
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=False)
+    # Test with debug = "plot"
+    _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=True)
+    # Test with debug = None
+    pcv.params.debug = None
+    h_norm = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=True)
+    pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    pcv.outputs.clear()
+    assert str(type(h_norm)) == "<class 'plotnine.ggplot.ggplot'>"
+
+
+def test_plantcv_analyze_thermal_values():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_thermal_values")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    #img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_THERMAL_IMG_MASK), -1)
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_THERMAL_ARRAY), encoding="latin1")
+    img = contours_npz['arr_0']
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.analyze_thermal_values(thermal_array=img, mask=mask, histplot=True)
+    pcv.params.debug = "plot"
+    thermal_hist = pcv.analyze_thermal_values(thermal_array=img, mask=mask, histplot=True)
+    pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    assert thermal_hist is not None and pcv.outputs.observations['median_temp']['value'] == 33.20922
 
 
 def test_plantcv_apply_mask_white():
@@ -2152,6 +2197,12 @@ def test_plantcv_readimage_rgba_as_rgb():
     assert np.shape(img)[2] == 3
 
 
+def test_plantcv_readimage_csv():
+    pcv.params.debug = None
+    img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_THERMAL_CSV), mode="csv")
+    assert len(np.shape(img)) == 2
+
+
 def test_plantcv_readimage_bad_file():
     with pytest.raises(RuntimeError):
         _ = pcv.readimage(filename=TEST_INPUT_COLOR)
@@ -3081,8 +3132,8 @@ def test_plantcv_morphology_segment_curvature():
     pcv.outputs.clear()
     curvature_img = pcv.morphology.segment_curvature(segmented_img, seg_objects)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    assert len(pcv.outputs.observations['segment_curvature']['value']) == 22
     pcv.outputs.clear()
-    assert len(np.unique(curvature_img)) == 24
 
 
 def test_plantcv_morphology_check_cycles():
@@ -3098,8 +3149,8 @@ def test_plantcv_morphology_check_cycles():
     pcv.params.debug = None
     cycle_img = pcv.morphology.check_cycles(mask)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    assert pcv.outputs.observations['num_cycles']['value'] == 1
     pcv.outputs.clear()
-    assert len(np.unique(cycle_img)) == 3
 
 
 def test_plantcv_morphology_find_branch_pts():
@@ -3183,7 +3234,7 @@ def test_plantcv_morphology_segment_skeleton():
     assert len(segment_objects) == 73
 
 
-def test_plantcv_morphology_segment_angles():
+def test_plantcv_morphology_segment_angle():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_angles")
     os.mkdir(cache_dir)
@@ -3195,11 +3246,11 @@ def test_plantcv_morphology_segment_angles():
     pcv.params.debug = "plot"
     angle_img = pcv.morphology.segment_angle(segmented_img, segment_objects)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    assert len(pcv.outputs.observations['segment_angle']['value']) == 22
     pcv.outputs.clear()
-    assert len(np.unique(angle_img)) == 24
 
 
-def test_plantcv_morphology_segment_angles_overflow():
+def test_plantcv_morphology_segment_angle_overflow():
     # Don't prune, would usually give overflow error without extra if statement in segment_angle
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_angles")
@@ -3208,8 +3259,8 @@ def test_plantcv_morphology_segment_angles_overflow():
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
     segmented_img, segment_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
     angle_img = pcv.morphology.segment_angle(segmented_img, segment_objects)
+    assert len(pcv.outputs.observations['segment_angle']['value']) == 73
     pcv.outputs.clear()
-    assert len(np.unique(angle_img)) == 74
 
 
 def test_plantcv_morphology_segment_euclidean_length():
@@ -3224,8 +3275,8 @@ def test_plantcv_morphology_segment_euclidean_length():
     pcv.params.debug = "plot"
     length_img = pcv.morphology.segment_euclidean_length(segmented_img, segment_objects)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    assert len(pcv.outputs.observations['segment_eu_length']['value']) == 22
     pcv.outputs.clear()
-    assert len(np.unique(length_img)) == 24
 
 
 def test_plantcv_morphology_segment_euclidean_length_bad_input():
@@ -3249,8 +3300,8 @@ def test_plantcv_morphology_segment_path_length():
     pcv.params.debug = "plot"
     length_img = pcv.morphology.segment_path_length(segmented_img, segment_objects)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    assert len(pcv.outputs.observations['segment_path_length']['value']) == 22
     pcv.outputs.clear()
-    assert len(np.unique(length_img)) == 24
 
 
 def test_plantcv_morphology_skeletonize():
@@ -3296,8 +3347,8 @@ def test_plantcv_morphology_segment_tangent_angle():
     pcv.params.debug = "plot"
     intersection_angles = pcv.morphology.segment_tangent_angle(skel, objs, 2)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    assert len(pcv.outputs.observations['segment_tangent_angle']['value']) == 73
     pcv.outputs.clear()
-    assert len(np.unique(intersection_angles)) == 18
 
 
 def test_plantcv_morphology_segment_id():
@@ -3321,7 +3372,7 @@ def test_plantcv_morphology_segment_insertion_angle():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
-    pruned,_,_ = pcv.morphology.prune(skel_img=skeleton, size=5)
+    pruned,_,_ = pcv.morphology.prune(skel_img=skeleton, size=6)
     segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=pruned)
     leaf_obj, stem_obj = pcv.morphology.segment_sort(pruned, seg_objects)
     pcv.params.debug = "plot"
@@ -3329,8 +3380,8 @@ def test_plantcv_morphology_segment_insertion_angle():
     pcv.params.debug = "print"
     insert_angles = pcv.morphology.segment_insertion_angle(pruned, segmented_img, leaf_obj, stem_obj, 10)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    assert len(pcv.outputs.observations['segment_insertion_angle']['value']) == 14
     pcv.outputs.clear()
-    assert len(np.unique(insert_angles)) == 44
 
 
 def test_plantcv_morphology_segment_insertion_angle_bad_stem():
@@ -3947,6 +3998,26 @@ def test_plantcv_transform_find_color_card_bad_colorcard():
         _, _, _ = pcv.transform.find_color_card(rgb_img=rgb_img)
 
 
+def test_plantcv_transform_rescale():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_rescale")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.transform.rescale(gray_img=gray_img, min_value=0, max_value=100)
+    pcv.params.debug= "plot"
+    rescaled_img = pcv.transform.rescale(gray_img=gray_img, min_value=0, max_value=100)
+    assert max(np.unique(rescaled_img)) == 100
+
+
+def test_plantcv_transform_rescale_bad_input():
+    # Load rgb image
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
+    with pytest.raises(RuntimeError):
+        _ = pcv.transform.rescale(gray_img=rgb_img)
+
 # ##############################
 # Tests for the threshold subpackage
 # ##############################
@@ -4368,8 +4439,8 @@ def test_plantcv_visualize_histogram():
     _ = pcv.visualize.histogram(gray_img=np.uint16(img), mask=mask, bins=200, title='Include Title')
     # Test in plot mode
     pcv.params.debug = "plot"
-    hist_header, hist_data, fig_hist = pcv.visualize.histogram(gray_img=img)
-    assert np.sum(hist_data[3]) != 0
+    fig_hist = pcv.visualize.histogram(gray_img=img)
+    assert str(type(fig_hist)) == "<class 'plotnine.ggplot.ggplot'>"
 
 
 def test_plantcv_visualize_clustered_contours():

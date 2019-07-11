@@ -11,6 +11,9 @@ This function tests whether an object (defined as nonzero pixels in a mask) fall
 
 - **Context:**
     - This function could be used to test whether the plant has grown outside the field of view.
+- **Output data stored:** Data ('in_bounds') automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
+    These data can always get accessed during a workflow (example below). For more detail about data output see [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
+
 - **Example use:**
 
 ```python

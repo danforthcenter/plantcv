@@ -12,6 +12,7 @@ functions:
 * `analyze_color`
 * `analyze_nir_intensity`
 * `analyze_object`
+* `analyze_thermal_values` 
 * `fluor_fvfm`
 * `report_size_marker_area`
 * `morphology.check_cycles`
@@ -21,6 +22,7 @@ functions:
 * `morphology.segment_insertion_angle`
 * `morphology.segment_path_length`
 * `morphology.segment_tangent_angle` 
+* `within_frame`
 * `watershed`
 
 An instance of `Outputs` is created on import automatically as `plantcv.outputs`. The function 

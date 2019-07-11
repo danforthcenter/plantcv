@@ -83,7 +83,7 @@ def main():
     args = options()
     
     # Read image
-    img, path, filename = pcv.readimage(args.image)
+    img, path, filename = pcv.readimage(filename=args.image)
     
     pcv.params.debug=args.debug #set debug mode
     
@@ -125,7 +125,7 @@ Check if this is an image captured at night.
     
     # white balance image based on white toughspot
     
-    img1 = pcv.white_balance(img,roi=(400,800,200,200))
+    img1 = pcv.white_balance(img=img,roi=(400,800,200,200))
 
 ```
 
@@ -149,7 +149,7 @@ Check if this is an image captured at night.
     #   crop = If True then image will be cropped to original image dimensions, if False
     #          the image size will be adjusted to accommodate new image dimensions 
     
-    rotate_img = pcv.rotate(img1, -1, False)
+    rotate_img = pcv.rotate(img=img1, rotation_deg=-1, crop=False)
 
 ```
 
@@ -170,7 +170,7 @@ Check if this is an image captured at night.
     #   number = integer, number of pixels to move image
     #   side   = direction to move from "top", "bottom", "right","left"
     
-    shift1 = pcv.shift_img(img1, 300, 'top')
+    shift1 = pcv.shift_img(img=img1, number=40, side='top')
     img1 = shift1
 
 ```
@@ -189,7 +189,7 @@ Convert the image from [RGB to LAB](rgb2lab.md) and select single color channel 
     #    rgb_img = image object, RGB colorspace
     #    channel = color subchannel ('l' = lightness, 'a' = green-magenta , 'b' = blue-yellow)
     
-    a = pcv.rgb2gray_lab(img1, 'a')
+    a = pcv.rgb2gray_lab(rgb_img=img1, channel='a')
 
 ```
 
@@ -210,10 +210,10 @@ Use the [binary threshold](binary_threshold.md) function to threshold green-mage
     #       - If object is light then standard thresholding is done
     #       - If object is dark then inverse thresholding is done
     
-    img_binary = pcv.threshold.binary(a, 120, 255, 'dark')
-    #                                     ^
-    #                                     |
-    #                                 adjust this value
+    img_binary = pcv.threshold.binary(gray_img=a, threshold=120, max_value=255, object_type='dark')
+    #                                                        ^
+    #                                                        |
+    #                                          adjust this value
 
 ```
 
@@ -227,13 +227,13 @@ Use the [binary threshold](binary_threshold.md) function to threshold green-mage
 
     # STEP 7: Fill in small objects (speckles)
     # Inputs:
-    #    bin_img  = image object, grayscale. img will be returned after filling
+    #    gray_img = image object, grayscale. img will be returned after filling
     #    size     = minimum object area size in pixels (integer)
     
-    fill_image = pcv.fill(img_binary, 100)
-    #                                  ^
-    #                                  |
-    #                         adjust this value
+    fill_image = pcv.fill(gray_img=img_binary, size=10)
+    #                                                ^
+    #                                                |
+    #                                 adjust this value
 
 ```
 
@@ -251,7 +251,7 @@ Use the [binary threshold](binary_threshold.md) function to threshold green-mage
     #    ksize    = kernel size, integer
     #    i        = iterations, i.e. number of consecutive filtering passes
     
-    dilated = pcv.dilate(fill_image, 1, 1)
+    dilated = pcv.dilate(gray_img=fill_image, ksize=2, i=1)
 
 ```
 
@@ -268,7 +268,7 @@ Use the [binary threshold](binary_threshold.md) function to threshold green-mage
     #    img  = image that the objects will be overlayed
     #    mask = what is used for object detection
     
-    id_objects, obj_hierarchy = pcv.find_objects(img1, dilated)
+    id_objects, obj_hierarchy = pcv.find_objects(img=img1, mask=dilated)
 
 ```
 
@@ -285,15 +285,15 @@ Define a [rectangular region of interest](roi_rectangle.md) in the image.
     #    img       = img to overlay roi
     #    x_adj     = adjust center along x axis
     #    y_adj     = adjust center along y axis
-    #    w_adj     = adjust width
     #    h_adj     = adjust height
+    #    w_adj     = adjust width
     # roi_contour, roi_hierarchy = pcv.roi.rectangle(img1, 10, 500, -10, -100)
     #                                                      ^                ^
     #                                                      |________________|
     #                                            adjust these four values
     
-    roi_contour, roi_hierarchy = pcv.roi.rectangle(img1, 10, 500, -10, -100)
-
+    roi_contour, roi_hierarchy = pcv.roi.rectangle(img=img1, x=6, y=90, h=200, w=390)
+    
 ```
 
 **Figure 10.** Define ROI.
@@ -314,8 +314,11 @@ Alternately the objects can be cut to the region of interest.
     #    obj_hierarchy  = hierarchy of objects, output from "Identifying Objects" function
     #    roi_type       = 'partial' (default, for partially inside), 'cutto', or 'largest' (keep only largest contour)
     
-    roi_objects, roi_obj_hierarchy, kept_mask, obj_area = pcv.roi_objects(img1, roi_contour, roi_hierarchy,
-                                                                          id_objects, obj_hierarchy, 'partial')
+    roi_objects, roi_obj_hierarchy, kept_mask, obj_area = pcv.roi_objects(img=img1, roi_contour=roi_contour, 
+                                                                          roi_hierarchy=roi_hierarchy,
+                                                                          object_contour=id_objects,
+                                                                          obj_hierarchy=obj_hierarchy, 
+                                                                          roi_type='partial')
                                                                       
 ```
 
@@ -345,7 +348,9 @@ for an example.
     #    show_grid         = if True then a grid gets displayed in debug mode (default show_grid=False)
     
     
-    clusters_i, contours, hierarchies = pcv.cluster_contours(img1, roi_objects, roi_obj_hierarchy, 4, 6)
+    clusters_i, contours, hierarchies = pcv.cluster_contours(img=img1, roi_objects=roi_objects, 
+                                                             roi_obj_hierarchy=roi_obj_hierarchy, 
+                                                             nrow=4, ncol=6)
 
 ```
 
@@ -375,7 +380,9 @@ for an example.
     out = args.outdir
     names = args.names
     
-    output_path, imgs, masks = pcv.cluster_contour_splitimg(img1, clusters_i, contours, hierarchies, out, file=filename, filenames=names)
+    output_path, imgs, masks = pcv.cluster_contour_splitimg(img=img1, grouped_contour_indexes=clusters_i, 
+                                                            contours=contours, hierarchy=hierarchies, 
+                                                            outdir=out, file=filename, filenames=names)
 
 ```
 
@@ -484,7 +491,7 @@ def main():
     
     # white balance image based on white toughspot
     
-    img1 = pcv.white_balance(img,roi=(400,800,200,200))
+    img1 = pcv.white_balance(img=img,roi=(400,800,200,200))
     
     # STEP 3: Rotate the image
     # Inputs:
@@ -495,7 +502,7 @@ def main():
     #          the image size will be adjusted to accommodate new image dimensions 
 
     
-    rotate_img = pcv.rotate(img1, -1, False)
+    rotate_img = pcv.rotate(img=img1,rotation_deg=-1, crop=False)
     
     # STEP 4: Shift image. This step is important for clustering later on.
     # For this image it also allows you to push the green raspberry pi camera
@@ -506,7 +513,7 @@ def main():
     #   number = integer, number of pixels to move image
     #   side   = direction to move from "top", "bottom", "right","left"
     
-    shift1 = pcv.shift_img(img1, 300, 'top')
+    shift1 = pcv.shift_img(img=img1, number=300, side='top')
     img1 = shift1
     
     # STEP 5: Convert image from RGB colorspace to LAB colorspace
@@ -515,7 +522,7 @@ def main():
     #    img     = image object, RGB colorspace
     #    channel = color subchannel ('l' = lightness, 'a' = green-magenta , 'b' = blue-yellow)
     
-    a = pcv.rgb2gray_lab(img1, 'a')
+    a = pcv.rgb2gray_lab(img=img1, channel='a')
     
     # STEP 6: Set a binary threshold on the saturation channel image
     # Inputs:
@@ -526,20 +533,20 @@ def main():
     #       - If object is light then standard thresholding is done
     #       - If object is dark then inverse thresholding is done
     
-    img_binary = pcv.threshold.binary(a, 120, 255, 'dark')
-    #                                     ^
-    #                                     |
-    #                                 adjust this value
+    img_binary = pcv.threshold.binary(img=a, threshold=120, max_value=255, object_type='dark')
+    #                                                   ^
+    #                                                   |
+    #                                     adjust this value
     
     # STEP 7: Fill in small objects (speckles)
     # Inputs:
     #    img  = image object, grayscale. img will be returned after filling
     #    size = minimum object area size in pixels (integer)
     
-    fill_image = pcv.fill(img_binary, 100)
-    #                                  ^
-    #                                  |
-    #                         adjust this value
+    fill_image = pcv.fill(img=img_binary, size=100)
+    #                                          ^
+    #                                          |
+    #                           adjust this value
     
     # STEP 8: Dilate so that you don't lose leaves (just in case)
     # Inputs:
@@ -547,28 +554,28 @@ def main():
     #    ksize  = kernel size
     #    i      = iterations, i.e. number of consecutive filtering passes
     
-    dilated = pcv.dilate(fill_image, 1, 1)
+    dilated = pcv.dilate(img=fill_image, ksize=1, i=1)
     
     # STEP 9: Find objects (contours: black-white boundaries)
     # Inputs:
     #    img  = image that the objects will be overlayed
     #    mask = what is used for object detection
     
-    id_objects, obj_hierarchy = pcv.find_objects(img1, dilated)
+    id_objects, obj_hierarchy = pcv.find_objects(img=img1, mask=dilated)
     
     # STEP 10: Define region of interest (ROI)
     # Inputs:
     #    img       = img to overlay roi
     #    x_adj     = adjust center along x axis
     #    y_adj     = adjust center along y axis
-    #    w_adj     = adjust width
     #    h_adj     = adjust height
+    #    w_adj     = adjust width
     # roi_contour, roi_hierarchy = pcv.roi.rectangle(img1, 10, 500, -10, -100)
     #                                                      ^                ^
     #                                                      |________________|
     #                                            adjust these four values
     
-    roi_contour, roi_hierarchy = pcv.roi.rectangle(img1, 10, 500, -10, -100)
+    roi_contour, roi_hierarchy = pcv.roi.rectangle(img=img1, x=6, y=90, h=200, w=390)
     
     # STEP 11: Keep objects that overlap with the ROI
     # Inputs:
@@ -579,8 +586,11 @@ def main():
     #    obj_hierarchy  = hierarchy of objects, output from "Identifying Objects" function
     #    roi_type       = 'partial' (default, for partially inside), 'cutto', or 'largest' (keep only largest contour)
     
-    roi_objects, roi_obj_hierarchy, kept_mask, obj_area = pcv.roi_objects(img1, roi_contour, roi_hierarchy,
-                                                                          id_objects, obj_hierarchy, 'partial')
+    roi_objects, roi_obj_hierarchy, kept_mask, obj_area = pcv.roi_objects(img=img1, roi_contour=roi_contour, 
+                                                                          roi_hierarchy=roi_hierarchy,
+                                                                          object_contour=id_objects,
+                                                                          obj_hierarchy=obj_hierarchy, 
+                                                                          roi_type='partial')
     
     # STEP 12: This function take a image with multiple contours and
     # clusters them based on user input of rows and columns
@@ -593,7 +603,9 @@ def main():
     #    ncol              = number of columns to cluster (this should be the approximate number of desired columns in the entire image even if there isn't a literal row of plants)
     #    show_grid         = if True then a grid gets displayed in debug mode (default show_grid=False)
     
-    clusters_i, contours, hierarchies = pcv.cluster_contours(img1, roi_objects, roi_obj_hierarchy, 4, 6)
+    clusters_i, contours, hierarchies = pcv.cluster_contours(img=img1, roi_objects=roi_objects, 
+                                                             roi_obj_hierarchy=roi_obj_hierarchy, 
+                                                             nrow=4, ncol=6)
     
     # STEP 13: This function takes clustered contours and splits them into multiple images,
     # also does a check to make sure that the number of inputted filenames matches the number
@@ -613,7 +625,9 @@ def main():
     out = args.outdir
     names = args.names
     
-    output_path = pcv.cluster_contour_splitimg(img1, clusters_i, contours, hierarchies, out, file=filename, filenames=names)
+    output_path, imgs, masks = pcv.cluster_contour_splitimg(img=img1, grouped_contour_indexes=clusters_i, 
+                                                            contours=contours, hierarchy=hierarchies, 
+                                                            outdir=out, file=filename, filenames=names)
     
 # Call program
 if __name__ == '__main__':

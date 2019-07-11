@@ -110,7 +110,11 @@ We start by [subtracting](image_subtract.md) the background.
 
 ```python
     # Subtract the background image from the image with the plant.
-    bkg_sub_img = pcv.image_subtract(img, img_bkgrd)
+    
+    # Inputs: 
+    #   gray_img1 - Grayscale image data from which gray_img2 will be subtracted
+    #   gray_img2 - Grayscale image data which will be subtracted from gray_img1
+    bkg_sub_img = pcv.image_subtract(gray_img1=img, img_bkgrd)
         
     # Threshold the image of interest using the two-sided custom range function (keep what is between 50-190)
     
@@ -119,7 +123,8 @@ We start by [subtracting](image_subtract.md) the background.
     #   lower_thresh - List of lower threshold values 
     #   upper_thresh - List of upper threshold values
     #   channel - Color-space channels of interest (either 'RGB', 'HSV', 'LAB', or 'gray')
-    bkg_sub_thres_img, masked_img = pcv.threshold.custom_range(bkg_sub_img, [50], [190], 'gray')
+    bkg_sub_thres_img, masked_img = pcv.threshold.custom_range(rgb_img=bkg_sub_img, lower_thresh=[50], 
+                                                               upper_thresh=[190], channel='gray')
 
 ```
 
@@ -143,14 +148,23 @@ the amount of plant material captured, and it is particularly useful if estimati
 
 ```python
     # Laplace filtering (identify edges based on 2nd derivative)
-    lp_img = pcv.laplace_filter(img, 1, 1)
+    
+    # Inputs:
+    #   gray_img - Grayscale image data 
+    #   ksize - Aperture size used to calculate the second derivative filter, 
+    #           specifies the size of the kernel (must be an odd integer)
+    #   scale - Scaling factor applied (multiplied) to computed Laplacian values 
+    #           (scale = 1 is unscaled) 
+    lp_img = pcv.laplace_filter(gray_img=img, ksize=1, scale=1)
+
     # Plot histogram of grayscale values 
-    pcv.visualize.histogram(lp_img)
+    pcv.visualize.histogram(gray_img=lp_img)
     
     # Lapacian image sharpening, this step will enhance the darkness of the edges detected
-    lp_shrp_img = pcv.image_subtract(img, lp_img)
+    lp_shrp_img = pcv.image_subtract(gray_img1=img, gray_img2=lp_img)
+    
     # Plot histogram of grayscale values, this helps to determine thresholding value 
-    pcv.visualize.histogram(lp_sharp_img)
+    pcv.visualize.histogram(gray_img=lp_sharp_img)
 
 ```
 
@@ -168,14 +182,25 @@ Notice the plant is darker in this image than it was in the original image. We c
 ```python
     # Sobel filtering
     # 1st derivative sobel filtering along horizontal axis, kernel = 1)
-    sbx_img = pcv.sobel_filter(img, 1, 0, 1)
+    
+    # Inputs: 
+    #   gray_img - Grayscale image data 
+    #   dx - Derivative of x to analyze 
+    #   dy - Derivative of y to analyze 
+    #   ksize - Aperture size used to calculate 2nd derivative, specifies the size of the kernel and must be an odd integer
+    # NOTE: Aperture size must be greater than the largest derivative (ksize > dx & ksize > dy) 
+    sbx_img = pcv.sobel_filter(gray_img=img, dx=1, dy=0, ksize=1)
     
     # 1st derivative sobel filtering along vertical axis, kernel = 1)
-    sby_img = pcv.sobel_filter(img, 0, 1, 1)
+    sby_img = pcv.sobel_filter(gray_img=img, dx=0, dy=1, ksize=1)
     
     # Combine the effects of both x and y filters through matrix addition
     # This will capture edges identified within each plane and emphasize edges found in both images
-    sb_img = pcv.image_add(sbx_img, sby_img)
+    
+    # Inputs:
+    #   gray_img1 - Grayscale image data to be added to gray_img2
+    #   gray_img2 - Grayscale image data to be added to gray_img1
+    sb_img = pcv.image_add(gray_img1=sbx_img, gray_img2=sby_img)
 
 ```
 
@@ -197,15 +222,24 @@ together and use the [binary threshold](binary_threshold.md) function.
 
 ```python
     # Use a lowpass (blurring) filter to smooth sobel image
-    mblur_img = pcv.median_blur(sb_img, 1)
-    mblur_invert_img = pcv.invert(mblur_img)
+    
+    # Inputs:
+    #   gray_img - Grayscale image data 
+    #   ksize - Kernel size (integer or tuple), (ksize, ksize) box if integer input,
+    #           (n, m) box if tuple input 
+    mblur_img = pcv.median_blur(gray_img=sb_img, ksize=1)
+
+    # Inputs:
+    #   gray_img - Grayscale image data 
+    mblur_invert_img = pcv.invert(gray_img=mblur_img)
     
     # combine the smoothed sobel image with the laplacian sharpened image
     # combines the best features of both methods as described in "Digital Image Processing" by Gonzalez and Woods pg. 169
-    edge_shrp_img = pcv.image_add(mblur_invert_img, lp_shrp_img)
+    edge_shrp_img = pcv.image_add(gray_img1=mblur_invert_img, gray_img2=lp_shrp_img)
     
     # Perform thresholding to generate a binary image
-    tr_es_img = pcv.threshold.binary(edge_shrp_img, 145, 255, 'dark')
+    tr_es_img = pcv.threshold.binary(gray_img=edge_shrp_img, threshold=145, 
+                                     max_value=255, object_type='dark')
 
 ```
 
@@ -230,7 +264,13 @@ Next, we [erode](erode.md) the image to reduce noise.
 
 ```python
     # Do erosion with a 3x3 kernel (ksize=3)
-    e1_img = pcv.erode(tr_es_img, 3, 1)
+    
+    # Inputs:
+    #   gray_img - Grayscale (usually binary) image data 
+    #   ksize - The size used to build a ksize x ksize 
+    #            matrix using np.ones. Must be greater than 1 to have an effect 
+    #   i - An integer for the number of iterations 
+    e1_img = pcv.erode(gray_img=tr_es_img, ksize=3, i=1)
 
 ```
 
@@ -247,10 +287,19 @@ this with the [logical or](logical_or.md) function. Then we [apply the mask](app
 ```python
     # Bring the two object identification approaches together.
     # Using a logical OR combine object identified by background subtraction and the object identified by derivative filter.
-    comb_img = pcv.logical_or(e1_img, bkg_sub_thres_img)
+    
+    # Inputs: 
+    #   bin_img1 - Binary image data to be compared in bin_img2
+    #   bin_img2 - Binary image data to be compared in bin_img1
+    comb_img = pcv.logical_or(bin_img1=e1_img, bin_img2=bkg_sub_thres_img)
     
     # Get masked image, Essentially identify pixels corresponding to plant and keep those.
-    masked_erd = pcv.apply_mask(img, comb_img, 'black')
+    
+    # Inputs: 
+    #   rgb_img - RGB image data 
+    #   mask - Binary mask image data 
+    #   mask_color - 'black' or 'white'
+    masked_erd = pcv.apply_mask(rgb_img=img, mask=comb_img, mask_color='black')
 
 ```
 
@@ -271,13 +320,23 @@ We can remove unwanted parts of the image using a [rectangular mask](rectangle_m
     # Need to remove the edges of the image, we did that by generating a set of rectangles to mask the edges
     # img is (254 X 320)
     # mask for the bottom of the image
-    masked1, box1_img, rect_contour1, hierarchy1 = pcv.rectangle_mask(img, (120,184), (215,252))
+    
+    # Inputs:
+    #   img - RGB or grayscale image data 
+    #   p1 - Point at the top left corner of the rectangle (tuple)
+    #   p2 - Point at the bottom right corner of the rectangle (tuple) 
+    #   color 'black' (default), 'gray', or 'white'
+    masked1, box1_img, rect_contour1, hierarchy1 = pcv.rectangle_mask(img=img, p1=(120,184), 
+                                                                      p2=(215,252))
     # mask for the left side of the image
-    masked2, box2_img, rect_contour2, hierarchy2 = pcv.rectangle_mask(img, (1,1), (85,252))
+    masked2, box2_img, rect_contour2, hierarchy2 = pcv.rectangle_mask(img=img, p1=(1,1),
+                                                                      p2=(85,252))
     # mask for the right side of the image
-    masked3, box3_img, rect_contour3, hierarchy3 = pcv.rectangle_mask(img, (240,1), (318,252))
+    masked3, box3_img, rect_contour3, hierarchy3 = pcv.rectangle_mask(img=img, p1=(240,1),
+                                                                      p2=(318,252))
     # mask the edges
-    masked4, box4_img, rect_contour4, hierarchy4 = pcv.rectangle_mask(img, (1,1), (318,252))
+    masked4, box4_img, rect_contour4, hierarchy4 = pcv.rectangle_mask(img=img, p1=(1,1), 
+                                                                      p2=(318,252))
 
 ```
 
@@ -300,13 +359,14 @@ Next, we use the [logical or](logical_or.md) function to combine the masks. Then
 
 ```python
     # combine boxes to filter the edges and car out of the photo
-    bx12_img = pcv.logical_or(box1_img, box2_img)
-    bx123_img = pcv.logical_or(bx12_img, box3_img)
-    bx1234_img = pcv.logical_or(bx123_img, box4_img)
+    bx12_img = pcv.logical_or(bin_img1=box1_img, bin_img2=box2_img)
+    bx123_img = pcv.logical_or(bin_img1=bx12_img, bin_img2=box3_img)
+    bx1234_img = pcv.logical_or(bin_img1=bx123_img, bin_img2=box4_img)
     
     # invert this mask and then apply it the masked image.
-    inv_bx1234_img = pcv.invert(bx1234_img)
-    edge_masked_img = pcv.apply_mask(masked_erd, inv_bx1234_img, 'black')
+    inv_bx1234_img = pcv.invert(gray_img=bx1234_img)
+    edge_masked_img = pcv.apply_mask(rgb_img=masked_erd, mask=inv_bx1234_img, 
+                                     mask_color='black')
 
 ```
 
@@ -323,13 +383,38 @@ within the ROI.
 ```python
 
     # Identify objects
-    id_objects,obj_hierarchy = pcv.find_objects(edge_masked_img, inv_bx1234_img)
+    
+    # Inputs:
+    #   img - RGB or grayscale image data for plotting
+    #   mask - Binary mask used for detecting contours
+    id_objects,obj_hierarchy = pcv.find_objects(img=edge_masked_img, mask=inv_bx1234_img)
     
     # Define ROI
+    
+    # Inputs: 
+    #   img - RGB or grayscale image to plot the ROI on 
+    #   x - The x-coordinate of the upper left corner of the rectangle 
+    #   y - The y-coordinate of the upper left corner of the rectangle 
+    #   h - The height of the rectangle 
+    #   w - The width of the rectangle 
     roi1, roi_hierarchy= pcv.roi.rectangle(img=edge_masked_img, x=100, y=100, h=200, w=200)
     
     # Decide which objects to keep
-    roi_objects, hierarchy5, kept_mask, obj_area = pcv.roi_objects(edge_masked_img, roi1, roi_hierarchy, id_objects, obj_hierarchy, 'partial')
+    
+    # Inputs:
+    #    img            = img to display kept objects
+    #    roi_contour    = contour of roi, output from any ROI function
+    #    roi_hierarchy  = contour of roi, output from any ROI function
+    #    object_contour = contours of objects, output from pcv.find_objects function
+    #    obj_hierarchy  = hierarchy of objects, output from pcv.find_objects function
+    #    roi_type       = 'partial' (default, for partially inside), 'cutto', or 
+    #    'largest' (keep only largest contour)
+    roi_objects, hierarchy5, kept_mask, obj_area = pcv.roi_objects(img=edge_masked_img, 
+                                                                   roi_contour=roi1, 
+                                                                   roi_hierarchy=roi_hierarchy, 
+                                                                   object_contour=id_objects, 
+                                                                   obj_hierarchy=obj_hierarchy, 
+                                                                   roi_type='partial')
 
 ```
 
@@ -344,7 +429,12 @@ We can use the [object composition](object_composition.md) function to outline t
 
 ```python
     rgb_img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
-    o, m = pcv.object_composition(rgb_img, roi_objects, hierarchy5)
+    
+    # Inputs:
+    #   img - RGB or grayscale image data for plotting 
+    #   contours - Contour list 
+    #   hierarchy - Contour hierarchy array 
+    o, m = pcv.object_composition(img=rgb_img, contours=roi_objects, hierarchy=hierarchy5)
 
 ```
 
@@ -353,9 +443,8 @@ We can use the [object composition](object_composition.md) function to outline t
 ![Screenshot](img/tutorial_images/nir/28_objcomp_t.jpg)
 
 Now that the plant has been separated from the background we can analyze the pixel composition and shape of the plant.
-In order to pseudocolor the plant by signal intensity the image needs to be converted from grayscale (1-dimension) to 
-pseudocolor (3-dimension). This is done by replicating the grayscale image 3X and combining them into a single 
-3-dimensional matrix (`rgb_img = cv2.cvtColor(img,cv2.COLOR_GRAY2RGB)`).
+To [pseudocolor](visualize_pseudocolor.md) a plant by pixel intensity can take very few parameters but offers a lot 
+of customization since it is intended to just make figures. 
 All masks, countours, etc... need to be converted to 3-dimensions for pseudocoloring.
 
 Now we can perform the [analysis of pixelwise signal value](analyze_NIR_intensity.md) and object [shape](analyze_shape.md) attributes.
@@ -368,16 +457,37 @@ Now we can perform the [analysis of pixelwise signal value](analyze_NIR_intensit
         outfile=args.outdir+"/"+filename
     
     # Perform signal analysis
-    nir_hist = pcv.analyze_nir_intensity(img, kept_mask, 256)
+    
+    # Inputs: 
+    #   gray_img - 8 or 16-bit grayscale image data 
+    #   mask - Binary mask made from selected contours 
+    #   bins - Number of classes to divide the spectrum into 
+    #   histplot - If True, plots the histogram of intensity values 
+    nir_hist = pcv.analyze_nir_intensity(gray_img=img, mask=kept_mask, 
+                                         bins=256, histplot=True)
     
     # Pseudocolor the grayscale image to a colormap
+    
+    # Inputs:
+    #     gray_img - Grayscale image data
+    #     obj - Single or grouped contour object (optional), if provided the pseudocolored image gets cropped down to the region of interest.
+    #     mask - Binary mask (optional) 
+    #     background - Background color/type. Options are "image" (gray_img), "white", or "black". A mask must be supplied.
+    #     cmap - Colormap
+    #     min_value - Minimum value for range of interest
+    #     max_value - Maximum value for range of interest
+    #     dpi - Dots per inch for image if printed out (optional, if dpi=None then the default is set to 100 dpi).
+    #     axes - If False then the title, x-axis, and y-axis won't be displayed (default axes=True).
+    #     colorbar - If False then the colorbar won't be displayed (default colorbar=True)
     pseudocolored_img = pcv.visualize.pseudocolor(gray_img=img, mask=kept_mask, cmap='viridis')
     
     # Perform shape analysis
-    shape_imgs = pcv.analyze_object(rgb_img, o, m)
     
-    # Plot out the NIR histogram
-    nir_hist
+    # Inputs:
+    #   img - RGB or grayscale image data 
+    #   obj- Single or grouped contour object
+    #   mask - Binary image mask to use as mask for moments analysis 
+    shape_imgs = pcv.analyze_object(img=rgb_img, obj=o, mask=m)
     
     # Write shape and nir data to results file
     pcv.print_results(filename=args.result)
@@ -449,82 +559,89 @@ def main():
     img_bkgrd = cv2.imread("background_nir_z2500.png", flags=0)
 
     # Subtract the background image from the image with the plant.
-    bkg_sub_img = pcv.image_subtract(img, img_bkgrd)
+    bkg_sub_img = pcv.image_subtract(gray_img1=img, gray_img2=img_bkgrd)
         
     # Threshold the image of interest using the two-sided custom range function (keep what is between 50-190)
-    bkg_sub_thres_img = pcv.threshold.custom_range(bkg_sub_img, [50], [190], 'gray')
+    bkg_sub_thres_img = pcv.threshold.custom_range(rgb_img=bkg_sub_img, lower_thresh=[50],
+                                                   upper_thresh=[190], channel='gray')
     
     # Laplace filtering (identify edges based on 2nd derivative)
-    lp_img = pcv.laplace_filter(img, 1, 1)
+    lp_img = pcv.laplace_filter(gray_img=img, ksize=1, scale=1)
     pcv.visualize.histogram(lp_img)
     
     # Lapacian image sharpening, this step will enhance the darkness of the edges detected
-    lp_shrp_img = pcv.image_subtract(img, lp_img)
-    pcv.visualize.histogram(lp_shrp_img)
+    lp_shrp_img = pcv.image_subtract(gray_img1=img, gray_img2=lp_img)
+    pcv.visualize.histogram(gray_img=lp_shrp_img)
     
     # Sobel filtering
     # 1st derivative sobel filtering along horizontal axis, kernel = 1)
-    sbx_img = pcv.sobel_filter(img, 1, 0, 1)
+    sbx_img = pcv.sobel_filter(gray_img=img, dx=1, dy=0, ksize=1)
     
     # 1st derivative sobel filtering along vertical axis, kernel = 1)
-    sby_img = pcv.sobel_filter(img, 0, 1, 1)
+    sby_img = pcv.sobel_filter(gray_img=img, dx=0, dy=1, ksize=1)
     
     # Combine the effects of both x and y filters through matrix addition
     # This will capture edges identified within each plane and emphasize edges found in both images
-    sb_img = pcv.image_add(sbx_img, sby_img)
+    sb_img = pcv.image_add(gray_img1=sbx_img, gray_img2=sby_img)
     
     # Use a lowpass (blurring) filter to smooth sobel image
-    mblur_img = pcv.median_blur(sb_img, 1)
-    mblur_invert_img = pcv.invert(mblur_img)
+    mblur_img = pcv.median_blur(gray_img=sb_img, ksize=1)
+    mblur_invert_img = pcv.invert(gray_img=mblur_img)
     
     # combine the smoothed sobel image with the laplacian sharpened image
     # combines the best features of both methods as described in "Digital Image Processing" by Gonzalez and Woods pg. 169
-    edge_shrp_img = pcv.image_add(mblur_invert_img, lp_shrp_img)
+    edge_shrp_img = pcv.image_add(gray_img1=mblur_invert_img, gray_img2=lp_shrp_img)
     
     # Perform thresholding to generate a binary image
-    tr_es_img = pcv.threshold.binary(edge_shrp_img, 145, 255, 'dark')
+    tr_es_img = pcv.threshold.binary(gray_img=edge_shrp_img, threshold=145, 
+                                     max_value=255, object_type='dark')
     
     # Do erosion with a 3x3 kernel
-    e1_img = pcv.erode(tr_es_img, 3, 1)
+    e1_img = pcv.erode(gray_img=tr_es_img, ksize=3, i=1)
     
     # Bring the two object identification approaches together.
     # Using a logical OR combine object identified by background subtraction and the object identified by derivative filter.
-    comb_img = pcv.logical_or(e1_img, bkg_sub_thres_img)
+    comb_img = pcv.logical_or(bin_img1=e1_img, bin_img2=bkg_sub_thres_img)
     
     # Get masked image, Essentially identify pixels corresponding to plant and keep those.
-    masked_erd = pcv.apply_mask(img, comb_img, 'black')
+    masked_erd = pcv.apply_mask(rgb_img=img, mask=comb_img, mask_color='black')
     
     # Need to remove the edges of the image, we did that by generating a set of rectangles to mask the edges
     # img is (254 X 320)
     # mask for the bottom of the image
-    masked1, box1_img, rect_contour1, hierarchy1 = pcv.rectangle_mask(img, (120,184), (215,252))
+    masked1, box1_img, rect_contour1, hierarchy1 = pcv.rectangle_mask(img=img, p1=(120,184), p2=(215,252))
     # mask for the left side of the image
-    masked2, box2_img, rect_contour2, hierarchy2 = pcv.rectangle_mask(img, (1,1), (85,252))
+    masked2, box2_img, rect_contour2, hierarchy2 = pcv.rectangle_mask(img=img, p1=(1,1), p2=(85,252))
     # mask for the right side of the image
-    masked3, box3_img, rect_contour3, hierarchy3 = pcv.rectangle_mask(img, (240,1), (318,252))
+    masked3, box3_img, rect_contour3, hierarchy3 = pcv.rectangle_mask(img=img, p1=(240,1), p2=(318,252))
     # mask the edges
-    masked4, box4_img, rect_contour4, hierarchy4 = pcv.rectangle_mask(img, (1,1), (318,252))
+    masked4, box4_img, rect_contour4, hierarchy4 = pcv.rectangle_mask(img=img, p1=(1,1), p2=(318,252))
     
     # combine boxes to filter the edges and car out of the photo
-    bx12_img = pcv.logical_or(box1_img, box2_img)
-    bx123_img = pcv.logical_or(bx12_img, box3_img)
-    bx1234_img = pcv.logical_or(bx123_img, box4_img)
+    bx12_img = pcv.logical_or(bin_img1=box1_img, bin_img2=box2_img)
+    bx123_img = pcv.logical_or(bin_img1=bx12_img, bin_img2=box3_img)
+    bx1234_img = pcv.logical_or(bin_img1=bx123_img, bin_img2=box4_img)
     
     # invert this mask and then apply it the masked image.
-    inv_bx1234_img = pcv.invert(bx1234_img)
-    edge_masked_img = pcv.apply_mask(masked_erd, inv_bx1234_img, 'black')
+    inv_bx1234_img = pcv.invert(gray_img=bx1234_img)
+    edge_masked_img = pcv.apply_mask(rgb_img=masked_erd, mask=inv_bx1234_img, mask_color='black')
     
     # Identify objects
-    id_objects,obj_hierarchy = pcv.find_objects(edge_masked_img, inv_bx1234_img)
+    id_objects,obj_hierarchy = pcv.find_objects(img=edge_masked_img, mask=inv_bx1234_img)
     
     # Define ROI
     roi1, roi_hierarchy= pcv.roi.rectangle(img=edge_masked_img, x=100, y=100, h=200, w=200)
     
     # Decide which objects to keep
-    roi_objects, hierarchy5, kept_mask, obj_area = pcv.roi_objects(edge_masked_img, roi1, roi_hierarchy, id_objects, obj_hierarchy, 'partial')
+    roi_objects, hierarchy5, kept_mask, obj_area = pcv.roi_objects(img=edge_masked_img, 
+                                                                   roi_contour=roi1, 
+                                                                   roi_hierarchy=roi_hierarchy, 
+                                                                   object_contour=id_objects, 
+                                                                   obj_hierarchy=obj_hierarchy, 
+                                                                   roi_type='partial')
     
     rgb_img = cv2.cvtColor(img,cv2.COLOR_GRAY2RGB)
-    o, m = pcv.object_composition(rgb_img, roi_objects, hierarchy5)
+    o, m = pcv.object_composition(img=rgb_img, contours=roi_objects, hierarchy=hierarchy5)
     
     ### Analysis ###
     
@@ -533,13 +650,13 @@ def main():
         outfile=args.outdir+"/"+img_name
     
     # Perform signal analysis
-    nir_hist = pcv.analyze_nir_intensity(img, kept_mask, 256)
+    nir_hist = pcv.analyze_nir_intensity(gray_img=img, mask=kept_mask, bins=256, histplot=True)
     
     # Pseudocolor the grayscale image to a colormap
     pseudocolored_img = pcv.visualize.pseudocolor(gray_img=img, mask=kept_mask, cmap='viridis')
     
     # Perform shape analysis
-    shape_imgs = pcv.analyze_object(rgb_img, o, m)
+    shape_imgs = pcv.analyze_object(img=rgb_img, obj=o, mask=m)
     
     # Write shape and nir data to results file
     pcv.print_results(filename=args.result)

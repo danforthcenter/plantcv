@@ -14,7 +14,8 @@ independent of size.
     - mask - This is a binary image. The object should be white and the background should be black.
 - **Context:**
     - Used to identify a set of sixty equidistant landmarks on the vertical axis. Once scaled these can be used for shape analysis.
-- **Output data stored:** [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
+- **Output data stored:** Data ('left_lmk', 'right_lmk', 'center_h_lmk') automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
+    These data can always get accessed during a workflow (example below). For more detail about data output see [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 **Input object contour and image**
 
@@ -31,6 +32,9 @@ pcv.params.debug = "plot"
 # Identify a set of land mark points
 # Results in set of point values that may indicate tip points
 left, right, center_h  = pcv.y_axis_pseudolandmarks(img, obj, mask)
+
+# Access data stored out from y_axis_pseudolandmarks
+left_landmarks = pcv.outputs.observations['left_lmk']['value']
 
 ```
 
