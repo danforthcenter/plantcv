@@ -2208,23 +2208,6 @@ def test_plantcv_readimage_bad_file():
         _ = pcv.readimage(filename=TEST_INPUT_COLOR)
 
 
-def test_plantcv_read_array_asimg():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_read_array_asimg")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    pcv.params.debug = 'print'
-    _ = pcv.read_array_asimg(array=os.path.join(TEST_DATA, TEST_INPUT_THERMAL_CSV))
-    pcv.params.debug = 'plot'
-    arrayvalues, scaled, path, array_name = pcv.read_array_asimg(array=os.path.join(TEST_DATA, TEST_INPUT_THERMAL_CSV))
-    assert len(np.shape(scaled)) == 3
-
-
-# def test_plantcv_read_array_asimg_bad_file():
-#     with pytest.raises(FileNotFoundError):
-#         _ = pcv.read_array_asimg(array=TEST_INPUT_COLOR)
-
-
 def test_plantcv_readbayer_default_bg():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_readbayer_default_bg")

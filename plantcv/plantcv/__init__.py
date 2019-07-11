@@ -162,7 +162,6 @@ from plantcv.plantcv import roi
 from plantcv.plantcv import threshold
 from plantcv.plantcv import transform
 from plantcv.plantcv.canny_edge_detect import canny_edge_detect
-from plantcv.plantcv.read_array_asimg import read_array_asimg
 from plantcv.plantcv.cluster_contour_mask import cluster_contour_mask
 from plantcv.plantcv.analyze_thermal_values import analyze_thermal_values
 from plantcv.plantcv import visualize
@@ -181,8 +180,8 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'apply_m
            'white_balance', 'acute_vertex', 'scale_features', 'landmark_reference_pt_dist', 'outputs',
            'x_axis_pseudolandmarks', 'y_axis_pseudolandmarks', 'gaussian_blur', 'cluster_contours', 'visualize',
            'cluster_contour_splitimg', 'rotate', 'shift_img', 'output_mask', 'auto_crop', 'canny_edge_detect',
-           'background_subtraction', 'naive_bayes_classifier', 'acute', 'distance_transform', 'params', 'pseudocolor',
-           'read_array_asimg','cluster_contour_mask','analyze_thermal_values', 'opening',
+           'background_subtraction', 'naive_bayes_classifier', 'acute', 'distance_transform', 'params',
+           'cluster_contour_mask','analyze_thermal_values', 'opening',
            'closing','within_frame', 'fill_holes']
 
 from ._version import get_versions
