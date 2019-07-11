@@ -153,24 +153,33 @@ as in the following examples:
 docker pull danforthcenter/plantcv
 
 # A simple command to demonstrate it works (nothing returned if import is successful)
-docker run danforthcenter/plantcv python -c 'import plantcv'
+docker run danforthcenter/plantcv python -c 'from plantcv import plantcv as pcv; print(pcv.__version__)'
 
 ```
 
-To analyze data with the PlantCV Docker container you will need to map a local folder that contains your inputs into
-the container filesystem. We have set up a directory in the container at `/data` to get data into/out of the container.
-In the example below, local data and scripts are in a directory called `/home/user` but it can be any directory you 
-want. Everything in `/home/user` will be accessible in the container and any outputs written to `/data` in the 
-container will be written locally to the directory you provide.
+The PlantCV container is built on top of the 
+[Jupyter minimal-notebook container](https://hub.docker.com/r/jupyter/minimal-notebook). To analyze data with the 
+PlantCV Docker container you will need to map a local folder that contains your inputs into
+the container filesystem. We use the same working directory as documented by 
+[Jupyter Docker Stacks](https://github.com/jupyter/docker-stacks). An easy way to run PlantCV in a container with
+Jupyter notebook support is to map your current directory into the container:
 
-For the sake of this example, assume that `/home/user` contains a PlantCV script called `test-script.py` and an image
-called `test-image.png`. The `test-script.py` in this case would be a script like the one described in the 
-[VIS tutorial](vis_tutorial.md).
+```bash
+docker run --rm -p 8888:8888 -v "$PWD":/home/jovyan/work danforthcenter/plantcv
+
+```
+
+Then point your browser to the URL that is printed to your terminal. Any data/notebooks saved to the `work` directory
+will persist on your local filesystem after the container is shut down.
+
+You can also run PlantCV on the command-line without Jupyter notebooks. For the sake of this example, assume that 
+your working directory contains a PlantCV script called `test-script.py` and an image called `test-image.png`. 
+The `test-script.py` in this case would be a script like the one described in the [VIS tutorial](vis_tutorial.md).
 
 ```bash
 # Analyzing data using the PlantCV docker image
-docker run -v /home/user:/data danforthcenter/plantcv \
-python /data/test-script.py -i /data/test-image.png -o /data -r /data/plantcv-results.txt
+docker run --rm -v "$PWD":/home/jovyan/work danforthcenter/plantcv python ./work/test-script.py \
+-i ./work/test-image.png -o ./work -r ./work/plantcv-results.txt
 
 ```
 
