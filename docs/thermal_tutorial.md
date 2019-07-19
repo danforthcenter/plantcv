@@ -114,7 +114,7 @@ grayscale images.
     #   gray_img - Grayscale image data 
     #   min_value - New minimum value for range of interest. default = 0
     #   max_value - New maximum value for range of interest. default = 255
-    scaled_thermal_img = pcv.rescale(gray_img=thermal_data)
+    scaled_thermal_img = pcv.transform.rescale(gray_img=thermal_data)
     
 ```
 
@@ -316,7 +316,7 @@ def main():
     #   gray_img - Grayscale image data 
     #   min_value - New minimum value for range of interest. default = 0
     #   max_value - New maximum value for range of interest. default = 255
-    scaled_thermal_img = pcv.rescale(gray_img=thermal_data)
+    scaled_thermal_img = pcv.transform.rescale(gray_img=thermal_data)
     
 
     # Threshold the thermal data to make a binary mask
