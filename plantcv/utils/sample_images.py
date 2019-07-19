@@ -47,11 +47,11 @@ def sample_images(source_path, dest_path, num=100):
                     shutil.copy(os.path.join(root, file), folder_path)
     else:
         for root, dirs, files in os.walk(source_path):
-
-            # Check file type so that only images get copied over
-            name, ext = os.path.splitext(files)
-            if ext.lower() in img_extensions:
-                img_element_array.append(files)
+            for file in files:
+                # Check file type so that only images get copied over
+                name, ext = os.path.splitext(file)
+                if ext.lower() in img_extensions:
+                    img_element_array.append(file)
 
         # Check to make sure number of imgs to select is less than number of images found 
         if num > len(img_element_array):
@@ -59,10 +59,10 @@ def sample_images(source_path, dest_path, num=100):
 
         # Get random images
         for i in range(0, num):
-            r = random.randint(0, len(img_element_array[0]) - 1)
+            r = random.randint(0, len(img_element_array) - 1)
             while r in num_images:
-                r = random.randint(0, len(img_element_array[0]) - 1)
-            sample_array.append(img_element_array[0][r])
+                r = random.randint(0, len(img_element_array) - 1)
+            sample_array.append(img_element_array[r])
             num_images.append(r)
 
         # Copy images over to destination 
