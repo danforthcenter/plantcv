@@ -4499,6 +4499,47 @@ def test_plantcv_utils_json2csv_bad_json():
                                csv_file=os.path.join(cache_dir, "exports"))
 
 
+def test_plantcv_utils_sample_images_snapshot():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_sample_images")
+    os.mkdir(cache_dir)
+    snapshot_dir = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
+    output_dir = os.path.join(cache_dir, "snapshot")
+    plantcv.utils.sample_images(source_path=snapshot_dir, dest_path=output_dir, num=2)
+    assert os.path.exists(os.path.join(cache_dir, "snapshot"))
+
+
+def test_plantcv_utils_sample_images_flatdir():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_sample_images")
+    os.mkdir(cache_dir)
+    flat_dir = os.path.join(TEST_DATA)
+    output_dir = os.path.join(cache_dir, "images")
+    plantcv.utils.sample_images(source_path=flat_dir, dest_path=output_dir, num=30)
+    random_images = os.listdir(output_dir)
+    assert all([len(random_images)==30, len(np.unique(random_images))==30])
+
+
+def test_plantcv_utils_sample_images_bad_source():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_sample_images")
+    os.mkdir(cache_dir)
+    fake_dir = os.path.join(TEST_DATA, "snapshot")
+    output_dir = os.path.join(cache_dir, "images")
+    with pytest.raises(IOError):
+        plantcv.utils.sample_images(source_path=fake_dir, dest_path=output_dir, num=3)
+
+
+def test_plantcv_utils_sample_images_bad_num():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_sample_images")
+    os.mkdir(cache_dir)
+    flat_dir = os.path.join(TEST_DATA)
+    output_dir = os.path.join(cache_dir, "images")
+    with pytest.raises(RuntimeError):
+        plantcv.utils.sample_images(source_path=flat_dir, dest_path=output_dir, num=300)
+
+
 # ##############################
 # Clean up test files
 # ##############################
