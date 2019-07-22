@@ -115,6 +115,7 @@ nav:
     - 'Read Bayer Raw Image': read_bayer.md
     - 'Rectangle Mask': rectangle_mask.md
     - 'Report Size Marker': report_size_marker.md
+    - 'Rescale': transform_rescale.md
     - 'Resize': resize.md
     - 'Region of Interest Tools':
       - 'Create a Circular ROI': roi_circle.md
