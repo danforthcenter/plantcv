@@ -4505,7 +4505,7 @@ def test_plantcv_utils_sample_images_snapshot():
     os.mkdir(cache_dir)
     snapshot_dir = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
     output_dir = os.path.join(cache_dir, "snapshot")
-    plantcv.utils.sample_images(source_path=snapshot_dir, dest_path=output_dir, num=2)
+    plantcv.utils.sample_images(source_path=snapshot_dir, dest_path=output_dir, num=3)
     assert os.path.exists(os.path.join(cache_dir, "snapshot"))
 
 
@@ -4530,7 +4530,7 @@ def test_plantcv_utils_sample_images_bad_source():
         plantcv.utils.sample_images(source_path=fake_dir, dest_path=output_dir, num=3)
 
 
-def test_plantcv_utils_sample_images_bad_num():
+def test_plantcv_utils_sample_images_bad_flat_num():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_sample_images")
     os.mkdir(cache_dir)
@@ -4538,6 +4538,16 @@ def test_plantcv_utils_sample_images_bad_num():
     output_dir = os.path.join(cache_dir, "images")
     with pytest.raises(RuntimeError):
         plantcv.utils.sample_images(source_path=flat_dir, dest_path=output_dir, num=300)
+
+
+def test_plantcv_utils_sample_images_bad_phenofront_num():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_sample_images")
+    os.mkdir(cache_dir)
+    snapshot_dir = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
+    output_dir = os.path.join(cache_dir, "images")
+    with pytest.raises(RuntimeError):
+        plantcv.utils.sample_images(source_path=snapshot_dir, dest_path=output_dir, num=300)
 
 
 # ##############################

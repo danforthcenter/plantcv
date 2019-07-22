@@ -27,6 +27,10 @@ def sample_images(source_path, dest_path, num=100):
             line_array.append(element_arr)
         input_csv.close()
 
+        # Check to make sure number of imgs to select is less than number of images found
+        if num > len(line_array):
+            fatal_error("Number of images found less than 'num'.")
+
         for i in range(0, num):
             r = random.randint(0, len(line_array) - 1)
             while r in num_images:

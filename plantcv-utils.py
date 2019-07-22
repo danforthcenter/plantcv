@@ -30,6 +30,7 @@ def options():
     sample_images_cmd.add_argument("-o", "--outdir", help="Output directory for the random sample to get saved",
                                    required=True)
     sample_images_cmd.add_argument("-n", "--number", help="The number of images to sample", default=100)
+    sample_images_cmd.set_defaults(func=run_sample_images)
 
 
     # If no arguments are given, print the help menu
