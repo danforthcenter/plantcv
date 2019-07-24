@@ -55,7 +55,7 @@ def run_json2csv(args):
 # run_sample_images
 ###########################################
 def run_sample_images(args):
-    plantcv.utils.sample_image(source_path=args.source, dest_path=args.outdir, num=args.number)
+    plantcv.utils.sample_images(source_path=args.source, dest_path=args.outdir, num=args.number)
 
 ###########################################
 
