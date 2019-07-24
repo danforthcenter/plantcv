@@ -3609,6 +3609,14 @@ def test_plantcv_roi_multi_bad_input():
         _, _ = pcv.roi.multi(rgb_img, coord=[(25, 120), (100, 100)], radius=20, spacing=(10, 10), nrows=3, ncols=6)
 
 
+def test_plantcv_roi_custom():
+    # Read in test RGB image
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    cnt, hier = pcv.roi.custom(img=img, vertices=[[2260, -1], [3130, 1848], [2404, 2029], [2205, 2298], [1617, 1761]])
+    assert np.shape(cnt) == (1, 5, 2)
+
 # ##############################
 # Tests for the transform subpackage
 # ##############################
