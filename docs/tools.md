@@ -63,6 +63,29 @@ is a table of observations with single values (e.g. area, convex hull area, etc.
 per image. `prefix-multi-value-traits.csv` is a table of observations with multiple values (e.g. frequency distribution
 of hue or other color channel/properties). The format of this table is one row per value/label. 
 
+#### Collect a random sample of images for testing workflows
+
+`plantcv-utils.py sample_images` is a command-line tool for gathering a random set of images for
+testing workflows before running over a full image set. 
+
+```
+usage: plantcv-utils.py sample_images [-h] -s SOURCE_DIRECTORY -o OUTPUT_DIRECTORY -n NUMBER
+
+optional arguments:
+  -h, --help                                      Show this help message and exit
+  -s SOURCE_DIRECTORY, --source SOURCE_DIRECTORY  Input image directory.
+  -o OUTPUT_DIRECTORY, --outdir OUTPUT_DIRECTORY  Output directory.
+  -n NUMBER, --number NUMBER                      Number of images to randomly select. (default=100)
+
+```
+
+Testing a workflow on small test set (that ideally spans time and/or treatments) can speed up workflow optimization and 
+test it on other images in the dataset to determine how robust the workflow will be. The random image sampler can help 
+identify 'problem images' before running a workflow in parallel over a large set of images. This
+tool can handle LemnaTec structured output in addition to a flat file directory. Currently supported image types include 
+.png, .jpg, .jpeg, .tif, .tiff, and .gif. A source directory will be created if it does not already exist. The number of 
+random images requested must be less than or equal to the number of images in the source directory. 
+
 ### Parallel workflow processing
 
 `plantcv-workflow.py` is a command-line tool for parallel processing of user-defined PlantCV workflows. It is used to

@@ -17,11 +17,21 @@ def options():
     # Create subcommand parsers
     subparsers = parser.add_subparsers()
 
-    # Create the Naive Bayes subcommand
+    # Create the json2csv subcommand
     json2csv_cmd = subparsers.add_parser("json2csv", help="Convert PlantCV output JSON files to CSV.")
     json2csv_cmd.add_argument("-j", "--json", help="Input PlantCV JSON filename.", required=True)
     json2csv_cmd.add_argument("-c", "--csv", help="Output CSV filename prefix.", required=True)
     json2csv_cmd.set_defaults(func=run_json2csv)
+
+
+    # Create the sample_images subcommand
+    sample_images_cmd = subparsers.add_parser("sample_images", help="Creates a random sample of images.")
+    sample_images_cmd.add_argument("-s", "--source", help="Source directory of images", required=True)
+    sample_images_cmd.add_argument("-o", "--outdir", help="Output directory for the random sample to get saved",
+                                   required=True)
+    sample_images_cmd.add_argument("-n", "--number", help="The number of images to sample", default=100)
+    sample_images_cmd.set_defaults(func=run_sample_images)
+
 
     # If no arguments are given, print the help menu
     if len(sys.argv) == 1:
@@ -40,6 +50,13 @@ def options():
 ###########################################
 def run_json2csv(args):
     plantcv.utils.json2csv(json_file=args.json, csv_file=args.csv)
+###########################################
+
+# run_sample_images
+###########################################
+def run_sample_images(args):
+    plantcv.utils.sample_images(source_path=args.source, dest_path=args.outdir, num=args.number)
+
 ###########################################
 
 

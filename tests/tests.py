@@ -3609,6 +3609,14 @@ def test_plantcv_roi_multi_bad_input():
         _, _ = pcv.roi.multi(rgb_img, coord=[(25, 120), (100, 100)], radius=20, spacing=(10, 10), nrows=3, ncols=6)
 
 
+def test_plantcv_roi_custom():
+    # Read in test RGB image
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    cnt, hier = pcv.roi.custom(img=img, vertices=[[2260, -1], [3130, 1848], [2404, 2029], [2205, 2298], [1617, 1761]])
+    assert np.shape(cnt) == (1, 5, 2)
+
 # ##############################
 # Tests for the transform subpackage
 # ##############################
@@ -4497,6 +4505,57 @@ def test_plantcv_utils_json2csv_bad_json():
     with pytest.raises(ValueError):
         plantcv.utils.json2csv(json_file=os.path.join(TEST_DATA, "incorrect_json_data.txt"),
                                csv_file=os.path.join(cache_dir, "exports"))
+
+
+def test_plantcv_utils_sample_images_snapshot():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_sample_images")
+    os.mkdir(cache_dir)
+    snapshot_dir = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
+    output_dir = os.path.join(cache_dir, "snapshot")
+    plantcv.utils.sample_images(source_path=snapshot_dir, dest_path=output_dir, num=3)
+    assert os.path.exists(os.path.join(cache_dir, "snapshot"))
+
+
+def test_plantcv_utils_sample_images_flatdir():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_sample_images")
+    os.mkdir(cache_dir)
+    flat_dir = os.path.join(TEST_DATA)
+    output_dir = os.path.join(cache_dir, "images")
+    plantcv.utils.sample_images(source_path=flat_dir, dest_path=output_dir, num=30)
+    random_images = os.listdir(output_dir)
+    assert all([len(random_images)==30, len(np.unique(random_images))==30])
+
+
+def test_plantcv_utils_sample_images_bad_source():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_sample_images")
+    os.mkdir(cache_dir)
+    fake_dir = os.path.join(TEST_DATA, "snapshot")
+    output_dir = os.path.join(cache_dir, "images")
+    with pytest.raises(IOError):
+        plantcv.utils.sample_images(source_path=fake_dir, dest_path=output_dir, num=3)
+
+
+def test_plantcv_utils_sample_images_bad_flat_num():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_sample_images")
+    os.mkdir(cache_dir)
+    flat_dir = os.path.join(TEST_DATA)
+    output_dir = os.path.join(cache_dir, "images")
+    with pytest.raises(RuntimeError):
+        plantcv.utils.sample_images(source_path=flat_dir, dest_path=output_dir, num=300)
+
+
+def test_plantcv_utils_sample_images_bad_phenofront_num():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_sample_images")
+    os.mkdir(cache_dir)
+    snapshot_dir = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
+    output_dir = os.path.join(cache_dir, "images")
+    with pytest.raises(RuntimeError):
+        plantcv.utils.sample_images(source_path=snapshot_dir, dest_path=output_dir, num=300)
 
 
 # ##############################

@@ -115,11 +115,13 @@ nav:
     - 'Read Bayer Raw Image': read_bayer.md
     - 'Rectangle Mask': rectangle_mask.md
     - 'Report Size Marker': report_size_marker.md
+    - 'Rescale': transform_rescale.md
     - 'Resize': resize.md
     - 'Region of Interest Tools':
       - 'Create a Circular ROI': roi_circle.md
       - 'Create an Elliptical ROI': roi_ellipse.md
       - 'Create a Rectangular ROI': roi_rectangle.md
+      - 'Create a Custom ROI': roi_custom.md
       - 'Create ROI from Binary Image': roi_from_binary_image.md
       - 'Create Multi ROIs': 'roi_multi.md'
       - 'Filter Objects by ROI': roi_objects.md
