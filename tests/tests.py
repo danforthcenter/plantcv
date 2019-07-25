@@ -2612,6 +2612,20 @@ def test_plantcv_roi_objects_grayscale_input():
     assert len(kept_contours) == 1046
 
 
+def test_plantcv_roi_objects_no_objects():
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
+    roi_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_ROI), encoding="latin1")
+    roi_contour = [np.array([[[750, 750]],[[750, 849]],[[799, 849]],[[799, 750]]])]
+    roi_hierarchy = roi_npz['arr_1']
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS1), encoding="latin1")
+    object_contours = contours_npz['arr_0']
+    object_hierarchy = contours_npz['arr_1']
+    with pytest.raises(RuntimeError):
+        _ = pcv.roi_objects(img=img, roi_type="partial", roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
+                            object_contour=object_contours, obj_hierarchy=object_hierarchy)
+
+
 def test_plantcv_rotate():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_rotate_img")

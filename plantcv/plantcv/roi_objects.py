@@ -60,19 +60,23 @@ def roi_objects(img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, 
                 if int(pptest) != -1:
                     keep = True
             if keep:
-                # Color the "gap contours" white
+                # Color the "gap contours" black
                 if obj_hierarchy[0][c][3] > -1:
                     cv2.drawContours(mask, object_contour, c, (0), -1, lineType=8, hierarchy=obj_hierarchy)
                 else:
-                    # Color the plant contour parts black
+                    # Color the plant contour parts white
                     cv2.drawContours(mask, object_contour, c, (255), -1, lineType=8, hierarchy=obj_hierarchy)
             else:
-                # If the contour isn't overlapping with the ROI, color it white
+                # If the contour isn't overlapping with the ROI, color it black
                 cv2.drawContours(mask, object_contour, c, (0), -1, lineType=8, hierarchy=obj_hierarchy)
 
         # Find the kept contours and area
         kept_cnt, kept_hierarchy = cv2.findContours(np.copy(mask), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
         obj_area = cv2.countNonZero(mask)
+
+        # If no objects were found partially within the ROI then fail
+        if obj_area == 0:
+            fatal_error("No objects found are within or overlap with the ROI")
 
         # Find the largest contour if roi_type is set to 'largest'
         if roi_type.upper() == 'LARGEST':
@@ -81,8 +85,9 @@ def roi_objects(img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, 
                   "subcontours will be dropped.")
             # Find the index of the largest contour in the list of contours
             largest_area = 0
+            index = 0
             for c, cnt in enumerate(kept_cnt):
-                area = cv2.contourArea(cnt)
+                area = len(cnt)
                 if area > largest_area:
                     largest_area = area
                     index = c
