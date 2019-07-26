@@ -166,7 +166,13 @@ from plantcv.plantcv.cluster_contour_mask import cluster_contour_mask
 from plantcv.plantcv.analyze_thermal_values import analyze_thermal_values
 from plantcv.plantcv import visualize
 from plantcv.plantcv import morphology
+from plantcv.plantcv import photosynthesis
 from plantcv.plantcv.fill_holes import fill_holes
+from plantcv.plantcv.masked_stats import mean
+from plantcv.plantcv.masked_stats import median
+from plantcv.plantcv.masked_stats import std
+
+
 
 # add new functions to end of lists
 
@@ -182,7 +188,7 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'apply_m
            'cluster_contour_splitimg', 'rotate', 'shift_img', 'output_mask', 'auto_crop', 'canny_edge_detect',
            'background_subtraction', 'naive_bayes_classifier', 'acute', 'distance_transform', 'params',
            'cluster_contour_mask','analyze_thermal_values', 'opening',
-           'closing','within_frame', 'fill_holes']
+           'closing','within_frame', 'fill_holes','mean','median','std']
 
 from ._version import get_versions
 __version__ = get_versions()['version']
