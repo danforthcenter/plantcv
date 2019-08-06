@@ -1,3 +1,5 @@
+# Rescale grayscale images to user defined range
+
 import os
 import numpy as np
 from plantcv.plantcv import fatal_error
