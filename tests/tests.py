@@ -4040,6 +4040,34 @@ def test_plantcv_transform_rescale_bad_input():
     with pytest.raises(RuntimeError):
         _ = pcv.transform.rescale(gray_img=rgb_img)
 
+
+def test_plantcv_transform_nonuniform_illumination_rgb():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_nonuniform_illumination")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Load rgb image
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
+    pcv.params.debug="plot"
+    _ = pcv.transform.nonuniform_illumination(img=rgb_img, ksize=11)
+    pcv.params.debug="print"
+    corrected = pcv.transform.nonuniform_illumination(img=rgb_img, ksize=11)
+    assert np.mean(corrected) < np.mean(rgb_img)
+
+
+def test_plantcv_transform_nonuniform_illumination_gray():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_nonuniform_illumination")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Load rgb image
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    pcv.params.debug="plot"
+    _ = pcv.transform.nonuniform_illumination(img=gray_img, ksize=11)
+    pcv.params.debug="print"
+    corrected = pcv.transform.nonuniform_illumination(img=gray_img, ksize=11)
+    assert np.shape(corrected) == np.shape(gray_img)
+
 # ##############################
 # Tests for the threshold subpackage
 # ##############################

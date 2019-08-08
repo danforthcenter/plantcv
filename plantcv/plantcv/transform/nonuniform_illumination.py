@@ -15,7 +15,7 @@ def nonuniform_illumination(img, ksize):
     """Correct for non uniform illumination i.e. spotlight correction.
 
             Inputs:
-            img       = RGB or rayscale image data
+            img       = RGB or grayscale image data
             ksize     = (optional) new minimum value for range of interest. default = 0
 
             Returns:
