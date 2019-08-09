@@ -4,9 +4,10 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv import params
+from plantcv.plantcv import outputs
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
-from plantcv.plantcv import outputs
+from plantcv.plantcv.morphology import segment_angle
 from plantcv.plantcv.morphology import segment_curvature
 
 
@@ -45,19 +46,11 @@ def id_pseudo_stem(segmented_img, stem_objects, threshold):
     true_stem = []
     pseudo_stem = []
 
-    for i, cnt in enumerate(stem_objects):
-
-        # Calculate slope of segments
-        [vx, vy, x, y] = cv2.fitLine(cnt, cv2.DIST_L2, 0, 0.01, 0.01)
-        slope = -vy / vx
-        angle = np.absolute(np.arctan(slope[0]) * 180 / np.pi)
-        angle_penalty = 90 - angle
-        segment_angle_penalty[i] = angle_penalty
-
-        # Penalize stem segments for being less steep
-        if angle < 80:
-            segment_rank[i] = + 1
-
+    # Calculate slope of segments
+    _ = segment_angle(segmented_img=segmented_img, objects=stem_objects)
+    segment_angle_vals = outputs.observations['segment_angle']['value']
+    # Segments close to vertical will have angles close to 90 or -90
+    segment_angle_penalty = (90 * np.ones(len(segment_angle_vals))) - np.absolute(segment_angle_vals)
     # Find the segment with the steepest slope
     most_vertical_i = np.where(segment_angle_penalty == np.amin(segment_angle_penalty))[0][0]
     # Find range of x-values
@@ -65,7 +58,6 @@ def id_pseudo_stem(segmented_img, stem_objects, threshold):
     # Make it twice as wide to allow for stem that isn't completely
     x_range = list(range(x - w, x + (2 * w)))
 
-    # Penalize stem segments for being far away (horizontally) from the steepest segment
     for i, cnt in enumerate(stem_objects):
         if not i == most_vertical_i:
             # Find range of x-values
@@ -75,12 +67,15 @@ def id_pseudo_stem(segmented_img, stem_objects, threshold):
                 x_offset = abs(x_range[0] - x_vals[-1])
                 x_val_penalty[i] = + x_offset
 
+    # Calculate curvature of each segment
     _ = segment_curvature(segmented_img=segmented_img, objects=stem_objects)
     segment_curvature_vals = outputs.observations['segment_curvature']['value']
-    segment_curve_penalty = abs(segment_curvature_vals - np.ones(len(segment_curvature_vals))) * 100
+    segment_curve_penalty = abs(segment_curvature_vals - np.ones(len(segment_curvature_vals))) * 200
 
+    # Combine penalty values into a total penalty value for each segment
     segment_penalty = segment_curve_penalty + x_val_penalty + segment_angle_penalty
 
+    # Draw debugging image and append to list of segment types
     for i, cnt in enumerate(stem_objects):
         if segment_penalty[i] < threshold:
             cv2.drawContours(labeled_img, stem_objects, i, (255, 0, 255), params.line_thickness, lineType=8)
@@ -95,7 +90,7 @@ def id_pseudo_stem(segmented_img, stem_objects, threshold):
     params.device += 1
 
     if params.debug == 'print':
-        print_image(labeled_img, os.path.join(params.debug_outdir, str(params.device) + '_sorted_segments.png'))
+        print_image(labeled_img, os.path.join(params.debug_outdir, str(params.device) + '_pseudo_stem.png'))
     elif params.debug == 'plot':
         plot_image(labeled_img)
 
