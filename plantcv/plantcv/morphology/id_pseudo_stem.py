@@ -42,6 +42,8 @@ def id_pseudo_stem(segmented_img, stem_objects, threshold):
     segment_rank = np.zeros(len(stem_objects))
     segment_angle_penalty = np.zeros(len(stem_objects))
     x_val_penalty = np.zeros(len(stem_objects))
+    true_stem = []
+    pseudo_stem = []
 
     for i, cnt in enumerate(stem_objects):
 
@@ -82,8 +84,10 @@ def id_pseudo_stem(segmented_img, stem_objects, threshold):
     for i, cnt in enumerate(stem_objects):
         if segment_penalty[i] < threshold:
             cv2.drawContours(labeled_img, stem_objects, i, (255, 0, 255), params.line_thickness, lineType=8)
+            true_stem.append(stem_objects[i])
         else:
             cv2.drawContours(labeled_img, stem_objects, i, (0, 255, 255), params.line_thickness, lineType=8)
+            pseudo_stem.append(stem_objects[i])
 
     # Reset debug mode
     params.debug = debug
@@ -95,4 +99,4 @@ def id_pseudo_stem(segmented_img, stem_objects, threshold):
     elif params.debug == 'plot':
         plot_image(labeled_img)
 
-    return labeled_img
+    return labeled_img, true_stem, pseudo_stem
