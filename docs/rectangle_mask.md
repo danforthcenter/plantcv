@@ -3,7 +3,7 @@
 Takes an input image and returns a binary image masked by a rectangular area denoted by p1 and p2. 
 Note that p1 = (0,0) is the top left hand corner bottom right hand corner is p2 = (max-value(x), max-value(y)).
 
-**plantcv.rectangle_mask**(*img, point1, point2, color="black"*)
+**plantcv.rectangle_mask**(*img, p1, p2, color="black"*)
 
 **returns** masked, binary img, contours, hierarchy 
 
@@ -29,7 +29,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Makes a rectangle area that will be treated as a mask
-masked, binary, contours, hierarchy = pcv.rectangle_mask(img, (0,0), (75,252), 
+masked, binary, contours, hierarchy = pcv.rectangle_mask(img=img, p1=(0,0), p2=(75,252), 
                                                          color="black")
                                                          
 ```
