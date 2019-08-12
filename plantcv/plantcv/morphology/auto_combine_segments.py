@@ -73,4 +73,14 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
 
 
 
+#    For each pseudo-stem:
+#    Determine if the pseudo-stem segment is a branching segment (one that branches off of the stem) or a secondary
+#    segment (one between a leaf object and another pseudo-stem object, or even the case where it’s between two pseudo-stem objects)
+#    For the branching P-S segments, prune off the ends and determine which end is NOT connect to the stem.
+#   Find the slope of this end segment (outer segment) and this is what will be used to help find the corresponding segment
+# Identify potential corresponding segments (Find leaf segments or other pseudo-stem segments that share an outer branch point )
+# For each potential segment (there will likely be two if I can determine the correct branch point) find the optimal
+# pairing by using “tangent” slope of the parts of the segment that coincide with the branch point of interest.
+# (Will look something similar to the algorithm for insertion angle since I’m able to determine the correct side of the leaf segment in that function)
+# Once I have the ID of the pseudo stem and the optimal pairing, combine segments.
 
