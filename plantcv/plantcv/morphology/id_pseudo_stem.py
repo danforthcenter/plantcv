@@ -16,6 +16,9 @@ def id_pseudo_stem(segmented_img, stem_objects, threshold):
         The identification of pseudo-stem segments (segments that are identified as primary objects by the
         plantcv.morphology.segment_sort algorithm, but truly belong to a leaf but get classified as stem
         due to leaves obscuring each other or leaves that have sharp angles that get picked up as branch points).
+        The algorithm for identifying pseudo-stem segments assumes that true pieces of stem should be close to
+        vertical in angle, should be closely stacked (relatively low x-value spread), and have low measures of
+        curvature.
 
         Inputs:
         segmented_img = Segmented debugging image
@@ -31,6 +34,7 @@ def id_pseudo_stem(segmented_img, stem_objects, threshold):
         :return labeled_img: numpy.ndarray
 
         """
+
     labeled_img = np.copy(segmented_img)
     if len(np.shape(labeled_img)) == 2:
         labeled_img = cv2.cvtColor(labeled_img, cv2.COLOR_GRAY2RGB)
@@ -46,7 +50,7 @@ def id_pseudo_stem(segmented_img, stem_objects, threshold):
     true_stem = []
     pseudo_stem = []
 
-    # Calculate slope of segments
+    # Calculate average angle of segments
     _ = segment_angle(segmented_img=segmented_img, objects=stem_objects)
     segment_angle_vals = outputs.observations['segment_angle']['value']
     # Segments close to vertical will have angles close to 90 or -90
@@ -55,9 +59,9 @@ def id_pseudo_stem(segmented_img, stem_objects, threshold):
     most_vertical_i = np.where(segment_angle_penalty == np.amin(segment_angle_penalty))[0][0]
     # Find range of x-values
     x, y, w, h = cv2.boundingRect(stem_objects[most_vertical_i])
-    # Make it twice as wide to allow for stem that isn't completely
     x_range = list(range(x - w, x + (2 * w)))
 
+    # Calculate x-value penalty for each segment depending on x-val location compared to the most vertical segment
     for i, cnt in enumerate(stem_objects):
         if not i == most_vertical_i:
             # Find range of x-values
@@ -70,6 +74,7 @@ def id_pseudo_stem(segmented_img, stem_objects, threshold):
     # Calculate curvature of each segment
     _ = segment_curvature(segmented_img=segmented_img, objects=stem_objects)
     segment_curvature_vals = outputs.observations['segment_curvature']['value']
+    # Curvature value = 1.0 is perfectly straight, larger is more curved.
     segment_curve_penalty = abs(segment_curvature_vals - np.ones(len(segment_curvature_vals))) * 200
 
     # Combine penalty values into a total penalty value for each segment
@@ -77,9 +82,11 @@ def id_pseudo_stem(segmented_img, stem_objects, threshold):
 
     # Draw debugging image and append to list of segment types
     for i, cnt in enumerate(stem_objects):
+        # Draw true stem segments as fuschia
         if segment_penalty[i] < threshold:
             cv2.drawContours(labeled_img, stem_objects, i, (255, 0, 255), params.line_thickness, lineType=8)
             true_stem.append(stem_objects[i])
+        # Draw pseudo-stem segments are yellow
         else:
             cv2.drawContours(labeled_img, stem_objects, i, (0, 255, 255), params.line_thickness, lineType=8)
             pseudo_stem.append(stem_objects[i])
