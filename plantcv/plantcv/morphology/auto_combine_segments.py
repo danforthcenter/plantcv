@@ -72,6 +72,27 @@ def _calc_proximity(target_obj, candidate_obj):
     return int(euclidean((target_x, target_y), (candidate_x, candidate_y)))
 
 
+def _calc_angle(object):
+    """ Calculate the angle of a contour object
+
+                Inputs:
+                object    = Contour list
+
+                Returns:
+                angle     = Angle of the linear regression curve fit to the object
+
+                :param object: list
+                :return angle: int
+                """
+    # Fit a regression line to the object
+    [vx, vy, x, y] = cv2.fitLine(object, cv2.DIST_L2, 0, 0.01, 0.01)
+    slope = -vy / vx
+    # Convert from line slope to degrees
+    angle = np.arctan(slope[0]) * 180 / np.pi
+
+    return angle
+
+
 def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_stem_obj):
     """ Automatically combine pseudo-stems to pieces of leaf or other pseudo-stem based on the location of the
         important branch point, and the slope of the segment near the branch point
@@ -128,9 +149,7 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
             cv2.drawContours(segment_end_plot, end, -1, 255, params.line_thickness, lineType=8)
             overlap_img = logical_and(segment_end_plot, stem_img)
             if np.sum(overlap_img) == 0:
-                [vx, vy, x, y] = cv2.fitLine(end, cv2.DIST_L2, 0, 0.01, 0.01)
-                slope = -vy / vx
-                segment_end_angle = np.arctan(slope[0]) * 180 / np.pi
+                segment_end_angle = _calc_angle(end)
 
 
 
