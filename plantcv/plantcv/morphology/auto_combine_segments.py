@@ -153,6 +153,13 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
     # Dilate stem
     stem_img = dilate(gray_img=plotting_img, ksize=4, i=1)
 
+    # Identify "true leaf" segments i.e. single segments that accurately represent a biological leaf
+
+    # Add them to the list of new leaf objects
+
+    # Remove "true leaf" segments from candidate segments since they shouldn't get combined with any pseudo-stems
+    
+
     # Loop through segment contours
     for i, cnt in enumerate(pseudo_stem_obj):
         segment_end_objs = _get_segment_ends(img=segmented_img, contour=cnt, size=10)
@@ -183,7 +190,7 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
                 candidate_compatibility.append(_calc_compatibility(target_obj=target_segment,
                                                                    candidate_obj=candidate_end_objs[1]))
 
-            # Get the most compatible end segment
+        # Get the index of the most compatible end segment
         optimal_seg_i = np.where(candidate_compatibility == np.amin(candidate_compatibility))[0][0]
 
         # Join the target segment and most compatible segment
