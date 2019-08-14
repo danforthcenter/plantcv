@@ -154,7 +154,7 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
     new_leaf_obj = [] # Leaf objects after automatically combining segments together
     branching_segments = []  # Segments that branch off from the stem
     secondary_segments = []  # Any pseudo-stem segments that aren't branching segments
-    candidate_segments = np.copy(leaf_objects)
+    candidate_segments = leaf_objects.copy()
     plotting_img = np.zeros(segmented_img.shape[:2], np.uint8)
 
     # Plot true stem values to help with identifying the axil part of the segment
@@ -186,10 +186,7 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
             branching_segments.append(cnt)
         # Otherwise a segment is located between pseudo-stems or between a pseudo-stem and leaf object
         else:
-            secondary_segments.append(cnt)
-
-    # Add secondary segments to the potential list of candidates for segments for combining
-    candidate_segments.append(secondary_segments)
+            candidate_segments.append(cnt)
 
     # For each of the pseudo-stem segments, find the most compatible segment for combining
     for i, cnt in enumerate(branching_segments):
@@ -209,12 +206,18 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
                                                    contour=candidate, size=10)
             # Determine which end segment is closer to the target segment, and calculate compatibility
             # with the target of the closer of the end segment for each candidate
-            if _calc_proximity(candidate_end_objs[0]) < _calc_proximity(candidate_end_objs[1]):
-                candidate_compatibility.append(_calc_compatibility(target_obj=target_segment,
-                                                                   candidate_obj=candidate_end_objs[0]))
+            prox0 = _calc_proximity(target_segment, candidate_end_objs[0])
+            prox1 = _calc_proximity(target_segment, candidate_end_objs[1])
+            if prox0 < prox1:
+                compatibility_score = _calc_compatibility(target_obj=target_segment,
+                                                          candidate_obj=candidate_end_objs[0])
+
             else:
-                candidate_compatibility.append(_calc_compatibility(target_obj=target_segment,
-                                                                   candidate_obj=candidate_end_objs[1]))
+                compatibility_score = _calc_compatibility(target_obj=target_segment,
+                                                          candidate_obj=candidate_end_objs[1])
+
+            # Append compatibility score to the list
+            candidate_compatibility.append(compatibility_score)
 
         # Get the index of the most compatible (lowest score) end segment
         optimal_seg_i = np.where(candidate_compatibility == np.amin(candidate_compatibility))[0][0]
@@ -231,6 +234,7 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
             new_leaf_obj.append(combined_segment)
         else:
             while not optimal_candidate in leaf_objects:
+                candidate_compatibility = []  # Initialize list of compatibility scores
                 # Determine which end of the combined segment is NOT the axil end
                 segment_end_objs = _get_segment_ends(img=segmented_img, contour=combined_segment, size=10)
                 for j, end in enumerate(segment_end_objs):
@@ -246,7 +250,9 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
                                                            contour=candidate, size=10)
                     # Determine which end segment is closer to the target segment, and calculate compatibility
                     # with the target of the closer of the end segment for each candidate
-                    if _calc_proximity(candidate_end_objs[0]) < _calc_proximity(candidate_end_objs[1]):
+                    prox0 = _calc_proximity(target_segment, candidate_end_objs[0])
+                    prox1 = _calc_proximity(target_segment, candidate_end_objs[1])
+                    if prox0 < prox1:
                         candidate_compatibility.append(_calc_compatibility(target_obj=target_segment,
                                                                            candidate_obj=candidate_end_objs[0]))
                     else:
@@ -263,7 +269,7 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
                 # Remove the segment that got combined from the list of candidates
                 candidate_segments.remove(optimal_candidate)
 
-            # Once a segment is complete (taverses from stem to leaf tip), add to new leaf objects list
+            # Once a segment is complete (traverses from stem to leaf tip), add to new leaf objects list
             new_leaf_obj.append(combined_segment)
 
     # Create a plot reflecting new leaf objects to show how they got combined
