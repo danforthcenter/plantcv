@@ -171,7 +171,26 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
         target_segment = cnt
         candidate_compatibility = []
         for j, candidate in enumerate(candidate_segments):
+            # Find which end of the candidate segment to compare to the target segment
+            candidate_end_objs = _get_segment_ends(img=segmented_img,
+                                                   contour=candidate, size=10)
+            # Determine which end segment is closer to the target segment, and calculate compatibility
+            # with the target of the closer of the end segment for each candidate
+            if _calc_proximity(candidate_end_objs[0]) < _calc_proximity(candidate_end_objs[1]):
+                candidate_compatibility.append(_calc_compatibility(target_obj=target_segment,
+                                                                   candidate_obj=candidate_end_objs[0]))
+            else:
+                candidate_compatibility.append(_calc_compatibility(target_obj=target_segment,
+                                                                   candidate_obj=candidate_end_objs[1]))
 
+            # Get the most compatible end segment
+        optimal_seg_i = np.where(candidate_compatibility == np.amin(candidate_compatibility))[0][0]
+
+        # Join the target segment and most compatible segment
+        new_leaf_obj.append(np.append(pseudo_stem_obj[i], candidate_segments[optimal_seg_i], 0))
+
+        # Remove the segment that got combined from the list of candidates
+        candidate_segments.remove(candidate_segments[optimal_seg_i])
 
 #    For each pseudo-stem:
 #    Determine if the pseudo-stem segment is a branching segment (one that branches off of the stem) or a secondary
