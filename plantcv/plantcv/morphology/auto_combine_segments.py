@@ -51,8 +51,8 @@ def _calc_proximity(target_obj, candidate_obj):
     """ Calculate the proximity of two segments by calculating euclidean distance between their centroids.
 
                 Inputs:
-                target_obj    = Image for plotting size
-                candidate_obj = Original segment
+                target_obj    = Original segment
+                candidate_obj = Candidate segment
 
                 Returns:
                 proximity     = Distance between two segments
@@ -93,6 +93,7 @@ def _calc_angle(object):
     return angle
 
 
+
 def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_stem_obj):
     """ Automatically combine pseudo-stems to pieces of leaf or other pseudo-stem based on the location of the
         important branch point, and the slope of the segment near the branch point
@@ -119,10 +120,11 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
     branching_segment = []  # Segments that branch off from the stem
     secondary_segment = []  # Any pseudo-stem segments that aren't branching segments
     end_segment_angles = []
+    new_leaf_obj = []
+
     plotting_img = np.zeros(segmented_img.shape[:2], np.uint8)
     candidate_segments = np.copy(leaf_objects)
     candidate_segments.append(pseudo_stem_obj)
-
 
     # Plot true stem values to help with identifying the axil part of the segment
     cv2.drawContours(plotting_img, true_stem_obj, -1, 255, params.line_thickness, lineType=8)
@@ -142,27 +144,24 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
         else:
             secondary_segment.append(cnt)
 
+    # For each of the pseudo-stem segments, find the most compatible segment for combining
     for i, cnt in enumerate(branching_segment):
-        segment_end_objs = _get_segment_ends(img=segmented_img, contour=cnt, size=10)
-        for j, end in enumerate(segment_end_objs):
-            segment_end_plot = np.zeros(segmented_img.shape[:2], np.uint8)
-            cv2.drawContours(segment_end_plot, end, -1, 255, params.line_thickness, lineType=8)
-            overlap_img = logical_and(segment_end_plot, stem_img)
-            if np.sum(overlap_img) == 0:
-                segment_end_angle = _calc_angle(end)
-
+        target_segment = cnt
+        candidate_compatibility = []
+        for j, candidate in enumerate(candidate_segments):
 
 
 #    For each pseudo-stem:
 #    Determine if the pseudo-stem segment is a branching segment (one that branches off of the stem) or a secondary
 #    segment (one between a leaf object and another pseudo-stem object, or even the case where it’s between two pseudo-stem objects)
 #    For the branching P-S segments, prune off the ends and determine which end is NOT connect to the stem.
-#   Find the slope of this end segment (outer segment) and this is what will be used to help find the corresponding segment
-# Identify potential corresponding segments (Find leaf segments or other pseudo-stem segments that share an outer branch point )
-# For each potential segment (there will likely be two if I can determine the correct branch point) find the optimal
-# pairing by using “tangent” slope of the parts of the segment that coincide with the branch point of interest.
-# (Will look something similar to the algorithm for insertion angle since I’m able to determine the correct side of the leaf segment in that function)
-# Once I have the ID of the pseudo stem and the optimal pairing, combine segments.
+#    Find the slope of this end segment (outer segment) and this is what will be used to help find the corresponding segment
+#    Identify potential corresponding segments (Find leaf segments or other pseudo-stem segments that share an outer branch point )
+#    For each potential segment (there will likely be two if I can determine the correct branch point) find the optimal
+#    pairing by using “tangent” slope of the parts of the segment that coincide with the branch point of interest.
+#    (Will look something similar to the algorithm for insertion angle since I’m able to determine the correct side of
+#    the leaf segment in that function)
+#    Once I have the ID of the pseudo stem and the optimal pairing, combine segments.
 
 
 # Matching candidate segments to pseudo-stem end segment of interest can come from a compatibility score that is calculated from
