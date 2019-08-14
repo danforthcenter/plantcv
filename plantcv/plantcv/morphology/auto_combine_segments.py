@@ -8,7 +8,7 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import logical_and
 from plantcv.plantcv import find_objects
 from scipy.spatial.distance import euclidean
-from plantcv.plantcv.morphology import segment_angle
+from plantcv.plantcv.morphology import segment_id
 from plantcv.plantcv.morphology import _iterative_prune
 
 
@@ -147,6 +147,10 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
                :return segmented_img: numpy.ndarray
                :return new_leaf_obj: list
                """
+    # Store debug mode
+    debug = params.debug
+    params.debug = None
+
     new_leaf_obj = [] # Leaf objects after automatically combining segments together
     branching_segments = []  # Segments that branch off from the stem
     secondary_segments = []  # Any pseudo-stem segments that aren't branching segments
@@ -225,3 +229,19 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
 # Add segments onto a branching type pseudo-stem until a leaf object is added. Then a segment should have travered
 # from the stem to the leaf tip and the leaf is complete.
 
+    # Create a plot reflecting new leaf objects to show how they got combined
+    _, labeled_img = segment_id(skel_img=plotting_img, objects=new_leaf_obj, mask=None)
+
+    # Reset debug mode
+    params.debug = debug
+
+    # Auto-increment device
+    params.device += 1
+
+    if params.debug == 'print':
+        print_image(labeled_img,
+                    os.path.join(params.debug_outdir, str(params.device) + '_combined_segment_ids.png'))
+    elif params.debug == 'plot':
+        plot_image(labeled_img)
+
+    return labeled_img, new_leaf_obj
