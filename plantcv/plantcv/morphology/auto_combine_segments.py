@@ -220,14 +220,51 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
         optimal_seg_i = np.where(candidate_compatibility == np.amin(candidate_compatibility))[0][0]
 
         # Join the target segment and most compatible segment
-        new_leaf_obj.append(np.append(cnt, candidate_segments[optimal_seg_i], 0))
+        optimal_candidate = candidate_segments[optimal_seg_i]
+        combined_segment = np.append(cnt, optimal_candidate, 0)
 
         # Remove the segment that got combined from the list of candidates
-        candidate_segments.remove(candidate_segments[optimal_seg_i])
+        candidate_segments.remove(optimal_candidate)
 
+        # Combine segments until the combined segment traverses from stem to leaf tip
+        if optimal_candidate in leaf_objects:
+            new_leaf_obj.append(combined_segment)
+        else:
+            while not optimal_candidate in leaf_objects:
+                # Determine which end of the combined segment is NOT the axil end
+                segment_end_objs = _get_segment_ends(img=segmented_img, contour=combined_segment, size=10)
+                for j, end in enumerate(segment_end_objs):
+                    segment_end_plot = np.zeros(segmented_img.shape[:2], np.uint8)
+                    cv2.drawContours(segment_end_plot, end, -1, 255, params.line_thickness, lineType=8)
+                    overlap_img = logical_and(segment_end_plot, stem_img)
+                    if np.sum(overlap_img) == 0:
+                        target_segment = end
+                # Calculate compatibility scores for each candidate segment
+                for j, candidate in enumerate(candidate_segments):
+                    # Find which end of the candidate segment to compare to the target segment
+                    candidate_end_objs = _get_segment_ends(img=segmented_img,
+                                                           contour=candidate, size=10)
+                    # Determine which end segment is closer to the target segment, and calculate compatibility
+                    # with the target of the closer of the end segment for each candidate
+                    if _calc_proximity(candidate_end_objs[0]) < _calc_proximity(candidate_end_objs[1]):
+                        candidate_compatibility.append(_calc_compatibility(target_obj=target_segment,
+                                                                           candidate_obj=candidate_end_objs[0]))
+                    else:
+                        candidate_compatibility.append(_calc_compatibility(target_obj=target_segment,
+                                                                           candidate_obj=candidate_end_objs[1]))
 
-# Add segments onto a branching type pseudo-stem until a leaf object is added. Then a segment should have travered
-# from the stem to the leaf tip and the leaf is complete.
+                # Get the index of the most compatible (lowest score) end segment
+                optimal_seg_i = np.where(candidate_compatibility == np.amin(candidate_compatibility))[0][0]
+
+                # Join the target segment and most compatible segment
+                optimal_candidate = candidate_segments[optimal_seg_i]
+                combined_segment = np.append(combined_segment, optimal_candidate, 0)
+
+                # Remove the segment that got combined from the list of candidates
+                candidate_segments.remove(optimal_candidate)
+
+            # Once a segment is complete (taverses from stem to leaf tip), add to new leaf objects list
+            new_leaf_obj.append(combined_segment)
 
     # Create a plot reflecting new leaf objects to show how they got combined
     _, labeled_img = segment_id(skel_img=plotting_img, objects=new_leaf_obj, mask=None)
@@ -240,7 +277,7 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
 
     if params.debug == 'print':
         print_image(labeled_img,
-                    os.path.join(params.debug_outdir, str(params.device) + '_combined_segment_ids.png'))
+                    os.path.join(params.debug_outdir, str(params.device) + '_auto_combined_segments.png'))
     elif params.debug == 'plot':
         plot_image(labeled_img)
 
