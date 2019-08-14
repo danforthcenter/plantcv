@@ -93,6 +93,28 @@ def _calc_angle(object):
     return angle
 
 
+def _calc_compatibility(target_obj, candidate_obj):
+    """ Calculate the compatibility of two segments using proximity and angle. If two segments have similar angle,
+        and are close to one another they are more compatible.
+
+                Inputs:
+                target_obj    = Original segment
+                candidate_obj = Candidate segment
+
+                Returns:
+                compatibility     = Distance between two segments
+
+                :param target_obj: list
+                :param candidate_obj: list
+                :return compatibility: float
+                """
+    prox = _calc_proximity(target_obj=target_obj, candidate_obj=candidate_obj)
+    target_angle = _calc_angle(object=target_obj)
+    candidate_segment_angle = _calc_angle(candidate_obj)
+    angle_difference = abs(candidate_segment_angle - target_obj)
+
+    return (prox + (2 * angle_difference))
+
 
 def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_stem_obj):
     """ Automatically combine pseudo-stems to pieces of leaf or other pseudo-stem based on the location of the
