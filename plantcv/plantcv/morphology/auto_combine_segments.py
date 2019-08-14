@@ -69,7 +69,10 @@ def _calc_proximity(target_obj, candidate_obj):
     candidate_x = int(candidate_moments["m10"] / candidate_moments["m00"])
     candidate_y = int(candidate_moments["m01"] / candidate_moments["m00"])
 
-    return int(euclidean((target_x, target_y), (candidate_x, candidate_y)))
+    # Compute distance between centroids
+    proximity = int(euclidean((target_x, target_y), (candidate_x, candidate_y)))
+
+    return proximity
 
 
 def _calc_angle(object):
@@ -87,6 +90,7 @@ def _calc_angle(object):
     # Fit a regression line to the object
     [vx, vy, x, y] = cv2.fitLine(object, cv2.DIST_L2, 0, 0.01, 0.01)
     slope = -vy / vx
+
     # Convert from line slope to degrees
     angle = np.arctan(slope[0]) * 180 / np.pi
 
@@ -108,12 +112,18 @@ def _calc_compatibility(target_obj, candidate_obj):
                 :param candidate_obj: list
                 :return compatibility: float
                 """
+    # Calculate distance between objects
     prox = _calc_proximity(target_obj=target_obj, candidate_obj=candidate_obj)
+
+    # Calculate difference between the angle of each object
     target_angle = _calc_angle(object=target_obj)
     candidate_segment_angle = _calc_angle(candidate_obj)
     angle_difference = abs(candidate_segment_angle - target_obj)
 
-    return (prox + (2 * angle_difference))
+    # Calculate compatibility score based proximity and angle similarity (lower compatibility scores are better)
+    compatibility = (prox + (2 * angle_difference))
+
+    return compatibility
 
 
 def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_stem_obj):
@@ -137,16 +147,11 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
                :return segmented_img: numpy.ndarray
                :return new_leaf_obj: list
                """
-
-
-    branching_segment = []  # Segments that branch off from the stem
-    secondary_segment = []  # Any pseudo-stem segments that aren't branching segments
-    end_segment_angles = []
-    new_leaf_obj = []
-
-    plotting_img = np.zeros(segmented_img.shape[:2], np.uint8)
+    new_leaf_obj = [] # Leaf objects after automatically combining segments together
+    branching_segments = []  # Segments that branch off from the stem
+    secondary_segments = []  # Any pseudo-stem segments that aren't branching segments
     candidate_segments = np.copy(leaf_objects)
-    candidate_segments.append(pseudo_stem_obj)
+    plotting_img = np.zeros(segmented_img.shape[:2], np.uint8)
 
     # Plot true stem values to help with identifying the axil part of the segment
     cv2.drawContours(plotting_img, true_stem_obj, -1, 255, params.line_thickness, lineType=8)
@@ -154,29 +159,46 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
     stem_img = dilate(gray_img=plotting_img, ksize=4, i=1)
 
     # Identify "true leaf" segments i.e. single segments that accurately represent a biological leaf
-
-    # Add them to the list of new leaf objects
-
-    # Remove "true leaf" segments from candidate segments since they shouldn't get combined with any pseudo-stems
-    
+    for i, cnt in enumerate(leaf_objects):
+        segment_end_objs = _get_segment_ends(img=segmented_img, contour=cnt, size=10)
+        # If one of the segment ends overlaps with the stem then it's a full leaf segment
+        segment_end_plot = np.zeros(segmented_img.shape[:2], np.uint8)
+        cv2.drawContours(segment_end_plot, segment_end_objs, -1, 255, params.line_thickness, lineType=8)
+        overlap_img = logical_and(segment_end_plot, stem_img)
+        # Add them to the list of new leaf objects
+        if np.sum(overlap_img) > 0:
+            new_leaf_obj.append(cnt)
+            # Remove "true leaf" segments from candidate segments, they shouldn't get combined with any pseudo-stems
+            candidate_segments.remove(cnt)
 
     # Loop through segment contours
     for i, cnt in enumerate(pseudo_stem_obj):
         segment_end_objs = _get_segment_ends(img=segmented_img, contour=cnt, size=10)
-
         # If one of the segment ends overlaps with the stem then it's a branching segment
         segment_end_plot = np.zeros(segmented_img.shape[:2], np.uint8)
         cv2.drawContours(segment_end_plot, segment_end_objs, -1, 255, params.line_thickness, lineType=8)
         overlap_img = logical_and(segment_end_plot, stem_img)
         if np.sum(overlap_img) == 0:
-            branching_segment.append(cnt)
+            branching_segments.append(cnt)
+        # Otherwise a segment is located between pseudo-stems or between a pseudo-stem and leaf object
         else:
-            secondary_segment.append(cnt)
+            secondary_segments.append(cnt)
+
+    # Add secondary segments to the potential list of candidates for segments for combining
+    candidate_segments.append(secondary_segments)
 
     # For each of the pseudo-stem segments, find the most compatible segment for combining
-    for i, cnt in enumerate(branching_segment):
-        target_segment = cnt
-        candidate_compatibility = []
+    for i, cnt in enumerate(branching_segments):
+        candidate_compatibility = [] # Initialize list of compatibility scores
+        # Determine which end of the branching segment is NOT the axil of the plant
+        segment_end_objs = _get_segment_ends(img=segmented_img, contour=cnt, size=10)
+        for j, end in enumerate(segment_end_objs):
+            segment_end_plot = np.zeros(segmented_img.shape[:2], np.uint8)
+            cv2.drawContours(segment_end_plot, end, -1, 255, params.line_thickness, lineType=8)
+            overlap_img = logical_and(segment_end_plot, stem_img)
+            if np.sum(overlap_img) == 0:
+                target_segment = end
+        # Calculate compatibility scores for each candidate segment
         for j, candidate in enumerate(candidate_segments):
             # Find which end of the candidate segment to compare to the target segment
             candidate_end_objs = _get_segment_ends(img=segmented_img,
@@ -190,28 +212,16 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
                 candidate_compatibility.append(_calc_compatibility(target_obj=target_segment,
                                                                    candidate_obj=candidate_end_objs[1]))
 
-        # Get the index of the most compatible end segment
+        # Get the index of the most compatible (lowest score) end segment
         optimal_seg_i = np.where(candidate_compatibility == np.amin(candidate_compatibility))[0][0]
 
         # Join the target segment and most compatible segment
-        new_leaf_obj.append(np.append(pseudo_stem_obj[i], candidate_segments[optimal_seg_i], 0))
+        new_leaf_obj.append(np.append(cnt, candidate_segments[optimal_seg_i], 0))
 
         # Remove the segment that got combined from the list of candidates
         candidate_segments.remove(candidate_segments[optimal_seg_i])
 
-#    For each pseudo-stem:
-#    Determine if the pseudo-stem segment is a branching segment (one that branches off of the stem) or a secondary
-#    segment (one between a leaf object and another pseudo-stem object, or even the case where it’s between two pseudo-stem objects)
-#    For the branching P-S segments, prune off the ends and determine which end is NOT connect to the stem.
-#    Find the slope of this end segment (outer segment) and this is what will be used to help find the corresponding segment
-#    Identify potential corresponding segments (Find leaf segments or other pseudo-stem segments that share an outer branch point )
-#    For each potential segment (there will likely be two if I can determine the correct branch point) find the optimal
-#    pairing by using “tangent” slope of the parts of the segment that coincide with the branch point of interest.
-#    (Will look something similar to the algorithm for insertion angle since I’m able to determine the correct side of
-#    the leaf segment in that function)
-#    Once I have the ID of the pseudo stem and the optimal pairing, combine segments.
 
-
-# Matching candidate segments to pseudo-stem end segment of interest can come from a compatibility score that is calculated from
-# proximity and slope.
+# Add segments onto a branching type pseudo-stem until a leaf object is added. Then a segment should have travered
+# from the stem to the leaf tip and the leaf is complete.
 
