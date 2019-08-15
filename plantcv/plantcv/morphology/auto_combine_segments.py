@@ -61,7 +61,7 @@ def _calc_proximity(target_obj, candidate_obj):
                 :param candidate_obj: list
                 :return proximity: int
                 """
-    # Grab coordinates of one pixel from each object 
+    # Grab coordinates of one pixel from each object
     target_x = target_obj[0][0][0]
     target_y = target_obj[0][0][1]
     candidate_x = candidate_obj[0][0][0]
@@ -215,11 +215,13 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
             prox0 = _calc_proximity(target_segment, candidate_end_objs[0])
             prox1 = _calc_proximity(target_segment, candidate_end_objs[1])
             if prox0 < prox1:
-                compatibility_score = _calc_compatibility(target_obj=target_segment,
+                compatibility_score = _calc_compatibility(img=segmented_img,
+                                                          target_obj=target_segment,
                                                           candidate_obj=candidate_end_objs[0])
 
             else:
-                compatibility_score = _calc_compatibility(target_obj=target_segment,
+                compatibility_score = _calc_compatibility(img=segmented_img,
+                                                          target_obj=target_segment,
                                                           candidate_obj=candidate_end_objs[1])
 
             # Append compatibility score to the list
@@ -259,10 +261,12 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
                     prox0 = _calc_proximity(target_segment, candidate_end_objs[0])
                     prox1 = _calc_proximity(target_segment, candidate_end_objs[1])
                     if prox0 < prox1:
-                        candidate_compatibility.append(_calc_compatibility(target_obj=target_segment,
+                        candidate_compatibility.append(_calc_compatibility(img=segmented_img,
+                                                                           target_obj=target_segment,
                                                                            candidate_obj=candidate_end_objs[0]))
                     else:
-                        candidate_compatibility.append(_calc_compatibility(target_obj=target_segment,
+                        candidate_compatibility.append(_calc_compatibility(img=segmented_img,
+                                                                           target_obj=target_segment,
                                                                            candidate_obj=candidate_end_objs[1]))
 
                 # Get the index of the most compatible (lowest score) end segment
