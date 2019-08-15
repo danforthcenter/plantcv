@@ -61,13 +61,11 @@ def _calc_proximity(target_obj, candidate_obj):
                 :param candidate_obj: list
                 :return proximity: int
                 """
-    # Compute the center of each contour
-    target_moments = cv2.moments(target_obj)
-    target_x = int(target_moments["m10"] / target_moments["m00"])
-    target_y = int(target_moments["m01"] / target_moments["m00"])
-    candidate_moments = cv2.moments(candidate_obj)
-    candidate_x = int(candidate_moments["m10"] / candidate_moments["m00"])
-    candidate_y = int(candidate_moments["m01"] / candidate_moments["m00"])
+    # Grab coordinates of one pixel from each object 
+    target_x = target_obj[0][0][0]
+    target_y = target_obj[0][0][1]
+    candidate_x = candidate_obj[0][0][0]
+    candidate_y = candidate_obj[0][0][1]
 
     # Compute distance between centroids
     proximity = int(euclidean((target_x, target_y), (candidate_x, candidate_y)))
@@ -103,17 +101,19 @@ def _calc_angle(img, object):
     return angle
 
 
-def _calc_compatibility(target_obj, candidate_obj):
+def _calc_compatibility(img, target_obj, candidate_obj):
     """ Calculate the compatibility of two segments using proximity and angle. If two segments have similar angle,
         and are close to one another they are more compatible.
 
                 Inputs:
+                img           = RGB or grayscale image
                 target_obj    = Original segment
                 candidate_obj = Candidate segment
 
                 Returns:
                 compatibility     = Distance between two segments
 
+                :param img: numpy.ndarray
                 :param target_obj: list
                 :param candidate_obj: list
                 :return compatibility: float
@@ -122,8 +122,8 @@ def _calc_compatibility(target_obj, candidate_obj):
     prox = _calc_proximity(target_obj=target_obj, candidate_obj=candidate_obj)
 
     # Calculate difference between the angle of each object
-    target_angle = _calc_angle(object=target_obj)
-    candidate_segment_angle = _calc_angle(candidate_obj)
+    target_angle = _calc_angle(img=img, object=target_obj)
+    candidate_segment_angle = _calc_angle(img=img, object=candidate_obj)
     angle_difference = abs(candidate_segment_angle - target_angle)
 
     # Calculate compatibility score based proximity and angle similarity (lower compatibility scores are better)
