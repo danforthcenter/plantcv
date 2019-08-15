@@ -7,6 +7,7 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 from plantcv.plantcv import logical_and
 from plantcv.plantcv import find_objects
+from plantcv.plantcv import color_palette
 from scipy.spatial.distance import euclidean
 from plantcv.plantcv.morphology import segment_id
 from plantcv.plantcv.morphology import _iterative_prune
@@ -283,7 +284,12 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
             new_leaf_obj.append(combined_segment)
 
     # Create a plot reflecting new leaf objects to show how they got combined
-    _, labeled_img = segment_id(skel_img=plotting_img, objects=new_leaf_obj, mask=None)
+    rand_color = color_palette(len(new_leaf_obj))
+    labeled_img = cv2.cvtColor(plotting_img, cv2.COLOR_GRAY2RGB)
+
+    for i, cnt in enumerate(new_leaf_obj):
+        labeled_img = cv2.drawContours(labeled_img, cnt, -1, rand_color[i],
+                                         params.line_thickness, lineType=8)
 
     # Reset debug mode
     params.debug = debug
