@@ -75,7 +75,7 @@ def _calc_proximity(target_obj, candidate_obj):
     return proximity
 
 
-def _calc_angle(object):
+def _calc_angle(img, object):
     """ Calculate the angle of a contour object
 
                 Inputs:
@@ -89,6 +89,12 @@ def _calc_angle(object):
                 """
     # Fit a regression line to the object
     [vx, vy, x, y] = cv2.fitLine(object, cv2.DIST_L2, 0, 0.01, 0.01)
+    # If the object is too small cv2 won't find a slope
+    if vy == 0:
+        obj_img = cv2.drawContours(img, object, -1, 255, params.line_thickness, lineType=8)
+        dilated_img = dilate(gray_img=obj_img, ksize=10, i=1)
+        dilated_objects, _ = find_objects(img=dilated_img, mask=dilated_img)
+        [vx, vy, x, y] = cv2.fitLine(dilated_objects[0], cv2.DIST_L2, 0, 0.01, 0.01)
     slope = -vy / vx
 
     # Convert from line slope to degrees
@@ -118,7 +124,7 @@ def _calc_compatibility(target_obj, candidate_obj):
     # Calculate difference between the angle of each object
     target_angle = _calc_angle(object=target_obj)
     candidate_segment_angle = _calc_angle(candidate_obj)
-    angle_difference = abs(candidate_segment_angle - target_obj)
+    angle_difference = abs(candidate_segment_angle - target_angle)
 
     # Calculate compatibility score based proximity and angle similarity (lower compatibility scores are better)
     compatibility = (prox + (2 * angle_difference))
@@ -175,14 +181,14 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
             # Remove "true leaf" segments from candidate segments, they shouldn't get combined with any pseudo-stems
             candidate_segments.remove(cnt)
 
-    # Loop through segment contours
+    # Loop through pseudo-stem segment contours to sort into ones next to stem and not
     for i, cnt in enumerate(pseudo_stem_obj):
         segment_end_objs = _get_segment_ends(img=segmented_img, contour=cnt, size=10)
         # If one of the segment ends overlaps with the stem then it's a branching segment
         segment_end_plot = np.zeros(segmented_img.shape[:2], np.uint8)
         cv2.drawContours(segment_end_plot, segment_end_objs, -1, 255, params.line_thickness, lineType=8)
         overlap_img = logical_and(segment_end_plot, stem_img)
-        if np.sum(overlap_img) == 0:
+        if np.sum(overlap_img) > 0:
             branching_segments.append(cnt)
         # Otherwise a segment is located between pseudo-stems or between a pseudo-stem and leaf object
         else:
