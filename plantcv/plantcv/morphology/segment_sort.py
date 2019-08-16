@@ -10,13 +10,14 @@ from plantcv.plantcv import logical_and
 from plantcv.plantcv.morphology import find_tips
 
 
-def segment_sort(skel_img, objects, mask=None):
+def segment_sort(skel_img, objects, mask=None, first_stem=True):
     """ Calculate segment curvature as defined by the ratio between geodesic and euclidean distance
 
         Inputs:
         skel_img          = Skeletonized image
         objects           = List of contours
         mask              = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
+        first_stem        = (Optional) if True, then the first (bottom) segment always gets classified as stem
 
         Returns:
         labeled_img       = Segmented debugging image with lengths labeled
@@ -25,8 +26,8 @@ def segment_sort(skel_img, objects, mask=None):
 
         :param skel_img: numpy.ndarray
         :param objects: list
-        :param labeled_img: numpy.ndarray
         :param mask: numpy.ndarray
+        :param first_stem: bool
         :return secondary_objects: list
         :return other_objects: list
         """
@@ -52,7 +53,7 @@ def segment_sort(skel_img, objects, mask=None):
         overlap_img = logical_and(segment_plot, tips_img)
 
         # The first contour is the base, and while it contains a tip, it isn't a leaf
-        if i == 0:
+        if i == 0 and first_stem:
             primary_objects.append(cnt)
 
         # Sort segments

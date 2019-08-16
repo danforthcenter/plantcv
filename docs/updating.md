@@ -416,6 +416,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.3: NA
 * post v3.3: secondary_objects, primary_objects = **plantcv.morphology.segment_sort**(*skel_img, objects, mask=None*)
+* post v3.5: secondary_objects, primary_objects = **plantcv.morphology.segment_sort**(*skel_img, objects, mask=None, first_stem=True*)
 
 #### plantcv.morphology.segment_tangent_angle
 
