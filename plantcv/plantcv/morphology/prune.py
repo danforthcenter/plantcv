@@ -8,9 +8,9 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 from plantcv.plantcv import find_objects
 from plantcv.plantcv import image_subtract
-from plantcv.plantcv.morphology import find_tips
 from plantcv.plantcv.morphology import segment_sort
 from plantcv.plantcv.morphology import segment_skeleton
+from plantcv.plantcv.morphology import _iterative_prune
 
 
 def prune(skel_img, size=0, mask=None):
@@ -56,7 +56,6 @@ def prune(skel_img, size=0, mask=None):
     if size>0:
         # If size>0 then check for segments that are smaller than size pixels long
 
-
         # Sort through segments since we don't want to remove primary segments
         secondary_objects, primary_objects = segment_sort(skel_img, objects)
 
@@ -71,8 +70,10 @@ def prune(skel_img, size=0, mask=None):
         removed_barbs = np.zeros(skel_img.shape[:2], np.uint8)
         cv2.drawContours(removed_barbs, removed_segments, -1, 255, 1,
                          lineType=8)
+
         # Subtract all short segments from the skeleton image
         pruned_img = image_subtract(pruned_img, removed_barbs)
+        pruned_img = _iterative_prune(pruned_img, 1)
 
     # Make debugging image
     if mask is None:
