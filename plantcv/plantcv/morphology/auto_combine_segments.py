@@ -228,21 +228,23 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
             # Append compatibility score to the list
             candidate_compatibility.append(compatibility_score)
 
-        # Get the index of the most compatible (lowest score) end segment
-        optimal_seg_i = np.where(candidate_compatibility == np.amin(candidate_compatibility))[0][0]
+        if len(candidate_compatibility) > 0:
+            # Get the index of the most compatible (lowest score) end segment
+            min_compatibility_value = min(candidate_compatibility)
+            optimal_seg_i = candidate_compatibility.index(min_compatibility_value)
 
-        # Join the target segment and most compatible segment
-        optimal_candidate = candidate_segments[optimal_seg_i]
-        combined_segment = np.append(cnt, optimal_candidate, 0)
+            # Join the target segment and most compatible segment
+            optimal_candidate = candidate_segments[optimal_seg_i]
+            combined_segment = np.append(cnt, optimal_candidate, 0)
 
-        # Remove the segment that got combined from the list of candidates
-        candidate_segments.remove(optimal_candidate)
+            # Remove the segment that got combined from the list of candidates
+            candidate_segments.remove(optimal_candidate)
 
         # Combine segments until the combined segment traverses from stem to leaf tip
         if optimal_candidate in leaf_objects:
             new_leaf_obj.append(combined_segment)
         else:
-            while not optimal_candidate in leaf_objects:
+            while (not optimal_candidate in leaf_objects) and len(candidate_segments) > 0:
                 candidate_compatibility = []  # Initialize list of compatibility scores
                 # Determine which end of the combined segment is NOT the axil end
                 segment_end_objs = _get_segment_ends(img=segmented_img, contour=combined_segment, size=10)
