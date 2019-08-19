@@ -1,6 +1,7 @@
 import os
 import cv2
 import numpy as np
+import random
 from plantcv.plantcv import params
 from plantcv.plantcv import dilate
 from plantcv.plantcv import plot_image
@@ -194,6 +195,9 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
         # Otherwise a segment is located between pseudo-stems or between a pseudo-stem and leaf object
         else:
             candidate_segments.append(cnt)
+
+    # Randomize the list of branching segments since they're ordered by location??????
+    # random.shuffle(branching_segments)
 
     # For each of the pseudo-stem segments, find the most compatible segment for combining
     for i, cnt in enumerate(branching_segments):
