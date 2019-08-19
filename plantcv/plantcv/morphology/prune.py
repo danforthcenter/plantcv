@@ -46,8 +46,6 @@ def prune(skel_img, size=0, mask=None):
 
     # Check to see if the skeleton has multiple objects
     skel_objects, _ = find_objects(skel_img, skel_img)
-    if not len(skel_objects) == 1:
-        print("Warning: Multiple objects detected! Pruning will further separate the difference pieces.")
 
     _, objects = segment_skeleton(skel_img)
     kept_segments = []

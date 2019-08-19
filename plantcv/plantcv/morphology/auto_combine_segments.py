@@ -273,7 +273,8 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
                                                                            candidate_obj=candidate_end_objs[1]))
 
                 # Get the index of the most compatible (lowest score) end segment
-                optimal_seg_i = np.where(candidate_compatibility == np.amin(candidate_compatibility))[0][0]
+                min_compatibility_value = min(candidate_compatibility)
+                optimal_seg_i = candidate_compatibility.index(min_compatibility_value)
 
                 # Join the target segment and most compatible segment
                 optimal_candidate = candidate_segments[optimal_seg_i]
