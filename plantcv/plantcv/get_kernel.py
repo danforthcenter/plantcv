@@ -1,12 +1,7 @@
 # Create a kernel structuring element
 
-from cv2 import getStructuringElement,
-import numpy as np
-import os
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import params
-
+import cv2
+from plantcv.plantcv import fatal_error
 
 
 def get_kernel(size, shape):
@@ -16,26 +11,23 @@ def get_kernel(size, shape):
     shape  = Element shape, either rectangle, cross, or ellipse.
 
     Returns:
-    kernel = Structuring element kernel
+    kernel = Numpy array structuring element kernel
 
     :param size: tuple
     :param shape: str
     :return kernel: numpy.ndarray
     """
 
-    if size <= 1:
+    if size[0] <= 1 and size[1] <= 1:
         raise ValueError('size needs to be greater than 1 for the function to have an effect')
 
     if shape.upper() == "RECTANGLE":
-        kernel = getStructuringElement(cv2.MORPH_RECT, size)
-    elif shape.upper() == "ELLIPSE ":
-        kernel = getStructuringElement(cv2.MORPH_ELLIPSE, size)
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, size)
+    elif shape.upper() == "ELLIPSE":
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, size)
     elif shape.upper() == "CROSS":
-        kernel = getStructuringElement(cv2.MORPH_CROSS, size)
+        kernel = cv2.getStructuringElement(cv2.MORPH_CROSS, size)
     else:
-
-
-
-
+        fatal_error("Shape " + str(shape) + " is not rectangle, ellipse or cross!")
 
     return kernel

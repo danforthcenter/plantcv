@@ -1689,6 +1689,31 @@ def test_plantcv_gaussian_blur():
     assert gavg != imgavg
 
 
+def test_plantcv_get_kernel_cross():
+    kernel = pcv.get_kernel(size=(3,3), shape="cross")
+    assert (kernel == np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]])).all()
+
+
+def test_plantcv_get_kernel_rectangle():
+    kernel = pcv.get_kernel(size=(3,3), shape="rectangle")
+    assert (kernel == np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]])).all()
+
+
+def test_plantcv_get_kernel_ellipse():
+    kernel = pcv.get_kernel(size=(3, 3), shape="ellipse")
+    assert (kernel == np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]])).all()
+
+
+def test_plantcv_get_kernel_bad_input_size():
+    with pytest.raises(ValueError):
+        kernel = pcv.get_kernel(size=(1,1), shape="ellipse")
+
+
+def test_plantcv_get_kernel_bad_input_shape():
+    with pytest.raises(RuntimeError):
+        kernel = pcv.get_kernel(size=(3,1), shape="square")
+
+
 def test_plantcv_get_nir_sv():
     nirpath = pcv.get_nir(TEST_DATA, TEST_VIS)
     nirpath1 = os.path.join(TEST_DATA, TEST_NIR)
