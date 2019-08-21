@@ -10,16 +10,20 @@ from plantcv.plantcv import params
 
 
 def get_kernel(size, shape):
-    """Performs morphological 'dilation' filtering. Adds pixel to center of kernel if conditions set in kernel are true.
-    Inputs:
-    size   = Kernel size (int). A k x k kernel will be built. Must be greater than 1 to have an effect.
-    shape  = Element shape, either
+    """Creates a kernel structuring element of specified size and shape.
+
+    size   = Kernel size (int). A (m x n) kernel will be built. Must be greater than 1 to have an effect.
+    shape  = Element shape, either rectangle, cross, or ellipse.
 
     Returns:
-    dil_img = dilated image
+    kernel = Structuring element kernel
 
-    :param gray_img: numpy.ndarray
-    :param ksize: int
-    :param i: int
-    :return dil_img: numpy.ndarray
+    :param size: tuple
+    :param shape: str
+    :return kernel: numpy.ndarray
     """
+
+    if size <= 1:
+        raise ValueError('size needs to be greater than 1 for the function to have an effect')
+
+
