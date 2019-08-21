@@ -30,6 +30,11 @@ def get_kernel(size, shape):
         kernel = getStructuringElement(cv2.MORPH_RECT, size)
     elif shape.upper() == "ELLIPSE ":
         kernel = getStructuringElement(cv2.MORPH_ELLIPSE, size)
+    elif shape.upper() == "CROSS":
+        kernel = getStructuringElement(cv2.MORPH_CROSS, size)
+    else:
+
+
 
 
 
