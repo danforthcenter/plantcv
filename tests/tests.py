@@ -1689,6 +1689,31 @@ def test_plantcv_gaussian_blur():
     assert gavg != imgavg
 
 
+def test_plantcv_get_kernel_cross():
+    kernel = pcv.get_kernel(size=(3,3), shape="cross")
+    assert (kernel == np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]])).all()
+
+
+def test_plantcv_get_kernel_rectangle():
+    kernel = pcv.get_kernel(size=(3,3), shape="rectangle")
+    assert (kernel == np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]])).all()
+
+
+def test_plantcv_get_kernel_ellipse():
+    kernel = pcv.get_kernel(size=(3, 3), shape="ellipse")
+    assert (kernel == np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]])).all()
+
+
+def test_plantcv_get_kernel_bad_input_size():
+    with pytest.raises(ValueError):
+        kernel = pcv.get_kernel(size=(1,1), shape="ellipse")
+
+
+def test_plantcv_get_kernel_bad_input_shape():
+    with pytest.raises(RuntimeError):
+        kernel = pcv.get_kernel(size=(3,1), shape="square")
+
+
 def test_plantcv_get_nir_sv():
     nirpath = pcv.get_nir(TEST_DATA, TEST_VIS)
     nirpath1 = os.path.join(TEST_DATA, TEST_NIR)
@@ -3953,7 +3978,8 @@ def test_plantcv_transform_find_color_card():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_find_color_card")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    df, start, space = pcv.transform.find_color_card(rgb_img=rgb_img, threshold_type='adaptgauss', blurry=False)
+    df, start, space = pcv.transform.find_color_card(rgb_img=rgb_img, threshold_type='adaptgauss', blurry=False,
+                                                     threshvalue=90)
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=start,
@@ -3980,7 +4006,7 @@ def test_plantcv_transform_find_color_card_optional_parameters():
     pcv.params.debug_outdir = cache_dir
     # Test with threshold ='normal'
     df1, start1, space1 = pcv.transform.find_color_card(rgb_img=rgb_img, threshold_type='normal', blurry=True,
-                                                        background='light')
+                                                        background='light', threshvalue=90)
     _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=start1,
                                              spacing=space1, nrows=6, ncols=4, exclude=[20, 0])
     # Test with threshold='otsu'
