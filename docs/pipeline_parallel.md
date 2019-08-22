@@ -15,10 +15,10 @@ We normally execute workflows in a shell script or in in a condor job file (or d
 * -p is the --workflow that you are going to run over the images, see the [VIS tutorial](vis_tutorial.md) and [PSII tutorial](psII_tutorial.md)
 * -i is the --outdir your desired location for the output images
 * -a is the --adaptor to indicate structure to grab the metadata from, either 'filename' or the default, which is 'phenofront' (lemnatec structured output)
-* -t is the --type extension 'png' is the default. It can also be any image format readable by opencv such as 'tif' or 'jpg'
+* -t is the --type extension, default is 'png'
 * -l is the --deliminator for the filename, default is "_"
 * -C is the --coprocess the specified imgtype with the imgtype specified in --match (e.g. coprocess NIR images with VIS).
-* -f is the --meta (data) format map for example the default is "imgtype_camera_frame_zoom_id"
+* -f is the --meta (data) format map for example, default is "imgtype_camera_frame_zoom_id".
 * -M is the --match metadata option, for example to select a certain zoom or angle. For example: 'imgtype:VIS,camera:SV,zoom:z500'
 * -D is the --dates option, to select a certain date range of data. YYYY-MM-DD-hh-mm-ss_YYYY-MM-DD-hh-mm-ss. If the second date is excluded then the current date is assumed.
 * -j is the --json, json database name
@@ -104,7 +104,9 @@ In order for PlantCV to scrape all of the necessary metadata from the image file
 1. Plant ID
 2. Timestamp
 3. Measurement/Experiment Label
-4. Camera Label
+4. Image Type
+5. Camera Label
+6. Zoom 
 
 **Example Name:**
 
@@ -117,6 +119,9 @@ AABA002948_2014-03-14 03-29-45_Pilot-031014_VIS_TV_z3500.png
 5. Camera Label = TV
 6. Zoom = z3500
 
+**Valid Metadata**
+
+Valid metadata that can be collected from filenames are `camera`, `imgtype`, `zoom`, `exposure`, `gain`, `frame`, `lifter`, `timestamp`, `id`, `plantbarcode`, `treatment`, `cartag`, `measurementlabel`, and `other`. 
 
 **Next, run images over a flat directory with images named as described above:**
 
@@ -127,7 +132,7 @@ We normally execute workflows as a shell script or as a condor jobfile (or dagma
 
 # Here we are running a VIS top-view workflow over a flat directory of images
 
-# Image names for this example look like this: cam1-16-08-06_16:45_el1100s1_p19.jpg
+# Image names for this example look like this: cam1_16-08-06-16:45_el1100s1_p19.jpg
 
 /home/mgehan/plantcv/plantcv-workflow.py \
 -d /shares/mgehan_share/raw_data/raw_image/2016-08_pat-edger/data/split-round1/split-cam1 \
