@@ -14,9 +14,8 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
     """Pseudocolor any grayscale image to custom colormap
 
     Inputs:
-    gray_img    = grayscale image dataROI or plant contour object. If provided, the pseudocolored image gets cropped
-                  down to the region of interest.if provided, the pseudocolored image gets cropped down to the region
-                  of interest
+    gray_img    = grayscale image data
+    obj         = ROI or plant contour object. if provided, the pseudocolored image gets cropped down to the region of interest
     mask        = (optional) binary mask
     cmap        = (optional) colormap. default is the matplotlib default, viridis
     background  = (optional) background color/type, options are "image" (gray_img), "white", or "black" (requires a mask)
