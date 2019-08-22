@@ -8,6 +8,7 @@ from plantcv.plantcv import dilate
 from plantcv.plantcv import closing
 from plantcv.plantcv import outputs
 from plantcv.plantcv import plot_image
+from plantcv.plantcv import logical_and
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import print_image
 from plantcv.plantcv import find_objects
@@ -86,26 +87,12 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
             # Determine if a segment is leaf end or leaf insertion segment
             for j, obj in enumerate(segment_end_obj):
 
-                cnt_as_tuples = []
-                num_pixels = len(obj)
-                count = 0
-
-                # Turn each contour into a list of tuples (can't search for list of coords, so reformat)
-                while num_pixels > count:
-                    x_coord = obj[count][0][0]
-                    y_coord = obj[count][0][1]
-                    cnt_as_tuples.append((x_coord, y_coord))
-                    count += 1
-
-                for tip_tups in tip_tuples:
-                    # If a tip is inside the list of contour tuples then it is a leaf end segment
-                    if tip_tups in cnt_as_tuples:
-                        is_insertion_segment.append(False)
-                    else:
-                        is_insertion_segment.append(True)
+                segment_plot = np.zeros(segmented_img.shape[:2], np.uint8)
+                cv2.drawContours(segment_plot, obj, -1, 255, 1, lineType=8)
+                overlap_img = logical_and(segment_plot, tips)
 
                 # If none of the tips are within a segment_end then it's an insertion segment
-                if all(is_insertion_segment):
+                if np.sum(overlap_img) == 0:
                     insertion_segments.append(segment_end_obj[j])
                     insertion_hierarchies.append(segment_end_hierarchy[0][j])
 

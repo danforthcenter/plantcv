@@ -668,6 +668,11 @@ pages for more details on the input and output variable types.
 * pre v3.0dev1: NA
 * post v3.0dev2: matrix = **plantcv.transform.load_matrix**(*filename*)
 
+#### plantcv.transform.nonuniform_illumination
+
+* pre v3.5: NA
+* post v3.5: corrected_img = **plantcv.transform.nonuniform_illumination**(*img, ksize*)
+
 #### plantcv.transform.quick_color_check
 
 * pre v3.0: NA

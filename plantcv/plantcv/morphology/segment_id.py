@@ -41,7 +41,7 @@ def segment_id(skel_img, objects, mask=None):
 
     # Plot all segment contours
     for i, cnt in enumerate(objects):
-        cv2.drawContours(segmented_img, objects, i, rand_color[i], params.line_thickness, lineType=8)
+        cv2.drawContours(segmented_img, cnt, -1, rand_color[i], params.line_thickness, lineType=8)
         # Store coordinates for labels
         label_coord_x.append(objects[i][0][0][0])
         label_coord_y.append(objects[i][0][0][1])

@@ -68,7 +68,7 @@ def job_builder(meta, valid_meta, workflow, job_dir, out_dir, coprocess=None, ot
         if (coprocess is not None) and ('coimg' in meta[img]):
             # Create an output file to store the co-image processing results and populate with metadata
             coimg = meta[meta[img]['coimg']]
-            coout = open(os.path.join(".", job_dir, meta[img]["coimg"] + ".txt"), 'w')
+            coout = open(os.path.join(".", job_dir, meta[img]["coimg"] + ".json"), 'w')
             # Store metadata in JSON
             coimg_meta["metadata"]["image"] = {
                 "label": "image file",
@@ -82,7 +82,7 @@ def job_builder(meta, valid_meta, workflow, job_dir, out_dir, coprocess=None, ot
             coout.close()
 
         # Create an output file to store the image processing results and populate with metadata
-        outfile = open(os.path.join(".", job_dir, img + ".txt"), 'w')
+        outfile = open(os.path.join(".", job_dir, img + ".json"), 'w')
         # Store metadata in JSON
         img_meta["metadata"]["image"] = {
                 "label": "image file",
@@ -98,10 +98,10 @@ def job_builder(meta, valid_meta, workflow, job_dir, out_dir, coprocess=None, ot
 
         # Build job
         job_parts = ["python", workflow, "--image", os.path.join(meta[img]['path'], img),
-                     "--outdir", out_dir, "--result", os.path.join(job_dir, img) + ".txt"]
+                     "--outdir", out_dir, "--result", os.path.join(job_dir, img) + ".json"]
         # Add job to list
         if coprocess is not None and ('coimg' in meta[img]):
-            job_parts = job_parts + ["--coresult", os.path.join(job_dir, meta[img]['coimg']) + ".txt"]
+            job_parts = job_parts + ["--coresult", os.path.join(job_dir, meta[img]['coimg']) + ".json"]
         if writeimg:
             job_parts.append("--writeimg")
         if other_args:

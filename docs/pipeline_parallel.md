@@ -18,7 +18,7 @@ We normally execute workflows in a shell script or in in a condor job file (or d
 * -t is the --type extension 'png' is the default. It can also be any image format readable by opencv such as 'tif' or 'jpg'
 * -l is the --deliminator for the filename, default is "_"
 * -C is the --coprocess the specified imgtype with the imgtype specified in --match (e.g. coprocess NIR images with VIS).
-* -f is the --meta (data) format map for example the default is "imgtype_camera_frame_zoom_id"
+* -f is the --meta (data) format map for example, default is "imgtype_camera_frame_zoom_id".
 * -M is the --match metadata option, for example to select a certain zoom or angle. For example: 'imgtype:VIS,camera:SV,zoom:z500'
 * -D is the --dates option, to select a certain date range of data. YYYY-MM-DD-hh-mm-ss_YYYY-MM-DD-hh-mm-ss. If the second date is excluded then the current date is assumed.
 * -j is the --json, json database name
@@ -104,16 +104,24 @@ In order for PlantCV to scrape all of the necessary metadata from the image file
 1. Plant ID
 2. Timestamp
 3. Measurement/Experiment Label
-4. Camera Label
+4. Image Type
+5. Camera Label
+6. Zoom 
 
 **Example Name:**
 
-AABA002948-2014-03-14 03_29_45-Pilot_031014-VIS_TV_z3500.png
+AABA002948_2014-03-14 03-29-45_Pilot-031014_VIS_TV_z3500.png
 
 1. Plant ID = AABA002948
-2. Timestamp = 2014-03-14 03_29_45
-3. Measurement Label = Pilot_031014
-4. Camera Label = VIS_TV_z3500
+2. Timestamp = 2014-03-14 03-29-45
+3. Measurement Label = Pilot-031014
+4. Image Type = VIS
+5. Camera Label = TV
+6. Zoom = z3500
+
+**Valid Metadata**
+
+Valid metadata that can be collected from filenames are `camera`, `imgtype`, `zoom`, `exposure`, `gain`, `frame`, `lifter`, `timestamp`, `id`, `plantbarcode`, `treatment`, `cartag`, `measurementlabel`, and `other`. 
 
 **Next, run images over a flat directory with images named as described above:**
 
@@ -124,7 +132,7 @@ We normally execute workflows as a shell script or as a condor jobfile (or dagma
 
 # Here we are running a VIS top-view workflow over a flat directory of images
 
-# Image names for this example look like this: cam1-16-08-06_16:45_el1100s1_p19.jpg
+# Image names for this example look like this: cam1_16-08-06-16:45_el1100s1_p19.jpg
 
 /home/mgehan/plantcv/plantcv-workflow.py \
 -d /shares/mgehan_share/raw_data/raw_image/2016-08_pat-edger/data/split-round1/split-cam1 \
