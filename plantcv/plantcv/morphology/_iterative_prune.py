@@ -26,8 +26,6 @@ def _iterative_prune(skel_img, size):
 
     # Check to see if the skeleton has multiple objects
     objects, _ = find_objects(pruned_img, pruned_img)
-    if not len(objects) == 1:
-        print("Warning: Multiple objects detected! Pruning will further separate the difference pieces.")
 
     # Iteratively remove endpoints (tips) from a skeleton
     for i in range(0, size):
