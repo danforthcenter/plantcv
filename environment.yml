@@ -12,6 +12,7 @@ dependencies:
   - plotnine
   - coveralls
   - nb_conda
+  - pip
   - pip:
     - opencv-python<4, >=3.4
 channels:
