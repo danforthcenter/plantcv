@@ -15,7 +15,7 @@ We normally execute workflows in a shell script or in in a condor job file (or d
 * -p is the --workflow that you are going to run over the images, see the [VIS tutorial](vis_tutorial.md) and [PSII tutorial](psII_tutorial.md)
 * -i is the --outdir your desired location for the output images
 * -a is the --adaptor to indicate structure to grab the metadata from, either 'filename' or the default, which is 'phenofront' (lemnatec structured output)
-* -t is the --type extension, default is 'png'
+* -t is the --type extension 'png' is the default. Any format readable by opencv is accepted such as 'tif' or 'jpg'
 * -l is the --deliminator for the filename, default is "_"
 * -C is the --coprocess the specified imgtype with the imgtype specified in --match (e.g. coprocess NIR images with VIS).
 * -f is the --meta (data) format map for example, default is "imgtype_camera_frame_zoom_id".
