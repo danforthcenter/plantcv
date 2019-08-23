@@ -3561,6 +3561,49 @@ def test_plantcv_photosynthesis_analyze_yiii_bad_input():
     with pytest.raises(RuntimeError):
         _ = pcv.photosynthesis.analyze_yii(fdark=fdark, fmax=fmax, fmin=fmin, mask=mask)
 
+def test_plantcv_photosynthesis_qc_fdark():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK), -1)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
+    qc = pcv.photosynthesis.qc_fdark(fdark=fdark, mask=mask, threshold=2000)
+    assert qc
+
+
+def test_plantcv_photosynthesis_qc_fdark_uint16_fail():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK), -1)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
+    qc = pcv.photosynthesis.qc_fdark(fdark=fdark, mask=mask)
+    assert not qc
+
+
+def test_plantcv_photosynthesis_qc_fdark_uint8_fail():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    qc = pcv.photosynthesis.qc_fdark(fdark=fdark, mask=mask, threshold=2)
+    assert not qc
+
+
+def test_plantcv_photosynthesis_qc_fdark_bad_input():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK))
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    with pytest.raises(RuntimeError):
+        _ = pcv.photosynthesis.qc_fdark(fdark=fdark, mask=mask)
+
 # ##############################
 # Tests for the roi subpackage
 # ##############################
