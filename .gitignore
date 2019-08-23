@@ -119,6 +119,9 @@ ENV/
 # Spyder project settings
 .spyderproject
 
+# vscode
+.vscode
+
 # Rope project settings
 .ropeproject
 ### JetBrains template
