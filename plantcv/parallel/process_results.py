@@ -34,7 +34,11 @@ def process_results(job_dir, json_file):
     for (dirpath, dirnames, filenames) in os.walk(job_dir):
         for filename in filenames:
             # Make sure file is a text file
+<<<<<<< HEAD
             if 'text/plain' in mimetypes.guess_type(filename) or 'application/json' in mimetypes.guess_type(filename):
+=======
+            if 'text/plain' in mimetypes.guess_type(filename):
+>>>>>>> parent of 20358b8... small changes
                 # Open results file
                 with open(os.path.join(dirpath, filename)) as results:
                     obs = json.load(results)

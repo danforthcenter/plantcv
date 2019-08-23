@@ -15,7 +15,7 @@ We normally execute workflows in a shell script or in in a condor job file (or d
 * -p is the --workflow that you are going to run over the images, see the [VIS tutorial](vis_tutorial.md) and [PSII tutorial](psII_tutorial.md)
 * -i is the --outdir your desired location for the output images
 * -a is the --adaptor to indicate structure to grab the metadata from, either 'filename' or the default, which is 'phenofront' (lemnatec structured output)
-* -t is the --type extension 'png' is the default. It can also be any image format readable by opencv such as 'tif' or 'jpg'
+* -t is the --type extension 'png' is the default or 'jpg'
 * -l is the --deliminator for the filename, default is "_"
 * -C is the --coprocess the specified imgtype with the imgtype specified in --match (e.g. coprocess NIR images with VIS).
 * -f is the --meta (data) format map for example, default is "imgtype_camera_frame_zoom_id".
@@ -110,9 +110,10 @@ In order for PlantCV to scrape all of the necessary metadata from the image file
 
 **Example Name:**
 
-AABA002948_2014-03-14 03-29-45_Pilot-031014_VIS_TV_z3500.png
+AABA002948-2014-03-14 03_29_45-Pilot_031014-VIS_TV_z3500.png
 
 1. Plant ID = AABA002948
+<<<<<<< HEAD
 2. Timestamp = 2014-03-14 03-29-45
 3. Measurement Label = Pilot-031014
 4. Image Type = VIS
@@ -122,6 +123,11 @@ AABA002948_2014-03-14 03-29-45_Pilot-031014_VIS_TV_z3500.png
 **Valid Metadata**
 
 Valid metadata that can be collected from filenames are `camera`, `imgtype`, `zoom`, `exposure`, `gain`, `frame`, `lifter`, `timestamp`, `id`, `plantbarcode`, `treatment`, `cartag`, `measurementlabel`, and `other`. 
+=======
+2. Timestamp = 2014-03-14 03_29_45
+3. Measurement Label = Pilot_031014
+4. Camera Label = VIS_TV_z3500
+>>>>>>> parent of 20358b8... small changes
 
 **Next, run images over a flat directory with images named as described above:**
 
