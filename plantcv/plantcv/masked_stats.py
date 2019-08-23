@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def mean(array, mask):
+def masked_mean(array, mask):
     """Compute mean for plant area only
     Inputs:
     array       = numpy array, e.g. an image
@@ -18,7 +18,7 @@ def mean(array, mask):
     return(np.mean(array[np.where(mask > 0)]))
 
 
-def std(array, mask):
+def masked_std(array, mask):
     """Compute standard deviation for plant area only
     Inputs:
     array       = numpy array, e.g. an image
@@ -35,7 +35,7 @@ def std(array, mask):
     return(np.std(array[np.where(mask > 0)]))
 
 
-def median(array, mask):
+def masked_median(array, mask):
     """Compute median for plant area only
     Inputs:
     array       = numpy array, e.g. an image

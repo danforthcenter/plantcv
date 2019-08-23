@@ -1935,6 +1935,29 @@ def test_plantcv_logical_xor():
     assert all([i == j] for i, j in zip(np.shape(xor_img), TEST_BINARY_DIM))
 
 
+def test_plantcv_masked_stats_masked_mean():
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK), -1)
+    masked_mean = pcv.masked_mean(array=img, mask=mask)
+    assert masked_mean > np.mean(img)
+
+
+def test_plantcv_masked_stats_masked_median():
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK), -1)
+    masked_mean = pcv.masked_median(array=img, mask=mask)
+    assert masked_mean > np.median(img)
+
+def test_plantcv_masked_stats_masked_std():
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK), -1)
+    masked_mean = pcv.masked_std(array=img, mask=mask)
+    assert masked_mean > np.std(img)
+
+
 def test_plantcv_median_blur():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_median_blur")
