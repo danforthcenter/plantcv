@@ -3498,6 +3498,39 @@ def test_plantcv_morphology_segment_combine_bad_input():
     with pytest.raises(RuntimeError):
         _, new_objects = pcv.morphology.segment_combine([0.5, 1.5], seg_objects, skel)
 
+
+# ########################################
+# Tests for the photosynthesis subpackage
+# ########################################
+def test_plantcv_photosynthesis_analyze_npq():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
+    fm = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
+    # Test with debug="plot"
+    pcv.params.debug = "plot"
+    _ = pcv.photosynthesis.analyze_npq(fmax=fmax, fm=fm, mask=mask)
+    # Test with debug="print"
+    pcv.params.debug = "print"
+    _ = pcv.photosynthesis.analyze_npq(fmax=fmax, fm=fm, mask=mask)
+    assert pcv.outputs.observations['npq_hist_peak']['value'] == 0.005859375
+
+
+def test_plantcv_photosynthesis_analyze_npq_bad_input():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX))
+    fm = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX))
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK) )
+    with pytest.raises(RuntimeError):
+        _ = pcv.photosynthesis.analyze_npq(fmax=fmax, fm=fm, mask=mask)
+
+
 # ##############################
 # Tests for the roi subpackage
 # ##############################

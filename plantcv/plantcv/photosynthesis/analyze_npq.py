@@ -63,8 +63,8 @@ def analyze_npq(fmax, fm, mask, bins=256):
     analysis_images.append(npq)
 
     # Calculate the median and std NPQ values for non-zero pixels
-    npq_median = masked_stats.median(npq, mask)
-    npq_std = masked_stats.std(npq, mask)
+    npq_median = masked_stats.masked_median(npq, mask)
+    npq_std = masked_stats.masked_std(npq, mask)
 
     # Calculate the histogram of Fv/Fm non-zero values
     npq_hist, npq_bins = np.histogram(
