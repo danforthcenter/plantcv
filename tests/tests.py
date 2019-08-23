@@ -1689,6 +1689,31 @@ def test_plantcv_gaussian_blur():
     assert gavg != imgavg
 
 
+def test_plantcv_get_kernel_cross():
+    kernel = pcv.get_kernel(size=(3,3), shape="cross")
+    assert (kernel == np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]])).all()
+
+
+def test_plantcv_get_kernel_rectangle():
+    kernel = pcv.get_kernel(size=(3,3), shape="rectangle")
+    assert (kernel == np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]])).all()
+
+
+def test_plantcv_get_kernel_ellipse():
+    kernel = pcv.get_kernel(size=(3, 3), shape="ellipse")
+    assert (kernel == np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]])).all()
+
+
+def test_plantcv_get_kernel_bad_input_size():
+    with pytest.raises(ValueError):
+        kernel = pcv.get_kernel(size=(1,1), shape="ellipse")
+
+
+def test_plantcv_get_kernel_bad_input_shape():
+    with pytest.raises(RuntimeError):
+        kernel = pcv.get_kernel(size=(3,1), shape="square")
+
+
 def test_plantcv_get_nir_sv():
     nirpath = pcv.get_nir(TEST_DATA, TEST_VIS)
     nirpath1 = os.path.join(TEST_DATA, TEST_NIR)
@@ -3394,7 +3419,16 @@ def test_plantcv_morphology_segment_insertion_angle():
     pcv.params.debug = "print"
     insert_angles = pcv.morphology.segment_insertion_angle(pruned, segmented_img, leaf_obj, stem_obj, 10)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
-    assert len(pcv.outputs.observations['segment_insertion_angle']['value']) == 14
+    assert pcv.outputs.observations['segment_insertion_angle']['value'] == [24.97999120101794, 50.75442037373474,
+                                                                            56.45078448114704, 64.19513117863062,
+                                                                            45.146799092975584, 57.80220388909291,
+                                                                            66.1559145648012, 77.57112958360631,
+                                                                            39.245580536881675, 84.24558178912076,
+                                                                            84.24558178912076, 50.75442037373474,
+                                                                            26.337516798081822, 58.46112771993523,
+                                                                            39.245580536881675, 28.645972294617223,
+                                                                            35.371548466069214, 20.64797104069403,
+                                                                            62.89851538735208]
     pcv.outputs.clear()
 
 
@@ -3953,7 +3987,8 @@ def test_plantcv_transform_find_color_card():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_find_color_card")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    df, start, space = pcv.transform.find_color_card(rgb_img=rgb_img, threshold_type='adaptgauss', blurry=False)
+    df, start, space = pcv.transform.find_color_card(rgb_img=rgb_img, threshold_type='adaptgauss', blurry=False,
+                                                     threshvalue=90)
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=start,
@@ -3980,7 +4015,7 @@ def test_plantcv_transform_find_color_card_optional_parameters():
     pcv.params.debug_outdir = cache_dir
     # Test with threshold ='normal'
     df1, start1, space1 = pcv.transform.find_color_card(rgb_img=rgb_img, threshold_type='normal', blurry=True,
-                                                        background='light')
+                                                        background='light', threshvalue=90)
     _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=start1,
                                              spacing=space1, nrows=6, ncols=4, exclude=[20, 0])
     # Test with threshold='otsu'
@@ -4039,6 +4074,34 @@ def test_plantcv_transform_rescale_bad_input():
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
     with pytest.raises(RuntimeError):
         _ = pcv.transform.rescale(gray_img=rgb_img)
+
+
+def test_plantcv_transform_nonuniform_illumination_rgb():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_nonuniform_illumination")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Load rgb image
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
+    pcv.params.debug="plot"
+    _ = pcv.transform.nonuniform_illumination(img=rgb_img, ksize=11)
+    pcv.params.debug="print"
+    corrected = pcv.transform.nonuniform_illumination(img=rgb_img, ksize=11)
+    assert np.mean(corrected) < np.mean(rgb_img)
+
+
+def test_plantcv_transform_nonuniform_illumination_gray():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_nonuniform_illumination")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Load rgb image
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    pcv.params.debug="plot"
+    _ = pcv.transform.nonuniform_illumination(img=gray_img, ksize=11)
+    pcv.params.debug="print"
+    corrected = pcv.transform.nonuniform_illumination(img=gray_img, ksize=11)
+    assert np.shape(corrected) == np.shape(gray_img)
 
 # ##############################
 # Tests for the threshold subpackage

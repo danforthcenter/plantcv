@@ -445,7 +445,7 @@ def main():
     ########################################
     
     # # Read in the previously created image mask 
-    # mask, path, filename = pcv.readimage("plant_mask.png")
+    mask, path, filename = pcv.readimage("plant_mask.png")
 
     # Crop the mask 
     cropped_mask = mask[1150:1750, 900:1550]

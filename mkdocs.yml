@@ -66,6 +66,7 @@ nav:
       - 'Sobel Filter': sobel_filter.md
       - 'Scharr Filter': scharr_filter.md
     - 'Gaussian Blur': gaussian_blur.md
+    - 'Get Kernel': get_kernel.md
     - 'Get NIR Images': get_nir.md
     - 'Erosion': erode.md
     - 'Fill Objects': fill.md
@@ -103,6 +104,7 @@ nav:
       - 'Segment Tangent Angle': segment_tangent_angle.md
       - 'Skeletonize': skeletonize.md
     - 'Naive Bayes Classifier': naive_bayes_classifier.md
+    - 'Nonuniform Illumination Correction': nonuniform_illumination.md
     - 'Object Composition': object_composition.md
     - 'Opening': opening.md
     - 'Output Mask': output_mask.md
