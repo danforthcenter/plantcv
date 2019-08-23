@@ -110,10 +110,9 @@ In order for PlantCV to scrape all of the necessary metadata from the image file
 
 **Example Name:**
 
-AABA002948-2014-03-14 03_29_45-Pilot_031014-VIS_TV_z3500.png
+AABA002948_2014-03-14 03-29-45_Pilot-031014_VIS_TV_z3500.png
 
 1. Plant ID = AABA002948
-<<<<<<< HEAD
 2. Timestamp = 2014-03-14 03-29-45
 3. Measurement Label = Pilot-031014
 4. Image Type = VIS
@@ -123,11 +122,6 @@ AABA002948-2014-03-14 03_29_45-Pilot_031014-VIS_TV_z3500.png
 **Valid Metadata**
 
 Valid metadata that can be collected from filenames are `camera`, `imgtype`, `zoom`, `exposure`, `gain`, `frame`, `lifter`, `timestamp`, `id`, `plantbarcode`, `treatment`, `cartag`, `measurementlabel`, and `other`. 
-=======
-2. Timestamp = 2014-03-14 03_29_45
-3. Measurement Label = Pilot_031014
-4. Camera Label = VIS_TV_z3500
->>>>>>> parent of 20358b8... small changes
 
 **Next, run images over a flat directory with images named as described above:**
 
