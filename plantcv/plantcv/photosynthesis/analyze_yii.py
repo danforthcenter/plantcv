@@ -69,8 +69,8 @@ def analyze_yii(fdark, fmin, fmax, mask, bins=256, parameter='Fv/Fm'):
     analysis_images.append(yii)
 
     # Calculate the median and std YII values for non-zero pixels
-    yii_median = masked_stats.median(yii, mask)
-    yii_std = masked_stats.std(yii, mask)
+    yii_median = masked_stats.masked_median(yii, mask)
+    yii_std = masked_stats.masked_std(yii, mask)
 
     # Calculate the histogram of Fv/Fm non-zero values
     yii_hist, yii_bins = np.histogram(
