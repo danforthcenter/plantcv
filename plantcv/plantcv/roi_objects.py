@@ -55,10 +55,19 @@ def roi_objects(img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, 
             keep = False
 
             # Test if the contours are within the ROI
+            pptest = [None]*(length+1)
             for i in range(0, length):
-                pptest = cv2.pointPolygonTest(roi_contour[0], (stack[i][0], stack[i][1]), False)
-                if int(pptest) != -1:
+                pptest[i] = cv2.pointPolygonTest(roi_contour[0], (stack[i][0], stack[i][1]), False)
+                if any([int(i) != -1 for i in pptest]):
                     keep = True
+                elif all([int(i) == -1 for i in pptest]):
+                    M = cv2.moments(cnt)
+                    cX = int(M["m10"] / M["m00"])
+                    cY = int(M["m01"] / M["m00"])
+                    if int(cv2.pointPolygonTest(cnt, (cX,cY), False)) == 1:
+                        keep = True
+                    else:
+                        keep = False
             if keep:
                 # Color the "gap contours" black
                 if obj_hierarchy[0][c][3] > -1:
