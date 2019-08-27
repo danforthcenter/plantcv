@@ -43,6 +43,8 @@ def roi_objects(img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, 
     params.device += 1
     # Create an empty grayscale (black) image the same dimensions as the input image
     mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
+    cv2.drawContours(mask, object_contour, -1, (255), -1, lineType=8, hierarchy=obj_hierarchy)
+
     # Create a mask of the filled in ROI
     roi_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
     roi_points = np.vstack(roi_contour[0])
@@ -61,33 +63,8 @@ def roi_objects(img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, 
             filtering_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
             cv2.fillPoly(filtering_mask, [np.vstack(object_contour[c])], (255))
             overlap_img = logical_and(filtering_mask, roi_mask)
-            # length = (len(cnt) - 1)
-            # stack = np.vstack(cnt)
-            # keep = False
-            #
-            # # Test if the contours are within the ROI
-            # pptest = np.zeros(length+1)
-            # for i in range(0, length):
-            #     pptest[i] = cv2.pointPolygonTest(roi_contour[0], (stack[i][0], stack[i][1]), False)
-            #     if any([int(i) != -1 for i in pptest]):
-            #         keep = True
-            #     elif all([int(i) == -1 for i in pptest]):
-            #         M = cv2.moments(cnt)
-            #         cX = int(M["m10"] / M["m00"])
-            #         cY = int(M["m01"] / M["m00"])
-            #         if int(cv2.pointPolygonTest(cnt, (cX,cY), False)) == 1:
-            #             keep = True
-            #         else:
-            #             keep = False
-            if np.sum(overlap_img) > 0:
-                # Color the "gap contours" black
-                if obj_hierarchy[0][c][3] > -1:
-                    cv2.drawContours(mask, object_contour, c, (0), -1, lineType=8, hierarchy=obj_hierarchy)
-                else:
-                    # Color the plant contour parts white
-                    cv2.drawContours(mask, object_contour, c, (255), -1, lineType=8, hierarchy=obj_hierarchy)
-            else:
-                # If the contour isn't overlapping with the ROI, color it black
+            # Delete contours that do not overlap at all with the ROI
+            if np.sum(overlap_img) == 0:
                 cv2.drawContours(mask, object_contour, c, (0), -1, lineType=8, hierarchy=obj_hierarchy)
 
         # Find the kept contours and area
