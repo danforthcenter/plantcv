@@ -55,7 +55,7 @@ def roi_objects(img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, 
             keep = False
 
             # Test if the contours are within the ROI
-            pptest = [None]*(length+1)
+            pptest = np.zeros(length+1)
             for i in range(0, length):
                 pptest[i] = cv2.pointPolygonTest(roi_contour[0], (stack[i][0], stack[i][1]), False)
                 if any([int(x) != -1 for x in pptest]):
