@@ -58,12 +58,18 @@ def roi_objects(img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, 
             pptest = np.zeros(length+1)
             for i in range(0, length):
                 pptest[i] = cv2.pointPolygonTest(roi_contour[0], (stack[i][0], stack[i][1]), False)
+                # if any edge point of object is in or on roi, then keep
                 if any([int(x) != -1 for x in pptest]):
                     keep = True
+                # if all edge points of object are outside roi, then test if roi is fully enclosed by object
                 elif all([int(x) == -1 for x in pptest]):
+                    # calculate moments for roi contour to find center of mass.
+                    # center calculation will fail if m00 is 0 which happens for self intersecting shapes because f(x,y) of shape isn't continuous anymore+
+                    # would it be better to convert to binary mask and use cv2.countNonZero
                     M = cv2.moments(cnt)
                     cX = int(M["m10"] / M["m00"])
                     cY = int(M["m01"] / M["m00"])
+                    # check if center of roi is inside object contour
                     if int(cv2.pointPolygonTest(cnt, (cX,cY), False)) == 1:
                         keep = True
                     else:
