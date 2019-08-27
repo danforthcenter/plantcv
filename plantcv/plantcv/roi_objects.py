@@ -58,9 +58,9 @@ def roi_objects(img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, 
             pptest = [None]*(length+1)
             for i in range(0, length):
                 pptest[i] = cv2.pointPolygonTest(roi_contour[0], (stack[i][0], stack[i][1]), False)
-                if any([int(i) != -1 for i in pptest]):
+                if any([int(x) != -1 for x in pptest]):
                     keep = True
-                elif all([int(i) == -1 for i in pptest]):
+                elif all([int(x) == -1 for x in pptest]):
                     M = cv2.moments(cnt)
                     cX = int(M["m10"] / M["m00"])
                     cY = int(M["m01"] / M["m00"])
