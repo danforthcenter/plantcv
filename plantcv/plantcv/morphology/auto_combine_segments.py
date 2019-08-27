@@ -134,7 +134,7 @@ def _calc_compatibility(img, target_obj, candidate_obj):
     return compatibility
 
 
-def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_stem_obj):
+def auto_combine_segments(mask, leaf_objects, true_stem_obj, pseudo_stem_obj):
     """ Automatically combine pseudo-stems to pieces of leaf or other pseudo-stem based on the location of the
         important branch point, and the slope of the segment near the branch point
 
@@ -148,7 +148,7 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
                segmented_img       = Debugging image
                new_leaf_obj        = Leaf objects after automatically combining segments together
 
-               :param segmented_img: numpy.ndarray
+               :param mask: numpy.ndarray
                :param leaf_objects: list
                :param true_stem_obj: list
                :param pseudo_stem_obj: list
@@ -163,7 +163,7 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
     branching_segments = []  # Segments that branch off from the stem
     secondary_segments = []  # Any pseudo-stem segments that aren't branching segments
     candidate_segments = leaf_objects.copy()
-    plotting_img = np.zeros(segmented_img.shape[:2], np.uint8)
+    plotting_img = np.zeros(mask.shape[:2], np.uint8)
 
     # Plot true stem values to help with identifying the axil part of the segment
     cv2.drawContours(plotting_img, true_stem_obj, -1, 255, params.line_thickness, lineType=8)
@@ -172,9 +172,9 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
 
     # Identify "true leaf" segments i.e. single segments that accurately represent a biological leaf
     for i, cnt in enumerate(leaf_objects):
-        segment_end_objs = _get_segment_ends(img=segmented_img, contour=cnt, size=10)
+        segment_end_objs = _get_segment_ends(img=mask, contour=cnt, size=10)
         # If one of the segment ends overlaps with the stem then it's a full leaf segment
-        segment_end_plot = np.zeros(segmented_img.shape[:2], np.uint8)
+        segment_end_plot = np.zeros(mask.shape[:2], np.uint8)
         cv2.drawContours(segment_end_plot, segment_end_objs, -1, 255, params.line_thickness, lineType=8)
         overlap_img = logical_and(segment_end_plot, stem_img)
         # Add them to the list of new leaf objects
@@ -185,9 +185,9 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
 
     # Loop through pseudo-stem segment contours to sort into ones next to stem and not
     for i, cnt in enumerate(pseudo_stem_obj):
-        segment_end_objs = _get_segment_ends(img=segmented_img, contour=cnt, size=10)
+        segment_end_objs = _get_segment_ends(img=mask, contour=cnt, size=10)
         # If one of the segment ends overlaps with the stem then it's a branching segment
-        segment_end_plot = np.zeros(segmented_img.shape[:2], np.uint8)
+        segment_end_plot = np.zeros(mask.shape[:2], np.uint8)
         cv2.drawContours(segment_end_plot, segment_end_objs, -1, 255, params.line_thickness, lineType=8)
         overlap_img = logical_and(segment_end_plot, stem_img)
         if np.sum(overlap_img) > 0:
@@ -203,9 +203,9 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
     for i, cnt in enumerate(branching_segments):
         candidate_compatibility = [] # Initialize list of compatibility scores
         # Determine which end of the branching segment is NOT the axil of the plant
-        segment_end_objs = _get_segment_ends(img=segmented_img, contour=cnt, size=10)
+        segment_end_objs = _get_segment_ends(img=mask, contour=cnt, size=10)
         for j, end in enumerate(segment_end_objs):
-            segment_end_plot = np.zeros(segmented_img.shape[:2], np.uint8)
+            segment_end_plot = np.zeros(mask.shape[:2], np.uint8)
             cv2.drawContours(segment_end_plot, end, -1, 255, params.line_thickness, lineType=8)
             overlap_img = logical_and(segment_end_plot, stem_img)
             if np.sum(overlap_img) == 0:
@@ -213,19 +213,19 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
         # Calculate compatibility scores for each candidate segment
         for j, candidate in enumerate(candidate_segments):
             # Find which end of the candidate segment to compare to the target segment
-            candidate_end_objs = _get_segment_ends(img=segmented_img,
+            candidate_end_objs = _get_segment_ends(img=mask,
                                                    contour=candidate, size=10)
             # Determine which end segment is closer to the target segment, and calculate compatibility
             # with the target of the closer of the end segment for each candidate
             prox0 = _calc_proximity(target_segment, candidate_end_objs[0])
             prox1 = _calc_proximity(target_segment, candidate_end_objs[1])
             if prox0 < prox1:
-                compatibility_score = _calc_compatibility(img=segmented_img,
+                compatibility_score = _calc_compatibility(img=mask,
                                                           target_obj=target_segment,
                                                           candidate_obj=candidate_end_objs[0])
 
             else:
-                compatibility_score = _calc_compatibility(img=segmented_img,
+                compatibility_score = _calc_compatibility(img=mask,
                                                           target_obj=target_segment,
                                                           candidate_obj=candidate_end_objs[1])
 
@@ -251,9 +251,9 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
             while (not optimal_candidate in leaf_objects) and len(candidate_segments) > 0:
                 candidate_compatibility = []  # Initialize list of compatibility scores
                 # Determine which end of the combined segment is NOT the axil end
-                segment_end_objs = _get_segment_ends(img=segmented_img, contour=combined_segment, size=10)
+                segment_end_objs = _get_segment_ends(img=mask, contour=combined_segment, size=10)
                 for j, end in enumerate(segment_end_objs):
-                    segment_end_plot = np.zeros(segmented_img.shape[:2], np.uint8)
+                    segment_end_plot = np.zeros(mask.shape[:2], np.uint8)
                     cv2.drawContours(segment_end_plot, end, -1, 255, params.line_thickness, lineType=8)
                     overlap_img = logical_and(segment_end_plot, stem_img)
                     if np.sum(overlap_img) == 0:
@@ -261,18 +261,18 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
                 # Calculate compatibility scores for each candidate segment
                 for j, candidate in enumerate(candidate_segments):
                     # Find which end of the candidate segment to compare to the target segment
-                    candidate_end_objs = _get_segment_ends(img=segmented_img,
+                    candidate_end_objs = _get_segment_ends(img=mask,
                                                            contour=candidate, size=10)
                     # Determine which end segment is closer to the target segment, and calculate compatibility
                     # with the target of the closer of the end segment for each candidate
                     prox0 = _calc_proximity(target_segment, candidate_end_objs[0])
                     prox1 = _calc_proximity(target_segment, candidate_end_objs[1])
                     if prox0 < prox1:
-                        candidate_compatibility.append(_calc_compatibility(img=segmented_img,
+                        candidate_compatibility.append(_calc_compatibility(img=mask,
                                                                            target_obj=target_segment,
                                                                            candidate_obj=candidate_end_objs[0]))
                     else:
-                        candidate_compatibility.append(_calc_compatibility(img=segmented_img,
+                        candidate_compatibility.append(_calc_compatibility(img=mask,
                                                                            target_obj=target_segment,
                                                                            candidate_obj=candidate_end_objs[1]))
 
@@ -292,6 +292,7 @@ def auto_combine_segments(segmented_img, leaf_objects, true_stem_obj, pseudo_ste
 
     # Create a plot reflecting new leaf objects to show how they got combined
     rand_color = color_palette(len(new_leaf_obj))
+    plotting_img = np.copy(mask)
     labeled_img = cv2.cvtColor(plotting_img, cv2.COLOR_GRAY2RGB)
 
     for i, cnt in enumerate(new_leaf_obj):

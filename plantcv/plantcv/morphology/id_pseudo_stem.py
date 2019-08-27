@@ -69,7 +69,7 @@ def id_pseudo_stem(segmented_img, stem_objects, threshold):
             x_vals = list(range(x, x + w))
             if not x_vals in x_range:
                 x_offset = abs(x_range[0] - x_vals[-1])
-                x_val_penalty[i] = + x_offset
+                x_val_penalty[i] =+ x_offset
 
     # Calculate curvature of each segment
     _ = segment_curvature(segmented_img=segmented_img, objects=stem_objects)
