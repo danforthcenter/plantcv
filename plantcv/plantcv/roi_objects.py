@@ -71,10 +71,6 @@ def roi_objects(img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, 
         kept_cnt, kept_hierarchy = cv2.findContours(np.copy(mask), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
         obj_area = cv2.countNonZero(mask)
 
-        # If no objects were found partially within the ROI then fail
-        if obj_area == 0:
-            fatal_error("No objects found are within or overlap with the ROI")
-
         # Find the largest contour if roi_type is set to 'largest'
         if roi_type.upper() == 'LARGEST':
             # Print warning statement about this feature
