@@ -106,8 +106,9 @@ def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1, show_g
     coordgroups = []
 
     for i, y in enumerate(unigroup):
-        col = int(y[0])
-        row = int(y[2])
+        col_row = y.split(',')
+        col = int(col_row[0])
+        row = int(col_row[1])
         for a, b in enumerate(coord2):
             if b[2] == col and b[3] == row:
                 grp = i
