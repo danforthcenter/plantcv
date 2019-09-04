@@ -165,51 +165,70 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
     percent_values = [round((i / 255) * 100, 2) for i in range(0, 256)]
     # Diverging values on a -128 to 127 scale (green-magenta and blue-yellow)
     diverging_values = [i for i in range(-128, 128)]
-    # outputs.measurements['color_data'] = {
-    #     'histograms': {
-    #         'blue': {'signal_values': rgb_values, 'frequency': histograms["b"]["hist"]},
-    #         'green': {'signal_values': rgb_values, 'frequency': histograms["g"]["hist"]},
-    #         'red': {'signal_values': rgb_values, 'frequency': histograms["r"]["hist"]},
-    #         'lightness': {'signal_values': percent_values, 'frequency': histograms["l"]["hist"]},
-    #         'green-magenta': {'signal_values': diverging_values, 'frequency': histograms["m"]["hist"]},
-    #         'blue-yellow': {'signal_values': diverging_values, 'frequency': histograms["y"]["hist"]},
-    #         'hue': {'signal_values': hue_values, 'frequency': histograms["h"]["hist"]},
-    #         'saturation': {'signal_values': percent_values, 'frequency': histograms["s"]["hist"]},
-    #         'value': {'signal_values': percent_values, 'frequency': histograms["v"]["hist"]}
-    #     },
-    #     'color_features': {
-    #         'hue_circular_mean': hue_circular_mean,
-    #         'hue_circular_std': hue_circular_std,
-    #         'hue_median': hue_median
-    #     }
-    # }
-    outputs.add_observation(variable='blue_frequencies', trait='blue frequencies',
-                            method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
-                            value=histograms["b"]["hist"], label=rgb_values)
-    outputs.add_observation(variable='green_frequencies', trait='green frequencies',
-                            method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
-                            value=histograms["g"]["hist"], label=rgb_values)
-    outputs.add_observation(variable='red_frequencies', trait='red frequencies',
-                            method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
-                            value=histograms["r"]["hist"], label=rgb_values)
-    outputs.add_observation(variable='lightness_frequencies', trait='lightness frequencies',
-                            method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
-                            value=histograms["l"]["hist"], label=percent_values)
-    outputs.add_observation(variable='green-magenta_frequencies', trait='green-magenta frequencies',
-                            method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
-                            value=histograms["m"]["hist"], label=diverging_values)
-    outputs.add_observation(variable='blue-yellow_frequencies', trait='blue-yellow frequencies',
-                            method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
-                            value=histograms["y"]["hist"], label=diverging_values)
-    outputs.add_observation(variable='hue_frequencies', trait='hue frequencies',
-                            method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
-                            value=histograms["h"]["hist"][0:180], label=hue_values)
-    outputs.add_observation(variable='saturation_frequencies', trait='saturation frequencies',
-                            method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
-                            value=histograms["s"]["hist"], label=percent_values)
-    outputs.add_observation(variable='value_frequencies', trait='value frequencies',
-                            method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
-                            value=histograms["v"]["hist"], label=percent_values)
+
+    if hist_plot_type.upper() == 'RGB':
+        outputs.add_observation(variable='blue_frequencies', trait='blue frequencies',
+                                method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                                value=histograms["b"]["hist"], label=rgb_values)
+        outputs.add_observation(variable='green_frequencies', trait='green frequencies',
+                                method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                                value=histograms["g"]["hist"], label=rgb_values)
+        outputs.add_observation(variable='red_frequencies', trait='red frequencies',
+                                method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                                value=histograms["r"]["hist"], label=rgb_values)
+
+    elif hist_plot_type.upper() == 'LAB':
+        outputs.add_observation(variable='lightness_frequencies', trait='lightness frequencies',
+                                method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                                value=histograms["l"]["hist"], label=percent_values)
+        outputs.add_observation(variable='green-magenta_frequencies', trait='green-magenta frequencies',
+                                method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                                value=histograms["m"]["hist"], label=diverging_values)
+        outputs.add_observation(variable='blue-yellow_frequencies', trait='blue-yellow frequencies',
+                                method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                                value=histograms["y"]["hist"], label=diverging_values)
+
+    elif hist_plot_type.upper() == 'HSV':
+        outputs.add_observation(variable='hue_frequencies', trait='hue frequencies',
+                                method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                                value=histograms["h"]["hist"][0:180], label=hue_values)
+        outputs.add_observation(variable='saturation_frequencies', trait='saturation frequencies',
+                                method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                                value=histograms["s"]["hist"], label=percent_values)
+        outputs.add_observation(variable='value_frequencies', trait='value frequencies',
+                                method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                                value=histograms["v"]["hist"], label=percent_values)
+
+    elif hist_plot_type.upper() == 'ALL':
+
+        outputs.add_observation(variable='blue_frequencies', trait='blue frequencies',
+                                method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                                value=histograms["b"]["hist"], label=rgb_values)
+        outputs.add_observation(variable='green_frequencies', trait='green frequencies',
+                                method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                                value=histograms["g"]["hist"], label=rgb_values)
+        outputs.add_observation(variable='red_frequencies', trait='red frequencies',
+                                method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                                value=histograms["r"]["hist"], label=rgb_values)
+        outputs.add_observation(variable='lightness_frequencies', trait='lightness frequencies',
+                                method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                                value=histograms["l"]["hist"], label=percent_values)
+        outputs.add_observation(variable='green-magenta_frequencies', trait='green-magenta frequencies',
+                                method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                                value=histograms["m"]["hist"], label=diverging_values)
+        outputs.add_observation(variable='blue-yellow_frequencies', trait='blue-yellow frequencies',
+                                method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                                value=histograms["y"]["hist"], label=diverging_values)
+        outputs.add_observation(variable='hue_frequencies', trait='hue frequencies',
+                                method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                                value=histograms["h"]["hist"][0:180], label=hue_values)
+        outputs.add_observation(variable='saturation_frequencies', trait='saturation frequencies',
+                                method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                                value=histograms["s"]["hist"], label=percent_values)
+        outputs.add_observation(variable='value_frequencies', trait='value frequencies',
+                                method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                                value=histograms["v"]["hist"], label=percent_values)
+    # Always save hue stats
     outputs.add_observation(variable='hue_circular_mean', trait='hue circular mean',
                             method='plantcv.plantcv.analyze_color', scale='degrees', datatype=float,
                             value=hue_circular_mean, label='degrees')
