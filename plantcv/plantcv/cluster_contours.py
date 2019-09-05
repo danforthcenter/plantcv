@@ -65,15 +65,16 @@ def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1, show_g
         # if isinstance(step, int):
         #     i = step
         # else:
-        i = len(step)
-        for x in range(0, i):
+        num_bins = len(step)
+        for x in range(0, num_bins):
             if x == 0:
-                if a >= 0 and a < step[x + 1]:
-                    return x + 1
-            elif a >= step[x - 1] and a < step[x]:
-                return x
-            elif a > step[x - 1] and a > np.max(step):
-                return i
+                if a >= 0 and a < step[1]:
+                    return 1
+            else:
+                if a >= step[x - 1] and a < step[x]:
+                    return x
+                elif a >= np.max(step):
+                    return num_bins
 
     dtype = [('cx', int), ('cy', int), ('rowbin', int), ('colbin', int), ('index', int)]
     coord = []
