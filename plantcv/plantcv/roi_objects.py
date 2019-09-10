@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import os
+from plantcv.plantcv import logical_and
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
@@ -35,10 +36,19 @@ def roi_objects(img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, 
     :return mask: numpy.ndarray
     :return obj_area: int
     """
+    # Store debug
+    debug = params.debug
+    params.debug = None
 
     params.device += 1
     # Create an empty grayscale (black) image the same dimensions as the input image
     mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
+    cv2.drawContours(mask, object_contour, -1, (255), -1, lineType=8, hierarchy=obj_hierarchy)
+
+    # Create a mask of the filled in ROI
+    roi_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
+    roi_points = np.vstack(roi_contour[0])
+    cv2.fillPoly(roi_mask, [roi_points], (255))
 
     # Make a copy of the input image for plotting
     ori_img = np.copy(img)
@@ -50,33 +60,16 @@ def roi_objects(img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, 
     if roi_type.upper() == 'PARTIAL' or roi_type.upper() == 'LARGEST':
         # Filter contours outside of the region of interest
         for c, cnt in enumerate(object_contour):
-            length = (len(cnt) - 1)
-            stack = np.vstack(cnt)
-            keep = False
-
-            # Test if the contours are within the ROI
-            for i in range(0, length):
-                pptest = cv2.pointPolygonTest(roi_contour[0], (stack[i][0], stack[i][1]), False)
-                if int(pptest) != -1:
-                    keep = True
-            if keep:
-                # Color the "gap contours" black
-                if obj_hierarchy[0][c][3] > -1:
-                    cv2.drawContours(mask, object_contour, c, (0), -1, lineType=8, hierarchy=obj_hierarchy)
-                else:
-                    # Color the plant contour parts white
-                    cv2.drawContours(mask, object_contour, c, (255), -1, lineType=8, hierarchy=obj_hierarchy)
-            else:
-                # If the contour isn't overlapping with the ROI, color it black
+            filtering_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
+            cv2.fillPoly(filtering_mask, [np.vstack(object_contour[c])], (255))
+            overlap_img = logical_and(filtering_mask, roi_mask)
+            # Delete contours that do not overlap at all with the ROI
+            if np.sum(overlap_img) == 0:
                 cv2.drawContours(mask, object_contour, c, (0), -1, lineType=8, hierarchy=obj_hierarchy)
 
         # Find the kept contours and area
         kept_cnt, kept_hierarchy = cv2.findContours(np.copy(mask), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
         obj_area = cv2.countNonZero(mask)
-
-        # If no objects were found partially within the ROI then fail
-        if obj_area == 0:
-            fatal_error("No objects found are within or overlap with the ROI")
 
         # Find the largest contour if roi_type is set to 'largest'
         if roi_type.upper() == 'LARGEST':
@@ -143,6 +136,8 @@ def roi_objects(img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, 
     else:
         fatal_error('ROI Type ' + str(roi_type) + ' is not "cutto", "largest", or "partial"!')
 
+    # Reset debug mode
+    params.debug = debug
     if params.debug == 'print':
         print_image(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_obj_on_img.png'))
         print_image(mask, os.path.join(params.debug_outdir, str(params.device) + '_roi_mask.png'))
