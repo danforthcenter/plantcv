@@ -1,12 +1,3 @@
----
-name: Pull Request
-about: Create a pull request
-title: ''
-labels: ''
-assignees: ''
-
----
-
 **Describe your changes**
 A clear and concise description of what changes are made by this pull request.
 What was the previous functionality (if relevant) and what can we do now with
