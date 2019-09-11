@@ -19,9 +19,6 @@ Steps to reproduce the behavior (including sample data and code really help):
 **Expected behavior**
 A clear and concise description of what you expected to happen.
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
-
 **Local environment (please complete the following information):**
  - OS: [e.g. Linux, macOS, Windows]
  - Environment [e.g. conda, virtualenv, pip, docker, etc.]
