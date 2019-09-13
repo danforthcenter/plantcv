@@ -6,8 +6,16 @@ import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
-from plantcv.plantcv import Outputs
 
+
+def _find_closest(A, target):
+    #A must be sorted
+    idx = A.searchsorted(target)
+    idx = np.clip(idx, 1, len(A)-1)
+    left = A[idx-1]
+    right = A[idx]
+    idx -= target - left < right - target
+    return idx
 
 def read_data(filename):
     """Read hyperspectral image data from file.
@@ -68,12 +76,24 @@ def read_data(filename):
         pseudo_rgb = cv2.merge((array_data[:, :, int(default_bands[0])],
                                 array_data[:, :, int(default_bands[1])],
                                 array_data[:, :, int(default_bands[2])]))
-    # else:
-    #     wavelength_dict = {}
-    #     for j, wavelength in header_dict["wavelength"]:
-    #         wavelength_dict.update({j: wavelength})
-    #
-    #  add method when there isn't suggested rgb values        
+    else:
+        wavelength_dict = {}
+        for j, wavelength in enumerate(header_dict["wavelength"]):
+            wavelength_dict.update({wavelength: j})
+
+        max_wavelength = max([float(i) for i in wavelength_dict.keys()])
+        min_wavelength = min([float(i) for i in wavelength_dict.keys()])
+
+        # Check range of available wavelength
+        if max_wavelength >= 635 and min_wavelength <= 490:
+            id_red = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 635)
+            id_green = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 520)
+            id_blue = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 450)
+
+            pseudo_rgb = cv2.merge((array_data[:, :, [id_red]],
+                                    array_data[:, :, [id_green]],
+                                    array_data[:, :, [id_blue]]))
+    #  add method when there isn't suggested rgb values
 
     if params.debug == "plot":
         plot_image(pseudo_rgb)
