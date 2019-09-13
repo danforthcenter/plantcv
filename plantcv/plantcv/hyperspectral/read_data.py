@@ -93,7 +93,13 @@ def read_data(filename):
             pseudo_rgb = cv2.merge((array_data[:, :, [id_blue]],
                                     array_data[:, :, [id_green]],
                                     array_data[:, :, [id_red]]))
-    #  add method when there isn't suggested rgb values
+        else:
+            # Otherwise take 3 wavelengths, first, middle and last available wavelength
+            id_red = len(header_dict["wavelength"])
+            id_green = int(id_red/2)
+            pseudo_rgb = cv2.merge((array_data[:, :, [0]],
+                                    array_data[:, :, [id_green]],
+                                    array_data[:, :, [id_red]]))
 
     if params.debug == "plot":
         # Gamma correct pseudo_rgb image
