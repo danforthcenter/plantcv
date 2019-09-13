@@ -177,7 +177,7 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
                                     method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
                                     value=histograms["r"]["hist"], label=rgb_values)
 
-        elif hist_plot_type.upper() == 'LAB' or hist_plot_type.upper() == 'ALL':
+        if hist_plot_type.upper() == 'LAB' or hist_plot_type.upper() == 'ALL':
             outputs.add_observation(variable='lightness_frequencies', trait='lightness frequencies',
                                     method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
                                     value=histograms["l"]["hist"], label=percent_values)
@@ -188,7 +188,7 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
                                     method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
                                     value=histograms["y"]["hist"], label=diverging_values)
 
-        elif hist_plot_type.upper() == 'HSV' or hist_plot_type.upper() == 'ALL':
+        if hist_plot_type.upper() == 'HSV' or hist_plot_type.upper() == 'ALL':
             outputs.add_observation(variable='hue_frequencies', trait='hue frequencies',
                                     method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
                                     value=histograms["h"]["hist"][0:180], label=hue_values)
