@@ -1,10 +1,12 @@
 # Read in a hyperspectral data cube as an array and parse metadata from the header file
 
+import os
+import cv2
+import numpy as np
+from plantcv.plantcv import params
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 from plantcv.plantcv import Outputs
-import numpy as np
-import os
 
 
 def read_data(filename):
@@ -38,7 +40,7 @@ def read_data(filename):
         hdata = hdata.replace("{\n", "{")
         hdata = hdata.replace("\n}", "}")
         hdata = hdata.replace(";", "")
-
+    hdata = hdata.split("\n")
     # Loop through and create a dictionary from the header file
     for i, string in enumerate(hdata):
         if '=' in string:
@@ -48,11 +50,34 @@ def read_data(filename):
             header_data = header_data[i].split(" : ")
             header_dict.update({header_data[0] : header_data[1].rstrip()})
 
-    bands = header_dict["bands"]
-    wavelengths = header_dict["wavelength"]
+    # Reshape the raw data into a datacube array
+    array_data = raw_data.reshape(int(header_dict["lines"]),
+                                  int(header_dict["bands"]),
+                                  int(header_dict["samples"])).transpose((0, 2, 1))
 
-    array_data = raw_data.reshape(header_dict["lines"],
-                                  header_dict["bands"],
-                                  header_dict["samples"]).transpose((0, 2, 1))
+    # Reformat wavelengths
+    header_dict["wavelength"] = header_dict["wavelength"].replace("{", "")
+    header_dict["wavelength"] = header_dict["wavelength"].replace("}", "")
+    header_dict["wavelength"] = header_dict["wavelength"].split(",")
+
+    if "default bands" in header_dict:
+        header_dict["default bands"] = header_dict["default bands"].replace("{", "")
+        header_dict["default bands"] = header_dict["default bands"].replace("}", "")
+        default_bands = header_dict["default bands"].split(",")
+
+        pseudo_rgb = cv2.merge((array_data[:, :, int(default_bands[0])],
+                                array_data[:, :, int(default_bands[1])],
+                                array_data[:, :, int(default_bands[2])]))
+    # else:
+    #     wavelength_dict = {}
+    #     for j, wavelength in header_dict["wavelength"]:
+    #         wavelength_dict.update({j: wavelength})
+    #
+    #  add method when there isn't suggested rgb values        
+
+    if params.debug == "plot":
+        plot_image(pseudo_rgb)
+    elif params.debug == "print":
+        print_image(pseudo_rgb, os.path.join(params.debug_outdir, str(params.device) + "_pseudo_rgb.png"))
 
     return array_data, header_dict
