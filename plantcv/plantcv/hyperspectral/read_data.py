@@ -86,17 +86,18 @@ def read_data(filename):
 
         # Check range of available wavelength
         if max_wavelength >= 635 and min_wavelength <= 490:
-            id_red = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 635)
-            id_green = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 520)
-            id_blue = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 450)
+            id_red = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 710)
+            id_green = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 540)
+            id_blue = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 480)
 
-            pseudo_rgb = cv2.merge((array_data[:, :, [id_red]],
+            pseudo_rgb = cv2.merge((array_data[:, :, [id_blue]],
                                     array_data[:, :, [id_green]],
-                                    array_data[:, :, [id_blue]]))
+                                    array_data[:, :, [id_red]]))
     #  add method when there isn't suggested rgb values
 
     if params.debug == "plot":
-        plot_image(pseudo_rgb)
+        # Gamma correct pseudo_rgb image
+        plot_image(pseudo_rgb**(1/2.2))
     elif params.debug == "print":
         print_image(pseudo_rgb, os.path.join(params.debug_outdir, str(params.device) + "_pseudo_rgb.png"))
 
