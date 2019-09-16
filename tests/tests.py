@@ -495,6 +495,9 @@ def test_plantcv_parallel_process_results_invalid_json():
 matplotlib.use('Template', warn=False)
 
 TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+HYPERSPECTRAL_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "hyperspectral_data")
+HYPERSPECTRAL_DATA = "darkReference"
+HYPERSPECTRAL_HDR = "darkReference.hdr"
 TEST_COLOR_DIM = (2056, 2454, 3)
 TEST_GRAY_DIM = (2056, 2454)
 TEST_BINARY_DIM = TEST_GRAY_DIM
@@ -3460,6 +3463,26 @@ def test_plantcv_morphology_segment_combine_bad_input():
     pcv.params.debug = "plot"
     with pytest.raises(RuntimeError):
         _, new_objects = pcv.morphology.segment_combine([0.5, 1.5], seg_objects, skel)
+
+
+# ########################################
+# Tests for the hyperspectral subpackage
+# ########################################
+def plantcv_hyperspectral_read_data_default():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = "plot"
+    array_data, header_dict = pcv.hyperspectral.read_data(filename=os.path.join(HYPERSPECTRAL_TEST_DATA,
+                                                                                HYPERSPECTRAL_DATA))
+    pcv.params.debug = "print"
+    array_data, header_dict = pcv.hyperspectral.read_data(filename=os.path.join(HYPERSPECTRAL_TEST_DATA,
+                                                                                HYPERSPECTRAL_DATA))
+    assert np.shape(array_data) == (1, 700, 987)
+
+
+
 
 # ##############################
 # Tests for the roi subpackage
