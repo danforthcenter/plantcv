@@ -72,10 +72,8 @@ def read_data(filename):
     header_dict["wavelength"] = header_dict["wavelength"].split(",")
 
     # Replace datatype ID number with the numpy datatype
-    dtype_dict = {"1": np.int8, "2": np.int16, "3": np.int32,
-                  "4": np.float32, "5": np.float64, "6": np.complex64,
-                  "9": np.complex128, "12": np.uint16, "13": np.uint32,
-                  "14": np.uint64, "15": np.uint64}
+    dtype_dict = {"1": np.uint8, "2": np.int16, "3": np.int32, "4": np.float32, "5": np.float64, "6": np.complex64,
+                  "9": np.complex128, "12": np.uint16, "13": np.uint32, "14": np.uint64, "15": np.uint64}
     header_dict["data type"] = dtype_dict[header_dict["data type"]]
 
     if "default bands" in header_dict:
@@ -110,6 +108,7 @@ def read_data(filename):
             pseudo_rgb = cv2.merge((array_data[:, :, [0]],
                                     array_data[:, :, [id_green]],
                                     array_data[:, :, [id_red]]))
+
     # Gamma correct pseudo_rgb image
     pseudo_rgb= pseudo_rgb ** (1 / 2.2)
 
