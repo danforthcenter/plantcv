@@ -44,18 +44,21 @@ def read_data(filename):
     with open(headername, "r") as f:
         # Replace characters for easier parsing
         hdata = f.read()
+        hdata = hdata.replace(",\n", ",")
         hdata = hdata.replace("\n,", ",")
         hdata = hdata.replace("{\n", "{")
         hdata = hdata.replace("\n}", "}")
+        hdata = hdata.replace(" \n ", "")
         hdata = hdata.replace(";", "")
     hdata = hdata.split("\n")
+
     # Loop through and create a dictionary from the header file
     for i, string in enumerate(hdata):
-        if '=' in string:
-            header_data = hdata[i].split(" = ")
+        if ' = ' in string:
+            header_data = string.split(" = ")
             header_dict.update({header_data[0]: header_data[1].rstrip()})
         elif ' : ' in string:
-            header_data = header_data[i].split(" : ")
+            header_data = string.split(" : ")
             header_dict.update({header_data[0] : header_data[1].rstrip()})
 
     # Reshape the raw data into a datacube array

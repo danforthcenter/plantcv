@@ -500,6 +500,8 @@ HYPERSPECTRAL_DATA = "darkReference"
 HYPERSPECTRAL_HDR = "darkReference.hdr"
 HYPERSPECTRAL_DATA_NO_DEFAULT = "darkReference2"
 HYPERSPECTRAL_HDR_NO_DEFAULT = "darkReference2.hdr"
+HYPERSPECTRAL_DATA_APPROX_PSEUDO = "darkReference3"
+HYPERSPECTRAL_HDR_APPROX_PSEUDO = "darkReference3.hdr"
 TEST_COLOR_DIM = (2056, 2454, 3)
 TEST_GRAY_DIM = (2056, 2454)
 TEST_BINARY_DIM = TEST_GRAY_DIM
@@ -3476,23 +3478,25 @@ def test_plantcv_hyperspectral_read_data_default():
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = "plot"
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA,HYPERSPECTRAL_DATA)
-    array_data, header_dict = pcv.hyperspectral.read_data(filename=spectral_filename)
+    _, _ = pcv.hyperspectral.read_data(filename=spectral_filename)
     pcv.params.debug = "print"
     array_data, header_dict = pcv.hyperspectral.read_data(filename=spectral_filename)
     assert np.shape(array_data) == (1, 800, 978)
 
 
 def test_plantcv_hyperspectral_read_data_no_default_bands():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_read_data_no_default_bands")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = "plot"
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA,HYPERSPECTRAL_DATA_NO_DEFAULT)
     array_data, header_dict = pcv.hyperspectral.read_data(filename=spectral_filename)
-    pcv.params.debug = "print"
-    array_data, header_dict = pcv.hyperspectral.read_data(filename=spectral_filename)
     assert np.shape(array_data) == (1, 800, 978)
 
+
+def test_plantcv_hyperspectral_read_data_approx_pseudorgb():
+    pcv.params.debug = "plot"
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA,HYPERSPECTRAL_DATA_APPROX_PSEUDO)
+    array_data, header_dict = pcv.hyperspectral.read_data(filename=spectral_filename)
+
+    assert np.shape(array_data) == (1, 800, 978)
 
 # ##############################
 # Tests for the roi subpackage
