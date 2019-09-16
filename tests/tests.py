@@ -498,6 +498,8 @@ TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 HYPERSPECTRAL_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "hyperspectral_data")
 HYPERSPECTRAL_DATA = "darkReference"
 HYPERSPECTRAL_HDR = "darkReference.hdr"
+HYPERSPECTRAL_DATA_NO_DEFAULT = "darkReference2"
+HYPERSPECTRAL_HDR_NO_DEFAULT = "darkReference2.hdr"
 TEST_COLOR_DIM = (2056, 2454, 3)
 TEST_GRAY_DIM = (2056, 2454)
 TEST_BINARY_DIM = TEST_GRAY_DIM
@@ -3468,20 +3470,28 @@ def test_plantcv_morphology_segment_combine_bad_input():
 # ########################################
 # Tests for the hyperspectral subpackage
 # ########################################
-def plantcv_hyperspectral_read_data_default():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
+def test_plantcv_hyperspectral_read_data_default():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_read_data_default")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = "plot"
-    array_data, header_dict = pcv.hyperspectral.read_data(filename=os.path.join(HYPERSPECTRAL_TEST_DATA,
-                                                                                HYPERSPECTRAL_DATA))
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA,HYPERSPECTRAL_DATA)
+    array_data, header_dict = pcv.hyperspectral.read_data(filename=spectral_filename)
     pcv.params.debug = "print"
-    array_data, header_dict = pcv.hyperspectral.read_data(filename=os.path.join(HYPERSPECTRAL_TEST_DATA,
-                                                                                HYPERSPECTRAL_DATA))
-    assert np.shape(array_data) == (1, 700, 987)
+    array_data, header_dict = pcv.hyperspectral.read_data(filename=spectral_filename)
+    assert np.shape(array_data) == (1, 800, 978)
 
 
+def test_plantcv_hyperspectral_read_data_no_default_bands():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_read_data_no_default_bands")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = "plot"
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA,HYPERSPECTRAL_DATA_NO_DEFAULT)
+    array_data, header_dict = pcv.hyperspectral.read_data(filename=spectral_filename)
+    pcv.params.debug = "print"
+    array_data, header_dict = pcv.hyperspectral.read_data(filename=spectral_filename)
+    assert np.shape(array_data) == (1, 800, 978)
 
 
 # ##############################

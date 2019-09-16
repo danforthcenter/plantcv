@@ -1,11 +1,3 @@
-import os
-import matplotlib
-# If there is no display or a matplotlib backend already defined, use the non-GUI backend
-if "DISPLAY" not in os.environ and "MPLBACKEND" not in os.environ:
-    matplotlib.use("Agg")
-
-observations = {}
-
 # class hyperspec_img:
 #
 #     """PlantCV parameters class
@@ -31,12 +23,7 @@ observations = {}
 #         self.text_size = text_size
 #         self.text_thickness = text_thickness
 
-
-
-
-
-
-from plantcv.plantcv.hyperspectral import read_data
+from plantcv.plantcv.hyperspectral.read_data import read_data
 
 # add new functions to end of lists
 __all__ = ["read_data"]

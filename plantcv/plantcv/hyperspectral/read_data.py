@@ -54,7 +54,7 @@ def read_data(filename):
         if '=' in string:
             header_data = hdata[i].split(" = ")
             header_dict.update({header_data[0]: header_data[1].rstrip()})
-        elif ':' in string:
+        elif ' : ' in string:
             header_data = header_data[i].split(" : ")
             header_dict.update({header_data[0] : header_data[1].rstrip()})
 
