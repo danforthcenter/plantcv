@@ -56,10 +56,10 @@ def read_data(filename):
     for i, string in enumerate(hdata):
         if ' = ' in string:
             header_data = string.split(" = ")
-            header_dict.update({header_data[0]: header_data[1].rstrip()})
+            header_dict.update({header_data[0].rstrip(): header_data[1].rstrip()})
         elif ' : ' in string:
             header_data = string.split(" : ")
-            header_dict.update({header_data[0] : header_data[1].rstrip()})
+            header_dict.update({header_data[0].rstrip() : header_data[1].rstrip()})
 
     # Reshape the raw data into a datacube array
     array_data = raw_data.reshape(int(header_dict["lines"]),
