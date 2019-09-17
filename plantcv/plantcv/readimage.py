@@ -8,6 +8,7 @@ from plantcv.plantcv import fatal_error
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
+from plantcv.plantcv.hyperspectral import read_data
 
 
 def readimage(filename, mode="native"):
@@ -37,6 +38,9 @@ def readimage(filename, mode="native"):
     elif mode.upper() == "CSV":
         inputarray = pd.read_csv(filename, sep=',', header=None)
         img = inputarray.values
+    elif mode.upper() == "ENVI":
+        array_data, header_dict = read_data(filename)
+        return array_data, header_dict
     else:
         img = cv2.imread(filename, -1)
 
