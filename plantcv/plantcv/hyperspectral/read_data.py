@@ -88,10 +88,12 @@ def read_data(filename):
         wavelength_dict = {}
         for j, wavelength in enumerate(header_dict["wavelength"]):
             wavelength_dict.update({wavelength: j})
-
-        max_wavelength = max([float(i.rstrip()) for i in wavelength_dict.keys()])
-        min_wavelength = min([float(i.rstrip()) for i in wavelength_dict.keys()])
-
+        try:
+            max_wavelength = max([float(i.rstrip()) for i in wavelength_dict.keys()])
+            min_wavelength = min([float(i.rstrip()) for i in wavelength_dict.keys()])
+        except ValueError:
+            max_wavelength = 1
+            min_wavelength = 0
         # Check range of available wavelength
         if max_wavelength >= 635 and min_wavelength <= 490:
             id_red = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 710)
