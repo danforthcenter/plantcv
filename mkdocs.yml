@@ -152,3 +152,4 @@ nav:
 markdown_extensions:
   - toc:
       permalink: True
+  - admonition
