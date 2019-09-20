@@ -495,6 +495,13 @@ def test_plantcv_parallel_process_results_invalid_json():
 matplotlib.use('Template', warn=False)
 
 TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+HYPERSPECTRAL_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "hyperspectral_data")
+HYPERSPECTRAL_DATA = "darkReference"
+HYPERSPECTRAL_HDR = "darkReference.hdr"
+HYPERSPECTRAL_DATA_NO_DEFAULT = "darkReference2"
+HYPERSPECTRAL_HDR_NO_DEFAULT = "darkReference2.hdr"
+HYPERSPECTRAL_DATA_APPROX_PSEUDO = "darkReference3"
+HYPERSPECTRAL_HDR_APPROX_PSEUDO = "darkReference3.hdr"
 TEST_COLOR_DIM = (2056, 2454, 3)
 TEST_GRAY_DIM = (2056, 2454)
 TEST_BINARY_DIM = TEST_GRAY_DIM
@@ -2228,6 +2235,12 @@ def test_plantcv_readimage_csv():
     assert len(np.shape(img)) == 2
 
 
+def test_plantcv_readimage_envi():
+    pcv.params.debug = None
+    array_data, header_dict = pcv.readimage(filename=os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA), mode="envi")
+    assert header_dict["bands"] == '978'
+
+
 def test_plantcv_readimage_bad_file():
     with pytest.raises(RuntimeError):
         _ = pcv.readimage(filename=TEST_INPUT_COLOR)
@@ -3460,6 +3473,36 @@ def test_plantcv_morphology_segment_combine_bad_input():
     pcv.params.debug = "plot"
     with pytest.raises(RuntimeError):
         _, new_objects = pcv.morphology.segment_combine([0.5, 1.5], seg_objects, skel)
+
+
+# ########################################
+# Tests for the hyperspectral subpackage
+# ########################################
+def test_plantcv_hyperspectral_read_data_default():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_read_data_default")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = "plot"
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA,HYPERSPECTRAL_DATA)
+    _, _ = pcv.hyperspectral.read_data(filename=spectral_filename)
+    pcv.params.debug = "print"
+    array_data, header_dict = pcv.hyperspectral.read_data(filename=spectral_filename)
+    assert np.shape(array_data) == (1, 800, 978)
+
+
+def test_plantcv_hyperspectral_read_data_no_default_bands():
+    pcv.params.debug = "plot"
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA,HYPERSPECTRAL_DATA_NO_DEFAULT)
+    array_data, header_dict = pcv.hyperspectral.read_data(filename=spectral_filename)
+    assert np.shape(array_data) == (1, 800, 978)
+
+
+def test_plantcv_hyperspectral_read_data_approx_pseudorgb():
+    pcv.params.debug = "plot"
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA,HYPERSPECTRAL_DATA_APPROX_PSEUDO)
+    array_data, header_dict = pcv.hyperspectral.read_data(filename=spectral_filename)
+    assert np.shape(array_data) == (1, 800, 978)
+
 
 # ##############################
 # Tests for the roi subpackage
