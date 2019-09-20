@@ -2235,6 +2235,12 @@ def test_plantcv_readimage_csv():
     assert len(np.shape(img)) == 2
 
 
+def test_plantcv_readimage_envi():
+    pcv.params.debug = None
+    array_data, header_dict = pcv.readimage(filename=os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA), mode="envi")
+    assert header_dict["bands"] == '978'
+
+
 def test_plantcv_readimage_bad_file():
     with pytest.raises(RuntimeError):
         _ = pcv.readimage(filename=TEST_INPUT_COLOR)
@@ -3495,8 +3501,8 @@ def test_plantcv_hyperspectral_read_data_approx_pseudorgb():
     pcv.params.debug = "plot"
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA,HYPERSPECTRAL_DATA_APPROX_PSEUDO)
     array_data, header_dict = pcv.hyperspectral.read_data(filename=spectral_filename)
-
     assert np.shape(array_data) == (1, 800, 978)
+
 
 # ##############################
 # Tests for the roi subpackage
