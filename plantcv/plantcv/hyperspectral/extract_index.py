@@ -36,9 +36,12 @@ def extract_index(array, header_dict, index="NDVI", fudge_factor=20):
 
     if index.upper() == "NDVI":
         if (max_wavelength + fudge_factor) >= 800 and (min_wavelength - fudge_factor) <= 670:
-            nir = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
-            red = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 670)
-            index_array = (nir - red) / (nir + red)
+            nir_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
+            red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 670)
+            nir = array[:, :, [nir_index]]
+            red = array[:, :, [red_index]]
+            ndvi = (nir - red) / (nir + red)
+            index_array = np.transpose(np.transpose(ndvi)[0])
         else:
             fatal_error("Available wavelengths are not suitable for calculating NDVI. Try increasing fudge factor.")
 
