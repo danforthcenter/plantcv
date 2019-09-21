@@ -24,7 +24,8 @@
 #         self.text_thickness = text_thickness
 
 from plantcv.plantcv.hyperspectral.read_data import read_data
+from plantcv.plantcv.hyperspectral.read_data import _find_closest
 
 # add new functions to end of lists
-__all__ = ["read_data"]
+__all__ = ["read_data", "_find_closest"]
 
