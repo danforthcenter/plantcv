@@ -3520,7 +3520,7 @@ def test_plantcv_hyperspectral_extract_index_ndvi():
     _ = pcv.hyperspectral.extract_index(array=array_data, header_dict=header_dict, index="NDVI")
     pcv.params.debug = "print"
     index_array = pcv.hyperspectral.extract_index(array=array_data, header_dict=header_dict, index="NDVI")
-    assert np.shape(index_array) == (1,800) and np.max(index_array) == 167
+    assert np.shape(index_array) == (1,800) and np.max(index_array) == 153
 
 
 def test_plantcv_hyperspectral_extract_index_gdvi():

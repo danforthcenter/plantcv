@@ -37,8 +37,8 @@ def extract_index(array, header_dict, index="NDVI", fudge_factor=20):
             # Obtain index that best represents NIR and red bands
             nir_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
             red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 670)
-            nir = array[:, :, [nir_index]]
-            red = array[:, :, [red_index]]
+            nir = (array[:, :, [nir_index]] + array[:, :, [nir_index + 4]] + array[:, :, [nir_index - 4]]) / 3
+            red = (array[:, :, [red_index]] + array[:, :, [red_index + 4]] + array[:, :, [red_index - 4]]) / 3
             ndvi = (nir - red) / (nir + red)
             index_array_raw = np.transpose(np.transpose(ndvi)[0])
 
