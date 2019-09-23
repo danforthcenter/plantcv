@@ -33,18 +33,22 @@ def extract_index(array, header_dict, index="NDVI", fudge_factor=20):
     for j, wavelength in enumerate(header_dict["wavelength"]):
         wavelength_dict.update({wavelength: j})
 
-
     if index.upper() == "NDVI":
         if (max_wavelength + fudge_factor) >= 800 and (min_wavelength - fudge_factor) <= 670:
+            # Obtain index that best represents NIR and red bands
             nir_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
             red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 670)
             nir = array[:, :, [nir_index]]
             red = array[:, :, [red_index]]
             ndvi = (nir - red) / (nir + red)
-            index_array = np.transpose(np.transpose(ndvi)[0])
+            index_array_raw = np.transpose(np.transpose(ndvi)[0])
+
+            # Resulting array is float 32 from -1 to 1, transform into uint8 for plotting
+            all_positive = np.add(index_array_raw, np.ones(np.shape(index_array_raw)))
+            datandvi = all_positive.astype(np.float64) / 2  # normalize the data to 0 - 1
+            index_array = (255 * datandvi).astype(np.uint8)  # scale to 255
         else:
             fatal_error("Available wavelengths are not suitable for calculating NDVI. Try increasing fudge factor.")
-
 
     if params.debug == "plot":
         # Gamma correct pseudo_rgb image
