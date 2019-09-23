@@ -67,6 +67,23 @@ def extract_index(array, header_dict, index="NDVI", fudge_factor=20):
         else:
             fatal_error("Available wavelengths are not suitable for calculating GDVI. Try increasing fudge factor.")
 
+    elif index.upper() == "SAVI":
+        # "Soil Adjusted Vegetation Index [Huete et al. (1988)]"
+        if (max_wavelength + fudge_factor) >= 800 and (min_wavelength - fudge_factor) <= 680:
+            nir_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
+            red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 680)
+            nir = (array[:, :, [nir_index]])
+            red = (array[:, :, [red_index]])
+            savi = (1.5 * (nir - red)) / (red + nir + 0.5)
+            index_array_raw = np.transpose(np.transpose(savi)[0])
+
+            # Resulting array is float 32 from -1 to 1, transform into uint8 for plotting
+            all_positive = np.add(index_array_raw, np.ones(np.shape(index_array_raw)))
+            datagdvi = all_positive.astype(np.float64) / 2  # normalize the data to 0 - 1
+            index_array = (255 * datagdvi).astype(np.uint8)  # scale to 255
+        else:
+            fatal_error("Available wavelengths are not suitable for calculating SAVI. Try increasing fudge factor.")
+
     if params.debug == "plot":
         # Gamma correct pseudo_rgb image
         plot_image(index_array)

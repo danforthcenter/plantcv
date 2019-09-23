@@ -3534,6 +3534,17 @@ def test_plantcv_hyperspectral_extract_index_gdvi():
     assert np.shape(index_array) == (1,800) and np.max(index_array) == 127
 
 
+def test_plantcv_hyperspectral_extract_index_savi():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_savi")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    array_data, header_dict = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, header_dict=header_dict, index="SAVI")
+    assert np.shape(index_array) == (1,800) and np.max(index_array) == 127
+
+
 def test_plantcv_hyperspectral_extract_index_ndvi_bad_input():
     header_dict = HYPERSPECTRAL_HDR_SMALL_RANGE
     array_data = TEST_ACUTE_RESULT
@@ -3546,6 +3557,13 @@ def test_plantcv_hyperspectral_extract_index_gdvi_bad_input():
     array_data = TEST_ACUTE_RESULT
     with pytest.raises(RuntimeError):
         index_array = pcv.hyperspectral.extract_index(array=array_data, header_dict=header_dict, index="GDVI")
+
+
+def test_plantcv_hyperspectral_extract_index_savi_bad_input():
+    header_dict = HYPERSPECTRAL_HDR_SMALL_RANGE
+    array_data = TEST_ACUTE_RESULT
+    with pytest.raises(RuntimeError):
+        index_array = pcv.hyperspectral.extract_index(array=array_data, header_dict=header_dict, index="SAVI")
 
 
 # ##############################
