@@ -25,9 +25,8 @@ def extract_index(array, header_dict, index="NDVI", fudge_factor=20):
         :return index_array: numpy.ndarray
         """
     # Min and max available wavelength will be used to determine if an index can be extracted
-    max_wavelength = float(max(header_dict['wavelength']))
-    min_wavelength = float(min(header_dict['wavelength']))
-
+    max_wavelength = max([float(i.rstrip()) for i in header_dict['wavelength']])
+    min_wavelength = min([float(i.rstrip()) for i in header_dict['wavelength']])
     # Dictionary of wavelength and it's index in the list
     wavelength_dict = {}
     for j, wavelength in enumerate(header_dict["wavelength"]):
@@ -48,7 +47,8 @@ def extract_index(array, header_dict, index="NDVI", fudge_factor=20):
             datandvi = all_positive.astype(np.float64) / 2  # normalize the data to 0 - 1
             index_array = (255 * datandvi).astype(np.uint8)  # scale to 255
         else:
-            fatal_error("Available wavelengths are not suitable for calculating NDVI. Try increasing fudge factor.")
+            fatal_error("Available wavelengths are not suitable for calculating NDVI. Try increasing fudge factor." )
+
 
     elif index.upper() == "GDVI":
         # "Green Difference Vegetation Index [Sripada et al. (2006)]"
