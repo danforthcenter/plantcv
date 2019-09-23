@@ -50,6 +50,23 @@ def extract_index(array, header_dict, index="NDVI", fudge_factor=20):
         else:
             fatal_error("Available wavelengths are not suitable for calculating NDVI. Try increasing fudge factor.")
 
+    elif index.upper() == "GDVI":
+        # "Green Difference Vegetation Index [Sripada et al. (2006)]"
+        if (max_wavelength + fudge_factor) >= 800 and (min_wavelength - fudge_factor) <= 680:
+            nir_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
+            red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 680)
+            nir = (array[:, :, [nir_index]] + array[:, :, [nir_index + 4]] + array[:, :, [nir_index - 4]]) / 3
+            red = (array[:, :, [red_index]] + array[:, :, [red_index + 4]] + array[:, :, [red_index - 4]]) / 3
+            gdvi = nir - red
+            index_array_raw = np.transpose(np.transpose(gdvi)[0])
+
+            # Resulting array is float 32 from -1 to 1, transform into uint8 for plotting
+            all_positive = np.add(index_array_raw, np.ones(np.shape(index_array_raw)))
+            datagdvi = all_positive.astype(np.float64) / 2  # normalize the data to 0 - 1
+            index_array = (255 * datagdvi).astype(np.uint8)  # scale to 255
+        else:
+            fatal_error("Available wavelengths are not suitable for calculating GDVI. Try increasing fudge factor.")
+
     if params.debug == "plot":
         # Gamma correct pseudo_rgb image
         plot_image(index_array)
