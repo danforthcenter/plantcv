@@ -25,4 +25,25 @@ def apply_mask_spectral(array, mask):
     """
     params.device += 1
 
-    rescaled_array[np.where(kept_mask == 0)] = 0
+    # Make a copy since we will directly mask the array
+    array_data = array.copy()
+    # Mask the array
+    array_data[np.where(mask == 0)] = 0
+
+    # Take 3 wavelengths, first, middle and last available wavelength
+    num_bands = np.shape(array)[2]
+    med_band = int(num_bands / 2)
+    pseudo_rgb = cv2.merge((array_data[:, :, [0]],
+                            array_data[:, :, [med_band]],
+                            array_data[:, :, [num_bands]]))
+
+        # Gamma correct pseudo_rgb image
+    pseudo_rgb = pseudo_rgb ** (1 / 2.2)
+
+    if params.debug == "plot":
+        # Gamma correct pseudo_rgb image
+        plot_image(pseudo_rgb)
+    elif params.debug == "print":
+        print_image(pseudo_rgb, os.path.join(params.debug_outdir, str(params.device) + "_masked_spectral.png"))
+
+    return array_data

@@ -25,7 +25,7 @@ def extract_index(array, header_dict, index="NDVI", fudge_factor=20):
         :return index_array: numpy.ndarray
         """
     params.device += 1
-    
+
     # Min and max available wavelength will be used to determine if an index can be extracted
     max_wavelength = max([float(i.rstrip()) for i in header_dict['wavelength']])
     min_wavelength = min([float(i.rstrip()) for i in header_dict['wavelength']])
