@@ -35,7 +35,7 @@ def apply_mask_spectral(array, mask):
     med_band = int(num_bands / 2)
     pseudo_rgb = cv2.merge((array_data[:, :, [0]],
                             array_data[:, :, [med_band]],
-                            array_data[:, :, [num_bands]]))
+                            array_data[:, :, [num_bands-1]]))
 
         # Gamma correct pseudo_rgb image
     pseudo_rgb = pseudo_rgb ** (1 / 2.2)
