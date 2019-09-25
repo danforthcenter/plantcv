@@ -24,6 +24,8 @@ def extract_index(array, header_dict, index="NDVI", fudge_factor=20):
         :param index: str
         :return index_array: numpy.ndarray
         """
+    params.device += 1
+    
     # Min and max available wavelength will be used to determine if an index can be extracted
     max_wavelength = max([float(i.rstrip()) for i in header_dict['wavelength']])
     min_wavelength = min([float(i.rstrip()) for i in header_dict['wavelength']])
@@ -51,7 +53,7 @@ def extract_index(array, header_dict, index="NDVI", fudge_factor=20):
 
 
     elif index.upper() == "GDVI":
-        # "Green Difference Vegetation Index [Sripada et al. (2006)]"
+        # Green Difference Vegetation Index [Sripada et al. (2006)]
         if (max_wavelength + fudge_factor) >= 800 and (min_wavelength - fudge_factor) <= 680:
             nir_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
             red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 680)
@@ -68,7 +70,7 @@ def extract_index(array, header_dict, index="NDVI", fudge_factor=20):
             fatal_error("Available wavelengths are not suitable for calculating GDVI. Try increasing fudge factor.")
 
     elif index.upper() == "SAVI":
-        # "Soil Adjusted Vegetation Index [Huete et al. (1988)]"
+        # Soil Adjusted Vegetation Index [Huete et al. (1988)]
         if (max_wavelength + fudge_factor) >= 800 and (min_wavelength - fudge_factor) <= 680:
             nir_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
             red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 680)
