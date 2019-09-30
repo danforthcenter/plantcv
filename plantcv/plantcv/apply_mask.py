@@ -39,10 +39,21 @@ def apply_mask(rgb_img, mask, mask_color):
     # Mask the array
     array_data[np.where(mask == 0)] = color_val
 
-    # Check if the array data is
-    if params.debug == 'print':
-        print_image(array_data, os.path.join(params.debug_outdir, str(params.device) + '_masked.png'))
-    elif params.debug == 'plot':
-        plot_image(array_data)
+    # Check if the array data format
+    if len(np.shape(array_data)) > 2 and np.shape(array_data)[-1] > 3:
+        num_bands = np.shape(array_data)[2]
+        med_band = int(num_bands / 2)
+        pseudo_rgb = cv2.merge((array_data[:, :, [0]],
+                                array_data[:, :, [med_band]],
+                                array_data[:, :, [num_bands - 1]]))
+        if params.debug == 'print':
+            print_image(array_data, os.path.join(params.debug_outdir, str(params.device) + '_masked.png'))
+        elif params.debug == 'plot':
+            plot_image(pseudo_rgb)
+    else:
+        if params.debug == 'print':
+            print_image(array_data, os.path.join(params.debug_outdir, str(params.device) + '_masked.png'))
+        elif params.debug == 'plot':
+            plot_image(array_data)
 
     return array_data
