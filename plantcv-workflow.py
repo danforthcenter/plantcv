@@ -130,8 +130,8 @@ def options():
     parser.add_argument("-t", "--type", help='Image format type (extension).', default="png")
     parser.add_argument("-l", "--delimiter", help='Image file name metadata delimiter character.', default='_')
     parser.add_argument("-f", "--meta",
-                        help='Image file name metadata format. List valid metadata fields separated by the '
-                             'delimiter (-l/--delimiter). Valid metadata fields are: ' +
+                        help='Image file name metadata structure. Comma-separated list of valid metadata terms. '
+                             'Valid metadata fields are: ' +
                              ', '.join(map(str, list(valid_meta.keys()))), default='imgtype_camera_frame_zoom_id')
     parser.add_argument("-M", "--match",
                         help='Restrict analysis to images with metadata matching input criteria. Input a '
@@ -192,7 +192,7 @@ def options():
     args.start_time = start_time
 
     # Image filename metadata structure
-    fields = args.meta.split(args.delimiter)
+    fields = args.meta.split(",")
     # Keep track of the number of metadata fields matching filenames should have
     args.meta_count = len(fields)
     structure = {}
