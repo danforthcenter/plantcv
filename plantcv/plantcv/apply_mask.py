@@ -1,6 +1,7 @@
 # Apply White or Black Background Mask
 
 import os
+import cv2
 import numpy as np
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
@@ -46,10 +47,10 @@ def apply_mask(rgb_img, mask, mask_color):
         pseudo_rgb = cv2.merge((array_data[:, :, [0]],
                                 array_data[:, :, [med_band]],
                                 array_data[:, :, [num_bands - 1]]))
-        if params.debug == 'print':
-            print_image(array_data, os.path.join(params.debug_outdir, str(params.device) + '_masked.png'))
-        elif params.debug == 'plot':
-            plot_image(pseudo_rgb)
+        # if params.debug == 'print':
+        #     print_image(array_data, os.path.join(params.debug_outdir, str(params.device) + '_masked.png'))
+        # elif params.debug == 'plot':
+        #     plot_image(pseudo_rgb)
     else:
         if params.debug == 'print':
             print_image(array_data, os.path.join(params.debug_outdir, str(params.device) + '_masked.png'))
