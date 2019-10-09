@@ -1067,6 +1067,21 @@ def test_plantcv_apply_mask_black():
     assert all([i == j] for i, j in zip(np.shape(masked_img), TEST_COLOR_DIM))
 
 
+def test_plantcv_apply_mask_hyperspectral():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_apply_mask_hyperspectral")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    img = np.ones((2056, 2454))
+    img_stacked = cv2.merge((img, img, img, img))
+    shape = np.shape(img_stacked)
+    masked_array = pcv.apply_mask(rgb_img=img_stacked, mask=mask, mask_color="black")
+    assert np.mean(masked_array) < np.mean(img_stacked)
+    #assert np.shape(img_stacked) == 1
+
+
 def test_plantcv_apply_mask_bad_input():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
