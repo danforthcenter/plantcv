@@ -74,7 +74,7 @@ If you are running on **Windows** (except with WSL), you will need to use a batc
 
 ```{batch}
 python.exe ^
-C:\Users\nfahlgren\Miniconda3\envs\plantcv\Scripts\plantcv-workflow.py ^ 
+%CONDA_PREFIX%\Scripts\plantcv-workflow.py ^ 
 -d C:\Users\nfahlgren\Documents\projects\lemnatec\burnin2\images3 ^
 -p C:\Users\nfahlgren\Documents\programs\plantcv\scripts\image_analysis\vis_tv\vis_tv_z300_L1.py ^
 -t png ^
