@@ -11,12 +11,12 @@ to run PlantCV over a flat file directory (just keep this in mind).
 We normally execute workflows in a shell script or in in a condor job file (or dagman workflow if running multiple workflows into one json database)
 
 * First call the plantcv-workflow.py script that does the parallelization
-* -d is the --directory of images
+* -d is the --dir directory of images
 * -p is the --workflow that you are going to run over the images, see the [VIS tutorial](vis_tutorial.md) and [PSII tutorial](psII_tutorial.md)
 * -i is the --outdir your desired location for the output images
 * -a is the --adaptor to indicate structure to grab the metadata from, either 'filename' or the default, which is 'phenofront' (lemnatec structured output)
 * -t is the --type extension 'png' is the default. Any format readable by opencv is accepted such as 'tif' or 'jpg'
-* -l is the --deliminator for the filename, default is "_"
+* -l is the --delimiter for the filename, default is "_"
 * -C is the --coprocess the specified imgtype with the imgtype specified in --match (e.g. coprocess NIR images with VIS).
 * -f is the --meta (data) format map for example, default is "imgtype_camera_frame_zoom_id".
 * -M is the --match metadata option, for example to select a certain zoom or angle. For example: 'imgtype:VIS,camera:SV,zoom:z500'
@@ -67,6 +67,30 @@ time \
 -T 10 \
 -w 
 
+```
+
+### Example Batch Script (Windows)
+If you are running on **Windows** (except with WSL), you will need to use a batch script. Assuming you are using Anaconda Prompt, make sure you `conda activate plantcv`, and `cd` to your project directory. Also, there are no comments in batch scripts and `python` can only find files in you immediate working directory (even if the file is in your PATH).
+
+```{batch}
+python.exe ^
+C:\Users\nfahlgren\Miniconda3\envs\plantcv\Scripts\plantcv-workflow.py ^ 
+-d C:\Users\nfahlgren\Documents\projects\lemnatec\burnin2\images3 ^
+-p C:\Users\nfahlgren\Documents\programs\plantcv\scripts\image_analysis\vis_tv\vis_tv_z300_L1.py ^
+-t png ^
+-j burnin2.json ^
+-i C:\Users\nfahlgren\Documents\projects\lemnatec\burnin2\plantcv3\images ^
+-m C:\Users\nfahlgren\Documents\programs\plantcv\masks\vis_tv\mask_brass_tv_z300_L1.png ^
+-f imgtype_camera_frame_zoom_id ^
+-M imgtype:VIS,camera:TV,zoom:z300 ^
+-C NIR ^
+-T 10 ^
+-w
+```
+
+If saved as `run_workflow.cmd` you can then execute it in the Anaconda Prompt:
+```
+(plantcv) C:\Users\nfahlgren\Documents\projects\lemnatec> run_workflows.cmd
 ```
 
 ### Example Condor Jobfile
@@ -152,5 +176,7 @@ We normally execute workflows as a shell script or as a condor jobfile (or dagma
 ```bash
 plantcv-utils.py json2csv -j output.json -c result-table
 ```
+
+This can be added as an additional line in the shell script that runs the workflow too.
 
 See [Accessory Tools](tools.md) for more information.
