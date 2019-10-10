@@ -25,7 +25,7 @@ def options():
         ValueError: if a metadata field is not supported.
     """
     # Job start time
-    start_time = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+    start_time = datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')
     print("Starting run " + start_time + '\n', file=sys.stderr)
 
     # These are metadata types that PlantCV deals with.
