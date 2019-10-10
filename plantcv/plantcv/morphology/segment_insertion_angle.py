@@ -58,6 +58,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
 
     # Create a list of tip tuples to use for sorting
     tips = find_tips(skel_img)
+    tips = dilate(tips, 3, 1)
     tip_objects, tip_hierarchies = find_objects(tips, tips)
     tip_tuples = []
     for i, cnt in enumerate(tip_objects):
@@ -131,6 +132,8 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     lefty = int((-x * vy / vx) + y)
     righty = int(((cols - x) * vy / vx) + y)
     cv2.line(labeled_img, (cols - 1, righty), (0, lefty), (150, 150, 150), 3)
+
+    rand_color = color_palette(len(insertion_segments))
 
     for t, segment in enumerate(insertion_segments):
         # Find line fit to each segment

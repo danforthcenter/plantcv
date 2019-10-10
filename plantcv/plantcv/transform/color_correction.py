@@ -9,6 +9,7 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 from plantcv.plantcv.roi import circle
+from plantcv.plantcv import params
 
 
 def get_color_matrix(rgb_img, mask):
@@ -406,7 +407,7 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
         canvas = np.copy(rgb_img)
         # Draw chip ROIs on the canvas image
         for chip in chips:
-            cv2.drawContours(canvas, chip[0], -1, (255, 255, 0), 5)
+            cv2.drawContours(canvas, chip[0], -1, (255, 255, 0), params.line_thickness)
         if params.debug == "print":
             print_image(img=canvas, filename=os.path.join(params.debug_outdir,
                                                           str(params.device) + "_color_card_mask_rois.png"))

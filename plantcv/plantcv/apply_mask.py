@@ -2,6 +2,7 @@
 
 import os
 import cv2
+import numpy as np
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
@@ -26,26 +27,34 @@ def apply_mask(rgb_img, mask, mask_color):
     """
 
     params.device += 1
-    if mask_color.upper() == 'WHITE':
-        # Mask image
-        masked_img = cv2.bitwise_and(rgb_img, rgb_img, mask=mask)
-        # Create inverted mask for background
-        mask_inv = cv2.bitwise_not(mask)
-        # Invert the background so that it is white, but apply mask_inv so you don't white out the plant
-        white_mask = cv2.bitwise_not(masked_img, mask=mask_inv)
-        # Add masked image to white background (can't just use mask_inv because that is a binary)
-        white_masked = cv2.add(masked_img, white_mask)
-        if params.debug == 'print':
-            print_image(white_masked, os.path.join(params.debug_outdir, str(params.device) + '_wmasked.png'))
-        elif params.debug == 'plot':
-            plot_image(white_masked)
-        return white_masked
-    elif mask_color.upper() == 'BLACK':
-        masked_img = cv2.bitwise_and(rgb_img, rgb_img, mask=mask)
-        if params.debug == 'print':
-            print_image(masked_img, os.path.join(params.debug_outdir, str(params.device) + '_bmasked.png'))
-        elif params.debug == 'plot':
-            plot_image(masked_img)
-        return masked_img
+
+    if mask_color.upper() == "WHITE":
+        color_val = 255
+    elif mask_color.upper() == "BLACK":
+        color_val = 0
     else:
         fatal_error('Mask Color ' + str(mask_color) + ' is not "white" or "black"!')
+
+    array_data = rgb_img.copy()
+
+    # Mask the array
+    array_data[np.where(mask == 0)] = color_val
+
+    # Check if the array data format
+    if len(np.shape(array_data)) > 2 and np.shape(array_data)[-1] > 3:
+        num_bands = np.shape(array_data)[2]
+        med_band = int(num_bands / 2)
+        pseudo_rgb = cv2.merge((array_data[:, :, [0]],
+                                array_data[:, :, [med_band]],
+                                array_data[:, :, [num_bands - 1]]))
+        # if params.debug == 'print':
+        #     print_image(array_data, os.path.join(params.debug_outdir, str(params.device) + '_masked.png'))
+        # elif params.debug == 'plot':
+        #     plot_image(pseudo_rgb)
+    else:
+        if params.debug == 'print':
+            print_image(array_data, os.path.join(params.debug_outdir, str(params.device) + '_masked.png'))
+        elif params.debug == 'plot':
+            plot_image(array_data)
+
+    return array_data

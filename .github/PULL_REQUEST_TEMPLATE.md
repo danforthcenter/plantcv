@@ -1,36 +1,17 @@
-<!--- 
-Thanks for contributing! Instructions are in comments, like this.
- 
-Please edit this template before submitting a new pull request.
--->
+**Describe your changes**
+A clear and concise description of what changes are made by this pull request.
+What was the previous functionality (if relevant) and what can we do now with
+these changes.
 
-<!--- 
-Title: Please provide a descriptive title that summarizes your pull request. 
--->
+**Type of update**
+Is this a:
+* Bug fix
+* New feature or feature enhancement
+* Update to documentation
+* Work in progress
 
-<!---
-Labels: Please select one or more relevant tags (menu on the right).
-(This only shows up for administrators.)
---->
+**Associated issues**
+Reference associated issue numbers. Does this pull request close any issues?
 
-### Description
-<!--- 
-Describe your changes, for example:
-* What did you change/add and why?
-* Does it close an open issue? (if so, please link to the issue)
-* Have you tested the changes, and if so, how?
--->
-
-### Types of changes
-<!---
-Is this a: 
-* Bug fix?
-* New feature?
-* Does it change existing functionality?
--->
-
-### Checklist:
-
-- [ ] Relevant tests (and test data) have been added or updated and passed.
-- [ ] The documentation was added or updated.
-- [ ] Relevant issues were updated or added.
+**Additional context**
+Add any other context about the problem here.
