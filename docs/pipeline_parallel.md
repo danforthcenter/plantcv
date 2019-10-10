@@ -147,6 +147,8 @@ AABA002948_2014-03-14 03-29-45_Pilot-031014_VIS_TV_z3500.png
 
 Valid metadata that can be collected from filenames are `camera`, `imgtype`, `zoom`, `exposure`, `gain`, `frame`, `lifter`, `timestamp`, `id`, `plantbarcode`, `treatment`, `cartag`, `measurementlabel`, and `other`. 
 
+`timestamps` must be of a format readable by [dateutil.parser.parse()](https://dateutil.readthedocs.io/en/stable/parser.html). Separator between date and time should be one of the `JUMP` listed [here](https://dateutil.readthedocs.io/en/stable/parser.html#dateutil.parser.parserinfo.JUMP). 
+
 **Next, run images over a flat directory with images named as described above:**
 
 We normally execute workflows as a shell script or as a condor jobfile (or dagman workflow)
