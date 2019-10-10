@@ -3581,6 +3581,17 @@ def test_plantcv_hyperspectral_extract_index_savi_bad_input():
         index_array = pcv.hyperspectral.extract_index(array=array_data, header_dict=header_dict, index="SAVI")
 
 
+def test_plantcv_hyperspectral_analyze_spectral():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_analyze_spectral")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    array_data, header_dict = pcv.hyperspectral.read_data(filename=spectral_filename)
+    analysis_img = pcv.hyperspectral.analyze_spectral(array=array_data, header_dict=header_dict, mask=, histplot=True)
+    assert pcv.outputs.observations['median_reflectance']['value'] == 84.0
+
+
 # ##############################
 # Tests for the roi subpackage
 # ##############################
