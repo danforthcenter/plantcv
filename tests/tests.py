@@ -498,6 +498,7 @@ TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 HYPERSPECTRAL_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "hyperspectral_data")
 HYPERSPECTRAL_DATA = "darkReference"
 HYPERSPECTRAL_HDR = "darkReference.hdr"
+HYPERSPECTRAL_MASK = "darkReference_mask.png"
 HYPERSPECTRAL_DATA_NO_DEFAULT = "darkReference2"
 HYPERSPECTRAL_HDR_NO_DEFAULT = "darkReference2.hdr"
 HYPERSPECTRAL_DATA_APPROX_PSEUDO = "darkReference3"
@@ -3587,8 +3588,9 @@ def test_plantcv_hyperspectral_analyze_spectral():
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    mask = cv2.imread(os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_MASK), -1)
     array_data, header_dict = pcv.hyperspectral.read_data(filename=spectral_filename)
-    analysis_img = pcv.hyperspectral.analyze_spectral(array=array_data, header_dict=header_dict, mask=, histplot=True)
+    analysis_img = pcv.hyperspectral.analyze_spectral(array=array_data, header_dict=header_dict, mask=mask, histplot=True)
     assert pcv.outputs.observations['median_reflectance']['value'] == 84.0
 
 
