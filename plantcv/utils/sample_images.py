@@ -8,10 +8,8 @@ def sample_images(source_path, dest_path, num=100):
     if not os.path.exists(source_path):
         raise IOError("Directory does not exist: {0}".format(source_path))
 
-    if not os.path.exists(dest_path):
-        os.mkdir(dest_path)
+    os.makedirs(dest_path, exist_ok=True)#python >=3.2
 
-    num = int(num)
     img_element_array = []
     sample_array = []
     num_images = []
@@ -45,8 +43,7 @@ def sample_images(source_path, dest_path, num=100):
             out_file.write(','.join(element))
             snap_path = os.path.join(source_path, "snapshot" + element[1])
             folder_path = os.path.join(dest_path, "snapshot" + element[1])
-            if not os.path.exists(folder_path):
-                os.mkdir(folder_path)
+            os.makedirs(folder_path, exist_ok=True)
             for root, dirs, files in os.walk(snap_path):
                 for file in files:
                     shutil.copy(os.path.join(root, file), folder_path)
