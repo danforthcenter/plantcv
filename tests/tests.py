@@ -1078,9 +1078,13 @@ def test_plantcv_apply_mask_hyperspectral():
     img = np.ones((2056, 2454))
     img_stacked = cv2.merge((img, img, img, img))
     shape = np.shape(img_stacked)
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.apply_mask(rgb_img=img_stacked, mask=mask, mask_color="black")
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
     masked_array = pcv.apply_mask(rgb_img=img_stacked, mask=mask, mask_color="black")
     assert np.mean(masked_array) < np.mean(img_stacked)
-    #assert np.shape(img_stacked) == 1
 
 
 def test_plantcv_apply_mask_bad_input():
