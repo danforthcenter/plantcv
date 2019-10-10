@@ -24,15 +24,12 @@ def read_data(filename):
         filename = name of image file
 
         Returns:
-        raw_data    = image object as numpy array
-        bands       = number of bands
-        wavelengths = list of wavelengths
+        array_data    = image object as numpy array
+        header_dict   = dictionary with metadata from the header file
 
         :param filename: str
-        :param mode: str
-        :return img: numpy.ndarray
-        :return bands: ing
-        :return wavelengths: list
+        :return array_data: numpy.ndarray
+        :return header_dict: dict
         """
     # Initialize dictionary
     header_dict = {}
