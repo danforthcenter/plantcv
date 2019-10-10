@@ -3590,8 +3590,12 @@ def test_plantcv_hyperspectral_analyze_spectral():
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     mask = cv2.imread(os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_MASK), -1)
     array_data, header_dict = pcv.hyperspectral.read_data(filename=spectral_filename)
+    pcv.params.debug = "plot"
+    _ = pcv.hyperspectral.analyze_spectral(array=array_data, header_dict=header_dict, mask=mask,
+                                                      histplot=True)
+    pcv.params.debug = "print"
     analysis_img = pcv.hyperspectral.analyze_spectral(array=array_data, header_dict=header_dict, mask=mask, histplot=True)
-    assert pcv.outputs.observations['median_reflectance']['value'] == 84.0
+    assert len(pcv.outputs.observations['spectral_frequencies']['value']) == 978
 
 
 # ##############################
