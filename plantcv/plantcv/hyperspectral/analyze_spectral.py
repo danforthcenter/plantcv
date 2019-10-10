@@ -1,13 +1,11 @@
 # Analyze signal data in Thermal image
 
 import os
-import cv2
 import numpy as np
 import pandas as pd
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 from plotnine import ggplot, aes, geom_line, scale_x_continuous
-from plantcv.plantcv.threshold import binary as binary_threshold
 
 
 def analyze_spectral(array, header_dict, mask, histplot=True):
