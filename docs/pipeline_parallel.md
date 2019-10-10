@@ -20,7 +20,7 @@ We normally execute workflows in a shell script or in in a condor job file (or d
 * -C is the --coprocess the specified imgtype with the imgtype specified in --match (e.g. coprocess NIR images with VIS).
 * -f is the --meta (data) format map for example, default is "imgtype_camera_frame_zoom_id".
 * -M is the --match metadata option, for example to select a certain zoom or angle. For example: 'imgtype:VIS,camera:SV,zoom:z500'
-* -D is the --dates option, to select a certain date range of data. YYYY-MM-DD-hh-mm-ss_YYYY-MM-DD-hh-mm-ss. If the second date is excluded then the current date is assumed.
+* -D is the --dates option, to select a certain date range of data. YYYY-MM-DD-hh-mm-ss_YYYY-MM-DD-hh-mm-ss. If the second date is excluded then the current date is assumed. Time can be excluded.
 * -j is the --json, json database name
 * -m is the --mask any image mask that you would like to provide
 * -T is the --threads (cpus) you would like to use.
