@@ -51,24 +51,24 @@ def analyze_spectral(array, header_dict, mask, histplot=True):
         new_wavelengths.append(float(wavelength))
         new_freq.append(str(wavelength_freq[i]))
 
-    maxreflectance = np.amax(wavelength_data)
-    minreflectance = np.amin(wavelength_data)
-    avgreflectance = np.average(wavelength_data)
-    medianreflectance = np.median(wavelength_data)
+    max_reflectance = np.amax(wavelength_data)
+    min_reflectance = np.amin(wavelength_data)
+    avg_reflectance = np.average(wavelength_data)
+    median_reflectance = np.median(wavelength_data)
 
     # Store data into outputs class
     outputs.add_observation(variable='max_reflectance', trait='maximum reflectance',
                             method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='degrees', datatype=float,
-                            value=float(maxreflectance), label='reflectance')
+                            value=float(max_reflectance), label='reflectance')
     outputs.add_observation(variable='min_reflectance', trait='minimum reflectance',
                             method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='degrees', datatype=float,
-                            value=float(minreflectance), label='reflectance')
+                            value=float(min_reflectance), label='reflectance')
     outputs.add_observation(variable='mean_reflectance', trait='mean_reflectance',
                             method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='degrees', datatype=float,
-                            value=float(avgreflectance), label='reflectance')
+                            value=float(avg_reflectance), label='reflectance')
     outputs.add_observation(variable='median_reflectance', trait='median_reflectance',
                             method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='degrees', datatype=float,
-                            value=float(medianreflectance), label='reflectance')
+                            value=float(median_reflectance), label='reflectance')
     outputs.add_observation(variable='spectral_frequencies', trait='thermal spectral_frequencies',
                             method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='frequency', datatype=list,
                             value=new_freq, label=header_dict["wavelength"])
@@ -77,10 +77,10 @@ def analyze_spectral(array, header_dict, mask, histplot=True):
     analysis_img = None
 
     if histplot is True:
-        dataset = pd.DataFrame({'Wavelength': new_wavelengths,
+        dataset = pd.DataFrame({'Wavelength (nm)': new_wavelengths,
                                 'Reflectance': wavelength_freq})
         fig_hist = (ggplot(data=dataset,
-                           mapping=aes(x='Wavelength',
+                           mapping=aes(x='Wavelength (nm)',
                                        y='Reflectance'))
                     + geom_line(color='purple')
                     + scale_x_continuous(breaks=list(range(min_wavelength, max_wavelength, 50)))
@@ -89,7 +89,7 @@ def analyze_spectral(array, header_dict, mask, histplot=True):
         analysis_img = fig_hist
 
         if params.debug == "print":
-            fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + '_therm_histogram.png'))
+            fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + '_spectral_histogram.png'))
         elif params.debug == "plot":
             print(fig_hist)
 
