@@ -43,31 +43,34 @@ def analyze_spectral(array, header_dict, mask, histplot=True):
     max_wavelength = int(np.ceil(float(header_dict["wavelength"][-1])))
 
     new_wavelengths = []
+    new_freq = []
 
-    for i in header_dict["wavelength"]:
-        new_wavelengths.append(float(i))
+    for i, wavelength in enumerate(header_dict["wavelength"]):
+        new_wavelengths.append(float(wavelength))
+        new_freq.append(str(wavelength_freq[i]))
 
-    maxtemp = np.amax(wavelength_data)
-    mintemp = np.amin(wavelength_data)
-    avgtemp = np.average(wavelength_data)
-    mediantemp = np.median(wavelength_data)
+    maxreflectance = np.amax(wavelength_data)
+    minreflectance = np.amin(wavelength_data)
+    avgreflectance = np.average(wavelength_data)
+    medianreflectance = np.median(wavelength_data)
+    print("max")
 
     # Store data into outputs class
     outputs.add_observation(variable='max_reflectance', trait='maximum reflectance',
                             method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='degrees', datatype=float,
-                            value=maxtemp, label='degrees')
+                            value=float(maxreflectance), label='reflectance')
     outputs.add_observation(variable='min_reflectance', trait='minimum reflectance',
                             method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='degrees', datatype=float,
-                            value=mintemp, label='degrees')
+                            value=float(minreflectance), label='reflectance')
     outputs.add_observation(variable='mean_reflectance', trait='mean_reflectance',
                             method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='degrees', datatype=float,
-                            value=avgtemp, label='degrees')
+                            value=float(avgreflectance), label='reflectance')
     outputs.add_observation(variable='median_reflectance', trait='median_reflectance',
                             method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='degrees', datatype=float,
-                            value=mediantemp, label='degrees')
+                            value=float(medianreflectance), label='reflectance')
     outputs.add_observation(variable='spectral_frequencies', trait='thermal spectral_frequencies',
                             method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='frequency', datatype=list,
-                            value=wavelength_freq, label=new_wavelengths)
+                            value=new_freq, label=header_dict["wavelength"])
 
     params.debug = debug
     analysis_img = None
