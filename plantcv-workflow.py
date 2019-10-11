@@ -116,6 +116,10 @@ def options():
                              'name. Current adaptors: phenofront, filename', default="phenofront")
     parser.add_argument("-p", "--workflow", help='Workflow script file.', required=True)
     parser.add_argument("-j", "--json", help='Output database file name.', required=True)
+    parser.add_argument("-f", "--meta",
+                        help='Image filename metadata structure. Comma-separated list of valid metadata terms. '
+                             'Valid metadata fields are: ' +
+                             ', '.join(map(str, list(valid_meta.keys()))))
     parser.add_argument("-i", "--outdir", help='Output directory for images. Not required by all workflows.',
                         default=".")
     parser.add_argument("-T", "--cpu", help='Number of CPU to use.', default=1, type=int)
@@ -129,10 +133,6 @@ def options():
                         required=False)
     parser.add_argument("-t", "--type", help='Image format type (extension).', default="png")
     parser.add_argument("-l", "--delimiter", help='Image file name metadata delimiter character.', default='_')
-    parser.add_argument("-f", "--meta",
-                        help='Image file name metadata structure. Comma-separated list of valid metadata terms. '
-                             'Valid metadata fields are: ' +
-                             ', '.join(map(str, list(valid_meta.keys()))), default='imgtype_camera_frame_zoom_id')
     parser.add_argument("-M", "--match",
                         help='Restrict analysis to images with metadata matching input criteria. Input a '
                              'metadata:value comma-separated list. This is an exact match search. '
