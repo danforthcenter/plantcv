@@ -38,10 +38,12 @@ def analyze_spectral(array, header_dict, mask, histplot=True):
     wavelength_data = array[np.where(mask > 0)]
     wavelength_freq = wavelength_data.mean(axis=0)
 
-    #
+    # Identify smallest and largest wavelengths available to scale the x-axis
     min_wavelength = int(np.ceil(float(header_dict["wavelength"][0])))
     max_wavelength = int(np.ceil(float(header_dict["wavelength"][-1])))
 
+    # Create lists with wavelengths in float format rather than as strings
+    # and make a list of the frequencies since they are in an array
     new_wavelengths = []
     new_freq = []
 
@@ -53,7 +55,6 @@ def analyze_spectral(array, header_dict, mask, histplot=True):
     minreflectance = np.amin(wavelength_data)
     avgreflectance = np.average(wavelength_data)
     medianreflectance = np.median(wavelength_data)
-    print("max")
 
     # Store data into outputs class
     outputs.add_observation(variable='max_reflectance', trait='maximum reflectance',
