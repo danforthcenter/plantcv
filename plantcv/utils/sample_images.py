@@ -11,7 +11,9 @@ def sample_images(source_path, dest_path, num=100):
     if not os.path.exists(dest_path):
         dirs = dest_path.split('/')
         for i,d in enumerate(dirs):
-            os.mkdir("/".join(dirs[0:i+1]))
+            newpath = os.path.sep.join(dirs[0:i+1])
+            if not os.path.exists(newpath):
+                os.mkdir(newpath)   
 
     img_element_array = []
     sample_array = []
@@ -47,9 +49,8 @@ def sample_images(source_path, dest_path, num=100):
             snap_path = os.path.join(source_path, "snapshot" + element[1])
             folder_path = os.path.join(dest_path, "snapshot" + element[1])
             if not os.path.exists(folder_path):
-                dirs = dest_path.split('/')
-                for i,d in enumerate(dirs):
-                    os.mkdir("/".join(dirs[0:i+1]))            for root, dirs, files in os.walk(snap_path):
+                os.mkdir(folder_path)#the beginning of folder_path (dest_path) already exists from above
+            for root, dirs, files in os.walk(snap_path):
                 for file in files:
                     shutil.copy(os.path.join(root, file), folder_path)
     else:
