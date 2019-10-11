@@ -119,7 +119,7 @@ def options():
     parser.add_argument("-f", "--meta",
                         help='Image filename metadata structure. Comma-separated list of valid metadata terms. '
                              'Valid metadata fields are: ' +
-                             ', '.join(map(str, list(valid_meta.keys()))))
+                             ', '.join(map(str, list(valid_meta.keys()))), required=True)
     parser.add_argument("-i", "--outdir", help='Output directory for images. Not required by all workflows.',
                         default=".")
     parser.add_argument("-T", "--cpu", help='Number of CPU to use.', default=1, type=int)
