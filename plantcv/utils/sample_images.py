@@ -11,7 +11,6 @@ def sample_images(source_path, dest_path, num=100):
     if not os.path.exists(dest_path):
         os.mkdir(dest_path)
 
-    num = int(num)
     img_element_array = []
     sample_array = []
     num_images = []
