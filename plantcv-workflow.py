@@ -132,7 +132,9 @@ def options():
                              'is excluded then the current date is assumed.',
                         required=False)
     parser.add_argument("-t", "--type", help='Image format type (extension).', default="png")
-    parser.add_argument("-l", "--delimiter", help='Image file name metadata delimiter character.', default='_')
+    parser.add_argument("-l", "--delimiter", help='Image file name metadata delimiter character.' 
+                                                  'Alternatively, a regular expression for parsing filename metadata.',
+                        default='_')
     parser.add_argument("-M", "--match",
                         help='Restrict analysis to images with metadata matching input criteria. Input a '
                              'metadata:value comma-separated list. This is an exact match search. '
