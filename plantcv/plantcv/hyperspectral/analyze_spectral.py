@@ -38,7 +38,6 @@ def analyze_spectral(array, header_dict, mask, histplot=True):
     wavelength_data = array[np.where(mask > 0)]
     wavelength_freq = wavelength_data.mean(axis=0)
 
-    #
     min_wavelength = int(np.ceil(float(header_dict["wavelength"][0])))
     max_wavelength = int(np.ceil(float(header_dict["wavelength"][-1])))
 
@@ -47,13 +46,12 @@ def analyze_spectral(array, header_dict, mask, histplot=True):
 
     for i, wavelength in enumerate(header_dict["wavelength"]):
         new_wavelengths.append(float(wavelength))
-        new_freq.append(str(wavelength_freq[i]))
+        new_freq.append((wavelength_freq[i]).astype(np.float))
 
     maxreflectance = np.amax(wavelength_data)
     minreflectance = np.amin(wavelength_data)
     avgreflectance = np.average(wavelength_data)
     medianreflectance = np.median(wavelength_data)
-    print("max")
 
     # Store data into outputs class
     outputs.add_observation(variable='max_reflectance', trait='maximum reflectance',
@@ -70,7 +68,7 @@ def analyze_spectral(array, header_dict, mask, histplot=True):
                             value=float(medianreflectance), label='reflectance')
     outputs.add_observation(variable='spectral_frequencies', trait='thermal spectral_frequencies',
                             method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='frequency', datatype=list,
-                            value=new_freq, label=header_dict["wavelength"])
+                            value=new_freq, label=new_wavelengths)
 
     params.debug = debug
     analysis_img = None
