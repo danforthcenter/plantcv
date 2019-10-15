@@ -55,18 +55,18 @@ def analyze_spectral(array, header_dict, mask, histplot=True):
 
     # Store data into outputs class
     outputs.add_observation(variable='max_reflectance', trait='maximum reflectance',
-                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='degrees', datatype=float,
+                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='none', datatype=float,
                             value=float(maxreflectance), label='reflectance')
     outputs.add_observation(variable='min_reflectance', trait='minimum reflectance',
-                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='degrees', datatype=float,
+                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='none', datatype=float,
                             value=float(minreflectance), label='reflectance')
-    outputs.add_observation(variable='mean_reflectance', trait='mean_reflectance',
-                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='degrees', datatype=float,
+    outputs.add_observation(variable='mean_reflectance', trait='mean reflectance',
+                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='none', datatype=float,
                             value=float(avgreflectance), label='reflectance')
-    outputs.add_observation(variable='median_reflectance', trait='median_reflectance',
-                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='degrees', datatype=float,
+    outputs.add_observation(variable='median_reflectance', trait='median reflectance',
+                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='none', datatype=float,
                             value=float(medianreflectance), label='reflectance')
-    outputs.add_observation(variable='spectral_frequencies', trait='thermal spectral_frequencies',
+    outputs.add_observation(variable='spectral_frequencies', trait='spectral frequencies',
                             method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='frequency', datatype=list,
                             value=new_freq, label=new_wavelengths)
 
