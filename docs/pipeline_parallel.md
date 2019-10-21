@@ -23,7 +23,7 @@ We normally execute workflows in a shell script or in in a condor job file (or d
 * -D is the --dates option, to select a certain date range of data. YYYY-MM-DD-hh-mm-ss_YYYY-MM-DD-hh-mm-ss. If the second date is excluded then the current date is assumed. Time can be excluded.
 * -j is the --json, json database name
 * -m is the --mask any image mask that you would like to provide
-* -T is the --threads (cpus) you would like to use.
+* -T is the --cpu # of cpu processes you would like to use.
 * -w is the --writeimg option, if True will write output images. default= False
 * -c is the --create option to overwrite an json database if it exists, if you are creating a new database or appending to database, do NOT add the -c flag
 * -o is the --other_args option, used to pass non-standard options to the workflow script. Must take the form `--other_args="--option1 value1 --option2 value2"`
