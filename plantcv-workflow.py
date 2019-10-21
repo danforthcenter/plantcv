@@ -118,7 +118,7 @@ def options():
     parser.add_argument("-j", "--json", help='Output database file name.', required=True)
     parser.add_argument("-i", "--outdir", help='Output directory for images. Not required by all workflows.',
                         default=".")
-    parser.add_argument("-T", "--cpu", help='Number of CPU to use.', default=1, type=int)
+    parser.add_argument("-T", "--cpu", help='Number of CPU processes to use.', default=1, type=int)
     parser.add_argument("-c", "--create",
                         help='will overwrite an existing database'
                              'Warning: activating this option will delete an existing database!',
