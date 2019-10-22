@@ -55,9 +55,10 @@ To install using `conda` first install [Anaconda](https://www.anaconda.com/downl
 `conda` configuration.
 
 ```bash
-conda config --add channels defaults
 conda config --add channels bioconda
 conda config --add channels conda-forge
+conda config --add channels defaults
+conda config --set channel_priority strict
 ```
 
 Then create an environment and install PlantCV.

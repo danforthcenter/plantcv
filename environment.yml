@@ -16,4 +16,5 @@ dependencies:
   - pip:
     - opencv-python<4, >=3.4
 channels:
+  - defaults
   - conda-forge
