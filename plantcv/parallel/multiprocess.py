@@ -12,6 +12,7 @@ def _process_images_multiproc(job):
 ###########################################
 def multiprocess(jobs, cpus):
     try:
+        __spec__ = None
         p = mp.Pool(processes=cpus)
         p.map(_process_images_multiproc, jobs)
         p.close()
