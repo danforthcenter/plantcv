@@ -9,12 +9,7 @@ def sample_images(source_path, dest_path, num=100):
         raise IOError("Directory does not exist: {0}".format(source_path))
       
     if not os.path.exists(dest_path):
-        try:
-            os.makedirs(dest_path) #exist_ok argument does not exist in python 2
-        except OSError as exception:
-            # in python 3 function docs say cannot rely on checking for EEXIST, since the operating system could give priority to other errors like EACCES or EROFS
-            if exception.errno != errno.EEXIST:
-                raise
+        os.makedirs(dest_path) #exist_ok argument does not exist in python 2
   
     img_element_array = []
     sample_array = []
