@@ -215,7 +215,7 @@ def options():
             key, value = pair.split(':')
             args.imgtype[key] = value
     else:
-        args.imgtype['None'] = 'None'
+        args.imgtype['None'] = None
 
     if (args.coprocess is not None) and ('imgtype' not in args.imgtype):
         raise ValueError("When the coprocess imgtype is defined, imgtype must be included in match.")
@@ -250,7 +250,8 @@ def main():
     # Database upload file name prefix
     # Use user inputs to make filenames
     prefix = 'plantcv'
-    if args.imgtype is not None:
+    # check if there are meta_fields to filter dataset by
+    if next(iter(args.imgtype)) != 'None':
         kv_list = []
         for key in args.imgtype:
             kv_list.append(key + str(args.imgtype[key]))
