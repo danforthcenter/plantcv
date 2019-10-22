@@ -11,7 +11,7 @@ def sample_images(source_path, dest_path, num=100):
     if not os.path.exists(dest_path):
         dirs = dest_path.split(os.path.sep)
         for i, d in enumerate(dirs):
-            newpath = os.path.sep.join(dirs[0:i+1])
+            newpath = os.path.sep.join(dirs[0:i+2])
             if not os.path.exists(newpath):
                 os.mkdir(newpath)   
 
