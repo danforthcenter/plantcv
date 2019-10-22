@@ -290,7 +290,6 @@ def main():
     multi_start_time = time.time()
     print("Processing images... ", file=sys.stderr)
 
-    __spec__ = None
     pcvp.multiprocess(jobs, args.cpu)
 
     # Parallel clock time
@@ -318,4 +317,5 @@ def main():
 ###########################################
 
 if __name__ == '__main__':
+    __spec__ = None
     main()
