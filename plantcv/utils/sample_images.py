@@ -9,9 +9,9 @@ def sample_images(source_path, dest_path, num=100):
         raise IOError("Directory does not exist: {0}".format(source_path))
 
     if not os.path.exists(dest_path):
-        dirs = dest_path.split('/')
-        for i,d in enumerate(dirs):
-            newpath = os.path.sep.join(dirs[0:i+1])
+        dirs = dest_path.split(os.path.sep)
+        for i, d in enumerate(dirs):
+            newpath = os.path.join(dirs[0:i+1])
             if not os.path.exists(newpath):
                 os.mkdir(newpath)   
 
@@ -49,7 +49,7 @@ def sample_images(source_path, dest_path, num=100):
             snap_path = os.path.join(source_path, "snapshot" + element[1])
             folder_path = os.path.join(dest_path, "snapshot" + element[1])
             if not os.path.exists(folder_path):
-                os.mkdir(folder_path)#the beginning of folder_path (dest_path) already exists from above
+                os.mkdir(folder_path)  # the beginning of folder_path (dest_path) already exists from above
             for root, dirs, files in os.walk(snap_path):
                 for file in files:
                     shutil.copy(os.path.join(root, file), folder_path)
