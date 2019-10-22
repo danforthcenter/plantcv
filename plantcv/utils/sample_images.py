@@ -1,15 +1,15 @@
 import os
 import random
 import shutil
-import errno
 from plantcv.plantcv import fatal_error
+
 
 def sample_images(source_path, dest_path, num=100):
     if not os.path.exists(source_path):
         raise IOError("Directory does not exist: {0}".format(source_path))
       
     if not os.path.exists(dest_path):
-        os.makedirs(dest_path) #exist_ok argument does not exist in python 2
+        os.makedirs(dest_path)  # exist_ok argument does not exist in python 2
   
     img_element_array = []
     sample_array = []
