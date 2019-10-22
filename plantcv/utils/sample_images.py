@@ -1,20 +1,21 @@
 import os
 import random
 import shutil
+import errno
 from plantcv.plantcv import fatal_error
-
 
 def sample_images(source_path, dest_path, num=100):
     if not os.path.exists(source_path):
         raise IOError("Directory does not exist: {0}".format(source_path))
-
+      
     if not os.path.exists(dest_path):
-        dirs = dest_path.split(os.path.sep)
-        for i, d in enumerate(dirs):
-            newpath = os.path.sep.join(dirs[0:i+2])
-            if not os.path.exists(newpath):
-                os.mkdir(newpath)   
-
+        try:
+            os.makedirs(dest_path) #exist_ok argument does not exist in python 2
+        except OSError as exception:
+            # in python 3 function docs say cannot rely on checking for EEXIST, since the operating system could give priority to other errors like EACCES or EROFS
+            if exception.errno != errno.EEXIST:
+                raise
+  
     img_element_array = []
     sample_array = []
     num_images = []
