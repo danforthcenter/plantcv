@@ -5,6 +5,7 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import Spectral_data
+from plantcv.plantcv.hyperspectral import _find_closest
 
 
 

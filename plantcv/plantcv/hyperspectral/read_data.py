@@ -116,8 +116,8 @@ def read_data(filename):
     pseudo_rgb = pseudo_rgb ** (1 / 2.2)
 
     # Create an instance of the spectral_data class
-    spectral_array = Spectral_data(array_data=array_data, max_wavelength=header_dict["wavelength"][-1],
-                                   min_wavelength=header_dict["wavelength"][0], d_type=header_dict["data type"],
+    spectral_array = Spectral_data(array_data=array_data, max_wavelength=float(header_dict["wavelength"][-1]),
+                                   min_wavelength=float(header_dict["wavelength"][0]), d_type=header_dict["data type"],
                                    wavelength_dict=wavelength_dict, samples=int(header_dict["samples"]),
                                    lines=int(header_dict["lines"]), interleave=header_dict["interleave"],
                                    wavelength_units=header_dict["wavelength units"], array_type="datacube",
