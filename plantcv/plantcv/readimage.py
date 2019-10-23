@@ -40,7 +40,7 @@ def readimage(filename, mode="native"):
         img = inputarray.values
     elif mode.upper() == "ENVI":
         array_data, header_dict = read_data(filename)
-        return array_data, header_dict
+        return array_data
     else:
         img = cv2.imread(filename, -1)
 
