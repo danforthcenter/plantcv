@@ -184,9 +184,6 @@ def options():
         args.start_date = (start_td.days * 24 * 3600) + start_td.seconds
         args.end_date = (end_td.days * 24 * 3600) + end_td.seconds
     else:
-        end = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-        end_list = map(int, end.split('-'))
-        end_td = datetime.datetime(*end_list) - datetime.datetime(1970, 1, 1)
         args.start_date = 1
         args.end_date = None
 
