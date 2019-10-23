@@ -6,6 +6,7 @@ import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
+from plantcv.plantcv import Spectral_data
 
 
 def _find_closest(A, target):
