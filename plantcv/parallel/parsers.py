@@ -227,7 +227,8 @@ def _check_date_range(start_date, end_date, img_time):
     """
 
     # Convert image datetime to unix time
-    timestamp = dt_parser(img_time.replace("-", ""))
+    img_time = img_time.replace("-", "").replace("_", "")
+    timestamp = dt_parser(img_time)
     time_delta = timestamp - datetime.datetime(1970, 1, 1)
     unix_time = (time_delta.days * 24 * 3600) + time_delta.seconds
     # Does the image date-time fall outside or inside the included range
