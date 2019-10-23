@@ -20,10 +20,10 @@ We normally execute workflows in a shell script or in in a condor job file (or d
 * -C is the --coprocess the specified imgtype with the imgtype specified in --match (e.g. coprocess NIR images with VIS).
 * -f is the --meta (data) structure of image file names. Comma-separated list of valid metadata terms.
 * -M is the --match metadata option, for example to select a certain zoom or angle. For example: 'imgtype:VIS,camera:SV,zoom:z500'
-* -D is the --dates option, to select a certain date range of data. YYYY-MM-DD-hh-mm-ss_YYYY-MM-DD-hh-mm-ss. If the second date is excluded then the current date is assumed.
+* -D is the --dates option, to select a certain date range of data. YYYY-MM-DD-hh-mm-ss_YYYY-MM-DD-hh-mm-ss. If the second date is excluded then the current date is assumed. Time can be excluded.
 * -j is the --json, json database name
 * -m is the --mask any image mask that you would like to provide
-* -T is the --threads (cpus) you would like to use.
+* -T is the --cpu # of cpu processes you would like to use.
 * -w is the --writeimg option, if True will write output images. default= False
 * -c is the --create option to overwrite an json database if it exists, if you are creating a new database or appending to database, do NOT add the -c flag
 * -o is the --other_args option, used to pass non-standard options to the workflow script. Must take the form `--other_args="--option1 value1 --option2 value2"`
@@ -146,6 +146,8 @@ AABA002948_2014-03-14 03-29-45_Pilot-031014_VIS_TV_z3500.png
 **Valid Metadata**
 
 Valid metadata that can be collected from filenames are `camera`, `imgtype`, `zoom`, `exposure`, `gain`, `frame`, `lifter`, `timestamp`, `id`, `plantbarcode`, `treatment`, `cartag`, `measurementlabel`, and `other`. 
+
+`timestamps` must be of a format readable by [dateutil.parser.parse()](https://dateutil.readthedocs.io/en/stable/parser.html). Separator between date and time should be one of the `JUMP` listed [here](https://dateutil.readthedocs.io/en/stable/parser.html#dateutil.parser.parserinfo.JUMP). The ISO standard is a `T`.
 
 **Next, run images over a flat directory with images named as described above:**
 

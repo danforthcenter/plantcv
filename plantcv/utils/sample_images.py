@@ -1,16 +1,16 @@
 import os
 import random
 import shutil
+import errno
 from plantcv.plantcv import fatal_error
-
 
 def sample_images(source_path, dest_path, num=100):
     if not os.path.exists(source_path):
         raise IOError("Directory does not exist: {0}".format(source_path))
-
+      
     if not os.path.exists(dest_path):
-        os.mkdir(dest_path)
-
+        os.makedirs(dest_path) #exist_ok argument does not exist in python 2
+  
     img_element_array = []
     sample_array = []
     num_images = []
@@ -45,7 +45,7 @@ def sample_images(source_path, dest_path, num=100):
             snap_path = os.path.join(source_path, "snapshot" + element[1])
             folder_path = os.path.join(dest_path, "snapshot" + element[1])
             if not os.path.exists(folder_path):
-                os.mkdir(folder_path)
+                os.mkdir(folder_path)  # the beginning of folder_path (dest_path) already exists from above
             for root, dirs, files in os.walk(snap_path):
                 for file in files:
                     shutil.copy(os.path.join(root, file), folder_path)

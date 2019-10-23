@@ -40,10 +40,10 @@ def process_results(job_dir, json_file):
                     obs = json.load(results)
                     data["entities"].append(obs)
                     # Keep track of all metadata variables stored
-                    for vars in obs["metadata"].keys():
+                    for vars in obs["metadata"]:
                         data["variables"][vars] = {"category": "metadata", "datatype": "<class 'str'>"}
                     # Keep track of all observations variables stored
-                    for othervars in obs["observations"].keys():
+                    for othervars in obs["observations"]:
                         data["variables"][othervars] = {"category": "observations",
                                                         "datatype": obs["observations"][othervars]["datatype"]}
 
