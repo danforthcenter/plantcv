@@ -188,7 +188,7 @@ def options():
         end_list = map(int, end.split('-'))
         end_td = datetime.datetime(*end_list) - datetime.datetime(1970, 1, 1)
         args.start_date = 1
-        args.end_date = (end_td.days * 24 * 3600) + end_td.seconds
+        args.end_date = None
 
     args.valid_meta = valid_meta
     args.start_time = start_time
