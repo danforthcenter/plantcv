@@ -1075,7 +1075,7 @@ def test_plantcv_apply_mask_hyperspectral():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    hyper_array, dict = pcv.hyperspectral.read_data(filename=spectral_filename)
+    hyper_array = pcv.hyperspectral.read_data(filename=spectral_filename)
 
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     img = np.ones((2056, 2454))
@@ -1086,7 +1086,7 @@ def test_plantcv_apply_mask_hyperspectral():
     _ = pcv.apply_mask(rgb_img=img_stacked, mask=img, mask_color="black")
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    masked_array = pcv.apply_mask(rgb_img=hyper_array, mask=img, mask_color="black")
+    masked_array = pcv.apply_mask(rgb_img=hyper_array.array_data, mask=img, mask_color="black")
     assert np.mean(masked_array) < np.mean(img_stacked)
 
 
@@ -3521,15 +3521,15 @@ def test_plantcv_hyperspectral_read_data_default():
 def test_plantcv_hyperspectral_read_data_no_default_bands():
     pcv.params.debug = "plot"
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA,HYPERSPECTRAL_DATA_NO_DEFAULT)
-    array_data, header_dict = pcv.hyperspectral.read_data(filename=spectral_filename)
-    assert np.shape(array_data) == (1, 800, 978)
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    assert np.shape(array_data.array_data) == (1, 800, 978)
 
 
 def test_plantcv_hyperspectral_read_data_approx_pseudorgb():
     pcv.params.debug = "plot"
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA,HYPERSPECTRAL_DATA_APPROX_PSEUDO)
-    array_data, header_dict = pcv.hyperspectral.read_data(filename=spectral_filename)
-    assert np.shape(array_data) == (1, 800, 978)
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    assert np.shape(array_data.array_data) == (1, 800, 978)
 
 
 def test_plantcv_hyperspectral_extract_index_ndvi():
@@ -3538,12 +3538,12 @@ def test_plantcv_hyperspectral_extract_index_ndvi():
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    array_data, header_dict = pcv.hyperspectral.read_data(filename=spectral_filename)
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
     pcv.params.debug = "plot"
-    _ = pcv.hyperspectral.extract_index(array=array_data, header_dict=header_dict, index="NDVI")
+    _ = pcv.hyperspectral.extract_index(array=array_data, index="NDVI")
     pcv.params.debug = "print"
-    index_array = pcv.hyperspectral.extract_index(array=array_data, header_dict=header_dict, index="NDVI")
-    assert np.shape(index_array) == (1,800)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="NDVI")
+    assert np.shape(index_array.array_data) == (1,800)
 
 
 def test_plantcv_hyperspectral_extract_index_gdvi():
@@ -3552,9 +3552,9 @@ def test_plantcv_hyperspectral_extract_index_gdvi():
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    array_data, header_dict = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, header_dict=header_dict, index="GDVI")
-    assert np.shape(index_array) == (1,800) and np.max(index_array) == 127
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="GDVI")
+    assert np.shape(index_array.array_data) == (1,800) and np.max(index_array.array_data) == 127
 
 
 def test_plantcv_hyperspectral_extract_index_savi():
@@ -3563,23 +3563,23 @@ def test_plantcv_hyperspectral_extract_index_savi():
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    array_data, header_dict = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, header_dict=header_dict, index="SAVI")
-    assert np.shape(index_array) == (1,800) and np.max(index_array) == 127
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="SAVI")
+    assert np.shape(index_array.array_data) == (1,800) and np.max(index_array.array_data) == 127
 
 
 def test_plantcv_hyperspectral_extract_index_ndvi_bad_input():
     header_dict = HYPERSPECTRAL_HDR_SMALL_RANGE
     array_data = TEST_ACUTE_RESULT
     with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=array_data, header_dict=header_dict, index="NDVI")
+        index_array = pcv.hyperspectral.extract_index(array=array_data, index="NDVI")
 
 
 def test_plantcv_hyperspectral_extract_index_gdvi_bad_input():
     header_dict = HYPERSPECTRAL_HDR_SMALL_RANGE
     array_data = TEST_ACUTE_RESULT
     with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=array_data, header_dict=header_dict, index="GDVI")
+        index_array = pcv.hyperspectral.extract_index(array=array_data, index="GDVI")
 
 
 def test_plantcv_hyperspectral_extract_index_savi_bad_input():
@@ -3596,12 +3596,11 @@ def test_plantcv_hyperspectral_analyze_spectral():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     mask = cv2.imread(os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_MASK), -1)
-    array_data, header_dict = pcv.hyperspectral.read_data(filename=spectral_filename)
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
     pcv.params.debug = "plot"
-    _ = pcv.hyperspectral.analyze_spectral(array=array_data, header_dict=header_dict, mask=mask,
-                                                      histplot=True)
+    _ = pcv.hyperspectral.analyze_spectral(array=array_data, mask=mask, histplot=True)
     pcv.params.debug = "print"
-    analysis_img = pcv.hyperspectral.analyze_spectral(array=array_data, header_dict=header_dict, mask=mask, histplot=True)
+    analysis_img = pcv.hyperspectral.analyze_spectral(array=array_data, mask=mask, histplot=True)
     assert len(pcv.outputs.observations['spectral_frequencies']['value']) == 978
 
 
