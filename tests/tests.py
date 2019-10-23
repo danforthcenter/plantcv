@@ -2265,8 +2265,8 @@ def test_plantcv_readimage_csv():
 
 def test_plantcv_readimage_envi():
     pcv.params.debug = None
-    array_data, header_dict = pcv.readimage(filename=os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA), mode="envi")
-    assert header_dict["bands"] == '978'
+    array_data = pcv.readimage(filename=os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA), mode="envi")
+    assert len(array_data.wavelength_dict) == '978'
 
 
 def test_plantcv_readimage_bad_file():
@@ -3512,10 +3512,10 @@ def test_plantcv_hyperspectral_read_data_default():
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = "plot"
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA,HYPERSPECTRAL_DATA)
-    _, _ = pcv.hyperspectral.read_data(filename=spectral_filename)
+    _ = pcv.hyperspectral.read_data(filename=spectral_filename)
     pcv.params.debug = "print"
-    array_data, header_dict = pcv.hyperspectral.read_data(filename=spectral_filename)
-    assert np.shape(array_data) == (1, 800, 978)
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    assert np.shape(array_data.array_data) == (1, 800, 978)
 
 
 def test_plantcv_hyperspectral_read_data_no_default_bands():
