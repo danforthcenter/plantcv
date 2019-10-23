@@ -8,7 +8,7 @@ from plantcv.plantcv import outputs
 from plotnine import ggplot, aes, geom_line, scale_x_continuous
 
 
-def analyze_spectral(array, header_dict, mask, histplot=True):
+def analyze_spectral(array, mask, histplot=True):
     """This extracts the hyperspectral reflectance values of each pixel writes the values out to
        a file. It can also print out a histogram plot of pixel intensity
        and a pseudocolor image of the plant.
@@ -34,20 +34,22 @@ def analyze_spectral(array, header_dict, mask, histplot=True):
     debug = params.debug
     params.debug = None
 
+    array_data = array.array_data
+
     # List of wavelengths recorded created from parsing the header file will be string, make list of floats
-    wavelength_data = array[np.where(mask > 0)]
+    wavelength_data = array_data[np.where(mask > 0)]
     wavelength_freq = wavelength_data.mean(axis=0)
 
     # Identify smallest and largest wavelengths available to scale the x-axis
-    min_wavelength = int(np.ceil(float(header_dict["wavelength"][0])))
-    max_wavelength = int(np.ceil(float(header_dict["wavelength"][-1])))
+    min_wavelength = array.min_wavelength
+    max_wavelength = array.max_wavelength
 
     # Create lists with wavelengths in float format rather than as strings
     # and make a list of the frequencies since they are in an array
     new_wavelengths = []
     new_freq = []
 
-    for i, wavelength in enumerate(header_dict["wavelength"]):
+    for i, wavelength in enumerate(array.wavelength_dict):
         new_wavelengths.append(float(wavelength))
         new_freq.append(str(wavelength_freq[i]))
 
@@ -56,6 +58,10 @@ def analyze_spectral(array, header_dict, mask, histplot=True):
     min_reflectance = np.amin(wavelength_data)
     avg_reflectance = np.average(wavelength_data)
     median_reflectance = np.median(wavelength_data)
+
+    wavelength_labels = []
+    for i in array.wavelength_dict.keys():
+        wavelength_labels.append(i)
 
     # Store data into outputs class
     outputs.add_observation(variable='max_reflectance', trait='maximum reflectance',
@@ -72,7 +78,7 @@ def analyze_spectral(array, header_dict, mask, histplot=True):
                             value=float(median_reflectance), label='reflectance')
     outputs.add_observation(variable='spectral_frequencies', trait='thermal spectral_frequencies',
                             method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='frequency', datatype=list,
-                            value=new_freq, label=header_dict["wavelength"])
+                            value=new_freq, label=wavelength_labels)
 
     params.debug = debug
     analysis_img = None
@@ -84,7 +90,8 @@ def analyze_spectral(array, header_dict, mask, histplot=True):
                            mapping=aes(x='Wavelength (nm)',
                                        y='Reflectance'))
                     + geom_line(color='purple')
-                    + scale_x_continuous(breaks=list(range(min_wavelength, max_wavelength, 50)))
+                    + scale_x_continuous(
+                    breaks=list(range(int(np.floor(min_wavelength)), int(np.ceil(max_wavelength)), 50)))
                     )
 
         analysis_img = fig_hist
