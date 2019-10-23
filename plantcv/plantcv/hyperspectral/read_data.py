@@ -9,13 +9,14 @@ from plantcv.plantcv import print_image
 
 
 def _find_closest(A, target):
-    #A must be sorted
+    # A must be sorted
     idx = A.searchsorted(target)
-    idx = np.clip(idx, 1, len(A)-1)
-    left = A[idx-1]
+    idx = np.clip(idx, 1, len(A) - 1)
+    left = A[idx - 1]
     right = A[idx]
     idx -= target - left < right - target
     return idx
+
 
 def read_data(filename):
     """Read hyperspectral image data from file.
@@ -56,7 +57,7 @@ def read_data(filename):
             header_dict.update({header_data[0].rstrip(): header_data[1].rstrip()})
         elif ' : ' in string:
             header_data = string.split(" : ")
-            header_dict.update({header_data[0].rstrip() : header_data[1].rstrip()})
+            header_dict.update({header_data[0].rstrip(): header_data[1].rstrip()})
 
     # Reshape the raw data into a datacube array
     array_data = raw_data.reshape(int(header_dict["lines"]),
@@ -67,6 +68,11 @@ def read_data(filename):
     header_dict["wavelength"] = header_dict["wavelength"].replace("{", "")
     header_dict["wavelength"] = header_dict["wavelength"].replace("}", "")
     header_dict["wavelength"] = header_dict["wavelength"].split(",")
+
+    # Create dictionary of wavelengths
+    wavelength_dict = {}
+    for j, wavelength in enumerate(header_dict["wavelength"]):
+        wavelength_dict.update({wavelength: j})
 
     # Replace datatype ID number with the numpy datatype
     dtype_dict = {"1": np.uint8, "2": np.int16, "3": np.int32, "4": np.float32, "5": np.float64, "6": np.complex64,
@@ -82,9 +88,6 @@ def read_data(filename):
                                 array_data[:, :, int(default_bands[1])],
                                 array_data[:, :, int(default_bands[2])]))
     else:
-        wavelength_dict = {}
-        for j, wavelength in enumerate(header_dict["wavelength"]):
-            wavelength_dict.update({wavelength: j})
         try:
             max_wavelength = max([float(i.rstrip()) for i in wavelength_dict.keys()])
             min_wavelength = min([float(i.rstrip()) for i in wavelength_dict.keys()])
@@ -103,13 +106,21 @@ def read_data(filename):
         else:
             # Otherwise take 3 wavelengths, first, middle and last available wavelength
             id_red = len(header_dict["wavelength"])
-            id_green = int(id_red/2)
+            id_green = int(id_red / 2)
             pseudo_rgb = cv2.merge((array_data[:, :, [0]],
                                     array_data[:, :, [id_green]],
                                     array_data[:, :, [id_red]]))
 
     # Gamma correct pseudo_rgb image
-    pseudo_rgb= pseudo_rgb ** (1 / 2.2)
+    pseudo_rgb = pseudo_rgb ** (1 / 2.2)
+
+    # Create an instance of the spectral_data class
+    spectral_array = Spectral_data(array_data=array_data, max_wavelength=header_dict["wavelength"][-1],
+                                   min_wavelength=header_dict["wavelength"][0], d_type=header_dict["data type"],
+                                   wavelength_dict=wavelength_dict, samples=int(header_dict["samples"]),
+                                   lines=int(header_dict["lines"]), interleave=header_dict["interleave"],
+                                   wavelength_units=header_dict["wavelength units"], array_type="datacube",
+                                   filename=filename)
 
     if params.debug == "plot":
         # Gamma correct pseudo_rgb image
@@ -117,4 +128,4 @@ def read_data(filename):
     elif params.debug == "print":
         print_image(pseudo_rgb, os.path.join(params.debug_outdir, str(params.device) + "_pseudo_rgb.png"))
 
-    return array_data, header_dict
+    return spectral_array
