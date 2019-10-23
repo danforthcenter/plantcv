@@ -39,7 +39,7 @@ def readimage(filename, mode="native"):
         inputarray = pd.read_csv(filename, sep=',', header=None)
         img = inputarray.values
     elif mode.upper() == "ENVI":
-        array_data, header_dict = read_data(filename)
+        array_data = read_data(filename)
         return array_data
     else:
         img = cv2.imread(filename, -1)
