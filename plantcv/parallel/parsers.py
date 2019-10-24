@@ -6,7 +6,7 @@ from dateutil.parser import parse as dt_parser
 
 # Parse metadata from filenames in a directory
 ###########################################
-def metadata_parser(data_dir, meta_fields, valid_meta, meta_filters, start_date, end_date, error_log, delimiter="_",
+def metadata_parser(data_dir, meta_fields, valid_meta, meta_filters, date_format, start_date, end_date, error_log, delimiter="_",
                     file_type="png", coprocess=None):
     """Reads metadata the input data directory.
 
@@ -15,6 +15,7 @@ def metadata_parser(data_dir, meta_fields, valid_meta, meta_filters, start_date,
         meta_fields:  Dictionary of image filename metadata fields and index positions.
         valid_meta:   Dictionary of valid metadata keys.
         meta_filters: Dictionary of metadata filters (key-value pairs).
+        date_format:  Date format code for timestamp metadata to use with strptime
         start_date:   Analysis start date in Unix time.
         end_date:     Analysis end date in Unix time.
         error_log:    Error log filehandle object.
@@ -30,6 +31,7 @@ def metadata_parser(data_dir, meta_fields, valid_meta, meta_filters, start_date,
     :param meta_fields: dict
     :param valid_meta: dict
     :param meta_filters: dict
+    :param date_format: str
     :param start_date: int
     :param end_date: int
     :param error_log: obj
@@ -197,7 +199,7 @@ def metadata_parser(data_dir, meta_fields, valid_meta, meta_filters, start_date,
                                 img_meta[field] = valid_meta[field]["value"]
 
                         if start_date and end_date and img_meta['timestamp'] is not None:
-                            in_date_range = _check_date_range(start_date, end_date, img_meta['timestamp'])
+                            in_date_range = _check_date_range(start_date, end_date, img_meta['timestamp'], date_format)
                             if in_date_range is False:
                                 img_pass = 0
 
@@ -212,23 +214,24 @@ def metadata_parser(data_dir, meta_fields, valid_meta, meta_filters, start_date,
 
 # Check to see if the image was taken between a specified date range
 ###########################################
-def _check_date_range(start_date, end_date, img_time):
+def _check_date_range(start_date, end_date, img_time, date_format='%Y-%m-%d %H-%M-%S'):
     """Check image time versus included date range.
 
     Args:
         start_date: Start date in Unix time
         end_date:   End date in Unix time
         img_time:   Image datetime
+        date_format: date format code for strptime
 
     :param start_date: int
     :param end_date: int
     :param img_time: str
+    :param date_format: str
     :return: bool
     """
 
     # Convert image datetime to unix time
-    img_time = img_time.replace("-", "").replace("_", "")
-    timestamp = dt_parser(img_time)
+    timestamp = datetime.datetime.strptime(img_time, date_format)
     time_delta = timestamp - datetime.datetime(1970, 1, 1)
     unix_time = (time_delta.days * 24 * 3600) + time_delta.seconds
     # Does the image date-time fall outside or inside the included range
