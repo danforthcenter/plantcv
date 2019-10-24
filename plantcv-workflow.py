@@ -116,6 +116,10 @@ def options():
                              'name. Current adaptors: phenofront, filename', default="phenofront")
     parser.add_argument("-p", "--workflow", help='Workflow script file.', required=True)
     parser.add_argument("-j", "--json", help='Output database file name.', required=True)
+    parser.add_argument("-f", "--meta",
+                        help='Image filename metadata structure. Comma-separated list of valid metadata terms. '
+                             'Valid metadata fields are: ' +
+                             ', '.join(map(str, list(valid_meta.keys()))), required=True)
     parser.add_argument("-i", "--outdir", help='Output directory for images. Not required by all workflows.',
                         default=".")
     parser.add_argument("-T", "--cpu", help='Number of CPU processes to use.', default=1, type=int)
@@ -128,11 +132,9 @@ def options():
                              'is excluded then the current date is assumed.',
                         required=False)
     parser.add_argument("-t", "--type", help='Image format type (extension).', default="png")
-    parser.add_argument("-l", "--delimiter", help='Image file name metadata delimiter character.', default='_')
-    parser.add_argument("-f", "--meta",
-                        help='Image file name metadata format. List valid metadata fields separated by the '
-                             'delimiter (-l/--delimiter). Valid metadata fields are: ' +
-                             ', '.join(map(str, list(valid_meta.keys()))), default='imgtype_camera_frame_zoom_id')
+    parser.add_argument("-l", "--delimiter", help='Image file name metadata delimiter character.' 
+                                                  'Alternatively, a regular expression for parsing filename metadata.',
+                        default='_')
     parser.add_argument("-M", "--match",
                         help='Restrict analysis to images with metadata matching input criteria. Input a '
                              'metadata:value comma-separated list. This is an exact match search. '
@@ -182,17 +184,14 @@ def options():
         args.start_date = (start_td.days * 24 * 3600) + start_td.seconds
         args.end_date = (end_td.days * 24 * 3600) + end_td.seconds
     else:
-        end = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-        end_list = map(int, end.split('-'))
-        end_td = datetime.datetime(*end_list) - datetime.datetime(1970, 1, 1)
         args.start_date = 1
-        args.end_date = (end_td.days * 24 * 3600) + end_td.seconds
+        args.end_date = None
 
     args.valid_meta = valid_meta
     args.start_time = start_time
 
     # Image filename metadata structure
-    fields = args.meta.split(args.delimiter)
+    fields = args.meta.split(",")
     # Keep track of the number of metadata fields matching filenames should have
     args.meta_count = len(fields)
     structure = {}
@@ -213,7 +212,7 @@ def options():
             key, value = pair.split(':')
             args.imgtype[key] = value
     else:
-        args.imgtype['None'] = 'None'
+        args.imgtype['None'] = None
 
     if (args.coprocess is not None) and ('imgtype' not in args.imgtype):
         raise ValueError("When the coprocess imgtype is defined, imgtype must be included in match.")
@@ -248,7 +247,8 @@ def main():
     # Database upload file name prefix
     # Use user inputs to make filenames
     prefix = 'plantcv'
-    if args.imgtype is not None:
+    # check if there are meta_fields to filter dataset by
+    if next(iter(args.imgtype)) != 'None':
         kv_list = []
         for key in args.imgtype:
             kv_list.append(key + str(args.imgtype[key]))
@@ -314,4 +314,5 @@ def main():
 ###########################################
 
 if __name__ == '__main__':
+    __spec__ = None
     main()

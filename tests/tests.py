@@ -246,6 +246,38 @@ def test_plantcv_parallel_metadata_parser_images():
     assert meta == expected
 
 
+def test_plantcv_parallel_metadata_parser_regex():
+    data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR)
+    meta_filters = {"imgtype": "VIS"}
+    start_date = 1413936000
+    end_date = 1414022400
+    error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
+    jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      start_date=start_date, end_date=end_date, error_log=error_log,
+                                                      delimiter='(VIS)_(SV)_(\d+)_(z1)_(h1)_(g0)_(e82)_(\d+)',
+                                                      file_type="jpg", coprocess=None)
+    expected = {
+        'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
+            'path': os.path.join(PARALLEL_TEST_DATA, 'images'),
+            'camera': 'SV',
+            'imgtype': 'VIS',
+            'zoom': 'z1',
+            'exposure': 'e82',
+            'gain': 'g0',
+            'frame': '0',
+            'lifter': 'h1',
+            'timestamp': None,
+            'id': '117770',
+            'plantbarcode': 'none',
+            'treatment': 'none',
+            'cartag': 'none',
+            'measurementlabel': 'none',
+            'other': 'none'}
+    }
+    assert meta == expected
+
+
 def test_plantcv_parallel_metadata_parser_images_outside_daterange():
     data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR2)
     meta_filters = {"imgtype": "VIS"}
