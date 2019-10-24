@@ -6,8 +6,8 @@ from dateutil.parser import parse as dt_parser
 
 # Parse metadata from filenames in a directory
 ###########################################
-def metadata_parser(data_dir, meta_fields, valid_meta, meta_filters, date_format, start_date, end_date, error_log, delimiter="_",
-                    file_type="png", coprocess=None):
+def metadata_parser(data_dir, meta_fields, valid_meta, meta_filters, date_format, 
+                    start_date, end_date, error_log, delimiter="_", file_type="png", coprocess=None):
     """Reads metadata the input data directory.
 
     Args:
