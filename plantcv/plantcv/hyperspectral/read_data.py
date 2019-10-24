@@ -31,7 +31,6 @@ def read_data(filename):
 
         :param filename: str
         :return array_data: numpy.ndarray
-        :return header_dict: dict
         """
     # Initialize dictionary
     header_dict = {}

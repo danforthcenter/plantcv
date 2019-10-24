@@ -20,7 +20,6 @@ def extract_index(array, index="NDVI", fudge_factor=20):
         index_array    = image object as numpy array
 
         :param array: numpy.ndarray
-        :param header_dict: dict
         :param index: str
         :return index_array: numpy.ndarray
         """

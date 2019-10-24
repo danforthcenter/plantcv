@@ -4,11 +4,13 @@ import os
 import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
+from plantcv.plantcv import fatal_error
+
 
 
 def analyze_index(index_array, mask):
-    """This extracts the hyperspectral index statistics and writes the values out to
-       a file.
+    """This extracts the hyperspectral index statistics and writes the values  as observations out to
+       the Outputs class.
 
     Inputs:
     array        = Instance of the Spectral_data class
@@ -25,6 +27,9 @@ def analyze_index(index_array, mask):
     :return analysis_img: ggplot
     """
     params.device += 1
+
+    if len(np.shape(mask)) > 2 or len(np.unique(mask)) > 2:
+        fatal_error("Mask should be a binary image of 0 and nonzero values.")
 
     masked_array = index_array.array_data[np.where(mask > 0)]
     index_mean = np.average(masked_array)

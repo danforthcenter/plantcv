@@ -22,7 +22,6 @@ def analyze_spectral(array, mask, histplot=True):
     analysis_img = output image
 
     :param array: numpy array
-    :param header_dict: dict
     :param mask: numpy array
     :param histplot: bool
     :return analysis_img: ggplot
