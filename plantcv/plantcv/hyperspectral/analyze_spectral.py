@@ -1,4 +1,4 @@
-# Analyze signal data in Thermal image
+# Analyze signal data in hyperspectral array
 
 import os
 import numpy as np
@@ -14,8 +14,7 @@ def analyze_spectral(array, mask, histplot=True):
        and a pseudocolor image of the plant.
 
     Inputs:
-    array        = numpy array of thermal values
-    header_dict  =
+    array        = numpy array of reflectance data
     mask         = Binary mask made from selected contours
     histplot     = if True plots histogram of intensity values
 
