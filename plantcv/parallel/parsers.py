@@ -119,7 +119,7 @@ def metadata_parser(data_dir, meta_fields, valid_meta, meta_filters, date_format
                                 img_meta[field] = valid_meta[field]["value"]
 
                         if start_date and end_date and img_meta['timestamp'] is not None:
-                            in_date_range = _check_date_range(start_date, end_date, img_meta['timestamp'], date_format)
+                            in_date_range = check_date_range(start_date, end_date, img_meta['timestamp'], date_format)
                             if in_date_range is False:
                                 img_pass = 0
 
@@ -199,7 +199,7 @@ def metadata_parser(data_dir, meta_fields, valid_meta, meta_filters, date_format
                                 img_meta[field] = valid_meta[field]["value"]
 
                         if start_date and end_date and img_meta['timestamp'] is not None:
-                            in_date_range = _check_date_range(start_date, end_date, img_meta['timestamp'], date_format)
+                            in_date_range = check_date_range(start_date, end_date, img_meta['timestamp'], date_format)
                             if in_date_range is False:
                                 img_pass = 0
 
@@ -214,7 +214,7 @@ def metadata_parser(data_dir, meta_fields, valid_meta, meta_filters, date_format
 
 # Check to see if the image was taken between a specified date range
 ###########################################
-def _check_date_range(start_date, end_date, img_time, date_format):
+def check_date_range(start_date, end_date, img_time, date_format):
     """Check image time versus included date range.
 
     Args:
@@ -230,10 +230,14 @@ def _check_date_range(start_date, end_date, img_time, date_format):
     :return: bool
     """
 
-    if date_format is None:
-        date_format = '%Y-%m-%d %H-%M-%S'
     # Convert image datetime to unix time
-    timestamp = datetime.datetime.strptime(img_time, date_format)
+    try:
+        timestamp = datetime.datetime.strptime(img_time, date_format)
+    except ValueError as e:
+        print(e)
+        print('Please specify the correct --timestampformat')
+        quit()
+    
     time_delta = timestamp - datetime.datetime(1970, 1, 1)
     unix_time = (time_delta.days * 24 * 3600) + time_delta.seconds
     # Does the image date-time fall outside or inside the included range
