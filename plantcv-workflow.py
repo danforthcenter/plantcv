@@ -144,14 +144,15 @@ def options():
                         help='Coprocess the specified imgtype with the imgtype specified in --match '
                              '(e.g. coprocess NIR images with VIS).',
                         default=None)
+    parser.add_argument("-s", "--timestampformat", 
+                        help='a date format code compatible with strptime C library, '
+                             'e.g. "%Y-%m-%d %H_%M_%S", except "%" symbols must be escaped on Windows with "%" '
+                             'e.g. "%%Y-%%m-%%d %%H_%%M_%%S". Required if adaptor = filename.',
+                        required=False,
+                        default='%Y-%m-%d %H:%M:%S.%f')
     parser.add_argument("-w", "--writeimg", help='Include analysis images in output.', default=False,
                         action="store_true")
     parser.add_argument("-o", "--other_args", help='Other arguments to pass to the workflow script.', required=False)
-    parser.add_argument("-s", "--timestampformat", 
-                        help='a date format code compatible with strptime C library, '
-                             'e.g. "%%Y-%%m-%%d %%H_%%M_%%S", except "%" symbols must be escaped on Windows with "%" '
-                             '"%%Y-%%m-%%d %%H_%%M_%%S". Required if adaptor = filename.',
-                        required=False)
     args = parser.parse_args()
 
     if not os.path.exists(args.dir):
@@ -177,7 +178,6 @@ def options():
         os.makedirs(args.jobdir)
     except IOError as e:
         raise IOError("{0}: {1}".format(e.strerror, args.jobdir))
-
 
     if args.dates:
         dates = args.dates.split('_')

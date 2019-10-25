@@ -24,6 +24,7 @@ We normally execute workflows in a shell script or in in a condor job file (or d
 * -j is the --json, json database name
 * -m is the --mask any image mask that you would like to provide
 * -T is the --cpu # of cpu processes you would like to use.
+* -s is the --timestampformat specify timestamp format for strptime C library. default is '%Y-%m-%d %H:%M:%S.%f' to parse '2010-10-10 10:10:10.123'. see [strptime docs](https://docs.python.org/3.7/library/datetime.html#strftime-and-strptime-behavior) for supported codes.
 * -w is the --writeimg option, if True will write output images. default= False
 * -c is the --create option to overwrite an json database if it exists, if you are creating a new database or appending to database, do NOT add the -c flag
 * -o is the --other_args option, used to pass non-standard options to the workflow script. Must take the form `--other_args="--option1 value1 --option2 value2"`
@@ -147,7 +148,7 @@ AABA002948_2014-03-14 03-29-45_Pilot-031014_VIS_TV_z3500.png
 
 Valid metadata that can be collected from filenames are `camera`, `imgtype`, `zoom`, `exposure`, `gain`, `frame`, `lifter`, `timestamp`, `id`, `plantbarcode`, `treatment`, `cartag`, `measurementlabel`, and `other`. 
 
-`timestamps` must be of a format readable by [dateutil.parser.parse()](https://dateutil.readthedocs.io/en/stable/parser.html). Separator between date and time should be one of the `JUMP` listed [here](https://dateutil.readthedocs.io/en/stable/parser.html#dateutil.parser.parserinfo.JUMP). The ISO standard is a `T`.
+For a flat direcotory of images (`--adaptor = filename`) you are required to specify the timestamp format (`--timestampformat`, `-s`) code for the [strptime C library](https://docs.python.org/3.7/library/datetime.html#strftime-and-strptime-behavior). For the example above you would use `--timestampformat "%Y-%m-%d %H-%M-%S"`.
 
 **Next, run images over a flat directory with images named as described above:**
 
@@ -163,6 +164,8 @@ We normally execute workflows as a shell script or as a condor jobfile (or dagma
 /home/mgehan/plantcv/plantcv-workflow.py \
 -d /shares/mgehan_share/raw_data/raw_image/2016-08_pat-edger/data/split-round1/split-cam1 \
 -a filename \
+-s %y-%m-%d-%H:%M
+-l _
 -p /home/mgehan/pat-edger/round1-python-pipelines/2016-08_pat-edger_brassica-cam1-splitimg.py \
 -j edger-round1-brassica.json \
 -i /shares/mgehan_share/raw_data/raw_image/2016-08_pat-edger/data/split-round1/split-cam1/output \
@@ -214,6 +217,7 @@ plantcv-workflow.py \
 --outdir output_directory \
 --meta camera,plantbarcode,timestamp \
 --delimiter '(.{3})_(.+)_(\d{4}-\d{2}-\d{2} \d{2}_\d{2}_\d{2})'
+--timestampformat "%Y-%m-%d %H_%M_%S"
 
 ```
 
