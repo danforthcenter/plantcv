@@ -3,7 +3,6 @@ import re
 import datetime
 from dateutil.parser import parse as dt_parser
 
-
 # Parse metadata from filenames in a directory
 ###########################################
 def metadata_parser(data_dir, meta_fields, valid_meta, meta_filters, date_format, 
@@ -234,9 +233,7 @@ def check_date_range(start_date, end_date, img_time, date_format):
     try:
         timestamp = datetime.datetime.strptime(img_time, date_format)
     except ValueError as e:
-        print(e)
-        print('Please specify the correct --timestampformat')
-        quit()
+        raise SystemExit(str(e) + '\n  --> Please specify the correct --timestampformat argument <--\n')
     
     time_delta = timestamp - datetime.datetime(1970, 1, 1)
     unix_time = (time_delta.days * 24 * 3600) + time_delta.seconds

@@ -304,7 +304,7 @@ def test_plantcv_parallel_check_date_range_wrongdateformat():
     end_date = 10
     img_time = '2010-10-10'
 
-    with pytest.raises(ValueError, match = r'does not match format'):
+    with pytest.raises(SystemExit, match = r'does not match format'):
         date_format = '%Y%m%d'
         _ = plantcv.parallel.check_date_range(
             start_date, end_date, img_time, date_format)
