@@ -96,6 +96,35 @@ params = Params()
 outputs = Outputs()
 
 
+class Spectral_data:
+    # PlantCV Hyperspectral data class
+    def __init__(self, array_data, max_wavelength, min_wavelength, d_type, wavelength_dict, samples, lines, interleave,
+                 wavelength_units, array_type, filename):
+        # The actual array/datacube
+        self.array_data = array_data
+        self.max_wavelength = max_wavelength
+        self.min_wavelength = min_wavelength
+        # Datatype
+        self.d_type = d_type
+        # Contains all available wavelengths where keys are wavelength and value are indices
+        self.wavelength_dict = wavelength_dict
+        # Resolution of a single band of spectral data is (samples, lines) rather than (x,y) with other arrays
+        self.samples = samples
+        self.lines = lines
+        # Interleave type
+        self.interleave = interleave
+        self.wavelength_units = wavelength_units
+        # The type of array data (entire datacube, specific index, first derivative, etc)
+        self.array_type = array_type
+        # The filename where the data originated from
+        self.filename = filename
+
+# Example
+# spectral_array = Spectral_data(max_wavelength=1000.95, min_wavelength=379.027, d_type=numpy.float32,
+#                           wavelength_dict=dictionary, samples=1600, lines=1704, interleave='bil',
+#                           wavelength_units='nm', array_type="datacube", filename=filename)
+
+
 from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.print_image import print_image
 from plantcv.plantcv.plot_image import plot_image
