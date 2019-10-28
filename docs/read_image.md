@@ -1,8 +1,8 @@
 ## Read Image
 
-Reads image into numpy ndarray and splits the path and image filename. This is a wrapper for the OpenCV function [imread](http://docs.opencv.org/modules/highgui/doc/reading_and_writing_images_and_video.html).
+Reads image into numpy ndarray and splits the path and image filename. Most modes of use of this function is a wrapper for the OpenCV function [imread](http://docs.opencv.org/modules/highgui/doc/reading_and_writing_images_and_video.html).
 
-**plantcv.readimage**(*filename, mode = "native"*)
+**plantcv.readimage**(*filename, mode="native"*)
 
 **returns** img, path, image filename
 
@@ -34,6 +34,6 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 #read in image
-img, path, img_filename = pcv.readimage("home/user/images/test-image.png", "native")
+img, path, img_filename = pcv.readimage(filename="home/user/images/test-image.png", mode="native")
 
 ```
