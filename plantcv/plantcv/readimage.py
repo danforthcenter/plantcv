@@ -16,7 +16,7 @@ def readimage(filename, mode="native"):
 
     Inputs:
     filename = name of image file
-    mode     = mode of imread ("native", "rgb", "rgba", "gray", "csv")
+    mode     = mode of imread ("native", "rgb", "rgba", "gray", "csv", "envi")
 
     Returns:
     img      = image object as numpy array
