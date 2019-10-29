@@ -91,7 +91,7 @@ def main():
     filename = spectral_array.filename
     
     # Save the pseudo-rgb image that gets created while reading in hyperspectral data
-    pcv.print_image(spectral_array.pseudo_rgb, filename + "_pseudo-rgb.png")
+    pcv.print_image(img=spectral_array.pseudo_rgb, filename=filename + "_pseudo-rgb.png")
     
 ```
 
@@ -158,8 +158,20 @@ Draw a rectangular ROI around the leaf of interest.
  
 ![Screenshot](img/tutorial_images/hyperspectral/rect_roi.jpg)
 
+```python
+    # 
+    
+    # Inputs: 
+    #   img - RGB or grayscale image data for plotting 
+    #   mask - Binary mask used for detecting contours 
+    id_objects, obj_hierarchy = pcv.find_objects(img=index_array_gdvi.array_data, mask=gdvi_thresh)
+    
+``` 
 
+**Figure 4.** Identify objects 
+Identify objects in the mask that was created. 
 
+![Screenshot](img/tutorial_images/hyperspectral/id_objects.jpg)
 
 
 
