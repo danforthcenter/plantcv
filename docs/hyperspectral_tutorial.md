@@ -135,13 +135,28 @@ For this image the Green Difference Vegetation Index was ideal for separating th
     
 ```
 
-**Figure 2.** Thresholded GDVI Image
-Use the grayscale GDVI image to create a mask for the leaf of interest. 
+**Figure 3.** Thresholded GDVI Image
+Use the grayscale GDVI image to create a mask for the leaf of interest. Take a binary threshold. 
  
 ![Screenshot](img/tutorial_images/hyperspectral/gdvi_thresh.jpg)
 
+```python
+    # Define ROI 
+    
+    # Inputs: 
+    #   img - RGB or grayscale image to plot the ROI on 
+    #   x - The x-coordinate of the upper left corner of the rectangle 
+    #   y - The y-coordinate of the upper left corner of the rectangle 
+    #   h - The height of the rectangle 
+    #   w - The width of the rectangle 
+    roi, roi_hierarchy= pcv.roi.rectangle(img=gdvi_thresh, x=400, y=400, h=400, w=400)
+    
+``` 
 
-
+**Figure 4.** Define a rectangular Region of Interest 
+Draw a rectangular ROI around the leaf of interest. 
+ 
+![Screenshot](img/tutorial_images/hyperspectral/rect_roi.jpg)
 
 
 
