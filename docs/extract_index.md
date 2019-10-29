@@ -36,7 +36,7 @@ ndvi_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="NDVI",
 
 **NDVI array image**
 
-![Screenshot](img/tutorial_images/hyperspectral/pseudo_rgb.jpg)
+![Screenshot](img/tutorial_images/hyperspectral/NDVI_index.jpg)
 
 **GDVI array image**
 
@@ -44,4 +44,4 @@ ndvi_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="NDVI",
 
 **SAVI array image**
 
-![Screenshot](img/tutorial_images/hyperspectral/pseudo_rgb.jpg)
+![Screenshot](img/tutorial_images/hyperspectral/savi_index.jpg)

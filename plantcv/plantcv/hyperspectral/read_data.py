@@ -134,7 +134,7 @@ def read_data(filename):
 
     # Reset debug mode
     params.debug = debug
-    
+
     if params.debug == "plot":
         # Gamma correct pseudo_rgb image
         plot_image(pseudo_rgb)
