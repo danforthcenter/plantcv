@@ -225,7 +225,7 @@ Binary mask after filtering objects by the region of interest that we defined.
 ``` 
 
 **Figure 8.** Spectral histogram 
- 
+Extract reflectance intensity data and store it out to the Outputs class. Also, plot the reflectance intensities in a histogram. 
   
 ![Screenshot](img/tutorial_images/hyperspectral/spectral_histogram.jpg)
 
