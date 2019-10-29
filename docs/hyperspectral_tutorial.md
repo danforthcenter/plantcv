@@ -118,6 +118,7 @@ object returned has many methods that are useful to users and within PlantCV fun
 
 **Figure 2.** GDVI Grayscale Image
 For this image the Green Difference Vegetation Index was ideal for separating the leaf of interest from the rest of the background. 
+We extract this specific index with the [extract index](extract_index.md) function. 
 
 ![Screenshot](img/tutorial_images/hyperspectral/gdvi.jpg)
 
@@ -136,7 +137,7 @@ For this image the Green Difference Vegetation Index was ideal for separating th
 ```
 
 **Figure 3.** Thresholded GDVI Image
-Use the grayscale GDVI image to create a mask for the leaf of interest. Take a binary threshold. 
+Use the grayscale GDVI image to create a mask for the leaf of interest. Take a [binary threshold](binary_threshold.md). 
  
 ![Screenshot](img/tutorial_images/hyperspectral/gdvi_thresh.jpg)
 
@@ -154,7 +155,7 @@ Use the grayscale GDVI image to create a mask for the leaf of interest. Take a b
 ``` 
 
 **Figure 4.** Define a rectangular Region of Interest 
-Draw a rectangular ROI around the leaf of interest. 
+Draw a [rectangular ROI](roi_rectangle.md) around the leaf of interest. 
  
 ![Screenshot](img/tutorial_images/hyperspectral/rect_roi.jpg)
 
@@ -169,7 +170,7 @@ Draw a rectangular ROI around the leaf of interest.
 ``` 
 
 **Figure 5.** Identify objects 
-Identify objects in the mask that was created. 
+[Identify objects](find_objects.md) in the mask that was created. 
 
 ![Screenshot](img/tutorial_images/hyperspectral/id_objects.jpg)
 
@@ -193,7 +194,7 @@ Identify objects in the mask that was created.
 ``` 
 
 **Figure 6.** Binary Mask 
-Binary mask after filtering objects by the region of interest that we defined. 
+Binary mask after [filtering objects by the region of interest](roi_objects.md) that we defined. 
 
 ![Screenshot](img/tutorial_images/hyperspectral/roi_mask.jpg)
 
@@ -209,7 +210,7 @@ Binary mask after filtering objects by the region of interest that we defined.
 ``` 
 
 **Figure 7.** Masked datacube 
- Applying a mask to the entire datacube can output a debugging image to confirm that the data was masked successfully. 
+[Applying a mask](apply_mask.md) to the entire datacube can output a debugging image to confirm that the data was masked successfully. 
  
 ![Screenshot](img/tutorial_images/hyperspectral/datacube_masked.jpg)
 
@@ -225,7 +226,7 @@ Binary mask after filtering objects by the region of interest that we defined.
 ``` 
 
 **Figure 8.** Spectral histogram 
-Extract reflectance intensity data and store it out to the Outputs class. Also, plot the reflectance intensities in a histogram. 
+[Extract reflectance intensity data](analyze_spectral.md) and store it out to the [Outputs class](outputs.md). Also, plot the reflectance intensities in a histogram. 
   
 ![Screenshot](img/tutorial_images/hyperspectral/spectral_histogram.jpg)
 
