@@ -85,7 +85,7 @@ def main():
     # Read image (readimage mode defaults to native but if image is RGBA then specify mode='rgb')
     # Inputs:
     #   filename - Image file to be read in 
-    #   mode -     Return mode of image; either 'native' (default), 'rgb', 'gray', 'envi', or 'csv'
+    #   mode     - Return mode of image; either 'native' (default), 'rgb', 'gray', 'envi', or 'csv'
     spectral_array = pcv.readimage(filename=args.image, mode='envi')
     
     filename = spectral_array.filename
@@ -106,8 +106,8 @@ object returned has many methods that are useful to users and within PlantCV fun
     # Extract the Green Difference Vegetation Index from the datacube 
     
     # Inputs:
-    #   array -        Hyperspectral data instance  
-    #   index -        Index of interest
+    #   array        - Hyperspectral data instance  
+    #   index        - Index of interest
     #   fudge_factor - How lenient to be if the required wavelengths 
     #                  for a specific index are not available 
     index_array_gdvi = pcv.hyperspectral.extract_index(array=spectral_array, 
@@ -125,9 +125,9 @@ For this image the Green Difference Vegetation Index was ideal for separating th
     # Threshold the grayscale image 
     
     # Inputs:
-    #   gray_img - Grayscale image data 
-    #   threshold- Threshold value (between 0-255)
-    #   max_value - Value to apply above threshold (255 = white) 
+    #   gray_img    - Grayscale image data 
+    #   threshold   - Threshold value (between 0-255)
+    #   max_value   - Value to apply above threshold (255 = white) 
     #   object_type - 'light' (default) or 'dark'. If the object is lighter than the 
     #                 background then standard threshold is done. If the object is 
     #                 darker than the background then inverse thresholding is done. 
@@ -145,10 +145,10 @@ Use the grayscale GDVI image to create a mask for the leaf of interest. Take a b
     
     # Inputs: 
     #   img - RGB or grayscale image to plot the ROI on 
-    #   x - The x-coordinate of the upper left corner of the rectangle 
-    #   y - The y-coordinate of the upper left corner of the rectangle 
-    #   h - The height of the rectangle 
-    #   w - The width of the rectangle 
+    #   x   - The x-coordinate of the upper left corner of the rectangle 
+    #   y   - The y-coordinate of the upper left corner of the rectangle 
+    #   h   - The height of the rectangle 
+    #   w   - The width of the rectangle 
     roi, roi_hierarchy= pcv.roi.rectangle(img=gdvi_thresh, x=400, y=400, h=400, w=400)
     
 ``` 
@@ -162,17 +162,41 @@ Draw a rectangular ROI around the leaf of interest.
     # 
     
     # Inputs: 
-    #   img - RGB or grayscale image data for plotting 
+    #   img  - RGB or grayscale image data for plotting 
     #   mask - Binary mask used for detecting contours 
     id_objects, obj_hierarchy = pcv.find_objects(img=index_array_gdvi.array_data, mask=gdvi_thresh)
     
 ``` 
 
-**Figure 4.** Identify objects 
+**Figure 5.** Identify objects 
 Identify objects in the mask that was created. 
 
 ![Screenshot](img/tutorial_images/hyperspectral/id_objects.jpg)
 
+```python
+    # 
+    
+    
+    # Inputs:
+    #    img            - img to display kept objects
+    #    roi_contour    - contour of roi, output from any ROI function
+    #    roi_hierarchy  - contour of roi, output from any ROI function
+    #    object_contour - contours of objects, output from pcv.find_objects function
+    #    obj_hierarchy  - hierarchy of objects, output from pcv.find_objects function
+    #    roi_type       - 'partial' (default, for partially inside), 'cutto', or 
+    #                     'largest' (keep only largest contour)
+    roi_objects, hierarchy, kept_mask, obj_area = pcv.roi_objects(img=index_array_gdvi.array_data, roi_contour=roi, 
+                                                                  roi_hierarchy=roi_hierarchy, 
+                                                                  object_contour=id_objects, 
+                                                                  obj_hierarchy=obj_hierarchy,
+                                                                  roi_type='partial')
+                                                               
+``` 
+
+**Figure 6.** Binary Mask 
+Binary mask after filtering objects by the region of interest that we defined. 
+
+![Screenshot](img/tutorial_images/hyperspectral/roi_mask.jpg)
 
 
 
