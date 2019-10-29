@@ -149,7 +149,7 @@ Use the grayscale GDVI image to create a mask for the leaf of interest. Take a b
     #   y   - The y-coordinate of the upper left corner of the rectangle 
     #   h   - The height of the rectangle 
     #   w   - The width of the rectangle 
-    roi, roi_hierarchy= pcv.roi.rectangle(img=gdvi_thresh, x=400, y=400, h=400, w=400)
+    roi, roi_hierarchy= pcv.roi.rectangle(img=gdvi_thresh, x=500, y=500, h=300, w=300)
     
 ``` 
 
@@ -159,7 +159,7 @@ Draw a rectangular ROI around the leaf of interest.
 ![Screenshot](img/tutorial_images/hyperspectral/rect_roi.jpg)
 
 ```python
-    # 
+    # Find Objects 
     
     # Inputs: 
     #   img  - RGB or grayscale image data for plotting 
@@ -174,8 +174,7 @@ Identify objects in the mask that was created.
 ![Screenshot](img/tutorial_images/hyperspectral/id_objects.jpg)
 
 ```python
-    # 
-    
+    # Filter object by a defined region of interest 
     
     # Inputs:
     #    img            - img to display kept objects
@@ -198,11 +197,25 @@ Binary mask after filtering objects by the region of interest that we defined.
 
 ![Screenshot](img/tutorial_images/hyperspectral/roi_mask.jpg)
 
+```python
+    # Apply the mask of the leaf to the entire datacube, and store it where the datacube is stored=. 
+    
+    # Inputs:
+    #   rgb_img - RGB image data 
+    #   mask - Binary mask image data 
+    #   mask_color - 'white' or 'black' 
+    spectral_array.array_data = pcv.apply_mask(rgb_img=spectral_array.array_data, mask=kept_mask, mask_color="black")
+                                                               
+``` 
+
+**Figure 7.** Masked datacube 
+ Applying a mask to the entire datacube can output a debugging image to confirm that the data was masked successfully. 
+ 
+![Screenshot](img/tutorial_images/hyperspectral/datacube_masked.jpg)
 
 
 
-
-
+_________________
 
 
 
