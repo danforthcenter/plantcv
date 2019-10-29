@@ -125,10 +125,15 @@ def read_data(filename):
                             rescale(pseudo_rgb[:, :, 2])))
 
     # Create an instance of the spectral_data class
-    print(header_dict["wavelength"][-1])
-    print(header_dict["wavelength"][0])
-    spectral_array = Spectral_data(array_data=array_data, max_wavelength=float(header_dict["wavelength"][-1]),
-                                   min_wavelength=float(header_dict["wavelength"][0]), d_type=header_dict["data type"],
+    try:
+        max_wl = float(header_dict["wavelength"][-1])
+        min_wl = float(header_dict["wavelength"][0])
+    except:
+        max_wl = header_dict["wavelength"][-1]
+        min_wl = header_dict["wavelength"][0]
+
+    spectral_array = Spectral_data(array_data=array_data, max_wavelength=max_wl,
+                                   min_wavelength=min_wl, d_type=header_dict["data type"],
                                    wavelength_dict=wavelength_dict, samples=int(header_dict["samples"]),
                                    lines=int(header_dict["lines"]), interleave=header_dict["interleave"],
                                    wavelength_units=header_dict["wavelength units"], array_type="datacube",
