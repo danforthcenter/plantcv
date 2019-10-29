@@ -149,7 +149,7 @@ def main():
     pcv.params.debug_outdir = args.outdir  # set output directory
 
     # Read image
-    img, path, filename = pcv.readimage(filename=args.image)
+    array_data = pcv.readimage(filename=args.image, mode='envi')
 
     # Write shape and color data to results file
     pcv.print_results(filename=args.result)

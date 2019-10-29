@@ -7,6 +7,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 from plantcv.plantcv import Spectral_data
+from plantcv.plantcv.transform import rescale
 
 
 def _find_closest(A, target):
@@ -88,6 +89,7 @@ def read_data(filename):
         pseudo_rgb = cv2.merge((array_data[:, :, int(default_bands[0])],
                                 array_data[:, :, int(default_bands[1])],
                                 array_data[:, :, int(default_bands[2])]))
+
     else:
         try:
             max_wavelength = max([float(i.rstrip()) for i in wavelength_dict.keys()])
@@ -114,6 +116,9 @@ def read_data(filename):
 
     # Gamma correct pseudo_rgb image
     pseudo_rgb = pseudo_rgb ** (1 / 2.2)
+    pseudo_rgb = cv2.merge((rescale(pseudo_rgb[:, :, 0]),
+                            rescale(pseudo_rgb[:, :, 1]),
+                            rescale(pseudo_rgb[:, :, 2])))
 
     # Create an instance of the spectral_data class
     spectral_array = Spectral_data(array_data=array_data, max_wavelength=float(header_dict["wavelength"][-1]),
@@ -121,7 +126,7 @@ def read_data(filename):
                                    wavelength_dict=wavelength_dict, samples=int(header_dict["samples"]),
                                    lines=int(header_dict["lines"]), interleave=header_dict["interleave"],
                                    wavelength_units=header_dict["wavelength units"], array_type="datacube",
-                                   filename=filename)
+                                   pseudo_rgb=pseudo_rgb, filename=filename)
 
     if params.debug == "plot":
         # Gamma correct pseudo_rgb image

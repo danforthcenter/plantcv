@@ -94,7 +94,7 @@ def extract_index(array, index="NDVI", fudge_factor=20):
                                 wavelength_dict={}, samples=array.samples,
                                 lines=array.lines, interleave=array.interleave,
                                 wavelength_units=array.wavelength_units, array_type="index_" + index.lower(),
-                                filename=array.filename)
+                                pseudo_rgb=None, filename=array.filename)
 
     if params.debug == "plot":
         # Gamma correct pseudo_rgb image
