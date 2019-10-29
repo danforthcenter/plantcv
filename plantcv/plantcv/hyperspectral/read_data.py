@@ -34,6 +34,10 @@ def read_data(filename):
         :return array_data: numpy.ndarray
         :return header_dict: dict
         """
+    # Store debug mode
+    debug = params.debug
+    params.debug = None
+
     # Initialize dictionary
     header_dict = {}
 
@@ -128,6 +132,9 @@ def read_data(filename):
                                    wavelength_units=header_dict["wavelength units"], array_type="datacube",
                                    pseudo_rgb=pseudo_rgb, filename=filename)
 
+    # Reset debug mode
+    params.debug = debug
+    
     if params.debug == "plot":
         # Gamma correct pseudo_rgb image
         plot_image(pseudo_rgb)

@@ -8,7 +8,7 @@ on using wavelengths that are at least close to the wavelength bands require to 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
 - **Parameters:**
-    - array         - A hyperspectral datacube object, an instance of the `Spectral_data` class
+    - array         - A hyperspectral datacube object, an instance of the `Spectral_data` class, (read in with [pcv.readimage](read_image.md) with `mode='envi'`)
     - index         - Desired index, either "ndvi" for normalized difference vegetation index, "gdvi" for green difference
     vegetation index, or "savi" for soil adjusted vegetation index.
     - fudge_factor  - Amount of flexibility (in nanometers) regarding using wavelengths that are 
@@ -20,6 +20,19 @@ on using wavelengths that are at least close to the wavelength bands require to 
     [GitHub issues page](https://github.com/danforthcenter/plantcv/issues). 
 - **Example use:**
     - Below
+```python
+
+from plantcv import plantcv as pcv
+
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
+
+pcv.params.debug = "print"
+
+# Extract NDVI index from the datacube 
+ndvi_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="NDVI", fudge_factor=20)
+
+```
 
 **NDVI array image**
 
