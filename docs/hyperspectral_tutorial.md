@@ -198,10 +198,10 @@ Binary mask after filtering objects by the region of interest that we defined.
 ![Screenshot](img/tutorial_images/hyperspectral/roi_mask.jpg)
 
 ```python
-    # Apply the mask of the leaf to the entire datacube, and store it where the datacube is stored=. 
+    # Apply the mask of the leaf to the entire datacube, and store it where the datacube is stored. 
     
     # Inputs:
-    #   rgb_img - RGB image data 
+    #   rgb_img - RGB image data or hyperspectral image data 
     #   mask - Binary mask image data 
     #   mask_color - 'white' or 'black' 
     spectral_array.array_data = pcv.apply_mask(rgb_img=spectral_array.array_data, mask=kept_mask, mask_color="black")
@@ -213,13 +213,29 @@ Binary mask after filtering objects by the region of interest that we defined.
  
 ![Screenshot](img/tutorial_images/hyperspectral/datacube_masked.jpg)
 
+```python
+    # Extract reflectance intensity data and store it out to the Outputs class. 
+    
+    # Inputs:
+    #   array        - Hyperspectral data instance  
+    #   mask         - Binary mask image data 
+    #   hist_plot    - If True plots histogram of reflectance intensity values
+    analysis_img = pcv.hyperspectral.analyze_spectral(array=spectral_array, mask=kept_mask, histplot=True)
+                                                               
+``` 
 
+**Figure 8.** Spectral histogram 
+ 
+  
+![Screenshot](img/tutorial_images/hyperspectral/spectral_histogram.jpg)
 
-_________________
-
-
-
-
+```python
+    # Write shape and color data to results file
+    pcv.print_results(filename=args.result)
+     
+if __name__ == '__main__':
+    main()                                                          
+``` 
 
 
 
@@ -263,16 +279,55 @@ def options():
 def main():
     # Get options
     args = options()
+    
+    pcv.params.debug=args.debug #set debug mode
+    pcv.params.debug_outdir=args.outdir #set output directory
+    
+    # Read image (readimage mode defaults to native but if image is RGBA then specify mode='rgb')
+    # Inputs:
+    #   filename - Image file to be read in 
+    #   mode     - Return mode of image; either 'native' (default), 'rgb', 'gray', 'envi', or 'csv'
+    spectral_array = pcv.readimage(filename=args.image, mode='envi')
+    
+    filename = spectral_array.filename
+    
+    # Save the pseudo-rgb image that gets created while reading in hyperspectral data
+    pcv.print_image(img=spectral_array.pseudo_rgb, filename=filename + "_pseudo-rgb.png")
+    
+    # Extract the Green Difference Vegetation Index from the datacube 
+    index_array_gdvi = pcv.hyperspectral.extract_index(array=spectral_array, 
+                                                       index="GDVI",
+                                                       fudge_factor=20)
+                                                    
+    # Threshold the grayscale image 
+    gdvi_thresh = pcv.threshold.binary(gray_img=index_array_gdvi.array_data, threshold=150, max_value=255)
 
-    pcv.params.debug = args.debug  # set debug mode
-    pcv.params.debug_outdir = args.outdir  # set output directory
+    # Define ROI 
+    roi, roi_hierarchy= pcv.roi.rectangle(img=gdvi_thresh, x=500, y=500, h=300, w=300)
 
-    # Read image
-    array_data = pcv.readimage(filename=args.image, mode='envi')
+    # Find Objects 
+    id_objects, obj_hierarchy = pcv.find_objects(img=index_array_gdvi.array_data, mask=gdvi_thresh)
+    
+    # Filter object by a defined region of interest 
+    roi_objects, hierarchy, kept_mask, obj_area = pcv.roi_objects(img=index_array_gdvi.array_data, roi_contour=roi, 
+                                                                  roi_hierarchy=roi_hierarchy, 
+                                                                  object_contour=id_objects, 
+                                                                  obj_hierarchy=obj_hierarchy,
+                                                                  roi_type='partial')
+  
+    # Apply the mask of the leaf to the entire datacube, and store it where the datacube is stored.
+    spectral_array.array_data = pcv.apply_mask(rgb_img=spectral_array.array_data, mask=kept_mask, mask_color="black")
+                                                               
+    # Extract reflectance intensity data and store it out to the Outputs class. 
+    
+    # Inputs:
+    #   array        - Hyperspectral data instance  
+    #   mask         - Binary mask image data 
+    #   hist_plot    - If True plots histogram of reflectance intensity values
 
     # Write shape and color data to results file
     pcv.print_results(filename=args.result)
-
+    
 if __name__ == '__main__':
     main()
     

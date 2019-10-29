@@ -14,10 +14,9 @@ def analyze_spectral(array, mask, histplot=True):
        and a pseudocolor image of the plant.
 
     Inputs:
-    array        = numpy array of thermal values
-    header_dict  =
+    array        = Hyperspectral data instance
     mask         = Binary mask made from selected contours
-    histplot     = if True plots histogram of intensity values
+    histplot     = if True plots histogram of reflectance intensity values
 
     Returns:
     analysis_img = output image
