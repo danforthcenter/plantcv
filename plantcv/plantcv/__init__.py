@@ -131,6 +131,11 @@ from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.print_image import print_image
 from plantcv.plantcv.plot_image import plot_image
 from plantcv.plantcv.color_palette import color_palette
+from plantcv.plantcv.rgb2gray import rgb2gray
+from plantcv.plantcv.gaussian_blur import gaussian_blur
+from plantcv.plantcv import transform
+from plantcv.plantcv import Spectral_data
+from plantcv.plantcv import hyperspectral
 from plantcv.plantcv.apply_mask import apply_mask
 from plantcv.plantcv.readimage import readimage
 from plantcv.plantcv.readbayer import readbayer
@@ -146,7 +151,6 @@ from plantcv.plantcv.watershed import watershed_segmentation
 from plantcv.plantcv.rectangle_mask import rectangle_mask
 from plantcv.plantcv.rgb2gray_hsv import rgb2gray_hsv
 from plantcv.plantcv.rgb2gray_lab import rgb2gray_lab
-from plantcv.plantcv.rgb2gray import rgb2gray
 from plantcv.plantcv.median_blur import median_blur
 from plantcv.plantcv.fill import fill
 from plantcv.plantcv.invert import invert
@@ -175,7 +179,6 @@ from plantcv.plantcv.scale_features import scale_features
 from plantcv.plantcv.landmark_reference_pt_dist import landmark_reference_pt_dist
 from plantcv.plantcv.x_axis_pseudolandmarks import x_axis_pseudolandmarks
 from plantcv.plantcv.y_axis_pseudolandmarks import y_axis_pseudolandmarks
-from plantcv.plantcv.gaussian_blur import gaussian_blur
 from plantcv.plantcv.cluster_contours import cluster_contours
 from plantcv.plantcv.cluster_contour_splitimg import cluster_contour_splitimg
 from plantcv.plantcv.rotate import rotate
@@ -191,7 +194,6 @@ from plantcv.plantcv.opening import opening
 from plantcv.plantcv.closing import closing
 from plantcv.plantcv import roi
 from plantcv.plantcv import threshold
-from plantcv.plantcv import transform
 from plantcv.plantcv.canny_edge_detect import canny_edge_detect
 from plantcv.plantcv.cluster_contour_mask import cluster_contour_mask
 from plantcv.plantcv.analyze_thermal_values import analyze_thermal_values
@@ -199,23 +201,23 @@ from plantcv.plantcv import visualize
 from plantcv.plantcv import morphology
 from plantcv.plantcv.fill_holes import fill_holes
 from plantcv.plantcv.get_kernel import get_kernel
-from plantcv.plantcv import hyperspectral
 
 # add new functions to end of lists
 
-__all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'apply_mask', 'readimage',
+__all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'apply_mask','gaussian_blur', 'transform',
+           'hyperspectral', 'readimage',
            'readbayer', 'laplace_filter', 'sobel_filter', 'scharr_filter', 'hist_equalization', 'erode',
            'image_add', 'image_subtract', 'dilate', 'watershed', 'rectangle_mask', 'rgb2gray_hsv', 'rgb2gray_lab',
            'rgb2gray', 'median_blur', 'fill', 'invert', 'logical_and', 'logical_or', 'logical_xor',
-           'find_objects', 'roi_objects', 'transform', 'object_composition', 'analyze_object', 'morphology',
+           'find_objects', 'roi_objects', 'object_composition', 'analyze_object', 'morphology',
            'analyze_bound_horizontal', 'analyze_bound_vertical', 'analyze_color', 'analyze_nir_intensity',
            'fluor_fvfm', 'print_results', 'resize', 'flip', 'crop_position_mask', 'get_nir', 'report_size_marker_area',
            'white_balance', 'acute_vertex', 'scale_features', 'landmark_reference_pt_dist', 'outputs',
-           'x_axis_pseudolandmarks', 'y_axis_pseudolandmarks', 'gaussian_blur', 'cluster_contours', 'visualize',
+           'x_axis_pseudolandmarks', 'y_axis_pseudolandmarks', 'cluster_contours', 'visualize',
            'cluster_contour_splitimg', 'rotate', 'shift_img', 'output_mask', 'auto_crop', 'canny_edge_detect',
            'background_subtraction', 'naive_bayes_classifier', 'acute', 'distance_transform', 'params',
            'cluster_contour_mask','analyze_thermal_values', 'opening',
-           'closing','within_frame', 'fill_holes', 'get_kernel', 'hyperspectral']
+           'closing','within_frame', 'fill_holes', 'get_kernel', 'Spectral_data']
 
 from ._version import get_versions
 __version__ = get_versions()['version']

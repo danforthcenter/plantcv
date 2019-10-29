@@ -23,8 +23,8 @@
 #         self.text_size = text_size
 #         self.text_thickness = text_thickness
 
-from plantcv.plantcv.hyperspectral.read_data import read_data
 from plantcv.plantcv.hyperspectral.read_data import _find_closest
+from plantcv.plantcv.hyperspectral.read_data import read_data
 from plantcv.plantcv.hyperspectral.extract_index import extract_index
 from plantcv.plantcv.hyperspectral.analyze_spectral import analyze_spectral
 
