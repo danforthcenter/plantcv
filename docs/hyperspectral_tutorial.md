@@ -121,6 +121,40 @@ For this image the Green Difference Vegetation Index was ideal for separating th
 
 ![Screenshot](img/tutorial_images/hyperspectral/gdvi.jpg)
 
+```python
+    # Threshold the grayscale image 
+    
+    # Inputs:
+    #   gray_img - Grayscale image data 
+    #   threshold- Threshold value (between 0-255)
+    #   max_value - Value to apply above threshold (255 = white) 
+    #   object_type - 'light' (default) or 'dark'. If the object is lighter than the 
+    #                 background then standard threshold is done. If the object is 
+    #                 darker than the background then inverse thresholding is done. 
+    gdvi_thresh = pcv.threshold.binary(gray_img=index_array_gdvi.array_data, threshold=150, max_value=255)
+    
+```
+
+**Figure 2.** Thresholded GDVI Image
+Use the grayscale GDVI image to create a mask for the leaf of interest. 
+ 
+![Screenshot](img/tutorial_images/hyperspectral/gdvi_thresh.jpg)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
