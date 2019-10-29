@@ -13,15 +13,16 @@ def extract_index(array, index="NDVI", fudge_factor=20):
     """Pull out indices of interest from a hyperspectral datacube.
 
         Inputs:
-        array = hyperspectral data array
+        array = hyperspectral data instance
         index = index of interest
+        fudge_factor = how lenient to be if the required wavelengths are not available
 
         Returns:
         index_array    = image object as numpy array
 
-        :param array: numpy.ndarray
-        :param header_dict: dict
+        :param array: __main__.Spectral_data
         :param index: str
+        :param fudge_factor: int
         :return index_array: numpy.ndarray
         """
     params.device += 1

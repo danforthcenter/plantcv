@@ -53,7 +53,6 @@ import sys, traceback
 import cv2
 import numpy as np
 import argparse
-import string
 from plantcv import plantcv as pcv
 
 ### Parse command-line arguments
@@ -86,19 +85,41 @@ def main():
     # Read image (readimage mode defaults to native but if image is RGBA then specify mode='rgb')
     # Inputs:
     #   filename - Image file to be read in 
-    #   mode - Return mode of image; either 'native' (default), 'rgb', 'gray', 'envi', or 'csv'
-    img, path, filename = pcv.readimage(filename=args.image, mode='envi')
+    #   mode -     Return mode of image; either 'native' (default), 'rgb', 'gray', 'envi', or 'csv'
+    spectral_array = pcv.readimage(filename=args.image, mode='envi')
+    
+    filename = spectral_array.filename
+    
+    # Save the pseudo-rgb image that gets created while reading in hyperspectral data
+    pcv.print_image(spectral_array.pseudo_rgb, filename + "_pseudo-rgb.png")
     
 ```
 
-**Figure 1.** Original image.
+**Figure 1.** Psuedo-RGB image from hyperspectral datacube.
 The picture in this tutorial we use is a HEADWALL Hyperspec ENVI Standard image. Reading an hyperspectral image in with PlantCV will also create a pseudo-RGB image 
-based on the wavelengths available in order to confirm that image data has been read in successfully. 
+based on the wavelengths available in order to confirm that image data has been read in successfully. This creates an instance of the `Spectral_data` class so the 
+object returned has many methods that are useful to users and within PlantCV functions. 
 
 ![Screenshot](img/tutorial_images/hyperspectral/pseudo_rgb.jpg)
 
+```python        
+    # Extract the Green Difference Vegetation Index from the datacube 
+    
+    # Inputs:
+    #   array -        Hyperspectral data instance  
+    #   index -        Index of interest
+    #   fudge_factor - How lenient to be if the required wavelengths 
+    #                  for a specific index are not available 
+    index_array_gdvi = pcv.hyperspectral.extract_index(array=spectral_array, 
+                                                       index="GDVI",
+                                                       fudge_factor=20)
+                                                       
+```
 
+**Figure 2.** GDVI Grayscale Image
+For this image the Green Difference Vegetation Index was ideal for separating the leaf of interest from the rest of the background. 
 
+![Screenshot](img/tutorial_images/hyperspectral/gdvi.jpg)
 
 
 
