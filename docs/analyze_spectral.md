@@ -11,10 +11,8 @@ the values out to a file. Can also print out a histogram of reflectance intensit
     - array         - A hyperspectral datacube object, an instance of the `Spectral_data` class (read in with [pcv.readimage](read_image.md) with `mode='envi'`)
     - mask          - Binary mask made from selected contours
     - histplot      - If True plots histogram of reflectance intensity values (default histplot = False)
-
 - **Example use:**
-    - Below
-    
+    - Below 
 - **Output data stored:** Data ('max_reflectance', 'min_reflectance', 'mean_reflectance', 'median_reflectance', 'spectral_frequencies') automatically gets stored to the 
     [`Outputs` class](outputs.md) when this function is ran. 
     These data can always get accessed during a workflow (example below). For more detail about data output see [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
@@ -38,4 +36,4 @@ reflectance_range = pcv.outputs.observations['max_reflectance']['value'] - pcv.o
 
 **Spectral Reflectance Intensity histogram**
 
-![Screenshot](img/tutorial_images/hyperspectral/pseudo_rgb.jpg)
+![Screenshot](img/tutorial_images/hyperspectral/spectral_histogram.jpg)
