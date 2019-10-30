@@ -38,6 +38,8 @@ Also see our tutorials for more detailed overviews of using PlantCV for specific
 * [VIS / NIR Dual Workflows](vis_nir_tutorial.md)
 * [Multi Plant Image Processing](multi-plant_tutorial.md)
 * [Morphology Package](morphology_tutorial.md) 
+* [Thermal Image Processing](thermal_tutorial.md)
+* [Hyperspectral Image Processing](hyperspectral_tutorial.md)
 * [Machine Learning Tutorial](machine_learning_tutorial.md)
 * [Parallel Image Processing](pipeline_parallel.md)
 * [Exporting Data for Downstream Analysis](db-exporter.md)
