@@ -194,9 +194,10 @@ def test_plantcv_parallel_metadata_parser_snapshots():
     meta_filters = {"imgtype": "VIS"}
     start_date = 1413936000
     end_date = 1414022400
+    date_format = '%Y-%m-%d %H:%M:%S.%f'
     error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
     jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters, date_format=date_format,
                                                       start_date=start_date, end_date=end_date, error_log=error_log,
                                                       delimiter="_", file_type="jpg", coprocess="NIR")
     assert meta == METADATA_COPROCESS
@@ -207,9 +208,10 @@ def test_plantcv_parallel_metadata_parser_snapshots_coimg():
     meta_filters = {"imgtype": "VIS"}
     start_date = 1413936000
     end_date = 1414022400
+    date_format = '%Y-%m-%d %H:%M:%S.%f'
     error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
     jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters, date_format=date_format,
                                                       start_date=start_date, end_date=end_date, error_log=error_log,
                                                       delimiter="_", file_type="jpg", coprocess="FAKE")
     assert meta == METADATA_VIS_ONLY
@@ -220,9 +222,10 @@ def test_plantcv_parallel_metadata_parser_images():
     meta_filters = {"imgtype": "VIS"}
     start_date = 1413936000
     end_date = 1414022400
+    date_format = '%Y' # no date in filename so it skips check date range and date_format doesn't matter
     error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
     jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,date_format=date_format,
                                                       start_date=start_date, end_date=end_date, error_log=error_log,
                                                       delimiter="_", file_type="jpg", coprocess=None)
     expected = {
@@ -246,19 +249,65 @@ def test_plantcv_parallel_metadata_parser_images():
     assert meta == expected
 
 
+def test_plantcv_parallel_metadata_parser_regex():
+    data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR)
+    meta_filters = {"imgtype": "VIS"}
+    start_date = 1413936000
+    end_date = 1414022400
+    date_format = '%Y-%m-%d %H:%M:%S.%f'
+    error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
+    jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,date_format=date_format,
+                                                      start_date=start_date, end_date=end_date, error_log=error_log,
+                                                      delimiter='(VIS)_(SV)_(\d+)_(z1)_(h1)_(g0)_(e82)_(\d+)',
+                                                      file_type="jpg", coprocess=None)
+    expected = {
+        'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
+            'path': os.path.join(PARALLEL_TEST_DATA, 'images'),
+            'camera': 'SV',
+            'imgtype': 'VIS',
+            'zoom': 'z1',
+            'exposure': 'e82',
+            'gain': 'g0',
+            'frame': '0',
+            'lifter': 'h1',
+            'timestamp': None,
+            'id': '117770',
+            'plantbarcode': 'none',
+            'treatment': 'none',
+            'cartag': 'none',
+            'measurementlabel': 'none',
+            'other': 'none'}
+    }
+    assert meta == expected
+
+
 def test_plantcv_parallel_metadata_parser_images_outside_daterange():
     data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR2)
-    meta_filters = {"imgtype": "VIS"}
+    meta_filters = {"imgtype": "NIR"}
     start_date = 10
     end_date = 10
+    date_format = "%Y-%m-%d %H_%M_%S"
     meta_fields = {"imgtype": 0, "camera": 1, "frame": 2, "zoom": 3, "lifter": 4, "gain": 5, "exposure": 6,
                    "timestamp": 7}
     error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
     jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=meta_fields,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters, date_format=date_format,
                                                       start_date=start_date, end_date=end_date, error_log=error_log,
-                                                      delimiter="_", file_type="jpg", coprocess=None)
+                                                      delimiter="(NIR)_(SV)_(\d)_(z1)_(h1)_(g0)_(e65)_(\d{4}-\d{2}-\d{2} \d{2}_\d{2}_\d{2})", 
+                                                      file_type="jpg", coprocess=None)
     assert meta == {}
+
+
+def test_plantcv_parallel_check_date_range_wrongdateformat():
+    start_date = 10
+    end_date = 10
+    img_time = '2010-10-10'
+
+    with pytest.raises(SystemExit, match = r'does not match format'):
+        date_format = '%Y%m%d'
+        _ = plantcv.parallel.check_date_range(
+            start_date, end_date, img_time, date_format)
 
 
 def test_plantcv_parallel_metadata_parser_snapshot_outside_daterange():
@@ -266,9 +315,10 @@ def test_plantcv_parallel_metadata_parser_snapshot_outside_daterange():
     meta_filters = {"imgtype": "VIS"}
     start_date = 10
     end_date = 10
+    date_format = '%Y-%m-%d %H:%M:%S.%f'
     error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
     jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,date_format=date_format,
                                                       start_date=start_date, end_date=end_date, error_log=error_log,
                                                       delimiter="_", file_type="jpg", coprocess=None)
 
@@ -280,9 +330,10 @@ def test_plantcv_parallel_metadata_parser_fail_images():
     meta_filters = {"cartag": "VIS"}
     start_date = 10
     end_date = 10
+    date_format = '%Y-%m-%d %H:%M:%S.%f'
     error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
     jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,date_format=date_format,
                                                       start_date=start_date, end_date=end_date, error_log=error_log,
                                                       delimiter="_", file_type="jpg", coprocess="NIR")
 
@@ -295,9 +346,10 @@ def test_plantcv_parallel_metadata_parser_images_no_frame():
     meta_filters = {"imgtype": "VIS"}
     start_date = 1413936000
     end_date = 1414022400
+    date_format = '%Y-%m-%d %H:%M:%S.%f'
     error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
     jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=meta_fields,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,date_format=date_format,
                                                       start_date=start_date, end_date=end_date, error_log=error_log,
                                                       delimiter="_", file_type="jpg", coprocess="NIR")
     assert meta == {
@@ -345,9 +397,10 @@ def test_plantcv_parallel_metadata_parser_images_no_camera():
     meta_filters = {"imgtype": "VIS"}
     start_date = 1413936000
     end_date = 1414022400
+    date_format = '%Y-%m-%d %H:%M:%S.%f'
     error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
     jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=meta_fields,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,date_format=date_format,
                                                       start_date=start_date, end_date=end_date, error_log=error_log,
                                                       delimiter="_", file_type="jpg", coprocess="NIR")
     assert meta == {
