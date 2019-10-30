@@ -6,14 +6,14 @@ A global variable "debug" allows the user to print out the resulting image. The 
 If set to 'print' then the function prints the image out, or if using a [Jupyter](jupyter.md) notebook you could set debug to 'plot' to have
 the images plot to the screen. Debug mode allows users to visualize and optimize each step on individual test images and small test sets before workflows are deployed over whole datasets.
 
-Coming soon: interactive Hyperspectral tutorial! 
+Coming soon: interactive hyperspectral tutorial! 
 
 Also see [here](#Hyperspectral-script) for the complete script. 
 
 **Workflow**
 
 1.  Optimize workflow on individual image with debug set to 'print' (or 'plot' if using a Jupyter notebook).
-2.  Run workflow on small test set (that ideally spans time and/or treatments).
+2.  Run workflow on small test set (that ideally spans time and/or treatments, see the [sample image function](tools.md).
 3.  Re-optimize workflows on 'problem images' after manual inspection of test set.
 4.  Deploy optimized workflow over test set using parallelization script.
 
@@ -82,7 +82,7 @@ def main():
     pcv.params.debug=args.debug #set debug mode
     pcv.params.debug_outdir=args.outdir #set output directory
     
-    # Read image (readimage mode defaults to native but if image is RGBA then specify mode='rgb')
+    # Read image 
     # Inputs:
     #   filename - Image file to be read in 
     #   mode     - Return mode of image; either 'native' (default), 'rgb', 'gray', 'envi', or 'csv'
@@ -97,7 +97,7 @@ def main():
 
 **Figure 1.** Psuedo-RGB image from hyperspectral datacube.
 The picture in this tutorial we use is a HEADWALL Hyperspec ENVI Standard image. Reading an hyperspectral image in with PlantCV will also create a pseudo-RGB image 
-based on the wavelengths available in order to confirm that image data has been read in successfully. This creates an instance of the `Spectral_data` class so the 
+based on the wavelengths available in order to confirm that image data has been read in successfully. This creates an instance of the [`Spectral_data` class](Spectral_data.md) so the 
 object returned has many methods that are useful to users and within PlantCV functions. 
 
 ![Screenshot](img/tutorial_images/hyperspectral/pseudo_rgb.jpg)
@@ -116,7 +116,7 @@ object returned has many methods that are useful to users and within PlantCV fun
                                                        
 ```
 
-**Figure 2.** GDVI Grayscale Image
+**Figure 2.** GDVI Grayscale Image.
 For this image the Green Difference Vegetation Index was ideal for separating the leaf of interest from the rest of the background. 
 We extract this specific index with the [extract index](extract_index.md) function. 
 
@@ -136,7 +136,7 @@ We extract this specific index with the [extract index](extract_index.md) functi
     
 ```
 
-**Figure 3.** Thresholded GDVI Image
+**Figure 3.** Thresholded GDVI Image.
 Use the grayscale GDVI image to create a mask for the leaf of interest. Take a [binary threshold](binary_threshold.md). 
  
 ![Screenshot](img/tutorial_images/hyperspectral/gdvi_thresh.jpg)
@@ -154,7 +154,7 @@ Use the grayscale GDVI image to create a mask for the leaf of interest. Take a [
     
 ``` 
 
-**Figure 4.** Define a rectangular Region of Interest 
+**Figure 4.** Define a rectangular Region of Interest. 
 Draw a [rectangular ROI](roi_rectangle.md) around the leaf of interest. 
  
 ![Screenshot](img/tutorial_images/hyperspectral/rect_roi.jpg)
@@ -169,7 +169,7 @@ Draw a [rectangular ROI](roi_rectangle.md) around the leaf of interest.
     
 ``` 
 
-**Figure 5.** Identify objects 
+**Figure 5.** Identify objects. 
 [Identify objects](find_objects.md) in the mask that was created. 
 
 ![Screenshot](img/tutorial_images/hyperspectral/id_objects.jpg)
@@ -193,7 +193,7 @@ Draw a [rectangular ROI](roi_rectangle.md) around the leaf of interest.
                                                                
 ``` 
 
-**Figure 6.** Binary Mask 
+**Figure 6.** Binary Mask. 
 Binary mask after [filtering objects by the region of interest](roi_objects.md) that we defined. 
 
 ![Screenshot](img/tutorial_images/hyperspectral/roi_mask.jpg)
@@ -209,7 +209,7 @@ Binary mask after [filtering objects by the region of interest](roi_objects.md) 
                                                                
 ``` 
 
-**Figure 7.** Masked datacube 
+**Figure 7.** Masked datacube. 
 [Applying a mask](apply_mask.md) to the entire datacube can output a debugging image to confirm that the data was masked successfully. 
  
 ![Screenshot](img/tutorial_images/hyperspectral/datacube_masked.jpg)
@@ -225,7 +225,7 @@ Binary mask after [filtering objects by the region of interest](roi_objects.md) 
                                                                
 ``` 
 
-**Figure 8.** Spectral histogram 
+**Figure 8.** Spectral histogram. 
 [Extract reflectance intensity data](analyze_spectral.md) and store it out to the [Outputs class](outputs.md). Also, plot the reflectance intensities in a histogram. 
   
 ![Screenshot](img/tutorial_images/hyperspectral/spectral_histogram.jpg)
@@ -320,11 +320,7 @@ def main():
     spectral_array.array_data = pcv.apply_mask(rgb_img=spectral_array.array_data, mask=kept_mask, mask_color="black")
                                                                
     # Extract reflectance intensity data and store it out to the Outputs class. 
-    
-    # Inputs:
-    #   array        - Hyperspectral data instance  
-    #   mask         - Binary mask image data 
-    #   hist_plot    - If True plots histogram of reflectance intensity values
+    analysis_img = pcv.hyperspectral.analyze_spectral(array=spectral_array, mask=kept_mask, histplot=True)
 
     # Write shape and color data to results file
     pcv.print_results(filename=args.result)
