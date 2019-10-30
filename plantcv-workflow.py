@@ -146,8 +146,8 @@ def options():
                         default=None)
     parser.add_argument("-s", "--timestampformat", 
                         help='a date format code compatible with strptime C library, '
-                             'e.g. "%Y-%m-%d %H_%M_%S", except "%" symbols must be escaped on Windows with "%" '
-                             'e.g. "%%Y-%%m-%%d %%H_%%M_%%S". Required if adaptor = filename.',
+                             'e.g. "%%Y-%%m-%%d %%H_%%M_%%S", except "%%" symbols must be escaped on Windows with "%%" '
+                             'e.g. "%%%%Y-%%%%m-%%%%d %%%%H_%%%%M_%%%%S". Required if adaptor = filename.',
                         required=False,
                         default='%Y-%m-%d %H:%M:%S.%f')
     parser.add_argument("-w", "--writeimg", help='Include analysis images in output.', default=False,
