@@ -116,9 +116,13 @@ def options():
                              'name. Current adaptors: phenofront, filename', default="phenofront")
     parser.add_argument("-p", "--workflow", help='Workflow script file.', required=True)
     parser.add_argument("-j", "--json", help='Output database file name.', required=True)
+    parser.add_argument("-f", "--meta",
+                        help='Image filename metadata structure. Comma-separated list of valid metadata terms. '
+                             'Valid metadata fields are: ' +
+                             ', '.join(map(str, list(valid_meta.keys()))), required=True)
     parser.add_argument("-i", "--outdir", help='Output directory for images. Not required by all workflows.',
                         default=".")
-    parser.add_argument("-T", "--cpu", help='Number of CPU to use.', default=1, type=int)
+    parser.add_argument("-T", "--cpu", help='Number of CPU processes to use.', default=1, type=int)
     parser.add_argument("-c", "--create",
                         help='will overwrite an existing database'
                              'Warning: activating this option will delete an existing database!',
@@ -128,11 +132,9 @@ def options():
                              'is excluded then the current date is assumed.',
                         required=False)
     parser.add_argument("-t", "--type", help='Image format type (extension).', default="png")
-    parser.add_argument("-l", "--delimiter", help='Image file name metadata delimiter character.', default='_')
-    parser.add_argument("-f", "--meta",
-                        help='Image file name metadata format. List valid metadata fields separated by the '
-                             'delimiter (-l/--delimiter). Valid metadata fields are: ' +
-                             ', '.join(map(str, list(valid_meta.keys()))), default='imgtype_camera_frame_zoom_id')
+    parser.add_argument("-l", "--delimiter", help='Image file name metadata delimiter character.' 
+                                                  'Alternatively, a regular expression for parsing filename metadata.',
+                        default='_')
     parser.add_argument("-M", "--match",
                         help='Restrict analysis to images with metadata matching input criteria. Input a '
                              'metadata:value comma-separated list. This is an exact match search. '
@@ -142,6 +144,12 @@ def options():
                         help='Coprocess the specified imgtype with the imgtype specified in --match '
                              '(e.g. coprocess NIR images with VIS).',
                         default=None)
+    parser.add_argument("-s", "--timestampformat", 
+                        help='a date format code compatible with strptime C library, '
+                             'e.g. "%%Y-%%m-%%d %%H_%%M_%%S", except "%%" symbols must be escaped on Windows with "%%" '
+                             'e.g. "%%%%Y-%%%%m-%%%%d %%%%H_%%%%M_%%%%S". Required if adaptor = filename.',
+                        required=False,
+                        default='%Y-%m-%d %H:%M:%S.%f')
     parser.add_argument("-w", "--writeimg", help='Include analysis images in output.', default=False,
                         action="store_true")
     parser.add_argument("-o", "--other_args", help='Other arguments to pass to the workflow script.', required=False)
@@ -151,12 +159,17 @@ def options():
         raise IOError("Directory does not exist: {0}".format(args.dir))
     if not os.path.exists(args.workflow):
         raise IOError("File does not exist: {0}".format(args.workflow))
-    if args.adaptor is 'phenofront':
+    if args.adaptor != 'phenofront' and args.adaptor != 'filename':
+        raise ValueError("Adaptor must be either phenofront or filename")
+    if args.adaptor == 'phenofront':
         if not os.path.exists(os.path.join(args.dir, 'SnapshotInfo.csv')):
             raise IOError(
                 'The snapshot metadata file SnapshotInfo.csv does not exist in {0}. '
                 'Perhaps you meant to use a different adaptor?'.format(
                     args.dir))
+    elif args.adaptor == 'filename':
+        if not args.timestampformat:
+            raise ValueError('A timestamp format (--timestampformat) must be provided when --adaptor = filename')
     if not os.path.exists(args.outdir):
         raise IOError("Directory does not exist: {0}".format(args.outdir))
 
@@ -165,9 +178,6 @@ def options():
         os.makedirs(args.jobdir)
     except IOError as e:
         raise IOError("{0}: {1}".format(e.strerror, args.jobdir))
-
-    if args.adaptor != 'phenofront' and args.adaptor != 'filename':
-        raise ValueError("Adaptor must be either phenofront or filename")
 
     if args.dates:
         dates = args.dates.split('_')
@@ -182,17 +192,14 @@ def options():
         args.start_date = (start_td.days * 24 * 3600) + start_td.seconds
         args.end_date = (end_td.days * 24 * 3600) + end_td.seconds
     else:
-        end = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-        end_list = map(int, end.split('-'))
-        end_td = datetime.datetime(*end_list) - datetime.datetime(1970, 1, 1)
         args.start_date = 1
-        args.end_date = (end_td.days * 24 * 3600) + end_td.seconds
+        args.end_date = None
 
     args.valid_meta = valid_meta
     args.start_time = start_time
 
     # Image filename metadata structure
-    fields = args.meta.split(args.delimiter)
+    fields = args.meta.split(",")
     # Keep track of the number of metadata fields matching filenames should have
     args.meta_count = len(fields)
     structure = {}
@@ -213,7 +220,7 @@ def options():
             key, value = pair.split(':')
             args.imgtype[key] = value
     else:
-        args.imgtype['None'] = 'None'
+        args.imgtype['None'] = None
 
     if (args.coprocess is not None) and ('imgtype' not in args.imgtype):
         raise ValueError("When the coprocess imgtype is defined, imgtype must be included in match.")
@@ -248,7 +255,8 @@ def main():
     # Database upload file name prefix
     # Use user inputs to make filenames
     prefix = 'plantcv'
-    if args.imgtype is not None:
+    # check if there are meta_fields to filter dataset by
+    if next(iter(args.imgtype)) != 'None':
         kv_list = []
         for key in args.imgtype:
             kv_list.append(key + str(args.imgtype[key]))
@@ -266,7 +274,7 @@ def main():
     # Read image file names
     ###########################################
     jobcount, meta = pcvp.metadata_parser(data_dir=args.dir, meta_fields=args.fields, valid_meta=args.valid_meta,
-                                          meta_filters=args.imgtype, start_date=args.start_date, end_date=args.end_date,
+                                          meta_filters=args.imgtype, date_format=args.timestampformat, start_date=args.start_date, end_date=args.end_date,
                                           error_log=error_log, delimiter=args.delimiter, file_type=args.type,
                                           coprocess=args.coprocess)
     ###########################################
@@ -314,4 +322,5 @@ def main():
 ###########################################
 
 if __name__ == '__main__':
+    __spec__ = None
     main()
