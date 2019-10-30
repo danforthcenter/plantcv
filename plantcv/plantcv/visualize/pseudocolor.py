@@ -168,7 +168,7 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
             plot_image(pseudo_img1)
             # Use non-blocking mode in case the function is run more than once
             plt.show(block=False)
-        elif params.debug == None:
-            plt.show(block=False)
+        # elif params.debug is None:
+            # plt.show(block=False)
 
     return pseudo_img
