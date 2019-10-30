@@ -45,8 +45,7 @@ PlantCV functions from the hyperspectral sub-package use `Spectral_data` implici
 from plantcv import plantcv as pcv
 
 
-# Use a pre-v3 function to open an image
-# Note that pcv.params.debug is passed to the debug argument
+# Read in data
 spectral_data_instance = pcv.readimage(filename="ee362e84-c861-4f0d-abbb-215ac58eed60_data")
 
 index_array_gdvi = pcv.hyperspectral.extract_index(array=spectral_data_instance, 

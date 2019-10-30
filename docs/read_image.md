@@ -1,6 +1,6 @@
 ## Read Image
 
-Reads image into numpy ndarray and splits the path and image filename. Most modes of use of this function is a wrapper for the OpenCV function [imread](http://docs.opencv.org/modules/highgui/doc/reading_and_writing_images_and_video.html).
+Reads image into numpy ndarray and splits the path and image filename (*see note about when `mode='envi'`). Most modes of use of this function is a wrapper for the OpenCV function [imread](http://docs.opencv.org/modules/highgui/doc/reading_and_writing_images_and_video.html).
 
 **plantcv.readimage**(*filename, mode="native"*)
 
@@ -25,6 +25,7 @@ Reads image into numpy ndarray and splits the path and image filename. Most mode
 - **Example use:**
     - [Use In VIS Tutorial](vis_tutorial.md) 
     - [Use In Thermal Tutorial](thermal_tutorial.md)
+    - [Use In Hyperspectral Tutorial](hyperspectral_tutorial.md)
 
 ```python
 from plantcv import plantcv as pcv      
