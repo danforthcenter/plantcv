@@ -1,7 +1,7 @@
 ## Analyze Spectral Values 
 
-This function calculates the reflectance intensity of each pixel associated with a hyperspectral datacube and writes 
-the values out to a file. Can also print out a histogram of reflectance intensity.
+This function calculates the reflectance frequencies associated with a hyperspectral datacube and writes 
+the values out as observations to get saved out. Can also print out a histogram of reflectance intensity.
 
 **plantcv.hyperspectral.analyze_spectral**(*array, mask, histplot=False*)
 
@@ -26,14 +26,14 @@ from plantcv import plantcv as pcv
 
 pcv.params.debug = "print"
 
-# Caclulates the proportion of pixels that fall into a signal bin and writes the values to a file. Also provides a histogram of this data
-thermal_hist  = pcv.hyperspectral.analyze_spectral(array=spectral_data, mask=mask, histplot=True)
+# Calculates reflectance frequencies and writes the values as observations. Also provides a histogram of this data
+spectral_hist  = pcv.hyperspectral.analyze_spectral(array=spectral_data, mask=mask, histplot=True)
 
-# Access data stored out from analyze_thermal_values
+# Access data stored 
 reflectance_range = pcv.outputs.observations['max_reflectance']['value'] - pcv.outputs.observations['min_reflectance']['value']
 
 ```
 
-**Spectral Reflectance Intensity histogram**
+**Spectral Reflectance Intensity Histogram**
 
 ![Screenshot](img/tutorial_images/hyperspectral/spectral_histogram.jpg)
