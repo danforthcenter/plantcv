@@ -1,6 +1,7 @@
 ## Extract Index 
 
-This function extracts an index from a `Spectral_data` class instance. There is a parameter to allow some flexibility 
+This function extracts an index from a hyperspectral datacube, which is a [`Spectral_data` class](Spectral_data.md) instance created while reading in with [readimage](read_image.md)
+with `mode='envi'`. There is also a parameter to allow some flexibility  
 on using wavelengths that are at least close to the wavelength bands require to calculate a specific index. 
 
 **plantcv.hyperspectral.extract_index**(*array, index="NDVI", fudge_factor=20*)
