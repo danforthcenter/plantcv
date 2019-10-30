@@ -3,6 +3,7 @@
 import os
 import cv2
 import numpy as np
+from plantcv.plantcv import dilate
 from plantcv.plantcv import params
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
@@ -44,6 +45,7 @@ def segment_sort(skel_img, objects, mask=None, first_stem=True):
         labeled_img = mask.copy()
 
     tips_img = find_tips(skel_img)
+    tips_img = dilate(tips_img, 3, 1)
 
     # Loop through segment contours
     for i, cnt in enumerate(objects):
