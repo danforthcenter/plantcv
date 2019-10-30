@@ -244,6 +244,7 @@ def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
 
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
+    overlap_img = np.zeros((height, width))
 
     # Initialize a binary image of the circle
     bin_img = np.zeros((height, width), dtype=np.uint8)
@@ -257,13 +258,16 @@ def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
             y = coord[1] + i * spacing[1]
             # Loop over each column
             for j in range(0, ncols):
+                # Initialize a binary image of the circle
+                bin_img = np.zeros((height, width), dtype=np.uint8)
                 # The upper left corner is the x starting coordinate + the ROI offset * the
                 # horizontal spacing between chips
                 x = coord[0] + j * spacing[0]
                 # Create a chip ROI
                 rois.append(circle(img=img, x=x, y=y, r=radius))
                 # Draw the circle on the binary image
-                cv2.circle(bin_img, (x, y), radius, 255, -1)
+                circle_img = cv2.circle(np.copy(bin_img), (x, y), radius, 255, -1)
+                overlap_img = overlap_img + circle_img
                 # Make a list of contours and hierarchies
                 roi_contour.append(cv2.findContours(np.copy(bin_img), cv2.RETR_EXTERNAL,
                                                     cv2.CHAIN_APPROX_NONE)[-2:][0])
@@ -281,6 +285,7 @@ def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
             rois.append(circle(img=img, x=x, y=y, r=radius))
             # Draw the circle on the binary image
             cv2.circle(bin_img, (x, y), radius, 255, -1)
+            overlap_img = overlap_img + bin_img
             #  Make a list of contours and hierarchies
             roi_contour.append(cv2.findContours(np.copy(bin_img), cv2.RETR_EXTERNAL,
                                                 cv2.CHAIN_APPROX_NONE)[-2:][0])
@@ -293,6 +298,10 @@ def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
     else:
         fatal_error("Function can either make a grid of ROIs (user must provide nrows, ncols, spacing, and coord) "
                     "or take custom ROI coordinates (user must provide a list of tuples to 'coord' parameter)")
+
+    if np.amax(overlap_img) > 255:
+        print("WARNING: Two or more of the user defined regions of interest overlap!")
+
     # Reset debug
     params.debug = debug
 
