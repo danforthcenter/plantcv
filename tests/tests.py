@@ -3719,7 +3719,7 @@ def test_plantcv_roi_multi_bad_input_oob():
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # nputs to make a grid make ROIs that go off the screen
     with pytest.raises(RuntimeError):
-        _, _ = pcv.roi.multi(rgb_img, coord=[(25000, 12000), (10000, 10000)], radius=2, spacing=(1, 1), nrows=3,ncols=6)
+        _, _ = pcv.roi.multi(rgb_img, coord=(25000, 12000), radius=2, spacing=(1, 1), nrows=3, ncols=6)
 
 
 def test_plantcv_roi_multi_bad_input_oob_list():
