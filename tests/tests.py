@@ -3733,6 +3733,7 @@ def test_plantcv_roi_multi_bad_input_oob_list():
 def test_plantcv_roi_custom():
     # Read in test RGB image
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    pcv.params.debug="plot"
     cnt, hier = pcv.roi.custom(img=img, vertices=[[226, 1], [313, 184], [240, 202], [220, 229], [161, 171]])
     assert np.shape(cnt) == (1, 5, 2)
 
