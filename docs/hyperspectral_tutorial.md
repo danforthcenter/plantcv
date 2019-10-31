@@ -231,6 +231,17 @@ Binary mask after [filtering objects by the region of interest](roi_objects.md) 
 ![Screenshot](img/tutorial_images/hyperspectral/spectral_histogram.jpg)
 
 ```python
+    # Extract statistics about an index for the leaf region 
+    
+    # Inputs:
+    #   array        - Hyperspectral index data instance  
+    #   mask         - Binary mask image data 
+    pcv.hyperspectral.analyze_index(array=index_array_gdvi, mask=kept_mask)
+                                                               
+``` 
+
+
+```python
     # Write shape and color data to results file
     pcv.print_results(filename=args.result)
      
@@ -321,7 +332,10 @@ def main():
                                                                
     # Extract reflectance intensity data and store it out to the Outputs class. 
     analysis_img = pcv.hyperspectral.analyze_spectral(array=spectral_array, mask=kept_mask, histplot=True)
-
+    
+    # Extract statistics about an index for the leaf region 
+    pcv.hyperspectral.analyze_index(array=index_array_gdvi, mask=kept_mask)
+    
     # Write shape and color data to results file
     pcv.print_results(filename=args.result)
     
