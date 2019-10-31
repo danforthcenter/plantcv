@@ -266,7 +266,7 @@ def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
                 # Create a chip ROI
                 rois.append(circle(img=img, x=x, y=y, r=radius))
                 # Draw the circle on the binary image
-                cv2.circle(all_roi_img, (x, y), radius, 255, -1)
+                all_roi_img = cv2.circle(all_roi_img, (x, y), radius, 255, -1)
                 circle_img = cv2.circle(np.copy(bin_img), (x, y), radius, 255, -1)
                 overlap_img = overlap_img + circle_img
                 # Make a list of contours and hierarchies
@@ -287,7 +287,7 @@ def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
             x = coord[i][0]
             rois.append(circle(img=img, x=x, y=y, r=radius))
             # Draw the circle on the binary image
-            cv2.circle(all_roi_img, (x, y), radius, 255, -1)
+            all_roi_img = cv2.circle(all_roi_img, (x, y), radius, 255, -1)
             circle_img = cv2.circle(bin_img, (x, y), radius, 255, -1)
             overlap_img = overlap_img + circle_img
             #  Make a list of contours and hierarchies
