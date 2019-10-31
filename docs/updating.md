@@ -1,5 +1,35 @@
 ## Updating PlantCV
 
+### PyPI
+
+To update PlantCV, in a terminal type:
+
+```bash
+pip install --upgrade
+```
+
+### Conda
+
+To update PlantCV, in a terminal type:
+
+```bash
+conda upgrade -n plantcv plantcv
+```
+
+If conda does not update your PlantCV installation, you can try installing a specific version. For example if you are on v3.6.1 and you would like to install v3.6.2 you can use:
+
+```bash
+conda install -n plantcv plantcv=3.6.2
+```
+
+You can find the latest version available on bioconda with:
+
+```bash
+conda list plantcv
+```
+
+### Manual Install
+
 The general procedure for updating PlantCV if you are using the `master` branch
 cloned from the `danforthcenter/plantcv` repository is to update your local 
 repository and reinstall the package.
