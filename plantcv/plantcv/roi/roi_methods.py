@@ -247,7 +247,7 @@ def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
     overlap_img = np.zeros((height, width))
 
     # Initialize a binary image of the circle
-    bin_img = np.zeros((height, width), dtype=np.uint8)
+    all_roi_img = np.zeros((height, width), dtype=np.uint8)
     roi_contour = []
     roi_hierarchy = []
     # Grid of ROIs
@@ -266,33 +266,37 @@ def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
                 # Create a chip ROI
                 rois.append(circle(img=img, x=x, y=y, r=radius))
                 # Draw the circle on the binary image
+                cv2.circle(all_roi_img, (x, y), radius, 255, -1)
                 circle_img = cv2.circle(np.copy(bin_img), (x, y), radius, 255, -1)
                 overlap_img = overlap_img + circle_img
                 # Make a list of contours and hierarchies
-                roi_contour.append(cv2.findContours(np.copy(bin_img), cv2.RETR_EXTERNAL,
+                roi_contour.append(cv2.findContours(np.copy(all_roi_img), cv2.RETR_EXTERNAL,
                                                     cv2.CHAIN_APPROX_NONE)[-2:][0])
-                roi_hierarchy.append(cv2.findContours(np.copy(bin_img), cv2.RETR_EXTERNAL,
+                roi_hierarchy.append(cv2.findContours(np.copy(all_roi_img), cv2.RETR_EXTERNAL,
                                                       cv2.CHAIN_APPROX_NONE)[-2:][1])
                 # Create an array of contours and list of hierarchy for when debug is set to 'plot'
-                roi_contour1, roi_hierarchy1 = cv2.findContours(np.copy(bin_img), cv2.RETR_TREE,
+                roi_contour1, roi_hierarchy1 = cv2.findContours(np.copy(all_roi_img), cv2.RETR_TREE,
                                                                 cv2.CHAIN_APPROX_NONE)[-2:]
 
     # User specified ROI centers
     elif (type(coord) == list) and ((nrows and ncols) is None):
         for i in range(0, len(coord)):
+            # Initialize a binary image of the circle
+            bin_img = np.zeros((height, width), dtype=np.uint8)
             y = coord[i][1]
             x = coord[i][0]
             rois.append(circle(img=img, x=x, y=y, r=radius))
             # Draw the circle on the binary image
-            cv2.circle(bin_img, (x, y), radius, 255, -1)
-            overlap_img = overlap_img + bin_img
+            cv2.circle(all_roi_img, (x, y), radius, 255, -1)
+            circle_img = cv2.circle(bin_img, (x, y), radius, 255, -1)
+            overlap_img = overlap_img + circle_img
             #  Make a list of contours and hierarchies
-            roi_contour.append(cv2.findContours(np.copy(bin_img), cv2.RETR_EXTERNAL,
+            roi_contour.append(cv2.findContours(np.copy(all_roi_img), cv2.RETR_EXTERNAL,
                                                 cv2.CHAIN_APPROX_NONE)[-2:][0])
-            roi_hierarchy.append(cv2.findContours(np.copy(bin_img), cv2.RETR_EXTERNAL,
+            roi_hierarchy.append(cv2.findContours(np.copy(all_roi_img), cv2.RETR_EXTERNAL,
                                                   cv2.CHAIN_APPROX_NONE)[-2:][1])
             # Create an array of contours and list of hierarchy for when debug is set to 'plot'
-            roi_contour1, roi_hierarchy1 = cv2.findContours(np.copy(bin_img), cv2.RETR_TREE,
+            roi_contour1, roi_hierarchy1 = cv2.findContours(np.copy(all_roi_img), cv2.RETR_TREE,
                                                             cv2.CHAIN_APPROX_NONE)[-2:]
 
     else:
@@ -310,6 +314,7 @@ def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
         _draw_roi(img=img, roi_contour=roi_contour1)
 
     return roi_contour, roi_hierarchy
+
 
 
 def custom(img, vertices):
