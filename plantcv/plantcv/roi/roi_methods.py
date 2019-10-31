@@ -261,6 +261,8 @@ def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
             y = coord[1] + i * spacing[1]
             # Loop over each column
             for j in range(0, ncols):
+                # Initialize a binary image of the circle
+                bin_img = np.zeros((height, width), dtype=np.uint8)
                 # The upper left corner is the x starting coordinate + the ROI offset * the
                 # horizontal spacing between chips
                 x = coord[0] + j * spacing[0]
