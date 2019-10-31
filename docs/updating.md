@@ -317,10 +317,10 @@ pages for more details on the input and output variable types.
 * pre v3.7: NA
 * post v3.7: spectral_histogram = **plantcv.hyperspectral.analyze_spectral**(*array, mask, histplot=True*)
 
-#### plantcv.hyperspectral.extract_index
+#### plantcv.hyperspectral.analyze_index
 
 * pre v3.7: NA
-* post v3.7: index_array = **plantcv.hyperspectral.extract_index**(*array, index="NDVI", fudge_factor=20*)
+* post v3.7: index_array = **plantcv.hyperspectral.extract_index**(*index_array, mask*)
 
 #### plantcv.hyperspectral.extract_index
 
