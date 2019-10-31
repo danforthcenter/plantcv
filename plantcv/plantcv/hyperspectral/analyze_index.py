@@ -16,12 +16,9 @@ def analyze_index(index_array, mask):
     Inputs:
     array        = Instance of the Spectral_data class,
     mask         = Binary mask made from selected contours
-    histplot     = if True plots histogram of intensity values
 
-    :param array: numpy array
-    :param header_dict: dict
+    :param array: __main__.Spectral_data
     :param mask: numpy array
-    :param histplot: bool
     """
     params.device += 1
 

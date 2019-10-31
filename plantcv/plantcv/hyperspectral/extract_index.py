@@ -18,12 +18,12 @@ def extract_index(array, index="NDVI", fudge_factor=20):
         fudge_factor = how lenient to be if the required wavelengths are not available
 
         Returns:
-        index_array    = image object as numpy array
+        index_array    = Index data as a Spectral_data instance
 
         :param array: __main__.Spectral_data
         :param index: str
         :param fudge_factor: int
-        :return index_array: numpy.ndarray
+        :return index_array: __main__.Spectral_data
         """
     params.device += 1
 

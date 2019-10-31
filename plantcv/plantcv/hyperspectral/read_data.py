@@ -27,12 +27,10 @@ def read_data(filename):
         filename = name of image file
 
         Returns:
-        array_data    = image object as numpy array
-        header_dict   = dictionary with metadata from the header file
+        spectral_array    = image object as numpy array
 
         :param filename: str
-        :return array_data: numpy.ndarray
-        :return header_dict: dict
+        :return spectral_array: __main__.Spectral_data
         """
     # Store debug mode
     debug = params.debug
