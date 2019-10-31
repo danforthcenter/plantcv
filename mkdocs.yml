@@ -72,6 +72,7 @@ nav:
     - 'Get NIR Images': get_nir.md
     - 'Histogram Normalization': HistEqualization.md
     - 'Hyperspectral Sub-Package':
+        - 'Analyze index': analyze_index.md
         - 'Analyze spectral': analyze_spectral.md
         - 'Extract index': extract_index.md
     - 'Image Add': image_add.md
