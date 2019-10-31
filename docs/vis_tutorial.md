@@ -85,7 +85,7 @@ def main():
     # Read image (readimage mode defaults to native but if image is RGBA then specify mode='rgb')
     # Inputs:
     #   filename - Image file to be read in 
-    #   mode - Return mode of image; either 'native' (default), 'rgb', 'gray', or 'csv'
+    #   mode - Return mode of image; either 'native' (default), 'rgb', 'gray', 'envi', or 'csv'
     img, path, filename = pcv.readimage(filename=args.image, mode='rgb')
     
 ```

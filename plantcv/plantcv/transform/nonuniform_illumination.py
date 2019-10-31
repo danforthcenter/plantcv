@@ -4,10 +4,10 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv import params
-from plantcv.plantcv import gaussian_blur
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 from plantcv.plantcv import rgb2gray
+from plantcv.plantcv import gaussian_blur
 from plantcv.plantcv.transform import rescale
 
 

@@ -13,14 +13,17 @@ def extract_index(array, index="NDVI", fudge_factor=20):
     """Pull out indices of interest from a hyperspectral datacube.
 
         Inputs:
-        array = hyperspectral data array
+
+        array = hyperspectral data instance
         index = index of interest
+        fudge_factor = how lenient to be if the required wavelengths are not available
 
         Returns:
         index_array    = image object as numpy array
 
-        :param array: numpy.ndarray
+        :param array: __main__.Spectral_data
         :param index: str
+        :param fudge_factor: int
         :return index_array: numpy.ndarray
         """
     params.device += 1
@@ -93,7 +96,7 @@ def extract_index(array, index="NDVI", fudge_factor=20):
                                 wavelength_dict={}, samples=array.samples,
                                 lines=array.lines, interleave=array.interleave,
                                 wavelength_units=array.wavelength_units, array_type="index_" + index.lower(),
-                                filename=array.filename)
+                                pseudo_rgb=None, filename=array.filename)
 
     if params.debug == "plot":
         # Gamma correct pseudo_rgb image

@@ -14,6 +14,7 @@ functions:
 * `analyze_object`
 * `analyze_thermal_values` 
 * `fluor_fvfm`
+* `hyperspectral.analyze_spectral`
 * `report_size_marker_area`
 * `morphology.check_cycles`
 * `morphology.segment_angle`

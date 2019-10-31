@@ -1,5 +1,6 @@
 # Analyze signal data in hyperspectral array
 
+
 import os
 import numpy as np
 import pandas as pd
@@ -14,14 +15,15 @@ def analyze_spectral(array, mask, histplot=True):
        and a pseudocolor image of the plant.
 
     Inputs:
-    array        = numpy array of reflectance data
+
+    array        = Hyperspectral data instance
     mask         = Binary mask made from selected contours
-    histplot     = if True plots histogram of intensity values
+    histplot     = if True plots histogram of reflectance intensity values
 
     Returns:
     analysis_img = output image
 
-    :param array: numpy array
+    :param array:  __main__.Spectral_data
     :param mask: numpy array
     :param histplot: bool
     :return analysis_img: ggplot
@@ -49,7 +51,7 @@ def analyze_spectral(array, mask, histplot=True):
 
     for i, wavelength in enumerate(array.wavelength_dict):
         new_wavelengths.append(float(wavelength))
-        new_freq.append(str(wavelength_freq[i]))
+        new_freq.append((wavelength_freq[i]).astype(np.float))
 
     # Calculate reflectance statistics
     max_reflectance = np.amax(wavelength_data)
