@@ -69,10 +69,6 @@ def rectangle(img, x, y, h, w):
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
 
-    # Check whether the ROI is correctly bounded inside the image
-    if x < 0 or y < 0 or x + w > width or y + h > height:
-        fatal_error("The ROI extends outside of the image!")
-
     # Create the rectangle contour vertices
     pt1 = [x, y]
     pt2 = [x, y + h - 1]
@@ -86,6 +82,10 @@ def rectangle(img, x, y, h, w):
     # Draw the ROI if requested
     if params.debug is not None:
         _draw_roi(img=img, roi_contour=roi_contour)
+
+    # Check whether the ROI is correctly bounded inside the image
+    if x < 0 or y < 0 or x + w > width or y + h > height:
+        fatal_error("The ROI extends outside of the image!")
 
     return roi_contour, roi_hierarchy
 
@@ -117,10 +117,6 @@ def circle(img, x, y, r):
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
 
-    # Check whether the ROI is correctly bounded inside the image
-    if x - r < 0 or x + r > width or y - r < 0 or y + r > height:
-        fatal_error("The ROI extends outside of the image!")
-
     # Initialize a binary image of the circle
     bin_img = np.zeros((height, width), dtype=np.uint8)
     # Draw the circle on the binary image
@@ -132,6 +128,10 @@ def circle(img, x, y, r):
     # Draw the ROI if requested
     if params.debug is not None:
         _draw_roi(img=img, roi_contour=roi_contour)
+
+    # Check whether the ROI is correctly bounded inside the image
+    if x - r < 0 or x + r > width or y - r < 0 or y + r > height:
+        fatal_error("The ROI extends outside of the image!")
 
     return roi_contour, roi_hierarchy
 
@@ -172,18 +172,17 @@ def ellipse(img, x, y, r1, r2, angle):
     # Draw the ellipse on the binary image
     cv2.ellipse(bin_img, (x, y), (r1, r2), angle, 0, 360, 255, -1)
 
-    if np.sum(bin_img[0, :]) + np.sum(bin_img[-1, :]) + np.sum(bin_img[:, 0]) + np.sum(bin_img[:, -1]) > 0:
-        fatal_error("The ROI extends outside of the image!")
-
     # Use the binary image to create an ROI contour
     roi_contour, roi_hierarchy = cv2.findContours(bin_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
-
-    if len(roi_contour) == 0:
-        fatal_error("The ROI is not on the image") 
 
     # Draw the ROI if requested
     if params.debug is not None:
         _draw_roi(img=img, roi_contour=roi_contour)
+
+    # Checks ellipse goes outside the image by checking row and column sum of edges
+    if (np.sum(bin_img[0, :]) + np.sum(bin_img[-1, :]) + np.sum(bin_img[:, 0]) + np.sum(bin_img[:, -1]) > 0) or \
+            len(roi_contour) == 0:
+        fatal_error("The ROI extends outside of the image, or ROI is not on the image!")
 
     return roi_contour, roi_hierarchy
 
@@ -352,5 +351,11 @@ def custom(img, vertices):
 
     if params.debug is not None:
         _draw_roi(img=img, roi_contour=roi_contour)
+
+    # Check that the ROI doesn't go off the screen
+    for i in vertices:
+        (x,y) = i
+        if x  < 0 or x  > width or y  < 0 or y  > height:
+            fatal_error("An ROI extends outside of the image!")
 
     return roi_contour, roi_hierarchy
