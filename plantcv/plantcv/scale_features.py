@@ -69,7 +69,7 @@ def scale_features(obj, mask, points, line_position):
     bly_scaled = float(bly - ymin) / float(ymax - ymin)
     boundary_line_scaled = (blx_scaled, bly_scaled)
     # If debug is 'True' plot an image of the scaled points on a black background
-    if params.debug == 'print':
+    if not params.debug == None:
         # Make a decent size blank image
         scaled_img = np.zeros((1500, 1500, 3), np.uint8)
         plotter = np.array(rescaled)
@@ -87,27 +87,10 @@ def scale_features(obj, mask, points, line_position):
         # Because the coordinates increase as you go down and to the right on the
         # image you need to flip the object around the x-axis
         flipped_scaled = cv2.flip(scaled_img, 0)
-        print_image(flipped_scaled, os.path.join(params.debug_outdir, str(params.device) + '_feature_scaled.png'))
-    # Return the transformed points
-    if params.debug == 'plot':
-        # Make a decent size blank image
-        scaled_img = np.zeros((1500, 1500, 3), np.uint8)
-        plotter = np.array(rescaled)
-        # Multiple the values between 0 - 1.0 by 1000 so you can plot on the black image
-        plotter = plotter * 1000
-        # For each of the coordinates plot a circle where the point is (+250 helps center
-        # the object in the middle of the blank image)
-        for i in plotter:
-            x, y = i.ravel()
-            cv2.circle(scaled_img, (int(x) + 250, int(y) + 250), params.line_thickness, (255, 255, 255), -1)
-        cv2.circle(scaled_img, (int(cmx_scaled * 1000) + 250, int(cmy_scaled * 1000) + 250), params.line_thickness,
-                   (255, 0, 255), -1)
-        cv2.circle(scaled_img, (int(blx_scaled * 1000) + 250, int(bly_scaled * 1000) + 250), params.line_thickness,
-                   (0, 255, 0), -1)
-        # Because the coordinates increase as you go down and to the right on the
-        # image you need to flip the object around the x-axis
-        flipped_scaled = cv2.flip(scaled_img, 0)
-        plot_image(flipped_scaled)
-
+        if params.debug == 'print':
+            print_image(flipped_scaled, os.path.join(params.debug_outdir, str(params.device) + '_feature_scaled.png'))
+        elif params.debug == 'plot':
+            plot_image(flipped_scaled)
+    
     # Return the transformed points
     return rescaled, centroid_scaled, boundary_line_scaled
