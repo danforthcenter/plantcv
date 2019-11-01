@@ -3714,13 +3714,37 @@ def test_plantcv_roi_multi_bad_input():
         _, _ = pcv.roi.multi(rgb_img, coord=[(25, 120), (100, 100)], radius=20, spacing=(10, 10), nrows=3, ncols=6)
 
 
+def test_plantcv_roi_multi_bad_input_oob():
+    # Read in test RGB image
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # nputs to make a grid make ROIs that go off the screen
+    with pytest.raises(RuntimeError):
+        _, _ = pcv.roi.multi(rgb_img, coord=(25000, 12000), radius=2, spacing=(1, 1), nrows=3, ncols=6)
+
+
+def test_plantcv_roi_multi_bad_input_oob_list():
+    # Read in test RGB image
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # All vertices in the list of centers must draw roi's that are inside the image
+    with pytest.raises(RuntimeError):
+        _, _ = pcv.roi.multi(rgb_img, coord=[(25000,25000), (25000,12000), (12000, 12000)], radius=20)
+
+
 def test_plantcv_roi_custom():
     # Read in test RGB image
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    cnt, hier = pcv.roi.custom(img=img, vertices=[[2260, -1], [3130, 1848], [2404, 2029], [2205, 2298], [1617, 1761]])
+    pcv.params.debug="plot"
+    cnt, hier = pcv.roi.custom(img=img, vertices=[[226, 1], [313, 184], [240, 202], [220, 229], [161, 171]])
     assert np.shape(cnt) == (1, 5, 2)
+
+
+def test_plantcv_roi_custom_bad_input():
+    # Read in test RGB image
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # ROI goes out of bounds
+    with pytest.raises(RuntimeError):
+        _ = pcv.roi.custom(img=img, vertices=[[226, -1], [3130, 1848], [2404, 2029], [2205, 2298], [1617, 1761]])
+
 
 # ##############################
 # Tests for the transform subpackage
