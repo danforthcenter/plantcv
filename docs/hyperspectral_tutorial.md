@@ -2,7 +2,7 @@
 
 PlantCV is composed of modular functions that can be arranged (or rearranged) and adjusted quickly and easily.
 Workflows do not need to be linear (and often are not). Please see workflow example below for more details.
-A global variable "debug" allows the user to print out the resulting image. The debug has three modes: either None, 'plot', or 'print'.
+A global variable "debug" allows the user to print out the resulting image. The [debug](parrams.md) has three modes: either None, 'plot', or 'print'.
 If set to 'print' then the function prints the image out, or if using a [Jupyter](jupyter.md) notebook you could set debug to 'plot' to have
 the images plot to the screen. Debug mode allows users to visualize and optimize each step on individual test images and small test sets before workflows are deployed over whole datasets.
 
@@ -38,7 +38,7 @@ Sample command to run a workflow on a single image:
 *  Always test workflows (preferably with -D flag set to 'print') before running over a full image set
 
 ```
-./workflowname.py -i testimg.png -o ./output-images -r results.txt -w -D 'print'
+./workflowname.py --image hyperspectral_ex_img --outdir ./output-images --result results.txt --writeimg --debug 'print'
 
 ```
 
@@ -239,6 +239,8 @@ Binary mask after [filtering objects by the region of interest](roi_objects.md) 
     pcv.hyperspectral.analyze_index(array=index_array_gdvi, mask=kept_mask)
                                                                
 ``` 
+
+[Extract reflectance statistics from an index](analyze_index.md) and store it out to the Outputs class.
 
 
 ```python

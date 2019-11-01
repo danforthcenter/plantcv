@@ -5,9 +5,10 @@ A PlantCV data object class.
 *class* plantcv.**Spectral_data**
 
 `Spectral_data` is a class that is used to create instances of hyperspectral/multispectral data objects for PlantCV analysis. 
-An instance of `Spectral_data` is created on import automatically as hyperspectral data is read in with [pcv.readimage](read_image.md). 
-Functions from the PlantCV hyperspectral sub-package import the `plantcv.Spectral_data` instance to access globally
-configured attributes. These attributes are used internally by PlantCV functions but also can be utilized by users. 
+An instance of `Spectral_data` is created automatically as hyperspectral data is read in with [pcv.readimage](read_image.md). 
+Functions from the PlantCV hyperspectral sub-package utilize the `plantcv.Spectral_data` instance attributes, which has metadata about the hyperspectral 
+data instance, to simplify function input. Most of this metadata is collected from the .hdr file. 
+These attributes are used internally by PlantCV functions but also can be utilized by users. 
 
 ### Attributes
 

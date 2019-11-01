@@ -8,19 +8,16 @@ This function calculates the hyperspectral index statistics and writes the value
 **returns** None
 
 - **Parameters:**
-    - index_array   - instance of the `Spectral_data` class (read in with [pcv.readimage](read_image.md) with `mode='csv'`)
+    - index_array   - instance of the `Spectral_data` class (created by running [pcv.hyperspectral.extract_index](extract_index.md))
     - mask          - Binary mask made from selected contours
 - **Context:**
     - Calculates data about mean, median, and standard deviation of an input index within a masked region. 
 - **Example use:**
     - Below
-- **Output data stored:** Mean, median, and standard deviation automatically gets stored to the 
+- **Output data stored:** Mean, median, and standard deviation of the index automatically gets stored to the 
     [`Outputs` class](outputs.md) when this function is ran. 
     These data can always get accessed during a workflow (example below). For more detail about data output see [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
-**Original thermal array image**
-
-![Screenshot](img/documentation_images/analyze_thermal_values/scaled_thermal_img.jpg)
 
 ```python
 
