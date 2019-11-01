@@ -63,18 +63,18 @@ def analyze_spectral(array, mask, histplot=True):
 
     # Store data into outputs class
     outputs.add_observation(variable='max_reflectance', trait='maximum reflectance',
-                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='degrees', datatype=float,
+                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='reflectance', datatype=float,
                             value=float(max_reflectance), label='reflectance')
     outputs.add_observation(variable='min_reflectance', trait='minimum reflectance',
-                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='degrees', datatype=float,
+                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='reflectance', datatype=float,
                             value=float(min_reflectance), label='reflectance')
     outputs.add_observation(variable='mean_reflectance', trait='mean_reflectance',
-                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='degrees', datatype=float,
+                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='reflectance', datatype=float,
                             value=float(avg_reflectance), label='reflectance')
     outputs.add_observation(variable='median_reflectance', trait='median_reflectance',
-                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='degrees', datatype=float,
+                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='reflectance', datatype=float,
                             value=float(median_reflectance), label='reflectance')
-    outputs.add_observation(variable='spectral_frequencies', trait='thermal spectral_frequencies',
+    outputs.add_observation(variable='spectral_frequencies', trait='spectral frequencies',
                             method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='frequency', datatype=list,
                             value=new_freq, label=wavelength_labels)
 
