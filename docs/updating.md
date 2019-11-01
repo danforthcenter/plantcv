@@ -222,6 +222,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, masked_img = **plantcv.apply_mask**(*img, mask, mask_color, device, debug=None*)
 * post v3.0dev2: masked_img = **plantcv.apply_mask**(*rgb_img, mask, mask_color*)
+* post v3.7: masked_img = **plantcv.apply_mask**(*img, mask, mask_color*) 
 
 #### plantcv.auto_crop
 

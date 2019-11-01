@@ -91,6 +91,6 @@ def scale_features(obj, mask, points, line_position):
             print_image(flipped_scaled, os.path.join(params.debug_outdir, str(params.device) + '_feature_scaled.png'))
         elif params.debug == 'plot':
             plot_image(flipped_scaled)
-    
+
     # Return the transformed points
     return rescaled, centroid_scaled, boundary_line_scaled
