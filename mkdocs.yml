@@ -150,8 +150,9 @@ nav:
     - 'Naive Bayes Multiclass': naive_bayes_multiclass.md
   - 'Package plantcv.parallel':
       - 'Job Builder': job_builder.md
-      - 'Workflow Parallelization': pipeline_parallel.md
+      - 'Metadata Parser': metadata_parser.md
       - 'Process Results': process_results.md
+      - 'Workflow Parallelization': pipeline_parallel.md
   - 'Add-on Packages':
     - 'Hyperspectral': https://plantcv.readthedocs.io/projects/hyperspectral
   - 'Accessory tools': tools.md
