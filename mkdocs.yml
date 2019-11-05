@@ -151,6 +151,7 @@ nav:
   - 'Package plantcv.parallel':
       - 'Job Builder': job_builder.md
       - 'Metadata Parser': metadata_parser.md
+      - 'Multiprocess': mutliprocess.md
       - 'Process Results': process_results.md
       - 'Workflow Parallelization': pipeline_parallel.md
   - 'Add-on Packages':
