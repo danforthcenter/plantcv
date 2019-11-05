@@ -32,7 +32,7 @@ First, if PlantCV is installed in the global Python search path, you can
 import the PlantCV library like normal:
 
 ```python
-import plantcv
+from plantcv import plantcv
 ```
 
 On the other hand, if you installed PlantCV into a local Python path,
@@ -42,7 +42,7 @@ example:
 ```python
 import sys
 sys.path.append("/home/user/plantcv")
-import plantcv
+from plantcv import plantcv
 ```
 
 Second, we use [matplotlib](http://matplotlib.org/) to do the
@@ -220,3 +220,5 @@ There are examples of full Python scripts found at the bottom of each tutorial.
 *  [Machine Learning Tutorial](machine_learning_tutorial.md)
 *  [Color Correction Tutorial](transform_color_correction_tutorial.md)
 *  [Morphology Tutorial](morphology_tutorial.md) 
+*  [Thermal Tutorial](thermal_tutorial.md) 
+*  [Hyperspectral Tutorial](hyperspectral_tutorial.md)
