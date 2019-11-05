@@ -148,6 +148,10 @@ nav:
   - 'Package plantcv.learn':
     - 'Naive Bayes': naive_bayes.md
     - 'Naive Bayes Multiclass': naive_bayes_multiclass.md
+  - 'Package plantcv.parallel':
+      - 'Job Builder': job_builder.md
+      - 'Workflow Parallelization': pipeline_parallel.md
+      - 'Process Results': process_results.md
   - 'Add-on Packages':
     - 'Hyperspectral': https://plantcv.readthedocs.io/projects/hyperspectral
   - 'Accessory tools': tools.md
