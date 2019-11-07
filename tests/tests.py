@@ -3575,14 +3575,14 @@ def test_plantcv_hyperspectral_read_data_no_default_bands():
     pcv.params.debug = "plot"
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA,HYPERSPECTRAL_DATA_NO_DEFAULT)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    assert np.shape(array_data.array_data) == (1, 800, 978)
+    assert np.shape(array_data.array_data) == (1, 1600, 978)
 
 
 def test_plantcv_hyperspectral_read_data_approx_pseudorgb():
     pcv.params.debug = "plot"
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA,HYPERSPECTRAL_DATA_APPROX_PSEUDO)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    assert np.shape(array_data.array_data) == (1, 800, 978)
+    assert np.shape(array_data.array_data) == (1, 1600, 978)
 
 
 def test_plantcv_hyperspectral_extract_index_ndvi():
