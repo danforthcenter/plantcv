@@ -76,8 +76,6 @@ def read_data(filename):
                   "9": np.complex128, "12": np.uint16, "13": np.uint32, "14": np.uint64, "15": np.uint64}
     header_dict["data type"] = dtype_dict[header_dict["data type"]]
 
-    print(header_dict["data type"])
-
     # Read in the data from the file
     raw_data = np.fromfile(filename, header_dict["data type"], -1)
 

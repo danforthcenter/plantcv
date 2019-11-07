@@ -3568,7 +3568,7 @@ def test_plantcv_hyperspectral_read_data_default():
     _ = pcv.hyperspectral.read_data(filename=spectral_filename)
     pcv.params.debug = "print"
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    assert np.shape(array_data.array_data) == (1, 800, 978)
+    assert np.shape(array_data.array_data) == (1, 1600, 978)
 
 
 def test_plantcv_hyperspectral_read_data_no_default_bands():
