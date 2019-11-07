@@ -95,8 +95,8 @@ def read_data(filename):
 
     else:
         try:
-            max_wavelength = max([float(i.rstrip()) for i in wavelength_dict.keys()])
-            min_wavelength = min([float(i.rstrip()) for i in wavelength_dict.keys()])
+            max_wavelength = float(max([float(i.rstrip()) for i in wavelength_dict.keys()]))
+            min_wavelength = float(min([float(i.rstrip()) for i in wavelength_dict.keys()]))
         except ValueError:
             max_wavelength = 1
             min_wavelength = 0
@@ -131,8 +131,8 @@ def read_data(filename):
         max_wl = header_dict["wavelength"][-1]
         min_wl = header_dict["wavelength"][0]
 
-    spectral_array = Spectral_data(array_data=array_data, max_wavelength=max_wl,
-                                   min_wavelength=min_wl, d_type=header_dict["data type"],
+    spectral_array = Spectral_data(array_data=array_data, max_wavelength=float(max_wl),
+                                   min_wavelength=float(min_wl), d_type=header_dict["data type"],
                                    wavelength_dict=wavelength_dict, samples=int(header_dict["samples"]),
                                    lines=int(header_dict["lines"]), interleave=header_dict["interleave"],
                                    wavelength_units=header_dict["wavelength units"], array_type="datacube",
