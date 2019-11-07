@@ -123,16 +123,18 @@ def read_data(filename):
                             rescale(pseudo_rgb[:, :, 1]),
                             rescale(pseudo_rgb[:, :, 2])))
 
-    # Create an instance of the spectral_data class
+
     try:
         max_wl = float(header_dict["wavelength"][-1])
         min_wl = float(header_dict["wavelength"][0])
+    # should be able to get rid of this once we drop python 2!
     except:
-        max_wl = header_dict["wavelength"][-1]
-        min_wl = header_dict["wavelength"][0]
+        max_wl = 1
+        min_wl = 0
 
-    spectral_array = Spectral_data(array_data=array_data, max_wavelength=float(max_wl),
-                                   min_wavelength=float(min_wl), d_type=header_dict["data type"],
+    # Create an instance of the spectral_data class
+    spectral_array = Spectral_data(array_data=array_data, max_wavelength=max_wl,
+                                   min_wavelength=min_wl, d_type=header_dict["data type"],
                                    wavelength_dict=wavelength_dict, samples=int(header_dict["samples"]),
                                    lines=int(header_dict["lines"]), interleave=header_dict["interleave"],
                                    wavelength_units=header_dict["wavelength units"], array_type="datacube",
