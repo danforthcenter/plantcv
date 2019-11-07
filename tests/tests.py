@@ -1140,7 +1140,7 @@ def test_plantcv_apply_mask_hyperspectral():
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     masked_array = pcv.apply_mask(rgb_img=hyper_array.array_data, mask=img, mask_color="black")
-    assert np.mean(masked_array) < np.mean(img_stacked)
+    assert np.mean(masked_array) == 13.97111260224949
 
 
 def test_plantcv_apply_mask_bad_input():
@@ -3596,7 +3596,7 @@ def test_plantcv_hyperspectral_extract_index_ndvi():
     _ = pcv.hyperspectral.extract_index(array=array_data, index="NDVI")
     pcv.params.debug = "print"
     index_array = pcv.hyperspectral.extract_index(array=array_data, index="NDVI")
-    assert np.shape(index_array.array_data) == (1,800)
+    assert np.shape(index_array.array_data) == (1,1600)
 
 
 def test_plantcv_hyperspectral_extract_index_gdvi():
@@ -3607,7 +3607,7 @@ def test_plantcv_hyperspectral_extract_index_gdvi():
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
     index_array = pcv.hyperspectral.extract_index(array=array_data, index="GDVI")
-    assert np.shape(index_array.array_data) == (1,800) and np.max(index_array.array_data) == 127
+    assert np.shape(index_array.array_data) == (1,1600) and np.max(index_array.array_data) == 255
 
 
 def test_plantcv_hyperspectral_extract_index_savi():
@@ -3618,7 +3618,7 @@ def test_plantcv_hyperspectral_extract_index_savi():
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
     index_array = pcv.hyperspectral.extract_index(array=array_data, index="SAVI")
-    assert np.shape(index_array.array_data) == (1,800) and np.max(index_array.array_data) == 127
+    assert np.shape(index_array.array_data) == (1,1600) and np.max(index_array.array_data) == 253
 
 
 def test_plantcv_hyperspectral_extract_index_ndvi_bad_input():
@@ -3675,7 +3675,7 @@ def test_plantcv_hyperspectral_analyze_index():
     pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img)
     pcv.params.debug = "plot"
     pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img)
-    assert pcv.outputs.observations['mean_index_savi']['value'] == 127.0
+    assert pcv.outputs.observations['mean_index_savi']['value'] == 141.0
 
 def test_plantcv_hyperspectral_analyze_index_bad_input_mask():
     pcv.params.debug = None
