@@ -39,8 +39,6 @@ def read_data(filename):
     # Initialize dictionary
     header_dict = {}
 
-    raw_data = np.fromfile(filename, np.float32, -1)
-
     headername = filename + ".hdr"
 
     with open(headername, "r") as f:
@@ -63,11 +61,6 @@ def read_data(filename):
             header_data = string.split(" : ")
             header_dict.update({header_data[0].rstrip(): header_data[1].rstrip()})
 
-    # Reshape the raw data into a datacube array
-    array_data = raw_data.reshape(int(header_dict["lines"]),
-                                  int(header_dict["bands"]),
-                                  int(header_dict["samples"])).transpose((0, 2, 1))
-
     # Reformat wavelengths
     header_dict["wavelength"] = header_dict["wavelength"].replace("{", "")
     header_dict["wavelength"] = header_dict["wavelength"].replace("}", "")
@@ -82,6 +75,16 @@ def read_data(filename):
     dtype_dict = {"1": np.uint8, "2": np.int16, "3": np.int32, "4": np.float32, "5": np.float64, "6": np.complex64,
                   "9": np.complex128, "12": np.uint16, "13": np.uint32, "14": np.uint64, "15": np.uint64}
     header_dict["data type"] = dtype_dict[header_dict["data type"]]
+
+    print(header_dict["data type"])
+
+    # Read in the data from the file
+    raw_data = np.fromfile(filename, header_dict["data type"], -1)
+
+    # Reshape the raw data into a datacube array
+    array_data = raw_data.reshape(int(header_dict["lines"]),
+                                  int(header_dict["bands"]),
+                                  int(header_dict["samples"])).transpose((0, 2, 1))
 
     if "default bands" in header_dict:
         header_dict["default bands"] = header_dict["default bands"].replace("{", "")
