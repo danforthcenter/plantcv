@@ -71,7 +71,7 @@ def read_data(filename):
     wavelength_dict = {}
     for j, wavelength in enumerate(header_dict["wavelength"]):
         try:
-            wavelength_dict.update({float(wavelength): float(j)})
+            wavelength_dict.update({float(wavelength.rstrip()): float(j.rstrip())})
         except ValueError:
             print(str(wavelength))
             print(str(j))
@@ -101,8 +101,8 @@ def read_data(filename):
 
     else:
         try:
-            max_wavelength = max([float(i.rstrip()) for i in wavelength_dict.keys()])
-            min_wavelength = min([float(i.rstrip()) for i in wavelength_dict.keys()])
+            max_wavelength = max([float(i) for i in wavelength_dict.keys()])
+            min_wavelength = min([float(i) for i in wavelength_dict.keys()])
         except ValueError:
             max_wavelength = 1
             min_wavelength = 0
