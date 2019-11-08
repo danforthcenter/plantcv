@@ -101,8 +101,8 @@ def read_data(filename):
 
     else:
         try:
-            max_wavelength = float(max([float(i.rstrip()) for i in wavelength_dict.keys()]))
-            min_wavelength = float(min([float(i.rstrip()) for i in wavelength_dict.keys()]))
+            max_wavelength = max([float(i.rstrip()) for i in wavelength_dict.keys()])
+            min_wavelength = min([float(i.rstrip()) for i in wavelength_dict.keys()])
         except ValueError:
             max_wavelength = 1
             min_wavelength = 0
