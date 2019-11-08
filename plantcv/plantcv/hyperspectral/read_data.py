@@ -70,9 +70,12 @@ def read_data(filename):
     # Create dictionary of wavelengths
     wavelength_dict = {}
     for j, wavelength in enumerate(header_dict["wavelength"]):
-        print(str(wavelength))
-        print(str(j))
-        wavelength_dict.update({float(wavelength): float(j)})
+        try:
+            wavelength_dict.update({float(wavelength): float(j)})
+        except ValueError:
+            print(str(wavelength))
+            print(str(j))
+            wavelength_dict.update({wavelength: j})
 
     # Replace datatype ID number with the numpy datatype
     dtype_dict = {"1": np.uint8, "2": np.int16, "3": np.int32, "4": np.float32, "5": np.float64, "6": np.complex64,
