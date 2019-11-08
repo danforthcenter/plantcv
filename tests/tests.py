@@ -2319,7 +2319,7 @@ def test_plantcv_readimage_csv():
 def test_plantcv_readimage_envi():
     pcv.params.debug = None
     array_data = pcv.readimage(filename=os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA), mode="envi")
-    assert len(array_data.wavelength_dict) == 978
+    assert len(array_data.array_type) == 8
 
 
 def test_plantcv_readimage_bad_file():
