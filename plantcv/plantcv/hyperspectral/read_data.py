@@ -56,10 +56,10 @@ def read_data(filename):
     for i, string in enumerate(hdata):
         if ' = ' in string:
             header_data = string.split(" = ")
-            header_dict.update({float(str(header_data[0].rstrip())): float(str(header_data[1].rstrip()))})
+            header_dict.update({header_data[0].rstrip(): header_data[1].rstrip()})
         elif ' : ' in string:
             header_data = string.split(" : ")
-            header_dict.update({float(str(header_data[0].rstrip())): float(str(header_data[1].rstrip()))})
+            header_dict.update({header_data[0].rstrip(): header_data[1].rstrip()})
 
     # Reformat wavelengths
     header_dict["wavelength"] = header_dict["wavelength"].replace("{", "")
@@ -70,7 +70,9 @@ def read_data(filename):
     # Create dictionary of wavelengths
     wavelength_dict = {}
     for j, wavelength in enumerate(header_dict["wavelength"]):
-        wavelength_dict.update({wavelength: j})
+        print(str(wavelength))
+        print(str(j))
+        wavelength_dict.update({float(wavelength): float(j)})
 
     # Replace datatype ID number with the numpy datatype
     dtype_dict = {"1": np.uint8, "2": np.int16, "3": np.int32, "4": np.float32, "5": np.float64, "6": np.complex64,
