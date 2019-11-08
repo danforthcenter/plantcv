@@ -8,6 +8,7 @@ file type = ENVI Standard
 data type = 12
 interleave = bil
 sensor type = Unknown
+default bands = {159,253,520}
 byte order = 0
 wavelength units = nm
 wavelength = {
