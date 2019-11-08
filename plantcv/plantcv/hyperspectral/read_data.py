@@ -64,6 +64,7 @@ def read_data(filename):
     # Reformat wavelengths
     header_dict["wavelength"] = header_dict["wavelength"].replace("{", "")
     header_dict["wavelength"] = header_dict["wavelength"].replace("}", "")
+    header_dict["wavelength"] = header_dict["wavelength"].replace(" ", "")
     header_dict["wavelength"] = header_dict["wavelength"].split(",")
 
     # Create dictionary of wavelengths
