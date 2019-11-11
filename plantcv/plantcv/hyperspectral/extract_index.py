@@ -30,8 +30,8 @@ def extract_index(array, index="NDVI", fudge_factor=20):
     # Min and max available wavelength will be used to determine if an index can be extracted
     #df_10v['emp_length'] = df_10v['emp_length'].astype(str).str.replace('\D+', '')
 
-    max_wavelength = array.max_wavelength
-    min_wavelength = array.min_wavelength
+    max_wavelength = float(array.max_wavelength.strip())
+    min_wavelength = float(array.min_wavelength.strip())
     # Dictionary of wavelength and it's index in the list
     wavelength_dict = array.wavelength_dict.copy()
     array_data = array.array_data.copy()
@@ -58,7 +58,7 @@ def extract_index(array, index="NDVI", fudge_factor=20):
 
     elif index.upper() == "GDVI":
         # Green Difference Vegetation Index [Sripada et al. (2006)]
-        if (max_wavelength + fudge_factor) >= 800 and(min_wavelength - fudge_factor) <= 680:
+        if (max_wavelength + fudge_factor) >= 800 and (min_wavelength - fudge_factor) <= 680:
             nir_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
             red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 680)
             nir = (array_data[:, :, [nir_index]] + array_data[:, :, [nir_index + 4]] + array_data[:, :,
