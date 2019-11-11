@@ -48,7 +48,7 @@ def analyze_spectral(array, mask, histplot=True):
     new_freq = []
 
     for i, wavelength in enumerate(array.wavelength_dict):
-        new_wavelengths.append(float(str(wavelength)))
+        new_wavelengths.append(wavelength)
         new_freq.append((wavelength_freq[i]).astype(np.float))
 
     # Calculate reflectance statistics
