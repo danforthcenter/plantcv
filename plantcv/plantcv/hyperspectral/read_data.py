@@ -125,6 +125,7 @@ def read_data(filename):
 
     # Gamma correct pseudo_rgb image
     pseudo_rgb = pseudo_rgb ** (1 / 2.2)
+    # Scale each of the channels up to 255
     pseudo_rgb = cv2.merge((rescale(pseudo_rgb[:, :, 0]),
                             rescale(pseudo_rgb[:, :, 1]),
                             rescale(pseudo_rgb[:, :, 2])))
@@ -133,10 +134,10 @@ def read_data(filename):
     try:
         max_wl = float(header_dict["wavelength"][-1])
         min_wl = float(header_dict["wavelength"][0])
-    # should be able to get rid of this once we drop python 2!
+    # Should be able to get rid of this once we drop python 2!
     except:
-        max_wl = 1
-        min_wl = 0
+        max_wl = header_dict["wavelength"][-1]
+        min_wl = header_dict["wavelength"][0]
 
     # Create an instance of the spectral_data class
     spectral_array = Spectral_data(array_data=array_data, max_wavelength=float(str(max_wl)),

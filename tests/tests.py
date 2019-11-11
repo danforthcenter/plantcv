@@ -648,6 +648,19 @@ TEST_INPUT_THERMAL_CSV = "FLIR2600.csv"
 # ##########################
 # Tests for the main package
 # ##########################
+def test_plantcv_hyperspectral_extract_index_ndvi():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_ndvi")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    pcv.params.debug = "plot"
+    _ = pcv.hyperspectral.extract_index(array=array_data, index="NDVI")
+    pcv.params.debug = "print"
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="NDVI")
+    assert np.shape(index_array.array_data) == (1,800)
+    
 def test_plantcv_acute():
     # Read in test data
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
@@ -3587,19 +3600,24 @@ def test_plantcv_hyperspectral_read_data_approx_pseudorgb():
     assert np.shape(array_data.array_data) == (1, 1600, 978)
 
 
-def test_plantcv_hyperspectral_extract_index_ndvi():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_ndvi")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    pcv.params.debug = None
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    if sys.version_info[0] > 3:
-        pcv.params.debug = "plot"
-        _ = pcv.hyperspectral.extract_index(array=array_data, index="NDVI", fudge_factor=801)
-        pcv.params.debug = "print"
-        index_array = pcv.hyperspectral.extract_index(array=array_data, index="NDVI", fudge_factor=801)
-        assert np.shape(index_array.array_data) == (1,1600)
+# def test_plantcv_hyperspectral_extract_index_ndvi():
+#     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_ndvi")
+#     os.mkdir(cache_dir)
+#     pcv.params.debug_outdir = cache_dir
+#     pcv.params.debug = None
+#     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+#     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+#     pcv.params.debug = "plot"
+#     _ = pcv.hyperspectral.extract_index(array=array_data, index="NDVI", fudge_factor=801)
+#     pcv.params.debug = "print"
+#     index_array = pcv.hyperspectral.extract_index(array=array_data, index="NDVI", fudge_factor=801)
+#     if sys.version_info[0] > 3:
+#
+#     else:
+#         assert np.shape(index_array.array_data) == (1,1600)
+
+
+
 
 
 def test_plantcv_hyperspectral_extract_index_gdvi():

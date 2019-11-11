@@ -37,8 +37,8 @@ def extract_index(array, index="NDVI", fudge_factor=20):
     if index.upper() == "NDVI":
         if (max_wavelength + fudge_factor) >= 800 and (min_wavelength - fudge_factor) <= 670:
             # Obtain index that best represents NIR and red bands
-            nir_index = _find_closest(np.array([float(str(i)) for i in wavelength_dict.keys()]), 800)
-            red_index = _find_closest(np.array([float(str(i)) for i in wavelength_dict.keys()]), 670)
+            nir_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
+            red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 670)
             nir = (array_data[:, :, [nir_index]] + array_data[:, :, [nir_index + 4]] + array_data[:, :,
                                                                                        [nir_index - 4]]) / 3
             red = (array_data[:, :, [red_index]] + array_data[:, :, [red_index + 4]] + array_data[:, :,
@@ -57,8 +57,8 @@ def extract_index(array, index="NDVI", fudge_factor=20):
     elif index.upper() == "GDVI":
         # Green Difference Vegetation Index [Sripada et al. (2006)]
         if (max_wavelength + fudge_factor) >= 800 and (min_wavelength - fudge_factor) <= 680:
-            nir_index = _find_closest(np.array([float(str(i)) for i in wavelength_dict.keys()]), 800)
-            red_index = _find_closest(np.array([float(str(i)) for i in wavelength_dict.keys()]), 680)
+            nir_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
+            red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 680)
             nir = (array_data[:, :, [nir_index]] + array_data[:, :, [nir_index + 4]] + array_data[:, :,
                                                                                        [nir_index - 4]]) / 3
             red = (array_data[:, :, [red_index]] + array_data[:, :, [red_index + 4]] + array_data[:, :,
@@ -76,8 +76,8 @@ def extract_index(array, index="NDVI", fudge_factor=20):
     elif index.upper() == "SAVI":
         # Soil Adjusted Vegetation Index [Huete et al. (1988)]
         if (max_wavelength + fudge_factor) >= 800 and (min_wavelength - fudge_factor) <= 680:
-            nir_index = _find_closest(np.array([float(str(i)) for i in wavelength_dict.keys()]), 800)
-            red_index = _find_closest(np.array([float(str(i)) for i in wavelength_dict.keys()]), 680)
+            nir_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
+            red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 680)
             nir = (array_data[:, :, [nir_index]])
             red = (array_data[:, :, [red_index]])
             savi = (1.5 * (nir - red)) / (red + nir + 0.5)
