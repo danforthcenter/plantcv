@@ -71,10 +71,8 @@ def read_data(filename):
     wavelength_dict = {}
     for j, wavelength in enumerate(header_dict["wavelength"]):
         try:
-            wavelength_dict.update({float(wavelength.rstrip()): float(j.rstrip())})
+            wavelength_dict.update({float(wavelength): float(j)})
         except:
-            print(str(wavelength))
-            print(str(j))
             wavelength_dict.update({wavelength: j})
 
     # Replace datatype ID number with the numpy datatype
