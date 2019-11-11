@@ -660,7 +660,7 @@ def test_plantcv_hyperspectral_extract_index_ndvi():
     pcv.params.debug = "print"
     index_array = pcv.hyperspectral.extract_index(array=array_data, index="NDVI")
     assert np.shape(index_array.array_data) == (1,800)
-    
+
 def test_plantcv_acute():
     # Read in test data
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
