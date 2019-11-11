@@ -3609,7 +3609,7 @@ def test_plantcv_hyperspectral_extract_index_ndvi():
     if sys.version_info[0] == 3:
         array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
         index_array = pcv.hyperspectral.extract_index(array=array_data, index="ndvi", fudge_factor=801)
-        assert np.shape(index_array.array_data) == (1,1600) and np.max(index_array.array_data) == 253
+        assert np.shape(index_array.array_data) == (1,1600) and np.max(index_array.array_data) == 153
 
 
 def test_plantcv_hyperspectral_extract_index_savi():
