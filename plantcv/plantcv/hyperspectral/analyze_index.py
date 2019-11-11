@@ -28,6 +28,7 @@ def analyze_index(index_array, mask):
     if len(np.shape(index_array.array_data)) > 2:
         fatal_error("index_array data should be a grayscale image.")
 
+    print(str(index_array.array_type))
     if index_array.array_type == "datacube":
         fatal_error("Spectral_data object instance should be an index, not a datacube.")
 
