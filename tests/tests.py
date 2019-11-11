@@ -648,18 +648,6 @@ TEST_INPUT_THERMAL_CSV = "FLIR2600.csv"
 # ##########################
 # Tests for the main package
 # ##########################
-def test_plantcv_hyperspectral_extract_index_ndvi():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_ndvi")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    pcv.params.debug = None
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    pcv.params.debug = "plot"
-    _ = pcv.hyperspectral.extract_index(array=array_data, index="NDVI")
-    pcv.params.debug = "print"
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="NDVI")
-    assert np.shape(index_array.array_data) == (1,800)
 
 def test_plantcv_acute():
     # Read in test data
@@ -3626,10 +3614,10 @@ def test_plantcv_hyperspectral_extract_index_gdvi():
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    if sys.version_info[0] > 3:
-        array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-        index_array = pcv.hyperspectral.extract_index(array=array_data, index="GDVI", fudge_factor=801)
-        assert np.shape(index_array.array_data) == (1,1600) and np.max(index_array.array_data) == 255
+    # if sys.version_info[0] > 3:
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="GDVI", fudge_factor=801)
+    assert np.shape(index_array.array_data) == (1,1600) and np.max(index_array.array_data) == 255
 
 
 def test_plantcv_hyperspectral_extract_index_savi():
@@ -3638,10 +3626,10 @@ def test_plantcv_hyperspectral_extract_index_savi():
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    if sys.version_info[0] > 3:
-        array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-        index_array = pcv.hyperspectral.extract_index(array=array_data, index="SAVI", fudge_factor=801)
-        assert np.shape(index_array.array_data) == (1,1600) and np.max(index_array.array_data) == 253
+    # if sys.version_info[0] > 3:
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="SAVI", fudge_factor=801)
+    assert np.shape(index_array.array_data) == (1,1600) and np.max(index_array.array_data) == 253
 
 
 def test_plantcv_hyperspectral_extract_index_ndvi_bad_input():
