@@ -132,16 +132,16 @@ def read_data(filename):
 
 
     try:
-        max_wl = float(header_dict["wavelength"][-1])
-        min_wl = float(header_dict["wavelength"][0])
+        max_wl = float(header_dict["wavelength"][-1].rstrip())
+        min_wl = float(header_dict["wavelength"][0].rstrip())
     # Should be able to get rid of this once we drop python 2!
     except:
-        max_wl = header_dict["wavelength"][-1]
-        min_wl = header_dict["wavelength"][0]
+        max_wl = header_dict["wavelength"][-1].rstrip()
+        min_wl = header_dict["wavelength"][0].rstrip()
 
     # Create an instance of the spectral_data class
-    spectral_array = Spectral_data(array_data=array_data, max_wavelength=float(str(max_wl)),
-                                   min_wavelength=float(str(min_wl)), d_type=header_dict["data type"],
+    spectral_array = Spectral_data(array_data=array_data, max_wavelength=max_wl,
+                                   min_wavelength=min_wl, d_type=header_dict["data type"],
                                    wavelength_dict=wavelength_dict, samples=int(header_dict["samples"]),
                                    lines=int(header_dict["lines"]), interleave=header_dict["interleave"],
                                    wavelength_units=header_dict["wavelength units"], array_type="datacube",
