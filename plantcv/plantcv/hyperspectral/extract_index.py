@@ -28,6 +28,8 @@ def extract_index(array, index="NDVI", fudge_factor=20):
     params.device += 1
 
     # Min and max available wavelength will be used to determine if an index can be extracted
+    #df_10v['emp_length'] = df_10v['emp_length'].astype(str).str.replace('\D+', '')
+
     max_wavelength = array.max_wavelength
     min_wavelength = array.min_wavelength
     # Dictionary of wavelength and it's index in the list
@@ -35,8 +37,7 @@ def extract_index(array, index="NDVI", fudge_factor=20):
     array_data = array.array_data.copy()
 
     if index.upper() == "NDVI":
-        if (float(max_wavelength.rstrip()) + fudge_factor) >= 800 and \
-                (float(min_wavelength.rstrip()) - fudge_factor) <= 670:
+        if (max_wavelength + fudge_factor) >= 800 and (min_wavelength - fudge_factor) <= 670:
             # Obtain index that best represents NIR and red bands
             nir_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
             red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 670)
@@ -57,8 +58,7 @@ def extract_index(array, index="NDVI", fudge_factor=20):
 
     elif index.upper() == "GDVI":
         # Green Difference Vegetation Index [Sripada et al. (2006)]
-        if (float(max_wavelength.rstrip()) + fudge_factor) >= 800 and \
-                (float(min_wavelength.rstrip()) - fudge_factor) <= 680:
+        if (max_wavelength + fudge_factor) >= 800 and(min_wavelength - fudge_factor) <= 680:
             nir_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
             red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 680)
             nir = (array_data[:, :, [nir_index]] + array_data[:, :, [nir_index + 4]] + array_data[:, :,
@@ -77,8 +77,7 @@ def extract_index(array, index="NDVI", fudge_factor=20):
 
     elif index.upper() == "SAVI":
         # Soil Adjusted Vegetation Index [Huete et al. (1988)]
-        if (float(max_wavelength.rstrip()) + fudge_factor) >= 800 and \
-                (float(min_wavelength.rstrip()) - fudge_factor) <= 680:
+        if (max_wavelength + fudge_factor) >= 800 and (min_wavelength - fudge_factor) <= 680:
             nir_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
             red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 680)
             nir = (array_data[:, :, [nir_index]])
