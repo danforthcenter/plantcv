@@ -70,10 +70,7 @@ def read_data(filename):
     # Create dictionary of wavelengths
     wavelength_dict = {}
     for j, wavelength in enumerate(header_dict["wavelength"]):
-        try:
-            wavelength_dict.update({float(wavelength): float(j)})
-        except:
-            wavelength_dict.update({wavelength: j})
+        wavelength_dict.update({float(wavelength): float(j)})
 
     # Replace datatype ID number with the numpy datatype
     dtype_dict = {"1": np.uint8, "2": np.int16, "3": np.int32, "4": np.float32, "5": np.float64, "6": np.complex64,
@@ -129,13 +126,9 @@ def read_data(filename):
                             rescale(pseudo_rgb[:, :, 2])))
 
 
-    try:
-        max_wl = float(str(header_dict["wavelength"][-1]).rstrip())
-        min_wl = float(str(header_dict["wavelength"][0]).rstrip())
+    max_wl = float(str(header_dict["wavelength"][-1]).rstrip())
+    min_wl = float(str(header_dict["wavelength"][0]).rstrip())
     # Should be able to get rid of this once we drop python 2!
-    except:
-        max_wl = str(header_dict["wavelength"][-1]).rstrip()
-        min_wl = str(header_dict["wavelength"][0]).rstrip()
 
     # Create an instance of the spectral_data class
     spectral_array = Spectral_data(array_data=array_data, max_wavelength=max_wl,
