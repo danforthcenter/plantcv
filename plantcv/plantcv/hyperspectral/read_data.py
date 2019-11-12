@@ -95,12 +95,8 @@ def read_data(filename):
                                 array_data[:, :, int(default_bands[2])]))
 
     else:
-        try:
-            max_wavelength = max([float(i) for i in wavelength_dict.keys()])
-            min_wavelength = min([float(i) for i in wavelength_dict.keys()])
-        except ValueError:
-            max_wavelength = 1
-            min_wavelength = 0
+        max_wavelength = max([float(i) for i in wavelength_dict.keys()])
+        min_wavelength = min([float(i) for i in wavelength_dict.keys()])
         # Check range of available wavelength
         if max_wavelength >= 635 and min_wavelength <= 490:
             id_red = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 710)
