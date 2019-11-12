@@ -28,10 +28,6 @@ def analyze_index(index_array, mask):
     if len(np.shape(index_array.array_data)) > 2:
         fatal_error("index_array data should be a grayscale image.")
 
-    print(str(index_array.array_type))
-    if index_array.array_type == "datacube":
-        fatal_error("Spectral_data object instance should be an index, not a datacube.")
-
     masked_array = index_array.array_data[np.where(mask > 0)]
     index_mean = np.average(masked_array)
     index_median = np.median(masked_array)
