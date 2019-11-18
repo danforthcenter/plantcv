@@ -3,16 +3,15 @@
 import os
 import numpy as np
 from plantcv.plantcv import params
-from plantcv.plantcv.hyperspectral import read_data
 
 
 def calibrate(raw_data, white_reference, dark_reference):
     """This function allows you calibrate raw hyperspectral image data with white and dark reference data.
 
     Inputs:
-    raw_data        =
-    white_reference =
-    dark_reference  =
+    raw_data        = Raw image 'Spectral_data' class instance
+    white_reference = White reference 'Spectral_data' class instance
+    dark_reference  = Dark reference 'Spectral_data' class instance
 
     Returns:
     calibrated      = Calibrated hyperspectral image
