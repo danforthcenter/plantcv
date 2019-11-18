@@ -3717,6 +3717,12 @@ def test_plantcv_hyperspectral_analyze_index_bad_input_datatype():
         pcv.hyperspectral.analyze_index(index_array=array_data, mask=mask_img)
 
 
+def test_plantcv_hyperspectral_calibrate():
+    calibrated = pcv.hyperspectral.calibrate(filename=os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA))
+    assert np.shape(calibrated.array_data) == (1704, 1600, 978)
+
+
+
 # ##############################
 # Tests for the roi subpackage
 # ##############################

@@ -121,10 +121,8 @@ def read_data(filename):
                             rescale(pseudo_rgb[:, :, 1]),
                             rescale(pseudo_rgb[:, :, 2])))
 
-
     max_wl = float(str(header_dict["wavelength"][-1]).rstrip())
     min_wl = float(str(header_dict["wavelength"][0]).rstrip())
-    # Should be able to get rid of this once we drop python 2!
 
     # Create an instance of the spectral_data class
     spectral_array = Spectral_data(array_data=array_data, max_wavelength=max_wl,

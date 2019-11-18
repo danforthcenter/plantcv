@@ -3,9 +3,6 @@
 import os
 import numpy as np
 from plantcv.plantcv import params
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
-from plantcv.plantcv import Spectral_data
 from plantcv.plantcv.hyperspectral import read_data
 
 
@@ -26,6 +23,9 @@ def calibrate(filename):
     """
     # Auto-increment device
     params.device += 1
+
+    # Store debug mode
+    debug = params.debug
 
     raw_data = read_data(filename=filename)
 
@@ -56,6 +56,10 @@ def calibrate(filename):
 
     # Reshape into hyperspectral datacube
     scalibrated = np.stack(output_calibrated, axis=2)
-    calibrated = np.transpose(scalibrated[0], (1, 0, 2))
+    raw_data.array_data = np.transpose(scalibrated[0], (1, 0, 2))
+    calibrated = raw_data
+
+    # Restore debug mode
+    params.debug = debug
 
     return calibrated
