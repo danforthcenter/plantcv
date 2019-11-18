@@ -8,7 +8,7 @@ from plantcv.plantcv.hyperspectral import read_data
 
 def calibrate(filename):
     """This function allows you read in hyperspectral images in raw format as array and normalize
-    it with white and dark reference. Assumes that the naming structure is consistent. 
+    it with white and dark reference.
 
     Inputs:
     filename        = Name of raw image file (assumes the raw data is from *_raw and *_raw.hdr files, and
