@@ -12,7 +12,7 @@ Calibrate a raw hyperspectral image using white and dark reference images.
     - dark_reference - Dark reference data (read in with pcv.readimage with `mode='envi'`) 
 
 - **Context:**
-    - Used to calibrate raw hyperspectral image data into reflectance values
+    - Used to calibrate raw hyperspectral image data into reflectance values. Calibrate using `reflectance = (raw data - dark reference) / (white reference - dark reference)`
 - **Example use:**
     - Below
     
