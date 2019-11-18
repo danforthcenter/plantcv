@@ -2,65 +2,26 @@
 
 Calibrate a raw hyperspectral image using white and dark reference images. 
 
-**plantcv.hyperspectral.calibrate(*filename*)**
+**plantcv.hyperspectral.calibrate(*raw_data, white_reference, dark_reference*)**
 
 **returns** calibrated [`Spectral_data` class instance](Spectral_data.md) 
 
 - **Parameters:**
-    - gray_img - Grayscale image data
-    - threshold - Threshold value (0-255)
-    - max_value - Value to apply above threshold (255 = white)
-    - object_type - "light" or "dark" (default: "light"). If object is lighter than the background then standard 
-                    thresholding is done. If object is darker than the background then inverse thresholding is done.
+    - raw_data -
+    - white_reference -
+    - dark_reference - 
+
 - **Context:**
-    - Used to help differentiate plant and background
+    - Used to calibrate raw hyperspectral image data into reflectance values
 - **Example use:**
-    - [Use In VIS Tutorial](vis_tutorial.md)
-    - [Use In NIR Tutorial](nir_tutorial.md)
-    - [Use In PSII Tutorial](psII_tutorial.md)
+    - Below
     
-**Original image**
 
-![Screenshot](img/documentation_images/binary_threshold/original_image.jpg)
-
-**Grayscale image (saturation channel)**
-
-![Screenshot](img/documentation_images/binary_threshold/saturation_image.jpg)
 
 ```python
 
 from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), 
-# or "plot" (Jupyter Notebooks or X11)
-
-pcv.params.debug = "print"
-
-# Create binary image from a gray image based on threshold values, 
-# targeting light objects in the image.
-threshold_light = pcv.threshold.binary(gray_img, 36, 255, 'light')
 
 ```
 
-**Thresholded image**
-
-![Screenshot](img/documentation_images/binary_threshold/thresholded_image.jpg)
-
-```python
-
-from plantcv import plantcv as pcv
-
-# Set global debug behavior to None (default), "print" (to file), 
-# or "plot" (Jupyter Notebooks or X11)
-
-pcv.params.debug = "print"
-
-# Create binary image from a gray image based on threshold values, 
-# targeting dark objects in the image.
-threshold_dark = pcv.threshold.binary(gray_img, 36, 255, 'dark')
-
-```
-
-**Thresholded image (inverse)**
-
-![Screenshot](img/documentation_images/binary_threshold/thresholded_inverse_image.jpg)
