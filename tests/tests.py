@@ -551,8 +551,8 @@ matplotlib.use('Template', warn=False)
 TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 HYPERSPECTRAL_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "hyperspectral_data")
 HYPERSPECTRAL_DATA = "darkReference"
-HYPERSPECTRAL_RAW_DATA = "rawdata"
-HYPERSPECTRAL_RAW_DATA_HDR = "rawdata.hdr"
+HYPERSPECTRAL_WHITE = "darkReference_whiteReference"
+HYPERSPECTRAL_DAKR = "darkReference_darkReference"
 HYPERSPECTRAL_HDR = "darkReference.hdr"
 HYPERSPECTRAL_MASK = "darkReference_mask.png"
 HYPERSPECTRAL_DATA_NO_DEFAULT = "darkReference2"
@@ -3720,7 +3720,13 @@ def test_plantcv_hyperspectral_analyze_index_bad_input_datatype():
 
 
 def test_plantcv_hyperspectral_calibrate():
-    calibrated = pcv.hyperspectral.calibrate(filename=os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA))
+    raw = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    white = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_WHITE)
+    dark = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DARK)
+    raw = pcv.hyperspectral.read_data(filename=raw)
+    white = pcv.hyperspectral.read_data(filename=white)
+    dark = pcv.hyperspectral.read_data(filename=dark)
+    calibrated = pcv.hyperspectral.calibrate(raw_data=raw, white_reference=white, dark_reference=dark)
     assert np.shape(calibrated.array_data) == (1, 1600, 978)
 
 
