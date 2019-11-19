@@ -147,7 +147,7 @@ def options():
     parser.add_argument("-s", "--timestampformat", 
                         help='a date format code compatible with strptime C library, '
                              'e.g. "%%Y-%%m-%%d %%H_%%M_%%S", except "%%" symbols must be escaped on Windows with "%%" '
-                             'e.g. "%%%%Y-%%%%m-%%%%d %%%%H_%%%%M_%%%%S". Required if adaptor = filename.',
+                             'e.g. "%%%%Y-%%%%m-%%%%d %%%%H_%%%%M_%%%%S"',
                         required=False,
                         default='%Y-%m-%d %H:%M:%S.%f')
     parser.add_argument("-w", "--writeimg", help='Include analysis images in output.', default=False,
@@ -167,9 +167,6 @@ def options():
                 'The snapshot metadata file SnapshotInfo.csv does not exist in {0}. '
                 'Perhaps you meant to use a different adaptor?'.format(
                     args.dir))
-    elif args.adaptor == 'filename':
-        if not args.timestampformat:
-            raise ValueError('A timestamp format (--timestampformat) must be provided when --adaptor = filename')
     if not os.path.exists(args.outdir):
         raise IOError("Directory does not exist: {0}".format(args.outdir))
 
