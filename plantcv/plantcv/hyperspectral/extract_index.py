@@ -103,7 +103,6 @@ def extract_index(array, index="NDVI", distance=20):
                                 pseudo_rgb=None, filename=array.filename)
 
     if params.debug == "plot":
-        # Gamma correct pseudo_rgb image
         plot_image(index_array.array_data)
     elif params.debug == "print":
         print_image(index_array.array_data,
