@@ -116,11 +116,11 @@ object returned has many methods that are useful to users and within PlantCV fun
     # Inputs:
     #   array        - Hyperspectral data instance  
     #   index        - Index of interest
-    #   fudge_factor - How lenient to be if the required wavelengths 
+    #   distance     - How lenient to be if the required wavelengths 
     #                  for a specific index are not available 
     index_array_gdvi = pcv.hyperspectral.extract_index(array=spectral_array, 
                                                        index="GDVI",
-                                                       fudge_factor=20)
+                                                       distance=20)
                                                        
 ```
 
