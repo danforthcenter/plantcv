@@ -3,6 +3,7 @@
 import os
 import numpy as np
 from plantcv.plantcv import params
+from plantcv.plantcv import Spectral_data
 
 
 def calibrate(raw_data, white_reference, dark_reference):
@@ -44,7 +45,21 @@ def calibrate(raw_data, white_reference, dark_reference):
 
     # Reshape into hyperspectral datacube
     scalibrated = np.stack(output_calibrated, axis=2)
-    raw_data.array_data = np.transpose(scalibrated[0], (1, 0, 2))
-    calibrated = raw_data
+    calibrated_array = np.transpose(scalibrated[0], (1, 0, 2))
+
+    # Make pseudo-rgb image for the calibrated image, take 3 wavelengths, first, middle and last available wavelength
+    id_red = len(raw_data.wavelength_dict)
+    id_green = int(id_red / 2)
+    pseudo_rgb = cv2.merge((calibrated_array[:, :, [0]],
+                            calibrated_array[:, :, [id_green]],
+                            calibrated_array[:, :, [id_red]]))
+
+    # Make a new class instance with the calibrated hyperspectral image
+    calibrated = Spectral_data(array_data=calibrated_array, max_wavelength=raw_data.max_wavelength,
+                               min_wavelength=raw_data.min_wavelength, d_type=raw_data.d_type,
+                               wavelength_dict=raw_data.wavelength_dict, samples=raw_data.samples,
+                               lines=raw_data.lines, interleave=raw_data.interleave,
+                               wavelength_units=raw_data.wavelength_units, array_type=raw_data.array_type,
+                               pseudo_rgb=raw_data.pseudo_rgb, filename=None)
 
     return calibrated
