@@ -104,7 +104,7 @@ class Spectral_data:
         self.array_data = array_data
         self.max_wavelength = max_wavelength
         self.min_wavelength = min_wavelength
-        # Datatype
+        # Numpy data type
         self.d_type = d_type
         # Contains all available wavelengths where keys are wavelength and value are indices
         self.wavelength_dict = wavelength_dict
@@ -116,7 +116,7 @@ class Spectral_data:
         self.wavelength_units = wavelength_units
         # The type of array data (entire datacube, specific index, first derivative, etc)
         self.array_type = array_type
-        # Psuedo-RGB image if the array_type is a datacube
+        # Pseudo-RGB image if the array_type is a datacube
         self.pseudo_rgb = pseudo_rgb
         # The filename where the data originated from
         self.filename = filename
