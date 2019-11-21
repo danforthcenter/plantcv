@@ -1,7 +1,7 @@
 ## Extract Index 
 
 This function extracts an index from a hyperspectral datacube, which is a [`Spectral_data` class](Spectral_data.md) instance created while reading in with [readimage](read_image.md)
-with `mode='envi'`. There is also a parameter to allow some flexibility  
+with `mode='envi'`. There is also a parameter to allow some flexibility 
 on using wavelengths that are at least close to the wavelength bands require to calculate a specific index. 
 
 **plantcv.hyperspectral.extract_index**(*array, index="NDVI", distance=20*)
@@ -27,7 +27,6 @@ from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
-
 pcv.params.debug = "print"
 
 # Extract NDVI index from the datacube 

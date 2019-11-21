@@ -20,7 +20,7 @@ Attributes are accessed as spectral_data_instance.*attribute*.
 
 **min_wavelength**: Smallest available wavelength in the spectral datacube. 
 
-**d_type**: Data type of the array data 
+**d_type**: Data type of the Numpy array data 
 
 **wavelength_dict**: The wavelength dictionary that gets created during [pcv.readimage](read_image.md) while `mode='envi'` since metadata is collected from the .hdr file 
 
