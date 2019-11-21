@@ -85,7 +85,7 @@ def analyze_spectral(array, mask, histplot=True):
         dataset = pd.DataFrame({'Wavelength ('+ array.wavelength_units+')': new_wavelengths,
                                 'Reflectance': wavelength_freq})
         fig_hist = (ggplot(data=dataset,
-                           mapping=aes(x='Wavelength (nm)',
+                           mapping=aes(x='Wavelength ('+ array.wavelength_units+')',
                                        y='Reflectance'))
                     + geom_line(color='purple')
                     + scale_x_continuous(
