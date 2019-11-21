@@ -14,7 +14,7 @@ def extract_index(array, index="NDVI", distance=20):
 
         Inputs:
         array = hyperspectral data instance
-        index = index of interest, either "ndvi", "gdvi", or "savi" 
+        index = index of interest, either "ndvi", "gdvi", or "savi"
         distance = how lenient to be if the required wavelengths are not available
 
         Returns:
@@ -87,8 +87,8 @@ def extract_index(array, index="NDVI", distance=20):
 
             # Resulting array is float 32 from -1 to 1, transform into uint8 for plotting
             all_positive = np.add(index_array_raw, np.ones(np.shape(index_array_raw)))
-            datagdvi = all_positive.astype(np.float64) / 2  # normalize the data to 0 - 1
-            index_array = (255 * datagdvi).astype(np.uint8)  # scale to 255
+            datasavi = all_positive.astype(np.float64) / 2  # normalize the data to 0 - 1
+            index_array = (255 * datasavi).astype(np.uint8)  # scale to 255
         else:
             fatal_error("Available wavelengths are not suitable for calculating SAVI. Try increasing fudge factor.")
 
