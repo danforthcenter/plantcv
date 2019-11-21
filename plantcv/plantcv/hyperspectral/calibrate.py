@@ -3,6 +3,8 @@
 import os
 import numpy as np
 from plantcv.plantcv import params
+from plantcv.plantcv import plot_image
+from plantcv.plantcv import print_image
 from plantcv.plantcv import Spectral_data
 
 
@@ -43,23 +45,37 @@ def calibrate(raw_data, white_reference, dark_reference):
         ans1 = raw_data.array_data[i,] / den
         output_calibrated.append(ans1)
 
-    # Reshape into hyperspectral datacube
-    scalibrated = np.stack(output_calibrated, axis=2)
-    calibrated_array = np.transpose(scalibrated[0], (1, 0, 2))
+        # Reshape into hyperspectral datacube
+        scalibrated = np.stack(output_calibrated, axis=2)
+        calibrated_array = np.transpose(scalibrated[0], (1, 0, 2))
 
-    # Make pseudo-rgb image for the calibrated image, take 3 wavelengths, first, middle and last available wavelength
-    id_red = len(raw_data.wavelength_dict)
-    id_green = int(id_red / 2)
-    pseudo_rgb = cv2.merge((calibrated_array[:, :, [0]],
-                            calibrated_array[:, :, [id_green]],
-                            calibrated_array[:, :, [id_red]]))
+        # Make pseudo-rgb image for the calibrated image, take 3 wavelengths, first, middle and last available wavelength
+        id_red = len(raw_data.wavelength_dict) - 1
+        id_green = int(id_red / 2)
+        print(np.shape(calibrated_array))
+        pseudo_rgb = cv2.merge((calibrated_array[:, :, [0]],
+                                calibrated_array[:, :, [id_green]],
+                                calibrated_array[:, :, [id_red]]))
 
-    # Make a new class instance with the calibrated hyperspectral image
-    calibrated = Spectral_data(array_data=calibrated_array, max_wavelength=raw_data.max_wavelength,
-                               min_wavelength=raw_data.min_wavelength, d_type=raw_data.d_type,
-                               wavelength_dict=raw_data.wavelength_dict, samples=raw_data.samples,
-                               lines=raw_data.lines, interleave=raw_data.interleave,
-                               wavelength_units=raw_data.wavelength_units, array_type=raw_data.array_type,
-                               pseudo_rgb=raw_data.pseudo_rgb, filename=None)
+        # Gamma correct pseudo_rgb image
+        pseudo_rgb = pseudo_rgb ** (1 / 2.2)
+        # Scale each of the channels up to 255
+        pseudo_rgb = cv2.merge((rescale(pseudo_rgb[:, :, 0]),
+                                rescale(pseudo_rgb[:, :, 1]),
+                                rescale(pseudo_rgb[:, :, 2])))
 
-    return calibrated
+        # Make a new class instance with the calibrated hyperspectral image
+        calibrated = Spectral_data(array_data=calibrated_array, max_wavelength=raw_data.max_wavelength,
+                                   min_wavelength=raw_data.min_wavelength, d_type=raw_data.d_type,
+                                   wavelength_dict=raw_data.wavelength_dict, samples=raw_data.samples,
+                                   lines=raw_data.lines, interleave=raw_data.interleave,
+                                   wavelength_units=raw_data.wavelength_units, array_type=raw_data.array_type,
+                                   pseudo_rgb=raw_data.pseudo_rgb, filename=None)
+
+        if params.debug == "plot":
+            # Gamma correct pseudo_rgb image
+            plot_image(pseudo_rgb)
+        elif params.debug == "print":
+            print_image(pseudo_rgb, os.path.join(params.debug_outdir, str(params.device) + "_calibrated_rgb.png"))
+
+        return calibrated

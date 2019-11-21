@@ -108,7 +108,7 @@ def read_data(filename):
                                     array_data[:, :, [id_red]]))
         else:
             # Otherwise take 3 wavelengths, first, middle and last available wavelength
-            id_red = len(header_dict["wavelength"])
+            id_red = len(raw_data.wavelength_dict) - 1
             id_green = int(id_red / 2)
             pseudo_rgb = cv2.merge((array_data[:, :, [0]],
                                     array_data[:, :, [id_green]],
