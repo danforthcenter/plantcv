@@ -40,8 +40,6 @@ def calibrate(raw_data, white_reference, dark_reference):
     output_num = []
     for i in range(0, raw_data.lines):
         ans = raw_data.array_data[i,].astype(np.float16) - dark_reference.array_data
-        # Don't allow negative reflectance values
-        ans[np.where(ans<0)] = 0
         output_num.append(ans)
     num = np.stack(output_num, axis=2)
     output_calibrated = []
