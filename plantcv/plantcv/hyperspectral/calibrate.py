@@ -32,17 +32,14 @@ def calibrate(raw_data, white_reference, dark_reference):
     # Store debugging mode
     debug = params.debug
 
-    d_reference = dark_reference
-    w_reference = white_reference
-
     # Collect the number of wavelengths present
-    num_bands = len(w_reference.wavelength_dict)
-    den = w_reference.array_data - d_reference.array_data
+    num_bands = len(white_reference.wavelength_dict)
+    den = white_reference.array_data - dark_reference.array_data
 
     # Calibrate using reflectance = (raw data - dark reference) / (white reference - dark reference)
     output_num = []
     for i in range(0, raw_data.lines):
-        ans = raw_data.array_data[i,] - d_reference.array_data
+        ans = raw_data.array_data[i,] - dark_reference.array_data
         output_num.append(ans)
     num = np.stack(output_num, axis=2)
     output_calibrated = []
