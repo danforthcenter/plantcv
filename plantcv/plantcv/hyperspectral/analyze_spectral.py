@@ -37,7 +37,7 @@ def analyze_spectral(array, mask, histplot=True):
     # List of wavelengths recorded created from parsing the header file will be string, make list of floats
     wavelength_data = array_data[np.where(mask > 0)]
 
-    # Calculate mean reflectance across wavelengths 
+    # Calculate mean reflectance across wavelengths
     wavelength_freq = wavelength_data.mean(axis=0)
 
     # Identify smallest and largest wavelengths available to scale the x-axis

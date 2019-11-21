@@ -92,6 +92,9 @@ def extract_index(array, index="NDVI", distance=20):
         else:
             fatal_error("Available wavelengths are not suitable for calculating SAVI. Try increasing fudge factor.")
 
+    else:
+        fatal_error(index + " is not one of the currently available indices for this function.")
+
     index_array = Spectral_data(array_data=index_array, max_wavelength=0,
                                 min_wavelength=0, d_type=np.uint8,
                                 wavelength_dict={}, samples=array.samples,
