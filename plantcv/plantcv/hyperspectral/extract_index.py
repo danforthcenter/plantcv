@@ -14,7 +14,7 @@ def extract_index(array, index="NDVI", distance=20):
 
         Inputs:
         array = hyperspectral data instance
-        index = index of interest
+        index = index of interest, either "ndvi", "gdvi", or "savi" 
         distance = how lenient to be if the required wavelengths are not available
 
         Returns:
