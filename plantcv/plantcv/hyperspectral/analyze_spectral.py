@@ -1,4 +1,4 @@
-# Analyze signal data in Thermal image
+# Analyze reflectance signal hyperspectral images
 
 import os
 import numpy as np
