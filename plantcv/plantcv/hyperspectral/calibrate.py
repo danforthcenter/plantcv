@@ -71,7 +71,7 @@ def calibrate(raw_data, white_reference, dark_reference):
                                wavelength_dict=raw_data.wavelength_dict, samples=raw_data.samples,
                                lines=raw_data.lines, interleave=raw_data.interleave,
                                wavelength_units=raw_data.wavelength_units, array_type=raw_data.array_type,
-                               pseudo_rgb=raw_data.pseudo_rgb, filename=None)
+                               pseudo_rgb=pseudo_rgb, filename=None)
 
     # Restore debug mode
     params.debug = debug
