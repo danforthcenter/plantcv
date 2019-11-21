@@ -13,6 +13,11 @@ Calibrate a raw hyperspectral image using white and dark reference images.
 
 - **Context:**
     - Used to calibrate raw hyperspectral image data into reflectance values. Calibrate using `reflectance = (raw data - dark reference) / (white reference - dark reference)`
+    based on [calibration protocol](https://docs.google.com/document/d/1w_zHHlrPVKsy1mnW9wrVzAU2edVqZH8i1IZa5BZxVpo/edit#heading=h.jjfbhbos05cc) posted by 
+    [The TERRA-REF team](https://github.com/terraref). This process of calibration might look different depending on the hyperspectral camera used so we highly encourage 
+    PlantCV users to reach out to the PlantCV developers/maintainers at the PlantCV [GitHub issues page](https://github.com/danforthcenter/plantcv/issues) to request to extend 
+    the functionality of this function to handle data from different cameras. 
+
 - **Example use:**
     - Below
     
