@@ -6,6 +6,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 from plantcv.plantcv import Spectral_data
+from plantcv.plantcv.transform import rescale
 
 
 def calibrate(raw_data, white_reference, dark_reference):
@@ -52,7 +53,6 @@ def calibrate(raw_data, white_reference, dark_reference):
         # Make pseudo-rgb image for the calibrated image, take 3 wavelengths, first, middle and last available wavelength
         id_red = len(raw_data.wavelength_dict) - 1
         id_green = int(id_red / 2)
-        print(np.shape(calibrated_array))
         pseudo_rgb = cv2.merge((calibrated_array[:, :, [0]],
                                 calibrated_array[:, :, [id_green]],
                                 calibrated_array[:, :, [id_red]]))
