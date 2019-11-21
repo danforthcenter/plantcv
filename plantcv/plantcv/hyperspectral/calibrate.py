@@ -1,6 +1,7 @@
 # Calibrate hyperspectral image data
 
 import os
+import cv2
 import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import plot_image
