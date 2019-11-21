@@ -82,7 +82,7 @@ def analyze_spectral(array, mask, histplot=True):
     analysis_img = None
 
     if histplot is True:
-        dataset = pd.DataFrame({'Wavelength (nm)': new_wavelengths,
+        dataset = pd.DataFrame({'Wavelength ('+ array.wavelength_units+')': new_wavelengths,
                                 'Reflectance': wavelength_freq})
         fig_hist = (ggplot(data=dataset,
                            mapping=aes(x='Wavelength (nm)',
