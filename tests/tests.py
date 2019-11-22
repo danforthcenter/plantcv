@@ -3659,7 +3659,7 @@ def test_plantcv_hyperspectral_extract_index_bad_input_index():
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     pcv.params.debug = None
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="SAVI", fudge_factor=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="SAVI", distance=801)
     with pytest.raises(RuntimeError):
         index_array = pcv.hyperspectral.extract_index(array=index_array, index="SAVII", distance=801)
 
@@ -3687,7 +3687,7 @@ def test_plantcv_hyperspectral_analyze_index():
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
     if sys.version_info[0] == 3:
-        index_array = pcv.hyperspectral.extract_index(array=array_data, index="SAVI", fudge_factor=801)
+        index_array = pcv.hyperspectral.extract_index(array=array_data, index="SAVI", distance=801)
         mask_img = cv2.imread(os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_MASK), -1)
         pcv.params.debug = "print"
         pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img)
@@ -3700,7 +3700,7 @@ def test_plantcv_hyperspectral_analyze_index_bad_input_mask():
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
     if sys.version_info[0] == 3:
-        index_array = pcv.hyperspectral.extract_index(array=array_data, index="SAVI", fudge_factor=801)
+        index_array = pcv.hyperspectral.extract_index(array=array_data, index="SAVI", distance=801)
         mask_img = cv2.imread(os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_MASK))
         with pytest.raises(RuntimeError):
             pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img)
@@ -3711,7 +3711,7 @@ def test_plantcv_hyperspectral_analyze_index_bad_input_index():
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
     if sys.version_info[0] == 3:
-        index_array = pcv.hyperspectral.extract_index(array=array_data, index="SAVI", fudge_factor=801)
+        index_array = pcv.hyperspectral.extract_index(array=array_data, index="SAVI", distance=801)
         mask_img = cv2.imread(os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_MASK), -1)
         index_array.array_data = cv2.imread(os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_MASK))
         with pytest.raises(RuntimeError):

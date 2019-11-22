@@ -354,7 +354,7 @@ pages for more details on the input and output variable types.
 #### plantcv.hyperspectral.extract_index
 
 * pre v3.7: NA
-* post v3.7: index_array = **plantcv.hyperspectral.extract_index**(*array, index="NDVI", fudge_factor=20*)
+* post v3.7: index_array = **plantcv.hyperspectral.extract_index**(*array, index="NDVI", distance=20*)
 
 #### plantcv.image_add
 

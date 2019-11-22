@@ -51,7 +51,7 @@ spectral_data_instance = pcv.readimage(filename="ee362e84-c861-4f0d-abbb-215ac58
 
 index_array_gdvi = pcv.hyperspectral.extract_index(array=spectral_data_instance, 
                                                    index="GDVI",
-                                                   fudge_factor=20)
+                                                   distance=20)
                                                    
 # Plot the pseudo-RGB image that is created when reading in hyperspectral data 
 pcv.plot_image(spectral_data_instance.pseudo_rgb)

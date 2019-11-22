@@ -319,7 +319,7 @@ def main():
     # Extract the Green Difference Vegetation Index from the datacube 
     index_array_gdvi = pcv.hyperspectral.extract_index(array=spectral_array, 
                                                        index="GDVI",
-                                                       fudge_factor=20)
+                                                       distance=20)
                                                     
     # Threshold the grayscale image 
     gdvi_thresh = pcv.threshold.binary(gray_img=index_array_gdvi.array_data, threshold=150, max_value=255)
