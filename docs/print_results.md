@@ -8,7 +8,17 @@ functions:
 * `analyze_color`
 * `analyze_nir_intensity`
 * `analyze_object`
+* `analyze_thermal_values`
 * `fluor_fvfm`
+* `hyperspectral.analyze_index`
+* `hyperspectral.analyze_spectral`
+* `morphology.check_cycles`
+* `morphology.segment_angle`
+* `morphology.segment_curvature`
+* `morphology.segment_euclidean_length`
+* `morphology.segment_insertion_angle`
+* `morphology.segment_path_length`
+* `morphology.segment_tangent_angle`
 * `report_size_marker_area`
 * `watershed`
 

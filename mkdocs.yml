@@ -31,6 +31,7 @@ nav:
     - 'Color Correction Workflow': transform_color_correction_tutorial.md
     - 'Morphology Workflow': morphology_tutorial.md
     - 'Thermal Workflow': thermal_tutorial.md
+    - 'Hyperspectral Workflow': hyperspectral_tutorial.md
   - 'Package Plantcv':
     - 'Analyze color': analyze_color.md
     - 'Analyze NIR': analyze_NIR_intensity.md
@@ -59,6 +60,7 @@ nav:
     - 'Distance Transform': distance_transform.md
     - 'Erosion': erode.md
     - 'Fill Objects': fill.md
+    - 'Fill Holes': fill_holes.md
     - 'Find Objects': find_objects.md
     - 'Flip Image': flip.md
     - 'Filters':
@@ -68,11 +70,12 @@ nav:
     - 'Gaussian Blur': gaussian_blur.md
     - 'Get Kernel': get_kernel.md
     - 'Get NIR Images': get_nir.md
-    - 'Erosion': erode.md
-    - 'Fill Objects': fill.md
-    - 'Fill Holes': fill_holes.md
-    - 'Find Objects': find_objects.md
     - 'Histogram Normalization': HistEqualization.md
+    - 'Hyperspectral Sub-Package':
+        - 'Analyze index': analyze_index.md
+        - 'Analyze spectral': analyze_spectral.md
+        - 'Calibrate': calibrate.md
+        - 'Extract index': extract_index.md
     - 'Image Add': image_add.md
     - 'Image Subtract': image_subtract.md
     - 'Invert': invert.md

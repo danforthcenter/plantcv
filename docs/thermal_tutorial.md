@@ -86,7 +86,7 @@ def main():
     
     # Inputs:
     #   filename - Image file to be read (possibly including a path)
-    #   mode - Return mode of image ("native," "rgb,", "rgba", "gray", or "csv"), defaults to "native"
+    #   mode - Return mode of image; either 'native' (default), 'rgb', 'gray', 'envi', or 'csv'
     thermal_data,path,filename = pcv.readimage(filename='FLIR2600.csv', mode="csv")
     
 ```
