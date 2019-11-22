@@ -1,4 +1,4 @@
-# Analyze signal data in Thermal image
+# Analyze reflectance signal data in an index
 
 import os
 import numpy as np
