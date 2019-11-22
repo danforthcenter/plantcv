@@ -1143,7 +1143,7 @@ def test_plantcv_apply_mask_hyperspectral():
     _ = pcv.apply_mask(img=img_stacked, mask=img, mask_color="black")
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    masked_array = pcv.apply_mask(rgb_img=hyper_array.array_data, mask=img, mask_color="black")
+    masked_array = pcv.apply_mask(img=hyper_array.array_data, mask=img, mask_color="black")
     assert np.mean(masked_array) == 13.97111260224949
 
 
