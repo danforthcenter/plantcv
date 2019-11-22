@@ -26,7 +26,7 @@ def analyze_thermal_values(thermal_array, mask, histplot=False):
     :param array: numpy array
     :param mask: numpy array
     :param histplot: bool
-    :return analysis_img: str
+    :return analysis_img: ggplot
     """
     params.device += 1
 
