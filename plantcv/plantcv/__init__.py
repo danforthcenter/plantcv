@@ -99,7 +99,7 @@ outputs = Outputs()
 class Spectral_data:
     # PlantCV Hyperspectral data class
     def __init__(self, array_data, max_wavelength, min_wavelength, d_type, wavelength_dict, samples, lines, interleave,
-                 wavelength_units, array_type, pseudo_rgb, filename):
+                 wavelength_units, array_type, pseudo_rgb, filename, default_bands):
         # The actual array/datacube
         self.array_data = array_data
         self.max_wavelength = max_wavelength
@@ -120,6 +120,8 @@ class Spectral_data:
         self.pseudo_rgb = pseudo_rgb
         # The filename where the data originated from
         self.filename = filename
+        # The default band indices needed to make an pseudo_rgb image, if not available then store None
+        self.default_bands = default_bands
 
 # Example
 # spectral_array = Spectral_data(max_wavelength=1000.95, min_wavelength=379.027, d_type=numpy.float32,
