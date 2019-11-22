@@ -63,7 +63,7 @@ def calibrate(raw_data, white_reference, dark_reference):
                                pseudo_rgb=None, filename=None, default_bands=raw_data.default_bands)
 
     # Make pseudo-rgb image for the calibrated image
-    pseudo_rgb = _make_pseudo_rgb(spectral_array=calibrated_array)
+    pseudo_rgb = _make_pseudo_rgb(spectral_array=calibrated)
 
     # Restore debug mode
     params.debug = debug
