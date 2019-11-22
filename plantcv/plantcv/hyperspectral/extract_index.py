@@ -57,7 +57,6 @@ def extract_index(array, index="NDVI", distance=20):
         else:
             fatal_error("Available wavelengths are not suitable for calculating NDVI. Try increasing fudge factor.")
 
-
     elif index.upper() == "GDVI":
         # Green Difference Vegetation Index [Sripada et al. (2006)]
         if (max_wavelength + distance) >= 800 and (min_wavelength - distance) <= 680:
