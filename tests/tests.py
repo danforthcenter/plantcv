@@ -3744,6 +3744,17 @@ def test_plantcv_hyperspectral_calibrate():
     assert np.shape(calibrated.array_data) == (1, 1600, 978)
 
 
+def test_plantcv_hyperspectral_extract_wavelength():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_wavelength")
+    os.mkdir(cache_dir)
+    spectral = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug = "plot"
+    _ = pcv.hyperspectral.extract_wavelength(spectral_data=spectral,wavelength=500)
+    pcv.params.debug = "print"
+    new = pcv.hyperspectral.extract_wavelength(spectral_data=raspectralw, wavelength=500)
+    assert np.shape(new.array_data) == (1, 1600, 978)
+
 # ##############################
 # Tests for the roi subpackage
 # ##############################
