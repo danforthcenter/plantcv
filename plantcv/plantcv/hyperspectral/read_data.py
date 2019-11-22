@@ -11,6 +11,19 @@ from plantcv.plantcv.transform import rescale
 
 
 def _find_closest(spectral_array, target):
+    """Find index of a target wavelength band in a hyperspectral data instance.
+
+    Inputs:
+        spectral_array = Hyperspectral data instance
+        target         = Target wavelength value
+
+    Returns:
+        idx            = Index
+
+    :param spectral_array: __main__.Spectral_data
+    :param target: float
+    :return spectral_array: __main__.Spectral_data
+    """
     # A must be sorted
     idx = spectral_array.searchsorted(target)
     idx = np.clip(idx, 1, len(spectral_array) - 1)
@@ -21,11 +34,23 @@ def _find_closest(spectral_array, target):
 
 
 def _make_pseudo_rgb(spectral_array):
+    """Create the best pseudo-rgb image possible from a hyperspectral datacube
+
+    Inputs:
+        spectral_array = Hyperspectral data instance
+
+    Returns:
+        pseudo_rgb     = Pseudo-rgb image
+
+    :param spectral_array: __main__.Spectral_data
+    :return pseudo_rgb: numpy.ndarray
+    """
 
     # Make shorter variable names for data from the spectral class instance object
-    default_bands = spectral_array.default_bands
-    hdr_dict = spectral_array.
     array_data = spectral_array.array_data
+    default_bands = spectral_array.default_bands
+    wl_keys = spectral_array.wavelength_dict.keys()
+
 
     if default_bands is not None:
         pseudo_rgb = cv2.merge((array_data[:, :, int(default_bands[0])],
@@ -33,16 +58,13 @@ def _make_pseudo_rgb(spectral_array):
                                 array_data[:, :, int(default_bands[2])]))
 
     else:
-        max_wavelength = max([float(i) for i in spectral_array.wavelength_dict.keys()])
-        min_wavelength = min([float(i) for i in spectral_array.wavelength_dict.keys()])
+        max_wavelength = max([float(i) for i in wl_keys])
+        min_wavelength = min([float(i) for i in wl_keys])
         # Check range of available wavelength
         if max_wavelength >= 635 and min_wavelength <= 490:
-            id_red = _find_closest(spectral_array=np.array([float(i) for i in spectral_array.wavelength_dict.keys()]),
-                                   target=710)
-            id_green = _find_closest(spectral_array=np.array([float(i) for i in spectral_array.wavelength_dict.keys()]),
-                                     target=540)
-            id_blue = _find_closest(spectral_array=np.array([float(i) for i in spectral_array.wavelength_dict.keys()]),
-                                    target=480)
+            id_red = _find_closest(spectral_array=np.array([float(i) for i in wl_keys]), target=710)
+            id_green = _find_closest(spectral_array=np.array([float(i) for i in wl_keys]), target=540)
+            id_blue = _find_closest(spectral_array=np.array([float(i) for i in wl_keys]), target=480)
 
             pseudo_rgb = cv2.merge((array_data[:, :, [id_blue]],
                                     array_data[:, :, [id_green]],
@@ -62,14 +84,19 @@ def _make_pseudo_rgb(spectral_array):
                             rescale(pseudo_rgb[:, :, 1]),
                             rescale(pseudo_rgb[:, :, 2])))
 
+    return pseudo_rgb
+
+
 def read_data(filename):
     """Read hyperspectral image data from file.
-        Inputs:
-        filename = name of image file
-        Returns:
-        spectral_array    = image object as numpy array
-        :param filename: str
-        :return spectral_array: __main__.Spectral_data
+    Inputs:
+    filename          = Name of image file
+
+    Returns:
+    spectral_array    = Hyperspectral data instance
+
+    :param filename: str
+    :return spectral_array: __main__.Spectral_data
         """
     # Store debug mode
     debug = params.debug
