@@ -1,4 +1,4 @@
-# Analyze signal data in Thermal image
+# Analyze reflectance signal hyperspectral images
 
 import os
 import numpy as np
@@ -36,6 +36,8 @@ def analyze_spectral(array, mask, histplot=True):
 
     # List of wavelengths recorded created from parsing the header file will be string, make list of floats
     wavelength_data = array_data[np.where(mask > 0)]
+
+    # Calculate mean reflectance across wavelengths
     wavelength_freq = wavelength_data.mean(axis=0)
 
     # Identify smallest and largest wavelengths available to scale the x-axis
@@ -48,7 +50,7 @@ def analyze_spectral(array, mask, histplot=True):
     new_freq = []
 
     for i, wavelength in enumerate(array.wavelength_dict):
-        new_wavelengths.append(float(wavelength))
+        new_wavelengths.append(wavelength)
         new_freq.append((wavelength_freq[i]).astype(np.float))
 
     # Calculate reflectance statistics
@@ -82,10 +84,10 @@ def analyze_spectral(array, mask, histplot=True):
     analysis_img = None
 
     if histplot is True:
-        dataset = pd.DataFrame({'Wavelength (nm)': new_wavelengths,
+        dataset = pd.DataFrame({'Wavelength ('+ array.wavelength_units+')': new_wavelengths,
                                 'Reflectance': wavelength_freq})
         fig_hist = (ggplot(data=dataset,
-                           mapping=aes(x='Wavelength (nm)',
+                           mapping=aes(x='Wavelength ('+ array.wavelength_units+')',
                                        y='Reflectance'))
                     + geom_line(color='purple')
                     + scale_x_continuous(

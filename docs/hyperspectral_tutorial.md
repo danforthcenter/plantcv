@@ -33,6 +33,14 @@ by the end users so please post feature requests, questions, and comments on the
 *  **Debug Flag:** Prints an image at each step
 *  **Region of Interest:** The user can input their own binary region of interest or image mask (make sure it is the same size as your image or you will have problems).
 
+**Image Calibration** 
+
+Raw hyperspectral data images often need to be calibrated. This process might look different depending on the hyperspectral camera used,
+but one example workflow would use white reference, dark reference images to calibrate raw hyperspectral image datacube into reflectance values. 
+[The TERRA-REF team](https://github.com/terraref) has nice documentation on their [calibration protocol](https://docs.google.com/document/d/1w_zHHlrPVKsy1mnW9wrVzAU2edVqZH8i1IZa5BZxVpo/edit#heading=h.jjfbhbos05cc).
+Please feel encouraged to reach out to the PlantCV developers/maintainers at the PlantCV [GitHub issues page](https://github.com/danforthcenter/plantcv/issues)
+to request to extend the functionality of the [calibration function](calibrate.md) inside the Hyperspectral sub-package for other calibration protocol. 
+
 Sample command to run a workflow on a single image:  
 
 *  Always test workflows (preferably with -D flag set to 'print') before running over a full image set
@@ -108,11 +116,11 @@ object returned has many methods that are useful to users and within PlantCV fun
     # Inputs:
     #   array        - Hyperspectral data instance  
     #   index        - Index of interest
-    #   fudge_factor - How lenient to be if the required wavelengths 
+    #   distance     - How lenient to be if the required wavelengths 
     #                  for a specific index are not available 
     index_array_gdvi = pcv.hyperspectral.extract_index(array=spectral_array, 
                                                        index="GDVI",
-                                                       fudge_factor=20)
+                                                       distance=20)
                                                        
 ```
 
@@ -311,7 +319,7 @@ def main():
     # Extract the Green Difference Vegetation Index from the datacube 
     index_array_gdvi = pcv.hyperspectral.extract_index(array=spectral_array, 
                                                        index="GDVI",
-                                                       fudge_factor=20)
+                                                       distance=20)
                                                     
     # Threshold the grayscale image 
     gdvi_thresh = pcv.threshold.binary(gray_img=index_array_gdvi.array_data, threshold=150, max_value=255)

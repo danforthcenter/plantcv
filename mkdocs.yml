@@ -74,6 +74,7 @@ nav:
     - 'Hyperspectral Sub-Package':
         - 'Analyze index': analyze_index.md
         - 'Analyze spectral': analyze_spectral.md
+        - 'Calibrate': calibrate.md
         - 'Extract index': extract_index.md
     - 'Image Add': image_add.md
     - 'Image Subtract': image_subtract.md

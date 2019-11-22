@@ -20,7 +20,7 @@ Attributes are accessed as spectral_data_instance.*attribute*.
 
 **min_wavelength**: Smallest available wavelength in the spectral datacube. 
 
-**d_type**: Data type of the array data 
+**d_type**: Data type of the Numpy array data 
 
 **wavelength_dict**: The wavelength dictionary that gets created during [pcv.readimage](read_image.md) while `mode='envi'` since metadata is collected from the .hdr file 
 
@@ -51,7 +51,7 @@ spectral_data_instance = pcv.readimage(filename="ee362e84-c861-4f0d-abbb-215ac58
 
 index_array_gdvi = pcv.hyperspectral.extract_index(array=spectral_data_instance, 
                                                    index="GDVI",
-                                                   fudge_factor=20)
+                                                   distance=20)
                                                    
 # Plot the pseudo-RGB image that is created when reading in hyperspectral data 
 pcv.plot_image(spectral_data_instance.pseudo_rgb)

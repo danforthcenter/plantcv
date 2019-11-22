@@ -1,6 +1,6 @@
 ENVI
 description = {[HEADWALL Hyperspec III]}
-samples = 800
+samples = 1600
 lines = 1
 bands = 978
 header offset = 0

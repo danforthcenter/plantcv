@@ -9,33 +9,35 @@ from plantcv.plantcv.hyperspectral import _find_closest
 
 
 
-def extract_index(array, index="NDVI", fudge_factor=20):
+def extract_index(array, index="NDVI", distance=20):
     """Pull out indices of interest from a hyperspectral datacube.
 
         Inputs:
         array = hyperspectral data instance
-        index = index of interest
-        fudge_factor = how lenient to be if the required wavelengths are not available
+        index = index of interest, either "ndvi", "gdvi", or "savi"
+        distance = how lenient to be if the required wavelengths are not available
 
         Returns:
         index_array    = Index data as a Spectral_data instance
 
         :param array: __main__.Spectral_data
         :param index: str
-        :param fudge_factor: int
+        :param distance: int
         :return index_array: __main__.Spectral_data
         """
     params.device += 1
 
     # Min and max available wavelength will be used to determine if an index can be extracted
-    max_wavelength = array.max_wavelength
-    min_wavelength = array.min_wavelength
+    #df_10v['emp_length'] = df_10v['emp_length'].astype(str).str.replace('\D+', '')
+
+    max_wavelength = float(array.max_wavelength)
+    min_wavelength = float(array.min_wavelength)
     # Dictionary of wavelength and it's index in the list
     wavelength_dict = array.wavelength_dict.copy()
     array_data = array.array_data.copy()
 
     if index.upper() == "NDVI":
-        if (max_wavelength + fudge_factor) >= 800 and (min_wavelength - fudge_factor) <= 670:
+        if (max_wavelength + distance) >= 800 and (min_wavelength - distance) <= 670:
             # Obtain index that best represents NIR and red bands
             nir_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
             red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 670)
@@ -56,7 +58,7 @@ def extract_index(array, index="NDVI", fudge_factor=20):
 
     elif index.upper() == "GDVI":
         # Green Difference Vegetation Index [Sripada et al. (2006)]
-        if (max_wavelength + fudge_factor) >= 800 and (min_wavelength - fudge_factor) <= 680:
+        if (max_wavelength + distance) >= 800 and (min_wavelength - distance) <= 680:
             nir_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
             red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 680)
             nir = (array_data[:, :, [nir_index]] + array_data[:, :, [nir_index + 4]] + array_data[:, :,
@@ -75,7 +77,7 @@ def extract_index(array, index="NDVI", fudge_factor=20):
 
     elif index.upper() == "SAVI":
         # Soil Adjusted Vegetation Index [Huete et al. (1988)]
-        if (max_wavelength + fudge_factor) >= 800 and (min_wavelength - fudge_factor) <= 680:
+        if (max_wavelength + distance) >= 800 and (min_wavelength - distance) <= 680:
             nir_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
             red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 680)
             nir = (array_data[:, :, [nir_index]])
@@ -85,10 +87,13 @@ def extract_index(array, index="NDVI", fudge_factor=20):
 
             # Resulting array is float 32 from -1 to 1, transform into uint8 for plotting
             all_positive = np.add(index_array_raw, np.ones(np.shape(index_array_raw)))
-            datagdvi = all_positive.astype(np.float64) / 2  # normalize the data to 0 - 1
-            index_array = (255 * datagdvi).astype(np.uint8)  # scale to 255
+            datasavi = all_positive.astype(np.float64) / 2  # normalize the data to 0 - 1
+            index_array = (255 * datasavi).astype(np.uint8)  # scale to 255
         else:
             fatal_error("Available wavelengths are not suitable for calculating SAVI. Try increasing fudge factor.")
+
+    else:
+        fatal_error(index + " is not one of the currently available indices for this function.")
 
     index_array = Spectral_data(array_data=index_array, max_wavelength=0,
                                 min_wavelength=0, d_type=np.uint8,
@@ -98,7 +103,6 @@ def extract_index(array, index="NDVI", fudge_factor=20):
                                 pseudo_rgb=None, filename=array.filename)
 
     if params.debug == "plot":
-        # Gamma correct pseudo_rgb image
         plot_image(index_array.array_data)
     elif params.debug == "print":
         print_image(index_array.array_data,

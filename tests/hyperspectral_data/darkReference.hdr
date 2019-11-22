@@ -1,15 +1,15 @@
 ENVI
 description = {[HEADWALL Hyperspec III]}
-samples = 800
+samples = 1600
 lines = 1
 bands = 978
 header offset = 0
 file type = ENVI Standard
-data type = 4
+data type = 12
 interleave = bil
 sensor type = Unknown
-byte order = 0
 default bands = {159,253,520}
+byte order = 0
 wavelength units = nm
 wavelength = {
 379.027

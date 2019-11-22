@@ -1,10 +1,10 @@
 ## Extract Index 
 
 This function extracts an index from a hyperspectral datacube, which is a [`Spectral_data` class](Spectral_data.md) instance created while reading in with [readimage](read_image.md)
-with `mode='envi'`. There is also a parameter to allow some flexibility  
+with `mode='envi'`. There is also a parameter to allow some flexibility 
 on using wavelengths that are at least close to the wavelength bands require to calculate a specific index. 
 
-**plantcv.hyperspectral.extract_index**(*array, index="NDVI", fudge_factor=20*)
+**plantcv.hyperspectral.extract_index**(*array, index="NDVI", distance=20*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -12,7 +12,7 @@ on using wavelengths that are at least close to the wavelength bands require to 
     - array         - A hyperspectral datacube object, an instance of the `Spectral_data` class, (read in with [pcv.readimage](read_image.md) with `mode='envi'`)
     - index         - Desired index, either "ndvi" for normalized difference vegetation index, "gdvi" for green difference
     vegetation index, or "savi" for soil adjusted vegetation index.
-    - fudge_factor  - Amount of flexibility (in nanometers) regarding using wavelengths that are 
+    - distance      - Amount of flexibility (in nanometers) regarding using wavelengths that are 
     at least close to the wavelength bands require to calculate a specific index
 
 - **Note:**
@@ -27,11 +27,10 @@ from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file), 
 # or "plot" (Jupyter Notebooks or X11)
-
 pcv.params.debug = "print"
 
 # Extract NDVI index from the datacube 
-ndvi_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="NDVI", fudge_factor=20)
+ndvi_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="NDVI", distance=20)
 
 ```
 
