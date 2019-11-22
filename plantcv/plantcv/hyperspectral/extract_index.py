@@ -100,7 +100,7 @@ def extract_index(array, index="NDVI", distance=20):
                                 wavelength_dict={}, samples=array.samples,
                                 lines=array.lines, interleave=array.interleave,
                                 wavelength_units=array.wavelength_units, array_type="index_" + index.lower(),
-                                pseudo_rgb=None, filename=array.filename)
+                                pseudo_rgb=None, filename=array.filename, default_bands=None)
 
     if params.debug == "plot":
         plot_image(index_array.array_data)
