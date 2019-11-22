@@ -8,7 +8,7 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv.transform import rescale
-from plantcv.plantcv.hypersepctral.read_data import _make_pseudo_rgb
+from plantcv.plantcv.hyperspectral.read_data import _make_pseudo_rgb
 
 
 def apply_mask(img, mask, mask_color):
