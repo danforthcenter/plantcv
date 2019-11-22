@@ -126,7 +126,7 @@ class Spectral_data:
 # Example
 # spectral_array = Spectral_data(max_wavelength=1000.95, min_wavelength=379.027, d_type=numpy.float32,
 #                           wavelength_dict=dictionary, samples=1600, lines=1704, interleave='bil',
-#                           wavelength_units='nm', array_type="datacube", filename=filename)
+#                           wavelength_units='nm', array_type="datacube", filename=fname, default_bands={159,253,520})
 
 
 from plantcv.plantcv.fatal_error import fatal_error

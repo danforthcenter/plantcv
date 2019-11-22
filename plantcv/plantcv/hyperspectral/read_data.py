@@ -170,16 +170,15 @@ def read_data(filename):
                                    pseudo_rgb=None, filename=filename, default_bands=default_bands)
 
     # Make pseudo-rgb image and replace it inside the class instance object
-    pseudo_rgb = _make_pseudo_rgb
-    spectral_array.pseudo_rgb = pseudo_rgb
+    spectral_array.pseudo_rgb = _make_pseudo_rgb
 
     # Reset debug mode
     params.debug = debug
 
     if params.debug == "plot":
         # Gamma correct pseudo_rgb image
-        plot_image(pseudo_rgb)
+        plot_image(spectral_array.pseudo_rgb)
     elif params.debug == "print":
-        print_image(pseudo_rgb, os.path.join(params.debug_outdir, str(params.device) + "_pseudo_rgb.png"))
+        print_image(spectral_array.pseudo_rgb, os.path.join(params.debug_outdir, str(params.device)+"_pseudo_rgb.png"))
 
     return spectral_array
