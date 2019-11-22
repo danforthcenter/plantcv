@@ -9,7 +9,7 @@ from plantcv.plantcv import Spectral_data
 from plantcv.plantcv.hyperspectral.read_data import _find_closest
 
 
-def extract_wavelength_data(spectral_data, wavelength):
+def extract_wavelength(spectral_data, wavelength):
     """Find index of a target wavelength band in a hyperspectral data instance.
 
         Inputs:
@@ -48,7 +48,7 @@ def extract_wavelength_data(spectral_data, wavelength):
         plot_image(index_array)
     elif params.debug == "print":
         print_image(index_array,
-                    os.path.join(params.debug_outdir, str(params.device) + wavelength + "_index.png"))
+                    os.path.join(params.debug_outdir, str(params.device) + str(wavelength) + "_index.png"))
 
     # Make a spectral data instance
     index_array = Spectral_data(array_data=index_array, max_wavelength=wavelength,
@@ -57,6 +57,6 @@ def extract_wavelength_data(spectral_data, wavelength):
                                 lines=spectral_data.lines, interleave=spectral_data.interleave,
                                 wavelength_units=spectral_data.wavelength_units,
                                 array_type="index_" + str(wavelength),
-                                pseudo_rgb=None, filename=spectral_data.filename)
+                                pseudo_rgb=None, filename=spectral_data.filename, default_bands=None)
 
     return index_array
