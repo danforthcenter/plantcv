@@ -30,10 +30,9 @@ def extract_index(array, index="NDVI", distance=20):
     params.device += 1
 
     # Min and max available wavelength will be used to determine if an index can be extracted
-    #df_10v['emp_length'] = df_10v['emp_length'].astype(str).str.replace('\D+', '')
-
     max_wavelength = float(array.max_wavelength)
     min_wavelength = float(array.min_wavelength)
+    
     # Dictionary of wavelength and it's index in the list
     wavelength_dict = array.wavelength_dict.copy()
     array_data = array.array_data.copy()
