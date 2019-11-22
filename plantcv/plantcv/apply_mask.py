@@ -10,11 +10,11 @@ from plantcv.plantcv import fatal_error
 from plantcv.plantcv.transform import rescale
 
 
-def apply_mask(rgb_img, mask, mask_color):
+def apply_mask(img, mask, mask_color):
     """Apply white image mask to image, with bitwise AND operator bitwise NOT operator and ADD operator.
 
     Inputs:
-    rgb_img    = RGB image data
+    img        = RGB image data
     mask       = Binary mask image data
     mask_color = 'white' or 'black'
 
@@ -36,7 +36,7 @@ def apply_mask(rgb_img, mask, mask_color):
     else:
         fatal_error('Mask Color ' + str(mask_color) + ' is not "white" or "black"!')
 
-    array_data = rgb_img.copy()
+    array_data = img.copy()
 
     # Mask the array
     array_data[np.where(mask == 0)] = color_val

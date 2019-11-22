@@ -1,3 +1,5 @@
+# Extract one of the predefined indices from a hyperspectral datacube
+
 import os
 import numpy as np
 from plantcv.plantcv import params

@@ -67,7 +67,7 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
         # We need to convert the input image into an one of the HSV channels and then threshold it
         if thresh_channel is not None and thresh is not None:
             # Mask the input image
-            masked = apply_mask(rgb_img=ref_img, mask=roi_mask, mask_color="black")
+            masked = apply_mask(img=ref_img, mask=roi_mask, mask_color="black")
             # Convert the masked image to hue, saturation, or value
             marker_hsv = rgb2gray_hsv(rgb_img=masked, channel=thresh_channel)
             # Threshold the HSV image

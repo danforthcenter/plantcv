@@ -31,6 +31,7 @@ def calibrate(raw_data, white_reference, dark_reference):
 
     # Store debugging mode
     debug = params.debug
+    params.debug = None
 
     # Collect the number of wavelengths present
     num_bands = len(white_reference.wavelength_dict)

@@ -1095,13 +1095,13 @@ def test_plantcv_apply_mask_white():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.apply_mask(rgb_img=img, mask=mask, mask_color="white")
+    _ = pcv.apply_mask(img=img, mask=mask, mask_color="white")
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.apply_mask(rgb_img=img, mask=mask, mask_color="white")
+    _ = pcv.apply_mask(img=img, mask=mask, mask_color="white")
     # Test with debug = None
     pcv.params.debug = None
-    masked_img = pcv.apply_mask(rgb_img=img, mask=mask, mask_color="white")
+    masked_img = pcv.apply_mask(img=img, mask=mask, mask_color="white")
     assert all([i == j] for i, j in zip(np.shape(masked_img), TEST_COLOR_DIM))
 
 
@@ -1115,13 +1115,13 @@ def test_plantcv_apply_mask_black():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.apply_mask(rgb_img=img, mask=mask, mask_color="black")
+    _ = pcv.apply_mask(img=img, mask=mask, mask_color="black")
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.apply_mask(rgb_img=img, mask=mask, mask_color="black")
+    _ = pcv.apply_mask(img=img, mask=mask, mask_color="black")
     # Test with debug = None
     pcv.params.debug = None
-    masked_img = pcv.apply_mask(rgb_img=img, mask=mask, mask_color="black")
+    masked_img = pcv.apply_mask(img=img, mask=mask, mask_color="black")
     assert all([i == j] for i, j in zip(np.shape(masked_img), TEST_COLOR_DIM))
 
 
@@ -1140,10 +1140,10 @@ def test_plantcv_apply_mask_hyperspectral():
     shape = np.shape(img_stacked)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.apply_mask(rgb_img=img_stacked, mask=img, mask_color="black")
+    _ = pcv.apply_mask(img=img_stacked, mask=img, mask_color="black")
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    masked_array = pcv.apply_mask(rgb_img=hyper_array.array_data, mask=img, mask_color="black")
+    masked_array = pcv.apply_mask(img=hyper_array.array_data, mask=img, mask_color="black")
     assert np.mean(masked_array) == 13.97111260224949
 
 
@@ -1153,7 +1153,7 @@ def test_plantcv_apply_mask_bad_input():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     with pytest.raises(RuntimeError):
         pcv.params.debug = "plot"
-        _ = pcv.apply_mask(rgb_img=img, mask=mask, mask_color="wite")
+        _ = pcv.apply_mask(img=img, mask=mask, mask_color="wite")
 
 
 def test_plantcv_auto_crop():
