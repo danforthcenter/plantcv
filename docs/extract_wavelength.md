@@ -27,20 +27,22 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
-blue_array_obj = pcv.hyperspectral.extract_wavelength(spectral_data=spectral_array_obj, wavelength=400)
+# Many plants absorb 430nm wavelength light. 
+blue_array_obj = pcv.hyperspectral.extract_wavelength(spectral_data=spectral_array_obj, wavelength=430)
 
 blue_array_obj.array_type
 
 ```
 
 ```python
-> 
+> The closest band found to 400nm is: 400.033
+
 ```
 
 **Grayscale array image**
 
-![Screenshot](img/tutorial_images/hyperspectral/NDVI_index.jpg)
+![Screenshot](img/documentation_images/extract_wavelength/430_grayscale.jpg)
 
 ```python
-> The closest band found to 400nm is: 400.033
+> 'index_430'
 ```
