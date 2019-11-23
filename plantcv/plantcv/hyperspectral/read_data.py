@@ -176,8 +176,6 @@ def read_data(filename):
     # Reset debug mode
     params.debug = debug
 
-    print(type(spectral_array.pseudo_rgb))
-
     if params.debug == "plot":
         # Gamma correct pseudo_rgb image
         plot_image(pseudo_rgb)
