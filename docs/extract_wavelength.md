@@ -1,6 +1,6 @@
 ## Extract Wavelength 
 
-This function extracts a single band from a hyperspectral data cube that is the closest to a user defined wavelength reflectance from a hyperspectral datacube, 
+This function extracts a single band that is the closest to a user defined wavelength reflectance from a hyperspectral datacube, 
 which is a [`Spectral_data` class](Spectral_data.md) instance created while reading in with [readimage](read_image.md)
 with `mode='envi'`. This function is similar to the [`extract_index`](extract_index.md) which calculates and outputs standard spectral indices. 
 
