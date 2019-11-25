@@ -151,9 +151,6 @@ def read_data(filename):
                                   int(header_dict["bands"]),
                                   int(header_dict["samples"])).transpose((0, 2, 1))
 
-    max_wl = float(str(header_dict["wavelength"][-1]).rstrip())
-    min_wl = float(str(header_dict["wavelength"][0]).rstrip())
-
     # Check for default bands (that get used to make pseudo_rgb image)
     default_bands = None
     if "default bands" in header_dict:
@@ -162,8 +159,10 @@ def read_data(filename):
         default_bands = header_dict["default bands"].split(",")
 
     # Create an instance of the spectral_data class
-    spectral_array = Spectral_data(array_data=array_data, max_wavelength=max_wl,
-                                   min_wavelength=min_wl, d_type=header_dict["data type"],
+    spectral_array = Spectral_data(array_data=array_data,
+                                   max_wavelength=float(str(header_dict["wavelength"][-1]).rstrip()),
+                                   min_wavelength=float(str(header_dict["wavelength"][0]).rstrip()),
+                                   d_type=header_dict["data type"],
                                    wavelength_dict=wavelength_dict, samples=int(header_dict["samples"]),
                                    lines=int(header_dict["lines"]), interleave=header_dict["interleave"],
                                    wavelength_units=header_dict["wavelength units"], array_type="datacube",
