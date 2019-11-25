@@ -42,10 +42,8 @@ def extract_index(array, index="NDVI", distance=20):
             # Obtain index that best represents NIR and red bands
             nir_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
             red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 670)
-            nir = (array_data[:, :, [nir_index]] + array_data[:, :, [nir_index + 4]] + array_data[:, :,
-                                                                                       [nir_index - 4]]) / 3
-            red = (array_data[:, :, [red_index]] + array_data[:, :, [red_index + 4]] + array_data[:, :,
-                                                                                       [red_index - 4]]) / 3
+            nir = (array_data[:, :, [nir_index]])
+            red = (array_data[:, :, [red_index]])
             index_array_raw = (nir - red) / (nir + red)
         else:
             fatal_error("Available wavelengths are not suitable for calculating NDVI. Try increasing fudge factor.")
@@ -55,10 +53,8 @@ def extract_index(array, index="NDVI", distance=20):
         if (max_wavelength + distance) >= 800 and (min_wavelength - distance) <= 680:
             nir_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
             red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 680)
-            nir = (array_data[:, :, [nir_index]] + array_data[:, :, [nir_index + 4]] + array_data[:, :,
-                                                                                       [nir_index - 4]]) / 3
-            red = (array_data[:, :, [red_index]] + array_data[:, :, [red_index + 4]] + array_data[:, :,
-                                                                                       [red_index - 4]]) / 3
+            nir = (array_data[:, :, [nir_index]])
+            red = (array_data[:, :, [red_index]])
             index_array_raw = nir - red
         else:
             fatal_error("Available wavelengths are not suitable for calculating GDVI. Try increasing fudge factor.")
