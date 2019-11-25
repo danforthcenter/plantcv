@@ -82,8 +82,8 @@ def extract_index(array, index="NDVI", distance=20):
 
     # Resulting array is float 32 from -1 to 1, transform into uint8 for plotting
     all_positive = np.add(index_array_raw, np.ones(np.shape(index_array_raw)))
-    datasavi = all_positive.astype(np.float64) / 2  # normalize the data to 0 - 1
-    index_array = (255 * datasavi).astype(np.uint8)  # scale to 255
+    data = all_positive.astype(np.float64) / 2  # normalize the data to 0 - 1
+    index_array = (255 * data).astype(np.uint8)  # scale to 255
 
     index_array = Spectral_data(array_data=index_array, max_wavelength=0,
                                 min_wavelength=0, d_type=np.uint8,
