@@ -74,11 +74,11 @@ for i in range(0, len(rois1)):
     analysis_images = pcv.analyze_object(img=img_copy, obj=plant_contour, mask=plant_mask)
     
     # Save the image with shape characteristics 
-    img_copy = analysis_images[0]
+    img_copy = analysis_images
     
     # Print out a text file with shape data for each plant in the image 
     pcv.print_results(filename = 'prefix_' + str(i) + '.txt')
-    # Clear the measurements stored globally into the Ouptuts class
+    # Clear the measurements stored globally into the Outputs class
     pcv.outputs.clear()
     
 # Plot out the image with shape analysis on each plant in the image 
