@@ -18,13 +18,15 @@ We normally execute workflows in a shell script or in in a condor job file (or d
 * -t is the --type extension 'png' is the default. Any format readable by opencv is accepted such as 'tif' or 'jpg'
 * -l is the --delimiter for the filename that is used to separate metadata, default is "_". Can also be a regular expression pattern (see below).
 * -C is the --coprocess the specified imgtype with the imgtype specified in --match (e.g. coprocess NIR images with VIS).
-* -f is the --meta (data) structure of image file names. Comma-separated list of valid metadata terms.
+* -f is the --meta (data) structure of image file names. Comma-separated list of valid metadata terms ( "camera","imgtype". "zoom", "exposure", "gain", 
+    "frame", "lifter", "timestamp", "id", "plantbarcode", "treatment", "cartag", "measurementlabel", or "other").
 * -M is the --match metadata option, for example to select a certain zoom or angle. For example: 'imgtype:VIS,camera:SV,zoom:z500'
 * -D is the --dates option, to select a certain date range of data. YYYY-MM-DD-hh-mm-ss_YYYY-MM-DD-hh-mm-ss. If the second date is excluded then the current date is assumed. Time can be excluded.
 * -j is the --json, json database name
 * -m is the --mask any image mask that you would like to provide
 * -T is the --cpu # of cpu processes you would like to use.
-* -s is the --timestampformat specify timestamp format for strptime C library. default is '%Y-%m-%d %H:%M:%S.%f' to parse '2010-10-10 10:10:10.123'. see [strptime docs](https://docs.python.org/3.7/library/datetime.html#strftime-and-strptime-behavior) for supported codes.
+* -s is the --timestampformat specify timestamp format for strptime C library. default is '%Y-%m-%d %H:%M:%S.%f' to parse '2010-10-10 10:10:10.123'. see 
+    [strptime docs](https://docs.python.org/3.7/library/datetime.html#strftime-and-strptime-behavior) for supported codes.
 * -w is the --writeimg option, if True will write output images. default= False
 * -c is the --create option to overwrite an json database if it exists, if you are creating a new database or appending to database, do NOT add the -c flag
 * -o is the --other_args option, used to pass non-standard options to the workflow script. Must take the form `--other_args="--option1 value1 --option2 value2"`
@@ -71,7 +73,8 @@ time \
 ```
 
 ### Example Batch Script (Windows)
-If you are running on **Windows** (except with WSL), you will need to use a batch script. Assuming you are using Anaconda Prompt, make sure you `conda activate plantcv`, and `cd` to your project directory. Also, there are no comments in batch scripts and `python` can only find files in you immediate working directory (even if the file is in your PATH).
+If you are running on **Windows** (except with WSL), you will need to use a batch script. Assuming you are using Anaconda Prompt, make sure you `conda activate plantcv`,
+ and `cd` to your project directory. Also, there are no comments in batch scripts and `python` can only find files in you immediate working directory (even if the file is in your PATH).
 
 ```{batch}
 python.exe ^
@@ -148,7 +151,8 @@ AABA002948_2014-03-14 03-29-45_Pilot-031014_VIS_TV_z3500.png
 
 Valid metadata that can be collected from filenames are `camera`, `imgtype`, `zoom`, `exposure`, `gain`, `frame`, `lifter`, `timestamp`, `id`, `plantbarcode`, `treatment`, `cartag`, `measurementlabel`, and `other`. 
 
-For a flat direcotory of images (`--adaptor = filename`) you are required to specify the timestamp format (`--timestampformat`, `-s`) code for the [strptime C library](https://docs.python.org/3.7/library/datetime.html#strftime-and-strptime-behavior). For the example above you would use `--timestampformat "%Y-%m-%d %H-%M-%S"`.
+For a flat direcotory of images (`--adaptor = filename`) you are required to specify the timestamp format (`--timestampformat`, `-s`) code for the 
+[strptime C library](https://docs.python.org/3.7/library/datetime.html#strftime-and-strptime-behavior). For the example above you would use `--timestampformat "%Y-%m-%d %H-%M-%S"`.
 
 **Next, run images over a flat directory with images named as described above:**
 
