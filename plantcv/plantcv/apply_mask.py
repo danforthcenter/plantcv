@@ -43,6 +43,7 @@ def apply_mask(img, mask, mask_color):
 
     # Check if the array data format
     if len(np.shape(array_data)) > 2 and np.shape(array_data)[-1] > 3:
+        # Replace this part with _make_pseudo_rgb
         num_bands = np.shape(array_data)[2]
         med_band = int(num_bands / 2)
         pseudo_rgb = cv2.merge((rescale(array_data[:, :, 0]),

@@ -30,10 +30,9 @@ def extract_index(array, index="NDVI", distance=20):
     params.device += 1
 
     # Min and max available wavelength will be used to determine if an index can be extracted
-    #df_10v['emp_length'] = df_10v['emp_length'].astype(str).str.replace('\D+', '')
-
     max_wavelength = float(array.max_wavelength)
     min_wavelength = float(array.min_wavelength)
+
     # Dictionary of wavelength and it's index in the list
     wavelength_dict = array.wavelength_dict.copy()
     array_data = array.array_data.copy()
@@ -43,37 +42,20 @@ def extract_index(array, index="NDVI", distance=20):
             # Obtain index that best represents NIR and red bands
             nir_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
             red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 670)
-            nir = (array_data[:, :, [nir_index]] + array_data[:, :, [nir_index + 4]] + array_data[:, :,
-                                                                                       [nir_index - 4]]) / 3
-            red = (array_data[:, :, [red_index]] + array_data[:, :, [red_index + 4]] + array_data[:, :,
-                                                                                       [red_index - 4]]) / 3
-            ndvi = (nir - red) / (nir + red)
-            index_array_raw = np.transpose(np.transpose(ndvi)[0])
-
-            # Resulting array is float 32 from -1 to 1, transform into uint8 for plotting
-            all_positive = np.add(index_array_raw, np.ones(np.shape(index_array_raw)))
-            datandvi = all_positive.astype(np.float64) / 2  # normalize the data to 0 - 1
-            index_array = (255 * datandvi).astype(np.uint8)  # scale to 255
+            nir = (array_data[:, :, [nir_index]])
+            red = (array_data[:, :, [red_index]])
+            index_array_raw = (nir - red) / (nir + red)
         else:
             fatal_error("Available wavelengths are not suitable for calculating NDVI. Try increasing fudge factor.")
-
 
     elif index.upper() == "GDVI":
         # Green Difference Vegetation Index [Sripada et al. (2006)]
         if (max_wavelength + distance) >= 800 and (min_wavelength - distance) <= 680:
             nir_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
             red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 680)
-            nir = (array_data[:, :, [nir_index]] + array_data[:, :, [nir_index + 4]] + array_data[:, :,
-                                                                                       [nir_index - 4]]) / 3
-            red = (array_data[:, :, [red_index]] + array_data[:, :, [red_index + 4]] + array_data[:, :,
-                                                                                       [red_index - 4]]) / 3
-            gdvi = nir - red
-            index_array_raw = np.transpose(np.transpose(gdvi)[0])
-
-            # Resulting array is float 32 from -1 to 1, transform into uint8 for plotting
-            all_positive = np.add(index_array_raw, np.ones(np.shape(index_array_raw)))
-            datagdvi = all_positive.astype(np.float64) / 2  # normalize the data to 0 - 1
-            index_array = (255 * datagdvi).astype(np.uint8)  # scale to 255
+            nir = (array_data[:, :, [nir_index]])
+            red = (array_data[:, :, [red_index]])
+            index_array_raw = nir - red
         else:
             fatal_error("Available wavelengths are not suitable for calculating GDVI. Try increasing fudge factor.")
 
@@ -84,25 +66,27 @@ def extract_index(array, index="NDVI", distance=20):
             red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 680)
             nir = (array_data[:, :, [nir_index]])
             red = (array_data[:, :, [red_index]])
-            savi = (1.5 * (nir - red)) / (red + nir + 0.5)
-            index_array_raw = np.transpose(np.transpose(savi)[0])
-
-            # Resulting array is float 32 from -1 to 1, transform into uint8 for plotting
-            all_positive = np.add(index_array_raw, np.ones(np.shape(index_array_raw)))
-            datasavi = all_positive.astype(np.float64) / 2  # normalize the data to 0 - 1
-            index_array = (255 * datasavi).astype(np.uint8)  # scale to 255
+            index_array_raw = (1.5 * (nir - red)) / (red + nir + 0.5)
         else:
             fatal_error("Available wavelengths are not suitable for calculating SAVI. Try increasing fudge factor.")
 
     else:
         fatal_error(index + " is not one of the currently available indices for this function.")
 
+    # Reshape array into hyperspectral datacube shape
+    index_array_raw = np.transpose(np.transpose(index_array_raw)[0])
+
+    # Resulting array is float 32 from -1 to 1, transform into uint8 for plotting
+    all_positive = np.add(index_array_raw, np.ones(np.shape(index_array_raw)))
+    data = all_positive.astype(np.float64) / 2  # normalize the data to 0 - 1
+    index_array = (255 * data).astype(np.uint8)  # scale to 255
+
     index_array = Spectral_data(array_data=index_array, max_wavelength=0,
                                 min_wavelength=0, d_type=np.uint8,
                                 wavelength_dict={}, samples=array.samples,
                                 lines=array.lines, interleave=array.interleave,
                                 wavelength_units=array.wavelength_units, array_type="index_" + index.lower(),
-                                pseudo_rgb=None, filename=array.filename)
+                                pseudo_rgb=None, filename=array.filename, default_bands=None)
 
     if params.debug == "plot":
         plot_image(index_array.array_data)
