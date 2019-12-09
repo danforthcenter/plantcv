@@ -2,6 +2,7 @@
 
 import os
 import cv2
+import numpy as np
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 from plantcv.plantcv import params
@@ -28,6 +29,12 @@ def crop(img, x, y, h, w):
        :param w: int
        :return cropped: numpy.ndarray
        """
+    params.device += 1
+
+    # Check if the array data format
+    if len(np.shape(img)) > 2 and np.shape(img)[-1] > 3:
+        cropped = img[y:y + h, x:x + w, :]
+
 
     cropped = img[y:y + h, x:x + w, :]
 
@@ -37,14 +44,13 @@ def crop(img, x, y, h, w):
     pt3 = (x + w - 1, y + h - 1)
     pt4 = (x + w - 1, y)
 
-    ref_img = cv2.rectangle(img=np.copy(img), pt1=pt1, pt2=pt3, color=(255, 0, 0),
-                            thickness=params.line_thickness)
+    ref_img = cv2.rectangle(img=np.copy(img), pt1=pt1, pt2=pt3, color=(255, 0, 0), thickness=params.line_thickness)
 
     if params.debug == "print":
         # If debug is print, save the image to a file
-        print_image(ref_img, os.path.join(params.debug_outdir, str(params.device) + "_roi.png"))
+        print_image(ref_img, os.path.join(params.debug_outdir, str(params.device) + "_crop.png"))
     elif params.debug == "plot":
         # If debug is plot, print to the plotting device
         plot_image(ref_img)
 
-    return ref_img
+    return cropped
