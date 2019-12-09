@@ -38,9 +38,7 @@ def crop(img, x, y, h, w):
         cropped = img[y:y + h, x:x + w, :]
     else:
         ref_img = np.copy(img)
-        cropped = img[y:y + h, x:x + w, :]
-
-    cropped = img[y:y + h, x:x + w, :]
+        cropped = img[y:y + h, x:x + w]
 
     # Create the rectangle contour vertices
     pt1 = (x, y)
