@@ -4,7 +4,7 @@ Crops image to an object and allows user to specify image padding (if desired)
 
 **plantcv.auto_crop**(*img, obj, padding_x=0, padding_y=0, color='black'*)
 
-**returns** image after resizing
+**returns** image after cropping
 
 - **Parameters:**
     - img - RGB or grayscale image data
