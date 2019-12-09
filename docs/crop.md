@@ -15,9 +15,6 @@ Crops image to user specified coordinates
 - **Context:**
     - Crops image 
     
-**Input image**
-
-![Screenshot](img/documentation_images/auto_crop/2016-05-25_1031.chamber129-camera-01.jpg)
 
 ```python
 
@@ -29,15 +26,15 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Crop image
-crop_img = pcv.crop(img=img, x=100, y=50, h=2000, w=1700)
+crop_img = pcv.crop(img=img, x=800, y=400, h=1200, w=900)
 
 ```
 
 **Debug Crop Image**
 
-![Screenshot](img/documentation_images/crop/)
+![Screenshot](img/documentation_images/crop/crop_debug.jpg)
 
 
 **Cropped Image**
 
-![Screenshot](img/documentation_images/crop/)
+![Screenshot](img/documentation_images/crop/cropped_img.jpg)
