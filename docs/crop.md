@@ -1,6 +1,6 @@
 ## Crop
 
-Crops image to specified coordinates 
+Crops image to user specified coordinates 
 
 **plantcv.crop**(*img, x, y, h, w*)
 
@@ -29,13 +29,15 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Crop image
-crop_img = pcv.crop()
-
-crop_img2 = pcv.crop()
+crop_img = pcv.crop(img=img, x=100, y=50, h=2000, w=1700)
 
 ```
 
-**Debug Crop Images**
+**Debug Crop Image**
 
 ![Screenshot](img/documentation_images/crop/)
 
+
+**Cropped Image**
+
+![Screenshot](img/documentation_images/crop/)
