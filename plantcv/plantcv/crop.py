@@ -33,18 +33,20 @@ def crop(img, x, y, h, w):
 
     # Check if the array data format
     if len(np.shape(img)) > 2 and np.shape(img)[-1] > 3:
+        ref_img = img[:, :, [0]]
+        ref_img = np.transpose(np.transpose(ref_img)[0])
         cropped = img[y:y + h, x:x + w, :]
-
+    else:
+        ref_img = np.copy(img)
+        cropped = img[y:y + h, x:x + w, :]
 
     cropped = img[y:y + h, x:x + w, :]
 
     # Create the rectangle contour vertices
     pt1 = (x, y)
-    pt2 = (x, y + h - 1)
-    pt3 = (x + w - 1, y + h - 1)
-    pt4 = (x + w - 1, y)
+    pt2 = (x + w - 1, y + h - 1)
 
-    ref_img = cv2.rectangle(img=np.copy(img), pt1=pt1, pt2=pt3, color=(255, 0, 0), thickness=params.line_thickness)
+    ref_img = cv2.rectangle(img=ref_img, pt1=pt1, pt2=pt2, color=(255, 0, 0), thickness=params.line_thickness)
 
     if params.debug == "print":
         # If debug is print, save the image to a file
