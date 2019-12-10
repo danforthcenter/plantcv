@@ -1392,6 +1392,39 @@ def test_plantcv_color_palette():
     assert (all(truths))
 
 
+def test_plantcv_crop():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_crop")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img, _, _ = pcv.readimage(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK), 'gray')
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.crop(img=img, x=10, y=10, h=50, w=50)
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    cropped = pcv.crop(img=img, x=10, y=10, h=50, w=50)
+    assert np.shape(cropped) == (50,50)
+
+
+def test_plantcv_crop_hyperspectral():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_crop_hyperspectral")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img = np.ones((2056, 2454))
+    img_stacked = cv2.merge((img, img, img, img))
+    shape = np.shape(img_stacked)
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.crop(img=img_stacked, x=10, y=10, h=50, w=50)
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    cropped = pcv.crop(img=img_stacked, x=10, y=10, h=50, w=50)
+    assert np.shape(cropped) == (50,50,4)
+
+
 def test_plantcv_crop_position_mask():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_crop_position_mask")
