@@ -3719,7 +3719,7 @@ def test_plantcv_hyperspectral_analyze_index():
     pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img)
     pcv.params.debug = "plot"
     pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img)
-    assert pcv.outputs.observations['mean_index_savi']['value'] == 141.0
+    assert pcv.outputs.observations['mean_index_savi']['value'] == -0.11320754716981132
 
 def test_plantcv_hyperspectral_analyze_index_bad_input_mask():
     pcv.params.debug = None
