@@ -6,7 +6,8 @@ from plantcv.plantcv.hyperspectral.extract_index import extract_index
 from plantcv.plantcv.hyperspectral.analyze_index import analyze_index
 from plantcv.plantcv.hyperspectral.analyze_spectral import analyze_spectral
 from plantcv.plantcv.hyperspectral.calibrate import calibrate
+from plantcv.plantcv.hyperspectral._avg_reflectance import _avg_reflectance
 
 # add new functions to end of lists
 __all__ = ["read_data", "_find_closest", "extract_index", "analyze_spectral", "analyze_index", "calibrate",
-           "_make_pseudo_rgb", "extract_wavelength"]
+           "_make_pseudo_rgb", "extract_wavelength", "_avg_reflectance"]
