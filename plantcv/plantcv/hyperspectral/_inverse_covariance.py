@@ -18,6 +18,11 @@ def _inverse_covariance(spectral_array):
             :return inverse_covariance: numpy array
             """
 
-    hsi_data = spectral_array.array_data
+    hsi_img = spectral_array.array_data
+
+    n_lines, n_samples, n_band = hsi_img.shape
+    n_pixels = n_lines * n_samples
+    hsi_data = np.reshape(hsi_img, (n_pixels, n_band), order='F').T
     inverse_covariance = np.linalg.pinv(np.cov(hsi_data.T, rowvar=False))
+
     return inverse_covariance

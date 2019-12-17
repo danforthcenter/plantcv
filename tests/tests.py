@@ -3788,6 +3788,14 @@ def test_plantcv_hyperspectral_avg_reflectance():
     avg_reflect = pcv.hyperspectral._avg_reflectance(spectral, mask=mask_img)
     assert len(avg_reflect) == 978
 
+
+def test_plantcv_hyperspectral_inverse_covariance():
+    spectral = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    spectral = pcv.hyperspectral.read_data(filename=spectral)
+    inv_cov = pcv.hyperspectral._inverse_covariance(spectral)
+    assert np.shape(inv_cov) == (978, 978)
+
+
 # ##############################
 # Tests for the roi subpackage
 # ##############################
