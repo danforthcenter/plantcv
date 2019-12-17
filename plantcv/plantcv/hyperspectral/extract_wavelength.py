@@ -36,14 +36,15 @@ def extract_wavelength(spectral_data, wavelength):
 
     # Reshape
     index_array_raw = spectral_data.array_data[:, :, [band_index]]
-    index_array_reshape = np.transpose(np.transpose(index_array_raw)[0])
+    index_array_raw = np.transpose(np.transpose(index_array_raw)[0])
 
     # Resulting array is float 32 from -1 to 1, transform into uint8 for plotting
-    all_positive = np.add(index_array_reshape, np.ones(np.shape(index_array_reshape)))
+    all_positive = np.add(index_array_raw, np.ones(np.shape(index_array_raw)))
     normalized = all_positive.astype(np.float64) / 2  # normalize the data to 0 - 1
     index_array = (255 * normalized).astype(np.uint8)  # scale to 255
 
     # Plot out grayscale image
+
     if params.debug == "plot":
         plot_image(index_array)
     elif params.debug == "print":
@@ -51,7 +52,7 @@ def extract_wavelength(spectral_data, wavelength):
                     os.path.join(params.debug_outdir, str(params.device) + str(wavelength) + "_index.png"))
 
     # Make a spectral data instance
-    index_array = Spectral_data(array_data=index_array, max_wavelength=wavelength,
+    index_array = Spectral_data(array_data=index_array_raw, max_wavelength=wavelength,
                                 min_wavelength=wavelength, d_type=np.uint8,
                                 wavelength_dict={}, samples=spectral_data.samples,
                                 lines=spectral_data.lines, interleave=spectral_data.interleave,
