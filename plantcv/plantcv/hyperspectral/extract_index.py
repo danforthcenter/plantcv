@@ -7,6 +7,7 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import Spectral_data
+from plantcv.plantcv.transform import rescale
 from plantcv.plantcv.hyperspectral import _find_closest
 
 
@@ -44,6 +45,7 @@ def extract_index(array, index="NDVI", distance=20):
             red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 670)
             nir = (array_data[:, :, [nir_index]])
             red = (array_data[:, :, [red_index]])
+            # Naturally ranges from -1 to 1
             index_array_raw = (nir - red) / (nir + red)
         else:
             fatal_error("Available wavelengths are not suitable for calculating NDVI. Try increasing fudge factor.")
@@ -55,6 +57,7 @@ def extract_index(array, index="NDVI", distance=20):
             red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 680)
             nir = (array_data[:, :, [nir_index]])
             red = (array_data[:, :, [red_index]])
+            # Naturally ranges from -2 to 2
             index_array_raw = nir - red
         else:
             fatal_error("Available wavelengths are not suitable for calculating GDVI. Try increasing fudge factor.")
@@ -66,6 +69,7 @@ def extract_index(array, index="NDVI", distance=20):
             red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 680)
             nir = (array_data[:, :, [nir_index]])
             red = (array_data[:, :, [red_index]])
+            # Naturally ranges from -1.2 to 1.2
             index_array_raw = (1.5 * (nir - red)) / (red + nir + 0.5)
         else:
             fatal_error("Available wavelengths are not suitable for calculating SAVI. Try increasing fudge factor.")
@@ -76,22 +80,21 @@ def extract_index(array, index="NDVI", distance=20):
     # Reshape array into hyperspectral datacube shape
     index_array_raw = np.transpose(np.transpose(index_array_raw)[0])
 
-    # Resulting array is float 32 from -1 to 1, transform into uint8 for plotting
-    all_positive = np.add(index_array_raw, np.ones(np.shape(index_array_raw)))
-    data = all_positive.astype(np.float64) / 2  # normalize the data to 0 - 1
-    index_array = (255 * data).astype(np.uint8)  # scale to 255
+    # Resulting array is float 32 from varying natural ranges, transform into uint8 for plotting
+    all_positive = np.add(index_array_raw, 2 * np.ones(np.shape(index_array_raw)))
+    scaled = rescale(all_positive)
 
-    index_array = Spectral_data(array_data=index_array, max_wavelength=0,
+    index_array = Spectral_data(array_data=index_array_raw, max_wavelength=0,
                                 min_wavelength=0, d_type=np.uint8,
                                 wavelength_dict={}, samples=array.samples,
                                 lines=array.lines, interleave=array.interleave,
                                 wavelength_units=array.wavelength_units, array_type="index_" + index.lower(),
-                                pseudo_rgb=None, filename=array.filename, default_bands=None)
+                                pseudo_rgb=scaled, filename=array.filename, default_bands=None)
 
     if params.debug == "plot":
-        plot_image(index_array.array_data)
+        plot_image(index_array.pseudo_rgb)
     elif params.debug == "print":
-        print_image(index_array.array_data,
+        print_image(index_array.pseudo_rgb,
                     os.path.join(params.debug_outdir, str(params.device) + index + "_index.png"))
 
     return index_array
