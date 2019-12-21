@@ -355,7 +355,7 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
     spacing        = Two-element tuple of the horizontal and vertical spacing between chip masks.
     nrows          = Number of chip rows.
     ncols          = Number of chip columns.
-    exclude        = Optional list of chips to exclude. List in largest to smallest index (e.g. [20, 0])
+    exclude        = Optional list of chips to exclude.
 
     Returns:
     mask           = Labeled mask of chips
@@ -389,6 +389,8 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
             x = start_coord[0] + j * spacing[0]
             # Create a chip ROI
             chips.append(circle(img=rgb_img, x=x, y=y, r=radius))
+    # Sort excluded chips from largest to smallest
+    exclude.sort(reverse=True)
     # Remove any excluded chips
     for chip in exclude:
         del chips[chip]
