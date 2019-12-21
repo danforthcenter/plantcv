@@ -1,5 +1,11 @@
 __all__ = ["metadata_parser", "job_builder", "process_results", "multiprocess", "check_date_range"]
 
+
+class Config:
+    def __init__(self):
+        pass
+
+
 from plantcv.parallel.parsers import metadata_parser
 from plantcv.parallel.parsers import check_date_range
 from plantcv.parallel.job_builder import job_builder
