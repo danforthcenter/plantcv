@@ -76,6 +76,7 @@ nav:
         - 'Analyze spectral': analyze_spectral.md
         - 'Calibrate': calibrate.md
         - 'Extract index': extract_index.md
+        - 'Extract wavelength': extract_wavelength.md
     - 'Image Add': image_add.md
     - 'Image Subtract': image_subtract.md
     - 'Invert': invert.md

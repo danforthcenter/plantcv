@@ -59,6 +59,17 @@ import numpy as np
 
 img_copy = np.copy(img)
 
+# The result file should exist if plantcv-workflow.py was run
+if os.path.exists(args.result):
+    # Open the result file
+    results = open(args.result, "r")
+    # The result file would have image metadata in it from plantcv-workflow.py, read it into memory
+    metadata = results.read()
+    # Close the file
+    results.close()
+    # Delete the file, we will create new ones
+    os.remove(args.result)
+
 for i in range(0, len(rois1)):
     roi = rois1[i]
     hierarchy = roi_hierarchy1[i]
@@ -74,11 +85,14 @@ for i in range(0, len(rois1)):
     analysis_images = pcv.analyze_object(img=img_copy, obj=plant_contour, mask=plant_mask)
     
     # Save the image with shape characteristics 
-    img_copy = analysis_images[0]
+    img_copy = analysis_images
     
     # Print out a text file with shape data for each plant in the image 
-    pcv.print_results(filename = 'prefix_' + str(i) + '.txt')
-    # Clear the measurements stored globally into the Ouptuts class
+    filename = args.result[:-4] + "_" + str(i) + ".txt" 
+    with open(filename, "w") as r:
+        r.write(metadata)
+    pcv.print_results(filename=filename)
+    # Clear the measurements stored globally into the Outputs class
     pcv.outputs.clear()
     
 # Plot out the image with shape analysis on each plant in the image 

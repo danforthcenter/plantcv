@@ -57,6 +57,7 @@ def analyze_spectral(array, mask, histplot=True):
     max_reflectance = np.amax(wavelength_data)
     min_reflectance = np.amin(wavelength_data)
     avg_reflectance = np.average(wavelength_data)
+    std_reflectance = np.std(wavelength_data)
     median_reflectance = np.median(wavelength_data)
 
     wavelength_labels = []
@@ -76,6 +77,9 @@ def analyze_spectral(array, mask, histplot=True):
     outputs.add_observation(variable='median_reflectance', trait='median_reflectance',
                             method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='reflectance', datatype=float,
                             value=float(median_reflectance), label='reflectance')
+    outputs.add_observation(variable='spectral_std', trait='pixel-wise standard deviation ',
+                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='None', datatype=float,
+                            value=std_reflectance, label='reflectance')
     outputs.add_observation(variable='spectral_frequencies', trait='spectral frequencies',
                             method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='frequency', datatype=list,
                             value=new_freq, label=wavelength_labels)

@@ -99,7 +99,7 @@ outputs = Outputs()
 class Spectral_data:
     # PlantCV Hyperspectral data class
     def __init__(self, array_data, max_wavelength, min_wavelength, d_type, wavelength_dict, samples, lines, interleave,
-                 wavelength_units, array_type, pseudo_rgb, filename):
+                 wavelength_units, array_type, pseudo_rgb, filename, default_bands):
         # The actual array/datacube
         self.array_data = array_data
         self.max_wavelength = max_wavelength
@@ -120,11 +120,13 @@ class Spectral_data:
         self.pseudo_rgb = pseudo_rgb
         # The filename where the data originated from
         self.filename = filename
+        # The default band indices needed to make an pseudo_rgb image, if not available then store None
+        self.default_bands = default_bands
 
 # Example
 # spectral_array = Spectral_data(max_wavelength=1000.95, min_wavelength=379.027, d_type=numpy.float32,
 #                           wavelength_dict=dictionary, samples=1600, lines=1704, interleave='bil',
-#                           wavelength_units='nm', array_type="datacube", filename=filename)
+#                           wavelength_units='nm', array_type="datacube", filename=fname, default_bands={159,253,520})
 
 
 from plantcv.plantcv.fatal_error import fatal_error
@@ -201,6 +203,7 @@ from plantcv.plantcv import visualize
 from plantcv.plantcv import morphology
 from plantcv.plantcv.fill_holes import fill_holes
 from plantcv.plantcv.get_kernel import get_kernel
+from plantcv.plantcv.crop import crop
 
 # add new functions to end of lists
 
@@ -217,7 +220,7 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'apply_m
            'cluster_contour_splitimg', 'rotate', 'shift_img', 'output_mask', 'auto_crop', 'canny_edge_detect',
            'background_subtraction', 'naive_bayes_classifier', 'acute', 'distance_transform', 'params',
            'cluster_contour_mask','analyze_thermal_values', 'opening',
-           'closing','within_frame', 'fill_holes', 'get_kernel', 'Spectral_data']
+           'closing','within_frame', 'fill_holes', 'get_kernel', 'Spectral_data', 'crop']
 
 from ._version import get_versions
 __version__ = get_versions()['version']
