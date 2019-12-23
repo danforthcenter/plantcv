@@ -189,6 +189,36 @@ def setup_function():
 # Tests for the parallel subpackage
 # ##############################
 
+def test_plantcv_parallel_create_config():
+    config = plantcv.parallel.Config(input_dir=os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR),
+                                     json="test.json", output_dir=os.path.join(TEST_TMPDIR),
+                                     filename_metadata=["imgtype", "camera", "frame", "zoom", "lifter", "gain",
+                                                        "exposure", "id"])
+    assert config.metadata_structure == META_FIELDS
+
+
+def test_plantcv_parallel_create_config_invalid_input_dir():
+    with pytest.raises(IOError):
+        plantcv.parallel.Config(input_dir="invalid_dir", json="test.json", output_dir=os.path.join(TEST_TMPDIR),
+                                filename_metadata=["imgtype", "camera", "frame", "zoom", "lifter", "gain",
+                                                   "exposure", "id"])
+
+
+def test_plantcv_parallel_create_config_create_output_dir():
+    config = plantcv.parallel.Config(input_dir=os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR),
+                                     json="test.json", output_dir=os.path.join(TEST_TMPDIR, "parallel_output"),
+                                     filename_metadata=["imgtype", "camera", "frame", "zoom", "lifter", "gain",
+                                                        "exposure", "id"])
+    assert os.path.exists(os.path.join(TEST_TMPDIR, "parallel_output"))
+
+
+def test_plantcv_parallel_create_config_invalid_metadata_terms():
+    with pytest.raises(ValueError):
+        plantcv.parallel.Config(input_dir=os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR),
+                                json="test.json", output_dir=os.path.join(TEST_TMPDIR),
+                                filename_metadata=["imgtype", "cam", "frame", "zoom", "lifter", "gain",
+                                                   "exposure", "id"])
+
 
 def test_plantcv_parallel_metadata_parser_snapshots():
     data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
