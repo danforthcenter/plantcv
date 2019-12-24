@@ -1,18 +1,21 @@
 import os
+import tempfile
 
 __all__ = ["metadata_parser", "job_builder", "process_results", "multiprocess", "check_date_range", "Config"]
 
 
 class Config:
-    def __init__(self, input_dir, json, filename_metadata, output_dir=".", processes=1, start_date=1, end_date=None,
-                 imgformat="png", delimiter="_", metadata_filters=None, timestampformat='%Y-%m-%d %H:%M:%S.%f',
-                 writeimg=False, other_args=None):
+    def __init__(self, input_dir, json, filename_metadata, output_dir=".", tmp_dir=None, processes=1, start_date=1,
+                 end_date=None, imgformat="png", delimiter="_", metadata_filters=None,
+                 timestampformat='%Y-%m-%d %H:%M:%S.%f', writeimg=False, other_args=None):
         # Validate input directory
         if not os.path.exists(input_dir):
             raise IOError("Input directory {0} does not exist!".format(input_dir))
         # Validate output directory or create it
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
+        # Create tmp directory
+        tmpdir = tempfile.mkdtemp(dir=tmp_dir)
         # Metadata terms dictionary
         metadata_terms = {
             # Camera settings
@@ -105,6 +108,7 @@ class Config:
         self.json = json
         self.filename_metadata = filename_metadata
         self.outdir = output_dir
+        self.tmp_dir = tmpdir
         self.processes = processes
         self.start_date = start_date
         self.end_date = end_date
