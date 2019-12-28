@@ -17,5 +17,5 @@ The job builder step in [PlantCV Workflow Parallelization](pipeline_parallel.md)
     - writeimg - Boolean that specifies whether output images should be created or not (default: False) 
 - **Context:**
     - This step is built into the [PlantCV Workflow Parallelization](pipeline_parallel.md) feature. It builds a list of image processing 
-    jobs which is the input for the [multiprocess](multiprocess.md) step in workflow parallelization. 
+    jobs which is the input for the [multiprocess](parallel_multiprocess.md) step in workflow parallelization. 
 

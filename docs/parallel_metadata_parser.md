@@ -20,4 +20,4 @@ Reads metadata the from the input data directory.
     - coprocess - Coprocess the specified imgtype with the imgtype specified in meta_filters (default: None) 
 - **Context:**
     - This is one of the first steps built into the [PlantCV Workflow Parallelization](pipeline_parallel.md) feature. 
-    It reads metadata the from the input data directory and uses the outputs in the [job builder](job_builder.md) step. 
+    It reads metadata the from the input data directory and uses the outputs in the [job builder](parallel_job_builder.md) step. 
