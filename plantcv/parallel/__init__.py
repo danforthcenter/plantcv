@@ -104,10 +104,10 @@ class Config:
             metadata_structure[field] = i
 
         # Create class methods
-        self.data_dir = input_dir
+        self.input_dir = input_dir
         self.json = json
         self.filename_metadata = filename_metadata
-        self.outdir = output_dir
+        self.output_dir = output_dir
         self.tmp_dir = tmpdir
         self.processes = processes
         self.start_date = start_date
