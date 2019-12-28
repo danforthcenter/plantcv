@@ -7,7 +7,7 @@ __all__ = ["metadata_parser", "job_builder", "process_results", "multiprocess", 
 class Config:
     def __init__(self, input_dir, json, filename_metadata, output_dir=".", tmp_dir=None, processes=1, start_date=1,
                  end_date=None, imgformat="png", delimiter="_", metadata_filters=None,
-                 timestampformat='%Y-%m-%d %H:%M:%S.%f', writeimg=False, other_args=None):
+                 timestampformat='%Y-%m-%d %H:%M:%S.%f', writeimg=False, other_args=None, coprocess=None):
         # Validate input directory
         if not os.path.exists(input_dir):
             raise IOError("Input directory {0} does not exist!".format(input_dir))
@@ -120,6 +120,7 @@ class Config:
         self.other_args = other_args
         self.metadata_terms = metadata_terms
         self.metadata_structure = metadata_structure
+        self.coprocess = coprocess
 
 
 from plantcv.parallel import Config
