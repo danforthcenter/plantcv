@@ -780,3 +780,8 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, left, right, center_h = **plantcv.y_axis_pseudolandmarks**(*obj, mask, img, device, debug=None*)
 * post v3.0dev2: left, right, center_h = **plantcv.y_axis_pseudolandmarks**(*obj, mask, img*)
 * post v3.2: left, right, center_h = **plantcv.y_axis_pseudolandmarks**(*img, obj, mask*)
+
+#### plantcv.parallel.metadata_parser
+
+* pre v3.8: jobcount, meta = **plantcv.parallel.metadata_parser**(*data_dir, meta_fields, valid_meta, meta_filters, date_format, start_date, end_date, error_log, delimiter="_", file_type="png", coprocess=None*)
+* post v3.8: jobcount, meta = **plantcv.parallel.metadata_parser**(*data_dir, meta_fields, valid_meta, meta_filters, date_format, start_date, end_date, delimiter="_", file_type="png", coprocess=None*)

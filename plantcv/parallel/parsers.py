@@ -1,12 +1,13 @@
 import os
 import re
+import sys
 import datetime
-from dateutil.parser import parse as dt_parser
+
 
 # Parse metadata from filenames in a directory
 ###########################################
 def metadata_parser(data_dir, meta_fields, valid_meta, meta_filters, date_format, 
-                    start_date, end_date, error_log, delimiter="_", file_type="png", coprocess=None):
+                    start_date, end_date, delimiter="_", file_type="png", coprocess=None):
     """Reads metadata the input data directory.
 
     Args:
@@ -17,7 +18,6 @@ def metadata_parser(data_dir, meta_fields, valid_meta, meta_filters, date_format
         date_format:  Date format code for timestamp metadata to use with strptime
         start_date:   Analysis start date in Unix time.
         end_date:     Analysis end date in Unix time.
-        error_log:    Error log filehandle object.
         delimiter:    Filename metadata delimiter string or regular expression pattern.
         file_type:    Image filetype extension (e.g. png).
         coprocess:    Coprocess the specified imgtype with the imgtype specified in meta_filters.
@@ -33,7 +33,6 @@ def metadata_parser(data_dir, meta_fields, valid_meta, meta_filters, date_format
     :param date_format: str
     :param start_date: int
     :param end_date: int
-    :param error_log: obj
     :param delimiter: str
     :param file_type: str
     :param coprocess: str
@@ -82,7 +81,8 @@ def metadata_parser(data_dir, meta_fields, valid_meta, meta_filters, date_format
                     dirpath = os.path.join(data_dir, 'snapshot' + data[colnames['id']])
                     filename = img + '.' + file_type
                     if not os.path.exists(os.path.join(dirpath, filename)):
-                        error_log.write("Something is wrong, file {0}/{1} does not exist".format(dirpath, filename))
+                        print("Something is wrong, file {0}/{1} does not exist".format(dirpath, filename),
+                              file=sys.stderr)
                         continue
                         # raise IOError("Something is wrong, file {0}/{1} does not exist".format(dirpath, filename))
                     # Metadata from image file name
@@ -155,9 +155,7 @@ def metadata_parser(data_dir, meta_fields, valid_meta, meta_filters, date_format
                                                     img_meta['coimg'] = coimg + '.' + file_type
                                                     coimg_pass = 1
                                 if coimg_pass == 0:
-                                    error_log.write(
-                                        "Could not find an image to coprocess with " + os.path.join(dirpath,
-                                                                                                    filename) + '\n')
+                                    print("Could not find an image to coprocess with {0}".format(os.path.join(dirpath, filename)), file=sys.stderr)
                             meta[filename] = img_meta
                         elif coimg_store == 1:
                             meta[filename] = img_meta
