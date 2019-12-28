@@ -27,98 +27,14 @@ def options():
     start_time = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     print("Starting run " + start_time + '\n', file=sys.stderr)
 
-    # These are metadata types that PlantCV deals with.
-    # Values are default values in the event the metadata is missing
-    valid_meta = {
-        # Camera settings
-        "camera": {
-            "label": "camera identifier",
-            "datatype": "<class 'str'>",
-            "value": "none"
-        },
-        "imgtype": {
-            "label": "image type",
-            "datatype": "<class 'str'>",
-            "value": "none"
-        },
-        "zoom": {
-            "label": "camera zoom setting",
-            "datatype": "<class 'str'>",
-            "value": "none"
-        },
-        "exposure": {
-            "label": "camera exposure setting",
-            "datatype": "<class 'str'>",
-            "value": "none"
-        },
-        "gain": {
-            "label": "camera gain setting",
-            "datatype": "<class 'str'>",
-            "value": "none"
-        },
-        "frame": {
-            "label": "image series frame identifier",
-            "datatype": "<class 'str'>",
-            "value": "none"
-        },
-        "lifter": {
-            "label": "imaging platform height setting",
-            "datatype": "<class 'str'>",
-            "value": "none"
-        },
-        # Date-Time
-        "timestamp": {
-            "label": "datetime of image",
-            "datatype": "<class 'datetime.datetime'>",
-            "value": None
-        },
-        # Sample attributes
-        "id": {
-            "label": "image identifier",
-            "datatype": "<class 'str'>",
-            "value": "none"
-        },
-        "plantbarcode": {
-            "label": "plant barcode identifier",
-            "datatype": "<class 'str'>",
-            "value": "none"
-        },
-        "treatment": {
-            "label": "treatment identifier",
-            "datatype": "<class 'str'>",
-            "value": "none"
-        },
-        "cartag": {
-            "label": "plant carrier identifier",
-            "datatype": "<class 'str'>",
-            "value": "none"
-        },
-        # Experiment attributes
-        "measurementlabel": {
-            "label": "experiment identifier",
-            "datatype": "<class 'str'>",
-            "value": "none"
-        },
-        # Other
-        "other": {
-            "label": "other identifier",
-            "datatype": "<class 'str'>",
-            "value": "none"
-        }
-    }
     parser = argparse.ArgumentParser(description='Parallel imaging processing with PlantCV.',
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("-d", "--dir", help='Input directory containing images or snapshots.', required=True)
-    parser.add_argument("-a", "--adaptor",
-                        help='Image metadata reader adaptor. PhenoFront metadata is stored in a CSV file and the '
-                             'image file name. For the filename option, all metadata is stored in the image file '
-                             'name. Current adaptors: phenofront, filename', default="phenofront")
     parser.add_argument("-p", "--workflow", help='Workflow script file.', required=True)
     parser.add_argument("-j", "--json", help='Output database file name.', required=True)
     parser.add_argument("-f", "--meta",
                         help='Image filename metadata structure. Comma-separated list of valid metadata terms. '
-                             'Valid metadata fields are: ' +
-                             ', '.join(map(str, list(valid_meta.keys()))), required=True)
+                             'Valid metadata fields are listed in the documentation.', required=True)
     parser.add_argument("-i", "--outdir", help='Output directory for images. Not required by all workflows.',
                         default=".")
     parser.add_argument("-T", "--cpu", help='Number of CPU processes to use.', default=1, type=int)
@@ -155,27 +71,6 @@ def options():
     parser.add_argument("-o", "--other_args", help='Other arguments to pass to the workflow script.', required=False)
     args = parser.parse_args()
 
-    if not os.path.exists(args.dir):
-        raise IOError("Directory does not exist: {0}".format(args.dir))
-    if not os.path.exists(args.workflow):
-        raise IOError("File does not exist: {0}".format(args.workflow))
-    if args.adaptor != 'phenofront' and args.adaptor != 'filename':
-        raise ValueError("Adaptor must be either phenofront or filename")
-    if args.adaptor == 'phenofront':
-        if not os.path.exists(os.path.join(args.dir, 'SnapshotInfo.csv')):
-            raise IOError(
-                'The snapshot metadata file SnapshotInfo.csv does not exist in {0}. '
-                'Perhaps you meant to use a different adaptor?'.format(
-                    args.dir))
-    if not os.path.exists(args.outdir):
-        raise IOError("Directory does not exist: {0}".format(args.outdir))
-
-    args.jobdir = start_time
-    try:
-        os.makedirs(args.jobdir)
-    except IOError as e:
-        raise IOError("{0}: {1}".format(e.strerror, args.jobdir))
-
     if args.dates:
         dates = args.dates.split('_')
         if len(dates) == 1:
@@ -192,22 +87,11 @@ def options():
         args.start_date = 1
         args.end_date = None
 
-    args.valid_meta = valid_meta
     args.start_time = start_time
 
-    # Image filename metadata structure
-    fields = args.meta.split(",")
-    # Keep track of the number of metadata fields matching filenames should have
-    args.meta_count = len(fields)
-    structure = {}
-    for i, field in enumerate(fields):
-        structure[field] = i
-    args.fields = structure
-
-    # Are the user-defined metadata valid?
-    for field in args.fields:
-        if field not in args.valid_meta:
-            raise ValueError("The field {0} is not a currently supported metadata type.".format(field))
+    # Recreate JSON file if flag is on
+    if os.path.exists(args.json) and args.create:
+        os.remove(args.json)
 
     # Metadata restrictions
     args.imgtype = {}
@@ -217,16 +101,17 @@ def options():
             key, value = pair.split(':')
             args.imgtype[key] = value
     else:
-        args.imgtype['None'] = None
+        args.imgtype = None
 
-    if (args.coprocess is not None) and ('imgtype' not in args.imgtype):
-        raise ValueError("When the coprocess imgtype is defined, imgtype must be included in match.")
+    config = pcvp.Config(input_dir=args.dir, json=args.json, filename_metadata=args.meta.split(","),
+                         output_dir=args.outdir, processes=args.cpu, start_date=args.start_date, end_date=args.end_date,
+                         imgformat=args.type, delimiter=args.delimiter, metadata_filters=args.imgtype,
+                         timestampformat=args.timestampformat, writeimg=args.writeimg, other_args=args.other_args)
 
-    # Recreate JSON file if flag is on
-    if os.path.exists(args.json) and args.create:
-        os.remove(args.json)
+    if not os.path.exists(args.workflow):
+        raise IOError("File does not exist: {0}".format(args.workflow))
 
-    return args
+    return config, args.workflow
 
 
 ###########################################
@@ -245,35 +130,13 @@ def main():
     """
 
     # Get options
-    args = options()
-
-    # Variables
-    ###########################################
-    # Database upload file name prefix
-    # Use user inputs to make filenames
-    prefix = 'plantcv'
-    # check if there are meta_fields to filter dataset by
-    if next(iter(args.imgtype)) != 'None':
-        kv_list = []
-        for key in args.imgtype:
-            kv_list.append(key + str(args.imgtype[key]))
-        prefix = prefix + '_' + '_'.join(map(str, kv_list))
-    if args.dates:
-        prefix = prefix + '_' + args.dates
-    ###########################################
-
-    # Open log files
-    error_log = open(prefix + '_errors_' + args.start_time + '.log', 'w')
-
-    # Run info
-    ###########################################
+    config, workflow = options()
 
     # Read image file names
     ###########################################
-    jobcount, meta = pcvp.metadata_parser(data_dir=args.dir, meta_fields=args.fields, valid_meta=args.valid_meta,
-                                          meta_filters=args.imgtype, date_format=args.timestampformat, start_date=args.start_date, end_date=args.end_date,
-                                          error_log=error_log, delimiter=args.delimiter, file_type=args.type,
-                                          coprocess=args.coprocess)
+    jobcount, meta = pcvp.metadata_parser(data_dir=config.input_dir, meta_fields=config.metadata_structure, valid_meta=config.metadata_terms,
+                                          meta_filters=config.metadata_filters, date_format=config.timestampformat, start_date=config.start_date, end_date=config.end_date,
+                                          delimiter=config.delimiter, file_type=config.imgformat, coprocess=config.coprocess)
     ###########################################
 
     # Process images
@@ -281,9 +144,9 @@ def main():
     # Job builder start time
     job_builder_start_time = time.time()
     print("Building job list... ", file=sys.stderr)
-    jobs = pcvp.job_builder(meta=meta, valid_meta=args.valid_meta, workflow=args.workflow, job_dir=args.jobdir,
-                            out_dir=args.outdir, coprocess=args.coprocess, other_args=args.other_args,
-                            writeimg=args.writeimg)
+    jobs = pcvp.job_builder(meta=meta, valid_meta=config.metadata_terms, workflow=workflow, job_dir=config.tmp_dir,
+                            out_dir=config.output_dir, coprocess=config.coprocess, other_args=config.other_args,
+                            writeimg=config.writeimg)
     # Job builder clock time
     job_builder_clock_time = time.time() - job_builder_start_time
     print("took " + str(job_builder_clock_time) + '\n', file=sys.stderr)
@@ -292,7 +155,7 @@ def main():
     multi_start_time = time.time()
     print("Processing images... ", file=sys.stderr)
 
-    pcvp.multiprocess(jobs, args.cpu)
+    pcvp.multiprocess(jobs, config.processes)
 
     # Parallel clock time
     multi_clock_time = time.time() - multi_start_time
@@ -304,19 +167,14 @@ def main():
     # Process results start time
     process_results_start_time = time.time()
     print("Processing results... ", file=sys.stderr)
-    pcvp.process_results(job_dir=args.jobdir, json_file=args.json)
+    pcvp.process_results(job_dir=config.tmp_dir, json_file=config.json)
     # Process results clock time
     process_results_clock_time = time.time() - process_results_start_time
     print("took " + str(process_results_clock_time) + '\n', file=sys.stderr)
     ###########################################
 
-    # Cleanup
-    ###########################################
-    error_log.close()
-    ###########################################
-
-
 ###########################################
+
 
 if __name__ == '__main__':
     __spec__ = None
