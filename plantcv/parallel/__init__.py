@@ -1,7 +1,8 @@
 import os
 import tempfile
 
-__all__ = ["metadata_parser", "job_builder", "process_results", "multiprocess", "check_date_range", "Config"]
+__all__ = ["metadata_parser", "job_builder", "process_results", "multiprocess", "check_date_range", "Config",
+           "run_workflow"]
 
 
 class Config:
@@ -129,3 +130,4 @@ from plantcv.parallel.parsers import check_date_range
 from plantcv.parallel.job_builder import job_builder
 from plantcv.parallel.process_results import process_results
 from plantcv.parallel.multiprocess import multiprocess
+from plantcv.parallel.run_workflow import run_workflow

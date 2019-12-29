@@ -2,7 +2,6 @@
 import os
 import sys
 import argparse
-import time
 import datetime
 import plantcv.parallel as pcvp
 
@@ -62,8 +61,7 @@ def options():
     parser.add_argument("-s", "--timestampformat", 
                         help='a date format code compatible with strptime C library, '
                              'e.g. "%%Y-%%m-%%d %%H_%%M_%%S", except "%%" symbols must be escaped on Windows with "%%" '
-                             'e.g. "%%%%Y-%%%%m-%%%%d %%%%H_%%%%M_%%%%S"'
-                             'default format code is "%%Y-%%m-%%d %%H:%%M:%%S.%%f"',
+                             'e.g. "%%%%Y-%%%%m-%%%%d %%%%H_%%%%M_%%%%S"',
                         required=False,
                         default='%Y-%m-%d %H:%M:%S.%f')
     parser.add_argument("-w", "--writeimg", help='Include analysis images in output.', default=False,
@@ -131,47 +129,7 @@ def main():
 
     # Get options
     config, workflow = options()
-
-    # Read image file names
-    ###########################################
-    jobcount, meta = pcvp.metadata_parser(data_dir=config.input_dir, meta_fields=config.metadata_structure, valid_meta=config.metadata_terms,
-                                          meta_filters=config.metadata_filters, date_format=config.timestampformat, start_date=config.start_date, end_date=config.end_date,
-                                          delimiter=config.delimiter, file_type=config.imgformat, coprocess=config.coprocess)
-    ###########################################
-
-    # Process images
-    ###########################################
-    # Job builder start time
-    job_builder_start_time = time.time()
-    print("Building job list... ", file=sys.stderr)
-    jobs = pcvp.job_builder(meta=meta, valid_meta=config.metadata_terms, workflow=workflow, job_dir=config.tmp_dir,
-                            out_dir=config.output_dir, coprocess=config.coprocess, other_args=config.other_args,
-                            writeimg=config.writeimg)
-    # Job builder clock time
-    job_builder_clock_time = time.time() - job_builder_start_time
-    print("took " + str(job_builder_clock_time) + '\n', file=sys.stderr)
-
-    # Parallel image processing time
-    multi_start_time = time.time()
-    print("Processing images... ", file=sys.stderr)
-
-    pcvp.multiprocess(jobs, config.processes)
-
-    # Parallel clock time
-    multi_clock_time = time.time() - multi_start_time
-    print("took " + str(multi_clock_time) + '\n', file=sys.stderr)
-    ###########################################
-
-    # Compile image analysis results
-    ###########################################
-    # Process results start time
-    process_results_start_time = time.time()
-    print("Processing results... ", file=sys.stderr)
-    pcvp.process_results(job_dir=config.tmp_dir, json_file=config.json)
-    # Process results clock time
-    process_results_clock_time = time.time() - process_results_start_time
-    print("took " + str(process_results_clock_time) + '\n', file=sys.stderr)
-    ###########################################
+    pcvp.run_workflow(config=config, workflow=workflow)
 
 ###########################################
 
