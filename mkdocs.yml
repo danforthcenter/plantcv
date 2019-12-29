@@ -151,6 +151,8 @@ nav:
     - 'Naive Bayes': naive_bayes.md
     - 'Naive Bayes Multiclass': naive_bayes_multiclass.md
   - 'Package plantcv.parallel':
+      - 'Configure Parallelization': parallel_config.md
+      - 'Run Workflows': parallel_run_workflow.md
       - 'Job Builder': parallel_job_builder.md
       - 'Metadata Parser': parallel_metadata_parser.md
       - 'Multiprocess': parallel_mutliprocess.md
