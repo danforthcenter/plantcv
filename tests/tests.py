@@ -565,6 +565,22 @@ def test_plantcv_parallel_process_results_invalid_json():
                                          json_file=os.path.join(cache_dir, "bad_results", "invalid.txt"))
 
 
+def test_plantcv_parallel_run_workflow():
+    # Create a test tmp directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_run_workflow")
+    os.mkdir(cache_dir)
+    data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR)
+    result_file = os.path.join(cache_dir, "results.json")
+    config = plantcv.parallel.Config(input_dir=data_dir, json=result_file, filename_metadata=META_FIELDS,
+                                     output_dir=cache_dir, tmp_dir=cache_dir, start_date=1413936000,
+                                     end_date=1414022400, metadata_filters={"imgtype": "VIS"}, timestampformat='%Y',
+                                     imgformat="jpg")
+    plantcv.parallel.run_workflow(config=config, workflow=TEST_PIPELINE)
+    with open(result_file, "r") as f:
+        results = json.load(f)
+        assert results["entities"][0]["observations"]["area"]["value"] == 1000
+
+
 # ####################################################################################################################
 # ########################################### PLANTCV MAIN PACKAGE ###################################################
 matplotlib.use('Template', warn=False)
