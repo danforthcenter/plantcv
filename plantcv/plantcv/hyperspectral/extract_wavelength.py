@@ -44,7 +44,6 @@ def extract_wavelength(spectral_data, wavelength):
     index_array = (255 * normalized).astype(np.uint8)  # scale to 255
 
     # Plot out grayscale image
-
     if params.debug == "plot":
         plot_image(index_array)
     elif params.debug == "print":
