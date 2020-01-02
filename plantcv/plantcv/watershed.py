@@ -38,10 +38,7 @@ def watershed_segmentation(rgb_img, mask, distance=10):
     # Store debug mode
     debug = params.debug
     params.debug = None
-    # # Will be depricating opencv version 2
-    # if cv2.__version__[0] == '2':
-    #     dist_transform = cv2.distanceTransform(mask, cv2.cv.CV_DIST_L2, maskSize=0)
-    # else:
+
     dist_transform = cv2.distanceTransformWithLabels(mask, cv2.DIST_L2, maskSize=0)[0]
 
     localMax = peak_local_max(dist_transform, indices=False, min_distance=distance, labels=mask)
