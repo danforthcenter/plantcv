@@ -85,6 +85,8 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
             marker_contour, marker_mask = object_composition(img=ref_img, contours=kept_contours,
                                                              hierarchy=kept_hierarchy)
         else:
+            # Reset debug mode
+            params.debug = debug
             fatal_error('thresh_channel and thresh must be defined in detect mode')
     elif marker.upper() == "DEFINE":
         # Identify contours in the masked image
@@ -93,6 +95,8 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
         # These become the marker contour and mask
         marker_contour, marker_mask = object_composition(img=ref_img, contours=contours, hierarchy=hierarchy)
     else:
+        # Reset debug mode
+        params.debug = debug
         fatal_error("marker must be either 'define' or 'detect' but {0} was provided.".format(marker))
 
     # Calculate the moments of the defined marker region

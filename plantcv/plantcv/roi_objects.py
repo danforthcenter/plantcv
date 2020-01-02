@@ -134,6 +134,8 @@ def roi_objects(img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, 
         cv2.drawContours(ori_img, roi_contour, -1, (255, 0, 0), params.line_thickness, lineType=8,
                          hierarchy=roi_hierarchy)
     else:
+        # Reset debug mode
+        params.debug = debug
         fatal_error('ROI Type ' + str(roi_type) + ' is not "cutto", "largest", or "partial"!')
 
     # Reset debug mode
