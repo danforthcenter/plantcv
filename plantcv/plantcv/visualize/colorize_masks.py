@@ -57,6 +57,7 @@ def colorize_masks(masks, colors):
             fatal_error("All elements of the 'colors' list must be either str or tuple")
         colored_img = colored_img + mask
 
+    params.device += 1
 
     if params.debug == 'print':
         print_image(colored_img, os.path.join(params.debug_outdir, str(params.device) + '_classes_plot.png'))
