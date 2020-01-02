@@ -31,13 +31,14 @@ def segment_curvature(segmented_img, objects):
         :return labeled_img: numpy.ndarray
 
         """
-    # Store debug
-    debug = params.debug
-    params.debug = None
 
     label_coord_x = []
     label_coord_y = []
     labeled_img = segmented_img.copy()
+
+    # Store debug
+    debug = params.debug
+    params.debug = None
 
     _ = segment_euclidean_length(segmented_img, objects)
     _ = segment_path_length(segmented_img, objects)
@@ -68,6 +69,9 @@ def segment_curvature(segmented_img, objects):
         cv2.line(labeled_img, points[0], points[1], rand_color[i], 1)
 
     segment_ids = []
+    # Reset debug mode
+    params.debug = debug
+
     for i, cnt in enumerate(objects):
         # Calculate geodesic distance
         text = "{:.3f}".format(curvature_measure[i])
@@ -82,8 +86,6 @@ def segment_curvature(segmented_img, objects):
                             method='plantcv.plantcv.morphology.segment_curvature', scale='none', datatype=list,
                             value=curvature_measure, label=segment_ids)
 
-    # Reset debug mode
-    params.debug = debug
     # Auto-increment device
     params.device += 1
 

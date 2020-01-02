@@ -85,7 +85,7 @@ def prune(skel_img, size=0, mask=None):
     pruned_obj, pruned_hierarchy = find_objects(pruned_img, pruned_img)
     cv2.drawContours(pruned_plot, removed_segments, -1, (0, 0, 255), params.line_thickness, lineType=8)
     cv2.drawContours(pruned_plot, pruned_obj, -1, (150, 150, 150), params.line_thickness, lineType=8)
-    
+
     # Auto-increment device
     params.device += 1
 

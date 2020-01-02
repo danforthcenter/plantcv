@@ -105,6 +105,9 @@ def segment_tangent_angle(segmented_img, objects, size):
         label_coord_y.append(objects[i][0][0][1])
 
     segment_ids = []
+    # Reset debug mode
+    params.debug = debug
+
     for i, cnt in enumerate(objects):
         # Label slope lines
         w = label_coord_x[i]
@@ -122,8 +125,6 @@ def segment_tangent_angle(segmented_img, objects, size):
                             method='plantcv.plantcv.morphology.segment_tangent_angle', scale='degrees', datatype=list,
                             value=intersection_angles, label=segment_ids)
 
-    # Reset debug mode
-    params.debug = debug
     # Auto-increment device
     params.device += 1
 
