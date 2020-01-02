@@ -1757,7 +1757,7 @@ def test_plantcv_fluor_fvfm():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_fluor_fvfm")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    filename = os.path.join(cache_dir, 'plantcv_fvfm_hist.jpg')
+    filename = os.path.join(cache_dir, 'plantcv_fvfm_hist.png')
     # Read in test data
     fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK), -1)
     fmin = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
@@ -4750,7 +4750,7 @@ def test_plantcv_visualize_pseudocolor():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
     obj_contour = contours_npz['arr_0']
-    filename = os.path.join(cache_dir, 'plantcv_pseudo_image.jpg')
+    filename = os.path.join(cache_dir, 'plantcv_pseudo_image.png')
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.visualize.pseudocolor(gray_img=img, mask=None)
