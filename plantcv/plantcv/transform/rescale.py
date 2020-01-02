@@ -29,7 +29,7 @@ def rescale(gray_img, min_value=0, max_value=255):
 
     rescaled_img = np.interp(gray_img, (gray_img.min(), gray_img.max()), (min_value, max_value))
     rescaled_img = (rescaled_img).astype('uint8')
-    
+
     # Autoincrement the device counter
     params.device += 1
 
