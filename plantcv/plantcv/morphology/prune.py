@@ -73,6 +73,9 @@ def prune(skel_img, size=0, mask=None):
         pruned_img = image_subtract(pruned_img, removed_barbs)
         pruned_img = _iterative_prune(pruned_img, 1)
 
+    # Reset debug mode
+    params.debug = debug
+
     # Make debugging image
     if mask is None:
         pruned_plot = np.zeros(skel_img.shape[:2], np.uint8)
@@ -82,10 +85,8 @@ def prune(skel_img, size=0, mask=None):
     pruned_obj, pruned_hierarchy = find_objects(pruned_img, pruned_img)
     cv2.drawContours(pruned_plot, removed_segments, -1, (0, 0, 255), params.line_thickness, lineType=8)
     cv2.drawContours(pruned_plot, pruned_obj, -1, (150, 150, 150), params.line_thickness, lineType=8)
-
-    # Reset debug mode
-    params.debug = debug
-
+    
+    # Auto-increment device
     params.device += 1
 
     if params.debug == 'print':

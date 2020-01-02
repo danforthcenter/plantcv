@@ -25,10 +25,6 @@ def check_cycles(skel_img):
     :return cycle_img: numpy.ndarray
     """
 
-    # Store debug
-    debug = params.debug
-    params.debug = None
-
     # Create the mask needed for cv2.floodFill, must be larger than the image
     h, w = skel_img.shape[:2]
     mask = np.zeros((h + 2, w + 2), np.uint8)
@@ -39,6 +35,10 @@ def check_cycles(skel_img):
 
     # Invert so the holes are white and background black
     just_cycles = cv2.bitwise_not(skel_copy)
+
+    # Store debug
+    debug = params.debug
+    params.debug = None
 
     # Erode slightly so that cv2.findContours doesn't think diagonal pixels are separate contours
     just_cycles = erode(just_cycles, 2, 1)
