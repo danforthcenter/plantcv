@@ -29,8 +29,6 @@ def analyze_bound_vertical(img, obj, mask, line_position):
     :param line_position: int
     :return analysis_images: list
     """
-
-    params.device += 1
     ori_img = np.copy(img)
 
     # Draw line horizontal line through bottom of image, that is adjusted to user input height
@@ -115,6 +113,7 @@ def analyze_bound_vertical(img, obj, mask, line_position):
         analysis_images.append(ori_img)
 
     if params.debug is not None:
+        params.device += 1
         point3 = (x_coor+2, 0)
         point4 = (x_coor+2, y_coor)
         cv2.line(ori_img, point3, point4, (255, 0, 255), params.line_thickness)
