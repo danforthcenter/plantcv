@@ -30,9 +30,6 @@ def get_color_matrix(rgb_img, mask):
     :return headers: string array
     :return color_matrix: numpy.ndarray
     """
-    # Autoincrement the device counter
-    params.device += 1
-
     # Check for RGB input
     if len(np.shape(rgb_img)) != 3:
         fatal_error("Input rgb_img is not an RGB image.")
@@ -84,10 +81,6 @@ def get_matrix_m(target_matrix, source_matrix):
     :return matrix_b: numpy.ndarray
 
     """
-
-    # Autoincrement the device counter
-    params.device += 1
-
     # if the number of chips in source_img match the number of chips in target_matrix
     if np.shape(target_matrix) == np.shape(source_matrix):
         t_cc, t_r, t_g, t_b = np.split(target_matrix, 4, 1)
@@ -159,9 +152,6 @@ def calc_transformation_matrix(matrix_m, matrix_b):
     # check matrix_m and matrix_b for multiplication
     if np.shape(matrix_m)[0] != np.shape(matrix_b)[1] or np.shape(matrix_m)[1] != np.shape(matrix_b)[0]:
         fatal_error("Cannot multiply matrices.")
-
-    # Autoincrement the device counter
-    params.device += 1
 
     t_r, t_r2, t_r3, t_g, t_g2, t_g3, t_b, t_b2, t_b3 = np.split(matrix_b, 9, 1)
 
@@ -283,10 +273,6 @@ def load_matrix(filename):
     :param filename: string ending in ".npz"
     :return matrix: numpy.matrix
     """
-
-    # Autoincrement the device counter
-    params.device += 1
-
     matrix_file = np.load(filename, encoding="latin1")
     matrix = matrix_file['arr_0']
     np.asmatrix(matrix)
@@ -374,10 +360,7 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
     params.device += 1
     # Initialize chip list
     chips = []
-    # Store user debug
-    debug = params.debug
-    # Temporarily disable debug
-    params.debug = None
+
     # Loop over each color card row
     for i in range(0, nrows):
         # The upper left corner is the y starting coordinate + the chip offset * the vertical spacing between chips
@@ -400,8 +383,6 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
     for chip in chips:
         mask = cv2.drawContours(mask, chip[0], -1, (i * 10), -1)
         i += 1
-    # Reset debug
-    params.debug = debug
     if params.debug is not None:
         # Create a copy of the input image for plotting
         canvas = np.copy(rgb_img)
@@ -481,6 +462,9 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
         geom_label(angle=15, size=7, nudge_y=-.25, nudge_x=.5, show_legend=False) + \
         scale_x_continuous(limits=(-5, 270)) + scale_y_continuous(limits=(-5, 275)) + \
         scale_color_manual(values=['blue', 'green', 'red'])
+
+    # Autoincrement the device counter
+    params.device += 1
 
     # Reset debug
     if params.debug is not None:
@@ -674,8 +658,7 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
     # Append distprox summary to dataframe
     df = df.assign(distprox=distmatrixflat.values)
 
-    # Compute how similar in area the squares are. lots of similar values indicates card
-    # isolate area measurements
+    # Compute how similar in area the squares are. lots of similar values indicates card isolate area measurements
     filtered_area = df['Area']
     # Create empty matrix for storing comparisons
     sizecomp = np.zeros((len(filtered_area), len(filtered_area)))
@@ -703,10 +686,9 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
     df = df[(df['distprox'] >= 5) & (df['sizeprox'] >= 5) & (df['width'] > minsqwidth) &
             (df['width'] < maxsqwidth)]
 
-    # Filter for proximity again to root out stragglers
-    # Find and count up squares that are within given radius,
-    # more squares = more likelihood of them being the card
-    # Median width of square time 2.5 gives proximity radius for searching for similar squares
+    # Filter for proximity again to root out stragglers. Find and count up squares that are within given radius,
+    # more squares = more likelihood of them being the card. Median width of square time 2.5 gives proximity radius
+    # for searching for similar squares
     median_sq_width_px = df["width"].median()
 
     # Squares that are within 6 widths of the current square
