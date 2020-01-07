@@ -81,6 +81,8 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
 
         if not len(segment_end_obj) == 2:
             print("Size too large, contour with ID#", i, "got pruned away completely.")
+            # Erase that contour that got pruned away and cannot have the angle measured
+            cv2.drawContours(labeled_img, leaf_objects, i, (255,255,255), params.line_thickness, lineType=8)
         else:
             # The contour can have insertion angle calculated
             valid_segment.append(cnt)
