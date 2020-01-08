@@ -3287,9 +3287,9 @@ def test_plantcv_morphology_count_tillers():
     _ = pcv.morphology.count_tillers(skeleton, seg_objects)
     pcv.params.debug = "plot"
     pcv.outputs.clear()
-    curvature_img = pcv.morphology.count_tillers(segmented_img, seg_objects)
+    curvature_img = pcv.morphology.count_tillers(skel_img=skeleton, stem_objects=seg_objects)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
-    assert len(pcv.outputs.observations['num_tillers']['value']) == 1
+    assert pcv.outputs.observations['num_tillers']['value'] == 2
     pcv.outputs.clear()
 
 
