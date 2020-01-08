@@ -3617,6 +3617,113 @@ def test_plantcv_morphology_segment_combine_bad_input():
         _, new_objects = pcv.morphology.segment_combine([0.5, 1.5], seg_objects, skel)
 
 
+#########################################
+# Tests for the photosynthesis subpackage
+#########################################
+
+def test_plantcv_photosynthesis_analyze_npq():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
+    fm = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
+    # Test with debug="plot"
+    pcv.params.debug = "plot"
+    _ = pcv.photosynthesis.analyze_npq(fmax=fmax, fm=fm, mask=mask)
+    # Test with debug="print"
+    pcv.params.debug = "print"
+    _ = pcv.photosynthesis.analyze_npq(fmax=fmax, fm=fm, mask=mask)
+    assert pcv.outputs.observations['npq_hist_peak']['value'] == 0.005859375
+
+
+def test_plantcv_photosynthesis_analyze_npq_bad_input():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX))
+    fm = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX))
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK))
+    with pytest.raises(RuntimeError):
+        _ = pcv.photosynthesis.analyze_npq(fmax=fmax, fm=fm, mask=mask)
+
+
+def test_plantcv_photosynthesis_analyze_yii():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK), -1)
+    fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
+    fmin = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
+    # Test with debug="plot"
+    pcv.params.debug = "plot"
+    _ = pcv.photosynthesis.analyze_yii(fdark=fdark, fmax=fmax, fmin=fmin, mask=mask)
+    # Test with debug="print"
+    pcv.params.debug = "print"
+    _ = pcv.photosynthesis.analyze_yii(fdark=fdark, fmax=fmax, fmin=fmin, mask=mask)
+    assert pcv.outputs.observations['yii_hist_peak']['value'] == 0.716796875
+
+
+def test_plantcv_photosynthesis_analyze_yiii_bad_input():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK))
+    fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
+    fmin = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
+    with pytest.raises(RuntimeError):
+        _ = pcv.photosynthesis.analyze_yii(fdark=fdark, fmax=fmax, fmin=fmin, mask=mask)
+
+def test_plantcv_photosynthesis_qc_fdark():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK), -1)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
+    qc = pcv.photosynthesis.qc_fdark(fdark=fdark, mask=mask, threshold=2000)
+    assert qc
+
+
+def test_plantcv_photosynthesis_qc_fdark_uint16_fail():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK), -1)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
+    qc = pcv.photosynthesis.qc_fdark(fdark=fdark, mask=mask)
+    assert not qc
+
+
+def test_plantcv_photosynthesis_qc_fdark_uint8_fail():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    qc = pcv.photosynthesis.qc_fdark(fdark=fdark, mask=mask, threshold=2)
+    assert not qc
+
+
+def test_plantcv_photosynthesis_qc_fdark_bad_input():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK))
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    with pytest.raises(RuntimeError):
+        _ = pcv.photosynthesis.qc_fdark(fdark=fdark, mask=mask)
+
+
 # ########################################
 # Tests for the hyperspectral subpackage
 # ########################################
