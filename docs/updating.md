@@ -1,5 +1,34 @@
 ## Updating PlantCV
 
+### PyPI
+
+To update PlantCV, in a terminal type:
+
+```bash
+pip install --upgrade
+```
+
+### Conda
+
+To update PlantCV, in a terminal type:
+
+```bash
+conda upgrade -n plantcv plantcv
+```
+
+If conda does not update your PlantCV installation, you can try installing a specific version. For example if you are on v3.6.1 and you would like to install v3.6.2 you can use:
+
+```bash
+conda install -n plantcv plantcv=3.6.2
+```
+
+You can find the latest version available on bioconda with:
+
+```bash
+conda list plantcv
+```
+
+### Manual Install
 The general procedure for updating PlantCV if you are using the `master` branch
 cloned from the `danforthcenter/plantcv` repository is to update your local 
 repository and reinstall the package.
@@ -193,6 +222,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, masked_img = **plantcv.apply_mask**(*img, mask, mask_color, device, debug=None*)
 * post v3.0dev2: masked_img = **plantcv.apply_mask**(*rgb_img, mask, mask_color*)
+* post v3.7: masked_img = **plantcv.apply_mask**(*img, mask, mask_color*) 
 
 #### plantcv.auto_crop
 
@@ -311,6 +341,21 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, img_eh = **plantcv.hist_equalization**(*img, device, debug=None*)
 * post v3.0dev2: img_eh = **plantcv.hist_equalization**(*gray_img*)
+
+#### plantcv.hyperspectral.analyze_spectral
+
+* pre v3.7: NA
+* post v3.7: spectral_histogram = **plantcv.hyperspectral.analyze_spectral**(*array, mask, histplot=True*)
+
+#### plantcv.hyperspectral.analyze_index
+
+* pre v3.7: NA
+* post v3.7: index_array = **plantcv.hyperspectral.extract_index**(*index_array, mask*)
+
+#### plantcv.hyperspectral.extract_index
+
+* pre v3.7: NA
+* post v3.7: index_array = **plantcv.hyperspectral.extract_index**(*array, index="NDVI", distance=20*)
 
 #### plantcv.image_add
 

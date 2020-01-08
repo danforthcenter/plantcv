@@ -33,17 +33,17 @@ def process_results(job_dir, json_file):
     # Walk through the image processing job directory and process data from each file
     for (dirpath, dirnames, filenames) in os.walk(job_dir):
         for filename in filenames:
-            # Make sure file is a text file
+            # Make sure file is a text or json file
             if 'text/plain' in mimetypes.guess_type(filename) or 'application/json' in mimetypes.guess_type(filename):
                 # Open results file
                 with open(os.path.join(dirpath, filename)) as results:
                     obs = json.load(results)
                     data["entities"].append(obs)
                     # Keep track of all metadata variables stored
-                    for vars in obs["metadata"].keys():
+                    for vars in obs["metadata"]:
                         data["variables"][vars] = {"category": "metadata", "datatype": "<class 'str'>"}
                     # Keep track of all observations variables stored
-                    for othervars in obs["observations"].keys():
+                    for othervars in obs["observations"]:
                         data["variables"][othervars] = {"category": "observations",
                                                         "datatype": obs["observations"][othervars]["datatype"]}
 

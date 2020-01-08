@@ -116,6 +116,13 @@ optional arguments:
                         Workflow script file. (default: None)
   -j JSON, --json JSON  
                         Output database file name. (default: None)
+  -f META, --meta META  
+                        Image file name metadata format. List valid metadata
+                        fields separated by commas.
+                        Valid metadata fields are: camera, imgtype, zoom,
+                        exposure, gain, frame, lifter, timestamp, id,
+                        plantbarcode, treatment, cartag, measurementlabel,
+                        other (default: imgtype_camera_frame_zoom_id)
   -i OUTDIR, --outdir OUTDIR
                         Output directory for images. Not required by all
                         workflows. (default: .)
@@ -132,15 +139,8 @@ optional arguments:
   -t TYPE, --type TYPE  
                         Image format type (extension). (default: png)
   -l DELIMITER, --delimiter DELIMITER
-                        Image file name metadata delimiter character.
+                        Image file name metadata delimiter character. Alternatively, a regular expression for parsing filename metadata.
                         (default: _)
-  -f META, --meta META  
-                        Image file name metadata format. List valid metadata
-                        fields separated by the delimiter (-l/--delimiter).
-                        Valid metadata fields are: camera, imgtype, zoom,
-                        exposure, gain, frame, lifter, timestamp, id,
-                        plantbarcode, treatment, cartag, measurementlabel,
-                        other (default: imgtype_camera_frame_zoom_id)
   -M MATCH, --match MATCH
                         Restrict analysis to images with metadata matching
                         input criteria. Input a metadata:value comma-separated
@@ -150,6 +150,10 @@ optional arguments:
                         Coprocess the specified imgtype with the imgtype
                         specified in --match (e.g. coprocess NIR images with
                         VIS). (default: None)
+  -s timestampformat, --timestampformat timestampformat
+                        A date format code compatible with strptime C library.
+                        e.g. "%%Y-%%m-%%d %%H_%%M_%%S", except "%%" symbols must be escaped on Windows with "%%" e.g. "%%%%Y-%%%%m-%%%%d %%%%H_%%%%M_%%%%S". 
+                        (default: "%%Y-%%m-%%d %%H:%%M:%%S.%%f")
   -w, --writeimg        
                         Include analysis images in output. (default: False)
   -o OTHER_ARGS, --other_args OTHER_ARGS

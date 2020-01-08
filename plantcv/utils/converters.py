@@ -18,9 +18,10 @@ def json2csv(json_file, csv_file):
         for key, var in data["variables"].items():
             if var["category"] == "metadata":
                 meta_vars.append(key)
-            elif var["datatype"] in ["<class 'bool'>", "<class 'int'>", "<class 'float'>", "<class 'str'>"]:
+            elif var["datatype"] in ["<class 'bool'>", "<class 'int'>", "<class 'float'>", "<class 'str'>",
+                                     "<type 'bool'>", "<type 'int'>", "<type 'float'>", "<type 'str'>"]:
                 scalar_vars.append(key)
-            elif var["datatype"] in ["<class 'list'>"]:
+            elif var["datatype"] in ["<class 'list'>", "<type 'list'>"]:
                 multi_vars.append(key)
 
         # Create a CSV file of single-value traits

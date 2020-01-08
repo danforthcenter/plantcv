@@ -227,10 +227,10 @@ Use the [binary threshold](binary_threshold.md) function to threshold green-mage
 
     # STEP 7: Fill in small objects (speckles)
     # Inputs:
-    #    gray_img = image object, grayscale. img will be returned after filling
+    #    bin_img  = image object, grayscale. img will be returned after filling
     #    size     = minimum object area size in pixels (integer)
     
-    fill_image = pcv.fill(gray_img=img_binary, size=10)
+    fill_image = pcv.fill(bin_img=img_binary, size=10)
     #                                                ^
     #                                                |
     #                                 adjust this value
@@ -540,10 +540,10 @@ def main():
     
     # STEP 7: Fill in small objects (speckles)
     # Inputs:
-    #    img  = image object, grayscale. img will be returned after filling
+    #    bin_img  = image object, binary. img will be returned after filling
     #    size = minimum object area size in pixels (integer)
     
-    fill_image = pcv.fill(img=img_binary, size=100)
+    fill_image = pcv.fill(bin_img=img_binary, size=100)
     #                                          ^
     #                                          |
     #                           adjust this value

@@ -4,18 +4,18 @@
 
 [PlantCV](http://plantcv.danforthcenter.org) is composed of modular functions in order to be applicable to a 
 variety of plant types and imaging systems. In the following documentation we will describe use of each function and 
-provide tutorials on how each function is used in the context of an overall image-processing workflow. The initial 
-releases of PlantCV have been designed for processing images from visible spectrum cameras ('VIS'), near-infrared 
-cameras ('NIR'), and excitation imaging fluorometers ('PSII'; see note below). Development of PlantCV is 
-ongoing---we encourage input from the greater plant phenomics community. Please post questions and comments on the 
+provide tutorials on how each function is used in the context of an overall image-processing workflow. PlantCV 
+currently supports the analysis of standard RGB color images (aka "VIS"), standard grayscale images (e.g. 
+near-infrared, "NIR"), thermal infrared images, and grayscale images from chlorophyll fluorescence imaging systems 
+("PSII"). Support for additional image types is under development. Development of PlantCV is ongoing---we encourage 
+input from the greater plant phenomics community. Please post questions and comments on the 
 [GitHub issues page](https://github.com/danforthcenter/plantcv/issues).
 
-**Note**: At the Danforth Center we refer to our excitation imaging 
-fluorometer (PSII) camera system as 'FLU' internally. But others have 
-previously published on their steady-state fluorescence imaging systems 
-(a different type of fluorescence imaging system) and referred to it as 
-'FLU'. We are working to make the naming changes of our functions from 
-'FLU' to 'PSII' to try and prevent further confusion.
+!!! note
+    At the Danforth Center we refer to our saturation pulse imaging  fluorometer (PSII) camera system as 'FLU' 
+    internally. But others have previously published on their steady-state fluorescence imaging systems 
+    (a different type of fluorescence imaging system) and referred to it as 'FLU'. We are working to make the 
+    naming changes of our functions from 'FLU' to 'PSII' to try and prevent further confusion.
 
 ## Getting started
 
@@ -38,6 +38,8 @@ Also see our tutorials for more detailed overviews of using PlantCV for specific
 * [VIS / NIR Dual Workflows](vis_nir_tutorial.md)
 * [Multi Plant Image Processing](multi-plant_tutorial.md)
 * [Morphology Package](morphology_tutorial.md) 
+* [Thermal Image Processing](thermal_tutorial.md)
+* [Hyperspectral Image Processing](hyperspectral_tutorial.md)
 * [Machine Learning Tutorial](machine_learning_tutorial.md)
 * [Parallel Image Processing](pipeline_parallel.md)
 * [Exporting Data for Downstream Analysis](db-exporter.md)
@@ -59,9 +61,9 @@ If you are interested in contributing to PlantCV, please see:
 
 ## Versions
 
-The documentation defaults to the `latest` version of PlantCV which is the latest
-commit in the `master` code branch.
-Documentation for all releases from v1.1 on are also available
-via the standard Read the Docs popup/pulldown menu (sidebar, bottom left).
+The documentation defaults to the `stable` version of PlantCV which is the current release version available from
+PyPI and Bioconda. Documentation for all releases from v1.1 on are also available via the standard Read the Docs 
+popup/pulldown menu (bottom right corner). Select the `latest` version to get the most up-to-date documentation
+associated with the current code in GitHub.
 
 [Return to the PlantCV homepage](http://plantcv.danforthcenter.org)

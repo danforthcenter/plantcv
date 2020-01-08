@@ -14,6 +14,8 @@ functions:
 * `analyze_object`
 * `analyze_thermal_values` 
 * `fluor_fvfm`
+* `hyperspectral.analyze_spectral`
+* `hyperspectral.analyze_index`
 * `report_size_marker_area`
 * `morphology.check_cycles`
 * `morphology.segment_angle`
@@ -35,14 +37,22 @@ Methods are accessed as plantcv.outputs.*method*.
 **clear**: Clears the contents of both measurements and image 
 
 **add_observation**: Add new measurement or other information
+
 * variable: A local unique identifier of a variable, e.g. a short name, that is a key linking the definitions of variables with observations.
+
 * trait: A name of the trait mapped to an external ontology; if there is no exact mapping, an informative description of the trait.
+
 * method: A name of the measurement method mapped to an external ontology; if there is no exact mapping, an informative description of the measurement procedure.
+
 * scale: Units of the measurement or a scale in which the observations are expressed; if possible, standard units and scales should be used and mapped to existing ontologies; in case of a non-standard scale a full explanation should be given.
 * datatype: The type of data to be stored, e.g. `int`, `str`, `list`, etc. 
+
 * value: The data itself. 
+
 * label:  The label for each value, which will be useful when the data is a frequency table (e.g. hues). 
-- **Example use:**
+
+
+**Example use:**
     - [Use In VIS/NIR Tutorial](vis_nir_tutorial.md)
 
 ### Examples

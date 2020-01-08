@@ -2,12 +2,12 @@
 
 Apply binary mask to an image.
 
-**plantcv.apply_mask**(*rgb_img, mask, mask_color*)
+**plantcv.apply_mask**(*img, mask, mask_color*)
 
 **returns** masked image
 
 - **Parameters:**
-    - rgb_img - RGB image data
+    - img - RGB image data or [Spectral_data](Spectral_data.md) class object. 
     - mask - Binary mask image data
     - mask_color - 'white' or 'black'
 - **Context:**
@@ -16,6 +16,7 @@ Apply binary mask to an image.
     - [Use In VIS Tutorial](vis_tutorial.md)
     - [Use In NIR Tutorial](nir_tutorial.md)
     - [Use In PSII Tutorial](psII_tutorial.md)
+    - [Use In Hyperspectral Tutorial](hyperspectral_tutorial.md)
 
 **Original RGB image**
 
@@ -35,7 +36,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Apply binary 'white' mask over an image. 
-masked_image = pcv.apply_mask(img, mask, 'white')
+masked_image = pcv.apply_mask(img=img, mask=mask, mask_color='white')
 
 ```
 
@@ -53,7 +54,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Apply binary 'black' mask over an image.
-masked_image = pcv.apply_mask(img, mask, 'black')
+masked_image = pcv.apply_mask(img=img, mask=mask, mask_color='black')
 
 ```
   

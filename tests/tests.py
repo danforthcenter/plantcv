@@ -6,6 +6,7 @@ import shutil
 import json
 import numpy as np
 import cv2
+import sys
 from plantcv import plantcv as pcv
 import plantcv.learn
 import plantcv.parallel
@@ -194,9 +195,10 @@ def test_plantcv_parallel_metadata_parser_snapshots():
     meta_filters = {"imgtype": "VIS"}
     start_date = 1413936000
     end_date = 1414022400
+    date_format = '%Y-%m-%d %H:%M:%S.%f'
     error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
     jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters, date_format=date_format,
                                                       start_date=start_date, end_date=end_date, error_log=error_log,
                                                       delimiter="_", file_type="jpg", coprocess="NIR")
     assert meta == METADATA_COPROCESS
@@ -207,9 +209,10 @@ def test_plantcv_parallel_metadata_parser_snapshots_coimg():
     meta_filters = {"imgtype": "VIS"}
     start_date = 1413936000
     end_date = 1414022400
+    date_format = '%Y-%m-%d %H:%M:%S.%f'
     error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
     jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters, date_format=date_format,
                                                       start_date=start_date, end_date=end_date, error_log=error_log,
                                                       delimiter="_", file_type="jpg", coprocess="FAKE")
     assert meta == METADATA_VIS_ONLY
@@ -220,9 +223,10 @@ def test_plantcv_parallel_metadata_parser_images():
     meta_filters = {"imgtype": "VIS"}
     start_date = 1413936000
     end_date = 1414022400
+    date_format = '%Y' # no date in filename so it skips check date range and date_format doesn't matter
     error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
     jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,date_format=date_format,
                                                       start_date=start_date, end_date=end_date, error_log=error_log,
                                                       delimiter="_", file_type="jpg", coprocess=None)
     expected = {
@@ -246,19 +250,65 @@ def test_plantcv_parallel_metadata_parser_images():
     assert meta == expected
 
 
+def test_plantcv_parallel_metadata_parser_regex():
+    data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR)
+    meta_filters = {"imgtype": "VIS"}
+    start_date = 1413936000
+    end_date = 1414022400
+    date_format = '%Y-%m-%d %H:%M:%S.%f'
+    error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
+    jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,date_format=date_format,
+                                                      start_date=start_date, end_date=end_date, error_log=error_log,
+                                                      delimiter='(VIS)_(SV)_(\d+)_(z1)_(h1)_(g0)_(e82)_(\d+)',
+                                                      file_type="jpg", coprocess=None)
+    expected = {
+        'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
+            'path': os.path.join(PARALLEL_TEST_DATA, 'images'),
+            'camera': 'SV',
+            'imgtype': 'VIS',
+            'zoom': 'z1',
+            'exposure': 'e82',
+            'gain': 'g0',
+            'frame': '0',
+            'lifter': 'h1',
+            'timestamp': None,
+            'id': '117770',
+            'plantbarcode': 'none',
+            'treatment': 'none',
+            'cartag': 'none',
+            'measurementlabel': 'none',
+            'other': 'none'}
+    }
+    assert meta == expected
+
+
 def test_plantcv_parallel_metadata_parser_images_outside_daterange():
     data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR2)
-    meta_filters = {"imgtype": "VIS"}
+    meta_filters = {"imgtype": "NIR"}
     start_date = 10
     end_date = 10
+    date_format = "%Y-%m-%d %H_%M_%S"
     meta_fields = {"imgtype": 0, "camera": 1, "frame": 2, "zoom": 3, "lifter": 4, "gain": 5, "exposure": 6,
                    "timestamp": 7}
     error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
     jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=meta_fields,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters, date_format=date_format,
                                                       start_date=start_date, end_date=end_date, error_log=error_log,
-                                                      delimiter="_", file_type="jpg", coprocess=None)
+                                                      delimiter="(NIR)_(SV)_(\d)_(z1)_(h1)_(g0)_(e65)_(\d{4}-\d{2}-\d{2} \d{2}_\d{2}_\d{2})", 
+                                                      file_type="jpg", coprocess=None)
     assert meta == {}
+
+
+def test_plantcv_parallel_check_date_range_wrongdateformat():
+    start_date = 10
+    end_date = 10
+    img_time = '2010-10-10'
+
+    with pytest.raises(SystemExit, match = r'does not match format'):
+        date_format = '%Y%m%d'
+        _ = plantcv.parallel.check_date_range(
+            start_date, end_date, img_time, date_format)
 
 
 def test_plantcv_parallel_metadata_parser_snapshot_outside_daterange():
@@ -266,9 +316,10 @@ def test_plantcv_parallel_metadata_parser_snapshot_outside_daterange():
     meta_filters = {"imgtype": "VIS"}
     start_date = 10
     end_date = 10
+    date_format = '%Y-%m-%d %H:%M:%S.%f'
     error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
     jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,date_format=date_format,
                                                       start_date=start_date, end_date=end_date, error_log=error_log,
                                                       delimiter="_", file_type="jpg", coprocess=None)
 
@@ -280,9 +331,10 @@ def test_plantcv_parallel_metadata_parser_fail_images():
     meta_filters = {"cartag": "VIS"}
     start_date = 10
     end_date = 10
+    date_format = '%Y-%m-%d %H:%M:%S.%f'
     error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
     jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,date_format=date_format,
                                                       start_date=start_date, end_date=end_date, error_log=error_log,
                                                       delimiter="_", file_type="jpg", coprocess="NIR")
 
@@ -295,9 +347,10 @@ def test_plantcv_parallel_metadata_parser_images_no_frame():
     meta_filters = {"imgtype": "VIS"}
     start_date = 1413936000
     end_date = 1414022400
+    date_format = '%Y-%m-%d %H:%M:%S.%f'
     error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
     jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=meta_fields,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,date_format=date_format,
                                                       start_date=start_date, end_date=end_date, error_log=error_log,
                                                       delimiter="_", file_type="jpg", coprocess="NIR")
     assert meta == {
@@ -345,9 +398,10 @@ def test_plantcv_parallel_metadata_parser_images_no_camera():
     meta_filters = {"imgtype": "VIS"}
     start_date = 1413936000
     end_date = 1414022400
+    date_format = '%Y-%m-%d %H:%M:%S.%f'
     error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
     jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=meta_fields,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,date_format=date_format,
                                                       start_date=start_date, end_date=end_date, error_log=error_log,
                                                       delimiter="_", file_type="jpg", coprocess="NIR")
     assert meta == {
@@ -495,6 +549,21 @@ def test_plantcv_parallel_process_results_invalid_json():
 matplotlib.use('Template', warn=False)
 
 TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+HYPERSPECTRAL_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "hyperspectral_data")
+HYPERSPECTRAL_DATA = "darkReference"
+HYPERSPECTRAL_WHITE = "darkReference_whiteReference"
+HYPERSPECTRAL_DARK = "darkReference_darkReference"
+HYPERSPECTRAL_HDR = "darkReference.hdr"
+HYPERSPECTRAL_MASK = "darkReference_mask.png"
+HYPERSPECTRAL_DATA_NO_DEFAULT = "darkReference2"
+HYPERSPECTRAL_HDR_NO_DEFAULT = "darkReference2.hdr"
+HYPERSPECTRAL_DATA_APPROX_PSEUDO = "darkReference3"
+HYPERSPECTRAL_HDR_APPROX_PSEUDO = "darkReference3.hdr"
+HYPERSPECTRAL_HDR_SMALL_RANGE = {'description': '{[HEADWALL Hyperspec III]}', 'samples': '800', 'lines': '1',
+                                 'bands': '978', 'header offset': '0',  'file type': 'ENVI Standard',
+                                 'interleave': 'bil', 'sensor type': 'Unknown', 'byte order': '0',
+                                 'default bands': '159,253,520', 'wavelength units': 'nm',
+                                 'wavelength': ['379.027', '379.663', '380.3', '380.936', '381.573', '382.209']}
 TEST_COLOR_DIM = (2056, 2454, 3)
 TEST_GRAY_DIM = (2056, 2454)
 TEST_BINARY_DIM = TEST_GRAY_DIM
@@ -581,6 +650,7 @@ TEST_INPUT_THERMAL_CSV = "FLIR2600.csv"
 # ##########################
 # Tests for the main package
 # ##########################
+
 def test_plantcv_acute():
     # Read in test data
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
@@ -1025,13 +1095,13 @@ def test_plantcv_apply_mask_white():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.apply_mask(rgb_img=img, mask=mask, mask_color="white")
+    _ = pcv.apply_mask(img=img, mask=mask, mask_color="white")
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.apply_mask(rgb_img=img, mask=mask, mask_color="white")
+    _ = pcv.apply_mask(img=img, mask=mask, mask_color="white")
     # Test with debug = None
     pcv.params.debug = None
-    masked_img = pcv.apply_mask(rgb_img=img, mask=mask, mask_color="white")
+    masked_img = pcv.apply_mask(img=img, mask=mask, mask_color="white")
     assert all([i == j] for i, j in zip(np.shape(masked_img), TEST_COLOR_DIM))
 
 
@@ -1045,14 +1115,36 @@ def test_plantcv_apply_mask_black():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.apply_mask(rgb_img=img, mask=mask, mask_color="black")
+    _ = pcv.apply_mask(img=img, mask=mask, mask_color="black")
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.apply_mask(rgb_img=img, mask=mask, mask_color="black")
+    _ = pcv.apply_mask(img=img, mask=mask, mask_color="black")
     # Test with debug = None
     pcv.params.debug = None
-    masked_img = pcv.apply_mask(rgb_img=img, mask=mask, mask_color="black")
+    masked_img = pcv.apply_mask(img=img, mask=mask, mask_color="black")
     assert all([i == j] for i, j in zip(np.shape(masked_img), TEST_COLOR_DIM))
+
+
+def test_plantcv_apply_mask_hyperspectral():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_apply_mask_hyperspectral")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    hyper_array = pcv.hyperspectral.read_data(filename=spectral_filename)
+
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    img = np.ones((2056, 2454))
+    img_stacked = cv2.merge((img, img, img, img))
+    shape = np.shape(img_stacked)
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.apply_mask(img=img_stacked, mask=img, mask_color="black")
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    masked_array = pcv.apply_mask(img=hyper_array.array_data, mask=img, mask_color="black")
+    assert np.mean(masked_array) == 13.97111260224949
 
 
 def test_plantcv_apply_mask_bad_input():
@@ -1061,7 +1153,7 @@ def test_plantcv_apply_mask_bad_input():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     with pytest.raises(RuntimeError):
         pcv.params.debug = "plot"
-        _ = pcv.apply_mask(rgb_img=img, mask=mask, mask_color="wite")
+        _ = pcv.apply_mask(img=img, mask=mask, mask_color="wite")
 
 
 def test_plantcv_auto_crop():
@@ -1300,6 +1392,39 @@ def test_plantcv_color_palette():
     assert (all(truths))
 
 
+def test_plantcv_crop():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_crop")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img, _, _ = pcv.readimage(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK), 'gray')
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.crop(img=img, x=10, y=10, h=50, w=50)
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    cropped = pcv.crop(img=img, x=10, y=10, h=50, w=50)
+    assert np.shape(cropped) == (50,50)
+
+
+def test_plantcv_crop_hyperspectral():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_crop_hyperspectral")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img = np.ones((2056, 2454))
+    img_stacked = cv2.merge((img, img, img, img))
+    shape = np.shape(img_stacked)
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.crop(img=img_stacked, x=10, y=10, h=50, w=50)
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    cropped = pcv.crop(img=img_stacked, x=10, y=10, h=50, w=50)
+    assert np.shape(cropped) == (50,50,4)
+
+
 def test_plantcv_crop_position_mask():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_crop_position_mask")
@@ -1308,7 +1433,7 @@ def test_plantcv_crop_position_mask():
     # Read in test data
     nir, path1, filename1 = pcv.readimage(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK), 'gray')
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK), -1)
-    mask_three_channel = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK))
+    mask_three_channel = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK), -1)
     mask_resize = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK_RESIZE), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
@@ -2251,6 +2376,13 @@ def test_plantcv_readimage_csv():
     assert len(np.shape(img)) == 2
 
 
+def test_plantcv_readimage_envi():
+    pcv.params.debug = None
+    array_data = pcv.readimage(filename=os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA), mode="envi")
+    if sys.version_info[0] < 3:
+        assert len(array_data.array_type) == 8
+
+
 def test_plantcv_readimage_bad_file():
     with pytest.raises(RuntimeError):
         _ = pcv.readimage(filename=TEST_INPUT_COLOR)
@@ -2619,7 +2751,7 @@ def test_plantcv_roi_objects():
                                                                 object_contour=object_contours,
                                                                 obj_hierarchy=object_hierarchy, roi_type="partial")
     # Assert that the contours were filtered as expected
-    assert len(kept_contours) == 1046
+    assert len(kept_contours) == 1891
 
 
 def test_plantcv_roi_objects_bad_input():
@@ -2657,21 +2789,7 @@ def test_plantcv_roi_objects_grayscale_input():
                                                                 object_contour=object_contours,
                                                                 obj_hierarchy=object_hierarchy)
     # Assert that the contours were filtered as expected
-    assert len(kept_contours) == 1046
-
-
-def test_plantcv_roi_objects_no_objects():
-    # Read in test data
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
-    roi_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_ROI), encoding="latin1")
-    roi_contour = [np.array([[[750, 750]],[[750, 849]],[[799, 849]],[[799, 750]]])]
-    roi_hierarchy = roi_npz['arr_1']
-    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS1), encoding="latin1")
-    object_contours = contours_npz['arr_0']
-    object_hierarchy = contours_npz['arr_1']
-    with pytest.raises(RuntimeError):
-        _ = pcv.roi_objects(img=img, roi_type="partial", roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
-                            object_contour=object_contours, obj_hierarchy=object_hierarchy)
+    assert len(kept_contours) == 1891
 
 
 def test_plantcv_rotate():
@@ -3500,109 +3618,206 @@ def test_plantcv_morphology_segment_combine_bad_input():
 
 
 # ########################################
-# Tests for the photosynthesis subpackage
+# Tests for the hyperspectral subpackage
 # ########################################
-def test_plantcv_photosynthesis_analyze_npq():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
+def test_plantcv_hyperspectral_read_data_default():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_read_data_default")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
-    fm = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
-    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
-    # Test with debug="plot"
     pcv.params.debug = "plot"
-    _ = pcv.photosynthesis.analyze_npq(fmax=fmax, fm=fm, mask=mask)
-    # Test with debug="print"
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA,HYPERSPECTRAL_DATA)
+    _ = pcv.hyperspectral.read_data(filename=spectral_filename)
     pcv.params.debug = "print"
-    _ = pcv.photosynthesis.analyze_npq(fmax=fmax, fm=fm, mask=mask)
-    assert pcv.outputs.observations['npq_hist_peak']['value'] == 0.005859375
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    assert np.shape(array_data.array_data) == (1, 1600, 978)
 
 
-def test_plantcv_photosynthesis_analyze_npq_bad_input():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX))
-    fm = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX))
-    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK))
-    with pytest.raises(RuntimeError):
-        _ = pcv.photosynthesis.analyze_npq(fmax=fmax, fm=fm, mask=mask)
-
-
-def test_plantcv_photosynthesis_analyze_yii():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK), -1)
-    fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
-    fmin = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
-    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
-    # Test with debug="plot"
+def test_plantcv_hyperspectral_read_data_no_default_bands():
     pcv.params.debug = "plot"
-    _ = pcv.photosynthesis.analyze_yii(fdark=fdark, fmax=fmax, fmin=fmin, mask=mask)
-    # Test with debug="print"
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA,HYPERSPECTRAL_DATA_NO_DEFAULT)
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    assert np.shape(array_data.array_data) == (1, 1600, 978)
+
+
+def test_plantcv_hyperspectral_read_data_approx_pseudorgb():
+    pcv.params.debug = "plot"
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA,HYPERSPECTRAL_DATA_APPROX_PSEUDO)
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    assert np.shape(array_data.array_data) == (1, 1600, 978)
+
+
+def test_plantcv_hyperspectral_extract_index_gdvi():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_gdvi")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="GDVI", distance=801)
+    assert np.shape(index_array.array_data) == (1,1600) and np.max(index_array.pseudo_rgb) == 255
+
+
+def test_plantcv_hyperspectral_extract_index_ndvi():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_ndvi")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="ndvi", distance=801)
+    assert np.shape(index_array.array_data) == (1,1600) and np.max(index_array.pseudo_rgb) == 255
+
+
+def test_plantcv_hyperspectral_extract_index_savi():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_savi")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = "plot"
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="SAVI", distance=801)
+    assert np.shape(index_array.array_data) == (1,1600) and np.max(index_array.pseudo_rgb) == 255
+
+
+def test_plantcv_hyperspectral_extract_index_ndvi_bad_input():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug=None
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="SAVI", distance=801)
+    with pytest.raises(RuntimeError):
+        index_array = pcv.hyperspectral.extract_index(array=index_array, index="NDVI")
+
+
+def test_plantcv_hyperspectral_extract_index_gdvi_bad_input():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug = None
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="SAVI", distance=801)
+    with pytest.raises(RuntimeError):
+        index_array = pcv.hyperspectral.extract_index(array=index_array, index="GDVI")
+
+
+def test_plantcv_hyperspectral_extract_index_savi_bad_input():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug = None
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="SAVI", distance=801)
+    with pytest.raises(RuntimeError):
+        index_array = pcv.hyperspectral.extract_index(array=index_array, index="SAVI")
+
+
+def test_plantcv_hyperspectral_extract_index_bad_input_index():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug = None
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="SAVI", distance=801)
+    with pytest.raises(RuntimeError):
+        index_array = pcv.hyperspectral.extract_index(array=index_array, index="SAVII", distance=801)
+
+
+def test_plantcv_hyperspectral_analyze_spectral():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_analyze_spectral")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    mask = cv2.imread(os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_MASK), -1)
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    pcv.params.debug = "plot"
+    _ = pcv.hyperspectral.analyze_spectral(array=array_data, mask=mask, histplot=True)
     pcv.params.debug = "print"
-    _ = pcv.photosynthesis.analyze_yii(fdark=fdark, fmax=fmax, fmin=fmin, mask=mask)
-    assert pcv.outputs.observations['yii_hist_peak']['value'] == 0.716796875
+    analysis_img = pcv.hyperspectral.analyze_spectral(array=array_data, mask=mask, histplot=True)
+    assert len(pcv.outputs.observations['spectral_frequencies']['value']) == 978
 
 
-def test_plantcv_photosynthesis_analyze_yiii_bad_input():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
+def test_plantcv_hyperspectral_analyze_index():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_analyze_index")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK))
-    fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
-    fmin = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
-    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="SAVI", distance=801)
+    mask_img = cv2.imread(os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_MASK), -1)
+    pcv.params.debug = "print"
+    pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img)
+    pcv.params.debug = "plot"
+    pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img)
+    assert pcv.outputs.observations['mean_index_savi']['value'] > 0
+
+def test_plantcv_hyperspectral_analyze_index_bad_input_mask():
+    pcv.params.debug = None
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="SAVI", distance=801)
+    mask_img = cv2.imread(os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_MASK))
     with pytest.raises(RuntimeError):
-        _ = pcv.photosynthesis.analyze_yii(fdark=fdark, fmax=fmax, fmin=fmin, mask=mask)
-
-def test_plantcv_photosynthesis_qc_fdark():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK), -1)
-    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
-    qc = pcv.photosynthesis.qc_fdark(fdark=fdark, mask=mask, threshold=2000)
-    assert qc
+        pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img)
 
 
-def test_plantcv_photosynthesis_qc_fdark_uint16_fail():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK), -1)
-    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
-    qc = pcv.photosynthesis.qc_fdark(fdark=fdark, mask=mask)
-    assert not qc
-
-
-def test_plantcv_photosynthesis_qc_fdark_uint8_fail():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
-    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    qc = pcv.photosynthesis.qc_fdark(fdark=fdark, mask=mask, threshold=2)
-    assert not qc
-
-
-def test_plantcv_photosynthesis_qc_fdark_bad_input():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK))
-    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+def test_plantcv_hyperspectral_analyze_index_bad_input_index():
+    pcv.params.debug = None
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="SAVI", distance=801)
+    mask_img = cv2.imread(os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_MASK), -1)
+    index_array.array_data = cv2.imread(os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_MASK))
     with pytest.raises(RuntimeError):
-        _ = pcv.photosynthesis.qc_fdark(fdark=fdark, mask=mask)
+        pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img)
+
+
+def test_plantcv_hyperspectral_analyze_index_bad_input_datatype():
+    pcv.params.debug = None
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    mask_img = cv2.imread(os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_MASK), -1)
+    with pytest.raises(RuntimeError):
+        pcv.hyperspectral.analyze_index(index_array=array_data, mask=mask_img)
+
+
+def test_plantcv_hyperspectral_calibrate():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_calibrate")
+    os.mkdir(cache_dir)
+    raw = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    white = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_WHITE)
+    dark = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DARK)
+    raw = pcv.hyperspectral.read_data(filename=raw)
+    white = pcv.hyperspectral.read_data(filename=white)
+    dark = pcv.hyperspectral.read_data(filename=dark)
+    pcv.params.debug="plot"
+    _ = pcv.hyperspectral.calibrate(raw_data=raw, white_reference=white, dark_reference=dark)
+    pcv.params.debug = "print"
+    calibrated = pcv.hyperspectral.calibrate(raw_data=raw, white_reference=white, dark_reference=dark)
+    assert np.shape(calibrated.array_data) == (1, 1600, 978)
+
+
+def test_plantcv_hyperspectral_extract_wavelength():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_wavelength")
+    os.mkdir(cache_dir)
+    spectral = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    spectral = pcv.hyperspectral.read_data(filename=spectral)
+    pcv.params.debug = "plot"
+    _ = pcv.hyperspectral.extract_wavelength(spectral_data=spectral,wavelength=500)
+    pcv.params.debug = "print"
+    new = pcv.hyperspectral.extract_wavelength(spectral_data=spectral, wavelength=500)
+    assert np.shape(new.array_data) == (1, 1600)
+
+
+def test_plantcv_hyperspectral_avg_reflectance():
+    spectral = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    mask_img = cv2.imread(os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_MASK), -1)
+    spectral = pcv.hyperspectral.read_data(filename=spectral)
+    avg_reflect = pcv.hyperspectral._avg_reflectance(spectral, mask=mask_img)
+    assert len(avg_reflect) == 978
+
+
+def test_plantcv_hyperspectral_inverse_covariance():
+    spectral = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    spectral = pcv.hyperspectral.read_data(filename=spectral)
+    inv_cov = pcv.hyperspectral._inverse_covariance(spectral)
+    assert np.shape(inv_cov) == (978, 978)
+
 
 # ##############################
 # Tests for the roi subpackage
@@ -3786,13 +4001,37 @@ def test_plantcv_roi_multi_bad_input():
         _, _ = pcv.roi.multi(rgb_img, coord=[(25, 120), (100, 100)], radius=20, spacing=(10, 10), nrows=3, ncols=6)
 
 
+def test_plantcv_roi_multi_bad_input_oob():
+    # Read in test RGB image
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # nputs to make a grid make ROIs that go off the screen
+    with pytest.raises(RuntimeError):
+        _, _ = pcv.roi.multi(rgb_img, coord=(25000, 12000), radius=2, spacing=(1, 1), nrows=3, ncols=6)
+
+
+def test_plantcv_roi_multi_bad_input_oob_list():
+    # Read in test RGB image
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # All vertices in the list of centers must draw roi's that are inside the image
+    with pytest.raises(RuntimeError):
+        _, _ = pcv.roi.multi(rgb_img, coord=[(25000,25000), (25000,12000), (12000, 12000)], radius=20)
+
+
 def test_plantcv_roi_custom():
     # Read in test RGB image
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    cnt, hier = pcv.roi.custom(img=img, vertices=[[2260, -1], [3130, 1848], [2404, 2029], [2205, 2298], [1617, 1761]])
+    pcv.params.debug="plot"
+    cnt, hier = pcv.roi.custom(img=img, vertices=[[226, 1], [313, 184], [240, 202], [220, 229], [161, 171]])
     assert np.shape(cnt) == (1, 5, 2)
+
+
+def test_plantcv_roi_custom_bad_input():
+    # Read in test RGB image
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # ROI goes out of bounds
+    with pytest.raises(RuntimeError):
+        _ = pcv.roi.custom(img=img, vertices=[[226, -1], [3130, 1848], [2404, 2029], [2205, 2298], [1617, 1761]])
+
 
 # ##############################
 # Tests for the transform subpackage
