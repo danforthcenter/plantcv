@@ -43,6 +43,7 @@ def count_tillers(skel_img, stem_objects):
                             value=num_tillers, label='none')
 
     rand_color = color_palette(num_tillers)
+    print(np.shaoe(skel_img))
     labeled_img = cv2.cvtColor(skel_img.copy(), cv2.COLOR_GRAY2RGB)
     for i, cnt in enumerate(tiller_objects):
         labeled_img = cv2.drawContours(labeled_img, cnt, -1, rand_color[i],

@@ -3275,6 +3275,24 @@ def test_plantcv_learn_naive_bayes_multiclass():
 # ####################################
 # Tests for the morphology subpackage
 # ####################################
+def test_plantcv_morphology_count_tillers():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_count_tillers")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
+    pcv.params.debug = "print"
+    segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
+    pcv.outputs.clear()
+    _ = pcv.morphology.count_tillers(skeleton, seg_objects)
+    pcv.params.debug = "plot"
+    pcv.outputs.clear()
+    curvature_img = pcv.morphology.count_tillers(segmented_img, seg_objects)
+    pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    assert len(pcv.outputs.observations['num_tillers']['value']) == 1
+    pcv.outputs.clear()
+
+
 def test_plantcv_morphology_segment_curvature():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_curvature")
