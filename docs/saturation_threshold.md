@@ -12,13 +12,14 @@ Creates a binary image from an RGB image by thresholding out saturated pixels.
     - threshold - Threshold value, above which is considered saturated (0-255, default = 255)
     - channel - How many channels must be saturated for the pixel to be masked out ("any", "all"; default="any")
 - **Context:**
-    - Used to threshold based on saturation of pixels from any or all color channels 
+    - Used to threshold based on saturation of pixels from any or all color channels. This can be a useful 
+    pre-processing step before doing color analysis.  
 - **Example use:**
     - Below
 
 **Original image**
 
-![Screenshot](img/documentation_images/texture_threshold/texture_gray.jpg)
+![Screenshot](img/documentation_images/saturation_threshold/vis_original_image.jpg)
 
 ```python
 
@@ -36,4 +37,6 @@ sat_thresh = pcv.threshold.saturation(rgb_img=rgb_img, threshold=250, channel="a
 
 **Thresholded image**
 
-![Screenshot](img/documentation_images/texture_threshold/texture_thresholded.jpg)
+We can see that part of the table was masked out due to being fully saturated. 
+
+![Screenshot](img/documentation_images/saturation_threshold/saturation_threshold.jpg)
