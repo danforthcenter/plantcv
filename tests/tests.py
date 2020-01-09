@@ -1757,7 +1757,7 @@ def test_plantcv_fluor_fvfm():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_fluor_fvfm")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    filename = os.path.join(cache_dir, 'plantcv_fvfm_hist.jpg')
+    filename = os.path.join(cache_dir, 'plantcv_fvfm_hist.png')
     # Read in test data
     fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK), -1)
     fmin = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
@@ -2292,7 +2292,7 @@ def test_plantcv_print_image():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    filename = os.path.join(cache_dir, 'plantcv_print_image.jpg')
+    filename = os.path.join(cache_dir, 'plantcv_print_image.png')
     pcv.print_image(img=img, filename=filename)
     # Assert that the file was created
     assert os.path.exists(filename) is True
