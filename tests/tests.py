@@ -4686,6 +4686,23 @@ def test_plantcv_threshold_custom_range_bad_input_channel():
         _, _ = pcv.threshold.custom_range(img, lower_thresh=[0], upper_thresh=[2], channel='CMYK')
 
 
+def test_plantcv_threshold_saturation():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_triangle")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    grargb_imgy_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.threshold.saturation(rgb_img=rgb_img, max_value=255, threshold=254, channel="all")
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    thresh = pcv.threshold.saturation(rgb_img=rgb_img, max_value=255, threshold=254, channel="any")
+    assert np.sum(thresh) == 222222
+
+
+
 def test_plantcv_threshold_triangle():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_triangle")
