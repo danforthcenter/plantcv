@@ -713,10 +713,10 @@ def saturation(rgb_img, threshold=255, channel = "any"):
         fatal_error(str(channel) + " is not a valid option. Channel must be either 'any', or 'all'.")
 
     # Invert "saturated" before returning, so saturated = black
-    masked_img = cv2.bitwise_not(saturated)
+    bin_img = cv2.bitwise_not(saturated)
 
     if params.debug == 'print':
-        print_image(masked_img, os.path.join(params.debug_outdir, str(params.device), '_saturation_threshold.png'))
+        print_image(bin_img, os.path.join(params.debug_outdir, str(params.device), '_saturation_threshold.png'))
     elif params.debug == 'plot':
-        plot_image(masked_img, cmap='gray')
-    return masked_img
+        plot_image(bin_img, cmap='gray')
+    return bin_img
