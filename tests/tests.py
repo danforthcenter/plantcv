@@ -4692,16 +4692,25 @@ def test_plantcv_threshold_saturation():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     # Read in test data
-    grargb_imgy_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.threshold.saturation(rgb_img=rgb_img, max_value=255, threshold=254, channel="all")
+    _ = pcv.threshold.saturation(rgb_img=rgb_img, threshold=254, channel="all")
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    thresh = pcv.threshold.saturation(rgb_img=rgb_img, max_value=255, threshold=254, channel="any")
-    assert np.sum(thresh) == 222222
+    thresh = pcv.threshold.saturation(rgb_img=rgb_img, threshold=254, channel="any")
+    assert np.sum(thresh) == 920050455 and len(np.unique(thresh)) == 2
 
 
+def test_plantcv_threshold_saturation_bad_input():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_triangle")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    with pytest.raises(RuntimeError):
+        _ = pcv.threshold.saturation(rgb_img=rgb_img, threshold=254, channel="red")
 
 def test_plantcv_threshold_triangle():
     # Test cache directory
