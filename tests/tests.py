@@ -4776,7 +4776,7 @@ def test_plantcv_visualize_pseudocolor():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
     obj_contour = contours_npz['arr_0']
-    filename = os.path.join(cache_dir, 'plantcv_pseudo_image.jpg')
+    filename = os.path.join(cache_dir, 'plantcv_pseudo_image.png')
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.visualize.pseudocolor(gray_img=img, mask=None)
