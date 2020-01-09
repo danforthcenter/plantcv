@@ -675,21 +675,21 @@ def _plot(x, mph, mpd, threshold, edge, valley, ax, ind):
     plt.show()
 
 
-def saturation_mask(rgb_img, threshold=255, how = "any"):
+def saturation(rgb_img, threshold=255, channel = "any"):
     """Return a mask filtering out saturated pixels.
 
     Inputs:
-    rgb_img   = RGB image
-    threshold = mode of imread ("native", "rgb", "rgba", "gray", "csv", "envi")
-    how       = how many channels must be saturated for the pixel to be masked out ("any", "all")
+    rgb_img    = RGB image
+    threshold  = value for threshold, above which is considered saturated
+    channel    = how many channels must be saturated for the pixel to be masked out ("any", "all")
 
     Returns:
-    mask      = A binary image with the saturated regions blacked out.
+    masked_img = A binary image with the saturated regions blacked out.
 
     :param img: np.ndarray
     :param threshold: int
-    :param how: str
-    :return img: np.ndarray
+    :param channel: str
+    :return masked_img: np.ndarray
     """
 
     params.device += 1
@@ -701,20 +701,22 @@ def saturation_mask(rgb_img, threshold=255, how = "any"):
     r_saturated = cv2.inRange(r, threshold, 255)
 
     # Combine channel masks
-    if how == "any":
+    if channel.lower() == "any":
         # Consider a pixel saturated if any channel is saturated
         saturated = cv2.bitwise_or(b_saturated, g_saturated)
         saturated = cv2.bitwise_or(saturated, r_saturated)
-    if how == "all":
+    elif channel.lower() == "all":
         # Consider a pixel saturated only if all channels are saturated
         saturated = cv2.bitwise_and(b_saturated, g_saturated)
         saturated = cv2.bitwise_and(saturated, r_saturated)
+    else:
+        fatal_error(str(channel) + " is not a valid option. Channel must be either 'any', or 'all'.")
 
     # Invert "saturated" before returning, so saturated = black
-    not_saturated = cv2.bitwise_not(saturated)
+    masked_img = cv2.bitwise_not(saturated)
 
     if params.debug == 'print':
-        print_image(not_saturated, os.path.join(params.debug_outdir, str(params.device), '_saturation_mask.png'))
+        print_image(masked_img, os.path.join(params.debug_outdir, str(params.device), '_saturation_threshold.png'))
     elif params.debug == 'plot':
-        plot_image(not_saturated, cmap='gray')
-    return not_saturated
+        plot_image(masked_img, cmap='gray')
+    return masked_img
