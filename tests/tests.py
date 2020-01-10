@@ -4688,7 +4688,7 @@ def test_plantcv_threshold_custom_range_bad_input_channel():
 
 def test_plantcv_threshold_saturation():
     # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_triangle")
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_saturation")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     # Read in test data
@@ -4704,7 +4704,7 @@ def test_plantcv_threshold_saturation():
 
 def test_plantcv_threshold_saturation_bad_input():
     # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_triangle")
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_saturation_bad_input")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     # Read in test data
