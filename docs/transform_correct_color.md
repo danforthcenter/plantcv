@@ -117,7 +117,7 @@ Creates a uniquely labeled mask for each color chip based on user-defined positi
     - spacing        = Two-element tuple of the horizontal and vertical spacing between chip masks.
     - nrows          = Number of chip rows.
     - ncols          = Number of chip columns.
-    - exclude        = Optional list of chips to exclude. List in largest to smallest index (e.g. [20, 0])
+    - exclude        = Optional list of chips to exclude.
 - **Returns**
     - mask           = Labeled mask of chips. The first chip is labeled with the value 0, then 10, 20, and so on.
     
