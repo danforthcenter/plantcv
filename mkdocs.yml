@@ -139,6 +139,7 @@ nav:
       - 'Gaussian Adaptive Threshold': gaussian_threshold.md
       - 'Mean Adaptive Threshold': mean_threshold.md
       - 'Otsu Auto Threshold': otsu_threshold.md
+      - 'Saturation Threshold': saturation_threshold.md
       - 'Triangle Auto Threshold': triangle_threshold.md
       - 'Texture Threshold': texture_threshold.md
     - 'Visualization Methods':

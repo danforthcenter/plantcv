@@ -662,6 +662,11 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: NA
 * post v3.0dev2: bin_img = **plantcv.threshold.otsu**(*gray_img, max_value, object_type="light"*)
 
+#### plantcv.threshold.saturation
+
+* pre v3.8: NA
+* post v3.8: bin_img = **plantcv.threshold.saturation**(*rgb_img, threshold=255, channel="any")
+
 #### plantcv.threshold.texture_filter
 
 * pre v3.0: NA
