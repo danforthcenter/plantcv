@@ -249,6 +249,45 @@ To do this, follow these four steps:
 
 Here is a sample of a plantcv function that calls on other plantcv functions:
 
+```python
+from plantcv import plantcv as pcv
+
+def new_function_calling_plantcv(img):
+    """New function calling another plantcv function.
+    
+    Inputs:
+    img          = description of img
+    
+    Returns:
+    modified_img = description of modified img
+    
+    :param img: type
+    :return modified_img: type
+    """
+
+    # Increment the device number by 1
+    params.device += 1
+
+    # Store debug mode
+    debug = params.debug
+    # Temporarily disable debugging
+    params.debug = None
+
+    # No debug images will be shown for this function
+    modified_img = pcv.some_function(img)
+
+    # Reset debug mode
+    params.debug = debug
+
+    if params.debug == 'print':
+        print_image(modified_img, os.path.join(params.debug_outdir, str(params.device) + '_new_function.jpg'))
+    elif params.debug == 'plot':
+        plot_image(modified_img)
+
+    return modified_img
+
+```
+
 ### Thanks
 
 Parts of this contribution guide are based on the
