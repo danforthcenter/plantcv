@@ -239,13 +239,13 @@ def new_function(img):
     returnval1
 ```
 
-If you need to call other plantcv functions from within your own function, be sure to disable debugging until you are ready to show your debug images. 
+If you need to call other plantcv functions from within your contributed function, be sure to disable debugging until you are ready to show your own debug images. 
 
 To do this, follow these four steps:
   1. Store the value of params.debug
   2. Temporarily set params.debug to None
   3. Call other plantcv functions, and take any other steps
-  4. Reset the debug mode before printing/plotting your own debug image(s).
+  4. Reset the debug mode to the stored value before printing/plotting your own debug image(s).
 
 Here is a sample of a plantcv function that calls on other plantcv functions:
 
@@ -256,13 +256,13 @@ def new_function_calling_plantcv(img):
     """New function calling another plantcv function.
     
     Inputs:
-    img          = description of img
+    img       = description of img
     
     Returns:
-    modified_img = description of modified img
+    final_img = description of final img
     
     :param img: type
-    :return modified_img: type
+    :return final_img: type
     """
 
     # Increment the device number by 1
@@ -273,18 +273,19 @@ def new_function_calling_plantcv(img):
     # Temporarily disable debugging
     params.debug = None
 
-    # No debug images will be shown for this function
+    # No debug images will be shown for these functions
     modified_img = pcv.some_function(img)
+    final_img = pcv.another_function(modified_img)
 
     # Reset debug mode
     params.debug = debug
 
     if params.debug == 'print':
-        print_image(modified_img, os.path.join(params.debug_outdir, str(params.device) + '_new_function.jpg'))
+        print_image(final_img, os.path.join(params.debug_outdir, str(params.device) + '_new_function.jpg'))
     elif params.debug == 'plot':
-        plot_image(modified_img)
+        plot_image(final_img)
 
-    return modified_img
+    return final_img
 
 ```
 
