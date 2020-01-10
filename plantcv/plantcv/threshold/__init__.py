@@ -5,5 +5,6 @@ from plantcv.plantcv.threshold.threshold_methods import otsu
 from plantcv.plantcv.threshold.threshold_methods import triangle
 from plantcv.plantcv.threshold.threshold_methods import texture
 from plantcv.plantcv.threshold.threshold_methods import custom_range
+from plantcv.plantcv.threshold.threshold_methods import saturation
 
-__all__ = ["binary", "gaussian", "mean", "otsu", "triangle", "texture", "custom_range"]
+__all__ = ["binary", "gaussian", "mean", "otsu", "triangle", "texture", "custom_range", "saturation"]
