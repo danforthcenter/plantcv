@@ -239,6 +239,10 @@ def new_function(img):
     returnval1
 ```
 
+If you need to call other plantcv functions from within your own function, be sure to disable debug output until you are ready to show your debug images. 
+
+You can do this by storing the value of params.debug, temporarily setting params.debug to None, and then reverting it before printing/plotting your debug images.
+
 ### Thanks
 
 Parts of this contribution guide are based on the
