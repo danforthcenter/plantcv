@@ -251,8 +251,8 @@ Here is a sample of a PlantCV function that calls on other PlantCV functions:
 
 ```python
 import plantcv.plantcv.params
-import plantcv.plantcv.some_function
-import plantcv.plantcv.another_function
+import plantcv.plantcv.example_plantcv_function
+import plantcv.plantcv.another_plantcv_function
 import plantcv.plantcv.print_image
 import plantcv.plantcv.plot_image
 
@@ -278,8 +278,8 @@ def new_function_calling_plantcv(img):
     params.debug = None
 
     # No debug images will be shown for these functions
-    modified_img = some_function(img)
-    final_img = another_function(modified_img)
+    modified_img = example_plantcv_function(img)
+    final_img = another_plantcv_function(modified_img)
 
     # Reset debug mode
     params.debug = debug
