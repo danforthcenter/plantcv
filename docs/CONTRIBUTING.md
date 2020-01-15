@@ -239,6 +239,60 @@ def new_function(img):
     returnval1
 ```
 
+If you need to call other PlantCV functions from within your contributed function, be sure to disable debugging until you are ready to show your own debug images.
+
+To do this, follow these four steps:
+  1. Store the value of params.debug
+  2. Temporarily set params.debug to None
+  3. Call other PlantCV functions, and take any other steps
+  4. Reset the debug mode to the stored value before printing/plotting your own debug image(s).
+
+Here is a sample of a PlantCV function that calls on other PlantCV functions:
+
+```python
+import plantcv.plantcv.params
+import plantcv.plantcv.example_plantcv_function
+import plantcv.plantcv.another_plantcv_function
+import plantcv.plantcv.print_image
+import plantcv.plantcv.plot_image
+
+def new_function_calling_plantcv(img):
+    """New function calling another plantcv function.
+    
+    Inputs:
+    img       = description of img
+    
+    Returns:
+    final_img = description of final img
+    
+    :param img: type
+    :return final_img: type
+    """
+
+    # Increment the device number by 1
+    params.device += 1
+
+    # Store debug mode
+    debug = params.debug
+    # Temporarily disable debugging
+    params.debug = None
+
+    # No debug images will be shown for these functions
+    modified_img = example_plantcv_function(img)
+    final_img = another_plantcv_function(modified_img)
+
+    # Reset debug mode
+    params.debug = debug
+
+    if params.debug == 'print':
+        print_image(final_img, os.path.join(params.debug_outdir, str(params.device) + '_new_function.jpg'))
+    elif params.debug == 'plot':
+        plot_image(final_img)
+
+    return final_img
+
+```
+
 ### Thanks
 
 Parts of this contribution guide are based on the
