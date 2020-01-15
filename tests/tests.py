@@ -1757,7 +1757,7 @@ def test_plantcv_fluor_fvfm():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_fluor_fvfm")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    filename = os.path.join(cache_dir, 'plantcv_fvfm_hist.jpg')
+    filename = os.path.join(cache_dir, 'plantcv_fvfm_hist.png')
     # Read in test data
     fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK), -1)
     fmin = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
@@ -2292,7 +2292,7 @@ def test_plantcv_print_image():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    filename = os.path.join(cache_dir, 'plantcv_print_image.jpg')
+    filename = os.path.join(cache_dir, 'plantcv_print_image.png')
     pcv.print_image(img=img, filename=filename)
     # Assert that the file was created
     assert os.path.exists(filename) is True
@@ -4686,6 +4686,32 @@ def test_plantcv_threshold_custom_range_bad_input_channel():
         _, _ = pcv.threshold.custom_range(img, lower_thresh=[0], upper_thresh=[2], channel='CMYK')
 
 
+def test_plantcv_threshold_saturation():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_saturation")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.threshold.saturation(rgb_img=rgb_img, threshold=254, channel="all")
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    thresh = pcv.threshold.saturation(rgb_img=rgb_img, threshold=254, channel="any")
+    assert np.sum(thresh) == 920050455 and len(np.unique(thresh)) == 2
+
+
+def test_plantcv_threshold_saturation_bad_input():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_saturation_bad_input")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    with pytest.raises(RuntimeError):
+        _ = pcv.threshold.saturation(rgb_img=rgb_img, threshold=254, channel="red")
+
 def test_plantcv_threshold_triangle():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_triangle")
@@ -4750,7 +4776,7 @@ def test_plantcv_visualize_pseudocolor():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
     obj_contour = contours_npz['arr_0']
-    filename = os.path.join(cache_dir, 'plantcv_pseudo_image.jpg')
+    filename = os.path.join(cache_dir, 'plantcv_pseudo_image.png')
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.visualize.pseudocolor(gray_img=img, mask=None)
