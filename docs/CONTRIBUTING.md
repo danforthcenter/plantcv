@@ -239,15 +239,15 @@ def new_function(img):
     returnval1
 ```
 
-If you need to call other plantcv functions from within your contributed function, be sure to disable debugging until you are ready to show your own debug images. 
+If you need to call other PlantCV functions from within your contributed function, be sure to disable debugging until you are ready to show your own debug images.
 
 To do this, follow these four steps:
   1. Store the value of params.debug
   2. Temporarily set params.debug to None
-  3. Call other plantcv functions, and take any other steps
+  3. Call other PlantCV functions, and take any other steps
   4. Reset the debug mode to the stored value before printing/plotting your own debug image(s).
 
-Here is a sample of a plantcv function that calls on other plantcv functions:
+Here is a sample of a PlantCV function that calls on other PlantCV functions:
 
 ```python
 from plantcv import plantcv as pcv
