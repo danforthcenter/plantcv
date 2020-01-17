@@ -1313,7 +1313,7 @@ def test_plantcv_cluster_contours_grayscale_input():
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI), 0)
     roi_objects = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_OBJECT), encoding="latin1")
     hierachy = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_HIERARCHY), encoding="latin1")
-    objs = roi_objects['arr_0']
+    objs = [roi_objects[arr_n] for arr_n in roi_objects]
     obj_hierarchy = hierachy['arr_0']
     # Test with debug = "print"
     pcv.params.debug = "print"
