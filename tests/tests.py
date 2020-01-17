@@ -1203,7 +1203,7 @@ def test_plantcv_auto_crop_bad_input():
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI), -1)
     gray_img = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
     contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_OBJECT), encoding="latin1")
-    roi_contours = contours['arr_0']
+    roi_contours = [contours[arr_n] for arr_n in contours]
     with pytest.raises(RuntimeError):
         pcv.params.debug = "plot"
         _ = pcv.auto_crop(img=gray_img, obj=roi_contours[1], padding_x=20, padding_y=20, color='wite')
