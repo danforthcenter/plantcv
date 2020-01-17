@@ -673,3 +673,50 @@ def _plot(x, mph, mpd, threshold, edge, valley, ax, ind):
                  % (mode, str(mph), mpd, str(threshold), edge))
     # plt.grid()
     plt.show()
+
+
+def saturation(rgb_img, threshold=255, channel = "any"):
+    """Return a mask filtering out saturated pixels.
+
+    Inputs:
+    rgb_img    = RGB image
+    threshold  = value for threshold, above which is considered saturated
+    channel    = how many channels must be saturated for the pixel to be masked out ("any", "all")
+
+    Returns:
+    masked_img = A binary image with the saturated regions blacked out.
+
+    :param img: np.ndarray
+    :param threshold: int
+    :param channel: str
+    :return masked_img: np.ndarray
+    """
+
+    params.device += 1
+
+    # Mask red, green, and blue saturation separately
+    b, g, r = cv2.split(rgb_img)
+    b_saturated = cv2.inRange(b, threshold, 255)
+    g_saturated = cv2.inRange(g, threshold, 255)
+    r_saturated = cv2.inRange(r, threshold, 255)
+
+    # Combine channel masks
+    if channel.lower() == "any":
+        # Consider a pixel saturated if any channel is saturated
+        saturated = cv2.bitwise_or(b_saturated, g_saturated)
+        saturated = cv2.bitwise_or(saturated, r_saturated)
+    elif channel.lower() == "all":
+        # Consider a pixel saturated only if all channels are saturated
+        saturated = cv2.bitwise_and(b_saturated, g_saturated)
+        saturated = cv2.bitwise_and(saturated, r_saturated)
+    else:
+        fatal_error(str(channel) + " is not a valid option. Channel must be either 'any', or 'all'.")
+
+    # Invert "saturated" before returning, so saturated = black
+    bin_img = cv2.bitwise_not(saturated)
+
+    if params.debug == 'print':
+        print_image(bin_img, os.path.join(params.debug_outdir, str(params.device), '_saturation_threshold.png'))
+    elif params.debug == 'plot':
+        plot_image(bin_img, cmap='gray')
+    return bin_img
