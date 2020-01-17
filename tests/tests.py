@@ -1286,7 +1286,7 @@ def test_plantcv_cluster_contours():
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI), -1)
     roi_objects = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_OBJECT), encoding="latin1")
     hierarchy = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_HIERARCHY), encoding="latin1")
-    objs = roi_objects['arr_0']
+    objs = [roi_objects[arr_n] for arr_n in roi_objects]
     obj_hierarchy = hierarchy['arr_0']
     # Test with debug = "print"
     pcv.params.debug = "print"
