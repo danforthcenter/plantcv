@@ -3498,7 +3498,7 @@ def test_plantcv_morphology_segment_tangent_angle():
     pcv.params.debug_outdir = cache_dir
     skel = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
     objects = np.load(os.path.join(TEST_DATA, TEST_SKELETON_OBJECTS), encoding="latin1")
-    objs = objects['arr_0']
+    objs = [objects[arr_n] for arr_n in objects]
     pcv.params.debug = "print"
     _ = pcv.morphology.segment_tangent_angle(skel, objs, 2)
     pcv.params.debug = "plot"
@@ -3515,7 +3515,7 @@ def test_plantcv_morphology_segment_id():
     pcv.params.debug_outdir = cache_dir
     skel = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
     objects = np.load(os.path.join(TEST_DATA, TEST_SKELETON_OBJECTS), encoding="latin1")
-    objs = objects['arr_0']
+    objs = [objects[arr_n] for arr_n in objects]
     pcv.params.debug = "print"
     _ = pcv.morphology.segment_id(skel, objs)
     pcv.params.debug = "plot"
