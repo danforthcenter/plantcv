@@ -33,7 +33,7 @@ def acute_vertex(img, obj, win, thresh, sep):
     :param win: int
     :param thresh: int
     :param sep: int
-    :return acute: ndarray
+    :return acute_points: ndarray
     :return img2: ndarray
     """
     params.device += 1
