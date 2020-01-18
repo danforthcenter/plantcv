@@ -1342,7 +1342,7 @@ def test_plantcv_cluster_contours_splitimg():
     hierachy = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_HIERARCHY), encoding="latin1")
     cluster_names = os.path.join(TEST_DATA, TEST_INPUT_GENOTXT)
     cluster_names_too_many = os.path.join(TEST_DATA, TEST_INPUT_GENOTXT_TOO_MANY)
-    roi_contours = contours['arr_0']
+    roi_contours = [contours[arr_n] for arr_n in contours]
     cluster_contours = [clusters[arr_n] for arr_n in  clusters]
     obj_hierarchy = hierachy['arr_0']
     # Test with debug = "print"
