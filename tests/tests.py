@@ -1343,7 +1343,7 @@ def test_plantcv_cluster_contours_splitimg():
     cluster_names = os.path.join(TEST_DATA, TEST_INPUT_GENOTXT)
     cluster_names_too_many = os.path.join(TEST_DATA, TEST_INPUT_GENOTXT_TOO_MANY)
     roi_contours = contours['arr_0']
-    cluster_contours = clusters['arr_0']
+    cluster_contours = [clusters[arr_n] for arr_n in  clusters]
     obj_hierarchy = hierachy['arr_0']
     # Test with debug = "print"
     pcv.params.debug = "print"
