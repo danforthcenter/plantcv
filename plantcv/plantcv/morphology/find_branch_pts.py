@@ -24,11 +24,7 @@ def find_branch_pts(skel_img, mask=None):
     :return branch_pts_img: numpy.ndarray
     """
 
-    # Store debug
-    debug = params.debug
-    params.debug = None
-
-    # In a kernel: 1 values line up with 255s, -1s line up with 0s, and 0s correspond to dont care
+    ### In a kernel: 1 values line up with 255s, -1s line up with 0s, and 0s correspond to don't care ###
     # T like branch points
     t1 = np.array([[-1,  1, -1],
                    [ 1,  1,  1],
@@ -68,6 +64,10 @@ def find_branch_pts(skel_img, mask=None):
     # Switch type to uint8 rather than bool
     branch_pts_img = branch_pts_img.astype(np.uint8) * 255
 
+    # Store debug
+    debug = params.debug
+    params.debug = None
+
     # Make debugging image
     if mask is None:
         dilated_skel = dilate(skel_img, params.line_thickness, 1)
@@ -91,7 +91,7 @@ def find_branch_pts(skel_img, mask=None):
     params.device += 1
 
     if params.debug == 'print':
-        print_image(branch_plot, os.path.join(params.debug_outdir, str(params.device) + '_skeleton_branches.png'))
+        print_image(branch_plot, os.path.join(params.debug_outdir, str(params.device) + '_branch_pts.png'))
     elif params.debug == 'plot':
         plot_image(branch_plot)
 

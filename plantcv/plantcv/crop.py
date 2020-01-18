@@ -8,7 +8,6 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import params
 
 
-
 def crop(img, x, y, h, w):
     """Crop image.
 

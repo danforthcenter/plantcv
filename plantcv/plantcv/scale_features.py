@@ -28,7 +28,6 @@ def scale_features(obj, mask, points, line_position):
     :return centroid_scaled: tuple
     :return boundary_line_scaled: tuple
     """
-    params.device += 1
     # Get the dimensions of the image from the binary thresholded object (mask)
     if not np.any(mask) or not np.any(obj):
         rescaled = ('NA', 'NA')
@@ -52,8 +51,6 @@ def scale_features(obj, mask, points, line_position):
     xmin = x
     xmax = x + width
     # Scale the coordinates of each of the feature locations
-    # Feature scaling X' = (X - xmin) / (xmax - xmin)
-    # Feature scaling Y' = (Y - ymin) / (ymax - ymin)
     rescaled = []
     for p in points:
         xval = float(p[0, 0] - xmin) / float(xmax - xmin)
@@ -70,6 +67,7 @@ def scale_features(obj, mask, points, line_position):
     boundary_line_scaled = (blx_scaled, bly_scaled)
     # If debug is 'True' plot an image of the scaled points on a black background
     if not params.debug == None:
+        params.device += 1
         # Make a decent size blank image
         scaled_img = np.zeros((1500, 1500, 3), np.uint8)
         plotter = np.array(rescaled)
@@ -84,8 +82,7 @@ def scale_features(obj, mask, points, line_position):
                    (255, 0, 255), -1)
         cv2.circle(scaled_img, (int(blx_scaled * 1000) + 250, int(bly_scaled * 1000) + 250), params.line_thickness,
                    (0, 255, 0), -1)
-        # Because the coordinates increase as you go down and to the right on the
-        # image you need to flip the object around the x-axis
+        # Because the coordinates inc as you go down and right on the img you need to flip the object around the x-axis
         flipped_scaled = cv2.flip(scaled_img, 0)
         if params.debug == 'print':
             print_image(flipped_scaled, os.path.join(params.debug_outdir, str(params.device) + '_feature_scaled.png'))

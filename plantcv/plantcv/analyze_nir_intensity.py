@@ -31,9 +31,6 @@ def analyze_nir_intensity(gray_img, mask, bins=256, histplot=False):
     :param histplot: bool
     :return analysis_images: plotnine ggplot
     """
-
-    params.device += 1
-
     # apply plant shaped mask to image
     mask1 = binary_threshold(mask, 0, 255, 'light')
     mask1 = (mask1 / 255)
@@ -62,18 +59,9 @@ def analyze_nir_intensity(gray_img, mask, bins=256, histplot=False):
     pixels = cv2.countNonZero(mask1)
     hist_percent = [(p / float(pixels)) * 100 for p in hist_nir]
 
-    # No longer returning a pseudocolored image
-    # make mask to select the background
-    # mask_inv = cv2.bitwise_not(mask)
-    # img_back = cv2.bitwise_and(rgbimg, rgbimg, mask=mask_inv)
-    # img_back1 = cv2.applyColorMap(img_back, colormap=1)
-
-    # mask the background and color the plant with color scheme 'jet'
-    # cplant = cv2.applyColorMap(rgbimg, colormap=2)
-    # masked1 = apply_mask(cplant, mask, 'black')
     masked1 = cv2.bitwise_and(rgbimg, rgbimg, mask=mask)
-    # cplant_back = cv2.add(masked1, img_back1)
     if params.debug is not None:
+        params.device += 1
         if params.debug == "print":
             print_image(masked1, os.path.join(params.debug_outdir, str(params.device) + "_masked_nir_plant.jpg"))
         if params.debug == "plot":

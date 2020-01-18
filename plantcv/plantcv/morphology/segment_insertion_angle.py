@@ -123,6 +123,8 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
         combined_stem, combined_stem_hier = find_objects(stem_img, stem_img)
 
     if loop_count == 50:
+        # Reset debug mode
+        params.debug = debug
         fatal_error('Unable to combine stem objects.')
 
     # Find slope of the stem

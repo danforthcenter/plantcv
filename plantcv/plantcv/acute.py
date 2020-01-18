@@ -35,8 +35,6 @@ def acute(obj, mask, win, thresh):
     :param thresh: int
     :return homolog_pts:
     """
-
-    params.device += 1
     chain = []                                         # Create empty chain to store angle scores
     for k in list(range(len(obj))):                    # Coordinate-by-coordinate 3-point assignments
         vert = obj[k]
@@ -195,12 +193,6 @@ def acute(obj, mask, win, thresh):
         start_pts = obj[SSpts]
         stop_pts = obj[TSpts]
 
-        if params.debug is not None:
-            return homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist
-        else:
-            return homolog_pts
-    else: 
-        if params.debug is not None:
-            return [], [], [], [], [], []
-        else:
-            return []
+        return homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist
+    else:
+        return [], [], [], [], [], []

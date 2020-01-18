@@ -1,13 +1,11 @@
 # Calibrate hyperspectral image data
 
 import os
-import cv2
 import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 from plantcv.plantcv import Spectral_data
-from plantcv.plantcv.transform import rescale
 from plantcv.plantcv.hyperspectral.read_data import _make_pseudo_rgb
 
 
@@ -30,10 +28,6 @@ def calibrate(raw_data, white_reference, dark_reference):
     """
     # Auto-increment device
     params.device += 1
-
-    # Store debugging mode
-    debug = params.debug
-    params.debug = None
 
     # Collect the number of wavelengths present
     num_bands = len(white_reference.wavelength_dict)
@@ -65,9 +59,6 @@ def calibrate(raw_data, white_reference, dark_reference):
     # Make pseudo-rgb image for the calibrated image
     pseudo_rgb = _make_pseudo_rgb(spectral_array=calibrated)
     calibrated.pseudo_rgb = pseudo_rgb
-
-    # Restore debug mode
-    params.debug = debug
 
     if params.debug == "plot":
         # Gamma correct pseudo_rgb image

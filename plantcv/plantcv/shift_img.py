@@ -29,7 +29,7 @@ def shift_img(img, number, side="right"):
     number -= 1
 
     if number < 0:
-        fatal_error("x and y cannot be negative numbers or non-integers")
+        fatal_error("number cannot be 0, negative numbers, or non-integers")
 
     # get the sizes of the images
     if len(np.shape(img)) == 3:

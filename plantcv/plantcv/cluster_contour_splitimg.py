@@ -45,8 +45,6 @@ def cluster_contour_splitimg(rgb_img, grouped_contour_indexes, contours, hierarc
     sys.stderr.write(
         'This function has been updated to include object hierarchy so object holes can be included\n')
 
-    # get names to split also to check the target number of objects
-
     i = datetime.now()
     timenow = i.strftime('%m-%d-%Y_%H:%M:%S')
 
@@ -67,7 +65,6 @@ def cluster_contour_splitimg(rgb_img, grouped_contour_indexes, contours, hierarc
 
     # make sure the number of objects matches the namelist, and if not, remove the smallest grouped countor
     # removing contours is not ideal but the lists don't match there is a warning to check output
-
     if len(namelist) == len(grouped_contour_indexes):
         corrected_contour_indexes = grouped_contour_indexes
     elif len(namelist) < len(grouped_contour_indexes):
@@ -103,7 +100,6 @@ def cluster_contour_splitimg(rgb_img, grouped_contour_indexes, contours, hierarc
         corrected_contour_indexes = grouped_contour_indexes
 
     # create filenames
-
     group_names = []
     group_names1 = []
     for i, x in enumerate(namelist):
@@ -113,7 +109,6 @@ def cluster_contour_splitimg(rgb_img, grouped_contour_indexes, contours, hierarc
         group_names1.append(maskname)
 
     # split image
-
     output_path = []
     output_imgs = []
     output_masks = []

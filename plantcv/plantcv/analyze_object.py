@@ -26,9 +26,6 @@ def analyze_object(img, obj, mask):
     :param mask: numpy.ndarray
     :return analysis_images: list
     """
-
-    params.device += 1
-
     # Valid objects can only be analyzed if they have >= 5 vertices
     if len(obj) < 5:
         return None
@@ -118,20 +115,6 @@ def analyze_object(img, obj, mask):
             if 0 <= xintercept <= iy and 0 <= xintercept1 <= iy:
                 cv2.line(background1, (xintercept1, ix), (xintercept, 0), (255), params.line_thickness)
             elif xintercept < 0 or xintercept > iy or xintercept1 < 0 or xintercept1 > iy:
-                # Used a random number generator to test if either of these cases were possible but neither is possible
-                # if xintercept < 0 and 0 <= xintercept1 <= iy:
-                #     yintercept = int(b_line)
-                #     cv2.line(background1, (0, yintercept), (xintercept1, ix), (255), 5)
-                # elif xintercept > iy and 0 <= xintercept1 <= iy:
-                #     yintercept1 = int((slope * iy) + b_line)
-                #     cv2.line(background1, (iy, yintercept1), (xintercept1, ix), (255), 5)
-                # elif 0 <= xintercept <= iy and xintercept1 < 0:
-                #     yintercept = int(b_line)
-                #     cv2.line(background1, (0, yintercept), (xintercept, 0), (255), 5)
-                # elif 0 <= xintercept <= iy and xintercept1 > iy:
-                #     yintercept1 = int((slope * iy) + b_line)
-                #     cv2.line(background1, (iy, yintercept1), (xintercept, 0), (255), 5)
-                # else:
                 yintercept = int(b_line)
                 yintercept1 = int((slope * iy) + b_line)
                 cv2.line(background1, (0, yintercept), (iy, yintercept1), (255), 5)
@@ -139,14 +122,11 @@ def analyze_object(img, obj, mask):
             cv2.line(background1, (iy, caliper_mid_y), (0, caliper_mid_y), (255), params.line_thickness)
 
         ret1, line_binary = cv2.threshold(background1, 0, 255, cv2.THRESH_BINARY)
-        # print_image(line_binary,(str(device)+'_caliperfit.png'))
 
         cv2.drawContours(background2, [hull], -1, (255), -1)
         ret2, hullp_binary = cv2.threshold(background2, 0, 255, cv2.THRESH_BINARY)
-        # print_image(hullp_binary,(str(device)+'_hull.png'))
 
         caliper = cv2.multiply(line_binary, hullp_binary)
-        # print_image(caliper,(str(device)+'_caliperlength.png'))
 
         caliper_y, caliper_x = np.array(caliper.nonzero())
         caliper_matrix = np.vstack((caliper_x, caliper_y))
@@ -156,9 +136,6 @@ def analyze_object(img, obj, mask):
         caliper_transpose1 = np.lexsort((caliper_y, caliper_x))
         caliper_transpose2 = [(caliper_x[i], caliper_y[i]) for i in caliper_transpose1]
         caliper_transpose = np.array(caliper_transpose2)
-
-    # else:
-    #  hull_area, solidity, perimeter, width, height, cmx, cmy = 'ND', 'ND', 'ND', 'ND', 'ND', 'ND', 'ND'
 
     analysis_images = []
 
@@ -171,14 +148,9 @@ def analyze_object(img, obj, mask):
         cv2.line(ori_img, (tuple(caliper_transpose[caliper_length - 1])), (tuple(caliper_transpose[0])), (255, 0, 255),
                  params.line_thickness)
         cv2.circle(ori_img, (int(cmx), int(cmy)), 10, (255, 0, 255), params.line_thickness)
-        # Output images with convex hull, extent x and y
-        # out_file = os.path.splitext(filename)[0] + '_shapes.jpg'
-        # out_file1 = os.path.splitext(filename)[0] + '_mask.jpg'
 
-        # print_image(ori_img, out_file)
         analysis_images.append(ori_img)
 
-        # print_image(mask, out_file1)
         analysis_images.append(mask)
 
     else:
@@ -231,6 +203,7 @@ def analyze_object(img, obj, mask):
                             value=float(eccentricity), label='none')
 
     if params.debug is not None:
+        params.device += 1
         cv2.drawContours(ori_img, obj, -1, (255, 0, 0), params.line_thickness)
         cv2.drawContours(ori_img, [hull], -1, (255, 0, 255), params.line_thickness)
         cv2.line(ori_img, (x, y), (x + width, y), (255, 0, 255), params.line_thickness)

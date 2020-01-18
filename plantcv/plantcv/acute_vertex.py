@@ -24,12 +24,17 @@ def acute_vertex(img, obj, win, thresh, sep):
              worked well for sample image)
     sep    = the number of contour points to search within for the most acute value
 
+    Returns:
+    acute_points = list of acute points
+    img2         = debugging image
+
     :param img: ndarray
     :param obj: ndarray
     :param win: int
     :param thresh: int
     :param sep: int
-    :return acute: ndarray
+    :return acute_points: ndarray
+    :return img2: ndarray
     """
     params.device += 1
     chain = []
@@ -40,10 +45,7 @@ def acute_vertex(img, obj, win, thresh, sep):
         x, y = obj[i].ravel()
         pre_x, pre_y = obj[i - win].ravel()
         post_x, post_y = obj[i + win].ravel()
-        # print "The iterator i is currently " + str(i)
-        # print "Here are the values: " + str(x) + " " + str(y)
-        # print "Here are the pre values: " + str(pre_x) + " " + str(pre_y)
-        # print "Here are the post values: " + str(post_x) + " " + str(post_y)
+
         # Angle in radians derived from Law of Cosines, converted to degrees
         P12 = np.sqrt((x-pre_x)*(x-pre_x)+(y-pre_y)*(y-pre_y))
         P13 = np.sqrt((x-post_x)*(x-post_x)+(y-post_y)*(y-post_y))
@@ -52,15 +54,10 @@ def acute_vertex(img, obj, win, thresh, sep):
             dot = (P12*P12 + P13*P13 - P23*P23)/(2*P12*P13)
         elif (2*P12*P13) < 0.001:
             dot = (P12*P12 + P13*P13 - P23*P23)/0.001
-        # Used a random number generator to test if either of these cases were possible but couldn't find a solution in
-        # 5 million iterations
-        # if dot > 1:                            # If float excedes 1 prevent arcos error and force to equal 1
-        #     dot = 1
 
-        if dot < -1:                     # If float excedes -1 prevent arcos error and force to equal -1
+        if dot < -1:     # If float exceeds -1 prevent arcos error and force to equal -1
             dot = -1
         ang = math.degrees(math.acos(dot))
-        # print "Here is the angle: " + str(ang)
         chain.append(ang)
         
     # Select points in contour that have an angle more acute than thresh
@@ -70,7 +67,7 @@ def acute_vertex(img, obj, win, thresh, sep):
             index.append(c)
     # There oftentimes several points around tips with acute angles
     # Here we try to pick the most acute angle given a set of contiguous point
-    # Sep is the number of points to evaluate the number of verticies
+    # Sep is the number of points to evaluate the number of vertices
     out = []
     tester = []
     for i in range(len(index)-1):
@@ -93,38 +90,21 @@ def acute_vertex(img, obj, win, thresh, sep):
     acute_points = []
     for pt in acute:
         acute_points.append(pt[0].tolist())
-    # If no points found as acute get the largest point
-    # if len(acute) == 0:
-        # acute = max(obj, key=cv2.contourArea)
-        # flag = 1
-    # img2 = np.copy(img)
-    # cv2.circle(img2,(int(cmx),int(cmy)),30,(0,215,255),-1)
-    # cv2.circle(img2,(int(cmx),int(bly)),30,(255,0,0),-1)
-    # Plot each of these tip points on the image
-    # for i in acute:
-    #        x,y = i.ravel()
-    #        cv2.circle(img2,(x,y),15,(153,0,153),-1)
-    # cv2.imwrite('tip_points_centroid_and_base.png', img2)
-    # Lets make a plot of these values on the
+
     img2 = np.copy(img)
     # Plot each of these tip points on the image
     for i in acute:
         x, y = i.ravel()
-        # cv2.circle(img2,(x,y),15,(255,204,255),-1)
         cv2.circle(img2, (x, y), params.line_thickness, (255, 0, 255), -1)
 
     if params.debug == 'print':
         print_image(img2, os.path.join(params.debug_outdir, str(params.device) + '_acute_vertices.png'))
     elif params.debug == 'plot':
         plot_image(img2)
-    # If flag was true (no points found as acute) reformat output appropriate type
-    # if flag == 1:
-    #     acute = np.asarray(acute)
-    #     acute = acute.reshape(1, 1, 2)
 
     # Store into global measurements
     outputs.add_observation(variable='tip_coordinates', trait='tip coordinates',
                             method='plantcv.plantcv.acute_vertex', scale='none', datatype=list,
                             value=acute_points, label='none')
 
-    return acute, img2
+    return acute_points, img2
