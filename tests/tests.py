@@ -4912,7 +4912,7 @@ def test_plantcv_visualize_clustered_contours():
     cluster_i = np.load(os.path.join(TEST_DATA, TEST_INPUT_VISUALIZE_CLUSTERS), encoding="latin1")
     objs = [roi_objects[arr_n] for arr_n in roi_objects]
     obj_hierarchy = hierarchy['arr_0']
-    cluster = cluster_i['arr_0']
+    cluster = [cluster_i[arr_n] for arr_n in cluster_i]
     # Test in print mode
     pcv.params.debug = "print"
     _ = pcv.visualize.clustered_contours(img=img, grouped_contour_indices=cluster, roi_objects=objs,
