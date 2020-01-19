@@ -264,6 +264,8 @@ def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
                 x = coord[0] + j * spacing[0]
                 # Check whether the ROI is correctly bounded inside the image
                 if x - radius < 0 or x + radius > width or y - radius < 0 or y + radius > height:
+                    # Reset debug
+                    params.debug = debug
                     fatal_error("An ROI extends outside of the image!")
                 # Draw the circle on the binary images
                 # Keep track of all roi
@@ -285,6 +287,8 @@ def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
             y = coord[i][1]
             x = coord[i][0]
             if x - radius < 0 or x + radius > width or y - radius < 0 or y + radius > height:
+                # Reset debug
+                params.debug = debug
                 fatal_error("An ROI extends outside of the image!")
             # Draw the circle on the binary image
             # Keep track of all roi
@@ -298,6 +302,8 @@ def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
             roi_contour.append(rc)
             roi_hierarchy.append(rh)
     else:
+        # Reset debug
+        params.debug = debug
         fatal_error("Function can either make a grid of ROIs (user must provide nrows, ncols, spacing, and coord) "
                     "or take custom ROI coordinates (user must provide only a list of tuples to 'coord' parameter). "
                     "Both options require a user-defined radius as well")

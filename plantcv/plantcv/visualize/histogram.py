@@ -40,6 +40,8 @@ def histogram(gray_img, mask=None, bins=256, color='red', title=None):
     else:
         masked = gray_img
 
+    params.debug=debug
+
     if gray_img.dtype == 'uint16':
         maxval = 65536
     else:
@@ -71,7 +73,7 @@ def histogram(gray_img, mask=None, bins=256, color='red', title=None):
                     + geom_line(color=color)
                     + scale_x_continuous(breaks=list(range(0, bins, 25)))
                     + labels.ggtitle(title))
-    params.debug=debug
+
     if params.debug is not None:
         if params.debug == "print":
             fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + '_hist.png'))

@@ -25,16 +25,16 @@ def nonuniform_illumination(img, ksize):
             :param ksize: int
             :return corrected_img: numpy.ndarray
             """
-    # Store debug mode
-    debug = params.debug
-    params.debug = None
-
     if len(np.shape(img)) == 3:
         img = rgb2gray(img)
 
     # Fill foreground objects
     kernel = np.ones((ksize, ksize), np.uint8)
     opening = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)
+
+    # Store debug mode
+    debug = params.debug
+    params.debug = None
 
     # Heavily blurred image acts like a background image
     blurred_img = gaussian_blur(opening, ksize=(ksize, ksize))
@@ -44,6 +44,8 @@ def nonuniform_illumination(img, ksize):
 
     # Reset debug mode
     params.debug = debug
+    # Autoincrement the device counter
+    params.device += 1
 
     if params.debug == 'print':
         print_image(corrected_img, os.path.join(params.debug_outdir, str(params.device) +

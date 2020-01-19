@@ -24,9 +24,6 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
     :param hist_plot_type: str
     :return analysis_images: list
     """
-
-    params.device += 1
-
     if len(np.shape(rgb_img)) < 3:
         fatal_error("rgb_img must be an RGB image")
 
@@ -133,12 +130,10 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
                         + scale_color_manual(color_channels)
                         )
         analysis_image = hist_fig
-    # Hue values of zero are red but are also the value for pixels where hue is undefined
-    # The hue value of a pixel will be undefined when the color values are saturated
-    # Therefore, hue values of zero are excluded from the calculations below
+    # Hue values of zero are red but are also the value for pixels where hue is undefined. The hue value of a pixel will
+    # be undef. when the color values are saturated. Therefore, hue values of 0 are excluded from the calculations below
 
-    # Calculate the median hue value
-    # The median is rescaled from the encoded 0-179 range to the 0-359 degree range
+    # Calculate the median hue value (median is rescaled from the encoded 0-179 range to the 0-359 degree range)
     hue_median = np.median(h[np.where(h > 0)]) * 2
 
     # Calculate the circular mean and standard deviation of the encoded hue values
@@ -146,11 +141,9 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
     hue_circular_mean = stats.circmean(h[np.where(h > 0)], high=179, low=0) * 2
     hue_circular_std = stats.circstd(h[np.where(h > 0)], high=179, low=0) * 2
 
-    # Store into lists instead for pipeline and print_results
-    # stats_dict = {'mean': circular_mean, 'std' : circular_std, 'median': median}
-
     # Plot or print the histogram
     if hist_plot_type is not None:
+        params.device += 1
         if params.debug == 'print':
             hist_fig.save(os.path.join(params.debug_outdir, str(params.device) + '_analyze_color_hist.png'))
         elif params.debug == 'plot':
@@ -211,6 +204,6 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
                             value=hue_median, label='degrees')
 
     # Store images
-    outputs.images.append([analysis_image])
+    outputs.images.append(analysis_image)
 
     return analysis_image

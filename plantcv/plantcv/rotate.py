@@ -26,7 +26,6 @@ def rotate(img, rotation_deg, crop):
     :param crop: bool
     :return rotated_img: numpy.ndarray
     """
-    params.device += 1
 
     if len(np.shape(img)) == 3:
         iy, ix, iz = np.shape(img)
@@ -50,6 +49,8 @@ def rotate(img, rotation_deg, crop):
         rotated_img = cv2.warpAffine(img, m, (nw, nh))
     else:
         rotated_img = cv2.warpAffine(img, m, (ix, iy))
+
+    params.device += 1
 
     if params.debug == 'print':
         print_image(rotated_img, os.path.join(params.debug_outdir, str(params.device) + str(rotation_deg) + '_rotated_img.png'))

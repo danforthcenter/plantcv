@@ -78,14 +78,6 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
             r2 = r1 - 1
         mask = mask[0:mx, r1:my - r2]
 
-    # get he sizes of the images again since you might have changed them.
-    # if len(np.shape(img)) == 3:
-    #     ix, iy, iz = np.shape(img)
-    #     ori_img = np.copy(img)
-    # else:
-    #     ix, iy = np.shape(img)
-    #     ori_img = np.dstack((img, img, img))
-
     # New mask shape
     mx, my = np.shape(mask)
 
@@ -94,10 +86,7 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
         top = np.zeros((x, my), dtype=np.uint8)
 
         maskv = np.vstack((top, mask))
-        # # In line 57 the mask is spliced, so there will never be a case where 'maskv' will have a 3rd dimension
-        # if len(np.shape(maskv)) == 3:
-        #     mx, my, mz = np.shape(maskv)
-        # else:
+
         mx, my = np.shape(maskv)
 
         if mx >= ix:
@@ -125,18 +114,12 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
         bottom = np.zeros((x, my), dtype=np.uint8)
 
         maskv = np.vstack((mask, bottom))
-        # print_image(maskv,(str(device)+"_push-bottom-test.png"))
 
-        # # In line 57 the mask is spliced, so there will never be a case where 'maskv' will have a 3rd dimension
-        # if len(np.shape(maskv)) == 3:
-        #     mx, my, mz = np.shape(maskv)
-        # else:
         mx, my = np.shape(maskv)
 
         if mx >= ix:
             maskdiff = mx - ix
             maskv = maskv[maskdiff:mx, 0:my]
-            # print_image(maskv,(str(device)+"_push-bottom-test.png"))
 
         if mx < ix:
             r = ix - mx
@@ -159,20 +142,13 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
         fatal_error(str(v_pos) + ' is not valid, must be "top" or "bottom"!')
 
     if h_pos.upper() == "LEFT":
-        # # In line 57 the mask is spliced, so there will never be a case where 'maskv' will have a 3rd dimension
-        # if len(np.shape(maskv)) == 3:
-        #     mx, my, mz = np.shape(maskv)
-        # else:
+
         mx, my = np.shape(maskv)
 
         # Add rows to the left
         left = np.zeros((mx, y), dtype=np.uint8)
         maskv = np.hstack((left, maskv))
 
-        # # In line 57 the mask is spliced, so there will never be a case where 'maskv' will have a 3rd dimension
-        # if len(np.shape(maskv)) == 3:
-        #     mx, my, mz = np.shape(maskv)
-        # else:
         mx, my = np.shape(maskv)
 
         if my >= iy:
@@ -196,20 +172,13 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
             plot_image(maskv, cmap='gray')
 
     elif h_pos.upper() == "RIGHT":
-        # # In line 57 the mask is spliced, so there will never be a case where 'maskv' will have a 3rd dimension
-        # if len(np.shape(maskv)) == 3:
-        #     mx, my, mz = np.shape(maskv)
-        # else:
+
         mx, my = np.shape(maskv)
 
         # Add rows to the left
         right = np.zeros((mx, y), dtype=np.uint8)
         maskv = np.hstack((maskv, right))
 
-        # # In line 57 the mask is spliced, so there will never be a case where 'maskv' will have a 3rd dimension
-        # if len(np.shape(maskv)) == 3:
-        #     mx, my, mz = np.shape(maskv)
-        # else:
         mx, my = np.shape(maskv)
 
         if my >= iy:

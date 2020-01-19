@@ -44,7 +44,6 @@ def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1, show_g
         iy, ix, = np.shape(img)
 
     # get the break groups
-
     if nrow == 1:
         rbreaks = [0, iy]
     else:
@@ -59,7 +58,6 @@ def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1, show_g
         cbreaks = range(0, ix, cstep1)
 
     # categorize what bin the center of mass of each contour
-
     def digitize(a, step):
         # The way cbreaks and rbreaks are calculated, step will never be an integer
         # if isinstance(step, int):
@@ -85,8 +83,6 @@ def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1, show_g
         else:
             cx = int(m['m10'] / m['m00'])
             cy = int(m['m01'] / m['m00'])
-            # colbin = np.digitize(cx, cbreaks)
-            # rowbin = np.digitize(cy, rbreaks)
             colbin = digitize(cx, cbreaks)
             rowbin = digitize(cy, rbreaks)
             a = (cx, cy, colbin, rowbin, i)
@@ -95,7 +91,6 @@ def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1, show_g
     coord2 = np.sort(coord1, order=('colbin', 'rowbin'))
 
     # get the list of unique coordinates and group the contours with the same bin coordinates
-
     groups = []
     for i, y in enumerate(coord2):
         col = y[3]

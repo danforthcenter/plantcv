@@ -28,10 +28,6 @@ def analyze_spectral(array, mask, histplot=True):
     """
     params.device += 1
 
-    # Store debug mode
-    debug = params.debug
-    params.debug = None
-
     array_data = array.array_data
 
     # List of wavelengths recorded created from parsing the header file will be string, make list of floats
@@ -83,9 +79,6 @@ def analyze_spectral(array, mask, histplot=True):
     outputs.add_observation(variable='spectral_frequencies', trait='spectral frequencies',
                             method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='frequency', datatype=list,
                             value=new_freq, label=wavelength_labels)
-
-    params.debug = debug
-    analysis_img = None
 
     if histplot is True:
         dataset = pd.DataFrame({'Wavelength ('+ array.wavelength_units+')': new_wavelengths,

@@ -1,3 +1,5 @@
+# Check if mask in within the frame
+
 import numpy as np
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import outputs

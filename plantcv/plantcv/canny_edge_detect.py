@@ -77,7 +77,10 @@ def canny_edge_detect(img, mask = None, sigma=1.0, low_thresh=None, high_thresh=
 
     # Adjust line thickness
     if thickness != 1:
+        debug = params.debug
+        params.debug = None
         bin_img = dilate(bin_img, thickness, 1)
+        params.debug = debug
     else:
         # Print or plot the binary image
         if params.debug == 'print':

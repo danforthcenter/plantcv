@@ -35,13 +35,6 @@ def fluor_fvfm(fdark, fmin, fmax, mask, bins=256):
     # Check that fdark, fmin, and fmax are grayscale (single channel)
     if not all(len(np.shape(i)) == 2 for i in [fdark, fmin, fmax]):
         fatal_error("The fdark, fmin, and fmax images must be grayscale images.")
-    # # Check that fdark, fmin, and fmax are the same bit
-    # if  not (all(i.dtype == "uint16" for i in [fdark, fmin, fmax]) or
-    #         (all(i.dtype == "uint8" for i in [fdark, fmin, fmax]))):
-    #     fatal_error("The fdark, fmin, and fmax images must all be the same bit depth.")
-    # Check that fdark, fmin, and fmax are 16-bit images
-    # if not all(i.dtype == "uint16" for i in [fdark, fmin, fmax]):
-    #     fatal_error("The fdark, fmin, and fmax images must be 16-bit images.")
 
     # QC Fdark Image
     fdark_mask = cv2.bitwise_and(fdark, fdark, mask=mask)
@@ -84,12 +77,6 @@ def fluor_fvfm(fdark, fmin, fmax, mask, bins=256):
     # Calculate which non-zero bin has the maximum Fv/Fm value
     max_bin = midpoints[np.argmax(fvfm_hist)]
 
-    # Print F-variable image
-    # print_image(fv, (os.path.splitext(filename)[0] + '_fv_img.png'))
-    # analysis_images.append(['IMAGE', 'fv', os.path.splitext(filename)[0] + '_fv_img.png'])
-
-    # Create Histogram Plot, if you change the bin number you might need to change binx so that it prints
-    # an appropriate number of labels
     # Create a dataframe
     dataset = pd.DataFrame({'Plant Pixels': fvfm_hist, 'Fv/Fm': midpoints})
     # Make the histogram figure using plotnine
@@ -98,44 +85,6 @@ def fluor_fvfm(fdark, fmin, fmax, mask, bins=256):
                      + geom_label(label='Peak Bin Value: ' + str(max_bin),
                                   x=.15, y=205, size=8, color='green'))
     analysis_images.append(fvfm_hist_fig)
-
-    # Changed histogram method over from matplotlib pyplot to plotnine
-    # binx = int(bins / 50)
-    # plt.plot(midpoints, fvfm_hist, color='green', label='Fv/Fm')
-    # plt.xticks(list(midpoints[0::binx]), rotation='vertical', size='xx-small')
-    # plt.legend()
-    # ax = plt.subplot(111)
-    # ax.set_ylabel('Plant Pixels')
-    # ax.text(0.05, 0.95, ('Peak Bin Value: ' + str(max_bin)), transform=ax.transAxes, verticalalignment='top')
-    # plt.grid()
-    # plt.title('Fv/Fm of ' + os.path.splitext(filename)[0])
-    # fig_name = (os.path.splitext(filename)[0] + '_fvfm_hist.svg')
-    # plt.savefig(fig_name)
-    # plt.clf()
-    # analysis_images.append(['IMAGE', 'fvfm_hist', fig_name])
-
-    # No longer pseudocolor the image, instead can be pseudocolored by pcv.pseudocolor
-    # # Pseudocolored Fv/Fm image
-    # plt.imshow(fvfm, vmin=0, vmax=1, cmap="viridis")
-    # plt.colorbar()
-    # # fvfm_8bit = fvfm * 255
-    # # fvfm_8bit = fvfm_8bit.astype(np.uint8)
-    # # plt.imshow(fvfm_8bit, vmin=0, vmax=1, cmap=cm.jet_r)
-    # # plt.subplot(111)
-    # # mask_inv = cv2.bitwise_not(mask)
-    # # background = np.dstack((mask, mask, mask, mask_inv))
-    # # my_cmap = plt.get_cmap('binary_r')
-    # # plt.imshow(background, cmap=my_cmap)
-    # plt.axis('off')
-    # fig_name = (os.path.splitext(filename)[0] + '_pseudo_fvfm.png')
-    # plt.savefig(fig_name, dpi=600, bbox_inches='tight')
-    # plt.clf()
-    # analysis_images.append(['IMAGE', 'fvfm_pseudo', fig_name])
-
-    # path = os.path.dirname(filename)
-    # fig_name = 'FvFm_pseudocolor_colorbar.svg'
-    # if not os.path.isfile(os.path.join(path, fig_name)):
-    #     plot_colorbar(path, fig_name, 2)
 
     if params.debug == 'print':
         print_image(fmin_mask, os.path.join(params.debug_outdir, str(params.device) + '_fmin_mask.png'))

@@ -28,12 +28,6 @@ def analyze_thermal_values(thermal_array, mask, histplot=False):
     :param histplot: bool
     :return analysis_img: ggplot
     """
-    params.device += 1
-
-    # Store debug mode
-    debug = params.debug
-    params.debug = None
-
     max_value = np.amax(thermal_array)
     # Calculate histogram
     hist_thermal = [float(l[0]) for l in cv2.calcHist([np.float32(thermal_array)],
@@ -46,8 +40,14 @@ def analyze_thermal_values(thermal_array, mask, histplot=False):
         b += bin_width
         bin_labels.append(b)
 
+    # Store debug mode
+    debug = params.debug
+    params.debug = None
+
     # apply plant shaped mask to image
     mask1 = binary_threshold(mask, 0, 255, 'light')
+    params.debug = debug
+
     mask1 = (mask1 / 255)
     masked_thermal = thermal_array[np.where(mask > 0)]
 
@@ -80,9 +80,9 @@ def analyze_thermal_values(thermal_array, mask, histplot=False):
                             value=hist_percent, label=bin_labels)
     analysis_img = None
 
-    params.debug = debug
-
     if histplot is True:
+        params.device += 1
+
         dataset = pd.DataFrame({'Temperature C': bin_labels,
                                 'Proportion of pixels (%)': hist_percent})
         fig_hist = (ggplot(data=dataset,

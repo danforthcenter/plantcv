@@ -45,6 +45,9 @@ def segment_skeleton(skel_img, mask=None):
     # Gather contours of leaves
     segment_objects, _ = find_objects(segments, segments)
 
+    # Reset debug mode
+    params.debug = debug
+
     # Color each segment a different color
     rand_color = color_palette(len(segment_objects))
 
@@ -57,8 +60,6 @@ def segment_skeleton(skel_img, mask=None):
     for i, cnt in enumerate(segment_objects):
         cv2.drawContours(segmented_img, segment_objects, i, rand_color[i], params.line_thickness, lineType=8)
 
-    # Reset debug mode
-    params.debug = debug
     # Auto-increment device
     params.device += 1
 

@@ -41,9 +41,8 @@ def rectangle_mask(img, p1, p2, color="black"):
         ix, iy, iz = np.shape(img)
     else:
         ix, iy = np.shape(img)
-    size = ix, iy
     # create a blank image of same size
-    bnk = np.zeros(size, dtype=np.uint8)
+    bnk = np.zeros((ix, iy), dtype=np.uint8)
     img1 = np.copy(img)
     # draw a rectangle denoted by pt1 and pt2 on the blank image
 
