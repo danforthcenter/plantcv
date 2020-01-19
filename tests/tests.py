@@ -2738,7 +2738,8 @@ def test_plantcv_roi_objects_bad_input():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     roi_contour_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_ROI_CONTOUR), encoding="latin1")
     roi_contour = [roi_contour_npz[arr_n] for arr_n in roi_contour_npz]
-    roi_hierarchy = roi_npz['arr_1']
+    roi_hierarchy_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_ROI_HIERARCHY), encoding="latin1")
+    roi_hierarchy = roi_hierarchy_npz['arr_0']
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS1), encoding="latin1")
     object_contours = contours_npz['arr_0']
     object_hierarchy = contours_npz['arr_1']
