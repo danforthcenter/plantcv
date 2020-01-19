@@ -2169,8 +2169,8 @@ def test_plantcv_object_composition_grayscale_input():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
-    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS1), encoding="latin1")
-    object_contours = contours_npz['arr_0']
+    object_contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_OBJECT_CONTOURS), encoding="latin1")
+    object_contours = [object_contours_npz[arr_n] for arr_n in object_contours_npz]
     object_hierarchy = contours_npz['arr_1']
     # Test with debug = "plot"
     pcv.params.debug = "plot"
