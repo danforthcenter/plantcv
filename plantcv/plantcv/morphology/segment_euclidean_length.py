@@ -30,17 +30,15 @@ def segment_euclidean_length(segmented_img, objects):
         :return labeled_img: numpy.ndarray
 
         """
-    # Store debug
-    debug = params.debug
-    params.debug = None
-
     x_list = []
     y_list = []
     segment_lengths = []
     rand_color = color_palette(len(objects))
 
-
     labeled_img = segmented_img.copy()
+    # Store debug
+    debug = params.debug
+    params.debug = None
 
     for i, cnt in enumerate(objects):
         # Store coordinates for labels
@@ -68,6 +66,9 @@ def segment_euclidean_length(segmented_img, objects):
         segment_lengths.append(euclidean(points[0], points[1]))
 
     segment_ids = []
+    # Reset debug mode
+    params.debug = debug
+
     # Put labels of length
     for c, value in enumerate(segment_lengths):
         text = "{:.2f}".format(value)
@@ -82,8 +83,6 @@ def segment_euclidean_length(segmented_img, objects):
                             method='plantcv.plantcv.morphology.segment_euclidean_length', scale='pixels', datatype=list,
                             value=segment_lengths, label=segment_ids)
 
-    # Reset debug mode
-    params.debug = debug
     # Auto-increment device
     params.device += 1
 

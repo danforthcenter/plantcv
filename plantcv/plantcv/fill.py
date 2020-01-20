@@ -1,7 +1,6 @@
 # Object fill device
 
 import numpy as np
-import cv2
 import os
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image

@@ -25,9 +25,6 @@ def find_tips(skel_img, mask=None):
     :param skel_img: numpy.ndarray
     :return tip_img: numpy.ndarray
     """
-    # Store debug
-    debug = params.debug
-    params.debug = None
 
     # In a kernel: 1 values line up with 255s, -1s line up with 0s, and 0s correspond to dont care
     endpoint1 = np.array([[-1, -1, -1],
@@ -50,6 +47,9 @@ def find_tips(skel_img, mask=None):
         tip_img = np.logical_or(cv2.morphologyEx(skel_img, op=cv2.MORPH_HITMISS, kernel=endpoint,
                                                  borderType=cv2.BORDER_CONSTANT, borderValue=0), tip_img)
     tip_img = tip_img.astype(np.uint8) * 255
+    # Store debug
+    debug = params.debug
+    params.debug = None
     tip_objects, _ = find_objects(tip_img, tip_img)
 
     if mask is None:

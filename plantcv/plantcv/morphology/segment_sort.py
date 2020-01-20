@@ -67,6 +67,9 @@ def segment_sort(skel_img, objects, mask=None, first_stem=True):
             else:
                 primary_objects.append(cnt)
 
+    # Reset debug mode
+    params.debug = debug
+
     # Plot segments where green segments are leaf objects and fuschia are other objects
     labeled_img = cv2.cvtColor(labeled_img, cv2.COLOR_GRAY2RGB)
     for i, cnt in enumerate(primary_objects):
@@ -74,8 +77,6 @@ def segment_sort(skel_img, objects, mask=None, first_stem=True):
     for i, cnt in enumerate(secondary_objects):
         cv2.drawContours(labeled_img, secondary_objects, i, (0, 255, 0), params.line_thickness, lineType=8)
 
-    # Reset debug mode
-    params.debug = debug
     # Auto-increment device
     params.device += 1
 

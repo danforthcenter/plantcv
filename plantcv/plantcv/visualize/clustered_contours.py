@@ -74,6 +74,8 @@ def clustered_contours(img, grouped_contour_indices, roi_objects, roi_obj_hierar
         # Empty the grouped_contours list for the next group
         grouped_contours = []
 
+    params.device += 1
+
     if params.debug == 'print':
         print_image(clustered_image, os.path.join(params.debug_outdir, str(params.device) + '_clusters.png'))
     elif params.debug == 'plot':

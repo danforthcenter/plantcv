@@ -20,17 +20,12 @@ def skeletonize(mask):
     :param mask: numpy.ndarray
     :return skeleton: numpy.ndarray
     """
-    # Store debug
-    debug = params.debug
-    params.debug = None
 
     # Convert mask to boolean image, rather than 0 and 255 for skimage to use it
     skeleton = skmorph.skeletonize(mask.astype(bool))
 
     skeleton = skeleton.astype(np.uint8) * 255
 
-    # Reset debug mode
-    params.debug = debug
     # Auto-increment device
     params.device += 1
 

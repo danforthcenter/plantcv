@@ -98,9 +98,6 @@ def read_data(filename):
     :param filename: str
     :return spectral_array: __main__.Spectral_data
         """
-    # Store debug mode
-    debug = params.debug
-    params.debug = None
 
     # Initialize dictionary
     header_dict = {}
@@ -171,9 +168,6 @@ def read_data(filename):
     # Make pseudo-rgb image and replace it inside the class instance object
     pseudo_rgb = _make_pseudo_rgb(spectral_array)
     spectral_array.pseudo_rgb = pseudo_rgb
-
-    # Reset debug mode
-    params.debug = debug
 
     if params.debug == "plot":
         # Gamma correct pseudo_rgb image

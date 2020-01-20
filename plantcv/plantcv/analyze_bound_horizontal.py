@@ -9,7 +9,6 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-
 def analyze_bound_horizontal(img, obj, mask, line_position):
     """User-input boundary line tool
 
@@ -29,7 +28,6 @@ def analyze_bound_horizontal(img, obj, mask, line_position):
     :return analysis_images: list
     """
 
-    params.device += 1
     ori_img = np.copy(img)
 
     # Draw line horizontal line through bottom of image, that is adjusted to user input height
@@ -115,6 +113,7 @@ def analyze_bound_horizontal(img, obj, mask, line_position):
         analysis_images.append(ori_img)
 
     if params.debug is not None:
+        params.device += 1
         point3 = (0, y_coor - 4)
         point4 = (x_coor, y_coor - 4)
         cv2.line(ori_img, point3, point4, (255, 0, 255), params.line_thickness)

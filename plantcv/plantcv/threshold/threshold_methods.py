@@ -33,8 +33,6 @@ def binary(gray_img, threshold, max_value, object_type="light"):
     :param object_type: str
     :return bin_img: numpy.ndarray
     """
-    params.device += 1
-
     # Set the threshold method
     threshold_method = ""
     if object_type.upper() == "LIGHT":
@@ -43,6 +41,8 @@ def binary(gray_img, threshold, max_value, object_type="light"):
         threshold_method = cv2.THRESH_BINARY_INV
     else:
         fatal_error('Object type ' + str(object_type) + ' is not "light" or "dark"!')
+
+    params.device += 1
 
     # Threshold the image
     bin_img = _call_threshold(gray_img, threshold, max_value, threshold_method, "_binary_threshold_")
@@ -69,8 +69,6 @@ def gaussian(gray_img, max_value, object_type="light"):
     :param object_type: str
     :return bin_img: numpy.ndarray
     """
-    params.device += 1
-
     # Set the threshold method
     threshold_method = ""
     if object_type.upper() == "LIGHT":
@@ -79,6 +77,8 @@ def gaussian(gray_img, max_value, object_type="light"):
         threshold_method = cv2.THRESH_BINARY_INV
     else:
         fatal_error('Object type ' + str(object_type) + ' is not "light" or "dark"!')
+
+    params.device += 1
 
     bin_img = _call_adaptive_threshold(gray_img, max_value, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, threshold_method,
                                        "_gaussian_threshold_")
@@ -105,8 +105,6 @@ def mean(gray_img, max_value, object_type="light"):
     :param object_type: str
     :return bin_img: numpy.ndarray
     """
-    params.device += 1
-
     # Set the threshold method
     threshold_method = ""
     if object_type.upper() == "LIGHT":
@@ -115,6 +113,8 @@ def mean(gray_img, max_value, object_type="light"):
         threshold_method = cv2.THRESH_BINARY_INV
     else:
         fatal_error('Object type ' + str(object_type) + ' is not "light" or "dark"!')
+
+    params.device += 1
 
     bin_img = _call_adaptive_threshold(gray_img, max_value, cv2.ADAPTIVE_THRESH_MEAN_C, threshold_method,
                                        "_mean_threshold_")
@@ -141,8 +141,6 @@ def otsu(gray_img, max_value, object_type="light"):
     :param object_type: str
     :return bin_img: numpy.ndarray
     """
-    params.device += 1
-
     # Set the threshold method
     threshold_method = ""
     if object_type.upper() == "LIGHT":
@@ -151,6 +149,8 @@ def otsu(gray_img, max_value, object_type="light"):
         threshold_method = cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU
     else:
         fatal_error('Object type ' + str(object_type) + ' is not "light" or "dark"!')
+
+    params.device += 1
 
     # Threshold the image
     bin_img = _call_threshold(gray_img, 0, max_value, threshold_method, "_otsu_threshold_")
@@ -180,8 +180,6 @@ def triangle(gray_img, max_value, object_type="light", xstep=1):
     :param xstep: int
     :return bin_img: numpy.ndarray
     """
-    params.device += 1
-
     # Calculate automatic threshold value based on triangle algorithm
     hist = cv2.calcHist([gray_img], [0], None, [256], [0, 255])
 
@@ -237,6 +235,8 @@ def triangle(gray_img, max_value, object_type="light", xstep=1):
         threshold_method = cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU
     else:
         fatal_error('Object type ' + str(object_type) + ' is not "light" or "dark"!')
+
+    params.device += 1
 
     # Threshold the image
     bin_img = _call_threshold(gray_img, autothreshval, max_value, threshold_method, "_triangle_threshold_")
@@ -336,10 +336,6 @@ def custom_range(rgb_img, lower_thresh, upper_thresh, channel='gray'):
     :return mask: numpy.ndarray
     :return masked_img: numpy.ndarray
     """
-
-    # Auto-increment the device counter
-    params.device += 1
-
     if channel.upper() == 'HSV':
 
         # Check threshold inputs
@@ -447,6 +443,9 @@ def custom_range(rgb_img, lower_thresh, upper_thresh, channel='gray'):
 
     else:
         fatal_error(str(channel) + " is not a valid colorspace. Channel must be either 'RGB', 'HSV', or 'gray'.")
+
+    # Auto-increment the device counter
+    params.device += 1
 
     # Print or plot the binary image if debug is on
     if params.debug == 'print':

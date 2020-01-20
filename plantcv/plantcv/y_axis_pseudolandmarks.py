@@ -31,11 +31,12 @@ def y_axis_pseudolandmarks(img, obj, mask):
     :return center_h: list
     """
     # Lets get some landmarks scanning along the y-axis
-    params.device += 1
     if not np.any(obj):
         return ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA')
     x, y, width, height = cv2.boundingRect(obj)
     extent = height
+
+    params.device += 1
 
     # Outputs
     left = []
@@ -133,12 +134,7 @@ def y_axis_pseudolandmarks(img, obj, mask):
                 smy = yval
                 x_centroids.append(int(smx))
                 y_centroids.append(int(smy))
-        # Get the indicie of the largest median/average x-axis value (if there is a tie it takes largest index)
-        # indice_median = row_median.index(max(row_median))
-        # indice_ave = row_ave.index(max(row_ave))
-        # median_value = row_median[indice_median]
-        # ave_value = row_ave[indice_ave]
-        # max_value = max_width[indice_ave]
+
         left = list(zip(left_points, y_vals))
         left = np.array(left)
         left.shape = (20, 1, 2)

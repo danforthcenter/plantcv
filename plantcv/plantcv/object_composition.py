@@ -27,7 +27,6 @@ def object_composition(img, contours, hierarchy):
     :return mask: numpy.ndarray
     """
 
-    params.device += 1
     ori_img = np.copy(img)
     # If the reference image is grayscale convert it to color
     if len(np.shape(ori_img)) == 2:
@@ -38,7 +37,6 @@ def object_composition(img, contours, hierarchy):
     mask = np.zeros(g.shape, dtype=np.uint8)
 
     for c, cnt in enumerate(contours):
-        # if hierarchy[0][c][3] == -1:
         if hierarchy[0][c][2] == -1 and hierarchy[0][c][3] > -1:
             stack[c] = 0
         else:
@@ -46,6 +44,7 @@ def object_composition(img, contours, hierarchy):
 
     ids = np.where(stack == 1)[0]
     if len(ids) > 0:
+        params.device += 1
         contour_list = [contours[i] for i in ids]
         group = np.vstack(contour_list)
         cv2.drawContours(mask, contours, -1, 255, -1, hierarchy=hierarchy)

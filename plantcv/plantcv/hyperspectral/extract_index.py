@@ -80,6 +80,10 @@ def extract_index(array, index="NDVI", distance=20):
     # Reshape array into hyperspectral datacube shape
     index_array_raw = np.transpose(np.transpose(index_array_raw)[0])
 
+    # Store debug mode
+    debug = params.debug
+    params.debug = None
+
     # Resulting array is float 32 from varying natural ranges, transform into uint8 for plotting
     all_positive = np.add(index_array_raw, 2 * np.ones(np.shape(index_array_raw)))
     scaled = rescale(all_positive)
@@ -90,6 +94,9 @@ def extract_index(array, index="NDVI", distance=20):
                                 lines=array.lines, interleave=array.interleave,
                                 wavelength_units=array.wavelength_units, array_type="index_" + index.lower(),
                                 pseudo_rgb=scaled, filename=array.filename, default_bands=None)
+
+    # Restore debug mode
+    params.debug = debug
 
     if params.debug == "plot":
         plot_image(index_array.pseudo_rgb)
