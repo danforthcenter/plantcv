@@ -575,9 +575,11 @@ TEST_INPUT_BINARY = "input_binary_img.png"
 # This image may be used, edited and reproduced freely.
 TEST_INPUT_RGBA = "input_rgba.png"
 TEST_INPUT_BAYER = "bayer_img.png"
-TEST_INPUT_ROI = "input_roi.npz"
+TEST_INPUT_ROI_CONTOUR = "input_roi_contour.npz"
+TEST_INPUT_ROI_HIERARCHY = "input_roi_hierarchy.npz"
 TEST_INPUT_CONTOURS = "input_contours.npz"
-TEST_INPUT_CONTOURS1 = "input_contours1.npz"
+TEST_INPUT_OBJECT_CONTOURS = "input_object_contours.npz"
+TEST_INPUT_OBJECT_HIERARCHY = "input_object_hierarchy.npz"
 TEST_VIS = "VIS_SV_0_z300_h1_g0_e85_v500_93054.png"
 TEST_NIR = "NIR_SV_0_z300_h1_g0_e15000_v500_93059.png"
 TEST_VIS_TV = "VIS_TV_0_z300_h1_g0_e85_v500_93054.png"
@@ -2141,9 +2143,10 @@ def test_plantcv_object_composition():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS1), encoding="latin1")
-    object_contours = contours_npz['arr_0']
-    object_hierarchy = contours_npz['arr_1']
+    object_contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_OBJECT_CONTOURS), encoding="latin1")
+    object_contours = [object_contours_npz[arr_n] for arr_n in object_contours_npz]
+    object_hierarchy_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_OBJECT_HIERARCHY), encoding="latin1")
+    object_hierarchy = object_hierarchy_npz['arr_0']
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.object_composition(img=img, contours=object_contours, hierarchy=object_hierarchy)
@@ -2166,9 +2169,10 @@ def test_plantcv_object_composition_grayscale_input():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
-    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS1), encoding="latin1")
-    object_contours = contours_npz['arr_0']
-    object_hierarchy = contours_npz['arr_1']
+    object_contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_OBJECT_CONTOURS), encoding="latin1")
+    object_contours = [object_contours_npz[arr_n] for arr_n in object_contours_npz]
+    object_hierarchy_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_OBJECT_HIERARCHY), encoding="latin1")
+    object_hierarchy = object_hierarchy_npz['arr_0']
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     contours, mask = pcv.object_composition(img=img, contours=object_contours, hierarchy=object_hierarchy)
@@ -2704,12 +2708,14 @@ def test_plantcv_roi_objects():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    roi_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_ROI), encoding="latin1")
-    roi_contour = roi_npz['arr_0']
-    roi_hierarchy = roi_npz['arr_1']
-    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS1), encoding="latin1")
-    object_contours = contours_npz['arr_0']
-    object_hierarchy = contours_npz['arr_1']
+    roi_contour_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_ROI_CONTOUR), encoding="latin1")
+    roi_contour = [roi_contour_npz[arr_n] for arr_n in roi_contour_npz]
+    roi_hierarchy_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_ROI_HIERARCHY), encoding="latin1")
+    roi_hierarchy = roi_hierarchy_npz['arr_0']
+    object_contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_OBJECT_CONTOURS), encoding="latin1")
+    object_contours = [object_contours_npz[arr_n] for arr_n in object_contours_npz]
+    object_hierarchy_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_OBJECT_HIERARCHY), encoding="latin1")
+    object_hierarchy = object_hierarchy_npz['arr_0']
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.roi_objects(img=img, roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
@@ -2734,12 +2740,14 @@ def test_plantcv_roi_objects():
 def test_plantcv_roi_objects_bad_input():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    roi_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_ROI), encoding="latin1")
-    roi_contour = roi_npz['arr_0']
-    roi_hierarchy = roi_npz['arr_1']
-    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS1), encoding="latin1")
-    object_contours = contours_npz['arr_0']
-    object_hierarchy = contours_npz['arr_1']
+    roi_contour_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_ROI_CONTOUR), encoding="latin1")
+    roi_contour = [roi_contour_npz[arr_n] for arr_n in roi_contour_npz]
+    roi_hierarchy_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_ROI_HIERARCHY), encoding="latin1")
+    roi_hierarchy = roi_hierarchy_npz['arr_0']
+    object_contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_OBJECT_CONTOURS), encoding="latin1")
+    object_contours = [object_contours_npz[arr_n] for arr_n in object_contours_npz]
+    object_hierarchy_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_OBJECT_HIERARCHY), encoding="latin1")
+    object_hierarchy = object_hierarchy_npz['arr_0']
     pcv.params.debug = None
     with pytest.raises(RuntimeError):
         _ = pcv.roi_objects(img=img, roi_type="cut", roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
@@ -2753,12 +2761,14 @@ def test_plantcv_roi_objects_grayscale_input():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
-    roi_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_ROI), encoding="latin1")
-    roi_contour = roi_npz['arr_0']
-    roi_hierarchy = roi_npz['arr_1']
-    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS1), encoding="latin1")
-    object_contours = contours_npz['arr_0']
-    object_hierarchy = contours_npz['arr_1']
+    roi_contour_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_ROI_CONTOUR), encoding="latin1")
+    roi_contour = [roi_contour_npz[arr_n] for arr_n in roi_contour_npz]
+    roi_hierarchy_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_ROI_HIERARCHY), encoding="latin1")
+    roi_hierarchy = roi_hierarchy_npz['arr_0']
+    object_contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_OBJECT_CONTOURS), encoding="latin1")
+    object_contours = [object_contours_npz[arr_n] for arr_n in object_contours_npz]
+    object_hierarchy_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_OBJECT_HIERARCHY), encoding="latin1")
+    object_hierarchy = object_hierarchy_npz['arr_0']
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     kept_contours, kept_hierarchy, mask, area = pcv.roi_objects(img=img, roi_type="partial", roi_contour=roi_contour,
