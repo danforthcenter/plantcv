@@ -2744,8 +2744,8 @@ def test_plantcv_roi_objects_bad_input():
     roi_contour = [roi_contour_npz[arr_n] for arr_n in roi_contour_npz]
     roi_hierarchy_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_ROI_HIERARCHY), encoding="latin1")
     roi_hierarchy = roi_hierarchy_npz['arr_0']
-    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS1), encoding="latin1")
-    object_contours = contours_npz['arr_0']
+    object_contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_OBJECT_CONTOURS), encoding="latin1")
+    object_contours = [object_contours_npz[arr_n] for arr_n in object_contours_npz]
     object_hierarchy = contours_npz['arr_1']
     pcv.params.debug = None
     with pytest.raises(RuntimeError):
