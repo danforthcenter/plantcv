@@ -2714,7 +2714,8 @@ def test_plantcv_roi_objects():
     roi_hierarchy = roi_hierarchy_npz['arr_0']
     object_contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_OBJECT_CONTOURS), encoding="latin1")
     object_contours = [object_contours_npz[arr_n] for arr_n in object_contours_npz]
-    object_hierarchy = contours_npz['arr_1']
+    object_hierarchy_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_OBJECT_HIERARCHY), encoding="latin1")
+    object_hierarchy = object_hierarchy_npz['arr_0']
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.roi_objects(img=img, roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
