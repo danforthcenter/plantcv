@@ -236,7 +236,7 @@ def new_function(img):
     elif params.debug == 'plot':
         plot_image(img)
 
-    returnval1
+    return returnval1
 ```
 
 If you need to call other PlantCV functions from within your contributed function, be sure to disable debugging until you are ready to show your own debug images.
