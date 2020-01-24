@@ -75,7 +75,7 @@ def analyze_spectral(array, mask, histplot=True):
                             value=float(median_reflectance), label='reflectance')
     outputs.add_observation(variable='spectral_std', trait='pixel-wise standard deviation ',
                             method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='None', datatype=float,
-                            value=std_reflectance, label='reflectance')
+                            value=float(std_reflectance), label='reflectance')
     outputs.add_observation(variable='spectral_frequencies', trait='spectral frequencies',
                             method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='frequency', datatype=list,
                             value=new_freq, label=wavelength_labels)
