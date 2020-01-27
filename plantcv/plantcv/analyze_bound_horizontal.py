@@ -138,8 +138,8 @@ def analyze_bound_horizontal(img, obj, mask, line_position):
                 cv2.line(wback, (int(cmx), y_coor - 2), (int(cmx), y_coor + height_below_bound), (0, 255, 0),
                          params.line_thickness)
         if params.debug == 'print':
-            print_image(wback, os.path.join(params.debug_outdir, str(params.device) + '_boundary_on_white.jpg'))
-            print_image(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_boundary_on_img.jpg'))
+            print_image(wback, os.path.join(params.debug_outdir, str(params.device) + '_boundary_on_white.png'))
+            print_image(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_boundary_on_img.png'))
         if params.debug == 'plot':
             plot_image(wback)
             plot_image(ori_img)

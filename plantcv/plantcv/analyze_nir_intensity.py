@@ -63,7 +63,7 @@ def analyze_nir_intensity(gray_img, mask, bins=256, histplot=False):
     if params.debug is not None:
         params.device += 1
         if params.debug == "print":
-            print_image(masked1, os.path.join(params.debug_outdir, str(params.device) + "_masked_nir_plant.jpg"))
+            print_image(masked1, os.path.join(params.debug_outdir, str(params.device) + "_masked_nir_plant.png"))
         if params.debug == "plot":
             plot_image(masked1)
 

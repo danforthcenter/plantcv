@@ -85,7 +85,7 @@ def naive_bayes_classifier(rgb_img, pdf_file):
     if params.debug == "print":
         for class_name, mask in masks.items():
             print_image(mask, os.path.join(params.debug_outdir,
-                                           str(params.device) + "_naive_bayes_" + class_name + "_mask.jpg"))
+                                           str(params.device) + "_naive_bayes_" + class_name + "_mask.png"))
     elif params.debug == "plot":
         for class_name, mask in masks.items():
             plot_image(mask, cmap="gray")

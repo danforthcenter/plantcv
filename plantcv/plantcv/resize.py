@@ -33,7 +33,7 @@ def resize(img, resize_x, resize_y):
     reimg = cv2.resize(img, (0, 0), fx=resize_x, fy=resize_y)
 
     if params.debug == 'print':
-        print_image(reimg, os.path.join(params.debug_outdir, str(params.device) + "_resize1.png"))
+        print_image(reimg, os.path.join(params.debug_outdir, str(params.device) + "_resize.png"))
     elif params.debug == 'plot':
         plot_image(reimg)
 
