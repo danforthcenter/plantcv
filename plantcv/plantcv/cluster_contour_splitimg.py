@@ -103,8 +103,8 @@ def cluster_contour_splitimg(rgb_img, grouped_contour_indexes, contours, hierarc
     group_names = []
     group_names1 = []
     for i, x in enumerate(namelist):
-        plantname = str(filebase) + '_' + str(x) + '_p' + str(i) + '.jpg'
-        maskname = str(filebase) + '_' + str(x) + '_p' + str(i) + '_mask.jpg'
+        plantname = str(filebase) + '_' + str(x) + '_p' + str(i) + '.png'
+        maskname = str(filebase) + '_' + str(x) + '_p' + str(i) + '_mask.png'
         group_names.append(plantname)
         group_names1.append(maskname)
 

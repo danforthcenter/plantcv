@@ -34,7 +34,7 @@ def opening(gray_img, kernel=None):
         filtered_img = morphology.opening(gray_img, kernel)
 
     if params.debug == 'print':
-        print_image(filtered_img, os.path.join(params.debug_outdir, str(params.device) + '_opening' + '.png'))
+        print_image(filtered_img, os.path.join(params.debug_outdir, str(params.device) + '_opening.png'))
     elif params.debug == 'plot':
         plot_image(filtered_img, cmap='gray')
 
