@@ -36,17 +36,17 @@ def analyze_index(index_array, mask):
     outputs.add_observation(variable='mean_' + index_array.array_type,
                             trait='Average ' + index_array.array_type + ' reflectance',
                             method='plantcv.plantcv.hyperspectral.analyze_index', scale='reflectance', datatype=float,
-                            value=index_mean, label='none')
+                            value=float(index_mean), label='none')
 
     outputs.add_observation(variable='med_' + index_array.array_type,
                             trait='Median ' + index_array.array_type + ' reflectance',
                             method='plantcv.plantcv.hyperspectral.analyze_index', scale='reflectance', datatype=float,
-                            value=index_median, label='none')
+                            value=float(index_median), label='none')
 
     outputs.add_observation(variable='std_' + index_array.array_type,
                             trait='Standard deviation ' + index_array.array_type + ' reflectance',
                             method='plantcv.plantcv.hyperspectral.analyze_index', scale='reflectance', datatype=float,
-                            value=index_std, label='none')
+                            value=float(index_std), label='none')
 
     if params.debug == "plot":
         plot_image(masked_array)
