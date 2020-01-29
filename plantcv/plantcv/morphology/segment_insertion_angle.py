@@ -46,15 +46,17 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     debug = params.debug
     params.debug = None
 
-    rows,cols = segmented_img.shape[:2]
+    rows, cols = segmented_img.shape[:2]
     labeled_img = segmented_img.copy()
     segment_slopes = []
     insertion_segments = []
     insertion_hierarchies = []
     intersection_angles = []
+    all_intersection_angles = []
     label_coord_x = []
     label_coord_y = []
     valid_segment = []
+    pruned_away = []
 
     # Create a list of tip tuples to use for sorting
     tips = find_tips(skel_img)
@@ -81,8 +83,10 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
 
         if not len(segment_end_obj) == 2:
             print("Size too large, contour with ID#", i, "got pruned away completely.")
+            pruned_away.append(True)
         else:
             # The contour can have insertion angle calculated
+            pruned_away.append(False)
             valid_segment.append(cnt)
 
             # Determine if a segment is leaf end or leaf insertion segment
@@ -115,8 +119,8 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     combined_stem, combined_stem_hier = find_objects(stem_img, stem_img)
 
     # Make sure stem objects are a single contour
-    loop_count=0
-    while len(combined_stem) > 1 and loop_count<50:
+    loop_count = 0
+    while len(combined_stem) > 1 and loop_count < 50:
         loop_count += 1
         stem_img = dilate(stem_img, 2, 1)
         stem_img = closing(stem_img)
@@ -158,6 +162,15 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
             intersection_angle = 180 - intersection_angle
         intersection_angles.append(intersection_angle)
 
+    # Compile list of measurements where there is a 'NA' where pruned away segments would go.
+    intersection_angles_editing = intersection_angles.copy()
+    for j in pruned_away:
+        if j:
+            all_intersection_angles.append('NA')
+        else:
+            all_intersection_angles.append(intersection_angles_editing[0])
+            intersection_angles_editing.remove(intersection_angles_editing[0])
+
     segment_ids = []
 
     for i, cnt in enumerate(insertion_segments):
@@ -172,7 +185,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
 
     outputs.add_observation(variable='segment_insertion_angle', trait='segment insertion angle',
                             method='plantcv.plantcv.morphology.segment_insertion_angle', scale='degrees', datatype=list,
-                            value=intersection_angles, label=segment_ids)
+                            value=all_intersection_angles, label=segment_ids)
 
     # Reset debug mode
     params.debug = debug
