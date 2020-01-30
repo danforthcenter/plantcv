@@ -79,6 +79,8 @@ def parse_match_arg(match_string):
                 value_is_complete()
             else:
                 char_is_part_of_value()
+    if mode == "single_value":
+        value_is_complete()
     return out
 
 def options():
