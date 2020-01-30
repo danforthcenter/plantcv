@@ -100,8 +100,9 @@ def metadata_parser(data_dir, meta_fields, valid_meta, meta_filters, date_format
                                 meta_value = metadata[meta_fields[field]]
                                 # If the metadata type has a user-provided restriction
                                 if field in meta_filters:
-                                    # If the input value does not match the image value, fail the image
-                                    if meta_value != meta_filters[field]:
+                                    # If the input value does not match an image value, fail the image
+                                    filter = meta_filter[field]
+                                    if meta_value != field and not meta_value in field:
                                         img_pass = 0
                                 img_meta[field] = meta_value
                             # If the same metadata is found in the CSV file, store the value
@@ -110,7 +111,8 @@ def metadata_parser(data_dir, meta_fields, valid_meta, meta_filters, date_format
                                 # If the metadata type has a user-provided restriction
                                 if field in meta_filters:
                                     # If the input value does not match the image value, fail the image
-                                    if meta_value != meta_filters[field]:
+                                    filter = meta_filter[field]
+                                    if meta_value != field and not meta_value in field:
                                         img_pass = 0
                                 img_meta[field] = meta_value
                             # Or use the default value
@@ -190,7 +192,8 @@ def metadata_parser(data_dir, meta_fields, valid_meta, meta_filters, date_format
                                 # If the metadata type has a user-provided restriction
                                 if field in meta_filters:
                                     # If the input value does not match the image value, fail the image
-                                    if meta_value != meta_filters[field]:
+                                    filter = meta_filters[field]
+                                    if meta_value != filter and not meta_value in filter:
                                         img_pass = 0
                                 img_meta[field] = meta_value
                             # Or use the default value
