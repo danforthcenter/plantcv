@@ -17,21 +17,23 @@ def parse_match_arg(match_string):
     value = []
     current_value = ""
     mode = "key"
+    processed = ""
     for char in match_string:
+        processed += char
         if mode == "waiting_for_next_key":
            if char == ",":
                pass
            else:
                mode="key"
                key += char
-        if mode == "key":
+        elif mode == "key":
             if char == ":":
                 mode = "begin_value"
             elif char == ",":
                 raise ValueError
             else:
                 key += char
-        if mode == "begin_value":
+        elif mode == "begin_value":
            if char == "[":
                mode = "list_value"
            else:
@@ -57,7 +59,6 @@ def parse_match_arg(match_string):
                 value = []
                 current_value = ""
     return out
-
 def options():
     """Parse command line options.
 
