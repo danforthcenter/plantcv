@@ -5,11 +5,36 @@ import sys
 import argparse
 import time
 import datetime
+import re #correct place in order?
 import plantcv.parallel as pcvp
 
 
 # Parse command-line arguments
 ###########################################
+def parse_match_arg(match_string):
+    """Transform the user's string containing match fields into a dictionary"""
+    #Regex for finding each key and value
+    key_value_regex = (
+        re.compile("(?P<key>.+):(!\[)(?P<single_value>.*)|(?P<list_value>\[.+(,.+)+\])")
+    )
+    #Search for keys and values to store in parsed_match_fields
+    parsed_match_fields = {}
+    for key_value in re.finditer(key_value_regex, match_string):
+        #Get a key
+        key = key_value["key"]
+        #For the value, check if the user gave a list of options
+        if key_value["list_value"] is not None:
+            list_of_values_as_string = key_value["list_value"]
+            list_without_brackets = list_of_values_as_string[1:-1]
+            value = list_without_brackets.split(",")
+        #Otherwise, the value is a singleton.
+        else:
+            single_value = key_value["single_value"]
+            value = [single_value]
+        #Add key and value to parsed_matched_fields
+        parsed_match_fields[key] = value
+    return parsed_match_fields
+
 def options():
     """Parse command line options.
 
@@ -213,10 +238,16 @@ def options():
     # Metadata restrictions
     args.imgtype = {}
     if args.match is not None:
-        pairs = args.match.split(',')
-        for pair in pairs:
-            key, value = pair.split(':')
-            args.imgtype[key] = value
+        args.imgtype = parse_match_arg(args.match)
+#        pairs = args.match.split(',')
+#        for pair in pairs:
+#            key, value = pair.split(':')
+#            if value.startswith("[") and value.endswith("]"):
+#              #The user has passed a list
+#              value = value[1:-1].split(",")
+#            else:
+#              #The user has passed one item
+#              args.imgtype[key] = [value]
     else:
         args.imgtype['None'] = None
 
