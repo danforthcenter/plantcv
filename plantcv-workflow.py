@@ -5,7 +5,6 @@ import sys
 import argparse
 import time
 import datetime
-import re #correct place in order?
 import plantcv.parallel as pcvp
 
 
@@ -18,6 +17,34 @@ def parse_match_arg(match_string):
     current_value = ""
     mode = "key"
     processed = ""
+    def value_is_complete():
+        nonlocal key
+        nonlocal current_value
+        nonlocal value
+        nonlocal out
+        current_value_is_complete()
+        if key in out:
+            out[key] += value
+        else:
+            out[key] = value
+        nonlocal processed
+        key = ""
+        current_value = ""
+        value = []
+    def current_value_is_complete():
+        nonlocal value
+        nonlocal current_value
+        value.append(current_value)
+        current_value = ""
+    def char_is_part_of_key():
+        nonlocal key
+        nonlocal char
+        key += char
+    def char_is_part_of_value():
+        nonlocal char
+        nonlocal current_value
+        current_value += char
+    char = ""
     for char in match_string:
         processed += char
         if mode == "waiting_for_next_key":
@@ -25,40 +52,35 @@ def parse_match_arg(match_string):
                pass
            else:
                mode="key"
-               key += char
+               char_is_part_of_key()
         elif mode == "key":
             if char == ":":
-                mode = "begin_value"
+                mode = "waiting_for_next_value"
             elif char == ",":
                 raise ValueError
             else:
-                key += char
-        elif mode == "begin_value":
+                char_is_part_of_key()
+        elif mode == "waiting_for_next_value":
            if char == "[":
                mode = "list_value"
            else:
               mode = "single_value"
-              current_value += char
+              char_is_part_of_value()
         elif mode == "list_value":
             if char == ",":
-                value.append(current_value)
-                current_value = ""
+                current_value_is_complete()
             elif char == "]":
                 mode = "waiting_for_next_key"
-                value.append(current_value)
-                out[key] = value
-                key = ""
-                value = []
-                current_value = ""
+                value_is_complete()
             else:
-                current_value += char
+                char_is_part_of_value()
         elif mode == "single_value":
             if char == ",":
-                out[key] = [current_value]
-                key = ""
-                value = []
-                current_value = ""
+                value_is_complete()
+            else:
+                char_is_part_of_value()
     return out
+
 def options():
     """Parse command line options.
 
