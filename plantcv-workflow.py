@@ -12,28 +12,51 @@ import plantcv.parallel as pcvp
 # Parse command-line arguments
 ###########################################
 def parse_match_arg(match_string):
-    """Transform the user's string containing match fields into a dictionary"""
-    #Regex for finding each key and value
-    key_value_regex = (
-        re.compile("(?P<key>.+):(!\[)(?P<single_value>.*)|(?P<list_value>\[.+(,.+)+\])")
-    )
-    #Search for keys and values to store in parsed_match_fields
-    parsed_match_fields = {}
-    for key_value in re.finditer(key_value_regex, match_string):
-        #Get a key
-        key = key_value["key"]
-        #For the value, check if the user gave a list of options
-        if key_value["list_value"] is not None:
-            list_of_values_as_string = key_value["list_value"]
-            list_without_brackets = list_of_values_as_string[1:-1]
-            value = list_without_brackets.split(",")
-        #Otherwise, the value is a singleton.
-        else:
-            single_value = key_value["single_value"]
-            value = [single_value]
-        #Add key and value to parsed_matched_fields
-        parsed_match_fields[key] = value
-    return parsed_match_fields
+    out = {}
+    key = ""
+    value = []
+    current_value = ""
+    mode = "key"
+    for char in match_string:
+        if mode == "waiting_for_next_key":
+           if char == ",":
+               pass
+           else:
+               mode="key"
+               key += char
+        if mode == "key":
+            if char == ":":
+                mode = "begin_value"
+            elif char == ",":
+                raise ValueError
+            else:
+                key += char
+        if mode == "begin_value":
+           if char == "[":
+               mode = "list_value"
+           else:
+              mode = "single_value"
+              current_value += char
+        elif mode == "list_value":
+            if char == ",":
+                value.append(current_value)
+                current_value = ""
+            elif char == "]":
+                mode = "waiting_for_next_key"
+                value.append(current_value)
+                out[key] = value
+                key = ""
+                value = []
+                current_value = ""
+            else:
+                current_value += char
+        elif mode == "single_value":
+            if char == ",":
+                out[key] = [current_value]
+                key = ""
+                value = []
+                current_value = ""
+    return out
 
 def options():
     """Parse command line options.
