@@ -101,9 +101,15 @@ def metadata_parser(data_dir, meta_fields, valid_meta, meta_filters, date_format
                                 # If the metadata type has a user-provided restriction
                                 if field in meta_filters:
                                     # If the input value does not match an image value, fail the image
-                                    filter = meta_filter[field]
-                                    if meta_value != field and not meta_value in field:
-                                        img_pass = 0
+                                    # filter = meta_filters[field]
+                                    # if meta_value != filter and (isinstance(filter, list) and not meta_value in field):
+                                    filter = meta_filters[field]
+                                    if isinstance(filter, list):
+                                        if not meta_value in filter:
+                                            img_pass = 0
+                                    else:
+                                        if meta_value != filter:
+                                            img_pass = 0
                                 img_meta[field] = meta_value
                             # If the same metadata is found in the CSV file, store the value
                             elif field in colnames:
@@ -111,9 +117,15 @@ def metadata_parser(data_dir, meta_fields, valid_meta, meta_filters, date_format
                                 # If the metadata type has a user-provided restriction
                                 if field in meta_filters:
                                     # If the input value does not match the image value, fail the image
-                                    filter = meta_filter[field]
-                                    if meta_value != field and not meta_value in field:
-                                        img_pass = 0
+                                    # filter = meta_filters[field]
+                                    # if meta_value != filter and (isinstance(field, list) and not meta_value in field):
+                                    filter = meta_filters[field]
+                                    if isinstance(filter, list):
+                                        if not meta_value in filter:
+                                            img_pass = 0
+                                    else:
+                                        if meta_value != filter:
+                                            img_pass = 0
                                 img_meta[field] = meta_value
                             # Or use the default value
                             else:
