@@ -2,7 +2,6 @@
 
 import os
 import cv2
-import math
 import numpy as np
 import pandas as pd
 from plantcv.plantcv import params
@@ -10,7 +9,6 @@ from plantcv.plantcv import outputs
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 from plantcv.plantcv import fatal_error
-from plantcv.plantcv.threshold import binary as binary_threshold
 from plotnine import ggplot, aes, geom_line, scale_x_continuous
 
 
@@ -19,11 +17,16 @@ def analyze_index(index_array, mask, histplot=False, bins=100):
        the Outputs class.
 
     Inputs:
-    array        = Instance of the Spectral_data class,
+    index_array  = Instance of the Spectral_data class, usually the output from pcv.hyperspectral.extract_index
     mask         = Binary mask made from selected contours
+    histplot     = if True plots histogram of intensity values
+    bins         = optional, number of classes to divide spectrum into
+
 
     :param array: __main__.Spectral_data
     :param mask: numpy array
+    :param histplot: bool
+    :param bins: int
     """
     params.device += 1
 
