@@ -3716,8 +3716,8 @@ def test_plantcv_hyperspectral_analyze_index():
     pcv.params.debug_outdir = cache_dir
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="ndvi", distance=801)
-    mask_img = cv2.imread(os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_MASK), -1)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="savi", distance=801)
+    mask_img = np.ones(np.shape(index_array.array_data))
     pcv.params.debug = "print"
     pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, histplot=True)
     pcv.params.debug = "plot"
