@@ -1,7 +1,7 @@
 ## Analyze Spectral Values 
 
 This function calculates the reflectance frequencies associated with a hyperspectral datacube and writes 
-the values out as observations to get saved out. Can also print out a histogram of reflectance intensity.
+the values out as observations to get saved out. Can also print out a histogram of average reflectance intensity.
 
 **plantcv.hyperspectral.analyze_spectral**(*array, mask, histplot=False*)
 
@@ -13,7 +13,7 @@ the values out as observations to get saved out. Can also print out a histogram 
     - histplot      - If True plots histogram of reflectance intensity values (default histplot = False)
 - **Example use:**
     - Below 
-- **Output data stored:** Data ('max_reflectance', 'min_reflectance', 'mean_reflectance', 'median_reflectance', 'spectral_frequencies') automatically gets stored to the 
+- **Output data stored:** Data ('max_reflectance', 'min_reflectance', 'median_reflectance', 'spectral_std', 'spectral_frequencies', 'global_mean_reflectance', 'global_median_reflectance', 'global_spectral_std') automatically gets stored to the 
     [`Outputs` class](outputs.md) when this function is ran. 
     These data can always get accessed during a workflow (example below). For more detail about data output see [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
@@ -30,7 +30,7 @@ pcv.params.debug = "print"
 spectral_hist  = pcv.hyperspectral.analyze_spectral(array=spectral_data, mask=mask, histplot=True)
 
 # Access data stored 
-reflectance_range = pcv.outputs.observations['max_reflectance']['value'] - pcv.outputs.observations['min_reflectance']['value']
+reflectance_range = max(pcv.outputs.observations['max_reflectance']['value']) - min(pcv.outputs.observations['min_reflectance']['value'])
 
 ```
 
