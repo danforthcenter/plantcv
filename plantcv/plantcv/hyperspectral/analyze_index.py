@@ -47,9 +47,8 @@ def analyze_index(index_array, mask, histplot=False, bins=100):
 
     # Calculate histogram
     maxval = round(np.amax(index_array.array_data[0]), 4)
-    print(np.shape(mask))
-    print(np.shape([index_array.array_data][0]))
-    hist_nir = [float(l[0]) for l in cv2.calcHist([index_array.array_data.astype(np.uint16)], [0], mask, [bins], [-2, 2])]
+    hist_nir = [float(l[0]) for l in cv2.calcHist([index_array.array_data.astype(np.float32)],
+                                                  [0], mask, [bins], [-2, 2])]
 
     # Create list of bin labels
     bin_width = maxval / float(bins)
@@ -61,10 +60,11 @@ def analyze_index(index_array, mask, histplot=False, bins=100):
         bin_labels.append(b)
         plotting_labels.append(round(b, 2))
 
-    # make hist percentage for plotting
+    # Make hist percentage for plotting
     pixels = cv2.countNonZero(mask)
     hist_percent = [(p / float(pixels)) * 100 for p in hist_nir]
 
+    # Reset debug mode and make plot
     params.debug = debug
 
     if histplot is True:
@@ -83,6 +83,7 @@ def analyze_index(index_array, mask, histplot=False, bins=100):
         elif params.debug == "plot":
             print(fig_hist)
 
+    # Make sure variable names should be unique within a workflow
     outputs.add_observation(variable='mean_' + index_array.array_type,
                             trait='Average ' + index_array.array_type + ' reflectance',
                             method='plantcv.plantcv.hyperspectral.analyze_index', scale='reflectance', datatype=float,
@@ -105,5 +106,5 @@ def analyze_index(index_array, mask, histplot=False, bins=100):
     if params.debug == "plot":
         plot_image(masked_array)
     elif params.debug == "print":
-        print_image(img=masked_array, filename=os.path.join(params.debug_outdir, str(params.device) +
-                                                            index_array.array_type + ".png"))
+        img_name = str(params.device) + index_array.array_type + "_hist.png"
+        print_image(img=masked_array, filename=os.path.join(params.debug_outdir, img_name))
