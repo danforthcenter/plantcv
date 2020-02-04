@@ -49,7 +49,7 @@ def analyze_index(index_array, mask, histplot=False, bins=100):
     maxval = round(np.amax(index_array.array_data[0]), 4)
     print(np.shape(mask))
     print(np.shape([index_array.array_data][0]))
-    hist_nir = [float(l[0]) for l in cv2.calcHist([index_array.array_data], [0], mask, [bins], [-2, 2])]
+    hist_nir = [float(l[0]) for l in cv2.calcHist([index_array.array_data.astype(np.uint16)], [0], mask, [bins], [-2, 2])]
 
     # Create list of bin labels
     bin_width = maxval / float(bins)
