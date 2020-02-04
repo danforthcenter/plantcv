@@ -106,5 +106,6 @@ def analyze_index(index_array, mask, histplot=False, bins=100):
     if params.debug == "plot":
         plot_image(masked_array)
     elif params.debug == "print":
-        img_name = str(params.device) + index_array.array_type + "_hist.png"
+        img_name = str(params.device) + index_array.array_type + ".png"
         print_image(img=masked_array, filename=os.path.join(params.debug_outdir, img_name))
+        
