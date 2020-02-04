@@ -342,15 +342,16 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, img_eh = **plantcv.hist_equalization**(*img, device, debug=None*)
 * post v3.0dev2: img_eh = **plantcv.hist_equalization**(*gray_img*)
 
+#### plantcv.hyperspectral.analyze_index
+
+* pre v3.7: NA
+* post v3.7: index_array = **plantcv.hyperspectral.analyze_index**(*index_array, mask*)
+* post v3.8: index_array = **plantcv.hyperspectral.analyze_index**(*index_array, mask, histplot=False, bins=100*)
+
 #### plantcv.hyperspectral.analyze_spectral
 
 * pre v3.7: NA
 * post v3.7: spectral_histogram = **plantcv.hyperspectral.analyze_spectral**(*array, mask, histplot=True*)
-
-#### plantcv.hyperspectral.analyze_index
-
-* pre v3.7: NA
-* post v3.7: index_array = **plantcv.hyperspectral.extract_index**(*index_array, mask*)
 
 #### plantcv.hyperspectral.extract_index
 
