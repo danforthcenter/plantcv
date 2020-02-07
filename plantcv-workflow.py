@@ -57,7 +57,7 @@ def parse_match_arg(match_string):
             if char == ":":
                 mode = "waiting_for_next_value"
             elif char == ",":
-                raise ValueError
+                raise ValueError("Key without value")
             else:
                 char_is_part_of_key()
         elif mode == "waiting_for_next_value":
