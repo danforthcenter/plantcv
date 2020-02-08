@@ -287,3 +287,76 @@ def _parse_filename(filename, delimiter, regex):
             metadata = []
     return metadata
 ###########################################
+
+def parse_match_arg(match_string):
+    out = {}
+    key = ""
+    value = []
+    current_value = ""
+    mode = "key"
+    processed = ""
+    def value_is_complete():
+        nonlocal key
+        nonlocal current_value
+        nonlocal value
+        nonlocal out
+        current_value_is_complete()
+        if key in out:
+            out[key] += value
+        else:
+            out[key] = value
+        nonlocal processed
+        key = ""
+        current_value = ""
+        value = []
+    def current_value_is_complete():
+        nonlocal value
+        nonlocal current_value
+        value.append(current_value)
+        current_value = ""
+    def char_is_part_of_key():
+        nonlocal key
+        nonlocal char
+        key += char
+    def char_is_part_of_value():
+        nonlocal char
+        nonlocal current_value
+        current_value += char
+    char = ""
+    for char in match_string:
+        processed += char
+        if mode == "waiting_for_next_key":
+           if char == ",":
+               pass
+           else:
+               mode="key"
+               char_is_part_of_key()
+        elif mode == "key":
+            if char == ":":
+                mode = "waiting_for_next_value"
+            elif char == ",":
+                raise ValueError("Key without value")
+            else:
+                char_is_part_of_key()
+        elif mode == "waiting_for_next_value":
+           if char == "[":
+               mode = "list_value"
+           else:
+              mode = "single_value"
+              char_is_part_of_value()
+        elif mode == "list_value":
+            if char == ",":
+                current_value_is_complete()
+            elif char == "]":
+                mode = "waiting_for_next_key"
+                value_is_complete()
+            else:
+                char_is_part_of_value()
+        elif mode == "single_value":
+            if char == ",":
+                value_is_complete()
+            else:
+                char_is_part_of_value()
+    if mode == "single_value":
+        value_is_complete()
+    return out
