@@ -189,6 +189,21 @@ def setup_function():
 # Tests for the parallel subpackage
 # ##############################
 
+def metadata_filters_are_functionally_equivalent(left, right):
+    def sanitize_values(filters):
+        for key, value in filters.items():
+            if not isinstance(value, list):
+                filters[key] = [value]
+        return filters
+    left = sanitize_values(left)
+    right = sanitize_values(right)
+    return left == right
+
+def test_plantcv_parallel_parse_match_arg_one_field_one_value():
+    filter_as_string = "id:1"
+    correct_filter = {"id":"1"}
+    observed_filter = plantcv.parallel.parse_match_arg(filter_as_string)
+    assert metadata_filters_are_functionally_equivalent(correct_filter, observed_filter)
 
 def test_plantcv_parallel_metadata_parser_snapshots():
     data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
