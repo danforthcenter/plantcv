@@ -355,6 +355,7 @@ def parse_match_arg(match_string):
         elif mode == "single_value":
             if char == ",":
                 value_is_complete()
+                mode = "waiting_for_next_key"
             else:
                 char_is_part_of_value()
     if mode == "single_value":
