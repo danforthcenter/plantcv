@@ -229,6 +229,13 @@ def test_plantcv_parallel_parse_match_arg_one_field_pythonic_first_cli_second():
     observed_filter = plantcv.parallel.parse_match_arg(filter_as_string)
     assert metadata_filters_are_functionally_equivalent(correct_filter, observed_filter)
 
+def test_plantcv_parallel_parse_match_arg_two_fields_pythonic_first_cli_second():
+    filter_as_string = "id:[1,2],camera:3,camera:4"
+    correct_filter = {"id":["1","2"],
+                      "camera":["3","4"]}
+    observed_filter = plantcv.parallel.parse_match_arg(filter_as_string)
+    assert metadata_filters_are_functionally_equivalent(correct_filter, observed_filter)
+
 def test_plantcv_parallel_metadata_parser_snapshots():
     data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
     meta_filters = {"imgtype": "VIS"}
