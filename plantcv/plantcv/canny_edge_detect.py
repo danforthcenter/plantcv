@@ -72,7 +72,7 @@ def canny_edge_detect(img, mask = None, sigma=1.0, low_thresh=None, high_thresh=
     # Run Canny edge detection on the grayscale image
     bool_img = feature.canny(img, sigma, low_thresh, high_thresh, mask, use_quantiles)
 
-    # skimage returns a bool image so convert it
+    # Skimage returns a bool image so convert it
     bin_img = np.copy(bool_img.astype(np.uint8) * 255)
 
     # Adjust line thickness

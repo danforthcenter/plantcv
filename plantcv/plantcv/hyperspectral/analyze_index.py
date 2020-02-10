@@ -100,7 +100,7 @@ def analyze_index(index_array, mask, histplot=False, bins=100):
                             value=float(index_std), label='none')
 
     outputs.add_observation(variable='index_frequencies_' + index_array.array_type, trait='index frequencies',
-                            method='plantcv.plantcv.analyze_nir_intensity', scale='frequency', datatype=list,
+                            method='plantcv.plantcv.hyperspectral.analyze_index', scale='frequency', datatype=list,
                             value=hist_percent, label=bin_labels)
 
     if params.debug == "plot":
