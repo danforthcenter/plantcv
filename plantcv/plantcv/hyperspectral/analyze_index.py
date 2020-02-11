@@ -46,21 +46,18 @@ def analyze_index(index_array, mask, histplot=False, bins=100, bin_max=None, bin
     index_std = np.std(masked_array)
 
     # Calculate histogram
-    maxval = round(np.amax(index_array.array_data[0]), 4)
+    maxval = round(np.amax(index_array.array_data[0]), 4) # Auto bins will detect maxval to use for calculating centers
+    b = 0  # Auto bins will always start from 0
     print(np.shape(mask))
     print(np.shape([index_array.array_data][0]))
     hist_nir = [float(l[0]) for l in
                 cv2.calcHist([index_array.array_data.astype(np.uint16)], [0], mask, [bins], [-2, 2])]
 
-    # Create list of bin labels
-    if bin_min == None:
-        b = 0
-    if bin_max == None:
-        bin_width = maxval / float(bins)
-    if (not bin_max == None):
-        maxval = bin_max
+    #
+    if not bin_max == None:
+        maxval = bin_max # If bin_max is defined then overwrite maxval variable
     if not bin_min == None:
-        b = bin_min
+        b = bin_min # If bin_min is defined then overwrite starting value
 
     bin_width = (maxval - b) / float(bins)
     bin_labels = [float(b)]
