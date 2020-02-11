@@ -45,19 +45,17 @@ def analyze_index(index_array, mask, histplot=False, bins=100, bin_max=None, bin
     index_median = np.median(masked_array)
     index_std = np.std(masked_array)
 
-    # Calculate histogram
-    hist_nir = [float(l[0]) for l in
-                cv2.calcHist([index_array.array_data.astype(np.uint16)], [0], mask, [bins], [-2, 2])]
-
-    maxval = round(np.amax(index_array.array_data[0]), 4)  # Auto bins will detect maxval to use for calculating centers
+    maxval = round(np.amax(masked_array), 4) # Auto bins will detect maxval to use for calculating centers
     b = 0  # Auto bins will always start from 0
-    # Overwrite starting bin and maximum value if defined
+
+
     if not bin_max == None:
         maxval = bin_max # If bin_max is defined then overwrite maxval variable
     if not bin_min == None:
         b = bin_min # If bin_min is defined then overwrite starting value
 
-    # Calculate bin labels based on centers of bins
+    # Calculate histogram
+    hist_nir = [float(l[0]) for l in cv2.calcHist([masked_array.astype(np.uint16)], [0], None, [bins], [-2, 2])]
     bin_width = (maxval - b) / float(bins)
     bin_labels = [float(b)]
     plotting_labels = [float(b)]
@@ -73,20 +71,13 @@ def analyze_index(index_array, mask, histplot=False, bins=100, bin_max=None, bin
     params.debug = debug
 
     if histplot is True:
-        hist_x = hist_percent
         dataset = pd.DataFrame({'Index Reflectance': bin_labels,
-                                'Proportion of pixels (%)': hist_x})
+                                'Proportion of pixels (%)': hist_percent})
         fig_hist = (ggplot(data=dataset,
                            mapping=aes(x='Index Reflectance',
                                        y='Proportion of pixels (%)'))
                     + geom_line(color='red')
-                    + scale_x_continuous(breaks=plotting_labels, labels=plotting_labels))
-
-        analysis_image = fig_hist
-        if params.debug == "print":
-            fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + index_array.array_type + '_hist.png'))
-        elif params.debug == "plot":
-            print(fig_hist)
+                    + scale_x_continuous(breaks=bin_labels, labels=plotting_labels))
 
     outputs.add_observation(variable='mean_' + index_array.array_type,
                             trait='Average ' + index_array.array_type + ' reflectance',
@@ -104,7 +95,7 @@ def analyze_index(index_array, mask, histplot=False, bins=100, bin_max=None, bin
                             value=float(index_std), label='none')
 
     outputs.add_observation(variable='index_frequencies_' + index_array.array_type, trait='index frequencies',
-                            method='plantcv.plantcv.analyze_nir_intensity', scale='frequency', datatype=list,
+                            method='plantcv.plantcv.analyze_index', scale='frequency', datatype=list,
                             value=hist_percent, label=bin_labels)
 
     if params.debug == "plot":
