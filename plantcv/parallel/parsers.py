@@ -290,7 +290,11 @@ def _parse_filename(filename, delimiter, regex):
 
 def parse_match_arg_simpler(match_string):
     def tokenize_match_arg(match_string):
-        pass
+        out = []
+        escaped = False
+        quoted = False
+        for char in match_string:
+            pass
     def as_dictionary(match_tokens):
         pass
     return as_dictionary(tokenize_match_arg(match_string)
