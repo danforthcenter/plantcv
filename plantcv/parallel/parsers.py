@@ -289,7 +289,14 @@ def _parse_filename(filename, delimiter, regex):
 ###########################################
 
 def parse_match_arg_simpler(match_string):
-    def recognize_symbols(match_string):
+    def tokenize_match_arg(match_string):
+        """This function recognizes the special characters and 
+        clumps of normal characters within the match arg. For 
+        example:
+        "id:[1,2]" -> ["id", ":", "[", "1", ",", "2","]"]
+        These intermediate results must be turned into a dictionary
+        later.
+        """
         out = []
         escaped = False
         active_quotes = []
