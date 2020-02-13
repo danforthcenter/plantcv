@@ -292,9 +292,16 @@ def parse_match_arg_simpler(match_string):
     def tokenize_match_arg(match_string):
         out = []
         escaped = False
-        quoted = False
+        active_quotes = []
+        current_item = ""
         for char in match_string:
-            pass
+            if escaped:
+                current_item += char
+                escaped = False
+            elif char in active_quotes:
+                quote_index = active_quotes.index(char)
+                active_quotes = active_quotes[:quote_index)
+                current_item += char
     def as_dictionary(match_tokens):
         pass
     return as_dictionary(tokenize_match_arg(match_string)
