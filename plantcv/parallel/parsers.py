@@ -325,7 +325,21 @@ def parse_match_arg_simpler(match_string):
             elif char == "/":
                 escaped = True
     def as_dictionary(match_tokens):
-        pass
+        mode = "key"
+        out = {}
+        if mode == "key":
+            pass
+        if mode == "list_value":
+            pass
+        if mode == "single_value":
+            pass
+        if mode == "list_expecting_item":
+            pass
+        if mode == "key_expecting_value":
+            pass
+        if mode == "expecting_key"
+            pass
+        return out
     return as_dictionary(tokenize_match_arg(match_string)
 
 def parse_match_arg(match_string):
