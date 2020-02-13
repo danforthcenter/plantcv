@@ -289,11 +289,18 @@ def _parse_filename(filename, delimiter, regex):
 ###########################################
 
 def parse_match_arg_simpler(match_string):
-    def tokenize_match_arg(match_string):
+    def recognize_symbols(match_string):
         out = []
         escaped = False
         active_quotes = []
+        quote_symbols = ["'",'"']
+        special_characters = [":", "[", "]"]
         current_item = ""
+        def flush_current_item():
+            nonlocal out
+            nonlocal current_item
+            out.append(current_item)
+            current_item = ""
         for char in match_string:
             if escaped:
                 current_item += char
@@ -302,6 +309,14 @@ def parse_match_arg_simpler(match_string):
                 quote_index = active_quotes.index(char)
                 active_quotes = active_quotes[:quote_index)
                 current_item += char
+            elif char in quote_symbols:
+                active_quotes.append(char)
+            elif char in special_characters:
+                flush_current_item()
+                current_item += char
+                flush_current_item()
+            elif char == "/":
+                escaped = True
     def as_dictionary(match_tokens):
         pass
     return as_dictionary(tokenize_match_arg(match_string)
