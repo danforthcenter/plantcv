@@ -347,7 +347,10 @@ def parse_match_arg_simpler(match_string):
             nonlocal current_key
             nonlocal current_value_list
             if current_key != "":
-                out[current_key] = current_value_list
+                if current_key in out:
+                    out[current_key].extend(current_value_list)
+                else:
+                    out[current_key] = current_value_list
                 current_value_list = []
                 current_key = ""
         for token in match_tokens:
