@@ -289,6 +289,7 @@ def _parse_filename(filename, delimiter, regex):
 ###########################################
 
 def parse_match_arg_simpler(match_string):
+    special_characters = [":", "[", "]"]
     def tokenize_match_arg(match_string):
         """This function recognizes the special characters and 
         clumps of normal characters within the match arg. For 
@@ -301,7 +302,6 @@ def parse_match_arg_simpler(match_string):
         escaped = False
         active_quotes = []
         quote_symbols = ["'",'"']
-        special_characters = [":", "[", "]"]
         current_item = ""
         def flush_current_item():
             nonlocal out
@@ -324,30 +324,65 @@ def parse_match_arg_simpler(match_string):
                 flush_current_item()
             elif char == "\\":
                 escaped = True
+            else:
+                current_item += char
+        flush_current_item()
+        return out
     def as_dictionary(match_tokens):
         mode = "expecting_key"
         out = {}
         current_key = ""
-        current_value = []
+        current_value_list = []
+        current_value = ""
+        def flush_value():
+            nonlocal current_value_list
+            nonlocal current_value
+            current_value_list.append(current_value)
+            current_value = ""
+        def flush_key_value():
+            nonlocal out
+            nonlocal current_key
+            nonlocal current_value
+            nonlocal current_value_list
+            out[current_key] = current_value_list
         for token in match_tokens:
             if mode == "expecting_key":
                 if token in special_characters:
                     raise ValueError("Expecting key value")
                 else:
                     current_key = token
-            if mode == "key_expecting_value":
+                    mode = "expecting_colon"
+            elif mode == "expecting_colon":
+                if token == ":":
+                    mode = "expecting_value"
+                else:
+                    raise ValueError("Key must be followed by :")
+            elif mode == "expecting_value":
                 if token in ":,]": #refactor
                     raise ValueError("Expecting value")
-                elif key == "[":
+                elif token == "[":
                     mode = "list_value"
                 else:
                     current_value = token
-            if mode == "single_value":
-                pass
-            if mode == "list_value":
-                pass
+                    flush_value()
+                    flush_key_value()
+                    mode = "expecting_key"
+            elif mode == "list_value":
+                if token == "]":
+                    flush_key_value()
+                    mode = "expecting_key"
+                elif token == ":":
+                    raise ValueError("Cannot use key-value pairs in a list value")
+                else:
+                    current_value = token
+                    flush_value()
+        if mode == "expecting_key":
+            flush_key_value()
         return out
-    return as_dictionary(tokenize_match_arg(match_string))
+    list_ = tokenize_match_arg(match_string)
+    print(list_)
+    dictionary = as_dictionary(list_)
+    return dictionary
 
 def parse_match_arg(match_string):
     out = {}
