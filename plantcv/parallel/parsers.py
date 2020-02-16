@@ -325,6 +325,8 @@ def parse_match_arg_simpler(match_string):
                 flush_current_item()
             elif char == "\\":
                 escaped = True
+            elif char == ",":
+                flush_current_item()
             else:
                 current_item += char
         flush_current_item()
@@ -343,9 +345,11 @@ def parse_match_arg_simpler(match_string):
         def flush_key_value():
             nonlocal out
             nonlocal current_key
-            nonlocal current_value
             nonlocal current_value_list
-            out[current_key] = current_value_list
+            if current_key != "":
+                out[current_key] = current_value_list
+                current_value_list = []
+                current_key = ""
         for token in match_tokens:
             if mode == "expecting_key":
                 if token in special_characters:
@@ -377,8 +381,7 @@ def parse_match_arg_simpler(match_string):
                 else:
                     current_value = token
                     flush_value()
-        if mode == "expecting_key":
-            flush_key_value()
+        flush_key_value()
         return out
     list_ = tokenize_match_arg(match_string)
     dictionary = as_dictionary(list_)
