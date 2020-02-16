@@ -293,7 +293,7 @@ def parse_match_arg_simpler(match_string):
         """This function recognizes the special characters and 
         clumps of normal characters within the match arg. For 
         example:
-        "id:[1,2]" -> ["id", ":", "[", "1", ",", "2","]"]
+        "id:[1,2]" -> ["id", ":", "[", "1", "2","]"]
         These intermediate results must be turned into a dictionary
         later.
         """
@@ -314,7 +314,7 @@ def parse_match_arg_simpler(match_string):
                 escaped = False
             elif char in active_quotes:
                 quote_index = active_quotes.index(char)
-                active_quotes = active_quotes[:quote_index)
+                active_quotes = active_quotes[:quote_index]
                 current_item += char
             elif char in quote_symbols:
                 active_quotes.append(char)
@@ -322,25 +322,32 @@ def parse_match_arg_simpler(match_string):
                 flush_current_item()
                 current_item += char
                 flush_current_item()
-            elif char == "/":
+            elif char == "\\":
                 escaped = True
     def as_dictionary(match_tokens):
-        mode = "key"
+        mode = "expecting_key"
         out = {}
-        if mode == "key":
-            pass
-        if mode == "list_value":
-            pass
-        if mode == "single_value":
-            pass
-        if mode == "list_expecting_item":
-            pass
-        if mode == "key_expecting_value":
-            pass
-        if mode == "expecting_key"
-            pass
+        current_key = ""
+        current_value = []
+        for token in match_tokens:
+            if mode == "expecting_key":
+                if token in special_characters:
+                    raise ValueError("Expecting key value")
+                else:
+                    current_key = token
+            if mode == "key_expecting_value":
+                if token in ":,]": #refactor
+                    raise ValueError("Expecting value")
+                elif key == "[":
+                    mode = "list_value"
+                else:
+                    current_value = token
+            if mode == "single_value":
+                pass
+            if mode == "list_value":
+                pass
         return out
-    return as_dictionary(tokenize_match_arg(match_string)
+    return as_dictionary(tokenize_match_arg(match_string))
 
 def parse_match_arg(match_string):
     out = {}
