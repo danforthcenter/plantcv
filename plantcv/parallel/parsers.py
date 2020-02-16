@@ -306,8 +306,9 @@ def parse_match_arg_simpler(match_string):
         def flush_current_item():
             nonlocal out
             nonlocal current_item
-            out.append(current_item)
-            current_item = ""
+            if current_item != "":
+                out.append(current_item)
+                current_item = ""
         for char in match_string:
             if escaped:
                 current_item += char
@@ -380,7 +381,6 @@ def parse_match_arg_simpler(match_string):
             flush_key_value()
         return out
     list_ = tokenize_match_arg(match_string)
-    print(list_)
     dictionary = as_dictionary(list_)
     return dictionary
 
