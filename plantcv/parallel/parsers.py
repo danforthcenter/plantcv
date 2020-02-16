@@ -310,24 +310,30 @@ def parse_match_arg_simpler(match_string):
                 out.append(current_item)
                 current_item = ""
         for char in match_string:
+            print("char", char)
+            print("active_quotes", active_quotes)
             if escaped:
                 current_item += char
                 escaped = False
-            elif char in active_quotes:
-                quote_index = active_quotes.index(char)
-                active_quotes = active_quotes[:quote_index]
-                if quote_index != 0:
-                    current_item += char
             elif char in quote_symbols:
-                active_quotes.append(char)
-            elif char in special_characters:
-                flush_current_item()
-                current_item += char
-                flush_current_item()
-            elif char == "\\":
-                escaped = True
-            elif char == ",":
-                flush_current_item()
+                if char in active_quotes:
+                    quote_index = active_quotes.index(char)
+                    active_quotes = active_quotes[:quote_index]
+                    if quote_index != 0:
+                        current_item += char
+                else:
+                    active_quotes.append(char)
+            elif len(active_quotes) == 0:
+                if char in special_characters:
+                    flush_current_item()
+                    current_item += char
+                    flush_current_item()
+                elif char == "\\":
+                    escaped = True
+                elif char == ",":
+                    flush_current_item()
+                else:
+                    current_item += char
             else:
                 current_item += char
         flush_current_item()
@@ -388,6 +394,7 @@ def parse_match_arg_simpler(match_string):
         flush_key_value()
         return out
     list_ = tokenize_match_arg(match_string)
+    print(list_)
     dictionary = as_dictionary(list_)
     return dictionary
 
