@@ -316,7 +316,8 @@ def parse_match_arg_simpler(match_string):
             elif char in active_quotes:
                 quote_index = active_quotes.index(char)
                 active_quotes = active_quotes[:quote_index]
-                current_item += char
+                if quote_index != 0:
+                    current_item += char
             elif char in quote_symbols:
                 active_quotes.append(char)
             elif char in special_characters:
