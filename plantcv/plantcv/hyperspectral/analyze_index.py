@@ -32,6 +32,7 @@ def analyze_index(index_array, mask, histplot=False, bins=100, bin_max=None, bin
 
     debug = params.debug
     params.debug = None
+    analysis_image = None
 
     if len(np.shape(mask)) > 2 or len(np.unique(mask)) > 2:
         fatal_error("Mask should be a binary image of 0 and nonzero values.")
@@ -45,7 +46,7 @@ def analyze_index(index_array, mask, histplot=False, bins=100, bin_max=None, bin
     index_median = np.median(masked_array)
     index_std = np.std(masked_array)
 
-    maxval = round(np.amax(masked_array), 4) # Auto bins will detect maxval to use for calculating centers
+    maxval = round(np.amax(masked_array), 8) # Auto bins will detect maxval to use for calculating centers
     b = 0  # Auto bins will always start from 0
 
 
@@ -55,7 +56,7 @@ def analyze_index(index_array, mask, histplot=False, bins=100, bin_max=None, bin
         b = bin_min # If bin_min is defined then overwrite starting value
 
     # Calculate histogram
-    hist_nir = [float(l[0]) for l in cv2.calcHist([masked_array.astype(np.uint16)], [0], None, [bins], [0, 1])]
+    hist_val = [float(l[0]) for l in cv2.calcHist([masked_array.astype(np.float32)], [0], None, [bins], [0, 1])]
     bin_width = (maxval - b) / float(bins)
     bin_labels = [float(b)]
     plotting_labels = [float(b)]
@@ -66,7 +67,7 @@ def analyze_index(index_array, mask, histplot=False, bins=100, bin_max=None, bin
 
     # Make hist percentage for plotting
     pixels = cv2.countNonZero(mask)
-    hist_percent = [(p / float(pixels)) * 100 for p in hist_nir]
+    hist_percent = [(p / float(pixels)) * 100 for p in hist_val]
 
     params.debug = debug
 
@@ -78,6 +79,12 @@ def analyze_index(index_array, mask, histplot=False, bins=100, bin_max=None, bin
                                        y='Proportion of pixels (%)'))
                     + geom_line(color='red')
                     + scale_x_continuous(breaks=bin_labels, labels=plotting_labels))
+        analysis_image = fig_hist
+        if params.debug == 'print':
+            fig_hist.save(os.path.join(params.debug_outdir, str(params.device) +
+                                                            index_array.array_type + "hist.png"))
+        elif params.debug == 'plot':
+            print(fig_hist)
 
     outputs.add_observation(variable='mean_' + index_array.array_type,
                             trait='Average ' + index_array.array_type + ' reflectance',
@@ -103,3 +110,8 @@ def analyze_index(index_array, mask, histplot=False, bins=100, bin_max=None, bin
     elif params.debug == "print":
         print_image(img=masked_array, filename=os.path.join(params.debug_outdir, str(params.device) +
                                                             index_array.array_type + ".png"))
+    # Store images
+    outputs.images.append(analysis_image)
+
+    return analysis_image
+
