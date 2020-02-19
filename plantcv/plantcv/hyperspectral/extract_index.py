@@ -88,8 +88,12 @@ def extract_index(array, index="NDVI", distance=20):
     all_positive = np.add(index_array_raw, 2 * np.ones(np.shape(index_array_raw)))
     scaled = rescale(all_positive)
 
+    # Find array min and max values
+    max_pixel = float(np.amax(index_array_raw))
+    min_pixel = float(np.amin(index_array_raw))
+
     index_array = Spectral_data(array_data=index_array_raw, max_wavelength=0,
-                                min_wavelength=0, d_type=np.uint8,
+                                min_wavelength=0, max_value=max_pixel, min_value=min_pixel, d_type=np.uint8,
                                 wavelength_dict={}, samples=array.samples,
                                 lines=array.lines, interleave=array.interleave,
                                 wavelength_units=array.wavelength_units, array_type="index_" + index.lower(),

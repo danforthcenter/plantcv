@@ -98,12 +98,16 @@ outputs = Outputs()
 
 class Spectral_data:
     # PlantCV Hyperspectral data class
-    def __init__(self, array_data, max_wavelength, min_wavelength, d_type, wavelength_dict, samples, lines, interleave,
+    def __init__(self, array_data, max_wavelength, min_wavelength, max_value, min_value, d_type, wavelength_dict, samples, lines, interleave,
                  wavelength_units, array_type, pseudo_rgb, filename, default_bands):
         # The actual array/datacube
         self.array_data = array_data
+        # Min/max available wavelengths (for spectral datacube)
         self.max_wavelength = max_wavelength
         self.min_wavelength = min_wavelength
+        #  Min/max pixel value for single wavelength or index
+        self.max_value = max_value
+        self.min_value = min_value
         # Numpy data type
         self.d_type = d_type
         # Contains all available wavelengths where keys are wavelength and value are indices
