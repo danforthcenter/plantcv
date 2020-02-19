@@ -3733,7 +3733,7 @@ def test_plantcv_hyperspectral_analyze_index_set_range():
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
     index_array = pcv.hyperspectral.extract_index(array=array_data, index="savi", distance=801)
     mask_img = np.ones(np.shape(index_array.array_data), dtype=np.uint8) * 255
-    pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, histplot=True, bin_min=0, bin_max=1)
+    pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, histplot=True, min_bin=0, max_bin=1)
     assert pcv.outputs.observations['mean_index_savi']['value'] > 0
 
 

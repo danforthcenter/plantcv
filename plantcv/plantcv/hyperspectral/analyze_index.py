@@ -12,7 +12,7 @@ from plantcv.plantcv import fatal_error
 from plotnine import ggplot, aes, geom_line, scale_x_continuous
 
 
-def analyze_index(index_array, mask, histplot=False, bins=100, bin_max=None, bin_min=None):
+def analyze_index(index_array, mask, histplot=False, bins=100, max_bin=None, min_bin=None):
     """This extracts the hyperspectral index statistics and writes the values  as observations out to
        the Outputs class.
 
@@ -21,12 +21,17 @@ def analyze_index(index_array, mask, histplot=False, bins=100, bin_max=None, bin
     mask         = Binary mask made from selected contours
     histplot     = if True plots histogram of intensity values
     bins         = optional, number of classes to divide spectrum into
+    bin_max      = optional, maximum bin value
+    bin_min      = optional, minimum bin value
 
 
     :param array: __main__.Spectral_data
     :param mask: numpy array
     :param histplot: bool
     :param bins: int
+    :param max_bin: float
+    :param min_bin: float
+    :return analysis_image: list
     """
     params.device += 1
 
@@ -50,10 +55,10 @@ def analyze_index(index_array, mask, histplot=False, bins=100, bin_max=None, bin
     b = 0  # Auto bins will always start from 0
 
 
-    if not bin_max == None:
-        maxval = bin_max # If bin_max is defined then overwrite maxval variable
-    if not bin_min == None:
-        b = bin_min # If bin_min is defined then overwrite starting value
+    if not max_bin == None:
+        maxval = max_bin # If bin_max is defined then overwrite maxval variable
+    if not min_bin == None:
+        b = min_bin # If bin_min is defined then overwrite starting value
 
     # Calculate histogram
     hist_val = [float(l[0]) for l in cv2.calcHist([masked_array.astype(np.float32)], [0], None, [bins], [0, 1])]
