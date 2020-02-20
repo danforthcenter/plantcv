@@ -11,7 +11,7 @@ on using wavelengths that are at least close to the wavelength bands require to 
 - **Parameters:**
     - array         - A hyperspectral datacube object, an instance of the `Spectral_data` class, (read in with [pcv.readimage](read_image.md) with `mode='envi'`)
     - index         - Desired index, either "ndvi" for normalized difference vegetation index, "gdvi" for green difference
-    vegetation index, or "savi" for soil adjusted vegetation index.
+    vegetation index, "savi" for soil adjusted vegetation index, of "pri" for photochemical reflectance index.
     - distance      - Amount of flexibility (in nanometers) regarding using wavelengths that are 
     at least close to the wavelength bands require to calculate a specific index
 
