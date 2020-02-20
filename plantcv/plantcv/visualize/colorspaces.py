@@ -12,7 +12,7 @@ from plantcv.plantcv import rgb2gray_hsv
 from plantcv.plantcv import rgb2gray_lab
 
 
-def colorspace(rgb_img):
+def colorspaces(rgb_img):
     """ Visualize an RGB image in all potential colorspaces
 
     Inputs:
