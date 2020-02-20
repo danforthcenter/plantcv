@@ -4,7 +4,7 @@ This is a plotting method used to examine all potential colorspaces from availab
 
 **plantcv.visualize.colorspaces**(*rgb_img*)
 
-**returns** fig_hist
+**returns** plotting_img
 
 - **Parameters:**
     - rgb_img - RGB image data, the original image for analysis.
@@ -28,5 +28,5 @@ colorspace_img = pcv.visualize.colorspaces(rgb_img=img)
 
 **Ouput**
 
-![Screenshot](img/documentation_images/histogram/mask.jpg)
+![Screenshot](img/documentation_images/visualize_colorspaces/all_colorspaces.jpg)
 
