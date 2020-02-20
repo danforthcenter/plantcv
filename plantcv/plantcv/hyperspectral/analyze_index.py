@@ -21,8 +21,8 @@ def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=None, max
     mask         = Binary mask made from selected contours
     histplot     = if True plots histogram of intensity values
     bins         = optional, number of classes to divide spectrum into
-    bin_max      = optional, maximum bin value
     bin_min      = optional, minimum bin value
+    bin_max      = optional, maximum bin value
 
 
     :param array: __main__.Spectral_data
