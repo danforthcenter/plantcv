@@ -48,9 +48,14 @@ def calibrate(raw_data, white_reference, dark_reference):
     scalibrated = np.stack(output_calibrated, axis=2)
     calibrated_array = np.transpose(scalibrated[0], (1, 0, 2))
 
+    # Find array min and max values
+    max_pixel = float(np.amax(calibrated_array))
+    min_pixel = float(np.amin(calibrated_array))
+
     # Make a new class instance with the calibrated hyperspectral image
     calibrated = Spectral_data(array_data=calibrated_array, max_wavelength=raw_data.max_wavelength,
-                               min_wavelength=raw_data.min_wavelength, d_type=raw_data.d_type,
+                               min_wavelength=raw_data.min_wavelength, max_value=max_pixel, min_value=min_pixel,
+                               d_type=raw_data.d_type,
                                wavelength_dict=raw_data.wavelength_dict, samples=raw_data.samples,
                                lines=raw_data.lines, interleave=raw_data.interleave,
                                wavelength_units=raw_data.wavelength_units, array_type=raw_data.array_type,

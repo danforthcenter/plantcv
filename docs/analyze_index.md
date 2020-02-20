@@ -3,7 +3,7 @@
 This function calculates the hyperspectral index statistics and writes the values  as observations out to
        the [Outputs class](outputs.md).
        
-**plantcv.hyperspectral.analyze_index**(*index_array, mask*)
+**plantcv.hyperspectral.analyze_index**(*index_array, mask, bins=100, min_bin=None, max_bin=None*)
 
 **returns** None
 
@@ -12,6 +12,9 @@ This function calculates the hyperspectral index statistics and writes the value
     - mask          - Binary mask made from selected contours
     - histplot      - If True plots histogram of intensity values
     - bins          - Optional, number of classes to divide spectrum into (default bins=100) 
+    - min_bin       - Optional, maximum bin label. If `None` then 0 will be used for the smallest bin label.
+    - max_bin       - Optional, maximum bin label. If `None` then maximum pixel value detected in the image will be used for the largest bin label.
+
 - **Context:**
     - Calculates data about mean, median, and standard deviation of an input index within a masked region. 
 - **Example use:**
@@ -37,4 +40,3 @@ pcv.hyperspectral.analyze_index(index_array=ndvi_index, mask=leaf_mask, histplot
 *Masked Index Histogram*
 
 ![Screenshot](img/documentation_images/analyze_index/index_ndvi_hist.jpg)
-

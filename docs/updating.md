@@ -345,8 +345,8 @@ pages for more details on the input and output variable types.
 #### plantcv.hyperspectral.analyze_index
 
 * pre v3.7: NA
-* post v3.7: index_array = **plantcv.hyperspectral.analyze_index**(*index_array, mask*)
-* post v3.8: index_array = **plantcv.hyperspectral.analyze_index**(*index_array, mask, histplot=False, bins=100*)
+* post v3.7: **plantcv.hyperspectral.analyze_index**(*index_array, mask*)
+* post v3.8: index_histogram = **plantcv.hyperspectral.analyze_index**(*index_array, mask, histplot=False, bins=100, max_bin=None, min_bin=None*)
 
 #### plantcv.hyperspectral.analyze_spectral
 
