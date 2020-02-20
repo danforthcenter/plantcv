@@ -3745,6 +3745,18 @@ def test_plantcv_hyperspectral_analyze_index():
     assert pcv.outputs.observations['mean_index_savi']['value'] > 0
 
 
+def test_plantcv_hyperspectral_analyze_index_set_range():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_analyze_index")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="savi", distance=801)
+    mask_img = np.ones(np.shape(index_array.array_data), dtype=np.uint8) * 255
+    pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, histplot=True, min_bin=0, max_bin=1)
+    assert pcv.outputs.observations['mean_index_savi']['value'] > 0
+
+
 def test_plantcv_hyperspectral_analyze_index_bad_input_mask():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)

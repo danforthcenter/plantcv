@@ -50,9 +50,13 @@ def extract_wavelength(spectral_data, wavelength):
         print_image(index_array,
                     os.path.join(params.debug_outdir, str(params.device) + str(wavelength) + "_index.png"))
 
+    # Find array min and max values
+    max_pixel = float(np.amax(index_array_raw))
+    min_pixel = float(np.amin(index_array_raw))
+
     # Make a spectral data instance
     index_array = Spectral_data(array_data=index_array_raw, max_wavelength=wavelength,
-                                min_wavelength=wavelength, d_type=np.uint8,
+                                min_wavelength=wavelength, max_value=max_pixel, min_value=min_pixel, d_type=np.uint8,
                                 wavelength_dict={}, samples=spectral_data.samples,
                                 lines=spectral_data.lines, interleave=spectral_data.interleave,
                                 wavelength_units=spectral_data.wavelength_units,

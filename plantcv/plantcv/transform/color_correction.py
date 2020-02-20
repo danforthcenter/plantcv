@@ -479,6 +479,8 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
 def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark'):
     """Automatically detects a color card and output info to use in create_color_card_mask function
 
+    Algorithm written by Brandon Hurr. Updated and implemented into PlantCV by Haley Schuhl.
+
     Inputs:
     rgb_img        = Input RGB image data containing a color card.
     threshold      = Threshold method, either 'normal', 'otsu', or 'adaptgauss', optional (default 'adaptgauss')

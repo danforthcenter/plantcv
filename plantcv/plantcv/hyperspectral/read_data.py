@@ -160,10 +160,15 @@ def read_data(filename):
         header_dict["default bands"] = header_dict["default bands"].replace("}", "")
         default_bands = header_dict["default bands"].split(",")
 
+    # Find array min and max values
+    max_pixel = float(np.amax(array_data))
+    min_pixel = float(np.amin(array_data))
+
     # Create an instance of the spectral_data class
     spectral_array = Spectral_data(array_data=array_data,
                                    max_wavelength=float(str(header_dict["wavelength"][-1]).rstrip()),
                                    min_wavelength=float(str(header_dict["wavelength"][0]).rstrip()),
+                                   max_value=max_pixel, min_value=min_pixel,
                                    d_type=header_dict["data type"],
                                    wavelength_dict=wavelength_dict, samples=int(header_dict["samples"]),
                                    lines=int(header_dict["lines"]), interleave=header_dict["interleave"],
