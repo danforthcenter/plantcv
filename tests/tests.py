@@ -4928,6 +4928,20 @@ def test_plantcv_visualize_clustered_contours():
     assert len(np.unique(cluster_img)) == 37
 
 
+def test_plantcv_visualize_colorspaces():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_plot_hist")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    pcv.params.debug = "plot"
+    _ = pcv.visualize.colorspaces(rgb_img=img)
+    pcv.params.debug = "print"
+    visualize_img = pcv.visualize.colorspaces(rgb_img=img)
+    assert np.shape(visualize_img)[1] == (np.shape(img)[1] * 5)
+
+
 # ##############################
 # Tests for the utils subpackage
 # ##############################
