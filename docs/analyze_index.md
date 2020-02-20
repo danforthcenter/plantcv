@@ -3,7 +3,7 @@
 This function calculates the hyperspectral index statistics and writes the values  as observations out to
        the [Outputs class](outputs.md).
        
-**plantcv.hyperspectral.analyze_index**(*index_array, mask, bins=100, max_bin=None, min_bin=None*)
+**plantcv.hyperspectral.analyze_index**(*index_array, mask, bins=100, min_bin=None, max_bin=None*)
 
 **returns** None
 
@@ -40,4 +40,3 @@ pcv.hyperspectral.analyze_index(index_array=ndvi_index, mask=leaf_mask, histplot
 *Masked Index Histogram*
 
 ![Screenshot](img/documentation_images/analyze_index/index_ndvi_hist.jpg)
-
