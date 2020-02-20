@@ -745,6 +745,12 @@ pages for more details on the input and output variable types.
 * pre v3.2: NA
 * post v3.2: colored_img = pcv.visualize.colorize_masks(classes, colors)
 
+
+#### plantcv.visualize.colorspaces
+
+* pre v3.8: NA
+* post v3.8: plotting_img = pcv.visualize.colorspaces(rgb_img)
+
 #### plantcv.visualize.histogram
 
 * pre v3.2: bins, hist = **plantcv.plot_hist**(*img, name=False*)
