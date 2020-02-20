@@ -78,8 +78,10 @@ def extract_index(array, index="NDVI", distance=20):
         #  Photochemical Reflectance Index (https://doi.org/10.1111/j.1469-8137.1995.tb03064.x)
         if (max_wavelength + distance) >= 570 and (min_wavelength - distance) <= 531:
             # Obtain index that best approximates 570 and 531 nm bands
-            pri570 = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 570)
-            pri531 = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 531)
+            pri570_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 570)
+            pri531_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 531)
+            pri570 = (array_data[:, :, [pri570_index]])
+            pri531 = (array_data[:, :, [pri531_index]])
             # PRI = (R531− R570)/(R531+ R570))
             denominator = pri531 + pri570
             # Avoid dividing by zero
