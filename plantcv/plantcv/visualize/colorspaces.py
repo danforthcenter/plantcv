@@ -36,7 +36,7 @@ def colorspace(rgb_img):
     # Initialize grayscale images list, rgb images list, plotting coordinates
     colorspace_names = ["H", "S", "V", "L", "A", "B"]
     all_colorspaces = []
-    rgb_imgs = []
+    labeled_imgs = []
     y = int(np.shape(rgb_img)[0] / 2)
     x = int(np.shape(rgb_img)[1] / 2)
 
@@ -54,12 +54,12 @@ def colorspace(rgb_img):
         labeled = cv2.putText(img=converted_img, text=colorspace_names[i], org=(x, y),
                               fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                               fontScale=params.text_size, color=(255, 0, 255), thickness=params.text_thickness)
-        rgb_imgs.append(labeled)
+        labeled_imgs.append(labeled)
 
-    # Compile images together including a larger version of the original image
-    all_imgs = np.vstack([np.hstack([rgb_imgs[0], rgb_imgs[1], rgb_imgs[2]]),
-                          np.hstack([rgb_imgs[3], rgb_imgs[4], rgb_imgs[5]])])
-    plotting_img = np.hstack([resize(img=rgb_img, resize_x=2, resize_y=2), all_imgs])
+    # Compile images together, including a larger version of the original image
+    all_labeled = np.vstack([np.hstack([labeled_imgs[0], labeled_imgs[1], labeled_imgs[2]]),
+                          np.hstack([labeled_imgs[3], labeled_imgs[4], labeled_imgs[5]])])
+    plotting_img = np.hstack([resize(img=rgb_img, resize_x=2, resize_y=2), all_labeled])
 
     # Reset debug mode
     params.debug = debug
