@@ -26,7 +26,7 @@ def colorspaces(rgb_img):
 
     """
 
-    if not np.shape(rgb_img)[2] == 3:
+    if not len(np.shape(rgb_img)) == 3:
         fatal_error("Input image is not RGB!")
 
     # Store and disable debug mode

@@ -4942,6 +4942,16 @@ def test_plantcv_visualize_colorspaces():
     assert np.shape(visualize_img)[1] == (np.shape(img)[1] * 5)
 
 
+def test_plantcv_visualize_colorspaces_bad_input():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_plot_hist")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    with pytest.raises(RuntimeError):
+        _ = pcv.visualize.colorspaces(rgb_img=img)
+
 # ##############################
 # Tests for the utils subpackage
 # ##############################
