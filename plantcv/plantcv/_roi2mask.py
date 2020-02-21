@@ -6,6 +6,8 @@ import numpy as np
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
+from plantcv.plantcv import plot_image
+from plantcv.plantcv import print_image
 
 
 def _roi2mask(img, roi_contour):
@@ -22,18 +24,18 @@ def _roi2mask(img, roi_contour):
     :param roi_hierarchy: numpy.ndarray
     :return mask: numpy.ndarray
     """
+    params.device += 1
 
     # create a blank image of same size
     shape_info = np.shape(img)
     bnk = np.zeros((shape_info[0], shape_info[1]), dtype=np.uint8)
     img1 = np.copy(img)
 
-    cv2.drawContours(bnk, roi_contour, 0, (255, 255, 255), -1)
-    cv2.drawContours(img1, roi_contour, 0, (255, 255, 255), -1)
+    mask = cv2.drawContours(bnk, roi_contour, 0, (255, 255, 255), -1)
 
     if params.debug == 'print':
-        print_image(bnk, os.path.join(params.debug_outdir, str(params.device) + '_roi.png'))
+        print_image(mask, os.path.join(params.debug_outdir, str(params.device) + '_roi_mask.png'))
     elif params.debug == 'plot':
-        plot_image(bnk, cmap="gray")
-        plot_image(img1, cmap="gray")
-    return img1, bnk, contour, hierarchy
+        plot_image(mask, cmap="gray")
+
+    return mask
