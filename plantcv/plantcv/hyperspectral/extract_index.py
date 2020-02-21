@@ -48,7 +48,7 @@ def extract_index(array, index="NDVI", distance=20):
             # Naturally ranges from -1 to 1
             index_array_raw = (nir - red) / (nir + red)
         else:
-            fatal_error("Available wavelengths are not suitable for calculating NDVI. Try increasing fudge factor.")
+            fatal_error("Available wavelengths are not suitable for calculating NDVI. Try increasing distance.")
 
     elif index.upper() == "GDVI":
         # Green Difference Vegetation Index [Sripada et al. (2006)]
@@ -60,7 +60,7 @@ def extract_index(array, index="NDVI", distance=20):
             # Naturally ranges from -2 to 2
             index_array_raw = nir - red
         else:
-            fatal_error("Available wavelengths are not suitable for calculating GDVI. Try increasing fudge factor.")
+            fatal_error("Available wavelengths are not suitable for calculating GDVI. Try increasing distance.")
 
     elif index.upper() == "SAVI":
         # Soil Adjusted Vegetation Index [Huete et al. (1988)]
@@ -72,10 +72,26 @@ def extract_index(array, index="NDVI", distance=20):
             # Naturally ranges from -1.2 to 1.2
             index_array_raw = (1.5 * (nir - red)) / (red + nir + 0.5)
         else:
-            fatal_error("Available wavelengths are not suitable for calculating SAVI. Try increasing fudge factor.")
+            fatal_error("Available wavelengths are not suitable for calculating SAVI. Try increasing distance.")
+
+    elif index.upper() == "PRI":
+        #  Photochemical Reflectance Index (https://doi.org/10.1111/j.1469-8137.1995.tb03064.x)
+        if (max_wavelength + distance) >= 570 and (min_wavelength - distance) <= 531:
+            # Obtain index that best approximates 570 and 531 nm bands
+            pri570_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 570)
+            pri531_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 531)
+            pri570 = (array_data[:, :, [pri570_index]])
+            pri531 = (array_data[:, :, [pri531_index]])
+            # PRI = (R531− R570)/(R531+ R570))
+            denominator = pri531 + pri570
+            # Avoid dividing by zero
+            index_array_raw = np.where(denominator == 0, 0, ((pri531 - pri570) / denominator))
+        else:
+            fatal_error("Available wavelengths are not suitable for calculating PRI. Try increasing distance.")
 
     else:
-        fatal_error(index + " is not one of the currently available indices for this function.")
+        fatal_error(index + " is not one of the currently available indices for this function. Please open an issue " +
+                    "on the PlantCV GitHub account so we can add more handy indicies!")
 
     # Reshape array into hyperspectral datacube shape
     index_array_raw = np.transpose(np.transpose(index_array_raw)[0])

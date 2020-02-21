@@ -24,7 +24,7 @@ def _find_closest(spectral_array, target):
     :param target: float
     :return spectral_array: __main__.Spectral_data
     """
-    # A must be sorted
+    # Array must be sorted
     idx = spectral_array.searchsorted(target)
     idx = np.clip(idx, 1, len(spectral_array) - 1)
     left = spectral_array[idx - 1]
