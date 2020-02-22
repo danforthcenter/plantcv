@@ -399,17 +399,27 @@ def parse_match_arg_simpler(match_string):
                     current_value = token
                     flush_value()
                     flush_key_value()
-                    mode = "expecting_key"
+                    mode = "expecting_key_comma"
             elif mode == "list_value":
-                if token == "]":
-                    flush_key_value()
-                    mode = "expecting_key"
-                elif token == ":":
+                if token == ":":
                     raise ValueError("Cannot use key-value pairs in a list value",
                                      show_error(token))
                 else:
                     current_value = token
                     flush_value()
+                    mode = "list_comma"
+            elif mode == "list_comma":
+                if token == "]":
+                    flush_key_value()
+                    mode = "expecting_key_comma"
+                elif token == ",":
+                    mode = "list_value"
+                else:
+                    raise ValueError("Expecting comma between list items")
+            elif mode == "expecting_key_comma":
+                if token != ",":
+                    raise ValueError("Expecting comma before key")
+                mode = "expecting_key"
         flush_key_value()
         return out
     list_ = tokenize_match_arg(match_string)
