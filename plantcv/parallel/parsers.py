@@ -360,12 +360,8 @@ def parse_match_arg_simpler(match_string):
         out = {}
         current_key = ""
         current_value_list = []
-        current_value = ""
-        def flush_value():
+        def flush_value(current_value):
             nonlocal current_value_list
-            nonlocal current_value
-            current_value_list.append(current_value)
-            current_value = ""
         def flush_key_value():
             nonlocal out
             nonlocal current_key
@@ -400,8 +396,7 @@ def parse_match_arg_simpler(match_string):
                 elif token == "[":
                     mode = "list_value"
                 else:
-                    current_value = token
-                    flush_value()
+                    flush_value(token)
                     flush_key_value()
                     mode = "expecting_key_comma"
             elif mode == "list_value":
@@ -410,8 +405,7 @@ def parse_match_arg_simpler(match_string):
                                                    token_obj.original_text,
                                                    token_obj))
                 else:
-                    current_value = token
-                    flush_value()
+                    flush_value(token)
                     mode = "list_comma"
             elif mode == "list_comma":
                 if token == "]":
