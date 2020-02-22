@@ -3,14 +3,12 @@
 import os
 import cv2
 import numpy as np
-from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
-from plantcv.plantcv import outputs
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 
 
-def _roi2mask(img, roi_contour):
+def roi2mask(img, roi_contour):
     """Create a binary mask from an ROI contour
     Inputs:
     img                  = RGB or grayscale image data
@@ -31,7 +29,7 @@ def _roi2mask(img, roi_contour):
     bnk = np.zeros((shape_info[0], shape_info[1]), dtype=np.uint8)
     img1 = np.copy(img)
 
-    mask = cv2.drawContours(bnk, roi_contour, 0, (255, 255, 255), -1)
+    mask = cv2.drawContours(bnk, roi_contour, 0, 255, -1)
 
     if params.debug == 'print':
         print_image(mask, os.path.join(params.debug_outdir, str(params.device) + '_roi_mask.png'))

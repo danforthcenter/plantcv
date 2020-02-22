@@ -33,7 +33,7 @@ def histogram(gray_img, mask=None, bins=256, color='red', title=None):
     # Apply mask if one is supplied
     if mask is not None:
         # apply plant shaped mask to image
-        params.debug=None
+        params.debug = None
         mask1 = binary_threshold(mask, 0, 255, 'light')
         mask1 = (mask1 / 255)
         masked = np.multiply(gray_img, mask1)
