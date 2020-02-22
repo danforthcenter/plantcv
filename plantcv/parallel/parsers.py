@@ -347,6 +347,8 @@ def parse_match_arg_simpler(match_string):
                     escaped = True
                 elif char == ",":
                     flush_current_item(False, idx)
+                    current_item += char
+                    flush_current_item(True, idx)
                 else:
                     current_item += char
             else:
