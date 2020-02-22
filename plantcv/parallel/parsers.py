@@ -290,9 +290,15 @@ def _parse_filename(filename, delimiter, regex):
 
 def parse_match_arg_simpler(match_string):
     special_characters = [":", "[", "]"]
+    class Token():
+        def __init__(self, text, special, original_text, original_text_position):
+            self.text = text
+            self.special = special
+            self.original_text = original_text
+            self.original_text_position = original_text_position
     def tokenize_match_arg(match_string):
-        """This function recognizes the special characters and 
-        clumps of normal characters within the match arg. For 
+        """This function recognizes the special characters and
+        clumps of normal characters within the match arg. For
         example:
         "id:[1,2]" -> ["id", ":", "[", "1", "2","]"]
         These intermediate results must be turned into a dictionary
@@ -303,13 +309,17 @@ def parse_match_arg_simpler(match_string):
         active_quotes = []
         quote_symbols = ["'",'"']
         current_item = ""
-        def flush_current_item():
+        def flush_current_item(special, idx):
             nonlocal out
             nonlocal current_item
             if current_item != "":
-                out.append(current_item)
+                token_obj = Token(current_item,
+                                  special,
+                                  match_string,
+                                  idx)
+                out.append(token_obj)
                 current_item = ""
-        for char in match_string:
+        for idx, char in enumerate(match_string):
             print("char", char)
             print("active_quotes", active_quotes)
             if escaped:
@@ -325,18 +335,18 @@ def parse_match_arg_simpler(match_string):
                     active_quotes.append(char)
             elif len(active_quotes) == 0:
                 if char in special_characters:
-                    flush_current_item()
+                    flush_current_item(False, idx)
                     current_item += char
-                    flush_current_item()
+                    flush_current_item(special=True,idx=idx)
                 elif char == "\\":
                     escaped = True
                 elif char == ",":
-                    flush_current_item()
+                    flush_current_item(False, idx)
                 else:
                     current_item += char
             else:
                 current_item += char
-        flush_current_item()
+        flush_current_item(special=False, idx=idx)
         return out
     def as_dictionary(match_tokens):
         mode = "expecting_key"
@@ -360,7 +370,8 @@ def parse_match_arg_simpler(match_string):
                     out[current_key] = current_value_list
                 current_value_list = []
                 current_key = ""
-        for token in match_tokens:
+        for idx, token_obj in enumerate(match_tokens):
+            token = token_obj.text
             if mode == "expecting_key":
                 if token in special_characters:
                     raise ValueError("Expecting key value")
@@ -387,7 +398,8 @@ def parse_match_arg_simpler(match_string):
                     flush_key_value()
                     mode = "expecting_key"
                 elif token == ":":
-                    raise ValueError("Cannot use key-value pairs in a list value")
+                    raise ValueError("Cannot use key-value pairs in a list value",
+                                     show_error(token))
                 else:
                     current_value = token
                     flush_value()
@@ -433,7 +445,7 @@ def parse_match_arg(match_string):
         nonlocal current_value
         current_value += char
     char = ""
-    for char in match_string:
+    for index, char in enumerate(match_string):
         processed += char
         if mode == "waiting_for_next_key":
            if char == ",":
