@@ -381,7 +381,9 @@ def parse_match_arg_simpler(match_string):
             token = token_obj.text
             if mode == "expecting_key":
                 if token in special_characters:
-                    raise ValueError("Expecting key value")
+                    raise ValueError(error_message("Expecting key value",
+                                                   token_obj.original_text,
+                                                   token_obj))
                 else:
                     current_key = token
                     mode = "expecting_colon"
@@ -392,7 +394,9 @@ def parse_match_arg_simpler(match_string):
                     raise ValueError("Key must be followed by :")
             elif mode == "expecting_value":
                 if token in ":,]": #refactor
-                    raise ValueError("Expecting value")
+                    raise ValueError(error_message("Expecting value",
+                                                   token_obj.original_text,
+                                                   token_obj))
                 elif token == "[":
                     mode = "list_value"
                 else:
@@ -402,8 +406,9 @@ def parse_match_arg_simpler(match_string):
                     mode = "expecting_key_comma"
             elif mode == "list_value":
                 if token == ":":
-                    raise ValueError("Cannot use key-value pairs in a list value",
-                                     show_error(token))
+                    raise ValueError(error_message("Cannot use key-value pairs in a list value",
+                                                   token_obj.original_text,
+                                                   token_obj))
                 else:
                     current_value = token
                     flush_value()
@@ -415,10 +420,14 @@ def parse_match_arg_simpler(match_string):
                 elif token == ",":
                     mode = "list_value"
                 else:
-                    raise ValueError("Expecting comma between list items")
+                    raise ValueError(error_message("Expecting comma between list items",
+                                                   token_obj.original_text,
+                                                   token_obj))
             elif mode == "expecting_key_comma":
                 if token != ",":
-                    raise ValueError("Expecting comma before key")
+                    raise ValueError(error_message("Expecting comma before key",
+                                                   token_obj.original_text,
+                                                   token_obj))
                 mode = "expecting_key"
         flush_key_value()
         return out
