@@ -288,6 +288,11 @@ def _parse_filename(filename, delimiter, regex):
     return metadata
 ###########################################
 
+def error_message(warning, original_text, token_object):
+    message_and_original = warning + "\n" + original_text
+    point_out_error = " " * token_object.original_text_position + "^"
+    return message_and_original + "\n" + point_out_error
+
 def parse_match_arg_simpler(match_string):
     special_characters = [":", "[", "]"]
     class Token():
