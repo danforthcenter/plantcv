@@ -390,7 +390,7 @@ def parse_match_arg_simpler(match_string):
                     raise ValueError("Key must be followed by :")
             elif mode == "expecting_value":
                 if token in ":,]": #refactor
-                    raise ValueError(error_message("Expecting value",
+                    raise ValueError(error_message("Empty value",
                                                    match_string,
                                                    token_obj))
                 elif token == "[":
@@ -419,7 +419,7 @@ def parse_match_arg_simpler(match_string):
                                                    token_obj))
             elif mode == "expecting_key_comma":
                 if token != ",":
-                    raise ValueError(error_message("Expecting comma before key",
+                    raise ValueError(error_message("Expecting comma after value",
                                                    match_string,
                                                    token_obj))
                 mode = "expecting_key"
