@@ -59,12 +59,12 @@ def colorspaces(rgb_img, original_img=True):
         labeled_imgs.append(labeled)
 
     # Compile images together, including a larger version of the original image
-    all_labeled = np.vstack([np.hstack([labeled_imgs[0], labeled_imgs[1], labeled_imgs[2]]),
+    plotting_img = np.vstack([np.hstack([labeled_imgs[0], labeled_imgs[1], labeled_imgs[2]]),
                           np.hstack([labeled_imgs[3], labeled_imgs[4], labeled_imgs[5]])])
 
     # If original_img is True then also plot the original image with the rest of them
     if original_img:
-        plotting_img = np.hstack([resize(img=rgb_img, resize_x=2, resize_y=2), all_labeled])
+        plotting_img = np.hstack([resize(img=rgb_img, resize_x=2, resize_y=2), plotting_img])
     plotting_img = resize(plotting_img,  x=.5, y=.5)
 
     # Reset debug mode
