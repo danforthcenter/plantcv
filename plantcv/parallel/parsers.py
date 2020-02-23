@@ -296,10 +296,9 @@ def error_message(warning, original_text, token_object):
 def parse_match_arg_simpler(match_string):
     special_characters = [":", "[", "]"]
     class Token():
-        def __init__(self, text, special, original_text, original_text_position):
+        def __init__(self, text, special, original_text_position):
             self.text = text
             self.special = special
-            self.original_text = original_text
             self.original_text_position = original_text_position
     def tokenize_match_arg(match_string):
         """This function recognizes the special characters and
@@ -320,7 +319,6 @@ def parse_match_arg_simpler(match_string):
             if current_item != "":
                 token_obj = Token(current_item,
                                   special,
-                                  match_string,
                                   idx)
                 out.append(token_obj)
                 current_item = ""
@@ -360,8 +358,10 @@ def parse_match_arg_simpler(match_string):
         out = {}
         current_key = ""
         current_value_list = []
+        current_value = ""
         def flush_value(current_value):
             nonlocal current_value_list
+            current_value_list.append(current_value)
         def flush_key_value():
             nonlocal out
             nonlocal current_key
@@ -378,7 +378,7 @@ def parse_match_arg_simpler(match_string):
             if mode == "expecting_key":
                 if token in special_characters:
                     raise ValueError(error_message("Expecting key value",
-                                                   token_obj.original_text,
+                                                   match_string,
                                                    token_obj))
                 else:
                     current_key = token
@@ -391,7 +391,7 @@ def parse_match_arg_simpler(match_string):
             elif mode == "expecting_value":
                 if token in ":,]": #refactor
                     raise ValueError(error_message("Expecting value",
-                                                   token_obj.original_text,
+                                                   match_string,
                                                    token_obj))
                 elif token == "[":
                     mode = "list_value"
@@ -402,7 +402,7 @@ def parse_match_arg_simpler(match_string):
             elif mode == "list_value":
                 if token == ":":
                     raise ValueError(error_message("Cannot use key-value pairs in a list value",
-                                                   token_obj.original_text,
+                                                   match_string,
                                                    token_obj))
                 else:
                     flush_value(token)
@@ -415,12 +415,12 @@ def parse_match_arg_simpler(match_string):
                     mode = "list_value"
                 else:
                     raise ValueError(error_message("Expecting comma between list items",
-                                                   token_obj.original_text,
+                                                   match_string,
                                                    token_obj))
             elif mode == "expecting_key_comma":
                 if token != ",":
                     raise ValueError(error_message("Expecting comma before key",
-                                                   token_obj.original_text,
+                                                   match_string,
                                                    token_obj))
                 mode = "expecting_key"
         flush_key_value()
