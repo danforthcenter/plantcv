@@ -293,7 +293,7 @@ def error_message(warning, original_text, idx):
     point_out_error = " " * idx + "^"
     return message_and_original + "\n" + point_out_error
 
-def parse_match_arg_simpler(match_string):
+def parse_match_arg(match_string):
     special_characters = [":", "[", "]"]
     class Token():
         def __init__(self, text, special, original_text_position):
@@ -430,7 +430,7 @@ def parse_match_arg_simpler(match_string):
     dictionary = as_dictionary(list_)
     return dictionary
 
-def parse_match_arg(match_string):
+def parse_match_arg_deprecated(match_string):
     out = {}
     key = ""
     value = []
