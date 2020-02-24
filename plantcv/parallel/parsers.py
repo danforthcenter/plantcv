@@ -376,35 +376,35 @@ def parse_match_arg(match_string):
         for idx, token_obj in enumerate(match_tokens):
             token = token_obj.text
             if mode == "expecting_key":
-                if token in special_characters:
+                if token in special_characters and token_obj.special:
                     raise ValueError(error_message("Expecting key value",
                                                    match_string,
                                                    token_obj.idx))
                 else:
                     current_key = token
                     mode = "expecting_colon"
-            elif mode == "expecting_colon":
-                if token == ":":
+            elif mode == "expecting_colon" and token_obj.special:
+                if token == ":" and token_obj.special:
                     mode = "expecting_value"
                 else:
                     raise ValueError("Key must be followed by :")
             elif mode == "expecting_value":
-                if token in ":,]": #refactor
+                if token in ":,]" and token_obj.special: #refactor
                     raise ValueError(error_message("Empty value",
                                                    match_string,
                                                    token_obj.idx - 1))
-                elif token == "[":
+                elif token == "[" and token_obj.special:
                     mode = "list_value"
                 else:
                     flush_value(token)
                     flush_key_value()
                     mode = "expecting_key_comma"
             elif mode == "list_value":
-                if token == ":":
+                if token == ":" and token_obj.special:
                     raise ValueError(error_message("Cannot use key-value pairs in a list value",
                                                    match_string,
                                                    token_obj.idx))
-                elif token == "]":
+                elif token == "]" and token_obj.special:
                     if len(current_value_list) == 0:
                         raise ValueError(error_message("Empty list",
                                                        match_string,
@@ -417,7 +417,7 @@ def parse_match_arg(match_string):
                     flush_value(token)
                     mode = "list_comma"
             elif mode == "list_comma":
-                if token == "]":
+                if token == "]" and token.special:
                     flush_key_value()
                     mode = "expecting_key_comma"
                 elif token == ",":
@@ -435,7 +435,7 @@ def parse_match_arg(match_string):
         flush_key_value()
         return out
     list_ = tokenize_match_arg(match_string)
-    print(list_)
+    print([i.text for i in list_])
     dictionary = as_dictionary(list_)
     return dictionary
 
