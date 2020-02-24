@@ -264,6 +264,21 @@ def test_plantcv_parallel_parse_match_arg_one_field_double_quote():
     observed_filter = plantcv.parallel.parse_match_arg(filter_as_string)
     assert metadata_filters_are_functionally_equivalent(correct_filter, observed_filter)
 
+
+def test_plantcv_parallel_parse_match_arg_one_field_double_quote():
+    filter_as_string = 'camera:"1"'
+    correct_filter = {"camera":"1"}
+    observed_filter = plantcv.parallel.parse_match_arg(filter_as_string)
+    assert metadata_filters_are_functionally_equivalent(correct_filter, observed_filter)
+
+
+def test_plantcv_parallel_parse_match_arg_one_field_backslash():
+    filter_as_string="camera:\:"
+    correct_filter = {"camera":":"}
+    observed_filter = plantcv.parallel.parse_match_arg(filter_as_string)
+    assert metadata_filters_are_functionally_equivalent(correct_filter, observed_filter)
+
+
 def test_plantcv_parallel_metadata_parser_snapshots():
     data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
     meta_filters = {"imgtype": "VIS"}
