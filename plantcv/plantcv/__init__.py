@@ -208,7 +208,7 @@ from plantcv.plantcv import morphology
 from plantcv.plantcv.fill_holes import fill_holes
 from plantcv.plantcv.get_kernel import get_kernel
 from plantcv.plantcv.crop import crop
-from plantcv.plantcv._roi2mask import roi2mask
+from plantcv.plantcv.roi2mask import roi2mask
 
 # add new functions to end of lists
 
