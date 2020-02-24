@@ -404,6 +404,15 @@ def parse_match_arg(match_string):
                     raise ValueError(error_message("Cannot use key-value pairs in a list value",
                                                    match_string,
                                                    token_obj.idx))
+                elif token == "]":
+                    if len(current_value_list) == 0:
+                        raise ValueError(error_message("Empty list",
+                                                       match_string,
+                                                       token_obj.idx))
+                    else:
+                        raise ValueError(error_message("Empty list item",
+                                                       match_string,
+                                                       token_obj.idx))
                 else:
                     flush_value(token)
                     mode = "list_comma"
