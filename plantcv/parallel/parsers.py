@@ -294,7 +294,7 @@ def error_message(warning, original_text, idx):
     return message_and_original + "\n" + point_out_error
 
 def parse_match_arg(match_string):
-    special_characters = [":", "[", "]"]
+    special_characters = ":[],"
     class Token():
         def __init__(self, text, special, original_text_position):
             self.text = text
@@ -417,17 +417,17 @@ def parse_match_arg(match_string):
                     flush_value(token)
                     mode = "list_comma"
             elif mode == "list_comma":
-                if token == "]" and token.special:
+                if token == "]" and token_obj.special:
                     flush_key_value()
                     mode = "expecting_key_comma"
-                elif token == ",":
+                elif token == "," and token_obj.special:
                     mode = "list_value"
                 else:
                     raise ValueError(error_message("Expecting comma between list items",
                                                    match_string,
                                                    token_obj.idx))
             elif mode == "expecting_key_comma":
-                if token != ",":
+                if not (token == "," and token_obj.special):
                     raise ValueError(error_message("Expecting comma after value",
                                                    match_string,
                                                    token_obj.idx))
@@ -436,6 +436,7 @@ def parse_match_arg(match_string):
         return out
     list_ = tokenize_match_arg(match_string)
     print([i.text for i in list_])
+    print([i.special for i in list_])
     dictionary = as_dictionary(list_)
     return dictionary
 
