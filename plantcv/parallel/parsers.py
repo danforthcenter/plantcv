@@ -288,9 +288,9 @@ def _parse_filename(filename, delimiter, regex):
     return metadata
 ###########################################
 
-def error_message(warning, original_text, token_object):
+def error_message(warning, original_text, idx):
     message_and_original = warning + "\n" + original_text
-    point_out_error = " " * token_object.original_text_position + "^"
+    point_out_error = " " * idx + "^"
     return message_and_original + "\n" + point_out_error
 
 def parse_match_arg_simpler(match_string):
@@ -299,7 +299,7 @@ def parse_match_arg_simpler(match_string):
         def __init__(self, text, special, original_text_position):
             self.text = text
             self.special = special
-            self.original_text_position = original_text_position
+            self.idx = original_text_position
     def tokenize_match_arg(match_string):
         """This function recognizes the special characters and
         clumps of normal characters within the match arg. For
@@ -379,7 +379,7 @@ def parse_match_arg_simpler(match_string):
                 if token in special_characters:
                     raise ValueError(error_message("Expecting key value",
                                                    match_string,
-                                                   token_obj))
+                                                   token_obj.idx))
                 else:
                     current_key = token
                     mode = "expecting_colon"
@@ -392,7 +392,7 @@ def parse_match_arg_simpler(match_string):
                 if token in ":,]": #refactor
                     raise ValueError(error_message("Empty value",
                                                    match_string,
-                                                   token_obj))
+                                                   token_obj.idx - 1))
                 elif token == "[":
                     mode = "list_value"
                 else:
@@ -403,7 +403,7 @@ def parse_match_arg_simpler(match_string):
                 if token == ":":
                     raise ValueError(error_message("Cannot use key-value pairs in a list value",
                                                    match_string,
-                                                   token_obj))
+                                                   token_obj.idx))
                 else:
                     flush_value(token)
                     mode = "list_comma"
@@ -416,12 +416,12 @@ def parse_match_arg_simpler(match_string):
                 else:
                     raise ValueError(error_message("Expecting comma between list items",
                                                    match_string,
-                                                   token_obj))
+                                                   token_obj.idx))
             elif mode == "expecting_key_comma":
                 if token != ",":
                     raise ValueError(error_message("Expecting comma after value",
                                                    match_string,
-                                                   token_obj))
+                                                   token_obj.idx))
                 mode = "expecting_key"
         flush_key_value()
         return out
