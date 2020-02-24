@@ -28,14 +28,16 @@ img, filename, filepath = pcv.readimage(filename="plant_image.png")
 
 roi_contour, roi_hierarchy = pcv.roi.custom(img=img, vertices=[[1190,490], [1470,830], [920,1430], [890,950]])
             
-# image converted from RGB to LAB, channels are then split. 
-# Lightness ('l') channel is outputed.
+# Convert the ROI contour into a binary mask
 mask = pcv.roi2mask(img=img, contour=roi_contour)
 
 ```
 
 **Custom ROI Image**
 
-![Screenshot](img/documentation_images/roi2mask/lab_lightness.jpg)
+![Screenshot](img/documentation_images/roi2mask/custom_roi.jpg)
 
 
+**Binary Mask**
+
+![Screenshot](img/documentation_images/roi2mask/custom_mask.jpg)

@@ -12,14 +12,13 @@ def roi2mask(img, contour):
     """Create a binary mask from an ROI contour
     Inputs:
     img                  = RGB or grayscale image data
-    contour              = RGB image data
-    roi_hierarchy        = Binary mask made from selected contours
+    contour              = An ROI set of points (contour)
 
     Returns:
     mask   = Binary mask
 
-    :param roi_contour: list
-    :param contour: numpy.ndarray
+    :param roi_contour: numpy.ndarray
+    :param contour: list
     :return mask: numpy.ndarray
     """
     params.device += 1
