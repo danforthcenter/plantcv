@@ -653,22 +653,6 @@ TEST_INPUT_THERMAL_CSV = "FLIR2600.csv"
 # Tests for the main package
 # ##########################
 
-def test_plantcv_roi2mask():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_acute_vertex")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    # Read in test data
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_VIS_SMALL))
-    contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR), encoding="latin1")
-    obj_contour = contours_npz['arr_0']
-    pcv.params.debug = "plot"
-    _ = pcv.roi2mask(img=img, roi_contour=obj_contour)
-    pcv.params.debug = "print"
-    mask = pcv.roi2mask(img=img, roi_contour=obj_contour)
-    assert np.shape(mask)[0:2] == np.shape(img)[0:2] and np.sum(mask) == 255
-
-
 def test_plantcv_acute():
     # Read in test data
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
@@ -2715,6 +2699,22 @@ def test_plantcv_rgb2gray():
     gray = pcv.rgb2gray(rgb_img=img)
     # Assert that the output image has the dimensions of the input image but is only a single channel
     assert all([i == j] for i, j in zip(np.shape(gray), TEST_GRAY_DIM))
+
+
+def test_plantcv_roi2mask():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_acute_vertex")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_VIS_SMALL))
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR), encoding="latin1")
+    obj_contour = contours_npz['arr_0']
+    pcv.params.debug = "plot"
+    _ = pcv.roi2mask(img=img, contour=obj_contour)
+    pcv.params.debug = "print"
+    mask = pcv.roi2mask(img=img, contour=obj_contour)
+    assert np.shape(mask)[0:2] == np.shape(img)[0:2] and np.sum(mask) == 255
 
 
 def test_plantcv_roi_objects():
