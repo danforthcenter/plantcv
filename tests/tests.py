@@ -4986,8 +4986,8 @@ def test_plantcv_visualize_colorspaces():
     pcv.params.debug = "plot"
     vis_img_small = pcv.visualize.colorspaces(rgb_img=img, original_img=False)
     pcv.params.debug = "print"
-    visualize_img = pcv.visualize.colorspaces(rgb_img=img)
-    assert np.shape(visualize_img)[1] == (np.shape(img)[1] * 5) and np.shape(vis_img_small)[1] == (np.shape(img)[1] * 5)
+    vis_img = pcv.visualize.colorspaces(rgb_img=img)
+    assert np.shape(vis_img)[1] > (np.shape(img)[1]) and np.shape(vis_img_small)[1] > (np.shape(img)[1])
 
 
 def test_plantcv_visualize_colorspaces_bad_input():
