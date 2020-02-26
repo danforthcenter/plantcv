@@ -65,7 +65,7 @@ def colorspaces(rgb_img, original_img=True):
     # If original_img is True then also plot the original image with the rest of them
     if original_img:
         plotting_img = np.hstack([resize(img=rgb_img, resize_x=2, resize_y=2), plotting_img])
-    plotting_img = resize(plotting_img,  x=.5, y=.5)
+    plotting_img = resize(plotting_img,  resize_x=.5, resize_y=.5)
 
     # Reset debug mode
     params.debug = debug
