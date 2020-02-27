@@ -4,5 +4,5 @@ pandas
 python-dateutil
 scipy
 scikit-image
-plotnine <= 0.5.1
+plotnine
 opencv-python<4, >=3.4
