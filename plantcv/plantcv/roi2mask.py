@@ -26,7 +26,6 @@ def roi2mask(img, contour):
     # create a blank image of same size
     shape_info = np.shape(img)
     bnk = np.zeros((shape_info[0], shape_info[1]), dtype=np.uint8)
-    img1 = np.copy(img)
 
     mask = cv2.drawContours(bnk, contour, 0, 255, -1)
 
