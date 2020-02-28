@@ -312,3 +312,5 @@ _site/*
 
 ## User ignores
 change_plantcv.sh
+
+.history/
