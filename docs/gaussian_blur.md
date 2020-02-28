@@ -9,7 +9,7 @@ The function is a wrapper for the OpenCV function [gaussian blur](http://docs.op
 
 - **Parameters:**
     - img - RGB or grayscale image data
-    - ksize - Tuple of kernel dimensions, e.g. (5, 5)
+    - ksize - Tuple of kernel dimensions, e.g. (5, 5). Must be odd integers.
     - sigma_x - standard deviation in X direction; if 0 (default), calculated from kernel size
     - sigma_y - standard deviation in Y direction; if sigma_Y is None (default), sigma_Y is taken to equal sigma_X
 - **Context:**
