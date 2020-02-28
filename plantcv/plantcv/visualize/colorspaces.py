@@ -12,16 +12,18 @@ from plantcv.plantcv import rgb2gray_hsv
 from plantcv.plantcv import rgb2gray_lab
 
 
-def colorspaces(rgb_img):
+def colorspaces(rgb_img, original_img=True):
     """ Visualize an RGB image in all potential colorspaces
 
     Inputs:
     rgb_img      = RGB image data
+    original_img = Whether or not to include the original image the the debugging plot
 
     Returns:
     plotting_img = Plotting image containing the original image and L,A,B,H,S, and V colorspaces
 
     :param segmented_img: numpy.ndarray
+    :param original_img: bool
     :return labeled_img: numpy.ndarray
 
     """
@@ -57,9 +59,13 @@ def colorspaces(rgb_img):
         labeled_imgs.append(labeled)
 
     # Compile images together, including a larger version of the original image
-    all_labeled = np.vstack([np.hstack([labeled_imgs[0], labeled_imgs[1], labeled_imgs[2]]),
+    plotting_img = np.vstack([np.hstack([labeled_imgs[0], labeled_imgs[1], labeled_imgs[2]]),
                           np.hstack([labeled_imgs[3], labeled_imgs[4], labeled_imgs[5]])])
-    plotting_img = np.hstack([resize(img=rgb_img, resize_x=2, resize_y=2), all_labeled])
+
+    # If original_img is True then also plot the original image with the rest of them
+    if original_img:
+        plotting_img = np.hstack([resize(img=rgb_img, resize_x=2, resize_y=2), plotting_img])
+    plotting_img = resize(plotting_img,  resize_x=.5, resize_y=.5)
 
     # Reset debug mode
     params.debug = debug
