@@ -2711,9 +2711,9 @@ def test_plantcv_roi2mask():
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR), encoding="latin1")
     obj_contour = contours_npz['arr_0']
     pcv.params.debug = "plot"
-    _ = pcv.roi2mask(img=img, contour=obj_contour)
+    _ = pcv.roi.roi2mask(img=img, contour=obj_contour)
     pcv.params.debug = "print"
-    mask = pcv.roi2mask(img=img, contour=obj_contour)
+    mask = pcv.roi.roi2mask(img=img, contour=obj_contour)
     assert np.shape(mask)[0:2] == np.shape(img)[0:2] and np.sum(mask) == 255
 
 

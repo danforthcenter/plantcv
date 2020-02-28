@@ -2,7 +2,7 @@
 
 Convert a region of interest/object contour to a binary mask of the same shape 
 
-**plantcv.roi2mask**(*img, contour*)
+**plantcv.roi.roi2mask**(*img, contour*)
 
 **returns** mask
 
@@ -29,7 +29,7 @@ img, filename, filepath = pcv.readimage(filename="plant_image.png")
 roi_contour, roi_hierarchy = pcv.roi.custom(img=img, vertices=[[1190,490], [1470,830], [920,1430], [890,950]])
             
 # Convert the ROI contour into a binary mask
-mask = pcv.roi2mask(img=img, contour=roi_contour)
+mask = pcv.roi.roi2mask(img=img, contour=roi_contour)
 
 ```
 

@@ -131,6 +131,7 @@ nav:
       - 'Create ROI from Binary Image': roi_from_binary_image.md
       - 'Create Multi ROIs': 'roi_multi.md'
       - 'Filter Objects by ROI': roi_objects.md
+      - 'ROI to Mask': roi2mask.md
     - 'Rotate': rotate2.md
     - 'Shift Image': shift.md
     - 'Thresholding Methods':
