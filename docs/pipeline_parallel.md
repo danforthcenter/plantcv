@@ -69,17 +69,15 @@ time \
 -C NIR \
 -T 10 \
 -w 
-
 ```
 
 ### Example Batch Script (Windows)
 If you are running on **Windows** (except with WSL), you will need to use a batch script. Assuming you are using Anaconda Prompt, make sure you `conda activate plantcv`,
- and `cd` to your project directory. Also, there are no comments in batch scripts and `python` can only find files in you immediate working directory (even if the file is in your PATH).
+ and `cd` to your project directory. There are no comments in batch scripts and `python` can only find files in you immediate working directory (even if the file is in your PATH). Also, the first argument needs to be on the same line `plantcv-workflow.py`.
 
-```{batch}
+```
 python.exe ^
-%CONDA_PREFIX%\Scripts\plantcv-workflow.py ^ 
--d C:\Users\nfahlgren\Documents\projects\lemnatec\burnin2\images3 ^
+%CONDA_PREFIX%\Scripts\plantcv-workflow.py -d C:\Users\nfahlgren\Documents\projects\lemnatec\burnin2\images3 ^
 -p C:\Users\nfahlgren\Documents\programs\plantcv\scripts\image_analysis\vis_tv\vis_tv_z300_L1.py ^
 -t png ^
 -j burnin2.json ^
