@@ -61,7 +61,7 @@ def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=None, max
         b = min_bin # If bin_min is defined then overwrite starting value
 
     # Calculate histogram
-    hist_val = [float(l[0]) for l in cv2.calcHist([masked_array.astype(np.float32)], [0], None, [bins], [0, 1])]
+    hist_val = [float(l[0]) for l in cv2.calcHist([masked_array.astype(np.float32)], [0], None, [bins], [b, maxval])]
     bin_width = (maxval - b) / float(bins)
     bin_labels = [float(b)]
     plotting_labels = [float(b)]
