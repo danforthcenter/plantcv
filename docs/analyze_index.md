@@ -17,6 +17,7 @@ This function calculates the hyperspectral index statistics and writes the value
 
 - **Context:**
     - Calculates data about mean, median, and standard deviation of an input index within a masked region. 
+    - If using an index that is expected to have negative values after masking (i.e. PRI) then default `min_bin` settings will cut off at 0 unless adjusted. 
 - **Example use:**
     - Below
 - **Output data stored:** Mean, median, and standard deviation of the index automatically gets stored to the 
