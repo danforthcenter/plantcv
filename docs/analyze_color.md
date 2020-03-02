@@ -52,3 +52,5 @@ hue_circular_mean = pcv.outputs.observations['hue_circular_mean']['value']
 which allows the user to pick a colormap for plotting.
 
 ![Screenshot](img/documentation_images/analyze_color/pseudocolored_value_image.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/analyze_color.py)

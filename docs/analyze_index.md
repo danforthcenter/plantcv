@@ -40,3 +40,5 @@ pcv.hyperspectral.analyze_index(index_array=ndvi_index, mask=leaf_mask, histplot
 *Masked Index Histogram*
 
 ![Screenshot](img/documentation_images/analyze_index/index_ndvi_hist.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/hyperspectral/analyze_index.py)

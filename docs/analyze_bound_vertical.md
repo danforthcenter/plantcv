@@ -52,3 +52,5 @@ of the boundary line.
 Boundary line set at 1100, purple is boundary line, blue line is extent x right of the boundary line, 
 green is area right of boundary line. Green line is extent x left of the boundary line and red is area left
 of the boundary line.
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/analyze_bound_vertical.py)

@@ -42,3 +42,5 @@ vertices = pcv.outputs.observations['tip_coordinates']['value']
 **Image of points selected**
 
 ![Screenshot](img/documentation_images/acute_vertex/av_output.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/acute_vertex.py)
