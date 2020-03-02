@@ -40,3 +40,5 @@ id_objects, obj_hierarchy = pcv.find_objects(img, mask)
 **Image with contours highlighted**
 
 ![Screenshot](img/documentation_images/find_objects/contours.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/find_objects.py)

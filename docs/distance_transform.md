@@ -36,3 +36,5 @@ distance_transform_img = pcv.distance_transform(mask, 1, 3)
 **Image after distance transform**
 
 ![Screenshot](img/documentation_images/distance_transform/distance_transform_img.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/distance_transform.py)

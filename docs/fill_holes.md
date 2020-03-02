@@ -34,3 +34,5 @@ fill_image = pcv.fill_holes(binary_img, 200)
 **Binary image with holes filled**
 
 ![Screenshot](img/documentation_images/fill_holes/filled_holes.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/fill_holes.py)

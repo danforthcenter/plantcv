@@ -38,3 +38,5 @@ er_img = pcv.erode(gray_img, ksize, 1)
 **Image after erosion**
 
 ![Screenshot](img/documentation_images/erode/erosion.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/erode.py)

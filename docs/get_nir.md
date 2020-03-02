@@ -30,3 +30,4 @@ nir_path = pcv.get_nir("/home/images/sorghum/snapshot1",
 
 ```
 
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/get_nir.py)

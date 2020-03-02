@@ -36,3 +36,5 @@ threshold_gaussian = pcv.threshold.gaussian(gray_img, 255, 'dark')
 **Auto-Thresholded image (gaussian)**
 
 ![Screenshot](img/documentation_images/auto_threshold/gaussian_threshold.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/threshold/threshold_methods.py)

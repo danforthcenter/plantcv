@@ -47,3 +47,5 @@ branch_points_img = pcv.morphology.find_branch_pts(skel_img=skeleton, mask=plant
 *Debug Image with Mask*
 
 ![Screenshot](img/documentation_images/find_branch_pts/branch_pts_debug_mask.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/morphology/find_branch_pts.py)
