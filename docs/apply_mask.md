@@ -61,3 +61,5 @@ masked_image = pcv.apply_mask(img=img, mask=mask, mask_color='black')
 **Black-masked image**
 
 ![Screenshot](img/documentation_images/apply_mask/black_masked_image.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/apply_mask.py)

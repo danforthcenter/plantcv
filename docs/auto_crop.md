@@ -43,3 +43,4 @@ crop_img2 = pcv.auto_crop(rgb_img, id_objects[0], 20, 20, 'image')
 
 ![Screenshot](img/documentation_images/auto_crop/155_auto_image.jpg)
 
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/auto_crop.py)

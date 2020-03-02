@@ -138,3 +138,5 @@ mask, masked_img = pcv.threshold.custom_range(rgb_img=gray_img, lower_thresh=[39
 **Mask (Grayscale Color-space)**
 
 ![Screenshot](img/documentation_images/custom_range_threshold/gray_mask.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/threshold/threshold_methods.py)

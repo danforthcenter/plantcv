@@ -48,3 +48,5 @@ clusters_i, contours, hierarchy = pcv.cluster_contours(img, roi_objects,
 **Cluster Contour Image with Grid**
 
 ![Screenshot](img/documentation_images/cluster_contour/show_grid.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/cluster_contours.py)

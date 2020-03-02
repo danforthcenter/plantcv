@@ -65,3 +65,5 @@ threshold_dark = pcv.threshold.binary(gray_img, 36, 255, 'dark')
 **Thresholded image (inverse)**
 
 ![Screenshot](img/documentation_images/binary_threshold/thresholded_inverse_image.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/threshold/threshold_methods.py)
