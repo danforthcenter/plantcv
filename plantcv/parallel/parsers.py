@@ -304,7 +304,7 @@ def parse_match_arg(match_string):
         """This function recognizes the special characters and
         clumps of normal characters within the match arg. For
         example:
-        "id:[1,2]" -> ["id", ":", "[", "1", "2","]"]
+        "id:[1,2]" -> ["id", ":", "[", "1", ",", "2", "]"]
         These intermediate results must be turned into a dictionary
         later.
         """
