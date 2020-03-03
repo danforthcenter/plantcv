@@ -25,3 +25,5 @@ mask = pcv.threshold.binary(gray_img, 36, 255, 'light')
 in_bounds = pcv.within_frame(mask)  #True or False?
 
 ```
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/within_frame.py)

@@ -37,3 +37,5 @@ corrected_img = pcv.white_balance(img, mode='hist', roi=(5, 5, 80, 80))
 **Corrected image**
 
 ![Screenshot](img/documentation_images/white_balance/corrected_image.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/white_balance.py)

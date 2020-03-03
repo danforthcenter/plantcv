@@ -52,3 +52,5 @@ clustered_image = pcv.visualize.clustered_contours(img=img, grouped_contour_indi
 **Clustered Image with Grid:** 
 
 ![Screenshot](img/documentation_images/visualize_clustered_contours/contour_cluster_img_grid.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/visualize/clustered_contours.py)
