@@ -297,7 +297,7 @@ def test_plantcv_parallel_parse_match_arg_one_field_close_list():
     assert metadata_filters_are_functionally_equivalent(correct_filter, observed_filter)
 
 def test_plantcv_parallel_parse_match_arg_one_field_close_list():
-    filter_as_string="camera:\'"
+    filter_as_string="camera:\\'"
     correct_filter = {"camera":"\'"}
     observed_filter = plantcv.parallel.ParseMatchArg().parse(filter_as_string)
     assert metadata_filters_are_functionally_equivalent(correct_filter, observed_filter)
