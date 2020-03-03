@@ -55,6 +55,7 @@ nav:
       - 'RGB to LAB': rgb2lab.md
       - 'RGB to HSV': rgb2hsv.md
       - 'White balance': white_balance.md
+    - 'Crop': crop.md
     - 'Crop and Position Mask': crop_position_mask.md
     - 'Dilation': dilate.md
     - 'Distance Transform': distance_transform.md
@@ -77,6 +78,7 @@ nav:
         - 'Calibrate': calibrate.md
         - 'Extract index': extract_index.md
         - 'Extract wavelength': extract_wavelength.md
+        - 'Spectral data objects': Spectral_data.md
     - 'Image Add': image_add.md
     - 'Image Subtract': image_subtract.md
     - 'Invert': invert.md
