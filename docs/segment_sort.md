@@ -50,3 +50,5 @@ leaf_obj, other_obj = pcv.morphology.segment_sort(skel_img=skeleton,
 *Segmented Image with Mask*
 
 ![Screenshot](img/documentation_images/segment_sort/sorted_segments_mask.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/morphology/segment_sort.py)

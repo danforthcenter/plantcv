@@ -58,3 +58,5 @@ segmented_img, leaves_labeled = pcv.morphology.segment_id(skel_img=skeleton,
 *Labeled Image, Leaves Only with Mask*
 
 ![Screenshot](img/documentation_images/segment_id/labeled_leaves_mask.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/morphology/segment_id.py)

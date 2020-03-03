@@ -45,3 +45,5 @@ sr_y_img = pcv.scharr_filter(gray_img, 0, 1, 1)
 **Scharr filtered (y-axis)**
 
 ![Screenshot](img/documentation_images/scharr_filter/scharr-y.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/scharr_filter.py)

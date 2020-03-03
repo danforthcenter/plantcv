@@ -35,3 +35,5 @@ shifted_img = pcv.shift_img(img, 300, "top")
 **Image after shift**
 
 ![Screenshot](img/documentation_images/shift/37_shifted.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/shift_img.py)

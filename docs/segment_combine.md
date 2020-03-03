@@ -66,3 +66,5 @@ labeled_img2, new_objects = pcv.morphology.segment_combine([7,6], new_objects, m
 *Other Leaf Combined*
 
 ![Screenshot](img/documentation_images/combine_segments/combined2_img.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/morphology/segment_combine.py)
