@@ -314,9 +314,6 @@ class ParseMatchArg:
         specials = []
         indices = []
         def flush_current_item(special, idx):
-            nonlocal out
-            nonlocal specials
-            nonlocal indices
             nonlocal current_item
             if current_item != "":
                 out.append(current_item)
@@ -324,8 +321,6 @@ class ParseMatchArg:
                 specials.append(special)
                 current_item = ""
         for idx, char in enumerate(match_string):
-            print("char", char)
-            print("active_quotes", active_quotes)
             if escaped:
                 current_item += char
                 escaped = False
