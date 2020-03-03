@@ -39,6 +39,9 @@ Subcommands:
 
 `plantcv-utils.py` is a command-line tool for running various utilities.
 
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv-utils.py)
+
+
 #### Convert output JSON data files to CSV tables
 
 `plantcv-utils.py json2csv` is a command-line tool for converting the output JSON files from `plantcv-workflow.py` to
@@ -63,6 +66,9 @@ is a table of observations with single values (e.g. area, convex hull area, etc.
 per image. `prefix-multi-value-traits.csv` is a table of observations with multiple values (e.g. frequency distribution
 of hue or other color channel/properties). The format of this table is one row per value/label. 
 
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/utils/converters.py)
+
+
 #### Collect a random sample of images for testing workflows
 
 `plantcv-utils.py sample_images` is a command-line tool for gathering a random set of images for
@@ -85,6 +91,9 @@ identify 'problem images' before running a workflow in parallel over a large set
 tool can handle LemnaTec structured output in addition to a flat file directory. Currently supported image types include 
 .png, .jpg, .jpeg, .tif, .tiff, and .gif. A source directory will be created if it does not already exist. The number of 
 random images requested must be less than or equal to the number of images in the source directory. 
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/utils/sample_images.py)
+
 
 ### Parallel workflow processing
 
@@ -161,3 +170,6 @@ optional arguments:
                         (default: None)
 
 ```
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv-workflow.py)
+

@@ -49,3 +49,5 @@ texture_img = pcv.threshold.texture(gray_img, ksize=6, threshold=7, offset=3,
 **Thresholded image**
 
 ![Screenshot](img/documentation_images/texture_threshold/texture_thresholded.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/threshold/threshold_methods.py)
