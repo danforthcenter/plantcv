@@ -316,6 +316,7 @@ class ParseMatchArg:
         
         Args:
             match_string: String to be parsed
+        
         :param match_string: str
         """
         out = []
@@ -363,6 +364,22 @@ class ParseMatchArg:
         flush_current_item(special=False, idx=idx)
         return out, specials, indices
     def as_dictionary(self, tokens, specials, indices, match_string):
+        """
+        This function converts the series of tokens returned by 
+        tokenize_match_arg into a dictionary mapping filter names
+        to lists of valid patterns. 
+        
+        Args:
+            tokens: the text content of each token
+            specials: whether each character is special or normal
+            indices: where in the original string each token begins
+            match_string: the original string being parsed
+            
+        :param tokens: list
+        :param specials: list
+        :param indices: list
+        :param match_string: string
+        """
         mode = "expecting_key"
         out = {}
         current_key = ""
