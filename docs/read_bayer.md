@@ -27,3 +27,5 @@ pcv.params.debug = "print"
 img, path, img_filename = pcv.readbayer("home/user/images/test-image.tiff")
 
 ```
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/readbayer.py)

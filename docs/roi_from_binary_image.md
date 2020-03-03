@@ -26,3 +26,5 @@ roi_contour, roi_hierarchy = pcv.roi.from_binary_image(img=rgb_img, bin_img=bin_
 ```
 
 ![Screenshot](img/documentation_images/from_binary_image/image_with_roi.png)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/roi/roi_methods.py)

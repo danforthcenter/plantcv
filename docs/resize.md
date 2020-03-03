@@ -36,3 +36,5 @@ resize_img = pcv.resize(img, 0.1154905775, 0.1154905775)
 **Image after resizing**
 
 ![Screenshot](img/documentation_images/resize/19_resize1.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/resize.py)
