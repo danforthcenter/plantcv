@@ -30,7 +30,7 @@ This function calculates the hyperspectral index statistics and writes the value
 
 from plantcv import plantcv as pcv
 
-pcv.hyperspectral.analyze_index(index_array=ndvi_index, mask=leaf_mask, histplot=True, bins=100)
+pcv.hyperspectral.analyze_index(index_array=ndvi_index, mask=leaf_mask, histplot=True, bins=100, min_bin=0, max_bin="auto")
 
 ```
 
