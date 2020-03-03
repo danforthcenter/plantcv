@@ -12,7 +12,7 @@ from plantcv.plantcv import fatal_error
 from plotnine import ggplot, aes, geom_line, scale_x_continuous
 
 
-def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=None, max_bin=None):
+def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=0, max_bin=1):
     """This extracts the hyperspectral index statistics and writes the values  as observations out to
        the Outputs class.
 
@@ -51,14 +51,15 @@ def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=None, max
     index_median = np.median(masked_array)
     index_std = np.std(masked_array)
 
-    maxval = round(np.amax(masked_array), 8) # Auto bins will detect maxval to use for calculating centers
-    b = 0  # Auto bins will always start from 0
+    # Set starting point and max bin values
+    maxval = max_bin
+    b = min_bin
 
-
-    if not max_bin == None:
-        maxval = max_bin # If bin_max is defined then overwrite maxval variable
-    if not min_bin == None:
-        b = min_bin # If bin_min is defined then overwrite starting value
+    # Auto calculate max_bin if set
+    if type(max_bin) is str and (max_bin.upper() == "AUTO"):
+        maxval = round(np.nanmax(masked_array), 8)  # Auto bins will detect maxval to use for calculating labels/bins
+    if type(min_bin) is str and (min_bin.upper() == "AUTO"):
+        b = round(np.nanmin(masked_array), 8) # If bin_min is auto then overwrite starting value
 
     # Calculate histogram
     hist_val = [float(l[0]) for l in cv2.calcHist([masked_array.astype(np.float32)], [0], None, [bins], [b, maxval])]
