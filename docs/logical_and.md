@@ -41,3 +41,5 @@ and_image = pcv.logical_and(s_threshold, b_threshold)
 **Combined image**
 
 ![Screenshot](img/documentation_images/logical_and/joined.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/logical_and.py)

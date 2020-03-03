@@ -41,3 +41,5 @@ avg_vert_distance = pcv.outputs.observations['vert_ave_c']['value']
 **Representation of many data points collected in two treatment blocks throughout time**
 
 ![Screenshot](img/documentation_images/landmark_reference_pt_dist/lrpd_output.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/landmark_reference_pt_dist.py)

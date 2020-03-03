@@ -40,3 +40,5 @@ sum_img = pcv.image_add(img1, img2)
 **Sum of images 1 and 2**
 
 ![Screenshot](img/documentation_images/image_add/added_image.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/image_add.py)

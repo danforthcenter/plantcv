@@ -42,3 +42,5 @@ ab = pcv.logical_or(maskeda_thresh, maskedb_thresh)
 **Combined image**
 
 ![Screenshot](img/documentation_images/logical_or/joined.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/logical_or.py)
