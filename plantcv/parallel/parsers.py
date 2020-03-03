@@ -288,13 +288,6 @@ def _parse_filename(filename, delimiter, regex):
     return metadata
 ###########################################
 
-class Token():
-    def __init__(self, text, special, original_text_position):
-        self.text = text
-        self.special = special
-        self.idx = original_text_position
-
-
 class ParseMatchArg:
     special_characters = ":[],"
     def error_message(self, warning, original_text, idx):
@@ -302,11 +295,9 @@ class ParseMatchArg:
         point_out_error = " " * idx + "^"
         return message_and_original + "\n" + point_out_error
     def parse(self, match_string):
-        list_ = self.tokenize_match_arg(match_string)
-        print([i.text for i in list_])
-        print([i.special for i in list_])
-        dictionary = self.as_dictionary(list_)
-        return dictionary        
+        tokens, specials, indices = self.tokenize_match_arg(match_string)
+        dictionary = self.as_dictionary(tokens, specials, indices, match_string)
+        return dictionary
     def tokenize_match_arg(self, match_string):
         """This function recognizes the special characters and
         clumps of normal characters within the match arg. For
@@ -320,14 +311,17 @@ class ParseMatchArg:
         active_quotes = []
         quote_symbols = ["'",'"']
         current_item = ""
+        specials = []
+        indices = []
         def flush_current_item(special, idx):
             nonlocal out
+            nonlocal specials
+            nonlocal indices
             nonlocal current_item
             if current_item != "":
-                token_obj = Token(current_item,
-                                  special,
-                                  idx)
-                out.append(token_obj)
+                out.append(current_item)
+                indices.append(idx)
+                specials.append(special)
                 current_item = ""
         for idx, char in enumerate(match_string):
             print("char", char)
@@ -358,9 +352,10 @@ class ParseMatchArg:
                     current_item += char
             else:
                 current_item += char
+            print("current item", current_item)
         flush_current_item(special=False, idx=idx)
-        return out
-    def as_dictionary(self, match_tokens):
+        return out, specials, indices
+    def as_dictionary(self, tokens, specials, indices, match_string):
         mode = "expecting_key"
         out = {}
         current_key = ""
@@ -380,64 +375,63 @@ class ParseMatchArg:
                     out[current_key] = current_value_list
                 current_value_list = []
                 current_key = ""
-        for idx, token_obj in enumerate(match_tokens):
-            token = token_obj.text
+        for token, special, idx, in zip(tokens, specials, indices):
             if mode == "expecting_key":
-                if token in self.special_characters and token_obj.special:
-                    raise ValueError(error_message("Expecting key value",
+                if token in self.special_characters and special:
+                    raise ValueError(self.error_message("Expecting key value",
                                                    match_string,
-                                                   token_obj.idx))
+                                                   idx))
                 else:
                     current_key = token
                     mode = "expecting_colon"
-            elif mode == "expecting_colon" and token_obj.special:
-                if token == ":" and token_obj.special:
+            elif mode == "expecting_colon" and special:
+                if token == ":" and special:
                     mode = "expecting_value"
                 else:
                     raise ValueError("Key must be followed by :")
             elif mode == "expecting_value":
-                if token in ":,]" and token_obj.special: #refactor
-                    raise ValueError(error_message("Empty value",
+                if token in ":,]" and special: #refactor
+                    raise ValueError(self.error_message("Empty value",
                                                    match_string,
-                                                   token_obj.idx - 1))
-                elif token == "[" and token_obj.special:
+                                                   idx - 1))
+                elif token == "[" and special:
                     mode = "list_value"
                 else:
                     flush_value(token)
                     flush_key_value()
                     mode = "expecting_key_comma"
             elif mode == "list_value":
-                if token == ":" and token_obj.special:
-                    raise ValueError(error_message("Cannot use key-value pairs in a list value",
+                if token == ":" and special:
+                    raise ValueError(self.error_message("Cannot use key-value pairs in a list value",
                                                    match_string,
-                                                   token_obj.idx))
-                elif token == "]" and token_obj.special:
+                                                   idx))
+                elif token == "]" and special:
                     if len(current_value_list) == 0:
-                        raise ValueError(error_message("Empty list",
+                        raise ValueError(self.error_message("Empty list",
                                                        match_string,
-                                                       token_obj.idx))
+                                                       idx))
                     else:
-                        raise ValueError(error_message("Empty list item",
+                        raise ValueError(self.error_message("Empty list item",
                                                        match_string,
-                                                       token_obj.idx))
+                                                       idx))
                 else:
                     flush_value(token)
                     mode = "list_comma"
             elif mode == "list_comma":
-                if token == "]" and token_obj.special:
+                if token == "]" and special:
                     flush_key_value()
                     mode = "expecting_key_comma"
-                elif token == "," and token_obj.special:
+                elif token == "," and special:
                     mode = "list_value"
                 else:
-                    raise ValueError(error_message("Expecting comma between list items",
+                    raise ValueError(self.error_message("Expecting comma between list items",
                                                    match_string,
-                                                   token_obj.idx))
+                                                   idx))
             elif mode == "expecting_key_comma":
-                if not (token == "," and token_obj.special):
-                    raise ValueError(error_message("Expecting comma after value",
+                if not (token == "," and special):
+                    raise ValueError(self.error_message("Expecting comma after value",
                                                    match_string,
-                                                   token_obj.idx))
+                                                   idx))
                 mode = "expecting_key"
         flush_key_value()
         return out
