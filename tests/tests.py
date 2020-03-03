@@ -2188,8 +2188,8 @@ def test_plantcv_within_frame():
     # Read in test data
     mask_ib = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK), -1)
     mask_oob = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK_OOB), -1)
-    in_bounds_ib = pcv.within_frame(mask = mask_ib)
-    in_bounds_oob = pcv.within_frame(mask = mask_oob)
+    in_bounds_ib = pcv.within_frame(mask=mask_ib, border_width=1)
+    in_bounds_oob = pcv.within_frame(mask=mask_oob, border_width=1)
     assert(in_bounds_ib is True and in_bounds_oob is False)
 
 
