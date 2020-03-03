@@ -12,7 +12,7 @@ from plantcv.plantcv import fatal_error
 from plotnine import ggplot, aes, geom_line, scale_x_continuous
 
 
-def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=None, max_bin=None):
+def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=0, max_bin=1):
     """This extracts the hyperspectral index statistics and writes the values  as observations out to
        the Outputs class.
 
@@ -51,17 +51,28 @@ def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=None, max
     index_median = np.median(masked_array)
     index_std = np.std(masked_array)
 
-    maxval = round(np.amax(masked_array), 8) # Auto bins will detect maxval to use for calculating centers
-    b = 0  # Auto bins will always start from 0
+    # Set starting point and max bin values
+    maxval = max_bin
+    b = min_bin
 
+    # Calculate observed min and max pixel values of the masked array
+    observed_max = np.nanmax(masked_array)
+    observed_min = np.nanmin(masked_array)
 
-    if not max_bin == None:
-        maxval = max_bin # If bin_max is defined then overwrite maxval variable
-    if not min_bin == None:
-        b = min_bin # If bin_min is defined then overwrite starting value
+    # Auto calculate max_bin if set
+    if type(max_bin) is str and (max_bin.upper() == "AUTO"):
+        maxval = round(observed_max, 8)  # Auto bins will detect maxval to use for calculating labels/bins
+    if type(min_bin) is str and (min_bin.upper() == "AUTO"):
+        b = round(observed_min, 8) # If bin_min is auto then overwrite starting value
+
+    # Print a warning if observed min/max outside user defined range
+    if observed_max > maxval or observed_min < b:
+        print("WARNING!!! The observed range of pixel values in your masked index provided is [" + str(observed_min) +
+              ", " + str(observed_max) + "] but the user defined range of bins for pixel frequencies is [" + str(b) +
+              ", " + str(maxval) + "]. Adjust min_bin and max_bin in order to avoid cutting off data being collected.")
 
     # Calculate histogram
-    hist_val = [float(l[0]) for l in cv2.calcHist([masked_array.astype(np.float32)], [0], None, [bins], [0, 1])]
+    hist_val = [float(l[0]) for l in cv2.calcHist([masked_array.astype(np.float32)], [0], None, [bins], [b, maxval])]
     bin_width = (maxval - b) / float(bins)
     bin_labels = [float(b)]
     plotting_labels = [float(b)]
