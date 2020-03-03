@@ -288,19 +288,26 @@ def _parse_filename(filename, delimiter, regex):
     return metadata
 ###########################################
 
-def error_message(warning, original_text, idx):
-    message_and_original = warning + "\n" + original_text
-    point_out_error = " " * idx + "^"
-    return message_and_original + "\n" + point_out_error
+class Token():
+    def __init__(self, text, special, original_text_position):
+        self.text = text
+        self.special = special
+        self.idx = original_text_position
 
-def parse_match_arg(match_string):
+
+class ParseMatchArg:
     special_characters = ":[],"
-    class Token():
-        def __init__(self, text, special, original_text_position):
-            self.text = text
-            self.special = special
-            self.idx = original_text_position
-    def tokenize_match_arg(match_string):
+    def error_message(self, warning, original_text, idx):
+        message_and_original = warning + "\n" + original_text
+        point_out_error = " " * idx + "^"
+        return message_and_original + "\n" + point_out_error
+    def parse(self, match_string):
+        list_ = self.tokenize_match_arg(match_string)
+        print([i.text for i in list_])
+        print([i.special for i in list_])
+        dictionary = self.as_dictionary(list_)
+        return dictionary        
+    def tokenize_match_arg(self, match_string):
         """This function recognizes the special characters and
         clumps of normal characters within the match arg. For
         example:
@@ -337,7 +344,7 @@ def parse_match_arg(match_string):
                 else:
                     active_quotes.append(char)
             elif len(active_quotes) == 0:
-                if char in special_characters:
+                if char in self.special_characters:
                     flush_current_item(False, idx)
                     current_item += char
                     flush_current_item(special=True,idx=idx)
@@ -353,7 +360,7 @@ def parse_match_arg(match_string):
                 current_item += char
         flush_current_item(special=False, idx=idx)
         return out
-    def as_dictionary(match_tokens):
+    def as_dictionary(self, match_tokens):
         mode = "expecting_key"
         out = {}
         current_key = ""
@@ -376,7 +383,7 @@ def parse_match_arg(match_string):
         for idx, token_obj in enumerate(match_tokens):
             token = token_obj.text
             if mode == "expecting_key":
-                if token in special_characters and token_obj.special:
+                if token in self.special_characters and token_obj.special:
                     raise ValueError(error_message("Expecting key value",
                                                    match_string,
                                                    token_obj.idx))
@@ -434,8 +441,3 @@ def parse_match_arg(match_string):
                 mode = "expecting_key"
         flush_key_value()
         return out
-    list_ = tokenize_match_arg(match_string)
-    print([i.text for i in list_])
-    print([i.special for i in list_])
-    dictionary = as_dictionary(list_)
-    return dictionary
