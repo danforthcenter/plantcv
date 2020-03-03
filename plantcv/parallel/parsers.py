@@ -295,6 +295,14 @@ class ParseMatchArg:
         point_out_error = " " * idx + "^"
         return message_and_original + "\n" + point_out_error
     def parse(self, match_string):
+        """
+        Parse the match string and return a dictionary of filters.
+
+        Args:
+            match_string: String to be parsed
+
+        :param match_string: str
+        """
         tokens, specials, indices = self.tokenize_match_arg(match_string)
         dictionary = self.as_dictionary(tokens, specials, indices, match_string)
         return dictionary
