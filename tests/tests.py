@@ -3785,6 +3785,24 @@ def test_plantcv_hyperspectral_analyze_index_auto_range():
     assert pcv.outputs.observations['mean_index_savi']['value'] > 0
 
 
+def test_plantcv_hyperspectral_analyze_index_outside_range_warning():
+    import io
+    from contextlib import redirect_stdout
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_analyze_index_auto_range")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="savi", distance=801)
+    mask_img = np.ones(np.shape(index_array.array_data), dtype=np.uint8) * 255
+    f = io.StringIO()
+    with redirect_stdout(f):
+        pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, min_bin=.5, max_bin=.55)
+    out = f.getvalue()
+    #assert os.listdir(cache_dir) is 0
+    assert out[0:10] == 'WARNING!!!'
+
+
 def test_plantcv_hyperspectral_analyze_index_bad_input_mask():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
