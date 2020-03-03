@@ -313,6 +313,10 @@ class ParseMatchArg:
         "id:[1,2]" -> ["id", ":", "[", "1", ",", "2", "]"]
         These intermediate results must be turned into a dictionary
         later.
+        
+        Args:
+            match_string: String to be parsed
+        :param match_string: str
         """
         out = []
         escaped = False
