@@ -35,3 +35,5 @@ corrected_img = pcv.transform.nonuniform_illumination(img=img, ksize=31)
 **Image after correction**
 
 ![Screenshot](img/documentation_images/nonuniform_illumination/corrected_img.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/transform/nonuniform_illumination.py)

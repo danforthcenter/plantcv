@@ -57,3 +57,5 @@ threshold_dark = pcv.threshold.otsu(gray_img, 255, 'light')
 **Thresholded image (inverse)**
 
 ![Screenshot](img/documentation_images/otsu_threshold/thresholded_light.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/threshold/threshold_methods.py)

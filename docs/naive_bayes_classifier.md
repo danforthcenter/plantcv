@@ -43,3 +43,5 @@ The output mask is a dictionary with the keys being the class names and the valu
 **Binary mask image**
 
 ![Screenshot](img/documentation_images/naive_bayes_classifier/mask_image.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/learn/naive_bayes.py)

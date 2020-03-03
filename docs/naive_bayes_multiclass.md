@@ -28,3 +28,5 @@ be created with [pcv.visualize.colorize_masks](visualize_colorize_masks.md).
     - Used to help differentiate two or more feature classes
 - **Example use:**
     - [Use In Machine Learning Tutorial](machine_learning_tutorial.md)
+
+**Source Code:** [Here]https://github.com/danforthcenter/plantcv/blob/master/plantcv/learn/naive_bayes.py)

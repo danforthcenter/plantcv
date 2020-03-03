@@ -52,3 +52,5 @@ blur_11 = pcv.median_blur(gray_img, (11, 11))
 **Median blur (ksize = (11,11))**
 
 ![Screenshot](img/documentation_images/median_blur/median_blur11.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/median_blur.py)
