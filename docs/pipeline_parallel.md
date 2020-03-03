@@ -235,3 +235,5 @@ plantcv-utils.py json2csv -j output.json -c result-table
 This can be added as an additional line in the shell script that runs the workflow too.
 
 See [Accessory Tools](tools.md) for more information.
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv-workflow.py)

@@ -26,3 +26,5 @@ from plantcv import plantcv as pcv
 pcv.print_image(img, "home/user/images/test-image.png")
 
 ```
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/print_image.py)

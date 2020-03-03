@@ -68,3 +68,5 @@ roi_contour, roi_hierarchy = pcv.roi.rectangle(x=100, y=100, h=200, w=200, img=i
 *pcv.params.line_thickness = 3*
 
 ![Screenshot](img/documentation_images/params/thickness3.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/__init__.py)
