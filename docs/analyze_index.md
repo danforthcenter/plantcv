@@ -3,7 +3,7 @@
 This function calculates the hyperspectral index statistics and writes the values  as observations out to
        the [Outputs class](outputs.md).
        
-**plantcv.hyperspectral.analyze_index**(*index_array, mask, bins=100, min_bin=None, max_bin=None*)
+**plantcv.hyperspectral.analyze_index**(*index_array, mask, bins=100, min_bin=0, max_bin=1*)
 
 **returns** None
 
@@ -12,12 +12,13 @@ This function calculates the hyperspectral index statistics and writes the value
     - mask          - Binary mask made from selected contours
     - histplot      - If True plots histogram of intensity values
     - bins          - Optional, number of classes to divide spectrum into (default bins=100) 
-    - min_bin       - Optional, maximum bin label. If `None` then 0 will be used for the smallest bin label while calculating pixel frequency data.
-    - max_bin       - Optional, maximum bin label. If `None` then maximum pixel value detected in the image will be used for the largest bin label.
+    - min_bin       - Optional, maximum bin label. Default of 0 will be used for the smallest bin label while calculating pixel frequency data unless otherwise defined. 
+                      `min_bin="auto"` will set minimum bin to the smallest observed pixel value within the masked index provided.
+    - max_bin       - Optional, maximum bin label. Default of 1 will be used for the maximum  bin label. `max_bin="auto"` will set maximum bin to the largest observed pixel value within the masked index provided. 
 
 - **Context:**
     - Calculates data about mean, median, and standard deviation of an input index within a masked region. 
-    - If using an index that is expected to have negative values after masking (i.e. PRI) then default `min_bin` settings will cut off at 0 unless adjusted. 
+    - If using an index that is expected to have negative values after masking (i.e. PRI) the default `min_bin=0` will cut off pixel frequency data at 0 unless adjusted. 
 - **Example use:**
     - Below
 - **Output data stored:** Mean, median, and standard deviation of the index automatically gets stored to the 
