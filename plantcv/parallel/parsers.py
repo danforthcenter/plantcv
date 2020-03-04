@@ -307,6 +307,12 @@ class ParseMatchArg:
         """
         self.tokenize_match_arg()
         return self.create_dictionary()
+    def flush_current_item(self, special, idx):
+        if self.current_item != "":
+            self.tokens.append(self.current_item)
+            self.indices.append(idx)
+            self.specials.append(special)
+            self.current_item = ""
     def tokenize_match_arg(self):
         """This function recognizes the special characters and
         clumps of normal characters within the match arg. For
@@ -320,52 +326,51 @@ class ParseMatchArg:
         
         :param match_string: str
         """
-        tokens = []
+        self.tokens = []
         escaped = False
         active_quotes = []
         quote_symbols = ["'",'"']
-        current_item = ""
-        specials = []
-        indices = []
-        def flush_current_item(special, idx):
-            nonlocal current_item
-            if current_item != "":
-                tokens.append(current_item)
-                indices.append(idx)
-                specials.append(special)
-                current_item = ""
+        self.current_item = ""
+        self.specials = []
+        self.indices = []
         for idx, char in enumerate(self.match_string):
             if escaped:
-                current_item += char
+                self.current_item += char
                 escaped = False
             elif char in quote_symbols:
                 if char in active_quotes:
                     quote_index = active_quotes.index(char)
                     active_quotes = active_quotes[:quote_index]
                     if quote_index != 0:
-                        current_item += char
+                        self.current_item += char
                 else:
                     active_quotes.append(char)
             elif len(active_quotes) == 0:
                 if char in self.special_characters:
-                    flush_current_item(False, idx)
-                    current_item += char
-                    flush_current_item(special=True,idx=idx)
+                    self.flush_current_item(False, idx)
+                    self.current_item += char
+                    self.flush_current_item(special=True,idx=idx)
                 elif char == "\\":
                     escaped = True
                 elif char == ",":
-                    flush_current_item(False, idx)
-                    current_item += char
-                    flush_current_item(True, idx)
+                    self.flush_current_item(False, idx)
+                    self.current_item += char
+                    self.flush_current_item(True, idx)
                 else:
-                    current_item += char
+                    self.current_item += char
             else:
-                current_item += char
-            print("current item", current_item)
-        flush_current_item(special=False, idx=idx)
-        self.tokens = tokens
-        self.specials = specials
-        self.indices = indices
+                self.current_item += char
+        self.flush_current_item(special=False, idx=idx)
+    def flush_value(self, current_value):
+        self.current_value_list.append(current_value)
+    def flush_key_value(self):
+        if self.current_key != "":
+            if self.current_key in self.out:
+                self.out[self.current_key].extend(self.current_value_list)
+            else:
+                self.out[self.current_key] = self.current_value_list
+            self.current_value_list = []
+            self.current_key = ""
     def create_dictionary(self):
         """
         This function converts the series of tokens returned by 
@@ -384,23 +389,10 @@ class ParseMatchArg:
         :param match_string: string
         """
         mode = "expecting_key"
-        out = {}
-        current_key = ""
-        current_value_list = []
-        current_value = ""
-        def flush_value(current_value):
-            current_value_list.append(current_value)
-        def flush_key_value():
-            nonlocal out
-            nonlocal current_key
-            nonlocal current_value_list
-            if current_key != "":
-                if current_key in out:
-                    out[current_key].extend(current_value_list)
-                else:
-                    out[current_key] = current_value_list
-                current_value_list = []
-                current_key = ""
+        self.out = {}
+        self.current_key = ""
+        self.current_value_list = []
+        self.current_value = ""
         for token, special, idx, in zip(self.tokens, 
                                         self.specials, 
                                         self.indices):
@@ -410,7 +402,7 @@ class ParseMatchArg:
                                                    self.match_string,
                                                    idx))
                 else:
-                    current_key = token
+                    self.current_key = token
                     mode = "expecting_colon"
             elif mode == "expecting_colon" and special:
                 if token == ":" and special:
@@ -425,8 +417,8 @@ class ParseMatchArg:
                 elif token == "[" and special:
                     mode = "list_value"
                 else:
-                    flush_value(token)
-                    flush_key_value()
+                    self.flush_value(token)
+                    self.flush_key_value()
                     mode = "expecting_key_comma"
             elif mode == "list_value":
                 if token == ":" and special:
@@ -434,7 +426,7 @@ class ParseMatchArg:
                                                    self.match_string,
                                                    idx))
                 elif token == "]" and special:
-                    if len(current_value_list) == 0:
+                    if len(self.current_value_list) == 0:
                         raise ValueError(self.error_message("Empty list",
                                                        self.match_string,
                                                        idx))
@@ -443,11 +435,11 @@ class ParseMatchArg:
                                                        self.match_string,
                                                        idx))
                 else:
-                    flush_value(token)
+                    self.flush_value(token)
                     mode = "list_comma"
             elif mode == "list_comma":
                 if token == "]" and special:
-                    flush_key_value()
+                    self.flush_key_value()
                     mode = "expecting_key_comma"
                 elif token == "," and special:
                     mode = "list_value"
@@ -461,5 +453,5 @@ class ParseMatchArg:
                                                         self.match_string,
                                                         idx))
                 mode = "expecting_key"
-        flush_key_value()
-        return out
+        self.flush_key_value()
+        return self.out
