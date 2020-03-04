@@ -290,8 +290,19 @@ def _parse_filename(filename, delimiter, regex):
 
 class ParseMatchArg:
     special_characters = ":[],"
-    def _error_message(self, warning, idx):
-        message_and_original = warning + "\n" + self.match_string
+    def _error_message(self, message, idx):
+        """This function formats an error message that explains
+        the problem and points out where in the user-provided line it
+        occurred.
+
+        Args:
+            warning: Explanation of the problem
+            idx:     Where to place the pointers
+
+        :param warning: string
+        :param index: int
+        """
+        message_and_original = message + "\n" + self.match_string
         point_out_error = " " * idx + "^"
         return message_and_original + "\n" + point_out_error
     def __init__(self, match_string):
