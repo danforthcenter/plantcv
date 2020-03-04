@@ -400,6 +400,11 @@ class ParseMatchArg:
         """
         self.current_value_list.append(current_value)
     def _flush_key_value(self):
+        """This function clears the value of self.current_key and 
+        self.current_value_list, unless self.current_key is empty.
+        If the key already exists, self.current_value_list will be
+        added to the existing values, instead of replacing them.
+        """
         if self.current_key != "":
             if self.current_key in self.out:
                 self.out[self.current_key].extend(self.current_value_list)
