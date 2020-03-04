@@ -391,6 +391,13 @@ class ParseMatchArg:
                 self.current_item += char
         self._flush_current_item(special=False, idx=idx)
     def _flush_value(self, current_value):
+        """This function simply adds the argument to self.current_value_list
+
+        Args:
+            current_value: the value to be added
+
+        :param current_value: string
+        """
         self.current_value_list.append(current_value)
     def _flush_key_value(self):
         if self.current_key != "":
