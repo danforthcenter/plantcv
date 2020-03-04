@@ -1,18 +1,21 @@
 ## Check whether an object is completely within an image
 
-This function tests whether an object (defined as nonzero pixels in a mask) falls completely within the bounds of an image or if it touches the edge.
+This function tests whether an object (defined as nonzero pixels in a mask) falls completely within the bounds of an 
+image or if it touches the edge.
 
-**plantcv.within_frame**(*mask*)
+**plantcv.within_frame**(*mask, border_width=1*)
 
 **returns** in_bounds
 
 - **Parameters:**
     - mask = a single channel image (i.e. binary or greyscale)
+    - border_width = distance from border of image considered out of frame (default = 1)
 
 - **Context:**
     - This function could be used to test whether the plant has grown outside the field of view.
 - **Output data stored:** Data ('in_bounds') automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
-    These data can always get accessed during a workflow (example below). For more detail about data output see [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
+    These data can always get accessed during a workflow (example below). For more detail about data output see 
+    [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 - **Example use:**
 

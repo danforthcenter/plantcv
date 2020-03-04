@@ -346,7 +346,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.7: NA
 * post v3.7: **plantcv.hyperspectral.analyze_index**(*index_array, mask*)
-* post v3.8: index_histogram = **plantcv.hyperspectral.analyze_index**(*index_array, mask, histplot=False, bins=100, max_bin=None, min_bin=None*)
+* post v3.8: index_histogram = **plantcv.hyperspectral.analyze_index**(*index_array, mask, histplot=False, bins=100, max_bin=0, min_bin=1*)
 
 #### plantcv.hyperspectral.analyze_spectral
 
@@ -785,6 +785,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.3: NA
 * post v3.3: in_bounds = **plantcv.within_frame**(*mask*)
+* post v3.8: in_bounds = **plantcv.within_frame**(*mask, border_width=1*)
 
 #### plantcv.x_axis_pseudolandmarks
 
