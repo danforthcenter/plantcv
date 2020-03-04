@@ -306,6 +306,13 @@ class ParseMatchArg:
         point_out_error = " " * idx + "^"
         return message_and_original + "\n" + point_out_error
     def __init__(self, match_string):
+        """This function initializes the parser with the string to be parsed
+        
+        Args:
+            match_string: The string to be parsed
+        
+        :param match_string: str
+        """
         self.match_string = match_string
     def parse(self):
         """
