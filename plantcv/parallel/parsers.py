@@ -5,7 +5,7 @@ from dateutil.parser import parse as dt_parser
 
 # Parse metadata from filenames in a directory
 ###########################################
-def metadata_parser(data_dir, meta_fields, valid_meta, meta_filters, date_format, 
+def metadata_parser(data_dir, meta_fields, valid_meta, meta_filters, date_format,
                     start_date, end_date, error_log, delimiter="_", file_type="png", coprocess=None):
     """Reads metadata the input data directory.
 
@@ -249,7 +249,6 @@ def check_date_range(start_date, end_date, img_time, date_format):
         timestamp = datetime.datetime.strptime(img_time, date_format)
     except ValueError as e:
         raise SystemExit(str(e) + '\n  --> Please specify the correct --timestampformat argument <--\n')
-    
     time_delta = timestamp - datetime.datetime(1970, 1, 1)
     unix_time = (time_delta.days * 24 * 3600) + time_delta.seconds
     # Does the image date-time fall outside or inside the included range
@@ -289,7 +288,20 @@ def _parse_filename(filename, delimiter, regex):
 ###########################################
 
 class ParseMatchArg:
+
     special_characters = ":[],"
+
+    def __init__(self, match_string):
+        """This function initializes the parser with the string to be parsed
+
+        Args:
+            match_string: The string to be parsed.
+
+        :param match_string: str
+        """
+        self.match_string = match_string
+
+
     def _error_message(self, message, idx):
         """This function formats an error message that explains
         the problem and points out where in the user-provided line it
@@ -305,15 +317,8 @@ class ParseMatchArg:
         message_and_original = message + "\n" + self.match_string
         point_out_error = " " * idx + "^"
         return message_and_original + "\n" + point_out_error
-    def __init__(self, match_string):
-        """This function initializes the parser with the string to be parsed
-        
-        Args:
-            match_string: The string to be parsed
-        
-        :param match_string: str
-        """
-        self.match_string = match_string
+
+
     def parse(self):
         """
         Parse the match string and return a dictionary of filters.
@@ -325,15 +330,17 @@ class ParseMatchArg:
         """
         self._tokenize_match_arg()
         return self._create_dictionary()
+
+
     def _flush_current_item(self, special, idx):
         """This function clears self.current_item and stores the previous value,
         along with information on the index of the token in the original string
         and whether it has a special meaning or is a regular string.
-        
+
         Args:
             special: Whether the current item is special
             idx: The index where the current item can be found in original string
-            
+
         :param special: bool
         :param idx: idt
         """
@@ -342,6 +349,8 @@ class ParseMatchArg:
             self.indices.append(idx)
             self.specials.append(special)
             self.current_item = ""
+
+
     def _tokenize_match_arg(self):
         """This function recognizes the special characters and
         clumps of normal characters within the match arg. For
@@ -349,10 +358,10 @@ class ParseMatchArg:
         "id:[1,2]" -> ["id", ":", "[", "1", ",", "2", "]"]
         These intermediate results must be turned into a dictionary
         later.
-        
+
         Args:
             match_string: String to be parsed
-        
+
         :param match_string: str
         """
         self.tokens = []
@@ -390,6 +399,8 @@ class ParseMatchArg:
             else:
                 self.current_item += char
         self._flush_current_item(special=False, idx=idx)
+
+
     def _flush_value(self, current_value):
         """This function simply adds the argument to self.current_value_list
 
@@ -399,8 +410,10 @@ class ParseMatchArg:
         :param current_value: string
         """
         self.current_value_list.append(current_value)
+
+
     def _flush_key_value(self):
-        """This function clears the value of self.current_key and 
+        """This function clears the value of self.current_key and
         self.current_value_list, unless self.current_key is empty.
         If the key already exists, self.current_value_list will be
         added to the existing values, instead of replacing them.
@@ -412,18 +425,20 @@ class ParseMatchArg:
                 self.out[self.current_key] = self.current_value_list
             self.current_value_list = []
             self.current_key = ""
+
+
     def _create_dictionary(self):
         """
-        This function converts the series of tokens returned by 
+        This function converts the series of tokens returned by
         tokenize_match_arg into a dictionary mapping filter names
-        to lists of valid patterns. 
-        
+        to lists of valid patterns.
+
         Args:
             tokens: the text content of each token
             specials: whether each character is special or normal
             indices: where in the original string each token begins
             match_string: the original string being parsed
-            
+
         :param tokens: list
         :param specials: list
         :param indices: list
@@ -434,13 +449,13 @@ class ParseMatchArg:
         self.current_key = ""
         self.current_value_list = []
         self.current_value = ""
-        for token, special, idx, in zip(self.tokens, 
-                                        self.specials, 
+        for token, special, idx, in zip(self.tokens,
+                                        self.specials,
                                         self.indices):
             if mode == "expecting_key":
                 if token in self.special_characters and special:
                     raise ValueError(self._error_message("Expecting key value",
-                                                   idx))
+                                                         idx))
                 else:
                     self.current_key = token
                     mode = "expecting_colon"
@@ -452,7 +467,7 @@ class ParseMatchArg:
             elif mode == "expecting_value":
                 if token in ":,]" and special: #refactor
                     raise ValueError(self._error_message("Empty value",
-                                                   idx - 1))
+                                                         idx - 1))
                 elif token == "[" and special:
                     mode = "list_value"
                 else:
@@ -462,14 +477,14 @@ class ParseMatchArg:
             elif mode == "list_value":
                 if token == ":" and special:
                     raise ValueError(self._error_message("Cannot use key-value pairs in a list value",
-                                                   idx))
+                                                         idx))
                 elif token == "]" and special:
                     if len(self.current_value_list) == 0:
                         raise ValueError(self._error_message("Empty list",
-                                                       idx))
+                                                             idx))
                     else:
                         raise ValueError(self._error_message("Empty list item",
-                                                       idx))
+                                                             idx))
                 else:
                     self._flush_value(token)
                     mode = "list_comma"
@@ -481,11 +496,11 @@ class ParseMatchArg:
                     mode = "list_value"
                 else:
                     raise ValueError(self._error_message("Expecting comma between list items",
-                                                   idx))
+                                                         idx))
             elif mode == "expecting_key_comma":
                 if not (token == "," and special):
                     raise ValueError(self._error_message("Expecting comma after value",
-                                                        idx))
+                                                         idx))
                 mode = "expecting_key"
         self._flush_key_value()
         return self.out
