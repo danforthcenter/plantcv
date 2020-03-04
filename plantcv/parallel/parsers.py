@@ -290,7 +290,7 @@ def _parse_filename(filename, delimiter, regex):
 
 class ParseMatchArg:
     special_characters = ":[],"
-    def error_message(self, warning, idx):
+    def _error_message(self, warning, idx):
         message_and_original = warning + "\n" + self.match_string
         point_out_error = " " * idx + "^"
         return message_and_original + "\n" + point_out_error
@@ -305,15 +305,15 @@ class ParseMatchArg:
 
         :param match_string: str
         """
-        self.tokenize_match_arg()
-        return self.create_dictionary()
-    def flush_current_item(self, special, idx):
+        self._tokenize_match_arg()
+        return self._create_dictionary()
+    def _flush_current_item(self, special, idx):
         if self.current_item != "":
             self.tokens.append(self.current_item)
             self.indices.append(idx)
             self.specials.append(special)
             self.current_item = ""
-    def tokenize_match_arg(self):
+    def _tokenize_match_arg(self):
         """This function recognizes the special characters and
         clumps of normal characters within the match arg. For
         example:
@@ -347,23 +347,23 @@ class ParseMatchArg:
                     active_quotes.append(char)
             elif len(active_quotes) == 0:
                 if char in self.special_characters:
-                    self.flush_current_item(False, idx)
+                    self._flush_current_item(False, idx)
                     self.current_item += char
-                    self.flush_current_item(special=True,idx=idx)
+                    self._flush_current_item(special=True,idx=idx)
                 elif char == "\\":
                     escaped = True
                 elif char == ",":
-                    self.flush_current_item(False, idx)
+                    self._flush_current_item(False, idx)
                     self.current_item += char
-                    self.flush_current_item(True, idx)
+                    self._flush_current_item(True, idx)
                 else:
                     self.current_item += char
             else:
                 self.current_item += char
-        self.flush_current_item(special=False, idx=idx)
-    def flush_value(self, current_value):
+        self._flush_current_item(special=False, idx=idx)
+    def _flush_value(self, current_value):
         self.current_value_list.append(current_value)
-    def flush_key_value(self):
+    def _flush_key_value(self):
         if self.current_key != "":
             if self.current_key in self.out:
                 self.out[self.current_key].extend(self.current_value_list)
@@ -371,7 +371,7 @@ class ParseMatchArg:
                 self.out[self.current_key] = self.current_value_list
             self.current_value_list = []
             self.current_key = ""
-    def create_dictionary(self):
+    def _create_dictionary(self):
         """
         This function converts the series of tokens returned by 
         tokenize_match_arg into a dictionary mapping filter names
@@ -398,7 +398,7 @@ class ParseMatchArg:
                                         self.indices):
             if mode == "expecting_key":
                 if token in self.special_characters and special:
-                    raise ValueError(self.error_message("Expecting key value",
+                    raise ValueError(self._error_message("Expecting key value",
                                                    idx))
                 else:
                     self.current_key = token
@@ -410,41 +410,41 @@ class ParseMatchArg:
                     raise ValueError("Key must be followed by :")
             elif mode == "expecting_value":
                 if token in ":,]" and special: #refactor
-                    raise ValueError(self.error_message("Empty value",
+                    raise ValueError(self._error_message("Empty value",
                                                    idx - 1))
                 elif token == "[" and special:
                     mode = "list_value"
                 else:
-                    self.flush_value(token)
-                    self.flush_key_value()
+                    self._flush_value(token)
+                    self._flush_key_value()
                     mode = "expecting_key_comma"
             elif mode == "list_value":
                 if token == ":" and special:
-                    raise ValueError(self.error_message("Cannot use key-value pairs in a list value",
+                    raise ValueError(self._error_message("Cannot use key-value pairs in a list value",
                                                    idx))
                 elif token == "]" and special:
                     if len(self.current_value_list) == 0:
-                        raise ValueError(self.error_message("Empty list",
+                        raise ValueError(self._error_message("Empty list",
                                                        idx))
                     else:
-                        raise ValueError(self.error_message("Empty list item",
+                        raise ValueError(self._error_message("Empty list item",
                                                        idx))
                 else:
-                    self.flush_value(token)
+                    self._flush_value(token)
                     mode = "list_comma"
             elif mode == "list_comma":
                 if token == "]" and special:
-                    self.flush_key_value()
+                    self._flush_key_value()
                     mode = "expecting_key_comma"
                 elif token == "," and special:
                     mode = "list_value"
                 else:
-                    raise ValueError(self.error_message("Expecting comma between list items",
+                    raise ValueError(self._error_message("Expecting comma between list items",
                                                    idx))
             elif mode == "expecting_key_comma":
                 if not (token == "," and special):
-                    raise ValueError(self.error_message("Expecting comma after value",
+                    raise ValueError(self._error_message("Expecting comma after value",
                                                         idx))
                 mode = "expecting_key"
-        self.flush_key_value()
+        self._flush_key_value()
         return self.out
