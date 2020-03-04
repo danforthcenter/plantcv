@@ -294,7 +294,9 @@ class ParseMatchArg:
         message_and_original = warning + "\n" + original_text
         point_out_error = " " * idx + "^"
         return message_and_original + "\n" + point_out_error
-    def parse(self, match_string):
+    def __init__(self, match_string):
+        self.match_string = match_string
+    def parse(self):
         """
         Parse the match string and return a dictionary of filters.
 
@@ -303,10 +305,9 @@ class ParseMatchArg:
 
         :param match_string: str
         """
-        tokens, specials, indices = self.tokenize_match_arg(match_string)
-        dictionary = self.as_dictionary(tokens, specials, indices, match_string)
-        return dictionary
-    def tokenize_match_arg(self, match_string):
+        self.tokenize_match_arg()
+        return self.create_dictionary()
+    def tokenize_match_arg(self):
         """This function recognizes the special characters and
         clumps of normal characters within the match arg. For
         example:
@@ -319,7 +320,7 @@ class ParseMatchArg:
         
         :param match_string: str
         """
-        out = []
+        tokens = []
         escaped = False
         active_quotes = []
         quote_symbols = ["'",'"']
@@ -329,11 +330,11 @@ class ParseMatchArg:
         def flush_current_item(special, idx):
             nonlocal current_item
             if current_item != "":
-                out.append(current_item)
+                tokens.append(current_item)
                 indices.append(idx)
                 specials.append(special)
                 current_item = ""
-        for idx, char in enumerate(match_string):
+        for idx, char in enumerate(self.match_string):
             if escaped:
                 current_item += char
                 escaped = False
@@ -362,8 +363,10 @@ class ParseMatchArg:
                 current_item += char
             print("current item", current_item)
         flush_current_item(special=False, idx=idx)
-        return out, specials, indices
-    def as_dictionary(self, tokens, specials, indices, match_string):
+        self.tokens = tokens
+        self.specials = specials
+        self.indices = indices
+    def create_dictionary(self):
         """
         This function converts the series of tokens returned by 
         tokenize_match_arg into a dictionary mapping filter names
@@ -386,7 +389,6 @@ class ParseMatchArg:
         current_value_list = []
         current_value = ""
         def flush_value(current_value):
-            nonlocal current_value_list
             current_value_list.append(current_value)
         def flush_key_value():
             nonlocal out
@@ -399,11 +401,13 @@ class ParseMatchArg:
                     out[current_key] = current_value_list
                 current_value_list = []
                 current_key = ""
-        for token, special, idx, in zip(tokens, specials, indices):
+        for token, special, idx, in zip(self.tokens, 
+                                        self.specials, 
+                                        self.indices):
             if mode == "expecting_key":
                 if token in self.special_characters and special:
                     raise ValueError(self.error_message("Expecting key value",
-                                                   match_string,
+                                                   self.match_string,
                                                    idx))
                 else:
                     current_key = token
@@ -416,7 +420,7 @@ class ParseMatchArg:
             elif mode == "expecting_value":
                 if token in ":,]" and special: #refactor
                     raise ValueError(self.error_message("Empty value",
-                                                   match_string,
+                                                   self.match_string,
                                                    idx - 1))
                 elif token == "[" and special:
                     mode = "list_value"
@@ -427,16 +431,16 @@ class ParseMatchArg:
             elif mode == "list_value":
                 if token == ":" and special:
                     raise ValueError(self.error_message("Cannot use key-value pairs in a list value",
-                                                   match_string,
+                                                   self.match_string,
                                                    idx))
                 elif token == "]" and special:
                     if len(current_value_list) == 0:
                         raise ValueError(self.error_message("Empty list",
-                                                       match_string,
+                                                       self.match_string,
                                                        idx))
                     else:
                         raise ValueError(self.error_message("Empty list item",
-                                                       match_string,
+                                                       self.match_string,
                                                        idx))
                 else:
                     flush_value(token)
@@ -449,13 +453,13 @@ class ParseMatchArg:
                     mode = "list_value"
                 else:
                     raise ValueError(self.error_message("Expecting comma between list items",
-                                                   match_string,
+                                                   self.match_string,
                                                    idx))
             elif mode == "expecting_key_comma":
                 if not (token == "," and special):
                     raise ValueError(self.error_message("Expecting comma after value",
-                                                   match_string,
-                                                   idx))
+                                                        self.match_string,
+                                                        idx))
                 mode = "expecting_key"
         flush_key_value()
         return out
