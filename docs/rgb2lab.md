@@ -72,3 +72,5 @@ b_channel = pcv.rgb2gray_lab(rgb_img, 'b')
 **Blue-Yellow channel image**
 
 ![Screenshot](img/documentation_images/rgb2lab/lab_blue-yellow.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/rgb2gray_lab.py)

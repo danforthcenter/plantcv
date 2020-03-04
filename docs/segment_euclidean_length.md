@@ -42,3 +42,5 @@ euclidean_lengths = pcv.outputs.observations['segment_eu_length']['value']
 *Labeled Image*
 
 ![Screenshot](img/documentation_images/segment_euclidean_length/labeled_eu_lengths.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/morphology/segment_euclidean_length.py)

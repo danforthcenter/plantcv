@@ -66,3 +66,5 @@ edges3 = pcv.canny_edge_detect(img=img, mask=bin_img, mask_color='black')
 ![Screenshot](img/documentation_images/canny_edge_detect/mask_canny.jpg)
 
 ![Screenshot](img/documentation_images/canny_edge_detect/masked_img_canny.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/canny_edge_detect.py)

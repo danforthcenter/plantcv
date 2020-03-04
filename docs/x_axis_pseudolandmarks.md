@@ -38,3 +38,5 @@ bottom_landmarks = pcv.outputs.observations['bottom_lmk']['value']
 **Image of points selected**
 
 ![Screenshot](img/documentation_images/x_axis_pseudolandmarks/xap_output.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/x_axis_pseudolandmarks.py)

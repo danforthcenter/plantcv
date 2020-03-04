@@ -41,3 +41,5 @@ xor_image = pcv.logical_xor(s_threshold, b_threshold)
 **Combined image**
 
 ![Screenshot](img/documentation_images/logical_xor/21_xor_joined.png)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/logical_xor.py)

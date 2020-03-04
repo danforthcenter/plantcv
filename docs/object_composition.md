@@ -41,3 +41,5 @@ obj, mask = pcv.object_composition(img, roi_objects, hierarchy)
 **Combined contours**
 
 ![Screenshot](img/documentation_images/object_composition/combined.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/object_composition.py)

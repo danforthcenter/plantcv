@@ -45,3 +45,5 @@ ndvi_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="NDVI",
 **SAVI array image**
 
 ![Screenshot](img/tutorial_images/hyperspectral/savi_index.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/hyperspectral/extract_index.py)

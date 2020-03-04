@@ -54,3 +54,5 @@ marker_area = pcv.outputs.observations['marker_area']['value']
 **Object (green) that is identified as size marker**
 
 ![Screenshot](img/documentation_images/report_size_marker/21_marker_shape.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/report_size_marker_area.py)

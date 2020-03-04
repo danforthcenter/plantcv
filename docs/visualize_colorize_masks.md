@@ -50,3 +50,5 @@ plotted = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['pustule'], ma
 **Plot with Colored Masks**
 
 ![Screenshot](img/documentation_images/colorize_masks/colored_classes.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/visualize/colorize_masks.py)

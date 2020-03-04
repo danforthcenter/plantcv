@@ -46,3 +46,5 @@ segment_curvatures = pcv.outputs.observations['segment_curvature']['value']
 *Labeled Image (only leaves)*
 
 ![Screenshot](img/documentation_images/segment_curvature/labeled_leaf_curvature.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/morphology/segment_curvature.py)

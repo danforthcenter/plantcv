@@ -76,3 +76,5 @@ roi_objects, hierarchy, kept_mask, obj_area = pcv.roi_objects(img, roi, roi_hier
 **Kept objects**
 
 ![Screenshot](img/documentation_images/roi_objects/kept_objects2.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/roi_objects.py)

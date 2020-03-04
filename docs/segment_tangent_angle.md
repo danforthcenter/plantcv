@@ -49,3 +49,5 @@ leaf_tangent_angles = pcv.outputs.observations['segment_tangent_angle']['value']
 *Labeled Image*
 
 ![Screenshot](img/documentation_images/segment_tangent_angle/tangent_angle_img.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/morphology/segment_tangent_angle.py)

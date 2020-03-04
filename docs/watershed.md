@@ -41,3 +41,5 @@ analysis_image = pcv.watershed_segmentation(crop_img, thresh, 10)
 **Watershed Segmentation**
 
 ![Screenshot](img/documentation_images/watershed/watershed.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/watershed.py)

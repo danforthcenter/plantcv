@@ -36,3 +36,5 @@ lp_img = pcv.laplace_filter(gray_img, 1, 1)
 **Image after Laplace filter**
 
 ![Screenshot](img/documentation_images/laplace_filter/lp_filtered.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/laplace_filter.py)

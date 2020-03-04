@@ -27,3 +27,5 @@ print(colors)
 [(0, 0, 255), (0, 255, 205), (100, 255, 0), (255, 106, 0), (255, 0, 199)]
 
 ```
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/color_palette.py)

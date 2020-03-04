@@ -37,3 +37,5 @@ dilate_img = pcv.dilate(gray_img=gray_img, ksize=9, i=1)
 **Image after dilation**
 
 ![Screenshot](img/documentation_images/dilate/dilate.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/dilate.py)

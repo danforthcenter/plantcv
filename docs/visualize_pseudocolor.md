@@ -96,3 +96,5 @@ simple_pseudo_img = pcv.visualize.pseudocolor(gray_img=img, obj=None, mask=mask,
 **Pseudocolored, Plotted on Input Image (no axes or colorbar)**
 
 ![Screenshot](img/documentation_images/pseudocolor/pseudo_onimage_simple.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/visualize/pseudocolor.py)

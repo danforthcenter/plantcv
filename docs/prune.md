@@ -74,3 +74,5 @@ pruned_skeleton, segmented_img, segment_objects = pcv.morphology.prune(skel_img=
 *Segmented Skeleton with Mask (image getting returned)*
 
 ![Screenshot](img/documentation_images/prune/pruned_segmented_img_mask.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/morphology/prune.py)

@@ -35,3 +35,5 @@ threshold_mean = pcv.threshold.mean(gray_img, 255, 'dark')
 **Auto-Thresholded image (mean)**
 
 ![Screenshot](img/documentation_images/auto_threshold/mean_threshold.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/threshold/threshold_methods.py)

@@ -59,3 +59,5 @@ thresholded = pcv.threshold.triangle(gray_img, 255, 'light', xstep=1)
 ![Screenshot](img/documentation_images/triangle_threshold/11_triangle_thresh_hist_3.0.jpg)
 
 ![Screenshot](img/documentation_images/triangle_threshold/11_triangle_thresh_img_3.0.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/threshold/threshold_methods.py)

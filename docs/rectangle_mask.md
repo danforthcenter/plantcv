@@ -41,3 +41,5 @@ masked, binary, contours, hierarchy = pcv.rectangle_mask(img=img, p1=(0,0), p2=(
 **Masked image**
 
 ![Screenshot](img/documentation_images/rectangle_mask/masked.jpg) 
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/rectangle_mask.py)

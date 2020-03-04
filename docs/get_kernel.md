@@ -46,3 +46,5 @@ print(cross_kernel)
 
 ```
 
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/get_kernel.py)
+

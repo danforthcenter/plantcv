@@ -49,3 +49,5 @@ pcv.params.debug = "print"
 filtered_img = pcv.closing(gray_img=gray_img, kernel=np.array([[1, 0, 1], [0, 1, 0], [1, 0, 1]]))
 
 ```
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/closing.py)

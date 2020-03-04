@@ -32,3 +32,5 @@ he_img = pcv.hist_equalization(gray_img)
 **Normalized image**
 
 ![Screenshot](img/documentation_images/HistEqualization/normalized_image.jpg)  
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/hist_equalization.py)

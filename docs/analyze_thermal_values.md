@@ -56,3 +56,5 @@ pseudocolor_img  = pcv.visualize.pseudocolor(thermal_img, min_value=31, max_valu
 ```
 
 ![Screenshot](img/documentation_images/analyze_thermal_values/thermal_pseudocolored.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/analyze_thermal_values.py)

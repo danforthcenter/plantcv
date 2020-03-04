@@ -40,3 +40,5 @@ hist_figure = pcv.visualize.histogram(gray_img, mask=mask, bins=256, color='red'
 **Histogram of signal intensity**
 
 ![Screenshot](img/documentation_images/histogram/hist.jpg) 
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/visualize/histogram.py)

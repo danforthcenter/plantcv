@@ -36,3 +36,5 @@ scaled_img = pcv.transform.rescale(thermal_data, 0, 255)
 **Image after resizing**
 
 ![Screenshot](img/tutorial_images/thermal/rescaled_image.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/transform/rescale.py)
