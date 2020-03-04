@@ -326,6 +326,17 @@ class ParseMatchArg:
         self._tokenize_match_arg()
         return self._create_dictionary()
     def _flush_current_item(self, special, idx):
+        """This function clears self.current_item and stores the previous value,
+        along with information on the index of the token in the original string
+        and whether it has a special meaning or is a regular string.
+        
+        Args:
+            special: Whether the current item is special
+            idx: The index where the current item can be found in original string
+            
+        :param special: bool
+        :param idx: idt
+        """
         if self.current_item != "":
             self.tokens.append(self.current_item)
             self.indices.append(idx)
