@@ -290,8 +290,8 @@ def _parse_filename(filename, delimiter, regex):
 
 class ParseMatchArg:
     special_characters = ":[],"
-    def error_message(self, warning, original_text, idx):
-        message_and_original = warning + "\n" + original_text
+    def error_message(self, warning, idx):
+        message_and_original = warning + "\n" + self.match_string
         point_out_error = " " * idx + "^"
         return message_and_original + "\n" + point_out_error
     def __init__(self, match_string):
@@ -399,7 +399,6 @@ class ParseMatchArg:
             if mode == "expecting_key":
                 if token in self.special_characters and special:
                     raise ValueError(self.error_message("Expecting key value",
-                                                   self.match_string,
                                                    idx))
                 else:
                     self.current_key = token
@@ -412,7 +411,6 @@ class ParseMatchArg:
             elif mode == "expecting_value":
                 if token in ":,]" and special: #refactor
                     raise ValueError(self.error_message("Empty value",
-                                                   self.match_string,
                                                    idx - 1))
                 elif token == "[" and special:
                     mode = "list_value"
@@ -423,16 +421,13 @@ class ParseMatchArg:
             elif mode == "list_value":
                 if token == ":" and special:
                     raise ValueError(self.error_message("Cannot use key-value pairs in a list value",
-                                                   self.match_string,
                                                    idx))
                 elif token == "]" and special:
                     if len(self.current_value_list) == 0:
                         raise ValueError(self.error_message("Empty list",
-                                                       self.match_string,
                                                        idx))
                     else:
                         raise ValueError(self.error_message("Empty list item",
-                                                       self.match_string,
                                                        idx))
                 else:
                     self.flush_value(token)
@@ -445,12 +440,10 @@ class ParseMatchArg:
                     mode = "list_value"
                 else:
                     raise ValueError(self.error_message("Expecting comma between list items",
-                                                   self.match_string,
                                                    idx))
             elif mode == "expecting_key_comma":
                 if not (token == "," and special):
                     raise ValueError(self.error_message("Expecting comma after value",
-                                                        self.match_string,
                                                         idx))
                 mode = "expecting_key"
         self.flush_key_value()
