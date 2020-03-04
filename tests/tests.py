@@ -203,35 +203,35 @@ def metadata_filters_are_functionally_equivalent(left, right):
 def test_plantcv_parallel_parse_match_arg_one_field_one_value():
     filter_as_string = "id:1"
     correct_filter = {"id":"1"}
-    observed_filter = plantcv.parallel.ParseMatchArg().parse(filter_as_string)
+    observed_filter = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
     assert metadata_filters_are_functionally_equivalent(correct_filter, observed_filter)
 
 
 def test_plantcv_parallel_parse_match_arg_one_field_pythonic_syntax():
     filter_as_string = "id:[1,2]"
     correct_filter = {"id":["1", "2"]}
-    observed_filter = plantcv.parallel.ParseMatchArg().parse(filter_as_string)
+    observed_filter = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
     assert metadata_filters_are_functionally_equivalent(correct_filter, observed_filter)
 
 
 def test_plantcv_parallel_parse_match_arg_one_field_cli_syntax():
     filter_as_string = "id:1,id:2"
     correct_filter = {"id":["1", "2"]}
-    observed_filter = plantcv.parallel.ParseMatchArg().parse(filter_as_string)
+    observed_filter = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
     assert metadata_filters_are_functionally_equivalent(correct_filter, observed_filter)
 
 
 def test_plantcv_parallel_parse_match_arg_one_field_cli_first_pythonic_second():
     filter_as_string = "id:1,id:2,id:[3,4]"
     correct_filter = {"id":["1","2","3","4"]}
-    observed_filter = plantcv.parallel.ParseMatchArg().parse(filter_as_string)
+    observed_filter = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
     assert metadata_filters_are_functionally_equivalent(correct_filter, observed_filter)
 
 
 def test_plantcv_parallel_parse_match_arg_one_field_pythonic_first_cli_second():
     filter_as_string = "id:[1,2],id:3,id:4"
     correct_filter = {"id":["1","2","3","4"]}
-    observed_filter = plantcv.parallel.ParseMatchArg().parse(filter_as_string)
+    observed_filter = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
     assert metadata_filters_are_functionally_equivalent(correct_filter, observed_filter)
 
 
@@ -239,7 +239,7 @@ def test_plantcv_parallel_parse_match_arg_two_fields_pythonic_first_cli_second()
     filter_as_string = "id:[1,2],camera:3,camera:4"
     correct_filter = {"id":["1","2"],
                       "camera":["3","4"]}
-    observed_filter = plantcv.parallel.ParseMatchArg().parse(filter_as_string)
+    observed_filter = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
     assert metadata_filters_are_functionally_equivalent(correct_filter, observed_filter)
 
 
@@ -247,59 +247,59 @@ def test_plantcv_parallel_parse_match_arg_two_fields_cli_first_pythonic_second()
     filter_as_string = "camera:1,camera:2,id:[3,4]"
     correct_filter = {"id":["3","4"],
                       "camera":["1","2"]}
-    observed_filter = plantcv.parallel.ParseMatchArg().parse(filter_as_string)
+    observed_filter = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
     assert metadata_filters_are_functionally_equivalent(correct_filter, observed_filter)
 
 
 def test_plantcv_parallel_parse_match_arg_one_field_single_quote():
     filter_as_string = "camera:'1'"
     correct_filter = {"camera":"1"}
-    observed_filter = plantcv.parallel.ParseMatchArg().parse(filter_as_string)
+    observed_filter = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
     assert metadata_filters_are_functionally_equivalent(correct_filter, observed_filter)
 
 
 def test_plantcv_parallel_parse_match_arg_one_field_double_quote():
     filter_as_string = 'camera:"1"'
     correct_filter = {"camera":"1"}
-    observed_filter = plantcv.parallel.ParseMatchArg().parse(filter_as_string)
+    observed_filter = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
     assert metadata_filters_are_functionally_equivalent(correct_filter, observed_filter)
 
 
 def test_plantcv_parallel_parse_match_arg_one_field_double_quote():
     filter_as_string = 'camera:"1"'
     correct_filter = {"camera":"1"}
-    observed_filter = plantcv.parallel.ParseMatchArg().parse(filter_as_string)
+    observed_filter = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
     assert metadata_filters_are_functionally_equivalent(correct_filter, observed_filter)
 
 
 def test_plantcv_parallel_parse_match_arg_one_field_backslash():
     filter_as_string="camera:\:"
     correct_filter = {"camera":":"}
-    observed_filter = plantcv.parallel.ParseMatchArg().parse(filter_as_string)
+    observed_filter = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
     assert metadata_filters_are_functionally_equivalent(correct_filter, observed_filter)
 
 def test_plantcv_parallel_parse_match_arg_one_field_open_list():
     filter_as_string="camera:\["
     correct_filter = {"camera":"["}
-    observed_filter = plantcv.parallel.ParseMatchArg().parse(filter_as_string)
+    observed_filter = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
     assert metadata_filters_are_functionally_equivalent(correct_filter, observed_filter)
 
 def test_plantcv_parallel_parse_match_arg_one_field_close_list():
     filter_as_string="camera:\]"
     correct_filter = {"camera":"]"}
-    observed_filter = plantcv.parallel.ParseMatchArg().parse(filter_as_string)
+    observed_filter = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
     assert metadata_filters_are_functionally_equivalent(correct_filter, observed_filter)
 
 def test_plantcv_parallel_parse_match_arg_one_field_close_list():
     filter_as_string="camera:\""
     correct_filter = {"camera":"\""}
-    observed_filter = plantcv.parallel.ParseMatchArg().parse(filter_as_string)
+    observed_filter = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
     assert metadata_filters_are_functionally_equivalent(correct_filter, observed_filter)
 
 def test_plantcv_parallel_parse_match_arg_one_field_close_list():
     filter_as_string="camera:\\'"
     correct_filter = {"camera":"\'"}
-    observed_filter = plantcv.parallel.ParseMatchArg().parse(filter_as_string)
+    observed_filter = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
     assert metadata_filters_are_functionally_equivalent(correct_filter, observed_filter)
 
 def test_plantcv_parallel_metadata_parser_snapshots():
