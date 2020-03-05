@@ -160,8 +160,6 @@ nav:
       - 'Multiprocess': mutliprocess.md
       - 'Process Results': process_results.md
       - 'Workflow Parallelization': pipeline_parallel.md
-  - 'Add-on Packages':
-    - 'Hyperspectral': https://plantcv.readthedocs.io/projects/hyperspectral
   - 'Accessory tools': tools.md
 markdown_extensions:
   - toc:
