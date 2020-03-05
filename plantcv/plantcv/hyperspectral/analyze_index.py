@@ -61,15 +61,17 @@ def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=0, max_bi
 
     # Auto calculate max_bin if set
     if type(max_bin) is str and (max_bin.upper() == "AUTO"):
-        maxval = round(observed_max, 8)  # Auto bins will detect maxval to use for calculating labels/bins
+        maxval = float(round(observed_max, 8))  # Auto bins will detect maxval to use for calculating labels/bins
     if type(min_bin) is str and (min_bin.upper() == "AUTO"):
-        b = round(observed_min, 8) # If bin_min is auto then overwrite starting value
+        b = float(round(observed_min, 8))  # If bin_min is auto then overwrite starting value
+
 
     # Print a warning if observed min/max outside user defined range
     if observed_max > maxval or observed_min < b:
         print("WARNING!!! The observed range of pixel values in your masked index provided is [" + str(observed_min) +
               ", " + str(observed_max) + "] but the user defined range of bins for pixel frequencies is [" + str(b) +
               ", " + str(maxval) + "]. Adjust min_bin and max_bin in order to avoid cutting off data being collected.")
+
 
     # Calculate histogram
     hist_val = [float(l[0]) for l in cv2.calcHist([masked_array.astype(np.float32)], [0], None, [bins], [b, maxval])]
