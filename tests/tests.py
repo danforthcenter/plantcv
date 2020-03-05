@@ -331,8 +331,6 @@ def test_plantcv_parallel_parse_match_arg_bad_input_unexpected_key():
     with pytest.raises(ValueError):
         _ = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
 
-
-
 def test_plantcv_parallel_metadata_parser_snapshots():
     data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
     meta_filters = {"imgtype": "VIS"}
