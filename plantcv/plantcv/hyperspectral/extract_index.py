@@ -91,7 +91,7 @@ def extract_index(array, index="NDVI", distance=20):
 
     elif index.upper() == "ACI":
         #  Van den Berg et al. 2005
-        if (max_wavelength + distance) >= 800 and (max_wavelength - distance) <= 560:
+        if (max_wavelength + distance) >= 800 and (min_wavelength - distance) <= 560:
             green_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 560)
             nir_index   = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
             green = (array_data[:, :, [green_index]])
@@ -103,7 +103,7 @@ def extract_index(array, index="NDVI", distance=20):
     
     elif index.upper() == "ARI":
         # Gitelson et al., 2001
-        if (max_wavelength + distance) >= 700 and (max_wavelength - distance) <= 550:
+        if (max_wavelength + distance) >= 700 and (min_wavelength - distance) <= 550:
             ari550_indes = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 550)
             ari700_index   = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 700)
             ari550 = (array_data[:, :, [ari550_indes]])
