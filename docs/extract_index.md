@@ -32,6 +32,15 @@ pcv.params.debug = "print"
 # Extract NDVI index from the datacube 
 ndvi_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="NDVI", distance=20)
 
+ndvi_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="GDVI")
+
+ndvi_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="SAVI")
+
+ndvi_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="ARI")
+
+ndvi_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="ACI")
+
+
 ```
 
 **NDVI array image**
@@ -45,5 +54,13 @@ ndvi_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="NDVI",
 **SAVI array image**
 
 ![Screenshot](img/tutorial_images/hyperspectral/savi_index.jpg)
+
+**ARI array image**
+
+![Screenshot](img/tutorial_images/hyperspectral/ari_index.jpg)
+
+**ACI array image**
+
+![Screenshot](img/tutorial_images/hyperspectral/aci_index.jpg)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/hyperspectral/extract_index.py)
