@@ -90,16 +90,19 @@ def extract_index(array, index="NDVI", distance=20):
             fatal_error("Available wavelengths are not suitable for calculating PRI. Try increasing distance.")
 
     elif index.upper() == "ACI":
+        #  Van den Berg et al. 2005
         if (max_wavelength + distance) >= 800 and (max_wavelength - distance) <= 560:
             green_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 560)
             nir_index   = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
             green = (array_data[:, :, [green_index]])
             nir   = (array_data[:, :, [nir_index]])
+            # Naturally ranges from -1.0 to 1.0
             index_array_raw = green/nir
         else:
             fatal_error("Available wavelengths are not suitable for calculating ACI. Try increasing distance.")
     
     elif index.upper() == "ARI":
+        # Gitelson et al., 2001
         if (max_wavelength + distance) >= 700 and (max_wavelength - distance) <= 550:
             ari550_indes = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 550)
             ari700_index   = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 700)
