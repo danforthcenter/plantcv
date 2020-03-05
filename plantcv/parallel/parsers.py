@@ -502,5 +502,8 @@ class ParseMatchArg:
                     raise ValueError(self._error_message("Expecting comma after value",
                                                          idx))
                 mode = "expecting_key"
+        if mode == "expecting_value":
+            raise ValueError(self._error_message("Expecting value",
+                                                  idx))
         self._flush_key_value()
         return self.out
