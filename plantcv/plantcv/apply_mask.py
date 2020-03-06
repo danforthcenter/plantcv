@@ -46,9 +46,13 @@ def apply_mask(img, mask, mask_color):
         # Replace this part with _make_pseudo_rgb
         num_bands = np.shape(array_data)[2]
         med_band = int(num_bands / 2)
+        debug = params.debug
+        params.debug = None
         pseudo_rgb = cv2.merge((rescale(array_data[:, :, 0]),
                                 rescale(array_data[:, :, med_band]),
                                 rescale(array_data[:, :, num_bands - 1])))
+        params.debug = debug
+
         if params.debug == 'print':
             print_image(pseudo_rgb, os.path.join(params.debug_outdir, str(params.device) + '_masked.png'))
         elif params.debug == 'plot':

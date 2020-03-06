@@ -11,7 +11,7 @@ on using wavelengths that are at least close to the wavelength bands require to 
 - **Parameters:**
     - array         - A hyperspectral datacube object, an instance of the `Spectral_data` class, (read in with [pcv.readimage](read_image.md) with `mode='envi'`)
     - index         - Desired index, either "ndvi" for normalized difference vegetation index, "gdvi" for green difference
-    vegetation index, "savi" for soil adjusted vegetation index, of "pri" for photochemical reflectance index.
+    vegetation index, "savi" for soil adjusted vegetation index, "pri" for photochemical reflectance index, "aci" for anthocyanin content index, or "ari" for anthocyanin reflectance index.
     - distance      - Amount of flexibility (in nanometers) regarding using wavelengths that are 
     at least close to the wavelength bands require to calculate a specific index
 
@@ -32,6 +32,15 @@ pcv.params.debug = "print"
 # Extract NDVI index from the datacube 
 ndvi_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="NDVI", distance=20)
 
+ndvi_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="GDVI")
+
+ndvi_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="SAVI")
+
+ndvi_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="ARI")
+
+ndvi_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="ACI")
+
+
 ```
 
 **NDVI array image**
@@ -45,5 +54,13 @@ ndvi_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="NDVI",
 **SAVI array image**
 
 ![Screenshot](img/tutorial_images/hyperspectral/savi_index.jpg)
+
+**ARI array image**
+
+![Screenshot](img/tutorial_images/hyperspectral/ari_index.jpg)
+
+**ACI array image**
+
+![Screenshot](img/tutorial_images/hyperspectral/aci_index.jpg)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/hyperspectral/extract_index.py)
