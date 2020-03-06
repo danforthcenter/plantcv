@@ -2,7 +2,7 @@
 
 PlantCV is composed of modular functions that can be arranged (or rearranged) and adjusted quickly and easily.
 Workflows do not need to be linear (and often are not). Please see workflow example below for more details.
-A global variable "debug" allows the user to print out the resulting image. The [debug](parrams.md) has three modes: either None, 'plot', or 'print'.
+A global variable "debug" allows the user to print out the resulting image. The [debug](params.md) has three modes: either None, 'plot', or 'print'.
 If set to 'print' then the function prints the image out, or if using a [Jupyter](jupyter.md) notebook you could set debug to 'plot' to have
 the images plot to the screen. Debug mode allows users to visualize and optimize each step on individual test images and small test sets before workflows are deployed over whole datasets.
 
