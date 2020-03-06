@@ -494,9 +494,6 @@ class ParseMatchArg:
                     mode = "expecting_key_comma"
                 elif token == "," and special:
                     mode = "list_value"
-                else:
-                    raise ValueError(self._error_message("Expecting comma between list items",
-                                                         idx))
             elif mode == "expecting_key_comma":
                 if not (token == "," and special):
                     raise ValueError(self._error_message("Expecting comma after value",
