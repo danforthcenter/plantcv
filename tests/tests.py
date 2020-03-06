@@ -332,9 +332,20 @@ def test_plantcv_parallel_parse_match_arg_bad_input_unexpected_key():
         _ = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
 
 
+def test_plantcv_parallel_parse_match_arg_bad_input_empty_value():
+    filter_as_string="camera:"
+    with pytest.raises(ValueError):
+        _ = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
 
-def test_plantcv_parallel_parse_match_arg_bad_input_no_key():
+
+def test_plantcv_parallel_parse_match_arg_bad_input_no_colon():
     filter_as_string="camera:1,2"
+    with pytest.raises(ValueError):
+        _ = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
+
+
+def test_plantcv_parallel_parse_match_arg_bad_input_special_instead_of_key():
+    filter_as_string="camera:1,,"
     with pytest.raises(ValueError):
         _ = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
 
