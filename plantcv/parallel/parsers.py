@@ -292,7 +292,7 @@ class ParseMatchArg:
     special_characters = ":[],"
 
     def __init__(self, match_string):
-        """This function initializes the parser with the string to be parsed
+        """This function initializes the parser with the string to be parsed.
 
         Args:
             match_string: The string to be parsed.
@@ -453,7 +453,7 @@ class ParseMatchArg:
                                         self.specials,
                                         self.indices):
             if mode == "expecting_key":
-                if token in self.special_characters and special:
+                if special:
                     raise ValueError(self._error_message("Expecting key value",
                                                          idx))
                 else:
@@ -503,7 +503,10 @@ class ParseMatchArg:
                                                          idx))
                 mode = "expecting_key"
         if mode == "expecting_value":
-            raise ValueError(self._error_message("Expecting value",
-                                                  idx))
+            raise ValueError(self._error_message("Empty value",
+                                                  idx - 1))
+        if mode in ["expecting_key", "expecting_colon"]:
+            raise ValueError(self._error_message("Empty key",
+                                                 idx - 1))
         self._flush_key_value()
         return self.out
