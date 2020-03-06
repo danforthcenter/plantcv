@@ -287,6 +287,50 @@ def _parse_filename(filename, delimiter, regex):
     return metadata
 ###########################################
 
+def error_message(message, idx, match_string):
+    """This function formats an error message that explains
+    the problem and points out where in the user-provided line it
+    occurred.
+
+    Args:
+        warning: Explanation of the problem
+        idx:     Where to place the pointers
+
+    :param warning: string
+    :param index: int
+    """
+    message_and_original = message + "\n" + match_string
+    point_out_error = " " * idx + "^"
+    return message_and_original + "\n" + point_out_error
+
+class ShowSourceOfError(ValueError):
+    message = ""
+    def __init__(self, index, source_string):
+        super().__init__(error_message(self.message,
+                                       index, 
+                                       source_string))
+
+class EmptyKeyError(ShowSourceOfError):
+    message = "Empty key"
+
+class EmptyValueError(ShowSourceOfError):
+    message = "Empty value"
+
+class UnexpectedSpecialCharacterError(ShowSourceOfError):
+    message = "Unexpected special character"
+
+class MissingColonError(ShowSourceOfError):
+    message = "Missing colon"
+
+class KeyValuePairInListError(ShowSourceOfError):
+    message = "Key-value pair in list"
+
+class EmptyListError(ShowSourceOfError):
+    message = "Empty list"
+
+class MissingCommaError(ShowSourceOfError):
+    message = "Missing comma"
+
 class ParseMatchArg:
 
     special_characters = ":[],"
@@ -300,23 +344,6 @@ class ParseMatchArg:
         :param match_string: str
         """
         self.match_string = match_string
-
-
-    def _error_message(self, message, idx):
-        """This function formats an error message that explains
-        the problem and points out where in the user-provided line it
-        occurred.
-
-        Args:
-            warning: Explanation of the problem
-            idx:     Where to place the pointers
-
-        :param warning: string
-        :param index: int
-        """
-        message_and_original = message + "\n" + self.match_string
-        point_out_error = " " * idx + "^"
-        return message_and_original + "\n" + point_out_error
 
 
     def parse(self):
@@ -454,8 +481,8 @@ class ParseMatchArg:
                                         self.indices):
             if mode == "expecting_key":
                 if special:
-                    raise ValueError(self._error_message("Expecting key value",
-                                                         idx))
+                    raise EmptyKeyError(idx,
+                                        self.match_string)
                 else:
                     self.current_key = token
                     mode = "expecting_colon"
@@ -463,11 +490,12 @@ class ParseMatchArg:
                 if token == ":" and special:
                     mode = "expecting_value"
                 else:
-                    raise ValueError("Key must be followed by :")
+                    raise MissingColonError(idx,
+                                            self.match_string)
             elif mode == "expecting_value":
                 if token in ":,]" and special: #refactor
-                    raise ValueError(self._error_message("Empty value",
-                                                         idx - 1))
+                    raise EmptyValueError(idx - 1,
+                                          self.match_string)
                 elif token == "[" and special:
                     mode = "list_value"
                 else:
@@ -476,15 +504,15 @@ class ParseMatchArg:
                     mode = "expecting_key_comma"
             elif mode == "list_value":
                 if token == ":" and special:
-                    raise ValueError(self._error_message("Cannot use key-value pairs in a list value",
-                                                         idx))
+                    raise EmptyValueError(idx,
+                                          self.match_string)
                 elif token == "]" and special:
                     if len(self.current_value_list) == 0:
-                        raise ValueError(self._error_message("Empty list",
-                                                             idx))
+                        raise EmptyListError(idx,
+                                             self.match_string)
                     else:
-                        raise ValueError(self._error_message("Empty list item",
-                                                             idx))
+                        raise EmptyValueError(idx,
+                                              self.match_string)
                 else:
                     self._flush_value(token)
                     mode = "list_comma"
@@ -494,16 +522,19 @@ class ParseMatchArg:
                     mode = "expecting_key_comma"
                 elif token == "," and special:
                     mode = "list_value"
+                else:
+                    raise MissingCommaError(idx,
+                                            self.match_string)
             elif mode == "expecting_key_comma":
                 if not (token == "," and special):
-                    raise ValueError(self._error_message("Expecting comma after value",
-                                                         idx))
+                    raise MissingCommaError(idx,
+                                            self.match_string)
                 mode = "expecting_key"
         if mode == "expecting_value":
-            raise ValueError(self._error_message("Empty value",
-                                                  idx - 1))
+            raise EmptyValueError(idx - 1,
+                                  self.match_string)
         if mode in ["expecting_key", "expecting_colon"]:
-            raise ValueError(self._error_message("Empty key",
-                                                 idx - 1))
+            raise EmptyKeyError(idx - 1, 
+                                self.match_string)
         self._flush_key_value()
         return self.out
