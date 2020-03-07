@@ -12,4 +12,5 @@ from plantcv.parallel.parsers import UnexpectedSpecialCharacterError
 from plantcv.parallel.parsers import MissingColonError
 from plantcv.parallel.parsers import KeyValuePairInListError
 from plantcv.parallel.parsers import EmptyListError
-from plantcv.parallel.parsers import MissingCommaError
+from plantcv.parallel.parsers import OnlyCommaValidError
+from plantcv.parallel.parsers import IncompleteKeyValuePairError

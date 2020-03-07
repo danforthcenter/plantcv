@@ -328,8 +328,11 @@ class KeyValuePairInListError(ShowSourceOfError):
 class EmptyListError(ShowSourceOfError):
     message = "Empty list"
 
-class MissingCommaError(ShowSourceOfError):
-    message = "Missing comma"
+class OnlyCommaValidError(ShowSourceOfError):
+    message = "Here, only a comma can follow a filter value"
+
+class IncompleteKeyValuePairError(ShowSourceOfError):
+    message = "Incomplete key-value pair"
 
 class ParseMatchArg:
 
@@ -481,8 +484,8 @@ class ParseMatchArg:
                                         self.indices):
             if mode == "expecting_key":
                 if special:
-                    raise EmptyKeyError(idx,
-                                        self.match_string)
+                    raise IncompleteKeyValuePairError(idx,
+                                                      self.match_string)
                 else:
                     self.current_key = token
                     mode = "expecting_colon"
@@ -490,12 +493,12 @@ class ParseMatchArg:
                 if token == ":" and special:
                     mode = "expecting_value"
                 else:
-                    raise MissingColonError(idx,
-                                            self.match_string)
+                    raise OnlyCommaValidError(idx,
+                                              self.match_string)
             elif mode == "expecting_value":
                 if token in ":,]" and special: #refactor
-                    raise EmptyValueError(idx - 1,
-                                          self.match_string)
+                    raise UnexpectedSpecialCharacterError(idx - 1,
+                                                          self.match_string)
                 elif token == "[" and special:
                     mode = "list_value"
                 else:
@@ -523,18 +526,21 @@ class ParseMatchArg:
                 elif token == "," and special:
                     mode = "list_value"
                 else:
-                    raise MissingCommaError(idx,
-                                            self.match_string)
+                    raise OnlyCommaValidError(idx,
+                                              self.match_string)
             elif mode == "expecting_key_comma":
                 if not (token == "," and special):
-                    raise MissingCommaError(idx,
-                                            self.match_string)
+                    raise OnlyCommaValidError(idx,
+                                              self.match_string)
                 mode = "expecting_key"
         if mode == "expecting_value":
             raise EmptyValueError(idx - 1,
                                   self.match_string)
-        if mode in ["expecting_key", "expecting_colon"]:
+        elif mode == "expecting_key":
             raise EmptyKeyError(idx - 1, 
                                 self.match_string)
+        elif mode == "expecting_colon":
+            raise IncompleteKeyValuePairError(idx,
+                                              self.match_string)
         self._flush_key_value()
         return self.out

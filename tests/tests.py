@@ -322,13 +322,13 @@ def test_plantcv_parallel_parse_match_arg_bad_input_no_value():
 
 def test_plantcv_parallel_parse_match_arg_bad_input_two_colons():
     filter_as_string="camera::"
-    with pytest.raises(plantcv.parallel.EmptyValueError):
+    with pytest.raises(plantcv.parallel.UnexpectedSpecialCharacterError):
         _ = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
 
 
 def test_plantcv_parallel_parse_match_arg_bad_input_unexpected_key():
     filter_as_string="camera:id:"
-    with pytest.raises(plantcv.parallel.MissingCommaError):
+    with pytest.raises(plantcv.parallel.OnlyCommaValidError):
         _ = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
 
 
@@ -340,19 +340,19 @@ def test_plantcv_parallel_parse_match_arg_bad_input_empty_value():
 
 def test_plantcv_parallel_parse_match_arg_bad_input_no_colon():
     filter_as_string="camera:1,2"
-    with pytest.raises(plantcv.parallel.EmptyKeyError):
+    with pytest.raises(plantcv.parallel.IncompleteKeyValuePairError):
         _ = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
 
 
 def test_plantcv_parallel_parse_match_arg_bad_input_special_instead_of_key():
     filter_as_string="camera:1,,"
-    with pytest.raises(plantcv.parallel.EmptyKeyError):
+    with pytest.raises(plantcv.parallel.IncompleteKeyValuePairError):
         _ = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
 
 
 def test_plantcv_parallel_parse_match_arg_bad_input_key_value_pair_in_list():
     filter_as_string="camera:[1:2]"
-    with pytest.raises(plantcv.parallel.MissingCommaError):
+    with pytest.raises(plantcv.parallel.OnlyCommaValidError):
         _ = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
 
 
