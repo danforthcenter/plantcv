@@ -484,6 +484,7 @@ class ParseMatchArg:
                                         self.indices):
             if mode == "expecting_key":
                 if special:
+                    #E.g. "camera:1,,"
                     raise IncompleteKeyValuePairError(idx,
                                                       self.match_string)
                 else:
@@ -493,10 +494,12 @@ class ParseMatchArg:
                 if token == ":" and special:
                     mode = "expecting_value"
                 else:
-                    raise OnlyCommaValidError(idx,
-                                              self.match_string)
+                    #E.g "camera:1,id,3"
+                    raise MissingColonError(idx,
+                                            self.match_string)
             elif mode == "expecting_value":
-                if token in ":,]" and special: #refactor
+                if special and token != "[":
+                    #E.g. "camera::"
                     raise UnexpectedSpecialCharacterError(idx - 1,
                                                           self.match_string)
                 elif token == "[" and special:
@@ -507,13 +510,16 @@ class ParseMatchArg:
                     mode = "expecting_key_comma"
             elif mode == "list_value":
                 if token == ":" and special:
-                    raise EmptyValueError(idx,
-                                          self.match_string)
+                    #E.g. "camera:[:]"
+                    raise UnexpectedSpecialCharacterError(idx,
+                                                          self.match_string)
                 elif token == "]" and special:
                     if len(self.current_value_list) == 0:
+                        #E.g. "camera:[]"
                         raise EmptyListError(idx,
                                              self.match_string)
                     else:
+                        #E.g. "camera:[1,]"
                         raise EmptyValueError(idx,
                                               self.match_string)
                 else:
@@ -526,20 +532,25 @@ class ParseMatchArg:
                 elif token == "," and special:
                     mode = "list_value"
                 else:
+                    #E.g. "camera:[1:2]"
                     raise OnlyCommaValidError(idx,
                                               self.match_string)
             elif mode == "expecting_key_comma":
                 if not (token == "," and special):
+                    #E.g. "camera:id:"
                     raise OnlyCommaValidError(idx,
                                               self.match_string)
                 mode = "expecting_key"
         if mode == "expecting_value":
+            #E.g. "camera:"
             raise EmptyValueError(idx - 1,
                                   self.match_string)
         elif mode == "expecting_key":
+            #E.g. "camera:id,"
             raise EmptyKeyError(idx - 1, 
                                 self.match_string)
         elif mode == "expecting_colon":
+            #E.g. "camera:1,2"
             raise IncompleteKeyValuePairError(idx,
                                               self.match_string)
         self._flush_key_value()

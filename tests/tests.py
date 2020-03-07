@@ -362,6 +362,24 @@ def test_plantcv_parallel_parse_match_arg_bad_input_empty_list_item():
         _ = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
 
 
+def test_plantcv_parallel_parse_match_arg_bad_input_comma_instead_of_colon():
+    filter_as_string="camera:1,id,3"
+    with pytest.raises(plantcv.parallel.MissingColonError):
+        _ = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
+
+
+def test_plantcv_parallel_parse_match_arg_bad_input_colon_instead_of_list_value():
+    filter_as_string="camera:[:]"
+    with pytest.raises(plantcv.parallel.UnexpectedSpecialCharacterError):
+        _ = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
+
+
+def test_plantcv_parallel_parse_match_arg_bad_input_end_on_key_comma():
+    filter_as_string="camera:id,"
+    with pytest.raises(plantcv.parallel.EmptyKeyError):
+        _ = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
+
+
 def test_plantcv_parallel_metadata_parser_snapshots():
     data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
     meta_filters = {"imgtype": "VIS"}
