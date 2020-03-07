@@ -500,7 +500,7 @@ class ParseMatchArg:
             elif mode == "expecting_value":
                 if special and token != "[":
                     #E.g. "camera::"
-                    raise UnexpectedSpecialCharacterError(idx - 1,
+                    raise UnexpectedSpecialCharacterError(idx,
                                                           self.match_string)
                 elif token == "[" and special:
                     mode = "list_value"
@@ -543,15 +543,15 @@ class ParseMatchArg:
                 mode = "expecting_key"
         if mode == "expecting_value":
             #E.g. "camera:"
-            raise EmptyValueError(idx - 1,
+            raise EmptyValueError(idx + 1,
                                   self.match_string)
         elif mode == "expecting_key":
             #E.g. "camera:id,"
-            raise EmptyKeyError(idx - 1, 
+            raise EmptyKeyError(idx + 1, 
                                 self.match_string)
         elif mode == "expecting_colon":
             #E.g. "camera:1,2"
-            raise IncompleteKeyValuePairError(idx,
+            raise IncompleteKeyValuePairError(idx + 1,
                                               self.match_string)
         self._flush_key_value()
         return self.out
