@@ -314,12 +314,6 @@ def test_plantcv_parallel_parse_match_arg_one_field_close_list():
     assert metadata_filters_are_functionally_equivalent(correct_filter, observed_filter)
 
 
-def test_plantcv_parallel_parse_match_arg_bad_input_no_value():
-    filter_as_string="camera:"
-    with pytest.raises(plantcv.parallel.EmptyValueError):
-        _ = plantcv.parallel.ParseMatchArg(filter_as_string).parse()
-
-
 def test_plantcv_parallel_parse_match_arg_bad_input_two_colons():
     filter_as_string="camera::"
     with pytest.raises(plantcv.parallel.UnexpectedSpecialCharacterError):
