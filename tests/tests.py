@@ -3676,7 +3676,7 @@ def test_plantcv_hyperspectral_extract_index_savi():
 
 
 def test_plantcv_hyperspectral_extract_index_pri():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_savi")
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_pri")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = "plot"
@@ -3783,16 +3783,6 @@ def test_plantcv_hyperspectral_extract_index_mtci():
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
     index_array = pcv.hyperspectral.extract_index(array=array_data, index="MTCI", distance=801)
-    assert np.shape(index_array.array_data) == (1,1600) and np.nanmax(index_array.pseudo_rgb) == 255
-
-def test_plantcv_hyperspectral_extract_index_ndre():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_ndre")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    pcv.params.debug = None
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="NDRE", distance=801)
     assert np.shape(index_array.array_data) == (1,1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 def test_plantcv_hyperspectral_extract_index_ndre():
