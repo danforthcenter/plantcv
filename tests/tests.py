@@ -3712,7 +3712,7 @@ def test_plantcv_hyperspectral_extract_index_cai():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="CAI", distance=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="CAI", distance=2000)
     assert np.shape(index_array.array_data) == (1,1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 def test_plantcv_hyperspectral_extract_index_cari():
@@ -3722,7 +3722,7 @@ def test_plantcv_hyperspectral_extract_index_cari():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="CARI", distance=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="CARI", distance=2000)
     assert np.shape(index_array.array_data) == (1,1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 def test_plantcv_hyperspectral_extract_index_ci_rededge():
@@ -3732,7 +3732,7 @@ def test_plantcv_hyperspectral_extract_index_ci_rededge():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="CI_rededge", distance=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="CI_rededge", distance=2000)
     assert np.shape(index_array.array_data) == (1,1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 def test_plantcv_hyperspectral_extract_index_cri():
@@ -3742,7 +3742,7 @@ def test_plantcv_hyperspectral_extract_index_cri():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="CRI", distance=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="CRI", distance=2000)
     assert np.shape(index_array.array_data) == (1,1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 def test_plantcv_hyperspectral_extract_index_evi():
@@ -3752,7 +3752,7 @@ def test_plantcv_hyperspectral_extract_index_evi():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="EVI", distance=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="EVI", distance=2000)
     assert np.shape(index_array.array_data) == (1,1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 def test_plantcv_hyperspectral_extract_index_mari():
@@ -3762,7 +3762,7 @@ def test_plantcv_hyperspectral_extract_index_mari():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="MARI", distance=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="MARI", distance=2000)
     assert np.shape(index_array.array_data) == (1,1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 def test_plantcv_hyperspectral_extract_index_mcari():
@@ -3772,7 +3772,7 @@ def test_plantcv_hyperspectral_extract_index_mcari():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="MCARI", distance=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="MCARI", distance=2000)
     assert np.shape(index_array.array_data) == (1,1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 def test_plantcv_hyperspectral_extract_index_mtci():
@@ -3782,7 +3782,7 @@ def test_plantcv_hyperspectral_extract_index_mtci():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="MTCI", distance=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="MTCI", distance=2000)
     assert np.shape(index_array.array_data) == (1,1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 def test_plantcv_hyperspectral_extract_index_ndre():
@@ -3792,7 +3792,7 @@ def test_plantcv_hyperspectral_extract_index_ndre():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="NDRE", distance=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="NDRE", distance=2000)
     assert np.shape(index_array.array_data) == (1,1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 def test_plantcv_hyperspectral_extract_index_psnd_chla():
@@ -3802,7 +3802,7 @@ def test_plantcv_hyperspectral_extract_index_psnd_chla():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PSND_CHLA", distance=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PSND_CHLA", distance=2000)
     assert np.shape(index_array.array_data) == (1,1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 def test_plantcv_hyperspectral_extract_index_psnd_chlb():
@@ -3812,7 +3812,7 @@ def test_plantcv_hyperspectral_extract_index_psnd_chlb():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PSND_CHLB", distance=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PSND_CHLB", distance=2000)
     assert np.shape(index_array.array_data) == (1,1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 def test_plantcv_hyperspectral_extract_index_psnd_car():
@@ -3822,7 +3822,7 @@ def test_plantcv_hyperspectral_extract_index_psnd_car():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PSND_CAR", distance=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PSND_CAR", distance=2000)
     assert np.shape(index_array.array_data) == (1,1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 def test_plantcv_hyperspectral_extract_index_psri():
@@ -3832,7 +3832,7 @@ def test_plantcv_hyperspectral_extract_index_psri():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PSRI", distance=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PSRI", distance=2000)
     assert np.shape(index_array.array_data) == (1,1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 def test_plantcv_hyperspectral_extract_index_pssr1():
@@ -3842,7 +3842,7 @@ def test_plantcv_hyperspectral_extract_index_pssr1():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PSSR1", distance=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PSSR1", distance=2000)
     assert np.shape(index_array.array_data) == (1,1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 def test_plantcv_hyperspectral_extract_index_pssr2():
@@ -3852,7 +3852,7 @@ def test_plantcv_hyperspectral_extract_index_pssr2():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PSSR2", distance=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PSSR2", distance=2000)
     assert np.shape(index_array.array_data) == (1,1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 def test_plantcv_hyperspectral_extract_index_pssr3():
@@ -3862,7 +3862,7 @@ def test_plantcv_hyperspectral_extract_index_pssr3():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PSSR3", distance=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PSSR3", distance=2000)
     assert np.shape(index_array.array_data) == (1,1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 def test_plantcv_hyperspectral_extract_index_rgri():
@@ -3872,7 +3872,7 @@ def test_plantcv_hyperspectral_extract_index_rgri():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="RGRI", distance=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="RGRI", distance=2000)
     assert np.shape(index_array.array_data) == (1,1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 def test_plantcv_hyperspectral_extract_index_rvsi():
@@ -3882,7 +3882,7 @@ def test_plantcv_hyperspectral_extract_index_rvsi():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="RVSI", distance=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="RVSI", distance=2000)
     assert np.shape(index_array.array_data) == (1,1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 def test_plantcv_hyperspectral_extract_index_sipi():
@@ -3892,7 +3892,7 @@ def test_plantcv_hyperspectral_extract_index_sipi():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="SIPI", distance=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="SIPI", distance=2000)
     assert np.shape(index_array.array_data) == (1,1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 def test_plantcv_hyperspectral_extract_index_sr():
@@ -3902,7 +3902,7 @@ def test_plantcv_hyperspectral_extract_index_sr():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="SR", distance=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="SR", distance=2000)
     assert np.shape(index_array.array_data) == (1,1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 def test_plantcv_hyperspectral_extract_index_vari():
@@ -3912,7 +3912,7 @@ def test_plantcv_hyperspectral_extract_index_vari():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="VARI", distance=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="VARI", distance=2000)
     assert np.shape(index_array.array_data) == (1,1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 def test_plantcv_hyperspectral_extract_index_vi_green():
@@ -3922,7 +3922,7 @@ def test_plantcv_hyperspectral_extract_index_vi_green():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="VI_green", distance=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="VI_green", distance=2000)
     assert np.shape(index_array.array_data) == (1,1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 def test_plantcv_hyperspectral_extract_index_wbi():
@@ -3932,7 +3932,7 @@ def test_plantcv_hyperspectral_extract_index_wbi():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="WBI", distance=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="WBI", distance=2000)
     assert np.shape(index_array.array_data) == (1,1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 def test_plantcv_hyperspectral_extract_index_ndvi_bad_input():
