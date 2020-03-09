@@ -138,7 +138,7 @@ def extract_index(array, index="NDVI", distance=20):
         else:
             fatal_error("Available wavelengths are not suitable for calculating CARI. Try increasing distance.")
 
-    elif index.upper() == 'CI_rededge':
+    elif index.upper() == 'CI_REDEDGE':
         # Chlorophyll index red edge (Giteson et al., 2003a)
         if (max_wavelength + distance) >= 800 and (min_wavelength - distance) <= 750:
             rededge_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 750)
@@ -374,7 +374,7 @@ def extract_index(array, index="NDVI", distance=20):
         else:
             fatal_error("Available wavelengths are not suitable for calculating VARI. Try increasing distance.")
 
-    elif index.upper() == 'VI_green':
+    elif index.upper() == 'VI_GREED':
         # Vegetation index using green band (Gitelson et al., 2002a)
         if (max_wavelength + distance) >= 670 and (min_wavelength - distance) <= 560:
             red_index   = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 670)
