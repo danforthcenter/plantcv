@@ -82,7 +82,7 @@ def extract_index(array, index="NDVI", distance=20):
             pri531_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 531)
             pri570 = (array_data[:, :, [pri570_index]])
             pri531 = (array_data[:, :, [pri531_index]])
-            # PRI = (R531− R570)/(R531+ R570))
+            # PRI = (R531- R570)/(R531+ R570))
             denominator = pri531 + pri570
             # Avoid dividing by zero
             index_array_raw = np.where(denominator == 0, 0, ((pri531 - pri570) / denominator))
