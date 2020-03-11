@@ -208,6 +208,7 @@ from plantcv.plantcv import morphology
 from plantcv.plantcv.fill_holes import fill_holes
 from plantcv.plantcv.get_kernel import get_kernel
 from plantcv.plantcv.crop import crop
+from plantcv.plantcv.extract_texture import extract_texture
 
 # add new functions to end of lists
 
@@ -224,7 +225,7 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'apply_m
            'cluster_contour_splitimg', 'rotate', 'shift_img', 'output_mask', 'auto_crop', 'canny_edge_detect',
            'background_subtraction', 'naive_bayes_classifier', 'acute', 'distance_transform', 'params',
            'cluster_contour_mask','analyze_thermal_values', 'opening',
-           'closing','within_frame', 'fill_holes', 'get_kernel', 'Spectral_data', 'crop']
+           'closing','within_frame', 'fill_holes', 'get_kernel', 'Spectral_data', 'crop', 'extract_texture']
 
 from ._version import get_versions
 __version__ = get_versions()['version']

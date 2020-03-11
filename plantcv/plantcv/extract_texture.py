@@ -1,13 +1,9 @@
 # Variance texture filter
 
 import os
-import cv2
-import math
 import numpy as np
-from matplotlib import pyplot as plt
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
-from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 from scipy.ndimage import generic_filter
 from skimage.feature import greycomatrix, greycoprops
@@ -57,7 +53,7 @@ def extract_texture(gray_img, ksize, offset=3, texture_method='dissimilarity', b
 
     if params.debug == "print":
         # If debug is print, save the image to a file
-        print_image(output, os.path.join(params.debug_outdir, str(params.device) + "_variance.png"))
+        print_image(output, os.path.join(params.debug_outdir, str(params.device) + texture_method + "_filter.png"))
     elif params.debug == "plot":
         # If debug is plot, print to the plotting device
         plot_image(output)
