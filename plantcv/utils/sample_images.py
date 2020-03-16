@@ -23,6 +23,7 @@ def sample_images(source_path, dest_path, num=100):
         input_csv = open(os.path.join(source_path, 'SnapshotInfo.csv'))
         header = input_csv.readline()
         for line in input_csv:
+            line = line.rstrip("\n")
             element_arr = line.split(',')
             line_array.append(element_arr)
         input_csv.close()
