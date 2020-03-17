@@ -208,7 +208,7 @@ from plantcv.plantcv import morphology
 from plantcv.plantcv.fill_holes import fill_holes
 from plantcv.plantcv.get_kernel import get_kernel
 from plantcv.plantcv.crop import crop
-from plantcv.plantcv.sdt_filter import extract_texture
+from plantcv.plantcv.stdev_filter import extract_texture
 
 # add new functions to end of lists
 

@@ -1,21 +1,15 @@
 # Variance texture filter
 
 
-import numpy as np
 import os
-import cv2
-import math
-from matplotlib import pyplot as plt
+import numpy as np
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
-from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
-from skimage.feature import greycomatrix, greycoprops
 from scipy.ndimage import generic_filter
-from timeit import default_timer as timer
 
 
-def std_filter(gray_img, ksize, offset=3, texture_method='dissimilarity', borders='nearest'):
+def stdev_filter(gray_img, ksize, offset=3, texture_method='dissimilarity', borders='nearest'):
     """Creates a binary image from a grayscale image using skimage texture calculation for thresholding.
     This function is quite slow.
 
