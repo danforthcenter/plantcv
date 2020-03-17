@@ -140,15 +140,19 @@ wbi_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="WBI", d
 ![Screenshot](img/tutorial_images/hyperspectral/aci_index.jpg)
 
 **NDRE array image**
+
 ![Screenshot](img/tutorial_images/hyperspectral/ndre_index.jpg)
 
 **PSND_CHLA array image**
+
 ![Screenshot](img/tutorial_images/hyperspectral/psnd_chla_index.jpg)
 
 **PSND_CHLB array image**
+
 ![Screenshot](img/tutorial_images/hyperspectral/psnd_chlb_index.jpg)
 
 **WBI array image**
+
 ![Screenshot](img/tutorial_images/hyperspectral/wbi_index.jpg)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/hyperspectral/extract_index.py)
