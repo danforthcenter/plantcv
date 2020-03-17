@@ -121,6 +121,7 @@ def extract_index(array, index="NDVI", distance=20):
             cari700_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 700)
             cari550 = (array_data[:, :, [cari550_index]])
             cari700 = (array_data[:, :, [cari700_index]])
+            # Naturally ranges from -inf to inf
             index_array_raw = (1/cari550)-(1/cari700)
         else:
             fatal_error("Available wavelengths are not suitable for calculating CARI. Try increasing distance.")
@@ -132,6 +133,7 @@ def extract_index(array, index="NDVI", distance=20):
             nir_index     = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
             rededge = (array_data[:, :, [rededge_index]])
             nir     = (array_data[:, :, [nir_index]])
+            # Naturally ranges from -1 to inf
             index_array_raw = nir/rededge - 1
         else:
             fatal_error("Available wavelengths are not suitable for calculating CI_rededge. Try increasing distance.")
@@ -143,6 +145,7 @@ def extract_index(array, index="NDVI", distance=20):
             cri1550_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 550)
             cri1510 = (array_data[:, :, [cri1510_index]])
             cri1550 = (array_data[:, :, [cri1550_index]])
+            # Naturally ranges from -inf to inf
             index_array_raw = 1/cri1510-1/cri1550
         else:
             fatal_error("Available wavelengths are not suitable for calculating CRI1. Try increasing distance.")
@@ -154,6 +157,7 @@ def extract_index(array, index="NDVI", distance=20):
             cri1700_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 700)
             cri1510 = (array_data[:, :, [cri1510_index]])
             cri1700 = (array_data[:, :, [cri1700_index]])
+            # Naturally ranges from -inf to inf
             index_array_raw = 1/cri1510-1/cri1700
         else:
             fatal_error("Available wavelengths are not suitable for calculating CRI2. Try increasing distance.")
@@ -167,6 +171,7 @@ def extract_index(array, index="NDVI", distance=20):
             blue = (array_data[:, :, [blue_index]])
             red = (array_data[:, :, [red_index]])
             nir = (array_data[:, :, [nir_index]])
+            # Naturally ranges from -inf to inf
             index_array_raw = 2.5*(nir-red)/(nir+6*red-7.5*blue+1)
         else:
             fatal_error("Available wavelengths are not suitable for calculating EVI. Try increasing distance.")
@@ -180,6 +185,7 @@ def extract_index(array, index="NDVI", distance=20):
             mari550 = (array_data[:, :, [mari550_index]])
             mari700 = (array_data[:, :, [mari700_index]])
             nir = (array_data[:, :, [nir_index]])
+            # Naturally ranges from -inf to inf
             index_array_raw = ((1/mari550)-(1/mari700))*nir
         else:
             fatal_error("Available wavelengths are not suitable for calculating MARI. Try increasing distance.")
@@ -193,6 +199,7 @@ def extract_index(array, index="NDVI", distance=20):
             mcari550 = (array_data[:, :, [mcari550_index]])
             mcari670 = (array_data[:, :, [mcari670_index]])
             mcari700 = (array_data[:, :, [mcari700_index]])
+            # Naturally ranges from -inf to inf
             index_array_raw = ((mcari700-mcari670)-0.2*(mcari700-mcari550))*(mcari700/mcari670)
         else:
             fatal_error("Available wavelengths are not suitable for calculating MCARI. Try increasing distance.")
@@ -206,6 +213,7 @@ def extract_index(array, index="NDVI", distance=20):
             mtci68125 = (array_data[:, :, [mtci68125_index]])
             mtci70875 = (array_data[:, :, [mtci70875_index]])
             mtci75375 = (array_data[:, :, [mtci75375_index]])
+            # Naturally ranges from -inf to inf
             index_array_raw = (mtci75375-mtci70875)/(mtci70875-mtci68125)
         else:
             fatal_error("Available wavelengths are not suitable for calculating MTCI. Try increasing distance.")
@@ -217,6 +225,7 @@ def extract_index(array, index="NDVI", distance=20):
             ndre790_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 790)
             ndre790 = (array_data[:, :, [ndre790_index]])
             ndre720 = (array_data[:, :, [ndre720_index]])
+            # Naturally ranges from -1 to 1
             index_array_raw = (ndre790-ndre720)/(ndre790+ndre720)
         else:
             fatal_error("Available wavelengths are not suitable for calculating NDRE. Try increasing distance.")
@@ -228,6 +237,7 @@ def extract_index(array, index="NDVI", distance=20):
             psndchla800_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
             psndchla675 = (array_data[:, :, [psndchla675_index]])
             psndchla800 = (array_data[:, :, [psndchla800_index]])
+            # Naturally ranges from -1 to 1
             index_array_raw = (psndchla800-psndchla675)/(psndchla800+psndchla675)
         else:
             fatal_error("Available wavelengths are not suitable for calculating PSND_CHLA. Try increasing distance.")
@@ -239,6 +249,7 @@ def extract_index(array, index="NDVI", distance=20):
             psndchlb800_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
             psndchlb650 = (array_data[:, :, [psndchlb650_index]])
             psndchlb800 = (array_data[:, :, [psndchlb800_index]])
+            # Naturally ranges from -1 to 1
             index_array_raw = (psndchlb800-psndchlb650)/(psndchlb800+psndchlb650)
         else:
             fatal_error("Available wavelengths are not suitable for calculating PSND_CHLB. Try increasing distance.")
@@ -250,6 +261,7 @@ def extract_index(array, index="NDVI", distance=20):
             psndcar800_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
             psndcar500 = (array_data[:, :, [psndcar500_index]])
             psndcar800 = (array_data[:, :, [psndcar800_index]])
+            # Naturally ranges from -1 to 1
             index_array_raw = (psndcar800-psndcar500)/(psndcar800+psndcar500)
         else:
             fatal_error("Available wavelengths are not suitable for calculating PSND_CAR. Try increasing distance.")
@@ -263,6 +275,7 @@ def extract_index(array, index="NDVI", distance=20):
             psri500 = (array_data[:, :, [psri500_index]])
             psri678 = (array_data[:, :, [psri678_index]])
             psri750 = (array_data[:, :, [psri750_index]])
+            # Naturally ranges from -inf to inf
             index_array_raw = (psri678-psri500)/psri750
         else:
             fatal_error("Available wavelengths are not suitable for calculating PSRI. Try increasing distance.")
@@ -274,6 +287,7 @@ def extract_index(array, index="NDVI", distance=20):
             pssr1_675_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 675)
             pssr1_800 = (array_data[:, :, [pssr1_800_index]])
             pssr1_675 = (array_data[:, :, [pssr1_675_index]])
+            # Naturally ranges from 0 to inf
             index_array_raw = pssr1_800/pssr1_675
         else:
             fatal_error("Available wavelengths are not suitable for calculating PSSR1. Try increasing distance.")
@@ -285,6 +299,7 @@ def extract_index(array, index="NDVI", distance=20):
             pssr2_650_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 650)
             pssr2_800 = (array_data[:, :, [pssr2_800_index]])
             pssr2_650 = (array_data[:, :, [pssr2_650_index]])
+            # Naturally ranges from 0 to inf
             index_array_raw = pssr2_800/pssr2_650
         else:
             fatal_error("Available wavelengths are not suitable for calculating PSSR2. Try increasing distance.")
@@ -296,6 +311,7 @@ def extract_index(array, index="NDVI", distance=20):
             pssr3_500_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 500)
             pssr3_800 = (array_data[:, :, [pssr3_800_index]])
             pssr3_500 = (array_data[:, :, [pssr3_500_index]])
+            # Naturally ranges from 0 to inf
             index_array_raw = pssr3_800/pssr3_500
         else:
             fatal_error("Available wavelengths are not suitable for calculating PSSR3. Try increasing distance.")
@@ -307,6 +323,7 @@ def extract_index(array, index="NDVI", distance=20):
             green_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 560)
             red   = (array_data[:, :, [red_index]])
             green = (array_data[:, :, [green_index]])
+            # Naturally ranges from 0 to inf
             index_array_raw = red / green
         else:
             fatal_error("Available wavelengths are not suitable for calculating RGRI. Try increasing distance.")
@@ -320,6 +337,7 @@ def extract_index(array, index="NDVI", distance=20):
             rvsi714 = (array_data[:, :, [rvsi714_index]])
             rvsi733 = (array_data[:, :, [rvsi733_index]])
             rvsi752 = (array_data[:, :, [rvsi752_index]])
+            # Naturally ranges from -1 to 1
             index_array_raw = (rvsi714+rvsi752)/2 - rvsi733
         else:
             fatal_error("Available wavelengths are not suitable for calculating RVSI. Try increasing distance.")
@@ -333,6 +351,7 @@ def extract_index(array, index="NDVI", distance=20):
             sipi445 = (array_data[:, :, [sipi445_index]])
             sipi680 = (array_data[:, :, [sipi680_index]])
             sipi800 = (array_data[:, :, [sipi800_index]])
+            # Naturally ranges from -inf to inf
             index_array_raw = (sipi800-sipi445)/(sipi800-sipi680)
         else:
             fatal_error("Available wavelengths are not suitable for calculating SIPI. Try increasing distance.")
@@ -344,6 +363,7 @@ def extract_index(array, index="NDVI", distance=20):
             sr800_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
             sr675 = (array_data[:, :, [sr675_index]])
             sr800 = (array_data[:, :, [sr800_index]])
+            # Naturally ranges from 0 to inf
             index_array_raw = sr800/sr675
         else:
             fatal_error("Available wavelengths are not suitable for calculating SR. Try increasing distance.")
@@ -357,6 +377,7 @@ def extract_index(array, index="NDVI", distance=20):
             red    = (array_data[:, :, [red_index]])
             green  = (array_data[:, :, [green_index]])
             blue   = (array_data[:, :, [blue_index]])
+            # Naturally ranges from -inf to inf
             index_array_raw = (green-red)/(green+red-blue)
         else:
             fatal_error("Available wavelengths are not suitable for calculating VARI. Try increasing distance.")
@@ -368,6 +389,7 @@ def extract_index(array, index="NDVI", distance=20):
             green_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 560)
             red    = (array_data[:, :, [red_index]])
             green  = (array_data[:, :, [green_index]])
+            # Naturally ranges from -1 to 1
             index_array_raw = (green-red)/(green+red)
         else:
             fatal_error("Available wavelengths are not suitable for calculating VI_green. Try increasing distance.")
@@ -379,6 +401,7 @@ def extract_index(array, index="NDVI", distance=20):
             green_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 560)
             red    = (array_data[:, :, [red_index]])
             green  = (array_data[:, :, [green_index]])
+            # Naturally ranges from -1 to 1
             index_array_raw = (green-red)/(green+red)
         else:
             fatal_error("Available wavelengths are not suitable for calculating VI_green. Try increasing distance.")
