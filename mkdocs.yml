@@ -133,6 +133,7 @@ nav:
         - 'Convert ROI to Mask': roi2mask.md
       - 'Rotate': rotate2.md
       - 'Shift Image': shift.md
+      - 'Standard Deviation Filter': stdev_filter.md
       - 'Thresholding Methods':
         - 'Binary Threshold': binary_threshold.md
         - 'Custom Range Threshold': custom_range_threshold.md
