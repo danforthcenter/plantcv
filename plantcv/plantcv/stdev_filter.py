@@ -9,34 +9,23 @@ from plantcv.plantcv import params
 from scipy.ndimage import generic_filter
 
 
-def stdev_filter(gray_img, ksize, offset=3, texture_method='dissimilarity', borders='nearest'):
+def stdev_filter(gray_img, ksize, borders='nearest'):
     """Creates a binary image from a grayscale image using skimage texture calculation for thresholding.
     This function is quite slow.
 
     Inputs:
     gray_img       = Grayscale image data
     ksize          = Kernel size for texture measure calculation
-    threshold      = Threshold value (0-255)
-    offset         = Distance offsets
-    texture_method = Feature of a grey level co-occurrence matrix, either
-                     'contrast', 'dissimilarity', 'homogeneity', 'ASM', 'energy',
-                     or 'correlation'.For equations of different features see
-                     scikit-image.
     borders        = How the array borders are handled, either 'reflect',
                      'constant', 'nearest', 'mirror', or 'wrap'
-    max_value      = Value to apply above threshold (usually 255 = white)
 
     Returns:
-    bin_img        = Thresholded, binary image
+    output         = Standard deviation values image
 
     :param gray_img: numpy.ndarray
     :param ksize: int
-    :param threshold: int
-    :param offset: int
-    :param texture_method: str
     :param borders: str
-    :param max_value: int
-    :return bin_img: numpy.ndarray
+    :return output: numpy.ndarray
     """
 
     # Make an array the same size as the original image
