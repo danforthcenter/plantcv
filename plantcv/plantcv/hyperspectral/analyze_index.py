@@ -21,17 +21,17 @@ def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=0, max_bi
     mask         = Binary mask made from selected contours
     histplot     = if True plots histogram of intensity values
     bins         = optional, number of classes to divide spectrum into
-    min_bin      = optional, minimum bin value
-    max_bin      = optional, maximum bin value
+    min_bin      = optional, minimum bin value ("auto" or user input minimum value)
+    max_bin      = optional, maximum bin value ("auto" or user input maximum value)
 
 
     :param array: __main__.Spectral_data
     :param mask: numpy array
     :param histplot: bool
     :param bins: int
-    :param max_bin: float
-    :param min_bin: float
-    :return analysis_image: list
+    :param max_bin: float, str
+    :param min_bin: float, str
+    :return analysis_image: ggplot, None
     """
     params.device += 1
 
