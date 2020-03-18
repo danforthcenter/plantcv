@@ -9,7 +9,7 @@ from plantcv.plantcv import params
 from scipy.ndimage import generic_filter
 
 
-def stdev_filter(gray_img, ksize, borders='nearest'):
+def stdev_filter(img, ksize, borders='nearest'):
     """Creates a binary image from a grayscale image using skimage texture calculation for thresholding.
     This function is quite slow.
 
@@ -29,10 +29,10 @@ def stdev_filter(gray_img, ksize, borders='nearest'):
     """
 
     # Make an array the same size as the original image
-    output = np.zeros(gray_img.shape, dtype=gray_img.dtype)
+    output = np.zeros(img.shape, dtype=img.dtype)
 
     # Apply the texture function over the whole image
-    generic_filter(gray_img, np.std, size=ksize, output=output, mode=borders)
+    generic_filter(img, np.std, size=ksize, output=output, mode=borders)
 
     if params.debug == "print":
         # If debug is print, save the image to a file

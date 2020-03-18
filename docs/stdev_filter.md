@@ -3,13 +3,13 @@
 Creates a grayscale image of pixelwise standard deviation from a grayscale image.
 
 
-**plantcv.stdev_filter(*gray_img, ksize, borders='nearest'*)**
+**plantcv.stdev_filter(*img, ksize, borders='nearest'*)**
 
 **returns** stdev image
 
 - **Parameters:**
-    - gray_img - Grayscale image data
-    - ksize - Kernel size for texture measure calculation, must be an odd integer
+    - img - Grayscale or RGB image data
+    - ksize - Kernel size for texture measure calculation
     - borders - How the array borders are handled, either ‘reflect’, ‘constant’, ‘nearest’ (default), ‘mirror’, or ‘wrap’
 - **Note:**
     - This function is computationally expensive than other filters and will likely take several moments to run (even longer if images are large).
@@ -30,9 +30,9 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Create binary image from a gray image based on texture values.
-texture_img_11 = pcv.stdev_filter(gray_img=gray_img, ksize=11, borders='nearest')
-texture_img_51 = pcv.stdev_filter(gray_img=gray_img, ksize=45, borders='nearest')
-texture_img_111 = pcv.stdev_filter(gray_img=gray_img, ksize=111, borders='nearest')
+texture_img_11 = pcv.stdev_filter(img=gray_img, ksize=11, borders='nearest')
+texture_img_51 = pcv.stdev_filter(img=gray_img, ksize=45, borders='nearest')
+texture_img_111 = pcv.stdev_filter(img=gray_img, ksize=111, borders='nearest')
 
                                     
 ```
