@@ -9,16 +9,16 @@ Creates a grayscale image of pixelwise standard deviation from a grayscale image
 
 - **Parameters:**
     - gray_img - Grayscale image data
-    - ksize - Kernel size for texture measure calculation
+    - ksize - Kernel size for texture measure calculation, must be an odd integer
     - borders - How the array borders are handled, either ‘reflect’, ‘constant’, ‘nearest’ (default), ‘mirror’, or ‘wrap’
 - **Note:**
     - This function is computationally expensive than other filters and will likely take several moments to run (even longer if images are large).
 - **Example use:**
     - Below
 
-**Original image **
+**Original image**
 
-![Screenshot](img/documentation_images/texture_threshold/texture_gray.jpg)
+![Screenshot](img/documentation_images/stdev_filter/cropped_plantago.jpg)
 
 ```python
 
@@ -31,22 +31,22 @@ pcv.params.debug = "print"
 
 # Create binary image from a gray image based on texture values.
 texture_img_11 = pcv.stdev_filter(gray_img=gray_img, ksize=11, borders='nearest')
-texture_img = pcv.stdev_filter(gray_img=gray_img, ksize=11, borders='nearest)
-texture_img_111 = pcv.stdev_filter(gray_img=gray_img, ksize=111, borders='nearest)
+texture_img_51 = pcv.stdev_filter(gray_img=gray_img, ksize=45, borders='nearest')
+texture_img_111 = pcv.stdev_filter(gray_img=gray_img, ksize=111, borders='nearest')
 
                                     
 ```
-
-**Original image**
-
-![Screenshot](img/documentation_images/stdev_filter/cropped_plantago.jpg)
 
 **Standard deviation image (ksize=11)**
 
 ![Screenshot](img/documentation_images/stdev_filter/stdev_filter11.jpg)
 
+**Standard deviation image (ksize=45)**
+
+![Screenshot](img/documentation_images/stdev_filter/stdev_filter45.jpg)
+
 **Standard deviation image (ksize=111)**
 
-![Screenshot](img/documentation_images/stdev_filter/stdev_filter11.jpg)
+![Screenshot](img/documentation_images/stdev_filter/stdev_filter111.jpg)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/stdev_filter.py)
