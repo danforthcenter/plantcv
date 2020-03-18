@@ -30,12 +30,23 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Create binary image from a gray image based on texture values.
-texture_img = pcv.stdev_filter(gray_img=gray_img, ksize=, borders='nearest)
+texture_img_11 = pcv.stdev_filter(gray_img=gray_img, ksize=11, borders='nearest')
+texture_img = pcv.stdev_filter(gray_img=gray_img, ksize=11, borders='nearest)
+texture_img_111 = pcv.stdev_filter(gray_img=gray_img, ksize=111, borders='nearest)
+
                                     
 ```
 
-**Standard deviation image**
+**Original image**
 
-![Screenshot](img/documentation_images/texture_threshold/texture_thresholded.jpg)
+![Screenshot](img/documentation_images/stdev_filter/cropped_plantago.jpg)
+
+**Standard deviation image (ksize=11)**
+
+![Screenshot](img/documentation_images/stdev_filter/stdev_filter11.jpg)
+
+**Standard deviation image (ksize=111)**
+
+![Screenshot](img/documentation_images/stdev_filter/stdev_filter11.jpg)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/stdev_filter.py)
