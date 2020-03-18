@@ -643,6 +643,11 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: sb_img = **plantcv.sobel_filter**(*gray_img, dx, dy, k*)
 * post v3.2: sb_img = **plantcv.sobel_filer**(*gray_img, dx, dy, ksize*)
 
+#### plantcv.stdev_filter
+
+* pre v3.9: NA
+* post v3.9: filtered_img = **plantcv.stdev_filter**(*img, kszie, borders="nearest"*)
+
 #### plantcv.threshold.binary
 
 * pre v3.0dev2: NA
