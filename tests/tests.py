@@ -2944,6 +2944,20 @@ def test_plantcv_sobel_filter():
     assert all([i == j] for i, j in zip(np.shape(sobel_img), TEST_GRAY_DIM))
 
 
+def test_plantcv_stdev_filter():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_sobel_filter")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY_SMALL), -1)
+    pcv.params.debug="plot"
+    _ = pcv.stdev_filter(gray_img=img, ksize=11)
+    pcv.params.deubg="print"
+    filter_img = pcv.stdev_filter(gray_img=img, ksize=11)
+    assert (np.shape(filter_img) == np.shape(img))
+
+
 def test_plantcv_watershed_segmentation():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_watershed_segmentation")
