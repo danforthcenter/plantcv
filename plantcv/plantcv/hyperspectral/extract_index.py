@@ -37,8 +37,8 @@ def extract_index(array, index="NDVI", distance=20):
     min_wavelength = float(array.min_wavelength)
 
     # Dictionary of wavelength and it's index in the list
-    wavelength_dict = array.wavelength_dict.copy()
-    array_data = array.array_data.copy()
+    wavelength_dict = array.wavelength_dict
+    array_data = array.array_data
 
     if index.upper() == "NDVI":
         if (max_wavelength + distance) >= 800 and (min_wavelength - distance) <= 670:
