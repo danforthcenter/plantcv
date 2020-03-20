@@ -657,6 +657,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.3: NA
 * post v3.3: mask, masked_img = **plantcv.threshold.custom_range**(*rgb_img, lower_thresh, upper_thresh, channel='RGB'*)**
+* post v3.8: mask, masked_img = **plantcv.threshold.custom_range**(*img, lower_thresh, upper_thresh, channel='RGB'*)**
 
 #### plantcv.threshold.gaussian
 

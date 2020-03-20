@@ -316,7 +316,7 @@ def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity'
     return bin_img
 
 
-def custom_range(rgb_img, lower_thresh, upper_thresh, channel='gray'):
+def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
     """Creates a thresholded image and mask from an RGB image and threshold values.
 
     Inputs:
@@ -329,7 +329,7 @@ def custom_range(rgb_img, lower_thresh, upper_thresh, channel='gray'):
     mask         = Mask, binary image
     masked_img   = Masked image, keeping the part of image of interest
 
-    :param rgb_img: numpy.ndarray
+    :param img: numpy.ndarray
     :param lower_thresh: list
     :param upper_thresh: list
     :param channel: str
@@ -345,7 +345,7 @@ def custom_range(rgb_img, lower_thresh, upper_thresh, channel='gray'):
                         "upper_thresh=255")
 
         # Convert the RGB image to HSV colorspace
-        hsv_img = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2HSV)
+        hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
         # Separate channels
         hue = hsv_img[:, :, 0]
@@ -358,7 +358,7 @@ def custom_range(rgb_img, lower_thresh, upper_thresh, channel='gray'):
         v_mask = cv2.inRange(value, lower_thresh[2], upper_thresh[2])
 
         # Apply the masks to the image
-        result = cv2.bitwise_and(rgb_img, rgb_img, mask=h_mask)
+        result = cv2.bitwise_and(img, img, mask=h_mask)
         result = cv2.bitwise_and(result, result, mask=s_mask)
         masked_img = cv2.bitwise_and(result, result, mask=v_mask)
 
@@ -375,9 +375,9 @@ def custom_range(rgb_img, lower_thresh, upper_thresh, channel='gray'):
                         "upper_thresh=255")
 
         # Separate channels (pcv.readimage reads RGB images in as BGR)
-        blue = rgb_img[:, :, 0]
-        green = rgb_img[:, :, 1]
-        red = rgb_img[:, :, 2]
+        blue = img[:, :, 0]
+        green = img[:, :, 1]
+        red = img[:, :, 2]
 
         # Make a mask for each channel
         b_mask = cv2.inRange(blue, lower_thresh[0], upper_thresh[0])
@@ -385,7 +385,7 @@ def custom_range(rgb_img, lower_thresh, upper_thresh, channel='gray'):
         r_mask = cv2.inRange(red, lower_thresh[2], upper_thresh[2])
 
         # Apply the masks to the image
-        result = cv2.bitwise_and(rgb_img, rgb_img, mask=b_mask)
+        result = cv2.bitwise_and(img, img, mask=b_mask)
         result = cv2.bitwise_and(result, result, mask=g_mask)
         masked_img = cv2.bitwise_and(result, result, mask=r_mask)
 
@@ -402,7 +402,7 @@ def custom_range(rgb_img, lower_thresh, upper_thresh, channel='gray'):
                         "upper_thresh=255")
 
         # Convert the RGB image to LAB colorspace
-        lab_img = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2LAB)
+        lab_img = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
 
         # Separate channels (pcv.readimage reads RGB images in as BGR)
         lightness = lab_img[:, :, 0]
@@ -415,7 +415,7 @@ def custom_range(rgb_img, lower_thresh, upper_thresh, channel='gray'):
         by_mask = cv2.inRange(blue_yellow, lower_thresh[2], upper_thresh[2])
 
         # Apply the masks to the image
-        result = cv2.bitwise_and(rgb_img, rgb_img, mask=l_mask)
+        result = cv2.bitwise_and(img, img, mask=l_mask)
         result = cv2.bitwise_and(result, result, mask=gm_mask)
         masked_img = cv2.bitwise_and(result, result, mask=by_mask)
 
@@ -429,17 +429,17 @@ def custom_range(rgb_img, lower_thresh, upper_thresh, channel='gray'):
         if not (len(lower_thresh) == 1 and len(upper_thresh) == 1):
             fatal_error("If useing a grayscale colorspace, 1 threshold is needed for both the " +
                         "lower_thresh and upper_thresh.")
-        if len(np.shape(rgb_img))==3:
+        if len(np.shape(img))==3:
             # Convert RGB image to grayscale colorspace
-            gray_img = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
+            gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         else:
-            gray_img = rgb_img
+            gray_img = img
 
         # Make a mask
         mask = cv2.inRange(gray_img, lower_thresh[0], upper_thresh[0])
 
         # Apply the masks to the image
-        masked_img = cv2.bitwise_and(rgb_img, rgb_img, mask=mask)
+        masked_img = cv2.bitwise_and(img, img, mask=mask)
 
     else:
         fatal_error(str(channel) + " is not a valid colorspace. Channel must be either 'RGB', 'HSV', or 'gray'.")
