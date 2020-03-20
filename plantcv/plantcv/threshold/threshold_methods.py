@@ -320,7 +320,7 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
     """Creates a thresholded image and mask from an RGB image and threshold values.
 
     Inputs:
-    rgb_img      = RGB image data
+    img      = RGB or grayscale image data
     lower_thresh = List of lower threshold values (0-255)
     upper_thresh = List of upper threshold values (0-255)
     channel      = Color-space channels of interest (RGB, HSV, LAB, or gray)
