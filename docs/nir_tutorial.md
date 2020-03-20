@@ -119,11 +119,11 @@ We start by [subtracting](image_subtract.md) the background.
     # Threshold the image of interest using the two-sided custom range function (keep what is between 50-190)
     
     # Inputs:
-    #   rgb_img - RGB image data 
+    #   img - RGB or grayscale image data 
     #   lower_thresh - List of lower threshold values 
     #   upper_thresh - List of upper threshold values
     #   channel - Color-space channels of interest (either 'RGB', 'HSV', 'LAB', or 'gray')
-    bkg_sub_thres_img, masked_img = pcv.threshold.custom_range(rgb_img=bkg_sub_img, lower_thresh=[50], 
+    bkg_sub_thres_img, masked_img = pcv.threshold.custom_range(img=bkg_sub_img, lower_thresh=[50], 
                                                                upper_thresh=[190], channel='gray')
 
 ```
@@ -562,7 +562,7 @@ def main():
     bkg_sub_img = pcv.image_subtract(gray_img1=img, gray_img2=img_bkgrd)
         
     # Threshold the image of interest using the two-sided custom range function (keep what is between 50-190)
-    bkg_sub_thres_img = pcv.threshold.custom_range(rgb_img=bkg_sub_img, lower_thresh=[50],
+    bkg_sub_thres_img = pcv.threshold.custom_range(img=bkg_sub_img, lower_thresh=[50],
                                                    upper_thresh=[190], channel='gray')
     
     # Laplace filtering (identify edges based on 2nd derivative)
