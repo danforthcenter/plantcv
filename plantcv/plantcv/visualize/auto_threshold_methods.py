@@ -66,7 +66,8 @@ def auto_threshold_methods(gray_img, grid_img=True, object_type="light"):
         params.debug = debug
         if params.debug == "print":
             # If debug is print, save the image to a file
-            print_image(labeled, os.path.join(params.debug_outdir, str(params.device), method + "_vis_colorspaces.png"))
+            print_image(labeled, os.path.join(params.debug_outdir, str(params.device) + "_" +
+                                              method_names[i] + "_vis_thresholds.png"))
         elif params.debug == "plot":
             # If debug is plot, print to the plotting device
             plot_image(labeled)
@@ -85,7 +86,7 @@ def auto_threshold_methods(gray_img, grid_img=True, object_type="light"):
         params.debug = debug
         if params.debug == "print":
             # If debug is print, save the image to a file
-            print_image(plotting_img, os.path.join(params.debug_outdir, str(params.device) + "_vis_colorspaces.png"))
+            print_image(plotting_img, os.path.join(params.debug_outdir, str(params.device) + "_vis_all_thresholds.png"))
         elif params.debug == "plot":
             # If debug is plot, print to the plotting device
             plot_image(plotting_img)
