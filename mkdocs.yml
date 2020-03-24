@@ -148,6 +148,7 @@ nav:
           - 'Nonuniform Illumination Correction': nonuniform_illumination.md
           - 'Rescale': transform_rescale.md
       - 'Visualization Methods':
+          - 'Auto Threshold Methods': visualize_auto_threshold_methods.md
           - 'Clustered Contours': visualize_clustered_contours.md
           - 'Colorize Masks': visualize_colorize_masks.md
           - 'Colorspaces': visualize_colorspace.md
