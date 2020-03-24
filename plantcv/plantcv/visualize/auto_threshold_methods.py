@@ -14,19 +14,23 @@ from plantcv.plantcv.threshold import gaussian
 from plantcv.plantcv.threshold import triangle
 
 
-def thresholds(gray_img, grid_img=True, object_type="light"):
+def auto_threshold_methods(gray_img, grid_img=True, object_type="light"):
     """ Visualize an RGB image in all potential colorspaces
 
     Inputs:
-    gray_img     = grayscale image data
-    original_img = Whether or not to include the original image the the debugging plot
+    gray_img     = Grayscale image data
+    grid_img     = Whether or not to compile masks into a single plot
+    object_type  = "light" or "dark" (default: "light")
+                   - If object is lighter than the background then standard thresholding is done
+                   - If object is darker than the background then inverse thresholding is done
 
     Returns:
-    plotting_img = Plotting image containing the original image and L,A,B,H,S, and V colorspaces
+    labeled_imgs = List of labeled plotting images
 
     :param gray_img: numpy.ndarray
     :param original_img: bool
-    :return labeled_img: numpy.ndarray
+    :param object_type: str
+    :return labeled_imgs: list
 
     """
     # Check the the image is grayscale
@@ -43,8 +47,8 @@ def thresholds(gray_img, grid_img=True, object_type="light"):
     labeled_imgs = []
 
     # Set starting location for labeling different masks
-    y = int(np.shape(gray_img)[0] / 4)
-    x = int(np.shape(gray_img)[1] / 4)
+    y = int(np.shape(gray_img)[0] / 8)
+    x = int(np.shape(gray_img)[1] / 8)
 
     # Create mask imgs from each thresholding method
     all_methods.append(gaussian(gray_img=gray_img, max_value=255, object_type=object_type))
@@ -69,12 +73,16 @@ def thresholds(gray_img, grid_img=True, object_type="light"):
         labeled_imgs.append(labeled)
 
     if grid_img:
+        # Store and disable debug mode
+        debug = params.debug
+        params.debug = None
         # Compile images together into one
         top_row = np.hstack([labeled_imgs[0], labeled_imgs[1]])
         bot_row = np.hstack([labeled_imgs[2], labeled_imgs[3]])
         plotting_img = np.vstack([top_row, bot_row])
         plotting_img = resize(plotting_img, resize_x=.5, resize_y=.5)
-
+        # Reset debug mode
+        params.debug = debug
         if params.debug == "print":
             # If debug is print, save the image to a file
             print_image(plotting_img, os.path.join(params.debug_outdir, str(params.device) + "_vis_colorspaces.png"))
