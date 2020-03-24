@@ -34,13 +34,13 @@ pcv.params.text_size = 2.2       # Default = .55
 pcv.params.text_thickness = 4    # Default = 2
 
 # Visualize all auto threshold methods  
-
+labeled_imgs = pcv.visualize.auto_threshold_methods(gray_img=gray_img, grid_img=True, object_type="light")
                                        
 ```
 
 **Grid Image:** 
 
-![Screenshot](img/documentation_images/visualize_clustered_contours/contour_cluster_img.jpg)
+![Screenshot](img/documentation_images/visualize_auto_threshold_methods/all_thresholds.jpg)
 
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/visualize/auto_threshold_methods.py)
