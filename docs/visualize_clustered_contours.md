@@ -1,6 +1,6 @@
 ## Plot Image With Clustering Information 
 
-This is a plotting method used tto represent the way in which contours get clustered together into objects from [cluster_contour](cluster_contours.md).
+This is a plotting method used to represent the way in which contours get clustered together into objects from [cluster_contour](cluster_contours.md).
 
 **plantcv.visualize.clustered_contours**(*img, grouped_contour_indices, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1*)
 
