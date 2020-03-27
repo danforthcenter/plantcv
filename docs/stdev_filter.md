@@ -39,14 +39,14 @@ texture_img_111 = pcv.stdev_filter(img=gray_img, ksize=111, borders='nearest')
 
 **Standard deviation image (ksize=11)**
 
-![Screenshot](img/documentation_images/stdev_filter/stdev_filter11.jpg)
+![Screenshot](img/documentation_images/stdev_filter/stdev_img11.jpg)
 
 **Standard deviation image (ksize=45)**
 
-![Screenshot](img/documentation_images/stdev_filter/stdev_filter45.jpg)
+![Screenshot](img/documentation_images/stdev_filter/stdev_img45.jpg)
 
 **Standard deviation image (ksize=111)**
 
-![Screenshot](img/documentation_images/stdev_filter/stdev_filter111.jpg)
+![Screenshot](img/documentation_images/stdev_filter/stdev_img111.jpg)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/stdev_filter.py)
