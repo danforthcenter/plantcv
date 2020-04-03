@@ -10,8 +10,6 @@ from plantcv.plantcv import Spectral_data
 from plantcv.plantcv.transform import rescale
 from plantcv.plantcv.hyperspectral import _find_closest
 
-
-
 def extract_index(array, index="NDVI", distance=20):
     """Pull out indices of interest from a hyperspectral datacube.
 
@@ -41,6 +39,8 @@ def extract_index(array, index="NDVI", distance=20):
     array_data = array.array_data
 
     if index.upper() == "NDVI":
+        # Normalized Difference Vegetation Index
+        msg = 'The theoretical range for NDVI is [-1,1].\n'
         if (max_wavelength + distance) >= 800 and (min_wavelength - distance) <= 670:
             # Obtain index that best represents NIR and red bands
             nir_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
@@ -54,6 +54,7 @@ def extract_index(array, index="NDVI", distance=20):
 
     elif index.upper() == "GDVI":
         # Green Difference Vegetation Index [Sripada et al. (2006)]
+        msg = 'The theoretical range for GDVI is [-2, 2].\n'
         if (max_wavelength + distance) >= 800 and (min_wavelength - distance) <= 680:
             nir_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
             red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 680)
@@ -66,6 +67,7 @@ def extract_index(array, index="NDVI", distance=20):
 
     elif index.upper() == "SAVI":
         # Soil Adjusted Vegetation Index [Huete et al. (1988)]
+        msg = 'The theoretical range for SAVI is [-1.2, 1.2].\n'
         if (max_wavelength + distance) >= 800 and (min_wavelength - distance) <= 680:
             nir_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
             red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 680)
@@ -78,6 +80,7 @@ def extract_index(array, index="NDVI", distance=20):
 
     elif index.upper() == "PRI":
         #  Photochemical Reflectance Index (https://doi.org/10.1111/j.1469-8137.1995.tb03064.x)
+        msg = 'The theoretical range for PRI is [-1, 1].\n'
         if (max_wavelength + distance) >= 570 and (min_wavelength - distance) <= 531:
             # Obtain index that best approximates 570 and 531 nm bands
             pri570_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 570)
@@ -93,6 +96,7 @@ def extract_index(array, index="NDVI", distance=20):
 
     elif index.upper() == "ACI":
         #  Van den Berg et al. 2005
+        msg = 'The theoretical range for ACI is [0, \u221e).\n'
         if (max_wavelength + distance) >= 800 and (min_wavelength - distance) <= 560:
             green_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 560)
             nir_index   = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
@@ -105,6 +109,7 @@ def extract_index(array, index="NDVI", distance=20):
     
     elif index.upper() == "ARI":
         # Gitelson et al., 2001
+        msg = 'The theoretical range for ARI is (-\u221e, \u221e).\n'
         if (max_wavelength + distance) >= 700 and (min_wavelength - distance) <= 550:
             ari550_indes = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 550)
             ari700_index   = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 700)
@@ -116,18 +121,22 @@ def extract_index(array, index="NDVI", distance=20):
 
     elif index.upper() == 'CARI':
         # Chlorophyll absorption in reflectance index (Giteson et al., 2003a)
+        msg = 'The theoretical range for CARI is [-1, 1].\n'
         if (max_wavelength + distance) >= 700 and (min_wavelength - distance) <= 550:
             cari550_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 550)
+            cari670_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 670)
             cari700_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 700)
             cari550 = (array_data[:, :, [cari550_index]])
+            cari670 = (array_data[:, :, [cari670_index]])
             cari700 = (array_data[:, :, [cari700_index]])
-            # Naturally ranges from -inf to inf
-            index_array_raw = (1/cari550)-(1/cari700)
+            # Naturally ranges from -1 to 1
+            index_array_raw = (cari700-cari670)-0.2*(cari700-cari550)
         else:
             fatal_error("Available wavelengths are not suitable for calculating CARI. Try increasing distance.")
 
     elif index.upper() == 'CI_REDEDGE':
         # Chlorophyll index red edge (Giteson et al., 2003a)
+        msg = 'The theoretical range for CI_REDEDGE is [-1, \u221e).\n'
         if (max_wavelength + distance) >= 800 and (min_wavelength - distance) <= 750:
             rededge_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 750)
             nir_index     = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
@@ -140,6 +149,7 @@ def extract_index(array, index="NDVI", distance=20):
 
     elif index.upper() == 'CRI1':
         # Carotenoid reflectance index (Gitelson et al., 2002b) (note: part 1 of 2)
+        msg = 'The theoretical range for CRI1 is (-\u221e, \u221e).\n'
         if (max_wavelength + distance) >= 550 and (min_wavelength - distance) <= 510:
             cri1510_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 510)
             cri1550_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 550)
@@ -152,6 +162,7 @@ def extract_index(array, index="NDVI", distance=20):
 
     elif index.upper() == 'CRI2':
         # Carotenoid reflectance index (Gitelson et al., 2002b) (note: part 1 of 2)
+        msg = 'The theoretical range for CRI2 is (-\u221e, \u221e).\n'
         if (max_wavelength + distance) >= 700 and (min_wavelength - distance) <= 510:
             cri1510_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 510)
             cri1700_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 700)
@@ -164,6 +175,7 @@ def extract_index(array, index="NDVI", distance=20):
 
     elif index.upper() == 'EVI':
         # Enhanced Vegetation index (Huete et al., 1997)
+        msg = 'The theoretical range for EVI is (-\u221e, \u221e).\n'
         if (max_wavelength + distance) >= 800 and (min_wavelength - distance) <= 470:
             blue_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 470)
             red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 670)
@@ -178,6 +190,7 @@ def extract_index(array, index="NDVI", distance=20):
 
     elif index.upper() == 'MARI':
         # Modified anthocyanin reflectance index (Gitelson et al., 2001)
+        msg = 'The theoretical range for MARI is (-\u221e, \u221e).\n'
         if (max_wavelength + distance) >= 800 and (min_wavelength - distance) <= 550:
             mari550_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 550)
             mari700_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 700)
@@ -192,6 +205,7 @@ def extract_index(array, index="NDVI", distance=20):
 
     elif index.upper() == 'MCARI':
         # Modified chlorophyll absorption in reflectance index (Daughtry et al., 2000)
+        msg = 'The theoretical range for MCARI is (-\u221e, \u221e).\n'
         if (max_wavelength + distance) >= 700 and (min_wavelength - distance) <= 550:
             mcari550_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 550)
             mcari670_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 670)
@@ -206,6 +220,7 @@ def extract_index(array, index="NDVI", distance=20):
 
     elif index.upper() == 'MTCI':
         # MERIS terrestrial chlorophyll index (Dash and Curran, 2004)
+        msg = 'The theoretical range for MTCI is (-\u221e, \u221e).\n'
         if (max_wavelength + distance) >= 753.75 and (min_wavelength - distance) <= 681.25:
             mtci68125_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 681.25)
             mtci70875_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 708.75)
@@ -220,6 +235,7 @@ def extract_index(array, index="NDVI", distance=20):
 
     elif index.upper() == 'NDRE':
         # Normalized difference red edge (Barnes et al., 2000)
+        msg = 'The theoretical range for NDRE is [-1, 1].\n'
         if (max_wavelength + distance) >= 790 and (min_wavelength - distance) <= 720:
             ndre720_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 720)
             ndre790_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 790)
@@ -231,7 +247,8 @@ def extract_index(array, index="NDVI", distance=20):
             fatal_error("Available wavelengths are not suitable for calculating NDRE. Try increasing distance.")
 
     elif index.upper() == 'PSND_CHLA':
-        # Pigment sensitive normalized difference (Blackburn, 1998) note: chl_a
+        # Pigment sensitive normalized difference (Blackburn, 1998) note: chl_a (part 1 of 3)
+        msg = 'The theoretical range for PSND_CHLA is [-1, 1].\n'
         if (max_wavelength + distance) >= 800 and (min_wavelength - distance) <= 675:
             psndchla675_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 675)
             psndchla800_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
@@ -243,7 +260,8 @@ def extract_index(array, index="NDVI", distance=20):
             fatal_error("Available wavelengths are not suitable for calculating PSND_CHLA. Try increasing distance.")
 
     elif index.upper() == 'PSND_CHLB':
-        # Pigment sensitive normalized difference (Blackburn, 1998) note: chl_b (part 1 of 3)
+        # Pigment sensitive normalized difference (Blackburn, 1998) note: chl_b (part 2 of 3)
+        msg = 'The theoretical range for PSND_CHLB is [-1,1].\n'
         if (max_wavelength + distance) >= 800 and (min_wavelength - distance) <= 650:
             psndchlb650_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 650)
             psndchlb800_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
@@ -255,7 +273,8 @@ def extract_index(array, index="NDVI", distance=20):
             fatal_error("Available wavelengths are not suitable for calculating PSND_CHLB. Try increasing distance.")
 
     elif index.upper() == 'PSND_CAR':
-        # Pigment sensitive normalized difference (Blackburn, 1998) note: chl_b (part 1 of 3)
+        # Pigment sensitive normalized difference (Blackburn, 1998) note: car (part 3 of 3)
+        msg = 'The theoretical range for PSND_CAR is [-1,1].\n'
         if (max_wavelength + distance) >= 800 and (min_wavelength - distance) <= 500:
             psndcar500_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 500)
             psndcar800_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
@@ -267,7 +286,8 @@ def extract_index(array, index="NDVI", distance=20):
             fatal_error("Available wavelengths are not suitable for calculating PSND_CAR. Try increasing distance.")
 
     elif index.upper() == 'PSRI':
-        # Plant senescence reflectance index (Merzlyak et al., 1999) note: car (part 1 of 3)
+        # Plant senescence reflectance index (Merzlyak et al., 1999)
+        msg = 'The theoretical range for PSRI is (-\u221e, \u221e).\n'
         if (max_wavelength + distance) >= 750 and (min_wavelength - distance) <= 500:
             psri500_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 500)
             psri678_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 678)
@@ -282,6 +302,7 @@ def extract_index(array, index="NDVI", distance=20):
 
     elif index.upper() == 'PSSR1':
         # Pigment-specific spectral ration (Blackburn, 1998) note: part 1 of 3
+        msg = 'The theoretical range for PSSR1 is [0, \u221e).\n'
         if (max_wavelength + distance) >= 800 and (min_wavelength - distance) <= 675:
             pssr1_800_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
             pssr1_675_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 675)
@@ -294,6 +315,7 @@ def extract_index(array, index="NDVI", distance=20):
 
     elif index.upper() == 'PSSR2':
         # Pigment-specific spectral ration (Blackburn, 1998) note: part 2 of 3
+        msg = 'The theoretical range for PSSR2 is [0, \u221e).\n'
         if (max_wavelength + distance) >= 800 and (min_wavelength - distance) <= 650:
             pssr2_800_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
             pssr2_650_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 650)
@@ -306,6 +328,7 @@ def extract_index(array, index="NDVI", distance=20):
 
     elif index.upper() == 'PSSR3':
         # Pigment-specific spectral ration (Blackburn, 1998) note: part 3 of 3
+        msg = 'The theoretical range for PSSR3 is [0, \u221e).\n'
         if (max_wavelength + distance) >= 800 and (min_wavelength - distance) <= 500:
             pssr3_800_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
             pssr3_500_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 500)
@@ -318,6 +341,7 @@ def extract_index(array, index="NDVI", distance=20):
 
     elif index.upper() == 'RGRI':
         # Red/green ratio index (Gamon and Surfus, 1999)
+        msg = 'The theoretical range for RGRI is [0, \u221e).\n'
         if (max_wavelength + distance) >= 670 and (min_wavelength - distance) <= 560:
             red_index   = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 670)
             green_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 560)
@@ -330,6 +354,7 @@ def extract_index(array, index="NDVI", distance=20):
 
     elif index.upper() == 'RVSI':
         # Red-edge vegetation stress index (Metron and Huntington, 1999)
+        msg = 'The theoretical range for RVSI is [-1, 1].\n'
         if (max_wavelength + distance) >= 752 and (min_wavelength - distance) <= 714:
             rvsi714_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 714)
             rvsi733_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 733)
@@ -344,6 +369,7 @@ def extract_index(array, index="NDVI", distance=20):
 
     elif index.upper() == 'SIPI':
         # Structure-intensitive pigment index (Penuelas et al., 1995)
+        msg = 'The theoretical range for SIPI is (-\u221e, \u221e).\n'
         if (max_wavelength + distance) >= 800 and (min_wavelength - distance) <= 445:
             sipi445_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 445)
             sipi680_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 680)
@@ -358,6 +384,7 @@ def extract_index(array, index="NDVI", distance=20):
 
     elif index.upper() == 'SR':
         # Simple ratio (Jordan, 1969)
+        msg = 'The theoretical range for SIPI is [0, \u221e).\n'
         if (max_wavelength + distance) >= 800 and (min_wavelength - distance) <= 675:
             sr675_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 675)
             sr800_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
@@ -370,6 +397,7 @@ def extract_index(array, index="NDVI", distance=20):
 
     elif index.upper() == 'VARI':
         # Visible atmospherically resistant index (Gitelson et al., 2002a)
+        msg = 'The theoretical range for VARI is (-\u221e, \u221e).\n'
         if (max_wavelength + distance) >= 670 and (min_wavelength - distance) <= 470:
             red_index   = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 670)
             green_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 560)
@@ -383,6 +411,7 @@ def extract_index(array, index="NDVI", distance=20):
             fatal_error("Available wavelengths are not suitable for calculating VARI. Try increasing distance.")
 
     elif index.upper() == 'VI_GREEN':
+        msg = 'The theoretical range for VI_GREEN is [-1, 1].\n'
         # Vegetation index using green band (Gitelson et al., 2002a)
         if (max_wavelength + distance) >= 670 and (min_wavelength - distance) <= 560:
             red_index   = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 670)
@@ -396,15 +425,16 @@ def extract_index(array, index="NDVI", distance=20):
 
     elif index.upper() == 'WBI':
         # Water band index (Peñuelas et al., 1997)
-        if (max_wavelength + distance) >= 800 and (min_wavelength - distance) <= 675:
-            red_index   = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 670)
-            green_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 560)
-            red    = (array_data[:, :, [red_index]])
-            green  = (array_data[:, :, [green_index]])
-            # Naturally ranges from -1 to 1
-            index_array_raw = (green-red)/(green+red)
+        msg = 'The theoretical range for WBI is [0, \u221e).\n'
+        if (max_wavelength + distance) >= 970 and (min_wavelength - distance) <= 900:
+            wbi900_index   = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 900)
+            wbi970_index   = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 970)
+            wbi900 = (array_data[:, :, [wbi900_index]])
+            wbi970 = (array_data[:, :, [wbi970_index]])
+            # Naturally ranges from 0 to infinity
+            index_array_raw = wbi900/wbi970
         else:
-            fatal_error("Available wavelengths are not suitable for calculating VI_green. Try increasing distance.")
+            fatal_error("Available wavelengths are not suitable for calculating WBI. Try increasing distance.")
 
     else:
         fatal_error(index + " is not one of the currently available indices for this function. Please open an issue " +
@@ -432,6 +462,73 @@ def extract_index(array, index="NDVI", distance=20):
                                 wavelength_units=array.wavelength_units, array_type="index_" + index.lower(),
                                 pseudo_rgb=scaled, filename=array.filename, default_bands=None)
 
+    # Check "bad" values, i.e. NANs or Infs
+    idx_nan, idy_nan = np.where(np.isnan(index_array_raw)==1)
+    idx_inf, idy_inf = np.where(np.isinf(index_array_raw)==1)
+
+    bad_pix = dict()
+    if len(idx_nan) > 0:
+        nan_x = np.unique(idx_nan)
+        if np.isscalar(nan_x):
+            nan_x = np.array(nan_x)
+        n_nan_x = len(nan_x)
+        nan_y = np.unique(idy_nan)
+        if np.isscalar(nan_y):
+            nan_y = np.array(nan_y)
+        n_nan_y = len(nan_y)
+        if len(idx_inf) > 0:
+            # case 1: both nan and inf issues exist
+            print(msg)
+            print('Attention: there are NAN and Inf in current VI output. The indices for those pixels are saved in the output but we would suggest removing these pixels if visualization is desired.')
+
+            inf_x = np.unique(idx_inf)
+            if np.isscalar(inf_x):
+                inf_x = np.array(inf_x)
+            n_inf_x = len(inf_x)
+            inf_y = np.unique(idy_inf)
+            if np.isscalar(inf_y):
+                inf_y = np.array(inf_y)
+            n_inf_y = len(inf_y)
+            bad_x = np.sort(np.unique(np.concatenate((nan_x, inf_x))))
+            bad_y = np.sort(np.unique(np.concatenate((nan_y, inf_y))))
+            n_bad_x = len(bad_x)
+            n_bad_y = len(bad_y)
+            bad_pix = {'nan_x': nan_x, 'nan_y': nan_y, 'inf_x': inf_x, 'inf_y': inf_y}
+        else:
+            # case 2: only the nan issue exists
+            print(msg)
+            print('Attention: There are NAN current VI. The indices for those pixels are saved in the output but we would suggest removing these pixels if visualization is desired.')
+            bad_x = nan_x
+            bad_y = nan_y
+            n_bad_x = n_nan_x
+            n_bad_y = n_nan_y
+            bad_pix = {'nan_x': nan_x, 'nan_y': nan_y, 'inf_x': None, 'inf_y': None}
+    elif len(idx_nan) == 0 and len(idx_inf) > 0:
+        # case 3: only the inf issue exists
+        print(msg)
+        print('Attention: There are Inf in current VI. The indices for those pixels are saved in the output but we would suggest removing these pixels if visualization is desired.')
+        inf_x = np.unique(idx_inf)
+        if np.isscalar(inf_x):
+            inf_x = np.array(inf_x)
+        n_inf_x = len(inf_x)
+        inf_y = np.unique(idy_inf)
+        if np.isscalar(inf_y):
+            inf_y = np.array(inf_y)
+        n_inf_y = len(inf_y)
+        bad_x = inf_x
+        bad_y = inf_y
+        n_bad_x = n_inf_x
+        n_bad_y = n_inf_y
+        bad_pix = {'nan_x': None, 'nan_y': None, 'inf_x': inf_x, 'inf_y': inf_y}
+    else:
+        print(msg)
+        # case 4: neither nan nor inf issue exists
+        n_bad_x = 0
+        n_bad_y = 0
+        bad_x = None
+        bad_y = None
+        bad_pix = {'nan_x': None, 'nan_y': None, 'inf_x': None, 'inf_y': None}
+
     # Restore debug mode
     params.debug = debug
 
@@ -441,4 +538,4 @@ def extract_index(array, index="NDVI", distance=20):
         print_image(index_array.pseudo_rgb,
                     os.path.join(params.debug_outdir, str(params.device) + index + "_index.png"))
 
-    return index_array
+    return index_array, bad_pix
