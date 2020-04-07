@@ -14,12 +14,12 @@ The naive Bayes approach used here can be trained to label pixels as plant or ba
 trained to output a binary image where background is labeled as black (0) and plant is labeled
 as white (255). The goal is to replace the need to set [binary threshold](binary_threshold.md) values manually.
 
-To train the classifier, we need to label a relatively small set of images using a binary mask (just like above).
+To train the classifier, we need to label a relatively small set of images using a binary mask.
 We can use PlantCV to create a binary mask for a set of input images using the methods described in the 
-[VIS tutorial](vis_tutorial.md).
+[VIS tutorial](vis_tutorial.md). Alternatively, you can outline and create masks by hand.
 
 For the purpose of this tutorial, we assume we are in a folder containing two subfolders, one containing original RGB
-images, and one containing black and white masks that match the set of RGB images.
+images, and one containing black and white masks match the set of RGB images.
 
 First, use `plantcv-train.py` to use the training images to output probability density functions (PDFs) for plant
 and background.
@@ -46,7 +46,7 @@ pcv.params.debug = "print"
 img, path, filename = pcv.readimage("color_image.png")
 
 # Classify the pixels as plant or background
-mask = pcv.naive_bayes_classifier(img, pdf_file="naive_bayes_pdfs.txt")
+masks = pcv.naive_bayes_classifier(img, pdf_file="naive_bayes_pdfs.txt")
 
 ```
 
@@ -61,10 +61,22 @@ the naive Bayes multiclass method is trained using colors sparsely sampled from 
 pixels in a given image.
 
 To train the classifier, we need to build a table of red, green, and blue color values for pixels sampled evenly from
-each class. The idea here is to collect a relevant sample of pixel color data for each class. The size of the sample 
+each class. *You need a minimum of 2 classes.* The idea here is to collect a relevant sample of pixel color data for each class. The size of the sample 
 needed to build robust probability density functions for each class will depend on a number of factors, including the
-variability in class colors and imaging quality/reproducibility. To collect pixel color data we currently use the Pixel
-Inspection Tool in [ImageJ](https://imagej.nih.gov/ij/). An example table built from pixel samples looks like this:
+variability in class colors and imaging quality/reproducibility. To collect pixel color data we currently use the [Pixel
+Inspection Tool](https://imagej.nih.gov/ij/plugins/pixel-tool/index.html) in [ImageJ](https://imagej.nih.gov/ij/). 
+
+To collect pixel samples, open the color image in ImageJ.
+
+![Screenshot](img/tutorial_images/machine_learning/color_image.jpg)
+
+Use the Pixel Inspector Tool to select regions of the image belonging to a single class. Clicking on a pixel in the image will give you a set of R,G,B values for a window of pixels around the central pixel. From the "Pixel Values" window you can copy the values to a text editor that supports Find & Replace of regex, such as [Atom](https://atom.io/) or [VS Code](https://code.visualstudio.com/). Copy and paste the pixel red,
+green, and blue values into a spreadsheet or text editor and reformat into a single column per class. 
+In this example, nine pixels are sampled with one click but the radius is adjustable.
+
+![Screenshot](img/tutorial_images/machine_learning/imagej_pixel_inspector.jpg)
+
+Then find and replace `\s` with `\n` to convert the text file into a single column. Add a header to the column. If you need to do this with multiple classes, do this in a separate text file for each class. Then copy and paste each class into a separate column in a spreadsheet (e.g. Excel), save as a "tab-delimited" file, open it in your text editor, and finally replace all `"` with nothing. An example table built from pixel samples looks like this:
 
 ```
 Plant	    Pustule	    Chlorosis	Background
@@ -84,18 +96,7 @@ Plant	    Pustule	    Chlorosis	Background
 Each column in the tab-delimited table is a feature class (in this example, plant, pustule, chlorosis, or background)
 and each cell is a comma-separated red, green, and blue triplet for a pixel.
 
-To collect pixel samples, open the color image in ImageJ.
-
-![Screenshot](img/tutorial_images/machine_learning/color_image.jpg)
-
-Use the Pixel Inspector Tool to select regions of the image belonging to a single class. Copy and paste the pixel red,
-green, and blue values into a spreadsheet or text editor and reformat into a single column per class. In this example,
-nine pixels are sampled with one click but the radius is adjustable.
-
-![Screenshot](img/tutorial_images/machine_learning/imagej_pixel_inspector.jpg)
-
-Once a satisfactory sample of pixels is collected, save the table as a tab-delimited text file. Like the naive Bayes
-method described above, use `plantcv-train.py` to use the pixel samples to output probability density functions (PDFs)
+Like the naive Bayes method described above, use `plantcv-train.py` to use the pixel samples to output probability density functions (PDFs)
 for each class.
 
 ```
@@ -113,7 +114,7 @@ allows users to choose colors for each class.
 
 ![Screenshot](img/tutorial_images/machine_learning/classified_image.jpg)
 
-### Parallelizing Image Classification
+### Parallelizing a Workflow that uses a Bayes Classifier
 
 To parallelize the naive Bayes methods described above, construct a workflow script following the guidelines in the 
 [workflow parallelization tutorial](pipeline_parallel.md), but with an additional argument provided for the probability
@@ -133,9 +134,9 @@ def options():
     parser.add_argument("-o", "--outdir", help="Output directory for image files.", required=False)
     parser.add_argument("-r", "--result", help="result file.", required=False)
     parser.add_argument("-r2", "--coresult", help="result file.", required=False)
-    parser.add_argument("-p", "--pdfs", help="Naive Bayes PDF file.", required=True)
     parser.add_argument("-w", "--writeimg", help="write out images.", default=False, action="store_true")
     parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.", default=None)
+    parser.add_argument("-p", "--pdfs", help="Naive Bayes PDF file.", required=True)
     args = parser.parse_args()
     return args
 
@@ -177,82 +178,6 @@ plantcv-workflow.py \
 
 ```
 
-## Machine Learning Script 
-
-```
-# First, use `plantcv-train.py` to use the training images to output probability density 
-# functions (PDFs) for plant and background.
-
-# plantcv-train.py naive_bayes --imgdir ./images --maskdir ./masks --outfile naive_bayes_pdfs.txt --plots
-
-```
-
-The output file from `plantcv-train.py` will contain one row for each color channel (hue, saturation, and value) for
-each class (e.g. plant and background). The first and second column are the class and channel label, respectively. The
-remaining 256 columns contain the p-value from the PDFs for each intensity value observable in an 8-bit image (0-255).
-
-Once we have the `plantcv-train.py` output file, we can classify pixels in a color image in PlantCV.
-
-```python
-#!/usr/bin/env python
-
-import os 
-import argparse
-from plantcv import plantcv as pcv
-
-# Parse command-line arguments
-def options():
-    parser = argparse.ArgumentParser(description="Imaging processing with opencv")
-    parser.add_argument("-i", "--image", help="Input image file.", required=True)
-    parser.add_argument("-o", "--outdir", help="Output directory for image files.", required=False)
-    parser.add_argument("-r", "--result", help="result file.", required=False)
-    parser.add_argument("-r2", "--coresult", help="result file.", required=False)
-    parser.add_argument("-p", "--pdfs", help="Naive Bayes PDF file.", required=True)
-    parser.add_argument("-w", "--writeimg", help="write out images.", default=False, action="store_true")
-    parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.", default=None)
-    args = parser.parse_args()
-    return args
+*  Always test workflows (preferably with -D flag set to 'print') on a smaller dataset before running over a full image set.* You can create a sample of your images with [`plantcv-utils.py sample_images`](tools.md).
 
 
-def main():
-    # Get options
-    args = options()
-    
-    # Initialize device counter
-    pcv.params.debug = args.debug
-    
-    # Read in the input image
-    vis, path, filename = pcv.readimage(filename=args.image)
-    
-    # Classify each pixel as plant or background (background and system components)
-    masks = pcv.naive_bayes_classifier(rgb_img=vis, pdf_file=args.pdfs)
-    colored_img = pcv.visualize.colorize_masks(masks=[masks['plant'], masks['pustule'], masks['background'], masks['chlorosis']], 
-                                               colors=['green', 'red', 'black', 'blue'])
-                                               
-    # Print out the colorized figure that got created 
-    pcv.print_image(colored_img, os.path.join(args.outdir, filename))
-    
-    # Additional steps in the workflow go here
-    
-# Call program
-if __name__ == '__main__':
-    main()
-    
-```
-
-*  Always test workflows (preferably with -D flag set to 'print') before running over a full image set
-
-Then run `plantcv-workflow.py` with options set based on the input images, but where the naive Bayes PDF file is input
-using the `--other_args` flag, for example:
-
-```bash
-plantcv-workflow.py \
---dir ./my-images \
---workflow my-naive-bayes-script.py \
---db my-db.sqlite3 \
---outdir . \
---meta imgtype_camera_timestamp \
---create \
---other_args="--pdfs naive_bayes_pdfs.txt"
-
-```
