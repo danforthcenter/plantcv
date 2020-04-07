@@ -375,9 +375,9 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
                         "upper_thresh=255")
 
         # Separate channels (pcv.readimage reads RGB images in as BGR)
-        blue = img[:, :, 0]
+        blue = img[:, :, 2]
         green = img[:, :, 1]
-        red = img[:, :, 2]
+        red = img[:, :, 0]
 
         # Make a mask for each channel
         b_mask = cv2.inRange(blue, lower_thresh[0], upper_thresh[0])
