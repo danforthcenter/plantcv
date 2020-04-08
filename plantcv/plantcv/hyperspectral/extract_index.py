@@ -10,6 +10,7 @@ from plantcv.plantcv import Spectral_data
 from plantcv.plantcv.transform import rescale
 from plantcv.plantcv.hyperspectral import _find_closest
 
+
 def extract_index(array, index="NDVI", distance=20):
     """Pull out indices of interest from a hyperspectral datacube.
 
@@ -99,23 +100,23 @@ def extract_index(array, index="NDVI", distance=20):
         msg = 'The theoretical range for ACI is [0, \u221e).\n'
         if (max_wavelength + distance) >= 800 and (min_wavelength - distance) <= 560:
             green_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 560)
-            nir_index   = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
+            nir_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
             green = (array_data[:, :, [green_index]])
-            nir   = (array_data[:, :, [nir_index]])
+            nir = (array_data[:, :, [nir_index]])
             # Naturally ranges from -1.0 to 1.0
-            index_array_raw = green/nir
+            index_array_raw = green / nir
         else:
             fatal_error("Available wavelengths are not suitable for calculating ACI. Try increasing distance.")
-    
+
     elif index.upper() == "ARI":
         # Gitelson et al., 2001
         msg = 'The theoretical range for ARI is (-\u221e, \u221e).\n'
         if (max_wavelength + distance) >= 700 and (min_wavelength - distance) <= 550:
             ari550_indes = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 550)
-            ari700_index   = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 700)
+            ari700_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 700)
             ari550 = (array_data[:, :, [ari550_indes]])
             ari700 = (array_data[:, :, [ari700_index]])
-            index_array_raw = (1/ari550)-(1/ari700)
+            index_array_raw = (1 / ari550) - (1 / ari700)
         else:
             fatal_error("Available wavelengths are not suitable for calculating ARI. Try increasing distance.")
 
@@ -130,7 +131,7 @@ def extract_index(array, index="NDVI", distance=20):
             cari670 = (array_data[:, :, [cari670_index]])
             cari700 = (array_data[:, :, [cari700_index]])
             # Naturally ranges from -1 to 1
-            index_array_raw = (cari700-cari670)-0.2*(cari700-cari550)
+            index_array_raw = (cari700 - cari670) - 0.2 * (cari700 - cari550)
         else:
             fatal_error("Available wavelengths are not suitable for calculating CARI. Try increasing distance.")
 
@@ -139,11 +140,11 @@ def extract_index(array, index="NDVI", distance=20):
         msg = 'The theoretical range for CI_REDEDGE is [-1, \u221e).\n'
         if (max_wavelength + distance) >= 800 and (min_wavelength - distance) <= 750:
             rededge_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 750)
-            nir_index     = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
+            nir_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 800)
             rededge = (array_data[:, :, [rededge_index]])
-            nir     = (array_data[:, :, [nir_index]])
+            nir = (array_data[:, :, [nir_index]])
             # Naturally ranges from -1 to inf
-            index_array_raw = nir/rededge - 1
+            index_array_raw = nir / rededge - 1
         else:
             fatal_error("Available wavelengths are not suitable for calculating CI_rededge. Try increasing distance.")
 
@@ -156,7 +157,7 @@ def extract_index(array, index="NDVI", distance=20):
             cri1510 = (array_data[:, :, [cri1510_index]])
             cri1550 = (array_data[:, :, [cri1550_index]])
             # Naturally ranges from -inf to inf
-            index_array_raw = 1/cri1510-1/cri1550
+            index_array_raw = 1 / cri1510 - 1 / cri1550
         else:
             fatal_error("Available wavelengths are not suitable for calculating CRI1. Try increasing distance.")
 
@@ -169,7 +170,7 @@ def extract_index(array, index="NDVI", distance=20):
             cri1510 = (array_data[:, :, [cri1510_index]])
             cri1700 = (array_data[:, :, [cri1700_index]])
             # Naturally ranges from -inf to inf
-            index_array_raw = 1/cri1510-1/cri1700
+            index_array_raw = 1 / cri1510 - 1 / cri1700
         else:
             fatal_error("Available wavelengths are not suitable for calculating CRI2. Try increasing distance.")
 
@@ -184,7 +185,7 @@ def extract_index(array, index="NDVI", distance=20):
             red = (array_data[:, :, [red_index]])
             nir = (array_data[:, :, [nir_index]])
             # Naturally ranges from -inf to inf
-            index_array_raw = 2.5*(nir-red)/(nir+6*red-7.5*blue+1)
+            index_array_raw = 2.5 * (nir - red) / (nir + 6 * red - 7.5 * blue + 1)
         else:
             fatal_error("Available wavelengths are not suitable for calculating EVI. Try increasing distance.")
 
@@ -199,7 +200,7 @@ def extract_index(array, index="NDVI", distance=20):
             mari700 = (array_data[:, :, [mari700_index]])
             nir = (array_data[:, :, [nir_index]])
             # Naturally ranges from -inf to inf
-            index_array_raw = ((1/mari550)-(1/mari700))*nir
+            index_array_raw = ((1 / mari550) - (1 / mari700)) * nir
         else:
             fatal_error("Available wavelengths are not suitable for calculating MARI. Try increasing distance.")
 
@@ -214,7 +215,7 @@ def extract_index(array, index="NDVI", distance=20):
             mcari670 = (array_data[:, :, [mcari670_index]])
             mcari700 = (array_data[:, :, [mcari700_index]])
             # Naturally ranges from -inf to inf
-            index_array_raw = ((mcari700-mcari670)-0.2*(mcari700-mcari550))*(mcari700/mcari670)
+            index_array_raw = ((mcari700 - mcari670) - 0.2 * (mcari700 - mcari550)) * (mcari700 / mcari670)
         else:
             fatal_error("Available wavelengths are not suitable for calculating MCARI. Try increasing distance.")
 
@@ -229,7 +230,7 @@ def extract_index(array, index="NDVI", distance=20):
             mtci70875 = (array_data[:, :, [mtci70875_index]])
             mtci75375 = (array_data[:, :, [mtci75375_index]])
             # Naturally ranges from -inf to inf
-            index_array_raw = (mtci75375-mtci70875)/(mtci70875-mtci68125)
+            index_array_raw = (mtci75375 - mtci70875) / (mtci70875 - mtci68125)
         else:
             fatal_error("Available wavelengths are not suitable for calculating MTCI. Try increasing distance.")
 
@@ -242,7 +243,7 @@ def extract_index(array, index="NDVI", distance=20):
             ndre790 = (array_data[:, :, [ndre790_index]])
             ndre720 = (array_data[:, :, [ndre720_index]])
             # Naturally ranges from -1 to 1
-            index_array_raw = (ndre790-ndre720)/(ndre790+ndre720)
+            index_array_raw = (ndre790 - ndre720) / (ndre790 + ndre720)
         else:
             fatal_error("Available wavelengths are not suitable for calculating NDRE. Try increasing distance.")
 
@@ -255,7 +256,7 @@ def extract_index(array, index="NDVI", distance=20):
             psndchla675 = (array_data[:, :, [psndchla675_index]])
             psndchla800 = (array_data[:, :, [psndchla800_index]])
             # Naturally ranges from -1 to 1
-            index_array_raw = (psndchla800-psndchla675)/(psndchla800+psndchla675)
+            index_array_raw = (psndchla800 - psndchla675) / (psndchla800 + psndchla675)
         else:
             fatal_error("Available wavelengths are not suitable for calculating PSND_CHLA. Try increasing distance.")
 
@@ -268,7 +269,7 @@ def extract_index(array, index="NDVI", distance=20):
             psndchlb650 = (array_data[:, :, [psndchlb650_index]])
             psndchlb800 = (array_data[:, :, [psndchlb800_index]])
             # Naturally ranges from -1 to 1
-            index_array_raw = (psndchlb800-psndchlb650)/(psndchlb800+psndchlb650)
+            index_array_raw = (psndchlb800 - psndchlb650) / (psndchlb800 + psndchlb650)
         else:
             fatal_error("Available wavelengths are not suitable for calculating PSND_CHLB. Try increasing distance.")
 
@@ -281,7 +282,7 @@ def extract_index(array, index="NDVI", distance=20):
             psndcar500 = (array_data[:, :, [psndcar500_index]])
             psndcar800 = (array_data[:, :, [psndcar800_index]])
             # Naturally ranges from -1 to 1
-            index_array_raw = (psndcar800-psndcar500)/(psndcar800+psndcar500)
+            index_array_raw = (psndcar800 - psndcar500) / (psndcar800 + psndcar500)
         else:
             fatal_error("Available wavelengths are not suitable for calculating PSND_CAR. Try increasing distance.")
 
@@ -296,7 +297,7 @@ def extract_index(array, index="NDVI", distance=20):
             psri678 = (array_data[:, :, [psri678_index]])
             psri750 = (array_data[:, :, [psri750_index]])
             # Naturally ranges from -inf to inf
-            index_array_raw = (psri678-psri500)/psri750
+            index_array_raw = (psri678 - psri500) / psri750
         else:
             fatal_error("Available wavelengths are not suitable for calculating PSRI. Try increasing distance.")
 
@@ -309,7 +310,7 @@ def extract_index(array, index="NDVI", distance=20):
             pssr1_800 = (array_data[:, :, [pssr1_800_index]])
             pssr1_675 = (array_data[:, :, [pssr1_675_index]])
             # Naturally ranges from 0 to inf
-            index_array_raw = pssr1_800/pssr1_675
+            index_array_raw = pssr1_800 / pssr1_675
         else:
             fatal_error("Available wavelengths are not suitable for calculating PSSR1. Try increasing distance.")
 
@@ -322,7 +323,7 @@ def extract_index(array, index="NDVI", distance=20):
             pssr2_800 = (array_data[:, :, [pssr2_800_index]])
             pssr2_650 = (array_data[:, :, [pssr2_650_index]])
             # Naturally ranges from 0 to inf
-            index_array_raw = pssr2_800/pssr2_650
+            index_array_raw = pssr2_800 / pssr2_650
         else:
             fatal_error("Available wavelengths are not suitable for calculating PSSR2. Try increasing distance.")
 
@@ -335,7 +336,7 @@ def extract_index(array, index="NDVI", distance=20):
             pssr3_800 = (array_data[:, :, [pssr3_800_index]])
             pssr3_500 = (array_data[:, :, [pssr3_500_index]])
             # Naturally ranges from 0 to inf
-            index_array_raw = pssr3_800/pssr3_500
+            index_array_raw = pssr3_800 / pssr3_500
         else:
             fatal_error("Available wavelengths are not suitable for calculating PSSR3. Try increasing distance.")
 
@@ -343,9 +344,9 @@ def extract_index(array, index="NDVI", distance=20):
         # Red/green ratio index (Gamon and Surfus, 1999)
         msg = 'The theoretical range for RGRI is [0, \u221e).\n'
         if (max_wavelength + distance) >= 670 and (min_wavelength - distance) <= 560:
-            red_index   = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 670)
+            red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 670)
             green_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 560)
-            red   = (array_data[:, :, [red_index]])
+            red = (array_data[:, :, [red_index]])
             green = (array_data[:, :, [green_index]])
             # Naturally ranges from 0 to inf
             index_array_raw = red / green
@@ -363,7 +364,7 @@ def extract_index(array, index="NDVI", distance=20):
             rvsi733 = (array_data[:, :, [rvsi733_index]])
             rvsi752 = (array_data[:, :, [rvsi752_index]])
             # Naturally ranges from -1 to 1
-            index_array_raw = (rvsi714+rvsi752)/2 - rvsi733
+            index_array_raw = (rvsi714 + rvsi752) / 2 - rvsi733
         else:
             fatal_error("Available wavelengths are not suitable for calculating RVSI. Try increasing distance.")
 
@@ -378,7 +379,7 @@ def extract_index(array, index="NDVI", distance=20):
             sipi680 = (array_data[:, :, [sipi680_index]])
             sipi800 = (array_data[:, :, [sipi800_index]])
             # Naturally ranges from -inf to inf
-            index_array_raw = (sipi800-sipi445)/(sipi800-sipi680)
+            index_array_raw = (sipi800 - sipi445) / (sipi800 - sipi680)
         else:
             fatal_error("Available wavelengths are not suitable for calculating SIPI. Try increasing distance.")
 
@@ -391,7 +392,7 @@ def extract_index(array, index="NDVI", distance=20):
             sr675 = (array_data[:, :, [sr675_index]])
             sr800 = (array_data[:, :, [sr800_index]])
             # Naturally ranges from 0 to inf
-            index_array_raw = sr800/sr675
+            index_array_raw = sr800 / sr675
         else:
             fatal_error("Available wavelengths are not suitable for calculating SR. Try increasing distance.")
 
@@ -399,14 +400,14 @@ def extract_index(array, index="NDVI", distance=20):
         # Visible atmospherically resistant index (Gitelson et al., 2002a)
         msg = 'The theoretical range for VARI is (-\u221e, \u221e).\n'
         if (max_wavelength + distance) >= 670 and (min_wavelength - distance) <= 470:
-            red_index   = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 670)
+            red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 670)
             green_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 560)
-            blue_index  = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 470)
-            red    = (array_data[:, :, [red_index]])
-            green  = (array_data[:, :, [green_index]])
-            blue   = (array_data[:, :, [blue_index]])
+            blue_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 470)
+            red = (array_data[:, :, [red_index]])
+            green = (array_data[:, :, [green_index]])
+            blue = (array_data[:, :, [blue_index]])
             # Naturally ranges from -inf to inf
-            index_array_raw = (green-red)/(green+red-blue)
+            index_array_raw = (green - red) / (green + red - blue)
         else:
             fatal_error("Available wavelengths are not suitable for calculating VARI. Try increasing distance.")
 
@@ -414,12 +415,12 @@ def extract_index(array, index="NDVI", distance=20):
         msg = 'The theoretical range for VI_GREEN is [-1, 1].\n'
         # Vegetation index using green band (Gitelson et al., 2002a)
         if (max_wavelength + distance) >= 670 and (min_wavelength - distance) <= 560:
-            red_index   = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 670)
+            red_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 670)
             green_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 560)
-            red    = (array_data[:, :, [red_index]])
-            green  = (array_data[:, :, [green_index]])
+            red = (array_data[:, :, [red_index]])
+            green = (array_data[:, :, [green_index]])
             # Naturally ranges from -1 to 1
-            index_array_raw = (green-red)/(green+red)
+            index_array_raw = (green - red) / (green + red)
         else:
             fatal_error("Available wavelengths are not suitable for calculating VI_green. Try increasing distance.")
 
@@ -427,12 +428,12 @@ def extract_index(array, index="NDVI", distance=20):
         # Water band index (Peñuelas et al., 1997)
         msg = 'The theoretical range for WBI is [0, \u221e).\n'
         if (max_wavelength + distance) >= 970 and (min_wavelength - distance) <= 900:
-            wbi900_index   = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 900)
-            wbi970_index   = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 970)
+            wbi900_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 900)
+            wbi970_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 970)
             wbi900 = (array_data[:, :, [wbi900_index]])
             wbi970 = (array_data[:, :, [wbi970_index]])
             # Naturally ranges from 0 to infinity
-            index_array_raw = wbi900/wbi970
+            index_array_raw = wbi900 / wbi970
         else:
             fatal_error("Available wavelengths are not suitable for calculating WBI. Try increasing distance.")
 
@@ -446,6 +447,33 @@ def extract_index(array, index="NDVI", distance=20):
     # Store debug mode
     debug = params.debug
     params.debug = None
+
+    # Check "bad" values, i.e. NANs or Infs
+    idx_nan, idy_nan = np.where(np.isnan(index_array_raw) == 1)
+    idx_inf, idy_inf = np.where(np.isinf(index_array_raw) == 1)
+    bad_pix = dict()
+    if len(idx_nan) > 0:
+        if len(idx_inf) > 0:
+            # case 1: both nan and inf issues exist
+            print(msg)
+            print('Attention: there are NAN and Inf in current VI output. The indices for those pixels are saved in the output but we would suggest removing these pixels if visualization is desired.')
+            bad_pix = {'nan': {'idx_nan': idx_nan, 'idy_nan': idy_nan}, 'inf': {'idx_inf': idx_inf, 'idy_inf': idy_inf}}
+
+        else:
+            # case 2: only the nan issue exists
+            print(msg)
+            print('Attention: There are NAN current VI. The indices for those pixels are saved in the output but we would suggest removing these pixels if visualization is desired.')
+            bad_pix = {'nan': {'idx_nan': idx_nan, 'idy_nan': idy_nan}}
+
+    elif len(idx_nan) == 0 and len(idx_inf) > 0:
+        # case 3: only the inf issue exists
+        print(msg)
+        print('Attention: There are Inf in current VI. The indices for those pixels are saved in the output but we would suggest removing these pixels if visualization is desired.')
+        bad_pix = {'inf': {'idx_inf': idx_inf, 'idy_inf': idy_inf}}
+
+    else:
+        print(msg)
+        # case 4: neither nan nor inf issue exists
 
     # Resulting array is float 32 from varying natural ranges, transform into uint8 for plotting
     all_positive = np.add(index_array_raw, 2 * np.ones(np.shape(index_array_raw)))
@@ -461,73 +489,6 @@ def extract_index(array, index="NDVI", distance=20):
                                 lines=array.lines, interleave=array.interleave,
                                 wavelength_units=array.wavelength_units, array_type="index_" + index.lower(),
                                 pseudo_rgb=scaled, filename=array.filename, default_bands=None)
-
-    # Check "bad" values, i.e. NANs or Infs
-    idx_nan, idy_nan = np.where(np.isnan(index_array_raw)==1)
-    idx_inf, idy_inf = np.where(np.isinf(index_array_raw)==1)
-
-    bad_pix = dict()
-    if len(idx_nan) > 0:
-        nan_x = np.unique(idx_nan)
-        if np.isscalar(nan_x):
-            nan_x = np.array(nan_x)
-        n_nan_x = len(nan_x)
-        nan_y = np.unique(idy_nan)
-        if np.isscalar(nan_y):
-            nan_y = np.array(nan_y)
-        n_nan_y = len(nan_y)
-        if len(idx_inf) > 0:
-            # case 1: both nan and inf issues exist
-            print(msg)
-            print('Attention: there are NAN and Inf in current VI output. The indices for those pixels are saved in the output but we would suggest removing these pixels if visualization is desired.')
-
-            inf_x = np.unique(idx_inf)
-            if np.isscalar(inf_x):
-                inf_x = np.array(inf_x)
-            n_inf_x = len(inf_x)
-            inf_y = np.unique(idy_inf)
-            if np.isscalar(inf_y):
-                inf_y = np.array(inf_y)
-            n_inf_y = len(inf_y)
-            bad_x = np.sort(np.unique(np.concatenate((nan_x, inf_x))))
-            bad_y = np.sort(np.unique(np.concatenate((nan_y, inf_y))))
-            n_bad_x = len(bad_x)
-            n_bad_y = len(bad_y)
-            bad_pix = {'nan_x': nan_x, 'nan_y': nan_y, 'inf_x': inf_x, 'inf_y': inf_y}
-        else:
-            # case 2: only the nan issue exists
-            print(msg)
-            print('Attention: There are NAN current VI. The indices for those pixels are saved in the output but we would suggest removing these pixels if visualization is desired.')
-            bad_x = nan_x
-            bad_y = nan_y
-            n_bad_x = n_nan_x
-            n_bad_y = n_nan_y
-            bad_pix = {'nan_x': nan_x, 'nan_y': nan_y, 'inf_x': None, 'inf_y': None}
-    elif len(idx_nan) == 0 and len(idx_inf) > 0:
-        # case 3: only the inf issue exists
-        print(msg)
-        print('Attention: There are Inf in current VI. The indices for those pixels are saved in the output but we would suggest removing these pixels if visualization is desired.')
-        inf_x = np.unique(idx_inf)
-        if np.isscalar(inf_x):
-            inf_x = np.array(inf_x)
-        n_inf_x = len(inf_x)
-        inf_y = np.unique(idy_inf)
-        if np.isscalar(inf_y):
-            inf_y = np.array(inf_y)
-        n_inf_y = len(inf_y)
-        bad_x = inf_x
-        bad_y = inf_y
-        n_bad_x = n_inf_x
-        n_bad_y = n_inf_y
-        bad_pix = {'nan_x': None, 'nan_y': None, 'inf_x': inf_x, 'inf_y': inf_y}
-    else:
-        print(msg)
-        # case 4: neither nan nor inf issue exists
-        n_bad_x = 0
-        n_bad_y = 0
-        bad_x = None
-        bad_y = None
-        bad_pix = {'nan_x': None, 'nan_y': None, 'inf_x': None, 'inf_y': None}
 
     # Restore debug mode
     params.debug = debug
