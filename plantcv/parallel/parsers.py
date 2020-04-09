@@ -489,100 +489,86 @@ class ParseMatchArg:
         In each iteration, the values will be stored in token, special, and
         idx.
 
-                                                         Initialization
 
-        Values of state variables
+        PERSISTENT on the left                           REPLACED EVERY LOOP on the right
+
         self.current_key = None
         self.current_value_list = []
         self.current_value = ""
         mode = "expecting_key"
 
-        -----------------------------------------------------------------
+        Iteration 1 ----------------------------------------------------
 
-                                                         Iteration 1
                                                          token = "id"
                                                          special = False
                                                          idx = 0
 
-        Values of state variables
         self.current_key = "id"
         self.current_value_list = []
         self.current_value = ""
         mode = "expecting_colon"
 
-        ----------------------------------------------------------------
+        Iteration 2 ----------------------------------------------------
 
-                                                        Iteration 2
                                                         token = ":"
                                                         special = True
                                                         idx = 2
 
-        Values of state variables
         self.current_key = "id"
         self.current_value_list = []
         self.current_value = ""
         mode = "expecting_value"
 
-        ----------------------------------------------------------------
+        Iteration 3 ---------------------------------------------------
 
-                                                        Iteration 3
                                                         token = "["
                                                         special = True
                                                         idx = 3
 
-        Values of state variables
         self.current_key = "id"
         self.current_value_list = []
         self.current_value = ""
         mode = "expecting_list_value"
 
-        ----------------------------------------------------------------
+        Iteration 4 ---------------------------------------------------
 
-                                                        Iteration 4
-                                                        token = "1"
-                                                        special = False
-                                                        idx = 4
+                                                       token = "1"
+                                                       special = False
+                                                       idx = 4
 
-        Values of state variables
         self.current_key = "id"
         self.current_value_list = [1]
         self.current_value = ""
         mode = "expecting_list_comma"
 
-        ----------------------------------------------------------------
+        Iteration 5 ---------------------------------------------------
 
-                                                       Iteration 5
                                                        token = ","
                                                        special = True
                                                        idx = 5
 
-        Values of state variables
         self.current_key = "id"
         self.current_value_list = ["1"]
         self.current_value = ""
         mode = "expecting_list_value"
 
-        ----------------------------------------------------------------
+        Iteration 6 ---------------------------------------------------
 
-                                                       Iteration 6
                                                        token = "2"
                                                        special = False
                                                        idx = 6
 
-        Values of state variables
         self.current_key = "id"
         self.current_value_list = ["1","2"]
         self.current_value = ""
         mode = "expecting_list_comma"
 
-        ----------------------------------------------------------------
+        Iteration 7 ---------------------------------------------------
 
-                                                       Iteration 7
                                                        token = "]"
                                                        special = True
                                                        idx = 7
 
-        Values of state variables
         self.current_key = "id"
         self.current_value_list = ["1","2"]
         self.current_value = ""
