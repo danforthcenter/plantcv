@@ -307,7 +307,7 @@ class ShowSourceOfError(ValueError):
     message = ""
     def __init__(self, index, source_string):
         super().__init__(error_message(self.message,
-                                       index, 
+                                       index,
                                        source_string))
 
 class EmptyKeyError(ShowSourceOfError):
@@ -448,13 +448,13 @@ class ParseMatchArg:
         If the key already exists, self.current_value_list will be
         added to the existing values, instead of replacing them.
         """
-        if self.current_key != "":
+        if self.current_key is not None:
             if self.current_key in self.out:
                 self.out[self.current_key].extend(self.current_value_list)
             else:
                 self.out[self.current_key] = self.current_value_list
             self.current_value_list = []
-            self.current_key = ""
+            self.current_key = None
 
 
     def _create_dictionary(self):
@@ -490,7 +490,7 @@ class ParseMatchArg:
         idx.
 
         Values of state variables
-            self.current_key = ""
+            self.current_key = None
             self.current_value_list = []
             self.current_value = ""
             mode = "expecting_key"
@@ -587,7 +587,7 @@ class ParseMatchArg:
         """
         mode = "expecting_key"
         self.out = {}
-        self.current_key = ""
+        self.current_key = None
         self.current_value_list = []
         self.current_value = ""
         for token, special, idx, in zip(self.tokens,
@@ -658,7 +658,7 @@ class ParseMatchArg:
                                   self.match_string)
         elif mode == "expecting_key":
             #E.g. "camera:id,"
-            raise EmptyKeyError(idx + 1, 
+            raise EmptyKeyError(idx + 1,
                                 self.match_string)
         elif mode == "expecting_colon":
             #E.g. "camera:1,2"
