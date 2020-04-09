@@ -479,10 +479,15 @@ class ParseMatchArg:
 
         Here is an example of how a list of tokens might be parsed:
 
-        Assume the following:
-            self.tokens =  ["id",  ":",  "[",  "1",   ",",  "2",   "]"]
-            self.special = [False, True, True, False, True, False, True]
-            self.indices =     [0,     2,    3,    4,     5,    6,     7]
+        Assume the string "id:[1a,2a]" has been parsed into the following three lists:
+            self.tokens =  ["id",   ":",   "[",   "1a",   ",",   "2a",   "]"]
+            self.special = [False,  True,  True,  False,  True,  False,  True]
+            self.indices = [0,      2,     3,     4,      6,     7,      8]
+
+       These will be represented with the following shorthand:
+            tokens  id:[1a,2a]
+            special F TTF TF T
+            indices 0 234 67 8
 
         The function will iterate over self.tokens, self.special, and
         self.indices.
@@ -499,8 +504,8 @@ class ParseMatchArg:
 
 
         Iteration 1 id:[1a,2b] -----------------------------------------
-                    0 234 67 9
                     F TTF TF T
+                    0 234 67 9
                     ==
                                                          token = "id"
                                                          special = False
@@ -512,8 +517,8 @@ class ParseMatchArg:
         mode = "expecting_colon"
 
         Iteration 2 id:[1a,2b] -----------------------------------------
-                    0 234 67 9
                     F TTF TF T
+                    0 234 67 9
                       =
                                                         token = ":"
                                                         special = True
@@ -525,8 +530,8 @@ class ParseMatchArg:
         mode = "expecting_value"
 
         Iteration 3 id:[1a,2b] -----------------------------------------
-                    0 234 67 9
                     F TTF TF T
+                    0 234 67 9
                        =
                                                         token = "["
                                                         special = True
@@ -538,8 +543,8 @@ class ParseMatchArg:
         mode = "expecting_list_value"
 
         Iteration 4 id:[1a,2b] -----------------------------------------
-                    0 234 67 9
                     F TTF TF T
+                    0 234 67 9
 	                ==
                                                        token = "1"
                                                        special = False
@@ -551,8 +556,8 @@ class ParseMatchArg:
         mode = "expecting_list_comma"
 
         Iteration 5 id:[1a,2b] -----------------------------------------
-                    0 234 67 9
                     F TTF TF T
+                    0 234 67 9
                           =
                                                        token = ","
                                                        special = True
@@ -564,8 +569,8 @@ class ParseMatchArg:
         mode = "expecting_list_value"
 
         Iteration 6 id:[1a,2b] -----------------------------------------
-                    0 234 67 9
                     F TTF TF T
+                    0 234 67 9
                            ==
                                                        token = "2b"
                                                        special = False
@@ -577,8 +582,8 @@ class ParseMatchArg:
         mode = "expecting_list_comma"
 
         Iteration 7 id:[1a,2b] -----------------------------------------
-                    0 234 67 9
                     F TTF TF T
+                    0 234 67 9
                              =
                                                        token = "]"
                                                        special = True
