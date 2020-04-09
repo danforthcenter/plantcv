@@ -465,46 +465,51 @@ class ParseMatchArg:
 
         While reading the list of tokens, the system can be in one of
         six possible states, each describing what is expected to come next:
-            expecting_key: Expecting a key, e.g. the "a" in "a:b"
+            expecting_key: Expecting a key, e.g. the "key" in "key:value"
             expecting_colon: Expecting a colon
-            expecting_value: Expecting a value, e.g. the "b" in "a:b"
-            expecting_key_comma: Expecting a comma outside a list, e,g. "a:b,c:d"
+            expecting_value: Expecting a value, e.g. the "value" in "key:value"
+            expecting_key_comma: Expecting a comma between key-value pairs, e.g. "a:b,c:d"
             expecting_list_comma: Expecting a comma inside a list, e.g. "[1,2]"
-                                  The closing bracket is also a valid symbol 
+                                  The closing bracket is also a valid symbol
                                   here.
-            expecting_list_value: Expecting a non-comma, non-bracket item 
+            expecting_list_value: Expecting a non-comma, non-bracket item
                                   inside a list
         The initial state is expecting_key. The state is stored in the variable
         mode.
 
         Here is an example of how a list of tokens might be parsed:
-            
+
         Assume the following:
             self.tokens =  ["id",  ":",  "[",  "1",   ",",  "2",   "]"]
             self.special = [False, True, True, False, True, False, True]
             self.indices =     [0,     2,    3,    4,     5,    6,     7]
 
-        The function will iterate over self.tokens, self.special, and 
+        The function will iterate over self.tokens, self.special, and
         self.indices.
-        In each iteration, the values will be stored in token, special, and 
+        In each iteration, the values will be stored in token, special, and
         idx.
-        
+
         Values of state variables
             self.current_key = ""
             self.current_value_list = []
             self.current_value = ""
             mode = "expecting_key"
-        
+
         Iteration 1
             token = "id"
             special = False
             idx = 0
-            
+
         Values of state variables
-            self.current_key = ""
+            self.current_key = "id"
             self.current_value_list = []
             self.current_value = ""
             mode = "expecting_key"
+
+        Iteration 2
+            token = "id"
+            special = False
+            idx = 0
 
         Args:
             tokens: the text content of each token
