@@ -499,6 +499,7 @@ class ParseMatchArg:
 
 
         Iteration 1 id:[1,2] -------------------------------------------
+                    0 234567
                     ==
                                                          token = "id"
                                                          special = False
@@ -510,6 +511,7 @@ class ParseMatchArg:
         mode = "expecting_colon"
 
         Iteration 2 id:[1,2] -------------------------------------------
+                    0 234567
                       =
                                                         token = ":"
                                                         special = True
@@ -521,6 +523,7 @@ class ParseMatchArg:
         mode = "expecting_value"
 
         Iteration 3 id:[1,2] -------------------------------------------
+                    0 234567
                        =
                                                         token = "["
                                                         special = True
@@ -532,6 +535,7 @@ class ParseMatchArg:
         mode = "expecting_list_value"
 
         Iteration 4 id:[1,2] -------------------------------------------
+                    0 234567
                         =
                                                        token = "1"
                                                        special = False
@@ -543,6 +547,7 @@ class ParseMatchArg:
         mode = "expecting_list_comma"
 
         Iteration 5 id:[1,2] -------------------------------------------
+                    0 234567
                          =
                                                        token = ","
                                                        special = True
@@ -554,6 +559,7 @@ class ParseMatchArg:
         mode = "expecting_list_value"
 
         Iteration 6 id:[1,2] -------------------------------------------
+                    0 234567
                           =
                                                        token = "2"
                                                        special = False
@@ -564,7 +570,8 @@ class ParseMatchArg:
         self.current_value = ""
         mode = "expecting_list_comma"
 
-        Iteration 6 id:[1,2] -------------------------------------------
+        Iteration 7 id:[1,2] -------------------------------------------
+                    0 234567
                            =
                                                        token = "]"
                                                        special = True
