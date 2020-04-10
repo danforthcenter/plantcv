@@ -495,104 +495,102 @@ class ParseMatchArg:
         idx.
 
 
-        PERSISTENT on the left                           REPLACED EVERY LOOP on the right
+        CHANGING on the left       PERSISTENT on the right
 
-        self.current_key = None
-        self.current_value_list = []
-        self.current_value = ""
-        mode = "expecting_key"
+                                   self.current_key = None
+                                   self.current_value_list = []
+                                   self.current_value = ""
+                                   mode = "expecting_key" #The string should start with a key
 
 
         Iteration 1 id:[1a,2b] -----------------------------------------
                     F TTF TF T
                     0 234 67 9
                     ==
-                                                         token = "id"
-                                                         special = False
-                                                         idx = 0
-
-        self.current_key = "id"
-        self.current_value_list = []
-        self.current_value = ""
-        mode = "expecting_colon"
+        token = "id"
+        special = False
+        idx = 0
+                                   self.current_key = "id" #Record key
+                                   self.current_value_list = []
+                                   self.current_value = ""
+                                   mode = "expecting_colon" #After the key should be a colon
 
         Iteration 2 id:[1a,2b] -----------------------------------------
                     F TTF TF T
                     0 234 67 9
                       =
-                                                        token = ":"
-                                                        special = True
-                                                        idx = 2
+        token = ":"
+        special = True
+        idx = 2
 
-        self.current_key = "id"
-        self.current_value_list = []
-        self.current_value = ""
-        mode = "expecting_value"
+                                   self.current_key = "id" #Key is still here
+                                   self.current_value_list = []
+                                   self.current_value = ""
+                                   mode = "expecting_value" #After the colon should be a value
 
         Iteration 3 id:[1a,2b] -----------------------------------------
                     F TTF TF T
                     0 234 67 9
                        =
-                                                        token = "["
-                                                        special = True
-                                                        idx = 3
+        token = "["
+        special = True
+        idx = 3
 
-        self.current_key = "id"
-        self.current_value_list = []
-        self.current_value = ""
-        mode = "expecting_list_value"
+                                   self.current_key = "id"
+                                   self.current_value_list = []
+                                   self.current_value = ""
+                                   mode = "expecting_list_value" #We got a bracket. There should be a 
 
         Iteration 4 id:[1a,2b] -----------------------------------------
                     F TTF TF T
                     0 234 67 9
 	                ==
-                                                       token = "1"
-                                                       special = False
-                                                       idx = 4
+        token = "1a"
+        special = False
+        idx = 4
 
-        self.current_key = "id"
-        self.current_value_list = ["1a"]
-        self.current_value = ""
-        mode = "expecting_list_comma"
+                                   self.current_key = "id"
+                                   self.current_value_list = ["1a"] #Record value
+                                   self.current_value = ""
+                                   mode = "expecting_list_comma"
 
         Iteration 5 id:[1a,2b] -----------------------------------------
                     F TTF TF T
                     0 234 67 9
                           =
-                                                       token = ","
-                                                       special = True
-                                                       idx = 6
+        token = ","
+        special = True
+        idx = 6
 
-        self.current_key = "id"
-        self.current_value_list = ["1a"]
-        self.current_value = ""
-        mode = "expecting_list_value"
+                                   self.current_key = "id"
+                                   self.current_value_list = ["1a"]
+                                   self.current_value = ""
+                                   mode = "expecting_list_value"
 
         Iteration 6 id:[1a,2b] -----------------------------------------
                     F TTF TF T
                     0 234 67 9
                            ==
-                                                       token = "2b"
-                                                       special = False
-                                                       idx = 7
+        token = "2b"
+        special = False
+        idx = 7
 
-        self.current_key = "id"
-        self.current_value_list = ["1a","2b"]
-        self.current_value = ""
-        mode = "expecting_list_comma"
+                                   self.current_key = "id"
+                                   self.current_value_list = ["1a","2b"] #Record second value
+                                   self.current_value = ""
+                                   mode = "expecting_list_comma"
 
         Iteration 7 id:[1a,2b] -----------------------------------------
                     F TTF TF T
                     0 234 67 9
                              =
-                                                       token = "]"
-                                                       special = True
-                                                       idx = 7
-
-        self.current_key = "id"
-        self.current_value_list = ["1a","2b"]
-        self.current_value = ""
-        mode = "expecting_key_comma"
+        token = "]"
+        special = True
+        idx = 7
+                                   self.current_key = "id"
+                                   self.current_value_list = ["1a","2b"]
+                                   self.current_value = ""
+                                   mode = "expecting_key_comma"
 
         At this point, the key-value pair {"id":["1a","2b"]} will be added to self.out.
 
