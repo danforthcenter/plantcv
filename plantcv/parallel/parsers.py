@@ -394,13 +394,20 @@ class ParseMatchArg:
 
         :param match_string: str
         """
+        #Master list of tokens
         self.tokens = []
-        escaped = False
-        active_quotes = []
-        quote_symbols = ["'",'"']
-        self.current_item = ""
+        #Store whether each token is special
         self.specials = []
+        #Store the position in the original string where each token was found
         self.indices = []
+        #Whether the current character has been escaped
+        escaped = False
+        #Store the opening quotation marks we are currently inside
+        active_quotes = []
+        #Formally store a list of quotation marks
+        quote_symbols = ["'",'"']
+        #Store the current character in the string
+        self.current_item = ""
         for idx, char in enumerate(self.match_string):
             if escaped:
                 self.current_item += char
