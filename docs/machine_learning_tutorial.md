@@ -70,13 +70,34 @@ To collect pixel samples, open the color image in ImageJ.
 
 ![Screenshot](img/tutorial_images/machine_learning/color_image.jpg)
 
-Use the Pixel Inspector Tool to select regions of the image belonging to a single class. Clicking on a pixel in the image will give you a set of R,G,B values for a window of pixels around the central pixel. From the "Pixel Values" window you can copy the values to a text editor that supports Find & Replace of regex, such as [Atom](https://atom.io/) or [VS Code](https://code.visualstudio.com/). Copy and paste the pixel red,
-green, and blue values into a spreadsheet or text editor and reformat into a single column per class. 
-In this example, nine pixels are sampled with one click but the radius is adjustable.
+Use the Pixel Inspector Tool to select regions of the image belonging to a single class. Clicking on a pixel in the image will give you a set of R,G,B values for a window of pixels around the central pixel. In this example, nine pixels are sampled with one click but the radius is adjustable.
 
 ![Screenshot](img/tutorial_images/machine_learning/imagej_pixel_inspector.jpg)
 
-Then find and replace `\s` with `\n` to convert the text file into a single column. Add a header to the column. If you need to do this with multiple classes, do this in a separate text file for each class. Then copy and paste each class into a separate column in a spreadsheet (e.g. Excel), save as a "tab-delimited" file, open it in your text editor, and finally replace all `"` with nothing. An example table built from pixel samples looks like this:
+From the "Pixel Values" window you can copy the values and paste them into a text editor that supports Find & Replace of regex, such as [Atom](https://atom.io/) or [VS Code](https://code.visualstudio.com/). The R,G,B values for a class should be proceeded with a line that contains only the class name.
+Open "Find and Replace" in your text editor and search for `\s` and replace with `\n`. This will convert the text file into a single column. Ultimately, the file contents should look like this (make sure there are no numbers in class names):
+
+```
+Plant
+0,255,0
+Postule
+0,0,255
+Chlorosis
+255,0,0
+Background
+255,255,255
+```
+
+Next, each class needs to be in its own column for the `plantcv-train`. Each class can be copied into a column in a spreadsheet (e.g. Excel) and saved as a "tab delimited file". Alternatively, if you have R installed you can use a utility script provided with PlantCV that will convert the single column file to a multicolumn file. You can download the script from [GitHub](https://raw.githubusercontent.com/danforthcenter/plantcv/master/utils/util-prepare_bayes_class_columns.R) and run it with
+
+```
+Rscript --vanilla util-prepare_bayes_class_columns.R "data/naive_bayes_training/bayes_rgb.tsv"
+```
+
+where `data/naive_bayes_training/bayes_rgb.tsv` is the path and filename with the pixel values you created above. The script will output a file called `bayes_rgb_trainingclasses.tsv` in the same directory as your `bayes_rgb.tsv` file.
+
+An example table built from pixel samples for use in `plantcv-train.py` looks like this:
+
 
 ```
 Plant	    Pustule	    Chlorosis	Background
