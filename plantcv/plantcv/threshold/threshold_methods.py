@@ -454,8 +454,8 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         print_image(mask, os.path.join(params.debug_outdir,
                                        str(params.device) + channel + 'custom_thresh_mask.png'))
     elif params.debug == 'plot':
-        plot_image(masked_img)
         plot_image(mask)
+        plot_image(masked_img)
 
     return mask, masked_img
 
