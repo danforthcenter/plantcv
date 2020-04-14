@@ -19,7 +19,7 @@ We can use PlantCV to create a binary mask for a set of input images using the m
 [VIS tutorial](vis_tutorial.md). Alternatively, you can outline and create masks by hand.
 
 For the purpose of this tutorial, we assume we are in a folder containing two subfolders, one containing original RGB
-images, and one containing black and white masks match the set of RGB images.
+images, and one containing black and white masks that match the set of RGB images.
 
 First, use `plantcv-train.py` to use the training images to output probability density functions (PDFs) for plant
 and background.
@@ -179,5 +179,4 @@ plantcv-workflow.py \
 ```
 
 *  Always test workflows (preferably with -D flag set to 'print') on a smaller dataset before running over a full image set.* You can create a sample of your images with [`plantcv-utils.py sample_images`](tools.md).
-
 
