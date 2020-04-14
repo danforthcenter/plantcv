@@ -9,6 +9,7 @@ on using wavelengths that are at least close to the wavelength bands require to 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
 a python dictionary of the location (x- & y-axis) of "bad" pixels (pixels with VI values being NAN or Inf). With the locations of "bad" pixels available, users will be able to remove those pixels for a better visualization
+(Refer to pcv.threshold.mask_bad as how to get a mask of these pixels, and pcv.visualize.pseudocolor as how to visuzlize the vegetation index with these pixel marked as red)
 
 - **Parameters:**
     - array         - A hyperspectral datacube object, an instance of the `Spectral_data` class, (read in with [pcv.readimage](read_image.md) with `mode='envi'`)
