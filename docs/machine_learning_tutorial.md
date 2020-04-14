@@ -133,7 +133,6 @@ def options():
     parser.add_argument("-i", "--image", help="Input image file.", required=True)
     parser.add_argument("-o", "--outdir", help="Output directory for image files.", required=False)
     parser.add_argument("-r", "--result", help="result file.", required=False)
-    parser.add_argument("-r2", "--coresult", help="result file.", required=False)
     parser.add_argument("-w", "--writeimg", help="write out images.", default=False, action="store_true")
     parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.", default=None)
     parser.add_argument("-p", "--pdfs", help="Naive Bayes PDF file.", required=True)
@@ -179,4 +178,3 @@ plantcv-workflow.py \
 ```
 
 *  Always test workflows (preferably with -D flag set to 'print') on a smaller dataset before running over a full image set.* You can create a sample of your images with [`plantcv-utils.py sample_images`](tools.md).
-
