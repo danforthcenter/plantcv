@@ -98,7 +98,7 @@ def analyze_nir_intensity(gray_img, mask, bins=256, histplot=False):
                             method='plantcv.plantcv.analyze_nir_intensity', scale='none', datatype=float,
                             value=masked_nir_mean, label='none')
     outputs.add_observation(variable='nir_median', trait='near-infrared median',
-                            method='plantcv.plantcv.analyze_nir_intensity', scale='frequency', datatype=float,
+                            method='plantcv.plantcv.analyze_nir_intensity', scale='none', datatype=float,
                             value=masked_nir_median, label='none')
     outputs.add_observation(variable='nir_stdev', trait='near-infrared standard deviation',
                             method='plantcv.plantcv.analyze_nir_intensity', scale='frequency', datatype=float,
