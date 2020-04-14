@@ -11,7 +11,7 @@
 # Necrosis
 # 255,0,0
 #
-# Example: Rscript --vanilla scripts/prepare_bayes_classes.R "data/naive_bayes_training/bayes_rgb.tsv"
+# Example: Rscript --vanilla util-prepare_bayes_class_columns.R "data/naive_bayes_training/bayes_rgb.tsv"
 
 # Get command line arguments
 args = commandArgs(trailingOnly = T)
