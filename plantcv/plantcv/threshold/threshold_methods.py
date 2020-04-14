@@ -719,3 +719,53 @@ def saturation(rgb_img, threshold=255, channel = "any"):
     elif params.debug == 'plot':
         plot_image(bin_img, cmap='gray')
     return bin_img
+
+
+def mask_bad(gray_img, bad_idx, bad_type='native'):
+    """ Returns a mask indicating the locations of "bad" pixels
+
+    Inputs:
+    gray_img        = gray scale image
+    bad_idx         = a dictionary indicating the locations of NAN and/or Inf pixels
+    bad_type        = interested type of bad pixels, "nan", "inf" or "native"
+        - if there are both nan and inf in the bad_idx dictionary, and the bad_type is "native", the returned mask would be one that mask out both types of bad pixels
+        - if there are either nan or inf in the bad_idx dictionary, and the bad_type is "native", the returned mask would be the one same as the dictionary indicated
+        - if there are either nan or inf in the bad_idx dictionary, and the bad_type is different from the dictionary indicated, an error would return
+
+    Returns:
+    mask            = a binary image with desired "bad" pixels being "white" (255)
+
+    :param gray_img: np.ndarray
+    :param bad_idx: dictionary
+    :param bad_type: str
+    :return masked: np.ndarray, type: uint8, unique values: 0, 255
+    """
+    dict_keys = list(bad_idx.keys())
+    size_img  = np.shape(gray_img)
+    if bad_type.lower() == 'native' and len(dict_keys) == 1:
+        mask = _get_mask(size_img, bad_idx, dict_keys[0])
+    elif bad_type.lower() == 'native' and len(dict_keys) > 1:
+        mask_ = _get_mask(size_img, bad_idx, 'nan')
+        mask  = mask_ + _get_mask(size_img, bad_idx, 'inf')
+    elif bad_type.lower() != 'native' and bad_type.lower() in bad_idx:
+        mask = _get_mask(size_img, bad_idx, bad_type.lower())
+    else:
+        fatal_error('{} does not appear in the current image.'.format(bad_type.lower()))
+    return mask
+
+
+def _get_mask(size_img, bad_idx, bad_type):
+    """ A helper function Returns a mask indicating the locations of "bad" pixels
+
+    Inputs:
+    size_img        = size of the input image
+    bad_idx         = a dictionary indicating the locations of NAN and/or Inf pixels
+    bad_type        = interested type of bad pixels, either 'nan' or 'inf'
+
+    Returns:
+    mask            = a binary image with desired "bad" pixels being "white" (255)
+    """
+    mask = np.zeros(size_img, dtype='uint8')
+    mask[bad_idx[bad_type.lower()]['idx_{}'.format(bad_type.lower())], bad_idx[bad_type.lower()][
+        'idy_{}'.format(bad_type.lower())]] = 255
+    return mask
