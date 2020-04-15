@@ -42,6 +42,11 @@ def analyze_nir_intensity(gray_img, mask, bins=256, histplot=False):
     else:
         maxval = 256
 
+    masked_array = gray_img[np.where(mask > 0)]
+    masked_nir_mean = np.average(masked_array)
+    masked_nir_median = np.median(masked_array)
+    masked_nir_std = np.std(masked_array)
+
     # Make a pseudo-RGB image
     rgbimg = cv2.cvtColor(gray_img, cv2.COLOR_GRAY2BGR)
 
@@ -89,6 +94,15 @@ def analyze_nir_intensity(gray_img, mask, bins=256, histplot=False):
     outputs.add_observation(variable='nir_frequencies', trait='near-infrared frequencies',
                             method='plantcv.plantcv.analyze_nir_intensity', scale='frequency', datatype=list,
                             value=hist_nir, label=bin_labels)
+    outputs.add_observation(variable='nir_mean', trait='near-infrared mean',
+                            method='plantcv.plantcv.analyze_nir_intensity', scale='none', datatype=float,
+                            value=masked_nir_mean, label='none')
+    outputs.add_observation(variable='nir_median', trait='near-infrared median',
+                            method='plantcv.plantcv.analyze_nir_intensity', scale='none', datatype=float,
+                            value=masked_nir_median, label='none')
+    outputs.add_observation(variable='nir_stdev', trait='near-infrared standard deviation',
+                            method='plantcv.plantcv.analyze_nir_intensity', scale='none', datatype=float,
+                            value=masked_nir_std, label='none')
 
     # Store images
     outputs.images.append(analysis_image)
