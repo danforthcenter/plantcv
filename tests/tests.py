@@ -14,6 +14,7 @@ import plantcv.utils
 # Import matplotlib and use a null Template to block plotting to screen
 # This will let us test debug = "plot"
 import matplotlib
+import pickle as pkl
 
 PARALLEL_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "parallel_data")
 TEST_TMPDIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".cache")
@@ -647,6 +648,7 @@ TEST_SKELETON_HIERARCHIES = "skeleton_hierarchies.npz"
 TEST_THERMAL_ARRAY = "thermal_img.npz"
 TEST_THERMAL_IMG_MASK = "thermal_img_mask.png"
 TEST_INPUT_THERMAL_CSV = "FLIR2600.csv"
+TEST_BAD_MASK = "bad_mask_test.pkl"
 
 
 # ##########################
@@ -5381,6 +5383,7 @@ def test_plantcv_visualize_pseudocolor():
     pcv.params.debug_outdir = cache_dir
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    mask_bad = pkl.load(open(os.path.join(TEST_DATA, TEST_BAD_MASK), 'rb'))
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
     obj_contour = contours_npz['arr_0']
     filename = os.path.join(cache_dir, 'plantcv_pseudo_image.png')
@@ -5402,7 +5405,7 @@ def test_plantcv_visualize_pseudocolor():
     # Test with debug = None
     pcv.params.debug = None
     _ = pcv.visualize.pseudocolor(gray_img=img, mask=None)
-    pseudo_img = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="white")
+    pseudo_img = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="white", bad_mask=mask_bad)
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(pseudo_img), TEST_BINARY_DIM)):
         assert 1
