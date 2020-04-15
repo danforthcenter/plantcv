@@ -5,7 +5,7 @@ pseudocolored image. Additionally, optional maximum and minimum values can be sp
 then the image gets saved to `pcv.params.debug_outdir`, and`pcv.params.dpi` can be set for the image that gets saved. If
 unaltered, the  matplotlib default is 100 pixels per inch.
 
-**plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, background="image", cmap=None, min_value=0, max_value=255, axes=True, colorbar=True, obj_padding='auto'*)
+**plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, background="image", cmap=None, min_value=0, max_value=255, axes=True, colorbar=True, obj_padding='auto', bad_mask=None, bad_color="red"*)
 
 **returns** pseudocolored image (that can be saved with `pcv.print_image`)
 
@@ -20,6 +20,8 @@ unaltered, the  matplotlib default is 100 pixels per inch.
     - axes       - If False then the title, x-axis, and y-axis won't be displayed (default axes=True).
     - colorbar   - If False then the colorbar won't be displayed (default colorbar=True)
     - obj_padding    - if "auto" (default) and an obj is supplied, then the image is cropped to an extent 20% larger in each dimension than the object. A single integer is also accepted to define the padding in pixels.
+    - bad_mask   - If bad_mask is not none, but a binary mask indicating the location of user difined "bad" pixels, the function will plot the visualization of the input image with those "bad" pixels marked with the color define in "bad_color".
+    - bad_color  - The color that shows bad pixels in output visualization image, default: "red"
 
 - **Context:**
     - Used to pseudocolor any grayscale image to custom colormap
@@ -71,6 +73,9 @@ simple_pseudo_img = pcv.visualize.pseudocolor(gray_img=img, obj=None, mask=mask,
                                               background="image", axes=False,
                                               colorbar=False, cmap='viridis')
 
+# When there are some user defined "bad" pixels indicated in array "bad_mask", and the red color is used to visualize them in the visualization.
+
+
 ```
 
 **Pseudocolored Image**
@@ -96,5 +101,8 @@ simple_pseudo_img = pcv.visualize.pseudocolor(gray_img=img, obj=None, mask=mask,
 **Pseudocolored, Plotted on Input Image (no axes or colorbar)**
 
 ![Screenshot](img/documentation_images/pseudocolor/pseudo_onimage_simple.jpg)
+
+**Pseudocolored, Pixels With User Defined "bad" Values Marked Using Red Color (no axes or colorbar)**
+![Screenshot](img/documentation_images/pseudocolor/pseudo_bad_marked.jpg)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/visualize/pseudocolor.py)
