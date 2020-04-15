@@ -10,7 +10,7 @@ from plantcv.plantcv import fatal_error
 
 
 def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255,
-                axes=True, colorbar=True, obj_padding="auto"):
+                axes=True, colorbar=True, obj_padding="auto", bad_mask=None, bad_color="red"):
     """Pseudocolor any grayscale image to custom colormap
 
     Inputs:
@@ -53,6 +53,12 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
     # Check if the image is grayscale
     if len(np.shape(gray_img)) != 2:
         fatal_error("Image must be grayscale.")
+
+    # Apply the bad pixel mask if given
+    if bad_mask is not None:
+        current_cmap = matplotlib.cm.get_cmap()
+        current_cmap.set_bad(color=bad_color)
+        gray_img1 = np.ma.array(gray_img1, mask=bad_mask)
 
     # Apply the mask if given
     if mask is not None:
@@ -172,3 +178,4 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
             plt.show(block=False)
 
     return pseudo_img
+
