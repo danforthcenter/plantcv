@@ -5354,6 +5354,21 @@ def test_plantcv_threshold_texture():
     else:
         assert 0
 
+def test_plantcv_threshold_get_mask():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_mask_bad")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    gray_img, _, _ = pcv.readimage(os.path.join(TEST_DATA, TEST_INPUT_GRAY_SMALL), 'gray')
+    sz = np.shape(gray_img)
+    # Load corresponding dictionary of "bad" pixel indices
+    bad_pix2 = pkl.load(open(os.path.join(TEST_DATA, TEST_BAD_INDEX2), 'rb')) #bad_pix2 contains both inf and nan
+
+    mask20 = pcv.threshold._get_mask(sz, bad_pix2, 'nan')
+    l20 = len(np.unique(mask20))
+    assert ((np.shape(mask20) == sz) and (l20 == 2))
+
 def test_plantcv_threshold_mask_bad():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_mask_bad")
