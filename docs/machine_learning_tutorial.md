@@ -6,8 +6,6 @@ below we describe how to train and use the first trainable classifier we have ma
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/machine_learning.ipynb) Check out our interactive machine learning tutorial! 
 
-Also see [here](#machine-learning-script) for the complete script. 
-
 ### Naive Bayes
 
 The naive Bayes approach used here can be trained to label pixels as plant or background. In other words, given a color image it can be
@@ -19,7 +17,7 @@ We can use PlantCV to create a binary mask for a set of input images using the m
 [VIS tutorial](vis_tutorial.md). Alternatively, you can outline and create masks by hand.
 
 For the purpose of this tutorial, we assume we are in a folder containing two subfolders, one containing original RGB
-images, and one containing black and white masks match the set of RGB images.
+images, and one containing black and white masks that match the set of RGB images.
 
 First, use `plantcv-train.py` to use the training images to output probability density functions (PDFs) for plant
 and background.
@@ -70,27 +68,55 @@ To collect pixel samples, open the color image in ImageJ.
 
 ![Screenshot](img/tutorial_images/machine_learning/color_image.jpg)
 
-Use the Pixel Inspector Tool to select regions of the image belonging to a single class. Clicking on a pixel in the image will give you a set of R,G,B values for a window of pixels around the central pixel. From the "Pixel Values" window you can copy the values to a text editor that supports Find & Replace of regex, such as [Atom](https://atom.io/) or [VS Code](https://code.visualstudio.com/). Copy and paste the pixel red,
-green, and blue values into a spreadsheet or text editor and reformat into a single column per class. 
-In this example, nine pixels are sampled with one click but the radius is adjustable.
+Use the Pixel Inspector Tool to select regions of the image belonging to a single class. Clicking on a pixel in the image will give you a set of R,G,B values for a window of pixels around the central pixel. In this example, nine pixels are sampled with one click but the radius is adjustable in "Prefs".
 
 ![Screenshot](img/tutorial_images/machine_learning/imagej_pixel_inspector.jpg)
 
-Then find and replace `\s` with `\n` to convert the text file into a single column. Add a header to the column. If you need to do this with multiple classes, do this in a separate text file for each class. Then copy and paste each class into a separate column in a spreadsheet (e.g. Excel), save as a "tab-delimited" file, open it in your text editor, and finally replace all `"` with nothing. An example table built from pixel samples looks like this:
+From the "Pixel Values" window you can copy the values and paste them into a text editor such as Notepad on Windows, TextEditor on MacOS, [Atom](https://atom.io/) or [VS Code](https://code.visualstudio.com/). The R,G,B values for a class should be proceeded with a line that contains the class name preceded by a `#`.
+The file contents should look like this:
 
 ```
-Plant	    Pustule	    Chlorosis	Background
-109,122,68	136,96,0	151,155,65	227,226,221
-103,114,58	139,93,0	148,151,67	232,231,226
-92,103,46	142,94,0	143,147,59	230,229,224
-94,110,52	156,110,33	177,170,109	226,225,220
-94,110,52	166,116,49	179,172,111	226,225,220
-91,107,48	162,106,43	182,173,107	230,229,224
-91,104,50	161,103,40	187,181,79	228,227,222
-78,91,35	153,96,26	180,174,70	228,227,222
-85,99,44	148,90,17	183,179,77	230,229,224
-90,100,48	150,95,23	129,129,37	229,228,223
-81,91,38	147,95,23	118,118,22	230,229,224
+#plant
+93,166,104	94,150,101	82,137,91
+86,154,102	87,145,94	79,137,95
+116,185,135	103,172,126	96,166,126
+#postule
+216,130,52	217,129,51	221,132,53
+218,131,53	223,132,54	221,132,53
+219,131,54	221,132,54	225,135,56
+#chlorosis
+255,242,89	255,241,90	255,239,87
+254,239,87	255,241,90	254,238,88
+255,241,88	253,238,87	255,240,90
+#background
+31,42,54	42,52,60	40,49,58
+28,38,51	32,43,55	36,47,59
+24,35,45	30,40,50	37,49,66
+```
+
+Next, each class needs to be in its own column for the `plantcv-train`. You can use a utility script provided with PlantCV in `plantcv-utils.py` that will convert the data from the Pixel Inspector to a table for the bayes training algorithm.
+
+```
+python plantcv-utils.py tabulate_bayes_classes -i pixel_inspector_rgb_values.txt -o bayes_classes.tsv
+```
+
+A note if you are using Windows you will need to specify the whole path to `plantcv-utils.py`. For example with an Anaconda installation it would be `python %CONDA_PREFIX%/Scripts/plantcv-utils.py tabulate_bayes_classes -i pixel_inspector_rgb_values.txt -o bayes_classes.tsv`
+
+where `pixel_inspector_rgb_values.txt` is the file with the pixel values you created above and `bayes_classes.tsv` is the file with the table for `plantcv-train.py`.
+
+An example table built from pixel samples for use in `plantcv-train.py` looks like this:
+
+```
+plant	postule	chlorosis	background
+93,166,104	216,130,52	255,242,89	31,42,54
+94,150,101	217,129,51	255,241,90	42,52,60
+82,137,91	221,132,53	255,239,87	40,49,58
+86,154,102	218,131,53	254,239,87	28,38,51
+87,145,94	223,132,54	255,241,90	32,43,55
+79,137,95	221,132,53	254,238,88	36,47,59
+116,185,135	219,131,54	255,241,88	24,35,45
+103,172,126	221,132,54	253,238,87	30,40,50
+96,166,126	225,135,56	255,240,90	37,49,66
 ```
 
 Each column in the tab-delimited table is a feature class (in this example, plant, pustule, chlorosis, or background)
@@ -133,7 +159,6 @@ def options():
     parser.add_argument("-i", "--image", help="Input image file.", required=True)
     parser.add_argument("-o", "--outdir", help="Output directory for image files.", required=False)
     parser.add_argument("-r", "--result", help="result file.", required=False)
-    parser.add_argument("-r2", "--coresult", help="result file.", required=False)
     parser.add_argument("-w", "--writeimg", help="write out images.", default=False, action="store_true")
     parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.", default=None)
     parser.add_argument("-p", "--pdfs", help="Naive Bayes PDF file.", required=True)
@@ -179,5 +204,3 @@ plantcv-workflow.py \
 ```
 
 *  Always test workflows (preferably with -D flag set to 'print') on a smaller dataset before running over a full image set.* You can create a sample of your images with [`plantcv-utils.py sample_images`](tools.md).
-
-
