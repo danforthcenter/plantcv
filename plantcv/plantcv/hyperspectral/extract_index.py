@@ -448,33 +448,6 @@ def extract_index(array, index="NDVI", distance=20):
     debug = params.debug
     params.debug = None
 
-    # Check "bad" values, i.e. NANs or Infs
-    idx_nan, idy_nan = np.where(np.isnan(index_array_raw) == 1)
-    idx_inf, idy_inf = np.where(np.isinf(index_array_raw) == 1)
-    bad_pix = dict()
-    if len(idx_nan) > 0:
-        if len(idx_inf) > 0:
-            # case 1: both nan and inf issues exist
-            print(msg)
-            print('Attention: there are NAN and Inf in current VI output. The indices for those pixels are saved in the output but we would suggest removing these pixels if visualization is desired.')
-            bad_pix = {'nan': {'idx_nan': idx_nan, 'idy_nan': idy_nan}, 'inf': {'idx_inf': idx_inf, 'idy_inf': idy_inf}}
-
-        else:
-            # case 2: only the nan issue exists
-            print(msg)
-            print('Attention: There are NAN current VI. The indices for those pixels are saved in the output but we would suggest removing these pixels if visualization is desired.')
-            bad_pix = {'nan': {'idx_nan': idx_nan, 'idy_nan': idy_nan}}
-
-    elif len(idx_nan) == 0 and len(idx_inf) > 0:
-        # case 3: only the inf issue exists
-        print(msg)
-        print('Attention: There are Inf in current VI. The indices for those pixels are saved in the output but we would suggest removing these pixels if visualization is desired.')
-        bad_pix = {'inf': {'idx_inf': idx_inf, 'idy_inf': idy_inf}}
-
-    else:
-        print(msg)
-        # case 4: neither nan nor inf issue exists
-
     # Resulting array is float 32 from varying natural ranges, transform into uint8 for plotting
     all_positive = np.add(index_array_raw, 2 * np.ones(np.shape(index_array_raw)))
     scaled = rescale(all_positive)
@@ -499,4 +472,4 @@ def extract_index(array, index="NDVI", distance=20):
         print_image(index_array.pseudo_rgb,
                     os.path.join(params.debug_outdir, str(params.device) + index + "_index.png"))
 
-    return index_array, bad_pix
+    return index_array
