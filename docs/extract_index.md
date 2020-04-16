@@ -8,9 +8,6 @@ on using wavelengths that are at least close to the wavelength bands require to 
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
-a python dictionary of the location (x- & y-axis) of "bad" pixels (pixels with VI values being NAN or Inf). With the locations of "bad" pixels available, users will be able to remove those pixels for a better visualization
-(Refer to pcv.threshold.mask_bad as how to get a mask of these pixels, and pcv.visualize.pseudocolor as how to visuzlize the vegetation index with these pixel marked as red)
-
 - **Parameters:**
     - array         - A hyperspectral datacube object, an instance of the `Spectral_data` class, (read in with [pcv.readimage](read_image.md) with `mode='envi'`)
     - index         - Desired index, either "ndvi" for normalized difference vegetation index, "gdvi" for green difference
@@ -33,91 +30,91 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Extract NDVI index from the datacube 
-ndvi_array, bad_pix  = pcv.hyperspectral.extract_index(array=spectral_data, index="NDVI", distance=20)
+ndvi_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="NDVI", distance=20)
 
 # Extract GDVI index from the datacube
-gdvi_array, bad_pix  = pcv.hyperspectral.extract_index(array=spectral_data, index="GDVI", distance=20)
+gdvi_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="GDVI", distance=20)
 
 # Extract SAVI index from the datacube
-savi_array, bad_pix  = pcv.hyperspectral.extract_index(array=spectral_data, index="SAVI", distance=20)
+savi_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="SAVI", distance=20)
 
 # Extract ARI index from the datacube
-ari_array, bad_pix  = pcv.hyperspectral.extract_index(array=spectral_data, index="ARI", distance=20)
+ari_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="ARI", distance=20)
 
 # Extract ACI index from the datacube 
-aci_array, bad_pix  = pcv.hyperspectral.extract_index(array=spectral_data, index="ACI", distance=20)
+aci_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="ACI", distance=20)
 
 # Extract ARI index from the datacube 
-ari_array, bad_pix  = pcv.hyperspectral.extract_index(array=spectral_data, index="ARI", distance=20)
+ari_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="ARI", distance=20)
 
 # Extract CARI index from the datacube 
-cari_array, bad_pix  = pcv.hyperspectral.extract_index(array=spectral_data, index="CARI", distance=20)
+cari_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="CARI", distance=20)
 
 # Extract CI_REDEDGE index from the datacube 
-ci_rededge_array, bad_pix  = pcv.hyperspectral.extract_index(array=spectral_data, index="CI_REDEDGE", distance=20)
+ci_rededge_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="CI_REDEDGE", distance=20)
 
 # Extract CRI1 index from the datacube 
-cri1_array, bad_pix  = pcv.hyperspectral.extract_index(array=spectral_data, index="CRI1", distance=20)
+cri1_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="CRI1", distance=20)
 
 # Extract CRI2 index from the datacube 
-cri2_array, bad_pix  = pcv.hyperspectral.extract_index(array=spectral_data, index="CRI2", distance=20)
+cri2_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="CRI2", distance=20)
 
 # Extract EVI index from the datacube 
-evi_array, bad_pix  = pcv.hyperspectral.extract_index(array=spectral_data, index="EVI", distance=20)
+evi_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="EVI", distance=20)
 
 # Extract MARI index from the datacube 
-mari_array, bad_pix  = pcv.hyperspectral.extract_index(array=spectral_data, index="MARI", distance=20)
+mari_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="MARI", distance=20)
 
 # Extract MCARI index from the datacube 
-mcari_array, bad_pix  = pcv.hyperspectral.extract_index(array=spectral_data, index="MCARI", distance=20)
+mcari_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="MCARI", distance=20)
 
 # Extract MTCI index from the datacube 
-mtci_array, bad_pix  = pcv.hyperspectral.extract_index(array=spectral_data, index="MTCI", distance=20)
+mtci_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="MTCI", distance=20)
 
 # Extract NDRE index from the datacube 
-ndre_array, bad_pix  = pcv.hyperspectral.extract_index(array=spectral_data, index="NDRE", distance=20)
+ndre_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="NDRE", distance=20)
 
 # Extract PSND_CHLA index from the datacube 
-psnd_chla_array, bad_pix  = pcv.hyperspectral.extract_index(array=spectral_data, index="PSND_CHLA", distance=20)
+psnd_chla_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="PSND_CHLA", distance=20)
 
 # Extract PSND_CHLB index from the datacube 
-psnd_chlb_array, bad_pix  = pcv.hyperspectral.extract_index(array=spectral_data, index="PSND_CHLB", distance=20)
+psnd_chlb_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="PSND_CHLB", distance=20)
 
 # Extract PSND_CAR index from the datacube 
-psnd_car_array, bad_pix  = pcv.hyperspectral.extract_index(array=spectral_data, index="PSND_CAR", distance=20)
+psnd_car_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="PSND_CAR", distance=20)
 
 # Extract PSRI index from the datacube 
-psri_array, bad_pix  = pcv.hyperspectral.extract_index(array=spectral_data, index="PSRI", distance=20)
+psri_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="PSRI", distance=20)
 
 # Extract PSSR1 index from the datacube 
-pssr1_array, bad_pix  = pcv.hyperspectral.extract_index(array=spectral_data, index="PSSR1", distance=20)
+pssr1_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="PSSR1", distance=20)
 
 # Extract PSSR2 index from the datacube 
-pssr2_array, bad_pix  = pcv.hyperspectral.extract_index(array=spectral_data, index="PSSR2", distance=20)
+pssr2_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="PSSR2", distance=20)
 
 # Extract PSSR3 index from the datacube 
-pssr3_array, bad_pix  = pcv.hyperspectral.extract_index(array=spectral_data, index="PSSR3", distance=20)
+pssr3_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="PSSR3", distance=20)
 
 # Extract RGRI index from the datacube 
-rgri_array, bad_pix  = pcv.hyperspectral.extract_index(array=spectral_data, index="RGRI", distance=20)
+rgri_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="RGRI", distance=20)
 
 # Extract RVSI index from the datacube 
-rvsi_array, bad_pix  = pcv.hyperspectral.extract_index(array=spectral_data, index="RVSI", distance=20)
+rvsi_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="RVSI", distance=20)
 
 # Extract SIPI index from the datacube 
-sipi_array, bad_pix  = pcv.hyperspectral.extract_index(array=spectral_data, index="SIPI", distance=20)
+sipi_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="SIPI", distance=20)
 
 # Extract SR index from the datacube 
-sr_array, bad_pix  = pcv.hyperspectral.extract_index(array=spectral_data, index="SR", distance=20)
+sr_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="SR", distance=20)
 
 # Extract VARI index from the datacube 
-vari_array, bad_pix  = pcv.hyperspectral.extract_index(array=spectral_data, index="VARI", distance=20)
+vari_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="VARI", distance=20)
 
 # Extract VI_GREEN index from the datacube 
-vi_green_array, bad_pix  = pcv.hyperspectral.extract_index(array=spectral_data, index="VI_GREEN", distance=20)
+vi_green_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="VI_GREEN", distance=20)
 
 # Extract WBI index from the datacube 
-wbi_array, bad_pix  = pcv.hyperspectral.extract_index(array=spectral_data, index="WBI", distance=20)
+wbi_array  = pcv.hyperspectral.extract_index(array=spectral_data, index="WBI", distance=20)
 
 
 ```
