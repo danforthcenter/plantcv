@@ -380,9 +380,9 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         red = img[:, :, 2]
 
         # Make a mask for each channel
-        b_mask = cv2.inRange(blue, lower_thresh[0], upper_thresh[0])
+        b_mask = cv2.inRange(blue, lower_thresh[2], upper_thresh[2])
         g_mask = cv2.inRange(green, lower_thresh[1], upper_thresh[1])
-        r_mask = cv2.inRange(red, lower_thresh[2], upper_thresh[2])
+        r_mask = cv2.inRange(red, lower_thresh[0], upper_thresh[0])
 
         # Apply the masks to the image
         result = cv2.bitwise_and(img, img, mask=b_mask)
