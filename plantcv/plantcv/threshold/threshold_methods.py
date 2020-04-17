@@ -734,15 +734,12 @@ def mask_bad(gray_img, bad_type='native'):
     mask = np.zeros(size_img, dtype='uint8')
     temp_nan, _ = np.where(np.isnan(gray_img) == 1)
     temp_inf, _ = np.where(np.isinf(gray_img) == 1)
-    if bad_type.lower() == 'native':
-        try:
-            mask[np.isnan(gray_img)] = 255
-        except:
-            pass
-        try:
-            mask[np.isinf(gray_img)] = 255
-        except:
-            pass
+
+    if len(temp_nan.tolist()) == 0 and len(temp_inf.tolist()) == 0:
+        fatal_error('Neither nan nor inf appears in the current image.')
+    elif bad_type.lower() == 'native':
+        mask[np.isnan(gray_img)] = 255
+        mask[np.isinf(gray_img)] = 255
     elif bad_type.lower() == 'nan' and len(temp_nan.tolist()) >= 1:
         mask[np.isnan(gray_img)] = 255
     elif bad_type.lower() == 'inf' and len(temp_inf.tolist()) >= 1:
