@@ -69,6 +69,6 @@ def rectangle_mask(img, p1, p2, color="black"):
     if params.debug == 'print':
         print_image(bnk, os.path.join(params.debug_outdir, str(params.device) + '_roi.png'))
     elif params.debug == 'plot':
-        plot_image(bnk, cmap="gray")
         plot_image(img1, cmap="gray")
+        plot_image(bnk, cmap="gray")
     return img1, bnk, contour, hierarchy

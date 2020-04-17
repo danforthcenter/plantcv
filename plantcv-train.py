@@ -48,7 +48,7 @@ def options():
     # If no arguments are given, print the help menu
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
-        sys.exit(1)
+        raise SystemExit()
 
     # Parse command-line options
     args = parser.parse_args()

@@ -7,6 +7,7 @@ import json
 import numpy as np
 import cv2
 import sys
+import pandas as pd
 from plantcv import plantcv as pcv
 import plantcv.learn
 import plantcv.parallel
@@ -656,6 +657,7 @@ TEST_BAD_IMG1 = 'bad_img1.pkl'
 TEST_BAD_IMG2 = 'bad_img2.pkl'
 TEST_BAD_IMG3 = 'bad_img3.pkl'
 TEST_BAD_IMG4 = 'bad_img4.pkl'
+PIXEL_VALUES = "pixel_inspector_rgb_values.txt"
 
 # ##########################
 # Tests for the main package
@@ -5719,6 +5721,24 @@ def test_plantcv_utils_sample_images_bad_phenofront_num():
     with pytest.raises(RuntimeError):
         plantcv.utils.sample_images(source_path=snapshot_dir, dest_path=output_dir, num=300)
 
+
+def test_plantcv_utils_tabulate_bayes_classes():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_tabulate_bayes_classes")
+    os.mkdir(cache_dir)
+    outfile = os.path.join(cache_dir, "rgb_table.txt")
+    plantcv.utils.tabulate_bayes_classes(input_file=os.path.join(TEST_DATA, PIXEL_VALUES), output_file=outfile)
+    table = pd.read_csv(outfile, sep="\t")
+    assert table.shape == (228, 2)
+
+
+def test_plantcv_utils_tabulate_bayes_classes_missing_input():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_tabulate_bayes_classes_missing_input")
+    os.mkdir(cache_dir)
+    outfile = os.path.join(cache_dir, "rgb_table.txt")
+    with pytest.raises(IOError):
+        plantcv.utils.tabulate_bayes_classes(input_file=os.path.join(PIXEL_VALUES), output_file=outfile)
 
 # ##############################
 # Clean up test files
