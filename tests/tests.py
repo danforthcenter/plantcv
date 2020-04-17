@@ -652,6 +652,10 @@ TEST_BAD_INDEX1 = 'bad_pix1.pkl'
 TEST_BAD_INDEX2 = 'bad_pix2.pkl'
 TEST_BAD_INDEX3 = 'bad_pix3.pkl'
 TEST_BAD_INDEX4 = 'bad_pix4.pkl'
+TEST_BAD_IMG1 = 'bad_img1.pkl'
+TEST_BAD_IMG2 = 'bad_img2.pkl'
+TEST_BAD_IMG3 = 'bad_img3.pkl'
+TEST_BAD_IMG4 = 'bad_img4.pkl'
 
 # ##########################
 # Tests for the main package
@@ -5354,65 +5358,80 @@ def test_plantcv_threshold_texture():
     else:
         assert 0
 
-def test_plantcv_threshold_get_mask():
+def test_plantcv_threshold_mask_bad_native():
     # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_mask_bad")
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_mask_bad_native")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     # Read in test data
-    gray_img, _, _ = pcv.readimage(os.path.join(TEST_DATA, TEST_INPUT_GRAY_SMALL), 'gray')
-    sz = np.shape(gray_img)
-    # Load corresponding dictionary of "bad" pixel indices
-    bad_pix2 = pkl.load(open(os.path.join(TEST_DATA, TEST_BAD_INDEX2), 'rb')) #bad_pix2 contains both inf and nan
+    bad_img = pkl.load(open(os.path.join(TEST_DATA, TEST_BAD_IMG2), 'rb'))
+    sz = np.shape(bad_img)
 
-    mask20 = pcv.threshold._get_mask(sz, bad_pix2, 'nan')
+    mask20 = pcv.threshold.mask_bad(bad_img, bad_type='native')
     l20 = len(np.unique(mask20))
-    assert ((np.shape(mask20) == sz) and (l20 == 2))
-
-def test_plantcv_threshold_mask_bad():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_mask_bad")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    # Read in test data
-    gray_img, _, _ = pcv.readimage(os.path.join(TEST_DATA, TEST_INPUT_GRAY_SMALL), 'gray')
-    sz = np.shape(gray_img)
-    # Load corresponding dictionary of "bad" pixel indices
-    bad_pix2 = pkl.load(open(os.path.join(TEST_DATA, TEST_BAD_INDEX2), 'rb')) #bad_pix2 contains both inf and nan
-    # bad_pix3 = pkl.load(open(os.path.join(TEST_DATA, TEST_BAD_INDEX3), 'rb')) #bad_pix3 contains only nan
-    # bad_pix4 = pkl.load(open(os.path.join(TEST_DATA, TEST_BAD_INDEX4), 'rb')) #bad_pix4 contains only inf
-
-    mask20 = pcv.threshold.mask_bad(gray_img, bad_pix2, bad_type='native')
-    l20 = len(np.unique(mask20))
-    # mask21 = pcv.threshold.mask_bad(gray_img, bad_pix2, bad_type='nan')
-    # l21 = len(np.unique(mask21))
-    # mask22 = pcv.threshold.mask_bad(gray_img, bad_pix2, bad_type='inf')
-    # l22 = len(np.unique(mask22))
-    # mask30 = pcv.threshold.mask_bad(gray_img, bad_pix3, bad_type='native')
-    # l30 = len(np.unique(mask30))
-    # mask31 = pcv.threshold.mask_bad(gray_img, bad_pix3, bad_type='nan')
-    # l31 = len(np.unique(mask31))
-    # mask40 = pcv.threshold.mask_bad(gray_img, bad_pix4, bad_type='native')
-    # l40 = len(np.unique(mask40))
-    # mask42 = pcv.threshold.mask_bad(gray_img, bad_pix4, bad_type='inf')
-    # l42 = len(np.unique(mask42))
 
     assert ((np.shape(mask20) ==  sz) and (l20 == 2))
 
-def test_plantcv_threshold_mask_bad_bad_input():
+def test_plantcv_threshold_mask_bad_native_bad_input():
     # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_mask_bad")
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_mask_bad_native_bad")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     # Read in test data
-    gray_img, _, _ = pcv.readimage(os.path.join(TEST_DATA, TEST_INPUT_GRAY_SMALL), 'gray')
-    sz = np.shape(gray_img)
-    # Load corresponding dictionary of "bad" pixel indices
-    bad_pix1 = pkl.load(open(os.path.join(TEST_DATA, TEST_BAD_INDEX1), 'rb')) #bad_pix1 is an empty dictionary
-    # bad_pix3 = pkl.load(open(os.path.join(TEST_DATA, TEST_BAD_INDEX3), 'rb')) #bad_pix3 contains only nan
-    # bad_pix4 = pkl.load(open(os.path.join(TEST_DATA, TEST_BAD_INDEX4), 'rb')) #bad_pix4 contains only inf
+    bad_img = pkl.load(open(os.path.join(TEST_DATA, TEST_BAD_IMG1), 'rb'))
+
     with pytest.raises(RuntimeError):
-        _ = pcv.threshold.mask_bad(gray_img, bad_pix1, bad_type='native')
+        _ = pcv.threshold.mask_bad(bad_img, bad_type='native')
+
+def test_plantcv_threshold_mask_bad_nan():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_mask_bad_nan")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    bad_img = pkl.load(open(os.path.join(TEST_DATA, TEST_BAD_IMG2), 'rb'))
+    sz = np.shape(bad_img)
+
+    mask21 = pcv.threshold.mask_bad(bad_img, bad_type='nan')
+    l21 = len(np.unique(mask21))
+
+    assert ((np.shape(mask21) ==  sz) and (l21 == 2))
+
+def test_plantcv_threshold_mask_bad_nan_bad_input():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_mask_bad_nan_bad")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    bad_img = pkl.load(open(os.path.join(TEST_DATA, TEST_BAD_IMG1), 'rb'))
+
+    with pytest.raises(RuntimeError):
+        _ = pcv.threshold.mask_bad(bad_img, bad_type='nan')
+
+def test_plantcv_threshold_mask_bad_inf():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_mask_bad_inf")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    bad_img = pkl.load(open(os.path.join(TEST_DATA, TEST_BAD_IMG2), 'rb'))
+    sz = np.shape(bad_img)
+
+    mask22 = pcv.threshold.mask_bad(bad_img, bad_type='inf')
+    l22 = len(np.unique(mask22))
+
+    assert ((np.shape(mask22) ==  sz) and (l22 == 2))
+
+def test_plantcv_threshold_mask_bad_inf_bad_input():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_mask_bad_inf_bad")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    bad_img = pkl.load(open(os.path.join(TEST_DATA, TEST_BAD_IMG1), 'rb'))
+
+    with pytest.raises(RuntimeError):
+        _ = pcv.threshold.mask_bad(bad_img, bad_type='inf')
 
 
 # ###################################
