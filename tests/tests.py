@@ -4256,7 +4256,7 @@ def test_plantcv_hyperspectral_analyze_index():
     pcv.params.debug_outdir = cache_dir
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array, bad_pix = pcv.hyperspectral.extract_index(array=array_data, index="savi", distance=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="savi", distance=801)
     mask_img = np.ones(np.shape(index_array.array_data), dtype=np.uint8) * 255
     pcv.params.debug = "print"
     pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, histplot=True)
@@ -4271,7 +4271,7 @@ def test_plantcv_hyperspectral_analyze_index_set_range():
     pcv.params.debug_outdir = cache_dir
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array, bad_pix = pcv.hyperspectral.extract_index(array=array_data, index="savi", distance=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="savi", distance=801)
     mask_img = np.ones(np.shape(index_array.array_data), dtype=np.uint8) * 255
     pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, histplot=True, min_bin=0, max_bin=1)
     assert pcv.outputs.observations['mean_index_savi']['value'] > 0
@@ -4283,7 +4283,7 @@ def test_plantcv_hyperspectral_analyze_index_auto_range():
     pcv.params.debug_outdir = cache_dir
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array, bad_pix = pcv.hyperspectral.extract_index(array=array_data, index="savi", distance=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="savi", distance=801)
     mask_img = np.ones(np.shape(index_array.array_data), dtype=np.uint8) * 255
     pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, min_bin="auto", max_bin="auto")
     assert pcv.outputs.observations['mean_index_savi']['value'] > 0
@@ -4297,7 +4297,7 @@ def test_plantcv_hyperspectral_analyze_index_outside_range_warning():
     pcv.params.debug_outdir = cache_dir
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array, bad_pix = pcv.hyperspectral.extract_index(array=array_data, index="savi", distance=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="savi", distance=801)
     mask_img = np.ones(np.shape(index_array.array_data), dtype=np.uint8) * 255
     f = io.StringIO()
     with redirect_stdout(f):
@@ -4311,7 +4311,7 @@ def test_plantcv_hyperspectral_analyze_index_bad_input_mask():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array, bad_pix = pcv.hyperspectral.extract_index(array=array_data, index="SAVI", distance=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="SAVI", distance=801)
     mask_img = cv2.imread(os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_MASK))
     with pytest.raises(RuntimeError):
         pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img)
@@ -4321,7 +4321,7 @@ def test_plantcv_hyperspectral_analyze_index_bad_input_index():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array, bad_pix = pcv.hyperspectral.extract_index(array=array_data, index="SAVI", distance=801)
+    index_array = pcv.hyperspectral.extract_index(array=array_data, index="SAVI", distance=801)
     mask_img = cv2.imread(os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_MASK), -1)
     index_array.array_data = cv2.imread(os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_MASK))
     with pytest.raises(RuntimeError):
