@@ -5381,9 +5381,10 @@ def test_plantcv_threshold_mask_bad_native_bad_input():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     bad_img = pkl.load(open(os.path.join(TEST_DATA, TEST_BAD_IMG1), 'rb'))
+    sz = np.shape(bad_img)
+    mask10 = pcv.threshold.mask_bad(bad_img, bad_type='native')
 
-    with pytest.raises(RuntimeError):
-        _ = pcv.threshold.mask_bad(bad_img, bad_type='native')
+    assert mask10.all() == np.zeros(sz, dtype='uint8').all()
 
 def test_plantcv_threshold_mask_bad_nan():
     # Test cache directory
@@ -5406,9 +5407,10 @@ def test_plantcv_threshold_mask_bad_nan_bad_input():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     bad_img = pkl.load(open(os.path.join(TEST_DATA, TEST_BAD_IMG1), 'rb'))
+    sz = np.shape(bad_img)
+    mask11 = pcv.threshold.mask_bad(bad_img, bad_type='nan')
 
-    with pytest.raises(RuntimeError):
-        _ = pcv.threshold.mask_bad(bad_img, bad_type='nan')
+    assert mask11.all() == np.zeros(sz, dtype='uint8').all()
 
 def test_plantcv_threshold_mask_bad_inf():
     # Test cache directory
@@ -5431,9 +5433,10 @@ def test_plantcv_threshold_mask_bad_inf_bad_input():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     bad_img = pkl.load(open(os.path.join(TEST_DATA, TEST_BAD_IMG1), 'rb'))
+    sz = np.shape(bad_img)
+    mask12 = pcv.threshold.mask_bad(bad_img, bad_type='inf')
 
-    with pytest.raises(RuntimeError):
-        _ = pcv.threshold.mask_bad(bad_img, bad_type='inf')
+    assert mask12.all() == np.zeros(sz, dtype='uint8').all()
 
 
 # ###################################
