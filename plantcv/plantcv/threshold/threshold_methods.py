@@ -736,7 +736,9 @@ def mask_bad(gray_img, bad_type='native'):
     temp_inf, _ = np.where(np.isinf(gray_img) == 1)
 
     if len(temp_nan.tolist()) == 0 and len(temp_inf.tolist()) == 0:
-        fatal_error('Neither nan nor inf appears in the current image.')
+        # fatal_error('Neither nan nor inf appears in the current image.')
+        mask = mask
+        print('Neither nan nor inf appears in the current image.')
     elif bad_type.lower() == 'native':
         mask[np.isnan(gray_img)] = 255
         mask[np.isinf(gray_img)] = 255
@@ -745,6 +747,7 @@ def mask_bad(gray_img, bad_type='native'):
     elif bad_type.lower() == 'inf' and len(temp_inf.tolist()) >= 1:
         mask[np.isinf(gray_img)] = 255
     else:
-        fatal_error('{} does not appear in the current image.'.format(bad_type.lower()))
+        # fatal_error('{} does not appear in the current image.'.format(bad_type.lower()))
+        mask = mask
+        print('{} does not appear in the current image.'.format(bad_type.lower()))
     return mask
-
