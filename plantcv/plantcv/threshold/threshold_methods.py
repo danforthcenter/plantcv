@@ -748,19 +748,3 @@ def mask_bad(gray_img, bad_type='native'):
         fatal_error('{} does not appear in the current image.'.format(bad_type.lower()))
     return mask
 
-
-# def _get_mask(size_img, bad_idx, bad_type):
-#     """ A helper function Returns a mask indicating the locations of "bad" pixels
-#
-#     Inputs:
-#     size_img        = size of the input image
-#     bad_idx         = a dictionary indicating the locations of NAN and/or Inf pixels
-#     bad_type        = interested type of bad pixels, either 'nan' or 'inf'
-#
-#     Returns:
-#     mask            = a binary image with desired "bad" pixels being "white" (255)
-#     """
-#     mask = np.zeros(size_img, dtype='uint8')
-#     mask[bad_idx[bad_type.lower()]['idx_{}'.format(bad_type.lower())], bad_idx[bad_type.lower()][
-#         'idy_{}'.format(bad_type.lower())]] = 255
-#     return mask
