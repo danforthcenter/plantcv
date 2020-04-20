@@ -462,6 +462,7 @@ def extract_index(array, index="NDVI", distance=20):
                                 lines=array.lines, interleave=array.interleave,
                                 wavelength_units=array.wavelength_units, array_type="index_" + index.lower(),
                                 pseudo_rgb=scaled, filename=array.filename, default_bands=None)
+    print(msg)
 
     # Restore debug mode
     params.debug = debug
