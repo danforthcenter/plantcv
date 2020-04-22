@@ -270,6 +270,37 @@ def cri2(hsi, distance=20):
     else:
         fatal_error("Available wavelengths are not suitable for calculating CRI2. Try increasing distance.")
 
+def egi(hsi, distance=20):
+    """Excess Green Index (Wobbecke et al., 1995)
+    The theoretical range for EGI is (-2/3, 2/3).
+
+    inputs:
+    hsi      = hyperspectral image (PlantCV Spectral_data instance)
+    distance = how lenient to be if the required wavelengths are not available
+
+    Returns:
+    index_array    = Index data as a Spectral_data instance
+    :param hsi: __main__.Spectral_data
+    :param distance: int
+    :return index_array: __main__.Spectral_data
+    """
+
+    if (float(hsi.max_wavelength) + distance) >= 670 and (float(hsi.min_wavelength) - distance) <= 470:
+        red_index  = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
+        green_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 560)
+        blue_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 470)
+        red  = (hsi.array_data[:, :, [red_index]])
+        green  = (hsi.array_data[:, :, [green_index]])
+        blue = (hsi.array_data[:, :, [blue_index]])
+        summation = red+green+blue
+        r = red/summation
+        g = green/summation
+        b = blue/summation
+        index_array_raw = 2*g - r - b
+        return _package_index(hsi=hsi, raw_index=index_array_raw, method="EGI")
+    else:
+        fatal_error("Available wavelengths are not suitable for calculating EGI. Try increasing distance.")
+
 def evi(hsi, distance=20):
     """Enhanced Vegetation index (Huete et al., 1997)
     The theoretical range for EVI is (-Inf, Inf).
@@ -779,7 +810,6 @@ def wbi(hsi, distance=20):
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="WBI")
     else:
         fatal_error("Available wavelengths are not suitable for calculating WBI. Try increasing distance.")
-
 
 def _package_index(hsi, raw_index, method):
     """Private function to package raw index array as a Spectral_data object.
