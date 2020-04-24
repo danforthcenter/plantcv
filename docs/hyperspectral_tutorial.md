@@ -119,7 +119,7 @@ object returned has many methods that are useful to users and within PlantCV fun
     #   distance   - How lenient to be if the required wavelengths 
     #                for a specific index are not available. Amount of flexibility (in nanometers) 
     #                regarding the bands used to calculate an index.
-    index_array_gdvi  = pcv.spectral_index.gdvi(hsi=spectral_array.array_data, distance=20)
+    index_array_gdvi  = pcv.spectral_index.gdvi(hsi=spectral_array, distance=20)
                                                        
 ```
 
@@ -316,7 +316,7 @@ def main():
     pcv.print_image(img=spectral_array.pseudo_rgb, filename=filename + "_pseudo-rgb.png")
     
     # Extract the Green Difference Vegetation Index from the datacube 
-    index_array_gdvi  = pcv.spectral_index.gdvi(hsi=spectral_array.array_data, distance=20)
+    index_array_gdvi  = pcv.spectral_index.gdvi(hsi=spectral_array, distance=20)
                                                     
     # Threshold the grayscale image 
     gdvi_thresh = pcv.threshold.binary(gray_img=index_array_gdvi.array_data, threshold=150, max_value=255)
