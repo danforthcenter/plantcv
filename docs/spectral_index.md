@@ -1,17 +1,16 @@
 ## Spectral Index
 
-This function extracts indices, typically from a hyperspectral datacube, which is a [`Spectral_data` class](Spectral_data.md) instance created while reading in with [readimage](read_image.md)
-with `mode='envi'`. For some indices, RGB images are also eligable of calculating them. There is also a parameter to allow some flexibility 
-on using wavelengths that are at least close to the wavelength bands require to calculate a specific index. 
+This function extracts indices, typically from a hyperspectral datacube, which is a [`Spectral_data` class](Spectral_data.md) instance created while reading in with the [pcv.readimage](read_image.md)
+function with `mode='envi'`. For certain indices RGB images are valid input. There is also a parameter to allow some flexibility 
+if the required wavelengths for a specific index are not available.
 
 **plantcv.spectral_index.ndvi**(*hsi, distance=20*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
 - **Parameters:**
-    - hsi         - A hyperspectral image, an instance of the `Spectral_data` class in plantcv, (read in with [pcv.readimage](read_image.md) with `mode='envi'`)
-    - distance    - Amount of flexibility (in nanometers) regarding using wavelengths that are 
-    at least close to the wavelength bands require to calculate a specific index
+    - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
+    - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
 
 - **Note:**
     - We are adding potential indices as needed by PlantCV contributors, however the functions added to PlantCV are shaped in large part 
@@ -46,10 +45,10 @@ aci_array  = pcv.spectral_index.aci(hsi=spectral_data, distance=20)
 ari_array  = pcv.spectral_index.ari(hsi=spectral_data, distance=20)
 
 # Extract CARI index from the datacube 
-cari_array  = pcv.spectral_index.cari(hsi=spectral_data, index="CARI", distance=20)
+cari_array  = pcv.spectral_index.cari(hsi=spectral_data, distance=20)
 
 # Extract CI_REDEDGE index from the datacube 
-ci_rededge_array  = pcv.spectral_index.ci_rededge(array=spectral_data, index="CI_REDEDGE", distance=20)
+ci_rededge_array  = pcv.spectral_index.ci_rededge(array=spectral_data, distance=20)
 
 # Extract CRI1 index from the datacube 
 cri1_array  = pcv.hyperspectral.extract_index.cri1(hsi=spectral_data, distance=20)
