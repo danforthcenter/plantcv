@@ -357,6 +357,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.7: NA
 * post v3.7: index_array = **plantcv.hyperspectral.extract_index**(*array, index="NDVI", distance=20*)
+* post v3.8: DEPRECATED see plantcv.spectral_index
 
 #### plantcv.image_add
 
@@ -642,6 +643,122 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, sb_img = **plantcv.sobel_filter**(*img, dx, dy, k, device, debug=None*)
 * post v3.0dev2: sb_img = **plantcv.sobel_filter**(*gray_img, dx, dy, k*)
 * post v3.2: sb_img = **plantcv.sobel_filer**(*gray_img, dx, dy, ksize*)
+
+#### plantcv.spectral_index.ndvi(hsi, distance=20)
+
+* post v3.8: array = plantcv.spectral_index.ndvi(hsi, distance=20)
+
+#### plantcv.spectral_index.gdvi(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.gdvi**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.savi(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.savi**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.pri(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.pri**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.aci(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.aci**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.ari(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.ari**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.ci_rededge(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.ci_rededge**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.cri1(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.cri1**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.cri2(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.cri2**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.egi(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.egi**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.evi(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.evi**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.mari(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.mari**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.mcari(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.mcari**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.mtci(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.mtci**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.ndre(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.ndre**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.psnd_chla(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.psnd_chla**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.psnd_chlb(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.psnd_chlb**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.psnd_car(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.psnd_car**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.psri(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.psri**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.pssr1(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.pssr1**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.pssr2(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.pssr2**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.pssr3(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.pssr3**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.rgri(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.rgri**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.rvsi(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.rvsi**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.sipi(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.sipi**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.sr(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.sr**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.vari(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.vari**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.vi_green(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.vi_green**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.wbi(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.wbi**(*hsi, distance=20*)
 
 #### plantcv.stdev_filter
 
