@@ -41,9 +41,6 @@ ari_array  = pcv.spectral_index.ari(hsi=spectral_data, distance=20)
 # Extract ACI index from the datacube 
 aci_array  = pcv.spectral_index.aci(hsi=spectral_data, distance=20)
 
-# Extract ARI index from the datacube 
-ari_array  = pcv.spectral_index.ari(hsi=spectral_data, distance=20)
-
 # Extract CARI index from the datacube 
 cari_array  = pcv.spectral_index.cari(hsi=spectral_data, distance=20)
 
