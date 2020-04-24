@@ -23,20 +23,24 @@ def options():
     json2csv_cmd.add_argument("-c", "--csv", help="Output CSV filename prefix.", required=True)
     json2csv_cmd.set_defaults(func=run_json2csv)
 
+    # Create the tabulate_bayes_classes subcommand
+    json2csv_cmd = subparsers.add_parser("tabulate_bayes_classes", help="Convert pixel samples to a Bayes class table.")
+    json2csv_cmd.add_argument("-i", "--infile", help="Input text file.", required=True)
+    json2csv_cmd.add_argument("-o", "--outfile", help="Output tab-delimited table file.", required=True)
+    json2csv_cmd.set_defaults(func=run_tabulate_bayes_classes)
 
     # Create the sample_images subcommand
     sample_images_cmd = subparsers.add_parser("sample_images", help="Creates a random sample of images.")
     sample_images_cmd.add_argument("-s", "--source", help="Source directory of images", required=True)
     sample_images_cmd.add_argument("-o", "--outdir", help="Output directory for the random sample to get saved",
                                    required=True)
-    sample_images_cmd.add_argument("-n", "--number", help="The number of images to sample", default=100, type = int)
+    sample_images_cmd.add_argument("-n", "--number", help="The number of images to sample", default=100, type=int)
     sample_images_cmd.set_defaults(func=run_sample_images)
-
 
     # If no arguments are given, print the help menu
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
-        sys.exit(1)
+        raise SystemExit()
 
     # Parse command-line options
     args = parser.parse_args()
@@ -51,6 +55,14 @@ def options():
 def run_json2csv(args):
     plantcv.utils.json2csv(json_file=args.json, csv_file=args.csv)
 ###########################################
+
+
+# run_json2csv
+###########################################
+def run_tabulate_bayes_classes(args):
+    plantcv.utils.tabulate_bayes_classes(input_file=args.infile, output_file=args.outfile)
+###########################################
+
 
 # run_sample_images
 ###########################################
