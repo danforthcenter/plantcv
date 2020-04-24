@@ -395,7 +395,7 @@ def extract_index(array, index="NDVI", distance=20):
             fatal_error("Available wavelengths are not suitable for calculating VI_green. Try increasing distance.")
 
     elif index.upper() == 'WBI':
-        # Water band index (Peñuelas et al., 1997)
+        # Water band index (Penuelas et al., 1997)
         if (max_wavelength + distance) >= 800 and (min_wavelength - distance) <= 675:
             red_index   = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 670)
             green_index = _find_closest(np.array([float(i) for i in wavelength_dict.keys()]), 560)
