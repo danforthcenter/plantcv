@@ -24,8 +24,6 @@ def ndvi(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-    params.device += 1
-
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 670:
         # Obtain index that best represents NIR and red bands
         nir_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
@@ -130,7 +128,6 @@ def aci(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 560:
         green_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 560)
         nir_index   = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
@@ -206,7 +203,6 @@ def ci_rededge(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 750:
         rededge_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 750)
         nir_index     = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
@@ -826,6 +822,7 @@ def _package_index(hsi, raw_index, method):
     :params method: str
     :params index: __main__.Spectral_data
     """
+    params.device += 1
     # Reshape array into hyperspectral datacube shape
     raw_index = np.transpose(np.transpose(raw_index)[0])
 
@@ -860,4 +857,3 @@ def _package_index(hsi, raw_index, method):
                     os.path.join(params.debug_outdir, str(params.device) + method + "_index.png"))
 
     return index
-
