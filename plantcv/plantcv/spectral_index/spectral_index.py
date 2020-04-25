@@ -10,6 +10,7 @@ from plantcv.plantcv import Spectral_data
 from plantcv.plantcv.transform import rescale
 from plantcv.plantcv.hyperspectral import _find_closest
 
+
 def ndvi(hsi, distance=20):
     """Normalized Difference Vegetation Index.
     The theoretical range for NDVI is [-1.0, 1.0]
@@ -36,6 +37,7 @@ def ndvi(hsi, distance=20):
     else:
         fatal_error("Available wavelengths are not suitable for calculating NDVI. Try increasing distance.")
 
+
 def gdvi(hsi, distance=20):
     """Green Difference Vegetation Index [Sripada et al. (2006)]
     The theoretical range for GDVI is [-2.0, 2.0].
@@ -61,6 +63,7 @@ def gdvi(hsi, distance=20):
     else:
         fatal_error("Available wavelengths are not suitable for calculating GDVI. Try increasing distance.")
 
+
 def savi(hsi, distance=20):
     """Soil Adjusted Vegetation Index [Huete et al. (1988)]
     The theoretical range for SAVI is [-1.2, 1.2].
@@ -85,6 +88,7 @@ def savi(hsi, distance=20):
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="SAVI")
     else:
         fatal_error("Available wavelengths are not suitable for calculating SAVI. Try increasing distance.")
+
 
 def pri(hsi, distance=20):
     """Photochemical Reflectance Index (https://doi.org/10.1111/j.1469-8137.1995.tb03064.x)
@@ -114,6 +118,7 @@ def pri(hsi, distance=20):
     else:
         fatal_error("Available wavelengths are not suitable for calculating PRI. Try increasing distance.")
 
+
 def aci(hsi, distance=20):
     """Anthocyanin content index (Van den Berg et al., 2005)
     The theoretical range for ACI is [0.0, Inf).
@@ -130,13 +135,14 @@ def aci(hsi, distance=20):
     """
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 560:
         green_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 560)
-        nir_index   = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
+        nir_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
         green = (hsi.array_data[:, :, [green_index]])
-        nir   = (hsi.array_data[:, :, [nir_index]])
+        nir = (hsi.array_data[:, :, [nir_index]])
         index_array_raw = green / nir
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="ACI")
     else:
         fatal_error("Available wavelengths are not suitable for calculating ACI. Try increasing distance.")
+
 
 def ari(hsi, distance=20):
     """Anthocyanin reflectance index (Gitelson et al., 2001)
@@ -161,6 +167,7 @@ def ari(hsi, distance=20):
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="ARI")
     else:
         fatal_error("Available wavelengths are not suitable for calculating ARI. Try increasing distance.")
+
 
 def cari(hsi, distance=20):
     """Chlorophyll absorption in reflectance index (Daughtry et al., 2000)
@@ -189,6 +196,7 @@ def cari(hsi, distance=20):
     else:
         fatal_error("Available wavelengths are not suitable for calculating CARI. Try increasing distance.")
 
+
 def ci_rededge(hsi, distance=20):
     """Chlorophyll index red edge (Giteson et al., 2003a)
     The theoretical range for CI_REDEDGE is [-1.0, Inf).
@@ -205,14 +213,15 @@ def ci_rededge(hsi, distance=20):
     """
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 750:
         rededge_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 750)
-        nir_index     = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
+        nir_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
         rededge = (hsi.array_data[:, :, [rededge_index]])
-        nir     = (hsi.array_data[:, :, [nir_index]])
+        nir = (hsi.array_data[:, :, [nir_index]])
         # Naturally ranges from -1 to inf
         index_array_raw = nir / rededge - 1
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="CI_REDEDGE")
     else:
         fatal_error("Available wavelengths are not suitable for calculating CI_REDEDGE. Try increasing distance.")
+
 
 def cri1(hsi, distance=20):
     """Carotenoid reflectance index (Gitelson et al., 2002b) (note: part 1 of 2)
@@ -240,6 +249,7 @@ def cri1(hsi, distance=20):
     else:
         fatal_error("Available wavelengths are not suitable for calculating CRI1. Try increasing distance.")
 
+
 def cri2(hsi, distance=20):
     """Carotenoid reflectance index (Gitelson et al., 2002b) (note: part 2 of 2)
     The theoretical range for CRI2 is (-Inf, Inf).
@@ -266,6 +276,7 @@ def cri2(hsi, distance=20):
     else:
         fatal_error("Available wavelengths are not suitable for calculating CRI2. Try increasing distance.")
 
+
 def egi(hsi, distance=20):
     """Excess Green Index (Wobbecke et al., 1995)
     The theoretical range for EGI is (-2/3, 2/3).
@@ -282,20 +293,21 @@ def egi(hsi, distance=20):
     """
 
     if (float(hsi.max_wavelength) + distance) >= 670 and (float(hsi.min_wavelength) - distance) <= 470:
-        red_index  = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
+        red_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
         green_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 560)
         blue_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 470)
-        red  = (hsi.array_data[:, :, [red_index]])
-        green  = (hsi.array_data[:, :, [green_index]])
+        red = (hsi.array_data[:, :, [red_index]])
+        green = (hsi.array_data[:, :, [green_index]])
         blue = (hsi.array_data[:, :, [blue_index]])
-        summation = red+green+blue
-        r = red/summation
-        g = green/summation
-        b = blue/summation
-        index_array_raw = 2*g - r - b
+        summation = red + green + blue
+        r = red / summation
+        g = green / summation
+        b = blue / summation
+        index_array_raw = 2 * g - r - b
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="EGI")
     else:
         fatal_error("Available wavelengths are not suitable for calculating EGI. Try increasing distance.")
+
 
 def evi(hsi, distance=20):
     """Enhanced Vegetation index (Huete et al., 1997)
@@ -314,16 +326,17 @@ def evi(hsi, distance=20):
 
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 470:
         blue_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 470)
-        red_index  = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
-        nir_index  = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
+        red_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
+        nir_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
         blue = (hsi.array_data[:, :, [blue_index]])
-        red  = (hsi.array_data[:, :, [red_index]])
-        nir  = (hsi.array_data[:, :, [nir_index]])
+        red = (hsi.array_data[:, :, [red_index]])
+        nir = (hsi.array_data[:, :, [nir_index]])
         # Naturally ranges from -inf to inf
         index_array_raw = 2.5 * (nir - red) / (nir + 6 * red - 7.5 * blue + 1)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="EVI")
     else:
         fatal_error("Available wavelengths are not suitable for calculating EVI. Try increasing distance.")
+
 
 def mari(hsi, distance=20):
     """Modified anthocyanin reflectance index (Gitelson et al., 2001)
@@ -343,15 +356,16 @@ def mari(hsi, distance=20):
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 550:
         mari550_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 550)
         mari700_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 700)
-        nir_index     = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
+        nir_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
         mari550 = (hsi.array_data[:, :, [mari550_index]])
         mari700 = (hsi.array_data[:, :, [mari700_index]])
-        nir     = (hsi.array_data[:, :, [nir_index]])
+        nir = (hsi.array_data[:, :, [nir_index]])
         # Naturally ranges from -inf to inf
         index_array_raw = ((1 / mari550) - (1 / mari700)) * nir
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="MARI")
     else:
         fatal_error("Available wavelengths are not suitable for calculating MARI. Try increasing distance.")
+
 
 def mcari(hsi, distance=20):
     """Modified chlorophyll absorption in reflectance index (Daughtry et al., 2000)
@@ -381,6 +395,7 @@ def mcari(hsi, distance=20):
     else:
         fatal_error("Available wavelengths are not suitable for calculating MCARI. Try increasing distance.")
 
+
 def mtci(hsi, distance=20):
     """MERIS terrestrial chlorophyll index (Dash and Curran, 2004)
     The theoretical range for MTCI is (-Inf, Inf).
@@ -409,6 +424,7 @@ def mtci(hsi, distance=20):
     else:
         fatal_error("Available wavelengths are not suitable for calculating MTCI. Try increasing distance.")
 
+
 def ndre(hsi, distance=20):
     """Normalized difference red edge (Barnes et al., 2000)
     The theoretical range for NDRE is [-1.0, 1.0].
@@ -434,6 +450,7 @@ def ndre(hsi, distance=20):
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="NDRE")
     else:
         fatal_error("Available wavelengths are not suitable for calculating NDRE. Try increasing distance.")
+
 
 def psnd_chla(hsi, distance=20):
     """Pigment sensitive normalized difference (Blackburn, 1998) note: chl_a (part 1 of 3)
@@ -461,6 +478,7 @@ def psnd_chla(hsi, distance=20):
     else:
         fatal_error("Available wavelengths are not suitable for calculating PSND_CHLA. Try increasing distance.")
 
+
 def psnd_chlb(hsi, distance=20):
     """Pigment sensitive normalized difference (Blackburn, 1998) note: chl_b (part 2 of 3)
     The theoretical range for PSND_CHLB is [-1.0, 1.0].
@@ -486,6 +504,7 @@ def psnd_chlb(hsi, distance=20):
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSND_CHLB")
     else:
         fatal_error("Available wavelengths are not suitable for calculating PSND_CHLB. Try increasing distance.")
+
 
 def psnd_car(hsi, distance=20):
     """Pigment sensitive normalized difference (Blackburn, 1998) note: car (part 3 of 3)
@@ -513,6 +532,7 @@ def psnd_car(hsi, distance=20):
     else:
         fatal_error("Available wavelengths are not suitable for calculating PSND_CAR. Try increasing distance.")
 
+
 def psri(hsi, distance=20):
     """Plant senescence reflectance index (Merzlyak et al., 1999)
     The theoretical range for PSRI is (-Inf, Inf).
@@ -528,7 +548,7 @@ def psri(hsi, distance=20):
     :return index_array: __main__.Spectral_data
     """
 
-    if (float(hsi.max_wavelength) + distance)>= 750 and (float(hsi.min_wavelength) - distance) <= 500:
+    if (float(hsi.max_wavelength) + distance) >= 750 and (float(hsi.min_wavelength) - distance) <= 500:
         psri500_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 500)
         psri678_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 678)
         psri750_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 750)
@@ -540,6 +560,7 @@ def psri(hsi, distance=20):
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSRI")
     else:
         fatal_error("Available wavelengths are not suitable for calculating PSRI. Try increasing distance.")
+
 
 def pssr1(hsi, distance=20):
     """Pigment-specific spectral ration (Blackburn, 1998) note: part 1 of 3
@@ -567,6 +588,7 @@ def pssr1(hsi, distance=20):
     else:
         fatal_error("Available wavelengths are not suitable for calculating PSSR1. Try increasing distance.")
 
+
 def pssr2(hsi, distance=20):
     """Pigment-specific spectral ration (Blackburn, 1998) note: part 2 of 3
     The theoretical range for PSSR2 is [0.0, Inf).
@@ -592,6 +614,7 @@ def pssr2(hsi, distance=20):
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSSR2")
     else:
         fatal_error("Available wavelengths are not suitable for calculating PSSR2. Try increasing distance.")
+
 
 def pssr3(hsi, distance=20):
     """Pigment-specific spectral ration (Blackburn, 1998) note: part 3 of 3
@@ -619,6 +642,7 @@ def pssr3(hsi, distance=20):
     else:
         fatal_error("Available wavelengths are not suitable for calculating PSSR3. Try increasing distance.")
 
+
 def rgri(hsi, distance=20):
     """Red/green ratio index (Gamon and Surfus, 1999)
     The theoretical range for RGRI is [0.0, Inf).
@@ -635,15 +659,16 @@ def rgri(hsi, distance=20):
     """
 
     if (float(hsi.max_wavelength) + distance) >= 670 and (float(hsi.min_wavelength) - distance) <= 560:
-        red_index   = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
+        red_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
         green_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 560)
-        red   = (hsi.array_data[:, :, [red_index]])
+        red = (hsi.array_data[:, :, [red_index]])
         green = (hsi.array_data[:, :, [green_index]])
         # Naturally ranges from 0 to inf
         index_array_raw = red / green
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="RGRI")
     else:
         fatal_error("Available wavelengths are not suitable for calculating RGRI. Try increasing distance.")
+
 
 def rvsi(hsi, distance=20):
     """Red-edge vegetation stress index (Metron and Huntington, 1999)
@@ -673,6 +698,7 @@ def rvsi(hsi, distance=20):
     else:
         fatal_error("Available wavelengths are not suitable for calculating RVSI. Try increasing distance.")
 
+
 def sipi(hsi, distance=20):
     """Structure-intensitive pigment index (Penuelas et al., 1995)
     The theoretical range for SIPI is (-Inf, Inf).
@@ -701,6 +727,7 @@ def sipi(hsi, distance=20):
     else:
         fatal_error("Available wavelengths are not suitable for calculating SIPI. Try increasing distance.")
 
+
 def sr(hsi, distance=20):
     """Simple ratio (Jordan, 1969)
     The theoretical range for SR is [0.0, Inf).
@@ -727,6 +754,7 @@ def sr(hsi, distance=20):
     else:
         fatal_error("Available wavelengths are not suitable for calculating SR. Try increasing distance.")
 
+
 def vari(hsi, distance=20):
     """Visible atmospherically resistant index (Gitelson et al., 2002a)
     The theoretical range for VARI is (-Inf, Inf).
@@ -743,17 +771,18 @@ def vari(hsi, distance=20):
     """
 
     if (float(hsi.max_wavelength) + distance) >= 670 and (float(hsi.min_wavelength) - distance) <= 470:
-        red_index   = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
+        red_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
         green_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 560)
-        blue_index  = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 470)
-        red   = (hsi.array_data[:, :, [red_index]])
+        blue_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 470)
+        red = (hsi.array_data[:, :, [red_index]])
         green = (hsi.array_data[:, :, [green_index]])
-        blue  = (hsi.array_data[:, :, [blue_index]])
+        blue = (hsi.array_data[:, :, [blue_index]])
         # Naturally ranges from -inf to inf
         index_array_raw = (green - red) / (green + red - blue)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="VARI")
     else:
         fatal_error("Available wavelengths are not suitable for calculating VARI. Try increasing distance.")
+
 
 def vi_green(hsi, distance=20):
     """Vegetation index using green band (Gitelson et al., 2002a)
@@ -770,16 +799,17 @@ def vi_green(hsi, distance=20):
     :return index_array: __main__.Spectral_data
     """
 
-    if (float(hsi.max_wavelength) + distance) >=  670 and (float(hsi.min_wavelength) - distance) <= 560:
-        red_index   = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
+    if (float(hsi.max_wavelength) + distance) >= 670 and (float(hsi.min_wavelength) - distance) <= 560:
+        red_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
         green_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 560)
-        red   = (hsi.array_data[:, :, [red_index]])
+        red = (hsi.array_data[:, :, [red_index]])
         green = (hsi.array_data[:, :, [green_index]])
         # Naturally ranges from -1 to 1
         index_array_raw = (green - red) / (green + red)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="VI_GREEN")
     else:
         fatal_error("Available wavelengths are not suitable for calculating VI_GREEN. Try increasing distance.")
+
 
 def wbi(hsi, distance=20):
     """Water band index (Peñuelas et al., 1997)
@@ -806,6 +836,7 @@ def wbi(hsi, distance=20):
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="WBI")
     else:
         fatal_error("Available wavelengths are not suitable for calculating WBI. Try increasing distance.")
+
 
 def _package_index(hsi, raw_index, method):
     """Private function to package raw index array as a Spectral_data object.
