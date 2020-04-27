@@ -166,35 +166,6 @@ def ari(hsi, distance=20):
         fatal_error("Available wavelengths are not suitable for calculating ARI. Try increasing distance.")
 
 
-def cari(hsi, distance=20):
-    """Chlorophyll absorption in reflectance index (Daughtry et al., 2000)
-    The theoretical range for CARI is [-1.0, 1.0].
-
-    inputs:
-    hsi      = hyperspectral image (PlantCV Spectral_data instance)
-    distance = how lenient to be if the required wavelengths are not available
-
-    Returns:
-    index_array    = Index data as a Spectral_data instance
-    :param hsi: __main__.Spectral_data
-    :param distance: int
-    :return index_array: __main__.Spectral_data
-    """
-
-    if (float(hsi.max_wavelength) + distance) >= 700 and (float(hsi.min_wavelength) - distance) <= 550:
-        cari550_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 550)
-        cari670_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
-        cari700_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 700)
-        cari550 = (hsi.array_data[:, :, [cari550_index]])
-        cari670 = (hsi.array_data[:, :, [cari670_index]])
-        cari700 = (hsi.array_data[:, :, [cari700_index]])
-        # Naturally ranges from -1 to 1
-        index_array_raw = (cari700 - cari670) - 0.2 * (cari700 - cari550)
-        return _package_index(hsi=hsi, raw_index=index_array_raw, method="CARI")
-    else:
-        fatal_error("Available wavelengths are not suitable for calculating CARI. Try increasing distance.")
-
-
 def ci_rededge(hsi, distance=20):
     """Chlorophyll index red edge (Giteson et al., 2003a)
     The theoretical range for CI_REDEDGE is [-1.0, Inf).
