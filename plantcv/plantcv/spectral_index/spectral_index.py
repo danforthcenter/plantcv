@@ -40,7 +40,7 @@ def ndvi(hsi, distance=20):
 
 def gdvi(hsi, distance=20):
     """Green Difference Vegetation Index [Sripada et al. (2006)]
-    The theoretical range for GDVI is [-2.0, 2.0].
+    The theoretical range for GDVI is [-1.0, 1.0].
 
     inputs:
     hsi           = hyperspectral image (PlantCV Spectral_data instance)
@@ -52,13 +52,13 @@ def gdvi(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-    if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 680:
-        nir_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
-        red_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 680)
-        nir = (hsi.array_data[:, :, [nir_index]])
-        red = (hsi.array_data[:, :, [red_index]])
-        # Naturally ranges from -2 to 2
-        index_array_raw = nir - red
+    if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 580:
+        nir_index   = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
+        green_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 580)
+        nir   = (hsi.array_data[:, :, [nir_index]])
+        green = (hsi.array_data[:, :, [green_index]])
+        # Naturally ranges from -1 to 1
+        index_array_raw = nir - green
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="GDVI")
     else:
         fatal_error("Available wavelengths are not suitable for calculating GDVI. Try increasing distance.")
@@ -110,10 +110,7 @@ def pri(hsi, distance=20):
         pri531_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 531)
         pri570 = (hsi.array_data[:, :, [pri570_index]])
         pri531 = (hsi.array_data[:, :, [pri531_index]])
-        # PRI = (R531- R570)/(R531+ R570))
-        denominator = pri531 + pri570
-        # Avoid dividing by zero
-        index_array_raw = np.where(denominator == 0, 0, ((pri531 - pri570) / denominator))
+        index_array_raw = (pri531- pri570)/(pri531+ pri570)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PRI")
     else:
         fatal_error("Available wavelengths are not suitable for calculating PRI. Try increasing distance.")
