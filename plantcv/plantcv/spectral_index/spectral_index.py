@@ -108,7 +108,7 @@ def pri(hsi, distance=20):
         pri531_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 531)
         pri570 = (hsi.array_data[:, :, [pri570_index]])
         pri531 = (hsi.array_data[:, :, [pri531_index]])
-        index_array_raw = (R531- R570)/(R531+ R570)
+        index_array_raw = (pri531- pri570)/(pri531+ pri570)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PRI")
     else:
         fatal_error("Available wavelengths are not suitable for calculating PRI. Try increasing distance.")
