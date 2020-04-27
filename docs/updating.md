@@ -676,9 +676,9 @@ pages for more details on the input and output variable types.
 
 * post v3.8: array = **plantcv.spectral_index.cri700**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.egi(hsi, distance=20)
+#### plantcv.spectral_index.egi(rgb_img)
 
-* post v3.8: array = **plantcv.spectral_index.egi**(*hsi, distance=20*)
+* post v3.8: array = **plantcv.spectral_index.egi**(*rgb_img*)
 
 #### plantcv.spectral_index.evi(hsi, distance=20)
 

@@ -3849,18 +3849,10 @@ def test_plantcv_spectral_index_egi():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    array_data  = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.spectral_index.egi(hsi=array_data, distance=20)
-    assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    index_array = pcv.spectral_index.egi(rgb_img=rgb_img)
+    assert np.shape(index_array.array_data) == (2056, 2454) and np.nanmax(index_array.pseudo_rgb) == 255
 
-def test_plantcv_spectral_index_egi_bad_input():
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    pcv.params.debug = None
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.spectral_index.egi(hsi=array_data, distance=20)
-    with pytest.raises(RuntimeError):
-        _ = pcv.spectral_index.egi(hsi=index_array, distance=20)
 
 def test_plantcv_spectral_index_evi():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_evi")

@@ -2,6 +2,7 @@
 
 import os
 import numpy as np
+import cv2
 from plantcv.plantcv import params
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
@@ -34,8 +35,8 @@ def ndvi(hsi, distance=20):
         # Obtain index that best represents NIR and red bands
         r800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
         r670_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
-        r800 = (hsi.array_data[:, :, [r800_index]])
-        r670 = (hsi.array_data[:, :, [r670_index]])
+        r800 = (hsi.array_data[:, :, r800_index])
+        r670 = (hsi.array_data[:, :, r670_index])
         # Naturally ranges from -1 to 1
         index_array_raw = (r800 - r670) / (r800 + r670)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="NDVI")
@@ -65,8 +66,8 @@ def gdvi(hsi, distance=20):
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 550:
         r800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
         r550_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 550)
-        r800 = (hsi.array_data[:, :, [r800_index]])
-        r550 = (hsi.array_data[:, :, [r550_index]])
+        r800 = (hsi.array_data[:, :, r800_index])
+        r550 = (hsi.array_data[:, :, r550_index])
         # Naturally ranges from -1 to 1
         index_array_raw = r800 - r550
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="GDVI")
@@ -96,8 +97,8 @@ def savi(hsi, distance=20):
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 680:
         r800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
         r680_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 680)
-        r800 = (hsi.array_data[:, :, [r800_index]])
-        r680 = (hsi.array_data[:, :, [r680_index]])
+        r800 = (hsi.array_data[:, :, r800_index])
+        r680 = (hsi.array_data[:, :, r680_index])
         # Naturally ranges from -1.2 to 1.2
         index_array_raw = (1.5 * (r800 - r680)) / (r800 + r680 + 0.5)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="SAVI")
@@ -128,8 +129,8 @@ def pri(hsi, distance=20):
         # Obtain index that best approximates 570 and 531 nm bands
         r570_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 570)
         r531_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 531)
-        r570 = (hsi.array_data[:, :, [r570_index]])
-        r531 = (hsi.array_data[:, :, [r531_index]])
+        r570 = (hsi.array_data[:, :, r570_index])
+        r531 = (hsi.array_data[:, :, r531_index])
         index_array_raw = (r531 - r570) / (r531 + r570)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PRI")
     else:
@@ -158,8 +159,8 @@ def ari(hsi, distance=20):
     if (float(hsi.max_wavelength) + distance) >= 700 and (float(hsi.min_wavelength) - distance) <= 550:
         r550_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 550)
         r700_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 700)
-        r550 = (hsi.array_data[:, :, [r550_index]])
-        r700 = (hsi.array_data[:, :, [r700_index]])
+        r550 = (hsi.array_data[:, :, r550_index])
+        r700 = (hsi.array_data[:, :, r700_index])
         index_array_raw = (1 / r550) - (1 / r700)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="ARI")
     else:
@@ -188,8 +189,8 @@ def ci_rededge(hsi, distance=20):
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 700:
         r700_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 700)
         r800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
-        r700 = (hsi.array_data[:, :, [r700_index]])
-        r800 = (hsi.array_data[:, :, [r800_index]])
+        r700 = (hsi.array_data[:, :, r700_index])
+        r800 = (hsi.array_data[:, :, r800_index])
         # Naturally ranges from -1 to inf
         index_array_raw = (r800 / r700) - 1
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="CI_REDEDGE")
@@ -219,8 +220,8 @@ def cri550(hsi, distance=20):
     if (float(hsi.max_wavelength) + distance) >= 550 and (float(hsi.min_wavelength) - distance) <= 510:
         r510_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 510)
         r550_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 550)
-        r510 = (hsi.array_data[:, :, [r510_index]])
-        r550 = (hsi.array_data[:, :, [r550_index]])
+        r510 = (hsi.array_data[:, :, r510_index])
+        r550 = (hsi.array_data[:, :, r550_index])
         # Naturally ranges from -inf to inf
         index_array_raw = (1 / r510) - (1 / r550)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="CRI510")
@@ -250,8 +251,8 @@ def cri700(hsi, distance=20):
     if (float(hsi.max_wavelength) + distance) >= 700 and (float(hsi.min_wavelength) - distance) <= 510:
         r510_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 510)
         r700_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 700)
-        r510 = (hsi.array_data[:, :, [r510_index]])
-        r700 = (hsi.array_data[:, :, [r700_index]])
+        r510 = (hsi.array_data[:, :, r510_index])
+        r700 = (hsi.array_data[:, :, r700_index])
         # Naturally ranges from -inf to inf
         index_array_raw = (1 / r510) - (1 / r700)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="CRI700")
@@ -259,36 +260,41 @@ def cri700(hsi, distance=20):
         fatal_error("Available wavelengths are not suitable for calculating CRI700. Try increasing distance.")
 
 
-def egi(hsi, distance=20):
-    """Excess Green Index (Wobbecke et al., 1995)
-    The theoretical range for EGI is (-2/3, 2/3).
+def egi(rgb_img):
+    """Excess Green Index.
 
-    inputs:
-    hsi      = hyperspectral image (PlantCV Spectral_data instance)
-    distance = how lenient to be if the required wavelengths are not available
+    r = R / (R + G + B)
+    g = G / (R + G + B)
+    b = B / (R + G + B)
+    EGI = 2g - r - b
+
+    The theoretical range for EGI is (-1, 2).
+
+    Inputs:
+    rgb_img      = Color image (np.array)
 
     Returns:
     index_array    = Index data as a Spectral_data instance
-    :param hsi: __main__.Spectral_data
-    :param distance: int
-    :return index_array: __main__.Spectral_data
+
+    :param rgb_img: np.array
+    :return index_array: np.array
     """
 
-    if (float(hsi.max_wavelength) + distance) >= 670 and (float(hsi.min_wavelength) - distance) <= 470:
-        red_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
-        green_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 560)
-        blue_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 470)
-        red = (hsi.array_data[:, :, [red_index]])
-        green = (hsi.array_data[:, :, [green_index]])
-        blue = (hsi.array_data[:, :, [blue_index]])
-        summation = red + green + blue
-        r = red / summation
-        g = green / summation
-        b = blue / summation
-        index_array_raw = 2 * g - r - b
-        return _package_index(hsi=hsi, raw_index=index_array_raw, method="EGI")
-    else:
-        fatal_error("Available wavelengths are not suitable for calculating EGI. Try increasing distance.")
+    # Split the RGB image into component channels
+    blue, green, red = cv2.split(rgb_img)
+    # Calculate float32 sum of all channels
+    total = red.astype(np.float32) + green.astype(np.float32) + blue.astype(np.float32)
+    # Calculate normalized channels
+    r = red.astype(np.float32) / total
+    g = green.astype(np.float32) / total
+    b = blue.astype(np.float32) / total
+    index_array_raw = (2 * g) - r - b
+
+    hsi = Spectral_data(array_data=None, max_wavelength=0, min_wavelength=0, max_value=255, min_value=0,
+                        d_type=np.uint8, wavelength_dict={}, samples=None, lines=None, interleave=None,
+                        wavelength_units=None, array_type=None, pseudo_rgb=None, filename=None, default_bands=None)
+
+    return _package_index(hsi=hsi, raw_index=index_array_raw, method="EGI")
 
 
 def evi(hsi, distance=20):
@@ -310,9 +316,9 @@ def evi(hsi, distance=20):
         blue_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 470)
         red_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
         nir_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
-        blue = (hsi.array_data[:, :, [blue_index]])
-        red = (hsi.array_data[:, :, [red_index]])
-        nir = (hsi.array_data[:, :, [nir_index]])
+        blue = (hsi.array_data[:, :, blue_index])
+        red = (hsi.array_data[:, :, red_index])
+        nir = (hsi.array_data[:, :, nir_index])
         # Naturally ranges from -inf to inf
         index_array_raw = 2.5 * (nir - red) / (nir + 6 * red - 7.5 * blue + 1)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="EVI")
@@ -339,9 +345,9 @@ def mari(hsi, distance=20):
         mari550_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 550)
         mari700_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 700)
         nir_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
-        mari550 = (hsi.array_data[:, :, [mari550_index]])
-        mari700 = (hsi.array_data[:, :, [mari700_index]])
-        nir = (hsi.array_data[:, :, [nir_index]])
+        mari550 = (hsi.array_data[:, :, mari550_index])
+        mari700 = (hsi.array_data[:, :, mari700_index])
+        nir = (hsi.array_data[:, :, nir_index])
         # Naturally ranges from -inf to inf
         index_array_raw = ((1 / mari550) - (1 / mari700)) * nir
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="MARI")
@@ -372,9 +378,9 @@ def mcari(hsi, distance=20):
         r550_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 550)
         r670_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
         r700_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 700)
-        r550 = (hsi.array_data[:, :, [r550_index]])
-        r670 = (hsi.array_data[:, :, [r670_index]])
-        r700 = (hsi.array_data[:, :, [r700_index]])
+        r550 = (hsi.array_data[:, :, r550_index])
+        r670 = (hsi.array_data[:, :, r670_index])
+        r700 = (hsi.array_data[:, :, r700_index])
         # Naturally ranges from -inf to inf
         index_array_raw = ((r700 - r670) - 0.2 * (r700 - r550)) * (r700 / r670)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="MCARI")
@@ -401,9 +407,9 @@ def mtci(hsi, distance=20):
         mtci68125_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 681.25)
         mtci70875_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 708.75)
         mtci75375_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 753.75)
-        mtci68125 = (hsi.array_data[:, :, [mtci68125_index]])
-        mtci70875 = (hsi.array_data[:, :, [mtci70875_index]])
-        mtci75375 = (hsi.array_data[:, :, [mtci75375_index]])
+        mtci68125 = (hsi.array_data[:, :, mtci68125_index])
+        mtci70875 = (hsi.array_data[:, :, mtci70875_index])
+        mtci75375 = (hsi.array_data[:, :, mtci75375_index])
         # Naturally ranges from -inf to inf
         index_array_raw = (mtci75375 - mtci70875) / (mtci70875 - mtci68125)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="MTCI")
@@ -429,8 +435,8 @@ def ndre(hsi, distance=20):
     if (float(hsi.max_wavelength) + distance) >= 790 and (float(hsi.min_wavelength) - distance) <= 720:
         ndre720_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 720)
         ndre790_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 790)
-        ndre790 = (hsi.array_data[:, :, [ndre790_index]])
-        ndre720 = (hsi.array_data[:, :, [ndre720_index]])
+        ndre790 = (hsi.array_data[:, :, ndre790_index])
+        ndre720 = (hsi.array_data[:, :, ndre720_index])
         # Naturally ranges from -1 to 1
         index_array_raw = (ndre790 - ndre720) / (ndre790 + ndre720)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="NDRE")
@@ -456,8 +462,8 @@ def psnd_chla(hsi, distance=20):
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 675:
         psndchla675_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 675)
         psndchla800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
-        psndchla675 = (hsi.array_data[:, :, [psndchla675_index]])
-        psndchla800 = (hsi.array_data[:, :, [psndchla800_index]])
+        psndchla675 = (hsi.array_data[:, :, psndchla675_index])
+        psndchla800 = (hsi.array_data[:, :, psndchla800_index])
         # Naturally ranges from -1 to 1
         index_array_raw = (psndchla800 - psndchla675) / (psndchla800 + psndchla675)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSND_CHLA")
@@ -483,8 +489,8 @@ def psnd_chlb(hsi, distance=20):
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 650:
         psndchlb650_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 650)
         psndchlb800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
-        psndchlb650 = (hsi.array_data[:, :, [psndchlb650_index]])
-        psndchlb800 = (hsi.array_data[:, :, [psndchlb800_index]])
+        psndchlb650 = (hsi.array_data[:, :, psndchlb650_index])
+        psndchlb800 = (hsi.array_data[:, :, psndchlb800_index])
         # Naturally ranges from -1 to 1
         index_array_raw = (psndchlb800 - psndchlb650) / (psndchlb800 + psndchlb650)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSND_CHLB")
@@ -510,8 +516,8 @@ def psnd_car(hsi, distance=20):
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 500:
         psndcar500_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 500)
         psndcar800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
-        psndcar500 = (hsi.array_data[:, :, [psndcar500_index]])
-        psndcar800 = (hsi.array_data[:, :, [psndcar800_index]])
+        psndcar500 = (hsi.array_data[:, :, psndcar500_index])
+        psndcar800 = (hsi.array_data[:, :, psndcar800_index])
         # Naturally ranges from -1 to 1
         index_array_raw = (psndcar800 - psndcar500) / (psndcar800 + psndcar500)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSND_CAR")
@@ -538,9 +544,9 @@ def psri(hsi, distance=20):
         psri500_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 500)
         psri678_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 678)
         psri750_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 750)
-        psri500 = (hsi.array_data[:, :, [psri500_index]])
-        psri678 = (hsi.array_data[:, :, [psri678_index]])
-        psri750 = (hsi.array_data[:, :, [psri750_index]])
+        psri500 = (hsi.array_data[:, :, psri500_index])
+        psri678 = (hsi.array_data[:, :, psri678_index])
+        psri750 = (hsi.array_data[:, :, psri750_index])
         # Naturally ranges from -inf to inf
         index_array_raw = (psri678 - psri500) / psri750
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSRI")
@@ -566,8 +572,8 @@ def pssr1(hsi, distance=20):
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 675:
         pssr1_800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
         pssr1_675_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 675)
-        pssr1_800 = (hsi.array_data[:, :, [pssr1_800_index]])
-        pssr1_675 = (hsi.array_data[:, :, [pssr1_675_index]])
+        pssr1_800 = (hsi.array_data[:, :, pssr1_800_index])
+        pssr1_675 = (hsi.array_data[:, :, pssr1_675_index])
         # Naturally ranges from 0 to inf
         index_array_raw = pssr1_800 / pssr1_675
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSSR1")
@@ -593,8 +599,8 @@ def pssr2(hsi, distance=20):
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 650:
         pssr2_800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
         pssr2_650_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 650)
-        pssr2_800 = (hsi.array_data[:, :, [pssr2_800_index]])
-        pssr2_650 = (hsi.array_data[:, :, [pssr2_650_index]])
+        pssr2_800 = (hsi.array_data[:, :, pssr2_800_index])
+        pssr2_650 = (hsi.array_data[:, :, pssr2_650_index])
         # Naturally ranges from 0 to inf
         index_array_raw = pssr2_800 / pssr2_650
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSSR2")
@@ -620,8 +626,8 @@ def pssr3(hsi, distance=20):
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 500:
         pssr3_800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
         pssr3_500_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 500)
-        pssr3_800 = (hsi.array_data[:, :, [pssr3_800_index]])
-        pssr3_500 = (hsi.array_data[:, :, [pssr3_500_index]])
+        pssr3_800 = (hsi.array_data[:, :, pssr3_800_index])
+        pssr3_500 = (hsi.array_data[:, :, pssr3_500_index])
         # Naturally ranges from 0 to inf
         index_array_raw = pssr3_800 / pssr3_500
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSSR3")
@@ -647,8 +653,8 @@ def rgri(hsi, distance=20):
     if (float(hsi.max_wavelength) + distance) >= 670 and (float(hsi.min_wavelength) - distance) <= 560:
         red_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
         green_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 560)
-        red = (hsi.array_data[:, :, [red_index]])
-        green = (hsi.array_data[:, :, [green_index]])
+        red = (hsi.array_data[:, :, red_index])
+        green = (hsi.array_data[:, :, green_index])
         # Naturally ranges from 0 to inf
         index_array_raw = red / green
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="RGRI")
@@ -675,9 +681,9 @@ def rvsi(hsi, distance=20):
         rvsi714_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 714)
         rvsi733_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 733)
         rvsi752_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 752)
-        rvsi714 = (hsi.array_data[:, :, [rvsi714_index]])
-        rvsi733 = (hsi.array_data[:, :, [rvsi733_index]])
-        rvsi752 = (hsi.array_data[:, :, [rvsi752_index]])
+        rvsi714 = (hsi.array_data[:, :, rvsi714_index])
+        rvsi733 = (hsi.array_data[:, :, rvsi733_index])
+        rvsi752 = (hsi.array_data[:, :, rvsi752_index])
         # Naturally ranges from -1 to 1
         index_array_raw = (rvsi714 + rvsi752) / 2 - rvsi733
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="RVSI")
@@ -704,9 +710,9 @@ def sipi(hsi, distance=20):
         sipi445_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 445)
         sipi680_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 680)
         sipi800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
-        sipi445 = (hsi.array_data[:, :, [sipi445_index]])
-        sipi680 = (hsi.array_data[:, :, [sipi680_index]])
-        sipi800 = (hsi.array_data[:, :, [sipi800_index]])
+        sipi445 = (hsi.array_data[:, :, sipi445_index])
+        sipi680 = (hsi.array_data[:, :, sipi680_index])
+        sipi800 = (hsi.array_data[:, :, sipi800_index])
         # Naturally ranges from -inf to inf
         index_array_raw = (sipi800 - sipi445) / (sipi800 - sipi680)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="SIPI")
@@ -732,8 +738,8 @@ def sr(hsi, distance=20):
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 675:
         sr675_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 675)
         sr800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
-        sr675 = (hsi.array_data[:, :, [sr675_index]])
-        sr800 = (hsi.array_data[:, :, [sr800_index]])
+        sr675 = (hsi.array_data[:, :, sr675_index])
+        sr800 = (hsi.array_data[:, :, sr800_index])
         # Naturally ranges from 0 to inf
         index_array_raw = sr800 / sr675
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="SR")
@@ -760,9 +766,9 @@ def vari(hsi, distance=20):
         red_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
         green_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 560)
         blue_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 470)
-        red = (hsi.array_data[:, :, [red_index]])
-        green = (hsi.array_data[:, :, [green_index]])
-        blue = (hsi.array_data[:, :, [blue_index]])
+        red = (hsi.array_data[:, :, red_index])
+        green = (hsi.array_data[:, :, green_index])
+        blue = (hsi.array_data[:, :, blue_index])
         # Naturally ranges from -inf to inf
         index_array_raw = (green - red) / (green + red - blue)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="VARI")
@@ -788,8 +794,8 @@ def vi_green(hsi, distance=20):
     if (float(hsi.max_wavelength) + distance) >= 670 and (float(hsi.min_wavelength) - distance) <= 560:
         red_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
         green_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 560)
-        red = (hsi.array_data[:, :, [red_index]])
-        green = (hsi.array_data[:, :, [green_index]])
+        red = (hsi.array_data[:, :, red_index])
+        green = (hsi.array_data[:, :, green_index])
         # Naturally ranges from -1 to 1
         index_array_raw = (green - red) / (green + red)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="VI_GREEN")
@@ -815,8 +821,8 @@ def wbi(hsi, distance=20):
     if (float(hsi.max_wavelength) + distance) >= 970 and (float(hsi.min_wavelength) - distance) <= 900:
         wbi900_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 900)
         wbi970_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 970)
-        wbi900 = (hsi.array_data[:, :, [wbi900_index]])
-        wbi970 = (hsi.array_data[:, :, [wbi970_index]])
+        wbi900 = (hsi.array_data[:, :, wbi900_index])
+        wbi970 = (hsi.array_data[:, :, wbi970_index])
         # Naturally ranges from 0 to Inf
         index_array_raw = wbi900 / wbi970
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="WBI")
@@ -840,8 +846,6 @@ def _package_index(hsi, raw_index, method):
     :params index: __main__.Spectral_data
     """
     params.device += 1
-    # Reshape array into hyperspectral datacube shape
-    raw_index = np.transpose(np.transpose(raw_index)[0])
 
     # Store debug mode
     debug = params.debug
