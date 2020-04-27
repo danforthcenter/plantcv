@@ -125,7 +125,7 @@ object returned has many methods that are useful to users and within PlantCV fun
 
 **Figure 2.** GDVI Grayscale Image.
 For this image the Green Difference Vegetation Index was ideal for separating the leaf of interest from the rest of the background. 
-We extract this specific index with the [extract index](extract_index.md) function. 
+We extract this specific index with the [pcv.spectral index.gdvi](spectral_index.md) function. 
 
 ![Screenshot](img/tutorial_images/hyperspectral/gdvi.jpg)
 
