@@ -136,32 +136,6 @@ def pri(hsi, distance=20):
         fatal_error("Available wavelengths are not suitable for calculating PRI. Try increasing distance.")
 
 
-def aci(hsi, distance=20):
-    """Anthocyanin content index (Van den Berg et al., 2005)
-    The theoretical range for ACI is [0.0, Inf).
-
-    inputs:
-    hsi      = hyperspectral image (PlantCV Spectral_data instance)
-    distance = how lenient to be if the required wavelengths are not available
-
-    Returns:
-    index_array    = Index data as a Spectral_data instance
-    :param hsi: __main__.Spectral_data
-    :param distance: int
-    :return index_array: __main__.Spectral_data
-    """
-
-    if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 560:
-        green_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 560)
-        nir_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
-        green = (hsi.array_data[:, :, [green_index]])
-        nir = (hsi.array_data[:, :, [nir_index]])
-        index_array_raw = green / nir
-        return _package_index(hsi=hsi, raw_index=index_array_raw, method="ACI")
-    else:
-        fatal_error("Available wavelengths are not suitable for calculating ACI. Try increasing distance.")
-
-
 def ari(hsi, distance=20):
     """Anthocyanin Reflectance Index.
 

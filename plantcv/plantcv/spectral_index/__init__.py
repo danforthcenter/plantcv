@@ -2,7 +2,6 @@ from plantcv.plantcv.spectral_index.spectral_index import ndvi
 from plantcv.plantcv.spectral_index.spectral_index import gdvi
 from plantcv.plantcv.spectral_index.spectral_index import savi
 from plantcv.plantcv.spectral_index.spectral_index import pri
-from plantcv.plantcv.spectral_index.spectral_index import aci
 from plantcv.plantcv.spectral_index.spectral_index import ari
 from plantcv.plantcv.spectral_index.spectral_index import cari
 from plantcv.plantcv.spectral_index.spectral_index import ci_rededge
@@ -31,4 +30,4 @@ from plantcv.plantcv.spectral_index.spectral_index import wbi
 
 
 # add new functions to end of lists
-__all__ = ["ndvi", "gdvi", "savi", "pri", "aci", "ari", "cari", "ci_rededge", "cri1", "cri2", "egi", "evi", "mari", "mcari", "mtci", "ndre", "psnd_chla", "psnd_chlb", "psri", "pssr1", "pssr2", "pssr3", "rgri", "rvsi", "sipi", "sr", "vi_green", "wbi"]
+__all__ = ["ndvi", "gdvi", "savi", "pri", "ari", "cari", "ci_rededge", "cri1", "cri2", "egi", "evi", "mari", "mcari", "mtci", "ndre", "psnd_chla", "psnd_chlb", "psri", "pssr1", "pssr2", "pssr3", "rgri", "rvsi", "sipi", "sr", "vi_green", "wbi"]

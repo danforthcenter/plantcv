@@ -660,10 +660,6 @@ pages for more details on the input and output variable types.
 
 * post v3.8: array = **plantcv.spectral_index.pri**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.aci(hsi, distance=20)
-
-* post v3.8: array = **plantcv.spectral_index.aci**(*hsi, distance=20*)
-
 #### plantcv.spectral_index.ari(hsi, distance=20)
 
 * post v3.8: array = **plantcv.spectral_index.ari**(*hsi, distance=20*)
