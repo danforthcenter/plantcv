@@ -668,13 +668,13 @@ pages for more details on the input and output variable types.
 
 * post v3.8: array = **plantcv.spectral_index.ci_rededge**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.cri1(hsi, distance=20)
+#### plantcv.spectral_index.cri550(hsi, distance=20)
 
-* post v3.8: array = **plantcv.spectral_index.cri1**(*hsi, distance=20*)
+* post v3.8: array = **plantcv.spectral_index.cri550**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.cri2(hsi, distance=20)
+#### plantcv.spectral_index.cri700(hsi, distance=20)
 
-* post v3.8: array = **plantcv.spectral_index.cri2**(*hsi, distance=20*)
+* post v3.8: array = **plantcv.spectral_index.cri700**(*hsi, distance=20*)
 
 #### plantcv.spectral_index.egi(hsi, distance=20)
 

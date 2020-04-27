@@ -167,84 +167,96 @@ def ari(hsi, distance=20):
 
 
 def ci_rededge(hsi, distance=20):
-    """Chlorophyll index red edge (Giteson et al., 2003a)
+    """Chlorophyll Index Red Edge.
+
+    CI_REDEDGE = (R800 / R700) - 1
+
     The theoretical range for CI_REDEDGE is [-1.0, Inf).
 
-    inputs:
-    hsi      = hyperspectral image (PlantCV Spectral_data instance)
-    distance = how lenient to be if the required wavelengths are not available
+    Inputs:
+    hsi         = hyperspectral image (PlantCV Spectral_data instance)
+    distance    = how lenient to be if the required wavelengths are not available
 
     Returns:
-    index_array    = Index data as a Spectral_data instance
+    index_array = Index data as a Spectral_data instance
+
     :param hsi: __main__.Spectral_data
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
 
-    if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 750:
-        rededge_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 750)
-        nir_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
-        rededge = (hsi.array_data[:, :, [rededge_index]])
-        nir = (hsi.array_data[:, :, [nir_index]])
+    if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 700:
+        r700_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 700)
+        r800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
+        r700 = (hsi.array_data[:, :, [r700_index]])
+        r800 = (hsi.array_data[:, :, [r800_index]])
         # Naturally ranges from -1 to inf
-        index_array_raw = nir / rededge - 1
+        index_array_raw = (r800 / r700) - 1
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="CI_REDEDGE")
     else:
         fatal_error("Available wavelengths are not suitable for calculating CI_REDEDGE. Try increasing distance.")
 
 
-def cri1(hsi, distance=20):
-    """Carotenoid reflectance index (Gitelson et al., 2002b) (note: part 1 of 2)
-    The theoretical range for CRI1 is (-Inf, Inf).
+def cri550(hsi, distance=20):
+    """Carotenoid Reflectance Index 550.
 
-    inputs:
-    hsi      = hyperspectral image (PlantCV Spectral_data instance)
-    distance = how lenient to be if the required wavelengths are not available
+    CRI550 = (1 / R510) - (1 / R550)
+
+    The theoretical range for CRI550 is (-Inf, Inf).
+
+    Inputs:
+    hsi         = hyperspectral image (PlantCV Spectral_data instance)
+    distance    = how lenient to be if the required wavelengths are not available
 
     Returns:
-    index_array    = Index data as a Spectral_data instance
+    index_array = Index data as a Spectral_data instance
+
     :param hsi: __main__.Spectral_data
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
 
     if (float(hsi.max_wavelength) + distance) >= 550 and (float(hsi.min_wavelength) - distance) <= 510:
-        cri1510_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 510)
-        cri1550_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 550)
-        cri1510 = (hsi.array_data[:, :, [cri1510_index]])
-        cri1550 = (hsi.array_data[:, :, [cri1550_index]])
+        r510_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 510)
+        r550_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 550)
+        r510 = (hsi.array_data[:, :, [r510_index]])
+        r550 = (hsi.array_data[:, :, [r550_index]])
         # Naturally ranges from -inf to inf
-        index_array_raw = 1 / cri1510 - 1 / cri1550
-        return _package_index(hsi=hsi, raw_index=index_array_raw, method="CRI1")
+        index_array_raw = (1 / r510) - (1 / r550)
+        return _package_index(hsi=hsi, raw_index=index_array_raw, method="CRI510")
     else:
-        fatal_error("Available wavelengths are not suitable for calculating CRI1. Try increasing distance.")
+        fatal_error("Available wavelengths are not suitable for calculating CRI510. Try increasing distance.")
 
 
-def cri2(hsi, distance=20):
-    """Carotenoid reflectance index (Gitelson et al., 2002b) (note: part 2 of 2)
-    The theoretical range for CRI2 is (-Inf, Inf).
+def cri700(hsi, distance=20):
+    """Carotenoid Reflectance Index 700.
 
-    inputs:
-    hsi      = hyperspectral image (PlantCV Spectral_data instance)
-    distance = how lenient to be if the required wavelengths are not available
+    CRI700 = (1 / R510) - (1 / R700)
+
+    The theoretical range for CRI700 is (-Inf, Inf).
+
+    Inputs:
+    hsi         = hyperspectral image (PlantCV Spectral_data instance)
+    distance    = how lenient to be if the required wavelengths are not available
 
     Returns:
-    index_array    = Index data as a Spectral_data instance
+    index_array = Index data as a Spectral_data instance
+
     :param hsi: __main__.Spectral_data
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
 
     if (float(hsi.max_wavelength) + distance) >= 700 and (float(hsi.min_wavelength) - distance) <= 510:
-        cri1510_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 510)
-        cri1700_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 700)
-        cri1510 = (hsi.array_data[:, :, [cri1510_index]])
-        cri1700 = (hsi.array_data[:, :, [cri1700_index]])
+        r510_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 510)
+        r700_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 700)
+        r510 = (hsi.array_data[:, :, [r510_index]])
+        r700 = (hsi.array_data[:, :, [r700_index]])
         # Naturally ranges from -inf to inf
-        index_array_raw = 1 / cri1510 - 1 / cri1700
-        return _package_index(hsi=hsi, raw_index=index_array_raw, method="CRI2")
+        index_array_raw = (1 / r510) - (1 / r700)
+        return _package_index(hsi=hsi, raw_index=index_array_raw, method="CRI700")
     else:
-        fatal_error("Available wavelengths are not suitable for calculating CRI2. Try increasing distance.")
+        fatal_error("Available wavelengths are not suitable for calculating CRI700. Try increasing distance.")
 
 
 def egi(hsi, distance=20):
