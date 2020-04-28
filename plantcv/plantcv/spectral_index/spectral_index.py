@@ -554,29 +554,33 @@ def psnd_car(hsi, distance=20):
 
 
 def psri(hsi, distance=20):
-    """Plant senescence reflectance index (Merzlyak et al., 1999)
+    """Plant Senescence Reflectance Index.
+
+    PSRI = (R678 - R500) / R750
+
     The theoretical range for PSRI is (-Inf, Inf).
 
-    inputs:
-    hsi      = hyperspectral image (PlantCV Spectral_data instance)
-    distance = how lenient to be if the required wavelengths are not available
+    Inputs:
+    hsi         = hyperspectral image (PlantCV Spectral_data instance)
+    distance    = how lenient to be if the required wavelengths are not available
 
     Returns:
-    index_array    = Index data as a Spectral_data instance
+    index_array = Index data as a Spectral_data instance
+
     :param hsi: __main__.Spectral_data
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
 
     if (float(hsi.max_wavelength) + distance) >= 750 and (float(hsi.min_wavelength) - distance) <= 500:
-        psri500_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 500)
-        psri678_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 678)
-        psri750_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 750)
-        psri500 = (hsi.array_data[:, :, psri500_index])
-        psri678 = (hsi.array_data[:, :, psri678_index])
-        psri750 = (hsi.array_data[:, :, psri750_index])
+        r500_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 500)
+        r678_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 678)
+        r750_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 750)
+        r500 = (hsi.array_data[:, :, r500_index])
+        r678 = (hsi.array_data[:, :, r678_index])
+        r750 = (hsi.array_data[:, :, r750_index])
         # Naturally ranges from -inf to inf
-        index_array_raw = (psri678 - psri500) / psri750
+        index_array_raw = (r678 - r500) / r750
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSRI")
     else:
         fatal_error("Available wavelengths are not suitable for calculating PSRI. Try increasing distance.")

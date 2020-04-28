@@ -322,6 +322,24 @@ Index range: -1.0, 1.0
     - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
     - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
 
+### PSRI
+
+Calculates the Plant Senescence Reflectance Index using reflectance values ([Merzlyak et al. 1999](#references)):
+
+```
+PSRI = (R678 - R500) / R750
+```
+
+Index range: -Inf, Inf
+
+**plantcv.spectral_index.psri**(*hsi, distance=20*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
+    - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
+
 ### PSSR-Chlorophyll a
 
 Calculates the Pigment Specific Simple Ratio for Chlorophyll a using reflectance values 
@@ -572,6 +590,10 @@ Huete AR, HuiQing Liu, van Leeuwen WJD. 1997. The use of vegetation indices in f
 and saturation. In: IGARSS’97. 1997 IEEE International Geoscience and Remote Sensing Symposium Proceedings. Remote 
 Sensing - A Scientific Vision for Sustainable Development. 1966–1968 vol.4. DOI: 
 [10.1109/IGARSS.1997.609169](https://doi.org/10.1109/IGARSS.1997.609169).
+
+Merzlyak MN, Gitelson AA, Chivkunova OB, Rakitin VYU. 1999. Non-destructive optical detection of pigment changes during 
+leaf senescence and fruit ripening. Physiologia Plantarum 106:135–141. DOI: 
+[10.1034/j.1399-3054.1999.106119.x](https://doi.org/10.1034/j.1399-3054.1999.106119.x).
 
 Penuelas J, Filella I, Gamon JA. 1995. Assessment of photosynthetic radiation-use efficiency with spectral reflectance. 
 The New Phytologist 131:291–296. DOI: 
