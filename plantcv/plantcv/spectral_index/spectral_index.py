@@ -695,12 +695,12 @@ def rgri(hsi, distance=20):
     """
 
     if (float(hsi.max_wavelength) + distance) >= 670 and (float(hsi.min_wavelength) - distance) <= 560:
-        red_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
-        green_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 560)
-        red = (hsi.array_data[:, :, red_index])
-        green = (hsi.array_data[:, :, green_index])
+        r670_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
+        r560_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 560)
+        r670 = (hsi.array_data[:, :, r670_index])
+        r560 = (hsi.array_data[:, :, r560_index])
         # Naturally ranges from 0 to inf
-        index_array_raw = red / green
+        index_array_raw = r670 / r560
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="RGRI")
     else:
         fatal_error("Available wavelengths are not suitable for calculating RGRI. Try increasing distance.")

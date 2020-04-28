@@ -397,6 +397,29 @@ Index range: -1.0, 1.0
     - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
     - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
 
+### RGRI
+Calculates the Red:Green Ratio Index for anthocyanin using reflectance values ([Gamon and Surfus 1999](#references)):
+
+```
+RGRI = RED / GREEN
+```
+
+Here, we use ~R670 for RED and ~R560 for GREEN:
+
+```
+RGRI = R670 / R560
+```
+
+Index range: 0.0, Inf
+
+**plantcv.spectral_index.rgri**(*hsi, distance=20*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
+    - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
+
 ### SAVI
 
 Calculates the Soil Adjusted Vegetation Index using reflectance values ([Huete 1988](#references)):
@@ -566,6 +589,9 @@ from leaf and canopy reflectance. Remote Sensing of Environment 74:229–239. DO
 
 Dash J, Curran PJ. 2004. The MERIS terrestrial chlorophyll index. International Journal of Remote Sensing 25:5403–5413. 
 DOI: [10.1080/0143116042000274015](https://doi.org/10.1080/0143116042000274015).
+
+Gamon JA, Surfus JS. 1999. Assessing leaf pigment content and activity with a reflectometer. The New Phytologist 
+143:105–117. DOI: [10.1046/j.1469-8137.1999.00424.x](https://doi.org/10.1046/j.1469-8137.1999.00424.x).
 
 Gitelson AA, Zur Y, Chivkunova OB, Merzlyak MN. 2002. Assessing carotenoid content in plant leaves with reflectance 
 spectroscopy. Photochemistry and Photobiology 75:272–281. DOI: 
