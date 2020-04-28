@@ -716,17 +716,17 @@ pages for more details on the input and output variable types.
 
 * post v3.8: array = **plantcv.spectral_index.psri**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.pssr1(hsi, distance=20)
+#### plantcv.spectral_index.pssr_chla(hsi, distance=20)
 
-* post v3.8: array = **plantcv.spectral_index.pssr1**(*hsi, distance=20*)
+* post v3.8: array = **plantcv.spectral_index.pssr_chla**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.pssr2(hsi, distance=20)
+#### plantcv.spectral_index.pssr_chlb(hsi, distance=20)
 
-* post v3.8: array = **plantcv.spectral_index.pssr2**(*hsi, distance=20*)
+* post v3.8: array = **plantcv.spectral_index.pssr_chlb**(*hsi, distance=20*)
 
-#### plantcv.spectral_index.pssr3(hsi, distance=20)
+#### plantcv.spectral_index.pssr_car(hsi, distance=20)
 
-* post v3.8: array = **plantcv.spectral_index.pssr3**(*hsi, distance=20*)
+* post v3.8: array = **plantcv.spectral_index.pssr_car**(*hsi, distance=20*)
 
 #### plantcv.spectral_index.rgri(hsi, distance=20)
 

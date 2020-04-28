@@ -298,58 +298,66 @@ def egi(rgb_img):
 
 
 def evi(hsi, distance=20):
-    """Enhanced Vegetation index (Huete et al., 1997)
+    """Enhanced Vegetation index.
+
+    EVI = (2.5 * (R800 - R670)) / (1 + R800 + (6 * R670) - (7.5 * R480))
+
     The theoretical range for EVI is (-Inf, Inf).
 
-    inputs:
-    hsi      = hyperspectral image (PlantCV Spectral_data instance)
-    distance = how lenient to be if the required wavelengths are not available
+    Inputs:
+    hsi         = hyperspectral image (PlantCV Spectral_data instance)
+    distance    = how lenient to be if the required wavelengths are not available
 
     Returns:
-    index_array    = Index data as a Spectral_data instance
+    index_array = Index data as a Spectral_data instance
+
     :param hsi: __main__.Spectral_data
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
 
-    if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 470:
-        blue_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 470)
-        red_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
-        nir_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
-        blue = (hsi.array_data[:, :, blue_index])
-        red = (hsi.array_data[:, :, red_index])
-        nir = (hsi.array_data[:, :, nir_index])
+    if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 480:
+        r480_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 480)
+        r670_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
+        r800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
+        r480 = (hsi.array_data[:, :, r480_index])
+        r670 = (hsi.array_data[:, :, r670_index])
+        r800 = (hsi.array_data[:, :, r800_index])
         # Naturally ranges from -inf to inf
-        index_array_raw = 2.5 * (nir - red) / (nir + 6 * red - 7.5 * blue + 1)
+        index_array_raw = (2.5 * (r800 - r670)) / (1 + r800 + (6 * r670) - (7.5 * r480))
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="EVI")
     else:
         fatal_error("Available wavelengths are not suitable for calculating EVI. Try increasing distance.")
 
 
 def mari(hsi, distance=20):
-    """Modified anthocyanin reflectance index (Gitelson et al., 2001)
+    """Modified Anthocyanin Reflectance Index.
+
+    MARI = ((1 / R550) - (1 / R700)) * R800
+
     The theoretical range for MARI is (-Inf, Inf).
 
-    inputs:
-    hsi      = hyperspectral image (PlantCV Spectral_data instance)
-    distance = how lenient to be if the required wavelengths are not available
+    Inputs:
+    hsi         = hyperspectral image (PlantCV Spectral_data instance)
+    distance    = how lenient to be if the required wavelengths are not available
 
     Returns:
-    index_array    = Index data as a Spectral_data instance
+    index_array = Index data as a Spectral_data instance
+
     :param hsi: __main__.Spectral_data
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
 
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 550:
-        mari550_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 550)
-        mari700_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 700)
-        nir_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
-        mari550 = (hsi.array_data[:, :, mari550_index])
-        mari700 = (hsi.array_data[:, :, mari700_index])
-        nir = (hsi.array_data[:, :, nir_index])
+        r550_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 550)
+        r700_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 700)
+        r800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
+        r550 = (hsi.array_data[:, :, r550_index])
+        r700 = (hsi.array_data[:, :, r700_index])
+        r800 = (hsi.array_data[:, :, r800_index])
         # Naturally ranges from -inf to inf
-        index_array_raw = ((1 / mari550) - (1 / mari700)) * nir
+        index_array_raw = ((1 / r550) - (1 / r700)) * r800
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="MARI")
     else:
         fatal_error("Available wavelengths are not suitable for calculating MARI. Try increasing distance.")
@@ -389,137 +397,157 @@ def mcari(hsi, distance=20):
 
 
 def mtci(hsi, distance=20):
-    """MERIS terrestrial chlorophyll index (Dash and Curran, 2004)
+    """MERIS Terrestrial Chlorophyll Index.
+
+    MTCI = (R753.75 - R708.75) / (R708.75 - R681.25)
+
     The theoretical range for MTCI is (-Inf, Inf).
 
-    inputs:
-    hsi      = hyperspectral image (PlantCV Spectral_data instance)
-    distance = how lenient to be if the required wavelengths are not available
+    Inputs:
+    hsi         = hyperspectral image (PlantCV Spectral_data instance)
+    distance    = how lenient to be if the required wavelengths are not available
 
     Returns:
-    index_array    = Index data as a Spectral_data instance
+    index_array = Index data as a Spectral_data instance
+
     :param hsi: __main__.Spectral_data
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
 
     if (float(hsi.max_wavelength) + distance) >= 753.75 and (float(hsi.min_wavelength) - distance) <= 681.25:
-        mtci68125_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 681.25)
-        mtci70875_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 708.75)
-        mtci75375_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 753.75)
-        mtci68125 = (hsi.array_data[:, :, mtci68125_index])
-        mtci70875 = (hsi.array_data[:, :, mtci70875_index])
-        mtci75375 = (hsi.array_data[:, :, mtci75375_index])
+        r681_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 681.25)
+        r708_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 708.75)
+        r753_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 753.75)
+        r681 = (hsi.array_data[:, :, r681_index])
+        r708 = (hsi.array_data[:, :, r708_index])
+        r753 = (hsi.array_data[:, :, r753_index])
         # Naturally ranges from -inf to inf
-        index_array_raw = (mtci75375 - mtci70875) / (mtci70875 - mtci68125)
+        index_array_raw = (r753 - r708) / (r708 - r681)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="MTCI")
     else:
         fatal_error("Available wavelengths are not suitable for calculating MTCI. Try increasing distance.")
 
 
 def ndre(hsi, distance=20):
-    """Normalized difference red edge (Barnes et al., 2000)
+    """Normalized Difference Red Edge.
+
+    NDRE = (R790 - R720) / (R790 + R720)
+
     The theoretical range for NDRE is [-1.0, 1.0].
 
-    inputs:
-    hsi      = hyperspectral image (PlantCV Spectral_data instance)
-    distance = how lenient to be if the required wavelengths are not available
+    Inputs:
+    hsi         = hyperspectral image (PlantCV Spectral_data instance)
+    distance    = how lenient to be if the required wavelengths are not available
 
     Returns:
-    index_array    = Index data as a Spectral_data instance
+    index_array = Index data as a Spectral_data instance
+
     :param hsi: __main__.Spectral_data
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
 
     if (float(hsi.max_wavelength) + distance) >= 790 and (float(hsi.min_wavelength) - distance) <= 720:
-        ndre720_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 720)
-        ndre790_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 790)
-        ndre790 = (hsi.array_data[:, :, ndre790_index])
-        ndre720 = (hsi.array_data[:, :, ndre720_index])
+        r720_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 720)
+        r790_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 790)
+        r790 = (hsi.array_data[:, :, r790_index])
+        r720 = (hsi.array_data[:, :, r720_index])
         # Naturally ranges from -1 to 1
-        index_array_raw = (ndre790 - ndre720) / (ndre790 + ndre720)
+        index_array_raw = (r790 - r720) / (r790 + r720)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="NDRE")
     else:
         fatal_error("Available wavelengths are not suitable for calculating NDRE. Try increasing distance.")
 
 
 def psnd_chla(hsi, distance=20):
-    """Pigment sensitive normalized difference (Blackburn, 1998) note: chl_a (part 1 of 3)
+    """Pigment Specific Normalized Difference for Chlorophyll a.
+
+    PSND_CHLA = (R800 - R680) / (R800 + R680)
+
     The theoretical range for PSND_CHLA is [-1.0, 1.0].
 
-    inputs:
-    hsi      = hyperspectral image (PlantCV Spectral_data instance)
-    distance = how lenient to be if the required wavelengths are not available
+    Inputs:
+    hsi         = hyperspectral image (PlantCV Spectral_data instance)
+    distance    = how lenient to be if the required wavelengths are not available
 
     Returns:
-    index_array    = Index data as a Spectral_data instance
+    index_array = Index data as a Spectral_data instance
+
     :param hsi: __main__.Spectral_data
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
 
-    if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 675:
-        psndchla675_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 675)
-        psndchla800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
-        psndchla675 = (hsi.array_data[:, :, psndchla675_index])
-        psndchla800 = (hsi.array_data[:, :, psndchla800_index])
+    if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 680:
+        r680_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 680)
+        r800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
+        r680 = (hsi.array_data[:, :, r680_index])
+        r800 = (hsi.array_data[:, :, r800_index])
         # Naturally ranges from -1 to 1
-        index_array_raw = (psndchla800 - psndchla675) / (psndchla800 + psndchla675)
+        index_array_raw = (r800 - r680) / (r800 + r680)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSND_CHLA")
     else:
         fatal_error("Available wavelengths are not suitable for calculating PSND_CHLA. Try increasing distance.")
 
 
 def psnd_chlb(hsi, distance=20):
-    """Pigment sensitive normalized difference (Blackburn, 1998) note: chl_b (part 2 of 3)
+    """Pigment Specific Normalized Difference for Chlorophyll b.
+
+    PSND_CHLB = (R800 - R635) / (R800 + R635)
+
     The theoretical range for PSND_CHLB is [-1.0, 1.0].
 
-    inputs:
-    hsi      = hyperspectral image (PlantCV Spectral_data instance)
-    distance = how lenient to be if the required wavelengths are not available
+    Inputs:
+    hsi         = hyperspectral image (PlantCV Spectral_data instance)
+    distance    = how lenient to be if the required wavelengths are not available
 
     Returns:
-    index_array    = Index data as a Spectral_data instance
+    index_array = Index data as a Spectral_data instance
+
     :param hsi: __main__.Spectral_data
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
 
-    if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 650:
-        psndchlb650_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 650)
-        psndchlb800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
-        psndchlb650 = (hsi.array_data[:, :, psndchlb650_index])
-        psndchlb800 = (hsi.array_data[:, :, psndchlb800_index])
+    if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 635:
+        r635_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 635)
+        r800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
+        r635 = (hsi.array_data[:, :, r635_index])
+        r800 = (hsi.array_data[:, :, r800_index])
         # Naturally ranges from -1 to 1
-        index_array_raw = (psndchlb800 - psndchlb650) / (psndchlb800 + psndchlb650)
+        index_array_raw = (r800 - r635) / (r800 + r635)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSND_CHLB")
     else:
         fatal_error("Available wavelengths are not suitable for calculating PSND_CHLB. Try increasing distance.")
 
 
 def psnd_car(hsi, distance=20):
-    """Pigment sensitive normalized difference (Blackburn, 1998) note: car (part 3 of 3)
+    """Pigment Specific Normalized Difference for Caroteniods.
+
+    PSND_CAR = (R800 - R470) / (R800 + R470)
+
     The theoretical range for PSND_CAR is [-1.0, 1.0].
 
-    inputs:
-    hsi      = hyperspectral image (PlantCV Spectral_data instance)
-    distance = how lenient to be if the required wavelengths are not available
+    Inputs:
+    hsi         = hyperspectral image (PlantCV Spectral_data instance)
+    distance    = how lenient to be if the required wavelengths are not available
 
     Returns:
-    index_array    = Index data as a Spectral_data instance
+    index_array = Index data as a Spectral_data instance
+
     :param hsi: __main__.Spectral_data
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
 
-    if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 500:
-        psndcar500_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 500)
-        psndcar800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
-        psndcar500 = (hsi.array_data[:, :, psndcar500_index])
-        psndcar800 = (hsi.array_data[:, :, psndcar800_index])
+    if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 470:
+        r470_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 470)
+        r800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
+        r470 = (hsi.array_data[:, :, r470_index])
+        r800 = (hsi.array_data[:, :, r800_index])
         # Naturally ranges from -1 to 1
-        index_array_raw = (psndcar800 - psndcar500) / (psndcar800 + psndcar500)
+        index_array_raw = (r800 - r470) / (r800 + r470)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSND_CAR")
     else:
         fatal_error("Available wavelengths are not suitable for calculating PSND_CAR. Try increasing distance.")
@@ -554,85 +582,97 @@ def psri(hsi, distance=20):
         fatal_error("Available wavelengths are not suitable for calculating PSRI. Try increasing distance.")
 
 
-def pssr1(hsi, distance=20):
-    """Pigment-specific spectral ration (Blackburn, 1998) note: part 1 of 3
-    The theoretical range for PSSR1 is [0.0, Inf).
+def pssr_chla(hsi, distance=20):
+    """Pigment Specific Simple Ratio for Chlorophyll a.
 
-    inputs:
-    hsi      = hyperspectral image (PlantCV Spectral_data instance)
-    distance = how lenient to be if the required wavelengths are not available
+    PSSR_CHLA = R800 / R680
+
+    The theoretical range for PSSR_CHLA is [0.0, Inf).
+
+    Inputs:
+    hsi         = hyperspectral image (PlantCV Spectral_data instance)
+    distance    = how lenient to be if the required wavelengths are not available
 
     Returns:
-    index_array    = Index data as a Spectral_data instance
+    index_array = Index data as a Spectral_data instance
+
     :param hsi: __main__.Spectral_data
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
 
-    if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 675:
-        pssr1_800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
-        pssr1_675_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 675)
-        pssr1_800 = (hsi.array_data[:, :, pssr1_800_index])
-        pssr1_675 = (hsi.array_data[:, :, pssr1_675_index])
+    if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 680:
+        r800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
+        r680_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 680)
+        r800 = (hsi.array_data[:, :, r800_index])
+        r680 = (hsi.array_data[:, :, r680_index])
         # Naturally ranges from 0 to inf
-        index_array_raw = pssr1_800 / pssr1_675
-        return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSSR1")
+        index_array_raw = r800 / r680
+        return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSSR_CHLA")
     else:
-        fatal_error("Available wavelengths are not suitable for calculating PSSR1. Try increasing distance.")
+        fatal_error("Available wavelengths are not suitable for calculating PSSR_CHLA. Try increasing distance.")
 
 
-def pssr2(hsi, distance=20):
-    """Pigment-specific spectral ration (Blackburn, 1998) note: part 2 of 3
-    The theoretical range for PSSR2 is [0.0, Inf).
+def pssr_chlb(hsi, distance=20):
+    """Pigment Specific Simple Ratio for Chlorophyll b.
 
-    inputs:
-    hsi      = hyperspectral image (PlantCV Spectral_data instance)
-    distance = how lenient to be if the required wavelengths are not available
+    PSSR_CHLB = R800 / R635
+
+    The theoretical range for PSSR_CHLB is [0.0, Inf).
+
+    Inputs:
+    hsi         = hyperspectral image (PlantCV Spectral_data instance)
+    distance    = how lenient to be if the required wavelengths are not available
 
     Returns:
-    index_array    = Index data as a Spectral_data instance
+    index_array = Index data as a Spectral_data instance
+
     :param hsi: __main__.Spectral_data
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
 
-    if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 650:
-        pssr2_800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
-        pssr2_650_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 650)
-        pssr2_800 = (hsi.array_data[:, :, pssr2_800_index])
-        pssr2_650 = (hsi.array_data[:, :, pssr2_650_index])
+    if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 635:
+        r800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
+        r635_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 635)
+        r800 = (hsi.array_data[:, :, r800_index])
+        r635 = (hsi.array_data[:, :, r635_index])
         # Naturally ranges from 0 to inf
-        index_array_raw = pssr2_800 / pssr2_650
-        return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSSR2")
+        index_array_raw = r800 / r635
+        return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSSR_CHLB")
     else:
-        fatal_error("Available wavelengths are not suitable for calculating PSSR2. Try increasing distance.")
+        fatal_error("Available wavelengths are not suitable for calculating PSSR_CHLB. Try increasing distance.")
 
 
-def pssr3(hsi, distance=20):
-    """Pigment-specific spectral ration (Blackburn, 1998) note: part 3 of 3
-    The theoretical range for PSSR3 is [0.0, Inf).
+def pssr_car(hsi, distance=20):
+    """Pigment Specific Simple Ratio for Caroteniods.
 
-    inputs:
-    hsi      = hyperspectral image (PlantCV Spectral_data instance)
-    distance = how lenient to be if the required wavelengths are not available
+    PSSR_CAR = R800 / R470
+
+    The theoretical range for PSSR_CAR is [0.0, Inf).
+
+    Inputs:
+    hsi         = hyperspectral image (PlantCV Spectral_data instance)
+    distance    = how lenient to be if the required wavelengths are not available
 
     Returns:
-    index_array    = Index data as a Spectral_data instance
+    index_array = Index data as a Spectral_data instance
+
     :param hsi: __main__.Spectral_data
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
 
-    if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 500:
-        pssr3_800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
-        pssr3_500_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 500)
-        pssr3_800 = (hsi.array_data[:, :, pssr3_800_index])
-        pssr3_500 = (hsi.array_data[:, :, pssr3_500_index])
+    if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 470:
+        r800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
+        r470_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 470)
+        r800 = (hsi.array_data[:, :, r800_index])
+        r470 = (hsi.array_data[:, :, r470_index])
         # Naturally ranges from 0 to inf
-        index_array_raw = pssr3_800 / pssr3_500
-        return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSSR3")
+        index_array_raw = r800 / r470
+        return _package_index(hsi=hsi, raw_index=index_array_raw, method="PSSR_CAR")
     else:
-        fatal_error("Available wavelengths are not suitable for calculating PSSR3. Try increasing distance.")
+        fatal_error("Available wavelengths are not suitable for calculating PSSR_CAR. Try increasing distance.")
 
 
 def rgri(hsi, distance=20):

@@ -103,6 +103,30 @@ Index range: -1, 2
 - **Parameters:**
     - rgb_img     - Color image.
 
+### EVI
+
+Calculates the Enhanced Vegetation index using reflectance values ([Huete et al. 1997](#references)):
+
+```
+EVI = (2.5 * (NIR - RED)) / (1 + NIR + (6 * RED) - (7.5 * BLUE))
+```
+
+Here, we use ~R800 for NIR, ~R670 for RED, and ~R480 for BLUE:
+
+```
+EVI = (2.5 * (R800 - R670)) / (1 + R800 + (6 * R670) - (7.5 * R480))
+```
+
+Index range: -Inf, Inf
+
+**plantcv.spectral_index.evi**(*hsi, distance=20*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
+    - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
+
 ### GDVI
 
 Calculates the Green Difference Vegetation Index using reflectance values ([Sripada et al. 2006](#references)):
@@ -127,6 +151,24 @@ Index range: -2.0, 2.0
     - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
     - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
 
+### MARI
+
+Calculates the Modified Anthocyanin Reflectance Index using reflectance values ([Gitelson et al. 2006](#references)):
+
+```
+MARI = ((1 / R550) - (1 / R700)) * R800
+```
+
+Index range: -Inf, Inf
+
+**plantcv.spectral_index.mari**(*hsi, distance=20*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
+    - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
+
 ### MCARI
 
 Calculates the Modified Chlorophyll Absorption Reflectance Index using reflectance values ([Daughtry et al. 2000](#references)):
@@ -138,6 +180,42 @@ MCARI = ((R700 - R670) - 0.2 * (R700 - R550)) * (R700 / R670)
 Index range: -Inf, Inf
 
 **plantcv.spectral_index.mcari**(*hsi, distance=20*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
+    - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
+
+### MTCI
+
+Calculates the MERIS Terrestrial Chlorophyll Index using reflectance values ([Dash and Curran 2004](#references)):
+
+```
+MTCI = (R753.75 - R708.75) / (R708.75 - R681.25)
+```
+
+Index range: -Inf, Inf
+
+**plantcv.spectral_index.mtci**(*hsi, distance=20*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
+    - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
+
+### NDRE
+
+Calculates the Normalized Difference Red Edge index using reflectance values ([Barnes et al. 2000](#references)):
+
+```
+NDRE = (R790 - R720) / (R790 + R720)
+```
+
+Index range: -1.0, 1.0
+
+**plantcv.spectral_index.ndre**(*hsi, distance=20*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -180,6 +258,120 @@ PRI = (R531 - R570) / (R531 + R570)
 Index range: -1.0, 1.0
 
 **plantcv.spectral_index.pri**(*hsi, distance=20*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
+    - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
+
+### PSND-Chlorophyll a
+
+Calculates the Pigment Specific Normalized Difference for Chlorophyll a using reflectance values 
+([Blackburn 1998](#references)):
+
+```
+PSND_CHLA = (R800 - R680) / (R800 + R680)
+```
+
+Index range: -1.0, 1.0
+
+**plantcv.spectral_index.psnd_chla**(*hsi, distance=20*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
+    - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
+
+### PSND-Chlorophyll b
+
+Calculates the Pigment Specific Normalized Difference for Chlorophyll b using reflectance values 
+([Blackburn 1998](#references)):
+
+```
+PSND_CHLB = (R800 - R635) / (R800 + R635)
+```
+
+Index range: -1.0, 1.0
+
+**plantcv.spectral_index.psnd_chlb**(*hsi, distance=20*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
+    - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
+
+### PSND-Caroteniods
+
+Calculates the Pigment Specific Normalized Difference for Caroteniods using reflectance values 
+([Blackburn 1998](#references)):
+
+```
+PSND_CAR = (R800 - R470) / (R800 + R470)
+```
+
+Index range: -1.0, 1.0
+
+**plantcv.spectral_index.psnd_car**(*hsi, distance=20*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
+    - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
+
+### PSSR-Chlorophyll a
+
+Calculates the Pigment Specific Simple Ratio for Chlorophyll a using reflectance values 
+([Blackburn 1998](#references)):
+
+```
+PSSR_CHLA = R800 / R680
+```
+
+Index range: -1.0, 1.0
+
+**plantcv.spectral_index.pssr_chla**(*hsi, distance=20*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
+    - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
+
+### PSSR-Chlorophyll b
+
+Calculates the Pigment Specific Simple Ratio for Chlorophyll b using reflectance values 
+([Blackburn 1998](#references)):
+
+```
+PSSR_CHLB = R800 / R635
+```
+
+Index range: -1.0, 1.0
+
+**plantcv.spectral_index.pssr_chlb**(*hsi, distance=20*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
+    - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
+
+### PSSR-Caroteniods
+
+Calculates the Pigment Specific Simple Ratio for Caroteniods using reflectance values 
+([Blackburn 1998](#references)):
+
+```
+PSSR_CAR = R800 / R470
+```
+
+Index range: -1.0, 1.0
+
+**plantcv.spectral_index.pssr_car**(*hsi, distance=20*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -272,13 +464,13 @@ psnd_car_array  = pcv.spectral_index.psnd_car(hsi=spectral_data, distance=20)
 psri_array  = pcv.spectral_index.psri(hsi=spectral_data, distance=20)
 
 # Extract PSSR1 index from the datacube 
-pssr1_array  = pcv.spectral_index.pssr1(hsi=spectral_data, distance=20)
+pssr_chla_array  = pcv.spectral_index.pssr_chla(hsi=spectral_data, distance=20)
 
 # Extract PSSR2 index from the datacube 
-pssr2_array  = pcv.spectral_index.pssr2(hsi=spectral_data, distance=20)
+pssr_chlb_array  = pcv.spectral_index.pssr_chlb(hsi=spectral_data, distance=20)
 
 # Extract PSSR3 index from the datacube 
-pssr3_array  = pcv.spectral_index.pssr3(hsi=spectral_data, distance=20)
+pssr_car_array  = pcv.spectral_index.pssr_car(hsi=spectral_data, distance=20)
 
 # Extract RGRI index from the datacube 
 rgri_array  = pcv.spectral_index.rgri(hsi=spectral_data, distance=20)
@@ -341,9 +533,21 @@ egi_array = pcv.spectral_index.egi(rgb_img=img)
 
 ### References
 
+Barnes EM, Clarke TR, Richards SE, Colaizzi PD, Haberland J, Kostrzewski M, Waller P, Choi C, Riley E, Thompson T, 
+Others. 2000. Coincident detection of crop water stress, nitrogen status and canopy density using ground based 
+multispectral data. In: Proceedings of the Fifth International Conference on Precision Agriculture, Bloomington, MN, 
+USA. [LINK](https://naldc.nal.usda.gov/download/4190/PDF)
+
+Blackburn GA. 1998. Quantifying chlorophylls and caroteniods at leaf and canopy scales: An evaluation of some 
+hyperspectral approaches. Remote Sensing of Environment 66:273–285. DOI: 
+[10.1016/S0034-4257(98)00059-5](https://doi.org/10.1016/S0034-4257(98)00059-5).
+
 Daughtry CST, Walthall CL, Kim MS, de Colstoun EB, McMurtrey JE. 2000. Estimating corn leaf chlorophyll concentration 
 from leaf and canopy reflectance. Remote Sensing of Environment 74:229–239. DOI: 
 [10.1016/S0034-4257(00)00113-9](https://doi.org/10.1016/S0034-4257(00)00113-9).
+
+Dash J, Curran PJ. 2004. The MERIS terrestrial chlorophyll index. International Journal of Remote Sensing 25:5403–5413. 
+DOI: [10.1080/0143116042000274015](https://doi.org/10.1080/0143116042000274015).
 
 Gitelson AA, Zur Y, Chivkunova OB, Merzlyak MN. 2002. Assessing carotenoid content in plant leaves with reflectance 
 spectroscopy. Photochemistry and Photobiology 75:272–281. DOI: 
@@ -353,12 +557,21 @@ Gitelson AA, Viña A, Arkebauer TJ, Rundquist DC, Keydan G, Leavitt B. 2003. Rem
 green leaf biomass in maize canopies. Geophysical Research Letters 30. DOI: 
 [10.1029/2002GL016450](https://doi.org/10.1029/2002GL016450).
 
+Gitelson AA, Keydan GP, Merzlyak MN. 2006. Three-band model for noninvasive estimation of chlorophyll, carotenoids, and 
+anthocyanin contents in higher plant leaves. Geophysical Research Letters 33:239. DOI: 
+[10.1029/2006GL026457](https://doi.org/10.1029/2006GL026457).
+
 Gitelson AA, Merzlyak MN, Chivkunova OB. 2007. Optical properties and nondestructive estimation of anthocyanin content 
 in plant Leaves. Photochemistry and Photobiology 74:38–45. DOI: 
 [10.1562/0031-8655(2001)0740038OPANEO2.0.CO2](https://doi.org/10.1562/0031-8655(2001)0740038OPANEO2.0.CO2).
 
 Huete AR. 1988. A soil-adjusted vegetation index (SAVI). Remote Sensing of Environment 25:295–309. 
 DOI: [10.1016/0034-4257(88)90106-X](https://doi.org/10.1016/0034-4257(88)90106-X).
+
+Huete AR, HuiQing Liu, van Leeuwen WJD. 1997. The use of vegetation indices in forested regions: issues of linearity 
+and saturation. In: IGARSS’97. 1997 IEEE International Geoscience and Remote Sensing Symposium Proceedings. Remote 
+Sensing - A Scientific Vision for Sustainable Development. 1966–1968 vol.4. DOI: 
+[10.1109/IGARSS.1997.609169](https://doi.org/10.1109/IGARSS.1997.609169).
 
 Penuelas J, Filella I, Gamon JA. 1995. Assessment of photosynthetic radiation-use efficiency with spectral reflectance. 
 The New Phytologist 131:291–296. DOI: 

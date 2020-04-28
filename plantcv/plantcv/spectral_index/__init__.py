@@ -16,9 +16,9 @@ from plantcv.plantcv.spectral_index.spectral_index import psnd_chla
 from plantcv.plantcv.spectral_index.spectral_index import psnd_chlb
 from plantcv.plantcv.spectral_index.spectral_index import psnd_car
 from plantcv.plantcv.spectral_index.spectral_index import psri
-from plantcv.plantcv.spectral_index.spectral_index import pssr1
-from plantcv.plantcv.spectral_index.spectral_index import pssr2
-from plantcv.plantcv.spectral_index.spectral_index import pssr3
+from plantcv.plantcv.spectral_index.spectral_index import pssr_chla
+from plantcv.plantcv.spectral_index.spectral_index import pssr_chlb
+from plantcv.plantcv.spectral_index.spectral_index import pssr_car
 from plantcv.plantcv.spectral_index.spectral_index import rgri
 from plantcv.plantcv.spectral_index.spectral_index import rvsi
 from plantcv.plantcv.spectral_index.spectral_index import sipi
@@ -29,4 +29,6 @@ from plantcv.plantcv.spectral_index.spectral_index import wbi
 
 
 # add new functions to end of lists
-__all__ = ["ndvi", "gdvi", "savi", "pri", "ari", "ci_rededge", "cri550", "cri700", "egi", "evi", "mari", "mcari", "mtci", "ndre", "psnd_chla", "psnd_chlb", "psri", "pssr1", "pssr2", "pssr3", "rgri", "rvsi", "sipi", "sr", "vi_green", "wbi"]
+__all__ = ["ndvi", "gdvi", "savi", "pri", "ari", "ci_rededge", "cri550", "cri700", "egi", "evi", "mari", "mcari",
+           "mtci", "ndre", "psnd_chla", "psnd_chlb", "psri", "pssr_chla", "pssr_chlb", "pssr_car", "rgri", "rvsi",
+           "sipi", "sr", "vi_green", "wbi"]
