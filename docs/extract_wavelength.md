@@ -2,12 +2,12 @@
 
 This function extracts a single reflectance band that is the closest to a user defined wavelength from a hyperspectral datacube, 
 which is a [`Spectral_data` class](Spectral_data.md) instance created while reading in with [`pcv.readimage`](read_image.md)
-with `mode='envi'`. This function is similar to the [`pcv.hyperspectral.extract_index`](extract_index.md) function which calculates 
-and outputs standard spectral indices from a hyperspectral datacube. 
+with `mode='envi'`. This function is similar to the [`pcv.spectral_index`](spectral_index.md) functions which calculates 
+and outputs standard spectral indices from a hyperspectral datacubes. 
 
 **plantcv.hyperspectral.extract_wavelength**(*spectral_data, wavelength*)
 
-**returns** index array (instance of the `Spectral_data` class)
+**returns** channel array (instance of the `Spectral_data` class)
 
 - **Parameters:**
     - spectral_data      - Hyperspectral data instance

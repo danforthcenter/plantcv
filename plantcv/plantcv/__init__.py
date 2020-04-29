@@ -142,6 +142,7 @@ from plantcv.plantcv.gaussian_blur import gaussian_blur
 from plantcv.plantcv import transform
 from plantcv.plantcv import Spectral_data
 from plantcv.plantcv import hyperspectral
+from plantcv.plantcv import spectral_index
 from plantcv.plantcv.apply_mask import apply_mask
 from plantcv.plantcv.readimage import readimage
 from plantcv.plantcv.readbayer import readbayer

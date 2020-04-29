@@ -199,7 +199,8 @@ def test_plantcv_parallel_metadata_parser_snapshots():
     date_format = '%Y-%m-%d %H:%M:%S.%f'
     error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
     jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters, date_format=date_format,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      date_format=date_format,
                                                       start_date=start_date, end_date=end_date, error_log=error_log,
                                                       delimiter="_", file_type="jpg", coprocess="NIR")
     assert meta == METADATA_COPROCESS
@@ -213,7 +214,8 @@ def test_plantcv_parallel_metadata_parser_snapshots_coimg():
     date_format = '%Y-%m-%d %H:%M:%S.%f'
     error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
     jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters, date_format=date_format,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      date_format=date_format,
                                                       start_date=start_date, end_date=end_date, error_log=error_log,
                                                       delimiter="_", file_type="jpg", coprocess="FAKE")
     assert meta == METADATA_VIS_ONLY
@@ -224,10 +226,11 @@ def test_plantcv_parallel_metadata_parser_images():
     meta_filters = {"imgtype": "VIS"}
     start_date = 1413936000
     end_date = 1414022400
-    date_format = '%Y' # no date in filename so it skips check date range and date_format doesn't matter
+    date_format = '%Y'  # no date in filename so it skips check date range and date_format doesn't matter
     error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
     jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,date_format=date_format,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      date_format=date_format,
                                                       start_date=start_date, end_date=end_date, error_log=error_log,
                                                       delimiter="_", file_type="jpg", coprocess=None)
     expected = {
@@ -259,7 +262,8 @@ def test_plantcv_parallel_metadata_parser_regex():
     date_format = '%Y-%m-%d %H:%M:%S.%f'
     error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
     jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,date_format=date_format,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      date_format=date_format,
                                                       start_date=start_date, end_date=end_date, error_log=error_log,
                                                       delimiter='(VIS)_(SV)_(\d+)_(z1)_(h1)_(g0)_(e82)_(\d+)',
                                                       file_type="jpg", coprocess=None)
@@ -294,9 +298,10 @@ def test_plantcv_parallel_metadata_parser_images_outside_daterange():
                    "timestamp": 7}
     error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
     jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=meta_fields,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters, date_format=date_format,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      date_format=date_format,
                                                       start_date=start_date, end_date=end_date, error_log=error_log,
-                                                      delimiter="(NIR)_(SV)_(\d)_(z1)_(h1)_(g0)_(e65)_(\d{4}-\d{2}-\d{2} \d{2}_\d{2}_\d{2})", 
+                                                      delimiter="(NIR)_(SV)_(\d)_(z1)_(h1)_(g0)_(e65)_(\d{4}-\d{2}-\d{2} \d{2}_\d{2}_\d{2})",
                                                       file_type="jpg", coprocess=None)
     assert meta == {}
 
@@ -306,7 +311,7 @@ def test_plantcv_parallel_check_date_range_wrongdateformat():
     end_date = 10
     img_time = '2010-10-10'
 
-    with pytest.raises(SystemExit, match = r'does not match format'):
+    with pytest.raises(SystemExit, match=r'does not match format'):
         date_format = '%Y%m%d'
         _ = plantcv.parallel.check_date_range(
             start_date, end_date, img_time, date_format)
@@ -320,7 +325,8 @@ def test_plantcv_parallel_metadata_parser_snapshot_outside_daterange():
     date_format = '%Y-%m-%d %H:%M:%S.%f'
     error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
     jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,date_format=date_format,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      date_format=date_format,
                                                       start_date=start_date, end_date=end_date, error_log=error_log,
                                                       delimiter="_", file_type="jpg", coprocess=None)
 
@@ -335,7 +341,8 @@ def test_plantcv_parallel_metadata_parser_fail_images():
     date_format = '%Y-%m-%d %H:%M:%S.%f'
     error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
     jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,date_format=date_format,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      date_format=date_format,
                                                       start_date=start_date, end_date=end_date, error_log=error_log,
                                                       delimiter="_", file_type="jpg", coprocess="NIR")
 
@@ -351,7 +358,8 @@ def test_plantcv_parallel_metadata_parser_images_no_frame():
     date_format = '%Y-%m-%d %H:%M:%S.%f'
     error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
     jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=meta_fields,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,date_format=date_format,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      date_format=date_format,
                                                       start_date=start_date, end_date=end_date, error_log=error_log,
                                                       delimiter="_", file_type="jpg", coprocess="NIR")
     assert meta == {
@@ -402,7 +410,8 @@ def test_plantcv_parallel_metadata_parser_images_no_camera():
     date_format = '%Y-%m-%d %H:%M:%S.%f'
     error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
     jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=meta_fields,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,date_format=date_format,
+                                                      valid_meta=VALID_META, meta_filters=meta_filters,
+                                                      date_format=date_format,
                                                       start_date=start_date, end_date=end_date, error_log=error_log,
                                                       delimiter="_", file_type="jpg", coprocess="NIR")
     assert meta == {
@@ -561,7 +570,7 @@ HYPERSPECTRAL_HDR_NO_DEFAULT = "darkReference2.hdr"
 HYPERSPECTRAL_DATA_APPROX_PSEUDO = "darkReference3"
 HYPERSPECTRAL_HDR_APPROX_PSEUDO = "darkReference3.hdr"
 HYPERSPECTRAL_HDR_SMALL_RANGE = {'description': '{[HEADWALL Hyperspec III]}', 'samples': '800', 'lines': '1',
-                                 'bands': '978', 'header offset': '0',  'file type': 'ENVI Standard',
+                                 'bands': '978', 'header offset': '0', 'file type': 'ENVI Standard',
                                  'interleave': 'bil', 'sensor type': 'Unknown', 'byte order': '0',
                                  'default bands': '159,253,520', 'wavelength units': 'nm',
                                  'wavelength': ['379.027', '379.663', '380.3', '380.936', '381.573', '382.209']}
@@ -649,6 +658,7 @@ TEST_THERMAL_ARRAY = "thermal_img.npz"
 TEST_THERMAL_IMG_MASK = "thermal_img_mask.png"
 TEST_INPUT_THERMAL_CSV = "FLIR2600.csv"
 PIXEL_VALUES = "pixel_inspector_rgb_values.txt"
+
 
 # ##########################
 # Tests for the main package
@@ -846,6 +856,7 @@ def test_plantcv_analyze_bound_vertical_small_x():
     assert pcv.outputs.observations['width_right_reference']['value'] == 441
     pcv.outputs.clear()
 
+
 def test_plantcv_analyze_color():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_color")
@@ -917,8 +928,9 @@ def test_plantcv_analyze_nir():
     pcv.params.debug = None
     h_norm = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=True)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
-    assert len(pcv.outputs.observations['nir_frequencies']['value']) == 256
+    result = len(pcv.outputs.observations['nir_frequencies']['value'])
     pcv.outputs.clear()
+    assert result == 256
 
 
 def test_plantcv_analyze_object():
@@ -1045,29 +1057,6 @@ def test_plantcv_analyze_object_small_contour():
     obj_images = pcv.analyze_object(img=img, obj=obj_contour, mask=mask)
     assert obj_images is None
 
-def test_plantcv_analyze_nir():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_nir")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    # Read in test data
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
-    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.analyze_nir_intensity(gray_img=np.uint16(img), mask=mask, bins=256, histplot=True)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=False)
-    # Test with debug = "plot"
-    _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=True)
-    # Test with debug = None
-    pcv.params.debug = None
-    h_norm = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=True)
-    pcv.print_results(os.path.join(cache_dir, "results.txt"))
-    pcv.outputs.clear()
-    assert str(type(h_norm)) == "<class 'plotnine.ggplot.ggplot'>"
-
 
 def test_plantcv_analyze_thermal_values():
     # Test cache directory
@@ -1075,7 +1064,7 @@ def test_plantcv_analyze_thermal_values():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     # Read in test data
-    #img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
+    # img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_THERMAL_IMG_MASK), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_THERMAL_ARRAY), encoding="latin1")
     img = contours_npz['arr_0']
@@ -1346,7 +1335,7 @@ def test_plantcv_cluster_contours_splitimg():
     cluster_names = os.path.join(TEST_DATA, TEST_INPUT_GENOTXT)
     cluster_names_too_many = os.path.join(TEST_DATA, TEST_INPUT_GENOTXT_TOO_MANY)
     roi_contours = [contours[arr_n] for arr_n in contours]
-    cluster_contours = [clusters[arr_n] for arr_n in  clusters]
+    cluster_contours = [clusters[arr_n] for arr_n in clusters]
     obj_hierarchy = hierachy['arr_0']
     # Test with debug = "print"
     pcv.params.debug = "print"
@@ -1407,7 +1396,7 @@ def test_plantcv_crop():
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     cropped = pcv.crop(img=img, x=10, y=10, h=50, w=50)
-    assert np.shape(cropped) == (50,50)
+    assert np.shape(cropped) == (50, 50)
 
 
 def test_plantcv_crop_hyperspectral():
@@ -1425,7 +1414,7 @@ def test_plantcv_crop_hyperspectral():
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     cropped = pcv.crop(img=img_stacked, x=10, y=10, h=50, w=50)
-    assert np.shape(cropped) == (50,50,4)
+    assert np.shape(cropped) == (50, 50, 4)
 
 
 def test_plantcv_crop_position_mask():
@@ -1818,12 +1807,12 @@ def test_plantcv_gaussian_blur():
 
 
 def test_plantcv_get_kernel_cross():
-    kernel = pcv.get_kernel(size=(3,3), shape="cross")
+    kernel = pcv.get_kernel(size=(3, 3), shape="cross")
     assert (kernel == np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]])).all()
 
 
 def test_plantcv_get_kernel_rectangle():
-    kernel = pcv.get_kernel(size=(3,3), shape="rectangle")
+    kernel = pcv.get_kernel(size=(3, 3), shape="rectangle")
     assert (kernel == np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]])).all()
 
 
@@ -1834,12 +1823,12 @@ def test_plantcv_get_kernel_ellipse():
 
 def test_plantcv_get_kernel_bad_input_size():
     with pytest.raises(ValueError):
-        kernel = pcv.get_kernel(size=(1,1), shape="ellipse")
+        kernel = pcv.get_kernel(size=(1, 1), shape="ellipse")
 
 
 def test_plantcv_get_kernel_bad_input_shape():
     with pytest.raises(RuntimeError):
-        kernel = pcv.get_kernel(size=(3,1), shape="square")
+        kernel = pcv.get_kernel(size=(3, 1), shape="square")
 
 
 def test_plantcv_get_nir_sv():
@@ -2181,6 +2170,7 @@ def test_plantcv_object_composition_grayscale_input():
     contour_shape = np.shape(contours)  # type: tuple
     assert contour_shape[1] == 1
 
+
 def test_plantcv_within_frame():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_within_frame")
@@ -2191,7 +2181,7 @@ def test_plantcv_within_frame():
     mask_oob = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK_OOB), -1)
     in_bounds_ib = pcv.within_frame(mask=mask_ib, border_width=1)
     in_bounds_oob = pcv.within_frame(mask=mask_oob, border_width=1)
-    assert(in_bounds_ib is True and in_bounds_oob is False)
+    assert (in_bounds_ib is True and in_bounds_oob is False)
 
 
 def test_plantcv_within_frame_bad_input():
@@ -2952,9 +2942,9 @@ def test_plantcv_stdev_filter():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY_SMALL), -1)
-    pcv.params.debug="plot"
+    pcv.params.debug = "plot"
     _ = pcv.stdev_filter(img=img, ksize=11)
-    pcv.params.deubg="print"
+    pcv.params.deubg = "print"
     filter_img = pcv.stdev_filter(img=img, ksize=11)
     assert (np.shape(filter_img) == np.shape(img))
 
@@ -3570,7 +3560,7 @@ def test_plantcv_morphology_segment_insertion_angle():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
-    pruned,_,_ = pcv.morphology.prune(skel_img=skeleton, size=6)
+    pruned, _, _ = pcv.morphology.prune(skel_img=skeleton, size=6)
     segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=pruned)
     leaf_obj, stem_obj = pcv.morphology.segment_sort(pruned, seg_objects)
     pcv.params.debug = "plot"
@@ -3578,9 +3568,9 @@ def test_plantcv_morphology_segment_insertion_angle():
     pcv.params.debug = "print"
     insert_angles = pcv.morphology.segment_insertion_angle(pruned, segmented_img, leaf_obj, stem_obj, 10)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
-    assert pcv.outputs.observations['segment_insertion_angle']['value'][:6] == ['NA', 'NA', 'NA' ,24.97999120101794,
-                                                                            50.75442037373474,
-                                                                            56.45078448114704]
+    assert pcv.outputs.observations['segment_insertion_angle']['value'][:6] == ['NA', 'NA', 'NA', 24.97999120101794,
+                                                                                50.75442037373474,
+                                                                                56.45078448114704]
     pcv.outputs.clear()
 
 
@@ -3603,7 +3593,7 @@ def test_plantcv_morphology_segment_combine():
     segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=skel)
     pcv.params.debug = "plot"
     # Test with list of IDs input
-    _, new_objects = pcv.morphology.segment_combine([0,1], seg_objects, skel)
+    _, new_objects = pcv.morphology.segment_combine([0, 1], seg_objects, skel)
     assert len(new_objects) + 1 == len(seg_objects)
 
 
@@ -3616,7 +3606,7 @@ def test_plantcv_morphology_segment_combine_lists():
     segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=skel)
     pcv.params.debug = "print"
     # Test with list of lists input
-    _, new_objects = pcv.morphology.segment_combine([[0,1,2], [3,4]], seg_objects, skel)
+    _, new_objects = pcv.morphology.segment_combine([[0, 1, 2], [3, 4]], seg_objects, skel)
     assert len(new_objects) + 3 == len(seg_objects)
 
 
@@ -3636,7 +3626,7 @@ def test_plantcv_hyperspectral_read_data_default():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = "plot"
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA,HYPERSPECTRAL_DATA)
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     _ = pcv.hyperspectral.read_data(filename=spectral_filename)
     pcv.params.debug = "print"
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -3645,595 +3635,566 @@ def test_plantcv_hyperspectral_read_data_default():
 
 def test_plantcv_hyperspectral_read_data_no_default_bands():
     pcv.params.debug = "plot"
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA,HYPERSPECTRAL_DATA_NO_DEFAULT)
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA_NO_DEFAULT)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
     assert np.shape(array_data.array_data) == (1, 1600, 978)
 
 
 def test_plantcv_hyperspectral_read_data_approx_pseudorgb():
     pcv.params.debug = "plot"
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA,HYPERSPECTRAL_DATA_APPROX_PSEUDO)
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA_APPROX_PSEUDO)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
     assert np.shape(array_data.array_data) == (1, 1600, 978)
 
 
-def test_plantcv_hyperspectral_extract_index_gdvi():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_gdvi")
+def test_plantcv_spectral_index_ndvi():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_ndvi")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="GDVI", distance=801)
-    assert np.shape(index_array.array_data) == (1,1600) and np.nanmax(index_array.pseudo_rgb) == 255
-
-
-def test_plantcv_hyperspectral_extract_index_ndvi():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_ndvi")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    pcv.params.debug = None
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="ndvi", distance=801)
-    assert np.shape(index_array.array_data) == (1,1600) and np.nanmax(index_array.pseudo_rgb) == 255
-
-
-def test_plantcv_hyperspectral_extract_index_savi():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_savi")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    pcv.params.debug = "plot"
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="SAVI", distance=801)
-    assert np.shape(index_array.array_data) == (1,1600) and np.nanmax(index_array.pseudo_rgb) == 255
-
-
-def test_plantcv_hyperspectral_extract_index_pri():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_pri")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    pcv.params.debug = "plot"
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PRI", distance=801)
+    index_array = pcv.spectral_index.ndvi(hsi=array_data, distance=20)
     assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 
-def test_plantcv_hyperspectral_extract_index_aci():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_aci")
+def test_plantcv_spectral_index_ndvi_bad_input():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug = None
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.spectral_index.ndvi(hsi=array_data, distance=20)
+    with pytest.raises(RuntimeError):
+        _ = pcv.spectral_index.ndvi(hsi=index_array, distance=20)
+
+
+def test_plantcv_spectral_index_gdvi():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_gdvi")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="ACI", distance=801)
+    index_array = pcv.spectral_index.gdvi(hsi=array_data, distance=20)
     assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 
-def test_plantcv_hyperspectral_extract_index_ari():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_ari")
+def test_plantcv_spectral_index_gdvi_bad_input():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug = None
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.spectral_index.gdvi(hsi=array_data, distance=20)
+    with pytest.raises(RuntimeError):
+        _ = pcv.spectral_index.gdvi(hsi=index_array, distance=20)
+
+
+def test_plantcv_spectral_index_savi():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_savi")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="ARI", distance=801)
+    index_array = pcv.spectral_index.savi(hsi=array_data, distance=20)
     assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
-def test_plantcv_hyperspectral_extract_index_cari():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_cari")
+
+def test_plantcv_spectral_index_savi_bad_input():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug = None
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.spectral_index.savi(hsi=array_data, distance=20)
+    with pytest.raises(RuntimeError):
+        _ = pcv.spectral_index.savi(hsi=index_array, distance=20)
+
+
+def test_plantcv_spectral_index_pri():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_pri")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="CARI", distance=2000)
+    index_array = pcv.spectral_index.pri(hsi=array_data, distance=20)
     assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 
-def test_plantcv_hyperspectral_extract_index_ci_rededge():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_ci_rededge")
+def test_plantcv_spectral_index_pri_bad_input():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug = None
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.spectral_index.pri(hsi=array_data, distance=20)
+    with pytest.raises(RuntimeError):
+        _ = pcv.spectral_index.pri(hsi=index_array, distance=20)
+
+
+def test_plantcv_spectral_index_ari():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_ari")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="CI_REDEDGE", distance=2000)
+    index_array = pcv.spectral_index.ari(hsi=array_data, distance=20)
     assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 
-def test_plantcv_hyperspectral_extract_index_cri1():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_cri1")
+def test_plantcv_spectral_index_ari_bad_input():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug = None
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.spectral_index.ari(hsi=array_data, distance=20)
+    with pytest.raises(RuntimeError):
+        _ = pcv.spectral_index.ari(hsi=index_array, distance=20)
+
+
+def test_plantcv_spectral_index_ci_rededge():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_ci_rededge")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="CRI1", distance=2000)
+    index_array = pcv.spectral_index.ci_rededge(hsi=array_data, distance=20)
     assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 
-def test_plantcv_hyperspectral_extract_index_cri2():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_cri2")
+def test_plantcv_spectral_index_ci_rededge_bad_input():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug = None
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.spectral_index.ci_rededge(hsi=array_data, distance=20)
+    with pytest.raises(RuntimeError):
+        _ = pcv.spectral_index.ci_rededge(hsi=index_array, distance=20)
+
+
+def test_plantcv_spectral_index_cri550():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_cri550")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="CRI2", distance=2000)
+    index_array = pcv.spectral_index.cri550(hsi=array_data, distance=20)
     assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 
-def test_plantcv_hyperspectral_extract_index_evi():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_evi")
+def test_plantcv_spectral_index_cri550_bad_input():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug = None
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.spectral_index.cri550(hsi=array_data, distance=20)
+    with pytest.raises(RuntimeError):
+        _ = pcv.spectral_index.cri550(hsi=index_array, distance=20)
+
+
+def test_plantcv_spectral_index_cri700():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_cri700")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="EVI", distance=2000)
+    index_array = pcv.spectral_index.cri700(hsi=array_data, distance=20)
     assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 
-def test_plantcv_hyperspectral_extract_index_mari():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_mari")
+def test_plantcv_spectral_index_cri700_bad_input():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug = None
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.spectral_index.cri700(hsi=array_data, distance=20)
+    with pytest.raises(RuntimeError):
+        _ = pcv.spectral_index.cri700(hsi=index_array, distance=20)
+
+
+def test_plantcv_spectral_index_egi():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_egi")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    index_array = pcv.spectral_index.egi(rgb_img=rgb_img)
+    assert np.shape(index_array.array_data) == (2056, 2454) and np.nanmax(index_array.pseudo_rgb) == 255
+
+
+def test_plantcv_spectral_index_evi():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_evi")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="MARI", distance=2000)
+    index_array = pcv.spectral_index.evi(hsi=array_data, distance=20)
     assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 
-def test_plantcv_hyperspectral_extract_index_mcari():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_mcari")
+def test_plantcv_spectral_index_evi_bad_input():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug = None
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.spectral_index.evi(hsi=array_data, distance=20)
+    with pytest.raises(RuntimeError):
+        _ = pcv.spectral_index.evi(hsi=index_array, distance=20)
+
+
+def test_plantcv_spectral_index_mari():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_mari")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="MCARI", distance=2000)
+    index_array = pcv.spectral_index.mari(hsi=array_data, distance=20)
     assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 
-def test_plantcv_hyperspectral_extract_index_mtci():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_mtci")
+def test_plantcv_spectral_index_mari_bad_input():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug = None
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.spectral_index.mari(hsi=array_data, distance=20)
+    with pytest.raises(RuntimeError):
+        _ = pcv.spectral_index.mari(hsi=index_array, distance=20)
+
+
+def test_plantcv_spectral_index_mcari():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_mcari")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="MTCI", distance=2000)
+    index_array = pcv.spectral_index.mcari(hsi=array_data, distance=20)
     assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 
-def test_plantcv_hyperspectral_extract_index_ndre():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_ndre")
+def test_plantcv_spectral_index_mcari_bad_input():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug = None
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.spectral_index.mcari(hsi=array_data, distance=20)
+    with pytest.raises(RuntimeError):
+        _ = pcv.spectral_index.mcari(hsi=index_array, distance=20)
+
+
+def test_plantcv_spectral_index_mtci():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_mtci")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="NDRE", distance=2000)
+    index_array = pcv.spectral_index.mtci(hsi=array_data, distance=20)
     assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 
-def test_plantcv_hyperspectral_extract_index_psnd_chla():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_psnd_chla")
+def test_plantcv_spectral_index_mtci_bad_input():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug = None
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.spectral_index.mtci(hsi=array_data, distance=20)
+    with pytest.raises(RuntimeError):
+        _ = pcv.spectral_index.mtci(hsi=index_array, distance=20)
+
+
+def test_plantcv_spectral_index_ndre():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_ndre")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PSND_CHLA", distance=2000)
+    index_array = pcv.spectral_index.ndre(hsi=array_data, distance=20)
     assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 
-def test_plantcv_hyperspectral_extract_index_psnd_chlb():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_psnd_chlb")
+def test_plantcv_spectral_index_ndre_bad_input():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug = None
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.spectral_index.ndre(hsi=array_data, distance=20)
+    with pytest.raises(RuntimeError):
+        _ = pcv.spectral_index.ndre(hsi=index_array, distance=20)
+
+
+def test_plantcv_spectral_index_psnd_chla():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_psnd_chla")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PSND_CHLB", distance=2000)
+    index_array = pcv.spectral_index.psnd_chla(hsi=array_data, distance=20)
     assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 
-def test_plantcv_hyperspectral_extract_index_psnd_car():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_psnd_car")
+def test_plantcv_spectral_index_psnd_chla_bad_input():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug = None
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.spectral_index.psnd_chla(hsi=array_data, distance=20)
+    with pytest.raises(RuntimeError):
+        _ = pcv.spectral_index.psnd_chla(hsi=index_array, distance=20)
+
+
+def test_plantcv_spectral_index_psnd_chlb():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_psnd_chlb")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PSND_CAR", distance=2000)
+    index_array = pcv.spectral_index.psnd_chlb(hsi=array_data, distance=20)
     assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 
-def test_plantcv_hyperspectral_extract_index_psri():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_psri")
+def test_plantcv_spectral_index_psnd_chlb_bad_input():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug = None
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.spectral_index.psnd_chlb(hsi=array_data, distance=20)
+    with pytest.raises(RuntimeError):
+        _ = pcv.spectral_index.psnd_chlb(hsi=index_array, distance=20)
+
+
+def test_plantcv_spectral_index_psnd_car():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_psnd_car")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PSRI", distance=2000)
+    index_array = pcv.spectral_index.psnd_car(hsi=array_data, distance=20)
     assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 
-def test_plantcv_hyperspectral_extract_index_pssr1():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_pssr1")
+def test_plantcv_spectral_index_psnd_car_bad_input():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug = None
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.spectral_index.psnd_car(hsi=array_data, distance=20)
+    with pytest.raises(RuntimeError):
+        _ = pcv.spectral_index.psnd_car(hsi=index_array, distance=20)
+
+
+def test_plantcv_spectral_index_psri():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_psri")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PSSR1", distance=2000)
+    index_array = pcv.spectral_index.psri(hsi=array_data, distance=20)
     assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 
-def test_plantcv_hyperspectral_extract_index_pssr2():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_pssr2")
+def test_plantcv_spectral_index_psri_bad_input():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug = None
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.spectral_index.psri(hsi=array_data, distance=20)
+    with pytest.raises(RuntimeError):
+        _ = pcv.spectral_index.psri(hsi=index_array, distance=20)
+
+
+def test_plantcv_spectral_index_pssr_chla():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_pssr_chla")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PSSR2", distance=2000)
+    index_array = pcv.spectral_index.pssr_chla(hsi=array_data, distance=20)
     assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 
-def test_plantcv_hyperspectral_extract_index_pssr3():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_pssr3")
+def test_plantcv_spectral_index_pssr_chla_bad_input():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug = None
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.spectral_index.pssr_chla(hsi=array_data, distance=20)
+    with pytest.raises(RuntimeError):
+        _ = pcv.spectral_index.pssr_chla(hsi=index_array, distance=20)
+
+
+def test_plantcv_spectral_index_pssr_chlb():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_pssr_chlb")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PSSR3", distance=2000)
+    index_array = pcv.spectral_index.pssr_chlb(hsi=array_data, distance=20)
     assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 
-def test_plantcv_hyperspectral_extract_index_rgri():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_rgri")
+def test_plantcv_spectral_index_pssr_chlb_bad_input():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug = None
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.spectral_index.pssr_chlb(hsi=array_data, distance=20)
+    with pytest.raises(RuntimeError):
+        _ = pcv.spectral_index.pssr_chlb(hsi=index_array, distance=20)
+
+
+def test_plantcv_spectral_index_pssr_car():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_pssr_car")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="RGRI", distance=2000)
+    index_array = pcv.spectral_index.pssr_car(hsi=array_data, distance=20)
     assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 
-def test_plantcv_hyperspectral_extract_index_rvsi():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_rvsi")
+def test_plantcv_spectral_index_pssr_car_bad_input():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug = None
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.spectral_index.pssr_car(hsi=array_data, distance=20)
+    with pytest.raises(RuntimeError):
+        _ = pcv.spectral_index.pssr_car(hsi=index_array, distance=20)
+
+
+def test_plantcv_spectral_index_rgri():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_rgri")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="RVSI", distance=2000)
+    index_array = pcv.spectral_index.rgri(hsi=array_data, distance=20)
     assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 
-def test_plantcv_hyperspectral_extract_index_sipi():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_sipi")
+def test_plantcv_spectral_index_rgri_bad_input():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug = None
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.spectral_index.rgri(hsi=array_data, distance=20)
+    with pytest.raises(RuntimeError):
+        _ = pcv.spectral_index.rgri(hsi=index_array, distance=20)
+
+
+def test_plantcv_spectral_index_rvsi():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_rvsi")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="SIPI", distance=2000)
+    index_array = pcv.spectral_index.rvsi(hsi=array_data, distance=20)
     assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 
-def test_plantcv_hyperspectral_extract_index_sr():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_sr")
+def test_plantcv_spectral_index_rvsi_bad_input():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug = None
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.spectral_index.rvsi(hsi=array_data, distance=20)
+    with pytest.raises(RuntimeError):
+        _ = pcv.spectral_index.rvsi(hsi=index_array, distance=20)
+
+
+def test_plantcv_spectral_index_sipi():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_sipi")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="SR", distance=2000)
+    index_array = pcv.spectral_index.sipi(hsi=array_data, distance=20)
     assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 
-def test_plantcv_hyperspectral_extract_index_vari():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_vari")
+def test_plantcv_spectral_index_sipi_bad_input():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug = None
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.spectral_index.sipi(hsi=array_data, distance=20)
+    with pytest.raises(RuntimeError):
+        _ = pcv.spectral_index.sipi(hsi=index_array, distance=20)
+
+
+def test_plantcv_spectral_index_sr():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_sr")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="VARI", distance=2000)
+    index_array = pcv.spectral_index.sr(hsi=array_data, distance=20)
     assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 
-def test_plantcv_hyperspectral_extract_index_vi_green():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_vi_green")
+def test_plantcv_spectral_index_sr_bad_input():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug = None
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.spectral_index.sr(hsi=array_data, distance=20)
+    with pytest.raises(RuntimeError):
+        _ = pcv.spectral_index.sipi(hsi=index_array, distance=20)
+
+
+def test_plantcv_spectral_index_vari():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_vari")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="VI_GREEN", distance=2000)
+    index_array = pcv.spectral_index.vari(hsi=array_data, distance=20)
     assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 
-def test_plantcv_hyperspectral_extract_index_wbi():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_index_wbi")
+def test_plantcv_spectral_index_vari_bad_input():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    pcv.params.debug = None
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.spectral_index.vari(hsi=array_data, distance=20)
+    with pytest.raises(RuntimeError):
+        _ = pcv.spectral_index.vari(hsi=index_array, distance=20)
+
+
+def test_plantcv_spectral_index_vi_green():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_vi_green")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="WBI", distance=2000)
+    index_array = pcv.spectral_index.vi_green(hsi=array_data, distance=20)
     assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 
-def test_plantcv_hyperspectral_extract_index_ndvi_bad_input():
+def test_plantcv_spectral_index_vi_green_bad_input():
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     pcv.params.debug = None
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="NDVI", distance=801)
+    index_array = pcv.spectral_index.vi_green(hsi=array_data, distance=20)
     with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=index_array, index="NDVI")
+        _ = pcv.spectral_index.vi_green(hsi=index_array, distance=20)
 
 
-def test_plantcv_hyperspectral_extract_index_gdvi_bad_input():
+def test_plantcv_spectral_index_wi():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_wi")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
+    index_array = pcv.spectral_index.wi(hsi=array_data, distance=20)
+    assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
+
+
+def test_plantcv_spectral_index_wi_bad_input():
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     pcv.params.debug = None
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="GDVI", distance=801)
+    index_array = pcv.spectral_index.wi(hsi=array_data, distance=20)
     with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=index_array, index="GDVI")
-
-
-def test_plantcv_hyperspectral_extract_index_savi_bad_input():
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    pcv.params.debug = None
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="SAVI", distance=801)
-    with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=index_array, index="SAVI")
-
-
-def test_plantcv_hyperspectral_extract_index_pri_bad_input():
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    pcv.params.debug = None
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PRI", distance=801)
-    with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=index_array, index="PRI")
-
-
-def test_plantcv_hyperspectral_extract_index_aci_bad_input():
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    pcv.params.debug = None
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="ACI", distance=801)
-    with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=index_array, index="ACI")
-
-
-def test_plantcv_hyperspectral_extract_index_ari_bad_input():
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    pcv.params.debug = None
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="ARI", distance=801)
-    with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=index_array, index="ARI")
-
-
-def test_plantcv_hyperspectral_extract_index_cari_bad_input():
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    pcv.params.debug = None
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="CARI", distance=801)
-    with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=index_array, index="CARI")
-
-
-def test_plantcv_hyperspectral_extract_index_ci_rededge_bad_input():
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    pcv.params.debug = None
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="CI_REDEDGE", distance=801)
-    with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=index_array, index="CI_REDEDGE")
-
-
-def test_plantcv_hyperspectral_extract_index_cri1_bad_input():
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    pcv.params.debug = None
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="CRI1", distance=801)
-    with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=index_array, index="CRI1")
-
-
-def test_plantcv_hyperspectral_extract_index_cri2_bad_input():
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    pcv.params.debug = None
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="CRI2", distance=801)
-    with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=index_array, index="CRI2")
-
-
-def test_plantcv_hyperspectral_extract_index_evi_bad_input():
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    pcv.params.debug = None
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="EVI", distance=801)
-    with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=index_array, index="EVI")
-
-
-def test_plantcv_hyperspectral_extract_index_mari_bad_input():
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    pcv.params.debug = None
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="MARI", distance=801)
-    with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=index_array, index="MARI")
-
-
-def test_plantcv_hyperspectral_extract_index_mcari_bad_input():
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    pcv.params.debug = None
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="MCARI", distance=801)
-    with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=index_array, index="MCARI")
-
-
-def test_plantcv_hyperspectral_extract_index_mtci_bad_input():
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    pcv.params.debug = None
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="MTCI", distance=801)
-    with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=index_array, index="MTCI")
-
-
-def test_plantcv_hyperspectral_extract_index_ndre_bad_input():
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    pcv.params.debug = None
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="NDRE", distance=801)
-    with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=index_array, index="NDRE")
-
-
-def test_plantcv_hyperspectral_extract_index_psnd_chla_bad_input():
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    pcv.params.debug = None
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PSND_CHLA", distance=801)
-    with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=index_array, index="PSND_CHLA")
-
-
-def test_plantcv_hyperspectral_extract_index_psnd_chlb_bad_input():
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    pcv.params.debug = None
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PSND_CHLB", distance=801)
-    with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=index_array, index="PSND_CHLB")
-
-
-def test_plantcv_hyperspectral_extract_index_psnd_car_bad_input():
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    pcv.params.debug = None
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PSND_CAR", distance=801)
-    with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=index_array, index="PSND_CAR")
-
-
-def test_plantcv_hyperspectral_extract_index_psri_bad_input():
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    pcv.params.debug = None
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PSRI", distance=801)
-    with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=index_array, index="PSRI")
-
-
-def test_plantcv_hyperspectral_extract_index_pssr1_bad_input():
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    pcv.params.debug = None
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PSSR1", distance=801)
-    with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=index_array, index="PSSR1")
-
-
-def test_plantcv_hyperspectral_extract_index_pssr2_bad_input():
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    pcv.params.debug = None
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PSSR2", distance=801)
-    with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=index_array, index="PSSR2")
-
-
-def test_plantcv_hyperspectral_extract_index_pssr3_bad_input():
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    pcv.params.debug = None
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="PSSR3", distance=801)
-    with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=index_array, index="PSSR3")
-
-
-def test_plantcv_hyperspectral_extract_index_rgri_bad_input():
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    pcv.params.debug = None
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="RGRI", distance=801)
-    with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=index_array, index="RGRI")
-
-
-def test_plantcv_hyperspectral_extract_index_rvsi_bad_input():
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    pcv.params.debug = None
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="RVSI", distance=801)
-    with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=index_array, index="RVSI")
-
-
-def test_plantcv_hyperspectral_extract_index_sipi_bad_input():
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    pcv.params.debug = None
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="SIPI", distance=801)
-    with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=index_array, index="SIPI")
-
-
-def test_plantcv_hyperspectral_extract_index_sr_bad_input():
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    pcv.params.debug = None
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="SR", distance=801)
-    with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=index_array, index="SR")
-
-
-def test_plantcv_hyperspectral_extract_index_vari_bad_input():
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    pcv.params.debug = None
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="VARI", distance=801)
-    with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=index_array, index="VARI")
-
-
-def test_plantcv_hyperspectral_extract_index_vi_green_bad_input():
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    pcv.params.debug = None
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="VI_GREEN", distance=801)
-    with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=index_array, index="VI_GREEN")
-
-
-def test_plantcv_hyperspectral_extract_index_wbi_bad_input():
-    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
-    pcv.params.debug = None
-    array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="WBI", distance=801)
-    with pytest.raises(RuntimeError):
-        index_array = pcv.hyperspectral.extract_index(array=index_array, index="WBI")
+        _ = pcv.spectral_index.wi(hsi=index_array, distance=20)
 
 
 def test_plantcv_hyperspectral_analyze_spectral():
@@ -4257,7 +4218,7 @@ def test_plantcv_hyperspectral_analyze_index():
     pcv.params.debug_outdir = cache_dir
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="savi", distance=801)
+    index_array = pcv.spectral_index.savi(hsi=array_data, distance=801)
     mask_img = np.ones(np.shape(index_array.array_data), dtype=np.uint8) * 255
     pcv.params.debug = "print"
     pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, histplot=True)
@@ -4272,7 +4233,7 @@ def test_plantcv_hyperspectral_analyze_index_set_range():
     pcv.params.debug_outdir = cache_dir
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="savi", distance=801)
+    index_array = pcv.spectral_index.savi(hsi=array_data, distance=801)
     mask_img = np.ones(np.shape(index_array.array_data), dtype=np.uint8) * 255
     pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, histplot=True, min_bin=0, max_bin=1)
     assert pcv.outputs.observations['mean_index_savi']['value'] > 0
@@ -4284,7 +4245,7 @@ def test_plantcv_hyperspectral_analyze_index_auto_range():
     pcv.params.debug_outdir = cache_dir
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="savi", distance=801)
+    index_array = pcv.spectral_index.savi(hsi=array_data, distance=801)
     mask_img = np.ones(np.shape(index_array.array_data), dtype=np.uint8) * 255
     pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, min_bin="auto", max_bin="auto")
     assert pcv.outputs.observations['mean_index_savi']['value'] > 0
@@ -4298,13 +4259,13 @@ def test_plantcv_hyperspectral_analyze_index_outside_range_warning():
     pcv.params.debug_outdir = cache_dir
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="savi", distance=801)
+    index_array = pcv.spectral_index.savi(hsi=array_data, distance=801)
     mask_img = np.ones(np.shape(index_array.array_data), dtype=np.uint8) * 255
     f = io.StringIO()
     with redirect_stdout(f):
         pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, min_bin=.5, max_bin=.55)
     out = f.getvalue()
-    #assert os.listdir(cache_dir) is 0
+    # assert os.listdir(cache_dir) is 0
     assert out[0:10] == 'WARNING!!!'
 
 
@@ -4312,7 +4273,7 @@ def test_plantcv_hyperspectral_analyze_index_bad_input_mask():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="SAVI", distance=801)
+    index_array = pcv.spectral_index.savi(hsi=array_data, distance=801)
     mask_img = cv2.imread(os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_MASK))
     with pytest.raises(RuntimeError):
         pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img)
@@ -4322,7 +4283,7 @@ def test_plantcv_hyperspectral_analyze_index_bad_input_index():
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.hyperspectral.extract_index(array=array_data, index="SAVI", distance=801)
+    index_array = pcv.spectral_index.savi(hsi=array_data, distance=801)
     mask_img = cv2.imread(os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_MASK), -1)
     index_array.array_data = cv2.imread(os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_MASK))
     with pytest.raises(RuntimeError):
@@ -4348,7 +4309,7 @@ def test_plantcv_hyperspectral_calibrate():
     raw = pcv.hyperspectral.read_data(filename=raw)
     white = pcv.hyperspectral.read_data(filename=white)
     dark = pcv.hyperspectral.read_data(filename=dark)
-    pcv.params.debug="plot"
+    pcv.params.debug = "plot"
     _ = pcv.hyperspectral.calibrate(raw_data=raw, white_reference=white, dark_reference=dark)
     pcv.params.debug = "print"
     calibrated = pcv.hyperspectral.calibrate(raw_data=raw, white_reference=white, dark_reference=dark)
@@ -4362,7 +4323,7 @@ def test_plantcv_hyperspectral_extract_wavelength():
     spectral = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     spectral = pcv.hyperspectral.read_data(filename=spectral)
     pcv.params.debug = "plot"
-    _ = pcv.hyperspectral.extract_wavelength(spectral_data=spectral,wavelength=500)
+    _ = pcv.hyperspectral.extract_wavelength(spectral_data=spectral, wavelength=500)
     pcv.params.debug = "print"
     new = pcv.hyperspectral.extract_wavelength(spectral_data=spectral, wavelength=500)
     assert np.shape(new.array_data) == (1, 1600)
@@ -4578,13 +4539,13 @@ def test_plantcv_roi_multi_bad_input_oob_list():
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # All vertices in the list of centers must draw roi's that are inside the image
     with pytest.raises(RuntimeError):
-        _, _ = pcv.roi.multi(rgb_img, coord=[(25000,25000), (25000,12000), (12000, 12000)], radius=20)
+        _, _ = pcv.roi.multi(rgb_img, coord=[(25000, 25000), (25000, 12000), (12000, 12000)], radius=20)
 
 
 def test_plantcv_roi_custom():
     # Read in test RGB image
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    pcv.params.debug="plot"
+    pcv.params.debug = "plot"
     cnt, hier = pcv.roi.custom(img=img, vertices=[[226, 1], [313, 184], [240, 202], [220, 229], [161, 171]])
     assert np.shape(cnt) == (1, 5, 2)
 
@@ -4996,7 +4957,7 @@ def test_plantcv_transform_rescale():
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.transform.rescale(gray_img=gray_img, min_value=0, max_value=100)
-    pcv.params.debug= "plot"
+    pcv.params.debug = "plot"
     rescaled_img = pcv.transform.rescale(gray_img=gray_img, min_value=0, max_value=100)
     assert max(np.unique(rescaled_img)) == 100
 
@@ -5015,9 +4976,9 @@ def test_plantcv_transform_nonuniform_illumination_rgb():
     pcv.params.debug_outdir = cache_dir
     # Load rgb image
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
-    pcv.params.debug="plot"
+    pcv.params.debug = "plot"
     _ = pcv.transform.nonuniform_illumination(img=rgb_img, ksize=11)
-    pcv.params.debug="print"
+    pcv.params.debug = "print"
     corrected = pcv.transform.nonuniform_illumination(img=rgb_img, ksize=11)
     assert np.mean(corrected) < np.mean(rgb_img)
 
@@ -5029,11 +4990,12 @@ def test_plantcv_transform_nonuniform_illumination_gray():
     pcv.params.debug_outdir = cache_dir
     # Load rgb image
     gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    pcv.params.debug="plot"
+    pcv.params.debug = "plot"
     _ = pcv.transform.nonuniform_illumination(img=gray_img, ksize=11)
-    pcv.params.debug="print"
+    pcv.params.debug = "print"
     corrected = pcv.transform.nonuniform_illumination(img=gray_img, ksize=11)
     assert np.shape(corrected) == np.shape(gray_img)
+
 
 # ##############################
 # Tests for the threshold subpackage
@@ -5299,6 +5261,7 @@ def test_plantcv_threshold_saturation_bad_input():
     with pytest.raises(RuntimeError):
         _ = pcv.threshold.saturation(rgb_img=rgb_img, threshold=254, channel="red")
 
+
 def test_plantcv_threshold_triangle():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_triangle")
@@ -5528,7 +5491,7 @@ def test_plantcv_visualize_clustered_contours():
     # Test in plot mode
     pcv.params.debug = "plot"
     cluster_img = pcv.visualize.clustered_contours(img=img1, grouped_contour_indices=cluster, roi_objects=objs,
-                                         roi_obj_hierarchy=obj_hierarchy)
+                                                   roi_obj_hierarchy=obj_hierarchy)
     assert len(np.unique(cluster_img)) == 37
 
 
@@ -5555,6 +5518,7 @@ def test_plantcv_visualize_colorspaces_bad_input():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.colorspaces(rgb_img=img)
+
 
 # ##############################
 # Tests for the utils subpackage
@@ -5605,7 +5569,7 @@ def test_plantcv_utils_sample_images_flatdir():
     output_dir = os.path.join(cache_dir, "images")
     plantcv.utils.sample_images(source_path=flat_dir, dest_path=output_dir, num=30)
     random_images = os.listdir(output_dir)
-    assert all([len(random_images)==30, len(np.unique(random_images))==30])
+    assert all([len(random_images) == 30, len(np.unique(random_images)) == 30])
 
 
 def test_plantcv_utils_sample_images_bad_source():
@@ -5655,6 +5619,7 @@ def test_plantcv_utils_tabulate_bayes_classes_missing_input():
     outfile = os.path.join(cache_dir, "rgb_table.txt")
     with pytest.raises(IOError):
         plantcv.utils.tabulate_bayes_classes(input_file=os.path.join(PIXEL_VALUES), output_file=outfile)
+
 
 # ##############################
 # Clean up test files

@@ -75,7 +75,7 @@ nav:
           - 'Analyze index': analyze_index.md
           - 'Analyze spectral': analyze_spectral.md
           - 'Calibrate': calibrate.md
-          - 'Extract index': extract_index.md
+          - 'Spectral Index': spectral_index.md
           - 'Extract wavelength': extract_wavelength.md
           - 'Spectral data objects': Spectral_data.md
       - 'Image Add': image_add.md
@@ -133,6 +133,7 @@ nav:
         - 'Convert ROI to Mask': roi2mask.md
       - 'Rotate': rotate2.md
       - 'Shift Image': shift.md
+      - 'Spectral Index': spectral_index.md
       - 'Standard Deviation Filter': stdev_filter.md
       - 'Thresholding Methods':
         - 'Binary Threshold': binary_threshold.md
