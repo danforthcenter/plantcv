@@ -25,10 +25,10 @@ from plantcv.plantcv.spectral_index.spectral_index import sipi
 from plantcv.plantcv.spectral_index.spectral_index import sr
 from plantcv.plantcv.spectral_index.spectral_index import vari
 from plantcv.plantcv.spectral_index.spectral_index import vi_green
-from plantcv.plantcv.spectral_index.spectral_index import wbi
+from plantcv.plantcv.spectral_index.spectral_index import wi
 
 
 # add new functions to end of lists
 __all__ = ["ndvi", "gdvi", "savi", "pri", "ari", "ci_rededge", "cri550", "cri700", "egi", "evi", "mari", "mcari",
            "mtci", "ndre", "psnd_chla", "psnd_chlb", "psri", "pssr_chla", "pssr_chlb", "pssr_car", "rgri", "rvsi",
-           "sipi", "sr", "vi_green", "wbi"]
+           "sipi", "sr", "vi_green", "wi"]

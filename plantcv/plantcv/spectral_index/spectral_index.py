@@ -868,29 +868,33 @@ def vi_green(hsi, distance=20):
         fatal_error("Available wavelengths are not suitable for calculating VI_GREEN. Try increasing distance.")
 
 
-def wbi(hsi, distance=20):
-    """Water band index (Peñuelas et al., 1997)
-    The theoretical range for WBI is [0.0, Inf).
+def wi(hsi, distance=20):
+    """Water Index.
 
-    inputs:
-    hsi      = hyperspectral image (PlantCV Spectral_data instance)
-    distance = how lenient to be if the required wavelengths are not available
+    WI = R900 / R970
+
+    The theoretical range for WI is [0.0, Inf).
+
+    Inputs:
+    hsi         = hyperspectral image (PlantCV Spectral_data instance)
+    distance    = how lenient to be if the required wavelengths are not available
 
     Returns:
-    index_array    = Index data as a Spectral_data instance
+    index_array = Index data as a Spectral_data instance
+
     :param hsi: __main__.Spectral_data
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
 
     if (float(hsi.max_wavelength) + distance) >= 970 and (float(hsi.min_wavelength) - distance) <= 900:
-        wbi900_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 900)
-        wbi970_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 970)
-        wbi900 = (hsi.array_data[:, :, wbi900_index])
-        wbi970 = (hsi.array_data[:, :, wbi970_index])
+        r900_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 900)
+        r970_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 970)
+        r900 = (hsi.array_data[:, :, r900_index])
+        r970 = (hsi.array_data[:, :, r970_index])
         # Naturally ranges from 0 to Inf
-        index_array_raw = wbi900 / wbi970
-        return _package_index(hsi=hsi, raw_index=index_array_raw, method="WBI")
+        index_array_raw = r900 / r970
+        return _package_index(hsi=hsi, raw_index=index_array_raw, method="WI")
     else:
         fatal_error("Available wavelengths are not suitable for calculating WBI. Try increasing distance.")
 

@@ -4177,24 +4177,24 @@ def test_plantcv_spectral_index_vi_green_bad_input():
         _ = pcv.spectral_index.vi_green(hsi=index_array, distance=20)
 
 
-def test_plantcv_spectral_index_wbi():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_wbi")
+def test_plantcv_spectral_index_wi():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_wi")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.spectral_index.wbi(hsi=array_data, distance=20)
+    index_array = pcv.spectral_index.wi(hsi=array_data, distance=20)
     assert np.shape(index_array.array_data) == (1, 1600) and np.nanmax(index_array.pseudo_rgb) == 255
 
 
-def test_plantcv_spectral_index_wbi_bad_input():
+def test_plantcv_spectral_index_wi_bad_input():
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     pcv.params.debug = None
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    index_array = pcv.spectral_index.wbi(hsi=array_data, distance=20)
+    index_array = pcv.spectral_index.wi(hsi=array_data, distance=20)
     with pytest.raises(RuntimeError):
-        _ = pcv.spectral_index.wbi(hsi=index_array, distance=20)
+        _ = pcv.spectral_index.wi(hsi=index_array, distance=20)
 
 
 def test_plantcv_hyperspectral_analyze_spectral():

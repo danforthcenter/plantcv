@@ -559,6 +559,24 @@ Index range: -1.0, 1.0
     - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
     - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
 
+### WI
+
+Calculates the Water Index using reflectance values ([Penuelas et al., 1997](#references)):
+
+```
+WI = R900 / R970
+```
+
+Index range: 0.0, Inf
+
+**plantcv.spectral_index.wi**(*hsi, distance=20*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
+    - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
+
 ### Examples
 
 ```python
@@ -645,7 +663,7 @@ vari_array  = pcv.spectral_index.vari(hsi=spectral_data, distance=20)
 vi_green_array  = pcv.spectral_index.vi_green(hsi=spectral_data, distance=20)
 
 # Extract WBI index from the datacube 
-wbi_array  = pcv.spectral_index.wbi(hsi=spectral_data, distance=20)
+wi_array  = pcv.spectral_index.wi(hsi=spectral_data, distance=20)
 
 egi_array = pcv.spectral_index.egi(rgb_img=img)
 
@@ -679,7 +697,7 @@ egi_array = pcv.spectral_index.egi(rgb_img=img)
 
 ![Screenshot](img/tutorial_images/hyperspectral/psnd_chlb_index.jpg)
 
-**WBI array image**
+**WI array image**
 
 ![Screenshot](img/tutorial_images/hyperspectral/wbi_index.jpg)
 
@@ -749,6 +767,9 @@ The New Phytologist 131:291–296. DOI:
 
 Penuelas J, Baret F, Filella I. 1995. Semi-empirical indices to assess carotenoids/chlorophyll-a ratio from leaf 
 spectral reflectance. Photosynthetica 31:221–230. [LINK](https://www.researchgate.net/publication/229084513_Semi-Empirical_Indices_to_Assess_CarotenoidsChlorophyll-a_Ratio_from_Leaf_Spectral_Reflectance).
+
+Penuelas J, Pinol J, Ogaya R, Filella I. 1997. Estimation of plant water concentration by the reflectance Water Index 
+WI (R900/R970). International Journal of Remote Sensing 18:2869–2875. DOI: [10.1080/014311697217396](https://doi.org/10.1080/014311697217396).
 
 Rouse JW, Haas RH, Scheel JA, Deering DW. 1974. Monitoring Vegetation Systems in the Great Plains with ERTS. In: 
 Freden SC, Mercanti EP, Becker MA eds. Third Earth Resources Technology Satellite-1 Symposium: The Proceedings of a 
