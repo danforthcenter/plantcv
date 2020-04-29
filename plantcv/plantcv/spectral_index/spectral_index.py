@@ -805,56 +805,64 @@ def sr(hsi, distance=20):
 
 
 def vari(hsi, distance=20):
-    """Visible atmospherically resistant index (Gitelson et al., 2002a)
+    """Visible Atmospherically Resistant Index.
+
+    VARI = (R550 - R670) / (R550 + R670 - R480)
+
     The theoretical range for VARI is (-Inf, Inf).
 
-    inputs:
-    hsi      = hyperspectral image (PlantCV Spectral_data instance)
-    distance = how lenient to be if the required wavelengths are not available
+    Inputs:
+    hsi         = hyperspectral image (PlantCV Spectral_data instance)
+    distance    = how lenient to be if the required wavelengths are not available
 
     Returns:
-    index_array    = Index data as a Spectral_data instance
+    index_array = Index data as a Spectral_data instance
+
     :param hsi: __main__.Spectral_data
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
 
-    if (float(hsi.max_wavelength) + distance) >= 670 and (float(hsi.min_wavelength) - distance) <= 470:
-        red_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
-        green_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 560)
-        blue_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 470)
-        red = (hsi.array_data[:, :, red_index])
-        green = (hsi.array_data[:, :, green_index])
-        blue = (hsi.array_data[:, :, blue_index])
+    if (float(hsi.max_wavelength) + distance) >= 670 and (float(hsi.min_wavelength) - distance) <= 480:
+        r670_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
+        r550_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 550)
+        r480_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 480)
+        r670 = (hsi.array_data[:, :, r670_index])
+        r550 = (hsi.array_data[:, :, r550_index])
+        r480 = (hsi.array_data[:, :, r480_index])
         # Naturally ranges from -inf to inf
-        index_array_raw = (green - red) / (green + red - blue)
+        index_array_raw = (r550 - r670) / (r550 + r670 - r480)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="VARI")
     else:
         fatal_error("Available wavelengths are not suitable for calculating VARI. Try increasing distance.")
 
 
 def vi_green(hsi, distance=20):
-    """Vegetation index using green band (Gitelson et al., 2002a)
+    """Vegetation Index using green bands.
+
+    VIgreen = (R550 - R670) / (R550 + R670)
+
     The theoretical range for VI_GREEN is [-1.0, 1.0].
 
-    inputs:
-    hsi      = hyperspectral image (PlantCV Spectral_data instance)
-    distance = how lenient to be if the required wavelengths are not available
+    Inputs:
+    hsi         = hyperspectral image (PlantCV Spectral_data instance)
+    distance    = how lenient to be if the required wavelengths are not available
 
     Returns:
-    index_array    = Index data as a Spectral_data instance
+    index_array = Index data as a Spectral_data instance
+
     :param hsi: __main__.Spectral_data
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
 
-    if (float(hsi.max_wavelength) + distance) >= 670 and (float(hsi.min_wavelength) - distance) <= 560:
-        red_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
-        green_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 560)
-        red = (hsi.array_data[:, :, red_index])
-        green = (hsi.array_data[:, :, green_index])
+    if (float(hsi.max_wavelength) + distance) >= 670 and (float(hsi.min_wavelength) - distance) <= 550:
+        r670_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
+        r550_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 550)
+        r670 = (hsi.array_data[:, :, r670_index])
+        r550 = (hsi.array_data[:, :, r550_index])
         # Naturally ranges from -1 to 1
-        index_array_raw = (green - red) / (green + red)
+        index_array_raw = (r550 - r670) / (r550 + r670)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="VI_GREEN")
     else:
         fatal_error("Available wavelengths are not suitable for calculating VI_GREEN. Try increasing distance.")

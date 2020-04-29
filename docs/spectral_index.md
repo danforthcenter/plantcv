@@ -13,7 +13,7 @@ are not available.
 
 ### ARI
 
-Calculates the Anthocyanin Reflectance Index using reflectance values ([Gitelson et al. 2001](#references)):
+Calculates the Anthocyanin Reflectance Index using reflectance values ([Gitelson et al., 2001](#references)):
 
 ```
 ARI = (1 / R550) - (1 / R700)
@@ -31,7 +31,7 @@ Index range: -Inf, Inf
 
 ### CI_REDEDGE
 
-Calculates the Chlorophyll Index Rededge using reflectance values ([Gitelson et al. 2003](#references)):
+Calculates the Chlorophyll Index Rededge using reflectance values ([Gitelson et al., 2003](#references)):
 
 ```
 CI_REDEDGE = (R800 / R700) - 1
@@ -49,7 +49,7 @@ Index range: -1.0, Inf
 
 ### CRI550
 
-Calculates the Carotenoid Reflectance Index 550 using reflectance values ([Gitelson et al. 2002](#references)):
+Calculates the Carotenoid Reflectance Index 550 using reflectance values ([Gitelson et al., 2002a](#references)):
 
 ```
 CRI550 = (1 / R510) - (1 / R550)
@@ -67,7 +67,7 @@ Index range: -Inf, Inf
 
 ### CRI700
 
-Calculates the Carotenoid Reflectance Index 700 using reflectance values ([Gitelson et al. 2002](#references)):
+Calculates the Carotenoid Reflectance Index 700 using reflectance values ([Gitelson et al., 2002a](#references)):
 
 ```
 CRI700 = (1 / R510) - (1 / R700)
@@ -85,7 +85,7 @@ Index range: -Inf, Inf
 
 ### EGI
 
-Calculates the Excess Green Index using RGB values ([Woebbecke et al. 1995](#references)):
+Calculates the Excess Green Index using RGB values ([Woebbecke et al., 1995](#references)):
 
 ```
 r = R / (R + G + B)
@@ -105,7 +105,7 @@ Index range: -1, 2
 
 ### EVI
 
-Calculates the Enhanced Vegetation index using reflectance values ([Huete et al. 1997](#references)):
+Calculates the Enhanced Vegetation index using reflectance values ([Huete et al., 1997](#references)):
 
 ```
 EVI = (2.5 * (NIR - RED)) / (1 + NIR + (6 * RED) - (7.5 * BLUE))
@@ -129,7 +129,7 @@ Index range: -Inf, Inf
 
 ### GDVI
 
-Calculates the Green Difference Vegetation Index using reflectance values ([Sripada et al. 2006](#references)):
+Calculates the Green Difference Vegetation Index using reflectance values ([Sripada et al., 2006](#references)):
 
 ```
 GDVI = (NIR - GREEN) / (NIR + GREEN)
@@ -153,7 +153,7 @@ Index range: -2.0, 2.0
 
 ### MARI
 
-Calculates the Modified Anthocyanin Reflectance Index using reflectance values ([Gitelson et al. 2006](#references)):
+Calculates the Modified Anthocyanin Reflectance Index using reflectance values ([Gitelson et al., 2006](#references)):
 
 ```
 MARI = ((1 / R550) - (1 / R700)) * R800
@@ -171,7 +171,7 @@ Index range: -Inf, Inf
 
 ### MCARI
 
-Calculates the Modified Chlorophyll Absorption Reflectance Index using reflectance values ([Daughtry et al. 2000](#references)):
+Calculates the Modified Chlorophyll Absorption Reflectance Index using reflectance values ([Daughtry et al., 2000](#references)):
 
 ```
 MCARI = ((R700 - R670) - 0.2 * (R700 - R550)) * (R700 / R670)
@@ -207,7 +207,7 @@ Index range: -Inf, Inf
 
 ### NDRE
 
-Calculates the Normalized Difference Red Edge index using reflectance values ([Barnes et al. 2000](#references)):
+Calculates the Normalized Difference Red Edge index using reflectance values ([Barnes et al., 2000](#references)):
 
 ```
 NDRE = (R790 - R720) / (R790 + R720)
@@ -225,7 +225,7 @@ Index range: -1.0, 1.0
 
 ### NDVI
 
-Calculates the Normalized Difference Vegetation Index using reflectance values ([Rouse et al. 1974](#references)):
+Calculates the Normalized Difference Vegetation Index using reflectance values ([Rouse et al., 1974](#references)):
 
 ```
 NDVI = (NIR - RED) / (NIR + RED)
@@ -249,7 +249,7 @@ Index range: -1.0, 1.0
 
 ### PRI
 
-Calculates the Photochemical Reflectance Index using reflectance values ([Penuelas et al. 1995a](#references)):
+Calculates the Photochemical Reflectance Index using reflectance values ([Penuelas et al., 1995a](#references)):
 
 ```
 PRI = (R531 - R570) / (R531 + R570)
@@ -324,7 +324,7 @@ Index range: -1.0, 1.0
 
 ### PSRI
 
-Calculates the Plant Senescence Reflectance Index using reflectance values ([Merzlyak et al. 1999](#references)):
+Calculates the Plant Senescence Reflectance Index using reflectance values ([Merzlyak et al., 1999](#references)):
 
 ```
 PSRI = (R678 - R500) / R750
@@ -465,7 +465,7 @@ Index range: -1.2, 1.2
 
 ### SIPI
 
-Calculates the Structure-Independent Pigment Index using reflectance values ([Penuelas et al. 1995b](#references)):
+Calculates the Structure-Independent Pigment Index using reflectance values ([Penuelas et al., 1995b](#references)):
 
 ```
 SIPI = (NIR - RED) / (NIR - BLUE)
@@ -511,6 +511,53 @@ Index range: 0.0, Inf
     - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
     - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
 
+### VARI
+
+Calculates the Visible Atmospherically Resistant Index using reflectance values ([Gitelson et al., 2002b](#references)):
+
+```
+VARI = (GREEN - RED) / (GREEN + RED - BLUE)
+```
+
+Here, we use ~R480 for BLUE, ~R550 for GREEN, and ~R670 for RED:
+
+```
+VARI = (R550 - R670) / (R550 + R670 - R480)
+```
+
+Index range: -Inf, Inf
+
+**plantcv.spectral_index.vari**(*hsi, distance=20*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
+    - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
+
+### VI_GREEN
+
+Calculates the Vegetation Index using green bands using reflectance values ([Gitelson et al., 2002b](#references)):
+
+```
+VIgreen = (GREEN - RED) / (GREEN + RED)
+```
+
+Here, we use ~R550 for GREEN and ~R670 for RED:
+
+```
+VIgreen = (R550 - R670) / (R550 + R670)
+```
+
+Index range: -1.0, 1.0
+
+**plantcv.spectral_index.vi_green**(*hsi, distance=20*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
+    - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
 
 ### Examples
 
@@ -662,6 +709,9 @@ Gamon JA, Surfus JS. 1999. Assessing leaf pigment content and activity with a re
 Gitelson AA, Zur Y, Chivkunova OB, Merzlyak MN. 2002. Assessing carotenoid content in plant leaves with reflectance 
 spectroscopy. Photochemistry and Photobiology 75:272–281. DOI: 
 [10.1562/0031-8655(2002)0750272ACCIPL2.0.CO2](https://doi.org/10.1562/0031-8655(2002)0750272ACCIPL2.0.CO2).
+
+Gitelson AA, Kaufman YJ, Stark R, Rundquist D. 2002. Novel algorithms for remote estimation of vegetation fraction. 
+Remote Sensing of Environment 80:76–87. DOI: [10.1016/S0034-4257(01)00289-9](https://doi.org/10.1016/S0034-4257(01)00289-9).
 
 Gitelson AA, Viña A, Arkebauer TJ, Rundquist DC, Keydan G, Leavitt B. 2003. Remote estimation of leaf area index and 
 green leaf biomass in maize canopies. Geophysical Research Letters 30. DOI: 
