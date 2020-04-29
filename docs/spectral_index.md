@@ -602,11 +602,11 @@ ari_array  = pcv.spectral_index.ari(hsi=spectral_data, distance=20)
 # Extract CI_REDEDGE index from the datacube 
 ci_rededge_array  = pcv.spectral_index.ci_rededge(hsi=spectral_data, distance=20)
 
-# Extract CRI1 index from the datacube 
-cri1_array  = pcv.hyperspectral.extract_index.cri550(hsi=spectral_data, distance=20)
+# Extract CRI550 index from the datacube 
+cri550_array  = pcv.hyperspectral.extract_index.cri550(hsi=spectral_data, distance=20)
 
-# Extract CRI2 index from the datacube 
-cri2_array  = pcv.spectral_index.cri700(hsi=spectral_data, distance=20)
+# Extract CRI700 index from the datacube 
+cri700_array  = pcv.spectral_index.cri700(hsi=spectral_data, distance=20)
 
 # Extract EVI index from the datacube 
 evi_array  = pcv.spectral_index.evi(hsi=spectral_data, distance=20)
@@ -635,13 +635,13 @@ psnd_car_array  = pcv.spectral_index.psnd_car(hsi=spectral_data, distance=20)
 # Extract PSRI index from the datacube 
 psri_array  = pcv.spectral_index.psri(hsi=spectral_data, distance=20)
 
-# Extract PSSR1 index from the datacube 
+# Extract PSSR_CHLA index from the datacube 
 pssr_chla_array  = pcv.spectral_index.pssr_chla(hsi=spectral_data, distance=20)
 
-# Extract PSSR2 index from the datacube 
+# Extract PSSR_CHLB index from the datacube 
 pssr_chlb_array  = pcv.spectral_index.pssr_chlb(hsi=spectral_data, distance=20)
 
-# Extract PSSR3 index from the datacube 
+# Extract PSSR_CAR index from the datacube 
 pssr_car_array  = pcv.spectral_index.pssr_car(hsi=spectral_data, distance=20)
 
 # Extract RGRI index from the datacube 
@@ -662,7 +662,7 @@ vari_array  = pcv.spectral_index.vari(hsi=spectral_data, distance=20)
 # Extract VI_GREEN index from the datacube 
 vi_green_array  = pcv.spectral_index.vi_green(hsi=spectral_data, distance=20)
 
-# Extract WBI index from the datacube 
+# Extract WI index from the datacube 
 wi_array  = pcv.spectral_index.wi(hsi=spectral_data, distance=20)
 
 egi_array = pcv.spectral_index.egi(rgb_img=img)
