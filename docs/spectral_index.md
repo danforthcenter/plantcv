@@ -398,6 +398,7 @@ Index range: -1.0, 1.0
     - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
 
 ### RGRI
+
 Calculates the Red:Green Ratio Index for anthocyanin using reflectance values ([Gamon and Surfus 1999](#references)):
 
 ```
@@ -413,6 +414,24 @@ RGRI = R670 / R560
 Index range: 0.0, Inf
 
 **plantcv.spectral_index.rgri**(*hsi, distance=20*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
+    - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
+
+### RVSI
+
+Calculates the Red-Edge Vegetation Stress Index using reflectance values ([Merton and Huntington 1999](#references)):
+
+```
+RVSI = ((R714 + R752) / 2) - R733
+```
+
+Index range: -1.0, 1.0
+
+**plantcv.spectral_index.rvsi**(*hsi, distance=20*)
 
 **returns** calculated index array (instance of the `Spectral_data` class)
 
@@ -616,6 +635,9 @@ Huete AR, HuiQing Liu, van Leeuwen WJD. 1997. The use of vegetation indices in f
 and saturation. In: IGARSS’97. 1997 IEEE International Geoscience and Remote Sensing Symposium Proceedings. Remote 
 Sensing - A Scientific Vision for Sustainable Development. 1966–1968 vol.4. DOI: 
 [10.1109/IGARSS.1997.609169](https://doi.org/10.1109/IGARSS.1997.609169).
+
+Merton R, Huntington J. 1999. Early simulation results of the ARIES-1 satellite sensor for multi-temporal vegetation 
+research derived from AVIRIS. [LINK](https://aviris.jpl.nasa.gov/proceedings/workshops/99_docs/41.pdf).
 
 Merzlyak MN, Gitelson AA, Chivkunova OB, Rakitin VYU. 1999. Non-destructive optical detection of pigment changes during 
 leaf senescence and fruit ripening. Physiologia Plantarum 106:135–141. DOI: 

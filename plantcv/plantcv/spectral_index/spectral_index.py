@@ -683,12 +683,13 @@ def rgri(hsi, distance=20):
     """Red/green ratio index (Gamon and Surfus, 1999)
     The theoretical range for RGRI is [0.0, Inf).
 
-    inputs:
-    hsi      = hyperspectral image (PlantCV Spectral_data instance)
-    distance = how lenient to be if the required wavelengths are not available
+    Inputs:
+    hsi         = hyperspectral image (PlantCV Spectral_data instance)
+    distance    = how lenient to be if the required wavelengths are not available
 
     Returns:
-    index_array    = Index data as a Spectral_data instance
+    index_array = Index data as a Spectral_data instance
+
     :param hsi: __main__.Spectral_data
     :param distance: int
     :return index_array: __main__.Spectral_data
@@ -707,29 +708,33 @@ def rgri(hsi, distance=20):
 
 
 def rvsi(hsi, distance=20):
-    """Red-edge vegetation stress index (Metron and Huntington, 1999)
+    """Red-Edge Vegetation Stress Index.
+
+    RVSI = ((R714 + R752) / 2) - R733
+
     The theoretical range for RVSI is [-1.0, 1.0].
 
-    inputs:
-    hsi      = hyperspectral image (PlantCV Spectral_data instance)
-    distance = how lenient to be if the required wavelengths are not available
+    Inputs:
+    hsi         = hyperspectral image (PlantCV Spectral_data instance)
+    distance    = how lenient to be if the required wavelengths are not available
 
     Returns:
-    index_array    = Index data as a Spectral_data instance
+    index_array = Index data as a Spectral_data instance
+
     :param hsi: __main__.Spectral_data
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
 
     if (float(hsi.max_wavelength) + distance) >= 752 and (float(hsi.min_wavelength) - distance) <= 714:
-        rvsi714_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 714)
-        rvsi733_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 733)
-        rvsi752_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 752)
-        rvsi714 = (hsi.array_data[:, :, rvsi714_index])
-        rvsi733 = (hsi.array_data[:, :, rvsi733_index])
-        rvsi752 = (hsi.array_data[:, :, rvsi752_index])
+        r714_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 714)
+        r733_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 733)
+        r752_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 752)
+        r714 = (hsi.array_data[:, :, r714_index])
+        r733 = (hsi.array_data[:, :, r733_index])
+        r752 = (hsi.array_data[:, :, r752_index])
         # Naturally ranges from -1 to 1
-        index_array_raw = (rvsi714 + rvsi752) / 2 - rvsi733
+        index_array_raw = ((r714 + r752) / 2) - r733
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="RVSI")
     else:
         fatal_error("Available wavelengths are not suitable for calculating RVSI. Try increasing distance.")
