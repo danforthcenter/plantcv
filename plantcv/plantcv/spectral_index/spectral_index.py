@@ -774,27 +774,31 @@ def sipi(hsi, distance=20):
 
 
 def sr(hsi, distance=20):
-    """Simple ratio (Jordan, 1969)
+    """Simple Ratio.
+
+    SR = R800 / R670
+
     The theoretical range for SR is [0.0, Inf).
 
-    inputs:
-    hsi      = hyperspectral image (PlantCV Spectral_data instance)
-    distance = how lenient to be if the required wavelengths are not available
+    Inputs:
+    hsi         = hyperspectral image (PlantCV Spectral_data instance)
+    distance    = how lenient to be if the required wavelengths are not available
 
     Returns:
-    index_array    = Index data as a Spectral_data instance
+    index_array = Index data as a Spectral_data instance
+
     :param hsi: __main__.Spectral_data
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
 
-    if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 675:
-        sr675_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 675)
-        sr800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
-        sr675 = (hsi.array_data[:, :, sr675_index])
-        sr800 = (hsi.array_data[:, :, sr800_index])
+    if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 670:
+        r670_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
+        r800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
+        r670 = (hsi.array_data[:, :, r670_index])
+        r800 = (hsi.array_data[:, :, r800_index])
         # Naturally ranges from 0 to inf
-        index_array_raw = sr800 / sr675
+        index_array_raw = r800 / r670
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="SR")
     else:
         fatal_error("Available wavelengths are not suitable for calculating SR. Try increasing distance.")
