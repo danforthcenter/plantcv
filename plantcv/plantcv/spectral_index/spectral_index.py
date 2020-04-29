@@ -741,29 +741,33 @@ def rvsi(hsi, distance=20):
 
 
 def sipi(hsi, distance=20):
-    """Structure-intensitive pigment index (Penuelas et al., 1995)
+    """Structure-Independent Pigment Index.
+
+    SIPI = (R800 - R670) / (R800 - R480)
+
     The theoretical range for SIPI is (-Inf, Inf).
 
-    inputs:
-    hsi      = hyperspectral image (PlantCV Spectral_data instance)
-    distance = how lenient to be if the required wavelengths are not available
+    Inputs:
+    hsi         = hyperspectral image (PlantCV Spectral_data instance)
+    distance    = how lenient to be if the required wavelengths are not available
 
     Returns:
-    index_array    = Index data as a Spectral_data instance
+    index_array = Index data as a Spectral_data instance
+
     :param hsi: __main__.Spectral_data
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
 
-    if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 445:
-        sipi445_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 445)
-        sipi680_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 680)
-        sipi800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
-        sipi445 = (hsi.array_data[:, :, sipi445_index])
-        sipi680 = (hsi.array_data[:, :, sipi680_index])
-        sipi800 = (hsi.array_data[:, :, sipi800_index])
+    if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 480:
+        r480_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 480)
+        r670_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
+        r800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
+        r445 = (hsi.array_data[:, :, r480_index])
+        r670 = (hsi.array_data[:, :, r670_index])
+        r800 = (hsi.array_data[:, :, r800_index])
         # Naturally ranges from -inf to inf
-        index_array_raw = (sipi800 - sipi445) / (sipi800 - sipi680)
+        index_array_raw = (r800 - r670) / (r800 - r445)
         return _package_index(hsi=hsi, raw_index=index_array_raw, method="SIPI")
     else:
         fatal_error("Available wavelengths are not suitable for calculating SIPI. Try increasing distance.")

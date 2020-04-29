@@ -249,7 +249,7 @@ Index range: -1.0, 1.0
 
 ### PRI
 
-Calculates the Photochemical Reflectance Index using reflectance values ([Penuelas et al. 1995](#references)):
+Calculates the Photochemical Reflectance Index using reflectance values ([Penuelas et al. 1995a](#references)):
 
 ```
 PRI = (R531 - R570) / (R531 + R570)
@@ -463,7 +463,29 @@ Index range: -1.2, 1.2
     - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
     - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
 
+### SIPI
 
+Calculates the Structure-Independent Pigment Index using reflectance values ([Penuelas et al. 1995b](#references)):
+
+```
+SIPI = (NIR - RED) / (NIR - BLUE)
+```
+
+Here, we use ~R800 for NIR, ~670 for RED and ~R480 for BLUE:
+
+```
+SIPI = (R800 - R680) / (R800 - R480)
+```
+
+Index range: -Inf, Inf
+
+**plantcv.spectral_index.sipi**(*hsi, distance=20*)
+
+**returns** calculated index array (instance of the `Spectral_data` class)
+
+- **Parameters:**
+    - hsi         - Hyperspectral image object, an instance of the `Spectral_data` class in plantcv (read in using [pcv.readimage](read_image.md) with `mode='envi'`)
+    - distance    - Amount of flexibility (in nanometers) regarding the bands used to calculate an index.
 
 ### Examples
 
@@ -646,6 +668,9 @@ leaf senescence and fruit ripening. Physiologia Plantarum 106:135–141. DOI:
 Penuelas J, Filella I, Gamon JA. 1995. Assessment of photosynthetic radiation-use efficiency with spectral reflectance. 
 The New Phytologist 131:291–296. DOI: 
 [10.1111/j.1469-8137.1995.tb03064.x](https://doi.org/10.1111/j.1469-8137.1995.tb03064.x).
+
+Penuelas J, Baret F, Filella I. 1995. Semi-empirical indices to assess carotenoids/chlorophyll-a ratio from leaf 
+spectral reflectance. Photosynthetica 31:221–230. [LINK](https://www.researchgate.net/publication/229084513_Semi-Empirical_Indices_to_Assess_CarotenoidsChlorophyll-a_Ratio_from_Leaf_Spectral_Reflectance).
 
 Rouse JW, Haas RH, Scheel JA, Deering DW. 1974. Monitoring Vegetation Systems in the Great Plains with ERTS. In: 
 Freden SC, Mercanti EP, Becker MA eds. Third Earth Resources Technology Satellite-1 Symposium: The Proceedings of a 
