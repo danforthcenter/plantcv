@@ -16,13 +16,11 @@ def segment_combine(segment_list, objects, mask):
             Inputs:
             segment_list  = List of segments to get combined, or list of lists of segments to get combined
             objects       = List of contours
-            hierarchy     = Contour hierarchy NumPy array
             mask          = Binary mask for debugging image
 
             Returns:
             segmented_img = Segmented image
             objects       = Updated list of contours
-            hierarchy     = Updated contour hierarchy NumPy array
 
             :param segment_list: list
             :param objects: list
