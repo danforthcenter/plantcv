@@ -15,10 +15,10 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
     rgb_img          = RGB image data
     mask             = Binary mask made from selected contours
     hist_plot_type   = 'None', 'all', 'rgb','lab' or 'hsv'
-    
+
     Returns:
     analysis_image   = histogram output
-    
+
     :param rgb_img: numpy.ndarray
     :param mask: numpy.ndarray
     :param hist_plot_type: str
@@ -198,7 +198,7 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
                             value=hue_circular_mean, label='degrees')
     outputs.add_observation(variable='hue_circular_std', trait='hue circular standard deviation',
                             method='plantcv.plantcv.analyze_color', scale='degrees', datatype=float,
-                            value=hue_median, label='degrees')
+                            value=hue_circular_std, label='degrees')
     outputs.add_observation(variable='hue_median', trait='hue median',
                             method='plantcv.plantcv.analyze_color', scale='degrees', datatype=float,
                             value=hue_median, label='degrees')
