@@ -164,7 +164,12 @@ def read_data(filename):
     max_pixel = float(np.amax(array_data))
     min_pixel = float(np.amin(array_data))
 
-    # Create an instance of the spectral_data class
+    try:
+        wavelength_units = header_dict["wavelength units"]
+    except:
+        wavelength_units = "nm"
+
+        # Create an instance of the spectral_data class
     spectral_array = Spectral_data(array_data=array_data,
                                    max_wavelength=float(str(header_dict["wavelength"][-1]).rstrip()),
                                    min_wavelength=float(str(header_dict["wavelength"][0]).rstrip()),
@@ -172,7 +177,7 @@ def read_data(filename):
                                    d_type=header_dict["data type"],
                                    wavelength_dict=wavelength_dict, samples=int(header_dict["samples"]),
                                    lines=int(header_dict["lines"]), interleave=header_dict["interleave"],
-                                   wavelength_units=header_dict["wavelength units"], array_type="datacube",
+                                   wavelength_units=wavelength_units, array_type="datacube",
                                    pseudo_rgb=None, filename=filename, default_bands=default_bands)
 
     # Make pseudo-rgb image and replace it inside the class instance object
