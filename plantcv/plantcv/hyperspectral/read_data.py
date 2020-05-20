@@ -108,7 +108,7 @@ def read_data(filename):
     header_dict = {}
 
     # Remove any file extension and set .hdr filename
-    filename_base = filename.split(".")[0]
+    filename_base = os.path.splitext(filename)[0]
     headername = filename_base + ".hdr"
 
     with open(headername, "r") as f:
