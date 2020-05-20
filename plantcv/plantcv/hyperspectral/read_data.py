@@ -166,10 +166,9 @@ def read_data(filename):
     max_pixel = float(np.amax(array_data))
     min_pixel = float(np.amin(array_data))
 
-    try:
-        wavelength_units = header_dict["wavelength units"]
-    except:
-        wavelength_units = "nm"
+    wavelength_units = header_dict.get("wavelength units")
+    if wavelength_units is None:
+        wavelength units = "nm"
 
         # Create an instance of the spectral_data class
     spectral_array = Spectral_data(array_data=array_data,
