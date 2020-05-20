@@ -168,7 +168,7 @@ def read_data(filename):
 
     wavelength_units = header_dict.get("wavelength units")
     if wavelength_units is None:
-        wavelength units = "nm"
+        wavelength_units = "nm"
 
         # Create an instance of the spectral_data class
     spectral_array = Spectral_data(array_data=array_data,
