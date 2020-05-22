@@ -3,11 +3,11 @@
 import os
 import cv2
 import numpy as np
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import fatal_error
-from plantcv.plantcv.roi import circle
 from plantcv.plantcv import params
+from plantcv.plantcv import plot_image
+from plantcv.plantcv.roi import circle
+from plantcv.plantcv import print_image
+from plantcv.plantcv import fatal_error
 
 
 def get_color_matrix(rgb_img, mask):
@@ -404,10 +404,10 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
     over saturated color chips or other issues.
 
     Inputs:
-    source_matrix      = a 22x4 matrix containing the average red value, average green value, and
-                             average blue value for each color chip of the source image
-    target_matrix      = a 22x4 matrix containing the average red value, average green value, and
-                             average blue value for each color chip of the target image
+    source_matrix      = an nrowsXncols matrix containing the avg red, green, and blue values for each color chip 
+                            of the source image
+    target_matrix      = an nrowsXncols matrix containing the avg red, green, and blue values for each color chip 
+                            of the target image
     num_chips          = number of color card chips included in the matrices (integer)
 
     :param source_matrix: numpy.ndarray
@@ -509,11 +509,11 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
 
     # Get image attributes
     height, width, channels = rgb_img.shape
-    totalpx = float(height * width)
+    total_pix = float(height * width)
 
     # Minimum and maximum square size based upon 12 MP image
-    minarea = 1000. / 12000000. * totalpx
-    maxarea = 8000000. / 12000000. * totalpx
+    minarea = 1000. / 12000000. * total_pix
+    maxarea = 8000000. / 12000000. * total_pix
 
     # Create gray image for further processing
     gray_img = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
