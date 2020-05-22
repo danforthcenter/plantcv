@@ -512,8 +512,8 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
     total_pix = float(height * width)
 
     # Minimum and maximum square size based upon 12 MP image
-    minarea = 1000. / 12000000. * total_pix
-    maxarea = 8000000. / 12000000. * total_pix
+    min_area = 1000. / 12000000. * total_pix
+    max_area = 8000000. / 12000000. * total_pix
 
     # Create gray image for further processing
     gray_img = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
@@ -542,28 +542,28 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
         fatal_error('Background parameter ' + str(background) + ' is not "light" or "dark"!')
 
     # Thresholding
-    if threshold_type == "otsu":
+    if threshold_type.upper() == "OTSU":
         # Blur slightly so defects on card squares and background patterns are less likely to be picked up
         gaussian = cv2.GaussianBlur(gray_img, (5, 5), 0)
         ret, threshold = cv2.threshold(gaussian, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    elif threshold_type == "normal":
+    elif threshold_type.upper() == "NORMAL":
         # Blur slightly so defects on card squares and background patterns are less likely to be picked up
         gaussian = cv2.GaussianBlur(gray_img, (5, 5), 0)
         ret, threshold = cv2.threshold(gaussian, threshvalue, 255, cv2.THRESH_BINARY)
-    elif threshold_type == "adaptgauss":
+    elif threshold_type.upper() == "ADAPTGAUSS":
         # Blur slightly so defects on card squares and background patterns are less likely to be picked up
         gaussian = cv2.GaussianBlur(gray_img, (11, 11), 0)
         threshold = cv2.adaptiveThreshold(gaussian, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
                                           cv2.THRESH_BINARY_INV, 51, 2)
     else:
-        fatal_error('Threshold ' + str(threshold_type) + ' is not "otsu", "normal", or "adaptgauss"!')
+        fatal_error('Input threshold=' + str(threshold_type) + ' but should be "otsu", "normal", or "adaptgauss"!')
 
     # Apply automatic Canny edge detection using the computed median
-    edges = skimage.feature.canny(threshold)
-    edges.dtype = 'uint8'
+    canny_edges = skimage.feature.canny(threshold)
+    canny_edges.dtype = 'uint8'
 
     # Compute contours to find the squares of the card
-    contours, hierarchy = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[-2:]
+    contours, hierarchy = cv2.findContours(canny_edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[-2:]
     # Variable of which contour is which
     mindex = []
     # Variable to store moments
@@ -610,7 +610,7 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
     # Loop over our contours and extract data about them
     for index, c in enumerate(contours):
         # Area isn't 0, but greater than min-area and less than max-area
-        if marea[index] != 0 and minarea < marea[index] < maxarea:
+        if marea[index] != 0 and min_area < marea[index] < max_area:
             peri = cv2.arcLength(c, True)
             approx = cv2.approxPolyDP(c, 0.1 * peri, True)
             center, wh, angle = cv2.minAreaRect(c)  # Rotated rectangle
@@ -622,7 +622,7 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
             if len(approx) == 4 or len(approx) == 5:
                 msquarecoords.append(approx)
             else:  # It's not square
-                #msquare.append(0)
+                # msquare.append(0)
                 msquarecoords.append(0)
         else:  # Contour has area of 0, not interesting
             msquare.append(0)
@@ -632,16 +632,16 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
             mwhratio.append(0)
 
     # Make a pandas df from data for filtering out junk
-    locarea = {'index': mindex, 'X': mx, 'Y': my, 'width': mwidth, 'height': mheight, 'WHratio': mwhratio,
-               'Area': marea, 'square': msquare, 'child': mchild}
-    df = pd.DataFrame(locarea)
+    all_contours = {'index': mindex, 'x': mx, 'y': my, 'width': mwidth, 'height': mheight, 'res_ratio': mwhratio,
+                    'area': marea, 'square': msquare, 'child': mchild}
+    df = pd.DataFrame(all_contours)
 
     # Add calculated blur factor to output
     df['blurriness'] = blurfactor
 
     # Filter df for attributes that would isolate squares of reasonable size
-    df = df[(df['Area'] > minarea) & (df['Area'] < maxarea) & (df['child'] != -1) &
-            (df['square'].isin([4, 5])) & (df['WHratio'] < 1.2) & (df['WHratio'] > 0.85)]
+    df = df[(df['area'] > min_area) & (df['area'] < max_area) & (df['child'] != -1) &
+            (df['square'].isin([4, 5])) & (df['res_ratio'] < 1.2) & (df['res_ratio'] > 0.85)]
 
     # Filter nested squares from dataframe, was having issues with median being towards smaller nested squares
     df = df[~(df['index'].isin(df['index'] + 1))]
@@ -653,7 +653,7 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
     # Squares that are within 6 widths of the current square
     pixeldist = median_sq_width_px * 6
     # Computes euclidean distance matrix for the x and y contour centroids
-    distmatrix = pd.DataFrame(squareform(pdist(df[['X', 'Y']])))
+    distmatrix = pd.DataFrame(squareform(pdist(df[['x', 'y']])))
     # Add up distances that are less than  ones have distance less than pixeldist pixels
     distmatrixflat = distmatrix.apply(lambda dist: dist[dist <= pixeldist].count() - 1, axis=1)
 
@@ -661,7 +661,7 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
     df = df.assign(distprox=distmatrixflat.values)
 
     # Compute how similar in area the squares are. lots of similar values indicates card isolate area measurements
-    filtered_area = df['Area']
+    filtered_area = df['area']
     # Create empty matrix for storing comparisons
     sizecomp = np.zeros((len(filtered_area), len(filtered_area)))
     # Double loop through all areas to compare to each other
@@ -679,7 +679,7 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
     df = df.assign(sizeprox=sizematrix.values)
 
     # Reorder dataframe for better printing
-    df = df[['index', 'X', 'Y', 'width', 'height', 'WHratio', 'Area', 'square', 'child',
+    df = df[['index', 'x', 'y', 'width', 'height', 'res_ratio', 'area', 'square', 'child',
              'blurriness', 'distprox', 'sizeprox']]
 
     # Loosely filter for size and distance (relative size to median)
@@ -696,7 +696,7 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
     # Squares that are within 6 widths of the current square
     pixeldist = median_sq_width_px * 5
     # Computes euclidean distance matrix for the x and y contour centroids
-    distmatrix = pd.DataFrame(squareform(pdist(df[['X', 'Y']])))
+    distmatrix = pd.DataFrame(squareform(pdist(df[['x', 'y']])))
     # Add up distances that are less than  ones have distance less than pixeldist pixels
     distmatrixflat = distmatrix.apply(lambda dist: dist[dist <= pixeldist].count() - 1, axis=1)
 
@@ -706,25 +706,24 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
     # Filter results for distance proximity to other squares
     df = df[(df['distprox'] >= 4)]
     # Remove all not numeric values use to_numeric with parameter, errors='coerce' - it replace non numeric to NaNs:
-    df['X'] = pd.to_numeric(df['X'], errors='coerce')
-    df['Y'] = pd.to_numeric(df['Y'], errors='coerce')
+    df['x'] = pd.to_numeric(df['x'], errors='coerce')
+    df['y'] = pd.to_numeric(df['y'], errors='coerce')
 
     # Remove NaN
     df = df.dropna()
 
-
-    if df['X'].min() is np.nan or df['Y'].min() is np.nan:
+    if df['x'].min() is np.nan or df['y'].min() is np.nan:
         fatal_error('No color card found under current parameters')
     else:
         # Extract the starting coordinate
-        start_coord = (df['X'].min(), df['Y'].min())
+        start_coord = (df['x'].min(), df['y'].min())
 
         # start_coord = (int(df['X'].min()), int(df['Y'].min()))
         # Calculate the range
-        spacingx_short = (df['X'].max() - df['X'].min()) / 3
-        spacingy_short = (df['Y'].max() - df['Y'].min()) / 3
-        spacingx_long = (df['X'].max() - df['X'].min()) / 5
-        spacingy_long = (df['Y'].max() - df['Y'].min()) / 5
+        spacingx_short = (df['x'].max() - df['x'].min()) / 3
+        spacingy_short = (df['y'].max() - df['y'].min()) / 3
+        spacingx_long = (df['x'].max() - df['x'].min()) / 5
+        spacingy_long = (df['y'].max() - df['y'].min()) / 5
         # Chip spacing since 4x6 card assumed
         spacing_short = min(spacingx_short, spacingy_short)
         spacing_long = max(spacingx_long, spacingy_long)
