@@ -1,13 +1,11 @@
 # Color Corrections Functions
 
 import os
-import errno
 import cv2
 import numpy as np
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
-from plantcv.plantcv import params
 from plantcv.plantcv.roi import circle
 from plantcv.plantcv import params
 
