@@ -474,19 +474,22 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
             print(p1)
 
 
-def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark'):
+def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark',
+                    record_chip_size="median"):
     """Automatically detects a color card and output info to use in create_color_card_mask function
 
     Algorithm written by Brandon Hurr. Updated and implemented into PlantCV by Haley Schuhl.
 
-    Inputs:
-    rgb_img        = Input RGB image data containing a color card.
-    threshold      = Threshold method, either 'normal', 'otsu', or 'adaptgauss', optional (default 'adaptgauss')
-    threshvalue    = Thresholding value, optional (default 125)
-    blurry         = Bool (default False) if True then image sharpening applied
-    background     = Type of image background either 'dark' or 'light' (default 'dark'); if 'light' then histogram
+        Inputs:
+    rgb_img          = Input RGB image data containing a color card.
+    threshold        = Threshold method, either 'normal', 'otsu', or 'adaptgauss', optional (default 'adaptgauss')
+    threshvalue      = Thresholding value, optional (default 125)
+    blurry           = Bool (default False) if True then image sharpening applied
+    background       = Type of image background either 'dark' or 'light' (default 'dark'); if 'light' then histogram
                         expansion applied to better detect edges, but histogram expansion will be hindered if there
                         is a dark background
+    record_chip_size = Optional str for choosing chip size measurement to be recorded, either "median",
+                        "mean", or None
 
     Returns:
     df             = Dataframe containing information about the filtered contours
@@ -498,6 +501,7 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
     :param threshvalue: int
     :param blurry: bool
     :param background: str
+    :param record_chip_size: str
     :return df: pandas.core.frame.DataFrame
     :return start_coord: tuple
     :return spacing: tuple
@@ -730,5 +734,21 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
         # Smaller spacing measurement might have a chip missing
         spacing = int(max(spacing_short, spacing_long))
         spacing = (spacing, spacing)
+
+
+    if record_chip_size is not None:
+        if record_chip_size.upper() == "MEDIAN":
+            chip_size = df.loc[:,"area"].median()
+        elif record_chip_size.upper() == "MEAN":
+            chip_size = df.loc[:,"area"].mean()
+        else:
+            print(srt(record_chip_size) + " Is not a valid entry for record_chip_size." +
+                  " Must be either 'mean', 'median', or None. ")
+            chip_size = None
+        # Store into global measurements
+        outputs.add_observation(variable='color_chip_size', trait='size of color card chips identified',
+                                method='plantcv.plantcv.transform.find_color_card', scale='none',
+                                datatype=float, value=chip_size, label=str(record_chip_size))
+
 
     return df, start_coord, spacing
