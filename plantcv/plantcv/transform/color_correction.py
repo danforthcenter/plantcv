@@ -4,6 +4,7 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv import params
+from plantcv.plantcv import outputs
 from plantcv.plantcv import plot_image
 from plantcv.plantcv.roi import circle
 from plantcv.plantcv import print_image
@@ -742,8 +743,8 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
         elif record_chip_size.upper() == "MEAN":
             chip_size = df.loc[:,"area"].mean()
         else:
-            print(srt(record_chip_size) + " Is not a valid entry for record_chip_size." +
-                  " Must be either 'mean', 'median', or None. ")
+            print(str(record_chip_size) + " Is not a valid entry for record_chip_size." +
+                  " Must be either 'mean', 'median', or None.")
             chip_size = None
         # Store into global measurements
         outputs.add_observation(variable='color_chip_size', trait='size of color card chips identified',
