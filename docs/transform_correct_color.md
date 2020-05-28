@@ -58,16 +58,17 @@ target_matrix, source_matrix, transformation_matrix, corrected_img = pcv.transfo
 
 Automatically detects a color card's location and size. Useful in workflows where color card positioning isn't constant in all images.
 
-**plantcv.transform.find_color_card**(*rgb_img, threshold='adaptgauss', threshvalue=125, blurry=False, background='dark'*)
+**plantcv.transform.find_color_card**(*rgb_img, threshold='adaptgauss', threshvalue=125, blurry=False, background='dark', record_chip_size='median*)
 
 **returns** df, start_coord, spacing
 
 - **Parameters**
-    - rgb_img       = Input RGB image data containing a color card.
-    - threshold     = Optional threshold method, either 'normal', 'otsu', or 'adaptgauss' (default theshold='adaptgauss')
-    - threshvalue   = Optional thresholding value (default threshvalue=125)
-    - blurry        = Optional boolean, if True then image sharpening is applied (default blurry=False)
-    - background    = Optional type of image background, either 'dark' or 'light' (default background='dark')
+    - rgb_img          = Input RGB image data containing a color card.
+    - threshold        = Optional threshold method, either 'normal', 'otsu', or 'adaptgauss' (default theshold='adaptgauss')
+    - threshvalue      = Optional thresholding value (default threshvalue=125)
+    - blurry           = Optional boolean, if True then image sharpening is applied (default blurry=False)
+    - background       = Optional type of image background, either 'dark' or 'light' (default background='dark')
+    - record_chip_size = Optional str for choosing chip size measurement to be recorded, either "median" (default), "mean", or None
 - **Returns**
     - df            = Dataframe of all color card chips found.
     - start_coord   = Two-element tuple of the first chip mask starting x and y coordinate. Useful in [create a color card mask](#create-a-labeled-color-card-mask) function.
