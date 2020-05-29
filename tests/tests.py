@@ -4924,6 +4924,37 @@ def test_plantcv_transform_find_color_card_optional_parameters():
                                                                    220], dtype=np.uint8)))
 
 
+def test_plantcv_transform_find_color_card_optional_size_parameters():
+    # Load rgb image
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG_COLOR_CARD))
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_find_color_card")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    df1, start1, space1 = pcv.transform.find_color_card(rgb_img=rgb_img, record_chip_size="mean")
+    assert pcv.outputs.observations["color_chip_size"]["value"] > 15000
+
+
+def test_plantcv_transform_find_color_card_optional_size_parameters_none():
+    pcv.outputs.observations.clear()
+    # Load rgb image
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG_COLOR_CARD))
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_find_color_card")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    df1, start1, space1 = pcv.transform.find_color_card(rgb_img=rgb_img, record_chip_size=None)
+    with pytest.raises(KeyError):
+        pcv.outputs.observations["color_chip_size"]
+
+
+def test_plantcv_transform_find_color_card_bad_record_chip_size():
+    # Load rgb image
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
+    pcv.params.debug = None
+    _, _, _ = pcv.transform.find_color_card(rgb_img=rgb_img, record_chip_size='averageeeed')
+    assert pcv.outputs.observations["color_chip_size"]["value"] == None
+
 def test_plantcv_transform_find_color_card_bad_thresh_input():
     # Load rgb image
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
