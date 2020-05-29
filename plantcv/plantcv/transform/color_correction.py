@@ -483,7 +483,7 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
 
         Inputs:
     rgb_img          = Input RGB image data containing a color card.
-    threshold        = Threshold method, either 'normal', 'otsu', or 'adaptgauss', optional (default 'adaptgauss')
+    threshold_type   = Threshold method, either 'normal', 'otsu', or 'adaptgauss', optional (default 'adaptgauss')
     threshvalue      = Thresholding value, optional (default 125)
     blurry           = Bool (default False) if True then image sharpening applied
     background       = Type of image background either 'dark' or 'light' (default 'dark'); if 'light' then histogram
@@ -561,7 +561,7 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
         threshold = cv2.adaptiveThreshold(gaussian, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
                                           cv2.THRESH_BINARY_INV, 51, 2)
     else:
-        fatal_error('Input threshold=' + str(threshold_type) + ' but should be "otsu", "normal", or "adaptgauss"!')
+        fatal_error('Input threshold_type=' + str(threshold_type) + ' but should be "otsu", "normal", or "adaptgauss"!')
 
     # Apply automatic Canny edge detection using the computed median
     canny_edges = skimage.feature.canny(threshold)
