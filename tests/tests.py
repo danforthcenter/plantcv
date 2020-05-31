@@ -605,6 +605,7 @@ TEST_INPUT_FMAX = "FLUO_TV_max.png"
 TEST_INPUT_FMASK = "FLUO_TV_MASK.png"
 TEST_INPUT_GREENMAG = "input_green-magenta.jpg"
 TEST_INPUT_MULTI = "multi_ori_image.jpg"
+TEST_INPUT_MULTI_MASK = "multi_ori_mask.jpg"
 TEST_INPUT_MULTI_OBJECT = "roi_objects.npz"
 TEST_INPUT_MULTI_CONTOUR = "multi_contours.npz"
 TEST_INPUT_ClUSTER_CONTOUR = "clusters_i.npz"
@@ -3268,6 +3269,31 @@ def test_plantcv_background_subtraction_different_sizes():
     fgmask = pcv.background_subtraction(background_image=bg_img_resized, foreground_image=fg_img)
     assert np.sum(fgmask) > 0
 
+def test_plantcv_spatial_clustering_dbscan():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_spatial_clustering_dbscan")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_MULTI_MASK),-1)
+    pcv.params.debug = "print"
+    _=pcv.spatial_clustering(img,Algorithm="DBSCAN",min_cluster_size=10,max_distance=0,njobs=2)
+    pcv.params.debug = "plot"
+    spmask=pcv.spatial_clustering(img,Algorithm="DBSCAN",min_cluster_size=10,max_distance=0,njobs=2)
+    assert len(spmask[1])==2
+
+def test_plantcv_spatial_clustering_optics():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_spatial_clustering_optics")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_MULTI_MASK),-1)
+    pcv.params.debug = None
+    spmask=pcv.spatial_clustering(img,Algorithm="OPTICS",min_cluster_size=100,max_distance=5000,njobs=2)
+    assert len(spmask[1])==2
+
+def test_plantcv_spatial_clustering_badinput():
+    img=cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_MULTI_MASK),-1)
+    pcv.params.debug = None
+    with pytest.raises(NameError):
+        spmask=pcv.spatial_clustering(img,Algorithm="Hydra",min_cluster_size=5,max_distance=100,njobs=2)
 
 # ##############################
 # Tests for the learn subpackage
@@ -4514,7 +4540,7 @@ def test_plantcv_roi_multi():
     # Test with debug = None
     pcv.params.debug = None
     rois1, roi_hierarchy1 = pcv.roi.multi(rgb_img, coord=(25, 120), radius=20, spacing=(10, 10), nrows=3, ncols=6)
-    # Assert the contours has 18 ROIs 
+    # Assert the contours has 18 ROIs
     assert len(rois1) == 18
 
 
