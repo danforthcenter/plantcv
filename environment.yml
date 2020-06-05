@@ -8,6 +8,7 @@ dependencies:
   - python-dateutil
   - scipy
   - scikit-image
+  - scikit-learn
   - pytest
   - plotnine
   - coveralls
