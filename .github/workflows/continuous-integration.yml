@@ -49,13 +49,13 @@ jobs:
         # Set to true if you are running parallel jobs, then use "parallel_finished: true" for the last action.
         parallel: true
 
-    finish:
-      needs: build
-      runs-on: ubuntu-latest
-      steps:
-        - name: Coveralls finished
-          uses: coverallsapp/github-action@master
-          with:
-            github-token: ${{ secrets.GITHUB_TOKEN }}
-            # Set to true for the last action when using "parallel: true".
-            parallel-finished: true
+  finish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Coveralls finished
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # Set to true for the last action when using "parallel: true".
+          parallel-finished: true
