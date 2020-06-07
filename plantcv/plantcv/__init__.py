@@ -142,7 +142,6 @@ from plantcv.plantcv.color_palette import color_palette
 from plantcv.plantcv.rgb2gray import rgb2gray
 from plantcv.plantcv.gaussian_blur import gaussian_blur
 from plantcv.plantcv import transform
-from plantcv.plantcv import Spectral_data
 from plantcv.plantcv import hyperspectral
 from plantcv.plantcv import spectral_index
 from plantcv.plantcv.apply_mask import apply_mask
@@ -203,7 +202,6 @@ from plantcv.plantcv.opening import opening
 from plantcv.plantcv.closing import closing
 from plantcv.plantcv import roi
 from plantcv.plantcv import threshold
-from plantcv.plantcv.canny_edge_detect import canny_edge_detect
 from plantcv.plantcv.cluster_contour_mask import cluster_contour_mask
 from plantcv.plantcv.analyze_thermal_values import analyze_thermal_values
 from plantcv.plantcv import visualize
