@@ -56,7 +56,7 @@ def x_axis_pseudolandmarks(img, obj, mask):
         for i in range(1, 21):
             if i == 1:
                 pt_max = x + (inc * i)
-                pt_min = x 
+                pt_min = x
             else:
                 pt_max = x + (inc * i)
                 pt_min = x + (inc * (i - 1))
@@ -76,7 +76,7 @@ def x_axis_pseudolandmarks(img, obj, mask):
         y_centroids = []
         # For each of the 20 intervals
         for pt in point_range:
-            # Get the left and right bounds    
+            # Get the left and right bounds
             left_point, right_point = pt
             # Get all cols within these two points
             cols = []

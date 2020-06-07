@@ -405,9 +405,9 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
     over saturated color chips or other issues.
 
     Inputs:
-    source_matrix      = an nrowsXncols matrix containing the avg red, green, and blue values for each color chip 
+    source_matrix      = an nrowsXncols matrix containing the avg red, green, and blue values for each color chip
                             of the source image
-    target_matrix      = an nrowsXncols matrix containing the avg red, green, and blue values for each color chip 
+    target_matrix      = an nrowsXncols matrix containing the avg red, green, and blue values for each color chip
                             of the target image
     num_chips          = number of color card chips included in the matrices (integer)
 

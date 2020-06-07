@@ -62,5 +62,5 @@ def background_subtraction(background_image, foreground_image):
         print_image(fgmask, os.path.join(params.debug_outdir, str(params.device) + "_background_subtraction.png"))
     elif params.debug == "plot":
         plot_image(fgmask, cmap="gray")
-    
+
     return fgmask

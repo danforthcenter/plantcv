@@ -4497,7 +4497,7 @@ def test_plantcv_roi_multi():
     # Test with debug = None
     pcv.params.debug = None
     rois1, roi_hierarchy1 = pcv.roi.multi(rgb_img, coord=(25, 120), radius=20, spacing=(10, 10), nrows=3, ncols=6)
-    # Assert the contours has 18 ROIs 
+    # Assert the contours has 18 ROIs
     assert len(rois1) == 18
 
 

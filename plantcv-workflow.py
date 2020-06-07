@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from __future__ import print_function
 import os
 import sys
 import argparse
@@ -107,8 +106,7 @@ def options():
             "value": "none"
         }
     }
-    parser = argparse.ArgumentParser(description='Parallel imaging processing with PlantCV.',
-                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser = argparse.ArgumentParser(description='Parallel imaging processing with PlantCV.')
     parser.add_argument("-d", "--dir", help='Input directory containing images or snapshots.', required=True)
     parser.add_argument("-a", "--adaptor",
                         help='Image metadata reader adaptor. PhenoFront metadata is stored in a CSV file and the '

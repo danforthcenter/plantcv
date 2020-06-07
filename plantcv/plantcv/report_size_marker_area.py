@@ -118,7 +118,7 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
 
     # Reset debug mode
     params.debug = debug
-    
+
     if params.debug == 'print':
         print_image(ref_img, os.path.join(params.debug_outdir, str(params.device) + '_marker_shape.png'))
     elif params.debug == 'plot':

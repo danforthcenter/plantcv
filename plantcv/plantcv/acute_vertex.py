@@ -59,10 +59,10 @@ def acute_vertex(img, obj, win, thresh, sep):
             dot = -1
         ang = math.degrees(math.acos(dot))
         chain.append(ang)
-        
+
     # Select points in contour that have an angle more acute than thresh
     index = []
-    for c in range(len(chain)):         
+    for c in range(len(chain)):
         if float(chain[c]) <= thresh:
             index.append(c)
     # There oftentimes several points around tips with acute angles
@@ -83,7 +83,7 @@ def acute_vertex(img, obj, win, thresh, sep):
             # print str(t)
             out.append(t)
             tester = []
-        
+
     # Store the points in the variable acute
     acute = obj[[out]]
     acute_points = []

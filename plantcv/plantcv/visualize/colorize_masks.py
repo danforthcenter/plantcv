@@ -45,7 +45,7 @@ def colorize_masks(masks, colors):
                   'pink': (204, 192, 255), 'dark yellow': (0, 205, 255), 'green': (0, 255, 0)}
 
     ix, iy = np.shape(masks[0])
-    colored_img = np.zeros((ix,iy,3), dtype=np.uint8)
+    colored_img = np.zeros((ix, iy, 3), dtype=np.uint8)
     # Assign pixels to the selected color
 
     for i in range(0, len(masks)):

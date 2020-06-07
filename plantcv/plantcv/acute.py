@@ -42,7 +42,7 @@ def acute(obj, mask, win, thresh):
         for r in range(len(obj)):                      # Reverse can to obtain point A
             rev = k - r
             pos = obj[rev]
-            dist_2 = np.sqrt(np.square(pos[0][0]-vert[0][0])+np.square(pos[0][1]-vert[0][1]))   
+            dist_2 = np.sqrt(np.square(pos[0][0]-vert[0][0])+np.square(pos[0][1]-vert[0][1]))
             if r >= 2:
                 if (dist_2 > dist_1) & (dist_2 <= win):  # Further from vertex than current pt A while within window?
                     dist_1 = dist_2
@@ -50,14 +50,14 @@ def acute(obj, mask, win, thresh):
                 elif dist_2 > win:
                     break
             else:
-                ptA = pos          
+                ptA = pos
         dist_1 = 0
         for f in range(len(obj)):                      # Forward scan to obtain point B
             fwd = k + f
             if fwd >= len(obj):
                 fwd -= len(obj)
             pos = obj[fwd]
-            dist_2 = np.sqrt(np.square(pos[0][0]-vert[0][0])+np.square(pos[0][1]-vert[0][1]))   
+            dist_2 = np.sqrt(np.square(pos[0][0]-vert[0][0])+np.square(pos[0][1]-vert[0][1]))
             if f >= 2:
                 if (dist_2 > dist_1) & (dist_2 <= win):  # Further from vertex than current pt B while within window?
                     dist_1 = dist_2
@@ -92,7 +92,7 @@ def acute(obj, mask, win, thresh):
     float(len(acute_pos)) / float(len(obj))  # Proportion of informative positions
 
     if len(index) != 0:
-        
+
         isle = []
         island = []
 
@@ -150,7 +150,7 @@ def acute(obj, mask, win, thresh):
                 vals = []
             else:
                 ptvals.append('NaN')        # If no values can be retrieved (small/collapsed contours)
-                vals = [] 
+                vals = []
 
             # Identify pixel coordinate to use as pseudolandmark for island
             if len(isle[x]) == 1:           # If landmark is a single point (store position)
@@ -164,7 +164,7 @@ def acute(obj, mask, win, thresh):
                 ptB = chain[isle[x][1]]
                 if ptA < ptB:
                     pt = isle[x][0]             # Store point A if more acute
-                    max_dist.append([isle[x][0], '-', chain[isle[x][0]]])  
+                    max_dist.append([isle[x][0], '-', chain[isle[x][0]]])
                 elif ptA > ptB:
                     pt = isle[x][1]             # Store point B if more acute
                     max_dist.append([isle[x][1], '-', chain[isle[x][1]]])

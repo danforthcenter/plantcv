@@ -7,7 +7,7 @@ from plantcv.plantcv import fatal_error
 # Process results. Parse individual image output files.
 ###########################################
 def process_results(job_dir, json_file):
-    """Get results from individual files. Parse the results and recompile for SQLite.
+    """Get results from individual files and combine into final JSON file.
 
     Args:
         job_dir:              Intermediate file output directory.
@@ -49,5 +49,3 @@ def process_results(job_dir, json_file):
     # Write out json file with info from all images
     with open(json_file, 'w') as datafile:
         json.dump(data, datafile)
-
-###########################################

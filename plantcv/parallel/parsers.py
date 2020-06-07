@@ -5,8 +5,8 @@ import datetime
 
 # Parse metadata from filenames in a directory
 ###########################################
-def metadata_parser(data_dir, meta_fields, valid_meta, meta_filters, date_format, 
-                    start_date, end_date, error_log, delimiter="_", file_type="png", coprocess=None):
+def metadata_parser(data_dir, meta_fields, valid_meta, meta_filters, date_format, start_date, end_date, error_log,
+                    delimiter="_", file_type="png", coprocess=None):
     """Reads metadata the input data directory.
 
     Args:
@@ -234,7 +234,7 @@ def check_date_range(start_date, end_date, img_time, date_format):
         timestamp = datetime.datetime.strptime(img_time, date_format)
     except ValueError as e:
         raise SystemExit(str(e) + '\n  --> Please specify the correct --timestampformat argument <--\n')
-    
+
     time_delta = timestamp - datetime.datetime(1970, 1, 1)
     unix_time = (time_delta.days * 24 * 3600) + time_delta.seconds
     # Does the image date-time fall outside or inside the included range
