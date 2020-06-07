@@ -23,6 +23,7 @@ def find_tips(skel_img, mask=None):
     tip_img   = Image with just tips, rest 0
 
     :param skel_img: numpy.ndarray
+    :param mask: numpy.ndarray
     :return tip_img: numpy.ndarray
     """
 

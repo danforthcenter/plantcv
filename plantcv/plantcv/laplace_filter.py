@@ -22,7 +22,7 @@ def laplace_filter(gray_img, ksize, scale):
     lp_filtered = laplacian filtered image
 
     :param gray_img: numpy.ndarray
-    :param kernel: int
+    :param ksize: int
     :param scale: int
     :return lp_filtered: numpy.ndarray
     """

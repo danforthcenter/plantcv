@@ -22,8 +22,8 @@ def gaussian_blur(img, ksize, sigma_x=0, sigma_y=None):
 
     :param img: numpy.ndarray
     :param ksize: tuple
-    :param sigmax: int
-    :param sigmay: str or int
+    :param sigma_x: int
+    :param sigma_y: str or int
     :return img_gblur: numpy.ndarray
     """
 

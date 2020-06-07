@@ -28,7 +28,7 @@ def auto_threshold_methods(gray_img, grid_img=True, object_type="light"):
     labeled_imgs = List of labeled plotting images
 
     :param gray_img: numpy.ndarray
-    :param original_img: bool
+    :param grid_img: bool
     :param object_type: str
     :return labeled_imgs: list
 

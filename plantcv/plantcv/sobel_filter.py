@@ -26,7 +26,6 @@ def sobel_filter(gray_img, dx, dy, ksize):
     :param dx: int
     :param dy: int
     :param ksize: int
-    :param scale: int
     :return sb_img: numpy.ndarray
     """
     params.device += 1

@@ -28,6 +28,7 @@ def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1, show_g
 
     :param img: numpy.ndarray
     :param roi_objects: list
+    :param roi_obj_hierarchy: numpy.ndarray
     :param nrow: int
     :param ncol: int
     :param show_grid: bool

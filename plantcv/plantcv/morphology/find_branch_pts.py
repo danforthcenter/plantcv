@@ -21,6 +21,7 @@ def find_branch_pts(skel_img, mask=None):
     branch_pts_img = Image with just branch points, rest 0
 
     :param skel_img: numpy.ndarray
+    :param mask: np.ndarray
     :return branch_pts_img: numpy.ndarray
     """
 

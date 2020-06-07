@@ -685,7 +685,7 @@ def saturation(rgb_img, threshold=255, channel = "any"):
     Returns:
     masked_img = A binary image with the saturated regions blacked out.
 
-    :param img: np.ndarray
+    :param rgb_img: np.ndarray
     :param threshold: int
     :param channel: str
     :return masked_img: np.ndarray

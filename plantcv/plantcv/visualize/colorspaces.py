@@ -22,10 +22,9 @@ def colorspaces(rgb_img, original_img=True):
     Returns:
     plotting_img = Plotting image containing the original image and L,A,B,H,S, and V colorspaces
 
-    :param segmented_img: numpy.ndarray
+    :param rgb_img: numpy.ndarray
     :param original_img: bool
     :return labeled_img: numpy.ndarray
-
     """
 
     if not len(np.shape(rgb_img)) == 3:

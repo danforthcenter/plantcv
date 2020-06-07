@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
-from plotnine import ggplot, aes, geom_line, scale_x_continuous
+from plotnine import ggplot, aes, geom_line
 from plantcv.plantcv.threshold import binary as binary_threshold
 
 
@@ -23,8 +23,8 @@ def analyze_thermal_values(thermal_array, mask, histplot=False):
     Returns:
     analysis_img = output image
 
-    :param array: numpy array
-    :param mask: numpy array
+    :param thermal_array: numpy.ndarray
+    :param mask: numpy.ndarray
     :param histplot: bool
     :return analysis_img: ggplot
     """

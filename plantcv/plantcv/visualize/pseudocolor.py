@@ -38,8 +38,8 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
     :param background: str
     :param min_value: numeric
     :param max_value: numeric
-    :param dpi: int
     :param axes: bool
+    :param colorbar: bool
     :param obj_padding: str, int
     :return pseudo_image: numpy.ndarray
     """

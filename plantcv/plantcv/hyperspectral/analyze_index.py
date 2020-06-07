@@ -25,7 +25,7 @@ def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=0, max_bi
     max_bin      = optional, maximum bin value ("auto" or user input maximum value)
 
 
-    :param array: __main__.Spectral_data
+    :param index_array: __main__.Spectral_data
     :param mask: numpy array
     :param histplot: bool
     :param bins: int
