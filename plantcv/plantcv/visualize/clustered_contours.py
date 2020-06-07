@@ -82,4 +82,3 @@ def clustered_contours(img, grouped_contour_indices, roi_objects, roi_obj_hierar
         plot_image(clustered_image)
 
     return clustered_image
-
