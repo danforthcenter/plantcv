@@ -53,7 +53,7 @@ def background_subtraction(background_image, foreground_image):
     bgsub = cv2.createBackgroundSubtractorMOG2()
     # Applying the background image to the background subtractor first.
     # Anything added after is subtracted from the previous iterations.
-    fgmask = bgsub.apply(bg_img)
+    _ = bgsub.apply(bg_img)
     # Applying the foreground image to the background subtractor (therefore removing the background)
     fgmask = bgsub.apply(fg_img)
 

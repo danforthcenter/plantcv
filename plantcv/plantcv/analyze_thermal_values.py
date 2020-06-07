@@ -54,9 +54,6 @@ def analyze_thermal_values(thermal_array, mask, histplot=False):
     pixels = cv2.countNonZero(mask1)
     hist_percent = [(p / float(pixels)) * 100 for p in hist_thermal]
 
-    masked = np.multiply(mask1, thermal_array)
-    nonzero = masked[np.nonzero(masked)]
-
     maxtemp = np.amax(masked_thermal)
     mintemp = np.amin(masked_thermal)
     avgtemp = np.average(masked_thermal)

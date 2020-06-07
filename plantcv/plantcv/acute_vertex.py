@@ -85,7 +85,6 @@ def acute_vertex(img, obj, win, thresh, sep):
             tester = []
         
     # Store the points in the variable acute
-    flag = 0
     acute = obj[[out]]
     acute_points = []
     for pt in acute:

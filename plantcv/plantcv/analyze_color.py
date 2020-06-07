@@ -76,7 +76,6 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
 
     # Create list of bin labels for 8-bit data
     binval = np.arange(0, 256)
-    bin_values = [l for l in binval]
 
     analysis_image = None
     # Create a dataframe of bin labels and histogram data

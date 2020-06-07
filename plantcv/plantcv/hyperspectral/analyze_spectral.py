@@ -59,8 +59,6 @@ def analyze_spectral(array, mask, histplot=True):
         new_min_per_band.append(min_per_band[i].astype(np.float))
 
     # Calculate reflectance statistics
-    max_reflectance = np.amax(wavelength_data)
-    min_reflectance = np.amin(wavelength_data)
     avg_reflectance = np.average(wavelength_data)
     std_reflectance = np.std(wavelength_data)
     median_reflectance = np.median(wavelength_data)

@@ -49,9 +49,6 @@ def histogram(gray_img, mask=None, bins=256, color='red', title=None):
 
     # Store histogram data
     hist_gray_data, hist_bins = np.histogram(masked, bins, (1, maxval))
-    hist_bins1 = hist_bins[:-1]
-    hist_bins2 = [l for l in hist_bins1]
-    hist_gray = [l for l in hist_gray_data]
     # make hist percentage for plotting
     pixels = cv2.countNonZero(masked)
     hist_percent = (hist_gray_data / float(pixels)) * 100
