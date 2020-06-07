@@ -1,7 +1,6 @@
 import os
 import random
 import shutil
-import errno
 from plantcv.plantcv import fatal_error
 
 def sample_images(source_path, dest_path, num=100):

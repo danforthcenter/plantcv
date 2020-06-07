@@ -1,7 +1,6 @@
 import os
 import re
 import datetime
-from dateutil.parser import parse as dt_parser
 
 # Parse metadata from filenames in a directory
 ###########################################

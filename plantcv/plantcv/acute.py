@@ -3,7 +3,7 @@
 import numpy as np
 import math
 import cv2
-from plantcv.plantcv import params
+
 
 def acute(obj, mask, win, thresh):
     """acute: identify landmark positions within a contour for morphometric analysis

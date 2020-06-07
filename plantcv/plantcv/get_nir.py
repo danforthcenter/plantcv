@@ -3,7 +3,6 @@
 import os
 import re
 import numpy as np
-from plantcv.plantcv import params
 
 
 def get_nir(path, filename):

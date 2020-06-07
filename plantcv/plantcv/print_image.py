@@ -1,5 +1,4 @@
 # Print image to file
-import sys
 import cv2
 import numpy
 import matplotlib
