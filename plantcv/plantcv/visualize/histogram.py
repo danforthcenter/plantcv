@@ -9,7 +9,6 @@ import pandas as pd
 from plotnine import ggplot, aes, geom_line, scale_x_continuous, labels
 
 
-
 def histogram(gray_img, mask=None, bins=256, color='red', title=None):
     """Plot a histogram using ggplot.
 
@@ -40,7 +39,7 @@ def histogram(gray_img, mask=None, bins=256, color='red', title=None):
     else:
         masked = gray_img
 
-    params.debug=debug
+    params.debug = debug
 
     if gray_img.dtype == 'uint16':
         maxval = 65536

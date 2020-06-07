@@ -30,9 +30,7 @@ def analyze_thermal_values(thermal_array, mask, histplot=False):
     """
     max_value = np.amax(thermal_array)
     # Calculate histogram
-    hist_thermal = [float(l[0]) for l in cv2.calcHist([np.float32(thermal_array)],
-                                                      [0], mask, [256],
-                                                      [0, max_value])]
+    hist_thermal = [float(i[0]) for i in cv2.calcHist([np.float32(thermal_array)], [0], mask, [256], [0, max_value])]
     bin_width = max_value / 256.
     b = 0
     bin_labels = [float(b)]

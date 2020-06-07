@@ -120,14 +120,14 @@ def x_axis_pseudolandmarks(img, obj, mask):
             s = cv2.moments(window)
             # Centroid (center of mass x, center of mass y)
             if largest - smallest > 3:
-                    if s['m00'] > 0.001:
-                        smx, smy = (s['m10'] / s['m00'], s['m01'] / s['m00'])
-                        x_centroids.append(int(smx))
-                        y_centroids.append(int(smy))
-                    if s['m00'] < 0.001:
-                        smx, smy = (s['m10'] / 0.001, s['m01'] / 0.001)
-                        x_centroids.append(int(smx))
-                        y_centroids.append(int(smy))
+                if s['m00'] > 0.001:
+                    smx, smy = (s['m10'] / s['m00'], s['m01'] / s['m00'])
+                    x_centroids.append(int(smx))
+                    y_centroids.append(int(smy))
+                if s['m00'] < 0.001:
+                    smx, smy = (s['m10'] / 0.001, s['m01'] / 0.001)
+                    x_centroids.append(int(smx))
+                    y_centroids.append(int(smy))
             else:
                 smx = (largest + smallest) / 2
                 smy = xval
@@ -204,10 +204,9 @@ def x_axis_pseudolandmarks(img, obj, mask):
             y = i[0, 1]
             cv2.circle(img2, (int(x), int(y)), params.line_thickness, (0, 79, 255), -1)
         if params.debug == 'plot':
-                plot_image(img2)
+            plot_image(img2)
         elif params.debug == 'print':
-                print_image(img2,
-                            os.path.join(params.debug_outdir, (str(params.device) + '_x_axis_pseudolandmarks.png')))
+            print_image(img2, os.path.join(params.debug_outdir, (str(params.device) + '_x_axis_pseudolandmarks.png')))
 
     # Store into global measurements
     for pt in top:

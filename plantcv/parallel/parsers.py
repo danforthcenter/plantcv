@@ -2,6 +2,7 @@ import os
 import re
 import datetime
 
+
 # Parse metadata from filenames in a directory
 ###########################################
 def metadata_parser(data_dir, meta_fields, valid_meta, meta_filters, date_format, 

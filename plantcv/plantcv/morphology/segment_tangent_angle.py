@@ -12,6 +12,7 @@ from plantcv.plantcv import find_objects
 from plantcv.plantcv import color_palette
 from plantcv.plantcv.morphology import _iterative_prune
 
+
 def _slope_to_intesect_angle(m1, m2):
     """ Calculate intersections angle (in degrees) from the slope of two lines
 

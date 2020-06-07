@@ -65,16 +65,14 @@ def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=0, max_bi
     if type(min_bin) is str and (min_bin.upper() == "AUTO"):
         b = float(round(observed_min, 8))  # If bin_min is auto then overwrite starting value
 
-
     # Print a warning if observed min/max outside user defined range
     if observed_max > maxval or observed_min < b:
         print("WARNING!!! The observed range of pixel values in your masked index provided is [" + str(observed_min) +
               ", " + str(observed_max) + "] but the user defined range of bins for pixel frequencies is [" + str(b) +
               ", " + str(maxval) + "]. Adjust min_bin and max_bin in order to avoid cutting off data being collected.")
 
-
     # Calculate histogram
-    hist_val = [float(l[0]) for l in cv2.calcHist([masked_array.astype(np.float32)], [0], None, [bins], [b, maxval])]
+    hist_val = [float(i[0]) for i in cv2.calcHist([masked_array.astype(np.float32)], [0], None, [bins], [b, maxval])]
     bin_width = (maxval - b) / float(bins)
     bin_labels = [float(b)]
     plotting_labels = [float(b)]
@@ -99,8 +97,8 @@ def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=0, max_bi
                     + scale_x_continuous(breaks=bin_labels, labels=plotting_labels))
         analysis_image = fig_hist
         if params.debug == 'print':
-            fig_hist.save(os.path.join(params.debug_outdir, str(params.device) +
-                                                            index_array.array_type + "hist.png"))
+            fig_hist.save(os.path.join(params.debug_outdir,
+                                       str(params.device) + index_array.array_type + "hist.png"))
         elif params.debug == 'plot':
             print(fig_hist)
 

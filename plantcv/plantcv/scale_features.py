@@ -66,7 +66,7 @@ def scale_features(obj, mask, points, line_position):
     bly_scaled = float(bly - ymin) / float(ymax - ymin)
     boundary_line_scaled = (blx_scaled, bly_scaled)
     # If debug is 'True' plot an image of the scaled points on a black background
-    if not params.debug == None:
+    if not params.debug is None:
         params.device += 1
         # Make a decent size blank image
         scaled_img = np.zeros((1500, 1500, 3), np.uint8)
