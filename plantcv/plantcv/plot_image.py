@@ -1,5 +1,4 @@
 # Plot image to screen
-import os
 import cv2
 import numpy
 import matplotlib

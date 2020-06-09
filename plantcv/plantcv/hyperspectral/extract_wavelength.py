@@ -13,14 +13,14 @@ def extract_wavelength(spectral_data, wavelength):
     """Find index of a target wavelength band in a hyperspectral data instance.
 
         Inputs:
-            spectral_array = Hyperspectral data instance
+            spectral_data  = Hyperspectral data instance
             wavelength     = Target wavelength value
 
         Returns:
             index_array    = Data instance of request wavelength band
 
-        :param spectral_array: __main__.Spectral_data
-        :param target: float
+        :param spectral_data: __main__.Spectral_data
+        :param wavelength: float
         :return index_array: __main__.Spectral_data
         """
     # Make a list of all keys which are the wavelengths

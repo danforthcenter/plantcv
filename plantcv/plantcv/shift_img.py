@@ -57,7 +57,7 @@ def shift_img(img, number, side="right"):
         fatal_error("side must be 'top', 'bottom', 'right', or 'left'")
 
     if len(np.shape(img)) == 2:
-        adjusted_img = adjusted_img[:,:,0]
+        adjusted_img = adjusted_img[:, :, 0]
     if params.debug == 'print':
         print_image(adjusted_img, os.path.join(params.debug_outdir, str(params.device) + "_shifted_img.png"))
     elif params.debug == 'plot':

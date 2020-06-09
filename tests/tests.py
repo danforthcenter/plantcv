@@ -265,7 +265,7 @@ def test_plantcv_parallel_metadata_parser_regex():
                                                       valid_meta=VALID_META, meta_filters=meta_filters,
                                                       date_format=date_format,
                                                       start_date=start_date, end_date=end_date, error_log=error_log,
-                                                      delimiter='(VIS)_(SV)_(\d+)_(z1)_(h1)_(g0)_(e82)_(\d+)',
+                                                      delimiter=r'(VIS)_(SV)_(\d+)_(z1)_(h1)_(g0)_(e82)_(\d+)',
                                                       file_type="jpg", coprocess=None)
     expected = {
         'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
@@ -297,12 +297,12 @@ def test_plantcv_parallel_metadata_parser_images_outside_daterange():
     meta_fields = {"imgtype": 0, "camera": 1, "frame": 2, "zoom": 3, "lifter": 4, "gain": 5, "exposure": 6,
                    "timestamp": 7}
     error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
+    regex = r"(NIR)_(SV)_(\d)_(z1)_(h1)_(g0)_(e65)_(\d{4}-\d{2}-\d{2} \d{2}_\d{2}_\d{2})"
     jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=meta_fields,
                                                       valid_meta=VALID_META, meta_filters=meta_filters,
                                                       date_format=date_format,
                                                       start_date=start_date, end_date=end_date, error_log=error_log,
-                                                      delimiter="(NIR)_(SV)_(\d)_(z1)_(h1)_(g0)_(e65)_(\d{4}-\d{2}-\d{2} \d{2}_\d{2}_\d{2})",
-                                                      file_type="jpg", coprocess=None)
+                                                      delimiter=regex, file_type="jpg", coprocess=None)
     assert meta == {}
 
 
@@ -773,7 +773,7 @@ def test_plantcv_analyze_bound_horizontal_neg_y():
     pcv.params.debug = "plot"
     _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=-1000)
     _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=0)
-    boundary_img1 = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=2056)
+    _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=2056)
     shutil.copyfile(os.path.join(TEST_DATA, "data_results.txt"), os.path.join(cache_dir, "data_results.txt"))
     pcv.print_results(os.path.join(cache_dir, "data_results.txt"))
     assert pcv.outputs.observations['height_above_reference']['value'] == 713
@@ -798,7 +798,7 @@ def test_plantcv_analyze_bound_vertical():
     _ = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=1000)
     # Test with debug = None
     pcv.params.debug = None
-    boundary_img1 = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=1000)
+    _ = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=1000)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert pcv.outputs.observations['width_left_reference']['value'] == 94
     pcv.outputs.clear()
@@ -816,7 +816,7 @@ def test_plantcv_analyze_bound_vertical_grayscale_image():
     object_contours = contours_npz['arr_0']
     # Test with a grayscale reference image and debug="plot"
     pcv.params.debug = "plot"
-    boundary_img1 = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=1000)
+    _ = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=1000)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert pcv.outputs.observations['width_left_reference']['value'] == 94
     pcv.outputs.clear()
@@ -834,7 +834,7 @@ def test_plantcv_analyze_bound_vertical_neg_x():
     object_contours = contours_npz['arr_0']
     # Test with debug="plot", line position that will trigger -x
     pcv.params.debug = "plot"
-    boundary_img1 = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=2454)
+    _ = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=2454)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert pcv.outputs.observations['width_left_reference']['value'] == 441
     pcv.outputs.clear()
@@ -852,7 +852,7 @@ def test_plantcv_analyze_bound_vertical_small_x():
     object_contours = contours_npz['arr_0']
     # Test with debug='plot', line position that will trigger -x, and two channel object
     pcv.params.debug = "plot"
-    boundary_img1 = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=1)
+    _ = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=1)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert pcv.outputs.observations['width_right_reference']['value'] == 441
     pcv.outputs.clear()
@@ -880,7 +880,7 @@ def test_plantcv_analyze_color():
 
     # Test with debug = None
     pcv.params.debug = None
-    imgs = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='rgb')
+    _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='rgb')
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert pcv.outputs.observations['hue_median']['value'] == 84.0
     pcv.outputs.clear()
@@ -927,7 +927,7 @@ def test_plantcv_analyze_nir():
     _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=True)
     # Test with debug = None
     pcv.params.debug = None
-    h_norm = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=True)
+    _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=True)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     result = len(pcv.outputs.observations['nir_frequencies']['value'])
     pcv.outputs.clear()
@@ -1127,10 +1127,8 @@ def test_plantcv_apply_mask_hyperspectral():
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     hyper_array = pcv.hyperspectral.read_data(filename=spectral_filename)
 
-    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     img = np.ones((2056, 2454))
     img_stacked = cv2.merge((img, img, img, img))
-    shape = np.shape(img_stacked)
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.apply_mask(img=img_stacked, mask=img, mask_color="black")
@@ -1408,7 +1406,6 @@ def test_plantcv_crop_hyperspectral():
     # Read in test data
     img = np.ones((2056, 2454))
     img_stacked = cv2.merge((img, img, img, img))
-    shape = np.shape(img_stacked)
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.crop(img=img_stacked, x=10, y=10, h=50, w=50)
@@ -1693,10 +1690,7 @@ def test_plantcv_find_objects():
     pcv.params.debug = None
     contours, hierarchy = pcv.find_objects(img=img, mask=mask)
     # Assert the correct number of contours are found
-    if cv2.__version__[0] == '2':
-        assert len(contours) == 2
-    else:
-        assert len(contours) == 2
+    assert len(contours) == 2
 
 
 def test_plantcv_find_objects_grayscale_input():
@@ -1711,10 +1705,7 @@ def test_plantcv_find_objects_grayscale_input():
     pcv.params.debug = "plot"
     contours, hierarchy = pcv.find_objects(img=img, mask=mask)
     # Assert the correct number of contours are found
-    if cv2.__version__[0] == '2':
-        assert len(contours) == 2
-    else:
-        assert len(contours) == 2
+    assert len(contours) == 2
 
 
 def test_plantcv_flip():
@@ -1824,12 +1815,12 @@ def test_plantcv_get_kernel_ellipse():
 
 def test_plantcv_get_kernel_bad_input_size():
     with pytest.raises(ValueError):
-        kernel = pcv.get_kernel(size=(1, 1), shape="ellipse")
+        _ = pcv.get_kernel(size=(1, 1), shape="ellipse")
 
 
 def test_plantcv_get_kernel_bad_input_shape():
     with pytest.raises(RuntimeError):
-        kernel = pcv.get_kernel(size=(3, 1), shape="square")
+        _ = pcv.get_kernel(size=(3, 1), shape="square")
 
 
 def test_plantcv_get_nir_sv():
@@ -2561,10 +2552,7 @@ def test_plantcv_report_size_marker_grayscale_input():
     pcv.params.debug = None
     images = pcv.report_size_marker_area(img=img, roi_contour=roi_contour, roi_hierarchy=roi_hierarchy, marker='define',
                                          objcolor='light', thresh_channel='s', thresh=120)
-    if cv2.__version__[0] == '2':
-        assert len(images) != 0
-    else:
-        assert len(images) != 0
+    assert len(images) != 0
 
 
 def test_plantcv_report_size_marker_bad_marker_input():
@@ -2968,10 +2956,7 @@ def test_plantcv_watershed_segmentation():
     pcv.params.debug = None
     _ = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
-    if cv2.__version__[0] == '2':
-        assert pcv.outputs.observations['estimated_object_count']['value'] > 9
-    else:
-        assert pcv.outputs.observations['estimated_object_count']['value'] > 9
+    assert pcv.outputs.observations['estimated_object_count']['value'] > 9
 
 
 def test_plantcv_white_balance_gray_16bit():
@@ -3225,10 +3210,7 @@ def test_plantcv_background_subtraction():
     fgmask = pcv.background_subtraction(background_image=bg_img, foreground_image=bg_img)
     truths.append(np.sum(fgmask) == 0)
     # All of these should be true for the function to pass testing.
-    if cv2.__version__[0] == '2':
-        assert (all(truths))
-    else:
-        assert (all(truths))
+    assert (all(truths))
 
 
 def test_plantcv_background_subtraction_debug():
@@ -3344,7 +3326,7 @@ def test_plantcv_morphology_segment_curvature():
     _ = pcv.morphology.segment_curvature(segmented_img, seg_objects)
     pcv.params.debug = "plot"
     pcv.outputs.clear()
-    curvature_img = pcv.morphology.segment_curvature(segmented_img, seg_objects)
+    _ = pcv.morphology.segment_curvature(segmented_img, seg_objects)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert len(pcv.outputs.observations['segment_curvature']['value']) == 22
     pcv.outputs.clear()
@@ -3361,7 +3343,7 @@ def test_plantcv_morphology_check_cycles():
     pcv.params.debug = "plot"
     _ = pcv.morphology.check_cycles(mask)
     pcv.params.debug = None
-    cycle_img = pcv.morphology.check_cycles(mask)
+    _ = pcv.morphology.check_cycles(mask)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert pcv.outputs.observations['num_cycles']['value'] == 1
     pcv.outputs.clear()
@@ -3458,7 +3440,7 @@ def test_plantcv_morphology_segment_angle():
     segmented_img, segment_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
     _ = pcv.morphology.segment_angle(segmented_img=segmented_img, objects=segment_objects)
     pcv.params.debug = "plot"
-    angle_img = pcv.morphology.segment_angle(segmented_img, segment_objects)
+    _ = pcv.morphology.segment_angle(segmented_img, segment_objects)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert len(pcv.outputs.observations['segment_angle']['value']) == 22
     pcv.outputs.clear()
@@ -3472,7 +3454,7 @@ def test_plantcv_morphology_segment_angle_overflow():
     pcv.params.debug_outdir = cache_dir
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
     segmented_img, segment_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
-    angle_img = pcv.morphology.segment_angle(segmented_img, segment_objects)
+    _ = pcv.morphology.segment_angle(segmented_img, segment_objects)
     assert len(pcv.outputs.observations['segment_angle']['value']) == 73
     pcv.outputs.clear()
 
@@ -3487,7 +3469,7 @@ def test_plantcv_morphology_segment_euclidean_length():
     segmented_img, segment_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
     _ = pcv.morphology.segment_euclidean_length(segmented_img, segment_objects)
     pcv.params.debug = "plot"
-    length_img = pcv.morphology.segment_euclidean_length(segmented_img, segment_objects)
+    _ = pcv.morphology.segment_euclidean_length(segmented_img, segment_objects)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert len(pcv.outputs.observations['segment_eu_length']['value']) == 22
     pcv.outputs.clear()
@@ -3512,7 +3494,7 @@ def test_plantcv_morphology_segment_path_length():
     segmented_img, segment_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
     _ = pcv.morphology.segment_path_length(segmented_img, segment_objects)
     pcv.params.debug = "plot"
-    length_img = pcv.morphology.segment_path_length(segmented_img, segment_objects)
+    _ = pcv.morphology.segment_path_length(segmented_img, segment_objects)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert len(pcv.outputs.observations['segment_path_length']['value']) == 22
     pcv.outputs.clear()
@@ -3531,7 +3513,8 @@ def test_plantcv_morphology_skeletonize():
     _ = pcv.morphology.skeletonize(mask=mask)
     pcv.params.debug = None
     skeleton = pcv.morphology.skeletonize(mask=mask)
-    assert (skeleton == input_skeleton).all()
+    arr = np.array(skeleton == input_skeleton)
+    assert arr.all()
 
 
 def test_plantcv_morphology_segment_sort():
@@ -3559,7 +3542,7 @@ def test_plantcv_morphology_segment_tangent_angle():
     pcv.params.debug = "print"
     _ = pcv.morphology.segment_tangent_angle(skel, objs, 2)
     pcv.params.debug = "plot"
-    intersection_angles = pcv.morphology.segment_tangent_angle(skel, objs, 2)
+    _ = pcv.morphology.segment_tangent_angle(skel, objs, 2)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert len(pcv.outputs.observations['segment_tangent_angle']['value']) == 73
     pcv.outputs.clear()
@@ -3592,7 +3575,7 @@ def test_plantcv_morphology_segment_insertion_angle():
     pcv.params.debug = "plot"
     _ = pcv.morphology.segment_insertion_angle(pruned, segmented_img, leaf_obj, stem_obj, 3)
     pcv.params.debug = "print"
-    insert_angles = pcv.morphology.segment_insertion_angle(pruned, segmented_img, leaf_obj, stem_obj, 10)
+    _ = pcv.morphology.segment_insertion_angle(pruned, segmented_img, leaf_obj, stem_obj, 10)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert pcv.outputs.observations['segment_insertion_angle']['value'][:6] == ['NA', 'NA', 'NA', 24.97999120101794,
                                                                                 50.75442037373474,
@@ -4234,7 +4217,7 @@ def test_plantcv_hyperspectral_analyze_spectral():
     pcv.params.debug = "plot"
     _ = pcv.hyperspectral.analyze_spectral(array=array_data, mask=mask, histplot=True)
     pcv.params.debug = "print"
-    analysis_img = pcv.hyperspectral.analyze_spectral(array=array_data, mask=mask, histplot=True)
+    _ = pcv.hyperspectral.analyze_spectral(array=array_data, mask=mask, histplot=True)
     assert len(pcv.outputs.observations['spectral_frequencies']['value']) == 978
 
 
@@ -4817,10 +4800,10 @@ def test_plantcv_transform_correct_color():
     pcv.params.debug = None
     _, _, matrix_t, corrected_img = pcv.transform.correct_color(target_img, mask, source_img, mask, output_path)
     # assert source and corrected have same shape
-    assert np.array_equal(corrected_img, corrected_compare) and \
-           os.path.exists(os.path.join(output_path, "target_matrix.npz")) is True and \
-           os.path.exists(os.path.join(output_path, "source_matrix.npz")) is True and \
-           os.path.exists(os.path.join(output_path, "transformation_matrix.npz")) is True
+    assert all([np.array_equal(corrected_img, corrected_compare),
+                os.path.exists(os.path.join(output_path, "target_matrix.npz")) is True,
+                os.path.exists(os.path.join(output_path, "source_matrix.npz")) is True,
+                os.path.exists(os.path.join(output_path, "transformation_matrix.npz")) is True])
 
 
 def test_plantcv_transform_correct_color_output_dne():
@@ -4847,10 +4830,10 @@ def test_plantcv_transform_correct_color_output_dne():
     pcv.params.debug = None
     _, _, matrix_t, corrected_img = pcv.transform.correct_color(target_img, mask, source_img, mask, output_path)
     # assert source and corrected have same shape
-    assert np.array_equal(corrected_img, corrected_compare) and \
-           os.path.exists(os.path.join(output_path, "target_matrix.npz")) is True and \
-           os.path.exists(os.path.join(output_path, "source_matrix.npz")) is True and \
-           os.path.exists(os.path.join(output_path, "transformation_matrix.npz")) is True
+    assert all([np.array_equal(corrected_img, corrected_compare),
+                os.path.exists(os.path.join(output_path, "target_matrix.npz")) is True,
+                os.path.exists(os.path.join(output_path, "source_matrix.npz")) is True,
+                os.path.exists(os.path.join(output_path, "transformation_matrix.npz")) is True])
 
 
 def test_plantcv_transform_create_color_card_mask():
@@ -4948,6 +4931,37 @@ def test_plantcv_transform_find_color_card_optional_parameters():
     assert all([i == j] for i, j in zip(np.unique(mask), np.array([0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110,
                                                                    120, 130, 140, 150, 160, 170, 180, 190, 200, 210,
                                                                    220], dtype=np.uint8)))
+
+
+def test_plantcv_transform_find_color_card_optional_size_parameters():
+    # Load rgb image
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG_COLOR_CARD))
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_find_color_card")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    _, _, _ = pcv.transform.find_color_card(rgb_img=rgb_img, record_chip_size="mean")
+    assert pcv.outputs.observations["color_chip_size"]["value"] > 15000
+
+
+def test_plantcv_transform_find_color_card_optional_size_parameters_none():
+    pcv.outputs.observations.clear()
+    # Load rgb image
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG_COLOR_CARD))
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_find_color_card")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    _, _, _ = pcv.transform.find_color_card(rgb_img=rgb_img, record_chip_size=None)
+    assert pcv.outputs.observations.get("color_chip_size") is None
+
+
+def test_plantcv_transform_find_color_card_bad_record_chip_size():
+    # Load rgb image
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
+    pcv.params.debug = None
+    _, _, _ = pcv.transform.find_color_card(rgb_img=rgb_img, record_chip_size='averageeeed')
+    assert pcv.outputs.observations["color_chip_size"]["value"] is None
 
 
 def test_plantcv_transform_find_color_card_bad_thresh_input():

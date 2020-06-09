@@ -51,7 +51,6 @@ def _make_pseudo_rgb(spectral_array):
     default_bands = spectral_array.default_bands
     wl_keys = spectral_array.wavelength_dict.keys()
 
-
     if default_bands is not None:
         pseudo_rgb = cv2.merge((array_data[:, :, int(default_bands[0])],
                                 array_data[:, :, int(default_bands[1])],
@@ -107,7 +106,9 @@ def read_data(filename):
     # Initialize dictionary
     header_dict = {}
 
-    headername = filename + ".hdr"
+    # Remove any file extension and set .hdr filename
+    filename_base = os.path.splitext(filename)[0]
+    headername = filename_base + ".hdr"
 
     with open(headername, "r") as f:
         # Replace characters for easier parsing
@@ -164,7 +165,11 @@ def read_data(filename):
     max_pixel = float(np.amax(array_data))
     min_pixel = float(np.amin(array_data))
 
-    # Create an instance of the spectral_data class
+    wavelength_units = header_dict.get("wavelength units")
+    if wavelength_units is None:
+        wavelength_units = "nm"
+
+        # Create an instance of the spectral_data class
     spectral_array = Spectral_data(array_data=array_data,
                                    max_wavelength=float(str(header_dict["wavelength"][-1]).rstrip()),
                                    min_wavelength=float(str(header_dict["wavelength"][0]).rstrip()),
@@ -172,7 +177,7 @@ def read_data(filename):
                                    d_type=header_dict["data type"],
                                    wavelength_dict=wavelength_dict, samples=int(header_dict["samples"]),
                                    lines=int(header_dict["lines"]), interleave=header_dict["interleave"],
-                                   wavelength_units=header_dict["wavelength units"], array_type="datacube",
+                                   wavelength_units=wavelength_units, array_type="datacube",
                                    pseudo_rgb=None, filename=filename, default_bands=default_bands)
 
     # Make pseudo-rgb image and replace it inside the class instance object

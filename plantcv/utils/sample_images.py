@@ -1,16 +1,16 @@
 import os
 import random
 import shutil
-import errno
 from plantcv.plantcv import fatal_error
+
 
 def sample_images(source_path, dest_path, num=100):
     if not os.path.exists(source_path):
         raise IOError("Directory does not exist: {0}".format(source_path))
-      
+
     if not os.path.exists(dest_path):
-        os.makedirs(dest_path) #exist_ok argument does not exist in python 2
-  
+        os.makedirs(dest_path)  # exist_ok argument does not exist in python 2
+
     img_element_array = []
     sample_array = []
     num_images = []
@@ -59,7 +59,7 @@ def sample_images(source_path, dest_path, num=100):
                 if ext.lower() in img_extensions:
                     img_element_array.append(file)
 
-        # Check to make sure number of imgs to select is less than number of images found 
+        # Check to make sure number of imgs to select is less than number of images found
         if num > len(img_element_array):
             fatal_error("Number of images found less than 'num'.")
 
@@ -71,6 +71,6 @@ def sample_images(source_path, dest_path, num=100):
             sample_array.append(img_element_array[r])
             num_images.append(r)
 
-        # Copy images over to destination 
+        # Copy images over to destination
         for element in sample_array:
             shutil.copy(os.path.join(source_path, element), dest_path)

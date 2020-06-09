@@ -23,16 +23,17 @@ def find_tips(skel_img, mask=None):
     tip_img   = Image with just tips, rest 0
 
     :param skel_img: numpy.ndarray
+    :param mask: numpy.ndarray
     :return tip_img: numpy.ndarray
     """
 
     # In a kernel: 1 values line up with 255s, -1s line up with 0s, and 0s correspond to dont care
     endpoint1 = np.array([[-1, -1, -1],
-                          [-1,  1, -1],
-                          [ 0,  1,  0]])
+                          [-1, 1, -1],
+                          [0, 1,  0]])
     endpoint2 = np.array([[-1, -1, -1],
-                          [-1,  1,  0],
-                          [-1,  0,  1]])
+                          [-1, 1, 0],
+                          [-1, 0, 1]])
 
     endpoint3 = np.rot90(endpoint1)
     endpoint4 = np.rot90(endpoint2)

@@ -21,17 +21,18 @@ def find_branch_pts(skel_img, mask=None):
     branch_pts_img = Image with just branch points, rest 0
 
     :param skel_img: numpy.ndarray
+    :param mask: np.ndarray
     :return branch_pts_img: numpy.ndarray
     """
 
-    ### In a kernel: 1 values line up with 255s, -1s line up with 0s, and 0s correspond to don't care ###
+    # In a kernel: 1 values line up with 255s, -1s line up with 0s, and 0s correspond to don't care
     # T like branch points
-    t1 = np.array([[-1,  1, -1],
-                   [ 1,  1,  1],
+    t1 = np.array([[-1, 1, -1],
+                   [1, 1, 1],
                    [-1, -1, -1]])
-    t2 = np.array([[ 1, -1,  1],
-                   [-1,  1, -1],
-                   [ 1, -1, -1]])
+    t2 = np.array([[1, -1, 1],
+                   [-1, 1, -1],
+                   [1, -1, -1]])
     t3 = np.rot90(t1)
     t4 = np.rot90(t2)
     t5 = np.rot90(t3)
@@ -40,12 +41,12 @@ def find_branch_pts(skel_img, mask=None):
     t8 = np.rot90(t6)
 
     # Y like branch points
-    y1 = np.array([[ 1, -1,  1],
-                   [ 0,  1,  0],
-                   [ 0,  1,  0]])
-    y2 = np.array([[-1,  1, -1],
-                   [ 1,  1,  0],
-                   [-1,  0,  1]])
+    y1 = np.array([[1, -1, 1],
+                   [0, 1, 0],
+                   [0, 1, 0]])
+    y2 = np.array([[-1, 1, -1],
+                   [1, 1, 0],
+                   [-1, 0, 1]])
     y3 = np.rot90(y1)
     y4 = np.rot90(y2)
     y5 = np.rot90(y3)

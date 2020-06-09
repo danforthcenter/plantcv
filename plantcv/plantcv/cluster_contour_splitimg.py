@@ -54,9 +54,8 @@ def cluster_contour_splitimg(rgb_img, grouped_contour_indexes, contours, hierarc
         filebase = os.path.splitext(file)[0]
 
     if filenames is None:
-        l = len(grouped_contour_indexes)
         namelist = []
-        for x in range(0, l):
+        for x in range(0, len(grouped_contour_indexes)):
             namelist.append(x)
     else:
         with open(filenames, 'r') as n:

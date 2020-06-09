@@ -14,7 +14,6 @@ from scipy.spatial.distance import euclidean
 from plantcv.plantcv.morphology import find_tips
 
 
-
 def segment_euclidean_length(segmented_img, objects):
     """ Use segmented skeleton image to gather euclidean length measurements per segment
 
@@ -76,7 +75,7 @@ def segment_euclidean_length(segmented_img, objects):
         h = y_list[c]
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                     fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
-        segment_label = "ID" + str(c)
+        # segment_label = "ID" + str(c)
         segment_ids.append(c)
 
     outputs.add_observation(variable='segment_eu_length', trait='segment euclidean length',

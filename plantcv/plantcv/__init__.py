@@ -6,6 +6,7 @@ if "DISPLAY" not in os.environ and "MPLBACKEND" not in os.environ:
 
 observations = {}
 
+
 class Params:
     """PlantCV parameters class
     Keyword arguments/parameters:
@@ -51,18 +52,19 @@ class Outputs:
     def add_observation(self, variable, trait, method, scale, datatype, value, label):
         """
         Keyword arguments/parameters:
-        variable     = A local unique identifier of a variable, e.g. a short name, that is a key linking the definitions of
-                       variables with observations.
+        variable     = A local unique identifier of a variable, e.g. a short name,
+                       that is a key linking the definitions of variables with observations.
         trait        = A name of the trait mapped to an external ontology; if there is no exact mapping, an informative
                        description of the trait.
         method       = A name of the measurement method mapped to an external ontology; if there is no exact mapping, an
                        informative description of the measurement procedure
         scale        = Units of the measurement or scale in which the observations are expressed; if possible, standard
-                       units and scales should be used and mapped to existing ontologies; in the case of non-standard scale
-                       a full explanation should be given
+                       units and scales should be used and mapped to existing ontologies; in the case of non-standard
+                       scale a full explanation should be given
         datatype     = The type of data to be stored, e.g. 'int', 'float', 'str', 'list', etc.
         value        = The data itself
-        label        = The label for each value (most useful when the data is a frequency table as in hue, or other tables)
+        label        = The label for each value (most useful when the data is a frequency table as in hue,
+                       or other tables)
 
         :param variable: str
         :param trait: str
@@ -98,8 +100,8 @@ outputs = Outputs()
 
 class Spectral_data:
     # PlantCV Hyperspectral data class
-    def __init__(self, array_data, max_wavelength, min_wavelength, max_value, min_value, d_type, wavelength_dict, samples, lines, interleave,
-                 wavelength_units, array_type, pseudo_rgb, filename, default_bands):
+    def __init__(self, array_data, max_wavelength, min_wavelength, max_value, min_value, d_type, wavelength_dict,
+                 samples, lines, interleave, wavelength_units, array_type, pseudo_rgb, filename, default_bands):
         # The actual array/datacube
         self.array_data = array_data
         # Min/max available wavelengths (for spectral datacube)
@@ -140,7 +142,6 @@ from plantcv.plantcv.color_palette import color_palette
 from plantcv.plantcv.rgb2gray import rgb2gray
 from plantcv.plantcv.gaussian_blur import gaussian_blur
 from plantcv.plantcv import transform
-from plantcv.plantcv import Spectral_data
 from plantcv.plantcv import hyperspectral
 from plantcv.plantcv import spectral_index
 from plantcv.plantcv.apply_mask import apply_mask
@@ -201,7 +202,6 @@ from plantcv.plantcv.opening import opening
 from plantcv.plantcv.closing import closing
 from plantcv.plantcv import roi
 from plantcv.plantcv import threshold
-from plantcv.plantcv.canny_edge_detect import canny_edge_detect
 from plantcv.plantcv.cluster_contour_mask import cluster_contour_mask
 from plantcv.plantcv.analyze_thermal_values import analyze_thermal_values
 from plantcv.plantcv import visualize
@@ -214,7 +214,7 @@ from plantcv.plantcv.spatial_clustering import spatial_clustering
 
 # add new functions to end of lists
 
-__all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'apply_mask','gaussian_blur', 'transform',
+__all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'apply_mask', 'gaussian_blur', 'transform',
            'hyperspectral', 'readimage',
            'readbayer', 'laplace_filter', 'sobel_filter', 'scharr_filter', 'hist_equalization', 'erode',
            'image_add', 'image_subtract', 'dilate', 'watershed', 'rectangle_mask', 'rgb2gray_hsv', 'rgb2gray_lab',
@@ -229,6 +229,7 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'apply_m
            'cluster_contour_mask','analyze_thermal_values', 'opening',
            'closing','within_frame', 'fill_holes', 'get_kernel', 'Spectral_data', 'crop', 'stdev_filter',
            'spatial_clustering']
+
 
 from ._version import get_versions
 __version__ = get_versions()['version']

@@ -7,7 +7,7 @@ from plantcv.plantcv import fatal_error
 # Process results. Parse individual image output files.
 ###########################################
 def process_results(job_dir, json_file):
-    """Get results from individual files. Parse the results and recompile for SQLite.
+    """Get results from individual files and combine into final JSON file.
 
     Args:
         job_dir:              Intermediate file output directory.
@@ -29,7 +29,6 @@ def process_results(job_dir, json_file):
         # Data dictionary
         data = {"variables": {}, "entities": []}
 
-
     # Walk through the image processing job directory and process data from each file
     for (dirpath, dirnames, filenames) in os.walk(job_dir):
         for filename in filenames:
@@ -40,8 +39,8 @@ def process_results(job_dir, json_file):
                     obs = json.load(results)
                     data["entities"].append(obs)
                     # Keep track of all metadata variables stored
-                    for vars in obs["metadata"]:
-                        data["variables"][vars] = {"category": "metadata", "datatype": "<class 'str'>"}
+                    for var in obs["metadata"]:
+                        data["variables"][var] = {"category": "metadata", "datatype": "<class 'str'>"}
                     # Keep track of all observations variables stored
                     for othervars in obs["observations"]:
                         data["variables"][othervars] = {"category": "observations",
@@ -50,5 +49,3 @@ def process_results(job_dir, json_file):
     # Write out json file with info from all images
     with open(json_file, 'w') as datafile:
         json.dump(data, datafile)
-
-###########################################
