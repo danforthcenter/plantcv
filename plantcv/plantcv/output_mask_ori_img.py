@@ -94,6 +94,6 @@ def output_mask(img, mask, filename, outdir=None, mask_only=False):
         if params.debug == 'print':
             print_image(mask, os.path.join(params.debug_outdir, str(params.device) + '_mask-img.png'))
         elif params.debug == 'plot':
-                plot_image(mask, cmap='gray')
+            plot_image(mask, cmap='gray')
 
         return maskpath, analysis_images

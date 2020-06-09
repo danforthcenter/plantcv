@@ -55,28 +55,27 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
     # Store histograms, plotting colors, and plotting labels
     histograms = {
         "b": {"label": "blue", "graph_color": "blue",
-              "hist": [float(l[0]) for l in cv2.calcHist([channels["b"]], [0], mask, [256], [0, 255])]},
+              "hist": [float(i[0]) for i in cv2.calcHist([channels["b"]], [0], mask, [256], [0, 255])]},
         "g": {"label": "green", "graph_color": "forestgreen",
-              "hist": [float(l[0]) for l in cv2.calcHist([channels["g"]], [0], mask, [256], [0, 255])]},
+              "hist": [float(i[0]) for i in cv2.calcHist([channels["g"]], [0], mask, [256], [0, 255])]},
         "r": {"label": "red", "graph_color": "red",
-              "hist": [float(l[0]) for l in cv2.calcHist([channels["r"]], [0], mask, [256], [0, 255])]},
+              "hist": [float(i[0]) for i in cv2.calcHist([channels["r"]], [0], mask, [256], [0, 255])]},
         "l": {"label": "lightness", "graph_color": "dimgray",
-              "hist": [float(l[0]) for l in cv2.calcHist([channels["l"]], [0], mask, [256], [0, 255])]},
+              "hist": [float(i[0]) for i in cv2.calcHist([channels["l"]], [0], mask, [256], [0, 255])]},
         "m": {"label": "green-magenta", "graph_color": "magenta",
-              "hist": [float(l[0]) for l in cv2.calcHist([channels["m"]], [0], mask, [256], [0, 255])]},
+              "hist": [float(i[0]) for i in cv2.calcHist([channels["m"]], [0], mask, [256], [0, 255])]},
         "y": {"label": "blue-yellow", "graph_color": "yellow",
-              "hist": [float(l[0]) for l in cv2.calcHist([channels["y"]], [0], mask, [256], [0, 255])]},
+              "hist": [float(i[0]) for i in cv2.calcHist([channels["y"]], [0], mask, [256], [0, 255])]},
         "h": {"label": "hue", "graph_color": "blueviolet",
-              "hist": [float(l[0]) for l in cv2.calcHist([channels["h"]], [0], mask, [256], [0, 255])]},
+              "hist": [float(i[0]) for i in cv2.calcHist([channels["h"]], [0], mask, [256], [0, 255])]},
         "s": {"label": "saturation", "graph_color": "cyan",
-              "hist": [float(l[0]) for l in cv2.calcHist([channels["s"]], [0], mask, [256], [0, 255])]},
+              "hist": [float(i[0]) for i in cv2.calcHist([channels["s"]], [0], mask, [256], [0, 255])]},
         "v": {"label": "value", "graph_color": "orange",
-              "hist": [float(l[0]) for l in cv2.calcHist([channels["v"]], [0], mask, [256], [0, 255])]}
+              "hist": [float(i[0]) for i in cv2.calcHist([channels["v"]], [0], mask, [256], [0, 255])]}
     }
 
     # Create list of bin labels for 8-bit data
     binval = np.arange(0, 256)
-    bin_values = [l for l in binval]
 
     analysis_image = None
     # Create a dataframe of bin labels and histogram data

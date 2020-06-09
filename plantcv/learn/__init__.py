@@ -7,4 +7,4 @@ if "DISPLAY" not in os.environ or "MPLBACKEND" not in os.environ:
 from plantcv.learn.naive_bayes import naive_bayes
 from plantcv.learn.naive_bayes import naive_bayes_multiclass
 
-__all__ = ["naive_bayes"]
+__all__ = ["naive_bayes", "naive_bayes_multiclass"]

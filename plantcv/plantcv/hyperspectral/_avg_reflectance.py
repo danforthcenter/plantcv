@@ -15,8 +15,8 @@ def _avg_reflectance(spectral_data, mask):
         Returns:
             idx            = Index
 
-        :param spectral_array: __main__.Spectral_data
-        :param mask: numpy array
+        :param spectral_data: __main__.Spectral_data
+        :param mask: numpy.ndarray
         :return spectral_array: __main__.Spectral_data
         """
     # Initialize list of average reflectance values

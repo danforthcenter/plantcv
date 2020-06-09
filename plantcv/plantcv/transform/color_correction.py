@@ -405,9 +405,9 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
     over saturated color chips or other issues.
 
     Inputs:
-    source_matrix      = an nrowsXncols matrix containing the avg red, green, and blue values for each color chip 
+    source_matrix      = an nrowsXncols matrix containing the avg red, green, and blue values for each color chip
                             of the source image
-    target_matrix      = an nrowsXncols matrix containing the avg red, green, and blue values for each color chip 
+    target_matrix      = an nrowsXncols matrix containing the avg red, green, and blue values for each color chip
                             of the target image
     num_chips          = number of color card chips included in the matrices (integer)
 
@@ -498,7 +498,7 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
     spacing        = Two element tuple of spacing between centers of chips
 
     :param rgb_img: numpy.ndarray
-    :param threshold: str
+    :param threshold_type: str
     :param threshvalue: int
     :param blurry: bool
     :param background: str
@@ -736,12 +736,11 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
         spacing = int(max(spacing_short, spacing_long))
         spacing = (spacing, spacing)
 
-
     if record_chip_size is not None:
         if record_chip_size.upper() == "MEDIAN":
-            chip_size = df.loc[:,"area"].median()
+            chip_size = df.loc[:, "area"].median()
         elif record_chip_size.upper() == "MEAN":
-            chip_size = df.loc[:,"area"].mean()
+            chip_size = df.loc[:, "area"].mean()
         else:
             print(str(record_chip_size) + " Is not a valid entry for record_chip_size." +
                   " Must be either 'mean', 'median', or None.")
@@ -750,6 +749,5 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
         outputs.add_observation(variable='color_chip_size', trait='size of color card chips identified',
                                 method='plantcv.plantcv.transform.find_color_card', scale='none',
                                 datatype=float, value=chip_size, label=str(record_chip_size))
-
 
     return df, start_coord, spacing

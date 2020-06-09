@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
-from plotnine import ggplot, aes, geom_line, scale_x_continuous
+from plotnine import ggplot, aes, geom_line
 from plantcv.plantcv.threshold import binary as binary_threshold
 
 
@@ -23,16 +23,14 @@ def analyze_thermal_values(thermal_array, mask, histplot=False):
     Returns:
     analysis_img = output image
 
-    :param array: numpy array
-    :param mask: numpy array
+    :param thermal_array: numpy.ndarray
+    :param mask: numpy.ndarray
     :param histplot: bool
     :return analysis_img: ggplot
     """
     max_value = np.amax(thermal_array)
     # Calculate histogram
-    hist_thermal = [float(l[0]) for l in cv2.calcHist([np.float32(thermal_array)],
-                                                      [0], mask, [256],
-                                                      [0, max_value])]
+    hist_thermal = [float(i[0]) for i in cv2.calcHist([np.float32(thermal_array)], [0], mask, [256], [0, max_value])]
     bin_width = max_value / 256.
     b = 0
     bin_labels = [float(b)]
@@ -53,9 +51,6 @@ def analyze_thermal_values(thermal_array, mask, histplot=False):
 
     pixels = cv2.countNonZero(mask1)
     hist_percent = [(p / float(pixels)) * 100 for p in hist_thermal]
-
-    masked = np.multiply(mask1, thermal_array)
-    nonzero = masked[np.nonzero(masked)]
 
     maxtemp = np.amax(masked_thermal)
     mintemp = np.amin(masked_thermal)
