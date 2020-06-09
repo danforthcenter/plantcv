@@ -33,7 +33,8 @@ def dilate(gray_img, ksize, i):
     dil_img = cv2.dilate(src=gray_img, kernel=kernel2, iterations=i)
     params.device += 1
     if params.debug == 'print':
-        print_image(dil_img, os.path.join(params.debug_outdir, str(params.device) + '_dil_image' + str(ksize) + '_itr' + str(i) + '.png'))
+        print_image(dil_img, os.path.join(params.debug_outdir,
+                                          str(params.device) + '_dil_image' + str(ksize) + '_itr' + str(i) + '.png'))
     elif params.debug == 'plot':
         plot_image(dil_img, cmap='gray')
     return dil_img

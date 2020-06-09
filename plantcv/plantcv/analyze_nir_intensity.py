@@ -51,7 +51,7 @@ def analyze_nir_intensity(gray_img, mask, bins=256, histplot=False):
     rgbimg = cv2.cvtColor(gray_img, cv2.COLOR_GRAY2BGR)
 
     # Calculate histogram
-    hist_nir = [float(l[0]) for l in cv2.calcHist([gray_img], [0], mask, [bins], [0, maxval])]
+    hist_nir = [float(i[0]) for i in cv2.calcHist([gray_img], [0], mask, [bins], [0, maxval])]
     # Create list of bin labels
     bin_width = maxval / float(bins)
     b = 0

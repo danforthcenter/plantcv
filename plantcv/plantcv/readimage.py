@@ -45,7 +45,7 @@ def readimage(filename, mode="native"):
         img = cv2.imread(filename, -1)
 
     # Default to drop alpha channel if user doesn't specify 'rgba'
-    if len(np.shape(img))==3 and np.shape(img)[2] == 4 and mode.upper() == "NATIVE":
+    if len(np.shape(img)) == 3 and np.shape(img)[2] == 4 and mode.upper() == "NATIVE":
         img = cv2.imread(filename)
 
     if img is None:

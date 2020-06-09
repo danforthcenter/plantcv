@@ -22,7 +22,7 @@ def stdev_filter(img, ksize, borders='nearest'):
     Returns:
     output         = Standard deviation values image
 
-    :param gray_img: numpy.ndarray
+    :param img: numpy.ndarray
     :param ksize: int
     :param borders: str
     :return output: numpy.ndarray

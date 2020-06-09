@@ -51,7 +51,7 @@ def prune(skel_img, size=0, mask=None):
     kept_segments = []
     removed_segments = []
 
-    if size>0:
+    if size > 0:
         # If size>0 then check for segments that are smaller than size pixels long
 
         # Sort through segments since we don't want to remove primary segments

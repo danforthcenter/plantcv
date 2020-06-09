@@ -1,5 +1,4 @@
 # Print image to file
-import sys
 import cv2
 import numpy
 import matplotlib
@@ -33,5 +32,5 @@ def print_image(img, filename):
         img.save(filename)
 
     else:
-        fatal_error("Error writing file " + filename + ": input img is " + str(type(img))+ ", not a numpy.ndarray, " +
+        fatal_error("Error writing file " + filename + ": input img is " + str(type(img)) + ", not a numpy.ndarray, " +
                     "matplotlib.figure, or plotnine.ggplot and cannot get saved out with print_image.")

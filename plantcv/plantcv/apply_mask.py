@@ -21,7 +21,7 @@ def apply_mask(img, mask, mask_color):
     Returns:
     masked_img = masked image data
 
-    :param rgb_img: numpy.ndarray
+    :param img: numpy.ndarray
     :param mask: numpy.ndarray
     :param mask_color: str
     :return masked_img: numpy.ndarray

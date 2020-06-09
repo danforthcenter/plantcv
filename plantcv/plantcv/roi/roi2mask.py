@@ -17,7 +17,7 @@ def roi2mask(img, contour):
     Returns:
     mask   = Binary mask
 
-    :param roi_contour: numpy.ndarray
+    :param img: numpy.ndarray
     :param contour: list
     :return mask: numpy.ndarray
     """

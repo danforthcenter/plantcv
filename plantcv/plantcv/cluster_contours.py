@@ -28,6 +28,7 @@ def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1, show_g
 
     :param img: numpy.ndarray
     :param roi_objects: list
+    :param roi_obj_hierarchy: numpy.ndarray
     :param nrow: int
     :param ncol: int
     :param show_grid: bool
@@ -139,9 +140,9 @@ def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1, show_g
                 cv2.line(img_copy, (0, y), (ix, y), (255, 0, 0), params.line_thickness)
             for x in cbreaks:
                 cv2.line(img_copy, (x, 0), (x, iy), (255, 0, 0), params.line_thickness)
-        if params.debug=='print':
+        if params.debug == 'print':
             print_image(img_copy, os.path.join(params.debug_outdir, str(params.device) + '_clusters.png'))
-        elif params.debug=='plot':
+        elif params.debug == 'plot':
             plot_image(img_copy)
 
     return grouped_contour_indexes, contours, roi_obj_hierarchy
