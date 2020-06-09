@@ -62,13 +62,12 @@ def calibrate(raw_data, white_reference, dark_reference):
                                pseudo_rgb=None, filename=None, default_bands=raw_data.default_bands)
 
     # Make pseudo-rgb image for the calibrated image
-    pseudo_rgb = _make_pseudo_rgb(spectral_array=calibrated)
-    calibrated.pseudo_rgb = pseudo_rgb
+    calibrated.pseudo_rgb = _make_pseudo_rgb(spectral_array=calibrated)
 
     if params.debug == "plot":
         # Gamma correct pseudo_rgb image
-        plot_image(pseudo_rgb)
+        plot_image(calibrated.pseudo_rgb)
     elif params.debug == "print":
-        print_image(pseudo_rgb, os.path.join(params.debug_outdir, str(params.device) + "_calibrated_rgb.png"))
+        print_image(calibrated.pseudo_rgb, os.path.join(params.debug_outdir, str(params.device) + "_calibrated_rgb.png"))
 
     return calibrated
