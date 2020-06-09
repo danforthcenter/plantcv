@@ -18,15 +18,13 @@ def options():
 # Functions
 def average_all_img(directory, outdir):
     allfiles = os.listdir(directory)
-    
     path = str(directory)
-    
     allpaths = []
-    
+
     for files in allfiles:
         p = path + str(files)
         allpaths.append(p)
-    
+
     img, path, filename = pcv.readimage(allpaths[0])
     n = len(allpaths)
 

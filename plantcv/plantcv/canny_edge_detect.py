@@ -11,7 +11,7 @@ import cv2
 import os
 
 
-def canny_edge_detect(img, mask = None, sigma=1.0, low_thresh=None, high_thresh=None, thickness=1,
+def canny_edge_detect(img, mask=None, sigma=1.0, low_thresh=None, high_thresh=None, thickness=1,
                       mask_color=None, use_quantiles=False):
     """Edge filter an image using the Canny algorithm.
 

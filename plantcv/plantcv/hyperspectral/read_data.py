@@ -51,7 +51,6 @@ def _make_pseudo_rgb(spectral_array):
     default_bands = spectral_array.default_bands
     wl_keys = spectral_array.wavelength_dict.keys()
 
-
     if default_bands is not None:
         pseudo_rgb = cv2.merge((array_data[:, :, int(default_bands[0])],
                                 array_data[:, :, int(default_bands[1])],

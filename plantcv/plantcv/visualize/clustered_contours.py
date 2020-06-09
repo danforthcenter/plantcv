@@ -38,11 +38,11 @@ def clustered_contours(img, grouped_contour_indices, roi_objects, roi_obj_hierar
     iy, ix = np.shape(img)[:2]
 
     # Gray input images need to get converted to RGB for plotting colors
-    if len(np.shape(img)) ==2:
+    if len(np.shape(img)) == 2:
         clustered_image = cv2.cvtColor(clustered_image, cv2.COLOR_GRAY2RGB)
 
     # Plot grid if nrow or ncol are changed from the default
-    if nrow>1 or ncol>1:
+    if nrow > 1 or ncol > 1:
         rbreaks = range(0, iy, int(np.rint(iy / nrow)))
         cbreaks = range(0, ix, int(np.rint(ix / ncol)))
         for y in rbreaks:
@@ -82,4 +82,3 @@ def clustered_contours(img, grouped_contour_indices, roi_objects, roi_obj_hierar
         plot_image(clustered_image)
 
     return clustered_image
-

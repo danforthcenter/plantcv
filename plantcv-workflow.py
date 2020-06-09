@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from __future__ import print_function
 import os
 import sys
 import argparse
@@ -107,8 +106,7 @@ def options():
             "value": "none"
         }
     }
-    parser = argparse.ArgumentParser(description='Parallel imaging processing with PlantCV.',
-                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser = argparse.ArgumentParser(description='Parallel imaging processing with PlantCV.')
     parser.add_argument("-d", "--dir", help='Input directory containing images or snapshots.', required=True)
     parser.add_argument("-a", "--adaptor",
                         help='Image metadata reader adaptor. PhenoFront metadata is stored in a CSV file and the '
@@ -132,7 +130,7 @@ def options():
                              'is excluded then the current date is assumed.',
                         required=False)
     parser.add_argument("-t", "--type", help='Image format type (extension).', default="png")
-    parser.add_argument("-l", "--delimiter", help='Image file name metadata delimiter character.' 
+    parser.add_argument("-l", "--delimiter", help='Image file name metadata delimiter character.'
                                                   'Alternatively, a regular expression for parsing filename metadata.',
                         default='_')
     parser.add_argument("-M", "--match",
@@ -144,7 +142,7 @@ def options():
                         help='Coprocess the specified imgtype with the imgtype specified in --match '
                              '(e.g. coprocess NIR images with VIS).',
                         default=None)
-    parser.add_argument("-s", "--timestampformat", 
+    parser.add_argument("-s", "--timestampformat",
                         help='a date format code compatible with strptime C library, '
                              'e.g. "%%Y-%%m-%%d %%H_%%M_%%S", except "%%" symbols must be escaped on Windows with "%%" '
                              'e.g. "%%%%Y-%%%%m-%%%%d %%%%H_%%%%M_%%%%S"'
@@ -272,7 +270,8 @@ def main():
     # Read image file names
     ###########################################
     jobcount, meta = pcvp.metadata_parser(data_dir=args.dir, meta_fields=args.fields, valid_meta=args.valid_meta,
-                                          meta_filters=args.imgtype, date_format=args.timestampformat, start_date=args.start_date, end_date=args.end_date,
+                                          meta_filters=args.imgtype, date_format=args.timestampformat,
+                                          start_date=args.start_date, end_date=args.end_date,
                                           error_log=error_log, delimiter=args.delimiter, file_type=args.type,
                                           coprocess=args.coprocess)
     ###########################################

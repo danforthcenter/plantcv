@@ -60,7 +60,7 @@ def landmark_reference_pt_dist(points_r, centroid_r, bline_r):
     hori_ave_c = np.mean(hori_dist_c)
     euc_ave_c = np.mean(euc_dist_c)
     ang_ave_c = np.mean(angles_c)
-  
+
     vert_dist_b = []
     hori_dist_b = []
     euc_dist_b = []
@@ -116,5 +116,3 @@ def landmark_reference_pt_dist(points_r, centroid_r, bline_r):
     outputs.add_observation(variable='ang_ave_b', trait='average angle between landmark point and baseline',
                             method='plantcv.plantcv.landmark_reference_pt_dist', scale='degrees', datatype=float,
                             value=ang_ave_b, label='degrees')
-
-
