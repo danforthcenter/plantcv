@@ -68,9 +68,9 @@ def spatial_clustering(mask, algorithm="OPTICS", min_cluster_size=5, max_distanc
                                                                   dict_of_colors[str(db.labels_[z])][1],
                                                                   dict_of_colors[str(db.labels_[z])][0])
 
-      image[zipped[z][0], zipped[z][1]] = (dict_of_colors[str(db.labels_[z])][2],
-                                           dict_of_colors[str(db.labels_[z])][1],
-                                           dict_of_colors[str(db.labels_[z])][0])
+        image[zipped[z][0], zipped[z][1]] = (dict_of_colors[str(db.labels_[z])][2],
+                                             dict_of_colors[str(db.labels_[z])][1],
+                                             dict_of_colors[str(db.labels_[z])][0])
     params.device += 1
 
     if params.debug == 'print':
