@@ -97,8 +97,8 @@ via pull request.
 - Q: How is PlantCV tested?
     - A: Unit tests are in the 'tests' directory
     in the root of the source tree.
-    We use the Travis Continuous Integration tool
-    to [monitor status](https://travis-ci.org/danforthcenter/plantcv)
+    We use GitHub Actions workflows
+    to [monitor status](https://github.com/danforthcenter/plantcv/actions)
     and test pull requests
     for breaking changes.
 - Q: Does PlantCV follow [Semantic Version Numbering](http://semver.org/)
