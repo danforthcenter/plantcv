@@ -36,6 +36,9 @@ def spatial_clustering(mask, algorithm="OPTICS", min_cluster_size=5, max_distanc
     :return sub_mask: list
     """
 
+    # Increment device counter
+    params.device += 1
+
     # Uppercase algorithm name
     al_upper = algorithm.upper()
 
@@ -50,6 +53,7 @@ def spatial_clustering(mask, algorithm="OPTICS", min_cluster_size=5, max_distanc
     if max_distance is None:
         max_distance = default_max_dist.get(al_upper)
 
+    # Get all x, y coordinates of white pixels in the mask
     x, y = np.where(mask == 255)
     zipped = np.column_stack((x, y))
 
@@ -60,27 +64,34 @@ def spatial_clustering(mask, algorithm="OPTICS", min_cluster_size=5, max_distanc
         scaled = StandardScaler().fit_transform(zipped)
         db = DBSCAN(eps=max_distance, min_samples=min_cluster_size, n_jobs=-1).fit(scaled)
 
-    n_clusters_ = len(set(db.labels_)) - (1 if -1 in db.labels_ else 0)
-    colors = color_palette(n_clusters_ + 1)
+    # Number of clusters
+    n_clusters = len(set(db.labels_)) - (1 if -1 in db.labels_ else 0)
+    # Create a color palette of n_clusters colors
+    colors = color_palette(n_clusters + 1)
+    # Initialize variables
     dict_of_colors = {}
     sub_mask = []
     h, w = mask.shape
+    # Colorized clusters image
     image = np.zeros((h, w, 3), np.uint8)
-    for y in range(0, n_clusters_):
+    # Index the label color for each cluster
+    for y in range(0, n_clusters):
         dict_of_colors[str(y)] = colors[y]
         sub_mask.append(np.zeros((h, w), np.uint8))
 
+    # Group -1 are points not assigned to a cluster
     dict_of_colors["-1"] = (255, 255, 255)
 
+    # Loop over labels/clusters
     for z in range(0, len(db.labels_)):
         if not db.labels_[z] == -1:
+            # Create a binary mask for each cluster
             sub_mask[db.labels_[z]][zipped[z][0], zipped[z][1]] = 255
 
+        # Add a cluster with a unique label color to the cluster image
         image[zipped[z][0], zipped[z][1]] = (dict_of_colors[str(db.labels_[z])][2],
                                              dict_of_colors[str(db.labels_[z])][1],
                                              dict_of_colors[str(db.labels_[z])][0])
-
-    params.device += 1
 
     if params.debug == 'print':
         print_image(image, "full_image_mask.png")
