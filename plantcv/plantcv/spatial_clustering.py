@@ -1,6 +1,6 @@
 # Segment objects into spatial based clusters within an image
 
-import cv2
+import os
 import numpy as np
 from sklearn.cluster import DBSCAN
 from sklearn.cluster import OPTICS
@@ -96,7 +96,7 @@ def spatial_clustering(mask, algorithm="OPTICS", min_cluster_size=5, max_distanc
                                                  dict_of_colors[str(db.labels_[z])][0])
 
     if params.debug == 'print':
-        print_image(clust_img, "full_image_mask.png")
+        print_image(clust_img, os.path.join(params.debug_outdir, f"{params.device}_{al_upper}_clusters.png"))
 
     elif params.debug == 'plot':
         plot_image(clust_img)
