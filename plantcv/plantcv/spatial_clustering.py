@@ -27,13 +27,15 @@ def spatial_clustering(mask, algorithm="OPTICS", min_cluster_size=5, max_distanc
                        of your picture.  (Default=0)
 
     Returns:
+    clust_img        = Output image with each cluster draw with a unique color.
+    clust_masks      = List of binary masks, one per cluster.
 
     :param mask: numpy.ndarray
     :param algorithm: str
     :param min_cluster_size: int
     :param max_distance: float
-    :return image: numpy.ndarray
-    :return sub_mask: list
+    :return clust_img: numpy.ndarray
+    :return clust_masks: list
     """
 
     # Increment device counter
@@ -70,14 +72,14 @@ def spatial_clustering(mask, algorithm="OPTICS", min_cluster_size=5, max_distanc
     colors = color_palette(n_clusters + 1)
     # Initialize variables
     dict_of_colors = {}
-    sub_mask = []
+    clust_masks = []
     h, w = mask.shape
     # Colorized clusters image
-    image = np.zeros((h, w, 3), np.uint8)
+    clust_img = np.zeros((h, w, 3), np.uint8)
     # Index the label color for each cluster
     for y in range(0, n_clusters):
         dict_of_colors[str(y)] = colors[y]
-        sub_mask.append(np.zeros((h, w), np.uint8))
+        clust_masks.append(np.zeros((h, w), np.uint8))
 
     # Group -1 are points not assigned to a cluster
     dict_of_colors["-1"] = (255, 255, 255)
@@ -86,17 +88,17 @@ def spatial_clustering(mask, algorithm="OPTICS", min_cluster_size=5, max_distanc
     for z in range(0, len(db.labels_)):
         if not db.labels_[z] == -1:
             # Create a binary mask for each cluster
-            sub_mask[db.labels_[z]][zipped[z][0], zipped[z][1]] = 255
+            clust_masks[db.labels_[z]][zipped[z][0], zipped[z][1]] = 255
 
         # Add a cluster with a unique label color to the cluster image
-        image[zipped[z][0], zipped[z][1]] = (dict_of_colors[str(db.labels_[z])][2],
-                                             dict_of_colors[str(db.labels_[z])][1],
-                                             dict_of_colors[str(db.labels_[z])][0])
+        clust_img[zipped[z][0], zipped[z][1]] = (dict_of_colors[str(db.labels_[z])][2],
+                                                 dict_of_colors[str(db.labels_[z])][1],
+                                                 dict_of_colors[str(db.labels_[z])][0])
 
     if params.debug == 'print':
-        print_image(image, "full_image_mask.png")
+        print_image(clust_img, "full_image_mask.png")
 
     elif params.debug == 'plot':
-        plot_image(image)
+        plot_image(clust_img)
 
-    return image, sub_mask
+    return clust_img, clust_masks
