@@ -50,7 +50,6 @@ def spatial_clustering(mask, algorithm="OPTICS", min_cluster_size=5, max_distanc
     if max_distance is None:
         max_distance = default_max_dist.get(al_upper)
 
-
     vis = np.copy(mask)
     backtorgb = cv2.cvtColor(vis, cv2.COLOR_GRAY2RGB)
     x, y = np.where(np.all(backtorgb == [255, 255, 255], axis=2))
@@ -73,10 +72,10 @@ def spatial_clustering(mask, algorithm="OPTICS", min_cluster_size=5, max_distanc
         dict_of_colors[str(y)] = colors[y]
         sub_mask.append(np.zeros((h, w), np.uint8))
 
-    dict_of_colors["-1"]=(255,255,255)
+    dict_of_colors["-1"] = (255, 255, 255)
 
     for z in range(0, len(db.labels_)):
-        if not db.labels_[z]==-1:
+        if not db.labels_[z] == -1:
             sub_mask[db.labels_[z]][zipped[z][0], zipped[z][1]] = 255
 
         image[zipped[z][0], zipped[z][1]] = (dict_of_colors[str(db.labels_[z])][2],
