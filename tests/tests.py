@@ -3257,9 +3257,9 @@ def test_plantcv_spatial_clustering_dbscan():
     pcv.params.debug_outdir = cache_dir
     img = cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_MULTI_MASK),-1)
     pcv.params.debug = "print"
-    _ = pcv.spatial_clustering(img, algorithm="DBSCAN", min_cluster_size=10, max_distance=0, njobs=2)
+    _ = pcv.spatial_clustering(img, algorithm="DBSCAN", min_cluster_size=10, max_distance=0)
     pcv.params.debug = "plot"
-    spmask = pcv.spatial_clustering(img, algorithm="DBSCAN", min_cluster_size=10, max_distance=0, njobs=2)
+    spmask = pcv.spatial_clustering(img, algorithm="DBSCAN", min_cluster_size=10, max_distance=0)
     assert len(spmask[1]) == 2
 
 def test_plantcv_spatial_clustering_optics():
@@ -3268,14 +3268,14 @@ def test_plantcv_spatial_clustering_optics():
     pcv.params.debug_outdir = cache_dir
     img = cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_MULTI_MASK),-1)
     pcv.params.debug = None
-    spmask = pcv.spatial_clustering(img, algorithm="OPTICS", min_cluster_size=100, max_distance=5000, njobs=2)
+    spmask = pcv.spatial_clustering(img, algorithm="OPTICS", min_cluster_size=100, max_distance=5000)
     assert len(spmask[1]) == 2
 
 def test_plantcv_spatial_clustering_badinput():
     img = cv2.imread(os.path.join(TEST_DATA,TEST_INPUT_MULTI_MASK),-1)
     pcv.params.debug = None
     with pytest.raises(NameError):
-        _ = pcv.spatial_clustering(img, algorithm="Hydra", min_cluster_size=5, max_distance=100, njobs=2)
+        _ = pcv.spatial_clustering(img, algorithm="Hydra", min_cluster_size=5, max_distance=100)
 
 # ##############################
 # Tests for the learn subpackage
