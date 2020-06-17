@@ -1,5 +1,5 @@
-# run: conda env create --file environment37.yml
-name: test-environment
+# run: conda env create --file environment.yml
+name: plantcv
 dependencies:
   - python=3.7
   - matplotlib>=1.5
@@ -8,13 +8,10 @@ dependencies:
   - python-dateutil
   - scipy
   - scikit-image
-  - pytest
+  - scikit-learn
   - plotnine
-  - coveralls
   - nb_conda
-  - pip
-  - pip:
-    - opencv-python<4, >=3.4
+  - opencv<4, >=3.4
 channels:
   - defaults
   - conda-forge

@@ -605,6 +605,7 @@ TEST_INPUT_FMAX = "FLUO_TV_max.png"
 TEST_INPUT_FMASK = "FLUO_TV_MASK.png"
 TEST_INPUT_GREENMAG = "input_green-magenta.jpg"
 TEST_INPUT_MULTI = "multi_ori_image.jpg"
+TEST_INPUT_MULTI_MASK = "multi_ori_mask.jpg"
 TEST_INPUT_MULTI_OBJECT = "roi_objects.npz"
 TEST_INPUT_MULTI_CONTOUR = "multi_contours.npz"
 TEST_INPUT_ClUSTER_CONTOUR = "clusters_i.npz"
@@ -3249,6 +3250,35 @@ def test_plantcv_background_subtraction_different_sizes():
     pcv.params.debug = None
     fgmask = pcv.background_subtraction(background_image=bg_img_resized, foreground_image=fg_img)
     assert np.sum(fgmask) > 0
+
+
+def test_plantcv_spatial_clustering_dbscan():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_spatial_clustering_dbscan")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI_MASK), -1)
+    pcv.params.debug = "print"
+    _ = pcv.spatial_clustering(img, algorithm="DBSCAN", min_cluster_size=10, max_distance=None)
+    pcv.params.debug = "plot"
+    spmask = pcv.spatial_clustering(img, algorithm="DBSCAN", min_cluster_size=10, max_distance=None)
+    assert len(spmask[1]) == 2
+
+
+def test_plantcv_spatial_clustering_optics():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_spatial_clustering_optics")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI_MASK), -1)
+    pcv.params.debug = None
+    spmask = pcv.spatial_clustering(img, algorithm="OPTICS", min_cluster_size=100, max_distance=5000)
+    assert len(spmask[1]) == 2
+
+
+def test_plantcv_spatial_clustering_badinput():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI_MASK), -1)
+    pcv.params.debug = None
+    with pytest.raises(NameError):
+        _ = pcv.spatial_clustering(img, algorithm="Hydra", min_cluster_size=5, max_distance=100)
 
 
 # ##############################

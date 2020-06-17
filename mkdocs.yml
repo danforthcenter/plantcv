@@ -133,6 +133,7 @@ nav:
         - 'Convert ROI to Mask': roi2mask.md
       - 'Rotate': rotate2.md
       - 'Shift Image': shift.md
+      - 'Spatial Clustering': spatial_clustering.md
       - 'Spectral Index': spectral_index.md
       - 'Standard Deviation Filter': stdev_filter.md
       - 'Thresholding Methods':
