@@ -11,14 +11,14 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import color_palette
 
 
-def spatial_clustering(mask, algorithm="OPTICS", min_cluster_size=5, max_distance=None):
+def spatial_clustering(mask, algorithm="DBSCAN", min_cluster_size=5, max_distance=None):
     """Counts and segments portions of an image based on distance between two pixels.
     Masks showing all clusters, plus masks of individual clusters, are returned.
 
     Inputs:
     mask             = Mask/binary image to segment into clusters.
     algorithm        = Algorithm to use for segregating different clusters.
-                       Currently supporting OPTICS and DBSCAN. (Default="OPTICS")
+                       Currently supporting OPTICS and DBSCAN. (Default="DBSCAN")
     min_cluster_size = The minimum size a section of a mask must be (in pixels)
                        before it can be considered its own cluster. (Default=5)
     max_distance     = The total distance between two pixels for them to be considered a part
