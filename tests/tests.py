@@ -6321,7 +6321,7 @@ def test_plantcv_time_series_time_series():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     time_cond = ['08-05', '11-05', '17-05', '21-05']
-    savedir = pcv.time_seires.time_series_linking(TIME_SERIES_TEST_RAW, TIME_SERIES_TEST_INSTANCE_SEG, cache_dir, time_cond, link_logic=1, class_names=['BG', 'Leaf'])
+    savedir = pcv.time_series.time_series_linking(TIME_SERIES_TEST_RAW, TIME_SERIES_TEST_INSTANCE_SEG, cache_dir, time_cond, link_logic=1, class_names=['BG', 'Leaf'])
     assert len(os.listdir(savedir)) > 0
 
 def test_plantcv_visualize_overlay_two_imgs():
