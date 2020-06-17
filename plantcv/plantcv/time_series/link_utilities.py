@@ -190,6 +190,9 @@ class PlantData():
 
         # store all the images
         self.images = []
+
+        # minimum dimension of image. To link time series, all images must have the same dimension, to make it easier, we make the image square
+        self.min_dim = 0
         
         # store all the mask detection during [starttime, endtime]
         self.masks = []
@@ -207,8 +210,7 @@ class PlantData():
         self.imagedir     = imagedir
         self.segmentationdir = segmentationdir
         self.savedir      = os.path.join(savedir, str(datetime.datetime.now()))
-        if not os.path.exists(self.savedir):
-            os.makedirs(self.savedir)
+        os.makedirs(self.savedir)
         self.visualdir    = os.path.join(self.savedir, 'visualization')
 
         self.total_time    = 0
@@ -242,16 +244,16 @@ class PlantData():
     def getpath(self, path):
         self.dir = path 
         
-    def addimage(self): 
-        for t in self.time:
-            filename = os.path.join(self.dir, '10.9.1.241_pos-165-003-020_{}_crop-img11.jpg'.format(t))
-            image = skimage.io.imread(filename)
-            self.images.append(image)
+    # def addimage(self): 
+    #     for t in self.time:
+    #         filename = os.path.join(self.dir, '10.9.1.241_pos-165-003-020_{}_crop-img11.jpg'.format(t))
+    #         image = skimage.io.imread(filename)
+    #         self.images.append(image)
 
     def Sorttime(self, time_cond):
         """
-           you need to modify this function accordint to you format 
-           return: loop through the dataset_dir, and add time in time order 
+           This function is designed for files with file names which contain a "date-time" part, with an format of YYYY-MM-DD-HH-MM
+           Return: loop through the dataset_dir, and add time in time order 
         """
                         
         filenames = [f for f in os.listdir(self.segmentationdir) if f.endswith('.pkl')]        
@@ -274,11 +276,24 @@ class PlantData():
 
     def load_images(self):
         """ Load original images
+            Again this function is also designed for files with file names which contain a "date-time" part, with an format of YYYY-MM-DD-HH-MM
         """
+        filenames = [f for f in os.listdir(self.imagedir) if f.endswith('.jpg')]  
+        temp_imgs  = []
+        sz        = []
         for t in self.time:
-            file_name = '10.9.1.241_pos-165-003-020_{}_crop-img11.jpg'.format(t)
-            junk = skimage.io.imread(os.path.join(self.imagedir, file_name))
-            img = junk[0: 499, 0: 499, :] # make all images the same size
+            for f in filenames:
+                temp = re.search(t, f)
+                if temp:
+                    junk = skimage.io.imread(os.path.join(self.imagedir, f))
+                    temp_imgs.append(junk)
+                    sz.append(np.min(junk.shape[0:2]))
+                    # img  = junk[0: 499, 0: 499, :] # make all images the same size
+                    # self.images.append(img)
+                    filenames.remove(f)
+        self.min_dim = np.min(sz)
+        for junk in temp_imgs:
+            img = junk[0: self.min_dim, 0: self.min_dim, :] # make all images the same size
             self.images.append(img)
 
     def load_results(self):
@@ -287,7 +302,7 @@ class PlantData():
         for t in self.time:
             file_name = '{}.pkl'.format(t)
             r = pkl.load(open(os.path.join(self.segmentationdir, file_name), 'rb'))
-            self.masks.append(r["masks"][0: 499, 0: 499, :]) # make all masks the same size
+            self.masks.append(r["masks"][0: self.min_dim, 0: self.min_dim, :]) # make all masks the same size
             self.rois.append(r["rois"])
             self.class_ids.append(r['class_ids'])
             self.scores.append(r['scores'])
