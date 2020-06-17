@@ -34,7 +34,8 @@ def time_series_linking(imagedir, segmentationdir, savedir, time_cond, link_logi
         link_logic: 1: IoU (intersection over union), 2: Io1A (intersection over 1st area), default value: 1
         class_names: used in bounding box visualization. by default there are background and leaf
     Output:
-        There is no returned values as output, though the results will be saved in user defined "savedir"
+        There is only one return value as output, which is the directory where the results saved
+        The results will be saved under the user defined "savedir", in a subfolder whose name is date&time when the program runs
         1. colors.pkl: the colors (indicated by arrays) used in bounding box visualization. Without this predefined list of color, the assignment of color will be random. With this predefined color set, same color will represent for the same leaf all the time
         2. details.txt: the logic of linking as well as time condition will be shown, so that would be easier for users to check these parameters for the specific expreiment
         3. saved_plant.pkl: a "Plant" instance will be saved, with all the information included: time points, original images, instance segmentation masks, etc.
@@ -58,7 +59,7 @@ def time_series_linking(imagedir, segmentationdir, savedir, time_cond, link_logi
                 This set of visualization show results with bounding boxes. In every image, different leaves are show in bounding boxes with different colors. 
                 Naming format: YYYY-MM-DD-HH-MM_visual.png
     """
-    
+
     # initialize Plant class
     Plant = funcs.PlantData(imagedir, segmentationdir, savedir)
 
@@ -179,6 +180,8 @@ def time_series_linking(imagedir, segmentationdir, savedir, time_cond, link_logi
 
     # save all information
     pkl.dump(Plant, open(os.path.join(Plant.savedir, 'saved_plant.pkl'), 'wb'))
+
+    return Plant.savedir
 
 
 
