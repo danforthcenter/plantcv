@@ -77,7 +77,7 @@ def _make_pseudo_rgb(spectral_array):
                                     array_data[:, :, [id_red]]))
 
     # Gamma correct pseudo_rgb image
-    pseudo_rgb = pseudo_rgb ** (1 / 2.2)
+    # pseudo_rgb = pseudo_rgb ** (1 / 2.2)
     # Scale each of the channels up to 255
     debug = params.debug
     params.debug = None
