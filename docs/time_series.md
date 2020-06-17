@@ -17,7 +17,7 @@ To understand the growth of every leaf instance of a plant, we need pull out the
 - **Parameters:**
     - imagedir: directory of original image used
     - segmentationdir: directory of leaf instance segmentation result
-    - savedir: desired saving directory of linking result
+    - savedir: desired saving directory of linking result. Note that this function will generate a folder under your specified saving directory, with the date and time you run this programme
     - time_cond: condition of data used, indicated by list of times, e.g. time_cond = ["08-05", "15-05"] represents for including data collected at 8:05am and 3:05pm everyday in this experiment
     - link_logic: 1: IoU (intersection over union), 2: Io1A (intersection over 1st area), default value: 1
     - class_names: used in bounding box visualization. by default there are background and leaf
