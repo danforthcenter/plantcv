@@ -65,6 +65,8 @@ def time_series_linking(imagedir, segmentationdir, savedir, time_cond, link_logi
     Plant.getpath(Plant.imagedir)
     Plant.Sorttime(time_cond)
 
+    Plant.load_images()
+
     # load mrcnn inferencing results
     Plant.load_results()
     
