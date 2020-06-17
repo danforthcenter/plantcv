@@ -659,6 +659,9 @@ TEST_THERMAL_IMG_MASK = "thermal_img_mask.png"
 TEST_INPUT_THERMAL_CSV = "FLIR2600.csv"
 PIXEL_VALUES = "pixel_inspector_rgb_values.txt"
 
+TIME_SERIES_TEST_DIR          = os.path.join(os.path.dirname(os.path.abspath(__file__)), "seires_data")
+TIME_SERIES_TEST_RAW          = os.path.join(TIME_SERIES_TEST_DIR, "raw_im")
+TIME_SERIES_TEST_INSTANCE_SEG = os.path.join(TIME_SERIES_TEST_DIR, "instance_segmentation")
 
 # ##########################
 # Tests for the main package
@@ -4249,6 +4252,7 @@ def test_plantcv_hyperspectral_analyze_index_outside_range_warning():
         pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, min_bin=.5, max_bin=.55)
     out = f.getvalue()
     # assert os.listdir(cache_dir) is 0
+
     assert out[0:10] == 'WARNING!!!'
 
 
@@ -5533,6 +5537,14 @@ def test_plantcv_visualize_colorspaces_bad_input():
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.colorspaces(rgb_img=img)
 
+def test_plantcv_time_series_time_series():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_time_series")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    time_cond = ['08-05', '11-05', '17-05', '21-05']
+    savedir = pcv.time_seires.time_series_linking(TIME_SERIES_TEST_RAW, TIME_SERIES_TEST_INSTANCE_SEG, cache_dir, time_cond, link_logic=1, class_names=['BG', 'Leaf'])
+    assert len(os.listdir(savedir)) > 0
 
 # ##############################
 # Tests for the utils subpackage
