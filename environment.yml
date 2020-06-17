@@ -8,6 +8,7 @@ dependencies:
   - python-dateutil
   - scipy
   - scikit-image
+  - scikit-learn
   - plotnine
   - nb_conda
   - opencv<4, >=3.4
