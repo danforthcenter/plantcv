@@ -210,6 +210,7 @@ from plantcv.plantcv.fill_holes import fill_holes
 from plantcv.plantcv.get_kernel import get_kernel
 from plantcv.plantcv.crop import crop
 from plantcv.plantcv.stdev_filter import stdev_filter
+from plantcv.plantcv import time_series
 
 # add new functions to end of lists
 
