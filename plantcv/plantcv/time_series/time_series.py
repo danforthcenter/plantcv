@@ -20,7 +20,7 @@ import pickle as pkl
 import re
 from plantcv import plantcv as pcv
 import copy
-import link_utilities as funcs
+from plantcv.plantcv.time_series import link_utilities as funcs
 
 
 def time_series_linking(imagedir, segmentationdir, savedir, time_cond, link_logic=1, class_names=['BG', 'Leaf']):
