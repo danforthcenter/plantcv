@@ -47,6 +47,7 @@ def calibrate(raw_data, white_reference, dark_reference):
     # Reshape into hyperspectral datacube
     scalibrated = np.stack(output_calibrated, axis=2)
     calibrated_array = np.transpose(scalibrated[0], (1, 0, 2))
+    calibrated_array[np.where(calibrated_array < 0)] = 0
 
     # Find array min and max values
     max_pixel = float(np.amax(calibrated_array))
