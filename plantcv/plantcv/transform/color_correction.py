@@ -749,6 +749,8 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
             print(str(record_chip_size) + " Is not a valid entry for record_chip_size." +
                   " Must be either 'mean', 'median', or None.")
             chip_size = None
+            chip_height = None
+            chip_width = None
         # Store into global measurements
         outputs.add_observation(variable='color_chip_size', trait='size of color card chips identified',
                                 method='plantcv.plantcv.transform.find_color_card', scale='none',
