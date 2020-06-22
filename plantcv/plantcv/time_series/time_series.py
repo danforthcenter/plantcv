@@ -21,6 +21,7 @@ import re
 from plantcv import plantcv as pcv
 import copy
 from plantcv.plantcv.time_series import link_utilities as funcs
+# import link_utilities as funcs
 
 
 def time_series_linking(imagedir, segmentationdir, savedir, time_cond, link_logic=1, class_names=['BG', 'Leaf']):
@@ -34,8 +35,7 @@ def time_series_linking(imagedir, segmentationdir, savedir, time_cond, link_logi
         link_logic: 1: IoU (intersection over union), 2: Io1A (intersection over 1st area), default value: 1
         class_names: used in bounding box visualization. by default there are background and leaf
     Output:
-        There is only one return value as output, which is the directory where the results saved
-        The results will be saved under the user defined "savedir", in a subfolder whose name is date&time when the program runs
+        There is no returned values as output, though the results will be saved in user defined "savedir"
         1. colors.pkl: the colors (indicated by arrays) used in bounding box visualization. Without this predefined list of color, the assignment of color will be random. With this predefined color set, same color will represent for the same leaf all the time
         2. details.txt: the logic of linking as well as time condition will be shown, so that would be easier for users to check these parameters for the specific expreiment
         3. saved_plant.pkl: a "Plant" instance will be saved, with all the information included: time points, original images, instance segmentation masks, etc.
@@ -59,7 +59,7 @@ def time_series_linking(imagedir, segmentationdir, savedir, time_cond, link_logi
                 This set of visualization show results with bounding boxes. In every image, different leaves are show in bounding boxes with different colors. 
                 Naming format: YYYY-MM-DD-HH-MM_visual.png
     """
-
+    
     # initialize Plant class
     Plant = funcs.PlantData(imagedir, segmentationdir, savedir)
 
@@ -145,10 +145,8 @@ def time_series_linking(imagedir, segmentationdir, savedir, time_cond, link_logi
                     mask   = np.zeros(mask_t.shape, dtype=np.uint8)
                     mask[np.where(mask_t)] = 255
                     leaf_t = pcv.apply_mask(img, mask, mask_color='black')
-#                     pcv.print_image(leaf_t, os.path.join(path_visual1, '{}_{}_{}_{}.png'.format(start_time, start_idx, t, link_leaf[t])))
-#                     pkl.dump(leaf_t, open(os.path.join(path_visual1, '{}_{}_{}_{}.pkl'.format(start_time, start_idx, t, link_leaf[t])), 'wb'))
-                    pcv.print_image(leaf_t, os.path.join(path_visual1, '{}_{}_{}_{}_{}.png'.format(start_time, start_idx, link_leaf[t], t, Plant.time[t])))
-                    pkl.dump(leaf_t, open(os.path.join(path_visual1, '{}_{}_{}_{}_{}.pkl'.format(start_time, start_idx, link_leaf[t], t, Plant.time[t])), 'wb'))
+                    pcv.print_image(leaf_t, os.path.join(path_visual1, '{}_{}_{}_{}_{}.png'.format(start_time, start_idx, link_leaf[t], t, Plant.filename_pre[t])))
+                    pkl.dump(leaf_t, open(os.path.join(path_visual1, '{}_{}_{}_{}_{}.pkl'.format(start_time, start_idx, link_leaf[t], t, Plant.filename_pre[t])), 'wb'))
                     
 
                     ## 2. show with an alpha channel
@@ -163,14 +161,12 @@ def time_series_linking(imagedir, segmentationdir, savedir, time_cond, link_logi
                     ax2 = fig2.add_subplot(1,1,1)
                     ax2.imshow(masked_im)  
                     ax2.axis('off')
-#                     plt.savefig(os.path.join(save_dir_, 'time_{}.png'.format(t)))
-                    plt.savefig(os.path.join(save_dir_, str(Plant.time[t]) + '.png'))
+                    plt.savefig(os.path.join(save_dir_, str(Plant.filename_pre[t]) + '.png'))
                     plt.close(fig2)
-                    # pcv.print_image(masked_im, os.path.join(save_dir_, 'time_{}.png'.format(t)))
             count += 1
 
     ## 3. visualize with bounding boxes
-    for (img, mask, roi, class_id, score, color, t) in zip(Plant.images, Plant.masks, Plant.rois, Plant.class_ids, Plant.scores, color_all, Plant.time):
+    for (img, mask, roi, class_id, score, color, t) in zip(Plant.images, Plant.masks, Plant.rois, Plant.class_ids, Plant.scores, color_all, Plant.filename_pre):
         funcs.display_instances(img, roi, mask, class_id, 
                 class_names, score, ax=funcs.get_ax(rows=1, cols=1, size=16),show_bbox=True, show_mask=True,
                 colors = color)        
@@ -180,10 +176,5 @@ def time_series_linking(imagedir, segmentationdir, savedir, time_cond, link_logi
 
     # save all information
     pkl.dump(Plant, open(os.path.join(Plant.savedir, 'saved_plant.pkl'), 'wb'))
-
-    return Plant.savedir
-
-
-
-
-
+    
+    return Plant
