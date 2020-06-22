@@ -185,6 +185,8 @@ class PlantData():
         
         # store a list of time of the images
         self.time = []
+        # store a list of original prefixes of the original images
+        self.filename_pre = []
         # total num of leaves that being detected 
         self.numleaf = 0 
 
@@ -256,45 +258,56 @@ class PlantData():
            Return: loop through the dataset_dir, and add time in time order 
         """
                         
-        filenames = [f for f in os.listdir(self.segmentationdir) if f.endswith('.pkl')]        
+        filenames = [f for f in os.listdir(self.segmentationdir) if f.endswith('.pkl')]  
+        filenames_ori = [f for f in os.listdir(self.imagedir) if f.endswith('.jpg')]  
         time_temp = []
-        for x in filenames:
-            temp = re.search('\d{4}-\d{2}-\d{2}-\d{2}-\d{2}', x)
+        file_name = []
+        for filename in filenames:
+            temp = re.search('\d{4}-\d{2}-\d{2}-\d{2}-\d{2}', filename)
             if temp:
                 timepart = temp.group()
                 for cond in time_cond:
                     if timepart.endswith(cond):
                         time_temp.append(timepart)
+                        junk = [1 if re.search(timepart, f) is not None else 0 for f in filenames_ori]
+                        file_name.append(filenames_ori[junk.index(1)].replace('.jpg', ''))
                         continue
 
         index_temp = np.argsort(time_temp)
         # forward
         self.time = [time_temp[i] for i in index_temp]
-        # backward
-#         self.time_back = [time_temp[i] for i in reversed(index_temp)]
-
+        self.filename_pre = [file_name[i] for i in index_temp] 
 
     def load_images(self):
         """ Load original images
             Again this function is also designed for files with file names which contain a "date-time" part, with an format of YYYY-MM-DD-HH-MM
         """
-        filenames = [f for f in os.listdir(self.imagedir) if f.endswith('.jpg')]  
-        temp_imgs  = []
+#         filenames = [f for f in os.listdir(self.imagedir) if f.endswith('.jpg')]  
+#         temp_imgs  = []
+#         sz        = []
+#         for t in self.time:
+#             for f in filenames:
+#                 temp = re.search(t, f)
+#                 if temp:
+#                     junk = skimage.io.imread(os.path.join(self.imagedir, f))
+#                     temp_imgs.append(junk)
+#                     sz.append(np.min(junk.shape[0:2]))
+#                     filenames.remove(f)
+#         self.min_dim = np.min(sz)
+#         for junk in temp_imgs:
+#             img = junk[0: self.min_dim, 0: self.min_dim, :] # make all images the same size
+#             self.images.append(img)
+        temp_imgs  = []  
         sz        = []
-        for t in self.time:
-            for f in filenames:
-                temp = re.search(t, f)
-                if temp:
-                    junk = skimage.io.imread(os.path.join(self.imagedir, f))
-                    temp_imgs.append(junk)
-                    sz.append(np.min(junk.shape[0:2]))
-                    # img  = junk[0: 499, 0: 499, :] # make all images the same size
-                    # self.images.append(img)
-                    filenames.remove(f)
+        for pre in self.filename_pre:
+            filename = pre + '.jpg'
+            junk = skimage.io.imread(os.path.join(self.imagedir, filename))
+            temp_imgs.append(junk)
+            sz.append(np.min(junk.shape[0:2]))
         self.min_dim = np.min(sz)
         for junk in temp_imgs:
             img = junk[0: self.min_dim, 0: self.min_dim, :] # make all images the same size
-            self.images.append(img)
+            self.images.append(img)                                         
 
     def load_results(self):
         """ Instead of running instance segmentation, load instance segmentation results (masks)
