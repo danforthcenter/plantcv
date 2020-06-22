@@ -211,7 +211,7 @@ class PlantData():
         # store the dataset directory, instance segmentation result directory, time-series linking result directory and visualization directory
         self.imagedir     = imagedir
         self.segmentationdir = segmentationdir
-        self.savedir      = os.path.join(savedir, str(datetime.datetime.now()))
+        self.savedir      = os.path.join(savedir, str(datetime.datetime.now()).replace(' ', '_'))
         os.makedirs(self.savedir)
         self.visualdir    = os.path.join(self.savedir, 'visualization')
 
