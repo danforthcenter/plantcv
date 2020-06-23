@@ -210,7 +210,7 @@ To deploy a workflow over a full image set please see tutorial on [workflow para
 
 ## Creating Masks
 
-We have added functions to semi-automate the tasks of [detecting](find_color_card.md) and [creating a color card mask](transform_correct_color.md#create-a-labeled-color-card-mask).
+We have added functions to semi-automate the tasks of [detecting](find_color_card.md) and [creating a color card mask](create_color_card_mask.md).
 
 Or manually create a labeled mask as described below:
 
