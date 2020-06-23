@@ -94,8 +94,8 @@ If you are in debug mode "plot", a horizontally stacked comparison of the source
 
 ![Screenshot](img/documentation_images/color_correction_tutorial/hstack_chips.jpg)
 
-**4) Using either the returned transformation_matrix or [loading](transform_correct_color.md#load-matrix) the transformation_matrix from its directory,
-you may now [apply the matrix](transform_correct_color.md#apply-transformation-matrix) to congruent images.**
+**4) Using either the returned transformation_matrix or [loading](load_matrix.md) the transformation_matrix from its directory,
+you may now [apply the matrix](apply_transformation_matrix.md) to congruent images.**
 
 ```python
 # Inputs:
@@ -137,7 +137,7 @@ mask = cv2.imread("mask.png", -1) # mask must be read in "as-is" include -1
 
 ```
 
-**2) [Save](transform_correct_color.md#save-matrix) the target color matrix.**
+**2) [Save](save_matrix.md) the target color matrix.**
 
 ```python
 
@@ -165,7 +165,7 @@ source_headers, source_matrix = pcv.transform.get_color_matrix(rgb_img=source_im
 
 ```
 
-**4) Get the [Moore-Penrose Inverse Matrix](transform_correct_color.md#moore-penrose-inverse).**
+**4) Get the [Moore-Penrose Inverse Matrix](mp-inverse.md).**
 
 ```python
 
@@ -176,7 +176,7 @@ matrix_a, matrix_m, matrix_b = pcv.transform.get_matrix_m(target_matrix= target_
 
 ```
 
-**5) Calculate the [transformation matrix](transform_correct_color.md#transformation-matrix).**
+**5) Calculate the [transformation matrix](transformation_matrix.md).**
 
 ```python
 
@@ -191,7 +191,7 @@ deviance, transformation_matrix = pcv.transform.calc_transformation_matrix(matri
 
 ```
 
-**6) [Apply](transform_correct_color.md#apply-transformation-matrix) the transformation matrix.**
+**6) [Apply](apply_transformation_matrix.md) the transformation matrix.**
 
 ```python
 
@@ -210,7 +210,7 @@ To deploy a workflow over a full image set please see tutorial on [workflow para
 
 ## Creating Masks
 
-We have added functions to semi-automate the tasks of [detecting](transform_correct_color.md#automatically-find-a-color-card) and [creating a color card mask](transform_correct_color.md#create-a-labeled-color-card-mask).
+We have added functions to semi-automate the tasks of [detecting](find_color_card.md) and [creating a color card mask](transform_correct_color.md#create-a-labeled-color-card-mask).
 
 Or manually create a labeled mask as described below:
 
