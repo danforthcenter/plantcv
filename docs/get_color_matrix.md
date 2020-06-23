@@ -14,7 +14,9 @@ Computes the average *R*, *G*, *B* values for each region in the RGB image denot
     - color_matrix = a *n* x 4 matrix containing the average red value, average green value, and average blue value for each color chip.
     - headers      = a list of 4 headers corresponding to the 4 columns of color_matrix respectively
 
-
+- **Example use:**
+    - [Color Correction Tutorial](transform_color_correction_tutorial.md)
+    
 ```python
 
 from plantcv import plantcv as pcv

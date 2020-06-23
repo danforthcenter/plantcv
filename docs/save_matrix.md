@@ -10,6 +10,9 @@ Save a matrix from to '.npz' file.
     - matrix   = a numpy.matrix or numpy.ndarray
     - filename = name of file to which matrix will be saved. Must end in .npz
     
+- **Example use:**
+    - [Color Correction Tutorial](transform_color_correction_tutorial.md)
+    
 ```python
 
 from plantcv import plantcv as pcv
