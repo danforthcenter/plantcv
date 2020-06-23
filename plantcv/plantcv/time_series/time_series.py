@@ -145,8 +145,8 @@ def time_series_linking(imagedir, segmentationdir, savedir, time_cond, link_logi
                     mask   = np.zeros(mask_t.shape, dtype=np.uint8)
                     mask[np.where(mask_t)] = 255
                     leaf_t = pcv.apply_mask(img, mask, mask_color='black')
-                    pcv.print_image(leaf_t, os.path.join(path_visual1, '{}_{}_{}_{}_{}.png'.format(start_time, start_idx, link_leaf[t], t, Plant.filename_pre[t])))
-                    pkl.dump(leaf_t, open(os.path.join(path_visual1, '{}_{}_{}_{}_{}.pkl'.format(start_time, start_idx, link_leaf[t], t, Plant.filename_pre[t])), 'wb'))
+                    pcv.print_image(leaf_t, os.path.join(path_visual1, '{}_{}_{}_{}_{}.png'.format(start_time, start_idx, t, link_leaf[t], Plant.filename_pre[t])))
+                    pkl.dump(leaf_t, open(os.path.join(path_visual1, '{}_{}_{}_{}_{}.pkl'.format(start_time, start_idx, t, link_leaf[t], Plant.filename_pre[t])), 'wb'))
                     
 
                     ## 2. show with an alpha channel
