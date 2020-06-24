@@ -33,7 +33,8 @@ def time_series_linking(imagedir, segmentationdir, savedir, time_cond, link_logi
         savedir: desired saving directory of linking result
         time_cond: condition of data used, indicated by list of times, e.g. time_cond = ["08-05", "15-05"] represents for including data collected at 8:05am and 3:05pm everyday in this experiment
         link_logic: 1: IoU (intersection over union), 2: Io1A (intersection over 1st area), default value: 1
-        class_names: used in bounding box visualization. by default there are background and leaf
+        class_names: used in bounding box visualization. By default there are background and leaf
+        mode: either 'link' or 'load'. When creating a new linking, use in mode 'link', when trying to load from saved file, use in mode 'load'. By default the mode is 'link'.
     Output:
         An instance from "Plant" class would be returned, all the results will be saved in a folder with name of date and time when the function runs inside the user defined "savedir". Sample folder name: 2020-06-23-15-42 (a format of YYYY-MM-DD-HH-mm).
         1. colors.pkl: the colors (indicated by arrays) used in bounding box visualization. Without this predefined list of color, the assignment of color will be random. With this predefined color set, same color will represent for the same leaf all the time
