@@ -181,7 +181,7 @@ def _getmatchedIndex(mask, masks, mode):
 
     
 class PlantData():
-    def __init__(self, imagedir, segmentationdir, savedir):
+    def __init__(self, imagedir, segmentationdir, savedir, mode='link'):
         
         # store a list of time of the images
         self.time = []
@@ -209,17 +209,23 @@ class PlantData():
         self.scores = []
         
         # store the dataset directory, instance segmentation result directory, time-series linking result directory and visualization directory
-        self.imagedir     = imagedir
+        self.imagedir        = imagedir
         self.segmentationdir = segmentationdir
-        self.savedir      = os.path.join(savedir, str(datetime.datetime.now()).replace(' ', '_'))
-        os.makedirs(self.savedir)
-        self.visualdir    = os.path.join(self.savedir, 'visualization')
+        junk                 = datetime.datetime.now()
+        if mode == 'link':
+            subfolder            = '{}-{}-{}-{}-{}'.format(junk.year, str(junk.month).zfill(2), str(junk.day).zfill(2), str(junk.hour).zfill(2), str(junk.minute).zfill(2))
+            self.savedir         = os.path.join(savedir, subfolder)
+            os.makedirs(self.savedir)
+        else:
+            self.savedir = savedir
 
-        self.total_time    = 0
-        self.max_nleaf     = 0
-        self.init_nleaf    = 0
-        self.num_leaves    = []
-        self.num_emergence = 0
+        self.visualdir       = os.path.join(self.savedir, 'visualization')
+
+        self.total_time      = 0
+        self.max_nleaf       = 0
+        self.init_nleaf      = 0
+        self.num_leaves      = []
+        self.num_emergence   = 0
         
         self.emerging_info    = [] # list length: self.total_time
         self.link_info        = [] # list length: self.total_time-1, dictionaries inside
@@ -245,12 +251,6 @@ class PlantData():
         
     def getpath(self, path):
         self.dir = path 
-        
-    # def addimage(self): 
-    #     for t in self.time:
-    #         filename = os.path.join(self.dir, '10.9.1.241_pos-165-003-020_{}_crop-img11.jpg'.format(t))
-    #         image = skimage.io.imread(filename)
-    #         self.images.append(image)
 
     def Sorttime(self, time_cond):
         """
@@ -282,21 +282,6 @@ class PlantData():
         """ Load original images
             Again this function is also designed for files with file names which contain a "date-time" part, with an format of YYYY-MM-DD-HH-MM
         """
-#         filenames = [f for f in os.listdir(self.imagedir) if f.endswith('.jpg')]  
-#         temp_imgs  = []
-#         sz        = []
-#         for t in self.time:
-#             for f in filenames:
-#                 temp = re.search(t, f)
-#                 if temp:
-#                     junk = skimage.io.imread(os.path.join(self.imagedir, f))
-#                     temp_imgs.append(junk)
-#                     sz.append(np.min(junk.shape[0:2]))
-#                     filenames.remove(f)
-#         self.min_dim = np.min(sz)
-#         for junk in temp_imgs:
-#             img = junk[0: self.min_dim, 0: self.min_dim, :] # make all images the same size
-#             self.images.append(img)
         temp_imgs  = []  
         sz        = []
         for pre in self.filename_pre:
@@ -370,10 +355,14 @@ class PlantData():
         self.link_info[start_time] = link['forward']
                     
     def get_series(self):
+        ## define new leaves and their unique identifiers at time points with new leaves emerging
         t = 0
         key_t = 't{}'.format(t)
         self.link_series[key_t] = dict()
         self.link_series[key_t]['new_leaf'] = self.available_leaves[0]
+        #
+        self.link_series[key_t]['unique_id'] = self.link_series[key_t]['new_leaf']
+        unique_id = len(self.link_series[key_t]['new_leaf'])
             
         for t in range(1, self.total_time):
             new_leaves = [i for i in self.available_leaves[t] if i not in self.link_info[t-1]]
@@ -381,6 +370,22 @@ class PlantData():
                 key_t = 't{}'.format(t)
                 self.link_series[key_t] = dict()
                 self.link_series[key_t]['new_leaf'] = np.array(new_leaves)
+#                 if len(new_leaves) > 1:
+#                     id_temp = []
+#                     for new_leav in new_leaves:
+#                         id_temp.append(unique_id)
+#                         unique_id = unique_id + 1
+#                     self.link_series[key_t]['unique_id' = np.array(id_temp)
+#                 else:
+#                     self.link_series[key_t]['unique_id'] = np.array(unique_id)
+#                     unique_id = unique_id + 1
+                id_temp = []
+                for new_leaf in new_leaves:
+                    id_temp.append(unique_id)
+                    unique_id = unique_id + 1
+                self.link_series[key_t]['unique_id'] = np.array(id_temp)
+        
+        ## for time points with new leaves emerging, get the linking information for every new leaf    
         for key_t in self.link_series:
             t0 = int(key_t.replace('t',''))
             for leaf in self.link_series[key_t]['new_leaf']:
@@ -394,3 +399,4 @@ class PlantData():
                         break
                     else:
                         self.link_series[key_t][key_leaf][t_] = self.link_info[t_-1][idx]
+                        
