@@ -146,15 +146,18 @@ nav:
         - 'Triangle Auto Threshold': triangle_threshold.md
         - 'Texture Threshold': texture_threshold.md
       - 'Transformation Methods':
-          - 'Apply Transformation Matrix': apply_transformation_matrix.md
-          - 'Correct Color': transform_correct_color.md
-          - 'Get Color Matrix': get_color_matrix.md
-          - 'Nonuniform Illumination Correction': nonuniform_illumination.md
-          - 'Rescale': transform_rescale.md
+          - 'Auto-Detect Color Card': find_color_card.md
+          - 'Create Color Card Mask': create_color_card_mask.md
+          - 'Convert Color Card to Matrix': get_color_matrix.md
+          - 'Calculate Moore-Penrose Inverse Matrix': mp_inverse.md
+          - 'Create Color Correction Matrix': transformation_matrix.md
+          - 'Apply Color Correction Matrix': apply_transformation_matrix.md
+          - 'Color Correction Workflow': transform_correct_color.md
+          - 'Quick Color Check': quick_color_check.md
           - 'Load Matrix': load_matrix.md
           - 'Save Matrix': save_matrix.md
-          - 'Transformation Matrix': transformation_matrix.md
-          - 'Quick Color Check': quick_color_check.md
+          - 'Nonuniform Illumination Correction': nonuniform_illumination.md
+          - 'Rescale Image Values': transform_rescale.md
       - 'Visualization Methods':
           - 'Auto Threshold Methods': visualize_auto_threshold_methods.md
           - 'Clustered Contours': visualize_clustered_contours.md
