@@ -53,9 +53,9 @@ import numpy as np
 
 pcv.params.debug = "print" #set debug mode
 
-target_img = cv2.imread("target_img.png")
-source_img = cv2.imread("source1_img.png")
-mask = cv2.imread("test_mask.png", -1) # mask must be read in "as-is" include -1
+target_img, targetpath, targetname = pcv.readimage(filename="target_img.png")
+source_img, sourcepath, sourcename = pcv.readimage(filename="source1_img.png")
+mask, maskpath, maskname = pcv.readimage(filename="test_mask.png")
 #Since target_img and source_img have the same zoom and colorchecker position, 
 # the same mask can be used for both.
 
@@ -94,15 +94,15 @@ If you are in debug mode "plot", a horizontally stacked comparison of the source
 
 ![Screenshot](img/documentation_images/color_correction_tutorial/hstack_chips.jpg)
 
-**4) Using either the returned transformation_matrix or [loading](transform_correct_color.md#load-matrix) the transformation_matrix from its directory,
-you may now [apply the matrix](transform_correct_color.md#apply-transformation-matrix) to congruent images.**
+**4) Using either the returned transformation_matrix or [loading](load_matrix.md) the transformation_matrix from its directory,
+you may now [apply the matrix](apply_transformation_matrix.md) to congruent images.**
 
 ```python
 # Inputs:
 #   filename - .npz file to which a numpy.matrix or numpy.ndarray is saved
 transformation_matrix = pcv.transform.load_matrix(filename="./test1/transformation_matrix.npz") #load in transformation_matrix
 
-new_source = cv2.imread("VIS_SV_0_z1_h1_g0_e65_v500_376217_0.png") #read in new image for transformation
+new_source, newpath, newname = pcv.readimage(filename="VIS_SV_0_z1_h1_g0_e65_v500_376217_0.png") #read in new image for transformation
 
 #apply transformation
 
@@ -110,7 +110,7 @@ new_source = cv2.imread("VIS_SV_0_z1_h1_g0_e65_v500_376217_0.png") #read in new 
 #   source_img - an RGB image to be corrected to the target color space
 #   target_img - an RGB image with the target color space
 #   transformation_matrix - a 9x9 matrix of tranformation coefficients
-corrected_img = pcv.transform.apply_transformation_matrix(source_img= new_source, target_img= target_img, transformation_matrix= transformation_matrix)
+corrected_img = pcv.transform.apply_transformation_matrix(source_imgnew_source, target_img=target_img, transformation_matrix=transformation_matrix)
 
 ```
 
@@ -130,14 +130,14 @@ submodule. The target_matrix may be saved separately and referred to as needed f
 
 ```python
 
-target_img = cv2.imread("target_img.png")
-source_img = cv2.imread("source_img.png")
-mask = cv2.imread("mask.png", -1) # mask must be read in "as-is" include -1
+target_img, targetpath, targetname = pcv.readimage(filename="target_img.png")
+source_img, sourcepath, sourcename = pcv.readimage(filename="source_img.png")
+mask, maskpath, maskname = pcv.readimage(filename="mask.png")
 #Since target_img and source_img have the same zoom and colorchecker position, the same mask can be used for both. 
 
 ```
 
-**2) [Save](transform_correct_color.md#save-matrix) the target color matrix.**
+**2) [Save](save_matrix.md) the target color matrix.**
 
 ```python
 
@@ -165,18 +165,18 @@ source_headers, source_matrix = pcv.transform.get_color_matrix(rgb_img=source_im
 
 ```
 
-**4) Get the [Moore-Penrose Inverse Matrix](transform_correct_color.md#moore-penrose-inverse).**
+**4) Get the [Moore-Penrose Inverse Matrix](mp_inverse.md).**
 
 ```python
 
 # matrix_a is a matrix of average rgb values for each color ship in source_img, matrix_m is a moore-penrose inverse matrix,
 # matrix_b is a matrix of average rgb values for each color ship in source_img
 
-matrix_a, matrix_m, matrix_b = pcv.transform.get_matrix_m(target_matrix= target_matrix, source_matrix= source_matrix)
+matrix_a, matrix_m, matrix_b = pcv.transform.get_matrix_m(target_matrix=target_matrix, source_matrix=source_matrix)
 
 ```
 
-**5) Calculate the [transformation matrix](transform_correct_color.md#transformation-matrix).**
+**5) Calculate the [transformation matrix](transformation_matrix.md).**
 
 ```python
 
@@ -191,11 +191,11 @@ deviance, transformation_matrix = pcv.transform.calc_transformation_matrix(matri
 
 ```
 
-**6) [Apply](transform_correct_color.md#apply-transformation-matrix) the transformation matrix.**
+**6) [Apply](apply_transformation_matrix.md) the transformation matrix.**
 
 ```python
 
-corrected_img = pcv.transform.apply_transformation_matrix(source_img= source_img, target_img= target_img, transformation_matrix= transformation_matrix)
+corrected_img = pcv.transform.apply_transformation_matrix(source_img=source_img, target_img=target_img, transformation_matrix=transformation_matrix)
 
 ```
 
@@ -210,7 +210,7 @@ To deploy a workflow over a full image set please see tutorial on [workflow para
 
 ## Creating Masks
 
-We have added functions to semi-automate the tasks of [detecting](transform_correct_color.md#automatically-find-a-color-card) and [creating a color card mask](transform_correct_color.md#create-a-labeled-color-card-mask).
+We have added functions to semi-automate the tasks of [detecting](find_color_card.md) and [creating a color card mask](create_color_card_mask.md).
 
 Or manually create a labeled mask as described below:
 
@@ -232,7 +232,7 @@ pcv.params.debug = "plot"
 
 ```python
 
-img = cv2.imread("target_img.png") #read in img
+img, imgpath, imgname = pcv.readimage(filename="target_img.png") #read in img
 pcv.plot_image(img)
 
 ```
@@ -244,7 +244,7 @@ pcv.plot_image(img)
 
 #Using the pixel coordinate on the plotted image, designate a region of interest for an n x n pixel region in each color chip.
 
-dimensions = [50,50]  #pixel ROI dimensions
+dimensions = [50, 50]  #pixel ROI dimensions
 
 chips = []
 #Declare first row:
@@ -255,10 +255,10 @@ chips = []
 #   y - The y-coordinate of the upper left corner of the rectangle 
 #   h - The height of the rectangle 
 #   w - The width of the rectangle 
-chips.append(pcv.roi.rectangle(img=img, x=1020, y = 1010, w = dimensions[0], h = dimensions[1])) #white
-chips.append(pcv.roi.rectangle(img=img, x= 1150 , y= 1010 , w = dimensions[0], h = dimensions[1]))#blue
-chips.append(pcv.roi.rectangle(img=img, x= 1280 , y= 1010 , w = dimensions[0], h = dimensions[1]))#orange
-chips.append(pcv.roi.rectangle(img=img, x= 1420 , y= 1010 , w = dimensions[0], h = dimensions[1]))#brown
+chips.append(pcv.roi.rectangle(img=img, x=1020, y=1010, w=dimensions[0], h=dimensions[1])) #white
+chips.append(pcv.roi.rectangle(img=img, x=1150 , y=1010 , w=dimensions[0], h=dimensions[1]))#blue
+chips.append(pcv.roi.rectangle(img=img, x=1280 , y=1010 , w=dimensions[0], h=dimensions[1]))#orange
+chips.append(pcv.roi.rectangle(img=img, x=1420 , y=1010 , w=dimensions[0], h=dimensions[1]))#brown
     
 
 
@@ -270,10 +270,10 @@ row_total = 6
 
 #declare all other rows
 for i in range(1, row_total):
-    chips.append(pcv.roi.rectangle(img=img, x=1020, y = 1010 + i*(y_shift), w = dimensions[0], h = dimensions[1]))
-    chips.append(pcv.roi.rectangle(img=img, x= 1150 , y= 1010 + i*(y_shift), w = dimensions[0], h = dimensions[1]))
-    chips.append(pcv.roi.rectangle(img=img, x= 1280 , y= 1010 + i*(y_shift), w = dimensions[0], h = dimensions[1]))
-    chips.append(pcv.roi.rectangle(img=img, x= 1420 , y= 1010 + i*(y_shift), w = dimensions[0], h = dimensions[1]))
+    chips.append(pcv.roi.rectangle(img=img, x=1020, y=1010 + i * y_shift, w=dimensions[0], h=dimensions[1]))
+    chips.append(pcv.roi.rectangle(img=img, x=1150 , y=1010 + i * y_shift, w=dimensions[0], h=dimensions[1]))
+    chips.append(pcv.roi.rectangle(img=img, x=1280 , y=1010 + i * y_shift, w=dimensions[0], h=dimensions[1]))
+    chips.append(pcv.roi.rectangle(img=img, x=1420 , y=1010 + i * y_shift, w=dimensions[0], h=dimensions[1]))
 
 ```
 
@@ -288,7 +288,7 @@ del chips[19]
 
 mask = np.zeros(shape=np.shape(img)[:2], dtype = np.uint8()) # create empty mask img.
 
-print mask
+print(mask)
 
 ```
 
@@ -306,16 +306,16 @@ print mask
 
 # draw contours for each region of interest and give them unique color values.
 
-i=1
+i = 1
 for chip in chips:
     print(chip)
     mask = cv2.drawContours(mask, chip[0], -1, (i*10), -1)
-    i+=1
+    i += 1
 
 
 pcv.plot_image(mask, cmap="gray")
 
-mask = mask*10  #multiply values in the mask for greater contrast. Exclude if designating have more than 25 color chips.
+mask = mask * 10  #multiply values in the mask for greater contrast. Exclude if designating have more than 25 color chips.
 
 ```
 
@@ -338,7 +338,7 @@ np.unique(mask)
 
 ```python
 
-cv2.imwrite("test_mask.png", mask) #write to file.
+pcv.print_image(img=mask, filename="test_mask.png") #write to file.
 
 ```
 
@@ -359,10 +359,10 @@ import matplotlib
 
 ```python
 
-target_img = cv2.imread("target_img.png")
-source_img = cv2.imread("source2_img.png")
-target_mask = cv2.imread("test_mask.png", -1) # mask must be read in "as-is" include -1
-source_mask = cv2.imread("mask2_img.png", -1) 
+target_img, targetpath, targetname = pcv.readimage(filename="target_img.png")
+source_img, sourcepath, sourcename = pcv.readimage(filename="source2_img.png")
+target_mask, tmaskpath, tmaskname = pcv.readimage(filename="test_mask.png")
+source_mask, smaskpath, smaskname = pcv.readimage(filename="mask2_img.png") 
 
 #.npz files containing target_matrix, source_matrix, and transformation_matrix will be saved to the output_directory file path
 output_directory = "./test1"
@@ -383,9 +383,9 @@ target_matrix, source_matrix, transformation_matrix, corrected_img = pcv.transfo
 
 transformation_matrix = pcv.transform.load_matrix("./test1/transformation_matrix.npz") #load in transformation_matrix
 
-new_source = cv2.imread("VIS_SV_0_z1_h1_g0_e65_v500_376217_0.png") #read in new image for transformation
+new_source, newpath, newname = pcv.readimage(filename="VIS_SV_0_z1_h1_g0_e65_v500_376217_0.png") #read in new image for transformation
 
-corrected_img = pcv.transform.apply_transformation_matrix(source_img= new_source, target_img= target_img, transformation_matrix= transformation_matrix) #apply transformation
+corrected_img = pcv.transform.apply_transformation_matrix(source_img=new_source, target_img=target_img, transformation_matrix=transformation_matrix) #apply transformation
 
 ```
 
@@ -486,9 +486,9 @@ def main():
 
     pcv.params.debug = "print" #set debug mode
     
-    target_img = cv2.imread("target_img.png")
-    source_img = cv2.imread("source1_img.png")
-    mask = cv2.imread("test_mask.png", -1) # mask must be read in "as-is" include -1
+    target_img, targetpath, targetname = pcv.readimage(filename="target_img.png")
+    source_img, sourcepath, sourcename = pcv.readimage(filename="source1_img.png")
+    mask, maskpath, maskname = pcv.readimage(filename="test_mask.png")
     #Since target_img and source_img have the same zoom and colorchecker position, the same mask can be used for both.
     
     #.npz files containing target_matrix, source_matrix, and transformation_matrix will be saved to the output_directory file path
@@ -499,14 +499,14 @@ def main():
     
     transformation_matrix = pcv.transform.load_matrix("./test1/transformation_matrix.npz") #load in transformation_matrix
     
-    new_source = cv2.imread("VIS_SV_0_z1_h1_g0_e65_v500_376217_0.png") #read in new image for transformation
+    new_source, newpath, newname = pcv.readimage(filename="VIS_SV_0_z1_h1_g0_e65_v500_376217_0.png") #read in new image for transformation
     
     #apply transformation
-    corrected_img = pcv.transform.apply_transformation_matrix(source_img= new_source, target_img= target_img, transformation_matrix= transformation_matrix)
+    corrected_img = pcv.transform.apply_transformation_matrix(source_img=new_source, target_img=target_img, transformation_matrix=transformation_matrix)
     
-    target_img = cv2.imread("target_img.png")
-    source_img = cv2.imread("source_img.png")
-    mask = cv2.imread("mask.png", -1) # mask must be read in "as-is" include -1
+    target_img, targetpath, targetname = pcv.readimage(filename="target_img.png")
+    source_img, sourcepath, sourcename = pcv.readimage(filename="source1_img.png")
+    mask, maskpath, maskname = pcv.readimage(filename="test_mask.png")
     #Since target_img and source_img have the same zoom and colorchecker position, the same mask can be used for both. 
     
     # get color matrix of target and save
@@ -519,7 +519,7 @@ def main():
     # matrix_a is a matrix of average rgb values for each color ship in source_img, matrix_m is a moore-penrose inverse matrix,
     # matrix_b is a matrix of average rgb values for each color ship in source_img
     
-    matrix_a, matrix_m, matrix_b = pcv.transform.get_matrix_m(target_matrix= target_matrix, source_matrix= source_matrix)
+    matrix_a, matrix_m, matrix_b = pcv.transform.get_matrix_m(target_matrix=target_matrix, source_matrix=source_matrix)
     
     # deviance is the measure of how greatly the source image deviates from the target image's color space. 
     # Two images of the same color space should have a deviance of ~0.
@@ -527,7 +527,7 @@ def main():
     
     deviance, transformation_matrix = pcv.transform.calc_transformation_matrix(matrix_m, matrix_b)
     
-    corrected_img = pcv.transform.apply_transformation_matrix(source_img= source_img, target_img= target_img, transformation_matrix= transformation_matrix)
+    corrected_img = pcv.transform.apply_transformation_matrix(source_img=source_img, target_img=target_img, transformation_matrix=transformation_matrix)
     
     """
     
@@ -540,7 +540,7 @@ def main():
     
     pcv.params.debug = "plot"
     
-    img = cv2.imread("target_img.png") #read in img
+    img, imgpath, imgname = pcv.readimage(filename="target_img.png") #read in img
     pcv.plot_image(img)
     
     #Using the pixel coordinate on the plotted image, designate a region of interest for an n x n pixel region in each color chip.
@@ -562,10 +562,10 @@ def main():
     
     #declare all other rows
     for i in range(1, row_total):
-    chips.append(pcv.roi.rectangle(img=img, x=1020, y = 1010 + i*(y_shift), w = dimensions[0], h = dimensions[1]))
-    chips.append(pcv.roi.rectangle(img=img, x= 1150 , y= 1010 + i*(y_shift), w = dimensions[0], h = dimensions[1]))
-    chips.append(pcv.roi.rectangle(img=img, x= 1280 , y= 1010 + i*(y_shift), w = dimensions[0], h = dimensions[1]))
-    chips.append(pcv.roi.rectangle(img=img, x= 1420 , y= 1010 + i*(y_shift), w = dimensions[0], h = dimensions[1]))
+    chips.append(pcv.roi.rectangle(img=img, x=1020, y=1010 + i * y_shift, w=dimensions[0], h=dimensions[1]))
+    chips.append(pcv.roi.rectangle(img=img, x=1150 , y=1010 + i * y_shift, w=dimensions[0], h=dimensions[1]))
+    chips.append(pcv.roi.rectangle(img=img, x=1280 , y=1010 + i * y_shift, w=dimensions[0], h=dimensions[1]))
+    chips.append(pcv.roi.rectangle(img=img, x=1420 , y=1010 + i * y_shift, w=dimensions[0], h=dimensions[1]))
     
     #remove black and white
     del chips[0]
@@ -577,16 +577,15 @@ def main():
     
     # draw contours for each region of interest and give them unique color values.
     
-    i=1
+    i = 1
     for chip in chips:
-    print(chip)
-    mask = cv2.drawContours(mask, chip[0], -1, (i*10), -1)
-    i+=1
-    
+        print(chip)
+        mask = cv2.drawContours(mask, chip[0], -1, (i * 10), -1)
+        i += 1
     
     pcv.plot_image(mask, cmap="gray")
     
-    mask = mask*10  #multiply values in the mask for greater contrast. Exclude if designating have more than 25 color chips.
+    mask = mask * 10  #multiply values in the mask for greater contrast. Exclude if designating have more than 25 color chips.
     
     np.unique(mask)
     
@@ -597,10 +596,10 @@ def main():
     import numpy as np
     import matplotlib
     
-    target_img = cv2.imread("target_img.png")
-    source_img = cv2.imread("source2_img.png")
-    target_mask = cv2.imread("test_mask.png", -1) # mask must be read in "as-is" include -1
-    source_mask = cv2.imread("mask2_img.png", -1) 
+    target_img, targetpath, targetname = pcv.readimage(filename="target_img.png")
+    source_img, sourcepath, sourcename = pcv.readimage(filename="source2_img.png")
+    target_mask, tmaskpath, tmaskname = pcv.readimage(filename="test_mask.png")
+    source_mask smaskpath, smaskname = pcv.readimage(filename="mask2_img.png") 
     
     #.npz files containing target_matrix, source_matrix, and transformation_matrix will be saved to the output_directory file path
     output_directory = "./test1"
@@ -609,7 +608,7 @@ def main():
     
     transformation_matrix = pcv.transform.load_matrix("./test1/transformation_matrix.npz") #load in transformation_matrix
     
-    new_source = cv2.imread("VIS_SV_0_z1_h1_g0_e65_v500_376217_0.png") #read in new image for transformation
+    new_source, newpath, newname = pcv.readimage(filename="VIS_SV_0_z1_h1_g0_e65_v500_376217_0.png") #read in new image for transformation
     
     corrected_img = pcv.transform.apply_transformation_matrix(source_img=new_source, target_img=target_img, transformation_matrix=transformation_matrix) #apply transformation
 

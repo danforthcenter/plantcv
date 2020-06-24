@@ -739,15 +739,28 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
     if record_chip_size is not None:
         if record_chip_size.upper() == "MEDIAN":
             chip_size = df.loc[:, "area"].median()
+            chip_height = df.loc[:, "height"].median()
+            chip_width = df.loc[:, "width"].median()
         elif record_chip_size.upper() == "MEAN":
             chip_size = df.loc[:, "area"].mean()
+            chip_height = df.loc[:, "height"].mean()
+            chip_width = df.loc[:, "width"].mean()
         else:
             print(str(record_chip_size) + " Is not a valid entry for record_chip_size." +
                   " Must be either 'mean', 'median', or None.")
             chip_size = None
+            chip_height = None
+            chip_width = None
         # Store into global measurements
         outputs.add_observation(variable='color_chip_size', trait='size of color card chips identified',
                                 method='plantcv.plantcv.transform.find_color_card', scale='none',
                                 datatype=float, value=chip_size, label=str(record_chip_size))
+        method = record_chip_size.lower()
+        outputs.add_observation(variable=f'{method}_color_chip_height', trait=f'{method} height of color card chips identified',
+                                method='plantcv.plantcv.transform.find_color_card', scale='none',
+                                datatype=float, value=chip_height, label=str(record_chip_size))
+        outputs.add_observation(variable=f'{method}_color_chip_width', trait=f'{method} size of color card chips identified',
+                                method='plantcv.plantcv.transform.find_color_card', scale='none',
+                                datatype=float, value=chip_width, label=str(record_chip_size))
 
     return df, start_coord, spacing

@@ -88,14 +88,12 @@ def main():
     # Get options
     args = options()
     
-    pcv.params.debug=args.debug #set debug mode
-    pcv.params.debug_outdir=args.outdir #set output directory
+    pcv.params.debug = args.debug #set debug mode
+    pcv.params.debug_outdir = args.outdir #set output directory
     
     # Read image (converting fmax and track to 8 bit just to create a mask, use 16-bit for all the math)
     mask, path, filename = pcv.readimage(args.fmax)
-    track = cv2.imread(args.track)
-    
-    mask1, mask2, mask3 = cv2.split(mask)
+    track, trackpath, trackname = pcv.readimage(args.track)
     
 ```
 
@@ -136,7 +134,7 @@ The [apply mask function](apply_mask.md) is then used to apply the track mask to
     #   rgb_img - RGB image data 
     #   mask - Binary mask image data 
     #   mask_color - 'black' or 'white'
-    track_masked = pcv.apply_mask(rgb_img=mask1, mask=track_inv, mask_color='black')
+    track_masked = pcv.apply_mask(img=mask, mask=track_inv, mask_color='black')
     
 ```
 
@@ -283,9 +281,9 @@ along with the generated mask to calculate Fv/Fm.
 ```python
 ################ Analysis ################  
     
-    outfile=False
-    if args.writeimg==True:
-        outfile=args.outdir+"/"+filename
+    outfile = False
+    if args.writeimg == True:
+        outfile = os.path.join(args.outdir, filename)
     
     # Find shape properties, output shape image (optional)
     
@@ -296,9 +294,9 @@ along with the generated mask to calculate Fv/Fm.
     shape_img = pcv.analyze_object(img=mask, obj=obj, mask=masked)
     
     # Fluorescence Measurement (read in 16-bit images)
-    fdark = cv2.imread(args.fdark, -1)
-    fmin = cv2.imread(args.fmin, -1)
-    fmax = cv2.imread(args.fmax, -1)
+    fdark, darkpath, darkname = pcv.readimage(args.fdark)
+    fmin, minpath, minname = pcv.readimage(args.fmin)
+    fmax, maxpath, maxname = pcv.readimage(args.fmax)
     
     
     # Inputs:
@@ -366,12 +364,9 @@ In the terminal:
 Python script:
 
 ```python
-#!/usr/bin/python
-import sys, traceback
+#!/usr/bin/env python
 import cv2
-import numpy as np
 import argparse
-import string
 from plantcv import plantcv as pcv
 
 ### Parse command-line arguments
@@ -391,21 +386,18 @@ def main():
     # Get options
     args = options()
     
-    pcv.params.debug=args.debug #set debug mode
-    pcv.params.debug_outdir=args.outdir #set output directory
+    pcv.params.debug = args.debug #set debug mode
+    pcv.params.debug_outdir = args.outdir #set output directory
     
     # Read image (converting fmax and track to 8 bit just to create a mask, use 16-bit for all the math)
     mask, path, filename = pcv.readimage(args.fmax)
-    #mask = cv2.imread(args.fmax)
-    track = cv2.imread(args.track)
+    track, trackpath, trackname = pcv.readimage(args.track)
     
-    mask1, mask2, mask3 = cv2.split(mask)
-
     # Mask pesky track autofluor
     track1 = pcv.rgb2gray_hsv(rgb_img=track, channel='v')
     track_thresh = pcv.threshold.binary(gray_img=track1, threshold=0, max_value=255, object_type='light')
     track_inv = pcv.invert(gray_img=track_thresh)
-    track_masked = pcv.apply_mask(rgb_img=mask1, mask=track_inv, mask_color='black')
+    track_masked = pcv.apply_mask(img=mask, mask=track_inv, mask_color='black')
 
     # Threshold the image
     fmax_thresh = pcv.threshold.binary(gray_img=track_masked, threshold=20, max_value=255, 
@@ -436,17 +428,17 @@ def main():
     
     ################ Analysis ################  
     
-    outfile=False
-    if args.writeimg==True:
-        outfile=args.outdir+"/"+filename
+    outfile = False
+    if args.writeimg == True:
+        outfile = os.path.join(args.outdir, filename)
     
     # Find shape properties, output shape image (optional)
     shape_img = pcv.analyze_object(img=mask, obj=obj, mask=masked)
     
     # Fluorescence Measurement (read in 16-bit images)
-    fdark = cv2.imread(args.fdark, -1)
-    fmin = cv2.imread(args.fmin, -1)
-    fmax = cv2.imread(args.fmax, -1)
+    fdark, darkpath, darkname = pcv.readimage(args.fdark)
+    fmin, minpath, minname = pcv.readimage(args.fmin)
+    fmax, maxpath, maxname = pcv.readimage(args.fmax)
     
     fvfm_images = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=kept_mask, bins=256)
 
