@@ -755,10 +755,11 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
         outputs.add_observation(variable='color_chip_size', trait='size of color card chips identified',
                                 method='plantcv.plantcv.transform.find_color_card', scale='none',
                                 datatype=float, value=chip_size, label=str(record_chip_size))
-        outputs.add_observation(variable='color_chip_height', trait='height of color card chips identified',
+        method = record_chip_size.lower()
+        outputs.add_observation(variable=f'{method}_color_chip_height', trait=f'{method} height of color card chips identified',
                                 method='plantcv.plantcv.transform.find_color_card', scale='none',
                                 datatype=float, value=chip_height, label=str(record_chip_size))
-        outputs.add_observation(variable='color_chip_width', trait='size of color card chips identified',
+        outputs.add_observation(variable=f'{method}_color_chip_width', trait=f'{method} size of color card chips identified',
                                 method='plantcv.plantcv.transform.find_color_card', scale='none',
                                 datatype=float, value=chip_width, label=str(record_chip_size))
 
