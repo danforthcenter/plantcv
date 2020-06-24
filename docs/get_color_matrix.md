@@ -20,12 +20,9 @@ Computes the average *R*, *G*, *B* values for each region in the RGB image denot
 ```python
 
 from plantcv import plantcv as pcv
-import cv2
 
-
-rgb_img = cv2.imread("target_img.png")
-mask = cv2.imread("mask_img.png", -1) # mask must be read in "as-is" include -1
-
+rgb_img, imgpath, imgname = pcv.readimage(filename="target_img.png")
+mask, maskpath, maskname = pcv.readimage(filename="mask_img.png")
 
 headers, color_matrix = pcv.transform.get_color_matrix(rgb_img, mask)
 
@@ -57,5 +54,4 @@ print(color_matrix)
      [ 210.      207.1596  128.736    28.7744]
      [ 220.       74.632   158.8224  144.3724]]
      
- ```
- 
+```
