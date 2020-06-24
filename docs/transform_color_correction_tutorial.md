@@ -165,7 +165,7 @@ source_headers, source_matrix = pcv.transform.get_color_matrix(rgb_img=source_im
 
 ```
 
-**4) Get the [Moore-Penrose Inverse Matrix](mp-inverse.md).**
+**4) Get the [Moore-Penrose Inverse Matrix](mp_inverse.md).**
 
 ```python
 
