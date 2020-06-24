@@ -37,11 +37,11 @@ To see an example of how to create a grayscale mask of color chips see [here](tr
 from plantcv import plantcv as pcv
 import cv2
 
-target_img = cv2.imread("target_img.png")
-source_img = cv2.imread("source1_img.png")
+target_img, targetpath, targetname = pcv.readimage("target_img.png")
+source_img, sourcepath, sourcename = pcv.readimage("source1_img.png")
 
-target_mask = cv2.imread("mask_img.png", -1) # mask must be read in "as-is" include -1
-source_mask = cv2.imread("mask_img.png", -1) # in this case, as our images share a zoom level and colorchecker placement, the same mask is used for both the target and the source.
+target_mask, tmaskpath, tmaskname = pcv.readimage("mask_img.png")
+source_mask, smaskpath, smaskname = pcv.readimage("mask_img.png") # in this case, as our images share a zoom level and colorchecker placement, the same mask is used for both the target and the source.
 
 output_directory = "."
 

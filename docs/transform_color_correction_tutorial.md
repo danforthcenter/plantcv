@@ -232,7 +232,7 @@ pcv.params.debug = "plot"
 
 ```python
 
-img = cv2.imread("target_img.png") #read in img
+img, imgpath, imgname = pcv.readimage(filename="target_img.png") #read in img
 pcv.plot_image(img)
 
 ```
@@ -244,7 +244,7 @@ pcv.plot_image(img)
 
 #Using the pixel coordinate on the plotted image, designate a region of interest for an n x n pixel region in each color chip.
 
-dimensions = [50,50]  #pixel ROI dimensions
+dimensions = [50, 50]  #pixel ROI dimensions
 
 chips = []
 #Declare first row:
