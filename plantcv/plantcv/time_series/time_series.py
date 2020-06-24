@@ -24,7 +24,7 @@ from plantcv.plantcv.time_series import link_utilities as funcs
 # import link_utilities as funcs
 
 
-def time_series_linking(imagedir, segmentationdir, savedir, time_cond, link_logic=1, class_names=['BG', 'Leaf']):
+def time_series_linking(imagedir, segmentationdir, savedir, time_cond, link_logic=1, class_names=['BG', 'Leaf'], mode='link'):
     """
     Function used to get leaf instance growth information after segment leaf instances (using maskrcnn or other methods)
     Input:
@@ -35,19 +35,20 @@ def time_series_linking(imagedir, segmentationdir, savedir, time_cond, link_logi
         link_logic: 1: IoU (intersection over union), 2: Io1A (intersection over 1st area), default value: 1
         class_names: used in bounding box visualization. by default there are background and leaf
     Output:
-        There is no returned values as output, though the results will be saved in user defined "savedir"
+        An instance from "Plant" class would be returned, all the results will be saved in a folder with name of date and time when the function runs inside the user defined "savedir". Sample folder name: 2020-06-23-15-42 (a format of YYYY-MM-DD-HH-mm).
         1. colors.pkl: the colors (indicated by arrays) used in bounding box visualization. Without this predefined list of color, the assignment of color will be random. With this predefined color set, same color will represent for the same leaf all the time
         2. details.txt: the logic of linking as well as time condition will be shown, so that would be easier for users to check these parameters for the specific expreiment
         3. saved_plant.pkl: a "Plant" instance will be saved, with all the information included: time points, original images, instance segmentation masks, etc.
         4. a folder called "visualization", which contains 3 subfolders:
             1) a folder call "visualization 1", which contains 1st set of visualization
                 In this set of visualization, the instance segmentation masks are applied to original images, so that there is only 1 leaf in every image. 
-                result name: {}_{}_{}_{}.png
+                result name: {}_{}_{}_{}_{}.png
                 Naming rules for file names: 
                     1st digit: time of 1st emergence of the leaf
                     2nd digit: leaf index when it first emerges
                     3rd digit: current time point
                     4th digit: current leaf index
+                    5th digit: original image name
 
             2) a folder called "visualization 2", which contains 2nd set of visualization
                 This set of visualization show results with an alpha channel, such that we can see the main leaf in the original image, with other parts being half transparent
@@ -57,124 +58,135 @@ def time_series_linking(imagedir, segmentationdir, savedir, time_cond, link_logi
 
             3) a folder called "visualization 3", which containes 3rd set of visualization 
                 This set of visualization show results with bounding boxes. In every image, different leaves are show in bounding boxes with different colors. 
-                Naming format: YYYY-MM-DD-HH-MM_visual.png
+                Naming format: {}_visual.png
+                The original image name is inside the {}.
     """
-    
-    # initialize Plant class
-    Plant = funcs.PlantData(imagedir, segmentationdir, savedir)
+    if mode == 'link':
+        # initialize Plant class
+        Plant = funcs.PlantData(imagedir, segmentationdir, savedir)
 
-    Plant.getpath(Plant.imagedir)
-    Plant.Sorttime(time_cond)
+        Plant.getpath(Plant.imagedir)
+        Plant.Sorttime(time_cond)
 
-    Plant.load_images()
+        Plant.load_images()
 
-    # load mrcnn inferencing results
-    Plant.load_results()
-    
-    Plant.getinitleaf()
-    Plant.getmaxleaf()
+        # load mrcnn inferencing results
+        Plant.load_results()
 
-    Plant.gettotaltime()
-    Plant.getnumemergence()
+        Plant.getinitleaf()
+        Plant.getmaxleaf()
 
-    # plot the #leaves vs. time relationship
-    plt.plot(np.array(range(0,len(Plant.num_leaves))), Plant.num_leaves)
-    
-    if not os.path.exists(os.path.join(Plant.savedir, 'details.txt')):
-        file = open(os.path.join(Plant.savedir, 'details.txt'), 'w')
-        if link_logic == 1:
-            file.write('mode: IOU\n')
+        Plant.gettotaltime()
+        Plant.getnumemergence()
+
+        # plot the #leaves vs. time relationship
+        plt.plot(np.array(range(0,len(Plant.num_leaves))), Plant.num_leaves)
+
+        if not os.path.exists(os.path.join(Plant.savedir, 'details.txt')):
+            file = open(os.path.join(Plant.savedir, 'details.txt'), 'w')
+            if link_logic == 1:
+                file.write('mode: IOU\n')
+            else:
+                file.write('mode: IOP\n')
+            file.write('Directory of original images: {}\n'.format(Plant.imagedir))
+            file.write('Directory of instance segmentation: {}\n'.format(Plant.segmentationdir))
+            file.write('Image conditions: {}'.format(time_cond))
+            file.close()
+
+        # linking initialization
+        Plant.initialize_linking()
+
+        # link
+        for t in range(0, Plant.total_time-1):
+            Plant.linking(t, mode=link_logic)
+        Plant.get_series()
+
+        ####### visualization #######
+        # load original images
+        if len(Plant.images) == 0:
+            Plant.load_images() #Plant.images
+
+        # visualization method 1: show only one leaf per image
+        path_visual1 = os.path.join(Plant.visualdir, 'visualization1')
+        if not os.path.exists(path_visual1):
+            os.makedirs(path_visual1)
+
+        # visualization method 2: show with an alpha channel
+        path_visual2 = os.path.join(Plant.visualdir, 'visualization2')
+        if not os.path.exists(path_visual2):
+            os.makedirs(path_visual2)
+
+        # visualization method 3: show with bounding boxes
+        path_visual3 = os.path.join(Plant.visualdir, 'visualization3')
+        if not os.path.exists(path_visual3):
+            os.makedirs(path_visual3)
+
+        count = 0
+        if not os.path.exists('{}/colors.pkl'.format(Plant.savedir)):
+            colors = funcs._random_colors(20)
+            pkl.dump(colors, open('{}/colors.pkl'.format(Plant.savedir), 'wb'))
         else:
-            file.write('mode: IOP\n')
-        file.write('Directory of original images: {}\n'.format(Plant.imagedir))
-        file.write('Directory of instance segmentation: {}\n'.format(Plant.segmentationdir))
-        file.write('Image conditions: {}'.format(time_cond))
-        file.close()
+            colors = pkl.load(open('{}/colors.pkl'.format(Plant.savedir), 'rb'))
 
-    # linking initialization
-    Plant.initialize_linking()
+        color_all = [[tuple() for i in range(0, num)] for num in Plant.num_leaves]
+        for key_t in Plant.link_series:
+            # 
+            ids = Plant.link_series[key_t]['unique_id']
 
-    # link
-    for t in range(0, Plant.total_time-1):
-        Plant.linking(t, mode=link_logic)
-    Plant.get_series()
+            start_time = int(key_t.replace('t', ''))
+            leaves_t = Plant.link_series[key_t]['new_leaf']
+    #         for leaf in leaves_t:
+            for (unique_id, leaf) in zip(ids, leaves_t):
+                key_leaf  = 'leaf{}'.format(leaf)
+                link_leaf = Plant.link_series[key_t][key_leaf]
+                start_idx = link_leaf[start_time]
+                for t in range(start_time, Plant.total_time):
+                    img = Plant.images[t]
+                    if link_leaf[t] >= 0:
+                        color_all[t][link_leaf[t]] = colors[count]
 
-    ####### visualization #######
-    # load original images
-    if len(Plant.images) == 0:
-        Plant.load_images() #Plant.images
+                        mask_t = Plant.masks[t][:,:,link_leaf[t]]
 
-    # visualization method 1: show only one leaf per image
-    path_visual1 = os.path.join(Plant.visualdir, 'visualization1')
-    if not os.path.exists(path_visual1):
-        os.makedirs(path_visual1)
+                        ## 1. save the masked image, i.e. single leaves
+                        mask   = np.zeros(mask_t.shape, dtype=np.uint8)
+                        mask[np.where(mask_t)] = 255
+                        leaf_t = pcv.apply_mask(img, mask, mask_color='black')
+                        pcv.print_image(leaf_t, os.path.join(path_visual1, '{}_{}_{}_{}_{}_{}.png'.format(unique_id, start_time, start_idx, t, link_leaf[t], Plant.filename_pre[t])))
+                        pkl.dump(leaf_t, open(os.path.join(path_visual1, '{}_{}_{}_{}_{}_{}.pkl'.format(unique_id, start_time, start_idx, t, link_leaf[t], Plant.filename_pre[t])), 'wb'))
 
-    # visualization method 2: show with an alpha channel
-    path_visual2 = os.path.join(Plant.visualdir, 'visualization2')
-    if not os.path.exists(path_visual2):
-        os.makedirs(path_visual2)
 
-    # visualization method 3: show with bounding boxes
-    path_visual3 = os.path.join(Plant.visualdir, 'visualization3')
-    if not os.path.exists(path_visual3):
-        os.makedirs(path_visual3)
+                        ## 2. show with an alpha channel
+                        # update the mask where there is an alpha channel
+                        mask_ = np.ones(mask_t.shape)*0.5
+                        mask_[np.where(mask_t == True)] = 1
+                        masked_im = np.concatenate((img.astype(float)/255, np.expand_dims(mask_, axis=2)), axis=2)
+                        save_dir_ = os.path.join(path_visual2, '{}_{}_{}.png'.format(unique_id, start_time, start_idx))
+                        if not os.path.exists(save_dir_):
+                            os.makedirs(save_dir_)
+                        fig2 = plt.figure(figsize=(5,5))
+                        ax2 = fig2.add_subplot(1,1,1)
+                        ax2.imshow(masked_im)  
+                        ax2.axis('off')
+                        plt.savefig(os.path.join(save_dir_, str(Plant.filename_pre[t]) + '.png'))
+                        plt.close(fig2)
+                count += 1
 
-    count = 0
-    if not os.path.exists('{}/colors.pkl'.format(Plant.savedir)):
-        colors = funcs._random_colors(20)
-        pkl.dump(colors, open('{}/colors.pkl'.format(Plant.savedir), 'wb'))
+        ## 3. visualize with bounding boxes
+        for (img, mask, roi, class_id, score, color, t) in zip(Plant.images, Plant.masks, Plant.rois, Plant.class_ids, Plant.scores, color_all, Plant.filename_pre):
+            funcs.display_instances(img, roi, mask, class_id, 
+                    class_names, score, ax=funcs.get_ax(rows=1, cols=1, size=16),show_bbox=True, show_mask=True,
+                    colors = color)        
+
+            plt.savefig(os.path.join(path_visual3, '{}_visual.png'.format(t)))
+            plt.close('all')
+
+        # save all information
+        pkl.dump(Plant, open(os.path.join(Plant.savedir, 'saved_plant.pkl'), 'wb'))
+        
     else:
-        colors = pkl.load(open('{}/colors.pkl'.format(Plant.savedir), 'rb'))
-
-    color_all = [[tuple() for i in range(0, num)] for num in Plant.num_leaves]
-    for key_t in Plant.link_series:
-        start_time = int(key_t.replace('t', ''))
-        leaves_t = Plant.link_series[key_t]['new_leaf']
-        for leaf in leaves_t:
-            key_leaf  = 'leaf{}'.format(leaf)
-            link_leaf = Plant.link_series[key_t][key_leaf]
-            start_idx = link_leaf[start_time]
-            for t in range(start_time, Plant.total_time):
-                img = Plant.images[t]
-                if link_leaf[t] >= 0:
-                    color_all[t][link_leaf[t]] = colors[count]
-
-                    mask_t = Plant.masks[t][:,:,link_leaf[t]]
-
-                    ## 1. save the masked image, i.e. single leaves
-                    mask   = np.zeros(mask_t.shape, dtype=np.uint8)
-                    mask[np.where(mask_t)] = 255
-                    leaf_t = pcv.apply_mask(img, mask, mask_color='black')
-                    pcv.print_image(leaf_t, os.path.join(path_visual1, '{}_{}_{}_{}_{}.png'.format(start_time, start_idx, t, link_leaf[t], Plant.filename_pre[t])))
-                    pkl.dump(leaf_t, open(os.path.join(path_visual1, '{}_{}_{}_{}_{}.pkl'.format(start_time, start_idx, t, link_leaf[t], Plant.filename_pre[t])), 'wb'))
-                    
-
-                    ## 2. show with an alpha channel
-                    # update the mask where there is an alpha channel
-                    mask_ = np.ones(mask_t.shape)*0.5
-                    mask_[np.where(mask_t == True)] = 1
-                    masked_im = np.concatenate((img.astype(float)/255, np.expand_dims(mask_, axis=2)), axis=2)
-                    save_dir_ = os.path.join(path_visual2, '{}_{}.png'.format(start_time, start_idx))
-                    if not os.path.exists(save_dir_):
-                        os.makedirs(save_dir_)
-                    fig2 = plt.figure(figsize=(5,5))
-                    ax2 = fig2.add_subplot(1,1,1)
-                    ax2.imshow(masked_im)  
-                    ax2.axis('off')
-                    plt.savefig(os.path.join(save_dir_, str(Plant.filename_pre[t]) + '.png'))
-                    plt.close(fig2)
-            count += 1
-
-    ## 3. visualize with bounding boxes
-    for (img, mask, roi, class_id, score, color, t) in zip(Plant.images, Plant.masks, Plant.rois, Plant.class_ids, Plant.scores, color_all, Plant.filename_pre):
-        funcs.display_instances(img, roi, mask, class_id, 
-                class_names, score, ax=funcs.get_ax(rows=1, cols=1, size=16),show_bbox=True, show_mask=True,
-                colors = color)        
-
-        plt.savefig(os.path.join(path_visual3, '{}_visual.png'.format(t)))
-        plt.close('all')
-
-    # save all information
-    pkl.dump(Plant, open(os.path.join(Plant.savedir, 'saved_plant.pkl'), 'wb'))
+        # initialize Plant class
+        Plant = funcs.PlantData(imagedir, segmentationdir, savedir, mode='load')
+        # Load from existed PlantData instance
+        Plant = pkl.load( open(os.path.join(path_save, 'saved_plant.pkl'), 'rb'))
     
     return Plant
