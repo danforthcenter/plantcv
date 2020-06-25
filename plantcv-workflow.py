@@ -99,11 +99,29 @@ def options():
             "datatype": "<class 'str'>",
             "value": "none"
         },
+        # Device identifier
+        "device": {
+            "label": "devide identifier",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        # Location
+        "location":{
+            "label": "location",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
         # Other
         "other": {
             "label": "other identifier",
             "datatype": "<class 'str'>",
             "value": "none"
+        },
+        # Unique Leaf Identifier
+        "uidleaf":{
+            "label": "unique leaf identifier",
+            "datatype": "<class 'int'>",
+            "value": None
         }
     }
     parser = argparse.ArgumentParser(description='Parallel imaging processing with PlantCV.')
