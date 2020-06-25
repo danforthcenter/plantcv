@@ -43,23 +43,28 @@ def time_series_linking(imagedir, segmentationdir, savedir, time_cond, link_logi
         4. a folder called "visualization", which contains 3 subfolders:
             1) a folder call "visualization 1", which contains 1st set of visualization
                 In this set of visualization, the instance segmentation masks are applied to original images, so that there is only 1 leaf in every image. 
-                result name: {}_{}_{}_{}_{}.png
-                Naming rules for file names: 
-                    1st digit: time of 1st emergence of the leaf
-                    2nd digit: leaf index when it first emerges
-                    3rd digit: current time point
-                    4th digit: current leaf index
-                    5th digit: original image name
+                result name: {}_{}-{}-{}-{}_{}.png
+                Naming convention for file names: 
+                    1st digit: unique identifier of the leaf
+                    2nd digit: time of first emergence of the leaf
+                    3rd digut: leaf index when it first emerges
+                    4rd digit: current time point
+                    5th digit: current leaf index
+                    6th digit: original image name
 
             2) a folder called "visualization 2", which contains 2nd set of visualization
                 This set of visualization show results with an alpha channel, such that we can see the main leaf in the original image, with other parts being half transparent
                 There are several subfolders, the number of subfolders depends on the number of "new leaves" in total
-                Every subfolder is a "new leaf", whose name is {}_{}, with 1st digit represents time of 1st emergence of the leaf and 2nd digit represents leaf index when it first emerges
-                    Inside every folder, images of leaves with names "time_{}.png" are contained; the number inside the {} represents the time point
+                Every subfolder is a "new leaf", whose name is {}_{}-{}
+                Naming convention for folder names:
+                    1st digit: unique identifier of the leaf
+                    2nd digit: time of first emergence of the leaf
+                    3rd digut: leaf index when it first emerges
+                Inside every folder, images of leaves with names same as original image names are contained.
 
             3) a folder called "visualization 3", which containes 3rd set of visualization 
                 This set of visualization show results with bounding boxes. In every image, different leaves are show in bounding boxes with different colors. 
-                Naming format: {}_visual.png
+                Naming format: {}-visual.png
                 The original image name is inside the {}.
     """
     if mode == 'link':
@@ -136,7 +141,6 @@ def time_series_linking(imagedir, segmentationdir, savedir, time_cond, link_logi
 
             start_time = int(key_t.replace('t', ''))
             leaves_t = Plant.link_series[key_t]['new_leaf']
-    #         for leaf in leaves_t:
             for (unique_id, leaf) in zip(ids, leaves_t):
                 key_leaf  = 'leaf{}'.format(leaf)
                 link_leaf = Plant.link_series[key_t][key_leaf]
@@ -148,20 +152,20 @@ def time_series_linking(imagedir, segmentationdir, savedir, time_cond, link_logi
 
                         mask_t = Plant.masks[t][:,:,link_leaf[t]]
 
-                        ## 1. save the masked image, i.e. single leaves
+        ## 1. save the masked image, i.e. single leaves
                         mask   = np.zeros(mask_t.shape, dtype=np.uint8)
                         mask[np.where(mask_t)] = 255
                         leaf_t = pcv.apply_mask(img, mask, mask_color='black')
-                        pcv.print_image(leaf_t, os.path.join(path_visual1, '{}_{}_{}_{}_{}_{}.png'.format(unique_id, start_time, start_idx, t, link_leaf[t], Plant.filename_pre[t])))
-                        pkl.dump(leaf_t, open(os.path.join(path_visual1, '{}_{}_{}_{}_{}_{}.pkl'.format(unique_id, start_time, start_idx, t, link_leaf[t], Plant.filename_pre[t])), 'wb'))
+                        pcv.print_image(leaf_t, os.path.join(path_visual1, '{}_{}-{}-{}-{}_{}.png'.format(unique_id, start_time, start_idx, t, link_leaf[t], Plant.filename_pre[t])))
+#                         pkl.dump(leaf_t, open(os.path.join(path_visual1, '{}_{}_{}_{}_{}_{}.pkl'.format(unique_id, start_time, start_idx, t, link_leaf[t], Plant.filename_pre[t])), 'wb'))
 
 
-                        ## 2. show with an alpha channel
-                        # update the mask where there is an alpha channel
+        ## 2. show result with an alpha channel
+                        # update the mask where there is an alpha channel (alpha=0.5)
                         mask_ = np.ones(mask_t.shape)*0.5
                         mask_[np.where(mask_t == True)] = 1
                         masked_im = np.concatenate((img.astype(float)/255, np.expand_dims(mask_, axis=2)), axis=2)
-                        save_dir_ = os.path.join(path_visual2, '{}_{}_{}.png'.format(unique_id, start_time, start_idx))
+                        save_dir_ = os.path.join(path_visual2, '{}_{}-{}'.format(unique_id, start_time, start_idx))
                         if not os.path.exists(save_dir_):
                             os.makedirs(save_dir_)
                         fig2 = plt.figure(figsize=(5,5))
@@ -178,7 +182,7 @@ def time_series_linking(imagedir, segmentationdir, savedir, time_cond, link_logi
                     class_names, score, ax=funcs.get_ax(rows=1, cols=1, size=16),show_bbox=True, show_mask=True,
                     colors = color)        
 
-            plt.savefig(os.path.join(path_visual3, '{}_visual.png'.format(t)))
+            plt.savefig(os.path.join(path_visual3, '{}-visual.png'.format(t)))
             plt.close('all')
 
         # save all information
@@ -188,6 +192,7 @@ def time_series_linking(imagedir, segmentationdir, savedir, time_cond, link_logi
         # initialize Plant class
         Plant = funcs.PlantData(imagedir, segmentationdir, savedir, mode='load')
         # Load from existed PlantData instance
-        Plant = pkl.load( open(os.path.join(path_save, 'saved_plant.pkl'), 'rb'))
+        Plant = pkl.load( open(os.path.join(Plant.savedir, 'saved_plant.pkl'), 'rb'))
     
     return Plant
+    
