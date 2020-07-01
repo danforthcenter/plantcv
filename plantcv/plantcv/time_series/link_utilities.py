@@ -186,9 +186,11 @@ def _getmatchedIndex(mask, masks, mode):
 
 
 class PlantData():
-    def __init__(self, imagedir, segmentationdir, savedir, mode='link', suffix='.jpg'):
+    def __init__(self, imagedir, segmentationdir, savedir, pattern_datetime, mode='link', suffix='.jpg'):
 
         self.suffix = suffix
+
+        self.pattern_datetime = pattern_datetime
 
         # store a list of time of the images
         self.time = []
@@ -262,7 +264,7 @@ class PlantData():
 
     def Sorttime(self, time_cond):
         """
-           This function is designed for files with file names which contain a "date-time" part, with an format of YYYY-MM-DD-HH-MM
+           This function is designed for files with file names which contain a "date-time" part, with an user-defined pattern, e.g. YYYY-MM-DD-hh-mm
            Return: loop through the dataset_dir, and add time in time order
         """
 
@@ -271,7 +273,7 @@ class PlantData():
         time_temp = []
         file_name = []
         for filename in filenames:
-            temp = re.search('\d{4}-\d{2}-\d{2}-\d{2}-\d{2}', filename)
+            temp = re.search(self.pattern_datetime, filename)
             if temp:
                 timepart = temp.group()
                 for cond in time_cond:
@@ -288,8 +290,9 @@ class PlantData():
 
     def load_images(self):
         """ Load original images
-            Again this function is also designed for files with file names which contain a "date-time" part, with an format of YYYY-MM-DD-HH-MM
+            This function is also designed for files with file names which contain a "date-time" part, with a user defined pattern
         """
+
         temp_imgs = []
         sz = []
         for pre in self.filename_pre:
@@ -380,15 +383,6 @@ class PlantData():
                 key_t = 't{}'.format(t)
                 self.link_series[key_t] = dict()
                 self.link_series[key_t]['new_leaf'] = np.array(new_leaves)
-                #                 if len(new_leaves) > 1:
-                #                     id_temp = []
-                #                     for new_leav in new_leaves:
-                #                         id_temp.append(unique_id)
-                #                         unique_id = unique_id + 1
-                #                     self.link_series[key_t]['unique_id' = np.array(id_temp)
-                #                 else:
-                #                     self.link_series[key_t]['unique_id'] = np.array(unique_id)
-                #                     unique_id = unique_id + 1
                 id_temp = []
                 for new_leaf in new_leaves:
                     id_temp.append(unique_id)
