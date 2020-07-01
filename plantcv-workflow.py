@@ -99,8 +99,8 @@ def options():
             "value": "none"
         },
         # Device identifier
-        "device": {
-            "label": "devide identifier",
+        "ip": {
+            "label": "ip address of device",
             "datatype": "<class 'str'>",
             "value": "none"
         },
@@ -117,7 +117,7 @@ def options():
             "value": "none"
         },
         # Unique Leaf Identifier
-        "uidleaf":{
+        "uid_leaf":{
             "label": "unique leaf identifier",
             "datatype": "<class 'int'>",
             "value": None
