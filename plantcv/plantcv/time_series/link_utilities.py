@@ -290,21 +290,6 @@ class PlantData():
         """ Load original images
             Again this function is also designed for files with file names which contain a "date-time" part, with an format of YYYY-MM-DD-HH-MM
         """
-        #         filenames = [f for f in os.listdir(self.imagedir) if f.endswith('.jpg')]
-        #         temp_imgs  = []
-        #         sz        = []
-        #         for t in self.time:
-        #             for f in filenames:
-        #                 temp = re.search(t, f)
-        #                 if temp:
-        #                     junk = skimage.io.imread(os.path.join(self.imagedir, f))
-        #                     temp_imgs.append(junk)
-        #                     sz.append(np.min(junk.shape[0:2]))
-        #                     filenames.remove(f)
-        #         self.min_dim = np.min(sz)
-        #         for junk in temp_imgs:
-        #             img = junk[0: self.min_dim, 0: self.min_dim, :] # make all images the same size
-        #             self.images.append(img)
         temp_imgs = []
         sz = []
         for pre in self.filename_pre:
