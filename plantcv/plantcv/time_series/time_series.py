@@ -23,7 +23,7 @@ import copy
 from plantcv.plantcv.time_series import link_utilities as funcs
 # import link_utilities as funcs
 
-def time_series_linking(imagedir, segmentationdir, savedir, time_cond, link_logic=1, class_names=['BG', 'Leaf'],
+def time_series_linking(imagedir, segmentationdir, savedir, pattern_datetime, time_cond, link_logic=1, class_names=['BG', 'Leaf'],
                         mode='link', suffix='.jpg'):
     """
     Function used to get leaf instance growth information after segment leaf instances (using maskrcnn or other methods)
@@ -69,7 +69,7 @@ def time_series_linking(imagedir, segmentationdir, savedir, time_cond, link_logi
     """
     if mode == 'link':
         # initialize Plant class
-        Plant = funcs.PlantData(imagedir, segmentationdir, savedir, mode, suffix)
+        Plant = funcs.PlantData(imagedir, segmentationdir, savedir, pattern_datetime, mode, suffix)
 
         Plant.getpath(Plant.imagedir)
         Plant.Sorttime(time_cond)
@@ -140,8 +140,6 @@ def time_series_linking(imagedir, segmentationdir, savedir, time_cond, link_logi
             ids = Plant.link_series[key_t]['unique_id']
 
             start_time = int(key_t.replace('t', ''))
-            #             if start_time == 40:
-            #                 pdb.set_trace()
             leaves_t = Plant.link_series[key_t]['new_leaf']
             for (unique_id, leaf) in zip(ids, leaves_t):
                 key_leaf = 'leaf{}'.format(leaf)
@@ -161,7 +159,7 @@ def time_series_linking(imagedir, segmentationdir, savedir, time_cond, link_logi
                                                              '{}_{}-{}-{}-{}_{}.png'.format(unique_id, start_time,
                                                                                             start_idx, t, link_leaf[t],
                                                                                             Plant.filename_pre[t])))
-                        #                         pkl.dump(leaf_t, open(os.path.join(path_visual1, '{}_{}_{}_{}_{}_{}.pkl'.format(unique_id, start_time, start_idx, t, link_leaf[t], Plant.filename_pre[t])), 'wb'))
+                        # pkl.dump(leaf_t, open(os.path.join(path_visual1, '{}_{}_{}_{}_{}_{}.pkl'.format(unique_id, start_time, start_idx, t, link_leaf[t], Plant.filename_pre[t])), 'wb'))
 
                         ## 2. show result with an alpha channel
                         # update the mask where there is an alpha channel (alpha=0.5)
