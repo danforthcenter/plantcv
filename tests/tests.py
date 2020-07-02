@@ -6320,8 +6320,13 @@ def test_plantcv_time_series_time_series():
     cache_dir = os.path.join(TEST_TMPDIR, "test_time_series")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    time_cond = ['08-05', '11-05', '17-05', '21-05']
-    Plant_ = pcv.time_series.time_series_linking(TIME_SERIES_TEST_RAW, TIME_SERIES_TEST_INSTANCE_SEG, cache_dir, time_cond, link_logic=1, class_names=['BG', 'Leaf'], mode='link')
+    time_cond        = ['08-05', '11-05', '17-05', '21-05']
+    link_logic       = 1
+    class_names      = ['BG', 'Leaf']
+    pattern_datetime = '\d{4}-\d{2}-\d{2}-\d{2}-\d{2}'  # YYYY-MM-DD-hh-mm
+    mode             = 'link'
+    suffix           = '.jpg'
+    Plant_ = pcv.time_series.time_series_linking(TIME_SERIES_TEST_RAW, TIME_SERIES_TEST_INSTANCE_SEG, cache_dir, pattern_datetime, time_cond, link_logic, class_names, mode, suffix)
     assert len(os.listdir(Plant_.savedir)) > 0
 
 def test_plantcv_visualize_overlay_two_imgs():
