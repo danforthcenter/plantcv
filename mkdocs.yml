@@ -32,6 +32,7 @@ nav:
     - 'Morphology Workflow': morphology_tutorial.md
     - 'Thermal Workflow': thermal_tutorial.md
     - 'Hyperspectral Workflow': hyperspectral_tutorial.md
+    - 'Instance Segmentation': instance_segmentation_tutorial.md
   - 'PlantCV Namespace':
     - 'PlantCV':
       - 'Analyze Color': analyze_color.md
@@ -150,6 +151,7 @@ nav:
         - 'Saturation Threshold': saturation_threshold.md
         - 'Triangle Auto Threshold': triangle_threshold.md
         - 'Texture Threshold': texture_threshold.md
+      - 'Time Series': time_series.md
       - 'Transformation Methods':
           - 'Auto-Detect Color Card': find_color_card.md
           - 'Create Color Card Mask': create_color_card_mask.md
