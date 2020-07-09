@@ -11,7 +11,7 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import color_palette
 
 
-def analyze_stem(stem_objects, segmented_img, mask=None):
+def analyze_stem(stem_objects, segmented_img):
     """ Calculate angle of segments (in degrees) by fitting a linear regression line to segments.
 
         Inputs:
@@ -27,11 +27,24 @@ def analyze_stem(stem_objects, segmented_img, mask=None):
         :return labeled_img: numpy.ndarray
         """
 
+    labeled_img = np.copy(segmented_img)
+    grouped_stem = np.vstack(stem_objects)
+    x, y, width, height = cv2.boundingRect(grouped_stem)
+    stem_base = x + (width/2)
+
 
 
     outputs.add_observation(variable='culm_height', trait='vertical length of stem segments',
                             method='plantcv.plantcv.morphology.analyze_stem', scale='pixels', datatype=float,
-                            value=culm_height, label=None)
+                            value=height, label=None)
+
+
+
+    if params.debug is not None:
+        params.device += 1
+
+        cv2.line(labeled_img, (int(stem_base), y), (int(stem_base), y + height), (0, 255, 0), params.line_thickness)
+
 
     # Auto-increment device
     params.device += 1
@@ -40,5 +53,7 @@ def analyze_stem(stem_objects, segmented_img, mask=None):
         print_image(labeled_img, os.path.join(params.debug_outdir, str(params.device) + '_segmented_angles.png'))
     elif params.debug == 'plot':
         plot_image(labeled_img)
+
+
 
     return labeled_img
