@@ -3287,7 +3287,7 @@ def test_plantcv_color_clustering_use_model():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_learn_color_clustering_train")
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR_CLUSTER_FIRST), -1)
     pcv.params.debug = None
-    spmask = pcv.color_clustering_segmentation(img=img, project_name="temp_testing_multi")
+    spmask = pcv.color_clustering_segmentation(img=img, project_name=TEST_DATA+"\\temp_testing_multi")
     assert len(spmask[1])==6
 
 def test_plantcv_color_clustering_use_model_mask_alias():
@@ -3296,7 +3296,7 @@ def test_plantcv_color_clustering_use_model_mask_alias():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR_CLUSTER_FIRST), -1)
     alias_file = cv2.imread(os.path.join(TEST_DATA, "test_alias_list.txt"))
     pcv.params.debug = None
-    _,spmask = pcv.color_clustering_segmentation(img=img, project_name="temp_testing_multi",alias_file=TEST_DATA+"\\test_alias_list.txt")
+    _,spmask = pcv.color_clustering_segmentation(img=img, project_name=TEST_DATA+"\\temp_testing_multi",alias_file=TEST_DATA+"\\test_alias_list.txt")
     assert ("test_submask" in spmask) == True
 
 
@@ -3344,8 +3344,8 @@ def test_plantcv_learn_color_clustering_train_model_exists():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_learn_color_clustering_train")
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR_CLUSTER_FIRST), -1)
     pcv.params.debug = None
-    plantcv.learn.color_clustering_train(img=img, remove=[[255,255,255]], project_name="temp_testing")
-    assert os.path.exists("temp_testing_GaussianMixtureModel.mdl")
+    plantcv.learn.color_clustering_train(img=img, remove=[[255,255,255]], project_name="tbd")
+    assert os.path.exists("tbd_GaussianMixtureModel.mdl")
 
 def test_plantcv_learn_color_clustering_train_model_multi_img():
     # Test cache directory
@@ -3354,8 +3354,8 @@ def test_plantcv_learn_color_clustering_train_model_multi_img():
     second=(os.path.join(TEST_DATA, TEST_INPUT_COLOR_CLUSTER_SECOND))
     vis=first+","+second
     pcv.params.debug = "print"
-    plantcv.learn.color_clustering_train(img=vis, remove=[[255,255,255]], num_components=6, project_name="temp_testing_multi")
-    assert os.path.exists("temp_testing_GaussianMixtureModel.mdl")
+    plantcv.learn.color_clustering_train(img=vis, remove=[[255,255,255]], num_components=6, project_name="tbd")
+    assert os.path.exists("tbd_GaussianMixtureModel.mdl")
 
 # ####################################
 # Tests for the morphology subpackage
