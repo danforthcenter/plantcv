@@ -3296,7 +3296,7 @@ def test_plantcv_color_clustering_use_model_mask_alias():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR_CLUSTER_FIRST), -1)
     alias_file = cv2.imread(os.path.join(TEST_DATA, "test_alias_list.txt"))
     pcv.params.debug = None
-    _,spmask = pcv.color_clustering_segmentation(img=img, project_name=os.path.join(TEST_DATA, "temp_testing_multi"),alias_file=TEST_DATA+"\\test_alias_list.txt")
+    _,spmask = pcv.color_clustering_segmentation(img=img, project_name=os.path.join(TEST_DATA, "temp_testing_multi"),alias_file=os.path.join(TEST_DATA,"test_alias_list.txt"))
     assert ("test_submask" in spmask) == True
 
 
