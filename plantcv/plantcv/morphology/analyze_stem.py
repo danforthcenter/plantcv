@@ -32,15 +32,9 @@ def analyze_stem(stem_objects, segmented_img, mask=mask):
     # Find vertical height of the stem by measuring bounding box
     stem_x, stem_y, width, height = cv2.boundingRect(grouped_stem)
 
-    # Set bounds for regression lines to get drawn
-    x_min = 0
-    x_max = img_x
-
     # Calculate stem angle
     [vx, vy, x, y] = cv2.fitLine(grouped_stem, cv2.DIST_L2, 0, 0.01, 0.01)
     slope = -vy / vx
-    intercept1 = int(((x - x_min) * slope) + y)
-    intercept2 = int(((x - x_max) * slope) + y)
 
     # Calculate stem path length
     stem_length = cv2.arcLength(grouped_stem, False) / 2
@@ -60,6 +54,10 @@ def analyze_stem(stem_objects, segmented_img, mask=mask):
         # draw culm_height
         cv2.line(labeled_img, (int(stem_x), stem_y), (int(stem_x), stem_y + height), (0, 255, 0), params.line_thickness)
         # draw combined stem angle
+        x_min = 0 # Set bounds for regression lines to get drawn
+        x_max = img_x
+        intercept1 = int(((x - x_min) * slope) + y)
+        intercept2 = int(((x - x_max) * slope) + y)
         if slope > 1000000 or slope < -1000000:
             print("Slope  is ", slope, " and cannot be plotted.")
         else:
