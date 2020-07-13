@@ -556,7 +556,7 @@ def test_plantcv_parallel_process_results_invalid_json():
 
 # ####################################################################################################################
 # ########################################### PLANTCV MAIN PACKAGE ###################################################
-matplotlib.use('Template', warn=False)
+# matplotlib.use('Template', warn=False)
 
 TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 HYPERSPECTRAL_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "hyperspectral_data")
@@ -5537,6 +5537,71 @@ def test_plantcv_visualize_colorspaces_bad_input():
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.colorspaces(rgb_img=img)
 
+# case1: only the correct directory of images is provided
+def test_plantcv_visualize_time_lapse_video_case1():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_case1')
+    os.mkdir(cache_dir)
+
+    pcv.visualize.time_lapse_video(img_directory=TIME_SERIES_TEST_RAW, fps=29.97, name_video='time_lapse_video_case1', path_video=cache_dir, display='off')
+    assert os.path.exists(os.path.join(cache_dir, 'time_lapse_video_case1.mp4'))
+
+# case2: the correct directory of images as well as the correct suffix of images is provided
+def test_plantcv_visualize_time_lapse_video_case2():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_case2')
+    os.mkdir(cache_dir)
+    pcv.visualize.time_lapse_video(img_directory=TIME_SERIES_TEST_RAW, suffix_img='.jpg', fps=29.97, name_video='time_lapse_video_case2', path_video=cache_dir, display='off')
+    assert os.path.exists(os.path.join(cache_dir, 'time_lapse_video_case2.mp4'))
+
+# case 3: the correct directory of images as well as the correct list of files are provided
+def test_plantcv_visualize_time_lapse_video_case3():
+    # Test cache directoy
+    cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_case3')
+    os.mkdir(cache_dir)
+    list_img = [img for img in os.listdir(TIME_SERIES_TEST_RAW) if img.endswith('.jpg')]
+    pcv.visualize.time_lapse_video(img_directory=TIME_SERIES_TEST_RAW, list_img=list_img, fps=29.97, name_video='time_lapse_video_case3', path_video=cache_dir, display='off')
+    assert os.path.exists(os.path.join(cache_dir, 'time_lapse_video_case3.mp4'))
+
+# case 4: the correct directory of images as well as a list of files are provided, however the list is incorrect (contains correct part, but also contains incorrect part)
+def test_plantcv_visualize_time_lapse_video_case4():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_case4')
+    os.mkdir(cache_dir)
+    list_img = [img for img in os.listdir(TIME_SERIES_TEST_RAW) if img.endswith('.jpg')]
+    list_img.append('junk.jpg')
+    with pytest.warns(UserWarning):
+        pcv.visualize.time_lapse_video(img_directory=TIME_SERIES_TEST_RAW, list_img=list_img, fps=29.97, name_video='time_lapse_video_case4', path_video=cache_dir, display='off')
+        # warnings.warn("my warning", UserWarning)
+        assert os.path.exists(os.path.join(cache_dir, 'time_lapse_video_case4.mp4'))
+
+def test_plantcv_visualize_time_lapse_video_bad_dir():
+    # Test cachae directory
+    cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_bad_dir')
+    os.mkdir(cache_dir)
+    with pytest.raises(RuntimeError):
+        pcv.visualize.time_lapse_video(img_directory=TIME_SERIES_TEST_DIR, fps=29.97, path_video=cache_dir, display='off')
+
+def test_plantcv_visualize_time_lapse_video_bad_suffix():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_bad_suffix')
+    os.mkdir(cache_dir)
+    with pytest.raises(RuntimeError):
+        pcv.visualize.time_lapse_video(img_directory=TIME_SERIES_TEST_RAW, suffix_img='.png', fps=29.97, path_video=None, display='on')
+
+# the correct directory of images as well as a list of files are provided, however the list is incorrect (none of the files contained is correct)
+def test_plantcv_visualize_time_lapse_video_bad_list():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_bad_list')
+    os.mkdir(cache_dir)
+    list_img_ = [img for img in os.listdir(TIME_SERIES_TEST_RAW) if img.endswith('.jpg')]
+    list_img  = [img.replace('.jpg', '_.jpg') for img in list_img_]
+    with pytest.raises(RuntimeError):
+        pcv.visualize.time_lapse_video(img_directory=TIME_SERIES_TEST_RAW, list_img=list_img, fps=29.97, path_video=cache_dir, display='off')
+
+# ##############################
+# Tests for the time_series subpackage
+# ##############################
 def test_plantcv_time_series_time_series():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_time_series")
