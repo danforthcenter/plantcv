@@ -157,6 +157,7 @@ nav:
           - 'Colorspaces': visualize_colorspace.md
           - 'Histogram': visualize_histogram.md
           - 'Pseudocolor': visualize_pseudocolor.md
+          - 'Time Lapse Video': visualize_time_lapse_video.md
       - 'Watershed Segmentation': watershed.md
       - 'White balance': white_balance.md
       - 'Within Frame': within_frame.md
