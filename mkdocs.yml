@@ -175,6 +175,7 @@ nav:
           - 'Histogram': visualize_histogram.md
           - 'Overlay Images': visualize_ovelay_two_imgs.md
           - 'Pseudocolor': visualize_pseudocolor.md
+          - 'Time Lapse Video': visualize_time_lapse_video.md
       - 'Watershed Segmentation': watershed.md
       - 'White balance': white_balance.md
       - 'Within Frame': within_frame.md
