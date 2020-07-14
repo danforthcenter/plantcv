@@ -3631,6 +3631,24 @@ def test_plantcv_morphology_segment_combine_bad_input():
         _, new_objects = pcv.morphology.segment_combine([0.5, 1.5], seg_objects, skel)
 
 
+def test_plantcv_morphology_analyze_stem():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_analyze_stem")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
+    pruned, segmented_img, _ = pcv.morphology.prune(skel_img=skeleton, size=6)
+    segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=pruned)
+    leaf_obj, stem_obj = pcv.morphology.segment_sort(pruned, seg_objects)
+    pcv.params.debug = "plot"
+    _ = pcv.morphology.analyze_stem(rgb_img=segmented_img, stem_objects=stem_obj)
+    pcv.params.debug = "print"
+    _ = pcv.morphology.analyze_stem(rgb_img=segmented_img, stem_objects=stem_obj)
+    pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    assert pcv.outputs.observations['stem_angle']['value'] == 20
+    pcv.outputs.clear()
+
+
 # ########################################
 # Tests for the hyperspectral subpackage
 # ########################################
