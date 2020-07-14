@@ -13,7 +13,7 @@ from plantcv.plantcv import image_subtract
 from plantcv.plantcv.morphology import find_branch_pts
 
 
-def segment_skeleton(skel_img, mask=None, ordered_colors=True):
+def segment_skeleton_new(skel_img, mask=None, ordered_colors=True):
     """ Segment a skeleton image into pieces
 
         Inputs:
