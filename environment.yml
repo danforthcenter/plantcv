@@ -11,7 +11,7 @@ dependencies:
   - scikit-learn
   - plotnine
   - nb_conda
-  - opencv<4, >=3.4
+  - opencv<3.10, >=3.4
 channels:
   - defaults
   - conda-forge
