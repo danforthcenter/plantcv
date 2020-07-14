@@ -13,12 +13,14 @@ from plantcv.plantcv import image_subtract
 from plantcv.plantcv.morphology import find_branch_pts
 
 
-def segment_skeleton(skel_img, mask=None):
+def segment_skeleton_new(skel_img, mask=None, ordered_colors=True):
     """ Segment a skeleton image into pieces
 
         Inputs:
-        skel_img      = Skeletonized image
-        mask          = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
+        skel_img         = Skeletonized image
+        mask             = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
+        ordered_colors   = if True, color gradient will correlate with segment ID number,
+                           if False colors will be randomly assigned to segments.
 
         Returns:
         segmented_img       = Segmented debugging image
