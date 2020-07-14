@@ -44,7 +44,7 @@ def analyze_stem(rgb_img, stem_objects):
                             value=height, label=None)
     outputs.add_observation(variable='stem_angle', trait='angle of combined stem object',
                             method='plantcv.plantcv.morphology.analyze_stem', scale='degrees', datatype=float,
-                            value=slope, label=None)
+                            value=float(slope), label=None)
     outputs.add_observation(variable='stem_length', trait='path length of combined stem object',
                             method='plantcv.plantcv.morphology.analyze_stem', scale='None', datatype=float,
                             value=stem_length, label=None)

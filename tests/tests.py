@@ -3644,9 +3644,23 @@ def test_plantcv_morphology_analyze_stem():
     _ = pcv.morphology.analyze_stem(rgb_img=segmented_img, stem_objects=stem_obj)
     pcv.params.debug = "print"
     _ = pcv.morphology.analyze_stem(rgb_img=segmented_img, stem_objects=stem_obj)
-    assert pcv.outputs.observations['stem_angle']['value'] == -12.531776
+    assert pcv.outputs.observations['stem_angle']['value'] == -12.531776428222656
     pcv.outputs.clear()
 
+
+def test_plantcv_morphology_analyze_stem_bad_angle():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
+    pruned, _, _ = pcv.morphology.prune(skel_img=skeleton, size=5)
+    segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=pruned)
+    leaf_obj, stem_obj = pcv.morphology.segment_sort(pruned, seg_objects)
+    stem_obj = [leaf_obj[0], leaf_obj[10]]
+    _ = pcv.morphology.analyze_stem(rgb_img=segmented_img, stem_objects=stem_obj)
+    assert pcv.outputs.observations['stem_angle']['value'] == -1.0688458681106567
+    pcv.outputs.clear()
 
 # ########################################
 # Tests for the hyperspectral subpackage
