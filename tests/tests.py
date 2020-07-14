@@ -3644,8 +3644,7 @@ def test_plantcv_morphology_analyze_stem():
     _ = pcv.morphology.analyze_stem(rgb_img=segmented_img, stem_objects=stem_obj)
     pcv.params.debug = "print"
     _ = pcv.morphology.analyze_stem(rgb_img=segmented_img, stem_objects=stem_obj)
-    pcv.print_results(os.path.join(cache_dir, "results.txt"))
-    assert pcv.outputs.observations['stem_angle']['value'] == 20
+    assert pcv.outputs.observations['stem_angle']['value'] == -12.531776
     pcv.outputs.clear()
 
 
