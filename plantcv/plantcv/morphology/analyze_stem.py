@@ -9,26 +9,26 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 
 
-def analyze_stem(stem_objects, segmented_img, mask=mask):
+def analyze_stem(stem_objects, rgb_img):
     """ Calculate angle of segments (in degrees) by fitting a linear regression line to segments.
 
         Inputs:
         stem_objects  = List of stem segments (output from segment_sort function)
-        segmented_img = Segmented image to plot debug image
-        mask          =
+        rgb_img       = RGB image to plot debug image
 
         Returns:
         labeled_img    = Stem analysis debugging image
 
 
         :param stem_objects: list
-        :param segmented_img: numpy.ndarray
+        :param rgb_img: numpy.ndarray
         :return labeled_img: numpy.ndarray
         """
 
-    labeled_img = np.copy(segmented_img)
+    labeled_img = np.copy(rgb_img)
     img_x, img_y, _ = np.shape(labeled_img)
     grouped_stem = np.vstack(stem_objects)
+
     # Find vertical height of the stem by measuring bounding box
     stem_x, stem_y, width, height = cv2.boundingRect(grouped_stem)
 
@@ -51,9 +51,9 @@ def analyze_stem(stem_objects, segmented_img, mask=mask):
 
     if params.debug is not None:
         params.device += 1
-        # draw culm_height
+        # Draw culm_height
         cv2.line(labeled_img, (int(stem_x), stem_y), (int(stem_x), stem_y + height), (0, 255, 0), params.line_thickness)
-        # draw combined stem angle
+        # Draw combined stem angle
         x_min = 0 # Set bounds for regression lines to get drawn
         x_max = img_x
         intercept1 = int(((x - x_min) * slope) + y)
