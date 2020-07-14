@@ -1,3 +1,5 @@
+# Break skeleton into segments
+
 import os
 import cv2
 from plantcv.plantcv import dilate
@@ -10,19 +12,18 @@ from plantcv.plantcv import image_subtract
 from plantcv.plantcv.morphology import find_branch_pts
 
 
-def segment_skeleton_new(skel_img, mask=None, ordered_colors=True):
+def segment_skeleton(skel_img, mask=None):
     """ Segment a skeleton image into pieces
+
         Inputs:
-        skel_img         = Skeletonized image
-        mask             = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
-        ordered_colors   = if True, color gradient will correlate with segment ID number, 
-                           if False colors will be randomly assigned to segments. 
-                           
+        skel_img      = Skeletonized image
+        mask          = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
+
         Returns:
         segmented_img       = Segmented debugging image
         segment_objects     = list of contours
         segment_hierarchies = contour hierarchy list
-        
+
         :param skel_img: numpy.ndarray
         :param mask: numpy.ndarray
         :return segmented_img: numpy.ndarray
@@ -48,19 +49,12 @@ def segment_skeleton_new(skel_img, mask=None, ordered_colors=True):
     params.debug = debug
 
     # Color each segment a different color
-    # rand_color = color_palette(len(segment_objects))
+    rand_color = color_palette(len(segment_objects))
 
     if mask is None:
         segmented_img = skel_img.copy()
     else:
         segmented_img = mask.copy()
-        
-    rand_color = color_palette(len(segment_objects))
-
-    if ordered_colors:
-        rand_color = rand_color
-    else:
-        np.random.shuffle(rand_color)
 
     segmented_img = cv2.cvtColor(segmented_img, cv2.COLOR_GRAY2RGB)
     for i, cnt in enumerate(segment_objects):
