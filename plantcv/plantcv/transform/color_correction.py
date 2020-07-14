@@ -621,7 +621,11 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
             center, wh, angle = cv2.minAreaRect(c)  # Rotated rectangle
             mwidth.append(wh[0])
             mheight.append(wh[1])
-            mwhratio.append(wh[0] / wh[1])
+            # In different versions of OpenCV, width and height can be listed in a different order
+            # To normalize the ratio we sort them and take the ratio of the longest / shortest
+            wh_sorted = list(wh)
+            wh_sorted.sort()
+            mwhratio.append(wh_sorted[1] / wh_sorted[0])
             msquare.append(len(approx))
             # If the approx contour has 4 points then we can assume we have 4-sided objects
             if len(approx) == 4 or len(approx) == 5:
