@@ -11,6 +11,12 @@ Find branch/junction points in a skeletonized image.
     - mask - Binary mask used for debugging image (optional). If provided the debug image will be overlaid on the mask.
 - **Context:**
     - Identifies branch/junction points in a skeleton image
+    
+- **Output data stored:** Data ('branch_pts') 
+    automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
+    All data stored in the Outputs class gets printed out while running [print_results](print_results.md) but
+    these data can always get accessed during a workflow. For more detail about data output see 
+    [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 **Skeleton Image**
 
