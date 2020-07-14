@@ -2,6 +2,7 @@
 
 import os
 import cv2
+import numpy as np
 from plantcv.plantcv import dilate
 from plantcv.plantcv import params
 from plantcv.plantcv import plot_image
@@ -50,6 +51,11 @@ def segment_skeleton(skel_img, mask=None):
 
     # Color each segment a different color
     rand_color = color_palette(len(segment_objects))
+
+    if ordered_colors:
+        rand_color = rand_color
+    else:
+        np.random.shuffle(rand_color)
 
     if mask is None:
         segmented_img = skel_img.copy()
