@@ -6,4 +6,4 @@ scipy
 scikit-image
 scikit-learn
 plotnine
-opencv-python<3.10, >=3.4
+opencv-python<4, >=3.4
