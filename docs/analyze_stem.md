@@ -1,7 +1,7 @@
 ## Analyze Stem Objects
 
-Primary, or stem, objects identified during workflows that examine the [mmorphology](morphology_tutorial.md) of 
-plants or plant organs can have specific characteristics measured about the stem segments of a skeleton. These measurement
+Primary, or stem, objects identified during workflows that examine the [morphology](morphology_tutorial.md) of 
+plants or plant organs can have specific characteristics measured about the stem segments of a skeleton.
 
 **plantcv.morphology.analyze_stem**(*rgb_img, stem_objects*)
 
@@ -18,7 +18,8 @@ plants or plant organs can have specific characteristics measured about the stem
 
 - **Output data stored:** Data ('stem_angle', 'stem_height', and 'stem_length') 
     automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
-    These data can always get accessed during a workflow. For more detail about data output see 
+    All data stored in the Outputs class gets printed out while running [print_results](print_results.md) but
+    these data can always get accessed during a workflow. For more detail about data output see 
     [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
     
  ```python
@@ -40,10 +41,10 @@ stem_angle = pcv.outputs.observations['stem_angle']['value']
 
 **Image 1 with identified stem characteristics**
 
-![Screenshot](img/documentation_images/.jpg)
+![Screenshot](img/documentation_images/analyze_stem/143_segmented_angles.jpg)
 
 **Image 2 with identified stem characteristics**
 
-![Screenshot](img/documentation_images/)
+![Screenshot](img/documentation_images/analyze_stem/218_segmented_angles.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/analyze_object.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/analyze_stem.py)
