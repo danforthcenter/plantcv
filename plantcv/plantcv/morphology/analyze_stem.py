@@ -9,19 +9,19 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 
 
-def analyze_stem(stem_objects, rgb_img):
+def analyze_stem(rgb_img, stem_objects):
     """ Calculate angle of segments (in degrees) by fitting a linear regression line to segments.
 
         Inputs:
-        stem_objects  = List of stem segments (output from segment_sort function)
         rgb_img       = RGB image to plot debug image
+        stem_objects  = List of stem segments (output from segment_sort function)
 
         Returns:
         labeled_img    = Stem analysis debugging image
 
 
-        :param stem_objects: list
         :param rgb_img: numpy.ndarray
+        :param stem_objects: list
         :return labeled_img: numpy.ndarray
         """
 
