@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import dilate
+from plantcv.plantcv import outputs
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 from plantcv.plantcv import find_objects
@@ -82,9 +83,21 @@ def find_branch_pts(skel_img, mask=None):
                          hierarchy=skel_hier)
 
     branch_objects, _ = find_objects(branch_pts_img, branch_pts_img)
+
+    # Initialize list of tip data points
+    branch_list = []
+    branch_labels = []
     for i in branch_objects:
         x, y = i.ravel()[:2]
+        branch_list.append((x, y))
+        branch_labels.append(i)
         cv2.circle(branch_plot, (x, y), params.line_thickness, (255, 0, 255), -1)
+
+
+
+    outputs.add_observation(variable='branch_pts', trait='list of tip coordinates identified from a skeleton',
+                            method='plantcv.plantcv.morphology.find_branch_pts', scale='pixels', datatype=list,
+                            value=branch_list, label=branch_labels)
 
     # Reset debug mode
     params.debug = debug
