@@ -3657,9 +3657,11 @@ def test_plantcv_morphology_analyze_stem_bad_angle():
     pruned, _, _ = pcv.morphology.prune(skel_img=skeleton, size=5)
     segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=pruned)
     leaf_obj, stem_obj = pcv.morphology.segment_sort(pruned, seg_objects)
-    stem_obj = [leaf_obj[0], leaf_obj[10]]
+    #print([stem_obj[3]])
+    #stem_obj = [stem_obj[3]]
+    stem_obj = [[[[1116, 1728]], [[1116, 1]]]]
     _ = pcv.morphology.analyze_stem(rgb_img=segmented_img, stem_objects=stem_obj)
-    assert pcv.outputs.observations['stem_angle']['value'] == -1.0688458681106567
+    assert pcv.outputs.observations['stem_angle']['value'] == 22877334.0
     pcv.outputs.clear()
 
 # ########################################
