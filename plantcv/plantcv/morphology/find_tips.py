@@ -70,9 +70,9 @@ def find_tips(skel_img, mask=None):
     # Initialize list of tip data points
     tip_list = []
     tip_labels = []
-    for i in tip_objects:
-        x, y = i.ravel()[:2]
-        tip_list.append((x, y))
+    for i, tip in enumerate(tip_objects):
+        x, y = tip.ravel()[:2]
+        tip_list.append((int(x), int(y)))
         tip_labels.append(i)
         cv2.circle(tip_plot, (x, y), params.line_thickness, (0, 255, 0), -1)
 

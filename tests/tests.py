@@ -3348,6 +3348,7 @@ def test_plantcv_morphology_check_cycles():
     _ = pcv.morphology.check_cycles(mask)
     pcv.params.debug = None
     _ = pcv.morphology.check_cycles(mask)
+    print(pcv.outputs.observations["num_cycles"]["value"])
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert pcv.outputs.observations['num_cycles']['value'] == 1
     pcv.outputs.clear()
@@ -3445,6 +3446,7 @@ def test_plantcv_morphology_segment_angle():
     _ = pcv.morphology.segment_angle(segmented_img=segmented_img, objects=segment_objects)
     pcv.params.debug = "plot"
     _ = pcv.morphology.segment_angle(segmented_img, segment_objects)
+    print(pcv.outputs.observations)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert len(pcv.outputs.observations['segment_angle']['value']) == 22
     pcv.outputs.clear()

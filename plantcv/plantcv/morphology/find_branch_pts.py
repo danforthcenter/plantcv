@@ -87,9 +87,9 @@ def find_branch_pts(skel_img, mask=None):
     # Initialize list of tip data points
     branch_list = []
     branch_labels = []
-    for i in branch_objects:
-        x, y = i.ravel()[:2]
-        branch_list.append((x, y))
+    for i, branch in enumerate(branch_objects):
+        x, y = branch.ravel()[:2]
+        branch_list.append((float(x), float(y)))
         branch_labels.append(i)
         cv2.circle(branch_plot, (x, y), params.line_thickness, (255, 0, 255), -1)
 

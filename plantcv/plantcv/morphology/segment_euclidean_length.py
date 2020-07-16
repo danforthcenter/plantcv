@@ -62,7 +62,7 @@ def segment_euclidean_length(segmented_img, objects):
         cv2.line(labeled_img, points[0], points[1], rand_color[i], 1)
 
         # Calculate euclidean distance between tips of each contour
-        segment_lengths.append(euclidean(points[0], points[1]))
+        segment_lengths.append(float(euclidean(points[0], points[1])))
 
     segment_ids = []
     # Reset debug mode
