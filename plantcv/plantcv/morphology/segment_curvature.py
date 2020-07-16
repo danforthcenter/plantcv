@@ -44,7 +44,7 @@ def segment_curvature(segmented_img, objects):
     _ = segment_path_length(segmented_img, objects)
     eu_lengths = outputs.observations['segment_eu_length']['value']
     path_lengths = outputs.observations['segment_path_length']['value']
-    curvature_measure = [float(x/y) for x, y in zip(path_lengths, eu_lengths)]
+    curvature_measure = [float(x / y) for x, y in zip(path_lengths, eu_lengths)]
     rand_color = color_palette(len(objects))
 
     for i, cnt in enumerate(objects):

@@ -24,7 +24,7 @@ def analyze_stem(rgb_img, stem_objects):
         :param stem_objects: list
         :return labeled_img: numpy.ndarray
         """
-
+    params.device += 1
     labeled_img = np.copy(rgb_img)
     img_x, img_y, _ = np.shape(labeled_img)
     grouped_stem = np.vstack(stem_objects)
@@ -50,7 +50,6 @@ def analyze_stem(rgb_img, stem_objects):
                             value=stem_length, label=None)
 
     if params.debug is not None:
-        params.device += 1
         # Draw culm_height
         cv2.line(labeled_img, (int(stem_x), stem_y), (int(stem_x), stem_y + height), (0, 255, 0), params.line_thickness)
         # Draw combined stem angle
