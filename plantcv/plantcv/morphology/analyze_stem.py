@@ -23,7 +23,7 @@ def analyze_stem(rgb_img, stem_objects):
         :param rgb_img: numpy.ndarray
         :param stem_objects: list
         :return labeled_img: numpy.ndarray
-        """
+    """
     params.device += 1
     labeled_img = np.copy(rgb_img)
     img_x, img_y, _ = np.shape(labeled_img)
