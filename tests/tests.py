@@ -1269,6 +1269,8 @@ def test_plantcv_closing_bad_input():
 
 
 def test_plantcv_cluster_contours():
+    # Reset the saved color scale (can be saved between tests)
+    pcv.params.saved_color_scale = None
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_cluster_contours")
     os.mkdir(cache_dir)
@@ -1296,6 +1298,8 @@ def test_plantcv_cluster_contours():
 
 
 def test_plantcv_cluster_contours_grayscale_input():
+    # Reset the saved color scale (can be saved between tests)
+    pcv.params.saved_color_scale = None
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_cluster_contours_grayscale_input")
     os.mkdir(cache_dir)
@@ -1322,6 +1326,8 @@ def test_plantcv_cluster_contours_grayscale_input():
 
 
 def test_plantcv_cluster_contours_splitimg():
+    # Reset the saved color scale (can be saved between tests)
+    pcv.params.saved_color_scale = None
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_cluster_contours_splitimg")
     os.mkdir(cache_dir)
@@ -1366,7 +1372,7 @@ def test_plantcv_cluster_contours_splitimg():
 
 
 def test_plantcv_color_palette():
-    # Return a color palette in random order
+    # Reset the saved color scale (can be saved between tests)
     pcv.params.saved_color_scale = None
     # Return a color palette
     colors = pcv.color_palette(10)
@@ -1374,8 +1380,9 @@ def test_plantcv_color_palette():
 
 
 def test_plantcv_color_palette_random():
-    # Return a color palette in random order
+    # Reset the saved color scale (can be saved between tests)
     pcv.params.saved_color_scale = None
+    # Return a color palette in random order
     pcv.params.color_sequence = "random"
     colors = pcv.color_palette(10)
     assert np.shape(colors) == (10, 3)
@@ -2944,6 +2951,8 @@ def test_plantcv_stdev_filter():
 
 
 def test_plantcv_watershed_segmentation():
+    # Reset the saved color scale (can be saved between tests)
+    pcv.params.saved_color_scale = None
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_watershed_segmentation")
     os.mkdir(cache_dir)
@@ -3258,6 +3267,8 @@ def test_plantcv_background_subtraction_different_sizes():
 
 
 def test_plantcv_spatial_clustering_dbscan():
+    # Reset the saved color scale (can be saved between tests)
+    pcv.params.saved_color_scale = None
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_spatial_clustering_dbscan")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
@@ -3270,6 +3281,8 @@ def test_plantcv_spatial_clustering_dbscan():
 
 
 def test_plantcv_spatial_clustering_optics():
+    # Reset the saved color scale (can be saved between tests)
+    pcv.params.saved_color_scale = None
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_spatial_clustering_optics")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
@@ -3280,6 +3293,8 @@ def test_plantcv_spatial_clustering_optics():
 
 
 def test_plantcv_spatial_clustering_badinput():
+    # Reset the saved color scale (can be saved between tests)
+    pcv.params.saved_color_scale = None
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI_MASK), -1)
     pcv.params.debug = None
     with pytest.raises(NameError):
