@@ -1366,6 +1366,8 @@ def test_plantcv_cluster_contours_splitimg():
 
 
 def test_plantcv_color_palette():
+    # Return a color palette in random order
+    pcv.params.saved_color_scale = None
     # Return a color palette
     colors = pcv.color_palette(10)
     assert np.shape(colors) == (10, 3)
