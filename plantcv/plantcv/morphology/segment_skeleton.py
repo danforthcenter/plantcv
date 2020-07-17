@@ -2,7 +2,6 @@
 
 import os
 import cv2
-import numpy as np
 from plantcv.plantcv import dilate
 from plantcv.plantcv import params
 from plantcv.plantcv import plot_image
@@ -13,25 +12,21 @@ from plantcv.plantcv import image_subtract
 from plantcv.plantcv.morphology import find_branch_pts
 
 
-def segment_skeleton(skel_img, mask=None, ordered_colors=True):
+def segment_skeleton(skel_img, mask=None):
     """ Segment a skeleton image into pieces
 
         Inputs:
         skel_img         = Skeletonized image
         mask             = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
-        ordered_colors   = if True, color gradient will correlate with segment ID number,
-                           if False colors will be randomly assigned to segments.
 
         Returns:
         segmented_img       = Segmented debugging image
         segment_objects     = list of contours
-        segment_hierarchies = contour hierarchy list
 
         :param skel_img: numpy.ndarray
         :param mask: numpy.ndarray
         :return segmented_img: numpy.ndarray
         :return segment_objects: list
-        "return segment_hierarchies: numpy.ndarray
         """
 
     # Store debug
@@ -55,11 +50,6 @@ def segment_skeleton(skel_img, mask=None, ordered_colors=True):
 
     # Color each segment a different color
     rand_color = color_palette(len(segment_objects))
-
-    if ordered_colors:
-        rand_color = rand_color
-    else:
-        np.random.shuffle(rand_color)
 
     if mask is None:
         segmented_img = skel_img.copy()
