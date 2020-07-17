@@ -556,7 +556,7 @@ def test_plantcv_parallel_process_results_invalid_json():
 
 # ####################################################################################################################
 # ########################################### PLANTCV MAIN PACKAGE ###################################################
-# matplotlib.use('Template', warn=False)
+matplotlib.use('Template', warn=False)
 
 TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 HYPERSPECTRAL_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "hyperspectral_data")
@@ -5542,17 +5542,18 @@ def test_plantcv_visualize_time_lapse_video_case1():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_case1')
     os.mkdir(cache_dir)
-
-    pcv.visualize.time_lapse_video(img_directory=TIME_SERIES_TEST_RAW, fps=29.97, name_video='time_lapse_video_case1', path_video=cache_dir, display='off')
-    assert os.path.exists(os.path.join(cache_dir, 'time_lapse_video_case1.mp4'))
+    with pytest.warns(UserWarning):
+        _, _ = pcv.visualize.time_lapse_video(img_directory=TIME_SERIES_TEST_RAW, fps=29.97, name_video='time_lapse_video_case1', path_video=cache_dir, display='off')
+        assert os.path.exists(os.path.join(cache_dir, 'time_lapse_video_case1.mp4'))
 
 # case2: the correct directory of images as well as the correct suffix of images is provided
 def test_plantcv_visualize_time_lapse_video_case2():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_case2')
     os.mkdir(cache_dir)
-    pcv.visualize.time_lapse_video(img_directory=TIME_SERIES_TEST_RAW, suffix_img='.jpg', fps=29.97, name_video='time_lapse_video_case2', path_video=cache_dir, display='off')
-    assert os.path.exists(os.path.join(cache_dir, 'time_lapse_video_case2.mp4'))
+    with pytest.warns(UserWarning):
+        pcv.visualize.time_lapse_video(img_directory=TIME_SERIES_TEST_RAW, suffix_img='.jpg', fps=29.97, name_video='time_lapse_video_case2', path_video=cache_dir, display='off')
+        assert os.path.exists(os.path.join(cache_dir, 'time_lapse_video_case2.mp4'))
 
 # case 3: the correct directory of images as well as the correct list of files are provided
 def test_plantcv_visualize_time_lapse_video_case3():
@@ -5560,8 +5561,9 @@ def test_plantcv_visualize_time_lapse_video_case3():
     cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_case3')
     os.mkdir(cache_dir)
     list_img = [img for img in os.listdir(TIME_SERIES_TEST_RAW) if img.endswith('.jpg')]
-    pcv.visualize.time_lapse_video(img_directory=TIME_SERIES_TEST_RAW, list_img=list_img, fps=29.97, name_video='time_lapse_video_case3', path_video=cache_dir, display='off')
-    assert os.path.exists(os.path.join(cache_dir, 'time_lapse_video_case3.mp4'))
+    with pytest.warns(UserWarning):
+        pcv.visualize.time_lapse_video(img_directory=TIME_SERIES_TEST_RAW, list_img=list_img, fps=29.97, name_video='time_lapse_video_case3', path_video=cache_dir, display='off')
+        assert os.path.exists(os.path.join(cache_dir, 'time_lapse_video_case3.mp4'))
 
 # case 4: the correct directory of images as well as a list of files are provided, however the list is incorrect (contains correct part, but also contains incorrect part)
 def test_plantcv_visualize_time_lapse_video_case4():
@@ -5572,7 +5574,6 @@ def test_plantcv_visualize_time_lapse_video_case4():
     list_img.append('junk.jpg')
     with pytest.warns(UserWarning):
         pcv.visualize.time_lapse_video(img_directory=TIME_SERIES_TEST_RAW, list_img=list_img, fps=29.97, name_video='time_lapse_video_case4', path_video=cache_dir, display='off')
-        # warnings.warn("my warning", UserWarning)
         assert os.path.exists(os.path.join(cache_dir, 'time_lapse_video_case4.mp4'))
 
 def test_plantcv_visualize_time_lapse_video_bad_dir():
