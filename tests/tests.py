@@ -556,7 +556,7 @@ def test_plantcv_parallel_process_results_invalid_json():
 
 # ####################################################################################################################
 # ########################################### PLANTCV MAIN PACKAGE ###################################################
-matplotlib.use('Template', warn=False)
+matplotlib.use('Template')
 
 TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 HYPERSPECTRAL_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "hyperspectral_data")
