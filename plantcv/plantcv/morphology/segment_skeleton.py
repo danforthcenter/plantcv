@@ -34,6 +34,8 @@ def segment_skeleton(skel_img, mask=None):
     # Store debug
     debug = params.debug
     params.debug = None
+    # Remove any previously saved color palettes, we need a new one for segment analysis
+    params.saved_color_scale = None
 
     # Find branch points
     bp = find_branch_pts(skel_img)
