@@ -5569,6 +5569,8 @@ def test_plantcv_visualize_histogram():
 
 
 def test_plantcv_visualize_clustered_contours():
+    # Reset the saved color scale (can be saved between tests)
+    pcv.params.saved_color_scale = None
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_plot_hist")
     os.mkdir(cache_dir)
