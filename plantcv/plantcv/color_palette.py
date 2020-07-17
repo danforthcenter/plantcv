@@ -1,5 +1,6 @@
 # Color palette returns an array of colors (rainbow)
 
+from matplotlib import pyplot as plt
 import numpy as np
 from plantcv.plantcv import params
 
@@ -16,7 +17,6 @@ def color_palette(num):
     :param num: int
     :return colors: list
     """
-    from matplotlib import pyplot as plt
     # If a previous palette is saved, return it
     if params.saved_color_scale is not None:
         return params.saved_color_scale
