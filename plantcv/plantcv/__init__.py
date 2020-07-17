@@ -8,21 +8,35 @@ observations = {}
 
 
 class Params:
-    """PlantCV parameters class
-    Keyword arguments/parameters:
-    device       = device number. Used to count steps in the pipeline. (default: 0)
-    debug        = None, print, or plot. Print = save to file, Plot = print to screen. (default: None)
-    debug_outdir = Debug images output directory. (default: .)
-    :param device: int
-    :param debug: str
-    :param debug_outdir: str
-    :param line_thickness: numeric
-    :param dpi: int
-    :param text_size: float
-    """
+    """PlantCV parameters class."""
 
     def __init__(self, device=0, debug=None, debug_outdir=".", line_thickness=5, dpi=100, text_size=0.55,
-                 text_thickness=2):
+                 text_thickness=2, color_scale="gist_rainbow", color_sequence="sequential", saved_color_scale=None):
+        """Initialize parameters.
+
+        Keyword arguments/parameters:
+        device            = Device number. Used to count steps in the pipeline. (default: 0)
+        debug             = None, print, or plot. Print = save to file, Plot = print to screen. (default: None)
+        debug_outdir      = Debug images output directory. (default: .)
+        line_thickness    = Width of line drawings. (default: 5)
+        dpi               = Figure plotting resolution, dots per inch. (default: 100)
+        text_size         = Size of plotting text. (default: 0.55)
+        text_thickness    = Thickness of plotting text. (default: 2)
+        color_scale       = Name of plotting color scale (matplotlib colormap). (default: gist_rainbow)
+        color_sequence    = Build color scales in "sequential" or "random" order. (default: sequential)
+        saved_color_scale = Saved color scale that will be applied next time color_palette is called. (default: None)
+
+        :param device: int
+        :param debug: str
+        :param debug_outdir: str
+        :param line_thickness: numeric
+        :param dpi: int
+        :param text_size: float
+        :param text_thickness: int
+        :param color_scale: str
+        :param color_sequence: str
+        :param saved_color_scale: list
+        """
         self.device = device
         self.debug = debug
         self.debug_outdir = debug_outdir
@@ -30,6 +44,9 @@ class Params:
         self.dpi = dpi
         self.text_size = text_size
         self.text_thickness = text_thickness
+        self.color_scale = color_scale
+        self.color_sequence = color_sequence
+        self.saved_color_scale = saved_color_scale
 
 
 class Outputs:
