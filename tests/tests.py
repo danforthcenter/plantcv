@@ -1366,21 +1366,24 @@ def test_plantcv_cluster_contours_splitimg():
 
 
 def test_plantcv_color_palette():
-    # Collect assertions
-    truths = []
-
-    # Return one random color
-    colors = pcv.color_palette(1)
-    # Colors should be a list of length 1, containing a tuple of length 3
-    truths.append(len(colors) == 1)
-    truths.append(len(colors[0]) == 3)
-
-    # Return ten random colors
+    # Return a color palette
     colors = pcv.color_palette(10)
-    # Colors should be a list of length 10
-    truths.append(len(colors) == 10)
-    # All of these should be true for the function to pass testing.
-    assert (all(truths))
+    assert np.shape(colors) == (10, 3)
+
+
+def test_plantcv_color_palette_random():
+    # Return a color palette in random order
+    pcv.params.saved_color_scale = None
+    pcv.params.color_sequence = "random"
+    colors = pcv.color_palette(10)
+    assert np.shape(colors) == (10, 3)
+
+
+def test_plantcv_color_palette_saved():
+    # Return a color palette that was saved
+    pcv.params.saved_color_scale = [[0, 0, 0], [255, 255, 255]]
+    colors = pcv.color_palette(2)
+    assert colors == [[0, 0, 0], [255, 255, 255]]
 
 
 def test_plantcv_crop():
