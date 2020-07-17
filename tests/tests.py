@@ -2951,8 +2951,6 @@ def test_plantcv_stdev_filter():
 
 
 def test_plantcv_watershed_segmentation():
-    # Reset the saved color scale (can be saved between tests)
-    pcv.params.saved_color_scale = None
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_watershed_segmentation")
     os.mkdir(cache_dir)
@@ -2962,12 +2960,18 @@ def test_plantcv_watershed_segmentation():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED_MASK), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
+    # Reset the saved color scale (can be saved between tests)
+    pcv.params.saved_color_scale = None
     _ = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
+    # Reset the saved color scale (can be saved between tests)
+    pcv.params.saved_color_scale = None
     _ = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10)
     # Test with debug = None
     pcv.params.debug = None
+    # Reset the saved color scale (can be saved between tests)
+    pcv.params.saved_color_scale = None
     _ = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert pcv.outputs.observations['estimated_object_count']['value'] > 9
@@ -3267,15 +3271,17 @@ def test_plantcv_background_subtraction_different_sizes():
 
 
 def test_plantcv_spatial_clustering_dbscan():
-    # Reset the saved color scale (can be saved between tests)
-    pcv.params.saved_color_scale = None
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_spatial_clustering_dbscan")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI_MASK), -1)
     pcv.params.debug = "print"
+    # Reset the saved color scale (can be saved between tests)
+    pcv.params.saved_color_scale = None
     _ = pcv.spatial_clustering(img, algorithm="DBSCAN", min_cluster_size=10, max_distance=None)
     pcv.params.debug = "plot"
+    # Reset the saved color scale (can be saved between tests)
+    pcv.params.saved_color_scale = None
     spmask = pcv.spatial_clustering(img, algorithm="DBSCAN", min_cluster_size=10, max_distance=None)
     assert len(spmask[1]) == 2
 
@@ -5569,8 +5575,6 @@ def test_plantcv_visualize_histogram():
 
 
 def test_plantcv_visualize_clustered_contours():
-    # Reset the saved color scale (can be saved between tests)
-    pcv.params.saved_color_scale = None
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_plot_hist")
     os.mkdir(cache_dir)
@@ -5586,10 +5590,14 @@ def test_plantcv_visualize_clustered_contours():
     cluster = [cluster_i[arr_n] for arr_n in cluster_i]
     # Test in print mode
     pcv.params.debug = "print"
+    # Reset the saved color scale (can be saved between tests)
+    pcv.params.saved_color_scale = None
     _ = pcv.visualize.clustered_contours(img=img, grouped_contour_indices=cluster, roi_objects=objs,
                                          roi_obj_hierarchy=obj_hierarchy, nrow=2, ncol=2)
     # Test in plot mode
     pcv.params.debug = "plot"
+    # Reset the saved color scale (can be saved between tests)
+    pcv.params.saved_color_scale = None
     cluster_img = pcv.visualize.clustered_contours(img=img1, grouped_contour_indices=cluster, roi_objects=objs,
                                                    roi_obj_hierarchy=obj_hierarchy)
     assert len(np.unique(cluster_img)) == 37
