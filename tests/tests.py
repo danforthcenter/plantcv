@@ -5600,7 +5600,7 @@ def test_plantcv_visualize_clustered_contours():
     pcv.params.saved_color_scale = None
     cluster_img = pcv.visualize.clustered_contours(img=img1, grouped_contour_indices=cluster, roi_objects=objs,
                                                    roi_obj_hierarchy=obj_hierarchy)
-    assert len(np.unique(cluster_img)) == 37
+    assert len(np.unique(cluster_img.reshape(-1, cluster_img.shape[2]), axis=0)) == 37
 
 
 def test_plantcv_visualize_colorspaces():
