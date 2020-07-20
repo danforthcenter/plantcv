@@ -5,11 +5,12 @@ import numpy as np
 from plantcv.plantcv import params
 
 
-def color_palette(num):
+def color_palette(num, saved=False):
     """color_palette: Returns a list of colors length num
 
     Inputs:
     num        = number of colors to return.
+    saved      = use the previously stored color scale, if any (default = False).
 
     Returns:
     colors     = a list of color lists (RGB values)
@@ -17,8 +18,8 @@ def color_palette(num):
     :param num: int
     :return colors: list
     """
-    # If a previous palette is saved, return it
-    if params.saved_color_scale is not None:
+    # If a previous palette is saved and saved = True, return it
+    if params.saved_color_scale is not None and saved is True:
         return params.saved_color_scale
     else:
         # Retrieve the matplotlib colormap

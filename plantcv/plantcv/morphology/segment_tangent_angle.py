@@ -58,7 +58,8 @@ def segment_tangent_angle(segmented_img, objects, size):
     label_coord_x = []
     label_coord_y = []
 
-    rand_color = color_palette(len(objects))
+    # Create a color scale, use a previously stored scale if available
+    rand_color = color_palette(num=len(objects), saved=True)
 
     for i, cnt in enumerate(objects):
         find_tangents = np.zeros(segmented_img.shape[:2], np.uint8)

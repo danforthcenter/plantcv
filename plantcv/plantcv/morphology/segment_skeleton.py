@@ -32,8 +32,6 @@ def segment_skeleton(skel_img, mask=None):
     # Store debug
     debug = params.debug
     params.debug = None
-    # Remove any previously saved color palettes, we need a new one for segment analysis
-    params.saved_color_scale = None
 
     # Find branch points
     bp = find_branch_pts(skel_img)
@@ -48,8 +46,8 @@ def segment_skeleton(skel_img, mask=None):
     # Reset debug mode
     params.debug = debug
 
-    # Color each segment a different color
-    rand_color = color_palette(len(segment_objects))
+    # Color each segment a different color, do not used a previously saved color scale
+    rand_color = color_palette(num=len(segment_objects), saved=False)
 
     if mask is None:
         segmented_img = skel_img.copy()

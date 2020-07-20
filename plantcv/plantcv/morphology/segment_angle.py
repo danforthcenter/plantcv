@@ -33,7 +33,8 @@ def segment_angle(segmented_img, objects):
 
     labeled_img = segmented_img.copy()
 
-    rand_color = color_palette(len(objects))
+    # Use a previously saved color scale if available
+    rand_color = color_palette(num=len(objects), saved=True)
 
     for i, cnt in enumerate(objects):
         # Find bounds for regression lines to get drawn
