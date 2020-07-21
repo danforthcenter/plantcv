@@ -267,6 +267,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0: NA
 * post v3.0: colors = **plantcv.color_palette**(*num*)
+* post v3.9: colors = **plantcv.color_palette**(*num, saved=False*)
 
 #### plantcv.crop_position_mask
 

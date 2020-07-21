@@ -32,7 +32,8 @@ def segment_euclidean_length(segmented_img, objects):
     x_list = []
     y_list = []
     segment_lengths = []
-    rand_color = color_palette(len(objects))
+    # Create a color scale, use a previously stored scale if available
+    rand_color = color_palette(num=len(objects), saved=True)
 
     labeled_img = segmented_img.copy()
     # Store debug

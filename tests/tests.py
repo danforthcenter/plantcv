@@ -556,7 +556,7 @@ def test_plantcv_parallel_process_results_invalid_json():
 
 # ####################################################################################################################
 # ########################################### PLANTCV MAIN PACKAGE ###################################################
-matplotlib.use('Template', warn=False)
+matplotlib.use('Template')
 
 TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 HYPERSPECTRAL_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "hyperspectral_data")
@@ -1366,21 +1366,23 @@ def test_plantcv_cluster_contours_splitimg():
 
 
 def test_plantcv_color_palette():
-    # Collect assertions
-    truths = []
+    # Return a color palette
+    colors = pcv.color_palette(num=10, saved=False)
+    assert np.shape(colors) == (10, 3)
 
-    # Return one random color
-    colors = pcv.color_palette(1)
-    # Colors should be a list of length 1, containing a tuple of length 3
-    truths.append(len(colors) == 1)
-    truths.append(len(colors[0]) == 3)
 
-    # Return ten random colors
-    colors = pcv.color_palette(10)
-    # Colors should be a list of length 10
-    truths.append(len(colors) == 10)
-    # All of these should be true for the function to pass testing.
-    assert (all(truths))
+def test_plantcv_color_palette_random():
+    # Return a color palette in random order
+    pcv.params.color_sequence = "random"
+    colors = pcv.color_palette(num=10, saved=False)
+    assert np.shape(colors) == (10, 3)
+
+
+def test_plantcv_color_palette_saved():
+    # Return a color palette that was saved
+    pcv.params.saved_color_scale = [[0, 0, 0], [255, 255, 255]]
+    colors = pcv.color_palette(num=2, saved=True)
+    assert colors == [[0, 0, 0], [255, 255, 255]]
 
 
 def test_plantcv_crop():
@@ -5564,13 +5566,17 @@ def test_plantcv_visualize_clustered_contours():
     cluster = [cluster_i[arr_n] for arr_n in cluster_i]
     # Test in print mode
     pcv.params.debug = "print"
+    # Reset the saved color scale (can be saved between tests)
+    pcv.params.saved_color_scale = None
     _ = pcv.visualize.clustered_contours(img=img, grouped_contour_indices=cluster, roi_objects=objs,
                                          roi_obj_hierarchy=obj_hierarchy, nrow=2, ncol=2)
     # Test in plot mode
     pcv.params.debug = "plot"
+    # Reset the saved color scale (can be saved between tests)
+    pcv.params.saved_color_scale = None
     cluster_img = pcv.visualize.clustered_contours(img=img1, grouped_contour_indices=cluster, roi_objects=objs,
                                                    roi_obj_hierarchy=obj_hierarchy)
-    assert len(np.unique(cluster_img)) == 37
+    assert len(np.unique(cluster_img.reshape(-1, cluster_img.shape[2]), axis=0)) == 37
 
 
 def test_plantcv_visualize_colorspaces():
