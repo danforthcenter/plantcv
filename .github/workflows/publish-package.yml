@@ -26,17 +26,16 @@ jobs:
         pip install pytest
         pip install -r requirements.txt
     - name: Cross-platform tests
-      run: |
-        python setup.py test
+      run: py.test tests/
 
   deploy:
 
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@main
     - name: Set up Python
-      uses: actions/setup-python@master
+      uses: actions/setup-python@main
       with:
         python-version: '3.x'
     - name: Install dependencies
