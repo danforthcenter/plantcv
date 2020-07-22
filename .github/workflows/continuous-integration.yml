@@ -23,7 +23,7 @@ jobs:
       PYTHON: ${{ matrix.python-version }}
 
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@main
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@master
       with:

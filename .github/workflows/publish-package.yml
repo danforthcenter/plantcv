@@ -15,7 +15,7 @@ jobs:
         python-version: [3.8]
         os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@main
     - name: Set up Python ${{ matrix.os }}
       uses: actions/setup-python@master
       with:
