@@ -23,8 +23,8 @@ import copy
 from plantcv.plantcv.time_series import link_utilities as funcs
 # import link_utilities as funcs
 
-def time_series_linking(imagedir, segmentationdir, savedir, pattern_datetime, time_cond, link_logic=1, class_names=['BG', 'Leaf'],
-                        mode='link', suffix='.jpg'):
+def time_series_linking(imagedir, segmentationdir, savedir, pattern_datetime, time_cond, link_logic=1,
+                        class_names=['BG', 'Leaf'], mode='link', suffix='.jpg'):
     """
     Function used to get leaf instance growth information after segment leaf instances (using maskrcnn or other methods)
     Input:
@@ -73,7 +73,6 @@ def time_series_linking(imagedir, segmentationdir, savedir, pattern_datetime, ti
 
         Plant.getpath(Plant.imagedir)
         Plant.Sorttime(time_cond)
-
         Plant.load_images()
 
         # load mrcnn inferencing results
@@ -98,6 +97,9 @@ def time_series_linking(imagedir, segmentationdir, savedir, pattern_datetime, ti
             file.write('Directory of instance segmentation: {}\n'.format(Plant.segmentationdir))
             file.write('Image conditions: {}'.format(time_cond))
             file.close()
+
+        print('start\n')
+        print('...')
 
         # linking initialization
         Plant.initialize_linking()
@@ -158,7 +160,13 @@ def time_series_linking(imagedir, segmentationdir, savedir, pattern_datetime, ti
                         pcv.print_image(leaf_t, os.path.join(path_visual1,
                                                              '{}_{}-{}-{}-{}_{}.png'.format(unique_id, start_time,
                                                                                             start_idx, t, link_leaf[t],
-                                                                                            Plant.filename_pre[t])))
+                                                                                            Plant.filename_pre[t],
+                                                                                            Plant.ext)))
+                        pcv.print_image(leaf_t, os.path.join(path_visual1,
+                                                             '{}_{}-{}-{}-{}_{}{}'.format(unique_id, start_time,
+                                                                                          start_idx, t, link_leaf[t],
+                                                                                          Plant.filename_pre[t],
+                                                                                          Plant.ext)))
                         # pkl.dump(leaf_t, open(os.path.join(path_visual1, '{}_{}_{}_{}_{}_{}.pkl'.format(unique_id, start_time, start_idx, t, link_leaf[t], Plant.filename_pre[t])), 'wb'))
 
                         ## 2. show result with an alpha channel
@@ -173,7 +181,7 @@ def time_series_linking(imagedir, segmentationdir, savedir, pattern_datetime, ti
                         ax2 = fig2.add_subplot(1, 1, 1)
                         ax2.imshow(masked_im)
                         ax2.axis('off')
-                        plt.savefig(os.path.join(save_dir_, str(Plant.filename_pre[t]) + '.png'))
+                        plt.savefig(os.path.join(save_dir_, str(Plant.filename_pre[t]) + Plant.ext))
                         plt.close(fig2)
 
                 count += 1
@@ -184,8 +192,7 @@ def time_series_linking(imagedir, segmentationdir, savedir, pattern_datetime, ti
                                     class_names, score, ax=funcs.get_ax(rows=1, cols=1, size=16), show_bbox=True,
                                     show_mask=True,
                                     colors=color)
-
-            plt.savefig(os.path.join(path_visual3, '{}-visual.png'.format(t)))
+            plt.savefig(os.path.join(path_visual3, '{}-visual{}'.format(t, Plant.ext)))
             plt.close('all')
 
         # save all information
@@ -197,5 +204,6 @@ def time_series_linking(imagedir, segmentationdir, savedir, pattern_datetime, ti
         # Load from existed PlantData instance
         Plant = pkl.load(open(os.path.join(Plant.savedir, 'saved_plant.pkl'), 'rb'))
 
+    print('\nFinished!\nThe results are saved here:\n{}'.format(Plant.savedir))
+
     return Plant
-    
