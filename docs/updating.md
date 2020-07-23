@@ -267,6 +267,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0: NA
 * post v3.0: colors = **plantcv.color_palette**(*num*)
+* post v3.9: colors = **plantcv.color_palette**(*num, saved=False*)
 
 #### plantcv.crop_position_mask
 
@@ -407,6 +408,11 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, img_mblur = **plantcv.median_blur**(*img, ksize, device, debug=None*)
 * post v3.0dev2: img_mblur = **plantcv.median_blur**(*gray_img, ksize*)
 * post v3.2: img_blur = **plantcv.median_blur**(*gray_img, ksize*) OR img_blur = **plantcv.median_blur**(*gray_img, (ksize1, ksize2)*)
+
+#### plantcv.morphology.analyze_stem
+
+* pre v3.8: NA
+* post v3.8: labeled_img = **plantcv.morphology.analyze_stem**(*rgb_img, stem_objects*)
 
 #### plantcv.morphology.check_cycles
 

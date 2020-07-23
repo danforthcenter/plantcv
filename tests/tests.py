@@ -556,7 +556,7 @@ def test_plantcv_parallel_process_results_invalid_json():
 
 # ####################################################################################################################
 # ########################################### PLANTCV MAIN PACKAGE ###################################################
-matplotlib.use('Template', warn=False)
+matplotlib.use('Template')
 
 TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 HYPERSPECTRAL_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "hyperspectral_data")
@@ -605,6 +605,7 @@ TEST_INPUT_FMAX = "FLUO_TV_max.png"
 TEST_INPUT_FMASK = "FLUO_TV_MASK.png"
 TEST_INPUT_GREENMAG = "input_green-magenta.jpg"
 TEST_INPUT_MULTI = "multi_ori_image.jpg"
+TEST_INPUT_MULTI_MASK = "multi_ori_mask.jpg"
 TEST_INPUT_MULTI_OBJECT = "roi_objects.npz"
 TEST_INPUT_MULTI_CONTOUR = "multi_contours.npz"
 TEST_INPUT_ClUSTER_CONTOUR = "clusters_i.npz"
@@ -1368,21 +1369,23 @@ def test_plantcv_cluster_contours_splitimg():
 
 
 def test_plantcv_color_palette():
-    # Collect assertions
-    truths = []
+    # Return a color palette
+    colors = pcv.color_palette(num=10, saved=False)
+    assert np.shape(colors) == (10, 3)
 
-    # Return one random color
-    colors = pcv.color_palette(1)
-    # Colors should be a list of length 1, containing a tuple of length 3
-    truths.append(len(colors) == 1)
-    truths.append(len(colors[0]) == 3)
 
-    # Return ten random colors
-    colors = pcv.color_palette(10)
-    # Colors should be a list of length 10
-    truths.append(len(colors) == 10)
-    # All of these should be true for the function to pass testing.
-    assert (all(truths))
+def test_plantcv_color_palette_random():
+    # Return a color palette in random order
+    pcv.params.color_sequence = "random"
+    colors = pcv.color_palette(num=10, saved=False)
+    assert np.shape(colors) == (10, 3)
+
+
+def test_plantcv_color_palette_saved():
+    # Return a color palette that was saved
+    pcv.params.saved_color_scale = [[0, 0, 0], [255, 255, 255]]
+    colors = pcv.color_palette(num=2, saved=True)
+    assert colors == [[0, 0, 0], [255, 255, 255]]
 
 
 def test_plantcv_crop():
@@ -3254,6 +3257,35 @@ def test_plantcv_background_subtraction_different_sizes():
     assert np.sum(fgmask) > 0
 
 
+def test_plantcv_spatial_clustering_dbscan():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_spatial_clustering_dbscan")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI_MASK), -1)
+    pcv.params.debug = "print"
+    _ = pcv.spatial_clustering(img, algorithm="DBSCAN", min_cluster_size=10, max_distance=None)
+    pcv.params.debug = "plot"
+    spmask = pcv.spatial_clustering(img, algorithm="DBSCAN", min_cluster_size=10, max_distance=None)
+    assert len(spmask[1]) == 2
+
+
+def test_plantcv_spatial_clustering_optics():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_spatial_clustering_optics")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI_MASK), -1)
+    pcv.params.debug = None
+    spmask = pcv.spatial_clustering(img, algorithm="OPTICS", min_cluster_size=100, max_distance=5000)
+    assert len(spmask[1]) == 2
+
+
+def test_plantcv_spatial_clustering_badinput():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI_MASK), -1)
+    pcv.params.debug = None
+    with pytest.raises(NameError):
+        _ = pcv.spatial_clustering(img, algorithm="Hydra", min_cluster_size=5, max_distance=100)
+
+
 # ##############################
 # Tests for the learn subpackage
 # ##############################
@@ -3321,6 +3353,7 @@ def test_plantcv_morphology_check_cycles():
     _ = pcv.morphology.check_cycles(mask)
     pcv.params.debug = None
     _ = pcv.morphology.check_cycles(mask)
+    print(pcv.outputs.observations["num_cycles"]["value"])
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert pcv.outputs.observations['num_cycles']['value'] == 1
     pcv.outputs.clear()
@@ -3603,6 +3636,39 @@ def test_plantcv_morphology_segment_combine_bad_input():
     with pytest.raises(RuntimeError):
         _, new_objects = pcv.morphology.segment_combine([0.5, 1.5], seg_objects, skel)
 
+
+def test_plantcv_morphology_analyze_stem():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_analyze_stem")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
+    pruned, segmented_img, _ = pcv.morphology.prune(skel_img=skeleton, size=6)
+    segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=pruned)
+    leaf_obj, stem_obj = pcv.morphology.segment_sort(pruned, seg_objects)
+    pcv.params.debug = "plot"
+    _ = pcv.morphology.analyze_stem(rgb_img=segmented_img, stem_objects=stem_obj)
+    pcv.params.debug = "print"
+    _ = pcv.morphology.analyze_stem(rgb_img=segmented_img, stem_objects=stem_obj)
+    assert pcv.outputs.observations['stem_angle']['value'] == -12.531776428222656
+    pcv.outputs.clear()
+
+
+def test_plantcv_morphology_analyze_stem_bad_angle():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
+    pruned, _, _ = pcv.morphology.prune(skel_img=skeleton, size=5)
+    segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=pruned)
+    leaf_obj, stem_obj = pcv.morphology.segment_sort(pruned, seg_objects)
+    #print([stem_obj[3]])
+    #stem_obj = [stem_obj[3]]
+    stem_obj = [[[[1116, 1728]], [[1116, 1]]]]
+    _ = pcv.morphology.analyze_stem(rgb_img=segmented_img, stem_objects=stem_obj)
+    assert pcv.outputs.observations['stem_angle']['value'] == 22877334.0
+    pcv.outputs.clear()
 
 # ########################################
 # Tests for the hyperspectral subpackage
@@ -5504,13 +5570,17 @@ def test_plantcv_visualize_clustered_contours():
     cluster = [cluster_i[arr_n] for arr_n in cluster_i]
     # Test in print mode
     pcv.params.debug = "print"
+    # Reset the saved color scale (can be saved between tests)
+    pcv.params.saved_color_scale = None
     _ = pcv.visualize.clustered_contours(img=img, grouped_contour_indices=cluster, roi_objects=objs,
                                          roi_obj_hierarchy=obj_hierarchy, nrow=2, ncol=2)
     # Test in plot mode
     pcv.params.debug = "plot"
+    # Reset the saved color scale (can be saved between tests)
+    pcv.params.saved_color_scale = None
     cluster_img = pcv.visualize.clustered_contours(img=img1, grouped_contour_indices=cluster, roi_objects=objs,
                                                    roi_obj_hierarchy=obj_hierarchy)
-    assert len(np.unique(cluster_img)) == 37
+    assert len(np.unique(cluster_img.reshape(-1, cluster_img.shape[2]), axis=0)) == 37
 
 
 def test_plantcv_visualize_colorspaces():

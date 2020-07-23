@@ -16,19 +16,17 @@ def segment_skeleton(skel_img, mask=None):
     """ Segment a skeleton image into pieces
 
         Inputs:
-        skel_img      = Skeletonized image
-        mask          = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
+        skel_img         = Skeletonized image
+        mask             = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
 
         Returns:
         segmented_img       = Segmented debugging image
         segment_objects     = list of contours
-        segment_hierarchies = contour hierarchy list
 
         :param skel_img: numpy.ndarray
         :param mask: numpy.ndarray
         :return segmented_img: numpy.ndarray
         :return segment_objects: list
-        "return segment_hierarchies: numpy.ndarray
         """
 
     # Store debug
@@ -48,8 +46,8 @@ def segment_skeleton(skel_img, mask=None):
     # Reset debug mode
     params.debug = debug
 
-    # Color each segment a different color
-    rand_color = color_palette(len(segment_objects))
+    # Color each segment a different color, do not used a previously saved color scale
+    rand_color = color_palette(num=len(segment_objects), saved=False)
 
     if mask is None:
         segmented_img = skel_img.copy()

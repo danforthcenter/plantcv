@@ -8,8 +8,8 @@
     - img - An RGB or grayscale image to plot the ROI on in debug mode.
     - x - The x-coordinate of the center of the ellipse.
     - y - The y-coordinate of the center of the ellipse.
-    - r1 - The radius of the major axis.
-    - r2 - The radius of the minor axis.
+    - r1 - The radius of the minor axis.
+    - r2 - The radius of the major axis.
     - angle - The angle of rotation in degrees of the major axis.
 - **Context:**
     - Used to define a region of interest in the image.

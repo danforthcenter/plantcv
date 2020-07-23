@@ -6,10 +6,10 @@
 variety of plant types and imaging systems. In the following documentation we will describe use of each function and 
 provide tutorials on how each function is used in the context of an overall image-processing workflow. PlantCV 
 currently supports the analysis of standard RGB color images (aka "VIS"), standard grayscale images (e.g. 
-near-infrared, "NIR"), thermal infrared images, and grayscale images from chlorophyll fluorescence imaging systems 
-("PSII"). Support for additional image types is under development. Development of PlantCV is ongoing---we encourage 
-input from the greater plant phenomics community. Please post questions and comments on the 
-[GitHub issues page](https://github.com/danforthcenter/plantcv/issues).
+near-infrared, "NIR"), thermal infrared images, grayscale images from chlorophyll fluorescence imaging systems 
+("PSII"), and hyperspectral ("ENVI") images. Support for additional image types is under development. Development of 
+PlantCV is ongoing---we encourage input from the greater plant phenomics community. Please post questions and comments 
+on the [GitHub issues page](https://github.com/danforthcenter/plantcv/issues).
 
 !!! note
     At the Danforth Center we refer to our saturation pulse imaging  fluorometer (PSII) camera system as 'FLU' 

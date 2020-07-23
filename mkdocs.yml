@@ -94,6 +94,7 @@ nav:
         - 'Logical Operations-XOr': logical_xor.md
       - 'Median Blur': median_blur.md
       - 'Morphology Functions':
+        - 'Analyze_stem': analyze_stem.md
         - 'Check Cycles': check_cycles.md
         - 'Find Branches': find_branch_pts.md
         - 'Find Tips': find_tips.md
@@ -134,6 +135,7 @@ nav:
         - 'Convert ROI to Mask': roi2mask.md
       - 'Rotate': rotate2.md
       - 'Shift Image': shift.md
+      - 'Spatial Clustering': spatial_clustering.md
       - 'Spectral Index': spectral_index.md
       - 'Standard Deviation Filter': stdev_filter.md
       - 'Thresholding Methods':
@@ -147,9 +149,18 @@ nav:
         - 'Texture Threshold': texture_threshold.md
       - 'Time Series': time_series.md
       - 'Transformation Methods':
-          - 'Correct Color': transform_correct_color.md
+          - 'Auto-Detect Color Card': find_color_card.md
+          - 'Create Color Card Mask': create_color_card_mask.md
+          - 'Convert Color Card to Matrix': get_color_matrix.md
+          - 'Calculate Moore-Penrose Inverse Matrix': mp_inverse.md
+          - 'Create Color Correction Matrix': transformation_matrix.md
+          - 'Apply Color Correction Matrix': apply_transformation_matrix.md
+          - 'Color Correction Workflow': transform_correct_color.md
+          - 'Quick Color Check': quick_color_check.md
+          - 'Load Matrix': load_matrix.md
+          - 'Save Matrix': save_matrix.md
           - 'Nonuniform Illumination Correction': nonuniform_illumination.md
-          - 'Rescale': transform_rescale.md
+          - 'Rescale Image Values': transform_rescale.md
       - 'Visualization Methods':
           - 'Auto Threshold Methods': visualize_auto_threshold_methods.md
           - 'Clustered Contours': visualize_clustered_contours.md

@@ -386,7 +386,7 @@ The next step is to [get the matching NIR](get_nir.md) image, [resize](resize.md
     if args.coresult is not None:
         nirpath = pcv.get_nir(path,filename)
         nir, path1, filename1 = pcv.readimage(nirpath)
-        nir2 = cv2.imread(nirpath,0)
+        nir2, path2, filename2 = pcv.readimage(nirpath)
 
 
     # Inputs:
@@ -584,7 +584,7 @@ def main():
     if args.coresult is not None:
         nirpath = pcv.get_nir(path,filename)
         nir, path1, filename1 = pcv.readimage(nirpath)
-        nir2 = cv2.imread(nirpath,0)
+        nir2, path2, filename2 = pcv.readimage(nirpath)
 
     nmask = pcv.resize(img=mask, resize_x=0.28, resize_y=0.28)
 
