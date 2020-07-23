@@ -225,7 +225,8 @@ class PlantData():
             subfolder = '{}-{}-{}-{}-{}'.format(junk.year, str(junk.month).zfill(2), str(junk.day).zfill(2),
                                                 str(junk.hour).zfill(2), str(junk.minute).zfill(2))
             self.savedir = os.path.join(savedir, subfolder)
-            os.makedirs(self.savedir)
+            if not os.path.exists(self.savedir):
+                os.makedirs(self.savedir)
         else:
             self.savedir = savedir
 
@@ -272,6 +273,11 @@ class PlantData():
         filenames_ori = [f for f in os.listdir(self.imagedir) if f.endswith(self.suffix)]
         time_temp = []
         file_name = []
+        ext1, ext2 = os.path.splitext(self.suffix)
+        if ext1.startswith('.'):
+            ext = ext1
+        elif ext2.startswith('.'):
+            ext = ext2
         for filename in filenames:
             temp = re.search(self.pattern_datetime, filename)
             if temp:
@@ -280,7 +286,8 @@ class PlantData():
                     if timepart.endswith(cond):
                         time_temp.append(timepart)
                         junk = [1 if re.search(timepart, f) is not None else 0 for f in filenames_ori]
-                        file_name.append(filenames_ori[junk.index(1)].replace('.jpg', ''))
+                        #                         file_name.append(filenames_ori[junk.index(1)].replace('.jpg', ''))
+                        file_name.append(filenames_ori[junk.index(1)].replace(ext, ''))
                         continue
 
         index_temp = np.argsort(time_temp)
@@ -292,7 +299,21 @@ class PlantData():
         """ Load original images
             This function is also designed for files with file names which contain a "date-time" part, with a user defined pattern
         """
-
+        #         filenames = [f for f in os.listdir(self.imagedir) if f.endswith('.jpg')]
+        #         temp_imgs  = []
+        #         sz        = []
+        #         for t in self.time:
+        #             for f in filenames:
+        #                 temp = re.search(t, f)
+        #                 if temp:
+        #                     junk = skimage.io.imread(os.path.join(self.imagedir, f))
+        #                     temp_imgs.append(junk)
+        #                     sz.append(np.min(junk.shape[0:2]))
+        #                     filenames.remove(f)
+        #         self.min_dim = np.min(sz)
+        #         for junk in temp_imgs:
+        #             img = junk[0: self.min_dim, 0: self.min_dim, :] # make all images the same size
+        #             self.images.append(img)
         temp_imgs = []
         sz = []
         for pre in self.filename_pre:
@@ -383,6 +404,15 @@ class PlantData():
                 key_t = 't{}'.format(t)
                 self.link_series[key_t] = dict()
                 self.link_series[key_t]['new_leaf'] = np.array(new_leaves)
+                #                 if len(new_leaves) > 1:
+                #                     id_temp = []
+                #                     for new_leav in new_leaves:
+                #                         id_temp.append(unique_id)
+                #                         unique_id = unique_id + 1
+                #                     self.link_series[key_t]['unique_id' = np.array(id_temp)
+                #                 else:
+                #                     self.link_series[key_t]['unique_id'] = np.array(unique_id)
+                #                     unique_id = unique_id + 1
                 id_temp = []
                 for new_leaf in new_leaves:
                     id_temp.append(unique_id)
