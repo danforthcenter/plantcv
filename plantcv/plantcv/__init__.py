@@ -245,7 +245,7 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'apply_m
            'cluster_contour_splitimg', 'rotate', 'shift_img', 'output_mask', 'auto_crop', 'canny_edge_detect',
            'background_subtraction', 'naive_bayes_classifier', 'acute', 'distance_transform', 'params',
            'cluster_contour_mask', 'analyze_thermal_values', 'opening',
-           'closing', 'within_frame', 'fill_holes', 'get_kernel', 'Spectral_data', 'crop', 'stdev_filter', 'time_series']
+           'closing', 'within_frame', 'fill_holes', 'get_kernel', 'Spectral_data', 'crop', 'stdev_filter', 'time_series',
            'cluster_contour_mask','analyze_thermal_values', 'opening',
            'closing','within_frame', 'fill_holes', 'get_kernel', 'Spectral_data', 'crop', 'stdev_filter',
            'spatial_clustering']
