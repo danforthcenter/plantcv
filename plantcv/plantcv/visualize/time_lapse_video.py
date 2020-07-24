@@ -155,7 +155,7 @@ def time_lapse_video(img_directory, list_img=None, suffix_img=None, size_frame=N
 
         out.release()
         cv2.destroyAllWindows()
-        if display is 'on':
+        if display == 'on':
             print('The generated video: \n{},\nAnd is saved here:\n{}.'.format(save_name, path_video))
 
     return list_img, size_frame
