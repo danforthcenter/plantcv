@@ -189,6 +189,7 @@ class PlantData():
     def __init__(self, imagedir, segmentationdir, savedir, pattern_datetime, mode='link', suffix='.jpg'):
 
         self.suffix = suffix
+        self.ext    = None
 
         self.pattern_datetime = pattern_datetime
 
@@ -275,9 +276,9 @@ class PlantData():
         file_name = []
         ext1, ext2 = os.path.splitext(self.suffix)
         if ext1.startswith('.'):
-            ext = ext1
+            self.ext = ext1
         elif ext2.startswith('.'):
-            ext = ext2
+            self.ext = ext2
         for filename in filenames:
             temp = re.search(self.pattern_datetime, filename)
             if temp:
@@ -287,7 +288,7 @@ class PlantData():
                         time_temp.append(timepart)
                         junk = [1 if re.search(timepart, f) is not None else 0 for f in filenames_ori]
                         #                         file_name.append(filenames_ori[junk.index(1)].replace('.jpg', ''))
-                        file_name.append(filenames_ori[junk.index(1)].replace(ext, ''))
+                        file_name.append(filenames_ori[junk.index(1)].replace(self.ext, ''))
                         continue
 
         index_temp = np.argsort(time_temp)
