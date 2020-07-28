@@ -9,7 +9,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import fatal_error
 
 
-def auto_crop(img, obj, padding_x=0, padding_y=0, color='black'):
+def auto_crop(img, obj, padding_x=0, padding_y=0 color='black'):
     """Resize image.
 
     Inputs:
@@ -42,24 +42,46 @@ def auto_crop(img, obj, padding_x=0, padding_y=0, color='black'):
 
     crop_img = img[y:y + h, x:x + w]
 
-    offsetx = int(np.rint(padding_x))
-    offsety = int(np.rint(padding_y))
+    if type(padding_x) and type(padding_y) == 'int':
+        offsetx = int(np.rint(padding_x))
+        offsety = int(np.rint(padding_y))
 
-    if color.upper() == 'BLACK':
-        colorval = (0, 0, 0)
-        cropped = cv2.copyMakeBorder(crop_img, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT, value=colorval)
-    elif color.upper() == 'WHITE':
-        colorval = (255, 255, 255)
-        cropped = cv2.copyMakeBorder(crop_img, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT, value=colorval)
-    elif color.upper() == 'IMAGE':
-        # Check whether the ROI is correctly bounded inside the image
-        if x - offsetx < 0 or y - offsety < 0 or x + w + offsetx > width or y + h + offsety > height:
-            cropped = img_copy2[y - offsety:y + h + offsety, x - offsetx:x + w + offsetx]
+        if color.upper() == 'BLACK':
+            colorval = (0, 0, 0)
+            cropped = cv2.copyMakeBorder(crop_img, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT, value=colorval)
+        elif color.upper() == 'WHITE':
+            colorval = (255, 255, 255)
+            cropped = cv2.copyMakeBorder(crop_img, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT, value=colorval)
+        elif color.upper() == 'IMAGE':
+            # Check whether the ROI is correctly bounded inside the image
+            if x - offsetx < 0 or y - offsety < 0 or x + w + offsetx > width or y + h + offsety > height:
+                cropped = img_copy2[y - offsety:y + h + offsety, x - offsetx:x + w + offsetx]
+            else:
+                # If padding is the image, crop the image with a buffer rather than cropping and adding a buffer
+                cropped = img_copy2[y:y + h, x:x + w]
         else:
-            # If padding is the image, crop the image with a buffer rather than cropping and adding a buffer
-            cropped = img_copy2[y:y + h, x:x + w]
-    else:
-        fatal_error('Color was provided but ' + str(color) + ' is not "white", "black", or "image"!')
+            fatal_error('Color was provided but ' + str(color) + ' is not "white", "black", or "image"!')
+
+    if type(padding_x) and type(padding_y) == 'tuple':
+        offsetx = padding_x
+        offsety = padding_y
+
+        if color.upper() == 'BLACK':
+            colorval = (0, 0, 0)
+            cropped = cv2.copyMakeBorder(crop_img, offsety[0], offsety[1], offsetx[0], offsetx[1], cv2.BORDER_CONSTANT, value=colorval)
+        elif color.upper() == 'WHITE':
+            colorval = (255, 255, 255)
+            cropped = cv2.copyMakeBorder(crop_img, offsety[0], offsety[1], offsetx[0], offsetx[1], cv2.BORDER_CONSTANT, value=colorval)
+        elif color.upper() == 'IMAGE':
+            # Check whether the ROI is correctly bounded inside the image
+            if x - offsetx[0] < 0 or x - offsetx[1] < 0 or y - offsety[0] < 0 or y - offsety[1] < 0 or x + w + offsetx[0] > width or y + h + offsety[0] > height or y + h + offsety[1] > height:
+                cropped = img_copy2[y - offsety[0]:y + h + offsety[0], x - offsetx[0]:x + w + offsetx[0]]
+            else:
+                # If padding is the image, crop the image with a buffer rather than cropping and adding a buffer
+                cropped = img_copy2[y:y + h, x:x + w]
+        else:
+            fatal_error('Color was provided but ' + str(color) + ' is not "white", "black", or "image"!')
+
 
     if params.debug == 'print':
         print_image(img_copy, os.path.join(params.debug_outdir, str(params.device) + "_crop_area.png"))
