@@ -15,8 +15,8 @@ def auto_crop(img, obj, padding_x=0, padding_y=0 color='black'):
     Inputs:
     img       = RGB or grayscale image data
     obj       = contours
-    padding_x = padding in the x direction
-    padding_y = padding in the y direction
+    padding_x = integer or tuple to add padding the x direction
+    padding_y = integer or tuple to add padding the x direction
     color     = either 'black', 'white', or 'image'
 
     Returns:
@@ -74,11 +74,11 @@ def auto_crop(img, obj, padding_x=0, padding_y=0 color='black'):
             cropped = cv2.copyMakeBorder(crop_img, offsety[0], offsety[1], offsetx[0], offsetx[1], cv2.BORDER_CONSTANT, value=colorval)
         elif color.upper() == 'IMAGE':
             # Check whether the ROI is correctly bounded inside the image
-            if x - offsetx[0] < 0 or x - offsetx[1] < 0 or y - offsety[0] < 0 or y - offsety[1] < 0 or x + w + offsetx[0] > width or y + h + offsety[0] > height or y + h + offsety[1] > height:
-                cropped = img_copy2[y - offsety[0]:y + h + offsety[0], x - offsetx[0]:x + w + offsetx[0]]
+            if x - offsetx[1] < 0  or y - offsety[0] < 0 or x + w + offsetx[1] > width or y + h + offsety[1] > height:
+                cropped = img_copy2[y:y + h, x:x + w]
             else:
                 # If padding is the image, crop the image with a buffer rather than cropping and adding a buffer
-                cropped = img_copy2[y:y + h, x:x + w]
+                cropped = img_copy2[y - offsety[0]:y + h + offsety[1], x - offsetx[0]:x + w + offsetx[1]]
         else:
             fatal_error('Color was provided but ' + str(color) + ' is not "white", "black", or "image"!')
 
