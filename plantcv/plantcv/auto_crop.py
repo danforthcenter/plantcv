@@ -9,7 +9,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import fatal_error
 
 
-def auto_crop(img, obj, padding_x=0, padding_y=0 color='black'):
+def auto_crop(img, obj, padding_x=0, padding_y=0, color='black'):
     """Resize image.
 
     Inputs:
@@ -42,7 +42,7 @@ def auto_crop(img, obj, padding_x=0, padding_y=0 color='black'):
 
     crop_img = img[y:y + h, x:x + w]
 
-    if type(padding_x) and type(padding_y) == 'int':
+    if type(padding_x) and type(padding_y) == int:
         offsetx = int(np.rint(padding_x))
         offsety = int(np.rint(padding_y))
 
@@ -62,7 +62,7 @@ def auto_crop(img, obj, padding_x=0, padding_y=0 color='black'):
         else:
             fatal_error('Color was provided but ' + str(color) + ' is not "white", "black", or "image"!')
 
-    if type(padding_x) and type(padding_y) == 'tuple':
+    if type(padding_x) and type(padding_y) == tuple:
         offsetx = padding_x
         offsety = padding_y
 
