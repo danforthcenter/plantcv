@@ -48,11 +48,14 @@ def auto_crop(img, obj, padding_x=0, padding_y=0, color='black'):
         offsety_top = int(np.rint(padding_y))
         offsety_bottom = int(np.rint(padding_y))
 
-    if type(padding_x) and type(padding_y) == tuple:
+    elif type(padding_x) and type(padding_y) == tuple:
         offsetx_left = padding_x[0]
         offsetx_right = padding_x[1]
         offsety_top = padding_y[0]
         offsety_bottom = padding_y[1]
+
+    else:
+        fatal_error('Both padding_x and padding_x parameters must be either int or tuple.')
 
     if color.upper() == 'BLACK':
         colorval = (0, 0, 0)
