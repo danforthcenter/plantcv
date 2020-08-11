@@ -42,13 +42,13 @@ def auto_crop(img, obj, padding_x=0, padding_y=0, color='black'):
 
     crop_img = img[y:y + h, x:x + w]
 
-    if type(padding_x) and type(padding_y) == int:
+    if type(padding_x) == int and type(padding_y) == int:
         offsetx_left = int(np.rint(padding_x))
         offsetx_right = int(np.rint(padding_x))
         offsety_top = int(np.rint(padding_y))
         offsety_bottom = int(np.rint(padding_y))
 
-    elif type(padding_x) and type(padding_y) == tuple:
+    elif type(padding_x) == tuple and type(padding_y) == tuple:
         offsetx_left = padding_x[0]
         offsetx_right = padding_x[1]
         offsety_top = padding_y[0]
