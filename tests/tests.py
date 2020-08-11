@@ -1158,7 +1158,7 @@ def test_plantcv_auto_crop():
     roi_contours = [contours[arr_n] for arr_n in contours]
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.auto_crop(img=img1, obj=roi_contours[1], padding_x=20, padding_y=20, color='black')
+    _ = pcv.auto_crop(img=img1, obj=roi_contours[1], padding_x=(20,10), padding_y=(20,10), color='black')
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.auto_crop(img=img1, obj=roi_contours[1], color='image')
@@ -1189,15 +1189,23 @@ def test_plantcv_auto_crop_grayscale_input():
     assert x > x1
 
 
-def test_plantcv_auto_crop_bad_input():
+def test_plantcv_auto_crop_bad_color_input():
     # Read in test data
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI), -1)
     gray_img = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
     contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_OBJECT), encoding="latin1")
     roi_contours = [contours[arr_n] for arr_n in contours]
     with pytest.raises(RuntimeError):
-        pcv.params.debug = "plot"
         _ = pcv.auto_crop(img=gray_img, obj=roi_contours[1], padding_x=20, padding_y=20, color='wite')
+
+def test_plantcv_auto_crop_bad_padding_input():
+    # Read in test data
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI), -1)
+    gray_img = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
+    contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_OBJECT), encoding="latin1")
+    roi_contours = [contours[arr_n] for arr_n in contours]
+    with pytest.raises(RuntimeError):
+        _ = pcv.auto_crop(img=gray_img, obj=roi_contours[1], padding_x="one", padding_y=20, color='white')
 
 
 def test_plantcv_canny_edge_detect():
