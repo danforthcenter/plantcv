@@ -189,6 +189,78 @@ def setup_function():
 # ##############################
 # Tests for the parallel subpackage
 # ##############################
+def test_plantcv_parallel_workflowconfig_create_template():
+    # Create a test tmp directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_workflowconfig_create_template")
+    os.mkdir(cache_dir)
+    # Define output path/filename
+    template_file = os.path.join(cache_dir, "config_template.json")
+    # Create config instance
+    wf = plantcv.parallel.WorkflowConfig()
+    # Save template file
+    wf.create_template(config_file=template_file)
+
+    assert os.path.exists(template_file)
+
+
+def test_plantcv_parallel_workflowconfig_import_config_file():
+    # Define input path/filename
+    config_file = os.path.join(PARALLEL_TEST_DATA, "workflow_config_template.json")
+    # Create config instance
+    wf = plantcv.parallel.WorkflowConfig()
+    # import config file
+    wf.import_config_file(config_file=config_file)
+
+    assert wf.config["processes"] == 2
+
+
+def test_plantcv_parallel_workflowconfig_validate_config():
+    # Create a test tmp directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_workflowconfig_validate_config")
+    os.mkdir(cache_dir)
+    # Create config instance
+    wf = plantcv.parallel.WorkflowConfig()
+    # Set valid values in config
+    wf.config["input_dir"] = os.path.join(PARALLEL_TEST_DATA, "images")
+    wf.config["json"] = os.path.join(cache_dir, "valid_config.json")
+    wf.config["filename_metadata"] = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
+    wf.config["output_dir"] = cache_dir
+    # Validate config
+    result = wf.validate_config()
+
+    assert result is None
+
+
+def test_plantcv_parallel_workflowconfig_invalid_config():
+    # Create a test tmp directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_workflowconfig_invalid_config")
+    os.mkdir(cache_dir)
+    # Create config instance
+    wf = plantcv.parallel.WorkflowConfig()
+    # Set invalid values in config
+    # input_dir, json, and filename_metadata are not defined by default, but are required
+    # Remove a keyword
+    del wf.config["tmp_dir"]
+    # Validate config
+    result = wf.validate_config()
+
+    assert result == ["tmp_dir", "input_dir", "json", "filename_metadata"]
+
+
+def test_plantcv_parallel_workflowconfig_invalid_metadata_terms():
+    # Create a test tmp directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_workflowconfig_invalid_metadata_terms")
+    os.mkdir(cache_dir)
+    # Create config instance
+    wf = plantcv.parallel.WorkflowConfig()
+    # Set invalid values in config
+    # input_dir and json are not defined by default, but are required
+    # Set an incorrect metadata term
+    wf.config["filename_metadata"].append("invalid")
+    # Validate config
+    result = wf.validate_config()
+
+    assert result == ["input_dir", "json", "filename_metadata"]
 
 
 def test_plantcv_parallel_metadata_parser_snapshots():
