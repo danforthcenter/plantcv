@@ -2,6 +2,7 @@
     "input_dir": "",
     "json": "",
     "filename_metadata": [],
+    "workflow": "",
     "output_dir": "./output_images",
     "tmp_dir": null,
     "processes": 2,
@@ -14,8 +15,6 @@
     "writeimg": false,
     "other_args": null,
     "coprocess": null,
-    "group_by": null,
-    "merge_group": null,
     "metadata_terms": {
         "camera": {
             "label": "camera identifier",

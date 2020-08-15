@@ -224,11 +224,10 @@ def test_plantcv_parallel_workflowconfig_validate_config():
     wf.config["input_dir"] = os.path.join(PARALLEL_TEST_DATA, "images")
     wf.config["json"] = os.path.join(cache_dir, "valid_config.json")
     wf.config["filename_metadata"] = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
+    wf.config["workflow"] = TEST_PIPELINE
     wf.config["output_dir"] = cache_dir
     # Validate config
-    result = wf.validate_config()
-
-    assert result is None
+    assert wf.validate_config()
 
 
 def test_plantcv_parallel_workflowconfig_invalid_config():
@@ -242,9 +241,7 @@ def test_plantcv_parallel_workflowconfig_invalid_config():
     # Remove a keyword
     del wf.config["tmp_dir"]
     # Validate config
-    result = wf.validate_config()
-
-    assert result == ["tmp_dir", "input_dir", "json", "filename_metadata"]
+    assert not wf.validate_config()
 
 
 def test_plantcv_parallel_workflowconfig_invalid_metadata_terms():
@@ -258,9 +255,7 @@ def test_plantcv_parallel_workflowconfig_invalid_metadata_terms():
     # Set an incorrect metadata term
     wf.config["filename_metadata"].append("invalid")
     # Validate config
-    result = wf.validate_config()
-
-    assert result == ["input_dir", "json", "filename_metadata"]
+    assert not wf.validate_config()
 
 
 def test_plantcv_parallel_metadata_parser_snapshots():
