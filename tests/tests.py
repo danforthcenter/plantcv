@@ -103,7 +103,7 @@ VALID_META = {
 
 METADATA_COPROCESS = {
     'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
-        'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383'),
+        'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383', 'VIS_SV_0_z1_h1_g0_e82_117770'),
         'camera': 'SV',
         'imgtype': 'VIS',
         'zoom': 'z1',
@@ -121,7 +121,7 @@ METADATA_COPROCESS = {
         'coimg': 'NIR_SV_0_z1_h1_g0_e65_117779.jpg'
     },
     'NIR_SV_0_z1_h1_g0_e65_117779.jpg': {
-        'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383'),
+        'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383', 'NIR_SV_0_z1_h1_g0_e65_117779'),
         'camera': 'SV',
         'imgtype': 'NIR',
         'zoom': 'z1',
@@ -140,7 +140,7 @@ METADATA_COPROCESS = {
 }
 METADATA_VIS_ONLY = {
     'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
-        'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383'),
+        'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383', 'VIS_SV_0_z1_h1_g0_e82_117770.jpg'),
         'camera': 'SV',
         'imgtype': 'VIS',
         'zoom': 'z1',
@@ -159,7 +159,7 @@ METADATA_VIS_ONLY = {
 }
 METADATA_NIR_ONLY = {
     'NIR_SV_0_z1_h1_g0_e65_117779.jpg': {
-        'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383'),
+        'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383', 'NIR_SV_0_z1_h1_g0_e65_117779.jpg'),
         'camera': 'SV',
         'imgtype': 'NIR',
         'zoom': 'z1',
@@ -259,50 +259,58 @@ def test_plantcv_parallel_workflowconfig_invalid_metadata_terms():
 
 
 def test_plantcv_parallel_metadata_parser_snapshots():
-    data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
-    meta_filters = {"imgtype": "VIS"}
-    start_date = 1413936000
-    end_date = 1414022400
-    date_format = '%Y-%m-%d %H:%M:%S.%f'
-    error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
-    jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,
-                                                      date_format=date_format,
-                                                      start_date=start_date, end_date=end_date, error_log=error_log,
-                                                      delimiter="_", file_type="jpg", coprocess="NIR")
-    assert meta == METADATA_COPROCESS
+    # Create config instance
+    wf = plantcv.parallel.WorkflowConfig()
+    wf.config["input_dir"] = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
+    wf.config["json"] = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_metadata_parser_snapshots", "output.json")
+    wf.config["filename_metadata"] = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
+    wf.config["workflow"] = TEST_PIPELINE
+    wf.config["metadata_filters"] = {"imgtype": "VIS", "camera": "SV"}
+    wf.config["start_date"] = 1413936000
+    wf.config["end_date"] = 1414022400
+    wf.config["timestampformat"] = '%Y-%m-%d %H:%M:%S.%f'
+    wf.config["imgformat"] = "jpg"
+
+    meta = plantcv.parallel.metadata_parser(config=wf)
+    assert meta == METADATA_VIS_ONLY
 
 
 def test_plantcv_parallel_metadata_parser_snapshots_coimg():
-    data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
-    meta_filters = {"imgtype": "VIS"}
-    start_date = 1413936000
-    end_date = 1414022400
-    date_format = '%Y-%m-%d %H:%M:%S.%f'
-    error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
-    jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,
-                                                      date_format=date_format,
-                                                      start_date=start_date, end_date=end_date, error_log=error_log,
-                                                      delimiter="_", file_type="jpg", coprocess="FAKE")
+    # Create config instance
+    wf = plantcv.parallel.WorkflowConfig()
+    wf.config["input_dir"] = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
+    wf.config["json"] = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_metadata_parser_snapshots_coimg",
+                                     "output.json")
+    wf.config["filename_metadata"] = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
+    wf.config["workflow"] = TEST_PIPELINE
+    wf.config["metadata_filters"] = {"imgtype": "VIS"}
+    wf.config["start_date"] = 1413936000
+    wf.config["end_date"] = 1414022400
+    wf.config["timestampformat"] = '%Y-%m-%d %H:%M:%S.%f'
+    wf.config["imgformat"] = "jpg"
+    wf.config["coprocess"] = "FAKE"
+
+    meta = plantcv.parallel.metadata_parser(config=wf)
     assert meta == METADATA_VIS_ONLY
 
 
 def test_plantcv_parallel_metadata_parser_images():
-    data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR)
-    meta_filters = {"imgtype": "VIS"}
-    start_date = 1413936000
-    end_date = 1414022400
-    date_format = '%Y'  # no date in filename so it skips check date range and date_format doesn't matter
-    error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
-    jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,
-                                                      date_format=date_format,
-                                                      start_date=start_date, end_date=end_date, error_log=error_log,
-                                                      delimiter="_", file_type="jpg", coprocess=None)
+    # Create config instance
+    wf = plantcv.parallel.WorkflowConfig()
+    wf.config["input_dir"] = os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR)
+    wf.config["json"] = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_metadata_parser_images", "output.json")
+    wf.config["filename_metadata"] = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
+    wf.config["workflow"] = TEST_PIPELINE
+    wf.config["metadata_filters"] = {"imgtype": "VIS"}
+    wf.config["start_date"] = 1413936000
+    wf.config["end_date"] = 1414022400
+    wf.config["timestampformat"] = '%Y'  # no date in filename so check date range and date_format are ignored
+    wf.config["imgformat"] = "jpg"
+
+    meta = plantcv.parallel.metadata_parser(config=wf)
     expected = {
         'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
-            'path': os.path.join(PARALLEL_TEST_DATA, 'images'),
+            'path': os.path.join(PARALLEL_TEST_DATA, 'images', 'VIS_SV_0_z1_h1_g0_e82_117770.jpg'),
             'camera': 'SV',
             'imgtype': 'VIS',
             'zoom': 'z1',
@@ -322,21 +330,23 @@ def test_plantcv_parallel_metadata_parser_images():
 
 
 def test_plantcv_parallel_metadata_parser_regex():
-    data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR)
-    meta_filters = {"imgtype": "VIS"}
-    start_date = 1413936000
-    end_date = 1414022400
-    date_format = '%Y-%m-%d %H:%M:%S.%f'
-    error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
-    jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,
-                                                      date_format=date_format,
-                                                      start_date=start_date, end_date=end_date, error_log=error_log,
-                                                      delimiter=r'(VIS)_(SV)_(\d+)_(z1)_(h1)_(g0)_(e82)_(\d+)',
-                                                      file_type="jpg", coprocess=None)
+    # Create config instance
+    wf = plantcv.parallel.WorkflowConfig()
+    wf.config["input_dir"] = os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR)
+    wf.config["json"] = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_metadata_parser_images", "output.json")
+    wf.config["filename_metadata"] = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
+    wf.config["workflow"] = TEST_PIPELINE
+    wf.config["metadata_filters"] = {"imgtype": "VIS"}
+    wf.config["start_date"] = 1413936000
+    wf.config["end_date"] = 1414022400
+    wf.config["timestampformat"] = '%Y-%m-%d %H:%M:%S.%f'
+    wf.config["imgformat"] = "jpg"
+    wf.config["delimiter"] = r'(VIS)_(SV)_(\d+)_(z1)_(h1)_(g0)_(e82)_(\d+)'
+
+    meta = plantcv.parallel.metadata_parser(config=wf)
     expected = {
         'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
-            'path': os.path.join(PARALLEL_TEST_DATA, 'images'),
+            'path': os.path.join(PARALLEL_TEST_DATA, 'images', 'VIS_SV_0_z1_h1_g0_e82_117770.jpg'),
             'camera': 'SV',
             'imgtype': 'VIS',
             'zoom': 'z1',
@@ -356,20 +366,21 @@ def test_plantcv_parallel_metadata_parser_regex():
 
 
 def test_plantcv_parallel_metadata_parser_images_outside_daterange():
-    data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR2)
-    meta_filters = {"imgtype": "NIR"}
-    start_date = 10
-    end_date = 10
-    date_format = "%Y-%m-%d %H_%M_%S"
-    meta_fields = {"imgtype": 0, "camera": 1, "frame": 2, "zoom": 3, "lifter": 4, "gain": 5, "exposure": 6,
-                   "timestamp": 7}
-    error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
-    regex = r"(NIR)_(SV)_(\d)_(z1)_(h1)_(g0)_(e65)_(\d{4}-\d{2}-\d{2} \d{2}_\d{2}_\d{2})"
-    jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=meta_fields,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,
-                                                      date_format=date_format,
-                                                      start_date=start_date, end_date=end_date, error_log=error_log,
-                                                      delimiter=regex, file_type="jpg", coprocess=None)
+    # Create config instance
+    wf = plantcv.parallel.WorkflowConfig()
+    wf.config["input_dir"] = os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR2)
+    wf.config["json"] = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_metadata_parser_images_outside_daterange",
+                                     "output.json")
+    wf.config["filename_metadata"] = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "timestamp"]
+    wf.config["workflow"] = TEST_PIPELINE
+    wf.config["metadata_filters"] = {"imgtype": "NIR"}
+    wf.config["start_date"] = 10
+    wf.config["end_date"] = 10
+    wf.config["timestampformat"] = "%Y-%m-%d %H_%M_%S"
+    wf.config["imgformat"] = "jpg"
+    wf.config["delimiter"] = r"(NIR)_(SV)_(\d)_(z1)_(h1)_(g0)_(e65)_(\d{4}-\d{2}-\d{2} \d{2}_\d{2}_\d{2})"
+
+    meta = plantcv.parallel.metadata_parser(config=wf)
     assert meta == {}
 
 
@@ -385,53 +396,62 @@ def test_plantcv_parallel_check_date_range_wrongdateformat():
 
 
 def test_plantcv_parallel_metadata_parser_snapshot_outside_daterange():
-    data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
-    meta_filters = {"imgtype": "VIS"}
-    start_date = 10
-    end_date = 10
-    date_format = '%Y-%m-%d %H:%M:%S.%f'
-    error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
-    jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,
-                                                      date_format=date_format,
-                                                      start_date=start_date, end_date=end_date, error_log=error_log,
-                                                      delimiter="_", file_type="jpg", coprocess=None)
+    # Create config instance
+    wf = plantcv.parallel.WorkflowConfig()
+    wf.config["input_dir"] = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
+    wf.config["json"] = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_metadata_parser_snapshot_outside_daterange",
+                                     "output.json")
+    wf.config["filename_metadata"] = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
+    wf.config["workflow"] = TEST_PIPELINE
+    wf.config["metadata_filters"] = {"imgtype": "VIS"}
+    wf.config["start_date"] = 10
+    wf.config["end_date"] = 10
+    wf.config["timestampformat"] = '%Y-%m-%d %H:%M:%S.%f'
+    wf.config["imgformat"] = "jpg"
+
+    meta = plantcv.parallel.metadata_parser(config=wf)
 
     assert meta == {}
 
 
 def test_plantcv_parallel_metadata_parser_fail_images():
-    data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
-    meta_filters = {"cartag": "VIS"}
-    start_date = 10
-    end_date = 10
-    date_format = '%Y-%m-%d %H:%M:%S.%f'
-    error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
-    jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=META_FIELDS,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,
-                                                      date_format=date_format,
-                                                      start_date=start_date, end_date=end_date, error_log=error_log,
-                                                      delimiter="_", file_type="jpg", coprocess="NIR")
+    # Create config instance
+    wf = plantcv.parallel.WorkflowConfig()
+    wf.config["input_dir"] = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
+    wf.config["json"] = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_metadata_parser_fail_images", "output.json")
+    wf.config["filename_metadata"] = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
+    wf.config["workflow"] = TEST_PIPELINE
+    wf.config["metadata_filters"] = {"cartag": "VIS"}
+    wf.config["start_date"] = 10
+    wf.config["end_date"] = 10
+    wf.config["timestampformat"] = '%Y-%m-%d %H:%M:%S.%f'
+    wf.config["imgformat"] = "jpg"
+    wf.config["coprocess"] = "NIR"
 
+    meta = plantcv.parallel.metadata_parser(config=wf)
     assert meta == METADATA_NIR_ONLY
 
 
 def test_plantcv_parallel_metadata_parser_images_no_frame():
-    data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
-    meta_fields = {"imgtype": 0, "camera": 1, "X": 2, "zoom": 3, "lifter": 4, "gain": 5, "exposure": 6, "id": 7}
-    meta_filters = {"imgtype": "VIS"}
-    start_date = 1413936000
-    end_date = 1414022400
-    date_format = '%Y-%m-%d %H:%M:%S.%f'
-    error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
-    jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=meta_fields,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,
-                                                      date_format=date_format,
-                                                      start_date=start_date, end_date=end_date, error_log=error_log,
-                                                      delimiter="_", file_type="jpg", coprocess="NIR")
+    # Create config instance
+    wf = plantcv.parallel.WorkflowConfig()
+    wf.config["input_dir"] = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
+    wf.config["json"] = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_metadata_parser_images_no_frame",
+                                     "output.json")
+    wf.config["filename_metadata"] = ["imgtype", "camera", "X", "zoom", "lifter", "gain", "exposure", "id"]
+    wf.config["workflow"] = TEST_PIPELINE
+    wf.config["metadata_filters"] = {"imgtype": "VIS"}
+    wf.config["start_date"] = 1413936000
+    wf.config["end_date"] = 1414022400
+    wf.config["timestampformat"] = '%Y-%m-%d %H:%M:%S.%f'
+    wf.config["imgformat"] = "jpg"
+    wf.config["coprocess"] = "NIR"
+
+    meta = plantcv.parallel.metadata_parser(config=wf)
+
     assert meta == {
         'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
-            'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383'),
+            'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383', 'VIS_SV_0_z1_h1_g0_e82_117770.jpg'),
             'camera': 'SV',
             'imgtype': 'VIS',
             'zoom': 'z1',
@@ -449,7 +469,7 @@ def test_plantcv_parallel_metadata_parser_images_no_frame():
             'coimg': 'NIR_SV_0_z1_h1_g0_e65_117779.jpg'
         },
         'NIR_SV_0_z1_h1_g0_e65_117779.jpg': {
-            'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383'),
+            'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383', 'NIR_SV_0_z1_h1_g0_e65_117779.jpg'),
             'camera': 'SV',
             'imgtype': 'NIR',
             'zoom': 'z1',
@@ -469,21 +489,25 @@ def test_plantcv_parallel_metadata_parser_images_no_frame():
 
 
 def test_plantcv_parallel_metadata_parser_images_no_camera():
-    data_dir = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
-    meta_fields = {"imgtype": 0, "X": 1, "frame": 2, "zoom": 3, "lifter": 4, "gain": 5, "exposure": 6, "id": 7}
-    meta_filters = {"imgtype": "VIS"}
-    start_date = 1413936000
-    end_date = 1414022400
-    date_format = '%Y-%m-%d %H:%M:%S.%f'
-    error_log = open(os.path.join(TEST_TMPDIR, "error.log"), 'w')
-    jobcount, meta = plantcv.parallel.metadata_parser(data_dir=data_dir, meta_fields=meta_fields,
-                                                      valid_meta=VALID_META, meta_filters=meta_filters,
-                                                      date_format=date_format,
-                                                      start_date=start_date, end_date=end_date, error_log=error_log,
-                                                      delimiter="_", file_type="jpg", coprocess="NIR")
+    # Create config instance
+    wf = plantcv.parallel.WorkflowConfig()
+    wf.config["input_dir"] = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
+    wf.config["json"] = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_metadata_parser_images_no_frame",
+                                     "output.json")
+    wf.config["filename_metadata"] = ["imgtype", "X", "frame", "zoom", "lifter", "gain", "exposure", "id"]
+    wf.config["workflow"] = TEST_PIPELINE
+    wf.config["metadata_filters"] = {"imgtype": "VIS"}
+    wf.config["start_date"] = 1413936000
+    wf.config["end_date"] = 1414022400
+    wf.config["timestampformat"] = '%Y-%m-%d %H:%M:%S.%f'
+    wf.config["imgformat"] = "jpg"
+    wf.config["coprocess"] = "NIR"
+
+    meta = plantcv.parallel.metadata_parser(config=wf)
+
     assert meta == {
         'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
-            'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383'),
+            'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383', 'VIS_SV_0_z1_h1_g0_e82_117770.jpg'),
             'camera': 'none',
             'imgtype': 'VIS',
             'zoom': 'z1',
@@ -501,7 +525,7 @@ def test_plantcv_parallel_metadata_parser_images_no_camera():
             'coimg': 'NIR_SV_0_z1_h1_g0_e65_117779.jpg'
         },
         'NIR_SV_0_z1_h1_g0_e65_117779.jpg': {
-            'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383'),
+            'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383', 'NIR_SV_0_z1_h1_g0_e65_117779.jpg'),
             'camera': 'none',
             'imgtype': 'NIR',
             'zoom': 'z1',
