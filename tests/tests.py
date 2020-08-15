@@ -103,7 +103,7 @@ VALID_META = {
 
 METADATA_COPROCESS = {
     'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
-        'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383', 'VIS_SV_0_z1_h1_g0_e82_117770'),
+        'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383', 'VIS_SV_0_z1_h1_g0_e82_117770.jpg'),
         'camera': 'SV',
         'imgtype': 'VIS',
         'zoom': 'z1',
@@ -121,7 +121,7 @@ METADATA_COPROCESS = {
         'coimg': 'NIR_SV_0_z1_h1_g0_e65_117779.jpg'
     },
     'NIR_SV_0_z1_h1_g0_e65_117779.jpg': {
-        'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383', 'NIR_SV_0_z1_h1_g0_e65_117779'),
+        'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383', 'NIR_SV_0_z1_h1_g0_e65_117779.jpg'),
         'camera': 'SV',
         'imgtype': 'NIR',
         'zoom': 'z1',
@@ -545,16 +545,32 @@ def test_plantcv_parallel_metadata_parser_images_no_camera():
 
 
 def test_plantcv_parallel_job_builder_single_image():
-    jobs = plantcv.parallel.job_builder(meta=METADATA_VIS_ONLY, valid_meta=VALID_META, workflow=TEST_PIPELINE,
-                                        job_dir=TEST_TMPDIR, out_dir=TEST_TMPDIR, coprocess=None,
-                                        other_args="--other on", writeimg=True)
+    # Create cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_job_builder_single_image")
+    os.mkdir(cache_dir)
+    # Create config instance
+    wf = plantcv.parallel.WorkflowConfig()
+    wf.config["input_dir"] = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
+    wf.config["json"] = os.path.join(cache_dir, "output.json")
+    wf.config["tmp_dir"] = cache_dir
+    wf.config["filename_metadata"] = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
+    wf.config["workflow"] = TEST_PIPELINE
+    wf.config["output_dir"] = cache_dir
+    wf.config["metadata_filters"] = {"imgtype": "VIS", "camera": "SV"}
+    wf.config["start_date"] = 1413936000
+    wf.config["end_date"] = 1414022400
+    wf.config["timestampformat"] = '%Y-%m-%d %H:%M:%S.%f'
+    wf.config["imgformat"] = "jpg"
+    wf.config["other_args"] = ["--other", "on"]
+    wf.config["writeimg"] = True
+
+    jobs = plantcv.parallel.job_builder(meta=METADATA_VIS_ONLY, config=wf)
 
     image_name = list(METADATA_VIS_ONLY.keys())[0]
-    image_path = os.path.join(METADATA_VIS_ONLY[image_name]['path'], image_name)
-    result_file = os.path.join(TEST_TMPDIR, image_name + '.txt')
+    result_file = os.path.join(cache_dir, image_name + '.txt')
 
-    expected = ['python', TEST_PIPELINE, '--image', image_path, '--outdir', TEST_TMPDIR, '--result', result_file,
-                '--writeimg', '--other', 'on']
+    expected = ['python', TEST_PIPELINE, '--image', METADATA_VIS_ONLY[image_name]['path'], '--outdir',
+                cache_dir, '--result', result_file, '--writeimg', '--other', 'on']
 
     if len(expected) != len(jobs[0]):
         assert False
@@ -563,18 +579,36 @@ def test_plantcv_parallel_job_builder_single_image():
 
 
 def test_plantcv_parallel_job_builder_coprocess():
-    jobs = plantcv.parallel.job_builder(meta=METADATA_COPROCESS, valid_meta=VALID_META, workflow=TEST_PIPELINE,
-                                        job_dir=TEST_TMPDIR, out_dir=TEST_TMPDIR, coprocess='NIR',
-                                        other_args="--other on", writeimg=True)
+    # Create cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_job_builder_coprocess")
+    os.mkdir(cache_dir)
+    # Create config instance
+    wf = plantcv.parallel.WorkflowConfig()
+    wf.config["input_dir"] = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
+    wf.config["json"] = os.path.join(cache_dir, "output.json")
+    wf.config["tmp_dir"] = cache_dir
+    wf.config["filename_metadata"] = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
+    wf.config["workflow"] = TEST_PIPELINE
+    wf.config["output_dir"] = cache_dir
+    wf.config["metadata_filters"] = {"imgtype": "VIS", "camera": "SV"}
+    wf.config["start_date"] = 1413936000
+    wf.config["end_date"] = 1414022400
+    wf.config["timestampformat"] = '%Y-%m-%d %H:%M:%S.%f'
+    wf.config["imgformat"] = "jpg"
+    wf.config["other_args"] = ["--other", "on"]
+    wf.config["writeimg"] = True
+    wf.config["coprocess"] = "NIR"
+
+    jobs = plantcv.parallel.job_builder(meta=METADATA_COPROCESS, config=wf)
 
     img_names = list(METADATA_COPROCESS.keys())
     vis_name = img_names[0]
-    vis_path = os.path.join(METADATA_COPROCESS[vis_name]['path'], vis_name)
-    result_file = os.path.join(TEST_TMPDIR, vis_name + '.txt')
+    vis_path = METADATA_COPROCESS[vis_name]['path']
+    result_file = os.path.join(cache_dir, vis_name + '.txt')
     nir_name = img_names[1]
-    coresult_file = os.path.join(TEST_TMPDIR, nir_name + '.txt')
+    coresult_file = os.path.join(cache_dir, nir_name + '.txt')
 
-    expected = ['python', TEST_PIPELINE, '--image', vis_path, '--outdir', TEST_TMPDIR, '--result', result_file,
+    expected = ['python', TEST_PIPELINE, '--image', vis_path, '--outdir', cache_dir, '--result', result_file,
                 '--coresult', coresult_file, '--writeimg', '--other', 'on']
 
     if len(expected) != len(jobs[0]):
