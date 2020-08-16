@@ -13,25 +13,23 @@ __all__ = ["metadata_parser", "job_builder", "process_results", "multiprocess", 
 
 class WorkflowConfig:
     def __init__(self):
-        # Private variable _template stores the unmodified configuration template
-        self._template = {
-            "input_dir": "",
-            "json": "",
-            "filename_metadata": [],
-            "workflow": "",
-            "output_dir": "./output_images",
-            "tmp_dir": None,
-            "processes": 1,
-            "start_date": 1,
-            "end_date": None,
-            "imgformat": "png",
-            "delimiter": "_",
-            "metadata_filters": {},
-            "timestampformat": "%Y-%m-%d %H:%M:%S.%f",
-            "writeimg": False,
-            "other_args": None,
-            "coprocess": None,
-            "metadata_terms": {
+        self.input_dir = ""
+        self.json = ""
+        self.filename_metadata = []
+        self.workflow = ""
+        self.output_dir = "./output_images"
+        self.tmp_dir = None
+        self.processes = 1
+        self.start_date = 1
+        self.end_date = None
+        self.imgformat = "png"
+        self.delimiter = "_"
+        self.metadata_filters = {}
+        self.timestampformat = "%Y-%m-%d %H:%M:%S.%f"
+        self.writeimg = False
+        self.other_args = None
+        self.coprocess = None
+        self.metadata_terms = {
                 # Camera settings
                 "camera": {
                     "label": "camera identifier",
@@ -108,73 +106,66 @@ class WorkflowConfig:
                     "value": "none"
                 }
             }
-        }
-        # Initialize the config property with the template
-        self.config = deepcopy(self._template)
 
-    # Create config template file from the template property
-    def create_template(self, config_file):
-        """Create configuration template file.
+    # Save configuration to a file
+    def save_config(self, config_file):
+        """Save configuration to a file.
 
         Input variables:
-        config_file = Configuration filename to write template to (text/JSON)
+        config_file = Filename to write configuration to (text/JSON)
 
         :param config_file: str
         """
         # Open the file for writing
-        with open(config_file, "w") as f:
+        with open(config_file, "w") as fp:
             # Save the data in JSON format with indentation
-            json.dump(obj=self._template, fp=f, indent=4)
+            json.dump(obj=vars(self), fp=fp, indent=4)
 
-    # Class method for importing configs from a file
-    def import_config_file(self, config_file):
-        """Import configuration from a file.
+    # Import a configuration from a file
+    def import_config(self, config_file):
+        """Import a configuration file.
 
         Input variables:
-        config_file = Configuration file to import from.
+        config_file = Configuration file to import
 
         :param config_file: str
         """
         # Open the file for reading
-        with open(config_file, "r") as f:
-            # Import the JSON configuration to the config property
-            self.config = json.load(f)
+        with open(config_file, "r") as fp:
+            # Import the JSON configuration data
+            config = json.load(fp)
+            for key, value in config.items():
+                setattr(self, key, value)
 
     # Validation checks on current config
     def validate_config(self):
         """Validation checks on current configuration.
         """
         checks = [True]
-        # Validate the configuration is complete
-        for prop in self._template:
-            if prop not in self.config:
-                print("Error: configuration property {0} not found in config, please use a valid template".format(
-                    prop))
-                checks.append(False)
         # Validate input directory
-        if not os.path.exists(self.config.get("input_dir")):
-            print("Error: input directory (input_dir) is required and {0} does not exist.".format(
-                self.config.get("input_dir")), file=sys.stderr)
+        if not os.path.exists(self.input_dir):
+            print(f"Error: input directory (input_dir) is required and {self.input_dir} does not exist.",
+                  file=sys.stderr)
             checks.append(False)
         # Validate JSON file
-        if self.config.get("json") == "":
+        if self.json == "":
             print("Error: an output JSON file (json) is required but is currently undefined.", file=sys.stderr)
             checks.append(False)
         # Validate filename metadata
-        if len(self.config.get("filename_metadata")) == 0:
+        if len(self.filename_metadata) == 0:
             print("Error: a list of filename metadata terms (filename_metadata) is required but is currently undefined",
                   file=sys.stderr)
             checks.append(False)
         else:
             # Are the user-defined metadata valid?
-            for term in self.config.get("filename_metadata"):
-                if term not in self.config.get("metadata_terms"):
-                    print("Error: the term {0} in filename_metadata is not a currently supported metadata type.".format(
-                        term))
+            for term in self.filename_metadata:
+                if term not in self.metadata_terms:
+                    print(f"Error: the term {term} in filename_metadata is not a currently supported metadata type.",
+                          file=sys.stderr)
                     checks.append(False)
         # Validate workflow script
-        if not os.path.exists(self.config.get("workflow")):
-            print("Error: PlantCV workflow script (workflow) is required and {0} does not exist.".format(
-                self.config.get("workflow")), file=sys.stderr)
+        if not os.path.exists(self.workflow):
+            print(f"Error: PlantCV workflow script (workflow) is required and {self.workflow} does not exist.",
+                  file=sys.stderr)
             checks.append(False)
         return all(checks)

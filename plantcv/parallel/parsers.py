@@ -24,19 +24,19 @@ def metadata_parser(config):
 
     # A dictionary of metadata terms and their index position in the filename metadata term list
     metadata_index = {}
-    for i, term in enumerate(config.config["filename_metadata"]):
+    for i, term in enumerate(config.filename_metadata):
         metadata_index[term] = i
 
     # How many metadata terms are in the files we intend to process?
-    meta_count = len(config.config["filename_metadata"])
+    meta_count = len(config.filename_metadata)
 
     # Compile regex (even if it's only a delimiter character)
-    regex = re.compile(config.config["delimiter"])
+    regex = re.compile(config.delimiter)
 
     # Check whether there is a snapshot metadata file or not
-    if os.path.exists(os.path.join(config.config["input_dir"], "SnapshotInfo.csv")):
+    if os.path.exists(os.path.join(config.input_dir, "SnapshotInfo.csv")):
         # Open the SnapshotInfo.csv file
-        csvfile = open(os.path.join(config.config["input_dir"], 'SnapshotInfo.csv'), 'r')
+        csvfile = open(os.path.join(config.input_dir, 'SnapshotInfo.csv'), 'r')
 
         # Read the first header line
         header = csvfile.readline()
@@ -61,14 +61,14 @@ def metadata_parser(config):
             img_list = img_list_str.split(';')
             for img in img_list:
                 if len(img) != 0:
-                    dirpath = os.path.join(config.config["input_dir"], 'snapshot' + data[colnames['id']])
-                    filename = img + '.' + config.config["imgformat"]
+                    dirpath = os.path.join(config.input_dir, 'snapshot' + data[colnames['id']])
+                    filename = img + '.' + config.imgformat
                     if not os.path.exists(os.path.join(dirpath, filename)):
                         print(f"Something is wrong, file {dirpath}/{filename} does not exist", file=sys.stderr)
                         continue
                         # raise IOError("Something is wrong, file {0}/{1} does not exist".format(dirpath, filename))
                     # Metadata from image file name
-                    metadata = _parse_filename(filename=img, delimiter=config.config["delimiter"], regex=regex)
+                    metadata = _parse_filename(filename=img, delimiter=config.delimiter, regex=regex)
                     # Not all images in a directory may have the same metadata structure only keep those that do
                     if len(metadata) == meta_count:
                         # Image metadata
@@ -77,63 +77,64 @@ def metadata_parser(config):
                         img_pass = 1
                         coimg_store = 0
                         # For each of the type of metadata PlantCV keeps track of
-                        for term in config.config["metadata_terms"]:
+                        for term in config.metadata_terms:
                             # If the same metadata is found in the image filename, store the value
                             if term in metadata_index:
                                 meta_value = metadata[metadata_index[term]]
                                 # If the metadata type has a user-provided restriction
-                                if term in config.config["metadata_filters"]:
+                                if term in config.metadata_filters:
                                     # If the input value does not match the image value, fail the image
-                                    if meta_value != config.config["metadata_filters"][term]:
+                                    if meta_value != config.metadata_filters[term]:
                                         img_pass = 0
                                 img_meta[term] = meta_value
                             # If the same metadata is found in the CSV file, store the value
                             elif term in colnames:
                                 meta_value = data[colnames[term]]
                                 # If the metadata type has a user-provided restriction
-                                if term in config.config["metadata_filters"]:
+                                if term in config.metadata_filters:
                                     # If the input value does not match the image value, fail the image
-                                    if meta_value != config.config["metadata_filters"][term]:
+                                    if meta_value != config.metadata_filters[term]:
                                         img_pass = 0
                                 img_meta[term] = meta_value
                             # Or use the default value
                             else:
-                                img_meta[term] = config.config["metadata_terms"][term]["value"]
+                                img_meta[term] = config.metadata_terms[term]["value"]
 
-                        if config.config["start_date"] and config.config["end_date"] and img_meta['timestamp'] is not None:
-                            in_date_range = check_date_range(config.config["start_date"], config.config["end_date"],
-                                                             img_meta['timestamp'], config.config["timestampformat"])
+                        if config.start_date and config.end_date and img_meta['timestamp'] is not None:
+                            in_date_range = check_date_range(config.start_date, config.end_date,
+                                                             img_meta['timestamp'], config.timestampformat)
                             if in_date_range is False:
                                 img_pass = 0
 
-                        if config.config["coprocess"] is not None:
-                            if img_meta['imgtype'] == config.config["coprocess"]:
+                        if config.coprocess is not None:
+                            if img_meta['imgtype'] == config.coprocess:
                                 coimg_store = 1
 
                         # If the image meets the user's criteria, store the metadata
                         if img_pass == 1:
                             # Link image to coprocessed image
                             coimg_pass = 0
-                            if config.config["coprocess"] is not None:
+                            if config.coprocess is not None:
                                 for coimg in img_list:
                                     if len(coimg) != 0:
-                                        meta_parts = _parse_filename(filename=coimg, delimiter=config.config["delimiter"], regex=regex)
+                                        meta_parts = _parse_filename(filename=coimg, delimiter=config.delimiter,
+                                                                     regex=regex)
                                         if len(meta_parts) > 0:
                                             coimgtype = meta_parts[metadata_index['imgtype']]
-                                            if coimgtype == config.config["coprocess"]:
-                                                if 'camera' in config.config["filename_metadata"]:
+                                            if coimgtype == config.coprocess:
+                                                if 'camera' in config.filename_metadata:
                                                     cocamera = meta_parts[metadata_index['camera']]
-                                                    if 'frame' in config.config["filename_metadata"]:
+                                                    if 'frame' in config.filename_metadata:
                                                         coframe = meta_parts[metadata_index['frame']]
                                                         if cocamera == img_meta['camera'] and coframe == img_meta['frame']:
-                                                            img_meta['coimg'] = coimg + '.' + config.config["imgformat"]
+                                                            img_meta['coimg'] = coimg + '.' + config.imgformat
                                                             coimg_pass = 1
                                                     else:
                                                         if cocamera == img_meta['camera']:
-                                                            img_meta['coimg'] = coimg + '.' + config.config["imgformat"]
+                                                            img_meta['coimg'] = coimg + '.' + config.imgformat
                                                             coimg_pass = 1
                                                 else:
-                                                    img_meta['coimg'] = coimg + '.' + config.config["imgformat"]
+                                                    img_meta['coimg'] = coimg + '.' + config.imgformat
                                                     coimg_pass = 1
                                 if coimg_pass == 0:
                                     print(f"Could not find an image to coprocess with {img_path}")
@@ -142,11 +143,11 @@ def metadata_parser(config):
                             meta[filename] = img_meta
     else:
         # Compile regular expression to remove image file extensions
-        pattern = re.escape('.') + config.config["imgformat"] + '$'
+        pattern = re.escape('.') + config.imgformat + '$'
         ext = re.compile(pattern, re.IGNORECASE)
 
         # Walk through the input directory and find images that match input criteria
-        for (dirpath, dirnames, filenames) in os.walk(config.config["input_dir"]):
+        for (dirpath, dirnames, filenames) in os.walk(config.input_dir):
             for filename in filenames:
                 # Is filename and image?
                 is_img = ext.search(filename)
@@ -154,7 +155,7 @@ def metadata_parser(config):
                 if is_img is not None:
                     # Remove the file extension
                     prefix = ext.sub('', filename)
-                    metadata = _parse_filename(filename=prefix, delimiter=config.config["delimiter"], regex=regex)
+                    metadata = _parse_filename(filename=prefix, delimiter=config.delimiter, regex=regex)
 
                     # Not all images in a directory may have the same metadata structure only keep those that do
                     if len(metadata) == meta_count:
@@ -163,23 +164,23 @@ def metadata_parser(config):
                         img_meta = {'path': img_path}
                         img_pass = 1
                         # For each of the type of metadata PlantCV keeps track of
-                        for term in config.config["metadata_terms"]:
+                        for term in config.metadata_terms:
                             # If the same metadata is found in the image filename, store the value
                             if term in metadata_index:
                                 meta_value = metadata[metadata_index[term]]
                                 # If the metadata type has a user-provided restriction
-                                if term in config.config["metadata_filters"]:
+                                if term in config.metadata_filters:
                                     # If the input value does not match the image value, fail the image
-                                    if meta_value != config.config["metadata_filters"][term]:
+                                    if meta_value != config.metadata_filters[term]:
                                         img_pass = 0
                                 img_meta[term] = meta_value
                             # Or use the default value
                             else:
-                                img_meta[term] = config.config["metadata_terms"][term]["value"]
+                                img_meta[term] = config.metadata_terms[term]["value"]
 
-                        if config.config["start_date"] and config.config["end_date"] and img_meta['timestamp'] is not None:
-                            in_date_range = check_date_range(config.config["start_date"], config.config["end_date"],
-                                                             img_meta['timestamp'], config.config["timestampformat"])
+                        if config.start_date and config.end_date and img_meta['timestamp'] is not None:
+                            in_date_range = check_date_range(config.start_date, config.end_date,
+                                                             img_meta['timestamp'], config.timestampformat)
                             if in_date_range is False:
                                 img_pass = 0
 
