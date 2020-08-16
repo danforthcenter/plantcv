@@ -244,6 +244,19 @@ def test_plantcv_parallel_workflowconfig_invalid_metadata_terms():
     assert not config.validate_config()
 
 
+def test_plantcv_parallel_workflowconfig_invalid_filename_metadata():
+    # Create a test tmp directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_workflowconfig_invalid_filename_metadata")
+    os.mkdir(cache_dir)
+    # Create config instance
+    config = plantcv.parallel.WorkflowConfig()
+    # Set invalid values in config
+    # input_dir and json are not defined by default, but are required
+    # Do not set required filename_metadata
+    # Validate config
+    assert not config.validate_config()
+
+
 def test_plantcv_parallel_metadata_parser_snapshots():
     # Create config instance
     config = plantcv.parallel.WorkflowConfig()
@@ -415,6 +428,61 @@ def test_plantcv_parallel_metadata_parser_fail_images():
 
     meta = plantcv.parallel.metadata_parser(config=config)
     assert meta == METADATA_NIR_ONLY
+
+
+def test_plantcv_parallel_metadata_parser_images_with_frame():
+    # Create config instance
+    config = plantcv.parallel.WorkflowConfig()
+    config.input_dir = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
+    config.json = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_metadata_parser_images_with_frame", "output.json")
+    config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
+    config.workflow = TEST_PIPELINE
+    config.metadata_filters = {"imgtype": "VIS"}
+    config.start_date = 1413936000
+    config.end_date = 1414022400
+    config.timestampformat = '%Y-%m-%d %H:%M:%S.%f'
+    config.imgformat = "jpg"
+    config.coprocess = "NIR"
+
+    meta = plantcv.parallel.metadata_parser(config=config)
+
+    assert meta == {
+        'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
+            'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383', 'VIS_SV_0_z1_h1_g0_e82_117770.jpg'),
+            'camera': 'SV',
+            'imgtype': 'VIS',
+            'zoom': 'z1',
+            'exposure': 'e82',
+            'gain': 'g0',
+            'frame': '0',
+            'lifter': 'h1',
+            'timestamp': '2014-10-22 17:49:35.187',
+            'id': '117770',
+            'plantbarcode': 'Ca031AA010564',
+            'treatment': 'none',
+            'cartag': '2143',
+            'measurementlabel': 'C002ch_092214_biomass',
+            'other': 'none',
+            'coimg': 'NIR_SV_0_z1_h1_g0_e65_117779.jpg'
+        },
+        'NIR_SV_0_z1_h1_g0_e65_117779.jpg': {
+            'path': os.path.join(PARALLEL_TEST_DATA, 'snapshots', 'snapshot57383', 'NIR_SV_0_z1_h1_g0_e65_117779.jpg'),
+            'camera': 'SV',
+            'imgtype': 'NIR',
+            'zoom': 'z1',
+            'exposure': 'e65',
+            'gain': 'g0',
+            'frame': '0',
+            'lifter': 'h1',
+            'timestamp': '2014-10-22 17:49:35.187',
+            'id': '117779',
+            'plantbarcode': 'Ca031AA010564',
+            'treatment': 'none',
+            'cartag': '2143',
+            'measurementlabel': 'C002ch_092214_biomass',
+            'other': 'none'
+        }
+    }
 
 
 def test_plantcv_parallel_metadata_parser_images_no_frame():
