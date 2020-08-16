@@ -8,9 +8,39 @@ to run PlantCV over a flat file directory (just keep this in mind).
 
 ### Running PlantCV over PhenoFront image data-set structure
 
-We normally execute workflows in a shell script or in in a condor job file (or dagman workflow if running multiple workflows into one json database)
+We normally execute workflows in a shell script or in in a cluster scheduler job file. The parallelization tool
+`plantcv-workflow.py` has many configuration parameters. To make it easier to manage the number of input parameters, 
+a configuration file can be edited and input. However, the program will still accept inputs via command-line parameters
+if preferred.
 
-* First call the plantcv-workflow.py script that does the parallelization
+### Configuration file
+
+To create a configuration file, in a `python` console or Jupyter notebook run the following:
+
+```python
+import plantcv.parallel
+config = plantcv.parallel.WorkflowConfig()
+config.save_config("config.json")
+```
+
+The code above saves a text configuration file in JSON format using the built-in defaults for parameters. Open this
+file with your favorite text editor and adjust the parameters as needed. Alternatively, the parameters can be modified
+directly in Python as demonstrated in the [WorkflowConfig documentation](parallel_config.md). A configuration can be
+saved at any time using the `save_config` method to save for later use.
+
+Some notes on JSON format:
+* Like Python, string variables (e.g. "VIS") need to be in quotes.
+* Unlike Python, `true` and `false` in JSON are lowercase.
+
+Once configured, a workflow can be run in parallel over a dataset using the command:
+
+```bash
+plantcv-workflow.py --config config.json
+```
+
+### Command-line parameters
+
+Alternative command-line parameters for the `plantcv-workflow.py` script that does the parallelization
 * -d is the --dir directory of images
 * -p is the --workflow that you are going to run over the images, see the [VIS tutorial](vis_tutorial.md) and [PSII tutorial](psII_tutorial.md)
 * -i is the --outdir your desired location for the output images
