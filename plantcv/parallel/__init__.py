@@ -27,7 +27,7 @@ class WorkflowConfig:
         self.metadata_filters = {}
         self.timestampformat = "%Y-%m-%d %H:%M:%S.%f"
         self.writeimg = False
-        self.other_args = None
+        self.other_args = []
         self.coprocess = None
         self.metadata_terms = {
                 # Camera settings

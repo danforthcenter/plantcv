@@ -1,24 +1,24 @@
 ## Parallel workflow configuration class
 
-`WorkflowConfig` is a class that stores parallel workflow configuration parameters. An instance of `WorkflowConfig` 
-is input to the `plantcv.parallel.run_workflow` function to execute a PlantCV workflow on an image dataset, in parallel.
+`WorkflowConfig` is a class that stores parallel workflow configuration parameters. Configurations can be saved/imported
+to run workflows in parallel.
 
 *class* **plantcv.parallel.WorkflowConfig**
 
 **Class methods**
 
-Create a template configuration file that can be modified and imported by a workflow.
+Save a configuration file that can be modified and imported to run workflows in parallel.
 
-**WorkflowConfig.create_template**(*config_file*)
+**WorkflowConfig.save_config**(*config_file*)
 
 - **Parameters:**
-    - config_file (str, required): path/name of output configuration file template
+    - config_file (str, required): path/name of output configuration file
 - **Context:**
-    - Used to create a template configuration file that can be edited and imported
+    - Used to create a configuration file that can be edited and imported
 
 Import a configuration file. 
 
-**WorkflowConfig.import_config_file**(*config_file*)
+**WorkflowConfig.import_config**(*config_file*)
 
 - **Parameters:**
     - config_file (str, required): path/name of input configuration file
@@ -50,7 +50,7 @@ Validate parameters/structure of configuration data.
     - group_by (list, default = `None`): a list of metadata terms to treat as a group
     - timestampformat (str, default = '%Y-%m-%d %H:%M:%S.%f'): a date format code compatible with strptime C library
     - writeimg (bool, default = `False`): save analysis images to `output_dir` if `True`
-    - other_args (str, default = `None`): other arguments required by the workflow
+    - other_args (list, default = `None`): other arguments required by the workflow
     - coprocess (str, default = `None`): coprocess the specified imgtype with the imgtype specified in metadata_filters (e.g. coprocess NIR images with VIS)
 - **Context:**
     - Used to configure parallelization of PlantCV workflows.
