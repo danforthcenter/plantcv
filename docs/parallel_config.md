@@ -40,7 +40,7 @@ Validate parameters/structure of configuration data.
     - filename_metadata (list, required): list of metadata terms used to construct filenames
     - workflow (str, required): path/name of user-defined PlantCV workflow Python script (validates that it exists)
     - output_dir (str, default = "."): path/name of output directory where images will be saved
-    - tmp_dir (str, default = `None`): path/name of parent folder for the temporary directory, current working directory when `None`
+    - tmp_dir (str, default = `None`): path/name of parent folder for the temporary directory, uses system default temporary directory when `None`
     - processes (int, default = 1): number of parallel processes
     - start_date (int, default = 1): start date in Unix time used to filter images. Images will be analyzed that are newer than the start date
     - end_date (int, default = `None`): end date in Unix time used to filter images. Images will be analyzed that are older than the end date, unless `None`
@@ -50,7 +50,7 @@ Validate parameters/structure of configuration data.
     - group_by (list, default = `None`): a list of metadata terms to treat as a group
     - timestampformat (str, default = '%Y-%m-%d %H:%M:%S.%f'): a date format code compatible with strptime C library
     - writeimg (bool, default = `False`): save analysis images to `output_dir` if `True`
-    - other_args (list, default = `None`): other arguments required by the workflow
+    - other_args (list, default = `[]`): list of other arguments required by the workflow (e.g. ["--input1", "value1", "--input2", "value2"])
     - coprocess (str, default = `None`): coprocess the specified imgtype with the imgtype specified in metadata_filters (e.g. coprocess NIR images with VIS)
 - **Context:**
     - Used to configure parallelization of PlantCV workflows.
@@ -61,15 +61,15 @@ Validate parameters/structure of configuration data.
 import plantcv.parallel
 
 # Create a WorkflowConfig instance
-wf = plantcv.parallel.WorkflowConfig()
+config = plantcv.parallel.WorkflowConfig()
 # Create a template configuration file
-wf.create_template(config_file="my_config.json")
+config.save_config(config_file="my_config.json")
 # Edit configuration file as needed
 # Import the configuration file
-wf.import_config_file(config_file="my_config.json")
+config.import_config(config_file="my_config.json")
 # Check for errors
-errors = wf.validate_config()
-# Run a workflow in parallel
-plantcv.parallel.run_workflow(config=wf.config, workflow=workflow)
+passed = config.validate_config()
 
+# Change configuration values directly in Python
+config.input_dir = "./my_images"
 ```

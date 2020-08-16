@@ -173,6 +173,7 @@ nav:
       - 'Naive Bayes': naive_bayes.md
       - 'Naive Bayes Multiclass': naive_bayes_multiclass.md
     - 'Parallelization':
+        - 'Configure Parallelization': parallel_config.md
         - 'Job Builder': job_builder.md
         - 'Metadata Parser': metadata_parser.md
         - 'Multiprocess': multiprocess.md
