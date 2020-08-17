@@ -15,6 +15,8 @@ import plantcv.utils
 # Import matplotlib and use a null Template to block plotting to screen
 # This will let us test debug = "plot"
 import matplotlib
+import dask
+from dask.distributed import Client
 
 PARALLEL_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "parallel_data")
 TEST_TMPDIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".cache")
@@ -176,6 +178,8 @@ METADATA_NIR_ONLY = {
         'other': 'none'
     }
 }
+# Set the temp directory for dask
+dask.config.set(temporary_directory=TEST_TMPDIR)
 
 
 # ##########################
@@ -211,7 +215,7 @@ def test_plantcv_parallel_workflowconfig_import_config_file():
     # import config file
     config.import_config(config_file=config_file)
 
-    assert config.processes == 2
+    assert config.cluster == "LocalCluster"
 
 
 def test_plantcv_parallel_workflowconfig_validate_config():
@@ -253,6 +257,20 @@ def test_plantcv_parallel_workflowconfig_invalid_filename_metadata():
     # Set invalid values in config
     # input_dir and json are not defined by default, but are required
     # Do not set required filename_metadata
+    # Validate config
+    assert not config.validate_config()
+
+
+def test_plantcv_parallel_workflowconfig_invalid_cluster():
+    # Create a test tmp directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_workflowconfig_invalid_cluster")
+    os.mkdir(cache_dir)
+    # Create config instance
+    config = plantcv.parallel.WorkflowConfig()
+    # Set invalid values in config
+    # input_dir and json are not defined by default, but are required
+    # Set invalid cluster type
+    config.cluster = "MyCluster"
     # Validate config
     assert not config.validate_config()
 
@@ -368,7 +386,7 @@ def test_plantcv_parallel_metadata_parser_images_outside_daterange():
     config = plantcv.parallel.WorkflowConfig()
     config.input_dir = os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR2)
     config.json = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_metadata_parser_images_outside_daterange",
-                                     "output.json")
+                               "output.json")
     config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "timestamp"]
     config.workflow = TEST_PIPELINE
     config.metadata_filters = {"imgtype": "NIR"}
@@ -490,7 +508,7 @@ def test_plantcv_parallel_metadata_parser_images_no_frame():
     config = plantcv.parallel.WorkflowConfig()
     config.input_dir = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
     config.json = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_metadata_parser_images_no_frame",
-                                     "output.json")
+                               "output.json")
     config.filename_metadata = ["imgtype", "camera", "X", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = TEST_PIPELINE
     config.metadata_filters = {"imgtype": "VIS"}
@@ -669,13 +687,36 @@ def test_plantcv_parallel_job_builder_coprocess():
         assert all([i == j] for i, j in zip(jobs[0], expected))
 
 
+def test_plantcv_parallel_multiprocess_create_dask_cluster_local():
+    client = plantcv.parallel.create_dask_cluster(cluster="LocalCluster", cluster_config={})
+    status = client.status
+    client.shutdown()
+    assert status == "running"
+
+
+def test_plantcv_parallel_multiprocess_create_dask_cluster():
+    client = plantcv.parallel.create_dask_cluster(cluster="HTCondorCluster", cluster_config={"cores": 1,
+                                                                                             "memory": "1GB",
+                                                                                             "disk": "1GB"})
+    status = client.status
+    client.shutdown()
+    assert status == "running"
+
+
+def test_plantcv_parallel_multiprocess_create_dask_cluster_invalid_cluster():
+    with pytest.raises(ValueError):
+        _ = plantcv.parallel.create_dask_cluster(cluster="Skynet", cluster_config={})
+
+
 def test_plantcv_parallel_multiprocess():
     image_name = list(METADATA_VIS_ONLY.keys())[0]
     image_path = os.path.join(METADATA_VIS_ONLY[image_name]['path'], image_name)
     result_file = os.path.join(TEST_TMPDIR, image_name + '.txt')
     jobs = [['python', TEST_PIPELINE, '--image', image_path, '--outdir', TEST_TMPDIR, '--result', result_file,
              '--writeimg', '--other', 'on']]
-    plantcv.parallel.multiprocess(jobs, 1)
+    # Create a dask LocalCluster client
+    client = Client(n_workers=1)
+    plantcv.parallel.multiprocess(jobs, client=client)
     assert os.path.exists(result_file)
 
 
