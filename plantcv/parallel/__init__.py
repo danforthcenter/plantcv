@@ -39,11 +39,6 @@ class WorkflowConfig:
             "local_directory": None,
             "job_extra": None
         }
-        self.cluster_max_workers = 1
-        self.cluster_cores_per_job = 1
-        self.cluster_mem_per_job = "1GB"
-        self.cluster_disk_per_job = "1GB"
-        self.cluster_job_extra = {"local_directory": "$TMPDIR"}
         self.metadata_terms = {
                 # Camera settings
                 "camera": {
