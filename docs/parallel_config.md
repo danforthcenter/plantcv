@@ -54,6 +54,7 @@ Validate parameters/structure of configuration data.
     - cluster (str, default = "LocalCluster"): LocalCluster will run PlantCV workflows on a single machine. All valid options currently are: "LocalCluster", 
     "HTCondorCluster", "LSFCluster", "MoabCluster", "OARCluster", "PBSCluster", "SGECluster", and "SLURMCluster". See [Dask-Jobqueue](https://jobqueue.dask.org/) for more details.
     - cluster_config (dict, default: see below ): a dictionary of parameters and values used to configure the cluster for parallel processing locally or remotely.
+    - metadata_terms (dict, default: as-is): a dictionary of metadata terms used to assign values in image filenames (or metadata files) to metadata terms (should not be modified).
 - **Context:**
     - Used to configure parallelization of PlantCV workflows.
 
