@@ -22,7 +22,7 @@ def read_dat(filename):
         :return fmax: numpy.ndarray
         """
     # Find .INF filename based on the .DAT filename
-    inf_filename = filename.replace("PSD", "HRD")
+    inf_filename = filename.replace("PSD", "HDR")
     inf_filename = inf_filename.replace(".DAT", ".INF")
 
     # Parse .inf file and create dictionary with metadata stored within
