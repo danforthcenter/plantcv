@@ -46,11 +46,33 @@ def read_dat(filename):
             inf_dict.update({header_data[0].rstrip(): header_data[1].rstrip()})
 
     # Store image dimension data
-    img_cols = int(inf_dict["ImageCols"])
-    img_rows = int(inf_dict["ImageRows"])
+    x = int(inf_dict["ImageCols"])
+    y = int(inf_dict["ImageRows"])
 
     # Dump and reshape raw data so that the z dimension is the number of frames
     raw_data = np.fromfile(filename, np.uint16, -1)
-    img_cube = raw_data.reshape(int(len(raw_data) / (img_rows * img_cols)), img_cols, img_rows).transpose((2, 1, 0))
+    img_cube = raw_data.reshape(int(len(raw_data) / (y * x)), x, y).transpose((2, 1, 0))
 
-    return img_cube, inf_dict
+    # Extract fdark and fmin from the datacube of stacked frames
+    fdark = img_cube[:, :, [0]]
+    fdark = np.transpose(np.transpose(fdark)[0])  # Reshape frame from (x,y,1) to (x,y)
+    fmin = img_cube[:, :, [1]]
+    fmin = np.transpose(np.transpose(fmin)[0])
+
+    # Identify fmax frame
+    i = 0
+    max_sum = 0
+    max_index = 1
+
+    while i < 21:
+        frame = img_cube[:, :, [i]]
+        frame_raw = np.transpose(np.transpose(frame)[0])
+        pixel_sum = np.sum(frame_raw)
+        if pixel_sum > max_sum:
+            max_sum = pixel_sum
+            max_index = i
+        i += 1
+    fmax = img_cube[:, :, [max_index]]
+    fmax = np.transpose(np.transpose(fdark)[0])  # Reshape frame from (x,y,1) to (x,y)
+
+    return fdark, fmin, fmax
