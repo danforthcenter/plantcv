@@ -5,7 +5,6 @@
     "workflow": "",
     "output_dir": "./output_images",
     "tmp_dir": null,
-    "processes": 2,
     "start_date": 1,
     "end_date": null,
     "imgformat": "png",
@@ -15,6 +14,16 @@
     "writeimg": false,
     "other_args": null,
     "coprocess": null,
+    "cluster": "LocalCluster",
+    "cluster_config": {
+        "n_workers": 1,
+        "cores": 1,
+        "memory": "1GB",
+        "disk": "1GB",
+        "log_directory": null,
+        "local_directory": null,
+        "job_extra": null
+    },
     "metadata_terms": {
         "camera": {
             "label": "camera identifier",

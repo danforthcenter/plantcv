@@ -127,7 +127,6 @@ def options():
         config.filename_metadata = args.meta.split(",")
         config.workflow = args.workflow
         config.output_dir = args.outdir
-        config.processes = args.cpu
         config.start_date = args.start_date
         config.end_date = args.end_date
         config.imgformat = args.type
@@ -138,6 +137,8 @@ def options():
         if args.other_args:
             config.other_args = args.other_args.split(" ")
         config.coprocess = args.coprocess
+        config.cluster = "LocalCluster"
+        config.cluster_config = {"n_workers": args.cpu, "memory": "1GB", "disk": "1GB"}
 
     if not config.validate_config():
         raise ValueError("Invalid configuration file. Check errors above.")
@@ -183,7 +184,8 @@ def main():
     # Parallel image processing time
     multi_start_time = time.time()
     print("Processing images... ", file=sys.stderr)
-    plantcv.parallel.multiprocess(jobs, config.processes)
+    cluster_client = plantcv.parallel.create_dask_cluster(cluster=config.cluster, cluster_config=config.cluster_config)
+    plantcv.parallel.multiprocess(jobs=jobs, client=cluster_client)
     multi_clock_time = time.time() - multi_start_time
     print(f"Processing images took {multi_clock_time} seconds.", file=sys.stderr)
     ###########################################
@@ -197,8 +199,8 @@ def main():
     process_results_clock_time = time.time() - process_results_start_time
     print(f"Processing results took {process_results_clock_time} seconds.", file=sys.stderr)
     ###########################################
-
 ###########################################
+
 
 if __name__ == '__main__':
     __spec__ = None

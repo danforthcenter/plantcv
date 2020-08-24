@@ -1,14 +1,15 @@
 import os
 import sys
 import json
-from copy import deepcopy
 from plantcv.parallel.parsers import metadata_parser
 from plantcv.parallel.parsers import check_date_range
 from plantcv.parallel.job_builder import job_builder
 from plantcv.parallel.process_results import process_results
 from plantcv.parallel.multiprocess import multiprocess
+from plantcv.parallel.multiprocess import create_dask_cluster
 
-__all__ = ["metadata_parser", "job_builder", "process_results", "multiprocess", "check_date_range", "WorkflowConfig"]
+__all__ = ["metadata_parser", "job_builder", "process_results", "multiprocess", "check_date_range", "WorkflowConfig",
+           "create_dask_cluster"]
 
 
 class WorkflowConfig:
@@ -19,7 +20,6 @@ class WorkflowConfig:
         self.workflow = ""
         self.output_dir = "./output_images"
         self.tmp_dir = None
-        self.processes = 1
         self.start_date = 1
         self.end_date = None
         self.imgformat = "png"
@@ -29,6 +29,16 @@ class WorkflowConfig:
         self.writeimg = False
         self.other_args = []
         self.coprocess = None
+        self.cluster = "LocalCluster"
+        self.cluster_config = {
+            "n_workers": 1,
+            "cores": 1,
+            "memory": "1GB",
+            "disk": "1GB",
+            "log_directory": None,
+            "local_directory": None,
+            "job_extra": None
+        }
         self.metadata_terms = {
                 # Camera settings
                 "camera": {
@@ -168,4 +178,11 @@ class WorkflowConfig:
             print(f"Error: PlantCV workflow script (workflow) is required and {self.workflow} does not exist.",
                   file=sys.stderr)
             checks.append(False)
+        # Validate the cluster type
+        valid_clusters = ["HTCondorCluster", "LocalCluster", "LSFCluster", "MoabCluster", "OARCluster", "PBSCluster",
+                          "SGECluster", "SLURMCluster"]
+        if self.cluster not in valid_clusters:
+            print(f"Error: the cluster type {self.cluster} is not a supported cluster provider. "
+                  f"Valid clusters include: {', '.join(map(str, valid_clusters))}."
+                  )
         return all(checks)
