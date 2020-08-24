@@ -9,7 +9,7 @@ to run PlantCV over a flat file directory (just keep this in mind).
 ### Running PlantCV over PhenoFront image data-set structure
 
 We normally execute workflows in a shell script or in in a cluster scheduler job file. The parallelization tool
-`plantcv-workflow.py` has many configuration parameters. To make it easier to manage the number of input parameters, 
+`plantcv-workflow.py` has many configuration parameters. To make it easier to manage the number of input parameters,
 a configuration file can be edited and input. However, the program will still accept inputs via command-line parameters
 if preferred.
 
@@ -31,6 +31,10 @@ saved at any time using the `save_config` method to save for later use.
 Some notes on JSON format:
 * Like Python, string variables (e.g. "VIS") need to be in quotes.
 * Unlike Python, `true` and `false` in JSON are lowercase.
+* `None` in Python translates to `null` in JSON
+* `\` characters need to be escaped in JSON e.g. `\d` in Python becomes `\\d` in JSON
+
+Differences between JSON and Python will be automatically converted appropriately if you make changes to the config in Python and then use `save_config`.
 
 Once configured, a workflow can be run in parallel over a dataset using the command:
 
@@ -48,14 +52,14 @@ Alternative command-line parameters for the `plantcv-workflow.py` script that do
 * -t is the --type extension 'png' is the default. Any format readable by opencv is accepted such as 'tif' or 'jpg'
 * -l is the --delimiter for the filename that is used to separate metadata, default is "_". Can also be a regular expression pattern (see below).
 * -C is the --coprocess the specified imgtype with the imgtype specified in --match (e.g. coprocess NIR images with VIS).
-* -f is the --meta (data) structure of image file names. Comma-separated list of valid metadata terms ( "camera","imgtype". "zoom", "exposure", "gain", 
+* -f is the --meta (data) structure of image file names. Comma-separated list of valid metadata terms ( "camera","imgtype". "zoom", "exposure", "gain",
     "frame", "lifter", "timestamp", "id", "plantbarcode", "treatment", "cartag", "measurementlabel", or "other").
 * -M is the --match metadata option, for example to select a certain zoom or angle. For example: 'imgtype:VIS,camera:SV,zoom:z500'
 * -D is the --dates option, to select a certain date range of data. YYYY-MM-DD-hh-mm-ss_YYYY-MM-DD-hh-mm-ss. If the second date is excluded then the current date is assumed. Time can be excluded.
 * -j is the --json, json database name
 * -m is the --mask any image mask that you would like to provide
 * -T is the --cpu # of cpu processes you would like to use.
-* -s is the --timestampformat specify timestamp format for strptime C library. default is '%Y-%m-%d %H:%M:%S.%f' to parse '2010-10-10 10:10:10.123'. see 
+* -s is the --timestampformat specify timestamp format for strptime C library. default is '%Y-%m-%d %H:%M:%S.%f' to parse '2010-10-10 10:10:10.123'. see
     [strptime docs](https://docs.python.org/3.7/library/datetime.html#strftime-and-strptime-behavior) for supported codes.
 * -w is the --writeimg option, if True will write output images. default= False
 * -c is the --create option to overwrite an json database if it exists, if you are creating a new database or appending to database, do NOT add the -c flag
@@ -98,7 +102,7 @@ time \
 -M imgtype:VIS,camera:TV,zoom:z1000 \
 -C NIR \
 -T 10 \
--w 
+-w
 ```
 
 ### Example Batch Script (Windows)
@@ -162,7 +166,7 @@ In order for PlantCV to scrape all of the necessary metadata from the image file
 3. Measurement/Experiment Label
 4. Image Type
 5. Camera Label
-6. Zoom 
+6. Zoom
 
 **Example Name:**
 
@@ -177,9 +181,9 @@ AABA002948_2014-03-14 03-29-45_Pilot-031014_VIS_TV_z3500.png
 
 **Valid Metadata**
 
-Valid metadata that can be collected from filenames are `camera`, `imgtype`, `zoom`, `exposure`, `gain`, `frame`, `lifter`, `timestamp`, `id`, `plantbarcode`, `treatment`, `cartag`, `measurementlabel`, and `other`. 
+Valid metadata that can be collected from filenames are `camera`, `imgtype`, `zoom`, `exposure`, `gain`, `frame`, `lifter`, `timestamp`, `id`, `plantbarcode`, `treatment`, `cartag`, `measurementlabel`, and `other`.
 
-For a flat direcotory of images (`--adaptor = filename`) you are required to specify the timestamp format (`--timestampformat`, `-s`) code for the 
+For a flat direcotory of images (`--adaptor = filename`) you are required to specify the timestamp format (`--timestampformat`, `-s`) code for the
 [strptime C library](https://docs.python.org/3.7/library/datetime.html#strftime-and-strptime-behavior). For the example above you would use `--timestampformat "%Y-%m-%d %H-%M-%S"`.
 
 **Next, run images over a flat directory with images named as described above:**
@@ -210,7 +214,7 @@ We normally execute workflows as a shell script or as a condor jobfile (or dagma
 
 ### Using a pattern matching-based filename metadata parser
 
-If image filenames do not use a consistent delimiter (e.g. rgb_plant-1_2019-01-01 10_00_00.png) throughout, 
+If image filenames do not use a consistent delimiter (e.g. rgb_plant-1_2019-01-01 10_00_00.png) throughout,
 then using the `--delimiter` option with a single separator character will not split the filename properly
 into the component metadata parts. An advanced option to extract metadata in this situation is to use pattern
 matching, or [regular expressions](https://docs.python.org/3.7/library/re.html). The `--delimiter` option
@@ -225,7 +229,7 @@ Regular expression: '(.{3})_(.+)_(\d{4}-\d{2}-\d{2} \d{2}_\d{2}_\d{2})'
 
 A key part of the pattern is the use of parenthesis because in regular expression syntax these
 mark the start and end of a group that will be returned from a match (or in other words parsed
-for our purposes). Regular expression patterns can be as general or specific as needed. The 
+for our purposes). Regular expression patterns can be as general or specific as needed. The
 pattern above reads as:
 
 Group 1 (camera): any 3 characters
