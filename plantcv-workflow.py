@@ -94,13 +94,10 @@ def options():
             if len(dates) == 1:
                 # End is current time
                 dates.append(datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S'))
-            start = map(int, dates[0].split('-'))
-            end = map(int, dates[1].split('-'))
-            # Convert start and end dates to Unix time
-            start_td = datetime.datetime(*start) - datetime.datetime(1970, 1, 1)
-            end_td = datetime.datetime(*end) - datetime.datetime(1970, 1, 1)
-            args.start_date = (start_td.days * 24 * 3600) + start_td.seconds
-            args.end_date = (end_td.days * 24 * 3600) + end_td.seconds
+             args.start_date = plantcv.parallel.convert_datetime_to_unixtime(
+                dates[0], "%Y-%m-%d")
+            args.end_date = plantcv.parallel.convert_datetime_to_unixtime(
+                dates[1], "%Y-%m-%d")
         else:
             args.start_date = 1
             args.end_date = None
