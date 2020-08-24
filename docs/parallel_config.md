@@ -16,7 +16,7 @@ Save a configuration file that can be modified and imported to run workflows in 
 - **Context:**
     - Used to create a configuration file that can be edited and imported
 
-Import a configuration file. 
+Import a configuration file.
 
 **WorkflowConfig.import_config**(*config_file*)
 
@@ -47,7 +47,7 @@ Validate parameters/structure of configuration data.
     - delimiter (str, default = "_"): image filename metadata term delimiter character. Alternatively, a regular expression for parsing filename metadata
     - metadata_filters (dict, default = `None`): a dictionary of metadata terms (keys) and values, images will be analyzed that have the associated term and value
     - group_by (list, default = `None`): a list of metadata terms to treat as a group
-    - timestampformat (str, default = '%Y-%m-%d %H:%M:%S.%f'): a date format code compatible with strptime C library
+    - timestampformat (str, default = '%Y-%m-%d %H:%M:%S.%f'): a date format code compatible with strptime C library. see [strptime docs](https://docs.python.org/3.7/library/datetime.html#strftime-and-strptime-behavior) for supported codes.
     - writeimg (bool, default = `False`): save analysis images to `output_dir` if `True`
     - other_args (list, default = `[]`): list of other arguments required by the workflow (e.g. ["--input1", "value1", "--input2", "value2"])
     - coprocess (str, default = `None`): coprocess the specified imgtype with the imgtype specified in metadata_filters (e.g. coprocess NIR images with VIS)
