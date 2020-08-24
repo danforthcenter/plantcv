@@ -211,19 +211,40 @@ def check_date_range(start_date, end_date, img_time, date_format):
     """
 
     # Convert image datetime to unix time
-    try:
-        timestamp = datetime.datetime.strptime(img_time, date_format)
-    except ValueError as e:
-        raise SystemExit(str(e) + '\n  --> Please specify the correct --timestampformat argument <--\n')
-
-    time_delta = timestamp - datetime.datetime(1970, 1, 1)
-    unix_time = (time_delta.days * 24 * 3600) + time_delta.seconds
+    unix_time = convert_datetime_to_unixtime(timestamp_str=img_time, date_format=date_format)
     # Does the image date-time fall outside or inside the included range
     if unix_time < start_date or unix_time > end_date:
         return False
     else:
         return True
 ###########################################
+
+
+# Convert datetime string to Unix time
+###########################################
+def convert_datetime_to_unixtime(timestamp_str, date_format):
+    """Converts a timestamp string to a Unix time integer.
+
+    Inputs:
+    timestamp_str = a datetime string.
+    date_format   = date format code for strptime
+
+    Returns:
+        unix_time = an integar value of seconds elapsed since epoch (1970-01-01 00:00:00)
+
+    :param timestamp_str: str
+    :param date_format: str
+    :return unix_time: int
+    """
+    # Convert image datetime to unix time
+    try:
+        timestamp = datetime.datetime.strptime(timestamp_str, date_format)
+    except ValueError as e:
+        raise SystemExit(str(e) + '\n  --> Please specify the correct timestampformat parameter <--\n')
+
+    time_delta = timestamp - datetime.datetime(1970, 1, 1)
+    unix_time = (time_delta.days * 24 * 3600) + time_delta.seconds
+    return unix_time
 
 
 # Filename metadata parser
