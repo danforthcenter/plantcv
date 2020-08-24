@@ -93,11 +93,10 @@ def options():
             dates = args.dates.split('_')
             if len(dates) == 1:
                 # End is current time
-                dates.append(datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S'))
-             args.start_date = plantcv.parallel.convert_datetime_to_unixtime(
-                dates[0], "%Y-%m-%d")
-            args.end_date = plantcv.parallel.convert_datetime_to_unixtime(
-                dates[1], "%Y-%m-%d")
+                today = datetime.datetime.now() + datetime.timedelta(days=1)
+                dates.append(today.strftime('%Y-%m-%d'))
+            args.start_date = plantcv.parallel.convert_datetime_to_unixtime(dates[0], "%Y-%m-%d")
+            args.end_date = plantcv.parallel.convert_datetime_to_unixtime(dates[1], "%Y-%m-%d")
         else:
             args.start_date = 1
             args.end_date = None
