@@ -176,11 +176,9 @@ def metadata_parser(config):
                             else:
                                 img_meta[term] = config.metadata_terms[term]["value"]
 
-                        if config.start_date and config.end_date and img_meta['timestamp'] is not None:
-                            in_date_range = check_date_range(config.start_date, config.end_date,
-                                                             img_meta['timestamp'], config.timestampformat)
-                            if in_date_range is False:
-                                img_pass = 0
+                        in_date_range = check_date_range(config.start_date, config.end_date, img_meta['timestamp'], config.timestampformat)
+                        if in_date_range is False:
+                            img_pass = 0
 
                         # If the image meets the user's criteria, store the metadata
                         if img_pass == 1:
