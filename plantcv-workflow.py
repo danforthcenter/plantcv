@@ -5,6 +5,7 @@ import argparse
 import time
 import datetime
 import plantcv.parallel
+import tempfile
 import shutil
 
 # Parse command-line arguments
@@ -176,8 +177,9 @@ def main():
         config.end_date = plantcv.parallel.convert_datetime_to_unixtime(config.end_date, config.timestampformat)
 
     # Create temporary directory for job
-    config.tmp_dir = os.path.join(config.tmp_dir, start_time)
-    os.makedirs(config.tmp_dir, exist_ok=True)
+    if config.tmp_dir is not None:
+        os.makedirs(config.tmp_dir, exist_ok=True)
+    config.tmp_dir = tempfile.mkdtemp(prefix=start_time+'_', dir=config.tmp_dir)
 
     # Read image metadata
     ###########################################
