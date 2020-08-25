@@ -37,7 +37,7 @@ Validate parameters/structure of configuration data.
 - **Parameters:**
     - input_dir (str, required): path/name of input images directory (validates that it exists)
     - json (str, required): path/name of output JSON data file (appends new data if it already exists)
-    - filename_metadata (list, required): list of metadata terms used to construct filenames
+    - filename_metadata (list, required): list of metadata terms used to construct filenames. for example: `["plantbarcode","timestamp"]`. Supported metadata terms are listed [here](pipeline_parallel.md).
     - workflow (str, required): path/name of user-defined PlantCV workflow Python script (validates that it exists)
     - output_dir (str, default = "."): path/name of output directory where images will be saved
     - tmp_dir (str, default = `None`): path/name of parent folder for the temporary directory, uses system default temporary directory when `None`
@@ -101,14 +101,33 @@ import plantcv.parallel
 
 # Create a WorkflowConfig instance
 config = plantcv.parallel.WorkflowConfig()
-# Create a template configuration file
-config.save_config(config_file="my_config.json")
-# Edit configuration file as needed
-# Import the configuration file
-config.import_config(config_file="my_config.json")
-# Check for errors
-passed = config.validate_config()
 
-# Change configuration values directly in Python
+#or if you want to reuse a configuration file you can import it
+config.import_config(config_file="my_config.json")
+
+# Change configuration values directly in Python as needed. At a minimum you must specify input_dir, json, filename_metadata, workflow.
 config.input_dir = "./my_images"
+config.json = "output.json"
+config.filename_metadata = ["plantbarcode","timestamp"]
+config.workflow = "my_workflow.py"
+
+# Check for errors
+config.validate_config()
+
+# If it passes, save your configuration
+config.save_config(config_file="my_config.json")
+```
+
+You may also edit your configuration file directly in a text editor, just remember that JSON syntax applies. See [Workflow Parallization tutorial for examples](pipeline_parallel.md)
+
+To run `plantcv-workflow.py` with a config file you can use the following:
+
+```shell
+python plantcv-workflow.py --config my_config.json
+```
+
+Remember that `python` and `plantcv-workflow.py` need to be in your PATH, for example with Conda environment. On Windows you will need to specify the whole path to `plantcv-workflow.py`.
+
+```shell
+python %CONDA_PREFIX%/Scripts/plantcv-workflow.py --config my_config.json
 ```
