@@ -233,6 +233,38 @@ def test_plantcv_parallel_workflowconfig_validate_config():
     # Validate config
     assert config.validate_config()
 
+def test_plantcv_parallel_workflowconfig_invalid_startdate():
+    # Create a test tmp directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_workflowconfig_invalid_startdate")
+    os.mkdir(cache_dir)
+    # Create config instance
+    config = plantcv.parallel.WorkflowConfig()
+    # Set valid values in config
+    config.input_dir = os.path.join(PARALLEL_TEST_DATA, "images")
+    config.json = os.path.join(cache_dir, "valid_config.json")
+    config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
+    config.workflow = TEST_PIPELINE
+    config.img_outdir = cache_dir
+    config.start_date = "2020-05-10"
+    # Validate config
+    assert not config.validate_config()
+
+def test_plantcv_parallel_workflowconfig_invalid_enddate():
+    # Create a test tmp directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_workflowconfig_invalid_enddate")
+    os.mkdir(cache_dir)
+    # Create config instance
+    config = plantcv.parallel.WorkflowConfig()
+    # Set valid values in config
+    config.input_dir = os.path.join(PARALLEL_TEST_DATA, "images")
+    config.json = os.path.join(cache_dir, "valid_config.json")
+    config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
+    config.workflow = TEST_PIPELINE
+    config.img_outdir = cache_dir
+    config.end_date = "2020-05-10"
+    config.timestampformat = "%Y%m%d"
+    # Validate config
+    assert not config.validate_config()
 
 def test_plantcv_parallel_workflowconfig_invalid_metadata_terms():
     # Create a test tmp directory
