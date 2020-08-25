@@ -105,9 +105,6 @@ def options():
             args.start_date = datetime.datetime(1970,1,1,0,0,1).strftime(args.timestampformat)
             args.end_date = datetime.datetime.now().strftime(args.timestampformat)
 
-        # Recreate JSON file if flag is on
-        if os.path.exists(args.json) and args.create:
-            os.remove(args.json)
 
         # Metadata restrictions
         args.imgtype = {}
@@ -136,6 +133,7 @@ def options():
             config.other_args = args.other_args.split(" ")
         config.coprocess = args.coprocess
         config.cleanup = args.cleanup
+        config.append = not args.create
         config.cluster = "LocalCluster"
         config.cluster_config = {"n_workers": args.cpu, "memory": "1GB", "disk": "1GB"}
 
@@ -183,6 +181,10 @@ def main():
 
     # Create img_outdir
     os.makedirs(config.img_outdir, exist_ok=True)
+
+    # Remove JSON results file if append=False
+    if not config.append and os.path.exists(config.json):
+        os.remove(config.json)
 
     # Read image metadata
     ###########################################

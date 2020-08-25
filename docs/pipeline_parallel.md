@@ -180,6 +180,7 @@ in a list to the `filename_metadata` parameter.
     "other_args": null,
     "coprocess": null,
     "cleanup": true,
+    "append": true,
     "cluster": "HTCondorCluster",
     "cluster_config": {
         "n_workers": 16,

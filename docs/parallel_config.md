@@ -52,6 +52,7 @@ Validate parameters/structure of configuration data.
     - other_args (list, default = `[]`): list of other arguments required by the workflow (e.g. ["--input1", "value1", "--input2", "value2"])
     - coprocess (str, default = `None`): coprocess the specified imgtype with the imgtype specified in metadata_filters (e.g. coprocess NIR images with VIS)
     - cleanup (bool, default =`True`): remove temporary job directory if `True`
+    - append (bool, default = `True`): if `True` will append results to an existing json file. if `False`, will delete previous results stored in the specified JSON file.
     - cluster (str, default = "LocalCluster"): LocalCluster will run PlantCV workflows on a single machine. All valid options currently are: "LocalCluster",
     "HTCondorCluster", "LSFCluster", "MoabCluster", "OARCluster", "PBSCluster", "SGECluster", and "SLURMCluster". See [Dask-Jobqueue](https://jobqueue.dask.org/) for more details.
     - cluster_config (dict, default: see below ): a dictionary of parameters and values used to configure the cluster for parallel processing locally or remotely.

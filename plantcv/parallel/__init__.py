@@ -32,6 +32,7 @@ class WorkflowConfig:
         self.other_args = []
         self.coprocess = None
         self.cleanup = True
+        self.append = True
         self.cluster = "LocalCluster"
         self.cluster_config = {
             "n_workers": 1,
