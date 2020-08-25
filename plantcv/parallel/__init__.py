@@ -21,8 +21,8 @@ class WorkflowConfig:
         self.filename_metadata = []
         self.workflow = ""
         self.img_outdir = "./output_images"
-        self.tmp_dir = None
-        self.start_date = 1
+        self.tmp_dir = "."
+        self.start_date = None
         self.end_date = None
         self.imgformat = "png"
         self.delimiter = "_"
@@ -31,6 +31,7 @@ class WorkflowConfig:
         self.writeimg = False
         self.other_args = []
         self.coprocess = None
+        self.cleanup = True
         self.cluster = "LocalCluster"
         self.cluster_config = {
             "n_workers": 1,
@@ -183,19 +184,21 @@ class WorkflowConfig:
             checks.append(False)
 
         # Validate start_date and end_date formats
-        try:
-            timestamp = datetime.datetime.strptime(
-                self.start_date, self.timestampformat)
-        except ValueError as e:
-            print(str(e) + '\n  --> Please specify the start_date according to the timestampformat  <--\n')
-            checks.append(False)
-        try:
-            timestamp = datetime.datetime.strptime(
-                self.end_date, self.timestampformat)
-        except ValueError as e:
-            print(str(
-                e) + '\n  --> Please specify the end_date according to the timestampformat  <--\n')
-            checks.append(False)
+        if self.start_date is not None:
+            try:
+                timestamp = datetime.datetime.strptime(
+                    self.start_date, self.timestampformat)
+            except ValueError as e:
+                print(str(e) + '\n  --> Please specify the start_date according to the timestampformat  <--\n')
+                checks.append(False)
+        if self.end_date is not None:
+            try:
+                timestamp = datetime.datetime.strptime(
+                    self.end_date, self.timestampformat)
+            except ValueError as e:
+                print(str(
+                    e) + '\n  --> Please specify the end_date according to the timestampformat  <--\n')
+                checks.append(False)
 
         # Validate the cluster type
         valid_clusters = ["HTCondorCluster", "LocalCluster", "LSFCluster", "MoabCluster", "OARCluster", "PBSCluster",

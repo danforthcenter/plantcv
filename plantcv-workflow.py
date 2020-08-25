@@ -5,7 +5,7 @@ import argparse
 import time
 import datetime
 import plantcv.parallel
-
+import shutil
 
 # Parse command-line arguments
 ###########################################
@@ -23,9 +23,6 @@ def options():
         ValueError: if adaptor is not phenofront or dbimportexport.
         ValueError: if a metadata field is not supported.
     """
-    # Job start time
-    start_time = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    print("Starting run " + start_time + '\n', file=sys.stderr)
 
     parser = argparse.ArgumentParser(description='Parallel imaging processing with PlantCV.')
     config_grp = parser.add_argument_group('CONFIG')
@@ -80,6 +77,7 @@ def options():
                              action="store_true")
     cmdline_grp.add_argument("-o", "--other_args", help='Other arguments to pass to the workflow script.',
                              required=False)
+    cmdline_grp.add_argument("-z", "--cleanup", help='Remove temporary working directory', default=False)
     args = parser.parse_args()
 
     # Create a config
@@ -105,8 +103,6 @@ def options():
         else:
             args.start_date = datetime.datetime(1970,1,1,0,0,1).strftime(args.timestampformat)
             args.end_date = datetime.datetime.now().strftime(args.timestampformat)
-
-        args.start_time = start_time
 
         # Recreate JSON file if flag is on
         if os.path.exists(args.json) and args.create:
@@ -138,6 +134,7 @@ def options():
         if args.other_args:
             config.other_args = args.other_args.split(" ")
         config.coprocess = args.coprocess
+        config.cleanup = args.cleanup
         config.cluster = "LocalCluster"
         config.cluster_config = {"n_workers": args.cpu, "memory": "1GB", "disk": "1GB"}
 
@@ -161,12 +158,26 @@ def main():
 
     """
 
+    # Job start time
+    start_time = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+    print("Starting run " + start_time + '\n', file=sys.stderr)
+
     # Get options
     config = options()
 
     # Convert dates to unixtime before metadata_parser
-    config.start_date = plantcv.parallel.convert_datetime_to_unixtime(config.start_date, config.timestampformat)
-    config.end_date = plantcv.parallel.convert_datetime_to_unixtime(config.end_date, config.timestampformat)
+    if config.start_date is None:
+        config.start_date = 1
+    else:
+        config.start_date = plantcv.parallel.convert_datetime_to_unixtime(config.start_date, config.timestampformat)
+    if config.end_date is None:
+        config.end_date = datetime.datetime.now().timestamp()
+    else:
+        config.end_date = plantcv.parallel.convert_datetime_to_unixtime(config.end_date, config.timestampformat)
+
+    # Create temporary directory for job
+    config.tmp_dir = os.path.join(config.tmp_dir, start_time)
+    os.makedirs(config.tmp_dir, exist_ok=True)
 
     # Read image metadata
     ###########################################
@@ -204,6 +215,10 @@ def main():
     process_results_clock_time = time.time() - process_results_start_time
     print(f"Processing results took {process_results_clock_time} seconds.", file=sys.stderr)
     ###########################################
+
+    # Cleanup
+    if config.cleanup is True:
+        shutil.rmtree(config.tmp_dir)
 ###########################################
 
 

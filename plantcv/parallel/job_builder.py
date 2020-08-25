@@ -24,8 +24,6 @@ def job_builder(meta, config):
 
     # Overall job stack. List of list of jobs
     jobs = []
-    # Create a workflow results temporary directory
-    config.tmp_dir = tempfile.mkdtemp(dir=config.tmp_dir)
 
     # Get the list of images
     # images = list(meta.keys())
