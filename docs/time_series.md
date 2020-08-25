@@ -18,9 +18,8 @@ To understand the growth of every leaf instance of a plant, we need to re-assign
     - savedir: desired saving directory of linking result. Note that this function will generate a folder under your specified saving directory, with the date and time you run this programme
     - pattern_datetime: the pattern of date and time part in original file names, dafault value '\d{4}-\d{2}-\d{2}-\d{2}-\d{2}' which represents YYYY-MM-DD-hh-mm. 
     - time_cond: condition of data used, indicated by list of times, e.g. time_cond = ['08-05', '15-05'] represents for including data collected at 8:05am and 3:05pm everyday in this experiment. Make sure the format of date matches the pattern-datetime.
-    - link_logic: 1: IoU (intersection over union), 2: Io1A (intersection over 1st area), default value: 1
+    - colors: a list of tuples represent for pre-defined colors. By default it is set to None and a list of colors will be generated and saved. 
     - class_names: used in bounding box visualization. by default there are background and leaf, i.e. class_names = ['BG', 'leaf']
-    - mode: can be either 'link' or 'load', use 'link' when trying to get linked time-series from instance segmentation; use 'load' when trying to load from saved linking
     - suffix: the suffix of original images, make sure all images having the same suffix, e.g. suffix='.jpg' or suffix='-img8.jpg'. Make sure all the images desired having the same suffix pattern.
 - **Output:**
         An instance of Plant object is returned, with all information (original image series, mask series, link information, etc.) included. Besides, all the results will be saved in user defined "savedir".
@@ -30,7 +29,8 @@ Note: under the user specified saving directory, a new folder named after the da
 1. colors.pkl: the colors (represented by arrays) used in bounding box visualization. With this predefined color set, same color will represent for the leaf instance with same instance label all the time, i.e. same color represents leaf with the same label. Without this predefined list of color, the assignment of color will be random, i.e. the color provides no information to leaf indices.  
 2. details.txt: the logic of linking as well as time condition will be saved in this text file, so that would be easier for users to check these parameters for the specific experiment.
 3. saved_plant.pkl: a "Plant" object instance will be saved, with all the information included: time points, original images, instance segmentation masks, etc.
-4. a folder called "visualization", which contains 3 subfolders:
+4. linking_info.csv: a csv file includes the linking information will be saved.
+5. a folder called "visualization", which contains 3 subfolders:
 
     1) a folder call "visualization 1", which contains 1st set of visualization
         In this set of visualization, the instance segmentation masks are applied to original images, so that there is only 1 leaf in every image. 
@@ -80,28 +80,24 @@ from plantcv import plantcv as pcv
 path_img          = '/shares/mgehan_share/acasto/auto_crop/output_10.1.9.214_wtCol_512'
 
 ## Specify the directory of instance segmentation result 
-path_segmentation = '/shares/mgehan_share/hsheng/projects/maskRCNN/results/output_10.1.9.214_wtCol_512/index7/2020-06-25-10-35/subsampled/2020-06-30-10-51/'
+path_segmentation = '/shares/mgehan_share/hsheng/projects/maskRCNN/results/output_10.1.9.214_wtCol_512/index12/2020-08-24-07-29/segmentation/updated'
 
 ## Specify the desired directory to save results
-path_save         = '/shares/mgehan_share/hsheng/projects/maskRCNN/results/output_10.1.9.214_wtCol_512/index7/2020-06-25-10-35/time_series_linking'
+path_save         = '/shares/mgehan_share/hsheng/projects/maskRCNN/results/output_10.1.9.214_wtCol_512/index12/2020-08-24-07-29/time_series_linking'
 
 ## Specify the date-time pattern of original image names
 pattern_datetime = '\d{4}-\d{2}-\d{2}-\d{2}-\d{2}' # YYYY-MM-DD-hh-mm
 
 ## Specify the desired time point to include in to the analysis
-time_cond = ['08-05', '11-05', '17-05', '21-05'] 
+time_cond = ['08-05', '11-05', '17-05', '21-05'] # exp5 & exp6
 
-link_logic  = 1
 class_names = ['BG', 'Leaf']
-mode        = 'link'
 
-## Specify the suffix for all images you want to include, note that all the images shown have the same suffix as you specified
-## Normally it would be something like '.png' or '.jpg', in this specific case, the image contained in the folder have name like 
-## 'xxx-img{}.jpg', the number inside the {} represents the index of plant. So in this case, to include images for the same plant, 
-## you will have to specify the index of plant.
-suffix      = '-img7.jpg'
-​linked_Plant = pcv.time_series.time_series_linking(path_img, path_segmentation, path_save, pattern_datetime, 
-                               time_cond, link_logic, class_names, mode, suffix)
+suffix = '-img{}.jpg'.format(idx_plant)
+
+linked_Plant = pcv.time_series.time_series_linking(imagedir=path_img, segmentationdir=path_segmentation, savedir=path_save, 
+                            pattern_datetime=pattern_datetime, time_cond=time_cond, class_names=['BG', 'Leaf'], suffix=suffix)
+
 ```
 When it finished, you can go ahead and check the saved result. If you are not sure where the results are saved, you can type:
 ```linked_Plant.savedir```
