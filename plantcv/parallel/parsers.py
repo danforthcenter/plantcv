@@ -100,7 +100,7 @@ def metadata_parser(config):
                             else:
                                 img_meta[term] = config.metadata_terms[term]["value"]
 
-                        in_date_range = check_date_range(config.start_date, config.end_date,img_meta['timestamp'], config.timestampformat)
+                        in_date_range = check_date_range(config.start_date, config.end_date, img_meta['timestamp'], config.timestampformat)
                         if in_date_range is False:
                             img_pass = 0
 
