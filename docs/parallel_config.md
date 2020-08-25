@@ -41,8 +41,8 @@ Validate parameters/structure of configuration data.
     - workflow (str, required): path/name of user-defined PlantCV workflow Python script (validates that it exists)
     - output_dir (str, default = "."): path/name of output directory where images will be saved
     - tmp_dir (str, default = `None`): path/name of parent folder for the temporary directory, uses system default temporary directory when `None`
-    - start_date (int, default = 1): start date in Unix time used to filter images. Images will be analyzed that are newer than the start date
-    - end_date (int, default = `None`): end date in Unix time used to filter images. Images will be analyzed that are older than the end date, unless `None`
+    - start_date (int, default = 1): start date used to filter images. Images will be analyzed that are newer than the start date. string format matching timestampformat
+    - end_date (int, default = `None`): end date used to filter images. Images will be analyzed that are older than the end date, unless `None`. string format matching timestampformat
     - imgformat (str, default = "png"): image file format/extension
     - delimiter (str, default = "_"): image filename metadata term delimiter character. Alternatively, a regular expression for parsing filename metadata
     - metadata_filters (dict, default = `None`): a dictionary of metadata terms (keys) and values, images will be analyzed that have the associated term and value
@@ -51,7 +51,7 @@ Validate parameters/structure of configuration data.
     - writeimg (bool, default = `False`): save analysis images to `output_dir` if `True`
     - other_args (list, default = `[]`): list of other arguments required by the workflow (e.g. ["--input1", "value1", "--input2", "value2"])
     - coprocess (str, default = `None`): coprocess the specified imgtype with the imgtype specified in metadata_filters (e.g. coprocess NIR images with VIS)
-    - cluster (str, default = "LocalCluster"): LocalCluster will run PlantCV workflows on a single machine. All valid options currently are: "LocalCluster", 
+    - cluster (str, default = "LocalCluster"): LocalCluster will run PlantCV workflows on a single machine. All valid options currently are: "LocalCluster",
     "HTCondorCluster", "LSFCluster", "MoabCluster", "OARCluster", "PBSCluster", "SGECluster", and "SLURMCluster". See [Dask-Jobqueue](https://jobqueue.dask.org/) for more details.
     - cluster_config (dict, default: see below ): a dictionary of parameters and values used to configure the cluster for parallel processing locally or remotely.
     - metadata_terms (dict, default: as-is): a dictionary of metadata terms used to assign values in image filenames (or metadata files) to metadata terms (should not be modified).
@@ -60,15 +60,15 @@ Validate parameters/structure of configuration data.
 
 ### Cluster configuration
 
-[Dask](https://dask.org/) is used to parallelize PlantCV image analysis workflows using both `dask.distributed` and `dask_jobqueue`. 
+[Dask](https://dask.org/) is used to parallelize PlantCV image analysis workflows using both `dask.distributed` and `dask_jobqueue`.
 In Dask a cluster is a type of computing environment, which could either be local or a remote resource (in this case a computing cluster managed by a scheduler).
 
 First, we need to define the type of cluster to use. `LocalCluster` is the simplest setup and creates a pool of computing resources on the machine where we will
-run the `plantcv.parallel` functions. 
+run the `plantcv.parallel` functions.
 
 !!! note
     The concept of "local" and "remote" is relative to the PlantCV program, not the user. In other words, LocalCluster
-    could be used to run PlantCV on a single remote machine if this task were submitted to a remote computing environment 
+    could be used to run PlantCV on a single remote machine if this task were submitted to a remote computing environment
     (e.g. cloud, campus cluster, etc.). This is the standard approach PlantCV has used in older versions.
 
 All other currently supported cluster types listed above allow the user to configure PlantCV to interface with a job
@@ -80,7 +80,7 @@ scheduling platform and distribute image analysis workflows across a computing r
 After defining the cluster, parameters are used to define the size of and request resources from the given computing environment.
 These settings are defined in the `cluster_config` parameter. We define by default the following parameters:
 
-- n_workers (int, required, default = 1): the number of workers/slots to request from the cluster. Because we generally use 
+- n_workers (int, required, default = 1): the number of workers/slots to request from the cluster. Because we generally use
 1 CPU per image analysis workflow, this is effectively the maximum number of concurrently running workflows.
 - cores (int, required, default = 1): the number of compute cores per workflow. This should be left as 1 unless a workflow is designed to use multiple CPUs/cores/threads.
 - memory (str, required, default = "1GB"): the amount of memory/RAM used per workflow. Can be set as a number plus units (KB, MB, GB, etc.).

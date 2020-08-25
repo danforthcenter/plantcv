@@ -93,13 +93,18 @@ def options():
             dates = args.dates.split('_')
             if len(dates) == 1:
                 # End is current time
-                today = datetime.datetime.now() + datetime.timedelta(days=1)
-                dates.append(today.strftime('%Y-%m-%d'))
-            args.start_date = plantcv.parallel.convert_datetime_to_unixtime(dates[0], "%Y-%m-%d")
-            args.end_date = plantcv.parallel.convert_datetime_to_unixtime(dates[1], "%Y-%m-%d")
+                dates.append(datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S'))
+            start = map(int, dates[0].split('-'))
+            end = map(int, dates[1].split('-'))
+            # Convert start and end dates to Unix time
+            # in order to maintain flexibility to only specify Ymd or YmdHMS as it was you need to do it this way instead of the convert_datetime_unixtime function because you don't know how the user will input the dates argument. (maybe there is a hybrid approach?)
+            start_td = datetime.datetime(*start) - datetime.datetime(1970, 1, 1)
+            end_td = datetime.datetime(*end) - datetime.datetime(1970, 1, 1)
+            args.start_date = datetime.datetime.utcfromtimestamp((start_td.days * 24 * 3600) + start_td.seconds).strftime(args.timestampformat)
+            args.end_date = datetime.datetime.utcfromtimestamp((end_td.days * 24 * 3600) + end_td.seconds).strftime(args.timestampformat)
         else:
-            args.start_date = 1
-            args.end_date = None
+            args.start_date = datetime.datetime(1970,1,1,0,0,1).strftime(args.timestampformat)
+            args.end_date = datetime.datetime.now().strftime(args.timestampformat)
 
         args.start_time = start_time
 
@@ -159,7 +164,11 @@ def main():
     # Get options
     config = options()
 
-    # Read image metaata
+    # Convert dates to unixtime before metadata_parser
+    config.start_date = plantcv.parallel.convert_datetime_to_unixtime(config.start_date, config.timestampformat)
+    config.end_date = plantcv.parallel.convert_datetime_to_unixtime(config.end_date, config.timestampformat)
+
+    # Read image metadata
     ###########################################
     parser_start_time = time.time()
     print("Reading image metadata...", file=sys.stderr)
