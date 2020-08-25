@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import datetime
 from plantcv.parallel.parsers import metadata_parser
 from plantcv.parallel.parsers import convert_datetime_to_unixtime
 from plantcv.parallel.parsers import check_date_range
@@ -174,11 +175,28 @@ class WorkflowConfig:
                     print(f"Error: the term {term} in filename_metadata is not a currently supported metadata type.",
                           file=sys.stderr)
                     checks.append(False)
+
         # Validate workflow script
         if not os.path.exists(self.workflow):
             print(f"Error: PlantCV workflow script (workflow) is required and {self.workflow} does not exist.",
                   file=sys.stderr)
             checks.append(False)
+
+        # Validate start_date and end_date formats
+        try:
+            timestamp = datetime.datetime.strptime(
+                self.start_date, self.timestampformat)
+        except ValueError as e:
+            print(str(e) + '\n  --> Please specify the start_date according to the timestampformat  <--\n')
+            checks.append(False)
+        try:
+            timestamp = datetime.datetime.strptime(
+                self.end_date, self.timestampformat)
+        except ValueError as e:
+            print(str(
+                e) + '\n  --> Please specify the end_date according to the timestampformat  <--\n')
+            checks.append(False)
+
         # Validate the cluster type
         valid_clusters = ["HTCondorCluster", "LocalCluster", "LSFCluster", "MoabCluster", "OARCluster", "PBSCluster",
                           "SGECluster", "SLURMCluster"]
