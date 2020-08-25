@@ -1,10 +1,10 @@
+#### link utilities
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Tue Jun  9 09:53:34 2020
 
-Functions used in time series linking after getting leaf instance segmentation result
-
+Functions used in time series linking after getting leaf instances segmented
 
 @author: hudanyunsheng
 """
@@ -26,6 +26,8 @@ from plantcv import plantcv as pcv
 import datetime
 import copy
 import colorsys
+from plantcv.plantcv import fatal_error
+from scipy.optimize import linear_sum_assignment
 
 
 def _random_colors(N, bright=True):
@@ -138,31 +140,29 @@ def display_instances(image, boxes, masks, class_ids, class_names,
     if auto_show:
         plt.show()
 
-
-def _compute_overlaps_masks(masks1, masks2, mode=1):
+def _compute_overlaps_masks(masks1, masks2):    
     """Computes IoU overlaps between two sets of masks.
     masks1, masks2: [Height, Width, instances]
     mode: 1 or 2, 1 represent for IOU, 2 represent for intersection over the area of the previous mask
     """
-
+    mode = 1
     # If either set of masks is empty return empty result
     if masks1.shape[-1] == 0 or masks2.shape[-1] == 0:
         return np.zeros((masks1.shape[-1], masks2.shape[-1]))
-    # flatten masks and compute their areas
-    masks1 = np.reshape(masks1 > .5, (-1, masks1.shape[-1])).astype(np.float32)
-    masks2 = np.reshape(masks2 > .5, (-1, masks2.shape[-1])).astype(np.float32)
-    area1 = np.sum(masks1, axis=0)
-    area2 = np.sum(masks2, axis=0)
-
-    # intersections and union
-    intersections = np.dot(masks1.T, masks2)
-    if mode == 1:
-        union = area1[:, None] + area2[None, :] - intersections
-        overlaps = intersections / union
-    elif mode == 2:
-        overlaps = intersections / area1[:, None]
-    return overlaps
-
+    n1 = masks1.shape[2]
+    n2 = masks2.shape[2]
+    intersections = np.zeros((n1,n2))
+    unions        = np.zeros((n1,n2))
+    for idx_m in range(0, n1):
+        maski  = np.expand_dims(masks1[:,:,idx_m], axis=2)
+        masks_ = np.reshape(masks2 > .5, (-1, masks2.shape[-1])).astype(np.float32)
+        maski_ = np.reshape(maski > .5, (-1, maski.shape[-1])).astype(np.float32)
+        intersection = np.dot(masks_.T, maski_).squeeze()
+        intersections[idx_m,:] = intersection
+        union  = np.sum(masks_,0) + np.sum(maski_) - intersection
+        unions[idx_m,:] = union
+    IOUs = np.divide(intersections,unions)
+    return IOUs
 
 def get_ax(rows=1, cols=1, size=16):  # ???
     """Return a Matplotlib Axes array to be used in
@@ -175,18 +175,8 @@ def get_ax(rows=1, cols=1, size=16):  # ???
     fig.tight_layout()
     return ax
 
-
-def _getmatchedIndex(mask, masks, mode):
-    """Get the index from masks that matches the mask"""
-    score = _compute_overlaps_masks(np.expand_dims(mask, axis=-1), masks, mode)
-    if max(score[0]) > 0.15:
-        return np.argmax(score[0]), score
-    else:
-        return -1, score
-
-
 class PlantData():
-    def __init__(self, imagedir, segmentationdir, savedir, pattern_datetime, mode='link', suffix='.jpg'):
+    def __init__(self, imagedir, segmentationdir, savedir, pattern_datetime, suffix='.jpg'):            
 
         self.suffix = suffix
         self.ext    = None
@@ -222,14 +212,12 @@ class PlantData():
         self.imagedir = imagedir
         self.segmentationdir = segmentationdir
         junk = datetime.datetime.now()
-        if mode == 'link':
-            subfolder = '{}-{}-{}-{}-{}'.format(junk.year, str(junk.month).zfill(2), str(junk.day).zfill(2),
-                                                str(junk.hour).zfill(2), str(junk.minute).zfill(2))
-            self.savedir = os.path.join(savedir, subfolder)
-            if not os.path.exists(self.savedir):
-                os.makedirs(self.savedir)
-        else:
-            self.savedir = savedir
+
+        subfolder = '{}-{}-{}-{}-{}'.format(junk.year, str(junk.month).zfill(2), str(junk.day).zfill(2),
+                                            str(junk.hour).zfill(2), str(junk.minute).zfill(2))
+        self.savedir = os.path.join(savedir, subfolder)
+        if not os.path.exists(self.savedir):
+            os.makedirs(self.savedir)
 
         self.visualdir = os.path.join(self.savedir, 'visualization')
 
@@ -287,7 +275,6 @@ class PlantData():
                     if timepart.endswith(cond):
                         time_temp.append(timepart)
                         junk = [1 if re.search(timepart, f) is not None else 0 for f in filenames_ori]
-                        #                         file_name.append(filenames_ori[junk.index(1)].replace('.jpg', ''))
                         file_name.append(filenames_ori[junk.index(1)].replace(self.ext, ''))
                         continue
 
@@ -300,21 +287,6 @@ class PlantData():
         """ Load original images
             This function is also designed for files with file names which contain a "date-time" part, with a user defined pattern
         """
-        #         filenames = [f for f in os.listdir(self.imagedir) if f.endswith('.jpg')]
-        #         temp_imgs  = []
-        #         sz        = []
-        #         for t in self.time:
-        #             for f in filenames:
-        #                 temp = re.search(t, f)
-        #                 if temp:
-        #                     junk = skimage.io.imread(os.path.join(self.imagedir, f))
-        #                     temp_imgs.append(junk)
-        #                     sz.append(np.min(junk.shape[0:2]))
-        #                     filenames.remove(f)
-        #         self.min_dim = np.min(sz)
-        #         for junk in temp_imgs:
-        #             img = junk[0: self.min_dim, 0: self.min_dim, :] # make all images the same size
-        #             self.images.append(img)
         temp_imgs = []
         sz = []
         for pre in self.filename_pre:
@@ -339,54 +311,35 @@ class PlantData():
             self.scores.append(r['scores'])
 
     def initialize_linking(self):
-        self.emerging_info = [[] for i in range(0, self.total_time)]
-        self.link_info = [-np.ones((self.num_leaves[i]), dtype=int) for i in range(0, self.total_time - 1)]
-        self.weights = [-np.inf * np.ones((self.num_leaves[i], self.num_leaves[i + 1])) for i in
-                        range(0, self.total_time - 1)]
+        self.emerging_info    = [[] for i in range(0, self.total_time)]
+        self.link_info        = [-np.ones((self.num_leaves[i]), dtype=int) for i in range(0, self.total_time - 1)]
+        self.weights          = [-np.inf * np.ones((self.num_leaves[i], self.num_leaves[i + 1])) for i in range(0, self.total_time - 1)]
         self.available_leaves = [np.array(range(0, self.num_leaves[i])) for i in range(0, self.total_time)]
-        self.time_compare = [np.ones((self.num_leaves[i]), dtype=int) * i for i in range(0, self.total_time)]
+        self.time_compare     = [np.ones((self.num_leaves[i]), dtype=int) * i for i in range(0, self.total_time)]
 
-    def linking(self, start_time, mode):
-        masks1 = copy.deepcopy(self.masks[start_time])
-        masks2 = copy.deepcopy(self.masks[start_time + 1])
-        leaves1 = copy.deepcopy(self.available_leaves[start_time])
-        leaves2 = copy.deepcopy(self.available_leaves[start_time + 1])
+    def linking(self, t0):
+        threshold = 0.2
+        masks0 = copy.deepcopy(self.masks[t0])
+        masks1 = copy.deepcopy(self.masks[t0 + 1])
+        leaves0 = copy.deepcopy(self.available_leaves[t0])
+        leaves1 = copy.deepcopy(self.available_leaves[t0 + 1])
+        n0 = len(leaves0)
         n1 = len(leaves1)
-        n2 = len(leaves2)
-        n = np.min((n1, n2))
-        N = np.max((n1, n2))
-        weight = dict()
-        weight['forward'] = -np.inf * np.ones((n1, n2))
-        #         weight['backward'] = -np.inf*np.zeros((n2, n1))
-        link = dict()
-        link['forward'] = -np.ones((n1))
-        #         link['backward'] = -np.ones((n2))
+        n  = np.min((n0, n1))
+        N  = np.max((n0, n1))
+        weight = -np.inf * np.ones((n0, n1))
+        link = -np.ones((n0))           
+        weight = _compute_overlaps_masks(masks0, masks1)
+        idx_col = np.where(np.max(weight, axis=0) < threshold)[0] # find those volumns with maximum value < 0.15
+        avail_col = [x for x in range(0,n1) if x not in idx_col]
+        weight_ = copy.deepcopy(weight)
 
-        for (masks, masks_all, leaves, key) in zip([masks1, masks2], [masks2, masks1], [leaves1, leaves2], ['forward']):
-            #         for (masks, masks_all, leaves, key) in zip([masks1, masks2], [masks2, masks1], [leaves1, leaves2], ['forward', 'backward']):
-            for (idx, main_leaf) in enumerate(leaves):
-                mask = masks[:, :, main_leaf]
-                link[key][idx], weight[key][idx, :] = _getmatchedIndex(mask, masks_all, mode)
-            # check for duplicates (and hence non-unique links)
-            val, cou = np.unique(link[key], return_counts=True)
-            idx_temp = np.where(cou > 1)[0]
-
-            if len(idx_temp) > 0:  # matching to same leaf exists
-                idx_vs = val[idx_temp]
-                for idx_v in idx_vs:
-                    idxs = np.where(link[key] == idx_v)[0]
-                    weights_comp = weight[key][:, int(idx_v)]
-
-                    idx_keep = np.argmax(weights_comp)
-                    idx_drop = np.delete(idxs, np.where(idxs == idx_keep))
-                    weight_temp = copy.deepcopy(weight[key][idx_drop])
-                    weight_temp[0, int(idx_v)] = 0
-                    if np.max(weight_temp) > 0.2:
-                        link[key][idx_drop] = np.argmax(weight_temp)
-                    else:
-                        link[key][idx_drop] = -1
-
-        self.link_info[start_time] = link['forward']
+        weight_ = np.delete(weight_, idx_col, 1) 
+        row_ind, col_ind = linear_sum_assignment(weight_, maximize=True)
+        for (r, c) in zip(row_ind, col_ind):
+            if weight_[r, c] >= threshold:
+                link[r] = avail_col[c]
+        self.link_info[t0] = link
 
     def get_series(self):
         ## define new leaves and their unique identifiers at time points with new leaves emerging
@@ -405,15 +358,7 @@ class PlantData():
                 key_t = 't{}'.format(t)
                 self.link_series[key_t] = dict()
                 self.link_series[key_t]['new_leaf'] = np.array(new_leaves)
-                #                 if len(new_leaves) > 1:
-                #                     id_temp = []
-                #                     for new_leav in new_leaves:
-                #                         id_temp.append(unique_id)
-                #                         unique_id = unique_id + 1
-                #                     self.link_series[key_t]['unique_id' = np.array(id_temp)
-                #                 else:
-                #                     self.link_series[key_t]['unique_id'] = np.array(unique_id)
-                #                     unique_id = unique_id + 1
+
                 id_temp = []
                 for new_leaf in new_leaves:
                     id_temp.append(unique_id)
@@ -421,7 +366,7 @@ class PlantData():
                 self.link_series[key_t]['unique_id'] = np.array(id_temp)
         ## for time points with new leaves emerging, get the linking information for every new leaf
         for key_t in self.link_series:
-            t0 = int(key_t.replace('t', ''))
+            t0 = int(key_t.replace('t', ''))  
             for leaf in self.link_series[key_t]['new_leaf']:
                 key_leaf = 'leaf{}'.format(leaf)
                 self.link_series[key_t][key_leaf] = -np.ones(self.total_time, dtype=int)
@@ -434,3 +379,4 @@ class PlantData():
                             break
                         else:
                             self.link_series[key_t][key_leaf][t_] = self.link_info[t_ - 1][idx]
+                            
