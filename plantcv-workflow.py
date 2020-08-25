@@ -181,6 +181,9 @@ def main():
         os.makedirs(config.tmp_dir, exist_ok=True)
     config.tmp_dir = tempfile.mkdtemp(prefix=start_time+'_', dir=config.tmp_dir)
 
+    # Create img_outdir
+    os.makedirs(config.img_outdir, exist_ok=True)
+
     # Read image metadata
     ###########################################
     parser_start_time = time.time()
