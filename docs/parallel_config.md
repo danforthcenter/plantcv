@@ -102,7 +102,7 @@ import plantcv.parallel
 # Create a WorkflowConfig instance
 config = plantcv.parallel.WorkflowConfig()
 
-#or if you want to reuse a configuration file you can import it
+#if you want to reuse a configuration file you can import it after creating an instance
 config.import_config(config_file="my_config.json")
 
 # Change configuration values directly in Python as needed. At a minimum you must specify input_dir, json, filename_metadata, workflow.
