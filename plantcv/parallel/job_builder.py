@@ -44,7 +44,7 @@ def job_builder(meta, config):
                 images.append(img)
         else:
             images.append(img)
-    
+
     # Log the number of jobs to be run
     n_jobs = len(images)
     print(f"Job list will include {n_jobs} images", file=sys.stderr)
@@ -88,7 +88,7 @@ def job_builder(meta, config):
 
         # Build job
         job_parts = ["python", config.workflow, "--image", meta[img]['path'],
-                     "--outdir", config.output_dir, "--result",
+                     "--outdir", config.img_outdir, "--result",
                      os.path.join(config.tmp_dir, img) + ".txt"]
         # Add job to list
         if config.coprocess is not None and ('coimg' in meta[img]):

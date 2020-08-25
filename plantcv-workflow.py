@@ -127,7 +127,7 @@ def options():
         config.json = args.json
         config.filename_metadata = args.meta.split(",")
         config.workflow = args.workflow
-        config.output_dir = args.outdir
+        config.img_outdir = args.outdir
         config.start_date = args.start_date
         config.end_date = args.end_date
         config.imgformat = args.type

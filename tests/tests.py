@@ -229,7 +229,7 @@ def test_plantcv_parallel_workflowconfig_validate_config():
     config.json = os.path.join(cache_dir, "valid_config.json")
     config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = TEST_PIPELINE
-    config.output_dir = cache_dir
+    config.img_outdir = cache_dir
     # Validate config
     assert config.validate_config()
 
@@ -625,7 +625,7 @@ def test_plantcv_parallel_job_builder_single_image():
     config.tmp_dir = cache_dir
     config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = TEST_PIPELINE
-    config.output_dir = cache_dir
+    config.img_outdir = cache_dir
     config.metadata_filters = {"imgtype": "VIS", "camera": "SV"}
     config.start_date = 1413936000
     config.end_date = 1414022400
@@ -659,7 +659,7 @@ def test_plantcv_parallel_job_builder_coprocess():
     config.tmp_dir = cache_dir
     config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = TEST_PIPELINE
-    config.output_dir = cache_dir
+    config.img_outdir = cache_dir
     config.metadata_filters = {"imgtype": "VIS", "camera": "SV"}
     config.start_date = 1413936000
     config.end_date = 1414022400
@@ -5876,8 +5876,8 @@ def test_plantcv_utils_sample_images_snapshot():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_sample_images")
     os.mkdir(cache_dir)
     snapshot_dir = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
-    output_dir = os.path.join(cache_dir, "snapshot")
-    plantcv.utils.sample_images(source_path=snapshot_dir, dest_path=output_dir, num=3)
+    img_outdir = os.path.join(cache_dir, "snapshot")
+    plantcv.utils.sample_images(source_path=snapshot_dir, dest_path=img_outdir, num=3)
     assert os.path.exists(os.path.join(cache_dir, "snapshot"))
 
 
@@ -5886,9 +5886,9 @@ def test_plantcv_utils_sample_images_flatdir():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_sample_images")
     os.mkdir(cache_dir)
     flat_dir = os.path.join(TEST_DATA)
-    output_dir = os.path.join(cache_dir, "images")
-    plantcv.utils.sample_images(source_path=flat_dir, dest_path=output_dir, num=30)
-    random_images = os.listdir(output_dir)
+    img_outdir = os.path.join(cache_dir, "images")
+    plantcv.utils.sample_images(source_path=flat_dir, dest_path=img_outdir, num=30)
+    random_images = os.listdir(img_outdir)
     assert all([len(random_images) == 30, len(np.unique(random_images)) == 30])
 
 
@@ -5897,9 +5897,9 @@ def test_plantcv_utils_sample_images_bad_source():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_sample_images")
     os.mkdir(cache_dir)
     fake_dir = os.path.join(TEST_DATA, "snapshot")
-    output_dir = os.path.join(cache_dir, "images")
+    img_outdir = os.path.join(cache_dir, "images")
     with pytest.raises(IOError):
-        plantcv.utils.sample_images(source_path=fake_dir, dest_path=output_dir, num=3)
+        plantcv.utils.sample_images(source_path=fake_dir, dest_path=img_outdir, num=3)
 
 
 def test_plantcv_utils_sample_images_bad_flat_num():
@@ -5907,9 +5907,9 @@ def test_plantcv_utils_sample_images_bad_flat_num():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_sample_images")
     os.mkdir(cache_dir)
     flat_dir = os.path.join(TEST_DATA)
-    output_dir = os.path.join(cache_dir, "images")
+    img_outdir = os.path.join(cache_dir, "images")
     with pytest.raises(RuntimeError):
-        plantcv.utils.sample_images(source_path=flat_dir, dest_path=output_dir, num=300)
+        plantcv.utils.sample_images(source_path=flat_dir, dest_path=img_outdir, num=300)
 
 
 def test_plantcv_utils_sample_images_bad_phenofront_num():
@@ -5917,9 +5917,9 @@ def test_plantcv_utils_sample_images_bad_phenofront_num():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_sample_images")
     os.mkdir(cache_dir)
     snapshot_dir = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
-    output_dir = os.path.join(cache_dir, "images")
+    img_outdir = os.path.join(cache_dir, "images")
     with pytest.raises(RuntimeError):
-        plantcv.utils.sample_images(source_path=snapshot_dir, dest_path=output_dir, num=300)
+        plantcv.utils.sample_images(source_path=snapshot_dir, dest_path=img_outdir, num=300)
 
 
 def test_plantcv_utils_tabulate_bayes_classes():

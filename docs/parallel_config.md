@@ -39,7 +39,7 @@ Validate parameters/structure of configuration data.
     - json (str, required): path/name of output JSON data file (appends new data if it already exists)
     - filename_metadata (list, required): list of metadata terms used to construct filenames. for example: `["plantbarcode","timestamp"]`. Supported metadata terms are listed [here](pipeline_parallel.md).
     - workflow (str, required): path/name of user-defined PlantCV workflow Python script (validates that it exists)
-    - output_dir (str, default = "."): path/name of output directory where images will be saved
+    - img_outdir (str, default = "."): path/name of output directory where images will be saved
     - tmp_dir (str, default = `None`): path/name of parent folder for the temporary directory, uses system default temporary directory when `None`
     - start_date (int, default = 1): start date used to filter images. Images will be analyzed that are newer than the start date. string format matching timestampformat
     - end_date (int, default = `None`): end date used to filter images. Images will be analyzed that are older than the end date, unless `None`. string format matching timestampformat
@@ -48,7 +48,7 @@ Validate parameters/structure of configuration data.
     - metadata_filters (dict, default = `None`): a dictionary of metadata terms (keys) and values, images will be analyzed that have the associated term and value
     - group_by (list, default = `None`): a list of metadata terms to treat as a group
     - timestampformat (str, default = '%Y-%m-%d %H:%M:%S.%f'): a date format code compatible with strptime C library. see [strptime docs](https://docs.python.org/3.7/library/datetime.html#strftime-and-strptime-behavior) for supported codes.
-    - writeimg (bool, default = `False`): save analysis images to `output_dir` if `True`
+    - writeimg (bool, default = `False`): save analysis images to `img_outdir` if `True`
     - other_args (list, default = `[]`): list of other arguments required by the workflow (e.g. ["--input1", "value1", "--input2", "value2"])
     - coprocess (str, default = `None`): coprocess the specified imgtype with the imgtype specified in metadata_filters (e.g. coprocess NIR images with VIS)
     - cluster (str, default = "LocalCluster"): LocalCluster will run PlantCV workflows on a single machine. All valid options currently are: "LocalCluster",

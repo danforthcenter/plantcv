@@ -19,7 +19,7 @@ class WorkflowConfig:
         self.json = ""
         self.filename_metadata = []
         self.workflow = ""
-        self.output_dir = "./output_images"
+        self.img_outdir = "./output_images"
         self.tmp_dir = None
         self.start_date = 1
         self.end_date = None

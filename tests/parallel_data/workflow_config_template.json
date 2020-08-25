@@ -3,7 +3,7 @@
     "json": "",
     "filename_metadata": [],
     "workflow": "",
-    "output_dir": "./output_images",
+    "img_outdir": "./output_images",
     "tmp_dir": null,
     "start_date": 1,
     "end_date": null,
