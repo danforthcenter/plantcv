@@ -24,16 +24,17 @@ config = plantcv.parallel.WorkflowConfig()
 config.save_config("config.json")
 ```
 
-The code above saves a text configuration file in JSON format using the built-in defaults for parameters. Open this
-file with your favorite text editor and adjust the parameters as needed. Alternatively, the parameters can be modified
+The code above saves a text configuration file in JSON format using the built-in defaults for parameters. The parameters can be modified
 directly in Python as demonstrated in the [WorkflowConfig documentation](parallel_config.md). A configuration can be
-saved at any time using the `save_config` method to save for later use.
+saved at any time using the `save_config` method to save for later use. Alternatively, open the saved config
+file with your favorite text editor and adjust the parameters as needed.
 
 Some notes on JSON format:
 * Like Python, string variables (e.g. "VIS") need to be in quotes.
 * Unlike Python, `true` and `false` in JSON are lowercase.
 * `None` in Python translates to `null` in JSON
 * `\` characters need to be escaped in JSON e.g. `\d` in Python becomes `\\d` in JSON
+* There are no comments in JSON
 
 Differences between JSON and Python will be automatically converted appropriately if you make changes to the config in Python and then use `save_config`.
 
@@ -79,7 +80,7 @@ AABA002948_2014-03-14 03-29-45_Pilot-031014_VIS_TV_z3500.png
 Valid metadata that can be collected from filenames are `camera`, `imgtype`, `zoom`, `exposure`, `gain`, `frame`,
 `lifter`, `timestamp`, `id`, `plantbarcode`, `treatment`, `cartag`, `measurementlabel`, and `other`.
 
-For a flat direcotory of images you are required to specify the timestamp format (`timestampformat` configuration parameter) code for the
+For a flat directory of images you are required to specify the timestamp format (`timestampformat` configuration parameter) code for the
 [strptime C library](https://docs.python.org/3.7/library/datetime.html#strftime-and-strptime-behavior).
 For the example above you would use `"timestampformat": "%Y-%m-%d %H-%M-%S"`.
 
@@ -95,7 +96,7 @@ Sample image filename: `cam1_16-08-06-16:45_el1100s1_p19.jpg`
     "workflow": "/home/mgehan/pat-edger/round1-python-pipelines/2016-08_pat-edger_brassica-cam1-splitimg.py",
     "img_outdir": "/shares/mgehan_share/raw_data/raw_image/2016-08_pat-edger/data/split-round1/split-cam1/output",
     "tmp_dir": null,
-    "start_date": 1,
+    "start_date": null,
     "end_date": null,
     "imgformat": "jpg",
     "delimiter": "_",
@@ -104,6 +105,7 @@ Sample image filename: `cam1_16-08-06-16:45_el1100s1_p19.jpg`
     "writeimg": true,
     "other_args": null,
     "coprocess": null,
+    "cleanup": true,
     "cluster": "HTCondorCluster",
     "cluster_config": {
         "n_workers": 16,
@@ -168,7 +170,7 @@ in a list to the `filename_metadata` parameter.
     "workflow": "user-workflow.py",
     "img_outdir": "output_directory",
     "tmp_dir": null,
-    "start_date": 1,
+    "start_date": null,
     "end_date": null,
     "imgformat": "jpg",
     "delimiter": '(.{3})_(.+)_(\d{4}-\d{2}-\d{2} \d{2}_\d{2}_\d{2})',
@@ -177,6 +179,7 @@ in a list to the `filename_metadata` parameter.
     "writeimg": true,
     "other_args": null,
     "coprocess": null,
+    "cleanup": true,
     "cluster": "HTCondorCluster",
     "cluster_config": {
         "n_workers": 16,
@@ -228,6 +231,7 @@ Alternative command-line parameters for the `plantcv-workflow.py` script that do
 * -w is the --writeimg option, if True will write output images. default= False
 * -c is the --create option to overwrite an json database if it exists, if you are creating a new database or appending to database, do NOT add the -c flag
 * -o is the --other_args option, used to pass non-standard options to the workflow script. Must take the form `--other_args="--option1 value1 --option2 value2"`
+* -z is the --cleanup option, this will remove the temporary job directory
 
 
 #### If running as a command in a shell script

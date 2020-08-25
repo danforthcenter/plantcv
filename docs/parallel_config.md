@@ -41,8 +41,8 @@ Validate parameters/structure of configuration data.
     - workflow (str, required): path/name of user-defined PlantCV workflow Python script (validates that it exists)
     - img_outdir (str, default = "."): path/name of output directory where images will be saved
     - tmp_dir (str, default = `None`): path/name of parent folder for the temporary directory, uses system default temporary directory when `None`
-    - start_date (int, default = 1): start date used to filter images. Images will be analyzed that are newer than the start date. string format matching timestampformat
-    - end_date (int, default = `None`): end date used to filter images. Images will be analyzed that are older than the end date, unless `None`. string format matching timestampformat
+    - start_date (int, default = `None`): start date used to filter images. Images will be analyzed that are newer than the start date. In the case of `None` all images prior to `end_date` are processed. string format should match timestampformat
+    - end_date (int, default = `None`): end date used to filter images. Images will be analyzed that are older than the end date. In the case of `None` all images after `start_date` are processed. string format should match timestampformat
     - imgformat (str, default = "png"): image file format/extension
     - delimiter (str, default = "_"): image filename metadata term delimiter character. Alternatively, a regular expression for parsing filename metadata
     - metadata_filters (dict, default = `None`): a dictionary of metadata terms (keys) and values, images will be analyzed that have the associated term and value
@@ -51,6 +51,7 @@ Validate parameters/structure of configuration data.
     - writeimg (bool, default = `False`): save analysis images to `img_outdir` if `True`
     - other_args (list, default = `[]`): list of other arguments required by the workflow (e.g. ["--input1", "value1", "--input2", "value2"])
     - coprocess (str, default = `None`): coprocess the specified imgtype with the imgtype specified in metadata_filters (e.g. coprocess NIR images with VIS)
+    - cleanup (bool, default =`True`): remove temporary job directory if `True`
     - cluster (str, default = "LocalCluster"): LocalCluster will run PlantCV workflows on a single machine. All valid options currently are: "LocalCluster",
     "HTCondorCluster", "LSFCluster", "MoabCluster", "OARCluster", "PBSCluster", "SGECluster", and "SLURMCluster". See [Dask-Jobqueue](https://jobqueue.dask.org/) for more details.
     - cluster_config (dict, default: see below ): a dictionary of parameters and values used to configure the cluster for parallel processing locally or remotely.
