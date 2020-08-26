@@ -13,7 +13,7 @@ Reads image into numpy ndarray and reshapes the frames into a datacube before id
     - Reads in file to be processed and does so using the metadata contained within a corresponding .INF file
 - **Notes:**
     - This function assumes a specific pattern between .DAT image files and their corresponding .INF file. 
-    We assume that for every image file `xx_PSD_xxx.DAT` there will be a corresponding metadata file with the same filepath
+    We assume that for every image file `xx_PSD_xxx.DAT` there will be a corresponding metadata file with the same path
     named `xx_HDR_xxx.INF` 
 - **Example use:**
     - [Use In PSII Tutorial](psII_tutorial.md) ****Needs updating**** 
@@ -27,7 +27,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 #read in image
-fdark, fmin, fmax = pcv.photosynthesis(filename="PSII_PSD_supopt_temp_ehegari_22_rep6.DAT")
+fdark, fmin, fmax = pcv.photosynthesis.read_dat(filename="PSII_PSD_20200826_22_rep6.DAT")
 
 ```
 
