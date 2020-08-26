@@ -574,6 +574,8 @@ HYPERSPECTRAL_HDR_SMALL_RANGE = {'description': '{[HEADWALL Hyperspec III]}', 's
                                  'interleave': 'bil', 'sensor type': 'Unknown', 'byte order': '0',
                                  'default bands': '159,253,520', 'wavelength units': 'nm',
                                  'wavelength': ['379.027', '379.663', '380.3', '380.936', '381.573', '382.209']}
+FLUOR_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "photosynthesis_data")
+FLUOR_IMG = "PSII_PSD_supopt_temp_btx623_22_rep1.DAT"
 TEST_COLOR_DIM = (2056, 2454, 3)
 TEST_GRAY_DIM = (2056, 2454)
 TEST_BINARY_DIM = TEST_GRAY_DIM
