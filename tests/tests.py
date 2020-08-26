@@ -4403,6 +4403,21 @@ def test_plantcv_hyperspectral_inverse_covariance():
     assert np.shape(inv_cov) == (978, 978)
 
 
+# ########################################
+# Tests for the photosynthesis subpackage
+# ########################################
+def test_plantcv_photosynthesis_read_dat():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_photosynthesis_read_dat")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = "plot"
+    fluor_filename = os.path.join(FLUOR_TEST_DATA, FLUOR_IMG)
+    _, _, _ = pcv.photosynthesis.read_dat(filename=fluor_filename)
+    pcv.params.debug = "print"
+    fdark, fmin, fmax = pcv.photosynthesis.read_dat(filename=fluor_filename)
+    assert np.shape(fmin) == np.shape(fdark)
+
+
 # ##############################
 # Tests for the roi subpackage
 # ##############################
