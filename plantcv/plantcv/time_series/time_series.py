@@ -22,7 +22,8 @@ import re
 from plantcv import plantcv as pcv
 import copy
 import csv
-import link_utilities as funcs
+# import link_utilities as funcs
+# import  pcv.time_series.link_utilities as funcs
 
 def time_series_linking(imagedir, segmentationdir, savedir, pattern_datetime, time_cond, colors=None, class_names=['BG', 'Leaf'], suffix='.jpg'):
     
@@ -71,8 +72,8 @@ def time_series_linking(imagedir, segmentationdir, savedir, pattern_datetime, ti
                 The original image name is inside the {}.
     """
         # initialize Plant class
-    Plant = funcs.PlantData(imagedir, segmentationdir, savedir, pattern_datetime, suffix)
-#     Plant = PlantData(imagedir, segmentationdir, savedir, pattern_datetime, suffix)
+    # Plant = funcs.PlantData(imagedir, segmentationdir, savedir, pattern_datetime, suffix)
+    Plant = pcv.time_series.PlantData(imagedir, segmentationdir, savedir, pattern_datetime, suffix)
 
     Plant.getpath(Plant.imagedir)
     Plant.Sorttime(time_cond)
@@ -133,8 +134,8 @@ def time_series_linking(imagedir, segmentationdir, savedir, pattern_datetime, ti
     count = 0
     if colors is None:
         if not os.path.exists('{}/colors.pkl'.format(Plant.savedir)):
-            colors = funcs._random_colors(40)
-#             colors = _random_colors(40)
+            # colors = funcs._random_colors(40)
+            colors = pcv.time_series._random_colors(40)
             pkl.dump(colors, open('{}/colors.pkl'.format(Plant.savedir), 'wb'))
         else:
             colors = pkl.load(open('{}/colors.pkl'.format(Plant.savedir), 'rb'))
@@ -196,8 +197,8 @@ def time_series_linking(imagedir, segmentationdir, savedir, pattern_datetime, ti
     ## 3. visualize with bounding boxes
     for (img, mask, roi, class_id, score, color, t) in zip(Plant.images, Plant.masks, Plant.rois, Plant.class_ids,
                                                            Plant.scores, color_all, Plant.filename_pre):
-        funcs.display_instances(img, roi, mask, class_id, class_names, score, ax=funcs.get_ax(rows=1, cols=1, size=16), show_bbox=True, show_mask=True, colors=color)
-#         display_instances(img, roi, mask, class_id, class_names, score, ax=get_ax(rows=1, cols=1, size=16), show_bbox=True, show_mask=True, colors=color)
+        # funcs.display_instances(img, roi, mask, class_id, class_names, score, ax=funcs.get_ax(rows=1, cols=1, size=16), show_bbox=True, show_mask=True, colors=color)
+        pcv.time_series.display_instances(img, roi, mask, class_id, class_names, score, ax=pcv.time_series.get_ax(rows=1, cols=1, size=16), show_bbox=True, show_mask=True, colors=color)
         plt.savefig(os.path.join(path_visual3, '{}-visual{}'.format(t, Plant.ext)))
         plt.close('all')
     # save all information
