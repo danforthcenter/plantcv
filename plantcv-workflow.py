@@ -133,7 +133,7 @@ def options():
         config.cleanup = args.cleanup
         config.append = not args.create
         config.cluster = "LocalCluster"
-        config.cluster_config = {"n_workers": args.cpu, "memory": "1GB", "disk": "1GB"}
+        config.cluster_config = {"n_workers": args.cpu, "cores": 1, "memory": "1GB", "disk": "1GB"}
 
     if not config.validate_config():
         raise ValueError("Invalid configuration file. Check errors above.")
