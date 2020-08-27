@@ -15,7 +15,7 @@ from plantcv.plantcv.threshold import triangle
 
 
 def auto_threshold_methods(gray_img, grid_img=True, object_type="light"):
-    """ Visualize an RGB image in all potential colorspaces
+    """ Compare auto threshold methods for a grayscale image
 
     Inputs:
     gray_img     = Grayscale image data
