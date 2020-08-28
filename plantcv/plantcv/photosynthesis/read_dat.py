@@ -73,6 +73,6 @@ def read_dat(filename):
             max_index = i
         i += 1
     fmax = img_cube[:, :, [max_index]]
-    fmax = np.transpose(np.transpose(fdark)[0])  # Reshape frame from (x,y,1) to (x,y)
+    fmax = np.transpose(np.transpose(fmax)[0])  # Reshape frame from (x,y,1) to (x,y)
 
     return fdark, fmin, fmax
