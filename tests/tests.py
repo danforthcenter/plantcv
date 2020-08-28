@@ -4415,7 +4415,7 @@ def test_plantcv_photosynthesis_read_dat():
     _, _, _ = pcv.photosynthesis.read_dat(filename=fluor_filename)
     pcv.params.debug = "print"
     fdark, fmin, fmax = pcv.photosynthesis.read_dat(filename=fluor_filename)
-    assert np.shape(fmin) == np.shape(fdark)
+    assert np.sum(fmin) < np.sum(fmax)
 
 
 # ##############################
