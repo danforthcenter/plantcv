@@ -1,7 +1,10 @@
-# VERSION 1
 # Read in fluorescence images from a .DAT file
 
+import os
 import numpy as np
+from plantcv.plantcv import params
+from plantcv.plantcv.plot_image import plot_image
+from plantcv.plantcv.print_image import print_image
 
 
 def read_dat(filename):
@@ -74,5 +77,14 @@ def read_dat(filename):
         i += 1
     fmax = img_cube[:, :, [max_index]]
     fmax = np.transpose(np.transpose(fmax)[0])  # Reshape frame from (x,y,1) to (x,y)
+
+    if params.debug == "print":
+        print_image(fdark, os.path.join(params.debug_outdir, "fdark_frame.png"))
+        print_image(fmin, os.path.join(params.debug_outdir, "fmin_frame.png"))
+        print_image(fmax, os.path.join(params.debug_outdir, "fmax_frame.png"))
+    elif params.debug == "plot":
+        plot_image(fdark)
+        plot_image(fmin)
+        plot_image(fmax)
 
     return fdark, fmin, fmax
