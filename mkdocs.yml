@@ -114,6 +114,8 @@ nav:
       - 'Opening': opening.md
       - 'Output Mask': output_mask.md
       - 'Outputs Class': outputs.md
+      - 'Photosynthesis Functions':
+          - 'Read DAT': photosynthesis_read_dat.md 
       - 'Params (Debugging)': params.md
       - 'Print Image': print_image.md
       - 'Print Results': print_results.md
