@@ -506,6 +506,11 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, maskpath, analysis_images = **plantcv.output_mask**(*device, img, mask, filename, outdir=None, mask_only=False, debug=None*)
 * post v3.0dev2: imgpath, maskpath, analysis_images = **plantcv.output_mask**(*img, mask, filename, outdir=None, mask_only=False*)
 
+#### plantcv.photosynthesis.read_dat
+
+* pre v3.10: NA
+* post v3.10: fdark, fmin, fmax = **plantcv.photosynthesis.read_dat**(*filename*)
+
 #### plantcv.plot_hist
 
 * pre v3.0dev2: bins, hist = **plantcv.plot_hist**(*img, name=False*)
