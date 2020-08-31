@@ -86,70 +86,70 @@ def main():
     pcv.params.debug = args.debug #set debug mode
     pcv.params.debug_outdir = args.outdir #set output directory
     
-    # Read image (converting fmax and track to 8 bit just to create a mask, use 16-bit for all the math)
-    fdark, fmin, fmax = pcv.photosynthesis.read_dat(args.image)
+    # Read fluorescence image data 
+    fdark1, fmin1, fmax1 = pcv.photosynthesis.read_dat(args.image)
     
 ```
 
-**Figure 1.** Fdark
+**Figure 1.** `Fdark` frame 
 
 ![Screenshot](img/tutorial_images/psII/fdark.jpg)
 
-**Figure 2.** Fmin
+**Figure 2.** `Fmin` frame 
 
 ![Screenshot](img/tutorial_images/psII/fmin.jpg)
 
-**Figure 3.** Fmax image that will be used to create a plant mask that will isolate the plant material in the image. 
+**Figure 3.** `Fmax` frame. This will be used to create a plant mask that will isolate the plant material in the image. 
 
-![Screenshot](img/tutorial_images/psII/fmax.jpg)
+![Screenshot](img/tutorial_images/psII/fmax_rescaled_sideways.jpg)
 
 ```python
-    # Mask pesky track autofluor
+    # Rotate each frame so that plant is upright 
     
     # Inputs:
-    #   rgb_img - RGB image data 
-    #   channel - Split 'h' (hue), 's' (saturation), or 'v' (value) channel 
-    track1 = pcv.rgb2gray_hsv(rgb_img=track, channel='v')
+    #   img             - Image data 
+    #   rotation_deg    - Rotation angle in degrees, can be a negative number, positive values move counter clockwise
+    #   crop            - If crop is set to True, image will be cropped to original image dimensions. If set to False, the image size will be adjusted to accommodate new image dimensions.
+    fdark = pcv.rotate(img=fdark1, rotation_deg=-90, crop=False)
+    fmin = pcv.rotate(img=fmin1, rotation_deg=-90, crop=False)
+    fmax = pcv.rotate(img=fmax1, rotation_deg=-90, crop=False)
     
-    # Inputs:
-    #   gray_img - Grayscale image data 
-    #   threshold- Threshold value (between 0-255)
-    #   max_value - Value to apply above threshold (255 = white) 
-    #   object_type - 'light' (default) or 'dark'. If the object is lighter than the background then standard threshold is done.
-    #                 If the object is darker than the background then inverse thresholding is done. 
-    track_thresh = pcv.threshold.binary(gray_img=track1, threshold=0, max_value=255, object_type='light')
-    
-    # Inputs:
-    #   gray_img - Grayscale image data 
-    track_inv = pcv.invert(gray_img=track_thresh)
-
-    # Inputs: 
-    #   rgb_img - RGB image data 
-    #   mask - Binary mask image data 
-    #   mask_color - 'black' or 'white'
-    track_masked = pcv.apply_mask(img=mask, mask=track_inv, mask_color='black')
     
 ```
 
-**Figure 2.** (Top) Inverted mask (white portion is kept as objects).
-(Bottom) Fmax image (Figure 1) with the inverted mask applied.  
+**Figure 4.** Rotated `fmax` frame  
 
-![Screenshot](img/tutorial_images/psII/01_invert.jpg)
+![Screenshot](img/tutorial_images/psII/fmax_rescaled.jpg)
 
-![Screenshot](img/tutorial_images/psII/02_bmasked.jpg)
-
-The resulting image is then thresholded with a [binary threshold](binary_threshold.md) to capture the plant material.
+The resulting image is then thresholded with a [binary threshold](binary_threshold.md) to capture the plant material. In most cases, it is expected that pixel values 
+range between 0 and 255, but our example image has pixel values from 0 to over 7000. Trial and error a common method for selecting an appropriate threshold value. 
 
 ```python
-    # Threshold the image
-    fmax_thresh = pcv.threshold.binary(gray_img=track_masked, threshold=20, max_value=255, 
-                                       object_type='light')    
+    # Threshold the `fmax` image
+    
+    # Inputs:
+    #   gray_img        - Grayscale image data 
+    #   threshold       - Threshold value (usually between 0-255)
+    #   max_value       - Value to apply above threshold (255 = white) 
+    #   object_type     - 'light' (default) or 'dark'. If the object is lighter than the 
+    #                       background then standard threshold is done. If the object is 
+    #                       darker than the background then inverse thresholding is done. 
+    plant_mask = pcv.threshold.binary(gray_img=fmax, threshold=855, max_value=255, object_type="light")
+   
 ```
 
 **Figure 3.** Binary threshold on masked Fmax image.
 
-![Screenshot](img/tutorial_images/psII/03_binary_threshold20.jpg)
+![Screenshot](img/tutorial_images/psII/plant_mask.jpg)
 
+###############################################################################################################################################################################################
+###############################################################################################################################################################################################
+
+###############################################################################################################################################################################################
+###############################################################################################################################################################################################
+
+###############################################################################################################################################################################################
+###############################################################################################################################################################################################
 Noise is reduced with the [median blur](median_blur.md) function.
 
 ```python
@@ -200,7 +200,7 @@ the [find objects](find_objects.md) function.
 
 **Figure 6.** All objects found within the image are identified.
 
-![Screenshot](img/tutorial_images/psII/06_id_objects.jpg)
+![Screenshot](img/tutorial_images/psII/id_obj.jpg)
 
 Next the region of interest is defined using the [rectangular region of interest](roi_rectangle.md) function.
 
