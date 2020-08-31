@@ -1,8 +1,13 @@
+import os
 import numpy as np
 from scipy import ndimage as ndi
 from skimage.segmentation import watershed
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import color_palette
+from plantcv.plantcv import params
+from plantcv.plantcv import plot_image
+from plantcv.plantcv import print_image
+
 
 
 def segment_image_series(img_series, masks, ref_frame=0, expand_labels=True):
@@ -12,7 +17,7 @@ def segment_image_series(img_series, masks, ref_frame=0, expand_labels=True):
     img_series    = 3D stack of grayscale images
     masks         = 3D stack of binary masks
     ref_frame     = Index of the reference image to extract markers
-    expand_labels = If True, stack the labels frame in the 3rd dimension 
+    expand_labels = If True, stack the labels frame in the 3rd dimension
 
     Returns:
     markers      = 3D stack of segmented images
@@ -23,6 +28,7 @@ def segment_image_series(img_series, masks, ref_frame=0, expand_labels=True):
     :params expand_dims: bool
     :return markers: numpy.ndarray
     """
+    params.device += 1
 
     if len(img_series.shape) < 3:
         img_series = np.expand_dims(img_series,axis=2)
@@ -31,7 +37,18 @@ def segment_image_series(img_series, masks, ref_frame=0, expand_labels=True):
     h,w,N = img_series.shape
 
     # Automatic label on one frame
-    labels, _ = ndi.label(masks[:,:,ref_frame])
+    labels, n_labels = ndi.label(masks[:,:,ref_frame])
+
+    # Create image for printing (debug mode)
+    debug_img = np.zeros((h,w,3), dtype=np.uint8)
+    rgb_values = color_palette(n_labels)
+    for i in range(n_labels):
+        debug_img[labels==i+1] = rgb_values[i]
+    if params.debug == 'print':
+        print_image(debug_img, os.path.join(params.debug_outdir, str(params.device) + '_auto_markers.png'))
+    elif params.debug == 'plot':
+        plot_image(debug_img)
+
     if expand_labels:
         markers = np.tile(np.expand_dims(labels,axis=2),(1,1,N))
     else:
@@ -60,6 +77,7 @@ def segment_leaves(img, markers, mask):
     :params mask: numpy.ndarray
     :return markers: numpy.ndarray
     """
+    params.device += 1
 
     if len(img.shape) < 3:
         img = np.expand_dims(img,axis=2)
