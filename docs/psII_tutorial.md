@@ -15,8 +15,6 @@ of plants with vertical architecture. You can read more about how we validated t
 analysis workflows in the [PlantCV Paper](http://dx.doi.org/10.1016/j.molp.2015.06.005). 
 However, the workflows to analyze PSII images are functional and a sample workflow is outlined below.  
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/psII_tutorial.ipynb) Check out our interactive PSII tutorial! 
-
 Also see [here](#psii-script) for the complete script. 
 
 ### Workflow
@@ -33,22 +31,22 @@ To run a PSII workflow over a single PSII image set (3 images) there are 4 requi
 1.  **Image 1:** F0 (a.k.a Fdark/null) image.
 2.  **Image 2:** Fmin image.
 3.  **Image 3:** Fmax image. 
-5.  **Output directory:** If debug mode is set to 'print' output images from each step are produced,
-otherwise ~4 final output images are produced.
+5.  **Output directory:** If debug mode is set to 'print' output images from each step are produced.
+
+This tutorial showcases an example workflow for fluorescence images taken with the [CropReporter system](https://www.phenovation.com/cropreporter/). 
+CropReporter images are stored in .DAT files where multiple frames, depending on the measurement protocol, are stored into a single file. Users with different data formats can still 
+analyze fluorescence images by reading in individual images for each. Image sets that don't have an `fdark` frame can create a null image of the same size with `np.zeros`. 
 
 Optional Inputs:
 
-*  **Debug Flag:** Prints or plots (if in Jupyter or have x11 forwarding on) an image at each step
-*  **Region of Interest:** The user can input their own binary region of interest or image mask 
-(for PSII images we use a premade mask to remove the screws from the image). 
-Make sure the input is the same size as your image or you will have problems.  
+*  **Debug Flag:** Prints or plots (if in Jupyter or have x11 forwarding on) an image at each step 
 
 Sample command to run a workflow on a single PSII image set:  
 
 * Always test workflows (preferably with -D flag for debug mode) before running over a full image set.
 
 ```
-./workflowname.py -i /home/user/images/testimg.png -o /home/user/output-images -D 'print'
+./workflowname.py -i /home/user/images/PSII_PSD_testimg_22_rep6.DAT.DAT -o /home/user/output-images -D 'print'
 
 ```
 
@@ -68,10 +66,7 @@ from plantcv import plantcv as pcv
 ### Parse command-line arguments
 def options():
     parser = argparse.ArgumentParser(description="Imaging processing with opencv")
-    parser.add_argument("-i1", "--fdark", help="Input image file.", required=True)
-    parser.add_argument("-i2", "--fmin", help="Input image file.", required=True)
-    parser.add_argument("-i3", "--fmax", help="Input image file.", required=True)
-    parser.add_argument("-m", "--track", help="Input region of interest file.", required=False)
+    parser.add_argument("-i", "--image", help="Input image file.", required=True)
     parser.add_argument("-o", "--outdir", help="Output directory for image files.", required=True)
     parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.", action="store_true")
     args = parser.parse_args()
@@ -79,8 +74,8 @@ def options():
     
 ```
 
-The PSII workflow first uses the Fmax image to create an image mask. Our PSII images are 16-bit grayscale, 
-but we will initially [read](read_image.md) the Fmax image in as a 8-bit color image just to create the image mask.
+All required frames are contained within a single `.DAT` file. See the documentation page for [`plantcv.photosynthesis.read_dat()`](photosynthesis_read_dat.md) to see more detail on
+how this type of data is read in.
 
 ```python
 ### Main workflow
@@ -92,23 +87,21 @@ def main():
     pcv.params.debug_outdir = args.outdir #set output directory
     
     # Read image (converting fmax and track to 8 bit just to create a mask, use 16-bit for all the math)
-    mask, path, filename = pcv.readimage(args.fmax)
-    track, trackpath, trackname = pcv.readimage(args.track)
+    fdark, fmin, fmax = pcv.photosynthesis.read_dat(args.image)
     
 ```
 
-**Figure 1.** (Top) Fmax image that will be used to create a plant mask that will isolate the plant material in the image. 
-(Bottom) Premade image mask for the screws and metallic bits that are auto-fluorescent.
+**Figure 1.** Fdark
 
-![Screenshot](img/tutorial_images/psII/Fmax.jpg)
+![Screenshot](img/tutorial_images/psII/fdark.jpg)
 
-![Screenshot](img/tutorial_images/psII/mask.jpg)
+**Figure 2.** Fmin
 
-We use a premade-mask for the screws on the car that consistently give background signal, but this is not required.
-The track mask is an RGB image so a single channel is selected using the [RGB to HSV](rgb2hsv.md)
-function and converted to a binary mask with a [binary threshold](binary_threshold.md).
-The mask is [inverted](invert.md) since the screws were white in the track image.
-The [apply mask function](apply_mask.md) is then used to apply the track mask to one channel of the Fmax image (mask1). 
+![Screenshot](img/tutorial_images/psII/fmin.jpg)
+
+**Figure 3.** Fmax image that will be used to create a plant mask that will isolate the plant material in the image. 
+
+![Screenshot](img/tutorial_images/psII/fmax.jpg)
 
 ```python
     # Mask pesky track autofluor
