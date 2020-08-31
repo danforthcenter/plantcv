@@ -138,37 +138,11 @@ range between 0 and 255, but our example image has pixel values from 0 to over 7
    
 ```
 
-**Figure 3.** Binary threshold on masked Fmax image.
+**Figure 5.** Binary threshold on masked Fmax image.
 
 ![Screenshot](img/tutorial_images/psII/plant_mask.jpg)
 
-###############################################################################################################################################################################################
-###############################################################################################################################################################################################
-
-###############################################################################################################################################################################################
-###############################################################################################################################################################################################
-
-###############################################################################################################################################################################################
-###############################################################################################################################################################################################
-Noise is reduced with the [median blur](median_blur.md) function.
-
-```python
-    # Median Filter
-    
-    # Inputs:
-    #   gray_img - Grayscale image data 
-    #   ksize - Kernel size. Integer or tuple; (ksize, ksize) box if integer is input, 
-    #           (n, m) size box if tuple is given.
-    s_mblur = pcv.median_blur(gray_img=fmax_thresh, ksize=5)
-    s_cnt = pcv.median_blur(gray_img=fmax_thresh, ksize=5)
-    
-```
-
-**Figure 4.** Median blur applied.
-
-![Screenshot](img/tutorial_images/psII/04_median_blur5.jpg)
-
-Noise is also reduced with the [fill](fill.md) function.
+Noise is reduced with the [fill](fill.md) function.
 
 ```python
     # Fill small objects
@@ -176,14 +150,13 @@ Noise is also reduced with the [fill](fill.md) function.
     # Inputs:
     #   bin_img - Binary image data 
     #   size - Minimum object area size in pixels (integer), smaller objects get filled in. 
-    s_fill = pcv.fill(bin_img=s_mblur, size=110)
-    sfill_cnt = pcv.fill(bin_img=s_mblur, size=110)
+    cleaned_mask = pcv.fill(bin_img=plant_mask, size=20)
     
 ```
 
-**Figure 5.** Fill applied.  
+**Figure 6.** Fill applied.  
 
-![Screenshot](img/tutorial_images/psII/05_fill110.jpg)
+![Screenshot](img/tutorial_images/psII/filled_plant_mask.jpg)
 
 Objects (OpenCV refers to them a contours) are then identified within the image using 
 the [find objects](find_objects.md) function.
@@ -194,58 +167,13 @@ the [find objects](find_objects.md) function.
     # Inputs:
     #   img - RGB or grayscale image data for plotting
     #   mask - Binary mask used for detecting contours
-    id_objects,obj_hierarchy = pcv.find_objects(img=mask, mask=sfill_cnt)
+    id_objects ,obj_hierarchy = pcv.find_objects(img=fmax, mask=cleaned_mask)
     
 ```
 
-**Figure 6.** All objects found within the image are identified.
+**Figure 7.** All objects found within the image are identified.
 
 ![Screenshot](img/tutorial_images/psII/id_obj.jpg)
-
-Next the region of interest is defined using the [rectangular region of interest](roi_rectangle.md) function.
-
-```python
-    # Define ROI
-    
-    # Inputs: 
-    #   img - RGB or grayscale image to plot the ROI on 
-    #   x - The x-coordinate of the upper left corner of the rectangle 
-    #   y - The y-coordinate of the upper left corner of the rectangle 
-    #   h - The height of the rectangle 
-    #   w - The width of the rectangle 
-    roi1, roi_hierarchy = pcv.roi.rectangle(img=mask, x=100, y=100, h=200, w=200)
-    
-```
-
-**Figure 7.** Region of interest is drawn on the image.
-
-![Screenshot](img/tutorial_images/psII/07_roi.jpg)
-
-The objects within and overlapping are kept with the [region of interest objects](roi_objects.md) function.
-Alternately the objects can be cut to the region of interest.
-
-```python
-    # Decide which objects to keep
-    
-    # Inputs:
-    #    img            = img to display kept objects
-    #    roi_contour    = contour of roi, output from any ROI function
-    #    roi_hierarchy  = contour of roi, output from any ROI function
-    #    object_contour = contours of objects, output from pcv.find_objects function
-    #    obj_hierarchy  = hierarchy of objects, output from pcv.find_objects function
-    #    roi_type       = 'partial' (default, for partially inside), 'cutto', or 
-    #    'largest' (keep only largest contour)
-    roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(img=mask, roi_contour=roi1, 
-                                                               roi_hierarchy=roi_hierarchy, 
-                                                               object_contour=id_objects, 
-                                                               obj_hierarchy=obj_hierarchy, 
-                                                               roi_type='partial')
-    
-```
-
-**Figure 8.** Objects in the region of interest are identified (green).  
-
-![Screenshot](img/tutorial_images/psII/08_obj_on_img.jpg)
 
 The isolated objects now should all be plant material. There can be more than one object that makes up a plant,
 since sometimes leaves twist making them appear in images as separate objects. Therefore, in order for shape 
@@ -258,13 +186,26 @@ analysis to perform properly the plant objects need to be combined into one obje
     #   img - RGB or grayscale image data for plotting 
     #   contours - Contour list 
     #   hierarchy - Contour hierarchy array 
-    obj, masked = pcv.object_composition(img=mask, contours=roi_objects, hierarchy=hierarchy3)
+    obj, masked = pcv.object_composition(img=cleaned_mask, contours=id_objects, hierarchy=obj_hierarchy)
     
 ```
 
-**Figure 9.** Combined plant object outlined in blue.
+**Figure 8.** Combined plant object outlined in blue.
 
-![Screenshot](img/tutorial_images/psII/09_objcomp.jpg)
+![Screenshot](img/tutorial_images/psII/22_objcomp.jpg)
+
+__________________________________________________________________________________________________________________________________________________________________________________________________
+__________________________________________________________________________________________________________________________________________________________________________________________________
+
+
+__________________________________________________________________________________________________________________________________________________________________________________________________
+__________________________________________________________________________________________________________________________________________________________________________________________________
+
+
+__________________________________________________________________________________________________________________________________________________________________________________________________
+__________________________________________________________________________________________________________________________________________________________________________________________________
+
+
 
 The next step is to analyze the plant object for traits such as [shape](analyze_shape.md), or [PSII signal](fluor_fvfm.md).
 
