@@ -33,8 +33,8 @@ To run a PSII workflow over a single PSII image set (3 images) there are 4 requi
 3.  **Image 3:** Fmax image. 
 5.  **Output directory:** If debug mode is set to 'print' output images from each step are produced.
 
-This tutorial showcases an example workflow for fluorescence images taken with the [CropReporter system](https://www.phenovation.com/cropreporter/). 
-CropReporter images are stored in .DAT files where multiple frames, depending on the measurement protocol, are stored into a single file. Users with different data formats can still 
+This tutorial shows an example workflow for fluorescence images taken with the [CropReporter system](https://www.phenovation.com/cropreporter/). 
+CropReporter images are stored in .DAT files where multiple frames are stored into a single file. Users with different data formats can still 
 analyze fluorescence images by reading in individual images for each. Image sets that don't have an `fdark` frame can create a null image of the same size with `np.zeros`. 
 
 Optional Inputs:
@@ -56,11 +56,7 @@ Workflows start by importing necessary packages, and by defining user inputs.
 
 ```python
 #!/usr/bin/python
-import sys, traceback
-import cv2
-import numpy as np
 import argparse
-import string
 from plantcv import plantcv as pcv
 
 ### Parse command-line arguments
@@ -148,8 +144,8 @@ Noise is reduced with the [fill](fill.md) function.
     # Fill small objects
     
     # Inputs:
-    #   bin_img - Binary image data 
-    #   size - Minimum object area size in pixels (integer), smaller objects get filled in. 
+    #   bin_img         - Binary image data 
+    #   size            - Minimum object area size in pixels (integer), smaller objects get filled in. 
     cleaned_mask = pcv.fill(bin_img=plant_mask, size=20)
     
 ```
@@ -165,8 +161,8 @@ the [find objects](find_objects.md) function.
     # Identify objects
     
     # Inputs:
-    #   img - RGB or grayscale image data for plotting
-    #   mask - Binary mask used for detecting contours
+    #   img             - RGB or grayscale image data for plotting
+    #   mask            - Binary mask used for detecting contours
     id_objects ,obj_hierarchy = pcv.find_objects(img=fmax, mask=cleaned_mask)
     
 ```
@@ -184,8 +180,8 @@ analysis to perform properly the plant objects need to be combined into one obje
     
     # Inputs:
     #   img - RGB or grayscale image data for plotting 
-    #   contours - Contour list 
-    #   hierarchy - Contour hierarchy array 
+    #   contours        - Contour list 
+    #   hierarchy       - Contour hierarchy array 
     obj, masked = pcv.object_composition(img=cleaned_mask, contours=id_objects, hierarchy=obj_hierarchy)
     
 ```
@@ -194,40 +190,26 @@ analysis to perform properly the plant objects need to be combined into one obje
 
 ![Screenshot](img/tutorial_images/psII/22_objcomp.jpg)
 
-__________________________________________________________________________________________________________________________________________________________________________________________________
-__________________________________________________________________________________________________________________________________________________________________________________________________
-
-
-__________________________________________________________________________________________________________________________________________________________________________________________________
-__________________________________________________________________________________________________________________________________________________________________________________________________
-
-
-__________________________________________________________________________________________________________________________________________________________________________________________________
-__________________________________________________________________________________________________________________________________________________________________________________________________
-
-
-
 The next step is to analyze the plant object for traits such as [shape](analyze_shape.md), or [PSII signal](fluor_fvfm.md).
-
 
 ```python
 ################ Analysis ################  
     # Find shape properties, output shape image (optional)
     
     # Inputs:
-    #   img - RGB or grayscale image data 
-    #   obj- Single or grouped contour object
-    #   mask - Binary image mask to use as mask for moments analysis 
+    #   img             - RGB or grayscale image data 
+    #   obj             - Single or grouped contour object
+    #   mask            - Binary image mask to use as mask for moments analysis 
     shape_img = pcv.analyze_object(img=fmax, obj=obj, mask=cleaned_mask)
 
     # Analyze fv/fm fluorescence properties 
     
     # Inputs:
-    #   fdark - Grayscale image 
-    #   fmin - Grayscale image 
-    #   fmax - Grayscale image 
-    #   mask - Binary mask of selected contours 
-    #   bins - Number of grayscale bins (0-256 for 8-bit img, 0-65536 for 16-bit). Default bins = 256
+    #   fdark           - Grayscale image 
+    #   fmin            - Grayscale image 
+    #   fmax            - Grayscale image 
+    #   mask            - Binary mask of selected contours 
+    #   bins            - Number of grayscale bins (0-256 for 8-bit img, 0-65536 for 16-bit). Default bins = 256
     fvfm_images = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=cleaned_mask, bins=256)
 
     # Store the two fv_fm images
@@ -237,16 +219,16 @@ The next step is to analyze the plant object for traits such as [shape](analyze_
     # Pseudocolor the Fv/Fm grayscale image that is calculated inside the fluor_fvfm function
     
     # Inputs:
-    #     gray_img - Grayscale image data
-    #     obj - Single or grouped contour object (optional), if provided the pseudocolored image gets cropped down to the region of interest.
-    #     mask - Binary mask (optional) 
-    #     background - Background color/type. Options are "image" (gray_img), "white", or "black". A mask must be supplied.
-    #     cmap - Colormap (https://matplotlib.org/tutorials/colors/colormaps.html)
-    #     min_value - Minimum value for range of interest
-    #     max_value - Maximum value for range of interest
-    #     dpi - Dots per inch for image if printed out (optional, if dpi=None then the default is set to 100 dpi).
-    #     axes - If False then the title, x-axis, and y-axis won't be displayed (default axes=True).
-    #     colorbar - If False then the colorbar won't be displayed (default colorbar=True)
+    #     gray_img      - Grayscale image data
+    #     obj           - Single or grouped contour object (optional), if provided the pseudocolored image gets cropped down to the region of interest.
+    #     mask          - Binary mask (optional) 
+    #     background    - Background color/type. Options are "image" (gray_img), "white", or "black". A mask must be supplied.
+    #     cmap          - Colormap (https://matplotlib.org/tutorials/colors/colormaps.html)
+    #     min_value     - Minimum value for range of interest
+    #     max_value     - Maximum value for range of interest
+    #     dpi           - Dots per inch for image if printed out (optional, if dpi=None then the default is set to 100 dpi).
+    #     axes          - If False then the title, x-axis, and y-axis won't be displayed (default axes=True).
+    #     colorbar      - If False then the colorbar won't be displayed (default colorbar=True)
     pseudocolored_img = pcv.visualize.pseudocolor(gray_img=fv_img, mask=cleaned_mask, cmap='jet')
 
     # Write shape and nir data to results file
@@ -257,16 +239,16 @@ if __name__ == '__main__':
     
 ```
 
-**Figure 10.** Shape analysis debug image 
+**Figure 9.** Shape analysis debug image 
 
 ![Screenshot](img/tutorial_images/psII/shapes.jpg)
 
 
-**Figure 11.** Fv/Fm values debug image 
+**Figure 10.** Fv/Fm values debug image 
 
 ![Screenshot](img/tutorial_images/psII/27_fv_hist.jpg)
 
-**Figure 10.** Image pseudocolored by Fv/Fm values
+**Figure 11.** Image pseudocolored by Fv/Fm values
 
 ![Screenshot](img/tutorial_images/psII/36_pseudocolored.jpg)
 
@@ -277,7 +259,7 @@ To deploy a workflow over a full image set please see tutorial on [workflow para
 In the terminal:
 
 ```
-./workflowname.py -i /home/user/images/testimg.png -o /home/user/output-images -D 'print'
+./workflowname.py -i /home/user/images/PSII_PSD_testimg_22_rep6.DAT.DAT -o /home/user/output-images -D 'print'
 
 ```
 
@@ -286,13 +268,8 @@ In the terminal:
 Python script:
 
 ```python
-#!/usr/bin/env python
-#!/usr/bin/python
-import sys, traceback
-import cv2
-import numpy as np
+# !/usr/bin/python
 import argparse
-import string
 from plantcv import plantcv as pcv
 
 ### Parse command-line arguments
