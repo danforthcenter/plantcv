@@ -209,29 +209,18 @@ ________________________________________________________________________________
 
 The next step is to analyze the plant object for traits such as [shape](analyze_shape.md), or [PSII signal](fluor_fvfm.md).
 
-For the PSII signal function the 16-bit F0, Fmin, and  Fmax images are read in so that they can be used 
-along with the generated mask to calculate Fv/Fm.
 
 ```python
 ################ Analysis ################  
-    
-    outfile = False
-    if args.writeimg == True:
-        outfile = os.path.join(args.outdir, filename)
-    
     # Find shape properties, output shape image (optional)
     
     # Inputs:
     #   img - RGB or grayscale image data 
     #   obj- Single or grouped contour object
     #   mask - Binary image mask to use as mask for moments analysis 
-    shape_img = pcv.analyze_object(img=mask, obj=obj, mask=masked)
-    
-    # Fluorescence Measurement (read in 16-bit images)
-    fdark, darkpath, darkname = pcv.readimage(args.fdark)
-    fmin, minpath, minname = pcv.readimage(args.fmin)
-    fmax, maxpath, maxname = pcv.readimage(args.fmax)
-    
+    shape_img = pcv.analyze_object(img=fmax, obj=obj, mask=cleaned_mask)
+
+    # Analyze fv/fm fluorescence properties 
     
     # Inputs:
     #   fdark - Grayscale image 
@@ -239,9 +228,9 @@ along with the generated mask to calculate Fv/Fm.
     #   fmax - Grayscale image 
     #   mask - Binary mask of selected contours 
     #   bins - Number of grayscale bins (0-256 for 8-bit img, 0-65536 for 16-bit). Default bins = 256
-    fvfm_images = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=kept_mask, bins=256)
+    fvfm_images = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=cleaned_mask, bins=256)
 
-    # Store the two images
+    # Store the two fv_fm images
     fv_img = fvfm_images[0]
     fvfm_hist = fvfm_images[1]
 
@@ -258,7 +247,7 @@ along with the generated mask to calculate Fv/Fm.
     #     dpi - Dots per inch for image if printed out (optional, if dpi=None then the default is set to 100 dpi).
     #     axes - If False then the title, x-axis, and y-axis won't be displayed (default axes=True).
     #     colorbar - If False then the colorbar won't be displayed (default colorbar=True)
-    pseudocolored_img = pcv.visualize.pseudocolor(gray_img=fv_img, mask=kept_mask, cmap='jet')
+    pseudocolored_img = pcv.visualize.pseudocolor(gray_img=fv_img, mask=cleaned_mask, cmap='jet')
 
     # Write shape and nir data to results file
     pcv.print_results(filename=args.result)
@@ -268,19 +257,18 @@ if __name__ == '__main__':
     
 ```
 
-**Figure 10.** Input images from top to bottom: F0 (null image also known as Fdark); Fmin image; Fmax image.
+**Figure 10.** Shape analysis debug image 
 
-![Screenshot](img/tutorial_images/psII/Fdark.jpg)
+![Screenshot](img/tutorial_images/psII/shapes.jpg)
 
-![Screenshot](img/tutorial_images/psII/Fmin.jpg)
 
-![Screenshot](img/tutorial_images/psII/Fmax.jpg)
+**Figure 11.** Fv/Fm values debug image 
 
-**Figure 11.** (Top) Image pseudocolored by Fv/Fm values. (Bottom) Histogram of raw Fv/Fm values.
+![Screenshot](img/tutorial_images/psII/27_fv_hist.jpg)
 
-![Screenshot](img/tutorial_images/psII/10_pseudo_fvfm.jpg)
+**Figure 10.** Image pseudocolored by Fv/Fm values
 
-![Screenshot](img/tutorial_images/psII/11_fvfm_hist.jpg)
+![Screenshot](img/tutorial_images/psII/36_pseudocolored.jpg)
 
 To deploy a workflow over a full image set please see tutorial on [workflow parallelization](pipeline_parallel.md).
 
@@ -299,17 +287,18 @@ Python script:
 
 ```python
 #!/usr/bin/env python
+#!/usr/bin/python
+import sys, traceback
 import cv2
+import numpy as np
 import argparse
+import string
 from plantcv import plantcv as pcv
 
 ### Parse command-line arguments
 def options():
     parser = argparse.ArgumentParser(description="Imaging processing with opencv")
-    parser.add_argument("-i1", "--fdark", help="Input image file.", required=True)
-    parser.add_argument("-i2", "--fmin", help="Input image file.", required=True)
-    parser.add_argument("-i3", "--fmax", help="Input image file.", required=True)
-    parser.add_argument("-m", "--track", help="Input region of interest file.", required=False)
+    parser.add_argument("-i", "--image", help="Input image file.", required=True)
     parser.add_argument("-o", "--outdir", help="Output directory for image files.", required=True)
     parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.", action="store_true")
     args = parser.parse_args()
@@ -323,67 +312,38 @@ def main():
     pcv.params.debug = args.debug #set debug mode
     pcv.params.debug_outdir = args.outdir #set output directory
     
-    # Read image (converting fmax and track to 8 bit just to create a mask, use 16-bit for all the math)
-    mask, path, filename = pcv.readimage(args.fmax)
-    track, trackpath, trackname = pcv.readimage(args.track)
+    # Read fluorescence image data 
+    fdark1, fmin1, fmax1 = pcv.photosynthesis.read_dat(args.image)
     
-    # Mask pesky track autofluor
-    track1 = pcv.rgb2gray_hsv(rgb_img=track, channel='v')
-    track_thresh = pcv.threshold.binary(gray_img=track1, threshold=0, max_value=255, object_type='light')
-    track_inv = pcv.invert(gray_img=track_thresh)
-    track_masked = pcv.apply_mask(img=mask, mask=track_inv, mask_color='black')
-
-    # Threshold the image
-    fmax_thresh = pcv.threshold.binary(gray_img=track_masked, threshold=20, max_value=255, 
-                                   object_type='light')
-
-    # Median Filter
-    s_mblur = pcv.median_blur(gray_img=fmax_thresh, ksize=5)
-    s_cnt = pcv.median_blur(gray_img=fmax_thresh, ksize=5)
-
-    # Fill small objects
-    s_fill = pcv.fill(bin_img=s_mblur, size=110)
-    sfill_cnt = pcv.fill(bin_img=s_mblur, size=110)
-
-    # Identify objects
-    id_objects,obj_hierarchy = pcv.find_objects(img=mask, mask=sfill_cnt)
-
-    # Define ROI
-    roi1, roi_hierarchy = pcv.roi.rectangle(img=mask, x=100, y=100, h=200, w=200)
-
-    # Decide which objects to keep
-    roi_objects, hierarchy3, kept_mask, obj_area = pcv.roi_objects(img=mask, roi_contour=roi1, 
-                                                               roi_hierarchy=roi_hierarchy, 
-                                                               object_contour=id_objects, 
-                                                               obj_hierarchy=obj_hierarchy, 
-                                                               roi_type='partial')
+    # Rotate so plant is upright 
+    fdark = pcv.rotate(img=fdark1, rotation_deg=-90, crop=False)
+    fmin = pcv.rotate(img=fmin1, rotation_deg=-90, crop=False)
+    fmax = pcv.rotate(img=fmax1, rotation_deg=-90, crop=False)
+    
+    # Threshold fmax image to make plant mask 
+    plant_mask = pcv.threshold.binary(gray_img=fmax, threshold=855, max_value=255, object_type="light")
+    
+    # Clean the mask by filling in small noise objects
+    cleaned_mask = pcv.fill(bin_img=plant_mask, size=20)
+    
     # Object combine kept objects
-    obj, masked = pcv.object_composition(img=mask, contours=roi_objects, hierarchy=hierarchy3)
+    id_objects ,obj_hierarchy = pcv.find_objects(img=fmax, mask=cleaned_mask)
+    obj, masked = pcv.object_composition(img=cleaned_mask, contours=id_objects, hierarchy=obj_hierarchy)
     
-    ################ Analysis ################  
-    
-    outfile = False
-    if args.writeimg == True:
-        outfile = os.path.join(args.outdir, filename)
-    
-    # Find shape properties, output shape image (optional)
-    shape_img = pcv.analyze_object(img=mask, obj=obj, mask=masked)
-    
-    # Fluorescence Measurement (read in 16-bit images)
-    fdark, darkpath, darkname = pcv.readimage(args.fdark)
-    fmin, minpath, minname = pcv.readimage(args.fmin)
-    fmax, maxpath, maxname = pcv.readimage(args.fmax)
-    
-    fvfm_images = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=kept_mask, bins=256)
+     # Find shape properties
+    shape_img = pcv.analyze_object(img=fmax, obj=obj, mask=cleaned_mask)
 
-    # Store the two images
+    # Analyze fv/fm fluorescence properties 
+    fvfm_images = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=cleaned_mask, bins=256)
+
+    # Store the two fv_fm images
     fv_img = fvfm_images[0]
     fvfm_hist = fvfm_images[1]
 
     # Pseudocolor the Fv/Fm grayscale image that is calculated inside the fluor_fvfm function
-    pseudocolored_img = pcv.visualize.pseudocolor(gray_img=fv_img, mask=kept_mask, cmap='jet')
-
-    # Write shape and nir data to results file
+    pseudocolored_img = pcv.visualize.pseudocolor(gray_img=fv_img, mask=cleaned_mask, cmap='jet')
+    
+    # Write shape and fv/fm data to results file
     pcv.print_results(filename=args.result)
   
 if __name__ == '__main__':
