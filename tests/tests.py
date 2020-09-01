@@ -3361,8 +3361,10 @@ def test_plantcv_learn_gmm_train_model_exists():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_learn_color_clustering_train")
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR_CLUSTER_FIRST), -1)
-    pcv.params.debug = None
+    pcv.params.debug = "print"
     plantcv.learn.gmm(img=img, remove=[[255,255,255]], project_name="tbd")
+    pcv.params.debug = "plot"
+    plantcv.learn.gmm(img=img, remove=[[255, 255, 255]], project_name="tbd")
     assert os.path.exists("tbd_GaussianMixtureModel.mdl")
 
 
@@ -3374,6 +3376,8 @@ def test_plantcv_learn_gmm_train_model_multi_img():
     vis=first+","+second
     pcv.params.debug = "print"
     plantcv.learn.gmm(img=vis, remove=[[255,255,255]], num_components=6, project_name="tbd")
+    pcv.params.debug = "plot"
+    plantcv.learn.gmm(img=vis, remove=[[255, 255, 255]], num_components=6, project_name="tbd")
     assert os.path.exists("tbd_GaussianMixtureModel.mdl")
 
 
