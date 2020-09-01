@@ -3295,19 +3295,23 @@ def test_plantcv_spatial_clustering_badinput():
 
 def test_plantcv_gmm_classifier_use_model():
     # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_learn_color_clustering_train")
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_gmm_classifier")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR_CLUSTER_FIRST), -1)
-    pcv.params.debug = None
+    pcv.params.debug = "print"
     spmask = pcv.gmm_classifier(img=img, project_name=os.path.join(TEST_DATA, "temp_testing_multi"))
     assert len(spmask[1])==6
 
 
 def test_plantcv_gmm_classifier_use_model_mask_alias():
     # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_learn_color_clustering_train")
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_gmm_classifier_use_alias")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR_CLUSTER_FIRST), -1)
     alias_file = cv2.imread(os.path.join(TEST_DATA, "test_alias_list.txt"))
-    pcv.params.debug = None
+    pcv.params.debug = "plot"
     _,spmask = pcv.gmm_classifier(img=img, project_name=os.path.join(TEST_DATA, "temp_testing_multi"), alias_file=os.path.join(TEST_DATA, "test_alias_list.txt"))
     assert ("test_submask" in spmask) == True
 
