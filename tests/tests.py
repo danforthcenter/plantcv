@@ -3459,9 +3459,9 @@ def test_plantcv_morphology_fill_segments():
     pcv.params.debug = "plot"
     _ = pcv.morphology.fill_segments(mask, obj)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
-    tests = [outputs.observations['segment_area']['value'][42] == 5529,
-        outputs.observations['segment_area']['value'][20] == 5057,
-        outputs.observations['segment_area']['value'][49] == 3323]
+    tests = [pcv.outputs.observations['segment_area']['value'][42] == 5529,
+        pcv.outputs.observations['segment_area']['value'][20] == 5057,
+        pcv.outputs.observations['segment_area']['value'][49] == 3323]
     assert all(tests)
     pcv.outputs.clear()
 
