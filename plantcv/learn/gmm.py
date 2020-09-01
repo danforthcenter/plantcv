@@ -140,9 +140,13 @@ def gmm(img, remove=[], num_components=4, project_name="PlantCV"):
         params.device += 1
 
         if params.debug == 'print':
-            pcv.print_image(output,project_name+"_"+str(params.device)+"_Train_Full_Image_Mask.png")
+            fname1 = project_name + "_" + str(params.device) + "_Train_Full_Image_Mask.png"
+            name1 = os.path.join(params.debug_outdir, fname1)
+            pcv.print_image(output,name1)
             for c in range(0,num_components):
-                pcv.print_image(submask[c],project_name+"_"+str(params.device)+"_submask_"+str(c)+".png")
+                fname2 = project_name + "_" + str(params.device) + "_submask_" + str(c) + ".png"
+                name2 = os.path.join(params.debug_outdir, fname2)
+                pcv.print_image(submask[c], name2)
 
         elif params.debug == 'plot':
             pcv.plot_image(output)
