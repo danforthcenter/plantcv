@@ -3292,7 +3292,7 @@ def test_plantcv_spatial_clustering_badinput():
     with pytest.raises(NameError):
         _ = pcv.spatial_clustering(img, algorithm="Hydra", min_cluster_size=5, max_distance=100)
 
-def test_plantcv_color_clustering_use_model():
+def test_plantcv_gmm_classifier_use_model():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_learn_color_clustering_train")
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR_CLUSTER_FIRST), -1)
@@ -3300,7 +3300,7 @@ def test_plantcv_color_clustering_use_model():
     spmask = pcv.gmm_classifier(img=img, project_name=os.path.join(TEST_DATA, "temp_testing_multi"))
     assert len(spmask[1])==6
 
-def test_plantcv_color_clustering_use_model_mask_alias():
+def test_plantcv_gmm_classifier_use_model_mask_alias():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_learn_color_clustering_train")
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR_CLUSTER_FIRST), -1)
