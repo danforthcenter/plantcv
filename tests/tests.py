@@ -3444,6 +3444,27 @@ def test_plantcv_morphology_segment_skeleton():
     segmented_img, segment_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
     assert len(segment_objects) == 73
 
+def test_plantcv_morphology_fill_segments():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_fill_segments")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    obj_dic = np.load(os.path.join(TEST_DATA, TEST_SKELETON_OBJECTS))
+    obj = []
+    for key,val in obj_dic.items():
+        obj.append(val)
+    pcv.params.debug = "print"
+    _ = pcv.morphology.fill_segments(mask, obj)
+    pcv.params.debug = "plot"
+    _ = pcv.morphology.fill_segments(mask, obj)
+    pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    tests = [outputs.observations['segment_area']['value'][42] == 5529,
+        outputs.observations['segment_area']['value'][20] == 5057,
+        outputs.observations['segment_area']['value'][49] == 3323]
+    assert all(tests)
+    pcv.outputs.clear()
+
 
 def test_plantcv_morphology_segment_angle():
     # Test cache directory
