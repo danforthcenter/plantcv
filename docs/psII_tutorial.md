@@ -311,7 +311,7 @@ def main():
     shape_img = pcv.analyze_object(img=fmax, obj=obj, mask=cleaned_mask)
 
     # Analyze fv/fm fluorescence properties
-    fvfm_images = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=cleaned_mask, bins=256)
+    fvfm_images = pcv.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=cleaned_mask, bins=256)
 
     # Store the two fv_fm images
     fv_img = fvfm_images[0]

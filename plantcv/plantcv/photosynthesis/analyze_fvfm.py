@@ -12,7 +12,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def fluor_fvfm(fdark, fmin, fmax, mask, bins=256):
+def analyze_fvfm(fdark, fmin, fmax, mask, bins=256):
     """Analyze PSII camera images.
     Inputs:
     fdark       = grayscale fdark image

@@ -41,7 +41,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Analyze Fv/Fm    
-fvfm_images = pcv.fluor_fvfm(fdark, fmin, fmax, kept_mask, 256)
+fvfm_images = pcv.analyze_fvfm(fdark, fmin, fmax, kept_mask, 256)
 
 # Access data stored out from fluor_fvfm
 fvfm_median = pcv.outputs.observations['fvfm_median']['value']
