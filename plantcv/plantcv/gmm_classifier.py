@@ -1,9 +1,8 @@
-import os
+# GMM Classifier
+
 from plantcv import plantcv as pcv
-import cv2
 import numpy as np
 from plantcv.plantcv import params
-from sklearn import mixture
 import pickle
 
 def gmm_classifier(img, project_name="PlantCV", alias_file=""):
@@ -12,25 +11,21 @@ def gmm_classifier(img, project_name="PlantCV", alias_file=""):
 
     Inputs:
     img             = An rgb image
-    project_name          = Colors to ignore in the original when calculating the clusters.  For example,
-                    the background color of the image.  This can substantially speed up calculations.
-    num_components  =  The number of clusters of colors you wish to divide the image into.  (Default=4)
-                    project_name: This will be used to name the output Gaussian model as well as images.
+    project_name    = This name is used to load the Guassian model.
+    alias_file      =  A file of list to rename the individual clusters.  Default is blank (in which case,
+                    clusters are simply number sequentially).
 
+    Returns:
+    output          =  Mask of full image with each component listed by color
+    mask_alias      = Individual masks for each component
 
        :param img: numpy.ndarray
-       :param remove: list
-       :param num_components: int
        :param project_name: str
+       :param alias_file: str
+       :param project_name: str
+       :return output: numpy.ndarray
+       :return mask_alias: numpy.ndarray
     """
-    """
-    img: An rgb image
-    project_name: This name is used to load the Guassian model.
-    alias_file=A file of list to rename the individual clusters.  Default is blank (in which case,
-               clusters are simply number sequentially).
-
-    """
-
     gmm = pickle.load(open(str(project_name)+"_GaussianMixtureModel.mdl", "rb"))
     colors = pickle.load(open(str(project_name)+"_colors.mdl", "rb"))
     num_components = pickle.load(open(str(project_name)+"_numberOfComponents.mdl", "rb"))
