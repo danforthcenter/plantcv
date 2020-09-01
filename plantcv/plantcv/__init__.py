@@ -228,7 +228,7 @@ from plantcv.plantcv.get_kernel import get_kernel
 from plantcv.plantcv.crop import crop
 from plantcv.plantcv.stdev_filter import stdev_filter
 from plantcv.plantcv.spatial_clustering import spatial_clustering
-from plantcv.plantcv.color_clustering_segmentation import color_clustering_segmentation
+from plantcv.plantcv.gmm_segmentation import color_clustering_segmentation
 
 # add new functions to end of lists
 
