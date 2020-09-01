@@ -1,3 +1,5 @@
+# Train the GMM segmentation model
+
 import os
 from plantcv import plantcv as pcv
 import cv2
@@ -6,14 +8,23 @@ from plantcv.plantcv import params
 from sklearn import mixture
 import pickle
 
-def color_clustering_train(img, remove=[], num_components=4, project_name="PlantCV"):
-    """
-    img: An rgb image
-    remove: Colors to ignore in the original when calculating the clusters.  For example,
-            the background color of the image.  This can substantially speed up calculations.
-    num_components: The number of clusters of colors you wish to divide the image into.  (Default=4)
-    project_name: This will be used to name the output Gaussian model as well as images.
 
+def gmm_segmentation_train(img, remove=[], num_components=4, project_name="PlantCV"):
+    """
+    Train the GMM segmentation model
+
+    Inputs:
+    img             = An rgb image
+    remove          = Colors to ignore in the original when calculating the clusters.  For example,
+                    the background color of the image.  This can substantially speed up calculations.
+    num_components  =  The number of clusters of colors you wish to divide the image into.  (Default=4)
+                    project_name: This will be used to name the output Gaussian model as well as images.
+
+
+       :param img: numpy.ndarray
+       :param remove: list
+       :param num_components: int
+       :param project_name: str
     """
 
     zipped=[]
