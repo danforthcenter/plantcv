@@ -113,9 +113,9 @@ def gmm(img, remove=[], num_components=4, project_name="PlantCV"):
                     pcv.print_image(submask[v][c],project_name+"_"+str(params.device)+"_submask_"+str(c)+".png")
 
             elif params.debug == 'plot':
-                pcv.plot_image(output[v],project_name+"_"+str(params.device)+"_Train_Full_Image_Mask.png")
+                pcv.plot_image(output[v])
                 for c in range(0,num_components):
-                    pcv.plot_image(submask[v][c],project_name+"_"+str(params.device)+"_submask_"+str(c)+".png")
+                    pcv.plot_image(submask[v][c])
 
 
     else:
@@ -145,6 +145,6 @@ def gmm(img, remove=[], num_components=4, project_name="PlantCV"):
                 pcv.print_image(submask[c],project_name+"_"+str(params.device)+"_submask_"+str(c)+".png")
 
         elif params.debug == 'plot':
-            pcv.plot_image(output,project_name+"_"+str(params.device)+"_Train_Full_Image_Mask.png")
+            pcv.plot_image(output)
             for c in range(0,num_components):
-                pcv.plot_image(submask[c],project_name+"_"+str(params.device)+"_submask_"+str(c)+".png")
+                pcv.plot_image(submask[c])
