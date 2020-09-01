@@ -2,7 +2,7 @@
 
 Trains the Gaussian Mixture Model used to classify pictures based on color.
 
-**plantcv.learn.color_clustering_train**(*img, remove, num_components, project_name*)
+**plantcv.learn.gmm_clustering_train**(*img, remove, num_components, project_name*)
 
 **returns** none
 
@@ -13,6 +13,6 @@ Trains the Gaussian Mixture Model used to classify pictures based on color.
     - project_name - This name is prepended to the output Gaussian Mixture Model file.  This tells the Segmentation function which Gaussian Mixture Model file to use.
 
 - **Context:**
-    - This function segment an image by color.  You can choose a priori the number of colors by which you wish to cluster your image.
+    - This function segment an image by color.  You must choose the number of colors by which you wish to cluster your image.
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/learn/color_clustering_train.py)
