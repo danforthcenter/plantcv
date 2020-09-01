@@ -8,6 +8,22 @@ import pickle
 
 def color_clustering_segmentation(img, project_name="PlantCV", alias_file=""):
     """
+    Train the GMM segmentation model
+
+    Inputs:
+    img             = An rgb image
+    project_name          = Colors to ignore in the original when calculating the clusters.  For example,
+                    the background color of the image.  This can substantially speed up calculations.
+    num_components  =  The number of clusters of colors you wish to divide the image into.  (Default=4)
+                    project_name: This will be used to name the output Gaussian model as well as images.
+
+
+       :param img: numpy.ndarray
+       :param remove: list
+       :param num_components: int
+       :param project_name: str
+    """
+    """
     img: An rgb image
     project_name: This name is used to load the Guassian model.
     alias_file=A file of list to rename the individual clusters.  Default is blank (in which case,
@@ -18,7 +34,7 @@ def color_clustering_segmentation(img, project_name="PlantCV", alias_file=""):
     gmm = pickle.load(open(str(project_name)+"_GaussianMixtureModel.mdl", "rb"))
     colors = pickle.load(open(str(project_name)+"_colors.mdl", "rb"))
     num_components = pickle.load(open(str(project_name)+"_numberOfComponents.mdl", "rb"))
-    remove=pickle.load(open(str(project_name)+"_removed.mdl", "rb"))
+    remove = pickle.load(open(str(project_name)+"_removed.mdl", "rb"))
 
     zipped=[]
 

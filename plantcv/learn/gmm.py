@@ -9,7 +9,7 @@ from sklearn import mixture
 import pickle
 
 
-def gmm_segmentation_train(img, remove=[], num_components=4, project_name="PlantCV"):
+def gmm(img, remove=[], num_components=4, project_name="PlantCV"):
     """
     Train the GMM segmentation model
 
