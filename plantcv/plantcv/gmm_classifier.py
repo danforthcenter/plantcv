@@ -6,7 +6,7 @@ from plantcv.plantcv import params
 from sklearn import mixture
 import pickle
 
-def color_clustering_segmentation(img, project_name="PlantCV", alias_file=""):
+def gmm_classifier(img, project_name="PlantCV", alias_file=""):
     """
     Train the GMM segmentation model
 

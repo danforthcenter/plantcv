@@ -25,7 +25,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Segment an image by color based on a previously trained Gaussian Mixture Model.
-obj, mask = pcv.color_clustering_segmentation(img, project_name, alias_file)
+obj, mask = pcv.gmm_classifier(img, project_name, alias_file)
 ```
 
 **Segmented Image**
