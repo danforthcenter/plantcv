@@ -4,6 +4,7 @@ from plantcv import plantcv as pcv
 import numpy as np
 from plantcv.plantcv import params
 import pickle
+import os
 
 def gmm_classifier(img, project_name="PlantCV", alias_file=""):
     """
@@ -83,10 +84,13 @@ def gmm_classifier(img, project_name="PlantCV", alias_file=""):
 
                 sub_mask[lab_][x, y]=255
 
+    params.device += 1
     if params.debug == 'print':
-        pcv.print_image(output, project_name+"_Full_Image_Mask.png")
+        fname = project_name + "_" + str(params.device) +"_Full_Image_Mask.png"
+        name = os.path.join(params.debug_outdir, fname)
+        pcv.print_image(output,name )
     elif params.debug == 'plot':
-        pcv.plot_image(output, project_name+"_Full_Image_Mask.png")
+        pcv.plot_image(output)
 
     if alias_file=="":
         return output, sub_mask
