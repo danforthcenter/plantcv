@@ -3292,6 +3292,7 @@ def test_plantcv_spatial_clustering_badinput():
     with pytest.raises(NameError):
         _ = pcv.spatial_clustering(img, algorithm="Hydra", min_cluster_size=5, max_distance=100)
 
+
 def test_plantcv_gmm_classifier_use_model():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_learn_color_clustering_train")
@@ -3299,6 +3300,7 @@ def test_plantcv_gmm_classifier_use_model():
     pcv.params.debug = None
     spmask = pcv.gmm_classifier(img=img, project_name=os.path.join(TEST_DATA, "temp_testing_multi"))
     assert len(spmask[1])==6
+
 
 def test_plantcv_gmm_classifier_use_model_mask_alias():
     # Test cache directory
@@ -3343,29 +3345,33 @@ def test_plantcv_learn_naive_bayes_multiclass():
                                          mkplots=True)
     assert os.path.exists(outfile)
 
-def test_plantcv_learn_color_clustering_train_badinput():
+
+def test_plantcv_learn_gmm_train_badinput():
     # Test cache directory
     pcv.params.debug = None
     with pytest.raises(NameError):
-        plantcv.learn.color_clustering_train(img="jigglypuff.png")
+        plantcv.learn.gmm(img="jigglypuff.png")
 
-def test_plantcv_learn_color_clustering_train_model_exists():
+
+def test_plantcv_learn_gmm_train_model_exists():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_learn_color_clustering_train")
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR_CLUSTER_FIRST), -1)
     pcv.params.debug = None
-    plantcv.learn.color_clustering_train(img=img, remove=[[255,255,255]], project_name="tbd")
+    plantcv.learn.gmm(img=img, remove=[[255,255,255]], project_name="tbd")
     assert os.path.exists("tbd_GaussianMixtureModel.mdl")
 
-def test_plantcv_learn_color_clustering_train_model_multi_img():
+
+def test_plantcv_learn_gmm_train_model_multi_img():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_learn_color_clustering_train")
     first=(os.path.join(TEST_DATA, TEST_INPUT_COLOR_CLUSTER_FIRST))
     second=(os.path.join(TEST_DATA, TEST_INPUT_COLOR_CLUSTER_SECOND))
     vis=first+","+second
     pcv.params.debug = "print"
-    plantcv.learn.color_clustering_train(img=vis, remove=[[255,255,255]], num_components=6, project_name="tbd")
+    plantcv.learn.gmm(img=vis, remove=[[255,255,255]], num_components=6, project_name="tbd")
     assert os.path.exists("tbd_GaussianMixtureModel.mdl")
+
 
 # ####################################
 # Tests for the morphology subpackage
