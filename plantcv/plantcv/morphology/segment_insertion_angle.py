@@ -105,7 +105,8 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
             label_coord_x.append(leaf_objects[i][0][0][0])
             label_coord_y.append(leaf_objects[i][0][0][1])
 
-    rand_color = color_palette(len(valid_segment))
+    # Create a color scale, use a previously stored scale if available
+    rand_color = color_palette(num=len(valid_segment), saved=True)
 
     for i, cnt in enumerate(valid_segment):
         cv2.drawContours(labeled_img, valid_segment, i, rand_color[i], params.line_thickness, lineType=8)

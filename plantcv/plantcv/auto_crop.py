@@ -15,8 +15,8 @@ def auto_crop(img, obj, padding_x=0, padding_y=0, color='black'):
     Inputs:
     img       = RGB or grayscale image data
     obj       = contours
-    padding_x = padding in the x direction
-    padding_y = padding in the y direction
+    padding_x = integer or tuple to add padding the x direction
+    padding_y = integer or tuple to add padding the y direction
     color     = either 'black', 'white', or 'image'
 
     Returns:
@@ -42,24 +42,37 @@ def auto_crop(img, obj, padding_x=0, padding_y=0, color='black'):
 
     crop_img = img[y:y + h, x:x + w]
 
-    offsetx = int(np.rint(padding_x))
-    offsety = int(np.rint(padding_y))
+    if type(padding_x) is int and type(padding_y) is int:
+        offsetx_left = int(np.rint(padding_x))
+        offsetx_right = int(np.rint(padding_x))
+        offsety_top = int(np.rint(padding_y))
+        offsety_bottom = int(np.rint(padding_y))
+
+    elif type(padding_x) is tuple and type(padding_y) is tuple:
+        offsetx_left = padding_x[0]
+        offsetx_right = padding_x[1]
+        offsety_top = padding_y[0]
+        offsety_bottom = padding_y[1]
+
+    else:
+        fatal_error('Both padding_x and padding_x parameters must be either int or tuple.')
 
     if color.upper() == 'BLACK':
         colorval = (0, 0, 0)
-        cropped = cv2.copyMakeBorder(crop_img, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT, value=colorval)
+        cropped = cv2.copyMakeBorder(crop_img, offsety_top, offsety_bottom, offsetx_left, offsetx_right, cv2.BORDER_CONSTANT, value=colorval)
     elif color.upper() == 'WHITE':
         colorval = (255, 255, 255)
-        cropped = cv2.copyMakeBorder(crop_img, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT, value=colorval)
+        cropped = cv2.copyMakeBorder(crop_img, offsety_top, offsety_bottom, offsetx_left, offsetx_right, cv2.BORDER_CONSTANT, value=colorval)
     elif color.upper() == 'IMAGE':
         # Check whether the ROI is correctly bounded inside the image
-        if x - offsetx < 0 or y - offsety < 0 or x + w + offsetx > width or y + h + offsety > height:
-            cropped = img_copy2[y - offsety:y + h + offsety, x - offsetx:x + w + offsetx]
+        if x - offsetx_right < 0  or y - offsety_top < 0 or x + w + offsetx_right > width or y + h + offsety_bottom > height:
+            cropped = img_copy2[y:y + h, x:x + w]
         else:
             # If padding is the image, crop the image with a buffer rather than cropping and adding a buffer
-            cropped = img_copy2[y:y + h, x:x + w]
+            cropped = img_copy2[y - offsety_top:y + h + offsety_bottom, x - offsetx_left:x + w + offsetx_right]
     else:
         fatal_error('Color was provided but ' + str(color) + ' is not "white", "black", or "image"!')
+
 
     if params.debug == 'print':
         print_image(img_copy, os.path.join(params.debug_outdir, str(params.device) + "_crop_area.png"))

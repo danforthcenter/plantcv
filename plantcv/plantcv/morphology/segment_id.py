@@ -36,8 +36,8 @@ def segment_id(skel_img, objects, mask=None):
 
     segmented_img = cv2.cvtColor(segmented_img, cv2.COLOR_GRAY2RGB)
 
-    # Color each segment a different color
-    rand_color = color_palette(len(objects))
+    # Create a color scale, use a previously stored scale if available
+    rand_color = color_palette(num=len(objects), saved=True)
 
     # Plot all segment contours
     for i, cnt in enumerate(objects):
