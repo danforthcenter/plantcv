@@ -1748,45 +1748,6 @@ def test_plantcv_flip_bad_input():
         _ = pcv.flip(img=img, direction="vert")
 
 
-def test_plantcv_fluor_fvfm():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_fluor_fvfm")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    filename = os.path.join(cache_dir, 'plantcv_fvfm_hist.png')
-    # Read in test data
-    fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK), -1)
-    fmin = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
-    fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
-    fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
-    analysis_images = pcv.analyze_fvfm(fdark=fdark + 3000, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
-    # Test under updated print and plot function
-    hist_img = analysis_images[1]
-    pcv.print_image(hist_img, filename)
-    pcv.plot_image(hist_img)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
-    # Test with debug = None
-    pcv.params.debug = None
-    fvfm_images = pcv.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
-    pcv.print_results(os.path.join(cache_dir, "results.txt"))
-    pcv.outputs.clear()
-    assert len(fvfm_images) != 0
-
-
-def test_plantcv_fluor_fvfm_bad_input():
-    fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    fmin = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
-    fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
-    fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
-    with pytest.raises(RuntimeError):
-        _ = pcv.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
-
-
 def test_plantcv_gaussian_blur():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_gaussian_blur")
@@ -4416,6 +4377,45 @@ def test_plantcv_photosynthesis_read_dat():
     pcv.params.debug = "print"
     fdark, fmin, fmax = pcv.photosynthesis.read_dat(filename=fluor_filename)
     assert np.sum(fmin) < np.sum(fmax)
+
+
+def test_plantcv_photosynthesis_analyze_fvfm():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_fluor_fvfm")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    filename = os.path.join(cache_dir, 'plantcv_fvfm_hist.png')
+    # Read in test data
+    fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK), -1)
+    fmin = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
+    fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
+    fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
+    analysis_images = pcv.analyze_fvfm(fdark=fdark + 3000, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
+    # Test under updated print and plot function
+    hist_img = analysis_images[1]
+    pcv.print_image(hist_img, filename)
+    pcv.plot_image(hist_img)
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    _ = pcv.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
+    # Test with debug = None
+    pcv.params.debug = None
+    fvfm_images = pcv.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
+    pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    pcv.outputs.clear()
+    assert len(fvfm_images) != 0
+
+
+def test_plantcv_fluor_fvfm_bad_input():
+    fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    fmin = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
+    fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
+    fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
+    with pytest.raises(RuntimeError):
+        _ = pcv.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
 
 
 # ##############################
