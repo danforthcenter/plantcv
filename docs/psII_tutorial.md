@@ -210,7 +210,7 @@ The next step is to analyze the plant object for traits such as [shape](analyze_
     #   fmax            - Grayscale image
     #   mask            - Binary mask of selected contours
     #   bins            - Number of grayscale bins (0-256 for 8-bit img, 0-65536 for 16-bit). Default bins = 256
-    fvfm_images = pcv.fluor_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=cleaned_mask, bins=256)
+    fvfm_images = pcv.photosynthesis.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=cleaned_mask, bins=256)
 
     # Store the two fv_fm images
     fv_img = fvfm_images[0]
@@ -311,7 +311,7 @@ def main():
     shape_img = pcv.analyze_object(img=fmax, obj=obj, mask=cleaned_mask)
 
     # Analyze fv/fm fluorescence properties
-    fvfm_images = pcv.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=cleaned_mask, bins=256)
+    fvfm_images = pcv.pcv.photosynthesis.analyze_fvfm((fdark=fdark, fmin=fmin, fmax=fmax, mask=cleaned_mask, bins=256)
 
     # Store the two fv_fm images
     fv_img = fvfm_images[0]
