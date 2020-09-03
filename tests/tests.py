@@ -4392,8 +4392,8 @@ def test_plantcv_photosynthesis_analyze_fvfm():
     fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
-    analysis_images = pcv.analyze_fvfm(fdark=fdark + 3000, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
+    _ = pcv.photosynthesis.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
+    analysis_images = pcv.photosynthesis.analyze_fvfm(fdark=fdark + 3000, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
     # Test under updated print and plot function
     hist_img = analysis_images[1]
     pcv.print_image(hist_img, filename)
