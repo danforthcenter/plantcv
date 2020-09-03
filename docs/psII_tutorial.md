@@ -43,7 +43,7 @@ Sample command to run a workflow on a single PSII image set:
 * Always test workflows (preferably with -D flag for debug mode) before running over a full image set.
 
 ```
-./workflowname.py -i /home/user/images/PSII_PSD_testimg_22_rep6.DAT.DAT -o /home/user/output-images -D 'print'
+./workflowname.py -i /home/user/images/PSII_PSD_testimg_22_rep6.DAT -o /home/user/output-images -D 'print'
 
 ```
 
