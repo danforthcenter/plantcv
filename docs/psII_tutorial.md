@@ -210,7 +210,7 @@ The next step is to analyze the plant object for traits such as [shape](analyze_
     fvfm_images = pcv.photosynthesis.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=cleaned_mask, bins=256)
 
     # Store the two fv_fm images
-    fv_img = fvfm_images[0]
+    fvfm_img = fvfm_images[0]
     fvfm_hist = fvfm_images[1]
 
     # Pseudocolor the Fv/Fm grayscale image that is calculated inside the fluor_fvfm function
