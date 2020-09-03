@@ -5611,6 +5611,68 @@ def test_plantcv_visualize_colorspaces_bad_input():
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.colorspaces(rgb_img=img)
 
+def test_plantcv_visualize_resize_img_RGB():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_visualize_resize_img_RGB")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED))
+    new_size = (300,300)
+    img_= pcv.visualize._resize_img(img=img, new_size=new_size)
+    assert img_.shape[0:2] == new_size
+
+def test_plantcv_visualize_resize_img_grayscale():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_visualize_resize_img_grayscale")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED_MASK), -1)
+    new_size = (300,300)
+    img_= pcv.visualize._resize_img(img=img, new_size=new_size)
+    assert img_.shape[0:2] == new_size
+
+def test_plantcv_visualize_overlay_two_imgs():
+    pcv.params.debug = None
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_visualize_overlay_two_imgs")
+    os.mkdir(cache_dir)
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED))
+    img2 = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
+    desized_size = (300,300)
+    out_img = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2, size_img=desized_size)
+    assert out_img.shape[0:2] == desized_size and len(out_img.shape) == 3
+
+def test_plantcv_visualize_overlay_two_imgs_grayscale():
+    pcv.params.debug = None
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_visualize_overlay_two_imgs")
+    os.mkdir(cache_dir)
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED))
+    img2 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED_MASK),-1)
+    desized_size = (300,300)
+    out_img = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2, size_img=desized_size)
+    assert out_img.shape[0:2] == desized_size and len(out_img.shape) == 3 and len(img2.shape) == 2
+
+def test_plantcv_visualize_overlay_two_imgs_no_size():
+    pcv.params.debug = None
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_visualize_overlay_two_imgs")
+    os.mkdir(cache_dir)
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED))
+    img2 = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
+    sz_img1 = img1.shape[0:2]
+    sz_img2 = img2.shape[0:2]
+    out_img = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2, size_img=None)
+    sz_out = np.max([sz_img1[0], sz_img2[0]]), np.max([sz_img1[1], sz_img2[1]])
+    assert out_img.shape[0:2] == sz_out and len(out_img.shape) == 3
+
+def test_plantcv_visualize_overlay_two_imgs_bad_alpha():
+    pcv.params.debug = None
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_visualize_overlay_two_imgs")
+    os.mkdir(cache_dir)
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED))
+    img2 = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
+    alpha = -1
+    with pytest.raises(RuntimeError):
+        _ = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2, alpha=alpha, size_img=None)
 
 # ##############################
 # Tests for the utils subpackage
