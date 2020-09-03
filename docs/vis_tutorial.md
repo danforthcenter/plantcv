@@ -490,7 +490,7 @@ In the terminal:
 Python script: 
 
 ```python
-# !/usr/bin/python
+#!/usr/bin/env python
 import os
 import argparse
 from plantcv import plantcv as pcv

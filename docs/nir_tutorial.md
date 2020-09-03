@@ -51,7 +51,7 @@ Sample command to run a Workflow on a single image:
 #### Workflows start by importing necessary packages, and by defining user inputs.
 
 ```python
-#!/usr/bin/python
+#!/usr/bin/env python
 import os, sys, traceback
 import cv2
 import numpy as np
@@ -521,7 +521,6 @@ Python script:
 ```python
 #!/usr/bin/env python
 import os
-import cv2
 import argparse
 from plantcv import plantcv as pcv
 

@@ -55,7 +55,7 @@ Sample command to run a workflow on a single PSII image set:
 Workflows start by importing necessary packages, and by defining user inputs.
 
 ```python
-#!/usr/bin/python
+#!/usr/bin/env python
 import argparse
 from plantcv import plantcv as pcv
 
@@ -268,7 +268,7 @@ In the terminal:
 Python script:
 
 ```python
-# !/usr/bin/python
+#!/usr/bin/env python
 import argparse
 from plantcv import plantcv as pcv
 
