@@ -256,7 +256,7 @@ To deploy a workflow over a full image set please see tutorial on [workflow para
 In the terminal:
 
 ```
-./workflowname.py -i /home/user/images/PSII_PSD_testimg_22_rep6.DAT.DAT -o /home/user/output-images -D 'print'
+./workflowname.py -i /home/user/images/PSII_PSD_testimg_22_rep6.DAT -o /home/user/output-images -D 'print'
 
 ```
 
