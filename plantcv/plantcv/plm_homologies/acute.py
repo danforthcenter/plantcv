@@ -5,7 +5,7 @@ import math
 import cv2
 
 
-def acute(obj, mask, win, thresh):
+def acute(obj, mask, win, threshold, debug):
     """acute: identify landmark positions within a contour for morphometric analysis
 
     Inputs:
@@ -15,7 +15,7 @@ def acute(obj, mask, win, thresh):
                   score; 1 cm in pixels often works well
     thresh      = angle score threshold to be applied for mapping out landmark
                   coordinate clusters within each contour
-
+    debug       = Debugging mode enabled/disabled for use in troubleshooting
 
     Outputs:
     homolog_pts = pseudo-landmarks selected from each landmark cluster
@@ -35,6 +35,7 @@ def acute(obj, mask, win, thresh):
     :param thresh: int
     :return homolog_pts:
     """
+
     chain = []                                         # Create empty chain to store angle scores
     for k in list(range(len(obj))):                    # Coordinate-by-coordinate 3-point assignments
         vert = obj[k]
@@ -74,17 +75,19 @@ def acute(obj, mask, win, thresh):
         dot = (P12*P12 + P13*P13 - P23*P23)/(2*P12*P13)
 
         # Used a random number generator to test if either of these cases were possible but neither is possible
-        # if dot > 1:              # If float exceeds 1 prevent arcos error and force to equal 1
-        #     dot = 1
-        # elif dot < -1:           # If float exceeds -1 prevent arcos error and force to equal -1
-        #     dot = -1
+        if dot > 1:              # If float exceeds 1 prevent arcos error and force to equal 1
+            dot = 1
+        elif dot < -1:           # If float exceeds -1 prevent arcos error and force to equal -1
+            dot = -1
+
         ang = math.degrees(math.acos(dot))
+        #print(str(k)+'  '+str(dot)+'  '+str(ang))
         chain.append(ang)
 
     index = []                      # Index chain to find clusters below angle threshold
 
     for c in range(len(chain)):     # Identify links in chain with acute angles
-        if float(chain[c]) <= thresh:
+        if float(chain[c]) <= threshold:
             index.append(c)         # Append positions of acute links to index
 
     acute_pos = obj[index]            # Extract all island points blindly
@@ -116,13 +119,11 @@ def acute(obj, mask, win, thresh):
         if len(isle) > 1:
             if (isle[0][0] == 0) & (isle[-1][-1] == (len(chain)-1)):
                 print('Fusing contour edges')
-
-                # Cannot add a range and a list (or int)
-                # island = range(-(len(chain)-isle[-1][0]), 0)+isle[0]  # Fuse overlapping ends of contour
+                island = isle[-1]+isle[0]  # Fuse overlapping ends of contour
                 # Delete islands to be spliced if start-end fusion required
                 del isle[0]
                 del isle[-1]
-                # isle.insert(0, island)      # Prepend island to isle
+                isle.insert(0, island)      # Prepend island to isle
         else:
             print('Microcontour...')
 
