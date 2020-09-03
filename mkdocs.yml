@@ -36,7 +36,7 @@ nav:
     - 'PlantCV':
       - 'Analyze color': analyze_color.md
       - 'Analyze NIR': analyze_NIR_intensity.md
-      - 'Analyze PSII': fluor_fvfm.md
+      - 'Analyze FvFm': photosynthesis_analyze_fvfm.md
       - 'Analyze Shape': analyze_shape.md
       - 'Analyze Thermal': analyze_thermal_values.md
       - 'Apply Mask': apply_mask.md
