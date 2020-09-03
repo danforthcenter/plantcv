@@ -226,7 +226,7 @@ The next step is to analyze the plant object for traits such as [shape](analyze_
     #     dpi           - Dots per inch for image if printed out (optional, if dpi=None then the default is set to 100 dpi).
     #     axes          - If False then the title, x-axis, and y-axis won't be displayed (default axes=True).
     #     colorbar      - If False then the colorbar won't be displayed (default colorbar=True)
-    pseudocolored_img = pcv.visualize.pseudocolor(gray_img=fv_img, mask=cleaned_mask, cmap='jet')
+    pseudocolored_img = pcv.visualize.pseudocolor(gray_img=fvfm_img, mask=cleaned_mask, cmap='jet')
 
     # Write shape and nir data to results file
     pcv.print_results(filename=args.result)
@@ -311,11 +311,11 @@ def main():
     fvfm_images = pcv.pcv.photosynthesis.analyze_fvfm((fdark=fdark, fmin=fmin, fmax=fmax, mask=cleaned_mask, bins=256)
 
     # Store the two fv_fm images
-    fv_img = fvfm_images[0]
+    fvfm_img = fvfm_images[0]
     fvfm_hist = fvfm_images[1]
 
     # Pseudocolor the Fv/Fm grayscale image that is calculated inside the fluor_fvfm function
-    pseudocolored_img = pcv.visualize.pseudocolor(gray_img=fv_img, mask=cleaned_mask, cmap='jet')
+    pseudocolored_img = pcv.visualize.pseudocolor(gray_img=fvfm_img, mask=cleaned_mask, cmap='jet')
 
     # Write shape and fv/fm data to results file
     pcv.print_results(filename=args.result)
