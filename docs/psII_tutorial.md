@@ -10,10 +10,7 @@ This allows users to visualize and optimize each step on individual test images 
 
 PSII images (3 in a set; F0, Fmin, and Fmax) are captured directly following a saturating fluorescence pulse
 (red light; 630 nm). These three PSII images can be used to calculate Fv/Fm (efficiency of photosystem II)
-for each pixel of the plant. Unfortunately, our PSII imaging cabinet has a design flaw when capturing images
-of plants with vertical architecture. You can read more about how we validated this flaw using our PSII
-analysis workflows in the [PlantCV Paper](http://dx.doi.org/10.1016/j.molp.2015.06.005).
-However, the workflows to analyze PSII images are functional and a sample workflow is outlined below.  
+for each pixel of the plant. A workflow to analyze PSII images is outlined below.  
 
 Also see [here](#psii-script) for the complete script.
 
