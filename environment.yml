@@ -13,5 +13,5 @@ dependencies:
   - nb_conda
   - opencv<4, >=3.4
 channels:
-  - defaults
   - conda-forge
+  - defaults

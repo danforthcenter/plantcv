@@ -112,7 +112,9 @@ setuptools.setup(
     setup_requires=["pytest-runner"],
     tests_require=['pytest'],
     cmdclass=versioneer.get_cmdclass(),
-    # scripts=["plantcv-train.py", "plantcv-utils.py", "plantcv-workflow.py"]
+    # scripts=["plantcv/commandline/plantcv-utils.py",
+    #     "plantcv/commandline/plantcv-train.py",
+    #     "plantcv/commandline/plantcv-workflow.py"],
 
     # If there are data files included in your packages that need to be
     # installed, specify them here.  If using Python 2.6 or less, then these
@@ -135,6 +137,6 @@ setuptools.setup(
             'plantcv-workflow=plantcv.commandline.plantcvworkflow:main',
             'plantcv-train=plantcv.commandline.plantcvtrain:main',
             'plantcv-utils=plantcv.commandline.plantcvutils:main'
-        ],
-    },
+        ]
+    }
 )
