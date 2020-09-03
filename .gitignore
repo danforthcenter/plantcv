@@ -314,5 +314,3 @@ _site/*
 change_plantcv.sh
 
 .history/
-tests/data/temp_testing_multi_1_Full_Image_Mask.png
-tests/data/temp_testing_multi_Full_Image_Mask.png
