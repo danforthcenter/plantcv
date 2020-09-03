@@ -8,7 +8,7 @@ The debug has three modes: either None, 'plot', or 'print'. If set to
 the images plot to the screen.
 This allows users to visualize and optimize each step on individual test images and small test sets before workflows are deployed over whole datasets.
 
-PSII images (3 in a set; F0, Fmin, and Fmax) are captured directly following a saturating fluorescence pulse
+PSII images (3 in a set; Fdark, Fmin (F0), and Fmax) are captured directly following a saturating fluorescence pulse
 (red light; 630 nm). These three PSII images can be used to calculate Fv/Fm (efficiency of photosystem II)
 for each pixel of the plant. Unfortunately, our PSII imaging cabinet has a design flaw when capturing images
 of plants with vertical architecture. You can read more about how we validated this flaw using our PSII
@@ -28,7 +28,7 @@ Also see [here](#psii-script) for the complete script.
 
 To run a PSII workflow over a single PSII image set (3 images) there are 4 required inputs:
 
-1.  **Image 1:** F0 (a.k.a Fdark/null) image.
+1.  **Image 1:** Fdark/null image.
 2.  **Image 2:** Fmin image.
 3.  **Image 3:** Fmax image.
 5.  **Output directory:** If debug mode is set to 'print' output images from each step are produced.
