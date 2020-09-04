@@ -4393,15 +4393,8 @@ def test_plantcv_photosynthesis_analyze_fvfm():
     # Test with debug = "print"
     pcv.params.debug = "print"
     analysis_images = pcv.photosynthesis.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
-    # Test under updated print and plot function
-    hist_img = analysis_images[1]
-    pcv.print_image(hist_img, filename)
-    pcv.plot_image(hist_img)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.photosynthesis.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
-    # Test with debug = None
-    pcv.params.debug = None
     fvfm_images = pcv.photosynthesis.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
     assert len(fvfm_images) != 0
 
