@@ -7,7 +7,7 @@ from plantcv.plantcv.plot_image import plot_image
 from plantcv.plantcv.print_image import print_image
 
 
-def read_dat(filename):
+def read_cropreporter(filename):
     """Read in, reshape, and subset a datacube of fluorescence snapshots
 
         Inputs:

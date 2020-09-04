@@ -27,7 +27,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 #read in image
-fdark, fmin, fmax = pcv.photosynthesis.read_dat(filename="PSII_PSD_20200826_22_rep6.DAT")
+fdark, fmin, fmax = pcv.photosynthesis.read_cropreporter(filename="PSII_PSD_20200826_22_rep6.DAT")
 
 ```
 

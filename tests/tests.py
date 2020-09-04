@@ -4373,9 +4373,9 @@ def test_plantcv_photosynthesis_read_dat():
     pcv.params.debug_outdir = cache_dir
     pcv.params.debug = "plot"
     fluor_filename = os.path.join(FLUOR_TEST_DATA, FLUOR_IMG)
-    _, _, _ = pcv.photosynthesis.read_dat(filename=fluor_filename)
+    _, _, _ = pcv.photosynthesis.read_cropreporter(filename=fluor_filename)
     pcv.params.debug = "print"
-    fdark, fmin, fmax = pcv.photosynthesis.read_dat(filename=fluor_filename)
+    fdark, fmin, fmax = pcv.photosynthesis.read_cropreporter(filename=fluor_filename)
     assert np.sum(fmin) < np.sum(fmax)
 
 
