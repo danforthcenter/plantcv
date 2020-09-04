@@ -45,8 +45,8 @@ Sample command to run a workflow on a single image:
 #### Workflows start by importing necessary packages, and by defining user inputs.
 
 ```python
+#!/usr/bin/env python
 
-#!/usr/bin/python
 import sys, traceback
 import cv2
 import numpy as np
@@ -265,16 +265,16 @@ To deploy a Workflow over a full image set please see tutorial on [Workflow para
 
 In the terminal:
 
-```
+```python
 ./Workflowname.py -i /home/user/images/testimg.png -o /home/user/output-images -D 'print'
 
 ```
 
 *  Always test Workflows (preferably with -D flag set to 'print') before running over a full image set
 
-```
+```python
 
-#!/usr/bin/python
+#!/usr/bin/env python
 import sys, traceback
 import cv2
 import numpy as np
