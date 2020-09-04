@@ -114,7 +114,7 @@ nav:
       - 'Output Mask': output_mask.md
       - 'Outputs Class': outputs.md
       - 'Photosynthesis Functions':
-          - 'Read DAT': photosynthesis_read_dat.md
+          - 'Read CropReporter Data': photosynthesis_read_cropreporter.md
           - 'Analyze Fv/Fm': photosynthesis_analyze_fvfm.md
       - 'Params (Debugging)': params.md
       - 'Print Image': print_image.md

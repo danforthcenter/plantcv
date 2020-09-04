@@ -1,8 +1,8 @@
-## Read .DAT Fluorescence Image Files
+## Read CropReporter Fluorescence Image Files
 
-Reads image into numpy ndarray and reshapes the frames into a datacube before identifying and extracting `fdark`, `fmin`, and `fmax` as separate numpy ndarrays. 
+Reads .DAT image data into numpy ndarray and reshapes the frames into a datacube before identifying and extracting `fdark`, `fmin`, and `fmax` as separate numpy ndarrays. 
 
-**plantcv.photosynthesis.read_dat**(*filename*)
+**plantcv.photosynthesis.read_cropreporter**(*filename*)
 
 **returns** fdark, fmin, fmax
 
