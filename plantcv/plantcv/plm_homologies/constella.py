@@ -5,7 +5,7 @@ from scipy.spatial.distance import pdist
 from scipy.cluster.hierarchy import dendrogram, linkage
 from scipy.cluster.hierarchy import cut_tree
 
-def plmConstella(cur_plms, PCstarscape,  group_iter, outfile_prefix, debug):
+def constella(cur_plms, PCstarscape,  group_iter, outfile_prefix, debug):
 
 	"""plmConstella: Generate a plm multivariate space for downstream use in homology group assignments
 

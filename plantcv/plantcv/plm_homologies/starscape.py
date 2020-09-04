@@ -7,7 +7,7 @@ from mpl_toolkits import mplot3d
 import pandas as pd
 import numpy as np
 
-def plmStarScape(cur_plms, groupA, groupB, outfile_prefix, debug):
+def starscape(cur_plms, groupA, groupB, outfile_prefix, debug):
 
     init_comps=6
     cutoff=0.99

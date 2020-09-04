@@ -2,7 +2,7 @@
 
 import numpy as np
 
-def plmSpace(cur_plms, debug):
+def space(cur_plms, debug):
 
     """plmSpace: Generate a plm multivariate space for downstream use in homology group assignments
 

@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-def plmConstellaQC(denovo_groups, annotated_groups, debug):
+def constellaqc(denovo_groups, annotated_groups, debug):
 
 	"""plmConstellaQC: Compare de novo annotations of Constella to known standards in order to estimate error rates
 
