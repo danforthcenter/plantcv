@@ -116,7 +116,6 @@ nav:
       - 'Photosynthesis Functions':
           - 'Read DAT': photosynthesis_read_dat.md
           - 'Analyze Fv/Fm': photosynthesis_analyze_fvfm.md
-          - 'Photosynthesis Tutorial': psII_tutorial.md
       - 'Params (Debugging)': params.md
       - 'Print Image': print_image.md
       - 'Print Results': print_results.md
