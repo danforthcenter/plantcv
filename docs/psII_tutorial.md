@@ -67,7 +67,7 @@ def options():
 
 ```
 
-All required frames are contained within a single `.DAT` file. See the documentation page for [`plantcv.photosynthesis.read_dat()`](photosynthesis_read_dat.md) to see more detail on
+All required frames are contained within a single `.DAT` file. See the documentation page for [`plantcv.photosynthesis.read_cropreporter()`](photosynthesis_read_cropreporter.md) to see more detail on
 how this type of data is read in.
 
 ```python
@@ -80,7 +80,7 @@ def main():
     pcv.params.debug_outdir = args.outdir #set output directory
 
     # Read fluorescence image data
-    fdark1, fmin1, fmax1 = pcv.photosynthesis.read_dat(args.image)
+    fdark1, fmin1, fmax1 = pcv.photosynthesis.read_cropreporter(args.image)
 
 ```
 
@@ -287,7 +287,7 @@ def main():
     pcv.params.debug_outdir = args.outdir #set output directory
 
     # Read fluorescence image data
-    fdark1, fmin1, fmax1 = pcv.photosynthesis.read_dat(args.image)
+    fdark1, fmin1, fmax1 = pcv.photosynthesis.read_cropreporter(args.image)
 
     # Rotate so plant is upright
     fdark = pcv.rotate(img=fdark1, rotation_deg=-90, crop=False)
@@ -308,7 +308,7 @@ def main():
     shape_img = pcv.analyze_object(img=fmax, obj=obj, mask=cleaned_mask)
 
     # Analyze fv/fm fluorescence properties
-    fvfm_images = pcv.pcv.photosynthesis.analyze_fvfm((fdark=fdark, fmin=fmin, fmax=fmax, mask=cleaned_mask, bins=256)
+    fvfm_images = pcv.pcv.photosynthesis.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=cleaned_mask, bins=256)
 
     # Store the two fv_fm images
     fvfm_img = fvfm_images[0]
