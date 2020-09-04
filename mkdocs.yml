@@ -34,9 +34,8 @@ nav:
     - 'Hyperspectral Workflow': hyperspectral_tutorial.md
   - 'PlantCV Namespace':
     - 'PlantCV':
-      - 'Analyze color': analyze_color.md
+      - 'Analyze Color': analyze_color.md
       - 'Analyze NIR': analyze_NIR_intensity.md
-      - 'Analyze FvFm': photosynthesis_analyze_fvfm.md
       - 'Analyze Shape': analyze_shape.md
       - 'Analyze Thermal': analyze_thermal_values.md
       - 'Apply Mask': apply_mask.md
