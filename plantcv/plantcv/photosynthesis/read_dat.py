@@ -67,21 +67,15 @@ def read_dat(filename):
     max_sum = 0
     max_index = 1
 
-    while i < 21:
-        frame = img_cube[:, :, [i]]
-        frame_raw = np.transpose(np.transpose(frame)[0])
-        pixel_sum = np.sum(frame_raw)
-        if pixel_sum > max_sum:
-            max_sum = pixel_sum
-            max_index = i
-        i += 1
-    fmax = img_cube[:, :, [max_index]]
-    fmax = np.transpose(np.transpose(fmax)[0])  # Reshape frame from (x,y,1) to (x,y)
+    frame_sums = []
+    for i in range(img_cube.shape[2]):
+        frame_sums.append(np.sum(img_cube[:, :, i]))
+    fmax = img_cube[:, :, np.argmax(frame_sums)]
 
     if params.debug == "print":
-        print_image(fdark, os.path.join(params.debug_outdir, "fdark_frame.png"))
-        print_image(fmin, os.path.join(params.debug_outdir, "fmin_frame.png"))
-        print_image(fmax, os.path.join(params.debug_outdir, "fmax_frame.png"))
+        print_image(fdark, os.path.join(params.debug_outdir, str(params.device) + "fdark_frame.png"))
+        print_image(fmin, os.path.join(params.debug_outdir, str(params.device) + "fmin_frame.png"))
+        print_image(fmax, os.path.join(params.debug_outdir, str(params.device) + "fmax_frame.png"))
     elif params.debug == "plot":
         plot_image(fdark)
         plot_image(fmin)
