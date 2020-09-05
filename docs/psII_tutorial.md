@@ -187,7 +187,7 @@ analysis to perform properly the plant objects need to be combined into one obje
 
 ![Screenshot](img/tutorial_images/psII/22_objcomp.jpg)
 
-The next step is to analyze the plant object for traits such as [shape](analyze_shape.md), or [PSII signal](fluor_fvfm.md).
+The next step is to analyze the plant object for traits such as [shape](analyze_shape.md), or [PSII signal](photosynthesis_analyze_fvfm.md).
 
 ```python
 ################ Analysis ################  
