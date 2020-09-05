@@ -191,7 +191,6 @@ from plantcv.plantcv.analyze_bound_horizontal import analyze_bound_horizontal
 from plantcv.plantcv.analyze_bound_vertical import analyze_bound_vertical
 from plantcv.plantcv.analyze_color import analyze_color
 from plantcv.plantcv.analyze_nir_intensity import analyze_nir_intensity
-from plantcv.plantcv.fluor_fvfm import fluor_fvfm
 from plantcv.plantcv.print_results import print_results
 from plantcv.plantcv.resize import resize
 from plantcv.plantcv.flip import flip
@@ -228,6 +227,7 @@ from plantcv.plantcv.get_kernel import get_kernel
 from plantcv.plantcv.crop import crop
 from plantcv.plantcv.stdev_filter import stdev_filter
 from plantcv.plantcv.spatial_clustering import spatial_clustering
+from plantcv.plantcv import photosynthesis
 
 # add new functions to end of lists
 
@@ -238,14 +238,14 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'apply_m
            'rgb2gray', 'median_blur', 'fill', 'invert', 'logical_and', 'logical_or', 'logical_xor',
            'find_objects', 'roi_objects', 'object_composition', 'analyze_object', 'morphology',
            'analyze_bound_horizontal', 'analyze_bound_vertical', 'analyze_color', 'analyze_nir_intensity',
-           'fluor_fvfm', 'print_results', 'resize', 'flip', 'crop_position_mask', 'get_nir', 'report_size_marker_area',
+           'print_results', 'resize', 'flip', 'crop_position_mask', 'get_nir', 'report_size_marker_area',
            'white_balance', 'acute_vertex', 'scale_features', 'landmark_reference_pt_dist', 'outputs',
            'x_axis_pseudolandmarks', 'y_axis_pseudolandmarks', 'cluster_contours', 'visualize',
            'cluster_contour_splitimg', 'rotate', 'shift_img', 'output_mask', 'auto_crop', 'canny_edge_detect',
            'background_subtraction', 'naive_bayes_classifier', 'acute', 'distance_transform', 'params',
-           'cluster_contour_mask','analyze_thermal_values', 'opening',
-           'closing','within_frame', 'fill_holes', 'get_kernel', 'Spectral_data', 'crop', 'stdev_filter',
-           'spatial_clustering']
+           'cluster_contour_mask', 'analyze_thermal_values', 'opening',
+           'closing', 'within_frame', 'fill_holes', 'get_kernel', 'Spectral_data', 'crop', 'stdev_filter',
+           'spatial_clustering', 'photosynthesis']
 
 
 from ._version import get_versions
