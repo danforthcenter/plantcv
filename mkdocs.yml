@@ -94,6 +94,7 @@ nav:
       - 'Morphology Functions':
         - 'Analyze_stem': analyze_stem.md
         - 'Check Cycles': check_cycles.md
+        - 'Fill Segments': fill_segments.md
         - 'Find Branches': find_branch_pts.md
         - 'Find Tips': find_tips.md
         - 'Prune': prune.md
