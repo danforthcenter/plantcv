@@ -148,7 +148,6 @@ density functions file output by `plantcv-train.py`. For example:
 
 ```python
 #!/usr/bin/env python
-
 import os 
 import argparse
 from plantcv import plantcv as pcv
