@@ -10,7 +10,7 @@ configured attributes.
 
 ### Attributes
 
-Attributes are accessed as plantcv.*attribute*.
+Attributes are accessed as plantcv.params.*attribute*.
 
 **device**: A counter for image processing steps that is autoincremented by functions that use `params`. Default = 0.
 
