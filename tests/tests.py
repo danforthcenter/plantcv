@@ -315,8 +315,8 @@ def test_plantcv_parallel_metadata_parser_snapshots():
     config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = TEST_PIPELINE
     config.metadata_filters = {"imgtype": "VIS", "camera": "SV"}
-    config.start_date = 1413936000
-    config.end_date = 1414022400
+    config.start_date = "2014-10-21 00:00:00.0"
+    config.end_date = "2014-10-23 00:00:00.0"
     config.timestampformat = '%Y-%m-%d %H:%M:%S.%f'
     config.imgformat = "jpg"
 
@@ -332,8 +332,8 @@ def test_plantcv_parallel_metadata_parser_snapshots_coimg():
     config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = TEST_PIPELINE
     config.metadata_filters = {"imgtype": "VIS"}
-    config.start_date = 1413936000
-    config.end_date = 1414022400
+    config.start_date = "2014-10-21 00:00:00.0"
+    config.end_date = "2014-10-23 00:00:00.0"
     config.timestampformat = '%Y-%m-%d %H:%M:%S.%f'
     config.imgformat = "jpg"
     config.coprocess = "FAKE"
@@ -350,8 +350,8 @@ def test_plantcv_parallel_metadata_parser_images():
     config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = TEST_PIPELINE
     config.metadata_filters = {"imgtype": "VIS"}
-    config.start_date = 1413936000
-    config.end_date = 1414022400
+    config.start_date = "2014"
+    config.end_date = "2014"
     config.timestampformat = '%Y'  # no date in filename so check date range and date_format are ignored
     config.imgformat = "jpg"
 
@@ -385,8 +385,8 @@ def test_plantcv_parallel_metadata_parser_regex():
     config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = TEST_PIPELINE
     config.metadata_filters = {"imgtype": "VIS"}
-    config.start_date = 1413936000
-    config.end_date = 1414022400
+    config.start_date = "2014-10-21 00:00:00.0"
+    config.end_date = "2014-10-23 00:00:00.0"
     config.timestampformat = '%Y-%m-%d %H:%M:%S.%f'
     config.imgformat = "jpg"
     config.delimiter = r'(VIS)_(SV)_(\d+)_(z1)_(h1)_(g0)_(e82)_(\d+)'
@@ -422,8 +422,8 @@ def test_plantcv_parallel_metadata_parser_images_outside_daterange():
     config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "timestamp"]
     config.workflow = TEST_PIPELINE
     config.metadata_filters = {"imgtype": "NIR"}
-    config.start_date = 10
-    config.end_date = 10
+    config.start_date = "1970-01-01 00_00_00"
+    config.end_date = "1970-01-01 00_00_00"
     config.timestampformat = "%Y-%m-%d %H_%M_%S"
     config.imgformat = "jpg"
     config.delimiter = r"(NIR)_(SV)_(\d)_(z1)_(h1)_(g0)_(e65)_(\d{4}-\d{2}-\d{2} \d{2}_\d{2}_\d{2})"
@@ -452,8 +452,8 @@ def test_plantcv_parallel_metadata_parser_snapshot_outside_daterange():
     config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = TEST_PIPELINE
     config.metadata_filters = {"imgtype": "VIS"}
-    config.start_date = 10
-    config.end_date = 10
+    config.start_date = "1970-01-01 00:00:00.0"
+    config.end_date = "1970-01-01 00:00:00.0"
     config.timestampformat = '%Y-%m-%d %H:%M:%S.%f'
     config.imgformat = "jpg"
 
@@ -470,8 +470,8 @@ def test_plantcv_parallel_metadata_parser_fail_images():
     config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = TEST_PIPELINE
     config.metadata_filters = {"cartag": "VIS"}
-    config.start_date = 10
-    config.end_date = 10
+    config.start_date = "1970-01-01 00:00:00.0"
+    config.end_date = "1970-01-01 00:00:00.0"
     config.timestampformat = '%Y-%m-%d %H:%M:%S.%f'
     config.imgformat = "jpg"
     config.coprocess = "NIR"
@@ -488,8 +488,8 @@ def test_plantcv_parallel_metadata_parser_images_with_frame():
     config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = TEST_PIPELINE
     config.metadata_filters = {"imgtype": "VIS"}
-    config.start_date = 1413936000
-    config.end_date = 1414022400
+    config.start_date = "2014-10-21 00:00:00.0"
+    config.end_date = "2014-10-23 00:00:00.0"
     config.timestampformat = '%Y-%m-%d %H:%M:%S.%f'
     config.imgformat = "jpg"
     config.coprocess = "NIR"
@@ -544,8 +544,8 @@ def test_plantcv_parallel_metadata_parser_images_no_frame():
     config.filename_metadata = ["imgtype", "camera", "X", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = TEST_PIPELINE
     config.metadata_filters = {"imgtype": "VIS"}
-    config.start_date = 1413936000
-    config.end_date = 1414022400
+    config.start_date = "2014-10-21 00:00:00.0"
+    config.end_date = "2014-10-23 00:00:00.0"
     config.timestampformat = '%Y-%m-%d %H:%M:%S.%f'
     config.imgformat = "jpg"
     config.coprocess = "NIR"
@@ -599,8 +599,8 @@ def test_plantcv_parallel_metadata_parser_images_no_camera():
     config.filename_metadata = ["imgtype", "X", "frame", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = TEST_PIPELINE
     config.metadata_filters = {"imgtype": "VIS"}
-    config.start_date = 1413936000
-    config.end_date = 1414022400
+    config.start_date = "2014-10-21 00:00:00.0"
+    config.end_date = "2014-10-23 00:00:00.0"
     config.timestampformat = '%Y-%m-%d %H:%M:%S.%f'
     config.imgformat = "jpg"
     config.coprocess = "NIR"
@@ -659,8 +659,8 @@ def test_plantcv_parallel_job_builder_single_image():
     config.workflow = TEST_PIPELINE
     config.img_outdir = cache_dir
     config.metadata_filters = {"imgtype": "VIS", "camera": "SV"}
-    config.start_date = 1413936000
-    config.end_date = 1414022400
+    config.start_date = "2014-10-21 00:00:00.0"
+    config.end_date = "2014-10-23 00:00:00.0"
     config.timestampformat = '%Y-%m-%d %H:%M:%S.%f'
     config.imgformat = "jpg"
     config.other_args = ["--other", "on"]
@@ -693,8 +693,8 @@ def test_plantcv_parallel_job_builder_coprocess():
     config.workflow = TEST_PIPELINE
     config.img_outdir = cache_dir
     config.metadata_filters = {"imgtype": "VIS", "camera": "SV"}
-    config.start_date = 1413936000
-    config.end_date = 1414022400
+    config.start_date = "2014-10-21 00:00:00.0"
+    config.end_date = "2014-10-23 00:00:00.0"
     config.timestampformat = '%Y-%m-%d %H:%M:%S.%f'
     config.imgformat = "jpg"
     config.other_args = ["--other", "on"]

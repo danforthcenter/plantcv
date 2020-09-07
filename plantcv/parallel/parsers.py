@@ -18,6 +18,16 @@ def metadata_parser(config):
     :param config: plantcv.parallel.WorkflowConfig
     :return meta: dict
     """
+    # Configured start and end datetime in Unix time
+    start_date = config.start_date
+    if start_date is None:
+        start_date = datetime.datetime(1970, 1, 1, 0, 0, 1).strftime(config.timestampformat)
+    end_date = config.end_date
+    if end_date is None:
+        end_date = datetime.datetime.now().strftime(config.timestampformat)
+
+    start_date_unixtime = convert_datetime_to_unixtime(timestamp_str=start_date, date_format=config.timestampformat)
+    end_date_unixtime = convert_datetime_to_unixtime(timestamp_str=end_date, date_format=config.timestampformat)
 
     # Metadata data structure
     meta = {}
@@ -101,7 +111,8 @@ def metadata_parser(config):
                                 img_meta[term] = config.metadata_terms[term]["value"]
 
                         if img_meta['timestamp'] is not None:
-                            in_date_range = check_date_range(config.start_date, config.end_date, img_meta['timestamp'], config.timestampformat)
+                            in_date_range = check_date_range(start_date_unixtime, end_date_unixtime,
+                                                             img_meta['timestamp'], config.timestampformat)
                             if in_date_range is False:
                                 img_pass = 0
 
@@ -178,7 +189,8 @@ def metadata_parser(config):
                                 img_meta[term] = config.metadata_terms[term]["value"]
 
                         if img_meta['timestamp'] is not None:
-                            in_date_range = check_date_range(config.start_date, config.end_date, img_meta['timestamp'], config.timestampformat)
+                            in_date_range = check_date_range(start_date_unixtime, end_date_unixtime,
+                                                             img_meta['timestamp'], config.timestampformat)
                             if in_date_range is False:
                                 img_pass = 0
 
