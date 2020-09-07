@@ -96,16 +96,9 @@ def options():
                 dates.append(datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S'))
             start = map(int, dates[0].split('-'))
             end = map(int, dates[1].split('-'))
-            # Convert start and end dates to Unix time
-            # in order to maintain flexibility to only specify Ymd or YmdHMS as it was you need to do it this way
-            # instead of the convert_datetime_unixtime function because you don't know how the user will input the
-            # dates argument. (maybe there is a hybrid approach?)
-            start_td = datetime.datetime(*start) - datetime.datetime(1970, 1, 1)
-            end_td = datetime.datetime(*end) - datetime.datetime(1970, 1, 1)
-            args.start_date = datetime.datetime.utcfromtimestamp(
-                (start_td.days * 24 * 3600) + start_td.seconds).strftime(args.timestampformat)
-            args.end_date = datetime.datetime.utcfromtimestamp(
-                (end_td.days * 24 * 3600) + end_td.seconds).strftime(args.timestampformat)
+            # Use the parsed input datetimes to create datetime strings that match the input timestampformat
+            args.start_date = datetime.datetime(*start).strftime(args.timestampformat)
+            args.end_date = datetime.datetime(*end).strftime(args.timestampformat)
         else:
             args.start_date = datetime.datetime(1970, 1, 1, 0, 0, 1).strftime(args.timestampformat)
             args.end_date = datetime.datetime.now().strftime(args.timestampformat)
@@ -165,16 +158,6 @@ def main():
 
     # Get options
     config = options()
-
-    # Convert dates to unixtime before metadata_parser
-    if config.start_date is None:
-        config.start_date = 1
-    else:
-        config.start_date = plantcv.parallel.convert_datetime_to_unixtime(config.start_date, config.timestampformat)
-    if config.end_date is None:
-        config.end_date = datetime.datetime.now().timestamp()
-    else:
-        config.end_date = plantcv.parallel.convert_datetime_to_unixtime(config.end_date, config.timestampformat)
 
     # Create temporary directory for job
     if config.tmp_dir is not None:
