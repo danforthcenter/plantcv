@@ -50,11 +50,11 @@ Validate parameters/structure of configuration data.
 **tmp_dir**: (str, default = `None`): path/name of parent folder for the temporary directory, uses system default .
 temporary directory when `None`.
 
-**start_date**: (int, default = `None`): start date used to filter images. Images will be analyzed that are newer than 
+**start_date**: (str, default = `None`): start date used to filter images. Images will be analyzed that are newer than 
 the start date. In the case of `None` all images prior to `end_date` are processed. string format should match 
 `timestampformat`.
 
-**end_date**: (int, default = `None`): end date used to filter images. Images will be analyzed that are older than the 
+**end_date**: (str, default = `None`): end date used to filter images. Images will be analyzed that are older than the 
 end date. In the case of `None` all images after `start_date` are processed. string format should match 
 `timestampformat`.
 
