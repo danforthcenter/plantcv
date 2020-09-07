@@ -8,6 +8,7 @@ import plantcv.parallel
 import tempfile
 import shutil
 
+
 # Parse command-line arguments
 ###########################################
 def options():
@@ -96,15 +97,18 @@ def options():
             start = map(int, dates[0].split('-'))
             end = map(int, dates[1].split('-'))
             # Convert start and end dates to Unix time
-            # in order to maintain flexibility to only specify Ymd or YmdHMS as it was you need to do it this way instead of the convert_datetime_unixtime function because you don't know how the user will input the dates argument. (maybe there is a hybrid approach?)
+            # in order to maintain flexibility to only specify Ymd or YmdHMS as it was you need to do it this way
+            # instead of the convert_datetime_unixtime function because you don't know how the user will input the
+            # dates argument. (maybe there is a hybrid approach?)
             start_td = datetime.datetime(*start) - datetime.datetime(1970, 1, 1)
             end_td = datetime.datetime(*end) - datetime.datetime(1970, 1, 1)
-            args.start_date = datetime.datetime.utcfromtimestamp((start_td.days * 24 * 3600) + start_td.seconds).strftime(args.timestampformat)
-            args.end_date = datetime.datetime.utcfromtimestamp((end_td.days * 24 * 3600) + end_td.seconds).strftime(args.timestampformat)
+            args.start_date = datetime.datetime.utcfromtimestamp(
+                (start_td.days * 24 * 3600) + start_td.seconds).strftime(args.timestampformat)
+            args.end_date = datetime.datetime.utcfromtimestamp(
+                (end_td.days * 24 * 3600) + end_td.seconds).strftime(args.timestampformat)
         else:
-            args.start_date = datetime.datetime(1970,1,1,0,0,1).strftime(args.timestampformat)
+            args.start_date = datetime.datetime(1970, 1, 1, 0, 0, 1).strftime(args.timestampformat)
             args.end_date = datetime.datetime.now().strftime(args.timestampformat)
-
 
         # Metadata restrictions
         args.imgtype = {}
@@ -175,7 +179,7 @@ def main():
     # Create temporary directory for job
     if config.tmp_dir is not None:
         os.makedirs(config.tmp_dir, exist_ok=True)
-    config.tmp_dir = tempfile.mkdtemp(prefix=start_time+'_', dir=config.tmp_dir)
+    config.tmp_dir = tempfile.mkdtemp(prefix=start_time + '_', dir=config.tmp_dir)
 
     # Create img_outdir
     os.makedirs(config.img_outdir, exist_ok=True)
