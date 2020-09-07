@@ -5,7 +5,7 @@
     "workflow": "",
     "img_outdir": "./output_images",
     "tmp_dir": null,
-    "start_date": 1,
+    "start_date": null,
     "end_date": null,
     "imgformat": "png",
     "delimiter": "_",
