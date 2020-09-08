@@ -8,7 +8,7 @@ import numpy as np
 import cv2
 import sys
 import pandas as pd
-from plotnine import ggplot, aes
+from plotnine import ggplot
 from plantcv import plantcv as pcv
 import plantcv.learn
 import plantcv.parallel
@@ -2521,6 +2521,20 @@ def test_plantcv_plot_image_matplotlib_input():
     pimg = pcv.visualize.pseudocolor(gray_img=img, mask=mask, min_value=10, max_value=200)
     with pytest.raises(RuntimeError):
         pcv.plot_image(pimg)
+
+
+def test_plantcv_plot_image_plotnine():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_plot_image_plotnine")
+    os.mkdir(cache_dir)
+    dataset = pd.DataFrame({'x': [1, 2, 3, 4], 'y': [1, 2, 3, 4]})
+    img = ggplot(data=dataset)
+    try:
+        pcv.plot_image(img=img)
+    except RuntimeError:
+        assert False
+    # Assert that the image was plotted without error
+    assert True
 
 
 def test_plantcv_print_image():
