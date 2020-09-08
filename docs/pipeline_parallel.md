@@ -50,10 +50,14 @@ workflows locally or distribute workflows to a cluster using a scheduler service
 ### Running PlantCV workflows over a flat directory of images
 
 !!! note
-    We will try and update PlantCV so that it can run over flat directories in a more flexible manner.
-    But for now please follow the instructions on Running PlantCV over a flat directory carefully.
+    PlantCV can analyze images in parallel that are stored in a directory (including subdirectories). Our aim is to
+    make this process as flexible as possible but consistency in naming images is key. Ideally image filenames are
+    constructed of metadata information separated by a consistent delimiter (though we provide a regular 
+    expression-based parser if needed). Please follow the instructions below carefully, but future updates will support
+    more complex image selection and grouping functionality.
 
-In order for PlantCV to extract all of the necessary metadata from the image files, image files need to be named in a particular way.
+In order for PlantCV to extract all of the necessary metadata from the image files, image files need to be named in 
+a particular way.
 
 **Image name might include:**
 
@@ -80,7 +84,8 @@ AABA002948_2014-03-14 03-29-45_Pilot-031014_VIS_TV_z3500.png
 Valid metadata that can be collected from filenames are `camera`, `imgtype`, `zoom`, `exposure`, `gain`, `frame`,
 `lifter`, `timestamp`, `id`, `plantbarcode`, `treatment`, `cartag`, `measurementlabel`, and `other`.
 
-For a flat directory of images you are required to specify the timestamp format (`timestampformat` configuration parameter) code for the
+For a flat directory of images you are required to specify the timestamp format (`timestampformat` configuration 
+parameter) code for the
 [strptime C library](https://docs.python.org/3.7/library/datetime.html#strftime-and-strptime-behavior).
 For the example above you would use `"timestampformat": "%Y-%m-%d %H-%M-%S"`.
 
