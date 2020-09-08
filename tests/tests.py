@@ -4452,7 +4452,7 @@ def test_plantcv_spectral_index_sr_bad_input():
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
     index_array = pcv.spectral_index.sr(hsi=array_data, distance=20)
     with pytest.raises(RuntimeError):
-        _ = pcv.spectral_index.sipi(hsi=index_array, distance=20)
+        _ = pcv.spectral_index.sr(hsi=index_array, distance=20)
 
 
 def test_plantcv_spectral_index_vari():
