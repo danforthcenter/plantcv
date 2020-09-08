@@ -30,7 +30,7 @@ saved at any time using the `save_config` method to save for later use. Alternat
 file with your favorite text editor and adjust the parameters as needed.
 
 Some notes on JSON format:
-* Like Python, string variables (e.g. "VIS") need to be in quotes.
+* Like Python, string variables (e.g. "VIS") need to be in quotes but must be double `"` quotes.
 * Unlike Python, `true` and `false` in JSON are lowercase.
 * `None` in Python translates to `null` in JSON
 * `\` characters need to be escaped in JSON e.g. `\d` in Python becomes `\\d` in JSON
