@@ -8,6 +8,7 @@ import numpy as np
 import cv2
 import sys
 import pandas as pd
+from plotnine import ggplot, aes
 from plantcv import plantcv as pcv
 import plantcv.learn
 import plantcv.parallel
@@ -2538,6 +2539,18 @@ def test_plantcv_print_image():
 def test_plantcv_print_image_bad_type():
     with pytest.raises(RuntimeError):
         pcv.print_image(img=[], filename="/dev/null")
+
+
+def test_plantcv_print_image_plotnine():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_print_image_plotnine")
+    os.mkdir(cache_dir)
+    dataset = pd.DataFrame({'x': [1, 2, 3, 4], 'y': [1, 2, 3, 4]})
+    img = ggplot(data=dataset)
+    filename = os.path.join(cache_dir, 'plantcv_print_image.png')
+    pcv.print_image(img=img, filename=filename)
+    # Assert that the file was created
+    assert os.path.exists(filename) is True
 
 
 def test_plantcv_readimage_native():
