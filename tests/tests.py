@@ -3183,7 +3183,7 @@ def test_plantcv_stdev_filter():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY_SMALL), -1)
     pcv.params.debug = "plot"
     _ = pcv.stdev_filter(img=img, ksize=11)
-    pcv.params.deubg = "print"
+    pcv.params.debug = "print"
     filter_img = pcv.stdev_filter(img=img, ksize=11)
     assert (np.shape(filter_img) == np.shape(img))
 
