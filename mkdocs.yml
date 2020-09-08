@@ -176,10 +176,11 @@ nav:
       - 'Naive Bayes': naive_bayes.md
       - 'Naive Bayes Multiclass': naive_bayes_multiclass.md
     - 'Parallelization':
-        - 'Job Builder': job_builder.md
-        - 'Metadata Parser': metadata_parser.md
-        - 'Multiprocess': multiprocess.md
-        - 'Process Results': process_results.md
+        - 'Configure Parallelization': parallel_config.md
+        - 'Metadata Parser': parallel_metadata_parser.md
+        - 'Job Builder': parallel_job_builder.md
+        - 'Multiprocess': parallel_multiprocess.md
+        - 'Process Results': parallel_process_results.md
         - 'Workflow Parallelization': pipeline_parallel.md
   - 'Accessory tools': tools.md
 markdown_extensions:
