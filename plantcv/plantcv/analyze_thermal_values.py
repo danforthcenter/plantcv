@@ -87,7 +87,7 @@ def analyze_thermal_values(thermal_array, mask, histplot=False):
 
         analysis_img = fig_hist
         if params.debug == "print":
-            fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + '_therm_histogram.png'))
+            fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + '_therm_histogram.png'), verbose=False)
         elif params.debug == "plot":
             print(fig_hist)
 
