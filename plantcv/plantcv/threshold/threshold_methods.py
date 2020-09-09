@@ -608,10 +608,11 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
     #     # NaN's and values close to NaN's cannot be peaks
     #     ind = ind[np.in1d(ind, np.unique(np.hstack((indnan, indnan - 1, indnan + 1))), invert=True)]
     # first and last values of x cannot be peaks
-    if ind.size and ind[0] == 0:
-        ind = ind[1:]
-    if ind.size and ind[-1] == x.size - 1:
-        ind = ind[:-1]
+    # if ind.size and ind[0] == 0:
+    #     ind = ind[1:]
+    # if ind.size and ind[-1] == x.size - 1:
+    #     ind = ind[:-1]
+    # We think the above code will never be reached given some of the hardcoded properties used
 
     # # Where this function is used has hardcoded mph=None so this will never be used
     # # remove peaks < minimum peak height

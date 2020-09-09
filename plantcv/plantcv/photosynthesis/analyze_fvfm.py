@@ -90,7 +90,7 @@ def analyze_fvfm(fdark, fmin, fmax, mask, bins=256):
         print_image(fmin_mask, os.path.join(params.debug_outdir, str(params.device) + '_fmin_mask.png'))
         print_image(fmax_mask, os.path.join(params.debug_outdir, str(params.device) + '_fmax_mask.png'))
         print_image(fv, os.path.join(params.debug_outdir, str(params.device) + '_fv_convert.png'))
-        fvfm_hist_fig.save(os.path.join(params.debug_outdir, str(params.device) + '_fv_hist.png'))
+        fvfm_hist_fig.save(os.path.join(params.debug_outdir, str(params.device) + '_fv_hist.png'), verbose=False)
     elif params.debug == 'plot':
         plot_image(fmin_mask, cmap='gray')
         plot_image(fmax_mask, cmap='gray')

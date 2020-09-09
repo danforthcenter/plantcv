@@ -8,6 +8,7 @@ import numpy as np
 import cv2
 import sys
 import pandas as pd
+from plotnine import ggplot
 from plantcv import plantcv as pcv
 import plantcv.learn
 import plantcv.parallel
@@ -2522,6 +2523,20 @@ def test_plantcv_plot_image_matplotlib_input():
         pcv.plot_image(pimg)
 
 
+def test_plantcv_plot_image_plotnine():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_plot_image_plotnine")
+    os.mkdir(cache_dir)
+    dataset = pd.DataFrame({'x': [1, 2, 3, 4], 'y': [1, 2, 3, 4]})
+    img = ggplot(data=dataset)
+    try:
+        pcv.plot_image(img=img)
+    except RuntimeError:
+        assert False
+    # Assert that the image was plotted without error
+    assert True
+
+
 def test_plantcv_print_image():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_print_image")
@@ -2538,6 +2553,18 @@ def test_plantcv_print_image():
 def test_plantcv_print_image_bad_type():
     with pytest.raises(RuntimeError):
         pcv.print_image(img=[], filename="/dev/null")
+
+
+def test_plantcv_print_image_plotnine():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_print_image_plotnine")
+    os.mkdir(cache_dir)
+    dataset = pd.DataFrame({'x': [1, 2, 3, 4], 'y': [1, 2, 3, 4]})
+    img = ggplot(data=dataset)
+    filename = os.path.join(cache_dir, 'plantcv_print_image.png')
+    pcv.print_image(img=img, filename=filename)
+    # Assert that the file was created
+    assert os.path.exists(filename) is True
 
 
 def test_plantcv_readimage_native():
@@ -3183,7 +3210,7 @@ def test_plantcv_stdev_filter():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY_SMALL), -1)
     pcv.params.debug = "plot"
     _ = pcv.stdev_filter(img=img, ksize=11)
-    pcv.params.deubg = "print"
+    pcv.params.debug = "print"
     filter_img = pcv.stdev_filter(img=img, ksize=11)
     assert (np.shape(filter_img) == np.shape(img))
 
@@ -4452,7 +4479,7 @@ def test_plantcv_spectral_index_sr_bad_input():
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
     index_array = pcv.spectral_index.sr(hsi=array_data, distance=20)
     with pytest.raises(RuntimeError):
-        _ = pcv.spectral_index.sipi(hsi=index_array, distance=20)
+        _ = pcv.spectral_index.sr(hsi=index_array, distance=20)
 
 
 def test_plantcv_spectral_index_vari():
