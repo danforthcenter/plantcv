@@ -22,7 +22,7 @@ If conda does not update your PlantCV installation, you can try installing a spe
 conda install -n plantcv plantcv=3.6.2
 ```
 
-You can find the latest version available on bioconda with:
+You can find the latest version available on [conda-forge](https://conda-forge.org/) with:
 
 ```bash
 conda list plantcv
@@ -65,7 +65,7 @@ If you have put the cloned plantcv repository folder in your `PYTHONPATH` then
 pulling alone is enough to update. See [installation instructions](installation.md) 
 for details on required dependencies. When using a PlantCV clone (as opposed to a 
 conda environment) updating may require manual installation of any dependencies added
-since the clone was created. 
+since the clone was created.
 
 ### Updating from v1 to v2
 
