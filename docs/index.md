@@ -14,7 +14,7 @@ on the [GitHub issues page](https://github.com/danforthcenter/plantcv/issues).
 ## Getting started
 
 The documentation can be navigated using the sidebar table of contents. Documentation for individual PlantCV functions
-are listed under the headings "Package plantcv" and "Package plantcv.learn." For general information on installation,
+are listed under the headings "PlantCV Namespace". For general information on installation,
 updating, and other questions, see:
 
 * [Installing PlantCV](installation.md)
@@ -24,7 +24,14 @@ updating, and other questions, see:
 * [Using Jupyter Notebooks with PlantCV](jupyter.md)
 * [Summary of Output Measurements and Database Structure](output_measurements.md)
 
-Also see our tutorials for more detailed overviews of using PlantCV for specific tasks:
+## Tutorials 
+
+We have added interactive documentation (the link takes up to a few minutes to load so be patient please),
+so you can test out workflows and even upload your own images to test on.
+
+* [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=index.ipynb) Check out our interactive tutorials! 
+
+Also see our tutorials documentation pages for more detailed overviews of using PlantCV for specific tasks:
 
 * [VIS/RGB Image Processing](vis_tutorial.md)
 * [Near-Infrared Image Processing](nir_tutorial.md)
@@ -37,13 +44,6 @@ Also see our tutorials for more detailed overviews of using PlantCV for specific
 * [Machine Learning Tutorial](machine_learning_tutorial.md)
 * [Parallel Image Processing](pipeline_parallel.md)
 * [Exporting Data for Downstream Analysis](db-exporter.md)
-
-We have added interactive documentation (the link takes up to a few minutes to load so be patient please),
-so you can test out workflows and even upload your own images to test on.
-
-## Interactive Tutorials 
-
-* [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=index.ipynb) Check out our interactive tutorials! 
 
 ## Contributing 
 
