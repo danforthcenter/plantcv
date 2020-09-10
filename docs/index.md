@@ -11,12 +11,6 @@ near-infrared, "NIR"), thermal infrared images, grayscale images from chlorophyl
 PlantCV is ongoing---we encourage input from the greater plant phenomics community. Please post questions and comments 
 on the [GitHub issues page](https://github.com/danforthcenter/plantcv/issues).
 
-!!! note
-    At the Danforth Center we refer to our saturation pulse imaging  fluorometer (PSII) camera system as 'FLU' 
-    internally. But others have previously published on their steady-state fluorescence imaging systems 
-    (a different type of fluorescence imaging system) and referred to it as 'FLU'. We are working to make the 
-    naming changes of our functions from 'FLU' to 'PSII' to try and prevent further confusion.
-
 ## Getting started
 
 The documentation can be navigated using the sidebar table of contents. Documentation for individual PlantCV functions
