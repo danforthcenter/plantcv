@@ -37,7 +37,7 @@ PlantCV has been tested on the following systems:
 
 Stable releases of PlantCV are available through both the Python Package Index (PyPI) and `conda` through the 
 [Bioconda channel](https://bioconda.github.io/). We plan on releasing new versions of PlantCV into both platforms on
-at least a monthly basis.
+at a monthly basis.
 
 #### PyPI
 
@@ -89,8 +89,7 @@ For most users we recommend installation using `conda`, a cross-platform package
 [Anaconda](https://www.anaconda.com/download/) or [Miniconda](https://conda.io/miniconda.html) implementations of 
 `conda` can be used. Here is an overview of the process:
 
-1. Download and install the version of `conda` that is appropriate for your system. Unless you have other reasons to, 
-we recommend using Python 3. PlantCV is compatible with Python 2.7 but eventually support for 2.7 will end.
+1. Download and install the version of `conda` that is appropriate for your system. 
 2. Clone or download PlantCV from GitHub. Feel free to use [GitHub Desktop](https://desktop.github.com/) or 
 command-line `git`. Git will allow you to pull updates from GitHub, but if you prefer not to use git you can download
 a zip file of the package from [GitHub](https://github.com/danforthcenter/plantcv).
@@ -112,7 +111,7 @@ cd plantcv
 conda env create -n plantcv -f environment.yml
 
 # Activate the plantcv environment (you will have to do this each time you start a new session)
-source activate plantcv
+conda activate plantcv
 
 # Test PlantCV (optional)
 python setup.py test
@@ -215,15 +214,21 @@ After signing up for an account create a new workspace and choose a Python templ
 
 Install update
 
-`sudo apt-get update`
+```bash
+sudo apt-get update
+```
 
 Install software dependencies
 
-`sudo apt-get install git libopencv-dev python-opencv python-numpy python-matplotlib sqlite3`
+```bash
+sudo apt-get install git libopencv-dev python-opencv python-numpy python-matplotlib sqlite3
+```
 
 Clone the PlantCV repository into your home directory
 
-`git clone https://github.com/danforthcenter/plantcv.git`
+```bash
+git clone https://github.com/danforthcenter/plantcv.git
+```
 
 The default branch (master) is the latest release. If you want to check out a specific version:
 
@@ -236,11 +241,15 @@ git checkout v1.1
 
 Install PlantCV
 
-`sudo python setup.py install`
+```bash
+sudo python setup.py install
+```
 
 After installation test with the following:
 
-`python -c 'import plantcv'`
+```bash
+python -c 'import plantcv'
+```
 
 You will be given the following error:
 
@@ -252,9 +261,13 @@ This error will have no effect on the output of your workflows and can continue 
 
 To temporarily remove the driver and error use:
 
-`sudo ln /dev/null /dev/raw1394`
+```bash
+sudo ln /dev/null /dev/raw1394
+```
 
 Test import again and you should see no more errors. Restarting workspace will require input to remove 
 libdc1394 error again.
 
-`python -c 'import plantcv'`
+```bash
+python -c 'import plantcv'
+```
