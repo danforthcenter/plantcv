@@ -15,7 +15,7 @@ There are many ways to contribute:
 * Revise existing code
 * Add or revise documentation
 
-If you need any help, please contact us.
+If you need any help, please contact us. 
 
 ## Creating Issues
 
@@ -104,7 +104,7 @@ git checkout -b plantcv-issuenumber-title-of-issue
 
 #### Work and commit
 
-Do you work, and commit as you see fit. Make your commit messages helpful.
+Do your work, and commit as you see fit. Make your commit messages helpful.
 
 ```
 # Stage files to commit (. for all, or specfic list of files)
@@ -131,7 +131,8 @@ to the main PlantCV repository. Generating a pull request will notify
 the maintainers of PlantCV. GitHub will report whether the merge can be
 done automatically without conflict, or whether manual fixes are 
 required. GitHub Actions will also generate an automatic build report on 
-whether or not the updates break the automated unit tests.
+whether or not the updates break the automated unit tests, and a 
+check of code coverage of unit tests.
 
 ### Guidelines for adding new features
 
@@ -173,6 +174,9 @@ script passes on the function you modified. Testing locally can be done with pyt
 ```
 cd plantcv
 python setup.py test
+
+# Or you can just run a subset of tests to save time
+pytest tests/tests.py -k analyze # this will run all tests with "analyze" in the test name 
 ```
 
 Add documentation for your new feature (see [Adding/editing Documentation](documentation.md) for more details). A new 
