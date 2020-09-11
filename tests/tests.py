@@ -5642,6 +5642,7 @@ def test_plantcv_visualize_overlay_two_imgs():
     pcv.params.debug = 'print'
     out_img = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2, size_img=desized_size)
     pcv.params.debug = 'plot'
+    out_img = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2, size_img=desized_size)
     assert out_img.shape[0:2] == desized_size and len(out_img.shape) == 3
 
 def test_plantcv_visualize_overlay_two_imgs_grayscale():
