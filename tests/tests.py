@@ -5639,7 +5639,9 @@ def test_plantcv_visualize_overlay_two_imgs():
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED))
     img2 = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
     desized_size = (300,300)
+    pcv.params.debug = 'print'
     out_img = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2, size_img=desized_size)
+    pcv.params.debug = 'plot'
     assert out_img.shape[0:2] == desized_size and len(out_img.shape) == 3
 
 def test_plantcv_visualize_overlay_two_imgs_grayscale():
@@ -5651,6 +5653,16 @@ def test_plantcv_visualize_overlay_two_imgs_grayscale():
     desized_size = (300,300)
     out_img = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2, size_img=desized_size)
     assert out_img.shape[0:2] == desized_size and len(out_img.shape) == 3 and len(img2.shape) == 2
+
+def test_plantcv_visualize_overlay_two_imgs_grayscale2():
+    pcv.params.debug = None
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_visualize_overlay_two_imgs")
+    os.mkdir(cache_dir)
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED_MASK), -1)
+    img2 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED))
+    desized_size = (300,300)
+    out_img = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2, size_img=desized_size)
+    assert out_img.shape[0:2] == desized_size and len(out_img.shape) == 3 and len(img1.shape) == 2
 
 def test_plantcv_visualize_overlay_two_imgs_no_size():
     pcv.params.debug = None
