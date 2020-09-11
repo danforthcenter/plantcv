@@ -2,7 +2,7 @@
 
 ## Summary
 
-Harassment in code and discussion or violation of physical boundaries is
+Harassment in code and discussion, or violation of physical boundaries is
 completely unacceptable anywhere in the PlantCV project codebase, issue
 tracker, chatrooms, mailing lists, meetups, and other events. Violators
 will be warned by the core team. Repeat violations will result in being
