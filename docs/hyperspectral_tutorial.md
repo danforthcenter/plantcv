@@ -56,10 +56,8 @@ Sample command to run a workflow on a single image:
 
 ```python
 
-#!/usr/bin/python
-import sys, traceback
-import cv2
-import numpy as np
+#!/usr/bin/env python
+
 import argparse
 from plantcv import plantcv as pcv
 
@@ -112,21 +110,20 @@ object returned has many methods that are useful to users and within PlantCV fun
 
 ```python        
     # Extract the Green Difference Vegetation Index from the datacube 
-    
+
     # Inputs:
-    #   array        - Hyperspectral data instance  
-    #   index        - Index of interest
-    #   distance     - How lenient to be if the required wavelengths 
-    #                  for a specific index are not available 
-    index_array_gdvi = pcv.hyperspectral.extract_index(array=spectral_array, 
-                                                       index="GDVI",
-                                                       distance=20)
+    #   hsi        - A hyperspectral image, an instance of the `Spectral_data` class in plantcv, 
+    #                (read in with pcv.readimage with `mode='envi'`)
+    #   distance   - How lenient to be if the required wavelengths 
+    #                for a specific index are not available. Amount of flexibility (in nanometers) 
+    #                regarding the bands used to calculate an index.
+    index_array_gdvi  = pcv.spectral_index.gdvi(hsi=spectral_array, distance=20)
                                                        
 ```
 
 **Figure 2.** GDVI Grayscale Image.
 For this image the Green Difference Vegetation Index was ideal for separating the leaf of interest from the rest of the background. 
-We extract this specific index with the [extract index](extract_index.md) function. 
+We extract this specific index with the [pcv.spectral index.gdvi](spectral_index.md) function. 
 
 ![Screenshot](img/tutorial_images/hyperspectral/gdvi.jpg)
 
@@ -273,12 +270,9 @@ In the terminal:
 Python script: 
 
 ```python
-# !/usr/bin/python
-import sys, traceback
-import cv2
-import numpy as np
+#!/usr/bin/env python
+
 import argparse
-import string
 from plantcv import plantcv as pcv
 
 
@@ -317,9 +311,7 @@ def main():
     pcv.print_image(img=spectral_array.pseudo_rgb, filename=filename + "_pseudo-rgb.png")
     
     # Extract the Green Difference Vegetation Index from the datacube 
-    index_array_gdvi = pcv.hyperspectral.extract_index(array=spectral_array, 
-                                                       index="GDVI",
-                                                       distance=20)
+    index_array_gdvi  = pcv.spectral_index.gdvi(hsi=spectral_array, distance=20)
                                                     
     # Threshold the grayscale image 
     gdvi_thresh = pcv.threshold.binary(gray_img=index_array_gdvi.array_data, threshold=150, max_value=255)

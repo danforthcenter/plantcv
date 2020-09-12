@@ -267,6 +267,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.0: NA
 * post v3.0: colors = **plantcv.color_palette**(*num*)
+* post v3.9: colors = **plantcv.color_palette**(*num, saved=False*)
 
 #### plantcv.crop_position_mask
 
@@ -325,6 +326,7 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: hist_header, hist_data, hist_images = **plantcv.fluor_fvfm**(*fdark, fmin, fmax, mask, filename, bins=256*)
 * post v3.0: hist_header, hist_data, analysis_images = **plantcv.fluor_fvfm**(*fdark, fmin, fmax, mask, bins=256*)
 * post v3.3: analysis_images = **plantcv.fluor_fvfm**(*fdark, fmin, fmax, mask, bins=256*)
+* post v3.9: DEPRECATED see plantcv.photosynthesis
 
 #### plantcv.gaussian_blur
 
@@ -357,6 +359,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.7: NA
 * post v3.7: index_array = **plantcv.hyperspectral.extract_index**(*array, index="NDVI", distance=20*)
+* post v3.8: DEPRECATED see plantcv.spectral_index
 
 #### plantcv.image_add
 
@@ -406,6 +409,11 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, img_mblur = **plantcv.median_blur**(*img, ksize, device, debug=None*)
 * post v3.0dev2: img_mblur = **plantcv.median_blur**(*gray_img, ksize*)
 * post v3.2: img_blur = **plantcv.median_blur**(*gray_img, ksize*) OR img_blur = **plantcv.median_blur**(*gray_img, (ksize1, ksize2)*)
+
+#### plantcv.morphology.analyze_stem
+
+* pre v3.8: NA
+* post v3.8: labeled_img = **plantcv.morphology.analyze_stem**(*rgb_img, stem_objects*)
 
 #### plantcv.morphology.check_cycles
 
@@ -498,6 +506,15 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, maskpath, analysis_images = **plantcv.output_mask**(*device, img, mask, filename, outdir=None, mask_only=False, debug=None*)
 * post v3.0dev2: imgpath, maskpath, analysis_images = **plantcv.output_mask**(*img, mask, filename, outdir=None, mask_only=False*)
+
+#### plantcv.photosynthesis.analyze_fvfm
+* pre v3.10: see plantcv.fluor_fvfm
+* post v3.10: analysis_images = **plantcv.photosynthesis.analyze_fvfm**(*fdark, fmin, fmax, mask, bins=256*)
+
+#### plantcv.photosynthesis.read_cropreporter
+
+* pre v3.10: NA
+* post v3.10: fdark, fmin, fmax = **plantcv.photosynthesis.read_cropreporter**(*filename*)
 
 #### plantcv.plot_hist
 
@@ -643,6 +660,118 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: sb_img = **plantcv.sobel_filter**(*gray_img, dx, dy, k*)
 * post v3.2: sb_img = **plantcv.sobel_filer**(*gray_img, dx, dy, ksize*)
 
+#### plantcv.spectral_index.ndvi(hsi, distance=20)
+
+* post v3.8: array = plantcv.spectral_index.ndvi(hsi, distance=20)
+
+#### plantcv.spectral_index.gdvi(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.gdvi**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.savi(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.savi**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.pri(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.pri**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.ari(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.ari**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.ci_rededge(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.ci_rededge**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.cri550(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.cri550**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.cri700(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.cri700**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.egi(rgb_img)
+
+* post v3.8: array = **plantcv.spectral_index.egi**(*rgb_img*)
+
+#### plantcv.spectral_index.evi(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.evi**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.mari(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.mari**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.mcari(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.mcari**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.mtci(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.mtci**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.ndre(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.ndre**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.psnd_chla(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.psnd_chla**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.psnd_chlb(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.psnd_chlb**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.psnd_car(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.psnd_car**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.psri(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.psri**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.pssr_chla(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.pssr_chla**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.pssr_chlb(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.pssr_chlb**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.pssr_car(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.pssr_car**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.rgri(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.rgri**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.rvsi(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.rvsi**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.sipi(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.sipi**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.sr(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.sr**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.vari(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.vari**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.vi_green(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.vi_green**(*hsi, distance=20*)
+
+#### plantcv.spectral_index.wi(hsi, distance=20)
+
+* post v3.8: array = **plantcv.spectral_index.wi**(*hsi, distance=20*)
+
 #### plantcv.stdev_filter
 
 * pre v3.9: NA
@@ -714,6 +843,8 @@ pages for more details on the input and output variable types.
 * pre v3.0: NA
 * post v3.0: df, start_coord, spacing = **plantcv.transform.find_color_card**(*rgb_img, threshold='adaptgauss', threshvalue=125, blurry=False, background='dark'*)
 * post v3.3: df, start_coord, spacing = **plantcv.transform.find_color_card**(*rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark'*)
+* post v3.9: df, start_coord, spacing = **plantcv.transform.find_color_card**(*rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark', record_chip_size='median'*)
+ 
 
 #### plantcv.transform.get_color_matrix
 

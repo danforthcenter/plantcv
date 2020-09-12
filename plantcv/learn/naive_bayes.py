@@ -11,12 +11,12 @@ def naive_bayes(imgdir, maskdir, outfile, mkplots=False):
     """Naive Bayes training function
 
     Inputs:
-    imgdir  = Path to a directory of original 8-bit RGB images. 
+    imgdir  = Path to a directory of original 8-bit RGB images.
     maskdir = Path to a directory of binary mask images. Mask images must have the same name as their corresponding
               color images.
     outfile = Name of the output text file that will store the color channel probability density functions.
     mkplots = Make PDF plots (True or False).
-    
+
     :param imgdir: str
     :param maskdir: str
     :param outfile: str
@@ -80,16 +80,17 @@ def naive_bayes(imgdir, maskdir, outfile, mkplots=False):
 
 
 def naive_bayes_multiclass(samples_file, outfile, mkplots=False):
-    """Naive Bayes training function for two or more classes from sampled pixel RGB values
-    
+    """Naive Bayes training function for two or more classes from sampled pixel RGB values.
+
     Inputs:
     samples_file = Input text file containing sampled pixel RGB values for each training class. The file should be a
                    tab-delimited table with one training class per column. The required first row must contain header
-                   labels for each class. The row values for each class must be comma-delimited RGB values. See the
-                   file plantcv/tests/data/sampled_rgb_points.txt for an example.
+                   labels for each class. The row values for each class must be comma-delimited RGB values.
+                   You must have at least 2 classes. See the file plantcv/tests/data/sampled_rgb_points.txt for
+                   an example.
     outfile      = Name of the output text file that will store the color channel probability density functions.
     mkplots      = Make PDF plots (True or False).
-    
+
     :param samples_file: str
     :param outfile: str
     :param mkplots: bool

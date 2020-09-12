@@ -44,8 +44,9 @@ def segment_curvature(segmented_img, objects):
     _ = segment_path_length(segmented_img, objects)
     eu_lengths = outputs.observations['segment_eu_length']['value']
     path_lengths = outputs.observations['segment_path_length']['value']
-    curvature_measure = [x/y for x, y in zip(path_lengths, eu_lengths)]
-    rand_color = color_palette(len(objects))
+    curvature_measure = [float(x / y) for x, y in zip(path_lengths, eu_lengths)]
+    # Create a color scale, use a previously stored scale if available
+    rand_color = color_palette(num=len(objects), saved=True)
 
     for i, cnt in enumerate(objects):
         # Store coordinates for labels
@@ -79,7 +80,7 @@ def segment_curvature(segmented_img, objects):
         h = label_coord_y[i]
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                     fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
-        segment_label = "ID" + str(i)
+        # segment_label = "ID" + str(i)
         segment_ids.append(i)
 
     outputs.add_observation(variable='segment_curvature', trait='segment curvature',

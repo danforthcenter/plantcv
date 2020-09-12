@@ -53,7 +53,7 @@ Sample command to run a workflow on a single image:
 #### Workflows start by importing necessary packages, and by defining user inputs.
 
 ```python
-#!/usr/bin/python
+#!/usr/bin/env python
 import os
 import sys, traceback
 import cv2
@@ -386,7 +386,7 @@ The next step is to [get the matching NIR](get_nir.md) image, [resize](resize.md
     if args.coresult is not None:
         nirpath = pcv.get_nir(path,filename)
         nir, path1, filename1 = pcv.readimage(nirpath)
-        nir2 = cv2.imread(nirpath,0)
+        nir2, path2, filename2 = pcv.readimage(nirpath)
 
 
     # Inputs:
@@ -489,13 +489,9 @@ In the terminal:
 Python script: 
 
 ```python
-#!/usr/bin/python
+#!/usr/bin/env python
 import os
-import sys, traceback
-import cv2
-import numpy as np
 import argparse
-import string
 from plantcv import plantcv as pcv
 
 ### Parse command-line arguments
@@ -584,7 +580,7 @@ def main():
     if args.coresult is not None:
         nirpath = pcv.get_nir(path,filename)
         nir, path1, filename1 = pcv.readimage(nirpath)
-        nir2 = cv2.imread(nirpath,0)
+        nir2, path2, filename2 = pcv.readimage(nirpath)
 
     nmask = pcv.resize(img=mask, resize_x=0.28, resize_y=0.28)
 

@@ -66,7 +66,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     for i, cnt in enumerate(tip_objects):
         tip_tuples.append((cnt[0][0][0], cnt[0][0][1]))
 
-    rand_color = color_palette(len(leaf_objects))
+    # rand_color = color_palette(len(leaf_objects))
 
     for i, cnt in enumerate(leaf_objects):
         # Draw leaf objects
@@ -79,7 +79,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
         # Segment ends are the portions pruned off
         segment_ends = find_segment_tangents - pruned_segment
         segment_end_obj, segment_end_hierarchy = find_objects(segment_ends, segment_ends)
-        is_insertion_segment = []
+        # is_insertion_segment = []
 
         if not len(segment_end_obj) == 2:
             print("Size too large, contour with ID#", i, "got pruned away completely.")
@@ -105,7 +105,8 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
             label_coord_x.append(leaf_objects[i][0][0][0])
             label_coord_y.append(leaf_objects[i][0][0][1])
 
-    rand_color = color_palette(len(valid_segment))
+    # Create a color scale, use a previously stored scale if available
+    rand_color = color_palette(num=len(valid_segment), saved=True)
 
     for i, cnt in enumerate(valid_segment):
         cv2.drawContours(labeled_img, valid_segment, i, rand_color[i], params.line_thickness, lineType=8)
@@ -180,7 +181,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
         text = "{:.2f}".format(intersection_angles[i])
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                     fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
-        segment_label = "ID" + str(i)
+        # segment_label = "ID" + str(i)
         segment_ids.append(i)
 
     outputs.add_observation(variable='segment_insertion_angle', trait='segment insertion angle',

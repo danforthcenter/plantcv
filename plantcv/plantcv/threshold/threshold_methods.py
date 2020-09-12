@@ -12,6 +12,7 @@ from plantcv.plantcv import params
 from skimage.feature import greycomatrix, greycoprops
 from scipy.ndimage import generic_filter
 
+
 # Binary threshold
 def binary(gray_img, threshold, max_value, object_type="light"):
     """Creates a binary image from a grayscale image based on the threshold value.
@@ -380,9 +381,9 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         red = img[:, :, 2]
 
         # Make a mask for each channel
-        b_mask = cv2.inRange(blue, lower_thresh[0], upper_thresh[0])
+        b_mask = cv2.inRange(blue, lower_thresh[2], upper_thresh[2])
         g_mask = cv2.inRange(green, lower_thresh[1], upper_thresh[1])
-        r_mask = cv2.inRange(red, lower_thresh[2], upper_thresh[2])
+        r_mask = cv2.inRange(red, lower_thresh[0], upper_thresh[0])
 
         # Apply the masks to the image
         result = cv2.bitwise_and(img, img, mask=b_mask)
@@ -429,7 +430,7 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         if not (len(lower_thresh) == 1 and len(upper_thresh) == 1):
             fatal_error("If useing a grayscale colorspace, 1 threshold is needed for both the " +
                         "lower_thresh and upper_thresh.")
-        if len(np.shape(img))==3:
+        if len(np.shape(img)) == 3:
             # Convert RGB image to grayscale colorspace
             gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         else:
@@ -573,7 +574,8 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
 
     x = np.atleast_1d(x).astype('float64')
 
-    # It is always the case that x.size=256 since 256 hardcoded in line 186 -> cv2.calcHist([gray_img], [0], None, [256], [0, 255])
+    # It is always the case that x.size=256 since 256 hardcoded in line 186 ->
+    # cv2.calcHist([gray_img], [0], None, [256], [0, 255])
     # if x.size < 3:
     #     return np.array([], dtype=int)
 
@@ -606,10 +608,11 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
     #     # NaN's and values close to NaN's cannot be peaks
     #     ind = ind[np.in1d(ind, np.unique(np.hstack((indnan, indnan - 1, indnan + 1))), invert=True)]
     # first and last values of x cannot be peaks
-    if ind.size and ind[0] == 0:
-        ind = ind[1:]
-    if ind.size and ind[-1] == x.size - 1:
-        ind = ind[:-1]
+    # if ind.size and ind[0] == 0:
+    #     ind = ind[1:]
+    # if ind.size and ind[-1] == x.size - 1:
+    #     ind = ind[:-1]
+    # We think the above code will never be reached given some of the hardcoded properties used
 
     # # Where this function is used has hardcoded mph=None so this will never be used
     # # remove peaks < minimum peak height
@@ -674,7 +677,7 @@ def _plot(x, mph, mpd, threshold, edge, valley, ax, ind):
     plt.show()
 
 
-def saturation(rgb_img, threshold=255, channel = "any"):
+def saturation(rgb_img, threshold=255, channel="any"):
     """Return a mask filtering out saturated pixels.
 
     Inputs:
@@ -685,7 +688,7 @@ def saturation(rgb_img, threshold=255, channel = "any"):
     Returns:
     masked_img = A binary image with the saturated regions blacked out.
 
-    :param img: np.ndarray
+    :param rgb_img: np.ndarray
     :param threshold: int
     :param channel: str
     :return masked_img: np.ndarray

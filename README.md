@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/danforthcenter/plantcv.svg?branch=master)](https://travis-ci.org/danforthcenter/plantcv)
-[![Coverage Status](https://coveralls.io/repos/github/danforthcenter/plantcv/badge.svg)](https://coveralls.io/github/danforthcenter/plantcv)
+![builds](https://github.com/danforthcenter/plantcv/workflows/builds/badge.svg)
+[![codecov](https://codecov.io/gh/danforthcenter/plantcv/branch/master/graph/badge.svg)](https://codecov.io/gh/danforthcenter/plantcv)
 [![Documentation Status](http://readthedocs.org/projects/plantcv/badge/?version=latest)](http://plantcv.readthedocs.io/en/latest/?badge=latest)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=index.ipynb)
 [![Docker Pulls](https://img.shields.io/docker/pulls/danforthcenter/plantcv.svg)](https://hub.docker.com/r/danforthcenter/plantcv/)
@@ -19,42 +19,34 @@ Follow us on twitter [@plantcv](https://twitter.com/plantcv).
 
 ## Introduction to PlantCV
 
-PlantCV [1] is an imaging processing and trait extraction package designed for plant biology research
-that is built upon open-source software platforms [OpenCV](http://opencv.org) [2], [NumPy](http://www.numpy.org) [3], 
-and [MatPlotLib](http://matplotlib.org) [4].
+PlantCV is an open-source image analysis software package targeted for plant phenotyping. PlantCV provides a common
+programming and documentation interface to a collection of image analysis techniques that are integrated from a variety
+of source packages and algorithms. PlantCV utilizes a modular architecture that enables flexibility in the design of
+analysis workflows and rapid assimilation and integration of new methods. For more information about the project,
+links to recorded presentations, and publications using PlantCV, please visit our homepage: 
+https://plantcv.danforthcenter.org/.
 
-If you use PlantCV please cite us [1].
+### Quick Links
 
-*  The project website can be found at [plantcv.danforthcenter.org](http://plantcv.danforthcenter.org)
+* [Documentation](http://plantcv.readthedocs.io/)
+* [Interactive Documentation](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=index.ipynb)
+* [Installation Instructions](https://plantcv.readthedocs.io/en/stable/installation/)
+* [Updating/Changelog](https://plantcv.readthedocs.io/en/stable/updating/)
+* [Public Image Datasets](http://plantcv.danforthcenter.org/pages/data.html)
+* [Contribution Guide](https://plantcv.readthedocs.io/en/stable/CONTRIBUTING/)
+* [Code of Conduct](https://plantcv.readthedocs.io/en/stable/CODE_OF_CONDUCT/)
+* Downloads
+  * [GitHub](https://github.com/danforthcenter/plantcv)
+  * [PyPI](https://pypi.org/project/plantcv/)
+  * [Bioconda](https://anaconda.org/bioconda/plantcv)
+  * [Docker](https://hub.docker.com/repository/docker/danforthcenter/plantcv)
+  * [Zenodo](https://doi.org/10.5281/zenodo.595522)
 
-*  Installation instructions can be found [here](http://plantcv.readthedocs.io/en/latest/installation/)
+### Citing PlantCV
 
-*  Further documentation for PlantCV functions and use can be found at the 
-[PlantCV Read the Docs site](http://plantcv.readthedocs.io/) and we have added
-[interactive documentation](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=index.ipynb).
-
-*  Test image sets can be found on our [Data page](http://plantcv.danforthcenter.org/pages/data.html). 
-We recommend first testing with sets from the Danforth Center.
-
-*  We recommend reading Reference [1], the first publication to detail PlantCV and provide examples of functionality.
-
-* To contribute, please see the [contribution guide](http://plantcv.readthedocs.io/en/latest/CONTRIBUTING/)
-
-### Citations:
-
-1. Fahlgren N, Feldman M, Gehan MA, Wilson MS, Shyu C, Bryant DW, Hill ST, McEntee CJ, Warnasooriya SN, Kumar I, 
-Ficor T, Turnipseed S, Gilbert KB, Brutnell TP, Carrington JC, Mockler TC, Baxter I. (2015) A versatile phenotyping
-system and analytics platform reveals diverse temporal responses to water availability in *Setaria*. Molecular Plant 8:
-1520-1535. http://doi.org/10.1016/j.molp.2015.06.005
-
-2. Bradski G (2000) The OpenCV library. Dr. Dobb's Journal 25(11): 120-126.
-http://www.drdobbs.com/open-source/the-opencv-library/184404319
-
-3. Oliphant TE (2007) Python for Scientific Computing. Computing in Science & Engineering 9: 10-20.
-http://doi.org/10.1109/MCSE.2007.58
-
-4. Hunter JD (2007) Matplotlib: A 2D graphics environment. Computing in Science & Engineering 9: 90-95.
-http://doi.org/10.1109/MCSE.2007.55
+If you use PlantCV, please cite the [PlantCV publications](https://plantcv.danforthcenter.org/#plantcv-publications)
+relevant to your work. To see how others have used PlantCV in their research, check out our list of 
+[publications using PlantCV](https://plantcv.danforthcenter.org/#publications-using-plantcv).
 
 ___
 

@@ -21,6 +21,7 @@ PlantCV has been tested on the following systems:
     - pandas
     - python-dateutil
     - scikit-image
+    - scikit-learn
     - scipy
     - plotnine
     - setuptools
@@ -31,7 +32,6 @@ PlantCV has been tested on the following systems:
 - conda (Anaconda or Miniconda)
 - git
 - Jupyter
-- SQLite
 
 ### Install via a package manager
 

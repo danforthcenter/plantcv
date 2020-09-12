@@ -9,7 +9,6 @@ import pandas as pd
 from plotnine import ggplot, aes, geom_line, scale_x_continuous, labels
 
 
-
 def histogram(gray_img, mask=None, bins=256, color='red', title=None):
     """Plot a histogram using ggplot.
 
@@ -40,7 +39,7 @@ def histogram(gray_img, mask=None, bins=256, color='red', title=None):
     else:
         masked = gray_img
 
-    params.debug=debug
+    params.debug = debug
 
     if gray_img.dtype == 'uint16':
         maxval = 65536
@@ -49,9 +48,6 @@ def histogram(gray_img, mask=None, bins=256, color='red', title=None):
 
     # Store histogram data
     hist_gray_data, hist_bins = np.histogram(masked, bins, (1, maxval))
-    hist_bins1 = hist_bins[:-1]
-    hist_bins2 = [l for l in hist_bins1]
-    hist_gray = [l for l in hist_gray_data]
     # make hist percentage for plotting
     pixels = cv2.countNonZero(masked)
     hist_percent = (hist_gray_data / float(pixels)) * 100
@@ -76,7 +72,7 @@ def histogram(gray_img, mask=None, bins=256, color='red', title=None):
 
     if params.debug is not None:
         if params.debug == "print":
-            fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + '_hist.png'))
+            fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + '_hist.png'), verbose=False)
         if params.debug == "plot":
             print(fig_hist)
 

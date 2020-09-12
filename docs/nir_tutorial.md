@@ -51,8 +51,8 @@ Sample command to run a Workflow on a single image:
 #### Workflows start by importing necessary packages, and by defining user inputs.
 
 ```python
-#!/usr/bin/python
-import sys, traceback
+#!/usr/bin/env python
+import os, sys, traceback
 import cv2
 import numpy as np
 import argparse
@@ -82,17 +82,14 @@ def main():
     # Get options
     args = options()
     
-    pcv.params.debug=args.debug #set debug mode
-    pcv.params.debug_outdir=args.outdir #set output directory
+    pcv.params.debug = args.debug #set debug mode
+    pcv.params.debug_outdir = args.outdir #set output directory
     
     # Read image (Note: flags=0 indicates to expect a grayscale image)
-    img = cv2.imread(args.image, flags=0)
-    
-    # Get directory path and image name from command line arguments
-    path, img_name = os.path.split(args.image)
+    img, path, img_name = pcv.readimage(args.image)
     
     # Read in image which is the pixelwise average of background images
-    img_bkgrd = cv2.imread("background_nir_z2500.png", flags=0)
+    img_bkgrd, bkgrdpath, bkgrdname = pcv.readimage(filename="background_nir_z2500.png")
     
 ```
 
@@ -299,7 +296,7 @@ this with the [logical or](logical_or.md) function. Then we [apply the mask](app
     #   rgb_img - RGB image data 
     #   mask - Binary mask image data 
     #   mask_color - 'black' or 'white'
-    masked_erd = pcv.apply_mask(rgb_img=img, mask=comb_img, mask_color='black')
+    masked_erd = pcv.apply_mask(img=img, mask=comb_img, mask_color='black')
 
 ```
 
@@ -365,7 +362,7 @@ Next, we use the [logical or](logical_or.md) function to combine the masks. Then
     
     # invert this mask and then apply it the masked image.
     inv_bx1234_img = pcv.invert(gray_img=bx1234_img)
-    edge_masked_img = pcv.apply_mask(rgb_img=masked_erd, mask=inv_bx1234_img, 
+    edge_masked_img = pcv.apply_mask(img=masked_erd, mask=inv_bx1234_img, 
                                      mask_color='black')
 
 ```
@@ -428,13 +425,12 @@ within the ROI.
 We can use the [object composition](object_composition.md) function to outline the plant.
 
 ```python
-    rgb_img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
-    
+
     # Inputs:
     #   img - RGB or grayscale image data for plotting 
     #   contours - Contour list 
     #   hierarchy - Contour hierarchy array 
-    o, m = pcv.object_composition(img=rgb_img, contours=roi_objects, hierarchy=hierarchy5)
+    o, m = pcv.object_composition(img=img, contours=roi_objects, hierarchy=hierarchy5)
 
 ```
 
@@ -452,9 +448,9 @@ Now we can perform the [analysis of pixelwise signal value](analyze_NIR_intensit
 ```python
 ### Analysis ###
 
-    outfile=False
-    if args.writeimg==True:
-        outfile=args.outdir+"/"+filename
+    outfile = False
+    if args.writeimg == True:
+        outfile = os.path.join(args.outdir, filename)
     
     # Perform signal analysis
     
@@ -523,13 +519,9 @@ In the terminal:
 Python script: 
 
 ```python
-#!/usr/bin/python
+#!/usr/bin/env python
 import os
-import sys, traceback
-import cv2
-import numpy as np
 import argparse
-import string
 from plantcv import plantcv as pcv
 
 def options():
@@ -546,17 +538,13 @@ def main():
     # Get options
     args = options()
     
-    pcv.params.debug=args.debug #set debug mode
-    pcv.params.debug_outdir=args.outdir #set output directory
+    pcv.params.debug = args.debug #set debug mode
+    pcv.params.debug_outdir = args.outdir #set output directory
     
-    # Read image (Note: flags=0 indicates to expect a grayscale image)
-    img = cv2.imread(args.image, flags=0)
-    
-    # Get directory path and image name from command line arguments
-    path, img_name = os.path.split(args.image)
+    img, path, img_name = pcv.readimage(filename=args.image)
     
     # Read in image which is the pixelwise average of background images
-    img_bkgrd = cv2.imread("background_nir_z2500.png", flags=0)
+    img_bkgrd, bkgrdpath, bkgrdname = pcv.readimage("background_nir_z2500.png")
 
     # Subtract the background image from the image with the plant.
     bkg_sub_img = pcv.image_subtract(gray_img1=img, gray_img2=img_bkgrd)
@@ -604,7 +592,7 @@ def main():
     comb_img = pcv.logical_or(bin_img1=e1_img, bin_img2=bkg_sub_thres_img)
     
     # Get masked image, Essentially identify pixels corresponding to plant and keep those.
-    masked_erd = pcv.apply_mask(rgb_img=img, mask=comb_img, mask_color='black')
+    masked_erd = pcv.apply_mask(img=img, mask=comb_img, mask_color='black')
     
     # Need to remove the edges of the image, we did that by generating a set of rectangles to mask the edges
     # img is (254 X 320)
@@ -624,7 +612,7 @@ def main():
     
     # invert this mask and then apply it the masked image.
     inv_bx1234_img = pcv.invert(gray_img=bx1234_img)
-    edge_masked_img = pcv.apply_mask(rgb_img=masked_erd, mask=inv_bx1234_img, mask_color='black')
+    edge_masked_img = pcv.apply_mask(img=masked_erd, mask=inv_bx1234_img, mask_color='black')
     
     # Identify objects
     id_objects,obj_hierarchy = pcv.find_objects(img=edge_masked_img, mask=inv_bx1234_img)
@@ -640,14 +628,13 @@ def main():
                                                                    obj_hierarchy=obj_hierarchy, 
                                                                    roi_type='partial')
     
-    rgb_img = cv2.cvtColor(img,cv2.COLOR_GRAY2RGB)
-    o, m = pcv.object_composition(img=rgb_img, contours=roi_objects, hierarchy=hierarchy5)
+    o, m = pcv.object_composition(img=img, contours=roi_objects, hierarchy=hierarchy5)
     
     ### Analysis ###
     
-    outfile=False
-    if args.writeimg==True:
-        outfile=args.outdir+"/"+img_name
+    outfile = False
+    if args.writeimg == True:
+        outfile = os.path.join(args.outdir, img_name)
     
     # Perform signal analysis
     nir_hist = pcv.analyze_nir_intensity(gray_img=img, mask=kept_mask, bins=256, histplot=True)

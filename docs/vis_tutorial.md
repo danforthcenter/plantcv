@@ -47,12 +47,9 @@ Sample command to run a workflow on a single image:
 
 ```python
 
-#!/usr/bin/python
-import sys, traceback
-import cv2
-import numpy as np
+#!/usr/bin/env python
+import os
 import argparse
-import string
 from plantcv import plantcv as pcv
 
 ### Parse command-line arguments
@@ -374,9 +371,9 @@ The next step is to analyze the plant object for traits such as [horizontal heig
 ```python
     ############### Analysis ################
   
-    outfile=False
-    if args.writeimg==True:
-        outfile=args.outdir+"/"+filename
+    outfile = False
+    if args.writeimg == True:
+        outfile = os.path.join(args.outdir, filename)
   
     # Find shape properties, output shape image (optional)
     
@@ -493,12 +490,9 @@ In the terminal:
 Python script: 
 
 ```python
-# !/usr/bin/python
-import sys, traceback
-import cv2
-import numpy as np
+#!/usr/bin/env python
+import os
 import argparse
-import string
 from plantcv import plantcv as pcv
 
 
@@ -539,7 +533,7 @@ def main():
     s_cnt = pcv.median_blur(gray_img=s_thresh, ksize=5)
 
     # Convert RGB to LAB and extract the Blue channel
-    b = pcv.rgb2gray_lab(gray_img=img, channel='b')
+    b = pcv.rgb2gray_lab(rgb_img=img, channel='b')
 
     # Threshold the blue image
     b_thresh = pcv.threshold.binary(gray_img=b, threshold=160, max_value=255, object_type='light')
@@ -552,7 +546,7 @@ def main():
     bs = pcv.logical_or(bin_img1=s_mblur, bin_img2=b_cnt)
 
     # Apply Mask (for VIS images, mask_color=white)
-    masked = pcv.apply_mask(rgb_img=img, mask=bs, mask_color='white')
+    masked = pcv.apply_mask(img=img, mask=bs, mask_color='white')
 
     # Convert RGB to LAB and extract the Green-Magenta and Blue-Yellow channels
     masked_a = pcv.rgb2gray_lab(rgb_img=masked, channel='a')
@@ -571,7 +565,7 @@ def main():
     ab_fill = pcv.fill(bin_img=ab, size=200)
 
     # Apply mask (for VIS images, mask_color=white)
-    masked2 = pcv.apply_mask(rgb_img=masked, mask=ab_fill, mask_color='white')
+    masked2 = pcv.apply_mask(img=masked, mask=ab_fill, mask_color='white')
 
     # Identify objects
     id_objects, obj_hierarchy = pcv.find_objects(img=masked2, mask=ab_fill)
@@ -591,9 +585,9 @@ def main():
 
     ############### Analysis ################
 
-    outfile=False
+    outfile = False
     if args.writeimg == True:
-        outfile = args.outdir + "/" + filename
+        outfile = os.path.join(args.outdir, filename)
 
     # Find shape properties, output shape image (optional)
     shape_imgs = pcv.analyze_object(img=img, obj=obj, mask=mask)

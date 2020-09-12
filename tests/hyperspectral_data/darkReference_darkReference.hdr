@@ -10,7 +10,6 @@ interleave = bil
 sensor type = Unknown
 default bands = {159,253,520}
 byte order = 0
-wavelength units = nm
 wavelength = {
 379.027
 ,379.663

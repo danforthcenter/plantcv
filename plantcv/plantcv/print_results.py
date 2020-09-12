@@ -1,7 +1,6 @@
 # Print Numerical Data
 
 import json
-import csv
 import os
 from plantcv.plantcv import outputs
 

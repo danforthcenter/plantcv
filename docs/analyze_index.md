@@ -1,14 +1,14 @@
-## Analyze a Hyperspectral Index
+## Analyze a Spectral Index
 
-This function calculates the hyperspectral index statistics and writes the values  as observations out to
-       the [Outputs class](outputs.md).
+This function calculates the spectral index statistics and writes the values  as observations out to the 
+[Outputs class](outputs.md).
        
 **plantcv.hyperspectral.analyze_index**(*index_array, mask, bins=100, min_bin=0, max_bin=1*)
 
 **returns** None
 
 - **Parameters:**
-    - index_array   - instance of the `Spectral_data` class (created by running [pcv.hyperspectral.extract_index](extract_index.md))
+    - index_array   - instance of the `Spectral_data` class (created by running [pcv.spectral_index](spectral_index.md))
     - mask          - Binary mask made from selected contours
     - histplot      - If True plots histogram of intensity values
     - bins          - Optional, number of classes to divide spectrum into (default bins=100) 

@@ -59,8 +59,6 @@ def analyze_spectral(array, mask, histplot=True):
         new_min_per_band.append(min_per_band[i].astype(np.float))
 
     # Calculate reflectance statistics
-    max_reflectance = np.amax(wavelength_data)
-    min_reflectance = np.amin(wavelength_data)
     avg_reflectance = np.average(wavelength_data)
     std_reflectance = np.std(wavelength_data)
     median_reflectance = np.median(wavelength_data)
@@ -71,11 +69,11 @@ def analyze_spectral(array, mask, histplot=True):
 
     # Store data into outputs class
     outputs.add_observation(variable='global_mean_reflectance', trait='global mean reflectance',
-                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='reflectance', datatype=float,
-                            value=float(avg_reflectance), label='reflectance')
+                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='reflectance',
+                            datatype=float, value=float(avg_reflectance), label='reflectance')
     outputs.add_observation(variable='global_median_reflectance', trait='global median reflectance',
-                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='reflectance', datatype=float,
-                            value=float(median_reflectance), label='reflectance')
+                            method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='reflectance',
+                            datatype=float, value=float(median_reflectance), label='reflectance')
     outputs.add_observation(variable='global_spectral_std', trait='pixel-wise standard deviation per band',
                             method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='None', datatype=float,
                             value=float(std_reflectance), label='reflectance')
@@ -96,10 +94,10 @@ def analyze_spectral(array, mask, histplot=True):
                             value=new_freq, label=wavelength_labels)
 
     if histplot is True:
-        dataset = pd.DataFrame({'Wavelength ('+ array.wavelength_units+')': new_wavelengths,
+        dataset = pd.DataFrame({'Wavelength (' + array.wavelength_units + ')': new_wavelengths,
                                 'Reflectance': wavelength_freq})
         fig_hist = (ggplot(data=dataset,
-                           mapping=aes(x='Wavelength ('+ array.wavelength_units+')',
+                           mapping=aes(x='Wavelength (' + array.wavelength_units + ')',
                                        y='Reflectance'))
                     + geom_line(color='purple')
                     + scale_x_continuous(
@@ -109,7 +107,8 @@ def analyze_spectral(array, mask, histplot=True):
         analysis_img = fig_hist
 
         if params.debug == "print":
-            fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + '_spectral_histogram.png'))
+            fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + '_spectral_histogram.png'),
+                          verbose=False)
         elif params.debug == "plot":
             print(fig_hist)
 

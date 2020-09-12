@@ -78,8 +78,8 @@ def segment_combine(segment_list, objects, mask):
     labeled_img = mask.copy()
     labeled_img = cv2.cvtColor(labeled_img, cv2.COLOR_GRAY2RGB)
 
-    # Color each segment a different color
-    rand_color = color_palette(len(all_objects))
+    # Color each segment a different color, use a previously saved scale if available
+    rand_color = color_palette(num=len(all_objects), saved=True)
 
     # Plot all segment contours
     for i, cnt in enumerate(all_objects):

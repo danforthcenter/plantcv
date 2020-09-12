@@ -37,9 +37,8 @@ first, to allow others to comment and give feedback.
 When you have created a new feature or non-trivial change to existing
 code, create a 'pull request'.
 
-**Branching and Pull Requests**: Although core developers have write 
-permissions to the PlantCV repository, 
-*please use the feature branch workflow* (below) in order to allow pull
+**Branching and Pull Requests**: All contributors to PlantCV code or documentation are required to use the 
+*feature branch workflow* (below) in order to allow pull
 requests, automated testing, and code review.
 
 ### Using Git at the Command Line
@@ -131,7 +130,7 @@ Once your new feature is ready, create a pull request from your fork/branch
 to the main PlantCV repository. Generating a pull request will notify
 the maintainers of PlantCV. GitHub will report whether the merge can be
 done automatically without conflict, or whether manual fixes are 
-required. Travis-CI will also generate an automatic build report on 
+required. GitHub Actions will also generate an automatic build report on 
 whether or not the updates break the automated unit tests.
 
 ### Guidelines for adding new features
@@ -157,11 +156,11 @@ or need help don't hesitate to ask [here](https://github.com/danforthcenter/plan
 
 In addition to adding a new feature, test your code thoroughly:
 
-PlantCV utilizes [Travis CI](https://travis-ci.org/), [Coveralls](https://coveralls.io/), and 
+PlantCV utilizes [GitHub Actions](https://github.com/features/actions), [Codecov](https://codecov.io/), and 
 [Read the Docs](https://readthedocs.org/) to provide continuous integration of unit testing and documentation. 
-Integration with Travis CI allows us to test whether new pull requests break or change the output of existing functions.
-Coveralls tells us the percentage of PlantCV repository code that is covered by the unit tests (better the coverage the 
-more likely we are to catch problematic pull requests). To include new functions in Travis CI tests (to make sure they 
+Integration with GitHub Actions allows us to test whether new pull requests break or change the output of existing functions.
+Codecov tells us the percentage of PlantCV repository code that is covered by the unit tests (better the coverage the 
+more likely we are to catch problematic pull requests). To include new functions in GitHub Actions tests (to make sure they 
 aren't broken by future pull requests) we need a 'unit test' or set of 'unit tests' (if you need more than one test to 
 cover function options).
 
@@ -173,7 +172,7 @@ script passes on the function you modified. Testing locally can be done with pyt
 
 ```
 cd plantcv
-py.test -v tests/tests.py
+python setup.py test
 ```
 
 Add documentation for your new feature (see [Adding/editing Documentation](documentation.md) for more details). A new 

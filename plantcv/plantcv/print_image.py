@@ -1,5 +1,4 @@
 # Print image to file
-import sys
 import cv2
 import numpy
 import matplotlib
@@ -30,8 +29,8 @@ def print_image(img, filename):
 
     # Print ggplot type images
     elif str(image_type) == "<class 'plotnine.ggplot.ggplot'>":
-        img.save(filename)
+        img.save(filename, verbose=False)
 
     else:
-        fatal_error("Error writing file " + filename + ": input img is " + str(type(img))+ ", not a numpy.ndarray, " +
+        fatal_error("Error writing file " + filename + ": input img is " + str(type(img)) + ", not a numpy.ndarray, " +
                     "matplotlib.figure, or plotnine.ggplot and cannot get saved out with print_image.")

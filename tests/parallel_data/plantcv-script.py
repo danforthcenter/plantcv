@@ -18,6 +18,7 @@ def options():
 
 def main():
     args = options()
+    _ = pcv.__version__
 
     shape_header = ['HEADER_SHAPES', 'area', 'hull-area', 'solidity', 'perimeter', 'width', 'height', 'longest_axis',
                     'center-of-mass-x', 'center-of-mass-y', 'hull_vertices', 'in_bounds', 'ellipse_center_x',

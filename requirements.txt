@@ -4,5 +4,8 @@ pandas
 python-dateutil
 scipy
 scikit-image
+scikit-learn
 plotnine
+dask
+dask-jobqueue
 opencv-python<4, >=3.4

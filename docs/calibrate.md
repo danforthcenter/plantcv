@@ -17,6 +17,9 @@ Calibrate a raw hyperspectral image using white and dark reference images.
     [The TERRA-REF team](https://github.com/terraref). This process of calibration might look different depending on the hyperspectral camera used so we highly encourage 
     PlantCV users to reach out to the PlantCV developers/maintainers at the PlantCV [GitHub issues page](https://github.com/danforthcenter/plantcv/issues) to request to extend 
     the functionality of this function to handle data from different cameras. 
+    
+!!! note
+    Depending on white and dark_reference images there may be pixel values >1.0 but all pixel values <0 are truncated to 0. 
 
 - **Example use:**
     - Below

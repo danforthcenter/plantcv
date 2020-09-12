@@ -6,22 +6,37 @@ if "DISPLAY" not in os.environ and "MPLBACKEND" not in os.environ:
 
 observations = {}
 
+
 class Params:
-    """PlantCV parameters class
-    Keyword arguments/parameters:
-    device       = device number. Used to count steps in the pipeline. (default: 0)
-    debug        = None, print, or plot. Print = save to file, Plot = print to screen. (default: None)
-    debug_outdir = Debug images output directory. (default: .)
-    :param device: int
-    :param debug: str
-    :param debug_outdir: str
-    :param line_thickness: numeric
-    :param dpi: int
-    :param text_size: float
-    """
+    """PlantCV parameters class."""
 
     def __init__(self, device=0, debug=None, debug_outdir=".", line_thickness=5, dpi=100, text_size=0.55,
-                 text_thickness=2):
+                 text_thickness=2, color_scale="gist_rainbow", color_sequence="sequential", saved_color_scale=None):
+        """Initialize parameters.
+
+        Keyword arguments/parameters:
+        device            = Device number. Used to count steps in the pipeline. (default: 0)
+        debug             = None, print, or plot. Print = save to file, Plot = print to screen. (default: None)
+        debug_outdir      = Debug images output directory. (default: .)
+        line_thickness    = Width of line drawings. (default: 5)
+        dpi               = Figure plotting resolution, dots per inch. (default: 100)
+        text_size         = Size of plotting text. (default: 0.55)
+        text_thickness    = Thickness of plotting text. (default: 2)
+        color_scale       = Name of plotting color scale (matplotlib colormap). (default: gist_rainbow)
+        color_sequence    = Build color scales in "sequential" or "random" order. (default: sequential)
+        saved_color_scale = Saved color scale that will be applied next time color_palette is called. (default: None)
+
+        :param device: int
+        :param debug: str
+        :param debug_outdir: str
+        :param line_thickness: numeric
+        :param dpi: int
+        :param text_size: float
+        :param text_thickness: int
+        :param color_scale: str
+        :param color_sequence: str
+        :param saved_color_scale: list
+        """
         self.device = device
         self.debug = debug
         self.debug_outdir = debug_outdir
@@ -29,6 +44,9 @@ class Params:
         self.dpi = dpi
         self.text_size = text_size
         self.text_thickness = text_thickness
+        self.color_scale = color_scale
+        self.color_sequence = color_sequence
+        self.saved_color_scale = saved_color_scale
 
 
 class Outputs:
@@ -51,18 +69,19 @@ class Outputs:
     def add_observation(self, variable, trait, method, scale, datatype, value, label):
         """
         Keyword arguments/parameters:
-        variable     = A local unique identifier of a variable, e.g. a short name, that is a key linking the definitions of
-                       variables with observations.
+        variable     = A local unique identifier of a variable, e.g. a short name,
+                       that is a key linking the definitions of variables with observations.
         trait        = A name of the trait mapped to an external ontology; if there is no exact mapping, an informative
                        description of the trait.
         method       = A name of the measurement method mapped to an external ontology; if there is no exact mapping, an
                        informative description of the measurement procedure
         scale        = Units of the measurement or scale in which the observations are expressed; if possible, standard
-                       units and scales should be used and mapped to existing ontologies; in the case of non-standard scale
-                       a full explanation should be given
+                       units and scales should be used and mapped to existing ontologies; in the case of non-standard
+                       scale a full explanation should be given
         datatype     = The type of data to be stored, e.g. 'int', 'float', 'str', 'list', etc.
         value        = The data itself
-        label        = The label for each value (most useful when the data is a frequency table as in hue, or other tables)
+        label        = The label for each value (most useful when the data is a frequency table as in hue,
+                       or other tables)
 
         :param variable: str
         :param trait: str
@@ -98,8 +117,8 @@ outputs = Outputs()
 
 class Spectral_data:
     # PlantCV Hyperspectral data class
-    def __init__(self, array_data, max_wavelength, min_wavelength, max_value, min_value, d_type, wavelength_dict, samples, lines, interleave,
-                 wavelength_units, array_type, pseudo_rgb, filename, default_bands):
+    def __init__(self, array_data, max_wavelength, min_wavelength, max_value, min_value, d_type, wavelength_dict,
+                 samples, lines, interleave, wavelength_units, array_type, pseudo_rgb, filename, default_bands):
         # The actual array/datacube
         self.array_data = array_data
         # Min/max available wavelengths (for spectral datacube)
@@ -140,8 +159,8 @@ from plantcv.plantcv.color_palette import color_palette
 from plantcv.plantcv.rgb2gray import rgb2gray
 from plantcv.plantcv.gaussian_blur import gaussian_blur
 from plantcv.plantcv import transform
-from plantcv.plantcv import Spectral_data
 from plantcv.plantcv import hyperspectral
+from plantcv.plantcv import spectral_index
 from plantcv.plantcv.apply_mask import apply_mask
 from plantcv.plantcv.readimage import readimage
 from plantcv.plantcv.readbayer import readbayer
@@ -172,7 +191,6 @@ from plantcv.plantcv.analyze_bound_horizontal import analyze_bound_horizontal
 from plantcv.plantcv.analyze_bound_vertical import analyze_bound_vertical
 from plantcv.plantcv.analyze_color import analyze_color
 from plantcv.plantcv.analyze_nir_intensity import analyze_nir_intensity
-from plantcv.plantcv.fluor_fvfm import fluor_fvfm
 from plantcv.plantcv.print_results import print_results
 from plantcv.plantcv.resize import resize
 from plantcv.plantcv.flip import flip
@@ -200,7 +218,6 @@ from plantcv.plantcv.opening import opening
 from plantcv.plantcv.closing import closing
 from plantcv.plantcv import roi
 from plantcv.plantcv import threshold
-from plantcv.plantcv.canny_edge_detect import canny_edge_detect
 from plantcv.plantcv.cluster_contour_mask import cluster_contour_mask
 from plantcv.plantcv.analyze_thermal_values import analyze_thermal_values
 from plantcv.plantcv import visualize
@@ -209,23 +226,27 @@ from plantcv.plantcv.fill_holes import fill_holes
 from plantcv.plantcv.get_kernel import get_kernel
 from plantcv.plantcv.crop import crop
 from plantcv.plantcv.stdev_filter import stdev_filter
+from plantcv.plantcv.spatial_clustering import spatial_clustering
+from plantcv.plantcv import photosynthesis
 
 # add new functions to end of lists
 
-__all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'apply_mask','gaussian_blur', 'transform',
+__all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'apply_mask', 'gaussian_blur', 'transform',
            'hyperspectral', 'readimage',
            'readbayer', 'laplace_filter', 'sobel_filter', 'scharr_filter', 'hist_equalization', 'erode',
            'image_add', 'image_subtract', 'dilate', 'watershed', 'rectangle_mask', 'rgb2gray_hsv', 'rgb2gray_lab',
            'rgb2gray', 'median_blur', 'fill', 'invert', 'logical_and', 'logical_or', 'logical_xor',
            'find_objects', 'roi_objects', 'object_composition', 'analyze_object', 'morphology',
            'analyze_bound_horizontal', 'analyze_bound_vertical', 'analyze_color', 'analyze_nir_intensity',
-           'fluor_fvfm', 'print_results', 'resize', 'flip', 'crop_position_mask', 'get_nir', 'report_size_marker_area',
+           'print_results', 'resize', 'flip', 'crop_position_mask', 'get_nir', 'report_size_marker_area',
            'white_balance', 'acute_vertex', 'scale_features', 'landmark_reference_pt_dist', 'outputs',
            'x_axis_pseudolandmarks', 'y_axis_pseudolandmarks', 'cluster_contours', 'visualize',
            'cluster_contour_splitimg', 'rotate', 'shift_img', 'output_mask', 'auto_crop', 'canny_edge_detect',
            'background_subtraction', 'naive_bayes_classifier', 'acute', 'distance_transform', 'params',
-           'cluster_contour_mask','analyze_thermal_values', 'opening',
-           'closing','within_frame', 'fill_holes', 'get_kernel', 'Spectral_data', 'crop', 'stdev_filter']
+           'cluster_contour_mask', 'analyze_thermal_values', 'opening',
+           'closing', 'within_frame', 'fill_holes', 'get_kernel', 'Spectral_data', 'crop', 'stdev_filter',
+           'spatial_clustering', 'photosynthesis']
+
 
 from ._version import get_versions
 __version__ = get_versions()['version']

@@ -1,4 +1,4 @@
-# Visualize an RGB image in all potential colorspaces as one glance
+# Compare auto threshold methods for a grayscale image
 
 import os
 import cv2
@@ -15,7 +15,7 @@ from plantcv.plantcv.threshold import triangle
 
 
 def auto_threshold_methods(gray_img, grid_img=True, object_type="light"):
-    """ Visualize an RGB image in all potential colorspaces
+    """ Compare auto threshold methods for a grayscale image
 
     Inputs:
     gray_img     = Grayscale image data
@@ -28,12 +28,12 @@ def auto_threshold_methods(gray_img, grid_img=True, object_type="light"):
     labeled_imgs = List of labeled plotting images
 
     :param gray_img: numpy.ndarray
-    :param original_img: bool
+    :param grid_img: bool
     :param object_type: str
     :return labeled_imgs: list
 
     """
-    # Check the the image is grayscale
+    # Check that the image is grayscale
     if not len(np.shape(gray_img)) == 2:
         fatal_error("Input image is not grayscale!")
 
@@ -41,7 +41,7 @@ def auto_threshold_methods(gray_img, grid_img=True, object_type="light"):
     debug = params.debug
     params.debug = None
 
-    # Initialize grayscale images list, rgb images list, plotting coordinates
+    # Initialize threshold method names, mask list, final images
     method_names = ["Gaussian", "Mean", "Otsu", "Triangle"]
     all_methods = []
     labeled_imgs = []

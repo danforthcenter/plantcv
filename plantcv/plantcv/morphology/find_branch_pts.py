@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import dilate
+from plantcv.plantcv import outputs
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 from plantcv.plantcv import find_objects
@@ -21,17 +22,18 @@ def find_branch_pts(skel_img, mask=None):
     branch_pts_img = Image with just branch points, rest 0
 
     :param skel_img: numpy.ndarray
+    :param mask: np.ndarray
     :return branch_pts_img: numpy.ndarray
     """
 
-    ### In a kernel: 1 values line up with 255s, -1s line up with 0s, and 0s correspond to don't care ###
+    # In a kernel: 1 values line up with 255s, -1s line up with 0s, and 0s correspond to don't care
     # T like branch points
-    t1 = np.array([[-1,  1, -1],
-                   [ 1,  1,  1],
+    t1 = np.array([[-1, 1, -1],
+                   [1, 1, 1],
                    [-1, -1, -1]])
-    t2 = np.array([[ 1, -1,  1],
-                   [-1,  1, -1],
-                   [ 1, -1, -1]])
+    t2 = np.array([[1, -1, 1],
+                   [-1, 1, -1],
+                   [1, -1, -1]])
     t3 = np.rot90(t1)
     t4 = np.rot90(t2)
     t5 = np.rot90(t3)
@@ -40,12 +42,12 @@ def find_branch_pts(skel_img, mask=None):
     t8 = np.rot90(t6)
 
     # Y like branch points
-    y1 = np.array([[ 1, -1,  1],
-                   [ 0,  1,  0],
-                   [ 0,  1,  0]])
-    y2 = np.array([[-1,  1, -1],
-                   [ 1,  1,  0],
-                   [-1,  0,  1]])
+    y1 = np.array([[1, -1, 1],
+                   [0, 1, 0],
+                   [0, 1, 0]])
+    y2 = np.array([[-1, 1, -1],
+                   [1, 1, 0],
+                   [-1, 0, 1]])
     y3 = np.rot90(y1)
     y4 = np.rot90(y2)
     y5 = np.rot90(y3)
@@ -81,9 +83,19 @@ def find_branch_pts(skel_img, mask=None):
                          hierarchy=skel_hier)
 
     branch_objects, _ = find_objects(branch_pts_img, branch_pts_img)
-    for i in branch_objects:
-        x, y = i.ravel()[:2]
+
+    # Initialize list of tip data points
+    branch_list = []
+    branch_labels = []
+    for i, branch in enumerate(branch_objects):
+        x, y = branch.ravel()[:2]
+        branch_list.append((float(x), float(y)))
+        branch_labels.append(i)
         cv2.circle(branch_plot, (x, y), params.line_thickness, (255, 0, 255), -1)
+
+    outputs.add_observation(variable='branch_pts', trait='list of branch-point coordinates identified from a skeleton',
+                            method='plantcv.plantcv.morphology.find_branch_pts', scale='pixels', datatype=list,
+                            value=branch_list, label=branch_labels)
 
     # Reset debug mode
     params.debug = debug

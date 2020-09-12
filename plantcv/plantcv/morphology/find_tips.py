@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import dilate
+from plantcv.plantcv import outputs
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 from plantcv.plantcv import find_objects
@@ -23,16 +24,17 @@ def find_tips(skel_img, mask=None):
     tip_img   = Image with just tips, rest 0
 
     :param skel_img: numpy.ndarray
+    :param mask: numpy.ndarray
     :return tip_img: numpy.ndarray
     """
 
     # In a kernel: 1 values line up with 255s, -1s line up with 0s, and 0s correspond to dont care
     endpoint1 = np.array([[-1, -1, -1],
-                          [-1,  1, -1],
-                          [ 0,  1,  0]])
+                          [-1, 1, -1],
+                          [0, 1,  0]])
     endpoint2 = np.array([[-1, -1, -1],
-                          [-1,  1,  0],
-                          [-1,  0,  1]])
+                          [-1, 1, 0],
+                          [-1, 0, 1]])
 
     endpoint3 = np.rot90(endpoint1)
     endpoint4 = np.rot90(endpoint2)
@@ -65,9 +67,18 @@ def find_tips(skel_img, mask=None):
         cv2.drawContours(tip_plot, skel_obj, -1, (150, 150, 150), params.line_thickness,
                          lineType=8, hierarchy=skel_hier)
 
-    for i in tip_objects:
-        x, y = i.ravel()[:2]
+    # Initialize list of tip data points
+    tip_list = []
+    tip_labels = []
+    for i, tip in enumerate(tip_objects):
+        x, y = tip.ravel()[:2]
+        tip_list.append((int(x), int(y)))
+        tip_labels.append(i)
         cv2.circle(tip_plot, (x, y), params.line_thickness, (0, 255, 0), -1)
+
+    outputs.add_observation(variable='tips', trait='list of tip coordinates identified from a skeleton',
+                            method='plantcv.plantcv.morphology.find_tips', scale='pixels', datatype=list,
+                            value=tip_list, label=tip_labels)
 
     # Reset debug mode
     params.debug = debug

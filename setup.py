@@ -5,9 +5,7 @@ https://packaging.python.org/en/latest/distributing.html
 https://github.com/pypa/sampleproject
 """
 
-import sys
 import setuptools
-#from setuptools.command.test import test as TestCommand
 from codecs import open
 from os import path
 import versioneer
@@ -36,7 +34,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 requirements_f = open('requirements.txt', 'r')
-dependencies = [ req for req in requirements_f.readlines() ]
+dependencies = [req for req in requirements_f.readlines()]
 
 setuptools.setup(
     name='plantcv',

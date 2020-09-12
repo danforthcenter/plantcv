@@ -20,7 +20,8 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
                   down to the region of interest. default = None
     mask        = (optional) binary mask
     cmap        = (optional) colormap. default is the matplotlib default, viridis
-    background  = (optional) background color/type, options are "image" (gray_img), "white", or "black" (requires a mask). default = 'image'
+    background  = (optional) background color/type, options are "image" (gray_img), "white", or "black"
+                  (requires a mask). default = 'image'
     min_value   = (optional) minimum value for range of interest. default = 0
     max_value   = (optional) maximum value for range of interest. default = 255
     axes        = (optional) if False then x- and y-axis won't be displayed, nor will the title. default = True
@@ -39,8 +40,8 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
     :param background: str
     :param min_value: numeric
     :param max_value: numeric
-    :param dpi: int
     :param axes: bool
+    :param colorbar: bool
     :param obj_padding: str, int
     :return pseudo_image: numpy.ndarray
     """
@@ -145,7 +146,7 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
             plot_image(pseudo_img1)
             # Use non-blocking mode in case the function is run more than once
             plt.show(block=False)
-        elif params.debug == None:
+        elif params.debug is None:
             plt.show(block=False)
 
     else:
@@ -175,7 +176,7 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
             plot_image(pseudo_img1)
             # Use non-blocking mode in case the function is run more than once
             plt.show(block=False)
-        elif params.debug == None:
+        elif params.debug is None:
             plt.show(block=False)
 
     return pseudo_img
