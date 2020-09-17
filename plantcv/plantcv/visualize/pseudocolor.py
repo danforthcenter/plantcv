@@ -131,17 +131,6 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
         # Store the current figure
         pseudo_img = plt.gcf()
 
-        # Print or plot if debug is turned on
-        if params.debug == 'print':
-            plt.savefig(os.path.join(params.debug_outdir, str(params.device) + '_pseudocolored.png'), dpi=params.dpi)
-            plt.close()
-        elif params.debug == 'plot':
-            plot_image(pseudo_img1)
-            # Use non-blocking mode in case the function is run more than once
-            plt.show(block=False)
-        elif params.debug is None:
-            plt.show(block=False)
-
     else:
         # Pseudocolor the image
         pseudo_img1 = plt.imshow(gray_img1, cmap=cmap, vmin=min_value, vmax=max_value)
@@ -160,16 +149,18 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
 
         pseudo_img = plt.gcf()
 
-        # Print or plot if debug is turned on
+
+    # Print or plot if debug is turned on
+    if params.debug is not None:
         if params.debug == 'print':
-            plt.savefig(os.path.join(params.debug_outdir, str(params.device) + '_pseudocolored.png'), dpi=params.dpi)
-            pseudo_img.clear()
+            plt.savefig(os.path.join(params.debug_outdir, str(
+                params.device) + '_pseudocolored.png'), dpi=params.dpi)
             plt.close()
         elif params.debug == 'plot':
             plot_image(pseudo_img1)
             # Use non-blocking mode in case the function is run more than once
             plt.show(block=False)
-        elif params.debug is None:
-            plt.show(block=False)
+    else:
+        plt.close()
 
     return pseudo_img
