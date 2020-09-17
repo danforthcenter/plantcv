@@ -112,10 +112,11 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
             fatal_error(
                 "Background type {0} is not supported. Please use 'white', 'black', or 'image'.".format(background))
 
+        fig = plt.figure()
         # Pseudocolor the image, plot the background first
         pseudo_img1 = plt.imshow(bkg_img, cmap=bkg_cmap)
         # Overlay the masked grayscale image with the user input colormap
-        plt.imshow(masked_img, cmap=cmap, vmin=min_value, vmax=max_value)
+        pseudo_img2 = plt.imshow(masked_img, cmap=cmap, vmin=min_value, vmax=max_value)
 
         if colorbar:
             plt.colorbar(fraction=0.033, pad=0.04)
@@ -132,6 +133,7 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
         pseudo_img = plt.gcf()
 
     else:
+        fig = plt.figure()
         # Pseudocolor the image
         pseudo_img1 = plt.imshow(gray_img1, cmap=cmap, vmin=min_value, vmax=max_value)
 

@@ -245,10 +245,11 @@ def triangle(gray_img, max_value, object_type="light", xstep=1):
     # Additional figures created by this method, if debug is on
     if params.debug is not None:
         if params.debug == 'print':
-            plt.plot(hist)
-            plt.title('Threshold value = {t}'.format(t=autothreshval))
-            plt.axis([0, 256, 0, max(hist)])
-            plt.grid(True)
+            fig, ax = plt.subplots()
+            ax.plot(hist)
+            ax.set(title='Threshold value = {t}'.format(t=autothreshval))
+            ax.axis([0, 256, 0, max(hist)])
+            ax.grid(True)
             fig_name_hist = os.path.join(params.debug_outdir,
                                          str(params.device) + '_triangle_thresh_hist_' + str(autothreshval) + ".png")
             # write the figure to current directory
@@ -257,9 +258,10 @@ def triangle(gray_img, max_value, object_type="light", xstep=1):
             plt.clf()
         elif params.debug == 'plot':
             print('Threshold value = {t}'.format(t=autothreshval))
-            plt.plot(hist)
-            plt.axis([0, 256, 0, max(hist)])
-            plt.grid(True)
+            fig, ax = plt.subplots()
+            ax.plot(hist)
+            ax.axis([0, 256, 0, max(hist)])
+            ax.grid(True)
             plt.show()
 
     return bin_img
