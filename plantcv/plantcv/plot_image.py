@@ -23,17 +23,17 @@ def plot_image(img, cmap=None):
         matplotlib.rcParams['figure.dpi'] = params.dpi
         # If the image is color then OpenCV stores it as BGR, we plot it as RGB
         if len(dimensions) == 3:
-            fig = plt.figure()
+            plt.figure()
             plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
             plt.show()
 
         elif cmap is None and len(dimensions) == 2:
-            fig = plt.figure()
+            plt.figure()
             plt.imshow(img, cmap="gray")
             plt.show()
 
         elif cmap is not None and len(dimensions) == 2:
-            fig = plt.figure()
+            plt.figure()
             plt.imshow(img, cmap=cmap)
             plt.show()
 

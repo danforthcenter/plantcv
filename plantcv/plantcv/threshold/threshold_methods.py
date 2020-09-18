@@ -245,7 +245,7 @@ def triangle(gray_img, max_value, object_type="light", xstep=1):
     # Additional figures created by this method, if debug is on
     if params.debug is not None:
         if params.debug == 'print':
-            fig, ax = plt.subplots()
+            _, ax = plt.subplots()
             ax.plot(hist)
             ax.set(title='Threshold value = {t}'.format(t=autothreshval))
             ax.axis([0, 256, 0, max(hist)])
@@ -258,7 +258,7 @@ def triangle(gray_img, max_value, object_type="light", xstep=1):
             plt.clf()
         elif params.debug == 'plot':
             print('Threshold value = {t}'.format(t=autothreshval))
-            fig, ax = plt.subplots()
+            _, ax = plt.subplots()
             ax.plot(hist)
             ax.axis([0, 256, 0, max(hist)])
             ax.grid(True)
