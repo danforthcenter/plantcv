@@ -158,7 +158,7 @@ class InstanceTimeSeriesLinking(object):
     Assumption: the timepoints are all sorted, the images and masks are also sorted by timepoints (chronologically)
     """
 
-    def __init__(self, images, masks, timepoints, thres, logic='IOS', name_sub='instance'):
+    def __init__(self, images, masks, timepoints, logic='IOS', thres=0.2, name_sub='instance'):
         # a list of images which are ndarrays
         self.images = images
         # a list of masks which are ndarrays (of the same length of images)
@@ -534,11 +534,12 @@ class InstanceTSLinkingWrapper(object):
             segs.append(r["masks"][0:min_dim, 0:min_dim, :])  # make all masks the same size
         return segs
 
-    def __call__(self, dir_img, dir_seg, pattern_dt, time_cond, thres, logic, name_sub, suffix, suffix_seg,colors=None,color_all=None):
+    def __call__(self, dir_img, dir_seg, pattern_dt, time_cond, logic, thres, name_sub, suffix, suffix_seg,colors=None,color_all=None):
         self.set_save_dirs()
         self.sort_time(dir_img, dir_seg, pattern_dt, time_cond, suffix, suffix_seg)
         imgs,min_dim = self.load_images()
         segs = self.load_segs(min_dim)
         # create an instance of InstanceTimeSeriesLinkingClass
-        inst_ts_linking = InstanceTimeSeriesLinking(imgs, segs, self.timepoints, thres, logic, name_sub)
+        inst_ts_linking = InstanceTimeSeriesLinking(imgs, segs, self.timepoints, logic, thres, name_sub)
         inst_ts_linking(self.dir_save, self.dir_visual_, self.dir_visual, self.savename_, self.savename, colors, color_all)
+        return inst_ts_linking
