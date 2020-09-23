@@ -6381,18 +6381,32 @@ def test_plantcv_visualize_time_lapse_video_bad_list():
 # ##############################
 # Tests for the time_series subpackage
 # ##############################
+
 def test_plantcv_time_series_time_series():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_time_series")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    time_cond        = ['08-05', '11-05', '17-05', '21-05']
-    link_logic       = 1
-    class_names      = ['BG', 'Leaf']
+    dir_img = TIME_SERIES_TEST_RAW
+    dir_seg = TIME_SERIES_TEST_INSTANCE_SEG
+    dir_save = cache_dir
+    dir_visual_ = os.path.join(dir_save,'visual_old')
+    os.mkdir(dir_visual_)
+    dir_visual  = os.path.join(dir_save,'visual')
+    os.mkdir(dir_visual)
     pattern_datetime = '\d{4}-\d{2}-\d{2}-\d{2}-\d{2}'  # YYYY-MM-DD-hh-mm
-    suffix           = '.jpg'
-    Plant_ = pcv.time_series.time_series_linking(imagedir=TIME_SERIES_TEST_RAW, segmentationdir=TIME_SERIES_TEST_INSTANCE_SEG, savedir=cache_dir, pattern_datetime=pattern_datetime, time_cond=time_cond, colors=None, class_names=class_names, suffix=suffix)
-    assert len(os.listdir(Plant_.savedir)) > 0
+    time_cond = ['08-05', '11-05', '17-05', '21-05']
+    suffix = '.jpg'
+    suffix_seg = '.pkl'
+    thres = 0.2
+    logic = 'IOS'
+    name_sub = 'leaf'
+    name_series = 'linked_series'
+    inst_ts_linking = pcv.time_series.InstanceTSLinkingWrapper(dir_save=dir_save, savename=name_series)
+    inst_ts_linking(dir_img, dir_seg, pattern_datetime, time_cond, thres, logic, name_sub, suffix,
+                    suffix_seg)
+    assert len(os.listdir(inst_ts_linking.dir_save)) > 0
+
 
 def test_plantcv_visualize_overlay_two_imgs():
     pcv.params.debug = None
