@@ -6403,7 +6403,7 @@ def test_plantcv_time_series_time_series():
     name_sub = 'leaf'
     name_series = 'linked_series'
     inst_ts_linking = pcv.time_series.InstanceTSLinkingWrapper(dir_save=dir_save, savename=name_series)
-    inst_ts_linking(dir_img, dir_seg, pattern_datetime, time_cond, thres, logic, name_sub, suffix,
+    inst_ts_linking(dir_img, dir_seg, pattern_datetime, time_cond, logic, thres, name_sub, suffix,
                     suffix_seg)
     assert len(os.listdir(inst_ts_linking.dir_save)) > 0
 
