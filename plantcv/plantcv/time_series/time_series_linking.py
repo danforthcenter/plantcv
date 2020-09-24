@@ -313,7 +313,7 @@ class InstanceTimeSeriesLinking(object):
                                     # find the time point
                                     idx_l2 = np.where(self.link_series[t2_][self.key_id] == inst2)[0][0]
                                     # add information to t_
-                                    self.link_series[t_]['{}{}'.format(self.name_sub, leaf_id)][t0 + 1:] = \
+                                    self.link_series[t_]['{}{}'.format(self.name_sub, inst_id)][t0 + 1:] = \
                                     self.link_series[t2_]['{}{}'.format(self.name_sub, inst2)][t0 + 1:]
                                     # delete from t2_
                                     self.link_series[t2_][self.key_id] = np.delete(self.link_series[t2_][self.key_id],
