@@ -107,7 +107,8 @@ def analyze_spectral(array, mask, histplot=True):
         analysis_img = fig_hist
 
         if params.debug == "print":
-            fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + '_spectral_histogram.png'))
+            fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + '_spectral_histogram.png'),
+                          verbose=False)
         elif params.debug == "plot":
             print(fig_hist)
 

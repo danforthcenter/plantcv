@@ -98,7 +98,7 @@ def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=0, max_bi
         analysis_image = fig_hist
         if params.debug == 'print':
             fig_hist.save(os.path.join(params.debug_outdir,
-                                       str(params.device) + index_array.array_type + "hist.png"))
+                                       str(params.device) + index_array.array_type + "hist.png"), verbose=False)
         elif params.debug == 'plot':
             print(fig_hist)
 

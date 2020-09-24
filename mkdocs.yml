@@ -35,9 +35,8 @@ nav:
     - 'Instance Segmentation': instance_segmentation_tutorial.md
   - 'PlantCV Namespace':
     - 'PlantCV':
-      - 'Analyze color': analyze_color.md
+      - 'Analyze Color': analyze_color.md
       - 'Analyze NIR': analyze_NIR_intensity.md
-      - 'Analyze PSII': fluor_fvfm.md
       - 'Analyze Shape': analyze_shape.md
       - 'Analyze Thermal': analyze_thermal_values.md
       - 'Apply Mask': apply_mask.md
@@ -96,6 +95,7 @@ nav:
       - 'Morphology Functions':
         - 'Analyze_stem': analyze_stem.md
         - 'Check Cycles': check_cycles.md
+        - 'Fill Segments': fill_segments.md
         - 'Find Branches': find_branch_pts.md
         - 'Find Tips': find_tips.md
         - 'Prune': prune.md
@@ -115,6 +115,9 @@ nav:
       - 'Opening': opening.md
       - 'Output Mask': output_mask.md
       - 'Outputs Class': outputs.md
+      - 'Photosynthesis Functions':
+          - 'Read CropReporter Data': photosynthesis_read_cropreporter.md
+          - 'Analyze Fv/Fm': photosynthesis_analyze_fvfm.md
       - 'Params (Debugging)': params.md
       - 'Print Image': print_image.md
       - 'Print Results': print_results.md
@@ -176,10 +179,11 @@ nav:
       - 'Naive Bayes': naive_bayes.md
       - 'Naive Bayes Multiclass': naive_bayes_multiclass.md
     - 'Parallelization':
-        - 'Job Builder': job_builder.md
-        - 'Metadata Parser': metadata_parser.md
-        - 'Multiprocess': multiprocess.md
-        - 'Process Results': process_results.md
+        - 'Configure Parallelization': parallel_config.md
+        - 'Metadata Parser': parallel_metadata_parser.md
+        - 'Job Builder': parallel_job_builder.md
+        - 'Multiprocess': parallel_multiprocess.md
+        - 'Process Results': parallel_process_results.md
         - 'Workflow Parallelization': pipeline_parallel.md
   - 'Accessory tools': tools.md
 markdown_extensions:
