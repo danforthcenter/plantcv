@@ -144,7 +144,8 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
     if hist_plot_type is not None:
         params.device += 1
         if params.debug == 'print':
-            hist_fig.save(os.path.join(params.debug_outdir, str(params.device) + '_analyze_color_hist.png'))
+            hist_fig.save(os.path.join(params.debug_outdir, str(params.device) + '_analyze_color_hist.png'),
+                          verbose=False)
         elif params.debug == 'plot':
             print(hist_fig)
 

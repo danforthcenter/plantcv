@@ -143,7 +143,7 @@ suggestions for additional metadata we should track that would be useful to you,
 
 Functions that automatically store data to the [`Outputs` class](outputs.md) are [acute_vertex](acute_vertex.md), [analyze_color](analyze_color.md),
 [analyze_bound_horizontal](analyze_bound_horizontal.md), [analyze_bound_vertical](analyze_bound_vertical.md), [analyze_nir_intensity](analyze_NIR_intensity), 
-[analyze_object](analyze_shape.md), [analyze_thermal_values](analyze_thermal_values.md), [fluor_fvfm](fluor_fvfm.md), [hyperspectral.analyze_spectral](analyze_spectral.md),
+[analyze_object](analyze_shape.md), [analyze_thermal_values](analyze_thermal_values.md), [photosynthesis.analyze_fvfm](photosynthesis_analyze_fvfm.md), [hyperspectral.analyze_spectral](analyze_spectral.md),
 [hyperspectral.analyze_index](analyze_index.md), [landmark_reference_pt_dist](landmark_reference_pt_dist.md), [morphology.check_cycles](check_cycles.md), 
 [morphology.find_tips](find_tips.md), [morphology.find_branch_pts](find_branch_pts.md), [morphology.segment_angle](segment_angle.md), 
 [morphology.segment_curvature](segment_curvature.md), [morphology.segment_euclidean_length](segment_euclidean_length.md), 

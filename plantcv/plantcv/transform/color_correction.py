@@ -470,7 +470,7 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
     # Reset debug
     if params.debug is not None:
         if params.debug == 'print':
-            p1.save(os.path.join(params.debug_outdir, 'color_quick_check.png'))
+            p1.save(os.path.join(params.debug_outdir, 'color_quick_check.png'), verbose=False)
         elif params.debug == 'plot':
             print(p1)
 

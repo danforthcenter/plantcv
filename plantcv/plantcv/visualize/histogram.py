@@ -72,7 +72,7 @@ def histogram(gray_img, mask=None, bins=256, color='red', title=None):
 
     if params.debug is not None:
         if params.debug == "print":
-            fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + '_hist.png'))
+            fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + '_hist.png'), verbose=False)
         if params.debug == "plot":
             print(fig_hist)
 
