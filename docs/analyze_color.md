@@ -2,14 +2,14 @@
 
 Extract color data of objects and produce pseudocolored images, can extract data for RGB (Red, Green, Blue), HSV (Hue, Saturation, Value) and LAB (Lightness, Green-Magenta, Blue Yellow) channels.
 
-**plantcv.analyze_color**(*rgb_img, mask, hist_plot_type=None*)
+**plantcv.analyze_color**(*rgb_img, mask, hist_plot_type="all*)
 
 **returns** Histogram image (if hist_plot_type is not `None`, otherwise returns `None` object)   
 
 - **Parameters:**  
     - rgb_img - RGB image data
     - mask - binary mask of selected contours
-    - hist_plot_type - None (default), 'all', 'rgb','lab' or 'hsv', this is the data to be printed to an SVG histogram file, however all (every channel) data is still stored to the database.
+    - hist_plot_type - None, 'all'(default), 'rgb', 'lab', or 'hsv'. This can limit the data saved out. Hue data is still saved out when set to None. 
 - **Context:**
     - Used to extract color data from RGB, LAB, and HSV color channels.
     - Generates histogram of color channel data. 
@@ -35,7 +35,7 @@ pcv.params.debug = "print"
 
 # Analyze Color
     
-analysis_image = pcv.analyze_color(rgb_img, mask, 'all')
+analysis_image = pcv.analyze_color(rgb_img=rgb_img, mask=mask, hist_plot_type='all')
 
 # Access data stored out from analyze_color
 hue_circular_mean = pcv.outputs.observations['hue_circular_mean']['value']
