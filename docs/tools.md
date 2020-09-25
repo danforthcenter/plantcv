@@ -89,7 +89,7 @@ Testing a workflow on small test set (that ideally spans time and/or treatments)
 test it on other images in the dataset to determine how robust the workflow will be. The random image sampler can help 
 identify 'problem images' before running a workflow in parallel over a large set of images. This
 tool can handle LemnaTec structured output in addition to a flat file directory. Currently supported image types include 
-.png, .jpg, .jpeg, .tif, .tiff, and .gif. A source directory will be created if it does not already exist. The number of 
+.png, .jpg, .jpeg, .tif, .tiff, and .gif. An output directory will be created if it does not already exist. The number of 
 random images requested must be less than or equal to the number of images in the source directory. 
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/utils/sample_images.py)
