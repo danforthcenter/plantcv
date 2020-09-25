@@ -5,7 +5,7 @@ the values out to the [Outputs class](outputs.md). Can also return/plot/print ou
 
 **plantcv.analyze_nir_intensity**(*gray_img, mask, bins=256, histplot=False*)
 
-**returns** Histogram image (if histplot is not `True`, otherwise returns `None` object)  
+**returns** Histogram image (when histplot is `True`, otherwise returns `None` object)  
 
 - **Parameters:**
     - gray_img - 8- or 16-bit grayscale image data
