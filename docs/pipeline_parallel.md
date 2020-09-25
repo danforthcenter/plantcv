@@ -30,11 +30,12 @@ saved at any time using the `save_config` method to save for later use. Alternat
 file with your favorite text editor and adjust the parameters as needed.
 
 **Some notes on JSON format:**
-  * Like Python, string variables (e.g. "VIS") need to be in quotes but must be double `"` quotes.
-  * Unlike Python, `true` and `false` in JSON are lowercase.
-  * `None` in Python translates to `null` in JSON
-  * `\` characters need to be escaped in JSON e.g. `\d` in Python becomes `\\d` in JSON
-  * There are no comments in JSON
+
+* Like Python, string variables (e.g. "VIS") need to be in quotes but must be double `"` quotes.
+* Unlike Python, `true` and `false` in JSON are lowercase.
+* `None` in Python translates to `null` in JSON
+* `\` characters need to be escaped in JSON e.g. `\d` in Python becomes `\\d` in JSON
+* There are no comments in JSON
 
 Differences between JSON and Python will be automatically converted appropriately if you make changes to the config in Python and then use `save_config`.
 
@@ -218,26 +219,27 @@ See [Accessory Tools](tools.md) for more information.
 ### Legacy command-line parameters
 
 Alternative command-line parameters for the `plantcv-workflow.py` script that does the parallelization
-  * -d is the --dir directory of images
-  * -p is the --workflow that you are going to run over the images, see the [VIS tutorial](vis_tutorial.md) and [PSII tutorial](psII_tutorial.md)
-  * -i is the --outdir your desired location for the output images
-  * -a is the --adaptor to indicate structure to grab the metadata from, either 'filename' or the default, which is 'phenofront' (lemnatec structured output)
-  * -t is the --type extension 'png' is the default. Any format readable by opencv is accepted such as 'tif' or 'jpg'
-  * -l is the --delimiter for the filename that is used to separate metadata, default is "_". Can also be a regular expression pattern (see below).
-  * -C is the --coprocess the specified imgtype with the imgtype specified in --match (e.g. coprocess NIR images with VIS).
-  * -f is the --meta (data) structure of image file names. Comma-separated list of valid metadata terms ( "camera","imgtype". "zoom", "exposure", "gain",
-    "frame", "lifter", "timestamp", "id", "plantbarcode", "treatment", "cartag", "measurementlabel", or "other").
-  * -M is the --match metadata option, for example to select a certain zoom or angle. For example: 'imgtype:VIS,camera:SV,zoom:z500'
-  * -D is the --dates option, to select a certain date range of data. YYYY-MM-DD-hh-mm-ss_YYYY-MM-DD-hh-mm-ss. If the second date is excluded then the current date is assumed. Time can be excluded.
-  * -j is the --json, json database name
-  * -m is the --mask any image mask that you would like to provide
-  * -T is the --cpu # of cpu processes you would like to use.
-  * -s is the --timestampformat specify timestamp format for strptime C library. default is '%Y-%m-%d %H:%M:%S.%f' to parse '2010-10-10 10:10:10.123'. see
-    [strptime docs](https://docs.python.org/3.7/library/datetime.html#strftime-and-strptime-behavior) for supported codes.
-  * -w is the --writeimg option, if True will write output images. default= False
-  * -c is the --create option to overwrite an json database if it exists, if you are creating a new database or appending to database, do NOT add the -c flag
-  * -o is the --other_args option, used to pass non-standard options to the workflow script. Must take the form `--other_args="--option1 value1 --option2 value2"`
-  * -z is the --cleanup option, this will remove the temporary job directory
+
+* -d is the --dir directory of images
+* -p is the --workflow that you are going to run over the images, see the [VIS tutorial](vis_tutorial.md) and [PSII tutorial](psII_tutorial.md)
+* -i is the --outdir your desired location for the output images
+* -a is the --adaptor to indicate structure to grab the metadata from, either 'filename' or the default, which is 'phenofront' (lemnatec structured output)
+* -t is the --type extension 'png' is the default. Any format readable by opencv is accepted such as 'tif' or 'jpg'
+* -l is the --delimiter for the filename that is used to separate metadata, default is "_". Can also be a regular expression pattern (see below).
+* -C is the --coprocess the specified imgtype with the imgtype specified in --match (e.g. coprocess NIR images with VIS).
+* -f is the --meta (data) structure of image file names. Comma-separated list of valid metadata terms ( "camera","imgtype". "zoom", "exposure", "gain",
+"frame", "lifter", "timestamp", "id", "plantbarcode", "treatment", "cartag", "measurementlabel", or "other").
+* -M is the --match metadata option, for example to select a certain zoom or angle. For example: 'imgtype:VIS,camera:SV,zoom:z500'
+* -D is the --dates option, to select a certain date range of data. YYYY-MM-DD-hh-mm-ss_YYYY-MM-DD-hh-mm-ss. If the second date is excluded then the current date is assumed. Time can be excluded.
+* -j is the --json, json database name
+* -m is the --mask any image mask that you would like to provide
+* -T is the --cpu # of cpu processes you would like to use.
+* -s is the --timestampformat specify timestamp format for strptime C library. default is '%Y-%m-%d %H:%M:%S.%f' to parse '2010-10-10 10:10:10.123'. see
+[strptime docs](https://docs.python.org/3.7/library/datetime.html#strftime-and-strptime-behavior) for supported codes.
+* -w is the --writeimg option, if True will write output images. default= False
+* -c is the --create option to overwrite an json database if it exists, if you are creating a new database or appending to database, do NOT add the -c flag
+* -o is the --other_args option, used to pass non-standard options to the workflow script. Must take the form `--other_args="--option1 value1 --option2 value2"`
+* -z is the --cleanup option, this will remove the temporary job directory
 
 
 #### If running as a command in a shell script
