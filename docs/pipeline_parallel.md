@@ -129,7 +129,7 @@ Sample image filename: `cam1_16-08-06-16:45_el1100s1_p19.jpg`
 ```
 
 Running `plantcv-workflow.py --config config.json` with the example configuration options above will run the PlantCV
-workflow script `2016-08_pat-edger_brassica-cam1-splitimg.p` on the images in the input directory using an HTCondor
+workflow script `2016-08_pat-edger_brassica-cam1-splitimg.py` on the images in the input directory using an HTCondor
 compute cluster with up to 16 worker jobs checked out of the cluster.
 
 ### Using a pattern matching-based filename metadata parser
@@ -218,26 +218,26 @@ See [Accessory Tools](tools.md) for more information.
 ### Legacy command-line parameters
 
 Alternative command-line parameters for the `plantcv-workflow.py` script that does the parallelization
-* -d is the --dir directory of images
-* -p is the --workflow that you are going to run over the images, see the [VIS tutorial](vis_tutorial.md) and [PSII tutorial](psII_tutorial.md)
-* -i is the --outdir your desired location for the output images
-* -a is the --adaptor to indicate structure to grab the metadata from, either 'filename' or the default, which is 'phenofront' (lemnatec structured output)
-* -t is the --type extension 'png' is the default. Any format readable by opencv is accepted such as 'tif' or 'jpg'
-* -l is the --delimiter for the filename that is used to separate metadata, default is "_". Can also be a regular expression pattern (see below).
-* -C is the --coprocess the specified imgtype with the imgtype specified in --match (e.g. coprocess NIR images with VIS).
-* -f is the --meta (data) structure of image file names. Comma-separated list of valid metadata terms ( "camera","imgtype". "zoom", "exposure", "gain",
+  * -d is the --dir directory of images
+  * -p is the --workflow that you are going to run over the images, see the [VIS tutorial](vis_tutorial.md) and [PSII tutorial](psII_tutorial.md)
+  * -i is the --outdir your desired location for the output images
+  * -a is the --adaptor to indicate structure to grab the metadata from, either 'filename' or the default, which is 'phenofront' (lemnatec structured output)
+  * -t is the --type extension 'png' is the default. Any format readable by opencv is accepted such as 'tif' or 'jpg'
+  * -l is the --delimiter for the filename that is used to separate metadata, default is "_". Can also be a regular expression pattern (see below).
+  * -C is the --coprocess the specified imgtype with the imgtype specified in --match (e.g. coprocess NIR images with VIS).
+  * -f is the --meta (data) structure of image file names. Comma-separated list of valid metadata terms ( "camera","imgtype". "zoom", "exposure", "gain",
     "frame", "lifter", "timestamp", "id", "plantbarcode", "treatment", "cartag", "measurementlabel", or "other").
-* -M is the --match metadata option, for example to select a certain zoom or angle. For example: 'imgtype:VIS,camera:SV,zoom:z500'
-* -D is the --dates option, to select a certain date range of data. YYYY-MM-DD-hh-mm-ss_YYYY-MM-DD-hh-mm-ss. If the second date is excluded then the current date is assumed. Time can be excluded.
-* -j is the --json, json database name
-* -m is the --mask any image mask that you would like to provide
-* -T is the --cpu # of cpu processes you would like to use.
-* -s is the --timestampformat specify timestamp format for strptime C library. default is '%Y-%m-%d %H:%M:%S.%f' to parse '2010-10-10 10:10:10.123'. see
+  * -M is the --match metadata option, for example to select a certain zoom or angle. For example: 'imgtype:VIS,camera:SV,zoom:z500'
+  * -D is the --dates option, to select a certain date range of data. YYYY-MM-DD-hh-mm-ss_YYYY-MM-DD-hh-mm-ss. If the second date is excluded then the current date is assumed. Time can be excluded.
+  * -j is the --json, json database name
+  * -m is the --mask any image mask that you would like to provide
+  * -T is the --cpu # of cpu processes you would like to use.
+  * -s is the --timestampformat specify timestamp format for strptime C library. default is '%Y-%m-%d %H:%M:%S.%f' to parse '2010-10-10 10:10:10.123'. see
     [strptime docs](https://docs.python.org/3.7/library/datetime.html#strftime-and-strptime-behavior) for supported codes.
-* -w is the --writeimg option, if True will write output images. default= False
-* -c is the --create option to overwrite an json database if it exists, if you are creating a new database or appending to database, do NOT add the -c flag
-* -o is the --other_args option, used to pass non-standard options to the workflow script. Must take the form `--other_args="--option1 value1 --option2 value2"`
-* -z is the --cleanup option, this will remove the temporary job directory
+  * -w is the --writeimg option, if True will write output images. default= False
+  * -c is the --create option to overwrite an json database if it exists, if you are creating a new database or appending to database, do NOT add the -c flag
+  * -o is the --other_args option, used to pass non-standard options to the workflow script. Must take the form `--other_args="--option1 value1 --option2 value2"`
+  * -z is the --cleanup option, this will remove the temporary job directory
 
 
 #### If running as a command in a shell script
