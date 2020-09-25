@@ -61,24 +61,27 @@ def _resize_img(img, size):
 
 def time_lapse_video(img_directory, list_img=None, suffix_img=None, size_frame=None, fps=29.97,
                      name_video='time_lapse_video', path_video=None, display='on'):
-    """Generate time-lapse video given a folder of images
-    Inputs:
-        img_directory: the directory of folder of images to make the time-lapse video
-        list_img: desired list of images in img_directory to create the video. If None is passed, all images would be included by default.
-        name_video: the prefix of output video name
-        size_frame: the desired size of every frame.
+    """
+    Generate time-lapse video given a folder of images
+    :param img_directory: the directory of folder of images to make the time-lapse video.
+    :param list_img: desired list of images in img_directory to create the video. If None is passed, all images would be included by default.
+    :param suffix_img:
+    :param size_frame: the desired size of every frame.
             In a video, every frame should have the same size.
             The assumption is that all images given should have same size. However, in some cases, the sizes of images are slightly differ from each other.
             If the frame size is given, if an images is larger than the given size, the image would be cropped automatically; if an image is smaller than the given size, the image would be zero-padded automatically
             If the frame size is not given, the largest size of all images would be used as the frame size.
-        fps: (frames per second) frame rate
+    :param fps: (frames per second) frame rate
             Commonly used values: 23.98, 24, 25, 29.97, 30, 50, 59.94, 60
-        path_video: the desired saving path of output video. If not given, the video would be saved the the same directory of the images.
-        display: indicator of whether to display current status (by displaying saving directory and saving name) while running this function
-    Outputs:
-        list_img: the list of images used to generate the video
-        size_frame: the frame size of the video
-        """
+    :param name_video:
+    :param path_video: the desired saving path of output video. If not given, the video would be saved the the same directory of the images.
+    :param display: indicator of whether to display current status (by displaying saving directory and saving name) while running this function
+    :param kw: possible name and value: compress, and a number indicating what fraction compared to the original image. e.g. 0.5 represent compress the image to 1/2 of its original size
+    :return:
+    list_img: the list of images used to generate the video
+    size_frame: the frame size of the video
+    """
+
     ## Get the list of image files in the given directory and sort them alphabetically by their names
     temp_list = []
     for f in os.listdir(img_directory):
@@ -130,12 +133,10 @@ def time_lapse_video(img_directory, list_img=None, suffix_img=None, size_frame=N
             list_r.append(img.shape[0])
             list_c.append(img.shape[1])
             imgs.append(img)
-        max_c = np.max(list_c)
-        max_r = np.max(list_r)
+        max_c, max_r = np.max(list_c), np.max(list_r)
 
         # If the frame size is not provided, use the largest size of the images as the frame size
-        if size_frame is None:
-            size_frame = (max_c, max_r)
+        size_frame = size_frame or (max_c, max_r)
 
         if not (len(np.unique(list_r)) == 1 and len(np.unique(list_c)) == 1):
             warnings.warn("The sizes of images are not the same, an image resizing (cropping or zero-padding) will be done to make all images the same size ({}x{}) before creating the video! If you assume the images should have the same size, please check the images used to generate this video!".format(
@@ -149,10 +150,16 @@ def time_lapse_video(img_directory, list_img=None, suffix_img=None, size_frame=N
         save_name = os.path.join(path_video, name_video + '.mp4')
 
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Be sure to use lower case
+        # if 'compress' in kw:
+        #     ratio = kw['compress']
+        # else:
+        #     ratio = 1
+        # size_frame_ = tuple(int(x*ratio) for x in size_frame)
         out = cv2.VideoWriter(save_name, fourcc, fps, size_frame)
-        for img in imgs:
-            out.write(_resize_img(img, (max_r, max_c)))
 
+        for img in imgs:
+            # out.write(cv2.resize(_resize_img(img, (size_frame[-1],size_frame[0])), (size_frame_)))
+            out.write(_resize_img(img, (size_frame[-1], size_frame[0])))
         out.release()
         cv2.destroyAllWindows()
         if display == 'on':
