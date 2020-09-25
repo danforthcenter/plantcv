@@ -9,7 +9,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def analyze_color(rgb_img, mask, hist_plot_type="all"):
+def analyze_color(rgb_img, mask, hist_plot_type=None):
     """Analyze the color properties of an image object
     Inputs:
     rgb_img          = RGB image data
