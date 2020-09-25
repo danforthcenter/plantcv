@@ -6304,7 +6304,6 @@ def test_plantcv_visualize_colorspaces():
     vis_img = pcv.visualize.colorspaces(rgb_img=img)
     assert np.shape(vis_img)[1] > (np.shape(img)[1]) and np.shape(vis_img_small)[1] > (np.shape(img)[1])
 
-
 def test_plantcv_visualize_colorspaces_bad_input():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_plot_hist")
@@ -6315,6 +6314,34 @@ def test_plantcv_visualize_colorspaces_bad_input():
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.colorspaces(rgb_img=img)
 
+def test_plantcv_visualize_time_lapse_video_resize_img():
+    cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_resizeRGB')
+    os.mkdir(cache_dir)
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    resized_img = pcv.visualize._resize_img(img, (10,10))
+    assert np.shape(resized_img) == (10,10,3)
+
+def test_plantcv_visualize_time_lapse_video_resize_img_large():
+    cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_resizeRGB')
+    os.mkdir(cache_dir)
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    resized_img = pcv.visualize._resize_img(img, (1000,1000))
+    assert np.shape(resized_img) == (1000,1000,3)
+
+def test_plantcv_visualize_time_lapse_video_resize_img_gray():
+    cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_resizeGRAY')
+    os.mkdir(cache_dir)
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY),-1)
+    resized_img = pcv.visualize._resize_img(img, (10,10))
+    assert np.shape(resized_img) == (10,10)
+
+def test_plantcv_visualize_time_lapse_video_resize_img_gray_large():
+    cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_resizeGRAY')
+    os.mkdir(cache_dir)
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY),-1)
+    resized_img = pcv.visualize._resize_img(img, (1000,1000))
+    assert np.shape(resized_img) == (1000,1000)
+
 # case1: only the correct directory of images is provided
 def test_plantcv_visualize_time_lapse_video_case1():
     # Test cache directory
@@ -6323,6 +6350,15 @@ def test_plantcv_visualize_time_lapse_video_case1():
     with pytest.warns(UserWarning):
         _, _ = pcv.visualize.time_lapse_video(img_directory=TIME_SERIES_TEST_RAW, fps=29.97, name_video='time_lapse_video_case1', path_video=cache_dir, display='off')
         assert os.path.exists(os.path.join(cache_dir, 'time_lapse_video_case1.mp4'))
+
+# case1.5: no path_video provided and display "on"
+def test_plantcv_visualize_time_lapse_video_case1():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_case1')
+    os.mkdir(cache_dir)
+    with pytest.warns(UserWarning):
+        _, _ = pcv.visualize.time_lapse_video(img_directory=TIME_SERIES_TEST_RAW, fps=29.97, name_video='time_lapse_video_case1', display='on')
+        assert os.path.exists(os.path.join(TIME_SERIES_TEST_RAW, 'time_lapse_video_case1.mp4'))
 
 # case2: the correct directory of images as well as the correct suffix of images is provided
 def test_plantcv_visualize_time_lapse_video_case2():
