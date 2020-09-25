@@ -29,12 +29,12 @@ directly in Python as demonstrated in the [WorkflowConfig documentation](paralle
 saved at any time using the `save_config` method to save for later use. Alternatively, open the saved config
 file with your favorite text editor and adjust the parameters as needed.
 
-Some notes on JSON format:
-* Like Python, string variables (e.g. "VIS") need to be in quotes but must be double `"` quotes.
-* Unlike Python, `true` and `false` in JSON are lowercase.
-* `None` in Python translates to `null` in JSON
-* `\` characters need to be escaped in JSON e.g. `\d` in Python becomes `\\d` in JSON
-* There are no comments in JSON
+**Some notes on JSON format:**
+  * Like Python, string variables (e.g. "VIS") need to be in quotes but must be double `"` quotes.
+  * Unlike Python, `true` and `false` in JSON are lowercase.
+  * `None` in Python translates to `null` in JSON
+  * `\` characters need to be escaped in JSON e.g. `\d` in Python becomes `\\d` in JSON
+  * There are no comments in JSON
 
 Differences between JSON and Python will be automatically converted appropriately if you make changes to the config in Python and then use `save_config`.
 
