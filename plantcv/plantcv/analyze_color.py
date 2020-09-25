@@ -9,12 +9,12 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def analyze_color(rgb_img, mask, hist_plot_type=None):
+def analyze_color(rgb_img, mask, hist_plot_type="all"):
     """Analyze the color properties of an image object
     Inputs:
     rgb_img          = RGB image data
     mask             = Binary mask made from selected contours
-    hist_plot_type   = 'None', 'all', 'rgb','lab' or 'hsv'
+    hist_plot_type   = None, 'all', 'rgb','lab' or 'hsv'
 
     Returns:
     analysis_image   = histogram output
