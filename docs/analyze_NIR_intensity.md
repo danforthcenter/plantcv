@@ -10,7 +10,7 @@ the values out to the [Outputs class](outputs.md). Can also return/plot/print ou
 - **Parameters:**
     - gray_img - 8- or 16-bit grayscale image data
     - mask     - Binary mask made from selected contours
-    - bins     - Number of class to divide spectrum into (default bins = 256)
+    - bins     - Number of classes to divide spectrum into (default bins = 256)
     - histplot - If True plots histogram of intensity values (default histplot = False)
 - **Context:**
     - Near Infrared pixel frequencies within a masked area of an image. 
