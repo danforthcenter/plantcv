@@ -29,11 +29,10 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
-# Apply to a grayscale image
 # Filtered image will highlight areas of coarse pixel 
 # intensity change based on 1st derivative
-sb_x_img = pcv.sobel_filter(gray_img, 1, 0, 1)
-sb_y_img = pcv.sobel_filter(gray_img, 0, 1, 1)
+sb_x_img = pcv.sobel_filter(gray_img=gray_img, dx=1, dy=0, ksize=1)
+sb_y_img = pcv.sobel_filter(gray_img=gray_img, dx=0, dy=1, ksize=1)
 
 ```
 
