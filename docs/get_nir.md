@@ -25,8 +25,8 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Get NIR image
-nir_path = pcv.get_nir("/home/images/sorghum/snapshot1", 
-                       "VIS_SV_90_z300_h1_g0_e85_v500_86939.png")
+nir_path = pcv.get_nir(path="/home/images/sorghum/snapshot1", 
+                       filename="VIS_SV_90_z300_h1_g0_e85_v500_86939.png")
 
 ```
 
