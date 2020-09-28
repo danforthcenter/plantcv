@@ -15,7 +15,7 @@ PlantCV has been tested on the following systems:
 
 - Python (tested with versions 2.7, 3.6, and 3.7)
     - argparse
-    - cv2 (a.k.a. OpenCV; some functions require 3.0+, we recommend 3.3+. We install it via the PyPI package opencv-python)
+    - cv2 (a.k.a. OpenCV; requires at least 3.4 and <4. We install it via the PyPI package opencv-python)
     - matplotlib (requires at least 1.5, works with 2+)
     - numpy (requires at least 1.11)
     - pandas
