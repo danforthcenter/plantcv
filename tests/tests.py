@@ -6314,33 +6314,33 @@ def test_plantcv_visualize_colorspaces_bad_input():
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.colorspaces(rgb_img=img)
 
-# def test_plantcv_visualize_time_lapse_video_resize_img():
-#     cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_resizeRGB')
-#     os.mkdir(cache_dir)
-#     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-#     resized_img = pcv.visualize._resize_img(img, (10,10))
-#     assert np.shape(resized_img) == (10,10,3)
-#
-# def test_plantcv_visualize_time_lapse_video_resize_img_large():
-#     cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_resizeRGB')
-#     os.mkdir(cache_dir)
-#     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-#     resized_img = pcv.visualize._resize_img(img, (1000,1000))
-#     assert np.shape(resized_img) == (1000,1000,3)
-#
-# def test_plantcv_visualize_time_lapse_video_resize_img_gray():
-#     cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_resizeGRAY')
-#     os.mkdir(cache_dir)
-#     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY),-1)
-#     resized_img = pcv.visualize._resize_img(img, (10,10))
-#     assert np.shape(resized_img) == (10,10)
-#
-# def test_plantcv_visualize_time_lapse_video_resize_img_gray_large():
-#     cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_resizeGRAY')
-#     os.mkdir(cache_dir)
-#     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY),-1)
-#     resized_img = pcv.visualize._resize_img(img, (1000,1000))
-#     assert np.shape(resized_img) == (1000,1000)
+def test_plantcv_visualize_time_lapse_video_resize_img():
+    cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_resizeRGB')
+    os.mkdir(cache_dir)
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    resized_img = pcv.visualize._resize_img(img, (10,10))
+    assert np.shape(resized_img) == (10,10,3)
+
+def test_plantcv_visualize_time_lapse_video_resize_img_large():
+    cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_resizeRGB')
+    os.mkdir(cache_dir)
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    resized_img = pcv.visualize._resize_img(img, (1000,1000))
+    assert np.shape(resized_img) == (1000,1000,3)
+
+def test_plantcv_visualize_time_lapse_video_resize_img_gray():
+    cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_resizeGRAY')
+    os.mkdir(cache_dir)
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY),-1)
+    resized_img = pcv.visualize._resize_img(img, (10,10))
+    assert np.shape(resized_img) == (10,10)
+
+def test_plantcv_visualize_time_lapse_video_resize_img_gray_large():
+    cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_resizeGRAY')
+    os.mkdir(cache_dir)
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY),-1)
+    resized_img = pcv.visualize._resize_img(img, (1000,1000))
+    assert np.shape(resized_img) == (1000,1000)
 
 # case1: only the correct directory of images is provided
 def test_plantcv_visualize_time_lapse_video_case1():
