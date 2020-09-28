@@ -8,5 +8,7 @@ from plantcv.plantcv.time_series.time_series_linking import InstanceTSLinkingWra
 
 
 # add new functions to end of lists
-__all__ = ["_random_colors", "_apply_mask", "_get_ax", "_display_instances", "_compute_overlaps_masks",
-            "InstanceTimeSeriesLinking", "InstanceTSLinkingWrapper"]
+# __all__ = ["_random_colors", "_apply_mask", "_get_ax", "_display_instances", "_compute_overlaps_masks",
+#             "InstanceTimeSeriesLinking", "InstanceTSLinkingWrapper"]
+
+__all__ = ["InstanceTimeSeriesLinking", "InstanceTSLinkingWrapper"]
