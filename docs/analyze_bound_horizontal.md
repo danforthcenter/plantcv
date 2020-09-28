@@ -12,7 +12,7 @@ best if the pot size/position of the plant remains relatively constant.
     - img - RGB or grayscale image data for plotting
     - obj - single or grouped contour object
     - mask - binary mask of selected contours
-    - line_position = position of boundary line (a value of 0 would draw the line through the top of the image)
+    - line_position - position of boundary line (a value of 0 would draw the line through the top of the image)
 - **Context:**
     - Used to define a boundary line for the image, to find the height above and below as well as area above and below a boundary line.
 - **Example use:**
@@ -30,7 +30,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Set Boundary Line    
-boundary_image = pcv.analyze_bound_horizontal(img, obj, mask, 300)
+boundary_image = pcv.analyze_bound_horizontal(img=img, obj=obj, mask=bin_mask, line_position=300)
 
 # Access data stored out from analyze_bound_horizontal
 percent_area_below_reference = pcv.outputs.observations['percent_area_below_reference']['value']
@@ -41,14 +41,14 @@ percent_area_below_reference = pcv.outputs.observations['percent_area_below_refe
 
 ![Screenshot](img/documentation_images/analyze_bound_horizontal/boundary_950.jpg)
 
-Boundary line set at 300, purple line is boundary line, blue line is extent y above boundary line, 
+Boundary line set at 300, purple line is boundary line, blue line is height above boundary line, 
 green is area above boundary line.
 
 **Boundary tool output image (y = 520)**
 
 ![Screenshot](img/documentation_images/analyze_bound_horizontal/boundary_330.jpg)
 
-Boundary line set at 520, purple is boundary line, blue line is extent y above boundary line, 
-green line is extent y below boundary line, green is area above boundary line and red is area below boundary line.
+Boundary line set at 520, purple is boundary line, blue line is height above boundary line, 
+green line is height below boundary line, green is area above boundary line and red is area below boundary line.
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/analyze_bound_horizontal.py)
