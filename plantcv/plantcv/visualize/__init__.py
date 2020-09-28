@@ -11,7 +11,7 @@ __all__ = ["pseudocolor", "colorize_masks", "histogram", "clustered_contours", "
            "overlay_two_imgs","display_instances"]
 
 from plantcv.plantcv.visualize.time_lapse_video import time_lapse_video
-from plantcv.plantcv.visualize.time_lapse_video import _resize_img
+# from plantcv.plantcv.visualize.time_lapse_video import _resize_img
 
-__all__ = ["pseudocolor", "colorize_masks", "histogram", "clustered_contours", "colorspaces", "auto_threshold_methods", "time_lapse_video", "_resize_img"]
-
+# __all__ = ["pseudocolor", "colorize_masks", "histogram", "clustered_contours", "colorspaces", "auto_threshold_methods", "time_lapse_video", "_resize_img"]
+__all__ = ["pseudocolor", "colorize_masks", "histogram", "clustered_contours", "colorspaces", "auto_threshold_methods", "time_lapse_video"]
