@@ -28,7 +28,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Create binary image from a gray image based 
-threshold_mean = pcv.threshold.mean(gray_img, 255, 'dark')
+threshold_mean = pcv.threshold.mean(gray_img=gray_img, max_value=255, object_type='dark')
 
 ```
 
