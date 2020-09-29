@@ -2,7 +2,7 @@
 
 Creates a binary image from a grayscale image using the Gaussian adaptive thresholding method.
 
-**plantcv.threshold.gaussian(*gray_img, max_value, object_type="light"*)**
+**plantcv.threshold.gaussian**(*gray_img, max_value, object_type="light"*)
 
 **returns** thresholded/binary image
 

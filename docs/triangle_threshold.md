@@ -2,7 +2,7 @@
 
 Creates a binary image from a gray image using adaptive thresholding.
 
-**plantcv.threshold.triangle(*gray_img, max_value, object_type="light", xstep=1*)**
+**plantcv.threshold.triangle**(*gray_img, max_value, object_type="light", xstep=1*)
 
 **returns** thresholded/binary image
 

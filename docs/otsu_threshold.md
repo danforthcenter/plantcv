@@ -2,7 +2,7 @@
 
 Creates a binary image from a gray image based on the threshold values. 
 
-**plantcv.threshold.otsu(*gray_img, max_value, object_type="light"*)**
+**plantcv.threshold.otsu**(*gray_img, max_value, object_type="light"*)
 
 **returns** thresholded/binary image
 
