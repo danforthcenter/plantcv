@@ -996,8 +996,8 @@ TEST_INPUT_INSTANCE_IMG  = "visualize_inst_seg_img.png"
 TEST_INPUT_INSTANCE_MASK = "visualize_inst_seg_mask.pkl"
 
 TIME_SERIES_TEST_DIR          = os.path.join(os.path.dirname(os.path.abspath(__file__)), "seires_data")
-TIME_SERIES_TEST_RAW          = os.path.join(TIME_SERIES_TEST_DIR, "raw_im_2")
-TIME_SERIES_TEST_INSTANCE_SEG = os.path.join(TIME_SERIES_TEST_DIR, "inst_seg_2")
+TIME_SERIES_TEST_RAW          = os.path.join(TIME_SERIES_TEST_DIR, "raw_im")
+TIME_SERIES_TEST_INSTANCE_SEG = os.path.join(TIME_SERIES_TEST_DIR, "inst_seg")
 
 # ##########################
 # Tests for the main package
