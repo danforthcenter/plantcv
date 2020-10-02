@@ -942,8 +942,8 @@ TEST_INPUT_THERMAL_CSV = "FLIR2600.csv"
 PIXEL_VALUES = "pixel_inspector_rgb_values.txt"
 
 TIME_SERIES_TEST_DIR          = os.path.join(os.path.dirname(os.path.abspath(__file__)), "seires_data")
-TIME_SERIES_TEST_RAW          = os.path.join(TIME_SERIES_TEST_DIR, "raw_im_2")
-TIME_SERIES_TEST_INSTANCE_SEG = os.path.join(TIME_SERIES_TEST_DIR, "inst_seg_2")
+TIME_SERIES_TEST_RAW          = os.path.join(TIME_SERIES_TEST_DIR, "raw_im")
+TIME_SERIES_TEST_INSTANCE_SEG = os.path.join(TIME_SERIES_TEST_DIR, "inst_seg")
 
 # ##########################
 # Tests for the main package
