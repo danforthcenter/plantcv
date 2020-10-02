@@ -6418,6 +6418,13 @@ def test_plantcv_visualize_time_lapse_video_bad_list():
 # Tests for the time_series subpackage
 # ##############################
 
+def test_plantcv_time_series_display_instances():
+    # Test cache directory
+    loaded = pkl.load(open(os.path.join(TIME_SERIES_TEST_INSTANCE_SEG, "img_segment_.pkl"), 'rb'))
+    img = loaded['img']
+    masks = loaded['segment']['masks']
+    pcv.time_series._display_instances(img, masks, figsize=(16, 16), title="", ax=None, colors=None)
+
 def test_plantcv_time_series_time_series():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_time_series")
@@ -6441,7 +6448,10 @@ def test_plantcv_time_series_time_series():
     inst_ts_linking = pcv.time_series.InstanceTSLinkingWrapper(dir_save=dir_save, savename=name_series)
     inst_ts_linking(dir_img, dir_seg, pattern_datetime, time_cond, logic, thres, name_sub, suffix,
                     suffix_seg)
-    assert len(os.listdir(inst_ts_linking.dir_save)) > 0
+    inst_ts_linking2 = pcv.time_series.InstanceTSLinkingWrapper(dir_save=dir_save, savename=name_series)
+    inst_ts_linking2(dir_img, dir_seg, pattern_datetime, time_cond, 'IOU', thres, name_sub, suffix,
+                    suffix_seg)
+    assert (len(os.listdir(inst_ts_linking.dir_save)) > 0) and (len(os.listdir(inst_ts_linking2.dir_save)) > 0)
 
 
 def test_plantcv_visualize_overlay_two_imgs():
