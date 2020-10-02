@@ -132,9 +132,9 @@ def _compute_overlaps_masks(masks1, masks2):
     The masks should be of the same size
     masks1, masks2: [Height, Width, instances]
     """
-    # If either set of masks is empty return empty result
-    if masks1.shape[-1] == 0 or masks2.shape[-1] == 0:
-        return np.zeros((masks1.shape[-1], masks2.shape[-1]))
+    # # If either set of masks is empty return empty result
+    # if masks1.shape[-1] == 0 or masks2.shape[-1] == 0:
+    #     return np.zeros((masks1.shape[-1], masks2.shape[-1]))
     n1 = masks1.shape[2]
     n2 = masks2.shape[2]
     intersections = np.zeros((n1, n2))
