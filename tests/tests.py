@@ -940,6 +940,14 @@ TEST_THERMAL_ARRAY = "thermal_img.npz"
 TEST_THERMAL_IMG_MASK = "thermal_img_mask.png"
 TEST_INPUT_THERMAL_CSV = "FLIR2600.csv"
 TEST_BAD_MASK = "bad_mask_test.pkl"
+TEST_BAD_INDEX1 = 'bad_pix1.pkl'
+TEST_BAD_INDEX2 = 'bad_pix2.pkl'
+TEST_BAD_INDEX3 = 'bad_pix3.pkl'
+TEST_BAD_INDEX4 = 'bad_pix4.pkl'
+TEST_BAD_IMG1 = 'bad_img1.pkl'
+TEST_BAD_IMG2 = 'bad_img2.pkl'
+TEST_BAD_IMG3 = 'bad_img3.pkl'
+TEST_BAD_IMG4 = 'bad_img4.pkl'
 PIXEL_VALUES = "pixel_inspector_rgb_values.txt"
 
 
@@ -5765,6 +5773,99 @@ def test_plantcv_threshold_texture():
             assert 0
     else:
         assert 0
+
+
+def test_plantcv_threshold_mask_bad_native():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_mask_bad_native")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    bad_img = pkl.load(open(os.path.join(TEST_DATA, TEST_BAD_IMG2), 'rb'))
+    sz = np.shape(bad_img)
+
+    mask20 = pcv.threshold.mask_bad(bad_img, bad_type='native')
+    l20 = len(np.unique(mask20))
+
+    assert ((np.shape(mask20) == sz) and (l20 == 2))
+
+
+def test_plantcv_threshold_mask_bad_native_bad_input():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_mask_bad_native_bad")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    bad_img = pkl.load(open(os.path.join(TEST_DATA, TEST_BAD_IMG1), 'rb'))
+    sz = np.shape(bad_img)
+    mask10 = pcv.threshold.mask_bad(bad_img, bad_type='native')
+
+    assert mask10.all() == np.zeros(sz, dtype='uint8').all()
+
+
+def test_plantcv_threshold_mask_bad_nan():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_mask_bad_nan")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    bad_img = pkl.load(open(os.path.join(TEST_DATA, TEST_BAD_IMG2), 'rb'))
+    sz = np.shape(bad_img)
+
+    mask21 = pcv.threshold.mask_bad(bad_img, bad_type='nan')
+    l21 = len(np.unique(mask21))
+
+    assert ((np.shape(mask21) == sz) and (l21 == 2))
+
+
+def test_plantcv_threshold_mask_bad_nan_bad_input():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_mask_bad_nan_bad")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    bad_img = pkl.load(open(os.path.join(TEST_DATA, TEST_BAD_IMG1), 'rb'))
+    sz = np.shape(bad_img)
+    mask11 = pcv.threshold.mask_bad(bad_img, bad_type='nan')
+
+    assert mask11.all() == np.zeros(sz, dtype='uint8').all()
+
+def test_plantcv_threshold_mask_bad_input_color_img():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_mask_bad_put_color_img")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    bad_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    with pytest.raises(RuntimeError):
+        pcv.threshold.mask_bad(bad_img, bad_type='nan')
+
+def test_plantcv_threshold_mask_bad_inf():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_mask_bad_inf")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    bad_img = pkl.load(open(os.path.join(TEST_DATA, TEST_BAD_IMG2), 'rb'))
+    sz = np.shape(bad_img)
+
+    mask22 = pcv.threshold.mask_bad(bad_img, bad_type='inf')
+    l22 = len(np.unique(mask22))
+
+    assert ((np.shape(mask22) == sz) and (l22 == 2))
+
+
+def test_plantcv_threshold_mask_bad_inf_bad_input():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_mask_bad_inf_bad")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    bad_img = pkl.load(open(os.path.join(TEST_DATA, TEST_BAD_IMG1), 'rb'))
+    sz = np.shape(bad_img)
+    mask12 = pcv.threshold.mask_bad(bad_img, bad_type='inf')
+
+    assert mask12.all() == np.zeros(sz, dtype='uint8').all()
 
 
 # ###################################
