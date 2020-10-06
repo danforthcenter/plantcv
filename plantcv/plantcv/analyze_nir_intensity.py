@@ -87,7 +87,7 @@ def analyze_nir_intensity(gray_img, mask, bins=256, histplot=False):
 
         analysis_image = fig_hist
         if params.debug == "print":
-            fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + '_nir_hist.png'))
+            fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + '_nir_hist.png'), verbose=False)
         elif params.debug == "plot":
             print(fig_hist)
 

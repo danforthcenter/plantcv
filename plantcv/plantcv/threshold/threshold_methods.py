@@ -245,10 +245,11 @@ def triangle(gray_img, max_value, object_type="light", xstep=1):
     # Additional figures created by this method, if debug is on
     if params.debug is not None:
         if params.debug == 'print':
-            plt.plot(hist)
-            plt.title('Threshold value = {t}'.format(t=autothreshval))
-            plt.axis([0, 256, 0, max(hist)])
-            plt.grid(True)
+            _, ax = plt.subplots()
+            ax.plot(hist)
+            ax.set(title='Threshold value = {t}'.format(t=autothreshval))
+            ax.axis([0, 256, 0, max(hist)])
+            ax.grid(True)
             fig_name_hist = os.path.join(params.debug_outdir,
                                          str(params.device) + '_triangle_thresh_hist_' + str(autothreshval) + ".png")
             # write the figure to current directory
@@ -257,9 +258,10 @@ def triangle(gray_img, max_value, object_type="light", xstep=1):
             plt.clf()
         elif params.debug == 'plot':
             print('Threshold value = {t}'.format(t=autothreshval))
-            plt.plot(hist)
-            plt.axis([0, 256, 0, max(hist)])
-            plt.grid(True)
+            _, ax = plt.subplots()
+            ax.plot(hist)
+            ax.axis([0, 256, 0, max(hist)])
+            ax.grid(True)
             plt.show()
 
     return bin_img
@@ -608,10 +610,11 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
     #     # NaN's and values close to NaN's cannot be peaks
     #     ind = ind[np.in1d(ind, np.unique(np.hstack((indnan, indnan - 1, indnan + 1))), invert=True)]
     # first and last values of x cannot be peaks
-    if ind.size and ind[0] == 0:
-        ind = ind[1:]
-    if ind.size and ind[-1] == x.size - 1:
-        ind = ind[:-1]
+    # if ind.size and ind[0] == 0:
+    #     ind = ind[1:]
+    # if ind.size and ind[-1] == x.size - 1:
+    #     ind = ind[:-1]
+    # We think the above code will never be reached given some of the hardcoded properties used
 
     # # Where this function is used has hardcoded mph=None so this will never be used
     # # remove peaks < minimum peak height

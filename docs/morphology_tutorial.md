@@ -52,12 +52,9 @@ Sample command to run a workflow on a single image:
 
 ```python
 
-#!/usr/bin/python
-import sys, traceback
-import cv2
-import numpy as np
+#!/usr/bin/env python
+# import sys, traceback
 import argparse
-import string
 from plantcv import plantcv as pcv
 
 ### Parse command-line arguments
@@ -408,12 +405,10 @@ In the terminal:
 Python script: 
 
 ```python
-# !/usr/bin/python
-import sys, traceback
-import cv2
-import numpy as np
+#!/usr/bin/env python
+# import sys, traceback
+
 import argparse
-import string
 from plantcv import plantcv as pcv
 
 
