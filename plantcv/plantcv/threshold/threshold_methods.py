@@ -722,3 +722,38 @@ def saturation(rgb_img, threshold=255, channel="any"):
     elif params.debug == 'plot':
         plot_image(bin_img, cmap='gray')
     return bin_img
+
+
+def mask_bad(gray_img, bad_type='native'):
+    """ Returns a mask indicating the locations of "bad" pixels
+
+    Inputs:
+    gray_img        = gray scale image represented by an nd-array (data type: float)
+    bad_type        = interested type of bad pixels, 'nan', 'inf' or 'native'
+
+    """
+
+    size_img = np.shape(gray_img)
+    if len(size_img) != 2:
+        fatal_error('Input image is not a grayscale image!')
+
+    mask = np.zeros(size_img, dtype='uint8')
+    temp_nan, _ = np.where(np.isnan(gray_img) == 1)
+    temp_inf, _ = np.where(np.isinf(gray_img) == 1)
+
+    if len(temp_nan.tolist()) == 0 and len(temp_inf.tolist()) == 0:
+        # fatal_error('Neither nan nor inf appears in the current image.')
+        mask = mask
+        print('Neither nan nor inf appears in the current image.')
+    elif bad_type.lower() == 'native':
+        mask[np.isnan(gray_img)] = 255
+        mask[np.isinf(gray_img)] = 255
+    elif bad_type.lower() == 'nan' and len(temp_nan.tolist()) >= 1:
+        mask[np.isnan(gray_img)] = 255
+    elif bad_type.lower() == 'inf' and len(temp_inf.tolist()) >= 1:
+        mask[np.isinf(gray_img)] = 255
+    else:
+        # fatal_error('{} does not appear in the current image.'.format(bad_type.lower()))
+        mask = mask
+        print('{} does not appear in the current image.'.format(bad_type.lower()))
+    return mask
