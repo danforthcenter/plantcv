@@ -5,7 +5,7 @@ pseudocolored image. Additionally, optional maximum and minimum values can be sp
 then the image gets saved to `pcv.params.debug_outdir`, and`pcv.params.dpi` can be set for the image that gets saved. If
 unaltered, the  matplotlib default is 100 pixels per inch.
 
-**plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, background="image", cmap=None, min_value=0, max_value=255, axes=True, colorbar=True, obj_padding='auto', bad_mask=None, bad_color="red"*)
+**plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, background="image", cmap=None, min_value=0, max_value=255, axes=True, colorbar=True, obj_padding='auto', \*, bad_mask=None, bad_color="red"*)
 
 **returns** pseudocolored image (that can be saved with `pcv.print_image`)
 
@@ -35,6 +35,9 @@ unaltered, the  matplotlib default is 100 pixels per inch.
 **Mask**
 
 ![Screenshot](img/documentation_images/pseudocolor/mask.jpg)
+
+**Mask of "bad" values**
+![Screenshot](img/documentation_images/mask_bad_threshold/bad_mask_both.png)
 
 
 ```python
@@ -103,6 +106,6 @@ simple_pseudo_img = pcv.visualize.pseudocolor(gray_img=img, obj=None, mask=mask,
 ![Screenshot](img/documentation_images/pseudocolor/pseudo_onimage_simple.jpg)
 
 **Pseudocolored, Pixels With User Defined "bad" Values Marked Using Red Color (no axes or colorbar)**
-![Screenshot](img/documentation_images/pseudocolor/pseudo_bad_marked.jpg)
+![Screenshot](img/documentation_images/pseudocolor/mask_bad_both.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/visualize/pseudocolor.py)
