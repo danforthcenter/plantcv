@@ -732,6 +732,7 @@ def mask_bad(gray_img, bad_type='native'):
     bad_type        = interested type of bad pixels, 'nan', 'inf' or 'native'
 
     """
+    params.device += 1
 
     size_img = np.shape(gray_img)
     if len(size_img) != 2:
@@ -756,4 +757,10 @@ def mask_bad(gray_img, bad_type='native'):
         # fatal_error('{} does not appear in the current image.'.format(bad_type.lower()))
         mask = mask
         print('{} does not appear in the current image.'.format(bad_type.lower()))
+
+    if params.debug == 'print':
+        print_image(mask, os.path.join(params.debug_outdir, str(params.device), '_bad_mask.png'))
+    elif params.debug == 'plot':
+        plot_image(mask, cmap='gray')
+
     return mask
