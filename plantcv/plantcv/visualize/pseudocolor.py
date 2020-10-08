@@ -11,7 +11,7 @@ import matplotlib
 
 
 def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255,
-                axes=True, colorbar=True, obj_padding="auto", bad_mask=None, bad_color="red"):
+                axes=True, colorbar=True, obj_padding="auto", *, bad_mask=None, bad_color="red"):
     """Pseudocolor any grayscale image to custom colormap
 
     Inputs:
@@ -33,6 +33,7 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
     Returns:
     pseudo_image = pseudocolored image
 
+
     :param gray_img: numpy.ndarray
     :param obj: numpy.ndarray
     :param mask: numpy.ndarray
@@ -43,6 +44,8 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
     :param axes: bool
     :param colorbar: bool
     :param obj_padding: str, int
+    :param bad_mask: numpy.ndarray, (keyword-only parameter), default None
+    :param bad_color: str, (keyword-only parameter), default "red"
     :return pseudo_image: numpy.ndarray
     """
 
