@@ -59,7 +59,7 @@ using one of the methods described in the
 #### Install PlantCV dependencies
 
 We recommend using `conda` to set up a virtual environment for developing PlantCV. Instructions can be found in the
-[installation documentation](installation.md#manual-installs).
+[installation documentation](installation.md#installation-from-the-source-code).
 
 #### Create a branch to do your work
 
