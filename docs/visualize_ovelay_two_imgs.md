@@ -1,6 +1,6 @@
-## Pseudocolor any Grayscale Image
+## Overlay Two Images
 
-This function overlays one input image on top of the other one, with and desired alpha value indicating the opacity of the 1st image. It is able to handle both RGB image and gray scale images.
+This function overlays one input image on top of the other one, with a desired alpha value indicating the opacity of the 1st image. It is able to handle both RGB  and gray scale images.
 
 **plantcv.visualize.overlay_two_imgs**(*img1, img2, alpha=0.5, size_img=None*)
 
@@ -9,8 +9,8 @@ This function overlays one input image on top of the other one, with and desired
 - **Parameters:**
     - img1        - 1st input image (ndarray).
     - img2        - 2nd input image (ndarray).
-    - alpha       - Opacity of the 1st image (a value in the range of (0,1)), 0.5 by default.
-    - size_img    - Desired output image size. Both input images would be resized to a same size. If the desired size is not given, the larger weight and height of two input images would be used as the common size, and the images would be resized to this size.
+    - alpha       - Opacity of the 1st image (a value in the range of (0,1), default `alpha=0.5`).
+    - size_img    - Desired output image size (optional, default: None). Both input images would be resized to a same size. If the desired size is not given, the larger width and height of the two input images is used as the common size.
 
 - **Context:**
     - Used to overlay two images. 
