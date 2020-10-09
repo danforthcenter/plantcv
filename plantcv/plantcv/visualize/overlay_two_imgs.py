@@ -19,8 +19,22 @@ import warnings
 
 def _resize_img(img, new_size):
     """Resize the image to the given new size
+
+    Inputs:
+    img         = RGB or grayscale image data
+    new_size    = New dimensions of the output image
+
+
+    Returns:
+    output_img  = resized output image
+
+    :param img: numpy.ndarray
+    :param new_size: tuple
+    :return output_img: numpy.ndarray
+
+    Note:
     If the given size is larger than the original image size, zero-pad the image.
-    If the given size is smaller than the origina image size, crop the image (right & bottom).
+    If the given size is smaller than the original image size, crop the image (right & bottom).
     """
 
     # original image size
@@ -64,11 +78,23 @@ def overlay_two_imgs(img1, img2, alpha=0.5, size_img=None):
     """
     A function used to overlay two images with a given alpha value (alpha indicated how opaque the 1st image is)
     Input grayscale images would be converted to RGB first
-    inputs:
-    img1: ndarray, can be either 3-dimensional (RGB image) or 2-dimensional (graysacle)
-    img2: ndarray, can be either 3-dimensional (RGB image) or 2-dimensional (graysacle)
-    alpha: desired opacity of 1st image, range: (0,1), default value=0.5
-    size_img: desired size of the image, (width, height), default value=None (if there is no desired size, the output image size would be equal to the larger size of the two)
+
+    Inputs:
+    img1        = ndarray, can be either 3-dimensional (RGB image) or 2-dimensional (graysacle)
+    img2        = ndarray, can be either 3-dimensional (RGB image) or 2-dimensional (graysacle)
+    alpha       = desired opacity of 1st image, range: (0,1), default value=0.5
+    size_img    = desired size of the image, (width, height), default value=None (if there is no desired size, the
+                  output image size would be equal to the larger size of the two)
+
+
+    Returns:
+    out_img     = blended output image
+
+    :param img1: numpy.ndarray
+    :param img2: numpy.ndarray
+    :param alpha: float
+    :param size_img: tuple
+    :return out_img: numpy.ndarray
     """
 
     if alpha > 1 or alpha < 0:
