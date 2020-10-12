@@ -106,7 +106,7 @@ Sample image filename: `cam1_16-08-06-16:45_el1100s1_p19.jpg`
     "end_date": null,
     "imgformat": "jpg",
     "delimiter": "_",
-    "metadata_filters": {"imgtype":"VIS"},
+    "metadata_filters": {"camera": "cam1"},
     "timestampformat": "%y-%m-%d-%H:%M",
     "writeimg": true,
     "other_args": null,
