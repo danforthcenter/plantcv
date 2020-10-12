@@ -12,7 +12,7 @@ Flips an image in either the horizontal or vertical direction
 - **Context:**
     - Used to flip images when necessary
 - **Example use:**
- - flip image horizontally or vertically, rotate function is also available to adjust image positioning.
+    - Below
 
 **Original image**
 
@@ -27,7 +27,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Flip Image Horizontal
-flipped= pcv.flip(img, 'horizontal')
+flipped= pcv.flip(img=img, direction='horizontal')
 
 ```
 
@@ -37,14 +37,9 @@ flipped= pcv.flip(img, 'horizontal')
 
 ```python
 
-from plantcv import plantcv as pcv
-
-# Set global debug behavior to None (default), "print" (to file), 
-# or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
 
 # Flip Image Vertical
-flipped= pcv.flip(img, 'vertical')
+flipped= pcv.flip(img=img, direction='vertical')
 
 ```
 

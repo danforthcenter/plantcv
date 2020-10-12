@@ -1,14 +1,14 @@
 ## Analyze Thermal Values 
 
 This function calculates the intensity of each pixel associated with the temperature and writes 
-the values out to a file. Can also print out a histogram of pixel intensity.
+the values out to a file. Can optionally create a histogram of pixel intensity.
 
 **plantcv.analyze_thermal_values**(*thermal_array, mask, histplot=False*)
 
 **returns** thermal histogram (if `histplot=True`, otherwise returns None object)
 
 - **Parameters:**
-    - thermal_array - Numpy array of thermal values (read in with [pcv.readimage](read_image.md) with `mode='csv'`)
+    - thermal_array - Numpy array of thermal image data (most likely read in with [pcv.readimage](read_image.md) with `mode='csv'`)
     - mask          - Binary mask made from selected contours
     - histplot      - If True plots histogram of intensity values (default histplot = False)
 - **Context:**
