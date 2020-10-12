@@ -68,7 +68,7 @@ and [updating documentation](documentation.md).
     See also tutorials on the [DDPSC Maker Group site](http://maker.danforthcenter.org/).
 - Q: Can PlantCV use information about the temporal relation of images
   for object tracking etc.?
-    - A: Not ye, but stick around!
+    - A: Not yet, but stick around!
     OpenCV includes tools for analyzing video data,
     so this could be added in the future.
 - Q: My plants are touching,
