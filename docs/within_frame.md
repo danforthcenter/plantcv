@@ -1,4 +1,4 @@
-## Check An Object Is Within Frame
+## Check If An Object Is Within Frame
 
 This function tests whether an object (defined as nonzero pixels in a mask) falls completely within the bounds of an 
 image, or if it touches the edge.

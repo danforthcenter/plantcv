@@ -9,7 +9,7 @@ Extract color data of objects and produce pseudocolored images, can extract data
 - **Parameters:**  
     - rgb_img - RGB image data
     - mask - binary mask of selected contours
-    - hist_plot_type - None, 'all'(default), 'rgb', 'lab', or 'hsv'. This can limit the data saved out. Hue data is still saved out when set to None. 
+    - hist_plot_type - None (default), 'all', 'rgb', 'lab', or 'hsv'. This can limit the data saved out. Hue data is still saved out when set to None. 
 - **Context:**
     - Used to extract color data from RGB, LAB, and HSV color channels.
     - Generates histogram of color channel data. 
