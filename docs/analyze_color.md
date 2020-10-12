@@ -2,7 +2,7 @@
 
 Extract color data of objects and produce pseudocolored images, can extract data for RGB (Red, Green, Blue), HSV (Hue, Saturation, Value) and LAB (Lightness, Green-Magenta, Blue Yellow) channels.
 
-**plantcv.analyze_color**(*rgb_img, mask, hist_plot_type="all*)
+**plantcv.analyze_color**(*rgb_img, mask, hist_plot_type=None*)
 
 **returns** Histogram image (if hist_plot_type is not `None`, otherwise returns `None` object)   
 
