@@ -23,7 +23,7 @@ pcv.params.debug = "print"
 
 # Apply fill holes to a binary image 
 
-fill_image = pcv.fill_holes(binary_img, 200)
+fill_image = pcv.fill_holes(bin_img=binary_img)
 
 ```
 

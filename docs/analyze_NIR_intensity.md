@@ -5,12 +5,12 @@ the values out to the [Outputs class](outputs.md). Can also return/plot/print ou
 
 **plantcv.analyze_nir_intensity**(*gray_img, mask, bins=256, histplot=False*)
 
-**returns** Histogram image (if histplot is not `True`, otherwise returns `None` object)  
+**returns** Histogram image (when histplot is `True`, otherwise returns `None` object)  
 
 - **Parameters:**
     - gray_img - 8- or 16-bit grayscale image data
     - mask     - Binary mask made from selected contours
-    - bins     - Number of class to divide spectrum into (default bins = 256)
+    - bins     - Number of NIR intensity value groups (default bins = 256)
     - histplot - If True plots histogram of intensity values (default histplot = False)
 - **Context:**
     - Near Infrared pixel frequencies within a masked area of an image. 

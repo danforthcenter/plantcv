@@ -9,15 +9,15 @@ new version of code is pushed to the PlantCV GitHub repository.
 
 ### Updating PlantCV documentation
 
-Follow the [contribution guide](CONTRIBUTING.md) to learn how to `fork` a
-copy of the PlantCV repository, edit files, and generate a `pull`
-request to merge your updates back into the main repository. Changes to
-PlantCV should generally be done in the `dev` branch, which corresponds
-to the `latest` version of the documentation on Read the Docs.
+Follow the [contribution guide](CONTRIBUTING.md) to learn how clone a copy of the PlantCV
+repository, edit files, and generate a `pull` request to merge your updates back into the 
+main repository. Changes to PlantCV should be done in a branch, and pull against the 
+`master` branch  which corresponds to the `latest` version of the documentation on Read the Docs.
 
 The documentation files are all located in the `docs` folder. If you are
 editing existing documentation, the Markdown files can be edited in any
-plain text editor or in the GitHub web interface. See [here](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
+plain text editor or in the GitHub web interface. 
+See [here](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
 for an overview of Markdown format.
 
 When adding new documentation, a new Markdown file should be added to
@@ -31,10 +31,10 @@ general style guidelines. Finally, new documentation files need to be
 referenced in the `mkdocs.yml` file in the main repository folder. This
 is done by adding the new file as a node in the table of contents tree.
 In the example below a new documentation file was added to the
-Documentation, Tutorials, and Library sections.
+Documentation, Tutorials, and PlantCV Namespace sections.
 
 ```
-pages:
+nav:
 - Home: index.md
 - Documentation:
   - Installation: installation.md
@@ -42,17 +42,19 @@ pages:
   - Tutorials:
     - 'VIS workflow': vis_tutorial.md
     - 'New tutorial': new_tutorial.md
-  - Library:
+  - - 'PlantCV Namespace':
     - 'Analyze color': analyze_color.md
     - 'New function': new_function.md
+
 ```
 
 `mkdocs` can be used to test that the new documentation can be built
 correctly locally before submitting to GitHub. From the root of a local
 plantcv repository clone:
 
-```
+```bash
 mkdocs build --theme readthedocs --site-dir _site
+
 ```
 
 A clean build will output the messages:
@@ -60,6 +62,8 @@ A clean build will output the messages:
 ```
 INFO    -  Cleaning site directory
 INFO    -  Building documentation to directory: plantcv/_site
+INFO    -  Documentation built in 6.29 seconds
+
 ```
 
 The `_site` folder (ignored by git) will contain the static HTML files

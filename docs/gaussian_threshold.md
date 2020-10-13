@@ -2,7 +2,7 @@
 
 Creates a binary image from a grayscale image using the Gaussian adaptive thresholding method.
 
-**plantcv.threshold.gaussian(*gray_img, max_value, object_type="light"*)**
+**plantcv.threshold.gaussian**(*gray_img, max_value, object_type="light"*)
 
 **returns** thresholded/binary image
 
@@ -29,7 +29,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Create binary image from a gray image based
-threshold_gaussian = pcv.threshold.gaussian(gray_img, 255, 'dark')
+threshold_gaussian = pcv.threshold.gaussian(gray_img=gray_img, max_value=255, object_type='dark')
 
 ```
 

@@ -12,7 +12,7 @@ best if the pot size/position of the plant remains relatively constant.
     - img - RGB or grayscale image data for plotting
     - obj - single or grouped contour object
     - mask - binary mask of selected contours
-    - line_position = position of boundary line (a value of 0 would draw the line through the left of the image)
+    - line_position - position of boundary line (a value of 0 would draw the line through the left of the image)
 - **Context:**
     - Used to define a boundary line for the image, to find the width to the right and to the left as well as area to the right and to the left of a boundary line.
 - **Example use:**
@@ -30,7 +30,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Set Boundary Line    
-boundary_image = pcv.analyze_bound_vertical(img, obj, mask, 1000)
+boundary_image = pcv.analyze_bound_vertical(img=img, obj=obj, mask=bin_mask, line_position=1000)
 
 # Access data stored out from analyze_bound_vertical
 area_right_reference = pcv.outputs.observations['area_right_reference']['value']

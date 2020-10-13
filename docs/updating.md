@@ -5,7 +5,8 @@
 To update PlantCV, in a terminal type:
 
 ```bash
-pip install --upgrade
+pip install --upgrade plantcv
+
 ```
 
 ### Conda
@@ -14,58 +15,37 @@ To update PlantCV, in a terminal type:
 
 ```bash
 conda upgrade -n plantcv plantcv
+
 ```
 
 If conda does not update your PlantCV installation, you can try installing a specific version. For example if you are on v3.6.1 and you would like to install v3.6.2 you can use:
 
 ```bash
 conda install -n plantcv plantcv=3.6.2
+
 ```
 
-You can find the latest version available on bioconda with:
+You can find the latest version available on [conda-forge](https://conda-forge.org/) with:
 
 ```bash
 conda list plantcv
+
 ```
 
-### Manual Install
+### Updating from the source code
+
 The general procedure for updating PlantCV if you are using the `master` branch
 cloned from the `danforthcenter/plantcv` repository is to update your local 
 repository and reinstall the package.
 
+With GitHub Desktop you can [synchronize](https://docs.github.com/en/free-pro-team@latest/desktop/contributing-and-collaborating-using-github-desktop/syncing-your-branch)
+to pull updates from GitHub. Or on the command line update using `git pull`.
+
 If you are not sure that you have cloned the `danforthcenter/plantcv` repository
 and are on the `master` branch, here is how you can tell:
 
-```
-cd plantcv
-
-git remote -v
-
-# You should see something like:
-# origin	https://github.com/danforthcenter/plantcv.git (fetch)
-
-git status
-
-# You should see:
-# On branch master
-# nothing to commit, working directory clean
-```
-
-If the above is true, updating can be done simply by:
-
-```
-git pull
-
-python setup.py install
-
-# Or with sudo if needed
-```
-
-If you have put the cloned plantcv repository folder in your `PYTHONPATH` then
-pulling alone is enough to update. See [installation instructions](installation.md) 
-for details on required dependencies. When using a PlantCV clone (as opposed to a 
-conda environment) updating may require manual installation of any dependencies added
-since the clone was created. 
+If you installed PlantCV using the "editable" mode `pip install -e .` then your installation should be updated
+automatically. Alternatively, you can run `python setup.py install` to reinstall the package from the cloned repository.
 
 ### Updating from v1 to v2
 
