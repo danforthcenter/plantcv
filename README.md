@@ -28,26 +28,19 @@ links to recorded presentations, and publications using PlantCV, please visit ou
 
 ### Quick Links
 
-*  [Documentation](http://plantcv.readthedocs.io/)
-
-*  [Interactive Documentation](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=index.ipynb)
-
-*  [Installation Instructions](https://plantcv.readthedocs.io/en/stable/installation/)
-
-*  [Updating/Changelog](https://plantcv.readthedocs.io/en/stable/updating/)
-
-*  [Public Image Datasets](http://plantcv.danforthcenter.org/pages/data.html)
-
-*  [Contribution Guide](https://plantcv.readthedocs.io/en/stable/CONTRIBUTING/)
-
-*  [Code of Conduct](https://plantcv.readthedocs.io/en/stable/CODE_OF_CONDUCT/)
-
-*  Downloads
-  *  [GitHub](https://github.com/danforthcenter/plantcv)
-  *  [PyPI](https://pypi.org/project/plantcv/)
-  *  [Bioconda](https://anaconda.org/bioconda/plantcv)
-  *  [Docker](https://hub.docker.com/repository/docker/danforthcenter/plantcv)
-  *  [Zenodo](https://doi.org/10.5281/zenodo.595522)
+* [Documentation](http://plantcv.readthedocs.io/)
+* [Interactive Documentation](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=index.ipynb)
+* [Installation Instructions](https://plantcv.readthedocs.io/en/stable/installation/)
+* [Updating/Changelog](https://plantcv.readthedocs.io/en/stable/updating/)
+* [Public Image Datasets](http://plantcv.danforthcenter.org/pages/data.html)
+* [Contribution Guide](https://plantcv.readthedocs.io/en/stable/CONTRIBUTING/)
+* [Code of Conduct](https://plantcv.readthedocs.io/en/stable/CODE_OF_CONDUCT/)
+* Downloads
+  * [GitHub](https://github.com/danforthcenter/plantcv)
+  * [PyPI](https://pypi.org/project/plantcv/)
+  * [Conda-forge](https://anaconda.org/conda-forge/plantcv)
+  * [Docker](https://hub.docker.com/r/danforthcenter/plantcv)
+  * [Zenodo](https://doi.org/10.5281/zenodo.595522)
 
 ### Citing PlantCV
 
