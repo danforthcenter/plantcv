@@ -725,16 +725,12 @@ def saturation(rgb_img, threshold=255, channel="any"):
         plot_image(bin_img, cmap='gray')
     return bin_img
 
-
 def mask_bad(gray_img, bad_type='native'):
-    """ Returns a mask indicating the locations of "bad" pixels
-
-    Inputs:
-    gray_img        = gray scale image represented by an nd-array (data type: float)
-    bad_type        = interested type of bad pixels, 'nan', 'inf' or 'native'
-
     """
-    
+    :param gray_img: gray scale image represented by an nd-array (data type: float)
+    :param bad_type: interested type of bad pixels, 'nan', 'inf' or 'native'
+    :return: A mask indicating the locations of "bad" pixels
+    """
     params.device += 1
 
     size_img = np.shape(gray_img)
