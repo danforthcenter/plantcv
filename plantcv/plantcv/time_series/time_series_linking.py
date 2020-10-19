@@ -132,9 +132,9 @@ def _compute_overlaps_masks(masks1, masks2):
     The masks should be of the same size
     masks1, masks2: [Height, Width, instances]
     """
-    # # If either set of masks is empty return empty result
-    # if masks1.shape[-1] == 0 or masks2.shape[-1] == 0:
-    #     return np.zeros((masks1.shape[-1], masks2.shape[-1]))
+    # If either set of masks is empty return empty result
+    if masks1.shape[-1] == 0 or masks2.shape[-1] == 0:
+        return np.zeros((masks1.shape[-1], masks2.shape[-1]))
     n1 = masks1.shape[2]
     n2 = masks2.shape[2]
     intersections = np.zeros((n1, n2))
@@ -152,34 +152,31 @@ def _compute_overlaps_masks(masks1, masks2):
     ious = np.divide(intersections, unions)
     return ious, ioss
 
-
 class InstanceTimeSeriesLinking(object):
     """A class that links segmented instances throughout time
     Assumption: the timepoints are all sorted, the images and masks are also sorted by timepoints (chronologically)
     """
 
-    def __init__(self, images, masks, timepoints, logic='IOS', thres=0.2, name_sub='instance'):
+    def __init__(self):
         # a list of images which are ndarrays
-        self.images = images
+        self.images = None
         # a list of masks which are ndarrays (of the same length of images)
-        self.masks = masks
+        self.masks = None
         # a list of timepoints (of the same length of images)
-        self.timepoints = timepoints
-        self.total_time = len(self.timepoints)
+        self.timepoints = None
+        self.total_time = None
         # number of instances: a list in which every element represent for number of instances in corresponding image
-        self.n_insts = []
-        for i in range(0, len(self.masks)):
-            self.n_insts.append(self.masks[i].shape[2])
+        self.n_insts = None
 
         # initialization for linking
-        self.thres = thres
-        self.link_info = [-np.ones((self.n_insts[i]), dtype=int) for i in range(0, self.total_time - 1)]
-        self.unlinked_insts = [np.array(range(0, self.n_insts[i])) for i in range(0, self.total_time)]
-        self.link_series = dict()  # only for those newly emerging leaves
-        self.weights = []
-        self.logic = logic.upper()
-        self.name_sub = name_sub
-        self.key_id = '{}_ids'.format(name_sub)
+        self.thres = None
+        self.link_info = None
+        self.unlinked_insts = None
+        self.link_series = None
+        self.weights = None
+        self.logic   = None
+        self.name_sub = None
+        self.key_id = None
 
     def save_linked_series(self, savedir, savename):
         """save lining information into a .csv file and a .pkl file with the same prefix of filename
@@ -196,7 +193,19 @@ class InstanceTimeSeriesLinking(object):
                 new_line = ['{}'.format(uid), '{}'.format(cid)] + item['{}{}'.format(self.name_sub, cid)].tolist()
                 writer_junk.writerow(new_line)
         csvfile.close()
-        pkl.dump(self, open(os.path.join(savedir, savename + '.pkl'), 'wb'))
+        # pkl.dump(self, open(os.path.join(savedir, savename + '.pkl'), 'wb'))
+        pkl.dump(vars(self), open(os.path.join(savedir, savename+".pkl"), 'wb'))
+
+    def import_linked_series(self, savedir, savename):
+        """import a linked time-series from previously saved file
+
+        :param savedir: saving directory
+        :param savename: saving name
+        :return:
+        """
+        linked = pkl.load(open(os.path.join(savedir, savename+'.pkl'),"rb"))
+        for key, value in linked.items():
+            setattr(self, key, value)
 
     def linking(self, t0):
         """
@@ -204,8 +213,7 @@ class InstanceTimeSeriesLinking(object):
         :param t0: starting time point
         :return: None, but self.link_info would be updated
         """
-        masks0, masks1 = copy.deepcopy(self.masks[t0]), copy.deepcopy(
-            self.masks[t0 + 1])  # both masks0 and masks1 are ndarrays
+        masks0, masks1 = copy.deepcopy(self.masks[t0]), copy.deepcopy(self.masks[t0 + 1])  # both masks0 and masks1 are ndarrays
         n0, n1 = masks0.shape[2], masks1.shape[2]
         weight = -np.inf * np.ones((n0, n1))
         link = -np.ones(n0)
@@ -385,7 +393,7 @@ class InstanceTimeSeriesLinking(object):
                             [unique_id, start_time, self.timepoints[start_time], t, self.timepoints[t], link_inst[t]])
 
                         pcv.print_image(leaf_t, os.path.join(visualdirs['1'],
-                                                             '{}_{}-{}-{}-{}_{}.png'.format(unique_id, start_time,
+                                                             '{}_{}-{}-{}-{}_{}.jpg'.format(unique_id, start_time,
                                                                                             start_idx, t, link_inst[t],
                                                                                             self.timepoints[t])))
                         mask_2[np.where(mask_t == True)] = 1
@@ -399,7 +407,7 @@ class InstanceTimeSeriesLinking(object):
                     ax2.imshow(masked_im)
                     ax2.axis('off')
                     ax2.set_title(title_vis2, fontsize=16)
-                    plt.savefig(os.path.join(save_dir_, str(self.timepoints[t]) + '.png'))
+                    plt.savefig(os.path.join(save_dir_, str(self.timepoints[t]) + '.jpg'))
                     plt.close(fig2)
 
                 count += 1
@@ -408,10 +416,32 @@ class InstanceTimeSeriesLinking(object):
         for (img, masks, color, t) in zip(self.images, self.masks, color_all, self.timepoints):
             _display_instances(img, masks, figsize=(16, 16), title="", ax=_get_ax(rows=1, cols=1, size=16),
                                colors=color)
-            plt.savefig(os.path.join(visualdirs['3'], '{}.png'.format(t)))
+            plt.savefig(os.path.join(visualdirs['3'], '{}.jpg'.format(t)))
             plt.close('all')
 
-    def __call__(self, savedir, visualdir_, visualdir, savename_, savename, colors=None, color_all=None):
+    def __call__(self, images, masks, timepoints, savedir, visualdir_, visualdir, savename_, savename, logic="IOS", thres=0.2, name_sub="instance",colors=None, color_all=None):
+        # a list of images which are ndarrays
+        self.images = images
+        # a list of masks which are ndarrays (of the same length of images)
+        self.masks  = masks
+        # a list of timepoints (of the same length of images)
+        self.timepoints = timepoints
+        self.total_time = len(self.timepoints)
+        # number of instances: a list in which every element represent for number of instances in corresponding image
+        self.n_insts = []
+        for i in range(0, len(self.masks)):
+            self.n_insts.append(self.masks[i].shape[2])
+
+        # initialization for linking
+        self.thres     = thres
+        self.link_info = [-np.ones((self.n_insts[i]), dtype=int) for i in range(0, self.total_time - 1)]
+        self.unlinked_insts = [np.array(range(0, self.n_insts[i])) for i in range(0, self.total_time)]
+        self.link_series = dict()  # only for those newly emerging leaves
+        self.weights  = []
+        self.logic    = logic.upper()
+        self.name_sub = name_sub
+        self.key_id   = '{}_ids'.format(name_sub)
+
         for t0 in range(0, self.total_time - 1):
             self.linking(t0)
         self.get_series()
@@ -431,26 +461,29 @@ class InstanceTSLinkingWrapper(object):
     3) For every image, there is a corresponding segmentation result
     Otherwise, please get your data prepared and use the "InstanceTimeSeriesLinking" class directly
     """
-    def __init__(self, dir_save, savename):
-        self.dir_save = dir_save
-        self.savename = savename
-        self.savename_ = '{}_old'.format(savename)
+
+    def __init__(self):
+        self.dir_save = None
+        self.savename = None
+        self.savename_ = None
         self.dir_img = None
         self.dir_seg = None
         self.time_cond = None
-        self.suffix    = None
-        self.ext       = None
+        self.suffix = None
+        self.ext = None
         self.suffix_seg = None
-        self.timepoints = []
-        self.imgfiles = []
-        self.segfiles = []
+        self.timepoints = None
+        self.imgfiles = None
+        self.segfiles = None
         self.dir_visual = None
         self.dir_visual_ = None
+        self.pattern_dt = None
 
     def set_save_dirs(self):
         junk = datetime.datetime.now()
         subfolder = '{}-{}-{}-{}-{}'.format(junk.year, str(junk.month).zfill(2), str(junk.day).zfill(2),
-                                            str(junk.hour).zfill(2), str(junk.minute).zfill(2), str(junk.second).zfill(2))
+                                            str(junk.hour).zfill(2), str(junk.minute).zfill(2),
+                                            str(junk.second).zfill(2))
         self.dir_save = os.path.join(self.dir_save, subfolder)
         if not os.path.exists(self.dir_save):
             os.makedirs(self.dir_save)
@@ -461,23 +494,11 @@ class InstanceTSLinkingWrapper(object):
         if not os.path.exists(self.dir_visual_):
             os.makedirs(self.dir_visual_)
 
-    def sort_time(self, dir_img, dir_seg, pattern_dt, time_cond, suffix='.jpg', suffix_seg='.pkl'):
+    def sort_time(self):
         """
         This function is designed for files with file names which contain a "date-time" part, with an user-defined pattern
         sort time based on names of original images
-        :param dir_img: directory of original images
-        :param dir_seg: directory of segmentation results
-        :param pattern_dt: the common pattern of date-time part in file names, e.g. YYYY-MM-DD-hh-mm
-        :param time_cond: the date time of data intended to be included in the analysis
-        :param suffix: the common suffix of all original image files
-        :param suffix_seg: the common suffix of all segmentation result files
-        :return: sorted and trimed list of images as well as segmentation files
         """
-        self.dir_img = dir_img
-        self.dir_seg = dir_seg
-        self.time_cond  = time_cond
-        self.suffix     = suffix
-        self.suffix_seg = suffix_seg
 
         # file name extension of original images
         ext1, ext2 = os.path.splitext(self.suffix)
@@ -491,55 +512,76 @@ class InstanceTSLinkingWrapper(object):
         imgfs_all.sort()
         segfs_all.sort()
         for (fi, fs) in zip(imgfs_all, segfs_all):
-            tempi = re.search(pattern_dt, fi)
-            temps = re.search(pattern_dt, fs)
+            tempi = re.search(self.pattern_dt, fi)
+            temps = re.search(self.pattern_dt, fs)
             if tempi and temps:
-                timepart = tempi.group()  #timeparts = temps.group() the assumption is that original image and the results have the same dt_pattern
+                timepart = tempi.group()  # timeparts = temps.group() the assumption is that original image and the results have the same dt_pattern
                 for cond in self.time_cond:
                     if timepart.endswith(cond):
                         self.timepoints.append(timepart)
                         continue
         index_temp = np.argsort(self.timepoints)
-        self.timepoints   = [self.timepoints[i] for i in index_temp]
+        self.timepoints = [self.timepoints[i] for i in index_temp]
         self.imgfiles = [imgfs_all[i] for i in index_temp]
         self.segfiles = [segfs_all[i] for i in index_temp]
 
     def load_images(self):
         """
-        Get the list of images (nd-arrays) ready
+        Load images and put them into a list
         :return:
+        max_dim: common maximum dimension of all images
         """
         temp_imgs = []
         sz = []
-        imgs = []
         for f in self.imgfiles:
             junk = skimage.io.imread(os.path.join(self.dir_img, f))
             temp_imgs.append(junk)
             sz.append(np.min(junk.shape[0:2]))
-        min_dim = np.min(sz)
+        max_dim = np.min(sz)
         for junk in temp_imgs:
             img = junk[0: min_dim, 0: min_dim, :]  # make all images the same size
-            imgs.append(img)
-        return imgs, min_dim
+            self.imgs.append(img)
+        return max_dim
 
-    def load_segs(self, min_dim):
+    def load_segs(self, max_dim):
         """
         Get the list of segmentation masks (nd-arrays) ready
-        :param min_dim: minimum dimension of images (get from original images) (Assumption: square images)
+        :param max_dim: common maximum dimension of all images (get from original images) (Assumption: square images)
         :return:
         """
-        segs = []
+        # segs = []
         for f in self.segfiles:
             r = pkl.load(open(os.path.join(self.dir_seg, f), 'rb'))
-            segs.append(r["masks"][0:min_dim, 0:min_dim, :])  # make all masks the same size
-        return segs
+            self.segs.append(r["masks"][0:max_dim, 0:max_dim, :])  # make all masks the same size
+        # return segs
 
-    def __call__(self, dir_img, dir_seg, pattern_dt, time_cond, logic, thres, name_sub, suffix, suffix_seg,colors=None,color_all=None):
+    def __call__(self, dir_save, savename, dir_img, dir_seg, pattern_dt, time_cond, logic, thres, name_sub,
+                 suffix=".jpg", suffix_seg=".pkl", colors=None, color_all=None):
+        self.dir_save = dir_save
+        self.savename = savename
+        self.savename_ = '{}_old'.format(savename)
         self.set_save_dirs()
-        self.sort_time(dir_img, dir_seg, pattern_dt, time_cond, suffix, suffix_seg)
-        imgs,min_dim = self.load_images()
-        segs = self.load_segs(min_dim)
+        self.dir_img = dir_img
+        self.dir_seg = dir_seg
+        self.pattern_dt = pattern_dt
+        self.time_cond = time_cond
+        self.logic = logic
+        self.thres = thres
+        self.name_sub = name_sub
+        self.suffix = suffix
+        self.suffix_seg = suffix_seg
+        self.imgs = []
+        self.segs = []
+        self.timepoints = []
+
+        self.sort_time()
+        min_dim = self.load_images()
+        self.load_segs(min_dim)
         # create an instance of InstanceTimeSeriesLinkingClass
-        inst_ts_linking = InstanceTimeSeriesLinking(imgs, segs, self.timepoints, logic, thres, name_sub)
-        inst_ts_linking(self.dir_save, self.dir_visual_, self.dir_visual, self.savename_, self.savename, colors, color_all)
+
+        inst_ts_linking = InstanceTimeSeriesLinking()
+        inst_ts_linking(images=self.imgs, masks=self.segs, timepoints=self.timepoints, savedir=self.dir_save,
+                        visualdir_=self.dir_visual_, visualdir=self.dir_visual, savename_=self.savename_,
+                        savename=self.savename, logic=self.logic, thres=self.thres, name_sub=self.name_sub)
+
         return inst_ts_linking
