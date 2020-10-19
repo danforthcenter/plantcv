@@ -32,7 +32,7 @@ First, if PlantCV is installed in the global Python search path, you can
 import the PlantCV library like normal:
 
 ```python
-from plantcv import plantcv
+from plantcv import plantcv as pcv
 ```
 
 On the other hand, if you installed PlantCV into a local Python path,
@@ -42,7 +42,7 @@ example:
 ```python
 import sys
 sys.path.append("/home/user/plantcv")
-from plantcv import plantcv
+from plantcv import plantcv as pcv 
 ```
 
 Second, we use [matplotlib](http://matplotlib.org/) to do the

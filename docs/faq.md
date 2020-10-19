@@ -30,10 +30,7 @@ and [updating documentation](documentation.md).
     and publications related to specific features added
     since the initial release.
 - Q: What version(s) of Python and OpenCV does PlantCV work with?
-    - A: PlantCV currently works with both Python 2.7 and 3+ and OpenCV 2 and 3. Python 2.7 can be used with
-    either OpenCV 2 or 3 but Python 3 can only be used with OpenCV 3. Our recommended configuration is
-    Python 3 and OpenCV 3. In the future, Python 2 and OpenCV 2 
-    support will end but removing support is not currently on our roadmap.
+    - A: PlantCV currently works with Python 3+ and OpenCV 3. 
 - Q: When will the next stable version of PlantCV be released?
     - A: Please see the [Milestones](https://github.com/danforthcenter/plantcv/milestones)
     page for target date estimates
@@ -71,7 +68,7 @@ and [updating documentation](documentation.md).
     See also tutorials on the [DDPSC Maker Group site](http://maker.danforthcenter.org/).
 - Q: Can PlantCV use information about the temporal relation of images
   for object tracking etc.?
-    - A: Not at present.
+    - A: Not yet, but stick around!
     OpenCV includes tools for analyzing video data,
     so this could be added in the future.
 - Q: My plants are touching,

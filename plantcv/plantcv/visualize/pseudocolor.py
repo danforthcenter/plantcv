@@ -122,8 +122,9 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
             fatal_error(
                 "Background type {0} is not supported. Please use 'white', 'black', or 'image'.".format(background))
 
+        plt.figure()
         # Pseudocolor the image, plot the background first
-        pseudo_img1 = plt.imshow(bkg_img, cmap=bkg_cmap)
+        plt.imshow(bkg_img, cmap=bkg_cmap)
         # Overlay the masked grayscale image with the user input colormap
         plt.imshow(masked_img, cmap=cmap, vmin=min_value, vmax=max_value)
 
@@ -141,20 +142,10 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
         # Store the current figure
         pseudo_img = plt.gcf()
 
-        # Print or plot if debug is turned on
-        if params.debug == 'print':
-            plt.savefig(os.path.join(params.debug_outdir, str(params.device) + '_pseudocolored.png'), dpi=params.dpi)
-            plt.close()
-        elif params.debug == 'plot':
-            plot_image(pseudo_img1)
-            # Use non-blocking mode in case the function is run more than once
-            plt.show(block=False)
-        elif params.debug is None:
-            plt.show(block=False)
-
     else:
+        plt.figure()
         # Pseudocolor the image
-        pseudo_img1 = plt.imshow(gray_img1, cmap=cmap, vmin=min_value, vmax=max_value)
+        plt.imshow(gray_img1, cmap=cmap, vmin=min_value, vmax=max_value)
 
         if colorbar:
             # Include the colorbar
@@ -170,17 +161,18 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
 
         pseudo_img = plt.gcf()
 
-        # Print or plot if debug is turned on
+
+    # Print or plot if debug is turned on
+    if params.debug is not None:
         if params.debug == 'print':
-            plt.savefig(os.path.join(params.debug_outdir, str(params.device) + '_pseudocolored.png'), dpi=params.dpi)
-            pseudo_img.clear()
+            plt.savefig(os.path.join(params.debug_outdir, str(
+                params.device) + '_pseudocolored.png'), dpi=params.dpi)
             plt.close()
         elif params.debug == 'plot':
-            plot_image(pseudo_img1)
             # Use non-blocking mode in case the function is run more than once
             plt.show(block=False)
-        elif params.debug is None:
-            plt.show(block=False)
+    else:
+        plt.close()
 
     return pseudo_img
 

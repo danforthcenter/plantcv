@@ -39,12 +39,6 @@ filtered_img = pcv.closing(gray_img=gray_img)
 In addition to the [kernel making](get_kernel.md) function users can create custom kernel shapes. 
 ```python
 
-from plantcv import plantcv as pcv
-import numpy as np
-
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
-
 # Apply closing with an X-shaped kernel 
 filtered_img = pcv.closing(gray_img=gray_img, kernel=np.array([[1, 0, 1], [0, 1, 0], [1, 0, 1]]))
 

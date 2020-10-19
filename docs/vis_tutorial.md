@@ -3,7 +3,7 @@
 PlantCV is composed of modular functions that can be arranged (or rearranged) and adjusted quickly and easily.
 Workflows do not need to be linear (and often are not). Please see workflow example below for more details.
 A global variable "debug" allows the user to print out the resulting image. The debug has three modes: either None, 'plot', or 'print'.
-If set to 'print' then the function prints the image out, or if using a [Jupyter](jupyter.md) notebook you could set debug to 'plot' to have
+If set to 'print' then the function prints the image out to a file, or if using a [Jupyter](jupyter.md) notebook you could set debug to 'plot' to have
 the images plot to the screen. Debug mode allows users to visualize and optimize each step on individual test images and small test sets before workflows are deployed over whole datasets.
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/vis_tutorial.ipynb) Check out our interactive VIS tutorial! 
@@ -319,7 +319,7 @@ Next a [rectangular region of interest](roi_rectangle.md) is defined (this can b
 
 ![Screenshot](img/tutorial_images/vis/21_roi.jpg)
 
-Once the region of interest is defined you can decide to keep everything overlapping with the [region of interest](roi_objects.md))
+Once the region of interest is defined you can decide to keep everything overlapping with the [region of interest](roi_objects.md)
 or cut the objects to the shape of the region of interest.
 
 
@@ -401,7 +401,7 @@ The next step is to analyze the plant object for traits such as [horizontal heig
     #   mask - Binary mask of selected contours 
     #   hist_plot_type - None (default), 'all', 'rgb', 'lab', or 'hsv'
     #                    This is the data to be printed to the SVG histogram file  
-    color_histogram = pcv.analyze_color(rgb_img=img, mask=kept_mask, hist_plot_type='all')
+    color_histogram = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='all')
 
     # Pseudocolor the grayscale image
     
@@ -418,7 +418,7 @@ The next step is to analyze the plant object for traits such as [horizontal heig
     #     dpi - Dots per inch for image if printed out (optional, if dpi=None then the default is set to 100 dpi).
     #     axes - If False then the title, x-axis, and y-axis won't be displayed (default axes=True).
     #     colorbar - If False then the colorbar won't be displayed (default colorbar=True)
-    pseudocolored_img = pcv.visualize.pseudocolor(gray_img=s, mask=kept_mask, cmap='jet')
+    pseudocolored_img = pcv.visualize.pseudocolor(gray_img=s, mask=mask, cmap='jet')
 
     # Write shape and color data to results file
     pcv.print_results(filename=args.result)
@@ -596,10 +596,10 @@ def main():
     boundary_img1 = pcv.analyze_bound_horizontal(img=img, obj=obj, mask=mask, line_position=1680)
 
     # Determine color properties: Histograms, Color Slices, output color analyzed histogram (optional)
-    color_histogram = pcv.analyze_color(rgb_img=img, mask=kept_mask, hist_plot_type='all')
+    color_histogram = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='all')
 
     # Pseudocolor the grayscale image
-    pseudocolored_img = pcv.visualize.pseudocolor(gray_img=s, mask=kept_mask, cmap='jet')
+    pseudocolored_img = pcv.visualize.pseudocolor(gray_img=s, mask=mask, cmap='jet')
 
     # Write shape and color data to results file
     pcv.print_results(filename=args.result)
