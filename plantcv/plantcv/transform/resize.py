@@ -7,7 +7,6 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 
-
 def resize(img, resize_x, resize_y):
     """Resize image.
 
