@@ -223,8 +223,7 @@ class InstanceTimeSeriesLinking(object):
         elif self.logic == 'IOS':
             weight = ioss
         self.weights.append(weight)
-        idx_col = np.where(np.max(weight, axis=0) < self.thres)[
-            0]  # find those columns with maximum value < threshold (self.thres)
+        idx_col = np.where(np.max(weight, axis=0) < self.thres)[0]  # find those columns with maximum value < threshold (self.thres)
         avail_col = [x for x in range(0, n1) if x not in idx_col]
         weight_ = copy.deepcopy(weight)
         weight_ = np.delete(weight_, idx_col, 1)
@@ -307,8 +306,7 @@ class InstanceTimeSeriesLinking(object):
                                 weight = ious
                             elif self.logic == 'IOS':
                                 weight = ioss
-                            idx_col = np.where(np.max(weight, axis=0) < self.thres)[
-                                0]  # find those columns with maximum value < thres
+                            idx_col = np.where(np.max(weight, axis=0) < self.thres)[0]  # find those columns with maximum value < thres
                             # avail_col = [x for x in range(0, n2) if x not in idx_col]
                             weight_ = copy.deepcopy(weight)
                             weight_ = np.delete(weight_, idx_col, 1)
