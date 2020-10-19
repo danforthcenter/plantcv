@@ -734,6 +734,7 @@ def mask_bad(gray_img, bad_type='native'):
     bad_type        = interested type of bad pixels, 'nan', 'inf' or 'native'
 
     """
+    
     params.device += 1
 
     size_img = np.shape(gray_img)
