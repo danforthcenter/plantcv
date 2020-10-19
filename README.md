@@ -15,7 +15,7 @@ If you have questions, please submit them via the
 [GitHub issues page](https://github.com/danforthcenter/plantcv/issues).
 Follow us on twitter [@plantcv](https://twitter.com/plantcv).
 
----
+***
 
 ## Introduction to PlantCV
 
@@ -24,23 +24,30 @@ programming and documentation interface to a collection of image analysis techni
 of source packages and algorithms. PlantCV utilizes a modular architecture that enables flexibility in the design of
 analysis workflows and rapid assimilation and integration of new methods. For more information about the project,
 links to recorded presentations, and publications using PlantCV, please visit our homepage: 
-https://plantcv.danforthcenter.org/.
+<https://plantcv.danforthcenter.org/>.
 
 ### Quick Links
 
-* [Documentation](http://plantcv.readthedocs.io/)
-* [Interactive Documentation](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=index.ipynb)
-* [Installation Instructions](https://plantcv.readthedocs.io/en/stable/installation/)
-* [Updating/Changelog](https://plantcv.readthedocs.io/en/stable/updating/)
-* [Public Image Datasets](http://plantcv.danforthcenter.org/pages/data.html)
-* [Contribution Guide](https://plantcv.readthedocs.io/en/stable/CONTRIBUTING/)
-* [Code of Conduct](https://plantcv.readthedocs.io/en/stable/CODE_OF_CONDUCT/)
-* Downloads
-  * [GitHub](https://github.com/danforthcenter/plantcv)
-  * [PyPI](https://pypi.org/project/plantcv/)
-  * [Bioconda](https://anaconda.org/bioconda/plantcv)
-  * [Docker](https://hub.docker.com/repository/docker/danforthcenter/plantcv)
-  * [Zenodo](https://doi.org/10.5281/zenodo.595522)
+*  [Documentation](http://plantcv.readthedocs.io/)
+
+*  [Interactive Documentation](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=index.ipynb)
+
+*  [Installation Instructions](https://plantcv.readthedocs.io/en/stable/installation/)
+
+*  [Updating/Changelog](https://plantcv.readthedocs.io/en/stable/updating/)
+
+*  [Public Image Datasets](http://plantcv.danforthcenter.org/pages/data.html)
+
+*  [Contribution Guide](https://plantcv.readthedocs.io/en/stable/CONTRIBUTING/)
+
+*  [Code of Conduct](https://plantcv.readthedocs.io/en/stable/CODE_OF_CONDUCT/)
+
+*  Downloads
+  *  [GitHub](https://github.com/danforthcenter/plantcv)
+  *  [PyPI](https://pypi.org/project/plantcv/)
+  *  [Bioconda](https://anaconda.org/bioconda/plantcv)
+  *  [Docker](https://hub.docker.com/repository/docker/danforthcenter/plantcv)
+  *  [Zenodo](https://doi.org/10.5281/zenodo.595522)
 
 ### Citing PlantCV
 
@@ -48,12 +55,12 @@ If you use PlantCV, please cite the [PlantCV publications](https://plantcv.danfo
 relevant to your work. To see how others have used PlantCV in their research, check out our list of 
 [publications using PlantCV](https://plantcv.danforthcenter.org/#publications-using-plantcv).
 
-___
+***
 
-## Issues with PlantCV?
+## Issues with PlantCV
 
 Please file any PlantCV suggestions/issues/bugs via our 
 [GitHub issues page](https://github.com/danforthcenter/plantcv/issues). Please check to see if any related 
 issues have already been filed.
 
----
+***
