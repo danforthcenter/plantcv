@@ -5418,6 +5418,80 @@ def test_plantcv_transform_rescale_bad_input():
     with pytest.raises(RuntimeError):
         _ = pcv.transform.rescale(gray_img=rgb_img)
 
+def test_plantcv_transform_resize():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_trancform_resize")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY_SMALL),-1)
+    size = (100, 100)
+
+    # Test with debug "print"
+    pcv.params.debug="print"
+    _ = pcv.transform.resize(gray_img, size)
+    # Test with debug "plot"
+    pcv.params.debug="plot"
+    _ = pcv.transform.resize(gray_img, (20,10))
+    resized_im = pcv.transform.resize(gray_img, size)
+    assert resized_im.shape == (size[1], size[0])
+
+def test_plantcv_transform_resize_interp():
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY_SMALL),-1)
+    size = (100, 100)
+    pcv.params.debug=None
+    resized_im = pcv.transform.resize(gray_img, size, interp_mtd=cv2.INTER_CUBIC)
+    assert resized_im.shape == (size[1], size[0])
+
+def test_plantcv_transform_resize_crop():
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY_SMALL),-1)
+    size = (20, 20)
+    pcv.params.debug=None
+    resized_im = pcv.transform.resize(gray_img, size, interpolation=False)
+    assert resized_im.shape == (size[1], size[0])
+
+def test_plantcv_transform_resize_pad():
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY_SMALL),-1)
+    size = (100, 100)
+    pcv.params.debug=None
+    resized_im = pcv.transform.resize(gray_img, size, interpolation=False)
+    assert resized_im.shape == (size[1], size[0])
+
+def test_plantcv_transform_resize_pad_crop_color():
+    color_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY_SMALL))
+    size = (100, 100)
+    pcv.params.debug=None
+    resized_im = pcv.transform.resize(color_img, size, interpolation=False)
+    assert resized_im.shape == (size[1], size[0],3)
+
+def test_plantcv_transform_resize_factor():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_trancform_resize_factor")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY_SMALL),-1)
+
+    # Test with debug "print"
+    factor_x = 0.5
+    factor_y = 0.2
+    pcv.params.debug="print"
+    resized_im = pcv.transform.resize_factor(gray_img, factor_x, factor_y)
+    assert (int(gray_img.shape[0] * factor_y) == resized_im.shape[0]) and (int(gray_img.shape[1] * factor_x) == resized_im.shape[1])
+
+    # Test with debug "plot"
+    factor_x = 2
+    factor_y = 2.2
+    pcv.params.debug="plot"
+    resized_im = pcv.transform.resize_factor(gray_img, factor_x, factor_y)
+
+    pcv.params.debug = None
+    _ = pcv.transform.resize_factor(gray_img, factor_x, factor_y, interp_mtd=cv2.INTER_CUBIC)
+    assert (int(gray_img.shape[0] * factor_y) == resized_im.shape[0]) and (int(gray_img.shape[1] * factor_x) == resized_im.shape[1])
+
+
+def test_plantcv_transform_resize_factor_bad_input():
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY_SMALL), -1)
+    with pytest.raises(RuntimeError):
+        _ = pcv.transform.resize_factor(gray_img, 0, 2)
 
 def test_plantcv_transform_nonuniform_illumination_rgb():
     # Test cache directory
