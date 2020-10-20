@@ -2854,36 +2854,6 @@ def test_plantcv_report_size_marker_bad_threshold_input():
                                         objcolor='light', thresh_channel=None, thresh=120)
 
 
-def test_plantcv_resize():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_resize")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    # Read in test data
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.resize(img=img, resize_x=0.5, resize_y=0.5)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.resize(img=img, resize_x=0.5, resize_y=0.5)
-    # Test with debug = None
-    pcv.params.debug = None
-    resized_img = pcv.resize(img=img, resize_x=0.5, resize_y=0.5)
-    ix, iy, iz = np.shape(img)
-    rx, ry, rz = np.shape(resized_img)
-    assert ix > rx
-
-
-def test_plantcv_resize_bad_inputs():
-    # Read in test data
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    # Test for fatal error caused by two negative resize values
-    pcv.params.debug = None
-    with pytest.raises(RuntimeError):
-        _ = pcv.resize(img=img, resize_x=-1, resize_y=-1)
-
-
 def test_plantcv_rgb2gray_hsv():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_rgb2gray_hsv")
@@ -6046,27 +6016,7 @@ def test_plantcv_visualize_colorspaces_bad_input():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.colorspaces(rgb_img=img)
-
-def test_plantcv_visualize_resize_img_RGB():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_visualize_resize_img_RGB")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    # Read in test data
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED))
-    new_size = (300,300)
-    img_= pcv.visualize._resize_img(img=img, new_size=new_size)
-    assert img_.shape[0:2] == new_size
-
-def test_plantcv_visualize_resize_img_grayscale():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_visualize_resize_img_grayscale")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    # Read in test data
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED_MASK), -1)
-    new_size = (300,300)
-    img_= pcv.visualize._resize_img(img=img, new_size=new_size)
-    assert img_.shape[0:2] == new_size
+        
 
 def test_plantcv_visualize_overlay_two_imgs():
     pcv.params.debug = None
@@ -6076,6 +6026,7 @@ def test_plantcv_visualize_overlay_two_imgs():
     img2 = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
     desized_size = (300,300)
     pcv.params.debug = 'print'
+    pcv.params.debug_outdir = cache_dir
     out_img = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2, size_img=desized_size)
     pcv.params.debug = 'plot'
     out_img = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2, size_img=desized_size)
