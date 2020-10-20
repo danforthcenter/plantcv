@@ -1,5 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+# Overlay two input images
 
 """
 Created on Tue. September 01 21:00:01 2020
@@ -15,55 +14,56 @@ from plantcv.plantcv import fatal_error
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 from plantcv.plantcv import params
+from plantcv.plantcv.transform import resize
 import warnings
 
 
-def _resize_img(img, new_size):
-    """Resize the image to the given new size
-    :param img: RGB or grayscale image data (numpy.ndarray)
-    :param new_size: New dimensions of the output image (tuple)
-    :return output_img: resized output image (numpy.ndarray)
-    Note:
-    If the given size is larger than the original image size, zero-pad the image.
-    If the given size is smaller than the original image size, crop the image (right & bottom).
-    """
-
-    # original image size
-    r_ori, c_ori = img.shape[0], img.shape[1]
-    r, c = new_size[0], new_size[1]
-
-    # check whether the input image is RGB or binary
-    if len(img.shape) > 2:
-        b_ori = np.shape(img)[2]
-        junk = copy.deepcopy(img)
-    else:
-        b_ori = 1
-        junk = np.expand_dims(img, axis=2)
-
-    # deal with rows
-    img1 = copy.deepcopy(junk)
-    if r < r_ori:
-        img1 = junk[0:r, :, :]
-    elif r > r_ori:
-        img1 = np.zeros_like(junk, shape=[r, c_ori, b_ori])
-        img1[0:r_ori, :, :] = junk
-
-    # update
-    r_ori, c_ori = img1.shape[0], img1.shape[1]
-    img2 = copy.deepcopy(img1)
-
-    # deal with columns
-    if c < c_ori:
-        img2 = img1[:, 0:c, :]
-    elif c > c_ori:
-        img2 = np.zeros_like(img1, shape=[r_ori, c, b_ori])
-        img2[:, 0:c_ori, :] = img1
-
-    if b_ori == 1:
-        output_img = np.squeeze(img2, axis=2)
-    else:
-        output_img = img2
-    return output_img
+# def _resize_img(img, new_size):
+#     """Resize the image to the given new size
+#     :param img: RGB or grayscale image data (numpy.ndarray)
+#     :param new_size: New dimensions of the output image (tuple)
+#     :return output_img: resized output image (numpy.ndarray)
+#     Note:
+#     If the given size is larger than the original image size, zero-pad the image.
+#     If the given size is smaller than the original image size, crop the image (right & bottom).
+#     """
+#
+#     # original image size
+#     r_ori, c_ori = img.shape[0], img.shape[1]
+#     r, c = new_size[0], new_size[1]
+#
+#     # check whether the input image is RGB or binary
+#     if len(img.shape) > 2:
+#         b_ori = np.shape(img)[2]
+#         junk = copy.deepcopy(img)
+#     else:
+#         b_ori = 1
+#         junk = np.expand_dims(img, axis=2)
+#
+#     # deal with rows
+#     img1 = copy.deepcopy(junk)
+#     if r < r_ori:
+#         img1 = junk[0:r, :, :]
+#     elif r > r_ori:
+#         img1 = np.zeros_like(junk, shape=[r, c_ori, b_ori])
+#         img1[0:r_ori, :, :] = junk
+#
+#     # update
+#     r_ori, c_ori = img1.shape[0], img1.shape[1]
+#     img2 = copy.deepcopy(img1)
+#
+#     # deal with columns
+#     if c < c_ori:
+#         img2 = img1[:, 0:c, :]
+#     elif c > c_ori:
+#         img2 = np.zeros_like(img1, shape=[r_ori, c, b_ori])
+#         img2[:, 0:c_ori, :] = img1
+#
+#     if b_ori == 1:
+#         output_img = np.squeeze(img2, axis=2)
+#     else:
+#         output_img = img2
+#     return output_img
 
 def overlay_two_imgs(img1, img2, alpha=0.5, size_img=None):
     """    A function used to overlay two images with a given alpha value (alpha indicated how opaque the 1st image is)
@@ -102,14 +102,12 @@ def overlay_two_imgs(img1, img2, alpha=0.5, size_img=None):
 
     # check if sizes are the same
     if sz_img1 != size_img:
-        #         img1_ = pcv.visualize._resize_img(img1_, size_img)
-        img1_ = _resize_img(img1_, size_img)
+        img1_ = resize(img1_, size_img, interpolation=False)
         warnings.warn(
             "Image1 has a size of {}x{}, which is different from the desired size of {}x{}, an image resizing (cropping or zero-padding) will be done before overlay them!".format(
                 sz_img1[0], sz_img1[1], size_img[0], size_img[1]))
     if sz_img2 != size_img:
-        #         img1_ = pcv.visualize._resize_img(img1_, size_img)
-        img2_ = _resize_img(img2_, size_img)
+        img2_ = resize(img2_, size_img, interpolation=False)
         warnings.warn(
             "Image1 has a size of {}x{}, which is different from the desired size of {}x{}, an image resizing (cropping or zero-padding) will be done before overlay them!".format(
                 sz_img2[0], sz_img2[1], size_img[0], size_img[1]))
