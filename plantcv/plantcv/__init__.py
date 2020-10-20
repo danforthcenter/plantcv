@@ -189,7 +189,6 @@ from plantcv.plantcv.analyze_bound_vertical import analyze_bound_vertical
 from plantcv.plantcv.analyze_color import analyze_color
 from plantcv.plantcv.analyze_nir_intensity import analyze_nir_intensity
 from plantcv.plantcv.print_results import print_results
-from plantcv.plantcv.resize import resize
 from plantcv.plantcv.flip import flip
 from plantcv.plantcv.crop_position_mask import crop_position_mask
 from plantcv.plantcv.get_nir import get_nir
