@@ -6016,7 +6016,7 @@ def test_plantcv_visualize_colorspaces_bad_input():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.colorspaces(rgb_img=img)
-        
+
 
 def test_plantcv_visualize_overlay_two_imgs():
     pcv.params.debug = None
