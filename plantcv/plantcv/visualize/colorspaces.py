@@ -4,7 +4,8 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv import params
-from plantcv.plantcv import resize
+# from plantcv.plantcv import resize
+from plantcv.plantcv.transform import resize_factor
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import print_image
@@ -63,8 +64,10 @@ def colorspaces(rgb_img, original_img=True):
 
     # If original_img is True then also plot the original image with the rest of them
     if original_img:
-        plotting_img = np.hstack([resize(img=rgb_img, resize_x=2, resize_y=2), plotting_img])
-    plotting_img = resize(plotting_img,  resize_x=.5, resize_y=.5)
+        # plotting_img = np.hstack([resize(img=rgb_img, resize_x=2, resize_y=2), plotting_img])
+        plotting_img = np.hstack([resize(img=rgb_img, factor_x=2, factor_y=2), plotting_img])
+    # plotting_img = resize(plotting_img,  resize_x=.5, resize_y=.5)
+    plotting_img = resize_factor(plotting_img, factor_x=.5, factor_y=.5)
 
     # Reset debug mode
     params.debug = debug
