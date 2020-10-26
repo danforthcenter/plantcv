@@ -16,12 +16,22 @@ def _set_interpolation(**kw):
         if new_area >= old_area:
             interp_mtd = cv2.INTER_CUBIC
         else:
-            interp_mtd = cv2.INTER_AREA
+            interp_mtd = interpolation=cv2.INTER_AREA
     elif ("factor_x" in kw) and ("factor_y" in kw):
         if kw["factor_x"] * kw["factor_y"] >=1:
             interp_mtd = cv2.INTER_CUBIC
         else:
-            interp_mtd = cv2.INTER_AREA
+            interp_mtd = interpolation=cv2.INTER_AREA
+    elif kw["interp_mtd"].upper() == "INTER_NEAREST":
+        interp_mtd = cv2.INTER_NEAREST
+    elif kw["interp_mtd"].upper() == "INTER_LINEAR":
+        interp_mtd = cv2.INTER_LINEAR
+    elif kw["interp_mtd"].upper() == "INTER_AREA":
+        interp_mtd = cv2.INTER_AREA
+    elif kw["interp_mtd"].upper() == "INTER_CUBIC":
+        interp_mtd = cv2.INTER_CUBIC
+    elif kw["interp_mtd"].upper() == "INTER_LANCZOS4":
+        interp_mtd = cv2.INTER_LANCZOS4
     return interp_mtd
 
 def resize(img, size, interpolation=True, **kw):
@@ -38,7 +48,7 @@ def resize(img, size, interpolation=True, **kw):
     params.device += 1
     if interpolation:
         if "interp_mtd" in kw:
-            interp_mtd = kw["interp_mtd"]
+            interp_mtd = _set_interpolation(interp_mtd=kw["interp_mtd"])
         else:
             interp_mtd = _set_interpolation(size_old=img.shape, size=size)
         resized_im = cv2.resize(img, dsize=size, interpolation=interp_mtd)
