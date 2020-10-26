@@ -5409,7 +5409,11 @@ def test_plantcv_transform_resize_interp():
     gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY_SMALL),-1)
     size = (100, 100)
     pcv.params.debug=None
-    resized_im = pcv.transform.resize(gray_img, size, interp_mtd=cv2.INTER_CUBIC)
+    _ = pcv.transform.resize(gray_img, size, interp_mtd="INTER_CUBIC")
+    _ = pcv.transform.resize(gray_img, size, interp_mtd="INTER_area")
+    _ = pcv.transform.resize(gray_img, size, interp_mtd="inter_NEAREST")
+    _ = pcv.transform.resize(gray_img, size, interp_mtd="inter_linear")
+    resized_im = pcv.transform.resize(gray_img, size, interp_mtd="INTER_LANCZOS4")
     assert resized_im.shape == (size[1], size[0])
 
 def test_plantcv_transform_resize_crop():
@@ -6016,7 +6020,6 @@ def test_plantcv_visualize_colorspaces_bad_input():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.colorspaces(rgb_img=img)
-
 
 def test_plantcv_visualize_overlay_two_imgs():
     pcv.params.debug = None
