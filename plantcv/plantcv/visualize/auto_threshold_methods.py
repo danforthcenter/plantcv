@@ -82,7 +82,7 @@ def auto_threshold_methods(gray_img, grid_img=True, object_type="light"):
         bot_row = np.hstack([labeled_imgs[2], labeled_imgs[3]])
         plotting_img = np.vstack([top_row, bot_row])
         labeled_imgs.append(plotting_img)
-        plotting_img = resize_factor(plotting_img, factor_x=.5, factor_y=.5)
+        plotting_img = resize_factor(plotting_img, factors=(0.5, 0.5))
         # Reset debug mode
         params.debug = debug
         if params.debug == "print":

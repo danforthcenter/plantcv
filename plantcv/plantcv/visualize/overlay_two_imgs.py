@@ -55,12 +55,12 @@ def overlay_two_imgs(img1, img2, alpha=0.5, size_img=None):
 
     # check if sizes are the same
     if sz_img1 != size_img:
-        img1_ = resize(img1_, (size_img[1],size_img[0]), interpolation=False)
+        img1_ = resize(img1_, (size_img[1], size_img[0]), interpolation=None)
         warnings.warn(
             "Image1 has a size of {}x{}, which is different from the desired size of {}x{}, an image resizing (cropping or zero-padding) will be done before overlay them!".format(
                 sz_img1[0], sz_img1[1], size_img[0], size_img[1]))
     if sz_img2 != size_img:
-        img2_ = resize(img2_, (size_img[1],size_img[0]), interpolation=False)
+        img2_ = resize(img2_, (size_img[1], size_img[0]), interpolation=None)
         warnings.warn(
             "Image1 has a size of {}x{}, which is different from the desired size of {}x{}, an image resizing (cropping or zero-padding) will be done before overlay them!".format(
                 sz_img2[0], sz_img2[1], size_img[0], size_img[1]))
