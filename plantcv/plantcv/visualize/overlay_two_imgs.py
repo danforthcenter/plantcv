@@ -19,16 +19,23 @@ import warnings
 
 
 def overlay_two_imgs(img1, img2, alpha=0.5, size_img=None):
-    """    A function used to overlay two images with a given alpha value (alpha indicated how opaque the 1st image is)
-    Input grayscale images would be converted to RGB first
-    :param img1 : (numpy.ndarray) ndarray, can be either 3-dimensional (RGB image) or 2-dimensional (graysacle)
-    :param img2: (numpy.ndarray) ndarray, can be either 3-dimensional (RGB image) or 2-dimensional (graysacle)
-    :param alpha: (float) desired opacity of 1st image, range: (0,1), default value=0.5
-    :param size_img: (tuple) desired size of the image, (width, height), default value=None (if there is no desired size, the
-                  output image size would be equal to the larger size of the two)
-    :return: out_img: (numpy.ndarray) blended output image
-    """
+    """Overlay two images with a given alpha value.
 
+    Inputs:
+    img1     - RGB or grayscale image data
+    img2     - RGB or grayscale image data
+    alpha    - Desired opacity of 1st image, range: (0,1), default value=0.5
+    size_img - Desired size of the image, (width, height), default value=None (if there is no desired size, the
+               output image size would be equal to the larger size of the two)
+    Returns:
+    out_img  - Blended RGB image
+
+    :param img1: numpy.ndarray
+    :param img2: numpy.ndarray
+    :param alpha: float
+    :param size_img: tuple
+    :return: out_img: numpy.ndarray
+    """
     if alpha > 1 or alpha < 0:
         fatal_error("The value of alpha should be in the range of (0,1)!")
 

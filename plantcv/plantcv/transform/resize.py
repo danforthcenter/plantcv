@@ -60,6 +60,7 @@ def _set_interpolation(input_size, output_size, method):
 
 def resize(img, size, interpolation="auto"):
     """Resize input image to a desired new size.
+
     By default, the resizing is done by interpolation. If interpolation is None,
     the resizing is done by either cropping or padding (zero-padding by default now)
 
