@@ -47,7 +47,7 @@ def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=0, max_bi
 
     # Mask data and collect statistics about pixels within the masked image
     masked_array = index_array.array_data[np.where(mask > 0)]
-    masked_array = masked_array[np.isfinitie(masked_array)]
+    masked_array = masked_array[np.isfinite(masked_array)]
 
     index_mean = np.nanmean(masked_array)
     index_median = np.nanmedian(masked_array)
