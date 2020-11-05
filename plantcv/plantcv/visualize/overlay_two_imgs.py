@@ -9,7 +9,6 @@ A function
 import os
 import cv2
 import numpy as np
-import copy
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
@@ -39,15 +38,14 @@ def overlay_two_imgs(img1, img2, alpha=0.5, size_img=None):
     if alpha > 1 or alpha < 0:
         fatal_error("The value of alpha should be in the range of (0,1)!")
 
-    ## check the dimensions of both images
-    if len(img1.shape) == 3:
-        img1_ = copy.deepcopy(img1)
-    elif len(img1.shape) == 2:
-        img1_ = cv2.cvtColor(img1, cv2.COLOR_GRAY2BGR)
-    if len(img2.shape) == 3:
-        img2_ = copy.deepcopy(img2)
-    elif len(img2.shape) == 2:
-        img2_ = cv2.cvtColor(img2, cv2.COLOR_GRAY2BGR)
+    # Copy the input images
+    img1_ = np.copy(img1)
+    img2_ = np.copy(img2)
+    # If the images are grayscale convert to BGR
+    if len(img1_.shape) == 2:
+        img1_ = cv2.cvtColor(img1_, cv2.COLOR_GRAY2BGR)
+    if len(img2_.shape) == 2:
+        img2_ = cv2.cvtColor(img2_, cv2.COLOR_GRAY2BGR)
 
     ## sizing
     sz_img1 = img1_.shape[0:2]
