@@ -13,26 +13,23 @@ from plantcv.plantcv import fatal_error
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 from plantcv.plantcv import params
-from plantcv.plantcv.transform import resize
 import warnings
 
 
-def overlay_two_imgs(img1, img2, alpha=0.5, size_img=None):
+def overlay_two_imgs(img1, img2, alpha=0.5):
     """Overlay two images with a given alpha value.
 
     Inputs:
     img1     - RGB or grayscale image data
     img2     - RGB or grayscale image data
     alpha    - Desired opacity of 1st image, range: (0,1), default value=0.5
-    size_img - Desired size of the image, (width, height), default value=None (if there is no desired size, the
-               output image size would be equal to the larger size of the two)
+
     Returns:
     out_img  - Blended RGB image
 
     :param img1: numpy.ndarray
     :param img2: numpy.ndarray
     :param alpha: float
-    :param size_img: tuple
     :return: out_img: numpy.ndarray
     """
     if alpha > 1 or alpha < 0:
@@ -48,27 +45,11 @@ def overlay_two_imgs(img1, img2, alpha=0.5, size_img=None):
         img2_ = cv2.cvtColor(img2_, cv2.COLOR_GRAY2BGR)
 
     ## sizing
-    sz_img1 = img1_.shape[0:2]
-    sz_img2 = img2_.shape[0:2]
-
-    # if the desired size is not given, use the larger one
-    if size_img is None:
-        size_img = np.max([sz_img1[0], sz_img2[0]]), np.max([sz_img1[1], sz_img2[1]])
+    # assumption: the sizes of img1 and img2 are the same
+    size_img = img1_.shape[0:2]
 
     # initialize the output image
     out_img = np.zeros(size_img + (3,), dtype='uint8')
-
-    # check if sizes are the same
-    if sz_img1 != size_img:
-        img1_ = resize(img1_, (size_img[1], size_img[0]), interpolation=None)
-        warnings.warn(
-            "Image1 has a size of {}x{}, which is different from the desired size of {}x{}, an image resizing (cropping or zero-padding) will be done before overlay them!".format(
-                sz_img1[0], sz_img1[1], size_img[0], size_img[1]))
-    if sz_img2 != size_img:
-        img2_ = resize(img2_, (size_img[1], size_img[0]), interpolation=None)
-        warnings.warn(
-            "Image1 has a size of {}x{}, which is different from the desired size of {}x{}, an image resizing (cropping or zero-padding) will be done before overlay them!".format(
-                sz_img2[0], sz_img2[1], size_img[0], size_img[1]))
 
     # blending
     out_img[:, :, :] = (alpha * img1_[:, :, :]) + ((1 - alpha) * img2_[:, :, :])
