@@ -6018,13 +6018,15 @@ def test_plantcv_visualize_overlay_two_imgs():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_visualize_overlay_two_imgs")
     os.mkdir(cache_dir)
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED))
+    desized_size = (300, 300)
+    img1_ = pcv.transform.resize(img1, desized_size, interpolation=None)
     img2 = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
-    desized_size = (300,300)
+    img2_ = pcv.transform.resize(img2, desized_size, interpolation=None)
     pcv.params.debug = 'print'
     pcv.params.debug_outdir = cache_dir
-    out_img = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2, size_img=desized_size)
+    out_img = pcv.visualize.overlay_two_imgs(img1=img1_, img2=img2_)
     pcv.params.debug = 'plot'
-    out_img = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2, size_img=desized_size)
+    out_img = pcv.visualize.overlay_two_imgs(img1=img1_, img2=img2_)
     assert out_img.shape[0:2] == desized_size and len(out_img.shape) == 3
 
 
@@ -6032,11 +6034,13 @@ def test_plantcv_visualize_overlay_two_imgs_grayscale():
     pcv.params.debug = None
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_visualize_overlay_two_imgs_grayscale")
     os.mkdir(cache_dir)
+    desized_size = (300, 300)
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED))
     img2 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED_MASK),-1)
-    desized_size = (300,300)
-    out_img = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2, size_img=desized_size)
-    assert out_img.shape[0:2] == desized_size and len(out_img.shape) == 3 and len(img2.shape) == 2
+    img1_ = pcv.transform.resize(img1, desized_size, interpolation=None)
+    img2_ = pcv.transform.resize(img2, desized_size, interpolation=None)
+    out_img = pcv.visualize.overlay_two_imgs(img1=img1_, img2=img2_)
+    assert out_img.shape[0:2] == desized_size and len(out_img.shape) == 3 and len(img2_.shape) == 2
 
 
 def test_plantcv_visualize_overlay_two_imgs_grayscale2():
@@ -6046,21 +6050,10 @@ def test_plantcv_visualize_overlay_two_imgs_grayscale2():
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED_MASK), -1)
     img2 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED))
     desized_size = (300,300)
-    out_img = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2, size_img=desized_size)
-    assert out_img.shape[0:2] == desized_size and len(out_img.shape) == 3 and len(img1.shape) == 2
-
-
-def test_plantcv_visualize_overlay_two_imgs_no_size():
-    pcv.params.debug = None
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_visualize_overlay_two_imgs_no_size")
-    os.mkdir(cache_dir)
-    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED))
-    img2 = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
-    sz_img1 = img1.shape[0:2]
-    sz_img2 = img2.shape[0:2]
-    out_img = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2, size_img=None)
-    sz_out = np.max([sz_img1[0], sz_img2[0]]), np.max([sz_img1[1], sz_img2[1]])
-    assert out_img.shape[0:2] == sz_out and len(out_img.shape) == 3
+    img1_ = pcv.transform.resize(img1, desized_size, interpolation=None)
+    img2_ = pcv.transform.resize(img2, desized_size, interpolation=None)
+    out_img = pcv.visualize.overlay_two_imgs(img1=img1_, img2=img2_)
+    assert out_img.shape[0:2] == desized_size and len(out_img.shape) == 3 and len(img1_.shape) == 2
 
 
 def test_plantcv_visualize_overlay_two_imgs_bad_alpha():
@@ -6069,9 +6062,12 @@ def test_plantcv_visualize_overlay_two_imgs_bad_alpha():
     os.mkdir(cache_dir)
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED))
     img2 = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
+    desized_size = (300,300)
+    img1_ = pcv.transform.resize(img1, desized_size, interpolation=None)
+    img2_ = pcv.transform.resize(img2, desized_size, interpolation=None)
     alpha = -1
     with pytest.raises(RuntimeError):
-        _ = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2, alpha=alpha, size_img=None)
+        _ = pcv.visualize.overlay_two_imgs(img1=img1_, img2=img2_, alpha=alpha)
 
 
 # ##############################
