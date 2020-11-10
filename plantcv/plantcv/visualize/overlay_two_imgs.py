@@ -13,7 +13,6 @@ from plantcv.plantcv import fatal_error
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 from plantcv.plantcv import params
-import warnings
 
 
 def overlay_two_imgs(img1, img2, alpha=0.5):
