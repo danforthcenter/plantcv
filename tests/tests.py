@@ -234,6 +234,7 @@ def test_plantcv_parallel_workflowconfig_validate_config():
     # Validate config
     assert config.validate_config()
 
+
 def test_plantcv_parallel_workflowconfig_invalid_startdate():
     # Create a test tmp directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_workflowconfig_invalid_startdate")
@@ -249,6 +250,7 @@ def test_plantcv_parallel_workflowconfig_invalid_startdate():
     config.start_date = "2020-05-10"
     # Validate config
     assert not config.validate_config()
+
 
 def test_plantcv_parallel_workflowconfig_invalid_enddate():
     # Create a test tmp directory
@@ -266,6 +268,7 @@ def test_plantcv_parallel_workflowconfig_invalid_enddate():
     config.timestampformat = "%Y%m%d"
     # Validate config
     assert not config.validate_config()
+
 
 def test_plantcv_parallel_workflowconfig_invalid_metadata_terms():
     # Create a test tmp directory
@@ -1438,7 +1441,7 @@ def test_plantcv_auto_crop():
     roi_contours = [contours[arr_n] for arr_n in contours]
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.auto_crop(img=img1, obj=roi_contours[1], padding_x=(20,10), padding_y=(20,10), color='black')
+    _ = pcv.auto_crop(img=img1, obj=roi_contours[1], padding_x=(20, 10), padding_y=(20, 10), color='black')
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.auto_crop(img=img1, obj=roi_contours[1], color='image')
@@ -1477,6 +1480,7 @@ def test_plantcv_auto_crop_bad_color_input():
     roi_contours = [contours[arr_n] for arr_n in contours]
     with pytest.raises(RuntimeError):
         _ = pcv.auto_crop(img=gray_img, obj=roi_contours[1], padding_x=20, padding_y=20, color='wite')
+
 
 def test_plantcv_auto_crop_bad_padding_input():
     # Read in test data
@@ -3681,6 +3685,7 @@ def test_plantcv_morphology_segment_skeleton():
     segmented_img, segment_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
     assert len(segment_objects) == 73
 
+
 def test_plantcv_morphology_fill_segments():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_fill_segments")
@@ -3689,7 +3694,7 @@ def test_plantcv_morphology_fill_segments():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     obj_dic = np.load(os.path.join(TEST_DATA, TEST_SKELETON_OBJECTS))
     obj = []
-    for key,val in obj_dic.items():
+    for key, val in obj_dic.items():
         obj.append(val)
     pcv.params.debug = "print"
     _ = pcv.morphology.fill_segments(mask, obj)
@@ -3697,8 +3702,8 @@ def test_plantcv_morphology_fill_segments():
     _ = pcv.morphology.fill_segments(mask, obj)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     tests = [pcv.outputs.observations['segment_area']['value'][42] == 5529,
-        pcv.outputs.observations['segment_area']['value'][20] == 5057,
-        pcv.outputs.observations['segment_area']['value'][49] == 3323]
+             pcv.outputs.observations['segment_area']['value'][20] == 5057,
+             pcv.outputs.observations['segment_area']['value'][49] == 3323]
     assert all(tests)
     pcv.outputs.clear()
 
@@ -3925,13 +3930,14 @@ def test_plantcv_morphology_analyze_stem_bad_angle():
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
     pruned, _, _ = pcv.morphology.prune(skel_img=skeleton, size=5)
     segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=pruned)
-    leaf_obj, stem_obj = pcv.morphology.segment_sort(pruned, seg_objects)
-    #print([stem_obj[3]])
-    #stem_obj = [stem_obj[3]]
+    _, _ = pcv.morphology.segment_sort(pruned, seg_objects)
+    # print([stem_obj[3]])
+    # stem_obj = [stem_obj[3]]
     stem_obj = [[[[1116, 1728]], [[1116, 1]]]]
     _ = pcv.morphology.analyze_stem(rgb_img=segmented_img, stem_objects=stem_obj)
     assert pcv.outputs.observations['stem_angle']['value'] == 22877334.0
     pcv.outputs.clear()
+
 
 # ########################################
 # Tests for the hyperspectral subpackage
@@ -4679,7 +4685,7 @@ def test_plantcv_photosynthesis_analyze_fvfm():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_fvfm")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    filename = os.path.join(cache_dir, 'plantcv_fvfm_hist.png')
+    # filename = os.path.join(cache_dir, 'plantcv_fvfm_hist.png')
     # Read in test data
     fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK), -1)
     fmin = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
@@ -4687,7 +4693,7 @@ def test_plantcv_photosynthesis_analyze_fvfm():
     fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    analysis_images = pcv.photosynthesis.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
+    _ = pcv.photosynthesis.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     fvfm_images = pcv.photosynthesis.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
@@ -4719,9 +4725,10 @@ def test_plantcv_photosynthesis_analyze_fvfm_bad_fdark():
     fmin = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
     fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
     fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
-    analysis_images = pcv.photosynthesis.analyze_fvfm(fdark=fdark + 3000, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
-    assert pcv.outputs.observations['fdark_passed_qc']['value'] == False
+    _ = pcv.photosynthesis.analyze_fvfm(fdark=fdark + 3000, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
+    check = pcv.outputs.observations['fdark_passed_qc']['value'] is False
     pcv.outputs.clear()
+    assert check
 
 
 def test_plantcv_photosynthesis_analyze_fvfm_bad_input():
@@ -5397,10 +5404,10 @@ def test_plantcv_transform_resize():
     gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY_SMALL), -1)
     size = (100, 100)
     # Test with debug "print"
-    pcv.params.debug="print"
+    pcv.params.debug = "print"
     _ = pcv.transform.resize(img=gray_img, size=size, interpolation="auto")
     # Test with debug "plot"
-    pcv.params.debug="plot"
+    pcv.params.debug = "plot"
     resized_img = pcv.transform.resize(img=gray_img, size=size, interpolation="auto")
     assert resized_img.shape == size
 
@@ -5442,7 +5449,7 @@ def test_plantcv_transform_resize_factor():
     factor_x = 0.5
     factor_y = 0.2
     # Test with debug "print"
-    pcv.params.debug="print"
+    pcv.params.debug = "print"
     _ = pcv.transform.resize_factor(img=gray_img, factors=(factor_x, factor_y), interpolation="auto")
     # Test with debug "plot"
     pcv.params.debug = "plot"
@@ -6017,57 +6024,55 @@ def test_plantcv_visualize_overlay_two_imgs():
     pcv.params.debug = None
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_visualize_overlay_two_imgs")
     os.mkdir(cache_dir)
-    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED))
-    desized_size = (300, 300)
-    img1_ = pcv.transform.resize(img1, desized_size, interpolation=None)
-    img2 = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
-    img2_ = pcv.transform.resize(img2, desized_size, interpolation=None)
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    img2 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY))
     pcv.params.debug = 'print'
     pcv.params.debug_outdir = cache_dir
-    out_img = pcv.visualize.overlay_two_imgs(img1=img1_, img2=img2_)
+    _ = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2)
     pcv.params.debug = 'plot'
-    out_img = pcv.visualize.overlay_two_imgs(img1=img1_, img2=img2_)
-    assert out_img.shape[0:2] == desized_size and len(out_img.shape) == 3
+    out_img = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2)
+    sample_pt1 = img1[1445, 1154]
+    sample_pt2 = img2[1445, 1154]
+    sample_pt3 = out_img[1445, 1154]
+    pred_rgb = (sample_pt1 * 0.5) + (sample_pt2 * 0.5)
+    pred_rgb = pred_rgb.astype(np.uint8)
+    assert np.array_equal(sample_pt3, pred_rgb)
 
 
 def test_plantcv_visualize_overlay_two_imgs_grayscale():
     pcv.params.debug = None
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_visualize_overlay_two_imgs_grayscale")
     os.mkdir(cache_dir)
-    desized_size = (300, 300)
-    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED))
-    img2 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED_MASK),-1)
-    img1_ = pcv.transform.resize(img1, desized_size, interpolation=None)
-    img2_ = pcv.transform.resize(img2, desized_size, interpolation=None)
-    out_img = pcv.visualize.overlay_two_imgs(img1=img1_, img2=img2_)
-    assert out_img.shape[0:2] == desized_size and len(out_img.shape) == 3 and len(img2_.shape) == 2
-
-
-def test_plantcv_visualize_overlay_two_imgs_grayscale2():
-    pcv.params.debug = None
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_visualize_overlay_two_imgs_grayscale2")
-    os.mkdir(cache_dir)
-    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED_MASK), -1)
-    img2 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED))
-    desized_size = (300,300)
-    img1_ = pcv.transform.resize(img1, desized_size, interpolation=None)
-    img2_ = pcv.transform.resize(img2, desized_size, interpolation=None)
-    out_img = pcv.visualize.overlay_two_imgs(img1=img1_, img2=img2_)
-    assert out_img.shape[0:2] == desized_size and len(out_img.shape) == 3 and len(img1_.shape) == 2
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    img2 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    out_img = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2)
+    sample_pt1 = np.array([255, 255, 255], dtype=np.uint8)
+    sample_pt2 = np.array([255, 255, 255], dtype=np.uint8)
+    sample_pt3 = out_img[1445, 1154]
+    pred_rgb = (sample_pt1 * 0.5) + (sample_pt2 * 0.5)
+    pred_rgb = pred_rgb.astype(np.uint8)
+    assert np.array_equal(sample_pt3, pred_rgb)
 
 
 def test_plantcv_visualize_overlay_two_imgs_bad_alpha():
     pcv.params.debug = None
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_visualize_overlay_two_imgs_bad_alpha")
     os.mkdir(cache_dir)
-    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED))
-    img2 = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
-    desized_size = (300,300)
-    img1_ = pcv.transform.resize(img1, desized_size, interpolation=None)
-    img2_ = pcv.transform.resize(img2, desized_size, interpolation=None)
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    img2 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY))
     alpha = -1
     with pytest.raises(RuntimeError):
-        _ = pcv.visualize.overlay_two_imgs(img1=img1_, img2=img2_, alpha=alpha)
+        _ = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2, alpha=alpha)
+
+
+def test_plantcv_visualize_overlay_two_imgs_size_mismatch():
+    pcv.params.debug = None
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_visualize_overlay_two_imgs_size_mismatch")
+    os.mkdir(cache_dir)
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    img2 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED))
+    with pytest.raises(RuntimeError):
+        _ = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2)
 
 
 # ##############################
