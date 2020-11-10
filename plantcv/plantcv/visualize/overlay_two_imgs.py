@@ -31,8 +31,15 @@ def overlay_two_imgs(img1, img2, alpha=0.5):
     :param alpha: float
     :return: out_img: numpy.ndarray
     """
+    # Validate alpha
     if alpha > 1 or alpha < 0:
         fatal_error("The value of alpha should be in the range of (0,1)!")
+
+    # Validate image sizes are the same
+    size_img1 = img1.shape[0:2]
+    size_img2 = img2.shape[0:2]
+    if size_img1 != size_img2:
+        fatal_error(f"The height/width of img1 ({size_img1}) needs to match img2 ({size_img2}).")
 
     # Copy the input images
     img1_ = np.copy(img1)
@@ -43,12 +50,8 @@ def overlay_two_imgs(img1, img2, alpha=0.5):
     if len(img2_.shape) == 2:
         img2_ = cv2.cvtColor(img2_, cv2.COLOR_GRAY2BGR)
 
-    ## sizing
-    # assumption: the sizes of img1 and img2 are the same
-    size_img = img1_.shape[0:2]
-
     # initialize the output image
-    out_img = np.zeros(size_img + (3,), dtype='uint8')
+    out_img = np.zeros(size_img1 + (3,), dtype=np.uint8)
 
     # blending
     out_img[:, :, :] = (alpha * img1_[:, :, :]) + ((1 - alpha) * img2_[:, :, :])
