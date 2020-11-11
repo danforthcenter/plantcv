@@ -193,5 +193,10 @@ def test_data():
         "workflow_script": os.path.join(datadir, "plantcv-script.py"),
         "metadata_vis_only": metadata_vis_only,
         "metadata_nir_only": metadata_nir_only,
-        "metadata_coprocess": metadata_coprocess
+        "metadata_coprocess": metadata_coprocess,
+        "parallel_results_dir": os.path.join(datadir, "results"),
+        "parallel_bad_results_dir": os.path.join(datadir, "bad_results"),
+        "appended_results_file": os.path.join(datadir, "appended_results.json"),
+        "new_results_file": os.path.join(datadir, "new_result.json"),
+        "valid_json_file": os.path.join(datadir, "valid.json")
     }
