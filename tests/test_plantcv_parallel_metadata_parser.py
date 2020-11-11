@@ -1,8 +1,6 @@
 import os
 import pytest
-from plantcv.parallel import metadata_parser
-from plantcv.parallel import WorkflowConfig
-from plantcv.parallel import check_date_range
+from plantcv.parallel import check_date_range, metadata_parser, WorkflowConfig
 
 
 def test_plantcv_parallel_metadata_parser_snapshots(test_data):

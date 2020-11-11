@@ -1,6 +1,5 @@
 import os
-from plantcv.parallel import job_builder
-from plantcv.parallel import WorkflowConfig
+from plantcv.parallel import job_builder, WorkflowConfig
 
 
 def test_plantcv_parallel_job_builder_single_image(test_data, tmpdir):
