@@ -146,6 +146,43 @@ def test_data():
             'other': 'none'
         }
     }
+    metadata_coprocess = {
+        'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
+            'path': os.path.join(datadir, 'snapshots', 'snapshot57383', 'VIS_SV_0_z1_h1_g0_e82_117770.jpg'),
+            'camera': 'SV',
+            'imgtype': 'VIS',
+            'zoom': 'z1',
+            'exposure': 'e82',
+            'gain': 'g0',
+            'frame': '0',
+            'lifter': 'h1',
+            'timestamp': '2014-10-22 17:49:35.187',
+            'id': '117770',
+            'plantbarcode': 'Ca031AA010564',
+            'treatment': 'none',
+            'cartag': '2143',
+            'measurementlabel': 'C002ch_092214_biomass',
+            'other': 'none',
+            'coimg': 'NIR_SV_0_z1_h1_g0_e65_117779.jpg'
+        },
+        'NIR_SV_0_z1_h1_g0_e65_117779.jpg': {
+            'path': os.path.join(datadir, 'snapshots', 'snapshot57383', 'NIR_SV_0_z1_h1_g0_e65_117779.jpg'),
+            'camera': 'SV',
+            'imgtype': 'NIR',
+            'zoom': 'z1',
+            'exposure': 'e65',
+            'gain': 'g0',
+            'frame': '0',
+            'lifter': 'h1',
+            'timestamp': '2014-10-22 17:49:35.187',
+            'id': '117779',
+            'plantbarcode': 'Ca031AA010564',
+            'treatment': 'none',
+            'cartag': '2143',
+            'measurementlabel': 'C002ch_092214_biomass',
+            'other': 'none'
+        }
+    }
     return {
         "color_img": os.path.join(datadir, "input_color_img.jpg"),
         "workflowconfig_template": workflowconfig_template,
@@ -155,5 +192,6 @@ def test_data():
         "img_snapshotdir": os.path.join(datadir, "snapshots"),
         "workflow_script": os.path.join(datadir, "plantcv-script.py"),
         "metadata_vis_only": metadata_vis_only,
-        "metadata_nir_only": metadata_nir_only
+        "metadata_nir_only": metadata_nir_only,
+        "metadata_coprocess": metadata_coprocess
     }
