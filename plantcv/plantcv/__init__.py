@@ -8,7 +8,7 @@ class Params:
     """PlantCV parameters class."""
 
     def __init__(self, device=0, debug=None, debug_outdir=".", line_thickness=5, dpi=100, text_size=0.55,
-                 text_thickness=2, color_scale="gist_rainbow", color_sequence="sequential", saved_color_scale=None):
+                 text_thickness=2, marker_size=60, color_scale="gist_rainbow", color_sequence="sequential", saved_color_scale=None):
         """Initialize parameters.
 
         Keyword arguments/parameters:
@@ -19,6 +19,7 @@ class Params:
         dpi               = Figure plotting resolution, dots per inch. (default: 100)
         text_size         = Size of plotting text. (default: 0.55)
         text_thickness    = Thickness of plotting text. (default: 2)
+        marker_size       = Size of plotting markers (default: 60)
         color_scale       = Name of plotting color scale (matplotlib colormap). (default: gist_rainbow)
         color_sequence    = Build color scales in "sequential" or "random" order. (default: sequential)
         saved_color_scale = Saved color scale that will be applied next time color_palette is called. (default: None)
@@ -30,6 +31,7 @@ class Params:
         :param dpi: int
         :param text_size: float
         :param text_thickness: int
+        :param marker_size: int
         :param color_scale: str
         :param color_sequence: str
         :param saved_color_scale: list
@@ -41,6 +43,7 @@ class Params:
         self.dpi = dpi
         self.text_size = text_size
         self.text_thickness = text_thickness
+        self.marker_size = marker_size
         self.color_scale = color_scale
         self.color_sequence = color_sequence
         self.saved_color_scale = saved_color_scale
