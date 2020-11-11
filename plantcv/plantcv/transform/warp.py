@@ -6,11 +6,9 @@ import numpy as np
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
-from plantcv.plantcv import params
-from plantcv.plantcv import visualize
-from plantcv.plantcv.image_subtract import image_subtract
-from matplotlib import pyplot as plt
 from plantcv.plantcv import color_palette
+from plantcv.plantcv import params
+from matplotlib import pyplot as plt
 
 
 def warp(img, refimg, pts, refpts, method='default'):
@@ -46,39 +44,41 @@ def warp(img, refimg, pts, refpts, method='default'):
         'lmeds': cv2.LMEDS,
         'rho': cv2.RHO}
 
-
-    refshape = refimg.shape
-    rows, cols = refshape[0:2]
+    shape_ref = refimg.shape
+    rows_ref, cols_ref = shape_ref[0:2]
     # scale marker_size and line_thickness for different resolutions
-    res_ratio = int(np.ceil(img.shape[0]/rows)) #ratio never smaller than 1 with np.ceil
-    cols = color_palette(len(pts))
+    rows_img = img.shape[0]
+    if rows_img > rows_ref:
+        res_ratio_i = int(np.ceil(rows_img/rows_ref)) #ratio never smaller than 1 with np.ceil
+        res_ratio_r = 1
+    else:
+        res_ratio_r = int(np.ceil(rows_ref/rows_img))
+        res_ratio_i = 1
+    # marker colors
+    colors = color_palette(len(pts))
 
-    # img2 = img.copy()
-    # img2 = cv2.merge((img2, img2, img2))
-    # for i, pt in enumerate(pts):
-    #     print(type(i))
-    #     print(i)
-    #     print(cols[i])
-    #     cv2.drawMarker(img2, pt, color=[255, 0, 40],
-    #                    markerType=cv2.MARKER_CROSS,
-    #                    markerSize=params.marker_size*res_ratio,
-    #                    thickness=params.line_thickness*res_ratio)
+    img2 = img.copy()
+    img2 = cv2.merge((img2, img2, img2))
+    for i, pt in enumerate(pts):
+        cv2.drawMarker(img2, pt, color=colors[i],
+                       markerType=cv2.MARKER_CROSS,
+                       markerSize=params.marker_size*res_ratio_i,
+                       thickness=params.line_thickness*res_ratio_i)
 
-    # refimg2 = refimg.copy()
-    # if len(refshape)==2:
-    #     refimg2 = cv2.merge((refimg2, refimg2, refimg2))
-    # for i, pt in enumerate(refpts):
-    #     cv2.drawMarker(refimg2, pt, color=cols[i],
-    #                    markerType=cv2.MARKER_CROSS,
-    #                    markerSize=params.marker_size,
-    #                    thickness=params.line_thickness)
+    refimg2 = refimg.copy()
+    if len(shape_ref)==2:
+        refimg2 = cv2.merge((refimg2, refimg2, refimg2))
+    for i, pt in enumerate(refpts):
+        cv2.drawMarker(refimg2, pt, color=colors[i],
+                       markerType=cv2.MARKER_CROSS,
+                       markerSize=params.marker_size*res_ratio_r,
+                       thickness=params.line_thickness*res_ratio_r)
 
     ptsarr = np.array(pts, dtype='float32')
     refptsarr = np.array(refpts, dtype='float32')
 
-    # M, S = cv2.findHomography(refptsarr, ptsarr, method=methods.get(method))
-    M = np.array([[1,0,0],[0,1,0],[0,0,1]])
-    warped_img = cv2.warpPerspective(src=img, M=M, dsize=(cols, rows))
+    M, S = cv2.findHomography(ptsarr, refptsarr, method=methods.get(method))
+    warped_img = cv2.warpPerspective(src=img, M=M, dsize=(cols_ref, rows_ref))
 
     if params.debug != None:
         debug = params.debug
