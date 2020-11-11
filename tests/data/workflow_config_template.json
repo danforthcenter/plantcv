@@ -12,8 +12,10 @@
     "metadata_filters": {},
     "timestampformat": "%Y-%m-%d %H:%M:%S.%f",
     "writeimg": false,
-    "other_args": null,
+    "other_args": [],
     "coprocess": null,
+    "cleanup": true,
+    "append": true,
     "cluster": "LocalCluster",
     "cluster_config": {
         "n_workers": 1,
