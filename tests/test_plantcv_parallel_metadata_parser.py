@@ -1,6 +1,6 @@
 import os
 import pytest
-from plantcv.parallel import check_date_range, metadata_parser, WorkflowConfig
+from plantcv.parallel import check_date_range, convert_datetime_to_unixtime, metadata_parser, WorkflowConfig
 
 
 def test_plantcv_parallel_metadata_parser_snapshots(test_data):
@@ -353,3 +353,13 @@ def test_plantcv_parallel_metadata_parser_images_no_camera(test_data):
             'other': 'none'
         }
     }
+
+
+def test_plantcv_parallel_convert_datetime_to_unixtime():
+    unix_time = convert_datetime_to_unixtime(timestamp_str="1970-01-01", date_format="%Y-%m-%d")
+    assert unix_time == 0
+
+
+def test_plantcv_parallel_convert_datetime_to_unixtime_bad_strptime():
+    with pytest.raises(SystemExit):
+        _ = convert_datetime_to_unixtime(timestamp_str="1970-01-01", date_format="%Y-%m")
