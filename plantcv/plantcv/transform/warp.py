@@ -8,7 +8,6 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import color_palette
 from plantcv.plantcv import params
-from matplotlib import pyplot as plt
 
 
 def warp(img, refimg, pts, refpts, method='default'):
