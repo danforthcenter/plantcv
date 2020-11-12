@@ -1,5 +1,6 @@
 import pytest
 import os
+import numpy as np
 
 
 @pytest.fixture(scope="session")
@@ -108,6 +109,7 @@ def test_data():
             }
         }
     }
+    # Metadata result for VIS only data
     metadata_vis_only = {
         'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
             'path': os.path.join(datadir, 'snapshots', 'snapshot57383', 'VIS_SV_0_z1_h1_g0_e82_117770.jpg'),
@@ -127,6 +129,7 @@ def test_data():
             'other': 'none'
         }
     }
+    # Metadata result for NIR only data
     metadata_nir_only = {
         'NIR_SV_0_z1_h1_g0_e65_117779.jpg': {
             'path': os.path.join(datadir, 'snapshots', 'snapshot57383', 'NIR_SV_0_z1_h1_g0_e65_117779.jpg'),
@@ -146,6 +149,7 @@ def test_data():
             'other': 'none'
         }
     }
+    # Metadata result for VIS and NIR coprocessed data
     metadata_coprocess = {
         'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
             'path': os.path.join(datadir, 'snapshots', 'snapshot57383', 'VIS_SV_0_z1_h1_g0_e82_117770.jpg'),
@@ -183,6 +187,9 @@ def test_data():
             'other': 'none'
         }
     }
+    # Read contours from saved NumPy array
+    setaria_small_mask_contours_npz = np.load(os.path.join(datadir, "setaria_composed_contours.npz"), encoding="latin1")
+    setaria_small_mask_contours = setaria_small_mask_contours_npz['arr_0']
     return {
         "color_img": os.path.join(datadir, "input_color_img.jpg"),
         "workflowconfig_template": workflowconfig_template,
@@ -198,5 +205,7 @@ def test_data():
         "parallel_bad_results_dir": os.path.join(datadir, "bad_results"),
         "appended_results_file": os.path.join(datadir, "appended_results.json"),
         "new_results_file": os.path.join(datadir, "new_result.json"),
-        "valid_json_file": os.path.join(datadir, "valid.json")
+        "valid_json_file": os.path.join(datadir, "valid.json"),
+        "setaria_small_mask": os.path.join(datadir, "setaria_small_mask.png"),
+        "setaria_small_mask_contours": setaria_small_mask_contours
     }
