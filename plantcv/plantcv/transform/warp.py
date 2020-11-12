@@ -81,22 +81,24 @@ def warp(img, refimg, pts, refpts, method='default'):
     warped_img = cv2.warpPerspective(src=img, M=M, dsize=(cols_ref, rows_ref))
 
     if params.debug != None:
-        debug = params.debug
-        params.debug = None
-        # if len(refimg.shape)==3:
-        #     warped_img = cv2.merge((warped_img, warped_img, warped_img))
-
-        # imgsub = cv2.substract(refimg, warped_img)
-        # imgblend = cv2.add(refimg, warped_img)
-        # imgblend = cv2.addWeighted(refimg, 0.3, warped_img, 0.7, 0)
-        params.debug=debug
+        if len(np.unique(img))==2:
+            # i was trying to get a blend effect in the debug output but I can' figure out how to get that when img is an rgb image. if refimg is a grayscale then it happens automatically.
+            # nothing new happens if dividing by 1
+            warped_blend = np.divide(warped_img, 1, out=np.zeros_like(warped_img), casting='unsafe')
+        else:
+            warped_blend = warped_img
+        if len(refimg.shape)==2:
+            imgadd = cv2.add(refimg, warped_blend)
+        else:
+            warped_blend3 = cv2.merge((warped_blend, warped_blend, warped_blend))
+            imgadd = cv2.add(refimg, warped_blend3)
         if params.debug == 'plot':
             plot_image(img2)
             plot_image(refimg2)
-            # plot_image(imgsub)
+            plot_image(imgadd)
         if params.debug == 'print':
             print_image(img2, os.path.join(params.debug_outdir, str(params.device) + "_img-to-warp.png"))
             print_image(refimg2, os.path.join(params.debug_outdir, str(params.device) + "_img-ref.png"))
-            # print_image(imgsub, os.path.join(params.debug_outdir, str(params.device) + "_warp_overlay.png"))
+            print_image(imgadd, os.path.join(params.debug_outdir, str(params.device) + "_warp_overlay.png"))
 
     return warped_img
