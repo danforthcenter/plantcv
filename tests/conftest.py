@@ -1,6 +1,10 @@
 import pytest
 import os
 import numpy as np
+import matplotlib
+
+# Disable plotting
+matplotlib.use('Template')
 
 
 @pytest.fixture(scope="session")
@@ -206,6 +210,12 @@ def test_data():
         "appended_results_file": os.path.join(datadir, "appended_results.json"),
         "new_results_file": os.path.join(datadir, "new_result.json"),
         "valid_json_file": os.path.join(datadir, "valid.json"),
+        "setaria_small_vis": os.path.join(datadir, "setaria_small_vis.png"),
         "setaria_small_mask": os.path.join(datadir, "setaria_small_mask.png"),
-        "setaria_small_mask_contours": setaria_small_mask_contours
+        "setaria_small_mask_contours": setaria_small_mask_contours,
+        "acute_vertex_result": np.asarray([[[119, 285]], [[151, 280]], [[168, 267]], [[168, 262]], [[171, 261]],
+                                           [[224, 269]], [[246, 271]], [[260, 277]], [[141, 248]], [[183, 194]],
+                                           [[188, 237]], [[173, 240]], [[186, 260]], [[147, 244]], [[163, 246]],
+                                           [[173, 268]], [[170, 272]], [[151, 320]], [[195, 289]], [[228, 272]],
+                                           [[210, 272]], [[209, 247]], [[210, 232]]])
     }
