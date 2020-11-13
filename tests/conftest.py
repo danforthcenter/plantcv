@@ -194,6 +194,12 @@ def test_data():
     # Read contours from saved NumPy array
     setaria_small_mask_contours_npz = np.load(os.path.join(datadir, "setaria_composed_contours.npz"), encoding="latin1")
     setaria_small_mask_contours = setaria_small_mask_contours_npz['arr_0']
+    input_contours_npz = np.load(os.path.join(datadir, "input_contours.npz"), encoding="latin1")
+    input_object_contours = input_contours_npz['arr_0']
+    setaria_small_plant_composed_contours_npz = np.load(os.path.join(datadir,
+                                                                     "setaria_small_plant_composed_contours.npz"),
+                                                        encoding="latin1")
+    setaria_small_plant_composed_contours = setaria_small_plant_composed_contours_npz["arr_0"]
     return {
         "color_img": os.path.join(datadir, "input_color_img.jpg"),
         "workflowconfig_template": workflowconfig_template,
@@ -217,5 +223,12 @@ def test_data():
                                            [[224, 269]], [[246, 271]], [[260, 277]], [[141, 248]], [[183, 194]],
                                            [[188, 237]], [[173, 240]], [[186, 260]], [[147, 244]], [[163, 246]],
                                            [[173, 268]], [[170, 272]], [[151, 320]], [[195, 289]], [[228, 272]],
-                                           [[210, 272]], [[209, 247]], [[210, 232]]])
+                                           [[210, 272]], [[209, 247]], [[210, 232]]]),
+        "input_color_img": os.path.join(datadir, "input_color_img.jpg"),
+        "input_binary_img": os.path.join(datadir, "input_binary_img.png"),
+        "input_object_contours": input_object_contours,
+        "input_gray_img": os.path.join(datadir, "input_gray_img.jpg"),
+        "setaria_small_plant_vis": os.path.join(datadir, "setaria_small_plant_vis.png"),
+        "setaria_small_plant_mask": os.path.join(datadir, "setaria_small_plant_mask.png"),
+        "setaria_small_plant_composed_contours": setaria_small_plant_composed_contours
     }
