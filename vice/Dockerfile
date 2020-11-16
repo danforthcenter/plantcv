@@ -15,7 +15,7 @@ USER jovyan
 # install plantcv
 RUN conda update -n base conda \
     && conda install jupyterlab=0.35.4 nb_conda \
-    && conda create -n plantcv -c bioconda plantcv nb_conda \
+    && conda create -n plantcv -c conda-forge plantcv nb_conda \
     && conda clean -tipsy \
     && fix-permissions $CONDA_DIR
 
