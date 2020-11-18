@@ -32,9 +32,9 @@ def warp(img, refimg, pts, refpts, method='default'):
 
     params.device += 1
 
-    if len(pts)<4 and len(refpts)<4:
+    if len(pts) < 4 or len(refpts) < 4:
         fatal_error('Please provide 4 pairs of corresponding coordinates.')
-    if len(img.shape)>2:
+    if len(img.shape) > 2:
         fatal_error('The input `img` should be grayscale or binary.')
 
     methods = {
@@ -56,6 +56,7 @@ def warp(img, refimg, pts, refpts, method='default'):
     # marker colors
     colors = color_palette(len(pts))
 
+    # temp rgb image for colored markers on img
     img2 = img.copy()
     img2 = cv2.merge((img2, img2, img2))
     for i, pt in enumerate(pts):
@@ -64,8 +65,9 @@ def warp(img, refimg, pts, refpts, method='default'):
                        markerSize=params.marker_size*res_ratio_i,
                        thickness=params.line_thickness*res_ratio_i)
 
+    # temp rgb image for colored markers on refimg
     refimg2 = refimg.copy()
-    if len(shape_ref)==2:
+    if len(shape_ref) == 2:
         refimg2 = cv2.merge((refimg2, refimg2, refimg2))
     for i, pt in enumerate(refpts):
         cv2.drawMarker(refimg2, pt, color=colors[i],
@@ -73,24 +75,32 @@ def warp(img, refimg, pts, refpts, method='default'):
                        markerSize=params.marker_size*res_ratio_r,
                        thickness=params.line_thickness*res_ratio_r)
 
+    # convert list of tuples to array for cv2 functions
     ptsarr = np.array(pts, dtype='float32')
     refptsarr = np.array(refpts, dtype='float32')
 
+    # find tranformation matrix and warp
     M, S = cv2.findHomography(ptsarr, refptsarr, method=methods.get(method))
     warped_img = cv2.warpPerspective(src=img, M=M, dsize=(cols_ref, rows_ref))
 
     if params.debug != None:
+        # adjust warped_img for blending
         if len(np.unique(img))==2:
-            # i was trying to get a blend effect in the debug output but I can' figure out how to get that when img is an rgb image. if refimg is a grayscale then it happens automatically.
-            # nothing new happens if dividing by 1
-            warped_blend = np.divide(warped_img, 1, out=np.zeros_like(warped_img), casting='unsafe')
+        # if img is binary, reduce white areas to less than 255
+            warped_blend = np.divide(warped_img, 3, out=np.zeros_like(warped_img), casting='unsafe')
         else:
+        # if refimg is a grayscale then it probably already is less than 255
             warped_blend = warped_img
+
+        # Blending based on types of images. Blend by adding will create a white ghost effect on grayscale refimg
         if len(refimg.shape)==2:
+        #  if refimg is greyscale
             imgadd = cv2.add(refimg, warped_blend)
         else:
-            warped_blend3 = cv2.merge((warped_blend, warped_blend, warped_blend))
+            # if refimg is rgb(a) then a white overlay. I can' figure out how to get ghosting when img is an rgb image.
+            warped_blend3 = cv2.merge((warped_blend,)*refimg.shape[2]) #create 3(4) channel image based on shape of refimg
             imgadd = cv2.add(refimg, warped_blend3)
+
         if params.debug == 'plot':
             plot_image(img2)
             plot_image(refimg2)
