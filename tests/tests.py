@@ -947,7 +947,7 @@ PIXEL_VALUES = "pixel_inspector_rgb_values.txt"
 # ##########################
 # Tests for the main package
 # ##########################
-def test_plantcv_transform_warp():
+def test_plantcv_transform_warp_smaller():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR),-1)
     bimg = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY),-1)
     bimg_small = cv2.resize(bimg, (200,300))
@@ -960,7 +960,7 @@ def test_plantcv_transform_warp():
     assert np.count_nonzero(mask_warped)==92781
 
 
-def test_plantcv_transform_warp():
+def test_plantcv_transform_warp_larger():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR),-1)
     gimg = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY),-1)
     gimg_large = cv2.resize(gimg, (5000,7000))
