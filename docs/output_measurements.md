@@ -13,7 +13,7 @@ dataset, and `entities` is a list of data blocks for each unit of analysis (typi
 image) in the dataset. For each entity there are two data blocks: `metadata` is a set of key-value pairs of metadata
 keywords and their values (e.g. image or experimental metadata such as timestamp, treatment, etc.), and `observations`
 is a set of data blocks of observational data or measurements. Each observation has the same set of information,
-roughly following the MIAPPE guidelines: `trait` is the name of the observation, `method` is generally the PlantCV
+roughly following the [MIAPPE](https://www.miappe.org/) guidelines: `trait` is the name of the observation, `method` is generally the PlantCV
 function name used (but it could be another method), `scale` is the observation units, `datatype` is the Python data
 type the data are stored as, `value` is the observation output value(s), and `label` is the data/category label. 
 
@@ -139,13 +139,14 @@ suggestions for additional metadata we should track that would be useful to you,
 | measurementlabel | experiment name or ID                                 |
 | other            | other information                                     |
 
+
 ## Output Observations
 
 Functions that automatically store data to the [`Outputs` class](outputs.md) are [acute_vertex](acute_vertex.md), [analyze_color](analyze_color.md),
 [analyze_bound_horizontal](analyze_bound_horizontal.md), [analyze_bound_vertical](analyze_bound_vertical.md), [analyze_nir_intensity](analyze_NIR_intensity), 
 [analyze_object](analyze_shape.md), [analyze_thermal_values](analyze_thermal_values.md), [photosynthesis.analyze_fvfm](photosynthesis_analyze_fvfm.md), [hyperspectral.analyze_spectral](analyze_spectral.md),
 [hyperspectral.analyze_index](analyze_index.md), [landmark_reference_pt_dist](landmark_reference_pt_dist.md), [morphology.check_cycles](check_cycles.md), 
-[morphology.find_tips](find_tips.md), [morphology.find_branch_pts](find_branch_pts.md), [morphology.segment_angle](segment_angle.md), 
+[morphology.fill_segments](fill_segments.md), [morphology.find_tips](find_tips.md), [morphology.find_branch_pts](find_branch_pts.md), [morphology.segment_angle](segment_angle.md), 
 [morphology.segment_curvature](segment_curvature.md), [morphology.segment_euclidean_length](segment_euclidean_length.md), 
 [morphology.segment_insertion_angle](segment_insertion_angle.md), [morphology.segment_path_length](segment_pathlength.md), 
 [morphology.segment_tangent_angle](segment_tangent_angle.md), [report_size_marker_area](report_size_marker.md), [watershed_segmentation](watershed.md),

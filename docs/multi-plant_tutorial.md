@@ -548,7 +548,7 @@ def main():
     #    ksize  = kernel size
     #    i      = iterations, i.e. number of consecutive filtering passes
     
-    dilated = pcv.dilate(img=fill_image, ksize=1, i=1)
+    dilated = pcv.dilate(gray_img=fill_image, ksize=1, i=1)
     
     # STEP 9: Find objects (contours: black-white boundaries)
     # Inputs:

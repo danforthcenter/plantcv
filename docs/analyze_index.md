@@ -3,7 +3,7 @@
 This function calculates the spectral index statistics and writes the values  as observations out to the 
 [Outputs class](outputs.md).
        
-**plantcv.hyperspectral.analyze_index**(*index_array, mask, bins=100, min_bin=0, max_bin=1*)
+**plantcv.hyperspectral.analyze_index**(*index_array, mask, histplot=False, bins=100, min_bin=0, max_bin=1*)
 
 **returns** None
 
@@ -23,7 +23,7 @@ This function calculates the spectral index statistics and writes the values  as
     - Below
 - **Output data stored:** Mean, median, and standard deviation of the index automatically gets stored to the 
     [`Outputs` class](outputs.md) when this function is ran. 
-    These data can always get accessed during a workflow (example below). For more detail about data output see [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
+    These data can always get accessed during a workflow. For more detail about data output see [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 
 ```python

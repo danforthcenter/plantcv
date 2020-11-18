@@ -51,11 +51,11 @@ Validate parameters/structure of configuration data.
 temporary directory when `None`.
 
 **start_date**: (str, default = `None`): start date used to filter images. Images will be analyzed that are newer than 
-the start date. In the case of `None` all images prior to `end_date` are processed. string format should match 
+the start date. In the case of `None` all images prior to `end_date` are processed. String format should match 
 `timestampformat`.
 
 **end_date**: (str, default = `None`): end date used to filter images. Images will be analyzed that are older than the 
-end date. In the case of `None` all images after `start_date` are processed. string format should match 
+end date. In the case of `None` all images after `start_date` are processed. String format should match 
 `timestampformat`.
 
 **imgformat**: (str, default = "png"): image file format/extension.
@@ -68,7 +68,7 @@ analyzed that have the associated term and value.
 
 
 **timestampformat**: (str, default = '%Y-%m-%d %H:%M:%S.%f'): a date format code compatible with strptime C library. 
-see [strptime docs](https://docs.python.org/3.7/library/datetime.html#strftime-and-strptime-behavior) for supported 
+See [strptime docs](https://docs.python.org/3.7/library/datetime.html#strftime-and-strptime-behavior) for supported 
 codes.
 
 **writeimg**: (bool, default = `False`): save analysis images to `img_outdir` if `True`.
@@ -81,7 +81,7 @@ codes.
 
 **cleanup**: (bool, default =`True`): remove temporary job directory if `True`.
 
-**append**: (bool, default = `True`): if `True` will append results to an existing json file. if `False`, will delete 
+**append**: (bool, default = `True`): if `True` will append results to an existing json file. If `False`, will delete 
 previous results stored in the specified JSON file.
 
 **cluster** (str, default = "LocalCluster"): LocalCluster will run PlantCV workflows on a single machine. All valid 

@@ -31,7 +31,7 @@ pcv.params.debug = "print"
 
 # Perform erosion filtering
 # Results in removal of isolated pixels or boundary of object removal
-er_img = pcv.erode(gray_img, ksize, 1)
+er_img = pcv.erode(gray_img=gray_img, ksize=3, i=1)
 
 ```
 

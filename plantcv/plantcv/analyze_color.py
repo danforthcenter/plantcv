@@ -14,7 +14,7 @@ def analyze_color(rgb_img, mask, hist_plot_type=None):
     Inputs:
     rgb_img          = RGB image data
     mask             = Binary mask made from selected contours
-    hist_plot_type   = 'None', 'all', 'rgb','lab' or 'hsv'
+    hist_plot_type   = None, 'all', 'rgb','lab' or 'hsv'
 
     Returns:
     analysis_image   = histogram output

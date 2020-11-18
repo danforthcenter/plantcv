@@ -99,9 +99,6 @@ def main():
 
 ![Screenshot](img/tutorial_images/nir/background_average.jpg)
 
-Note: Sometimes it is easier to use pre-built OpenCV functions. In most situations the documentation is quite good.
-However for more complex operations (those that require multiple OpenCV functions), I would recommend writing a PlantCV subroutine.
-
 First, let's examine how efficiently we can capture the plant. Then we will worry about masking problematic background objects.
 We start by [subtracting](image_subtract.md) the background.
 
@@ -111,17 +108,17 @@ We start by [subtracting](image_subtract.md) the background.
     # Inputs: 
     #   gray_img1 - Grayscale image data from which gray_img2 will be subtracted
     #   gray_img2 - Grayscale image data which will be subtracted from gray_img1
-    bkg_sub_img = pcv.image_subtract(gray_img1=img, img_bkgrd)
+    bkg_sub_img = pcv.image_subtract(gray_img1=img_bkgrd, gray_img2=img)
         
-    # Threshold the image of interest using the two-sided custom range function (keep what is between 50-190)
+    # Threshold the image of interest using the two-sided custom range function (keep what is between 20-190)
     
     # Inputs:
     #   img - RGB or grayscale image data 
     #   lower_thresh - List of lower threshold values 
     #   upper_thresh - List of upper threshold values
     #   channel - Color-space channels of interest (either 'RGB', 'HSV', 'LAB', or 'gray')
-    bkg_sub_thres_img, masked_img = pcv.threshold.custom_range(img=bkg_sub_img, lower_thresh=[50], 
-                                                               upper_thresh=[190], channel='gray')
+    bkg_sub_thres_img, masked_img = pcv.threshold.custom_range(img=bkg_sub_img, lower_thresh=[20], 
+                                                               upper_thresh=[250], channel='gray')
 
 ```
 
@@ -135,7 +132,7 @@ Images were subtracted using the PlantCV [image subtract](image_subtract.md) fun
 This function is built using the numpy '-' operator.
 It is a modulo operator rather than a saturation operator.
 
-Thresholding was done using the OpenCV inRange function. Pixels that have a signal value less than 50 and greater than 190 will be set to 0 (black), 
+Thresholding was done using the [custom range threshold](custom_range_threshold.md) function. Pixels that have a signal value less than 20 and greater than 250 will be set to 0 (black), 
 while those with a value between these two will be set to 255 (white).
 This approach works very well if you have image of the background without plant material.
 

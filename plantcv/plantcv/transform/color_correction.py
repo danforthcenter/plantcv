@@ -359,6 +359,9 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
     params.device += 1
     # Initialize chip list
     chips = []
+    # Store debug mode
+    debug = params.debug
+    params.debug = None
 
     # Loop over each color card row
     for i in range(0, nrows):
@@ -371,6 +374,8 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
             x = start_coord[0] + j * spacing[0]
             # Create a chip ROI
             chips.append(circle(img=rgb_img, x=x, y=y, r=radius))
+    # Restore debug parameter
+    params.debug = debug
     # Sort excluded chips from largest to smallest
     exclude.sort(reverse=True)
     # Remove any excluded chips
