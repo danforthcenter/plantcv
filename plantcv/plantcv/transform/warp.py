@@ -60,7 +60,9 @@ def warp(img, refimg, pts, refpts, method='default'):
     img2 = img.copy()
     img2 = cv2.merge((img2, img2, img2))
     for i, pt in enumerate(pts):
-        cv2.drawMarker(img2, pt, color=colors[i],
+        cv2.drawMarker(img2,
+                       pt,
+                       color=colors[i],
                        markerType=cv2.MARKER_CROSS,
                        markerSize=params.marker_size*res_ratio_i,
                        thickness=params.line_thickness*res_ratio_i)
@@ -70,7 +72,9 @@ def warp(img, refimg, pts, refpts, method='default'):
     if len(shape_ref) == 2:
         refimg2 = cv2.merge((refimg2, refimg2, refimg2))
     for i, pt in enumerate(refpts):
-        cv2.drawMarker(refimg2, pt, color=colors[i],
+        cv2.drawMarker(refimg2,
+                       pt,
+                       color=colors[i],
                        markerType=cv2.MARKER_CROSS,
                        markerSize=params.marker_size*res_ratio_r,
                        thickness=params.line_thickness*res_ratio_r)
@@ -83,9 +87,9 @@ def warp(img, refimg, pts, refpts, method='default'):
     M, S = cv2.findHomography(ptsarr, refptsarr, method=methods.get(method))
     warped_img = cv2.warpPerspective(src=img, M=M, dsize=(cols_ref, rows_ref))
 
-    if params.debug != None:
+    if params.debug is not None:
         # adjust warped_img for blending
-        if len(np.unique(img))==2:
+        if len(np.unique(img)) == 2:
         # if img is binary, reduce white areas to less than 255
             warped_blend = np.divide(warped_img, 3, out=np.zeros_like(warped_img), casting='unsafe')
         else:
@@ -93,7 +97,7 @@ def warp(img, refimg, pts, refpts, method='default'):
             warped_blend = warped_img
 
         # Blending based on types of images. Blend by adding will create a white ghost effect on grayscale refimg
-        if len(refimg.shape)==2:
+        if len(refimg.shape) == 2:
         #  if refimg is greyscale
             imgadd = cv2.add(refimg, warped_blend)
         else:
