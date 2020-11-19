@@ -953,11 +953,17 @@ def test_plantcv_transform_warp_smaller():
     bimg_small = cv2.resize(bimg, (200,300))
     mrow, mcol = bimg_small.shape
     vrow, vcol, vdepth = img.shape
-    pcv.params.debug=None
+    pcv.params.debug = None
     mask_warped = pcv.transform.warp(bimg_small, img[:,:,2],
                                     pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
                                     refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
+    pcv.params.debug = 'plot'
+    mask_warped_plot = pcv.transform.warp(bimg_small, img[:,:,2],
+                                pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
+                                refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
+
     assert np.count_nonzero(mask_warped)==92781
+    assert np.count_nonzero(mask_warped_plot)==92781
 
 
 def test_plantcv_transform_warp_larger():
@@ -971,13 +977,12 @@ def test_plantcv_transform_warp_larger():
                                     pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
                                     refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
     pcv.params.debug='print'
-    mask_warped_print = pcv.transform.warp(gimg_large, img,
+    _ = pcv.transform.warp(gimg_large, img,
                                     pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
                                     refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
 
 
     assert np.sum(mask_warped_plot)==83103814
-    assert np.sum(mask_warped_print)==83103814
 
 
 def test_plantcv_transform_warp_rgbimgerror():
