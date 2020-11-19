@@ -8,6 +8,7 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import color_palette
 from plantcv.plantcv import params
+from plantcv.plantcv.visualize import overlay_two_imgs
 
 
 def warp(img, refimg, pts, refpts, method='default'):
@@ -32,7 +33,7 @@ def warp(img, refimg, pts, refpts, method='default'):
 
     params.device += 1
 
-    if len(pts) < 4 or len(refpts) < 4:
+    if len(pts) != 4 or len(refpts) != 4:
         fatal_error('Please provide 4 pairs of corresponding coordinates.')
     if len(img.shape) > 2:
         fatal_error('The input `img` should be grayscale or binary.')
@@ -92,30 +93,18 @@ def warp(img, refimg, pts, refpts, method='default'):
         warped_img[warped_img > 0] = 255
 
     if params.debug is not None:
-        # adjust warped_img for blending
-        if len(np.unique(img)) == 2:
-            # if img is binary, reduce white areas to less than 255
-            warped_blend = np.divide(warped_img, 3, out=np.zeros_like(warped_img), casting='unsafe')
-        else:
-            # if refimg is a grayscale then it probably already is less than 255
-            warped_blend = warped_img
-
-        # Blending based on types of images. Blend by adding will create a white ghost effect on grayscale refimg
-        if len(refimg.shape) == 2:
-            #  if refimg is greyscale
-            imgadd = cv2.add(refimg, warped_blend)
-        else:
-            # if refimg is rgb(a) then a white overlay. I can' figure out how to get ghosting when img is an rgb image.
-            warped_blend3 = cv2.merge((warped_blend,)*refimg.shape[2]) #create 3(4) channel image based on shape of refimg
-            imgadd = cv2.add(refimg, warped_blend3)
+        debug_mode = params.debug
+        params.debug = None
+        img_blend = overlay_two_imgs(warped_img, refimg)
+        params.debug = debug_mode
 
         if params.debug == 'plot':
             plot_image(img2)
             plot_image(refimg2)
-            plot_image(imgadd)
+            plot_image(img_blend)
         if params.debug == 'print':
             print_image(img2, os.path.join(params.debug_outdir, str(params.device) + "_img-to-warp.png"))
             print_image(refimg2, os.path.join(params.debug_outdir, str(params.device) + "_img-ref.png"))
-            print_image(imgadd, os.path.join(params.debug_outdir, str(params.device) + "_warp_overlay.png"))
+            print_image(img_blend, os.path.join(params.debug_outdir, str(params.device) + "_warp_overlay.png"))
 
     return warped_img
