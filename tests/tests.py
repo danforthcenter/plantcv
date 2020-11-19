@@ -963,8 +963,8 @@ def test_plantcv_transform_warp_smaller():
                                 pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
                                 refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
 
-    assert np.count_nonzero(mask_warped)==92781
-    assert np.count_nonzero(mask_warped_plot)==92781
+    assert np.count_nonzero(mask_warped)==93142
+    assert np.count_nonzero(mask_warped_plot)==93142
 
 
 def test_plantcv_transform_warp_larger():
