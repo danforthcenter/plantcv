@@ -92,7 +92,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
                 segment_plot = np.zeros(segmented_img.shape[:2], np.uint8)
                 cv2.drawContours(segment_plot, obj, -1, 255, 1, lineType=8)
                 segment_plot = dilate(segment_plot, 3, 1)
-                tips = dilate(tips, 3, 1)
+                #tips = dilate(tips, 3, 1)
                 overlap_img = logical_and(segment_plot, tips)
 
                 # If none of the tips are within a segment_end then it's an insertion segment
@@ -163,7 +163,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
 
     # Compile list of measurements where there is a 'NA' where pruned away segments would go.
     print(intersection_angles)
-    print(len(pruned_away))
+    print(pruned_away)
     intersection_angles_editing = intersection_angles.copy()
     for j in pruned_away:
         if j:
