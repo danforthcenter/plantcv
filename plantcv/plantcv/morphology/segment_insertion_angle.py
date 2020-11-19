@@ -162,6 +162,8 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
         intersection_angles.append(intersection_angle)
 
     # Compile list of measurements where there is a 'NA' where pruned away segments would go.
+    print(intersection_angles)
+    print(len(pruned_away))
     intersection_angles_editing = intersection_angles.copy()
     for j in pruned_away:
         if j:
