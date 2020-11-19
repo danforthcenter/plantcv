@@ -2,13 +2,13 @@
 
 Reads image into numpy ndarray and splits the path and image filename. This is a wrapper for the OpenCV function [imread](http://docs.opencv.org/modules/highgui/doc/reading_and_writing_images_and_video.html). In contrast to `readimage`, this function is specifically designed to read images with Bayer mosaic pixel pattern and return a demosaicked image.
 
-**plantcv.readbayer**(*filename, bayerpattern = 'BG', alg = "default"*)
+**plantcv.readbayer**(*filename, bayerpattern = 'RG', alg = "default"*)
 
 **returns** img, path, image filename
 
 - **Parameters:**
     - filename - image file to be read (possibly including a path)
-    - bayerpattern  - arrangement of the pixels. Often found by trial and error. Either "BG" (default), "GB", "RG", "GR".
+    - bayerpattern  - arrangement of the pixels. Often found by trial and error. Either "RG" (default), "GB", "BG", "GR".
     - alg - algorithm with which to demosaic the image. Either "default" (default), "EdgeAware", "VariableNumberGradients". Not case sensitive.
 
 - **Context:**
@@ -17,9 +17,9 @@ Reads image into numpy ndarray and splits the path and image filename. This is a
     - Not exactly available, but could substitute for `readimage` [in VIS Tutorial](vis_tutorial.md)
 
 ```python
-from plantcv import plantcv as pcv      
+from plantcv import plantcv as pcv
 
-# Set global debug behavior to None (default), "print" (to file), 
+# Set global debug behavior to None (default), "print" (to file),
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 

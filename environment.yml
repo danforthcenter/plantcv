@@ -14,7 +14,7 @@ dependencies:
   - dask
   - dask-jobqueue
   - nb_conda
-  - opencv<4, >=3.4
+  - opencv<4, >=3.4.7
 channels:
   - conda-forge
   - defaults

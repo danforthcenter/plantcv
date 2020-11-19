@@ -8,12 +8,12 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
 
 
-def readbayer(filename, bayerpattern='BG', alg='default'):
+def readbayer(filename, bayerpattern='RG', alg='default'):
     """Read image from file that has a Bayer mosaic.
 
     Inputs:
     filename = name of image file
-    bayerpattern = arrangement of the pixels. Often found by trial and error. ("BG","GB","RG","GR")
+    bayerpattern = arrangement of the pixels. See the camera tech specs or use trial and error. ("BG","GB","RG","GR")
     alg = algorithm with which to demosaic the image. ("default","EdgeAware","VariableNumberGradients")
 
     Returns:
@@ -42,29 +42,29 @@ def readbayer(filename, bayerpattern='BG', alg='default'):
         fatal_error("Failed to open " + filename)
 
     if alg.upper() == 'DEFAULT':
-        if bayerpattern.upper() == 'BG':
+        if bayerpattern.upper() == 'RG':
             img = cv2.cvtColor(image_raw, cv2.COLOR_BayerBG2BGR)
         elif bayerpattern.upper() == 'GB':
             img = cv2.cvtColor(image_raw, cv2.COLOR_BayerGB2BGR)
-        elif bayerpattern.upper() == 'RG':
+        elif bayerpattern.upper() == 'BG':
             img = cv2.cvtColor(image_raw, cv2.COLOR_BayerRG2BGR)
         elif bayerpattern.upper() == 'GR':
             img = cv2.cvtColor(image_raw, cv2.COLOR_BayerGR2BGR)
     elif alg.upper() == 'EDGEAWARE':
-        if bayerpattern.upper() == 'BG':
+        if bayerpattern.upper() == 'RG':
             img = cv2.cvtColor(image_raw, cv2.COLOR_BayerBG2BGR_EA)
         elif bayerpattern.upper() == 'GB':
             img = cv2.cvtColor(image_raw, cv2.COLOR_BayerGB2BGR_EA)
-        elif bayerpattern.upper() == 'RG':
+        elif bayerpattern.upper() == 'BG':
             img = cv2.cvtColor(image_raw, cv2.COLOR_BayerRG2BGR_EA)
         elif bayerpattern.upper() == 'GR':
             img = cv2.cvtColor(image_raw, cv2.COLOR_BayerGR2BGR_EA)
     elif alg.upper() == 'VARIABLENUMBERGRADIENTS':
-        if bayerpattern.upper() == 'BG':
+        if bayerpattern.upper() == 'RG':
             img = cv2.cvtColor(image_raw, cv2.COLOR_BayerBG2BGR_VNG)
         elif bayerpattern.upper() == 'GB':
             img = cv2.cvtColor(image_raw, cv2.COLOR_BayerGB2BGR_VNG)
-        elif bayerpattern.upper() == 'RG':
+        elif bayerpattern.upper() == 'BG':
             img = cv2.cvtColor(image_raw, cv2.COLOR_BayerRG2BGR_VNG)
         elif bayerpattern.upper() == 'GR':
             img = cv2.cvtColor(image_raw, cv2.COLOR_BayerGR2BGR_VNG)
