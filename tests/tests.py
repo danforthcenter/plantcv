@@ -950,7 +950,8 @@ PIXEL_VALUES = "pixel_inspector_rgb_values.txt"
 def test_plantcv_transform_warp_smaller():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR),-1)
     bimg = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY),-1)
-    bimg_small = cv2.resize(bimg, (200,300))
+    bimg_small = cv2.resize(bimg, (200,300)) #not sure why INTER_NEAREST doesn't preserve values
+    bimg_small[bimg_small>0]=255
     mrow, mcol = bimg_small.shape
     vrow, vcol, vdepth = img.shape
     pcv.params.debug = None

@@ -87,18 +87,22 @@ def warp(img, refimg, pts, refpts, method='default'):
     M, S = cv2.findHomography(ptsarr, refptsarr, method=methods.get(method))
     warped_img = cv2.warpPerspective(src=img, M=M, dsize=(cols_ref, rows_ref))
 
+    # preserve binary
+    if len(np.unique(img)) == 2:
+        warped_img[warped_img > 0] = 255
+
     if params.debug is not None:
         # adjust warped_img for blending
         if len(np.unique(img)) == 2:
-        # if img is binary, reduce white areas to less than 255
+            # if img is binary, reduce white areas to less than 255
             warped_blend = np.divide(warped_img, 3, out=np.zeros_like(warped_img), casting='unsafe')
         else:
-        # if refimg is a grayscale then it probably already is less than 255
+            # if refimg is a grayscale then it probably already is less than 255
             warped_blend = warped_img
 
         # Blending based on types of images. Blend by adding will create a white ghost effect on grayscale refimg
         if len(refimg.shape) == 2:
-        #  if refimg is greyscale
+            #  if refimg is greyscale
             imgadd = cv2.add(refimg, warped_blend)
         else:
             # if refimg is rgb(a) then a white overlay. I can' figure out how to get ghosting when img is an rgb image.
