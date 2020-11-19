@@ -973,10 +973,9 @@ def test_plantcv_transform_warp_larger():
     mrow, mcol = gimg_large.shape
     vrow, vcol, vdepth = img.shape
     pcv.params.debug='print'
-    mask_warped_print = pcv.transform.warp(gimg_large, img,
+    _ = pcv.transform.warp(gimg_large, img,
                                     pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
                                     refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
-
 
     assert np.sum(mask_warped_print)==83103814
 
