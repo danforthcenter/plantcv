@@ -3880,9 +3880,9 @@ def test_plantcv_morphology_segment_insertion_angle():
     pcv.params.debug = "print"
     _ = pcv.morphology.segment_insertion_angle(pruned, segmented_img, leaf_obj, stem_obj, 10)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
-    assert pcv.outputs.observations['segment_insertion_angle']['value'][:6] == ['NA', 'NA', 'NA', 24.97999120101794,
-                                                                                50.75442037373474,
-                                                                                56.45078448114704]
+    assert pcv.outputs.observations['segment_insertion_angle']['value'][:6] == ['NA', 'NA', 'NA', 24.956918822001636,
+                                                                                50.7313343343401,
+                                                                                56.427712102130734]
     pcv.outputs.clear()
 
 
