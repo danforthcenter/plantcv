@@ -1012,7 +1012,7 @@ def test_plantcv_transform_warp_4ptserror():
     with pytest.raises(RuntimeError):
         _ = pcv.transform.warp(img[:,:,2], img,
                                 pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
-                                refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1)])
+                                refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1),(0,vrow-1)])
 
 
 def test_plantcv_acute():
