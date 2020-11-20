@@ -157,6 +157,8 @@ from plantcv.plantcv.print_image import print_image
 from plantcv.plantcv.plot_image import plot_image
 from plantcv.plantcv.color_palette import color_palette
 from plantcv.plantcv.rgb2gray import rgb2gray
+from plantcv.plantcv.rgb2gray_hsv import rgb2gray_hsv
+from plantcv.plantcv.rgb2gray_lab import rgb2gray_lab
 from plantcv.plantcv.gaussian_blur import gaussian_blur
 from plantcv.plantcv import transform
 from plantcv.plantcv import hyperspectral
@@ -174,8 +176,6 @@ from plantcv.plantcv.erode import erode
 from plantcv.plantcv.dilate import dilate
 from plantcv.plantcv.watershed import watershed_segmentation
 from plantcv.plantcv.rectangle_mask import rectangle_mask
-from plantcv.plantcv.rgb2gray_hsv import rgb2gray_hsv
-from plantcv.plantcv.rgb2gray_lab import rgb2gray_lab
 from plantcv.plantcv.median_blur import median_blur
 from plantcv.plantcv.fill import fill
 from plantcv.plantcv.invert import invert
