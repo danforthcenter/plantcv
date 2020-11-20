@@ -125,7 +125,6 @@ nav:
       - 'Read Bayer Raw Image': read_bayer.md
       - 'Rectangle Mask': rectangle_mask.md
       - 'Report Size Marker': report_size_marker.md
-      - 'Resize': resize.md
       - 'Region of Interest Tools':
         - 'Create a Circular ROI': roi_circle.md
         - 'Create an Elliptical ROI': roi_ellipse.md
@@ -162,12 +161,14 @@ nav:
           - 'Save Matrix': save_matrix.md
           - 'Nonuniform Illumination Correction': nonuniform_illumination.md
           - 'Rescale Image Values': transform_rescale.md
+          - 'Resize Images': transform_resize.md
       - 'Visualization Methods':
           - 'Auto Threshold Methods': visualize_auto_threshold_methods.md
           - 'Clustered Contours': visualize_clustered_contours.md
           - 'Colorize Masks': visualize_colorize_masks.md
           - 'Colorspaces': visualize_colorspace.md
           - 'Histogram': visualize_histogram.md
+          - 'Overlay Images': visualize_ovelay_two_imgs.md
           - 'Pseudocolor': visualize_pseudocolor.md
       - 'Watershed Segmentation': watershed.md
       - 'White balance': white_balance.md
