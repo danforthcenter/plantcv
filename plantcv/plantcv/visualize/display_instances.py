@@ -1,5 +1,5 @@
 # display instances in an image
-
+import cv2
 from matplotlib.patches import Polygon
 import colorsys
 import random
