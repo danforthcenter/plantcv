@@ -18,6 +18,7 @@ import plantcv.utils
 import matplotlib
 import dask
 from dask.distributed import Client
+import pickle as pkl
 
 PARALLEL_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "parallel_data")
 TEST_TMPDIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".cache")
@@ -942,7 +943,8 @@ TEST_THERMAL_ARRAY = "thermal_img.npz"
 TEST_THERMAL_IMG_MASK = "thermal_img_mask.png"
 TEST_INPUT_THERMAL_CSV = "FLIR2600.csv"
 PIXEL_VALUES = "pixel_inspector_rgb_values.txt"
-
+TEST_INPUT_INSTANCE_IMG  = "visualize_inst_seg_img.png"
+TEST_INPUT_INSTANCE_MASK = "visualize_inst_seg_mask.pkl"
 
 # ##########################
 # Tests for the main package
@@ -6074,6 +6076,34 @@ def test_plantcv_visualize_overlay_two_imgs_size_mismatch():
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2)
 
+def test_plantcv_visualize_display_instances(tmpdir):
+
+    img,_,_ = pcv.readimage(filename=os.path.join(TEST_DATA,TEST_INPUT_INSTANCE_IMG),mode="RGB")
+    masks = pkl.load(open(os.path.join(TEST_DATA,TEST_INPUT_INSTANCE_MASK), "rb"))["masks"]
+    _, colors = pcv.visualize.display_instances(img, masks, figsize=(16, 16), title="", ax=None, colors=None, captions=None,
+                               show_bbox=True)
+    assert len(colors) == masks.shape[2]
+
+def test_plantcv_visualize_display_instances_bad_color(tmpdir):
+    import colorsys
+    import random
+    img,_,_ = pcv.readimage(filename=os.path.join(TEST_DATA,TEST_INPUT_INSTANCE_IMG),mode="RGB")
+    masks = pkl.load(open(os.path.join(TEST_DATA,TEST_INPUT_INSTANCE_MASK), "rb"))["masks"]
+    num = 2
+    hsv = [(i / num, 1, 1.0) for i in range(num)]
+    colors = list(map(lambda c: colorsys.hsv_to_rgb(*c), hsv))
+    random.shuffle(colors)
+    with pytest.raises(RuntimeError):
+        _, _ = pcv.visualize.display_instances(img, masks, figsize=(16, 16), title="", ax=None, colors=colors, captions=None,
+                               show_bbox=True)
+
+def test_plantcv_visualize_display_instances_bad_size(tmpdir):
+    img,_,_ = pcv.readimage(filename=os.path.join(TEST_DATA,TEST_INPUT_INSTANCE_IMG),mode="RGB")
+    img = img[0:100,0:100,:]
+    masks = pkl.load(open(os.path.join(TEST_DATA,TEST_INPUT_INSTANCE_MASK), "rb"))["masks"]
+    with pytest.raises(RuntimeError):
+        _, _ = pcv.visualize.display_instances(img, masks, figsize=(16, 16), title="", ax=None, colors=None, captions=None,
+                               show_bbox=True)
 
 # ##############################
 # Tests for the utils subpackage
