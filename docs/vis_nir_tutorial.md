@@ -380,7 +380,7 @@ The next step is to analyze the plant object for traits such as [horizontal heig
 
 ![Screenshot](img/tutorial_images/vis-nir/15_pseudocolor.jpg)
 
-The next step is to [get the matching NIR](get_nir.md) image, [resize](resize.md), and place the VIS [mask](crop_position_mask.md) over it.
+The next step is to [get the matching NIR](get_nir.md) image, [resize](transform_resize.md), and place the VIS [mask](crop_position_mask.md) over it.
 
 ```python
     if args.coresult is not None:
@@ -393,7 +393,7 @@ The next step is to [get the matching NIR](get_nir.md) image, [resize](resize.md
     #   img - RGB or grayscale image to resize
     #   resize_x - resize number in the x dimension
     #   resize_y - resize number in the y dimension 
-    nmask = pcv.resize(img=mask, resize_x=0.28, resize_y=0.28)
+    nmask = pcv.transform.resize_factor(img=mask, factors=(0.28, 0.28), interpolation="auto")
     
     
     # Inputs:
@@ -582,7 +582,7 @@ def main():
         nir, path1, filename1 = pcv.readimage(nirpath)
         nir2, path2, filename2 = pcv.readimage(nirpath)
 
-    nmask = pcv.resize(img=mask, resize_x=0.28, resize_y=0.28)
+    nmask = pcv.transform.resize_factor(img=mask, factors=(0.28, 0.28), interpolation="auto")
 
     newmask = pcv.crop_position_mask(img=nir, mask=nmask, x=40, y=3, 
                                  v_pos="top", h_pos="right")
