@@ -46,39 +46,6 @@ def warp(img, refimg, pts, refpts, method='default'):
 
     shape_ref = refimg.shape
     rows_ref, cols_ref = shape_ref[0:2]
-    # scale marker_size and line_thickness for different resolutions
-    rows_img = img.shape[0]
-    if rows_img > rows_ref:
-        res_ratio_i = int(np.ceil(rows_img/rows_ref)) #ratio never smaller than 1 with np.ceil
-        res_ratio_r = 1
-    else:
-        res_ratio_r = int(np.ceil(rows_ref/rows_img))
-        res_ratio_i = 1
-    # marker colors
-    colors = color_palette(len(pts))
-
-    # temp rgb image for colored markers on img
-    img2 = img.copy()
-    img2 = cv2.merge((img2, img2, img2))
-    for i, pt in enumerate(pts):
-        cv2.drawMarker(img2,
-                       pt,
-                       color=colors[i],
-                       markerType=cv2.MARKER_CROSS,
-                       markerSize=params.marker_size*res_ratio_i,
-                       thickness=params.line_thickness*res_ratio_i)
-
-    # temp rgb image for colored markers on refimg
-    refimg2 = refimg.copy()
-    if len(shape_ref) == 2:
-        refimg2 = cv2.merge((refimg2, refimg2, refimg2))
-    for i, pt in enumerate(refpts):
-        cv2.drawMarker(refimg2,
-                       pt,
-                       color=colors[i],
-                       markerType=cv2.MARKER_CROSS,
-                       markerSize=params.marker_size*res_ratio_r,
-                       thickness=params.line_thickness*res_ratio_r)
 
     # convert list of tuples to array for cv2 functions
     ptsarr = np.array(pts, dtype='float32')
@@ -93,6 +60,40 @@ def warp(img, refimg, pts, refpts, method='default'):
         warped_img[warped_img > 0] = 255
 
     if params.debug is not None:
+        # scale marker_size and line_thickness for different resolutions
+        rows_img = img.shape[0]
+        if rows_img > rows_ref:
+            res_ratio_i = int(np.ceil(rows_img/rows_ref)) #ratio never smaller than 1 with np.ceil
+            res_ratio_r = 1
+        else:
+            res_ratio_r = int(np.ceil(rows_ref/rows_img))
+            res_ratio_i = 1
+        # marker colors
+        colors = color_palette(len(pts))
+
+        # temp rgb image for colored markers on img
+        img2 = img.copy()
+        img2 = cv2.merge((img2, img2, img2))
+        for i, pt in enumerate(pts):
+            cv2.drawMarker(img2,
+                        pt,
+                        color=colors[i],
+                        markerType=cv2.MARKER_CROSS,
+                        markerSize=params.marker_size*res_ratio_i,
+                        thickness=params.line_thickness*res_ratio_i)
+
+        # temp rgb image for colored markers on refimg
+        refimg2 = refimg.copy()
+        if len(shape_ref) == 2:
+            refimg2 = cv2.merge((refimg2, refimg2, refimg2))
+        for i, pt in enumerate(refpts):
+            cv2.drawMarker(refimg2,
+                        pt,
+                        color=colors[i],
+                        markerType=cv2.MARKER_CROSS,
+                        markerSize=params.marker_size*res_ratio_r,
+                        thickness=params.line_thickness*res_ratio_r)
+
         debug_mode = params.debug
         params.debug = None
         img_blend = overlay_two_imgs(warped_img, refimg)
