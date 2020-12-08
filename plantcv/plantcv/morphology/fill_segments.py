@@ -31,13 +31,13 @@ def fill_segments(mask, objects, stem_objects=None):
     h,w = mask.shape
     markers = np.zeros((h,w))
 
+    objects_unique = objects.copy()
     if not stem_objects==None:
-        objects = objects.copy()
-        objects.append(np.vstack(stem_objects))
+        objects_unique.append(np.vstack(stem_objects))
 
-    labels = np.arange(len(objects)) + 1
+    labels = np.arange(len(objects_unique)) + 1
     for i,l in enumerate(labels):
-        cv2.drawContours(markers, objects, i ,int(l) , 5)
+        cv2.drawContours(markers, objects_unique, i ,int(l) , 5)
 
     # Fill as a watershed segmentation from contours as markers
     filled_mask = watershed(mask==0, markers=markers,
