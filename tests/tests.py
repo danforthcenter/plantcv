@@ -21,6 +21,9 @@ import dask
 from dask.distributed import Client
 import pickle as pkl
 from skimage.util import img_as_ubyte
+import glob
+import re
+import skimage.io
 
 PARALLEL_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "parallel_data")
 TEST_TMPDIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".cache")
@@ -6418,41 +6421,74 @@ def test_plantcv_visualize_time_lapse_video_bad_list():
 # Tests for the time_series subpackage
 # ##############################
 
-def test_plantcv_time_series_display_instances():
-    # Test cache directory
-    loaded = pkl.load(open(os.path.join(TIME_SERIES_TEST_INSTANCE_SEG, "img_segment_.pkl"), 'rb'))
-    img = loaded['img']
-    masks = loaded['segment']['masks']
-    pcv.time_series._display_instances(img, masks, figsize=(16, 16), title="", ax=None, colors=None)
+# def test_plantcv_time_series_display_instances():
+#     # Test cache directory
+#     loaded = pkl.load(open(os.path.join(TIME_SERIES_TEST_INSTANCE_SEG, "img_segment_.pkl"), 'rb'))
+#     img = loaded['img']
+#     masks = loaded['segment']['masks']
+#     pcv.time_series._display_instances(img, masks, figsize=(16, 16), title="", ax=None, colors=None)
 
 def test_plantcv_time_series_time_series():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_time_series")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    dir_img = TIME_SERIES_TEST_RAW
-    dir_seg = TIME_SERIES_TEST_INSTANCE_SEG
-    dir_save = cache_dir
-    dir_visual_ = os.path.join(dir_save,'visual_old')
-    os.mkdir(dir_visual_)
-    dir_visual  = os.path.join(dir_save,'visual')
-    os.mkdir(dir_visual)
-    pattern_datetime = '\d{4}-\d{2}-\d{2}-\d{2}-\d{2}'  # YYYY-MM-DD-hh-mm
-    time_cond = ['08-05', '11-05', '17-05', '21-05']
-    suffix = '.jpg'
-    suffix_seg = '.pkl'
-    thres = 0.2
-    logic = 'IOS'
-    name_sub = 'leaf'
-    name_series = 'linked_series'
-    inst_ts_linking = pcv.time_series.InstanceTSLinkingWrapper(dir_save=dir_save, savename=name_series)
-    inst_ts_linking(dir_img, dir_seg, pattern_datetime, time_cond, logic, thres, name_sub, suffix,
-                    suffix_seg)
-    inst_ts_linking2 = pcv.time_series.InstanceTSLinkingWrapper(dir_save=dir_save, savename=name_series)
-    inst_ts_linking2(dir_img, dir_seg, pattern_datetime, time_cond, 'IOU', thres, name_sub, '12.jpg',
-                    suffix_seg)
-    assert (len(os.listdir(inst_ts_linking.dir_save)) > 0) and (len(os.listdir(inst_ts_linking2.dir_save)) > 0)
 
+    path_img = TIME_SERIES_TEST_RAW
+    path_segmentation = TIME_SERIES_TEST_INSTANCE_SEG
+    path_save = cache_dir
+    savename = "link_series"
+    pattern_datetime = "\d{4}-\d{2}-\d{2}-\d{2}-\d{2}"  # YYYY-MM-DD-hh
+    ext = "_crop-img12.jpg"
+    ext_seg = ".pkl"
+
+    list_seg = glob.glob(os.path.join(path_segmentation, "2*{}".format(ext_seg)))
+    timepoints = []
+    for f_seg in list_seg:
+        tp_temp = re.search(pattern_datetime, f_seg).group()
+        timepoints.append(tp_temp)
+    timepoints.sort()
+    # Load original images
+    images = []
+    temp_imgs = []
+    sz = []
+
+    for tp in timepoints:
+        filename_ = "*_{}{}".format(tp, ext)
+        filename = glob.glob(os.path.join(path_img, filename_))[0]
+
+        junk_ = skimage.io.imread(filename)
+        junk = junk_
+        if len(junk_.shape) == 2:
+            junk = cv2.cvtColor(junk_, cv2.COLOR_GRAY2BGR)
+        temp_imgs.append(junk)
+        sz.append(np.min(junk.shape[0:2]))
+    min_dim = np.min(sz)
+    for junk in temp_imgs:
+        img = junk[0: min_dim, 0:min_dim, :]  # make all images the same size
+        images.append(img)
+    # load instance segmentation results (masks)
+    masks = []
+    for tp in timepoints:
+        print(tp)
+        print(ext_seg)
+        filename_ = "*{}{}".format(tp, ext_seg)
+        print(filename_)
+        filename = glob.glob(os.path.join(path_segmentation, filename_))[0]
+        print("file name is {}".format(filename))
+        r = pkl.load(open(filename, 'rb'))
+        masks.append(r['masks'][0: min_dim, 0:min_dim, :])  # make all masks the same size
+
+    logic = 'IOS'
+    thres = 0.1
+
+    # create an instance of Instance_timeseries_linking
+    name_sub = 'leaf'
+    inst_ts_linking = pcv.time_series.InstanceTimeSeriesLinking()
+    inst_ts_linking(images=images, masks=masks, timepoints=timepoints, savedir=path_save, savename=savename,
+                    logic=logic, thres=thres, name_sub=name_sub, update=False)
+
+    assert (len(os.listdir(path_save)) > 0) and inst_ts_linking.updated == 0
 
 def test_plantcv_visualize_overlay_two_imgs():
     pcv.params.debug = None
