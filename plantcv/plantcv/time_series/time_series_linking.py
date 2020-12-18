@@ -447,8 +447,11 @@ class InstanceTimeSeriesLinking(object):
     #         _visualize3(img, masks, colors_t, savename=savename3)
     #         plt.close("all")
 
-    def __call__(self, images, masks, timepoints, savedir, savename, logic="IOS", thres=0.2, name_sub="instance",
-                 colors=None, color_all=None, update=False, max_delta_t=2, savedir_=None, savename_=None):
+    # def __call__(self, images, masks, timepoints, savedir, savename, logic="IOS", thres=0.2, name_sub="instance",
+    #              colors=None, color_all=None, update=False, max_delta_t=2, savedir_=None, savename_=None):
+    # def __call__(self, images, masks, timepoints, savedir, savename, logic="IOS", thres=0.2, name_sub="instance",
+    #              update=False, max_delta_t=2, savedir_=None, savename_=None):
+    def __call__(self, images, masks, timepoints, logic="IOS", thres=0.2, name_sub="instance", update=False, max_delta_t=2):
         # a list of images which are ndarrays
         self.images = images
         # a list of masks which are ndarrays (of the same length of images)
@@ -479,23 +482,23 @@ class InstanceTimeSeriesLinking(object):
         # if not os.path.exists(visualdir):
         #     os.makedirs(visualdir)
         # self.visualize(visualdir)
-        self.save_linked_series(savedir, savename)
+        # self.save_linked_series(savedir, savename)
 
         if update:
             self.update_ti(max_delta_t)
-            if self.updated == 1:
-                if savedir_ is not None and savedir_ != savedir:
-                    visualdir_ = os.path.join(savedir, "visualization")
-                else:
-                    savedir_ = savedir
-                    visualdir_ = os.path.join(savedir, "updated_visualization")
-                if not os.path.exists(visualdir_):
-                    os.makedirs(visualdir_)
-
-                if savename_ is None:
-                    savename_ = "{}_{}".format(savename, max_delta_t)
-
-                # self.visualize(visualdir_)
-                self.save_linked_series(savedir_, savename_)
+            # if self.updated == 1:
+            #     if savedir_ is not None and savedir_ != savedir:
+            #         visualdir_ = os.path.join(savedir, "visualization")
+            #     else:
+            #         savedir_ = savedir
+            #         visualdir_ = os.path.join(savedir, "updated_visualization")
+            #     if not os.path.exists(visualdir_):
+            #         os.makedirs(visualdir_)
+            #
+            #     if savename_ is None:
+            #         savename_ = "{}_{}".format(savename, max_delta_t)
+            #
+            #     # self.visualize(visualdir_)
+            #     self.save_linked_series(savedir_, savename_)
 
         # self.save_to_csv(savedir, "link_series_old.csv", "link_info_old.csv")
