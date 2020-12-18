@@ -6470,12 +6470,8 @@ def test_plantcv_time_series_time_series():
     # load instance segmentation results (masks)
     masks = []
     for tp in timepoints:
-        print(tp)
-        print(ext_seg)
         filename_ = "*{}{}".format(tp, ext_seg)
-        print(filename_)
         filename = glob.glob(os.path.join(path_segmentation, filename_))[0]
-        print("file name is {}".format(filename))
         r = pkl.load(open(filename, 'rb'))
         masks.append(r['masks'][0: min_dim, 0:min_dim, :])  # make all masks the same size
 
@@ -6485,10 +6481,9 @@ def test_plantcv_time_series_time_series():
     # create an instance of Instance_timeseries_linking
     name_sub = 'leaf'
     inst_ts_linking = pcv.time_series.InstanceTimeSeriesLinking()
-    inst_ts_linking(images=images, masks=masks, timepoints=timepoints, savedir=path_save, savename=savename,
-                    logic=logic, thres=thres, name_sub=name_sub, update=False)
-
-    assert (len(os.listdir(path_save)) > 0) and inst_ts_linking.updated == 0
+    inst_ts_linking(images=images, masks=masks, timepoints=timepoints, logic=logic, thres=thres, name_sub=name_sub, update=False)
+    assert inst_ts_linking.updated == 0 and len(inst_ts_linking.timepoints)-1==len(inst_ts_linking.link_info)
+    # assert (len(os.listdir(path_save)) > 0) and inst_ts_linking.updated == 0
 
 def test_plantcv_visualize_overlay_two_imgs():
     pcv.params.debug = None
