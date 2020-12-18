@@ -72,7 +72,8 @@ def find_tips(skel_img, mask=None):
     tip_labels = []
     for i, tip in enumerate(tip_objects):
         x, y = tip.ravel()[:2]
-        tip_list.append((int(x), int(y)))
+        coord = (int(x), int(y))
+        tip_list.append(coord)
         tip_labels.append(i)
         cv2.circle(tip_plot, (x, y), params.line_thickness, (0, 255, 0), -1)
 
