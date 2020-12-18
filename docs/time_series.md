@@ -1,6 +1,6 @@
 ## time_series
 
-This class is designed to link segmented instances over time. Images should be taken across a time (e.g. every several hours) and ideally there should be minimal movment of plant/camera.
+This class is designed to link segmented instances over time. Images should be taken across a time (e.g. every 4 hours for several days), and ideally there should be minimal or no movment of plant and camera.
 
 To use this class for generating time-series linking, the instance segmentation for every image is required. For more information on instance segmentation and a demo of instance segmentation, check here: [Instance Segmentation](instance_segmentation_tutorial.md).
  
@@ -8,34 +8,73 @@ When using instance segmentation algorithms like maskRCNN, the assignment for th
 
 To understand the growth of every leaf instance of a plant, we need to re-assign the instance labels so that the same leaf always has the same instance label (identifier) across the whole time period. 
 
-There are two way of using this class: either using it directly or using the wrapper. Examples of both are provided below.
+For details of using this class, see examples below.
 
-**\# initialize an instance of InstanceTimeSeriesLinking class:**
+*initialize an instance of InstanceTimeSeriesLinking class:* 
 
-**inst_ts_linking = plantcv.time_series.InstanceTimeSeriesLinking**(*images, masks, timepoints, logic, thres, name_sub*)
-**inst_ts_linking**(*savedir, visualdir_, visualdir, savename_, savename*)
+**inst_ts_linking = plantcv.time_series.InstanceTimeSeriesLinking()**
 
-**returns** No returned value, the inst_ts_linking is an instance which belongs to InstanceTimeSeriesLinking class. 
+*run the callable object*
 
-- **Parameters for initialization:**
+**inst_ts_linking**(*images, masks, timepoints, savedir, savename, logic="IOS", thres=0.2, name_sub="instance",update=False, max_delta_t=2*)
+**returns** No returned value, the inst_ts_linking is an instance object which belongs to InstanceTimeSeriesLinking class. 
+
+- **Parameters**
     - images: a list of images. Every element of this list is an array represents one image
     - masks: a list of instance segmentation masks. Every element of this list is an array represents instance segmentation masks correspond to one image.
     - timepoints: a list of timepoints. The lengths for images, masks and timepoint should be the same and the elements are correspond to each other
-    - logic: the logic used in linking. Segments from different timepoints are believed to be the same instance appeared in different timepoints based on either their IOU (intersection-over-union) or IOS (Intersection-over-self_area)
-      If the value is larger than the threshold, they will be connected. The logic can be either "IOU" or "IOS". "IOS" is recommended. 
-    - thres: threshold used in the linking logic as mentioned above. For "IOS" it is recommended to start with a threshod of 0.2.
-    - name_sub: name of the main subject we care about. By default name_sub = 'instance', which means the instances we care about in images are called "instance". Other examples can be "leaf" which means that we call one instance in images a "leaf".
-
-Once you get the class object initialized, it is callable, which means it is a callable function itself so that you can get the linking result by running the 2nd line of code presented above. 
-- **Parameters to call functions:**
-    - savedir: desired saving directory of linking result
-    - visualdir_: desired saving directory of visualization (before update)
-    - visualdir: desired saving directory of visualization (final)
-    - savename_: desired saving name of results (before update)
-    - savename: desired saving name of results (final)
+    - logic (optional): the logic used in linking. Segments from different timepoints are believed to be the same instance appeared in different timepoints based on either their IOU (intersection-over-union) or IOS (Intersection-over-self_area)
+      If the value is larger than the threshold, they will be connected. The logic can be either "IOU" or "IOS". Default value is "IOS".
+    - thres (optional): threshold used in the linking logic as mentioned above. Different threshold is needed when using different linking logic. Default value is 0.2.
+    - name_sub (optional): name of the main subject we care about. By default name_sub = 'instance', which means the instances we care about in images are called "instance". Other examples can be "leaf" which means that we call one instance in images a "leaf".
+    - update (optional): whether or not updating the time-series linking result. By default (not updating) the time-series linking would only examine the neighboring pairs of time points (time interval = 1). By updating the time-series linking we will be examining a larger interval of time. 
+    - max_delta_t (optional): only needed when update=True. By default max_delta_t=2.
 
 - **Output:**
-        An instance of InstanceTimeSeriesLinking class is returned, with all information (original image series, mask series, link information, etc.) included. Besides, all the results will be saved in user defined "savedir":   
+        An instance of InstanceTimeSeriesLinking class is returned, with all information (original image series, mask series, link information, etc.) included.   
+
+```python
+from plantcv import plantcv as pcv
+# Below are examples of input variables, always adjust base on your own application. 
+logic = 'IOS'
+thres = 0.1
+name_sub = 'leaf'
+## Initialize an instance of class InstanceTimeSeriesLinking
+inst_ts_linking = pcv.time_series.InstanceTimeSeriesLinking()
+inst_ts_linking(images=images, masks=masks, timepoints=timepoints, logic=logic, thres=thres, name_sub=name_sub)
+```
+Make sure all the images and masks are already sorted based on timepoints. 
+
+To save the result, simply specify the directory of saving as well as the name (prefix)
+```python
+## Specify the desired directory to save results
+dir_save = '/shares/mgehan_share/hsheng/projects/maskRCNN/results/output_10.1.9.214_wtCol_512/index12/2020-08-24-07-29/time_series_linking'
+
+## Specify the desired name to save the result (prefix)
+savename = 'linked_series'
+
+inst_ts_linking.save_linked_series(savedir=dir_save, savename=savename)
+```
+To import a previously saved result:
+```python
+dir_save = '/shares/mgehan_share/hsheng/projects/maskRCNN/results/output_10.1.9.214_wtCol_512/index12/2020-08-24-07-29/time_series_linking'
+savename = 'linked_series'
+inst_ts_linking = time_series_linking.InstanceTimeSeriesLinking()
+inst_ts_linking.import_linked_series(savedir=dir_save, savename=savename)
+```
+
+The option to update the time-series linking result is also available:
+```python
+max_delta_t = 3
+inst_ts_linking.update_ti(delta_t=max_delta_t)
+```
+
+Alternatively, the time-series linking can be done with ```update=True```
+```python
+inst_ts_linking(images=images, masks=masks, timepoints=timepoints, logic=logic, thres=thres, name_sub=name_sub, update=True, max_delta_t=3)
+```
+
+<!--
 You will get two sets of results: those end with "_old" are results before updating; others are final results.
 1. {}.pkl (or {}_old.pkl): an "InstanceTimeSeriesLinking" class instance, with all the information included: time points, original images, instance segmentation masks, etc. The filename is specified by user. 
 2. {}.csv (or {}_old.csv): a csv file includes the linking series information (every row in the table is a unique instance throughtout time).
@@ -73,8 +112,7 @@ You will get two sets of results: those end with "_old" are results before updat
         
         {}-visual.png
         The original image name is inside the {}.
-    This set of visualization is designed for making time-lapse videos of segmentation shown with bounding boxes. With the instance labels re-assigned such that one label represents one leaf across the whole time, we would observe that every leaf is represented by a specific color across the whold time period. 
-            
+    This set of visualization is designed for making time-lapse videos of segmentation shown with bounding boxes. With the instance labels re-assigned such that one label represents one leaf across the whole time, we would observe that every leaf is represented by a specific color across the whold time period.             
 It is always a good practice to check the quality of instance segmentation before running time_series_linking. One way to check the instance segmentation is to make a time-lapse video with your instance segmentation result shown in bounding boxes. To make time-lapse videos, you will need video editing softwares, e.g. imovie. An example is shown below. Notice that in almost all cases, you would observe that the colors for the same leaf change during the time. That is due to the random assignment of labels. You can later compare this time lapse video to that generate after all labels re-assigned by running time_series_linking function. 
 
 Instead of making a video, another way to check the quality of instance segmentation is by checking the segmented image one by one.
@@ -204,8 +242,8 @@ suffix_seg = '.pkl'
 
 inst_ts_linking = pcv.time_series.inst_ts_linking_wrap(dir_img, dir_seg, pattern_dt, time_cond, logic, thres, name_sub, suffix, suffix_seg)
 ```
-All the analysis for the results are same to what described above. 
-
+All the analysis for the results are same to what described above.
+-->
 
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/time_series/time_series.py)
