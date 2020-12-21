@@ -3715,6 +3715,26 @@ def test_plantcv_morphology_fill_segments():
     pcv.outputs.clear()
 
 
+def test_plantcv_morphology_fill_segments_with_stem():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_fill_segments")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    obj_dic = np.load(os.path.join(TEST_DATA, TEST_SKELETON_OBJECTS))
+    obj = []
+    for key, val in obj_dic.items():
+        obj.append(val)
+
+    stem_obj = obj[0:4]
+    pcv.params.debug = "print"
+    _ = pcv.morphology.fill_segments(mask, obj, stem_obj)
+    pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    num_objects = len(pcv.outputs.observations['segment_area']['value'])
+    assert num_objects == 70
+    pcv.outputs.clear()
+
+
 def test_plantcv_morphology_segment_angle():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_angles")
@@ -3862,9 +3882,9 @@ def test_plantcv_morphology_segment_insertion_angle():
     pcv.params.debug = "print"
     _ = pcv.morphology.segment_insertion_angle(pruned, segmented_img, leaf_obj, stem_obj, 10)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
-    assert pcv.outputs.observations['segment_insertion_angle']['value'][:6] == ['NA', 'NA', 'NA', 24.97999120101794,
-                                                                                50.75442037373474,
-                                                                                56.45078448114704]
+    assert pcv.outputs.observations['segment_insertion_angle']['value'][:6] == ['NA', 'NA', 'NA', 24.956918822001636,
+                                                                                50.7313343343401,
+                                                                                56.427712102130734]
     pcv.outputs.clear()
 
 

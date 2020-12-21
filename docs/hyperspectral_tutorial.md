@@ -207,10 +207,10 @@ Binary mask after [filtering objects by the region of interest](roi_objects.md) 
     # Apply the mask of the leaf to the entire datacube, and store it where the datacube is stored. 
     
     # Inputs:
-    #   rgb_img - RGB image data or hyperspectral image data 
+    #   img - RGB image data or hyperspectral image data 
     #   mask - Binary mask image data 
     #   mask_color - 'white' or 'black' 
-    spectral_array.array_data = pcv.apply_mask(rgb_img=spectral_array.array_data, mask=kept_mask, mask_color="black")
+    spectral_array.array_data = pcv.apply_mask(img=spectral_array.array_data, mask=kept_mask, mask_color="black")
                                                                
 ``` 
 
