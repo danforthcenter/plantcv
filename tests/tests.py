@@ -6490,21 +6490,56 @@ def test_plantcv_time_series_time_series():
     inst_ts_linking = pcv.time_series.InstanceTimeSeriesLinking()
     inst_ts_linking(images=images, masks=masks, timepoints=timepoints, logic=logic, thres=thres, name_sub=name_sub, update=False)
     assert inst_ts_linking.updated == 0 and len(inst_ts_linking.timepoints)-1==len(inst_ts_linking.link_info)
+    inst_ts_linking.update_ti(delta_t=2)
+    assert len(inst_ts_linking.timepoints)-1==len(inst_ts_linking.link_info)
+
+    inst_ts_linking.save_linked_series(path_save,'linked_series')
+    assert (len(os.listdir(path_save)) > 0)
+
+    inst_ts_linking = pcv.time_series.InstanceTimeSeriesLinking()
+    inst_ts_linking.import_linked_series(path_save, 'linked_series')
+    assert len(inst_ts_linking.timepoints)-1==len(inst_ts_linking.link_info)
+
+    logic = 'IOU'
+    inst_ts_linking = pcv.time_series.InstanceTimeSeriesLinking()
+    inst_ts_linking(images=images, masks=masks, timepoints=timepoints, logic=logic, thres=thres, name_sub=name_sub, update=False)
+    assert inst_ts_linking.updated == 0 and len(inst_ts_linking.timepoints)-1==len(inst_ts_linking.link_info)
+
+    logic = 'emd'
+    inst_ts_linking = pcv.time_series.InstanceTimeSeriesLinking()
+    with pytest.raises(RuntimeError):
+        inst_ts_linking(images=images, masks=masks, timepoints=timepoints, logic=logic, thres=thres, name_sub=name_sub, update=False)
     # assert (len(os.listdir(path_save)) > 0) and inst_ts_linking.updated == 0
 
 def test_plantcv_time_series_evaluation():
-    loaded    = pkl.load(open(os.path.join(TIME_SERIES_TEST_DIR,"result.pkl"),'rb'))
+    loaded17    = pkl.load(open(os.path.join(TIME_SERIES_TEST_DIR,"result_N_17.pkl"),'rb'))
+    loaded18    = pkl.load(open(os.path.join(TIME_SERIES_TEST_DIR, "result_N_18.pkl"), 'rb'))
+    loaded20 = pkl.load(open(os.path.join(TIME_SERIES_TEST_DIR, "result_N_20.pkl"), 'rb'))
     loaded_gt = pkl.load(open(os.path.join(TIME_SERIES_TEST_DIR,"gt.pkl"),'rb'))
-    li = loaded['li']
-    ti = loaded['ti']
+    li17 = loaded17['li']
+    ti17 = loaded17['ti']
+    li18 = loaded18['li']
+    ti18 = loaded18['ti']
+    li20 = loaded20['li']
+    ti20 = loaded20['ti']
     li_gt = loaded_gt['li_gt']
     ti_gt = loaded_gt['ti_gt']
 
     with pytest.raises(RuntimeError):
-        pcv.time_series.get_scores(li[0:-1], ti[0:-1,:], li_gt, ti_gt)
+        pcv.time_series.get_scores(li18[0:-1], ti18[0:-1,:], li_gt, ti_gt)
 
-    scores = pcv.time_series.get_scores(li, ti, li_gt, ti_gt)
-    assert len(li) == ti.shape[0]-1 and len(li_gt) == ti_gt.shape[0]-1 and ti.shape[1] == scores['N_'] and ti_gt.shape[1] == scores['N']
+    with pytest.raises(RuntimeError):
+        pcv.time_series.get_scores(li18[1:], ti18[1:,:], li_gt, ti_gt)
+
+    scores = pcv.time_series.get_scores(li18, ti18, li_gt, ti_gt)
+    assert len(li18) == ti18.shape[0]-1 and len(li_gt) == ti_gt.shape[0]-1 and ti18.shape[1] == scores['N_'] and ti_gt.shape[1] == scores['N']
+
+    scores = pcv.time_series.get_scores(li20, ti20, li_gt, ti_gt)
+    assert len(li20) == ti20.shape[0]-1 and len(li_gt) == ti_gt.shape[0]-1 and ti20.shape[1] == scores['N_'] and ti_gt.shape[1] == scores['N']
+
+    scores = pcv.time_series.get_scores(li17, ti17, li_gt, ti_gt)
+    assert len(li17) == ti17.shape[0] - 1 and len(li_gt) == ti_gt.shape[0] - 1 and ti17.shape[1] == scores['N_'] and ti_gt.shape[1] == scores['N']
+
 
 def test_plantcv_visualize_overlay_two_imgs():
     pcv.params.debug = None
