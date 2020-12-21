@@ -998,7 +998,7 @@ PIXEL_VALUES = "pixel_inspector_rgb_values.txt"
 TEST_INPUT_INSTANCE_IMG  = "visualize_inst_seg_img.png"
 TEST_INPUT_INSTANCE_MASK = "visualize_inst_seg_mask.pkl"
 
-TIME_SERIES_TEST_DIR          = os.path.join(os.path.dirname(os.path.abspath(__file__)), "seires_data")
+TIME_SERIES_TEST_DIR          = os.path.join(os.path.dirname(os.path.abspath(__file__)), "time_seires_data")
 TIME_SERIES_TEST_RAW          = os.path.join(TIME_SERIES_TEST_DIR, "raw_im")
 TIME_SERIES_TEST_INSTANCE_SEG = os.path.join(TIME_SERIES_TEST_DIR, "inst_seg")
 
@@ -6492,18 +6492,19 @@ def test_plantcv_time_series_time_series():
     assert inst_ts_linking.updated == 0 and len(inst_ts_linking.timepoints)-1==len(inst_ts_linking.link_info)
     # assert (len(os.listdir(path_save)) > 0) and inst_ts_linking.updated == 0
 
-# def test_plantcv_time_series_compute_overlap_masks():
-#     path_segmentation = TIME_SERIES_TEST_INSTANCE_SEG
-#     ext_seg = ".pkl"
-#     list_seg = glob.glob(os.path.join(path_segmentation, "2*{}".format(ext_seg)))
-#     loaded1 = pkl.load(open(list_seg[0], 'rb'))
-#     loaded2 = pkl.load(open(list_seg[1], 'rb'))
-#     masks1 = loaded1['masks']
-#     masks2 = loaded2['masks']
-#     n1, n2, _, _, _ = _compute_overlaps_masks(masks1[:,:,0], masks2)
-#     assert n1 == 1 and n2 == masks2.shape[2]
-#     n1_, n2_, _, _, _ = _compute_overlaps_masks(masks1, masks2[:, :, 0])
-#     assert n1_ == masks1.shape[2] and n2_ == 1
+def test_plantcv_time_series_evaluation():
+    loaded    = pkl.load(open(os.path.join(TIME_SERIES_TEST_DIR,"result.pkl"),'rb'))
+    loaded_gt = pkl.load(open(os.path.join(TIME_SERIES_TEST_DIR,"gt.pkl"),'rb'))
+    li = loaded['li']
+    ti = loaded['ti']
+    li_gt = loaded_gt['li_gt']
+    ti_gt = loaded_gt['ti_gt']
+
+    with pytest.raises(RuntimeError):
+        pcv.time_series.get_scores(li[0:-1], ti[0:-1,:], li_gt, ti_gt)
+
+    scores = pcv.time_series.get_scores(li, ti, li_gt, ti_gt)
+    assert len(li) == ti.shape[0]-1 and len(li_gt) == ti_gt.shape[0]-1 and ti.shape[1] == scores['N_'] and ti_gt.shape[1] == scores['N']
 
 def test_plantcv_visualize_overlay_two_imgs():
     pcv.params.debug = None
