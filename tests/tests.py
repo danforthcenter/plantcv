@@ -6475,6 +6475,13 @@ def test_plantcv_time_series_time_series():
         r = pkl.load(open(filename, 'rb'))
         masks.append(r['masks'][0: min_dim, 0:min_dim, :])  # make all masks the same size
 
+    # test for "_compute_overlap_masks"
+    masks1 = masks[0]
+    masks2 = masks[1]
+    n1, n2, _, _, _ = pcv.time_series._compute_overlaps_masks(masks1[:, :, 0], masks2)
+    n1_, n2_, _, _, _ = pcv.time_series._compute_overlaps_masks(masks1, masks2[:, :, 0])
+    assert n1 == 1 and n2 == masks2.shape[2] and n1_ == masks1.shape[2] and n2_ == 1
+
     logic = 'IOS'
     thres = 0.1
 
@@ -6484,6 +6491,19 @@ def test_plantcv_time_series_time_series():
     inst_ts_linking(images=images, masks=masks, timepoints=timepoints, logic=logic, thres=thres, name_sub=name_sub, update=False)
     assert inst_ts_linking.updated == 0 and len(inst_ts_linking.timepoints)-1==len(inst_ts_linking.link_info)
     # assert (len(os.listdir(path_save)) > 0) and inst_ts_linking.updated == 0
+
+# def test_plantcv_time_series_compute_overlap_masks():
+#     path_segmentation = TIME_SERIES_TEST_INSTANCE_SEG
+#     ext_seg = ".pkl"
+#     list_seg = glob.glob(os.path.join(path_segmentation, "2*{}".format(ext_seg)))
+#     loaded1 = pkl.load(open(list_seg[0], 'rb'))
+#     loaded2 = pkl.load(open(list_seg[1], 'rb'))
+#     masks1 = loaded1['masks']
+#     masks2 = loaded2['masks']
+#     n1, n2, _, _, _ = _compute_overlaps_masks(masks1[:,:,0], masks2)
+#     assert n1 == 1 and n2 == masks2.shape[2]
+#     n1_, n2_, _, _, _ = _compute_overlaps_masks(masks1, masks2[:, :, 0])
+#     assert n1_ == masks1.shape[2] and n2_ == 1
 
 def test_plantcv_visualize_overlay_two_imgs():
     pcv.params.debug = None
