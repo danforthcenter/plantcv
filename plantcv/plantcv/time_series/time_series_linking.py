@@ -1,11 +1,11 @@
 # !/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Tue Jun  9 09:53:34 2020
+Created on Tue Jun  9  2020
 
 Functions used in time series linking after getting leaf instances segmented
 
-@author: hudanyunsheng
+@author: hudanyun sheng
 """
 
 import numpy as np
