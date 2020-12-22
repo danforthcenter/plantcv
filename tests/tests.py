@@ -6490,26 +6490,40 @@ def test_plantcv_time_series_time_series():
     inst_ts_linking = pcv.time_series.InstanceTimeSeriesLinking()
     inst_ts_linking(images=images, masks=masks, timepoints=timepoints, logic=logic, thres=thres, name_sub=name_sub, update=False)
     assert inst_ts_linking.updated == 0 and len(inst_ts_linking.timepoints)-1==len(inst_ts_linking.link_info)
+
+    # test with update_ti = True
+    inst_ts_linking = pcv.time_series.InstanceTimeSeriesLinking()
+    inst_ts_linking(images=images, masks=masks, timepoints=timepoints, logic=logic, thres=thres, name_sub=name_sub, update=True)
+    assert len(inst_ts_linking.timepoints)-1==len(inst_ts_linking.link_info)
+
+    # test on update_ti
     inst_ts_linking.update_ti(delta_t=2)
     assert len(inst_ts_linking.timepoints)-1==len(inst_ts_linking.link_info)
 
-    inst_ts_linking.save_linked_series(path_save,'linked_series')
+    # test on save_linked_series
+    inst_ts_linking.save_linked_series(path_save,savename)
     assert (len(os.listdir(path_save)) > 0)
 
-    inst_ts_linking = pcv.time_series.InstanceTimeSeriesLinking()
-    inst_ts_linking.import_linked_series(path_save, 'linked_series')
-    assert len(inst_ts_linking.timepoints)-1==len(inst_ts_linking.link_info)
-
+    # test on using IOU as linking logic
     logic = 'IOU'
     inst_ts_linking = pcv.time_series.InstanceTimeSeriesLinking()
     inst_ts_linking(images=images, masks=masks, timepoints=timepoints, logic=logic, thres=thres, name_sub=name_sub, update=False)
     assert inst_ts_linking.updated == 0 and len(inst_ts_linking.timepoints)-1==len(inst_ts_linking.link_info)
 
+    # test on using logic that is currently unavailable
     logic = 'emd'
     inst_ts_linking = pcv.time_series.InstanceTimeSeriesLinking()
     with pytest.raises(RuntimeError):
         inst_ts_linking(images=images, masks=masks, timepoints=timepoints, logic=logic, thres=thres, name_sub=name_sub, update=False)
     # assert (len(os.listdir(path_save)) > 0) and inst_ts_linking.updated == 0
+
+    # test on import_linked_series and then for the case where there is no potential updates
+    inst_ts_linking = pcv.time_series.InstanceTimeSeriesLinking()
+    inst_ts_linking.import_linked_series(TIME_SERIES_TEST_DIR, 'link_series_no_updates')
+    assert len(inst_ts_linking.timepoints)-1==len(inst_ts_linking.link_info)
+    inst_ts_linking.update_ti()
+    assert inst_ts_linking.updated == 0
+
 
 def test_plantcv_time_series_evaluation():
     loaded17    = pkl.load(open(os.path.join(TIME_SERIES_TEST_DIR,"result_N_17.pkl"),'rb'))
@@ -6525,12 +6539,6 @@ def test_plantcv_time_series_evaluation():
     li_gt = loaded_gt['li_gt']
     ti_gt = loaded_gt['ti_gt']
 
-    with pytest.raises(RuntimeError):
-        pcv.time_series.get_scores(li18[0:-1], ti18[0:-1,:], li_gt, ti_gt)
-
-    with pytest.raises(RuntimeError):
-        pcv.time_series.get_scores(li18[1:], ti18[1:,:], li_gt, ti_gt)
-
     scores = pcv.time_series.get_scores(li18, ti18, li_gt, ti_gt)
     assert len(li18) == ti18.shape[0]-1 and len(li_gt) == ti_gt.shape[0]-1 and ti18.shape[1] == scores['N_'] and ti_gt.shape[1] == scores['N']
 
@@ -6539,6 +6547,19 @@ def test_plantcv_time_series_evaluation():
 
     scores = pcv.time_series.get_scores(li17, ti17, li_gt, ti_gt)
     assert len(li17) == ti17.shape[0] - 1 and len(li_gt) == ti_gt.shape[0] - 1 and ti17.shape[1] == scores['N_'] and ti_gt.shape[1] == scores['N']
+
+    # 1st fatal_error in evaluate_link
+    with pytest.raises(RuntimeError):
+        pcv.time_series.evaluate_link(li18[0:-1], li_gt)
+
+    with pytest.raises(RuntimeError):
+        pcv.time_series.evaluate_link(li18[1:], li_gt)
+
+    # 2nd fatal_error in evaluate_link
+    li18_ = li18
+    li18_[0] = np.delete(li18[0],2)
+    with pytest.raises(RuntimeError):
+        pcv.time_series.evaluate_link(li18_, li_gt)
 
 
 def test_plantcv_visualize_overlay_two_imgs():
