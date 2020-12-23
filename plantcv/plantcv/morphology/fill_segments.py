@@ -1,8 +1,9 @@
+# Fill a mask using watershed and skeleton segments
+
 import os
 import cv2
 import numpy as np
 from skimage.segmentation import watershed
-from plantcv.plantcv import fatal_error
 from plantcv.plantcv import outputs
 from plantcv.plantcv import color_palette
 from plantcv.plantcv import params
@@ -10,7 +11,7 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 
 
-def fill_segments(mask, objects):
+def fill_segments(mask, objects, stem_objects=None):
     """Fills masked segments from contours.
 
     Inputs:
@@ -30,9 +31,13 @@ def fill_segments(mask, objects):
     h,w = mask.shape
     markers = np.zeros((h,w))
 
-    labels = np.arange(len(objects)) + 1
+    objects_unique = objects.copy()
+    if not stem_objects==None:
+        objects_unique.append(np.vstack(stem_objects))
+
+    labels = np.arange(len(objects_unique)) + 1
     for i,l in enumerate(labels):
-        cv2.drawContours(markers, objects, i ,int(l) , 5)
+        cv2.drawContours(markers, objects_unique, i ,int(l) , 5)
 
     # Fill as a watershed segmentation from contours as markers
     filled_mask = watershed(mask==0, markers=markers,
@@ -46,7 +51,7 @@ def fill_segments(mask, objects):
                             value=counts[1:].tolist(),
                             label=(ids[1:]-1).tolist())
 
-    rgb_vals = color_palette(num=len(labels), saved=True)
+    rgb_vals = color_palette(num=len(labels), saved=False)
     filled_img = np.zeros((h,w,3), dtype=np.uint8)
     for l in labels:
         for ch in range(3):
