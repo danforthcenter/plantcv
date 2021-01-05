@@ -8,7 +8,7 @@ from plantcv.plantcv import outputs
 from plotnine import ggplot, aes, geom_line, scale_x_continuous
 
 
-def analyze_spectral(array, mask, histplot=True):
+def analyze_spectral(array, mask, histplot=True, label=None):
     """This extracts the hyperspectral reflectance values of each pixel writes the values out to
        a file. It can also print out a histogram plot of pixel intensity
        and a pseudocolor image of the plant.
@@ -17,6 +17,7 @@ def analyze_spectral(array, mask, histplot=True):
     array        = Hyperspectral data instance
     mask         = Binary mask made from selected contours
     histplot     = if True plots histogram of reflectance intensity values
+    label        = optional label parameter, modifies the variable name of observations recorded
 
     Returns:
     analysis_img = output image
@@ -24,6 +25,7 @@ def analyze_spectral(array, mask, histplot=True):
     :param array: __main__.Spectral_data
     :param mask: numpy array
     :param histplot: bool
+    :param label: str
     :return analysis_img: ggplot
     """
     params.device += 1

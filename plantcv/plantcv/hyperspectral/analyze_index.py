@@ -12,7 +12,7 @@ from plantcv.plantcv import fatal_error
 from plotnine import ggplot, aes, geom_line, scale_x_continuous
 
 
-def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=0, max_bin=1):
+def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=0, max_bin=1, label=None):
     """This extracts the hyperspectral index statistics and writes the values  as observations out to
        the Outputs class.
 
@@ -23,6 +23,8 @@ def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=0, max_bi
     bins         = optional, number of classes to divide spectrum into
     min_bin      = optional, minimum bin value ("auto" or user input minimum value)
     max_bin      = optional, maximum bin value ("auto" or user input maximum value)
+    label        = optional label parameter, modifies the variable name of observations recorded
+
 
 
     :param index_array: __main__.Spectral_data
@@ -31,6 +33,7 @@ def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=0, max_bi
     :param bins: int
     :param max_bin: float, str
     :param min_bin: float, str
+    :param label: str
     :return analysis_image: ggplot, None
     """
     params.device += 1
