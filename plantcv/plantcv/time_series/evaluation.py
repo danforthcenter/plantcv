@@ -47,7 +47,7 @@ def evaluate_link(li, li_gt):
             fatal_error('Different number of instances!!')
     num_insts = [len(x) for x in li_gt]
     # num_matched = [(sum(x == y)) for (x,y) in zip(li_gt, li)]
-    num_matched = [(len(x == y)) for (x, y) in zip(li_gt, li)]
+    num_matched = [(sum(x == y)) for (x, y) in zip(li_gt, li)]
     score = sum(num_matched) / sum(num_insts)
     return score, num_insts, num_matched
 
