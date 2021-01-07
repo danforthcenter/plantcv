@@ -107,22 +107,27 @@ def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=0, max_bi
         elif params.debug == 'plot':
             print(fig_hist)
 
-    outputs.add_observation(variable='mean_' + index_array.array_type,
+    if label == None:
+        prefix=""
+    else:
+        prefix=label
+
+    outputs.add_observation(variable=prefix + 'mean_' + index_array.array_type,
                             trait='Average ' + index_array.array_type + ' reflectance',
                             method='plantcv.plantcv.hyperspectral.analyze_index', scale='reflectance', datatype=float,
                             value=float(index_mean), label='none')
 
-    outputs.add_observation(variable='med_' + index_array.array_type,
+    outputs.add_observation(variable=prefix + 'med_' + index_array.array_type,
                             trait='Median ' + index_array.array_type + ' reflectance',
                             method='plantcv.plantcv.hyperspectral.analyze_index', scale='reflectance', datatype=float,
                             value=float(index_median), label='none')
 
-    outputs.add_observation(variable='std_' + index_array.array_type,
+    outputs.add_observation(variable=prefix + 'std_' + index_array.array_type,
                             trait='Standard deviation ' + index_array.array_type + ' reflectance',
                             method='plantcv.plantcv.hyperspectral.analyze_index', scale='reflectance', datatype=float,
                             value=float(index_std), label='none')
 
-    outputs.add_observation(variable='index_frequencies_' + index_array.array_type, trait='index frequencies',
+    outputs.add_observation(variable=prefix + 'index_frequencies_' + index_array.array_type, trait='index frequencies',
                             method='plantcv.plantcv.analyze_index', scale='frequency', datatype=list,
                             value=hist_percent, label=bin_labels)
 
@@ -130,7 +135,7 @@ def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=0, max_bi
         plot_image(masked_array)
     elif params.debug == "print":
         print_image(img=masked_array, filename=os.path.join(params.debug_outdir, str(params.device) +
-                                                            index_array.array_type + ".png"))
+                                                            index_array.array_type + prefix + ".png"))
     # Store images
     outputs.images.append(analysis_image)
 
