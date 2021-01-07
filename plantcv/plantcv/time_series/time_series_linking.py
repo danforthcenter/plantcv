@@ -76,7 +76,7 @@ def _get_link(masks1, masks2, logic, thres):
     """
     Get link information between two sets of binary instance segmentation masks
     :param masks1: (numpy.ndarray of shape: [Height, Width, n1]), where n1 is the number of instances
-    :param masks2: (numpy.ndarray of shape: [Height, Width, n1]), where n1 is the number of instances
+    :param masks2: (numpy.ndarray of shape: [Height, Width, n2]), where n2 is the number of instances
     :param logic: linking logic to use. (currently) either "IOU" or "IOS"
     :param thres: threshold to link two masks (two binary segmentation masks can only be linked if the calculated overlap between is greater than the threshold)
     :return:
@@ -192,6 +192,23 @@ def _get_ti(num_insts, uids, link_info):
                 t += 1
     return ti, t_appear, t_disappear
 
+def _get_li_from_ti(ti):
+    """
+
+    :param ti:
+    :return:
+    """
+    li = []
+    for t in range(len(ti)-1):
+        ti_0 = ti[t,:]
+        ti_1 = ti[t+1,:]
+        l0 = [x for x in ti_0 if x >= 0]
+        l1 = [x for (x, y) in zip(ti_1, ti_0) if y >= 0]
+        link_t = -np.ones(len(l0), dtype=np.int64)
+        for (idx, x) in enumerate(l0):
+            link_t[x] = l1[idx]
+        li.append(link_t)
+    return li
 
 # def _visualize1(img, mask, savename=None):
 #     """
