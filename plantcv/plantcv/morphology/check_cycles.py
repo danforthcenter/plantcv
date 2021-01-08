@@ -13,15 +13,17 @@ from plantcv.plantcv import find_objects
 from plantcv.plantcv import color_palette
 
 
-def check_cycles(skel_img):
+def check_cycles(skel_img, label=None):
     """ Check for cycles in a skeleton image
     Inputs:
     skel_img     = Skeletonized image
+    label        = optional label parameter, modifies the variable name of observations recorded
 
     Returns:
     cycle_img    = Image with cycles identified
 
     :param skel_img: numpy.ndarray
+    :param label: str
     :return cycle_img: numpy.ndarray
     """
 
@@ -60,8 +62,13 @@ def check_cycles(skel_img):
             cv2.drawContours(cycle_img, cycle_objects, i, rand_color[i], params.line_thickness, lineType=8,
                              hierarchy=cycle_hierarchies)
 
+    if label == None:
+        prefix = ""
+    else:
+        prefix = label + "_"
+
     # Store Cycle Data
-    outputs.add_observation(variable='num_cycles', trait='number of cycles',
+    outputs.add_observation(variable=prefix + 'num_cycles', trait='number of cycles',
                             method='plantcv.plantcv.morphology.check_cycles', scale='none', datatype=int,
                             value=int(num_cycles), label='none')
 
@@ -71,7 +78,7 @@ def check_cycles(skel_img):
     params.device += 1
 
     if params.debug == 'print':
-        print_image(cycle_img, os.path.join(params.debug_outdir, str(params.device) + '_cycles.png'))
+        print_image(cycle_img, os.path.join(params.debug_outdir, str(params.device) + prefix + '_cycles.png'))
     elif params.debug == 'plot':
         plot_image(cycle_img)
 

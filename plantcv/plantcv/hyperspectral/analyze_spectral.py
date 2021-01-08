@@ -70,9 +70,9 @@ def analyze_spectral(array, mask, histplot=True, label=None):
         wavelength_labels.append(i)
 
     if label == None:
-        prefix=""
+        prefix = ""
     else:
-        prefix=label + "_"
+        prefix = label + "_"
 
     # Store data into outputs class
     outputs.add_observation(variable=prefix + 'global_mean_reflectance', trait='global mean reflectance',

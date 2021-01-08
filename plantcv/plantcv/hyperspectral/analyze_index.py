@@ -108,9 +108,9 @@ def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=0, max_bi
             print(fig_hist)
 
     if label == None:
-        prefix=""
+        prefix = ""
     else:
-        prefix=label + "_"
+        prefix = label + "_"
 
     outputs.add_observation(variable=prefix + 'mean_' + index_array.array_type,
                             trait='Average ' + index_array.array_type + ' reflectance',

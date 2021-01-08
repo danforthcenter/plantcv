@@ -9,12 +9,13 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 
 
-def analyze_stem(rgb_img, stem_objects):
+def analyze_stem(rgb_img, stem_objects, label=None):
     """ Calculate angle of segments (in degrees) by fitting a linear regression line to segments.
 
         Inputs:
         rgb_img       = RGB image to plot debug image
         stem_objects  = List of stem segments (output from segment_sort function)
+        label        = optional label parameter, modifies the variable name of observations recorded
 
         Returns:
         labeled_img    = Stem analysis debugging image
@@ -22,6 +23,7 @@ def analyze_stem(rgb_img, stem_objects):
 
         :param rgb_img: numpy.ndarray
         :param stem_objects: list
+        :param label: str
         :return labeled_img: numpy.ndarray
     """
     params.device += 1
@@ -39,13 +41,19 @@ def analyze_stem(rgb_img, stem_objects):
     # Calculate stem path length
     stem_length = cv2.arcLength(grouped_stem, False) / 2
 
-    outputs.add_observation(variable='stem_height', trait='vertical length of stem segments',
+
+    if label == None:
+        prefix = ""
+    else:
+        prefix = label + "_"
+
+    outputs.add_observation(variable=prefix + 'stem_height', trait='vertical length of stem segments',
                             method='plantcv.plantcv.morphology.analyze_stem', scale='pixels', datatype=float,
                             value=height, label=None)
-    outputs.add_observation(variable='stem_angle', trait='angle of combined stem object',
+    outputs.add_observation(variable=prefix + 'stem_angle', trait='angle of combined stem object',
                             method='plantcv.plantcv.morphology.analyze_stem', scale='degrees', datatype=float,
                             value=float(slope), label=None)
-    outputs.add_observation(variable='stem_length', trait='path length of combined stem object',
+    outputs.add_observation(variable=prefix + 'stem_length', trait='path length of combined stem object',
                             method='plantcv.plantcv.morphology.analyze_stem', scale='None', datatype=float,
                             value=stem_length, label=None)
 

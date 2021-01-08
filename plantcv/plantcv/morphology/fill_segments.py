@@ -11,7 +11,7 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 
 
-def fill_segments(mask, objects, stem_objects=None):
+def fill_segments(mask, objects, stem_objects=None, label=None):
     """Fills masked segments from contours.
 
     Inputs:
