@@ -19,7 +19,7 @@ from plantcv.plantcv.morphology import find_branch_pts
 from plantcv.plantcv.morphology.segment_tangent_angle import _slope_to_intesect_angle
 
 
-def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects, size):
+def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects, size, label=None):
     """ Find leaf insertion angles in degrees of skeleton segments. Fit a linear regression line to the stem.
         Use `size` pixels on  the portion of leaf next to the stem find a linear regression line,
         and calculate angle between the two lines per leaf object.
@@ -29,13 +29,17 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
         leaf_objects     = List of leaf segments
         stem_objects     = List of stem segments
         size             = Size of inner leaf used to calculate slope lines
+        label        = optional label parameter, modifies the variable name of observations recorded
+
         Returns:
         labeled_img      = Debugging image with angles labeled
+
         :param skel_img: numpy.ndarray
         :param segmented_img: numpy.ndarray
         :param leaf_objects: list
         :param stem_objects: list
         :param size: int
+        :param label: str 
         :return labeled_img: numpy.ndarray
         """
 
@@ -182,7 +186,12 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
         # segment_label = "ID" + str(i)
         segment_ids.append(i)
 
-    outputs.add_observation(variable='segment_insertion_angle', trait='segment insertion angle',
+    if label == None:
+        prefix = ""
+    else:
+        prefix = label + "_"
+
+    outputs.add_observation(variable=prefix + 'segment_insertion_angle', trait='segment insertion angle',
                             method='plantcv.plantcv.morphology.segment_insertion_angle', scale='degrees', datatype=list,
                             value=all_intersection_angles, label=segment_ids)
 
@@ -193,7 +202,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
 
     if params.debug == 'print':
         print_image(labeled_img,
-                    os.path.join(params.debug_outdir, str(params.device) + '_segment_insertion_angles.png'))
+                    os.path.join(params.debug_outdir, str(params.device) + prefix + '_segment_insertion_angles.png'))
     elif params.debug == 'plot':
         plot_image(labeled_img)
 
