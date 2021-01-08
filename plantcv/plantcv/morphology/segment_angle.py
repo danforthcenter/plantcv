@@ -11,12 +11,13 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import color_palette
 
 
-def segment_angle(segmented_img, objects):
+def segment_angle(segmented_img, objects, label=None):
     """ Calculate angle of segments (in degrees) by fitting a linear regression line to segments.
 
         Inputs:
         segmented_img  = Segmented image to plot slope lines and angles on
         objects        = List of contours
+        label          = optional label parameter, modifies the variable name of observations recorded
 
         Returns:
         labeled_img    = Segmented debugging image with angles labeled
@@ -24,6 +25,7 @@ def segment_angle(segmented_img, objects):
 
         :param segmented_img: numpy.ndarray
         :param objects: list
+        :param label: str
         :return labeled_img: numpy.ndarray
         """
 
@@ -74,7 +76,12 @@ def segment_angle(segmented_img, objects):
         # segment_label = "ID" + str(i)
         segment_ids.append(i)
 
-    outputs.add_observation(variable='segment_angle', trait='segment angle',
+    if label == None:
+        prefix = ""
+    else:
+        prefix = label + "_"
+
+    outputs.add_observation(variable=prefix + 'segment_angle', trait='segment angle',
                             method='plantcv.plantcv.morphology.segment_angle', scale='degrees', datatype=list,
                             value=segment_angles, label=segment_ids)
 
@@ -82,7 +89,8 @@ def segment_angle(segmented_img, objects):
     params.device += 1
 
     if params.debug == 'print':
-        print_image(labeled_img, os.path.join(params.debug_outdir, str(params.device) + '_segmented_angles.png'))
+        print_image(labeled_img, os.path.join(params.debug_outdir, str(params.device) +
+                                              prefix + '_segmented_angles.png'))
     elif params.debug == 'plot':
         plot_image(labeled_img)
 

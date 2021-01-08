@@ -85,7 +85,7 @@ def find_tips(skel_img, mask=None, label=None):
     else:
         prefix = label + "_"
 
-    outputs.add_observation(variable='tips', trait='list of tip coordinates identified from a skeleton',
+    outputs.add_observation(variable=prefix + 'tips', trait='list of tip coordinates identified from a skeleton',
                             method='plantcv.plantcv.morphology.find_tips', scale='pixels', datatype=list,
                             value=tip_list, label=tip_labels)
 
@@ -95,7 +95,7 @@ def find_tips(skel_img, mask=None, label=None):
     params.device += 1
 
     if params.debug == 'print':
-        print_image(tip_plot, os.path.join(params.debug_outdir, str(params.device) + '_skeleton_tips.png'))
+        print_image(tip_plot, os.path.join(params.debug_outdir, str(params.device) + prefix + '_skeleton_tips.png'))
     elif params.debug == 'plot':
         plot_image(tip_plot)
 

@@ -135,7 +135,7 @@ def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=0, max_bi
         plot_image(masked_array)
     elif params.debug == "print":
         print_image(img=masked_array, filename=os.path.join(params.debug_outdir, str(params.device) +
-                                                            index_array.array_type + prefix + ".png"))
+                                                            prefix + index_array.array_type + prefix + ".png"))
     # Store images
     outputs.images.append(analysis_image)
 
