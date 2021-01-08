@@ -8,7 +8,7 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 
 
-def segment_path_length(segmented_img, objects):
+def segment_path_length(segmented_img, objects, label=None):
     """ Use segments to calculate geodesic distance per segment
 
         Inputs:

@@ -39,7 +39,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
         :param leaf_objects: list
         :param stem_objects: list
         :param size: int
-        :param label: str 
+        :param label: str
         :return labeled_img: numpy.ndarray
         """
 
