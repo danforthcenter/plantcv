@@ -72,7 +72,7 @@ def analyze_spectral(array, mask, histplot=True, label=None):
     if label == None:
         prefix=""
     else:
-        prefix=label
+        prefix=label + "_"
 
     # Store data into outputs class
     outputs.add_observation(variable=prefix + 'global_mean_reflectance', trait='global mean reflectance',
