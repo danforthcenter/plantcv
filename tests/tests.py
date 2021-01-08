@@ -4547,10 +4547,10 @@ def test_plantcv_hyperspectral_analyze_spectral():
     mask = cv2.imread(os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_MASK), -1)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
     pcv.params.debug = "plot"
-    _ = pcv.hyperspectral.analyze_spectral(array=array_data, mask=mask, histplot=True)
+    _ = pcv.hyperspectral.analyze_spectral(array=array_data, mask=mask, histplot=True, label=None)
     pcv.params.debug = "print"
-    _ = pcv.hyperspectral.analyze_spectral(array=array_data, mask=mask, histplot=True)
-    assert len(pcv.outputs.observations['spectral_frequencies']['value']) == 978
+    _ = pcv.hyperspectral.analyze_spectral(array=array_data, mask=mask, histplot=True, label="prefix")
+    assert len(pcv.outputs.observations['prefix_spectral_frequencies']['value']) == 978
 
 
 def test_plantcv_hyperspectral_analyze_index():
@@ -4604,7 +4604,7 @@ def test_plantcv_hyperspectral_analyze_index_outside_range_warning():
     mask_img = np.ones(np.shape(index_array.array_data), dtype=np.uint8) * 255
     f = io.StringIO()
     with redirect_stdout(f):
-        pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, min_bin=.5, max_bin=.55)
+        pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, min_bin=.5, max_bin=.55, label="i")
     out = f.getvalue()
     # assert os.listdir(cache_dir) is 0
     assert out[0:10] == 'WARNING!!!'
