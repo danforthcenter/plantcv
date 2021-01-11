@@ -2,12 +2,13 @@
 
 Check for cycles within a skeletonized image. 
 
-**plantcv.morphology.check_cycles**(*skel_img*)
+**plantcv.morphology.check_cycles**(*skel_img, label=None*)
 
 **returns** debugging cycle image
 
 - **Parameters:**
     - skel_img - Skeleton image (output from [plantcv.morphology.skeletonize](skeletonize.md))
+    - label    - Optional label parameter, modifies the variable name of observations recorded. (default `label=None`)
 - **Context:**
     - Identifies cycles in a skeleton image. 
 - **Output data stored:** Data ('num_cycles') automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
@@ -29,7 +30,7 @@ pcv.params.debug = "print"
 # The cycle_img created for debugging purposes allows for line thickness 
 # adjustments with the global line thickness parameter. Try setting 
 # pcv.params.line_thickness = 8 for thicker lines (default 5)
-cycle_img = pcv.morphology.check_cycles(skel_img=skeleton)
+cycle_img = pcv.morphology.check_cycles(skel_img=skeleton, label=None)
 
 # Access data stored out from check_cycles
 num_cycles = pcv.outputs.observations['num_cycles']['value']

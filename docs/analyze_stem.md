@@ -3,13 +3,14 @@
 Primary, or stem, objects identified during workflows that examine the [morphology](morphology_tutorial.md) of 
 plants or plant organs can have specific characteristics measured about the stem segments of a skeleton.
 
-**plantcv.morphology.analyze_stem**(*rgb_img, stem_objects*)
+**plantcv.morphology.analyze_stem**(*rgb_img, stem_objects, label=None*)
 
 **returns** labeled_img
 
 - **Parameters:**
-    - rgb_img - RGB image data for plotting.
+    - rgb_img      - RGB image data for plotting.
     - stem_objects - List of stem segments (output from [segment_sort](segment_sort.md) function)
+    - label        - Optional label parameter, modifies the variable name of observations recorded 
 - **Context:**
     - Used to output stem morphological characteristics, including height, angle, and length.
 - **Example use:**
@@ -31,11 +32,12 @@ from plantcv import plantcv as pcv
 
 pcv.params.debug = "print"
     
-stem_debug_img1 = pcv.morphology.analyze_stem(rgb_img=img1, stem_objects=stem_objects1)
-stem_debug_img2 = pcv.morphology.analyze_stem(rgb_img=img2, stem_objects=stem_objects2)
-
+stem_debug_img1 = pcv.morphology.analyze_stem(rgb_img=img1, stem_objects=stem_objects1, label=None)
 # Access data stored out from analyze_object
 stem_angle = pcv.outputs.observations['stem_angle']['value']
+
+stem_debug_img2 = pcv.morphology.analyze_stem(rgb_img=img2, stem_objects=stem_objects2, label="rep1")
+stem_angle = pcv.outputs.observations['rep1_stem_angle']['value']
 
 ```
 

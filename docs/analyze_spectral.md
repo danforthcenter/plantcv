@@ -3,7 +3,7 @@
 This function calculates the reflectance frequencies associated with a hyperspectral datacube and writes 
 the values out as observations to get saved out. Can also print out a histogram of average reflectance intensity.
 
-**plantcv.hyperspectral.analyze_spectral**(*array, mask, histplot=False*)
+**plantcv.hyperspectral.analyze_spectral**(*array, mask, histplot=False, label=None*)
 
 **returns** reflectance histogram (if `histplot=True`, otherwise returns None object)
 
