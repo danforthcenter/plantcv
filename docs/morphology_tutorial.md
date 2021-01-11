@@ -171,8 +171,8 @@ off. The function prunes only secondary segments; primary segments that are smal
     # Inputs:
     #   skel_img = Skeletonized image
     #   mask     = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
-    
-    branch_pts_mask = pcv.morphology.find_branch_pts(skel_img=skeleton, mask=cropped_mask)
+    #   label    = (Optional) label parameter, modifies the variable name of observations recorded. (default `label=None`)
+    branch_pts_mask = pcv.morphology.find_branch_pts(skel_img=skeleton, mask=cropped_mask, label=None)
 
 ```
 
@@ -193,8 +193,9 @@ to remove all barbs.
     # Inputs:
     #   skel_img = Skeletonized image
     #   mask     = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
+    #   label    = (Optional) label parameter, modifies the variable name of observations recorded. (default `label=None`)
     
-    tip_pts_mask = pcv.morphology.find_tips(skel_img=skeleton, mask=None)
+    tip_pts_mask = pcv.morphology.find_tips(skel_img=skeleton, mask=None, label=None)
 
 ```
 
@@ -262,9 +263,10 @@ For this tutorial we assume leaves are the objects of interest, and just pass th
     # Inputs:
     #   segmented_img = Segmented image to plot lengths on
     #   objects       = List of contours
+    #   label    = (Optional) label parameter, modifies the variable name of observations recorded. (default `label=None`)
     
     labeled_img  = pcv.morphology.segment_path_length(segmented_img=segmented_img, 
-                                                      objects=leaf_obj)
+                                                      objects=leaf_obj, label=None)
 
 ```
 
