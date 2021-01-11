@@ -3646,7 +3646,7 @@ def test_plantcv_morphology_prune():
     pcv.params.debug = "print"
     _ = pcv.morphology.prune(skel_img=skeleton, size=1)
     pcv.params.debug = "plot"
-    _ = pcv.morphology.prune(skel_img=skeleton, size=1, mask=skeleton, label="prefix")
+    _ = pcv.morphology.prune(skel_img=skeleton, size=1, mask=skeleton)
     pcv.params.debug = None
     pruned_img, _, _ = pcv.morphology.prune(skel_img=skeleton, size=3)
     assert np.sum(pruned_img) < np.sum(skeleton)
