@@ -45,7 +45,13 @@ def fill_segments(mask, objects, stem_objects=None, label=None):
 
     # Count area in pixels of each segment
     ids, counts = np.unique(filled_mask, return_counts=True)
-    outputs.add_observation(variable='segment_area', trait='segment area',
+    
+    if label == None:
+        prefix = ""
+    else:
+        prefix = label + "_"
+        
+    outputs.add_observation(variable=prefix + 'segment_area', trait='segment area',
                             method='plantcv.plantcv.morphology.fill_segments',
                             scale='pixels', datatype=list,
                             value=counts[1:].tolist(),
