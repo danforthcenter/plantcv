@@ -5,7 +5,6 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 from plantcv.plantcv import params
-from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 
 

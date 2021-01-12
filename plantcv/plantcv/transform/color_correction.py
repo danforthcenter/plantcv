@@ -481,7 +481,7 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
 
 
 def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark',
-                    record_chip_size="median"):
+                    record_chip_size="median", label=None):
     """Automatically detects a color card and output info to use in create_color_card_mask function
 
     Algorithm written by Brandon Hurr. Updated and implemented into PlantCV by Haley Schuhl.
@@ -496,6 +496,7 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
                         is a dark background
     record_chip_size = Optional str for choosing chip size measurement to be recorded, either "median",
                         "mean", or None
+    label       = optional label parameter, modifies the variable name of observations recorded
 
     Returns:
     df             = Dataframe containing information about the filtered contours
@@ -508,6 +509,7 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
     :param blurry: bool
     :param background: str
     :param record_chip_size: str
+    :param label: str
     :return df: pandas.core.frame.DataFrame
     :return start_coord: tuple
     :return spacing: tuple
@@ -761,14 +763,20 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
             chip_height = None
             chip_width = None
         # Store into global measurements
-        outputs.add_observation(variable='color_chip_size', trait='size of color card chips identified',
+        if label == None:
+            prefix = ""
+        else:
+            prefix = label + "_"
+        outputs.add_observation(variable=prefix + 'color_chip_size', trait='size of color card chips identified',
                                 method='plantcv.plantcv.transform.find_color_card', scale='none',
                                 datatype=float, value=chip_size, label=str(record_chip_size))
         method = record_chip_size.lower()
-        outputs.add_observation(variable=f'{method}_color_chip_height', trait=f'{method} height of color card chips identified',
+        outputs.add_observation(variable=prefix + f'{method}_color_chip_height',
+                                trait=f'{method} height of color card chips identified',
                                 method='plantcv.plantcv.transform.find_color_card', scale='none',
                                 datatype=float, value=chip_height, label=str(record_chip_size))
-        outputs.add_observation(variable=f'{method}_color_chip_width', trait=f'{method} size of color card chips identified',
+        outputs.add_observation(variable=prefix + f'{method}_color_chip_width',
+                                trait=f'{method} size of color card chips identified',
                                 method='plantcv.plantcv.transform.find_color_card', scale='none',
                                 datatype=float, value=chip_width, label=str(record_chip_size))
 
