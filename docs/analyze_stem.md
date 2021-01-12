@@ -22,7 +22,7 @@ plants or plant organs can have specific characteristics measured about the stem
     these data can always get accessed during a workflow. For more detail about data output see 
     [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
     
- ```python
+```python
 
 from plantcv import plantcv as pcv
 
