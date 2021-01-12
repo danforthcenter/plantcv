@@ -284,9 +284,10 @@ passed into the function.
     # Inputs:
     #   segmented_img = Segmented image to plot lengths on
     #   objects       = List of contours
+    #   label    = (Optional) label parameter, modifies the variable name of observations recorded. (default `label=None`)
     
     labeled_img = pcv.morphology.segment_euclidean_length(segmented_img=segmented_img, 
-                                                          objects=leaf_obj)
+                                                          objects=leaf_obj, label=None)
 
 ```
 
@@ -304,9 +305,10 @@ euclidean distance of each segment passed to the function.
     # Inputs:
     #   segmented_img = Segmented image to plot curvature on
     #   objects       = List of contours
+    #   label    = (Optional) label parameter, modifies the variable name of observations recorded. (default `label=None`)
     
     labeled_img = pcv.morphology.segment_curvature(segmented_img=segmented_img, 
-                                                   objects=leaf_obj)
+                                                   objects=leaf_obj, label=None)
 
 ```
 
@@ -326,9 +328,10 @@ is a straight line while larger values indicate the segment has more curvature.
     # Inputs:
     #   segmented_img = Segmented image to plot angles on
     #   objects       = List of contours
+    #   label    = (Optional) label parameter, modifies the variable name of observations recorded. (default `label=None`)
     
     labeled_img = pcv.morphology.segment_angle(segmented_img=segmented_img, 
-                                               objects=leaf_obj)
+                                               objects=leaf_obj, label=None)
 
 ```
 
@@ -347,9 +350,10 @@ by fitting a linear regression line to each segment.
     #   segmented_img = Segmented image to plot tangent angles on
     #   objects       = List of contours
     #   size          = Size of ends used to calculate "tangent" lines
+    #   label    = (Optional) label parameter, modifies the variable name of observations recorded. (default `label=None`)
     
     labeled_img = pcv.morphology.segment_tangent_angle(segmented_img=segmented_img, 
-                                                       objects=leaf_obj, size=15)
+                                                       objects=leaf_obj, size=15, label=None)
 
 ```
 
@@ -372,12 +376,13 @@ leaves that are more "floppy" will have smaller angles.
     #   leaf_objects     = List of leaf contours
     #   stem_objects     = List of stem objects 
     #   size             = Size of the inner portion of each leaf to find a linear regression line
+    #   label    = (Optional) label parameter, modifies the variable name of observations recorded. (default `label=None`)
     
     labeled_img = pcv.morphology.segment_insertion_angle(skel_img=skeleton,
                                                          segmented_img=segmented_img, 
                                                          leaf_objects=leaf_obj, 
                                                          stem_objects=stem_obj,
-                                                         size=20)
+                                                         size=20, label=None)
 
 ```
 
