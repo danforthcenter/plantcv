@@ -138,7 +138,8 @@ def segment_tangent_angle(segmented_img, objects, size, label=None):
     params.device += 1
 
     if params.debug == 'print':
-        print_image(labeled_img, os.path.join(params.debug_outdir, str(params.device) + '_segment_tangent_angles.png'))
+        print_image(labeled_img, os.path.join(params.debug_outdir, str(params.device) + prefix +
+                                              '_segment_tangent_angles.png'))
     elif params.debug == 'plot':
         plot_image(labeled_img)
 

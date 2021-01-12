@@ -111,7 +111,7 @@ def find_branch_pts(skel_img, mask=None, label=None):
     params.device += 1
 
     if params.debug == 'print':
-        print_image(branch_plot, os.path.join(params.debug_outdir, str(params.device) + '_branch_pts.png'))
+        print_image(branch_plot, os.path.join(params.debug_outdir, str(params.device) + prefix + '_branch_pts.png'))
     elif params.debug == 'plot':
         plot_image(branch_plot)
 

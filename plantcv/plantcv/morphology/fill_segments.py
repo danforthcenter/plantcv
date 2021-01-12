@@ -58,7 +58,7 @@ def fill_segments(mask, objects, stem_objects=None, label=None):
             filled_img[:,:,ch][filled_mask==l] = rgb_vals[l-1][ch]
 
     if params.debug == 'print':
-        print_image(filled_img, os.path.join(params.debug_outdir, str(params.device) + '_filled_img.png'))
+        print_image(filled_img, os.path.join(params.debug_outdir, str(params.device) + prefix + '_filled_img.png'))
     elif params.debug == 'plot':
         plot_image(filled_img)
 

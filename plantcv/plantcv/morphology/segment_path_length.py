@@ -61,7 +61,8 @@ def segment_path_length(segmented_img, objects, label=None):
     params.device += 1
 
     if params.debug == 'print':
-        print_image(labeled_img, os.path.join(params.debug_outdir, str(params.device) + '_segment_path_lengths.png'))
+        print_image(labeled_img, os.path.join(params.debug_outdir, str(params.device) + prefix +
+                                              '_segment_path_lengths.png'))
     elif params.debug == 'plot':
         plot_image(labeled_img)
 
