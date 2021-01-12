@@ -101,7 +101,7 @@ def segment_combine(segment_list, objects, mask):
 
     if params.debug == 'print':
         print_image(labeled_img,
-                    os.path.join(params.debug_outdir, str(params.device) + prefix + '_combined_segment_ids.png'))
+                    os.path.join(params.debug_outdir, str(params.device) + '_combined_segment_ids.png'))
     elif params.debug == 'plot':
         plot_image(labeled_img)
 
