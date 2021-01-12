@@ -2,7 +2,7 @@
 
 Measure the curvature of segments.   
 
-**plantcv.morphology.segment_curvature**(*segmented_img, objects*)
+**plantcv.morphology.segment_curvature**(*segmented_img, objects, label=None*)
 
 **returns** labeled image 
 

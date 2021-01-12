@@ -2,7 +2,7 @@
 
 Measure angles of segments. 
 
-**plantcv.morphology.segment_angle**(*segmented_img, objects*)
+**plantcv.morphology.segment_angle**(*segmented_img, objects, label=None*)
 
 **returns** labeled image   
 
