@@ -329,11 +329,13 @@ pages for more details on the input and output variable types.
 * pre v3.7: NA
 * post v3.7: **plantcv.hyperspectral.analyze_index**(*index_array, mask*)
 * post v3.8: index_histogram = **plantcv.hyperspectral.analyze_index**(*index_array, mask, histplot=False, bins=100, max_bin=0, min_bin=1*)
+* post v3.11: index_histogram = **plantcv.hyperspectral.analyze_index**(*index_array, mask, histplot=False, bins=100, max_bin=0, min_bin=1, label=None*)
 
 #### plantcv.hyperspectral.analyze_spectral
 
 * pre v3.7: NA
 * post v3.7: spectral_histogram = **plantcv.hyperspectral.analyze_spectral**(*array, mask, histplot=True*)
+* post v3.11: spectral_histogram =**plantcv.hyperspectral.analyze_spectral**(*array, mask, histplot=True, label=None*)
 
 #### plantcv.hyperspectral.extract_index
 
@@ -394,21 +396,25 @@ pages for more details on the input and output variable types.
 
 * pre v3.8: NA
 * post v3.8: labeled_img = **plantcv.morphology.analyze_stem**(*rgb_img, stem_objects*)
+* post v3.11: labeled_img = **plantcv.morphology.analyze_stem**(*rgb_img, stem_objects, label=None*)
 
 #### plantcv.morphology.check_cycles
 
 * pre v3.3: NA
 * post v3.3: cycle_img = **plantcv.morphology.check_cycles**(*skel_img*)
+* post v3.11: cycle_img = **plantcv.morphology.check_cycles**(*skel_img, label=None*)
 
 #### plantcv.morphology.find_branch_pts
 
 * pre v3.3: NA
 * post v3.3: branch_pts_img = **plantcv.morphology.find_branch_pts**(*skel_img, mask=None*)
+* post v3.11: branch_pts_img = **plantcv.morphology.find_branch_pts**(*skel_img, mask=None, label=None*)
 
 #### plantcv.morphology.find_tips
 
 * pre v3.3: NA
 * post v3.3: tip_img = **plantcv.morphology.find_tips**(*skel_img, mask=None*) 
+* post v3.11: tip_img = **plantcv.morphology.find_tips**(*skel_img, mask=None, label=None*) 
 
 #### plantcv.morphology.prune
 
@@ -420,16 +426,19 @@ pages for more details on the input and output variable types.
 
 * pre v3.3: NA
 * post v3.3: labeled_img = **plantcv.morphology.segment_angle**(*segmented_img, objects*) 
+* post v3.11: labeled_img = **plantcv.morphology.segment_angle**(*segmented_img, objects, label=None*) 
 
-#### plantcv.morphology.curvature
+#### plantcv.morphology.segment_curvature
 
 * pre v3.3: NA
 * post v3.3: labeled_img = **plantcv.morphology.segment_curvature**(*segmented_img, objects*)
+* post v3.11: labeled_img = **plantcv.morphology.segment_curvature**(*segmented_img, objects, label=None*)
 
 #### plantcv.morphology.segment_euclidean_length
 
 * pre v3.3: NA
 * post v3.3: labeled_img = **plantcv.morphology.segment_euclidean_length**(*segmented_img, objects*) 
+* post v3.11: labeled_img = **plantcv.morphology.segment_euclidean_length**(*segmented_img, objects, label=None*) 
 
 #### plantcv.morphology.segment_id
 
@@ -440,6 +449,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.3: NA
 * post v3.3: labeled_img = **plantcv.morphology.segment_path_length**(*segmented_img, objects*)
+* post v3.11: labeled_img = **plantcv.morphology.segment_path_length**(*segmented_img, objects, label=None*)
 
 #### plantcv.morphology.segment_skeleton
 
@@ -455,6 +465,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.3: NA
 * post v3.3: labeled_img = **plantcv.morphology.segment_tangent_angle**(*segmented_img, objects, size*)
+* post v3.11: labeled_img = **plantcv.morphology.segment_tangent_angle**(*segmented_img, objects, size, label=None*)
 
 #### plantcv.morphology.skeletontize
 
