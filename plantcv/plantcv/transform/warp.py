@@ -52,7 +52,7 @@ def warp(img, refimg, pts, refpts, method='default'):
     refptsarr = np.array(refpts, dtype='float32')
 
     # find tranformation matrix and warp
-    M, S = cv2.findHomography(ptsarr, refptsarr, method=methods.get(method))
+    M, _ = cv2.findHomography(ptsarr, refptsarr, method=methods.get(method))
     warped_img = cv2.warpPerspective(src=img, M=M, dsize=(cols_ref, rows_ref))
 
     # preserve binary
