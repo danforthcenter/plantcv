@@ -63,7 +63,7 @@ def warp(img, refimg, pts, refpts, method='default'):
         # scale marker_size and line_thickness for different resolutions
         rows_img = img.shape[0]
         if rows_img > rows_ref:
-            res_ratio_i = int(np.ceil(rows_img/rows_ref)) #ratio never smaller than 1 with np.ceil
+            res_ratio_i = int(np.ceil(rows_img/rows_ref))  # ratio never smaller than 1 with np.ceil
             res_ratio_r = 1
         else:
             res_ratio_r = int(np.ceil(rows_ref/rows_img))
@@ -76,11 +76,11 @@ def warp(img, refimg, pts, refpts, method='default'):
         img2 = cv2.merge((img2, img2, img2))
         for i, pt in enumerate(pts):
             cv2.drawMarker(img2,
-                        pt,
-                        color=colors[i],
-                        markerType=cv2.MARKER_CROSS,
-                        markerSize=params.marker_size*res_ratio_i,
-                        thickness=params.line_thickness*res_ratio_i)
+                           pt,
+                           color=colors[i],
+                           markerType=cv2.MARKER_CROSS,
+                           markerSize=params.marker_size*res_ratio_i,
+                           thickness=params.line_thickness*res_ratio_i)
 
         # temp rgb image for colored markers on refimg
         refimg2 = refimg.copy()
@@ -88,11 +88,11 @@ def warp(img, refimg, pts, refpts, method='default'):
             refimg2 = cv2.merge((refimg2, refimg2, refimg2))
         for i, pt in enumerate(refpts):
             cv2.drawMarker(refimg2,
-                        pt,
-                        color=colors[i],
-                        markerType=cv2.MARKER_CROSS,
-                        markerSize=params.marker_size*res_ratio_r,
-                        thickness=params.line_thickness*res_ratio_r)
+                           pt,
+                           color=colors[i],
+                           markerType=cv2.MARKER_CROSS,
+                           markerSize=params.marker_size*res_ratio_r,
+                           thickness=params.line_thickness*res_ratio_r)
 
         debug_mode = params.debug
         params.debug = None
