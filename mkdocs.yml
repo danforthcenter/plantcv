@@ -160,6 +160,7 @@ nav:
           - 'Load Matrix': load_matrix.md
           - 'Save Matrix': save_matrix.md
           - 'Nonuniform Illumination Correction': nonuniform_illumination.md
+          - 'Perspective warp': transform_warp.md
           - 'Rescale Image Values': transform_rescale.md
           - 'Resize Images': transform_resize.md
       - 'Visualization Methods':
