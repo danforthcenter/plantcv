@@ -2,7 +2,7 @@
 
 Extract Fv/Fm data of objects.
 
-**plantcv.photosynthesis.analyze_fvfm**(*fdark, fmin, fmax, mask, bins=256*)
+**plantcv.photosynthesis.analyze_fvfm**(*fdark, fmin, fmax, mask, bins=256, label=None*)
 
 **returns** PSII analysis images (Fv/Fm image, Fv/Fm histogram)
 
@@ -12,6 +12,7 @@ Extract Fv/Fm data of objects.
     - fmax - image object, grayscale
     - mask - binary mask of selected contours
     - bins - number of grayscale bins (0-256 for 8-bit images and 0 to 65,536), if you would like to bin data, you would alter this number (default bins=256)
+    - label - Optional label parameter, modifies the variable name of observations recorded. (default `label=None`)
 - **Context:**
     - Used to extract Fv/Fm or Fv'/Fm' per identified plant pixel.
     - Generates histogram of Fv/Fm data.
@@ -41,10 +42,10 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Analyze Fv/Fm    
-fvfm_images = pcv.photosynthesis.analyze_fvfm(fdark, fmin, fmax, kept_mask, 256)
+fvfm_images = pcv.photosynthesis.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=kept_mask, bins=256, label="fluor")
 
 # Access data stored out from fluor_fvfm
-fvfm_median = pcv.outputs.observations['fvfm_median']['value']
+fvfm_median = pcv.outputs.observations['fluor_fvfm_median']['value']
 
 # Store the two images
 fvfm_img = fvfm_images[0]
