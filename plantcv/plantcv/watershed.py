@@ -16,7 +16,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def watershed_segmentation(rgb_img, mask, distance=10):
+def watershed_segmentation(rgb_img, mask, distance=10, label=None):
     """Uses the watershed algorithm to detect boundary of objects. Needs a marker file which specifies area which is
        object (white), background (grey), unknown area (black).
 
@@ -24,6 +24,7 @@ def watershed_segmentation(rgb_img, mask, distance=10):
     rgb_img             = image to perform watershed on needs to be 3D (i.e. np.shape = x,y,z not np.shape = x,y)
     mask                = binary image, single channel, object in white and background black
     distance            = min_distance of local maximum
+    label               = optional label parameter, modifies the variable name of observations recorded
 
     Returns:
     analysis_images     = list of output images
@@ -31,6 +32,7 @@ def watershed_segmentation(rgb_img, mask, distance=10):
     :param rgb_img: numpy.ndarray
     :param mask: numpy.ndarray
     :param distance: int
+    :param label: str
     :return analysis_images: list
     """
     params.device += 1
@@ -59,16 +61,22 @@ def watershed_segmentation(rgb_img, mask, distance=10):
 
     estimated_object_count = len(np.unique(markers)) - 1
 
+    if label == None:
+        prefix = ""
+    else:
+        prefix = label + "_"
+
     # Reset debug mode
     params.debug = debug
     if params.debug == 'print':
-        print_image(dist_transform, os.path.join(params.debug_outdir, str(params.device) + '_watershed_dist_img.png'))
-        print_image(joined, os.path.join(params.debug_outdir, str(params.device) + '_watershed_img.png'))
+        print_image(dist_transform, os.path.join(params.debug_outdir, str(params.device) + prefix +
+                                                 '_watershed_dist_img.png'))
+        print_image(joined, os.path.join(params.debug_outdir, str(params.device) + prefix + '_watershed_img.png'))
     elif params.debug == 'plot':
         plot_image(dist_transform, cmap='gray')
         plot_image(joined)
 
-    outputs.add_observation(variable='estimated_object_count', trait='estimated object count',
+    outputs.add_observation(variable=prefix + 'estimated_object_count', trait='estimated object count',
                             method='plantcv.plantcv.watershed', scale='none', datatype=int,
                             value=estimated_object_count, label='none')
 
