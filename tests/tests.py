@@ -4781,7 +4781,7 @@ def test_plantcv_photosynthesis_analyze_fvfm():
     fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.photosynthesis.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
+    _ = pcv.photosynthesis.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, bins=1000, label="prefix")
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     fvfm_images = pcv.photosynthesis.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
@@ -5369,7 +5369,7 @@ def test_plantcv_transform_find_color_card():
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=start,
-                                             spacing=space, nrows=6, ncols=4, exclude=[20, 0])
+                                             spacing=space, nrows=6, ncols=4, exclude=[20, 0], label="prefix")
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=start,
