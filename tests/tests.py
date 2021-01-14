@@ -2284,7 +2284,7 @@ def test_plantcv_landmark_reference_pt_dist():
     pcv.landmark_reference_pt_dist(points_r=points_rescaled, centroid_r=centroid_rescaled, bline_r=bottomline_rescaled,
                                    label="prefix")
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
-    assert len(pcv.outputs.observations) == 8
+    assert len(pcv.outputs.observations) == 42
     pcv.outputs.clear()
 
 
