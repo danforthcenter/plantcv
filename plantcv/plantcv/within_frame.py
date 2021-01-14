@@ -18,7 +18,7 @@ def within_frame(mask, border_width=1, label=None):
 
     :param mask: numpy.ndarray
     :param border_width: int
-    :param label: str 
+    :param label: str
     :return in_bounds: bool
     """
 
