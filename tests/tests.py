@@ -1082,6 +1082,7 @@ def test_plantcv_analyze_bound_horizontal():
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=300, label="prefix")
+    pcv.outputs.clear()
     _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=100)
     _ = pcv.analyze_bound_horizontal(img=img_above_bound_only, obj=object_contours, mask=mask, line_position=1756)
     # Test with debug = "plot"
