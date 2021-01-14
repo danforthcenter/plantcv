@@ -5369,7 +5369,7 @@ def test_plantcv_transform_find_color_card():
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=start,
-                                             spacing=space, nrows=6, ncols=4, exclude=[20, 0], label="prefix")
+                                             spacing=space, nrows=6, ncols=4, exclude=[20, 0])
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=start,
@@ -5392,20 +5392,8 @@ def test_plantcv_transform_find_color_card_optional_parameters():
     pcv.params.debug_outdir = cache_dir
     # Test with threshold ='normal'
     df1, start1, space1 = pcv.transform.find_color_card(rgb_img=rgb_img, threshold_type='normal', blurry=True,
-                                                        background='light', threshvalue=90)
-    _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=start1,
-                                             spacing=space1, nrows=6, ncols=4, exclude=[20, 0])
-    # Test with threshold='otsu'
-    df2, start2, space2 = pcv.transform.find_color_card(rgb_img=rgb_img, threshold_type='otsu', blurry=True)
-    _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=start2,
-                                             spacing=space2, nrows=6, ncols=4, exclude=[20, 0])
-    # Test with debug = None
-    pcv.params.debug = None
-    mask = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=start2,
-                                                spacing=space2, nrows=6, ncols=4, exclude=[20, 0])
-    assert all([i == j] for i, j in zip(np.unique(mask), np.array([0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110,
-                                                                   120, 130, 140, 150, 160, 170, 180, 190, 200, 210,
-                                                                   220], dtype=np.uint8)))
+                                                        background='light', threshvalue=90, label="prefix")
+    assert pcv.outputs.observations["prefix_color_chip_size"]["value"] > 15000
 
 
 def test_plantcv_transform_find_color_card_optional_size_parameters():
