@@ -979,7 +979,7 @@ def test_plantcv_acute_vertex():
     obj_contour = contours_npz['arr_0']
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img)
+    _ = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img, label="prefix")
     _ = pcv.acute_vertex(obj=[], win=5, thresh=15, sep=5, img=img)
     _ = pcv.acute_vertex(obj=[], win=.01, thresh=.01, sep=1, img=img)
     # Test with debug = "plot"
@@ -1014,7 +1014,7 @@ def test_plantcv_analyze_bound_horizontal():
     object_contours = contours_npz['arr_0']
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=300)
+    _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=300, label="prefix")
     _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=100)
     _ = pcv.analyze_bound_horizontal(img=img_above_bound_only, obj=object_contours, mask=mask, line_position=1756)
     # Test with debug = "plot"
@@ -1075,7 +1075,7 @@ def test_plantcv_analyze_bound_vertical():
     object_contours = contours_npz['arr_0']
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=1000)
+    _ = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=1000, label="prefix")
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=1000)
@@ -1152,7 +1152,7 @@ def test_plantcv_analyze_color():
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type="all")
-    _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type=None)
+    _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type=None, label="prefix")
 
     # Test with debug = "plot"
     pcv.params.debug = "plot"
@@ -1202,7 +1202,7 @@ def test_plantcv_analyze_nir():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.analyze_nir_intensity(gray_img=np.uint16(img), mask=mask, bins=256, histplot=True)
+    _ = pcv.analyze_nir_intensity(gray_img=np.uint16(img), mask=mask, bins=256, histplot=True, label="prefix")
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=False)
@@ -1230,7 +1230,7 @@ def test_plantcv_analyze_object():
     # max_obj = max(obj_contour, key=len)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.analyze_object(img=img, obj=obj_contour, mask=mask)
+    _ = pcv.analyze_object(img=img, obj=obj_contour, mask=mask, label="prefix")
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.analyze_object(img=img, obj=obj_contour, mask=mask)
@@ -1354,7 +1354,7 @@ def test_plantcv_analyze_thermal_values():
     img = contours_npz['arr_0']
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.analyze_thermal_values(thermal_array=img, mask=mask, histplot=True)
+    _ = pcv.analyze_thermal_values(thermal_array=img, mask=mask, histplot=True, label="prefix")
     pcv.params.debug = "plot"
     thermal_hist = pcv.analyze_thermal_values(thermal_array=img, mask=mask, histplot=True)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
@@ -2210,7 +2210,7 @@ def test_plantcv_landmark_reference_pt_dist():
                        (0.6458, 0.3472), (0.6389, 0.5208), (0.6458, 0.625)]
     centroid_rescaled = (0.4685, 0.4945)
     bottomline_rescaled = (0.4685, 0.2569)
-    _ = pcv.landmark_reference_pt_dist(points_r=[], centroid_r=('a', 'b'), bline_r=(0, 0))
+    _ = pcv.landmark_reference_pt_dist(points_r=[], centroid_r=('a', 'b'), bline_r=(0, 0), label="prefix")
     _ = pcv.landmark_reference_pt_dist(points_r=[(10, 1000)], centroid_r=(10, 10), bline_r=(10, 10))
     _ = pcv.landmark_reference_pt_dist(points_r=[], centroid_r=(0, 0), bline_r=(0, 0))
     pcv.landmark_reference_pt_dist(points_r=points_rescaled, centroid_r=centroid_rescaled, bline_r=bottomline_rescaled)
@@ -2426,7 +2426,7 @@ def test_plantcv_within_frame():
     # Read in test data
     mask_ib = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK), -1)
     mask_oob = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK_OOB), -1)
-    in_bounds_ib = pcv.within_frame(mask=mask_ib, border_width=1)
+    in_bounds_ib = pcv.within_frame(mask=mask_ib, border_width=1, label="prefix")
     in_bounds_oob = pcv.within_frame(mask=mask_oob, border_width=1)
     assert (in_bounds_ib is True and in_bounds_oob is False)
 
@@ -2794,7 +2794,7 @@ def test_plantcv_report_size_marker_detect():
     # Test with debug = "print"
     pcv.params.debug = "print"
     _ = pcv.report_size_marker_area(img=img, roi_contour=roi_contour, roi_hierarchy=roi_hierarchy, marker='detect',
-                                    objcolor='light', thresh_channel='s', thresh=120)
+                                    objcolor='light', thresh_channel='s', thresh=120, label="prefix")
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.report_size_marker_area(img=img, roi_contour=roi_contour, roi_hierarchy=roi_hierarchy, marker='detect',
@@ -3199,7 +3199,7 @@ def test_plantcv_watershed_segmentation():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED_MASK), -1)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10)
+    _ = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10, label="prefix")
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10)
@@ -3320,7 +3320,7 @@ def test_plantcv_x_axis_pseudolandmarks():
     _ = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
+    _ = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img, label="prefix")
     _ = pcv.x_axis_pseudolandmarks(obj=np.array([[0, 0], [0, 0]]), mask=np.array([[0, 0], [0, 0]]), img=img)
     _ = pcv.x_axis_pseudolandmarks(obj=np.array(([[89, 222]], [[252, 39]], [[89, 207]])),
                                    mask=np.array(([[42, 161]], [[2, 47]], [[211, 222]])), img=img)
@@ -3379,7 +3379,7 @@ def test_plantcv_y_axis_pseudolandmarks():
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR), encoding="latin1")
     obj_contour = contours_npz['arr_0']
     pcv.params.debug = "print"
-    _ = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
+    _ = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img, label="prefix")
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
