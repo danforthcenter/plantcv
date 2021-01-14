@@ -3,7 +3,7 @@
 This function calculates the intensity of each pixel associated with the temperature and writes 
 the values out to a file. Can optionally create a histogram of pixel intensity.
 
-**plantcv.analyze_thermal_values**(*thermal_array, mask, histplot=False*)
+**plantcv.analyze_thermal_values**(*thermal_array, mask, histplot=False, label=None*)
 
 **returns** thermal histogram (if `histplot=True`, otherwise returns None object)
 
@@ -11,6 +11,7 @@ the values out to a file. Can optionally create a histogram of pixel intensity.
     - thermal_array - Numpy array of thermal image data (most likely read in with [pcv.readimage](read_image.md) with `mode='csv'`)
     - mask          - Binary mask made from selected contours
     - histplot      - If True plots histogram of intensity values (default histplot = False)
+    - label - Optional label parameter, modifies the variable name of observations recorded. (default `label=None`)
 - **Context:**
     - Data about image temperature within a masked region. 
 - **Example use:**
@@ -33,7 +34,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Caclulates the proportion of pixels that fall into a signal bin and writes the values to a file. Also provides a histogram of this data
-thermal_hist  = pcv.analyze_thermal_values(thermal_img, mask, histplot=True)
+thermal_hist  = pcv.analyze_thermal_values(thermal_array=thermal_img, maks=mask, histplot=True, label=None)
 
 # Access data stored out from analyze_thermal_values
 temp_range = pcv.outputs.observations['max_temp']['value'] - pcv.outputs.observations['min_temp']['value']
