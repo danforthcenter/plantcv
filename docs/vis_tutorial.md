@@ -380,8 +380,9 @@ The next step is to analyze the plant object for traits such as [horizontal heig
     # Inputs:
     #   img - RGB or grayscale image data 
     #   obj- Single or grouped contour object
-    #   mask - Binary image mask to use as mask for moments analysis     
-    shape_img = pcv.analyze_object(img=img, obj=obj, mask=mask)
+    #   mask - Binary image mask to use as mask for moments analysis  
+    #   label - Optional label parameter, modifies the variable name of observations recorded   
+    shape_img = pcv.analyze_object(img=img, obj=obj, mask=mask, label=None)
     
     # Shape properties relative to user boundary line (optional)
     
@@ -390,9 +391,10 @@ The next step is to analyze the plant object for traits such as [horizontal heig
     #   obj - Single or grouped contour object 
     #   mask - Binary mask of selected contours 
     #   line_position - Position of boundary line (a value of 0 would draw a line 
-    #                   through the bottom of the image) 
+    #                   through the bottom of the image)
+    #   label - Optional label parameter, modifies the variable name of observations recorded  
     boundary_img1 = pcv.analyze_bound_horizontal(img=img, obj=obj, mask=mask, 
-                                                   line_position=1680)
+                                                   line_position=1680, label=None)
     
     # Determine color properties: Histograms, Color Slices, output color analyzed histogram (optional)
     
@@ -400,8 +402,9 @@ The next step is to analyze the plant object for traits such as [horizontal heig
     #   rgb_img - RGB image data
     #   mask - Binary mask of selected contours 
     #   hist_plot_type - None (default), 'all', 'rgb', 'lab', or 'hsv'
-    #                    This is the data to be printed to the SVG histogram file  
-    color_histogram = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='all')
+    #                    This is the data to be printed to the SVG histogram file 
+    #   label - Optional label parameter, modifies the variable name of observations recorded  
+    color_histogram = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='all', label=None)
 
     # Pseudocolor the grayscale image
     
@@ -590,13 +593,13 @@ def main():
         outfile = os.path.join(args.outdir, filename)
 
     # Find shape properties, output shape image (optional)
-    shape_imgs = pcv.analyze_object(img=img, obj=obj, mask=mask)
+    shape_imgs = pcv.analyze_object(img=img, obj=obj, mask=mask, label=None)
 
     # Shape properties relative to user boundary line (optional)
-    boundary_img1 = pcv.analyze_bound_horizontal(img=img, obj=obj, mask=mask, line_position=1680)
+    boundary_img1 = pcv.analyze_bound_horizontal(img=img, obj=obj, mask=mask, line_position=1680, label=None)
 
     # Determine color properties: Histograms, Color Slices, output color analyzed histogram (optional)
-    color_histogram = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='all')
+    color_histogram = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='all', label=None)
 
     # Pseudocolor the grayscale image
     pseudocolored_img = pcv.visualize.pseudocolor(gray_img=s, mask=mask, cmap='jet')
