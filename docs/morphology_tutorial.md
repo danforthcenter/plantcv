@@ -395,6 +395,45 @@ out from a stem will have larger insertion angles than those that grow upward.
 ![Screenshot](img/tutorial_images/morphology/insertion_angle_img.jpg)
 
 
+```python
+    
+    # Fill in segments (also stores out area data)  
+    
+    # Inputs:
+    # mask         = Binary image, single channel, object = 1 and background = 0
+    # objects      = List of contours
+    # label        = (Optional) label parameter, modifies the variable name of observations recorded. (default `label=None`)
+    filled_img = pcv.morphology.fill_segments(mask=cropped_mask, objects=edge_objects, label="all_segments")
+
+
+```
+
+**Figure 19.** Fill Segment Area 
+
+The [plantcv.morphology.fill_segment](fill_segments.md) function aims to measure 
+area of segments filled in. By using watershed segmentation to flood fill the mask by
+using the segments as markers. 
+
+![Screenshot](img/tutorial_images/morphology/filled_img_all_segments.jpg)
+
+
+```python
+    
+    # Fill in leaves (also stores out area data)  
+    
+    filled_img2 = pcv.morphology.fill_segments(mask=cropped_mask, objects=leaf_obj, stem_objects=stem_obj, label="separate_leaves")
+
+
+```
+
+**Figure 20.** Fill Leaf/Stem Area 
+
+The [plantcv.morphology.fill_segment](fill_segments.md) function can also measure segments
+separately. When inputting sorted stem and leaf segments, the stem segments will be combined into 
+one object while the leaves remain separate.  
+
+![Screenshot](img/tutorial_images/morphology/filled_segments_stem.jpg)
+
 To deploy a workflow over a full image set please see tutorial on 
 [workflow parallelization](pipeline_parallel.md).
 
@@ -503,6 +542,10 @@ def main():
                                                           leaf_objects=leaf_obj, 
                                                           stem_objects=stem_obj,
                                                           size=20, label=None)
+    
+    # Fill in segments (also stores out area data)                                                       
+    filled_img = pcv.morphology.fill_segments(mask=cropped_mask, objects=edge_objects, label="all_segments")
+    filled_img2 = pcv.morphology.fill_segments(mask=cropped_mask, objects=leaf_obj, stem_objects=stem_obj, label="separate_leaves")
                                                           
                                                           
     # Write out data collected about angles and lengths                                                       
