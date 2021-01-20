@@ -465,10 +465,10 @@ def main():
     pruned, seg_img, edge_objects = pcv.morphology.prune(skel_img=skeleton, size=0, mask=cropped_mask)
         
     # Identify branch points   
-    branch_pts_mask = pcv.morphology.find_branch_pts(skel_img=skeleton, mask=cropped_mask)
+    branch_pts_mask = pcv.morphology.find_branch_pts(skel_img=skeleton, mask=cropped_mask, label=None)
         
     # Identify tip points   
-    tip_pts_mask = pcv.morphology.find_tips(skel_img=skeleton, mask=None)
+    tip_pts_mask = pcv.morphology.find_tips(skel_img=skeleton, mask=None, label=None)
     
     # Sort segments into leaf objects and stem objects  
     leaf_obj, stem_obj = pcv.morphology.segment_sort(skel_img=skeleton, objects=edge_objects,
@@ -480,29 +480,29 @@ def main():
         
     # Measure path lengths of segments     
     labeled_img2 = pcv.morphology.segment_path_length(segmented_img=segmented_img, 
-                                                      objects=leaf_obj)
+                                                      objects=leaf_obj, label=None)
         
     # Measure euclidean distance of segments      
     labeled_img3 = pcv.morphology.segment_euclidean_length(segmented_img=segmented_img, 
-                                                           objects=leaf_obj)
+                                                           objects=leaf_obj, label=None)
        
     # Measure curvature of segments      
     labeled_img4 = pcv.morphology.segment_curvature(segmented_img=segmented_img, 
-                                                    objects=leaf_obj)
+                                                    objects=leaf_obj, label=None)
         
     # Measure the angle of segments      
-    labeled_img5 = pcv.morphology.segment_angle(segmented_img=segmented_img, objects=leaf_obj)
+    labeled_img5 = pcv.morphology.segment_angle(segmented_img=segmented_img, objects=leaf_obj, label=None)
     
     # Measure the tangent angles of segments      
     labeled_img6 = pcv.morphology.segment_tangent_angle(segmented_img=segmented_img, 
-                                                        objects=leaf_obj, size=15)
+                                                        objects=leaf_obj, size=15, label=None)
                                                                          
     # Measure the leaf insertion angles      
     labeled_img7 = pcv.morphology.segment_insertion_angle(skel_img=skeleton,
                                                           segmented_img=segmented_img, 
                                                           leaf_objects=leaf_obj, 
                                                           stem_objects=stem_obj,
-                                                          size=20)
+                                                          size=20, label=None)
                                                           
                                                           
     # Write out data collected about angles and lengths                                                       
