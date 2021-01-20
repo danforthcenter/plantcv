@@ -150,6 +150,7 @@ Functions that automatically store data to the [`Outputs` class](outputs.md) are
 [morphology.segment_curvature](segment_curvature.md), [morphology.segment_euclidean_length](segment_euclidean_length.md), 
 [morphology.segment_insertion_angle](segment_insertion_angle.md), [morphology.segment_path_length](segment_pathlength.md), 
 [morphology.segment_tangent_angle](segment_tangent_angle.md), [report_size_marker_area](report_size_marker.md), [watershed_segmentation](watershed.md),
-[within_frame](within_frame.md), [x_axis_pseudolandmarks](x_axis_pseudolandmarks.md), and [y_axis_pseudolandmarks](y_axis_pseudolandmarks.md). 
+[within_frame](within_frame.md), [x_axis_pseudolandmarks](x_axis_pseudolandmarks.md), and [y_axis_pseudolandmarks](y_axis_pseudolandmarks.md). All of these functions include an optional `label` parameter 
+that allows users to append custom prefixes to the unique variable identifier. 
 
 For more detail about the traits measured by each function see the [Observation Traits Summary Table](https://docs.google.com/spreadsheets/d/1gk5VocBA-63gyF_vA6yPNvWreZ1R7-_z4vOfm37YBl8/edit?usp=sharing).
