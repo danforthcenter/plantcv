@@ -456,8 +456,9 @@ Now we can perform the [analysis of pixelwise signal value](analyze_NIR_intensit
     #   mask - Binary mask made from selected contours 
     #   bins - Number of classes to divide the spectrum into 
     #   histplot - If True, plots the histogram of intensity values 
+    #   label - Optional label parameter, modifies the variable name of observations recorded. (default `label=None`)
     nir_hist = pcv.analyze_nir_intensity(gray_img=img, mask=kept_mask, 
-                                         bins=256, histplot=True)
+                                         bins=256, histplot=True, label=None)
     
     # Pseudocolor the grayscale image to a colormap
     
@@ -480,7 +481,8 @@ Now we can perform the [analysis of pixelwise signal value](analyze_NIR_intensit
     #   img - RGB or grayscale image data 
     #   obj- Single or grouped contour object
     #   mask - Binary image mask to use as mask for moments analysis 
-    shape_imgs = pcv.analyze_object(img=rgb_img, obj=o, mask=m)
+    #   label - Optional label parameter, modifies the variable name of observations recorded. (default `label=None`)
+    shape_imgs = pcv.analyze_object(img=img, obj=o, mask=m, label=None)
     
     # Write shape and nir data to results file
     pcv.print_results(filename=args.result)
@@ -634,13 +636,13 @@ def main():
         outfile = os.path.join(args.outdir, img_name)
     
     # Perform signal analysis
-    nir_hist = pcv.analyze_nir_intensity(gray_img=img, mask=kept_mask, bins=256, histplot=True)
+    nir_hist = pcv.analyze_nir_intensity(gray_img=img, mask=kept_mask, bins=256, histplot=True, label=None)
     
     # Pseudocolor the grayscale image to a colormap
     pseudocolored_img = pcv.visualize.pseudocolor(gray_img=img, mask=kept_mask, cmap='viridis')
     
     # Perform shape analysis
-    shape_imgs = pcv.analyze_object(img=rgb_img, obj=o, mask=m)
+    shape_imgs = pcv.analyze_object(img=img, obj=o, mask=m, label=None)
     
     # Write shape and nir data to results file
     pcv.print_results(filename=args.result)
