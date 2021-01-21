@@ -8,6 +8,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 
+from scipy.ndimage import sobel, generic_gradient_magnitude
 
 
 def segment_image_series(img_series, masks, ref_frame=0, expand_labels=True):
@@ -39,16 +40,6 @@ def segment_image_series(img_series, masks, ref_frame=0, expand_labels=True):
     # Automatic label on one frame
     labels, n_labels = ndi.label(masks[:,:,ref_frame])
 
-    # Create image for printing (debug mode)
-    debug_img = np.zeros((h,w,3), dtype=np.uint8)
-    rgb_values = color_palette(n_labels)
-    for i in range(n_labels):
-        debug_img[labels==i+1] = rgb_values[i]
-    if params.debug == 'print':
-        print_image(debug_img, os.path.join(params.debug_outdir, str(params.device) + '_auto_markers.png'))
-    elif params.debug == 'plot':
-        plot_image(debug_img)
-
     if expand_labels:
         markers = np.tile(np.expand_dims(labels,axis=2),(1,1,N))
     else:
@@ -56,8 +47,33 @@ def segment_image_series(img_series, masks, ref_frame=0, expand_labels=True):
         markers[:,:,ref_frame] = labels
 
     # Edges using 3D sobel operator as elevation map for watershed
-    edges = ndi.generic_gradient_magnitude(img_series, ndi.sobel)
+    edges = generic_gradient_magnitude(img_series, sobel)
     segmented_imgs = watershed(edges, markers=markers, mask=masks,compactness=0)
+
+    # Create images for plotting (debug mode)
+    rgb_values = color_palette(n_labels)
+    debug_markers = np.zeros((h,w,3), dtype=np.uint8)
+    for l in range(n_labels):
+        debug_markers[labels==l+1] = rgb_values[l]
+
+    if params.debug == 'print':
+        print_image(debug_markers, os.path.join(params.debug_outdir,
+                    str(params.device) + '_auto_markers.png'))
+        for i in range(N):
+            labeled_frame = segmented_imgs[:,:,i]
+            debug_frame = np.zeros((h,w,3), dtype=np.uint8)
+            for l in range(n_labels):
+                debug_frame[labeled_frame==l+1] = rgb_values[l]
+            print_image(debug_frame, os.path.join(params.debug_outdir,
+                        str(params.device) + '_frame_'+str(i)+'.png'))
+    elif params.debug == 'plot':
+        plot_image(debug_markers)
+        for i in range(N):
+            labeled_frame = segmented_imgs[:,:,i]
+            debug_frame = np.zeros((h,w,3), dtype=np.uint8)
+            for l in range(n_labels):
+                debug_frame[labeled_frame==l+1] = rgb_values[l]
+            plot_image(debug_frame)
 
     return segmented_imgs
 
