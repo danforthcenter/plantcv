@@ -144,6 +144,7 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, acute = **plantcv.acute_vertex**(*obj, win, thresh, sep, img, device, debug=None*)
 * post v3.0dev2: acute = **plantcv.acute_vertex**(*obj, win, thresh, sep, img*)
 * post v3.2: acute, analysis_image = **plantcv.acute_vertex**(*img, obj, win, thresh, sep*)
+* post v3.11: acute, analysis_image = **plantcv.acute_vertex**(**img, obj, win, thresh, sep, label=None*)
 
 #### plantcv.adaptive_threshold
 
@@ -164,6 +165,8 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: bound_header, bound_data, analysis_images = **plantcv.analyze_bound_horizontal**(*img, obj, mask, line_position, filename=False*)
 * post v3.0: bound_header, bound_data, analysis_images = **plantcv.analyze_bound_horizontal**(*img, obj, mask, line_position*)
 * post v3.3: analysis_image = **plantcv.analyze_bound_horizontal**(*img, obj, mask, line_position*)
+* post v3.11: analysis_image = **plantcv.analyze_bound_horizontal**(*img, obj, mask, line_position, label=None*)
+
 
 #### plantcv.analyze_bound_vertical
 
@@ -171,6 +174,8 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: bound_header, bound_data, analysis_images = **plantcv.analyze_bound_vertical**(*img, obj, mask, line_position, filename=False*)
 * post v3.0.5: bound_header, bound_data, analysis_images = **plantcv.analyze_bound_vertical**(*img, obj, mask, line_position*)
 * post v3.3: analysis_image = **plantcv.analyze_bound_vertical**(*img, obj, mask, line_position*)
+* post v3.11: analysis_image = **plantcv.analyze_bound_vertical**(*img, obj, mask, line_position, label=None*)
+
 
 #### plantcv.analyze_color
 
@@ -178,6 +183,8 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: hist_header, hist_data, analysis_images = **plantcv.analyze_color**(*rgb_img, mask, bins, hist_plot_type=None, pseudo_channel='v', pseudo_bkg='img', filename=False*)
 * post v3.0: hist_header, hist_data, analysis_images = **plantcv.analyze_color**(*rgb_img, mask, bins, hist_plot_type=None*)
 * post v3.3: analysis_image = **plantcv.analyze_color**(*rgb_img, mask, hist_plot_type=None*)
+* post v3.11: analysis_image = **plantcv.analyze_color**(*rgb_img, mask, hist_plot_type=None, label=None*)
+
 
 #### plantcv.analyze_nir_intensity
 
@@ -185,6 +192,8 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: hist_header, hist_data, analysis_img = **plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False, filename=False*)
 * post v3.0: hist_header, hist_data, nir_hist = **plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False*)
 * post v3.3: nir_hist = **plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False*)
+* post v3.11: nir_hist = **plantcv.analyze_nir_intensity**(*gray_img, mask, bins, histplot=False, label=None*)
+
 
 #### plantcv.analyze_object
 
@@ -192,11 +201,14 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: shape_header, shape_data, analysis_images = **plantcv.analyze_object**(*img, obj, mask, filename=False*)
 * post v3.0: shape_header, shape_data, analysis_images = **plantcv.analyze_object**(*img, obj, mask*)
 * post v3.3: analysis_image = **plantcv.analyze_object**(*img, obj, mask*)
+* post v3.11: analysis_image = **plantcv.analyze_object**(*img, obj, mask, label=None*)
+
 
 #### plantcv.analyze_thermal_values
 
 * pre v3.5: NA
 * post v3.5: thermal_histogram = **plantcv.analyze_thermal_values**(*thermal_array, mask, histplot=False*)
+* post v3.11: thermal_histogram = **plantcv.analyze_thermal_values**(*thermal_array, mask, histplot=False, label=None*)
 
 #### plantcv.apply_mask
 
