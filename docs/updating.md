@@ -343,6 +343,7 @@ pages for more details on the input and output variable types.
 * post v3.8: index_histogram = **plantcv.hyperspectral.analyze_index**(*index_array, mask, histplot=False, bins=100, max_bin=0, min_bin=1*)
 * post v3.11: index_histogram = **plantcv.hyperspectral.analyze_index**(*index_array, mask, histplot=False, bins=100, max_bin=0, min_bin=1, label=None*)
 
+
 #### plantcv.hyperspectral.analyze_spectral
 
 * pre v3.7: NA
@@ -376,6 +377,8 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: vert_ave_c, hori_ave_c, euc_ave_c, ang_ave_c, vert_ave_b, hori_ave_b, euc_ave_b, ang_ave_b = **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r*)
 * post v3.2: landmark_header, landmark_data = **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r*)
 * post v3.3: **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r*)
+* post v3.11: **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r, label=None*)
+
 
 #### plantcv.laplace_filter
 
@@ -513,6 +516,7 @@ pages for more details on the input and output variable types.
 #### plantcv.photosynthesis.analyze_fvfm
 * pre v3.10: see plantcv.fluor_fvfm
 * post v3.10: analysis_images = **plantcv.photosynthesis.analyze_fvfm**(*fdark, fmin, fmax, mask, bins=256*)
+* post v3.11: analysis_images = **plantcv.photosynthesis.analyze_fvfm**(*fdark, fmin, fmax, mask, bins=256, label=None*)
 
 #### plantcv.photosynthesis.read_cropreporter
 
@@ -569,6 +573,7 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: marker_header, marker_data, analysis_images = **plantcv.report_size_marker_area**(*img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None, thresh=None, filename=False*)
 * post v3.1: marker_header, marker_data, analysis_image = **plantcv.report_size_marker_area**(*img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None, thresh=None*)
 * post v3.3: analysis_image = **plantcv.report_size_marker_area**(*img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None, thresh=None*)
+* post v3.11: analysis_image = **plantcv.report_size_marker_area**(*img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None, thresh=None, label=None*)
 
 #### plantcv.resize
 
@@ -847,7 +852,7 @@ pages for more details on the input and output variable types.
 * post v3.0: df, start_coord, spacing = **plantcv.transform.find_color_card**(*rgb_img, threshold='adaptgauss', threshvalue=125, blurry=False, background='dark'*)
 * post v3.3: df, start_coord, spacing = **plantcv.transform.find_color_card**(*rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark'*)
 * post v3.9: df, start_coord, spacing = **plantcv.transform.find_color_card**(*rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark', record_chip_size='median'*)
- 
+* post v3.11: df, start_coord, spacing = **plantcv.transform.find_color_card**(*rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark', record_chip_size='median', label=None*)
 
 #### plantcv.transform.get_color_matrix
 
@@ -915,6 +920,7 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: watershed_header, watershed_data, analysis_images = **plantcv.watershed_segmentation**(*rgb_img, mask, distance=10, filename=False*)
 * post v3.1: watershed_header, watershed_data, analysis_images = **plantcv.watershed_segmentation**(*rgb_img, mask, distance=10*)
 * post v3.3: analysis_image = **plantcv.watershed_segmentation**(*rgb_img, mask, distance=10*)
+* post v3.11: analysis_image = **plantcv.watershed_segmentation**(*rgb_img, mask, distance=10, label=None*)
 
 #### plantcv.white_balance
 
@@ -926,15 +932,18 @@ pages for more details on the input and output variable types.
 * pre v3.3: NA
 * post v3.3: in_bounds = **plantcv.within_frame**(*mask*)
 * post v3.8: in_bounds = **plantcv.within_frame**(*mask, border_width=1*)
+* post v3.11: in_bounds = **plantcv.within_frame**(*mask, border_width=1, label=None*)
 
 #### plantcv.x_axis_pseudolandmarks
 
 * pre v3.0dev2: device, top, bottom, center_v = **plantcv.x_axis_pseudolandmarks**(*obj, mask, img, device, debug=None*)
 * post v3.0dev2: top, bottom, center_v = **plantcv.x_axis_pseudolandmarks**(*obj, mask, img*)
 * post v3.2: top, bottom, center_v = **plantcv.x_axis_pseudolandmarks**(*img, obj, mask*)
+* post v3.11: top, bottom, center_v = **plantcv.x_axis_pseudolandmarks**(*img, obj, mask, label=None*)
 
 #### plantcv.y_axis_pseudolandmarks
 
 * pre v3.0dev2: device, left, right, center_h = **plantcv.y_axis_pseudolandmarks**(*obj, mask, img, device, debug=None*)
 * post v3.0dev2: left, right, center_h = **plantcv.y_axis_pseudolandmarks**(*obj, mask, img*)
 * post v3.2: left, right, center_h = **plantcv.y_axis_pseudolandmarks**(*img, obj, mask*)
+* post v3.11: left, right, center_h = **plantcv.y_axis_pseudolandmarks**(*img, obj, mask, label=None*)
