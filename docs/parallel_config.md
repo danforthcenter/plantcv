@@ -45,6 +45,8 @@ Validate parameters/structure of configuration data.
 
 **workflow**: (str, required): path/name of user-defined PlantCV workflow Python script (validates that it exists).
 
+**include_all_subdirs**: (bool, default = `True`): not including images in subdirectories if `False`
+
 **img_outdir**: (str, default = "."): path/name of output directory where images will be saved.
 
 **tmp_dir**: (str, default = `None`): path/name of parent folder for the temporary directory, uses system default .
