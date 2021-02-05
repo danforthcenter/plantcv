@@ -2,7 +2,7 @@
 
 Propagate the labels of a segmented skeleton to fill the mask.
 
-**plantcv.morphology.fill_segments**(*mask, objects*)
+**plantcv.morphology.fill_segments**(*mask, objects, stem_objects=None*)
 
 **returns** filled_img  
 
@@ -11,6 +11,7 @@ Propagate the labels of a segmented skeleton to fill the mask.
     - objects - Segment objects (output from either [plantcv.morphology.prune](prune.md),
     [plantcv.morphology.segment_skeleton](segment_skeleton.md), or
     [plantcv.morphology.segment_sort](segment_sort.md)).
+    - stem_objects - Optional input for stem objects that will be combined into a single object before filling the mask. 
 - **Context:**
     - Uses the watershed algorithm to fill the mask propagating the objects' labels.
 - **Output data stored:** Data ('segment_area') automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran.

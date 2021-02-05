@@ -89,7 +89,8 @@ def find_branch_pts(skel_img, mask=None):
     branch_labels = []
     for i, branch in enumerate(branch_objects):
         x, y = branch.ravel()[:2]
-        branch_list.append((float(x), float(y)))
+        coord = (int(x), int(y))
+        branch_list.append(coord)
         branch_labels.append(i)
         cv2.circle(branch_plot, (x, y), params.line_thickness, (255, 0, 255), -1)
 
