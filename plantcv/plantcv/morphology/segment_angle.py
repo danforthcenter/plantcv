@@ -11,7 +11,7 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import color_palette
 
 
-def segment_angle(segmented_img, objects, label=None):
+def segment_angle(segmented_img, objects, label="default"):
     """ Calculate angle of segments (in degrees) by fitting a linear regression line to segments.
 
         Inputs:
@@ -76,10 +76,7 @@ def segment_angle(segmented_img, objects, label=None):
         # segment_label = "ID" + str(i)
         segment_ids.append(i)
 
-    if label == None:
-        prefix = ""
-    else:
-        prefix = label + "_"
+    prefix = label + "_"
 
     outputs.add_observation(variable=prefix + 'segment_angle', trait='segment angle',
                             method='plantcv.plantcv.morphology.segment_angle', scale='degrees', datatype=list,

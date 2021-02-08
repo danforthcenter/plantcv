@@ -14,7 +14,7 @@ from plantcv.plantcv.morphology import segment_path_length
 from plantcv.plantcv.morphology import segment_euclidean_length
 
 
-def segment_curvature(segmented_img, objects, label=None):
+def segment_curvature(segmented_img, objects, label="default"):
     """ Calculate segment curvature as defined by the ratio between geodesic and euclidean distance.
         Measurement of two-dimensional tortuosity.
 
@@ -85,10 +85,7 @@ def segment_curvature(segmented_img, objects, label=None):
         # segment_label = "ID" + str(i)
         segment_ids.append(i)
 
-    if label == None:
-        prefix = ""
-    else:
-        prefix = label + "_"
+    prefix = label + "_"
 
     outputs.add_observation(variable=prefix + 'segment_curvature', trait='segment curvature',
                             method='plantcv.plantcv.morphology.segment_curvature', scale='none', datatype=list,

@@ -13,7 +13,7 @@ from plantcv.plantcv import find_objects
 from plantcv.plantcv import color_palette
 
 
-def check_cycles(skel_img, label=None):
+def check_cycles(skel_img, label="default"):
     """ Check for cycles in a skeleton image
     Inputs:
     skel_img     = Skeletonized image
@@ -62,10 +62,7 @@ def check_cycles(skel_img, label=None):
             cv2.drawContours(cycle_img, cycle_objects, i, rand_color[i], params.line_thickness, lineType=8,
                              hierarchy=cycle_hierarchies)
 
-    if label == None:
-        prefix = ""
-    else:
-        prefix = label + "_"
+    prefix = label + "_"
 
     # Store Cycle Data
     outputs.add_observation(variable=prefix + 'num_cycles', trait='number of cycles',

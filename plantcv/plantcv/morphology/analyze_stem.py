@@ -9,7 +9,7 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 
 
-def analyze_stem(rgb_img, stem_objects, label=None):
+def analyze_stem(rgb_img, stem_objects, label="default"):
     """ Calculate angle of segments (in degrees) by fitting a linear regression line to segments.
 
         Inputs:
@@ -41,11 +41,7 @@ def analyze_stem(rgb_img, stem_objects, label=None):
     # Calculate stem path length
     stem_length = cv2.arcLength(grouped_stem, False) / 2
 
-
-    if label == None:
-        prefix = ""
-    else:
-        prefix = label + "_"
+    prefix = label + "_"
 
     outputs.add_observation(variable=prefix + 'stem_height', trait='vertical length of stem segments',
                             method='plantcv.plantcv.morphology.analyze_stem', scale='pixels', datatype=float,

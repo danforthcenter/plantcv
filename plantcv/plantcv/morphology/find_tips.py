@@ -11,7 +11,7 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import find_objects
 
 
-def find_tips(skel_img, mask=None, label=None):
+def find_tips(skel_img, mask=None, label="default"):
     """
     The endpoints algorithm was inspired by Jean-Patrick Pommier: https://gist.github.com/jeanpat/5712699
     Find tips in skeletonized image.
@@ -80,10 +80,7 @@ def find_tips(skel_img, mask=None, label=None):
         cv2.circle(tip_plot, (x, y), params.line_thickness, (0, 255, 0), -1)
 
 
-    if label == None:
-        prefix = ""
-    else:
-        prefix = label + "_"
+    prefix = label + "_"
 
     outputs.add_observation(variable=prefix + 'tips', trait='list of tip coordinates identified from a skeleton',
                             method='plantcv.plantcv.morphology.find_tips', scale='pixels', datatype=list,

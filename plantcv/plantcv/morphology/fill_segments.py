@@ -11,7 +11,7 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 
 
-def fill_segments(mask, objects, stem_objects=None, label=None):
+def fill_segments(mask, objects, stem_objects=None, label="default"):
     """Fills masked segments from contours.
 
     Inputs:
@@ -46,10 +46,7 @@ def fill_segments(mask, objects, stem_objects=None, label=None):
     # Count area in pixels of each segment
     ids, counts = np.unique(filled_mask, return_counts=True)
     
-    if label == None:
-        prefix = ""
-    else:
-        prefix = label + "_"
+    prefix = label + "_"
         
     outputs.add_observation(variable=prefix + 'segment_area', trait='segment area',
                             method='plantcv.plantcv.morphology.fill_segments',

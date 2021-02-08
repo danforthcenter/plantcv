@@ -19,7 +19,7 @@ from plantcv.plantcv.morphology import find_branch_pts
 from plantcv.plantcv.morphology.segment_tangent_angle import _slope_to_intesect_angle
 
 
-def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects, size, label=None):
+def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects, size, label="default"):
     """ Find leaf insertion angles in degrees of skeleton segments. Fit a linear regression line to the stem.
         Use `size` pixels on  the portion of leaf next to the stem find a linear regression line,
         and calculate angle between the two lines per leaf object.
@@ -186,10 +186,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
         # segment_label = "ID" + str(i)
         segment_ids.append(i)
 
-    if label == None:
-        prefix = ""
-    else:
-        prefix = label + "_"
+    prefix = label + "_"
 
     outputs.add_observation(variable=prefix + 'segment_insertion_angle', trait='segment insertion angle',
                             method='plantcv.plantcv.morphology.segment_insertion_angle', scale='degrees', datatype=list,

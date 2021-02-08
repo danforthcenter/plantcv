@@ -31,7 +31,7 @@ def _slope_to_intesect_angle(m1, m2):
     return angle
 
 
-def segment_tangent_angle(segmented_img, objects, size, label=None):
+def segment_tangent_angle(segmented_img, objects, size, label="default"):
     """ Find 'tangent' angles in degrees of skeleton segments. Use `size` pixels on either end of
         each segment to find a linear regression line, and calculate angle between the two lines
         drawn per segment.
@@ -125,10 +125,7 @@ def segment_tangent_angle(segmented_img, objects, size, label=None):
         # segment_label = "ID" + str(i)
         segment_ids.append(i)
 
-    if label == None:
-        prefix = ""
-    else:
-        prefix = label + "_"
+    prefix = label + "_"
 
     outputs.add_observation(variable=prefix + 'segment_tangent_angle', trait='segment tangent angle',
                             method='plantcv.plantcv.morphology.segment_tangent_angle', scale='degrees', datatype=list,
