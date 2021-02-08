@@ -28,7 +28,7 @@ functions:
 * `watershed`
 
 An instance of `Outputs` is created on import automatically as `plantcv.outputs`. The function 
-[pcv.print_results](print_results.md) will print out all the stored measurments data to a text file. 
+[pcv.print_results](print_results.md) will print out all the stored measurment data to a text file. 
 
 ### Methods
 
@@ -63,10 +63,10 @@ from plantcv import plantcv as pcv
 ######## workflow steps here ########
 
 # Find shape properties, output shape image (optional)
-shape_img = pcv.analyze_object(img, obj, mask)
+shape_img = pcv.analyze_object(img, obj, mask, label="default")
 
 # Look at object area data without writing to a file 
-plant_area = pcv.outputs.observations['pixel_area']['value']
+plant_area = pcv.outputs.observations['default_pixel_area']['value']
 
 # Write shape data to results file
 pcv.print_results(filename=args.result)
@@ -76,8 +76,8 @@ pcv.outputs.clear()
 
 ######## More workflow steps here ########
 
-nir_imgs = pcv.analyze_nir_intensity(nir2, nir_combinedmask, 256)
-shape_img = pcv.analyze_object(nir2, nir_combined, nir_combinedmask)
+nir_imgs = pcv.analyze_nir_intensity(nir2, nir_combinedmask, 256, label="default")
+shape_img = pcv.analyze_object(nir2, nir_combined, nir_combinedmask, label="default")
 
 # Write the NIR and shape data to a file 
 pcv.print_results(filename=args.coresult)
