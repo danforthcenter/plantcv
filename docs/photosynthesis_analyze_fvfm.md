@@ -2,7 +2,7 @@
 
 Extract Fv/Fm data of objects.
 
-**plantcv.photosynthesis.analyze_fvfm**(*fdark, fmin, fmax, mask, bins=256, label=None*)
+**plantcv.photosynthesis.analyze_fvfm**(*fdark, fmin, fmax, mask, bins=256, label="default"*)
 
 **returns** PSII analysis images (Fv/Fm image, Fv/Fm histogram)
 
@@ -12,7 +12,7 @@ Extract Fv/Fm data of objects.
     - fmax - image object, grayscale
     - mask - binary mask of selected contours
     - bins - number of grayscale bins (0-256 for 8-bit images and 0 to 65,536), if you would like to bin data, you would alter this number (default bins=256)
-    - label - Optional label parameter, modifies the variable name of observations recorded. (default `label=None`)
+    - label - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
 - **Context:**
     - Used to extract Fv/Fm or Fv'/Fm' per identified plant pixel.
     - Generates histogram of Fv/Fm data.
