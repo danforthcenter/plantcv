@@ -3,7 +3,7 @@
 Get and record the size of a size marker or set an area as a size marker.
 
 **plantcv.report_size_marker_area**(*img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None,
-                            thresh=None, label=None*)
+                            thresh=None, label="default"*)
 
 **returns** analysis_image
 
@@ -42,10 +42,10 @@ roi_contour, roi_hierarchy = pcv.roi.rectangle(img=img1, x=3550, y=850, h=500, w
 
 # Detect and Measure Size Marker
 image = pcv.report_size_marker_area(img=img1, roi_contour=roi_contour, roi_hierarchy=roi_hierarchy, 
-                    marker='detect', objcolor='light', thresh_channel='s', thresh=120, label=None)
+                    marker='detect', objcolor='light', thresh_channel='s', thresh=120, label="default")
 
 # Access data stored out from report_size_marker_area
-marker_area = pcv.outputs.observations['marker_area']['value']
+marker_area = pcv.outputs.observations['default_marker_area']['value']
 
 ```
 
