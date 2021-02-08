@@ -226,9 +226,9 @@ Binary mask after [filtering objects by the region of interest](roi_objects.md) 
     #   array        - Hyperspectral data instance  
     #   mask         - Binary mask image data 
     #   hist_plot    - If True plots histogram of reflectance intensity values
-    #   label        - Optional label parameter, modifies the variable name of observations recorded. (default `label=None`)
+    #   label        - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
 
-    analysis_img = pcv.hyperspectral.analyze_spectral(array=spectral_array, mask=kept_mask, histplot=True, label=None)
+    analysis_img = pcv.hyperspectral.analyze_spectral(array=spectral_array, mask=kept_mask, histplot=True, label="default")
                                                                
 ``` 
 
@@ -243,9 +243,9 @@ Binary mask after [filtering objects by the region of interest](roi_objects.md) 
     # Inputs:
     #   array        - Hyperspectral index data instance  
     #   mask         - Binary mask image data 
-    #   label        - Optional label parameter, modifies the variable name of observations recorded. (default `label=None`)
+    #   label        - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
 
-    pcv.hyperspectral.analyze_index(array=index_array_gdvi, mask=kept_mask, label=None)
+    pcv.hyperspectral.analyze_index(array=index_array_gdvi, mask=kept_mask, label="default")
                                                                
 ``` 
 

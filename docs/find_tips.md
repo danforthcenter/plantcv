@@ -2,14 +2,14 @@
 
 Find endpoints of a skeletonized image.
 
-**plantcv.morphology.find_tips**(*skel_img, mask=None, label=None*)
+**plantcv.morphology.find_tips**(*skel_img, mask=None, label="default"*)
 
 **returns** Binary mask of endpoints 
 
 - **Parameters:**
     - skel_img - Skeleton image (output from [plantcv.morphology.skeletonize](skeletonize.md))
     - mask     - Binary mask used for debugging (optional). If provided the debug image will be overlaid on the mask.
-    - label    - Optional label parameter, modifies the variable name of observations recorded. (default `label=None`)
+    - label    - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
     
 - **Context:**
     - Identifies endpoints/tips in a skeleton image

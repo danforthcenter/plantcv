@@ -2,7 +2,7 @@
 
 Propagate the labels of a segmented skeleton to fill the mask.
 
-**plantcv.morphology.fill_segments**(*mask, objects, stem_objects=None, label=None*)
+**plantcv.morphology.fill_segments**(*mask, objects, stem_objects=None, label="default""default"*)
 
 **returns** filled_img  
 
@@ -12,7 +12,7 @@ Propagate the labels of a segmented skeleton to fill the mask.
     [plantcv.morphology.segment_skeleton](segment_skeleton.md), or
     [plantcv.morphology.segment_sort](segment_sort.md)).
     - stem_objects - Optional input for stem objects that will be combined into a single object before filling the mask. 
-    - label        - Optional label parameter, modifies the variable name of observations recorded. (default `label=None`)
+    - label        - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
 - **Context:**
     - Uses the watershed algorithm to fill the mask propagating the objects' labels.
 - **Output data stored:** Data ('segment_area') automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran.
@@ -33,10 +33,10 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
-filled_img = pcv.morphology.fill_segments(mask=plant_mask, objects=obj, label=None)
+filled_img = pcv.morphology.fill_segments(mask=plant_mask, objects=obj, label="default")
 
 # Access data stored out from fill_segments
-segments_area = pcv.outputs.observations['segment_area']['value']
+segments_area = pcv.outputs.observations['default_segment_area']['value']
 
 ```
 
