@@ -10,7 +10,7 @@ from plantcv.plantcv import outputs
 from plantcv.plantcv import within_frame
 
 
-def analyze_object(img, obj, mask, label=None):
+def analyze_object(img, obj, mask, label="default"):
     """Outputs numeric properties for an input object (contour or grouped contours).
 
     Inputs:
@@ -158,10 +158,7 @@ def analyze_object(img, obj, mask, label=None):
     else:
         pass
 
-    if label == None:
-        prefix = ""
-    else:
-        prefix = label + "_"
+    prefix = label + "_"
 
     outputs.add_observation(variable=prefix + 'area', trait='area',
                             method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,

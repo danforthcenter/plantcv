@@ -9,7 +9,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def analyze_bound_vertical(img, obj, mask, line_position, label=None):
+def analyze_bound_vertical(img, obj, mask, line_position, label="default"):
     """User-input boundary line tool
 
     Inputs:
@@ -146,10 +146,7 @@ def analyze_bound_vertical(img, obj, mask, line_position, label=None):
             plot_image(wback)
             plot_image(ori_img)
 
-    if label == None:
-        prefix = ""
-    else:
-        prefix = label + "_"
+    prefix = label + "_"
 
     outputs.add_observation(variable=prefix + 'vertical_reference_position', trait='vertical reference position',
                             method='plantcv.plantcv.analyze_bound_vertical', scale='none', datatype=int,

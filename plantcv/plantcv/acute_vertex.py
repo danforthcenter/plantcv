@@ -10,7 +10,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def acute_vertex(img, obj, win, thresh, sep, label=None):
+def acute_vertex(img, obj, win, thresh, sep, label="default"):
     """acute_vertex: identify corners/acute angles of an object
 
     For each point in contour, get a point before (pre) and after (post) the point of interest,
@@ -99,10 +99,7 @@ def acute_vertex(img, obj, win, thresh, sep, label=None):
         x, y = i.ravel()
         cv2.circle(img2, (x, y), params.line_thickness, (255, 0, 255), -1)
 
-    if label == None:
-        prefix = ""
-    else:
-        prefix = label + "_"
+    prefix = label + "_"
 
     if params.debug == 'print':
         print_image(img2, os.path.join(params.debug_outdir, str(params.device) + prefix + '_acute_vertices.png'))

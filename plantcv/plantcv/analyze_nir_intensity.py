@@ -12,7 +12,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def analyze_nir_intensity(gray_img, mask, bins=256, histplot=False, label=None):
+def analyze_nir_intensity(gray_img, mask, bins=256, histplot=False, label="default"):
     """This function calculates the intensity of each pixel associated with the plant and writes the values out to
        a file. It can also print out a histogram plot of pixel intensity and a pseudocolor image of the plant.
 
@@ -93,10 +93,7 @@ def analyze_nir_intensity(gray_img, mask, bins=256, histplot=False, label=None):
         elif params.debug == "plot":
             print(fig_hist)
 
-    if label == None:
-        prefix = ""
-    else:
-        prefix = label + "_"
+    prefix = label + "_"
 
     outputs.add_observation(variable=prefix + 'nir_frequencies', trait='near-infrared frequencies',
                             method='plantcv.plantcv.analyze_nir_intensity', scale='frequency', datatype=list,

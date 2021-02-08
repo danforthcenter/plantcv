@@ -9,7 +9,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def analyze_color(rgb_img, mask, hist_plot_type=None, label=None):
+def analyze_color(rgb_img, mask, hist_plot_type=None, label="default"):
     """Analyze the color properties of an image object
     Inputs:
     rgb_img          = RGB image data
@@ -161,10 +161,7 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, label=None):
     # Diverging values on a -128 to 127 scale (green-magenta and blue-yellow)
     diverging_values = [i for i in range(-128, 128)]
 
-    if label == None:
-        prefix = ""
-    else:
-        prefix = label + "_"
+    prefix = label + "_"
 
     if hist_plot_type is not None:
         if hist_plot_type.upper() == 'RGB' or hist_plot_type.upper() == 'ALL':

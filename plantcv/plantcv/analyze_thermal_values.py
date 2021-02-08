@@ -10,7 +10,7 @@ from plotnine import ggplot, aes, geom_line
 from plantcv.plantcv.threshold import binary as binary_threshold
 
 
-def analyze_thermal_values(thermal_array, mask, histplot=False, label=None):
+def analyze_thermal_values(thermal_array, mask, histplot=False, label="default"):
     """This extracts the thermal values of each pixel writes the values out to
        a file. It can also print out a histogram plot of pixel intensity
        and a pseudocolor image of the plant.
@@ -59,10 +59,7 @@ def analyze_thermal_values(thermal_array, mask, histplot=False, label=None):
     avgtemp = np.average(masked_thermal)
     mediantemp = np.median(masked_thermal)
 
-    if label == None:
-        prefix = ""
-    else:
-        prefix = label + "_"
+    prefix = label + "_"
 
     # Store data into outputs class
     outputs.add_observation(variable=prefix + 'max_temp', trait='maximum temperature',

@@ -12,7 +12,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def analyze_fvfm(fdark, fmin, fmax, mask, bins=256, label=None):
+def analyze_fvfm(fdark, fmin, fmax, mask, bins=256, label="default"):
     """Analyze PSII camera images.
     Inputs:
     fdark       = grayscale fdark image
@@ -89,10 +89,7 @@ def analyze_fvfm(fdark, fmin, fmax, mask, bins=256, label=None):
                                   x=.15, y=205, size=8, color='green'))
     analysis_images.append(fvfm_hist_fig)
 
-    if label == None:
-        prefix = ""
-    else:
-        prefix = label + "_"
+    prefix = label + "_"
 
     if params.debug == 'print':
         print_image(fmin_mask, os.path.join(params.debug_outdir, str(params.device) + prefix +  '_fmin_mask.png'))
