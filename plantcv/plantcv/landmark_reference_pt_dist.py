@@ -7,7 +7,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def landmark_reference_pt_dist(points_r, centroid_r, bline_r, label=None):
+def landmark_reference_pt_dist(points_r, centroid_r, bline_r, label="default"):
     """landmark_reference_pt_dist
 
     For each point in contour, get a point before (pre) and after (post) the point of interest.
@@ -93,10 +93,7 @@ def landmark_reference_pt_dist(points_r, centroid_r, bline_r, label=None):
     euc_ave_b = np.mean(euc_dist_b)
     ang_ave_b = np.mean(angles_b)
 
-    if label == None:
-        prefix = ""
-    else:
-        prefix = label + "_"
+    prefix = label + "_"
 
     outputs.add_observation(variable=prefix + 'vert_ave_c', trait='average vertical distance from centroid',
                             method='plantcv.plantcv.landmark_reference_pt_dist', scale='pixels', datatype=float,

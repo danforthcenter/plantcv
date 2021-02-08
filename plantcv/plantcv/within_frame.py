@@ -5,7 +5,7 @@ from plantcv.plantcv import fatal_error
 from plantcv.plantcv import outputs
 
 
-def within_frame(mask, border_width=1, label=None):
+def within_frame(mask, border_width=1, label="default"):
     """
     This function tests whether the plant touches the edge of the image, i.e. it is completely in the field of view.
     Input:
@@ -43,10 +43,7 @@ def within_frame(mask, border_width=1, label=None):
     out_of_bounds = bool(np.count_nonzero(border_pxs))
     in_bounds = not out_of_bounds
 
-    if label == None:
-        prefix = ""
-    else:
-        prefix = label + "_"
+    prefix = label + "_"
 
     outputs.add_observation(variable=prefix + 'in_bounds', trait='whether the plant goes out of bounds ',
                             method='plantcv.plantcv.within_frame', scale='none', datatype=bool,

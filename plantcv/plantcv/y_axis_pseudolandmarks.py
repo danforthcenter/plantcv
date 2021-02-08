@@ -10,7 +10,7 @@ from plantcv.plantcv import outputs
 from plantcv.plantcv import fatal_error
 
 
-def y_axis_pseudolandmarks(img, obj, mask, label=None):
+def y_axis_pseudolandmarks(img, obj, mask, label="default"):
     """Divide up object contour into 19 equidistant segments and generate landmarks for each
 
     Inputs:
@@ -215,10 +215,7 @@ def y_axis_pseudolandmarks(img, obj, mask, label=None):
     for pt in center_h:
         center_h_list.append(pt[0].tolist())
 
-    if label == None:
-        prefix = ""
-    else:
-        prefix = label + "_"
+    prefix = label + "_"
 
     outputs.add_observation(variable=prefix + 'left_lmk', trait='left landmark coordinates',
                             method='plantcv.plantcv.x_axis_pseudolandmarks', scale='none', datatype=tuple,

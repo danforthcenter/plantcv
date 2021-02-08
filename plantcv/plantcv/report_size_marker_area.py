@@ -17,7 +17,7 @@ from plantcv.plantcv import outputs
 
 
 def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None,
-                            thresh=None, label=None):
+                            thresh=None, label="default"):
     """Detects a size marker in a specified region and reports its size and eccentricity
 
     Inputs:
@@ -121,10 +121,7 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
     # Reset debug mode
     params.debug = debug
 
-    if label == None:
-        prefix = ""
-    else:
-        prefix = label + "_"
+    prefix = label + "_"
 
     if params.debug == 'print':
         print_image(ref_img, os.path.join(params.debug_outdir, str(params.device) + prefix + '_marker_shape.png'))
