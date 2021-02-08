@@ -3,7 +3,7 @@
 This function calculates the intensity of each pixel associated with the plant and writes 
 the values out to the [Outputs class](outputs.md). Can also return/plot/print out a histogram plot of pixel intensity.
 
-**plantcv.analyze_nir_intensity**(*gray_img, mask, bins=256, histplot=False, label=None*)
+**plantcv.analyze_nir_intensity**(*gray_img, mask, bins=256, histplot=False, label="default"*)
 
 **returns** Histogram image (when histplot is `True`, otherwise returns `None` object)  
 
@@ -12,7 +12,7 @@ the values out to the [Outputs class](outputs.md). Can also return/plot/print ou
     - mask     - Binary mask made from selected contours
     - bins     - Number of NIR intensity value groups (default bins = 256)
     - histplot - If True plots histogram of intensity values (default histplot = False)
-    - label - Optional label parameter, modifies the variable name of observations recorded. (default `label=None`)
+    - label - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
 - **Context:**
     - Near Infrared pixel frequencies within a masked area of an image. 
 - **Example use:**
@@ -34,10 +34,10 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Caclulates the proportion of pixels that fall into a signal bin and writes the values to a file. Also provides a histogram of this data
-analysis_image  = pcv.analyze_nir_intensity(gray_img, mask, 256, histplot=True, label=None)
+analysis_image  = pcv.analyze_nir_intensity(gray_img, mask, 256, histplot=True, label="default")
 
 # Access data stored out from analyze_nir_intensity
-nir_frequencies = pcv.outputs.observations['nir_frequencies']['value']
+nir_frequencies = pcv.outputs.observations['default_nir_frequencies']['value']
 
 ```
 

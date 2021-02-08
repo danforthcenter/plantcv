@@ -3,7 +3,7 @@
 Primary, or stem, objects identified during workflows that examine the [morphology](morphology_tutorial.md) of 
 plants or plant organs can have specific characteristics measured about the stem segments of a skeleton.
 
-**plantcv.morphology.analyze_stem**(*rgb_img, stem_objects, label=None*)
+**plantcv.morphology.analyze_stem**(*rgb_img, stem_objects, label="default"*)
 
 **returns** labeled_img
 
@@ -32,9 +32,9 @@ from plantcv import plantcv as pcv
 
 pcv.params.debug = "print"
     
-stem_debug_img1 = pcv.morphology.analyze_stem(rgb_img=img1, stem_objects=stem_objects1, label=None)
+stem_debug_img1 = pcv.morphology.analyze_stem(rgb_img=img1, stem_objects=stem_objects1, label="default")
 # Access data stored out from analyze_object
-stem_angle = pcv.outputs.observations['stem_angle']['value']
+stem_angle = pcv.outputs.observations['default_stem_angle']['value']
 
 stem_debug_img2 = pcv.morphology.analyze_stem(rgb_img=img2, stem_objects=stem_objects2, label="rep1")
 stem_angle = pcv.outputs.observations['rep1_stem_angle']['value']

@@ -2,7 +2,7 @@
 
 Shape analysis outputs numeric properties for an input object (contour or grouped contours), works best on grouped contours.
  
-**plantcv.analyze_object**(*img, obj, mask, label=None*)
+**plantcv.analyze_object**(*img, obj, mask, label="default"*)
 
 **returns** analysis_image
 
@@ -10,7 +10,7 @@ Shape analysis outputs numeric properties for an input object (contour or groupe
     - img - RGB or grayscale image data for plotting.
     - obj - Single or grouped contour object.
     - mask - Binary image to use as mask for moments analysis.
-    - label - Optional label parameter, modifies the variable name of observations recorded. (default `label=None`)
+    - label - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
 - **Context:**
     - Used to output shape characteristics of an image, including height, object area, convex hull, convex hull area, 
     perimeter, extent x, extent y, longest axis, centroid x coordinate, centroid y coordinate, in bounds QC (if object 
@@ -39,13 +39,13 @@ pcv.params.debug = "print"
 
 # Characterize object shapes
     
-shape_image = pcv.analyze_object(img=img, obj=objects, mask=mask, label=None)
+shape_image = pcv.analyze_object(img=img, obj=objects, mask=mask, label="default")
 
 # Save returned images with more specific naming
 pcv.print_image(shape_image, '/home/malia/setaria_shape_img.png')
 
 # Access data stored out from analyze_object
-plant_solidity = pcv.outputs.observations['solidity']['value']
+plant_solidity = pcv.outputs.observations['default_solidity']['value']
 
 ```
 

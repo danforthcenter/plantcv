@@ -4,7 +4,7 @@ Set boundary line with boundary tool, this allows the user to find the extent-x 
 to the right and to the left as well as the area to the right and to the left of the set boundary line. This tool functions 
 best if the pot size/position of the plant remains relatively constant.
  
-**plantcv.analyze_bound_vertical**(*img, obj, mask, line_position, label=None*)
+**plantcv.analyze_bound_vertical**(*img, obj, mask, line_position, label="default"*)
 
 **returns** image with boundary data
 
@@ -31,10 +31,10 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Set Boundary Line    
-boundary_image = pcv.analyze_bound_vertical(img=img, obj=obj, mask=bin_mask, line_position=1000, label=None)
+boundary_image = pcv.analyze_bound_vertical(img=img, obj=obj, mask=bin_mask, line_position=1000, label="default")
 
 # Access data stored out from analyze_bound_vertical
-area_right_reference = pcv.outputs.observations['area_right_reference']['value']
+area_right_reference = pcv.outputs.observations['default_area_right_reference']['value']
 
 ```
 
