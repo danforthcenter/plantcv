@@ -3,7 +3,7 @@
 This function tests whether an object (defined as nonzero pixels in a mask) falls completely within the bounds of an 
 image, or if it touches the edge.
 
-**plantcv.within_frame**(*mask, border_width=1, label=None*)
+**plantcv.within_frame**(*mask, border_width=1, label="default"*)
 
 **returns** in_bounds
 
