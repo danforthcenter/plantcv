@@ -5941,6 +5941,7 @@ def test_plantcv_visualize_pseudocolor():
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="image")
+    _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="image", title="customized title")
     _ = pcv.visualize.pseudocolor(gray_img=img, mask=None)
     _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="black", obj=obj_contour, axes=False,
                                   colorbar=False)
