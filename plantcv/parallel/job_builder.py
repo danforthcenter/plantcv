@@ -62,7 +62,7 @@ def job_builder(meta, config):
             coimg_meta["metadata"]["image"] = {
                 "label": "image file",
                 "datatype": "<class 'str'>",
-                "value": os.path.join(coimg['path'], meta[img]['coimg'])
+                "value": coimg['path']
             }
             # Valid metadata
             for m in list(config.metadata_terms.keys()):
@@ -76,7 +76,7 @@ def job_builder(meta, config):
         img_meta["metadata"]["image"] = {
                 "label": "image file",
                 "datatype": "<class 'str'>",
-                "value": os.path.join(meta[img]['path'], img)
+                "value": meta[img]['path']
             }
         # Valid metadata
         for m in list(config.metadata_terms.keys()):
