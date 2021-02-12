@@ -64,7 +64,7 @@ def analyze_stem(rgb_img, stem_objects, label="default"):
         else:
             cv2.line(labeled_img, (x_max - 1, intercept2), (x_min, intercept1), (0, 0, 255), 1)
         if params.debug == 'print':
-            print_image(labeled_img, os.path.join(params.debug_outdir, str(params.device) + prefix + 'stem_analze.png'))
+            print_image(labeled_img, os.path.join(params.debug_outdir, str(params.device) + 'stem_analze.png'))
         elif params.debug == 'plot':
             plot_image(labeled_img)
 
