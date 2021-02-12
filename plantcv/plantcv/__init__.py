@@ -8,7 +8,8 @@ class Params:
     """PlantCV parameters class."""
 
     def __init__(self, device=0, debug=None, debug_outdir=".", line_thickness=5, dpi=100, text_size=0.55,
-                 text_thickness=2, marker_size=60, color_scale="gist_rainbow", color_sequence="sequential", saved_color_scale=None):
+                 text_thickness=2, marker_size=60, color_scale="gist_rainbow", color_sequence="sequential",
+                 saved_color_scale=None):
         """Initialize parameters.
 
         Keyword arguments/parameters:
@@ -66,9 +67,10 @@ class Outputs:
         self.observations = {}
 
     # Method to add observation to outputs
-    def add_observation(self, variable, trait, method, scale, datatype, value, label):
+    def add_observation(self, sample, variable, trait, method, scale, datatype, value, label):
         """
         Keyword arguments/parameters:
+        sample       = Sample name. Used to distinguish between multiple samples
         variable     = A local unique identifier of a variable, e.g. a short name,
                        that is a key linking the definitions of variables with observations.
         trait        = A name of the trait mapped to an external ontology; if there is no exact mapping, an informative
@@ -83,6 +85,7 @@ class Outputs:
         label        = The label for each value (most useful when the data is a frequency table as in hue,
                        or other tables)
 
+        :param sample: str
         :param variable: str
         :param trait: str
         :param method: str
@@ -91,6 +94,7 @@ class Outputs:
         :param value:
         :param label:
         """
+        self.sample = sample
         self.variable = variable
         self.trait = trait
         self.method = method
@@ -99,7 +103,11 @@ class Outputs:
         self.value = value
         self.label = label
 
-        self.observations[variable] = {
+        # Create an empty dictionary for the sample if it does not exist
+        if sample not in self.observations:
+            self.observations[sample] = {}
+        # Save the observation for the sample and variable
+        self.observations[sample][variable] = {
             "trait": trait,
             "method": method,
             "scale": scale,
