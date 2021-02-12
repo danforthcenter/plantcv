@@ -214,7 +214,7 @@ def analyze_object(img, obj, mask, label="default"):
         cv2.line(ori_img, (tuple(caliper_transpose[caliper_length - 1])), (tuple(caliper_transpose[0])), (255, 0, 255),
                  params.line_thickness)
         if params.debug == 'print':
-            print_image(ori_img, os.path.join(params.debug_outdir, str(params.device) + prefix + '_shapes.png'))
+            print_image(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_shapes.png'))
         elif params.debug == 'plot':
             if len(np.shape(img)) == 3:
                 plot_image(ori_img)
