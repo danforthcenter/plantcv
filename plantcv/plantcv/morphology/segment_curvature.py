@@ -44,8 +44,8 @@ def segment_curvature(segmented_img, objects, label="default"):
 
     _ = segment_euclidean_length(segmented_img, objects, label="backend")
     _ = segment_path_length(segmented_img, objects, label="backend")
-    eu_lengths = outputs.observations['backend_segment_eu_length']['value']
-    path_lengths = outputs.observations['backend_segment_path_length']['value']
+    eu_lengths = outputs.observations['backend']['segment_eu_length']['value']
+    path_lengths = outputs.observations['backend']['segment_path_length']['value']
     curvature_measure = [float(x / y) for x, y in zip(path_lengths, eu_lengths)]
     # Create a color scale, use a previously stored scale if available
     rand_color = color_palette(num=len(objects), saved=True)
