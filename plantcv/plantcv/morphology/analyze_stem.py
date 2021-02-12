@@ -41,15 +41,13 @@ def analyze_stem(rgb_img, stem_objects, label="default"):
     # Calculate stem path length
     stem_length = cv2.arcLength(grouped_stem, False) / 2
 
-    prefix = label + "_"
-
-    outputs.add_observation(variable=prefix + 'stem_height', trait='vertical length of stem segments',
+    outputs.add_observation(sample=label, variable='stem_height', trait='vertical length of stem segments',
                             method='plantcv.plantcv.morphology.analyze_stem', scale='pixels', datatype=float,
                             value=height, label=None)
-    outputs.add_observation(variable=prefix + 'stem_angle', trait='angle of combined stem object',
+    outputs.add_observation(sample=label, variable='stem_angle', trait='angle of combined stem object',
                             method='plantcv.plantcv.morphology.analyze_stem', scale='degrees', datatype=float,
                             value=float(slope), label=None)
-    outputs.add_observation(variable=prefix + 'stem_length', trait='path length of combined stem object',
+    outputs.add_observation(sample=label, variable='stem_length', trait='path length of combined stem object',
                             method='plantcv.plantcv.morphology.analyze_stem', scale='None', datatype=float,
                             value=stem_length, label=None)
 
@@ -57,7 +55,7 @@ def analyze_stem(rgb_img, stem_objects, label="default"):
         # Draw culm_height
         cv2.line(labeled_img, (int(stem_x), stem_y), (int(stem_x), stem_y + height), (0, 255, 0), params.line_thickness)
         # Draw combined stem angle
-        x_min = 0 # Set bounds for regression lines to get drawn
+        x_min = 0  # Set bounds for regression lines to get drawn
         x_max = img_x
         intercept1 = int(((x - x_min) * slope) + y)
         intercept2 = int(((x - x_max) * slope) + y)

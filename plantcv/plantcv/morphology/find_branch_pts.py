@@ -96,9 +96,8 @@ def find_branch_pts(skel_img, mask=None, label="default"):
         branch_labels.append(i)
         cv2.circle(branch_plot, (x, y), params.line_thickness, (255, 0, 255), -1)
 
-    prefix = label + "_"
-
-    outputs.add_observation(variable='branch_pts', trait='list of branch-point coordinates identified from a skeleton',
+    outputs.add_observation(sample=label, variable='branch_pts',
+                            trait='list of branch-point coordinates identified from a skeleton',
                             method='plantcv.plantcv.morphology.find_branch_pts', scale='pixels', datatype=list,
                             value=branch_list, label=branch_labels)
 
@@ -108,7 +107,7 @@ def find_branch_pts(skel_img, mask=None, label="default"):
     params.device += 1
 
     if params.debug == 'print':
-        print_image(branch_plot, os.path.join(params.debug_outdir, str(params.device) + prefix + '_branch_pts.png'))
+        print_image(branch_plot, os.path.join(params.debug_outdir, str(params.device) + '_branch_pts.png'))
     elif params.debug == 'plot':
         plot_image(branch_plot)
 

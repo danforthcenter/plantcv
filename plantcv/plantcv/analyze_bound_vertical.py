@@ -146,29 +146,28 @@ def analyze_bound_vertical(img, obj, mask, line_position, label="default"):
             plot_image(wback)
             plot_image(ori_img)
 
-    prefix = label + "_"
-
-    outputs.add_observation(variable=prefix + 'vertical_reference_position', trait='vertical reference position',
+    outputs.add_observation(sample=label, variable='vertical_reference_position', trait='vertical reference position',
                             method='plantcv.plantcv.analyze_bound_vertical', scale='none', datatype=int,
                             value=line_position, label='none')
-    outputs.add_observation(variable=prefix + 'width_left_reference', trait='width left of reference',
+    outputs.add_observation(sample=label, variable='width_left_reference', trait='width left of reference',
                             method='plantcv.plantcv.analyze_bound_vertical', scale='pixels', datatype=int,
                             value=width_left_bound, label='pixels')
-    outputs.add_observation(variable=prefix + 'width_right_reference', trait='width right of reference',
+    outputs.add_observation(sample=label, variable='width_right_reference', trait='width right of reference',
                             method='plantcv.plantcv.analyze_bound_vertical', scale='pixels', datatype=int,
                             value=width_right_bound, label='pixels')
-    outputs.add_observation(variable=prefix + 'area_left_reference', trait='area left of reference',
+    outputs.add_observation(sample=label, variable='area_left_reference', trait='area left of reference',
                             method='plantcv.plantcv.analyze_bound_vertical', scale='pixels', datatype=int,
                             value=left_bound_area, label='pixels')
-    outputs.add_observation(variable=prefix + 'percent_area_left_reference', trait='percent area left of reference',
-                            method='plantcv.plantcv.analyze_bound_vertical', scale='none', datatype=float,
+    outputs.add_observation(sample=label, variable='percent_area_left_reference',
+                            trait='percent area left of reference', method='plantcv.plantcv.analyze_bound_vertical',
+                            scale='none', datatype=float,
                             value=percent_bound_area_left, label='none')
-    outputs.add_observation(variable=prefix + 'area_right_reference', trait='area right of reference',
+    outputs.add_observation(sample=label, variable='area_right_reference', trait='area right of reference',
                             method='plantcv.plantcv.analyze_bound_vertical', scale='pixels', datatype=int,
                             value=right_bound_area, label='pixels')
-    outputs.add_observation(variable=prefix + 'percent_area_right_reference', trait='percent area right of reference',
-                            method='plantcv.plantcv.analyze_bound_vertical', scale='none', datatype=float,
-                            value=percent_bound_area_right, label='none')
+    outputs.add_observation(sample=label, variable='percent_area_right_reference',
+                            trait='percent area right of reference', method='plantcv.plantcv.analyze_bound_vertical',
+                            scale='none', datatype=float, value=percent_bound_area_right, label='none')
 
     # Store images
     outputs.images.append(analysis_images)

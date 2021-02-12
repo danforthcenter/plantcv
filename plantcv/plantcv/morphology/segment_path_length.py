@@ -48,9 +48,7 @@ def segment_path_length(segmented_img, objects, label="default"):
                     fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
         segment_ids.append(c)
 
-    prefix = label + "_"
-
-    outputs.add_observation(variable=prefix + 'segment_path_length', trait='segment path length',
+    outputs.add_observation(sample=label, variable='segment_path_length', trait='segment path length',
                             method='plantcv.plantcv.morphology.segment_path_length', scale='pixels', datatype=list,
                             value=segment_lengths, label=segment_ids)
 
@@ -58,8 +56,7 @@ def segment_path_length(segmented_img, objects, label="default"):
     params.device += 1
 
     if params.debug == 'print':
-        print_image(labeled_img, os.path.join(params.debug_outdir, str(params.device) + prefix +
-                                              '_segment_path_lengths.png'))
+        print_image(labeled_img, os.path.join(params.debug_outdir, str(params.device) + '_segment_path_lengths.png'))
     elif params.debug == 'plot':
         plot_image(labeled_img)
 

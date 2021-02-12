@@ -43,9 +43,9 @@ def watershed_segmentation(rgb_img, mask, distance=10, label=None):
 
     dist_transform = cv2.distanceTransformWithLabels(mask, cv2.DIST_L2, maskSize=0)[0]
 
-    localMax = peak_local_max(dist_transform, indices=False, min_distance=distance, labels=mask)
+    local_max = peak_local_max(dist_transform, indices=False, min_distance=distance, labels=mask)
 
-    markers = ndi.label(localMax, structure=np.ones((3, 3)))[0]
+    markers = ndi.label(local_max, structure=np.ones((3, 3)))[0]
     dist_transform1 = -dist_transform
     labels = watershed(dist_transform1, markers, mask=mask)
 
@@ -61,22 +61,16 @@ def watershed_segmentation(rgb_img, mask, distance=10, label=None):
 
     estimated_object_count = len(np.unique(markers)) - 1
 
-    if label == None:
-        prefix = ""
-    else:
-        prefix = label + "_"
-
     # Reset debug mode
     params.debug = debug
     if params.debug == 'print':
-        print_image(dist_transform, os.path.join(params.debug_outdir, str(params.device) + prefix +
-                                                 '_watershed_dist_img.png'))
-        print_image(joined, os.path.join(params.debug_outdir, str(params.device) + prefix + '_watershed_img.png'))
+        print_image(dist_transform, os.path.join(params.debug_outdir, str(params.device) + '_watershed_dist_img.png'))
+        print_image(joined, os.path.join(params.debug_outdir, str(params.device) + '_watershed_img.png'))
     elif params.debug == 'plot':
         plot_image(dist_transform, cmap='gray')
         plot_image(joined)
 
-    outputs.add_observation(variable=prefix + 'estimated_object_count', trait='estimated object count',
+    outputs.add_observation(sample=label, variable='estimated_object_count', trait='estimated object count',
                             method='plantcv.plantcv.watershed', scale='none', datatype=int,
                             value=estimated_object_count, label='none')
 

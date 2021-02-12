@@ -96,7 +96,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
                 segment_plot = np.zeros(segmented_img.shape[:2], np.uint8)
                 cv2.drawContours(segment_plot, obj, -1, 255, 1, lineType=8)
                 segment_plot = dilate(segment_plot, 3, 1)
-                #tips = dilate(tips, 3, 1)
+                # tips = dilate(tips, 3, 1)
                 overlap_img = logical_and(segment_plot, tips)
 
                 # If none of the tips are within a segment_end then it's an insertion segment
@@ -186,9 +186,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
         # segment_label = "ID" + str(i)
         segment_ids.append(i)
 
-    prefix = label + "_"
-
-    outputs.add_observation(variable=prefix + 'segment_insertion_angle', trait='segment insertion angle',
+    outputs.add_observation(sample=label, variable='segment_insertion_angle', trait='segment insertion angle',
                             method='plantcv.plantcv.morphology.segment_insertion_angle', scale='degrees', datatype=list,
                             value=all_intersection_angles, label=segment_ids)
 
@@ -199,7 +197,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
 
     if params.debug == 'print':
         print_image(labeled_img,
-                    os.path.join(params.debug_outdir, str(params.device) + prefix + '_segment_insertion_angles.png'))
+                    os.path.join(params.debug_outdir, str(params.device) + '_segment_insertion_angles.png'))
     elif params.debug == 'plot':
         plot_image(labeled_img)
 

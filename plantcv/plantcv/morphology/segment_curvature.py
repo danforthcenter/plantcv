@@ -85,9 +85,7 @@ def segment_curvature(segmented_img, objects, label="default"):
         # segment_label = "ID" + str(i)
         segment_ids.append(i)
 
-    prefix = label + "_"
-
-    outputs.add_observation(variable=prefix + 'segment_curvature', trait='segment curvature',
+    outputs.add_observation(sample=label, variable='segment_curvature', trait='segment curvature',
                             method='plantcv.plantcv.morphology.segment_curvature', scale='none', datatype=list,
                             value=curvature_measure, label=segment_ids)
 
@@ -95,8 +93,7 @@ def segment_curvature(segmented_img, objects, label="default"):
     params.device += 1
 
     if params.debug == 'print':
-        print_image(labeled_img, os.path.join(params.debug_outdir, str(params.device) + prefix +
-                                              '_segment_curvature.png'))
+        print_image(labeled_img, os.path.join(params.debug_outdir, str(params.device) + '_segment_curvature.png'))
     elif params.debug == 'plot':
         plot_image(labeled_img)
 

@@ -59,22 +59,20 @@ def analyze_thermal_values(thermal_array, mask, histplot=False, label="default")
     avgtemp = np.average(masked_thermal)
     mediantemp = np.median(masked_thermal)
 
-    prefix = label + "_"
-
     # Store data into outputs class
-    outputs.add_observation(variable=prefix + 'max_temp', trait='maximum temperature',
+    outputs.add_observation(sample=label, variable='max_temp', trait='maximum temperature',
                             method='plantcv.plantcv.analyze_thermal_values', scale='degrees', datatype=float,
                             value=maxtemp, label='degrees')
-    outputs.add_observation(variable=prefix + 'min_temp', trait='minimum temperature',
+    outputs.add_observation(sample=label, variable='min_temp', trait='minimum temperature',
                             method='plantcv.plantcv.analyze_thermal_values', scale='degrees', datatype=float,
                             value=mintemp, label='degrees')
-    outputs.add_observation(variable=prefix + 'mean_temp', trait='mean temperature',
+    outputs.add_observation(sample=label, variable='mean_temp', trait='mean temperature',
                             method='plantcv.plantcv.analyze_thermal_values', scale='degrees', datatype=float,
                             value=avgtemp, label='degrees')
-    outputs.add_observation(variable=prefix + 'median_temp', trait='median temperature',
+    outputs.add_observation(sample=label, variable='median_temp', trait='median temperature',
                             method='plantcv.plantcv.analyze_thermal_values', scale='degrees', datatype=float,
                             value=mediantemp, label='degrees')
-    outputs.add_observation(variable=prefix + 'thermal_frequencies', trait='thermal frequencies',
+    outputs.add_observation(sample=label, variable='thermal_frequencies', trait='thermal frequencies',
                             method='plantcv.plantcv.analyze_thermal_values', scale='frequency', datatype=list,
                             value=hist_percent, label=bin_labels)
     analysis_img = None
@@ -91,8 +89,7 @@ def analyze_thermal_values(thermal_array, mask, histplot=False, label="default")
 
         analysis_img = fig_hist
         if params.debug == "print":
-            fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + prefix + '_therm_histogram.png'),
-                          verbose=False)
+            fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + '_therm_histogram.png'), verbose=False)
         elif params.debug == "plot":
             print(fig_hist)
 

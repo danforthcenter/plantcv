@@ -62,10 +62,8 @@ def check_cycles(skel_img, label="default"):
             cv2.drawContours(cycle_img, cycle_objects, i, rand_color[i], params.line_thickness, lineType=8,
                              hierarchy=cycle_hierarchies)
 
-    prefix = label + "_"
-
     # Store Cycle Data
-    outputs.add_observation(variable=prefix + 'num_cycles', trait='number of cycles',
+    outputs.add_observation(sample=label, variable='num_cycles', trait='number of cycles',
                             method='plantcv.plantcv.morphology.check_cycles', scale='none', datatype=int,
                             value=int(num_cycles), label='none')
 
@@ -75,7 +73,7 @@ def check_cycles(skel_img, label="default"):
     params.device += 1
 
     if params.debug == 'print':
-        print_image(cycle_img, os.path.join(params.debug_outdir, str(params.device) + prefix + '_cycles.png'))
+        print_image(cycle_img, os.path.join(params.debug_outdir, str(params.device) + '_cycles.png'))
     elif params.debug == 'plot':
         plot_image(cycle_img)
 

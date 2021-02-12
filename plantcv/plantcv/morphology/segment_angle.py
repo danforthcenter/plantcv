@@ -76,9 +76,7 @@ def segment_angle(segmented_img, objects, label="default"):
         # segment_label = "ID" + str(i)
         segment_ids.append(i)
 
-    prefix = label + "_"
-
-    outputs.add_observation(variable=prefix + 'segment_angle', trait='segment angle',
+    outputs.add_observation(sample=label, variable='segment_angle', trait='segment angle',
                             method='plantcv.plantcv.morphology.segment_angle', scale='degrees', datatype=list,
                             value=segment_angles, label=segment_ids)
 
@@ -86,8 +84,7 @@ def segment_angle(segmented_img, objects, label="default"):
     params.device += 1
 
     if params.debug == 'print':
-        print_image(labeled_img, os.path.join(params.debug_outdir, str(params.device) +
-                                              prefix + '_segmented_angles.png'))
+        print_image(labeled_img, os.path.join(params.debug_outdir, str(params.device) + '_segmented_angles.png'))
     elif params.debug == 'plot':
         plot_image(labeled_img)
 

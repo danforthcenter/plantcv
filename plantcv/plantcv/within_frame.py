@@ -43,9 +43,7 @@ def within_frame(mask, border_width=1, label="default"):
     out_of_bounds = bool(np.count_nonzero(border_pxs))
     in_bounds = not out_of_bounds
 
-    prefix = label + "_"
-
-    outputs.add_observation(variable=prefix + 'in_bounds', trait='whether the plant goes out of bounds ',
+    outputs.add_observation(sample=label, variable='in_bounds', trait='whether the plant goes out of bounds ',
                             method='plantcv.plantcv.within_frame', scale='none', datatype=bool,
                             value=in_bounds, label='none')
 

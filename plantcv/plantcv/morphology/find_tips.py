@@ -79,10 +79,7 @@ def find_tips(skel_img, mask=None, label="default"):
         tip_labels.append(i)
         cv2.circle(tip_plot, (x, y), params.line_thickness, (0, 255, 0), -1)
 
-
-    prefix = label + "_"
-
-    outputs.add_observation(variable=prefix + 'tips', trait='list of tip coordinates identified from a skeleton',
+    outputs.add_observation(sample=label, variable='tips', trait='list of tip coordinates identified from a skeleton',
                             method='plantcv.plantcv.morphology.find_tips', scale='pixels', datatype=list,
                             value=tip_list, label=tip_labels)
 
@@ -92,7 +89,7 @@ def find_tips(skel_img, mask=None, label="default"):
     params.device += 1
 
     if params.debug == 'print':
-        print_image(tip_plot, os.path.join(params.debug_outdir, str(params.device) + prefix + '_skeleton_tips.png'))
+        print_image(tip_plot, os.path.join(params.debug_outdir, str(params.device) + '_skeleton_tips.png'))
     elif params.debug == 'plot':
         plot_image(tip_plot)
 

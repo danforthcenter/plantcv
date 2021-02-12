@@ -89,30 +89,27 @@ def analyze_fvfm(fdark, fmin, fmax, mask, bins=256, label="default"):
                                   x=.15, y=205, size=8, color='green'))
     analysis_images.append(fvfm_hist_fig)
 
-    prefix = label + "_"
-
     if params.debug == 'print':
-        print_image(fmin_mask, os.path.join(params.debug_outdir, str(params.device) + prefix +  '_fmin_mask.png'))
-        print_image(fmax_mask, os.path.join(params.debug_outdir, str(params.device) + prefix + '_fmax_mask.png'))
-        print_image(fv, os.path.join(params.debug_outdir, str(params.device) + prefix + '_fv_convert.png'))
-        fvfm_hist_fig.save(os.path.join(params.debug_outdir, str(params.device) + prefix + '_fv_hist.png'),
-                           verbose=False)
+        print_image(fmin_mask, os.path.join(params.debug_outdir, str(params.device) + '_fmin_mask.png'))
+        print_image(fmax_mask, os.path.join(params.debug_outdir, str(params.device) + '_fmax_mask.png'))
+        print_image(fv, os.path.join(params.debug_outdir, str(params.device) + '_fv_convert.png'))
+        fvfm_hist_fig.save(os.path.join(params.debug_outdir, str(params.device) + '_fv_hist.png'), verbose=False)
     elif params.debug == 'plot':
         plot_image(fmin_mask, cmap='gray')
         plot_image(fmax_mask, cmap='gray')
         plot_image(fv, cmap='gray')
         print(fvfm_hist_fig)
 
-    outputs.add_observation(variable=prefix + 'fvfm_hist', trait='Fv/Fm frequencies',
+    outputs.add_observation(sample=label, variable='fvfm_hist', trait='Fv/Fm frequencies',
                             method='plantcv.plantcv.fluor_fvfm', scale='none', datatype=list,
                             value=fvfm_hist.tolist(), label=np.around(midpoints, decimals=len(str(bins))).tolist())
-    outputs.add_observation(variable=prefix + 'fvfm_hist_peak', trait='peak Fv/Fm value',
+    outputs.add_observation(sample=label, variable='fvfm_hist_peak', trait='peak Fv/Fm value',
                             method='plantcv.plantcv.fluor_fvfm', scale='none', datatype=float,
                             value=float(max_bin), label='none')
-    outputs.add_observation(variable=prefix + 'fvfm_median', trait='Fv/Fm median',
+    outputs.add_observation(sample=label, variable='fvfm_median', trait='Fv/Fm median',
                             method='plantcv.plantcv.fluor_fvfm', scale='none', datatype=float,
                             value=float(np.around(fvfm_median, decimals=4)), label='none')
-    outputs.add_observation(variable=prefix + 'fdark_passed_qc', trait='Fdark passed QC',
+    outputs.add_observation(sample=label, variable='fdark_passed_qc', trait='Fdark passed QC',
                             method='plantcv.plantcv.fluor_fvfm', scale='none', datatype=bool,
                             value=qc_fdark, label='none')
 

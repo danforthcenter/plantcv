@@ -99,15 +99,13 @@ def acute_vertex(img, obj, win, thresh, sep, label="default"):
         x, y = i.ravel()
         cv2.circle(img2, (x, y), params.line_thickness, (255, 0, 255), -1)
 
-    prefix = label + "_"
-
     if params.debug == 'print':
-        print_image(img2, os.path.join(params.debug_outdir, str(params.device) + prefix + '_acute_vertices.png'))
+        print_image(img2, os.path.join(params.debug_outdir, str(params.device) + '_acute_vertices.png'))
     elif params.debug == 'plot':
         plot_image(img2)
 
     # Store into global measurements
-    outputs.add_observation(variable=prefix + 'tip_coordinates', trait='tip coordinates',
+    outputs.add_observation(sample=label, variable='tip_coordinates', trait='tip coordinates',
                             method='plantcv.plantcv.acute_vertex', scale='none', datatype=list,
                             value=acute_points, label='none')
 

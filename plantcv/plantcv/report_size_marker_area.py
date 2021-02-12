@@ -121,23 +121,23 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
     # Reset debug mode
     params.debug = debug
 
-    prefix = label + "_"
-
     if params.debug == 'print':
-        print_image(ref_img, os.path.join(params.debug_outdir, str(params.device) + prefix + '_marker_shape.png'))
+        print_image(ref_img, os.path.join(params.debug_outdir, str(params.device) + '_marker_shape.png'))
     elif params.debug == 'plot':
         plot_image(ref_img)
 
-    outputs.add_observation(variable=prefix + 'marker_area', trait='marker area',
+    outputs.add_observation(sample=label, variable='marker_area', trait='marker area',
                             method='plantcv.plantcv.report_size_marker_area', scale='pixels', datatype=int,
                             value=marker_area, label='pixels')
-    outputs.add_observation(variable=prefix + 'marker_ellipse_major_axis', trait='marker ellipse major axis length',
+    outputs.add_observation(sample=label, variable='marker_ellipse_major_axis',
+                            trait='marker ellipse major axis length',
                             method='plantcv.plantcv.report_size_marker_area', scale='pixels', datatype=int,
                             value=major_axis_length, label='pixels')
-    outputs.add_observation(variable=prefix + 'marker_ellipse_minor_axis', trait='marker ellipse minor axis length',
+    outputs.add_observation(sample=label, variable='marker_ellipse_minor_axis',
+                            trait='marker ellipse minor axis length',
                             method='plantcv.plantcv.report_size_marker_area', scale='pixels', datatype=int,
                             value=minor_axis_length, label='pixels')
-    outputs.add_observation(variable=prefix + 'marker_ellipse_eccentricity', trait='marker ellipse eccentricity',
+    outputs.add_observation(sample=label, variable='marker_ellipse_eccentricity', trait='marker ellipse eccentricity',
                             method='plantcv.plantcv.report_size_marker_area', scale='none', datatype=float,
                             value=eccentricity, label='none')
 

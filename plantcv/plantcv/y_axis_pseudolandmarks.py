@@ -215,15 +215,13 @@ def y_axis_pseudolandmarks(img, obj, mask, label="default"):
     for pt in center_h:
         center_h_list.append(pt[0].tolist())
 
-    prefix = label + "_"
-
-    outputs.add_observation(variable=prefix + 'left_lmk', trait='left landmark coordinates',
+    outputs.add_observation(sample=label, variable='left_lmk', trait='left landmark coordinates',
                             method='plantcv.plantcv.x_axis_pseudolandmarks', scale='none', datatype=tuple,
                             value=tuple(left_list), label='none')
-    outputs.add_observation(variable=prefix + 'right_lmk', trait='right landmark coordinates',
+    outputs.add_observation(sample=label, variable='right_lmk', trait='right landmark coordinates',
                             method='plantcv.plantcv.x_axis_pseudolandmarks', scale='none', datatype=tuple,
                             value=tuple(right_list), label='none')
-    outputs.add_observation(variable=prefix + 'center_h_lmk', trait='center horizontal landmark coordinates',
+    outputs.add_observation(sample=label, variable='center_h_lmk', trait='center horizontal landmark coordinates',
                             method='plantcv.plantcv.x_axis_pseudolandmarks', scale='none', datatype=tuple,
                             value=tuple(center_h_list), label='none')
 

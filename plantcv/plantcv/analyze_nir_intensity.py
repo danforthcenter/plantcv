@@ -93,18 +93,16 @@ def analyze_nir_intensity(gray_img, mask, bins=256, histplot=False, label="defau
         elif params.debug == "plot":
             print(fig_hist)
 
-    prefix = label + "_"
-
-    outputs.add_observation(variable=prefix + 'nir_frequencies', trait='near-infrared frequencies',
+    outputs.add_observation(sample=label, variable='nir_frequencies', trait='near-infrared frequencies',
                             method='plantcv.plantcv.analyze_nir_intensity', scale='frequency', datatype=list,
                             value=hist_nir, label=bin_labels)
-    outputs.add_observation(variable=prefix + 'nir_mean', trait='near-infrared mean',
+    outputs.add_observation(sample=label, variable='nir_mean', trait='near-infrared mean',
                             method='plantcv.plantcv.analyze_nir_intensity', scale='none', datatype=float,
                             value=masked_nir_mean, label='none')
-    outputs.add_observation(variable=prefix + 'nir_median', trait='near-infrared median',
+    outputs.add_observation(sample=label, variable='nir_median', trait='near-infrared median',
                             method='plantcv.plantcv.analyze_nir_intensity', scale='none', datatype=float,
                             value=masked_nir_median, label='none')
-    outputs.add_observation(variable=prefix + 'nir_stdev', trait='near-infrared standard deviation',
+    outputs.add_observation(sample=label, variable='nir_stdev', trait='near-infrared standard deviation',
                             method='plantcv.plantcv.analyze_nir_intensity', scale='none', datatype=float,
                             value=masked_nir_std, label='none')
 
