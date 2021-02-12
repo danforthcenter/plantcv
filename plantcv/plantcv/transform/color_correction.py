@@ -481,7 +481,7 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
 
 
 def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark',
-                    record_chip_size="median", label=None):
+                    record_chip_size="median", label="default"):
     """Automatically detects a color card and output info to use in create_color_card_mask function
 
     Algorithm written by Brandon Hurr. Updated and implemented into PlantCV by Haley Schuhl.
@@ -496,7 +496,7 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
                         is a dark background
     record_chip_size = Optional str for choosing chip size measurement to be recorded, either "median",
                         "mean", or None
-    label            = optional label parameter, modifies the variable name of observations recorded
+    label            = optional label parameter, modifies the variable name of observations recorded (default 'default')
 
     Returns:
     df             = Dataframe containing information about the filtered contours
