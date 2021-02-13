@@ -36,7 +36,7 @@ pcv.params.debug = "print"
 list_of_acute_points, points_img = pcv.acute_vertex(img=img, obj=obj, window=30, thresh=15, sep=100, label="default")
 
 # Access data stored out from acute_vertex
-vertices = pcv.outputs.observations['default_tip_coordinates']['value']
+vertices = pcv.outputs.observations['default']['tip_coordinates']['value']
 
 ```
 
