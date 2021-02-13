@@ -41,7 +41,7 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
     :param objcolor: str
     :param thresh_channel: str
     :param thresh: int
-    :param label: str 
+    :param label: str
     :return: analysis_images: list
     """
     # Store debug

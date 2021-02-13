@@ -27,7 +27,7 @@ def y_axis_pseudolandmarks(img, obj, mask, label="default"):
     :param img: numpy.ndarray
     :param obj: list
     :param mask: numpy.ndarray
-    :param label: str 
+    :param label: str
     :return left: list
     :return right: list
     :return center_h: list
