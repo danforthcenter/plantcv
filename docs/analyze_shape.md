@@ -18,7 +18,7 @@ Shape analysis outputs numeric properties for an input object (contour or groupe
 - **Example use:**
     - [Use In VIS Tutorial](vis_tutorial.md)
     - [Use In NIR Tutorial](nir_tutorial.md)
-    - [Use In PSII Tutorial](psII_tutorial.md) 
+    - [Use In PSII Tutorial](psII_tutorial.md)
 - **Output data stored:** Data ('area', 'convex_hull_area', 'solidity', 'perimeter', 'width', 'height', 'longest_path', 'center_of_mass, 
     'convex_hull_vertices', 'object_in_frame', 'ellipse_center', 'ellipse_major_axis', 'ellipse_minor_axis', 'ellipse_angle', 'ellipse_eccentricity') 
     automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
@@ -45,7 +45,7 @@ shape_image = pcv.analyze_object(img=img, obj=objects, mask=mask, label="default
 pcv.print_image(shape_image, '/home/malia/setaria_shape_img.png')
 
 # Access data stored out from analyze_object
-plant_solidity = pcv.outputs.observations['default_solidity']['value']
+plant_solidity = pcv.outputs.observations['default']['solidity']['value']
 
 ```
 

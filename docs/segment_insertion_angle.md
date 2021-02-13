@@ -45,7 +45,7 @@ labeled_img = pcv.morphology.segment_insertion_angle(skel_img=skeleton,
                                                      size=20, label="default")
 
 # Access data stored out from segment_insertion_angle
-segment_insertion_angles = pcv.outputs.observations['default_segment_insertion_angle']['value']
+segment_insertion_angles = pcv.outputs.observations['default']['segment_insertion_angle']['value']
 
 ```
 

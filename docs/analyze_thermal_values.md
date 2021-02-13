@@ -37,7 +37,7 @@ pcv.params.debug = "print"
 thermal_hist  = pcv.analyze_thermal_values(thermal_array=thermal_img, maks=mask, histplot=True, label="default")
 
 # Access data stored out from analyze_thermal_values
-temp_range = pcv.outputs.observations['default_max_temp']['value'] - pcv.outputs.observations['default_min_temp']['value']
+temp_range = pcv.outputs.observations['default']['max_temp']['value'] - pcv.outputs.observations['default']['min_temp']['value']
 
 ```
 

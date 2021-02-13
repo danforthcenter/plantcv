@@ -34,7 +34,7 @@ pcv.params.debug = "print"
 labeled_img = pcv.morphology.segment_angle(segmented_img=segmented_img, objects=obj, label="default")
 
 # Access data stored out from segment_angle
-segment_angles = pcv.outputs.observations['default_segment_angle']['value']
+segment_angles = pcv.outputs.observations['default']['segment_angle']['value']
 
 ```
 

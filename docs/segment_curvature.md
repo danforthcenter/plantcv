@@ -36,9 +36,8 @@ labeled_img2 = pcv.morphology.segment_curvature(segmented_img=leaf_segmented,
                                                 objects=leaf_obj, label="leaf")
 
 # Access data stored out from segment_curvature
-all_curvatures = pcv.outputs.observations['all_segment_curvature']['value']
-leaf_curvatures = pcv.outputs.observations['leaf_segment_curvature']['value']
-
+all_curvatures = pcv.outputs.observations['all']['segment_curvature']['value']
+leaf_curvatures = pcv.outputs.observations['leaf']['segment_curvature']['value']
 
 ```
 

@@ -43,7 +43,7 @@ labeled_img = pcv.morphology.segment_tangent_angle(segmented_img=leaves_segment,
                                                    size=15, label="default")
 
 # Access data stored out from segment_tangent_angle
-leaf_tangent_angles = pcv.outputs.observations['default_segment_tangent_angle']['value']
+leaf_tangent_angles = pcv.outputs.observations['default']['segment_tangent_angle']['value']
 
 ```
 

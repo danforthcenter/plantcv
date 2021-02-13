@@ -36,7 +36,7 @@ labeled_img = pcv.morphology.segment_path_length(segmented_img=segmented_img,
                                                  objects=obj, label="default")
 
 # Access data stored out from segment_path_length
-path_lengths = pcv.outputs.observations['default_segment_path_length']['value']
+path_lengths = pcv.outputs.observations['default']['segment_path_length']['value']
 
 ```
 

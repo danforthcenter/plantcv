@@ -39,7 +39,7 @@ pcv.params.debug = "print"
 analysis_image = pcv.analyze_color(rgb_img=rgb_img, mask=mask, hist_plot_type='all', label="default")
 
 # Access data stored out from analyze_color
-hue_circular_mean = pcv.outputs.observations['default_hue_circular_mean']['value']
+hue_circular_mean = pcv.outputs.observations['default']['hue_circular_mean']['value']
 
 ```
 

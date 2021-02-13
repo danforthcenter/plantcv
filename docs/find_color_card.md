@@ -34,7 +34,7 @@ df, start, space = pcv.transform.find_color_card(rgb_img=rgb_img)
 
 # Use these outputs to create a labeled color card mask
 mask = pcv.transform.create_color_card_mask(rgb_img=img, radius=10, start_coord=start, spacing=space, ncols=6, nrows=4, label="prefix")
-avg_chip_size = pcv.outputs.observations['prefix_color_chip_size']['value']
+avg_chip_size = pcv.outputs.observations['prefix']['color_chip_size']['value']
 
 ```
 

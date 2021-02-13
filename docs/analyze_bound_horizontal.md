@@ -13,7 +13,7 @@ best if the pot size/position of the plant remains relatively constant.
     - obj - single or grouped contour object
     - mask - binary mask of selected contours
     - line_position - position of boundary line (a value of 0 would draw the line through the top of the image)
-    - label - Optional label parameter, modifies the variable name of observations recorded. (default `label=None`)
+    - label - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
 - **Context:**
     - Used to define a boundary line for the image, to find the height above and below as well as area above and below a boundary line.
 - **Example use:**
@@ -34,7 +34,7 @@ pcv.params.debug = "print"
 boundary_image = pcv.analyze_bound_horizontal(img=img, obj=obj, mask=bin_mask, line_position=300, label="default")
 
 # Access data stored out from analyze_bound_horizontal
-percent_area_below_reference = pcv.outputs.observations['default_percent_area_below_reference']['value']
+percent_area_below_reference = pcv.outputs.observations['default']['percent_area_below_reference']['value']
 
 ```
 

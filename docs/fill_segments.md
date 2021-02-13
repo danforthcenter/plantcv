@@ -36,7 +36,7 @@ pcv.params.debug = "print"
 filled_img = pcv.morphology.fill_segments(mask=plant_mask, objects=obj, label="default")
 
 # Access data stored out from fill_segments
-segments_area = pcv.outputs.observations['default_segment_area']['value']
+segments_area = pcv.outputs.observations['default']['segment_area']['value']
 
 ```
 

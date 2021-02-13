@@ -33,10 +33,10 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 labeled_img = pcv.morphology.segment_euclidean_length(segmented_img=segmented_img, 
-                                                      objects=obj, label=None)
+                                                      objects=obj, label="default")
 
 # Access data stored out from segment_euclidean_length
-euclidean_lengths = pcv.outputs.observations['segment_eu_length']['value']
+euclidean_lengths = pcv.outputs.observations['default']['segment_eu_length']['value']
 
 ```
 

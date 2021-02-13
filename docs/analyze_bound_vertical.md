@@ -13,7 +13,7 @@ best if the pot size/position of the plant remains relatively constant.
     - obj - single or grouped contour object
     - mask - binary mask of selected contours
     - line_position - position of boundary line (a value of 0 would draw the line through the left of the image)
-    - label - Optional label parameter, modifies the variable name of observations recorded. (default `label=None`)
+    - label - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
 - **Context:**
     - Used to define a boundary line for the image, to find the width to the right and to the left as well as area to the right and to the left of a boundary line.
 - **Example use:**
@@ -34,7 +34,7 @@ pcv.params.debug = "print"
 boundary_image = pcv.analyze_bound_vertical(img=img, obj=obj, mask=bin_mask, line_position=1000, label="default")
 
 # Access data stored out from analyze_bound_vertical
-area_right_reference = pcv.outputs.observations['default_area_right_reference']['value']
+area_right_reference = pcv.outputs.observations['default']['area_right_reference']['value']
 
 ```
 

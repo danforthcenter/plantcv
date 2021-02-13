@@ -45,7 +45,7 @@ pcv.params.debug = "print"
 fvfm_images = pcv.photosynthesis.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=kept_mask, bins=256, label="fluor")
 
 # Access data stored out from fluor_fvfm
-fvfm_median = pcv.outputs.observations['fluor_fvfm_median']['value']
+fvfm_median = pcv.outputs.observations['fluor']['fvfm_median']['value']
 
 # Store the two images
 fvfm_img = fvfm_images[0]

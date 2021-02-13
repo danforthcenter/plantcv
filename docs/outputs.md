@@ -38,6 +38,8 @@ Methods are accessed as plantcv.outputs.*method*.
 
 **add_observation**: Add new measurement or other information
 
+* sample: A sample name or label. Observations are organized by sample name.
+
 * variable: A local unique identifier of a variable, e.g. a short name, that is a key linking the definitions of variables with observations.
 
 * trait: A name of the trait mapped to an external ontology; if there is no exact mapping, an informative description of the trait.
@@ -66,7 +68,7 @@ from plantcv import plantcv as pcv
 shape_img = pcv.analyze_object(img, obj, mask, label="default")
 
 # Look at object area data without writing to a file 
-plant_area = pcv.outputs.observations['default_pixel_area']['value']
+plant_area = pcv.outputs.observations['default']['pixel_area']['value']
 
 # Write shape data to results file
 pcv.print_results(filename=args.result)
@@ -97,7 +99,8 @@ healthy_plant = np.count_nonzero(mask['plant'])
 percent_diseased = sick_plant / (sick_plant + healthy_plant)
 
 # Create a new measurement
-pcv.outputs.add_observation(variable='percent_diseased', trait='percent of plant detected to be diseased',
+pcv.outputs.add_observation(sample='default', variable='percent_diseased', 
+                            trait='percent of plant detected to be diseased',
                             method='ratio of pixels', scale='percent', datatype=float,
                             value=percent_diseased, label='percent')
 

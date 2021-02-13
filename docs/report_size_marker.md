@@ -45,7 +45,7 @@ image = pcv.report_size_marker_area(img=img1, roi_contour=roi_contour, roi_hiera
                     marker='detect', objcolor='light', thresh_channel='s', thresh=120, label="default")
 
 # Access data stored out from report_size_marker_area
-marker_area = pcv.outputs.observations['default_marker_area']['value']
+marker_area = pcv.outputs.observations['default']['marker_area']['value']
 
 ```
 

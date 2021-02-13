@@ -32,7 +32,7 @@ pcv.params.debug = "plot"
 top, bottom, center_v = pcv.x_axis_pseudolandmarks(img=img, obj=obj, mask=mask, label="default")
 
 # Access data stored out from x_axis_pseudolandmarks
-bottom_landmarks = pcv.outputs.observations['default_bottom_lmk']['value']
+bottom_landmarks = pcv.outputs.observations['default']['bottom_lmk']['value']
 
 ```
 

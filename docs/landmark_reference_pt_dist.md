@@ -35,7 +35,7 @@ pcv.params.debug = "print"
 pcv.landmark_reference_pt_dist(points_r=points_r, centroid_r=centroid_r, bline_r=bline_r, label="default")
 
 # Access data stored out from landmark_reference_pt_dist
-avg_vert_distance = pcv.outputs.observations['default_vert_ave_c']['value']
+avg_vert_distance = pcv.outputs.observations['default']['vert_ave_c']['value']
 
 ```
 

@@ -12,10 +12,11 @@ The JSON output file has two top-level sections: `variables` is a collection of 
 dataset, and `entities` is a list of data blocks for each unit of analysis (typically an image, or a sub-region of an
 image) in the dataset. For each entity there are two data blocks: `metadata` is a set of key-value pairs of metadata
 keywords and their values (e.g. image or experimental metadata such as timestamp, treatment, etc.), and `observations`
-is a set of data blocks of observational data or measurements. Each observation has the same set of information,
-roughly following the [MIAPPE](https://www.miappe.org/) guidelines: `trait` is the name of the observation, `method` is generally the PlantCV
-function name used (but it could be another method), `scale` is the observation units, `datatype` is the Python data
-type the data are stored as, `value` is the observation output value(s), and `label` is the data/category label. 
+is a set of data blocks of observational data or measurements. Observations contain samples. Each sample has the same 
+set of information, roughly following the [MIAPPE](https://www.miappe.org/) guidelines: `trait` is the name of the 
+observation, `method` is generally the PlantCV function name used (but it could be another method), `scale` is the 
+observation units, `datatype` is the Python data type the data are stored as, `value` is the observation output 
+value(s), and `label` is the data/category label. 
 
 Example (abbreviated) JSON data:
 
@@ -90,21 +91,23 @@ Example (abbreviated) JSON data:
                 }
             },
             "observations": {
-                "pixel_area": {
-                    "trait": "area",
-                    "method": "plantcv.plantcv.analyze_object",
-                    "scale": "pixels",
-                    "datatype": "<class 'int'>",
-                    "value": 10000,
-                    "label": "pixels"
-                },
-                "hull_area": {
-                    "trait": "convex hull area",
-                    "method": "plantcv.plantcv.analyze_object",
-                    "scale": "pixels",
-                    "datatype": "<class 'int'>",
-                    "value": 100000,
-                    "label": "pixels"
+                "sample1": {
+                    "pixel_area": {
+                        "trait": "area",
+                        "method": "plantcv.plantcv.analyze_object",
+                        "scale": "pixels",
+                        "datatype": "<class 'int'>",
+                        "value": 10000,
+                        "label": "pixels"
+                    },
+                    "hull_area": {
+                        "trait": "convex hull area",
+                        "method": "plantcv.plantcv.analyze_object",
+                        "scale": "pixels",
+                        "datatype": "<class 'int'>",
+                        "value": 100000,
+                        "label": "pixels"
+                    }
                 }
             }
         }

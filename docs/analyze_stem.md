@@ -34,10 +34,10 @@ pcv.params.debug = "print"
     
 stem_debug_img1 = pcv.morphology.analyze_stem(rgb_img=img1, stem_objects=stem_objects1, label="default")
 # Access data stored out from analyze_object
-stem_angle = pcv.outputs.observations['default_stem_angle']['value']
+stem_angle = pcv.outputs.observations['default']['stem_angle']['value']
 
 stem_debug_img2 = pcv.morphology.analyze_stem(rgb_img=img2, stem_objects=stem_objects2, label="rep1")
-stem_angle = pcv.outputs.observations['rep1_stem_angle']['value']
+stem_angle = pcv.outputs.observations['rep1']['stem_angle']['value']
 
 ```
 

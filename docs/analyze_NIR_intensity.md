@@ -37,7 +37,7 @@ pcv.params.debug = "print"
 analysis_image  = pcv.analyze_nir_intensity(gray_img, mask, 256, histplot=True, label="default")
 
 # Access data stored out from analyze_nir_intensity
-nir_frequencies = pcv.outputs.observations['default_nir_frequencies']['value']
+nir_frequencies = pcv.outputs.observations['default']['nir_frequencies']['value']
 
 ```
 

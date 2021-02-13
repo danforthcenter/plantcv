@@ -31,7 +31,7 @@ pcv.params.debug = "print"
 spectral_hist  = pcv.hyperspectral.analyze_spectral(array=spectral_data, mask=mask, histplot=True, label="default")
 
 # Access data stored 
-reflectance_range = max(pcv.outputs.observations['default_max_reflectance']['value']) - min(pcv.outputs.observations['default_min_reflectance']['value'])
+reflectance_range = max(pcv.outputs.observations['default']['max_reflectance']['value']) - min(pcv.outputs.observations['default']['min_reflectance']['value'])
 
 ```
 

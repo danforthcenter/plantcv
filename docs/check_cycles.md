@@ -33,7 +33,7 @@ pcv.params.debug = "print"
 cycle_img = pcv.morphology.check_cycles(skel_img=skeleton, label="default")
 
 # Access data stored out from check_cycles
-num_cycles = pcv.outputs.observations['default_num_cycles']['value']
+num_cycles = pcv.outputs.observations['default']['num_cycles']['value']
 
 ```
 
