@@ -171,8 +171,8 @@ off. The function prunes only secondary segments; primary segments that are smal
     # Inputs:
     #   skel_img = Skeletonized image
     #   mask     = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
-    
-    branch_pts_mask = pcv.morphology.find_branch_pts(skel_img=skeleton, mask=cropped_mask)
+    #   label    = (Optional) label parameter, modifies the variable name of observations recorded. (default `label="default"`)
+    branch_pts_mask = pcv.morphology.find_branch_pts(skel_img=skeleton, mask=cropped_mask, label="default")
 
 ```
 
@@ -193,8 +193,9 @@ to remove all barbs.
     # Inputs:
     #   skel_img = Skeletonized image
     #   mask     = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
+    #   label    = (Optional) label parameter, modifies the variable name of observations recorded. (default `label="default"`)
     
-    tip_pts_mask = pcv.morphology.find_tips(skel_img=skeleton, mask=None)
+    tip_pts_mask = pcv.morphology.find_tips(skel_img=skeleton, mask=None, label="default")
 
 ```
 
@@ -262,9 +263,10 @@ For this tutorial we assume leaves are the objects of interest, and just pass th
     # Inputs:
     #   segmented_img = Segmented image to plot lengths on
     #   objects       = List of contours
+    #   label    = (Optional) label parameter, modifies the variable name of observations recorded. (default `label="default"`)
     
     labeled_img  = pcv.morphology.segment_path_length(segmented_img=segmented_img, 
-                                                      objects=leaf_obj)
+                                                      objects=leaf_obj, label="default")
 
 ```
 
@@ -282,9 +284,10 @@ passed into the function.
     # Inputs:
     #   segmented_img = Segmented image to plot lengths on
     #   objects       = List of contours
+    #   label    = (Optional) label parameter, modifies the variable name of observations recorded. (default `label="default"`)
     
     labeled_img = pcv.morphology.segment_euclidean_length(segmented_img=segmented_img, 
-                                                          objects=leaf_obj)
+                                                          objects=leaf_obj, label="default")
 
 ```
 
@@ -302,9 +305,10 @@ euclidean distance of each segment passed to the function.
     # Inputs:
     #   segmented_img = Segmented image to plot curvature on
     #   objects       = List of contours
+    #   label    = (Optional) label parameter, modifies the variable name of observations recorded. (default `label="default"`)
     
     labeled_img = pcv.morphology.segment_curvature(segmented_img=segmented_img, 
-                                                   objects=leaf_obj)
+                                                   objects=leaf_obj, label="default")
 
 ```
 
@@ -324,9 +328,10 @@ is a straight line while larger values indicate the segment has more curvature.
     # Inputs:
     #   segmented_img = Segmented image to plot angles on
     #   objects       = List of contours
+    #   label    = (Optional) label parameter, modifies the variable name of observations recorded. (default `label="default"`)
     
     labeled_img = pcv.morphology.segment_angle(segmented_img=segmented_img, 
-                                               objects=leaf_obj)
+                                               objects=leaf_obj, label="default")
 
 ```
 
@@ -345,9 +350,10 @@ by fitting a linear regression line to each segment.
     #   segmented_img = Segmented image to plot tangent angles on
     #   objects       = List of contours
     #   size          = Size of ends used to calculate "tangent" lines
+    #   label    = (Optional) label parameter, modifies the variable name of observations recorded. (default `label="default"`)
     
     labeled_img = pcv.morphology.segment_tangent_angle(segmented_img=segmented_img, 
-                                                       objects=leaf_obj, size=15)
+                                                       objects=leaf_obj, size=15, label="default")
 
 ```
 
@@ -370,12 +376,13 @@ leaves that are more "floppy" will have smaller angles.
     #   leaf_objects     = List of leaf contours
     #   stem_objects     = List of stem objects 
     #   size             = Size of the inner portion of each leaf to find a linear regression line
+    #   label    = (Optional) label parameter, modifies the variable name of observations recorded. (default `label="default"`)
     
     labeled_img = pcv.morphology.segment_insertion_angle(skel_img=skeleton,
                                                          segmented_img=segmented_img, 
                                                          leaf_objects=leaf_obj, 
                                                          stem_objects=stem_obj,
-                                                         size=20)
+                                                         size=20, label="default")
 
 ```
 
@@ -387,6 +394,45 @@ out from a stem will have larger insertion angles than those that grow upward.
 
 ![Screenshot](img/tutorial_images/morphology/insertion_angle_img.jpg)
 
+
+```python
+    
+    # Fill in segments (also stores out area data)  
+    
+    # Inputs:
+    # mask         = Binary image, single channel, object = 1 and background = 0
+    # objects      = List of contours
+    # label        = (Optional) label parameter, modifies the variable name of observations recorded. (default `label="default"`)
+    filled_img = pcv.morphology.fill_segments(mask=cropped_mask, objects=edge_objects, label="all_segments")
+
+
+```
+
+**Figure 19.** Fill Segment Area 
+
+The [plantcv.morphology.fill_segment](fill_segments.md) function aims to measure 
+area of segments filled in. By using watershed segmentation to flood fill the mask by
+using the segments as markers. 
+
+![Screenshot](img/tutorial_images/morphology/filled_img_all_segments.jpg)
+
+
+```python
+    
+    # Fill in leaves (also stores out area data)  
+    
+    filled_img2 = pcv.morphology.fill_segments(mask=cropped_mask, objects=leaf_obj, stem_objects=stem_obj, label="separate_leaves")
+
+
+```
+
+**Figure 20.** Fill Leaf/Stem Area 
+
+The [plantcv.morphology.fill_segment](fill_segments.md) function can also measure segments
+separately. When inputting sorted stem and leaf segments, the stem segments will be combined into 
+one object while the leaves remain separate.  
+
+![Screenshot](img/tutorial_images/morphology/filled_segments_stem.jpg)
 
 To deploy a workflow over a full image set please see tutorial on 
 [workflow parallelization](pipeline_parallel.md).
@@ -458,10 +504,10 @@ def main():
     pruned, seg_img, edge_objects = pcv.morphology.prune(skel_img=skeleton, size=0, mask=cropped_mask)
         
     # Identify branch points   
-    branch_pts_mask = pcv.morphology.find_branch_pts(skel_img=skeleton, mask=cropped_mask)
+    branch_pts_mask = pcv.morphology.find_branch_pts(skel_img=skeleton, mask=cropped_mask, label="default")
         
     # Identify tip points   
-    tip_pts_mask = pcv.morphology.find_tips(skel_img=skeleton, mask=None)
+    tip_pts_mask = pcv.morphology.find_tips(skel_img=skeleton, mask=None, label="default")
     
     # Sort segments into leaf objects and stem objects  
     leaf_obj, stem_obj = pcv.morphology.segment_sort(skel_img=skeleton, objects=edge_objects,
@@ -473,29 +519,33 @@ def main():
         
     # Measure path lengths of segments     
     labeled_img2 = pcv.morphology.segment_path_length(segmented_img=segmented_img, 
-                                                      objects=leaf_obj)
+                                                      objects=leaf_obj, label="default")
         
     # Measure euclidean distance of segments      
     labeled_img3 = pcv.morphology.segment_euclidean_length(segmented_img=segmented_img, 
-                                                           objects=leaf_obj)
+                                                           objects=leaf_obj, label="default")
        
     # Measure curvature of segments      
     labeled_img4 = pcv.morphology.segment_curvature(segmented_img=segmented_img, 
-                                                    objects=leaf_obj)
+                                                    objects=leaf_obj, label="default")
         
     # Measure the angle of segments      
-    labeled_img5 = pcv.morphology.segment_angle(segmented_img=segmented_img, objects=leaf_obj)
+    labeled_img5 = pcv.morphology.segment_angle(segmented_img=segmented_img, objects=leaf_obj, label="default")
     
     # Measure the tangent angles of segments      
     labeled_img6 = pcv.morphology.segment_tangent_angle(segmented_img=segmented_img, 
-                                                        objects=leaf_obj, size=15)
+                                                        objects=leaf_obj, size=15, label="default")
                                                                          
     # Measure the leaf insertion angles      
     labeled_img7 = pcv.morphology.segment_insertion_angle(skel_img=skeleton,
                                                           segmented_img=segmented_img, 
                                                           leaf_objects=leaf_obj, 
                                                           stem_objects=stem_obj,
-                                                          size=20)
+                                                          size=20, label="default")
+    
+    # Fill in segments (also stores out area data)                                                       
+    filled_img = pcv.morphology.fill_segments(mask=cropped_mask, objects=edge_objects, label="all_segments")
+    filled_img2 = pcv.morphology.fill_segments(mask=cropped_mask, objects=leaf_obj, stem_objects=stem_obj, label="separate_leaves")
                                                           
                                                           
     # Write out data collected about angles and lengths                                                       

@@ -13,15 +13,17 @@ from plantcv.plantcv import find_objects
 from plantcv.plantcv import color_palette
 
 
-def check_cycles(skel_img):
+def check_cycles(skel_img, label="default"):
     """ Check for cycles in a skeleton image
     Inputs:
     skel_img     = Skeletonized image
+    label        = optional label parameter, modifies the variable name of observations recorded
 
     Returns:
     cycle_img    = Image with cycles identified
 
     :param skel_img: numpy.ndarray
+    :param label: str
     :return cycle_img: numpy.ndarray
     """
 
@@ -61,7 +63,7 @@ def check_cycles(skel_img):
                              hierarchy=cycle_hierarchies)
 
     # Store Cycle Data
-    outputs.add_observation(variable='num_cycles', trait='number of cycles',
+    outputs.add_observation(sample=label, variable='num_cycles', trait='number of cycles',
                             method='plantcv.plantcv.morphology.check_cycles', scale='none', datatype=int,
                             value=int(num_cycles), label='none')
 

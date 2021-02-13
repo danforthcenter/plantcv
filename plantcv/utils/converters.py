@@ -28,7 +28,7 @@ def json2csv(json_file, csv_file):
         csv = open(csv_file + "-single-value-traits.csv", "w")
 
         # Build the single-value variables output table
-        csv.write(",".join(map(str, meta_vars + scalar_vars)) + "\n")
+        csv.write(",".join(map(str, meta_vars + ["sample"] + scalar_vars)) + "\n")
         for entity in data["entities"]:
             row = []
             # Add metadata variables
@@ -39,19 +39,21 @@ def json2csv(json_file, csv_file):
                 else:
                     row.append("NA")
             # Add scalar variables
-            for var in scalar_vars:
-                obs = entity[data["variables"][var]["category"]]
-                if var in obs:
-                    row.append(obs[var]["value"])
-                else:
-                    row.append("NA")
-            csv.write(",".join(map(str, row)) + "\n")
+            for sample in entity["observations"]:
+                measurements = [sample]
+                for var in scalar_vars:
+                    obs = entity[data["variables"][var]["category"]][sample]
+                    if var in obs:
+                        measurements.append(obs[var]["value"])
+                    else:
+                        measurements.append("NA")
+                csv.write(",".join(map(str, row + measurements)) + "\n")
         # Close the CSV file
         csv.close()
 
         # Create a CSV file of multi-value variables
         csv = open(csv_file + "-multi-value-traits.csv", "w")
-        csv.write(",".join(map(str, meta_vars + ["trait", "value", "label"])) + "\n")
+        csv.write(",".join(map(str, meta_vars + ["sample", "trait", "value", "label"])) + "\n")
         for entity in data["entities"]:
             meta_row = []
             # Add metadata variables
@@ -62,17 +64,16 @@ def json2csv(json_file, csv_file):
                 else:
                     meta_row.append("NA")
             # Add multi-value variables
-            for var in multi_vars:
-                obs = entity[data["variables"][var]["category"]]
-                if var in obs:
-                    if obs[var]["label"] != "none":
-                        for i in range(0, len(obs[var]["value"])):
-                            row = [var]
-                            row.append(obs[var]["value"][i])
-                            row.append(obs[var]["label"][i])
-                            csv.write(",".join(map(str, meta_row + row)) + "\n")
-                else:
-                    csv.write(",".join(map(str, meta_row + [var, "NA", "NA"])) + "\n")
+            for sample in entity["observations"]:
+                for var in multi_vars:
+                    obs = entity[data["variables"][var]["category"]][sample]
+                    if var in obs:
+                        if obs[var]["label"] != "none":
+                            for i in range(0, len(obs[var]["value"])):
+                                row = [sample, var, obs[var]["value"][i], obs[var]["label"][i]]
+                                csv.write(",".join(map(str, meta_row + row)) + "\n")
+                    else:
+                        csv.write(",".join(map(str, meta_row + [var, "NA", "NA"])) + "\n")
         csv.close()
     else:
         # If the file does not exist raise an error
