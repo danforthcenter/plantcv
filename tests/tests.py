@@ -5432,6 +5432,21 @@ def test_plantcv_transform_find_color_card_optional_parameters():
     assert pcv.outputs.observations["prefix"]["color_chip_size"]["value"] > 15000
 
 
+def test_plantcv_transform_find_color_card_otsu():
+    # Clear previous outputs
+    pcv.outputs.clear()
+    # Load rgb image
+    rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG_COLOR_CARD))
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_find_color_card_otsu")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Test with threshold ='normal'
+    df1, start1, space1 = pcv.transform.find_color_card(rgb_img=rgb_img, threshold_type='otsu', blurry=True,
+                                                        background='light', threshvalue=90, label="prefix")
+    assert pcv.outputs.observations["prefix"]["color_chip_size"]["value"] > 15000
+
+
 def test_plantcv_transform_find_color_card_optional_size_parameters():
     # Clear previous outputs
     pcv.outputs.clear()
