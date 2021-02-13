@@ -2285,7 +2285,7 @@ def test_plantcv_landmark_reference_pt_dist():
                                    label="prefix")
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     print(pcv.outputs.observations['prefix'])
-    assert len(pcv.outputs.observations['prefix']) == 8
+    assert len(pcv.outputs.observations['prefix'].keys()) == 8
     pcv.outputs.clear()
 
 

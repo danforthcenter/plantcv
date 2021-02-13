@@ -16,7 +16,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def watershed_segmentation(rgb_img, mask, distance=10, label=None):
+def watershed_segmentation(rgb_img, mask, distance=10, label="default"):
     """Uses the watershed algorithm to detect boundary of objects. Needs a marker file which specifies area which is
        object (white), background (grey), unknown area (black).
 
