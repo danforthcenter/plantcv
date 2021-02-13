@@ -1069,6 +1069,8 @@ def test_plantcv_acute_vertex_bad_obj():
 
 
 def test_plantcv_analyze_bound_horizontal():
+    # Clear previous outputs
+    pcv.outputs.clear()
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_bound_horizontal")
     os.mkdir(cache_dir)
@@ -1095,7 +1097,6 @@ def test_plantcv_analyze_bound_horizontal():
     shutil.copyfile(os.path.join(TEST_DATA, "data_results.txt"), os.path.join(cache_dir, "data_results.txt"))
     pcv.print_results(os.path.join(cache_dir, "data_results.txt"))
     assert len(pcv.outputs.observations["default"]) == 7
-    pcv.outputs.clear()
 
 
 def test_plantcv_analyze_bound_horizontal_grayscale_image():
@@ -1111,6 +1112,8 @@ def test_plantcv_analyze_bound_horizontal_grayscale_image():
 
 
 def test_plantcv_analyze_bound_horizontal_neg_y():
+    # Clear previous outputs
+    pcv.outputs.clear()
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_bound_horizontal")
     os.mkdir(cache_dir)
@@ -1128,10 +1131,11 @@ def test_plantcv_analyze_bound_horizontal_neg_y():
     shutil.copyfile(os.path.join(TEST_DATA, "data_results.txt"), os.path.join(cache_dir, "data_results.txt"))
     pcv.print_results(os.path.join(cache_dir, "data_results.txt"))
     assert pcv.outputs.observations['default']['height_above_reference']['value'] == 713
-    pcv.outputs.clear()
 
 
 def test_plantcv_analyze_bound_vertical():
+    # Clear previous outputs
+    pcv.outputs.clear()
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_bound_vertical")
     os.mkdir(cache_dir)
@@ -1152,7 +1156,6 @@ def test_plantcv_analyze_bound_vertical():
     _ = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=1000)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert pcv.outputs.observations['default']['width_left_reference']['value'] == 94
-    pcv.outputs.clear()
 
 
 def test_plantcv_analyze_bound_vertical_grayscale_image():
@@ -1174,6 +1177,8 @@ def test_plantcv_analyze_bound_vertical_grayscale_image():
 
 
 def test_plantcv_analyze_bound_vertical_neg_x():
+    # Clear previous outputs
+    pcv.outputs.clear()
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_bound_vertical")
     os.mkdir(cache_dir)
@@ -1188,10 +1193,11 @@ def test_plantcv_analyze_bound_vertical_neg_x():
     _ = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=2454)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert pcv.outputs.observations['default']['width_left_reference']['value'] == 441
-    pcv.outputs.clear()
 
 
 def test_plantcv_analyze_bound_vertical_small_x():
+    # Clear previous outputs
+    pcv.outputs.clear()
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_bound_vertical")
     os.mkdir(cache_dir)
@@ -1206,10 +1212,11 @@ def test_plantcv_analyze_bound_vertical_small_x():
     _ = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=1)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert pcv.outputs.observations['default']['width_right_reference']['value'] == 441
-    pcv.outputs.clear()
 
 
 def test_plantcv_analyze_color():
+    # Clear previous outputs
+    pcv.outputs.clear()
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_color")
     os.mkdir(cache_dir)
@@ -1234,7 +1241,6 @@ def test_plantcv_analyze_color():
     _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='rgb')
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert pcv.outputs.observations['default']['hue_median']['value'] == 84.0
-    pcv.outputs.clear()
 
 
 def test_plantcv_analyze_color_incorrect_image():
@@ -1261,6 +1267,8 @@ def test_plantcv_analyze_color_incorrect_hist_plot_type():
 
 
 def test_plantcv_analyze_nir():
+    # Clear previous outputs
+    pcv.outputs.clear()
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_nir")
     os.mkdir(cache_dir)
@@ -1281,7 +1289,6 @@ def test_plantcv_analyze_nir():
     _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=True)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     result = len(pcv.outputs.observations['default']['nir_frequencies']['value'])
-    pcv.outputs.clear()
     assert result == 256
 
 
@@ -1411,6 +1418,8 @@ def test_plantcv_analyze_object_small_contour():
 
 
 def test_plantcv_analyze_thermal_values():
+    # Clear previous outputs
+    pcv.outputs.clear()
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_thermal_values")
     os.mkdir(cache_dir)
@@ -2269,6 +2278,8 @@ def test_plantcv_invert():
 
 
 def test_plantcv_landmark_reference_pt_dist():
+    # Clear previous outputs
+    pcv.outputs.clear()
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_landmark_reference")
     os.mkdir(cache_dir)
     points_rescaled = [(0.0139, 0.2569), (0.2361, 0.2917), (0.3542, 0.3819), (0.3542, 0.4167), (0.375, 0.4236),
@@ -2281,12 +2292,10 @@ def test_plantcv_landmark_reference_pt_dist():
     _ = pcv.landmark_reference_pt_dist(points_r=[], centroid_r=('a', 'b'), bline_r=(0, 0))
     _ = pcv.landmark_reference_pt_dist(points_r=[(10, 1000)], centroid_r=(10, 10), bline_r=(10, 10))
     _ = pcv.landmark_reference_pt_dist(points_r=[], centroid_r=(0, 0), bline_r=(0, 0))
-    pcv.landmark_reference_pt_dist(points_r=points_rescaled, centroid_r=centroid_rescaled, bline_r=bottomline_rescaled,
-                                   label="prefix")
+    _ = pcv.landmark_reference_pt_dist(points_r=points_rescaled, centroid_r=centroid_rescaled,
+                                       bline_r=bottomline_rescaled, label="prefix")
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
-    print(pcv.outputs.observations['prefix'])
     assert len(pcv.outputs.observations['prefix'].keys()) == 8
-    pcv.outputs.clear()
 
 
 def test_plantcv_laplace_filter():
@@ -3260,6 +3269,8 @@ def test_plantcv_stdev_filter():
 
 
 def test_plantcv_watershed_segmentation():
+    # Clear previous outputs
+    pcv.outputs.clear()
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_watershed_segmentation")
     os.mkdir(cache_dir)
@@ -3640,6 +3651,8 @@ def test_plantcv_learn_naive_bayes_multiclass():
 # Tests for the morphology subpackage
 # ####################################
 def test_plantcv_morphology_segment_curvature():
+    # Clear previous outputs
+    pcv.outputs.clear()
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_curvature")
     os.mkdir(cache_dir)
@@ -3654,10 +3667,11 @@ def test_plantcv_morphology_segment_curvature():
     _ = pcv.morphology.segment_curvature(segmented_img, seg_objects)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert len(pcv.outputs.observations['default']['segment_curvature']['value']) == 22
-    pcv.outputs.clear()
 
 
 def test_plantcv_morphology_check_cycles():
+    # Clear previous outputs
+    pcv.outputs.clear()
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_branches")
     os.mkdir(cache_dir)
@@ -3671,7 +3685,6 @@ def test_plantcv_morphology_check_cycles():
     _ = pcv.morphology.check_cycles(mask)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert pcv.outputs.observations['default']['num_cycles']['value'] == 1
-    pcv.outputs.clear()
 
 
 def test_plantcv_morphology_find_branch_pts():
@@ -3756,6 +3769,8 @@ def test_plantcv_morphology_segment_skeleton():
 
 
 def test_plantcv_morphology_fill_segments():
+    # Clear previous outputs
+    pcv.outputs.clear()
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_fill_segments")
     os.mkdir(cache_dir)
@@ -3774,10 +3789,11 @@ def test_plantcv_morphology_fill_segments():
              pcv.outputs.observations['default']['segment_area']['value'][20] == 5057,
              pcv.outputs.observations['default']['segment_area']['value'][49] == 3323]
     assert all(tests)
-    pcv.outputs.clear()
 
 
 def test_plantcv_morphology_fill_segments_with_stem():
+    # Clear previous outputs
+    pcv.outputs.clear()
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_fill_segments")
     os.mkdir(cache_dir)
@@ -3794,10 +3810,11 @@ def test_plantcv_morphology_fill_segments_with_stem():
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     num_objects = len(pcv.outputs.observations['default']['segment_area']['value'])
     assert num_objects == 70
-    pcv.outputs.clear()
 
 
 def test_plantcv_morphology_segment_angle():
+    # Clear previous outputs
+    pcv.outputs.clear()
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_angles")
     os.mkdir(cache_dir)
@@ -3810,10 +3827,11 @@ def test_plantcv_morphology_segment_angle():
     _ = pcv.morphology.segment_angle(segmented_img, segment_objects)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert len(pcv.outputs.observations['default']['segment_angle']['value']) == 22
-    pcv.outputs.clear()
 
 
 def test_plantcv_morphology_segment_angle_overflow():
+    # Clear previous outputs
+    pcv.outputs.clear()
     # Don't prune, would usually give overflow error without extra if statement in segment_angle
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_angles")
@@ -3823,10 +3841,11 @@ def test_plantcv_morphology_segment_angle_overflow():
     segmented_img, segment_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
     _ = pcv.morphology.segment_angle(segmented_img, segment_objects)
     assert len(pcv.outputs.observations['default']['segment_angle']['value']) == 73
-    pcv.outputs.clear()
 
 
 def test_plantcv_morphology_segment_euclidean_length():
+    # Clear previous outputs
+    pcv.outputs.clear()
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_eu_length")
     os.mkdir(cache_dir)
@@ -3839,7 +3858,6 @@ def test_plantcv_morphology_segment_euclidean_length():
     _ = pcv.morphology.segment_euclidean_length(segmented_img, segment_objects)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert len(pcv.outputs.observations['default']['segment_eu_length']['value']) == 22
-    pcv.outputs.clear()
 
 
 def test_plantcv_morphology_segment_euclidean_length_bad_input():
@@ -3852,6 +3870,8 @@ def test_plantcv_morphology_segment_euclidean_length_bad_input():
 
 
 def test_plantcv_morphology_segment_path_length():
+    # Clear previous outputs
+    pcv.outputs.clear()
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_path_length")
     os.mkdir(cache_dir)
@@ -3864,7 +3884,6 @@ def test_plantcv_morphology_segment_path_length():
     _ = pcv.morphology.segment_path_length(segmented_img, segment_objects)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert len(pcv.outputs.observations['default']['segment_path_length']['value']) == 22
-    pcv.outputs.clear()
 
 
 def test_plantcv_morphology_skeletonize():
@@ -3899,6 +3918,8 @@ def test_plantcv_morphology_segment_sort():
 
 
 def test_plantcv_morphology_segment_tangent_angle():
+    # Clear previous outputs
+    pcv.outputs.clear()
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_tangent_angle")
     os.mkdir(cache_dir)
@@ -3912,7 +3933,6 @@ def test_plantcv_morphology_segment_tangent_angle():
     _ = pcv.morphology.segment_tangent_angle(skel, objs, 2)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert len(pcv.outputs.observations['default']['segment_tangent_angle']['value']) == 73
-    pcv.outputs.clear()
 
 
 def test_plantcv_morphology_segment_id():
@@ -3931,6 +3951,8 @@ def test_plantcv_morphology_segment_id():
 
 
 def test_plantcv_morphology_segment_insertion_angle():
+    # Clear previous outputs
+    pcv.outputs.clear()
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
     os.mkdir(cache_dir)
@@ -3948,7 +3970,6 @@ def test_plantcv_morphology_segment_insertion_angle():
                                                                                         24.956918822001636,
                                                                                         50.7313343343401,
                                                                                         56.427712102130734]
-    pcv.outputs.clear()
 
 
 def test_plantcv_morphology_segment_insertion_angle_bad_stem():
@@ -3996,6 +4017,8 @@ def test_plantcv_morphology_segment_combine_bad_input():
 
 
 def test_plantcv_morphology_analyze_stem():
+    # Clear previous outputs
+    pcv.outputs.clear()
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_analyze_stem")
     os.mkdir(cache_dir)
@@ -4009,10 +4032,11 @@ def test_plantcv_morphology_analyze_stem():
     pcv.params.debug = "print"
     _ = pcv.morphology.analyze_stem(rgb_img=segmented_img, stem_objects=stem_obj)
     assert pcv.outputs.observations['default']['stem_angle']['value'] == -12.531776428222656
-    pcv.outputs.clear()
 
 
 def test_plantcv_morphology_analyze_stem_bad_angle():
+    # Clear previous outputs
+    pcv.outputs.clear()
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
     os.mkdir(cache_dir)
@@ -4026,7 +4050,6 @@ def test_plantcv_morphology_analyze_stem_bad_angle():
     stem_obj = [[[[1116, 1728]], [[1116, 1]]]]
     _ = pcv.morphology.analyze_stem(rgb_img=segmented_img, stem_objects=stem_obj)
     assert pcv.outputs.observations['default']['stem_angle']['value'] == 22877334.0
-    pcv.outputs.clear()
 
 
 # ########################################
@@ -4609,6 +4632,8 @@ def test_plantcv_spectral_index_wi_bad_input():
 
 
 def test_plantcv_hyperspectral_analyze_spectral():
+    # Clear previous outputs
+    pcv.outputs.clear()
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_analyze_spectral")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
@@ -4624,6 +4649,8 @@ def test_plantcv_hyperspectral_analyze_spectral():
 
 
 def test_plantcv_hyperspectral_analyze_index():
+    # Clear previous outputs
+    pcv.outputs.clear()
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_analyze_index")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
@@ -4639,6 +4666,8 @@ def test_plantcv_hyperspectral_analyze_index():
 
 
 def test_plantcv_hyperspectral_analyze_index_set_range():
+    # Clear previous outputs
+    pcv.outputs.clear()
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_analyze_index_set_range")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
@@ -4651,6 +4680,8 @@ def test_plantcv_hyperspectral_analyze_index_set_range():
 
 
 def test_plantcv_hyperspectral_analyze_index_auto_range():
+    # Clear previous outputs
+    pcv.outputs.clear()
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_analyze_index_auto_range")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
@@ -4807,6 +4838,8 @@ def test_plantcv_photosynthesis_analyze_fvfm_print_analysis_results():
 
 
 def test_plantcv_photosynthesis_analyze_fvfm_bad_fdark():
+    # Clear previous outputs
+    pcv.outputs.clear()
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_fvfm")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
@@ -4817,7 +4850,6 @@ def test_plantcv_photosynthesis_analyze_fvfm_bad_fdark():
     fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
     _ = pcv.photosynthesis.analyze_fvfm(fdark=fdark + 3000, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
     check = pcv.outputs.observations['default']['fdark_passed_qc']['value'] is False
-    pcv.outputs.clear()
     assert check
 
 
@@ -5386,6 +5418,8 @@ def test_plantcv_transform_find_color_card():
 
 
 def test_plantcv_transform_find_color_card_optional_parameters():
+    # Clear previous outputs
+    pcv.outputs.clear()
     # Load rgb image
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG_COLOR_CARD))
     # Test cache directory
@@ -5399,6 +5433,8 @@ def test_plantcv_transform_find_color_card_optional_parameters():
 
 
 def test_plantcv_transform_find_color_card_optional_size_parameters():
+    # Clear previous outputs
+    pcv.outputs.clear()
     # Load rgb image
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG_COLOR_CARD))
     # Test cache directory
@@ -5410,7 +5446,8 @@ def test_plantcv_transform_find_color_card_optional_size_parameters():
 
 
 def test_plantcv_transform_find_color_card_optional_size_parameters_none():
-    pcv.outputs.observations.clear()
+    # Clear previous outputs
+    pcv.outputs.clear()
     # Load rgb image
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG_COLOR_CARD))
     # Test cache directory
@@ -5422,6 +5459,8 @@ def test_plantcv_transform_find_color_card_optional_size_parameters_none():
 
 
 def test_plantcv_transform_find_color_card_bad_record_chip_size():
+    # Clear previous outputs
+    pcv.outputs.clear()
     # Load rgb image
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
     pcv.params.debug = None
