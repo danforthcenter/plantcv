@@ -61,6 +61,6 @@ def constellaqc(denovo_groups, annotated_groups, debug):
 	Total=VSum+SSum+CSum
 
 
-	print('\n\nValid Call Rate:     ', 100*(VSum/Total), '%')
-	print('Splitting Call Rate: ', 100*(SSum/Total), '%')
-	print('Clumping Call Rate:  ', 100*(CSum/Total), '%')
+	print('\n\nValid Call Rate:     ', round(100*(VSum/Total),2), '%')
+	print('Splitting Call Rate: ', round(100*(SSum/Total),2), '%')
+	print('Clumping Call Rate:  ', round(100*(CSum/Total),2), '%')

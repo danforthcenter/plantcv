@@ -9,7 +9,7 @@ import numpy as np
 
 def starscape(cur_plms, groupA, groupB, outfile_prefix, debug):
 
-    init_comps=6
+    init_comps=4
     cutoff=0.99
 
     """plmSpace: Generate a plm multivariate space for downstream use in homology group assignments
@@ -93,32 +93,53 @@ def starscape(cur_plms, groupA, groupB, outfile_prefix, debug):
         else:
             plt.savefig(outfile_prefix+'_screeplot.png')
 
+    plt.close()
+
     colors = ['r', 'b']
 
-    #3D plot of First 3 PCA dimensions
-    fig_PrComp = plt.figure(figsize=(8, 8))
-    fig_PrComp = plt.axes(projection='3d')
+    if informative_comps>=3:
+        #3D plot of First 3 PCA dimensions
+        fig_PrComp = plt.figure(figsize=(8, 8))
+        fig_PrComp = plt.axes(projection='3d')
 
-    fig_PrComp.set_xlabel('Principal Component 1', fontsize = 14)
-    fig_PrComp.set_ylabel('Principal Component 2', fontsize = 14)
-    fig_PrComp.set_zlabel('Principal Component 3', fontsize = 14)
+        fig_PrComp.set_xlabel('Principal Component 1', fontsize = 14)
+        fig_PrComp.set_ylabel('Principal Component 2', fontsize = 14)
+        fig_PrComp.set_zlabel('Principal Component 3', fontsize = 14)
 
-    targets = [groupA, groupB]
+        targets = [groupA, groupB]
 
-    indicesToKeep = finalDf['filename'] == targets[0]
-    fig_PrComp.scatter3D(finalDf.loc[indicesToKeep, 'PC1'], 
-                  finalDf.loc[indicesToKeep, 'PC2'], 
-                  finalDf.loc[indicesToKeep, 'PC3'], c=colors[0]);
+        indicesToKeep = finalDf['filename'] == targets[0]
+        fig_PrComp.scatter3D(finalDf.loc[indicesToKeep, 'PC1'], 
+                      finalDf.loc[indicesToKeep, 'PC2'], 
+                      finalDf.loc[indicesToKeep, 'PC3'], c=colors[0]);
 
-    indicesToKeep = finalDf['filename'] == targets[1]
-    fig_PrComp.scatter3D(finalDf.loc[indicesToKeep, 'PC1'], 
-                  finalDf.loc[indicesToKeep, 'PC2'], 
-                  finalDf.loc[indicesToKeep, 'PC3'], c=colors[1]);
+        indicesToKeep = finalDf['filename'] == targets[1]
+        fig_PrComp.scatter3D(finalDf.loc[indicesToKeep, 'PC1'], 
+                      finalDf.loc[indicesToKeep, 'PC2'], 
+                      finalDf.loc[indicesToKeep, 'PC3'], c=colors[1]);
+    elif informative_comps==2:
+        #2D plot of First 2 PCA dimensions
+        fig_PrComp = plt.figure(figsize=(8, 8))
+
+        targets = [groupA, groupB]
+
+        indicesToKeep = finalDf['filename'] == targets[0]
+        fig_PrComp = plt.scatter(finalDf.loc[indicesToKeep, 'PC1'], 
+                      finalDf.loc[indicesToKeep, 'PC2'], c=colors[0]);
+
+        indicesToKeep = finalDf['filename'] == targets[1]
+        fig_PrComp = plt.scatter(finalDf.loc[indicesToKeep, 'PC1'], 
+                      finalDf.loc[indicesToKeep, 'PC2'], c=colors[1]);
+
+        fig_PrComp = plt.xlabel('Principal Component 1', fontsize = 14)
+        fig_PrComp = plt.ylabel('Principal Component 2', fontsize = 14)
 
     if debug==True:
         if outfile_prefix==None:
             plt.show(fig_PrComp)
         else:
-            plt.savefig(outfile_prefix+'_PCspace.png') 
+            plt.savefig(outfile_prefix+'_PCspace.png')
+
+    plt.close()
 
     return(finalDf, eigenvals, loadings)

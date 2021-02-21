@@ -118,14 +118,16 @@ def acute(obj, mask, win, threshold, debug):
 
         if len(isle) > 1:
             if (isle[0][0] == 0) & (isle[-1][-1] == (len(chain)-1)):
-                print('Fusing contour edges')
+                if debug==True:
+                    print('Fusing contour edges')
                 island = isle[-1]+isle[0]  # Fuse overlapping ends of contour
                 # Delete islands to be spliced if start-end fusion required
                 del isle[0]
                 del isle[-1]
                 isle.insert(0, island)      # Prepend island to isle
         else:
-            print('Microcontour...')
+            if debug==True:
+                print('Microcontour...')
 
         # Homologous point maximum distance method
         pt = []
@@ -154,26 +156,35 @@ def acute(obj, mask, win, threshold, debug):
                 vals = []
 
             # Identify pixel coordinate to use as pseudolandmark for island
-            if len(isle[x]) == 1:           # If landmark is a single point (store position)
-                # print 'route A'
-                pt = isle[x][0]
-                max_dist.append([isle[x][0], '-', chain[isle[x][0]]])
+            
+            #if len(isle[x]) == 1:           # If landmark is a single point (store position)
+            #    if debug == True:
+            #        print('route A')
+            #    pt = isle[x][0]
+            #    max_dist.append([isle[x][0], '-', chain[isle[x][0]]])
+            #    # print pt
+            #elif len(isle[x]) == 2:         # If landmark is a pair of points (store more acute position)
+            #    if debug == True:
+            #        print('route B')
+            #    ptA = chain[isle[x][0]]
+            #    ptB = chain[isle[x][1]]
+            #    print(ptA, ptB)
+            #    if ptA == ptB:
+            #        pt = isle[x][0]             # Store point A if both are equally acute
+            #        max_dist.append([isle[x][0], '-', chain[isle[x][0]]])                
+            #    elif ptA < ptB:
+            #        pt = isle[x][0]             # Store point A if more acute
+            #        max_dist.append([isle[x][0], '-', chain[isle[x][0]]])
+            #    elif ptA > ptB:
+            #        pt = isle[x][1]             # Store point B if more acute
+            #        max_dist.append([isle[x][1], '-', chain[isle[x][1]]])
                 # print pt
-            elif len(isle[x]) == 2:         # If landmark is a pair of points (store more acute position)
-                # print 'route B'
-                ptA = chain[isle[x][0]]
-                ptB = chain[isle[x][1]]
-                if ptA < ptB:
-                    pt = isle[x][0]             # Store point A if more acute
-                    max_dist.append([isle[x][0], '-', chain[isle[x][0]]])
-                elif ptA > ptB:
-                    pt = isle[x][1]             # Store point B if more acute
-                    max_dist.append([isle[x][1], '-', chain[isle[x][1]]])
-                # print pt
-            else:                           # If landmark is multiple points (distance scan for position)
-                # print 'route C'
-                SS = obj[[isle[x]]][0]          # Store isle "x" start site
-                TS = obj[[isle[x]]][-1]         # Store isle "x" termination site
+
+            if len(isle[x]) >= 3:                           # If landmark is multiple points (distance scan for position)
+                if debug == True:
+                    print('route C')
+                SS = obj[isle[x][0]]            # Store isle "x" start site
+                TS = obj[isle[x][-1]]           # Store isle "x" termination site
                 dist_1 = 0
                 for d in range(len(isle[x])):   # Scan from SS to TS within isle "x"
                     site = obj[[isle[x][d]]]
@@ -186,10 +197,18 @@ def acute(obj, mask, win, threshold, debug):
                         pt = isle[x][d]
                         dist_1 = dist_2                           # Current mean becomes new best mean
                 # print pt
-            maxpts.append(pt)           # Empty 'pts' prior to next mean distance scan
-            SSpts.append(isle[x][0])
-            TSpts.append(isle[x][-1])
+                if debug == True:
+                    print('Landmark site: ',pt, ' , Start site: ', isle[x][0], ' , Term. site: ', isle[x][-1])
+                
+                maxpts.append(pt)           # Empty 'pts' prior to next mean distance scan
+                SSpts.append(isle[x][0])
+                TSpts.append(isle[x][-1])
 
+            if debug==True:
+                print('Landmark point indices: ', maxpts)
+                print('Starting site indices: ', SSpts)
+                print('Termination site indices: ', TSpts)
+            
         homolog_pts = obj[maxpts]
         start_pts = obj[SSpts]
         stop_pts = obj[TSpts]
