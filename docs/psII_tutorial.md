@@ -103,9 +103,9 @@ def main():
     #   img             - Image data
     #   rotation_deg    - Rotation angle in degrees, can be a negative number, positive values move counter clockwise
     #   crop            - If crop is set to True, image will be cropped to original image dimensions. If set to False, the image size will be adjusted to accommodate new image dimensions.
-    fdark = pcv.rotate(img=fdark1, rotation_deg=-90, crop=False)
-    fmin = pcv.rotate(img=fmin1, rotation_deg=-90, crop=False)
-    fmax = pcv.rotate(img=fmax1, rotation_deg=-90, crop=False)
+    fdark = pcv.transform.rotate(img=fdark1, rotation_deg=-90, crop=False)
+    fmin = pcv.transform.rotate(img=fmin1, rotation_deg=-90, crop=False)
+    fmax = pcv.transform.rotate(img=fmax1, rotation_deg=-90, crop=False)
 
 
 ```
@@ -292,9 +292,9 @@ def main():
     fdark1, fmin1, fmax1 = pcv.photosynthesis.read_cropreporter(args.image)
 
     # Rotate so plant is upright
-    fdark = pcv.rotate(img=fdark1, rotation_deg=-90, crop=False)
-    fmin = pcv.rotate(img=fmin1, rotation_deg=-90, crop=False)
-    fmax = pcv.rotate(img=fmax1, rotation_deg=-90, crop=False)
+    fdark = pcv.transform.rotate(img=fdark1, rotation_deg=-90, crop=False)
+    fmin = pcv.transform.rotate(img=fmin1, rotation_deg=-90, crop=False)
+    fmax = pcv.transform.rotate(img=fmax1, rotation_deg=-90, crop=False)
 
     # Threshold fmax image to make plant mask
     plant_mask = pcv.threshold.binary(gray_img=fmax, threshold=855, max_value=255, object_type="light")
