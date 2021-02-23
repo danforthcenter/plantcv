@@ -209,7 +209,7 @@ The purpose of this mask is to exclude as much background with simple thresholdi
     # Apply Mask (for VIS images, mask_color=white)
     
     # Inputs:
-    #   rgb_img - RGB image data 
+    #   img - RGB image data 
     #   mask - Binary mask image data 
     #   mask_color - 'white' or 'black' 
     masked = pcv.apply_mask(img=img, mask=bs, mask_color='white')
