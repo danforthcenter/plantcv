@@ -86,13 +86,13 @@ def histogram(img, mask=None, bins=None, lower_range=0, upper_range=None, title=
         if img.shape[2] == 3:
             b_names = ['blue', 'green', 'red']
         else:
-            b_names = [str(i) for i in range(len(img.shape[2]))]
+            b_names = [str(i) for i in range(img.shape[2])]
 
     if len(img.shape) == 2:
         hist_data = _hist_gray(img, bins=bins, lower_range=lower_range, upper_range=upper_range, mask=mask)
         hist_data['color channel'] = ['0' for i in range(len(hist_data))]
 
-    elif len(img.shape) == 3 and img.shape[2] == 3:
+    else:
         # Assumption: RGB image
         for (b, b_name) in enumerate(b_names):
             hist_temp = _hist_gray(img[:, :, b], bins=bins, lower_range=lower_range, upper_range=upper_range, mask=mask)
