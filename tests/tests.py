@@ -6106,7 +6106,7 @@ def test_plantcv_visualize_histogram():
 
     # Test multi-spectral image
     img_multi = np.concatenate((img_rgb,img_rgb),axis=2)
-    _, _ = pcv.visualize.histogram(img=img_rgb)
+    _, _ = pcv.visualize.histogram(img=img_multi)
 
 def test_plantcv_visualize_clustered_contours():
     # Test cache directory
