@@ -6090,12 +6090,23 @@ def test_plantcv_visualize_histogram():
     pcv.params.debug = "print"
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    _ = pcv.visualize.histogram(img=np.uint16(img), mask=mask, bins=200, lower_range=0, upper_range=255, title='Include Title')
+    _,_ = pcv.visualize.histogram(img=np.uint16(img), mask=mask, bins=200, lower_range=0, upper_range=255, title='Include Title')
+    _, _ = pcv.visualize.histogram(img=np.uint16(img), mask=mask, bins=200, title='Include Title')
     # Test in plot mode
     pcv.params.debug = "plot"
     fig_hist, hist_data = pcv.visualize.histogram(img=img)
     assert str(type(fig_hist)) == "<class 'plotnine.ggplot.ggplot'>" and str(type(hist_data)) == "<class 'pandas.core.frame.DataFrame'>"
+    with pytest.raises(RuntimeError):
+        _, _ = pcv.visualize.histogram(img=None)
+    with pytest.raises(RuntimeError):
+        _, _ = pcv.visualize.histogram(img=img[0,:])
+    # Test RGB input image
+    img_rgb = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    _, _ = pcv.visualize.histogram(img=img_rgb)
 
+    # Test multi-spectral image
+    img_multi = np.concatenate((img_rgb,img_rgb),axis=2)
+    _, _ = pcv.visualize.histogram(img=img_rgb)
 
 def test_plantcv_visualize_clustered_contours():
     # Test cache directory
