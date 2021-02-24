@@ -20,10 +20,10 @@ def _hist_gray(gray_img, bins, lower_range, upper_range, mask=None):
     :return:
     hist_data (pd.DataFrame): a DataFrame with columns "pixel intensity" and "proportion of pixels (%)", Ready to be used for ggplot
     """
-    if type(gray_img) is not np.ndarray:
-        fatal_error("Only image of type numpy.ndarray is supported input!")
-    if len(gray_img.shape) < 2:
-        fatal_error("Input image should be at least a 2d array!")
+    # if type(gray_img) is not np.ndarray:
+    #     fatal_error("Only image of type numpy.ndarray is supported input!")
+    # if len(gray_img.shape) < 2:
+    #     fatal_error("Input image should be at least a 2d array!")
 
     params.device += 1
     debug = params.debug
