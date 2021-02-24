@@ -1437,7 +1437,6 @@ def test_plantcv_analyze_thermal_values():
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert thermal_hist is not None and pcv.outputs.observations['default']['median_temp']['value'] == 33.20922
 
-
 def test_plantcv_apply_mask_white():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_apply_mask_white")
@@ -6091,11 +6090,11 @@ def test_plantcv_visualize_histogram():
     pcv.params.debug = "print"
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    _ = pcv.visualize.histogram(gray_img=np.uint16(img), mask=mask, bins=200, title='Include Title')
+    _ = pcv.visualize.histogram(img=np.uint16(img), mask=mask, bins=200, lower_range=0, upper_range=255, title='Include Title')
     # Test in plot mode
     pcv.params.debug = "plot"
-    fig_hist = pcv.visualize.histogram(gray_img=img)
-    assert str(type(fig_hist)) == "<class 'plotnine.ggplot.ggplot'>"
+    fig_hist, hist_data = pcv.visualize.histogram(img=img)
+    assert str(type(fig_hist)) == "<class 'plotnine.ggplot.ggplot'>" and str(type(hist_data)) == "<class 'pandas.core.frame.DataFrame'>"
 
 
 def test_plantcv_visualize_clustered_contours():
