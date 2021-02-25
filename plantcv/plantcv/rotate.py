@@ -20,7 +20,7 @@ def rotate(img, rotation_deg, crop):
     :param crop: bool
     :return rotated_img: numpy.ndarray
     """
-    print("""Deprecation Warning: 
+    print("""Deprecation Warning:
     plantcv.rotate has moved to plantcv.transform.rotate. 
     plantcv.rotate will be removed in a future version""", file=sys.stderr)
     rotated_img = rotate_new(img, rotation_deg, crop)

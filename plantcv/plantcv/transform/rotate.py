@@ -9,8 +9,7 @@ from plantcv.plantcv import params
 
 
 def rotate(img, rotation_deg, crop):
-    """Rotate image, sometimes it is necessary to rotate image, especially when clustering for
-       multiple plants is needed.
+    """Rotate an image by an angle.
 
     Inputs:
     img          = RGB or grayscale image data
@@ -27,10 +26,8 @@ def rotate(img, rotation_deg, crop):
     :return rotated_img: numpy.ndarray
     """
 
-    if len(np.shape(img)) == 3:
-        iy, ix, iz = np.shape(img)
-    else:
-        iy, ix = np.shape(img)
+    # Extract image spatial dimensions
+    iy, ix = np.shape(img)[:2]
 
     m = cv2.getRotationMatrix2D((ix / 2, iy / 2), rotation_deg, 1)
 
