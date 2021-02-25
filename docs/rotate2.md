@@ -28,7 +28,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Rotate image
-device, rotate_img = pcv.transform.rotate(img, 10, True)
+rotate_img = pcv.transform.rotate(img, 10, True)
 
 ```
 
