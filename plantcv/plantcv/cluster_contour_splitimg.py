@@ -9,7 +9,7 @@ from plantcv.plantcv import apply_mask
 from plantcv.plantcv import params
 
 
-def cluster_contour_splitimg(rgb_img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None,
+def cluster_contour_splitimg(img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None,
                              filenames=None):
 
     """
@@ -17,7 +17,7 @@ def cluster_contour_splitimg(rgb_img, grouped_contour_indexes, contours, hierarc
     the number of inputted filenames matches the number of clustered contours.
 
     Inputs:
-    rgb_img                 = RGB image data
+    img                     = image data
     grouped_contour_indexes = output of cluster_contours, indexes of clusters of contours
     contours                = contours to cluster, output of cluster_contours
     hierarchy               = hierarchy of contours, output of find_objects
@@ -30,7 +30,7 @@ def cluster_contour_splitimg(rgb_img, grouped_contour_indexes, contours, hierarc
     Returns:
     output_path             = array of paths to output images
 
-    :param rgb_img: numpy.ndarray
+    :param img: numpy.ndarray
     :param grouped_contour_indexes: list
     :param contours: list
     :param hierarchy: numpy.ndarray
@@ -119,9 +119,9 @@ def cluster_contour_splitimg(rgb_img, grouped_contour_indexes, contours, hierarc
         else:
             savename = os.path.join(".", group_names[y])
             savename1 = os.path.join(".", group_names1[y])
-        iy, ix, iz = np.shape(rgb_img)
+        iy, ix, iz = np.shape(img)
         mask = np.zeros((iy, ix, 3), dtype=np.uint8)
-        masked_img = np.copy(rgb_img)
+        masked_img = np.copy(img)
         for a in x:
             if hierarchy[0][a][3] > -1:
                 cv2.drawContours(mask, contours, a, (0, 0, 0), -1, lineType=8, hierarchy=hierarchy)
