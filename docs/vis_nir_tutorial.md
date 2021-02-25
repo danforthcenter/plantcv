@@ -216,10 +216,10 @@ The purpose of this mask is to exclude as much background with simple thresholdi
     # Apply Mask (for VIS images, mask_color=white)
     
     # Inputs:
-    #   rgb_img - RGB image data 
+    #   img - RGB image data 
     #   mask - Binary mask image data 
     #   mask_color - 'white' or 'black' 
-    masked = pcv.apply_mask(rgb_img=img, mask=bs, mack_color='white')
+    masked = pcv.apply_mask(img=img, mask=bs, mack_color='white')
     
 ```
 
@@ -542,7 +542,7 @@ def main():
     bs = pcv.logical_and(bin_img1=s_mblur, bin_img2=b_cnt)
 
     # Apply Mask (for VIS images, mask_color=white)
-    masked = pcv.apply_mask(rgb_img=img, mask=bs, mask_color='white')
+    masked = pcv.apply_mask(img=img, mask=bs, mask_color='white')
 
     # Identify objects
     id_objects,obj_hierarchy = pcv.find_objects(img=masked, mask=bs)
