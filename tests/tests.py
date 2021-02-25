@@ -3104,8 +3104,14 @@ def test_plantcv_roi_objects_grayscale_input():
     # Assert that the contours were filtered as expected
     assert len(kept_contours) == 1891
 
-
 def test_plantcv_rotate():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    rotated = pcv.rotate(img=img, rotation_deg=45, crop=True)
+    imgavg = np.average(img)
+    rotateavg = np.average(rotated)
+    assert rotateavg != imgavg
+
+def test_plantcv_transform_rotate():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_rotate_img")
     os.mkdir(cache_dir)
@@ -3114,26 +3120,26 @@ def test_plantcv_rotate():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.rotate(img=img, rotation_deg=45, crop=True)
+    _ = pcv.transform.rotate(img=img, rotation_deg=45, crop=True)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.rotate(img=img, rotation_deg=45, crop=True)
+    _ = pcv.transform.rotate(img=img, rotation_deg=45, crop=True)
     # Test with debug = None
     pcv.params.debug = None
-    rotated = pcv.rotate(img=img, rotation_deg=45, crop=True)
+    rotated = pcv.transform.rotate(img=img, rotation_deg=45, crop=True)
     imgavg = np.average(img)
     rotateavg = np.average(rotated)
     assert rotateavg != imgavg
 
 
-def test_plantcv_rotate_gray():
+def test_plantcv_transform_rotate_gray():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    _ = pcv.rotate(img=img, rotation_deg=45, crop=False)
+    _ = pcv.transform.rotate(img=img, rotation_deg=45, crop=False)
     # Test with debug = None
     pcv.params.debug = None
-    rotated = pcv.rotate(img=img, rotation_deg=45, crop=False)
+    rotated = pcv.transform.rotate(img=img, rotation_deg=45, crop=False)
     imgavg = np.average(img)
     rotateavg = np.average(rotated)
     assert rotateavg != imgavg
