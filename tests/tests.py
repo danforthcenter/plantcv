@@ -3814,7 +3814,7 @@ def test_plantcv_morphology_fill_segments_with_stem():
     pcv.params.debug = "print"
     _ = pcv.morphology.fill_segments(mask, obj, stem_obj)
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
-    num_objects = len(pcv.outputs.observations['default']['segment_area']['value'])
+    num_objects = len(pcv.outputs.observations['default']['leaf_area']['value'])
     assert num_objects == 70
 
 
