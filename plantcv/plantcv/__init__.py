@@ -1,6 +1,6 @@
 import os
 import matplotlib
-
+from plantcv.plantcv import fatal_error
 observations = {}
 
 
@@ -80,7 +80,7 @@ class Outputs:
         scale        = Units of the measurement or scale in which the observations are expressed; if possible, standard
                        units and scales should be used and mapped to existing ontologies; in the case of non-standard
                        scale a full explanation should be given
-        datatype     = The type of data to be stored, e.g. 'int', 'float', 'str', 'list', etc.
+        datatype     = The type of data to be stored, e.g. 'int', 'float', 'str', 'list', 'bool', etc.
         value        = The data itself
         label        = The label for each value (most useful when the data is a frequency table as in hue,
                        or other tables)
@@ -103,9 +103,15 @@ class Outputs:
         self.value = value
         self.label = label
 
+        
+
         # Create an empty dictionary for the sample if it does not exist
         if sample not in self.observations:
             self.observations[sample] = {}
+        supported_dtype = ["int","float", "str", "list", "bool"]
+        # Send an error message if datatype is not supported by json
+        if not str(type(value)) in ["<class '{}'>".format(i) for i in supported_dtype]:
+            fatal_error("Data type not compatible with json! Please use only these: int, float, string, list, or bool!")
         # Save the observation for the sample and variable
         self.observations[sample][variable] = {
             "trait": trait,
