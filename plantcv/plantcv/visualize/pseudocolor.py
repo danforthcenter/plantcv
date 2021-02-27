@@ -5,7 +5,6 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 from plantcv.plantcv import params
-from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 
 
@@ -14,28 +13,38 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
     """Pseudocolor any grayscale image to custom colormap
 
     Inputs:
+    gray_img    = grayscale image data
+    obj         = (optional) ROI or plant contour object. If provided, the pseudocolored image gets cropped
+                  down to the region of interest. default = None
+    mask        = (optional) binary mask
+    cmap        = (optional) colormap. default is the matplotlib default, viridis
+    background  = (optional) background color/type, options are "image" (gray_img), "white", or "black"
+                  (requires a mask). default = 'image'
+    min_value   = (optional) minimum value for range of interest. default = 0
+    max_value   = (optional) maximum value for range of interest. default = 255
+    axes        = (optional) if False then x- and y-axis won't be displayed, nor will the title. default = True
+    colorbar    = (optional) if False then colorbar won't be displayed. default = True
+    obj_padding = (optional) if "auto" (default) and an obj is supplied, then the image is cropped to an extent 20%
+                  larger in each dimension than the object. An single integer is also accepted to define the padding
+                  in pixels
+    title       = (optional) custom title for the plot gets drawn if title is not None. default = None
 
-    :param gray_img: grayscale image data
-    :param obj: (optional) ROI or plant contour object. If provided, the pseudocolored image gets cropped
-              down to the region of interest. default = None
-    :param mask: (optional) binary mask
-    :param cmap: (optional) colormap. default is the matplotlib default, viridis
-    :param background: (optional) background color/type, options are "image" (gray_img), "white", or "black"
-              (requires a mask). default = 'image'
-    :param min_value: (optional) minimum value for range of interest. default = 0
-    :param max_value: (optional) maximum value for range of interest. default = 255
-    :param axes: (optional) if False then x- and y-axis won't be displayed, nor will the title. default = True
-    :param colorbar: (optional) if False then colorbar won't be displayed. default = True
-    :param obj_padding: (optional) if "auto" (default) and an obj is supplied, then the image is cropped to an extent 20%
-              larger in each dimension than the object. An single integer is also accepted to define the padding
-              in pixels
-    :param title: custom title for the plot gets drawn if title is not None
+    Returns:
+    pseudo_image = pseudocolored image
 
-    :return:
-    pseudo_image: pseudocolored image
+    :param gray_img: numpy.ndarray
+    :param obj: numpy.ndarray
+    :param mask: numpy.ndarray
+    :param cmap: str
+    :param background: str
+    :param min_value: numeric
+    :param max_value: numeric
+    :param axes: bool
+    :param colorbar: bool
+    :param obj_padding: str, int
+    :param title: str
+    :return pseudo_image: numpy.ndarray
     """
-
-
 
     # Auto-increment the device counter
     params.device += 1
@@ -145,7 +154,6 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
             plt.yticks([])
 
         pseudo_img = plt.gcf()
-
 
     # Print or plot if debug is turned on
     if params.debug is not None:
