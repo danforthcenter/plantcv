@@ -109,7 +109,7 @@ class Outputs:
             self.observations[sample] = {}
         supported_dtype = ["str", "list", "bool","tuple"]
         # Send an error message if datatype is not supported by json
-        if not ("int" in str(type(value)) or "float" in str(type(value)) or str(type(value)) in ["<class '{}'>".format(i) for i in supported_dtype]):
+        if not ("int" in str(type(value)) or "float" in str(type(value)) or value is None or str(type(value)) in ["<class '{}'>".format(i) for i in supported_dtype]):
             fatal_error("Data type not compatible with json! Please use only these: int, float, string, list, or bool!")
         # Save the observation for the sample and variable
         self.observations[sample][variable] = {
@@ -120,7 +120,6 @@ class Outputs:
             "value": value,
             "label": label
         }
-
 
 # Initialize an instance of the Params and Outputs class with default values
 # params and outputs are available when plantcv is imported
