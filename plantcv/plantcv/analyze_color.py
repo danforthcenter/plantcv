@@ -60,23 +60,23 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, label="default"):
 
     histograms = {
         "b": {"label": "blue", "graph_color": "blue",
-              "hist": _hist_gray(channels["b"], 256, 0, 255, mask)[2]},
+              "hist": _hist_gray(channels["b"], 256, 0, 255, mask)[2].tolist()},
         "g": {"label": "green", "graph_color": "forestgreen",
-              "hist": _hist_gray(channels["g"], 256, 0, 255, mask)[2]},
+              "hist": _hist_gray(channels["g"], 256, 0, 255, mask)[2].tolist()},
         "r": {"label": "red", "graph_color": "red",
-              "hist": _hist_gray(channels["r"], 256, 0, 255, mask)[2]},
+              "hist": _hist_gray(channels["r"], 256, 0, 255, mask)[2].tolist()},
         "l": {"label": "lightness", "graph_color": "dimgray",
-              "hist": _hist_gray(channels["l"], 256, 0, 255, mask)[2]},
+              "hist": _hist_gray(channels["l"], 256, 0, 255, mask)[2].tolist()},
         "m": {"label": "green-magenta", "graph_color": "magenta",
-              "hist": _hist_gray(channels["m"], 256, 0, 255, mask)[2]},
+              "hist": _hist_gray(channels["m"], 256, 0, 255, mask)[2].tolist()},
         "y": {"label": "blue-yellow", "graph_color": "yellow",
-              "hist": _hist_gray(channels["y"], 256, 0, 255, mask)[2]},
+              "hist": _hist_gray(channels["y"], 256, 0, 255, mask)[2].tolist()},
         "h": {"label": "hue", "graph_color": "blueviolet",
-              "hist": _hist_gray(channels["h"], 256, 0, 255, mask)[2]},
+              "hist": _hist_gray(channels["h"], 256, 0, 255, mask)[2].tolist()},
         "s": {"label": "saturation", "graph_color": "cyan",
-              "hist": _hist_gray(channels["s"], 256, 0, 255, mask)[2]},
+              "hist": _hist_gray(channels["s"], 256, 0, 255, mask)[2].tolist()},
         "v": {"label": "value", "graph_color": "orange",
-              "hist": _hist_gray(channels["v"], 256, 0, 255, mask)[2]}
+              "hist": _hist_gray(channels["v"], 256, 0, 255, mask)[2].tolist()}
     }
 
     # Create list of bin labels for 8-bit data
