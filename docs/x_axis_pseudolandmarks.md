@@ -3,7 +3,7 @@
 Divide plant object into twenty equidistant bins and assign pseudolandmark points based upon their actual (not scaled) position.
 Once this data is scaled this approach may provide some information regarding shape independent of size.
 
-**plantcv.x_axis_pseudolandmarks**(*img, obj, mask*)
+**plantcv.x_axis_pseudolandmarks**(*img, obj, mask, label="default"*)
 
 **returns** landmarks_on_top (top), landmarks_on_bottom (bottom), landmarks_at_center_along_the_vertical_axis (center_V)
 
@@ -11,6 +11,7 @@ Once this data is scaled this approach may provide some information regarding sh
     - img - A copy of the original image (RGB or grayscale) generated using np.copy
     - obj - A contour of the plant object (this should be output from the object_composition.py fxn)
     - mask - This is a binary image. The object should be white and the background should be black.
+    - label - Optional label parameter, modifies the variable name of observations recorded
 - **Context:**
     - Used to identify a set of sixty equidistant landmarks on the horizontal axis. Once scaled these can be used for shape analysis.
 - **Output data stored:** Data ('top_lmk', 'bottom_lmk', 'center_v_lmk') automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
@@ -28,10 +29,10 @@ pcv.params.debug = "plot"
 
 # Identify a set of land mark points
 # Results in set of point values that may indicate tip points
-top, bottom, center_v = pcv.x_axis_pseudolandmarks(img, obj, mask)
+top, bottom, center_v = pcv.x_axis_pseudolandmarks(img=img, obj=obj, mask=mask, label="default")
 
 # Access data stored out from x_axis_pseudolandmarks
-bottom_landmarks = pcv.outputs.observations['bottom_lmk']['value']
+bottom_landmarks = pcv.outputs.observations['default']['bottom_lmk']['value']
 
 ```
 

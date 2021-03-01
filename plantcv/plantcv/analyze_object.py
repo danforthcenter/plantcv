@@ -10,13 +10,14 @@ from plantcv.plantcv import outputs
 from plantcv.plantcv import within_frame
 
 
-def analyze_object(img, obj, mask):
+def analyze_object(img, obj, mask, label="default"):
     """Outputs numeric properties for an input object (contour or grouped contours).
 
     Inputs:
     img             = RGB or grayscale image data for plotting
     obj             = single or grouped contour object
     mask            = Binary image to use as mask
+    label           = optional label parameter, modifies the variable name of observations recorded
 
     Returns:
     analysis_images = list of output images
@@ -24,6 +25,7 @@ def analyze_object(img, obj, mask):
     :param img: numpy.ndarray
     :param obj: list
     :param mask: numpy.ndarray
+    :param label: str
     :return analysis_images: list
     """
     # Valid objects can only be analyzed if they have >= 5 vertices
@@ -46,7 +48,7 @@ def analyze_object(img, obj, mask):
     background2 = np.zeros(size1, dtype=np.uint8)
 
     # Check is object is touching image boundaries (QC)
-    in_bounds = within_frame(mask)
+    in_bounds = within_frame(mask=mask, label=label)
 
     # Convex Hull
     hull = cv2.convexHull(obj)
@@ -156,49 +158,49 @@ def analyze_object(img, obj, mask):
     else:
         pass
 
-    outputs.add_observation(variable='area', trait='area',
+    outputs.add_observation(sample=label, variable='area', trait='area',
                             method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
                             value=area, label='pixels')
-    outputs.add_observation(variable='convex_hull_area', trait='convex hull area',
+    outputs.add_observation(sample=label, variable='convex_hull_area', trait='convex hull area',
                             method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
                             value=hull_area, label='pixels')
-    outputs.add_observation(variable='solidity', trait='solidity',
+    outputs.add_observation(sample=label, variable='solidity', trait='solidity',
                             method='plantcv.plantcv.analyze_object', scale='none', datatype=float,
                             value=solidity, label='none')
-    outputs.add_observation(variable='perimeter', trait='perimeter',
+    outputs.add_observation(sample=label, variable='perimeter', trait='perimeter',
                             method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
                             value=perimeter, label='pixels')
-    outputs.add_observation(variable='width', trait='width',
+    outputs.add_observation(sample=label, variable='width', trait='width',
                             method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
                             value=width, label='pixels')
-    outputs.add_observation(variable='height', trait='height',
+    outputs.add_observation(sample=label, variable='height', trait='height',
                             method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
                             value=height, label='pixels')
-    outputs.add_observation(variable='longest_path', trait='longest path',
+    outputs.add_observation(sample=label, variable='longest_path', trait='longest path',
                             method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
                             value=caliper_length, label='pixels')
-    outputs.add_observation(variable='center_of_mass', trait='center of mass',
+    outputs.add_observation(sample=label, variable='center_of_mass', trait='center of mass',
                             method='plantcv.plantcv.analyze_object', scale='none', datatype=tuple,
                             value=(cmx, cmy), label='none')
-    outputs.add_observation(variable='convex_hull_vertices', trait='convex hull vertices',
+    outputs.add_observation(sample=label, variable='convex_hull_vertices', trait='convex hull vertices',
                             method='plantcv.plantcv.analyze_object', scale='none', datatype=int,
                             value=hull_vertices, label='none')
-    outputs.add_observation(variable='object_in_frame', trait='object in frame',
+    outputs.add_observation(sample=label, variable='object_in_frame', trait='object in frame',
                             method='plantcv.plantcv.analyze_object', scale='none', datatype=bool,
                             value=in_bounds, label='none')
-    outputs.add_observation(variable='ellipse_center', trait='ellipse center',
+    outputs.add_observation(sample=label, variable='ellipse_center', trait='ellipse center',
                             method='plantcv.plantcv.analyze_object', scale='none', datatype=tuple,
                             value=(center[0], center[1]), label='none')
-    outputs.add_observation(variable='ellipse_major_axis', trait='ellipse major axis length',
+    outputs.add_observation(sample=label, variable='ellipse_major_axis', trait='ellipse major axis length',
                             method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
                             value=major_axis_length, label='pixels')
-    outputs.add_observation(variable='ellipse_minor_axis', trait='ellipse minor axis length',
+    outputs.add_observation(sample=label, variable='ellipse_minor_axis', trait='ellipse minor axis length',
                             method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
                             value=minor_axis_length, label='pixels')
-    outputs.add_observation(variable='ellipse_angle', trait='ellipse major axis angle',
+    outputs.add_observation(sample=label, variable='ellipse_angle', trait='ellipse major axis angle',
                             method='plantcv.plantcv.analyze_object', scale='degrees', datatype=float,
                             value=float(angle), label='degrees')
-    outputs.add_observation(variable='ellipse_eccentricity', trait='ellipse eccentricity',
+    outputs.add_observation(sample=label, variable='ellipse_eccentricity', trait='ellipse eccentricity',
                             method='plantcv.plantcv.analyze_object', scale='none', datatype=float,
                             value=float(eccentricity), label='none')
 
