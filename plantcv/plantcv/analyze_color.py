@@ -7,6 +7,7 @@ from plotnine import ggplot, aes, geom_line, scale_x_continuous, scale_color_man
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
+from plantcv.plantcv.visualize import _hist_gray
 
 
 def analyze_color(rgb_img, mask, hist_plot_type=None, label="default"):
@@ -55,25 +56,27 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, label="default"):
         fatal_error("The histogram plot type was " + str(hist_plot_type) +
                     ', but can only be one of the following: None, "all", "rgb", "lab", or "hsv"!')
     # Store histograms, plotting colors, and plotting labels
+    pixels = len(np.where(mask > 0)[0])
+
     histograms = {
         "b": {"label": "blue", "graph_color": "blue",
-              "hist": [float(i[0]) for i in cv2.calcHist([channels["b"]], [0], mask, [256], [0, 255])]},
+              "hist": _hist_gray(channels["b"], 256, 0, 255, mask)[2]},
         "g": {"label": "green", "graph_color": "forestgreen",
-              "hist": [float(i[0]) for i in cv2.calcHist([channels["g"]], [0], mask, [256], [0, 255])]},
+              "hist": _hist_gray(channels["g"], 256, 0, 255, mask)[2]},
         "r": {"label": "red", "graph_color": "red",
-              "hist": [float(i[0]) for i in cv2.calcHist([channels["r"]], [0], mask, [256], [0, 255])]},
+              "hist": _hist_gray(channels["r"], 256, 0, 255, mask)[2]},
         "l": {"label": "lightness", "graph_color": "dimgray",
-              "hist": [float(i[0]) for i in cv2.calcHist([channels["l"]], [0], mask, [256], [0, 255])]},
+              "hist": _hist_gray(channels["l"], 256, 0, 255, mask)[2]},
         "m": {"label": "green-magenta", "graph_color": "magenta",
-              "hist": [float(i[0]) for i in cv2.calcHist([channels["m"]], [0], mask, [256], [0, 255])]},
+              "hist": _hist_gray(channels["m"], 256, 0, 255, mask)[2]},
         "y": {"label": "blue-yellow", "graph_color": "yellow",
-              "hist": [float(i[0]) for i in cv2.calcHist([channels["y"]], [0], mask, [256], [0, 255])]},
+              "hist": _hist_gray(channels["y"], 256, 0, 255, mask)[2]},
         "h": {"label": "hue", "graph_color": "blueviolet",
-              "hist": [float(i[0]) for i in cv2.calcHist([channels["h"]], [0], mask, [256], [0, 255])]},
+              "hist": _hist_gray(channels["h"], 256, 0, 255, mask)[2]},
         "s": {"label": "saturation", "graph_color": "cyan",
-              "hist": [float(i[0]) for i in cv2.calcHist([channels["s"]], [0], mask, [256], [0, 255])]},
+              "hist": _hist_gray(channels["s"], 256, 0, 255, mask)[2]},
         "v": {"label": "value", "graph_color": "orange",
-              "hist": [float(i[0]) for i in cv2.calcHist([channels["v"]], [0], mask, [256], [0, 255])]}
+              "hist": _hist_gray(channels["v"], 256, 0, 255, mask)[2]}
     }
 
     # Create list of bin labels for 8-bit data
