@@ -379,7 +379,9 @@ def test_plantcv_parallel_metadata_parser_images():
             'other': 'none'}
     }
     assert meta == expected
-
+    config.include_all_subdirs = False
+    meta = plantcv.parallel.metadata_parser(config=config)
+    assert meta == expected
 
 def test_plantcv_parallel_metadata_parser_regex():
     # Create config instance
