@@ -108,9 +108,9 @@ class Outputs:
         # Create an empty dictionary for the sample if it does not exist
         if sample not in self.observations:
             self.observations[sample] = {}
-        supported_dtype = ["int","float", "str", "list", "bool"]
+        supported_dtype = ["str", "list", "bool"]
         # Send an error message if datatype is not supported by json
-        if not str(type(value)) in ["<class '{}'>".format(i) for i in supported_dtype]:
+        if not ("int" in str(type(value)) or "float" in str(type(value)) or str(type(value)) in ["<class '{}'>".format(i) for i in supported_dtype]):
             fatal_error("Data type not compatible with json! Please use only these: int, float, string, list, or bool!")
         # Save the observation for the sample and variable
         self.observations[sample][variable] = {
