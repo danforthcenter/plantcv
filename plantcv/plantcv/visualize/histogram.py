@@ -47,9 +47,9 @@ def _hist_gray(gray_img, bins, lower_bound, upper_bound, mask=None):
     hist_percent = (hist_gray_data / float(pixels)) * 100
     bin_labels = np.linspace(lower_bound, upper_bound, bins)
 
-    hist_data = pd.DataFrame({'pixel intensity': bin_labels, 'proportion of pixels (%)': hist_percent})
-
-    return hist_data
+    return bin_labels, hist_percent
+    # hist_data = pd.DataFrame({'pixel intensity': bin_labels, 'proportion of pixels (%)': hist_percent})
+    # return hist_data
 
 
 def histogram(img, mask=None, bins=None, lower_bound=None, upper_bound=None, title=None):
@@ -82,14 +82,15 @@ def histogram(img, mask=None, bins=None, lower_bound=None, upper_bound=None, tit
             b_names = [str(i) for i in range(img.shape[2])]
 
     if len(img.shape) == 2:
-        hist_data = _hist_gray(img, bins=bins, lower_bound=lower_bound, upper_bound=upper_bound, mask=mask)
-        hist_data['color channel'] = ['0' for i in range(len(hist_data))]
+        bin_labels, hist_percent= _hist_gray(img, bins=bins, lower_bound=lower_bound, upper_bound=upper_bound, mask=mask)
+        hist_data = pd.DataFrame({'pixel intensity': bin_labels, 'proportion of pixels (%)': hist_percent, 'color channel':['0' for i in range(len(hist_percent))]})
+        # hist_data['color channel'] = ['0' for i in range(len(hist_data))]
 
     else:
         # Assumption: RGB image
         for (b, b_name) in enumerate(b_names):
-            hist_temp = _hist_gray(img[:, :, b], bins=bins, lower_bound=lower_bound, upper_bound=upper_bound, mask=mask)
-            hist_temp['color channel'] = [b_name for i in range(len(hist_temp))]
+            bin_labels, hist_percent = _hist_gray(img[:, :, b], bins=bins, lower_bound=lower_bound, upper_bound=upper_bound, mask=mask)
+            hist_temp = pd.DataFrame({'pixel intensity': bin_labels, 'proportion of pixels (%)': hist_percent, 'color channel':[b_name for i in range(len(hist_percent))]})
             if b == 0:
                 hist_data = hist_temp
             else:
