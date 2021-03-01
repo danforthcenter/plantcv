@@ -61,7 +61,7 @@ Methods are accessed as plantcv.outputs.*method*.
     - 'list' or 'tuple'
     - 'bool'
 
-* value: The data itself. Make sure the data type of value coincide with the datatyp stated in "datatype". 
+* value: The data itself. Make sure the data type of value matches the datatyp stated in "datatype". 
 
 * label:  The label for each value, which will be useful when the data is a frequency table (e.g. hues). 
 
