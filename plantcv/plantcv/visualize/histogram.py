@@ -9,21 +9,17 @@ import pandas as pd
 from plotnine import ggplot, aes, geom_line, scale_x_continuous, labels, scale_color_manual
 
 
-def _hist_gray(gray_img, bins, lower_range, upper_range, mask=None):
+def _hist_gray(gray_img, bins, lower_bound, upper_bound, mask=None):
     """ Prepare the ready to plot histogram data
     :param gray_img: (numpy.ndarray) = grayscale image to analyze
     :param bins: (int) number of classes to divide spectrum into
-    :param lower_range: (int) the lower range of the bins
-    :param upper_range: (int) the upper range of the bins
+    :param lower_bound: (int) the lower bound of the bins
+    :param upper_bound: (int) the upper bound of the bins
     :param mask: (numpy.ndarray) = (optional) binary mask made from selected contours, by default mask = None
 
     :return:
     hist_data (pd.DataFrame): a DataFrame with columns "pixel intensity" and "proportion of pixels (%)", Ready to be used for ggplot
     """
-    # if type(gray_img) is not np.ndarray:
-    #     fatal_error("Only image of type numpy.ndarray is supported input!")
-    # if len(gray_img.shape) < 2:
-    #     fatal_error("Input image should be at least a 2d array!")
 
     params.device += 1
     debug = params.debug
@@ -45,24 +41,24 @@ def _hist_gray(gray_img, bins, lower_range, upper_range, mask=None):
     params.debug = debug
 
     # Store histogram data
-    hist_gray_data, hist_bins = np.histogram(masked, bins, (lower_range, upper_range))
+    hist_gray_data, hist_bins = np.histogram(masked, bins, (lower_bound, upper_bound))
 
     # make hist percentage for plotting
     hist_percent = (hist_gray_data / float(pixels)) * 100
-    bin_labels = np.linspace(lower_range, upper_range, bins)
+    bin_labels = np.linspace(lower_bound, upper_bound, bins)
 
     hist_data = pd.DataFrame({'pixel intensity': bin_labels, 'proportion of pixels (%)': hist_percent})
 
     return hist_data
 
 
-def histogram(img, mask=None, bins=None, lower_range=0, upper_range=None, title=None):
+def histogram(img, mask=None, bins=None, lower_bound=None, upper_bound=None, title=None):
     """Plot a histogram using ggplot
     :param img: (numpy.ndarray) = image to analyze
     :param mask: (numpy.ndarray) = (optional) binary mask made from selected contours, by default mask = None
     :param bins: (int) number of classes to divide spectrum into, by default bins = 256
-    :param lower_range: (int) the lower range of the bins
-    :param upper_range: (int) the upper range of the bins
+    :param lower_bound: (int) the lower range of the bins, by default lower_bound = None
+    :param upper_bound: (int) the upper range of the bins, by default upper_bound = None
     :param title: (str) custom title for the plot gets drawn if title is not None, by default title = None
     :return:
     fig_hist: ggplot
@@ -73,12 +69,9 @@ def histogram(img, mask=None, bins=None, lower_range=0, upper_range=None, title=
     if len(img.shape) < 2:
         fatal_error("Input image should be at least a 2d array!")
 
-    if upper_range is None:
-        if img.dtype == 'uint16':
-            upper_range = 65536
-        else:
-            upper_range = 256
-    bins = bins or upper_range-lower_range+1
+    lower_bound = lower_bound or img.min()
+    upper_bound = upper_bound or img.max()
+    bins = bins or int(np.ceil(min(256, upper_bound - lower_bound + 1)))
 
     params.device += 1
 
@@ -89,23 +82,27 @@ def histogram(img, mask=None, bins=None, lower_range=0, upper_range=None, title=
             b_names = [str(i) for i in range(img.shape[2])]
 
     if len(img.shape) == 2:
-        hist_data = _hist_gray(img, bins=bins, lower_range=lower_range, upper_range=upper_range, mask=mask)
+        hist_data = _hist_gray(img, bins=bins, lower_bound=lower_bound, upper_bound=upper_bound, mask=mask)
         hist_data['color channel'] = ['0' for i in range(len(hist_data))]
 
     else:
         # Assumption: RGB image
         for (b, b_name) in enumerate(b_names):
-            hist_temp = _hist_gray(img[:, :, b], bins=bins, lower_range=lower_range, upper_range=upper_range, mask=mask)
+            hist_temp = _hist_gray(img[:, :, b], bins=bins, lower_bound=lower_bound, upper_bound=upper_bound, mask=mask)
             hist_temp['color channel'] = [b_name for i in range(len(hist_temp))]
             if b == 0:
                 hist_data = hist_temp
             else:
                 hist_data = hist_data.append(hist_temp)
 
+    start = int(np.floor(lower_bound))
+    stop = int(np.ceil(upper_bound))
+    step = max(1, int((np.ceil(upper_bound) - np.floor(lower_bound)) / 10))
+
     fig_hist = (ggplot(data=hist_data, mapping=aes(x='pixel intensity',
                                                    y='proportion of pixels (%)', color='color channel'))
                 + geom_line()
-                + scale_x_continuous(breaks=list(range(lower_range, upper_range, max(1, int((upper_range - lower_range) / 10))))))
+                + scale_x_continuous(breaks=list(range(start, stop, step))))
 
     if title is not None:
         fig_hist = fig_hist + labels.ggtitle(title)
