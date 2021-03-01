@@ -18,7 +18,9 @@ def _hist_gray(gray_img, bins, lower_bound, upper_bound, mask=None):
     :param mask: (numpy.ndarray) = (optional) binary mask made from selected contours, by default mask = None
 
     :return:
-    hist_data (pd.DataFrame): a DataFrame with columns "pixel intensity" and "proportion of pixels (%)", Ready to be used for ggplot
+    bin_labels (numpy.ndarray): an array of histogram bin labels
+    hist_percent (numpy.ndarray): an array of histogram represented by percent values
+    hist_gray_data (numpy.ndarray): an array of histogram (original values)
     """
 
     params.device += 1
@@ -47,7 +49,7 @@ def _hist_gray(gray_img, bins, lower_bound, upper_bound, mask=None):
     hist_percent = (hist_gray_data / float(pixels)) * 100
     bin_labels = np.linspace(lower_bound, upper_bound, bins)
 
-    return bin_labels, hist_percent
+    return bin_labels, hist_percent, hist_gray_data
     # hist_data = pd.DataFrame({'pixel intensity': bin_labels, 'proportion of pixels (%)': hist_percent})
     # return hist_data
 
@@ -62,7 +64,7 @@ def histogram(img, mask=None, bins=None, lower_bound=None, upper_bound=None, tit
     :param title: (str) custom title for the plot gets drawn if title is not None, by default title = None
     :return:
     fig_hist: ggplot
-    hist_data: dataframe with histogram data
+    hist_data: dataframe with histogram data, with columns "pixel intensity" and "proportion of pixels (%)", Ready to be used for ggplot
     """
     if type(img) is not np.ndarray:
         fatal_error("Only image of type numpy.ndarray is supported input!")
@@ -82,14 +84,14 @@ def histogram(img, mask=None, bins=None, lower_bound=None, upper_bound=None, tit
             b_names = [str(i) for i in range(img.shape[2])]
 
     if len(img.shape) == 2:
-        bin_labels, hist_percent= _hist_gray(img, bins=bins, lower_bound=lower_bound, upper_bound=upper_bound, mask=mask)
+        bin_labels, hist_percent,_ = _hist_gray(img, bins=bins, lower_bound=lower_bound, upper_bound=upper_bound, mask=mask)
         hist_data = pd.DataFrame({'pixel intensity': bin_labels, 'proportion of pixels (%)': hist_percent, 'color channel':['0' for i in range(len(hist_percent))]})
         # hist_data['color channel'] = ['0' for i in range(len(hist_data))]
 
     else:
         # Assumption: RGB image
         for (b, b_name) in enumerate(b_names):
-            bin_labels, hist_percent = _hist_gray(img[:, :, b], bins=bins, lower_bound=lower_bound, upper_bound=upper_bound, mask=mask)
+            bin_labels, hist_percent,_ = _hist_gray(img[:, :, b], bins=bins, lower_bound=lower_bound, upper_bound=upper_bound, mask=mask)
             hist_temp = pd.DataFrame({'pixel intensity': bin_labels, 'proportion of pixels (%)': hist_percent, 'color channel':[b_name for i in range(len(hist_percent))]})
             if b == 0:
                 hist_data = hist_temp
