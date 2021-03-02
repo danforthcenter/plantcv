@@ -84,26 +84,25 @@ def histogram(img, mask=None, bins=None, lower_bound=None, upper_bound=None, tit
             b_names = [str(i) for i in range(img.shape[2])]
 
     if len(img.shape) == 2:
-        bin_labels, hist_percent,_ = _hist_gray(img, bins=bins, lower_bound=lower_bound, upper_bound=upper_bound, mask=mask)
-        hist_data = pd.DataFrame({'pixel intensity': bin_labels, 'proportion of pixels (%)': hist_percent, 'color channel':['0' for i in range(len(hist_percent))]})
+        bin_labels, hist_percent, hist_ = _hist_gray(img, bins=bins, lower_bound=lower_bound, upper_bound=upper_bound, mask=mask)
+        hist_data = pd.DataFrame({'pixel intensity': bin_labels, 'proportion of pixels (%)': hist_percent, 'intensity': hist_, 'color channel':['0' for i in range(len(hist_percent))]})
         # hist_data['color channel'] = ['0' for i in range(len(hist_data))]
 
     else:
         # Assumption: RGB image
         for (b, b_name) in enumerate(b_names):
-            bin_labels, hist_percent,_ = _hist_gray(img[:, :, b], bins=bins, lower_bound=lower_bound, upper_bound=upper_bound, mask=mask)
-            hist_temp = pd.DataFrame({'pixel intensity': bin_labels, 'proportion of pixels (%)': hist_percent, 'color channel':[b_name for i in range(len(hist_percent))]})
+            bin_labels, hist_percent, hist_  = _hist_gray(img[:, :, b], bins=bins, lower_bound=lower_bound, upper_bound=upper_bound, mask=mask)
+            hist_temp = pd.DataFrame({'pixel intensity': bin_labels, 'proportion of pixels (%)': hist_percent, 'intensity': hist_, 'color channel':[b_name for i in range(len(hist_percent))]})
             if b == 0:
                 hist_data = hist_temp
             else:
                 hist_data = hist_data.append(hist_temp)
 
     start = int(np.floor(lower_bound))
-    stop = int(np.ceil(upper_bound))
-    step = max(1, int((np.ceil(upper_bound) - np.floor(lower_bound)) / 10))
+    stop  = int(np.ceil(upper_bound))
+    step  = max(1, int((np.ceil(upper_bound) - np.floor(lower_bound)) / 10))
 
-    fig_hist = (ggplot(data=hist_data, mapping=aes(x='pixel intensity',
-                                                   y='proportion of pixels (%)', color='color channel'))
+    fig_hist = (ggplot(data=hist_data, mapping=aes(x='pixel intensity', y='proportion of pixels (%)', color='color channel'))
                 + geom_line()
                 + scale_x_continuous(breaks=list(range(start, stop, step))))
 
