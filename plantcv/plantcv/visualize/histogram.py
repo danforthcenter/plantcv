@@ -47,7 +47,8 @@ def _hist_gray(gray_img, bins, lower_bound, upper_bound, mask=None):
 
     # make hist percentage for plotting
     hist_percent = (hist_gray_data / float(pixels)) * 100
-    bin_labels = np.linspace(lower_bound, upper_bound, bins)
+    # use middle value of every bin as bin label
+    bin_labels   = np.array([np.average([hist_bins[i],hist_bins[i+1]]) for i in range(0,len(hist_bins)-1)])
 
     return bin_labels, hist_percent, hist_gray_data
     # hist_data = pd.DataFrame({'pixel intensity': bin_labels, 'proportion of pixels (%)': hist_percent})
@@ -71,9 +72,9 @@ def histogram(img, mask=None, bins=None, lower_bound=None, upper_bound=None, tit
     if len(img.shape) < 2:
         fatal_error("Input image should be at least a 2d array!")
 
-    lower_bound = lower_bound or img.min()
-    upper_bound = upper_bound or img.max()
-    bins = bins or int(np.ceil(min(256, upper_bound - lower_bound + 1)))
+    lower_bound = lower_bound if lower_bound is not None else img.min()
+    upper_bound = upper_bound if upper_bound is not None else img.max()
+    bins = bins if bins is not None else int(np.ceil(min(256, upper_bound - lower_bound + 1)))
 
     params.device += 1
 
