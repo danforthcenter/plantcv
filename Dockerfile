@@ -1,5 +1,5 @@
 FROM jupyter/minimal-notebook
-MAINTAINER PlantCV <ddpsc.plantcv@gmail.com>
+LABEL maintainer="PlantCV <plantcv@danforthcenter.org>"
 
 USER root
 

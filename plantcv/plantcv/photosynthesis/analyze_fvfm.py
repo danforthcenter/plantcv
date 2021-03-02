@@ -12,7 +12,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def analyze_fvfm(fdark, fmin, fmax, mask, bins=256):
+def analyze_fvfm(fdark, fmin, fmax, mask, bins=256, label="default"):
     """Analyze PSII camera images.
     Inputs:
     fdark       = grayscale fdark image
@@ -20,6 +20,8 @@ def analyze_fvfm(fdark, fmin, fmax, mask, bins=256):
     fmax        = grayscale fmax image
     mask        = mask of plant (binary, single channel)
     bins        = number of bins (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
+    label       = optional label parameter, modifies the variable name of observations recorded
+
     Returns:
     analysis_images = list of images (fv image and fvfm histogram image)
     :param fdark: numpy.ndarray
@@ -27,6 +29,7 @@ def analyze_fvfm(fdark, fmin, fmax, mask, bins=256):
     :param fmax: numpy.ndarray
     :param mask: numpy.ndarray
     :param bins: int
+    :param label: str
     :return analysis_images: numpy.ndarray
     """
 
@@ -97,16 +100,16 @@ def analyze_fvfm(fdark, fmin, fmax, mask, bins=256):
         plot_image(fv, cmap='gray')
         print(fvfm_hist_fig)
 
-    outputs.add_observation(variable='fvfm_hist', trait='Fv/Fm frequencies',
+    outputs.add_observation(sample=label, variable='fvfm_hist', trait='Fv/Fm frequencies',
                             method='plantcv.plantcv.fluor_fvfm', scale='none', datatype=list,
                             value=fvfm_hist.tolist(), label=np.around(midpoints, decimals=len(str(bins))).tolist())
-    outputs.add_observation(variable='fvfm_hist_peak', trait='peak Fv/Fm value',
+    outputs.add_observation(sample=label, variable='fvfm_hist_peak', trait='peak Fv/Fm value',
                             method='plantcv.plantcv.fluor_fvfm', scale='none', datatype=float,
                             value=float(max_bin), label='none')
-    outputs.add_observation(variable='fvfm_median', trait='Fv/Fm median',
+    outputs.add_observation(sample=label, variable='fvfm_median', trait='Fv/Fm median',
                             method='plantcv.plantcv.fluor_fvfm', scale='none', datatype=float,
                             value=float(np.around(fvfm_median, decimals=4)), label='none')
-    outputs.add_observation(variable='fdark_passed_qc', trait='Fdark passed QC',
+    outputs.add_observation(sample=label, variable='fdark_passed_qc', trait='Fdark passed QC',
                             method='plantcv.plantcv.fluor_fvfm', scale='none', datatype=bool,
                             value=qc_fdark, label='none')
 
