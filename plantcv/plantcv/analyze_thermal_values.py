@@ -8,7 +8,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 from plotnine import ggplot, aes, geom_line
 from plantcv.plantcv.threshold import binary as binary_threshold
-
+from plantcv.plantcv.visualize import histogram
 
 def analyze_thermal_values(thermal_array, mask, histplot=False, label="default"):
     """This extracts the thermal values of each pixel writes the values out to
@@ -30,29 +30,18 @@ def analyze_thermal_values(thermal_array, mask, histplot=False, label="default")
     :param label: str
     :return analysis_img: ggplot
     """
-    max_value = np.amax(thermal_array)
-    # Calculate histogram
-    hist_thermal = [float(i[0]) for i in cv2.calcHist([np.float32(thermal_array)], [0], mask, [256], [0, max_value])]
-    bin_width = max_value / 256.
-    b = 0
-    bin_labels = [float(b)]
-    for i in range(255):
-        b += bin_width
-        bin_labels.append(b)
 
     # Store debug mode
     debug = params.debug
     params.debug = None
 
-    # apply plant shaped mask to image
-    mask1 = binary_threshold(mask, 0, 255, 'light')
     params.debug = debug
 
-    mask1 = (mask1 / 255)
     masked_thermal = thermal_array[np.where(mask > 0)]
 
-    pixels = cv2.countNonZero(mask1)
-    hist_percent = [(p / float(pixels)) * 100 for p in hist_thermal]
+    # call the histogram function
+    _, hist_data = histogram(thermal_array, mask=mask, bins=256)
+    bin_labels, hist_percent = hist_data['pixel intensity'], hist_data['proportion of pixels (%)']
 
     maxtemp = np.amax(masked_thermal)
     mintemp = np.amin(masked_thermal)
@@ -74,15 +63,18 @@ def analyze_thermal_values(thermal_array, mask, histplot=False, label="default")
                             value=mediantemp, label='degrees')
     outputs.add_observation(sample=label, variable='thermal_frequencies', trait='thermal frequencies',
                             method='plantcv.plantcv.analyze_thermal_values', scale='frequency', datatype=list,
-                            value=hist_percent, label=bin_labels)
+                            value=hist_percent.tolist(), label=bin_labels.tolist())
     analysis_img = None
 
     if histplot is True:
         params.device += 1
 
-        dataset = pd.DataFrame({'Temperature C': bin_labels,
-                                'Proportion of pixels (%)': hist_percent})
-        fig_hist = (ggplot(data=dataset,
+        # change column names of "hist_data"
+        hist_data = hist_data.rename(
+            columns={"pixel intensity": "Temperature C", "proportion of pixels (%)": "Proportion of pixels (%)"},
+            errors="raise")
+
+        fig_hist = (ggplot(data=hist_data,
                            mapping=aes(x='Temperature C',
                                        y='Proportion of pixels (%)'))
                     + geom_line(color='green'))
