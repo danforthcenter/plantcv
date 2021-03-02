@@ -7,7 +7,7 @@ from plotnine import ggplot, aes, geom_line, scale_x_continuous, scale_color_man
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
-from plantcv.plantcv.visualize import _hist_gray
+from plantcv.plantcv.visualize import histogram
 
 
 def analyze_color(rgb_img, mask, hist_plot_type=None, label="default"):
@@ -55,28 +55,27 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, label="default"):
     if hist_plot_type is not None and hist_plot_type.upper() not in hist_types:
         fatal_error("The histogram plot type was " + str(hist_plot_type) +
                     ', but can only be one of the following: None, "all", "rgb", "lab", or "hsv"!')
-    # Store histograms, plotting colors, and plotting labels
-    # pixels = len(np.where(mask > 0)[0])
 
+    # Store histograms, plotting colors, and plotting labels
     histograms = {
         "b": {"label": "blue", "graph_color": "blue",
-              "hist": _hist_gray(channels["b"], 256, 0, 255, mask)[2].tolist()},
+              "hist": histogram(channels["b"], mask, 256, 0, 255)[1]['hist_count'].tolist()},
         "g": {"label": "green", "graph_color": "forestgreen",
-              "hist": _hist_gray(channels["g"], 256, 0, 255, mask)[2].tolist()},
+              "hist": histogram(channels["g"], mask, 256, 0, 255)[1]['hist_count'].tolist()},
         "r": {"label": "red", "graph_color": "red",
-              "hist": _hist_gray(channels["r"], 256, 0, 255, mask)[2].tolist()},
+              "hist": histogram(channels["r"], mask, 256, 0, 255)[1]['hist_count'].tolist()},
         "l": {"label": "lightness", "graph_color": "dimgray",
-              "hist": _hist_gray(channels["l"], 256, 0, 255, mask)[2].tolist()},
+              "hist": histogram(channels["l"], mask, 256, 0, 255)[1]['hist_count'].tolist()},
         "m": {"label": "green-magenta", "graph_color": "magenta",
-              "hist": _hist_gray(channels["m"], 256, 0, 255, mask)[2].tolist()},
+              "hist": histogram(channels["m"], mask, 256, 0, 255)[1]['hist_count'].tolist()},
         "y": {"label": "blue-yellow", "graph_color": "yellow",
-              "hist": _hist_gray(channels["y"], 256, 0, 255, mask)[2].tolist()},
+              "hist": histogram(channels["y"], mask, 256, 0, 255)[1]['hist_count'].tolist()},
         "h": {"label": "hue", "graph_color": "blueviolet",
-              "hist": _hist_gray(channels["h"], 256, 0, 255, mask)[2].tolist()},
+              "hist": histogram(channels["h"], mask, 256, 0, 255)[1]['hist_count'].tolist()},
         "s": {"label": "saturation", "graph_color": "cyan",
-              "hist": _hist_gray(channels["s"], 256, 0, 255, mask)[2].tolist()},
+              "hist": histogram(channels["s"], mask, 256, 0, 255)[1]['hist_count'].tolist()},
         "v": {"label": "value", "graph_color": "orange",
-              "hist": _hist_gray(channels["v"], 256, 0, 255, mask)[2].tolist()}
+              "hist": histogram(channels["v"], mask, 256, 0, 255)[1]['hist_count'].tolist()}
     }
 
     # Create list of bin labels for 8-bit data
