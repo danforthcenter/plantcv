@@ -10,7 +10,7 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv.threshold import binary as binary_threshold
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
-
+from plantcv.plantcv.visualize import histogram
 
 def analyze_nir_intensity(gray_img, mask, bins=256, histplot=False, label="default"):
     """This function calculates the intensity of each pixel associated with the plant and writes the values out to
@@ -51,7 +51,7 @@ def analyze_nir_intensity(gray_img, mask, bins=256, histplot=False, label="defau
     # Calculate histogram
     fig_hist, hist_data = histogram(gray_img, mask=mask, bins=bins, lower_bound=0, upper_bound=maxval, title=None)
 
-    bin_labels, hist_nir, hist_percent = hist_data['pixel intensity'].tolist(), hist_data['intensity'].tolist(), \
+    bin_labels, hist_nir, hist_percent = hist_data['pixel intensity'].tolist(), hist_data['hist_count'].tolist(), \
                                          hist_data['proportion of pixels (%)'].tolist()
 
     masked1 = cv2.bitwise_and(rgbimg, rgbimg, mask=mask)
