@@ -56,7 +56,7 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, label="default"):
         fatal_error("The histogram plot type was " + str(hist_plot_type) +
                     ', but can only be one of the following: None, "all", "rgb", "lab", or "hsv"!')
     # Store histograms, plotting colors, and plotting labels
-    pixels = len(np.where(mask > 0)[0])
+    # pixels = len(np.where(mask > 0)[0])
 
     histograms = {
         "b": {"label": "blue", "graph_color": "blue",
@@ -136,7 +136,6 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, label="default"):
         analysis_image = hist_fig
     # Hue values of zero are red but are also the value for pixels where hue is undefined. The hue value of a pixel will
     # be undef. when the color values are saturated. Therefore, hue values of 0 are excluded from the calculations below
-
     # Calculate the median hue value (median is rescaled from the encoded 0-179 range to the 0-359 degree range)
     hue_median = np.median(h[np.where(h > 0)]) * 2
 
