@@ -103,9 +103,9 @@ def main():
     #   img             - Image data
     #   rotation_deg    - Rotation angle in degrees, can be a negative number, positive values move counter clockwise
     #   crop            - If crop is set to True, image will be cropped to original image dimensions. If set to False, the image size will be adjusted to accommodate new image dimensions.
-    fdark = pcv.rotate(img=fdark1, rotation_deg=-90, crop=False)
-    fmin = pcv.rotate(img=fmin1, rotation_deg=-90, crop=False)
-    fmax = pcv.rotate(img=fmax1, rotation_deg=-90, crop=False)
+    fdark = pcv.transform.rotate(img=fdark1, rotation_deg=-90, crop=False)
+    fmin = pcv.transform.rotate(img=fmin1, rotation_deg=-90, crop=False)
+    fmax = pcv.transform.rotate(img=fmax1, rotation_deg=-90, crop=False)
 
 
 ```
@@ -197,7 +197,8 @@ The next step is to analyze the plant object for traits such as [shape](analyze_
     #   img             - RGB or grayscale image data
     #   obj             - Single or grouped contour object
     #   mask            - Binary image mask to use as mask for moments analysis
-    shape_img = pcv.analyze_object(img=fmax, obj=obj, mask=cleaned_mask)
+    #   label        - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
+    shape_img = pcv.analyze_object(img=fmax, obj=obj, mask=cleaned_mask, label="default")
 
     # Analyze fv/fm fluorescence properties
 
@@ -207,7 +208,8 @@ The next step is to analyze the plant object for traits such as [shape](analyze_
     #   fmax            - Grayscale image
     #   mask            - Binary mask of selected contours
     #   bins            - Number of grayscale bins (0-256 for 8-bit img, 0-65536 for 16-bit). Default bins = 256
-    fvfm_images = pcv.photosynthesis.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=cleaned_mask, bins=256)
+    #   label        - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
+    fvfm_images = pcv.photosynthesis.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=cleaned_mask, bins=256, label="default")
 
     # Store the two fv_fm images
     fvfm_img = fvfm_images[0]
@@ -290,9 +292,9 @@ def main():
     fdark1, fmin1, fmax1 = pcv.photosynthesis.read_cropreporter(args.image)
 
     # Rotate so plant is upright
-    fdark = pcv.rotate(img=fdark1, rotation_deg=-90, crop=False)
-    fmin = pcv.rotate(img=fmin1, rotation_deg=-90, crop=False)
-    fmax = pcv.rotate(img=fmax1, rotation_deg=-90, crop=False)
+    fdark = pcv.transform.rotate(img=fdark1, rotation_deg=-90, crop=False)
+    fmin = pcv.transform.rotate(img=fmin1, rotation_deg=-90, crop=False)
+    fmax = pcv.transform.rotate(img=fmax1, rotation_deg=-90, crop=False)
 
     # Threshold fmax image to make plant mask
     plant_mask = pcv.threshold.binary(gray_img=fmax, threshold=855, max_value=255, object_type="light")
@@ -305,10 +307,10 @@ def main():
     obj, masked = pcv.object_composition(img=cleaned_mask, contours=id_objects, hierarchy=obj_hierarchy)
 
      # Find shape properties
-    shape_img = pcv.analyze_object(img=fmax, obj=obj, mask=cleaned_mask)
+    shape_img = pcv.analyze_object(img=fmax, obj=obj, mask=cleaned_mask, label="default")
 
     # Analyze fv/fm fluorescence properties
-    fvfm_images = pcv.pcv.photosynthesis.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=cleaned_mask, bins=256)
+    fvfm_images = pcv.pcv.photosynthesis.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=cleaned_mask, bins=256, label="default")
 
     # Store the two fv_fm images
     fvfm_img = fvfm_images[0]

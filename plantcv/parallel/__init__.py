@@ -21,6 +21,7 @@ class WorkflowConfig:
         self.filename_metadata = []
         self.workflow = ""
         self.img_outdir = "./output_images"
+        self.include_all_subdirs = True
         self.tmp_dir = None
         self.start_date = None
         self.end_date = None

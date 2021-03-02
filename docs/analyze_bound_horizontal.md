@@ -4,7 +4,7 @@ Set boundary line with boundary tool, this allows the user to find the extent-y 
 above and below as well as the area above and below the boundary line. This tool functions 
 best if the pot size/position of the plant remains relatively constant.
  
-**plantcv.analyze_bound_horizontal**(*img, obj, mask, line_position*)
+**plantcv.analyze_bound_horizontal**(*img, obj, mask, line_position, label="default"*)
 
 **returns** image with boundary data
 
@@ -13,6 +13,7 @@ best if the pot size/position of the plant remains relatively constant.
     - obj - single or grouped contour object
     - mask - binary mask of selected contours
     - line_position - position of boundary line (a value of 0 would draw the line through the top of the image)
+    - label - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
 - **Context:**
     - Used to define a boundary line for the image, to find the height above and below as well as area above and below a boundary line.
 - **Example use:**
@@ -30,10 +31,10 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Set Boundary Line    
-boundary_image = pcv.analyze_bound_horizontal(img=img, obj=obj, mask=bin_mask, line_position=300)
+boundary_image = pcv.analyze_bound_horizontal(img=img, obj=obj, mask=bin_mask, line_position=300, label="default")
 
 # Access data stored out from analyze_bound_horizontal
-percent_area_below_reference = pcv.outputs.observations['percent_area_below_reference']['value']
+percent_area_below_reference = pcv.outputs.observations['default']['percent_area_below_reference']['value']
 
 ```
 

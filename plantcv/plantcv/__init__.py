@@ -8,7 +8,8 @@ class Params:
     """PlantCV parameters class."""
 
     def __init__(self, device=0, debug=None, debug_outdir=".", line_thickness=5, dpi=100, text_size=0.55,
-                 text_thickness=2, color_scale="gist_rainbow", color_sequence="sequential", saved_color_scale=None):
+                 text_thickness=2, marker_size=60, color_scale="gist_rainbow", color_sequence="sequential",
+                 saved_color_scale=None):
         """Initialize parameters.
 
         Keyword arguments/parameters:
@@ -19,6 +20,7 @@ class Params:
         dpi               = Figure plotting resolution, dots per inch. (default: 100)
         text_size         = Size of plotting text. (default: 0.55)
         text_thickness    = Thickness of plotting text. (default: 2)
+        marker_size       = Size of plotting markers (default: 60)
         color_scale       = Name of plotting color scale (matplotlib colormap). (default: gist_rainbow)
         color_sequence    = Build color scales in "sequential" or "random" order. (default: sequential)
         saved_color_scale = Saved color scale that will be applied next time color_palette is called. (default: None)
@@ -30,6 +32,7 @@ class Params:
         :param dpi: int
         :param text_size: float
         :param text_thickness: int
+        :param marker_size: int
         :param color_scale: str
         :param color_sequence: str
         :param saved_color_scale: list
@@ -41,6 +44,7 @@ class Params:
         self.dpi = dpi
         self.text_size = text_size
         self.text_thickness = text_thickness
+        self.marker_size = marker_size
         self.color_scale = color_scale
         self.color_sequence = color_sequence
         self.saved_color_scale = saved_color_scale
@@ -63,9 +67,10 @@ class Outputs:
         self.observations = {}
 
     # Method to add observation to outputs
-    def add_observation(self, variable, trait, method, scale, datatype, value, label):
+    def add_observation(self, sample, variable, trait, method, scale, datatype, value, label):
         """
         Keyword arguments/parameters:
+        sample       = Sample name. Used to distinguish between multiple samples
         variable     = A local unique identifier of a variable, e.g. a short name,
                        that is a key linking the definitions of variables with observations.
         trait        = A name of the trait mapped to an external ontology; if there is no exact mapping, an informative
@@ -80,6 +85,7 @@ class Outputs:
         label        = The label for each value (most useful when the data is a frequency table as in hue,
                        or other tables)
 
+        :param sample: str
         :param variable: str
         :param trait: str
         :param method: str
@@ -88,6 +94,7 @@ class Outputs:
         :param value:
         :param label:
         """
+        self.sample = sample
         self.variable = variable
         self.trait = trait
         self.method = method
@@ -96,7 +103,11 @@ class Outputs:
         self.value = value
         self.label = label
 
-        self.observations[variable] = {
+        # Create an empty dictionary for the sample if it does not exist
+        if sample not in self.observations:
+            self.observations[sample] = {}
+        # Save the observation for the sample and variable
+        self.observations[sample][variable] = {
             "trait": trait,
             "method": method,
             "scale": scale,
@@ -154,6 +165,8 @@ from plantcv.plantcv.print_image import print_image
 from plantcv.plantcv.plot_image import plot_image
 from plantcv.plantcv.color_palette import color_palette
 from plantcv.plantcv.rgb2gray import rgb2gray
+from plantcv.plantcv.rgb2gray_hsv import rgb2gray_hsv
+from plantcv.plantcv.rgb2gray_lab import rgb2gray_lab
 from plantcv.plantcv.gaussian_blur import gaussian_blur
 from plantcv.plantcv import transform
 from plantcv.plantcv import hyperspectral
@@ -171,8 +184,6 @@ from plantcv.plantcv.erode import erode
 from plantcv.plantcv.dilate import dilate
 from plantcv.plantcv.watershed import watershed_segmentation
 from plantcv.plantcv.rectangle_mask import rectangle_mask
-from plantcv.plantcv.rgb2gray_hsv import rgb2gray_hsv
-from plantcv.plantcv.rgb2gray_lab import rgb2gray_lab
 from plantcv.plantcv.median_blur import median_blur
 from plantcv.plantcv.fill import fill
 from plantcv.plantcv.invert import invert
