@@ -25,7 +25,11 @@ def read_cropreporter(filename):
         :return fmax: numpy.ndarray
         """
     # Find .INF filename based on the .DAT filename
-    inf_filename = filename.replace("PSD", "HDR")
+    img_filename = filename.split("/")[-1]
+    filename_components = img_filename.split("_")
+    filename_components[1] = "HDR"
+    s = "_"
+    inf_filename = s.join(filename_components)
     inf_filename = inf_filename.replace(".DAT", ".INF")
 
     # Parse .inf file and create dictionary with metadata stored within
