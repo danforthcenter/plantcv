@@ -45,7 +45,7 @@ def analyze_thermal_values(thermal_array, mask, histplot=False, label="default")
     # call the histogram function
     params.debug = None
     hist_fig, hist_data = histogram(thermal_array, mask=mask)
-    bin_labels, hist_percent = hist_data['pixel intensity'], hist_data['proportion of pixels (%)']
+    bin_labels, hist_percent = hist_data['pixel intensity'].tolist(), hist_data['proportion of pixels (%)'].tolist()
 
     # Store data into outputs class
     outputs.add_observation(sample=label, variable='max_temp', trait='maximum temperature',
