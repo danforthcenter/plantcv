@@ -6,9 +6,10 @@ import numpy as np
 import pandas as pd
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
-from plotnine import ggplot, aes, geom_line
+from plotnine import ggplot, aes, geom_line, labs
 from plantcv.plantcv.threshold import binary as binary_threshold
 from plantcv.plantcv.visualize import histogram
+
 
 def analyze_thermal_values(thermal_array, mask, histplot=False, label="default"):
     """This extracts the thermal values of each pixel writes the values out to
@@ -22,31 +23,29 @@ def analyze_thermal_values(thermal_array, mask, histplot=False, label="default")
     label        = optional label parameter, modifies the variable name of observations recorded
 
     Returns:
-    analysis_img = output image
+    analysis_image = output image
 
     :param thermal_array: numpy.ndarray
     :param mask: numpy.ndarray
     :param histplot: bool
     :param label: str
-    :return analysis_img: ggplot
+    :return analysis_image: ggplot
     """
 
     # Store debug mode
     debug = params.debug
-    params.debug = None
 
-    params.debug = debug
-
+    # apply plant shaped mask to image and calculate statistics based on the masked image
     masked_thermal = thermal_array[np.where(mask > 0)]
-
-    # call the histogram function
-    _, hist_data = histogram(thermal_array, mask=mask, bins=256)
-    bin_labels, hist_percent = hist_data['pixel intensity'], hist_data['proportion of pixels (%)']
-
     maxtemp = np.amax(masked_thermal)
     mintemp = np.amin(masked_thermal)
     avgtemp = np.average(masked_thermal)
     mediantemp = np.median(masked_thermal)
+
+    # call the histogram function
+    params.debug = None
+    hist_fig, hist_data = histogram(thermal_array, mask=mask)
+    bin_labels, hist_percent = hist_data['pixel intensity'], hist_data['proportion of pixels (%)']
 
     # Store data into outputs class
     outputs.add_observation(sample=label, variable='max_temp', trait='maximum temperature',
@@ -63,26 +62,24 @@ def analyze_thermal_values(thermal_array, mask, histplot=False, label="default")
                             value=mediantemp, label='degrees')
     outputs.add_observation(sample=label, variable='thermal_frequencies', trait='thermal frequencies',
                             method='plantcv.plantcv.analyze_thermal_values', scale='frequency', datatype=list,
-                            value=hist_percent.tolist(), label=bin_labels.tolist())
-    analysis_img = None
-
+                            value=hist_percent, label=bin_labels)
+    params.debug = debug
+    analysis_image = None
     if histplot is True:
         params.device += 1
 
         # change column names of "hist_data"
-        hist_data = hist_data.rename(
-            columns={"pixel intensity": "Temperature C", "proportion of pixels (%)": "Proportion of pixels (%)"},
-            errors="raise")
-
-        fig_hist = (ggplot(data=hist_data,
-                           mapping=aes(x='Temperature C',
-                                       y='Proportion of pixels (%)'))
-                    + geom_line(color='green'))
-
-        analysis_img = fig_hist
+        hist_fig = hist_fig + labs(x="Temperature C", y="Proportion of pixels (%)")
         if params.debug == "print":
-            fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + '_therm_histogram.png'), verbose=False)
+            hist_fig.save(os.path.join(params.debug_outdir, str(params.device) + '_therm_histogram.png'),
+                          verbose=False)
         elif params.debug == "plot":
-            print(fig_hist)
+            print(hist_fig)
+        analysis_image = hist_fig
+    # Store images
+    outputs.images.append(analysis_image)
 
-    return analysis_img
+    return analysis_image
+
+
+
