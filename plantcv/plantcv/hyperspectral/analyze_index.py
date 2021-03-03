@@ -9,7 +9,8 @@ from plantcv.plantcv import outputs
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 from plantcv.plantcv import fatal_error
-from plotnine import ggplot, aes, geom_line, scale_x_continuous
+from plotnine import ggplot, aes, geom_line, scale_x_continuous, labs
+from plantcv.plantcv.visualize import histogram
 
 
 def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=0, max_bin=1, label="default"):
@@ -77,35 +78,17 @@ def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=0, max_bi
               ", " + str(maxval) + "]. Adjust min_bin and max_bin in order to avoid cutting off data being collected.")
 
     # Calculate histogram
-    hist_val = [float(i[0]) for i in cv2.calcHist([masked_array.astype(np.float32)], [0], None, [bins], [b, maxval])]
-    bin_width = (maxval - b) / float(bins)
-    bin_labels = [float(b)]
-    plotting_labels = [float(b)]
-    for i in range(bins - 1):
-        b += bin_width
-        bin_labels.append(b)
-        plotting_labels.append(round(b, 2))
-
-    # Make hist percentage for plotting
-    pixels = cv2.countNonZero(mask)
-    hist_percent = [(p / float(pixels)) * 100 for p in hist_val]
+    hist_fig, hist_data = histogram(index_array.array_data, mask=mask, bins=bins, lower_bound=b, upper_bound=maxval)
+    bin_labels, hist_percent = hist_data['pixel intensity'].tolist(), hist_data['proportion of pixels (%)'].tolist()
 
     params.debug = debug
-
     if histplot is True:
-        dataset = pd.DataFrame({'Index Reflectance': bin_labels,
-                                'Proportion of pixels (%)': hist_percent})
-        fig_hist = (ggplot(data=dataset,
-                           mapping=aes(x='Index Reflectance',
-                                       y='Proportion of pixels (%)'))
-                    + geom_line(color='red')
-                    + scale_x_continuous(breaks=bin_labels, labels=plotting_labels))
-        analysis_image = fig_hist
+        hist_fig = hist_fig + labs(x='Index Reflectance', y='Proportion of pixels (%)')
         if params.debug == 'print':
-            fig_hist.save(os.path.join(params.debug_outdir,
-                                       str(params.device) + index_array.array_type + "hist.png"), verbose=False)
+            hist_fig.save(os.path.join(params.debug_outdir, str(params.device) + index_array.array_type + "hist.png"), verbose=False)
         elif params.debug == 'plot':
-            print(fig_hist)
+            print(hist_fig)
+        analysis_image = hist_fig
 
     outputs.add_observation(sample=label, variable='mean_' + index_array.array_type,
                             trait='Average ' + index_array.array_type + ' reflectance',
