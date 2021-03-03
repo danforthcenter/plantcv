@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 import pandas as pd
 from scipy import stats
-from plotnine import ggplot, aes, geom_line, scale_x_continuous, scale_color_manual
+from plotnine import ggplot, aes, geom_line, scale_x_continuous, scale_color_manual, labs
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
@@ -55,27 +55,25 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, label="default"):
     if hist_plot_type is not None and hist_plot_type.upper() not in hist_types:
         fatal_error("The histogram plot type was " + str(hist_plot_type) +
                     ', but can only be one of the following: None, "all", "rgb", "lab", or "hsv"!')
-
-    # Store histograms, plotting colors, and plotting labels
     histograms = {
         "b": {"label": "blue", "graph_color": "blue",
-              "hist": histogram(channels["b"], mask, 256, 0, 255)[1]['hist_count'].tolist()},
+              "hist": histogram(channels["b"], mask, 256, 0, 255)[1]['proportion of pixels (%)'].tolist()},
         "g": {"label": "green", "graph_color": "forestgreen",
-              "hist": histogram(channels["g"], mask, 256, 0, 255)[1]['hist_count'].tolist()},
+              "hist": histogram(channels["g"], mask, 256, 0, 255)[1]['proportion of pixels (%)'].tolist()},
         "r": {"label": "red", "graph_color": "red",
-              "hist": histogram(channels["r"], mask, 256, 0, 255)[1]['hist_count'].tolist()},
+              "hist": histogram(channels["r"], mask, 256, 0, 255)[1]['proportion of pixels (%)'].tolist()},
         "l": {"label": "lightness", "graph_color": "dimgray",
-              "hist": histogram(channels["l"], mask, 256, 0, 255)[1]['hist_count'].tolist()},
+              "hist": histogram(channels["l"], mask, 256, 0, 255)[1]['proportion of pixels (%)'].tolist()},
         "m": {"label": "green-magenta", "graph_color": "magenta",
-              "hist": histogram(channels["m"], mask, 256, 0, 255)[1]['hist_count'].tolist()},
+              "hist": histogram(channels["m"], mask, 256, 0, 255)[1]['proportion of pixels (%)'].tolist()},
         "y": {"label": "blue-yellow", "graph_color": "yellow",
-              "hist": histogram(channels["y"], mask, 256, 0, 255)[1]['hist_count'].tolist()},
+              "hist": histogram(channels["y"], mask, 256, 0, 255)[1]['proportion of pixels (%)'].tolist()},
         "h": {"label": "hue", "graph_color": "blueviolet",
-              "hist": histogram(channels["h"], mask, 256, 0, 255)[1]['hist_count'].tolist()},
+              "hist": histogram(channels["h"], mask, 256, 0, 255)[1]['proportion of pixels (%)'].tolist()},
         "s": {"label": "saturation", "graph_color": "cyan",
-              "hist": histogram(channels["s"], mask, 256, 0, 255)[1]['hist_count'].tolist()},
+              "hist": histogram(channels["s"], mask, 256, 0, 255)[1]['proportion of pixels (%)'].tolist()},
         "v": {"label": "value", "graph_color": "orange",
-              "hist": histogram(channels["v"], mask, 256, 0, 255)[1]['hist_count'].tolist()}
+              "hist": histogram(channels["v"], mask, 256, 0, 255)[1]['proportion of pixels (%)'].tolist()}
     }
 
     # Create list of bin labels for 8-bit data
@@ -88,13 +86,12 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, label="default"):
                             'lightness': histograms["l"]["hist"], 'green-magenta': histograms["m"]["hist"],
                             'blue-yellow': histograms["y"]["hist"], 'hue': histograms["h"]["hist"],
                             'saturation': histograms["s"]["hist"], 'value': histograms["v"]["hist"]})
-
     # Make the histogram figure using plotnine
     if hist_plot_type is not None:
         if hist_plot_type.upper() == 'RGB':
             df_rgb = pd.melt(dataset, id_vars=['bins'], value_vars=['blue', 'green', 'red'],
-                             var_name='Color Channel', value_name='Pixels')
-            hist_fig = (ggplot(df_rgb, aes(x='bins', y='Pixels', color='Color Channel'))
+                             var_name='color Channel', value_name='proportion of pixels (%)')
+            hist_fig = (ggplot(df_rgb, aes(x='bins', y='proportion of pixels (%)', color='color Channel'))
                         + geom_line()
                         + scale_x_continuous(breaks=list(range(0, 256, 25)))
                         + scale_color_manual(['blue', 'green', 'red'])
@@ -103,8 +100,8 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, label="default"):
         elif hist_plot_type.upper() == 'LAB':
             df_lab = pd.melt(dataset, id_vars=['bins'],
                              value_vars=['lightness', 'green-magenta', 'blue-yellow'],
-                             var_name='Color Channel', value_name='Pixels')
-            hist_fig = (ggplot(df_lab, aes(x='bins', y='Pixels', color='Color Channel'))
+                             var_name='color Channel', value_name='proportion of pixels (%)')
+            hist_fig = (ggplot(df_lab, aes(x='bins', y='proportion of pixels (%)', color='color Channel'))
                         + geom_line()
                         + scale_x_continuous(breaks=list(range(0, 256, 25)))
                         + scale_color_manual(['yellow', 'magenta', 'dimgray'])
@@ -113,8 +110,8 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, label="default"):
         elif hist_plot_type.upper() == 'HSV':
             df_hsv = pd.melt(dataset, id_vars=['bins'],
                              value_vars=['hue', 'saturation', 'value'],
-                             var_name='Color Channel', value_name='Pixels')
-            hist_fig = (ggplot(df_hsv, aes(x='bins', y='Pixels', color='Color Channel'))
+                             var_name='color Channel', value_name='proportion of pixels (%)')
+            hist_fig = (ggplot(df_hsv, aes(x='bins', y='proportion of pixels (%)', color='color Channel'))
                         + geom_line()
                         + scale_x_continuous(breaks=list(range(0, 256, 25)))
                         + scale_color_manual(['blueviolet', 'cyan', 'orange'])
@@ -125,14 +122,16 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, label="default"):
                            'blue-yellow', 'hue', 'saturation', 'value'], dtype="category")
             color_channels = ['blue', 'yellow', 'green', 'magenta', 'blueviolet',
                               'dimgray', 'red', 'cyan', 'orange']
-            df_all = pd.melt(dataset, id_vars=['bins'], value_vars=s, var_name='Color Channel',
-                             value_name='Pixels')
-            hist_fig = (ggplot(df_all, aes(x='bins', y='Pixels', color='Color Channel'))
+            df_all = pd.melt(dataset, id_vars=['bins'], value_vars=s, var_name='color Channel',
+                             value_name='proportion of pixels (%)')
+            hist_fig = (ggplot(df_all, aes(x='bins', y='proportion of pixels (%)', color='color Channel'))
                         + geom_line()
                         + scale_x_continuous(breaks=list(range(0, 256, 25)))
                         + scale_color_manual(color_channels)
                         )
-        analysis_image = hist_fig
+
+        hist_fig = hist_fig + labs(x="Pixel intensity", y="Proportion of pixels (%)")
+
     # Hue values of zero are red but are also the value for pixels where hue is undefined. The hue value of a pixel will
     # be undef. when the color values are saturated. Therefore, hue values of 0 are excluded from the calculations below
     # Calculate the median hue value (median is rescaled from the encoded 0-179 range to the 0-359 degree range)
@@ -151,6 +150,7 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, label="default"):
                           verbose=False)
         elif params.debug == 'plot':
             print(hist_fig)
+        analysis_image = hist_fig
 
     # Store into global measurements
     # RGB signal values are in an unsigned 8-bit scale of 0-255
@@ -178,7 +178,8 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, label="default"):
             outputs.add_observation(sample=label, variable='lightness_frequencies', trait='lightness frequencies',
                                     method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
                                     value=histograms["l"]["hist"], label=percent_values)
-            outputs.add_observation(sample=label, variable='green-magenta_frequencies', trait='green-magenta frequencies',
+            outputs.add_observation(sample=label, variable='green-magenta_frequencies',
+                                    trait='green-magenta frequencies',
                                     method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
                                     value=histograms["m"]["hist"], label=diverging_values)
             outputs.add_observation(sample=label, variable='blue-yellow_frequencies', trait='blue-yellow frequencies',
@@ -211,3 +212,6 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, label="default"):
     outputs.images.append(analysis_image)
 
     return analysis_image
+
+
+
