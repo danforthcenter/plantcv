@@ -55,7 +55,7 @@ def _hist_gray(gray_img, bins, lower_bound, upper_bound, mask=None):
     # return hist_data
 
 
-def histogram(img, mask=None, bins=None, lower_bound=None, upper_bound=None, title=None):
+def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, title=None):
     """Plot a histogram using ggplot
     :param img: (numpy.ndarray) = image to analyze
     :param mask: (numpy.ndarray) = (optional) binary mask made from selected contours, by default mask = None
