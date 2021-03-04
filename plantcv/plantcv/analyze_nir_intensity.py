@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 from plotnine import ggplot, aes, geom_line, scale_x_continuous, scale_color_manual, labs
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv import fatal_error, plot_image, print_image
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 from plantcv.plantcv.visualize import histogram
