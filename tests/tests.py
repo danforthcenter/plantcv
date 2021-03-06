@@ -960,6 +960,7 @@ def test_plantcv_outputs_add_observation():
     outputs.add_observation(sample='default', variable='test', trait='test variable', method='type', scale='none', datatype=float, value=2.2, label=[])
     outputs.add_observation(sample='default', variable='test', trait='test variable', method='type', scale='none', datatype=bool, value=True, label=[])
     outputs.add_observation(sample='default', variable='test', trait='test variable', method='type', scale='none', datatype=str, value='2', label=[])
+    outputs.add_observation(sample='default', variable='test', trait='test variable', method='type', scale='none', datatype=dict, value=dict(), label=[])
 
     with pytest.raises(RuntimeError):
         outputs.add_observation(sample='default', variable='test', trait='test variable', method='type', scale='none', datatype=list, value=np.array([2]), label=[])
