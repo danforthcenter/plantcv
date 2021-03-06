@@ -60,6 +60,7 @@ Methods are accessed as plantcv.outputs.*method*.
     - 'int' or 'float'
     - 'list' or 'tuple'
     - 'bool'
+    - 'dict'
 
 * value: The data itself. Make sure the data type of value matches the datatyp stated in "datatype". 
 
