@@ -2632,17 +2632,10 @@ def test_plantcv_print_image_plotnine():
 
 
 def test_plantcv_readimage_native():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_readimage")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_COLOR), mode='rgba')
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # Test with debug = None
     pcv.params.debug = None
+    _ = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_COLOR), mode='rgba')
+    _ = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_COLOR), mode='native')
     # Assert that the image name returned equals the name of the input image
     # Assert that the path of the image returned equals the path of the input image
@@ -2657,6 +2650,7 @@ def test_plantcv_readimage_native():
 
 
 def test_plantcv_readimage_grayscale():
+    # Test with debug = None
     pcv.params.debug = None
     _, _, _ = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_GRAY), mode="grey")
     img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_GRAY), mode="gray")
@@ -2664,24 +2658,28 @@ def test_plantcv_readimage_grayscale():
 
 
 def test_plantcv_readimage_rgb():
+    # Test with debug = None
     pcv.params.debug = None
     img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_GRAY), mode="rgb")
     assert len(np.shape(img)) == 3
 
 
 def test_plantcv_readimage_rgba_as_rgb():
+    # Test with debug = None
     pcv.params.debug = None
     img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_RGBA), mode="native")
     assert np.shape(img)[2] == 3
 
 
 def test_plantcv_readimage_csv():
+    # Test with debug = None
     pcv.params.debug = None
     img, path, img_name = pcv.readimage(filename=os.path.join(TEST_DATA, TEST_INPUT_THERMAL_CSV), mode="csv")
     assert len(np.shape(img)) == 2
 
 
 def test_plantcv_readimage_envi():
+    # Test with debug = None
     pcv.params.debug = None
     array_data = pcv.readimage(filename=os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA), mode="envi")
     if sys.version_info[0] < 3:
