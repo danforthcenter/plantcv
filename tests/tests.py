@@ -1230,33 +1230,24 @@ def test_plantcv_analyze_bound_vertical_small_x():
 def test_plantcv_analyze_color():
     # Clear previous outputs
     pcv.outputs.clear()
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_color")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    # Test with debug = None
+    pcv.params.debug = None
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
     _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type="all")
     _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type=None, label="prefix")
-
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
     _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type=None)
     _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='lab')
     _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='hsv')
     _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type=None)
-
-    # Test with debug = None
-    pcv.params.debug = None
     _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='rgb')
-    pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert pcv.outputs.observations['default']['hue_median']['value'] == 84.0
 
 
 def test_plantcv_analyze_color_incorrect_image():
+    # Test with debug = None
+    pcv.params.debug = None
     img_binary = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     with pytest.raises(RuntimeError):
@@ -1264,18 +1255,20 @@ def test_plantcv_analyze_color_incorrect_image():
 
 
 def test_plantcv_analyze_color_bad_hist_type():
+    # Test with debug = None
+    pcv.params.debug = None
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    pcv.params.debug = "plot"
     with pytest.raises(RuntimeError):
         _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='bgr')
 
 
 def test_plantcv_analyze_color_incorrect_hist_plot_type():
+    # Test with debug = None
+    pcv.params.debug = None
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     with pytest.raises(RuntimeError):
-        pcv.params.debug = "plot"
         _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type="bgr")
 
 
