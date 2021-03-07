@@ -949,6 +949,17 @@ PIXEL_VALUES = "pixel_inspector_rgb_values.txt"
 # ##########################
 # Tests for the main package
 # ##########################
+@pytest.mark.parametrize("debug", ["print", "plot"])
+def test_plantcv_debug(debug, tmpdir):
+    from plantcv.plantcv._debug import _debug
+    # Create a test tmp directory
+    img_outdir = tmpdir.mkdir("sub")
+    pcv.params.debug = debug
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    _debug(visual=img, filename=os.path.join(img_outdir, TEST_INPUT_COLOR))
+    assert True
+
+
 def test_plantcv_transform_warp_smaller():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR),-1)
     bimg = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY),-1)
