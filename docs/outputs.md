@@ -60,9 +60,10 @@ Methods are accessed as plantcv.outputs.*method*.
     - 'int' or 'float'
     - 'list' or 'tuple'
     - 'bool'
+    - 'NoneType'
     - 'dict'
 
-* value: The data itself. Make sure the data type of value matches the datatyp stated in "datatype". 
+* value: The data itself. Make sure the data type of value matches the data type stated in "datatype". 
 
 * label:  The label for each value, which will be useful when the data is a frequency table (e.g. hues). 
 
