@@ -1,7 +1,6 @@
 import os
 import matplotlib
 from plantcv.plantcv import fatal_error
-observations = {}
 
 
 class Params:
