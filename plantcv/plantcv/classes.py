@@ -98,7 +98,7 @@ class Outputs:
             self.observations[sample] = {}
 
         # Supported data types
-        supported_dtype = ["int", "float", "str", "list", "bool", "tuple", "dict", "NoneType"]
+        supported_dtype = ["int", "float", "str", "list", "bool", "tuple", "dict", "NoneType", "numpy.float64"]
         # Supported class types
         class_list = [f"<class '{cls}'>" for cls in supported_dtype]
 
