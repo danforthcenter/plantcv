@@ -19,7 +19,8 @@ unaltered, the  matplotlib default DPI is 100 pixels per inch.
     - max_value  - Maximum value (optional) for range of the colorbar. Default: 255
     - axes       - If False then the title, x-axis, and y-axis won't be displayed (default axes=True).
     - colorbar   - If False then the colorbar won't be displayed (default colorbar=True)
-    - obj_padding    - If "auto" (default) and an obj is supplied, then the image is cropped to an extent 20% larger in each dimension than the object. A single integer is also accepted to define the padding in pixels.
+    - obj_padding    - If "auto" (default), and an obj is supplied, then the image is cropped to an extent 20% larger in each dimension than the object. A single integer is also accepted to define the padding in pixels.
+    - title      - The title for the pseudocolored image (default title=None) 
 
 - **Context:**
     - Used to pseudocolor any grayscale image to custom colormap
