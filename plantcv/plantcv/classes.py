@@ -92,15 +92,6 @@ class Outputs:
         :param value:
         :param label:
         """
-        self.sample = sample
-        self.variable = variable
-        self.trait = trait
-        self.method = method
-        self.scale = scale
-        self.datatype = datatype
-        self.value = value
-        self.label = label
-
 
         # Create an empty dictionary for the sample if it does not exist
         if sample not in self.observations:
