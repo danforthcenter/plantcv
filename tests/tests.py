@@ -949,6 +949,24 @@ PIXEL_VALUES = "pixel_inspector_rgb_values.txt"
 # ##########################
 # Tests for the main package
 # ##########################
+@pytest.mark.parametrize("datatype,value", [[list, []], [int, 2], [float, 2.2], [bool, True], [str, "2"], [dict, {}],
+                                            [tuple, ()], [None, None]])
+def test_plantcv_outputs_add_observation(datatype, value):
+    # Create output instance
+    outputs = pcv.Outputs()
+    outputs.add_observation(sample='default', variable='test', trait='test variable', method='type', scale='none',
+                            datatype=datatype, value=value, label=[])
+    assert outputs.observations["default"]["test"]["value"] == value
+
+
+def test_plantcv_outputs_add_observation_invalid_type():
+    # Create output instance
+    outputs = pcv.Outputs()
+    with pytest.raises(RuntimeError):
+        outputs.add_observation(sample='default', variable='test', trait='test variable', method='type', scale='none',
+                                datatype=list, value=np.array([2]), label=[])
+
+
 def test_plantcv_transform_warp_smaller():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR),-1)
     bimg = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY),-1)
