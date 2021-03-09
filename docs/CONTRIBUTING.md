@@ -167,19 +167,25 @@ import cv2
 import os
 
 # Import functions from within plantcv
-from plantcv.plantcv import params 
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
+from plantcv.plantcv import params
+from plantcv.plantcv._debug import _debug
 ```
 
 Here is a sample of a new function. Arguments should be defined.
-Generally, functions should utilize the global `debug` parameter from the [params](params.md) class.
-Users can set `pcv.params.debug `
+Generally, functions should utilize the private function `_debug` to produce visualization results.
+Users can set `pcv.params.debug`
 to `None` (default), "print" (to file), or "plot" (to screen if using [Jupyter](jupyter.md) notebooks or X11).
-Functions should also increment the `device` number, which is a counter for image processing steps that is autoincremented by functions that use `params`.
-Note that the inputs and outputs are documented with Python docstrings.
+Functions should also increment the `device` number, which is a counter for image processing steps that is 
+autoincremented by functions that use `params`. Note that the inputs and outputs are documented with Python docstrings.
 
 ```python
+# Import external packages
+import numpy as np
+import cv2
+import os
+from plantcv.plantcv import params
+from plantcv.plantcv._debug import _debug
+
 
 def new_function(img):
     """New function.
@@ -199,16 +205,14 @@ def new_function(img):
 
     returnval1 = some_code_on_img(img)
     
-    if params.debug == "print":
-        print_image(img, os.path.join(params.debug_outdir, str(params.device) + '_new_function.jpg'))
-    elif params.debug == 'plot':
-        plot_image(img)
+    _debug(visual=returnval1, filename=os.path.join(params.debug_outdir, str(params.device) + '_new_function.jpg'))
 
     return returnval1
 
 ```
 
-If you need to call other PlantCV functions from within your contributed function, be sure to disable debugging until you are ready to show your own debug images.
+If you need to call other PlantCV functions from within your contributed function, be sure to disable debugging until 
+you are ready to show your own debug images.
 
 To do this, follow these four steps:
   1. Store the value of params.debug
@@ -219,11 +223,11 @@ To do this, follow these four steps:
 Here is a sample of a PlantCV function that calls on other PlantCV functions:
 
 ```python
-import plantcv.plantcv.params
-import plantcv.plantcv.example_plantcv_function
-import plantcv.plantcv.another_plantcv_function
-import plantcv.plantcv.print_image
-import plantcv.plantcv.plot_image
+from plantcv.plantcv import params
+from plantcv.plantcv._debug import _debug
+from plantcv.plantcv import example_plantcv_function
+from plantcv.plantcv import another_plantcv_function
+
 
 def new_function_calling_plantcv(img):
     """New function calling another plantcv function.
@@ -252,11 +256,8 @@ def new_function_calling_plantcv(img):
 
     # Reset debug mode
     params.debug = debug
-
-    if params.debug == 'print':
-        print_image(final_img, os.path.join(params.debug_outdir, str(params.device) + '_new_function.jpg'))
-    elif params.debug == 'plot':
-        plot_image(final_img)
+    
+    _debug(visual=final_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_new_function.jpg'))
 
     return final_img
 
