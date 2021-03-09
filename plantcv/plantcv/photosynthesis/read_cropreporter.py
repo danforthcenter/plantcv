@@ -49,7 +49,7 @@ def read_cropreporter(inf_filename):
 
     # Record a dictonary of all measurements done, 0 means not done, 1 means measurement done
     frames_captured = {key: value for key, value in inf_dict.items() if "Done" in key}
-    # Record a list of measurements
+    # Record a list of measurements, just first three letters is enough to match them up
     frames_expected = [key.upper()[0:3] for key, value in frames_captured.items() if str(value) == "1"]
     # Define dictionary of measurement name and the corresponding binary image filename
     corresponding_dict = {"FVF": "PSD", "FQF": "PSL", "CHL": "CHL", "NPQ": "NPQ", "SPC": "SPC",
@@ -57,11 +57,11 @@ def read_cropreporter(inf_filename):
     all_imgs = {}
     # Loop over all expected binary image files
     for key in frames_expected:
+        # Find the corresponding binary image filename based on the INF filename
         inf = os.path.split(inf_filename)[-1]
         path = os.path.dirname(inf_filename)
         filename_components = inf.split("_")
         filename_components[1] = corresponding_dict[key]
-
         s = "_"
         bin_filename = s.join(filename_components)
         bin_filename = bin_filename.replace(".INF", ".DAT")
@@ -73,7 +73,7 @@ def read_cropreporter(inf_filename):
         # Append the image cube to a dictonary with all images
         all_imgs[corresponding_dict[key]] = img_cube
 
-# NEEDS UPDATING, plan to use x-array objects to store all frames as a single thing that can be input into analysis fxns 
+# NEEDS UPDATING, plan to use x-array objects to store all frames as a single thing that can be input into analysis fxns
     # # Extract fdark and fmin from the datacube of stacked frames
     # fdark = img_cube[:, :, [0]]
     # fdark = np.transpose(np.transpose(fdark)[0])  # Reshape frame from (x,y,1) to (x,y)
