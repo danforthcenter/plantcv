@@ -978,6 +978,9 @@ def test_plantcv_outputs_add_observation_invalid_type():
                                 datatype=list, value=np.array([2]), label=[])
 
 def test_plantcv_transform_warp_perspective():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_acute_vertex")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     vrow, vcol, vdepth = img.shape
     pcv.params.debug = None
@@ -987,6 +990,9 @@ def test_plantcv_transform_warp_perspective():
         pcv.transform.warp_perspective(img, img, pts=[(0, 0), (vcol - 1, 0), (vcol - 1, vrow - 1)], refpts=[(0, 0), (vcol - 1, 0), (vcol - 1, vrow - 1)])
 
 def test_plantcv_transform_warp_affine():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_acute_vertex")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     vrow, vcol, vdepth = img.shape
     pcv.params.debug = None
@@ -996,6 +1002,9 @@ def test_plantcv_transform_warp_affine():
         pcv.transform.warp_affine(img, img, pts=[(0, 0), (vcol - 1, 0), (vcol - 1, vrow - 1), (0, vrow - 1)], refpts=[(0, 0), (vcol - 1, 0), (vcol - 1, vrow - 1), (0, vrow - 1)])
 
 def test_plantcv_transform_warp_smaller():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_acute_vertex")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR),-1)
     bimg = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY),-1)
     bimg_small = cv2.resize(bimg, (200,300)) #not sure why INTER_NEAREST doesn't preserve values
@@ -1015,6 +1024,9 @@ def test_plantcv_transform_warp_smaller():
 
 
 def test_plantcv_transform_warp_larger():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_acute_vertex")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR),-1)
     gimg = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY),-1)
     gimg_large = cv2.resize(gimg, (5000,7000))
