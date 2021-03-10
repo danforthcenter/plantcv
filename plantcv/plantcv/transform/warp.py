@@ -66,54 +66,54 @@ def warp_perspective(img, refimg, pts, refpts, method='default'):
     if len(np.unique(img)) == 2:
         warped_img[warped_img > 0] = 255
 
-    if params.debug is not None:
-        # scale marker_size and line_thickness for different resolutions
-        rows_img = img.shape[0]
-        if rows_img > rows_ref:
-            res_ratio_i = int(np.ceil(rows_img / rows_ref))  # ratio never smaller than 1 with np.ceil
-            res_ratio_r = 1
-        else:
-            res_ratio_r = int(np.ceil(rows_ref / rows_img))
-            res_ratio_i = 1
-        # marker colors
-        colors = color_palette(len(pts))
+    # if params.debug is not None:
+    # scale marker_size and line_thickness for different resolutions
+    rows_img = img.shape[0]
+    if rows_img > rows_ref:
+        res_ratio_i = int(np.ceil(rows_img / rows_ref))  # ratio never smaller than 1 with np.ceil
+        res_ratio_r = 1
+    else:
+        res_ratio_r = int(np.ceil(rows_ref / rows_img))
+        res_ratio_i = 1
+    # marker colors
+    colors = color_palette(len(pts))
 
-        # rgb image for colored markers on img
-        img_marked = img.copy()
-        # convert to RGB image if not
-        if len(shape_img) == 2:
-            img_marked = cv2.cvtColor(img_marked, cv2.COLOR_GRAY2RGB)
+    # rgb image for colored markers on img
+    img_marked = img.copy()
+    # convert to RGB image if not
+    if len(shape_img) == 2:
+        img_marked = cv2.cvtColor(img_marked, cv2.COLOR_GRAY2RGB)
 
-        for i, pt in enumerate(pts):
-            cv2.drawMarker(img_marked,
-                           pt,
-                           color=colors[i],
-                           markerType=cv2.MARKER_CROSS,
-                           markerSize=params.marker_size * res_ratio_i,
-                           thickness=params.line_thickness * res_ratio_i)
+    for i, pt in enumerate(pts):
+        cv2.drawMarker(img_marked,
+                       pt,
+                       color=colors[i],
+                       markerType=cv2.MARKER_CROSS,
+                       markerSize=params.marker_size * res_ratio_i,
+                       thickness=params.line_thickness * res_ratio_i)
 
-        # rgb image for colored markers on refimg
-        refimg_marked = refimg.copy()
-        if len(shape_ref) == 2:
-            refimg_marked = cv2.cvtColor(refimg_marked, cv2.COLOR_GRAY2RGB)
+    # rgb image for colored markers on refimg
+    refimg_marked = refimg.copy()
+    if len(shape_ref) == 2:
+        refimg_marked = cv2.cvtColor(refimg_marked, cv2.COLOR_GRAY2RGB)
 
-        for i, pt in enumerate(refpts):
-            cv2.drawMarker(refimg_marked,
-                           pt,
-                           color=colors[i],
-                           markerType=cv2.MARKER_CROSS,
-                           markerSize=params.marker_size * res_ratio_r,
-                           thickness=params.line_thickness * res_ratio_r)
+    for i, pt in enumerate(refpts):
+        cv2.drawMarker(refimg_marked,
+                       pt,
+                       color=colors[i],
+                       markerType=cv2.MARKER_CROSS,
+                       markerSize=params.marker_size * res_ratio_r,
+                       thickness=params.line_thickness * res_ratio_r)
 
-        debug_mode = params.debug
-        params.debug = None
+    debug_mode = params.debug
+    params.debug = None
 
-        img_blend = overlay_two_imgs(warped_img, refimg)
-        params.debug = debug_mode
+    img_blend = overlay_two_imgs(warped_img, refimg)
+    params.debug = debug_mode
 
-        _debug(visual=img_marked, filename=os.path.join(params.debug_outdir, str(params.device) + "_img-to-warp.png"))
-        _debug(visual=refimg_marked, filename=os.path.join(params.debug_outdir, str(params.device) + "_img-ref.png"))
-        _debug(visual=img_blend, filename=os.path.join(params.debug_outdir, str(params.device) + "_warp_overlay.png"))
+    _debug(visual=img_marked, filename=os.path.join(params.debug_outdir, str(params.device) + "_img-to-warp.png"))
+    _debug(visual=refimg_marked, filename=os.path.join(params.debug_outdir, str(params.device) + "_img-ref.png"))
+    _debug(visual=img_blend, filename=os.path.join(params.debug_outdir, str(params.device) + "_warp_overlay.png"))
 
     return mat, warped_img
 
@@ -164,53 +164,53 @@ def warp_affine(img, refimg, pts, refpts):
     if len(np.unique(img)) == 2:
         warped_img[warped_img > 0] = 255
 
-    if params.debug is not None:
-        # scale marker_size and line_thickness for different resolutions
-        rows_img = img.shape[0]
-        if rows_img > rows_ref:
-            res_ratio_i = int(np.ceil(rows_img / rows_ref))  # ratio never smaller than 1 with np.ceil
-            res_ratio_r = 1
-        else:
-            res_ratio_r = int(np.ceil(rows_ref / rows_img))
-            res_ratio_i = 1
-        # marker colors
-        colors = color_palette(len(pts))
+    # if params.debug is not None:
+    # scale marker_size and line_thickness for different resolutions
+    rows_img = img.shape[0]
+    if rows_img > rows_ref:
+        res_ratio_i = int(np.ceil(rows_img / rows_ref))  # ratio never smaller than 1 with np.ceil
+        res_ratio_r = 1
+    else:
+        res_ratio_r = int(np.ceil(rows_ref / rows_img))
+        res_ratio_i = 1
+    # marker colors
+    colors = color_palette(len(pts))
 
-        # rgb image for colored markers on img
-        img_marked = img.copy()
-        # convert to RGB image if not
-        if len(shape_img) == 2:
-            img_marked = cv2.cvtColor(img_marked, cv2.COLOR_GRAY2RGB)
+    # rgb image for colored markers on img
+    img_marked = img.copy()
+    # convert to RGB image if not
+    if len(shape_img) == 2:
+        img_marked = cv2.cvtColor(img_marked, cv2.COLOR_GRAY2RGB)
 
-        for i, pt in enumerate(pts):
-            cv2.drawMarker(img_marked,
-                           pt,
-                           color=colors[i],
-                           markerType=cv2.MARKER_CROSS,
-                           markerSize=params.marker_size * res_ratio_i,
-                           thickness=params.line_thickness * res_ratio_i)
+    for i, pt in enumerate(pts):
+        cv2.drawMarker(img_marked,
+                       pt,
+                       color=colors[i],
+                       markerType=cv2.MARKER_CROSS,
+                       markerSize=params.marker_size * res_ratio_i,
+                       thickness=params.line_thickness * res_ratio_i)
 
-        # rgb image for colored markers on refimg
-        refimg_marked = refimg.copy()
-        if len(shape_ref) == 2:
-            refimg_marked = cv2.cvtColor(refimg_marked, cv2.COLOR_GRAY2RGB)
+    # rgb image for colored markers on refimg
+    refimg_marked = refimg.copy()
+    if len(shape_ref) == 2:
+        refimg_marked = cv2.cvtColor(refimg_marked, cv2.COLOR_GRAY2RGB)
 
-        for i, pt in enumerate(refpts):
-            cv2.drawMarker(refimg_marked,
-                           pt,
-                           color=colors[i],
-                           markerType=cv2.MARKER_CROSS,
-                           markerSize=params.marker_size * res_ratio_r,
-                           thickness=params.line_thickness * res_ratio_r)
+    for i, pt in enumerate(refpts):
+        cv2.drawMarker(refimg_marked,
+                       pt,
+                       color=colors[i],
+                       markerType=cv2.MARKER_CROSS,
+                       markerSize=params.marker_size * res_ratio_r,
+                       thickness=params.line_thickness * res_ratio_r)
 
-        debug_mode = params.debug
-        params.debug = None
+    debug_mode = params.debug
+    params.debug = None
 
-        img_blend = overlay_two_imgs(warped_img, refimg)
-        params.debug = debug_mode
+    img_blend = overlay_two_imgs(warped_img, refimg)
+    params.debug = debug_mode
 
-        _debug(visual=img_marked, filename=os.path.join(params.debug_outdir, str(params.device) + "_img-to-warp.png"))
-        _debug(visual=refimg_marked, filename=os.path.join(params.debug_outdir, str(params.device) + "_img-ref.png"))
-        _debug(visual=img_blend, filename=os.path.join(params.debug_outdir, str(params.device) + "_warp_overlay.png"))
+    _debug(visual=img_marked, filename=os.path.join(params.debug_outdir, str(params.device) + "_img-to-warp.png"))
+    _debug(visual=refimg_marked, filename=os.path.join(params.debug_outdir, str(params.device) + "_img-ref.png"))
+    _debug(visual=img_blend, filename=os.path.join(params.debug_outdir, str(params.device) + "_warp_overlay.png"))
 
     return mat, warped_img
