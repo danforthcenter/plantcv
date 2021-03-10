@@ -977,6 +977,23 @@ def test_plantcv_outputs_add_observation_invalid_type():
         outputs.add_observation(sample='default', variable='test', trait='test variable', method='type', scale='none',
                                 datatype=list, value=np.array([2]), label=[])
 
+def test_plantcv_transform_warp_perspective():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    vrow, vcol, vdepth = img.shape
+    pcv.params.debug = None
+    mat, warped_img = pcv.transform.warp_perspective(img, img, pts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)], refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
+    assert mat.shape == (3, 3)
+    with pytest.raises(RuntimeError):
+        pcv.transform.warp_perspective(img, img, pts=[(0, 0), (vcol - 1, 0), (vcol - 1, vrow - 1)], refpts=[(0, 0), (vcol - 1, 0), (vcol - 1, vrow - 1)])
+
+def test_plantcv_transform_warp_affine():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    vrow, vcol, vdepth = img.shape
+    pcv.params.debug = None
+    mat, warped_img = pcv.transform.warp_affine(img, img, pts = [(0,0),(vcol-1,0),(vcol-1,vrow-1)], refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1)])
+    assert mat.shape == (2, 3)
+    with pytest.raises(RuntimeError):
+        pcv.transform.warp_affine(img, img, pts=[(0, 0), (vcol - 1, 0), (vcol - 1, vrow - 1), (0, vrow - 1)], refpts=[(0, 0), (vcol - 1, 0), (vcol - 1, vrow - 1), (0, vrow - 1)])
 
 def test_plantcv_transform_warp_smaller():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR),-1)
@@ -986,16 +1003,15 @@ def test_plantcv_transform_warp_smaller():
     mrow, mcol = bimg_small.shape
     vrow, vcol, vdepth = img.shape
     pcv.params.debug = None
-    mask_warped = pcv.transform.warp(bimg_small, img[:,:,2],
+    mat, mask_warped = pcv.transform.warp_perspective(bimg_small, img[:,:,2],
                                     pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
                                     refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
-    pcv.params.debug = 'plot'
-    mask_warped_plot = pcv.transform.warp(bimg_small, img[:,:,2],
-                                pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
-                                refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
+    assert mat.shape == (3, 3) and np.count_nonzero(mask_warped)==93142
 
-    assert np.count_nonzero(mask_warped)==93142
-    assert np.count_nonzero(mask_warped_plot)==93142
+    mat, mask_warped = pcv.transform.warp_affine(bimg_small, img[:,:,2],
+                                    pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1)],
+                                    refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1)])
+    assert mat.shape == (2, 3) and np.count_nonzero(mask_warped)==93142
 
 
 def test_plantcv_transform_warp_larger():
@@ -1004,46 +1020,49 @@ def test_plantcv_transform_warp_larger():
     gimg_large = cv2.resize(gimg, (5000,7000))
     mrow, mcol = gimg_large.shape
     vrow, vcol, vdepth = img.shape
-    pcv.params.debug='print'
-    mask_warped_print = pcv.transform.warp(gimg_large, img,
+    mat, mask_warped = pcv.transform.warp_perspective(gimg_large, img,
                                     pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
                                     refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
+    assert mat.shape == (3, 3) and np.sum(mask_warped)==83103814
 
-    assert np.sum(mask_warped_print)==83103814
-
-
-def test_plantcv_transform_warp_rgbimgerror():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR),-1)
-    gimg = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY),-1)
-    gimg_large = cv2.resize(gimg, (5000,7000))
-    mrow, mcol = gimg_large.shape
-    vrow, vcol, vdepth = img.shape
-
-    with pytest.raises(RuntimeError):
-        _ = pcv.transform.warp(img, img,
-                                pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
-                                refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
+    mat, mask_warped = pcv.transform.warp_affine(gimg_large, img,
+                                    pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1)],
+                                    refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1)])
+    assert mat.shape == (2, 3) and np.sum(mask_warped)==83104086
 
 
-def test_plantcv_transform_warp_4ptserror():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR),-1)
-    mrow, mcol, _ = img.shape
-    vrow, vcol, vdepth = img.shape
+# def test_plantcv_transform_warp_rgbimgerror():
+#     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR),-1)
+#     gimg = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY),-1)
+#     gimg_large = cv2.resize(gimg, (5000,7000))
+#     mrow, mcol = gimg_large.shape
+#     vrow, vcol, vdepth = img.shape
+#
+#     with pytest.raises(RuntimeError):
+#         _ = pcv.transform.warp(img, img,
+#                                 pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
+#                                 refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
 
-    with pytest.raises(RuntimeError):
-        _ = pcv.transform.warp(img[:,:,0], img,
-                                pts = [(0,0),(mcol-1,0),(0,mrow-1)],
-                                refpts = [(0,0),(vcol-1,0),(0,vrow-1)])
 
-    with pytest.raises(RuntimeError):
-        _ = pcv.transform.warp(img[:,:,1], img,
-                                pts = [(0,0),(mcol-1,0),(0,mrow-1)],
-                                refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
-
-    with pytest.raises(RuntimeError):
-        _ = pcv.transform.warp(img[:,:,2], img,
-                                pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
-                                refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1),(0,vrow-1)])
+# def test_plantcv_transform_warp_4ptserror():
+#     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR),-1)
+#     mrow, mcol, _ = img.shape
+#     vrow, vcol, vdepth = img.shape
+#
+#     with pytest.raises(RuntimeError):
+#         _ = pcv.transform.warp(img[:,:,0], img,
+#                                 pts = [(0,0),(mcol-1,0),(0,mrow-1)],
+#                                 refpts = [(0,0),(vcol-1,0),(0,vrow-1)])
+#
+#     with pytest.raises(RuntimeError):
+#         _ = pcv.transform.warp(img[:,:,1], img,
+#                                 pts = [(0,0),(mcol-1,0),(0,mrow-1)],
+#                                 refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
+#
+#     with pytest.raises(RuntimeError):
+#         _ = pcv.transform.warp(img[:,:,2], img,
+#                                 pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
+#                                 refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1),(0,vrow-1)])
 
 
 def test_plantcv_acute():
