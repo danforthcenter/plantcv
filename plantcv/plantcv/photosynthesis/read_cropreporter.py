@@ -2,6 +2,7 @@
 
 import os
 import numpy as np
+import xarray as xr
 from plantcv.plantcv import params
 from plantcv.plantcv.plot_image import plot_image
 from plantcv.plantcv.print_image import print_image
@@ -55,6 +56,7 @@ def read_cropreporter(inf_filename):
     corresponding_dict = {"FVF": "PSD", "FQF": "PSL", "CHL": "CHL", "NPQ": "NPQ", "SPC": "SPC",
                           "CLR": "CLR", "RFD": "RFD", "GFP": "GFP", "RFP": "RFP"}
     all_imgs = {}
+    all_xarrays = [] 
     # Loop over all expected binary image files
     for key in frames_expected:
         # Find the corresponding binary image filename based on the INF filename
@@ -72,6 +74,14 @@ def read_cropreporter(inf_filename):
         img_cube = raw_data.reshape(int(len(raw_data) / (y * x)), x, y).transpose((2, 1, 0))
         # Append the image cube to a dictonary with all images
         all_imgs[corresponding_dict[key]] = img_cube
+
+        x_coord = np.arange(y)
+        y_coord = np.arange(x)
+        frames_list = np.arange(np.shape(all_imgs[corresponding_dict[key]])[2])
+
+        foo = xr.DataArray(img_cube, dims=["x", "y", "frame"],
+                           coords={"x": x_coord, "y": y_coord, "frame": frames_list}, name=corresponding_dict[key])
+        all_xarrays.append(foo)
 
 # NEEDS UPDATING, plan to use x-array objects to store all frames as a single thing that can be input into analysis fxns
     # # Extract fdark and fmin from the datacube of stacked frames
