@@ -56,7 +56,7 @@ def read_cropreporter(inf_filename):
     corresponding_dict = {"FVF": "PSD", "FQF": "PSL", "CHL": "CHL", "NPQ": "NPQ", "SPC": "SPC",
                           "CLR": "CLR", "RFD": "RFD", "GFP": "GFP", "RFP": "RFP"}
     all_imgs = {}
-    all_xarrays = [] 
+    all_xarrays = []
     # Loop over all expected binary image files
     for key in frames_expected:
         # Find the corresponding binary image filename based on the INF filename
@@ -71,14 +71,13 @@ def read_cropreporter(inf_filename):
         # Read in binary image file
         raw_data = np.fromfile(bin_file, np.uint16, -1)
         # Reshape into a datacube
-        img_cube = raw_data.reshape(int(len(raw_data) / (y * x)), x, y).transpose((2, 1, 0))
+        img_cube = raw_data.reshape(int(len(raw_data) / (y * x)), x, y).transpose((1, 2, 0))
         # Append the image cube to a dictonary with all images
         all_imgs[corresponding_dict[key]] = img_cube
 
-        x_coord = np.arange(y)
-        y_coord = np.arange(x)
+        x_coord = np.arange(x)
+        y_coord = np.arange(y)
         frames_list = np.arange(np.shape(all_imgs[corresponding_dict[key]])[2])
-
         foo = xr.DataArray(img_cube, dims=["x", "y", "frame"],
                            coords={"x": x_coord, "y": y_coord, "frame": frames_list}, name=corresponding_dict[key])
         all_xarrays.append(foo)
