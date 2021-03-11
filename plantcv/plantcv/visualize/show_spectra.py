@@ -2,7 +2,7 @@
 
 from scipy.spatial import distance
 import numpy as np
-
+import matplotlib.pyplot as plt
 
 def _find_closest(pt, pts):
     """ Given coordinates of a point and a list of coordinates of a bunch of points, find the point that has the smallest Euclidean to the given point
