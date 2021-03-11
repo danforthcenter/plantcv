@@ -48,11 +48,23 @@ def fill_segments(mask, objects, stem_objects=None, label="default"):
     # Count area in pixels of each segment
     ids, counts = np.unique(filled_mask, return_counts=True)
 
-    outputs.add_observation(sample=label, variable='segment_area', trait='segment area',
-                            method='plantcv.plantcv.morphology.fill_segments',
-                            scale='pixels', datatype=list,
-                            value=counts[1:].tolist(),
-                            label=(ids[1:]-1).tolist())
+    if stem_objects is None:
+        outputs.add_observation(sample=label, variable='segment_area', trait='segment area',
+                                method='plantcv.plantcv.morphology.fill_segments',
+                                scale='pixels', datatype=list,
+                                value=counts[1:].tolist(),
+                                label=(ids[1:]-1).tolist())
+    else:
+        outputs.add_observation(sample=label, variable='leaf_area', trait='segment area',
+                                method='plantcv.plantcv.morphology.fill_segments',
+                                scale='pixels', datatype=list,
+                                value=counts[1:].tolist(),
+                                label=(ids[1:]-1).tolist())
+        outputs.add_observation(sample=label, variable='stem_area', trait='segment area',
+                                method='plantcv.plantcv.morphology.fill_segments',
+                                scale='pixels', datatype=list,
+                                value=counts[1:].tolist(),
+                                label=(ids[1:]-1).tolist())
 
     rgb_vals = color_palette(num=len(labels), saved=False)
     filled_img = np.zeros((h, w, 3), dtype=np.uint8)

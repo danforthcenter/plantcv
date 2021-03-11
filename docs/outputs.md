@@ -47,9 +47,23 @@ Methods are accessed as plantcv.outputs.*method*.
 * method: A name of the measurement method mapped to an external ontology; if there is no exact mapping, an informative description of the measurement procedure.
 
 * scale: Units of the measurement or a scale in which the observations are expressed; if possible, standard units and scales should be used and mapped to existing ontologies; in case of a non-standard scale a full explanation should be given.
-* datatype: The type of data to be stored, e.g. `int`, `str`, `list`, etc. 
+* datatype: The type of data to be stored. In JSON, values must be one of the following data types:
+    - a string
+    - a number
+    - an array
+    - a boolean
+    - null
+    - a JSON object
+    
+    They are equilvalent to python data types of the following:
+    - 'str'
+    - 'int' or 'float'
+    - 'list' or 'tuple'
+    - 'bool'
+    - 'NoneType'
+    - 'dict'
 
-* value: The data itself. 
+* value: The data itself. Make sure the data type of value matches the data type stated in "datatype". 
 
 * label:  The label for each value, which will be useful when the data is a frequency table (e.g. hues). 
 

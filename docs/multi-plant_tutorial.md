@@ -148,7 +148,7 @@ Check if this is an image captured at night.
     #   crop = If True then image will be cropped to original image dimensions, if False
     #          the image size will be adjusted to accommodate new image dimensions 
     
-    rotate_img = pcv.rotate(img=img1, rotation_deg=-1, crop=False)
+    rotate_img = pcv.transform.rotate(img=img1, rotation_deg=-1, crop=False)
 
 ```
 
@@ -496,7 +496,7 @@ def main():
     #          the image size will be adjusted to accommodate new image dimensions 
 
     
-    rotate_img = pcv.rotate(img=img1,rotation_deg=-1, crop=False)
+    rotate_img = pcv.transform.rotate(img=img1,rotation_deg=-1, crop=False)
     
     # STEP 4: Shift image. This step is important for clustering later on.
     # For this image it also allows you to push the green raspberry pi camera

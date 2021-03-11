@@ -2,7 +2,7 @@
 
 Propagate the labels of a segmented skeleton to fill the mask.
 
-**plantcv.morphology.fill_segments**(*mask, objects, stem_objects=None, label="default""default"*)
+**plantcv.morphology.fill_segments**(*mask, objects, stem_objects=None, label="default"*)
 
 **returns** filled_img  
 
@@ -15,7 +15,9 @@ Propagate the labels of a segmented skeleton to fill the mask.
     - label        - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
 - **Context:**
     - Uses the watershed algorithm to fill the mask propagating the objects' labels.
-- **Output data stored:** Data ('segment_area') automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran.
+- **Output data stored:** Data ('segment_area') automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran without the `stem_objects` parameter.
+    When the optional parameter is utilized then the data variable names will be ('leaf_area') and ('stem_area'). Data sample names are modified with an optional 
+    `label` prefix. 
     These data can always get accessed during a workflow (example below). For more detail about data output see [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 **Reference Image:** mask, objects drawn as labels

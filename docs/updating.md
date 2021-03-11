@@ -636,6 +636,10 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: kept_cnt, hierarchy, mask, obj_area = **plantcv.roi_objects**(*img, roi_type, roi_contour, roi_hierarchy, object_contour, obj_hierarchy*)
 * post v3.3: kept_cnt, hierarchy, mask, obj_area = **plantcv.roi_objects**(*img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy,roi_type='partial'*)
 
+#### plantcv.transform.rotate
+
+* post v3.12.0: rotated_img = **plantcv.transform.rotate**(*img, rotation_deg, crop*)
+
 #### plantcv.rotate
 
 * pre v3.0dev2: device, rotated_img = **plantcv.rotate**(*img, rotation_deg, crop, device, debug=None*)
@@ -914,6 +918,7 @@ pages for more details on the input and output variable types.
 * pre v3.2: pseudo_img = **plantcv.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, dpi=None, axes=True, colorbar=True*)
 * post v3.2: pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, dpi=None, axes=True, colorbar=True*)
 * post v3.3: pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, axes=True, colorbar=True*)
+* post v3.12: pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, axes=True, colorbar=True, obj_padding="auto", title=None*)
 
 #### plantcv.watershed_segmentation
 
