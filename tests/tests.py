@@ -1750,7 +1750,7 @@ def test_plantcv_cluster_contours_splitimg_grayscale():
     cluster_contours = [clusters[arr_n] for arr_n in clusters]
     obj_hierarchy = hierachy['arr_0']
     pcv.params.debug = None
-    output_path, imgs, masks = pcv.cluster_contour_splitimg_grayscale(img=img1, grouped_contour_indexes=cluster_contours,
+    output_path, imgs, masks = pcv.cluster_contour_splitimg(img=img1, grouped_contour_indexes=cluster_contours,
                                                             contours=roi_contours, hierarchy=obj_hierarchy, outdir=None,
                                                             file=None,
                                                             filenames=None)
