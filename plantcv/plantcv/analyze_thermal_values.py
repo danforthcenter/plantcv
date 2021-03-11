@@ -10,7 +10,7 @@ from plotnine import ggplot, aes, geom_line
 from plantcv.plantcv.threshold import binary as binary_threshold
 
 
-def analyze_thermal_values(thermal_array, mask, histplot=False):
+def analyze_thermal_values(thermal_array, mask, histplot=False, label="default"):
     """This extracts the thermal values of each pixel writes the values out to
        a file. It can also print out a histogram plot of pixel intensity
        and a pseudocolor image of the plant.
@@ -19,6 +19,7 @@ def analyze_thermal_values(thermal_array, mask, histplot=False):
     array        = numpy array of thermal values
     mask         = Binary mask made from selected contours
     histplot     = if True plots histogram of intensity values
+    label        = optional label parameter, modifies the variable name of observations recorded
 
     Returns:
     analysis_img = output image
@@ -26,6 +27,7 @@ def analyze_thermal_values(thermal_array, mask, histplot=False):
     :param thermal_array: numpy.ndarray
     :param mask: numpy.ndarray
     :param histplot: bool
+    :param label: str
     :return analysis_img: ggplot
     """
     max_value = np.amax(thermal_array)
@@ -58,19 +60,19 @@ def analyze_thermal_values(thermal_array, mask, histplot=False):
     mediantemp = np.median(masked_thermal)
 
     # Store data into outputs class
-    outputs.add_observation(variable='max_temp', trait='maximum temperature',
+    outputs.add_observation(sample=label, variable='max_temp', trait='maximum temperature',
                             method='plantcv.plantcv.analyze_thermal_values', scale='degrees', datatype=float,
                             value=maxtemp, label='degrees')
-    outputs.add_observation(variable='min_temp', trait='minimum temperature',
+    outputs.add_observation(sample=label, variable='min_temp', trait='minimum temperature',
                             method='plantcv.plantcv.analyze_thermal_values', scale='degrees', datatype=float,
                             value=mintemp, label='degrees')
-    outputs.add_observation(variable='mean_temp', trait='mean temperature',
+    outputs.add_observation(sample=label, variable='mean_temp', trait='mean temperature',
                             method='plantcv.plantcv.analyze_thermal_values', scale='degrees', datatype=float,
                             value=avgtemp, label='degrees')
-    outputs.add_observation(variable='median_temp', trait='median temperature',
+    outputs.add_observation(sample=label, variable='median_temp', trait='median temperature',
                             method='plantcv.plantcv.analyze_thermal_values', scale='degrees', datatype=float,
                             value=mediantemp, label='degrees')
-    outputs.add_observation(variable='thermal_frequencies', trait='thermal frequencies',
+    outputs.add_observation(sample=label, variable='thermal_frequencies', trait='thermal frequencies',
                             method='plantcv.plantcv.analyze_thermal_values', scale='frequency', datatype=list,
                             value=hist_percent, label=bin_labels)
     analysis_img = None

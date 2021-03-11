@@ -28,7 +28,7 @@ functions:
 * `watershed`
 
 An instance of `Outputs` is created on import automatically as `plantcv.outputs`. The function 
-[pcv.print_results](print_results.md) will print out all the stored measurments data to a text file. 
+[pcv.print_results](print_results.md) will print out all the stored measurment data to a text file. 
 
 ### Methods
 
@@ -38,6 +38,8 @@ Methods are accessed as plantcv.outputs.*method*.
 
 **add_observation**: Add new measurement or other information
 
+* sample: A sample name or label. Observations are organized by sample name.
+
 * variable: A local unique identifier of a variable, e.g. a short name, that is a key linking the definitions of variables with observations.
 
 * trait: A name of the trait mapped to an external ontology; if there is no exact mapping, an informative description of the trait.
@@ -45,9 +47,23 @@ Methods are accessed as plantcv.outputs.*method*.
 * method: A name of the measurement method mapped to an external ontology; if there is no exact mapping, an informative description of the measurement procedure.
 
 * scale: Units of the measurement or a scale in which the observations are expressed; if possible, standard units and scales should be used and mapped to existing ontologies; in case of a non-standard scale a full explanation should be given.
-* datatype: The type of data to be stored, e.g. `int`, `str`, `list`, etc. 
+* datatype: The type of data to be stored. In JSON, values must be one of the following data types:
+    - a string
+    - a number
+    - an array
+    - a boolean
+    - null
+    - a JSON object
+    
+    They are equilvalent to python data types of the following:
+    - 'str'
+    - 'int' or 'float'
+    - 'list' or 'tuple'
+    - 'bool'
+    - 'NoneType'
+    - 'dict'
 
-* value: The data itself. 
+* value: The data itself. Make sure the data type of value matches the data type stated in "datatype". 
 
 * label:  The label for each value, which will be useful when the data is a frequency table (e.g. hues). 
 
@@ -63,10 +79,10 @@ from plantcv import plantcv as pcv
 ######## workflow steps here ########
 
 # Find shape properties, output shape image (optional)
-shape_img = pcv.analyze_object(img, obj, mask)
+shape_img = pcv.analyze_object(img, obj, mask, label="default")
 
 # Look at object area data without writing to a file 
-plant_area = pcv.outputs.observations['pixel_area']['value']
+plant_area = pcv.outputs.observations['default']['pixel_area']['value']
 
 # Write shape data to results file
 pcv.print_results(filename=args.result)
@@ -76,8 +92,8 @@ pcv.outputs.clear()
 
 ######## More workflow steps here ########
 
-nir_imgs = pcv.analyze_nir_intensity(nir2, nir_combinedmask, 256)
-shape_img = pcv.analyze_object(nir2, nir_combined, nir_combinedmask)
+nir_imgs = pcv.analyze_nir_intensity(nir2, nir_combinedmask, 256, label="default")
+shape_img = pcv.analyze_object(nir2, nir_combined, nir_combinedmask, label="default")
 
 # Write the NIR and shape data to a file 
 pcv.print_results(filename=args.coresult)
@@ -97,7 +113,8 @@ healthy_plant = np.count_nonzero(mask['plant'])
 percent_diseased = sick_plant / (sick_plant + healthy_plant)
 
 # Create a new measurement
-pcv.outputs.add_observation(variable='percent_diseased', trait='percent of plant detected to be diseased',
+pcv.outputs.add_observation(sample='default', variable='percent_diseased', 
+                            trait='percent of plant detected to be diseased',
                             method='ratio of pixels', scale='percent', datatype=float,
                             value=percent_diseased, label='percent')
 

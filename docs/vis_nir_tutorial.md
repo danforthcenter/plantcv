@@ -216,10 +216,10 @@ The purpose of this mask is to exclude as much background with simple thresholdi
     # Apply Mask (for VIS images, mask_color=white)
     
     # Inputs:
-    #   rgb_img - RGB image data 
+    #   img - RGB image data 
     #   mask - Binary mask image data 
     #   mask_color - 'white' or 'black' 
-    masked = pcv.apply_mask(rgb_img=img, mask=bs, mack_color='white')
+    masked = pcv.apply_mask(img=img, mask=bs, mack_color='white')
     
 ```
 
@@ -322,7 +322,8 @@ The next step is to analyze the plant object for traits such as [horizontal heig
     #   img - RGB or grayscale image data 
     #   obj- Single or grouped contour object
     #   mask - Binary image mask to use as mask for moments analysis 
-    shape_img = pcv.analyze_object(img=img, obj=obj, mask=mask)
+    #   label - Optional label parameter, modifies the variable name of observations recorded 
+    shape_img = pcv.analyze_object(img=img, obj=obj, mask=mask, label="default")
     
     # Shape properties relative to user boundary line (optional)
     
@@ -332,8 +333,9 @@ The next step is to analyze the plant object for traits such as [horizontal heig
     #   mask - Binary mask of selected contours 
     #   line_position - Position of boundary line (a value of 0 would draw a line 
     #                   through the bottom of the image) 
+    #   label - Optional label parameter, modifies the variable name of observations recorded 
     boundary_img1 = pcv.analyze_bound_horizontal(img=img, obj=obj, mask=mask, 
-                                                     line_position=1680)
+                                                     line_position=1680, label="default")
     
     # Determine color properties: Histograms, Color Slices, output color analyzed histogram (optional)
     
@@ -341,7 +343,8 @@ The next step is to analyze the plant object for traits such as [horizontal heig
     #   rgb_img - RGB image data
     #   mask - Binary mask of selected contours 
     #   hist_plot_type - None (default), 'all', 'rgb', 'lab', or 'hsv'
-    color_histogram = pcv.analyze_color(rgb_img=img, mask=kept_mask, hist_plot_type='all')
+    #   label - Optional label parameter, modifies the variable name of observations recorded 
+    color_histogram = pcv.analyze_color(rgb_img=img, mask=kept_mask, hist_plot_type='all', label="default")
 
     # Pseudocolor the grayscale image
     
@@ -442,10 +445,11 @@ The next step is to [get the matching NIR](get_nir.md) image, [resize](transform
     #   mask - Binary mask made from selected contours 
     #   bins - Number of classes to divide spectrum into
     #   histplot - If True then plots histogram of intensity values, (default False) 
+    #   label - Optional label parameter, modifies the variable name of observations recorded 
     nir_hist = pcv.analyze_nir_intensity(gray_img=nir2, mask=nir_combinedmask, 
-                                         bins=256, histplot=True)
+                                         bins=256, histplot=True, label="default")
                                          
-    nir_shape_image = pcv.analyze_object(img=nir2, obj=nir_combined, mask=nir_combinedmask)
+    nir_shape_image = pcv.analyze_object(img=nir2, obj=nir_combined, mask=nir_combinedmask, label="NIR")
 
     # Save out the NIR histogram
     pcv.print_image(img=nir_hist, filename=os.path.join(pcv.params.debug_outdir, 'nirhist.png'))
@@ -538,7 +542,7 @@ def main():
     bs = pcv.logical_and(bin_img1=s_mblur, bin_img2=b_cnt)
 
     # Apply Mask (for VIS images, mask_color=white)
-    masked = pcv.apply_mask(rgb_img=img, mask=bs, mask_color='white')
+    masked = pcv.apply_mask(img=img, mask=bs, mask_color='white')
 
     # Identify objects
     id_objects,obj_hierarchy = pcv.find_objects(img=masked, mask=bs)
@@ -559,14 +563,14 @@ def main():
     ############### Analysis ################  
   
     # Find shape properties, output shape image (optional)
-    shape_img = pcv.analyze_object(img=img, obj=obj, mask=mask)
+    shape_img = pcv.analyze_object(img=img, obj=obj, mask=mask, label="default")
     
     # Shape properties relative to user boundary line (optional)
     boundary_img1 = pcv.analyze_bound_horizontal(img=img, obj=obj, mask=mask, 
-                                                 line_position=1680)
+                                                 line_position=1680, label="default")
     
     # Determine color properties: Histograms, Color Slices, output color analyzed histogram (optional)
-    color_histogram = pcv.analyze_color(rgb_img=img, mask=kept_mask, hist_plot_type='all')
+    color_histogram = pcv.analyze_color(rgb_img=img, mask=kept_mask, hist_plot_type='all', label="default")
 
     # Pseudocolor the grayscale image
     pseudocolored_img = pcv.visualize.pseudocolor(gray_img=s, mask=kept_mask, cmap='jet')
@@ -594,8 +598,8 @@ def main():
                                                         hierarchy=nir_hierarchy)
 
     # Analyze NIR intensity and object shape 
-    nir_hist = pcv.analyze_nir_intensity(gray_img=nir2, mask=nir_combinedmask, bins=256, histplot=True)
-    nir_shape_image = pcv.analyze_object(img=nir2, obj=nir_combined, mask=nir_combinedmask)
+    nir_hist = pcv.analyze_nir_intensity(gray_img=nir2, mask=nir_combinedmask, bins=256, histplot=True, label="default")
+    nir_shape_image = pcv.analyze_object(img=nir2, obj=nir_combined, mask=nir_combinedmask, label="NIR")
 
     # Save out the NIR histogram
     pcv.print_image(nir_imgs[0], os.path.join(pcv.params.debug_outdir, 'nirhist.png'))

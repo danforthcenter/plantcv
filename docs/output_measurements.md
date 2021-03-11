@@ -12,10 +12,11 @@ The JSON output file has two top-level sections: `variables` is a collection of 
 dataset, and `entities` is a list of data blocks for each unit of analysis (typically an image, or a sub-region of an
 image) in the dataset. For each entity there are two data blocks: `metadata` is a set of key-value pairs of metadata
 keywords and their values (e.g. image or experimental metadata such as timestamp, treatment, etc.), and `observations`
-is a set of data blocks of observational data or measurements. Each observation has the same set of information,
-roughly following the [MIAPPE](https://www.miappe.org/) guidelines: `trait` is the name of the observation, `method` is generally the PlantCV
-function name used (but it could be another method), `scale` is the observation units, `datatype` is the Python data
-type the data are stored as, `value` is the observation output value(s), and `label` is the data/category label. 
+is a set of data blocks of observational data or measurements. Observations contain samples. Each sample has the same 
+set of information, roughly following the [MIAPPE](https://www.miappe.org/) guidelines: `trait` is the name of the 
+observation, `method` is generally the PlantCV function name used (but it could be another method), `scale` is the 
+observation units, `datatype` is the Python data type the data are stored as, `value` is the observation output 
+value(s), and `label` is the data/category label. 
 
 Example (abbreviated) JSON data:
 
@@ -90,21 +91,23 @@ Example (abbreviated) JSON data:
                 }
             },
             "observations": {
-                "pixel_area": {
-                    "trait": "area",
-                    "method": "plantcv.plantcv.analyze_object",
-                    "scale": "pixels",
-                    "datatype": "<class 'int'>",
-                    "value": 10000,
-                    "label": "pixels"
-                },
-                "hull_area": {
-                    "trait": "convex hull area",
-                    "method": "plantcv.plantcv.analyze_object",
-                    "scale": "pixels",
-                    "datatype": "<class 'int'>",
-                    "value": 100000,
-                    "label": "pixels"
+                "sample1": {
+                    "pixel_area": {
+                        "trait": "area",
+                        "method": "plantcv.plantcv.analyze_object",
+                        "scale": "pixels",
+                        "datatype": "<class 'int'>",
+                        "value": 10000,
+                        "label": "pixels"
+                    },
+                    "hull_area": {
+                        "trait": "convex hull area",
+                        "method": "plantcv.plantcv.analyze_object",
+                        "scale": "pixels",
+                        "datatype": "<class 'int'>",
+                        "value": 100000,
+                        "label": "pixels"
+                    }
                 }
             }
         }
@@ -150,6 +153,7 @@ Functions that automatically store data to the [`Outputs` class](outputs.md) are
 [morphology.segment_curvature](segment_curvature.md), [morphology.segment_euclidean_length](segment_euclidean_length.md), 
 [morphology.segment_insertion_angle](segment_insertion_angle.md), [morphology.segment_path_length](segment_pathlength.md), 
 [morphology.segment_tangent_angle](segment_tangent_angle.md), [report_size_marker_area](report_size_marker.md), [watershed_segmentation](watershed.md),
-[within_frame](within_frame.md), [x_axis_pseudolandmarks](x_axis_pseudolandmarks.md), and [y_axis_pseudolandmarks](y_axis_pseudolandmarks.md). 
+[within_frame](within_frame.md), [x_axis_pseudolandmarks](x_axis_pseudolandmarks.md), and [y_axis_pseudolandmarks](y_axis_pseudolandmarks.md). All of these functions include an optional `label` parameter 
+that allows users to append custom prefixes to the unique variable identifier. 
 
 For more detail about the traits measured by each function see the [Observation Traits Summary Table](https://docs.google.com/spreadsheets/d/1gk5VocBA-63gyF_vA6yPNvWreZ1R7-_z4vOfm37YBl8/edit?usp=sharing).

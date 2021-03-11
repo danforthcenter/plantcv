@@ -5,12 +5,11 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 from plantcv.plantcv import params
-from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 
 
 def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255,
-                axes=True, colorbar=True, obj_padding="auto"):
+                axes=True, colorbar=True, obj_padding="auto", title=None):
     """Pseudocolor any grayscale image to custom colormap
 
     Inputs:
@@ -28,6 +27,7 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
     obj_padding = (optional) if "auto" (default) and an obj is supplied, then the image is cropped to an extent 20%
                   larger in each dimension than the object. An single integer is also accepted to define the padding
                   in pixels
+    title       = (optional) custom title for the plot gets drawn if title is not None. default = None
 
     Returns:
     pseudo_image = pseudocolored image
@@ -42,6 +42,7 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
     :param axes: bool
     :param colorbar: bool
     :param obj_padding: str, int
+    :param title: str
     :return pseudo_image: numpy.ndarray
     """
 
@@ -123,7 +124,10 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
 
         if axes:
             # Include image title
-            plt.title('Pseudocolored image')
+            if title is not None:
+                plt.title(title)
+            else:
+                plt.title('Pseudocolored image')
         else:
             # Remove axes
             plt.xticks([])
@@ -150,7 +154,6 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
             plt.yticks([])
 
         pseudo_img = plt.gcf()
-
 
     # Print or plot if debug is turned on
     if params.debug is not None:
