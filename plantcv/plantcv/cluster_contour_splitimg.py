@@ -119,7 +119,7 @@ def cluster_contour_splitimg(img, grouped_contour_indexes, contours, hierarchy, 
         else:
             savename = os.path.join(".", group_names[y])
             savename1 = os.path.join(".", group_names1[y])
-        iy, ix, iz = np.shape(img)
+        iy, ix = np.shape(img)[:2]
         mask = np.zeros((iy, ix, 3), dtype=np.uint8)
         masked_img = np.copy(img)
         for a in x:
