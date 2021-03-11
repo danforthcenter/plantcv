@@ -1734,6 +1734,29 @@ def test_plantcv_cluster_contours_splitimg():
     assert len(output_path) != 0
 
 
+def test_plantcv_cluster_contours_splitimg_grayscale():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_cluster_contours_splitimg_grayscale")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI), 0)
+    contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_CONTOUR), encoding="latin1")
+    clusters = np.load(os.path.join(TEST_DATA, TEST_INPUT_ClUSTER_CONTOUR), encoding="latin1")
+    hierachy = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_HIERARCHY), encoding="latin1")
+    cluster_names = os.path.join(TEST_DATA, TEST_INPUT_GENOTXT)
+    cluster_names_too_many = os.path.join(TEST_DATA, TEST_INPUT_GENOTXT_TOO_MANY)
+    roi_contours = [contours[arr_n] for arr_n in contours]
+    cluster_contours = [clusters[arr_n] for arr_n in clusters]
+    obj_hierarchy = hierachy['arr_0']
+    pcv.params.debug = None
+    output_path, imgs, masks = pcv.cluster_contour_splitimg_grayscale(img=img1, grouped_contour_indexes=cluster_contours,
+                                                            contours=roi_contours, hierarchy=obj_hierarchy, outdir=None,
+                                                            file=None,
+                                                            filenames=None)
+    assert len(output_path) != 0
+
+
 def test_plantcv_color_palette():
     # Return a color palette
     colors = pcv.color_palette(num=10, saved=False)
