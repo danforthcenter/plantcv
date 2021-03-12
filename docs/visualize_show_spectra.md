@@ -22,6 +22,6 @@ show_spectra = pcv.visualize.ShowSpectra(array)
 ```
 
 Check out this video for a sample usage:
-<iframe src="https://vimeo.com/522535625" width="640" height="480" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+<iframe src="https://player.vimeo.com/video/522535625" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/visualize/show_spectra.py)
