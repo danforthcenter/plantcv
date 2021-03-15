@@ -6211,14 +6211,19 @@ def test_plantcv_visualize_show_spectra():
     e2.xdata = 0
     e2.ydata = 0
 
-    e3 = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=show_spectra.fig.canvas, x=1, y=0, button=1)
+    e1_ = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=show_spectra.fig.canvas, x=0, y=0,button=1)
+    e1_.xdata = 0
+    e1_.ydata = 0
+
+    e3 = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=show_spectra.fig.canvas, x=1, y=0, button=3)
     e3.xdata = 1
     e3.ydata = 0
 
     show_spectra.onclick(e1)
     show_spectra.onclick(e2)
+    show_spectra.onclick(e1_)
     show_spectra.onclick(e3)
-    assert len(show_spectra.events) == 3
+    assert len(show_spectra.events) == 4
 
 def test_plantcv_visualize_overlay_two_imgs_size_mismatch():
     pcv.params.debug = None
