@@ -6208,8 +6208,9 @@ def test_plantcv_visualize_show_spectra():
     e1.ydata = 0
 
     e2 = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=show_spectra.fig.canvas, x=0, y=0, button=3)
-    e1.xdata = 0
-    e1.ydata = 0
+    e2.xdata = 0
+    e2.ydata = 0
+
     show_spectra.onclick(e1)
     show_spectra.onclick(e2)
     assert len(show_spectra.events) == 2
