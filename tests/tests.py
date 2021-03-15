@@ -6193,6 +6193,26 @@ def test_plantcv_visualize_overlay_two_imgs_bad_alpha():
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2, alpha=alpha)
 
+def test_plantcv_visualize_show_spectra():
+    # read hypersectral data
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    array_data        = pcv.hyperspectral.read_data(filename=spectral_filename)
+
+    # initialization
+    show_spectra = pcv.visualize.ShowSpectra(array_data, figsize=(12, 6))
+    assert len(show_spectra.events) == 0
+
+    # create mock events
+    e1 = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=show_spectra.fig.canvas, x=0, y=0,button=1)
+    e1.xdata = 0
+    e1.ydata = 0
+
+    e2 = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=show_spectra.fig.canvas, x=0, y=0, button=3)
+    e1.xdata = 0
+    e1.ydata = 0
+    show_spectra.onclick(e1)
+    show_spectra.onclick(e2)
+    assert len(show_spectra.events) == 2
 
 def test_plantcv_visualize_overlay_two_imgs_size_mismatch():
     pcv.params.debug = None
