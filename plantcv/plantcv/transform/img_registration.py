@@ -4,6 +4,7 @@ from plantcv import plantcv as pcv
 from scipy.spatial import distance
 import numpy as np
 import matplotlib.pyplot as plt
+import pickle as pkl
 
 
 def _find_closest(pt, pts):
@@ -13,8 +14,6 @@ def _find_closest(pt, pts):
     :param pts: (a list of tuples) coordinates of a list of points
     :return: index of the closest point and the coordinates of that point
     """
-    if pt in pts:
-        return pt
     dists = distance.cdist([pt], pts, 'euclidean')
     idx = np.argmin(dists)
     return idx, pts[idx]
@@ -41,6 +40,7 @@ class ImageRegistrator:
         # cursor = Cursor(axes[0], horizOn=True, vertOn=True, useblit=True, color='red', linewidth=2)
 
         self.points = [[], []]
+        self.events = []
 
         # onclick = functools.partial(_onclick_, fig, axes, array_data, wvs)
 
@@ -62,18 +62,18 @@ class ImageRegistrator:
         self.axes[idx_ax].lines.remove(axplots[idx_remove])
 
     def onclick(self, event):
+        self.events.append(event)
 
-        # collecting points on reference image
+        # collect points on reference image
         if str(event.inaxes._subplotspec) == 'GridSpec(1, 2)[0:1, 0:1]':
             # left click
             if event.button == 1:
                 self.left_click(0, event.xdata, event.ydata)
-
             # right click
             else:
                 self.right_click(0, event.xdata, event.ydata)
 
-        # collecting points on target image
+        # collect points on target image
         elif str(event.inaxes._subplotspec) == 'GridSpec(1, 2)[0:1, 1:2]':
             # left click
             if event.button == 1:
@@ -83,6 +83,17 @@ class ImageRegistrator:
             else:
                 self.right_click(1, event.xdata, event.ydata)
         self.fig.canvas.draw()
+
+    def save_model(self, model_file="model"):
+        pkl.dump(self.model, open("{}.pkl".format(model_file), "wb"))
+
+    def display_coords(self):
+        print("\nCoordinates for selected reference points: ")
+        for point_ref in self.points[0]:
+            print("\n{}".format(point_ref))
+        print("\nCoordinates for selected target points: ")
+        for point_tar in self.points[1]:
+            print("\n{}".format(point_tar))
 
     def regist(self):
         # use warp function in plantcv
