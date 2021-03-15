@@ -11,16 +11,40 @@ Another optional parameter is the desired figure size `figsize`, by default `fig
 ### Attributes
 **img_ref** (`ndarray`, datatype: uint8, required): input reference image.
 **img_tar** (`ndarray`, datatype: uint8, required): input target image.
-**points** (`list`): list of coordinates of selected pixels on reference image and target image
+**points** (`list`): list of coordinates of selected pixels on reference image and target image.
+**model** (`numpy.ndarray`): tranformation matrix of size (3,3) that register the target image to the reference image. 
 
+### Class methods
+**display_coords()**
+
+Display user selected coordinates for both reference image and target image
+
+**regist()** 
+
+Register the target image to the reference image based on user selected landmark points.
+
+**save_model(model_file="model")**
+
+Save the transformation matrix used for image registration.
 
 ```python
 
 from plantcv import plantcv as pcv
-
+# Initialize an image registrator
 img_registrator = ImageRegistrator(img_ref, img_tar, figsize=(12, 6))
-## collecting land mark points
+
+## 
+# collecting land mark points
+##
+
+# Display user selected coordinates on both reference image and target image
+img_registrator.display_coords()
+
+# Register the target image to the reference image based on the model calculated from selected points
 img_registrator.regist()
+
+# Save
+img_registrator.save_model(model_file="my_model")
 
 ```
 
