@@ -5616,6 +5616,66 @@ def test_plantcv_transform_nonuniform_illumination_gray():
     corrected = pcv.transform.nonuniform_illumination(img=gray_img, ksize=11)
     assert np.shape(corrected) == np.shape(gray_img)
 
+def test_plantcv_transform_img_registration():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_img_registration")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+
+    loaded = np.load(os.path.join(TEST_DATA, TEST_THERMAL_ARRAY), encoding="latin1")
+    therm = loaded['arr_0']
+    im_rgb = pcv.transform.rescale(therm)
+
+    # initialization
+    img_regist = pcv.transform.ImageRegistrator(pcv.transform.rescale(therm), im_rgb, figsize=(10, 5))
+    assert len(img_regist.events) == 0 and len(img_regist.points[0]) == 0 and len(img_regist.points[1]) == 0
+
+    ## create mock events
+
+    # e1: left click on left subplot
+    e1 = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=img_regist.fig.canvas, x=0, y=0, button=1)
+    e1.xdata = 0
+    e1.ydata = 0
+    e1.inaxes = img_regist.axes[0]
+    e1.inaxes._subplotspec = matplotlib.gridspec.SubplotSpec(matplotlib.gridspec.GridSpec(nrows=1, ncols=2, figure=img_regist.fig), 0, num2=0)
+
+    # e2: left click on right subplot
+    e2 = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=img_regist.fig.canvas, x=0, y=0, button=1)
+    e2.xdata = 0
+    e2.ydata = 0
+    e2.inaxes = img_regist.axes[1]
+    e2.inaxes._subplotspec = matplotlib.gridspec.SubplotSpec(matplotlib.gridspec.GridSpec(nrows=1, ncols=2, figure=img_regist.fig), 1, num2=1)
+
+    # e1_: right click on left subplot
+    e1_ = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=img_regist.fig.canvas, x=0, y=0, button=3)
+    e1_.xdata = 0
+    e1_.ydata = 0
+    e1_.inaxes = img_regist.axes[0]
+    e1_.inaxes._subplotspec = matplotlib.gridspec.SubplotSpec(matplotlib.gridspec.GridSpec(nrows=1, ncols=2, figure=img_regist.fig), 0, num2=0)
+
+    # e2_: right click on right subplot
+    e2_ = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=img_regist.fig.canvas, x=0, y=0, button=3)
+    e2_.xdata = 0
+    e2_.ydata = 0
+    e2_.inaxes = img_regist.axes[1]
+    e2_.inaxes._subplotspec = matplotlib.gridspec.SubplotSpec(matplotlib.gridspec.GridSpec(nrows=1, ncols=2, figure=img_regist.fig), 1, num2=1)
+
+    img_regist.onclick(e1)
+    img_regist.onclick(e2)
+    assert len(img_regist.events) == 2 and len(img_regist.points[0]) == 1 and len(img_regist.points[1]) == 1
+
+    img_regist.onclick(e1_)
+    img_regist.onclick(e2_)
+    assert len(img_regist.events) == 4 and len(img_regist.points[0]) == 0 and len(img_regist.points[1]) == 0
+
+    img_regist.points[0] = [(0, 0), (1, 0), (1, 1), (0, 1)]
+    img_regist.points[1] = [(0, 0), (1, 0), (1, 1), (0, 1)]
+    img_regist.display_coords()
+
+    img_regist.regist()
+    img_regist.save_model(model_file=os.path.join(cache_dir,"model"))
+    assert img_regist.model is not None and os.path.exists(os.path.join(cache_dir,'model.pkl'))
+
 
 # ##############################
 # Tests for the threshold subpackage
