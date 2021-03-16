@@ -57,6 +57,7 @@ def read_cropreporter(inf_filename):
                           "CLR": "CLR", "RFD": "RFD", "GFP": "GFP", "RFP": "RFP"}
     all_imgs = {}
     all_xarrays = []
+    param_labels = []
     # Loop over all expected binary image files
     for key in frames_expected:
         # Find the corresponding binary image filename based on the INF filename
@@ -78,9 +79,13 @@ def read_cropreporter(inf_filename):
         x_coord = np.arange(x)
         y_coord = np.arange(y)
         frames_list = np.arange(np.shape(all_imgs[corresponding_dict[key]])[2])
-        foo = xr.DataArray(img_cube, dims=["x", "y", "frame"],
-                           coords={"x": x_coord, "y": y_coord, "frame": frames_list}, name=corresponding_dict[key])
-        all_xarrays.append(foo)
+        da = xr.DataArray(img_cube[None, ...], dims=["parameter", "x", "y", "frame"], coords= {"frame":frames_list})
+        param_labels = param_labels + [corresponding_dict[key]]
+        all_xarrays.append(da)
+
+    all_xarrays = xr.concat(all_xarrays, 'parameter')
+    param_labels = pd.Index(param_labels)
+    all_xarrays.coords['parameter'] = param_labels
 
 # NEEDS UPDATING, plan to use x-array objects to store all frames as a single thing that can be input into analysis fxns
     # # Extract fdark and fmin from the datacube of stacked frames
@@ -109,3 +114,4 @@ def read_cropreporter(inf_filename):
     #     plot_image(fmax)
     #
     # return fdark, fmin, fmax
+    return inf_dict, all_imgs, all_xarrays
