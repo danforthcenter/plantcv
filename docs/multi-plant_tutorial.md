@@ -388,7 +388,7 @@ for an example.
     # also does a check to make sure that the number of inputted filenames matches the number
     # of clustered contours. If no filenames are given then the objects are just numbered
     # Inputs:
-    #    img                     = ideally a masked RGB image.
+    #    img                     = ideally a masked image.
     #    grouped_contour_indexes = output of cluster_contours, indexes of clusters of contours
     #    contours                = contours to cluster, output of cluster_contours
     #    hierarchy               = object hierarchy
