@@ -2,7 +2,7 @@
 
 This is a plotting method used to represent the way in which contours get clustered together into objects from [pcv.cluster_contours](cluster_contours.md).
 
-**plantcv.visualize.clustered_contours**(*img, grouped_contour_indices, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1*)
+**plantcv.visualize.clustered_contours**(*img, grouped_contour_indices, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1, bounding=True*)
 
 **returns** clustered_image
 
@@ -13,6 +13,7 @@ This is a plotting method used to represent the way in which contours get cluste
     - roi_obj_hierarchy - object hierarchy
     - nrow - Optional row grid lines to get drawn (default nrow=1). If `nrow` is unchanged, grid lines don't get drawn. 
     - ncol - Optional column grid lines to get drawn (default ncol=1). If `ncol` is unchanged, grid lines don't get drawn. 
+    - bounding - Optional circles to bound the individual clusters (default bounding=True)
 - **Context:**
     - This function was written to allow users to debug [pcv.cluster_contours](cluster_contours.md) and make sure that contours from the same 
     plant are getting grouped together. 
