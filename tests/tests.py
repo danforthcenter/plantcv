@@ -6109,18 +6109,18 @@ def test_plantcv_visualize_clustered_contours():
     objs = [roi_objects[arr_n] for arr_n in roi_objects]
     obj_hierarchy = hierarchy['arr_0']
     cluster = [cluster_i[arr_n] for arr_n in cluster_i]
-    # Test in print mode
-    pcv.params.debug = "print"
-    # Reset the saved color scale (can be saved between tests)
-    pcv.params.saved_color_scale = None
-    _ = pcv.visualize.clustered_contours(img=img, grouped_contour_indices=cluster, roi_objects=objs,
-                                         roi_obj_hierarchy=obj_hierarchy, nrow=2, ncol=2, bounding=True)
     # Test in plot mode
     pcv.params.debug = "plot"
     # Reset the saved color scale (can be saved between tests)
     pcv.params.saved_color_scale = None
     cluster_img = pcv.visualize.clustered_contours(img=img1, grouped_contour_indices=cluster, roi_objects=objs,
                                                    roi_obj_hierarchy=obj_hierarchy, bounding=False)
+    # Test in print mode
+    pcv.params.debug = "print"
+    # Reset the saved color scale (can be saved between tests)
+    pcv.params.saved_color_scale = None
+    _ = pcv.visualize.clustered_contours(img=img, grouped_contour_indices=cluster, roi_objects=objs,
+                                         roi_obj_hierarchy=obj_hierarchy, nrow=2, ncol=2, bounding=True)
     assert len(np.unique(cluster_img.reshape(-1, cluster_img.shape[2]), axis=0)) == 37
 
 
