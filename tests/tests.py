@@ -1310,17 +1310,21 @@ def test_plantcv_analyze_nir():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.analyze_nir_intensity(gray_img=np.uint16(img), mask=mask, bins=256, histplot=True, label="prefix")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=False)
-    # Test with debug = "plot"
-    _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=True)
-    # Test with debug = None
+    # # Test with debug = "print"
+    # pcv.params.debug = "print"
+    # _ = pcv.analyze_nir_intensity(gray_img=np.uint16(img), mask=mask, bins=256, histplot=True, label="prefix")
+    # # Test with debug = "plot"
+    # pcv.params.debug = "plot"
+    # _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=False)
+    # # Test with debug = "plot"
+    # _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=True)
+    # # Test with debug = None
+    # pcv.params.debug = None
+    # _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=True)
+
     pcv.params.debug = None
     _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=True)
+
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     result = len(pcv.outputs.observations['default']['nir_frequencies']['value'])
     assert result == 256
@@ -1431,11 +1435,15 @@ def test_plantcv_analyze_thermal_values():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_THERMAL_IMG_MASK), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_THERMAL_ARRAY), encoding="latin1")
     img = contours_npz['arr_0']
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.analyze_thermal_values(thermal_array=img, mask=mask, histplot=True, label="prefix")
-    pcv.params.debug = "plot"
+
+    # pcv.params.debug = "print"
+    # _ = pcv.analyze_thermal_values(thermal_array=img, mask=mask, histplot=True, label="prefix")
+    # pcv.params.debug = "plot"
+    # thermal_hist = pcv.analyze_thermal_values(thermal_array=img, mask=mask, histplot=True)
+
+    pcv.params.debug = None
     thermal_hist = pcv.analyze_thermal_values(thermal_array=img, mask=mask, histplot=True)
+
     pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert thermal_hist is not None and pcv.outputs.observations['default']['median_temp']['value'] == 33.20922
 
