@@ -97,5 +97,5 @@ class ImageRegistrator:
 
     def regist(self):
         # use warp function in plantcv
-        self.model, self.img_registered = pcv.transform.warp_perspective(self.img_tar, self.img_ref, self.points[1], self.points[0], method='ransac')
+        self.model, self.img_registered = pcv.transform.warp_align(self.img_tar, self.img_ref, self.points[1], self.points[0], method='ransac')
 
