@@ -53,6 +53,7 @@ def warp_align(img, refimg, pts, refpts, method='default'):
     shape_img = img.shape
     shape_ref = refimg.shape
     rows_ref, cols_ref = shape_ref[0:2]
+    rows_img, cols_img = shape_img[0:2]
 
     # convert list of tuples to array for cv2 functions
     ptsarr = np.array(pts, dtype='float32')
@@ -60,6 +61,8 @@ def warp_align(img, refimg, pts, refpts, method='default'):
 
     # find tranformation matrix and warp
     mat, status = cv2.findHomography(ptsarr, refptsarr, method=methods.get(method))
+    if mat is None:
+        fatal_error( "Cannot calculate a robust with given corresponding coordinates and with desired robust estimation algorithm {}!".format(method))
     warped_img = cv2.warpPerspective(src=img, M=mat, dsize=(cols_ref, rows_ref))
 
     # preserve binary
@@ -68,7 +71,7 @@ def warp_align(img, refimg, pts, refpts, method='default'):
 
     if params.debug is not None:
         # scale marker_size and line_thickness for different resolutions
-        rows_img = shape_img[0]
+
         if rows_img > rows_ref:
             res_ratio_i = int(np.ceil(rows_img / rows_ref))  # ratio never smaller than 1 with np.ceil
             res_ratio_r = 1
@@ -101,10 +104,12 @@ def warp_align(img, refimg, pts, refpts, method='default'):
 
         for i, pt in enumerate(refpts):
             if status[i][0] == 1:
+                print("5")
                 cv2.drawMarker(refimg_marked, pt, color=colors[i], markerType=cv2.MARKER_CROSS,
                                markerSize=params.marker_size * res_ratio_r,
                                thickness=params.line_thickness * res_ratio_r)
             else:
+                print("6")
                 cv2.drawMarker(refimg_marked, pt, color=colors[i], markerType=cv2.MARKER_TRIANGLE_UP,
                                markerSize=params.marker_size * res_ratio_r,
                                thickness=params.line_thickness * res_ratio_r)
