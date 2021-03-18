@@ -143,7 +143,7 @@ def cluster_contour_splitimg(img, grouped_contour_indexes, contours, hierarchy, 
                 print_image(mask_binary, savename1)
             output_path.append(savename)
 
-        _debug(visual=masked1, filename=os.path.join(params.debug_outdir, str(params.device) + '_clusters.png'))
-        _debug(visual=mask_binary, filename=os.path.join(params.debug_outdir, str(params.device) + '_clusters_mask.png'))
+            _debug(visual=masked1, filename=os.path.join(params.debug_outdir, str(params.device) + '_clusters.png'))
+            _debug(visual=mask_binary, filename=os.path.join(params.debug_outdir, str(params.device) + '_clusters_mask.png'))
 
     return output_path, output_imgs, output_masks
