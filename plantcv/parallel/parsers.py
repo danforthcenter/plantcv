@@ -156,47 +156,60 @@ def metadata_parser(config):
         pattern = re.escape('.') + config.imgformat + '$'
         ext = re.compile(pattern, re.IGNORECASE)
 
-        # Walk through the input directory and find images that match input criteria
-        for (dirpath, dirnames, filenames) in os.walk(config.input_dir):
-            for filename in filenames:
-                # Is filename and image?
-                is_img = ext.search(filename)
-                # If filename is an image, parse the metadata
-                if is_img is not None:
-                    # Remove the file extension
-                    prefix = ext.sub('', filename)
-                    metadata = _parse_filename(filename=prefix, delimiter=config.delimiter, regex=regex)
+        # Prepare lists of paths and filenames of images by walking through the input directory and get only files
+        # Initialize the dictionary with two keys: "dirpath" and "filename"
+        paths_files = dict({'dirpath':[],'filename':[]})
+        if config.include_all_subdirs is True:
+            for (dirpath, dirnames, filenames) in os.walk(config.input_dir):
+                for filename in filenames:
+                    # Is it a file?
+                    if os.path.isfile(os.path.join(dirpath, filename)):
+                        paths_files['dirpath'].append(dirpath)
+                        paths_files['filename'].append(filename)
+        else:
+            paths_files['filename'] = [f for f in os.listdir(config.input_dir) if os.path.isfile(os.path.join(config.input_dir,f))]
+            paths_files['dirpath']  = [config.input_dir for i in paths_files['filename']]
 
-                    # Not all images in a directory may have the same metadata structure only keep those that do
-                    if len(metadata) == meta_count:
-                        # Image metadata
-                        img_path = os.path.join(dirpath, filename)
-                        img_meta = {'path': img_path}
-                        img_pass = 1
-                        # For each of the type of metadata PlantCV keeps track of
-                        for term in config.metadata_terms:
-                            # If the same metadata is found in the image filename, store the value
-                            if term in metadata_index:
-                                meta_value = metadata[metadata_index[term]]
-                                # If the metadata type has a user-provided restriction
-                                if term in config.metadata_filters:
-                                    # If the input value does not match the image value, fail the image
-                                    if meta_value != config.metadata_filters[term]:
-                                        img_pass = 0
-                                img_meta[term] = meta_value
-                            # Or use the default value
-                            else:
-                                img_meta[term] = config.metadata_terms[term]["value"]
+        # Walk through all files and find images that match input criteria
+        for (dirpath, filename) in zip(paths_files['dirpath'], paths_files['filename']):
+            # Is filename and image?
+            is_img = ext.search(filename)
+            # If filename is an image, parse the metadata
+            if is_img is not None:
+                # Remove the file extension
+                prefix = ext.sub('', filename)
+                metadata = _parse_filename(filename=prefix, delimiter=config.delimiter, regex=regex)
 
-                        if img_meta['timestamp'] is not None:
-                            in_date_range = check_date_range(start_date_unixtime, end_date_unixtime,
-                                                             img_meta['timestamp'], config.timestampformat)
-                            if in_date_range is False:
-                                img_pass = 0
+                # Not all images in a directory may have the same metadata structure only keep those that do
+                if len(metadata) == meta_count:
+                    # Image metadata
+                    img_path = os.path.join(dirpath, filename)
+                    img_meta = {'path': img_path}
+                    img_pass = 1
+                    # For each of the type of metadata PlantCV keeps track of
+                    for term in config.metadata_terms:
+                        # If the same metadata is found in the image filename, store the value
+                        if term in metadata_index:
+                            meta_value = metadata[metadata_index[term]]
+                            # If the metadata type has a user-provided restriction
+                            if term in config.metadata_filters:
+                                # If the input value does not match the image value, fail the image
+                                if meta_value != config.metadata_filters[term]:
+                                    img_pass = 0
+                            img_meta[term] = meta_value
+                        # Or use the default value
+                        else:
+                            img_meta[term] = config.metadata_terms[term]["value"]
 
-                        # If the image meets the user's criteria, store the metadata
-                        if img_pass == 1:
-                            meta[filename] = img_meta
+                    if img_meta['timestamp'] is not None:
+                        in_date_range = check_date_range(start_date_unixtime, end_date_unixtime,
+                                                         img_meta['timestamp'], config.timestampformat)
+                        if in_date_range is False:
+                            img_pass = 0
+
+                    # If the image meets the user's criteria, store the metadata
+                    if img_pass == 1:
+                        meta[filename] = img_meta
 
     return meta
 ###########################################

@@ -31,15 +31,16 @@ def _slope_to_intesect_angle(m1, m2):
     return angle
 
 
-def segment_tangent_angle(segmented_img, objects, size):
+def segment_tangent_angle(segmented_img, objects, size, label="default"):
     """ Find 'tangent' angles in degrees of skeleton segments. Use `size` pixels on either end of
         each segment to find a linear regression line, and calculate angle between the two lines
         drawn per segment.
 
         Inputs:
         segmented_img  = Segmented image to plot slope lines and intersection angles on
-        objects   = List of contours
-        size      = Size of ends used to calculate "tangent" lines
+        objects        = List of contours
+        size           = Size of ends used to calculate "tangent" lines
+        label          = optional label parameter, modifies the variable name of observations recorded
 
         Returns:
         labeled_img    = Segmented debugging image with angles labeled
@@ -47,6 +48,7 @@ def segment_tangent_angle(segmented_img, objects, size):
         :param segmented_img: numpy.ndarray
         :param objects: list
         :param size: int
+        :param label: str
         :return labeled_img: numpy.ndarray
         """
     # Store debug
@@ -123,7 +125,7 @@ def segment_tangent_angle(segmented_img, objects, size):
         # segment_label = "ID" + str(i)
         segment_ids.append(i)
 
-    outputs.add_observation(variable='segment_tangent_angle', trait='segment tangent angle',
+    outputs.add_observation(sample=label, variable='segment_tangent_angle', trait='segment tangent angle',
                             method='plantcv.plantcv.morphology.segment_tangent_angle', scale='degrees', datatype=list,
                             value=intersection_angles, label=segment_ids)
 
