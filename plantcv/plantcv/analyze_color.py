@@ -5,18 +5,20 @@ import pandas as pd
 from scipy import stats
 from plotnine import ggplot, aes, geom_line, scale_x_continuous, scale_color_manual, labs
 from plantcv.plantcv import fatal_error
+from plantcv.plantcv import deprecation_warning
 from plantcv.plantcv import params
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import outputs
 from plantcv.plantcv.visualize import histogram
-from plantcv.plantcv._debug import _debug
 
 
-def analyze_color(rgb_img, mask, hist_plot_type=None, label="default"):
+def analyze_color(rgb_img, mask, colorspaces = None, hist_plot_type = None, label="default"):
     """Analyze the color properties of an image object
     Inputs:
     rgb_img          = RGB image data
     mask             = Binary mask made from selected contours
-    hist_plot_type   = None, 'all', 'rgb','lab' or 'hsv'
+    (deprecated) hist_plot_type   = None, 'all', 'rgb','lab' or 'hsv'
+    colorspaces      = None, 'all', 'rgb','lab' or 'hsv'
     label            = optional label parameter, modifies the variable name of observations recorded
 
     Returns:
@@ -24,10 +26,14 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, label="default"):
 
     :param rgb_img: numpy.ndarray
     :param mask: numpy.ndarray
-    :param hist_plot_type: str
+    :param colorspaces: str
     :param label: str
     :return analysis_images: list
     """
+    if hist_plot_type or hist_plot_type is None:
+        deprecation_warning("'hist_plot_type' will be deprecate in the future version of plantCV. Please use 'colorspaces' instead.")
+        colorspaces = hist_plot_type
+
     if len(np.shape(rgb_img)) < 3:
         fatal_error("rgb_img must be an RGB image")
 
@@ -53,9 +59,10 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, label="default"):
                   "LAB": ("l", "m", "y"),
                   "HSV": ("h", "s", "v")}
 
-    if hist_plot_type is not None and hist_plot_type.upper() not in hist_types:
-        fatal_error("The histogram plot type was " + str(hist_plot_type) +
+    if colorspaces is not None and colorspaces.upper() not in hist_types:
+        fatal_error("The histogram plot type was " + str(colorspaces) +
                     ', but can only be one of the following: None, "all", "rgb", "lab", or "hsv"!')
+
     histograms = {
         "b": {"label": "blue", "graph_color": "blue",
               "hist": histogram(channels["b"], mask, 256, 0, 255)[1]['proportion of pixels (%)'].tolist()},
@@ -88,8 +95,8 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, label="default"):
                             'blue-yellow': histograms["y"]["hist"], 'hue': histograms["h"]["hist"],
                             'saturation': histograms["s"]["hist"], 'value': histograms["v"]["hist"]})
     # Make the histogram figure using plotnine
-    if hist_plot_type is not None:
-        if hist_plot_type.upper() == 'RGB':
+    if colorspaces is not None:
+        if colorspaces.upper() == 'RGB':
             df_rgb = pd.melt(dataset, id_vars=['bins'], value_vars=['blue', 'green', 'red'],
                              var_name='color Channel', value_name='proportion of pixels (%)')
             hist_fig = (ggplot(df_rgb, aes(x='bins', y='proportion of pixels (%)', color='color Channel'))
@@ -98,7 +105,7 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, label="default"):
                         + scale_color_manual(['blue', 'green', 'red'])
                         )
 
-        elif hist_plot_type.upper() == 'LAB':
+        elif colorspaces.upper() == 'LAB':
             df_lab = pd.melt(dataset, id_vars=['bins'],
                              value_vars=['lightness', 'green-magenta', 'blue-yellow'],
                              var_name='color Channel', value_name='proportion of pixels (%)')
@@ -108,7 +115,7 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, label="default"):
                         + scale_color_manual(['yellow', 'magenta', 'dimgray'])
                         )
 
-        elif hist_plot_type.upper() == 'HSV':
+        elif colorspaces.upper() == 'HSV':
             df_hsv = pd.melt(dataset, id_vars=['bins'],
                              value_vars=['hue', 'saturation', 'value'],
                              var_name='color Channel', value_name='proportion of pixels (%)')
@@ -118,7 +125,7 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, label="default"):
                         + scale_color_manual(['blueviolet', 'cyan', 'orange'])
                         )
 
-        elif hist_plot_type.upper() == 'ALL':
+        elif colorspaces.upper() == 'ALL':
             s = pd.Series(['blue', 'green', 'red', 'lightness', 'green-magenta',
                            'blue-yellow', 'hue', 'saturation', 'value'], dtype="category")
             color_channels = ['blue', 'yellow', 'green', 'magenta', 'blueviolet',
@@ -144,7 +151,7 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, label="default"):
     hue_circular_std = stats.circstd(h[np.where(h > 0)], high=179, low=0) * 2
 
     # Plot or print the histogram
-    if hist_plot_type is not None:
+    if colorspaces is not None:
         params.device += 1
         # if params.debug == 'print':
         #     hist_fig.save(os.path.join(params.debug_outdir, str(params.device) + '_analyze_color_hist.png'),
@@ -164,8 +171,8 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, label="default"):
     # Diverging values on a -128 to 127 scale (green-magenta and blue-yellow)
     diverging_values = [i for i in range(-128, 128)]
 
-    if hist_plot_type is not None:
-        if hist_plot_type.upper() == 'RGB' or hist_plot_type.upper() == 'ALL':
+    if colorspaces is not None:
+        if colorspaces.upper() == 'RGB' or colorspaces.upper() == 'ALL':
             outputs.add_observation(sample=label, variable='blue_frequencies', trait='blue frequencies',
                                     method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
                                     value=histograms["b"]["hist"], label=rgb_values)
@@ -176,7 +183,7 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, label="default"):
                                     method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
                                     value=histograms["r"]["hist"], label=rgb_values)
 
-        if hist_plot_type.upper() == 'LAB' or hist_plot_type.upper() == 'ALL':
+        if colorspaces.upper() == 'LAB' or colorspaces.upper() == 'ALL':
             outputs.add_observation(sample=label, variable='lightness_frequencies', trait='lightness frequencies',
                                     method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
                                     value=histograms["l"]["hist"], label=percent_values)
@@ -188,7 +195,7 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, label="default"):
                                     method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
                                     value=histograms["y"]["hist"], label=diverging_values)
 
-        if hist_plot_type.upper() == 'HSV' or hist_plot_type.upper() == 'ALL':
+        if colorspaces.upper() == 'HSV' or colorspaces.upper() == 'ALL':
             outputs.add_observation(sample=label, variable='hue_frequencies', trait='hue frequencies',
                                     method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
                                     value=histograms["h"]["hist"][0:180], label=hue_values)
