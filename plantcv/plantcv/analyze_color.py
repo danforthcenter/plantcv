@@ -27,11 +27,12 @@ def analyze_color(rgb_img, mask, colorspaces = None, hist_plot_type = None, labe
     :param rgb_img: numpy.ndarray
     :param mask: numpy.ndarray
     :param colorspaces: str
+    :param hist_plot_type: str
     :param label: str
     :return analysis_images: list
     """
     if hist_plot_type or hist_plot_type is None:
-        deprecation_warning("'hist_plot_type' will be deprecate in the future version of plantCV. Please use 'colorspaces' instead.")
+        deprecation_warning("'hist_plot_type' will be deprecated in the future version of plantCV. Please use 'colorspaces' instead.")
         colorspaces = hist_plot_type
 
     if len(np.shape(rgb_img)) < 3:
