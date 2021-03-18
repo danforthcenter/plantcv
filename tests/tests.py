@@ -988,6 +988,8 @@ def test_plantcv_transform_warp_align():
 
     mat, warped_img = pcv.transform.warp_align(img, img, pts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)], refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
     assert mat.shape == (3, 3)
+
+    # different number of points
     with pytest.raises(RuntimeError):
         pcv.transform.warp_align(img, img, pts=[(0, 0), (vcol-1, 0), (vcol-1, vrow-1),(0,vrow-1)], refpts=[(0, 0), (vcol-1, 0), (vcol-1, vrow-1)])
 
@@ -996,9 +998,9 @@ def test_plantcv_transform_warp_align():
     bimg_small[bimg_small>0]=255
     mrow, mcol = bimg_small.shape
     vrow, vcol, vdepth = img.shape
-    mat, warped_img = pcv.transform.warp_align(bimg_small, img,
-                                 pts=[(0, 0), (mcol - 1, 0), (mcol - 1, mrow - 1), (0, mrow - 1), (0, 100)],
-                                 refpts=[(0, 0), (vcol - 1, 0), (vcol - 1, vrow - 1), (0, vrow - 1), (0, 100)],
+    mat, warped_img = pcv.transform.warp_align(img,bimg_small,
+                                 pts=[(0, 0), (vcol - 1, 0), (vcol - 1, vrow - 1), (0, vrow - 1), (0, 100)],
+                                 refpts=[(0, 0), (mcol - 1, 0), (mcol - 1, mrow - 1), (0, mrow - 1), (0, 100)],
                                  method='ransac')
     assert mat.shape == (3, 3)
     with pytest.raises(RuntimeError):
@@ -1007,51 +1009,6 @@ def test_plantcv_transform_warp_align():
                    refpts=[(0, 0), (vcol - 1, 0), (vcol - 1, vrow - 1), (0, vrow - 1), (0, 100)],
                    method='rho')
 
-# def test_plantcv_transform_warp_align_smaller():
-#     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_acute_vertex")
-#     os.mkdir(cache_dir)
-#     pcv.params.debug_outdir = cache_dir
-#     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR),-1)
-#     bimg = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY),-1)
-#     bimg_small = cv2.resize(bimg, (200,300)) #not sure why INTER_NEAREST doesn't preserve values
-#     bimg_small[bimg_small>0]=255
-#     mrow, mcol = bimg_small.shape
-#     vrow, vcol, vdepth = img.shape
-#     pcv.params.debug = 'print'
-#     mat, mask_warped = pcv.transform.warp_align(bimg_small, img[:,:,2],
-#                                     pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
-#                                     refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)],
-#                                                 method="lmeds")
-#     assert mat.shape == (3, 3)
-#
-#     mat, mask_warped = pcv.transform.warp_align(img[:,:,2],bimg_small,
-#                                     pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
-#                                     refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)],
-#                                                 method="lmeds")
-#     assert mat.shape == (3, 3)
-#
-#
-# def test_plantcv_transform_warp_align_larger():
-#     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_acute_vertex")
-#     os.mkdir(cache_dir)
-#     pcv.params.debug_outdir = cache_dir
-#     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR),-1)
-#     gimg = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY),-1)
-#     gimg_large = cv2.resize(gimg, (5000,7000))
-#     mrow, mcol = gimg_large.shape
-#     vrow, vcol, vdepth = img.shape
-#     mat, mask_warped = pcv.transform.warp_align(gimg_large, img,
-#                                     pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
-#                                     refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)],
-#                                                 method="lmeds")
-#     assert mat.shape == (3, 3)
-#
-#     gimg_large = cv2.resize(gimg, (5000, 7000))
-#     mat, mask_warped = pcv.transform.warp_align(gimg_large,img,
-#                                     pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1),(0,mrow-100)],
-#                                     refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1),(0,vrow-100)],
-#                                                 method="lmeds")
-#     assert mat.shape == (3, 3)
 
 def test_plantcv_acute():
     # Read in test data
