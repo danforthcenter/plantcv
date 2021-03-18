@@ -1002,12 +1002,14 @@ def test_plantcv_transform_warp_align_smaller():
     pcv.params.debug = None
     mat, mask_warped = pcv.transform.warp_align(bimg_small, img[:,:,2],
                                     pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
-                                    refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
+                                    refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)],
+                                                method="lmeds")
     assert mat.shape == (3, 3)
 
     mat, mask_warped = pcv.transform.warp_align(img[:,:,2],bimg_small,
                                     pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
-                                    refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
+                                    refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)],
+                                                method="lmeds")
     assert mat.shape == (3, 3)
 
 
@@ -1022,13 +1024,15 @@ def test_plantcv_transform_warp_align_larger():
     vrow, vcol, vdepth = img.shape
     mat, mask_warped = pcv.transform.warp_align(gimg_large, img,
                                     pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
-                                    refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
+                                    refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)],
+                                                method="lmeds")
     assert mat.shape == (3, 3)
-    gimg_large = cv2.resize(gimg, (7000, 5000))
+
+    gimg_large = cv2.resize(gimg, (5000, 7000))
     mat, mask_warped = pcv.transform.warp_align(gimg_large,img,
                                     pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1),(0,mrow-100)],
                                     refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1),(0,vrow-100)],
-                                                method="ransac")
+                                                method="lmeds")
     assert mat.shape == (3, 3)
 
 def test_plantcv_acute():
