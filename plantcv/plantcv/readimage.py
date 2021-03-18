@@ -5,10 +5,9 @@ import cv2
 import numpy as np
 import pandas as pd
 from plantcv.plantcv import fatal_error
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
 from plantcv.plantcv.hyperspectral import read_data
+from plantcv.plantcv._debug import _debug
 
 
 def readimage(filename, mode="native"):
@@ -54,9 +53,7 @@ def readimage(filename, mode="native"):
     # Split path from filename
     path, img_name = os.path.split(filename)
 
-    if params.debug == "print":
-        print_image(img, os.path.join(params.debug_outdir, "input_image.png"))
-    elif params.debug == "plot":
-        plot_image(img)
+    # Debugging visualization
+    _debug(visual=img, filename=os.path.join(params.debug_outdir, "input_image.png"))
 
     return img, path, img_name

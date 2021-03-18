@@ -8,6 +8,7 @@ from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 from plantcv.plantcv.visualize import histogram
+from plantcv.plantcv._debug import _debug
 
 
 def analyze_color(rgb_img, mask, hist_plot_type=None, label="default"):
@@ -145,12 +146,13 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, label="default"):
     # Plot or print the histogram
     if hist_plot_type is not None:
         params.device += 1
-        if params.debug == 'print':
-            hist_fig.save(os.path.join(params.debug_outdir, str(params.device) + '_analyze_color_hist.png'),
-                          verbose=False)
-        elif params.debug == 'plot':
-            print(hist_fig)
+        # if params.debug == 'print':
+        #     hist_fig.save(os.path.join(params.debug_outdir, str(params.device) + '_analyze_color_hist.png'),
+        #                   verbose=False)
+        # elif params.debug == 'plot':
+        #     print(hist_fig)
         analysis_image = hist_fig
+        _debug(visual=hist_fig, filename=os.path.join(params.debug_outdir, str(params.device) + '_analyze_color_hist.png'))
 
     # Store into global measurements
     # RGB signal values are in an unsigned 8-bit scale of 0-255

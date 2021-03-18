@@ -334,7 +334,7 @@ def main():
                                                                   roi_type='partial')
   
     # Apply the mask of the leaf to the entire datacube, and store it where the datacube is stored.
-    spectral_array.array_data = pcv.apply_mask(rgb_img=spectral_array.array_data, mask=kept_mask, mask_color="black")
+    spectral_array.array_data = pcv.apply_mask(img=spectral_array.array_data, mask=kept_mask, mask_color="black")
                                                                
     # Extract reflectance intensity data and store it out to the Outputs class. 
     analysis_img = pcv.hyperspectral.analyze_spectral(array=spectral_array, mask=kept_mask, histplot=True)
