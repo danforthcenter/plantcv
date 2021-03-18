@@ -1005,9 +1005,9 @@ def test_plantcv_transform_warp_align_smaller():
                                     refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
     assert mat.shape == (3, 3)
 
-    mat, mask_warped = pcv.transform.warp_align(bimg_small, img[:,:,2],
-                                    pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1)],
-                                    refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1)])
+    mat, mask_warped = pcv.transform.warp_align(img[:,:,2],bimg_small,
+                                    pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
+                                    refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
     assert mat.shape == (3, 3)
 
 
@@ -1025,9 +1025,9 @@ def test_plantcv_transform_warp_align_larger():
                                     refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
     assert mat.shape == (3, 3)
 
-    mat, mask_warped = pcv.transform.warp_align(gimg_large, img,
-                                    pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1)],
-                                    refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1)])
+    mat, mask_warped = pcv.transform.warp_align(img,gimg_large, 
+                                    pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
+                                    refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
     assert mat.shape == (3, 3)
 
 def test_plantcv_acute():
