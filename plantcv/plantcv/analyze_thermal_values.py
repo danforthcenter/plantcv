@@ -9,9 +9,11 @@ from plantcv.plantcv import outputs
 from plotnine import ggplot, aes, geom_line, labs
 from plantcv.plantcv.threshold import binary as binary_threshold
 from plantcv.plantcv.visualize import histogram
+from plantcv.plantcv import deprecation_warning
+from plantcv.plantcv._debug import _debug
 
 
-def analyze_thermal_values(thermal_array, mask, histplot=False, label="default"):
+def analyze_thermal_values(thermal_array, mask, label="default", histplot=None):
     """This extracts the thermal values of each pixel writes the values out to
        a file. It can also print out a histogram plot of pixel intensity
        and a pseudocolor image of the plant.
@@ -31,6 +33,9 @@ def analyze_thermal_values(thermal_array, mask, histplot=False, label="default")
     :param label: str
     :return analysis_image: ggplot
     """
+
+    if histplot is not None:
+        deprecation_warning("'histplot' will be deprecated in the future version of plantCV. This function plots histogram by default. ")
 
     # Store debug mode
     debug = params.debug
@@ -64,18 +69,14 @@ def analyze_thermal_values(thermal_array, mask, histplot=False, label="default")
                             method='plantcv.plantcv.analyze_thermal_values', scale='frequency', datatype=list,
                             value=hist_percent, label=bin_labels)
     params.debug = debug
-    analysis_image = None
-    if histplot is True:
-        params.device += 1
+    params.device += 1
 
-        # change column names of "hist_data"
-        hist_fig = hist_fig + labs(x="Temperature C", y="Proportion of pixels (%)")
-        if params.debug == "print":
-            hist_fig.save(os.path.join(params.debug_outdir, str(params.device) + '_therm_histogram.png'),
-                          verbose=False)
-        elif params.debug == "plot":
-            print(hist_fig)
-        analysis_image = hist_fig
+    # change column names of "hist_data"
+    hist_fig = hist_fig + labs(x="Temperature C", y="Proportion of pixels (%)")
+
+    _debug(visual=hist_fig, filename=os.path.join(params.debug_outdir, str(params.device) + "_therm_histogram.png"))
+
+    analysis_image = hist_fig
     # Store images
     outputs.images.append(analysis_image)
 
