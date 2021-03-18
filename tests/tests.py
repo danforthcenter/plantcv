@@ -1683,10 +1683,6 @@ def test_plantcv_cluster_contours_grayscale_input():
 
 
 def test_plantcv_cluster_contours_splitimg():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_cluster_contours_splitimg")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     # Read in test data
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI), -1)
     contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_CONTOUR), encoding="latin1")
