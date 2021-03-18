@@ -4694,10 +4694,14 @@ def test_plantcv_hyperspectral_analyze_index():
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
     index_array = pcv.spectral_index.savi(hsi=array_data, distance=801)
     mask_img = np.ones(np.shape(index_array.array_data), dtype=np.uint8) * 255
-    pcv.params.debug = "print"
+    # pcv.params.debug = "print"
+    # pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, histplot=True)
+    # pcv.params.debug = "plot"
+    # pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, histplot=True)
+
+    pcv.params.debug = None
     pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, histplot=True)
-    pcv.params.debug = "plot"
-    pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, histplot=True)
+
     assert pcv.outputs.observations['default']['mean_index_savi']['value'] > 0
 
 
@@ -4711,6 +4715,7 @@ def test_plantcv_hyperspectral_analyze_index_set_range():
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
     index_array = pcv.spectral_index.savi(hsi=array_data, distance=801)
     mask_img = np.ones(np.shape(index_array.array_data), dtype=np.uint8) * 255
+    pcv.params.debug = None
     pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, histplot=True, min_bin=0, max_bin=1)
     assert pcv.outputs.observations['default']['mean_index_savi']['value'] > 0
 
@@ -4725,6 +4730,7 @@ def test_plantcv_hyperspectral_analyze_index_auto_range():
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
     index_array = pcv.spectral_index.savi(hsi=array_data, distance=801)
     mask_img = np.ones(np.shape(index_array.array_data), dtype=np.uint8) * 255
+    pcv.params.debug = None
     pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, min_bin="auto", max_bin="auto")
     assert pcv.outputs.observations['default']['mean_index_savi']['value'] > 0
 
@@ -4741,6 +4747,7 @@ def test_plantcv_hyperspectral_analyze_index_outside_range_warning():
     mask_img = np.ones(np.shape(index_array.array_data), dtype=np.uint8) * 255
     f = io.StringIO()
     with redirect_stdout(f):
+        pcv.params.debug = None
         pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, min_bin=.5, max_bin=.55, label="i")
     out = f.getvalue()
     # assert os.listdir(cache_dir) is 0
