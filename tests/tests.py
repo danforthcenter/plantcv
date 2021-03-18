@@ -1277,27 +1277,27 @@ def test_plantcv_analyze_color():
     _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='rgb')
     assert pcv.outputs.observations['default']['hue_median']['value'] == 84.0
 
-# def test_plantcv_analyze_color_incorrect_image():
-#     img_binary = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-#     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-#     with pytest.raises(RuntimeError):
-#         _ = pcv.analyze_color(rgb_img=img_binary, mask=mask, hist_plot_type=None)
+def test_plantcv_analyze_color_incorrect_image():
+    img_binary = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    with pytest.raises(RuntimeError):
+        _ = pcv.analyze_color(rgb_img=img_binary, mask=mask, hist_plot_type=None)
 #
 #
-# def test_plantcv_analyze_color_bad_hist_type():
-#     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-#     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-#     pcv.params.debug = "plot"
-#     with pytest.raises(RuntimeError):
-#         _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='bgr')
-#
-#
-# def test_plantcv_analyze_color_incorrect_hist_plot_type():
-#     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-#     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-#     with pytest.raises(RuntimeError):
-#         pcv.params.debug = "plot"
-#         _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type="bgr")
+def test_plantcv_analyze_color_bad_hist_type():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    pcv.params.debug = "plot"
+    with pytest.raises(RuntimeError):
+        _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='bgr')
+
+
+def test_plantcv_analyze_color_incorrect_hist_plot_type():
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    with pytest.raises(RuntimeError):
+        pcv.params.debug = "plot"
+        _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type="bgr")
 
 
 def test_plantcv_analyze_nir():
