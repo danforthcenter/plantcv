@@ -1695,6 +1695,21 @@ def test_plantcv_cluster_contours_splitimg():
     obj_hierarchy = hierachy['arr_0']
     # Test with debug = None
     pcv.params.debug = None
+    _, _, _ = pcv.cluster_contour_splitimg(img=img1, grouped_contour_indexes=cluster_contours,
+                                           contours=roi_contours,
+                                           hierarchy=obj_hierarchy, outdir=cache_dir, file=None, filenames=None)
+    _, _, _ = pcv.cluster_contour_splitimg(img=img1, grouped_contour_indexes=[[0]], contours=[],
+                                           hierarchy=np.array([[[1, -1, -1, -1]]]))
+    _, _, _ = pcv.cluster_contour_splitimg(img=img1, grouped_contour_indexes=cluster_contours,
+                                           contours=roi_contours,
+                                           hierarchy=obj_hierarchy, outdir=cache_dir, file='multi', filenames=None)
+    _, _, _ = pcv.cluster_contour_splitimg(img=img1, grouped_contour_indexes=cluster_contours,
+                                           contours=roi_contours,
+                                           hierarchy=obj_hierarchy, outdir=None, file=None, filenames=cluster_names)
+    _, _, _ = pcv.cluster_contour_splitimg(img=img1, grouped_contour_indexes=cluster_contours,
+                                           contours=roi_contours,
+                                           hierarchy=obj_hierarchy, outdir=None, file=None,
+                                           filenames=cluster_names_too_many)
     output_path, imgs, masks = pcv.cluster_contour_splitimg(img=img1, grouped_contour_indexes=cluster_contours,
                                                             contours=roi_contours, hierarchy=obj_hierarchy, outdir=None,
                                                             file=None,
