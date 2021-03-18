@@ -1028,7 +1028,7 @@ def test_plantcv_transform_warp_align_larger():
     mat, mask_warped = pcv.transform.warp_align(gimg_large, img,
                                     pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1)],
                                     refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1)])
-    assert mat.shape == (3, 3) 
+    assert mat.shape == (3, 3)
 
 def test_plantcv_acute():
     # Read in test data
