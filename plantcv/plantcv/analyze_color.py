@@ -17,7 +17,7 @@ def analyze_color(rgb_img, mask, colorspaces = None, hist_plot_type = None, labe
     Inputs:
     rgb_img          = RGB image data
     mask             = Binary mask made from selected contours
-    (deprecated) hist_plot_type   = None, 'all', 'rgb','lab' or 'hsv'
+    hist_plot_type(to be deprecated)    = None, 'all', 'rgb','lab' or 'hsv'
     colorspaces      = None, 'all', 'rgb','lab' or 'hsv'
     label            = optional label parameter, modifies the variable name of observations recorded
 
