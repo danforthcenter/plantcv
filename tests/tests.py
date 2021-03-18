@@ -1024,10 +1024,11 @@ def test_plantcv_transform_warp_align_larger():
                                     pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
                                     refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
     assert mat.shape == (3, 3)
-
-    mat, mask_warped = pcv.transform.warp_align(img,gimg_large, 
-                                    pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
-                                    refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
+    gimg_large = cv2.resize(gimg, (7000, 5000))
+    mat, mask_warped = pcv.transform.warp_align(img,gimg_large,
+                                    pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1),(0,mrow-100)],
+                                    refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1),(0,vrow-100)],
+                                                method="ransac")
     assert mat.shape == (3, 3)
 
 def test_plantcv_acute():
