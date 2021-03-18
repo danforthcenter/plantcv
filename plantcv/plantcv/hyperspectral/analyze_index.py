@@ -6,14 +6,14 @@ import numpy as np
 import pandas as pd
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import fatal_error
 from plotnine import ggplot, aes, geom_line, scale_x_continuous, labs
 from plantcv.plantcv.visualize import histogram
+from plantcv.plantcv import deprecation_warning
 
 
-def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=0, max_bin=1, label="default"):
+def analyze_index(index_array, mask, bins=100, min_bin=0, max_bin=1, label="default", histplot=None):
     """This extracts the hyperspectral index statistics and writes the values  as observations out to
        the Outputs class.
 
@@ -39,9 +39,11 @@ def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=0, max_bi
     """
     params.device += 1
 
+    if histplot is not None:
+        deprecation_warning("'histplot' will be deprecated in the future version of plantCV. This function plots histogram by default. ")
+
     debug = params.debug
     params.debug = None
-    analysis_image = None
 
     if len(np.shape(mask)) > 2 or len(np.unique(mask)) > 2:
         fatal_error("Mask should be a binary image of 0 and nonzero values.")
@@ -82,13 +84,15 @@ def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=0, max_bi
     bin_labels, hist_percent = hist_data['pixel intensity'].tolist(), hist_data['proportion of pixels (%)'].tolist()
 
     params.debug = debug
-    if histplot is True:
-        hist_fig = hist_fig + labs(x='Index Reflectance', y='Proportion of pixels (%)')
-        if params.debug == 'print':
-            hist_fig.save(os.path.join(params.debug_outdir, str(params.device) + index_array.array_type + "hist.png"), verbose=False)
-        elif params.debug == 'plot':
-            print(hist_fig)
-        analysis_image = hist_fig
+    hist_fig = hist_fig + labs(x='Index Reflectance', y='Proportion of pixels (%)')
+    # if params.debug == 'print':
+    #     hist_fig.save(os.path.join(params.debug_outdir, str(params.device) + index_array.array_type + "hist.png"), verbose=False)
+    # elif params.debug == 'plot':
+    #     print(hist_fig)
+
+    _debug(visual=masked_array, filename=os.path.join(params.debug_outdir, str(params.device) + index_array.array_type + "hist.png"))
+
+    analysis_image = hist_fig
 
     outputs.add_observation(sample=label, variable='mean_' + index_array.array_type,
                             trait='Average ' + index_array.array_type + ' reflectance',
@@ -109,11 +113,13 @@ def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=0, max_bi
                             trait='index frequencies', method='plantcv.plantcv.analyze_index', scale='frequency',
                             datatype=list, value=hist_percent, label=bin_labels)
 
-    if params.debug == "plot":
-        plot_image(masked_array)
-    elif params.debug == "print":
-        print_image(img=masked_array, filename=os.path.join(params.debug_outdir, str(params.device) +
-                                                            index_array.array_type + ".png"))
+    # if params.debug == "plot":
+    #     plot_image(masked_array)
+    # elif params.debug == "print":
+    #     print_image(img=masked_array, filename=os.path.join(params.debug_outdir, str(params.device) +
+    #                                                         index_array.array_type + ".png"))
+
+    _debug(visual=masked_array, filename=os.path.join(params.debug_outdir, str(params.device) + index_array.array_type + ".png"))
     # Store images
     outputs.images.append(analysis_image)
 
