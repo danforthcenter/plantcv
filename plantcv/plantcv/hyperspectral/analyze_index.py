@@ -12,7 +12,7 @@ from plantcv.plantcv import fatal_error
 from plotnine import ggplot, aes, geom_line, scale_x_continuous
 
 
-def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=0, max_bin=1):
+def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=0, max_bin=1, label="default"):
     """This extracts the hyperspectral index statistics and writes the values  as observations out to
        the Outputs class.
 
@@ -23,6 +23,8 @@ def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=0, max_bi
     bins         = optional, number of classes to divide spectrum into
     min_bin      = optional, minimum bin value ("auto" or user input minimum value)
     max_bin      = optional, maximum bin value ("auto" or user input maximum value)
+    label        = optional label parameter, modifies the variable name of observations recorded
+
 
 
     :param index_array: __main__.Spectral_data
@@ -31,6 +33,7 @@ def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=0, max_bi
     :param bins: int
     :param max_bin: float, str
     :param min_bin: float, str
+    :param label: str
     :return analysis_image: ggplot, None
     """
     params.device += 1
@@ -47,9 +50,11 @@ def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=0, max_bi
 
     # Mask data and collect statistics about pixels within the masked image
     masked_array = index_array.array_data[np.where(mask > 0)]
-    index_mean = np.average(masked_array)
-    index_median = np.median(masked_array)
-    index_std = np.std(masked_array)
+    masked_array = masked_array[np.isfinite(masked_array)]
+
+    index_mean = np.nanmean(masked_array)
+    index_median = np.nanmedian(masked_array)
+    index_std = np.nanstd(masked_array)
 
     # Set starting point and max bin values
     maxval = max_bin
@@ -98,28 +103,28 @@ def analyze_index(index_array, mask, histplot=False, bins=100, min_bin=0, max_bi
         analysis_image = fig_hist
         if params.debug == 'print':
             fig_hist.save(os.path.join(params.debug_outdir,
-                                       str(params.device) + index_array.array_type + "hist.png"))
+                                       str(params.device) + index_array.array_type + "hist.png"), verbose=False)
         elif params.debug == 'plot':
             print(fig_hist)
 
-    outputs.add_observation(variable='mean_' + index_array.array_type,
+    outputs.add_observation(sample=label, variable='mean_' + index_array.array_type,
                             trait='Average ' + index_array.array_type + ' reflectance',
                             method='plantcv.plantcv.hyperspectral.analyze_index', scale='reflectance', datatype=float,
                             value=float(index_mean), label='none')
 
-    outputs.add_observation(variable='med_' + index_array.array_type,
+    outputs.add_observation(sample=label, variable='med_' + index_array.array_type,
                             trait='Median ' + index_array.array_type + ' reflectance',
                             method='plantcv.plantcv.hyperspectral.analyze_index', scale='reflectance', datatype=float,
                             value=float(index_median), label='none')
 
-    outputs.add_observation(variable='std_' + index_array.array_type,
+    outputs.add_observation(sample=label, variable='std_' + index_array.array_type,
                             trait='Standard deviation ' + index_array.array_type + ' reflectance',
                             method='plantcv.plantcv.hyperspectral.analyze_index', scale='reflectance', datatype=float,
                             value=float(index_std), label='none')
 
-    outputs.add_observation(variable='index_frequencies_' + index_array.array_type, trait='index frequencies',
-                            method='plantcv.plantcv.analyze_index', scale='frequency', datatype=list,
-                            value=hist_percent, label=bin_labels)
+    outputs.add_observation(sample=label, variable='index_frequencies_' + index_array.array_type,
+                            trait='index frequencies', method='plantcv.plantcv.analyze_index', scale='frequency',
+                            datatype=list, value=hist_percent, label=bin_labels)
 
     if params.debug == "plot":
         plot_image(masked_array)

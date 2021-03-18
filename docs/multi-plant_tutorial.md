@@ -54,8 +54,7 @@ Sample command to run a workflow on a single image:
 #### Workflows start by importing necessary packages, and by defining user inputs.
 
 ```python
-#!/usr/bin/python
-
+#!/usr/bin/env python
 import numpy as np
 import argparse 
 from plantcv import plantcv as pcv
@@ -149,7 +148,7 @@ Check if this is an image captured at night.
     #   crop = If True then image will be cropped to original image dimensions, if False
     #          the image size will be adjusted to accommodate new image dimensions 
     
-    rotate_img = pcv.rotate(img=img1, rotation_deg=-1, crop=False)
+    rotate_img = pcv.transform.rotate(img=img1, rotation_deg=-1, crop=False)
 
 ```
 
@@ -366,7 +365,7 @@ for an example.
     # also does a check to make sure that the number of inputted filenames matches the number
     # of clustered contours. If no filenames are given then the objects are just numbered
     # Inputs:
-    #    img                     = ideally a masked RGB image.
+    #    img                     = ideally a masked image.
     #    grouped_contour_indexes = output of cluster_contours, indexes of clusters of contours
     #    contours                = contours to cluster, output of cluster_contours
     #    hierarchy               = object hierarchy
@@ -441,15 +440,10 @@ In the terminal:
 Python script: 
 
 ```python
-#!/usr/bin/python
+#!/usr/bin/env python
 
-import sys, traceback
-import cv2
-import os
-import re
 import numpy as np
 import argparse
-import string
 from plantcv import plantcv as pcv
 
 ### Parse command-line arguments
@@ -502,7 +496,7 @@ def main():
     #          the image size will be adjusted to accommodate new image dimensions 
 
     
-    rotate_img = pcv.rotate(img=img1,rotation_deg=-1, crop=False)
+    rotate_img = pcv.transform.rotate(img=img1,rotation_deg=-1, crop=False)
     
     # STEP 4: Shift image. This step is important for clustering later on.
     # For this image it also allows you to push the green raspberry pi camera
@@ -554,7 +548,7 @@ def main():
     #    ksize  = kernel size
     #    i      = iterations, i.e. number of consecutive filtering passes
     
-    dilated = pcv.dilate(img=fill_image, ksize=1, i=1)
+    dilated = pcv.dilate(gray_img=fill_image, ksize=1, i=1)
     
     # STEP 9: Find objects (contours: black-white boundaries)
     # Inputs:

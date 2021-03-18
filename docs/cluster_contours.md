@@ -1,6 +1,6 @@
 ## Cluster Contours
 
-This function take a image with multiple contours and clusters them based on user input of rows and columns
+This function take a image with multiple contours and clusters them based on user input of rows and columns.
 
 **platncv.cluster_contours**(*img, roi_objects, roi_obj_hierarchy, nrow=1,ncol=1, show_grid=False*)
 

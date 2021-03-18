@@ -3,7 +3,7 @@
 Creates a binary image from an RGB image by thresholding out saturated pixels. 
 
 
-**plantcv.threshold.saturation(*rgb_img, threshold=255, channel="any"*)**
+**plantcv.threshold.saturation**(*rgb_img, threshold=255, channel="any"*)
 
 **returns** thresholded/binary image
 

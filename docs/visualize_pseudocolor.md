@@ -1,9 +1,9 @@
-## Pseudocolor any Grayscale Image
+## Pseudocolor Grayscale Image
 
-This function pseudocolors any grayscale image to custom colormap. An optional mask can leave background out in the
+This function pseudocolors any grayscale image to a custom colormap. An optional mask can leave background out in the
 pseudocolored image. Additionally, optional maximum and minimum values can be specified. When `pcv.params.debug='print'`
 then the image gets saved to `pcv.params.debug_outdir`, and`pcv.params.dpi` can be set for the image that gets saved. If
-unaltered, the  matplotlib default is 100 pixels per inch.
+unaltered, the  matplotlib default DPI is 100 pixels per inch.
 
 **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, background="image", cmap=None, min_value=0, max_value=255, axes=True, colorbar=True, obj_padding='auto'*)
 
@@ -12,14 +12,15 @@ unaltered, the  matplotlib default is 100 pixels per inch.
 - **Parameters:**
     - gray_img   - Grayscale image data
     - obj        - ROI or plant contour object (optional) if provided, the pseudocolored image gets cropped down to the region of interest.
-    - mask       - Binary mask made from selected contours
-    - background - Background color/type. Options are "image" (gray_img), "white", or "black". A mask must be supplied.
+    - mask       - Binary mask made from selected contours (optional) 
+    - background - Background color/type. Options are "image" (default), "white", or "black". A mask must be supplied in order to utilize this parameter.
     - cmap       - Custom colormap, see [here](https://matplotlib.org/tutorials/colors/colormaps.html) for tips on how to choose a colormap in Matplotlib.
-    - min_value  - Minimum value (optional) for range of the colorbar.
-    - max_value  - Maximum value (optional) for range of the colorbar.
+    - min_value  - Minimum value (optional) for range of the colorbar. Default: 0
+    - max_value  - Maximum value (optional) for range of the colorbar. Default: 255
     - axes       - If False then the title, x-axis, and y-axis won't be displayed (default axes=True).
     - colorbar   - If False then the colorbar won't be displayed (default colorbar=True)
-    - obj_padding    - if "auto" (default) and an obj is supplied, then the image is cropped to an extent 20% larger in each dimension than the object. A single integer is also accepted to define the padding in pixels.
+    - obj_padding    - If "auto" (default), and an obj is supplied, then the image is cropped to an extent 20% larger in each dimension than the object. A single integer is also accepted to define the padding in pixels.
+    - title      - The title for the pseudocolored image (default title=None) 
 
 - **Context:**
     - Used to pseudocolor any grayscale image to custom colormap

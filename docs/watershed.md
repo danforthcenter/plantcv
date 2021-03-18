@@ -4,17 +4,16 @@ This function is based on code contributed by Suxing Liu, Arkansas State Univers
 For more information see [https://github.com/lsx1980/Leaf_count](https://github.com/lsx1980/Leaf_count).
 This function uses the watershed algorithm to detect boundary of objects.
 Needs a mask file which specifies area which is object is white, and background is black.
-Requires cv2 version 3.0+
 
-**plantcv.watershed_segmentation**(*rgb_img, mask, distance=10*)**
+**plantcv.watershed_segmentation**(*rgb_img, mask, distance=10, label="default"*)
 
 **returns** analysis_image
 
 - **Parameters:**
     - rgb_img - RGB image data
-    - mask - binary image, single channel, object in white and background black
-    - distance - min_distance of local maximum, lower values are more sensitive, and segments more objects (default: 10)
-    - filename - if user wants to output analysis images change filenames from False (default)
+    - mask - Binary image, single channel, object in white and background black
+    - distance - Minimum distance of local maximum, lower values are more sensitive, and segments more objects (default: 10)
+    - label - Optional label parameter, modifies the variable name of observations recorded
 - **Context:**
     - Used to segment image into parts
     - Data automatically gets stored into the [Outputs class](outputs.md). Users can look at the data collected at any point during 
@@ -34,7 +33,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Segment image with watershed function
-analysis_image = pcv.watershed_segmentation(crop_img, thresh, 10)
+analysis_image = pcv.watershed_segmentation(rgb_img=crop_img, mask=bin_mask, distance=10, label="default")
 
 ```
 

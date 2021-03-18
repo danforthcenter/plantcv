@@ -3,7 +3,7 @@
 Creates a grayscale image of pixelwise standard deviation from a grayscale image.
 
 
-**plantcv.stdev_filter(*img, ksize, borders='nearest'*)**
+**plantcv.stdev_filter**(*img, ksize, borders='nearest'*)
 
 **returns** stdev image
 

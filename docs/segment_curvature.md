@@ -2,7 +2,7 @@
 
 Measure the curvature of segments.   
 
-**plantcv.morphology.segment_curvature**(*segmented_img, objects*)
+**plantcv.morphology.segment_curvature**(*segmented_img, objects, label="default"*)
 
 **returns** labeled image 
 
@@ -12,6 +12,7 @@ Measure the curvature of segments.
     - objects - Segment objects (output from either [plantcv.morphology.prune](prune.md),
     [plantcv.morphology.segment_skeleton](segment_skeleton.md), or
     [plantcv.morphology.segment_sort](segment_sort.md)).
+    - label         - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
 - **Context:**
     - Calculates curvature of segments by taking the ratio of the geodesic distance ([plantcv.morphology.segment_path_length](segment_pathlength.md))
     over the euclidean distance [plantcv.morphology.segment_euclidean_length](segment_euclidean_length.md)). Measurement of two-dimensional tortuosity.
@@ -29,13 +30,14 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 labeled_img = pcv.morphology.segment_curvature(segmented_img=segmented_img, 
-                                               objects=obj)
+                                               objects=obj, label="all")
 # Pass just leaf objects and hierarchies (output from pcv.morphology.segment_sort) 
 labeled_img2 = pcv.morphology.segment_curvature(segmented_img=leaf_segmented,
-                                                objects=leaf_obj)
+                                                objects=leaf_obj, label="leaf")
 
 # Access data stored out from segment_curvature
-segment_curvatures = pcv.outputs.observations['segment_curvature']['value']
+all_curvatures = pcv.outputs.observations['all']['segment_curvature']['value']
+leaf_curvatures = pcv.outputs.observations['leaf']['segment_curvature']['value']
 
 ```
 

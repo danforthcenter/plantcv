@@ -4,7 +4,7 @@ Creates a binary image from a grayscale image using [skimage](http://scikit-imag
 texture calculation for thresholding.
 
 
-**plantcv.threshold.texture(*gray_img, ksize, threshold, offset=3, texture_method='dissimilarity', borders='nearest', max_value=255*)**
+**plantcv.threshold.texture**(*gray_img, ksize, threshold, offset=3, texture_method='dissimilarity', borders='nearest', max_value=255*)
 
 **returns** thresholded/binary image
 

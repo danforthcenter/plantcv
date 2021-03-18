@@ -56,10 +56,8 @@ Sample command to run a workflow on a single image:
 
 ```python
 
-#!/usr/bin/python
-import sys, traceback
-import cv2
-import numpy as np
+#!/usr/bin/env python
+
 import argparse
 from plantcv import plantcv as pcv
 
@@ -209,10 +207,10 @@ Binary mask after [filtering objects by the region of interest](roi_objects.md) 
     # Apply the mask of the leaf to the entire datacube, and store it where the datacube is stored. 
     
     # Inputs:
-    #   rgb_img - RGB image data or hyperspectral image data 
+    #   img - RGB image data or hyperspectral image data 
     #   mask - Binary mask image data 
     #   mask_color - 'white' or 'black' 
-    spectral_array.array_data = pcv.apply_mask(rgb_img=spectral_array.array_data, mask=kept_mask, mask_color="black")
+    spectral_array.array_data = pcv.apply_mask(img=spectral_array.array_data, mask=kept_mask, mask_color="black")
                                                                
 ``` 
 
@@ -228,7 +226,9 @@ Binary mask after [filtering objects by the region of interest](roi_objects.md) 
     #   array        - Hyperspectral data instance  
     #   mask         - Binary mask image data 
     #   hist_plot    - If True plots histogram of reflectance intensity values
-    analysis_img = pcv.hyperspectral.analyze_spectral(array=spectral_array, mask=kept_mask, histplot=True)
+    #   label        - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
+
+    analysis_img = pcv.hyperspectral.analyze_spectral(array=spectral_array, mask=kept_mask, histplot=True, label="default")
                                                                
 ``` 
 
@@ -243,7 +243,9 @@ Binary mask after [filtering objects by the region of interest](roi_objects.md) 
     # Inputs:
     #   array        - Hyperspectral index data instance  
     #   mask         - Binary mask image data 
-    pcv.hyperspectral.analyze_index(array=index_array_gdvi, mask=kept_mask)
+    #   label        - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
+
+    pcv.hyperspectral.analyze_index(array=index_array_gdvi, mask=kept_mask, label="default")
                                                                
 ``` 
 
@@ -272,12 +274,9 @@ In the terminal:
 Python script: 
 
 ```python
-# !/usr/bin/python
-import sys, traceback
-import cv2
-import numpy as np
+#!/usr/bin/env python
+
 import argparse
-import string
 from plantcv import plantcv as pcv
 
 
@@ -335,7 +334,7 @@ def main():
                                                                   roi_type='partial')
   
     # Apply the mask of the leaf to the entire datacube, and store it where the datacube is stored.
-    spectral_array.array_data = pcv.apply_mask(rgb_img=spectral_array.array_data, mask=kept_mask, mask_color="black")
+    spectral_array.array_data = pcv.apply_mask(img=spectral_array.array_data, mask=kept_mask, mask_color="black")
                                                                
     # Extract reflectance intensity data and store it out to the Outputs class. 
     analysis_img = pcv.hyperspectral.analyze_spectral(array=spectral_array, mask=kept_mask, histplot=True)
