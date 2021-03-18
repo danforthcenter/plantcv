@@ -9,44 +9,6 @@ from plantcv.plantcv.classes import Spectral_data
 params = Params()
 outputs = Outputs()
 
-
-class Spectral_data:
-    # PlantCV Hyperspectral data class
-    def __init__(self, array_data, max_wavelength, min_wavelength, max_value, min_value, d_type, wavelength_dict,
-                 samples, lines, interleave, wavelength_units, array_type, pseudo_rgb, filename, default_bands):
-        # The actual array/datacube
-        self.array_data = array_data
-        # Min/max available wavelengths (for spectral datacube)
-        self.max_wavelength = max_wavelength
-        self.min_wavelength = min_wavelength
-        #  Min/max pixel value for single wavelength or index
-        self.max_value = max_value
-        self.min_value = min_value
-        # Numpy data type
-        self.d_type = d_type
-        # Contains all available wavelengths where keys are wavelength and value are indices
-        self.wavelength_dict = wavelength_dict
-        # Resolution of a single band of spectral data is (samples, lines) rather than (x,y) with other arrays
-        self.samples = samples
-        self.lines = lines
-        # Interleave type
-        self.interleave = interleave
-        self.wavelength_units = wavelength_units
-        # The type of array data (entire datacube, specific index, first derivative, etc)
-        self.array_type = array_type
-        # Pseudo-RGB image if the array_type is a datacube
-        self.pseudo_rgb = pseudo_rgb
-        # The filename where the data originated from
-        self.filename = filename
-        # The default band indices needed to make an pseudo_rgb image, if not available then store None
-        self.default_bands = default_bands
-
-# Example
-# spectral_array = Spectral_data(max_wavelength=1000.95, min_wavelength=379.027, d_type=numpy.float32,
-#                           wavelength_dict=dictionary, samples=1600, lines=1704, interleave='bil',
-#                           wavelength_units='nm', array_type="datacube", filename=fname, default_bands={159,253,520})
-
-
 from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.deprecation import deprecation_warning
 from plantcv.plantcv.print_image import print_image
