@@ -85,12 +85,8 @@ def analyze_index(index_array, mask, bins=100, min_bin=0, max_bin=1, label="defa
 
     params.debug = debug
     hist_fig = hist_fig + labs(x='Index Reflectance', y='Proportion of pixels (%)')
-    # if params.debug == 'print':
-    #     hist_fig.save(os.path.join(params.debug_outdir, str(params.device) + index_array.array_type + "hist.png"), verbose=False)
-    # elif params.debug == 'plot':
-    #     print(hist_fig)
 
-    _debug(visual=masked_array, filename=os.path.join(params.debug_outdir, str(params.device) + index_array.array_type + "hist.png"))
+    _debug(visual=hist_fig, filename=os.path.join(params.debug_outdir, str(params.device) + index_array.array_type + "_hist.png"))
 
     analysis_image = hist_fig
 
@@ -112,12 +108,6 @@ def analyze_index(index_array, mask, bins=100, min_bin=0, max_bin=1, label="defa
     outputs.add_observation(sample=label, variable='index_frequencies_' + index_array.array_type,
                             trait='index frequencies', method='plantcv.plantcv.analyze_index', scale='frequency',
                             datatype=list, value=hist_percent, label=bin_labels)
-
-    # if params.debug == "plot":
-    #     plot_image(masked_array)
-    # elif params.debug == "print":
-    #     print_image(img=masked_array, filename=os.path.join(params.debug_outdir, str(params.device) +
-    #                                                         index_array.array_type + ".png"))
 
     _debug(visual=masked_array, filename=os.path.join(params.debug_outdir, str(params.device) + index_array.array_type + ".png"))
     # Store images
