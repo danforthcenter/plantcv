@@ -63,21 +63,11 @@ def analyze_nir_intensity(gray_img, mask, bins=256, label="default", histplot=No
     masked1 = cv2.bitwise_and(rgbimg, rgbimg, mask=mask)
     params.debug = debug
 
-    # if params.debug is not None:
-    #     params.device += 1
-    #     if params.debug == "print":
-    #         print_image(masked1, os.path.join(params.debug_outdir, str(params.device) + "_masked_nir_plant.png"))
-    #     if params.debug == "plot":
-    #         plot_image(masked1)
-
     _debug(visual=masked1, filename=os.path.join(params.debug_outdir, str(params.device) + "_masked_nir_plant.png"))
 
 
     fig_hist = fig_hist + labs(x="Grayscale pixel intensity (0-{})".format(maxval), y="Proportion of pixels (%)")
-    # if params.debug == "print":
-    #     fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + '_nir_hist.png'), verbose=False)
-    # elif params.debug == "plot":
-    #     print(fig_hist)
+
     _debug(visual=fig_hist, filename=os.path.join(params.debug_outdir, str(params.device) + "_nir_hist.png"))
     analysis_image = fig_hist
 
