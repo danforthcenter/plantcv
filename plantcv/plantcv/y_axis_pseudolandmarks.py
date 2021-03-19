@@ -10,13 +10,14 @@ from plantcv.plantcv import outputs
 from plantcv.plantcv import fatal_error
 
 
-def y_axis_pseudolandmarks(img, obj, mask):
+def y_axis_pseudolandmarks(img, obj, mask, label="default"):
     """Divide up object contour into 19 equidistant segments and generate landmarks for each
 
     Inputs:
     img      = This is a copy of the original plant image generated using np.copy if debug is true it will be drawn on
     obj      = a contour of the plant object (this should be output from the object_composition.py fxn)
     mask     = this is a binary image. The object should be white and the background should be black
+    label        = optional label parameter, modifies the variable name of observations recorded
 
     Returns:
     left      = List of landmarks within the left side
@@ -26,6 +27,7 @@ def y_axis_pseudolandmarks(img, obj, mask):
     :param img: numpy.ndarray
     :param obj: list
     :param mask: numpy.ndarray
+    :param label: str
     :return left: list
     :return right: list
     :return center_h: list
@@ -213,13 +215,13 @@ def y_axis_pseudolandmarks(img, obj, mask):
     for pt in center_h:
         center_h_list.append(pt[0].tolist())
 
-    outputs.add_observation(variable='left_lmk', trait='left landmark coordinates',
+    outputs.add_observation(sample=label, variable='left_lmk', trait='left landmark coordinates',
                             method='plantcv.plantcv.x_axis_pseudolandmarks', scale='none', datatype=tuple,
                             value=tuple(left_list), label='none')
-    outputs.add_observation(variable='right_lmk', trait='right landmark coordinates',
+    outputs.add_observation(sample=label, variable='right_lmk', trait='right landmark coordinates',
                             method='plantcv.plantcv.x_axis_pseudolandmarks', scale='none', datatype=tuple,
                             value=tuple(right_list), label='none')
-    outputs.add_observation(variable='center_h_lmk', trait='center horizontal landmark coordinates',
+    outputs.add_observation(sample=label, variable='center_h_lmk', trait='center horizontal landmark coordinates',
                             method='plantcv.plantcv.x_axis_pseudolandmarks', scale='none', datatype=tuple,
                             value=tuple(center_h_list), label='none')
 

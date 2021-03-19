@@ -23,6 +23,10 @@ unaltered, the  matplotlib default DPI is 100 pixels per inch.
     - bad_mask   - If bad_mask is not none, but a binary mask indicating the location of user difined "bad" pixels, the function will plot the visualization of the input image with those "bad" pixels marked with the color define in "bad_color".
     - bad_color  - The color that shows bad pixels in output visualization image, default: "red"
 
+    - obj_padding    - If "auto" (default), and an obj is supplied, then the image is cropped to an extent 20% larger in each dimension than the object. A single integer is also accepted to define the padding in pixels.
+    - title      - The title for the pseudocolored image (default title=None) 
+
+
 - **Context:**
     - Used to pseudocolor any grayscale image to custom colormap
 - **Example use:**

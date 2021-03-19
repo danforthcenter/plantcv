@@ -217,7 +217,8 @@ Now that the plant has been separated from the background we can analyze the tem
     #   img - Array of thermal values
     #   mask - Binary mask made from selected contours
     #   histplot - If True plots histogram of intensity values (default histplot = False)
-    analysis_img = pcv.analyze_thermal_values(thermal_array=thermal_data, mask=kept_mask, histplot=True)
+    #   label - Optional label parameter, modifies the variable name of observations recorded 
+    analysis_img = pcv.analyze_thermal_values(thermal_array=thermal_data, mask=kept_mask, histplot=True, label="default")
                                                                       
 ```
 
@@ -372,7 +373,8 @@ def main():
     #   img - Array of thermal values
     #   mask - Binary mask made from selected contours
     #   histplot - If True plots histogram of intensity values (default histplot = False)
-    analysis_img = pcv.analyze_thermal_values(thermal_array=thermal_data, mask=kept_mask, histplot=True)
+    #   label - Optional label parameter, modifies the variable name of observations recorded 
+    analysis_img = pcv.analyze_thermal_values(thermal_array=thermal_data, mask=kept_mask, histplot=True, label="default")
 
 
     # Pseudocolor the thermal data 
