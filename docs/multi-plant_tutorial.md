@@ -373,7 +373,7 @@ for an example.
     clustered_image = pcv.visualize.clustered_contours(img=img, grouped_contour_indices=cnt_i, 
                                                    roi_objects=roi_obj,
                                                    roi_obj_hierarchy=hier,
-                                                   nrow=4, ncol=6)
+                                                   nrow=4, ncol=6, bounding=True)
 ```
 
 **Figure 12b.** Visualize clustered contours
