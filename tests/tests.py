@@ -4677,9 +4677,11 @@ def test_plantcv_hyperspectral_analyze_spectral():
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     mask = cv2.imread(os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_MASK), -1)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    pcv.params.debug = "plot"
-    _ = pcv.hyperspectral.analyze_spectral(array=array_data, mask=mask, histplot=True)
-    pcv.params.debug = "print"
+    # pcv.params.debug = "plot"
+    # _ = pcv.hyperspectral.analyze_spectral(array=array_data, mask=mask, histplot=True)
+    # pcv.params.debug = "print"
+    # _ = pcv.hyperspectral.analyze_spectral(array=array_data, mask=mask, histplot=True, label="prefix")
+    pcv.params.debug = None
     _ = pcv.hyperspectral.analyze_spectral(array=array_data, mask=mask, histplot=True, label="prefix")
     assert len(pcv.outputs.observations['prefix']['spectral_frequencies']['value']) == 978
 
