@@ -59,7 +59,7 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
     if len(np.shape(gray_img)) != 2:
         fatal_error("Image must be grayscale.")
 
-    # Apply the bad pixel mask if given
+    # # Apply the bad pixel mask if given
     if bad_mask is not None:
         current_cmap = matplotlib.cm.get_cmap()
         current_cmap.set_bad(color=bad_color)
@@ -122,9 +122,24 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
             fatal_error(
                 "Background type {0} is not supported. Please use 'white', 'black', or 'image'.".format(background))
 
+        # plt.figure()
+        # # Pseudocolor the image, plot the background first
+        # plt.imshow(bkg_img, cmap=bkg_cmap)
+        # # Overlay the masked grayscale image with the user input colormap
+        # plt.imshow(masked_img, cmap=cmap, vmin=min_value, vmax=max_value)
+
         plt.figure()
         # Pseudocolor the image, plot the background first
         plt.imshow(bkg_img, cmap=bkg_cmap)
+
+        # # Apply the bad pixel mask if given
+        if bad_mask is not None:
+            if bad_color.upper() == 'RED':
+                color = (0,0,255)
+            else:
+                pass
+            colored_mask = pcv.visualize.colorize_masks([bad_mask], [color])
+            masked_img = pcv.visualize.overlay_two_imgs(masked_img, colored_mask, alpha=0.5)
         # Overlay the masked grayscale image with the user input colormap
         plt.imshow(masked_img, cmap=cmap, vmin=min_value, vmax=max_value)
 
@@ -147,6 +162,10 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
 
     else:
         plt.figure()
+        if bad_mask is not None:
+            current_cmap = matplotlib.cm.get_cmap()
+            current_cmap.set_bad(color=bad_color)
+            gray_img1 = np.ma.array(gray_img1, mask=bad_mask)
         # Pseudocolor the image
         plt.imshow(gray_img1, cmap=cmap, vmin=min_value, vmax=max_value)
 
