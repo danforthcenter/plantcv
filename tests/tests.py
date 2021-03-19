@@ -6264,6 +6264,11 @@ def test_plantcv_visualize_display_instances_bad_color(tmpdir):
     with pytest.raises(RuntimeError):
         _, _ = pcv.visualize.display_instances(img, masks, figsize=(16, 16), title="", ax=None, colors=colors, captions=None, show_bbox=True)
 
+    colors_ = pcv.color_palette(num)
+    colors = [tuple(c) for c in colors_]
+    with pytest.raises(RuntimeError):
+        _, _ = pcv.visualize.display_instances(img, masks, figsize=(16, 16), title="", ax=None, colors=colors, captions=None, show_bbox=True)
+
 def test_plantcv_visualize_display_instances_bad_color2(tmpdir):
     import colorsys
     import random
