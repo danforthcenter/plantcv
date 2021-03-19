@@ -36,13 +36,13 @@ pcv.params.line_thickness = 10 # Default = 5
 # Create a figure using output from pcv.cluster_contours 
 clustered_image = pcv.visualize.clustered_contours(img=img, grouped_contour_indices=cnt_i, 
                                                    roi_objects=roi_obj,
-                                                   roi_obj_hierarchy=hier)
+                                                   roi_obj_hierarchy=hier, bounding=True)
 
 # Create a figure using output from pcv.cluster_contours with a grid
 clustered_image = pcv.visualize.clustered_contours(img=img, grouped_contour_indices=cnt_i, 
                                                    roi_objects=roi_obj,
                                                    roi_obj_hierarchy=hier,
-                                                   nrow=4, ncol=6)
+                                                   nrow=4, ncol=6, bounding=True)
                                        
 ```
 
