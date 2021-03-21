@@ -61,7 +61,8 @@ def sample_images(source_path, dest_path, num=100):
 
         # Check to make sure number of imgs to select is less than number of images found
         if num > len(img_element_array):
-            fatal_error("Number of images found less than 'num'.")
+            fatal_error("Number of images found ({0}) less than 'num'.".
+                            format(len(img_element_array)))
 
         # Get random images
         for i in range(0, num):
