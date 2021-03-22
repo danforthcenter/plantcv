@@ -1,4 +1,4 @@
-## Warp to Align
+## Warp
 
 Find the transformation matrix that best describes the projective transform from reference image to target image, based on pairs of corresponding points on reference image and target image, respectively;
 performs the projective transform on the target image to align it to the reference image. 
@@ -13,17 +13,17 @@ Projective transformation describs most cases when images are taken from a sligh
 
 Read about different transformations at [Image Processing in OpenCV](https://docs.opencv.org/3.4/da/d6e/tutorial_py_geometric_transformations.html) and the [transform module of scikit-image](https://scikit-image.org/docs/dev/api/skimage.transform.html#skimage.transform.estimate_transform). 
 
-### warp_align 
-**plantcv.transform.warp_align**(*img, refimg, pts, refpts, method="default"*)
+### warp 
+**plantcv.transform.warp**(*img, refimg, pts, refpts, method="default"*)
 
 **returns** image after warping and a 3x3 matrix of the perspective transformation.
 
 - **Parameters:**
-    - img - image to warp (np.ndarray)
-    - refimg - image used as a reference for the warp (np.ndarray)
-    - pts - coordinate points on `img`. At least 4 pairs should be given as a list of tuples
-    - refpts - corresponding coordinate points on `refimg`. At least 4 pairs should be given as a list of tuples
-    - method - robust estimation algorithm when calculating projective transformation. Available options are 'default', 'ransac', 'lmeds', 'rho' which correspond to the opencv methods and [vary based on how they handle outlier points](https://docs.opencv.org/3.4/d9/d0c/group__calib3d.html#ga4abc2ece9fab9398f2e560d53c8c9780)
+    - img - (np.ndarray) image to warp (np.ndarray)
+    - refimg - (np.ndarray) image used as a reference for the warp 
+    - pts - (list) coordinate points on `img`. At least 4 pairs should be given as a list of tuples
+    - refpts - (list) corresponding coordinate points on `refimg`. At least 4 pairs should be given as a list of tuples
+    - method - (str) robust estimation algorithm when calculating projective transformation. Available options are 'default', 'ransac', 'lmeds', 'rho' which correspond to the opencv methods and [vary based on how they handle outlier points](https://docs.opencv.org/3.4/d9/d0c/group__calib3d.html#ga4abc2ece9fab9398f2e560d53c8c9780)
       - Any 4 pairs of corresponding points can define a projective transform. More than 4 pairs given means there are outliers. 
       - Robust estimation algorithms can be used to estimate the model based only on inliers to find a robust model.
       - Using 'default' means that a regular method using all the points without robustness i.e., the least squares method, is adopted.
@@ -54,7 +54,7 @@ from plantcv import plantcv as pcv
 mrow, mcol = mask.shape
 vrow, vcol, vdepth = grayimg.shape
 
-mat, img_warped = pcv.transform.warp_align(img=mask,
+img_warped, mat = pcv.transform.warp(img=mask,
                                 refimg=grayimg,
                                 pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
                                 refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)],
@@ -77,7 +77,7 @@ Check back later for information of getting landmark coordinates to registrate t
 
 from plantcv import plantcv as pcv
 pcv.params.marker_size=12
-mat, img_warped = pcv.transform.warp_align(img=im_RGB,
+img_warped, mat = pcv.transform.warp(img=im_RGB,
                                 refimg=im_therm,
                                 pts=pts_RGB,
                                 refpts=pts_therm)
@@ -96,5 +96,33 @@ Target image with markers:
 ![ref_marked](img/documentation_images/transform_warp/tar_pts.png)
 
 A pair of correaponding inlier points are represented with the same color with the "+" marker; the outliers are represented using upper triangles. 
+
+### warp_align
+**plantcv.transform.warp_align**(*img, mat, refimg=None)*
+
+**returns** image after warping.
+
+Highly related to the `warp` function, the `warp_align` function takes an input image, a transformation mask, and perform the geometric transformation defined by the given transformation matrix. 
+- **Parameters:**
+    - img - (np.ndarray) image to warp 
+    - mat - (np.ndarray) a 3x3 matrix that describes the projective transformation. Tyically, it would be the 2nd output of the `transform.warp` function.
+    - refimg (optional) - (np.ndarray) image used as a reference for the warp. If provided, the warped image would be overlaid on the reference image to visualize; otherwise, only the warped image will be shown.
+
+- **Context:**
+    - Warps an image based on the transformation matrix. 
+    
+- **Example use:**
+```python
+
+from plantcv import plantcv as pcv
+img_warped  = pcv.transform.warp_align(img=im_RGB,mat=M, refimg=im_therm)
+img_warped_ = pcv.transform.warp_align(img=im_RGB,mat=M)
+```
+
+Warped image:
+![warped_RGB](img/documentation_images/transform_warp/align_warped.png)
+
+Warped image overlaied on reference image (if reference image is provided):
+![warped_overlay](img/documentation_images/transform_warp/align_warp_overlay.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/transform/warp.py)
