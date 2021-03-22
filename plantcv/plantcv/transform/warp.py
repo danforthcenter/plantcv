@@ -171,19 +171,19 @@ def warp_align(img, mat, refimg=None):
 
     params.device += 1
 
-    # if no reference image, assume the target image is to be warped to the same size of itself
+    # if no reference image, assume the target image is to be warped to the same size of itself,
+    # and the reference image is the image itself
     if refimg is None:
-        rows_ref, cols_ref = img.shape[0:2]
+        refimg = _preprocess_img_dtype(img)
     else:
-        rows_ref, cols_ref = refimg.shape[0:2]
+        refimg = _preprocess_img_dtype(refimg)
+    rows_ref, cols_ref = refimg.shape[0:2]
 
     warped_img = cv2.warpPerspective(src=img, M=mat, dsize=(cols_ref, rows_ref))
 
-    img_blend = warped_img
     debug_mode = params.debug
-    if refimg is not None:
-        params.debug = None
-        img_blend = overlay_two_imgs(_preprocess_img_dtype(warped_img), _preprocess_img_dtype(refimg))
+    params.debug = None
+    img_blend = overlay_two_imgs(_preprocess_img_dtype(warped_img), refimg)
 
     params.debug = debug_mode
     _debug(visual=warped_img, filename=os.path.join(params.debug_outdir, str(params.device) + "_warped.png"))
