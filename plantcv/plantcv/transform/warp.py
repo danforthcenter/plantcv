@@ -156,32 +156,32 @@ def warp(img, refimg, pts, refpts, method='default'):
     return warped_img, mat
 
 
-def warp_align(img, mat, refimg=None):
-    """
-    Warp the input image based on given transformation matrix mat, to align with the refimg
-
-    :param img: image to warp (np.ndarray)
-    :param mat: transformation matrix (np.ndarray, size: (3,3))
-    :param refimg: (option) reference image
-    :return:
-    warpped image warped_img
-    """
-
-    params.device += 1
-    if refimg is None:
-        rows_ref, cols_ref = img.shape[0:2]
-    else:
-        rows_ref, cols_ref = refimg.shape[0:2]
-
-    warped_img = cv2.warpPerspective(src=img, M=mat, dsize=(cols_ref, rows_ref))
-    img_blend = warped_img
-    debug_mode = params.debug
-    if refimg is not None:
-        params.debug = None
-        img_blend = overlay_two_imgs(warped_img, refimg)
-
-    params.debug = debug_mode
-    _debug(visual=warped_img, filename=os.path.join(params.debug_outdir, str(params.device) + "_warped.png"))
-    _debug(visual=img_blend, filename=os.path.join(params.debug_outdir, str(params.device) + "_warp_overlay.png"))
-
-    return warped_img
+# def warp_align(img, mat, refimg=None):
+#     """
+#     Warp the input image based on given transformation matrix mat, to align with the refimg
+#
+#     :param img: image to warp (np.ndarray)
+#     :param mat: transformation matrix (np.ndarray, size: (3,3))
+#     :param refimg: (option) reference image
+#     :return:
+#     warpped image warped_img
+#     """
+#
+#     params.device += 1
+#     if refimg is None:
+#         rows_ref, cols_ref = img.shape[0:2]
+#     else:
+#         rows_ref, cols_ref = refimg.shape[0:2]
+#
+#     warped_img = cv2.warpPerspective(src=img, M=mat, dsize=(cols_ref, rows_ref))
+#     img_blend = warped_img
+#     debug_mode = params.debug
+#     if refimg is not None:
+#         params.debug = None
+#         img_blend = overlay_two_imgs(warped_img, refimg)
+#
+#     params.debug = debug_mode
+#     _debug(visual=warped_img, filename=os.path.join(params.debug_outdir, str(params.device) + "_warped.png"))
+#     _debug(visual=img_blend, filename=os.path.join(params.debug_outdir, str(params.device) + "_warp_overlay.png"))
+#
+#     return warped_img
