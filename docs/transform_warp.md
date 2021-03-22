@@ -106,7 +106,7 @@ Highly related to the `warp` function, the `warp_align` function takes an input 
 - **Parameters:**
     - img - (np.ndarray) image to warp 
     - mat - (np.ndarray) a 3x3 matrix that describes the projective transformation. Tyically, it would be the 2nd output of the `transform.warp` function.
-    - refimg (optional) - (np.ndarray) image used as a reference for the warp. If provided, the warped image would be overlaid on the reference image to visualize; otherwise, only the warped image will be shown.
+    - refimg (optional) - (np.ndarray) image used as a reference for the warp. If provided, the warped image would be overlaid on the reference image to visualize; otherwise, the warped image would be overlaied on the original image.
 
 - **Context:**
     - Warps an image based on the transformation matrix. 
@@ -115,8 +115,13 @@ Highly related to the `warp` function, the `warp_align` function takes an input 
 ```python
 
 from plantcv import plantcv as pcv
-img_warped  = pcv.transform.warp_align(img=im_RGB,mat=M, refimg=im_therm)
-img_warped_ = pcv.transform.warp_align(img=im_RGB,mat=M)
+import numpy as np
+# M1 is the 2nd output from pcv.transform.warp
+img_warped  = pcv.transform.warp_align(img=im_RGB,mat=M1, refimg=im_therm)
+
+# M2 defines a translation transformation, which is a special case of projective transformation
+M2 = np.array([[1.0,0.0,100.0],[0.0,1.0,50.0],[0.0,0.0,1.0]])
+img_warped2 = pcv.transform.warp_align(img=im_RGB,mat=M2)
 ```
 
 Warped image:
@@ -124,5 +129,11 @@ Warped image:
 
 Warped image overlaied on reference image (if reference image is provided):
 ![warped_overlay](img/documentation_images/transform_warp/align_warp_overlay.png)
+
+Warped image:
+![warped_RGB](img/documentation_images/transform_warp/warped_no_ref.png)
+
+Warped image overlaied on original image (if reference image not provided):
+![warped_overlay](img/documentation_images/transform_warp/warp_overlay_no_ref.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/transform/warp.py)
