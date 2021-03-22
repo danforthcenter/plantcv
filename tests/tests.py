@@ -978,6 +978,60 @@ def test_plantcv_outputs_add_observation_invalid_type():
                                 datatype=list, value=np.array([2]), label=[])
 
 
+def test_plantcv_outputs_save_results_json_newfile(tmpdir):
+    # Create a test tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+    outfile = os.path.join(cache_dir, "results.json")
+    # Create output instance
+    outputs = pcv.Outputs()
+    outputs.add_observation(sample='default', variable='test', trait='test variable', method='test', scale='none',
+                            datatype=str, value="test", label="none")
+    outputs.save_results(filename=outfile, outformat="json")
+    with open(outfile, "r") as fp:
+        results = json.load(fp)
+        assert results["observations"]["default"]["test"]["value"] == "test"
+
+
+def test_plantcv_outputs_save_results_json_existing_file(tmpdir):
+    # Create a test tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+    outfile = os.path.join(cache_dir, "data_results.txt")
+    shutil.copyfile(os.path.join(TEST_DATA, "data_results.txt"), outfile)
+    # Create output instance
+    outputs = pcv.Outputs()
+    outputs.add_observation(sample='default', variable='test', trait='test variable', method='test', scale='none',
+                            datatype=str, value="test", label="none")
+    outputs.save_results(filename=outfile, outformat="json")
+    with open(outfile, "r") as fp:
+        results = json.load(fp)
+        assert results["observations"]["default"]["test"]["value"] == "test"
+
+
+def test_plantcv_outputs_save_results_csv(tmpdir):
+    # Create a test tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+    outfile = os.path.join(cache_dir, "results.csv")
+    testfile = os.path.join(TEST_DATA, "data_results.csv")
+    # Create output instance
+    outputs = pcv.Outputs()
+    outputs.add_observation(sample='default', variable='string', trait='string variable', method='string', scale='none',
+                            datatype=str, value="string", label="none")
+    outputs.add_observation(sample='default', variable='boolean', trait='boolean variable', method='boolean',
+                            scale='none', datatype=bool, value=True, label="none")
+    outputs.add_observation(sample='default', variable='list', trait='list variable', method='list',
+                            scale='none', datatype=list, value=[1, 2, 3], label=[1, 2, 3])
+    outputs.add_observation(sample='default', variable='tuple', trait='tuple variable', method='tuple',
+                            scale='none', datatype=tuple, value=(1, 2), label=(1, 2))
+    outputs.add_observation(sample='default', variable='tuple_list', trait='list of tuples variable',
+                            method='tuple_list', scale='none', datatype=list, value=[(1, 2), (3, 4)], label=[1, 2])
+    outputs.save_results(filename=outfile, outformat="csv")
+    with open(outfile, "r") as fp:
+        results = fp.read()
+    with open(testfile, "r") as fp:
+        test_results = fp.read()
+    assert results == test_results
+
+
 def test_plantcv_transform_warp_smaller():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR),-1)
     bimg = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY),-1)
