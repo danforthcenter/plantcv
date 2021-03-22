@@ -330,12 +330,12 @@ Alternately the objects can be cut to the region of interest.
 ![Screenshot](img/tutorial_images/multi-img/11_roi_objects.jpg)
 
 [Cluster](cluster_contours.md) plants based on defined grid. Optionally, users can add a visualization 
-step to more clearly see which contours get clustered together. See the documentation for [pcv.visualze.clustered_contours](visualize_clustered_contours.md) 
+step to test the cluster_contours function and get a better understanding of how the function performed. See the documentation for [pcv.visualize.clustered_contours](visualize_clustered_contours.md) 
 for an example. 
 
 ```python
 
-    # STEP 12: This function take a image with multiple contours and
+    # STEP 12a: This function take a image with multiple contours and
     # clusters them based on user input of rows and columns
     
     # Inputs:
@@ -350,12 +350,35 @@ for an example.
     clusters_i, contours, hierarchies = pcv.cluster_contours(img=img1, roi_objects=roi_objects, 
                                                              roi_obj_hierarchy=roi_obj_hierarchy, 
                                                              nrow=4, ncol=6)
-
 ```
 
-**Figure 12.** Cluster contours
+**Figure 12a.** Cluster contours
 
 ![Screenshot](img/tutorial_images/multi-img/12_clusters.jpg)
+
+```python
+
+    # Step 12b: This function is a plotting method used to represent 
+    # the way in which contours get clustered together into objects
+    
+    # Inputs:
+    #   img                      = RGB or grayscale image data for plotting.
+    #   grouped_contour_indices  = Contour indices for which groups contours belong to. Output from [pcv.cluster_contour](cluster_contours.md)
+    #   roi_objects              = object contours in an image that are needed to be clustered.
+    #   roi_obj_hierarchy        = object hierarchy
+    #   nrow                     = Optional row grid lines to get drawn (default nrow=1). If `nrow` is unchanged, grid lines don't get drawn. 
+    #   ncol                     = Optional column grid lines to get drawn (default ncol=1). If `ncol` is unchanged, grid lines don't get drawn. 
+    #   bounding                 = Optional circles to bound the individual clusters (default bounding=True)
+
+    clustered_image = pcv.visualize.clustered_contours(img=img, grouped_contour_indices=cnt_i, 
+                                                   roi_objects=roi_obj,
+                                                   roi_obj_hierarchy=hier,
+                                                   nrow=4, ncol=6, bounding=True)
+```
+
+**Figure 12b.** Visualize clustered contours
+
+![Screenshot](img/documentation_images/visualize_clustered_contours/contour_cluster_img.jpg)
 
 [Split](cluster_contours_splitimg.md) the images.
 

@@ -1697,8 +1697,8 @@ def test_plantcv_cluster_contours_splitimg():
     roi_contours = [contours[arr_n] for arr_n in contours]
     cluster_contours = [clusters[arr_n] for arr_n in clusters]
     obj_hierarchy = hierachy['arr_0']
-    # Test with debug = "print"
-    pcv.params.debug = "print"
+    # Test with debug = None
+    pcv.params.debug = None
     _, _, _ = pcv.cluster_contour_splitimg(img=img1, grouped_contour_indexes=cluster_contours,
                                            contours=roi_contours,
                                            hierarchy=obj_hierarchy, outdir=cache_dir, file=None, filenames=None)
@@ -1707,9 +1707,6 @@ def test_plantcv_cluster_contours_splitimg():
     _, _, _ = pcv.cluster_contour_splitimg(img=img1, grouped_contour_indexes=cluster_contours,
                                            contours=roi_contours,
                                            hierarchy=obj_hierarchy, outdir=cache_dir, file='multi', filenames=None)
-
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
     _, _, _ = pcv.cluster_contour_splitimg(img=img1, grouped_contour_indexes=cluster_contours,
                                            contours=roi_contours,
                                            hierarchy=obj_hierarchy, outdir=None, file=None, filenames=cluster_names)
@@ -1717,8 +1714,6 @@ def test_plantcv_cluster_contours_splitimg():
                                            contours=roi_contours,
                                            hierarchy=obj_hierarchy, outdir=None, file=None,
                                            filenames=cluster_names_too_many)
-    # Test with debug = None
-    pcv.params.debug = None
     output_path, imgs, masks = pcv.cluster_contour_splitimg(img=img1, grouped_contour_indexes=cluster_contours,
                                                             contours=roi_contours, hierarchy=obj_hierarchy, outdir=None,
                                                             file=None,
@@ -6132,19 +6127,19 @@ def test_plantcv_visualize_clustered_contours():
     objs = [roi_objects[arr_n] for arr_n in roi_objects]
     obj_hierarchy = hierarchy['arr_0']
     cluster = [cluster_i[arr_n] for arr_n in cluster_i]
-    # Test in print mode
-    pcv.params.debug = "print"
-    # Reset the saved color scale (can be saved between tests)
-    pcv.params.saved_color_scale = None
-    _ = pcv.visualize.clustered_contours(img=img, grouped_contour_indices=cluster, roi_objects=objs,
-                                         roi_obj_hierarchy=obj_hierarchy, nrow=2, ncol=2)
     # Test in plot mode
     pcv.params.debug = "plot"
     # Reset the saved color scale (can be saved between tests)
     pcv.params.saved_color_scale = None
-    cluster_img = pcv.visualize.clustered_contours(img=img1, grouped_contour_indices=cluster, roi_objects=objs,
-                                                   roi_obj_hierarchy=obj_hierarchy)
-    assert len(np.unique(cluster_img.reshape(-1, cluster_img.shape[2]), axis=0)) == 37
+    _ = pcv.visualize.clustered_contours(img=img1, grouped_contour_indices=cluster, roi_objects=objs,
+                                                   roi_obj_hierarchy=obj_hierarchy, bounding=False)
+    # Test in print mode
+    pcv.params.debug = "print"
+    # Reset the saved color scale (can be saved between tests)
+    pcv.params.saved_color_scale = None
+    cluster_img = pcv.visualize.clustered_contours(img=img, grouped_contour_indices=cluster, roi_objects=objs,
+                                         roi_obj_hierarchy=obj_hierarchy, nrow=2, ncol=2, bounding=True)
+    assert np.sum(cluster_img) > np.sum(img)
 
 
 def test_plantcv_visualize_colorspaces():
