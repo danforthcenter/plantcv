@@ -977,37 +977,47 @@ def test_plantcv_outputs_add_observation_invalid_type():
         outputs.add_observation(sample='default', variable='test', trait='test variable', method='type', scale='none',
                                 datatype=list, value=np.array([2]), label=[])
 
-def test_plantcv_transform_warp_align():
-    print('dd')
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_warp_align")
+def test_plantcv_transform_warp():
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_warp")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     vrow, vcol, vdepth = img.shape
-    pcv.params.debug = 'plot'
+    pcv.params.debug = None
 
-    mat, warped_img = pcv.transform.warp_align(img, img, pts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)], refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
-    assert mat.shape == (3, 3)
+    warped_img,  mat = pcv.transform.warp(img, img, pts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)], refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
+    assert mat.shape == (3, 3) and warped_img.dtype == img.dtype
+
+    img_ = img/255.0
+    warped_img,  mat = pcv.transform.warp(img_, img_, pts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)], refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
+    assert mat.shape == (3, 3) and warped_img.dtype == img_.dtype
 
     # different number of points
     with pytest.raises(RuntimeError):
-        pcv.transform.warp_align(img, img, pts=[(0, 0), (vcol-1, 0), (vcol-1, vrow-1),(0,vrow-1)], refpts=[(0, 0), (vcol-1, 0), (vcol-1, vrow-1)])
+        pcv.transform.warp(img, img, pts=[(0, 0), (vcol-1, 0), (vcol-1, vrow-1),(0,vrow-1)], refpts=[(0, 0), (vcol-1, 0), (vcol-1, vrow-1)])
 
     bimg = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY),-1)
     bimg_small = cv2.resize(bimg, (200,300))
     bimg_small[bimg_small>0]=255
     mrow, mcol = bimg_small.shape
     vrow, vcol, vdepth = img.shape
-    mat, warped_img = pcv.transform.warp_align(img,bimg_small,
+    warped_img,  mat = pcv.transform.warp(img,bimg_small,
                                  pts=[(0, 0), (vcol - 1, 0), (vcol - 1, vrow - 1), (0, vrow - 1), (0, 100)],
                                  refpts=[(0, 0), (mcol - 1, 0), (mcol - 1, mrow - 1), (0, mrow - 1), (0, 100)],
                                  method='ransac')
     assert mat.shape == (3, 3)
     with pytest.raises(RuntimeError):
-        pcv.transform.warp_align(bimg_small, img,
+        pcv.transform.warp(bimg_small, img,
                    pts=[(0, 0), (mcol - 1, 0), (mcol - 1, mrow - 1), (0, mrow - 1), (0, 100)],
                    refpts=[(0, 0), (vcol - 1, 0), (vcol - 1, vrow - 1), (0, vrow - 1), (0, 100)],
                    method='rho')
+
+# def test_plantcv_transform_warp_align():
+#     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_warp")
+#     os.mkdir(cache_dir)
+#     pcv.params.debug_outdir = cache_dir
+#     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+#     warped_im= pcv.transform.warp_align(img, mat, refimg=img[:,:,0])
 
 
 def test_plantcv_acute():
