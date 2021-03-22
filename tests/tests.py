@@ -2660,6 +2660,14 @@ def test_plantcv_print_image_plotnine():
     assert os.path.exists(filename) is True
 
 
+def test_plantcv_print_results(tmpdir):
+    # Create a tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+    outfile = os.path.join(cache_dir, "results.json")
+    pcv.print_results(filename=outfile)
+    assert os.path.exists(outfile)
+
+
 def test_plantcv_readimage_native():
     # Test with debug = None
     pcv.params.debug = None
