@@ -989,7 +989,7 @@ def test_plantcv_transform_warp():
 
     pcv.params.debug = "plot"
     img_ = img/255.0
-    warped_img,  mat = pcv.transform.warp(img_, img_, pts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)], refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
+    warped_img,  mat = pcv.transform.warp(img_[:,:,0], img_, pts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)], refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
     assert mat.shape == (3, 3) and warped_img.dtype == img_.dtype
 
     # different number of points
