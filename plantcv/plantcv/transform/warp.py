@@ -64,10 +64,6 @@ def warp(img, refimg, pts, refpts, method='default'):
     if len(pts) != len(refpts):
         fatal_error('Please provide same number of corresponding coordinates.')
 
-    # convert image types to accepted ones for plantcv and opencv
-    img_    = _preprocess_img_dtype(img)
-    refimg_ = _preprocess_img_dtype(refimg)
-
     # convert coordinates to int if they are not int
     pts = [tuple(map(int, tup)) for tup in pts]
     refpts = [tuple(map(int, tup)) for tup in refpts]
@@ -91,11 +87,12 @@ def warp(img, refimg, pts, refpts, method='default'):
     mat, status = cv2.findHomography(ptsarr, refptsarr, method=methods.get(method))
     if mat is None:
         fatal_error( "Cannot calculate a robust with given corresponding coordinates and with desired robust estimation algorithm {}!".format(method))
-    warped_img = cv2.warpPerspective(src=img_, M=mat, dsize=(cols_ref, rows_ref))
+    warped_img = cv2.warpPerspective(src=img, M=mat, dsize=(cols_ref, rows_ref))
 
     # preserve binary
     if len(np.unique(img)) == 2:
         warped_img[warped_img > 0] = 255
+
     if params.debug is not None:
         # scale marker_size and line_thickness for different resolutions
         if rows_img > rows_ref:
@@ -106,6 +103,10 @@ def warp(img, refimg, pts, refpts, method='default'):
             res_ratio_i = 1
         # marker colors
         colors = color_palette(len(pts))
+
+        # convert image types to accepted ones for cv2.cvtColor
+        img_ = _preprocess_img_dtype(img)
+        refimg_ = _preprocess_img_dtype(refimg)
 
         # rgb image for colored markers on img
         img_marked = img_.copy()
@@ -141,7 +142,8 @@ def warp(img, refimg, pts, refpts, method='default'):
         debug_mode = params.debug
         params.debug = None
 
-        img_blend = overlay_two_imgs(warped_img, refimg_)
+        # make sure the input image for "overlay_two_imgs" is of dtype "uint8" such that it would be acceptable for overlay_two_imgs (cv2.cvtColor)
+        img_blend = overlay_two_imgs(_preprocess_img_dtype(warped_img), refimg_)
         params.debug = debug_mode
 
         _debug(visual=img_marked, filename=os.path.join(params.debug_outdir, str(params.device) + "_img-to-warp.png"))
@@ -149,39 +151,42 @@ def warp(img, refimg, pts, refpts, method='default'):
         _debug(visual=img_blend, filename=os.path.join(params.debug_outdir, str(params.device) + "_warp_overlay.png"))
 
     # rescale the warped_img and preserve the original the datatype
-    if img.dtype != 'uint8':
-        warped_img = np.interp(warped_img, (warped_img.min(), warped_img.max()), (img.min(), img.max())).astype(
-            img.dtype)
+    # if img.dtype != 'uint8':
+    #     warped_img = np.interp(warped_img, (warped_img.min(), warped_img.max()), (img.min(), img.max())).astype(
+    #         img.dtype)
 
     return warped_img, mat
 
 
-# def warp_align(img, mat, refimg=None):
-#     """
-#     Warp the input image based on given transformation matrix mat, to align with the refimg
-#
-#     :param img: image to warp (np.ndarray)
-#     :param mat: transformation matrix (np.ndarray, size: (3,3))
-#     :param refimg: (option) reference image
-#     :return:
-#     warpped image warped_img
-#     """
-#
-#     params.device += 1
-#     if refimg is None:
-#         rows_ref, cols_ref = img.shape[0:2]
-#     else:
-#         rows_ref, cols_ref = refimg.shape[0:2]
-#
-#     warped_img = cv2.warpPerspective(src=img, M=mat, dsize=(cols_ref, rows_ref))
-#     img_blend = warped_img
-#     debug_mode = params.debug
-#     if refimg is not None:
-#         params.debug = None
-#         img_blend = overlay_two_imgs(warped_img, refimg)
-#
-#     params.debug = debug_mode
-#     _debug(visual=warped_img, filename=os.path.join(params.debug_outdir, str(params.device) + "_warped.png"))
-#     _debug(visual=img_blend, filename=os.path.join(params.debug_outdir, str(params.device) + "_warp_overlay.png"))
-#
-#     return warped_img
+def warp_align(img, mat, refimg=None):
+    """
+    Warp the input image based on given transformation matrix mat, to align with the refimg
+
+    :param img: image to warp (np.ndarray)
+    :param mat: transformation matrix (np.ndarray, size: (3,3))
+    :param refimg: (option) reference image
+    :return:
+    warpped image warped_img
+    """
+
+    params.device += 1
+
+    # if no reference image, assume the target image is to be warped to the same size of itself
+    if refimg is None:
+        rows_ref, cols_ref = img.shape[0:2]
+    else:
+        rows_ref, cols_ref = refimg.shape[0:2]
+
+    warped_img = cv2.warpPerspective(src=img, M=mat, dsize=(cols_ref, rows_ref))
+
+    img_blend = warped_img
+    debug_mode = params.debug
+    if refimg is not None:
+        params.debug = None
+        img_blend = overlay_two_imgs(_preprocess_img_dtype(warped_img), _preprocess_img_dtype(refimg))
+
+    params.debug = debug_mode
+    _debug(visual=warped_img, filename=os.path.join(params.debug_outdir, str(params.device) + "_warped.png"))
+    _debug(visual=img_blend, filename=os.path.join(params.debug_outdir, str(params.device) + "_warp_overlay.png"))
+
+    return warped_img
