@@ -984,15 +984,16 @@ def test_plantcv_transform_warp():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     vrow, vcol, vdepth = img.shape
     pcv.params.debug = None
-
     warped_img,  mat = pcv.transform.warp(img, img, pts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)], refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
     assert mat.shape == (3, 3) and warped_img.dtype == img.dtype
 
+    pcv.params.debug = None
     img_ = img/255.0
     warped_img,  mat = pcv.transform.warp(img_, img_, pts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)], refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
     assert mat.shape == (3, 3) and warped_img.dtype == img_.dtype
 
     # different number of points
+    pcv.params.debug = None
     with pytest.raises(RuntimeError):
         pcv.transform.warp(img, img, pts=[(0, 0), (vcol-1, 0), (vcol-1, vrow-1),(0,vrow-1)], refpts=[(0, 0), (vcol-1, 0), (vcol-1, vrow-1)])
 
@@ -1001,11 +1002,12 @@ def test_plantcv_transform_warp():
     bimg_small[bimg_small>0]=255
     mrow, mcol = bimg_small.shape
     vrow, vcol, vdepth = img.shape
-    warped_img,  mat = pcv.transform.warp(img,bimg_small,
+    warped_img,  mat = pcv.transform.warp(img, bimg_small,
                                  pts=[(0, 0), (vcol - 1, 0), (vcol - 1, vrow - 1), (0, vrow - 1), (0, 100)],
                                  refpts=[(0, 0), (mcol - 1, 0), (mcol - 1, mrow - 1), (0, mrow - 1), (0, 100)],
                                  method='ransac')
-    assert mat.shape == (3, 3)
+    assert mat.shape == (3, 3) and warped_img.dtype == img.dtype
+
     with pytest.raises(RuntimeError):
         pcv.transform.warp(bimg_small, img,
                    pts=[(0, 0), (mcol - 1, 0), (mcol - 1, mrow - 1), (0, mrow - 1), (0, 100)],
