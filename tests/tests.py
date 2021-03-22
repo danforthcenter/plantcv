@@ -977,7 +977,8 @@ def test_plantcv_outputs_add_observation_invalid_type():
         outputs.add_observation(sample='default', variable='test', trait='test variable', method='type', scale='none',
                                 datatype=list, value=np.array([2]), label=[])
 
-def test_plantcv_transform_warp():
+def test_plantcv_transform_warp_warp_align():
+    # test warp and warp align together
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_warp")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
@@ -986,6 +987,10 @@ def test_plantcv_transform_warp():
     pcv.params.debug = None
     warped_img,  mat = pcv.transform.warp(img, img, pts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)], refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
     assert mat.shape == (3, 3) and warped_img.dtype == img.dtype
+
+    _ = pcv.transform.warp_align(img, mat)
+    warped_img_ = pcv.transform.warp_align(img, mat, img)
+    assert warped_img_.dtype == img.dtype
 
     pcv.params.debug = "plot"
     img_ = img/255.0
@@ -1013,13 +1018,6 @@ def test_plantcv_transform_warp():
                    pts=[(0, 0), (mcol - 1, 0), (mcol - 1, mrow - 1), (0, mrow - 1), (0, 100)],
                    refpts=[(0, 0), (vcol - 1, 0), (vcol - 1, vrow - 1), (0, vrow - 1), (0, 100)],
                    method='rho')
-
-# def test_plantcv_transform_warp_align():
-#     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_warp")
-#     os.mkdir(cache_dir)
-#     pcv.params.debug_outdir = cache_dir
-#     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-#     warped_im= pcv.transform.warp_align(img, mat, refimg=img[:,:,0])
 
 
 def test_plantcv_acute():
