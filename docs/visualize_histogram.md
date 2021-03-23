@@ -7,13 +7,13 @@ This is a plotting method used to examine the distribution of signal within an i
 - **Parameters:**
     - img - Image data which is numpy.ndarray, the original image for analysis.
     - mask - Optional binary mask made from selected contours (default mask=None).
-    - bins - Number of class to divide spectrum into (default bins=256).
+    - bins - Number of class to divide spectrum into (default bins=100).
     - lower_bound - lower bound of range to be shown in the histogram (default lower_range=None). 
     - upper_bound - upper bound of range to be shown in the histogram. 
     - title - The title for the histogram (default title=None) 
     
 **Context:**
-    - Examine the distribution of the signal, this can help select a value for binary thresholding.
+    - Examine the distribution of the signal, this can help select a value for calling the binary thresholding function.
     
 - **Example use:**
     - [Use In NIR Tutorial](nir_tutorial.md)
@@ -47,7 +47,9 @@ hist_figure3, hist_data3 = histogram(img=gray_img, mask=mask, lower_bound=10, up
 ![Screenshot](img/documentation_images/histogram/gray_histogram_bins.png)
 ![Screenshot](img/documentation_images/histogram/gray_histogram_trimmed.png)
 
-If input an RGB image, the histogram function can plot histograms for 3 bands automatically.
+
+The histogram function plots histograms from 3 color bands automatically if an RGB input image is given.
+
 **RGB image**
 ![Screenshot](img/tutorial_images/vis/original_image.jpg)
 ```python
