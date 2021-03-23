@@ -1310,17 +1310,6 @@ def test_plantcv_analyze_nir():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # # Test with debug = "print"
-    # pcv.params.debug = "print"
-    # _ = pcv.analyze_nir_intensity(gray_img=np.uint16(img), mask=mask, bins=256, histplot=True, label="prefix")
-    # # Test with debug = "plot"
-    # pcv.params.debug = "plot"
-    # _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=False)
-    # # Test with debug = "plot"
-    # _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=True)
-    # # Test with debug = None
-    # pcv.params.debug = None
-    # _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=True)
 
     pcv.params.debug = None
     _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=True)
@@ -1435,11 +1424,6 @@ def test_plantcv_analyze_thermal_values():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_THERMAL_IMG_MASK), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_THERMAL_ARRAY), encoding="latin1")
     img = contours_npz['arr_0']
-
-    # pcv.params.debug = "print"
-    # _ = pcv.analyze_thermal_values(thermal_array=img, mask=mask, histplot=True, label="prefix")
-    # pcv.params.debug = "plot"
-    # thermal_hist = pcv.analyze_thermal_values(thermal_array=img, mask=mask, histplot=True)
 
     pcv.params.debug = None
     thermal_hist = pcv.analyze_thermal_values(thermal_array=img, mask=mask, histplot=True)
@@ -6137,23 +6121,23 @@ def test_plantcv_visualize_histogram():
     pcv.params.debug = "print"
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    _, _ = pcv.visualize.histogram(img=img, mask=mask, bins=200, lower_bound=0, upper_bound=255, title='Include Title')
-    _, _ = pcv.visualize.histogram(img=img, mask=mask, bins=200, title='Include Title')
+    _ = pcv.visualize.histogram(img=img, mask=mask, bins=200, lower_bound=0, upper_bound=255, title='Include Title')
+    _, _ = pcv.visualize.histogram(img=img, mask=mask, bins=200, title='Include Title', hist_data_flag=True)
     # Test in plot mode
     pcv.params.debug = "plot"
-    fig_hist, hist_data = pcv.visualize.histogram(img=img)
+    fig_hist, hist_data = pcv.visualize.histogram(img=img, hist_data_flag=True)
     assert str(type(fig_hist)) == "<class 'plotnine.ggplot.ggplot'>" and str(type(hist_data)) == "<class 'pandas.core.frame.DataFrame'>"
     with pytest.raises(RuntimeError):
-        _, _ = pcv.visualize.histogram(img=None)
+        _ = pcv.visualize.histogram(img=None)
     with pytest.raises(RuntimeError):
-        _, _ = pcv.visualize.histogram(img=img[0,:])
+        _ = pcv.visualize.histogram(img=img[0,:])
     # Test RGB input image
     img_rgb = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    _, _ = pcv.visualize.histogram(img=img_rgb)
+    _ = pcv.visualize.histogram(img=img_rgb)
 
     # Test multi-spectral image
     img_multi = np.concatenate((img_rgb,img_rgb),axis=2)
-    _, _ = pcv.visualize.histogram(img=img_multi)
+    _ = pcv.visualize.histogram(img=img_multi)
 
 def test_plantcv_visualize_clustered_contours():
     # Test cache directory
