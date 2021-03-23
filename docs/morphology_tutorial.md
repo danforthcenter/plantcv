@@ -438,8 +438,7 @@ To deploy a workflow over a full image set please see tutorial on
 [workflow parallelization](pipeline_parallel.md).
 
 ```python
-    # Write shape and color data to results file
-    pcv.print_results(filename=args.result)
+    # Write all data to results file
     pcv.outputs.save_results(filename=args.result)
      
 if __name__ == '__main__':
