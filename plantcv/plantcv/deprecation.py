@@ -13,5 +13,5 @@ def deprecation_warning(warning):
     version = _version.get_versions()
     # f string
     # warning_msg = "{} \nCurrent PlantCV version: {} released on {}".format(warning, version["version"], version['date'])
-    f"{warning} Current PlantCV version: {version['version']} released on {version['date']}"
+    warning_msg = f"{warning} Current PlantCV version: {version['version']} released on {version['date']}"
     warnings.warn(warning_msg, DeprecationWarning, stacklevel=2)
