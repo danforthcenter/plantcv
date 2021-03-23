@@ -6,6 +6,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from plantcv.plantcv import params
 from plantcv.plantcv import fatal_error
+from plantcv.plantcv import visualize
 import matplotlib
 
 
@@ -138,8 +139,8 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
                 color = (0,0,255)
             else:
                 pass
-            colored_mask = pcv.visualize.colorize_masks([bad_mask], [color])
-            masked_img = pcv.visualize.overlay_two_imgs(masked_img, colored_mask, alpha=0.5)
+            colored_mask = visualize.colorize_masks([bad_mask], [color])
+            masked_img = visualize.overlay_two_imgs(masked_img, colored_mask, alpha=0.5)
         # Overlay the masked grayscale image with the user input colormap
         plt.imshow(masked_img, cmap=cmap, vmin=min_value, vmax=max_value)
 
