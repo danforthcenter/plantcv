@@ -364,7 +364,7 @@ The next step is to analyze the plant object for traits such as [horizontal heig
     pseudocolored_img = pcv.visualize.pseudocolor(gray_img=s, mask=kept_mask, cmap='jet')
 
     # Write shape and color data to results file
-    pcv.print_results(filename=args.result)
+    pcv.outputs.save_results(filename=args.result)
     
     # Will will print out results again, so clear the outputs before running NIR analysis 
     pcv.outputs.clear()
@@ -576,7 +576,7 @@ def main():
     pseudocolored_img = pcv.visualize.pseudocolor(gray_img=s, mask=kept_mask, cmap='jet')
 
     # Write shape and color data to results file
-    pcv.print_results(filename=args.result)
+    pcv.outputs.save_results(filename=args.result)
     
     # Will will print out results again, so clear the outputs before running NIR analysis 
     pcv.outputs.clear()
@@ -608,7 +608,7 @@ def main():
     pcv.print_image(nir_shape_image, os.path.join(pcv.params.debug_outdir, 'shape.png'))
 
     # Save data to coresult file 
-    pcv.print_results(filename=args.coresult)
+    pcv.outputs.save_results(filename=args.coresult)
     
 if __name__ == '__main__':
   main()

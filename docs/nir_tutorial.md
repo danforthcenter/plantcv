@@ -485,7 +485,7 @@ Now we can perform the [analysis of pixelwise signal value](analyze_NIR_intensit
     shape_imgs = pcv.analyze_object(img=img, obj=o, mask=m, label="default")
     
     # Write shape and nir data to results file
-    pcv.print_results(filename=args.result)
+    pcv.outputs.save_results(filename=args.result)
     
 # Call program
 if __name__ == '__main__':
@@ -645,7 +645,7 @@ def main():
     shape_imgs = pcv.analyze_object(img=img, obj=o, mask=m, label="default")
     
     # Write shape and nir data to results file
-    pcv.print_results(filename=args.result)
+    pcv.outputs.save_results(filename=args.result)
     
 # Call program
 if __name__ == '__main__':

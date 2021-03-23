@@ -549,7 +549,7 @@ def main():
                                                           
                                                           
     # Write out data collected about angles and lengths                                                       
-    pcv.print_results(filename=args.result)
+    pcv.outputs.save_results(filename=args.result)
 
 if __name__ == '__main__':
     main()
