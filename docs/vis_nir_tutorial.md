@@ -470,7 +470,7 @@ The next step is to [get the matching NIR](get_nir.md) image, [resize](transform
 Write co-result data out to a file.
 
 ```python
-    pcv.print_result(filename=args.coresult)
+    pcv.outputs.save_results(filename=args.coresult)
     
 if __name__ == '__main__':
     main()
