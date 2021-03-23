@@ -11,6 +11,7 @@ from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 from skimage.feature import greycomatrix, greycoprops
 from scipy.ndimage import generic_filter
+from plantcv.plantcv._debug import _debug
 
 
 # Binary threshold
@@ -451,15 +452,8 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
     params.device += 1
 
     # Print or plot the binary image if debug is on
-    if params.debug == 'print':
-        print_image(masked_img, os.path.join(params.debug_outdir,
-                                             str(params.device) + channel + 'custom_thresh.png'))
-        print_image(mask, os.path.join(params.debug_outdir,
-                                       str(params.device) + channel + 'custom_thresh_mask.png'))
-    elif params.debug == 'plot':
-        plot_image(mask)
-        plot_image(masked_img)
-
+    _debug(visual=masked_img, filename=os.path.join(params.debug_outdir, str(params.device) + channel + 'custom_thresh.png'))
+    _debug(visual=mask, filename=os.path.join(params.debug_outdir, str(params.device) + channel + 'custom_thresh_mask.png'))
     return mask, masked_img
 
 
@@ -472,11 +466,7 @@ def _call_threshold(gray_img, threshold, max_value, threshold_method, method_nam
         bin_img = np.uint8(bin_img)
 
     # Print or plot the binary image if debug is on
-    if params.debug == 'print':
-        print_image(bin_img, os.path.join(params.debug_outdir,
-                                          str(params.device) + method_name + str(threshold) + '.png'))
-    elif params.debug == 'plot':
-        plot_image(bin_img, cmap='gray')
+    _debug(visual=bin_img, filename=os.path.join(params.debug_outdir, str(params.device) + method_name + str(threshold) + '.png'))
 
     return bin_img
 
@@ -487,11 +477,7 @@ def _call_adaptive_threshold(gray_img, max_value, adaptive_method, threshold_met
     bin_img = cv2.adaptiveThreshold(gray_img, max_value, adaptive_method, threshold_method, 11, 2)
 
     # Print or plot the binary image if debug is on
-    if params.debug == 'print':
-        print_image(bin_img, os.path.join(params.debug_outdir,
-                                          str(params.device) + method_name + '.png'))
-    elif params.debug == 'plot':
-        plot_image(bin_img, cmap='gray')
+    _debug(visual=bin_img, filename=os.path.join(params.debug_outdir, str(params.device) + method_name + '.png'))
 
     return bin_img
 
@@ -725,41 +711,41 @@ def saturation(rgb_img, threshold=255, channel="any"):
         plot_image(bin_img, cmap='gray')
     return bin_img
 
-def mask_bad(gray_img, bad_type='native'):
-    """
-    :param gray_img: gray scale image represented by an nd-array (data type: float)
+def mask_bad(float_img, bad_type='native'):
+    """ Create a mask with desired "bad" pixels of the input floaat image marked.
+    :param float_img: image represented by an nd-array (data type: float). Most probably, it is the result of some calculation based on the original image. So the datatype is float, and it is possible to have some "bad" values, i.e. nan and/or inf
     :param bad_type: interested type of bad pixels, 'nan', 'inf' or 'native'
     :return: A mask indicating the locations of "bad" pixels
     """
     params.device += 1
-
-    size_img = np.shape(gray_img)
+    size_img = np.shape(float_img)
     if len(size_img) != 2:
-        fatal_error('Input image is not a grayscale image!')
+        fatal_error('Input image is not a single channel image!')
 
     mask = np.zeros(size_img, dtype='uint8')
-    temp_nan, _ = np.where(np.isnan(gray_img) == 1)
-    temp_inf, _ = np.where(np.isinf(gray_img) == 1)
+    idx_nan, idy_nan = np.where(np.isnan(float_img) == 1)
+    idx_inf, idy_inf = np.where(np.isinf(float_img) == 1)
 
-    if len(temp_nan.tolist()) == 0 and len(temp_inf.tolist()) == 0:
-        # fatal_error('Neither nan nor inf appears in the current image.')
+    # neither nan nor inf exists in the image, print out a message and the mask would just be all zero
+    if len(idx_nan) == 0 and len(idx_inf) == 0:
         mask = mask
         print('Neither nan nor inf appears in the current image.')
+    ## at least one of the "bad" exists
+    # desired bad to mark is "native"
     elif bad_type.lower() == 'native':
-        mask[np.isnan(gray_img)] = 255
-        mask[np.isinf(gray_img)] = 255
-    elif bad_type.lower() == 'nan' and len(temp_nan.tolist()) >= 1:
-        mask[np.isnan(gray_img)] = 255
-    elif bad_type.lower() == 'inf' and len(temp_inf.tolist()) >= 1:
-        mask[np.isinf(gray_img)] = 255
+        # mask[np.isnan(gray_img)] = 255
+        # mask[np.isinf(gray_img)] = 255
+        mask[idx_nan, idy_nan] = 255
+        mask[idx_inf, idy_inf] = 255
+    elif bad_type.lower() == 'nan' and len(idx_nan) >= 1:
+        mask[idx_nan, idy_nan] = 255
+    elif bad_type.lower() == 'inf' and len(idx_inf) >= 1:
+        mask[idx_inf, idy_inf] = 255
+    # "bad" exists but not the user desired bad type, return the all-zero mask
     else:
-        # fatal_error('{} does not appear in the current image.'.format(bad_type.lower()))
         mask = mask
         print('{} does not appear in the current image.'.format(bad_type.lower()))
 
-    if params.debug == 'print':
-        print_image(mask, os.path.join(params.debug_outdir, str(params.device), '_bad_mask.png'))
-    elif params.debug == 'plot':
-        plot_image(mask, cmap='gray')
+    _debug(visual=mask, filename=os.path.join(params.debug_outdir, str(params.device) + "_bad_mask.png"))
 
     return mask
