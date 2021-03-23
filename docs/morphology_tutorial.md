@@ -437,6 +437,15 @@ one object while the leaves remain separate.
 To deploy a workflow over a full image set please see tutorial on 
 [workflow parallelization](pipeline_parallel.md).
 
+```python
+    # Write shape and color data to results file
+    pcv.print_results(filename=args.result)
+    pcv.outputs.save_results(filename=args.result)
+     
+if __name__ == '__main__':
+    main()                                                          
+``` 
+
 ## Morphology Script 
 
 In the terminal:
