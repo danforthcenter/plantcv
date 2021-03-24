@@ -34,7 +34,7 @@ l_channel = pcv.rgb2gray_cmyk(rgb_img=rgb_img, channel='Y')
 
 **Cyan channel image**
 
-![Screenshot](img/documentation_images/rgb2lab/CMYK-cyan.jpg)
+![Screenshot](img/documentation_images/rgb2cmyk/CMYK-cyan.jpg)
 
 ```python
 
@@ -45,7 +45,7 @@ a_channel = pcv.rgb2gray_cmyk(rgb_img=rgb_img, channel='C')
 
 **Magenta channel image**
 
-![Screenshot](img/documentation_images/rgb2lab/CMYK-magenta.jpg)
+![Screenshot](img/documentation_images/rgb2cmyk/CMYK-magenta.jpg)
 
 ```python
 
@@ -56,7 +56,7 @@ a_channel = pcv.rgb2gray_cmyk(rgb_img=rgb_img, channel='M')
 
 **Yellow channel image**
 
-![Screenshot](img/documentation_images/rgb2lab/CMYK-yellow.jpg)
+![Screenshot](img/documentation_images/rgb2cmyk/CMYK-yellow.jpg)
 
 ```python
 
@@ -67,7 +67,7 @@ a_channel = pcv.rgb2gray_cmyk(rgb_img=rgb_img, channel='Y')
 
 **Black channel image**
 
-![Screenshot](img/documentation_images/rgb2lab/CMYK-black.jpg)
+![Screenshot](img/documentation_images/rgb2cmyk/CMYK-black.jpg)
 
 ```python
 
