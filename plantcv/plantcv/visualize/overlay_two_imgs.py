@@ -13,6 +13,7 @@ import skimage
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
+from plantcv.plantcv.transform import rescale
 
 
 def _preprocess_img_dtype(img):
@@ -77,11 +78,6 @@ def overlay_two_imgs(img1, img2, alpha=0.5):
     out_img[:, :, :] = (alpha * img1_[:, :, :]) + ((1 - alpha) * img2_[:, :, :])
 
     params.device += 1
-    if params.debug == 'print':
-        print_image(out_img, os.path.join(params.debug_outdir, str(params.device) + '_overlay.png'))
-    elif params.debug == 'plot':
-        plot_image(out_img)
-
     _debug(visual=out_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_overlay.png'))
 
     return out_img
