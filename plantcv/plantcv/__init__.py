@@ -14,6 +14,7 @@ from plantcv.plantcv.color_palette import color_palette
 from plantcv.plantcv.rgb2gray import rgb2gray
 from plantcv.plantcv.rgb2gray_hsv import rgb2gray_hsv
 from plantcv.plantcv.rgb2gray_lab import rgb2gray_lab
+from plantcv.plantcv.rgb2gray_cmyk import rgb2gray_cmyk
 from plantcv.plantcv.gaussian_blur import gaussian_blur
 from plantcv.plantcv import transform
 from plantcv.plantcv import hyperspectral
@@ -92,7 +93,7 @@ del get_versions
 __all__ = ['fatal_error', 'Params', 'Outputs', 'Spectral_data', 'print_image', 'plot_image', 'color_palette',
            'apply_mask', 'gaussian_blur', 'transform', 'hyperspectral', 'readimage',
            'readbayer', 'laplace_filter', 'sobel_filter', 'scharr_filter', 'hist_equalization', 'erode',
-           'image_add', 'image_subtract', 'dilate', 'watershed', 'rectangle_mask', 'rgb2gray_hsv', 'rgb2gray_lab',
+           'image_add', 'image_subtract', 'dilate', 'watershed', 'rectangle_mask', 'rgb2gray_hsv', 'rgb2gray_lab', 'rgb2gray_cmyk',
            'rgb2gray', 'median_blur', 'fill', 'invert', 'logical_and', 'logical_or', 'logical_xor',
            'find_objects', 'roi_objects', 'object_composition', 'analyze_object', 'morphology',
            'analyze_bound_horizontal', 'analyze_bound_vertical', 'analyze_color', 'analyze_nir_intensity',
