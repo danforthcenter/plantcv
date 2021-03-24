@@ -6173,10 +6173,8 @@ def test_plantcv_visualize_overlay_two_imgs():
     os.mkdir(cache_dir)
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     img2 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY))
-    pcv.params.debug = 'print'
-    pcv.params.debug_outdir = cache_dir
-    _ = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2)
-    pcv.params.debug = 'plot'
+
+    pcv.params.debug = None
     out_img = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2)
     sample_pt1 = img1[1445, 1154]
     sample_pt2 = img2[1445, 1154]
