@@ -5954,6 +5954,9 @@ def test_plantcv_threshold_mask_bad_native():
     l22 = len(np.unique(mask22))
     assert ((np.shape(mask22) == sz) and (l22 == 2))
 
+    # test on pseudocolor
+    pcv.visualize.pseudocolor(bad_img, bad_mask=mask22, bad_color="red")
+
 
 def test_plantcv_threshold_mask_bad_native_bad_input():
     # Test cache directory
