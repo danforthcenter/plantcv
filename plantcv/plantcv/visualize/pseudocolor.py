@@ -10,7 +10,8 @@ from plantcv.plantcv import visualize
 import matplotlib
 
 
-def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, axes=True, colorbar=True, obj_padding="auto", *, bad_mask=None, bad_color="red"):
+def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, axes=True,
+                colorbar=True, obj_padding="auto", title=None, bad_mask=None, bad_color="red"):
 
     """Pseudocolor any grayscale image to custom colormap
 
@@ -30,6 +31,8 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
                   larger in each dimension than the object. An single integer is also accepted to define the padding
                   in pixels
     title       = (optional) custom title for the plot gets drawn if title is not None. default = None
+    bad_mask    = (optional)
+    bad_color   = (optional)
 
     Returns:
     pseudo_image = pseudocolored image
@@ -45,6 +48,7 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
     :param axes: bool
     :param colorbar: bool
     :param obj_padding: str, int
+    :param title: str, default None
     :param bad_mask: numpy.ndarray, (keyword-only parameter), default None
     :param bad_color: str, (keyword-only parameter), default "red"
     :return pseudo_image: numpy.ndarray
