@@ -51,6 +51,7 @@ nav:
       - 'Color Palette': color_palette.md
       - 'Colorspace Conversion':
         - 'RGB to Gray': rgb2gray.md
+        - 'RGB to CMYK': rgb2cmyk.md
         - 'RGB to LAB': rgb2lab.md
         - 'RGB to HSV': rgb2hsv.md
       - 'Crop': crop.md
