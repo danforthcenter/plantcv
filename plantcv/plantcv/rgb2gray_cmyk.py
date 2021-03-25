@@ -49,7 +49,7 @@ def rgb2gray_cmyk(rgb_img, channel):
     # Convert the input BGR image to LAB colorspace
     CMYK = (np.dstack((C,M,Y,K)) * 255).astype(np.uint8)
     #Split CMYK channels
-    Y, K, C, M = cv2.split(CMYK)
+    Y, M, C, K = cv2.split(CMYK)
     # Create a channel dictionaries for lookups by a channel name index
     channels = {"c": C, "m": M, "y": Y, "k": K}
 
