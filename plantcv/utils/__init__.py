@@ -1,4 +1,4 @@
-__all__ = ["json2csv", "tabulate_bayes_classes", "sample_images"]
+__all__ = ["json2csv", "tabulate_bayes_classes", "sample_images","read_dataset","random_subset"]
 
 from plantcv.utils.converters import json2csv
 from plantcv.utils.converters import tabulate_bayes_classes
