@@ -31,42 +31,25 @@ def rgb2gray_cmyk(rgb_img, channel):
     if channel not in names:
         fatal_error("Channel " + str(channel) + " is not c, m, y or k!")
 
-    B = rgb_img[:, :, 0].astype(float) # float conversion
-    G = rgb_img[:, :, 1].astype(float) #
-    R = rgb_img[:, :, 2].astype(float) #
+    # Create float
+    bgr = rgb_img.astype(float)/255.
 
-    B_ = np.copy(B) 
-    G_ = np.copy(G)
-    R_ = np.copy(R)
+    # K channel
+    K = 1 - np.max(bgr, axis=2)
 
-    K = np.zeros_like(B) 
-    C = np.zeros_like(B) 
-    M = np.zeros_like(B) 
-    Y = np.zeros_like(B) 
+    # C Channel
+    C = (1-bgr[...,2] - K)/(1-K)
 
-    for i in range(B.shape[0]):
-        for j in range(B.shape[1]):
-            B_[i, j] = B[i, j]/255
-            G_[i, j] = G[i, j]/255
-            R_[i, j] = R[i, j]/255
+    # M Channel
+    M = (1-bgr[...,1] - K)/(1-K)
 
-            K[i, j] = 1 - max(B_[i, j], G_[i, j], R_[i, j])
-            if (B_[i, j] == 0) and (G_[i, j] == 0) and (R_[i, j] == 0):
-            # black
-                  C[i, j] = 0
-                  M[i, j] = 0  
-                  Y[i, j] = 0
-            else:
-
-                C[i, j] = (1 - R_[i, j] - K[i, j])/float((1 - K[i, j]))
-                M[i, j] = (1 - G_[i, j] - K[i, j])/float((1 - K[i, j]))
-                Y[i, j] = (1 - B_[i, j] - K[i, j])/float((1 - K[i, j]))
-
+    # Y Channel
+    Y = (1-bgr[...,0] - K)/(1-K)
 
     # Convert the input BGR image to LAB colorspace
     CMYK = (np.dstack((C,M,Y,K)) * 255).astype(np.uint8)
     #Split CMYK channels
-    C, M, Y, K = cv2.split(CMYK)
+    Y, K, C, M = cv2.split(CMYK)
     # Create a channel dictionaries for lookups by a channel name index
     channels = {"c": C, "m": M, "y": Y, "k": K}
 
