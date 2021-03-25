@@ -515,6 +515,22 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, maskpath, analysis_images = **plantcv.output_mask**(*device, img, mask, filename, outdir=None, mask_only=False, debug=None*)
 * post v3.0dev2: imgpath, maskpath, analysis_images = **plantcv.output_mask**(*img, mask, filename, outdir=None, mask_only=False*)
 
+#### plantcv.outputs.add_observation
+
+* pre v3.3: NA
+* post v3.3: **plantcv.outputs.add_observation**(*variable, trait, method, scale, datatype, value, label*)
+* post v3.11: **plantcv.outputs.add_observation**(*sample, variable, trait, method, scale, datatype, value, label*)
+
+#### plantcv.outputs.clear
+
+* pre v3.2: NA
+* post v3.2: **plantcv.outputs.clear**()
+
+#### plantcv.outputs.save_results
+
+* pre v3.12: NA
+* post v3.12: **plantcv.outputs.save_results**(*filename, outformat="json"*)
+
 #### plantcv.photosynthesis.analyze_fvfm
 * pre v3.10: see plantcv.fluor_fvfm
 * post v3.10: analysis_images = **plantcv.photosynthesis.analyze_fvfm**(*fdark, fmin, fmax, mask, bins=256*)
