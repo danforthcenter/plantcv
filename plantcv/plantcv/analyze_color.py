@@ -32,8 +32,8 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, colorspaces="all", label="
     :return analysis_images: list
     """
     if hist_plot_type is not None:
-        deprecation_warning("""'hist_plot_type' will be deprecated in the future version of PlantCV. 
-                                Please use 'colorspaces' instead.""")
+        deprecation_warning("'hist_plot_type' will be deprecated in a future version of PlantCV. "
+                            "Please use 'colorspaces' instead.")
         colorspaces = hist_plot_type
 
     if len(np.shape(rgb_img)) < 3:
@@ -56,14 +56,14 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, colorspaces="all", label="
     channels = {"b": b, "g": g, "r": r, "l": l, "m": m, "y": y, "h": h, "s": s, "v": v}
 
     # Histogram plot types
-    hist_types = {"ALL": ("b", "g", "r", "l", "m", "y", "h", "s", "v"),
-                  "RGB": ("b", "g", "r"),
-                  "LAB": ("l", "m", "y"),
-                  "HSV": ("h", "s", "v")}
+    hist_types = {"all": ("b", "g", "r", "l", "m", "y", "h", "s", "v"),
+                  "rgb": ("b", "g", "r"),
+                  "lab": ("l", "m", "y"),
+                  "hsv": ("h", "s", "v")}
 
-    if colorspaces is not None and colorspaces.upper() not in hist_types:
-        fatal_error("The histogram plot type was " + str(colorspaces) +
-                    ', but can only be one of the following: None, "all", "rgb", "lab", or "hsv"!')
+    if colorspaces.lower() not in hist_types:
+        fatal_error(f"Colorspace '{colorspaces}' is not supported, must be be one of the following: " 
+                    f"{', '.join(map(str, hist_types.keys()))}")
 
     histograms = {
         "b": {"label": "blue", "graph_color": "blue",
