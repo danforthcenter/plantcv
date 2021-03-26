@@ -6150,15 +6150,15 @@ def test_plantcv_visualize_histogram():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     _ = pcv.visualize.histogram(img=img, mask=mask, bins=200, lower_bound=0, upper_bound=255, title='Include Title')
-    _, _ = pcv.visualize.histogram(img=img, mask=mask, bins=200, title='Include Title', hist_data_flag=True)
+    _, _ = pcv.visualize.histogram(img=img, mask=mask, bins=200, title='Include Title', hist_data=True)
     # Test in plot mode
     pcv.params.debug = "plot"
-    fig_hist, hist_data = pcv.visualize.histogram(img=img, hist_data_flag=True)
+    fig_hist, hist_data = pcv.visualize.histogram(img=img, hist_data=True)
     assert str(type(fig_hist)) == "<class 'plotnine.ggplot.ggplot'>" and str(type(hist_data)) == "<class 'pandas.core.frame.DataFrame'>"
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.histogram(img=None)
     with pytest.raises(RuntimeError):
-        _ = pcv.visualize.histogram(img=img[0,:])
+        _ = pcv.visualize.histogram(img=img[0, :])
     # Test RGB input image
     img_rgb = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     _ = pcv.visualize.histogram(img=img_rgb)
