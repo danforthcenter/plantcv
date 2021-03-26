@@ -1,4 +1,6 @@
 # PlantCV classes
+import os
+import json
 from plantcv.plantcv import fatal_error
 
 
@@ -117,6 +119,64 @@ class Outputs:
             "value": value,
             "label": label
         }
+
+    # Method to save observations to a file
+    def save_results(self, filename, outformat="json"):
+        """Save results to a file.
+
+        Keyword arguments/parameters:
+        filename       = Output filename
+        outformat      = Output file format ("json" or "csv"). Default = "json"
+
+        :param filename: str
+        :param outformat: str
+        """
+        if outformat.upper() == "JSON":
+            if os.path.isfile(filename):
+                with open(filename, 'r') as f:
+                    hierarchical_data = json.load(f)
+                    hierarchical_data["observations"] = self.observations
+            else:
+                hierarchical_data = {"metadata": {}, "observations": self.observations}
+
+            with open(filename, mode='w') as f:
+                json.dump(hierarchical_data, f)
+        elif outformat.upper() == "CSV":
+            # Open output CSV file
+            csv_table = open(filename, "w")
+            # Write the header
+            csv_table.write(",".join(map(str, ["sample", "trait", "value", "label"])) + "\n")
+            # Iterate over data samples
+            for sample in self.observations:
+                # Iterate over traits for each sample
+                for var in self.observations[sample]:
+                    val = self.observations[sample][var]["value"]
+                    # If the data type is a list or tuple we need to unpack the data
+                    if isinstance(val, list) or isinstance(val, tuple):
+                        # Combine each value with its label
+                        for value, label in zip(self.observations[sample][var]["value"],
+                                                self.observations[sample][var]["label"]):
+                            # Skip list of tuple data types
+                            if not isinstance(value, tuple):
+                                # Save one row per value-label
+                                row = [sample, var, value, label]
+                                csv_table.write(",".join(map(str, row)) + "\n")
+                    # If the data type is Boolean, store as a numeric 1/0 instead of True/False
+                    elif isinstance(val, bool):
+                        row = [sample,
+                               var,
+                               int(self.observations[sample][var]["value"]),
+                               self.observations[sample][var]["label"]]
+                        csv_table.write(",".join(map(str, row)) + "\n")
+                    # For all other supported data types, save one row per trait
+                    # Assumes no unusual data types are present (possibly a bad assumption)
+                    else:
+                        row = [sample,
+                               var,
+                               self.observations[sample][var]["value"],
+                               self.observations[sample][var]["label"]
+                               ]
+                        csv_table.write(",".join(map(str, row)) + "\n")
 
 
 class Spectral_data:
