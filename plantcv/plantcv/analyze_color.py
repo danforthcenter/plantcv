@@ -152,12 +152,6 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, colorspaces="all", label="
     hue_circular_std = stats.circstd(h[np.where(h > 0)], high=179, low=0) * 2
 
     # Plot or print the histogram
-    params.device += 1
-    # if params.debug == 'print':
-    #     hist_fig.save(os.path.join(params.debug_outdir, str(params.device) + '_analyze_color_hist.png'),
-    #                   verbose=False)
-    # elif params.debug == 'plot':
-    #     print(hist_fig)
     analysis_image = hist_fig
     _debug(visual=hist_fig, filename=os.path.join(params.debug_outdir, str(params.device) + '_analyze_color_hist.png'))
 
