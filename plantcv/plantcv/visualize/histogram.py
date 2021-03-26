@@ -11,16 +11,27 @@ from plotnine import ggplot, aes, geom_line, scale_x_continuous, labels, scale_c
 
 def _hist_gray(gray_img, bins, lower_bound, upper_bound, mask=None):
     """ Prepare the ready to plot histogram data
-    :param gray_img: (numpy.ndarray) = grayscale image to analyze
-    :param bins: (int) number of classes to divide spectrum into
-    :param lower_bound: (int) the lower bound of the bins
-    :param upper_bound: (int) the upper bound of the bins
-    :param mask: (numpy.ndarray) = (optional) binary mask made from selected contours, by default mask = None
 
-    :return:
-    bin_labels (numpy.ndarray): an array of histogram bin labels
-    hist_percent (numpy.ndarray): an array of histogram represented by percent values
-    hist_gray_data (numpy.ndarray): an array of histogram (original values)
+    Inputs:
+    gray_img       = grayscale image to analyze
+    bins           = divide the data into n evenly spaced bins
+    lower_bound    = the lower bound of the bins (x-axis min value)
+    upper_bound    = the upper bound of the bins (x-axis max value)
+    mask           = binary mask, calculate histogram from masked area only (default=None)
+
+    Returns:
+    bin_labels     = an array of histogram bin labels
+    hist_percent   = an array of histogram represented by percent values
+    hist_gray_data = an array of histogram (original values)
+
+    :param gray_img: numpy.ndarray
+    :param bins: int
+    :param lower_bound: int
+    :param upper_bound: int
+    :param mask: numpy.ndarray
+    :return bin_labels: numpy.ndarray
+    :return hist_percent: numpy.ndarray
+    :return hist_gray_data: numpy.ndarray
     """
 
     params.device += 1
@@ -48,7 +59,7 @@ def _hist_gray(gray_img, bins, lower_bound, upper_bound, mask=None):
     # make hist percentage for plotting
     hist_percent = (hist_gray_data / float(pixels)) * 100
     # use middle value of every bin as bin label
-    bin_labels   = np.array([np.average([hist_bins[i],hist_bins[i+1]]) for i in range(0,len(hist_bins)-1)])
+    bin_labels = np.array([np.average([hist_bins[i], hist_bins[i+1]]) for i in range(0, len(hist_bins) - 1)])
 
     return bin_labels, hist_percent, hist_gray_data
     # hist_data = pd.DataFrame({'pixel intensity': bin_labels, 'proportion of pixels (%)': hist_percent})
@@ -56,17 +67,30 @@ def _hist_gray(gray_img, bins, lower_bound, upper_bound, mask=None):
 
 
 def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, title=None, hist_data=False):
-    """Plot a histogram using ggplot
-    :param img: (numpy.ndarray) = image to analyze
-    :param mask: (numpy.ndarray) = (optional) binary mask made from selected contours, by default mask = None
-    :param bins: (int) = (optional) number of classes to divide spectrum into, by default bins = 256
-    :param lower_bound: (int) = (optional) the lower range of the bins, by default lower_bound = None
-    :param upper_bound: (int) = (optional) the upper range of the bins, by default upper_bound = None
-    :param title: (str) = (optional) custom title for the plot gets drawn if title is not None, by default title = None
-    :param hist_data: (bool) = (optional) the flag indicates whether or not return the histogram data, by default hist_data_flag = False
-    :return:
-    fig_hist: ggplot
-    hist_data: dataframe with histogram data, with columns "pixel intensity" and "proportion of pixels (%)", Ready to be used for ggplot
+    """Plot histograms of each input image channel
+
+    Inputs:
+    img            = an RGB or grayscale image to analyze
+    mask           = binary mask, calculate histogram from masked area only (default=None)
+    bins           = divide the data into n evenly spaced bins (default=100)
+    lower_bound    = the lower bound of the bins (x-axis min value) (default=None)
+    upper_bound    = the upper bound of the bins (x-axis max value) (default=None)
+    title          = a custom title for the plot (default=None)
+    hist_data      = return the frequency distribution data if True (default=False)
+
+    Returns:
+    fig_hist       = histogram figure
+    hist_df        = dataframe with histogram data, with columns "pixel intensity" and "proportion of pixels (%)"
+
+    :param img: numpy.ndarray
+    :param mask: numpy.ndarray
+    :param bins: int
+    :param lower_bound: int
+    :param upper_bound: int
+    :param title: str
+    :param hist_data: bool
+    :return fig_hist: plotnine.ggplot.ggplot
+    :return hist_df: pandas.core.frame.DataFrame
     """
     if type(img) is not np.ndarray:
         fatal_error("Only image of type numpy.ndarray is supported input!")
