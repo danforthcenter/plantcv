@@ -67,23 +67,23 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, colorspaces="all", label="
 
     histograms = {
         "b": {"label": "blue", "graph_color": "blue",
-              "hist": histogram(channels["b"], mask, 256, 0, 255, hist_data_flag=True)[1]['proportion of pixels (%)'].tolist()},
+              "hist": histogram(channels["b"], mask, 256, 0, 255, hist_data=True)[1]['proportion of pixels (%)'].tolist()},
         "g": {"label": "green", "graph_color": "forestgreen",
-              "hist": histogram(channels["g"], mask, 256, 0, 255, hist_data_flag=True)[1]['proportion of pixels (%)'].tolist()},
+              "hist": histogram(channels["g"], mask, 256, 0, 255, hist_data=True)[1]['proportion of pixels (%)'].tolist()},
         "r": {"label": "red", "graph_color": "red",
-              "hist": histogram(channels["r"], mask, 256, 0, 255, hist_data_flag=True)[1]['proportion of pixels (%)'].tolist()},
+              "hist": histogram(channels["r"], mask, 256, 0, 255, hist_data=True)[1]['proportion of pixels (%)'].tolist()},
         "l": {"label": "lightness", "graph_color": "dimgray",
-              "hist": histogram(channels["l"], mask, 256, 0, 255, hist_data_flag=True)[1]['proportion of pixels (%)'].tolist()},
+              "hist": histogram(channels["l"], mask, 256, 0, 255, hist_data=True)[1]['proportion of pixels (%)'].tolist()},
         "m": {"label": "green-magenta", "graph_color": "magenta",
-              "hist": histogram(channels["m"], mask, 256, 0, 255, hist_data_flag=True)[1]['proportion of pixels (%)'].tolist()},
+              "hist": histogram(channels["m"], mask, 256, 0, 255, hist_data=True)[1]['proportion of pixels (%)'].tolist()},
         "y": {"label": "blue-yellow", "graph_color": "yellow",
-              "hist": histogram(channels["y"], mask, 256, 0, 255, hist_data_flag=True)[1]['proportion of pixels (%)'].tolist()},
+              "hist": histogram(channels["y"], mask, 256, 0, 255, hist_data=True)[1]['proportion of pixels (%)'].tolist()},
         "h": {"label": "hue", "graph_color": "blueviolet",
-              "hist": histogram(channels["h"], mask, 256, 0, 255, hist_data_flag=True)[1]['proportion of pixels (%)'].tolist()},
+              "hist": histogram(channels["h"], mask, 256, 0, 255, hist_data=True)[1]['proportion of pixels (%)'].tolist()},
         "s": {"label": "saturation", "graph_color": "cyan",
-              "hist": histogram(channels["s"], mask, 256, 0, 255, hist_data_flag=True)[1]['proportion of pixels (%)'].tolist()},
+              "hist": histogram(channels["s"], mask, 256, 0, 255, hist_data=True)[1]['proportion of pixels (%)'].tolist()},
         "v": {"label": "value", "graph_color": "orange",
-              "hist": histogram(channels["v"], mask, 256, 0, 255, hist_data_flag=True)[1]['proportion of pixels (%)'].tolist()}
+              "hist": histogram(channels["v"], mask, 256, 0, 255, hist_data=True)[1]['proportion of pixels (%)'].tolist()}
     }
 
     # Create list of bin labels for 8-bit data

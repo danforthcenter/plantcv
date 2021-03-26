@@ -55,7 +55,7 @@ def _hist_gray(gray_img, bins, lower_bound, upper_bound, mask=None):
     # return hist_data
 
 
-def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, title=None, hist_data_flag=False):
+def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, title=None, hist_data=False):
     """Plot a histogram using ggplot
     :param img: (numpy.ndarray) = image to analyze
     :param mask: (numpy.ndarray) = (optional) binary mask made from selected contours, by default mask = None
@@ -63,7 +63,7 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, titl
     :param lower_bound: (int) = (optional) the lower range of the bins, by default lower_bound = None
     :param upper_bound: (int) = (optional) the upper range of the bins, by default upper_bound = None
     :param title: (str) = (optional) custom title for the plot gets drawn if title is not None, by default title = None
-    :param hist_data_flag: (bool) = (optional) the flag indicates whether or not return the histogram data, by default hist_data_flag = False
+    :param hist_data: (bool) = (optional) the flag indicates whether or not return the histogram data, by default hist_data_flag = False
     :return:
     fig_hist: ggplot
     hist_data: dataframe with histogram data, with columns "pixel intensity" and "proportion of pixels (%)", Ready to be used for ggplot
@@ -123,6 +123,6 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, titl
             fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + '_hist.png'), verbose=False)
         if params.debug == "plot":
             print(fig_hist)
-    if hist_data_flag is True:
+    if hist_data is True:
         return fig_hist, hist_data
     return fig_hist
