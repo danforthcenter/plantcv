@@ -12,13 +12,13 @@ from plantcv.plantcv import outputs
 from plantcv.plantcv.visualize import histogram
 
 
-def analyze_color(rgb_img, mask, colorspaces = None, hist_plot_type = None, label="default"):
+def analyze_color(rgb_img, mask, hist_plot_type=None, colorspaces="all", label="default"):
     """Analyze the color properties of an image object
     Inputs:
     rgb_img          = RGB image data
     mask             = Binary mask made from selected contours
-    hist_plot_type(to be deprecated)    = None, 'all', 'rgb','lab' or 'hsv'
-    colorspaces      = None, 'all', 'rgb','lab' or 'hsv'
+    hist_plot_type   = None, 'all', 'rgb','lab' or 'hsv' (to be deprecated)
+    colorspaces      = 'all', 'rgb', 'lab', or 'hsv'
     label            = optional label parameter, modifies the variable name of observations recorded
 
     Returns:
@@ -31,8 +31,9 @@ def analyze_color(rgb_img, mask, colorspaces = None, hist_plot_type = None, labe
     :param label: str
     :return analysis_images: list
     """
-    if hist_plot_type or hist_plot_type is None:
-        deprecation_warning("'hist_plot_type' will be deprecated in the future version of plantCV. Please use 'colorspaces' instead.")
+    if hist_plot_type is not None:
+        deprecation_warning("""'hist_plot_type' will be deprecated in the future version of PlantCV. 
+                                Please use 'colorspaces' instead.""")
         colorspaces = hist_plot_type
 
     if len(np.shape(rgb_img)) < 3:
