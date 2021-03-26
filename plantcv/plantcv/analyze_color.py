@@ -97,50 +97,49 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, colorspaces="all", label="
                             'blue-yellow': histograms["y"]["hist"], 'hue': histograms["h"]["hist"],
                             'saturation': histograms["s"]["hist"], 'value': histograms["v"]["hist"]})
     # Make the histogram figure using plotnine
-    if colorspaces is not None:
-        if colorspaces.upper() == 'RGB':
-            df_rgb = pd.melt(dataset, id_vars=['bins'], value_vars=['blue', 'green', 'red'],
-                             var_name='color Channel', value_name='proportion of pixels (%)')
-            hist_fig = (ggplot(df_rgb, aes(x='bins', y='proportion of pixels (%)', color='color Channel'))
-                        + geom_line()
-                        + scale_x_continuous(breaks=list(range(0, 256, 25)))
-                        + scale_color_manual(['blue', 'green', 'red'])
-                        )
+    if colorspaces.upper() == 'RGB':
+        df_rgb = pd.melt(dataset, id_vars=['bins'], value_vars=['blue', 'green', 'red'],
+                         var_name='color Channel', value_name='proportion of pixels (%)')
+        hist_fig = (ggplot(df_rgb, aes(x='bins', y='proportion of pixels (%)', color='color Channel'))
+                    + geom_line()
+                    + scale_x_continuous(breaks=list(range(0, 256, 25)))
+                    + scale_color_manual(['blue', 'green', 'red'])
+                    )
 
-        elif colorspaces.upper() == 'LAB':
-            df_lab = pd.melt(dataset, id_vars=['bins'],
-                             value_vars=['lightness', 'green-magenta', 'blue-yellow'],
-                             var_name='color Channel', value_name='proportion of pixels (%)')
-            hist_fig = (ggplot(df_lab, aes(x='bins', y='proportion of pixels (%)', color='color Channel'))
-                        + geom_line()
-                        + scale_x_continuous(breaks=list(range(0, 256, 25)))
-                        + scale_color_manual(['yellow', 'magenta', 'dimgray'])
-                        )
+    elif colorspaces.upper() == 'LAB':
+        df_lab = pd.melt(dataset, id_vars=['bins'],
+                         value_vars=['lightness', 'green-magenta', 'blue-yellow'],
+                         var_name='color Channel', value_name='proportion of pixels (%)')
+        hist_fig = (ggplot(df_lab, aes(x='bins', y='proportion of pixels (%)', color='color Channel'))
+                    + geom_line()
+                    + scale_x_continuous(breaks=list(range(0, 256, 25)))
+                    + scale_color_manual(['yellow', 'magenta', 'dimgray'])
+                    )
 
-        elif colorspaces.upper() == 'HSV':
-            df_hsv = pd.melt(dataset, id_vars=['bins'],
-                             value_vars=['hue', 'saturation', 'value'],
-                             var_name='color Channel', value_name='proportion of pixels (%)')
-            hist_fig = (ggplot(df_hsv, aes(x='bins', y='proportion of pixels (%)', color='color Channel'))
-                        + geom_line()
-                        + scale_x_continuous(breaks=list(range(0, 256, 25)))
-                        + scale_color_manual(['blueviolet', 'cyan', 'orange'])
-                        )
+    elif colorspaces.upper() == 'HSV':
+        df_hsv = pd.melt(dataset, id_vars=['bins'],
+                         value_vars=['hue', 'saturation', 'value'],
+                         var_name='color Channel', value_name='proportion of pixels (%)')
+        hist_fig = (ggplot(df_hsv, aes(x='bins', y='proportion of pixels (%)', color='color Channel'))
+                    + geom_line()
+                    + scale_x_continuous(breaks=list(range(0, 256, 25)))
+                    + scale_color_manual(['blueviolet', 'cyan', 'orange'])
+                    )
 
-        elif colorspaces.upper() == 'ALL':
-            s = pd.Series(['blue', 'green', 'red', 'lightness', 'green-magenta',
-                           'blue-yellow', 'hue', 'saturation', 'value'], dtype="category")
-            color_channels = ['blue', 'yellow', 'green', 'magenta', 'blueviolet',
-                              'dimgray', 'red', 'cyan', 'orange']
-            df_all = pd.melt(dataset, id_vars=['bins'], value_vars=s, var_name='color Channel',
-                             value_name='proportion of pixels (%)')
-            hist_fig = (ggplot(df_all, aes(x='bins', y='proportion of pixels (%)', color='color Channel'))
-                        + geom_line()
-                        + scale_x_continuous(breaks=list(range(0, 256, 25)))
-                        + scale_color_manual(color_channels)
-                        )
+    elif colorspaces.upper() == 'ALL':
+        s = pd.Series(['blue', 'green', 'red', 'lightness', 'green-magenta',
+                       'blue-yellow', 'hue', 'saturation', 'value'], dtype="category")
+        color_channels = ['blue', 'yellow', 'green', 'magenta', 'blueviolet',
+                          'dimgray', 'red', 'cyan', 'orange']
+        df_all = pd.melt(dataset, id_vars=['bins'], value_vars=s, var_name='color Channel',
+                         value_name='proportion of pixels (%)')
+        hist_fig = (ggplot(df_all, aes(x='bins', y='proportion of pixels (%)', color='color Channel'))
+                    + geom_line()
+                    + scale_x_continuous(breaks=list(range(0, 256, 25)))
+                    + scale_color_manual(color_channels)
+                    )
 
-        hist_fig = hist_fig + labs(x="Pixel intensity", y="Proportion of pixels (%)")
+    hist_fig = hist_fig + labs(x="Pixel intensity", y="Proportion of pixels (%)")
 
     # Hue values of zero are red but are also the value for pixels where hue is undefined. The hue value of a pixel will
     # be undef. when the color values are saturated. Therefore, hue values of 0 are excluded from the calculations below
@@ -153,15 +152,14 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, colorspaces="all", label="
     hue_circular_std = stats.circstd(h[np.where(h > 0)], high=179, low=0) * 2
 
     # Plot or print the histogram
-    if colorspaces is not None:
-        params.device += 1
-        # if params.debug == 'print':
-        #     hist_fig.save(os.path.join(params.debug_outdir, str(params.device) + '_analyze_color_hist.png'),
-        #                   verbose=False)
-        # elif params.debug == 'plot':
-        #     print(hist_fig)
-        analysis_image = hist_fig
-        _debug(visual=hist_fig, filename=os.path.join(params.debug_outdir, str(params.device) + '_analyze_color_hist.png'))
+    params.device += 1
+    # if params.debug == 'print':
+    #     hist_fig.save(os.path.join(params.debug_outdir, str(params.device) + '_analyze_color_hist.png'),
+    #                   verbose=False)
+    # elif params.debug == 'plot':
+    #     print(hist_fig)
+    analysis_image = hist_fig
+    _debug(visual=hist_fig, filename=os.path.join(params.debug_outdir, str(params.device) + '_analyze_color_hist.png'))
 
     # Store into global measurements
     # RGB signal values are in an unsigned 8-bit scale of 0-255
@@ -173,40 +171,39 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, colorspaces="all", label="
     # Diverging values on a -128 to 127 scale (green-magenta and blue-yellow)
     diverging_values = [i for i in range(-128, 128)]
 
-    if colorspaces is not None:
-        if colorspaces.upper() == 'RGB' or colorspaces.upper() == 'ALL':
-            outputs.add_observation(sample=label, variable='blue_frequencies', trait='blue frequencies',
-                                    method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
-                                    value=histograms["b"]["hist"], label=rgb_values)
-            outputs.add_observation(sample=label, variable='green_frequencies', trait='green frequencies',
-                                    method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
-                                    value=histograms["g"]["hist"], label=rgb_values)
-            outputs.add_observation(sample=label, variable='red_frequencies', trait='red frequencies',
-                                    method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
-                                    value=histograms["r"]["hist"], label=rgb_values)
+    if colorspaces.upper() == 'RGB' or colorspaces.upper() == 'ALL':
+        outputs.add_observation(sample=label, variable='blue_frequencies', trait='blue frequencies',
+                                method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                                value=histograms["b"]["hist"], label=rgb_values)
+        outputs.add_observation(sample=label, variable='green_frequencies', trait='green frequencies',
+                                method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                                value=histograms["g"]["hist"], label=rgb_values)
+        outputs.add_observation(sample=label, variable='red_frequencies', trait='red frequencies',
+                                method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                                value=histograms["r"]["hist"], label=rgb_values)
 
-        if colorspaces.upper() == 'LAB' or colorspaces.upper() == 'ALL':
-            outputs.add_observation(sample=label, variable='lightness_frequencies', trait='lightness frequencies',
-                                    method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
-                                    value=histograms["l"]["hist"], label=percent_values)
-            outputs.add_observation(sample=label, variable='green-magenta_frequencies',
-                                    trait='green-magenta frequencies',
-                                    method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
-                                    value=histograms["m"]["hist"], label=diverging_values)
-            outputs.add_observation(sample=label, variable='blue-yellow_frequencies', trait='blue-yellow frequencies',
-                                    method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
-                                    value=histograms["y"]["hist"], label=diverging_values)
+    if colorspaces.upper() == 'LAB' or colorspaces.upper() == 'ALL':
+        outputs.add_observation(sample=label, variable='lightness_frequencies', trait='lightness frequencies',
+                                method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                                value=histograms["l"]["hist"], label=percent_values)
+        outputs.add_observation(sample=label, variable='green-magenta_frequencies',
+                                trait='green-magenta frequencies',
+                                method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                                value=histograms["m"]["hist"], label=diverging_values)
+        outputs.add_observation(sample=label, variable='blue-yellow_frequencies', trait='blue-yellow frequencies',
+                                method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                                value=histograms["y"]["hist"], label=diverging_values)
 
-        if colorspaces.upper() == 'HSV' or colorspaces.upper() == 'ALL':
-            outputs.add_observation(sample=label, variable='hue_frequencies', trait='hue frequencies',
-                                    method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
-                                    value=histograms["h"]["hist"][0:180], label=hue_values)
-            outputs.add_observation(sample=label, variable='saturation_frequencies', trait='saturation frequencies',
-                                    method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
-                                    value=histograms["s"]["hist"], label=percent_values)
-            outputs.add_observation(sample=label, variable='value_frequencies', trait='value frequencies',
-                                    method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
-                                    value=histograms["v"]["hist"], label=percent_values)
+    if colorspaces.upper() == 'HSV' or colorspaces.upper() == 'ALL':
+        outputs.add_observation(sample=label, variable='hue_frequencies', trait='hue frequencies',
+                                method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                                value=histograms["h"]["hist"][0:180], label=hue_values)
+        outputs.add_observation(sample=label, variable='saturation_frequencies', trait='saturation frequencies',
+                                method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                                value=histograms["s"]["hist"], label=percent_values)
+        outputs.add_observation(sample=label, variable='value_frequencies', trait='value frequencies',
+                                method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
+                                value=histograms["v"]["hist"], label=percent_values)
 
     # Always save hue stats
     outputs.add_observation(sample=label, variable='hue_circular_mean', trait='hue circular mean',
