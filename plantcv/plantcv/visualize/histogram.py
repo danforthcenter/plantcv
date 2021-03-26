@@ -94,7 +94,7 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, titl
     if len(img.shape) == 2:
         bin_labels, hist_percent, hist_ = _hist_gray(img, bins=bins, lower_bound=lower_bound, upper_bound=upper_bound,
                                                      mask=mask)
-        hist_data = pd.DataFrame(
+        hist_df = pd.DataFrame(
             {'pixel intensity': bin_labels, 'proportion of pixels (%)': hist_percent, 'hist_count': hist_,
              'color channel': ['0' for i in range(len(hist_percent))]})
     else:
@@ -106,11 +106,11 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, titl
                 {'pixel intensity': bin_labels, 'proportion of pixels (%)': hist_percent, 'hist_count': hist_,
                  'color channel': [b_name for i in range(len(hist_percent))]})
             if b == 0:
-                hist_data = hist_temp
+                hist_df = hist_temp
             else:
-                hist_data = hist_data.append(hist_temp)
+                hist_df = hist_df.append(hist_temp)
 
-    fig_hist = (ggplot(data=hist_data,
+    fig_hist = (ggplot(data=hist_df,
                        mapping=aes(x='pixel intensity', y='proportion of pixels (%)', color='color channel'))
                 + geom_line())
 
@@ -124,5 +124,5 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, titl
         if params.debug == "plot":
             print(fig_hist)
     if hist_data is True:
-        return fig_hist, hist_data
+        return fig_hist, hist_df
     return fig_hist
