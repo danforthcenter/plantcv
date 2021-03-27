@@ -120,19 +120,26 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, titl
                                                      mask=mask)
         hist_df = pd.DataFrame(
             {'pixel intensity': bin_labels, 'proportion of pixels (%)': hist_percent, 'hist_count': hist_,
-             'color channel': ['0' for i in range(len(hist_percent))]})
+             'color channel': ['0' for _ in range(len(hist_percent))]})
     else:
         # Assumption: RGB image
+        # Initialize dataframe column arrays
+        px_int = np.array([])
+        prop = np.array([])
+        hist_count = np.array([])
+        channel = []
         for (b, b_name) in enumerate(b_names):
             bin_labels, hist_percent, hist_ = _hist_gray(img[:, :, b], bins=bins, lower_bound=lower_bound,
                                                          upper_bound=upper_bound, mask=mask)
-            hist_temp = pd.DataFrame(
-                {'pixel intensity': bin_labels, 'proportion of pixels (%)': hist_percent, 'hist_count': hist_,
-                 'color channel': [b_name for i in range(len(hist_percent))]})
-            if b == 0:
-                hist_df = hist_temp
-            else:
-                hist_df = hist_df.append(hist_temp)
+            # Append histogram data for each channel
+            px_int = np.append(px_int, bin_labels)
+            prop = np.append(prop, hist_percent)
+            hist_count = np.append(hist_count, hist_)
+            channel = channel + [b_name for _ in range(len(hist_percent))]
+        # Create dataframe
+        hist_df = pd.DataFrame(
+            {'pixel intensity': px_int, 'proportion of pixels (%)': prop, 'hist_count': hist_count,
+             'color channel': channel})
 
     fig_hist = (ggplot(data=hist_df,
                        mapping=aes(x='pixel intensity', y='proportion of pixels (%)', color='color channel'))
