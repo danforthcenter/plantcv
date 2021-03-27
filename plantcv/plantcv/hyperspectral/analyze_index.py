@@ -1,14 +1,12 @@
 # Analyze reflectance signal data in an index
 
 import os
-import cv2
 import numpy as np
-import pandas as pd
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import fatal_error
-from plotnine import ggplot, aes, geom_line, scale_x_continuous, labs
+from plotnine import labs
 from plantcv.plantcv.visualize import histogram
 from plantcv.plantcv import deprecation_warning
 

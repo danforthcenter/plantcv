@@ -1,13 +1,10 @@
 # Analyze signal data in Thermal image
 
 import os
-import cv2
 import numpy as np
-import pandas as pd
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
-from plotnine import ggplot, aes, geom_line, labs
-from plantcv.plantcv.threshold import binary as binary_threshold
+from plotnine import labs
 from plantcv.plantcv.visualize import histogram
 from plantcv.plantcv import deprecation_warning
 from plantcv.plantcv._debug import _debug
