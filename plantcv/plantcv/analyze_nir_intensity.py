@@ -35,7 +35,7 @@ def analyze_nir_intensity(gray_img, mask, bins=256, label="default", histplot=No
 
     if histplot is not None:
         deprecation_warning("'histplot' will be deprecated in a future version of PlantCV. "
-                            "This function creates a histogram by default. ")
+                            "This function creates a histogram by default.")
 
     # calculate histogram
     if gray_img.dtype == 'uint16':

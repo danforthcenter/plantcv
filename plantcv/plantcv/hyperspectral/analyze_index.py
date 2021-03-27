@@ -37,7 +37,7 @@ def analyze_index(index_array, mask, bins=100, min_bin=0, max_bin=1, label="defa
     """
     if histplot is not None:
         deprecation_warning("'histplot' will be deprecated in a future version of PlantCV. "
-                            "This function creates a histogram by default. ")
+                            "This function creates a histogram by default.")
 
     debug = params.debug
     params.debug = None
