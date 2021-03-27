@@ -5,6 +5,7 @@ import numpy as np
 from plantcv.plantcv.threshold import binary as binary_threshold
 from plantcv.plantcv import params
 from plantcv.plantcv import fatal_error
+from plantcv.plantcv._debug import _debug
 import pandas as pd
 from plotnine import ggplot, aes, geom_line, scale_x_continuous, labels, scale_color_manual
 
@@ -107,8 +108,6 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, titl
     lower_bound = lower_bound if lower_bound is not None else img_min
     upper_bound = upper_bound if upper_bound is not None else img_max
 
-    params.device += 1
-
     if len(img.shape) > 2:
         if img.shape[2] == 3:
             b_names = ['blue', 'green', 'red']
@@ -149,11 +148,10 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, titl
         fig_hist = fig_hist + labels.ggtitle(title)
     if len(img.shape) > 2 and img.shape[2] == 3:
         fig_hist = fig_hist + scale_color_manual(['blue', 'green', 'red'])
-    if params.debug is not None:
-        if params.debug == "print":
-            fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + '_hist.png'), verbose=False)
-        if params.debug == "plot":
-            print(fig_hist)
+
+    # Plot or print the histogram
+    _debug(visual=fig_hist, filename=os.path.join(params.debug_outdir, str(params.device) + '_hist.png'))
+    
     if hist_data is True:
         return fig_hist, hist_df
     return fig_hist
