@@ -1348,16 +1348,27 @@ def test_plantcv_analyze_color_incorrect_hist_plot_type():
 def test_plantcv_analyze_nir():
     # Clear previous outputs
     pcv.outputs.clear()
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_nir")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    # Test with debug=None
+    pcv.params.debug = None
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
 
-    pcv.params.debug = None
     _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=True)
+    result = len(pcv.outputs.observations['default']['nir_frequencies']['value'])
+    assert result == 256
+
+
+def test_plantcv_analyze_nir_16bit():
+    # Clear previous outputs
+    pcv.outputs.clear()
+    # Test with debug=None
+    pcv.params.debug = None
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+
+    _ = pcv.analyze_nir_intensity(gray_img=np.uint16(img), mask=mask, bins=256, histplot=True)
     result = len(pcv.outputs.observations['default']['nir_frequencies']['value'])
     assert result == 256
 
