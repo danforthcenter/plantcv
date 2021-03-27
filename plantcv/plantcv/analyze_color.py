@@ -31,6 +31,8 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, colorspaces="all", label="
     :param label: str
     :return analysis_images: list
     """
+    # Save user debug setting
+    debug = params.debug
     if hist_plot_type is not None:
         deprecation_warning("'hist_plot_type' will be deprecated in a future version of PlantCV. "
                             "Please use 'colorspaces' instead.")
@@ -65,31 +67,44 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, colorspaces="all", label="
         fatal_error(f"Colorspace '{colorspaces}' is not supported, must be be one of the following: " 
                     f"{', '.join(map(str, hist_types.keys()))}")
 
+    # Calculate histogram
+    params.debug = None
     histograms = {
         "b": {"label": "blue", "graph_color": "blue",
-              "hist": histogram(channels["b"], mask, 256, 0, 255, hist_data=True)[1]['proportion of pixels (%)'].tolist()},
+              "hist": histogram(channels["b"], mask, 256, 0, 255,
+                                hist_data=True)[1]['proportion of pixels (%)'].tolist()},
         "g": {"label": "green", "graph_color": "forestgreen",
-              "hist": histogram(channels["g"], mask, 256, 0, 255, hist_data=True)[1]['proportion of pixels (%)'].tolist()},
+              "hist": histogram(channels["g"], mask, 256, 0, 255,
+                                hist_data=True)[1]['proportion of pixels (%)'].tolist()},
         "r": {"label": "red", "graph_color": "red",
-              "hist": histogram(channels["r"], mask, 256, 0, 255, hist_data=True)[1]['proportion of pixels (%)'].tolist()},
+              "hist": histogram(channels["r"], mask, 256, 0, 255,
+                                hist_data=True)[1]['proportion of pixels (%)'].tolist()},
         "l": {"label": "lightness", "graph_color": "dimgray",
-              "hist": histogram(channels["l"], mask, 256, 0, 255, hist_data=True)[1]['proportion of pixels (%)'].tolist()},
+              "hist": histogram(channels["l"], mask, 256, 0, 255,
+                                hist_data=True)[1]['proportion of pixels (%)'].tolist()},
         "m": {"label": "green-magenta", "graph_color": "magenta",
-              "hist": histogram(channels["m"], mask, 256, 0, 255, hist_data=True)[1]['proportion of pixels (%)'].tolist()},
+              "hist": histogram(channels["m"], mask, 256, 0, 255,
+                                hist_data=True)[1]['proportion of pixels (%)'].tolist()},
         "y": {"label": "blue-yellow", "graph_color": "yellow",
-              "hist": histogram(channels["y"], mask, 256, 0, 255, hist_data=True)[1]['proportion of pixels (%)'].tolist()},
+              "hist": histogram(channels["y"], mask, 256, 0, 255,
+                                hist_data=True)[1]['proportion of pixels (%)'].tolist()},
         "h": {"label": "hue", "graph_color": "blueviolet",
-              "hist": histogram(channels["h"], mask, 256, 0, 255, hist_data=True)[1]['proportion of pixels (%)'].tolist()},
+              "hist": histogram(channels["h"], mask, 256, 0, 255,
+                                hist_data=True)[1]['proportion of pixels (%)'].tolist()},
         "s": {"label": "saturation", "graph_color": "cyan",
-              "hist": histogram(channels["s"], mask, 256, 0, 255, hist_data=True)[1]['proportion of pixels (%)'].tolist()},
+              "hist": histogram(channels["s"], mask, 256, 0, 255,
+                                hist_data=True)[1]['proportion of pixels (%)'].tolist()},
         "v": {"label": "value", "graph_color": "orange",
-              "hist": histogram(channels["v"], mask, 256, 0, 255, hist_data=True)[1]['proportion of pixels (%)'].tolist()}
+              "hist": histogram(channels["v"], mask, 256, 0, 255,
+                                hist_data=True)[1]['proportion of pixels (%)'].tolist()}
     }
+
+    # Restore user debug setting
+    params.debug = debug
 
     # Create list of bin labels for 8-bit data
     binval = np.arange(0, 256)
 
-    analysis_image = None
     # Create a dataframe of bin labels and histogram data
     dataset = pd.DataFrame({'bins': binval, 'blue': histograms["b"]["hist"],
                             'green': histograms["g"]["hist"], 'red': histograms["r"]["hist"],
@@ -214,6 +229,3 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, colorspaces="all", label="
     outputs.images.append(analysis_image)
 
     return analysis_image
-
-
-
