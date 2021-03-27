@@ -93,7 +93,7 @@ def histogram(img, mask=None, bins=100, lower_bound=None, upper_bound=None, titl
     :return fig_hist: plotnine.ggplot.ggplot
     :return hist_df: pandas.core.frame.DataFrame
     """
-    if type(img) is not np.ndarray:
+    if not isinstance(img, np.ndarray):
         fatal_error("Only image of type numpy.ndarray is supported input!")
     if len(img.shape) < 2:
         fatal_error("Input image should be at least a 2d array!")
