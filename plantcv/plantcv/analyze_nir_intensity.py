@@ -56,8 +56,7 @@ def analyze_nir_intensity(gray_img, mask, bins=256, label="default", histplot=No
     fig_hist, hist_data = histogram(gray_img, mask=mask, bins=bins, lower_bound=0, upper_bound=maxval, title=None,
                                     hist_data=True)
 
-    bin_labels, hist_nir, hist_percent = hist_data["pixel intensity"].tolist(), hist_data['hist_count'].tolist(), \
-                                         hist_data["proportion of pixels (%)"].tolist()
+    bin_labels, hist_nir = hist_data["pixel intensity"].tolist(), hist_data['hist_count'].tolist()
 
     masked1 = cv2.bitwise_and(rgbimg, rgbimg, mask=mask)
 
