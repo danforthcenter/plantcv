@@ -9,7 +9,7 @@ from plantcv.plantcv.visualize import histogram
 from plantcv.plantcv import deprecation_warning
 
 
-def analyze_nir_intensity(gray_img, mask, bins=256, label="default", histplot=None):
+def analyze_nir_intensity(gray_img, mask, bins=256, histplot=None, label="default"):
     """This function calculates the intensity of each pixel associated with the plant and writes the values out to
        a file. It can also print out a histogram plot of pixel intensity and a pseudocolor image of the plant.
 

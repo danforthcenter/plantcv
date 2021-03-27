@@ -10,7 +10,7 @@ from plantcv.plantcv import deprecation_warning
 from plantcv.plantcv._debug import _debug
 
 
-def analyze_thermal_values(thermal_array, mask, label="default", histplot=None):
+def analyze_thermal_values(thermal_array, mask, histplot=None, label="default"):
     """This extracts the thermal values of each pixel writes the values out to
        a file. It can also print out a histogram plot of pixel intensity
        and a pseudocolor image of the plant.

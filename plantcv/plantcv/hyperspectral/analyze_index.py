@@ -11,7 +11,7 @@ from plantcv.plantcv.visualize import histogram
 from plantcv.plantcv import deprecation_warning
 
 
-def analyze_index(index_array, mask, bins=100, min_bin=0, max_bin=1, label="default", histplot=None):
+def analyze_index(index_array, mask, bins=100, min_bin=0, max_bin=1, histplot=None, label="default"):
     """This extracts the hyperspectral index statistics and writes the values  as observations out to
        the Outputs class.
 
