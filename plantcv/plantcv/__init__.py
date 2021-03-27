@@ -9,7 +9,7 @@ from plantcv.plantcv.classes import Spectral_data
 params = Params()
 outputs = Outputs()
 
-from plantcv.plantcv.deprecation import deprecation_warning
+from plantcv.plantcv.deprecation_warning import deprecation_warning
 from plantcv.plantcv.print_image import print_image
 from plantcv.plantcv.plot_image import plot_image
 from plantcv.plantcv.color_palette import color_palette
