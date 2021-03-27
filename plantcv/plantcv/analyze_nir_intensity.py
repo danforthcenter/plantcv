@@ -30,11 +30,12 @@ def analyze_nir_intensity(gray_img, mask, bins=256, label="default", histplot=No
     :param label: str
     :return analysis_images: plotnine ggplot
     """
-    params.device += 1
+    # Save user debug setting
     debug = params.debug
 
     if histplot is not None:
-        deprecation_warning("'histplot' will be deprecated in the future version of plantCV. This function plots histogram by default. ")
+        deprecation_warning("'histplot' will be deprecated in a future version of PlantCV. "
+                            "This function creates a histogram by default. ")
 
     # calculate histogram
     if gray_img.dtype == 'uint16':
@@ -59,13 +60,17 @@ def analyze_nir_intensity(gray_img, mask, bins=256, label="default", histplot=No
                                          hist_data["proportion of pixels (%)"].tolist()
 
     masked1 = cv2.bitwise_and(rgbimg, rgbimg, mask=mask)
+
+    # Restore user debug setting
     params.debug = debug
 
+    # Print or plot masked image
     _debug(visual=masked1, filename=os.path.join(params.debug_outdir, str(params.device) + "_masked_nir_plant.png"))
 
 
     fig_hist = fig_hist + labs(x="Grayscale pixel intensity (0-{})".format(maxval), y="Proportion of pixels (%)")
 
+    # Print or plot histogram
     _debug(visual=fig_hist, filename=os.path.join(params.debug_outdir, str(params.device) + "_nir_hist.png"))
     analysis_image = fig_hist
 
@@ -86,4 +91,3 @@ def analyze_nir_intensity(gray_img, mask, bins=256, label="default", histplot=No
     outputs.images.append(analysis_image)
 
     return analysis_image
-

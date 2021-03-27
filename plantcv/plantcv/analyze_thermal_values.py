@@ -32,7 +32,8 @@ def analyze_thermal_values(thermal_array, mask, label="default", histplot=None):
     """
 
     if histplot is not None:
-        deprecation_warning("'histplot' will be deprecated in the future version of plantCV. This function plots histogram by default. ")
+        deprecation_warning("'histplot' will be deprecated in a future version of PlantCV. "
+                            "This function creates a histogram by default. ")
 
     # Store debug mode
     debug = params.debug
@@ -65,12 +66,13 @@ def analyze_thermal_values(thermal_array, mask, label="default", histplot=None):
     outputs.add_observation(sample=label, variable='thermal_frequencies', trait='thermal frequencies',
                             method='plantcv.plantcv.analyze_thermal_values', scale='frequency', datatype=list,
                             value=hist_percent, label=bin_labels)
+    # Restore user debug setting
     params.debug = debug
-    params.device += 1
 
     # change column names of "hist_data"
     hist_fig = hist_fig + labs(x="Temperature C", y="Proportion of pixels (%)")
 
+    # Print or plot histogram
     _debug(visual=hist_fig, filename=os.path.join(params.debug_outdir, str(params.device) + "_therm_histogram.png"))
 
     analysis_image = hist_fig
@@ -78,6 +80,3 @@ def analyze_thermal_values(thermal_array, mask, label="default", histplot=None):
     outputs.images.append(analysis_image)
 
     return analysis_image
-
-
-

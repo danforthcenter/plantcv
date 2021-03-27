@@ -9,6 +9,7 @@ from plotnine import ggplot, aes, geom_line, scale_x_continuous
 from plantcv.plantcv import deprecation_warning
 from plantcv.plantcv._debug import _debug
 
+
 def analyze_spectral(array, mask, label="default", histplot=None):
     """This extracts the hyperspectral reflectance values of each pixel writes the values out to
        a file. It can also print out a histogram plot of pixel intensity
@@ -29,10 +30,9 @@ def analyze_spectral(array, mask, label="default", histplot=None):
     :param label: str
     :return analysis_img: ggplot
     """
-    params.device += 1
-
     if histplot is not None:
-        deprecation_warning("'histplot' will be deprecated in the future version of plantCV. Instead of a histogram this function plots the mean of spectra in the masked area. ")
+        deprecation_warning("'histplot' will be deprecated in a future version of PlantCV. "
+                            "Instead of a histogram this function plots the mean of spectra in the masked area.")
 
     array_data = array.array_data
 
@@ -100,16 +100,14 @@ def analyze_spectral(array, mask, label="default", histplot=None):
                             method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='frequency', datatype=list,
                             value=new_freq, label=wavelength_labels)
 
-
     dataset = pd.DataFrame({'Wavelength (' + array.wavelength_units + ')': new_wavelengths,
                             'Reflectance': wavelength_freq})
     mean_spectra = (ggplot(data=dataset,
-                       mapping=aes(x='Wavelength (' + array.wavelength_units + ')',
-                                   y='Reflectance'))
-                + geom_line(color='purple')
-                + scale_x_continuous(
-                breaks=list(range(int(np.floor(min_wavelength)), int(np.ceil(max_wavelength)), 50)))
-                )
+                    mapping=aes(x='Wavelength (' + array.wavelength_units + ')', y='Reflectance'))
+                    + geom_line(color='purple')
+                    + scale_x_continuous(breaks=list(range(int(np.floor(min_wavelength)),
+                                                           int(np.ceil(max_wavelength)), 50)))
+                    )
 
     analysis_img = mean_spectra
 

@@ -35,10 +35,9 @@ def analyze_index(index_array, mask, bins=100, min_bin=0, max_bin=1, label="defa
     :param label: str
     :return analysis_image: ggplot, None
     """
-    params.device += 1
-
     if histplot is not None:
-        deprecation_warning("'histplot' will be deprecated in the future version of plantCV. This function plots histogram by default. ")
+        deprecation_warning("'histplot' will be deprecated in a future version of PlantCV. "
+                            "This function creates a histogram by default. ")
 
     debug = params.debug
     params.debug = None
@@ -82,10 +81,13 @@ def analyze_index(index_array, mask, bins=100, min_bin=0, max_bin=1, label="defa
                                     hist_data=True)
     bin_labels, hist_percent = hist_data['pixel intensity'].tolist(), hist_data['proportion of pixels (%)'].tolist()
 
+    # Restore user debug setting
     params.debug = debug
     hist_fig = hist_fig + labs(x='Index Reflectance', y='Proportion of pixels (%)')
 
-    _debug(visual=hist_fig, filename=os.path.join(params.debug_outdir, str(params.device) + index_array.array_type + "_hist.png"))
+    # Print or plot histogram
+    _debug(visual=hist_fig,
+           filename=os.path.join(params.debug_outdir, str(params.device) + index_array.array_type + "_hist.png"))
 
     analysis_image = hist_fig
 
@@ -108,7 +110,9 @@ def analyze_index(index_array, mask, bins=100, min_bin=0, max_bin=1, label="defa
                             trait='index frequencies', method='plantcv.plantcv.analyze_index', scale='frequency',
                             datatype=list, value=hist_percent, label=bin_labels)
 
-    _debug(visual=masked_array, filename=os.path.join(params.debug_outdir, str(params.device) + index_array.array_type + ".png"))
+    # Print or plot the masked image
+    _debug(visual=masked_array,
+           filename=os.path.join(params.debug_outdir, str(params.device) + index_array.array_type + ".png"))
     # Store images
     outputs.images.append(analysis_image)
 
