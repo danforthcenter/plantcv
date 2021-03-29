@@ -255,6 +255,7 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, grouped_contour_indexes, contours, roi_obj_hierarchy = **plantcv.cluster_contours**(*device, img, roi_objects,roi_obj_hierarchy, nrow=1, ncol=1, debug=None*)
 * post v3.0dev2: grouped_contour_indexes, contours, roi_obj_hierarchy = **plantcv.cluster_contours**(*img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1*)
 * post v3.2: grouped_contour_indexes, contours, roi_obj_hierarchy = **plantcv.cluster_contours**(*img, roi_objects, roi_object_hierarchy, nrow=1, ncol=1, show_grid=False*)
+* post v3.12: grouped_contour_indexes, contours, roi_obj_hierarchy = **plantcv.cluster_contours**(*img, roi_objects, roi_object_hierarchy, nrow=1, ncol=1, show_grid=False, bounding=True*)
 
 #### plantcv.color_palette
 
@@ -513,6 +514,22 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, maskpath, analysis_images = **plantcv.output_mask**(*device, img, mask, filename, outdir=None, mask_only=False, debug=None*)
 * post v3.0dev2: imgpath, maskpath, analysis_images = **plantcv.output_mask**(*img, mask, filename, outdir=None, mask_only=False*)
+
+#### plantcv.outputs.add_observation
+
+* pre v3.3: NA
+* post v3.3: **plantcv.outputs.add_observation**(*variable, trait, method, scale, datatype, value, label*)
+* post v3.11: **plantcv.outputs.add_observation**(*sample, variable, trait, method, scale, datatype, value, label*)
+
+#### plantcv.outputs.clear
+
+* pre v3.2: NA
+* post v3.2: **plantcv.outputs.clear**()
+
+#### plantcv.outputs.save_results
+
+* pre v3.12: NA
+* post v3.12: **plantcv.outputs.save_results**(*filename, outformat="json"*)
 
 #### plantcv.photosynthesis.analyze_fvfm
 * pre v3.10: see plantcv.fluor_fvfm
