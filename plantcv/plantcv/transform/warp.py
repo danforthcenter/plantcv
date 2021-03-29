@@ -27,15 +27,6 @@ def _preprocess_img_dtype(img):
     params.debug = debug_mode
     return img_
 
-# def _img_dtype_check(img):
-#     if img.dtype == 'uint8':
-#         pass
-#     elif len(np.unique(img)) == 2:
-#         pass
-#     else:
-#         fatal_error("Image have datatype 'uint8' unless binary!")
-
-
 def warp(img, refimg, pts, refpts, method='default'):
     """Calculate a projective transform from 4 pairs of the corresponding points between image and reference image,
     then performs the projective transformation on input image to align the input image to reference image
