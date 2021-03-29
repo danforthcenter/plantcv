@@ -1304,58 +1304,71 @@ def test_plantcv_analyze_color():
     _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='lab')
     _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='hsv')
     _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type=None)
+
+    # Test with debug = "print"
+    # pcv.params.debug = "print"
+    _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type="all")
+    _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type=None, label="prefix")
+
+    # Test with debug = "plot"
+    # pcv.params.debug = "plot"
+    # _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type=None)
+    _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='lab')
+    _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='hsv')
+    # _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type=None)
+
+    # Test with debug = None
+    # pcv.params.debug = None
     _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='rgb')
     assert pcv.outputs.observations['default']['hue_median']['value'] == 84.0
 
-
 def test_plantcv_analyze_color_incorrect_image():
-    # Test with debug = None
-    pcv.params.debug = None
     img_binary = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     with pytest.raises(RuntimeError):
         _ = pcv.analyze_color(rgb_img=img_binary, mask=mask, hist_plot_type=None)
-
-
+#
+#
 def test_plantcv_analyze_color_bad_hist_type():
-    # Test with debug = None
-    pcv.params.debug = None
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    pcv.params.debug = "plot"
     with pytest.raises(RuntimeError):
         _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='bgr')
 
 
 def test_plantcv_analyze_color_incorrect_hist_plot_type():
-    # Test with debug = None
-    pcv.params.debug = None
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     with pytest.raises(RuntimeError):
+        pcv.params.debug = "plot"
         _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type="bgr")
 
 
 def test_plantcv_analyze_nir():
     # Clear previous outputs
     pcv.outputs.clear()
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_nir")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    # Test with debug=None
+    pcv.params.debug = None
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.analyze_nir_intensity(gray_img=np.uint16(img), mask=mask, bins=256, histplot=True, label="prefix")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=False)
-    # Test with debug = "plot"
+
     _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=True)
-    # Test with debug = None
+    result = len(pcv.outputs.observations['default']['nir_frequencies']['value'])
+    assert result == 256
+
+
+def test_plantcv_analyze_nir_16bit():
+    # Clear previous outputs
+    pcv.outputs.clear()
+    # Test with debug=None
     pcv.params.debug = None
-    _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=True)
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+
+    _ = pcv.analyze_nir_intensity(gray_img=np.uint16(img), mask=mask, bins=256, histplot=True)
     result = len(pcv.outputs.observations['default']['nir_frequencies']['value'])
     assert result == 256
 
@@ -1465,13 +1478,10 @@ def test_plantcv_analyze_thermal_values():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_THERMAL_IMG_MASK), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_THERMAL_ARRAY), encoding="latin1")
     img = contours_npz['arr_0']
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.analyze_thermal_values(thermal_array=img, mask=mask, histplot=True, label="prefix")
-    pcv.params.debug = "plot"
+
+    pcv.params.debug = None
     thermal_hist = pcv.analyze_thermal_values(thermal_array=img, mask=mask, histplot=True)
     assert thermal_hist is not None and pcv.outputs.observations['default']['median_temp']['value'] == 33.20922
-
 
 def test_plantcv_apply_mask_white():
     # Test cache directory
@@ -4690,9 +4700,11 @@ def test_plantcv_hyperspectral_analyze_spectral():
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     mask = cv2.imread(os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_MASK), -1)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    pcv.params.debug = "plot"
-    _ = pcv.hyperspectral.analyze_spectral(array=array_data, mask=mask, histplot=True)
-    pcv.params.debug = "print"
+    # pcv.params.debug = "plot"
+    # _ = pcv.hyperspectral.analyze_spectral(array=array_data, mask=mask, histplot=True)
+    # pcv.params.debug = "print"
+    # _ = pcv.hyperspectral.analyze_spectral(array=array_data, mask=mask, histplot=True, label="prefix")
+    pcv.params.debug = None
     _ = pcv.hyperspectral.analyze_spectral(array=array_data, mask=mask, histplot=True, label="prefix")
     assert len(pcv.outputs.observations['prefix']['spectral_frequencies']['value']) == 978
 
@@ -4707,10 +4719,14 @@ def test_plantcv_hyperspectral_analyze_index():
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
     index_array = pcv.spectral_index.savi(hsi=array_data, distance=801)
     mask_img = np.ones(np.shape(index_array.array_data), dtype=np.uint8) * 255
-    pcv.params.debug = "print"
+    # pcv.params.debug = "print"
+    # pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, histplot=True)
+    # pcv.params.debug = "plot"
+    # pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, histplot=True)
+
+    pcv.params.debug = None
     pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, histplot=True)
-    pcv.params.debug = "plot"
-    pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, histplot=True)
+
     assert pcv.outputs.observations['default']['mean_index_savi']['value'] > 0
 
 
@@ -4724,6 +4740,7 @@ def test_plantcv_hyperspectral_analyze_index_set_range():
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
     index_array = pcv.spectral_index.savi(hsi=array_data, distance=801)
     mask_img = np.ones(np.shape(index_array.array_data), dtype=np.uint8) * 255
+    pcv.params.debug = None
     pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, histplot=True, min_bin=0, max_bin=1)
     assert pcv.outputs.observations['default']['mean_index_savi']['value'] > 0
 
@@ -4738,6 +4755,7 @@ def test_plantcv_hyperspectral_analyze_index_auto_range():
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
     index_array = pcv.spectral_index.savi(hsi=array_data, distance=801)
     mask_img = np.ones(np.shape(index_array.array_data), dtype=np.uint8) * 255
+    pcv.params.debug = None
     pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, min_bin="auto", max_bin="auto")
     assert pcv.outputs.observations['default']['mean_index_savi']['value'] > 0
 
@@ -4754,6 +4772,7 @@ def test_plantcv_hyperspectral_analyze_index_outside_range_warning():
     mask_img = np.ones(np.shape(index_array.array_data), dtype=np.uint8) * 255
     f = io.StringIO()
     with redirect_stdout(f):
+        pcv.params.debug = None
         pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, min_bin=.5, max_bin=.55, label="i")
     out = f.getvalue()
     # assert os.listdir(cache_dir) is 0
@@ -6132,20 +6151,56 @@ def test_plantcv_visualize_colorize_masks_bad_color_input():
         _ = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']], colors=['red', 1.123])
 
 
-def test_plantcv_visualize_histogram():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_plot_hist")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    # Test in print mode
-    pcv.params.debug = "print"
+@pytest.mark.parametrize("bins,lb,ub,title", [[200, 0, 255, "Include Title"], [100, None, None, None]])
+def test_plantcv_visualize_histogram(bins, lb, ub, title):
+    # Test with debug = None
+    pcv.params.debug = None
+    # Read test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    _ = pcv.visualize.histogram(gray_img=np.uint16(img), mask=mask, bins=200, title='Include Title')
-    # Test in plot mode
-    pcv.params.debug = "plot"
-    fig_hist = pcv.visualize.histogram(gray_img=img)
-    assert str(type(fig_hist)) == "<class 'plotnine.ggplot.ggplot'>"
+    fig_hist, hist_df = pcv.visualize.histogram(img=img, mask=mask, bins=bins, lower_bound=lb, upper_bound=ub,
+                                                title=title, hist_data=True)
+    assert all([isinstance(fig_hist, ggplot), isinstance(hist_df, pd.core.frame.DataFrame)])
+
+
+def test_plantcv_visualize_histogram_no_mask():
+    # Test with debug = None
+    pcv.params.debug = None
+    # Read test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    fig_hist = pcv.visualize.histogram(img=img, mask=None)
+    assert isinstance(fig_hist, ggplot)
+
+
+def test_plantcv_visualize_histogram_rgb_img():
+    # Test with debug = None
+    pcv.params.debug = None
+    # Test RGB input image
+    img_rgb = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    fig_hist = pcv.visualize.histogram(img=img_rgb)
+    assert isinstance(fig_hist, ggplot)
+
+
+def test_plantcv_visualize_histogram_multispectral_img():
+    # Test with debug = None
+    pcv.params.debug = None
+    # Test multi-spectral image
+    img_rgb = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    img_multi = np.concatenate((img_rgb, img_rgb), axis=2)
+    fig_hist = pcv.visualize.histogram(img=img_multi)
+    assert isinstance(fig_hist, ggplot)
+
+
+def test_plantcv_visualize_histogram_no_img():
+    with pytest.raises(RuntimeError):
+        _ = pcv.visualize.histogram(img=None)
+
+
+def test_plantcv_visualize_histogram_array():
+    # Read test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    with pytest.raises(RuntimeError):
+        _ = pcv.visualize.histogram(img=img[0, :])
 
 
 def test_plantcv_visualize_clustered_contours():
