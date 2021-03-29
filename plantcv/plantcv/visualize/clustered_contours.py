@@ -9,7 +9,7 @@ from plantcv.plantcv import color_palette
 from plantcv.plantcv import params
 
 
-def clustered_contours(img, grouped_contour_indices, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1):
+def clustered_contours(img, grouped_contour_indices, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1, bounding = True):
     """
     This function takes the outputs from cluster_contours
 
@@ -20,6 +20,7 @@ def clustered_contours(img, grouped_contour_indices, roi_objects, roi_obj_hierar
     roi_obj_hierarchy       = object hierarchy
     nrow                    = Optional, number of rows. If changed from default, grid gets plot.
     ncol                    = Optional, number of columns. If changed from default, grid gets plot.
+    bounding                = Optional circles to bound the individual clusters (default bounding=True)
 
     Returns:
     clustered_image         = Labeled clusters image
@@ -30,6 +31,7 @@ def clustered_contours(img, grouped_contour_indices, roi_objects, roi_obj_hierar
     :param roi_obj_hierarchy: numpy.ndarray
     :param nrow: int
     :param ncol: int
+    :param bounding: bool 
 
     :return clustered_image: numpy.ndarray
     """
@@ -64,11 +66,12 @@ def clustered_contours(img, grouped_contour_indices, roi_objects, roi_obj_hierar
             # Combine contours into a single contour
             grouped_contours = np.vstack(grouped_contours)
             # Plot the bounding circle around the contours that got grouped together
-            center, radius = cv2.minEnclosingCircle(points=grouped_contours)
-            cv2.circle(img=clustered_image, center=(int(center[0]), int(center[1])), radius=int(radius),
+            if bounding:
+                center, radius = cv2.minEnclosingCircle(points=grouped_contours)
+                cv2.circle(img=clustered_image, center=(int(center[0]), int(center[1])), radius=int(radius),
                        color=rand_color[i], thickness=params.line_thickness, lineType=8)
-            # Label the cluster ID
-            cv2.putText(img=clustered_image, text=str(i),
+                #Label the cluster ID
+                cv2.putText(img=clustered_image, text=str(i),
                         org=(int(center[0]), int(center[1])), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                         fontScale=params.text_size, color=(200, 200, 200), thickness=params.text_thickness)
         # Empty the grouped_contours list for the next group

@@ -231,7 +231,7 @@ The next step is to analyze the plant object for traits such as [shape](analyze_
     pseudocolored_img = pcv.visualize.pseudocolor(gray_img=fvfm_img, mask=cleaned_mask, cmap='jet')
 
     # Write shape and nir data to results file
-    pcv.print_results(filename=args.result)
+    pcv.outputs.save_results(filename=args.result)
 
 if __name__ == '__main__':
     main()
@@ -320,7 +320,7 @@ def main():
     pseudocolored_img = pcv.visualize.pseudocolor(gray_img=fvfm_img, mask=cleaned_mask, cmap='jet')
 
     # Write shape and fv/fm data to results file
-    pcv.print_results(filename=args.result)
+    pcv.outputs.save_results(filename=args.result)
 
 if __name__ == '__main__':
     main()

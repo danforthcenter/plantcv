@@ -4,9 +4,9 @@ import cv2
 import numpy as np
 from datetime import datetime
 from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
 from plantcv.plantcv import apply_mask
 from plantcv.plantcv import params
+from plantcv.plantcv._debug import _debug
 
 
 def cluster_contour_splitimg(img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None,
@@ -142,11 +142,7 @@ def cluster_contour_splitimg(img, grouped_contour_indexes, contours, hierarchy, 
                 print_image(mask_binary, savename1)
             output_path.append(savename)
 
-            if params.debug == 'print':
-                print_image(masked1, os.path.join(params.debug_outdir, str(params.device) + '_clusters.png'))
-                print_image(mask_binary, os.path.join(params.debug_outdir, str(params.device) + '_clusters_mask.png'))
-            elif params.debug == 'plot':
-                plot_image(masked1)
-                plot_image(mask_binary, cmap='gray')
+            _debug(visual=masked1, filename=os.path.join(params.debug_outdir, str(params.device) + '_clusters.png'))
+            _debug(visual=mask_binary, filename=os.path.join(params.debug_outdir, str(params.device) + '_clusters_mask.png'))
 
     return output_path, output_imgs, output_masks
