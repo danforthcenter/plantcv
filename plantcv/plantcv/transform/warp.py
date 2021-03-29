@@ -50,8 +50,6 @@ def warp(img, refimg, pts, refpts, method='default'):
     :return warped_img: numpy.ndarray
     """
 
-    params.device += 1
-
     if len(pts) != len(refpts):
         fatal_error('Please provide same number of corresponding coordinates.')
 
@@ -141,11 +139,6 @@ def warp(img, refimg, pts, refpts, method='default'):
         _debug(visual=refimg_marked, filename=os.path.join(params.debug_outdir, str(params.device) + "_img-ref.png"))
         _debug(visual=img_blend, filename=os.path.join(params.debug_outdir, str(params.device) + "_warp_overlay.png"))
 
-    # rescale the warped_img and preserve the original the datatype
-    # if img.dtype != 'uint8':
-    #     warped_img = np.interp(warped_img, (warped_img.min(), warped_img.max()), (img.min(), img.max())).astype(
-    #         img.dtype)
-
     return warped_img, mat
 
 
@@ -159,8 +152,6 @@ def warp_align(img, mat, refimg=None):
     :return:
     warpped image warped_img
     """
-
-    params.device += 1
 
     # if no reference image, assume the target image is to be warped to the same size of itself,
     # and the reference image is the image itself
