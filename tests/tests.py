@@ -2283,6 +2283,24 @@ def test_plantcv_image_add():
     added_img = pcv.image_add(gray_img1=img1, gray_img2=img2)
     assert all([i == j] for i, j in zip(np.shape(added_img), TEST_BINARY_DIM))
 
+def test_plantcv_image_fusion():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_image_add")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # Read in test data
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY))
+    img2 = np.copy(img1)
+    fused_img = pcv.image_fusion(img1, img2, [480.0,550.0,670.0], [480.0,550.0,670.0])
+    assert str(type(fused_img)) == "<class 'plantcv.plantcv.classes.Spectral_data'>"
+
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), 0)
+    img2 = np.copy(img1)
+    img2 = img2[0:10,0:10]
+    with pytest.raises(RuntimeError):
+        _ = pcv.image_fusion(img1, img2, [480.0,550.0,670.0], [480.0,550.0,670.0])
+
+
 
 def test_plantcv_image_subtract():
     # Test cache directory
@@ -2302,7 +2320,6 @@ def test_plantcv_image_subtract():
     pcv.params.debug = None
     new_img = pcv.image_subtract(img1, img2)
     assert np.array_equal(new_img, np.zeros(np.shape(new_img), np.uint8))
-
 
 def test_plantcv_image_subtract_fail():
     # read in images
