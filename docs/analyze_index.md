@@ -1,6 +1,6 @@
 ## Analyze a Spectral Index
 
-This function calculates the spectral index statistics and writes the values  as observations out to the 
+This function calculates the spectral index statistics and writes the values as observations out to the 
 [Outputs class](outputs.md).
        
 **plantcv.hyperspectral.analyze_index**(*index_array, mask, histplot=False, bins=100, min_bin=0, max_bin=1, label="default"*)
