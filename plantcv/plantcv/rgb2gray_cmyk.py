@@ -2,8 +2,7 @@
 
 import cv2
 import os
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 import numpy as np
@@ -23,8 +22,6 @@ def rgb2gray_cmyk(rgb_img, channel):
     :param channel: str
     :return channel: numpy.ndarray
     """
-    # Auto-increment the device counter
-    params.device += 1
     # The allowable channel inputs are c, m , y or k
     names = {"c": "cyan", "m": "magenta", "y": "yellow", "k": "black"}
     channel = channel.lower()
@@ -53,10 +50,7 @@ def rgb2gray_cmyk(rgb_img, channel):
     # Create a channel dictionaries for lookups by a channel name index
     channels = {"c": C, "m": M, "y": Y, "k": K}
 
-    if params.debug == "print":
-        print_image(channels[channel], os.path.join(params.debug_outdir,
-                                                    str(params.device) + "_cmyk_" + names[channel] + ".png"))
-    elif params.debug == "plot":
-        plot_image(channels[channel], cmap="gray")
+    _debug(visual=channels[channel], filename=os.path.join(params.debug_outdir,
+                                                           str(params.device) + "_cmyk_" + names[channel] + ".png"))
 
     return channels[channel]
