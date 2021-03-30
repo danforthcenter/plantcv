@@ -58,7 +58,7 @@ def pixel_scatter_vis(paths_to_imgs, channel):
         fcolors = sub_img_rgb.reshape(img_height*IMG_WIDTH,c)/255
 
         # get the channel
-        sub_img_ch = channel_dict.get(ch, _not_valid)(sub_img, ch)
+        sub_img_ch = channel_dict.get(channel, _not_valid)(sub_img, channel)
         sub_img_ch_lin = sub_img_ch.reshape(-1)
 
         plt.scatter(np.arange(img_height*IMG_WIDTH), sub_img_ch_lin,
@@ -66,4 +66,4 @@ def pixel_scatter_vis(paths_to_imgs, channel):
                         edgecolors=None, facecolors=fcolors)
 
     plt.xlabel('Pixel linear index')
-    plt.ylabel(ch + ' channel')
+    plt.ylabel(channel + ' channel')
