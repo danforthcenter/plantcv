@@ -3021,6 +3021,26 @@ def test_plantcv_report_size_marker_bad_threshold_input():
                                         objcolor='light', thresh_channel=None, thresh=120)
 
 
+def test_plantcv_rgb2gray_cmyk():
+    # Test with debug = None
+    pcv.params.debug = None
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    c = pcv.rgb2gray_cmyk(rgb_img=img, channel="c")
+    # Assert that the output image has the dimensions of the input image but is only a single channel
+    assert all([i == j] for i, j in zip(np.shape(c), TEST_GRAY_DIM))
+
+
+def test_plantcv_rgb2gray_cmyk_bad_channel():
+    # Test with debug = None
+    pcv.params.debug = None
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    with pytest.raises(RuntimeError):
+        # Channel S is not in CMYK
+        _ = pcv.rgb2gray_cmyk(rgb_img=img, channel="s")
+
+
 def test_plantcv_rgb2gray_hsv():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_rgb2gray_hsv")
