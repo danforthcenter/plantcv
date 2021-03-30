@@ -6085,7 +6085,7 @@ def test_plantcv_visualize_pseudocolor():
     pcv.params.debug = "plot"
     _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="image")
     _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="image", title="customized title")
-    _ = pcv.visualize.pseudocolor(gray_img=img, mask=None)
+    _ = pcv.visualize.pseudocolor(gray_img=img, mask=None, title="customized title")
     _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="black", obj=obj_contour, axes=False,
                                   colorbar=False)
     _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="image", obj=obj_contour, obj_padding=15)
@@ -6093,7 +6093,7 @@ def test_plantcv_visualize_pseudocolor():
     # Test with debug = None
     pcv.params.debug = None
     _ = pcv.visualize.pseudocolor(gray_img=img, mask=None)
-    pseudo_img = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="white", bad_mask=mask_bad)
+    pseudo_img = pcv.visualize.pseudocolor(gray_img=img, obj=obj_contour, mask=mask, background="white", bad_mask=mask_bad)
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(pseudo_img), TEST_BINARY_DIM)):
         assert 1
