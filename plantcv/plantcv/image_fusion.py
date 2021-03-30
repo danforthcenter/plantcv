@@ -15,8 +15,8 @@ def image_fusion(img1, img2, wvs1, wvs2, array_type = None, filename = None):
     img2: 2nd image to be fused
     wvs1: list of wavelengths represent bands in img1
     wvs2: list of wavelengths represent bands in img2
-    array_type: description of the fused array
-    filename: desired filename of the fused array
+    array_type: (optional) description of the fused array
+    filename: (optional) desired filename of the fused array
 
     :param img1: np.ndarray
     :param img2: np.ndarray
@@ -38,11 +38,19 @@ def image_fusion(img1, img2, wvs1, wvs2, array_type = None, filename = None):
         fatal_error("Input images should have the same image size")
 
     array_data  = np.concatenate((img1, img2), axis=2)
-    array_data  = (array_data/255).astype(np.float32)
-    wavelengths = wvs1 + wvs2
+
+    # sort all wavelengths
+    wavelengths = np.array(wvs1 + wvs2)
+    ind = np.argsort(wavelengths)
+    wavelengths = wavelengths[ind]
+
     wavelength_dict = dict()
     for (idx, wv) in enumerate(wavelengths):
         wavelength_dict[wv] = float(idx)
+
+    # sort array_data based on wavelengths
+    array_data = array_data[:,:,ind]
+    array_data = (array_data / 255).astype(np.float32)
 
     max_pixel = float(np.amax(array_data))
     min_pixel = float(np.amin(array_data))
