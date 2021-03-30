@@ -20,8 +20,8 @@ def _get_B(rgb_img, _):
 def _get_gray(rgb_img, _):
     return pcv.rgb2gray(rgb_img=rgb_img)
 def _not_valid(*args):
-    return fatal_error("channel not valid, use R, G, B, l, \
-                        a, b, h, s, v or gray")
+    return fatal_error("channel not valid, use R, G, B, l, " +
+                        "a, b, h, s, v or gray")
 
 
 def pixel_scatter_vis(paths_to_imgs, channel):
@@ -40,6 +40,7 @@ def pixel_scatter_vis(paths_to_imgs, channel):
         'v' : pcv.rgb2gray_hsv,
     }
 
+    N = len(paths_to_imgs)
     fig = plt.figure()
     # load and plot the set of images sequentially
     for p in paths_to_imgs:
