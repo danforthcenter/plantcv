@@ -12,18 +12,21 @@ def read_cropreporter(inf_filename):
     """Read in, reshape, and subset a datacube of fluorescence snapshots
 
         Inputs:
-            inf_filename     = Fluorescence .INF filename
+            filename        = Fluorescence .DAT filename
 
         Returns:
             fdark            = fdark (F0) image
             fmin             = fmin image
             fmax             = fmax image
 
+        :param filename: str
         :param inf_filename: str
         :return fdark: numpy.ndarray
         :return fmin: numpy.ndarray
         :return fmax: numpy.ndarray
         """
+
+
     # Parse .inf file and create dictionary with metadata stored within
     with open(inf_filename, "r") as f:
         # Replace characters for easier parsing
@@ -48,70 +51,49 @@ def read_cropreporter(inf_filename):
     x = int(inf_dict["ImageCols"])
     y = int(inf_dict["ImageRows"])
 
-    # Record a dictonary of all measurements done, 0 means not done, 1 means measurement done
     frames_captured = {key: value for key, value in inf_dict.items() if "Done" in key}
-    # Record a list of measurements, just first three letters is enough to match them up
-    frames_expected = [key.upper()[0:3] for key, value in frames_captured.items() if str(value) == "1"]
-    # Define dictionary of measurement name and the corresponding binary image filename
-    corresponding_dict = {"FVF": "PSD", "FQF": "PSL", "CHL": "CHL", "NPQ": "NPQ", "SPC": "SPC",
-                          "CLR": "CLR", "RFD": "RFD", "GFP": "GFP", "RFP": "RFP"}
+    frames_expected = [key.upper()[0:3] for key,value in frames_captured.items() if str(value) == "1"]
+    corresponding_dict = {"FVF":"PSD", "FQF": "PSL", "CHL":"CHL", "NPQ":"NPQ", "SPC":"SPC",
+                          "CLR":"CLR", "RFD":"RFD", "GFP":"GFP", "RFP":"RFP"}
+
+    print(inf_dict)
     all_imgs = {}
-    all_xarrays = []
     param_labels = []
-    # Loop over all expected binary image files
+    all_xarrays = []
+    # Loop over all raw bin files
     for key in frames_expected:
-        # Find the corresponding binary image filename based on the INF filename
         inf = os.path.split(inf_filename)[-1]
         path = os.path.dirname(inf_filename)
         filename_components = inf.split("_")
         filename_components[1] = corresponding_dict[key]
+
         s = "_"
-        bin_filename = s.join(filename_components)
-        bin_filename = bin_filename.replace(".INF", ".DAT")
-        bin_file = os.path.join(path, bin_filename)
-        # Read in binary image file
-        raw_data = np.fromfile(bin_file, np.uint16, -1)
-        # Reshape into a datacube
+        bin_filenames = s.join(filename_components)
+        bin_filename = bin_filenames.replace(".INF", ".DAT")
+        bin_filepath = os.path.join(path, bin_filename)
+        raw_data = np.fromfile(bin_filepath, np.uint16, -1)
+        #img_cube = raw_data.reshape(int(len(raw_data) / (y * x)), x, y).transpose((2, 1, 0)) #numpy shaped
         img_cube = raw_data.reshape(int(len(raw_data) / (y * x)), x, y).transpose((1, 2, 0))
-        # Append the image cube to a dictonary with all images
-        all_imgs[corresponding_dict[key]] = img_cube
+        all_imgs[corresponding_dict[key]] = img_cube # store each data cube into a dictionary with labeled source
 
         x_coord = np.arange(x)
         y_coord = np.arange(y)
-        frames_list = np.arange(np.shape(all_imgs[corresponding_dict[key]])[2])
-        da = xr.DataArray(img_cube[None, ...], dims=["parameter", "x", "y", "frame"], coords= {"frame":frames_list})
-        param_labels = param_labels + [corresponding_dict[key]]
+        index_list = np.arange(np.shape(all_imgs[corresponding_dict[key]])[2])
+
+        param_label = [corresponding_dict[key]]*(np.shape(img_cube)[2]) # repetitive list of parameter labels
+        param_labels = param_labels + [corresponding_dict[key]] # concat onto list of all slices in the data cube
+
+        # Create x-array data array
+        da = xr.DataArray(img_cube[None, ...], dims=["parameter", "x", "y", "frame"], coords= {"index":index_list})
         all_xarrays.append(da)
 
+        print("total data array shape:" + str(np.shape(img_cube)))
+        print("^" + corresponding_dict[key])
+
+    # Join data array from each bin file into a single array
     all_xarrays = xr.concat(all_xarrays, 'parameter')
+    # Add labels
     param_labels = pd.Index(param_labels)
     all_xarrays.coords['parameter'] = param_labels
-
-# NEEDS UPDATING, plan to use x-array objects to store all frames as a single thing that can be input into analysis fxns
-    # # Extract fdark and fmin from the datacube of stacked frames
-    # fdark = img_cube[:, :, [0]]
-    # fdark = np.transpose(np.transpose(fdark)[0])  # Reshape frame from (x,y,1) to (x,y)
-    # fmin = img_cube[:, :, [1]]
-    # fmin = np.transpose(np.transpose(fmin)[0])
-    #
-    # # Identify fmax frame
-    # i = 0
-    # max_sum = 0
-    # max_index = 1
-    #
-    # frame_sums = []
-    # for i in range(img_cube.shape[2]):
-    #     frame_sums.append(np.sum(img_cube[:, :, i]))
-    # fmax = img_cube[:, :, np.argmax(frame_sums)]
-    #
-    # if params.debug == "print":
-    #     print_image(fdark, os.path.join(params.debug_outdir, str(params.device) + "fdark_frame.png"))
-    #     print_image(fmin, os.path.join(params.debug_outdir, str(params.device) + "fmin_frame.png"))
-    #     print_image(fmax, os.path.join(params.debug_outdir, str(params.device) + "fmax_frame.png"))
-    # elif params.debug == "plot":
-    #     plot_image(fdark)
-    #     plot_image(fmin)
-    #     plot_image(fmax)
-    #
-    # return fdark, fmin, fmax
+    #plot_image(img_cube[:, :, [0]])
     return inf_dict, all_imgs, all_xarrays
