@@ -32,24 +32,25 @@ def rgb2gray_cmyk(rgb_img, channel):
     bgr = rgb_img.astype(float)/255.
 
     # K channel
-    K = 1 - np.max(bgr, axis=2)
+    k = 1 - np.max(bgr, axis=2)
 
     # C Channel
-    C = (1-bgr[...,2] - K)/(1-K)
+    c = (1 - bgr[..., 2] - k) / (1 - k)
 
     # M Channel
-    M = (1-bgr[...,1] - K)/(1-K)
+    m = (1 - bgr[..., 1] - k) / (1 - k)
 
     # Y Channel
-    Y = (1-bgr[...,0] - K)/(1-K)
+    y = (1 - bgr[..., 0] - k) / (1 - k)
 
     # Convert the input BGR image to LAB colorspace
-    CMYK = (np.dstack((C,M,Y,K)) * 255).astype(np.uint8)
-    #Split CMYK channels
-    Y, M, C, K = cv2.split(CMYK)
+    cmyk = (np.dstack((c, m, y, k)) * 255).astype(np.uint8)
+    # Split CMYK channels
+    y, m, c, k = cv2.split(cmyk)
     # Create a channel dictionaries for lookups by a channel name index
-    channels = {"c": C, "m": M, "y": Y, "k": K}
+    channels = {"c": c, "m": m, "y": y, "k": k}
 
+    # Save or display the grayscale image
     _debug(visual=channels[channel], filename=os.path.join(params.debug_outdir,
                                                            str(params.device) + "_cmyk_" + names[channel] + ".png"))
 
