@@ -10,21 +10,19 @@ unaltered, the  matplotlib default DPI is 100 pixels per inch.
 **returns** pseudocolored image (that can be saved with `pcv.print_image`)
 
 - **Parameters:**
-    - gray_img   - Grayscale image data
-    - obj        - ROI or plant contour object (optional) if provided, the pseudocolored image gets cropped down to the region of interest.
-    - mask       - Binary mask made from selected contours (optional) 
-    - background - Background color/type. Options are "image" (default), "white", or "black". A mask must be supplied in order to utilize this parameter.
-    - cmap       - Custom colormap, see [here](https://matplotlib.org/tutorials/colors/colormaps.html) for tips on how to choose a colormap in Matplotlib.
-    - min_value  - Minimum value (optional) for range of the colorbar. Default: 0
-    - max_value  - Maximum value (optional) for range of the colorbar. Default: 255
-    - axes       - If False then the title, x-axis, and y-axis won't be displayed (default axes=True).
-    - colorbar   - If False then the colorbar won't be displayed (default colorbar=True)
-    - obj_padding    - if "auto" (default) and an obj is supplied, then the image is cropped to an extent 20% larger in each dimension than the object. A single integer is also accepted to define the padding in pixels.
-    - bad_mask   - If bad_mask is not none, but a binary mask indicating the location of user difined "bad" pixels, the function will plot the visualization of the input image with those "bad" pixels marked with the color define in "bad_color".
-    - bad_color  - The color that shows bad pixels in output visualization image, default: "red"
-
-    - obj_padding    - If "auto" (default), and an obj is supplied, then the image is cropped to an extent 20% larger in each dimension than the object. A single integer is also accepted to define the padding in pixels.
-    - title      - The title for the pseudocolored image (default title=None) 
+    - gray_img       - Grayscale image data
+    - obj            - ROI or plant contour object (optional) if provided, the pseudocolored image gets cropped down to the region of interest. "obj" can be the 1st output of the PlantCV region of interests functions, e.g. `pcv.roi.rectangle`.
+    - mask           - Binary mask made from selected contours (optional) 
+    - bad_mask       - binary mask of pixels with "bad" values, e.g. nan or inf or any other values considered to be not informative and should be excluded from analysis. default = None
+    - cmap           - Custom colormap, see [here](https://matplotlib.org/tutorials/colors/colormaps.html) for tips on how to choose a colormap in Matplotlib.
+    - background     - Background color/type. Options are "image" (default), "white", or "black". A mask must be supplied in order to utilize this parameter.  
+    - bad_color      - The color that shows "bad" pixels in output pseudocolored image, default: "red"
+    - min_value      - Minimum value (optional) for range of the colorbar. Default: 0
+    - max_value      - Maximum value (optional) for range of the colorbar. Default: 255
+    - axes           - If False then the title, x-axis, and y-axis won't be displayed (default axes=True).
+    - colorbar       - If False then the colorbar won't be displayed (default colorbar=True)
+    - obj_padding    - if "auto" (default), and an obj is supplied, then the image is cropped to an extent 20% larger in each dimension than the object. A single integer is also accepted to define the padding in pixels.
+    - title          - The title for the pseudocolored image (default title=None) 
 
 
 - **Context:**
@@ -41,7 +39,7 @@ unaltered, the  matplotlib default DPI is 100 pixels per inch.
 ![Screenshot](img/documentation_images/pseudocolor/mask.jpg)
 
 **Mask of "bad" values**
-![Screenshot](img/documentation_images/mask_bad_threshold/bad_mask_both.png)
+![Screenshot](img/documentation_images/pseudocolor/bad_mask.png)
 
 
 ```python
@@ -81,8 +79,10 @@ simple_pseudo_img = pcv.visualize.pseudocolor(gray_img=img, obj=None, mask=mask,
                                               colorbar=False, cmap='viridis')
 
 # When there are some user defined "bad" pixels indicated in array "bad_mask", and the red color is used to visualize them in the visualization.
+pseudo_img_bad_mask = pcv.visualize.pseudocolor(gray_img=img, obj=None, mask=None, bad_mask=bad_mask, bad_color="red", axes=False, colorbar=False)
 
-
+# When there are some user defined "bad" pixels indicated in array "bad_mask", and the red color is used to visualize them in the visualization.
+pseudo_img_mask_obj_bad_mask = pcv.visualize.pseudocolor(gray_img=img, obj=obg, mask=mask, background="white", bad_mask=bad_mask, bad_color="red", axes=False, colorbar=True)
 ```
 
 **Pseudocolored Image**
@@ -110,6 +110,9 @@ simple_pseudo_img = pcv.visualize.pseudocolor(gray_img=img, obj=None, mask=mask,
 ![Screenshot](img/documentation_images/pseudocolor/pseudo_onimage_simple.jpg)
 
 **Pseudocolored, Pixels With User Defined "bad" Values Marked Using Red Color (no axes or colorbar)**
-![Screenshot](img/documentation_images/pseudocolor/mask_bad_both.png)
+![Screenshot](img/documentation_images/pseudocolor/pseudocolored_mask_bad.png)
+
+**Pseudocolored, Cropped, background="white", Pixels With User Defined "bad" Values Marked Using Red Color (no axes)**
+![Screenshot](img/documentation_images/pseudocolor/pseudocolored_mask_bad_obj.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/visualize/pseudocolor.py)
