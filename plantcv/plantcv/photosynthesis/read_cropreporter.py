@@ -60,6 +60,7 @@ def read_cropreporter(inf_filename):
     all_imgs = {}
     param_labels = []
     all_xarrays = []
+    all_frame_labels = []
     # Loop over all raw bin files
     for key in frames_expected:
         inf = os.path.split(inf_filename)[-1]
@@ -80,20 +81,47 @@ def read_cropreporter(inf_filename):
         y_coord = np.arange(y)
         index_list = np.arange(np.shape(all_imgs[corresponding_dict[key]])[2])
 
+        #foo = xr.DataArray(img_cube, dims=["x", "y", "frame"], coords= {"x":x_coord, "y":y_coord, "frame":frames_list}, name=corresponding_dict[key])
         param_label = [corresponding_dict[key]]*(np.shape(img_cube)[2]) # repetitive list of parameter labels
         param_labels = param_labels + [corresponding_dict[key]] # concat onto list of all slices in the data cube
 
+        if corresponding_dict[key] is "NPQ":
+            frame_sums = []
+            for i in range(img_cube.shape[2]):
+                frame_sums.append(np.sum(img_cube[:, :, i]))
+            f_min = np.argmin(frame_sums)
+            frame_labels = ["other"]*(np.shape(img_cube)[2])
+            frame_labels[f_min] = "Fp"
+            frame_labels[np.argmax(frame_sums)] = "Fmp"
+        elif corresponding_dict[key] is "PSD":
+            frame_labels = ["other"]*(np.shape(img_cube)[2])
+            frame_labels[0] = "fdark"
+            frame_labels[1] = "fmin"
+            frame_sums = []
+            for i in range(img_cube.shape[2]):
+                frame_sums.append(np.sum(img_cube[:, :, i]))
+            frame_labels[np.argmax(frame_sums)] = "fmax"
+        else:
+            frame_labels = ["other"]*(np.shape(img_cube)[2])
+        all_frame_labels = all_frame_labels + frame_labels
+
         # Create x-array data array
-        da = xr.DataArray(img_cube[None, ...], dims=["parameter", "x", "y", "frame"], coords= {"index":index_list})
+        da = xr.DataArray(img_cube[None, None, ...], dims=["parameter", "frame_label", "x", "y", "index"], coords= {"index":index_list})
+        da["frame_label"] = ("index", frame_labels)
+        #da.assign_coords(alternate_sample_weights=('x', frame_labels)
+
         all_xarrays.append(da)
 
         print("total data array shape:" + str(np.shape(img_cube)))
         print("^" + corresponding_dict[key])
 
+
     # Join data array from each bin file into a single array
     all_xarrays = xr.concat(all_xarrays, 'parameter')
     # Add labels
     param_labels = pd.Index(param_labels)
+    all_frame_labels = pd.Index(all_frame_labels)
     all_xarrays.coords['parameter'] = param_labels
+    #all_xarrays.coords['frame_label'] = all_frame_labels
     #plot_image(img_cube[:, :, [0]])
     return inf_dict, all_imgs, all_xarrays
