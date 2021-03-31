@@ -9,7 +9,7 @@ A function
 import os
 import cv2
 import numpy as np
-import skimage
+from skimage import img_as_ubyte
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
