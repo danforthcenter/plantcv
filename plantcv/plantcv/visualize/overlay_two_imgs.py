@@ -25,7 +25,7 @@ def _preprocess_img_dtype(img):
     params.debug = None
     try:
         img_ = rescale(img)
-    except:
+    except RuntimeError:
         img_ = img_as_ubyte(img)
     params.debug = debug_mode
     return img_
