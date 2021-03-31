@@ -77,7 +77,6 @@ def overlay_two_imgs(img1, img2, alpha=0.5):
     # blending
     out_img[:, :, :] = (alpha * img1_[:, :, :]) + ((1 - alpha) * img2_[:, :, :])
 
-    params.device += 1
     _debug(visual=out_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_overlay.png'))
 
     return out_img
