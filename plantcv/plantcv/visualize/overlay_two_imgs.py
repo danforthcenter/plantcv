@@ -26,7 +26,7 @@ def _preprocess_img_dtype(img):
     try:
         img_ = rescale(img)
     except:
-        img_ = skimage.img_as_ubyte(img)
+        img_ = img_as_ubyte(img)
     params.debug = debug_mode
     return img_
 
