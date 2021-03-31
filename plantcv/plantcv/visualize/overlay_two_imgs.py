@@ -9,10 +9,26 @@ A function
 import os
 import cv2
 import numpy as np
+from skimage import img_as_ubyte
 from plantcv.plantcv import fatal_error
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
+from plantcv.plantcv.transform import rescale
+
+
+def _preprocess_img_dtype(img):
+    """ Transform the input image such that the datatype after transformation is uint8, ready for opencv functions
+    :param img: numpy.ndarray
+    :return img_: numpy.ndarray
+    """
+    debug_mode = params.debug
+    params.debug = None
+    try:
+        img_ = rescale(img)
+    except RuntimeError:
+        img_ = img_as_ubyte(img)
+    params.debug = debug_mode
+    return img_
 
 
 def overlay_two_imgs(img1, img2, alpha=0.5):
@@ -41,9 +57,14 @@ def overlay_two_imgs(img1, img2, alpha=0.5):
     if size_img1 != size_img2:
         fatal_error(f"The height/width of img1 ({size_img1}) needs to match img2 ({size_img2}).")
 
+    # Convert the datatype of the image such that
+    img1 = _preprocess_img_dtype(img1)
+    img2 = _preprocess_img_dtype(img2)
+
     # Copy the input images
     img1_ = np.copy(img1)
     img2_ = np.copy(img2)
+
     # If the images are grayscale convert to BGR
     if len(img1_.shape) == 2:
         img1_ = cv2.cvtColor(img1_, cv2.COLOR_GRAY2BGR)
@@ -56,9 +77,6 @@ def overlay_two_imgs(img1, img2, alpha=0.5):
     # blending
     out_img[:, :, :] = (alpha * img1_[:, :, :]) + ((1 - alpha) * img2_[:, :, :])
 
-    params.device += 1
-    if params.debug == 'print':
-        print_image(out_img, os.path.join(params.debug_outdir, str(params.device) + '_overlay.png'))
-    elif params.debug == 'plot':
-        plot_image(out_img)
+    _debug(visual=out_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_overlay.png'))
+
     return out_img
