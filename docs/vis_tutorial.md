@@ -424,7 +424,7 @@ The next step is to analyze the plant object for traits such as [horizontal heig
     pseudocolored_img = pcv.visualize.pseudocolor(gray_img=s, mask=mask, cmap='jet')
 
     # Write shape and color data to results file
-    pcv.print_results(filename=args.result)
+    pcv.outputs.save_results(filename=args.result)
   
 if __name__ == '__main__':
     main()
@@ -605,7 +605,7 @@ def main():
     pseudocolored_img = pcv.visualize.pseudocolor(gray_img=s, mask=mask, cmap='jet')
 
     # Write shape and color data to results file
-    pcv.print_results(filename=args.result)
+    pcv.outputs.save_results(filename=args.result)
 
 if __name__ == '__main__':
     main()

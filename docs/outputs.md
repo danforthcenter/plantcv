@@ -27,16 +27,16 @@ functions:
 * `within_frame`
 * `watershed`
 
-An instance of `Outputs` is created on import automatically as `plantcv.outputs`. The function 
-[pcv.print_results](print_results.md) will print out all the stored measurment data to a text file. 
+An instance of `Outputs` is created on import automatically as `plantcv.outputs`. The method 
+`Outputs.save_results` will save all the stored measurement data to a text file. 
 
 ### Methods
 
 Methods are accessed as plantcv.outputs.*method*.
 
-**clear**: Clears the contents of both measurements and image 
+**clear**(): Clears the contents of both measurements and image 
 
-**add_observation**: Add new measurement or other information
+**add_observation**(*sample, variable, trait, method, scale, datatype, value, label*): Add new measurement or other information
 
 * sample: A sample name or label. Observations are organized by sample name.
 
@@ -47,6 +47,7 @@ Methods are accessed as plantcv.outputs.*method*.
 * method: A name of the measurement method mapped to an external ontology; if there is no exact mapping, an informative description of the measurement procedure.
 
 * scale: Units of the measurement or a scale in which the observations are expressed; if possible, standard units and scales should be used and mapped to existing ontologies; in case of a non-standard scale a full explanation should be given.
+
 * datatype: The type of data to be stored. In JSON, values must be one of the following data types:
     - a string
     - a number
@@ -67,6 +68,11 @@ Methods are accessed as plantcv.outputs.*method*.
 
 * label:  The label for each value, which will be useful when the data is a frequency table (e.g. hues). 
 
+**save_results**(*filename, outformat="json"*): Save results to a file
+
+* filename: Path and name of the output file
+
+* outformat: Output file format (default = "json"). Supports "json" and "csv" formats
 
 **Example use:**
     - [Use In VIS/NIR Tutorial](vis_nir_tutorial.md)
@@ -85,7 +91,7 @@ shape_img = pcv.analyze_object(img, obj, mask, label="default")
 plant_area = pcv.outputs.observations['default']['pixel_area']['value']
 
 # Write shape data to results file
-pcv.print_results(filename=args.result)
+pcv.outputs.save_results(filename=args.result, outformat="json")
 
 # Will will print out results again, so clear the outputs before running NIR analysis 
 pcv.outputs.clear()
@@ -96,7 +102,7 @@ nir_imgs = pcv.analyze_nir_intensity(nir2, nir_combinedmask, 256, label="default
 shape_img = pcv.analyze_object(nir2, nir_combined, nir_combinedmask, label="default")
 
 # Write the NIR and shape data to a file 
-pcv.print_results(filename=args.coresult)
+pcv.outputs.save_results(filename=args.coresult, outformat="json")
 
 ```
 
@@ -119,8 +125,8 @@ pcv.outputs.add_observation(sample='default', variable='percent_diseased',
                             value=percent_diseased, label='percent')
 
 # Write custom data to results file
-pcv.print_results(filename=args.result)
+pcv.outputs.save_results(filename=args.result, outformat="json")
 
 ```
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/__init__.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/classes.py)

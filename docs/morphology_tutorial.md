@@ -437,6 +437,14 @@ one object while the leaves remain separate.
 To deploy a workflow over a full image set please see tutorial on 
 [workflow parallelization](pipeline_parallel.md).
 
+```python
+    # Write all data to results file
+    pcv.outputs.save_results(filename=args.result)
+     
+if __name__ == '__main__':
+    main()                                                          
+``` 
+
 ## Morphology Script 
 
 In the terminal:
@@ -549,7 +557,7 @@ def main():
                                                           
                                                           
     # Write out data collected about angles and lengths                                                       
-    pcv.print_results(filename=args.result)
+    pcv.outputs.save_results(filename=args.result)
 
 if __name__ == '__main__':
     main()
