@@ -18,8 +18,8 @@ from plantcv.plantcv.transform import rescale
 
 def _preprocess_img_dtype(img):
     """ Transform the input image such that the datatype after transformation is uint8, ready for opencv functions
-    :param img: inut image array
-    :return:
+    :param img: numpy.ndarray
+    :return img_: numpy.ndarray
     """
     debug_mode = params.debug
     params.debug = None
