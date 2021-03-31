@@ -713,9 +713,15 @@ def saturation(rgb_img, threshold=255, channel="any"):
 
 def mask_bad(float_img, bad_type='native'):
     """ Create a mask with desired "bad" pixels of the input floaat image marked.
-    :param float_img: image represented by an nd-array (data type: float). Most probably, it is the result of some calculation based on the original image. So the datatype is float, and it is possible to have some "bad" values, i.e. nan and/or inf
-    :param bad_type: interested type of bad pixels, 'nan', 'inf' or 'native'
-    :return: A mask indicating the locations of "bad" pixels
+    Inputs:
+    float_img = image represented by an nd-array (data type: float). Most probably, it is the result of some calculation based on the original image. So the datatype is float, and it is possible to have some "bad" values, i.e. nan and/or inf
+    bad_type = definition of "bad" type, can be 'nan', 'inf' or 'native'
+    Returns:
+    mask = A mask indicating the locations of "bad" pixels
+
+    :param float_img: np.ndarray
+    :param bad_type: str
+    :return: np.ndarray
     """
     params.device += 1
     size_img = np.shape(float_img)
