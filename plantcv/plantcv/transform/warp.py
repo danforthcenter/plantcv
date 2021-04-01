@@ -11,19 +11,19 @@ from plantcv.plantcv import fatal_error
 from plantcv.plantcv import color_palette
 from plantcv.plantcv.visualize import overlay_two_imgs
 from plantcv.plantcv.transform import rescale
-import skimage
+from skimage import img_as_ubyte
 
 def _preprocess_img_dtype(img):
     """ Transform the input image such that the datatype after transformation is uint8, ready for opencv functions
-    :param img: inut image array
-    :return:
+    :param img: numpy.ndarray
+    :return: img_: numpy.ndarray
     """
     debug_mode = params.debug
     params.debug = None
     try:
         img_         = rescale(img)
-    except:
-        img_ = skimage.img_as_ubyte(img)
+    except RuntimeError:
+        img_ = img_as_ubyte(img)
     params.debug = debug_mode
     return img_
 
@@ -32,14 +32,14 @@ def warp(img, refimg, pts, refpts, method='default'):
     then performs the projective transformation on input image to align the input image to reference image
 
     Inputs:
-    img = image data to be warped
-    refimg = image data to be used as reference
+    img = image to be warped
+    refimg = image to be used as reference
     pts = 4 coordinates on img
     refpts = 4 coordinates on refimg
     method = robust estimation algorithm when calculating projective transformation. 'default', 'ransac', 'lmeds', 'rho'
     Returns:
-    mat = transformation matrix
     warped_img = warped image
+    mat = transformation matrix
 
     :param img: numpy.ndarray
     :param refimg: numpy.ndarray
@@ -48,6 +48,7 @@ def warp(img, refimg, pts, refpts, method='default'):
     :param method: str
     :return mat: numpy.ndarray
     :return warped_img: numpy.ndarray
+    :return mat: numpy.ndarray
     """
 
     if len(pts) != len(refpts):
@@ -147,11 +148,18 @@ def warp_align(img, mat, refimg=None):
     """
     Warp the input image based on given transformation matrix mat, to align with the refimg
 
-    :param img: image to warp (np.ndarray)
-    :param mat: transformation matrix (np.ndarray, size: (3,3))
-    :param refimg: (option) reference image
+    Inputs:
+    img = image to be warped
+    mat = transformation matrix (size: (3,3))
+    refimg = (option) reference image. default=None
+    Returns:
+    warped_img = warped image
+
+    :param img: numpy.ndarray
+    :param mat: numpy.ndarray
+    :param refimg: (option) numpy.ndarray
     :return:
-    warpped image warped_img
+    warpped image: numpy.ndarray
     """
 
     # if no reference image, assume the target image is to be warped to the same size of itself,
