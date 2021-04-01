@@ -1,13 +1,14 @@
 ## Warp
 
 Find the transformation matrix that best describes the projective transform from reference image to target image, based on pairs of corresponding points on reference image and target image, respectively;
-performs the projective transform on the target image to align it to the reference image. 
+performs the projective transform on the target image to righ it with the reference image. 
 
 In general, any geometric transformation between 4 pairs of corresponding points is considered as projective transform. 
 - Projective Transform: preservs lines but not necessarily parallelism. There are several special cases of projective transform. 
   - Euclidean Transform (righd transform): preserves the Euclidean distance between pairs of points. It can be described as a rotation about the origin followed by a translation.
     - Similarity Transform: preserves the shape of objects. It combines scaling, translation and rotation. 
-  - Affine Transform: preserves lines (hence the alignment of objects), as well as parallelism between lines. It can be decomposed into a similarity transform and a shear transformation. 
+  - Affine Transform: preserves lines (hence the alignment of objects), as well as parallelism between lines. It can be decomposed into a similarity transform and a shear transformation.
+  
 
 Projective transformation describs most cases when images are taken from a slight different point of view, or even taken with different cameras. 
 
@@ -127,13 +128,13 @@ img_warped2 = pcv.transform.warp_align(img=im_RGB,mat=M2)
 Warped image:
 ![warped_RGB](img/documentation_images/transform_warp/align_warped.png)
 
-Warped image overlaied on reference image (if reference image is provided):
+Superimposed image of the warped image and the reference image (reference image provided):
 ![warped_overlay](img/documentation_images/transform_warp/align_warp_overlay.png)
 
 Warped image:
 ![warped_RGB](img/documentation_images/transform_warp/warped_no_ref.png)
 
-Warped image overlaied on original image (if reference image not provided):
+Superimposed image of the warped image and the original image (reference image not provided):
 ![warped_overlay](img/documentation_images/transform_warp/warp_overlay_no_ref.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/transform/warp.py)
