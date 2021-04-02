@@ -154,9 +154,11 @@ def hyper_histogram(array, mask, wvlengths=[480, 550, 670]):
             # colors_vis.append(_wavelength_to_rgb(wvlengths[i], gamma=0.8))
             color_vis = _wavelength_to_rgb(wvlengths[i], gamma=0.8)
             colors_vis.append(color_vis)
-            if color_vis in colors:
-                del colors_inv[colors.index(color_vis)]
-        colors_inv = colors_inv[0:len(ids_inv)]
+        # calculate the distances between every pair of (R,G,B) colors
+        dists   = distance.cdist(colors_vis, colors_inv, 'euclidean')
+        # exclude those colors "too close" to visible colors
+        exclude = np.argmin(dists, axis=1)
+        colors_inv = [c for (i,c) in enumerate(colors_inv) if i not in exclude]
         colors = []
         j_vis, j_inv = 0,0
         for i in range(0,len(wvlengths)):
