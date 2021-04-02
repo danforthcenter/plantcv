@@ -11,7 +11,6 @@ from plantcv.plantcv.visualize import histogram
 from plantcv.plantcv.hyperspectral import _find_closest
 from scipy.spatial import distance
 
-
 '''
     == A few notes about color ==
 
@@ -81,8 +80,8 @@ def _wavelength_to_rgb(wavelength, gamma=0.8):
     elif 645 <= wavelength <= 750:
         attenuation = 0.3 + 0.7 * (750 - wavelength) / (750 - 645)
         R, G, B = (1.0 * attenuation) ** gamma, 0.0, 0.0
-    # else:
-    #     R, G, B = 0.0, 0.0, 0.0
+    else:
+        R, G, B = 0.0, 0.0, 0.0
     R *= 255
     G *= 255
     B *= 255
@@ -101,7 +100,7 @@ def _RGB_to_webcode(RGB_values):
     return webcode
 
 
-def hyper_histogram(array, mask, wvlengths=[480, 550, 670]):
+def hyper_histogram(array, mask=None, bins=100, lower_bound=None, upper_bound=None, title=None, wvlengths=[480, 550, 670]):
     """This function calculates the histogram of selected wavelengths hyperspectral images
     The color of the histogram is based on the wavelength: if the wavelength is in the range of visible spectrum
     Inputs:
@@ -160,8 +159,8 @@ def hyper_histogram(array, mask, wvlengths=[480, 550, 670]):
         # exclude those colors "too close" to visible colors
         exclude = np.argmin(dists, axis=1)
         colors_inv = [c for (i,c) in enumerate(colors_inv) if i not in exclude]
-        colors = []
         j_vis, j_inv = 0,0
+        colors = []
         for i in range(0,len(wvlengths)):
             if i in ids_vis:
                 colors.append(colors_vis[j_vis])
@@ -178,11 +177,12 @@ def hyper_histogram(array, mask, wvlengths=[480, 550, 670]):
     debug = params.debug
     params.debug = None
     color_codes = []
+
     for i_wv, (wv, color) in enumerate(zip(wvlengths,colors)):
         idx = match_ids[i_wv]
         code_c = _RGB_to_webcode(color)
         color_codes.append(code_c)
-        _, hist_data = histogram(array_data[:, :, idx], mask=mask, bins=100, hist_data=True)
+        _, hist_data = histogram(array_data[:, :, idx], mask=mask, bins=bins, lower_bound=lower_bound, upper_bound=upper_bound, title=title, hist_data=True)
         histograms[wv] = {"label": wv, "graph_color": code_c, "reflectance": hist_data['pixel intensity'].tolist(),
                           "hist": hist_data['proportion of pixels (%)'].tolist()}
         if i_wv == 0:
@@ -202,6 +202,5 @@ def hyper_histogram(array, mask, wvlengths=[480, 550, 670]):
     _debug(fig_hist, filename=os.path.join(params.debug_outdir, str(params.device) + '_histogram.png'))
 
     return fig_hist
-
 
 
