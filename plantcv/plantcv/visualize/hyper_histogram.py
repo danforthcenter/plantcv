@@ -80,8 +80,8 @@ def _wavelength_to_rgb(wavelength, gamma=0.8):
     elif 645 <= wavelength <= 750:
         attenuation = 0.3 + 0.7 * (750 - wavelength) / (750 - 645)
         R, G, B = (1.0 * attenuation) ** gamma, 0.0, 0.0
-    else:
-        R, G, B = 0.0, 0.0, 0.0
+    # else:
+    #     R, G, B = 0.0, 0.0, 0.0
     R *= 255
     G *= 255
     B *= 255
@@ -142,22 +142,30 @@ def hyper_histogram(array, mask, wvlengths=[480, 550, 670]):
     # invisible wavelengths
     ids_inv = [idx for (idx,wv) in enumerate(wvlengths) if wv < 380 or wv > 750]
 
-    colors = []
+    colors = [tuple(x) for x in color_palette(len(wvlengths))]
     if len(ids_vis) < len(wvlengths):
         print("Warning: at least one of the desired wavelengths is not in the visible spectrum range!")
-        if len(ids_inv) == len(wvlengths): # All wavelengths in invisible range
-            colors = [tuple(x) for x in color_palette(len(wvlengths))]
-    if len(colors) == 0:
-        i = 0
-        while i < len(wvlengths):
+        # if len(ids_inv) == len(wvlengths): # All wavelengths in invisible range
+        #     colors = [tuple(x) for x in color_palette(len(wvlengths))]
+    if len(ids_inv) < len(wvlengths):
+        colors_vis = []
+        colors_inv = colors
+        for i in ids_vis:
+            # colors_vis.append(_wavelength_to_rgb(wvlengths[i], gamma=0.8))
+            color_vis = _wavelength_to_rgb(wvlengths[i], gamma=0.8)
+            colors_vis.append(color_vis)
+            if color_vis in colors:
+                del colors_inv[colors.index(color_vis)]
+        colors_inv = colors_inv[0:len(ids_inv)]
+        colors = []
+        j_vis, j_inv = 0,0
+        for i in range(0,len(wvlengths)):
             if i in ids_vis:
-                colors.append(_wavelength_to_rgb(wvlengths[i], gamma=0.8))
-                i += 1
+                colors.append(colors_vis[j_vis])
+                j_vis += 1
             else:
-                c = tuple(color_palette(1)[0])
-                if c not in colors:
-                    colors.append(c)
-                    i += 1
+                colors.append(colors_inv[j_inv])
+                j_inv += 1
 
     array_data = array.array_data
 
