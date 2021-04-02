@@ -6222,6 +6222,27 @@ def test_plantcv_visualize_histogram_array():
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.histogram(img=img[0, :])
 
+def test_plantcv_visualize_hyper_histogram():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_visualize_hyper_histogram")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+
+    # Read in test data
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    array = pcv.hyperspectral.read_data(filename=spectral_filename)
+    mask = np.ones((array.lines, array.samples))
+
+    fig_hist = pcv.visualize.hyper_histogram(array, mask)
+    assert isinstance(fig_hist, ggplot)
+
+    # test when there are bands whose wavelengths not in visible range
+    fig_hist = pcv.visualize.hyper_histogram(array, mask, wvlengths=[992, 990])
+    assert isinstance(fig_hist, ggplot)
+
+    with pytest.raises(RuntimeError):
+        _ = pcv.visualize.hyper_histogram(array, mask, wvlengths=[200, 550])
+
 
 def test_plantcv_visualize_clustered_contours():
     # Test cache directory
