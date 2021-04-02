@@ -6237,11 +6237,11 @@ def test_plantcv_visualize_hyper_histogram():
     assert isinstance(fig_hist, ggplot)
 
     # test when there are bands whose wavelengths not in visible range
-    fig_hist = pcv.visualize.hyper_histogram(array, mask, wvlengths=[992, 990])
+    fig_hist = pcv.visualize.hyper_histogram(array, mask, wvlengths=[390, 500, 640, 992, 990])
     assert isinstance(fig_hist, ggplot)
 
     with pytest.raises(RuntimeError):
-        _ = pcv.visualize.hyper_histogram(array, mask, wvlengths=[200, 550])
+        _ = pcv.visualize.hyper_histogram(array, mask, wvlengths=[200,  550])
 
 
 def test_plantcv_visualize_clustered_contours():
