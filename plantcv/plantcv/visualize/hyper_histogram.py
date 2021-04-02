@@ -9,6 +9,7 @@ from plantcv.plantcv import fatal_error, params, outputs, color_palette
 from plotnine import ggplot, aes, geom_line, geom_errorbar, scale_x_continuous, scale_color_manual
 from plantcv.plantcv.visualize import histogram
 from plantcv.plantcv.hyperspectral import _find_closest
+from scipy.spatial import distance
 
 
 '''
