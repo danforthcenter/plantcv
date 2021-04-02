@@ -80,8 +80,8 @@ def _wavelength_to_rgb(wavelength, gamma=0.8):
     elif 645 <= wavelength <= 750:
         attenuation = 0.3 + 0.7 * (750 - wavelength) / (750 - 645)
         R, G, B = (1.0 * attenuation) ** gamma, 0.0, 0.0
-    else:
-        R, G, B = 0.0, 0.0, 0.0
+    # else:
+    #     R, G, B = 0.0, 0.0, 0.0
     R *= 255
     G *= 255
     B *= 255
