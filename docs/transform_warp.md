@@ -138,3 +138,99 @@ Superimposed image of the warped image and the original image (reference image n
 ![warped_overlay](img/documentation_images/transform_warp/warp_overlay_no_ref.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/transform/warp.py)
+
+**Appendix**: Notes on image transformation
+A 2D image transformation is defined as transform all points in coordinate system 1 to coordinate system 2, which can be denoted as: P(x,y)->P'(x',y').
+So we have 
+
+![2D_general](https://latex.codecogs.com/svg.latex?\Large&space;\begin{bmatrix}x'\\\\y'\end{bmatrix}=M\begin{bmatrix}x\\\\y\end{bmatrix}=\begin{bmatrix}a&b\\\\c&d\end{bmatrix}\begin{bmatrix}x\\\\y\end{bmatrix}) 
+
+For several basic 2D transformations:
+
+- **Image Scaling**:
+
+![2D_scaling](https://latex.codecogs.com/svg.latex?\Large&space;\begin{bmatrix}x'\\\\y'\end{bmatrix}=\begin{bmatrix}sx&0\\\\0&sy\end{bmatrix}\begin{bmatrix}x\\\\y\end{bmatrix}) 
+
+- **Shear Transformation**:
+
+![2D_shear](https://latex.codecogs.com/svg.latex?\Large&space;\begin{bmatrix}x'\\\\y'\end{bmatrix}=\begin{bmatrix}1&shx\\\\shy&1\end{bmatrix}\begin{bmatrix}x\\\\y\end{bmatrix}) 
+
+- **Rotation**
+
+![2D_rotation](https://latex.codecogs.com/svg.latex?\Large&space;\begin{bmatrix}x'\\\\y'\end{bmatrix}=\begin{bmatrix}cos\theta&-sin\theta\\\\sin\theta&cos\theta\end{bmatrix}\begin{bmatrix}x\\\\y\end{bmatrix}) 
+
+These basic 2D image transformations are also known 2D **Linear** Transformations. Several characteristics of 2D Linear Transformation:
+- Combinations of scale, rotation, shear, and mirror
+- Only involves linear combinatsions of parameters a, b, c, and d
+- Origin maps to origin
+- Lines map to lines
+- Parallel lines remain prarllel
+- Ratios preserved
+
+Another important 2D image transformation is call 2D translation, which can be expressed as 
+
+![2D_translation](https://latex.codecogs.com/svg.latex?\Large&space;\begin{matrix}x'=x+t_x\\\\y'=y+t_y\end{matrix}) 
+
+However, there is not one 2D matrix can be used to describe this transformation. So the **homogeneous coordinates** are needed. 
+Long sentence short, using homogeneous coordinates is representing coordinates in 2 dimensions with a 3-dimensional vector. In equations we have
+
+![homogeneous1](https://latex.codecogs.com/svg.latex?\Large&space;\begin{bmatrix}x\\\\y\end{bmatrix}=\begin{bmatrix}x\\\\y\\\\1\end{bmatrix}) 
+
+For the purpose of conventional, we have
+
+![homogeneous2](https://latex.codecogs.com/svg.latex?\Large&space;\begin{bmatrix}x\\\\y\\\\w\end{bmatrix}) 
+
+With points in 2D spaces represented in this homogeneous coordinates, the basic 2D transformations can be represented in new ways:
+
+- **Image Scaling**:
+
+![2D_scaling_H](https://latex.codecogs.com/svg.latex?\Large&space;M_{sca}\begin{bmatrix}x'\\\\y'\\\\1\end{bmatrix}=\begin{bmatrix}sx&0&0\\\\0&sy&0\\\\0&0&1\end{bmatrix}\begin{bmatrix}x\\\\y\\\\1\end{bmatrix}) 
+
+- **Rotation**
+
+![2D_rotation_H](https://latex.codecogs.com/svg.latex?\Large&space;M_{rot}\begin{bmatrix}x'\\\\y'\\\\1\end{bmatrix}=\begin{bmatrix}cos\theta&-sin\theta&0\\\\sin\theta&cos\theta&0\\\\0&0&1\end{bmatrix}\begin{bmatrix}x\\\\y\\\\1\end{bmatrix}) 
+
+- **Shear Transformation**:
+
+![2D_shear_H](https://latex.codecogs.com/svg.latex?\Large&space;M_{she}\begin{bmatrix}x'\\\\y'\\\\1\end{bmatrix}=\begin{bmatrix}1&0&shx\\\\shy&1&0\\\\0&0&1\end{bmatrix}\begin{bmatrix}x\\\\y\\\\1\end{bmatrix}) 
+
+- **Translation**:
+
+![2D_translation_H](https://latex.codecogs.com/svg.latex?\Large&space;M_{tra}\begin{bmatrix}x'\\\\y'\\\\1\end{bmatrix}=\begin{bmatrix}1&0&tx\\\\0&1&ty\\\\0&0&1\end{bmatrix}\begin{bmatrix}x\\\\y\\\\1\end{bmatrix}) 
+
+These 2D images transformations described by homogeneour coordinates are also known as 2D **affine** transformations. Affine transformation combines linear transformations and translation. In equations we have:
+![2D_affine](https://latex.codecogs.com/svg.latex?\Large&space;\begin{bmatrix}x'\\\\y'\\\\w'\end{bmatrix}=M_{tra}M_{rot}M_{she}M_{sca}\begin{bmatrix}x\\\\y\\\\w\end{bmatrix}) 
+
+Let ![2D_affine_](https://latex.codecogs.com/svg.latex?\Large&space;M=M_{tra}M_{rot}M_{she}M_{sca}), we have
+
+![2D_affine_M](https://latex.codecogs.com/svg.latex?\Large&space;M=\begin{bmatrix}a&b&c\\\\d&e&f\\\\0&0&1\end{bmatrix})
+
+Notice that there are 6 defrees of freedom for this matrix, which means at least **3 pairs** of points (6 points) are needed to define an affine transformation.
+
+The properties of 2D affine transformations:
+- Origins don't necessarily map to origins
+- Lines map to lines
+- Parallelization and ratios preserved
+
+Another important transformation, **projective transformation**, which combines affine transformation and projective warps, is the tranforamtion model used most cases of image registration. 
+The properties of projective transformations:
+- Origins don't necessarily map to origina
+- Lines map to lines
+- Neither parallelization nor ratios preserved
+
+A projective transformation is represented as 
+
+![projective](https://latex.codecogs.com/svg.latex?\Large&space;M=\begin{bmatrix}a&b&c\\\\d&e&f\\\\g&h&1\end{bmatrix})
+
+Notice that there are 8 degrees of freedom for this transformation matrix, which implies that at least 4 pairs of points (8 points) are needed to define a projective transformation. 
+
+The process of a camera taking an image is actually mapping points on a ground plane (world points) to the image of the camera (image points).
+
+![camera](img/documentation_images/transform_warp/camera_model.png)
+
+We now know that with the homogeneous coordinate, we can describe the process of taking an image using a 3 by 3 transformation matrix (homography)
+
+For two or more images of the same view captured from different perspectives, if we want to learn the transformation from one image coordinate to another, we can still use a projective transformation matrix. 
+That explaines the reason for at least 4 pairs of points needed. 
+
+However, when trying to get a robust by applying some robust estimation algorithm, e.g. RANSAC, more than 4 pais of points should be provided.
