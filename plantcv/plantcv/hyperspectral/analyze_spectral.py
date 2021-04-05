@@ -6,9 +6,11 @@ import pandas as pd
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 from plotnine import ggplot, aes, geom_line, scale_x_continuous
+from plantcv.plantcv import deprecation_warning
+from plantcv.plantcv._debug import _debug
 
 
-def analyze_spectral(array, mask, histplot=True, label="default"):
+def analyze_spectral(array, mask, histplot=None, label="default"):
     """This extracts the hyperspectral reflectance values of each pixel writes the values out to
        a file. It can also print out a histogram plot of pixel intensity
        and a pseudocolor image of the plant.
@@ -16,7 +18,7 @@ def analyze_spectral(array, mask, histplot=True, label="default"):
     Inputs:
     array        = Hyperspectral data instance
     mask         = Binary mask made from selected contours
-    histplot     = if True plots histogram of reflectance intensity values
+    histplot     = (to be deprecated) if True plots histogram of reflectance intensity values
     label        = optional label parameter, modifies the variable name of observations recorded
 
     Returns:
@@ -28,7 +30,9 @@ def analyze_spectral(array, mask, histplot=True, label="default"):
     :param label: str
     :return analysis_img: ggplot
     """
-    params.device += 1
+    if histplot is not None:
+        deprecation_warning("'histplot' will be deprecated in a future version of PlantCV. "
+                            "Instead of a histogram this function plots the mean of spectra in the masked area.")
 
     array_data = array.array_data
 
@@ -55,10 +59,10 @@ def analyze_spectral(array, mask, histplot=True, label="default"):
 
     for i, wavelength in enumerate(array.wavelength_dict):
         new_wavelengths.append(wavelength)
-        new_freq.append((wavelength_freq[i]).astype(np.float))
-        new_std_per_band.append(std_per_band[i].astype(np.float))
-        new_max_per_band.append(max_per_band[i].astype(np.float))
-        new_min_per_band.append(min_per_band[i].astype(np.float))
+        new_freq.append((wavelength_freq[i]).astype(float))
+        new_std_per_band.append(std_per_band[i].astype(float))
+        new_max_per_band.append(max_per_band[i].astype(float))
+        new_min_per_band.append(min_per_band[i].astype(float))
 
     # Calculate reflectance statistics
     avg_reflectance = np.average(wavelength_data)
@@ -96,23 +100,17 @@ def analyze_spectral(array, mask, histplot=True, label="default"):
                             method='plantcv.plantcv.hyperspectral.analyze_spectral', scale='frequency', datatype=list,
                             value=new_freq, label=wavelength_labels)
 
-    if histplot is True:
-        dataset = pd.DataFrame({'Wavelength (' + array.wavelength_units + ')': new_wavelengths,
-                                'Reflectance': wavelength_freq})
-        fig_hist = (ggplot(data=dataset,
-                           mapping=aes(x='Wavelength (' + array.wavelength_units + ')',
-                                       y='Reflectance'))
+    dataset = pd.DataFrame({'Wavelength (' + array.wavelength_units + ')': new_wavelengths,
+                            'Reflectance': wavelength_freq})
+    mean_spectra = (ggplot(data=dataset,
+                    mapping=aes(x='Wavelength (' + array.wavelength_units + ')', y='Reflectance'))
                     + geom_line(color='purple')
-                    + scale_x_continuous(
-                    breaks=list(range(int(np.floor(min_wavelength)), int(np.ceil(max_wavelength)), 50)))
+                    + scale_x_continuous(breaks=list(range(int(np.floor(min_wavelength)),
+                                                           int(np.ceil(max_wavelength)), 50)))
                     )
 
-        analysis_img = fig_hist
+    analysis_img = mean_spectra
 
-        if params.debug == "print":
-            fig_hist.save(os.path.join(params.debug_outdir, str(params.device) + '_spectral_histogram.png'),
-                          verbose=False)
-        elif params.debug == "plot":
-            print(fig_hist)
+    _debug(visual=mean_spectra, filename=os.path.join(params.debug_outdir, str(params.device) + "_mean_spectra.png"))
 
     return analysis_img

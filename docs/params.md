@@ -46,6 +46,7 @@ the morphology sub-package.
 
 **saved_color_scale**: Using the `color_palette` function will save the color scale here for reuse in downstream functions. Set to `None` to remove. Default = `None`.
 
+**verbose**: Set the status of verboseness. When in "verbose" mode, the deprecation warning will always be printed once triggered. Default: `True`. Users can turn off deprecation warnings by setting `verbose=False`.
 ### Example
 
 Updated PlantCV functions use `params` implicitly, so overriding the `params` defaults will alter the behavior of
