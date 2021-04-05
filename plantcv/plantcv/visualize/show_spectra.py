@@ -31,7 +31,7 @@ class ShowSpectra(object):
         """
         print("Warning: this tool is under development and is expected to have updates frequently, please check the documentation page to make sure you are using the correct version!")
         self.fig, self.axes = plt.subplots(1, 2, figsize=figsize)
-        self.axes[0].imshow(spectral_data.pseudo_rgb)
+        self.axes[0].imshow(cv2.cvtColor(spectral_data.pseudo_rgb, cv2.COLOR_BGR2RGB))
         self.axes[0].set_title("Please click on interested pixels\n Right click for removal")
 
         self.axes[1].set_xlabel("wavelength (nm)")
