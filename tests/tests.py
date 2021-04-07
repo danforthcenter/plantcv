@@ -6204,18 +6204,26 @@ def test_plantcv_visualize_show_spectra():
 
     # create mock events
     e1 = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=show_spectra.fig.canvas, x=0, y=0,button=1)
+    e1.inaxes = show_spectra.axes[0]
+    e1.inaxes._subplotspec = show_spectra.axes[0]._subplotspec
     e1.xdata = 0
     e1.ydata = 0
 
     e2 = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=show_spectra.fig.canvas, x=0, y=0, button=3)
+    e2.inaxes = show_spectra.axes[0]
+    e2.inaxes._subplotspec = show_spectra.axes[0]._subplotspec
     e2.xdata = 0
     e2.ydata = 0
 
     e1_ = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=show_spectra.fig.canvas, x=0, y=0,button=1)
+    e1_.inaxes = show_spectra.axes[0]
+    e1_.inaxes._subplotspec = show_spectra.axes[0]._subplotspec
     e1_.xdata = 0
     e1_.ydata = 0
 
     e3 = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=show_spectra.fig.canvas, x=1, y=0, button=3)
+    e3.inaxes = show_spectra.axes[0]
+    e3.inaxes._subplotspec = show_spectra.axes[0]._subplotspec
     e3.xdata = 1
     e3.ydata = 0
 
@@ -6223,7 +6231,25 @@ def test_plantcv_visualize_show_spectra():
     show_spectra.onclick(e2)
     show_spectra.onclick(e1_)
     show_spectra.onclick(e3)
+
     assert len(show_spectra.events) == 4
+
+    # test for updating
+    # initialization
+    array_d = array_data.array_data
+    array_data.array_data = np.concatenate((array_d, array_d, array_d, array_d, array_d), axis=0)
+    show_spectra = pcv.visualize.ShowSpectra(array_data, figsize=(12, 6))
+    e1 = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=show_spectra.fig.canvas, x=1, y=1,button=1)
+    e1.inaxes = show_spectra.axes[0]
+    e1.inaxes._subplotspec = show_spectra.axes[0]._subplotspec
+    e1.xdata = 2
+    e1.ydata = 2
+    show_spectra.onclick(e1)
+    val = 1
+    show_spectra.radius_slider.val = val
+    show_spectra.update(val)
+    # assert show_spectra.r > 0
+    assert len(show_spectra.axes[0].patches) > 0
 
 def test_plantcv_visualize_overlay_two_imgs_size_mismatch():
     pcv.params.debug = None
