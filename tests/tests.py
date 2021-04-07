@@ -6230,9 +6230,10 @@ def test_plantcv_visualize_show_spectra():
     show_spectra.onclick(e1)
     show_spectra.onclick(e2)
     show_spectra.onclick(e1_)
+    show_spectra.onclick(e1_)
     show_spectra.onclick(e3)
 
-    assert len(show_spectra.events) == 4
+    assert len(show_spectra.events) == 5
 
     # test for updating
     # initialization
@@ -6245,10 +6246,14 @@ def test_plantcv_visualize_show_spectra():
     e1.xdata = 2
     e1.ydata = 2
     show_spectra.onclick(e1)
-    val = 1
+    val = 2
     show_spectra.radius_slider.val = val
     show_spectra.update(val)
-    # assert show_spectra.r > 0
+    show_spectra.onclick(e1)
+    show_spectra.update(val)
+    show_spectra.onclick(e2)
+    assert len(show_spectra.axes[0].patches) > 0
+    show_spectra.onclick(e1)
     assert len(show_spectra.axes[0].patches) > 0
 
 def test_plantcv_visualize_overlay_two_imgs_size_mismatch():
