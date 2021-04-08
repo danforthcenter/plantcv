@@ -17,7 +17,7 @@ Needs a mask file which specifies area which is object is white, and background 
 - **Context:**
     - Used to segment image into parts
     - Data automatically gets stored into the [Outputs class](outputs.md). Users can look at the data collected at any point during 
-    the workflow by using [pcv.print_results](print_results.md) which prints all stored data to a .json file.
+    the workflow by using [pcv.outputs.save_results](outputs.md) which saves all stored data to a .json file.
 - **Output data stored:** Data ('estimated_object_count') automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
     These data can always get accessed during a workflow (example below). For more detail about data output see [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
