@@ -965,7 +965,7 @@ def test_plantcv_debug(debug, tmpdir):
     _debug(visual=img, filename=os.path.join(img_outdir, TEST_INPUT_COLOR))
     assert True
 
-    
+
 @pytest.mark.parametrize("datatype,value", [[list, []], [int, 2], [float, 2.2], [bool, True], [str, "2"], [dict, {}],
                                             [tuple, ()], [None, None]])
 def test_plantcv_outputs_add_observation(datatype, value):
@@ -3863,18 +3863,12 @@ def test_plantcv_morphology_segment_skeleton():
 def test_plantcv_morphology_fill_segments():
     # Clear previous outputs
     pcv.outputs.clear()
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_fill_segments")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     obj_dic = np.load(os.path.join(TEST_DATA, TEST_SKELETON_OBJECTS))
     obj = []
     for key, val in obj_dic.items():
         obj.append(val)
-    pcv.params.debug = "print"
-    _ = pcv.morphology.fill_segments(mask, obj, label="prefix")
-    pcv.params.debug = "plot"
+    pcv.params.debug = None
     _ = pcv.morphology.fill_segments(mask, obj)
     tests = [pcv.outputs.observations['default']['segment_area']['value'][42] == 5529,
              pcv.outputs.observations['default']['segment_area']['value'][20] == 5057,
@@ -3885,10 +3879,6 @@ def test_plantcv_morphology_fill_segments():
 def test_plantcv_morphology_fill_segments_with_stem():
     # Clear previous outputs
     pcv.outputs.clear()
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_fill_segments")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     obj_dic = np.load(os.path.join(TEST_DATA, TEST_SKELETON_OBJECTS))
     obj = []
@@ -3896,7 +3886,7 @@ def test_plantcv_morphology_fill_segments_with_stem():
         obj.append(val)
 
     stem_obj = obj[0:4]
-    pcv.params.debug = "print"
+    pcv.params.debug = None
     _ = pcv.morphology.fill_segments(mask, obj, stem_obj)
     num_objects = len(pcv.outputs.observations['default']['leaf_area']['value'])
     assert num_objects == 70
