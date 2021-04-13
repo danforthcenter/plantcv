@@ -4,8 +4,8 @@ import os
 import numpy as np
 import xarray as xr
 from plantcv.plantcv import params
-from plantcv.plantcv.plot_image import plot_image
-from plantcv.plantcv.print_image import print_image
+from plantcv.plantcv._debug import _debug
+
 
 
 def read_cropreporter(inf_filename):
@@ -128,6 +128,8 @@ def read_cropreporter(inf_filename):
     # Create DataArray
     da = xr.DataArray(data=f, coords={"y": y_coord, "x": x_coord, "frame_label": all_frame_labels},
                       dims=["y", "x", "frame_label"])
+
+    _debug(visual=filled_img, filename=os.path.join(params.debug_outdir, str(params.device) + "_filled_img.png"))
 
     #all_xarrays.coords['frame_label'] = all_frame_labels
     #plot_image(img_cube[:, :, [0]])
