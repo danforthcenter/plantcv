@@ -3,11 +3,10 @@
 import os
 import cv2
 import numpy as np
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 from plantcv.plantcv import within_frame
+from plantcv.plantcv._debug import _debug
 
 
 def analyze_object(img, obj, mask, label="default"):
@@ -181,7 +180,7 @@ def analyze_object(img, obj, mask, label="default"):
                             value=caliper_length, label='pixels')
     outputs.add_observation(sample=label, variable='center_of_mass', trait='center of mass',
                             method='plantcv.plantcv.analyze_object', scale='none', datatype=tuple,
-                            value=(cmx, cmy), label='none')
+                            value=(cmx, cmy), label=("x", "y"))
     outputs.add_observation(sample=label, variable='convex_hull_vertices', trait='convex hull vertices',
                             method='plantcv.plantcv.analyze_object', scale='none', datatype=int,
                             value=hull_vertices, label='none')
@@ -190,7 +189,7 @@ def analyze_object(img, obj, mask, label="default"):
                             value=in_bounds, label='none')
     outputs.add_observation(sample=label, variable='ellipse_center', trait='ellipse center',
                             method='plantcv.plantcv.analyze_object', scale='none', datatype=tuple,
-                            value=(center[0], center[1]), label='none')
+                            value=(center[0], center[1]), label=("x", "y"))
     outputs.add_observation(sample=label, variable='ellipse_major_axis', trait='ellipse major axis length',
                             method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
                             value=major_axis_length, label='pixels')
@@ -204,22 +203,16 @@ def analyze_object(img, obj, mask, label="default"):
                             method='plantcv.plantcv.analyze_object', scale='none', datatype=float,
                             value=float(eccentricity), label='none')
 
-    if params.debug is not None:
-        params.device += 1
-        cv2.drawContours(ori_img, obj, -1, (255, 0, 0), params.line_thickness)
-        cv2.drawContours(ori_img, [hull], -1, (255, 0, 255), params.line_thickness)
-        cv2.line(ori_img, (x, y), (x + width, y), (255, 0, 255), params.line_thickness)
-        cv2.line(ori_img, (int(cmx), y), (int(cmx), y + height), (255, 0, 255), params.line_thickness)
-        cv2.circle(ori_img, (int(cmx), int(cmy)), 10, (255, 0, 255), params.line_thickness)
-        cv2.line(ori_img, (tuple(caliper_transpose[caliper_length - 1])), (tuple(caliper_transpose[0])), (255, 0, 255),
-                 params.line_thickness)
-        if params.debug == 'print':
-            print_image(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_shapes.png'))
-        elif params.debug == 'plot':
-            if len(np.shape(img)) == 3:
-                plot_image(ori_img)
-            else:
-                plot_image(ori_img, cmap='gray')
+    # Debugging output
+    params.device += 1
+    cv2.drawContours(ori_img, obj, -1, (255, 0, 0), params.line_thickness)
+    cv2.drawContours(ori_img, [hull], -1, (255, 0, 255), params.line_thickness)
+    cv2.line(ori_img, (x, y), (x + width, y), (255, 0, 255), params.line_thickness)
+    cv2.line(ori_img, (int(cmx), y), (int(cmx), y + height), (255, 0, 255), params.line_thickness)
+    cv2.circle(ori_img, (int(cmx), int(cmy)), 10, (255, 0, 255), params.line_thickness)
+    cv2.line(ori_img, (tuple(caliper_transpose[caliper_length - 1])), (tuple(caliper_transpose[0])), (255, 0, 255),
+             params.line_thickness)
+    _debug(visual=ori_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_shapes.png'))
 
     # Store images
     outputs.images.append(analysis_images)

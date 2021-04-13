@@ -202,7 +202,7 @@ def main():
     # Jupyter here
     
     # Print data that gets collected into the Outputs 
-    pcv.print_results(args.result)
+    pcv.outputs.save_results(filename=.result, outformat="json")
 
 if __name__ == '__main__':
     main()

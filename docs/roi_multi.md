@@ -91,7 +91,7 @@ for i in range(0, len(rois1)):
     filename = args.result[:-4] + "_" + str(i) + ".txt" 
     with open(filename, "w") as r:
         r.write(metadata)
-    pcv.print_results(filename=filename)
+    pcv.outputs.save_results(filename=filename)
     # Clear the measurements stored globally into the Outputs class
     pcv.outputs.clear()
     

@@ -7,8 +7,7 @@ from skimage.segmentation import watershed
 from plantcv.plantcv import outputs
 from plantcv.plantcv import color_palette
 from plantcv.plantcv import params
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
+from plantcv.plantcv._debug import _debug
 
 
 def fill_segments(mask, objects, stem_objects=None, label="default"):
@@ -28,8 +27,6 @@ def fill_segments(mask, objects, stem_objects=None, label="default"):
     :return filled_img: numpy.ndarray
     """
 
-    params.device += 1
-
     h, w = mask.shape
     markers = np.zeros((h, w))
 
@@ -48,11 +45,23 @@ def fill_segments(mask, objects, stem_objects=None, label="default"):
     # Count area in pixels of each segment
     ids, counts = np.unique(filled_mask, return_counts=True)
 
-    outputs.add_observation(sample=label, variable='segment_area', trait='segment area',
-                            method='plantcv.plantcv.morphology.fill_segments',
-                            scale='pixels', datatype=list,
-                            value=counts[1:].tolist(),
-                            label=(ids[1:]-1).tolist())
+    if stem_objects is None:
+        outputs.add_observation(sample=label, variable='segment_area', trait='segment area',
+                                method='plantcv.plantcv.morphology.fill_segments',
+                                scale='pixels', datatype=list,
+                                value=counts[1:].tolist(),
+                                label=(ids[1:]-1).tolist())
+    else:
+        outputs.add_observation(sample=label, variable='leaf_area', trait='segment area',
+                                method='plantcv.plantcv.morphology.fill_segments',
+                                scale='pixels', datatype=list,
+                                value=counts[1:].tolist(),
+                                label=(ids[1:]-1).tolist())
+        outputs.add_observation(sample=label, variable='stem_area', trait='segment area',
+                                method='plantcv.plantcv.morphology.fill_segments',
+                                scale='pixels', datatype=list,
+                                value=counts[1:].tolist(),
+                                label=(ids[1:]-1).tolist())
 
     rgb_vals = color_palette(num=len(labels), saved=False)
     filled_img = np.zeros((h, w, 3), dtype=np.uint8)
@@ -60,9 +69,7 @@ def fill_segments(mask, objects, stem_objects=None, label="default"):
         for ch in range(3):
             filled_img[:, :, ch][filled_mask == l] = rgb_vals[l - 1][ch]
 
-    if params.debug == 'print':
-        print_image(filled_img, os.path.join(params.debug_outdir, str(params.device) + '_filled_img.png'))
-    elif params.debug == 'plot':
-        plot_image(filled_img)
+    _debug(visual=filled_img, filename=os.path.join(params.debug_outdir, str(params.device) + "_filled_img.png"))
+
 
     return filled_img
