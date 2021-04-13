@@ -115,7 +115,7 @@ def read_cropreporter(filename):
     # Create DataArray
     da = xr.DataArray(data=f, coords={"y": y_coord, "x": x_coord, "frame_label": all_frame_labels},
                       dims=["y", "x", "frame_label"])
-    # Pass fmax frame to _debug function 
+    # Pass fmax frame to _debug function
     fmax = da.sel(frame_label='fmax').data
     _debug(visual=fmax, filename=os.path.join(params.debug_outdir, str(params.device) + "_fmax.png"))
 
