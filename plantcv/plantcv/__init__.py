@@ -74,6 +74,7 @@ from plantcv.plantcv import io
 from plantcv.plantcv.segment_image_series import segment_image_series
 from plantcv.plantcv.create_labels import create_labels
 from plantcv.plantcv import analyze
+from plantcv.plantcv.detect_discs import detect_discs
 # add new functions to end of lists
 
 # Auto versioning
@@ -149,5 +150,6 @@ __all__ = [
     "io",
     "segment_image_series",
     "create_labels",
-    "analyze"
+    "analyze",
+    "detect_discs"
 ]
