@@ -1,4 +1,4 @@
-# Fluorescence Analysis
+# Fluorescence Analysis (Fv/Fm parameter)
 
 import os
 import cv2
@@ -11,7 +11,7 @@ from plantcv.plantcv import outputs
 
 
 def analyze_fvfm(data, mask, bins=256, label="default"):
-    """Analyze PSII camera images.
+    """Calculate and analyze Fv/Fm from fluorescence image data.
     Inputs:
     data        = xarray of binary image data
     mask        = mask of plant (binary, single channel)
@@ -85,7 +85,7 @@ def analyze_fvfm(data, mask, bins=256, label="default"):
                                   x=.15, y=205, size=8, color='green'))
     analysis_images.append(fvfm_hist_fig)
 
-    # Plot/Print out fvfm and the histogram 
+    # Plot/Print out fvfm and the histogram
     _debug(visual=fvfm, filename=os.path.join(params.debug_outdir, str(params.device) + "_FvFm.png"))
     _debug(visual=fvfm_hist_fig, filename=os.path.join(params.debug_outdir, str(params.device) + "_FvFm_histogram.png"))
 
