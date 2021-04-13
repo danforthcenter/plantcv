@@ -1,4 +1,4 @@
-# Fluorescence Analysis
+# Fluorescence Analysis (NPQ parameter)
 
 import os
 import cv2
