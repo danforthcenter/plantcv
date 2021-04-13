@@ -39,7 +39,7 @@ def read_cropreporter(filename):
 
     metadata_dict = {}  # Initialize dictionary
 
-    # Loop through and create a dictionary from the inf file
+    # Loop through and create a dictionary from the .DAT file
     for i, string in enumerate(metadata):
         if '=' in string:
             header_data = string.split("=")
@@ -48,12 +48,12 @@ def read_cropreporter(filename):
     # Store image dimension data
     x = int(metadata_dict["ImageCols"])
     y = int(metadata_dict["ImageRows"])
-
+    # Use metadata to determine which frames to expect
     frames_captured = {key: value for key, value in metadata_dict.items() if "Done" in key}
     frames_expected = [key.upper()[0:3] for key, value in frames_captured.items() if str(value) == "1"]
     corresponding_dict = {"FVF": "PSD", "FQF": "PSL", "CHL": "CHL", "NPQ": "NPQ", "SPC": "SPC",
                           "CLR": "CLR", "RFD": "RFD", "GFP": "GFP", "RFP": "RFP"}
-
+    # Initialize lists
     param_labels = []
     img_frames = []
     all_indices = []
@@ -115,7 +115,7 @@ def read_cropreporter(filename):
     # Create DataArray
     da = xr.DataArray(data=f, coords={"y": y_coord, "x": x_coord, "frame_label": all_frame_labels},
                       dims=["y", "x", "frame_label"])
-
+    # Pass fmax frame to _debug function 
     fmax = da.sel(frame_label='fmax').data
     _debug(visual=fmax, filename=os.path.join(params.debug_outdir, str(params.device) + "_fmax.png"))
 
