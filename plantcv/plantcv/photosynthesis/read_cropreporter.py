@@ -39,7 +39,7 @@ def read_cropreporter(filename):
 
     metadata_dict = {}  # Initialize dictionary
 
-    # Loop through and create a dictionary from the .DAT file
+    # Loop through and create a dictionary from the .INF file
     for i, string in enumerate(metadata):
         if '=' in string:
             header_data = string.split("=")
@@ -61,7 +61,7 @@ def read_cropreporter(filename):
 
     # Loop over all raw bin files
     for key in frames_expected:
-        # Find corresponding bin img filepath based on .DAT filepath
+        # Find corresponding bin img filepath based on .INF filepath
         inf = os.path.split(filename)[-1]
         path = os.path.dirname(filename)
         filename_components = inf.split("_")
