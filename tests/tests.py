@@ -454,7 +454,47 @@ def test_plantcv_parallel_metadata_parser_no_default_dates():
     meta = plantcv.parallel.metadata_parser(config=config)
     assert meta == METADATA_VIS_ONLY
 
+def test_plantcv_parallel_workflowconfig_subdaily_timestampformat():
+    '''
+    timestampformats with only hours and smaller units of time were failing if the script was run earlier in the day than the images were taken. this was fixed by setting end_date to 23-59-59 if we don't detect the year-month-day
+    '''
+    # Create config instance
+    config = plantcv.parallel.WorkflowConfig()
+    config.input_dir = os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR2)
+    config.json = os.path.join(TEST_IMG_DIR2, "test_plantcv_parallel_metadata_parser_subdaily_timestampformat", "output.json")
+    config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "timestamp"]
+    config.workflow = TEST_PIPELINE
+    config.metadata_filters = {"imgtype": "NIR", "camera": "SV"}
+    config.start_date = None
+    config.end_date = None
+    config.timestampformat = "%H_%M_%S"
+    config.imgformat = "jpg"
 
+    config.delimiter = r"(NIR)_(SV)_(\d)_(z1)_(h1)_(g0)_(e65)_(\d{2}_\d{2}_\d{2})"
+
+    meta = plantcv.parallel.metadata_parser(config=config)
+    assert meta == {
+    'NIR_SV_0_z1_h1_g0_e65_23_59_59.jpg': {
+        'path': os.path.join(PARALLEL_TEST_DATA, 'images_w_date','NIR_SV_0_z1_h1_g0_e65_23_59_59.jpg'),
+        'imgtype': 'NIR',
+        'camera': 'SV',
+        'frame': '0',
+        'zoom': 'z1',
+        'lifter': 'h1',
+        'gain': 'g0',
+        'exposure': 'e65',
+        'timestamp': '23_59_59',
+        'measurementlabel': 'none',
+        'cartag':'none',
+        'id': 'none',
+        'treatment': 'none',
+        'plantbarcode': 'none',
+        'other': 'none'
+    }
+    }
+
+
+    
 def test_plantcv_parallel_check_date_range_wrongdateformat():
     start_date = 10
     end_date = 10
