@@ -88,17 +88,17 @@ def analyze_npq(data, mask, bins=256, label="default"):
     _debug(visual=npq, filename=os.path.join(params.debug_outdir, str(params.device) + "_FvFm.png"))
     _debug(visual=npq_hist_fig, filename=os.path.join(params.debug_outdir, str(params.device) + "_FvFm_histogram.png"))
 
-    outputs.add_observation(sample=label, variable='fvfm_hist', trait='Fv/Fm frequencies',
-                            method='plantcv.plantcv.fluor_fvfm', scale='none', datatype=list,
+    outputs.add_observation(sample=label, variable='npq_hist', trait='NPQ frequencies',
+                            method='plantcv.plantcv.analyze_npq', scale='none', datatype=list,
                             value=npq_hist.tolist(), label=np.around(midpoints, decimals=len(str(bins))).tolist())
-    outputs.add_observation(sample=label, variable='fvfm_hist_peak', trait='peak Fv/Fm value',
-                            method='plantcv.plantcv.fluor_fvfm', scale='none', datatype=float,
+    outputs.add_observation(sample=label, variable='npq_hist_peak', trait='peak NPQ value',
+                            method='plantcv.plantcv.analyze_npq', scale='none', datatype=float,
                             value=float(max_bin), label='none')
-    outputs.add_observation(sample=label, variable='fvfm_median', trait='Fv/Fm median',
-                            method='plantcv.plantcv.fluor_fvfm', scale='none', datatype=float,
+    outputs.add_observation(sample=label, variable='npq_median', trait='NPQ median',
+                            method='plantcv.plantcv.analyze_npq', scale='none', datatype=float,
                             value=float(np.around(npq_median, decimals=4)), label='none')
     outputs.add_observation(sample=label, variable='fdark_passed_qc', trait='Fdark passed QC',
-                            method='plantcv.plantcv.fluor_fvfm', scale='none', datatype=bool,
+                            method='plantcv.plantcv.analyze_npq', scale='none', datatype=bool,
                             value=qc_fdark, label='none')
 
     # Store images
