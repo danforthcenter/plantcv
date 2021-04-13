@@ -26,7 +26,6 @@ def read_cropreporter(inf_filename):
         :return fmax: numpy.ndarray
         """
 
-
     # Parse .inf file and create dictionary with metadata stored within
     with open(inf_filename, "r") as f:
         # Replace characters for easier parsing
@@ -52,49 +51,58 @@ def read_cropreporter(inf_filename):
     y = int(inf_dict["ImageRows"])
 
     frames_captured = {key: value for key, value in inf_dict.items() if "Done" in key}
-    frames_expected = [key.upper()[0:3] for key,value in frames_captured.items() if str(value) == "1"]
-    corresponding_dict = {"FVF":"PSD", "FQF": "PSL", "CHL":"CHL", "NPQ":"NPQ", "SPC":"SPC",
-                          "CLR":"CLR", "RFD":"RFD", "GFP":"GFP", "RFP":"RFP"}
+    frames_expected = [key.upper()[0:3] for key, value in frames_captured.items() if str(value) == "1"]
+    corresponding_dict = {"FVF": "PSD", "FQF": "PSL", "CHL": "CHL", "NPQ": "NPQ", "SPC": "SPC",
+                          "CLR": "CLR", "RFD": "RFD", "GFP": "GFP", "RFP": "RFP"}
 
-    print(inf_dict)
+    # print(inf_dict)
     all_imgs = {}
     param_labels = []
-    all_xarrays = []
+    img_frames = []
+    all_indices = []
     all_frame_labels = []
+
     # Loop over all raw bin files
     for key in frames_expected:
+        # Find corresponding bin img filepath based on .DAT filepath
         inf = os.path.split(inf_filename)[-1]
         path = os.path.dirname(inf_filename)
         filename_components = inf.split("_")
-        filename_components[1] = corresponding_dict[key]
-
+        filename_components[1] = corresponding_dict[key]  # replace header with bin img type
         s = "_"
         bin_filenames = s.join(filename_components)
         bin_filename = bin_filenames.replace(".INF", ".DAT")
         bin_filepath = os.path.join(path, bin_filename)
+
+        # Dump in bin img data
         raw_data = np.fromfile(bin_filepath, np.uint16, -1)
-        #img_cube = raw_data.reshape(int(len(raw_data) / (y * x)), x, y).transpose((2, 1, 0)) #numpy shaped
-        img_cube = raw_data.reshape(int(len(raw_data) / (y * x)), x, y).transpose((1, 2, 0))
-        all_imgs[corresponding_dict[key]] = img_cube # store each data cube into a dictionary with labeled source
 
-        x_coord = np.arange(x)
-        y_coord = np.arange(y)
-        index_list = np.arange(np.shape(all_imgs[corresponding_dict[key]])[2])
+        # Reshape
+        # img_cube = raw_data.reshape(int(len(raw_data) / (y * x)), x, y).transpose((1, 2, 0))
+        img_cube = raw_data.reshape(int(len(raw_data) / (y * x)), x, y).transpose((2, 1, 0))  # numpy shaped
 
-        #foo = xr.DataArray(img_cube, dims=["x", "y", "frame"], coords= {"x":x_coord, "y":y_coord, "frame":frames_list}, name=corresponding_dict[key])
-        param_label = [corresponding_dict[key]]*(np.shape(img_cube)[2]) # repetitive list of parameter labels
-        param_labels = param_labels + [corresponding_dict[key]] # concat onto list of all slices in the data cube
+        # Store bin img data
+        all_imgs[corresponding_dict[key]] = img_cube  # store each data cube into a dictionary with labeled source
+        img_frames.append(img_cube)  # append cube to a list
+
+        # Compile COORDS (lists of indicies)
+        index_list = np.arange(np.shape(img_cube)[2]).tolist()
+        all_indices = all_indices + index_list
+        param_label = [corresponding_dict[key]] * (np.shape(img_cube)[2])  # repetitive list of parameter labels
+        param_labels = param_labels + param_label
+
+        # Calculate frames of interest and keep track of their labels
 
         if corresponding_dict[key] is "NPQ":
             frame_sums = []
             for i in range(img_cube.shape[2]):
                 frame_sums.append(np.sum(img_cube[:, :, i]))
             f_min = np.argmin(frame_sums)
-            frame_labels = ["other"]*(np.shape(img_cube)[2])
+            frame_labels = ["other"] * (np.shape(img_cube)[2])
             frame_labels[f_min] = "Fp"
             frame_labels[np.argmax(frame_sums)] = "Fmp"
         elif corresponding_dict[key] is "PSD":
-            frame_labels = ["other"]*(np.shape(img_cube)[2])
+            frame_labels = ["other"] * (np.shape(img_cube)[2])
             frame_labels[0] = "fdark"
             frame_labels[1] = "fmin"
             frame_sums = []
@@ -102,26 +110,25 @@ def read_cropreporter(inf_filename):
                 frame_sums.append(np.sum(img_cube[:, :, i]))
             frame_labels[np.argmax(frame_sums)] = "fmax"
         else:
-            frame_labels = ["other"]*(np.shape(img_cube)[2])
+            frame_labels = ["other"] * (np.shape(img_cube)[2])
         all_frame_labels = all_frame_labels + frame_labels
 
-        # Create x-array data array
-        da = xr.DataArray(img_cube[None, None, ...], dims=["parameter", "frame_label", "x", "y", "index"], coords= {"index":index_list})
-        da["frame_label"] = ("index", frame_labels)
-        #da.assign_coords(alternate_sample_weights=('x', frame_labels)
+        # # TESTING SHTUFF
+    # print(param_labels)
+    # print(all_indices)
+    # print(all_frame_labels)
 
-        all_xarrays.append(da)
+    # Make coordinates list
+    x_coord = range(0, x)
+    y_coord = range(0, y)
+    index_list = np.arange(np.shape(all_imgs[corresponding_dict[key]])[2])
 
-        print("total data array shape:" + str(np.shape(img_cube)))
-        print("^" + corresponding_dict[key])
+    # Stack all the frames
+    f = np.dstack(img_frames)
+    # Create DataArray
+    da = xr.DataArray(data=f, coords={"y": y_coord, "x": x_coord, "frame_label": all_frame_labels},
+                      dims=["y", "x", "frame_label"])
 
-
-    # Join data array from each bin file into a single array
-    all_xarrays = xr.concat(all_xarrays, 'parameter')
-    # Add labels
-    param_labels = pd.Index(param_labels)
-    all_frame_labels = pd.Index(all_frame_labels)
-    all_xarrays.coords['parameter'] = param_labels
     #all_xarrays.coords['frame_label'] = all_frame_labels
     #plot_image(img_cube[:, :, [0]])
-    return inf_dict, all_imgs, all_xarrays
+    return inf_dict, all_imgs, da
