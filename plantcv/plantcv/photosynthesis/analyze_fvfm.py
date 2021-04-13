@@ -29,7 +29,7 @@ def analyze_fvfm(data, mask, bins=256, label="default"):
 
     # Auto-increment the device counter
     params.device += 1
-    # Check that fdark, fmin, and fmax are grayscale (single channel)
+    #  Extract frames of interest
     fdark = data.sel(frame_label='fdark').data
     fmax = data.sel(frame_label='fmax').data
     fmin = data.sel(frame_label='fmin').data
@@ -85,6 +85,7 @@ def analyze_fvfm(data, mask, bins=256, label="default"):
                                   x=.15, y=205, size=8, color='green'))
     analysis_images.append(fvfm_hist_fig)
 
+    # Plot/Print out fvfm and the histogram 
     _debug(visual=fvfm, filename=os.path.join(params.debug_outdir, str(params.device) + "_FvFm.png"))
     _debug(visual=fvfm_hist_fig, filename=os.path.join(params.debug_outdir, str(params.device) + "_FvFm_histogram.png"))
 
