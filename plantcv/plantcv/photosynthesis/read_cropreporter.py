@@ -129,8 +129,7 @@ def read_cropreporter(inf_filename):
     da = xr.DataArray(data=f, coords={"y": y_coord, "x": x_coord, "frame_label": all_frame_labels},
                       dims=["y", "x", "frame_label"])
 
-    _debug(visual=filled_img, filename=os.path.join(params.debug_outdir, str(params.device) + "_filled_img.png"))
+    fmax = da.sel(frame_label='fmax').data
+    _debug(visual=fmax, filename=os.path.join(params.debug_outdir, str(params.device) + "_fmax.png"))
 
-    #all_xarrays.coords['frame_label'] = all_frame_labels
-    #plot_image(img_cube[:, :, [0]])
     return inf_dict, all_imgs, da
