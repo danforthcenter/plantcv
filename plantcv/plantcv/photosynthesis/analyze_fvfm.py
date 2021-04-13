@@ -5,28 +5,22 @@ import cv2
 import numpy as np
 import pandas as pd
 from plotnine import ggplot, geom_label, aes, geom_line
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import fatal_error
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def analyze_fvfm(fdark, fmin, fmax, mask, bins=256, label="default"):
+def analyze_fvfm(data, mask, bins=256, label="default"):
     """Analyze PSII camera images.
     Inputs:
-    fdark       = grayscale fdark image
-    fmin        = grayscale fmin image
-    fmax        = grayscale fmax image
+    data        = xarray of binary image data
     mask        = mask of plant (binary, single channel)
     bins        = number of bins (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
     label       = optional label parameter, modifies the variable name of observations recorded
 
     Returns:
     analysis_images = list of images (fv image and fvfm histogram image)
-    :param fdark: numpy.ndarray
-    :param fmin: numpy.ndarray
-    :param fmax: numpy.ndarray
+    :param data: xarray.core.dataarray.DataArray
     :param mask: numpy.ndarray
     :param bins: int
     :param label: str
@@ -36,8 +30,10 @@ def analyze_fvfm(fdark, fmin, fmax, mask, bins=256, label="default"):
     # Auto-increment the device counter
     params.device += 1
     # Check that fdark, fmin, and fmax are grayscale (single channel)
-    if not all(len(np.shape(i)) == 2 for i in [fdark, fmin, fmax]):
-        fatal_error("The fdark, fmin, and fmax images must be grayscale images.")
+    fdark = data.sel(frame_label='fdark').data
+    fmax = data.sel(frame_label='fmax').data
+    fmin = data.sel(frame_label='fmin').data
+    mask = mask.astype(np.uint8)
 
     # QC Fdark Image
     fdark_mask = cv2.bitwise_and(fdark, fdark, mask=mask)
@@ -89,16 +85,8 @@ def analyze_fvfm(fdark, fmin, fmax, mask, bins=256, label="default"):
                                   x=.15, y=205, size=8, color='green'))
     analysis_images.append(fvfm_hist_fig)
 
-    if params.debug == 'print':
-        print_image(fmin_mask, os.path.join(params.debug_outdir, str(params.device) + '_fmin_mask.png'))
-        print_image(fmax_mask, os.path.join(params.debug_outdir, str(params.device) + '_fmax_mask.png'))
-        print_image(fv, os.path.join(params.debug_outdir, str(params.device) + '_fv_convert.png'))
-        fvfm_hist_fig.save(os.path.join(params.debug_outdir, str(params.device) + '_fv_hist.png'), verbose=False)
-    elif params.debug == 'plot':
-        plot_image(fmin_mask, cmap='gray')
-        plot_image(fmax_mask, cmap='gray')
-        plot_image(fv, cmap='gray')
-        print(fvfm_hist_fig)
+    _debug(visual=fvfm, filename=os.path.join(params.debug_outdir, str(params.device) + "_FvFm.png"))
+    _debug(visual=fvfm_hist_fig, filename=os.path.join(params.debug_outdir, str(params.device) + "_FvFm_histogram.png"))
 
     outputs.add_observation(sample=label, variable='fvfm_hist', trait='Fv/Fm frequencies',
                             method='plantcv.plantcv.fluor_fvfm', scale='none', datatype=list,
