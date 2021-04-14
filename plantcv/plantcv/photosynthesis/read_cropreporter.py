@@ -85,7 +85,7 @@ def read_cropreporter(filename):
         param_labels = param_labels + param_label
 
         # Calculate frames of interest and keep track of their labels
-        if corresponding_dict[key] is "NPQ":
+        if corresponding_dict[key] == "NPQ":
             frame_sums = []
             for i in range(img_cube.shape[2]):
                 frame_sums.append(np.sum(img_cube[:, :, i]))
@@ -93,7 +93,7 @@ def read_cropreporter(filename):
             frame_labels = ["other"] * (np.shape(img_cube)[2])
             frame_labels[f_min] = "Fp"
             frame_labels[np.argmax(frame_sums)] = "Fmp"
-        elif corresponding_dict[key] is "PSD":
+        elif corresponding_dict[key] == "PSD":
             frame_labels = ["other"] * (np.shape(img_cube)[2])
             frame_labels[0] = "fdark"
             frame_labels[1] = "fmin"
