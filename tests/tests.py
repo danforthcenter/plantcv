@@ -3711,6 +3711,16 @@ def test_detect_discs():
 
     assert len(coor) == 3
 
+def test_get_centroids():
+    # Read in test data
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_DISCS_MASK), -1)
+
+    # Test with debug = None
+    pcv.params.debug = None
+    coor = pcv.get_centroids(bin_img=mask)
+
+    assert len(coor) == 5
+
 
 # ##############################
 # Tests for the learn subpackage
