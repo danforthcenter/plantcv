@@ -199,6 +199,7 @@ With points in 2D spaces represented in this homogeneous coordinates, the basic 
 ![2D_translation_H](https://latex.codecogs.com/svg.latex?\Large&space;M_{tra}\begin{bmatrix}x'\\\\y'\\\\1\end{bmatrix}=\begin{bmatrix}1&0&tx\\\\0&1&ty\\\\0&0&1\end{bmatrix}\begin{bmatrix}x\\\\y\\\\1\end{bmatrix}) 
 
 These 2D images transformations described by homogeneour coordinates are also known as 2D **affine** transformations. Affine transformation combines linear transformations and translation. In equations we have:
+
 ![2D_affine](https://latex.codecogs.com/svg.latex?\Large&space;\begin{bmatrix}x'\\\\y'\\\\w'\end{bmatrix}=M_{tra}M_{rot}M_{she}M_{sca}\begin{bmatrix}x\\\\y\\\\w\end{bmatrix}) 
 
 Let ![2D_affine_](https://latex.codecogs.com/svg.latex?\Large&space;M=M_{tra}M_{rot}M_{she}M_{sca}), we have
@@ -212,7 +213,7 @@ The properties of 2D affine transformations:
 - Lines map to lines
 - Parallelization and ratios preserved
 
-Another important transformation, **projective transformation**, which combines affine transformation and projective warps, is the tranforamtion model used most cases of image registration. 
+Another important transformation, **projective transformation**, which combines affine transformation and projective warps, is the tranformation model used most cases of image registration. 
 The properties of projective transformations:
 - Origins don't necessarily map to origina
 - Lines map to lines
