@@ -7,8 +7,7 @@ from skimage.segmentation import watershed
 from plantcv.plantcv import outputs
 from plantcv.plantcv import color_palette
 from plantcv.plantcv import params
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
+from plantcv.plantcv._debug import _debug
 
 
 def fill_segments(mask, objects, stem_objects=None, label="default"):
@@ -27,8 +26,6 @@ def fill_segments(mask, objects, stem_objects=None, label="default"):
     :param label: str
     :return filled_img: numpy.ndarray
     """
-
-    params.device += 1
 
     h, w = mask.shape
     markers = np.zeros((h, w))
@@ -72,9 +69,7 @@ def fill_segments(mask, objects, stem_objects=None, label="default"):
         for ch in range(3):
             filled_img[:, :, ch][filled_mask == l] = rgb_vals[l - 1][ch]
 
-    if params.debug == 'print':
-        print_image(filled_img, os.path.join(params.debug_outdir, str(params.device) + '_filled_img.png'))
-    elif params.debug == 'plot':
-        plot_image(filled_img)
+    _debug(visual=filled_img, filename=os.path.join(params.debug_outdir, str(params.device) + "_filled_img.png"))
+
 
     return filled_img

@@ -31,7 +31,8 @@ def sample_images(source_path, dest_path, num=100):
 
         # Check to make sure number of imgs to select is less than number of images found
         if num > len(line_array):
-            fatal_error("Number of images found less than 'num'.")
+            fatal_error("Number of images found ({0}) less than 'num'.".
+                            format(len(line_array)))
 
         for i in range(0, num):
             r = random.randint(0, len(line_array) - 1)
@@ -57,11 +58,12 @@ def sample_images(source_path, dest_path, num=100):
                 # Check file type so that only images get copied over
                 name, ext = os.path.splitext(file)
                 if ext.lower() in img_extensions:
-                    img_element_array.append(file)
+                    img_element_array.append(os.path.join(root,file))
 
         # Check to make sure number of imgs to select is less than number of images found
         if num > len(img_element_array):
-            fatal_error("Number of images found less than 'num'.")
+            fatal_error("Number of images found ({0}) less than 'num'.".
+                            format(len(img_element_array)))
 
         # Get random images
         for i in range(0, num):
@@ -73,4 +75,4 @@ def sample_images(source_path, dest_path, num=100):
 
         # Copy images over to destination
         for element in sample_array:
-            shutil.copy(os.path.join(source_path, element), dest_path)
+            shutil.copy(element, dest_path)
