@@ -249,7 +249,7 @@ of customization since it is intended to just make figures.
                                            min_value=31, max_value=35)
                                            
     # Write shape and thermal data to results file
-    pcv.print_results(filename=args.result)
+    pcv.outputs.save_results(filename=args.result)
   
 if __name__ == '__main__':
     main()
@@ -396,7 +396,7 @@ def main():
                                            min_value=31, max_value=35)
                                            
     # Write shape and thermal data to results file
-    pcv.print_results(filename=args.result)
+    pcv.outputs.save_results(filename=args.result)
   
 if __name__ == '__main__':
     main()
