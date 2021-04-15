@@ -4926,7 +4926,7 @@ def test_plantcv_photosynthesis_analyze_fvfm_bad_fdark():
     fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
     fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
     # Create DataArray
-    da = xr.DataArray(data=np.dstack([fdark + 3000, fmin, fmax]), coords={"frame_label": ["fdark","fmin","fmax"], "y": range(0, np.shape(fdark)[1]), "x": range(0, np.shape(fdark)[0])},
+    da = xr.DataArray(data=np.dstack([fdark + 3000, fmin, fmax]), coords={"y": range(0, np.shape(fdark)[1]), "x": range(0, np.shape(fdark)[0]),"frame_label": ["fdark","fmin","fmax"]},
                       dims=["y", "x", "frame_label"])
     _ = pcv.photosynthesis.analyze_fvfm(data=da, mask=fmask, bins=1000)
     check = pcv.outputs.observations['default']['fdark_passed_qc']['value'] is False
