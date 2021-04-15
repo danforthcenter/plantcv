@@ -116,7 +116,7 @@ def main():
 
 The resulting image is then thresholded with a [binary threshold](binary_threshold.md) to capture the plant material. In most cases, it is expected that pixel values
 range between 0 and 255, but our example image has pixel values from 0 to over 7000. Trial and error is a common method for selecting an appropriate threshold value.
-We recommend choosing a threshold based on the Fmin image to reduce noise that may be introduced by the bright imaging light used when capturing Fmax. If this is not possible, we recommend using the [erode](erode.md) function after the [fill](fill.md) step to reduce noise around the plant border.
+In different imaging scenarios it may be easier to segment the Fmin image or the Fmax image. Fmax will have a higher dynamic range to more easily pick a precise threshold value but Fmin may have less errant signal (e.g., if a leaf moved during imaging).
 
 ```python
     # Threshold the `fmin` image
