@@ -13,7 +13,7 @@ from plantcv import plantcv as pcv
 import plantcv.learn
 import plantcv.parallel
 import plantcv.utils
-import xarray as xr 
+import xarray as xr
 # Import matplotlib and use a null Template to block plotting to screen
 # This will let us test debug = "plot"
 import matplotlib
@@ -4877,7 +4877,7 @@ def test_plantcv_photosynthesis_read_dat():
     _, _, _ = pcv.photosynthesis.read_cropreporter(filename=fluor_filename)
     pcv.params.debug = "print"
     da, path, filename = pcv.photosynthesis.read_cropreporter(filename=fluor_filename)
-    assert np.sum(da.sel(frame_label='fmax').data) < np.sum(da.sel(frame_label='fmin').data)
+    assert np.sum(da.sel(frame_label='fmax').data) > np.sum(da.sel(frame_label='fmin').data)
 
 
 def test_plantcv_photosynthesis_analyze_fvfm():
