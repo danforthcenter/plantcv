@@ -30,7 +30,7 @@ def analyze_fvfm(data, mask, bins=256, label="default"):
     # Auto-increment the device counter
     params.device += 1
     #  Extract frames of interest
-    fdark = data.sel(frame_label='fdark').data.astype(np.uint8)
+    fdark = (data.sel(frame_label='fdark').data).astype(np.uint8)
     fmax = data.sel(frame_label='fmax').data.astype(np.uint8)
     fmin = data.sel(frame_label='fmin').data.astype(np.uint8)
     mask = mask.astype(np.uint8)
