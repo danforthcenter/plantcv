@@ -533,11 +533,17 @@ pages for more details on the input and output variable types.
 * post v3.12: **plantcv.outputs.save_results**(*filename, outformat="json"*)
 
 #### plantcv.photosynthesis.analyze_fvfm
+
 * pre v3.10: see plantcv.fluor_fvfm
 * post v3.10: analysis_images = **plantcv.photosynthesis.analyze_fvfm**(*fdark, fmin, fmax, mask, bins=256*)
 * post v3.11: analysis_images = **plantcv.photosynthesis.analyze_fvfm**(*fdark, fmin, fmax, mask, bins=256, label="default"*)
 * post v4.0: Deprecated, see:
     analysis_images = **plantcv.photosynthesis.analyze_yii**(*data, mask, bins=256, label="default"*)
+
+#### plantcv.photosynthesis.analyze_npq
+
+* pre v4.0: NA
+* post v4.0: analysis_images = **plantcv.photosynthesis.analyze_npq**(*data, mask, bins=256*)
 
 #### plantcv.photosynthesis.read_cropreporter
 
