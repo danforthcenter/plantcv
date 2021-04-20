@@ -944,11 +944,11 @@ TEST_SKELETON_HIERARCHIES = "skeleton_hierarchies.npz"
 TEST_THERMAL_ARRAY = "thermal_img.npz"
 TEST_THERMAL_IMG_MASK = "thermal_img_mask.png"
 TEST_INPUT_THERMAL_CSV = "FLIR2600.csv"
-TEST_BAD_MASK = "bad_mask_test.pkl"
-TEST_IM_BAD_NONE = "bad_mask_none.pkl"
-TEST_IM_BAD_BOTH = "bad_mask_both.pkl"
-TEST_IM_BAD_NAN = "bad_mask_nan.pkl"
-TEST_IM_BAD_INF = "bad_mask_inf.pkl"
+# TEST_BAD_MASK = "bad_mask_test.pkl"
+# TEST_IM_BAD_NONE = "bad_mask_none.pkl"
+# TEST_IM_BAD_BOTH = "bad_mask_both.pkl"
+# TEST_IM_BAD_NAN = "bad_mask_nan.pkl"
+# TEST_IM_BAD_INF = "bad_mask_inf.pkl"
 PIXEL_VALUES = "pixel_inspector_rgb_values.txt"
 
 
@@ -6000,8 +6000,10 @@ def test_plantcv_threshold_mask_bad_native():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_mask_bad_native")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    # Read in test data
-    bad_img = pkl.load(open(os.path.join(TEST_DATA, TEST_IM_BAD_BOTH), 'rb'))
+    # Create a synthetic bad image
+    bad_img = np.reshape(np.random.rand(25), (5, 5))
+    bad_img[2, 2] = np.inf
+    bad_img[2, 3] = np.nan
     sz = np.shape(bad_img)
     pcv.params.debug = None
     mask20 = pcv.threshold.mask_bad(bad_img, bad_type='native')
@@ -6025,8 +6027,8 @@ def test_plantcv_threshold_mask_bad_native_bad_input():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_mask_bad_native_bad")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    # Read in test data
-    bad_img = pkl.load(open(os.path.join(TEST_DATA, TEST_IM_BAD_NONE), 'rb'))
+    # Create a synthetic bad image
+    bad_img = np.reshape(np.random.rand(25), (5, 5))
     sz = np.shape(bad_img)
     mask10 = pcv.threshold.mask_bad(bad_img, bad_type='native')
 
@@ -6038,8 +6040,9 @@ def test_plantcv_threshold_mask_bad_nan_bad_input():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_mask_bad_nan_bad")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    # Read in test data
-    bad_img = pkl.load(open(os.path.join(TEST_DATA, TEST_IM_BAD_INF), 'rb'))
+    # Create a synthetic bad image
+    bad_img = np.reshape(np.random.rand(25), (5, 5))
+    bad_img[2, 2] = np.inf
     sz = np.shape(bad_img)
     mask11 = pcv.threshold.mask_bad(bad_img, bad_type='nan')
 
@@ -6054,19 +6057,6 @@ def test_plantcv_threshold_mask_bad_input_color_img():
     bad_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     with pytest.raises(RuntimeError):
         pcv.threshold.mask_bad(bad_img, bad_type='nan')
-
-
-# def test_plantcv_threshold_mask_bad_inf_bad_input():
-#     # Test cache directory
-#     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_mask_bad_inf_bad")
-#     os.mkdir(cache_dir)
-#     pcv.params.debug_outdir = cache_dir
-#     # Read in test data
-#     bad_img = pkl.load(open(os.path.join(TEST_DATA, TEST_IM_BAD_NAN), 'rb'))
-#     sz = np.shape(bad_img)
-#     mask12 = pcv.threshold.mask_bad(bad_img, bad_type='inf')
-#
-#     assert mask12.all() == np.zeros(sz, dtype='uint8').all()
 
 
 # ###################################
@@ -6098,8 +6088,14 @@ def test_plantcv_visualize_pseudocolor():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    r,c = img.shape
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    mask_bad = pkl.load(open(os.path.join(TEST_DATA, TEST_BAD_MASK), 'rb'))
+    # generate 200 "bad" pixels
+    mask_bad = np.zeros((r, c), dtype=np.uint8)
+    mask_bad = np.reshape(mask_bad, (-1, 1))
+    mask_bad[0:100] = 255
+
+    mask_bad = np.reshape(mask_bad, (r, c))
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
     obj_contour = contours_npz['arr_0']
     filename = os.path.join(cache_dir, 'plantcv_pseudo_image.png')
