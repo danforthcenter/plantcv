@@ -149,6 +149,7 @@ nav:
         - 'Saturation Threshold': saturation_threshold.md
         - 'Triangle Auto Threshold': triangle_threshold.md
         - 'Texture Threshold': texture_threshold.md
+        - 'Mask Bad Threshold': mask_bad_threshold.md
       - 'Transformation Methods':
           - 'Auto-Detect Color Card': find_color_card.md
           - 'Create Color Card Mask': create_color_card_mask.md
