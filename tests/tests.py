@@ -4942,8 +4942,7 @@ def test_plantcv_photosynthesis_analyze_fvfm_bad_fdark():
                       dims=["y", "x", "frame_label"])
 
     _ = pcv.photosynthesis.analyze_fvfm(data=da, mask=fmask, bins=1000)
-    check = (pcv.outputs.observations['default']['fdark_passed_qc']['value'] == False) 
-    assert check
+    assert (pcv.outputs.observations['default']['fdark_passed_qc']['value'] == False)
 
 
 # def test_plantcv_photosynthesis_analyze_fvfm_bad_input():
