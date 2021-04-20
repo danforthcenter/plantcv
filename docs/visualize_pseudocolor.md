@@ -5,7 +5,7 @@ pseudocolored image. Additionally, optional maximum and minimum values can be sp
 then the image gets saved to `pcv.params.debug_outdir`, and`pcv.params.dpi` can be set for the image that gets saved. If
 unaltered, the  matplotlib default DPI is 100 pixels per inch.
 
-**plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, background="image", cmap=None, min_value=0, max_value=255, axes=True, colorbar=True, obj_padding='auto', \*, bad_mask=None, bad_color="red"*)
+**plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, background="image", cmap=None, min_value=0, max_value=255, axes=True, colorbar=True, obj_padding='auto', bad_mask=None, bad_color="red"*)
 
 **returns** pseudocolored image (that can be saved with `pcv.print_image`)
 

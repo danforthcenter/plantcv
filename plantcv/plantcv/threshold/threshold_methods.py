@@ -449,7 +449,6 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         fatal_error(str(channel) + " is not a valid colorspace. Channel must be either 'RGB', 'HSV', or 'gray'.")
 
     # Auto-increment the device counter
-    params.device += 1
 
     # Print or plot the binary image if debug is on
     _debug(visual=masked_img, filename=os.path.join(params.debug_outdir, str(params.device) + channel + 'custom_thresh.png'))
