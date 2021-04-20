@@ -1,6 +1,7 @@
 ## Mask bad pixels Threshold
 
 Creates a binary image from a grayscale based on pixel values and the definition of "bad" pixels.
+"Bad" pixels are invalid numeric data such as not a number (nan) or infinite (inf).
 
 **plantcv.threshold.mask_bad(*img, bad_type="native"*)**
 
