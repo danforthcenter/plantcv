@@ -723,7 +723,6 @@ def mask_bad(float_img, bad_type='native'):
     :param bad_type: str
     :return: np.ndarray
     """
-    params.device += 1
     size_img = np.shape(float_img)
     if len(size_img) != 2:
         fatal_error('Input image is not a single channel image!')
