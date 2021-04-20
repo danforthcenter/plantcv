@@ -4904,9 +4904,18 @@ def test_plantcv_photosynthesis_analyze_fvfm_print_analysis_results():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_fvfm")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    fluor_filename = os.path.join(FLUOR_TEST_DATA, FLUOR_IMG_INF)
-    da, path, filename = pcv.photosynthesis.read_cropreporter(filename=fluor_filename)
+    # Read in test data
+    fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK), -1)
+    fmin = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
+    fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
     fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
+    fdark_qc = [x for x in fdark.astype(np.uint8)]
+    # Create DataArray
+    da = xr.DataArray(data=np.dstack([fdark_qc, fmin, fmax]),
+                      coords={"y": range(0, np.shape(fdark)[0]), "x": range(0, np.shape(fdark)[1]),
+                              "frame_label": ["fdark", "fmin", "fmax"]},
+                      dims=["y", "x", "frame_label"])
+
     _ = pcv.photosynthesis.analyze_fvfm(data=da, mask=fmask, bins=1000)
     result_file = os.path.join(cache_dir, "results.txt")
     pcv.print_results(result_file)
@@ -4933,7 +4942,7 @@ def test_plantcv_photosynthesis_analyze_fvfm_bad_fdark():
                       dims=["y", "x", "frame_label"])
 
     _ = pcv.photosynthesis.analyze_fvfm(data=da, mask=fmask, bins=1000)
-    check = pcv.outputs.observations['default']['fdark_passed_qc']['value'] is False
+    check = (pcv.outputs.observations['default']['fdark_passed_qc']['value'] == False) 
     assert check
 
 
