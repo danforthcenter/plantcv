@@ -9,8 +9,8 @@ from plantcv.plantcv import fatal_error
 from plantcv.plantcv.apply_mask import apply_mask
 
 
-def pseudocolor(gray_img, obj=None, mask=None, bad_mask=None, cmap=None, background="image", bad_color="red",
-                min_value=0, max_value=255, axes=True, colorbar=True, obj_padding="auto", title=None):
+def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255,
+                axes=True, colorbar=True, obj_padding="auto", title=None, bad_mask=None, bad_color="red"):
     """Pseudocolor any grayscale image to custom colormap
 
     Inputs:
@@ -18,11 +18,9 @@ def pseudocolor(gray_img, obj=None, mask=None, bad_mask=None, cmap=None, backgro
     obj         = (optional) ROI or plant contour object. If provided, the pseudocolored image gets cropped
                   down to the region of interest. default = None
     mask        = (optional) binary mask
-    bad_mask    = (optional) binary mask of pixels with "bad" values, e.g. nan or inf or any other values considered to be not informative and to be excluded from analysis. default = None
     cmap        = (optional) colormap. default is the matplotlib default, viridis
     background  = (optional) background color/type, options are "image" (gray_img), "white", or "black"
                   (requires a mask). default = 'image'
-    bad_color   = (optional) desired color to show "bad" pixels. default = "red"
     min_value   = (optional) minimum value for range of interest. default = 0
     max_value   = (optional) maximum value for range of interest. default = 255
     axes        = (optional) if False then x- and y-axis won't be displayed, nor will the title. default = True
@@ -31,17 +29,16 @@ def pseudocolor(gray_img, obj=None, mask=None, bad_mask=None, cmap=None, backgro
                   larger in each dimension than the object. An single integer is also accepted to define the padding
                   in pixels
     title       = (optional) custom title for the plot gets drawn if title is not None. default = None
-
+    bad_mask    = (optional) binary mask of pixels with "bad" values, e.g. nan or inf or any other values considered to be not informative and to be excluded from analysis. default = None
+    bad_color   = (optional) desired color to show "bad" pixels. default = "red"
     Returns:
     pseudo_image = pseudocolored image
 
     :param gray_img: numpy.ndarray
     :param obj: numpy.ndarray
     :param mask: numpy.ndarray
-    :param bad_mask: numpy.ndarray
     :param cmap: str
     :param background: str
-    :param bad_color: str
     :param min_value: numeric
     :param max_value: numeric
     :param axes: bool
@@ -49,6 +46,8 @@ def pseudocolor(gray_img, obj=None, mask=None, bad_mask=None, cmap=None, backgro
     :param obj_padding: str, int
     :param title: str
     :return pseudo_image: numpy.ndarray
+    :param bad_mask: numpy.ndarray
+    :param bad_color: str
     """
 
     # Auto-increment the device counter
