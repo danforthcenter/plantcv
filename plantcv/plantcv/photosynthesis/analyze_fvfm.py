@@ -33,18 +33,18 @@ def analyze_fvfm(data, mask, bins=256, label="default"):
     fdark = (data.sel(frame_label='fdark').data).astype(np.uint8)
     fmax = data.sel(frame_label='fmax').data.astype(np.uint8)
     fmin = data.sel(frame_label='fmin').data.astype(np.uint8)
-    mask = mask.astype(np.uint8)
+    mask_int = mask.astype(np.uint8)
 
     # QC Fdark Image
-    fdark_mask = cv2.bitwise_and(fdark, fdark, mask=mask)
+    fdark_mask = cv2.bitwise_and(fdark, fdark, mask=mask_int)
     if np.amax(fdark_mask) > 2000:
         qc_fdark = False
     else:
         qc_fdark = True
 
     # Mask Fmin and Fmax Image
-    fmin_mask = cv2.bitwise_and(fmin, fmin, mask=mask)
-    fmax_mask = cv2.bitwise_and(fmax, fmax, mask=mask)
+    fmin_mask = cv2.bitwise_and(fmin, fmin, mask=mask_int)
+    fmax_mask = cv2.bitwise_and(fmax, fmax, mask=mask_int)
 
     # Calculate Fvariable, where Fv = Fmax - Fmin (masked)
     fv = np.subtract(fmax_mask, fmin_mask)
