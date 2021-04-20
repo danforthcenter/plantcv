@@ -12,19 +12,18 @@ unaltered, the  matplotlib default DPI is 100 pixels per inch.
 - **Parameters:**
     - gray_img       - Grayscale image data
     - obj            - ROI or plant contour object (optional) if provided, the pseudocolored image gets cropped down to the region of interest. "obj" can be the 1st output of the PlantCV region of interests functions, e.g. `pcv.roi.rectangle`.
-    - mask           - Binary mask made from selected contours (optional) 
-    - bad_mask       - binary mask of pixels with "bad" values, e.g. nan or inf or any other values considered to be not informative and should be excluded from analysis. default = None
+    - mask           - Binary mask made from selected contours (optional)
     - cmap           - Custom colormap, see [here](https://matplotlib.org/tutorials/colors/colormaps.html) for tips on how to choose a colormap in Matplotlib.
-    - background     - Background color/type. Options are "image" (default), "white", or "black". A mask must be supplied in order to utilize this parameter.  
-    - bad_color      - The color that shows "bad" pixels in output pseudocolored image, default: "red"
+    - background     - Background color/type. Options are "image" (default), "white", or "black". A mask must be supplied in order to utilize this parameter.
     - min_value      - Minimum value (optional) for range of the colorbar. Default: 0
     - max_value      - Maximum value (optional) for range of the colorbar. Default: 255
     - axes           - If False then the title, x-axis, and y-axis won't be displayed (default axes=True).
     - colorbar       - If False then the colorbar won't be displayed (default colorbar=True)
     - obj_padding    - if "auto" (default), and an obj is supplied, then the image is cropped to an extent 20% larger in each dimension than the object. A single integer is also accepted to define the padding in pixels.
     - title          - The title for the pseudocolored image (default title=None) 
-
-
+    - bad_mask       - binary mask of pixels with "bad" values, e.g. nan or inf or any other values considered to be not informative and should be excluded from analysis. default = None
+    - bad_color      - The color that shows "bad" pixels in output pseudocolored image, default: "red"
+  
 - **Context:**
     - Used to pseudocolor any grayscale image to custom colormap
 - **Example use:**
