@@ -270,29 +270,93 @@ def test_plantcv_parallel_workflowconfig_invalid_enddate():
     assert not config.validate_config()
 
 
-def test_plantcv_parallel_workflowconfig_invalid_metadata_terms():
+def test_plantcv_parallel_workflowconfig_invalid_input_dir():
     # Create a test tmp directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_workflowconfig_invalid_metadata_terms")
     os.mkdir(cache_dir)
     # Create config instance
     config = plantcv.parallel.WorkflowConfig()
-    # Set invalid values in config
-    # input_dir and json are not defined by default, but are required
-    # Set an incorrect metadata term
-    config.filename_metadata.append("invalid")
+    # Set valid values in config
+    # config.input_dir = os.path.join(PARALLEL_TEST_DATA, "images")
+    config.json = os.path.join(cache_dir, "valid_config.json")
+    config.workflow = TEST_PIPELINE
     # Validate config
     assert not config.validate_config()
 
 
-def test_plantcv_parallel_workflowconfig_invalid_filename_metadata():
+def test_plantcv_parallel_workflowconfig_invalid_json():
+    # Create a test tmp directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_workflowconfig_invalid_metadata_terms")
+    os.mkdir(cache_dir)
+    # Create config instance
+    config = plantcv.parallel.WorkflowConfig()
+    # Set valid values in config
+    config.input_dir = os.path.join(PARALLEL_TEST_DATA, "images")
+    # config.json = os.path.join(cache_dir, "valid_config.json")
+    config.workflow = TEST_PIPELINE
+    # Validate config
+    assert not config.validate_config()
+
+
+def test_plantcv_parallel_workflowconfig_invalid_workflow():
+    # Create a test tmp directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_workflowconfig_invalid_metadata_terms")
+    os.mkdir(cache_dir)
+    # Create config instance
+    config = plantcv.parallel.WorkflowConfig()
+    # Set valid values in config
+    config.input_dir = os.path.join(PARALLEL_TEST_DATA, "images")
+    config.json = os.path.join(cache_dir, "valid_config.json")
+    # config.workflow = TEST_PIPELINE
+    # Validate config
+    assert not config.validate_config()
+    
+
+def test_plantcv_parallel_workflowconfig_invalid_filename_metadata_none():
     # Create a test tmp directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_workflowconfig_invalid_filename_metadata")
     os.mkdir(cache_dir)
     # Create config instance
     config = plantcv.parallel.WorkflowConfig()
+    # Set valid values in config
+    config.input_dir = os.path.join(PARALLEL_TEST_DATA, "images")
+    config.json = os.path.join(cache_dir, "valid_config.json")
+    config.workflow = TEST_PIPELINE
     # Set invalid values in config
-    # input_dir and json are not defined by default, but are required
     # Do not set required filename_metadata
+    # Validate config
+    assert not config.validate_config()
+
+
+def test_plantcv_parallel_workflowconfig_invalid_filename_metadata_bad():
+    # Create a test tmp directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_workflowconfig_invalid_filename_metadata")
+    os.mkdir(cache_dir)
+    # Create config instance
+    config = plantcv.parallel.WorkflowConfig()
+    # Set valid values in config
+    config.input_dir = os.path.join(PARALLEL_TEST_DATA, "images")
+    config.json = os.path.join(cache_dir, "valid_config.json")
+    config.workflow = TEST_PIPELINE
+    # Set an incorrect metadata term
+    config.filename_metadata.append("invalid")
+    # Validate config
+    assert not config.validate_config()
+    
+
+def test_plantcv_parallel_workflowconfig_invalid_metadata_filters():
+    #metadata_filters must be in filename_metadata
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_workflowconfig_invalid_metadata_filters")
+    os.mkdir(cache_dir)
+    # Create config instance
+    config = plantcv.parallel.WorkflowConfig()
+    # Set valid values in config
+    config.input_dir = os.path.join(PARALLEL_TEST_DATA, "images")
+    config.json = os.path.join(cache_dir, "valid_config.json")
+    config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "id"]
+    config.metadata_filters = ["exposure"]
+    config.workflow = TEST_PIPELINE
+    config.img_outdir = cache_dir
     # Validate config
     assert not config.validate_config()
 
