@@ -110,9 +110,9 @@ def main():
 
 ```
 
-**Figure 4.** Rotated `fmin` frame  
+**Figure 4.** Rotated `fmax` frame  
 
-![Screenshot](img/tutorial_images/psII/fmin2.png)
+![Screenshot](img/tutorial_images/psII/fmax_rescaled2.png)
 
 The resulting image is then thresholded with a [binary threshold](binary_threshold.md) to capture the plant material. In most cases, it is expected that pixel values
 range between 0 and 255, but our example image has pixel values from 0 to over 7000. Trial and error is a common method for selecting an appropriate threshold value.
