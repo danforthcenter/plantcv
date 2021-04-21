@@ -5995,24 +5995,16 @@ def test_plantcv_threshold_texture():
         assert 0
 
 
-def test_plantcv_threshold_mask_bad_native():
+@pytest.mark.parametrize("bad_type", ["native", "nan", "inf"])
+def test_plantcv_threshold_mask_bad(bad_type):
     # Create a synthetic bad image
     bad_img = np.reshape(np.random.rand(25), (5, 5))
     bad_img[2, 2] = np.inf
     bad_img[2, 3] = np.nan
     sz = np.shape(bad_img)
     pcv.params.debug = None
-    mask20 = pcv.threshold.mask_bad(bad_img, bad_type='native')
-    l20 = len(np.unique(mask20))
-    assert ((np.shape(mask20) == sz) and (l20 == 2))
-
-    mask21 = pcv.threshold.mask_bad(bad_img, bad_type='nan')
-    l21 = len(np.unique(mask21))
-    assert ((np.shape(mask21) == sz) and (l21 == 2))
-
-    mask22 = pcv.threshold.mask_bad(bad_img, bad_type='inf')
-    l22 = len(np.unique(mask22))
-    assert ((np.shape(mask22) == sz) and (l22 == 2))
+    mask = pcv.threshold.mask_bad(bad_img, bad_type=bad_type)
+    assert((np.shape(mask) == sz) and (len(np.unique(mask)) == 2))
 
 
 def test_plantcv_threshold_mask_bad_native_bad_input():
