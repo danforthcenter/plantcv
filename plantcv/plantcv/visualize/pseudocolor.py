@@ -29,7 +29,8 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
                   larger in each dimension than the object. An single integer is also accepted to define the padding
                   in pixels
     title       = (optional) custom title for the plot gets drawn if title is not None. default = None
-    bad_mask    = (optional) binary mask of pixels with "bad" values, e.g. nan or inf or any other values considered to be not informative and to be excluded from analysis. default = None
+    bad_mask    = (optional) binary mask of pixels with "bad" values, e.g. nan or inf or any other values considered
+                  to be not informative and to be excluded from analysis. default = None
     bad_color   = (optional) desired color to show "bad" pixels. default = "red"
     Returns:
     pseudo_image = pseudocolored image
@@ -89,16 +90,19 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
                 gray_img1 = gray_img1[y - offsety:y + h + offsety, x - offsetx:x + w + offsetx]
             else:
                 # Crop img including buffer
-                gray_img1 = cv2.copyMakeBorder(crop_img, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT, value=(0, 0, 0))
+                gray_img1 = cv2.copyMakeBorder(crop_img, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT,
+                                               value=(0, 0, 0))
 
             # Crop the mask to the same size as the image
             crop_mask = mask[y:y + h, x:x + w]
-            mask = cv2.copyMakeBorder(crop_mask, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT, value=(0, 0, 0))
+            mask = cv2.copyMakeBorder(crop_mask, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT,
+                                      value=(0, 0, 0))
 
             # Crop the bad mask if there is one
             if bad_mask is not None:
                 crop_bad_mask = bad_mask[y:y + h, x:x + w]
-                bad_mask = cv2.copyMakeBorder(crop_bad_mask, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT, value=(0, 0, 0))
+                bad_mask = cv2.copyMakeBorder(crop_bad_mask, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT,
+                                              value=(0, 0, 0))
 
         # Apply the mask
         masked_img = np.ma.array(gray_img1, mask=~mask.astype(np.bool))
@@ -192,4 +196,3 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
         plt.close()
 
     return pseudo_img
-
