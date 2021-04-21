@@ -5752,13 +5752,13 @@ def test_plantcv_transform_nonuniform_illumination_gray():
 # ##############################
 # Tests for the threshold subpackage
 # ##############################
-def test_plantcv_threshold_binary():
+@pytest.mark.parametrize("objtype", ["dark", "light"])
+def test_plantcv_threshold_binary(objtype):
     # Read in test data
     gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with object type = dark
     pcv.params.debug = None
-    _ = pcv.threshold.binary(gray_img=gray_img, threshold=25, max_value=255, object_type="dark")
-    binary_img = pcv.threshold.binary(gray_img=gray_img, threshold=25, max_value=255, object_type="light")
+    binary_img = pcv.threshold.binary(gray_img=gray_img, threshold=25, max_value=255, object_type=objtype)
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(binary_img), TEST_GRAY_DIM)):
         # Assert that the image is binary
@@ -5777,13 +5777,13 @@ def test_plantcv_threshold_binary_incorrect_object_type():
         _ = pcv.threshold.binary(gray_img=gray_img, threshold=25, max_value=255, object_type="lite")
 
 
-def test_plantcv_threshold_gaussian():
+@pytest.mark.parametrize("objtype", ["dark", "light"])
+def test_plantcv_threshold_gaussian(objtype):
     # Read in test data
     gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with object type = dark
     pcv.params.debug = None
-    _ = pcv.threshold.gaussian(gray_img=gray_img, max_value=255, object_type="dark")
-    binary_img = pcv.threshold.gaussian(gray_img=gray_img, max_value=255, object_type="light")
+    binary_img = pcv.threshold.gaussian(gray_img=gray_img, max_value=255, object_type=objtype)
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(binary_img), TEST_GRAY_DIM)):
         # Assert that the image is binary
@@ -5802,13 +5802,13 @@ def test_plantcv_threshold_gaussian_incorrect_object_type():
         _ = pcv.threshold.gaussian(gray_img=gray_img, max_value=255, object_type="lite")
 
 
-def test_plantcv_threshold_mean():
+@pytest.mark.parametrize("objtype", ["dark", "light"])
+def test_plantcv_threshold_mean(objtype):
     # Read in test data
     gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with object type = dark
     pcv.params.debug = None
-    _ = pcv.threshold.mean(gray_img=gray_img, max_value=255, object_type="dark")
-    binary_img = pcv.threshold.mean(gray_img=gray_img, max_value=255, object_type="light")
+    binary_img = pcv.threshold.mean(gray_img=gray_img, max_value=255, object_type=objtype)
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(binary_img), TEST_GRAY_DIM)):
         # Assert that the image is binary
@@ -5827,13 +5827,13 @@ def test_plantcv_threshold_mean_incorrect_object_type():
         _ = pcv.threshold.mean(gray_img=gray_img, max_value=255, object_type="lite")
 
 
-def test_plantcv_threshold_otsu():
+@pytest.mark.parametrize("objtype", ["dark", "light"])
+def test_plantcv_threshold_otsu(objtype):
     # Read in test data
     gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GREENMAG), -1)
     # Test with object set to light
     pcv.params.debug = None
-    _ = pcv.threshold.otsu(gray_img=gray_img, max_value=255, object_type="light")
-    binary_img = pcv.threshold.otsu(gray_img=gray_img, max_value=255, object_type='dark')
+    binary_img = pcv.threshold.otsu(gray_img=gray_img, max_value=255, object_type=objtype)
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(binary_img), TEST_GRAY_DIM)):
         # Assert that the image is binary
@@ -5852,22 +5852,32 @@ def test_plantcv_threshold_otsu_incorrect_object_type():
         _ = pcv.threshold.otsu(gray_img=gray_img, max_value=255, object_type="lite")
 
 
-def test_plantcv_threshold_custom_range():
+@pytest.mark.parametrize("channel", ["HSV", "LAB", "RGB"])
+def test_plantcv_threshold_custom_range_rgb(channel):
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    # Test with debug = None
+    pcv.params.debug = None
+    mask, binary_img = pcv.threshold.custom_range(img, lower_thresh=[0, 0, 0], upper_thresh=[255, 255, 255],
+                                                  channel=channel)
+    # Assert that the output image has the dimensions of the input image
+    if all([i == j] for i, j in zip(np.shape(binary_img), TEST_GRAY_DIM)):
+        # Assert that the image is binary
+        if all([i == j] for i, j in zip(np.unique(binary_img), [0, 255])):
+            assert 1
+        else:
+            assert 0
+    else:
+        assert 0
 
+
+def test_plantcv_threshold_custom_range_grayscale():
+    # Read in test data
+    gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    # Test with debug = None
     pcv.params.debug = None
     # # Test channel='gray'
-    # _, _ = pcv.threshold.custom_range(img, lower_thresh=[0], upper_thresh=[255], channel='gray')
-    _, _ = pcv.threshold.custom_range(gray_img, lower_thresh=[0], upper_thresh=[255], channel='gray')
-    # Test channel='HSV'
-    _, _ = pcv.threshold.custom_range(img, lower_thresh=[0, 0, 0], upper_thresh=[255, 255, 255], channel='HSV')
-    # Test channel='LAB'
-    _, _ = pcv.threshold.custom_range(img, lower_thresh=[0, 0, 0], upper_thresh=[255, 255, 255], channel='LAB')
-    # pcv.params.debug = 'plot'
-    # Test channel='RGB'
-    mask, binary_img = pcv.threshold.custom_range(img, lower_thresh=[0, 0, 0], upper_thresh=[255, 255, 255], channel='RGB')
+    mask, binary_img = pcv.threshold.custom_range(gray_img, lower_thresh=[0], upper_thresh=[255], channel='gray')
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(binary_img), TEST_GRAY_DIM)):
         # Assert that the image is binary
