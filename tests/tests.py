@@ -5925,20 +5925,14 @@ def test_plantcv_threshold_custom_range_bad_input_channel():
         _, _ = pcv.threshold.custom_range(img, lower_thresh=[0], upper_thresh=[2], channel='CMYK')
 
 
-def test_plantcv_threshold_saturation():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_saturation")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+@pytest.mark.parametrize("channel,expected", [["all", 1020322575], ["any", 919631745]])
+def test_plantcv_threshold_saturation(channel, expected):
     # Read in test data
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.threshold.saturation(rgb_img=rgb_img, threshold=254, channel="all")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    thresh = pcv.threshold.saturation(rgb_img=rgb_img, threshold=254, channel="any")
-    assert np.sum(thresh) == 920050455 and len(np.unique(thresh)) == 2
+    # Test with debug = None
+    pcv.params.debug = None
+    thresh = pcv.threshold.saturation(rgb_img=rgb_img, threshold=254, channel=channel)
+    assert np.sum(thresh) == expected and len(np.unique(thresh)) == 2
 
 
 def test_plantcv_threshold_saturation_bad_input():
@@ -5981,6 +5975,8 @@ def test_plantcv_threshold_triangle_incorrect_object_type():
 
 
 def test_plantcv_threshold_texture():
+    # Test with debug = None
+    pcv.params.debug = None
     gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY_SMALL), -1)
     binary_img = pcv.threshold.texture(gray_img, ksize=6, threshold=7, offset=3, texture_method='dissimilarity',
                                        borders='nearest', max_value=255)

@@ -317,6 +317,9 @@ def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity'
 
     # Threshold so higher texture measurements stand out
     bin_img = binary(gray_img=output, threshold=threshold, max_value=max_value, object_type='light')
+
+    _debug(visual=bin_img, filename=os.path.join(params.debug_outdir, str(params.device) + "_texture_mask.png"))
+
     return bin_img
 
 
@@ -451,8 +454,10 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
     # Auto-increment the device counter
 
     # Print or plot the binary image if debug is on
-    _debug(visual=masked_img, filename=os.path.join(params.debug_outdir, str(params.device) + channel + 'custom_thresh.png'))
-    _debug(visual=mask, filename=os.path.join(params.debug_outdir, str(params.device) + channel + 'custom_thresh_mask.png'))
+    _debug(visual=masked_img, filename=os.path.join(params.debug_outdir,
+                                                    str(params.device) + channel + 'custom_thresh.png'))
+    _debug(visual=mask, filename=os.path.join(params.debug_outdir,
+                                              str(params.device) + channel + 'custom_thresh_mask.png'))
     return mask, masked_img
 
 
@@ -681,9 +686,6 @@ def saturation(rgb_img, threshold=255, channel="any"):
     :param channel: str
     :return masked_img: np.ndarray
     """
-
-    params.device += 1
-
     # Mask red, green, and blue saturation separately
     b, g, r = cv2.split(rgb_img)
     b_saturated = cv2.inRange(b, threshold, 255)
@@ -705,10 +707,7 @@ def saturation(rgb_img, threshold=255, channel="any"):
     # Invert "saturated" before returning, so saturated = black
     bin_img = cv2.bitwise_not(saturated)
 
-    if params.debug == 'print':
-        print_image(bin_img, os.path.join(params.debug_outdir, str(params.device), '_saturation_threshold.png'))
-    elif params.debug == 'plot':
-        plot_image(bin_img, cmap='gray')
+    _debug(visual=bin_img, filename=os.path.join(params.debug_outdir, str(params.device), '_saturation_threshold.png'))
     return bin_img
 
 
