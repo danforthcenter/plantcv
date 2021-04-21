@@ -2,8 +2,7 @@ import os
 import re
 import datetime
 import pandas as pd
-from itertools import product
-
+import itertools
 
 # Parse metadata from filenames in a directory
 ###########################################
@@ -57,6 +56,9 @@ def metadata_parser(config):
     default_meta = pd.DataFrame(config.metadata_terms).drop(['label'])
     image_meta_complete = filtered_image_meta.merge(default_meta, how='left')
 
+    # convert nan to 'none for compatibility
+    image_meta_complete.where(pd.isna(image_meta_complete),'none')
+    
     # meta dict
     meta = image_meta_complete.set_index('path').to_dict('index')
 
@@ -153,13 +155,14 @@ def _get_image_metadata(fns, config):
     for fullfn in fns:
         fn = os.path.basename(fullfn)
         fn = os.path.splitext(fn)
+        print(fns)
         f = _parse_filename(fn[0], config.delimiter, regex) #if delimiter is a single character it will split filenam with delimiter otherwise uses regex
         # Not all images in a directory may have the same metadata structure only keep those that do
         if len(f) == meta_count:
             f.append(fullfn)
             flist.append(f)
 
-    columnnames = config.filename_metadata
+    columnnames = config.filename_metadata.copy()
     columnnames.append('path')
     try:
         fdf = pd.DataFrame(flist,
