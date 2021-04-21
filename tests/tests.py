@@ -354,10 +354,14 @@ def test_plantcv_parallel_workflowconfig_invalid_metadata_filters():
     config.input_dir = os.path.join(PARALLEL_TEST_DATA, "images")
     config.json = os.path.join(cache_dir, "valid_config.json")
     config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "id"]
-    config.metadata_filters = ["exposure"]
     config.workflow = TEST_PIPELINE
     config.img_outdir = cache_dir
+    # Set invalid metadata_filter term not present in filename_metadata
+    config.metadata_filters = ["exposure"]
     # Validate config
+    assert not config.validate_config()
+    # Another invalid metadata_filter with independent check
+    config.metadata_filters = ["timestamp"]
     assert not config.validate_config()
 
 

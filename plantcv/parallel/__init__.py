@@ -5,13 +5,16 @@ import datetime
 from plantcv.parallel.parsers import metadata_parser
 from plantcv.parallel.parsers import convert_datetime_to_unixtime
 from plantcv.parallel.parsers import check_date_range
+from plantcv.parallel.parsers import find_images
+from plantcv.parallel.parsers import parse_filename
+from plantcv.parallel.parsers import get_image_metadata
 from plantcv.parallel.job_builder import job_builder
 from plantcv.parallel.process_results import process_results
 from plantcv.parallel.multiprocess import multiprocess
-from plantcv.parallel.multiprocess import create_dask_cluster
+
 
 __all__ = ["metadata_parser", "job_builder", "process_results", "multiprocess", "convert_datetime_to_unixtime",
-           "check_date_range", "WorkflowConfig"]
+           "check_date_range", "WorkflowConfig","find_images","get_image_metadata","parse_filename"]
 
 
 class WorkflowConfig:
@@ -166,6 +169,11 @@ class WorkflowConfig:
         if self.json == "":
             print("Error: an output JSON file (json) is required but is currently undefined.", file=sys.stderr)
             checks.append(False)
+        # Validate workflow script
+        if not os.path.exists(self.workflow):
+            print(f"Error: PlantCV workflow script (workflow) is required and {self.workflow} does not exist.",
+                  file=sys.stderr)
+            checks.append(False)
         # Validate filename metadata
         if len(self.filename_metadata) == 0:
             print("Error: a list of filename metadata terms (filename_metadata) is required but is currently undefined",
@@ -178,13 +186,17 @@ class WorkflowConfig:
                     print(f"Error: the term {term} in filename_metadata is not a currently supported metadata type.",
                           file=sys.stderr)
                     checks.append(False)
-
-        # Validate workflow script
-        if not os.path.exists(self.workflow):
-            print(f"Error: PlantCV workflow script (workflow) is required and {self.workflow} does not exist.",
-                  file=sys.stderr)
-            checks.append(False)
-
+        # Are the metadata filters in the filename metadata?
+        if len(self.metadata_filters) != 0:
+            for term in self.metadata_filters:
+                if term not in self.filename_metadata:
+                    print(f"Error: the term {term} in metadata_filters must also be in the filename_metadata.",
+                            file=sys.stderr)
+                    checks.append(False)
+            if 'timestamp' in self.metadata_filters:
+                print(f"Error: the term 'timestamp' should not be used as a metadata_filter. Please use start_date and end_date.",
+                      file=sys.stderr)
+                checks.append(False)
         # Validate start_date and end_date formats
         if self.start_date is not None:
             try:
