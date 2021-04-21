@@ -3,18 +3,16 @@ import sys
 import json
 import datetime
 from plantcv.parallel.parsers import metadata_parser
-from plantcv.parallel.parsers import convert_datetime_to_unixtime
-from plantcv.parallel.parsers import check_date_range
-from plantcv.parallel.parsers import find_images
-from plantcv.parallel.parsers import parse_filename
-from plantcv.parallel.parsers import get_image_metadata
+from plantcv.parallel.parsers import _find_images
+from plantcv.parallel.parsers import _parse_filename
+from plantcv.parallel.parsers import _get_image_metadata
 from plantcv.parallel.job_builder import job_builder
 from plantcv.parallel.process_results import process_results
 from plantcv.parallel.multiprocess import multiprocess
 
 
-__all__ = ["metadata_parser", "job_builder", "process_results", "multiprocess", "convert_datetime_to_unixtime",
-           "check_date_range", "WorkflowConfig","find_images","get_image_metadata","parse_filename"]
+__all__ = ["metadata_parser", "job_builder", "process_results", "multiprocess",
+           "WorkflowConfig", "find_images", "get_image_metadata", "parse_filename"]
 
 
 class WorkflowConfig:
@@ -48,82 +46,82 @@ class WorkflowConfig:
             "job_extra": None
         }
         self.metadata_terms = {
-                # Camera settings
-                "camera": {
-                    "label": "camera identifier",
-                    "datatype": "<class 'str'>",
-                    "value": "none"
-                },
-                "imgtype": {
-                    "label": "image type",
-                    "datatype": "<class 'str'>",
-                    "value": "none"
-                },
-                "zoom": {
-                    "label": "camera zoom setting",
-                    "datatype": "<class 'str'>",
-                    "value": "none"
-                },
-                "exposure": {
-                    "label": "camera exposure setting",
-                    "datatype": "<class 'str'>",
-                    "value": "none"
-                },
-                "gain": {
-                    "label": "camera gain setting",
-                    "datatype": "<class 'str'>",
-                    "value": "none"
-                },
-                "frame": {
-                    "label": "image series frame identifier",
-                    "datatype": "<class 'str'>",
-                    "value": "none"
-                },
-                "lifter": {
-                    "label": "imaging platform height setting",
-                    "datatype": "<class 'str'>",
-                    "value": "none"
-                },
-                # Date-Time
-                "timestamp": {
-                    "label": "datetime of image",
-                    "datatype": "<class 'datetime.datetime'>",
-                    "value": None
-                },
-                # Sample attributes
-                "id": {
-                    "label": "image identifier",
-                    "datatype": "<class 'str'>",
-                    "value": "none"
-                },
-                "plantbarcode": {
-                    "label": "plant barcode identifier",
-                    "datatype": "<class 'str'>",
-                    "value": "none"
-                },
-                "treatment": {
-                    "label": "treatment identifier",
-                    "datatype": "<class 'str'>",
-                    "value": "none"
-                },
-                "cartag": {
-                    "label": "plant carrier identifier",
-                    "datatype": "<class 'str'>",
-                    "value": "none"
-                },
-                # Experiment attributes
-                "measurementlabel": {
-                    "label": "experiment identifier",
-                    "datatype": "<class 'str'>",
-                    "value": "none"
-                },
-                # Other
-                "other": {
-                    "label": "other identifier",
-                    "datatype": "<class 'str'>",
-                    "value": "none"
-                }
+            # Camera settings
+            "camera": {
+                "label": "camera identifier",
+                "datatype": "<class 'str'>",
+                "value": "none"
+            },
+            "imgtype": {
+                "label": "image type",
+                "datatype": "<class 'str'>",
+                "value": "none"
+            },
+            "zoom": {
+                "label": "camera zoom setting",
+                "datatype": "<class 'str'>",
+                "value": "none"
+            },
+            "exposure": {
+                "label": "camera exposure setting",
+                "datatype": "<class 'str'>",
+                "value": "none"
+            },
+            "gain": {
+                "label": "camera gain setting",
+                "datatype": "<class 'str'>",
+                "value": "none"
+            },
+            "frame": {
+                "label": "image series frame identifier",
+                "datatype": "<class 'str'>",
+                "value": "none"
+            },
+            "lifter": {
+                "label": "imaging platform height setting",
+                "datatype": "<class 'str'>",
+                "value": "none"
+            },
+            # Date-Time
+            "timestamp": {
+                "label": "datetime of image",
+                "datatype": "<class 'datetime.datetime'>",
+                "value": None
+            },
+            # Sample attributes
+            "id": {
+                "label": "image identifier",
+                "datatype": "<class 'str'>",
+                "value": "none"
+            },
+            "plantbarcode": {
+                "label": "plant barcode identifier",
+                "datatype": "<class 'str'>",
+                "value": "none"
+            },
+            "treatment": {
+                "label": "treatment identifier",
+                "datatype": "<class 'str'>",
+                "value": "none"
+            },
+            "cartag": {
+                "label": "plant carrier identifier",
+                "datatype": "<class 'str'>",
+                "value": "none"
+            },
+            # Experiment attributes
+            "measurementlabel": {
+                "label": "experiment identifier",
+                "datatype": "<class 'str'>",
+                "value": "none"
+            },
+            # Other
+            "other": {
+                "label": "other identifier",
+                "datatype": "<class 'str'>",
+                "value": "none"
             }
+        }
 
     # Save configuration to a file
     def save_config(self, config_file):
@@ -167,7 +165,8 @@ class WorkflowConfig:
             checks.append(False)
         # Validate JSON file
         if self.json == "":
-            print("Error: an output JSON file (json) is required but is currently undefined.", file=sys.stderr)
+            print(
+                "Error: an output JSON file (json) is required but is currently undefined.", file=sys.stderr)
             checks.append(False)
         # Validate workflow script
         if not os.path.exists(self.workflow):
@@ -191,7 +190,7 @@ class WorkflowConfig:
             for term in self.metadata_filters:
                 if term not in self.filename_metadata:
                     print(f"Error: the term {term} in metadata_filters must also be in the filename_metadata.",
-                            file=sys.stderr)
+                          file=sys.stderr)
                     checks.append(False)
             if 'timestamp' in self.metadata_filters:
                 print(f"Error: the term 'timestamp' should not be used as a metadata_filter. Please use start_date and end_date.",
@@ -203,7 +202,8 @@ class WorkflowConfig:
                 timestamp = datetime.datetime.strptime(
                     self.start_date, self.timestampformat)
             except ValueError as e:
-                print(str(e) + '\n  --> Please specify the start_date according to the timestampformat  <--\n')
+                print(str(
+                    e) + '\n  --> Please specify the start_date according to the timestampformat  <--\n')
                 checks.append(False)
         if self.end_date is not None:
             try:
