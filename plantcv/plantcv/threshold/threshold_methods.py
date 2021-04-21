@@ -353,12 +353,12 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
 
         # Separate channels
         hue = hsv_img[:, :, 0]
-        saturation = hsv_img[:, :, 1]
+        sat = hsv_img[:, :, 1]
         value = hsv_img[:, :, 2]
 
         # Make a mask for each channel
         h_mask = cv2.inRange(hue, lower_thresh[0], upper_thresh[0])
-        s_mask = cv2.inRange(saturation, lower_thresh[1], upper_thresh[1])
+        s_mask = cv2.inRange(sat, lower_thresh[1], upper_thresh[1])
         v_mask = cv2.inRange(value, lower_thresh[2], upper_thresh[2])
 
         # Apply the masks to the image
