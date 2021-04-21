@@ -465,7 +465,8 @@ def _call_threshold(gray_img, threshold, max_value, threshold_method, method_nam
         bin_img = np.uint8(bin_img)
 
     # Print or plot the binary image if debug is on
-    _debug(visual=bin_img, filename=os.path.join(params.debug_outdir, str(params.device) + method_name + str(threshold) + '.png'))
+    _debug(visual=bin_img, filename=os.path.join(params.debug_outdir,
+                                                 str(params.device) + method_name + str(threshold) + '.png'))
 
     return bin_img
 
@@ -710,17 +711,20 @@ def saturation(rgb_img, threshold=255, channel="any"):
         plot_image(bin_img, cmap='gray')
     return bin_img
 
+
 def mask_bad(float_img, bad_type='native'):
     """ Create a mask with desired "bad" pixels of the input floaat image marked.
     Inputs:
-    float_img = image represented by an nd-array (data type: float). Most probably, it is the result of some calculation based on the original image. So the datatype is float, and it is possible to have some "bad" values, i.e. nan and/or inf
+    float_img = image represented by an nd-array (data type: float). Most probably, it is the result of some
+                calculation based on the original image. So the datatype is float, and it is possible to have some
+                "bad" values, i.e. nan and/or inf
     bad_type = definition of "bad" type, can be 'nan', 'inf' or 'native'
     Returns:
     mask = A mask indicating the locations of "bad" pixels
 
-    :param float_img: np.ndarray
+    :param float_img: numpy.ndarray
     :param bad_type: str
-    :return: np.ndarray
+    :return mask: numpy.ndarray
     """
     size_img = np.shape(float_img)
     if len(size_img) != 2:
@@ -734,7 +738,7 @@ def mask_bad(float_img, bad_type='native'):
     if len(idx_nan) == 0 and len(idx_inf) == 0:
         mask = mask
         print('Neither nan nor inf appears in the current image.')
-    ## at least one of the "bad" exists
+    # at least one of the "bad" exists
     # desired bad to mark is "native"
     elif bad_type.lower() == 'native':
         # mask[np.isnan(gray_img)] = 255
