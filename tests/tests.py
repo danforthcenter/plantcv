@@ -595,7 +595,33 @@ def test_plantcv_parallel_workflowconfig_subdaily_timestampformat():
     }
     }
 
+def test_plantcv_parallel_find_images_invalid_path():
+    config = plantcv.parallel.WorkflowConfig()
+    config.input_dir = 'invalidpath'
+    config.json = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_metadata_parser_snapshot_outside_daterange",
+                               "output.json")
+    config.filename_metadata = ["imgtype", "camera",
+                                "frame", "zoom", "lifter", "gain", "exposure", "id"]
+    config.workflow = TEST_PIPELINE
+
+    with pytest.raises(ValueError):
+        _ = plantcv.parallel.metadata_parser(config)
+
+
+def test_plantcv_parallel_find_images_no_files():
+    config = plantcv.parallel.WorkflowConfig()
+    config.input_dir = '.'
+    config.json = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_metadata_parser_snapshot_outside_daterange",
+                               "output.json")
+    config.filename_metadata = ["imgtype", "camera",
+                                "frame", "zoom", "lifter", "gain", "exposure", "id"]
+    config.workflow = TEST_PIPELINE
+    config.include_all_subdirs = False
     
+    with pytest.raises(RuntimeError, match=r'No files with extension'):
+        _ = plantcv.parallel.metadata_parser(config)
+
+   
 def test_plantcv_parallel_check_date_range_wrongdateformat():
     start_date = 10
     end_date = 10

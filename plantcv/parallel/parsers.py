@@ -325,12 +325,8 @@ def _get_image_metadata(fns, config):
 
     columnnames = config.filename_metadata.copy()
     columnnames.append('path')
-    try:
-        fdf = pd.DataFrame(flist,
-                           columns=columnnames)
-    except ValueError as e:
-        raise ValueError(
-            'The filenames did have correctly formated metadata as specified by delimiter argument.') from e
+    fdf = pd.DataFrame(flist,
+                        columns=columnnames)
 
     return(fdf)
 
