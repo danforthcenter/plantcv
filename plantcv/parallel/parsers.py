@@ -23,12 +23,18 @@ def metadata_parser(config):
     # Configured start and end datetime in Unix time
     start_date = config.start_date
     if start_date is None:
-        start_date = datetime.datetime(1970, 1, 1, 0, 0, 1)
+        start_date = datetime.datetime(1900, 1, 1, 0, 0, 0)
     else:
         start_date = datetime.datetime.strptime(start_date, config.timestampformat)
     end_date = config.end_date
     if end_date is None:
         end_date = datetime.datetime.now()
+        datestr = end_date.strftime(config.timestampformat)
+        # if timestampformat does not include year then the strptime will use year 1900.
+        # we need to make sure a timestamp without year still is filtered correctly by end_date and start_date 
+        if datetime.datetime.strptime(datestr, config.timestampformat).year == 1900:
+            nextyear = (end_date+datetime.timedelta(days=366)).year
+            end_date = datetime.datetime(nextyear,12,31,23,59,59)
     else:
         end_date = datetime.datetime.strptime(end_date, config.timestampformat)
 
@@ -179,12 +185,16 @@ def metadata_parser(config):
         if 'timestamp' in config.filename_metadata:
             filtered_image_meta['timestamp'] = pd.to_datetime(filtered_image_meta.timestamp, format = config.timestampformat)
             filtered_image_meta = filtered_image_meta.query('timestamp >= @start_date and timestamp <= @end_date')
-
+            filtered_image_meta['timestamp'] = filtered_image_meta.timestamp.dt.strftime(config.timestampformat)
+            
         # add missing metadata fields from default metadata dict
         default_meta = pd.DataFrame(config.metadata_terms).drop(['label','datatype'])
         if len(filtered_image_meta) > 0:
+            # can't perform left join wiht datetime columns so if you need to keep timestamp as a datetime object then filter and drop default meta:
+            # missing_meta = default_meta.drop(default_meta.filter(filtered_image_meta,axis=1), axis=1)
+            # image_meta_complete = filtered_image_meta.merge(missing_meta, how='cross')
             image_meta_complete = filtered_image_meta.merge(default_meta, how='left')
-            # convert nan to 'none for compatibility except timstamp
+            # convert nan to 'none' for compatibility except timstamp
             image_meta_complete = image_meta_complete.where(pd.notna(image_meta_complete),'none')
             # pandas uses nan for missing values. convert timestamp back to None if not specified
             if 'timestamp' not in config.filename_metadata:
