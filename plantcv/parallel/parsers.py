@@ -25,16 +25,17 @@ def metadata_parser(config):
     if start_date is None:
         start_date = datetime.datetime(1900, 1, 1, 0, 0, 0)
     else:
-        start_date = datetime.datetime.strptime(start_date, config.timestampformat)
+        start_date = datetime.datetime.strptime(
+            start_date, config.timestampformat)
     end_date = config.end_date
     if end_date is None:
         end_date = datetime.datetime.now()
         datestr = end_date.strftime(config.timestampformat)
         # if timestampformat does not include year then the strptime will use year 1900.
-        # we need to make sure a timestamp without year still is filtered correctly by end_date and start_date 
+        # we need to make sure a timestamp without year still is filtered correctly by end_date and start_date
         if datetime.datetime.strptime(datestr, config.timestampformat).year == 1900:
             nextyear = (end_date+datetime.timedelta(days=366)).year
-            end_date = datetime.datetime(nextyear,12,31,23,59,59)
+            end_date = datetime.datetime(nextyear, 12, 31, 23, 59, 59)
     else:
         end_date = datetime.datetime.strptime(end_date, config.timestampformat)
 
@@ -81,14 +82,17 @@ def metadata_parser(config):
             img_list = img_list_str.split(';')
             for img in img_list:
                 if len(img) != 0:
-                    dirpath = os.path.join(config.input_dir, 'snapshot' + data[colnames['id']])
+                    dirpath = os.path.join(
+                        config.input_dir, 'snapshot' + data[colnames['id']])
                     filename = img + '.' + config.imgformat
                     if not os.path.exists(os.path.join(dirpath, filename)):
-                        print(f"Something is wrong, file {dirpath}/{filename} does not exist", file=sys.stderr)
+                        print(
+                            f"Something is wrong, file {dirpath}/{filename} does not exist", file=sys.stderr)
                         continue
                         # raise IOError("Something is wrong, file {0}/{1} does not exist".format(dirpath, filename))
                     # Metadata from image file name
-                    metadata = _parse_filename(filename=img, delimiter=config.delimiter, regex=regex)
+                    metadata = _parse_filename(
+                        filename=img, delimiter=config.delimiter, regex=regex)
                     # Not all images in a directory may have the same metadata structure only keep those that do
                     if len(metadata) == meta_count:
                         # Image metadata
@@ -147,21 +151,25 @@ def metadata_parser(config):
                                                     if 'frame' in config.filename_metadata:
                                                         coframe = meta_parts[metadata_index['frame']]
                                                         if cocamera == img_meta['camera'] and coframe == img_meta['frame']:
-                                                            img_meta['coimg'] = coimg + '.' + config.imgformat
+                                                            img_meta['coimg'] = coimg + \
+                                                                '.' + config.imgformat
                                                             coimg_pass = 1
                                                     else:
                                                         if cocamera == img_meta['camera']:
-                                                            img_meta['coimg'] = coimg + '.' + config.imgformat
+                                                            img_meta['coimg'] = coimg + \
+                                                                '.' + config.imgformat
                                                             coimg_pass = 1
                                                 else:
-                                                    img_meta['coimg'] = coimg + '.' + config.imgformat
+                                                    img_meta['coimg'] = coimg + \
+                                                        '.' + config.imgformat
                                                     coimg_pass = 1
                                 if coimg_pass == 0:
-                                    print(f"Could not find an image to coprocess with {img_path}")
+                                    print(
+                                        f"Could not find an image to coprocess with {img_path}")
                             meta[filename] = img_meta
                         elif coimg_store == 1:
                             meta[filename] = img_meta
-                            
+
     else:
         # parse metadata from filenames
         image_filenames = _find_images(config)
@@ -173,35 +181,46 @@ def metadata_parser(config):
         else:
             # convert metadata_filters to dataframe
             # for scalars (single filter values) the values must be a list otherwise you need to specify index for dataframe
-            # to support multiple filter values per metadata term (hopefully one day!) all key values must be a list if key values are of different lengths. 
+            # to support multiple filter values per metadata term (hopefully one day!) all key values must be a list if key values are of different lengths.
             for key in config.metadata_filters.keys():
                 if not isinstance(config.metadata_filters[key], list):
-                    config.metadata_filters[key] = config.metadata_filters[key].split(',') #make scalar values a list for dataframe conversion. hope no one is using a comma in their metadata!
+                    # make scalar values a list for dataframe conversion. hope no one is using a comma in their metadata!
+                    config.metadata_filters[key] = config.metadata_filters[key].split(
+                        ',')
             # we need all combinations
-            metadata_filter = pd.DataFrame(list(itertools.product(*config.metadata_filters.values())), columns=config.metadata_filters.keys())
+            metadata_filter = pd.DataFrame(list(itertools.product(
+                *config.metadata_filters.values())), columns=config.metadata_filters.keys())
             # inner merge to filter for desired metadata terms
-            filtered_image_meta = all_image_meta.merge(metadata_filter, how='inner')
-            
+            filtered_image_meta = all_image_meta.merge(
+                metadata_filter, how='inner')
+
         if 'timestamp' in config.filename_metadata:
-            filtered_image_meta['timestamp'] = pd.to_datetime(filtered_image_meta.timestamp, format = config.timestampformat)
-            filtered_image_meta = filtered_image_meta.query('timestamp >= @start_date and timestamp <= @end_date')
-            filtered_image_meta['timestamp'] = filtered_image_meta.timestamp.dt.strftime(config.timestampformat)
-            
+            filtered_image_meta['timestamp'] = pd.to_datetime(
+                filtered_image_meta.timestamp, format=config.timestampformat)
+            filtered_image_meta = filtered_image_meta.query(
+                'timestamp >= @start_date and timestamp <= @end_date')
+            filtered_image_meta['timestamp'] = filtered_image_meta.timestamp.dt.strftime(
+                config.timestampformat)
+
         # add missing metadata fields from default metadata dict
-        default_meta = pd.DataFrame(config.metadata_terms).drop(['label','datatype'])
+        default_meta = pd.DataFrame(
+            config.metadata_terms).drop(['label', 'datatype'])
         if len(filtered_image_meta) > 0:
             # can't perform left join wiht datetime columns so if you need to keep timestamp as a datetime object then filter and drop default meta:
             # missing_meta = default_meta.drop(default_meta.filter(filtered_image_meta,axis=1), axis=1)
             # image_meta_complete = filtered_image_meta.merge(missing_meta, how='cross')
-            image_meta_complete = filtered_image_meta.merge(default_meta, how='left')
+            image_meta_complete = filtered_image_meta.merge(
+                default_meta, how='left')
             # convert nan to 'none' for compatibility except timstamp
-            image_meta_complete = image_meta_complete.where(pd.notna(image_meta_complete),'none')
+            image_meta_complete = image_meta_complete.where(
+                pd.notna(image_meta_complete), 'none')
             # pandas uses nan for missing values. convert timestamp back to None if not specified
             if 'timestamp' not in config.filename_metadata:
                 image_meta_complete['timestamp'] = None
 
             # add basename for compatibility
-            image_meta_complete['filename']=image_meta_complete.path.apply(os.path.basename)
+            image_meta_complete['filename'] = image_meta_complete.path.apply(
+                os.path.basename)
 
             # meta dict
             meta = image_meta_complete.set_index('filename').to_dict('index')
@@ -230,16 +249,18 @@ def _find_images(config):
         raise ValueError('the path %s does not exist' % config.input_dir)
 
     if config.include_all_subdirs is False:
-        fns = [fn for fn in glob.glob(pathname=os.path.join(config.input_dir, '*%s' % config.imgformat))]
+        fns = [fn for fn in glob.glob(pathname=os.path.join(
+            config.input_dir, '*%s' % config.imgformat))]
     else:
         fns = []
         for root, dirs, files in os.walk(config.input_dir):
             for file in files:
                 if file.endswith(config.imgformat):
                     fns.append(os.path.join(root, file))
-        
+
     if len(fns) == 0:
-        raise RuntimeError('No files with extension %s were found in the directory specified.' % config.imgformat)
+        raise RuntimeError(
+            'No files with extension %s were found in the directory specified.' % config.imgformat)
 
     return(fns)
 
@@ -270,7 +291,6 @@ def _parse_filename(filename, delimiter, regex):
     return metadata
 
 
-
 def _get_image_metadata(fns, config):
     """Get image filenames and return dataframe of metadata from filenames
 
@@ -285,10 +305,10 @@ def _get_image_metadata(fns, config):
     Raises:
         ValueError: if the filenames can't be parsed using the passed delimiter
     """
-    
+
     # How many metadata terms are in the files we intend to process?
     meta_count = len(config.filename_metadata)
-    
+
     # Compile regex (even if it's only a delimiter character)
     regex = re.compile(config.delimiter)
 
@@ -296,7 +316,8 @@ def _get_image_metadata(fns, config):
     for fullfn in fns:
         fn = os.path.basename(fullfn)
         fn = os.path.splitext(fn)
-        f = _parse_filename(fn[0], config.delimiter, regex) #if delimiter is a single character it will split filenam with delimiter otherwise uses regex
+        # if delimiter is a single character it will split filenam with delimiter otherwise uses regex
+        f = _parse_filename(fn[0], config.delimiter, regex)
         # Not all images in a directory may have the same metadata structure only keep those that do
         if len(f) == meta_count:
             f.append(fullfn)
@@ -306,9 +327,10 @@ def _get_image_metadata(fns, config):
     columnnames.append('path')
     try:
         fdf = pd.DataFrame(flist,
-                        columns=columnnames)
+                           columns=columnnames)
     except ValueError as e:
-        raise ValueError('The filenames did have correctly formated metadata as specified by delimiter argument.') from e
+        raise ValueError(
+            'The filenames did have correctly formated metadata as specified by delimiter argument.') from e
 
     return(fdf)
 
@@ -334,7 +356,8 @@ def check_date_range(start_date, end_date, img_time, date_format):
     try:
         img_time = datetime.datetime.strptime(img_time, date_format)
     except ValueError as e:
-        raise SystemExit(str(e) + '\n  --> Please specify the correct timestampformat argument <--\n')
+        raise SystemExit(
+            str(e) + '\n  --> Please specify the correct timestampformat argument <--\n')
 
     # Does the image date-time fall outside or inside the included range
     if img_time < start_date or img_time > end_date:
@@ -342,4 +365,3 @@ def check_date_range(start_date, end_date, img_time, date_format):
     else:
         return True
 ###########################################
-
