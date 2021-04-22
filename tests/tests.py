@@ -6094,7 +6094,7 @@ def test_plantcv_visualize_pseudocolor_mask(bkgrd, axes, pad):
     mask_bad[0:100] = 255
     mask_bad = np.reshape(mask_bad, (r, c))
     pseudo_img = pcv.visualize.pseudocolor(gray_img=img, obj=obj_contour, mask=mask, background=bkgrd,
-                                           bad_mask=mask_bad, title="Pseudocolored image", axes=axes)
+                                           bad_mask=mask_bad, title="Pseudocolored image", axes=axes, obj_padding=pad)
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(pseudo_img), TEST_BINARY_DIM)):
         assert 1
