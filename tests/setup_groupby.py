@@ -2,6 +2,7 @@ import os
 import plantcv.parallel
 import re
 import pandas as pd
+from itertools import product
 
 PARALLEL_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "parallel_data")
 TEST_TMPDIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".cache")
@@ -16,7 +17,7 @@ config.input_dir = os.path.join(PARALLEL_TEST_DATA, TEST_SNAPSHOT_DIR)
 config.json = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_metadata_parser_fail_images", "output.json")
 config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
 config.workflow = TEST_PIPELINE
-config.metadata_filters = {"imgtype": ["VIS","NIR"],"camera":"SV"}#{"cartag":"A1",
+config.metadata_filters = {"imgtype": "VIS","camera":["SV","TV"]}#{"cartag":"A1",
 config.imgformat = "jpg"
 config.coprocess = "NIR"
 # config.start_date = "1970-01-01 00:00:00.0"
