@@ -36,11 +36,12 @@ def sample_images(source_path, dest_path, num=100):
         out_file.write(header)
 
         # Get random snapshots
-        random_index = random.sample(range(0, len(line_array)), num)
+        random_index = random.sample(range(0, len(line_array) - 1), num)
         for i in random_index:
-            out_file.write(','.join(line_array[i]))
-            snap_path = os.path.join(source_path, "snapshot" + line_array[i][1])
-            folder_path = os.path.join(dest_path, "snapshot" + line_array[i][1])
+            row = line_array[int(i)]
+            out_file.write(','.join(row))
+            snap_path = os.path.join(source_path, "snapshot" + row[1])
+            folder_path = os.path.join(dest_path, "snapshot" + row[1])
             if not os.path.exists(folder_path):
                 os.mkdir(folder_path)  # the beginning of folder_path (dest_path) already exists from above
             for root, dirs, files in os.walk(snap_path):
@@ -62,4 +63,4 @@ def sample_images(source_path, dest_path, num=100):
         random_index = random.sample(range(0, len(img_element_array) - 1), num)
         # Copy images over to destination
         for i in random_index:
-            shutil.copy(img_element_array[i], dest_path)
+            shutil.copy(img_element_array[int(i)], dest_path)
