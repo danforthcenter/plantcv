@@ -831,16 +831,6 @@ def test_plantcv_parallel_multiprocess_create_dask_cluster_invalid_cluster():
         _ = plantcv.parallel.create_dask_cluster(cluster="Skynet", cluster_config={})
 
 
-def test_plantcv_parallel_convert_datetime_to_unixtime():
-    unix_time = plantcv.parallel.convert_datetime_to_unixtime(timestamp_str="1970-01-01", date_format="%Y-%m-%d")
-    assert unix_time == 0
-
-
-def test_plantcv_parallel_convert_datetime_to_unixtime_bad_strptime():
-    with pytest.raises(SystemExit):
-        _ = plantcv.parallel.convert_datetime_to_unixtime(timestamp_str="1970-01-01", date_format="%Y-%m")
-
-
 def test_plantcv_parallel_multiprocess():
     image_name = list(METADATA_VIS_ONLY.keys())[0]
     image_path = os.path.join(METADATA_VIS_ONLY[image_name]['path'], image_name)
