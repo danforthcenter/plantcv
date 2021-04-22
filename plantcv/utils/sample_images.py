@@ -6,7 +6,7 @@ from plantcv.plantcv import fatal_error
 
 def sample_images(source_path, dest_path, num=100):
     if not os.path.exists(source_path):
-        raise IOError("Directory does not exist: {0}".format(source_path))
+        raise IOError(f"Directory does not exist: {source_path}")
 
     if not os.path.exists(dest_path):
         os.makedirs(dest_path)  # exist_ok argument does not exist in python 2
@@ -31,8 +31,7 @@ def sample_images(source_path, dest_path, num=100):
 
         # Check to make sure number of imgs to select is less than number of images found
         if num > len(line_array):
-            fatal_error("Number of images found ({0}) less than 'num'.".
-                            format(len(line_array)))
+            fatal_error(f"Number of images found ({len(line_array)}) less than 'num'.")
 
         for i in range(0, num):
             r = random.randint(0, len(line_array) - 1)
@@ -62,8 +61,7 @@ def sample_images(source_path, dest_path, num=100):
 
         # Check to make sure number of imgs to select is less than number of images found
         if num > len(img_element_array):
-            fatal_error("Number of images found ({0}) less than 'num'.".
-                            format(len(img_element_array)))
+            fatal_error(f"Number of images found ({len(img_element_array)}) less than 'num'.")
 
         # Get random images
         for i in range(0, num):
