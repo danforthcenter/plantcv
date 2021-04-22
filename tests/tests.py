@@ -16,7 +16,7 @@ import plantcv.utils
 # Import matplotlib and use a null Template to block plotting to screen
 # This will let us test debug = "plot"
 import matplotlib
-import pickle as pkl
+import matplotlib.pyplot as plt
 import dask
 from dask.distributed import Client
 
@@ -2754,6 +2754,21 @@ def test_plantcv_print_image_plotnine():
     img = ggplot(data=dataset)
     filename = os.path.join(cache_dir, 'plantcv_print_image.png')
     pcv.print_image(img=img, filename=filename)
+    # Assert that the file was created
+    assert os.path.exists(filename) is True
+
+
+def test_plantcv_print_image_matplotlib():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_print_image_plotnine")
+    os.mkdir(cache_dir)
+    # Input data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    plt.figure()
+    plt.imshow(img)
+    plot = plt.gcf()
+    filename = os.path.join(cache_dir, 'plantcv_print_image.png')
+    pcv.print_image(img=plot, filename=filename)
     # Assert that the file was created
     assert os.path.exists(filename) is True
 
