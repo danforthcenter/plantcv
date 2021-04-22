@@ -6052,42 +6052,46 @@ def test_plantcv_visualize_auto_threshold_methods():
     assert len(labeled_imgs) == 5 and np.shape(labeled_imgs[0])[0] == np.shape(img)[0]
 
 
-def test_plantcv_visualize_pseudocolor():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_pseudocolor")
-    os.mkdir(cache_dir)
+@pytest.mark.parametrize("debug,axes", [["print", True], ["plot", False]])
+def test_plantcv_visualize_pseudocolor(debug, axes, tmpdir):
+    # Create a tmp directory
+    cache_dir = tmpdir.mkdir("sub")
     pcv.params.debug_outdir = cache_dir
+    # Input image
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    r,c = img.shape
-    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    r, c = img.shape
     # generate 200 "bad" pixels
     mask_bad = np.zeros((r, c), dtype=np.uint8)
     mask_bad = np.reshape(mask_bad, (-1, 1))
     mask_bad[0:100] = 255
-
     mask_bad = np.reshape(mask_bad, (r, c))
-    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
-    obj_contour = contours_npz['arr_0']
-    filename = os.path.join(cache_dir, 'plantcv_pseudo_image.png')
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.visualize.pseudocolor(gray_img=img, mask=None)
-    _ = pcv.visualize.pseudocolor(gray_img=img, mask=None)
+    # Debug mode
+    pcv.params.debug = debug
+    pseudo_img = pcv.visualize.pseudocolor(gray_img=img, mask=None, title="Pseudocolored image", axes=axes,
+                                           bad_mask=mask_bad)
+    # Assert that the output image has the dimensions of the input image
+    assert all([i == j] for i, j in zip(np.shape(pseudo_img), TEST_BINARY_DIM))
 
-    pimg = pcv.visualize.pseudocolor(gray_img=img, mask=mask, min_value=10, max_value=200)
-    pcv.print_image(pimg, filename)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="image")
-    _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="image", title="customized title")
-    _ = pcv.visualize.pseudocolor(gray_img=img, mask=None, title="customized title")
-    _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="black", obj=obj_contour, axes=False,
-                                  colorbar=False)
-    _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="image", obj=obj_contour, obj_padding=15)
-    _ = pcv.visualize.pseudocolor(gray_img=img, mask=None, axes=False, colorbar=False)
+
+@pytest.mark.parametrize("bkgrd,axes,pad", [["image", True, "auto"], ["white", False, 1], ["black", True, "auto"]])
+def test_plantcv_visualize_pseudocolor_mask(bkgrd, axes, pad):
     # Test with debug = None
     pcv.params.debug = None
-    _ = pcv.visualize.pseudocolor(gray_img=img, mask=None)
-    pseudo_img = pcv.visualize.pseudocolor(gray_img=img, obj=obj_contour, mask=mask, background="white", bad_mask=mask_bad)
+    # Input image
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    # Input mask
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    # Input contours
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
+    obj_contour = contours_npz['arr_0']
+    r, c = img.shape
+    # generate 200 "bad" pixels
+    mask_bad = np.zeros((r, c), dtype=np.uint8)
+    mask_bad = np.reshape(mask_bad, (-1, 1))
+    mask_bad[0:100] = 255
+    mask_bad = np.reshape(mask_bad, (r, c))
+    pseudo_img = pcv.visualize.pseudocolor(gray_img=img, obj=obj_contour, mask=mask, background=bkgrd,
+                                           bad_mask=mask_bad, title="Pseudocolored image", axes=axes)
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(pseudo_img), TEST_BINARY_DIM)):
         assert 1
@@ -6124,6 +6128,11 @@ def test_plantcv_visualize_pseudocolor_bad_padding():
     obj_contour = contours_npz['arr_0']
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, obj=obj_contour, obj_padding="pink")
+
+
+def test_plantcv_visualize_pseudocolor_bad_mask():
+    # Test with debug = None
+    pcv.params.debug = None
 
 
 def test_plantcv_visualize_colorize_masks():
