@@ -5852,13 +5852,16 @@ def test_plantcv_threshold_otsu_incorrect_object_type():
         _ = pcv.threshold.otsu(gray_img=gray_img, max_value=255, object_type="lite")
 
 
-@pytest.mark.parametrize("channel", ["HSV", "LAB", "RGB"])
-def test_plantcv_threshold_custom_range_rgb(channel):
+@pytest.mark.parametrize("channel,lower_thresh,upper_thresh", [["HSV", [0, 0, 0], [255, 255, 255]],
+                                                               ["LAB", [0, 0, 0], [255, 255, 255]],
+                                                               ["RGB", [0, 0, 0], [255, 255, 255]],
+                                                               ["GRAY", [0], [255]]])
+def test_plantcv_threshold_custom_range_rgb(channel, lower_thresh, upper_thresh):
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     # Test with debug = None
     pcv.params.debug = None
-    mask, binary_img = pcv.threshold.custom_range(img, lower_thresh=[0, 0, 0], upper_thresh=[255, 255, 255],
+    mask, binary_img = pcv.threshold.custom_range(img, lower_thresh=lower_thresh, upper_thresh=upper_thresh,
                                                   channel=channel)
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(binary_img), TEST_GRAY_DIM)):
