@@ -616,11 +616,27 @@ def test_plantcv_parallel_find_images_no_files():
     config.filename_metadata = ["imgtype", "camera",
                                 "frame", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = TEST_PIPELINE
-    config.include_all_subdirs = False
+    config.include_all_subdirs = False 
     
     with pytest.raises(RuntimeError, match=r'No files with extension'):
         _ = plantcv.parallel.metadata_parser(config)
 
+
+def test_plantcv_parallel_metadata_parser_unexpected_mergeerror():
+    config = plantcv.parallel.WorkflowConfig()
+    config.input_dir = os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR2)
+    config.json = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_metadata_parser_snapshot_outside_daterange",
+                               "output.json")
+    config.filename_metadata = ["imgtype", "camera"]
+    config.workflow = TEST_PIPELINE
+    config.imgformat = 'jpg'
+
+    try:
+        meta = plantcv.parallel.metadata_parser(config)
+    except pd.errors.MergeError as e:
+        raise pytest.fail("Unexpected MergeError: {0}".format(e))
+
+    assert meta == {}
    
 def test_plantcv_parallel_check_date_range_wrongdateformat():
     start_date = 10

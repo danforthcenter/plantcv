@@ -176,7 +176,7 @@ def metadata_parser(config):
         all_image_meta = _get_image_metadata(image_filenames, config)
 
         # if metadata filters are provided then filter dataframe
-        if config.metadata_filters is None:
+        if len(config.metadata_filters) == 0:
             filtered_image_meta = all_image_meta
         else:
             # convert metadata_filters to dataframe
@@ -202,10 +202,10 @@ def metadata_parser(config):
             filtered_image_meta['timestamp'] = filtered_image_meta.timestamp.dt.strftime(
                 config.timestampformat)
 
-        # add missing metadata fields from default metadata dict
-        default_meta = pd.DataFrame(
-            config.metadata_terms).drop(['label', 'datatype'])
         if len(filtered_image_meta) > 0:
+            # add missing metadata fields from default metadata dict
+            default_meta = pd.DataFrame(
+                config.metadata_terms).drop(['label', 'datatype'])
             # can't perform left join with datetime columns so if you need to keep timestamp as a datetime object then filter and drop default meta that is already in dataframe and then do a cross join:
             # missing_meta = default_meta.drop(default_meta.filter(filtered_image_meta,axis=1), axis=1)
             # image_meta_complete = filtered_image_meta.merge(missing_meta, how='cross')
