@@ -12,8 +12,6 @@ def sample_images(source_path, dest_path, num=100):
         os.makedirs(dest_path)  # exist_ok argument does not exist in python 2
 
     img_element_array = []
-    sample_array = []
-    num_images = []
     img_extensions = ['.png', '.jpg', '.jpeg', '.tif', '.tiff', '.gif']
 
     # If SnapshotInfo exists then need to make a new csv for the random image sample
@@ -33,19 +31,16 @@ def sample_images(source_path, dest_path, num=100):
         if num > len(line_array):
             fatal_error(f"Number of images found ({len(line_array)}) less than 'num'.")
 
-        for i in range(0, num):
-            r = random.randint(0, len(line_array) - 1)
-            while r in num_images:
-                r = random.randint(0, len(line_array) - 1)
-            sample_array.append(line_array[r])
-            num_images.append(r)
-
+        # Create SnapshotInfo file
         out_file = open(os.path.join(dest_path, 'SnapshotInfo.csv'), 'w')
         out_file.write(header)
-        for element in sample_array:
-            out_file.write(','.join(element))
-            snap_path = os.path.join(source_path, "snapshot" + element[1])
-            folder_path = os.path.join(dest_path, "snapshot" + element[1])
+
+        # Get random snapshots
+        random_index = random.sample(range(0, len(line_array)), num)
+        for i in random_index:
+            out_file.write(','.join(line_array[i]))
+            snap_path = os.path.join(source_path, "snapshot" + line_array[i][1])
+            folder_path = os.path.join(dest_path, "snapshot" + line_array[i][1])
             if not os.path.exists(folder_path):
                 os.mkdir(folder_path)  # the beginning of folder_path (dest_path) already exists from above
             for root, dirs, files in os.walk(snap_path):
@@ -64,13 +59,7 @@ def sample_images(source_path, dest_path, num=100):
             fatal_error(f"Number of images found ({len(img_element_array)}) less than 'num'.")
 
         # Get random images
-        for i in range(0, num):
-            r = random.randint(0, len(img_element_array) - 1)
-            while r in num_images:
-                r = random.randint(0, len(img_element_array) - 1)
-            sample_array.append(img_element_array[r])
-            num_images.append(r)
-
+        random_index = random.sample(range(0, len(img_element_array) - 1), num)
         # Copy images over to destination
-        for element in sample_array:
-            shutil.copy(element, dest_path)
+        for i in random_index:
+            shutil.copy(img_element_array[i], dest_path)
