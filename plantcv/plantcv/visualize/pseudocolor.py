@@ -147,8 +147,6 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
             # Include image title
             if title is not None:
                 plt.title(title)
-            else:
-                plt.title('Pseudocolored image')
         else:
             # Remove axes
             plt.xticks([])
@@ -174,8 +172,6 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
             # Include image title
             if title is not None:
                 plt.title(title)
-            else:
-                plt.title('Pseudocolored image')
         else:
             # Remove axes
             plt.xticks([])
