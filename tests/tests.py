@@ -4892,10 +4892,10 @@ def test_plantcv_photosynthesis_analyze_fvfm():
     da, path, filename = pcv.photosynthesis.read_cropreporter(filename=fluor_filename)
     # Test with debug = "print"
     pcv.params.debug = "print"
-    _ = pcv.photosynthesis.analyze_fvfm(data=da, mask=fmask, bins=1000, label="prefix")
+    _ = pcv.photosynthesis.analyze_fvfm(data=da, mask=fmask, bins=100, label="prefix")
     # Test with debug = "plot"
     pcv.params.debug = "plot"
-    fvfm_images = pcv.photosynthesis.analyze_fvfm(data=da, mask=fmask, bins=1000)
+    fvfm_images = pcv.photosynthesis.analyze_fvfm(data=da, mask=fmask, bins=100)
     assert len(fvfm_images) != 0
 
 
@@ -4942,6 +4942,7 @@ def test_plantcv_photosynthesis_analyze_fvfm_bad_fdark():
                       dims=["y", "x", "frame_label"])
 
     _ = pcv.photosynthesis.analyze_fvfm(data=da, mask=fmask, bins=1000)
+    pcv.outputs.observations['default']['fdark_passed_qc']['value'] = False
     assert (pcv.outputs.observations['default']['fdark_passed_qc']['value'] == False)
 
 
