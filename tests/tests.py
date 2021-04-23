@@ -860,6 +860,7 @@ HYPERSPECTRAL_HDR_SMALL_RANGE = {'description': '{[HEADWALL Hyperspec III]}', 's
                                  'wavelength': ['379.027', '379.663', '380.3', '380.936', '381.573', '382.209']}
 FLUOR_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "photosynthesis_data")
 FLUOR_IMG_INF = "PSII_HDR_supopt_temp_btx623_22_rep1.INF"
+FLUOR_NPQ_IMG_INF = "PSII_HDR_020321_WT_TOP_1.INF"
 TEST_COLOR_DIM = (2056, 2454, 3)
 TEST_GRAY_DIM = (2056, 2454)
 TEST_BINARY_DIM = TEST_GRAY_DIM
@@ -4945,7 +4946,47 @@ def test_plantcv_photosynthesis_analyze_fvfm_bad_fdark():
     pcv.outputs.observations['default']['fdark_passed_qc']['value'] = False
     assert (pcv.outputs.observations['default']['fdark_passed_qc']['value'] == False)
 
+def test_plantcv_photosynthesis_analyze_npq():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_fvfm")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # filename = os.path.join(cache_dir, 'plantcv_fvfm_hist.png')
+    # Read in test data
+    fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
+    fluor_filename = os.path.join(FLUOR_TEST_DATA, FLUOR_NPQ_IMG_INF)
+    da, path, filename = pcv.photosynthesis.read_cropreporter(filename=fluor_filename)
+    # Test with debug = "print"
+    pcv.params.debug = "print"
+    _ = pcv.photosynthesis.analyze_fvfm(data=da, mask=fmask, bins=100, label="prefix")
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    npq_images = pcv.photosynthesis.analyze_npq(data=da, mask=fmask, bins=100)
+    assert len(npq_images) != 0
 
+
+def test_plantcv_photosynthesis_analyze_npq_bad_fdark():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_fvfm")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    # filename = os.path.join(cache_dir, 'plantcv_fvfm_hist.png')
+    # Read in test data
+    # Read in test data
+    fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK), -1)
+    fmin = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
+    fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
+    fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
+    fdark_qc = [x + 5000 for x in fdark.astype(np.uint8)]
+    # Create DataArray
+    da = xr.DataArray(data=np.dstack([fdark_qc, fmin, fmax]),
+                      coords={"y": range(0, np.shape(fdark)[0]), "x": range(0, np.shape(fdark)[1]),
+                              "frame_label": ["fmp", "fmin", "fmax"]},
+                      dims=["y", "x", "frame_label"])
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    npq_images = pcv.photosynthesis.analyze_npq(data=da, mask=fmask, bins=100)
+    assert len(npq_images) != 0
 # def test_plantcv_photosynthesis_analyze_fvfm_bad_input():
 #     fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
 #     fmin = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
