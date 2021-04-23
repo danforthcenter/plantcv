@@ -890,6 +890,7 @@ TEST_INPUT_FDARK_LARGE = "FLUO_TV_DARK_large"
 TEST_INPUT_FMIN = "FLUO_TV_min.png"
 TEST_INPUT_FMAX = "FLUO_TV_max.png"
 TEST_INPUT_FMASK = "FLUO_TV_MASK.png"
+TEST_INPUT_FMASK2 = "FLUO_TV_MASK2.png"
 TEST_INPUT_GREENMAG = "input_green-magenta.jpg"
 TEST_INPUT_MULTI = "multi_ori_image.jpg"
 TEST_INPUT_MULTI_MASK = "multi_ori_mask.jpg"
@@ -4888,7 +4889,7 @@ def test_plantcv_photosynthesis_analyze_fvfm():
     pcv.params.debug_outdir = cache_dir
     # filename = os.path.join(cache_dir, 'plantcv_fvfm_hist.png')
     # Read in test data
-    fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
+    fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK2), -1)
     fluor_filename = os.path.join(FLUOR_TEST_DATA, FLUOR_IMG_INF)
     da, path, filename = pcv.photosynthesis.read_cropreporter(filename=fluor_filename)
     # Test with debug = "print"
@@ -4976,7 +4977,7 @@ def test_plantcv_photosynthesis_analyze_npq_bad_fdark():
     fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK), -1)
     fmin = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
     fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
-    fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
+    fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK2), -1)
     fdark_qc = [x + 5000 for x in fdark.astype(np.uint8)]
     # Create DataArray
     da = xr.DataArray(data=np.dstack([fdark_qc, fmin, fmax]),
