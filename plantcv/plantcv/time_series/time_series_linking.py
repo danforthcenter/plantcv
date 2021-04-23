@@ -12,6 +12,7 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 import os
+import os.path as osp
 import sys
 import random
 import math
@@ -142,7 +143,7 @@ def _get_ti(num_insts, uids, link_info):
     :param uids: unique ids at every time point
     :param link_info:
     :return:
-    ti: tracking information (np.ndarray of shape (T,max_uid))
+    ti: tracking information (np.ndarray of shape (T,N))
         ti[t,k]=j represents for: at time t the k-th leaf has a local index of j
         if ti[t,k]=-1, the k-th leaf does not appear at time t
         number of non-negative elements every row: number of instances
@@ -152,8 +153,9 @@ def _get_ti(num_insts, uids, link_info):
 
     emergence, emerge_times = _get_emergence(uids)
     T = len(num_insts)
-    max_uid = max([max(temp) for temp in uids])
-    N = max_uid + 1
+    # max_uid = max([max(temp) for temp in uids])
+    # N = max_uid + 1
+    N = len(np.unique(np.concatenate( uids, axis=0 )))
     ti = -np.ones((T, N), dtype=np.int64)
     for t in range(T):
         if t == 0:
@@ -220,7 +222,7 @@ def _get_li_from_ti(ti):
 #     if savename is not None:
 #         pcv.print_image(masked_im, savename)
 #     return masked_im
-
+#
 # def _visualize2(img, fig_title, mask=None, savename=None):
 #     """
 #     Apply mask with an alpha channel to the original image
@@ -241,11 +243,12 @@ def _get_li_from_ti(ti):
 #     if savename is not None:
 #         plt.savefig(savename)
 #     return masked_im
-
+#
 # def _visualize3(img, masks, colors, figsize=(16, 16), ax=None, captions=None, savename=None, title="", show_bbox=True):
 #     visualize_display_instances.display_instances(img, masks.astype(np.uint8), figsize=figsize, title=title, ax=ax, colors=colors, captions=captions, show_bbox=True)
 #     if savename is not None:
-#         plt.savefig(savename)
+#         # plt.savefig(savename)
+#         plt.savefig(savename, bbox_inches="tight",pad_inches=0)
 
 class InstanceTimeSeriesLinking(object):
     """A class that links segmented instances throughout time
@@ -267,7 +270,8 @@ class InstanceTimeSeriesLinking(object):
         self.thres = None
         self.link_info = None
         self.uids = None
-        self.max_uid = None
+        # self.max_uid = None
+        self.N = None
         self.emergence = None
         self.emerge_times = None
         self.ti = None
@@ -292,9 +296,7 @@ class InstanceTimeSeriesLinking(object):
         """save linking information into a .pkl file with the same prefix of filename
         Inputs: savedir and savename
         """
-
-        # pkl.dump(self, open(os.path.join(savedir, savename + '.pkl'), 'wb'))
-        pkl.dump(vars(self), open(os.path.join(savedir, savename + ".pkl"), 'wb'))
+        pkl.dump(vars(self), open(osp.join(savedir, savename + ".pkl"), 'wb'))
 
     def import_linked_series(self, savedir, savename):
         """import a linked time-series from previously saved file
@@ -303,36 +305,9 @@ class InstanceTimeSeriesLinking(object):
         :param savename: saving name
         :return:
         """
-        linked = pkl.load(open(os.path.join(savedir, savename + '.pkl'), "rb"))
+        linked = pkl.load(open(osp.join(savedir, savename + '.pkl'), "rb"))
         for key, value in linked.items():
             setattr(self, key, value)
-
-    # def save_to_csv(self, savedir, csvname1="link_series.csv", csvname2="link_series"):
-    #     """ save linking information into 2 .csv files
-    #     1. link_series.csv
-    #     2. link_info.csv
-    #     """
-    #     # csvname1 = "link_series.csv"
-    #     # csvname2 = "link_info.csv"
-    #     l0 = ['', ''] + [x for (idx, x) in enumerate(self.timepoints)]
-    #     l1 = ['unique_id', 'current_id'] + ['t{}'.format(idx) for (idx, x) in enumerate(self.timepoints)]
-    #     csvfile1 = open(os.path.join(savedir, csvname1), 'w', newline='')
-    #     writer1 = csv.writer(csvfile1, delimiter=',', quoting=csv.QUOTE_MINIMAL)
-    #     writer1.writerow(l0)
-    #     writer1.writerow(l1)
-    #     csvfile2 = open(os.path.join(savedir, csvname2), 'w', newline='')
-    #     writer_junk2 = csv.writer(csvfile2, delimiter=',', quoting=csv.QUOTE_MINIMAL)
-    #     writer_junk2.writerow(['unique_id', 'emerging_time', 'file_name_emerge', 'current_time', 'file_name', 'current_id'])
-    #     for (t0_, item) in self.link_series.items():
-    #         t0 = int(t0_.replace('t', ''))
-    #         for uid, cid in zip(item['uids'], item['ids']):
-    #             link_t0_i  = item['inst{}'.format(cid)]
-    #             new_line = ['{}'.format(uid), '{}'.format(cid)] + link_t0_i.tolist()
-    #             writer1.writerow(new_line)
-    #             for t in range(t0, self.T):
-    #                 writer_junk2.writerow([uid, t0, self.timepoints[t0], t, self.timepoints[t], link_t0_i[t]])
-    #     csvfile1.close()
-    #     csvfile2.close()
 
     def linking(self, t0):
         """
@@ -354,16 +329,22 @@ class InstanceTimeSeriesLinking(object):
         """
         self.uids = [-np.ones(n, dtype=np.int64) for n in self.n_insts]
         self.uids[0] = np.arange(len(self.link_info[0]), dtype=np.int64)
-        self.max_uid = max(self.uids[0])
+        # self.max_uid = max(self.uids[0])
+        max_uid = max(self.uids[0])
+        self.N = len(self.uids[0])
         for (t, link_t) in enumerate(self.link_info):
             for (cidt, cidt_) in enumerate(link_t):
                 if cidt_ >= 0:
                     self.uids[t + 1][cidt_] = self.uids[t][cidt]
-            if -1 in self.uids[t + 1]:  # -1 means there is not predecessor from a former timepoint -> assign new uids
+            if -1 in self.uids[t + 1]:  # -1 means there is no predecessor from a former timepoint -> potential to assign new uids
                 temp = np.where(self.uids[t + 1] == -1)[0]
                 for tid in temp:
-                    self.max_uid += 1
-                    self.uids[t + 1][tid] = self.max_uid
+                    # self.max_uid += 1
+                    # self.uids[t + 1][tid] = self.max_uid
+                    max_uid += 1
+                    self.uids[t + 1][tid] = max_uid
+                    self.N += 1
+
 
     def update_ti(self, delta_t=2):
         self.delta_t = delta_t if delta_t else self.delta_t
@@ -417,9 +398,9 @@ class InstanceTimeSeriesLinking(object):
                 print("updates!!")
                 # there will be updates, so save previous result in self.ti_, self.t_appear_, and self.t_disappear_, respectively
                 self.ti_, self.t_appear_, self.t_disappear_ = ti_, t_appear_, t_disappear_
-                for (idx, id_up) in enumerate(ids_update):
+                for (idx, id_up) in enumerate(reversed(ids_update)):
                     if id_up != -1:
-                        id_old = disp_uids[idx]
+                        id_old = disp_uids[len(ids_update)-1-idx]
                         t_ = t_appear_[id_up]
                         self.ti[t_:, id_old] = self.ti[t_:, id_up]
                 self.ti = np.delete(self.ti, to_del, 1)
@@ -430,7 +411,9 @@ class InstanceTimeSeriesLinking(object):
                 self.disp_uids = disp_uids
                 self.updated = 1
                 self.delta_t = delta_t
-                self.max_uid = self.max_uid - len(np.where(ids_update > -1)[0])
+                # self.max_uid = self.max_uid - len(np.where(ids_update > -1)[0]) +1
+                # self.max_uid = self.ti.shape[1]-1
+                self.N = self.ti.shape[1]
 
     # def visualize(self, visualdir, colors=None, color_all=None):
     #     """
@@ -445,29 +428,44 @@ class InstanceTimeSeriesLinking(object):
     #     visualdirs = dict()
     #     for i in range(1, 4):
     #         idx = str(i)
-    #         visualdirs[idx] = os.path.join(visualdir, 'visualization{}'.format(idx))
-    #         if not os.path.exists(visualdirs[idx]):
+    #         visualdirs[idx] = osp.join(visualdir, 'visualization{}'.format(idx))
+    #         if not osp.exists(visualdirs[idx]):
     #             os.makedirs(visualdirs[idx])
     #
     #     if colors is None:
-    #         colors = visualize_display_instances._random_colors(self.max_uid) # worest case: all leaves are unique
+    # #         colors = visualize_display_instances._random_colors(self.max_uid + 1)  # worest case: all leaves are unique
+    #         colors = visualize_display_instances._random_colors(self.N)  # worest case: all leaves are unique
     #     if color_all is None:
     #         color_all = [[tuple() for i in range(0, num)] for num in self.n_insts]
     #
-    #     for (t,ti_t) in enumerate(self.ti):
+    #     for (t, ti_t) in enumerate(self.ti):
     #         uids_t = [x for x in ti_t if x >= 0]
-    #         for (idx,uid) in enumerate(uids_t):
+    #         for (idx, uid) in enumerate(uids_t):
     #             color_all[t][idx] = colors[uid]
     #
-    #     for (img, masks, colors_t, t) in zip(self.images, self.masks, color_all, self.timepoints):
-    #         savename3 = os.path.join(visualdirs['3'], '{}.jpg'.format(t))
+    #     for id_t, (img, masks, colors_t, t) in enumerate(zip(self.images, self.masks, color_all, self.timepoints)):
+    #         # find exists unique ids at t
+    #         uids = np.where(self.ti[id_t] >= 0)[0]
+    #         for uid in uids:
+    #             cid = self.ti[id_t][uid]
+    #             mask = masks[:, :, cid]
+    #             savedir_uid1 = osp.join(visualdirs['1'], "{}_{}".format(self.name_sub, uid))
+    #             savedir_uid2 = osp.join(visualdirs['2'], "{}_{}".format(self.name_sub, uid))
+    #             savename1 = osp.join(savedir_uid1, '{}_{}.jpg'.format(t, cid))
+    #             title2 = '{}_{}'.format(t, cid)
+    #             savename2 = os.path.join(savedir_uid2, '{}.jpg'.format(title2))
+    #             if not osp.exists(savedir_uid1):
+    #                 os.makedirs(savedir_uid1)
+    #             if not osp.exists(savedir_uid2):
+    #                 os.makedirs(savedir_uid2)
+    #             _visualize1(img, mask, savename=savename1)
+    #             plt.close('all')
+    #             _visualize2(img, fig_title=title2, mask=mask, savename=savename2)
+    #             plt.close('all')
+    #         savename3 = osp.join(visualdirs['3'], '{}.jpg'.format(t))
     #         _visualize3(img, masks, colors_t, savename=savename3)
     #         plt.close("all")
 
-    # def __call__(self, images, masks, timepoints, savedir, savename, logic="IOS", thres=0.2, name_sub="instance",
-    #              colors=None, color_all=None, update=False, max_delta_t=2, savedir_=None, savename_=None):
-    # def __call__(self, images, masks, timepoints, savedir, savename, logic="IOS", thres=0.2, name_sub="instance",
-    #              update=False, max_delta_t=2, savedir_=None, savename_=None):
     def __call__(self, images, masks, timepoints, logic="IOS", thres=0.2, name_sub="instance", update=False, max_delta_t=2):
         # a list of images which are ndarrays
         self.images = images
@@ -495,27 +493,7 @@ class InstanceTimeSeriesLinking(object):
         self.get_uid()
         self.emergence, self.emerge_times = _get_emergence(self.uids)
         self.ti, self.t_appear, self.t_disappear = _get_ti(self.n_insts, self.uids, self.link_info)
-        # visualdir = os.path.join(savedir, "visualization")
-        # if not os.path.exists(visualdir):
-        #     os.makedirs(visualdir)
-        # self.visualize(visualdir)
         # self.save_linked_series(savedir, savename)
 
         if update:
             self.update_ti(max_delta_t)
-            # if self.updated == 1:
-            #     if savedir_ is not None and savedir_ != savedir:
-            #         visualdir_ = os.path.join(savedir, "visualization")
-            #     else:
-            #         savedir_ = savedir
-            #         visualdir_ = os.path.join(savedir, "updated_visualization")
-            #     if not os.path.exists(visualdir_):
-            #         os.makedirs(visualdir_)
-            #
-            #     if savename_ is None:
-            #         savename_ = "{}_{}".format(savename, max_delta_t)
-            #
-            #     # self.visualize(visualdir_)
-            #     self.save_linked_series(savedir_, savename_)
-
-        # self.save_to_csv(savedir, "link_series_old.csv", "link_info_old.csv")
