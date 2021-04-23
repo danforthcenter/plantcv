@@ -34,6 +34,8 @@ def analyze_fvfm(data, mask, bins=256, label="default"):
     fmax = data.sel(frame_label='fmax').data.astype(np.uint8)
     fmin = data.sel(frame_label='fmin').data.astype(np.uint8)
     mask_int = mask.astype(np.uint8)
+    print(np.shape(fdark))
+    print(np.shape(mask_int))
 
     # QC Fdark Image
     fdark_mask = cv2.bitwise_and(fdark, fdark, mask=mask_int)
