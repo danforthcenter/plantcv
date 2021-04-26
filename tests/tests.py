@@ -6360,6 +6360,56 @@ def test_plantcv_visualize_overlay_two_imgs_size_mismatch():
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2)
 
+def test_plantcv_visualize_time_lapse_video_cases():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_case1')
+    os.mkdir(cache_dir)
+    # Generate 3 test images and saved in cache_dir
+    for i in range(3):
+        temp_img = pcv.transform.rescale(np.random.rand(3,3))
+        pcv.print_image(temp_img, filename=os.path.join(cache_dir, f"img{i}.png"))
+
+    # case 1
+    _,_ = pcv.visualize.time_lapse_video(img_directory=cache_dir, auto_sort=False, fps=29.97, name_video='time_lapse_video_case1', path_video=cache_dir, display='on')
+    assert os.path.exists(os.path.join(cache_dir, 'time_lapse_video_case1.mp4'))
+
+    # case 1.5: not providing video saving path and turn off display mode
+    _,_ = pcv.visualize.time_lapse_video(img_directory=cache_dir, fps=29.97, name_video='time_lapse_video_case1_5', display='off')
+    assert os.path.exists(os.path.join(cache_dir, 'time_lapse_video_case1_5.mp4'))
+
+    # case 2: correct `suffix`, as well as correct `path_video`
+    _,_ = pcv.visualize.time_lapse_video(img_directory=cache_dir, suffix_img='.png', fps=29.97, name_video='time_lapse_video_case2', path_video=cache_dir, display='off')
+    assert os.path.exists(os.path.join(cache_dir, 'time_lapse_video_case2.mp4'))
+
+    # case 3: correct directory of images as well as the correct list of files are provided
+    list_img = [img for img in os.listdir(cache_dir) if img.endswith('.png')]
+    _,_ = pcv.visualize.time_lapse_video(img_directory=cache_dir, list_img=list_img, fps=29.97, name_video='time_lapse_video_case3', path_video=cache_dir, display='off')
+    assert os.path.exists(os.path.join(cache_dir, 'time_lapse_video_case3.mp4'))
+
+    # case 4: the correct directory of images as well as a list of files are provided, however the list is incorrect (contains correct part, but also contains incorrect part)
+    list_img = [img for img in os.listdir(cache_dir) if img.endswith('.png')]
+    list_img.append('junk.png')
+    with pytest.warns(UserWarning):
+        pcv.visualize.time_lapse_video(img_directory=cache_dir, list_img=list_img, fps=29.97, name_video='time_lapse_video_case4', path_video=cache_dir, display='off')
+        assert os.path.exists(os.path.join(cache_dir, 'time_lapse_video_case4.mp4'))
+
+    # case 5: bad suffix
+    with pytest.raises(RuntimeError):
+        pcv.visualize.time_lapse_video(img_directory=cache_dir, suffix_img='.jpg', fps=29.97, display='on')
+
+    # case 6: bad image list
+    list_img_ = [img for img in os.listdir(cache_dir) if img.endswith('.png')]
+    list_img = [img.replace('.png', '_.png') for img in list_img_]
+    with pytest.raises(RuntimeError):
+        pcv.visualize.time_lapse_video(img_directory=cache_dir, list_img=list_img, fps=29.97, path_video=cache_dir, display='off')
+
+def test_plantcv_visualize_time_lapse_video_bad_dir():
+    cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_bad_dir')
+    os.mkdir(cache_dir)
+    with pytest.raises(RuntimeError):
+        pcv.visualize.time_lapse_video(img_directory=cache_dir, fps=29.97, path_video=cache_dir, display='off')
+
+
 
 # ##############################
 # Tests for the utils subpackage
