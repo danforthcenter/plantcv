@@ -1,11 +1,5 @@
 # Overlay two input images
 
-"""
-Created on Tue. September 01 21:00:01 2020
-A function
-@author: hudanyunsheng
-"""
-
 import os
 import cv2
 import numpy as np
