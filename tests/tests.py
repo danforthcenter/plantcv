@@ -6403,6 +6403,20 @@ def test_plantcv_visualize_time_lapse_video_cases():
     with pytest.raises(RuntimeError):
         pcv.visualize.time_lapse_video(img_directory=cache_dir, list_img=list_img, fps=29.97, path_video=cache_dir, display='off')
 
+def test_plantcv_visualize_time_lapse_video_different_img_sizes():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_case1')
+    os.mkdir(cache_dir)
+    # Generate 3 test images and saved in cache_dir
+    for i in range(2):
+        temp_img = pcv.transform.rescale(np.random.rand(3,3))
+        pcv.print_image(temp_img, filename=os.path.join(cache_dir, f"img{i}.png"))
+    temp_img = pcv.transform.rescale(np.random.rand(2, 3))
+    pcv.print_image(temp_img, filename=os.path.join(cache_dir, "img2.png"))
+    with pytest.warns(UserWarning):
+        pcv.visualize.time_lapse_video(img_directory=cache_dir, fps=29.97, name_video='time_lapse_video_different_img_sizes', path_video=cache_dir, display='off')
+        assert os.path.exists(os.path.join(cache_dir, 'time_lapse_video_different_img_sizes.mp4'))
+
 def test_plantcv_visualize_time_lapse_video_bad_dir():
     cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_bad_dir')
     os.mkdir(cache_dir)
