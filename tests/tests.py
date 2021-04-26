@@ -6372,9 +6372,22 @@ def test_plantcv_visualize_click_count():
     e1_ = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=counter.fig.canvas, x=0, y=0, button=3)
     e1_.xdata = 0
     e1_.ydata = 0
+
+    # left click
+    e2 = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=counter.fig.canvas, x=0, y=0, button=1)
+    e2.xdata = 1
+    e2.ydata = 1
+
+    # right click
+    e2_ = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=counter.fig.canvas, x=0, y=0, button=3)
+    e2_.xdata = 1.2
+    e2_.ydata = 1.2
+
     counter.onclick(e1)
     counter.onclick(e1_)
-    assert len(counter.events) == 2
+    counter.onclick(e2)
+    counter.onclick(e2_)
+    assert len(counter.events) == 4
 
 # ##############################
 # Tests for the utils subpackage
