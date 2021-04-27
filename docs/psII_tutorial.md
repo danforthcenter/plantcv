@@ -86,15 +86,15 @@ def main():
 
 **Figure 1.** `Fdark` frame
 
-![Screenshot](img/tutorial_images/psII/fdark.jpg)
+![Screenshot](img/tutorial_images/psII/fdark2.png)
 
 **Figure 2.** `Fmin` frame
 
-![Screenshot](img/tutorial_images/psII/fmin.jpg)
+![Screenshot](img/tutorial_images/psII/fmin2.png)
 
 **Figure 3.** `Fmax` frame. This will be used to create a plant mask that will isolate the plant material in the image.
 
-![Screenshot](img/tutorial_images/psII/fmax_rescaled_sideways.jpg)
+![Screenshot](img/tutorial_images/psII/fmax2.png)
 
 ```python
     # Rotate each frame so that plant is upright
@@ -112,13 +112,14 @@ def main():
 
 **Figure 4.** Rotated `fmax` frame  
 
-![Screenshot](img/tutorial_images/psII/fmax_rescaled.jpg)
+![Screenshot](img/tutorial_images/psII/fmax_rescaled2.png)
 
 The resulting image is then thresholded with a [binary threshold](binary_threshold.md) to capture the plant material. In most cases, it is expected that pixel values
 range between 0 and 255, but our example image has pixel values from 0 to over 7000. Trial and error is a common method for selecting an appropriate threshold value.
+In different imaging scenarios it may be easier to segment the Fmin image or the Fmax image. Fmax will have a higher dynamic range to more easily pick a precise threshold value but Fmin may have less errant signal (e.g., if a leaf moved during imaging).
 
 ```python
-    # Threshold the `fmax` image
+    # Threshold the `fmin` image
 
     # Inputs:
     #   gray_img        - Grayscale image data
@@ -127,13 +128,13 @@ range between 0 and 255, but our example image has pixel values from 0 to over 7
     #   object_type     - 'light' (default) or 'dark'. If the object is lighter than the
     #                       background then standard threshold is done. If the object is
     #                       darker than the background then inverse thresholding is done.
-    plant_mask = pcv.threshold.binary(gray_img=fmax, threshold=855, max_value=255, object_type="light")
+    plant_mask = pcv.threshold.binary(gray_img=fmin, threshold=855, max_value=255, object_type="light")
 
 ```
 
-**Figure 5.** Binary threshold on masked Fmax image.
+**Figure 5.** Binary threshold on masked Fmin image.
 
-![Screenshot](img/tutorial_images/psII/plant_mask.jpg)
+![Screenshot](img/tutorial_images/psII/plant_mask2.png)
 
 Noise is reduced with the [fill](fill.md) function.
 
@@ -149,7 +150,7 @@ Noise is reduced with the [fill](fill.md) function.
 
 **Figure 6.** Fill applied.  
 
-![Screenshot](img/tutorial_images/psII/filled_plant_mask.jpg)
+![Screenshot](img/tutorial_images/psII/filled_plant_mask2.png)
 
 Objects (OpenCV refers to them as contours) are then identified within the image using
 the [find objects](find_objects.md) function.
@@ -160,13 +161,13 @@ the [find objects](find_objects.md) function.
     # Inputs:
     #   img             - RGB or grayscale image data for plotting
     #   mask            - Binary mask used for detecting contours
-    id_objects ,obj_hierarchy = pcv.find_objects(img=fmax, mask=cleaned_mask)
+    id_objects ,obj_hierarchy = pcv.find_objects(img=fmin, mask=cleaned_mask)
 
 ```
 
 **Figure 7.** All objects found within the image are identified.
 
-![Screenshot](img/tutorial_images/psII/id_obj.jpg)
+![Screenshot](img/tutorial_images/psII/id_obj2.png)
 
 The isolated objects now should all be plant material. There can be more than one object that makes up a plant,
 since sometimes leaves twist making them appear in images as separate objects. Therefore, in order for shape
@@ -185,7 +186,7 @@ analysis to perform properly the plant objects need to be combined into one obje
 
 **Figure 8.** Combined plant object outlined in blue.
 
-![Screenshot](img/tutorial_images/psII/22_objcomp.jpg)
+![Screenshot](img/tutorial_images/psII/objcomp2.png)
 
 The next step is to analyze the plant object for traits such as [shape](analyze_shape.md), or [PSII signal](photosynthesis_analyze_fvfm.md).
 
@@ -198,7 +199,7 @@ The next step is to analyze the plant object for traits such as [shape](analyze_
     #   obj             - Single or grouped contour object
     #   mask            - Binary image mask to use as mask for moments analysis
     #   label        - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
-    shape_img = pcv.analyze_object(img=fmax, obj=obj, mask=cleaned_mask, label="default")
+    shape_img = pcv.analyze_object(img=fmin, obj=obj, mask=cleaned_mask, label="default")
 
     # Analyze fv/fm fluorescence properties
 
@@ -240,16 +241,16 @@ if __name__ == '__main__':
 
 **Figure 9.** Shape analysis debug image
 
-![Screenshot](img/tutorial_images/psII/shapes.jpg)
+![Screenshot](img/tutorial_images/psII/shapes2.png)
 
 
 **Figure 10.** Fv/Fm values debug image
 
-![Screenshot](img/tutorial_images/psII/27_fv_hist.jpg)
+![Screenshot](img/tutorial_images/psII/fvfm_hist2.png)
 
 **Figure 11.** Image pseudocolored by Fv/Fm values
 
-![Screenshot](img/tutorial_images/psII/36_pseudocolored.jpg)
+![Screenshot](img/tutorial_images/psII/pseudocolored.png)
 
 To deploy a workflow over a full image set please see tutorial on [workflow parallelization](pipeline_parallel.md).
 
