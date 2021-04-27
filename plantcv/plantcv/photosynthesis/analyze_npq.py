@@ -1,7 +1,7 @@
 # Fluorescence Analysis (NPQ parameter)
 
 import os
-import cv2
+import xarray as xr
 import numpy as np
 import pandas as pd
 from plotnine import ggplot, geom_label, aes, geom_line
@@ -10,7 +10,10 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def analyze_npq(data, mask, bins=256, label="default"):
+def _calc_npq(Fmp, Fm):
+    return(Fm/Fmp - 1)
+
+def analyze_npq2(data, mask, bins=256, label="default"):
     """Calculate and analyze NPQ from fluorescence image data.
     Inputs:
     data        = x-array of binary image data
@@ -24,46 +27,14 @@ def analyze_npq(data, mask, bins=256, label="default"):
     :param mask: numpy.ndarray
     :param bins: int
     :param label: str
-    :return analysis_images: numpy.ndarray
+    :return npq_hist_fig: plotnine.ggplot.ggplot
     """
 
     # Auto-increment the device counter
     params.device += 1
-    # Extract frames of interest
-    fmp = data.sel(frame_label='Fmp').data
-    fm = data.sel(frame_label='Fm').data
-    mask = mask.astype(np.uint8)
-    print(np.shape(fm))
-    print(np.shape(mask))
-
-    # QC Fdark Image
-    fdark_mask = cv2.bitwise_and(fmp, fmp, mask=mask)
-    if np.amax(fdark_mask) > 2000:
-        qc_fdark = False
-    else:
-        qc_fdark = True
-
-    # Mask Fmin and Fmax Image
-    fmp_mask = cv2.bitwise_and(fmp, fmp, mask=mask)
-    fm_mask = cv2.bitwise_and(fm, fm, mask=mask)
-
-    # Calculate denomenator, where denom = Fmp - 1 (masked)
-    denom = np.subtract(fmp, np.ones(np.shape(fmp)))
-
-    # # When Fmin is greater than Fmax, a negative value is returned.
-    # # Because the data type is unsigned integers, negative values roll over, resulting in nonsensical values
-    # # Wherever Fmin is greater than Fmax, set Fv to zero
-    # denom[np.where(fm_mask < fmp_mask)] = 0
-    analysis_images = []
-
-    # Calculate Fv/Fm (Fvariable / Fmax) where Fmax is greater than zero
-    # By definition above, wherever Fmax is zero, Fvariable will also be zero
-    # To calculate the divisions properly we need to change from unit16 to float64 data types
-    denom = denom.astype(np.float64)
-    npq = np.copy(denom)
-    #nalysis_images.append(fvfm)
-    fm_flt = fm_mask.astype(np.float64)
-    npq[np.where(fm_mask > 0)] = fm_flt[np.where(fm_mask > 0)] / denom
+    npq = xr.apply_ufunc(_calc_npq,
+                      data.sel(frame_label='Fmp'),
+                      data.sel(frame_label='fmax'))
 
     # Calculate the median Fv/Fm value for non-zero pixels
     npq_median = np.median(npq[np.where(npq > 0)])
@@ -85,7 +56,6 @@ def analyze_npq(data, mask, bins=256, label="default"):
                      + geom_line(color='green', show_legend=True)
                      + geom_label(label='Peak Bin Value: ' + str(max_bin),
                                   x=.15, y=205, size=8, color='green'))
-    analysis_images.append(npq_hist_fig)
 
     _debug(visual=npq, filename=os.path.join(params.debug_outdir, str(params.device) + "_FvFm.png"))
     _debug(visual=npq_hist_fig, filename=os.path.join(params.debug_outdir, str(params.device) + "_FvFm_histogram.png"))
@@ -99,11 +69,9 @@ def analyze_npq(data, mask, bins=256, label="default"):
     outputs.add_observation(sample=label, variable='npq_median', trait='NPQ median',
                             method='plantcv.plantcv.photosynthesis.analyze_npq', scale='none', datatype=float,
                             value=float(np.around(npq_median, decimals=4)), label='none')
-    outputs.add_observation(sample=label, variable='fdark_passed_qc', trait='Fdark passed QC',
-                            method='plantcv.plantcv.photosynthesis.analyze_npq', scale='none', datatype=bool,
-                            value=qc_fdark, label='none')
+#
 
     # Store images
-    outputs.images.append(analysis_images)
+    outputs.images.append(npq_hist_fig)
 
-    return analysis_images
+    return npq_hist_fig
