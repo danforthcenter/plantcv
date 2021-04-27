@@ -7,7 +7,7 @@ from matplotlib import pyplot as plt
 from plantcv.plantcv import params
 from plantcv.plantcv import fatal_error
 from scipy.spatial import distance
-
+import json
 
 def _find_closest(pt, pts):
     """ Given coordinates of a point and a list of coordinates of a bunch of points, find the point that has the smallest Euclidean to the given point
@@ -58,6 +58,40 @@ class ClickCount(object):
 
         else:
             print(f"Warning: {label} already included and counted, nothing is imported!")
+
+    def save_coords(self, coord_file):
+        """Save collected coordinates to a file.
+        Input variables:
+        coord_file = Name of the file to save collected coordinate
+        :param coord_file: str
+        """
+        # Open the file for writing
+        with open(coord_file, "w") as fp:
+            # Save the data in JSON format with indentation
+            json.dump(obj=self.points, fp=fp, indent=4)
+
+    # def save_counter(self, counter_file):
+    #     """Save a counter object to a file
+    #     Input variables:
+    #     counter_file = Filename to write counter to
+    #     :param counter_file: str
+    #     """
+    #     # Open the file for writing
+    #     with open(counter_file, "w") as fp:
+    #         # Save the data in JSON format with indentation
+    #         json.dump(obj=vars(self), fp=fp, indent=4)
+    #
+    # def import_counter(self, counter_file):
+    #     """Import a counter object from a file
+    #     Input variables:
+    #     counter_file = Counter file to import
+    #     :param counter_file: str
+    #     """
+    #     # Open the file for reading
+    #     with open(counter_file, "r") as fp:
+    #         counter = json.load(fp)
+    #         for key, value in counter.items():
+    #             setattr(self, key, value)
 
     def view(self, label="total", color="c", view_all=False):
         """
