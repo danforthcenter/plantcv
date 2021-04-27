@@ -24,6 +24,11 @@
   - label - class label to show on the marked image. By default `label="total`.
   - color - desired color to show the class. By default `color="c"`.
   - view_all - a flag indicating whether to show markers for all classes or not. 
+  
+**save_coords(*coord_file*)**
+- Save the collected coordinates to a json file. 
+- **Parameter**
+  - coord_file - (json) file name to save the coordinates of collected points. 
 
 - **Example use:**
     - Below
