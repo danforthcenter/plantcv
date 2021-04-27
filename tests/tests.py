@@ -4997,7 +4997,7 @@ def test_plantcv_photosynthesis_analyze_fvfm_bad_fdark():
     fmin = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
     fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
     fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
-    fdark_qc = [x + 200 for x in fdark.astype(np.uint8)]
+    fdark_qc = [x + 3000 for x in fdark.astype(np.uint8)]
     # Create DataArray
     da = xr.DataArray(data=np.dstack([fdark_qc, fmin, fmax]),
                       coords={"y": range(0, np.shape(fdark)[0]), "x": range(0, np.shape(fdark)[1]),
