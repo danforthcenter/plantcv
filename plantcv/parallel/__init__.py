@@ -10,7 +10,7 @@ from plantcv.parallel.multiprocess import multiprocess
 from plantcv.parallel.multiprocess import create_dask_cluster #needed for tests
 
 __all__ = ["metadata_parser", "job_builder", "process_results", "multiprocess",
-           "WorkflowConfig", "find_images", "get_image_metadata", "parse_filename"]
+           "WorkflowConfig"]
 
 
 class WorkflowConfig:
