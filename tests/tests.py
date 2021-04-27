@@ -6343,6 +6343,8 @@ def test_plantcv_visualize_overlay_two_imgs_size_mismatch():
 
 def test_plantcv_visualize_click_count():
     pcv.params.debug = None
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_visualize_visualize_click_count")
+    os.mkdir(cache_dir)
     # generate fake testing image
     temp = pcv.transform.rescale(np.random.rand(5,5))
     img  = np.stack((temp,)*3, axis=-1)
@@ -6354,6 +6356,11 @@ def test_plantcv_visualize_click_count():
     counter.import_coords([(0,1)], label="c1")
     counter.import_coords([(0,2)], label="total")
     assert len(counter.count) == 2
+
+    # save coordinates
+    coord_file = os.path.join(cache_dir, 'coord.json')
+    counter.save_coords(coord_file)
+    assert os.path.exists(coord_file)
 
     # view different classes
     counter.view()
