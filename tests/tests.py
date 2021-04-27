@@ -4910,7 +4910,7 @@ def test_plantcv_photosynthesis_analyze_fvfm_print_analysis_results():
     fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK), -1)
     fmin = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
     fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
-    fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK2), -1)
+    fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
     fdark_qc = [x for x in fdark.astype(np.uint8)]
     # Create DataArray
     da = xr.DataArray(data=np.dstack([fdark_qc, fmin, fmax]),
@@ -4954,15 +4954,10 @@ def test_plantcv_photosynthesis_analyze_npq():
     pcv.params.debug_outdir = cache_dir
     # filename = os.path.join(cache_dir, 'plantcv_fvfm_hist.png')
     # Read in test data
-    fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
+    fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK2), -1)
     fluor_filename = os.path.join(FLUOR_TEST_DATA, FLUOR_NPQ_IMG_INF)
     da, path, filename = pcv.photosynthesis.read_cropreporter(filename=fluor_filename)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.photosynthesis.analyze_fvfm(data=da, mask=fmask, bins=100, label="prefix")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    npq_images = pcv.photosynthesis.analyze_npq(data=da, mask=fmask, bins=100)
+    npq_images = pcv.photosynthesis.analyze_npq(data=da, mask=fmask, bins=100, label="prefix")
     assert len(npq_images) != 0
 
 
@@ -4982,7 +4977,7 @@ def test_plantcv_photosynthesis_analyze_npq_bad_fdark():
     # Create DataArray
     da = xr.DataArray(data=np.dstack([fdark_qc, fmin, fmax]),
                       coords={"y": range(0, np.shape(fdark)[0]), "x": range(0, np.shape(fdark)[1]),
-                              "frame_label": ["fmp", "fmin", "fmax"]},
+                              "frame_label": ["Fmp", "Fm", "fmax"]},
                       dims=["y", "x", "frame_label"])
     # Test with debug = "plot"
     pcv.params.debug = "plot"
