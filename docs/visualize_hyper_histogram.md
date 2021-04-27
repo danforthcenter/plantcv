@@ -2,7 +2,7 @@
 
 This is a plotting method that is used to examine the distrubution of signal within an hyperspectral image for specific wavelengths. This function is an application of the [histogram](visualize_histogram.md) function.
 
-**plantcv.visualize.histogram**(*array, mask=None, bins=100, lower_bound=None, upper_bound=None, title=None, wvlengths=[480, 550, 670]*)
+**plantcv.visualize.hyper_histogram**(*array, mask=None, bins=100, lower_bound=None, upper_bound=None, title=None, wvlengths=[480, 550, 670]*)
 
 **returns** fig_hist
 
