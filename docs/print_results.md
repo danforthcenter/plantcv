@@ -1,5 +1,8 @@
 ## Print Measurement Results 
 
+!!! warning
+    `plantcv.print_results` is deprecated and will be removed in a future version.
+
 An [Outputs](outputs.md) class has been added that automatically stores measurements collected by the following 
 functions:
 

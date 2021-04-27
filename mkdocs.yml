@@ -1,5 +1,5 @@
 site_name: PlantCV
-site_url: http://plantcv.readthedocs.io/
+site_url: https://plantcv.readthedocs.io/
 site_description: Plant phenotyping using computer vision
 site_author: PlantCV Development Team
 repo_url: https://github.com/danforthcenter/plantcv
@@ -51,6 +51,7 @@ nav:
       - 'Color Palette': color_palette.md
       - 'Colorspace Conversion':
         - 'RGB to Gray': rgb2gray.md
+        - 'RGB to CMYK': rgb2cmyk.md
         - 'RGB to LAB': rgb2lab.md
         - 'RGB to HSV': rgb2hsv.md
       - 'Crop': crop.md
@@ -143,6 +144,7 @@ nav:
         - 'Binary Threshold': binary_threshold.md
         - 'Custom Range Threshold': custom_range_threshold.md
         - 'Gaussian Adaptive Threshold': gaussian_threshold.md
+        - 'Mask Bad Threshold': mask_bad_threshold.md
         - 'Mean Adaptive Threshold': mean_threshold.md
         - 'Otsu Auto Threshold': otsu_threshold.md
         - 'Saturation Threshold': saturation_threshold.md

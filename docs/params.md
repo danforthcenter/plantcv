@@ -46,6 +46,7 @@ the morphology sub-package.
 
 **saved_color_scale**: Using the `color_palette` function will save the color scale here for reuse in downstream functions. Set to `None` to remove. Default = `None`.
 
+**verbose**: Set the status of verboseness. When in "verbose" mode, the deprecation warning will always be printed once triggered. Default: `True`. Users can turn off deprecation warnings by setting `verbose=False`.
 ### Example
 
 Updated PlantCV functions use `params` implicitly, so overriding the `params` defaults will alter the behavior of
@@ -80,4 +81,4 @@ roi_contour, roi_hierarchy = pcv.roi.rectangle(x=100, y=100, h=200, w=200, img=i
 
 ![Screenshot](img/documentation_images/params/thickness3.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/__init__.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/classes.py)

@@ -16,6 +16,7 @@ import plantcv.utils
 # Import matplotlib and use a null Template to block plotting to screen
 # This will let us test debug = "plot"
 import matplotlib
+import matplotlib.pyplot as plt
 import dask
 from dask.distributed import Client
 import pickle as pkl
@@ -455,7 +456,47 @@ def test_plantcv_parallel_metadata_parser_no_default_dates():
     meta = plantcv.parallel.metadata_parser(config=config)
     assert meta == METADATA_VIS_ONLY
 
+def test_plantcv_parallel_workflowconfig_subdaily_timestampformat():
+    '''
+    timestampformats with only hours and smaller units of time were failing if the script was run earlier in the day than the images were taken. this was fixed by setting end_date to 23-59-59 if we don't detect the year-month-day
+    '''
+    # Create config instance
+    config = plantcv.parallel.WorkflowConfig()
+    config.input_dir = os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR2)
+    config.json = os.path.join(TEST_IMG_DIR2, "test_plantcv_parallel_metadata_parser_subdaily_timestampformat", "output.json")
+    config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "timestamp"]
+    config.workflow = TEST_PIPELINE
+    config.metadata_filters = {"imgtype": "NIR", "camera": "SV"}
+    config.start_date = None
+    config.end_date = None
+    config.timestampformat = "%H_%M_%S"
+    config.imgformat = "jpg"
 
+    config.delimiter = r"(NIR)_(SV)_(\d)_(z1)_(h1)_(g0)_(e65)_(\d{2}_\d{2}_\d{2})"
+
+    meta = plantcv.parallel.metadata_parser(config=config)
+    assert meta == {
+    'NIR_SV_0_z1_h1_g0_e65_23_59_59.jpg': {
+        'path': os.path.join(PARALLEL_TEST_DATA, 'images_w_date','NIR_SV_0_z1_h1_g0_e65_23_59_59.jpg'),
+        'imgtype': 'NIR',
+        'camera': 'SV',
+        'frame': '0',
+        'zoom': 'z1',
+        'lifter': 'h1',
+        'gain': 'g0',
+        'exposure': 'e65',
+        'timestamp': '23_59_59',
+        'measurementlabel': 'none',
+        'cartag':'none',
+        'id': 'none',
+        'treatment': 'none',
+        'plantbarcode': 'none',
+        'other': 'none'
+    }
+    }
+
+
+    
 def test_plantcv_parallel_check_date_range_wrongdateformat():
     start_date = 10
     end_date = 10
@@ -944,6 +985,11 @@ TEST_SKELETON_HIERARCHIES = "skeleton_hierarchies.npz"
 TEST_THERMAL_ARRAY = "thermal_img.npz"
 TEST_THERMAL_IMG_MASK = "thermal_img_mask.png"
 TEST_INPUT_THERMAL_CSV = "FLIR2600.csv"
+# TEST_BAD_MASK = "bad_mask_test.pkl"
+# TEST_IM_BAD_NONE = "bad_mask_none.pkl"
+# TEST_IM_BAD_BOTH = "bad_mask_both.pkl"
+# TEST_IM_BAD_NAN = "bad_mask_nan.pkl"
+# TEST_IM_BAD_INF = "bad_mask_inf.pkl"
 PIXEL_VALUES = "pixel_inspector_rgb_values.txt"
 TEST_INPUT_INSTANCE_IMG  = "visualize_inst_seg_img.png"
 TEST_INPUT_INSTANCE_MASK = "visualize_inst_seg_mask.pkl"
@@ -961,7 +1007,7 @@ def test_plantcv_debug(debug, tmpdir):
     _debug(visual=img, filename=os.path.join(img_outdir, TEST_INPUT_COLOR))
     assert True
 
-    
+
 @pytest.mark.parametrize("datatype,value", [[list, []], [int, 2], [float, 2.2], [bool, True], [str, "2"], [dict, {}],
                                             [tuple, ()], [None, None]])
 def test_plantcv_outputs_add_observation(datatype, value):
@@ -978,6 +1024,60 @@ def test_plantcv_outputs_add_observation_invalid_type():
     with pytest.raises(RuntimeError):
         outputs.add_observation(sample='default', variable='test', trait='test variable', method='type', scale='none',
                                 datatype=list, value=np.array([2]), label=[])
+
+
+def test_plantcv_outputs_save_results_json_newfile(tmpdir):
+    # Create a test tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+    outfile = os.path.join(cache_dir, "results.json")
+    # Create output instance
+    outputs = pcv.Outputs()
+    outputs.add_observation(sample='default', variable='test', trait='test variable', method='test', scale='none',
+                            datatype=str, value="test", label="none")
+    outputs.save_results(filename=outfile, outformat="json")
+    with open(outfile, "r") as fp:
+        results = json.load(fp)
+        assert results["observations"]["default"]["test"]["value"] == "test"
+
+
+def test_plantcv_outputs_save_results_json_existing_file(tmpdir):
+    # Create a test tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+    outfile = os.path.join(cache_dir, "data_results.txt")
+    shutil.copyfile(os.path.join(TEST_DATA, "data_results.txt"), outfile)
+    # Create output instance
+    outputs = pcv.Outputs()
+    outputs.add_observation(sample='default', variable='test', trait='test variable', method='test', scale='none',
+                            datatype=str, value="test", label="none")
+    outputs.save_results(filename=outfile, outformat="json")
+    with open(outfile, "r") as fp:
+        results = json.load(fp)
+        assert results["observations"]["default"]["test"]["value"] == "test"
+
+
+def test_plantcv_outputs_save_results_csv(tmpdir):
+    # Create a test tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+    outfile = os.path.join(cache_dir, "results.csv")
+    testfile = os.path.join(TEST_DATA, "data_results.csv")
+    # Create output instance
+    outputs = pcv.Outputs()
+    outputs.add_observation(sample='default', variable='string', trait='string variable', method='string', scale='none',
+                            datatype=str, value="string", label="none")
+    outputs.add_observation(sample='default', variable='boolean', trait='boolean variable', method='boolean',
+                            scale='none', datatype=bool, value=True, label="none")
+    outputs.add_observation(sample='default', variable='list', trait='list variable', method='list',
+                            scale='none', datatype=list, value=[1, 2, 3], label=[1, 2, 3])
+    outputs.add_observation(sample='default', variable='tuple', trait='tuple variable', method='tuple',
+                            scale='none', datatype=tuple, value=(1, 2), label=(1, 2))
+    outputs.add_observation(sample='default', variable='tuple_list', trait='list of tuples variable',
+                            method='tuple_list', scale='none', datatype=list, value=[(1, 2), (3, 4)], label=[1, 2])
+    outputs.save_results(filename=outfile, outformat="csv")
+    with open(outfile, "r") as fp:
+        results = fp.read()
+    with open(testfile, "r") as fp:
+        test_results = fp.read()
+    assert results == test_results
 
 
 def test_plantcv_transform_warp_smaller():
@@ -1126,9 +1226,6 @@ def test_plantcv_analyze_bound_horizontal():
     # Test with debug = None
     pcv.params.debug = None
     _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=1756)
-    # Copy a test file to the cache directory
-    shutil.copyfile(os.path.join(TEST_DATA, "data_results.txt"), os.path.join(cache_dir, "data_results.txt"))
-    pcv.print_results(os.path.join(cache_dir, "data_results.txt"))
     assert len(pcv.outputs.observations["default"]) == 7
 
 
@@ -1161,8 +1258,6 @@ def test_plantcv_analyze_bound_horizontal_neg_y():
     _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=-1000)
     _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=0)
     _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=2056)
-    shutil.copyfile(os.path.join(TEST_DATA, "data_results.txt"), os.path.join(cache_dir, "data_results.txt"))
-    pcv.print_results(os.path.join(cache_dir, "data_results.txt"))
     assert pcv.outputs.observations['default']['height_above_reference']['value'] == 713
 
 
@@ -1187,7 +1282,6 @@ def test_plantcv_analyze_bound_vertical():
     # Test with debug = None
     pcv.params.debug = None
     _ = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=1000)
-    pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert pcv.outputs.observations['default']['width_left_reference']['value'] == 94
 
 
@@ -1204,7 +1298,6 @@ def test_plantcv_analyze_bound_vertical_grayscale_image():
     # Test with a grayscale reference image and debug="plot"
     pcv.params.debug = "plot"
     _ = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=1000)
-    pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert pcv.outputs.observations['default']['width_left_reference']['value'] == 94
     pcv.outputs.clear()
 
@@ -1224,7 +1317,6 @@ def test_plantcv_analyze_bound_vertical_neg_x():
     # Test with debug="plot", line position that will trigger -x
     pcv.params.debug = "plot"
     _ = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=2454)
-    pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert pcv.outputs.observations['default']['width_left_reference']['value'] == 441
 
 
@@ -1243,7 +1335,6 @@ def test_plantcv_analyze_bound_vertical_small_x():
     # Test with debug='plot', line position that will trigger -x, and two channel object
     pcv.params.debug = "plot"
     _ = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=1)
-    pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert pcv.outputs.observations['default']['width_right_reference']['value'] == 441
 
 
@@ -1261,59 +1352,71 @@ def test_plantcv_analyze_color():
     _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='lab')
     _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='hsv')
     _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type=None)
+
+    # Test with debug = "print"
+    # pcv.params.debug = "print"
+    _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type="all")
+    _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type=None, label="prefix")
+
+    # Test with debug = "plot"
+    # pcv.params.debug = "plot"
+    # _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type=None)
+    _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='lab')
+    _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='hsv')
+    # _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type=None)
+
+    # Test with debug = None
+    # pcv.params.debug = None
     _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='rgb')
     assert pcv.outputs.observations['default']['hue_median']['value'] == 84.0
 
-
 def test_plantcv_analyze_color_incorrect_image():
-    # Test with debug = None
-    pcv.params.debug = None
     img_binary = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     with pytest.raises(RuntimeError):
         _ = pcv.analyze_color(rgb_img=img_binary, mask=mask, hist_plot_type=None)
-
-
+#
+#
 def test_plantcv_analyze_color_bad_hist_type():
-    # Test with debug = None
-    pcv.params.debug = None
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    pcv.params.debug = "plot"
     with pytest.raises(RuntimeError):
         _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='bgr')
 
 
 def test_plantcv_analyze_color_incorrect_hist_plot_type():
-    # Test with debug = None
-    pcv.params.debug = None
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     with pytest.raises(RuntimeError):
+        pcv.params.debug = "plot"
         _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type="bgr")
 
 
 def test_plantcv_analyze_nir():
     # Clear previous outputs
     pcv.outputs.clear()
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_nir")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    # Test with debug=None
+    pcv.params.debug = None
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.analyze_nir_intensity(gray_img=np.uint16(img), mask=mask, bins=256, histplot=True, label="prefix")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=False)
-    # Test with debug = "plot"
+
     _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=True)
-    # Test with debug = None
+    result = len(pcv.outputs.observations['default']['nir_frequencies']['value'])
+    assert result == 256
+
+
+def test_plantcv_analyze_nir_16bit():
+    # Clear previous outputs
+    pcv.outputs.clear()
+    # Test with debug=None
     pcv.params.debug = None
-    _ = pcv.analyze_nir_intensity(gray_img=img, mask=mask, bins=256, histplot=True)
-    pcv.print_results(os.path.join(cache_dir, "results.txt"))
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+
+    _ = pcv.analyze_nir_intensity(gray_img=np.uint16(img), mask=mask, bins=256, histplot=True)
     result = len(pcv.outputs.observations['default']['nir_frequencies']['value'])
     assert result == 256
 
@@ -1423,14 +1526,10 @@ def test_plantcv_analyze_thermal_values():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_THERMAL_IMG_MASK), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_THERMAL_ARRAY), encoding="latin1")
     img = contours_npz['arr_0']
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.analyze_thermal_values(thermal_array=img, mask=mask, histplot=True, label="prefix")
-    pcv.params.debug = "plot"
-    thermal_hist = pcv.analyze_thermal_values(thermal_array=img, mask=mask, histplot=True)
-    pcv.print_results(os.path.join(cache_dir, "results.txt"))
-    assert thermal_hist is not None and pcv.outputs.observations['default']['median_temp']['value'] == 33.20922
 
+    pcv.params.debug = None
+    thermal_hist = pcv.analyze_thermal_values(thermal_array=img, mask=mask, histplot=True)
+    assert thermal_hist is not None and pcv.outputs.observations['default']['median_temp']['value'] == 33.20922
 
 def test_plantcv_apply_mask_white():
     # Test cache directory
@@ -1699,8 +1798,8 @@ def test_plantcv_cluster_contours_splitimg():
     roi_contours = [contours[arr_n] for arr_n in contours]
     cluster_contours = [clusters[arr_n] for arr_n in clusters]
     obj_hierarchy = hierachy['arr_0']
-    # Test with debug = "print"
-    pcv.params.debug = "print"
+    # Test with debug = None
+    pcv.params.debug = None
     _, _, _ = pcv.cluster_contour_splitimg(img=img1, grouped_contour_indexes=cluster_contours,
                                            contours=roi_contours,
                                            hierarchy=obj_hierarchy, outdir=cache_dir, file=None, filenames=None)
@@ -1709,9 +1808,6 @@ def test_plantcv_cluster_contours_splitimg():
     _, _, _ = pcv.cluster_contour_splitimg(img=img1, grouped_contour_indexes=cluster_contours,
                                            contours=roi_contours,
                                            hierarchy=obj_hierarchy, outdir=cache_dir, file='multi', filenames=None)
-
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
     _, _, _ = pcv.cluster_contour_splitimg(img=img1, grouped_contour_indexes=cluster_contours,
                                            contours=roi_contours,
                                            hierarchy=obj_hierarchy, outdir=None, file=None, filenames=cluster_names)
@@ -1719,8 +1815,6 @@ def test_plantcv_cluster_contours_splitimg():
                                            contours=roi_contours,
                                            hierarchy=obj_hierarchy, outdir=None, file=None,
                                            filenames=cluster_names_too_many)
-    # Test with debug = None
-    pcv.params.debug = None
     output_path, imgs, masks = pcv.cluster_contour_splitimg(img=img1, grouped_contour_indexes=cluster_contours,
                                                             contours=roi_contours, hierarchy=obj_hierarchy, outdir=None,
                                                             file=None,
@@ -2311,7 +2405,6 @@ def test_plantcv_landmark_reference_pt_dist():
     _ = pcv.landmark_reference_pt_dist(points_r=[], centroid_r=(0, 0), bline_r=(0, 0))
     _ = pcv.landmark_reference_pt_dist(points_r=points_rescaled, centroid_r=centroid_rescaled,
                                        bline_r=bottomline_rescaled, label="prefix")
-    pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert len(pcv.outputs.observations['prefix'].keys()) == 8
 
 
@@ -2667,6 +2760,29 @@ def test_plantcv_print_image_plotnine():
     assert os.path.exists(filename) is True
 
 
+def test_plantcv_print_image_matplotlib():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_print_image_plotnine")
+    os.mkdir(cache_dir)
+    # Input data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    plt.figure()
+    plt.imshow(img)
+    plot = plt.gcf()
+    filename = os.path.join(cache_dir, 'plantcv_print_image.png')
+    pcv.print_image(img=plot, filename=filename)
+    # Assert that the file was created
+    assert os.path.exists(filename) is True
+
+
+def test_plantcv_print_results(tmpdir):
+    # Create a tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+    outfile = os.path.join(cache_dir, "results.json")
+    pcv.print_results(filename=outfile)
+    assert os.path.exists(outfile)
+
+
 def test_plantcv_readimage_native():
     # Test with debug = None
     pcv.params.debug = None
@@ -2897,7 +3013,6 @@ def test_plantcv_report_size_marker_detect():
     pcv.params.debug = None
     images = pcv.report_size_marker_area(img=img, roi_contour=roi_contour, roi_hierarchy=roi_hierarchy, marker='detect',
                                          objcolor='light', thresh_channel='s', thresh=120)
-    pcv.print_results(os.path.join(cache_dir, "results.txt"))
     pcv.outputs.clear()
     assert len(images) != 0
 
@@ -2950,6 +3065,26 @@ def test_plantcv_report_size_marker_bad_threshold_input():
     with pytest.raises(RuntimeError):
         _ = pcv.report_size_marker_area(img=img, roi_contour=roi_contour, roi_hierarchy=roi_hierarchy, marker='detect',
                                         objcolor='light', thresh_channel=None, thresh=120)
+
+
+def test_plantcv_rgb2gray_cmyk():
+    # Test with debug = None
+    pcv.params.debug = None
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    c = pcv.rgb2gray_cmyk(rgb_img=img, channel="c")
+    # Assert that the output image has the dimensions of the input image but is only a single channel
+    assert all([i == j] for i, j in zip(np.shape(c), TEST_GRAY_DIM))
+
+
+def test_plantcv_rgb2gray_cmyk_bad_channel():
+    # Test with debug = None
+    pcv.params.debug = None
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    with pytest.raises(RuntimeError):
+        # Channel S is not in CMYK
+        _ = pcv.rgb2gray_cmyk(rgb_img=img, channel="s")
 
 
 def test_plantcv_rgb2gray_hsv():
@@ -3308,7 +3443,6 @@ def test_plantcv_watershed_segmentation():
     # Test with debug = None
     pcv.params.debug = None
     _ = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10)
-    pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert pcv.outputs.observations['default']['estimated_object_count']['value'] > 9
 
 
@@ -3431,7 +3565,6 @@ def test_plantcv_x_axis_pseudolandmarks():
     # Test with debug = None
     pcv.params.debug = None
     top, bottom, center_v = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
-    pcv.print_results(os.path.join(cache_dir, "results.txt"))
     pcv.outputs.clear()
     assert all([all([i == j] for i, j in zip(np.shape(top), (20, 1, 2))),
                 all([i == j] for i, j in zip(np.shape(bottom), (20, 1, 2))),
@@ -3495,7 +3628,6 @@ def test_plantcv_y_axis_pseudolandmarks():
     # Test with debug = None
     pcv.params.debug = None
     left, right, center_h = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
-    pcv.print_results(os.path.join(cache_dir, "results.txt"))
     pcv.outputs.clear()
     assert all([all([i == j] for i, j in zip(np.shape(left), (20, 1, 2))),
                 all([i == j] for i, j in zip(np.shape(right), (20, 1, 2))),
@@ -3517,7 +3649,6 @@ def test_plantcv_y_axis_pseudolandmarks_small_obj():
     pcv.params.debug = "plot"
     pcv.outputs.clear()
     left, right, center_h = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
-    pcv.print_results(os.path.join(cache_dir, "results.txt"))
     pcv.outputs.clear()
     assert all([all([i == j] for i, j in zip(np.shape(left), (20, 1, 2))),
                 all([i == j] for i, j in zip(np.shape(right), (20, 1, 2))),
@@ -3532,7 +3663,6 @@ def test_plantcv_y_axis_pseudolandmarks_bad_input():
     obj_contour = np.array([])
     pcv.params.debug = None
     result = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
-    pcv.print_results(os.path.join(cache_dir, "results.txt"))
     pcv.outputs.clear()
     assert all([i == j] for i, j in zip(result, [("NA", "NA"), ("NA", "NA"), ("NA", "NA")]))
 
@@ -3686,7 +3816,6 @@ def test_plantcv_morphology_segment_curvature():
     pcv.params.debug = "plot"
     pcv.outputs.clear()
     _ = pcv.morphology.segment_curvature(segmented_img, seg_objects)
-    pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert len(pcv.outputs.observations['default']['segment_curvature']['value']) == 22
 
 
@@ -3704,7 +3833,6 @@ def test_plantcv_morphology_check_cycles():
     _ = pcv.morphology.check_cycles(mask)
     pcv.params.debug = None
     _ = pcv.morphology.check_cycles(mask)
-    pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert pcv.outputs.observations['default']['num_cycles']['value'] == 1
 
 
@@ -3792,20 +3920,13 @@ def test_plantcv_morphology_segment_skeleton():
 def test_plantcv_morphology_fill_segments():
     # Clear previous outputs
     pcv.outputs.clear()
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_fill_segments")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     obj_dic = np.load(os.path.join(TEST_DATA, TEST_SKELETON_OBJECTS))
     obj = []
     for key, val in obj_dic.items():
         obj.append(val)
-    pcv.params.debug = "print"
-    _ = pcv.morphology.fill_segments(mask, obj, label="prefix")
-    pcv.params.debug = "plot"
+    pcv.params.debug = None
     _ = pcv.morphology.fill_segments(mask, obj)
-    pcv.print_results(os.path.join(cache_dir, "results.txt"))
     tests = [pcv.outputs.observations['default']['segment_area']['value'][42] == 5529,
              pcv.outputs.observations['default']['segment_area']['value'][20] == 5057,
              pcv.outputs.observations['default']['segment_area']['value'][49] == 3323]
@@ -3815,10 +3936,6 @@ def test_plantcv_morphology_fill_segments():
 def test_plantcv_morphology_fill_segments_with_stem():
     # Clear previous outputs
     pcv.outputs.clear()
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_fill_segments")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     obj_dic = np.load(os.path.join(TEST_DATA, TEST_SKELETON_OBJECTS))
     obj = []
@@ -3826,9 +3943,8 @@ def test_plantcv_morphology_fill_segments_with_stem():
         obj.append(val)
 
     stem_obj = obj[0:4]
-    pcv.params.debug = "print"
+    pcv.params.debug = None
     _ = pcv.morphology.fill_segments(mask, obj, stem_obj)
-    pcv.print_results(os.path.join(cache_dir, "results.txt"))
     num_objects = len(pcv.outputs.observations['default']['leaf_area']['value'])
     assert num_objects == 70
 
@@ -3846,7 +3962,6 @@ def test_plantcv_morphology_segment_angle():
     _ = pcv.morphology.segment_angle(segmented_img=segmented_img, objects=segment_objects, label="prefix")
     pcv.params.debug = "plot"
     _ = pcv.morphology.segment_angle(segmented_img, segment_objects)
-    pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert len(pcv.outputs.observations['default']['segment_angle']['value']) == 22
 
 
@@ -3877,7 +3992,6 @@ def test_plantcv_morphology_segment_euclidean_length():
     _ = pcv.morphology.segment_euclidean_length(segmented_img, segment_objects, label="prefix")
     pcv.params.debug = "plot"
     _ = pcv.morphology.segment_euclidean_length(segmented_img, segment_objects)
-    pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert len(pcv.outputs.observations['default']['segment_eu_length']['value']) == 22
 
 
@@ -3903,7 +4017,6 @@ def test_plantcv_morphology_segment_path_length():
     _ = pcv.morphology.segment_path_length(segmented_img, segment_objects, label="prefix")
     pcv.params.debug = "plot"
     _ = pcv.morphology.segment_path_length(segmented_img, segment_objects)
-    pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert len(pcv.outputs.observations['default']['segment_path_length']['value']) == 22
 
 
@@ -3952,7 +4065,6 @@ def test_plantcv_morphology_segment_tangent_angle():
     _ = pcv.morphology.segment_tangent_angle(skel, objs, 2, label="prefix")
     pcv.params.debug = "plot"
     _ = pcv.morphology.segment_tangent_angle(skel, objs, 2)
-    pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert len(pcv.outputs.observations['default']['segment_tangent_angle']['value']) == 73
 
 
@@ -3986,7 +4098,6 @@ def test_plantcv_morphology_segment_insertion_angle():
     _ = pcv.morphology.segment_insertion_angle(pruned, segmented_img, leaf_obj, stem_obj, 3, label="prefix")
     pcv.params.debug = "print"
     _ = pcv.morphology.segment_insertion_angle(pruned, segmented_img, leaf_obj, stem_obj, 10)
-    pcv.print_results(os.path.join(cache_dir, "results.txt"))
     assert pcv.outputs.observations['default']['segment_insertion_angle']['value'][:6] == ['NA', 'NA', 'NA',
                                                                                         24.956918822001636,
                                                                                         50.7313343343401,
@@ -4662,9 +4773,11 @@ def test_plantcv_hyperspectral_analyze_spectral():
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     mask = cv2.imread(os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_MASK), -1)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
-    pcv.params.debug = "plot"
-    _ = pcv.hyperspectral.analyze_spectral(array=array_data, mask=mask, histplot=True)
-    pcv.params.debug = "print"
+    # pcv.params.debug = "plot"
+    # _ = pcv.hyperspectral.analyze_spectral(array=array_data, mask=mask, histplot=True)
+    # pcv.params.debug = "print"
+    # _ = pcv.hyperspectral.analyze_spectral(array=array_data, mask=mask, histplot=True, label="prefix")
+    pcv.params.debug = None
     _ = pcv.hyperspectral.analyze_spectral(array=array_data, mask=mask, histplot=True, label="prefix")
     assert len(pcv.outputs.observations['prefix']['spectral_frequencies']['value']) == 978
 
@@ -4679,10 +4792,14 @@ def test_plantcv_hyperspectral_analyze_index():
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
     index_array = pcv.spectral_index.savi(hsi=array_data, distance=801)
     mask_img = np.ones(np.shape(index_array.array_data), dtype=np.uint8) * 255
-    pcv.params.debug = "print"
+    # pcv.params.debug = "print"
+    # pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, histplot=True)
+    # pcv.params.debug = "plot"
+    # pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, histplot=True)
+
+    pcv.params.debug = None
     pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, histplot=True)
-    pcv.params.debug = "plot"
-    pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, histplot=True)
+
     assert pcv.outputs.observations['default']['mean_index_savi']['value'] > 0
 
 
@@ -4696,6 +4813,7 @@ def test_plantcv_hyperspectral_analyze_index_set_range():
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
     index_array = pcv.spectral_index.savi(hsi=array_data, distance=801)
     mask_img = np.ones(np.shape(index_array.array_data), dtype=np.uint8) * 255
+    pcv.params.debug = None
     pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, histplot=True, min_bin=0, max_bin=1)
     assert pcv.outputs.observations['default']['mean_index_savi']['value'] > 0
 
@@ -4710,6 +4828,7 @@ def test_plantcv_hyperspectral_analyze_index_auto_range():
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
     index_array = pcv.spectral_index.savi(hsi=array_data, distance=801)
     mask_img = np.ones(np.shape(index_array.array_data), dtype=np.uint8) * 255
+    pcv.params.debug = None
     pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, min_bin="auto", max_bin="auto")
     assert pcv.outputs.observations['default']['mean_index_savi']['value'] > 0
 
@@ -4726,6 +4845,7 @@ def test_plantcv_hyperspectral_analyze_index_outside_range_warning():
     mask_img = np.ones(np.shape(index_array.array_data), dtype=np.uint8) * 255
     f = io.StringIO()
     with redirect_stdout(f):
+        pcv.params.debug = None
         pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, min_bin=.5, max_bin=.55, label="i")
     out = f.getvalue()
     # assert os.listdir(cache_dir) is 0
@@ -5649,25 +5769,13 @@ def test_plantcv_transform_nonuniform_illumination_gray():
 # ##############################
 # Tests for the threshold subpackage
 # ##############################
-def test_plantcv_threshold_binary():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_binary")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+@pytest.mark.parametrize("objtype", ["dark", "light"])
+def test_plantcv_threshold_binary(objtype):
     # Read in test data
     gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with object type = dark
     pcv.params.debug = None
-    _ = pcv.threshold.binary(gray_img=gray_img, threshold=25, max_value=255, object_type="dark")
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.threshold.binary(gray_img=gray_img, threshold=25, max_value=255, object_type="light")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.threshold.binary(gray_img=gray_img, threshold=25, max_value=255, object_type="light")
-    # Test with debug = None
-    pcv.params.debug = None
-    binary_img = pcv.threshold.binary(gray_img=gray_img, threshold=25, max_value=255, object_type="light")
+    binary_img = pcv.threshold.binary(gray_img=gray_img, threshold=25, max_value=255, object_type=objtype)
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(binary_img), TEST_GRAY_DIM)):
         # Assert that the image is binary
@@ -5686,25 +5794,13 @@ def test_plantcv_threshold_binary_incorrect_object_type():
         _ = pcv.threshold.binary(gray_img=gray_img, threshold=25, max_value=255, object_type="lite")
 
 
-def test_plantcv_threshold_gaussian():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_gaussian")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+@pytest.mark.parametrize("objtype", ["dark", "light"])
+def test_plantcv_threshold_gaussian(objtype):
     # Read in test data
     gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with object type = dark
     pcv.params.debug = None
-    _ = pcv.threshold.gaussian(gray_img=gray_img, max_value=255, object_type="dark")
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.threshold.gaussian(gray_img=gray_img, max_value=255, object_type="light")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.threshold.gaussian(gray_img=gray_img, max_value=255, object_type="light")
-    # Test with debug = None
-    pcv.params.debug = None
-    binary_img = pcv.threshold.gaussian(gray_img=gray_img, max_value=255, object_type="light")
+    binary_img = pcv.threshold.gaussian(gray_img=gray_img, max_value=255, object_type=objtype)
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(binary_img), TEST_GRAY_DIM)):
         # Assert that the image is binary
@@ -5723,25 +5819,13 @@ def test_plantcv_threshold_gaussian_incorrect_object_type():
         _ = pcv.threshold.gaussian(gray_img=gray_img, max_value=255, object_type="lite")
 
 
-def test_plantcv_threshold_mean():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_mean")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+@pytest.mark.parametrize("objtype", ["dark", "light"])
+def test_plantcv_threshold_mean(objtype):
     # Read in test data
     gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     # Test with object type = dark
     pcv.params.debug = None
-    _ = pcv.threshold.mean(gray_img=gray_img, max_value=255, object_type="dark")
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.threshold.mean(gray_img=gray_img, max_value=255, object_type="light")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.threshold.mean(gray_img=gray_img, max_value=255, object_type="light")
-    # Test with debug = None
-    pcv.params.debug = None
-    binary_img = pcv.threshold.mean(gray_img=gray_img, max_value=255, object_type="light")
+    binary_img = pcv.threshold.mean(gray_img=gray_img, max_value=255, object_type=objtype)
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(binary_img), TEST_GRAY_DIM)):
         # Assert that the image is binary
@@ -5760,25 +5844,13 @@ def test_plantcv_threshold_mean_incorrect_object_type():
         _ = pcv.threshold.mean(gray_img=gray_img, max_value=255, object_type="lite")
 
 
-def test_plantcv_threshold_otsu():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_otsu")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+@pytest.mark.parametrize("objtype", ["dark", "light"])
+def test_plantcv_threshold_otsu(objtype):
     # Read in test data
     gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GREENMAG), -1)
     # Test with object set to light
     pcv.params.debug = None
-    _ = pcv.threshold.otsu(gray_img=gray_img, max_value=255, object_type="light")
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.threshold.otsu(gray_img=gray_img, max_value=255, object_type='dark')
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.threshold.otsu(gray_img=gray_img, max_value=255, object_type='dark')
-    # Test with debug = None
-    pcv.params.debug = None
-    binary_img = pcv.threshold.otsu(gray_img=gray_img, max_value=255, object_type='dark')
+    binary_img = pcv.threshold.otsu(gray_img=gray_img, max_value=255, object_type=objtype)
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(binary_img), TEST_GRAY_DIM)):
         # Assert that the image is binary
@@ -5797,27 +5869,35 @@ def test_plantcv_threshold_otsu_incorrect_object_type():
         _ = pcv.threshold.otsu(gray_img=gray_img, max_value=255, object_type="lite")
 
 
-def test_plantcv_threshold_custom_range():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_range")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+@pytest.mark.parametrize("channel,lower_thresh,upper_thresh", [["HSV", [0, 0, 0], [255, 255, 255]],
+                                                               ["LAB", [0, 0, 0], [255, 255, 255]],
+                                                               ["RGB", [0, 0, 0], [255, 255, 255]],
+                                                               ["GRAY", [0], [255]]])
+def test_plantcv_threshold_custom_range_rgb(channel, lower_thresh, upper_thresh):
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    # Test with debug = None
+    pcv.params.debug = None
+    mask, binary_img = pcv.threshold.custom_range(img, lower_thresh=lower_thresh, upper_thresh=upper_thresh,
+                                                  channel=channel)
+    # Assert that the output image has the dimensions of the input image
+    if all([i == j] for i, j in zip(np.shape(binary_img), TEST_GRAY_DIM)):
+        # Assert that the image is binary
+        if all([i == j] for i, j in zip(np.unique(binary_img), [0, 255])):
+            assert 1
+        else:
+            assert 0
+    else:
+        assert 0
+
+
+def test_plantcv_threshold_custom_range_grayscale():
+    # Read in test data
     gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = 'print'
-    # Test channel='gray'
-    _, _ = pcv.threshold.custom_range(img, lower_thresh=[0], upper_thresh=[255], channel='gray')
-    _, _ = pcv.threshold.custom_range(gray_img, lower_thresh=[0], upper_thresh=[255], channel='gray')
-    # Test channel='HSV'
-    _, _ = pcv.threshold.custom_range(img, lower_thresh=[0, 0, 0], upper_thresh=[255, 255, 255], channel='HSV')
-    # Test channel='LAB'
-    _, _ = pcv.threshold.custom_range(img, lower_thresh=[0, 0, 0], upper_thresh=[255, 255, 255], channel='LAB')
-    pcv.params.debug = 'plot'
-    # Test channel='RGB'
-    mask, binary_img = pcv.threshold.custom_range(img, lower_thresh=[0, 0, 0], upper_thresh=[255, 255, 255],
-                                                  channel='RGB')
+    # Test with debug = None
+    pcv.params.debug = None
+    # # Test channel='gray'
+    mask, binary_img = pcv.threshold.custom_range(gray_img, lower_thresh=[0], upper_thresh=[255], channel='gray')
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(binary_img), TEST_GRAY_DIM)):
         # Assert that the image is binary
@@ -5830,10 +5910,6 @@ def test_plantcv_threshold_custom_range():
 
 
 def test_plantcv_threshold_custom_range_bad_input_hsv():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_range")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     with pytest.raises(RuntimeError):
@@ -5841,21 +5917,14 @@ def test_plantcv_threshold_custom_range_bad_input_hsv():
 
 
 def test_plantcv_threshold_custom_range_bad_input_rgb():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_range")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     # Read in test data
+    pcv.params.debug = None
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     with pytest.raises(RuntimeError):
         _, _ = pcv.threshold.custom_range(img, lower_thresh=[0, 0], upper_thresh=[2, 2, 2, 2], channel='RGB')
 
 
 def test_plantcv_threshold_custom_range_bad_input_lab():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_range")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     with pytest.raises(RuntimeError):
@@ -5863,10 +5932,6 @@ def test_plantcv_threshold_custom_range_bad_input_lab():
 
 
 def test_plantcv_threshold_custom_range_bad_input_gray():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_range")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     with pytest.raises(RuntimeError):
@@ -5874,37 +5939,23 @@ def test_plantcv_threshold_custom_range_bad_input_gray():
 
 
 def test_plantcv_threshold_custom_range_bad_input_channel():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_range")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     with pytest.raises(RuntimeError):
         _, _ = pcv.threshold.custom_range(img, lower_thresh=[0], upper_thresh=[2], channel='CMYK')
 
 
-def test_plantcv_threshold_saturation():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_saturation")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+@pytest.mark.parametrize("channel", ["all", "any"])
+def test_plantcv_threshold_saturation(channel):
     # Read in test data
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.threshold.saturation(rgb_img=rgb_img, threshold=254, channel="all")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    thresh = pcv.threshold.saturation(rgb_img=rgb_img, threshold=254, channel="any")
-    assert np.sum(thresh) == 920050455 and len(np.unique(thresh)) == 2
+    # Test with debug = None
+    pcv.params.debug = None
+    thresh = pcv.threshold.saturation(rgb_img=rgb_img, threshold=254, channel=channel)
+    assert len(np.unique(thresh)) == 2
 
 
 def test_plantcv_threshold_saturation_bad_input():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_saturation_bad_input")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     # Read in test data
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     with pytest.raises(RuntimeError):
@@ -5918,14 +5969,12 @@ def test_plantcv_threshold_triangle():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
+
+    pcv.params.debug = None
     _ = pcv.threshold.triangle(gray_img=gray_img, max_value=255, object_type="dark", xstep=10)
-    # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.threshold.triangle(gray_img=gray_img, max_value=255, object_type="light", xstep=10)
-    # Test with debug = None
-    pcv.params.debug = None
+    pcv.params.debug = "print"
     binary_img = pcv.threshold.triangle(gray_img=gray_img, max_value=255, object_type="light", xstep=10)
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(binary_img), TEST_GRAY_DIM)):
@@ -5946,10 +5995,8 @@ def test_plantcv_threshold_triangle_incorrect_object_type():
 
 
 def test_plantcv_threshold_texture():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_threshold_texture")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    # Test with debug = None
+    pcv.params.debug = None
     gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY_SMALL), -1)
     binary_img = pcv.threshold.texture(gray_img, ksize=6, threshold=7, offset=3, texture_method='dissimilarity',
                                        borders='nearest', max_value=255)
@@ -5962,6 +6009,43 @@ def test_plantcv_threshold_texture():
             assert 0
     else:
         assert 0
+
+
+@pytest.mark.parametrize("bad_type", ["native", "nan", "inf"])
+def test_plantcv_threshold_mask_bad(bad_type):
+    # Create a synthetic bad image
+    bad_img = np.reshape(np.random.rand(25), (5, 5))
+    bad_img[2, 2] = np.inf
+    bad_img[2, 3] = np.nan
+    sz = np.shape(bad_img)
+    pcv.params.debug = None
+    mask = pcv.threshold.mask_bad(bad_img, bad_type=bad_type)
+    assert((np.shape(mask) == sz) and (len(np.unique(mask)) == 2))
+
+
+def test_plantcv_threshold_mask_bad_native_bad_input():
+    # Create a synthetic bad image
+    bad_img = np.reshape(np.random.rand(25), (5, 5))
+    sz = np.shape(bad_img)
+    mask10 = pcv.threshold.mask_bad(bad_img, bad_type='native')
+
+    assert mask10.all() == np.zeros(sz, dtype='uint8').all()
+
+
+def test_plantcv_threshold_mask_bad_nan_bad_input():
+    # Create a synthetic bad image
+    bad_img = np.reshape(np.random.rand(25), (5, 5))
+    bad_img[2, 2] = np.inf
+    sz = np.shape(bad_img)
+    mask11 = pcv.threshold.mask_bad(bad_img, bad_type='nan')
+
+    assert mask11.all() == np.zeros(sz, dtype='uint8').all()
+
+def test_plantcv_threshold_mask_bad_input_color_img():
+    # Read in test data
+    bad_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    with pytest.raises(RuntimeError):
+        pcv.threshold.mask_bad(bad_img, bad_type='nan')
 
 
 # ###################################
@@ -5988,35 +6072,46 @@ def test_plantcv_visualize_auto_threshold_methods():
     assert len(labeled_imgs) == 5 and np.shape(labeled_imgs[0])[0] == np.shape(img)[0]
 
 
-def test_plantcv_visualize_pseudocolor():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_pseudocolor")
-    os.mkdir(cache_dir)
+@pytest.mark.parametrize("debug,axes", [["print", True], ["plot", False]])
+def test_plantcv_visualize_pseudocolor(debug, axes, tmpdir):
+    # Create a tmp directory
+    cache_dir = tmpdir.mkdir("sub")
     pcv.params.debug_outdir = cache_dir
+    # Input image
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
-    obj_contour = contours_npz['arr_0']
-    filename = os.path.join(cache_dir, 'plantcv_pseudo_image.png')
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.visualize.pseudocolor(gray_img=img, mask=None)
-    _ = pcv.visualize.pseudocolor(gray_img=img, mask=None)
+    r, c = img.shape
+    # generate 200 "bad" pixels
+    mask_bad = np.zeros((r, c), dtype=np.uint8)
+    mask_bad = np.reshape(mask_bad, (-1, 1))
+    mask_bad[0:100] = 255
+    mask_bad = np.reshape(mask_bad, (r, c))
+    # Debug mode
+    pcv.params.debug = debug
+    pseudo_img = pcv.visualize.pseudocolor(gray_img=img, mask=None, title="Pseudocolored image", axes=axes,
+                                           bad_mask=mask_bad)
+    # Assert that the output image has the dimensions of the input image
+    assert all([i == j] for i, j in zip(np.shape(pseudo_img), TEST_BINARY_DIM))
 
-    pimg = pcv.visualize.pseudocolor(gray_img=img, mask=mask, min_value=10, max_value=200)
-    pcv.print_image(pimg, filename)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="image")
-    _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="image", title="customized title")
-    _ = pcv.visualize.pseudocolor(gray_img=img, mask=None)
-    _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="black", obj=obj_contour, axes=False,
-                                  colorbar=False)
-    _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="image", obj=obj_contour, obj_padding=15)
-    _ = pcv.visualize.pseudocolor(gray_img=img, mask=None, axes=False, colorbar=False)
+
+@pytest.mark.parametrize("bkgrd,axes,pad", [["image", True, "auto"], ["white", False, 1], ["black", True, "auto"]])
+def test_plantcv_visualize_pseudocolor_mask(bkgrd, axes, pad):
     # Test with debug = None
     pcv.params.debug = None
-    _ = pcv.visualize.pseudocolor(gray_img=img, mask=None)
-    pseudo_img = pcv.visualize.pseudocolor(gray_img=img, mask=mask, background="white")
+    # Input image
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    # Input mask
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    # Input contours
+    contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
+    obj_contour = contours_npz['arr_0']
+    r, c = img.shape
+    # generate 200 "bad" pixels
+    mask_bad = np.zeros((r, c), dtype=np.uint8)
+    mask_bad = np.reshape(mask_bad, (-1, 1))
+    mask_bad[0:100] = 255
+    mask_bad = np.reshape(mask_bad, (r, c))
+    pseudo_img = pcv.visualize.pseudocolor(gray_img=img, obj=obj_contour, mask=mask, background=bkgrd,
+                                           bad_mask=mask_bad, title="Pseudocolored image", axes=axes, obj_padding=pad)
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(pseudo_img), TEST_BINARY_DIM)):
         assert 1
@@ -6053,6 +6148,11 @@ def test_plantcv_visualize_pseudocolor_bad_padding():
     obj_contour = contours_npz['arr_0']
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.pseudocolor(gray_img=img, mask=mask, obj=obj_contour, obj_padding="pink")
+
+
+def test_plantcv_visualize_pseudocolor_bad_mask():
+    # Test with debug = None
+    pcv.params.debug = None
 
 
 def test_plantcv_visualize_colorize_masks():
@@ -6104,20 +6204,56 @@ def test_plantcv_visualize_colorize_masks_bad_color_input():
         _ = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']], colors=['red', 1.123])
 
 
-def test_plantcv_visualize_histogram():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_plot_hist")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    # Test in print mode
-    pcv.params.debug = "print"
+@pytest.mark.parametrize("bins,lb,ub,title", [[200, 0, 255, "Include Title"], [100, None, None, None]])
+def test_plantcv_visualize_histogram(bins, lb, ub, title):
+    # Test with debug = None
+    pcv.params.debug = None
+    # Read test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    _ = pcv.visualize.histogram(gray_img=np.uint16(img), mask=mask, bins=200, title='Include Title')
-    # Test in plot mode
-    pcv.params.debug = "plot"
-    fig_hist = pcv.visualize.histogram(gray_img=img)
-    assert str(type(fig_hist)) == "<class 'plotnine.ggplot.ggplot'>"
+    fig_hist, hist_df = pcv.visualize.histogram(img=img, mask=mask, bins=bins, lower_bound=lb, upper_bound=ub,
+                                                title=title, hist_data=True)
+    assert all([isinstance(fig_hist, ggplot), isinstance(hist_df, pd.core.frame.DataFrame)])
+
+
+def test_plantcv_visualize_histogram_no_mask():
+    # Test with debug = None
+    pcv.params.debug = None
+    # Read test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    fig_hist = pcv.visualize.histogram(img=img, mask=None)
+    assert isinstance(fig_hist, ggplot)
+
+
+def test_plantcv_visualize_histogram_rgb_img():
+    # Test with debug = None
+    pcv.params.debug = None
+    # Test RGB input image
+    img_rgb = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    fig_hist = pcv.visualize.histogram(img=img_rgb)
+    assert isinstance(fig_hist, ggplot)
+
+
+def test_plantcv_visualize_histogram_multispectral_img():
+    # Test with debug = None
+    pcv.params.debug = None
+    # Test multi-spectral image
+    img_rgb = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    img_multi = np.concatenate((img_rgb, img_rgb), axis=2)
+    fig_hist = pcv.visualize.histogram(img=img_multi)
+    assert isinstance(fig_hist, ggplot)
+
+
+def test_plantcv_visualize_histogram_no_img():
+    with pytest.raises(RuntimeError):
+        _ = pcv.visualize.histogram(img=None)
+
+
+def test_plantcv_visualize_histogram_array():
+    # Read test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    with pytest.raises(RuntimeError):
+        _ = pcv.visualize.histogram(img=img[0, :])
 
 
 def test_plantcv_visualize_clustered_contours():
@@ -6134,19 +6270,19 @@ def test_plantcv_visualize_clustered_contours():
     objs = [roi_objects[arr_n] for arr_n in roi_objects]
     obj_hierarchy = hierarchy['arr_0']
     cluster = [cluster_i[arr_n] for arr_n in cluster_i]
-    # Test in print mode
-    pcv.params.debug = "print"
-    # Reset the saved color scale (can be saved between tests)
-    pcv.params.saved_color_scale = None
-    _ = pcv.visualize.clustered_contours(img=img, grouped_contour_indices=cluster, roi_objects=objs,
-                                         roi_obj_hierarchy=obj_hierarchy, nrow=2, ncol=2)
     # Test in plot mode
     pcv.params.debug = "plot"
     # Reset the saved color scale (can be saved between tests)
     pcv.params.saved_color_scale = None
-    cluster_img = pcv.visualize.clustered_contours(img=img1, grouped_contour_indices=cluster, roi_objects=objs,
-                                                   roi_obj_hierarchy=obj_hierarchy)
-    assert len(np.unique(cluster_img.reshape(-1, cluster_img.shape[2]), axis=0)) == 37
+    _ = pcv.visualize.clustered_contours(img=img1, grouped_contour_indices=cluster, roi_objects=objs,
+                                                   roi_obj_hierarchy=obj_hierarchy, bounding=False)
+    # Test in print mode
+    pcv.params.debug = "print"
+    # Reset the saved color scale (can be saved between tests)
+    pcv.params.saved_color_scale = None
+    cluster_img = pcv.visualize.clustered_contours(img=img, grouped_contour_indices=cluster, roi_objects=objs,
+                                         roi_obj_hierarchy=obj_hierarchy, nrow=2, ncol=2, bounding=True)
+    assert np.sum(cluster_img) > np.sum(img)
 
 
 def test_plantcv_visualize_colorspaces():
@@ -6180,10 +6316,8 @@ def test_plantcv_visualize_overlay_two_imgs():
     os.mkdir(cache_dir)
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     img2 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY))
-    pcv.params.debug = 'print'
-    pcv.params.debug_outdir = cache_dir
-    _ = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2)
-    pcv.params.debug = 'plot'
+
+    pcv.params.debug = None
     out_img = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2)
     sample_pt1 = img1[1445, 1154]
     sample_pt2 = img2[1445, 1154]

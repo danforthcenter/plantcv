@@ -1,7 +1,5 @@
 # Print Numerical Data
 
-import json
-import os
 from plantcv.plantcv import outputs
 
 
@@ -14,13 +12,7 @@ def print_results(filename):
     :param filename: str
     :return:
     """
-
-    if os.path.isfile(filename):
-        with open(filename, 'r') as f:
-            hierarchical_data = json.load(f)
-            hierarchical_data["observations"] = outputs.observations
-    else:
-        hierarchical_data = {"metadata": {}, "observations": outputs.observations}
-
-    with open(filename, mode='w') as f:
-        json.dump(hierarchical_data, f)
+    print("""Deprecation warning: plantcv.print_results will be removed in a future version.
+             Please use plantcv.outputs.save_results instead.
+          """)
+    outputs.save_results(filename=filename, outformat="json")
