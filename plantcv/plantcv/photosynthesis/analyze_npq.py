@@ -33,7 +33,9 @@ def analyze_npq(data, mask, bins=256, label="default"):
     fmp = data.sel(frame_label='Fmp').data
     fm = data.sel(frame_label='Fm').data
     mask = mask.astype(np.uint8)
-
+    print(np.shape(fm))
+    print(np.shape(mask))
+    
     # QC Fdark Image
     fdark_mask = cv2.bitwise_and(fmp, fmp, mask=mask)
     if np.amax(fdark_mask) > 2000:
