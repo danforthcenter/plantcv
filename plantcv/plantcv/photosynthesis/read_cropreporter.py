@@ -58,6 +58,7 @@ def read_cropreporter(filename):
     img_frames = []
     all_indices = []
     all_frame_labels = []
+    print(frames_expected)
 
     # Loop over all raw bin files
     for key in frames_expected:
