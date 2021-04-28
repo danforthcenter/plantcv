@@ -2,7 +2,7 @@
 
 This function displays different object intances in different colors on top of the original image.
 
-**plantcv.visualize.display_instances**(*img, masks, figsize=(16, 16), title="", ax=None, colors=None, captions=None, show_bbox=True*)
+**plantcv.visualize.display_instances**(*img, masks, figsize=(16, 16), title="", colors=None, captions=None, show_bbox=True, ax=None*)
 **returns** masked_img, colors
 
 - **Parameters:**
@@ -10,11 +10,10 @@ This function displays different object intances in different colors on top of t
     - masks      - (required, ndarray) instance masks represented by a 3-d array, the 3rd dimension represents the number of insatnces to show.
     - figsize    - (optional, tuple) the size of the generated figure
     - title      - (optional, str) the title of the figure
-    - ax         - (optional, matplotlib.axes._subplots.AxesSubplot) the axis to plot on. If no axis is passed, create one and automatically call show())
     - colors     - (optional, list of tuples, every value should be in the range of [0.0,1.0]) a list of colors to use with each object. If no value is passed, a set of random colors would be used
     - captions   - (optional, str) a list of strings to use as captions for each object. If no list of captions is provided, show the local index of the instance
     - show_bbox  - (optional, bool) indicator of whether showing the bounding-box
-
+    - ax         - (optional, matplotlib.axes._subplots.AxesSubplot) the axis to plot on. If no axis is passed, a new one will be created 
 - **Context:**
     - Used to display different segmented instances on top of the original image. 
 - **Example use:**
@@ -24,7 +23,7 @@ This function displays different object intances in different colors on top of t
 
 ![Screenshot](img/documentation_images/visualize_display_instances/visualize_inst_seg_img.png)
 
-**masks: 10 different segmentation masks represent for different leaves**
+**masks: 10 segmentation masks represent for different leaves**
 
 ![Screenshot](img/documentation_images/visualize_display_instances/mask_0.png)
 ![Screenshot](img/documentation_images/visualize_display_instances/mask_1.png)
