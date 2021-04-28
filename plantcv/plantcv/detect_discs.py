@@ -6,7 +6,7 @@ from plantcv.plantcv._debug import _debug
 
 def detect_discs(bin_img, ecc_thresh=0):
     """ Detect disc-shaped regions in a binary image based on eccentricity.
-    A value of eccentricity between 0 and 1 correspond to an ellipse.
+    A value of eccentricity between 0 and 1 corresponds to an ellipse.
     The closer the value to 0 the closer the shape is to a circle.
 
     Inputs:
@@ -41,6 +41,7 @@ def detect_discs(bin_img, ecc_thresh=0):
             discs_mask = discs_mask + (labeled_img == i+1)
 
     _debug(visual=255*discs_mask, filename=os.path.join(params.debug_outdir,
-            str(params.device) + "_discs_mask.png"))
+            str(params.device) + "_discs_mask" +
+            str(int(ecc_thresh*10)) + ".png"))
 
     return discs_mask, discs_coor
