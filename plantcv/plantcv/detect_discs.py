@@ -44,4 +44,4 @@ def detect_discs(bin_img, ecc_thresh=0):
             str(params.device) + "_discs_mask" +
             str(int(ecc_thresh*10)) + ".png"))
 
-    return discs_mask, discs_coor
+    return 255*discs_mask, discs_coor
