@@ -1,13 +1,13 @@
 ## Visualize label image
 
-This is a plotting method used to visualize label image.
+This is a plotting method used to visualize labeled images.
 
 **plantcv.visualize.colorize_label_img**(*label_img*)
 
 **returns** colored_img
 
 - **Parameters:**
-    - label_img - A label image, i.e. a 2d image with int values at every pixel, where the values represent for the class the pixel belongs to
+    - label_img - A labeled image, i.e. a 2d image with unique integer values at every pixel, where the values represent for the class the pixel belongs to
 - **Context:**
     - Visualize different class labels in one image
 - **Example use:**
