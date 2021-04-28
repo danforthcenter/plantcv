@@ -6402,6 +6402,17 @@ def test_plantcv_visualize_display_instances_bad_color2():
     _, colors = pcv.visualize.display_instances(img, masks, colors=colors)
     assert len(colors) == masks.shape[2]
 
+def test_plantcv_visualize_display_instances_bad_color3():
+    pcv.params.debug = None
+    # create synthetic test data
+    img = img_as_ubyte(np.random.rand(10,10,3))
+    masks = np.zeros((10, 10, 2), dtype=np.uint8)
+    masks[1:3, 3:5, 0] = 1
+    masks[2:5, 1:3, 1] = 1
+    colors = [(10,0.0,15.0),(10,0.0,74)]
+    with pytest.raises(RuntimeError):
+        _, _ = pcv.visualize.display_instances(img, masks, colors=colors)
+
 def test_plantcv_visualize_display_instances_bad_size():
     pcv.params.debug = None
     # create synthetic test data
@@ -6409,6 +6420,7 @@ def test_plantcv_visualize_display_instances_bad_size():
     masks = np.zeros((10, 10, 2), dtype=np.uint8)
     with pytest.raises(RuntimeError):
         _, _ = pcv.visualize.display_instances(img, masks)
+
 
 # ##############################
 # Tests for the utils subpackage
