@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 
 def get_centroids(bin_img):
     """ Get the coordinates (row,column) of the centroid of each connected
@@ -16,7 +17,8 @@ def get_centroids(bin_img):
     """
 
     # find contours in the binary image
-    _, contours, _ = cv2.findContours(bin_img, cv2.RETR_TREE,
+    _, contours, _ = cv2.findContours(bin_img.astype(np.uint8),
+                                        cv2.RETR_TREE,
                                         cv2.CHAIN_APPROX_SIMPLE)
     coor = []
     for c in contours:

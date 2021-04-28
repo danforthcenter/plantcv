@@ -32,7 +32,7 @@ def detect_discs(bin_img, ecc_thresh=0):
 
     # Check the eccentricity of each region.
     # A value closer to 0 keeps only the most circular objects
-    discs_mask = np.zeros(labeled_img.shape, dtype=np.int32)
+    discs_mask = np.zeros(labeled_img.shape, dtype=np.uint8)
     # Store the list of coordinates (row,col) for the objects that pass the
     discs_coor = []
     for i,obj in enumerate(obj_measures):
