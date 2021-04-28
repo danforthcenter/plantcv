@@ -25,6 +25,12 @@ def metadata_parser(config):
     end_date = config.end_date
     if end_date is None:
         end_date = datetime.datetime.now().strftime(config.timestampformat)
+        now = datetime.datetime.now()
+        # now() maybe be before time of images if timestampformat is subdaily 
+        # if timestampformat is only hours,min,sec then the strptime will use year 1900
+        if now > datetime.datetime.strptime(end_date, config.timestampformat):
+            nextyear = (now+datetime.timedelta(days=366)).year
+            end_date = datetime.datetime(nextyear,12,31,23,59,59).strftime(config.timestampformat)
 
     start_date_unixtime = convert_datetime_to_unixtime(timestamp_str=start_date, date_format=config.timestampformat)
     end_date_unixtime = convert_datetime_to_unixtime(timestamp_str=end_date, date_format=config.timestampformat)
