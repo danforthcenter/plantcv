@@ -20,6 +20,7 @@ import matplotlib.pyplot as plt
 import dask
 from dask.distributed import Client
 import pickle as pkl
+from skimage.util import img_as_ubyte
 
 PARALLEL_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "parallel_data")
 TEST_TMPDIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".cache")
@@ -6362,65 +6363,52 @@ def test_plantcv_visualize_overlay_two_imgs_size_mismatch():
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2)
 
-def test_plantcv_visualize_display_instances(tmpdir):
-
-    img,_,_ = pcv.readimage(filename=os.path.join(TEST_DATA,TEST_INPUT_INSTANCE_IMG),mode="RGB")
-    masks = pkl.load(open(os.path.join(TEST_DATA,TEST_INPUT_INSTANCE_MASK), "rb"))["masks"]
-    pcv.params.debug = "plot"
-    _, colors = pcv.visualize.display_instances(img, masks, figsize=(16, 16), title="", ax=None, colors=None, captions=None, show_bbox=True)
-    assert len(colors) == masks.shape[2]
-    pcv.params.debug = "print"
+def test_plantcv_visualize_display_instances():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_visualize_display_instances")
     os.mkdir(cache_dir)
+    # create synthetic test data
+    img = img_as_ubyte(np.random.rand(10,10,3))
+    masks = np.zeros((10, 10, 2))
+    masks[1:3, 3:5, 0] = 1
+    masks[2:5, 1:3, 1] = 1
+    colors = [(1.0,0.0,0.15),(1.0,0.0,0.74)]
+    pcv.params.debug = "plot"
+    _, ax = plt.subplots(1, 1, figsize=(16, 16))
+    _, colors = pcv.visualize.display_instances(img, masks, title="test", colors=colors, captions=['1','2'], show_bbox=True, ax=ax)
+    pcv.params.debug = "print"
     pcv.params.debug_outdir = cache_dir
-    _, colors = pcv.visualize.display_instances(img[:,:,0], masks, figsize=(16, 16), title="", ax=None, colors=None, captions=None, show_bbox=True)
+    _, colors = pcv.visualize.display_instances(img, masks)
     assert len(colors) == masks.shape[2]
 
-
-def test_plantcv_visualize_display_instances_captions(tmpdir):
+def test_plantcv_visualize_display_instances_bad_color():
     pcv.params.debug = None
-    img,_,_ = pcv.readimage(filename=os.path.join(TEST_DATA,TEST_INPUT_INSTANCE_IMG),mode="RGB")
-    masks = pkl.load(open(os.path.join(TEST_DATA,TEST_INPUT_INSTANCE_MASK), "rb"))["masks"]
-    captions = [str(i) for i in range(masks.shape[2])]
-    _, colors = pcv.visualize.display_instances(img, masks, figsize=(16, 16), title="", ax=None, colors=None, captions=captions, show_bbox=True)
+    # create synthetic test data
+    img = img_as_ubyte(np.random.rand(10,10,3))
+    masks = np.zeros((10, 10, 2), dtype=np.uint8)
+    masks[1:3, 3:5, 0] = 1
+    masks[2:5, 1:3, 1] = 1
+    colors = [(1.0,0.0,0.15)]
+    with pytest.raises(RuntimeError):
+        _, _ = pcv.visualize.display_instances(img, masks, colors=colors)
+
+def test_plantcv_visualize_display_instances_bad_color2():
+    pcv.params.debug = None
+    # create synthetic test data
+    img = img_as_ubyte(np.random.rand(10,10,3))
+    masks = np.zeros((10, 10, 2), dtype=np.uint8)
+    masks[1:3, 3:5, 0] = 1
+    masks[2:5, 1:3, 1] = 1
+    colors = [(1.0,0.0,0.15),(1.0,0.0,0.74),(0.0,1.0,0.74)]
+    _, colors = pcv.visualize.display_instances(img, masks, colors=colors)
     assert len(colors) == masks.shape[2]
 
-
-def test_plantcv_visualize_display_instances_bad_color(tmpdir):
-    import colorsys
-    import random
-    img,_,_ = pcv.readimage(filename=os.path.join(TEST_DATA,TEST_INPUT_INSTANCE_IMG),mode="RGB")
-    masks = pkl.load(open(os.path.join(TEST_DATA,TEST_INPUT_INSTANCE_MASK), "rb"))["masks"]
-    num = 2
-    hsv = [(i / num, 1, 1.0) for i in range(num)]
-    colors = list(map(lambda c: colorsys.hsv_to_rgb(*c), hsv))
-    random.shuffle(colors)
+def test_plantcv_visualize_display_instances_bad_size():
+    pcv.params.debug = None
+    # create synthetic test data
+    img = img_as_ubyte(np.random.rand(5,5,3))
+    masks = np.zeros((10, 10, 2), dtype=np.uint8)
     with pytest.raises(RuntimeError):
-        _, _ = pcv.visualize.display_instances(img, masks, figsize=(16, 16), title="", ax=None, colors=colors, captions=None, show_bbox=True)
-
-    colors_ = pcv.color_palette(num)
-    colors = [tuple(c) for c in colors_]
-    with pytest.raises(RuntimeError):
-        _, _ = pcv.visualize.display_instances(img, masks, figsize=(16, 16), title="", ax=None, colors=colors, captions=None, show_bbox=True)
-
-def test_plantcv_visualize_display_instances_bad_color2(tmpdir):
-    import colorsys
-    import random
-    img,_,_ = pcv.readimage(filename=os.path.join(TEST_DATA,TEST_INPUT_INSTANCE_IMG),mode="RGB")
-    masks = pkl.load(open(os.path.join(TEST_DATA,TEST_INPUT_INSTANCE_MASK), "rb"))["masks"]
-    num = 20
-    hsv = [(i / num, 1, 1.0) for i in range(num)]
-    colors = list(map(lambda c: colorsys.hsv_to_rgb(*c), hsv))
-    random.shuffle(colors)
-    _, colors = pcv.visualize.display_instances(img, masks, figsize=(16, 16), title="", ax=None, colors=colors, captions=None, show_bbox=True)
-    assert len(colors) == masks.shape[2]
-
-def test_plantcv_visualize_display_instances_bad_size(tmpdir):
-    img,_,_ = pcv.readimage(filename=os.path.join(TEST_DATA,TEST_INPUT_INSTANCE_IMG),mode="RGB")
-    img = img[0:100,0:100,:]
-    masks = pkl.load(open(os.path.join(TEST_DATA,TEST_INPUT_INSTANCE_MASK), "rb"))["masks"]
-    with pytest.raises(RuntimeError):
-        _, _ = pcv.visualize.display_instances(img, masks, figsize=(16, 16), title="", ax=None, colors=None, captions=None, show_bbox=True)
+        _, _ = pcv.visualize.display_instances(img, masks)
 
 # ##############################
 # Tests for the utils subpackage
