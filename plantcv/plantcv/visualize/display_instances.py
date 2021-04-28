@@ -29,8 +29,8 @@ def _overlay_mask_on_img(img, mask, color, alpha=0.5):
     :param alpha: float
     :return: img: numpy.ndarray
     """
-    if len(img.shape) == 2:
-        img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+    # if len(img.shape) == 2:
+    #     img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
     for c in range(img.shape[-1]):
         img[:, :, c] = np.where(mask == 1,
                                 img[:, :, c] *
