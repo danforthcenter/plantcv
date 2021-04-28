@@ -10,7 +10,7 @@ from matplotlib import patches, lines
 from matplotlib.patches import Polygon
 from plantcv.plantcv import fatal_error, params, color_palette
 import os
-
+from cv2 import cvtColor, COLOR_BGR2RGB
 
 def _overlay_mask_on_img(img, mask, color, alpha=0.5):
     """ Overlay a given mask on top of an image such that the masked area (the non-zero areas in the mask) is shown in user
@@ -71,6 +71,9 @@ def display_instances(img, masks, figsize=(16, 16), title="", colors=None, capti
     debug = params.debug
     params.debug = None
 
+    # Auto-increment the device counter
+    params.device += 1
+
     if img.shape[0:2] != masks.shape[0:2]:
         fatal_error("Sizes of image and mask mismatch!")
     #
@@ -109,7 +112,8 @@ def display_instances(img, masks, figsize=(16, 16), title="", colors=None, capti
 
         # Mask
         mask = masks[:, :, i]
-        masked_img = _overlay_mask_on_img(masked_img, mask, color)
+        # the color is in order of r-g-b, however the image is in order of b-g-r, so take the reverse of color
+        masked_img = _overlay_mask_on_img(masked_img, mask, color[::-1])
 
         ys, xs = np.where(mask > 0)
         x1, x2 = min(xs), max(xs)
@@ -134,7 +138,7 @@ def display_instances(img, masks, figsize=(16, 16), title="", colors=None, capti
             caption = captions[i]
         ax.text(x1, y1 + 8, caption, color='w', size=13, backgroundcolor="none")
 
-    masked_img   = masked_img.astype(np.uint8)
+    masked_img   = cvtColor(masked_img.astype(np.uint8), COLOR_BGR2RGB)
     params.debug = debug
     if params.debug is not None:
         if params.debug == "plot":
