@@ -13,7 +13,7 @@ from plantcv.plantcv import outputs
 def _calc_npq(Fmp, Fm):
     return(Fm/Fmp - 1)
 
-def analyze_npq2(data, mask, bins=256, label="default"):
+def analyze_npq(data, mask, bins=256, label="default"):
     """Calculate and analyze NPQ from fluorescence image data.
     Inputs:
     data        = x-array of binary image data
