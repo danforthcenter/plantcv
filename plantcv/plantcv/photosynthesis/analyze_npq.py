@@ -10,9 +10,6 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def _calc_npq(Fmp, Fm):
-    return(Fm/Fmp - 1)
-
 def analyze_npq(data, mask, bins=256, label="default"):
     """Calculate and analyze NPQ from fluorescence image data.
     Inputs:
@@ -32,9 +29,39 @@ def analyze_npq(data, mask, bins=256, label="default"):
 
     # Auto-increment the device counter
     params.device += 1
-    npq = xr.apply_ufunc(_calc_npq,
-                      data.sel(frame_label='Fmp'),
-                      data.sel(frame_label='fmax'))
+    # Extract frames of interest
+    fmp = data.sel(frame_label='Fmp').data
+    fm = data.sel(frame_label='Fm').data
+    mask = mask.astype(np.uint8)
+
+    # QC Fdark Image
+    fdark_mask = cv2.bitwise_and(fmp, fmp, mask=mask)
+    if np.amax(fdark_mask) > 2000:
+        qc_fdark = False
+    else:
+        qc_fdark = True
+
+    # Mask Fmin and Fmax Image
+    fmp_mask = cv2.bitwise_and(fmp, fmp, mask=mask)
+    fm_mask = cv2.bitwise_and(fm, fm, mask=mask)
+
+    # Calculate denomenator, where denom = Fmp - 1 (masked)
+    denom = np.subtract(fmp, np.ones(np.shape(fmp)))
+
+    # # When Fmin is greater than Fmax, a negative value is returned.
+    # # Because the data type is unsigned integers, negative values roll over, resulting in nonsensical values
+    # # Wherever Fmin is greater than Fmax, set Fv to zero
+    # denom[np.where(fm_mask < fmp_mask)] = 0
+    analysis_images = []
+
+    # Calculate Fv/Fm (Fvariable / Fmax) where Fmax is greater than zero
+    # By definition above, wherever Fmax is zero, Fvariable will also be zero
+    # To calculate the divisions properly we need to change from unit16 to float64 data types
+    denom = denom.astype(np.float64)
+    npq = np.copy(denom)
+    # nalysis_images.append(fvfm)
+    fm_flt = fm_mask.astype(np.float64)
+    npq[np.where(fm_mask > 0)] = fm_flt[np.where(fm_mask > 0)] / denom
 
     # Calculate the median Fv/Fm value for non-zero pixels
     npq_median = np.median(npq[np.where(npq > 0)])
