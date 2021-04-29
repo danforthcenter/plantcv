@@ -1,12 +1,5 @@
-# !/usr/bin/env python3
-# -*- coding: utf-8 -*-
+# Functions used to evaulate time-series linking result
 """
-Created on Mon Dec  7 2020
-
-Functions used to evaluate time-series linking result
-
-@author: hudanyunsheng
-
 Notations and Definitions:
 T: total time
 N: total number of (unique) leaves in ground truth
