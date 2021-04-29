@@ -19,15 +19,15 @@ def time_lapse_video(img_directory, list_img=None, auto_sort = True, suffix_img=
     list_img       = the desired list of images in img_directory to create the video. If None is passed, all images would be included by default.
     auto_sort      = whether to automatically sort the list of images. Sometimes if the user provided the list of images, they don't want it to be automatically sorted alphabetically
     suffix_img     = common suffix of all image files, can be more than extension
-    size_frame     =  the desired size of every frame.
+    size_frame     = the desired size of every frame.
             In a video, every frame should have the same size.
             The assumption is that all images given should have same size. However, in some cases, the sizes of images are slightly differ from each other.
-            If the frame size is given, if an images is larger than the given size, the image would be cropped automatically; if an image is smaller than the given size, the image would be zero-padded automatically
+            If the frame size is given, if an image is larger than the given size, the image would be cropped automatically; if an image is smaller than the given size, the image would be zero-padded automatically
             If the frame size is not given, the largest size of all images would be used as the frame size.
     fps            = (frames per second) frame rate.
             Commonly used values: 23.98, 24, 25, 29.97, 30, 50, 59.94, 60
-    name_video     = desires saving name for the generated video
-    path_video     =  the desired saving path of output video. If not given, the video would be saved the the same directory of the images.
+    name_video     = desired saving name for the generated video
+    path_video     = the desired saving path of output video. If not given, the video would be saved the the same directory of the images.
     display        = indicator of whether to display current status (by displaying saving directory and saving name) while running this function
     :return:
     list_img       = the list of images used to generate the video
@@ -65,6 +65,7 @@ def time_lapse_video(img_directory, list_img=None, auto_sort = True, suffix_img=
             #  make the list of images extension free
             list_img_no_ext = [os.path.splitext(f)[0] if os.path.splitext(f)[1] else f for f in list_img]
             list_img_ = []
+            # check if the images in the given list exist in the directory by comparing both lists
             for (f,f_) in zip(list_img_no_ext,list_img):
                 try:
                     temp_list_no_ext.index(f)
