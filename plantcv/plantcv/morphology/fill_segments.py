@@ -75,4 +75,4 @@ def fill_segments(mask, objects, stem_objects=None, label="default"):
     params.debug = debug
     _debug(visual=filled_img, filename=os.path.join(params.debug_outdir, str(params.device) + "_filled_img.png"))
 
-    return filled_img, filled_mask
+    return filled_mask
