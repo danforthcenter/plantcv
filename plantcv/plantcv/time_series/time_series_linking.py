@@ -1,12 +1,4 @@
-# !/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Jun  9  2020
-
-Functions used in time series linking after getting leaf instances segmented
-
-@author: hudanyun sheng
-"""
+# Link time-series
 
 import numpy as np
 import matplotlib
@@ -35,16 +27,23 @@ import csv
 
 def _compute_overlaps_masks(masks1, masks2):
     """Compute overlaps of two sets of binary masks.
-     The overlaps are represented by IoU (intersection over union) and IoS (intersection over self-area).
-
+    The overlaps are represented by IoU (intersection over union) and IoS (intersection over self-area of the 1st mask).
+    Inputs:
+    masks1 = Binary masks data correspond to the 1st image
+    masks1 = Binary masks data correspond to the 2nd image
+    Outputs:
+    n1     = the number of instances in 1st set of binary masks
+    n2     = the number of instances in 2nd set of binary masks
+    ious   = inversection over union between any pairs of instances in masks1 and masks2
+    ioss   = inversection over self-area (areas of instances in 1st set of masks) between any pairs of instances in masks1 and masks2
+    unions = unions between any pairs of instances in masks1 and masks2
     :param masks1: (numpy.ndarray of shape: [Height, Width, n1]) , where n1 is the number of instances
     :param masks2: (numpy.ndarray of shape: [Height, Width, n2]) , where n2 is the number of instances
-    :return:
-    n1: the number of instances in 1st set of binary masks
-    n2: the number of instances in 2nd set of binary masks
-    ious: (numpy.ndarray of shape: [n1, n2]) inversection over union between any pairs of instances in masks1 and masks2
-    ioss: (numpy.ndarray of shape: [n1, n2]) inversection over self-area (areas of instances in 1st set of masks) between any pairs of instances in masks1 and masks2
-    unions: (numpy.ndarray of shape: [n1, n2]) unions between any pairs of instances in masks1 and masks2
+    :return: n1: int
+    :return: n2: int
+    :return: ious: numpy.ndarray of shape: [n1, n2]
+    :return: ioss: numpy.ndarray of shape: [n1, n2]
+    :return: unions: numpy.ndarray of shape: [n1, n2]
     """
 
     # If either set of masks is empty return an empty result
@@ -74,16 +73,27 @@ def _compute_overlaps_masks(masks1, masks2):
 
 
 def _get_link(masks1, masks2, logic, thres):
-    """
-    Get link information between two sets of binary instance segmentation masks
-    :param masks1: (numpy.ndarray of shape: [Height, Width, n1]), where n1 is the number of instances
-    :param masks2: (numpy.ndarray of shape: [Height, Width, n2]), where n2 is the number of instances
-    :param logic: linking logic to use. (currently) either "IOU" or "IOS"
-    :param thres: threshold to link two masks (two binary segmentation masks can only be linked if the calculated overlap between is greater than the threshold)
-    :return:
-    weight (numpy.ndarray of shape: [n1,n2]): weight matrix (indicated by IoU or IoS) calculated based on two sets of masks
-    link (numpy.1darray of length n1): link[i] = j means that the i-th mask in masks1 should be linked to j-th mask in masks2
-    row_ind, col_ind: selected row indices and column indices based on the weight matrix to finalize the "link"
+    """Get link information between two sets of binary instance segmentation masks
+    Inputs:
+    masks1 = Binary masks data correspond to the 1st image
+    masks2 = Binary masks data correspond to the 2nd image
+    logic = linking logic to use. (currently) either "IOU" or "IOS"
+    thres = threshold to link two masks (two binary segmentation masks can only be linked if the calculated overlap
+    between is greater than the threshold)
+    Outputs:
+    weight  = weight matrix (indicated by IoU or IoS) calculated based on two sets of masks
+    link    = linking information (numpy.1darray of length n1)). link[i] = j means that the i-th mask in masks1 should be linked to j-th mask in masks2
+    row_ind = selected row indices based on the weight matrix to finalize the "link"
+    col_ind = selected column indices based on the weight matrix to finalize the "link"
+
+    :param masks1: numpy.ndarray
+    :param masks2: numpy.ndarray
+    :param logic: str
+    :param thres: float
+    :return weight: numpy.ndarray
+    :return link: numpy.1darray of length n1
+    :return row_ind: int
+    :return col_ind: int
     """
 
     n1, n2, ious, ioss, _ = _compute_overlaps_masks(masks1, masks2)
@@ -110,16 +120,19 @@ def _get_link(masks1, masks2, logic, thres):
 
 
 def _get_emergence(uids):
-    """
-    get emergence as well as emerge times
-    :param uids: unique ids at every time point
-        (list of length T, where T is the total time)
-        every sub-list uids[t] (for t in range of (0,T)) is also a list of length nt, where nt is the number of instances at t
-    :return:
-    emergence: new segments (leaves) compared to previous time-point
-        (list of length T, where T is the total time)
-        every sub-list emergence[t] if also a list. If there is no new segments at t compared to (t-1), the emergence[t] is empty; otherwise, emergence[t] is a list of unique ids appear at t but not at (t-1).
-    emerge_times: (list) time points with emergence
+    """ Get the emerging information as well as emerging times
+    Inputs:
+    uids = unique indices present at every time point.
+            (list of length T, where T is the total time
+            every sub-list uids[t] (t is in range of (0,T)) is also a list of length nt,
+                where nt is the number of instances at t)
+    Outputs:
+    emergence    = new unique indices that don't exist in the previous time-point
+    emerge_times = time points with new indices appear
+
+    :param uids: list
+    :return emergence: list
+    :return emerge_times: list
     """
 
     emergence = [[] for i in uids]
@@ -137,18 +150,25 @@ def _get_emergence(uids):
 
 
 def _get_ti(num_insts, uids, link_info):
-    """
-    getting ti (tracking information)
-    :param num_insts: (list) number of instances at every time-point t
-    :param uids: unique ids at every time point
-    :param link_info:
-    :return:
-    ti: tracking information (np.ndarray of shape (T,N))
+    """ Get tracking information matrix (ti)
+    Inputs:
+    num_insts = number of instances at every time-point t
+    uids      = unique ids at every time point
+    link_info =
+    Outputs:
+    ti (tracking information) = (numpy.ndarray of shape (T,N))
         ti[t,k]=j represents for: at time t the k-th leaf has a local index of j
         if ti[t,k]=-1, the k-th leaf does not appear at time t
         number of non-negative elements every row: number of instances
-    t_appear: (list, length: N) the appear time of every unique id
-    t_disappear: (list, length: N) the disappear time of every unique id
+    t_appear                  = (list, length: N) the appear time of every unique id
+    t_disappear               = (list, length: N) the disappear time of every unique id
+
+    :param num_insts: list
+    :param uids: list
+    :param link_info:
+    :return ti: numpy.ndarray
+    :return t_appear: list
+    :return t_disappear: list
     """
 
     emergence, emerge_times = _get_emergence(uids)
@@ -195,11 +215,15 @@ def _get_ti(num_insts, uids, link_info):
     return ti, t_appear, t_disappear
 
 def _get_li_from_ti(ti):
+    """ Get linking information from tracking information
+    Inputs:
+    ti = tracking information
+    Outputs:
+    li = linking information
+    :param ti: numpy.ndarray
+    :return li: list
     """
 
-    :param ti:
-    :return:
-    """
     li = []
     for t in range(len(ti)-1):
         ti_0 = ti[t,:]
