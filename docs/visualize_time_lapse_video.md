@@ -1,6 +1,6 @@
 ## Automatically Generate a Time-Lapse Video given A Directory of Images
 
-This function automatically generates and saves the time-lapse video generated based on the given the folder of images. 
+This function automatically generates and saves the time-lapse video based on the given folder of images. 
 
 **plantcv.visualize.time_lapse_video**(*img_directory, list_img=None, auto_sort=True, suffix_img=None, size_frame=None, 
 fps=29.97, name_video='time_lapse_video', path_video=None, display='on'*)
@@ -10,10 +10,10 @@ fps=29.97, name_video='time_lapse_video', path_video=None, display='on'*)
 - **Parameters:**
     - img_directory         - Directory of images desired to be made into a video
     - list_img (optional)   - Desired list of images in img_directory to create the video. If None is passed, all images would be included by default.    
-    - auto_sort             - indicator of whether to sort the images.
+    - auto_sort             - Indicator of whether to sort the images.
     - suffix_img (optional) - The suffix of all input images. e.g. suffix='.jpg' or suffix='.png' or suffix='img10.jpg'. Make sure all images have the same suffix
             
-    If neigher list_img nor suffix_img is provided, all images in the directory will be included.
+    If neither list_img nor suffix_img is provided, all images in the directory will be included.
     - size_frame (optional) - The desired size of every frame.
     
     To generate a video, the image used in every frame shold have the same size, known as frame size. 
@@ -23,7 +23,7 @@ fps=29.97, name_video='time_lapse_video', path_video=None, display='on'*)
     
     If no value is passed to this parameter, the largest size of all images would be used as the frame size.
     
-    The resizing is done by cropping for those larger then desired sizes, zero-padding for those smaller than desired sizes.
+    The resizing is done by cropping for those larger than desired sizes and zero-padding for those smaller than desired sizes.
     
             Note: The most commonly used definition of frame size/image size is different from most commonly 
             used definition of matrix size (e.g. numpy arrays). The frame size/image size is defined as (width, height), 
@@ -31,7 +31,7 @@ fps=29.97, name_video='time_lapse_video', path_video=None, display='on'*)
             If you are trying to get the frame size/image size from the size of matrix (array), remember of change the 
             order of first and second dimension of the matrix, i.e. frame size = (num_columns, num_rows). 
     
-    - fps: (frames per second, optional) - frame rate. By default fps=29.97. Commonly used values: 23.98, 24, 25, 29.97, 30, 50, 59.94, 60   
+    - fps: (frames per second, optional) - Frame rate. By default fps=29.97. Commonly used values: 23.98, 24, 25, 29.97, 30, 50, 59.94, 60   
             
     - name_video (optional)              - The desired name of output video name. By default, the name would be 'time_lapse_video'
     - path_video (optional)              - The desired saving path of the video file. By default, the video will be saved at the same directory 
@@ -50,7 +50,7 @@ fps=29.97, name_video='time_lapse_video', path_video=None, display='on'*)
 
 **Folder of images**
 
-As an example, you can the sample saved inside PlantCV to test. You will need to know the directory of your PlantCV package. 
+As an example, you can use the sample saved inside PlantCV to test. You will need to know the directory of your PlantCV package. 
 You can find the test data here: "./plantcv/tests/seires_data/raw_im". We are to use all images inside the folder "raw_im" to generate a time-lapse video.
 --->
 
@@ -76,7 +76,9 @@ path_video = path_img
 
 display    = 'on'
 
+# Call with list_img
 list_img, frame_size = pcv.visualize.time_lapse_video(img_directory=img_directory, list_img=list_img, size_frame=size_frame, fps=fps, name_video=name_video, path_video=path_video, display=display)
+# Call with suffix_img
 list_img, frame_size = pcv.visualize.time_lapse_video(img_directory=img_directory, suffix_img=suffix_img, size_frame=size_frame, fps=fps, name_video=name_video, path_video=path_video, display=display)
 
 
