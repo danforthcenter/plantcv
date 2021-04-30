@@ -1,6 +1,7 @@
 ## Warp
 
-Find the transformation matrix that best describes the projective transform from reference image to target image, based on pairs of corresponding points on reference image and target image, respectively;
+Find the transformation matrix that best describes the projective transform from reference image (`refimg`) 
+to target image (`img`), based on pairs of corresponding points on reference image and target image, respectively;
 performs the projective transform on the target image to righ it with the reference image. 
 
 In general, any geometric transformation between 4 pairs of corresponding points is considered as projective transform. 
@@ -14,20 +15,22 @@ Projective transformation describs most cases when images are taken from a sligh
 
 Read about different transformations at [Image Processing in OpenCV](https://docs.opencv.org/3.4/da/d6e/tutorial_py_geometric_transformations.html) and the [transform module of scikit-image](https://scikit-image.org/docs/dev/api/skimage.transform.html#skimage.transform.estimate_transform). 
 
-### warp 
 **plantcv.transform.warp**(*img, refimg, pts, refpts, method="default"*)
 
 **returns** image after warping and a 3x3 matrix of the perspective transformation.
 
 - **Parameters:**
-    - img - (np.ndarray) image to warp (np.ndarray)
+    - img - (np.ndarray) image to warp 
     - refimg - (np.ndarray) image used as a reference for the warp 
     - pts - (list) coordinate points on `img`. At least 4 pairs should be given as a list of tuples
     - refpts - (list) corresponding coordinate points on `refimg`. At least 4 pairs should be given as a list of tuples
-    - method - (str) robust estimation algorithm when calculating projective transformation. Available options are 'default', 'ransac', 'lmeds', 'rho' which correspond to the opencv methods and [vary based on how they handle outlier points](https://docs.opencv.org/3.4/d9/d0c/group__calib3d.html#ga4abc2ece9fab9398f2e560d53c8c9780)
+    - method - (str) robust estimation algorithm when calculating projective transformation. 
+      Available options are 'default', 'ransac', 'lmeds', 'rho' which correspond to the opencv methods and vary based on 
+      [how they handle outlier points](https://docs.opencv.org/3.4/d9/d0c/group__calib3d.html#ga4abc2ece9fab9398f2e560d53c8c9780)
       - Any 4 pairs of corresponding points can define a projective transform. More than 4 pairs given means there are outliers. 
       - Robust estimation algorithms can be used to estimate the model based only on inliers to find a robust model.
       - Using 'default' means that a regular method using all the points without robustness i.e., the least squares method, is adopted.
+      - If a robust estimation algorithm is adopted, the outliers will be indicated in the debug image with triangles.
 - **Context:**
     - Warps an image without preserving parallel lines. 
 - **Example use:**
@@ -98,7 +101,7 @@ Target image with markers:
 
 A pair of correaponding inlier points are represented with the same color with the "+" marker; the outliers are represented using upper triangles. 
 
-### warp_align
+## warp_align
 **plantcv.transform.warp_align**(*img, mat, refimg=None)*
 
 **returns** image after warping.
