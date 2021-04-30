@@ -1,7 +1,6 @@
 # warp image
 
 import cv2
-import skimage
 import os
 import numpy as np
 import copy
@@ -21,7 +20,7 @@ def _preprocess_img_dtype(img):
     debug_mode = params.debug
     params.debug = None
     try:
-        img_         = rescale(img)
+        img_ = rescale(img)
     except RuntimeError:
         img_ = img_as_ubyte(img)
     params.debug = debug_mode
@@ -53,7 +52,8 @@ def warp(img, refimg, pts, refpts, method='default'):
 
     if len(pts) != len(refpts):
         fatal_error('Please provide same number of corresponding coordinates.')
-
+    if not(len(pts) >=4 and len(refpts) >= 4):
+        fatal_error('Please provide at least 4 pairs of points!')
     # convert coordinates to int if they are not int
     pts = [tuple(map(int, tup)) for tup in pts]
     refpts = [tuple(map(int, tup)) for tup in refpts]
