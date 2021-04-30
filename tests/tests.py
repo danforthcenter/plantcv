@@ -977,13 +977,6 @@ def test_plantcv_outputs_add_observation_invalid_type():
         outputs.add_observation(sample='default', variable='test', trait='test variable', method='type', scale='none',
                                 datatype=list, value=np.array([2]), label=[])
 
-def test_plantcv_transform_warp_warp_align():
-    # test warp and warp align together
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_warp")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-
 def test_plantcv_outputs_save_results_json_newfile(tmpdir):
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("sub")
