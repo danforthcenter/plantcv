@@ -1041,7 +1041,7 @@ def create_test_img_bin(sz_img):
     img[3:7, 2:8] = 1
     return img
 @pytest.mark.parametrize("img, refimg, method, refimg_, pts, refpts", [
-    # [create_test_img((12,10,3)), create_test_img((12,10,3)), "default", None, [(0,0),(1,0),(0,3),(4,4)], [(0,0),(1,0),(0,3),(4,4)]],
+    [create_test_img((12,10,3)), create_test_img((12,10,3)), "default", None, [(0,0),(1,0),(0,3),(4,4)], [(0,0),(1,0),(0,3),(4,4)]],
     [create_test_img((10,10,3)), create_test_img((11,11)), "lmeds", 1, [(0,0),(1,0),(0,3),(4,4)], [(0,0),(1,0),(0,3),(4,4)]],
     [create_test_img_bin((10,10)), create_test_img((11,11)), "rho", None, [(0,0),(1,0),(0,3),(4,4)], [(0,0),(1,0),(0,3),(4,4)]],
     [create_test_img_bin((10,10)), create_test_img((11,11,3)), "ransac", None, [(0,0),(1,0),(0,3),(4,4)], [(0,0),(1,0),(0,3),(4,4)]],
