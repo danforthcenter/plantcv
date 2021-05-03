@@ -76,7 +76,7 @@ def warp(img, refimg, pts, refpts, method='default'):
     # find tranformation matrix and warp
     mat, status = cv2.findHomography(ptsarr, refptsarr, method=methods.get(method))
     if mat is None:
-        fatal_error("Cannot calculate a robust with given corresponding coordinates and with desired robust estimation algorithm {}!".format(method))
+        fatal_error("Cannot calculate a robust model with given corresponding coordinates and with desired robust estimation algorithm {}!".format(method))
     warped_img = cv2.warpPerspective(src=img, M=mat, dsize=(cols_ref, rows_ref))
 
     # preserve binary
