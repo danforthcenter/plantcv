@@ -1031,49 +1031,44 @@ def test_plantcv_outputs_save_results_csv(tmpdir):
     assert results == test_results
 
 
-def test_plantcv_transform_warp_smaller():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR),-1)
-    bimg = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY),-1)
-    bimg_small = cv2.resize(bimg, (200,300)) #not sure why INTER_NEAREST doesn't preserve values
-    bimg_small[bimg_small>0]=255
-    mrow, mcol = bimg_small.shape
+def create_test_img(sz_img):
+    img = np.random.randint(np.prod(sz_img), size=sz_img) * 255
+    img = img.astype(np.uint8)
+    return img
 
-    vrow, vcol, vdepth = img.shape
-    pcv.params.debug = None
-    warped_img,  mat = pcv.transform.warp(img, img, pts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)], refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
-    assert mat.shape == (3, 3) and warped_img.dtype == img.dtype
+def create_test_img_bin(sz_img):
+    img = np.zeros(sz_img)
+    img[3:7, 2:8] = 1
+    return img
+@pytest.mark.parametrize("img, refimg, method, refimg_", [[create_test_img((10,10,3)), create_test_img((10,10,3)), "default", None],
+                                                         [create_test_img((10,10,3)), create_test_img((11,11)), "lmeds", 1],
+                                                         [create_test_img_bin((10,10)), create_test_img((11,11)), "rho", None],
+                                                         [create_test_img_bin((10,10)), create_test_img((11,11,3)), "ransac", None]])
+def test_plantcv_transform_warp(img, refimg, method, refimg_):
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_warp")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    pts    = [(0,0),(1,0),(0,3),(4,4)]
+    refpts = [(0,0),(1,0),(0,3),(4,4)]
+    warped_img, mat = pcv.transform.warp(img, refimg, pts, refpts, method=method)
 
-    _ = pcv.transform.warp_align(img, mat)
-    warped_img_ = pcv.transform.warp_align(img, mat, img)
-    assert warped_img_.dtype == img.dtype
-
-    pcv.params.debug = "plot"
-    img_ = img/255.0
-    warped_img,  mat = pcv.transform.warp(img_[:,:,0], img_, pts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)], refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
-    assert mat.shape == (3, 3) and warped_img.dtype == img_.dtype
-
-    # different number of points
-    # pcv.params.debug = None
+    if refimg_ is not None:
+        refimg_ = refimg
+        warped_img_ = pcv.transform.warp_align(img, mat, refimg_)
+        assert warped_img.shape[0:2] == refimg.shape[0:2] and warped_img_.shape[0:2] == refimg_.shape[0:2]
+    else:
+        warped_img_ = pcv.transform.warp_align(img, mat)
+        assert warped_img.shape[0:2] == refimg.shape[0:2] and warped_img_.shape[0:2] == img.shape[0:2]
+@pytest.mark.parametrize("img, refimg, pts, refpts", [[create_test_img_bin((5,5)), create_test_img((5,5)),[(0,0)],[(0,0),(0,1)]],
+                                                       [create_test_img_bin((5,5)), create_test_img((5,5)),[(0,0)],[(0,0)]]])
+def test_plantcv_transform_warp_err(img, refimg, pts, refpts):
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_warp")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
     with pytest.raises(RuntimeError):
-        pcv.transform.warp(img, img, pts=[(0, 0), (vcol-1, 0), (vcol-1, vrow-1),(0,vrow-1)], refpts=[(0, 0), (vcol-1, 0), (vcol-1, vrow-1)])
-
-    bimg = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY),-1)
-    bimg_small = cv2.resize(bimg, (200,300))
-    bimg_small[bimg_small>0]=255
-    mrow, mcol = bimg_small.shape
-    vrow, vcol, vdepth = img.shape
-    warped_img,  mat = pcv.transform.warp(img, bimg_small,
-                                 pts=[(0, 0), (vcol - 1, 0), (vcol - 1, vrow - 1), (0, vrow - 1), (0, 100)],
-                                 refpts=[(0, 0), (mcol - 1, 0), (mcol - 1, mrow - 1), (0, mrow - 1), (0, 100)],
-                                 method='ransac')
-    assert mat.shape == (3, 3) and warped_img.dtype == img.dtype
-
-    with pytest.raises(RuntimeError):
-        pcv.transform.warp(bimg_small, img,
-                   pts=[(0, 0), (mcol - 1, 0), (mcol - 1, mrow - 1), (0, mrow - 1), (0, 100)],
-                   refpts=[(0, 0), (vcol - 1, 0), (vcol - 1, vrow - 1), (0, vrow - 1), (0, 100)],
-                   method='rho')
-
+        pcv.transform.warp(img, refimg, pts, refpts)
 
 def test_plantcv_acute():
     # Read in test data
