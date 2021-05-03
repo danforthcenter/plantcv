@@ -1045,7 +1045,7 @@ def create_test_img_bin(sz_img):
     [create_test_img((10,10,3)), create_test_img((11,11)), "lmeds", 1, [(0,0),(1,0),(0,3),(4,4)], [(0,0),(1,0),(0,3),(4,4)]],
     [create_test_img_bin((10,10)), create_test_img((11,11)), "rho", None, [(0,0),(1,0),(0,3),(4,4)], [(0,0),(1,0),(0,3),(4,4)]],
     [create_test_img_bin((10,10)), create_test_img((11,11,3)), "ransac", None, [(0,0),(1,0),(0,3),(4,4)], [(0,0),(1,0),(0,3),(4,4)]],
-    [create_test_img((10, 15)), create_test_img((100, 150)), "ransac", None, [(0, 0), (0, 14), (9, 14), (0, 9), (3, 3)], [(0, 0), (149, 0), (99, 149), (0, 99), (3, 3)]]
+    [create_test_img((100, 150)), create_test_img((10, 15)), "ransac", None, [(0, 0), (149, 0), (99, 149), (0, 99), (3, 3)], [(0, 0), (0, 14), (9, 14), (0, 9), (3, 3)]]
                                                                        ])
 def test_plantcv_transform_warp(img, refimg, method, refimg_, pts , refpts):
     # Test cache directory
