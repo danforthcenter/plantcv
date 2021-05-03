@@ -1045,15 +1045,13 @@ def create_test_img_bin(sz_img):
     [create_test_img((10,10,3)), create_test_img((11,11)), "lmeds", 1, [(0,0),(1,0),(0,3),(4,4)], [(0,0),(1,0),(0,3),(4,4)]],
     [create_test_img_bin((10,10)), create_test_img((11,11)), "rho", None, [(0,0),(1,0),(0,3),(4,4)], [(0,0),(1,0),(0,3),(4,4)]],
     [create_test_img_bin((10,10)), create_test_img((11,11,3)), "ransac", None, [(0,0),(1,0),(0,3),(4,4)], [(0,0),(1,0),(0,3),(4,4)]],
-    [create_test_img((10, 15)), create_test_img((100, 150)), "default", None, [(0, 0), (0, 14), (9, 14), (0, 9), (3, 3)], [(0, 0), (149, 0), (99, 149), (0, 99), (3, 3)]]
+    [create_test_img((10, 15)), create_test_img((100, 150)), "ransac", None, [(0, 0), (0, 14), (9, 14), (0, 9), (3, 3)], [(0, 0), (149, 0), (99, 149), (0, 99), (3, 3)]]
                                                                        ])
 def test_plantcv_transform_warp(img, refimg, method, refimg_, pts , refpts):
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_warp")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    # pts    = [(0,0),(1,0),(0,3),(4,4)]
-    # refpts = [(0,0),(1,0),(0,3),(4,4)]
     warped_img, mat = pcv.transform.warp(img, refimg, pts, refpts, method=method)
 
     if refimg_ is not None:
@@ -1063,11 +1061,10 @@ def test_plantcv_transform_warp(img, refimg, method, refimg_, pts , refpts):
     else:
         warped_img_ = pcv.transform.warp_align(img, mat)
         assert warped_img.shape[0:2] == refimg.shape[0:2] and warped_img_.shape[0:2] == img.shape[0:2]
-@pytest.mark.parametrize("img, refimg, pts, refpts, method", [[create_test_img_bin((5,5)), create_test_img((5,5)),[(0,0)],[(0,0),(0,1)], None],
-                                                       [create_test_img_bin((5,5)), create_test_img((5,5)),[(0,0)],[(0,0)], None],
-                                                      [create_test_img((10, 15)), create_test_img((100, 150)),
-                                                       [(0, 0), (0, 14), (9, 14), (0, 9), (3, 3)],
-                                                       [(0, 0), (149, 0), (99, 149), (0, 99), (3, 3)], "rho"]
+@pytest.mark.parametrize("img, refimg, pts, refpts, method", [
+    [create_test_img_bin((5,5)), create_test_img((5,5)),[(0,0)],[(0,0),(0,1)], None],
+    [create_test_img_bin((5,5)), create_test_img((5,5)),[(0,0)],[(0,0)], None],
+    [create_test_img((10, 15)), create_test_img((100, 150)), [(0, 0), (0, 14), (9, 14), (0, 9), (3, 3)], [(0, 0), (149, 0), (99, 149), (0, 99), (3, 3)], "rho"]
                                                       ])
 def test_plantcv_transform_warp_err(img, refimg, pts, refpts, method):
     # Test cache directory
