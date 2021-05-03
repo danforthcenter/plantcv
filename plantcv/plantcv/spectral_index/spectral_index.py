@@ -4,8 +4,7 @@ import os
 import numpy as np
 import cv2
 from plantcv.plantcv import params
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import Spectral_data
 from plantcv.plantcv.transform import rescale
@@ -940,10 +939,7 @@ def _package_index(hsi, raw_index, method):
     # Restore debug mode
     params.debug = debug
 
-    if params.debug == "plot":
-        plot_image(index.pseudo_rgb)
-    elif params.debug == "print":
-        print_image(index.pseudo_rgb,
-                    os.path.join(params.debug_outdir, str(params.device) + method + "_index.png"))
+    _debug(visual=index.pseudo_rgb,
+           filename=os.path.join(params.debug_outdir, str(params.device) + method + "_index.png"))
 
     return index
