@@ -1,24 +1,18 @@
 FROM jupyter/minimal-notebook
-MAINTAINER PlantCV <ddpsc.plantcv@gmail.com>
+LABEL maintainer="PlantCV <plantcv@danforthcenter.org>"
 
 USER root
 
 RUN apt-get update && apt-get install -y libgl1-mesa-glx && rm -rf /var/lib/apt/lists/*
 
-# Install PlantCV
-RUN conda install --quiet --yes -c conda-forge \
-    "matplotlib>=1.5" \
-    "numpy>=1.11" \
-    pandas \
-    python-dateutil \
-    "scipy<1.3" \
-    "scikit-image<0.15" \
-    plotnine \
-    "opencv<4,>=3.4" && \
-    conda clean --all -f -y
-
 # Copy source files
 COPY . /tmp
+
+# Change working directory and modify requirements.txt
+RUN cd /tmp && sed -i'' -e 's/opencv.*//g' requirements.txt
+
+# Install PlantCV
+RUN cd /tmp && conda install --quiet --yes -c conda-forge --file requirements.txt 'opencv<4' && conda clean --all -f -y
 
 # Install PlantCV Python prerequisites and PlantCV
 RUN cd /tmp && python setup.py install

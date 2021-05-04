@@ -51,7 +51,7 @@ Sample command to run a Workflow on a single image:
 #### Workflows start by importing necessary packages, and by defining user inputs.
 
 ```python
-#!/usr/bin/python
+#!/usr/bin/env python
 import os, sys, traceback
 import cv2
 import numpy as np
@@ -99,9 +99,6 @@ def main():
 
 ![Screenshot](img/tutorial_images/nir/background_average.jpg)
 
-Note: Sometimes it is easier to use pre-built OpenCV functions. In most situations the documentation is quite good.
-However for more complex operations (those that require multiple OpenCV functions), I would recommend writing a PlantCV subroutine.
-
 First, let's examine how efficiently we can capture the plant. Then we will worry about masking problematic background objects.
 We start by [subtracting](image_subtract.md) the background.
 
@@ -111,17 +108,17 @@ We start by [subtracting](image_subtract.md) the background.
     # Inputs: 
     #   gray_img1 - Grayscale image data from which gray_img2 will be subtracted
     #   gray_img2 - Grayscale image data which will be subtracted from gray_img1
-    bkg_sub_img = pcv.image_subtract(gray_img1=img, img_bkgrd)
+    bkg_sub_img = pcv.image_subtract(gray_img1=img_bkgrd, gray_img2=img)
         
-    # Threshold the image of interest using the two-sided custom range function (keep what is between 50-190)
+    # Threshold the image of interest using the two-sided custom range function (keep what is between 20-190)
     
     # Inputs:
     #   img - RGB or grayscale image data 
     #   lower_thresh - List of lower threshold values 
     #   upper_thresh - List of upper threshold values
     #   channel - Color-space channels of interest (either 'RGB', 'HSV', 'LAB', or 'gray')
-    bkg_sub_thres_img, masked_img = pcv.threshold.custom_range(img=bkg_sub_img, lower_thresh=[50], 
-                                                               upper_thresh=[190], channel='gray')
+    bkg_sub_thres_img, masked_img = pcv.threshold.custom_range(img=bkg_sub_img, lower_thresh=[20], 
+                                                               upper_thresh=[250], channel='gray')
 
 ```
 
@@ -135,7 +132,7 @@ Images were subtracted using the PlantCV [image subtract](image_subtract.md) fun
 This function is built using the numpy '-' operator.
 It is a modulo operator rather than a saturation operator.
 
-Thresholding was done using the OpenCV inRange function. Pixels that have a signal value less than 50 and greater than 190 will be set to 0 (black), 
+Thresholding was done using the [custom range threshold](custom_range_threshold.md) function. Pixels that have a signal value less than 20 and greater than 250 will be set to 0 (black), 
 while those with a value between these two will be set to 255 (white).
 This approach works very well if you have image of the background without plant material.
 
@@ -145,7 +142,7 @@ the amount of plant material captured, and it is particularly useful if estimati
 
 ```python
     # Laplace filtering (identify edges based on 2nd derivative)
-    
+
     # Inputs:
     #   gray_img - Grayscale image data 
     #   ksize - Aperture size used to calculate the second derivative filter, 
@@ -155,13 +152,13 @@ the amount of plant material captured, and it is particularly useful if estimati
     lp_img = pcv.laplace_filter(gray_img=img, ksize=1, scale=1)
 
     # Plot histogram of grayscale values 
-    pcv.visualize.histogram(gray_img=lp_img)
-    
+    hist1 = pcv.visualize.histogram(img=lp_img)
+
     # Lapacian image sharpening, this step will enhance the darkness of the edges detected
     lp_shrp_img = pcv.image_subtract(gray_img1=img, gray_img2=lp_img)
-    
+
     # Plot histogram of grayscale values, this helps to determine thresholding value 
-    pcv.visualize.histogram(gray_img=lp_sharp_img)
+    hist2 = pcv.visualize.histogram(img=lp_shrp_img)
 
 ```
 
@@ -459,8 +456,9 @@ Now we can perform the [analysis of pixelwise signal value](analyze_NIR_intensit
     #   mask - Binary mask made from selected contours 
     #   bins - Number of classes to divide the spectrum into 
     #   histplot - If True, plots the histogram of intensity values 
+    #   label - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
     nir_hist = pcv.analyze_nir_intensity(gray_img=img, mask=kept_mask, 
-                                         bins=256, histplot=True)
+                                         bins=256, histplot=True, label="default")
     
     # Pseudocolor the grayscale image to a colormap
     
@@ -483,10 +481,11 @@ Now we can perform the [analysis of pixelwise signal value](analyze_NIR_intensit
     #   img - RGB or grayscale image data 
     #   obj- Single or grouped contour object
     #   mask - Binary image mask to use as mask for moments analysis 
-    shape_imgs = pcv.analyze_object(img=rgb_img, obj=o, mask=m)
+    #   label - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
+    shape_imgs = pcv.analyze_object(img=img, obj=o, mask=m, label="default")
     
     # Write shape and nir data to results file
-    pcv.print_results(filename=args.result)
+    pcv.outputs.save_results(filename=args.result)
     
 # Call program
 if __name__ == '__main__':
@@ -516,14 +515,14 @@ In the terminal:
 
 *  Always test Workflows (preferably with -D flag set to 'print') before running over a full image set
 
-Python script: 
+Python script:
 
 ```python
 #!/usr/bin/env python
 import os
-import cv2
 import argparse
 from plantcv import plantcv as pcv
+
 
 def options():
     parser = argparse.ArgumentParser(description="Imaging processing with opencv")
@@ -534,123 +533,125 @@ def options():
     args = parser.parse_args()
     return args
 
+
 ### Main Workflow
 def main():
     # Get options
     args = options()
-    
-    pcv.params.debug = args.debug #set debug mode
-    pcv.params.debug_outdir = args.outdir #set output directory
-    
+
+    pcv.params.debug = args.debug  # set debug mode
+    pcv.params.debug_outdir = args.outdir  # set output directory
+
     img, path, img_name = pcv.readimage(filename=args.image)
-    
+
     # Read in image which is the pixelwise average of background images
     img_bkgrd, bkgrdpath, bkgrdname = pcv.readimage("background_nir_z2500.png")
 
     # Subtract the background image from the image with the plant.
     bkg_sub_img = pcv.image_subtract(gray_img1=img, gray_img2=img_bkgrd)
-        
+
     # Threshold the image of interest using the two-sided custom range function (keep what is between 50-190)
     bkg_sub_thres_img = pcv.threshold.custom_range(img=bkg_sub_img, lower_thresh=[50],
                                                    upper_thresh=[190], channel='gray')
-    
+
     # Laplace filtering (identify edges based on 2nd derivative)
     lp_img = pcv.laplace_filter(gray_img=img, ksize=1, scale=1)
     pcv.visualize.histogram(lp_img)
-    
+
     # Lapacian image sharpening, this step will enhance the darkness of the edges detected
     lp_shrp_img = pcv.image_subtract(gray_img1=img, gray_img2=lp_img)
-    pcv.visualize.histogram(gray_img=lp_shrp_img)
-    
+    pcv.visualize.histogram()
+
     # Sobel filtering
     # 1st derivative sobel filtering along horizontal axis, kernel = 1)
     sbx_img = pcv.sobel_filter(gray_img=img, dx=1, dy=0, ksize=1)
-    
+
     # 1st derivative sobel filtering along vertical axis, kernel = 1)
     sby_img = pcv.sobel_filter(gray_img=img, dx=0, dy=1, ksize=1)
-    
+
     # Combine the effects of both x and y filters through matrix addition
     # This will capture edges identified within each plane and emphasize edges found in both images
     sb_img = pcv.image_add(gray_img1=sbx_img, gray_img2=sby_img)
-    
+
     # Use a lowpass (blurring) filter to smooth sobel image
     mblur_img = pcv.median_blur(gray_img=sb_img, ksize=1)
     mblur_invert_img = pcv.invert(gray_img=mblur_img)
-    
+
     # combine the smoothed sobel image with the laplacian sharpened image
     # combines the best features of both methods as described in "Digital Image Processing" by Gonzalez and Woods pg. 169
     edge_shrp_img = pcv.image_add(gray_img1=mblur_invert_img, gray_img2=lp_shrp_img)
-    
+
     # Perform thresholding to generate a binary image
-    tr_es_img = pcv.threshold.binary(gray_img=edge_shrp_img, threshold=145, 
+    tr_es_img = pcv.threshold.binary(gray_img=edge_shrp_img, threshold=145,
                                      max_value=255, object_type='dark')
-    
+
     # Do erosion with a 3x3 kernel
     e1_img = pcv.erode(gray_img=tr_es_img, ksize=3, i=1)
-    
+
     # Bring the two object identification approaches together.
     # Using a logical OR combine object identified by background subtraction and the object identified by derivative filter.
     comb_img = pcv.logical_or(bin_img1=e1_img, bin_img2=bkg_sub_thres_img)
-    
+
     # Get masked image, Essentially identify pixels corresponding to plant and keep those.
     masked_erd = pcv.apply_mask(img=img, mask=comb_img, mask_color='black')
-    
+
     # Need to remove the edges of the image, we did that by generating a set of rectangles to mask the edges
     # img is (254 X 320)
     # mask for the bottom of the image
-    masked1, box1_img, rect_contour1, hierarchy1 = pcv.rectangle_mask(img=img, p1=(120,184), p2=(215,252))
+    masked1, box1_img, rect_contour1, hierarchy1 = pcv.rectangle_mask(img=img, p1=(120, 184), p2=(215, 252))
     # mask for the left side of the image
-    masked2, box2_img, rect_contour2, hierarchy2 = pcv.rectangle_mask(img=img, p1=(1,1), p2=(85,252))
+    masked2, box2_img, rect_contour2, hierarchy2 = pcv.rectangle_mask(img=img, p1=(1, 1), p2=(85, 252))
     # mask for the right side of the image
-    masked3, box3_img, rect_contour3, hierarchy3 = pcv.rectangle_mask(img=img, p1=(240,1), p2=(318,252))
+    masked3, box3_img, rect_contour3, hierarchy3 = pcv.rectangle_mask(img=img, p1=(240, 1), p2=(318, 252))
     # mask the edges
-    masked4, box4_img, rect_contour4, hierarchy4 = pcv.rectangle_mask(img=img, p1=(1,1), p2=(318,252))
-    
+    masked4, box4_img, rect_contour4, hierarchy4 = pcv.rectangle_mask(img=img, p1=(1, 1), p2=(318, 252))
+
     # combine boxes to filter the edges and car out of the photo
     bx12_img = pcv.logical_or(bin_img1=box1_img, bin_img2=box2_img)
     bx123_img = pcv.logical_or(bin_img1=bx12_img, bin_img2=box3_img)
     bx1234_img = pcv.logical_or(bin_img1=bx123_img, bin_img2=box4_img)
-    
+
     # invert this mask and then apply it the masked image.
     inv_bx1234_img = pcv.invert(gray_img=bx1234_img)
     edge_masked_img = pcv.apply_mask(img=masked_erd, mask=inv_bx1234_img, mask_color='black')
-    
+
     # Identify objects
-    id_objects,obj_hierarchy = pcv.find_objects(img=edge_masked_img, mask=inv_bx1234_img)
-    
+    id_objects, obj_hierarchy = pcv.find_objects(img=edge_masked_img, mask=inv_bx1234_img)
+
     # Define ROI
-    roi1, roi_hierarchy= pcv.roi.rectangle(img=edge_masked_img, x=100, y=100, h=200, w=200)
-    
+    roi1, roi_hierarchy = pcv.roi.rectangle(img=edge_masked_img, x=100, y=100, h=200, w=200)
+
     # Decide which objects to keep
-    roi_objects, hierarchy5, kept_mask, obj_area = pcv.roi_objects(img=edge_masked_img, 
-                                                                   roi_contour=roi1, 
-                                                                   roi_hierarchy=roi_hierarchy, 
-                                                                   object_contour=id_objects, 
-                                                                   obj_hierarchy=obj_hierarchy, 
+    roi_objects, hierarchy5, kept_mask, obj_area = pcv.roi_objects(img=edge_masked_img,
+                                                                   roi_contour=roi1,
+                                                                   roi_hierarchy=roi_hierarchy,
+                                                                   object_contour=id_objects,
+                                                                   obj_hierarchy=obj_hierarchy,
                                                                    roi_type='partial')
-    
+
     o, m = pcv.object_composition(img=img, contours=roi_objects, hierarchy=hierarchy5)
-    
+
     ### Analysis ###
-    
+
     outfile = False
     if args.writeimg == True:
         outfile = os.path.join(args.outdir, img_name)
-    
+
     # Perform signal analysis
-    nir_hist = pcv.analyze_nir_intensity(gray_img=img, mask=kept_mask, bins=256, histplot=True)
-    
+    nir_hist = pcv.analyze_nir_intensity(gray_img=img, mask=kept_mask, bins=256, histplot=True, label="default")
+
     # Pseudocolor the grayscale image to a colormap
     pseudocolored_img = pcv.visualize.pseudocolor(gray_img=img, mask=kept_mask, cmap='viridis')
-    
+
     # Perform shape analysis
-    shape_imgs = pcv.analyze_object(img=rgb_img, obj=o, mask=m)
-    
+    shape_imgs = pcv.analyze_object(img=img, obj=o, mask=m, label="default")
+
     # Write shape and nir data to results file
-    pcv.print_results(filename=args.result)
-    
+    pcv.outputs.save_results(filename=args.result)
+
+
 # Call program
 if __name__ == '__main__':
     main()
-    
+
 ```

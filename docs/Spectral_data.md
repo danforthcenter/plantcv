@@ -77,4 +77,4 @@ print(str(spectral_data_instance.max_wavelength) + spectral_data_instance.wavele
 > 1000.95nm
 ```
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/__init__.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/classes.py)

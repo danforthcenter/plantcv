@@ -11,6 +11,7 @@ from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 from skimage.feature import greycomatrix, greycoprops
 from scipy.ndimage import generic_filter
+from plantcv.plantcv._debug import _debug
 
 
 # Binary threshold
@@ -245,10 +246,11 @@ def triangle(gray_img, max_value, object_type="light", xstep=1):
     # Additional figures created by this method, if debug is on
     if params.debug is not None:
         if params.debug == 'print':
-            plt.plot(hist)
-            plt.title('Threshold value = {t}'.format(t=autothreshval))
-            plt.axis([0, 256, 0, max(hist)])
-            plt.grid(True)
+            _, ax = plt.subplots()
+            ax.plot(hist)
+            ax.set(title='Threshold value = {t}'.format(t=autothreshval))
+            ax.axis([0, 256, 0, max(hist)])
+            ax.grid(True)
             fig_name_hist = os.path.join(params.debug_outdir,
                                          str(params.device) + '_triangle_thresh_hist_' + str(autothreshval) + ".png")
             # write the figure to current directory
@@ -257,9 +259,10 @@ def triangle(gray_img, max_value, object_type="light", xstep=1):
             plt.clf()
         elif params.debug == 'plot':
             print('Threshold value = {t}'.format(t=autothreshval))
-            plt.plot(hist)
-            plt.axis([0, 256, 0, max(hist)])
-            plt.grid(True)
+            _, ax = plt.subplots()
+            ax.plot(hist)
+            ax.axis([0, 256, 0, max(hist)])
+            ax.grid(True)
             plt.show()
 
     return bin_img
@@ -314,6 +317,9 @@ def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity'
 
     # Threshold so higher texture measurements stand out
     bin_img = binary(gray_img=output, threshold=threshold, max_value=max_value, object_type='light')
+
+    _debug(visual=bin_img, filename=os.path.join(params.debug_outdir, str(params.device) + "_texture_mask.png"))
+
     return bin_img
 
 
@@ -350,12 +356,12 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
 
         # Separate channels
         hue = hsv_img[:, :, 0]
-        saturation = hsv_img[:, :, 1]
+        sat = hsv_img[:, :, 1]
         value = hsv_img[:, :, 2]
 
         # Make a mask for each channel
         h_mask = cv2.inRange(hue, lower_thresh[0], upper_thresh[0])
-        s_mask = cv2.inRange(saturation, lower_thresh[1], upper_thresh[1])
+        s_mask = cv2.inRange(sat, lower_thresh[1], upper_thresh[1])
         v_mask = cv2.inRange(value, lower_thresh[2], upper_thresh[2])
 
         # Apply the masks to the image
@@ -446,18 +452,12 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         fatal_error(str(channel) + " is not a valid colorspace. Channel must be either 'RGB', 'HSV', or 'gray'.")
 
     # Auto-increment the device counter
-    params.device += 1
 
     # Print or plot the binary image if debug is on
-    if params.debug == 'print':
-        print_image(masked_img, os.path.join(params.debug_outdir,
-                                             str(params.device) + channel + 'custom_thresh.png'))
-        print_image(mask, os.path.join(params.debug_outdir,
-                                       str(params.device) + channel + 'custom_thresh_mask.png'))
-    elif params.debug == 'plot':
-        plot_image(mask)
-        plot_image(masked_img)
-
+    _debug(visual=masked_img, filename=os.path.join(params.debug_outdir,
+                                                    str(params.device) + channel + 'custom_thresh.png'))
+    _debug(visual=mask, filename=os.path.join(params.debug_outdir,
+                                              str(params.device) + channel + 'custom_thresh_mask.png'))
     return mask, masked_img
 
 
@@ -470,11 +470,8 @@ def _call_threshold(gray_img, threshold, max_value, threshold_method, method_nam
         bin_img = np.uint8(bin_img)
 
     # Print or plot the binary image if debug is on
-    if params.debug == 'print':
-        print_image(bin_img, os.path.join(params.debug_outdir,
-                                          str(params.device) + method_name + str(threshold) + '.png'))
-    elif params.debug == 'plot':
-        plot_image(bin_img, cmap='gray')
+    _debug(visual=bin_img, filename=os.path.join(params.debug_outdir,
+                                                 str(params.device) + method_name + str(threshold) + '.png'))
 
     return bin_img
 
@@ -485,11 +482,7 @@ def _call_adaptive_threshold(gray_img, max_value, adaptive_method, threshold_met
     bin_img = cv2.adaptiveThreshold(gray_img, max_value, adaptive_method, threshold_method, 11, 2)
 
     # Print or plot the binary image if debug is on
-    if params.debug == 'print':
-        print_image(bin_img, os.path.join(params.debug_outdir,
-                                          str(params.device) + method_name + '.png'))
-    elif params.debug == 'plot':
-        plot_image(bin_img, cmap='gray')
+    _debug(visual=bin_img, filename=os.path.join(params.debug_outdir, str(params.device) + method_name + '.png'))
 
     return bin_img
 
@@ -608,10 +601,11 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
     #     # NaN's and values close to NaN's cannot be peaks
     #     ind = ind[np.in1d(ind, np.unique(np.hstack((indnan, indnan - 1, indnan + 1))), invert=True)]
     # first and last values of x cannot be peaks
-    if ind.size and ind[0] == 0:
-        ind = ind[1:]
-    if ind.size and ind[-1] == x.size - 1:
-        ind = ind[:-1]
+    # if ind.size and ind[0] == 0:
+    #     ind = ind[1:]
+    # if ind.size and ind[-1] == x.size - 1:
+    #     ind = ind[:-1]
+    # We think the above code will never be reached given some of the hardcoded properties used
 
     # # Where this function is used has hardcoded mph=None so this will never be used
     # # remove peaks < minimum peak height
@@ -692,9 +686,6 @@ def saturation(rgb_img, threshold=255, channel="any"):
     :param channel: str
     :return masked_img: np.ndarray
     """
-
-    params.device += 1
-
     # Mask red, green, and blue saturation separately
     b, g, r = cv2.split(rgb_img)
     b_saturated = cv2.inRange(b, threshold, 255)
@@ -716,8 +707,52 @@ def saturation(rgb_img, threshold=255, channel="any"):
     # Invert "saturated" before returning, so saturated = black
     bin_img = cv2.bitwise_not(saturated)
 
-    if params.debug == 'print':
-        print_image(bin_img, os.path.join(params.debug_outdir, str(params.device), '_saturation_threshold.png'))
-    elif params.debug == 'plot':
-        plot_image(bin_img, cmap='gray')
+    _debug(visual=bin_img, filename=os.path.join(params.debug_outdir, str(params.device), '_saturation_threshold.png'))
     return bin_img
+
+
+def mask_bad(float_img, bad_type='native'):
+    """ Create a mask with desired "bad" pixels of the input floaat image marked.
+    Inputs:
+    float_img = image represented by an nd-array (data type: float). Most probably, it is the result of some
+                calculation based on the original image. So the datatype is float, and it is possible to have some
+                "bad" values, i.e. nan and/or inf
+    bad_type = definition of "bad" type, can be 'nan', 'inf' or 'native'
+    Returns:
+    mask = A mask indicating the locations of "bad" pixels
+
+    :param float_img: numpy.ndarray
+    :param bad_type: str
+    :return mask: numpy.ndarray
+    """
+    size_img = np.shape(float_img)
+    if len(size_img) != 2:
+        fatal_error('Input image is not a single channel image!')
+
+    mask = np.zeros(size_img, dtype='uint8')
+    idx_nan, idy_nan = np.where(np.isnan(float_img) == 1)
+    idx_inf, idy_inf = np.where(np.isinf(float_img) == 1)
+
+    # neither nan nor inf exists in the image, print out a message and the mask would just be all zero
+    if len(idx_nan) == 0 and len(idx_inf) == 0:
+        mask = mask
+        print('Neither nan nor inf appears in the current image.')
+    # at least one of the "bad" exists
+    # desired bad to mark is "native"
+    elif bad_type.lower() == 'native':
+        # mask[np.isnan(gray_img)] = 255
+        # mask[np.isinf(gray_img)] = 255
+        mask[idx_nan, idy_nan] = 255
+        mask[idx_inf, idy_inf] = 255
+    elif bad_type.lower() == 'nan' and len(idx_nan) >= 1:
+        mask[idx_nan, idy_nan] = 255
+    elif bad_type.lower() == 'inf' and len(idx_inf) >= 1:
+        mask[idx_inf, idy_inf] = 255
+    # "bad" exists but not the user desired bad type, return the all-zero mask
+    else:
+        mask = mask
+        print('{} does not appear in the current image.'.format(bad_type.lower()))
+
+    _debug(visual=mask, filename=os.path.join(params.debug_outdir, str(params.device) + "_bad_mask.png"))
+
+    return mask

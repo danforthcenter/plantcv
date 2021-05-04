@@ -3,7 +3,7 @@
 PlantCV is composed of modular functions that can be arranged (or rearranged) and adjusted quickly and easily.
 Workflows do not need to be linear (and often are not). Please see workflow example below for more details.
 A global variable "debug" allows the user to print out the resulting image. The debug has three modes: either None, 'plot', or 'print'.
-If set to 'print' then the function prints the image out, or if using a [Jupyter](jupyter.md) notebook you could set debug to 'plot' to have
+If set to 'print' then the function prints the image out to a file, or if using a [Jupyter](jupyter.md) notebook you could set debug to 'plot' to have
 the images plot to the screen. Debug mode allows users to visualize and optimize each step on individual test images and small test sets before workflows are deployed over whole datasets.
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/vis_tutorial.ipynb) Check out our interactive VIS tutorial! 
@@ -209,10 +209,10 @@ The purpose of this mask is to exclude as much background with simple thresholdi
     # Apply Mask (for VIS images, mask_color=white)
     
     # Inputs:
-    #   rgb_img - RGB image data 
+    #   img - RGB image data 
     #   mask - Binary mask image data 
     #   mask_color - 'white' or 'black' 
-    masked = pcv.apply_mask(rgb_img=img, mask=bs, mask_color='white')
+    masked = pcv.apply_mask(img=img, mask=bs, mask_color='white')
     
 ```
 
@@ -250,7 +250,7 @@ The resulting binary image is used to mask the masked image from Figure 7.
     ab_fill = pcv.fill(bin_img=ab, size=200)
     
     # Apply mask (for VIS images, mask_color=white)
-    masked2 = pcv.apply_mask(rgb_img=masked, mask=ab_fill, mask_color='white')
+    masked2 = pcv.apply_mask(img=masked, mask=ab_fill, mask_color='white')
     
 ```
 
@@ -319,7 +319,7 @@ Next a [rectangular region of interest](roi_rectangle.md) is defined (this can b
 
 ![Screenshot](img/tutorial_images/vis/21_roi.jpg)
 
-Once the region of interest is defined you can decide to keep everything overlapping with the [region of interest](roi_objects.md))
+Once the region of interest is defined you can decide to keep everything overlapping with the [region of interest](roi_objects.md)
 or cut the objects to the shape of the region of interest.
 
 
@@ -380,8 +380,9 @@ The next step is to analyze the plant object for traits such as [horizontal heig
     # Inputs:
     #   img - RGB or grayscale image data 
     #   obj- Single or grouped contour object
-    #   mask - Binary image mask to use as mask for moments analysis     
-    shape_img = pcv.analyze_object(img=img, obj=obj, mask=mask)
+    #   mask - Binary image mask to use as mask for moments analysis  
+    #   label - Optional label parameter, modifies the variable name of observations recorded   
+    shape_img = pcv.analyze_object(img=img, obj=obj, mask=mask, label="default")
     
     # Shape properties relative to user boundary line (optional)
     
@@ -390,9 +391,10 @@ The next step is to analyze the plant object for traits such as [horizontal heig
     #   obj - Single or grouped contour object 
     #   mask - Binary mask of selected contours 
     #   line_position - Position of boundary line (a value of 0 would draw a line 
-    #                   through the bottom of the image) 
+    #                   through the bottom of the image)
+    #   label - Optional label parameter, modifies the variable name of observations recorded  
     boundary_img1 = pcv.analyze_bound_horizontal(img=img, obj=obj, mask=mask, 
-                                                   line_position=1680)
+                                                   line_position=1680, label="default")
     
     # Determine color properties: Histograms, Color Slices, output color analyzed histogram (optional)
     
@@ -400,8 +402,9 @@ The next step is to analyze the plant object for traits such as [horizontal heig
     #   rgb_img - RGB image data
     #   mask - Binary mask of selected contours 
     #   hist_plot_type - None (default), 'all', 'rgb', 'lab', or 'hsv'
-    #                    This is the data to be printed to the SVG histogram file  
-    color_histogram = pcv.analyze_color(rgb_img=img, mask=kept_mask, hist_plot_type='all')
+    #                    This is the data to be printed to the SVG histogram file 
+    #   label - Optional label parameter, modifies the variable name of observations recorded  
+    color_histogram = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='all', label="default")
 
     # Pseudocolor the grayscale image
     
@@ -418,10 +421,10 @@ The next step is to analyze the plant object for traits such as [horizontal heig
     #     dpi - Dots per inch for image if printed out (optional, if dpi=None then the default is set to 100 dpi).
     #     axes - If False then the title, x-axis, and y-axis won't be displayed (default axes=True).
     #     colorbar - If False then the colorbar won't be displayed (default colorbar=True)
-    pseudocolored_img = pcv.visualize.pseudocolor(gray_img=s, mask=kept_mask, cmap='jet')
+    pseudocolored_img = pcv.visualize.pseudocolor(gray_img=s, mask=mask, cmap='jet')
 
     # Write shape and color data to results file
-    pcv.print_results(filename=args.result)
+    pcv.outputs.save_results(filename=args.result)
   
 if __name__ == '__main__':
     main()
@@ -490,7 +493,7 @@ In the terminal:
 Python script: 
 
 ```python
-# !/usr/bin/env python
+#!/usr/bin/env python
 import os
 import argparse
 from plantcv import plantcv as pcv
@@ -590,19 +593,19 @@ def main():
         outfile = os.path.join(args.outdir, filename)
 
     # Find shape properties, output shape image (optional)
-    shape_imgs = pcv.analyze_object(img=img, obj=obj, mask=mask)
+    shape_imgs = pcv.analyze_object(img=img, obj=obj, mask=mask, label="default")
 
     # Shape properties relative to user boundary line (optional)
-    boundary_img1 = pcv.analyze_bound_horizontal(img=img, obj=obj, mask=mask, line_position=1680)
+    boundary_img1 = pcv.analyze_bound_horizontal(img=img, obj=obj, mask=mask, line_position=1680, label="default")
 
     # Determine color properties: Histograms, Color Slices, output color analyzed histogram (optional)
-    color_histogram = pcv.analyze_color(rgb_img=img, mask=kept_mask, hist_plot_type='all')
+    color_histogram = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='all', label="default")
 
     # Pseudocolor the grayscale image
-    pseudocolored_img = pcv.visualize.pseudocolor(gray_img=s, mask=kept_mask, cmap='jet')
+    pseudocolored_img = pcv.visualize.pseudocolor(gray_img=s, mask=mask, cmap='jet')
 
     # Write shape and color data to results file
-    pcv.print_results(filename=args.result)
+    pcv.outputs.save_results(filename=args.result)
 
 if __name__ == '__main__':
     main()

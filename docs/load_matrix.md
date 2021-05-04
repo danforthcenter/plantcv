@@ -7,10 +7,10 @@ Load a matrix from an '.npz' file.
 **returns** matrix
 
 - **Parameters**
-    - filename = a .npz filename of a matrix
+    - filename - a .npz filename of a matrix
 
 - **Returns**
-    - matrix = an ndarray loaded from a '.npz' file
+    - matrix - an ndarray loaded from a '.npz' file
     
 - **Example use:**
     - [Color Correction Tutorial](transform_color_correction_tutorial.md)
@@ -21,6 +21,6 @@ from plantcv import plantcv as pcv
 
 filename = "test.npz"
 
-matrix = pcv.transform.load_matrix(filename)
+matrix = pcv.transform.load_matrix(filename=filename)
 
 ```

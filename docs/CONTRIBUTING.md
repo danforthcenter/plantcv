@@ -1,7 +1,7 @@
 # How to contribute
 
 This document aims to give an overview of how to contribute to PlantCV.
-We encourage third-party contributions in a variety of forms. There are
+We encourage contributions in a variety of forms. There are
 a few guidelines that we need contributors to follow so that we can
 keep things working for all users.
 
@@ -15,7 +15,7 @@ There are many ways to contribute:
 * Revise existing code
 * Add or revise documentation
 
-If you need any help, please contact us.
+If you need any help, please contact us. 
 
 ## Creating Issues
 
@@ -34,104 +34,99 @@ If you need any help, please contact us.
 When you add a significant **new feature**, please create an issue
 first, to allow others to comment and give feedback. 
 
-When you have created a new feature or non-trivial change to existing
+When you have created a new feature or other changes to existing
 code, create a 'pull request'.
 
 **Branching and Pull Requests**: All contributors to PlantCV code or documentation are required to use the 
 *feature branch workflow* (below) in order to allow pull
 requests, automated testing, and code review.
 
-### Using Git at the Command Line
+### Setting up a development environment
 
-Introduce your self to *git*, make sure you use an email associated with
-your GitHub account. This can also be done with the GitHub desktop application.
+!!! note
+    Before setting up a development environment, choose between one of two methods for working with the PlantCV
+    repository. 1) Use the [fork method](https://guides.github.com/activities/forking/) to create a personal copy of
+    PlantCV where you will make changes and synchronize them back to the main PlantCV repository; or 2) Send us a
+    request to be added as a collaborator on the PlantCV repository so that you can work with it directly instead of
+    having to manage a separate repository.
 
-```
-git config --global user.name "John Doe"
-git config --global user.email johndoe@example.com
-```
+#### Clone the source code from GitHub
 
-Fork the PlantCV repository to add it to your GitHub account.
+After choosing a method above for accessing PlantCV source code, create a clone of the source code GitHub repository
+using one of the methods described in the 
+[GitHub cloning a repository guide](https://docs.github.com/en/free-pro-team@latest/github/creating-cloning-and-archiving-repositories/cloning-a-repository).
 
-[Fork this repository](https://github.com/danforthcenter/plantcv#fork-destination-box)
+#### Install PlantCV dependencies
 
-Clone your fork of this repository
-
-```
-git clone https://github.com/<your username>/plantcv.git
-```
-
-Setup repository to be able to fetch from the master
-
-```
-git remote add upstream https://github.com/danforthcenter/plantcv.git
-```
-
-### Adding Features and Submitting Changes
-
-Always work in a branch rather than directly on the master 
-branch. Branches should focus on fixing or adding a single feature or
-set of closely related features because this will make it easier to 
-review and merge your contributions. Since multiple people work on the 
-same repository, make sure to keep your master branch in sync
-with the master of the danforthcenter/plantcv repository. The master
-branch is the central repository for stable releases and the latest code.
-
-Here is a simplified workflow on how add a new feature:
-
-#### Get the latest version
-
-Update your master branch with the main PlantCV repository (both locally and on GitHub)
-
-```
-git fetch upstream
-git checkout master
-git merge upstream/master
-git push
-```
+We recommend using `conda` to set up a virtual environment for developing PlantCV. Instructions can be found in the
+[installation documentation](installation.md#installation-from-the-source-code).
 
 #### Create a branch to do your work
 
-A good practice is to call the branch in the form of `plantcv-<issue-number>`
-followed by the title of the issue. This makes it easier to find out the
-issue you are trying to solve and helps us to understand what is done in
-the branch. Calling a branch my-work is confusing. Names of branch can
-not have a space, and should be replaced with a hyphen.
-
-```
-git checkout -b plantcv-issuenumber-title-of-issue
-```
+The PlantCV default branch is protected and does not allow direct modification. A better practice is to 
+[create a branch](https://docs.github.com/en/free-pro-team@latest/desktop/contributing-and-collaborating-using-github-desktop/managing-branches)
+to add modifications to. The name of the branch should be descriptive and can potentially contain a related issue 
+number. This makes it easier to find out the issue you are trying to solve and helps us to understand what is done in
+the branch. Calling a branch my-work is confusing. Names of branch can not have a space, and should be replaced with 
+a hyphen.
 
 #### Work and commit
 
-Do you work, and commit as you see fit. Make your commit messages helpful.
+Do your work and commit as you see fit to check your work into your branch. Descriptive commit messages and 
+descriptions are helpful for understanding the purpose of changes.
+
+#### Testing and documenting your code
+
+In addition to adding a new feature, test your code thoroughly:
+
+PlantCV utilizes [GitHub Actions](https://github.com/features/actions), [Codecov](https://codecov.io/), and 
+[Read the Docs](https://readthedocs.org/) to provide continuous integration of unit testing and documentation. 
+Integration with GitHub Actions allows us to test whether new pull requests break or change the output of existing 
+functions. Codecov tells us the percentage of PlantCV repository code that is covered by the unit tests (the better
+the coverage the more likely we are to catch problematic pull requests). To include new functions in GitHub Actions 
+tests (to make sure they aren't broken by future pull requests) we need a 'unit test' or set of 'unit tests' (if you 
+need more than one test to cover function options).
+
+Existing unit tests can be found in `tests/tests.py` as examples.
+The data to support unit tests can be found in the `tests/*data/` directories.
+
+If you are updating existing code, make sure that the `test.py`
+script passes on the function you modified. Testing locally can be done with pytest:
+
+```bash
+pytest tests/tests.py
+
+# Or you can just run a subset of tests to save time
+# This will run all tests with "analyze" in the test name 
+pytest tests/tests.py -k analyze
 
 ```
-# Stage files to commit (. for all, or specfic list of files)
-git add .
 
-# Commit staged files with descriptive message
-git commit -m "Helpful message about updates."
-```
+Add documentation for your new feature (see [Adding/editing Documentation](documentation.md) for more details). A new 
+Markdown file should be added to the docs folder, and a reference to your new doc file should
+be added to the `mkdocs.yml` file. You can test that your new documentation can be built correctly locally using 
+mkdocs from the root of your local plantcv repository.
 
-#### Push your changes up to GitHub
-
-Pushing will update your fork of the PlantCV repository. If this is the
-first time pushing to GitHub you will need to use the extended command
-below, other wise you can simply do a `git push`.
+```bash
+mkdocs build --theme readthedocs --site-dir _site
 
 ```
-git push -u origin plantcv-issuenumber-title-of-issue
-```
 
-#### Pull Request
+#### Publish your branch to GitHub and create a Pull Request
 
-Once your new feature is ready, create a pull request from your fork/branch 
-to the main PlantCV repository. Generating a pull request will notify
-the maintainers of PlantCV. GitHub will report whether the merge can be
-done automatically without conflict, or whether manual fixes are 
-required. GitHub Actions will also generate an automatic build report on 
-whether or not the updates break the automated unit tests.
+[Publishing your branch](https://docs.github.com/en/free-pro-team@latest/desktop/contributing-and-collaborating-using-github-desktop/managing-branches#publishing-a-branch)
+to GitHub will make it available for creating a pull request between the updates and the default branch of PlantCV.
+
+After publishing your branch you can create a pull request to create a comparison between the branch and the default
+branch of PlantCV. Generating a pull request will notify the maintainers of PlantCV. GitHub will report whether the
+branch can be merged with the default branch without conflicts (clashes between two independent updates) or whether 
+manual fixes are required. GitHub Actions will also generate an automatic build report on whether or not unit tests
+pass under multiple version of Python and checks code coverage statistics. At least one code review by someone other
+than the pull request author is required (think peer review but for code!). If updates to the pull request are needed,
+new commits can be checked into the local clone of the PlantCV repository and synchronized to GitHub, the pull request
+will automatically update when the branch is updated. Once tests pass, coverage is maintained or increased, and code
+review is approved, the branch will be merged with the default branch and the updates are now part of the latest
+version of PlantCV!
 
 ### Guidelines for adding new features
 
@@ -147,47 +142,21 @@ should **not** be added to PlantCV since these are (usually) not
 generalized or updated to maintain compatibility with new versions.
 
 If you are adding new image processing functions or trait extraction algorithms, make sure you read the section on 
-testing and documenting your code below. We are very appreciative of all community contributions to PlantCV! 
+testing and documenting your code above. We are very appreciative of all community contributions to PlantCV! 
 We do hope that if you are contributing new methods to PlantCV, you are also contributing documentation and unit 
 tests for your functions (described below), because you understand your code/functionality best. If you have questions 
 or need help don't hesitate to ask [here](https://github.com/danforthcenter/plantcv/issues).
 
-#### Testing and documenting your code
-
-In addition to adding a new feature, test your code thoroughly:
-
-PlantCV utilizes [GitHub Actions](https://github.com/features/actions), [Codecov](https://codecov.io/), and 
-[Read the Docs](https://readthedocs.org/) to provide continuous integration of unit testing and documentation. 
-Integration with GitHub Actions allows us to test whether new pull requests break or change the output of existing functions.
-Codecov tells us the percentage of PlantCV repository code that is covered by the unit tests (better the coverage the 
-more likely we are to catch problematic pull requests). To include new functions in GitHub Actions tests (to make sure they 
-aren't broken by future pull requests) we need a 'unit test' or set of 'unit tests' (if you need more than one test to 
-cover function options).
-
-Existing unit tests can be found in `tests/tests.py` as examples.
-The data to support unit tests can be found in `tests/data/`
-
-If you are updating existing code, make sure that the `test.py`
-script passes on the function you modified. Testing locally can be done with pytest:
-
-```
-cd plantcv
-python setup.py test
-```
-
-Add documentation for your new feature (see [Adding/editing Documentation](documentation.md) for more details). A new 
-Markdown file should be added to the docs folder, and a reference to your new doc file should
-be added to the `mkdocs.yml` file. You can test that your new documentation
-can be built correctly locally using mkdocs from the root of your local
-plantcv repository.
-
-```
-mkdocs build --theme readthedocs --site-dir _site
-```
-
 #### New function style guide
 
 Include commenting whenever possible.
+
+In general functions should aim to be modular and accomplish single tasks with a minimum number of inputs and outputs.
+There is not a clear cut rule on what is too much to lump together versus split apart but our general approach is to
+create functions that apply a single transformation to the inputs and then build workflows by chaining together the
+individual modules. However, if the objective is to take an input and always do x, y, and z steps then it may make sense
+to include these all in one function rather than having the user combine them every time. When in doubt, please reach
+out for input!
 
 Start code with import of modules, for example:
 
@@ -198,19 +167,25 @@ import cv2
 import os
 
 # Import functions from within plantcv
-from plantcv.plantcv import params 
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
+from plantcv.plantcv import params
+from plantcv.plantcv._debug import _debug
 ```
 
 Here is a sample of a new function. Arguments should be defined.
-Generally, functions should utilize the global `debug` parameter from the [params](params.md) class.
-Users can set `pcv.params.debug `
-to None (default), "print" (to file), or "plot" (to screen if using [Jupyter](jupyter.md) notebooks or X11).
-Functions should also increment the `device` number, which is a counter for image processing steps that is autoincremented by functions that use `params`.
-Note that the inputs and outputs are documented with Python docstrings.
+Generally, functions should utilize the private function `_debug` to produce visualization results.
+Users can set `pcv.params.debug`
+to `None` (default), "print" (to file), or "plot" (to screen if using [Jupyter](jupyter.md) notebooks or X11).
+Functions should also increment the `device` number, which is a counter for image processing steps that is 
+autoincremented by functions that use `params`. Note that the inputs and outputs are documented with Python docstrings.
 
 ```python
+# Import external packages
+import numpy as np
+import cv2
+import os
+from plantcv.plantcv import params
+from plantcv.plantcv._debug import _debug
+
 
 def new_function(img):
     """New function.
@@ -230,15 +205,14 @@ def new_function(img):
 
     returnval1 = some_code_on_img(img)
     
-    if params.debug == "print":
-        print_image(img, os.path.join(params.debug_outdir, str(params.device) + '_new_function.jpg'))
-    elif params.debug == 'plot':
-        plot_image(img)
+    _debug(visual=returnval1, filename=os.path.join(params.debug_outdir, str(params.device) + '_new_function.jpg'))
 
     return returnval1
+
 ```
 
-If you need to call other PlantCV functions from within your contributed function, be sure to disable debugging until you are ready to show your own debug images.
+If you need to call other PlantCV functions from within your contributed function, be sure to disable debugging until 
+you are ready to show your own debug images.
 
 To do this, follow these four steps:
   1. Store the value of params.debug
@@ -249,11 +223,11 @@ To do this, follow these four steps:
 Here is a sample of a PlantCV function that calls on other PlantCV functions:
 
 ```python
-import plantcv.plantcv.params
-import plantcv.plantcv.example_plantcv_function
-import plantcv.plantcv.another_plantcv_function
-import plantcv.plantcv.print_image
-import plantcv.plantcv.plot_image
+from plantcv.plantcv import params
+from plantcv.plantcv._debug import _debug
+from plantcv.plantcv import example_plantcv_function
+from plantcv.plantcv import another_plantcv_function
+
 
 def new_function_calling_plantcv(img):
     """New function calling another plantcv function.
@@ -282,11 +256,8 @@ def new_function_calling_plantcv(img):
 
     # Reset debug mode
     params.debug = debug
-
-    if params.debug == 'print':
-        print_image(final_img, os.path.join(params.debug_outdir, str(params.device) + '_new_function.jpg'))
-    elif params.debug == 'plot':
-        plot_image(final_img)
+    
+    _debug(visual=final_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_new_function.jpg'))
 
     return final_img
 

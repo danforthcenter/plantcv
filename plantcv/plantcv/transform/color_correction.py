@@ -359,6 +359,9 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
     params.device += 1
     # Initialize chip list
     chips = []
+    # Store debug mode
+    debug = params.debug
+    params.debug = None
 
     # Loop over each color card row
     for i in range(0, nrows):
@@ -371,6 +374,8 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
             x = start_coord[0] + j * spacing[0]
             # Create a chip ROI
             chips.append(circle(img=rgb_img, x=x, y=y, r=radius))
+    # Restore debug parameter
+    params.debug = debug
     # Sort excluded chips from largest to smallest
     exclude.sort(reverse=True)
     # Remove any excluded chips
@@ -470,13 +475,13 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
     # Reset debug
     if params.debug is not None:
         if params.debug == 'print':
-            p1.save(os.path.join(params.debug_outdir, 'color_quick_check.png'))
+            p1.save(os.path.join(params.debug_outdir, 'color_quick_check.png'), verbose=False)
         elif params.debug == 'plot':
             print(p1)
 
 
 def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark',
-                    record_chip_size="median"):
+                    record_chip_size="median", label="default"):
     """Automatically detects a color card and output info to use in create_color_card_mask function
 
     Algorithm written by Brandon Hurr. Updated and implemented into PlantCV by Haley Schuhl.
@@ -491,6 +496,7 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
                         is a dark background
     record_chip_size = Optional str for choosing chip size measurement to be recorded, either "median",
                         "mean", or None
+    label            = optional label parameter, modifies the variable name of observations recorded (default 'default')
 
     Returns:
     df             = Dataframe containing information about the filtered contours
@@ -503,6 +509,7 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
     :param blurry: bool
     :param background: str
     :param record_chip_size: str
+    :param label: str
     :return df: pandas.core.frame.DataFrame
     :return start_coord: tuple
     :return spacing: tuple
@@ -756,14 +763,16 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
             chip_height = None
             chip_width = None
         # Store into global measurements
-        outputs.add_observation(variable='color_chip_size', trait='size of color card chips identified',
+        outputs.add_observation(sample=label, variable='color_chip_size', trait='size of color card chips identified',
                                 method='plantcv.plantcv.transform.find_color_card', scale='none',
                                 datatype=float, value=chip_size, label=str(record_chip_size))
         method = record_chip_size.lower()
-        outputs.add_observation(variable=f'{method}_color_chip_height', trait=f'{method} height of color card chips identified',
+        outputs.add_observation(sample=label, variable=f'{method}_color_chip_height',
+                                trait=f'{method} height of color card chips identified',
                                 method='plantcv.plantcv.transform.find_color_card', scale='none',
                                 datatype=float, value=chip_height, label=str(record_chip_size))
-        outputs.add_observation(variable=f'{method}_color_chip_width', trait=f'{method} size of color card chips identified',
+        outputs.add_observation(sample=label, variable=f'{method}_color_chip_width',
+                                trait=f'{method} size of color card chips identified',
                                 method='plantcv.plantcv.transform.find_color_card', scale='none',
                                 datatype=float, value=chip_width, label=str(record_chip_size))
 
