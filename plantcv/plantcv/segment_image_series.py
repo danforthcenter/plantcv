@@ -38,20 +38,20 @@ def segment_image_series(img_dir, mask_dir, init_frame, init_labels=None, ksize=
     :param mask_dir: str
     :params init_frame: int
     :params init_labels: numpy.ndarray
-    :params ksize: int 
+    :params ksize: int
     :return out_labels: numpy.ndarray
     """
     debug = params.debug
     params.debug = None
     params.color_sequence = 'random'
 
-    image_names = sorted(os.listdir(imgDir))
+    image_names = sorted(os.listdir(img_dir))
 
 
     if init_labels is None:
         #get initialization labels
-        #init_img, _, _ = pcv.readimage(filename=imgDir+image_names[init_frame])
-        init_mask, _, _ = pcv.readimage(filename=maskDir +
+        #init_img, _, _ = pcv.readimage(filename=img_dir+image_names[init_frame])
+        init_mask, _, _ = pcv.readimage(filename=mask_dir +
                                         image_names[init_frame][:-4] +
                                         '_mask.png')
         init_labels, _ = ndi.label(init_mask)
@@ -79,10 +79,10 @@ def segment_image_series(img_dir, mask_dir, init_frame, init_labels=None, ksize=
         stack_idx = 2*ksize
         for m in range(ksize, -ksize-1, -1):
             frame = min(N-1, max(n+m,0))
-            img, _, _ = pcv.readimage(filename=imgDir+image_names[frame])
+            img, _, _ = pcv.readimage(filename=img_dir+image_names[frame])
             if m == 0:
                 img_n_rgb = img
-            mask, _, _ = pcv.readimage(filename=maskDir+image_names[frame][:-4]+'_mask.png')
+            mask, _, _ = pcv.readimage(filename=mask_dir+image_names[frame][:-4]+'_mask.png')
             img_stack[:,:,stack_idx] =  pcv.rgb2gray(rgb_img=img)
             mask_stack[:,:,stack_idx] = mask
             markers[:,:,stack_idx] = out_labels[:,:,frame]
@@ -103,8 +103,6 @@ def segment_image_series(img_dir, mask_dir, init_frame, init_labels=None, ksize=
                                                      image_names[n][:-4] + '_WSeg.png'))
         params.debug = None
 
-        if n == -1:
-            break
 
     # forward
     for n in range(init_frame+1,N):
@@ -121,10 +119,10 @@ def segment_image_series(img_dir, mask_dir, init_frame, init_labels=None, ksize=
         #stack_idx = -min(0,n-ksize)
         for m in range(-ksize,ksize+1):
             frame = min(N-1, max(n+m,0))
-            img, _, _ = pcv.readimage(filename=imgDir+image_names[frame])
+            img, _, _ = pcv.readimage(filename=img_dir+image_names[frame])
             if m == 0:
                 img_n_rgb = img
-            mask, _, _ = pcv.readimage(filename=maskDir+image_names[frame][:-4]+'_mask.png')
+            mask, _, _ = pcv.readimage(filename=mask_dir+image_names[frame][:-4]+'_mask.png')
             img_stack[:,:,stack_idx] =  pcv.rgb2gray(rgb_img=img)
             mask_stack[:,:,stack_idx] = mask
             markers[:,:,stack_idx] = out_labels[:,:,frame]
@@ -144,9 +142,6 @@ def segment_image_series(img_dir, mask_dir, init_frame, init_labels=None, ksize=
                                                      str(params.device) + '_' +
                                                      image_names[n][:-4] + '_WSeg.png'))
         params.debug = None
-
-        if n == -1:
-            break
 
 
     return out_labels
