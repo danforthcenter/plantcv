@@ -2,7 +2,7 @@
 
 import sys
 
-def deprecation_warning(warning):
+def warning(warning):
     """Print out warning message
 
     Inputs:
