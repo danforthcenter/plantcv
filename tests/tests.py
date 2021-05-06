@@ -6360,7 +6360,12 @@ def test_plantcv_visualize_overlay_two_imgs_size_mismatch():
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2)
 
-def test_plantcv_visualize_time_lapse_video_passes():
+@pytest.mark.parametrize("suffix_img, list_im_f, auto_sort, path_video_f, display",
+                         [[None, None, None, 1, "on"],
+                         [None, None, None, None, "off"],
+                         [".png", None, None, 1, "off"],
+                         [".png", 1, False, 1, "off"]])
+def test_plantcv_visualize_time_lapse_video_passes(suffix_img, list_im_f, auto_sort, path_video_f, display):
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video')
     os.mkdir(cache_dir)
@@ -6370,18 +6375,24 @@ def test_plantcv_visualize_time_lapse_video_passes():
         min_, max_ = np.nanmin(temp_img), np.nanmax(temp_img)
         temp_img = np.interp(temp_img, (min_, max_), (0, 255)).astype('uint8')
         cv2.imwrite(os.path.join(cache_dir, f"img{i}.png"), temp_img)
-    list_im = [img for img in os.listdir(cache_dir) if img.endswith('.png')]
-    @pytest.mark.parametrize("img_dir, suffix_img, list_img, auto_sort, name_video, path_video, display",
-                             [cache_dir, None, None, None, "time_lapse_video_case", cache_dir, "on"],
-                             [cache_dir, None, None, None, "time_lapse_video_case", None, "off"],
-                             [cache_dir, ".png", None, None, "time_lapse_video_case", cache_dir, "off"],
-                             [cache_dir, ".png", list_im, False, "time_lapse_video_case", cache_dir, "off"])
-    def test_time_lapse_video_passes(img_dir, suffix_img, list_img, auto_sort, name_video, path_video, display):
-        _, _ = pcv.visualize.time_lapse_video(img_directory=img_dir, suffix_img=suffix_img, fps=29.97,
-                                              name_video=name_video, path_video=path_video, display=display)
-        assert os.path.exists(os.path.join(cache_dir, name_video)) or os.path.exists(os.path.join(path_video, name_video))
+    if list_im_f:
+        list_im = [img for img in os.listdir(cache_dir) if img.endswith('.png')]
+    else:
+        list_im = None
+    if path_video_f:
+        path_video = cache_dir
+    else:
+        path_video = None
+    _, _ = pcv.visualize.time_lapse_video(img_directory=cache_dir, suffix_img=suffix_img, list_img=list_im, fps=29.97,
+                                          name_video="time_lapse_video_case", path_video=path_video, display=display)
+    assert os.path.exists(os.path.join(cache_dir, "time_lapse_video_case.mp4")) \
+           or os.path.exists(os.path.join(path_video, "time_lapse_video_case.mp4"))
 
-def test_plantcv_visualize_time_lapse_video_errors():
+@pytest.mark.parametrize("img_dir_f, suffix_img, list_im_f",
+                         [["bad", None, None],    # bad image directory
+                         ["good", '.jpg', None],  # bad suffix
+                         ["good", None, "bad"]])  # bad image list
+def test_plantcv_visualize_time_lapse_video_errors(img_dir_f, suffix_img, list_im_f):
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video')
     os.mkdir(cache_dir)
@@ -6391,20 +6402,19 @@ def test_plantcv_visualize_time_lapse_video_errors():
         min_, max_ = np.nanmin(temp_img), np.nanmax(temp_img)
         temp_img = np.interp(temp_img, (min_, max_), (0, 255)).astype('uint8')
         cv2.imwrite(os.path.join(cache_dir, f"img{i}.png"), temp_img)
-    # case 6: bad image list
-    list_img_ = [img for img in os.listdir(cache_dir) if img.endswith('.png')]
-    list_img = [img.replace('.png', '_.png') for img in list_img_]
+    if img_dir_f == "good":
+        img_dir = cache_dir
+    else:
+        img_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_bad')
+        os.mkdir(img_dir)
+    if list_im_f == "bad":
+        list_img_ = [img for img in os.listdir(cache_dir) if img.endswith('.png')]
+        list_img = [img.replace('.png', '_.png') for img in list_img_]
+    else:
+        list_img = None
 
-    cache_dir_bad = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_bad')
-    os.mkdir(cache_dir_bad)
-    @pytest.mark.parametrize("img_dir, suffix_img, list_im",
-                             [cache_dir_bad, None, None],    # bad image directory
-                             [cache_dir, '.jpg', None],      # bad suffix
-                             [cache_dir, None, list_img])    # bad image list
-    def test_time_lapse_video_errors(img_dir, suffix_img, list_im):
-
-        with pytest.raises(RuntimeError):
-            pcv.visualize.time_lapse_video(img_directory=img_dir, suffix_img=suffix_img, list_img=list_im, fps=29.97)
+    with pytest.raises(RuntimeError):
+        pcv.visualize.time_lapse_video(img_directory=img_dir, suffix_img=suffix_img, list_img=list_img, fps=29.97)
 
 # the correct directory of images as well as a list of files are provided, however the
 # list is incorrect (contains correct part, but also contains incorrect part)
@@ -6424,6 +6434,7 @@ def test_plantcv_visualize_time_lapse_video_incorrect_list_warns(capsys):
                                    name_video='time_lapse_video', path_video=cache_dir)
     out, err = capsys.readouterr()
     assert "Warning" in err and os.path.exists(os.path.join(cache_dir, 'time_lapse_video.mp4'))
+    
 # not all images have the same size (essential to generate a video)
 def test_plantcv_visualize_time_lapse_video_different_img_sizes_warns(capsys):
     # Test cache directory
@@ -6445,8 +6456,6 @@ def test_plantcv_visualize_time_lapse_video_different_img_sizes_warns(capsys):
                                    path_video=cache_dir, display='off')
     out, err = capsys.readouterr()
     assert "Warning" in err and os.path.exists(os.path.join(cache_dir, 'time_lapse_video.mp4'))
-
-
 
 
 # ##############################
