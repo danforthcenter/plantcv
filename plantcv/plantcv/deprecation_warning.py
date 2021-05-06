@@ -13,6 +13,7 @@ def deprecation_warning(warning):
     :param warning: str
     """
     version = _version.get_versions()
-    warning_msg = f"DeprecationWarning: {warning} Current PlantCV version: {version['version']} released on {version['date']}"
+    warning_msg = f"DeprecationWarning: {warning} Current PlantCV version: " \
+                  f"{version['version']} released on {version['date']}"
     if params.verbose is True:
         print(warning_msg, file=sys.stderr)
