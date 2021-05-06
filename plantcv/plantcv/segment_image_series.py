@@ -1,4 +1,5 @@
 import os
+import math
 import numpy as np
 import cv2 as cv
 from scipy import ndimage as ndi
@@ -23,13 +24,14 @@ def _labels2rgb(labels, n_labels, rgb_values):
     return rgb_img
 
 
-def segment_image_series(img_dir, mask_dir, init_frame, init_labels=None, ksize=1):
+def segment_image_series(img_dir, mask_dir, init_frame, save_labels=True, init_labels=None, ksize=3):
     """
 
     Inputs:
     img_dir     = Path to the image directory
     mask_dir    = Path to the mask directory
     init_frame  = Number of frame in the image series from where the labels propagate
+    save_labels = Save the labels for each frame as a numpy array
     init_labels = Array containing the initialization labels (same shape as the images)
     ksize       = Size for the block of images considered at each frame
 
@@ -38,14 +40,18 @@ def segment_image_series(img_dir, mask_dir, init_frame, init_labels=None, ksize=
 
     :param img_dir: str
     :param mask_dir: str
-    :params init_frame: int
-    :params init_labels: numpy.ndarray
-    :params ksize: int
+    :param init_frame: int
+    :param save_labels: bool
+    :param init_labels: numpy.ndarray
+    :param ksize: int
     :return out_labels: numpy.ndarray
     """
     debug = params.debug
     params.debug = None
     params.color_sequence = 'random'
+
+    # for symmetry, using blocks (kernels) of size 2*floor(ksize/2) + 1
+    half_k = math.floor(ksize/2)
 
     image_names = sorted(os.listdir(img_dir))
 
@@ -70,14 +76,14 @@ def segment_image_series(img_dir, mask_dir, init_frame, init_labels=None, ksize=
     # backward
     for n in range(init_frame,-1,-1):
         # build image and mask stacks
-        d = 2*ksize+1
+        d = 2*half_k+1
         img_stack = np.zeros((h,w,d))
         mask_stack = np.zeros((h,w,d))
         markers = np.zeros((h,w,d))
         # with this loop, the number of frames used is always the same,
-        # if stack_idx is always initialized to 2*ksize the borders are 'constant'
-        stack_idx = 2*ksize
-        for m in range(ksize, -ksize-1, -1):
+        # if stack_idx is always initialized to 2*half_k the borders are 'constant'
+        stack_idx = 2*half_k
+        for m in range(half_k, -half_k-1, -1):
             frame = min(N-1, max(n+m,0))
             img, _, _ = pcv.readimage(filename=img_dir+image_names[frame])
             if m == 0:
@@ -92,7 +98,7 @@ def segment_image_series(img_dir, mask_dir, init_frame, init_labels=None, ksize=
         edges = ndi.generic_gradient_magnitude(img_stack, ndi.sobel)
         # segmentation using the watershed algorithm
         labels = watershed(edges, markers=markers, mask=mask_stack, compactness=0)
-        out_labels[:,:,n] = labels[:,:,ksize]
+        out_labels[:,:,n] = labels[:,:,half_k]
 
         # Create images for plotting and printing (debug mode)
         rgb_seg = _labels2rgb(out_labels[:,:,n], n_labels, rgb_values)
@@ -106,7 +112,7 @@ def segment_image_series(img_dir, mask_dir, init_frame, init_labels=None, ksize=
     # forward
     for n in range(init_frame+1,N):
         # build image and mask stacks
-        d = 2*ksize+1
+        d = 2*half_k+1
         img_stack = np.zeros((h,w,d))
         mask_stack = np.zeros((h,w,d))
         markers = np.zeros((h,w,d))
@@ -114,8 +120,8 @@ def segment_image_series(img_dir, mask_dir, init_frame, init_labels=None, ksize=
         # if stack_idx is always initialized to 0 the borders are 'constant'
         stack_idx = 0
         # if stack_idx is initialized this way, the laft border is 'zero padded'
-        #stack_idx = -min(0,n-ksize)
-        for m in range(-ksize,ksize+1):
+        #stack_idx = -min(0,n-half_k)
+        for m in range(-half_k,half_k+1):
             frame = min(N-1, max(n+m,0))
             img, _, _ = pcv.readimage(filename=img_dir+image_names[frame])
             if m == 0:
@@ -130,7 +136,7 @@ def segment_image_series(img_dir, mask_dir, init_frame, init_labels=None, ksize=
         edges = ndi.generic_gradient_magnitude(img_stack, ndi.sobel)
         # segmentation using the watershed algorithm
         labels = watershed(edges, markers=markers, mask=mask_stack, compactness=0)
-        out_labels[:,:,n] = labels[:,:,ksize]
+        out_labels[:,:,n] = labels[:,:,half_k]
 
         # Create images for plotting and printing (debug mode)
         rgb_seg = _labels2rgb(out_labels[:,:,n], n_labels, rgb_values)
@@ -140,5 +146,9 @@ def segment_image_series(img_dir, mask_dir, init_frame, init_labels=None, ksize=
                                                      str(params.device) + '_' +
                                                      image_names[n][:-4] + '_WSeg.png'))
         params.debug = None
+
+    if save_labels == True:
+        [np.save(os.path.join(params.debug_outdir, f"{image_names[i][:-4]}_labels"),
+                out_labels[:,:,i]) for i in range(N)]
 
     return out_labels
