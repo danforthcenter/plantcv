@@ -8,7 +8,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv.transform import resize
 # import warnings
-from plantcv.plantcv import warnings
+from plantcv.plantcv import warn
 
 
 def time_lapse_video(img_directory, list_img=None, auto_sort = True, suffix_img=None, size_frame=None, fps=29.97,
@@ -83,7 +83,7 @@ def time_lapse_video(img_directory, list_img=None, auto_sort = True, suffix_img=
         elif len(list_img) < len(list_img_no_ext):
             # warnings.warn("Warning: Some files in the provided list not found, the video will be created based on "
             #               "available files in the provided directory!")
-            warnings("Warning: Some files in the provided list not found, the video will be created based on "
+            warn("Some files in the provided list not found, the video will be created based on "
                           "available files in the provided directory!")
 
     # if the list of images is not provided, check if suffix information is available
@@ -112,7 +112,7 @@ def time_lapse_video(img_directory, list_img=None, auto_sort = True, suffix_img=
     size_frame = size_frame or (max_c, max_r)
 
     if not (len(np.unique(list_r)) == 1 and len(np.unique(list_c)) == 1):
-        warnings(f"Warning: The sizes of images are not the same, an image resizing (cropping or zero-padding) will be done "
+        warn(f"The sizes of images are not the same, an image resizing (cropping or zero-padding) will be done "
                       "to make all images the same size ({size_frame[0]}x{size_frame[1])}) before creating the video! "
                       "If you assume the images should have the same size, please check the images used to generate this video!")
 
