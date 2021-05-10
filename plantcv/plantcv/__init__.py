@@ -10,7 +10,7 @@ params = Params()
 outputs = Outputs()
 
 from plantcv.plantcv.deprecation_warning import deprecation_warning
-from plantcv.plantcv.warnings import warnings
+from plantcv.plantcv.warn import warn
 from plantcv.plantcv.print_image import print_image
 from plantcv.plantcv.plot_image import plot_image
 from plantcv.plantcv.color_palette import color_palette
@@ -93,7 +93,7 @@ from ._version import get_versions
 __version__ = get_versions()['version']
 del get_versions
 
-__all__ = ['fatal_error', 'Params', 'Outputs', 'Spectral_data', 'deprecation_warning', 'warnings', 'print_image', 'plot_image',
+__all__ = ['fatal_error', 'Params', 'Outputs', 'Spectral_data', 'deprecation_warning', 'warn', 'print_image', 'plot_image',
            'color_palette', 'apply_mask', 'gaussian_blur', 'transform', 'hyperspectral', 'readimage', 'readbayer',
            'laplace_filter', 'sobel_filter', 'scharr_filter', 'hist_equalization', 'erode', 'image_add', 
            'image_subtract', 'dilate', 'watershed', 'rectangle_mask', 'rgb2gray_hsv', 'rgb2gray_lab', 'rgb2gray_cmyk',
