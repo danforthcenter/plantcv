@@ -995,6 +995,17 @@ PIXEL_VALUES = "pixel_inspector_rgb_values.txt"
 # ##########################
 # Tests for the main package
 # ##########################
+
+def test_plantcv_warn(capsys):
+    pcv.warn("warning message")
+    out, err = capsys.readouterr()
+    assert "Warning" in err
+
+def test_plantcv_deprecation_warning(capsys):
+    pcv.deprecation_warning("warning message")
+    out, err = capsys.readouterr()
+    assert "DeprecationWarning" in err
+
 @pytest.mark.parametrize("debug", ["print", "plot"])
 def test_plantcv_debug(debug, tmpdir):
     from plantcv.plantcv._debug import _debug
@@ -6365,50 +6376,44 @@ def test_plantcv_visualize_overlay_two_imgs_size_mismatch():
                          [None, None, None, None, "off"],
                          [".png", None, None, 1, "off"],
                          [".png", 1, False, 1, "off"]])
-def test_plantcv_visualize_time_lapse_video_passes(suffix_img, list_im_f, auto_sort, path_video_f, display):
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video')
-    os.mkdir(cache_dir)
-    # Generate 3 test images and saved in cache_dir
+def test_plantcv_visualize_time_lapse_video_passes(suffix_img, list_im_f, auto_sort, path_video_f, display, tmpdir):
+    # Generate 3 test images and saved in tmpdir
     for i in range(3):
         temp_img = np.random.rand(3,3)
         min_, max_ = np.nanmin(temp_img), np.nanmax(temp_img)
         temp_img = np.interp(temp_img, (min_, max_), (0, 255)).astype('uint8')
-        cv2.imwrite(os.path.join(cache_dir, f"img{i}.png"), temp_img)
+        cv2.imwrite(os.path.join(tmpdir, f"img{i}.png"), temp_img)
     if list_im_f:
-        list_im = [img for img in os.listdir(cache_dir) if img.endswith('.png')]
+        list_im = [img for img in os.listdir(tmpdir) if img.endswith('.png')]
     else:
         list_im = None
     if path_video_f:
-        path_video = cache_dir
+        path_video = tmpdir
     else:
         path_video = None
-    _, _ = pcv.visualize.time_lapse_video(img_directory=cache_dir, suffix_img=suffix_img, list_img=list_im, fps=29.97,
+    _, _ = pcv.visualize.time_lapse_video(img_directory=tmpdir, suffix_img=suffix_img, list_img=list_im, fps=29.97,
                                           name_video="time_lapse_video_case", path_video=path_video, display=display)
-    assert os.path.exists(os.path.join(cache_dir, "time_lapse_video_case.mp4")) \
+    assert os.path.exists(os.path.join(tmpdir, "time_lapse_video_case.mp4")) \
            or os.path.exists(os.path.join(path_video, "time_lapse_video_case.mp4"))
 
 @pytest.mark.parametrize("img_dir_f, suffix_img, list_im_f",
                          [["bad", None, None],    # bad image directory
                          ["good", '.jpg', None],  # bad suffix
                          ["good", None, "bad"]])  # bad image list
-def test_plantcv_visualize_time_lapse_video_errors(img_dir_f, suffix_img, list_im_f):
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video')
-    os.mkdir(cache_dir)
+def test_plantcv_visualize_time_lapse_video_errors(img_dir_f, suffix_img, list_im_f, tmpdir):
     # Generate 3 test images and saved in cache_dir
     for i in range(3):
         temp_img = np.random.rand(3, 3)
         min_, max_ = np.nanmin(temp_img), np.nanmax(temp_img)
         temp_img = np.interp(temp_img, (min_, max_), (0, 255)).astype('uint8')
-        cv2.imwrite(os.path.join(cache_dir, f"img{i}.png"), temp_img)
+        cv2.imwrite(os.path.join(tmpdir, f"img{i}.png"), temp_img)
     if img_dir_f == "good":
-        img_dir = cache_dir
+        img_dir = tmpdir
     else:
         img_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video_bad')
         os.mkdir(img_dir)
     if list_im_f == "bad":
-        list_img_ = [img for img in os.listdir(cache_dir) if img.endswith('.png')]
+        list_img_ = [img for img in os.listdir(tmpdir) if img.endswith('.png')]
         list_img = [img.replace('.png', '_.png') for img in list_img_]
     else:
         list_img = None
@@ -6418,44 +6423,37 @@ def test_plantcv_visualize_time_lapse_video_errors(img_dir_f, suffix_img, list_i
 
 # the correct directory of images as well as a list of files are provided, however the
 # list is incorrect (contains correct part, but also contains incorrect part)
-def test_plantcv_visualize_time_lapse_video_incorrect_list_warns(capsys):
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video')
-    os.mkdir(cache_dir)
-    # Generate 3 test images and saved in cache_dir
+def test_plantcv_visualize_time_lapse_video_incorrect_list_warns(tmpdir, capsys):
+    # Generate 3 test images and saved in tmpdir
     for i in range(3):
         temp_img = np.random.rand(3, 3)
         min_, max_ = np.nanmin(temp_img), np.nanmax(temp_img)
         temp_img = np.interp(temp_img, (min_, max_), (0, 255)).astype('uint8')
-        cv2.imwrite(os.path.join(cache_dir, f"img{i}.png"), temp_img)
-    list_img = [img for img in os.listdir(cache_dir) if img.endswith('.png')]
+        cv2.imwrite(os.path.join(tmpdir, f"img{i}.png"), temp_img)
+    list_img = [img for img in os.listdir(tmpdir) if img.endswith('.png')]
     list_img.append('junk.png')
-    pcv.visualize.time_lapse_video(img_directory=cache_dir, list_img=list_img, fps=29.97,
-                                   name_video='time_lapse_video', path_video=cache_dir)
+    pcv.visualize.time_lapse_video(img_directory=tmpdir, list_img=list_img, fps=29.97,
+                                   name_video='time_lapse_video', path_video=tmpdir)
     out, err = capsys.readouterr()
-    assert "Warning" in err and os.path.exists(os.path.join(cache_dir, 'time_lapse_video.mp4'))
+    assert "Warning" in err and os.path.exists(os.path.join(tmpdir, 'time_lapse_video.mp4'))
     
 # not all images have the same size (essential to generate a video)
-def test_plantcv_visualize_time_lapse_video_different_img_sizes_warns(capsys):
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, 'visualize_time_lapse_video')
-    os.mkdir(cache_dir)
-    # Generate 3 test images and saved in cache_dir
+def test_plantcv_visualize_time_lapse_video_different_img_sizes_warns(tmpdir, capsys):
+    # Generate 3 test images and saved in tmpdir
     for i in range(2):
         temp_img = np.random.rand(3, 3)
         min_, max_ = np.nanmin(temp_img), np.nanmax(temp_img)
         temp_img = np.interp(temp_img, (min_, max_), (0, 255)).astype('uint8')
-        cv2.imwrite(os.path.join(cache_dir, f"img{i}.png"), temp_img)
+        cv2.imwrite(os.path.join(tmpdir, f"img{i}.png"), temp_img)
     temp_img = np.random.rand(2, 3)
     min_, max_ = np.nanmin(temp_img), np.nanmax(temp_img)
     temp_img = np.interp(temp_img, (min_, max_), (0, 255)).astype('uint8')
-    cv2.imwrite(os.path.join(cache_dir, "img2.png"), temp_img)
+    cv2.imwrite(os.path.join(tmpdir, "img2.png"), temp_img)
 
-
-    pcv.visualize.time_lapse_video(img_directory=cache_dir, fps=29.97, name_video='time_lapse_video',
-                                   path_video=cache_dir, display='off')
+    pcv.visualize.time_lapse_video(img_directory=tmpdir, fps=29.97, name_video='time_lapse_video',
+                                   path_video=tmpdir, display='off')
     out, err = capsys.readouterr()
-    assert "Warning" in err and os.path.exists(os.path.join(cache_dir, 'time_lapse_video.mp4'))
+    assert "Warning" in err and os.path.exists(os.path.join(tmpdir, 'time_lapse_video.mp4'))
 
 
 # ##############################
