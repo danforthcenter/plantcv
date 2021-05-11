@@ -35,7 +35,6 @@ def analyze_fvfm(data, mask, bins=256, label="default"):
     fmin = data.sel(frame_label='fmin').data
     mask_int = mask.astype(np.uint8)
 
-
     # QC Fdark Image
     fdark_mask = cv2.bitwise_and(fdark, fdark, mask=mask_int)
     if np.amax(fdark_mask) > 2000:
