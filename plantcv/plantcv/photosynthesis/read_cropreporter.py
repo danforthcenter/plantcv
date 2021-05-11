@@ -7,7 +7,6 @@ from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 
 
-
 def read_cropreporter(filename):
     """Read in, reshape, and subset a datacube of fluorescence snapshots
 
@@ -19,7 +18,7 @@ def read_cropreporter(filename):
             path             = path to image files
             filename         = name of .DAT file
 
-        :param inf_filename: str
+        :param filename: str
         :return da: numpy.ndarray
         :return path: str
         :return filename: str
