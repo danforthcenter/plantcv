@@ -58,9 +58,9 @@ def segment_image_series(img_dir, mask_dir, init_frame, save_labels=True, init_l
     if init_labels is None:
         #get initialization labels
         #init_img, _, _ = pcv.readimage(filename=img_dir+image_names[init_frame])
-        init_mask, _, _ = pcv.readimage(filename=mask_dir +
-                                        image_names[init_frame][:-4] +
-                                        '_mask.png')
+        init_mask, _, _ = pcv.readimage(filename=os.path.join(mask_dir,
+                                        f"{image_names[init_frame][:-4]}_mask.png"),
+                                        mode='gray')
         init_labels, _ = ndi.label(init_mask)
 
     # output initialization
@@ -85,10 +85,12 @@ def segment_image_series(img_dir, mask_dir, init_frame, save_labels=True, init_l
         stack_idx = 2*half_k
         for m in range(half_k, -half_k-1, -1):
             frame = min(N-1, max(n+m,0))
-            img, _, _ = pcv.readimage(filename=img_dir+image_names[frame])
+            img, _, _ = pcv.readimage(filename=os.path.join(img_dir,image_names[frame]))
             if m == 0:
                 img_n_rgb = img
-            mask, _, _ = pcv.readimage(filename=mask_dir+image_names[frame][:-4]+'_mask.png')
+            mask, _, _ = pcv.readimage(filename=os.path.join(mask_dir,
+                                        f"{image_names[frame][:-4]}_mask.png"),
+                                        mode='gray')
             img_stack[:,:,stack_idx] = pcv.rgb2gray(rgb_img=img)
             mask_stack[:,:,stack_idx] = mask
             markers[:,:,stack_idx] = out_labels[:,:,frame]
@@ -105,8 +107,7 @@ def segment_image_series(img_dir, mask_dir, init_frame, save_labels=True, init_l
         vis_seg = cv.addWeighted(img_n_rgb, 0.7, rgb_seg, 0.3, 0.0)
         params.debug = debug
         _debug(visual=vis_seg, filename=os.path.join(params.debug_outdir,
-                                                     str(params.device) + '_' +
-                                                     image_names[n][:-4] + '_WSeg.png'))
+                                f"{str(params.device)}_{image_names[n][:-4]}_WSeg.png"))
         params.debug = None
 
     # forward
@@ -123,10 +124,12 @@ def segment_image_series(img_dir, mask_dir, init_frame, save_labels=True, init_l
         #stack_idx = -min(0,n-half_k)
         for m in range(-half_k,half_k+1):
             frame = min(N-1, max(n+m,0))
-            img, _, _ = pcv.readimage(filename=img_dir+image_names[frame])
+            img, _, _ = pcv.readimage(filename=os.path.join(img_dir,image_names[frame]))
             if m == 0:
                 img_n_rgb = img
-            mask, _, _ = pcv.readimage(filename=mask_dir+image_names[frame][:-4]+'_mask.png')
+            mask, _, _ = pcv.readimage(filename=os.path.join(mask_dir,
+                                        f"{image_names[frame][:-4]}_mask.png"),
+                                        mode='gray')
             img_stack[:,:,stack_idx] = pcv.rgb2gray(rgb_img=img)
             mask_stack[:,:,stack_idx] = mask
             markers[:,:,stack_idx] = out_labels[:,:,frame]
@@ -143,8 +146,7 @@ def segment_image_series(img_dir, mask_dir, init_frame, save_labels=True, init_l
         vis_seg = cv.addWeighted(img_n_rgb, 0.7, rgb_seg, 0.3, 0.0)
         params.debug = debug
         _debug(visual=vis_seg, filename=os.path.join(params.debug_outdir,
-                                                     str(params.device) + '_' +
-                                                     image_names[n][:-4] + '_WSeg.png'))
+                                f"{str(params.device)}_{image_names[n][:-4]}_WSeg.png"))
         params.debug = None
 
     if save_labels == True:
