@@ -35,7 +35,14 @@ def warp(img, refimg, pts, refpts, method='default'):
     refimg = image to be used as reference
     pts = 4 coordinates on img
     refpts = 4 coordinates on refimg
-    method = robust estimation algorithm when calculating projective transformation. 'default', 'ransac', 'lmeds', 'rho'
+    method = Available options are 'default', 'ransac', 'lmeds', 'rho' which correspond to the opencv methods
+    and vary based on whether they handle outlier points and how they handle outlier points.
+      - 'default': a regular method (the least squares method) using all the points
+      - 'ransac': RANSAC-based robust method
+        ([Random sample consensus](https://en.wikipedia.org/wiki/Random_sample_consensus#:~:text=An%20advantage%20of%20RANSAC%20is,present%20in%20the%20data%20set.&text=RANSAC%20can%20only%20estimate%20one%20model%20for%20a%20particular%20data%20set.))
+      - 'lmeds': Least-Median robust method
+        ([Least Median of Squares](http://www-sop.inria.fr/odyssee/software/old_robotvis/Tutorial-Estim/node25.html))
+      - 'RHO': PROSAC-based robust method ([PROSAC]
     Returns:
     warped_img = warped image
     mat = transformation matrix
