@@ -3795,7 +3795,7 @@ def test_plantcv_segment_image_series():
                     255*(img!=0).astype(np.uint8), flags=cv2.IMREAD_UNCHANGE)
 
     pcv.params.debug_outdir = cache_out_dir
-    params.color_sequence = 'random'
+    pcv.params.color_sequence = 'random'
     pcv.params.debug = None
 
     # test that the function detects the two objects and propagates the labels
