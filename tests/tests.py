@@ -3792,7 +3792,7 @@ def test_plantcv_segment_image_series():
 
         cv2.imwrite(os.path.join(cache_img_dir, f"{i}.png"), img)
         cv2.imwrite(os.path.join(cache_mask_dir, f"{i}_mask.png"),
-                    255*(img!=0).astype(np.uint8), flags=cv2.IMREAD_UNCHANGE)
+                    255*(img!=0).astype(np.uint8))
 
     pcv.params.debug_outdir = cache_out_dir
     pcv.params.color_sequence = 'random'
