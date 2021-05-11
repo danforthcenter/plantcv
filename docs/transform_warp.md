@@ -31,8 +31,9 @@ and the
     - pts - (list) coordinate points on `img`. At least 4 pairs should be given as a list of tuples
     - refpts - (list) corresponding coordinate points on `refimg`. At least 4 pairs should be given as a list of tuples
     - method - (str) method used to compute the transformation (homography) matrix.
-      Available options are 'default', 'ransac', 'lmeds', 'rho' which correspond to the opencv methods and vary based on 
-      [how they handle outlier points](https://docs.opencv.org/3.4/d9/d0c/group__calib3d.html#ga4abc2ece9fab9398f2e560d53c8c9780)
+      Available options are 'default', 'ransac', 'lmeds', 'rho' which correspond to the opencv methods 
+      and vary based on whether they handle outliers and [how they handle outlier points]
+      (https://docs.opencv.org/3.4/d9/d0c/group__calib3d.html#ga4abc2ece9fab9398f2e560d53c8c9780)
       - 'default': a regular method (the least squares method) using all the points
       - 'ransac': RANSAC-based robust method 
         ([Random sample consensus](https://en.wikipedia.org/wiki/Random_sample_consensus#:~:text=An%20advantage%20of%20RANSAC%20is,present%20in%20the%20data%20set.&text=RANSAC%20can%20only%20estimate%20one%20model%20for%20a%20particular%20data%20set.)) 
