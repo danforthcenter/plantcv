@@ -4931,15 +4931,11 @@ def test_plantcv_hyperspectral_inverse_covariance():
 # ########################################
 # Tests for the photosynthesis subpackage
 # ########################################
-def test_plantcv_photosynthesis_read_dat():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_photosynthesis_read_dat")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    pcv.params.debug = "plot"
+def test_plantcv_photosynthesis_read_cropreporter():
+    # Test with debug = None
+    pcv.params.debug = None
     fluor_filename = os.path.join(FLUOR_TEST_DATA, FLUOR_IMG_INF)
-    _, _, _ = pcv.photosynthesis.read_cropreporter(filename=fluor_filename)
-    pcv.params.debug = "print"
-    da, path, filename = pcv.photosynthesis.read_cropreporter(filename=fluor_filename)
+    da, imgpath, filename = pcv.photosynthesis.read_cropreporter(filename=fluor_filename)
     assert np.sum(da.sel(frame_label='fmax').data) > np.sum(da.sel(frame_label='fmin').data)
 
 
