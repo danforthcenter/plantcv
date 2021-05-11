@@ -5968,18 +5968,19 @@ def create_test_img_bin(sz_img):
     img = np.zeros(sz_img)
     img[3:7, 2:8] = 1
     return img
-@pytest.mark.parametrize("img, refimg, method, refimg_, pts, refpts", [
-    [create_test_img((12,10,3)), create_test_img((12,10,3)), "default", None, [(0,0),(1,0),(0,3),(4,4)], [(0,0),(1,0),(0,3),(4,4)]],
-    [create_test_img((10,10,3)), create_test_img((11,11)), "lmeds", 1, [(0,0),(1,0),(0,3),(4,4)], [(0,0),(1,0),(0,3),(4,4)]],
-    [create_test_img_bin((10,10)), create_test_img((11,11)), "rho", None, [(0,0),(1,0),(0,3),(4,4)], [(0,0),(1,0),(0,3),(4,4)]],
-    [create_test_img_bin((10,10)), create_test_img((11,11,3)), "ransac", None, [(0,0),(1,0),(0,3),(4,4)], [(0,0),(1,0),(0,3),(4,4)]],
-    [create_test_img((100, 150)), create_test_img((10, 15)), "ransac", None, [(0, 0), (149, 0), (99, 149), (0, 99), (3, 3)], [(0, 0), (0, 14), (9, 14), (0, 9), (3, 3)]]
+@pytest.mark.parametrize("img, refimg, method, refimg_, pts, refpts, debug_mode", [
+    [create_test_img((12,10,3)), create_test_img((12,10,3)), "default", None, [(0,0),(1,0),(0,3),(4,4)], [(0,0),(1,0),(0,3),(4,4)],"plot"],
+    [create_test_img((10,10,3)), create_test_img((11,11)), "lmeds", 1, [(0,0),(1,0),(0,3),(4,4)], [(0,0),(1,0),(0,3),(4,4)],"print"],
+    [create_test_img_bin((10,10)), create_test_img((11,11)), "rho", None, [(0,0),(1,0),(0,3),(4,4)], [(0,0),(1,0),(0,3),(4,4)],"print"],
+    [create_test_img_bin((10,10)), create_test_img((11,11,3)), "ransac", None, [(0,0),(1,0),(0,3),(4,4)], [(0,0),(1,0),(0,3),(4,4)],"print"],
+    [create_test_img((100, 150)), create_test_img((10, 15)), "ransac", None, [(0, 0), (149, 0), (99, 149), (0, 99), (3, 3)], [(0, 0), (0, 14), (9, 14), (0, 9), (3, 3)],"plot"]
                                                                        ])
-def test_plantcv_transform_warp(img, refimg, method, refimg_, pts , refpts):
+def test_plantcv_transform_warp(img, refimg, method, refimg_, pts , refpts, debug_mode, tmpdir):
     # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_warp")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    # cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_warp")
+    # os.mkdir(cache_dir)
+    pcv.params.debug_outdir = tmpdir
+    pcv.params.debug = debug_mode
     warped_img, mat = pcv.transform.warp(img, refimg, pts, refpts, method=method)
 
     if refimg_ is not None:
@@ -5989,16 +5990,17 @@ def test_plantcv_transform_warp(img, refimg, method, refimg_, pts , refpts):
     else:
         warped_img_ = pcv.transform.warp_align(img, mat)
         assert warped_img.shape[0:2] == refimg.shape[0:2] and warped_img_.shape[0:2] == img.shape[0:2]
+
 @pytest.mark.parametrize("img, refimg, pts, refpts, method", [
     [create_test_img_bin((5,5)), create_test_img((5,5)),[(0,0)],[(0,0),(0,1)], None],
     [create_test_img_bin((5,5)), create_test_img((5,5)),[(0,0)],[(0,0)], None],
     [create_test_img((10, 15)), create_test_img((100, 150)), [(0, 0), (0, 14), (9, 14), (0, 9), (3, 3)], [(0, 0), (149, 0), (99, 149), (0, 99), (3, 3)], "rho"]
                                                       ])
-def test_plantcv_transform_warp_err(img, refimg, pts, refpts, method):
+def test_plantcv_transform_warp_err(img, refimg, pts, refpts, method, tmpdir):
     # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_warp")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    # cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_warp")
+    # os.mkdir(cache_dir)
+    pcv.params.debug_outdir = tmpdir
     with pytest.raises(RuntimeError):
         pcv.transform.warp(img, refimg, pts, refpts, method=method)
 
