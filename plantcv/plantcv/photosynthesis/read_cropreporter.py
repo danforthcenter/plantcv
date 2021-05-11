@@ -11,12 +11,12 @@ def read_cropreporter(filename):
     """Read in, reshape, and subset a datacube of fluorescence snapshots
 
         Inputs:
-            filename        = Fluorescence .DAT filename
+            filename        = PhenoVation B.V. CropReporter .INF filename
 
         Returns:
             da               = x-array data array
             path             = path to image files
-            filename         = name of .DAT file
+            filename         = name of .INF file
 
         :param filename: str
         :return da: numpy.ndarray
@@ -24,25 +24,15 @@ def read_cropreporter(filename):
         :return filename: str
         """
 
+    # Initialize metadata dictionary
+    metadata_dict = {}
+
     # Parse .inf file and create dictionary with metadata stored within
-    with open(filename, "r") as f:
-        # Replace characters for easier parsing
-        metadata = f.read()
-        metadata = metadata.replace(",\n", ",")
-        metadata = metadata.replace("\n,", ",")
-        metadata = metadata.replace("{\n", "{")
-        metadata = metadata.replace("\n}", "}")
-        metadata = metadata.replace(" \n ", "")
-        metadata = metadata.replace(";", "")
-    metadata = metadata.split("\n")
-
-    metadata_dict = {}  # Initialize dictionary
-
-    # Loop through and create a dictionary from the .INF file
-    for i, string in enumerate(metadata):
-        if '=' in string:
-            header_data = string.split("=")
-            metadata_dict.update({header_data[0].rstrip(): header_data[1].rstrip()})
+    with open(filename, "r") as fp:
+        for line in fp:
+            if "=" in line:
+                key, value = line.rstrip("\n").split("=")
+                metadata_dict[key] = value
 
     # Store image dimension data
     x = int(metadata_dict["ImageCols"])
