@@ -20,8 +20,8 @@ def read_cropreporter(filename):
 
         :param filename: str
         :return da: numpy.ndarray
-        :return path: str
-        :return filename: str
+        :return imgpath: str
+        :return inf_filename: str
         """
 
     # Initialize metadata dictionary
@@ -48,17 +48,18 @@ def read_cropreporter(filename):
     all_indices = []
     all_frame_labels = []
 
+    # INF file prefix and path
+    inf_filename = os.path.split(filename)[-1]
+    imgpath = os.path.dirname(filename)
+    filename_components = inf_filename.split("_")
+
     # Loop over all raw bin files
     for key in frames_expected:
         # Find corresponding bin img filepath based on .INF filepath
-        inf = os.path.split(filename)[-1]
-        path = os.path.dirname(filename)
-        filename_components = inf.split("_")
         filename_components[1] = corresponding_dict[key]  # replace header with bin img type
-        s = "_"
-        bin_filenames = s.join(filename_components)
+        bin_filenames = "_".join(filename_components)
         bin_filename = bin_filenames.replace(".INF", ".DAT")
-        bin_filepath = os.path.join(path, bin_filename)
+        bin_filepath = os.path.join(imgpath, bin_filename)
 
         # Dump in bin img data
         raw_data = np.fromfile(bin_filepath, np.uint16, -1)
@@ -108,4 +109,4 @@ def read_cropreporter(filename):
     fmax = da.sel(frame_label='fmax').data
     _debug(visual=fmax, filename=os.path.join(params.debug_outdir, str(params.device) + "_fmax.png"))
 
-    return da, path, filename
+    return da, imgpath, inf_filename
