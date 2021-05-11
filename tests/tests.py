@@ -3790,8 +3790,8 @@ def test_plantcv_segment_image_series():
         obj2  = obj2_init  + rng.integers(low=-1, high=1, size=2)
         img[obj2[0]:obj2[0]+OBJ_SIZE,obj2[1]:obj2[1]+OBJ_SIZE,:] = RGB_VAL
 
-        cv.imwrite(os.path.join(cache_img_dir, f"{i}.png"), img)
-        cv.imwrite(os.path.join(cache_mask_dir, f"{i}_mask.png"),
+        cv2.imwrite(os.path.join(cache_img_dir, f"{i}.png"), img)
+        cv2.imwrite(os.path.join(cache_mask_dir, f"{i}_mask.png"),
                     255*(img!=0).astype(np.uint8), flags=cv2.IMREAD_UNCHANGE)
 
     pcv.params.debug_outdir = cache_out_dir
