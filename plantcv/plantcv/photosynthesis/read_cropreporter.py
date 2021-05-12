@@ -14,12 +14,12 @@ def read_cropreporter(filename):
         filename        = PhenoVation B.V. CropReporter .INF filename
 
     Returns:
-        da               = xarray DataArray
+        ps               = photosynthesis data in xarray DataArray format
         imgpath          = path to image files
         inf_filename     = name of .INF file
 
     :param filename: str
-    :return da: xarray.core.dataarray.DataArray
+    :return ps: xarray.core.dataarray.DataArray
     :return imgpath: str
     :return inf_filename: str
     """
@@ -103,10 +103,10 @@ def read_cropreporter(filename):
     # index_list = np.arange(np.shape(f)[2])
 
     # Create DataArray
-    da = xr.DataArray(data=f, coords={"y": y_coord, "x": x_coord, "frame_label": all_frame_labels},
+    ps = xr.DataArray(data=f, coords={"y": y_coord, "x": x_coord, "frame_label": all_frame_labels},
                       dims=["y", "x", "frame_label"])
     # Pass fmax frame to _debug function
-    fmax = da.sel(frame_label='fmax').data
+    fmax = ps.sel(frame_label='fmax').data
     _debug(visual=fmax, filename=os.path.join(params.debug_outdir, str(params.device) + "_fmax.png"))
 
-    return da, imgpath, inf_filename
+    return ps, imgpath, inf_filename
