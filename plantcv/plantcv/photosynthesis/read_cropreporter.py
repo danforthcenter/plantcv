@@ -10,19 +10,19 @@ from plantcv.plantcv._debug import _debug
 def read_cropreporter(filename):
     """Read in, reshape, and subset a datacube of fluorescence snapshots
 
-        Inputs:
-            filename        = PhenoVation B.V. CropReporter .INF filename
+    Inputs:
+        filename        = PhenoVation B.V. CropReporter .INF filename
 
-        Returns:
-            da               = x-array data array
-            path             = path to image files
-            filename         = name of .INF file
+    Returns:
+        da               = xarray DataArray
+        imgpath          = path to image files
+        inf_filename     = name of .INF file
 
-        :param filename: str
-        :return da: numpy.ndarray
-        :return imgpath: str
-        :return inf_filename: str
-        """
+    :param filename: str
+    :return da: xarray.core.dataarray.DataArray
+    :return imgpath: str
+    :return inf_filename: str
+    """
 
     # Initialize metadata dictionary
     metadata_dict = {}
@@ -100,7 +100,7 @@ def read_cropreporter(filename):
     # Make coordinates list
     x_coord = range(0, x)
     y_coord = range(0, y)
-    index_list = np.arange(np.shape(f)[2])
+    # index_list = np.arange(np.shape(f)[2])
 
     # Create DataArray
     da = xr.DataArray(data=f, coords={"y": y_coord, "x": x_coord, "frame_label": all_frame_labels},
