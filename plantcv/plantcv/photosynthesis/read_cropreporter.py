@@ -53,6 +53,9 @@ def read_cropreporter(filename):
     imgpath = os.path.dirname(filename)
     filename_components = inf_filename.split("_")
 
+    # Metadata attributes to attach to the xarray DataArray
+    attributes = {}
+
     # Loop over all raw bin files
     for key in frames_expected:
         # Find corresponding bin img filepath based on .INF filepath
@@ -76,23 +79,35 @@ def read_cropreporter(filename):
 
         # Calculate frames of interest and keep track of their labels
         if corresponding_dict[key] == "NPQ":
-            frame_sums = []
-            for i in range(img_cube.shape[2]):
-                frame_sums.append(np.sum(img_cube[:, :, i]))
-            f_min = np.argmin(frame_sums)
-            frame_labels = ["other"] * (np.shape(img_cube)[2])
-            frame_labels[f_min] = "Fp"
-            frame_labels[np.argmax(frame_sums)] = "Fmp"
+            frame_labels = ["NPQ-Fdark", "NPQ-F0", "NPQ-Fm", "NPQ-Fdark'", "NPQ-F0'", "NPQ-Fm'"]
         elif corresponding_dict[key] == "PSD":
-            frame_labels = ["other"] * (np.shape(img_cube)[2])
-            frame_labels[0] = "fdark"
-            frame_labels[1] = "fmin"
+            frame_labels = ["Fdark", "F0"]
+            for i in range(2, np.shape(img_cube)[2]):
+                frame_labels.append(f"F{i - 1}")
+            # Find the brightest frame and set it to Fmax (Fm)
             frame_sums = []
             for i in range(img_cube.shape[2]):
                 frame_sums.append(np.sum(img_cube[:, :, i]))
-            frame_labels[np.argmax(frame_sums)] = "fmax"
+            attributes["Fm"] = frame_labels[np.argmax(frame_sums)]
+            attributes["F-frames"] = img_cube.shape[2] - 1
+        elif corresponding_dict[key] == "PSL":
+            frame_labels = ["Fdark'", "F0'"]
+            for i in range(2, np.shape(img_cube)[2]):
+                frame_labels.append(f"F{i - 1}'")
+            # Find the brightest frame and set it to Fmax (Fm')
+            frame_sums = []
+            for i in range(img_cube.shape[2]):
+                frame_sums.append(np.sum(img_cube[:, :, i]))
+            attributes["Fm'"] = frame_labels[np.argmax(frame_sums)]
+            attributes["F'-frames"] = img_cube.shape[2] - 1
+        elif corresponding_dict[key] == "CLR":
+            frame_labels = ["Red", "Green", "Blue"]
+        elif corresponding_dict[key] == "CHL":
+            frame_labels = ["Chl", "Chl-NIR"]
+        elif corresponding_dict[key] == "SPC":
+            frame_labels = ["Anth", "Far-red", "Anth-NIR"]
         else:
-            frame_labels = ["other"] * (np.shape(img_cube)[2])
+            frame_labels = [key + "other"] * (np.shape(img_cube)[2])
         all_frame_labels = all_frame_labels + frame_labels
 
     # Stack all the frames
@@ -104,9 +119,9 @@ def read_cropreporter(filename):
 
     # Create DataArray
     ps = xr.DataArray(data=f, coords={"y": y_coord, "x": x_coord, "frame_label": all_frame_labels},
-                      dims=["y", "x", "frame_label"])
+                      dims=["y", "x", "frame_label"], attrs=attributes)
     # Pass fmax frame to _debug function
-    fmax = ps.sel(frame_label='fmax').data
+    fmax = ps.sel(frame_label=ps.attrs["Fm"]).data
     _debug(visual=fmax, filename=os.path.join(params.debug_outdir, str(params.device) + "_fmax.png"))
 
     return ps, imgpath, inf_filename
