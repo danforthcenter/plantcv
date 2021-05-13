@@ -4936,7 +4936,7 @@ def test_plantcv_photosynthesis_read_cropreporter():
     pcv.params.debug = None
     fluor_filename = os.path.join(FLUOR_TEST_DATA, FLUOR_IMG_INF)
     da, imgpath, filename = pcv.photosynthesis.read_cropreporter(filename=fluor_filename)
-    assert np.sum(da.sel(frame_label='fmax').data) > np.sum(da.sel(frame_label='fmin').data)
+    assert da.shape == (966, 1296, 21)
 
 
 def test_plantcv_photosynthesis_analyze_fvfm():
