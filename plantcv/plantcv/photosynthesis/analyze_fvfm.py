@@ -28,8 +28,6 @@ def analyze_fvfm(ps, mask, bins=256, label="default"):
     :return analysis_images: numpy.ndarray
     """
 
-    # Auto-increment the device counter
-    params.device += 1
     #  Extract frames of interest
     fdark = ps.sel(frame_label='fdark').data
     fmax = ps.sel(frame_label='fmax').data
