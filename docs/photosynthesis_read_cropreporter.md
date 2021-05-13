@@ -1,20 +1,20 @@
 ## Read CropReporter Fluorescence Image Files
 
-Reads .DAT image data into numpy ndarray and reshapes the frames into a datacube before identifying and extracting `fdark`, `fmin`, and `fmax` as separate numpy ndarrays. 
+Reads .INF/.DAT image data into an xarray DataArray with labeled frames. 
 
 **plantcv.photosynthesis.read_cropreporter**(*filename*)
 
-**returns** data_array, path, filename
+**returns** ps, imgpath, inf_filename
 
 - **Parameters:**
-    - filename - image file to be read (possibly including a path)
+    - filename - INF metadata file to be read (possibly including a path). DAT files are automatically detected.
     
 - **Context:**
     - Reads in binary image files to be processed and does so using the metadata contained within a corresponding .INF file.
 - **Notes:**
     - This function assumes a specific pattern between .INF metadata file and their corresponding .DAT binary image filenames. 
-    We assume that for every image file `xx_PSD_xxx.DAT` there will be a corresponding metadata file with the same path
-    named `xx_HDR_xxx.INF`. Some crop reporter imaging protocols will results in multiple binary image .DAT files per .INF metadata file.  
+    We assume that for every metadata file `xx_HDR_xxx.INF` there will be a corresponding image files with the same path
+    named `xx_XXX_xxx.DAT` where XXX is the analysis protocol (e.g. PSD, PSL, etc.). Some crop reporter imaging protocols will results in multiple binary image .DAT files per .INF metadata file.  
 - **Example use:**
     - [Use In PSII Tutorial](psII_tutorial.md) 
 
@@ -27,8 +27,8 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 #read in image
-da, path, filename = pcv.photosynthesis.read_cropreporter(filename="PSII_HDR_20200826_22_rep6.INF")
+ps, imgpath, filename = pcv.photosynthesis.read_cropreporter(filename="PSII_HDR_20200826_22_rep6.INF")
 
 ```
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/photosynthesis/read_dat.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/photosynthesis/read_cropreporter.py)
