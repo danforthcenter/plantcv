@@ -79,6 +79,7 @@ def read_cropreporter(filename):
         param_labels = param_labels + param_label
 
         # Calculate frames of interest and keep track of their labels
+        frame_labels = []
         if corresponding_dict[key] == "NPQ":
             frame_labels = ["NPQ-Fdark", "NPQ-F0", "NPQ-Fm", "NPQ-Fdark'", "NPQ-F0'", "NPQ-Fm'"]
             # Debug image NPQ-Fm
@@ -117,8 +118,6 @@ def read_cropreporter(filename):
             frame_labels = ["Anth", "Far-red", "Anth-NIR"]
             _debug(visual=img_cube[:, :, 0],
                    filename=os.path.join(params.debug_outdir, f"{str(params.device)}_SPC-Anth.png"))
-        else:
-            frame_labels = [key + "other"] * (np.shape(img_cube)[2])
         all_frame_labels = all_frame_labels + frame_labels
 
     # Stack all the frames
