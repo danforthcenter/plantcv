@@ -10,17 +10,18 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def analyze_fvfm(data, mask, bins=256, label="default"):
+def analyze_fvfm(ps, mask, bins=256, label="default"):
     """Calculate and analyze Fv/Fm from fluorescence image data.
     Inputs:
-    data        = xarray of binary image data
+    ps          = photosynthesis xarray DataArray
     mask        = mask of plant (binary, single channel)
     bins        = number of bins (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
     label       = optional label parameter, modifies the variable name of observations recorded
 
     Returns:
     analysis_images = list of images (fv image and fvfm histogram image)
-    :param data: xarray.core.dataarray.DataArray
+
+    :param ps: xarray.core.dataarray.DataArray
     :param mask: numpy.ndarray
     :param bins: int
     :param label: str
@@ -30,9 +31,9 @@ def analyze_fvfm(data, mask, bins=256, label="default"):
     # Auto-increment the device counter
     params.device += 1
     #  Extract frames of interest
-    fdark = data.sel(frame_label='fdark').data
-    fmax = data.sel(frame_label='fmax').data
-    fmin = data.sel(frame_label='fmin').data
+    fdark = ps.sel(frame_label='fdark').data
+    fmax = ps.sel(frame_label='fmax').data
+    fmin = ps.sel(frame_label='fmin').data
     mask_int = mask.astype(np.uint8)
 
     # QC Fdark Image
