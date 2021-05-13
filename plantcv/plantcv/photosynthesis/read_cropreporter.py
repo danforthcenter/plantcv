@@ -3,6 +3,7 @@
 import os
 import numpy as np
 import xarray as xr
+from plantcv.plantcv.transform import rescale
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 
@@ -80,32 +81,42 @@ def read_cropreporter(filename):
         # Calculate frames of interest and keep track of their labels
         if corresponding_dict[key] == "NPQ":
             frame_labels = ["NPQ-Fdark", "NPQ-F0", "NPQ-Fm", "NPQ-Fdark'", "NPQ-F0'", "NPQ-Fm'"]
+            # Debug image NPQ-Fm
+            _debug(visual=img_cube[:, :, 2],
+                   filename=os.path.join(params.debug_outdir,  f"{str(params.device)}_NPQ-Fm.png"))
         elif corresponding_dict[key] == "PSD":
             frame_labels = ["Fdark", "F0"]
             for i in range(2, np.shape(img_cube)[2]):
                 frame_labels.append(f"F{i - 1}")
-            # Find the brightest frame and set it to Fmax (Fm)
-            frame_sums = []
-            for i in range(img_cube.shape[2]):
-                frame_sums.append(np.sum(img_cube[:, :, i]))
-            attributes["Fm"] = frame_labels[np.argmax(frame_sums)]
             attributes["F-frames"] = img_cube.shape[2] - 1
+            _debug(visual=img_cube[:, :, -1],
+                   filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSD-{frame_labels[-1]}.png"))
         elif corresponding_dict[key] == "PSL":
             frame_labels = ["Fdark'", "F0'"]
             for i in range(2, np.shape(img_cube)[2]):
                 frame_labels.append(f"F{i - 1}'")
-            # Find the brightest frame and set it to Fmax (Fm')
-            frame_sums = []
-            for i in range(img_cube.shape[2]):
-                frame_sums.append(np.sum(img_cube[:, :, i]))
-            attributes["Fm'"] = frame_labels[np.argmax(frame_sums)]
             attributes["F'-frames"] = img_cube.shape[2] - 1
+            _debug(visual=img_cube[:, :, -1],
+                   filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSL-{frame_labels[-1]}.png"))
         elif corresponding_dict[key] == "CLR":
             frame_labels = ["Red", "Green", "Blue"]
+            debug = params.debug
+            params.debug = None
+            red = rescale(gray_img=img_cube[:, :, 0])
+            green = rescale(gray_img=img_cube[:, :, 1])
+            blue = rescale(gray_img=img_cube[:, :, 2])
+            rgb_img = np.dstack([blue, green, red])
+            params.debug = debug
+            _debug(visual=rgb_img,
+                   filename=os.path.join(params.debug_outdir, f"{str(params.device)}_CLR-RGB.png"))
         elif corresponding_dict[key] == "CHL":
             frame_labels = ["Chl", "Chl-NIR"]
+            _debug(visual=img_cube[:, :, 1],
+                   filename=os.path.join(params.debug_outdir, f"{str(params.device)}_CHL-NIR.png"))
         elif corresponding_dict[key] == "SPC":
             frame_labels = ["Anth", "Far-red", "Anth-NIR"]
+            _debug(visual=img_cube[:, :, 0],
+                   filename=os.path.join(params.debug_outdir, f"{str(params.device)}_SPC-Anth.png"))
         else:
             frame_labels = [key + "other"] * (np.shape(img_cube)[2])
         all_frame_labels = all_frame_labels + frame_labels
@@ -120,8 +131,5 @@ def read_cropreporter(filename):
     # Create DataArray
     ps = xr.DataArray(data=f, coords={"y": y_coord, "x": x_coord, "frame_label": all_frame_labels},
                       dims=["y", "x", "frame_label"], attrs=attributes)
-    # Pass fmax frame to _debug function
-    fmax = ps.sel(frame_label=ps.attrs["Fm"]).data
-    _debug(visual=fmax, filename=os.path.join(params.debug_outdir, str(params.device) + "_fmax.png"))
 
     return ps, imgpath, inf_filename
