@@ -30,9 +30,8 @@ def analyze_npq(ps, mask, bins=256, label="default"):
     """
 
     # Extract frames of interest
-    fmp = ps.sel(frame_label='Fmp').data
-    fm = ps.sel(frame_label='Fm').data
-    mask = mask.astype(np.uint8)
+    fmp = ps.sel(frame_label=ps.attrs("Fm'")).data
+    fm = ps.sel(frame_label=ps.attrs("Fm")).data
 
     # QC Fdark Image
     fdark_mask = cv2.bitwise_and(fmp, fmp, mask=mask)
