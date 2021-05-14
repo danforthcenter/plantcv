@@ -537,7 +537,13 @@ pages for more details on the input and output variable types.
 * pre v3.10: see plantcv.fluor_fvfm
 * post v3.10: analysis_images = **plantcv.photosynthesis.analyze_fvfm**(*fdark, fmin, fmax, mask, bins=256*)
 * post v3.11: analysis_images = **plantcv.photosynthesis.analyze_fvfm**(*fdark, fmin, fmax, mask, bins=256, label="default"*)
-* post v4.0: ind_fig, fvfm_hist_fig, analysis_images = **plantcv.photosynthesis.analyze_fvfm**(*ps, mask, bins=256, measurement="both", label="default"*)
+* post v4.0: Deprecated, see:
+  * ind_fig, fvfm_hist_fig, analysis_images = **plantcv.photosynthesis.analyze_yii**(*ps, mask, bins=256, measurement="both", label="default"*)
+
+#### plantcv.photosynthesis.analyze_yii
+
+* pre v4.0: NA
+* post v4.0: ind_fig, fvfm_hist_fig, analysis_images = **plantcv.photosynthesis.analyze_fvfm**(*ps, mask, measurement, bins=256, label="default"*)
 
 #### plantcv.photosynthesis.analyze_npq
 
