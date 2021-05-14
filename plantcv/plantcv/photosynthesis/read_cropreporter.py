@@ -97,6 +97,7 @@ def read_cropreporter(filename):
             for i in range(2, np.shape(img_cube)[2]):
                 frame_labels.append(f"F{i - 1}'")
             attributes["F'-frames"] = img_cube.shape[2] - 1
+            attributes["F'"] = "F0'"
             _debug(visual=img_cube[:, :, -1],
                    filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSL-{frame_labels[-1]}.png"))
         elif corresponding_dict[key] == "CLR":
