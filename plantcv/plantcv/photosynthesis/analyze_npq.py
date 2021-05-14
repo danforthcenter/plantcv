@@ -44,15 +44,19 @@ def analyze_npq(ps, mask, bins=256, label="default"):
     fm_masked = fm_masked.astype(np.float64)
 
     # Calculate NQP (Fm / Fm') - 1
-    npq = np.divide(fm_masked, fmp_masked)
-    npq[np.where(fmp_masked == 0)] = 0
+    npq = np.copy(fm_masked)
+    # Divide Fm by Fm' where Fm' > 0
+    npq[np.where(fmp_masked > 0)] /= fmp_masked[np.where(fmp_masked > 0)]
+    # Subtract 1
     npq -= 1
+    # Set NPQ = 0 where NPQ < 0
+    npq[np.where(npq < 0)] = 0
 
     # Calculate the median Fv/Fm value for non-zero pixels
     npq_median = np.median(npq[np.where(npq > 0)])
 
     # Calculate the histogram of NPQ non-zero values
-    npq_hist, npq_bins = np.histogram(npq[np.where(npq > 0)], bins, range=(0, 1))
+    npq_hist, npq_bins = np.histogram(npq[np.where(npq > 0)], bins, range=(0, 2))
     # npq_bins is a bins + 1 length list of bin endpoints, so we need to calculate bin midpoints so that
     # the we have a one-to-one list of x (NPQ) and y (frequency) values.
     # To do this we add half the bin width to each lower bin edge x-value
