@@ -29,8 +29,6 @@ def analyze_npq(ps, mask, bins=256, label="default"):
     :return npq_hist_fig: plotnine.ggplot.ggplot
     """
 
-    # Auto-increment the device counter
-    params.device += 1
     # Extract frames of interest
     fmp = ps.sel(frame_label='Fmp').data
     fm = ps.sel(frame_label='Fm').data
