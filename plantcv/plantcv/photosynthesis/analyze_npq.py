@@ -33,13 +33,6 @@ def analyze_npq(ps, mask, bins=256, label="default"):
     fmp = ps.sel(frame_label=ps.attrs("Fm'")).data
     fm = ps.sel(frame_label=ps.attrs("Fm")).data
 
-    # QC Fdark Image
-    fdark_mask = cv2.bitwise_and(fmp, fmp, mask=mask)
-    if np.amax(fdark_mask) > 2000:
-        qc_fdark = False
-    else:
-        qc_fdark = True
-
     # Mask Fmin and Fmax Image
     fmp_mask = cv2.bitwise_and(fmp, fmp, mask=mask)
     fm_mask = cv2.bitwise_and(fm, fm, mask=mask)
