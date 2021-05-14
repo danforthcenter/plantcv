@@ -44,7 +44,9 @@ def analyze_npq(ps, mask, bins=256, label="default"):
     fm_masked = fm_masked.astype(np.float64)
 
     # Calculate NQP (Fm / Fm') - 1
-    npq = np.divide(fm_masked[np.where(fmp_masked > 0)], fmp_masked[np.where(fmp_masked > 0)]) - 1
+    npq = np.divide(fm_masked, fmp_masked)
+    npq[np.where(fmp_masked == 0)] = 0
+    npq -= 1
 
     # Calculate the median Fv/Fm value for non-zero pixels
     npq_median = np.median(npq[np.where(npq > 0)])
@@ -67,7 +69,6 @@ def analyze_npq(ps, mask, bins=256, label="default"):
                      + geom_label(label='Peak Bin Value: ' + str(max_bin),
                                   x=.15, y=205, size=8, color='green'))
 
-    _debug(visual=npq, filename=os.path.join(params.debug_outdir, str(params.device) + "_NPQ.png"))
     _debug(visual=npq_hist_fig, filename=os.path.join(params.debug_outdir, str(params.device) + "_NPQ_histogram.png"))
 
     outputs.add_observation(sample=label, variable='npq_hist', trait='NPQ frequencies',
