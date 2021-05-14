@@ -4940,34 +4940,35 @@ def test_plantcv_photosynthesis_read_cropreporter():
     assert da.shape == (966, 1296, 21)
 
 
-def test_plantcv_photosynthesis_analyze_fvfm():
+def test_plantcv_photosynthesis_analyze_yii():
     # Test with debug = None
     pcv.params.debug = None
     # Read in test data
     fmask = cv2.imread(os.path.join(FLUOR_TEST_DATA, FLUOR_FMASK_SV), -1)
     fluor_filename = os.path.join(FLUOR_TEST_DATA, FLUOR_IMG_INF)
     da, path, filename = pcv.photosynthesis.read_cropreporter(filename=fluor_filename)
-    _ = pcv.photosynthesis.analyze_fvfm(ps=da, mask=fmask, bins=100, measurement="dark", label="default")
+    _ = pcv.photosynthesis.analyze_yii(ps=da, mask=fmask, bins=100, measurement="Fv/Fm", label="default")
     fvfm_med = pcv.outputs.observations["default"]["fvfm_median"]["value"]
     pcv.outputs.clear()
     assert fvfm_med == 0.7682
 
 
-def test_plantcv_photosynthesis_analyze_fvfm_full_dataset():
+def test_plantcv_photosynthesis_analyze_yii_full_dataset():
     # Test with debug = None
     pcv.params.debug = None
     # Read in test data
     fmask = cv2.imread(os.path.join(FLUOR_TEST_DATA, FLUOR_FMASK_TV), -1)
     fluor_filename = os.path.join(FLUOR_TEST_DATA, FLUOR_NPQ_IMG_INF)
     da, path, filename = pcv.photosynthesis.read_cropreporter(filename=fluor_filename)
-    _ = pcv.photosynthesis.analyze_fvfm(ps=da, mask=fmask, bins=100, measurement="both", label="default")
-    fvfm_med = pcv.outputs.observations["default"]["fvfm_median"]["value"]
+    _ = pcv.photosynthesis.analyze_yii(ps=da, mask=fmask, bins=100, measurement="Fq'/Fm'", label="default")
+    fvfm_med = pcv.outputs.observations["default"]["fqpfmp_median"]["value"]
     pcv.outputs.clear()
-    assert fvfm_med == 0.6317
+    assert fvfm_med == 0.507
 
 
-# def test_plantcv_photosynthesis_analyze_fvfm_print_analysis_results():
-#     # Test cache directory
+# def test_plantcv_photosynthesis_analyze_fvfm_bad_fdark():
+#     # Clear previous outputs
+#     pcv.outputs.clear()
 #     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_fvfm")
 #     os.mkdir(cache_dir)
 #     pcv.params.debug_outdir = cache_dir
@@ -4976,40 +4977,15 @@ def test_plantcv_photosynthesis_analyze_fvfm_full_dataset():
 #     fmin = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
 #     fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
 #     fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
-#     fdark_qc = [x for x in fdark.astype(np.uint8)]
+#     fdark[0, 0] = 3000
 #     # Create DataArray
-#     da = xr.DataArray(data=np.dstack([fdark_qc, fmin, fmax]),
+#     da = xr.DataArray(data=np.dstack([fdark, fmin, fmax]),
 #                       coords={"y": range(0, np.shape(fdark)[0]), "x": range(0, np.shape(fdark)[1]),
-#                               "frame_label": ["fdark", "fmin", "fmax"]},
-#                       dims=["y", "x", "frame_label"])
+#                               "frame_label": ["Fdark", "F0", "F1"]},
+#                       dims=["y", "x", "frame_label"], attrs={"F-frames": 2})
 #
-#     _ = pcv.photosynthesis.analyze_fvfm(data=da, mask=fmask, bins=1000)
-#     result_file = os.path.join(cache_dir, "results.txt")
-#     pcv.print_results(result_file)
-#     pcv.outputs.clear()
-#     assert os.path.exists(result_file)
-
-
-def test_plantcv_photosynthesis_analyze_fvfm_bad_fdark():
-    # Clear previous outputs
-    pcv.outputs.clear()
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_fvfm")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    # Read in test data
-    fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK), -1)
-    fmin = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
-    fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
-    fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
-    fdark[0, 0] = 3000
-    # Create DataArray
-    da = xr.DataArray(data=np.dstack([fdark, fmin, fmax]),
-                      coords={"y": range(0, np.shape(fdark)[0]), "x": range(0, np.shape(fdark)[1]),
-                              "frame_label": ["Fdark", "F0", "F1"]},
-                      dims=["y", "x", "frame_label"], attrs={"F-frames": 2})
-
-    _ = pcv.photosynthesis.analyze_fvfm(ps=da, mask=fmask, bins=100, measurement="dark")
-    assert (pcv.outputs.observations['default']['fdark_passed_qc']['value'] == False)
+#     _ = pcv.photosynthesis.analyze_fvfm(ps=da, mask=fmask, bins=100, measurement="dark")
+#     assert (pcv.outputs.observations['default']['fdark_passed_qc']['value'] == False)
 
 
 def test_plantcv_photosynthesis_analyze_npq():
