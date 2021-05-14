@@ -548,7 +548,7 @@ pages for more details on the input and output variable types.
 #### plantcv.photosynthesis.analyze_npq
 
 * pre v4.0: NA
-* post v4.0: analysis_images = **plantcv.photosynthesis.analyze_npq**(*data, mask, bins=256*)
+* post v4.0: npq_hist_fig, npq = **plantcv.photosynthesis.analyze_npq**(*ps, mask, bins=256, label="default"*)
 
 #### plantcv.photosynthesis.read_cropreporter
 
