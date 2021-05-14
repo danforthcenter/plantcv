@@ -1,18 +1,28 @@
-## Tutorial: PSII Image Workflow
+## Tutorial: Photosystem II Analysis Workflow
 
 PlantCV is composed of modular functions that can be arranged (or rearranged) and adjusted quickly and easily.
 Workflows do not need to be linear (and often are not). Please see workflow example below for more details.
 A global variable "debug" allows the user to print out the resulting image.
 The debug has three modes: either None, 'plot', or 'print'. If set to
-'print' then the function prints the image out, or if using a [Jupyter](jupyter.md) notebook you could set debug to 'plot' to have
-the images plot to the screen.
-This allows users to visualize and optimize each step on individual test images and small test sets before workflows are deployed over whole datasets.
+'print' then the function prints the image out, or if using a [Jupyter](jupyter.md) notebook you could set debug to 
+'plot' to have the images plot to the screen.
+This allows users to visualize and optimize each step on individual test images and small test sets before workflows 
+are deployed over whole datasets.
 
-PSII images (3 in a set; Fdark, Fmin (F0), and Fmax) are captured directly following a saturating fluorescence pulse
-(red light; 630 nm). These three PSII images can be used to calculate Fv/Fm (efficiency of photosystem II)
-for each pixel of the plant. A workflow to analyze PSII images is outlined below.  
+Measurement of chlorophyll fluorescence is a tool that can be used to monitor/estimate photosynthetic performance 
+(Baker 2008). Several systems exist that use imaging to detect chlorophyll fluorescence and support multiple measurement
+protocols. PlantCV currently supports data from the [PhenoVation CropReporter](https://phenovation.com/) system, which
+has measurement protocols for Fv/Fm, Fv'/Fm', Fq'/Fm', NPQ, among others. In PlantCV, CropReporter data (and later 
+other data sources) are imported into PlantCV as an [Xarray](http://xarray.pydata.org/en/stable/) DataArray with frame 
+labels and attributes that enable quick access to the frames needed to measure each parameter. A workflow to analyze 
+PSII images is outlined below.  
 
 Also see [here](#psii-script) for the complete script.
+
+### Citations
+
+Baker NR. 2008. Chlorophyll fluorescence: A probe of photosynthesis in vivo. *Annual Review of Plant Biology* 59:89–113. 
+DOI: [10.1146/annurev.arplant.59.032607.092759](https://doi.org/10.1146/annurev.arplant.59.032607.092759).
 
 ### Workflow
 
@@ -23,19 +33,21 @@ Also see [here](#psii-script) for the complete script.
 
 ### Running A Workflow
 
-To run a PSII workflow over a single PSII image set (3 images) there are 4 required inputs:
+The example workflow below utilizes a CropReporter dataset that utilized the Fv/Fm, Fq'/Fm', and NPQ measurement 
+protocols, but workflows could also be designed to analyze data with fewer protocols enabled.
 
-1.  **Image 1:** Fdark/null image.
-2.  **Image 2:** Fmin image.
-3.  **Image 3:** Fmax image.
-5.  **Output directory:** If debug mode is set to 'print' output images from each step are produced.
+To run this workflow over a single dataset there are 2 required inputs:
 
-This tutorial shows an example workflow for fluorescence images taken with the [CropReporter system](https://www.phenovation.com/cropreporter/).
-CropReporter images are stored in .DAT files where multiple frames are stored into a single file. Users with different data formats can still
-analyze fluorescence images by reading in individual images for each. Image sets that don't have an `fdark` frame can create a null image of the same size with `np.zeros`.
+1.  **Metadata File:** PSII_HDR.INF (also requires a PSII_PSD.DAT and PSII_PSL.DAT to be stored at the same location)
+2.  **Output directory:** Location where output images (if any) will be saved
+
+This tutorial shows an example workflow for fluorescence images taken with the 
+[CropReporter system](https://www.phenovation.com/cropreporter/). CropReporter images are stored in a metadata (.INF) 
+file and .DAT files where multiple frames are stored into a single file. 
 
 Optional Inputs:
 
+*  **Writeimg Flag:** Enables saving output images, where applicable
 *  **Debug Flag:** Prints or plots (if in Jupyter or have x11 forwarding on) an image at each step
 
 Sample command to run a workflow on a single PSII image set:  
@@ -43,7 +55,7 @@ Sample command to run a workflow on a single PSII image set:
 * Always test workflows (preferably with -D flag for debug mode) before running over a full image set.
 
 ```
-./workflowname.py -i /home/user/images/PSII_PSD_testimg_22_rep6.DAT -o /home/user/output-images -D 'print'
+./workflowname.py -i PSII_HDR_020321_WT_TOP_1.INF -o /home/user/output-images -D 'print'
 
 ```
 
@@ -53,21 +65,24 @@ Workflows start by importing necessary packages, and by defining user inputs.
 
 ```python
 #!/usr/bin/env python
+import os
 import argparse
 from plantcv import plantcv as pcv
 
 ### Parse command-line arguments
 def options():
     parser = argparse.ArgumentParser(description="Imaging processing with opencv")
-    parser.add_argument("-i", "--image", help="Input image file.", required=True)
+    parser.add_argument("-i", "--image", help="Input INF file.", required=True)
     parser.add_argument("-o", "--outdir", help="Output directory for image files.", required=True)
+    parser.add_argument("-w", "--writeimg", help="Save output images.", action="store_true")
     parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.", action="store_true")
     args = parser.parse_args()
     return args
 
 ```
 
-All required frames are contained within a single `.DAT` file. See the documentation page for [`plantcv.photosynthesis.read_cropreporter()`](photosynthesis_read_cropreporter.md) to see more detail on
+All required frames are contained within the `.DAT` files. See the documentation page for 
+[`plantcv.photosynthesis.read_cropreporter()`](photosynthesis_read_cropreporter.md) to see more detail on
 how this type of data is read in.
 
 ```python
@@ -80,177 +95,221 @@ def main():
     pcv.params.debug_outdir = args.outdir #set output directory
 
     # Read fluorescence image data
-    fdark1, fmin1, fmax1 = pcv.photosynthesis.read_cropreporter(args.image)
+    ps, pspath, inf_filename = pcv.photosynthesis.read_cropreporter(args.image)
 
 ```
 
-**Figure 1.** `Fdark` frame
+**Figure 1.** CropReporter images
 
-![Screenshot](img/tutorial_images/psII/fdark2.png)
+![Screenshot](img/tutorial_images/psII/cropreporter_images.png)
 
-**Figure 2.** `Fmin` frame
+From top-left to bottom-right: F-dark (lights off), F0 (minimum fluorescence of dark-adapted plant), Fm 
+(maximum fluorescence of dark-adapted plant), F-light (lights on), F' (steady-state fluorescence of light-adapted 
+plant), and Fm' (maximum fluorescence of light-adapted plant).
 
-![Screenshot](img/tutorial_images/psII/fmin2.png)
+The `ps` object is an Xarray DataArray that contains 21 images for the Fv/Fm and 21 images for the Fq'/Fm' protocols.
+Individual frames can be accessed through frame labels. Frames that have specific importance in estimating 
+photosynthetic parameters are labeled with attributes.
 
-**Figure 3.** `Fmax` frame. This will be used to create a plant mask that will isolate the plant material in the image.
-
-![Screenshot](img/tutorial_images/psII/fmax2.png)
+CropReporter data are 16-bit images. We first identify the F0 (minimum fluorescence) frame and rescale it to 8-bit
+so that we can generate a binary mask.
 
 ```python
-    # Rotate each frame so that plant is upright
-
-    # Inputs:
-    #   img             - Image data
-    #   rotation_deg    - Rotation angle in degrees, can be a negative number, positive values move counter clockwise
-    #   crop            - If crop is set to True, image will be cropped to original image dimensions. If set to False, the image size will be adjusted to accommodate new image dimensions.
-    fdark = pcv.transform.rotate(img=fdark1, rotation_deg=-90, crop=False)
-    fmin = pcv.transform.rotate(img=fmin1, rotation_deg=-90, crop=False)
-    fmax = pcv.transform.rotate(img=fmax1, rotation_deg=-90, crop=False)
-
+    fmin = pcv.transform.rescale(gray_img=ps.sel(frame_label="F0").data)
 
 ```
 
-**Figure 4.** Rotated `fmax` frame  
+**Figure 2.** 8-bit F0 image
 
-![Screenshot](img/tutorial_images/psII/fmax_rescaled2.png)
+![Screenshot](img/tutorial_images/psII/f0_img.png)
 
-The resulting image is then thresholded with a [binary threshold](binary_threshold.md) to capture the plant material. In most cases, it is expected that pixel values
-range between 0 and 255, but our example image has pixel values from 0 to over 7000. Trial and error is a common method for selecting an appropriate threshold value.
-In different imaging scenarios it may be easier to segment the Fmin image or the Fmax image. Fmax will have a higher dynamic range to more easily pick a precise threshold value but Fmin may have less errant signal (e.g., if a leaf moved during imaging).
+The resulting image is then thresholded to segment the image into foreground (plant) and background with the 
+autothreshold method [Otsu](otsu_threshold.md). In different imaging scenarios it may be easier to segment a brighter
+image from the fluorescence induction series (e.g. F1, F2, ..., Fn). When fluorescence is brighter the image will have
+a higher dynamic range to more easily threshold the whole plant, but Fmin may have less errant signal 
+(e.g., if a leaf moved during imaging).
 
 ```python
-    # Threshold the `fmin` image
+    # Threshold the F0 image
 
     # Inputs:
     #   gray_img        - Grayscale image data
-    #   threshold       - Threshold value (usually between 0-255)
     #   max_value       - Value to apply above threshold (255 = white)
     #   object_type     - 'light' (default) or 'dark'. If the object is lighter than the
     #                       background then standard threshold is done. If the object is
     #                       darker than the background then inverse thresholding is done.
-    plant_mask = pcv.threshold.binary(gray_img=fmin, threshold=855, max_value=255, object_type="light")
+    plant_mask = pcv.threshold.otsu(gray_img=fmin, max_value=255, object_type="light")
 
 ```
 
-**Figure 5.** Binary threshold on masked Fmin image.
+**Figure 3.** Thresholded F0 image.
 
-![Screenshot](img/tutorial_images/psII/plant_mask2.png)
+![Screenshot](img/tutorial_images/psII/f0_otsu_mask.png)
 
-Noise is reduced with the [fill](fill.md) function.
+Fill in missing areas of the plant with the [fill_holes](fill_holes.md) function.
 
 ```python
     # Fill small objects
 
     # Inputs:
     #   bin_img         - Binary image data
-    #   size            - Minimum object area size in pixels (integer), smaller objects get filled in.
-    cleaned_mask = pcv.fill(bin_img=plant_mask, size=20)
+    cleaned_mask = pcv.fill_holes(bin_img=plant_mask)
 
 ```
 
-**Figure 6.** Fill applied.  
+**Figure 4.** Fill holes applied.  
 
-![Screenshot](img/tutorial_images/psII/filled_plant_mask2.png)
+![Screenshot](img/tutorial_images/psII/f0_fill_holes_mask.png)
 
-Objects (OpenCV refers to them as contours) are then identified within the image using
-the [find objects](find_objects.md) function.
+In this experiment, the plant was dark-adapted. An image is taken of the plant in the dark (Fdark). The plant is then
+exposed to a saturating red light pulse briefly. An image of chlorophyll fluorescence is taken immediately after the
+pulse to measure minimal fluorescence (F0). Successive images are taken at a fixed time interval (20 total frames from
+F0 to F19 in this example). Here we will use the [analyze_yii](photosynthesis_analyze_yii.md) to analyze the
+fluorescence induction curve and identify the frame with maximal fluorescence (Fm) and then calculate the metric Fv/Fm
+to estimate the maximum efficiency of PSII.
 
 ```python
-    # Identify objects
+    # Analyze Fv/Fm
 
     # Inputs:
-    #   img             - RGB or grayscale image data for plotting
-    #   mask            - Binary mask used for detecting contours
-    id_objects ,obj_hierarchy = pcv.find_objects(img=fmin, mask=cleaned_mask)
+    #   ps          - photosynthesis xarray DataArray
+    #   mask        - mask of plant (binary, single channel)
+    #   measurement - choose which measurement routine to analyze: "Fv/Fm", "Fv'/Fm'", or "Fq'/Fm'"
+    #   bins        - number of bins (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
+    #   label       - optional label parameter, modifies the variable name of observations recorded
+
+    fvfm_ind, fvfm_hist, fvfm_img = pcv.photosynthesis.analyze_yii(ps=ps, mask=cleaned_mask, measurement="Fv/Fm", 
+                                                                   bins=256, label="default")
 
 ```
 
-**Figure 7.** All objects found within the image are identified.
+**Figure 5.** Dark-adapted fluorescence induction curve.  
 
-![Screenshot](img/tutorial_images/psII/id_obj2.png)
+![Screenshot](img/documentation_images/fluor_fvfm/dark_fluor_induction.png)
 
-The isolated objects now should all be plant material. There can be more than one object that makes up a plant,
-since sometimes leaves twist making them appear in images as separate objects. Therefore, in order for shape
-analysis to perform properly the plant objects need to be combined into one object using the [combine objects](object_composition.md) function.
+**Figure 6.** Fv/Fm histogram.  
+
+![Screenshot](img/documentation_images/fluor_fvfm/fvfm_histogram.png)
+
+After the Fv/Fm protocol, the plant is light-adapted. An image is taken of the plant in the light (Flight). The plant
+is then exposed to an actinic light, and an image of chlorophyll fluorescence is taken to measure steady-state
+fluorescence (F'). The plant is then exposed to a saturating red light pulse briefly. Successive images are taken at a 
+fixed time interval (20 total frames from F0 to F19 in this example). Here we will use the 
+[analyze_yii](photosynthesis_analyze_yii.md) to analyze the light-adapted fluorescence induction curve and identify the 
+frame with maximal fluorescence (Fm') and then calculate the metric Fq'/Fm' to estimate the operating efficiency of 
+PSII.
 
 ```python
-    # Object combine kept objects
+    # Analyze Fq'/Fm'
 
     # Inputs:
-    #   img - RGB or grayscale image data for plotting
-    #   contours        - Contour list
-    #   hierarchy       - Contour hierarchy array
-    obj, masked = pcv.object_composition(img=cleaned_mask, contours=id_objects, hierarchy=obj_hierarchy)
+    #   ps          - photosynthesis xarray DataArray
+    #   mask        - mask of plant (binary, single channel)
+    #   measurement - choose which measurement routine to analyze: "Fv/Fm", "Fv'/Fm'", or "Fq'/Fm'"
+    #   bins        - number of bins (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
+    #   label       - optional label parameter, modifies the variable name of observations recorded
+
+    fqfm_ind, fqfm_hist, fqfm_img = pcv.photosynthesis.analyze_yii(ps=ps, mask=cleaned_mask, measurement="Fq'/Fm'", 
+                                                                   bins=256, label="default")
 
 ```
 
-**Figure 8.** Combined plant object outlined in blue.
+**Figure 7.** Light-adapted fluorescence induction curve.  
 
-![Screenshot](img/tutorial_images/psII/objcomp2.png)
+![Screenshot](img/documentation_images/fluor_fvfm/light_fluor_induction.png)
 
-The next step is to analyze the plant object for traits such as [shape](analyze_shape.md), or [PSII signal](photosynthesis_analyze_yii.md).
+**Figure 8.** Fq'/Fm' histogram.  
+
+![Screenshot](img/documentation_images/fluor_fvfm/fqfm_histogram.png)
+
+After analyze the Fv/Fm and Fq'Fm' protocols, the photosynthesis data array (ps) is updated. Attributes are added to
+the Xarray DataArray to mark the Fm and Fm' frames based on analysis of the induction curves (these can be manually
+modified if usage of other frames was desirable). Now that Fm and Fm' have been identified, nonphotochemical quanching
+(NPQ) can be estimated using the [analyze_npq](photosynthesis_analyze_npq.md) function.
 
 ```python
-################ Analysis ################  
-    # Find shape properties, output shape image (optional)
+    # Analyze NPQ
 
     # Inputs:
-    #   img             - RGB or grayscale image data
-    #   obj             - Single or grouped contour object
-    #   mask            - Binary image mask to use as mask for moments analysis
-    #   label        - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
-    shape_img = pcv.analyze_object(img=fmin, obj=obj, mask=cleaned_mask, label="default")
+    #   ps          - photosynthesis xarray DataArray
+    #   mask        - mask of plant (binary, single channel)
+    #   bins        - number of bins (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
+    #   label       - optional label parameter, modifies the variable name of observations recorded
 
-    # Analyze fv/fm fluorescence properties
+    npq_hist, npq_img = pcv.photosynthesis.analyze_npq(ps=ps, mask=cleaned_mask, bins=256, label="default")
 
-    # Inputs:
-    #   fdark           - Grayscale image
-    #   fmin            - Grayscale image
-    #   fmax            - Grayscale image
-    #   mask            - Binary mask of selected contours
-    #   bins            - Number of grayscale bins (0-256 for 8-bit img, 0-65536 for 16-bit). Default bins = 256
-    #   label        - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
-    fvfm_images = pcv.photosynthesis.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=cleaned_mask, bins=256, label="default")
+```
 
-    # Store the two fv_fm images
-    fvfm_img = fvfm_images[0]
-    fvfm_hist = fvfm_images[1]
+**Figure 9.** NPQ histogram.  
 
-    # Pseudocolor the Fv/Fm grayscale image that is calculated inside the fluor_fvfm function
+![Screenshot](img/documentation_images/analyze_npq/npq_histogram.png)
+
+Optionally, the Fv/Fm, Fq'/Fm', and NPQ images can be visualized using the [pseudocolor](visualize_pseudocolor.md)
+function to assess the distribution of values across the plant.
+
+```python
+    # Pseudocolor the PSII metric images
 
     # Inputs:
-    #     gray_img      - Grayscale image data
-    #     obj           - Single or grouped contour object (optional), if provided the pseudocolored image gets cropped down to the region of interest.
-    #     mask          - Binary mask (optional)
-    #     background    - Background color/type. Options are "image" (gray_img), "white", or "black". A mask must be supplied.
-    #     cmap          - Colormap (https://matplotlib.org/tutorials/colors/colormaps.html)
-    #     min_value     - Minimum value for range of interest
-    #     max_value     - Maximum value for range of interest
-    #     dpi           - Dots per inch for image if printed out (optional, if dpi=None then the default is set to 100 dpi).
-    #     axes          - If False then the title, x-axis, and y-axis won't be displayed (default axes=True).
-    #     colorbar      - If False then the colorbar won't be displayed (default colorbar=True)
-    pseudocolored_img = pcv.visualize.pseudocolor(gray_img=fvfm_img, mask=cleaned_mask, cmap='jet')
+    # gray_img    - grayscale image data
+    # obj         - (optional) ROI or plant contour object. If provided, the pseudocolored image gets cropped
+    #               down to the region of interest. default = None
+    # mask        - (optional) binary mask
+    # cmap        - (optional) colormap. default is the matplotlib default, viridis
+    # background  - (optional) background color/type, options are "image" (gray_img), "white", or "black"
+    #               (requires a mask). default = 'image'
+    # min_value   - (optional) minimum value for range of interest. default = 0
+    # max_value   - (optional) maximum value for range of interest. default = 255
+    # axes        - (optional) if False then x- and y-axis won't be displayed, nor will the title. default = True
+    # colorbar    - (optional) if False then colorbar won't be displayed. default = True
+    # obj_padding - (optional) if "auto" (default) and an obj is supplied, then the image is cropped to an extent 20%
+    #               larger in each dimension than the object. An single integer is also accepted to define the padding
+    #               in pixels
+    # title       - (optional) custom title for the plot gets drawn if title is not None. default = None
+    # bad_mask    - (optional) binary mask of pixels with "bad" values, e.g. nan or inf or any other values considered
+    #               to be not informative and to be excluded from analysis. default = None
+    # bad_color   - (optional) desired color to show "bad" pixels. default = "red"
+    fvfm_cmap = pcv.visualize.pseudocolor(gray_img=fvfm_img, mask=cleaned_mask, cmap="viridis", 
+                                          min_value=0, max_value=1, title="Fv/Fm")
+    fqfm_cmap = pcv.visualize.pseudocolor(gray_img=fqfm_img, mask=cleaned_mask, cmap="viridis", 
+                                          min_value=0, max_value=1, title="Fq'/Fm'")
+    npq_cmap = pcv.visualize.pseudocolor(gray_img=npq_img, mask=cleaned_mask, cmap="viridis", 
+                                         min_value=0, max_value=1, title="NPQ")
 
-    # Write shape and nir data to results file
+```
+
+**Figure 10.** Pseudocolored Fv/Fm.  
+
+![Screenshot](img/documentation_images/fluor_fvfm/fvfm_colormap.png)
+
+**Figure 11.** Pseudocolored Fq'/Fm'.  
+
+![Screenshot](img/documentation_images/fluor_fvfm/fqfm_colormap.png)
+
+**Figure 12.** Pseudocolored NPQ.  
+
+![Screenshot](img/documentation_images/analyze_npq/npq_colormap.png)
+
+Save results and finish the workflow
+
+```python
+    # Save Fv/Fm, Fq'/Fm', and NPQ results
     pcv.outputs.save_results(filename=args.result)
+    
+    if args.writeimg:
+        pcv.print_image(img=fvfm_ind, filename=os.path.join(args.outdir, inf_filename[:-4] + "_fvfm_induction.png"))
+        pcv.print_image(img=fqfm_ind, filename=os.path.join(args.outdir, inf_filename[:-4] + "_fqfm_induction.png"))
+        pcv.print_image(img=fvfm_hist, filename=os.path.join(args.outdir, inf_filename[:-4] + "_fvfm_histogram.png"))
+        pcv.print_image(img=fqfm_hist, filename=os.path.join(args.outdir, inf_filename[:-4] + "_fqfm_histogram.png"))
+        pcv.print_image(img=npq_hist, filename=os.path.join(args.outdir, inf_filename[:-4] + "_npq_histogram.png"))
+        pcv.print_image(img=fvfm_cmap, filename=os.path.join(args.outdir, inf_filename[:-4] + "_fvfm_cmap.png"))
+        pcv.print_image(img=fqfm_cmap, filename=os.path.join(args.outdir, inf_filename[:-4] + "_fqfm_cmap.png"))
+        pcv.print_image(img=npq_cmap, filename=os.path.join(args.outdir, inf_filename[:-4] + "_npq_cmap.png"))
 
 if __name__ == '__main__':
     main()
 
 ```
-
-**Figure 9.** Shape analysis debug image
-
-![Screenshot](img/tutorial_images/psII/shapes2.png)
-
-
-**Figure 10.** Fv/Fm values debug image
-
-![Screenshot](img/tutorial_images/psII/fvfm_hist2.png)
-
-**Figure 11.** Image pseudocolored by Fv/Fm values
-
-![Screenshot](img/tutorial_images/psII/pseudocolored.png)
 
 To deploy a workflow over a full image set please see tutorial on [workflow parallelization](pipeline_parallel.md).
 
@@ -259,7 +318,7 @@ To deploy a workflow over a full image set please see tutorial on [workflow para
 In the terminal:
 
 ```
-./workflowname.py -i /home/user/images/PSII_PSD_testimg_22_rep6.DAT -o /home/user/output-images -D 'print'
+./workflowname.py -i /home/user/images/PSII_PSD_testimg_22_rep6.INF -o /home/user/output-images -D 'print'
 
 ```
 
@@ -269,17 +328,20 @@ Python script:
 
 ```python
 #!/usr/bin/env python
+import os
 import argparse
 from plantcv import plantcv as pcv
 
 ### Parse command-line arguments
 def options():
     parser = argparse.ArgumentParser(description="Imaging processing with opencv")
-    parser.add_argument("-i", "--image", help="Input image file.", required=True)
+    parser.add_argument("-i", "--image", help="Input INF file.", required=True)
     parser.add_argument("-o", "--outdir", help="Output directory for image files.", required=True)
+    parser.add_argument("-w", "--writeimg", help="Save output images.", action="store_true")
     parser.add_argument("-D", "--debug", help="Turn on debug, prints intermediate images.", action="store_true")
     args = parser.parse_args()
     return args
+
 
 ### Main workflow
 def main():
@@ -290,38 +352,101 @@ def main():
     pcv.params.debug_outdir = args.outdir #set output directory
 
     # Read fluorescence image data
-    fdark1, fmin1, fmax1 = pcv.photosynthesis.read_cropreporter(args.image)
+    ps, pspath, inf_filename = pcv.photosynthesis.read_cropreporter(args.image)
 
-    # Rotate so plant is upright
-    fdark = pcv.transform.rotate(img=fdark1, rotation_deg=-90, crop=False)
-    fmin = pcv.transform.rotate(img=fmin1, rotation_deg=-90, crop=False)
-    fmax = pcv.transform.rotate(img=fmax1, rotation_deg=-90, crop=False)
+    # Extract an 8-bit image (F0) from the dataset
+    fmin = pcv.transform.rescale(gray_img=ps.sel(frame_label="F0").data)
 
-    # Threshold fmax image to make plant mask
-    plant_mask = pcv.threshold.binary(gray_img=fmax, threshold=855, max_value=255, object_type="light")
+    # Threshold the F0 image
 
-    # Clean the mask by filling in small noise objects
-    cleaned_mask = pcv.fill(bin_img=plant_mask, size=20)
+    # Inputs:
+    #   gray_img        - Grayscale image data
+    #   max_value       - Value to apply above threshold (255 = white)
+    #   object_type     - 'light' (default) or 'dark'. If the object is lighter than the
+    #                       background then standard threshold is done. If the object is
+    #                       darker than the background then inverse thresholding is done.
+    plant_mask = pcv.threshold.otsu(gray_img=fmin, max_value=255, object_type="light")
 
-    # Object combine kept objects
-    id_objects ,obj_hierarchy = pcv.find_objects(img=fmax, mask=cleaned_mask)
-    obj, masked = pcv.object_composition(img=cleaned_mask, contours=id_objects, hierarchy=obj_hierarchy)
+    # Fill small objects
 
-     # Find shape properties
-    shape_img = pcv.analyze_object(img=fmax, obj=obj, mask=cleaned_mask, label="default")
+    # Inputs:
+    #   bin_img         - Binary image data
+    cleaned_mask = pcv.fill_holes(bin_img=plant_mask)
 
-    # Analyze fv/fm fluorescence properties
-    fvfm_images = pcv.pcv.photosynthesis.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=cleaned_mask, bins=256, label="default")
+    # Analyze Fv/Fm
 
-    # Store the two fv_fm images
-    fvfm_img = fvfm_images[0]
-    fvfm_hist = fvfm_images[1]
+    # Inputs:
+    #   ps          - photosynthesis xarray DataArray
+    #   mask        - mask of plant (binary, single channel)
+    #   measurement - choose which measurement routine to analyze: "Fv/Fm", "Fv'/Fm'", or "Fq'/Fm'"
+    #   bins        - number of bins (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
+    #   label       - optional label parameter, modifies the variable name of observations recorded
 
-    # Pseudocolor the Fv/Fm grayscale image that is calculated inside the fluor_fvfm function
-    pseudocolored_img = pcv.visualize.pseudocolor(gray_img=fvfm_img, mask=cleaned_mask, cmap='jet')
+    fvfm_ind, fvfm_hist, fvfm_img = pcv.photosynthesis.analyze_yii(ps=ps, mask=cleaned_mask, measurement="Fv/Fm", 
+                                                                   bins=256, label="default")
+    
+    # Analyze Fq'/Fm'
 
-    # Write shape and fv/fm data to results file
+    # Inputs:
+    #   ps          - photosynthesis xarray DataArray
+    #   mask        - mask of plant (binary, single channel)
+    #   measurement - choose which measurement routine to analyze: "Fv/Fm", "Fv'/Fm'", or "Fq'/Fm'"
+    #   bins        - number of bins (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
+    #   label       - optional label parameter, modifies the variable name of observations recorded
+
+    fqfm_ind, fqfm_hist, fqfm_img = pcv.photosynthesis.analyze_yii(ps=ps, mask=cleaned_mask, measurement="Fq'/Fm'", 
+                                                                   bins=256, label="default")
+
+    # Analyze NPQ
+
+    # Inputs:
+    #   ps          - photosynthesis xarray DataArray
+    #   mask        - mask of plant (binary, single channel)
+    #   bins        - number of bins (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
+    #   label       - optional label parameter, modifies the variable name of observations recorded
+
+    npq_hist, npq_img = pcv.photosynthesis.analyze_npq(ps=ps, mask=cleaned_mask, bins=256, label="default")
+
+    # Pseudocolor the PSII metric images
+
+    # Inputs:
+    # gray_img    - grayscale image data
+    # obj         - (optional) ROI or plant contour object. If provided, the pseudocolored image gets cropped
+    #               down to the region of interest. default = None
+    # mask        - (optional) binary mask
+    # cmap        - (optional) colormap. default is the matplotlib default, viridis
+    # background  - (optional) background color/type, options are "image" (gray_img), "white", or "black"
+    #               (requires a mask). default = 'image'
+    # min_value   - (optional) minimum value for range of interest. default = 0
+    # max_value   - (optional) maximum value for range of interest. default = 255
+    # axes        - (optional) if False then x- and y-axis won't be displayed, nor will the title. default = True
+    # colorbar    - (optional) if False then colorbar won't be displayed. default = True
+    # obj_padding - (optional) if "auto" (default) and an obj is supplied, then the image is cropped to an extent 20%
+    #               larger in each dimension than the object. An single integer is also accepted to define the padding
+    #               in pixels
+    # title       - (optional) custom title for the plot gets drawn if title is not None. default = None
+    # bad_mask    - (optional) binary mask of pixels with "bad" values, e.g. nan or inf or any other values considered
+    #               to be not informative and to be excluded from analysis. default = None
+    # bad_color   - (optional) desired color to show "bad" pixels. default = "red"
+    fvfm_cmap = pcv.visualize.pseudocolor(gray_img=fvfm_img, mask=cleaned_mask, cmap="viridis", 
+                                          min_value=0, max_value=1, title="Fv/Fm")
+    fqfm_cmap = pcv.visualize.pseudocolor(gray_img=fqfm_img, mask=cleaned_mask, cmap="viridis", 
+                                          min_value=0, max_value=1, title="Fq'/Fm'")
+    npq_cmap = pcv.visualize.pseudocolor(gray_img=npq_img, mask=cleaned_mask, cmap="viridis", 
+                                         min_value=0, max_value=1, title="NPQ")
+
+    # Save Fv/Fm, Fq'/Fm', and NPQ results
     pcv.outputs.save_results(filename=args.result)
+    
+    if args.writeimg:
+        pcv.print_image(img=fvfm_ind, filename=os.path.join(args.outdir, inf_filename[:-4] + "_fvfm_induction.png"))
+        pcv.print_image(img=fqfm_ind, filename=os.path.join(args.outdir, inf_filename[:-4] + "_fqfm_induction.png"))
+        pcv.print_image(img=fvfm_hist, filename=os.path.join(args.outdir, inf_filename[:-4] + "_fvfm_histogram.png"))
+        pcv.print_image(img=fqfm_hist, filename=os.path.join(args.outdir, inf_filename[:-4] + "_fqfm_histogram.png"))
+        pcv.print_image(img=npq_hist, filename=os.path.join(args.outdir, inf_filename[:-4] + "_npq_histogram.png"))
+        pcv.print_image(img=fvfm_cmap, filename=os.path.join(args.outdir, inf_filename[:-4] + "_fvfm_cmap.png"))
+        pcv.print_image(img=fqfm_cmap, filename=os.path.join(args.outdir, inf_filename[:-4] + "_fqfm_cmap.png"))
+        pcv.print_image(img=npq_cmap, filename=os.path.join(args.outdir, inf_filename[:-4] + "_npq_cmap.png"))
 
 if __name__ == '__main__':
     main()
