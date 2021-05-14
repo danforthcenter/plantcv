@@ -4935,9 +4935,9 @@ def test_plantcv_hyperspectral_inverse_covariance():
 def test_plantcv_photosynthesis_read_cropreporter():
     # Test with debug = None
     pcv.params.debug = None
-    fluor_filename = os.path.join(FLUOR_TEST_DATA, FLUOR_IMG_INF)
+    fluor_filename = os.path.join(FLUOR_TEST_DATA, FLUOR_NPQ_IMG_INF)
     da, imgpath, filename = pcv.photosynthesis.read_cropreporter(filename=fluor_filename)
-    assert da.shape == (966, 1296, 21)
+    assert da.shape == (966, 1296, 56)
 
 
 def test_plantcv_photosynthesis_analyze_yii():
