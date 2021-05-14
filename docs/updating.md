@@ -537,8 +537,7 @@ pages for more details on the input and output variable types.
 * pre v3.10: see plantcv.fluor_fvfm
 * post v3.10: analysis_images = **plantcv.photosynthesis.analyze_fvfm**(*fdark, fmin, fmax, mask, bins=256*)
 * post v3.11: analysis_images = **plantcv.photosynthesis.analyze_fvfm**(*fdark, fmin, fmax, mask, bins=256, label="default"*)
-* post v4.0: Deprecated, see:
-    analysis_images = **plantcv.photosynthesis.analyze_yii**(*data, mask, bins=256, label="default"*)
+* post v4.0: ind_fig, fvfm_hist_fig, analysis_images = **plantcv.photosynthesis.analyze_fvfm**(*ps, mask, bins=256, measurement="both", label="default"*)
 
 #### plantcv.photosynthesis.analyze_npq
 
@@ -549,7 +548,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.10: NA
 * post v3.10: fdark, fmin, fmax = **plantcv.photosynthesis.read_cropreporter**(*filename*)
-* post v4.0: data_array, path, filename = **plantcv.photosynthesis.read_cropreporter**(*filename*)
+* post v4.0: ps, imgpath, inf_filename = **plantcv.photosynthesis.read_cropreporter**(*filename*)
 
 #### plantcv.plot_hist
 
