@@ -4943,27 +4943,60 @@ def test_plantcv_photosynthesis_read_cropreporter():
 def test_plantcv_photosynthesis_analyze_yii():
     # Test with debug = None
     pcv.params.debug = None
-    # Read in test data
-    fmask = cv2.imread(os.path.join(FLUOR_TEST_DATA, FLUOR_FMASK_SV), -1)
-    fluor_filename = os.path.join(FLUOR_TEST_DATA, FLUOR_IMG_INF)
-    da, path, filename = pcv.photosynthesis.read_cropreporter(filename=fluor_filename)
-    _ = pcv.photosynthesis.analyze_yii(ps=da, mask=fmask, bins=100, measurement="Fv/Fm", label="default")
+    # Create data
+    mask = np.zeros((10, 10), dtype=np.uint8)
+    mask[5, 5] = 255
+    f0 = np.copy(mask)
+    f0[5, 5] = 1
+    f1 = np.copy(f0)
+    f1[5, 5] = 2
+    f2 = np.copy(f1)
+    f2[5, 5] = 4
+    # Create DataArray
+    da = xr.DataArray(data=np.dstack([f0, f1, f2]),
+                      coords={"y": range(0, np.shape(mask)[0]), "x": range(0, np.shape(mask)[1]),
+                              "frame_label": ["F0", "F1", "F2"]},
+                      dims=["y", "x", "frame_label"], attrs={"F0": "F0", "F-frames": 3})
+    _ = pcv.photosynthesis.analyze_yii(ps=da, mask=mask, bins=100, measurement="Fv/Fm", label="default")
     fvfm_med = pcv.outputs.observations["default"]["fvfm_median"]["value"]
     pcv.outputs.clear()
-    assert fvfm_med == 0.7682
+    assert fvfm_med == 0.75
 
 
-def test_plantcv_photosynthesis_analyze_yii_full_dataset():
+def test_plantcv_photosynthesis_analyze_yii_fqfm():
     # Test with debug = None
     pcv.params.debug = None
-    # Read in test data
-    fmask = cv2.imread(os.path.join(FLUOR_TEST_DATA, FLUOR_FMASK_TV), -1)
-    fluor_filename = os.path.join(FLUOR_TEST_DATA, FLUOR_NPQ_IMG_INF)
-    da, path, filename = pcv.photosynthesis.read_cropreporter(filename=fluor_filename)
-    _ = pcv.photosynthesis.analyze_yii(ps=da, mask=fmask, bins=100, measurement="Fq'/Fm'", label="default")
-    fvfm_med = pcv.outputs.observations["default"]["fqpfmp_median"]["value"]
+    # Create data
+    mask = np.zeros((10, 10), dtype=np.uint8)
+    mask[5, 5] = 255
+    f0 = np.copy(mask)
+    f0[5, 5] = 1
+    f1 = np.copy(f0)
+    f1[5, 5] = 2
+    f2 = np.copy(f1)
+    f2[5, 5] = 4
+    # Create DataArray
+    da = xr.DataArray(data=np.dstack([f0, f1, f2]),
+                      coords={"y": range(0, np.shape(mask)[0]), "x": range(0, np.shape(mask)[1]),
+                              "frame_label": ["F0'", "F1'", "F2'"]},
+                      dims=["y", "x", "frame_label"], attrs={"F'": "F0'", "F'-frames": 3})
+    _ = pcv.photosynthesis.analyze_yii(ps=da, mask=mask, bins=100, measurement="Fq'/Fm'", label="default")
+    fqfm_med = pcv.outputs.observations["default"]["fqpfmp_median"]["value"]
     pcv.outputs.clear()
-    assert fvfm_med == 0.507
+    assert fqfm_med == 0.75
+
+
+def test_plantcv_photosynthesis_analyze_yii_bad_measurement():
+    # Test with debug = None
+    pcv.params.debug = None
+    # Create data
+    mask = np.zeros((10, 10), dtype=np.uint8)
+    # Create DataArray
+    da = xr.DataArray(data=mask,
+                      coords={"y": range(0, np.shape(mask)[0]), "x": range(0, np.shape(mask)[1])},
+                      dims=["y", "x"])
+    with pytest.raises(RuntimeError):
+        _ = pcv.photosynthesis.analyze_yii(ps=da, mask=mask, bins=100, measurement="Fq/Fm", label="default")
 
 
 # def test_plantcv_photosynthesis_analyze_fvfm_bad_fdark():
@@ -4989,23 +5022,24 @@ def test_plantcv_photosynthesis_analyze_yii_full_dataset():
 
 
 def test_plantcv_photosynthesis_analyze_npq():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_fvfm")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    # filename = os.path.join(cache_dir, 'plantcv_fvfm_hist.png')
-    # Read in test data
-    fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK), -1)
-    fmin = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
-    fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
-    fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
+    # Test with debug = None
+    pcv.params.debug = None
+    # Create data
+    mask = np.zeros((10, 10), dtype=np.uint8)
+    mask[5, 5] = 255
+    fm = np.copy(mask)
+    fm[5, 5] = 10
+    fmp = np.copy(fm)
+    fmp[5, 5] = 5
     # Create DataArray
-    da = xr.DataArray(data=np.dstack([fdark, fmin, fmax]),
-                      coords={"y": range(0, np.shape(fdark)[0]), "x": range(0, np.shape(fdark)[1]),
-                              "frame_label": ["Fmp", "Fm", "fmax"]},
-                      dims=["y", "x", "frame_label"])
-    npq_images = pcv.photosynthesis.analyze_npq(data=da, mask=fmask, bins=100, label="prefix")
-    assert len(npq_images) != 0
+    da = xr.DataArray(data=np.dstack([fm, fmp]),
+                      coords={"y": range(0, np.shape(mask)[0]), "x": range(0, np.shape(mask)[1]),
+                              "frame_label": ["Fm", "Fmp"]},
+                      dims=["y", "x", "frame_label"], attrs={"Fm": "Fm", "Fm'": "Fmp"})
+    _ = pcv.photosynthesis.analyze_npq(ps=da, mask=mask, bins=100, label="prefix")
+    npq_med = pcv.outputs.observations["prefix"]["npq_median"]["value"]
+    pcv.outputs.clear()
+    assert npq_med == 1
 
 
 # ##############################
