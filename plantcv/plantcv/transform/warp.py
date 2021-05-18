@@ -3,7 +3,6 @@
 import cv2
 import os
 import numpy as np
-import copy
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import fatal_error
@@ -74,7 +73,7 @@ def warp(img, refimg, pts, refpts, method='default'):
     shape_img = img.shape
     shape_ref = refimg.shape
     rows_ref, cols_ref = shape_ref[0:2]
-    rows_img, cols_img = shape_img[0:2]
+    rows_img, _ = shape_img[0:2]
 
     # convert list of tuples to array for cv2 functions
     ptsarr = np.array(pts, dtype='float32')
