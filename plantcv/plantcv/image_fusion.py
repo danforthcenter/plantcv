@@ -1,5 +1,6 @@
 # Fuse two images
 
+import os
 import numpy as np
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import Spectral_data
@@ -7,7 +8,6 @@ from plantcv.plantcv import params
 from plantcv.plantcv.hyperspectral.read_data import _make_pseudo_rgb
 from plantcv.plantcv._debug import _debug
 
-import os
 
 def image_fusion(img1, img2, wvs1, wvs2, array_type = None, filename = None):
     """ Fuse two images of the same size together with given wavelengths representing and make a Spectral_data instance
