@@ -46,4 +46,17 @@ fused_img = pcv.image_fusion(img1, img2, wvs1, wvs2, array_type="nir-vis_fusion"
 
 ![Screenshot](img/documentation_images/image_fusion/fused.png)
 
+To show an example of the potential application of image fusion, a vegetation index, NDVI is calculated and the result 
+is presented. The NDVI is calculated using PlantCV tool [spectral_index](spectral_index.md) .
+
+```python
+from plantcv import plantcv as pcv
+
+pcv.params.debug = "plot"
+ndvi = pcv.spectral_index.ndvi(fused_img)
+```
+**NDVI index image calculated based on the fused image**
+
+![Screenshot](img/documentation_images/image_fusion/NDVI.png)
+
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/image_fusion.py)
