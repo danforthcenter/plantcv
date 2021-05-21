@@ -612,6 +612,8 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, reimg = **plantcv.resize**(*img, resize_x, resize_y, device, debug=None*)
 * post v3.0dev2: reimg = **plantcv.resize**(*img, resize_x, resize_y*)
+* post v3.11: Deprecated, see:
+    * **pcv.transform.resize** and **pcv.transform.resize_factor**
 
 #### plantcv.rgb2gray
 
@@ -905,6 +907,17 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev1: NA
 * post v3.0dev2: matrix = **plantcv.transform.load_matrix**(*filename*)
+
+#### plantcv.transform.resize
+
+* pre v3.11: NA
+* post v3.11: resized_img = **plantcv.transform.resize**(*img, size, interpolation="auto"*)
+
+#### plantcv.transform.resize_factor
+
+* pre v3.11: NA
+* post v3.11: resized_img = **plantcv.transform.resize_factor**(*img, factors, interpolation="auto"*)
+
 
 #### plantcv.transform.nonuniform_illumination
 
