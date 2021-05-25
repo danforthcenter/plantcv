@@ -5970,10 +5970,11 @@ def test_plantcv_transform_warp(img, refimg, method, refimg_, pts , refpts, debu
         assert warped_img.shape[0:2] == refimg.shape[0:2] and warped_img_.shape[0:2] == img.shape[0:2]
 
 @pytest.mark.parametrize("img, refimg, pts, refpts, method", [
-    [create_test_img_bin((5,5)), create_test_img((5,5)),[(0,0)],[(0,0),(0,1)], None],
-    [create_test_img_bin((5,5)), create_test_img((5,5)),[(0,0)],[(0,0)], None],
-    [create_test_img((10, 15)), create_test_img((100, 150)), [(0, 0), (0, 14), (9, 14), (0, 9), (3, 3)], [(0, 0), (149, 0), (99, 149), (0, 99), (3, 3)], "rho"]
-                                                      ])
+    [create_test_img_bin((5,5)), create_test_img((5,5)),[(0,0)],[(0,0),(0,1)], None], # different # of points provided for img and refimg
+    [create_test_img_bin((5,5)), create_test_img((5,5)),[(0,0)],[(0,0)], None], # not enough pairs of points provided
+    [create_test_img((10, 15)), create_test_img((100, 150)), [(0, 0), (0, 14), (9, 14), (0, 9), (3, 3)],
+     [(0, 0), (149, 0), (99, 149), (0, 99), (3, 3)], "rho"] # a "rho" robust extimation of homography not able to be calculated (cannot converge)
+])
 def test_plantcv_transform_warp_err(img, refimg, pts, refpts, method, tmpdir):
     # Test cache directory
     # cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_warp")
