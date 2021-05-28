@@ -49,13 +49,13 @@ def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1, show_g
         rbreaks = [0, iy]
     else:
         rstep = np.rint(iy / nrow)
-        rstep1 = np.int(rstep)
+        rstep1 = int(rstep)
         rbreaks = range(0, iy, rstep1)
     if ncol == 1:
         cbreaks = [0, ix]
     else:
         cstep = np.rint(ix / ncol)
-        cstep1 = np.int(cstep)
+        cstep1 = int(cstep)
         cbreaks = range(0, ix, cstep1)
 
     # categorize what bin the center of mass of each contour
