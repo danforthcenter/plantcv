@@ -15,6 +15,7 @@ dependencies:
   - dask-jobqueue
   - nb_conda
   - opencv<4, >=3.4
+  - xarray
 channels:
   - conda-forge
   - defaults
