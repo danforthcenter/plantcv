@@ -4,12 +4,12 @@ import cv2
 import numpy as np
 from datetime import datetime
 from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
 from plantcv.plantcv import apply_mask
 from plantcv.plantcv import params
+from plantcv.plantcv._debug import _debug
 
 
-def cluster_contour_splitimg(rgb_img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None,
+def cluster_contour_splitimg(img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None,
                              filenames=None):
 
     """
@@ -17,7 +17,7 @@ def cluster_contour_splitimg(rgb_img, grouped_contour_indexes, contours, hierarc
     the number of inputted filenames matches the number of clustered contours.
 
     Inputs:
-    rgb_img                 = RGB image data
+    img                     = image data
     grouped_contour_indexes = output of cluster_contours, indexes of clusters of contours
     contours                = contours to cluster, output of cluster_contours
     hierarchy               = hierarchy of contours, output of find_objects
@@ -30,7 +30,7 @@ def cluster_contour_splitimg(rgb_img, grouped_contour_indexes, contours, hierarc
     Returns:
     output_path             = array of paths to output images
 
-    :param rgb_img: numpy.ndarray
+    :param img: numpy.ndarray
     :param grouped_contour_indexes: list
     :param contours: list
     :param hierarchy: numpy.ndarray
@@ -119,9 +119,9 @@ def cluster_contour_splitimg(rgb_img, grouped_contour_indexes, contours, hierarc
         else:
             savename = os.path.join(".", group_names[y])
             savename1 = os.path.join(".", group_names1[y])
-        iy, ix, iz = np.shape(rgb_img)
+        iy, ix = np.shape(img)[:2]
         mask = np.zeros((iy, ix, 3), dtype=np.uint8)
-        masked_img = np.copy(rgb_img)
+        masked_img = np.copy(img)
         for a in x:
             if hierarchy[0][a][3] > -1:
                 cv2.drawContours(mask, contours, a, (0, 0, 0), -1, lineType=8, hierarchy=hierarchy)
@@ -142,11 +142,7 @@ def cluster_contour_splitimg(rgb_img, grouped_contour_indexes, contours, hierarc
                 print_image(mask_binary, savename1)
             output_path.append(savename)
 
-            if params.debug == 'print':
-                print_image(masked1, os.path.join(params.debug_outdir, str(params.device) + '_clusters.png'))
-                print_image(mask_binary, os.path.join(params.debug_outdir, str(params.device) + '_clusters_mask.png'))
-            elif params.debug == 'plot':
-                plot_image(masked1)
-                plot_image(mask_binary, cmap='gray')
+            _debug(visual=masked1, filename=os.path.join(params.debug_outdir, str(params.device) + '_clusters.png'))
+            _debug(visual=mask_binary, filename=os.path.join(params.debug_outdir, str(params.device) + '_clusters_mask.png'))
 
     return output_path, output_imgs, output_masks

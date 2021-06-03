@@ -90,7 +90,7 @@ def analyze_object(img, obj, mask, label="default"):
         vhull = np.vstack(hull)
 
         for i, c in enumerate(vhull):
-            xy = tuple(c)
+            xy = tuple([int(ci) for ci in c])
             pptest = cv2.pointPolygonTest(centerpoint[0], xy, measureDist=True)
             dist.append(pptest)
 
@@ -180,7 +180,7 @@ def analyze_object(img, obj, mask, label="default"):
                             value=caliper_length, label='pixels')
     outputs.add_observation(sample=label, variable='center_of_mass', trait='center of mass',
                             method='plantcv.plantcv.analyze_object', scale='none', datatype=tuple,
-                            value=(cmx, cmy), label='none')
+                            value=(cmx, cmy), label=("x", "y"))
     outputs.add_observation(sample=label, variable='convex_hull_vertices', trait='convex hull vertices',
                             method='plantcv.plantcv.analyze_object', scale='none', datatype=int,
                             value=hull_vertices, label='none')
@@ -189,7 +189,7 @@ def analyze_object(img, obj, mask, label="default"):
                             value=in_bounds, label='none')
     outputs.add_observation(sample=label, variable='ellipse_center', trait='ellipse center',
                             method='plantcv.plantcv.analyze_object', scale='none', datatype=tuple,
-                            value=(center[0], center[1]), label='none')
+                            value=(center[0], center[1]), label=("x", "y"))
     outputs.add_observation(sample=label, variable='ellipse_major_axis', trait='ellipse major axis length',
                             method='plantcv.plantcv.analyze_object', scale='pixels', datatype=int,
                             value=major_axis_length, label='pixels')
