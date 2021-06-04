@@ -18,13 +18,13 @@ def fill_segments(mask, objects, stem_objects=None, label="default"):
     objects      = List of contours
 
     Returns:
-    filled_img   = Filled mask
+    filled_mask   = Labeled mask
 
     :param mask: numpy.ndarray
     :param objects: list
     :param stem_objects: numpy.ndarray
     :param label: str
-    :return filled_img: numpy.ndarray
+    :return filled_mask: numpy.ndarray
     """
 
     h, w = mask.shape
@@ -73,6 +73,7 @@ def fill_segments(mask, objects, stem_objects=None, label="default"):
     params.debug = None
     filled_img = colorize_label_img(filled_mask)
     params.debug = debug
-    _debug(visual=filled_img, filename=os.path.join(params.debug_outdir, str(params.device) + "_filled_img.png"))
+    _debug(visual=filled_img, filename=os.path.join(params.debug_outdir,
+                                                    str(params.device) + "_filled_segments_img.png"))
 
     return filled_mask
