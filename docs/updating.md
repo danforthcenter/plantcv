@@ -422,6 +422,10 @@ pages for more details on the input and output variable types.
 * post v3.3: cycle_img = **plantcv.morphology.check_cycles**(*skel_img*)
 * post v3.11: cycle_img = **plantcv.morphology.check_cycles**(*skel_img, label="default"*)
 
+#### plantcv.morphology.fill_segments
+* pre v3.13: filled_img = **plantcv.morphology.fill_segments(*mask, objects, stem_objects=None, label="default"*)**
+* post v3.13: filled_mask = **plantcv.morphology.fill_segments(*mask, objects, stem_objects=None, label="default"*)**
+
 #### plantcv.morphology.find_branch_pts
 
 * pre v3.3: NA
@@ -913,11 +917,15 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: Deprecated, see:
     * bin_img = **plantcv.threshold.triangle**(*gray_img, max_value, object_type="light", xstep=1*)
 
-#### plantcv.visualize.colorize_masks 
+#### plantcv.visualize.colorize_label_img
+
+* pre v3.13: NA
+* post v3.13: colored_img = **plantcv.visualize.colorize_label_img**(*label_img*)
+
+#### plantcv.visualize.colorize_masks
 
 * pre v3.2: NA
 * post v3.2: colored_img = pcv.visualize.colorize_masks(classes, colors)
-
 
 #### plantcv.visualize.colorspaces
 

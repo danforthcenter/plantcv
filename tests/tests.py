@@ -3874,7 +3874,7 @@ def test_plantcv_morphology_fill_segments_with_stem():
     pcv.params.debug = None
     _ = pcv.morphology.fill_segments(mask, obj, stem_obj)
     num_objects = len(pcv.outputs.observations['default']['leaf_area']['value'])
-    assert num_objects == 70
+    assert num_objects == 69
 
 
 def test_plantcv_morphology_segment_angle():
@@ -6175,6 +6175,12 @@ def test_plantcv_visualize_colorize_masks_bad_color_input():
     mask = pcv.naive_bayes_classifier(rgb_img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']], colors=['red', 1.123])
+
+def test_plantcv_visualize_colorize_label_img():
+    label_img = np.array([[1,2,3],[4,5,6],[7,8,9]])
+    pcv.params.debug = None
+    colored_img = pcv.visualize.colorize_label_img(label_img)
+    assert (colored_img.shape[0:-1] == label_img.shape) and colored_img.shape[-1] == 3
 
 
 @pytest.mark.parametrize("bins,lb,ub,title", [[200, 0, 255, "Include Title"], [100, None, None, None]])
