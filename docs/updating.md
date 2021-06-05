@@ -917,11 +917,15 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: Deprecated, see:
     * bin_img = **plantcv.threshold.triangle**(*gray_img, max_value, object_type="light", xstep=1*)
 
-#### plantcv.visualize.colorize_masks 
+#### plantcv.visualize.colorize_label_img
+
+* pre v3.13: NA
+* post v3.13: colored_img = **plantcv.visualize.colorize_label_img**(*label_img*)
+
+#### plantcv.visualize.colorize_masks
 
 * pre v3.2: NA
 * post v3.2: colored_img = pcv.visualize.colorize_masks(classes, colors)
-
 
 #### plantcv.visualize.colorspaces
 
