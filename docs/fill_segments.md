@@ -37,6 +37,9 @@ pcv.params.debug = "print"
 
 filled_mask = pcv.morphology.fill_segments(mask=plant_mask, objects=obj, label="default")
 
+# Convert labeled mask to a colorized image
+filled_image = pcv.visualize.colorize_label_img(label_img=filled_mask)
+
 # Access data stored out from fill_segments
 segments_area = pcv.outputs.observations['default']['segment_area']['value']
 

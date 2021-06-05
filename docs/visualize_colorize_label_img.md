@@ -11,11 +11,11 @@ This is a plotting method used to visualize labeled images.
 - **Context:**
     - Visualize different class labels in one image
 - **Example use:**
-    - [Use In Machine Learning Tutorial](machine_learning_tutorial.md)
+    - [Use In Morphology Tutorial](morphology_tutorial.md)
 
 **Original image**
 
-![Screenshot](img/tutorial_images/machine_learning/color_image.jpg) 
+![Screenshot](img/tutorial_images/machine_learning/color_image.jpg)
 
 ```python
 
