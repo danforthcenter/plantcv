@@ -422,6 +422,10 @@ pages for more details on the input and output variable types.
 * post v3.3: cycle_img = **plantcv.morphology.check_cycles**(*skel_img*)
 * post v3.11: cycle_img = **plantcv.morphology.check_cycles**(*skel_img, label="default"*)
 
+#### plantcv.morphology.fill_segments
+* pre v3.13: filled_img = **plantcv.morphology.fill_segments(*mask, objects, stem_objects=None, label="default"*)**
+* post v3.13: filled_mask = **plantcv.morphology.fill_segments(*mask, objects, stem_objects=None, label="default"*)**
+
 #### plantcv.morphology.find_branch_pts
 
 * pre v3.3: NA
