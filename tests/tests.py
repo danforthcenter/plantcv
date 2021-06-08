@@ -6361,17 +6361,43 @@ def test_plantcv_visualize_overlay_two_imgs_size_mismatch():
         _ = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2)
 
 # ##############################
-# Tests for the eCDF sub-subpackage
+# Tests for the ecdf sub-subpackage
 # ##############################
 @pytest.mark.parametrize("title", ["Include Title", None])
-def test_plantcv_visualize_eCDF_obj_size(title):
+def test_plantcv_visualize_ecdf_obj_size(title, tmpdir):
     pcv.params.debug = None
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_visualize_eCDF_obj_size")
-    os.mkdir(cache_dir)
+    cache_dir = tmpdir.mkdir("sub")
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK), -1)
-    fig_ecdf = pcv.visualize.eCDF.obj_size(mask=mask,title=title)
+    fig_ecdf = pcv.visualize.ecdf.obj_size(mask=mask,title=title)
     assert isinstance(fig_ecdf, ggplot)
 
+@pytest.mark.parametrize("title", ["Include Title", None])
+def test_plantcv_visualize_ecdf_pix_intensity(title, tmpdir):
+    pcv.params.debug = None
+    # Create a tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    # img_rgb  = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), -1)
+    mask     =  np.where(img > 130,255,0).astype(np.uint8)
+    fig_ecdf = pcv.visualize.ecdf.pix_intensity(img, mask=mask, title=title)
+    assert isinstance(fig_ecdf, ggplot)
+
+def test_plantcv_visualize_ecdf_pix_intensity_rgb(tmpdir):
+    pcv.params.debug = None
+    # Create a tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+
+    img_gray = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    img  = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), -1)
+    mask     =  np.where(img_gray > 130,255,0).astype(np.uint8)
+    fig_ecdf = pcv.visualize.ecdf.pix_intensity(img, mask=mask)
+    assert isinstance(fig_ecdf, ggplot)
+
+def test_plantcv_visualize_ecdf_pix_intensity_wrong_input():
+    img = np.arange(0,10)
+    with pytest.raises(RuntimeError):
+        _ = pcv.visualize.ecdf.pix_intensity(img)
 
 # ##############################
 # Tests for the utils subpackage
