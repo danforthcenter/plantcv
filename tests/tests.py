@@ -6363,18 +6363,20 @@ def test_plantcv_visualize_overlay_two_imgs_size_mismatch():
 # ##############################
 # Tests for the eCDF sub-subpackage
 # ##############################
-def test_plantcv_visualize_eCDF_obj_size():
+@pytest.mark.parametrize("title", ["Include Title", None])
+def test_plantcv_visualize_eCDF_obj_size(title):
     pcv.params.debug = None
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_visualize_eCDF_obj_size")
     os.mkdir(cache_dir)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK), -1)
-    fig_ecdf = pcv.visualize.eCDF.obj_size(mask=mask)
+    fig_ecdf = pcv.visualize.eCDF.obj_size(mask=mask,title=title)
     assert isinstance(fig_ecdf, ggplot)
 
 
 # ##############################
 # Tests for the utils subpackage
 # ##############################
+
 def test_plantcv_utils_json2csv():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_json2csv")
