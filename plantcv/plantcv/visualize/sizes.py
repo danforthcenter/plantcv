@@ -29,6 +29,9 @@ def sizes(img, mask, num_objects=100):
     """
 
     plotting_img = np.copy(img)
+    # Convert grayscale images to color
+    if len(np.shape(plotting_img)) == 2:
+        ori_img = cv2.cvtColor(plotting_img, cv2.COLOR_GRAY2BGR)
 
     # Store debug
     debug = params.debug
