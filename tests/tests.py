@@ -6057,9 +6057,6 @@ def test_plantcv_visualize_auto_threshold_methods():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    pcv.params.debug = "print"
-    _ = pcv.visualize.auto_threshold_methods(gray_img=img)
-    pcv.params.debug = "plot"
     labeled_imgs = pcv.visualize.auto_threshold_methods(gray_img=img)
     assert len(labeled_imgs) == 5 and np.shape(labeled_imgs[0])[0] == np.shape(img)[0]
 
