@@ -4,10 +4,8 @@ import os
 import cv2
 import random
 import numpy as np
-from plantcv.plantcv import find_objects
+# from plantcv.plantcv import find_objects
 from plantcv.plantcv import params
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
 from plantcv.plantcv import color_palette
 from plantcv.plantcv._debug import _debug
 
@@ -39,7 +37,7 @@ def sizes(img, mask, num_objects=100):
     params.debug = None
 
     # ID contours and sort them from largest to smallest
-    id_objects, _ = find_objects(img=img, mask=mask)
+    id_objects, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
     sorted_objects = sorted(id_objects, key=lambda x: cv2.contourArea(x))
     # Function sorts smallest to largest so keep the last X objects listed
     sorted_objects = sorted_objects[len(sorted_objects) - num_objects : len(sorted_objects)]
@@ -76,11 +74,5 @@ def sizes(img, mask, num_objects=100):
     params.debug = debug
 
     _debug(visual=plotting_img, filename=os.path.join(params.debug_outdir, str(params.device) +'_object_sizes.png'))
-
-
-    if params.debug == 'print':
-        print_image(plotting_img, os.path.join(params.debug_outdir, str(params.device) + '_object_sizes.png'))
-    elif params.debug == 'plot':
-        plot_image(plotting_img)
 
     return plotting_img
