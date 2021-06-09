@@ -9,6 +9,7 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 from plantcv.plantcv import find_objects
 from plantcv.plantcv import color_palette
+from plantcv.plantcv._debug import _debug
 
 
 def sizes(img, mask, num_objects=100):
@@ -73,6 +74,9 @@ def sizes(img, mask, num_objects=100):
     params.device += 1
     # Reset debug mode
     params.debug = debug
+
+    _debug(visual=plotting_img, filename=os.path.join(params.debug_outdir, str(params.device) +'_object_sizes.png'))
+
 
     if params.debug == 'print':
         print_image(plotting_img, os.path.join(params.debug_outdir, str(params.device) + '_object_sizes.png'))
