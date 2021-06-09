@@ -28,41 +28,43 @@ def sizes(img, mask, num_objects=100):
     :return plotting_img: numpy.ndarray
     """
 
-
     plotting_img = np.copy(img)
 
     # Store debug
     debug = params.debug
     params.debug = None
 
-    id_objects, obj_hierarchy = find_objects(img=img, mask=mask)
-    rand_color = color_palette(num=len(id_objects), saved=False)
+    # ID contours and sort them from largest to smallest
+    id_objects, _ = find_objects(img=img, mask=mask)
+    sorted_objects = sorted(id_objects, key=lambda x: cv2.contourArea(x))
+    # Function sorts smallest to largest so keep the last X objects listed
+    sorted_objects = sorted_objects[len(sorted_objects) - num_objects : len(sorted_objects)]
+
+    rand_color = color_palette(num=num_objects, saved=False)
     random.shuffle(rand_color)
 
     label_coord_x = []
     label_coord_y = []
     area_vals = []
 
-    for i, cnt in enumerate(id_objects):
-        # Calculate geodesic distance, divide by two since cv2 seems to be taking the perimeter of the contour
-        area_vals.append(cv2.contourArea(cnt))
-        cv2.drawContours(plotting_img, id_objects, i, rand_color[i], thickness=-1)
-        # Store coordinates for labels
-        label_coord_x.append(id_objects[i][0][0][0])
-        label_coord_y.append(id_objects[i][0][0][1])
+    for i, contour in enumerate(sorted_objects):
+        # ID and store area values and centers of mass for labeling them
+        m = cv2.moments(contour)
+        area_vals.append(m['m00'])
+        label_coord_x.append(int(m["m10"] / m["m00"]))
+        label_coord_y.append(int(m["m01"] / m["m00"]))
+        # Fill in objects with color
+        cv2.drawContours(plotting_img, sorted_objects, i, rand_color[i], thickness=-1)
 
-    segment_ids = []
-    # Put labels of length
+    # Label with area values
     for c, value in enumerate(area_vals):
         text = "{:.0f}".format(value)
         w = label_coord_x[c]
         h = label_coord_y[c]
-        if c < int(num_objects):
-            cv2.putText(img=plotting_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                        fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
-        else:
-            print("There were " + str(len(area_vals)-num_objects) + " objects not annotated.")
-            break
+        cv2.putText(img=plotting_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                    fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
+        if c == (num_objects - 1):
+            print("There were " + str(len(id_objects) - num_objects) + " objects not annotated.")
 
     # Auto-increment device
     params.device += 1
