@@ -5931,51 +5931,93 @@ def test_plantcv_threshold_texture():
     else:
         assert 0
 
+
 def create_test_img(sz_img):
     img = np.random.randint(np.prod(sz_img), size=sz_img) * 255
     img = img.astype(np.uint8)
     return img
 
+
 def create_test_img_bin(sz_img):
     img = np.zeros(sz_img)
     img[3:7, 2:8] = 1
     return img
-@pytest.mark.parametrize("img, refimg, method, refimg_, pts, refpts, debug_mode", [
-    [create_test_img((12,10,3)), create_test_img((12,10,3)), "default", None, [(0,0),(1,0),(0,3),(4,4)], [(0,0),(1,0),(0,3),(4,4)],"plot"],
-    [create_test_img((10,10,3)), create_test_img((11,11)), "lmeds", 1, [(0,0),(1,0),(0,3),(4,4)], [(0,0),(1,0),(0,3),(4,4)],"print"],
-    [create_test_img_bin((10,10)), create_test_img((11,11)), "rho", None, [(0,0),(1,0),(0,3),(4,4)], [(0,0),(1,0),(0,3),(4,4)],"print"],
-    [create_test_img_bin((10,10)), create_test_img((11,11,3)), "ransac", None, [(0,0),(1,0),(0,3),(4,4)], [(0,0),(1,0),(0,3),(4,4)],"print"],
-    [create_test_img((100, 150)), create_test_img((10, 15)), "ransac", None, [(0, 0), (149, 0), (99, 149), (0, 99), (3, 3)], [(0, 0), (0, 14), (9, 14), (0, 9), (3, 3)],"plot"]
-                                                                       ])
-def test_plantcv_transform_warp(img, refimg, method, refimg_, pts , refpts, debug_mode, tmpdir):
-    # Test cache directory
-    # cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_warp")
-    # os.mkdir(cache_dir)
-    pcv.params.debug_outdir = tmpdir
-    pcv.params.debug = debug_mode
-    warped_img, mat = pcv.transform.warp(img, refimg, pts, refpts, method=method)
 
-    if refimg_ is not None:
-        refimg_ = refimg
-        warped_img_ = pcv.transform.warp_align(img, mat, refimg_)
-        assert warped_img.shape[0:2] == refimg.shape[0:2] and warped_img_.shape[0:2] == refimg_.shape[0:2]
-    else:
-        warped_img_ = pcv.transform.warp_align(img, mat)
-        assert warped_img.shape[0:2] == refimg.shape[0:2] and warped_img_.shape[0:2] == img.shape[0:2]
 
-@pytest.mark.parametrize("img, refimg, pts, refpts, method", [
-    [create_test_img_bin((5,5)), create_test_img((5,5)),[(0,0)],[(0,0),(0,1)], None], # different # of points provided for img and refimg
-    [create_test_img_bin((5,5)), create_test_img((5,5)),[(0,0)],[(0,0)], None], # not enough pairs of points provided
-    [create_test_img((10, 15)), create_test_img((100, 150)), [(0, 0), (0, 14), (9, 14), (0, 9), (3, 3)],
-     [(0, 0), (149, 0), (99, 149), (0, 99), (3, 3)], "rho"] # a "rho" robust extimation of homography not able to be calculated (cannot converge)
+def test_plantcv_transform_warp_default():
+    pcv.params.debug = "plot"
+    img = create_test_img((12, 10, 3))
+    refimg = create_test_img((12, 10, 3))
+    pts = [(0, 0),(1, 0),(0, 3),(4, 4)]
+    refpts = [(0, 0),(1, 0),(0, 3),(4, 4)]
+    warped_img, mat = pcv.transform.warp(img, refimg, pts, refpts, method="default")
+    assert np.allclose(mat, np.array([[1.00000000e+00,  1.04238500e-15, -7.69185075e-16],
+                                         [1.44375646e-16,  1.00000000e+00,  0.00000000e+00],
+                                         [-5.41315251e-16,  1.78930521e-15,  1.00000000e+00]]),
+                       atol=np.finfo(float).eps)
+
+
+def test_plantcv_transform_warp_lmeds():
+    pcv.params.debug = "plot"
+    img = create_test_img((10, 10, 3))
+    refimg = create_test_img((11, 11))
+    pts = [(0, 0), (1, 0), (0, 3), (4, 4)]
+    refpts = [(0, 0), (1, 0), (0, 3), (4, 4)]
+    warped_img, mat = pcv.transform.warp(img, refimg, pts, refpts, method="lmeds")
+    assert np.allclose(mat, np.array([[1.00000000e+00,  1.04238500e-15, -7.69185075e-16],
+                                      [1.44375646e-16,  1.00000000e+00,  0.00000000e+00],
+                                      [-5.41315251e-16,  1.78930521e-15,  1.00000000e+00]]),
+                       atol=np.finfo(float).eps)
+
+
+def test_plantcv_transform_warp_rho():
+    pcv.params.debug = "plot"
+    img = create_test_img_bin((10, 10))
+    refimg = create_test_img((11, 11))
+    pts = [(0, 0), (1, 0), (0, 3), (4, 4)]
+    refpts = [(0, 0), (1, 0), (0, 3), (4, 4)]
+    warped_img, mat = pcv.transform.warp(img, refimg, pts, refpts, method="rho")
+    assert np.allclose(mat, np.array([[1.00000000e+00,  1.04238500e-15, -7.69185075e-16],
+                                      [1.44375646e-16,  1.00000000e+00,  0.00000000e+00],
+                                      [-5.41315251e-16,  1.78930521e-15,  1.00000000e+00]]),
+                       atol=np.finfo(float).eps)
+
+
+def test_plantcv_transform_warp_ransac():
+    pcv.params.debug = "plot"
+    img = create_test_img((100, 150))
+    refimg = create_test_img((10, 15))
+    pts = [(0, 0), (149, 0), (99, 149), (0, 99), (3, 3)]
+    refpts = [(0, 0), (0, 14), (9, 14), (0, 9), (3, 3)]
+    warped_img, mat = pcv.transform.warp(img, refimg, pts, refpts, method="ransac")
+    assert np.allclose(mat, np.array([[1.15630614e+00, -3.12842751e-14,  2.83938618e-12],
+                                      [-1.15630614e-01,  1.27193676e+00, -7.84442971e-12],
+                                      [-7.91232483e-02,  1.31225296e-01,  1.00000000e+00]]),
+                       atol=np.finfo(float).eps)
+
+
+@pytest.mark.parametrize("pts, refpts", [
+    [[(0,0)],[(0,0),(0,1)]],  # different # of points provided for img and refimg
+    [[(0,0)],[(0,0)]],  # not enough pairs of points provided
+    [[(0, 0), (0, 14), (9, 14), (0, 9), (3, 3)],
+     [(0, 0), (149, 0), (99, 149), (0, 99), (3, 3)]]  # homography not able to be calculated (cannot converge)
 ])
-def test_plantcv_transform_warp_err(img, refimg, pts, refpts, method, tmpdir):
-    # Test cache directory
-    # cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_warp")
-    # os.mkdir(cache_dir)
-    pcv.params.debug_outdir = tmpdir
+def test_plantcv_transform_warp_err(pts, refpts):
+    img = create_test_img((10, 15))
+    refimg = create_test_img((100, 150))
+    method = "rho"
     with pytest.raises(RuntimeError):
         pcv.transform.warp(img, refimg, pts, refpts, method=method)
+
+
+@pytest.mark.parametrize("refimg, expected", [[None, (10, 10, 3)], [create_test_img((11, 11)), (11, 11, 3)]])
+def test_plantcv_transform_warp_align(refimg, expected):
+    img = create_test_img((10, 10, 3))
+    mat = np.array([[ 1.00000000e+00,  1.04238500e-15, -7.69185075e-16],
+                    [ 1.44375646e-16,  1.00000000e+00,  0.00000000e+00],
+                    [-5.41315251e-16,  1.78930521e-15,  1.00000000e+00]])
+    warp_img = pcv.transform.warp_align(img=img, mat=mat, refimg=refimg)
+    assert warp_img.shape == expected
 
 
 @pytest.mark.parametrize("bad_type", ["native", "nan", "inf"])
