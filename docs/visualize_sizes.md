@@ -19,11 +19,11 @@ This function plots separate objects as different colors and annotates the large
 
 **Original image:**
 
-![Screenshot](img/documentation_images/visualize_overlay_two_imgs/overlay_rgb.png)
+![Screenshot](img/documentation_images/.png)
 
 **Binary mask:**
 
-![Screenshot](img/documentation_images/visualize_overlay_two_imgs/overlay_bin.png)
+![Screenshot](img/documentation_images/visualize_sizes/.png)
 
 
 ```python
@@ -38,7 +38,7 @@ plotting_img = pcv.visualize.sizes(img=rgb_img, mask=mask, num_objects=100)
 
 **Output Visualization**
 
-![Screenshot](img/documentation_images/visualize_overlay_two_imgs/overlay_result.png)
+![Screenshot](img/documentation_images/visualize_sizes/.png)
 
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/visualize/sizes.py)
