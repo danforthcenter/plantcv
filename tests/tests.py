@@ -6347,7 +6347,7 @@ def test_plantcv_visualize_size():
     pcv.params.debug = None
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_visualize_overlay_two_imgs_size_mismatch")
     os.mkdir(cache_dir)
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY))
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     visualization = pcv.visualize.sizes(img=img, mask=img, num_objects=4)
     assert np.unique(visualization) == 7
 
