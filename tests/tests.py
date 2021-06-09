@@ -6151,17 +6151,7 @@ def test_plantcv_visualize_colorize_masks():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
     mask = pcv.naive_bayes_classifier(rgb_img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
-    _ = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']],
-                                     colors=[(0, 0, 0), (1, 1, 1)])
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']],
-                                     colors=[(0, 0, 0), (1, 1, 1)])
-    # Test with debug = None
-    pcv.params.debug = None
     colored_img = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']],
                                                colors=['red', 'blue'])
     # Assert that the output image has the dimensions of the input image
@@ -6176,8 +6166,6 @@ def test_plantcv_visualize_colorize_masks_bad_input_empty():
 def test_plantcv_visualize_colorize_masks_bad_input_mismatch_number():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
     mask = pcv.naive_bayes_classifier(rgb_img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']], colors=['red', 'green', 'blue'])
@@ -6186,15 +6174,12 @@ def test_plantcv_visualize_colorize_masks_bad_input_mismatch_number():
 def test_plantcv_visualize_colorize_masks_bad_color_input():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
     mask = pcv.naive_bayes_classifier(rgb_img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']], colors=['red', 1.123])
 
 def test_plantcv_visualize_colorize_label_img():
     label_img = np.array([[1,2,3],[4,5,6],[7,8,9]])
-    pcv.params.debug = None
     colored_img = pcv.visualize.colorize_label_img(label_img)
     assert (colored_img.shape[0:-1] == label_img.shape) and colored_img.shape[-1] == 3
 
