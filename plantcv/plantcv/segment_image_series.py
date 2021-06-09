@@ -24,7 +24,8 @@ def _labels2rgb(labels, n_labels, rgb_values):
     return rgb_img
 
 
-def segment_image_series(img_dir, mask_dir, init_frame, save_labels=True, init_labels=None, ksize=3):
+#def segment_image_series(img_dir, mask_dir, init_frame, save_labels=True, init_labels=None, ksize=3)
+def segment_image_series(imgs_paths, masks_paths, init_img_name, save_labels=True, init_labels=None, ksize=3):
     """
 
     Inputs:
@@ -53,14 +54,17 @@ def segment_image_series(img_dir, mask_dir, init_frame, save_labels=True, init_l
     # for symmetry, using blocks (kernels) of size 2*floor(ksize/2) + 1
     half_k = math.floor(ksize/2)
 
-    image_names = sorted(os.listdir(img_dir))
+    #image_names = sorted(os.listdir(img_dir))
+
+    image_names = [os.path.basename(img_path) for img_path in imgs_paths]
+    init_frame = image_names.index(init_img_name)
 
     if init_labels is None:
         #get initialization labels
-        #init_img, _, _ = pcv.readimage(filename=img_dir+image_names[init_frame])
-        init_mask, _, _ = pcv.readimage(filename=os.path.join(mask_dir,
-                                        f"{image_names[init_frame][:-4]}_mask.png"),
-                                        mode='gray')
+        init_mask, _, _ = pcv.readimage(filename=masks_paths[init_frame])
+        #init_mask, _, _ = pcv.readimage(filename=os.path.join(mask_dir,
+        #                                f"{image_names[init_frame][:-4]}_mask.png"),
+        #                                mode='gray')
         init_labels, _ = ndi.label(init_mask)
 
     # output initialization
@@ -75,6 +79,7 @@ def segment_image_series(img_dir, mask_dir, init_frame, save_labels=True, init_l
     # propagate labels sequentially from init_frame
     # backward
     for n in range(init_frame,-1,-1):
+        print(n)
         # build image and mask stacks
         d = 2*half_k+1
         img_stack = np.zeros((h,w,d))
@@ -85,12 +90,14 @@ def segment_image_series(img_dir, mask_dir, init_frame, save_labels=True, init_l
         stack_idx = 2*half_k
         for m in range(half_k, -half_k-1, -1):
             frame = min(N-1, max(n+m,0))
-            img, _, _ = pcv.readimage(filename=os.path.join(img_dir,image_names[frame]))
+            #img, _, _ = pcv.readimage(filename=os.path.join(img_dir,image_names[frame]))
+            img, _, _ = pcv.readimage(filename=imgs_paths[frame])
             if m == 0:
                 img_n_rgb = img
-            mask, _, _ = pcv.readimage(filename=os.path.join(mask_dir,
-                                        f"{image_names[frame][:-4]}_mask.png"),
-                                        mode='gray')
+            mask, _, _ = pcv.readimage(filename=masks_paths[frame], mode='gray')
+            #mask, _, _ = pcv.readimage(filename=os.path.join(mask_dir,
+            #                            f"{image_names[frame][:-4]}_mask.png"),
+            #                            mode='gray')
             img_stack[:,:,stack_idx] = pcv.rgb2gray(rgb_img=img)
             mask_stack[:,:,stack_idx] = mask
             markers[:,:,stack_idx] = out_labels[:,:,frame]
@@ -112,6 +119,7 @@ def segment_image_series(img_dir, mask_dir, init_frame, save_labels=True, init_l
 
     # forward
     for n in range(init_frame+1,N):
+        print(n)
         # build image and mask stacks
         d = 2*half_k+1
         img_stack = np.zeros((h,w,d))
@@ -124,12 +132,14 @@ def segment_image_series(img_dir, mask_dir, init_frame, save_labels=True, init_l
         #stack_idx = -min(0,n-half_k)
         for m in range(-half_k,half_k+1):
             frame = min(N-1, max(n+m,0))
-            img, _, _ = pcv.readimage(filename=os.path.join(img_dir,image_names[frame]))
+            img, _, _ = pcv.readimage(filename=imgs_paths[frame])
+            #img, _, _ = pcv.readimage(filename=os.path.join(img_dir,image_names[frame]))
             if m == 0:
                 img_n_rgb = img
-            mask, _, _ = pcv.readimage(filename=os.path.join(mask_dir,
-                                        f"{image_names[frame][:-4]}_mask.png"),
-                                        mode='gray')
+            mask, _, _ = pcv.readimage(filename=masks_paths[frame], mode='gray')
+            #mask, _, _ = pcv.readimage(filename=os.path.join(mask_dir,
+            #                            f"{image_names[frame][:-4]}_mask.png"),
+            #                            mode='gray')
             img_stack[:,:,stack_idx] = pcv.rgb2gray(rgb_img=img)
             mask_stack[:,:,stack_idx] = mask
             markers[:,:,stack_idx] = out_labels[:,:,frame]
