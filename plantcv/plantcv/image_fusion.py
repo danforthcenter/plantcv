@@ -18,8 +18,8 @@ def image_fusion(img1, img2, wvs1, wvs2, array_type=None, filename=None):
     array_type: (optional) description of the fused array
     filename: (optional) desired filename of the fused array
 
-    :param img1: np.ndarray
-    :param img2: np.ndarray
+    :param img1: numpy.ndarray
+    :param img2: numpy.ndarray
     :param wvs1: list
     :param wvs2: list
     :param array_type: str
