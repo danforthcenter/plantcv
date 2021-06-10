@@ -9,7 +9,7 @@ from plantcv.plantcv.hyperspectral.read_data import _make_pseudo_rgb
 from plantcv.plantcv._debug import _debug
 
 
-def image_fusion(img1, img2, wvs1, wvs2, array_type = None, filename = None):
+def image_fusion(img1, img2, wvs1, wvs2, array_type=None, filename=None):
     """ Fuse two images of the same size together with given wavelengths representing and make a Spectral_data instance
     img1: 1st image to be fused
     img2: 2nd image to be fused
@@ -76,4 +76,3 @@ def image_fusion(img1, img2, wvs1, wvs2, array_type = None, filename = None):
     _debug(visual=pseudo_rgb, filename=os.path.join(params.debug_outdir, str(params.device) + "_fused_pseudo_rgb.png"))
 
     return fused_array
-
