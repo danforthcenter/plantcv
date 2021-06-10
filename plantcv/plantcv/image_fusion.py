@@ -49,7 +49,7 @@ def image_fusion(img1, img2, wvs1, wvs2, array_type=None, filename=None):
         wavelength_dict[wv] = float(idx)
 
     # sort array_data based on wavelengths
-    array_data = array_data[:,:,ind]
+    array_data = array_data[:, :, ind]
     array_data = (array_data / 255).astype(np.float32)
 
     max_pixel = float(np.amax(array_data))
