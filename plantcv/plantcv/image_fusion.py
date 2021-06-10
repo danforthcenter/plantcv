@@ -28,7 +28,7 @@ def image_fusion(img1, img2, wvs1, wvs2, array_type=None, filename=None):
     """
 
     if len(img1.shape) == 2:
-        img1 = np.expand_dims(img1,axis=2)
+        img1 = np.expand_dims(img1, axis=2)
     r1, c1, b1 = img1.shape
 
     if len(img2.shape) == 2:
