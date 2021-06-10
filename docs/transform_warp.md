@@ -122,20 +122,21 @@ Target image with markers:
 A pair of corresponding inlier points are represented with the same color with the "+" marker; 
 the outliers are represented using upper triangles. 
 
-## warp_align
-**plantcv.transform.warp_align**(*img, mat, refimg=None)*
+## Warp Align
+**plantcv.transform.warp_align**(*img, refimg, mat)*
 
 **returns** image after warping.
 
 Highly related to the `warp` function, the `warp_align` function takes an input image, a transformation matrix, 
 and perform the geometric transformation defined by the given transformation matrix. 
 - **Parameters:**
-    - img - (np.ndarray) image to warp 
-    - mat - (np.ndarray) a 3x3 matrix that describes the projective transformation. 
-      Typically, it would be the 2nd output of the `transform.warp` function.
-    - refimg (optional) - (np.ndarray) image used as a reference for the warp. 
+    - img - (np.ndarray) image to warp
+    - refimg - (np.ndarray) image used as a reference for the warp. 
       If provided, the warped image would be overlaid on the reference image to visualize; 
       otherwise, the warped image would be overlaid on the original image.
+    - mat - (np.ndarray) a 3x3 matrix that describes the projective transformation. 
+      Typically, it would be the 2nd output of the `transform.warp` function.
+    
 
 - **Context:**
     - Warps an image based on the transformation matrix. 
@@ -146,11 +147,13 @@ and perform the geometric transformation defined by the given transformation mat
 from plantcv import plantcv as pcv
 import numpy as np
 # M1 is the 2nd output from pcv.transform.warp
-img_warped  = pcv.transform.warp_align(img=im_RGB, mat=M1, refimg=im_therm)
+img_warped  = pcv.transform.warp_align(img=im_RGB, refimg=im_therm, mat=M1)
 
 # M2 defines a translation transformation, which is a special case of projective transformation
 M2 = np.array([[1.0,0.0,100.0],[0.0,1.0,50.0],[0.0,0.0,1.0]])
-img_warped2 = pcv.transform.warp_align(img=im_RGB,mat=M2)
+# A reference image is not available so im_RGB can be used instead
+img_warped2 = pcv.transform.warp_align(img=im_RGB,img=im_RGB, mat=M2)
+
 ```
 
 Warped image:

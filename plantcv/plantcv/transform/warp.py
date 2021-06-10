@@ -151,37 +151,38 @@ def warp(img, refimg, pts, refpts, method='default'):
     return warped_img, mat
 
 
-def warp_align(img, mat, refimg=None):
+def warp_align(img, refimg, mat):
     """Warp the input image based on given transformation matrix mat, to align with the refimg
 
     Inputs:
     img    = image to be warped
+    refimg = reference image
     mat    = transformation matrix (size: (3,3))
-    refimg = (option) reference image. default=None
 
     Returns:
     warped_img = warped image
 
     :param img: numpy.ndarray
-    :param mat: numpy.ndarray
     :param refimg: numpy.ndarray
+    :param mat: numpy.ndarray
     :return warpped image: numpy.ndarray
     """
 
-    # if no reference image, assume the target image is to be warped to the same size of itself,
-    # and the reference image is the image itself
-    if refimg is None:
-        refimg = _preprocess_img_dtype(img)
-    else:
-        refimg = _preprocess_img_dtype(refimg)
+    # Ensure refimg is compatible with OpenCV
+    refimg = _preprocess_img_dtype(refimg.copy())
+
+    # The output size is the shape of the refimg
     rows_ref, cols_ref = refimg.shape[0:2]
 
+    # Transform img to fit on refimg
     warped_img = cv2.warpPerspective(src=img, M=mat, dsize=(cols_ref, rows_ref))
 
+    # Create an overlay of img on refimg
     debug_mode = params.debug
     params.debug = None
     img_blend = overlay_two_imgs(_preprocess_img_dtype(warped_img), refimg)
 
+    # Debug images
     params.debug = debug_mode
     _debug(visual=warped_img, filename=os.path.join(params.debug_outdir, str(params.device) + "_warped.png"))
     _debug(visual=img_blend, filename=os.path.join(params.debug_outdir, str(params.device) + "_warp_overlay.png"))

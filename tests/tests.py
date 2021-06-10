@@ -5998,14 +5998,14 @@ def test_plantcv_transform_warp_err(pts, refpts):
         pcv.transform.warp(img, refimg, pts, refpts, method=method)
 
 
-@pytest.mark.parametrize("refimg, expected", [[None, (10, 10, 3)], [create_test_img((11, 11)), (11, 11, 3)]])
-def test_plantcv_transform_warp_align(refimg, expected):
+def test_plantcv_transform_warp_align():
     img = create_test_img((10, 10, 3))
+    refimg = create_test_img((11, 11))
     mat = np.array([[ 1.00000000e+00,  1.04238500e-15, -7.69185075e-16],
                     [ 1.44375646e-16,  1.00000000e+00,  0.00000000e+00],
                     [-5.41315251e-16,  1.78930521e-15,  1.00000000e+00]])
     warp_img = pcv.transform.warp_align(img=img, mat=mat, refimg=refimg)
-    assert warp_img.shape == expected
+    assert warp_img.shape == (11, 11, 3)
 
 
 @pytest.mark.parametrize("bad_type", ["native", "nan", "inf"])
