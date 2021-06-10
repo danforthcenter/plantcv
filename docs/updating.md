@@ -662,6 +662,17 @@ pages for more details on the input and output variable types.
 
 * post v3.12.0: rotated_img = **plantcv.transform.rotate**(*img, rotation_deg, crop*)
 
+#### plantcv.transform.warp
+
+* pre v3.11.0: NA
+* post v3.11.0: warped_img = **plantcv.transform.warp(*img, refimg, pts, refpts, method='default'*)**
+* post v3.13.0: warped_img, mat = **plantcv.transform.warp(*img, refimg, pts, refpts, method='default'*)**
+
+#### plantcv.transform.warp_align
+
+* pre v3.13.0: NA
+* post v3.13.0: warped_img = **plantcv.transform.warp_align(*img, refimg, mat*)**
+
 #### plantcv.rotate
 
 * pre v3.0dev2: device, rotated_img = **plantcv.rotate**(*img, rotation_deg, crop, device, debug=None*)

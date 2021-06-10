@@ -1023,7 +1023,6 @@ def test_plantcv_outputs_add_observation_invalid_type():
         outputs.add_observation(sample='default', variable='test', trait='test variable', method='type', scale='none',
                                 datatype=list, value=np.array([2]), label=[])
 
-
 def test_plantcv_outputs_save_results_json_newfile(tmpdir):
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("sub")
@@ -1076,75 +1075,6 @@ def test_plantcv_outputs_save_results_csv(tmpdir):
     with open(testfile, "r") as fp:
         test_results = fp.read()
     assert results == test_results
-
-
-def test_plantcv_transform_warp_smaller():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR),-1)
-    bimg = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY),-1)
-    bimg_small = cv2.resize(bimg, (200,300)) #not sure why INTER_NEAREST doesn't preserve values
-    bimg_small[bimg_small>0]=255
-    mrow, mcol = bimg_small.shape
-    vrow, vcol, vdepth = img.shape
-    pcv.params.debug = None
-    mask_warped = pcv.transform.warp(bimg_small, img[:,:,2],
-                                    pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
-                                    refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
-    pcv.params.debug = 'plot'
-    mask_warped_plot = pcv.transform.warp(bimg_small, img[:,:,2],
-                                pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
-                                refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
-
-    assert np.count_nonzero(mask_warped)==93142
-    assert np.count_nonzero(mask_warped_plot)==93142
-
-
-def test_plantcv_transform_warp_larger():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR),-1)
-    gimg = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY),-1)
-    gimg_large = cv2.resize(gimg, (5000,7000))
-    mrow, mcol = gimg_large.shape
-    vrow, vcol, vdepth = img.shape
-    pcv.params.debug='print'
-    mask_warped_print = pcv.transform.warp(gimg_large, img,
-                                    pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
-                                    refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
-
-    assert np.sum(mask_warped_print)==83103814
-
-
-def test_plantcv_transform_warp_rgbimgerror():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR),-1)
-    gimg = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY),-1)
-    gimg_large = cv2.resize(gimg, (5000,7000))
-    mrow, mcol = gimg_large.shape
-    vrow, vcol, vdepth = img.shape
-
-    with pytest.raises(RuntimeError):
-        _ = pcv.transform.warp(img, img,
-                                pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
-                                refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
-
-
-def test_plantcv_transform_warp_4ptserror():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR),-1)
-    mrow, mcol, _ = img.shape
-    vrow, vcol, vdepth = img.shape
-
-    with pytest.raises(RuntimeError):
-        _ = pcv.transform.warp(img[:,:,0], img,
-                                pts = [(0,0),(mcol-1,0),(0,mrow-1)],
-                                refpts = [(0,0),(vcol-1,0),(0,vrow-1)])
-
-    with pytest.raises(RuntimeError):
-        _ = pcv.transform.warp(img[:,:,1], img,
-                                pts = [(0,0),(mcol-1,0),(0,mrow-1)],
-                                refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
-
-    with pytest.raises(RuntimeError):
-        _ = pcv.transform.warp(img[:,:,2], img,
-                                pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
-                                refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1),(0,vrow-1)])
-
 
 def test_plantcv_acute():
     # Read in test data
@@ -5757,7 +5687,6 @@ def test_plantcv_transform_nonuniform_illumination_gray():
     corrected = pcv.transform.nonuniform_illumination(img=gray_img, ksize=11)
     assert np.shape(corrected) == np.shape(gray_img)
 
-
 # ##############################
 # Tests for the threshold subpackage
 # ##############################
@@ -6001,6 +5930,82 @@ def test_plantcv_threshold_texture():
             assert 0
     else:
         assert 0
+
+
+def create_test_img(sz_img):
+    img = np.random.randint(np.prod(sz_img), size=sz_img) * 255
+    img = img.astype(np.uint8)
+    return img
+
+
+def create_test_img_bin(sz_img):
+    img = np.zeros(sz_img)
+    img[3:7, 2:8] = 1
+    return img
+
+
+def test_plantcv_transform_warp_default():
+    pcv.params.debug = "plot"
+    img = create_test_img((12, 10, 3))
+    refimg = create_test_img((12, 10, 3))
+    pts = [(0, 0),(1, 0),(0, 3),(4, 4)]
+    refpts = [(0, 0),(1, 0),(0, 3),(4, 4)]
+    warped_img, mat = pcv.transform.warp(img, refimg, pts, refpts, method="default")
+    assert mat.shape == (3, 3)
+
+
+def test_plantcv_transform_warp_lmeds():
+    pcv.params.debug = "plot"
+    img = create_test_img((10, 10, 3))
+    refimg = create_test_img((11, 11))
+    pts = [(0, 0), (1, 0), (0, 3), (4, 4)]
+    refpts = [(0, 0), (1, 0), (0, 3), (4, 4)]
+    warped_img, mat = pcv.transform.warp(img, refimg, pts, refpts, method="lmeds")
+    assert mat.shape == (3, 3)
+
+
+def test_plantcv_transform_warp_rho():
+    pcv.params.debug = "plot"
+    img = create_test_img_bin((10, 10))
+    refimg = create_test_img((11, 11))
+    pts = [(0, 0), (1, 0), (0, 3), (4, 4)]
+    refpts = [(0, 0), (1, 0), (0, 3), (4, 4)]
+    warped_img, mat = pcv.transform.warp(img, refimg, pts, refpts, method="rho")
+    assert mat.shape == (3, 3)
+
+
+def test_plantcv_transform_warp_ransac():
+    pcv.params.debug = "plot"
+    img = create_test_img((100, 150))
+    refimg = create_test_img((10, 15))
+    pts = [(0, 0), (149, 0), (99, 149), (0, 99), (3, 3)]
+    refpts = [(0, 0), (0, 14), (9, 14), (0, 9), (3, 3)]
+    warped_img, mat = pcv.transform.warp(img, refimg, pts, refpts, method="ransac")
+    assert mat.shape == (3, 3)
+
+
+@pytest.mark.parametrize("pts, refpts", [
+    [[(0,0)],[(0,0),(0,1)]],  # different # of points provided for img and refimg
+    [[(0,0)],[(0,0)]],  # not enough pairs of points provided
+    [[(0, 0), (0, 14), (9, 14), (0, 9), (3, 3)],
+     [(0, 0), (149, 0), (99, 149), (0, 99), (3, 3)]]  # homography not able to be calculated (cannot converge)
+])
+def test_plantcv_transform_warp_err(pts, refpts):
+    img = create_test_img((10, 15))
+    refimg = create_test_img((100, 150))
+    method = "rho"
+    with pytest.raises(RuntimeError):
+        pcv.transform.warp(img, refimg, pts, refpts, method=method)
+
+
+def test_plantcv_transform_warp_align():
+    img = create_test_img((10, 10, 3))
+    refimg = create_test_img((11, 11))
+    mat = np.array([[ 1.00000000e+00,  1.04238500e-15, -7.69185075e-16],
+                    [ 1.44375646e-16,  1.00000000e+00,  0.00000000e+00],
+                    [-5.41315251e-16,  1.78930521e-15,  1.00000000e+00]])
+    warp_img = pcv.transform.warp_align(img=img, mat=mat, refimg=refimg)
+    assert warp_img.shape == (11, 11, 3)
 
 
 @pytest.mark.parametrize("bad_type", ["native", "nan", "inf"])
