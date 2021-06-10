@@ -65,8 +65,7 @@ def sizes(img, mask, num_objects=100):
         h = label_coord_y[c]
         cv2.putText(img=plotting_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                     fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
-        if c == (num_objects - 1):
-            print("There were " + str(len(id_objects) - num_objects) + " objects not annotated.")
+    print("There were " + str(len(id_objects) - num_objects) + " objects not annotated.")
 
     # Auto-increment device
     params.device += 1
