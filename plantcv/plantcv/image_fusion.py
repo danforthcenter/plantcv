@@ -37,7 +37,7 @@ def image_fusion(img1, img2, wvs1, wvs2, array_type=None, filename=None):
     if (r1, c1) != (r2, c2):
         fatal_error("Input images should have the same image size")
 
-    array_data  = np.concatenate((img1, img2), axis=2)
+    array_data = np.concatenate((img1, img2), axis=2)
 
     # sort all wavelengths
     wavelengths = np.array(wvs1 + wvs2)
