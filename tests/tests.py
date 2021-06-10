@@ -2259,6 +2259,7 @@ def test_plantcv_image_add():
     added_img = pcv.image_add(gray_img1=img1, gray_img2=img2)
     assert all([i == j] for i, j in zip(np.shape(added_img), TEST_BINARY_DIM))
 
+
 def test_plantcv_image_fusion():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_image_add")
