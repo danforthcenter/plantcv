@@ -183,6 +183,6 @@ def read_data(filename):
     pseudo_rgb = _make_pseudo_rgb(spectral_array)
     spectral_array.pseudo_rgb = pseudo_rgb
 
-    _debug(visual=pseudo_rgb, filename=os.path.join(params.debug_outdir, str(params.device)+"_pseudo_rgb.png"))
+    _debug(visual=pseudo_rgb, filename=os.path.join(params.debug_outdir, str(params.device) + "_pseudo_rgb.png"))
 
     return spectral_array
