@@ -34,7 +34,7 @@ def image_fusion(img1, img2, wvs1, wvs2, array_type=None, filename=None):
     if len(img2.shape) == 2:
         img2 = np.expand_dims(img2, axis=2)
     r2, c2, b2 = img2.shape
-    if (r1,c1) != (r2,c2):
+    if (r1, c1) != (r2, c2):
         fatal_error("Input images should have the same image size")
 
     array_data  = np.concatenate((img1, img2), axis=2)
