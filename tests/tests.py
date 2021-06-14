@@ -6387,6 +6387,15 @@ def test_plantcv_visualize_ecdf_pix_intensity(title, tmpdir):
     mask     =  np.where(img > 130,255,0).astype(np.uint8)
     fig_ecdf = plantcv.plantcv.visualize.ecdf.pix_intensity(img, mask=mask, title=title)
     assert isinstance(fig_ecdf, ggplot)
+    
+def test_plantcv_visualize_ecdf_pix_intensity_no_mask(tmpdir):
+    pcv.params.debug = None
+    # Create a tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
+    fig_ecdf = plantcv.plantcv.visualize.ecdf.pix_intensity(img)
+    assert isinstance(fig_ecdf, ggplot)
 
 def test_plantcv_visualize_ecdf_pix_intensity_rgb(tmpdir):
     pcv.params.debug = None
