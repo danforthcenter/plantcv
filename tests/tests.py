@@ -2260,11 +2260,7 @@ def test_plantcv_image_add():
     assert all([i == j] for i, j in zip(np.shape(added_img), TEST_BINARY_DIM))
 
 
-def test_plantcv_image_fusion(tmpdir):
-    # Test cache directory
-    # cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_image_add")
-    cache_dir = tmpdir.mkdir("sub")
-    pcv.params.debug_outdir = cache_dir
+def test_plantcv_image_fusion():
     # Read in test data
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY))
     img2 = np.copy(img1)
