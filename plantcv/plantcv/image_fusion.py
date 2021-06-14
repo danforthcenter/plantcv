@@ -10,21 +10,19 @@ from plantcv.plantcv.hyperspectral.read_data import _make_pseudo_rgb
 from plantcv.plantcv._debug import _debug
 
 
-def image_fusion(img1, img2, wvs1, wvs2, array_type="multispectral", filename=None):
+def image_fusion(img1, img2, wvs1, wvs2, array_type="multispectral"):
     """Fuse two images of the same size together to create a multispectral image
     img1: 1st image to be fused
     img2: 2nd image to be fused
     wvs1: list of wavelengths represent bands in img1
     wvs2: list of wavelengths represent bands in img2
     array_type: (optional) description of the fused array
-    filename: (optional) desired filename of the fused array
 
     :param img1: numpy.ndarray
     :param img2: numpy.ndarray
     :param wvs1: list
     :param wvs2: list
     :param array_type: str
-    :param filename: str
     :return fused_array: plantcv.Spectral_data
     """
 
@@ -73,7 +71,7 @@ def image_fusion(img1, img2, wvs1, wvs2, array_type="multispectral", filename=No
                                 wavelength_dict=wavelength_dict,
                                 samples=c, lines=r, interleave="NA",
                                 wavelength_units="nm", array_type=array_type,
-                                pseudo_rgb=None, filename=filename, default_bands=None)
+                                pseudo_rgb=None, filename="NA", default_bands=None)
 
     # Make pseudo-rgb image and replace it inside the class instance object
     pseudo_rgb = _make_pseudo_rgb(fused_array)
