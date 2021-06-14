@@ -62,18 +62,14 @@ def image_fusion(img1, img2, wvs1, wvs2, array_type=None, filename=None):
     # Scale the array data to 0-1 by dividing by the maximum data type value
     array_data = (array_data / np.iinfo(array_data.dtype).max).astype(np.float32)
 
-    max_pixel = float(np.amax(array_data))
-    min_pixel = float(np.amin(array_data))
-
-    d_type = array_data.dtype
-
     r, c, b = array_data.shape
 
     fused_array = Spectral_data(array_data=array_data,
                                 max_wavelength=float(max(wavelengths)),
                                 min_wavelength=float(min(wavelengths)),
-                                max_value=max_pixel, min_value=min_pixel,
-                                d_type=d_type,
+                                max_value=float(np.amax(array_data)),
+                                min_value=float(np.amin(array_data)),
+                                d_type=array_data.dtype,
                                 wavelength_dict=wavelength_dict, samples=int(r * c),
                                 lines=int(b), interleave="bil",
                                 wavelength_units="nm", array_type=array_type,
