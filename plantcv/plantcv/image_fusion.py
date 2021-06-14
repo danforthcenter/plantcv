@@ -70,8 +70,8 @@ def image_fusion(img1, img2, wvs1, wvs2, array_type=None, filename=None):
                                 max_value=float(np.amax(array_data)),
                                 min_value=float(np.amin(array_data)),
                                 d_type=array_data.dtype,
-                                wavelength_dict=wavelength_dict, samples=int(r * c),
-                                lines=int(b), interleave="bil",
+                                wavelength_dict=wavelength_dict,
+                                samples=c, lines=r, interleave="NA",
                                 wavelength_units="nm", array_type=array_type,
                                 pseudo_rgb=None, filename=filename, default_bands=None)
 
