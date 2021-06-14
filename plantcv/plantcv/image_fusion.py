@@ -2,6 +2,7 @@
 
 import os
 import numpy as np
+from skimage import img_as_ubyte
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import Spectral_data
 from plantcv.plantcv import params
@@ -39,6 +40,12 @@ def image_fusion(img1, img2, wvs1, wvs2, array_type=None, filename=None):
     if (r1, c1) != (r2, c2):
         fatal_error("Input images should have the same image size")
 
+    # If the images are not the same data type, convert to 8-bit unsigned integer
+    if img1.dtype != img2.dtype:
+        img1 = img_as_ubyte(img1)
+        img2 = img_as_ubyte(img2)
+
+    # Concatenate the images on the depth/spectral (z) axis
     array_data = np.concatenate((img1, img2), axis=2)
 
     # sort all wavelengths
@@ -52,7 +59,8 @@ def image_fusion(img1, img2, wvs1, wvs2, array_type=None, filename=None):
 
     # sort array_data based on wavelengths
     array_data = array_data[:, :, ind]
-    array_data = (array_data / 255).astype(np.float32)
+    # Scale the array data to 0-1 by dividing by the maximum data type value
+    array_data = (array_data / np.iinfo(array_data.dtype).max).astype(np.float32)
 
     max_pixel = float(np.amax(array_data))
     min_pixel = float(np.amin(array_data))
@@ -92,6 +100,8 @@ def _expand_img_dims(img):
     :params img: numpy.ndarray
     :return img: numpy.ndarray
     """
+    # If the image is 2D, expand to 3D to make stackable
     if len(img.shape) == 2:
         return np.expand_dims(img, axis=2)
-    return img
+    # Return copy of image to break the reference to the input image
+    return img.copy()
