@@ -7,17 +7,10 @@ import numpy as np
 from plantcv.plantcv import params, fatal_error
 from plantcv.plantcv._debug import _debug
 from statsmodels.distributions.empirical_distribution import ECDF
-from plotnine import ggplot, aes, geom_point, labels, scale_color_manual
+from plotnine import ggplot, aes, geom_point, labels, scale_color_manual, scale_x_log10
 
 
 def obj_size(mask, title=None):
-# def obj_size(img, mask, title=None):
-    # mask1 = np.copy(mask)
-    # ori_img = np.copy(img)
-    # if len(np.shape(ori_img)) == 2:
-    #     ori_img = cv2.cvtColor(ori_img, cv2.COLOR_GRAY2BGR)
-    #
-    # objects, hierarchy = cv2.findContours(mask1, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
     objects, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
     areas = [cv2.contourArea(cnt) for cnt in objects]
 
@@ -26,7 +19,8 @@ def obj_size(mask, title=None):
     ecdf_df = pd.DataFrame({'object area': ecdf.x, 'cumulative probability': ecdf.y})
     fig_ecdf = (ggplot(data=ecdf_df,
                        mapping=aes(x='object area', y='cumulative probability'))
-                + geom_point(size=.1))
+                + geom_point(size=.1)
+                + scale_x_log10())
     if title is not None:
         fig_ecdf = fig_ecdf + labels.ggtitle(title)
 
@@ -46,10 +40,6 @@ def pix_intensity(img, mask=None, title=None):
 
     if len(img.shape) > 2 and img.shape[2] == 3:
         b_names = ['blue', 'green', 'red']
-        # if img.shape[2] == 3:
-        #     b_names = ['blue', 'green', 'red']
-        # else:
-        #     b_names = [str(i) for i in range(masked.shape[2])]
 
     if len(img.shape) == 2:
         ecdf = ECDF(masked.reshape(-1, ), side='right')
@@ -71,7 +61,8 @@ def pix_intensity(img, mask=None, title=None):
 
     fig_ecdf = (ggplot(data=ecdf_df,
                        mapping=aes(x='pixel intensity', y='cumulative probability', color='color channel'))
-                + geom_point(size=0.01))
+                + geom_point(size=0.01)
+                + scale_x_log10())
     if title is not None:
         fig_ecdf = fig_ecdf + labels.ggtitle(title)
     if len(img.shape) > 2 and img.shape[2] == 3:
@@ -80,4 +71,44 @@ def pix_intensity(img, mask=None, title=None):
     # Plot or print the histogram
     _debug(visual=fig_ecdf, filename=os.path.join(params.debug_outdir, str(params.device) + '_pix_intensity_ecdf.png'))
     return fig_ecdf
+
+
+def main():
+    import os
+    import argparse
+    from plantcv import plantcv as pcv
+    parser = argparse.ArgumentParser(description="ecdf")
+    parser.add_argument(
+        "--img-name", type=str, default="docs/img/documentation_images/visualize_ecdf/input_color_img.jpg",
+        help="name of the test image"
+    )
+    parser.add_argument(
+        "--gray-img-name", type=str, default="docs/img/documentation_images/visualize_ecdf/input_gray_img.jpg",
+        help="name of the test mask"
+    )
+    parser.add_argument(
+        "--save-path", type=str, default="docs/img/documentation_images/visualize_ecdf",
+        help="name of the test mask"
+    )
+
+
+    args = parser.parse_args()
+    img_vis, _, _ = pcv.readimage(args.img_name)
+    im_gray, _, _ = pcv.readimage(args.gray_img_name)
+    mask = np.where(im_gray > 130, 255, 0).astype(np.uint8)
+
+    fig_obj_size = obj_size(mask, title=None)
+    pcv.print_image(fig_obj_size, os.path.join(args.save_path, "ecdf_object_size"))
+
+    fig_pix_intensity = pix_intensity(img_vis, mask=mask, title=None)
+    pcv.print_image(fig_pix_intensity, os.path.join(args.save_path, "ecdf_pix_intensity"))
+
+    fig_pix_intensity_no_mask = pix_intensity(img_vis)
+    pcv.print_image(fig_pix_intensity_no_mask, os.path.join(args.save_path, "ecdf_pix_intensity_no_mask"))
+
+    fig_pix_intensity_gray_im = pix_intensity(im_gray)
+    pcv.print_image(fig_pix_intensity_gray_im, os.path.join(args.save_path, "ecdf_pix_intensity_gray_img_no_mask"))
+
+if __name__ == "__main__":
+    main()
 
