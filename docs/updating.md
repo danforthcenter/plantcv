@@ -369,6 +369,11 @@ pages for more details on the input and output variable types.
 * pre v3.0: NA
 * post v3.0: new_img = **plantcv.image_subtract**(*gray_img1, gray_img2*)
 
+#### plantcv.image_fusion
+
+* pre v3.13.0: NA
+* post v3.13.0: fused_img = **plantcv.image_fusion**(*img1, img2, wvs1, wvs2, array_type="multispectral"*)
+
 #### plantcv.invert
 
 * pre v3.0dev2: device, img_inv = **plantcv.invert**(*img, device, debug=None*)
