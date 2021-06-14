@@ -19,6 +19,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import dask
 from dask.distributed import Client
+from skimage import img_as_ubyte
 
 PARALLEL_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "parallel_data")
 TEST_TMPDIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".cache")
@@ -2262,18 +2263,21 @@ def test_plantcv_image_add():
 
 def test_plantcv_image_fusion():
     # Read in test data
-    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY))
-    img2 = np.copy(img1)
-    fused_img = pcv.image_fusion(img1, img2, [480.0,550.0,670.0], [480.0,550.0,670.0])
+    # 16-bit image
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX))
+    img2 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN))
+    # 8-bit image
+    img2 = img_as_ubyte(img2)
+    fused_img = pcv.image_fusion(img1, img2, [480.0, 550.0], [480.0, 550.0])
     assert str(type(fused_img)) == "<class 'plantcv.plantcv.classes.Spectral_data'>"
 
 
 def test_plantcv_image_fusion_size_diff():
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), 0)
     img2 = np.copy(img1)
-    img2 = img2[0:10,0:10]
+    img2 = img2[0:10, 0:10]
     with pytest.raises(RuntimeError):
-        _ = pcv.image_fusion(img1, img2, [480.0,550.0,670.0], [480.0,550.0,670.0])
+        _ = pcv.image_fusion(img1, img2, [480.0, 550.0, 670.0], [480.0, 550.0, 670.0])
 
 
 def test_plantcv_image_subtract():
