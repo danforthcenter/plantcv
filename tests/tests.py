@@ -2265,10 +2265,10 @@ def test_plantcv_image_fusion():
     # Read in test data
     # 16-bit image
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
-    img2 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
+    img2 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN))
     # 8-bit image
     img2 = img_as_ubyte(img2)
-    fused_img = pcv.image_fusion(img1, img2, [480.0], [550.0])
+    fused_img = pcv.image_fusion(img1, img2, [480.0], [550.0, 640.0, 800.0])
     assert str(type(fused_img)) == "<class 'plantcv.plantcv.classes.Spectral_data'>"
 
 
