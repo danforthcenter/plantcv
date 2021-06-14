@@ -10,7 +10,7 @@ from plantcv.plantcv._debug import _debug
 
 
 def image_fusion(img1, img2, wvs1, wvs2, array_type=None, filename=None):
-    """ Fuse two images of the same size together with given wavelengths representing and make a Spectral_data instance
+    """Fuse two images of the same size together to create a multispectral image
     img1: 1st image to be fused
     img2: 2nd image to be fused
     wvs1: list of wavelengths represent bands in img1
@@ -24,7 +24,7 @@ def image_fusion(img1, img2, wvs1, wvs2, array_type=None, filename=None):
     :param wvs2: list
     :param array_type: str
     :param filename: str
-    :return: fused_array (a Spectral_data instance)
+    :return fused_array: plantcv.Spectral_data
     """
 
     if len(img1.shape) == 2:
@@ -60,14 +60,14 @@ def image_fusion(img1, img2, wvs1, wvs2, array_type=None, filename=None):
     r, c, b = array_data.shape
 
     fused_array = Spectral_data(array_data=array_data,
-                                   max_wavelength=float(max(wavelengths)),
-                                   min_wavelength=float(min(wavelengths)),
-                                   max_value=max_pixel, min_value=min_pixel,
-                                   d_type=d_type,
-                                   wavelength_dict=wavelength_dict, samples=int(r * c),
-                                   lines=int(b), interleave="bil",
-                                   wavelength_units="nm", array_type=array_type,
-                                   pseudo_rgb=None, filename=filename, default_bands=None)
+                                max_wavelength=float(max(wavelengths)),
+                                min_wavelength=float(min(wavelengths)),
+                                max_value=max_pixel, min_value=min_pixel,
+                                d_type=d_type,
+                                wavelength_dict=wavelength_dict, samples=int(r * c),
+                                lines=int(b), interleave="bil",
+                                wavelength_units="nm", array_type=array_type,
+                                pseudo_rgb=None, filename=filename, default_bands=None)
 
     # Make pseudo-rgb image and replace it inside the class instance object
     pseudo_rgb = _make_pseudo_rgb(fused_array)
