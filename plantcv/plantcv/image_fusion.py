@@ -27,13 +27,15 @@ def image_fusion(img1, img2, wvs1, wvs2, array_type=None, filename=None):
     :return fused_array: plantcv.Spectral_data
     """
 
-    if len(img1.shape) == 2:
-        img1 = np.expand_dims(img1, axis=2)
-    r1, c1, b1 = img1.shape
+    # If the image is 2D, expand to 3D to make stackable
+    img1 = _expand_img_dims(img1)
+    r1, c1, _ = img1.shape
 
-    if len(img2.shape) == 2:
-        img2 = np.expand_dims(img2, axis=2)
-    r2, c2, b2 = img2.shape
+    # If the image is 2D, expand to 3D to make stackable
+    img2 = _expand_img_dims(img2)
+    r2, c2, _ = img2.shape
+
+    # Fatal error if images are not the same spatial dimensions
     if (r1, c1) != (r2, c2):
         fatal_error("Input images should have the same image size")
 
@@ -76,3 +78,20 @@ def image_fusion(img1, img2, wvs1, wvs2, array_type=None, filename=None):
     _debug(visual=pseudo_rgb, filename=os.path.join(params.debug_outdir, str(params.device) + "_fused_pseudo_rgb.png"))
 
     return fused_array
+
+
+def _expand_img_dims(img):
+    """Expand 2D images to 3D
+
+    Inputs:
+    img - input image
+
+    Returns:
+    img - image with expanded dimensions
+
+    :params img: numpy.ndarray
+    :return img: numpy.ndarray
+    """
+    if len(img.shape) == 2:
+        return np.expand_dims(img, axis=2)
+    return img
