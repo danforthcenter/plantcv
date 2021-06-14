@@ -29,6 +29,7 @@ from plantcv.plantcv.sobel_filter import sobel_filter
 from plantcv.plantcv.scharr_filter import scharr_filter
 from plantcv.plantcv.hist_equalization import hist_equalization
 from plantcv.plantcv.image_add import image_add
+from plantcv.plantcv.image_fusion import image_fusion
 from plantcv.plantcv.image_subtract import image_subtract
 from plantcv.plantcv.erode import erode
 from plantcv.plantcv.dilate import dilate
@@ -94,9 +95,9 @@ del get_versions
 
 __all__ = ['fatal_error', 'Params', 'Outputs', 'Spectral_data', 'deprecation_warning', 'print_image', 'plot_image',
            'color_palette', 'apply_mask', 'gaussian_blur', 'transform', 'hyperspectral', 'readimage', 'readbayer',
-           'laplace_filter', 'sobel_filter', 'scharr_filter', 'hist_equalization', 'erode', 'image_add', 
-           'image_subtract', 'dilate', 'watershed', 'rectangle_mask', 'rgb2gray_hsv', 'rgb2gray_lab', 'rgb2gray_cmyk',
-           'rgb2gray', 'median_blur', 'fill', 'invert', 'logical_and', 'logical_or', 'logical_xor',
+           'laplace_filter', 'sobel_filter', 'scharr_filter', 'hist_equalization', 'erode', 'image_add',
+           'image_fusion', 'image_subtract', 'dilate', 'watershed', 'rectangle_mask', 'rgb2gray_hsv', 'rgb2gray_lab',
+           'rgb2gray_cmyk', 'rgb2gray', 'median_blur', 'fill', 'invert', 'logical_and', 'logical_or', 'logical_xor',
            'find_objects', 'roi_objects', 'object_composition', 'analyze_object', 'morphology',
            'analyze_bound_horizontal', 'analyze_bound_vertical', 'analyze_color', 'analyze_nir_intensity',
            'print_results', 'flip', 'crop_position_mask', 'get_nir', 'report_size_marker_area',
