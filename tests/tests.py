@@ -6277,6 +6277,7 @@ def test_plantcv_visualize_histogram_array():
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.histogram(img=img[0, :])
 
+
 def test_plantcv_visualize_hyper_histogram():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_visualize_hyper_histogram")
