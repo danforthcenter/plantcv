@@ -175,6 +175,9 @@ nav:
           - 'Histogram': visualize_histogram.md
           - 'Overlay Images': visualize_ovelay_two_imgs.md
           - 'Pseudocolor': visualize_pseudocolor.md
+          - 'ecdf':
+              - 'obj_size': visualize_ecdf_obj_size.md
+              - 'pix_intensity': visualize_ecdf_pix_intensity.md
       - 'Watershed Segmentation': watershed.md
       - 'White balance': white_balance.md
       - 'Within Frame': within_frame.md
