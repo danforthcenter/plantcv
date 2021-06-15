@@ -15,7 +15,6 @@ visualization.
 - Examine the cumulative distribution of pixel intensities of a given image. This can be used as an alternative 
   to histogram visualization.
 - The y-axis presents the cumulative probability (range: [0,1]).  
-- The x-axis presents the pixel intensity in common log-scale (logarithm with base 10)
 
 - **Example use:**
     - Below
@@ -44,16 +43,20 @@ fig_ecdf_gray = pcv.visualize.ecdf.pix_intensity(img=gray_img, mask=mask)
 fig_ecdf_gray = pcv.visualize.ecdf.pix_intensity(img=gray_img)
 ```
 
-**Cumulative distribution of pixel intensities of RGB image**
+**Cumulative distribution of pixel intensities of RGB image (no mask)**
 
-![Screenshot](img/documentation_images/visualize_ecdf/ecdf_pix_intensity.png)
+![Screenshot](img/documentation_images/visualize_ecdf/ecdf_pix_int_rgb.png)
 
-**Cumulative distribution of pixel intensities of grayscale image**
+**Cumulative distribution of pixel intensities of RGB image with (mask provided)**
 
-![Screenshot](img/documentation_images/visualize_ecdf/ecdf_pix_intensity_gray_img.png)
+![Screenshot](img/documentation_images/visualize_ecdf/ecdf_pix_int_rgb_mask.png)
 
 **Cumulative distribution of pixel intensities of grayscale image (no mask)**
 
-![Screenshot](img/documentation_images/visualize_ecdf/ecdf_pix_intensity_gray_img_no_mask.png)
+![Screenshot](img/documentation_images/visualize_ecdf/ecdf_pix_int_gray.png)
+
+**Cumulative distribution of pixel intensities of grayscale image (mask provided)**
+
+![Screenshot](img/documentation_images/visualize_ecdf/ecdf_pix_int_gray_mask.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/visualize/ecdf/ecdf.py)
