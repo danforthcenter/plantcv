@@ -31,6 +31,6 @@ fig_ecdf = pcv.visualize.ecdf.obj_size(mask=mask)
 
 **Cumulative distribution of object sizes**
 
-![Screenshot](img/documentation_images/visualize_ecdf/ecdf_object_size.png)
+![Screenshot](img/documentation_images/visualize_ecdf/ecdf_obj_size.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/visualize/ecdf/ecdf.py)
