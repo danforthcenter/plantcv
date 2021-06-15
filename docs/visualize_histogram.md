@@ -55,6 +55,7 @@ hist_figure3, hist_data3 = pcv.visualize.histogram(img=gray_img, mask=mask, lowe
 The histogram function plots histograms from 3 color bands automatically if an RGB input image is given.
 
 **RGB image**
+
 ![Screenshot](img/tutorial_images/vis/original_image.jpg)
 
 ```python
