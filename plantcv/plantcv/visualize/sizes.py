@@ -68,7 +68,6 @@ def sizes(img, mask, num_objects=100):
     print("There were " + str(len(id_objects) - num_objects) + " objects not annotated.")
 
     # Auto-increment device
-    params.device += 1
     # Reset debug mode
     params.debug = debug
 
