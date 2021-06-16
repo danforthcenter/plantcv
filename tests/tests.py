@@ -19,6 +19,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import dask
 from dask.distributed import Client
+from skimage import img_as_ubyte
 
 PARALLEL_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "parallel_data")
 TEST_TMPDIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".cache")
@@ -2262,6 +2263,25 @@ def test_plantcv_image_add():
     assert all([i == j] for i, j in zip(np.shape(added_img), TEST_BINARY_DIM))
 
 
+def test_plantcv_image_fusion():
+    # Read in test data
+    # 16-bit image
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
+    img2 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN))
+    # 8-bit image
+    img2 = img_as_ubyte(img2)
+    fused_img = pcv.image_fusion(img1, img2, [480.0], [550.0, 640.0, 800.0])
+    assert str(type(fused_img)) == "<class 'plantcv.plantcv.classes.Spectral_data'>"
+
+
+def test_plantcv_image_fusion_size_diff():
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), 0)
+    img2 = np.copy(img1)
+    img2 = img2[0:10, 0:10]
+    with pytest.raises(RuntimeError):
+        _ = pcv.image_fusion(img1, img2, [480.0, 550.0, 670.0], [480.0, 550.0, 670.0])
+
+
 def test_plantcv_image_subtract():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_image_sub")
@@ -2280,7 +2300,6 @@ def test_plantcv_image_subtract():
     pcv.params.debug = None
     new_img = pcv.image_subtract(img1, img2)
     assert np.array_equal(new_img, np.zeros(np.shape(new_img), np.uint8))
-
 
 def test_plantcv_image_subtract_fail():
     # read in images
