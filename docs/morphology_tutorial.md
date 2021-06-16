@@ -403,12 +403,12 @@ out from a stem will have larger insertion angles than those that grow upward.
     # mask         = Binary image, single channel, object = 1 and background = 0
     # objects      = List of contours
     # label        = (Optional) label parameter, modifies the variable name of observations recorded. (default `label="default"`)
-    filled_img = pcv.morphology.fill_segments(mask=cropped_mask, objects=edge_objects, label="all_segments")
-
+    filled_mask = pcv.morphology.fill_segments(mask=cropped_mask, objects=edge_objects, label="all_segments")
+    filled_img = pcv.visualize.colorize_label_img(label_img=filled_mask)
 
 ```
 
-**Figure 19.** Fill Segment Area 
+**Figure 19.** Fill Segment Area
 
 The [plantcv.morphology.fill_segment](fill_segments.md) function aims to measure 
 area of segments filled in. By using watershed segmentation to flood fill the mask by
@@ -422,7 +422,7 @@ using the segments as markers.
     # Fill in leaves (also stores out area data)  
     
     filled_img2 = pcv.morphology.fill_segments(mask=cropped_mask, objects=leaf_obj, stem_objects=stem_obj, label="separate_leaves")
-
+    filled_img2 = pcv.visualize.colorize_label_img(label_img=filled_mask2)
 
 ```
 
@@ -552,8 +552,8 @@ def main():
                                                           size=20, label="default")
     
     # Fill in segments (also stores out area data)                                                       
-    filled_img = pcv.morphology.fill_segments(mask=cropped_mask, objects=edge_objects, label="all_segments")
-    filled_img2 = pcv.morphology.fill_segments(mask=cropped_mask, objects=leaf_obj, stem_objects=stem_obj, label="separate_leaves")
+    filled_mask = pcv.morphology.fill_segments(mask=cropped_mask, objects=edge_objects, label="all_segments")
+    filled_mask2 = pcv.morphology.fill_segments(mask=cropped_mask, objects=leaf_obj, stem_objects=stem_obj, label="separate_leaves")
                                                           
                                                           
     # Write out data collected about angles and lengths                                                       

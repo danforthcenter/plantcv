@@ -4,8 +4,7 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv import params
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import Spectral_data
 from plantcv.plantcv.transform import rescale
 
@@ -184,9 +183,6 @@ def read_data(filename):
     pseudo_rgb = _make_pseudo_rgb(spectral_array)
     spectral_array.pseudo_rgb = pseudo_rgb
 
-    if params.debug == "plot":
-        plot_image(pseudo_rgb)
-    elif params.debug == "print":
-        print_image(pseudo_rgb, os.path.join(params.debug_outdir, str(params.device)+"_pseudo_rgb.png"))
+    _debug(visual=pseudo_rgb, filename=os.path.join(params.debug_outdir, str(params.device) + "_pseudo_rgb.png"))
 
     return spectral_array

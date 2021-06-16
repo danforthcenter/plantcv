@@ -369,6 +369,11 @@ pages for more details on the input and output variable types.
 * pre v3.0: NA
 * post v3.0: new_img = **plantcv.image_subtract**(*gray_img1, gray_img2*)
 
+#### plantcv.image_fusion
+
+* pre v3.13.0: NA
+* post v3.13.0: fused_img = **plantcv.image_fusion**(*img1, img2, wvs1, wvs2, array_type="multispectral"*)
+
 #### plantcv.invert
 
 * pre v3.0dev2: device, img_inv = **plantcv.invert**(*img, device, debug=None*)
@@ -421,6 +426,10 @@ pages for more details on the input and output variable types.
 * pre v3.3: NA
 * post v3.3: cycle_img = **plantcv.morphology.check_cycles**(*skel_img*)
 * post v3.11: cycle_img = **plantcv.morphology.check_cycles**(*skel_img, label="default"*)
+
+#### plantcv.morphology.fill_segments
+* pre v3.13: filled_img = **plantcv.morphology.fill_segments(*mask, objects, stem_objects=None, label="default"*)**
+* post v3.13: filled_mask = **plantcv.morphology.fill_segments(*mask, objects, stem_objects=None, label="default"*)**
 
 #### plantcv.morphology.find_branch_pts
 
@@ -657,6 +666,17 @@ pages for more details on the input and output variable types.
 #### plantcv.transform.rotate
 
 * post v3.12.0: rotated_img = **plantcv.transform.rotate**(*img, rotation_deg, crop*)
+
+#### plantcv.transform.warp
+
+* pre v3.11.0: NA
+* post v3.11.0: warped_img = **plantcv.transform.warp(*img, refimg, pts, refpts, method='default'*)**
+* post v3.13.0: warped_img, mat = **plantcv.transform.warp(*img, refimg, pts, refpts, method='default'*)**
+
+#### plantcv.transform.warp_align
+
+* pre v3.13.0: NA
+* post v3.13.0: warped_img = **plantcv.transform.warp_align(*img, refimg, mat*)**
 
 #### plantcv.rotate
 
@@ -913,11 +933,15 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: Deprecated, see:
     * bin_img = **plantcv.threshold.triangle**(*gray_img, max_value, object_type="light", xstep=1*)
 
-#### plantcv.visualize.colorize_masks 
+#### plantcv.visualize.colorize_label_img
+
+* pre v3.13: NA
+* post v3.13: colored_img = **plantcv.visualize.colorize_label_img**(*label_img*)
+
+#### plantcv.visualize.colorize_masks
 
 * pre v3.2: NA
 * post v3.2: colored_img = pcv.visualize.colorize_masks(classes, colors)
-
 
 #### plantcv.visualize.colorspaces
 

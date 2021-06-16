@@ -6,14 +6,12 @@ from plantcv.plantcv import fatal_error
 
 def sample_images(source_path, dest_path, num=100):
     if not os.path.exists(source_path):
-        raise IOError("Directory does not exist: {0}".format(source_path))
+        raise IOError(f"Directory does not exist: {source_path}")
 
     if not os.path.exists(dest_path):
         os.makedirs(dest_path)  # exist_ok argument does not exist in python 2
 
     img_element_array = []
-    sample_array = []
-    num_images = []
     img_extensions = ['.png', '.jpg', '.jpeg', '.tif', '.tiff', '.gif']
 
     # If SnapshotInfo exists then need to make a new csv for the random image sample
@@ -31,22 +29,19 @@ def sample_images(source_path, dest_path, num=100):
 
         # Check to make sure number of imgs to select is less than number of images found
         if num > len(line_array):
-            fatal_error("Number of images found ({0}) less than 'num'.".
-                            format(len(line_array)))
+            fatal_error(f"Number of images found ({len(line_array)}) less than 'num'.")
 
-        for i in range(0, num):
-            r = random.randint(0, len(line_array) - 1)
-            while r in num_images:
-                r = random.randint(0, len(line_array) - 1)
-            sample_array.append(line_array[r])
-            num_images.append(r)
-
+        # Create SnapshotInfo file
         out_file = open(os.path.join(dest_path, 'SnapshotInfo.csv'), 'w')
         out_file.write(header)
-        for element in sample_array:
-            out_file.write(','.join(element))
-            snap_path = os.path.join(source_path, "snapshot" + element[1])
-            folder_path = os.path.join(dest_path, "snapshot" + element[1])
+
+        # Get random snapshots
+        random_index = random.sample(range(0, len(line_array) - 1), num)
+        for i in random_index:
+            row = line_array[int(i)]
+            out_file.write(','.join(row))
+            snap_path = os.path.join(source_path, "snapshot" + row[1])
+            folder_path = os.path.join(dest_path, "snapshot" + row[1])
             if not os.path.exists(folder_path):
                 os.mkdir(folder_path)  # the beginning of folder_path (dest_path) already exists from above
             for root, dirs, files in os.walk(snap_path):
@@ -58,21 +53,14 @@ def sample_images(source_path, dest_path, num=100):
                 # Check file type so that only images get copied over
                 name, ext = os.path.splitext(file)
                 if ext.lower() in img_extensions:
-                    img_element_array.append(os.path.join(root,file))
+                    img_element_array.append(os.path.join(root, file))
 
         # Check to make sure number of imgs to select is less than number of images found
         if num > len(img_element_array):
-            fatal_error("Number of images found ({0}) less than 'num'.".
-                            format(len(img_element_array)))
+            fatal_error(f"Number of images found ({len(img_element_array)}) less than 'num'.")
 
         # Get random images
-        for i in range(0, num):
-            r = random.randint(0, len(img_element_array) - 1)
-            while r in num_images:
-                r = random.randint(0, len(img_element_array) - 1)
-            sample_array.append(img_element_array[r])
-            num_images.append(r)
-
+        random_index = random.sample(range(0, len(img_element_array) - 1), num)
         # Copy images over to destination
-        for element in sample_array:
-            shutil.copy(element, dest_path)
+        for i in random_index:
+            shutil.copy(img_element_array[int(i)], dest_path)
