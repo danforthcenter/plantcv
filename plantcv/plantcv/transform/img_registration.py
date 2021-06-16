@@ -1,5 +1,6 @@
 # Image Registration Based On User Selected Landmark Points
 
+import cv2
 from plantcv import plantcv as pcv
 from scipy.spatial import distance
 import numpy as np
