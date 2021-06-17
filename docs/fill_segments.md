@@ -4,7 +4,7 @@ Propagate the labels of a segmented skeleton to fill the mask.
 
 **plantcv.morphology.fill_segments**(*mask, objects, stem_objects=None, label="default"*)
 
-**returns** filled_img  
+**returns** filled_mask
 
 - **Parameters:**
     - mask         - Binary mask
@@ -35,7 +35,10 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
-filled_img = pcv.morphology.fill_segments(mask=plant_mask, objects=obj, label="default")
+filled_mask = pcv.morphology.fill_segments(mask=plant_mask, objects=obj, label="default")
+
+# Convert labeled mask to a colorized image
+filled_image = pcv.visualize.colorize_label_img(label_img=filled_mask)
 
 # Access data stored out from fill_segments
 segments_area = pcv.outputs.observations['default']['segment_area']['value']
