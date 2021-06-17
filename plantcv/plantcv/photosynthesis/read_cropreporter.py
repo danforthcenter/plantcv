@@ -3,10 +3,10 @@
 import os
 import numpy as np
 import xarray as xr
-from plantcv.plantcv.transform import rescale
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
-
+from plantcv.plantcv import PSII_data
+from skimage.util import img_as_ubyte
 
 def read_cropreporter(filename):
     """Read in, reshape, and subset a datacube of fluorescence snapshots
@@ -41,24 +41,27 @@ def read_cropreporter(filename):
     # Use metadata to determine which frames to expect
     frames_captured = {key: value for key, value in metadata_dict.items() if "Done" in key}
     frames_expected = [key.upper()[0:3] for key, value in frames_captured.items() if str(value) == "1"]
-    corresponding_dict = {"FVF": "PSD", "FQF": "PSL", "CHL": "CHL", "NPQ": "NPQ", "SPC": "SPC",
-                          "CLR": "CLR", "RFD": "RFD", "GFP": "GFP", "RFP": "RFP"}
-    # Initialize lists
-    param_labels = []
-    img_frames = []
-    all_indices = []
-    all_frame_labels = []
+    # ignore NPQ
+    for i,k in enumerate(frames_expected):
+        if 'NPQ' == k:
+            frames_expected = [*frames_expected[0:i], *frames_expected[-i:]]
 
+    corresponding_dict = {"FVF": "PSD", "FQF": "PSL", "CHL": "CHL", "SPC": "SPC",
+                          "CLR": "CLR", "RFD": "RFD", "GFP": "GFP", "RFP": "RFP"}
+    
+    # Initialize lists
+    img_frames = []
+    ps = PSII_data()
+    
     # INF file prefix and path
     inf_filename = os.path.split(filename)[-1]
     imgpath = os.path.dirname(filename)
     filename_components = inf_filename.split("_")
 
-    # Metadata attributes to attach to the xarray DataArray
-    attributes = {}
-
     # Loop over all raw bin files
+    key = frames_expected[0]
     for key in frames_expected:
+        print('Compiling:', corresponding_dict[key])
         # Find corresponding bin img filepath based on .INF filepath
         filename_components[1] = corresponding_dict[key]  # replace header with bin img type
         bin_filenames = "_".join(filename_components)
@@ -72,65 +75,96 @@ def read_cropreporter(filename):
         # Store bin img data
         img_frames.append(img_cube)  # append cube to a list
 
-        # Compile COORDS (lists of indicies)
-        index_list = np.arange(np.shape(img_cube)[2]).tolist()
-        all_indices = all_indices + index_list
-        param_label = [corresponding_dict[key]] * (np.shape(img_cube)[2])  # repetitive list of parameter labels
-        param_labels = param_labels + param_label
-
-        # Calculate frames of interest and keep track of their labels
-        frame_labels = []
-        if corresponding_dict[key] == "NPQ":
-            frame_labels = ["NPQ-Fdark", "NPQ-F0", "NPQ-Fm", "NPQ-Fdark'", "NPQ-F0'", "NPQ-Fm'"]
-            # Debug image NPQ-Fm
-            _debug(visual=img_cube[:, :, 2],
-                   filename=os.path.join(params.debug_outdir,  f"{str(params.device)}_NPQ-Fm.png"))
-        elif corresponding_dict[key] == "PSD":
-            frame_labels = ["Fdark", "F0"]
-            for i in range(2, np.shape(img_cube)[2]):
-                frame_labels.append(f"F{i - 1}")
-            attributes["F-frames"] = img_cube.shape[2] - 1
-            attributes["F0"] = "F0"
-            _debug(visual=img_cube[:, :, -1],
+        # Calculate frames of interest and keep track of their labels. labels must be unique across all measurments
+        frame_labels = [(corresponding_dict[key]+str(i)) for i in range(img_cube.shape[2])]
+        frame_nums = np.arange(img_cube.shape[2])
+        
+        if corresponding_dict[key] == "PSD":
+            F0_frame = int(metadata_dict["FvFmFrameF0"])+1 #data cube includes Fdark at the beginning
+            Fm_frame = int(metadata_dict["FvFmFrameFm"])+1
+            frame_labels[0] = 'Fdark'
+            frame_labels[F0_frame] = 'F0'
+            frame_labels[Fm_frame] = 'Fm'
+            psd = xr.DataArray(
+                data=img_cube[...,None],
+                dims=('x','y','frame_label', 'measurement'),
+                coords={'frame_label': frame_labels,
+                        'frame_num' : ('frame_label', frame_nums),
+                        'measurement' : ['t0']},
+                name='darkadapted'
+                )
+            psd.attrs["long_name"] = "dark-adapted measurements"
+            ps.add_data(psd)
+            
+            _debug(visual=ps.darkadapted,
                    filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSD-{frame_labels[-1]}.png"))
+
         elif corresponding_dict[key] == "PSL":
-            frame_labels = ["Flight", "F0'"]
-            for i in range(2, np.shape(img_cube)[2]):
-                frame_labels.append(f"F{i - 1}'")
-            attributes["F'-frames"] = img_cube.shape[2] - 1
-            attributes["F'"] = "F0'"
-            _debug(visual=img_cube[:, :, -1],
+            Fsp_frame = int(metadata_dict["FqFmFrameFsp"])+1
+            Fmp_frame = int(metadata_dict["FqFmFrameFmp"])+1
+            frame_labels[0] = "Flight"
+            frame_labels[Fsp_frame] = 'Fp'
+            frame_labels[Fmp_frame] = 'Fmp'
+            psl = xr.DataArray(
+                data=img_cube[..., None],
+                dims=('x','y','frame_label','measurement'),
+                coords={'frame_label': frame_labels,
+                        'measurement' : ['t1']},
+                name='lightadapted'
+                )
+            psl.attrs["long_name"] = "light-adapted measurements"
+            ps.add_data(psl)
+
+            _debug(visual=ps.lightadapted,
                    filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSL-{frame_labels[-1]}.png"))
+
         elif corresponding_dict[key] == "CLR":
             frame_labels = ["Red", "Green", "Blue"]
             debug = params.debug
             params.debug = None
-            red = rescale(gray_img=img_cube[:, :, 0])
-            green = rescale(gray_img=img_cube[:, :, 1])
-            blue = rescale(gray_img=img_cube[:, :, 2])
+            red = img_as_ubyte(img_cube[:, :, 0])# I don't think we can use rescale here because it will change the ratios of red to green to blue since it scales based on min-max rather than 0-255
+            green = img_as_ubyte(img_cube[:, :, 1])
+            blue = img_as_ubyte(img_cube[:, :, 2])
             rgb_img = np.dstack([blue, green, red])
+            rgb = xr.DataArray(
+                data=rgb_img,
+                dims=('x','y','frame_label'),
+                coords={'frame_label': frame_labels},
+                name='rgb'
+                )
+            rgb.attrs["long_name"] = "rgb measurements"
+            ps.add_data(rgb)
+
             params.debug = debug
-            _debug(visual=rgb_img,
+            _debug(visual=ps.rgb, #does it make sense to show all three bands separately?
                    filename=os.path.join(params.debug_outdir, f"{str(params.device)}_CLR-RGB.png"))
+
         elif corresponding_dict[key] == "CHL":
             frame_labels = ["Chl", "Chl-NIR"]
-            _debug(visual=img_cube[:, :, 1],
+            chl = xr.DataArray(
+                data=img_cube,
+                dims=('x','y','frame_label'),
+                coords={'frame_label': frame_labels},
+                name = 'chlorophyll'
+                )
+            chl.attrs["long_name"] = "chlorophyll measurements"
+            ps.add_data(chl)
+
+            _debug(visual=ps.chlorophyll,
                    filename=os.path.join(params.debug_outdir, f"{str(params.device)}_CHL-NIR.png"))
+
         elif corresponding_dict[key] == "SPC":
             frame_labels = ["Anth", "Far-red", "Anth-NIR"]
-            _debug(visual=img_cube[:, :, 0],
+            spc = xr.DataArray(
+                data=img_cube,
+                dims=('x','y','frame_label'),
+                coords={'frame_label': frame_labels},
+                name='anthocyanin'
+                )
+            spc.attrs["long_name"] = "anthocyanin measurements"
+            ps.add_data(spc)
+
+            _debug(visual=ps.anthocyanin,
                    filename=os.path.join(params.debug_outdir, f"{str(params.device)}_SPC-Anth.png"))
-        all_frame_labels = all_frame_labels + frame_labels
-
-    # Stack all the frames
-    f = np.dstack(img_frames)
-    # Make coordinates list
-    x_coord = range(0, x)
-    y_coord = range(0, y)
-    # index_list = np.arange(np.shape(f)[2])
-
-    # Create DataArray
-    ps = xr.DataArray(data=f, coords={"y": y_coord, "x": x_coord, "frame_label": all_frame_labels},
-                      dims=["y", "x", "frame_label"], attrs=attributes)
 
     return ps, imgpath, inf_filename

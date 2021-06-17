@@ -54,9 +54,7 @@ class Params:
 
 
 class Outputs:
-    """PlantCV outputs class
-
-    """
+    """PlantCV outputs class"""
 
     def __init__(self):
         self.measurements = {}
@@ -183,7 +181,8 @@ class Outputs:
 
 
 class Spectral_data:
-    # PlantCV Hyperspectral data class
+    """PlantCV Hyperspectral data class"""
+    
     def __init__(self, array_data, max_wavelength, min_wavelength, max_value, min_value, d_type, wavelength_dict,
                  samples, lines, interleave, wavelength_units, array_type, pseudo_rgb, filename, default_bands):
         # The actual array/datacube
@@ -217,3 +216,24 @@ class Spectral_data:
 # spectral_array = Spectral_data(max_wavelength=1000.95, min_wavelength=379.027, d_type=numpy.float32,
 #                           wavelength_dict=dictionary, samples=1600, lines=1704, interleave='bil',
 #                           wavelength_units='nm', array_type="datacube", filename=fname, default_bands={159,253,520})
+
+
+class PSII_data:
+    """PSII data class"""
+    
+    def __init__(self):
+        self.darkadapted = None
+        self.lightadapted = None
+        self.rgb = None
+        self.anthocyanin = None
+        self.chlorophyll = None
+
+    def __repr__(self):
+        return('PSII data instance with measurements')
+    
+    def add_data(self, protocol):
+        '''
+        Input:
+            protocol: xr.DataArray with name equivalent to initialized attributes
+        '''
+        self.__dict__[protocol.name] = protocol
