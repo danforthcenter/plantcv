@@ -2,6 +2,7 @@
 import cv2
 import numpy
 import matplotlib
+import xarray
 from plantcv.plantcv import params
 from matplotlib import pyplot as plt
 from plantcv.plantcv import fatal_error
@@ -43,3 +44,9 @@ def plot_image(img, cmap=None):
     # Plot if the image is a plotnine ggplot image
     elif str(image_type) == "<class 'plotnine.ggplot.ggplot'>":
         print(img)
+
+    elif image_type == xarray.core.DataArray:
+        img.plot(col='frame_label', col_wrap=6)
+
+    else:
+        fatal_error(f"Error, plotting {image_type} is not supported.")
