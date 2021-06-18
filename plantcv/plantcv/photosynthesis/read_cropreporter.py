@@ -8,8 +8,10 @@ from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import PSII_data
 from skimage.util import img_as_ubyte
 
+
 def read_cropreporter(filename):
-    """Read in, reshape, and subset a datacube of fluorescence snapshots
+    """
+    Read in, reshape, and subset a datacube of fluorescence snapshots
 
     Inputs:
         filename        = PhenoVation B.V. CropReporter .INF filename

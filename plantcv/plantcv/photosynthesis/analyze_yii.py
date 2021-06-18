@@ -1,87 +1,109 @@
 # Fluorescence Analysis (Fv/Fm parameter)
 
 import os
-import cv2
 import numpy as np
 import pandas as pd
 from plotnine import ggplot, aes, geom_line, geom_label
+from plotnine.labels import labs
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def analyze_yii(ps, mask, measurement, bins=256, label="default"):
-    """Calculate and analyze PSII efficiency estimates from fluorescence image data.
+def analyze_yii(ps_da, mask, bins=256, measurement_labels=None, label="default"):
+    """
+    Calculate and analyze PSII efficiency estimates from fluorescence image data.
 
     Inputs:
-    ps          = photosynthesis xarray DataArray
-    mask        = mask of plant (binary, single channel)
-    measurement = choose which measurement routine to analyze: "Fv/Fm", "Fv'/Fm'", or "Fq'/Fm'"
-    bins        = number of bins (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
-    label       = optional label parameter, modifies the variable name of observations recorded
+    ps_da                     = photosynthesis xarray DataArray
+    mask                      = mask of plant (binary, single channel)
+    bins                      = number of bins for the histogram (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
+    measurement_labels        = labels for each measurement, modifies the variable name of observations recorded
+    label        = optional label parameter, modifies the variable name of observations recorded
 
     Returns:
-    ind_fig   = Fluorescence induction curve plot
     hist_fig  = Histogram of efficiency estimate
-    yii_img   = Image of efficiency estimate values
+    yii   = DataArray of efficiency estimate values
 
-    :param ps: xarray.core.dataarray.DataArray
+    :param ps_da: xarray.core.dataarray.DataArray
     :param mask: numpy.ndarray
-    :param measurement: str
     :param bins: int
-    :param label: str
+    :param measurement_labels: list
     :return ind_fig: plotnine.ggplot.ggplot
     :return hist_fig: plotnine.ggplot.ggplot
-    :return yii_img: numpy.ndarray
+    :return yii: xarray.core.dataarray.DataArray
     """
 
-    prot_vars = {
-        "fv/fm": {"Fm": "Fm", "F0": "F0"},
-        "fv'/fm'": {"Fm": "Fm", "F0": "F0"},
-        "fq'/fm'": {"Fm": "Fm'", "F0": "F'"}
-    }
+    if (measurement_labels is not None) and (len(measurement_labels) != ps_da.coords['measurement'].shape[0]):
+        fatal_error('measurement_labels must be the same length as the number of measurements in the DataArray')
+        
+    var = ps_da.name.lower()
 
-    if measurement.lower() not in prot_vars:
-        fatal_error(f"Measurement {measurement} is not one of Fv/Fm, Fv'/Fm', or Fq'/Fm'")
+    mask = mask[..., None, None]
+    if var == 'darkadapted':
+        yii0 = ps_da.astype('float').where(mask > 0, other = np.nan)
+        yii = (yii0.sel(frame_label='Fm') - yii0.sel(frame_label='F0')) / yii0.sel(frame_label='Fm')
+        
+    elif var == 'lightadapted':
+        def _calc_yii(ps_da):
+            return (ps_da.sel(frame_label='Fmp') - ps_da.sel(frame_label='Fp')) / ps_da.sel(frame_label='Fmp')
+        yii0 = ps_da.astype('float').where(mask > 0, other = np.nan)
+        yii = yii0.groupby('measurement', squeeze=True).map(_calc_yii)
 
-    # Analyze fluorescence induction curve to identify max fluorescence
-    ind_df = _fluor_induction(ps=ps, mask=mask, measurement=measurement)
+    # compute observations to store in Outputs
+    yii_median = yii.where(yii > 0).groupby('measurement').median(['x', 'y']).values
+    yii_max = yii.where(yii > 0).groupby('measurement').max(['x', 'y']).values
+    
+    # Create variables to label traits based on measurement label in data array
+    for i, mlabel in enumerate(ps_da.measurement.values):
+        if measurement_labels is not None:
+            mlabel = measurement_labels[i]
 
-    # Make fluorescence induction curve figure using plotnine
-    ind_fig = (ggplot(data=ind_df, mapping=aes(x="Timepoints", y="Fluorescence", color="Measurement"))
-               + geom_line(show_legend=True))
+        hist_df, hist_fig = _create_histogram(yii.isel({'measurement':i}).values, mlabel, bins)
 
-    # Select the F0, F0', or F' frame
-    fmin = ps.sel(frame_label=ps.attrs[prot_vars[measurement.lower()]["F0"]]).data
-    # Select the Fm or Fm' frame
-    fmax = ps.sel(frame_label=ps.attrs[prot_vars[measurement.lower()]["Fm"]]).data
+        # median value
+        outputs.add_observation(sample=label, variable=f"{mlabel} median yii", trait="median yii value",
+                                method='plantcv.plantcv.photosynthesis.analyze_yii', scale='none', datatype=float,
+                                value=float(np.around(yii_median[i], decimals=4)), label='none')
+        # max value
+        outputs.add_observation(sample=label, variable=f"{mlabel} peak yii", trait="peak yii value",
+                                method='plantcv.plantcv.photosynthesis.analyze_yii', scale='none', datatype=float,
+                                value=float(yii_max[i]), label='none')
+        # hist frequencies
+        outputs.add_observation(sample=label, variable=f"{mlabel} freq yii", trait="frequencies",
+                                method='plantcv.plantcv.photosynthesis.analyze_yii', scale='none', datatype=list,
+                                value=hist_df['Plant Pixels'].values.tolist(), 
+                                label=np.around(hist_df[mlabel].values.tolist(), decimals=2).tolist())
 
-    # Mask Fmin and Fmax Image
-    fmin_mask = cv2.bitwise_and(fmin, fmin, mask=mask)
-    fmax_mask = cv2.bitwise_and(fmax, fmax, mask=mask)
+        # Plot/Print out the histograms
+        _debug(visual=hist_fig, 
+               filename=os.path.join(params.debug_outdir, str(params.device) + f"_YII_{mlabel}_histogram.png"))
 
-    # Calculate F-delta
-    # Fv = Fm - F0 (masked)
-    # Fv' = Fm' - F0'
-    # Fq' = Fm' - F'
-    delta = np.subtract(fmax_mask, fmin_mask)
+    # Store images
+    outputs.images.append(yii)
 
-    # When Fmin is greater than Fmax, a negative value is returned.
-    # Because the data type is unsigned integers, negative values roll over, resulting in nonsensical values
-    # Wherever Fmin is greater than Fmax, set F-delta to zero
-    delta[np.where(fmax_mask < fmin_mask)] = 0
+    return hist_fig, yii.drop_vars(['frame_label', 'frame_num'])
 
-    # Calculate Fv/Fm, Fv'/Fm', or Fq'/Fm' where Fmax is greater than zero
-    # By definition above, wherever Fmax is zero, F-delta will also be zero
-    # To calculate the divisions properly we need to change from unit16 to float64 data types
-    yii_img = delta.astype(np.float64)
-    fmax_flt = fmax_mask.astype(np.float64)
-    yii_img[np.where(fmax_mask > 0)] /= fmax_flt[np.where(fmax_mask > 0)]
 
-    # Calculate the median Fv/Fm, Fv'/Fm', or Fq'/Fm' value for non-zero pixels
-    yii_median = np.median(yii_img[np.where(yii_img > 0)])
+def _create_histogram(yii_img, mlabel, bins):
+    """
+    Compute histogram of YII
 
+    Inputs:
+    yii_img     = numpy array of yii
+    bins        = number of bins for the histogram (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
+
+    Returns:
+    hist_fig  = Histogram of efficiency estimate
+    yii_img   = DataArray of efficiency estimate values
+
+    :param yii_img: numpy.ndarray
+    :param bins: int
+    :return hist_df: pandas.DataFrame
+    :return hist_fig: plotnine.ggplot.ggplot
+    """
+    
     # Calculate the histogram of Fv/Fm, Fv'/Fm', or Fq'/Fm' non-zero values
     yii_hist, yii_bins = np.histogram(yii_img[np.where(yii_img > 0)], bins, range=(0, 1))
     # yii_bins is a bins + 1 length list of bin endpoints, so we need to calculate bin midpoints so that
@@ -93,73 +115,13 @@ def analyze_yii(ps, mask, measurement, bins=256, label="default"):
     max_bin = midpoints[np.argmax(yii_hist)]
 
     # Create a dataframe
-    hist_df = pd.DataFrame({'Plant Pixels': yii_hist, measurement: midpoints})
+    hist_df = pd.DataFrame({'Plant Pixels': yii_hist, mlabel : midpoints})
 
     # Make the histogram figure using plotnine
-    hist_fig = (ggplot(data=hist_df, mapping=aes(x=measurement, y='Plant Pixels'))
+    hist_fig = (ggplot(data=hist_df, mapping=aes(x=mlabel, y='Plant Pixels'))
                 + geom_line(show_legend=True, color="green")
-                + geom_label(label=f"Peak Bin Value: {str(max_bin)}", x=.15, y=205, size=8, color="green"))
+                + geom_label(label=f"Peak Bin Value: {str(max_bin)}", x=.15, y=205, size=8, color="green")
+                + labs(title = f"measurement: {mlabel}",
+                       x = 'photosynthetic efficiency (yii)'))
 
-    # Plot/Print out the induction curves and the histograms
-    _debug(visual=ind_fig, filename=os.path.join(params.debug_outdir, str(params.device) + "_fluor_induction.png"))
-    _debug(visual=hist_fig, filename=os.path.join(params.debug_outdir, str(params.device) + "_YII_histogram.png"))
-
-    # Store images
-    outputs.images.append(yii_img)
-
-    # Create variables to label traits as either Fv/Fm or Fv'/Fm' measurements
-    var = measurement.lower()
-    var = var.replace("'", "p")
-    var = var.replace("/", "")
-
-    outputs.add_observation(sample=label, variable=f"{var}_hist", trait=f"{measurement} frequencies",
-                            method='plantcv.plantcv.photosynthesis.analyze_fvfm', scale='none', datatype=list,
-                            value=yii_hist.tolist(), label=np.around(midpoints, decimals=len(str(bins))).tolist())
-    outputs.add_observation(sample=label, variable=f"{var}_hist_peak", trait=f"peak {measurement} value",
-                            method='plantcv.plantcv.photosynthesis.analyze_fvfm', scale='none', datatype=float,
-                            value=float(max_bin), label='none')
-    outputs.add_observation(sample=label, variable=f"{var}_median", trait=f"{measurement} median",
-                            method='plantcv.plantcv.photosynthesis.analyze_fvfm', scale='none', datatype=float,
-                            value=float(np.around(yii_median, decimals=4)), label='none')
-
-    return ind_fig, hist_fig, yii_img
-
-
-def _fluor_induction(ps, mask, measurement):
-    """Calculate fluorescence induction curve.
-
-    Inputs:
-    ps          = photosynthesis xarray DataArray
-    mask        = mask of plant (binary, single channel)
-    measurement = choose which measurement routines to analyze: light, dark, or both (default)
-
-    Returns:
-    df          = data frame of fluorescence in the masked region at each timepoint
-
-    :param ps: xarray.core.dataarray.DataArray
-    :param mask: numpy.ndarray
-    :param measurement: str
-    :return df: pandas.core.frame.DataFrame
-    """
-    # Prime is empty for Fv/Fm (dark- and light-adapted) and ' for Fq'/Fm'
-    prime = ""
-    if measurement.lower() == "fq'/fm'":
-        prime = "'"
-    # Create a list of fluorescence values, measurement labels, and timepoint indices
-    fluor_values = []
-    meas = []
-    timepts = []
-    # Iterate over the PAM measurement frames
-    for i in range(ps.attrs[f"F{prime}-frames"]):
-        # Append the mean masked pixel value (fluorescence) to the list
-        fluor_values.append(np.mean(ps.sel(frame_label=f"F{i}{prime}").data[np.where(mask > 0)]))
-        # Append the measurement label (F or F')
-        meas.append(f"F{prime}")
-        # Append the timepoint index
-        timepts.append(i)
-    # Create a dataframe
-    df = pd.DataFrame({"Timepoints": timepts, "Fluorescence": fluor_values, "Measurement": meas})
-    # The Fm frame is the frame with the largest mean fluorescence value
-    fmax_frame = f"F{np.argmax(fluor_values)}{prime}"
-    ps.attrs[f"Fm{prime}"] = fmax_frame
-    return df
+    return hist_df, hist_fig
