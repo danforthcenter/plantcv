@@ -20,6 +20,7 @@ import matplotlib.pyplot as plt
 import dask
 from dask.distributed import Client
 from skimage import img_as_ubyte
+import subprocess
 
 PARALLEL_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "parallel_data")
 TEST_TMPDIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".cache")
@@ -27,6 +28,7 @@ TEST_IMG_DIR = "images"
 TEST_IMG_DIR2 = "images_w_date"
 TEST_SNAPSHOT_DIR = "snapshots"
 TEST_PIPELINE = os.path.join(PARALLEL_TEST_DATA, "plantcv-script.py")
+TEST_PIPELINE_JSON = os.path.join(PARALLEL_TEST_DATA, "plantcv-script-json.py")
 META_FIELDS = {"imgtype": 0, "camera": 1, "frame": 2, "zoom": 3, "lifter": 4, "gain": 5, "exposure": 6, "id": 7}
 VALID_META = {
     # Camera settings
@@ -878,6 +880,95 @@ def test_plantcv_parallel_process_results_invalid_json():
         plantcv.parallel.process_results(job_dir=os.path.join(cache_dir, "bad_results"),
                                          json_file=os.path.join(cache_dir, "bad_results", "invalid.txt"))
 
+def test_plantcv_match_multiple_metadata_values_with_config():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_match_multiple_metadata_values_with_config")
+    os.mkdir(cache_dir)
+
+    # Base config settings
+    config = plantcv.parallel.WorkflowConfig()
+    config.input_dir = TEST_DATA
+    config.workflow = TEST_PIPELINE_JSON
+    config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "other", "id"]
+
+    # A dictonary of metadata filters for each test case
+    metadata_filter_groups = [
+        {"imgtype":"VIS", "camera":"SV"},
+        {"imgtype":["VIS", "NIR"], "camera":"TV"},
+        {"imgtype":["VIS", "NIR"], "camera":["SV", "TV"]}
+    ]
+
+    # Call plantcv-workflow.py using each metadata filter and check results
+    for i, metadata_filters in enumerate(metadata_filter_groups):
+
+        # Set remaining config values and call plantcv-workflow.py
+        config.metadata_filters = metadata_filters
+        config.json = os.path.join(cache_dir, str(i) + "_output.json")
+        config_name = os.path.join(cache_dir, str(i) + "_config.json")
+        config.save_config(config_name)
+
+        if os.path.exists(config.json):
+             os.remove(config.json)
+
+        command = ["plantcv-workflow.py", "--config", config_name]
+        subprocess.run(command)
+
+        with open(config.json) as handle:
+            output = json.load(handle)
+
+        # For each metadata filter, ensure all processed images comply
+        for meta_field, filter in metadata_filters.items():
+            if isinstance(filter, list):
+                for entity in output["entities"]:
+                    assert entity["metadata"][meta_field]["value"] in filter
+            else:
+                for entity in output["entities"]:
+                    assert entity["metadata"][meta_field]["value"] == filter
+
+def test_plantcv_match_multiple_metadata_values_with_cli():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_match_multiple_metadata_values_with_cli")
+    os.mkdir(cache_dir)
+
+    # A metadata filter string for each test case
+    meta_filter_strings = [
+        "imgtype:VIS,camera:SV",
+        "imgtype:VIS,imgtype:NIR,camera:TV",
+        "imgtype:VIS,imgtype:NIR,camera:SV,camera:TV"
+    ]
+
+    # Each metadata filter string as a dictionary, for checking
+    meta_filter_dicts = [
+        {"imgtype":["VIS"], "camera":["SV"]},
+        {"imgtype":["VIS", "NIR"], "camera":["TV"]},
+        {"imgtype":["VIS", "NIR"], "camera":["SV", "TV"]}
+    ]
+
+    i = 0
+    for meta_filter_string, meta_filter_dict in zip(meta_filter_strings, meta_filter_dicts):
+
+	# Set command line arguments and call plantcv-workflow.py
+        output_path = os.path.join(cache_dir, str(i) + "_output.json")
+        if os.path.exists(output_path):
+            os.remove(output_path)
+        command = ["plantcv-workflow.py",
+            "--json", output_path,
+            "--dir", TEST_DATA,
+            "--workflow", TEST_PIPELINE_JSON,
+            "--meta", "imgtype,camera,frame,zoom,lifter,gain,exposure,other,id",
+            "--match", meta_filter_string
+        ]
+        subprocess.run(command)
+
+        with open(output_path) as handle:
+            output = json.load(handle)
+
+        # For each metadata filter, ensure all processed images comply
+        for meta_field, filters in meta_filter_dict.items():
+            for entity in output["entities"]:
+                assert entity["metadata"][meta_field]["value"] in filters
+
+        i += 1
 
 # ####################################################################################################################
 # ########################################### PLANTCV MAIN PACKAGE ###################################################
