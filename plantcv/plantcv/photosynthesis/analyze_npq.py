@@ -11,22 +11,24 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def analyze_npq(ps_da, mask, bins=256, measurement_labels=None, label="default"):
+def analyze_npq(ps_da_light, ps_da_dark, mask, bins=256, measurement_labels=None, label="default"):
     """
     Calculate and analyze PSII efficiency estimates from fluorescence image data.
 
     Inputs:
-    ps_da                     = photosynthesis xarray DataArray
-    mask                      = mask of plant (binary, single channel)
-    bins                      = number of bins for the histogram (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
-    measurement_labels        = labels for each measurement, modifies the variable name of observations recorded
-    label                     = optional label parameter, modifies the variable name of observations recorded
+    ps_da_light                 = photosynthesis xarray DataArray for which to compute npq
+    ps_da_dark                  = photosynthesis xarray DataArray that contains frame_label `Fm`
+    mask                        = mask of plant (binary, single channel)
+    bins                        = number of bins for the histogram (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
+    measurement_labels          = labels for each measurement in `ps_da_light`, modifies the variable name of observations recorded
+    label                       = optional label parameter, modifies the variable name of observations recorded
 
     Returns:
-    hist_fig  = Histogram of efficiency estimate
-    npq   = DataArray of efficiency estimate values
+    hist_fig  = Histogram of npq estimate
+    npq   = DataArray of npq values
 
-    :param ps_da: xarray.core.dataarray.DataArray
+    :param ps_da_light: xarray.core.dataarray.DataArray
+    :param ps_da_dark: xarray.core.dataarray.DataArray
     :param mask: numpy.ndarray
     :param bins: int
     :param measurement_labels: list
@@ -34,32 +36,33 @@ def analyze_npq(ps_da, mask, bins=256, measurement_labels=None, label="default")
     :return npq: xarray.core.dataarray.DataArray
     """
 
-    if (measurement_labels is not None) and (len(measurement_labels) != ps_da.coords['measurement'].shape[0]):
-        fatal_error('measurement_labels must be the same length as the number of measurements in the DataArray')
+    if (measurement_labels is not None) and (len(measurement_labels) != ps_da_light.coords['measurement'].shape[0]):
+        fatal_error('measurement_labels must be the same length as the number of measurements in `ps_da_light`')
 
-    var = ps_da.name.lower()
+    def _calc_npq(Fmp, Fm):
+        """NPQ = Fm/Fmp - 1"""
+        
+        out_flt = np.ones(shape=Fm.shape)*np.nan
+        Fmp = np.squeeze(Fmp)
+        div = np.divide(Fm, Fmp, out=out_flt,
+                        where=np.logical_and(Fm > 0, np.logical_and(Fmp > 0, Fm > Fmp)))
+        sub = np.subtract(div, 1, out=out_flt.copy(),
+                          where=div >= 1)        
+        return(sub)
 
-    mask = mask[..., None, None]
-    if var == 'darkadapted':
-        npq0 = ps_da.astype('float').where(mask > 0, other = np.nan)
-        npq = (npq0.sel(frame_label='Fm') - npq0.sel(frame_label='F0')) / npq0.sel(frame_label='Fm')
-
-    elif var == 'lightadapted':
-        def _calc_npq(ps_da):
-            return (ps_da.sel(frame_label='Fmp') - ps_da.sel(frame_label='Fp')) / ps_da.sel(frame_label='Fmp')
-        npq0 = ps_da.astype('float').where(mask > 0, other = np.nan)
-        npq = npq0.groupby('measurement', squeeze=True).map(_calc_npq)
+    Fm = ps_da_dark.sel(measurement='t0', frame_label='Fm').where(mask > 0, other=0)
+    npq = ps_da_light.sel(frame_label='Fmp').groupby('measurement', squeeze=True).map(_calc_npq, Fm=Fm)
 
     # compute observations to store in Outputs
     npq_median = npq.where(npq > 0).groupby('measurement').median(['x', 'y']).values
     npq_max = npq.where(npq > 0).groupby('measurement').max(['x', 'y']).values
-    
+
     # Create variables to label traits based on measurement label in data array
-    for i, mlabel in enumerate(ps_da.measurement.values):
+    for i, mlabel in enumerate(ps_da_light.measurement.values):
         if measurement_labels is not None:
             mlabel = measurement_labels[i]
 
-        hist_df, hist_fig = _create_histogram(npq.isel({'measurement':i}).values, mlabel, bins)
+        hist_df, hist_fig = _create_histogram(npq.isel({'measurement': i}).values, mlabel, bins)
 
         # median value
         outputs.add_observation(sample=label, variable=f"{mlabel} median npq", trait="median npq value",
@@ -76,7 +79,7 @@ def analyze_npq(ps_da, mask, bins=256, measurement_labels=None, label="default")
                                 label=np.around(hist_df[mlabel].values.tolist(), decimals=2).tolist())
 
         # Plot/Print out the histograms
-        _debug(visual=hist_fig, 
+        _debug(visual=hist_fig,
                filename=os.path.join(params.debug_outdir, str(params.device) + f"_NPQ_{mlabel}_histogram.png"))
 
     # Store images
