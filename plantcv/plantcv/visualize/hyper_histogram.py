@@ -13,6 +13,50 @@ from scipy.spatial import distance
 import colour
 
 
+def _wavelength_to_rgb(wvlength, cmfs = colour.MSDS_CMFS["CIE 2012 10 Degree Standard Observer"],
+                       matrix = np.array([[3.24062548, -1.53720797, -0.49862860],
+                                          [-0.96893071, 1.87575606, 0.04151752],
+                                          [0.05571012, -0.20402105, 1.05699594]]),
+                       gamma=0.8):
+    """
+    Converts wavelength to RGB tuple, using the "colour" package
+    :param wvlength:
+    :param cmfs:
+    :param matrix:
+    :param gamma:
+    :return:
+    """
+
+
+    # convert from wavelength to xyz
+    xyz = colour.wavelength_to_XYZ(wvlength, cmfs)
+    illuminant_xyz = np.array([0.34570, 0.35850])
+    illuminant_rgb = np.array([0.31270, 0.32900])
+
+    # convert from xyz to rgb
+    rgb = colour.XYZ_to_RGB(xyz, illuminant_XYZ=illuminant_xyz, illuminant_RGB=illuminant_rgb,
+                            chromatic_adaptation_transform="Bradford",
+                            matrix_XYZ_to_RGB=matrix)
+
+    # # Set negative values to zero before scaling
+    # rgb[np.where(rgb < 0)] = 0
+    # We're not in the RGB gamut: approximate by desaturating
+    if np.any(rgb < 0):
+        cor = -np.min(rgb)
+        rgb += cor
+
+    # # Normalize the rgb vector
+    # if not np.all(rgb == 0):
+    #     rgb /= np.max(rgb)
+
+    # gamma correction
+    rgb = rgb ** gamma
+
+    # Convert float RGB to 8-bit unsigned integer
+    color_vis = colour.io.convert_bit_depth(rgb, "uint8")
+    return color_vis
+
+
 def _rgb_to_webcode(rgb_values):
     """Convert (R,G,B) colors to web color codes (HTML color codes)
     Input:
@@ -100,22 +144,23 @@ def hyper_histogram(array, mask=None, bins=100, lower_bound=None, upper_bound=No
         colors_vis = []
         colors_inv = colors
 
-        # Color matching function
-        cmfs = colour.MSDS_CMFS["CIE 2012 10 Degree Standard Observer"]
-        matrix = np.array([[3.24062548, -1.53720797, -0.49862860],
-                           [-0.96893071, 1.87575606, 0.04151752],
-                           [0.05571012, -0.20402105, 1.05699594]])
+        # # Color matching function
+        # cmfs = colour.MSDS_CMFS["CIE 2012 10 Degree Standard Observer"]
+        # matrix = np.array([[3.24062548, -1.53720797, -0.49862860],
+        #                    [-0.96893071, 1.87575606, 0.04151752],
+        #                    [0.05571012, -0.20402105, 1.05699594]])
         for i in ids_vis:
-            # Convert wavelength to (R,G,B) colors
-            rgb = colour.XYZ_to_RGB(colour.wavelength_to_XYZ(wvlengths[i], cmfs),
-                                    illuminant_XYZ=np.array([0.9, 0.9]),
-                                    illuminant_RGB=np.array([0.9, 0.9]),
-                                    chromatic_adaptation_transform="Bradford",
-                                    matrix_XYZ_to_RGB=matrix)
-            # Set negative values to zero before scaling
-            rgb[np.where(rgb < 0)] = 0
-            # Convert float RGB to 8-bit unsigned integer
-            color_vis = colour.io.convert_bit_depth(rgb, "uint8")
+            # # Convert wavelength to (R,G,B) colors
+            # rgb = colour.XYZ_to_RGB(colour.wavelength_to_XYZ(wvlengths[i], cmfs),
+            #                         illuminant_XYZ=np.array([0.9, 0.9]),
+            #                         illuminant_RGB=np.array([0.9, 0.9]),
+            #                         chromatic_adaptation_transform="Bradford",
+            #                         matrix_XYZ_to_RGB=matrix)
+            # # Set negative values to zero before scaling
+            # rgb[np.where(rgb < 0)] = 0
+            # # Convert float RGB to 8-bit unsigned integer
+            # color_vis = colour.io.convert_bit_depth(rgb, "uint8")
+            color_vis = _wavelength_to_rgb(wvlengths[i])
             colors_vis.append(color_vis)
         # Calculate the distances between every pair of (R,G,B) colors
         dists = distance.cdist(colors_vis, colors_inv, 'euclidean')
