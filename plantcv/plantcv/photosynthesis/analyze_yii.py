@@ -30,21 +30,20 @@ def analyze_yii(ps_da, mask, bins=256, measurement_labels=None, label="default")
     :param mask: numpy.ndarray
     :param bins: int
     :param measurement_labels: list
-    :return ind_fig: plotnine.ggplot.ggplot
     :return hist_fig: plotnine.ggplot.ggplot
     :return yii: xarray.core.dataarray.DataArray
     """
 
     if (measurement_labels is not None) and (len(measurement_labels) != ps_da.coords['measurement'].shape[0]):
         fatal_error('measurement_labels must be the same length as the number of measurements in the DataArray')
-        
+
     var = ps_da.name.lower()
 
     mask = mask[..., None, None]
     if var == 'darkadapted':
         yii0 = ps_da.astype('float').where(mask > 0, other = np.nan)
         yii = (yii0.sel(frame_label='Fm') - yii0.sel(frame_label='F0')) / yii0.sel(frame_label='Fm')
-        
+
     elif var == 'lightadapted':
         def _calc_yii(ps_da):
             return (ps_da.sel(frame_label='Fmp') - ps_da.sel(frame_label='Fp')) / ps_da.sel(frame_label='Fmp')
