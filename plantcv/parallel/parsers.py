@@ -202,7 +202,7 @@ def metadata_parser(config):
                                 # If the input value does not match the image value, fail the image
                                 if isinstance(config.metadata_filters[term], list): 
                                     # list of multiple filters
-                                    if not meta_value in config.metadata_filters[term]:
+                                    if meta_value not in config.metadata_filters[term]:
                                         img_pass = 0
                                 else:
                                     # single filter as string
