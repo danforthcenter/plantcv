@@ -41,13 +41,13 @@ def analyze_yii(ps_da, mask, bins=256, measurement_labels=None, label="default")
 
     mask = mask[..., None, None]
     if var == 'darkadapted':
-        yii0 = ps_da.astype('float').where(mask > 0, other = np.nan)
+        yii0 = ps_da.astype('float').where(mask > 0, other=np.nan)
         yii = (yii0.sel(frame_label='Fm') - yii0.sel(frame_label='F0')) / yii0.sel(frame_label='Fm')
 
     elif var == 'lightadapted':
         def _calc_yii(ps_da):
             return (ps_da.sel(frame_label='Fmp') - ps_da.sel(frame_label='Fp')) / ps_da.sel(frame_label='Fmp')
-        yii0 = ps_da.astype('float').where(mask > 0, other = np.nan)
+        yii0 = ps_da.astype('float').where(mask > 0, other=np.nan)
         yii = yii0.groupby('measurement', squeeze=True).map(_calc_yii)
 
     # compute observations to store in Outputs

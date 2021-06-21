@@ -111,6 +111,7 @@ def read_cropreporter(filename):
                 data=img_cube[..., None],
                 dims=('x','y','frame_label','measurement'),
                 coords={'frame_label': frame_labels,
+                        'frame_num' : ('frame_label', frame_nums),
                         'measurement' : ['t1']},
                 name='lightadapted'
                 )
