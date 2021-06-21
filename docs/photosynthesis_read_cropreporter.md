@@ -1,6 +1,6 @@
 ## Read CropReporter Fluorescence Image Files
 
-Reads .INF/.DAT image data into an xarray DataArray with labeled frames. 
+Reads .INF/.DAT image data into a PSII_data instance containing xarray DataArrays with labeled frames. 
 
 **plantcv.photosynthesis.read_cropreporter**(*filename*)
 
@@ -10,7 +10,7 @@ Reads .INF/.DAT image data into an xarray DataArray with labeled frames.
     - filename - INF metadata file to be read (possibly including a path). DAT files are automatically detected.
     
 - **Context:**
-    - Reads in binary image files to be processed and does so using the metadata contained within a corresponding .INF file.
+    - Reads in binary image files to be processed and does so using the metadata contained within a corresponding .INF file. Measurements from dark-adapted plant state are stored in the attribute `darkadapted`. Frames F0 and Fm are labeled according to the metadata in .inf. The default measurement label is 't0'. Measurements from light-adapted plant state are stored in the attribute `lightadapted`. Frames Fp and Fmp are labeled according to the metadata in .inf. The default measurement label is 't1'.
 - **Notes:**
     - This function assumes a specific pattern between .INF metadata file and their corresponding .DAT binary image filenames. 
     We assume that for every metadata file `xx_HDR_xxx.INF` there will be a corresponding image files with the same path

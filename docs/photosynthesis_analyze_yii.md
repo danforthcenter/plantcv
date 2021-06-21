@@ -1,31 +1,25 @@
 ## Analyze the efficiency of Photosystem II
 
-Extract estimates of the efficiency (YII) of Photosystem II (PSII). Calculates Fv/Fm, Fv'/Fm', and Fq'/Fm' data 
-from a masked region.
+Extract estimates of the efficiency (YII) of Photosystem II (PSII). The photosynthesis subpackage is dependent on a PSII_Data instance file structure as created by photosynthesis.read_* files.
 
-**plantcv.photosynthesis.analyze_yii**(*ps, mask, measurement, bins=256, label="default"*)
+**plantcv.photosynthesis.analyze_yii**(*ps_da, mask, bins=256, measurement_labels=None, label="default"*)
 
-**returns** Fluorescence induction curve figure, YII histogram, and YII image
+**returns** YII histogram, and YII image
 
 - **Parameters:**
-    - ps - photosynthesis [Xarray](http://xarray.pydata.org/en/stable/#) DataArray that contains image frames from a
-      saturating light pulse chlorophyll fluorescence response measurement protocol for either light- and/or 
-      dark-adapted plants.
-    - mask - binary mask of selected contours
-    - measurement - choose which measurement protocol to analyze: "Fv/Fm", "Fv'/Fm'", or "Fq'/Fm'"
-    - bins - number of grayscale bins (0-256 for 8-bit images and 0 to 65,536), if you would like to bin data, 
-      you would alter this number (default bins=256)
-    - label - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
+    - ps_da - photosynthesis xarray DataArray
+    - mask - binary mask of plant
+    - bins - number of grayscale bins (0-256 for 8-bit images and 0 to 65,536), if you would like to bin data, you would alter this number (default bins=256)
+    - measurement_labels - labels for each measurement, modifies the default variable names of observations. must have same length as number of measurements in ps_da
+    - label - Optional label parameter, modifies the entity name of observations recorded. (default `label="default"`)
 - **Context:**
     - Used to extract Fv/Fm, Fv'/Fm' or Fq'/Fm' per identified plant pixel.
-    - Generates a fluorescence induction curve for F and/or F'
     - Generates histogram of Fv/Fm, Fv'/Fm' or Fq'/Fm' data.
     - Generates an Fv/Fm, Fv'/Fm' or Fq'/Fm' image.
 - **Example use:**
     - [Use In PSII Tutorial](psII_tutorial.md)
-- **Output data stored:** Data ('fvfm_hist', 'fvfm_hist_peak', 'fvfm_median', fvpfmp_hist, fvpfmp_hist_peak, 
-  fvpfmp_median, fqpfmp_hist, fqpfmp_hist_peak, fqpfmp_median) automatically gets stored to the 
-  [`Outputs` class](outputs.md) when this function is ran. These data can always get accessed during a workflow 
+- **Output data stored:** Data ('yii_hist_{measurement_label}', 'yii_hist_peak_{measurement_label}', 'yii_median_{measurement_label}' automatically gets stored to the 
+  [`Outputs` class](outputs.md) when this function is run. These data can always get accessed during a workflow 
   (example below). [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
 **Fluorescence images**
@@ -43,21 +37,25 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
+# photosynthesis read functions will read fluroescence data into predefined data format that includes at least attribute 'darkadapted'
+ps = pcv.photosynthesis.read_cropreporter(filename = "mydata.inf")
+
 # Analyze Fv/Fm    
-fvfm_ind, fvfm_hist, fvfm = pcv.photosynthesis.analyze_yii(ps=data_array, mask=kept_mask, measurement="Fv/Fm",
-                                                           bins=256, label="fluor")
+fvfm_hist, fvfm = pcv.photosynthesis.analyze_yii(ps=ps.darkadapted, 
+mask=kept_mask, 
+measurement_labels="Fv/Fm",
+bins=256, 
+label="fluor")
 
 # Access data stored out from fluor_fvfm
-fvfm_median = pcv.outputs.observations['fluor']['fvfm_median']['value']
+fvfm_median = pcv.outputs.observations['fluor']['yii_median_Fv/Fm']['value']
 
 # Pseudocolor the Fv/Fm image
 fvfm_cmap= pcv.visualize.pseudocolor(gray_img=fvfm, mask=kept_mask, min_value=0, max_value=1, title="Fv/Fm")
 
+# or you can use xarray builtin plot methods:
+fvfm.plot()
 ```
-
-**Fluorescence response curve**
-
-![Screenshot](img/documentation_images/fluor_fvfm/dark_fluor_induction.png)
 
 **Histogram of Fv/Fm values**
 
@@ -67,7 +65,7 @@ fvfm_cmap= pcv.visualize.pseudocolor(gray_img=fvfm, mask=kept_mask, min_value=0,
 
 ![Screenshot](img/documentation_images/fluor_fvfm/fvfm_colormap.png)
 
-**Analyze Fq'/Fm'**
+**Analyze Fq'/Fm' (lightadapted mesaurements)**
 
 ```python
 from plantcv import plantcv as pcv
@@ -77,19 +75,21 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Analyze Fq'/Fm'    
-fqfm_ind, fqfm_hist, fqfm = pcv.photosynthesis.analyze_yii(ps=data_array, mask=kept_mask, measurement="Fq'/Fm'",
-                                                           bins=256, label="fluor")
+fqfm_hist, fqfm = pcv.photosynthesis.analyze_yii(ps=ps.lightadapted, mask=kept_mask,                                                         
+bins=256, 
+measurement_labels="Fq'/Fm'",
+label="fluor")
 
 # Access data stored out from fluor_fvfm
-fqfm_median = pcv.outputs.observations['fluor']['fqpfmp_median']['value']
+fqfm_median = pcv.outputs.observations['fluor']["yii_median_Fq'/Fm'"]['value']
 
 fqfm_cmap= pcv.visualize.pseudocolor(gray_img=fqfm, mask=kept_mask, min_value=0, max_value=1, title="Fq'/Fm'")
 
+# or xarray plot method
+
+fqfm.plot()
+
 ```
-
-**Fluorescence response curve**
-
-![Screenshot](img/documentation_images/fluor_fvfm/light_fluor_induction.png)
 
 **Histogram of Fq'/Fm' values**
 

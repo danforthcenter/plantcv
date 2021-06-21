@@ -11,10 +11,10 @@ from skimage.util import img_as_ubyte
 
 def read_cropreporter(filename):
     """
-    Read in, reshape, and subset a datacube of fluorescence snapshots
+    Read datacubes from PhenoVation B.V. CropReporter into a PSII_Data instance.
 
     Inputs:
-        filename        = PhenoVation B.V. CropReporter .INF filename
+        filename        = CropReporter .INF filename
 
     Returns:
         ps               = photosynthesis data in xarray DataArray format
