@@ -53,13 +53,13 @@ def analyze_yii(ps_da, mask, bins=256, measurement_labels=None, label="default")
     # compute observations to store in Outputs
     yii_median = yii.where(yii > 0).groupby('measurement').median(['x', 'y']).values
     yii_max = yii.where(yii > 0).groupby('measurement').max(['x', 'y']).values
-    
+
     # Create variables to label traits based on measurement label in data array
     for i, mlabel in enumerate(ps_da.measurement.values):
         if measurement_labels is not None:
             mlabel = measurement_labels[i]
 
-    hist_df, hist_fig = _create_histogram(yii.isel({'measurement':i}).values, mlabel, bins)
+        hist_df, hist_fig = _create_histogram(yii.isel({'measurement': i}).values, mlabel, bins)
 
         # median value
         outputs.add_observation(sample=label, variable=f"yii_median_{mlabel} median", trait="median yii value",
@@ -75,9 +75,9 @@ def analyze_yii(ps_da, mask, bins=256, measurement_labels=None, label="default")
                                 value=hist_df['Plant Pixels'].values.tolist(), 
                                 label=np.around(hist_df[mlabel].values.tolist(), decimals=2).tolist())
 
-        # Plot/Print out the histograms
-        _debug(visual=hist_fig, 
-               filename=os.path.join(params.debug_outdir, str(params.device) + f"_YII_{mlabel}_histogram.png"))
+    # Plot/Print out the histograms
+    _debug(visual=hist_fig, 
+           filename=os.path.join(params.debug_outdir, str(params.device) + f"_YII_{mlabel}_histogram.png"))
 
     # Store images
     outputs.images.append(yii)
@@ -114,13 +114,13 @@ def _create_histogram(yii_img, mlabel, bins):
     max_bin = midpoints[np.argmax(yii_hist)]
 
     # Create a dataframe
-    hist_df = pd.DataFrame({'Plant Pixels': yii_hist, mlabel : midpoints})
+    hist_df = pd.DataFrame({'Plant Pixels': yii_hist, mlabel: midpoints})
 
     # Make the histogram figure using plotnine
     hist_fig = (ggplot(data=hist_df, mapping=aes(x=mlabel, y='Plant Pixels'))
                 + geom_line(show_legend=True, color="green")
                 + geom_label(label=f"Peak Bin Value: {str(max_bin)}", x=.15, y=205, size=8, color="green")
-                + labs(title = f"measurement: {mlabel}",
-                       x = 'photosynthetic efficiency (yii)'))
+                + labs(title=f"measurement: {mlabel}",
+                       x='photosynthetic efficiency (yii)'))
 
     return hist_df, hist_fig
