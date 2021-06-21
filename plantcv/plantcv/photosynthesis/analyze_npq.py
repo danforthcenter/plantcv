@@ -1,4 +1,4 @@
-# Fluorescence Analysis (Fv/Fm parameter)
+# Fluorescence Analysis (NPQ parameter)
 
 import os
 import numpy as np
@@ -21,7 +21,7 @@ def analyze_npq(ps_da_light, ps_da_dark, mask, bins=256, measurement_labels=None
     mask                        = mask of plant (binary, single channel)
     bins                        = number of bins for the histogram (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
     measurement_labels          = labels for each measurement in `ps_da_light`, modifies the variable name of observations recorded
-    label                       = optional label parameter, modifies the variable name of observations recorded
+    label                       = optional label parameter, modifies the entity name of observations recorded
 
     Returns:
     hist_fig  = Histogram of npq estimate
@@ -65,15 +65,15 @@ def analyze_npq(ps_da_light, ps_da_dark, mask, bins=256, measurement_labels=None
         hist_df, hist_fig = _create_histogram(npq.isel({'measurement': i}).values, mlabel, bins)
 
         # median value
-        outputs.add_observation(sample=label, variable=f"{mlabel} median npq", trait="median npq value",
+        outputs.add_observation(sample=label, variable=f"npq_median_{mlabel}", trait="median npq value",
                                 method='plantcv.plantcv.photosynthesis.analyze_npq', scale='none', datatype=float,
                                 value=float(np.around(npq_median[i], decimals=4)), label='none')
         # max value
-        outputs.add_observation(sample=label, variable=f"{mlabel} peak npq", trait="peak npq value",
+        outputs.add_observation(sample=label, variable=f"npq_hist_peak_{mlabel}", trait="peak npq value",
                                 method='plantcv.plantcv.photosynthesis.analyze_npq', scale='none', datatype=float,
                                 value=float(npq_max[i]), label='none')
         # hist frequencies
-        outputs.add_observation(sample=label, variable=f"{mlabel} freq npq", trait="frequencies",
+        outputs.add_observation(sample=label, variable=f"npq_hist_{mlabel}", trait="frequencies",
                                 method='plantcv.plantcv.photosynthesis.analyze_npq', scale='none', datatype=list,
                                 value=hist_df['Plant Pixels'].values.tolist(), 
                                 label=np.around(hist_df[mlabel].values.tolist(), decimals=2).tolist())

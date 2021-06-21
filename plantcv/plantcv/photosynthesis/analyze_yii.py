@@ -59,18 +59,18 @@ def analyze_yii(ps_da, mask, bins=256, measurement_labels=None, label="default")
         if measurement_labels is not None:
             mlabel = measurement_labels[i]
 
-        hist_df, hist_fig = _create_histogram(yii.isel({'measurement':i}).values, mlabel, bins)
+    hist_df, hist_fig = _create_histogram(yii.isel({'measurement':i}).values, mlabel, bins)
 
         # median value
-        outputs.add_observation(sample=label, variable=f"{mlabel} median yii", trait="median yii value",
+        outputs.add_observation(sample=label, variable=f"yii_median_{mlabel} median", trait="median yii value",
                                 method='plantcv.plantcv.photosynthesis.analyze_yii', scale='none', datatype=float,
                                 value=float(np.around(yii_median[i], decimals=4)), label='none')
         # max value
-        outputs.add_observation(sample=label, variable=f"{mlabel} peak yii", trait="peak yii value",
+        outputs.add_observation(sample=label, variable=f"yii_hist_peak_{mlabel}", trait="peak yii value",
                                 method='plantcv.plantcv.photosynthesis.analyze_yii', scale='none', datatype=float,
                                 value=float(yii_max[i]), label='none')
         # hist frequencies
-        outputs.add_observation(sample=label, variable=f"{mlabel} freq yii", trait="frequencies",
+        outputs.add_observation(sample=label, variable=f"yii_hist_{mlabel}", trait="yii frequencies",
                                 method='plantcv.plantcv.photosynthesis.analyze_yii', scale='none', datatype=list,
                                 value=hist_df['Plant Pixels'].values.tolist(), 
                                 label=np.around(hist_df[mlabel].values.tolist(), decimals=2).tolist())
