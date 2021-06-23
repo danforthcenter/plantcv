@@ -142,8 +142,6 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     righty = int(((cols - x) * vy / vx) + y)
     cv2.line(labeled_img, (cols - 1, righty), (0, lefty), (150, 150, 150), 3)
 
-    rand_color = color_palette(len(insertion_segments))
-
     for t, segment in enumerate(insertion_segments):
         # Find line fit to each segment
         [vx, vy, x, y] = cv2.fitLine(segment, cv2.DIST_L2, 0, 0.01, 0.01)
