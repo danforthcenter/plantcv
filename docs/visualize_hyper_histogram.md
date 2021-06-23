@@ -52,7 +52,9 @@ hist_figure3 = pcv.visualize.hyper_histogram(array, mask=mask, wvlengths=[380, 9
 **Histogram of signal intensity**
 
 ![hist_default](img/documentation_images/hyper_histogram/hist_default_bands.png)
+
 ![hist_single](img/documentation_images/hyper_histogram/hist_single_band.png)
+
 ![hist_two](img/documentation_images/hyper_histogram/hist_two_bands.png)
 
 
