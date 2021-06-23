@@ -65,8 +65,9 @@ def auto_threshold_methods(gray_img, grid_img=True, object_type="light"):
                               fontScale=params.text_size, color=(255, 0, 255), thickness=params.text_thickness)
         # Reset debug mode
         params.debug = debug
-        _debug(visual=labeled, filename=os.path.join(params.debug_outdir, str(params.device) + "_" +
-                                              method_names[i] + "_vis_thresholds.png"))
+        _debug(visual=labeled,
+               filename=os.path.join(params.debug_outdir,
+                                     str(params.device) + "_" + method_names[i] + "_vis_thresholds.png"))
         labeled_imgs.append(labeled)
 
     if grid_img:
@@ -81,7 +82,7 @@ def auto_threshold_methods(gray_img, grid_img=True, object_type="light"):
         plotting_img = resize_factor(plotting_img, factors=(0.5, 0.5))
         # Reset debug mode
         params.debug = debug
-        _debug(visual=plotting_img, filename=os.path.join(params.debug_outdir, str(params.device) +
-                                                          "_vis_all_thresholds.png"))
+        _debug(visual=plotting_img, 
+               filename=os.path.join(params.debug_outdir, str(params.device) + "_vis_all_thresholds.png"))
 
     return labeled_imgs
