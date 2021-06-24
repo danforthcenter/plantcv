@@ -894,6 +894,8 @@ HYPERSPECTRAL_DATA_NO_DEFAULT = "darkReference2"
 HYPERSPECTRAL_HDR_NO_DEFAULT = "darkReference2.hdr"
 HYPERSPECTRAL_DATA_APPROX_PSEUDO = "darkReference3"
 HYPERSPECTRAL_HDR_APPROX_PSEUDO = "darkReference3.hdr"
+HYPERSPECTRAL_DATA_BAD_INTERLEAVE = "darkReference4"
+HYPERSPECTRAL_HDR_BAD_INTERLEAVE = "darkReference4.hdr"
 HYPERSPECTRAL_HDR_SMALL_RANGE = {'description': '{[HEADWALL Hyperspec III]}', 'samples': '800', 'lines': '1',
                                  'bands': '978', 'header offset': '0', 'file type': 'ENVI Standard',
                                  'interleave': 'bil', 'sensor type': 'Unknown', 'byte order': '0',
@@ -4152,6 +4154,12 @@ def test_plantcv_hyperspectral_read_data_approx_pseudorgb():
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA_APPROX_PSEUDO)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
     assert np.shape(array_data.array_data) == (1, 1600, 978)
+
+
+def test_plantcv_hyperspectral_read_data_bad_interleave():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA_BAD_INTERLEAVE)
+    with pytest.raises(RuntimeError):
+        _ = pcv.hyperspectral.read_data(filename=spectral_filename)
 
 
 def test_plantcv_spectral_index_ndvi():
