@@ -1,10 +1,12 @@
 ## Image Registration
 
-`ImageRegistrator` is a class that registrater a target image based on user selected landmark pixels on reference and target images. 
+`ImageRegistrator` is a class that registrater a target image based on user selected landmark pixels on reference and 
+target images. 
 
 *class* **plantcv.transform.ImageRegistrator(img_ref, img_tar, figsize=(12, 6))**
 
-To initialize an instance of `ImageRegistrator` class, two required parameters are `img_ref` and `img_tar`, represent for target image and reference image, respectively.
+To initialize an instance of `ImageRegistrator` class, two required parameters are `img_ref` and `img_tar`, represent 
+for target image and reference image, respectively.
 
 Another optional parameter is the desired figure size `figsize`, by default `figsize=(12,6)`.
 
