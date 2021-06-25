@@ -5724,7 +5724,6 @@ def test_plantcv_transform_img_registration(tmpdir):
     img_tar = create_test_img((12, 10, 3))
     img_registrator = pcv.transform.ImageRegistrator(img_ref, img_tar)
 
-
     # create mock events: left click
     for pt in [(0, 0), (1, 0), (0, 3), (4, 4), (3,2)]:
         # left click, left axis
@@ -5763,7 +5762,19 @@ def test_plantcv_transform_img_registration(tmpdir):
     img_registrator.display_coords()
     img_registrator.save_model(model_file=os.path.join(cache_dir, "model"))
 
-    assert img_registrator.model is not None and len(img_registrator.points[0]) == 4 and len(img_registrator.points[1]) == 4 and os.path.isfile(os.path.join(cache_dir, "model.pkl"))
+    assert img_registrator.model is not None \
+           and len(img_registrator.points[0]) == 4 \
+           and len(img_registrator.points[1]) == 4 \
+           and os.path.isfile(os.path.join(cache_dir, "model.pkl"))
+    
+    
+def test_plantcv_transform_img_registration_gray():
+    # generate fake testing images
+    img_ref = create_test_img((12, 10))
+    img_tar = create_test_img((12, 10))
+    img_registrator = pcv.transform.ImageRegistrator(img_ref, img_tar)
+    assert len(img_registrator.events) == 0
+
 
 # ##############################
 # Tests for the threshold subpackage
