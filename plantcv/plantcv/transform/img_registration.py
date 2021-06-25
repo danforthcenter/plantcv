@@ -9,7 +9,8 @@ import pickle as pkl
 
 
 def _find_closest(pt, pts):
-    """ Given coordinates of a point and a list of coordinates of a bunch of points, find the point that has the smallest Euclidean to the given point
+    """ Given coordinates of a point and a list of coordinates of a bunch of points,
+    find the point that has the smallest Euclidean to the given point
 
     :param pt: (tuple) coordinates of a point
     :param pts: (a list of tuples) coordinates of a list of points
@@ -30,7 +31,8 @@ class ImageRegistrator:
 
         self.fig, self.axes = plt.subplots(1, 2, figsize=figsize)
         self.axes[0].text(0, -100,
-                          'Collect points matching features between images. Select location on reference image then target image. '
+                          'Collect points matching features between images. '
+                          'Select location on reference image then target image. '
                           '\nPlease first click on the reference image, then on the same point on the target image.'
                           '\nPlease select at least 4 pairs of points.')
 
@@ -110,5 +112,9 @@ class ImageRegistrator:
 
     def regist(self):
         # use warp function in plantcv
-        self.model, self.img_registered = pcv.transform.warp_align(self.img_tar, self.img_ref, self.points[1], self.points[0], method='ransac')
+        self.model, self.img_registered = pcv.transform.warp(self.img_tar,
+                                                                   self.img_ref,
+                                                                   self.points[1],
+                                                                   self.points[0],
+                                                                   method='ransac')
 
