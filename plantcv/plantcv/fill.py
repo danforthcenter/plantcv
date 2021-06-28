@@ -7,6 +7,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 from skimage.morphology import remove_small_objects
 
+
 def fill(bin_img, size):
     """Identifies objects and fills objects that are less than size.
 
