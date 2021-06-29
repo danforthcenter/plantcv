@@ -6385,7 +6385,7 @@ def test_plantcv_visualize_overlay_two_imgs_size_mismatch():
 
 
 @pytest.mark.parametrize("title", ["Include Title", None])
-def test_plantcv_visualize_obj_size_ecdf(title, tmpdir):
+def test_plantcv_visualize_obj_size_ecdf(title):
     pcv.params.debug = None
     cache_dir = tmpdir.mkdir("sub")
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK), -1)
