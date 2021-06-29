@@ -24,7 +24,6 @@ def obj_size_ecdf(mask, title=None):
     :param title: str
     :return fig_ecdf: plotnine.ggplot.ggplot
     """
-
     objects, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
     areas = [cv2.contourArea(cnt) for cnt in objects]
     # Remove objects with areas < 1px
