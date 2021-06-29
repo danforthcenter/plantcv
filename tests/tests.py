@@ -387,6 +387,102 @@ def test_plantcv_parallel_metadata_parser_images():
     meta = plantcv.parallel.metadata_parser(config=config)
     assert meta == expected
 
+
+def test_plantcv_parallel_metadata_parser_multivalue_filter():
+    # Create config instance
+    config = plantcv.parallel.WorkflowConfig()
+    config.input_dir = os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR)
+    config.json = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_metadata_parser_images", "output.json")
+    config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
+    config.workflow = TEST_PIPELINE
+    config.metadata_filters = {"imgtype": ["VIS", "NIR"]}
+    config.start_date = "2014"
+    config.end_date = "2014"
+    config.timestampformat = '%Y'  # no date in filename so check date range and date_format are ignored
+    config.imgformat = "jpg"
+
+    meta = plantcv.parallel.metadata_parser(config=config)
+    expected = {
+        'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
+            'path': os.path.join(PARALLEL_TEST_DATA, 'images', 'VIS_SV_0_z1_h1_g0_e82_117770.jpg'),
+            'camera': 'SV',
+            'imgtype': 'VIS',
+            'zoom': 'z1',
+            'exposure': 'e82',
+            'gain': 'g0',
+            'frame': '0',
+            'lifter': 'h1',
+            'timestamp': None,
+            'id': '117770',
+            'plantbarcode': 'none',
+            'treatment': 'none',
+            'cartag': 'none',
+            'measurementlabel': 'none',
+            'other': 'none'
+        },
+        'NIR_SV_0_z1_h1_g0_e65_117779.jpg': {
+            'path': os.path.join(PARALLEL_TEST_DATA, 'images', 'NIR_SV_0_z1_h1_g0_e65_117779.jpg'),
+            'camera': 'SV',
+            'imgtype': 'NIR',
+            'zoom': 'z1',
+            'exposure': 'e65',
+            'gain': 'g0',
+            'frame': '0',
+            'lifter': 'h1',
+            'timestamp': None,
+            'id': '117779',
+            'plantbarcode': 'none',
+            'treatment': 'none',
+            'cartag': 'none',
+            'measurementlabel': 'none',
+            'other': 'none'
+        }
+    }
+    assert meta == expected
+    config.include_all_subdirs = False
+    meta = plantcv.parallel.metadata_parser(config=config)
+    assert meta == expected
+
+
+def test_plantcv_parallel_metadata_parser_multivalue_filter_nomatch():
+    # Create config instance
+    config = plantcv.parallel.WorkflowConfig()
+    config.input_dir = os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR)
+    config.json = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_metadata_parser_images", "output.json")
+    config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
+    config.workflow = TEST_PIPELINE
+    config.metadata_filters = {"imgtype": ["VIS", "PSII"]}
+    config.start_date = "2014"
+    config.end_date = "2014"
+    config.timestampformat = '%Y'  # no date in filename so check date range and date_format are ignored
+    config.imgformat = "jpg"
+
+    meta = plantcv.parallel.metadata_parser(config=config)
+    expected = {
+        'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
+            'path': os.path.join(PARALLEL_TEST_DATA, 'images', 'VIS_SV_0_z1_h1_g0_e82_117770.jpg'),
+            'camera': 'SV',
+            'imgtype': 'VIS',
+            'zoom': 'z1',
+            'exposure': 'e82',
+            'gain': 'g0',
+            'frame': '0',
+            'lifter': 'h1',
+            'timestamp': None,
+            'id': '117770',
+            'plantbarcode': 'none',
+            'treatment': 'none',
+            'cartag': 'none',
+            'measurementlabel': 'none',
+            'other': 'none'
+        }
+    }
+    assert meta == expected
+    config.include_all_subdirs = False
+    meta = plantcv.parallel.metadata_parser(config=config)
+    assert meta == expected
+
+
 def test_plantcv_parallel_metadata_parser_regex():
     # Create config instance
     config = plantcv.parallel.WorkflowConfig()
@@ -458,6 +554,7 @@ def test_plantcv_parallel_metadata_parser_no_default_dates():
     meta = plantcv.parallel.metadata_parser(config=config)
     assert meta == METADATA_VIS_ONLY
 
+
 def test_plantcv_parallel_workflowconfig_subdaily_timestampformat():
     '''
     timestampformats with only hours and smaller units of time were failing if the script was run earlier in the day than the images were taken. this was fixed by setting end_date to 23-59-59 if we don't detect the year-month-day
@@ -478,25 +575,24 @@ def test_plantcv_parallel_workflowconfig_subdaily_timestampformat():
 
     meta = plantcv.parallel.metadata_parser(config=config)
     assert meta == {
-    'NIR_SV_0_z1_h1_g0_e65_23_59_59.jpg': {
-        'path': os.path.join(PARALLEL_TEST_DATA, 'images_w_date','NIR_SV_0_z1_h1_g0_e65_23_59_59.jpg'),
-        'imgtype': 'NIR',
-        'camera': 'SV',
-        'frame': '0',
-        'zoom': 'z1',
-        'lifter': 'h1',
-        'gain': 'g0',
-        'exposure': 'e65',
-        'timestamp': '23_59_59',
-        'measurementlabel': 'none',
-        'cartag':'none',
-        'id': 'none',
-        'treatment': 'none',
-        'plantbarcode': 'none',
-        'other': 'none'
+        'NIR_SV_0_z1_h1_g0_e65_23_59_59.jpg': {
+            'path': os.path.join(PARALLEL_TEST_DATA, 'images_w_date','NIR_SV_0_z1_h1_g0_e65_23_59_59.jpg'),
+            'imgtype': 'NIR',
+            'camera': 'SV',
+            'frame': '0',
+            'zoom': 'z1',
+            'lifter': 'h1',
+            'gain': 'g0',
+            'exposure': 'e65',
+            'timestamp': '23_59_59',
+            'measurementlabel': 'none',
+            'cartag':'none',
+            'id': 'none',
+            'treatment': 'none',
+            'plantbarcode': 'none',
+            'other': 'none'
+        }
     }
-    }
-
 
     
 def test_plantcv_parallel_check_date_range_wrongdateformat():
@@ -880,95 +976,6 @@ def test_plantcv_parallel_process_results_invalid_json():
         plantcv.parallel.process_results(job_dir=os.path.join(cache_dir, "bad_results"),
                                          json_file=os.path.join(cache_dir, "bad_results", "invalid.txt"))
 
-def test_plantcv_match_multiple_metadata_values_with_config():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_match_multiple_metadata_values_with_config")
-    os.mkdir(cache_dir)
-
-    # Base config settings
-    config = plantcv.parallel.WorkflowConfig()
-    config.input_dir = TEST_DATA
-    config.workflow = TEST_PIPELINE_JSON
-    config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "other", "id"]
-
-    # A dictonary of metadata filters for each test case
-    metadata_filter_groups = [
-        {"imgtype":"VIS", "camera":"SV"},
-        {"imgtype":["VIS", "NIR"], "camera":"TV"},
-        {"imgtype":["VIS", "NIR"], "camera":["SV", "TV"]}
-    ]
-
-    # Call plantcv-workflow.py using each metadata filter and check results
-    for i, metadata_filters in enumerate(metadata_filter_groups):
-
-        # Set remaining config values and call plantcv-workflow.py
-        config.metadata_filters = metadata_filters
-        config.json = os.path.join(cache_dir, str(i) + "_output.json")
-        config_name = os.path.join(cache_dir, str(i) + "_config.json")
-        config.save_config(config_name)
-
-        if os.path.exists(config.json):
-             os.remove(config.json)
-
-        command = ["plantcv-workflow.py", "--config", config_name]
-        subprocess.run(command)
-
-        with open(config.json) as handle:
-            output = json.load(handle)
-
-        # For each metadata filter, ensure all processed images comply
-        for meta_field, filter in metadata_filters.items():
-            if isinstance(filter, list):
-                for entity in output["entities"]:
-                    assert entity["metadata"][meta_field]["value"] in filter
-            else:
-                for entity in output["entities"]:
-                    assert entity["metadata"][meta_field]["value"] == filter
-
-def test_plantcv_match_multiple_metadata_values_with_cli():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_match_multiple_metadata_values_with_cli")
-    os.mkdir(cache_dir)
-
-    # A metadata filter string for each test case
-    meta_filter_strings = [
-        "imgtype:VIS,camera:SV",
-        "imgtype:VIS,imgtype:NIR,camera:TV",
-        "imgtype:VIS,imgtype:NIR,camera:SV,camera:TV"
-    ]
-
-    # Each metadata filter string as a dictionary, for checking
-    meta_filter_dicts = [
-        {"imgtype":["VIS"], "camera":["SV"]},
-        {"imgtype":["VIS", "NIR"], "camera":["TV"]},
-        {"imgtype":["VIS", "NIR"], "camera":["SV", "TV"]}
-    ]
-
-    i = 0
-    for meta_filter_string, meta_filter_dict in zip(meta_filter_strings, meta_filter_dicts):
-
-	# Set command line arguments and call plantcv-workflow.py
-        output_path = os.path.join(cache_dir, str(i) + "_output.json")
-        if os.path.exists(output_path):
-            os.remove(output_path)
-        command = ["plantcv-workflow.py",
-            "--json", output_path,
-            "--dir", TEST_DATA,
-            "--workflow", TEST_PIPELINE_JSON,
-            "--meta", "imgtype,camera,frame,zoom,lifter,gain,exposure,other,id",
-            "--match", meta_filter_string
-        ]
-        subprocess.run(command)
-
-        with open(output_path) as handle:
-            output = json.load(handle)
-
-        # For each metadata filter, ensure all processed images comply
-        for meta_field, filters in meta_filter_dict.items():
-            for entity in output["entities"]:
-                assert entity["metadata"][meta_field]["value"] in filters
-
-        i += 1
 
 # ####################################################################################################################
 # ########################################### PLANTCV MAIN PACKAGE ###################################################
