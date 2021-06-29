@@ -27,6 +27,8 @@ def obj_size_ecdf(mask, title=None):
 
     objects, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
     areas = [cv2.contourArea(cnt) for cnt in objects]
+# Remove objects with areas < 1px
+areas = [i for i in areas if i >= 1.0]
 
     ecdf = ECDF(areas, side='right')
 
