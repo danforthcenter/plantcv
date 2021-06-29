@@ -10,4 +10,4 @@ from plantcv.plantcv.visualize.obj_size_ecdf import obj_size_ecdf
 
 
 __all__ = ["pseudocolor", "colorize_masks", "histogram", "clustered_contours", "colorspaces", "auto_threshold_methods",
-           "overlay_two_imgs", "colorize_label_img","pix_intensity","obj_size", "obj_size_ecdf"]
+           "overlay_two_imgs", "colorize_label_img", "obj_size_ecdf"]
