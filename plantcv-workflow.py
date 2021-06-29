@@ -109,7 +109,7 @@ def options():
             pairs = args.match.split(',')
             for pair in pairs:
                 key, value = pair.split(':')
-                if not key in args.imgtype:
+                if key not in args.imgtype:
                     args.imgtype[key] = []
                 args.imgtype[key].append(value)
 
