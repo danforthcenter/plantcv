@@ -44,8 +44,15 @@ hist_figure1 = pcv.visualize.hyper_histogram(array, mask=mask)
 # Showing the histogram for a single wavelength (700nm)
 hist_figure2 = pcv.visualize.hyper_histogram(array, mask=mask, wvlengths=[700])
 
-# Showing the histogram for two wavelengths (the 970nm is not in the range of visible spectrum)
+# Showing the histogram for two wavelengths 
 hist_figure3 = pcv.visualize.hyper_histogram(array, mask=mask, wvlengths=[380, 970])
+
+# Showing the histogram for multiple wavelengths
+hist_figure4 = pcv.visualize.hyper_histogram(array, mask, 
+                                             wvlengths=[379, 409, 439, 469, 499, 529, 559, 568, 
+                                                        619, 649, 679, 709, 739, 769, 799, 
+                                                        829, 859, 889, 
+                                                        919, 949, 979, 1000])
 
 ```
 
@@ -57,5 +64,6 @@ hist_figure3 = pcv.visualize.hyper_histogram(array, mask=mask, wvlengths=[380, 9
 
 ![hist_two](img/documentation_images/hyper_histogram/hist_two_bands.png)
 
+![hist_multiple](img/documentation_images/hyper_histogram/hist_multiple_bands.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/visualize/hyper_histogram.py)
