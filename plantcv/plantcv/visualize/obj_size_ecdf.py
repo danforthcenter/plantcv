@@ -3,7 +3,6 @@
 import os
 import cv2
 import pandas as pd
-import numpy as np
 from plantcv.plantcv import params, fatal_error
 from plantcv.plantcv._debug import _debug
 from statsmodels.distributions.empirical_distribution import ECDF
@@ -44,4 +43,3 @@ def obj_size_ecdf(mask, title=None):
     _debug(visual=fig_ecdf,
            filename=os.path.join(params.debug_outdir, str(params.device) + '_area_ecdf.png'))
     return fig_ecdf
-
