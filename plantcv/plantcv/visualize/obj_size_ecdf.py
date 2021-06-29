@@ -3,7 +3,7 @@
 import os
 import cv2
 import pandas as pd
-from plantcv.plantcv import params, fatal_error
+from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 from statsmodels.distributions.empirical_distribution import ECDF
 from plotnine import ggplot, aes, geom_point, labels, \
