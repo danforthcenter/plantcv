@@ -6,8 +6,7 @@ import pandas as pd
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 from statsmodels.distributions.empirical_distribution import ECDF
-from plotnine import ggplot, aes, geom_point, labels, \
-    scale_color_manual, scale_x_log10
+from plotnine import ggplot, aes, geom_point, labels, scale_x_log10
 
 
 def obj_size_ecdf(mask, title=None):
