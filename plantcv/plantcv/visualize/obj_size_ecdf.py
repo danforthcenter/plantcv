@@ -32,7 +32,7 @@ areas = [i for i in areas if i >= 1.0]
 
     ecdf = ECDF(areas, side='right')
 
-    ecdf_df = pd.DataFrame({'object area': ecdf.x, 'cumulative probability': ecdf.y})
+    ecdf_df = pd.DataFrame({'object area': ecdf.x[1:], 'cumulative probability': ecdf.y[1:]})
     # create ecdf plot and apply log-scale for x-axis (areas)
     fig_ecdf = (ggplot(data=ecdf_df, mapping=aes(x='object area', y='cumulative probability'))
                 + geom_point(size=.1)
