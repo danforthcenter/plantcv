@@ -86,7 +86,6 @@ from plantcv.plantcv.crop import crop
 from plantcv.plantcv.stdev_filter import stdev_filter
 from plantcv.plantcv.spatial_clustering import spatial_clustering
 from plantcv.plantcv import photosynthesis
-# from plantcv.plantcv.visualize import ecdf
 # add new functions to end of lists
 
 # Auto versioning
