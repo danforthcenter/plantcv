@@ -10,8 +10,7 @@ from plotnine import ggplot, aes, geom_point, labels, scale_x_log10
 
 
 def obj_size_ecdf(mask, title=None):
-    """
-    Plot empirical cumulative distribution for object size based on binary mask
+    """Plot empirical cumulative distribution for object size based on binary mask.
 
     Inputs:
     mask  = binary mask
