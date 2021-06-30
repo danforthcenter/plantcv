@@ -1001,9 +1001,6 @@ TEST_INPUT_THERMAL_CSV = "FLIR2600.csv"
 PIXEL_VALUES = "pixel_inspector_rgb_values.txt"
 
 # leaving photosynthesis data here so it can be used to test plot_image and print_image
-
-
-@pytest.mark.fixture
 def ps_mask():
     """Create simple mask for PSII"""
     mask = np.zeros((10, 10), dtype=np.uint8)
@@ -1011,7 +1008,6 @@ def ps_mask():
     return(mask)
 
 
-@pytest.mark.fixture
 def ps_da(var):
     """Create simple data for PSII"""
     # sample images
@@ -5049,6 +5045,41 @@ def test_plantcv_photosynthesis_analyze_npq_fatalerror(mlabels, tmask):
     with pytest.raises(RuntimeError):
         _ = pcv.photosynthesis.analyze_npq(ps_da_dark=ps_da('darkadapted'), ps_da_light=ps_da(
             'lightadapted'), mask=tmask, bins=100, measurement_labels=mlabels, label="default")
+
+
+@pytest.mark.parametrize("da",
+                         [
+                            # test darkadapted
+                            ps_da("darkadapted"),
+                            # test lightadapted
+                            ps_da("lightadapted")
+                         ]
+                        )
+def test_plantcv_photosynthesis_reassign_frame_labels(da):
+    # Test with debug = None
+    pcv.params.debug = None
+    _ = pcv.photosynthesis.reassign_frame_labels(ps_da=da, mask=ps_mask())
+
+
+@pytest.mark.parametrize("da, tmask",
+                         [
+                            # test not PSII_data
+                            [pcv.PSII_data(), ps_mask()],
+                            # test input is dataarray
+                            ['nope', ps_mask()],
+                            # test input is dataarray with correct name
+                            [ps_da('darkadapted').rename('test'), ps_mask()],
+                            # test mask shape
+                            [ps_da('darkadapted'), np.ones((2, 2))],
+                            # test mask is binary
+                            [ps_da('lightadapted'), np.random.random(ps_mask().shape)]
+                         ]
+                        )
+def test_plantcv_photosynthesis_reassign_frame_labels_fatalerror(da, tmask):
+    # Test with debug = None
+    pcv.params.debug = None
+    with pytest.raises(RuntimeError):
+        _, _ = pcv.photosynthesis.reassign_frame_labels(ps_da=da, mask=tmask)
 
 
 # ##############################
