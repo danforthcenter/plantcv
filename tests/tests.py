@@ -20,7 +20,6 @@ import matplotlib.pyplot as plt
 import dask
 from dask.distributed import Client
 from skimage import img_as_ubyte
-import subprocess
 
 PARALLEL_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "parallel_data")
 TEST_TMPDIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".cache")
@@ -28,7 +27,6 @@ TEST_IMG_DIR = "images"
 TEST_IMG_DIR2 = "images_w_date"
 TEST_SNAPSHOT_DIR = "snapshots"
 TEST_PIPELINE = os.path.join(PARALLEL_TEST_DATA, "plantcv-script.py")
-TEST_PIPELINE_JSON = os.path.join(PARALLEL_TEST_DATA, "plantcv-script-json.py")
 META_FIELDS = {"imgtype": 0, "camera": 1, "frame": 2, "zoom": 3, "lifter": 4, "gain": 5, "exposure": 6, "id": 7}
 VALID_META = {
     # Camera settings
@@ -439,9 +437,6 @@ def test_plantcv_parallel_metadata_parser_multivalue_filter():
         }
     }
     assert meta == expected
-    config.include_all_subdirs = False
-    meta = plantcv.parallel.metadata_parser(config=config)
-    assert meta == expected
 
 
 def test_plantcv_parallel_metadata_parser_multivalue_filter_nomatch():
@@ -477,9 +472,6 @@ def test_plantcv_parallel_metadata_parser_multivalue_filter_nomatch():
             'other': 'none'
         }
     }
-    assert meta == expected
-    config.include_all_subdirs = False
-    meta = plantcv.parallel.metadata_parser(config=config)
     assert meta == expected
 
 
