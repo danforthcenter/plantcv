@@ -27,6 +27,9 @@ Reads image into numpy ndarray and splits the path and image filename (*see note
     - [Use In Thermal Tutorial](thermal_tutorial.md)
     - [Use In Hyperspectral Tutorial](hyperspectral_tutorial.md)
 
+!!! note
+  ENVI mode currently supports Band Interleaved by Line (BIL) and Band Sequential (BSQ) raw data formats.
+
 ```python
 from plantcv import plantcv as pcv      
 

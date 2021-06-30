@@ -20,6 +20,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import dask
 from dask.distributed import Client
+from skimage import img_as_ubyte
 
 PARALLEL_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "parallel_data")
 TEST_TMPDIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".cache")
@@ -894,6 +895,8 @@ HYPERSPECTRAL_DATA_NO_DEFAULT = "darkReference2"
 HYPERSPECTRAL_HDR_NO_DEFAULT = "darkReference2.hdr"
 HYPERSPECTRAL_DATA_APPROX_PSEUDO = "darkReference3"
 HYPERSPECTRAL_HDR_APPROX_PSEUDO = "darkReference3.hdr"
+HYPERSPECTRAL_DATA_BAD_INTERLEAVE = "darkReference4"
+HYPERSPECTRAL_HDR_BAD_INTERLEAVE = "darkReference4.hdr"
 HYPERSPECTRAL_HDR_SMALL_RANGE = {'description': '{[HEADWALL Hyperspec III]}', 'samples': '800', 'lines': '1',
                                  'bands': '978', 'header offset': '0', 'file type': 'ENVI Standard',
                                  'interleave': 'bil', 'sensor type': 'Unknown', 'byte order': '0',
@@ -1027,7 +1030,6 @@ def test_plantcv_outputs_add_observation_invalid_type():
         outputs.add_observation(sample='default', variable='test', trait='test variable', method='type', scale='none',
                                 datatype=list, value=np.array([2]), label=[])
 
-
 def test_plantcv_outputs_save_results_json_newfile(tmpdir):
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("sub")
@@ -1080,75 +1082,6 @@ def test_plantcv_outputs_save_results_csv(tmpdir):
     with open(testfile, "r") as fp:
         test_results = fp.read()
     assert results == test_results
-
-
-def test_plantcv_transform_warp_smaller():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR),-1)
-    bimg = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY),-1)
-    bimg_small = cv2.resize(bimg, (200,300)) #not sure why INTER_NEAREST doesn't preserve values
-    bimg_small[bimg_small>0]=255
-    mrow, mcol = bimg_small.shape
-    vrow, vcol, vdepth = img.shape
-    pcv.params.debug = None
-    mask_warped = pcv.transform.warp(bimg_small, img[:,:,2],
-                                    pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
-                                    refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
-    pcv.params.debug = 'plot'
-    mask_warped_plot = pcv.transform.warp(bimg_small, img[:,:,2],
-                                pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
-                                refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
-
-    assert np.count_nonzero(mask_warped)==93142
-    assert np.count_nonzero(mask_warped_plot)==93142
-
-
-def test_plantcv_transform_warp_larger():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR),-1)
-    gimg = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY),-1)
-    gimg_large = cv2.resize(gimg, (5000,7000))
-    mrow, mcol = gimg_large.shape
-    vrow, vcol, vdepth = img.shape
-    pcv.params.debug='print'
-    mask_warped_print = pcv.transform.warp(gimg_large, img,
-                                    pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
-                                    refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
-
-    assert np.sum(mask_warped_print)==83103814
-
-
-def test_plantcv_transform_warp_rgbimgerror():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR),-1)
-    gimg = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY),-1)
-    gimg_large = cv2.resize(gimg, (5000,7000))
-    mrow, mcol = gimg_large.shape
-    vrow, vcol, vdepth = img.shape
-
-    with pytest.raises(RuntimeError):
-        _ = pcv.transform.warp(img, img,
-                                pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
-                                refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
-
-
-def test_plantcv_transform_warp_4ptserror():
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR),-1)
-    mrow, mcol, _ = img.shape
-    vrow, vcol, vdepth = img.shape
-
-    with pytest.raises(RuntimeError):
-        _ = pcv.transform.warp(img[:,:,0], img,
-                                pts = [(0,0),(mcol-1,0),(0,mrow-1)],
-                                refpts = [(0,0),(vcol-1,0),(0,vrow-1)])
-
-    with pytest.raises(RuntimeError):
-        _ = pcv.transform.warp(img[:,:,1], img,
-                                pts = [(0,0),(mcol-1,0),(0,mrow-1)],
-                                refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1)])
-
-    with pytest.raises(RuntimeError):
-        _ = pcv.transform.warp(img[:,:,2], img,
-                                pts = [(0,0),(mcol-1,0),(mcol-1,mrow-1),(0,mrow-1)],
-                                refpts = [(0,0),(vcol-1,0),(vcol-1,vrow-1),(0,vrow-1),(0,vrow-1)])
-
 
 def test_plantcv_acute():
     # Read in test data
@@ -2096,18 +2029,8 @@ def test_plantcv_fatal_error():
 
 
 def test_plantcv_fill():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_fill")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.fill(bin_img=img, size=63632)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.fill(bin_img=img, size=63632)
     # Test with debug = None
     pcv.params.debug = None
     fill_img = pcv.fill(bin_img=img, size=63632)
@@ -2334,6 +2257,25 @@ def test_plantcv_image_add():
     assert all([i == j] for i, j in zip(np.shape(added_img), TEST_BINARY_DIM))
 
 
+def test_plantcv_image_fusion():
+    # Read in test data
+    # 16-bit image
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
+    img2 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN))
+    # 8-bit image
+    img2 = img_as_ubyte(img2)
+    fused_img = pcv.image_fusion(img1, img2, [480.0], [550.0, 640.0, 800.0])
+    assert str(type(fused_img)) == "<class 'plantcv.plantcv.classes.Spectral_data'>"
+
+
+def test_plantcv_image_fusion_size_diff():
+    img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), 0)
+    img2 = np.copy(img1)
+    img2 = img2[0:10, 0:10]
+    with pytest.raises(RuntimeError):
+        _ = pcv.image_fusion(img1, img2, [480.0, 550.0, 670.0], [480.0, 550.0, 670.0])
+
+
 def test_plantcv_image_subtract():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_image_sub")
@@ -2352,7 +2294,6 @@ def test_plantcv_image_subtract():
     pcv.params.debug = None
     new_img = pcv.image_subtract(img1, img2)
     assert np.array_equal(new_img, np.zeros(np.shape(new_img), np.uint8))
-
 
 def test_plantcv_image_subtract_fail():
     # read in images
@@ -3150,12 +3091,6 @@ def test_plantcv_rgb2gray():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.rgb2gray(rgb_img=img)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.rgb2gray(rgb_img=img)
     # Test with debug = None
     pcv.params.debug = None
     gray = pcv.rgb2gray(rgb_img=img)
@@ -3948,7 +3883,7 @@ def test_plantcv_morphology_fill_segments_with_stem():
     pcv.params.debug = None
     _ = pcv.morphology.fill_segments(mask, obj, stem_obj)
     num_objects = len(pcv.outputs.observations['default']['leaf_area']['value'])
-    assert num_objects == 70
+    assert num_objects == 69
 
 
 def test_plantcv_morphology_segment_angle():
@@ -4213,6 +4148,12 @@ def test_plantcv_hyperspectral_read_data_approx_pseudorgb():
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA_APPROX_PSEUDO)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
     assert np.shape(array_data.array_data) == (1, 1600, 978)
+
+
+def test_plantcv_hyperspectral_read_data_bad_interleave():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA_BAD_INTERLEAVE)
+    with pytest.raises(RuntimeError):
+        _ = pcv.hyperspectral.read_data(filename=spectral_filename)
 
 
 def test_plantcv_spectral_index_ndvi():
@@ -5784,6 +5725,70 @@ def test_plantcv_transform_nonuniform_illumination_gray():
     assert np.shape(corrected) == np.shape(gray_img)
 
 
+def test_plantcv_transform_warp_default():
+    pcv.params.debug = "plot"
+    img = create_test_img((12, 10, 3))
+    refimg = create_test_img((12, 10, 3))
+    pts = [(0, 0),(1, 0),(0, 3),(4, 4)]
+    refpts = [(0, 0),(1, 0),(0, 3),(4, 4)]
+    warped_img, mat = pcv.transform.warp(img, refimg, pts, refpts, method="default")
+    assert mat.shape == (3, 3)
+
+
+def test_plantcv_transform_warp_lmeds():
+    pcv.params.debug = "plot"
+    img = create_test_img((10, 10, 3))
+    refimg = create_test_img((11, 11))
+    pts = [(0, 0), (1, 0), (0, 3), (4, 4)]
+    refpts = [(0, 0), (1, 0), (0, 3), (4, 4)]
+    warped_img, mat = pcv.transform.warp(img, refimg, pts, refpts, method="lmeds")
+    assert mat.shape == (3, 3)
+
+
+def test_plantcv_transform_warp_rho():
+    pcv.params.debug = "plot"
+    img = create_test_img_bin((10, 10))
+    refimg = create_test_img((11, 11))
+    pts = [(0, 0), (1, 0), (0, 3), (4, 4)]
+    refpts = [(0, 0), (1, 0), (0, 3), (4, 4)]
+    warped_img, mat = pcv.transform.warp(img, refimg, pts, refpts, method="rho")
+    assert mat.shape == (3, 3)
+
+
+def test_plantcv_transform_warp_ransac():
+    pcv.params.debug = "plot"
+    img = create_test_img((100, 150))
+    refimg = create_test_img((10, 15))
+    pts = [(0, 0), (149, 0), (99, 149), (0, 99), (3, 3)]
+    refpts = [(0, 0), (0, 14), (9, 14), (0, 9), (3, 3)]
+    warped_img, mat = pcv.transform.warp(img, refimg, pts, refpts, method="ransac")
+    assert mat.shape == (3, 3)
+
+
+@pytest.mark.parametrize("pts, refpts", [
+    [[(0,0)],[(0,0),(0,1)]],  # different # of points provided for img and refimg
+    [[(0,0)],[(0,0)]],  # not enough pairs of points provided
+    [[(0, 0), (0, 14), (9, 14), (0, 9), (3, 3)],
+     [(0, 0), (149, 0), (99, 149), (0, 99), (3, 3)]]  # homography not able to be calculated (cannot converge)
+])
+def test_plantcv_transform_warp_err(pts, refpts):
+    img = create_test_img((10, 15))
+    refimg = create_test_img((100, 150))
+    method = "rho"
+    with pytest.raises(RuntimeError):
+        pcv.transform.warp(img, refimg, pts, refpts, method=method)
+
+
+def test_plantcv_transform_warp_align():
+    img = create_test_img((10, 10, 3))
+    refimg = create_test_img((11, 11))
+    mat = np.array([[ 1.00000000e+00,  1.04238500e-15, -7.69185075e-16],
+                    [ 1.44375646e-16,  1.00000000e+00,  0.00000000e+00],
+                    [-5.41315251e-16,  1.78930521e-15,  1.00000000e+00]])
+    warp_img = pcv.transform.warp_align(img=img, mat=mat, refimg=refimg)
+    assert warp_img.shape == (11, 11, 3)
+
+
 # ##############################
 # Tests for the threshold subpackage
 # ##############################
@@ -6029,6 +6034,18 @@ def test_plantcv_threshold_texture():
         assert 0
 
 
+def create_test_img(sz_img):
+    img = np.random.randint(np.prod(sz_img), size=sz_img) * 255
+    img = img.astype(np.uint8)
+    return img
+
+
+def create_test_img_bin(sz_img):
+    img = np.zeros(sz_img)
+    img[3:7, 2:8] = 1
+    return img
+
+
 @pytest.mark.parametrize("bad_type", ["native", "nan", "inf"])
 def test_plantcv_threshold_mask_bad(bad_type):
     # Create a synthetic bad image
@@ -6221,6 +6238,12 @@ def test_plantcv_visualize_colorize_masks_bad_color_input():
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']], colors=['red', 1.123])
 
+def test_plantcv_visualize_colorize_label_img():
+    label_img = np.array([[1,2,3],[4,5,6],[7,8,9]])
+    pcv.params.debug = None
+    colored_img = pcv.visualize.colorize_label_img(label_img)
+    assert (colored_img.shape[0:-1] == label_img.shape) and colored_img.shape[-1] == 3
+
 
 @pytest.mark.parametrize("bins,lb,ub,title", [[200, 0, 255, "Include Title"], [100, None, None, None]])
 def test_plantcv_visualize_histogram(bins, lb, ub, title):
@@ -6381,9 +6404,18 @@ def test_plantcv_visualize_overlay_two_imgs_size_mismatch():
         _ = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2)
 
 
+@pytest.mark.parametrize("title", ["Include Title", None])
+def test_plantcv_visualize_obj_size_ecdf(title):
+    pcv.params.debug = None
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK), -1)
+    fig_ecdf = plantcv.plantcv.visualize.obj_size_ecdf(mask=mask, title=title)
+    assert isinstance(fig_ecdf, ggplot)
+
+
 # ##############################
 # Tests for the utils subpackage
 # ##############################
+
 def test_plantcv_utils_json2csv():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_json2csv")

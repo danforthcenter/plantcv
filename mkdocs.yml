@@ -80,6 +80,7 @@ nav:
           - 'Spectral data objects': Spectral_data.md
       - 'Image Add': image_add.md
       - 'Image Subtract': image_subtract.md
+      - 'Image Fusion': image_fusion.md
       - 'Invert': invert.md
       - 'Landmark Analysis':
         - 'Acute Vertex': acute_vertex.md
@@ -169,10 +170,12 @@ nav:
       - 'Visualization Methods':
           - 'Auto Threshold Methods': visualize_auto_threshold_methods.md
           - 'Clustered Contours': visualize_clustered_contours.md
+          - 'Colorize Label Image': visualize_colorize_label_img.md
           - 'Colorize Masks': visualize_colorize_masks.md
           - 'Colorspaces': visualize_colorspace.md
           - 'Histogram': visualize_histogram.md
           - 'Overlay Images': visualize_ovelay_two_imgs.md
+          - 'Object Size ECDF': visualize_obj_size_ecdf.md
           - 'Pseudocolor': visualize_pseudocolor.md
       - 'Watershed Segmentation': watershed.md
       - 'White balance': white_balance.md
