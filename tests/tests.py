@@ -5008,7 +5008,7 @@ def test_plantcv_photosynthesis_analyze_npq(mlabels):
     _ = pcv.photosynthesis.analyze_npq(ps_da_dark=ps_da('darkadapted'), ps_da_light=ps_da('lightadapted'), mask=ps_mask(), bins=100, measurement_labels=mlabels, label="prefix")
     if mlabels is None:
         med = pcv.outputs.observations["prefix"]["npq_median_t1"]["value"]
-    elif isinstance(mlabels, list):
+    else:
         med = pcv.outputs.observations["prefix"]["npq_median_Fq/Fm"]["value"]
     pcv.outputs.clear()
     assert med == 0.25
