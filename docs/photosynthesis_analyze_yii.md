@@ -7,10 +7,10 @@ Extract estimates of the efficiency (YII) of Photosystem II (PSII). The photosyn
 **returns** YII histogram, and YII image
 
 - **Parameters:**
-    - ps_da - photosynthesis xarray DataArray
+    - ps_da - photosynthesis xarray DataArray for which to compute yii. Can either have a pair of frames F0,Fm or pair(s) of Fp,Fmp
     - mask - binary mask of plant
     - bins - number of grayscale bins (0-256 for 8-bit images and 0 to 65,536), if you would like to bin data, you would alter this number (default bins=256)
-    - measurement_labels - labels for each measurement, modifies the default variable names of observations. must have same length as number of measurements in ps_da
+    - measurement_labels - list of label(s) for each measurement, modifies the default variable names of observations. must have same length as number of measurements in ps_da
     - label - Optional label parameter, modifies the entity name of observations recorded. (default `label="default"`)
 - **Context:**
     - Used to extract Fv/Fm, Fv'/Fm' or Fq'/Fm' per identified plant pixel.
@@ -18,7 +18,7 @@ Extract estimates of the efficiency (YII) of Photosystem II (PSII). The photosyn
     - Generates an Fv/Fm, Fv'/Fm' or Fq'/Fm' image.
 - **Example use:**
     - [Use In PSII Tutorial](psII_tutorial.md)
-- **Output data stored:** Data ('yii_hist_{measurement_label}', 'yii_hist_peak_{measurement_label}', 'yii_median_{measurement_label}' automatically gets stored to the 
+- **Output data stored:** Data ('yii_hist_{measurement_label}', 'yii_max_{measurement_label}', 'yii_median_{measurement_label}' automatically gets stored to the 
   [`Outputs` class](outputs.md) when this function is run. These data can always get accessed during a workflow 
   (example below). [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
@@ -41,9 +41,9 @@ pcv.params.debug = "print"
 ps = pcv.photosynthesis.read_cropreporter(filename = "mydata.inf")
 
 # Analyze Fv/Fm    
-fvfm_hist, fvfm = pcv.photosynthesis.analyze_yii(ps=ps.darkadapted, 
+fvfm_hist, fvfm = pcv.photosynthesis.analyze_yii(ps_da=ps.darkadapted, 
 mask=kept_mask, 
-measurement_labels="Fv/Fm",
+measurement_labels=["Fv/Fm"],
 bins=256, 
 label="fluor")
 
@@ -77,7 +77,7 @@ pcv.params.debug = "print"
 # Analyze Fq'/Fm'    
 fqfm_hist, fqfm = pcv.photosynthesis.analyze_yii(ps=ps.lightadapted, mask=kept_mask,                                                         
 bins=256, 
-measurement_labels="Fq'/Fm'",
+measurement_labels=["Fq'/Fm'"],
 label="fluor")
 
 # Access data stored out from fluor_fvfm
@@ -85,10 +85,10 @@ fqfm_median = pcv.outputs.observations['fluor']["yii_median_Fq'/Fm'"]['value']
 
 fqfm_cmap= pcv.visualize.pseudocolor(gray_img=fqfm, mask=kept_mask, min_value=0, max_value=1, title="Fq'/Fm'")
 
-# or xarray plot method
-
-fqfm.plot()
-
+# or xarray plot method (output not shown)
+fqfm.plot(row = 'measurement', col_wrap = 3)
+# or
+fqfm.plot(col_wrap='measurement')
 ```
 
 **Histogram of Fq'/Fm' values**

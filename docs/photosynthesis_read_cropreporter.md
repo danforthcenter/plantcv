@@ -29,6 +29,10 @@ pcv.params.debug = "print"
 #read in image
 ps, imgpath, filename = pcv.photosynthesis.read_cropreporter(filename="PSII_HDR_20200826_22_rep6.INF")
 
+# you can check which variables were imported at the prompt with:
+ps
+
+
 ```
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/photosynthesis/read_cropreporter.py)

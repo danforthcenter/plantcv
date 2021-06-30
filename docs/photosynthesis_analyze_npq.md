@@ -13,7 +13,7 @@ Calculates (Fm/Fm') - 1 data from a masked region. The photosynthesis subpackage
     - mask - binary mask of selected contours
     - bins - number of grayscale bins (0-256 for 8-bit images and 0 to 65,536), if you would like to bin data, you 
       would alter this number (default bins=256)
-    - measurement_labels - labels for each measurement in `ps_da_light`, modifies the variable name of observations recorded
+    - measurement_labels - list of label(s) for each measurement in `ps_da_light`, modifies the variable name of observations recorded
     - label - Optional label parameter, modifies the entity name of observations recorded. (default `label="default"`)
 - **Context:**
     - Used to extract NPQ per identified plant pixel.
@@ -21,7 +21,7 @@ Calculates (Fm/Fm') - 1 data from a masked region. The photosynthesis subpackage
     - Generates an NPQ image.
 - **Example use:**
     - [Use In PSII Tutorial](psII_tutorial.md)
-- **Output data stored:** Data ('npq_hist_{measurement_label}', 'npq_hist_peak_{measurement_label}', 'npq_median_{measurement_label}') are automatically stored to the 
+- **Output data stored:** Data ('npq_hist_{measurement_label}', 'npq_max_{measurement_label}', 'npq_median_{measurement_label}') are automatically stored to the 
   [`Outputs` class](outputs.md) when this function is run. These data can be accessed during a workflow (example below). `{measurement_label}` is automatically created when importing the dataset, e.g. with `read_cropreporter()` but can be overwritten with `measurement_labels` argument.
   [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 
