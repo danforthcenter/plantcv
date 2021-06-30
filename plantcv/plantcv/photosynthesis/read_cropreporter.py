@@ -43,9 +43,9 @@ def read_cropreporter(filename):
     frames_captured = {key: value for key, value in metadata_dict.items() if "Done" in key}
     frames_expected = [key.upper()[0:3] for key, value in frames_captured.items() if str(value) == "1"]
     # ignore NPQ
-    for i,k in enumerate(frames_expected):
+    for i, k in enumerate(frames_expected):
         if 'NPQ' == k:
-            frames_expected = [*frames_expected[0:i], *frames_expected[-i:]]
+            frames_expected = [*frames_expected[:i], *frames_expected[-(i+1):]]
 
     corresponding_dict = {"FVF": "PSD", "FQF": "PSL", "CHL": "CHL", "SPC": "SPC",
                           "CLR": "CLR", "RFD": "RFD", "GFP": "GFP", "RFP": "RFP"}
