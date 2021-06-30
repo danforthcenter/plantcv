@@ -394,15 +394,12 @@ def test_plantcv_parallel_metadata_parser_multivalue_filter():
     config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = TEST_PIPELINE
     config.metadata_filters = {"imgtype": ["VIS", "NIR"]}
-    config.start_date = "2014"
-    config.end_date = "2014"
-    config.timestampformat = '%Y'  # no date in filename so check date range and date_format are ignored
     config.imgformat = "jpg"
 
     meta = plantcv.parallel.metadata_parser(config=config)
     expected = {
         'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
-            'path': os.path.join(PARALLEL_TEST_DATA, 'images', 'VIS_SV_0_z1_h1_g0_e82_117770.jpg'),
+            'path': os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR, 'VIS_SV_0_z1_h1_g0_e82_117770.jpg'),
             'camera': 'SV',
             'imgtype': 'VIS',
             'zoom': 'z1',
@@ -419,7 +416,7 @@ def test_plantcv_parallel_metadata_parser_multivalue_filter():
             'other': 'none'
         },
         'NIR_SV_0_z1_h1_g0_e65_117779.jpg': {
-            'path': os.path.join(PARALLEL_TEST_DATA, 'images', 'NIR_SV_0_z1_h1_g0_e65_117779.jpg'),
+            'path': os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR, 'NIR_SV_0_z1_h1_g0_e65_117779.jpg'),
             'camera': 'SV',
             'imgtype': 'NIR',
             'zoom': 'z1',
@@ -447,15 +444,12 @@ def test_plantcv_parallel_metadata_parser_multivalue_filter_nomatch():
     config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
     config.workflow = TEST_PIPELINE
     config.metadata_filters = {"imgtype": ["VIS", "PSII"]}
-    config.start_date = "2014"
-    config.end_date = "2014"
-    config.timestampformat = '%Y'  # no date in filename so check date range and date_format are ignored
     config.imgformat = "jpg"
 
     meta = plantcv.parallel.metadata_parser(config=config)
     expected = {
         'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
-            'path': os.path.join(PARALLEL_TEST_DATA, 'images', 'VIS_SV_0_z1_h1_g0_e82_117770.jpg'),
+            'path': os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR, 'VIS_SV_0_z1_h1_g0_e82_117770.jpg'),
             'camera': 'SV',
             'imgtype': 'VIS',
             'zoom': 'z1',
