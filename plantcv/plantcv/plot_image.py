@@ -5,16 +5,18 @@ import matplotlib
 from xarray.core.dataarray import DataArray
 from plotnine.ggplot import ggplot
 from plantcv.plantcv import params
+from plantcv.plantcv.classes import PSII_data
 from matplotlib import pyplot as plt
 from plantcv.plantcv import fatal_error
 
 
-def plot_image(img, cmap=None):
+def plot_image(img, cmap=None, **kwargs):
     """
     Plot an image to the screen.
 
-    :param img: numpy.ndarray
+    :param img: numpy.ndarray, ggplot, xarray.core.dataarray.DataArray
     :param cmap: str
+    :param **kwargs: key-value arguments to xarray.plot method
     :return:
     """
 
@@ -39,14 +41,18 @@ def plot_image(img, cmap=None):
             plt.show()
 
     elif isinstance(img, matplotlib.figure.Figure):
-        fatal_error("Error, matplotlib Figure not supported. Instead try running without plot_image.")
+        fatal_error(
+            "Error, matplotlib Figure not supported. Instead try running without plot_image.")
 
     # Plot if the image is a plotnine ggplot image
     elif isinstance(img, ggplot):
         print(img)
 
     elif isinstance(img, DataArray):
-        img.plot(col='frame_label', col_wrap=6)
+        img.plot(**kwargs)
+
+    elif isinstance(img, PSII_data):
+        fatal_error("You need to specify an underlying DataArray to plot.")
 
     else:
-        print(f"Plotting {type(img)} is not supported.")
+        fatal_error(f"Plotting {type(img)} is not supported.")
