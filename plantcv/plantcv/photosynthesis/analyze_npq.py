@@ -36,6 +36,12 @@ def analyze_npq(ps_da_light, ps_da_dark, mask, bins=256, measurement_labels=None
     :return npq: xarray.core.dataarray.DataArray
     """
 
+    if mask.shape != ps_da_light.shape[:2] or mask.shape != ps_da_dark.shape[:2]:
+        fatal_error(f"Mask needs to have shape {ps_da_dark.shape[:2]}")
+
+    if len(np.unique(mask)) > 2 or mask.dtype != 'uint8':
+        fatal_error("Mask must have dtype uint8 and be binary")
+
     if (measurement_labels is not None) and (len(measurement_labels) != ps_da_light.coords['measurement'].shape[0]):
         fatal_error('measurement_labels must be the same length as the number of measurements in `ps_da_light`')
 
@@ -73,7 +79,7 @@ def analyze_npq(ps_da_light, ps_da_dark, mask, bins=256, measurement_labels=None
 
     # Store images
     outputs.images.append(npq)
-    # this only returns the last histogram..... xarray does not seem to support panels of histograms
+    # this only returns the last histogram..... xarray does not seem to support panels of histograms. use matplotlib subplots?
     return hist_fig, npq.drop_vars(['frame_label', 'frame_num'])
 
 

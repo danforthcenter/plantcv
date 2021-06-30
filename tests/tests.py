@@ -1001,6 +1001,8 @@ TEST_INPUT_THERMAL_CSV = "FLIR2600.csv"
 PIXEL_VALUES = "pixel_inspector_rgb_values.txt"
 
 # leaving photosynthesis data here so it can be used to test plot_image and print_image
+
+
 @pytest.mark.fixture
 def ps_mask():
     """Create simple mask for PSII"""
@@ -4981,8 +4983,13 @@ def test_plantcv_photosynthesis_read_cropreporter():
     assert isinstance(ps, pcv.PSII_data) and ps.darkadapted.shape == (966, 1296, 21, 1)
 
 
-@pytest.mark.parametrize("mvar,mlabels", [["darkadapted", None],
-                                          ["lightadapted", ["Fq/Fm"]]])
+@pytest.mark.parametrize("mvar, mlabels",
+                         # test darkadapted control seq
+                         [["darkadapted", None],
+                          # test lightadapted control seq and measurement_labels arg
+                          ["lightadapted", ["Fq/Fm"]]
+                          ]
+                         )
 def test_plantcv_photosynthesis_analyze_yii(mvar, mlabels):
     # Test with debug = None
     pcv.params.debug = None
@@ -4998,13 +5005,20 @@ def test_plantcv_photosynthesis_analyze_yii(mvar, mlabels):
         assert med == 0.75
 
 
-def test_plantcv_photosynthesis_analyze_yii_bad_measurementlabels():
+@pytest.mark.parametrize("mlabels, tmask",
+                         # test wrong mask shape
+                         [[None, np.ones((2, 2))],
+                          # test non binary mask
+                          [None, np.random.random(ps_mask().shape)],
+                          # test bad measurement_labels
+                          [['f', 'm'], ps_mask()]])
+def test_plantcv_photosynthesis_analyze_yii_fatalerror(mlabels, tmask):
     # Test with debug = None
     pcv.params.debug = None
 
     with pytest.raises(RuntimeError):
-        _ = pcv.photosynthesis.analyze_yii(ps_da=ps_da('darkadapted'), mask=ps_mask(),
-                                           bins=100, measurement_labels=['f', 'm'], label="default")
+        _ = pcv.photosynthesis.analyze_yii(ps_da=ps_da('darkadapted'), mask=tmask,
+                                           bins=100, measurement_labels=mlabels, label="default")
 
 
 @pytest.mark.parametrize("mlabels", [None, ["Fq/Fm"]])
@@ -5021,13 +5035,20 @@ def test_plantcv_photosynthesis_analyze_npq(mlabels):
     assert med == 0.25
 
 
-def test_plantcv_photosynthesis_analyze_npq_bad_measurementlabels():
+@pytest.mark.parametrize("mlabels, tmask",
+                         # test wrong mask shape
+                         [[None, np.ones((2, 2))],
+                          # test non binary mask or not uint8
+                          [None, np.random.random(ps_mask().shape)],
+                          # test bad measurement_labels
+                          ['fm', ps_mask()]])
+def test_plantcv_photosynthesis_analyze_npq_fatalerror(mlabels, tmask):
     # Test with debug = None
     pcv.params.debug = None
 
     with pytest.raises(RuntimeError):
         _ = pcv.photosynthesis.analyze_npq(ps_da_dark=ps_da('darkadapted'), ps_da_light=ps_da(
-            'lightadapted'), mask=ps_mask(), bins=100, measurement_labels='fm', label="default")
+            'lightadapted'), mask=tmask, bins=100, measurement_labels=mlabels, label="default")
 
 
 # ##############################
