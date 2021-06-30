@@ -4969,7 +4969,8 @@ def test_plantcv_hyperspectral_inverse_covariance():
 # ########################################
 def test_plantcv_classes_psii_data():
     psii = pcv.PSII_data()
-    assert repr(psii) == "PSII variables defined:\n"
+    psii.add_data(ps_da('darkadapted'))
+    assert repr(psii) == "PSII variables defined:\ndarkadapted"
 
 
 def test_plantcv_photosynthesis_read_cropreporter():
