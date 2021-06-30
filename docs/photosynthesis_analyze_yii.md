@@ -53,7 +53,7 @@ fvfm_median = pcv.outputs.observations['fluor']['yii_median_Fv/Fm']['value']
 # Pseudocolor the Fv/Fm image
 fvfm_cmap= pcv.visualize.pseudocolor(gray_img=fvfm, mask=kept_mask, min_value=0, max_value=1, title="Fv/Fm")
 
-# or you can use xarray builtin plot methods:
+# or you can use xarray builtin plot methods (output not shown):
 fvfm.plot()
 ```
 

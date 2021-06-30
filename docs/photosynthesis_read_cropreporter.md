@@ -32,6 +32,8 @@ ps, imgpath, filename = pcv.photosynthesis.read_cropreporter(filename="PSII_HDR_
 # you can check which variables were imported at the prompt with:
 ps
 
+# to see the frames you imported use xarray plot methods e.g.
+ps.darkadapted.plot(col='frame_label', col_wrap=4)
 
 ```
 
