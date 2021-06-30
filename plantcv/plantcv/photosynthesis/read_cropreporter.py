@@ -87,8 +87,8 @@ def read_cropreporter(filename):
             frame_labels[F0_frame] = 'F0'
             frame_labels[Fm_frame] = 'Fm'
             psd = xr.DataArray(
-                data=img_cube[...,None],
-                dims=('x','y','frame_label', 'measurement'),
+                data=img_cube[..., None],
+                dims=('x', 'y', 'frame_label', 'measurement'),
                 coords={'frame_label': frame_labels,
                         'frame_num' : ('frame_label', frame_nums),
                         'measurement' : ['t0']},
@@ -108,7 +108,7 @@ def read_cropreporter(filename):
             frame_labels[Fmp_frame] = 'Fmp'
             psl = xr.DataArray(
                 data=img_cube[..., None],
-                dims=('x', 'y', 'frame_label','measurement'),
+                dims=('x', 'y', 'frame_label', 'measurement'),
                 coords={'frame_label': frame_labels,
                         'frame_num': ('frame_label', frame_nums),
                         'measurement': ['t1']},
@@ -124,7 +124,7 @@ def read_cropreporter(filename):
             frame_labels = ["Red", "Green", "Blue"]
             debug = params.debug
             params.debug = None
-            red = img_as_ubyte(img_cube[:, :, 0])# I don't think we can use rescale here because it will change the ratios of red to green to blue since it scales based on min-max rather than 0-255
+            red = img_as_ubyte(img_cube[:, :, 0]) # I don't think we can use rescale here because it will change the ratios of red to green to blue since it scales based on min-max rather than 0-255
             green = img_as_ubyte(img_cube[:, :, 1])
             blue = img_as_ubyte(img_cube[:, :, 2])
             rgb_img = np.dstack([blue, green, red])
