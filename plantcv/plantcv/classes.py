@@ -228,7 +228,7 @@ class PSII_data:
         self.anthocyanin = None
         self.chlorophyll = None
 
-    def __str__(self):
+    def __repr__(self):
         mvars = []
         for k, v in self.__dict__.items():
             if v is not None:
