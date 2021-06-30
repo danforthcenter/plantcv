@@ -4873,24 +4873,17 @@ def test_plantcv_hyperspectral_inverse_covariance():
 # ########################################
 # Tests for the photosynthesis subpackage
 # ########################################
-def test_plantcv_photosynthesis_read_cropreporter():
-    # Test with debug = None
-    pcv.params.debug = None
-    fluor_filename = os.path.join(PHOTOSYNTHESIS_TEST_DATA, PHOTOSYNTHESIS_NPQ_IMG_INF)
-    ps, imgpath, filename = pcv.photosynthesis.read_cropreporter(filename=fluor_filename)
-    assert isinstance(ps, pcv.PSII_data) and ps.darkadapted.shape == (966, 1296, 21, 1)
-
 @pytest.mark.fixture
 def ps_mask():
     """Create simple mask for PSII"""
     mask = np.zeros((10, 10), dtype=np.uint8)
     mask[5, 5] = 255
     return(mask)
+
     
 @pytest.mark.fixture
 def ps_da(var):
     """Create simple data for PSII"""
-
     # sample images
     f0 = ps_mask()
     f0[5, 5] = 1
@@ -4919,6 +4912,20 @@ def ps_da(var):
                 )
     return(da)
     
+
+def test_plantcv_classes_psii_data():
+    psii = pcv.PSII_data()
+    assert repr(psii) == "PSII variables defined:\n"
+
+
+def test_plantcv_photosynthesis_read_cropreporter():
+    # Test with debug = None
+    pcv.params.debug = None
+    fluor_filename = os.path.join(PHOTOSYNTHESIS_TEST_DATA, PHOTOSYNTHESIS_NPQ_IMG_INF)
+    ps, imgpath, filename = pcv.photosynthesis.read_cropreporter(filename=fluor_filename)
+    assert isinstance(ps, pcv.PSII_data) and ps.darkadapted.shape == (966, 1296, 21, 1)
+
+
 @pytest.mark.parametrize("mvar,mlabels", [["darkadapted", None],
                                           ["lightadapted", ["Fq/Fm"]]])
 def test_plantcv_photosynthesis_analyze_yii(mvar, mlabels):

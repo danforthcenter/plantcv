@@ -233,10 +233,7 @@ class PSII_data:
         for k, v in self.__dict__.items():
             if v is not None:
                 mvars.append(k)
-        if mvars is not None:
-            return("PSII variables defined:\n" + '\n'.join(mvars))
-        else:
-            return('No variables defined.')
+        return("PSII variables defined:\n" + '\n'.join(mvars))
     
     def add_data(self, protocol):
         '''
