@@ -28,6 +28,7 @@ from plantcv.plantcv.sobel_filter import sobel_filter
 from plantcv.plantcv.scharr_filter import scharr_filter
 from plantcv.plantcv.hist_equalization import hist_equalization
 from plantcv.plantcv.image_add import image_add
+from plantcv.plantcv.image_fusion import image_fusion
 from plantcv.plantcv.image_subtract import image_subtract
 from plantcv.plantcv.erode import erode
 from plantcv.plantcv.dilate import dilate
