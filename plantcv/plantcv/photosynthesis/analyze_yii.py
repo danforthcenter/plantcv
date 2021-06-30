@@ -72,12 +72,12 @@ def analyze_yii(ps_da, mask, bins=256, measurement_labels=None, label="default")
         # hist frequencies
         outputs.add_observation(sample=label, variable=f"yii_hist_{mlabel}", trait="yii frequencies",
                                 method='plantcv.plantcv.photosynthesis.analyze_yii', scale='none', datatype=list,
-                                value=hist_df['Plant Pixels'].values.tolist(), 
+                                value=hist_df['Plant Pixels'].values.tolist(),
                                 label=np.around(hist_df[mlabel].values.tolist(), decimals=2).tolist())
 
         # Plot/Print out the histograms
-        _debug(visual=hist_fig, 
-            filename=os.path.join(params.debug_outdir, str(params.device) + f"_YII_{mlabel}_histogram.png"))
+        _debug(visual=hist_fig,
+               filename=os.path.join(params.debug_outdir, str(params.device) + f"_YII_{mlabel}_histogram.png"))
 
     # Store images
     outputs.images.append(yii)
@@ -102,7 +102,7 @@ def _create_histogram(yii_img, mlabel, bins):
     :return hist_df: pandas.DataFrame
     :return hist_fig: plotnine.ggplot.ggplot
     """
-    
+
     # Calculate the histogram of Fv/Fm, Fv'/Fm', or Fq'/Fm' non-zero values
     yii_hist, yii_bins = np.histogram(yii_img[np.where(yii_img > 0)], bins, range=(0, 1))
     # yii_bins is a bins + 1 length list of bin endpoints, so we need to calculate bin midpoints so that

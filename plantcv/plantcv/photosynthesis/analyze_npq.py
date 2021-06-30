@@ -64,7 +64,7 @@ def analyze_npq(ps_da_light, ps_da_dark, mask, bins=256, measurement_labels=None
         # hist frequencies
         outputs.add_observation(sample=label, variable=f"npq_hist_{mlabel}", trait="frequencies",
                                 method='plantcv.plantcv.photosynthesis.analyze_npq', scale='none', datatype=list,
-                                value=hist_df['Plant Pixels'].values.tolist(), 
+                                value=hist_df['Plant Pixels'].values.tolist(),
                                 label=np.around(hist_df[mlabel].values.tolist(), decimals=2).tolist())
 
         # Plot/Print out the histograms
@@ -79,16 +79,16 @@ def analyze_npq(ps_da_light, ps_da_dark, mask, bins=256, measurement_labels=None
 
 def _calc_npq(Fmp, Fm):
     """NPQ = Fm/Fmp - 1"""
-    
+
     out_flt = np.ones(shape=Fm.shape)*np.nan
     Fmp = np.squeeze(Fmp)
     div = np.divide(Fm, Fmp, out=out_flt,
                     where=np.logical_and(Fm > 0, np.logical_and(Fmp > 0, Fm > Fmp)))
     sub = np.subtract(div, 1, out=out_flt.copy(),
-                        where=div >= 1)        
+                      where=div >= 1)
     return(sub)
 
-    
+
 def _create_histogram(npq_img, mlabel, bins):
     """
     Compute histogram of NPQ
@@ -106,7 +106,7 @@ def _create_histogram(npq_img, mlabel, bins):
     :return hist_df: pandas.DataFrame
     :return hist_fig: plotnine.ggplot.ggplot
     """
-    
+
     # Calculate the histogram of Fv/Fm, Fv'/Fm', or Fq'/Fm' non-zero values
     npq_hist, npq_bins = np.histogram(npq_img[np.where(npq_img > 0)], bins, range=(0, 1))
     # npq_bins is a bins + 1 length list of bin endpoints, so we need to calculate bin midpoints so that
@@ -118,14 +118,13 @@ def _create_histogram(npq_img, mlabel, bins):
     max_bin = midpoints[np.argmax(npq_hist)]
 
     # Create a dataframe
-    hist_df = pd.DataFrame({'Plant Pixels': npq_hist, mlabel : midpoints})
+    hist_df = pd.DataFrame({'Plant Pixels': npq_hist, mlabel: midpoints})
 
     # Make the histogram figure using plotnine
     hist_fig = (ggplot(data=hist_df, mapping=aes(x=mlabel, y='Plant Pixels'))
                 + geom_line(show_legend=True, color="green")
                 + geom_label(label=f"Peak Bin Value: {str(max_bin)}", x=.15, y=205, size=8, color="green")
-                + labs(title = f"measurement: {mlabel}",
-                       x = 'nonphotochemical quenching (npq)'))
+                + labs(title=f"measurement: {mlabel}",
+                       x='nonphotochemical quenching (npq)'))
 
     return hist_df, hist_fig
-

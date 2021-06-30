@@ -49,11 +49,11 @@ def read_cropreporter(filename):
 
     corresponding_dict = {"FVF": "PSD", "FQF": "PSL", "CHL": "CHL", "SPC": "SPC",
                           "CLR": "CLR", "RFD": "RFD", "GFP": "GFP", "RFP": "RFP"}
-    
+
     # Initialize lists
     img_frames = []
     ps = PSII_data()
-    
+
     # INF file prefix and path
     inf_filename = os.path.split(filename)[-1]
     imgpath = os.path.dirname(filename)
@@ -79,9 +79,9 @@ def read_cropreporter(filename):
         # Calculate frames of interest and keep track of their labels. labels must be unique across all measurments
         frame_labels = [(corresponding_dict[key] + str(i)) for i in range(img_cube.shape[2])]
         frame_nums = np.arange(img_cube.shape[2])
-        
+
         if corresponding_dict[key] == "PSD":
-            F0_frame = int(metadata_dict["FvFmFrameF0"]) + 1 #data cube includes Fdark at the beginning
+            F0_frame = int(metadata_dict["FvFmFrameF0"]) + 1  # data cube includes Fdark at the beginning
             Fm_frame = int(metadata_dict["FvFmFrameFm"]) + 1
             frame_labels[0] = 'Fdark'
             frame_labels[F0_frame] = 'F0'
@@ -90,13 +90,13 @@ def read_cropreporter(filename):
                 data=img_cube[..., None],
                 dims=('x', 'y', 'frame_label', 'measurement'),
                 coords={'frame_label': frame_labels,
-                        'frame_num' : ('frame_label', frame_nums),
-                        'measurement' : ['t0']},
+                        'frame_num': ('frame_label', frame_nums),
+                        'measurement': ['t0']},
                 name='darkadapted'
-                )
+            )
             psd.attrs["long_name"] = "dark-adapted measurements"
             ps.add_data(psd)
-            
+
             _debug(visual=ps.darkadapted,
                    filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSD-{frame_labels[-1]}.png"))
 
@@ -113,7 +113,7 @@ def read_cropreporter(filename):
                         'frame_num': ('frame_label', frame_nums),
                         'measurement': ['t1']},
                 name='lightadapted'
-                )
+            )
             psl.attrs["long_name"] = "light-adapted measurements"
             ps.add_data(psl)
 
@@ -124,7 +124,8 @@ def read_cropreporter(filename):
             frame_labels = ["Red", "Green", "Blue"]
             debug = params.debug
             params.debug = None
-            red = img_as_ubyte(img_cube[:, :, 0]) # I don't think we can use rescale here because it will change the ratios of red to green to blue since it scales based on min-max rather than 0-255
+            # I don't think we can use rescale here because it will change the ratios of red to green to blue since it scales based on min-max rather than 0-255
+            red = img_as_ubyte(img_cube[:, :, 0])
             green = img_as_ubyte(img_cube[:, :, 1])
             blue = img_as_ubyte(img_cube[:, :, 2])
             rgb_img = np.dstack([blue, green, red])
@@ -133,12 +134,12 @@ def read_cropreporter(filename):
                 dims=('x', 'y', 'frame_label'),
                 coords={'frame_label': frame_labels},
                 name='rgb'
-                )
+            )
             rgb.attrs["long_name"] = "rgb measurements"
             ps.add_data(rgb)
 
             params.debug = debug
-            _debug(visual=ps.rgb, #does it make sense to show all three bands separately?
+            _debug(visual=ps.rgb,  # does it make sense to show all three bands separately?
                    filename=os.path.join(params.debug_outdir, f"{str(params.device)}_CLR-RGB.png"))
 
         elif corresponding_dict[key] == "CHL":
@@ -148,7 +149,7 @@ def read_cropreporter(filename):
                 dims=('x', 'y', 'frame_label'),
                 coords={'frame_label': frame_labels},
                 name='chlorophyll'
-                )
+            )
             chl.attrs["long_name"] = "chlorophyll measurements"
             ps.add_data(chl)
 
@@ -162,7 +163,7 @@ def read_cropreporter(filename):
                 dims=('x', 'y', 'frame_label'),
                 coords={'frame_label': frame_labels},
                 name='anthocyanin'
-                )
+            )
             spc.attrs["long_name"] = "anthocyanin measurements"
             ps.add_data(spc)
 
