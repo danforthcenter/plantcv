@@ -92,7 +92,7 @@ def analyze_yii(ps_da, mask, bins=256, measurement_labels=None, label="default")
     # Store images
     outputs.images.append(yii)
     # this only returns the last histogram..... xarray does not seem to support panels of histograms. use matplotlib subplots?
-    return hist_fig, yii.drop_vars(['frame_label', 'frame_num'])
+    return yii.drop_vars(['frame_label', 'frame_num']), hist_fig
 
 
 def _create_histogram(yii_img, mlabel, bins):

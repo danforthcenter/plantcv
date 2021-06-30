@@ -33,14 +33,14 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Analyze NPQ   
-npq_hist, npq_img = pcv.photosynthesis.analyze_npq(ps_da_light=ps.lightadapted, ps_da_dark=ps.darkadapted, mask=kept_mask, bins=256, label="fluor")
+npq, npq_hist = pcv.photosynthesis.analyze_npq(ps_da_light=ps.lightadapted, ps_da_dark=ps.darkadapted, mask=kept_mask, bins=256, label="fluor")
 
 # Access data stored out from fluor_NPQ
 # the default measurement label for cropreporter data is t1
 npq_median = pcv.outputs.observations['fluor']['npq_median_t1']['value']
 
 # Pseudocolor the NPQ image
-pseudo_img = pcv.visualize.pseudocolor(gray_img=npq_img, mask=kept_mask, min_value=0, max_value=1, title="NPQ")
+pseudo_img = pcv.visualize.pseudocolor(gray_img=npq, mask=kept_mask, min_value=0, max_value=1, title="NPQ")
 
 ```
 

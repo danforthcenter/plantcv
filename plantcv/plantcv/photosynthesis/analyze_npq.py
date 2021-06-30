@@ -84,7 +84,7 @@ def analyze_npq(ps_da_light, ps_da_dark, mask, bins=256, measurement_labels=None
     # Store images
     outputs.images.append(npq)
     # this only returns the last histogram..... xarray does not seem to support panels of histograms. use matplotlib subplots?
-    return hist_fig, npq.drop_vars(['frame_label', 'frame_num'])
+    return npq.drop_vars(['frame_label', 'frame_num']), hist_fig
 
 
 def _calc_npq(Fmp, Fm):

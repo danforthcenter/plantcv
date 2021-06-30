@@ -41,7 +41,7 @@ pcv.params.debug = "print"
 ps = pcv.photosynthesis.read_cropreporter(filename = "mydata.inf")
 
 # Analyze Fv/Fm    
-fvfm_hist, fvfm = pcv.photosynthesis.analyze_yii(ps_da=ps.darkadapted, 
+fvfm, fvfm_hist = pcv.photosynthesis.analyze_yii(ps_da=ps.darkadapted, 
 mask=kept_mask, 
 measurement_labels=["Fv/Fm"],
 bins=256, 
@@ -75,7 +75,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Analyze Fq'/Fm'    
-fqfm_hist, fqfm = pcv.photosynthesis.analyze_yii(ps=ps.lightadapted, mask=kept_mask,                                                         
+fqfm, fqfm_hist = pcv.photosynthesis.analyze_yii(ps=ps.lightadapted, mask=kept_mask,                                                         
 bins=256, 
 measurement_labels=["Fq'/Fm'"],
 label="fluor")
