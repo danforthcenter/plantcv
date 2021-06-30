@@ -77,6 +77,10 @@ def analyze_npq(ps_da_light, ps_da_dark, mask, bins=256, measurement_labels=None
         _debug(visual=hist_fig,
                filename=os.path.join(params.debug_outdir, str(params.device) + f"_NPQ_{mlabel}_histogram.png"))
 
+    # Plot/print dataarray
+    _debug(visual=npq.plot(col='measurement', col_wrap=4),
+           filename=os.path.join(params.debug_outdir, str(params.device) + "_NPQ_dataarray.png"))
+
     # Store images
     outputs.images.append(npq)
     # this only returns the last histogram..... xarray does not seem to support panels of histograms. use matplotlib subplots?
