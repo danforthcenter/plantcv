@@ -220,7 +220,7 @@ class Spectral_data:
 
 class PSII_data:
     """PSII data class"""
-    
+
     def __init__(self):
         self.darkadapted = None
         self.lightadapted = None
@@ -228,8 +228,15 @@ class PSII_data:
         self.anthocyanin = None
         self.chlorophyll = None
 
-    def __repr__(self):
-        return('PSII data instance with measurements')
+    def __str__(self):
+        mvars = []
+        for k, v in self.__dict__.items():
+            if v is not None:
+                mvars.append(k)
+        if mvars is not None:
+            return("PSII variables defined:\n" + '\n'.join(mvars))
+        else:
+            return('No variables defined.')
     
     def add_data(self, protocol):
         '''
