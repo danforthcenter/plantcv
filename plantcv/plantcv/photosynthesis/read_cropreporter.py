@@ -26,7 +26,6 @@ def read_cropreporter(filename):
     :return imgpath: str
     :return inf_filename: str
     """
-
     # Initialize metadata dictionary
     metadata_dict = {}
 
@@ -78,12 +77,12 @@ def read_cropreporter(filename):
         img_frames.append(img_cube)  # append cube to a list
 
         # Calculate frames of interest and keep track of their labels. labels must be unique across all measurments
-        frame_labels = [(corresponding_dict[key]+str(i)) for i in range(img_cube.shape[2])]
+        frame_labels = [(corresponding_dict[key] + str(i)) for i in range(img_cube.shape[2])]
         frame_nums = np.arange(img_cube.shape[2])
         
         if corresponding_dict[key] == "PSD":
-            F0_frame = int(metadata_dict["FvFmFrameF0"])+1 #data cube includes Fdark at the beginning
-            Fm_frame = int(metadata_dict["FvFmFrameFm"])+1
+            F0_frame = int(metadata_dict["FvFmFrameF0"]) + 1 #data cube includes Fdark at the beginning
+            Fm_frame = int(metadata_dict["FvFmFrameFm"]) + 1
             frame_labels[0] = 'Fdark'
             frame_labels[F0_frame] = 'F0'
             frame_labels[Fm_frame] = 'Fm'
@@ -102,17 +101,17 @@ def read_cropreporter(filename):
                    filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSD-{frame_labels[-1]}.png"))
 
         elif corresponding_dict[key] == "PSL":
-            Fsp_frame = int(metadata_dict["FqFmFrameFsp"])+1
-            Fmp_frame = int(metadata_dict["FqFmFrameFmp"])+1
+            Fsp_frame = int(metadata_dict["FqFmFrameFsp"]) + 1
+            Fmp_frame = int(metadata_dict["FqFmFrameFmp"]) + 1
             frame_labels[0] = "Flight"
             frame_labels[Fsp_frame] = 'Fp'
             frame_labels[Fmp_frame] = 'Fmp'
             psl = xr.DataArray(
                 data=img_cube[..., None],
-                dims=('x','y','frame_label','measurement'),
+                dims=('x', 'y', 'frame_label','measurement'),
                 coords={'frame_label': frame_labels,
-                        'frame_num' : ('frame_label', frame_nums),
-                        'measurement' : ['t1']},
+                        'frame_num': ('frame_label', frame_nums),
+                        'measurement': ['t1']},
                 name='lightadapted'
                 )
             psl.attrs["long_name"] = "light-adapted measurements"
@@ -131,7 +130,7 @@ def read_cropreporter(filename):
             rgb_img = np.dstack([blue, green, red])
             rgb = xr.DataArray(
                 data=rgb_img,
-                dims=('x','y','frame_label'),
+                dims=('x', 'y', 'frame_label'),
                 coords={'frame_label': frame_labels},
                 name='rgb'
                 )
@@ -146,9 +145,9 @@ def read_cropreporter(filename):
             frame_labels = ["Chl", "Chl-NIR"]
             chl = xr.DataArray(
                 data=img_cube,
-                dims=('x','y','frame_label'),
+                dims=('x', 'y', 'frame_label'),
                 coords={'frame_label': frame_labels},
-                name = 'chlorophyll'
+                name='chlorophyll'
                 )
             chl.attrs["long_name"] = "chlorophyll measurements"
             ps.add_data(chl)
@@ -160,7 +159,7 @@ def read_cropreporter(filename):
             frame_labels = ["Anth", "Far-red", "Anth-NIR"]
             spc = xr.DataArray(
                 data=img_cube,
-                dims=('x','y','frame_label'),
+                dims=('x', 'y', 'frame_label'),
                 coords={'frame_label': frame_labels},
                 name='anthocyanin'
                 )
