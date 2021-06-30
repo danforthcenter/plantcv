@@ -39,17 +39,6 @@ def analyze_npq(ps_da_light, ps_da_dark, mask, bins=256, measurement_labels=None
     if (measurement_labels is not None) and (len(measurement_labels) != ps_da_light.coords['measurement'].shape[0]):
         fatal_error('measurement_labels must be the same length as the number of measurements in `ps_da_light`')
 
-    def _calc_npq(Fmp, Fm):
-        """NPQ = Fm/Fmp - 1"""
-        
-        out_flt = np.ones(shape=Fm.shape)*np.nan
-        Fmp = np.squeeze(Fmp)
-        div = np.divide(Fm, Fmp, out=out_flt,
-                        where=np.logical_and(Fm > 0, np.logical_and(Fmp > 0, Fm > Fmp)))
-        sub = np.subtract(div, 1, out=out_flt.copy(),
-                          where=div >= 1)        
-        return(sub)
-
     Fm = ps_da_dark.sel(measurement='t0', frame_label='Fm').where(mask > 0, other=0)
     npq = ps_da_light.sel(frame_label='Fmp').groupby('measurement', squeeze=True).map(_calc_npq, Fm=Fm)
 
@@ -69,7 +58,7 @@ def analyze_npq(ps_da_light, ps_da_dark, mask, bins=256, measurement_labels=None
                                 method='plantcv.plantcv.photosynthesis.analyze_npq', scale='none', datatype=float,
                                 value=float(np.around(npq_median[i], decimals=4)), label='none')
         # max value
-        outputs.add_observation(sample=label, variable=f"npq_hist_peak_{mlabel}", trait="peak npq value",
+        outputs.add_observation(sample=label, variable=f"npq_max_{mlabel}", trait="peak npq value",
                                 method='plantcv.plantcv.photosynthesis.analyze_npq', scale='none', datatype=float,
                                 value=float(npq_max[i]), label='none')
         # hist frequencies
@@ -84,10 +73,22 @@ def analyze_npq(ps_da_light, ps_da_dark, mask, bins=256, measurement_labels=None
 
     # Store images
     outputs.images.append(npq)
-
+    # this only returns the last histogram..... xarray does not seem to support panels of histograms
     return hist_fig, npq.drop_vars(['frame_label', 'frame_num'])
 
 
+def _calc_npq(Fmp, Fm):
+    """NPQ = Fm/Fmp - 1"""
+    
+    out_flt = np.ones(shape=Fm.shape)*np.nan
+    Fmp = np.squeeze(Fmp)
+    div = np.divide(Fm, Fmp, out=out_flt,
+                    where=np.logical_and(Fm > 0, np.logical_and(Fmp > 0, Fm > Fmp)))
+    sub = np.subtract(div, 1, out=out_flt.copy(),
+                        where=div >= 1)        
+    return(sub)
+
+    
 def _create_histogram(npq_img, mlabel, bins):
     """
     Compute histogram of NPQ

@@ -899,11 +899,11 @@ HYPERSPECTRAL_HDR_SMALL_RANGE = {'description': '{[HEADWALL Hyperspec III]}', 's
                                  'interleave': 'bil', 'sensor type': 'Unknown', 'byte order': '0',
                                  'default bands': '159,253,520', 'wavelength units': 'nm',
                                  'wavelength': ['379.027', '379.663', '380.3', '380.936', '381.573', '382.209']}
-FLUOR_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "photosynthesis_data")
-FLUOR_IMG_INF = "PSII_HDR_supopt_temp_btx623_22_rep1.INF"
-FLUOR_NPQ_IMG_INF = "PSII_HDR_020321_WT_TOP_1.INF"
-FLUOR_FMASK_SV = "PSII_HDR_supopt_temp_btx623_22_rep1_mask.png"
-FLUOR_FMASK_TV = "PSII_HDR_020321_WT_TOP_1_mask.png"
+PHOTOSYNTHESIS_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "photosynthesis_data")
+PHOTOSYNTHESIS_IMG_INF = "PSII_HDR_supopt_temp_btx623_22_rep1.INF"
+PHOTOSYNTHESIS_NPQ_IMG_INF = "PSII_HDR_020321_WT_TOP_1.INF"
+PHOTOSYNTHESIS_FMASK_SV = "PSII_HDR_supopt_temp_btx623_22_rep1_mask.png"
+PHOTOSYNTHESIS_FMASK_TV = "PSII_HDR_020321_WT_TOP_1_mask.png"
 TEST_COLOR_DIM = (2056, 2454, 3)
 TEST_GRAY_DIM = (2056, 2454)
 TEST_BINARY_DIM = TEST_GRAY_DIM
@@ -4935,111 +4935,90 @@ def test_plantcv_hyperspectral_inverse_covariance():
 def test_plantcv_photosynthesis_read_cropreporter():
     # Test with debug = None
     pcv.params.debug = None
-    fluor_filename = os.path.join(FLUOR_TEST_DATA, FLUOR_NPQ_IMG_INF)
-    da, imgpath, filename = pcv.photosynthesis.read_cropreporter(filename=fluor_filename)
-    assert da.shape == (966, 1296, 56)
+    fluor_filename = os.path.join(PHOTOSYNTHESIS_TEST_DATA, PHOTOSYNTHESIS_NPQ_IMG_INF)
+    ps, imgpath, filename = pcv.photosynthesis.read_cropreporter(filename=fluor_filename)
+    assert isinstance(ps, pcv.PSII_data) and ps.darkadapted.shape == (966, 1296, 21, 1)
 
-
-def test_plantcv_photosynthesis_analyze_yii():
-    # Test with debug = None
-    pcv.params.debug = None
-    # Create data
+@pytest.mark.fixture
+def ps_mask():
+    """Create simple mask for PSII"""
     mask = np.zeros((10, 10), dtype=np.uint8)
     mask[5, 5] = 255
-    f0 = np.copy(mask)
+    return(mask)
+    
+@pytest.mark.fixture
+def ps_da(var):
+    """Create simple data for PSII"""
+
+    # sample images
+    f0 = ps_mask()
     f0[5, 5] = 1
-    f1 = np.copy(f0)
+    f1 = ps_mask()
     f1[5, 5] = 2
-    f2 = np.copy(f1)
-    f2[5, 5] = 4
+    f2 = ps_mask()
+    f2[5, 5] = 10
+    f3 = ps_mask()
+    f3[5, 5] = 8
+
+    # set specific labels for xarray for dark and light adapted
+    if var == 'darkadapted':
+        frame_labels = ['Fdark','F0','Fm','3']
+        measurements = ['t0']
+    elif var == 'lightadapted':
+        frame_labels = ['Fdark','Fp','2','Fmp']
+        measurements = ['t1']
+        
     # Create DataArray
-    da = xr.DataArray(data=np.dstack([f0, f1, f2]),
-                      coords={"y": range(0, np.shape(mask)[0]), "x": range(0, np.shape(mask)[1]),
-                              "frame_label": ["F0", "F1", "F2"]},
-                      dims=["y", "x", "frame_label"], attrs={"F0": "F0", "F-frames": 3})
-    _ = pcv.photosynthesis.analyze_yii(ps=da, mask=mask, bins=100, measurement="Fv/Fm", label="default")
-    fvfm_med = pcv.outputs.observations["default"]["fvfm_median"]["value"]
-    pcv.outputs.clear()
-    assert fvfm_med == 0.75
-
-
-def test_plantcv_photosynthesis_analyze_yii_fqfm():
+    da = xr.DataArray(data=np.dstack([f0, f1, f2, f3])[..., None],
+                dims=('x','y','frame_label', 'measurement'),
+                coords={'frame_label': frame_labels,
+                        'frame_num' : ('frame_label', [0,1,2,3]),
+                        'measurement' : measurements},
+                name=var
+                )
+    return(da)
+    
+@pytest.mark.parametrize("mvar,mlabels", [["darkadapted", None],
+                                          ["lightadapted", ["Fq/Fm"]]])
+def test_plantcv_photosynthesis_analyze_yii(mvar, mlabels):
     # Test with debug = None
     pcv.params.debug = None
-    # Create data
-    mask = np.zeros((10, 10), dtype=np.uint8)
-    mask[5, 5] = 255
-    f0 = np.copy(mask)
-    f0[5, 5] = 1
-    f1 = np.copy(f0)
-    f1[5, 5] = 2
-    f2 = np.copy(f1)
-    f2[5, 5] = 4
-    # Create DataArray
-    da = xr.DataArray(data=np.dstack([f0, f1, f2]),
-                      coords={"y": range(0, np.shape(mask)[0]), "x": range(0, np.shape(mask)[1]),
-                              "frame_label": ["F0'", "F1'", "F2'"]},
-                      dims=["y", "x", "frame_label"], attrs={"F'": "F0'", "F'-frames": 3})
-    _ = pcv.photosynthesis.analyze_yii(ps=da, mask=mask, bins=100, measurement="Fq'/Fm'", label="default")
-    fqfm_med = pcv.outputs.observations["default"]["fqpfmp_median"]["value"]
-    pcv.outputs.clear()
-    assert fqfm_med == 0.75
+    _ = pcv.photosynthesis.analyze_yii(ps_da=ps_da(mvar), mask=ps_mask(), bins=100, measurement_labels=mlabels, label="default")
+    if mvar == 'darkadapted':
+        med = pcv.outputs.observations["default"]["yii_median_t0"]["value"]
+        pcv.outputs.clear()
+        assert med == 0.8
+    elif mvar == 'lightadapted':
+        med = pcv.outputs.observations["default"]["yii_median_Fq/Fm"]["value"]
+        pcv.outputs.clear()
+        assert med == 0.75
 
 
-def test_plantcv_photosynthesis_analyze_yii_bad_measurement():
+def test_plantcv_photosynthesis_analyze_yii_bad_measurementlabels():
     # Test with debug = None
     pcv.params.debug = None
-    # Create data
-    mask = np.zeros((10, 10), dtype=np.uint8)
-    # Create DataArray
-    da = xr.DataArray(data=mask,
-                      coords={"y": range(0, np.shape(mask)[0]), "x": range(0, np.shape(mask)[1])},
-                      dims=["y", "x"])
+    
     with pytest.raises(RuntimeError):
-        _ = pcv.photosynthesis.analyze_yii(ps=da, mask=mask, bins=100, measurement="Fq/Fm", label="default")
+        _ = pcv.photosynthesis.analyze_yii(ps_da=ps_da('darkadapted'), mask=ps_mask(), bins=100, measurement_labels=['f','m'], label="default")
 
-
-# def test_plantcv_photosynthesis_analyze_fvfm_bad_fdark():
-#     # Clear previous outputs
-#     pcv.outputs.clear()
-#     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_fvfm")
-#     os.mkdir(cache_dir)
-#     pcv.params.debug_outdir = cache_dir
-#     # Read in test data
-#     fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK), -1)
-#     fmin = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
-#     fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
-#     fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
-#     fdark[0, 0] = 3000
-#     # Create DataArray
-#     da = xr.DataArray(data=np.dstack([fdark, fmin, fmax]),
-#                       coords={"y": range(0, np.shape(fdark)[0]), "x": range(0, np.shape(fdark)[1]),
-#                               "frame_label": ["Fdark", "F0", "F1"]},
-#                       dims=["y", "x", "frame_label"], attrs={"F-frames": 2})
-#
-#     _ = pcv.photosynthesis.analyze_fvfm(ps=da, mask=fmask, bins=100, measurement="dark")
-#     assert (pcv.outputs.observations['default']['fdark_passed_qc']['value'] == False)
-
-
-def test_plantcv_photosynthesis_analyze_npq():
+@pytest.mark.parametrize("mlabels", [None, ["Fq/Fm"]])
+def test_plantcv_photosynthesis_analyze_npq(mlabels):
     # Test with debug = None
     pcv.params.debug = None
-    # Create data
-    mask = np.zeros((10, 10), dtype=np.uint8)
-    mask[5, 5] = 255
-    fm = np.copy(mask)
-    fm[5, 5] = 10
-    fmp = np.copy(fm)
-    fmp[5, 5] = 5
-    # Create DataArray
-    da = xr.DataArray(data=np.dstack([fm, fmp]),
-                      coords={"y": range(0, np.shape(mask)[0]), "x": range(0, np.shape(mask)[1]),
-                              "frame_label": ["Fm", "Fmp"]},
-                      dims=["y", "x", "frame_label"], attrs={"Fm": "Fm", "Fm'": "Fmp"})
-    _ = pcv.photosynthesis.analyze_npq(ps=da, mask=mask, bins=100, label="prefix")
-    npq_med = pcv.outputs.observations["prefix"]["npq_median"]["value"]
+    _ = pcv.photosynthesis.analyze_npq(ps_da_dark=ps_da('darkadapted'), ps_da_light=ps_da('lightadapted'), mask=ps_mask(), bins=100, measurement_labels=mlabels, label="prefix")
+    if mlabels is None:
+        med = pcv.outputs.observations["prefix"]["npq_median_t1"]["value"]
+    elif isinstance(mlabels, list):
+        med = pcv.outputs.observations["prefix"]["npq_median_Fq/Fm"]["value"]
     pcv.outputs.clear()
-    assert npq_med == 1
+    assert med == 0.25
+
+def test_plantcv_photosynthesis_analyze_npq_bad_measurementlabels():
+    # Test with debug = None
+    pcv.params.debug = None
+    
+    with pytest.raises(RuntimeError):
+        _ = pcv.photosynthesis.analyze_npq(ps_da_dark=ps_da('darkadapted'), ps_da_light=ps_da('lightadapted'), mask=ps_mask(), bins=100, measurement_labels='fm', label="default")
 
 
 # ##############################

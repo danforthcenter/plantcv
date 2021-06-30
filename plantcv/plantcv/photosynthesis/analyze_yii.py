@@ -62,11 +62,11 @@ def analyze_yii(ps_da, mask, bins=256, measurement_labels=None, label="default")
         hist_df, hist_fig = _create_histogram(yii.isel({'measurement': i}).values, mlabel, bins)
 
         # median value
-        outputs.add_observation(sample=label, variable=f"yii_median_{mlabel} median", trait="median yii value",
+        outputs.add_observation(sample=label, variable=f"yii_median_{mlabel}", trait="median yii value",
                                 method='plantcv.plantcv.photosynthesis.analyze_yii', scale='none', datatype=float,
                                 value=float(np.around(yii_median[i], decimals=4)), label='none')
         # max value
-        outputs.add_observation(sample=label, variable=f"yii_hist_peak_{mlabel}", trait="peak yii value",
+        outputs.add_observation(sample=label, variable=f"yii_max_{mlabel}", trait="peak yii value",
                                 method='plantcv.plantcv.photosynthesis.analyze_yii', scale='none', datatype=float,
                                 value=float(yii_max[i]), label='none')
         # hist frequencies
@@ -75,13 +75,13 @@ def analyze_yii(ps_da, mask, bins=256, measurement_labels=None, label="default")
                                 value=hist_df['Plant Pixels'].values.tolist(), 
                                 label=np.around(hist_df[mlabel].values.tolist(), decimals=2).tolist())
 
-    # Plot/Print out the histograms
-    _debug(visual=hist_fig, 
-           filename=os.path.join(params.debug_outdir, str(params.device) + f"_YII_{mlabel}_histogram.png"))
+        # Plot/Print out the histograms
+        _debug(visual=hist_fig, 
+            filename=os.path.join(params.debug_outdir, str(params.device) + f"_YII_{mlabel}_histogram.png"))
 
     # Store images
     outputs.images.append(yii)
-
+    # this only returns the last histogram..... xarray does not seem to support panels of histograms
     return hist_fig, yii.drop_vars(['frame_label', 'frame_num'])
 
 
