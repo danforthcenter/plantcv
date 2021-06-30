@@ -100,8 +100,14 @@ def metadata_parser(config):
                                 # If the metadata type has a user-provided restriction
                                 if term in config.metadata_filters:
                                     # If the input value does not match the image value, fail the image
-                                    if meta_value != config.metadata_filters[term]:
-                                        img_pass = 0
+                                    if isinstance(config.metadata_filters[term], list):
+                                        # list of multiple filters
+                                        if meta_value not in config.metadata_filters[term]:
+                                            img_pass = 0
+                                    else:
+                                        # single filter as string
+                                        if not meta_value == config.metadata_filters[term]:
+                                            img_pass = 0
                                 img_meta[term] = meta_value
                             # If the same metadata is found in the CSV file, store the value
                             elif term in colnames:
@@ -109,8 +115,14 @@ def metadata_parser(config):
                                 # If the metadata type has a user-provided restriction
                                 if term in config.metadata_filters:
                                     # If the input value does not match the image value, fail the image
-                                    if meta_value != config.metadata_filters[term]:
-                                        img_pass = 0
+                                    if isinstance(config.metadata_filters[term], list):
+                                        # list of multiple filters
+                                        if meta_value not in config.metadata_filters[term]:
+                                            img_pass = 0
+                                    else:
+                                        # single filter as string
+                                        if not meta_value == config.metadata_filters[term]:
+                                            img_pass = 0
                                 img_meta[term] = meta_value
                             # Or use the default value
                             else:
@@ -200,7 +212,7 @@ def metadata_parser(config):
                             # If the metadata type has a user-provided restriction
                             if term in config.metadata_filters:
                                 # If the input value does not match the image value, fail the image
-                                if isinstance(config.metadata_filters[term], list): 
+                                if isinstance(config.metadata_filters[term], list):
                                     # list of multiple filters
                                     if meta_value not in config.metadata_filters[term]:
                                         img_pass = 0
