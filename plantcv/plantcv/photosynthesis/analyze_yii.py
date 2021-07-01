@@ -54,7 +54,7 @@ def analyze_yii(ps_da, mask, bins=256, measurement_labels=None, label="default")
         def _calc_yii(ps_da):
             return (ps_da.sel(frame_label='Fmp') - ps_da.sel(frame_label='Fp')) / ps_da.sel(frame_label='Fmp')
         yii0 = ps_da.astype('float').where(mask > 0, other=np.nan)
-        yii = yii0.groupby('measurement', squeeze=True).map(_calc_yii)
+        yii = yii0.groupby('measurement', squeeze=False).map(_calc_yii)
 
     # compute observations to store in Outputs
     yii_median = yii.where(yii > 0).groupby('measurement').median(['x', 'y']).values
@@ -84,15 +84,22 @@ def analyze_yii(ps_da, mask, bins=256, measurement_labels=None, label="default")
         # Plot/Print out the histograms
         _debug(visual=hist_fig,
                filename=os.path.join(params.debug_outdir, str(params.device) + f"_YII_{mlabel}_histogram.png"))
-        
+
     # Plot/print dataarray
-    _debug(visual=yii.plot(col='measurement', col_wrap=4),
+    # plot will default to a hist if >1 measurements so explicitly call pcolormesh
+    da_frames = yii.plot.pcolormesh(row='measurement', col_wrap=int(np.ceil(yii.measurement.size/3)), robust=True)
+    _debug(visual=da_frames,
            filename=os.path.join(params.debug_outdir, str(params.device) + "_YII_dataarray.png"))
-    
+
     # Store images
     outputs.images.append(yii)
+
+    # drop coords identifying frames if they exist
+    res = [i for i in list(yii.coords) if 'frame' in i]
+    yii = yii.drop_vars(res)  # does not fail if res is []
+
     # this only returns the last histogram..... xarray does not seem to support panels of histograms. use matplotlib subplots?
-    return yii.drop_vars(['frame_label', 'frame_num']), hist_fig
+    return yii, hist_fig
 
 
 def _create_histogram(yii_img, mlabel, bins):

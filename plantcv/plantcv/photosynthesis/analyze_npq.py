@@ -46,7 +46,7 @@ def analyze_npq(ps_da_light, ps_da_dark, mask, bins=256, measurement_labels=None
         fatal_error('measurement_labels must be the same length as the number of measurements in `ps_da_light`')
 
     Fm = ps_da_dark.sel(measurement='t0', frame_label='Fm').where(mask > 0, other=0)
-    npq = ps_da_light.sel(frame_label='Fmp').groupby('measurement', squeeze=True).map(_calc_npq, Fm=Fm)
+    npq = ps_da_light.sel(frame_label='Fmp').groupby('measurement', squeeze=False).map(_calc_npq, Fm=Fm)
 
     # compute observations to store in Outputs
     npq_median = npq.where(npq > 0).groupby('measurement').median(['x', 'y']).values
@@ -78,19 +78,26 @@ def analyze_npq(ps_da_light, ps_da_dark, mask, bins=256, measurement_labels=None
                filename=os.path.join(params.debug_outdir, str(params.device) + f"_NPQ_{mlabel}_histogram.png"))
 
     # Plot/print dataarray
-    _debug(visual=npq.plot(col='measurement', col_wrap=4),
+    # plot will default to a hist if >1 measurements so explicitly call pcolormesh
+    da_frames = npq.plot.pcolormesh(col='measurement', col_wrap=int(np.ceil(npq.measurement.size/3)), robust=True)
+    _debug(visual=da_frames,
            filename=os.path.join(params.debug_outdir, str(params.device) + "_NPQ_dataarray.png"))
 
     # Store images
     outputs.images.append(npq)
-    # this only returns the last histogram..... xarray does not seem to support panels of histograms. use matplotlib subplots?
-    return npq.drop_vars(['frame_label', 'frame_num']), hist_fig
+
+    # drop coords identifying frames if they exist
+    res = [i for i in list(npq.coords) if 'frame' in i]
+    npq = npq.drop_vars(res)  # does not fail if res is []
+
+    # this only returns the last histogram..... xarray does not seem to support panels of histograms but does support matplotlib subplots....
+    return npq, hist_fig
 
 
 def _calc_npq(Fmp, Fm):
     """NPQ = Fm/Fmp - 1"""
 
-    out_flt = np.ones(shape=Fm.shape)*np.nan
+    out_flt = np.ones(shape=Fm.shape) * np.nan
     Fmp = np.squeeze(Fmp)
     div = np.divide(Fm, Fmp, out=out_flt,
                     where=np.logical_and(Fm > 0, np.logical_and(Fmp > 0, Fm > Fmp)))
