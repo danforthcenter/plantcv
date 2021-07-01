@@ -1001,6 +1001,8 @@ TEST_INPUT_THERMAL_CSV = "FLIR2600.csv"
 PIXEL_VALUES = "pixel_inspector_rgb_values.txt"
 
 # leaving photosynthesis data here so it can be used to test plot_image and print_image
+
+
 def ps_mask():
     """Create simple mask for PSII"""
     mask = np.zeros((10, 10), dtype=np.uint8)
@@ -1008,7 +1010,7 @@ def ps_mask():
     return(mask)
 
 
-def ps_da(var):
+def psii_cropreporter(var):
     """Create simple data for PSII"""
     # sample images
     f0 = ps_mask()
@@ -2721,7 +2723,7 @@ def test_plantcv_plot_image_plotnine():
 
 
 def test_plantcv_plot_image_dataarray():
-    da = ps_da('darkadapted')
+    da = psii_cropreporter('darkadapted')
     try:
         pcv.plot_image(da, col='frame_label')
     except RuntimeError:
@@ -2787,7 +2789,7 @@ def test_plantcv_print_image_matplotlib():
 
 
 def test_plantcv_print_image_xarrayplot():
-    da = ps_da('darkadapted')
+    da = psii_cropreporter('darkadapted')
     try:
         pcv.print_image(img=da.plot(col='frame_label'), filename='/dev/null')
     except RuntimeError:
@@ -2797,7 +2799,7 @@ def test_plantcv_print_image_xarrayplot():
 
 
 def test_plantcv_print_image_xarrayhist():
-    da = ps_da('darkadapted')
+    da = psii_cropreporter('darkadapted')
     with pytest.raises(RuntimeError):
         pcv.print_image(img=da.plot(), filename='/dev/null')
 
@@ -4965,9 +4967,58 @@ def test_plantcv_hyperspectral_inverse_covariance():
 # ########################################
 # Tests for the photosynthesis subpackage
 # ########################################
+def psii_walz(var):
+    """Create and return synthetic psii dataarrays from walz"""
+    # create darkadapted
+    if var == 'darkadapted':
+        i = 0
+        fmin = np.ones((10, 10), dtype='uint8') * ((i+15)*2)
+        fmax = np.ones((10, 10), dtype='uint8') * (200-i*15)
+        data = np.stack([fmin, fmax], axis=2)
+
+        frame_nums = range(0, 2)
+        indf = ['F0','Fm']
+        ps_da = xr.DataArray(
+            data=data[..., None],
+            dims=('x', 'y', 'frame_label', 'measurement'),
+            coords={'frame_label': indf,
+                    'frame_num': ('frame_label', frame_nums),
+                    'measurement': ['t0']},
+            name='darkadapted'
+        )
+
+    # create lightadapted
+    elif var == 'lightadapted':
+        da_list = []
+        measurement = []
+
+        for i in np.arange(1, 3):
+            indf = ['Fp', 'Fmp']
+            fmin = np.ones((10, 10), dtype='uint8') * ((i+15)*2)
+            fmax = np.ones((10, 10), dtype='uint8') * (200-i*15)
+            data = np.stack([fmin, fmax], axis=2)
+
+            lightadapted = xr.DataArray(
+                data=data[..., None],
+                dims=('x', 'y', 'frame_label', 'measurement'),
+                coords={'frame_label': indf,
+                        'frame_num': ('frame_label', range(0, 2))}
+            )
+
+            measurement.append((f't{i*40}'))
+            da_list.append(lightadapted)
+
+        prop_idx = pd.Index(measurement)
+        ps_da = xr.concat(da_list, 'measurement')
+        ps_da.name = 'lightadapted'
+        ps_da.coords['measurement'] = prop_idx
+
+    return(ps_da)
+
+
 def test_plantcv_classes_psii_data():
     psii = pcv.PSII_data()
-    psii.add_data(ps_da('darkadapted'))
+    psii.add_data(psii_cropreporter('darkadapted'))
     assert repr(psii) == "PSII variables defined:\ndarkadapted"
 
 
@@ -4979,26 +5030,38 @@ def test_plantcv_photosynthesis_read_cropreporter():
     assert isinstance(ps, pcv.PSII_data) and ps.darkadapted.shape == (966, 1296, 21, 1)
 
 
-@pytest.mark.parametrize("mvar, mlabels",
+@pytest.mark.parametrize("mda, mlabels",
                          # test darkadapted control seq
-                         [["darkadapted", None],
+                         [[psii_cropreporter("darkadapted"), None],
                           # test lightadapted control seq and measurement_labels arg
-                          ["lightadapted", ["Fq/Fm"]]
+                          [psii_cropreporter("lightadapted"), ["Fq/Fm"]],
+                          # test darkadapted walz
+                          [psii_walz("darkadapted"), ["Fv/Fm"]],
+                          # test lightadapted walz
+                          [psii_walz("lightadapted"), [f't{i*40}' for i in np.arange(1, 3)]]
                           ]
-                         )
-def test_plantcv_photosynthesis_analyze_yii(mvar, mlabels):
+                        )
+def test_plantcv_photosynthesis_analyze_yii(mda, mlabels):
     # Test with debug = None
     pcv.params.debug = None
-    _ = pcv.photosynthesis.analyze_yii(ps_da=ps_da(mvar), mask=ps_mask(), bins=100,
+    _ = pcv.photosynthesis.analyze_yii(ps_da=mda, mask=ps_mask(), bins=100,
                                        measurement_labels=mlabels, label="default")
-    if mvar == 'darkadapted':
+    if mlabels is None:
         med = pcv.outputs.observations["default"]["yii_median_t0"]["value"]
         pcv.outputs.clear()
         assert med == 0.8
-    elif mvar == 'lightadapted':
+    elif "Fq/Fm" in mlabels:
         med = pcv.outputs.observations["default"]["yii_median_Fq/Fm"]["value"]
         pcv.outputs.clear()
         assert med == 0.75
+    elif "Fv/Fm" in mlabels:
+        med = pcv.outputs.observations["default"]["yii_median_Fv/Fm"]["value"]
+        pcv.outputs.clear()
+        assert med == float(np.around((200 - 30) / 200, decimals=4))
+    elif "t40" in mlabels:
+        med = pcv.outputs.observations["default"]["yii_median_t40"]["value"]
+        pcv.outputs.clear()
+        assert med == float(np.around((185 - 32) / 185, decimals=4))
 
 
 @pytest.mark.parametrize("mlabels, tmask",
@@ -5013,22 +5076,31 @@ def test_plantcv_photosynthesis_analyze_yii_fatalerror(mlabels, tmask):
     pcv.params.debug = None
 
     with pytest.raises(RuntimeError):
-        _ = pcv.photosynthesis.analyze_yii(ps_da=ps_da('darkadapted'), mask=tmask,
+        _ = pcv.photosynthesis.analyze_yii(ps_da=psii_cropreporter('darkadapted'), mask=tmask,
                                            bins=100, measurement_labels=mlabels, label="default")
 
 
-@pytest.mark.parametrize("mlabels", [None, ["Fq/Fm"]])
-def test_plantcv_photosynthesis_analyze_npq(mlabels):
+@pytest.mark.parametrize("mda_light, mda_dark, mlabels",
+                         [
+                            # test cropreporter with measurement_labels
+                            [psii_cropreporter('lightadapted'), psii_cropreporter('darkadapted'), ["Fq/Fm"]],
+                            # test walz
+                            [psii_walz('lightadapted'), psii_walz('darkadapted'), None]
+                         ]
+                        )
+def test_plantcv_photosynthesis_analyze_npq(mda_dark, mda_light, mlabels):
     # Test with debug = None
     pcv.params.debug = None
-    _ = pcv.photosynthesis.analyze_npq(ps_da_dark=ps_da('darkadapted'), ps_da_light=ps_da(
-        'lightadapted'), mask=ps_mask(), bins=100, measurement_labels=mlabels, label="prefix")
-    if mlabels is None:
-        med = pcv.outputs.observations["prefix"]["npq_median_t1"]["value"]
-    else:
+    _ = pcv.photosynthesis.analyze_npq(ps_da_light=mda_light, ps_da_dark=mda_dark,
+                                       mask=ps_mask(), bins=100, measurement_labels=mlabels, label="prefix")
+    if mlabels is not None:
         med = pcv.outputs.observations["prefix"]["npq_median_Fq/Fm"]["value"]
-    pcv.outputs.clear()
-    assert med == 0.25
+        pcv.outputs.clear()
+        assert med == 0.25
+    else:
+        med = pcv.outputs.observations["prefix"]["npq_median_t40"]["value"]
+        pcv.outputs.clear()
+        assert med == float(np.around(200 / 185 - 1, decimals=4))
 
 
 @pytest.mark.parametrize("mlabels, tmask",
@@ -5043,18 +5115,18 @@ def test_plantcv_photosynthesis_analyze_npq_fatalerror(mlabels, tmask):
     pcv.params.debug = None
 
     with pytest.raises(RuntimeError):
-        _ = pcv.photosynthesis.analyze_npq(ps_da_dark=ps_da('darkadapted'), ps_da_light=ps_da(
+        _ = pcv.photosynthesis.analyze_npq(ps_da_dark=psii_cropreporter('darkadapted'), ps_da_light=psii_cropreporter(
             'lightadapted'), mask=tmask, bins=100, measurement_labels=mlabels, label="default")
 
 
 @pytest.mark.parametrize("da",
                          [
-                            # test darkadapted
-                            ps_da("darkadapted"),
-                            # test lightadapted
-                            ps_da("lightadapted")
+                             # test darkadapted
+                             psii_cropreporter("darkadapted"),
+                             # test lightadapted
+                            psii_cropreporter("lightadapted")
                          ]
-                        )
+                         )
 def test_plantcv_photosynthesis_reassign_frame_labels(da):
     # Test with debug = None
     pcv.params.debug = None
@@ -5063,18 +5135,18 @@ def test_plantcv_photosynthesis_reassign_frame_labels(da):
 
 @pytest.mark.parametrize("da, tmask",
                          [
-                            # test not PSII_data
-                            [pcv.PSII_data(), ps_mask()],
-                            # test input is dataarray
+                             # test not PSII_data
+                             [pcv.PSII_data(), ps_mask()],
+                             # test input is dataarray
                             ['nope', ps_mask()],
                             # test input is dataarray with correct name
-                            [ps_da('darkadapted').rename('test'), ps_mask()],
+                            [psii_cropreporter('darkadapted').rename('test'), ps_mask()],
                             # test mask shape
-                            [ps_da('darkadapted'), np.ones((2, 2))],
+                            [psii_cropreporter('darkadapted'), np.ones((2, 2))],
                             # test mask is binary
-                            [ps_da('lightadapted'), np.random.random(ps_mask().shape)]
+                            [psii_cropreporter('lightadapted'), np.random.random(ps_mask().shape)]
                          ]
-                        )
+                         )
 def test_plantcv_photosynthesis_reassign_frame_labels_fatalerror(da, tmask):
     # Test with debug = None
     pcv.params.debug = None
