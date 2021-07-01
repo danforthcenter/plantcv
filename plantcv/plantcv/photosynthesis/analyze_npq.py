@@ -24,16 +24,16 @@ def analyze_npq(ps_da_light, ps_da_dark, mask, bins=256, measurement_labels=None
     label                       = optional label parameter, modifies the entity name of observations recorded
 
     Returns:
-    hist_fig  = Histogram of npq estimate
     npq   = DataArray of npq values
+    hist_fig  = Histogram of npq estimate
 
     :param ps_da_light: xarray.core.dataarray.DataArray
     :param ps_da_dark: xarray.core.dataarray.DataArray
     :param mask: numpy.ndarray
     :param bins: int
     :param measurement_labels: list
-    :return hist_fig: plotnine.ggplot.ggplot
     :return npq: xarray.core.dataarray.DataArray
+    :return hist_fig: plotnine.ggplot.ggplot
     """
 
     if mask.shape != ps_da_light.shape[:2] or mask.shape != ps_da_dark.shape[:2]:

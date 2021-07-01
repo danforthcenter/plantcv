@@ -23,15 +23,15 @@ def analyze_yii(ps_da, mask, bins=256, measurement_labels=None, label="default")
     label        = optional label parameter, modifies the variable name of observations recorded
 
     Returns:
-    hist_fig  = Histogram of efficiency estimate
     yii   = DataArray of efficiency estimate values
+    hist_fig  = Histogram of efficiency estimate
 
     :param ps_da: xarray.core.dataarray.DataArray
     :param mask: numpy.ndarray
     :param bins: int
     :param measurement_labels: list
-    :return hist_fig: plotnine.ggplot.ggplot
     :return yii: xarray.core.dataarray.DataArray
+    :return hist_fig: plotnine.ggplot.ggplot
     """
 
     if mask.shape != ps_da.shape[:2]:
@@ -98,7 +98,7 @@ def analyze_yii(ps_da, mask, bins=256, measurement_labels=None, label="default")
     res = [i for i in list(yii.coords) if 'frame' in i]
     yii = yii.drop_vars(res)  # does not fail if res is []
 
-    # this only returns the last histogram..... xarray does not seem to support panels of histograms. use matplotlib subplots?
+    # this only returns the last histogram..... xarray does not seem to support panels of histograms but does support matplotlib subplots kwargs and axes
     return yii, hist_fig
 
 
