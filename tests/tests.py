@@ -6273,7 +6273,6 @@ def test_plantcv_visualize_histogram_multispectral_img():
     fig_hist = pcv.visualize.histogram(img=img_multi)
     assert isinstance(fig_hist, ggplot)
 
-
 def test_plantcv_visualize_histogram_no_img():
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.histogram(img=None)
@@ -6285,27 +6284,44 @@ def test_plantcv_visualize_histogram_array():
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.histogram(img=img[0, :])
 
-
-def test_plantcv_visualize_hyper_histogram():
+@pytest.mark.parametrize("wavelengths", [[], [390, 500, 640, 992, 990]])
+def test_plantcv_visualize_hyper_histogram(wavelengths, tmpdir):
     # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_visualize_hyper_histogram")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    img_outdir = tmpdir.mkdir("sub")
+    pcv.params.debug_outdir = img_outdir
 
     # Read in test data
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array = pcv.hyperspectral.read_data(filename=spectral_filename)
     mask = np.ones((array.lines, array.samples))
 
-    fig_hist = pcv.visualize.hyper_histogram(array, mask)
+    fig_hist = pcv.visualize.hyper_histogram(array, mask, wvlengths=wavelengths)
     assert isinstance(fig_hist, ggplot)
 
-    # test when there are bands whose wavelengths not in visible range
-    fig_hist = pcv.visualize.hyper_histogram(array, mask, wvlengths=[390, 500, 640, 992, 990])
-    assert isinstance(fig_hist, ggplot)
-
+def test_plantcv_visualize_hyper_histogram_wv_out_range():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    array = pcv.hyperspectral.read_data(filename=spectral_filename)
     with pytest.raises(RuntimeError):
-        _ = pcv.visualize.hyper_histogram(array, mask, wvlengths=[200,  550])
+        _ = pcv.visualize.hyper_histogram(array, wvlengths=[200,  550])
+
+def test_plantcv_visualize_hyper_histogram_extreme_wvs(tmpdir):
+    # Test cache directory
+    img_outdir = tmpdir.mkdir("sub")
+    pcv.params.debug_outdir = img_outdir
+
+    # Read in test data
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    array = pcv.hyperspectral.read_data(filename=spectral_filename)
+    mask = np.ones((array.lines, array.samples))
+
+    wv_keys = list(array.wavelength_dict.keys())
+    wavelengths = [250, 270, 1800, 2500]
+    # change first 4 keys
+    for (k_, k) in zip(wv_keys[0:5], wavelengths):
+        array.wavelength_dict[k] = array.wavelength_dict.pop(k_)
+    array.min_wavelength, array.max_wavelength = min(array.wavelength_dict), max(array.wavelength_dict)
+    fig_hist = pcv.visualize.hyper_histogram(array, mask, wvlengths=wavelengths)
+    assert isinstance(fig_hist, ggplot)
 
 
 def test_plantcv_visualize_clustered_contours():
