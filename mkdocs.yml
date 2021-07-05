@@ -19,7 +19,7 @@ nav:
     - 'Contributing to PlantCV': CONTRIBUTING.md
     - 'Code of Conduct': CODE_OF_CONDUCT.md
     - 'Adding/Editing Documentation': documentation.md
-  - Tutorials: tutorials.md
+  - "Tutorials": tutorials.md
 #    - 'VIS Workflow': vis_tutorial.md
 #    - 'NIR Workflow': nir_tutorial.md
 #    - 'PSII Workflow': psII_tutorial.md
