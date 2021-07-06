@@ -164,6 +164,7 @@ nav:
           - 'Colorspaces': visualize_colorspace.md
           - 'Histogram': visualize_histogram.md
           - 'Overlay Images': visualize_ovelay_two_imgs.md
+          - 'Object Size ECDF': visualize_obj_size_ecdf.md
           - 'Pseudocolor': visualize_pseudocolor.md
       - 'Watershed Segmentation': watershed.md
       - 'White balance': white_balance.md
