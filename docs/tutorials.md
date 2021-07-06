@@ -44,7 +44,7 @@
 </div>
 
 <div class="card" style="display:block">
-    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'vis_tutorial');return false;">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/vis_tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/vis_tutorial/vis_tutorial_card_img.png?raw=true" alt="VIS tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
@@ -59,7 +59,7 @@
 </div>
 
 <div class="card" style="display:block">
-    <a target="_blank" href="https://nbviewer.jupyter.org/github/danforthcenter/plantcv-binder/blob/master/notebooks/vis_nir_tutorial/vis_nir_tutorial.ipynb">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/vis_nir_tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/vis_nir_tutorial/vis_nir_tutorial_card_img.jpg?raw=true" alt="VIS-NIR tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
@@ -74,7 +74,7 @@
 </div>
 
 <div class="card" style="display:block">
-    <a target="_blank" href="https://nbviewer.jupyter.org/github/danforthcenter/plantcv-binder/blob/master/notebooks/nir_tutorial/nir_tutorial.ipynb">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/nir_tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/nir_tutorial/nir_tutorial_card_img.jpg?raw=true" alt="NIR tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
@@ -89,7 +89,7 @@
 </div>
 
 <div class="card" style="display:block">
-    <a target="_blank" href="https://nbviewer.jupyter.org/github/danforthcenter/plantcv-binder/blob/master/notebooks/photosynthesis_tutorial/psII_tutorial.ipynb">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/psII_tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/photosynthesis_tutorial/photosynthesis_tutorial_card.jpg?raw=true" alt="PSII tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
@@ -104,7 +104,7 @@
 </div>
 
 <div class="card" style="display:block">
-    <a target="_blank" href="https://nbviewer.jupyter.org/github/danforthcenter/plantcv-binder/blob/master/notebooks/thermal_tutorial/thermal.ipynb">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/thermal_tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/thermal_tutorial/thermal_tutorial_card.jpg?raw=true" alt="Thermal tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
@@ -119,7 +119,7 @@
 </div>
 
 <div class="card" style="display:block">
-    <a target="_blank" href="https://nbviewer.jupyter.org/github/danforthcenter/plantcv-binder/blob/master/notebooks/hyperspectral_tutorial/hyperspectral_tutorial.ipynb">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/hyperspectral_tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/hyperspectral_tutorial/hyperspectral_tutorial_card.jpg?raw=true" alt="Hyperspectral tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
@@ -134,7 +134,7 @@
 </div>
 
 <div class="card" style="display:block">
-    <a target="_blank" href="https://nbviewer.jupyter.org/github/danforthcenter/plantcv-binder/blob/master/notebooks/naive_bayes_tutorial/machine_learning.ipynb">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/machine_learning_tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/naive_bayes_tutorial/naive_bayes_tutorial_card.png?raw=true" alt="Naive Bayes tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
@@ -149,7 +149,7 @@
 </div>
 
 <div class="card" style="display:block">
-    <a target="_blank" href="https://nbviewer.jupyter.org/github/danforthcenter/plantcv-binder/blob/master/notebooks/multi_plant_tutorial/multi_plant_tutorial.ipynb">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/multi-plant_tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/multi_plant_tutorial/multi_plant_tutorial_card.png?raw=true" alt="Multi-plant tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
@@ -164,7 +164,7 @@
 </div>
 
 <div class="card" style="display:block">
-    <a target="_blank" href="https://nbviewer.jupyter.org/github/danforthcenter/plantcv-binder/blob/master/notebooks/morphology_tutorial/morphology_tutorial.ipynb">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/morphology_tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/morphology_tutorial/morphology_tutorial_card.png?raw=true" alt="Morphology tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
@@ -179,7 +179,7 @@
 </div>
 
 <div class="card" style="display:block">
-    <a target="_blank" href="https://nbviewer.jupyter.org/github/danforthcenter/plantcv-binder/blob/master/notebooks/color_correction_tutorial/color_correct_tutorial.ipynb">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/transform_color_correction_tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/color_correction_tutorial/color_correction_tutorial_card.png?raw=true" alt="Color correction tutorial" width="600" height="auto">
     </a>
     <div class="card-title">

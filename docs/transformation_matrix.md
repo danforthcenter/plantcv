@@ -15,7 +15,7 @@ Computes the transformation matrix for application to a source image to transfor
     - transformation_matrix - a 9x9 matrix of linear, square, and cubic transformation coefficients
 
 - **Example use:**
-    - [Color Correction Tutorial](transform_color_correction_tutorial.md)
+    - [Color Correction Tutorial](tutorials/transform_color_correction_tutorial.md)
     
 ```python
 

@@ -12,8 +12,8 @@ Identifies objects and fills objects that are less than specified size
   - **Context:**
     - Used to reduce image noise
 - **Example use:**
-    - [Use In VIS Tutorial](vis_tutorial.md)
-    - [Use In PSII Tutorial](psII_tutorial.md) 
+    - [Use In VIS Tutorial](tutorials/vis_tutorial.md)
+    - [Use In PSII Tutorial](tutorials/psII_tutorial.md) 
 
 ```python
 

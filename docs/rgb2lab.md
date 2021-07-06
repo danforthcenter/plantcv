@@ -13,7 +13,7 @@ Convert image from RGB color space to LAB color space and split the channels.
 - **Context:**
     - Used to help differentiate plant and background
 - **Example use:**
-    - [Use In VIS Tutorial](vis_tutorial.md)
+    - [Use In VIS Tutorial](tutorials/vis_tutorial.md)
 
 **Original RGB image**
 

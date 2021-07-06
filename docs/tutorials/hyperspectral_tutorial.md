@@ -2,8 +2,8 @@
 
 PlantCV is composed of modular functions that can be arranged (or rearranged) and adjusted quickly and easily.
 Workflows do not need to be linear (and often are not). Please see workflow example below for more details.
-A global variable "debug" allows the user to print out the resulting image. The [debug](params.md) has three modes: either None, 'plot', or 'print'.
-If set to 'print' then the function prints the image out, or if using a [Jupyter](jupyter.md) notebook you could set debug to 'plot' to have
+A global variable "debug" allows the user to print out the resulting image. The [debug](../params.md) has three modes: either None, 'plot', or 'print'.
+If set to 'print' then the function prints the image out, or if using a [Jupyter](../jupyter.md) notebook you could set debug to 'plot' to have
 the images plot to the screen. Debug mode allows users to visualize and optimize each step on individual test images and small test sets before workflows are deployed over whole datasets.
 
 Coming soon: interactive hyperspectral tutorial! 
@@ -13,7 +13,7 @@ Also see [here](#Hyperspectral-script) for the complete script.
 **Workflow**
 
 1.  Optimize workflow on individual image with debug set to 'print' (or 'plot' if using a Jupyter notebook).
-2.  Run workflow on small test set (that ideally spans time and/or treatments, see the [sample image function](tools.md).
+2.  Run workflow on small test set (that ideally spans time and/or treatments, see the [sample image function](../tools.md).
 3.  Re-optimize workflows on 'problem images' after manual inspection of test set.
 4.  Deploy optimized workflow over test set using parallelization script.
 
@@ -39,7 +39,7 @@ Raw hyperspectral data images often need to be calibrated. This process might lo
 but one example workflow would use white reference, dark reference images to calibrate raw hyperspectral image datacube into reflectance values. 
 [The TERRA-REF team](https://github.com/terraref) has nice documentation on their [calibration protocol](https://docs.google.com/document/d/1w_zHHlrPVKsy1mnW9wrVzAU2edVqZH8i1IZa5BZxVpo/edit#heading=h.jjfbhbos05cc).
 Please feel encouraged to reach out to the PlantCV developers/maintainers at the PlantCV [GitHub issues page](https://github.com/danforthcenter/plantcv/issues)
-to request to extend the functionality of the [calibration function](calibrate.md) inside the Hyperspectral sub-package for other calibration protocol. 
+to request to extend the functionality of the [calibration function](../calibrate.md) inside the Hyperspectral sub-package for other calibration protocol. 
 
 Sample command to run a workflow on a single image:  
 
@@ -76,7 +76,7 @@ def options():
 
 #### Start of the Main/Customizable portion of the workflow.
 
-The image input by the user is [read in](read_image.md).
+The image input by the user is [read in](../read_image.md).
 
 ```python
 
@@ -103,10 +103,10 @@ def main():
 
 **Figure 1.** Psuedo-RGB image from hyperspectral datacube.
 The picture in this tutorial we use is a HEADWALL Hyperspec ENVI Standard image. Reading an hyperspectral image in with PlantCV will also create a pseudo-RGB image 
-based on the wavelengths available in order to confirm that image data has been read in successfully. This creates an instance of the [`Spectral_data` class](Spectral_data.md) so the 
+based on the wavelengths available in order to confirm that image data has been read in successfully. This creates an instance of the [`Spectral_data` class](../Spectral_data.md) so the 
 object returned has many methods that are useful to users and within PlantCV functions. 
 
-![Screenshot](img/tutorial_images/hyperspectral/pseudo_rgb.jpg)
+![Screenshot](../img/tutorial_images/hyperspectral/pseudo_rgb.jpg)
 
 ```python        
     # Extract the Green Difference Vegetation Index from the datacube 
@@ -123,9 +123,9 @@ object returned has many methods that are useful to users and within PlantCV fun
 
 **Figure 2.** GDVI Grayscale Image.
 For this image the Green Difference Vegetation Index was ideal for separating the leaf of interest from the rest of the background. 
-We extract this specific index with the [pcv.spectral index.gdvi](spectral_index.md) function. 
+We extract this specific index with the [pcv.spectral index.gdvi](../spectral_index.md) function. 
 
-![Screenshot](img/tutorial_images/hyperspectral/gdvi.jpg)
+![Screenshot](../img/tutorial_images/hyperspectral/gdvi.jpg)
 
 ```python
     # Threshold the grayscale image 
@@ -142,9 +142,9 @@ We extract this specific index with the [pcv.spectral index.gdvi](spectral_index
 ```
 
 **Figure 3.** Thresholded GDVI Image.
-Use the grayscale GDVI image to create a mask for the leaf of interest. Take a [binary threshold](binary_threshold.md). 
+Use the grayscale GDVI image to create a mask for the leaf of interest. Take a [binary threshold](../binary_threshold.md). 
  
-![Screenshot](img/tutorial_images/hyperspectral/gdvi_thresh.jpg)
+![Screenshot](../img/tutorial_images/hyperspectral/gdvi_thresh.jpg)
 
 ```python
     # Define ROI 
@@ -160,9 +160,9 @@ Use the grayscale GDVI image to create a mask for the leaf of interest. Take a [
 ``` 
 
 **Figure 4.** Define a rectangular Region of Interest. 
-Draw a [rectangular ROI](roi_rectangle.md) around the leaf of interest. 
+Draw a [rectangular ROI](../roi_rectangle.md) around the leaf of interest. 
  
-![Screenshot](img/tutorial_images/hyperspectral/rect_roi.jpg)
+![Screenshot](../img/tutorial_images/hyperspectral/rect_roi.jpg)
 
 ```python
     # Find Objects 
@@ -175,9 +175,9 @@ Draw a [rectangular ROI](roi_rectangle.md) around the leaf of interest.
 ``` 
 
 **Figure 5.** Identify objects. 
-[Identify objects](find_objects.md) in the mask that was created. 
+[Identify objects](../find_objects.md) in the mask that was created. 
 
-![Screenshot](img/tutorial_images/hyperspectral/id_objects.jpg)
+![Screenshot](../img/tutorial_images/hyperspectral/id_objects.jpg)
 
 ```python
     # Filter object by a defined region of interest 
@@ -199,9 +199,9 @@ Draw a [rectangular ROI](roi_rectangle.md) around the leaf of interest.
 ``` 
 
 **Figure 6.** Binary Mask. 
-Binary mask after [filtering objects by the region of interest](roi_objects.md) that we defined. 
+Binary mask after [filtering objects by the region of interest](../roi_objects.md) that we defined. 
 
-![Screenshot](img/tutorial_images/hyperspectral/roi_mask.jpg)
+![Screenshot](../img/tutorial_images/hyperspectral/roi_mask.jpg)
 
 ```python
     # Apply the mask of the leaf to the entire datacube, and store it where the datacube is stored. 
@@ -215,9 +215,9 @@ Binary mask after [filtering objects by the region of interest](roi_objects.md) 
 ``` 
 
 **Figure 7.** Masked datacube. 
-[Applying a mask](apply_mask.md) to the entire datacube can output a debugging image to confirm that the data was masked successfully. 
+[Applying a mask](../apply_mask.md) to the entire datacube can output a debugging image to confirm that the data was masked successfully. 
  
-![Screenshot](img/tutorial_images/hyperspectral/datacube_masked.jpg)
+![Screenshot](../img/tutorial_images/hyperspectral/datacube_masked.jpg)
 
 ```python
     # Extract reflectance intensity data and store it out to the Outputs class. 
@@ -233,9 +233,9 @@ Binary mask after [filtering objects by the region of interest](roi_objects.md) 
 ``` 
 
 **Figure 8.** Spectral histogram. 
-[Extract reflectance intensity data](analyze_spectral.md) and store it out to the [Outputs class](outputs.md). Also, plot the reflectance intensities in a histogram. 
+[Extract reflectance intensity data](../analyze_spectral.md) and store it out to the [Outputs class](../outputs.md). Also, plot the reflectance intensities in a histogram. 
   
-![Screenshot](img/tutorial_images/hyperspectral/spectral_histogram.jpg)
+![Screenshot](../img/tutorial_images/hyperspectral/spectral_histogram.jpg)
 
 ```python
     # Extract statistics about an index for the leaf region 
@@ -249,7 +249,7 @@ Binary mask after [filtering objects by the region of interest](roi_objects.md) 
                                                                
 ``` 
 
-[Extract reflectance statistics from an index](analyze_index.md) and store it out to the Outputs class.
+[Extract reflectance statistics from an index](../analyze_index.md) and store it out to the Outputs class.
 
 
 ```python

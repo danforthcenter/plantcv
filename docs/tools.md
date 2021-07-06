@@ -6,7 +6,7 @@ available by downloading/cloning the GitHub repository.
 ### Training machine learning models
 
 `plantcv-train.py` is a command-line tool for training machine learning classifiers or other models in PlantCV. More
-detail is provided in the [Machine Learning Tutorial](machine_learning_tutorial.md) but command/input details are
+detail is provided in the [Machine Learning Tutorial](tutorials/machine_learning_tutorial.md) but command/input details are
 provided below:
 
 ```
