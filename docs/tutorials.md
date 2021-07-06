@@ -194,7 +194,7 @@
 </div>
 
 <div class="card" style="display:block">
-    <a target="_blank" href="https://nbviewer.jupyter.org/github/danforthcenter/plantcv-binder/blob/master/notebooks/input_output_tutorial/input_output.ipynb">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/input_output_tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/input_output_tutorial/input_output_tutorial_card.jpg?raw=true" alt="Input-output tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
@@ -209,7 +209,7 @@
 </div>
 
 <div class="card" style="display:block">
-    <a target="_blank" href="https://nbviewer.jupyter.org/github/danforthcenter/plantcv-binder/blob/master/notebooks/threshold_tutorial/threshold.ipynb">
+    <a target="_blank" hre<a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/threshold_tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/threshold_tutorial/threshold_tutorial_card.png?raw=true" alt="Thresholding tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
@@ -224,7 +224,7 @@
 </div>
 
 <div class="card" style="display:block">
-    <a target="_blank" href="https://nbviewer.jupyter.org/github/danforthcenter/plantcv-binder/blob/master/notebooks/roi_tutorial/roi_package.ipynb">
+    <a target="_blank" hre<a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/roi_tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/roi_tutorial/roi_tutorial_card.png?raw=true" alt="ROI tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
@@ -239,7 +239,7 @@
 </div>
 
 <div class="card" style="display:block">
-    <a target="_blank" href="https://nbviewer.jupyter.org/github/danforthcenter/plantcv-binder/blob/master/notebooks/watershed_segmentation_tutorial/segmentation.ipynb">
+    <a target="_blank" hre<a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/watershed_segmentation_tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/watershed_segmentation_tutorial/watershed_segmentation_tutorial_card.png?raw=true" alt="Watershed tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
