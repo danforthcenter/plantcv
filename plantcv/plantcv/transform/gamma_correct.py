@@ -1,4 +1,4 @@
-# Gamma Correction Function Prototype
+# Gamma Correction Function
 
 import os
 import numpy as np
