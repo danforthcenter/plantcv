@@ -109,7 +109,9 @@ def options():
             pairs = args.match.split(',')
             for pair in pairs:
                 key, value = pair.split(':')
-                args.imgtype[key] = value
+                if key not in args.imgtype:
+                    args.imgtype[key] = []
+                args.imgtype[key].append(value)
 
         # Populate config object
         config.input_dir = args.dir

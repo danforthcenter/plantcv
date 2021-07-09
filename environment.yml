@@ -15,7 +15,7 @@ dependencies:
   - dask-jobqueue
   - nb_conda
   - opencv<4, >=3.4
-  - colour-science
+  - statsmodels
 channels:
   - conda-forge
   - defaults

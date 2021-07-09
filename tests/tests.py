@@ -385,6 +385,90 @@ def test_plantcv_parallel_metadata_parser_images():
     meta = plantcv.parallel.metadata_parser(config=config)
     assert meta == expected
 
+
+def test_plantcv_parallel_metadata_parser_multivalue_filter():
+    # Create config instance
+    config = plantcv.parallel.WorkflowConfig()
+    config.input_dir = os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR)
+    config.json = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_metadata_parser_images", "output.json")
+    config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
+    config.workflow = TEST_PIPELINE
+    config.metadata_filters = {"imgtype": ["VIS", "NIR"]}
+    config.imgformat = "jpg"
+
+    meta = plantcv.parallel.metadata_parser(config=config)
+    expected = {
+        'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
+            'path': os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR, 'VIS_SV_0_z1_h1_g0_e82_117770.jpg'),
+            'camera': 'SV',
+            'imgtype': 'VIS',
+            'zoom': 'z1',
+            'exposure': 'e82',
+            'gain': 'g0',
+            'frame': '0',
+            'lifter': 'h1',
+            'timestamp': None,
+            'id': '117770',
+            'plantbarcode': 'none',
+            'treatment': 'none',
+            'cartag': 'none',
+            'measurementlabel': 'none',
+            'other': 'none'
+        },
+        'NIR_SV_0_z1_h1_g0_e65_117779.jpg': {
+            'path': os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR, 'NIR_SV_0_z1_h1_g0_e65_117779.jpg'),
+            'camera': 'SV',
+            'imgtype': 'NIR',
+            'zoom': 'z1',
+            'exposure': 'e65',
+            'gain': 'g0',
+            'frame': '0',
+            'lifter': 'h1',
+            'timestamp': None,
+            'id': '117779',
+            'plantbarcode': 'none',
+            'treatment': 'none',
+            'cartag': 'none',
+            'measurementlabel': 'none',
+            'other': 'none'
+        }
+    }
+    assert meta == expected
+
+
+def test_plantcv_parallel_metadata_parser_multivalue_filter_nomatch():
+    # Create config instance
+    config = plantcv.parallel.WorkflowConfig()
+    config.input_dir = os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR)
+    config.json = os.path.join(TEST_TMPDIR, "test_plantcv_parallel_metadata_parser_images", "output.json")
+    config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "id"]
+    config.workflow = TEST_PIPELINE
+    config.metadata_filters = {"imgtype": ["VIS", "PSII"]}
+    config.imgformat = "jpg"
+
+    meta = plantcv.parallel.metadata_parser(config=config)
+    expected = {
+        'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
+            'path': os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR, 'VIS_SV_0_z1_h1_g0_e82_117770.jpg'),
+            'camera': 'SV',
+            'imgtype': 'VIS',
+            'zoom': 'z1',
+            'exposure': 'e82',
+            'gain': 'g0',
+            'frame': '0',
+            'lifter': 'h1',
+            'timestamp': None,
+            'id': '117770',
+            'plantbarcode': 'none',
+            'treatment': 'none',
+            'cartag': 'none',
+            'measurementlabel': 'none',
+            'other': 'none'
+        }
+    }
+    assert meta == expected
+
+
 def test_plantcv_parallel_metadata_parser_regex():
     # Create config instance
     config = plantcv.parallel.WorkflowConfig()
@@ -456,6 +540,7 @@ def test_plantcv_parallel_metadata_parser_no_default_dates():
     meta = plantcv.parallel.metadata_parser(config=config)
     assert meta == METADATA_VIS_ONLY
 
+
 def test_plantcv_parallel_workflowconfig_subdaily_timestampformat():
     '''
     timestampformats with only hours and smaller units of time were failing if the script was run earlier in the day than the images were taken. this was fixed by setting end_date to 23-59-59 if we don't detect the year-month-day
@@ -476,25 +561,24 @@ def test_plantcv_parallel_workflowconfig_subdaily_timestampformat():
 
     meta = plantcv.parallel.metadata_parser(config=config)
     assert meta == {
-    'NIR_SV_0_z1_h1_g0_e65_23_59_59.jpg': {
-        'path': os.path.join(PARALLEL_TEST_DATA, 'images_w_date','NIR_SV_0_z1_h1_g0_e65_23_59_59.jpg'),
-        'imgtype': 'NIR',
-        'camera': 'SV',
-        'frame': '0',
-        'zoom': 'z1',
-        'lifter': 'h1',
-        'gain': 'g0',
-        'exposure': 'e65',
-        'timestamp': '23_59_59',
-        'measurementlabel': 'none',
-        'cartag':'none',
-        'id': 'none',
-        'treatment': 'none',
-        'plantbarcode': 'none',
-        'other': 'none'
+        'NIR_SV_0_z1_h1_g0_e65_23_59_59.jpg': {
+            'path': os.path.join(PARALLEL_TEST_DATA, 'images_w_date','NIR_SV_0_z1_h1_g0_e65_23_59_59.jpg'),
+            'imgtype': 'NIR',
+            'camera': 'SV',
+            'frame': '0',
+            'zoom': 'z1',
+            'lifter': 'h1',
+            'gain': 'g0',
+            'exposure': 'e65',
+            'timestamp': '23_59_59',
+            'measurementlabel': 'none',
+            'cartag':'none',
+            'id': 'none',
+            'treatment': 'none',
+            'plantbarcode': 'none',
+            'other': 'none'
+        }
     }
-    }
-
 
     
 def test_plantcv_parallel_check_date_range_wrongdateformat():
@@ -2025,18 +2109,8 @@ def test_plantcv_fatal_error():
 
 
 def test_plantcv_fill():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_fill")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.fill(bin_img=img, size=63632)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.fill(bin_img=img, size=63632)
     # Test with debug = None
     pcv.params.debug = None
     fill_img = pcv.fill(bin_img=img, size=63632)
@@ -5714,6 +5788,71 @@ def test_plantcv_transform_nonuniform_illumination_gray():
     corrected = pcv.transform.nonuniform_illumination(img=gray_img, ksize=11)
     assert np.shape(corrected) == np.shape(gray_img)
 
+
+def test_plantcv_transform_warp_default():
+    pcv.params.debug = "plot"
+    img = create_test_img((12, 10, 3))
+    refimg = create_test_img((12, 10, 3))
+    pts = [(0, 0),(1, 0),(0, 3),(4, 4)]
+    refpts = [(0, 0),(1, 0),(0, 3),(4, 4)]
+    warped_img, mat = pcv.transform.warp(img, refimg, pts, refpts, method="default")
+    assert mat.shape == (3, 3)
+
+
+def test_plantcv_transform_warp_lmeds():
+    pcv.params.debug = "plot"
+    img = create_test_img((10, 10, 3))
+    refimg = create_test_img((11, 11))
+    pts = [(0, 0), (1, 0), (0, 3), (4, 4)]
+    refpts = [(0, 0), (1, 0), (0, 3), (4, 4)]
+    warped_img, mat = pcv.transform.warp(img, refimg, pts, refpts, method="lmeds")
+    assert mat.shape == (3, 3)
+
+
+def test_plantcv_transform_warp_rho():
+    pcv.params.debug = "plot"
+    img = create_test_img_bin((10, 10))
+    refimg = create_test_img((11, 11))
+    pts = [(0, 0), (1, 0), (0, 3), (4, 4)]
+    refpts = [(0, 0), (1, 0), (0, 3), (4, 4)]
+    warped_img, mat = pcv.transform.warp(img, refimg, pts, refpts, method="rho")
+    assert mat.shape == (3, 3)
+
+
+def test_plantcv_transform_warp_ransac():
+    pcv.params.debug = "plot"
+    img = create_test_img((100, 150))
+    refimg = create_test_img((10, 15))
+    pts = [(0, 0), (149, 0), (99, 149), (0, 99), (3, 3)]
+    refpts = [(0, 0), (0, 14), (9, 14), (0, 9), (3, 3)]
+    warped_img, mat = pcv.transform.warp(img, refimg, pts, refpts, method="ransac")
+    assert mat.shape == (3, 3)
+
+
+@pytest.mark.parametrize("pts, refpts", [
+    [[(0,0)],[(0,0),(0,1)]],  # different # of points provided for img and refimg
+    [[(0,0)],[(0,0)]],  # not enough pairs of points provided
+    [[(0, 0), (0, 14), (9, 14), (0, 9), (3, 3)],
+     [(0, 0), (149, 0), (99, 149), (0, 99), (3, 3)]]  # homography not able to be calculated (cannot converge)
+])
+def test_plantcv_transform_warp_err(pts, refpts):
+    img = create_test_img((10, 15))
+    refimg = create_test_img((100, 150))
+    method = "rho"
+    with pytest.raises(RuntimeError):
+        pcv.transform.warp(img, refimg, pts, refpts, method=method)
+
+
+def test_plantcv_transform_warp_align():
+    img = create_test_img((10, 10, 3))
+    refimg = create_test_img((11, 11))
+    mat = np.array([[ 1.00000000e+00,  1.04238500e-15, -7.69185075e-16],
+                    [ 1.44375646e-16,  1.00000000e+00,  0.00000000e+00],
+                    [-5.41315251e-16,  1.78930521e-15,  1.00000000e+00]])
+    warp_img = pcv.transform.warp_align(img=img, mat=mat, refimg=refimg)
+    assert warp_img.shape == (11, 11, 3)
+
+
 # ##############################
 # Tests for the threshold subpackage
 # ##############################
@@ -5969,70 +6108,6 @@ def create_test_img_bin(sz_img):
     img = np.zeros(sz_img)
     img[3:7, 2:8] = 1
     return img
-
-
-def test_plantcv_transform_warp_default():
-    pcv.params.debug = "plot"
-    img = create_test_img((12, 10, 3))
-    refimg = create_test_img((12, 10, 3))
-    pts = [(0, 0),(1, 0),(0, 3),(4, 4)]
-    refpts = [(0, 0),(1, 0),(0, 3),(4, 4)]
-    warped_img, mat = pcv.transform.warp(img, refimg, pts, refpts, method="default")
-    assert mat.shape == (3, 3)
-
-
-def test_plantcv_transform_warp_lmeds():
-    pcv.params.debug = "plot"
-    img = create_test_img((10, 10, 3))
-    refimg = create_test_img((11, 11))
-    pts = [(0, 0), (1, 0), (0, 3), (4, 4)]
-    refpts = [(0, 0), (1, 0), (0, 3), (4, 4)]
-    warped_img, mat = pcv.transform.warp(img, refimg, pts, refpts, method="lmeds")
-    assert mat.shape == (3, 3)
-
-
-def test_plantcv_transform_warp_rho():
-    pcv.params.debug = "plot"
-    img = create_test_img_bin((10, 10))
-    refimg = create_test_img((11, 11))
-    pts = [(0, 0), (1, 0), (0, 3), (4, 4)]
-    refpts = [(0, 0), (1, 0), (0, 3), (4, 4)]
-    warped_img, mat = pcv.transform.warp(img, refimg, pts, refpts, method="rho")
-    assert mat.shape == (3, 3)
-
-
-def test_plantcv_transform_warp_ransac():
-    pcv.params.debug = "plot"
-    img = create_test_img((100, 150))
-    refimg = create_test_img((10, 15))
-    pts = [(0, 0), (149, 0), (99, 149), (0, 99), (3, 3)]
-    refpts = [(0, 0), (0, 14), (9, 14), (0, 9), (3, 3)]
-    warped_img, mat = pcv.transform.warp(img, refimg, pts, refpts, method="ransac")
-    assert mat.shape == (3, 3)
-
-
-@pytest.mark.parametrize("pts, refpts", [
-    [[(0,0)],[(0,0),(0,1)]],  # different # of points provided for img and refimg
-    [[(0,0)],[(0,0)]],  # not enough pairs of points provided
-    [[(0, 0), (0, 14), (9, 14), (0, 9), (3, 3)],
-     [(0, 0), (149, 0), (99, 149), (0, 99), (3, 3)]]  # homography not able to be calculated (cannot converge)
-])
-def test_plantcv_transform_warp_err(pts, refpts):
-    img = create_test_img((10, 15))
-    refimg = create_test_img((100, 150))
-    method = "rho"
-    with pytest.raises(RuntimeError):
-        pcv.transform.warp(img, refimg, pts, refpts, method=method)
-
-
-def test_plantcv_transform_warp_align():
-    img = create_test_img((10, 10, 3))
-    refimg = create_test_img((11, 11))
-    mat = np.array([[ 1.00000000e+00,  1.04238500e-15, -7.69185075e-16],
-                    [ 1.44375646e-16,  1.00000000e+00,  0.00000000e+00],
-                    [-5.41315251e-16,  1.78930521e-15,  1.00000000e+00]])
-    warp_img = pcv.transform.warp_align(img=img, mat=mat, refimg=refimg)
-    assert warp_img.shape == (11, 11, 3)
 
 
 @pytest.mark.parametrize("bad_type", ["native", "nan", "inf"])
@@ -6431,9 +6506,18 @@ def test_plantcv_visualize_overlay_two_imgs_size_mismatch():
         _ = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2)
 
 
+@pytest.mark.parametrize("title", ["Include Title", None])
+def test_plantcv_visualize_obj_size_ecdf(title):
+    pcv.params.debug = None
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MASK), -1)
+    fig_ecdf = plantcv.plantcv.visualize.obj_size_ecdf(mask=mask, title=title)
+    assert isinstance(fig_ecdf, ggplot)
+
+
 # ##############################
 # Tests for the utils subpackage
 # ##############################
+
 def test_plantcv_utils_json2csv():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_utils_json2csv")
