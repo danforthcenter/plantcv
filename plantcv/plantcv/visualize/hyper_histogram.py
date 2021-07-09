@@ -94,6 +94,7 @@ def hyper_histogram(array, mask=None, bins=100, lower_bound=None, upper_bound=No
     # Available wavelengths of the spectral data
     wl_keys = array.wavelength_dict.keys()
     wls = np.array([float(i) for i in wl_keys])
+    wls.sort()
 
     # Spectral resolution of the spectral data
     diffs = [wls[i] - wls[i - 1] for i in range(1, len(wls))]
