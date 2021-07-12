@@ -1,4 +1,4 @@
-## Tutorial: Multi-plant Image Workflow
+## Tutorial: Tools for Multi-Plant Analysis
 
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/multi_plant_tutorial/multi_plant_tutorial.ipynb) Check out our interactive multi-plant tutorial! 
