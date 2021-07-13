@@ -23,7 +23,7 @@ def analyze_fvfm(fdark, fmin, fmax, mask, bins=256, label="default"):
     label       = optional label parameter, modifies the variable name of observations recorded
 
     Returns:
-    analysis_images = list of images (fv image and fvfm histogram image)
+    analysis_images = list of images (fvfm image and fvfm histogram ggplot object)
     :param fdark: numpy.ndarray
     :param fmin: numpy.ndarray
     :param fmax: numpy.ndarray
@@ -63,9 +63,9 @@ def analyze_fvfm(fdark, fmin, fmax, mask, bins=256, label="default"):
     # By definition above, wherever Fmax is zero, Fvariable will also be zero
     # To calculate the divisions properly we need to change from unit16 to float64 data types
     fvfm = fv.astype(np.float64)
-    analysis_images.append(fvfm)
     fmax_flt = fmax_mask.astype(np.float64)
     fvfm[np.where(fmax_mask > 0)] /= fmax_flt[np.where(fmax_mask > 0)]
+    analysis_images.append(fvfm)
 
     # Calculate the median Fv/Fm value for non-zero pixels
     fvfm_median = np.median(fvfm[np.where(fvfm > 0)])
