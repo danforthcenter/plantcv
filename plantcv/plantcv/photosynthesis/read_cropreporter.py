@@ -76,11 +76,11 @@ def read_cropreporter(filename):
         frame_nums = np.arange(img_cube.shape[2])
 
         if corresponding_dict[key] == "PSD":
-            F0_frame = int(metadata_dict["FvFmFrameF0"]) + 1  # data cube includes Fdark at the beginning
-            Fm_frame = int(metadata_dict["FvFmFrameFm"]) + 1
+            f0_frame = int(metadata_dict["FvFmFrameF0"]) + 1  # data cube includes Fdark at the beginning
+            fm_frame = int(metadata_dict["FvFmFrameFm"]) + 1
             frame_labels[0] = 'Fdark'
-            frame_labels[F0_frame] = 'F0'
-            frame_labels[Fm_frame] = 'Fm'
+            frame_labels[f0_frame] = 'F0'
+            frame_labels[fm_frame] = 'Fm'
             psd = xr.DataArray(
                 data=img_cube[..., None],
                 dims=('x', 'y', 'frame_label', 'measurement'),
@@ -96,11 +96,11 @@ def read_cropreporter(filename):
                    filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSD-{frame_labels[-1]}.png"))
 
         elif corresponding_dict[key] == "PSL":
-            Fsp_frame = int(metadata_dict["FqFmFrameFsp"]) + 1
-            Fmp_frame = int(metadata_dict["FqFmFrameFmp"]) + 1
+            fsp_frame = int(metadata_dict["FqFmFrameFsp"]) + 1
+            fmp_frame = int(metadata_dict["FqFmFrameFmp"]) + 1
             frame_labels[0] = "Flight"
-            frame_labels[Fsp_frame] = 'Fp'
-            frame_labels[Fmp_frame] = 'Fmp'
+            frame_labels[fsp_frame] = 'Fp'
+            frame_labels[fmp_frame] = 'Fmp'
             psl = xr.DataArray(
                 data=img_cube[..., None],
                 dims=('x', 'y', 'frame_label', 'measurement'),
