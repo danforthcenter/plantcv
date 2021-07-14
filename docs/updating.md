@@ -563,7 +563,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.10: NA
 * post v3.10: fdark, fmin, fmax = **plantcv.photosynthesis.read_cropreporter**(*filename*)
-* post v4.0: ps, imgpath, inf_filename = **plantcv.photosynthesis.read_cropreporter**(*filename*)
+* post v4.0: ps = **plantcv.photosynthesis.read_cropreporter**(*filename*)
 
 #### plantcv.plot_hist
 

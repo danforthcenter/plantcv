@@ -18,13 +18,9 @@ def read_cropreporter(filename):
 
     Returns:
         ps               = photosynthesis data in xarray DataArray format
-        imgpath          = path to image files
-        inf_filename     = name of .INF file
 
     :param filename: str
     :return ps: xarray.core.dataarray.DataArray
-    :return imgpath: str
-    :return inf_filename: str
     """
     # Initialize metadata dictionary
     metadata_dict = {}
@@ -55,9 +51,9 @@ def read_cropreporter(filename):
     ps = PSII_data()
 
     # INF file prefix and path
-    inf_filename = os.path.split(filename)[-1]
-    imgpath = os.path.dirname(filename)
-    filename_components = inf_filename.split("_")
+    ps.filename = os.path.split(filename)[-1]
+    ps.datapath = os.path.dirname(filename)
+    filename_components = ps.filename.split("_")
 
     # Loop over all raw bin files
     key = frames_expected[0]
@@ -67,7 +63,7 @@ def read_cropreporter(filename):
         filename_components[1] = corresponding_dict[key]  # replace header with bin img type
         bin_filenames = "_".join(filename_components)
         bin_filename = bin_filenames.replace(".INF", ".DAT")
-        bin_filepath = os.path.join(imgpath, bin_filename)
+        bin_filepath = os.path.join(ps.datapath, bin_filename)
 
         # Dump in bin img data
         raw_data = np.fromfile(bin_filepath, np.uint16, -1)
@@ -170,4 +166,4 @@ def read_cropreporter(filename):
             _debug(visual=ps.anthocyanin,
                    filename=os.path.join(params.debug_outdir, f"{str(params.device)}_SPC-Anth.png"))
 
-    return ps, imgpath, inf_filename
+    return ps

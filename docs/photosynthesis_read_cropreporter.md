@@ -4,7 +4,7 @@ Reads .INF/.DAT image data into a PSII_data instance containing xarray DataArray
 
 **plantcv.photosynthesis.read_cropreporter**(*filename*)
 
-**returns** ps, imgpath, inf_filename
+**returns** ps
 
 - **Parameters:**
     - filename - INF metadata file to be read (possibly including a path). DAT files are automatically detected.
@@ -27,7 +27,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 #read in image
-ps, imgpath, filename = pcv.photosynthesis.read_cropreporter(filename="PSII_HDR_20200826_22_rep6.INF")
+ps = pcv.photosynthesis.read_cropreporter(filename="PSII_HDR_20200826_22_rep6.INF")
 
 # you can check which variables were imported at the prompt with:
 ps

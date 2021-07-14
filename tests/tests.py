@@ -5109,7 +5109,7 @@ def test_plantcv_photosynthesis_read_cropreporter():
     # Test with debug = None
     pcv.params.debug = None
     fluor_filename = os.path.join(PHOTOSYNTHESIS_TEST_DATA, PHOTOSYNTHESIS_NPQ_IMG_INF)
-    ps, imgpath, filename = pcv.photosynthesis.read_cropreporter(filename=fluor_filename)
+    ps = pcv.photosynthesis.read_cropreporter(filename=fluor_filename)
     assert isinstance(ps, pcv.PSII_data) and ps.darkadapted.shape == (966, 1296, 21, 1)
 
 

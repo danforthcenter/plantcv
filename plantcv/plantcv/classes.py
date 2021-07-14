@@ -227,6 +227,8 @@ class PSII_data:
         self.rgb = None
         self.anthocyanin = None
         self.chlorophyll = None
+        self.datapath = None
+        self.filename = None
 
     def __repr__(self):
         mvars = []
