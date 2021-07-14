@@ -138,7 +138,7 @@ def read_cropreporter(filename):
                    filename=os.path.join(params.debug_outdir, f"{str(params.device)}_CLR-RGB.png"))
 
         elif corresponding_dict[key] == "CHL":
-            frame_labels = ["Chl", "Chl-NIR"]
+            frame_labels = ["Fdark", "Chl"]
             chl = xr.DataArray(
                 data=img_cube,
                 dims=('x', 'y', 'frame_label'),
