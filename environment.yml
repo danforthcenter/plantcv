@@ -8,13 +8,14 @@ dependencies:
   - pandas
   - python-dateutil
   - scipy
-  - scikit-image
+  - scikit-image>=0.13
   - scikit-learn
   - plotnine
   - dask
   - dask-jobqueue
   - nb_conda
   - opencv<4, >=3.4
+  - statsmodels
 channels:
   - conda-forge
   - defaults

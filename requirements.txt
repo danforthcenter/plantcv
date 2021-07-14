@@ -3,9 +3,10 @@ numpy>=1.11
 pandas
 python-dateutil
 scipy
-scikit-image
+scikit-image>=0.13
 scikit-learn
 plotnine
 dask
 dask-jobqueue
 opencv-python<4, >=3.4
+statsmodels
