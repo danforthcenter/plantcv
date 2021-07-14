@@ -56,7 +56,6 @@ def read_cropreporter(filename):
     filename_components = ps.filename.split("_")
 
     # Loop over all raw bin files
-    key = frames_expected[0]
     for key in frames_expected:
         print('Compiling:', corresponding_dict[key])
         # Find corresponding bin img filepath based on .INF filepath
