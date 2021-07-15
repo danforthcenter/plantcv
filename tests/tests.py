@@ -5113,6 +5113,23 @@ def test_plantcv_photosynthesis_read_cropreporter():
     assert isinstance(ps, pcv.PSII_data) and ps.darkadapted.shape == (966, 1296, 21, 1)
 
 
+def test_plantcv_photosynthesis_read_cropreporter_spc_only(tmpdir):
+    # Create a test tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+    # Create dataset with only SPC
+    shutil.copyfile(os.path.join(PHOTOSYNTHESIS_TEST_DATA, PHOTOSYNTHESIS_NPQ_IMG_INF),
+                    os.path.join(cache_dir, PHOTOSYNTHESIS_NPQ_IMG_INF))
+    PHOTOSYNTHESIS_SPC_IMG_DAT = PHOTOSYNTHESIS_NPQ_IMG_INF.replace("HDR", "SPC")
+    PHOTOSYNTHESIS_SPC_IMG_DAT = PHOTOSYNTHESIS_SPC_IMG_DAT.replace("INF", "DAT")
+    shutil.copyfile(os.path.join(PHOTOSYNTHESIS_TEST_DATA, PHOTOSYNTHESIS_SPC_IMG_DAT),
+                    os.path.join(cache_dir, PHOTOSYNTHESIS_SPC_IMG_DAT))
+    # Test with debug = None
+    pcv.params.debug = None
+    fluor_filename = os.path.join(cache_dir, PHOTOSYNTHESIS_NPQ_IMG_INF)
+    ps = pcv.photosynthesis.read_cropreporter(filename=fluor_filename)
+    assert isinstance(ps, pcv.PSII_data) and ps.spectral.array_data.shape == (966, 1296, 3)
+
+
 @pytest.mark.parametrize("mda, mlabels",
                          # test darkadapted control seq
                          [[psii_cropreporter("darkadapted"), None],
