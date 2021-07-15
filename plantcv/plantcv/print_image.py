@@ -35,7 +35,7 @@ def print_image(img, filename):
         img.save(filename, verbose=False)
 
     elif isinstance(img, FacetGrid):
-        img.fig.savefig(filename)
+        img.fig.savefig(filename, dpi=params.dpi)
 
     elif isinstance(img, tuple) and len(img)==3:
         fatal_error('Looks like you are trying to save a histogram. If so, you have 2 options: 1. Use pcv.visualize.histogram() on each numpy.ndarray 2. Create a matplotlib figure by running myfig=plt.gcf() in the same execution as generating the histogram and then use pcv.print_image(myplot, filename=...). ')
