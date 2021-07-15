@@ -98,8 +98,9 @@ def _process_psd_data(ps, metadata):
         psd.attrs["long_name"] = "dark-adapted measurements"
         ps.add_data(psd)
 
-        _debug(visual=ps.darkadapted.plot(col='frame_label', col_wrap=4),
-               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSD-frames.png"))
+        _debug(visual=ps.darkadapted,
+               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSD-frames.png"),
+               col='frame_label', col_wrap=4)
 
 
 def _process_psl_data(ps, metadata):
@@ -134,8 +135,9 @@ def _process_psl_data(ps, metadata):
         psl.attrs["long_name"] = "light-adapted measurements"
         ps.add_data(psl)
 
-        _debug(visual=ps.lightadapted.plot(col='frame_label', col_wrap=4),
-               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSL-frames.png"))
+        _debug(visual=ps.lightadapted,
+               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSL-frames.png"),
+               col='frame_label', col_wrap=4)
 
 
 def _process_chl_data(ps, metadata):
@@ -164,8 +166,9 @@ def _process_chl_data(ps, metadata):
         chl.attrs["long_name"] = "chlorophyll measurements"
         ps.add_data(chl)
 
-        _debug(visual=ps.chlorophyll.plot(col='frame_label', col_wrap=4),
-               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_CHL-frames.png"))
+        _debug(visual=ps.chlorophyll,
+               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_CHL-frames.png"),
+               col='frame_label', col_wrap=4)
 
 
 def _process_spc_data(ps, metadata):

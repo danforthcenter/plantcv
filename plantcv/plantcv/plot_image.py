@@ -3,7 +3,6 @@ import cv2
 import numpy
 import matplotlib
 from xarray.core.dataarray import DataArray
-from xarray.plot.facetgrid import FacetGrid
 from plotnine.ggplot import ggplot
 from plantcv.plantcv import params
 from plantcv.plantcv.classes import PSII_data
@@ -17,7 +16,7 @@ def plot_image(img, cmap=None, **kwargs):
 
     :param img: numpy.ndarray, ggplot, xarray.core.dataarray.DataArray
     :param cmap: str
-    :param **kwargs: key-value arguments to xarray.plot method
+    :param kwargs: key-value arguments to xarray.plot method
     :return:
     """
 
@@ -51,9 +50,6 @@ def plot_image(img, cmap=None, **kwargs):
 
     elif isinstance(img, DataArray):
         img.plot(**kwargs)
-
-    elif isinstance(img, FacetGrid):
-        img
 
     elif isinstance(img, PSII_data):
         fatal_error("You need to plot an underlying DataArray.")

@@ -3,22 +3,24 @@ import cv2
 import numpy
 import matplotlib
 from plotnine.ggplot import ggplot
-from xarray.plot.facetgrid import FacetGrid
+from xarray.core.dataarray import DataArray
 from plantcv.plantcv.classes import PSII_data
 from plantcv.plantcv import params
 from plantcv.plantcv import fatal_error
 
 
-def print_image(img, filename):
+def print_image(img, filename, **kwargs):
     """
     Save image to file.
 
     Inputs:
     img      = image object
     filename = name of file to save image to
+    kwargs   = key-value arguments to xarray.plot method
 
     :param img: numpy.ndarray, matplotlib.figure.Figure, ggplot, xarray.plot.facetgrid.FacetGrid
     :param filename: string
+    :param kwargs: dict
     :return:
     """
 
@@ -34,8 +36,8 @@ def print_image(img, filename):
     elif isinstance(img, ggplot):
         img.save(filename, verbose=False)
 
-    elif isinstance(img, FacetGrid):
-        img.fig.savefig(filename, dpi=params.dpi)
+    elif isinstance(img, DataArray):
+        img.plot(**kwargs).fig.savefig(filename, dpi=params.dpi)
 
     elif isinstance(img, tuple) and len(img) == 3:
         fatal_error('Looks like you are trying to save a histogram. If so, you have 2 options: 1. Use '
