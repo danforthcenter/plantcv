@@ -41,7 +41,7 @@ def print_image(img, filename):
         fatal_error('Looks like you are trying to save a histogram. If so, you have 2 options: 1. Use pcv.visualize.histogram() on each numpy.ndarray 2. Create a matplotlib figure by running myfig=plt.gcf() in the same execution as generating the histogram and then use pcv.print_image(myplot, filename=...). ')
 
     elif isinstance(img, PSII_data):
-        fatal_error("You need to plot an underlying DataArray first.")
+        fatal_error("You need to plot an underlying DataArray.")
 
     else:
         fatal_error("Error writing file " + filename + ": input img is " + str(type(img)) + ", not a numpy.ndarray, " +
