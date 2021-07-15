@@ -18,7 +18,7 @@ def print_image(img, filename, **kwargs):
     filename = name of file to save image to
     kwargs   = key-value arguments to xarray.plot method
 
-    :param img: numpy.ndarray, matplotlib.figure.Figure, ggplot, xarray.plot.facetgrid.FacetGrid
+    :param img: numpy.ndarray, matplotlib.figure.Figure, ggplot, xarray.core.dataarray.DataArray
     :param filename: string
     :param kwargs: dict
     :return:
