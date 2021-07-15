@@ -2874,7 +2874,7 @@ def test_plantcv_print_image_matplotlib():
 def test_plantcv_print_image_xarrayplot():
     da = psii_cropreporter('darkadapted')
     try:
-        pcv.print_image(img=da.plot(col='frame_label'), filename='/dev/null')
+        pcv.print_image(img=da, col='frame_label', filename='/dev/null')
     except RuntimeError:
         assert False
     # Assert that the image was plotted without error
