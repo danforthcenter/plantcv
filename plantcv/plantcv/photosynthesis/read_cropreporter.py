@@ -98,8 +98,8 @@ def _process_psd_data(ps, metadata):
         psd.attrs["long_name"] = "dark-adapted measurements"
         ps.add_data(psd)
 
-        _debug(visual=ps.darkadapted,
-               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSD-{frame_labels[-1]}.png"))
+        _debug(visual=ps.darkadapted.plot(col='frame_label', col_wrap=4),
+               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSD-frames.png"))
 
 
 def _process_psl_data(ps, metadata):
@@ -134,8 +134,8 @@ def _process_psl_data(ps, metadata):
         psl.attrs["long_name"] = "light-adapted measurements"
         ps.add_data(psl)
 
-        _debug(visual=ps.lightadapted,
-               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSL-{frame_labels[-1]}.png"))
+        _debug(visual=ps.lightadapted.plot(col='frame_label', col_wrap=4),
+               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSL-frames.png"))
 
 
 def _process_chl_data(ps, metadata):
@@ -164,8 +164,8 @@ def _process_chl_data(ps, metadata):
         chl.attrs["long_name"] = "chlorophyll measurements"
         ps.add_data(chl)
 
-        _debug(visual=ps.chlorophyll,
-               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_CHL.png"))
+        _debug(visual=ps.chlorophyll.plot(col='frame_label', col_wrap=4),
+               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_CHL-frames.png"))
 
 
 def _process_spc_data(ps, metadata):
@@ -293,7 +293,7 @@ def _read_dat_file(dataset, filename, height, width):
     # Reshape, numpy shaped
     img_cube = raw_data.reshape(int(len(raw_data) / (height * width)), width, height).transpose((2, 1, 0))
 
-    # Calculate frames of interest and keep track of their labels. labels must be unique across all measurments
+    # Calculate frames of interest and keep track of their labels. labels must be unique across all measurements
     frame_labels = [(dataset + str(i)) for i in range(img_cube.shape[2])]
     frame_nums = np.arange(img_cube.shape[2])
 
