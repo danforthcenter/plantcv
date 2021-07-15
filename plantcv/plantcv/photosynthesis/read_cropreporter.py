@@ -236,6 +236,9 @@ def _process_spc_data(ps, metadata):
 
         ps.spectral = multispec
 
+        _debug(visual=ps.spectral.pseudo_rgb,
+               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_spectral-RGB.png"))
+
 
 def _dat_filepath(dataset, datapath, filename):
     """
