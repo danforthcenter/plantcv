@@ -6,6 +6,7 @@ import xarray as xr
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import PSII_data
+from plantcv.plantcv import Spectral_data
 from skimage.util import img_as_ubyte
 
 
@@ -20,7 +21,7 @@ def read_cropreporter(filename):
         ps               = photosynthesis data in xarray DataArray format
 
     :param filename: str
-    :return ps: xarray.core.dataarray.DataArray
+    :return ps: plantcv.plantcv.classes.PSII_data
     """
     # Initialize metadata dictionary
     metadata_dict = {}
@@ -32,137 +33,268 @@ def read_cropreporter(filename):
                 key, value = line.rstrip("\n").split("=")
                 metadata_dict[key] = value
 
-    # Store image dimension data
-    x = int(metadata_dict["ImageCols"])
-    y = int(metadata_dict["ImageRows"])
     # Use metadata to determine which frames to expect
-    frames_captured = {key: value for key, value in metadata_dict.items() if "Done" in key}
-    frames_expected = [key.upper()[0:3] for key, value in frames_captured.items() if str(value) == "1"]
+    # frames_captured = {key: value for key, value in metadata_dict.items() if "Done" in key}
+    # frames_expected = [key.upper()[0:3] for key, value in frames_captured.items() if str(value) == "1"]
     # ignore NPQ
-    for i, k in enumerate(frames_expected):
-        if 'NPQ' == k:
-            frames_expected = [*frames_expected[:i], *frames_expected[-(i+1):]]
+    # for i, k in enumerate(frames_expected):
+    #     if 'NPQ' == k:
+    #         frames_expected = [*frames_expected[:i], *frames_expected[-(i+1):]]
 
-    corresponding_dict = {"FVF": "PSD", "FQF": "PSL", "CHL": "CHL", "SPC": "SPC",
-                          "CLR": "CLR", "RFD": "RFD", "GFP": "GFP", "RFP": "RFP"}
+    # corresponding_dict = {"FVF": "PSD", "FQF": "PSL", "CHL": "CHL", "SPC": "SPC",
+    #                       "CLR": "CLR", "RFD": "RFD", "GFP": "GFP", "RFP": "RFP"}
 
-    # Initialize lists
-    img_frames = []
+    # Initialize PSII_data class
     ps = PSII_data()
 
     # INF file prefix and path
     ps.filename = os.path.split(filename)[-1]
     ps.datapath = os.path.dirname(filename)
-    filename_components = ps.filename.split("_")
 
-    # Loop over all raw bin files
-    for key in frames_expected:
-        print('Compiling:', corresponding_dict[key])
-        # Find corresponding bin img filepath based on .INF filepath
-        filename_components[1] = corresponding_dict[key]  # replace header with bin img type
-        bin_filenames = "_".join(filename_components)
-        bin_filename = bin_filenames.replace(".INF", ".DAT")
-        bin_filepath = os.path.join(ps.datapath, bin_filename)
+    # Dark-adapted measurements
+    _process_psd_data(ps=ps, metadata=metadata_dict)
 
-        # Dump in bin img data
-        raw_data = np.fromfile(bin_filepath, np.uint16, -1)
-        # Reshape
-        img_cube = raw_data.reshape(int(len(raw_data) / (y * x)), x, y).transpose((2, 1, 0))  # numpy shaped
-        # Store bin img data
-        img_frames.append(img_cube)  # append cube to a list
+    # Light-adapted measurements
+    _process_psl_data(ps=ps, metadata=metadata_dict)
 
-        # Calculate frames of interest and keep track of their labels. labels must be unique across all measurments
-        frame_labels = [(corresponding_dict[key] + str(i)) for i in range(img_cube.shape[2])]
-        frame_nums = np.arange(img_cube.shape[2])
+    # Chlorophyll fluorescence data
+    _process_chl_data(ps=ps, metadata=metadata_dict)
 
-        if corresponding_dict[key] == "PSD":
-            f0_frame = int(metadata_dict["FvFmFrameF0"]) + 1  # data cube includes Fdark at the beginning
-            fm_frame = int(metadata_dict["FvFmFrameFm"]) + 1
-            frame_labels[0] = 'Fdark'
-            frame_labels[f0_frame] = 'F0'
-            frame_labels[fm_frame] = 'Fm'
-            psd = xr.DataArray(
-                data=img_cube[..., None],
-                dims=('x', 'y', 'frame_label', 'measurement'),
-                coords={'frame_label': frame_labels,
-                        'frame_num': ('frame_label', frame_nums),
-                        'measurement': ['t0']},
-                name='darkadapted'
-            )
-            psd.attrs["long_name"] = "dark-adapted measurements"
-            ps.add_data(psd)
-
-            _debug(visual=ps.darkadapted,
-                   filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSD-{frame_labels[-1]}.png"))
-
-        elif corresponding_dict[key] == "PSL":
-            fsp_frame = int(metadata_dict["FqFmFrameFsp"]) + 1
-            fmp_frame = int(metadata_dict["FqFmFrameFmp"]) + 1
-            frame_labels[0] = "Flight"
-            frame_labels[fsp_frame] = 'Fp'
-            frame_labels[fmp_frame] = 'Fmp'
-            psl = xr.DataArray(
-                data=img_cube[..., None],
-                dims=('x', 'y', 'frame_label', 'measurement'),
-                coords={'frame_label': frame_labels,
-                        'frame_num': ('frame_label', frame_nums),
-                        'measurement': ['t1']},
-                name='lightadapted'
-            )
-            psl.attrs["long_name"] = "light-adapted measurements"
-            ps.add_data(psl)
-
-            _debug(visual=ps.lightadapted,
-                   filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSL-{frame_labels[-1]}.png"))
-
-        elif corresponding_dict[key] == "CLR":
-            frame_labels = ["Red", "Green", "Blue"]
-            debug = params.debug
-            params.debug = None
-            # I don't think we can use rescale here because it will change the ratios of red to green to blue since it scales based on min-max rather than 0-255
-            red = img_as_ubyte(img_cube[:, :, 0])
-            green = img_as_ubyte(img_cube[:, :, 1])
-            blue = img_as_ubyte(img_cube[:, :, 2])
-            rgb_img = np.dstack([blue, green, red])
-            rgb = xr.DataArray(
-                data=rgb_img,
-                dims=('x', 'y', 'frame_label'),
-                coords={'frame_label': frame_labels},
-                name='rgb'
-            )
-            rgb.attrs["long_name"] = "rgb measurements"
-            ps.add_data(rgb)
-
-            params.debug = debug
-            _debug(visual=ps.rgb,  # does it make sense to show all three bands separately?
-                   filename=os.path.join(params.debug_outdir, f"{str(params.device)}_CLR-RGB.png"))
-
-        elif corresponding_dict[key] == "CHL":
-            frame_labels = ["Fdark", "Chl"]
-            chl = xr.DataArray(
-                data=img_cube,
-                dims=('x', 'y', 'frame_label'),
-                coords={'frame_label': frame_labels},
-                name='chlorophyll'
-            )
-            chl.attrs["long_name"] = "chlorophyll measurements"
-            ps.add_data(chl)
-
-            _debug(visual=ps.chlorophyll,
-                   filename=os.path.join(params.debug_outdir, f"{str(params.device)}_CHL-NIR.png"))
-
-        elif corresponding_dict[key] == "SPC":
-            frame_labels = ["Anth", "Far-red", "Anth-NIR"]
-            spc = xr.DataArray(
-                data=img_cube,
-                dims=('x', 'y', 'frame_label'),
-                coords={'frame_label': frame_labels},
-                name='anthocyanin'
-            )
-            spc.attrs["long_name"] = "anthocyanin measurements"
-            ps.add_data(spc)
-
-            _debug(visual=ps.anthocyanin,
-                   filename=os.path.join(params.debug_outdir, f"{str(params.device)}_SPC-Anth.png"))
+    # Spectral measurements
+    _process_spc_data(ps=ps, metadata=metadata_dict)
 
     return ps
+
+
+def _process_psd_data(ps, metadata):
+    """
+    Create an xarray DataArray for a PSD dataset.
+
+    Inputs:
+        ps       = PSII_data instance
+        metadata = INF file metadata dictionary
+
+    :param ps: plantcv.plantcv.classes.PSII_data
+    :param metadata: dict
+    """
+    bin_filepath = _dat_filepath(dataset="PSD", datapath=ps.datapath, filename=ps.filename)
+    if os.path.exists(bin_filepath):
+        img_cube, frame_labels, frame_nums = _read_dat_file(dataset="PSD", filename=bin_filepath,
+                                                            height=int(metadata["ImageRows"]),
+                                                            width=int(metadata["ImageCols"]))
+        f0_frame = int(metadata["FvFmFrameF0"]) + 1  # data cube includes Fdark at the beginning
+        fm_frame = int(metadata["FvFmFrameFm"]) + 1
+        frame_labels[0] = 'Fdark'
+        frame_labels[f0_frame] = 'F0'
+        frame_labels[fm_frame] = 'Fm'
+        psd = xr.DataArray(
+            data=img_cube[..., None],
+            dims=('x', 'y', 'frame_label', 'measurement'),
+            coords={'frame_label': frame_labels,
+                    'frame_num': ('frame_label', frame_nums),
+                    'measurement': ['t0']},
+            name='darkadapted'
+        )
+        psd.attrs["long_name"] = "dark-adapted measurements"
+        ps.add_data(psd)
+
+        _debug(visual=ps.darkadapted,
+               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSD-{frame_labels[-1]}.png"))
+
+
+def _process_psl_data(ps, metadata):
+    """
+    Create an xarray DataArray for a PSL dataset.
+
+    Inputs:
+        ps       = PSII_data instance
+        metadata = INF file metadata dictionary
+
+    :param ps: plantcv.plantcv.classes.PSII_data
+    :param metadata: dict
+    """
+    bin_filepath = _dat_filepath(dataset="PSL", datapath=ps.datapath, filename=ps.filename)
+    if os.path.exists(bin_filepath):
+        img_cube, frame_labels, frame_nums = _read_dat_file(dataset="PSL", filename=bin_filepath,
+                                                            height=int(metadata["ImageRows"]),
+                                                            width=int(metadata["ImageCols"]))
+        fsp_frame = int(metadata["FqFmFrameFsp"]) + 1
+        fmp_frame = int(metadata["FqFmFrameFmp"]) + 1
+        frame_labels[0] = "Flight"
+        frame_labels[fsp_frame] = 'Fp'
+        frame_labels[fmp_frame] = 'Fmp'
+        psl = xr.DataArray(
+            data=img_cube[..., None],
+            dims=('x', 'y', 'frame_label', 'measurement'),
+            coords={'frame_label': frame_labels,
+                    'frame_num': ('frame_label', frame_nums),
+                    'measurement': ['t1']},
+            name='lightadapted'
+        )
+        psl.attrs["long_name"] = "light-adapted measurements"
+        ps.add_data(psl)
+
+        _debug(visual=ps.lightadapted,
+               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSL-{frame_labels[-1]}.png"))
+
+
+def _process_chl_data(ps, metadata):
+    """
+    Create an xarray DataArray for a CHL dataset.
+
+    Inputs:
+        ps       = PSII_data instance
+        metadata = INF file metadata dictionary
+
+    :param ps: plantcv.plantcv.classes.PSII_data
+    :param metadata: dict
+    """
+    bin_filepath = _dat_filepath(dataset="CHL", datapath=ps.datapath, filename=ps.filename)
+    if os.path.exists(bin_filepath):
+        img_cube, frame_labels, frame_nums = _read_dat_file(dataset="CHL", filename=bin_filepath,
+                                                            height=int(metadata["ImageRows"]),
+                                                            width=int(metadata["ImageCols"]))
+        frame_labels = ["Fdark", "Chl"]
+        chl = xr.DataArray(
+            data=img_cube,
+            dims=('x', 'y', 'frame_label'),
+            coords={'frame_label': frame_labels},
+            name='chlorophyll'
+        )
+        chl.attrs["long_name"] = "chlorophyll measurements"
+        ps.add_data(chl)
+
+        _debug(visual=ps.chlorophyll,
+               filename=os.path.join(params.debug_outdir, f"{str(params.device)}_CHL.png"))
+
+
+def _process_spc_data(ps, metadata):
+    """
+    Create a Spectral_data object for the SPC and CLR datasets.
+
+    Inputs:
+        ps       = PSII_data instance
+        metadata = INF file metadata dictionary
+
+    :param ps: plantcv.plantcv.classes.PSII_data
+    :param metadata: dict
+    """
+    img_cubes = []
+    wavelengths = []
+    clr_filepath = _dat_filepath(dataset="CLR", datapath=ps.datapath, filename=ps.filename)
+    spc_filepath = _dat_filepath(dataset="SPC", datapath=ps.datapath, filename=ps.filename)
+    rgb = None
+    if os.path.exists(clr_filepath):
+        rgb_cube, _, _ = _read_dat_file(dataset="CLR", filename=clr_filepath,
+                                        height=int(metadata["ImageRows"]),
+                                        width=int(metadata["ImageCols"]))
+        img_cubes.append(rgb_cube)
+        wavelengths += [670, 500, 460]
+        rgb = img_as_ubyte(rgb_cube[:, :, [2, 1, 0]])
+    if os.path.exists(spc_filepath):
+        spc_cube, _, _ = _read_dat_file(dataset="SPC", filename=spc_filepath,
+                                        height=int(metadata["ImageRows"]),
+                                        width=int(metadata["ImageCols"]))
+        img_cubes.append(spc_cube)
+        wavelengths += [550, 700, 800]
+        if rgb is None:
+            rgb = img_as_ubyte(spc_cube)
+
+    if len(img_cubes) > 0:
+        if len(img_cubes) == 2:
+            # Concatenate the images on the depth/spectral (z) axis
+            array_data = np.concatenate(img_cubes, axis=2)
+        else:
+            array_data = img_cubes[0]
+
+        # sort all wavelengths
+        wavelengths = np.array(wavelengths)
+        ind = np.argsort(wavelengths)
+        wavelengths = wavelengths[ind]
+
+        wavelength_dict = dict()
+        for (idx, wv) in enumerate(wavelengths):
+            wavelength_dict[wv] = float(idx)
+
+        # sort array_data based on wavelengths
+        array_data = array_data[:, :, ind]
+        # Scale the array data to 0-1 by dividing by the maximum data type value
+        array_data = (array_data / np.iinfo(array_data.dtype).max).astype(np.float32)
+
+        # Create a Spectral_data object
+        rows, columns, bands = array_data.shape
+        multispec = Spectral_data(array_data=array_data,
+                                  max_wavelength=float(max(wavelengths)),
+                                  min_wavelength=float(min(wavelengths)),
+                                  max_value=float(np.amax(array_data)),
+                                  min_value=float(np.amin(array_data)),
+                                  d_type=array_data.dtype,
+                                  wavelength_dict=wavelength_dict,
+                                  samples=columns, lines=rows, interleave="NA",
+                                  wavelength_units="nm", array_type="multispectral",
+                                  pseudo_rgb=rgb, filename="NA", default_bands=None)
+
+        ps.spectral = multispec
+
+
+def _dat_filepath(dataset, datapath, filename):
+    """
+    Create the filepath to a DAT file based on the INF filename.
+
+    Inputs:
+        dataset  = dataset key (PSD, PSL, SPC, CHL, CLR)
+        datapath = path to the dataset (basepath of the INF file)
+        filename = INF filename
+
+    Returns:
+        bin_filepath = fully-qualified path to the DAT file
+
+    :param dataset: str
+    :param datapath: str
+    :param filename: str
+    :return bin_filepath: str
+    """
+    filename_components = filename.split("_")
+    # Find corresponding bin img filepath based on .INF filepath
+    filename_components[1] = dataset  # replace header with bin img type
+    bin_filenames = "_".join(filename_components)
+    bin_filename = bin_filenames.replace(".INF", ".DAT")
+    bin_filepath = os.path.join(datapath, bin_filename)
+
+    return bin_filepath
+
+
+def _read_dat_file(dataset, filename, height, width):
+    """
+    Read raw data from DAT file.
+
+    Inputs:
+        dataset  = dataset key (PSD, PSL, SPC, CHL, CLR)
+        filename = fully-qualified path to the DAT file
+        height   = height (rows) of the images
+        width    = width (columns) of the image
+
+    Returns:
+        img_cube     = raw data cube in NumPy shape
+        frame_labels = list of labels for each frame
+        frame_nums   = the number of frames
+
+    :param dataset: str
+    :param filename: str
+    :param height: int
+    :param width: int
+    :return img_cube: numpy.ndarray
+    :return frame_labels: list
+    :return frame_numbs: int
+    """
+    print(f'Compiling: {dataset}')
+    # Dump in bin img data
+    raw_data = np.fromfile(filename, np.uint16, -1)
+    # Reshape, numpy shaped
+    img_cube = raw_data.reshape(int(len(raw_data) / (height * width)), width, height).transpose((2, 1, 0))
+
+    # Calculate frames of interest and keep track of their labels. labels must be unique across all measurments
+    frame_labels = [(dataset + str(i)) for i in range(img_cube.shape[2])]
+    frame_nums = np.arange(img_cube.shape[2])
+
+    return img_cube, frame_labels, frame_nums

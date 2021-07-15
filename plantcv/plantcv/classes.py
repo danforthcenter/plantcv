@@ -224,8 +224,7 @@ class PSII_data:
     def __init__(self):
         self.darkadapted = None
         self.lightadapted = None
-        self.rgb = None
-        self.anthocyanin = None
+        self.spectral = None
         self.chlorophyll = None
         self.datapath = None
         self.filename = None
