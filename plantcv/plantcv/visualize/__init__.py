@@ -7,6 +7,8 @@ from plantcv.plantcv.visualize.auto_threshold_methods import auto_threshold_meth
 from plantcv.plantcv.visualize.overlay_two_imgs import overlay_two_imgs
 from plantcv.plantcv.visualize.colorize_label_img import colorize_label_img
 from plantcv.plantcv.visualize.obj_sizes import obj_sizes
+from plantcv.plantcv.visualize.obj_size_ecdf import obj_size_ecdf
+
 
 __all__ = ["pseudocolor", "colorize_masks", "histogram", "clustered_contours", "colorspaces", "auto_threshold_methods",
-           "overlay_two_imgs", "colorize_label_img", "obj_sizes"]
+           "overlay_two_imgs", "colorize_label_img", "obj_size_ecdf", "obj_sizes"]
