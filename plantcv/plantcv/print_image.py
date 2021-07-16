@@ -7,6 +7,7 @@ from xarray.core.dataarray import DataArray
 from plantcv.plantcv.classes import PSII_data
 from plantcv.plantcv import params
 from plantcv.plantcv import fatal_error
+from plantcv.plantcv._debug import _show_dataarray
 
 
 def print_image(img, filename, **kwargs):
@@ -37,7 +38,7 @@ def print_image(img, filename, **kwargs):
         img.save(filename, verbose=False)
 
     elif isinstance(img, DataArray):
-        img.plot(**kwargs).fig.savefig(filename, dpi=params.dpi)
+        _show_dataarray(img, **kwargs).fig.savefig(filename, dpi=params.dpi)
 
     elif isinstance(img, tuple) and len(img) == 3:
         fatal_error('Looks like you are trying to save a histogram. If so, you have 2 options: 1. Use '
@@ -46,7 +47,7 @@ def print_image(img, filename, **kwargs):
                     'myplot, filename=...). ')
 
     elif isinstance(img, PSII_data):
-        fatal_error("You need to plot an underlying DataArray.")
+        fatal_error("You need to provide an underlying DataArray.")
 
     else:
         fatal_error(f"Error writing file {filename}: input img is {str(type(img))}, not a numpy.ndarray, "

@@ -33,17 +33,6 @@ def read_cropreporter(filename):
                 key, value = line.rstrip("\n").split("=")
                 metadata_dict[key] = value
 
-    # Use metadata to determine which frames to expect
-    # frames_captured = {key: value for key, value in metadata_dict.items() if "Done" in key}
-    # frames_expected = [key.upper()[0:3] for key, value in frames_captured.items() if str(value) == "1"]
-    # ignore NPQ
-    # for i, k in enumerate(frames_expected):
-    #     if 'NPQ' == k:
-    #         frames_expected = [*frames_expected[:i], *frames_expected[-(i+1):]]
-
-    # corresponding_dict = {"FVF": "PSD", "FQF": "PSL", "CHL": "CHL", "SPC": "SPC",
-    #                       "CLR": "CLR", "RFD": "RFD", "GFP": "GFP", "RFP": "RFP"}
-
     # Initialize PSII_data class
     ps = PSII_data()
 
@@ -98,9 +87,10 @@ def _process_psd_data(ps, metadata):
         psd.attrs["long_name"] = "dark-adapted measurements"
         ps.add_data(psd)
 
-        _debug(visual=ps.darkadapted,
+        _debug(visual=ps.darkadapted.squeeze('measurement', drop=True),
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSD-frames.png"),
-               col='frame_label', col_wrap=4)
+               col='frame_label',
+               col_wrap=int(np.ceil(ps.darkadapted.frame_label.size / 4)))
 
 
 def _process_psl_data(ps, metadata):
@@ -135,9 +125,10 @@ def _process_psl_data(ps, metadata):
         psl.attrs["long_name"] = "light-adapted measurements"
         ps.add_data(psl)
 
-        _debug(visual=ps.lightadapted,
+        _debug(visual=ps.lightadapted.squeeze('measurement', drop=True),
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_PSL-frames.png"),
-               col='frame_label', col_wrap=4)
+               col='frame_label',
+               col_wrap=int(np.ceil(ps.lightadapted.frame_label.size / 4)))
 
 
 def _process_chl_data(ps, metadata):
@@ -168,7 +159,8 @@ def _process_chl_data(ps, metadata):
 
         _debug(visual=ps.chlorophyll,
                filename=os.path.join(params.debug_outdir, f"{str(params.device)}_CHL-frames.png"),
-               col='frame_label', col_wrap=4)
+               col='frame_label',
+               col_wrap=int(np.ceil(ps.chlorophyll.frame_label.size / 4)))
 
 
 def _process_spc_data(ps, metadata):

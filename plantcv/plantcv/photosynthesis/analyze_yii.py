@@ -85,18 +85,21 @@ def analyze_yii(ps_da, mask, bins=256, measurement_labels=None, label="default")
         _debug(visual=hist_fig,
                filename=os.path.join(params.debug_outdir, str(params.device) + f"_YII_{mlabel}_histogram.png"))
 
-    # Plot/print dataarray
-    # plot will default to a hist if >1 measurements so explicitly call pcolormesh
-    da_frames = yii.plot.pcolormesh(row='measurement', col_wrap=int(np.ceil(yii.measurement.size/3)), robust=True)
-    _debug(visual=da_frames,
-           filename=os.path.join(params.debug_outdir, str(params.device) + "_YII_dataarray.png"))
+    # drop coords identifying frames if they exist
+    res = [i for i in list(yii.coords) if 'frame' in i]
+    yii = yii.drop_vars(res)  # does not fail if res is []
 
     # Store images
     outputs.images.append(yii)
 
-    # drop coords identifying frames if they exist
-    res = [i for i in list(yii.coords) if 'frame' in i]
-    yii = yii.drop_vars(res)  # does not fail if res is []
+    # Plot/print dataarray
+    # plot will default to a hist if >1 measurements so explicitly call pcolormesh
+    # da_frames = yii.plot.pcolormesh(row='measurement', col_wrap=int(np.ceil(yii.measurement.size/3)), robust=True)
+    _debug(visual=yii,
+           filename=os.path.join(params.debug_outdir, str(params.device) + "_YII_dataarray.png"),
+           robust=True,
+           col='measurement',
+           col_wrap=int(np.ceil(yii.measurement.size / 4)))
 
     # this only returns the last histogram..... xarray does not seem to support panels of histograms but does support matplotlib subplots kwargs and axes
     return yii, hist_fig

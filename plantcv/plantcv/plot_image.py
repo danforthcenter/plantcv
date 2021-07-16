@@ -8,6 +8,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv.classes import PSII_data
 from matplotlib import pyplot as plt
 from plantcv.plantcv import fatal_error
+from plantcv.plantcv._debug import _show_dataarray
 
 
 def plot_image(img, cmap=None, **kwargs):
@@ -49,7 +50,7 @@ def plot_image(img, cmap=None, **kwargs):
         print(img)
 
     elif isinstance(img, DataArray):
-        img.plot(**kwargs)
+        _show_dataarray(img, **kwargs)
 
     elif isinstance(img, PSII_data):
         fatal_error("You need to plot an underlying DataArray.")

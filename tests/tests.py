@@ -1085,7 +1085,6 @@ PIXEL_VALUES = "pixel_inspector_rgb_values.txt"
 
 # leaving photosynthesis data here so it can be used to test plot_image and print_image
 
-
 def ps_mask():
     """Create simple mask for PSII"""
     mask = np.zeros((10, 10), dtype=np.uint8)
@@ -1438,8 +1437,6 @@ def test_plantcv_analyze_color_incorrect_image():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     with pytest.raises(RuntimeError):
         _ = pcv.analyze_color(rgb_img=img_binary, mask=mask, hist_plot_type=None)
-#
-#
 
 
 def test_plantcv_analyze_color_bad_hist_type():
@@ -2805,8 +2802,20 @@ def test_plantcv_plot_image_plotnine():
     assert True
 
 
+@pytest.mark.parametrize("kwarg", ["frame_label", None])
+def test_plantcv_show_dataarray(kwarg):
+    from plantcv.plantcv._debug import _show_dataarray
+    da = psii_cropreporter('darkadapted').squeeze('measurement', drop=True)
+    try:
+        _show_dataarray(da, col=kwarg)
+    except RuntimeError:
+        assert False
+    # Assert that the image was plotted without error
+    assert True
+
+
 def test_plantcv_plot_image_dataarray():
-    da = psii_cropreporter('darkadapted')
+    da = psii_cropreporter('darkadapted').squeeze('measurement', drop=True)
     try:
         pcv.plot_image(da, col='frame_label')
     except RuntimeError:
@@ -2871,10 +2880,10 @@ def test_plantcv_print_image_matplotlib():
     assert os.path.exists(filename) is True
 
 
-def test_plantcv_print_image_xarrayplot():
-    da = psii_cropreporter('darkadapted')
+def test_plantcv_print_image_dataarray():
+    da = psii_cropreporter('darkadapted').squeeze('measurement', drop=True)
     try:
-        pcv.print_image(img=da, col='frame_label', filename='/dev/null')
+        pcv.print_image(img=da, filename='/dev/null')
     except RuntimeError:
         assert False
     # Assert that the image was plotted without error
@@ -5221,9 +5230,9 @@ def test_plantcv_photosynthesis_analyze_npq_fatalerror(mlabels, tmask):
 
 @pytest.mark.parametrize("da",
                          [
-                             # test darkadapted
-                             psii_cropreporter("darkadapted"),
-                             # test lightadapted
+                            # test darkadapted
+                            psii_cropreporter("darkadapted"),
+                            # test lightadapted
                             psii_cropreporter("lightadapted")
                          ]
                          )

@@ -77,18 +77,19 @@ def analyze_npq(ps_da_light, ps_da_dark, mask, bins=256, measurement_labels=None
         _debug(visual=hist_fig,
                filename=os.path.join(params.debug_outdir, str(params.device) + f"_NPQ_{mlabel}_histogram.png"))
 
-    # Plot/print dataarray
-    # plot will default to a hist if >1 measurements so explicitly call pcolormesh
-    da_frames = npq.plot.pcolormesh(col='measurement', col_wrap=int(np.ceil(npq.measurement.size/3)), robust=True)
-    _debug(visual=da_frames,
-           filename=os.path.join(params.debug_outdir, str(params.device) + "_NPQ_dataarray.png"))
+    # drop coords identifying frames if they exist
+    res = [i for i in list(npq.coords) if 'frame' in i]
+    npq = npq.drop_vars(res)  # does not fail if res is []
 
     # Store images
     outputs.images.append(npq)
 
-    # drop coords identifying frames if they exist
-    res = [i for i in list(npq.coords) if 'frame' in i]
-    npq = npq.drop_vars(res)  # does not fail if res is []
+    # Plot/print dataarray
+    _debug(visual=npq,
+           filename=os.path.join(params.debug_outdir, str(params.device) + "_NPQ_dataarray.png"),
+           col='measurement',
+           col_wrap=int(np.ceil(npq.measurement.size / 4)),
+           robust=True)
 
     # this only returns the last histogram..... xarray does not seem to support panels of histograms but does support matplotlib subplots....
     return npq, hist_fig
