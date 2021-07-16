@@ -19,6 +19,8 @@ def _show_dataarray(img, **kwargs):
     contains_xy = all([True for dim in ['x', 'y'] if dim in img.dims])
     col_or_row_given = col is not None or row is not None
     if contains_xy and col_or_row_given:
-        img.plot.pcolormesh(col=col, row=row, **kwargs)
+        fig = img.plot.pcolormesh(col=col, row=row, **kwargs)
     else:
-        img.plot(col=col, row=row, **kwargs)
+        fig = img.plot(col=col, row=row, **kwargs)
+
+    return(fig)
