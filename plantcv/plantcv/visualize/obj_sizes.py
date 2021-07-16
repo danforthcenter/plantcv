@@ -10,7 +10,7 @@ from plantcv.plantcv import color_palette
 from plantcv.plantcv._debug import _debug
 
 
-def sizes(img, mask, num_objects=100):
+def obj_sizes(img, mask, num_objects=100):
     """ Visualize an RGB image in all potential colorspaces
 
     Inputs:

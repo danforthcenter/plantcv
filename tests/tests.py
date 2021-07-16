@@ -6380,7 +6380,7 @@ def test_plantcv_visualize_size():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_visualize_sizes")
     os.mkdir(cache_dir)
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    visualization = pcv.visualize.sizes(img=img, mask=img, num_objects=4)
+    visualization = pcv.visualize.obj_sizes(img=img, mask=img, num_objects=4)
     assert len(np.unique(visualization)) == 4
 
 

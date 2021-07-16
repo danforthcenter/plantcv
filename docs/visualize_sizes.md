@@ -32,7 +32,7 @@ from plantcv import plantcv as pcv
 
 pcv.params.debug='plot'
 
-plotting_img = pcv.visualize.sizes(img=rgb_img, mask=mask, num_objects=27)
+plotting_img = pcv.visualize.obj_sizes(img=rgb_img, mask=mask, num_objects=27)
 
 ```
 
