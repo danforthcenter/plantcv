@@ -7,7 +7,7 @@ from xarray.core.dataarray import DataArray
 from plantcv.plantcv.classes import PSII_data
 from plantcv.plantcv import params
 from plantcv.plantcv import fatal_error
-from plantcv.plantcv._debug import _show_dataarray
+from plantcv.plantcv._show_dataarray import _show_dataarray
 
 
 def print_image(img, filename, **kwargs):

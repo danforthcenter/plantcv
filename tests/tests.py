@@ -2804,7 +2804,7 @@ def test_plantcv_plot_image_plotnine():
 
 @pytest.mark.parametrize("kwarg", ["frame_label", None])
 def test_plantcv_show_dataarray(kwarg):
-    from plantcv.plantcv._debug import _show_dataarray
+    from plantcv.plantcv._show_dataarray import _show_dataarray
     da = psii_cropreporter('darkadapted').squeeze('measurement', drop=True)
     try:
         _show_dataarray(da, col=kwarg)
