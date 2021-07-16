@@ -4,7 +4,6 @@ import os
 import cv2
 import random
 import numpy as np
-# from plantcv.plantcv import find_objects
 from plantcv.plantcv import params
 from plantcv.plantcv import color_palette
 from plantcv.plantcv._debug import _debug
@@ -67,8 +66,6 @@ def obj_sizes(img, mask, num_objects=100):
                     fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
     print(f"There were {len(id_objects) - num_objects} objects not annotated.")
 
-    # Auto-increment device
-    # Reset debug mode
     params.debug = debug
 
     _debug(visual=plotting_img, filename=os.path.join(params.debug_outdir, str(params.device) +'_object_sizes.png'))
