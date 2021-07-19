@@ -11,19 +11,21 @@ from plotnine import ggplot, aes, geom_line, geom_point, labs
 
 def reassign_frame_labels(ps_da, mask):
     """
-    Designed for cropreporter data. Analyze fluorescence frames to find min and max mean fluorescence and assign Fo, Fm or F', Fm'. 
-    Use this if you don't trust the cropreporter metadata frame numbers
+    Analyze fluorescence induction curve and assign Fm or Fmp frame labels.
+
+    Designed for cropreporter data. Analyze fluorescence frames to find max mean fluorescence and assign Fm or Fmp.
+    Use this if you want to assign Fm/Fmp based on observed values rather than CropReporter metadata.
 
     Inputs:
-    ps          = photosynthesis xarray DataArray
+    ps_da       = photosynthesis xarray DataArray
     mask        = mask of plant (binary, single channel)
 
     Returns:
     ps_da       = dataarray with updated frame_label coordinate
-    ind_fig    = ggplot induction curve of fluorescence
+    ind_fig     = ggplot induction curve of fluorescence
     ind_df      = data frame of mean fluorescence in the masked region at each timepoint
 
-    :param ps: xarray.core.dataarray.DataArray
+    :param ps_da: xarray.core.dataarray.DataArray
     :param mask: numpy.ndarray
     :return ps_da: xarray.core.dataarray.DataArray
     :return ind_fig: ggplot figure
@@ -43,28 +45,30 @@ def reassign_frame_labels(ps_da, mask):
         fatal_error(f"Mask needs to be binary and have shape {ps_da.shape[:2]}")
 
     # Prime is empty for Fv/Fm (dark- and light-adapted) and p for Fq'/Fm'
-    prime = ""
-    if ps_da.name.lower() == "lightadapted":
-        prime = "p"
-    # new frame_label array
+    datasets = {
+        "lightadapted": {
+            "prime": "p",
+            "label": "PSL"
+        },
+        "darkadapted": {
+            "prime": "",
+            "label": "PSD"
+        }
+    }
+
+    # Get the number of frame labels
     ind_size = ps_da.frame_label.size
-    idx = np.empty(dtype=object, shape=ind_size)
+    # Create a new frame label array populated with the current labels
+    idx = ps_da.frame_label.values
+    # Reset the frame labels after F0/Fp
+    for i in range(2, ind_size):
+        idx[i] = f"{datasets[ps_da.name.lower()]['label']}{i}"
     # get plant mean for each frame based on mask
     fluor_values = ps_da.where(img_as_bool(mask)[..., None, None]).mean(['x', 'y', 'measurement'])
     # find frame with max mean
     max_ind = np.argmax(fluor_values.data)
     # assign max frame label
-    idx[max_ind] = f"Fm{prime}"
-    # find frame with min mean. ignore 1st frame which is always Fdark/Flight
-    ind_values = fluor_values[1:]
-    min_ind = np.argmin(ind_values.data)
-    # assign min frame label
-    if len(prime) == 0:
-        idx[0] = "Fdark"
-        idx[(min_ind + 1)] = "F0"
-    else:
-        idx[0] = "Flight"
-        idx[(min_ind + 1)] = f"F{prime}"
+    idx[max_ind] = f"Fm{datasets[ps_da.name.lower()]['prime']}"
     # assign new labels back to dataarray
     ps_da = ps_da.assign_coords({'frame_label': ('frame_label', idx)})
 
@@ -82,4 +86,4 @@ def reassign_frame_labels(ps_da, mask):
     _debug(visual=ind_fig,
            filename=os.path.join(params.debug_outdir, str(params.device) + "_fluor_histogram.png"))
 
-    return(ps_da, ind_fig, ind_df)
+    return ps_da, ind_fig, ind_df
