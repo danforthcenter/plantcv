@@ -2802,10 +2802,12 @@ def test_plantcv_plot_image_plotnine():
     assert True
 
 
-@pytest.mark.parametrize("kwarg", ["frame_label", None])
-def test_plantcv_show_dataarray(kwarg):
+@pytest.mark.parametrize(['da', 'kwarg'],
+                         [
+                           [psii_cropreporter('darkadapted').squeeze('measurement', drop=True), 'frame_label']
+                         ])
+def test_plantcv_show_dataarray(da, kwarg):
     from plantcv.plantcv._show_dataarray import _show_dataarray
-    da = psii_cropreporter('darkadapted').squeeze('measurement', drop=True)
     try:
         _show_dataarray(da, col=kwarg)
     except RuntimeError:
@@ -2814,10 +2816,39 @@ def test_plantcv_show_dataarray(kwarg):
     assert True
 
 
-def test_plantcv_plot_image_dataarray():
-    da = psii_cropreporter('darkadapted').squeeze('measurement', drop=True)
+@pytest.mark.parametrize(['da', 'kwarg'],
+                         [
+                            # missing col or row as kwarg
+                            [psii_cropreporter('darkadapted').squeeze('measurement', drop=True), None],
+                            # missing x or y dim
+                            [psii_cropreporter('darkadapted').squeeze('measurement', drop=True)[0, :, :], 'frame_label']
+                         ]
+                         )
+def test_plantcv_show_dataarray_fatal_error(da, kwarg):
+    from plantcv.plantcv._show_dataarray import _show_dataarray
+    with pytest.raises(RuntimeError):
+        _show_dataarray(da, col=kwarg)
+
+@pytest.mark.parametrize(['da'],
+                         [
+                            #too many dims
+                            [psii_cropreporter('darkadapted')],
+                            # not enough dims
+                            [psii_cropreporter('darkadapted')[:, :, 0, 0]]
+                         ])
+def test_plantcv_show_dataarray_value_error(da):
+    from plantcv.plantcv._show_dataarray import _show_dataarray
+    # pcolormesh() fails with ValueError if ndim != 2 in addition to row and/or col
+    with pytest.raises(ValueError):
+        _show_dataarray(img=da, col_wrap=4, row='frame_label')
+
+
+@pytest.mark.parametrize(['da', 'kwarg'],
+                         [[psii_cropreporter('darkadapted').squeeze('measurement', drop=True), 'frame_label']]
+                         )
+def test_plantcv_plot_image_dataarray(da, kwarg):
     try:
-        pcv.plot_image(da, col='frame_label')
+        pcv.plot_image(da, col=kwarg)
     except RuntimeError:
         assert False
     # Assert that the image was plotted without error
@@ -2883,18 +2914,11 @@ def test_plantcv_print_image_matplotlib():
 def test_plantcv_print_image_dataarray():
     da = psii_cropreporter('darkadapted').squeeze('measurement', drop=True)
     try:
-        #this fails without col or row as an arg because xarray will create a matplotlib histogram that comes back as a tuple and then print_image will try to use self.fig.savefig which doesn't exist for a tuple
-        pcv.print_image(img=da, col='frame_label', filename='/dev/null') 
+        pcv.print_image(img=da, col='frame_label', filename='/dev/null')
     except RuntimeError:
         assert False
     # Assert that the image was plotted without error
     assert True
-
-
-# def test_plantcv_print_image_xarrayhist():
-#     da = psii_cropreporter('darkadapted')
-#     with pytest.raises(RuntimeError):
-#         pcv.print_image(img=da.plot(), filename='/dev/null')
 
 
 def test_plantcv_print_image_psiidata():

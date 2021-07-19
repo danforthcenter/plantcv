@@ -38,18 +38,16 @@ def print_image(img, filename, **kwargs):
         img.save(filename, verbose=False)
 
     elif isinstance(img, DataArray):
-        _show_dataarray(img, **kwargs).fig.savefig(filename, dpi=params.dpi)
-
-    elif isinstance(img, tuple) and len(img) == 3:
-        fatal_error('Looks like you are trying to save a histogram. If so, you have 2 options: 1. Use '
-                    'pcv.visualize.histogram() on each numpy.ndarray 2. Create a matplotlib figure by running '
-                    'myfig=plt.gcf() in the same execution as generating the histogram and then use pcv.print_image('
-                    'myplot, filename=...). ')
+        fig_handle = _show_dataarray(img, **kwargs)
+        # fig_handle comes back as a tuple if xarray makes a histogram
+        # fig_handle comes back as a list len 1 containing matplotlib.lines.Line2D if xarray makes a line plot
+        # will this ever happen? I think _show_dataarray and xarray will fail first
+        fig_handle.fig.savefig(filename, dpi=params.dpi)
 
     elif isinstance(img, PSII_data):
         fatal_error("You need to provide an underlying DataArray.")
 
     else:
         fatal_error(f"Error writing file {filename}: input img is {str(type(img))}, not a numpy.ndarray, "
-                    "matplotlib.figure, plotnine.ggplot, or xarray.plot.facetgrid.FacetGrid and cannot get "
+                    "matplotlib.figure, plotnine.ggplot, or xarray.core.dataarray.DataArray and cannot get "
                     "saved out with print_image.")
