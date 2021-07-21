@@ -46,7 +46,7 @@ def analyze_npq(ps_da_light, ps_da_dark, mask, bins=256, measurement_labels=None
         fatal_error('measurement_labels must be the same length as the number of measurements in `ps_da_light`')
 
     fm = ps_da_dark.sel(measurement='t0', frame_label='Fm').where(mask > 0, other=0)
-    npq = ps_da_light.sel(frame_label='Fmp').groupby('measurement', squeeze=False).map(_calc_npq, Fm=fm)
+    npq = ps_da_light.sel(frame_label='Fmp').groupby('measurement', squeeze=False).map(_calc_npq, fm=fm)
 
     # compute observations to store in Outputs
     npq_median = npq.where(npq > 0).groupby('measurement').median(['x', 'y']).values
