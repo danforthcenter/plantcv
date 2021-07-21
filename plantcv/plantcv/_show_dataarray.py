@@ -30,10 +30,11 @@ def _show_dataarray(img, **kwargs):
                     'For other types of plots please use xarray plotting methods and matplotlib directly.')
 
     try:
-        # need to force pcolormesh() for case when dim in col or row has length 1  https://github.com/pydata/xarray/issues/620
+        # need to force pcolormesh() for case when dim in col or row has length 1
+        # https://github.com/pydata/xarray/issues/620
         fig_handle = img.plot.pcolormesh(col=col, row=row, **kwargs)
     except ValueError as err:
         raise ValueError(f'You are trying to plot shape {img.shape} but you should have exactly 2 dimensions in '
                          'addition those specified by `col` and `row`.') from err
 
-    return(fig_handle)
+    return fig_handle
