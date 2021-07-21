@@ -13,18 +13,18 @@ from plantcv.plantcv import outputs
 
 def analyze_npq(ps_da_light, ps_da_dark, mask, bins=256, measurement_labels=None, label="default"):
     """
-    Calculate and analyze PSII efficiency estimates from fluorescence image data.
+    Calculate and analyze non-photochemical quenching estimates from fluorescence image data.
 
     Inputs:
-    ps_da_light                 = photosynthesis xarray DataArray for which to compute npq
-    ps_da_dark                  = photosynthesis xarray DataArray that contains frame_label `Fm`
-    mask                        = mask of plant (binary, single channel)
-    bins                        = number of bins for the histogram (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
-    measurement_labels          = labels for each measurement in `ps_da_light`, modifies the variable name of observations recorded
-    label                       = optional label parameter, modifies the entity name of observations recorded
+    ps_da_light        = photosynthesis xarray DataArray for which to compute npq
+    ps_da_dark         = photosynthesis xarray DataArray that contains frame_label `Fm`
+    mask               = mask of plant (binary, single channel)
+    bins               = number of bins for the histogram (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
+    measurement_labels = labels for each measurement in ps_da_light, modifies the variable name of observations recorded
+    label              = optional label parameter, modifies the entity name of observations recorded
 
     Returns:
-    npq   = DataArray of npq values
+    npq       = DataArray of npq values
     hist_fig  = Histogram of npq estimate
 
     :param ps_da_light: xarray.core.dataarray.DataArray
@@ -32,10 +32,10 @@ def analyze_npq(ps_da_light, ps_da_dark, mask, bins=256, measurement_labels=None
     :param mask: numpy.ndarray
     :param bins: int
     :param measurement_labels: list
+    :param label: str
     :return npq: xarray.core.dataarray.DataArray
     :return hist_fig: plotnine.ggplot.ggplot
     """
-
     if mask.shape != ps_da_light.shape[:2] or mask.shape != ps_da_dark.shape[:2]:
         fatal_error(f"Mask needs to have shape {ps_da_dark.shape[:2]}")
 
@@ -45,8 +45,8 @@ def analyze_npq(ps_da_light, ps_da_dark, mask, bins=256, measurement_labels=None
     if (measurement_labels is not None) and (len(measurement_labels) != ps_da_light.coords['measurement'].shape[0]):
         fatal_error('measurement_labels must be the same length as the number of measurements in `ps_da_light`')
 
-    Fm = ps_da_dark.sel(measurement='t0', frame_label='Fm').where(mask > 0, other=0)
-    npq = ps_da_light.sel(frame_label='Fmp').groupby('measurement', squeeze=False).map(_calc_npq, Fm=Fm)
+    fm = ps_da_dark.sel(measurement='t0', frame_label='Fm').where(mask > 0, other=0)
+    npq = ps_da_light.sel(frame_label='Fmp').groupby('measurement', squeeze=False).map(_calc_npq, Fm=fm)
 
     # compute observations to store in Outputs
     npq_median = npq.where(npq > 0).groupby('measurement').median(['x', 'y']).values
@@ -91,20 +91,21 @@ def analyze_npq(ps_da_light, ps_da_dark, mask, bins=256, measurement_labels=None
            col_wrap=int(np.ceil(npq.measurement.size / 4)),
            robust=True)
 
-    # this only returns the last histogram..... xarray does not seem to support panels of histograms but does support matplotlib subplots....
+    # this only returns the last histogram..... xarray does not seem to support panels of histograms
+    # but does support matplotlib subplots....
     return npq, hist_fig
 
 
-def _calc_npq(Fmp, Fm):
+def _calc_npq(fmp, fm):
     """NPQ = Fm/Fmp - 1"""
 
-    out_flt = np.ones(shape=Fm.shape) * np.nan
-    Fmp = np.squeeze(Fmp)
-    div = np.divide(Fm, Fmp, out=out_flt,
-                    where=np.logical_and(Fm > 0, np.logical_and(Fmp > 0, Fm > Fmp)))
+    out_flt = np.ones(shape=fm.shape) * np.nan
+    fmp = np.squeeze(fmp)
+    div = np.divide(fm, fmp, out=out_flt,
+                    where=np.logical_and(fm > 0, np.logical_and(fmp > 0, fm > fmp)))
     sub = np.subtract(div, 1, out=out_flt.copy(),
                       where=div >= 1)
-    return(sub)
+    return sub
 
 
 def _create_histogram(npq_img, mlabel, bins):
