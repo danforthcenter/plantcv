@@ -547,23 +547,28 @@ pages for more details on the input and output variable types.
 * post v3.10: analysis_images = **plantcv.photosynthesis.analyze_fvfm**(*fdark, fmin, fmax, mask, bins=256*)
 * post v3.11: analysis_images = **plantcv.photosynthesis.analyze_fvfm**(*fdark, fmin, fmax, mask, bins=256, label="default"*)
 * post v4.0: Deprecated, see:
-  * ind_fig, fvfm_hist_fig, analysis_images = **plantcv.photosynthesis.analyze_yii**(*ps, mask, bins=256, measurement="both", label="default"*)
+  * yii, hist_fig = **plantcv.photosynthesis.analyze_yii**(*ps_da, mask, bins=256, measurement_labels=None, label="default"*)
 
 #### plantcv.photosynthesis.analyze_yii
 
 * pre v4.0: NA
-* post v4.0: ind_fig, fvfm_hist_fig, analysis_images = **plantcv.photosynthesis.analyze_fvfm**(*ps, mask, measurement, bins=256, label="default"*)
+* post v4.0: yii, hist_fig = **plantcv.photosynthesis.analyze_yii**(*ps_da, mask, bins=256, measurement_labels=None, label="default"*)
 
 #### plantcv.photosynthesis.analyze_npq
 
 * pre v4.0: NA
-* post v4.0: npq_hist_fig, npq = **plantcv.photosynthesis.analyze_npq**(*ps, mask, bins=256, label="default"*)
+* post v4.0: npq, hist_fig = **plantcv.photosynthesis.analyze_npq**(*ps_da_light, ps_da_dark, mask, bins=256, measurement_labels=None, label="default"*)
 
 #### plantcv.photosynthesis.read_cropreporter
 
 * pre v3.10: NA
 * post v3.10: fdark, fmin, fmax = **plantcv.photosynthesis.read_cropreporter**(*filename*)
 * post v4.0: ps = **plantcv.photosynthesis.read_cropreporter**(*filename*)
+
+#### plantcv.photosynthesis.reassign_frame_labels
+
+* pre v4.0: NA
+* post v4.0: ps_da, ind_fig, ind_df = **plantcv.photosynthesis.reassign_frame_labels(*ps_da, mask*)**
 
 #### plantcv.plot_hist
 
