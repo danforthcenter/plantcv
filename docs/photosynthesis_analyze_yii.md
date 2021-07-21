@@ -26,7 +26,7 @@ Extract estimates of the efficiency (YII) of Photosystem II (PSII). The photosyn
 
 ![Screenshot](img/documentation_images/fluor_fvfm/fvfm_images.jpg)
 
-From top-left to bottom-right: Dark-adapted (Fdark, F0, Fm) and Light-adapted (Flight', F', and Fm')
+From top-left to bottom-right: Dark-adapted (F-dark, F0, Fm) and Light-adapted (F-light', F', and Fm')
 
 **Analyze Fv/Fm**
 
@@ -51,7 +51,7 @@ label="fluor")
 fvfm_median = pcv.outputs.observations['fluor']['yii_median_Fv/Fm']['value']
 
 # Pseudocolor the Fv/Fm image
-fvfm_cmap= pcv.visualize.pseudocolor(gray_img=fvfm, mask=kept_mask, min_value=0, max_value=1, title="Fv/Fm")
+fvfm_cmap = pcv.visualize.pseudocolor(gray_img=fvfm, mask=kept_mask, min_value=0, max_value=1, title="Fv/Fm")
 
 # or you can use xarray builtin plot methods (output not shown):
 fvfm.plot()
@@ -83,7 +83,7 @@ label="fluor")
 # Access data stored out from fluor_fvfm
 fqfm_median = pcv.outputs.observations['fluor']["yii_median_Fq'/Fm'"]['value']
 
-fqfm_cmap= pcv.visualize.pseudocolor(gray_img=fqfm, mask=kept_mask, min_value=0, max_value=1, title="Fq'/Fm'")
+fqfm_cmap = pcv.visualize.pseudocolor(gray_img=fqfm, mask=kept_mask, min_value=0, max_value=1, title="Fq'/Fm'")
 
 # or xarray plot method (output not shown)
 fqfm.plot(row = 'measurement', col_wrap = 3)
