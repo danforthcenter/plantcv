@@ -40,7 +40,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 #read in image
-ps = pcv.photosynthesis.read_cropreporter(filename="PSII_HDR_20200826_22_rep6.INF")
+ps = pcv.photosynthesis.read_cropreporter(filename="PSII_HDR_020321_WT_TOP_1.INF")
 
 # you can check which variables were imported at the prompt with:
 ps
@@ -49,5 +49,21 @@ ps
 ps.darkadapted.plot(col='frame_label', col_wrap=4)
 
 ```
+
+**Dark-adapted fluorescence measurements**
+
+![Screenshot](img/documentation_images/photosynthesis_read_cropreporter/0_PSD-frames.png)
+
+**Light-adapted fluorescence measurements**
+
+![Screenshot](img/documentation_images/photosynthesis_read_cropreporter/1_PSL-frames.png)
+
+**Chlorophyll fluorescence measurements**
+
+![Screenshot](img/documentation_images/photosynthesis_read_cropreporter/2_CHL-frames.png)
+
+**Spectral reflectance measurements**
+
+![Screenshot](img/documentation_images/photosynthesis_read_cropreporter/3_spectral-RGB.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/photosynthesis/read_cropreporter.py)
