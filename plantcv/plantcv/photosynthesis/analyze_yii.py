@@ -16,24 +16,24 @@ def analyze_yii(ps_da, mask, bins=256, measurement_labels=None, label="default")
     Calculate and analyze PSII efficiency estimates from fluorescence image data.
 
     Inputs:
-    ps_da                     = photosynthesis xarray DataArray
-    mask                      = mask of plant (binary, single channel)
-    bins                      = number of bins for the histogram (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
-    measurement_labels        = labels for each measurement, modifies the variable name of observations recorded
-    label        = optional label parameter, modifies the variable name of observations recorded
+    ps_da               = photosynthesis xarray DataArray
+    mask                = mask of plant (binary, single channel)
+    bins                = number of bins for the histogram (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
+    measurement_labels  = labels for each measurement, modifies the variable name of observations recorded
+    label               = optional label parameter, modifies the variable name of observations recorded
 
     Returns:
-    yii   = DataArray of efficiency estimate values
+    yii       = DataArray of efficiency estimate values
     hist_fig  = Histogram of efficiency estimate
 
     :param ps_da: xarray.core.dataarray.DataArray
     :param mask: numpy.ndarray
     :param bins: int
     :param measurement_labels: list
+    :param label: str
     :return yii: xarray.core.dataarray.DataArray
     :return hist_fig: plotnine.ggplot.ggplot
     """
-
     if mask.shape != ps_da.shape[:2]:
         fatal_error(f"Mask needs to have shape {ps_da.shape[:2]}")
 
@@ -51,8 +51,8 @@ def analyze_yii(ps_da, mask, bins=256, measurement_labels=None, label="default")
         yii = (yii0.sel(frame_label='Fm') - yii0.sel(frame_label='F0')) / yii0.sel(frame_label='Fm')
 
     elif var == 'lightadapted':
-        def _calc_yii(ps_da):
-            return (ps_da.sel(frame_label='Fmp') - ps_da.sel(frame_label='Fp')) / ps_da.sel(frame_label='Fmp')
+        def _calc_yii(da):
+            return (da.sel(frame_label='Fmp') - da.sel(frame_label='Fp')) / da.sel(frame_label='Fmp')
         yii0 = ps_da.astype('float').where(mask > 0, other=np.nan)
         yii = yii0.groupby('measurement', squeeze=False).map(_calc_yii)
 
@@ -101,7 +101,8 @@ def analyze_yii(ps_da, mask, bins=256, measurement_labels=None, label="default")
            col='measurement',
            col_wrap=int(np.ceil(yii.measurement.size / 4)))
 
-    # this only returns the last histogram..... xarray does not seem to support panels of histograms but does support matplotlib subplots kwargs and axes
+    # this only returns the last histogram..... xarray does not seem to support panels of histograms
+    # but does support matplotlib subplots kwargs and axes
     return yii, hist_fig
 
 
