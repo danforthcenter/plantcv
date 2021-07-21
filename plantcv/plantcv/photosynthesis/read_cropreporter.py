@@ -144,9 +144,9 @@ def _process_chl_data(ps, metadata):
     """
     bin_filepath = _dat_filepath(dataset="CHL", datapath=ps.datapath, filename=ps.filename)
     if os.path.exists(bin_filepath):
-        img_cube, frame_labels, frame_nums = _read_dat_file(dataset="CHL", filename=bin_filepath,
-                                                            height=int(metadata["ImageRows"]),
-                                                            width=int(metadata["ImageCols"]))
+        img_cube, frame_labels, _ = _read_dat_file(dataset="CHL", filename=bin_filepath,
+                                                   height=int(metadata["ImageRows"]),
+                                                   width=int(metadata["ImageCols"]))
         frame_labels = ["Fdark", "Chl"]
         chl = xr.DataArray(
             data=img_cube,
@@ -217,7 +217,7 @@ def _process_spc_data(ps, metadata):
         array_data = (array_data / np.iinfo(array_data.dtype).max).astype(np.float32)
 
         # Create a Spectral_data object
-        rows, columns, bands = array_data.shape
+        rows, columns = array_data.shape[0:2]
         multispec = Spectral_data(array_data=array_data,
                                   max_wavelength=float(max(wavelengths)),
                                   min_wavelength=float(min(wavelengths)),
