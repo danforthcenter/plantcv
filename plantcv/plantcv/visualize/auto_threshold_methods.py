@@ -5,8 +5,6 @@ import cv2
 import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv.transform import resize_factor
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv.threshold import mean
@@ -82,7 +80,7 @@ def auto_threshold_methods(gray_img, grid_img=True, object_type="light"):
         plotting_img = resize_factor(plotting_img, factors=(0.5, 0.5))
         # Reset debug mode
         params.debug = debug
-        _debug(visual=plotting_img, 
+        _debug(visual=plotting_img,
                filename=os.path.join(params.debug_outdir, str(params.device) + "_vis_all_thresholds.png"))
 
     return labeled_imgs
