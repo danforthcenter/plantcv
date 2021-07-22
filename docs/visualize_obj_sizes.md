@@ -2,7 +2,7 @@
 
 This function plots separate objects as different colors and annotates the largest objects with their respective sizes. 
 
-**plantcv.visualize.sizes**(*img, mask, num_objects=100*)
+**plantcv.visualize.obj_sizes**(*img, mask, num_objects=100*)
 
 **returns** plotting_img 
 
