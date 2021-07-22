@@ -16,7 +16,7 @@ This function take a image with multiple contours and clusters them based on use
 - **Context:**
     - Cluster contours based on number of approximate rows and columns
 - **Example use:**
-    - [Use In Multi-Plant Tutorial](multi-plant_tutorial.md)
+    - [Use In Multi-Plant Tutorial](tutorials/multi-plant_tutorial.md)
     
 
 **ROI Objects Output**

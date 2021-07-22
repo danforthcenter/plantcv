@@ -59,7 +59,7 @@ colmap = pcv.visualize.pseudocolor(gray_img=ndvi.array_data, mask=mask, cmap="Rd
 ```
 **NDVI index image calculated based on the fused image**
 
-![NDVI image](img/documentation_images/image_fusion/ndvi.png)
+![NDVI image](img/documentation_images/image_fusion/NDVI.png)
 
 **NDVI index image calculated based on the fused image**
 
