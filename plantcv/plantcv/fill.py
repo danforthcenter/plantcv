@@ -2,10 +2,9 @@
 
 import numpy as np
 import os
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
+from plantcv.plantcv._debug import _debug
 from skimage.morphology import remove_small_objects
 
 
@@ -39,9 +38,7 @@ def fill(bin_img, size):
     # Cast boolean image to binary and make a copy of the binary image for returning
     filtered_img = np.copy(bool_img.astype(np.uint8) * 255)
 
-    if params.debug == 'print':
-        print_image(filtered_img, os.path.join(params.debug_outdir, str(params.device) + '_fill' + str(size) + '.png'))
-    elif params.debug == 'plot':
-        plot_image(filtered_img, cmap='gray')
+    _debug(visual=filtered_img,
+           filename=os.path.join(params.debug_outdir, str(params.device) + "_fill" + str(size) + '.png'))
 
     return filtered_img

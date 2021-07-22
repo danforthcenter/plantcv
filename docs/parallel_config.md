@@ -36,65 +36,85 @@ Validate parameters/structure of configuration data.
 
 ### Attributes
 
-**input_dir**: (str, required): path/name of input images directory (validates that it exists).
+* **input_dir**: (str, required): path/name of input images directory (validates that it exists).
 
-**json**: (str, required): path/name of output JSON data file (appends new data if it already exists).
 
-**filename_metadata**: (list, required): list of metadata terms used to construct filenames. for example: 
+* **json**: (str, required): path/name of output JSON data file (appends new data if it already exists).
+
+
+* **filename_metadata**: (list, required): list of metadata terms used to construct filenames. for example: 
 `["plantbarcode","timestamp"]`. Supported metadata terms are listed [here](pipeline_parallel.md).
 
-**workflow**: (str, required): path/name of user-defined PlantCV workflow Python script (validates that it exists).
 
-**include_all_subdirs**: (bool, default = `True`): If `False`, only images directly in `input_dir` (no subdirectories) will be analyzed.
-
-**img_outdir**: (str, default = "."): path/name of output directory where images will be saved.
-
-**tmp_dir**: (str, default = `None`): path/name of parent folder for the temporary directory, uses system default .
-temporary directory when `None`.
-
-**start_date**: (str, default = `None`): start date used to filter images. Images will be analyzed that are newer than 
-the start date. In the case of `None` all images prior to `end_date` are processed. String format should match 
-`timestampformat`.
-
-**end_date**: (str, default = `None`): end date used to filter images. Images will be analyzed that are older than the 
-end date. In the case of `None` all images after `start_date` are processed. String format should match 
-`timestampformat`.
-
-**imgformat**: (str, default = "png"): image file format/extension.
-
-**delimiter**: (str, default = "_"): image filename metadata term delimiter character. Alternatively, a regular 
-expression for parsing filename metadata.
-
-**metadata_filters**: (dict, default = `None`): a dictionary of metadata terms (keys) and values, images will be 
-analyzed that have the associated term and value.
+* **workflow**: (str, required): path/name of user-defined PlantCV workflow Python script (validates that it exists).
 
 
-**timestampformat**: (str, default = '%Y-%m-%d %H:%M:%S.%f'): a date format code compatible with strptime C library. 
-See [strptime docs](https://docs.python.org/3.7/library/datetime.html#strftime-and-strptime-behavior) for supported 
-codes.
+* **include_all_subdirs**: (bool, default = `True`): If `False`, only images directly in `input_dir` (no 
+  subdirectories) will be analyzed.
 
-**writeimg**: (bool, default = `False`): save analysis images to `img_outdir` if `True`.
 
-**other_args**: (list, default = `[]`): list of other arguments required by the workflow (e.g. 
-["--input1", "value1", "--input2", "value2"]).
+* **img_outdir**: (str, default = "."): path/name of output directory where images will be saved.
 
-**coprocess** (str, default = `None`): coprocess the specified imgtype with the imgtype specified in metadata_filters 
-(e.g. coprocess NIR images with VIS).
 
-**cleanup**: (bool, default =`True`): remove temporary job directory if `True`.
+* **tmp_dir**: (str, default = `None`): path/name of parent folder for the temporary directory, uses system default
+  temporary directory when `None`.
 
-**append**: (bool, default = `True`): if `True` will append results to an existing json file. If `False`, will delete 
-previous results stored in the specified JSON file.
 
-**cluster** (str, default = "LocalCluster"): LocalCluster will run PlantCV workflows on a single machine. All valid 
-options currently are: "LocalCluster", "HTCondorCluster", "LSFCluster", "MoabCluster", "OARCluster", "PBSCluster", 
-"SGECluster", and "SLURMCluster". See [Dask-Jobqueue](https://jobqueue.dask.org/) for more details.
+* **start_date**: (str, default = `None`): start date used to filter images. Images will be analyzed that are newer 
+  than the start date. In the case of `None` all images prior to `end_date` are processed. String format should match
+  `timestampformat`.
 
-**cluster_config**: (dict, default: see below ): a dictionary of parameters and values used to configure the cluster 
-for parallel processing locally or remotely.
 
-**metadata_terms**: (dict, default: as-is): a dictionary of metadata terms used to assign values in image filenames 
-(or metadata files) to metadata terms (should not be modified).
+* **end_date**: (str, default = `None`): end date used to filter images. Images will be analyzed that are older than 
+  the end date. In the case of `None` all images after `start_date` are processed. String format should match 
+  `timestampformat`.
+
+
+* **imgformat**: (str, default = "png"): image file format/extension.
+
+
+* **delimiter**: (str, default = "_"): image filename metadata term delimiter character. Alternatively, a regular 
+  expression for parsing filename metadata.
+
+
+* **metadata_filters**: (dict, default = `None`): a dictionary of metadata terms (keys) and values, images will be 
+  analyzed that have the associated term and value. A list of accepted values can be included. (e.g. 
+  `{"imgtype": "VIS", "frame": ["0", "90"]"}`).
+
+
+* **timestampformat**: (str, default = '%Y-%m-%d %H:%M:%S.%f'): a date format code compatible with strptime C library. 
+  See [strptime docs](https://docs.python.org/3.7/library/datetime.html#strftime-and-strptime-behavior) for supported 
+  codes.
+
+
+* **writeimg**: (bool, default = `False`): save analysis images to `img_outdir` if `True`.
+
+
+* **other_args**: (list, default = `[]`): list of other arguments required by the workflow (e.g.
+  `["--input1", "value1", "--input2", "value2"]`).
+
+
+* **coprocess** (str, default = `None`): coprocess the specified imgtype with the imgtype specified in metadata_filters
+  (e.g. coprocess NIR images with VIS).
+
+* **cleanup**: (bool, default =`True`): remove temporary job directory if `True`.
+
+
+* **append**: (bool, default = `True`): if `True` will append results to an existing json file. If `False`, will delete
+  previous results stored in the specified JSON file.
+
+
+* **cluster** (str, default = "LocalCluster"): LocalCluster will run PlantCV workflows on a single machine. All valid
+  options currently are: "LocalCluster", "HTCondorCluster", "LSFCluster", "MoabCluster", "OARCluster", "PBSCluster",
+  "SGECluster", and "SLURMCluster". See [Dask-Jobqueue](https://jobqueue.dask.org/) for more details.
+
+
+* **cluster_config**: (dict, default: see below ): a dictionary of parameters and values used to configure the cluster
+  for parallel processing locally or remotely.
+
+
+* **metadata_terms**: (dict, default: as-is): a dictionary of metadata terms used to assign values in image filenames
+  (or metadata files) to metadata terms (should not be modified).
 
 
 ### Cluster configuration
