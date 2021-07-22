@@ -1187,22 +1187,10 @@ def test_plantcv_acute():
 
 
 def test_plantcv_acute_vertex():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_acute_vertex")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_VIS_SMALL))
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR), encoding="latin1")
     obj_contour = contours_npz['arr_0']
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img, label="prefix")
-    _ = pcv.acute_vertex(obj=[], win=5, thresh=15, sep=5, img=img)
-    _ = pcv.acute_vertex(obj=[], win=.01, thresh=.01, sep=1, img=img)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img)
     # Test with debug = None
     pcv.params.debug = None
     acute = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img)

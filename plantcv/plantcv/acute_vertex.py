@@ -4,10 +4,9 @@ import os
 import cv2
 import numpy as np
 import math
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
+from plantcv.plantcv._debug import _debug
 
 
 def acute_vertex(img, obj, win, thresh, sep, label="default"):
@@ -50,15 +49,17 @@ def acute_vertex(img, obj, win, thresh, sep, label="default"):
         post_x, post_y = obj[i + win].ravel()
 
         # Angle in radians derived from Law of Cosines, converted to degrees
-        P12 = np.sqrt((x-pre_x)*(x-pre_x)+(y-pre_y)*(y-pre_y))
-        P13 = np.sqrt((x-post_x)*(x-post_x)+(y-post_y)*(y-post_y))
-        P23 = np.sqrt((pre_x-post_x)*(pre_x-post_x)+(pre_y-post_y)*(pre_y-post_y))
-        if (2*P12*P13) > 0.001:
-            dot = (P12*P12 + P13*P13 - P23*P23)/(2*P12*P13)
-        elif (2*P12*P13) < 0.001:
-            dot = (P12*P12 + P13*P13 - P23*P23)/0.001
+        P12 = np.sqrt((x - pre_x) * (x - pre_x) + (y - pre_y) * (y - pre_y))
+        P13 = np.sqrt((x - post_x) * (x - post_x) + (y - post_y) *
+                      (y - post_y))
+        P23 = np.sqrt((pre_x - post_x) * (pre_x - post_x) + (pre_y - post_y) *
+                      (pre_y - post_y))
+        if (2 * P12 * P13) > 0.001:
+            dot = (P12 * P12 + P13 * P13 - P23 * P23) / (2 * P12 * P13)
+        elif (2 * P12 * P13) < 0.001:
+            dot = (P12 * P12 + P13 * P13 - P23 * P23) / 0.001
 
-        if dot < -1:     # If float exceeds -1 prevent arcos error and force to equal -1
+        if dot < -1:  # If float exceeds -1 prevent arcos error and force to equal -1
             dot = -1
         ang = math.degrees(math.acos(dot))
         chain.append(ang)
@@ -73,11 +74,11 @@ def acute_vertex(img, obj, win, thresh, sep, label="default"):
     # Sep is the number of points to evaluate the number of vertices
     out = []
     tester = []
-    for i in range(len(index)-1):
+    for i in range(len(index) - 1):
         # print str(index[i])
-        if index[i+1] - index[i] < sep:
+        if index[i + 1] - index[i] < sep:
             tester.append(index[i])
-        if index[i+1] - index[i] >= sep:
+        if index[i + 1] - index[i] >= sep:
             tester.append(index[i])
             # print(tester)
             angles = ([chain[d] for d in tester])
@@ -99,14 +100,18 @@ def acute_vertex(img, obj, win, thresh, sep, label="default"):
         x, y = i.ravel()
         cv2.circle(img2, (x, y), params.line_thickness, (255, 0, 255), -1)
 
-    if params.debug == 'print':
-        print_image(img2, os.path.join(params.debug_outdir, str(params.device) + '_acute_vertices.png'))
-    elif params.debug == 'plot':
-        plot_image(img2)
+    _debug(visual=img2,
+           filename=os.path.join(params.debug_outdir,
+                                 str(params.device) + '_acute_vertices.png'))
 
     # Store into global measurements
-    outputs.add_observation(sample=label, variable='tip_coordinates', trait='tip coordinates',
-                            method='plantcv.plantcv.acute_vertex', scale='none', datatype=list,
-                            value=acute_points, label='none')
+    outputs.add_observation(sample=label,
+                            variable='tip_coordinates',
+                            trait='tip coordinates',
+                            method='plantcv.plantcv.acute_vertex',
+                            scale='none',
+                            datatype=list,
+                            value=acute_points,
+                            label='none')
 
     return acute_points, img2
