@@ -1591,24 +1591,14 @@ def test_plantcv_apply_mask_bad_input():
 
 
 def test_plantcv_auto_crop():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_auto_crop")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     # Read in test data
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI), -1)
     contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_OBJECT), encoding="latin1")
     roi_contours = [contours[arr_n] for arr_n in contours]
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.auto_crop(img=img1, obj=roi_contours[1], padding_x=(20, 10), padding_y=(20, 10), color='black')
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.auto_crop(img=img1, obj=roi_contours[1], color='image')
-    _ = pcv.auto_crop(img=img1, obj=roi_contours[1], padding_x=2000, padding_y=2000, color='image')
     # Test with debug = None
     pcv.params.debug = None
-    cropped = pcv.auto_crop(img=img1, obj=roi_contours[1], padding_x=20, padding_y=20, color='black')
+    _ = pcv.auto_crop(img=img1, obj=roi_contours[1], padding_x=(20, 10), padding_y=(20, 10), color='black')
+    cropped = pcv.auto_crop(img=img1, obj=roi_contours[1], padding_x=20, padding_y=20, color='image')
     x, y, z = np.shape(img1)
     x1, y1, z1 = np.shape(cropped)
     assert x > x1
