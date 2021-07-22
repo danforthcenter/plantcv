@@ -19,7 +19,7 @@ def obj_sizes(img, mask, num_objects=100):
     num_objects  = Optional parameter to limit the number of objects that will get annotated.
 
     Returns:
-    plotting_img = Plotting image containing the original image and L,A,B,H,S, and V colorspaces
+    plotting_img = Plotting image with objects labeled by area
 
     :param img: numpy.ndarray
     :param mask: numpy.ndarray
