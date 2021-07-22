@@ -39,7 +39,7 @@ def obj_sizes(img, mask, num_objects=100):
     id_objects, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
     sorted_objects = sorted(id_objects, key=lambda x: cv2.contourArea(x))
     # Function sorts smallest to largest so keep the last X objects listed
-    sorted_objects = sorted_objects[len(sorted_objects) - num_objects : len(sorted_objects)]
+    sorted_objects = sorted_objects[len(sorted_objects) - num_objects: len(sorted_objects)]
 
     rand_color = color_palette(num=num_objects, saved=False)
     random.shuffle(rand_color)
@@ -68,6 +68,6 @@ def obj_sizes(img, mask, num_objects=100):
 
     params.debug = debug
 
-    _debug(visual=plotting_img, filename=os.path.join(params.debug_outdir, str(params.device) +'_object_sizes.png'))
+    _debug(visual=plotting_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_object_sizes.png'))
 
     return plotting_img
