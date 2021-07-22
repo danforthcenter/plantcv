@@ -14,7 +14,7 @@ conditions set in kernel are true.
 - **Context:**
     - Used to perform morphological dilation filtering. Helps expand objects at the edges, particularly after erosion.
 - **Example use:**
-    - [Use In NIR Tutorial](nir_tutorial.md)
+    - [Use In NIR Tutorial](tutorials/nir_tutorial.md)
     
 **Input grayscale image**
 

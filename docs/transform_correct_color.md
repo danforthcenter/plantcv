@@ -18,7 +18,7 @@ It also outputs, corrected_img, but storage (print or plot) is determined by deb
     - output_directory - a file path to which the target_matrix, source_matrix, and transformation_matrix will be save as .npz files
 
 
-To see an example of how to create a grayscale mask of color chips see [here](transform_color_correction_tutorial.md#creating-masks).
+To see an example of how to create a grayscale mask of color chips see [here](tutorials/transform_color_correction_tutorial.md#creating-masks).
 
 
 **Reference Images**

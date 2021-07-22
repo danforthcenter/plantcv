@@ -14,7 +14,7 @@ This is a filtering method used to identify and highlight fine edges based on th
 - **Context:**
     - Used to define edges around objects
 - **Example use:**
-    - [Use In NIR Tutorial](nir_tutorial.md)
+    - [Use In NIR Tutorial](tutorials/nir_tutorial.md)
 
 **Input grayscale image**
 

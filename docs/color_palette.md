@@ -12,7 +12,7 @@ can either be returned in sequential or randomized order.
     - saved - True/False whether a previously saved color scale should be used. Default = False
 - **Context:**
     - Used when a set of colors is needed.
-    - See: [Multi-plant tutorial](multi-plant_tutorial.md), [Morphology tutorial](morphology_tutorial.md),
+    - See: [Multi-plant tutorial](tutorials/multi-plant_tutorial.md), [Morphology tutorial](tutorials/morphology_tutorial.md),
     [Spatial clustering](spatial_clustering.md), and [Watershed segmentation](watershed.md).
     - Visit the [Matplotlib](https://matplotlib.org/tutorials/colors/colormaps.html#sphx-glr-tutorials-colors-colormaps-py) website for a list of available colormaps.
 
