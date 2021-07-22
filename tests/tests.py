@@ -3681,27 +3681,6 @@ def test_plantcv_background_subtraction():
     assert (all(truths))
 
 
-def test_plantcv_background_subtraction_debug():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_background_subtraction_debug")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    # List to hold result of all tests.
-    truths = []
-    fg_img = cv2.imread(os.path.join(TEST_DATA, TEST_FOREGROUND))
-    bg_img = cv2.imread(os.path.join(TEST_DATA, TEST_BACKGROUND))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    fgmask = pcv.background_subtraction(background_image=bg_img, foreground_image=fg_img)
-    truths.append(np.sum(fgmask) > 0)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    fgmask = pcv.background_subtraction(background_image=bg_img, foreground_image=fg_img)
-    truths.append(np.sum(fgmask) > 0)
-    # All of these should be true for the function to pass testing.
-    assert (all(truths))
-
-
 def test_plantcv_background_subtraction_bad_img_type():
     fg_color = cv2.imread(os.path.join(TEST_DATA, TEST_FOREGROUND))
     bg_gray = cv2.imread(os.path.join(TEST_DATA, TEST_BACKGROUND), 0)
