@@ -15,7 +15,7 @@ Computes the average *R*, *G*, *B* values for each region in the RGB image denot
     - headers      - a list of 4 headers corresponding to the 4 columns of color_matrix respectively
 
 - **Example use:**
-    - [Color Correction Tutorial](transform_color_correction_tutorial.md)
+    - [Color Correction Tutorial](tutorials/transform_color_correction_tutorial.md)
     
 ```python
 

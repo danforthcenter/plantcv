@@ -14,7 +14,7 @@ This is a function is used to subtract values of one gray-scale image array from
 - **Context:**
     - returns difference in pixel values of two images 
 - **Example use:**
-    - [Use In NIR Tutorial](nir_tutorial.md)
+    - [Use In NIR Tutorial](tutorials/nir_tutorial.md)
 
 **Gray_Img1**
 

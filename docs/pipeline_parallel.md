@@ -2,7 +2,7 @@
 
 !!! warning
     Workflows should be optimized to an image test-set before running a whole dataset.
-    See the [VIS workflow tutorial](vis_tutorial.md) or [VIS/NIR tutorial](vis_nir_tutorial.md).
+    See the [VIS workflow tutorial](tutorials/vis_tutorial.md) or [VIS/NIR tutorial](tutorials/vis_nir_tutorial.md).
     Our [download tool](https://github.com/danforthcenter/pheno-data-service), which talks to a LemnaTec database system,
     has a specific file structure, which may be different than yours unless you are using our tool, but we also have instructions
     to run PlantCV over a flat file directory (just keep this in mind).
@@ -221,7 +221,7 @@ See [Accessory Tools](tools.md) for more information.
 Alternative command-line parameters for the `plantcv-workflow.py` script that does the parallelization
 
 * -d is the --dir directory of images
-* -p is the --workflow that you are going to run over the images, see the [VIS tutorial](vis_tutorial.md) and [PSII tutorial](psII_tutorial.md)
+* -p is the --workflow that you are going to run over the images, see the [VIS tutorial](tutorials/vis_tutorial.md) and [PSII tutorial](tutorials/psII_tutorial.md)
 * -i is the --outdir your desired location for the output images
 * -a is the --adaptor to indicate structure to grab the metadata from, either 'filename' or the default, which is 'phenofront' (lemnatec structured output)
 * -t is the --type extension 'png' is the default. Any format readable by opencv is accepted such as 'tif' or 'jpg'
