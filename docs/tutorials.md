@@ -187,6 +187,22 @@
     </div>
 </div>
 
+<!--Seed Analysis Tutorial-->
+<div class="card" style="display:block">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/seed_analysis_tutorial');return false;">
+        <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/seed_analysis_tutorial/seed_analysis_tutorial_card.jpg?raw=true" alt="Seed analysis tutorial" width="600" height="auto">
+    </a>
+    <div class="card-title">
+        <h6>Seed Analysis Tutorial</h6>
+    </div>
+    <div class="card-tags">
+        <span><strong>Tags</strong>: seed, seed analysis, shape analysis, color analysis, seed count, quinoa</span>
+    </div>
+    <div class="card-button">
+        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/seed_analysis_tutorial/seed-analysis-workflow.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
+    </div>
+</div>
+
 <!--Morphology Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/morphology_tutorial');return false;">
