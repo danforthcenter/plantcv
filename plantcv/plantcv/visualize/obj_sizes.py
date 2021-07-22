@@ -10,7 +10,8 @@ from plantcv.plantcv._debug import _debug
 
 
 def obj_sizes(img, mask, num_objects=100):
-    """ Visualize an RGB image in all potential colorspaces
+    """
+    Label the size of objects in an image.
 
     Inputs:
     img          = RGB or grayscale image data
@@ -25,7 +26,6 @@ def obj_sizes(img, mask, num_objects=100):
     :param num_objects: int
     :return plotting_img: numpy.ndarray
     """
-
     plotting_img = np.copy(img)
     # Convert grayscale images to color
     if len(np.shape(plotting_img)) == 2:
