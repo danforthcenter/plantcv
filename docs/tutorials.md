@@ -267,6 +267,22 @@
     </div>
 </div>
 
+<!--Updated Threshold Tools Tutorial-->
+<div class="card" style="display:block">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/threshold_tools_tutorial');return false;">
+        <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/new_mask_tutorial/mask_tutorial_card.jpg?raw=true" alt="Thresholding tools tutorial" width="600" height="auto">
+    </a>
+    <div class="card-title">
+        <h6>Tools for Thresholding Plant Data</h6>
+    </div>
+    <div class="card-tags">
+        <span><strong>Tags</strong>: plant shoot, single plant, side-view, RGB, threshold methods, binary mask</span>
+    </div>
+    <div class="card-button">
+        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/new_mask_tutorial/create_binary_mask_tutorial.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
+    </div>
+</div>
+
 <!--ROI Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/roi_tutorial');return false;">
