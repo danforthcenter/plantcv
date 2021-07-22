@@ -6152,18 +6152,16 @@ def test_plantcv_threshold_mask_bad_input_color_img():
 # Tests for the visualize subpackage
 # ###################################
 def test_plantcv_visualize_auto_threshold_methods_bad_input():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_auto_threshold_methods")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    # Test with debug = None
+    pcv.params.debug = None
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.auto_threshold_methods(gray_img=img)
 
 
 def test_plantcv_visualize_auto_threshold_methods():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_auto_threshold_methods")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    # Test with debug = None
+    pcv.params.debug = None
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     labeled_imgs = pcv.visualize.auto_threshold_methods(gray_img=img)
     assert len(labeled_imgs) == 5 and np.shape(labeled_imgs[0])[0] == np.shape(img)[0]
@@ -6253,10 +6251,8 @@ def test_plantcv_visualize_pseudocolor_bad_mask():
 
 
 def test_plantcv_visualize_colorize_masks():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_naive_bayes_classifier")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    # Test with debug = None
+    pcv.params.debug = None
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = pcv.naive_bayes_classifier(rgb_img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
@@ -6454,9 +6450,9 @@ def test_plantcv_visualize_overlay_two_imgs_size_mismatch():
 def test_plantcv_visualize_size():
     pcv.params.debug = None
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_LEAF_MASK), -1)
-    visualization = pcv.visualize.obj_sizes(img=img, mask=img, num_objects=4)
-    # Output unique colors are the 4 objects, the gray text, the black background, and white unlabeled leaves
-    assert len(np.unique(visualization.reshape(-1, visualization.shape[2]), axis=0)) == 7
+    visualization = pcv.visualize.obj_sizes(img=img, mask=img, num_objects=100)
+    # Output unique colors are the 32 objects, the gray text, the black background, and white unlabeled leaves
+    assert len(np.unique(visualization.reshape(-1, visualization.shape[2]), axis=0)) == 35
 
 
 @pytest.mark.parametrize("title", ["Include Title", None])
