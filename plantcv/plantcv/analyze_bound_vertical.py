@@ -3,21 +3,19 @@
 import os
 import cv2
 import numpy as np
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
 def analyze_bound_vertical(img, obj, mask, line_position, label="default"):
-    """User-input boundary line tool
+    """
+    User-input boundary line tool
 
     Inputs:
     img             = RGB or grayscale image data for plotting
     obj             = single or grouped contour object
     mask            = Binary mask made from selected contours
-    shape_header    = pass shape header data to function
-    shape_data      = pass shape data so that analyze_bound data can be appended to it
     line_position   = position of boundary line (a value of 0 would draw the line through the left side of the image)
     label           = optional label parameter, modifies the variable name of observations recorded
 
@@ -92,7 +90,7 @@ def analyze_bound_vertical(img, obj, mask, line_position, label="default"):
         cv2.line(ori_img, point3, point4, (255, 0, 255), params.line_thickness)
         cv2.line(wback, point3, point4, (255, 0, 255), params.line_thickness)
         m = cv2.moments(mask, binaryImage=True)
-        cmx, cmy = (m['m10'] / m['m00'], m['m01'] / m['m00'])
+        _, cmy = (m['m10'] / m['m00'], m['m01'] / m['m00'])
         if x_coor - x <= 0:
             cv2.line(ori_img, (x, int(cmy)), (x + width, int(cmy)), (0, 255, 0), params.line_thickness)
             cv2.line(wback, (x, int(cmy)), (x + width, int(cmy)), (0, 255, 0), params.line_thickness)
@@ -121,7 +119,7 @@ def analyze_bound_vertical(img, obj, mask, line_position, label="default"):
         cv2.line(ori_img, point3, point4, (255, 0, 255), params.line_thickness)
         cv2.line(wback, point3, point4, (255, 0, 255), params.line_thickness)
         m = cv2.moments(mask, binaryImage=True)
-        cmx, cmy = (m['m10'] / m['m00'], m['m01'] / m['m00'])
+        _, cmy = (m['m10'] / m['m00'], m['m01'] / m['m00'])
         if x_coor - x <= 0:
             cv2.line(ori_img, (x, int(cmy)), (x + width, int(cmy)), (0, 255, 0), params.line_thickness)
             cv2.line(wback, (x, int(cmy)), (x + width, int(cmy)), (0, 255, 0), params.line_thickness)
@@ -139,12 +137,10 @@ def analyze_bound_vertical(img, obj, mask, line_position, label="default"):
                          params.line_thickness)
                 cv2.line(wback, (x_coor + 2, int(cmy)), (x_coor - width_right_bound, int(cmy)), (0, 255, 0),
                          params.line_thickness)
-        if params.debug == 'print':
-            print_image(wback, os.path.join(params.debug_outdir, str(params.device) + '_boundary_on_white.png'))
-            print_image(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_boundary_on_img.png'))
-        if params.debug == 'plot':
-            plot_image(wback)
-            plot_image(ori_img)
+        _debug(visual=wback,
+               filename=os.path.join(params.debug_outdir, str(params.device) + '_boundary_on_white.png'))
+        _debug(visual=ori_img,
+               filename=os.path.join(params.debug_outdir, str(params.device) + '_boundary_on_img.png'))
 
     outputs.add_observation(sample=label, variable='vertical_reference_position', trait='vertical reference position',
                             method='plantcv.plantcv.analyze_bound_vertical', scale='none', datatype=int,

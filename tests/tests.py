@@ -1260,21 +1260,11 @@ def test_plantcv_analyze_bound_horizontal_neg_y():
 def test_plantcv_analyze_bound_vertical():
     # Clear previous outputs
     pcv.outputs.clear()
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_bound_vertical")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
     object_contours = contours_npz['arr_0']
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=1000, label="prefix")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=1000)
     # Test with debug = None
     pcv.params.debug = None
     _ = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=1000)
