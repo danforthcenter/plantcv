@@ -171,6 +171,22 @@
     </div>
 </div>
 
+<!--Arabidopsis Multi-plant Tutorial-->
+<div class="card" style="display:block">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/arabidopsis_multi_plant_tutorial');return false;">
+        <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/arabidopsis_multi_plant_tutorial/multi_plant_tutorial_card.png?raw=true" alt="Multi-plant tutorial" width="600" height="auto">
+    </a>
+    <div class="card-title">
+        <h6>Arabidopsis Multi-Plant Tutorial</h6>
+    </div>
+    <div class="card-tags">
+        <span><strong>Tags</strong>: plant shoot, multi-plant, RGB, shape analysis, arabidopsis</span>
+    </div>
+    <div class="card-button">
+        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/arabidopsis_multi_plant_tutorial/arabidopsis_multiplant_tutorial.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
+    </div>
+</div>
+
 <!--Morphology Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/morphology_tutorial');return false;">
