@@ -1,4 +1,4 @@
-## Tutorial: NIR Image Workflow
+## Tutorial: Single plant NIR image workflow
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/nir_tutorial/nir_tutorial.ipynb) Check out our interactive NIR tutorial! 
 

@@ -1,4 +1,4 @@
-## Tutorial: Thermal Data Workflow
+## Tutorial: Thermal Image Workflow
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/thermal_tutorial/thermal.ipynb) Check out our interactive Thermal tutorial! 
 
