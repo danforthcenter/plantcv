@@ -2,24 +2,28 @@
 import cv2
 import numpy
 import matplotlib
+from xarray.core.dataarray import DataArray
+from plotnine.ggplot import ggplot
 from plantcv.plantcv import params
+from plantcv.plantcv.classes import PSII_data
 from matplotlib import pyplot as plt
 from plantcv.plantcv import fatal_error
+from plantcv.plantcv._show_dataarray import _show_dataarray
 
 
-def plot_image(img, cmap=None):
-    """Plot an image to the screen.
+def plot_image(img, cmap=None, **kwargs):
+    """
+    Plot an image to the screen.
 
-    :param img: numpy.ndarray
+    :param img: numpy.ndarray, ggplot, xarray.core.dataarray.DataArray
     :param cmap: str
+    :param kwargs: key-value arguments to xarray.plot method
     :return:
     """
 
-    image_type = type(img)
-
     dimensions = numpy.shape(img)
 
-    if image_type == numpy.ndarray:
+    if isinstance(img, numpy.ndarray):
         matplotlib.rcParams['figure.dpi'] = params.dpi
         # If the image is color then OpenCV stores it as BGR, we plot it as RGB
         if len(dimensions) == 3:
@@ -37,9 +41,19 @@ def plot_image(img, cmap=None):
             plt.imshow(img, cmap=cmap)
             plt.show()
 
-    elif image_type == matplotlib.figure.Figure:
-        fatal_error("Error, matplotlib Figure not supported. Instead try running without plot_image.")
+    elif isinstance(img, matplotlib.figure.Figure):
+        fatal_error(
+            "Error, matplotlib Figure not supported. Instead try running without plot_image.")
 
     # Plot if the image is a plotnine ggplot image
-    elif str(image_type) == "<class 'plotnine.ggplot.ggplot'>":
+    elif isinstance(img, ggplot):
         print(img)
+
+    elif isinstance(img, DataArray):
+        _show_dataarray(img, **kwargs)
+
+    elif isinstance(img, PSII_data):
+        fatal_error("You need to plot an underlying DataArray.")
+
+    else:
+        fatal_error(f"Plotting {type(img)} is not supported.")

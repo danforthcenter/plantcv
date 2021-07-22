@@ -145,15 +145,22 @@ suggestions for additional metadata we should track that would be useful to you,
 
 ## Output Observations
 
-Functions that automatically store data to the [`Outputs` class](outputs.md) are [acute_vertex](acute_vertex.md), [analyze_color](analyze_color.md),
-[analyze_bound_horizontal](analyze_bound_horizontal.md), [analyze_bound_vertical](analyze_bound_vertical.md), [analyze_nir_intensity](analyze_NIR_intensity), 
-[analyze_object](analyze_shape.md), [analyze_thermal_values](analyze_thermal_values.md), [photosynthesis.analyze_fvfm](photosynthesis_analyze_fvfm.md), [hyperspectral.analyze_spectral](analyze_spectral.md),
-[hyperspectral.analyze_index](analyze_index.md), [landmark_reference_pt_dist](landmark_reference_pt_dist.md), [morphology.check_cycles](check_cycles.md), 
-[morphology.fill_segments](fill_segments.md), [morphology.find_tips](find_tips.md), [morphology.find_branch_pts](find_branch_pts.md), [morphology.segment_angle](segment_angle.md), 
-[morphology.segment_curvature](segment_curvature.md), [morphology.segment_euclidean_length](segment_euclidean_length.md), 
-[morphology.segment_insertion_angle](segment_insertion_angle.md), [morphology.segment_path_length](segment_pathlength.md), 
-[morphology.segment_tangent_angle](segment_tangent_angle.md), [report_size_marker_area](report_size_marker.md), [watershed_segmentation](watershed.md),
-[within_frame](within_frame.md), [x_axis_pseudolandmarks](x_axis_pseudolandmarks.md), and [y_axis_pseudolandmarks](y_axis_pseudolandmarks.md). All of these functions include an optional `label` parameter 
+Functions that automatically store data to the [`Outputs` class](outputs.md) are [acute_vertex](acute_vertex.md), 
+[analyze_color](analyze_color.md), [analyze_bound_horizontal](analyze_bound_horizontal.md), 
+[analyze_bound_vertical](analyze_bound_vertical.md), [analyze_nir_intensity](analyze_NIR_intensity),
+[analyze_object](analyze_shape.md), [analyze_thermal_values](analyze_thermal_values.md), 
+[photosynthesis.analyze_fvfm](photosynthesis_analyze_yii.md), 
+[photosynthesis.analyze_npq](photosynthesis_analyze_npq.md), [hyperspectral.analyze_spectral](analyze_spectral.md),
+[hyperspectral.analyze_index](analyze_index.md), [landmark_reference_pt_dist](landmark_reference_pt_dist.md), 
+[morphology.check_cycles](check_cycles.md), [morphology.fill_segments](fill_segments.md), 
+[morphology.find_tips](find_tips.md), [morphology.find_branch_pts](find_branch_pts.md), 
+[morphology.segment_angle](segment_angle.md), [morphology.segment_curvature](segment_curvature.md), 
+[morphology.segment_euclidean_length](segment_euclidean_length.md),
+[morphology.segment_insertion_angle](segment_insertion_angle.md), 
+[morphology.segment_path_length](segment_pathlength.md), [morphology.segment_tangent_angle](segment_tangent_angle.md), 
+[report_size_marker_area](report_size_marker.md), [watershed_segmentation](watershed.md),
+[within_frame](within_frame.md), [x_axis_pseudolandmarks](x_axis_pseudolandmarks.md), and 
+[y_axis_pseudolandmarks](y_axis_pseudolandmarks.md). All of these functions include an optional `label` parameter 
 that allows users to append custom prefixes to the unique variable identifier. 
 
 For more detail about the traits measured by each function see the [Observation Traits Summary Table](https://docs.google.com/spreadsheets/d/1gk5VocBA-63gyF_vA6yPNvWreZ1R7-_z4vOfm37YBl8/edit?usp=sharing).

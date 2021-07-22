@@ -13,6 +13,7 @@ from plantcv import plantcv as pcv
 import plantcv.learn
 import plantcv.parallel
 import plantcv.utils
+import xarray as xr
 # Import matplotlib and use a null Template to block plotting to screen
 # This will let us test debug = "plot"
 import matplotlib
@@ -468,7 +469,7 @@ def test_plantcv_parallel_metadata_parser_multivalue_filter_nomatch():
     }
     assert meta == expected
 
-
+    
 def test_plantcv_parallel_metadata_parser_regex():
     # Create config instance
     config = plantcv.parallel.WorkflowConfig()
@@ -548,7 +549,8 @@ def test_plantcv_parallel_workflowconfig_subdaily_timestampformat():
     # Create config instance
     config = plantcv.parallel.WorkflowConfig()
     config.input_dir = os.path.join(PARALLEL_TEST_DATA, TEST_IMG_DIR2)
-    config.json = os.path.join(TEST_IMG_DIR2, "test_plantcv_parallel_metadata_parser_subdaily_timestampformat", "output.json")
+    config.json = os.path.join(
+        TEST_IMG_DIR2, "test_plantcv_parallel_metadata_parser_subdaily_timestampformat", "output.json")
     config.filename_metadata = ["imgtype", "camera", "frame", "zoom", "lifter", "gain", "exposure", "timestamp"]
     config.workflow = TEST_PIPELINE
     config.metadata_filters = {"imgtype": "NIR", "camera": "SV"}
@@ -562,7 +564,7 @@ def test_plantcv_parallel_workflowconfig_subdaily_timestampformat():
     meta = plantcv.parallel.metadata_parser(config=config)
     assert meta == {
         'NIR_SV_0_z1_h1_g0_e65_23_59_59.jpg': {
-            'path': os.path.join(PARALLEL_TEST_DATA, 'images_w_date','NIR_SV_0_z1_h1_g0_e65_23_59_59.jpg'),
+            'path': os.path.join(PARALLEL_TEST_DATA, 'images_w_date', 'NIR_SV_0_z1_h1_g0_e65_23_59_59.jpg'),
             'imgtype': 'NIR',
             'camera': 'SV',
             'frame': '0',
@@ -572,7 +574,7 @@ def test_plantcv_parallel_workflowconfig_subdaily_timestampformat():
             'exposure': 'e65',
             'timestamp': '23_59_59',
             'measurementlabel': 'none',
-            'cartag':'none',
+            'cartag': 'none',
             'id': 'none',
             'treatment': 'none',
             'plantbarcode': 'none',
@@ -580,7 +582,7 @@ def test_plantcv_parallel_workflowconfig_subdaily_timestampformat():
         }
     }
 
-    
+
 def test_plantcv_parallel_check_date_range_wrongdateformat():
     start_date = 10
     end_date = 10
@@ -985,8 +987,11 @@ HYPERSPECTRAL_HDR_SMALL_RANGE = {'description': '{[HEADWALL Hyperspec III]}', 's
                                  'interleave': 'bil', 'sensor type': 'Unknown', 'byte order': '0',
                                  'default bands': '159,253,520', 'wavelength units': 'nm',
                                  'wavelength': ['379.027', '379.663', '380.3', '380.936', '381.573', '382.209']}
-FLUOR_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "photosynthesis_data")
-FLUOR_IMG = "PSII_PSD_supopt_temp_btx623_22_rep1.DAT"
+PHOTOSYNTHESIS_TEST_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "photosynthesis_data")
+PHOTOSYNTHESIS_IMG_INF = "PSII_HDR_supopt_temp_btx623_22_rep1.INF"
+PHOTOSYNTHESIS_NPQ_IMG_INF = "PSII_HDR_020321_WT_TOP_1.INF"
+PHOTOSYNTHESIS_FMASK_SV = "PSII_HDR_supopt_temp_btx623_22_rep1_mask.png"
+PHOTOSYNTHESIS_FMASK_TV = "PSII_HDR_020321_WT_TOP_1_mask.png"
 TEST_COLOR_DIM = (2056, 2454, 3)
 TEST_GRAY_DIM = (2056, 2454)
 TEST_BINARY_DIM = TEST_GRAY_DIM
@@ -1078,6 +1083,45 @@ TEST_INPUT_THERMAL_CSV = "FLIR2600.csv"
 # TEST_IM_BAD_INF = "bad_mask_inf.pkl"
 PIXEL_VALUES = "pixel_inspector_rgb_values.txt"
 
+# leaving photosynthesis data here so it can be used to test plot_image and print_image
+
+def ps_mask():
+    """Create simple mask for PSII"""
+    mask = np.zeros((10, 10), dtype=np.uint8)
+    mask[5, 5] = 255
+    return(mask)
+
+
+def psii_cropreporter(var):
+    """Create simple data for PSII"""
+    # sample images
+    f0 = ps_mask()
+    f0[5, 5] = 1
+    f1 = ps_mask()
+    f1[5, 5] = 2
+    f2 = ps_mask()
+    f2[5, 5] = 10
+    f3 = ps_mask()
+    f3[5, 5] = 8
+
+    # set specific labels for xarray for dark and light adapted
+    if var == 'darkadapted':
+        frame_labels = ['Fdark', 'F0', 'Fm', '3']
+        measurements = ['t0']
+    elif var == 'lightadapted':
+        frame_labels = ['Fdark', 'Fp', '2', 'Fmp']
+        measurements = ['t1']
+
+    # Create DataArray
+    da = xr.DataArray(data=np.dstack([f0, f1, f2, f3])[..., None],
+                      dims=('x', 'y', 'frame_label', 'measurement'),
+                      coords={'frame_label': frame_labels,
+                              'frame_num': ('frame_label', [0, 1, 2, 3]),
+                              'measurement': measurements},
+                      name=var
+                      )
+    return(da)
+
 
 # ##########################
 # Tests for the main package
@@ -1109,6 +1153,7 @@ def test_plantcv_outputs_add_observation_invalid_type():
     with pytest.raises(RuntimeError):
         outputs.add_observation(sample='default', variable='test', trait='test variable', method='type', scale='none',
                                 datatype=list, value=np.array([2]), label=[])
+
 
 def test_plantcv_outputs_save_results_json_newfile(tmpdir):
     # Create a test tmp directory
@@ -1162,6 +1207,7 @@ def test_plantcv_outputs_save_results_csv(tmpdir):
     with open(testfile, "r") as fp:
         test_results = fp.read()
     assert results == test_results
+
 
 def test_plantcv_acute():
     # Read in test data
@@ -1385,13 +1431,14 @@ def test_plantcv_analyze_color():
     _ = pcv.analyze_color(rgb_img=img, mask=mask, hist_plot_type='rgb')
     assert pcv.outputs.observations['default']['hue_median']['value'] == 84.0
 
+
 def test_plantcv_analyze_color_incorrect_image():
     img_binary = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     with pytest.raises(RuntimeError):
         _ = pcv.analyze_color(rgb_img=img_binary, mask=mask, hist_plot_type=None)
-#
-#
+
+
 def test_plantcv_analyze_color_bad_hist_type():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
@@ -1545,6 +1592,7 @@ def test_plantcv_analyze_thermal_values():
     pcv.params.debug = None
     thermal_hist = pcv.analyze_thermal_values(thermal_array=img, mask=mask, histplot=True)
     assert thermal_hist is not None and pcv.outputs.observations['default']['median_temp']['value'] == 33.20922
+
 
 def test_plantcv_apply_mask_white():
     # Test cache directory
@@ -2375,6 +2423,7 @@ def test_plantcv_image_subtract():
     new_img = pcv.image_subtract(img1, img2)
     assert np.array_equal(new_img, np.zeros(np.shape(new_img), np.uint8))
 
+
 def test_plantcv_image_subtract_fail():
     # read in images
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
@@ -2753,6 +2802,70 @@ def test_plantcv_plot_image_plotnine():
     assert True
 
 
+@pytest.mark.parametrize(['da', 'kwarg'],
+                         [
+                           [psii_cropreporter('darkadapted').squeeze('measurement', drop=True), 'frame_label']
+                         ])
+def test_plantcv_show_dataarray(da, kwarg):
+    from plantcv.plantcv._show_dataarray import _show_dataarray
+    try:
+        _show_dataarray(da, col=kwarg)
+    except RuntimeError:
+        assert False
+    # Assert that the image was plotted without error
+    assert True
+
+
+@pytest.mark.parametrize(['da', 'kwarg'],
+                         [
+                            # missing col or row as kwarg
+                            [psii_cropreporter('darkadapted').squeeze('measurement', drop=True), None],
+                            # missing x or y dim
+                            [psii_cropreporter('darkadapted').squeeze('measurement', drop=True)[0, :, :], 'frame_label']
+                         ]
+                         )
+def test_plantcv_show_dataarray_fatal_error(da, kwarg):
+    from plantcv.plantcv._show_dataarray import _show_dataarray
+    with pytest.raises(RuntimeError):
+        _show_dataarray(da, col=kwarg)
+
+@pytest.mark.parametrize(['da'],
+                         [
+                            #too many dims
+                            [psii_cropreporter('darkadapted')],
+                            # not enough dims
+                            [psii_cropreporter('darkadapted')[:, :, 0, 0]]
+                         ])
+def test_plantcv_show_dataarray_value_error(da):
+    from plantcv.plantcv._show_dataarray import _show_dataarray
+    # pcolormesh() fails with ValueError if ndim != 2 in addition to row and/or col
+    with pytest.raises(ValueError):
+        _show_dataarray(img=da, col_wrap=4, row='frame_label')
+
+
+@pytest.mark.parametrize(['da', 'kwarg'],
+                         [[psii_cropreporter('darkadapted').squeeze('measurement', drop=True), 'frame_label']]
+                         )
+def test_plantcv_plot_image_dataarray(da, kwarg):
+    try:
+        pcv.plot_image(da, col=kwarg)
+    except RuntimeError:
+        assert False
+    # Assert that the image was plotted without error
+    assert True
+
+
+def test_plantcv_plot_image_psiidata():
+    psii = pcv.PSII_data()
+    with pytest.raises(RuntimeError):
+        pcv.plot_image(psii)
+
+
+def test_plantcv_plot_image_bad_type():
+    with pytest.raises(RuntimeError):
+        pcv.plot_image(img=[], filename="/dev/null")
+
+
 def test_plantcv_print_image():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_print_image")
@@ -2796,6 +2909,22 @@ def test_plantcv_print_image_matplotlib():
     pcv.print_image(img=plot, filename=filename)
     # Assert that the file was created
     assert os.path.exists(filename) is True
+
+
+def test_plantcv_print_image_dataarray():
+    da = psii_cropreporter('darkadapted').squeeze('measurement', drop=True)
+    try:
+        pcv.print_image(img=da, col='frame_label', filename='/dev/null')
+    except RuntimeError:
+        assert False
+    # Assert that the image was plotted without error
+    assert True
+
+
+def test_plantcv_print_image_psiidata():
+    psii = pcv.PSII_data()
+    with pytest.raises(RuntimeError):
+        pcv.print_image(img=psii, filename='/dev/null')
 
 
 def test_plantcv_print_results(tmpdir):
@@ -3271,12 +3400,14 @@ def test_plantcv_roi_objects_grayscale_input():
     # Assert that the contours were filtered as expected
     assert len(kept_contours) == 1891
 
+
 def test_plantcv_rotate():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     rotated = pcv.rotate(img=img, rotation_deg=45, crop=True)
     imgavg = np.average(img)
     rotateavg = np.average(rotated)
     assert rotateavg != imgavg
+
 
 def test_plantcv_transform_rotate():
     # Test cache directory
@@ -4116,9 +4247,9 @@ def test_plantcv_morphology_segment_insertion_angle():
     pcv.params.debug = "print"
     _ = pcv.morphology.segment_insertion_angle(pruned, segmented_img, leaf_obj, stem_obj, 10)
     assert pcv.outputs.observations['default']['segment_insertion_angle']['value'][:6] == ['NA', 'NA', 'NA',
-                                                                                        24.956918822001636,
-                                                                                        50.7313343343401,
-                                                                                        56.427712102130734]
+                                                                                           24.956918822001636,
+                                                                                           50.7313343343401,
+                                                                                           56.427712102130734]
 
 
 def test_plantcv_morphology_segment_insertion_angle_bad_stem():
@@ -4953,77 +5084,208 @@ def test_plantcv_hyperspectral_inverse_covariance():
 # ########################################
 # Tests for the photosynthesis subpackage
 # ########################################
-def test_plantcv_photosynthesis_read_dat():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_photosynthesis_read_dat")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    pcv.params.debug = "plot"
-    fluor_filename = os.path.join(FLUOR_TEST_DATA, FLUOR_IMG)
-    _, _, _ = pcv.photosynthesis.read_cropreporter(filename=fluor_filename)
-    pcv.params.debug = "print"
-    fdark, fmin, fmax = pcv.photosynthesis.read_cropreporter(filename=fluor_filename)
-    assert np.sum(fmin) < np.sum(fmax)
+def psii_walz(var):
+    """Create and return synthetic psii dataarrays from walz"""
+    # create darkadapted
+    if var == 'darkadapted':
+        i = 0
+        fmin = np.ones((10, 10), dtype='uint8') * ((i+15)*2)
+        fmax = np.ones((10, 10), dtype='uint8') * (200-i*15)
+        data = np.stack([fmin, fmax], axis=2)
+
+        frame_nums = range(0, 2)
+        indf = ['F0','Fm']
+        ps_da = xr.DataArray(
+            data=data[..., None],
+            dims=('x', 'y', 'frame_label', 'measurement'),
+            coords={'frame_label': indf,
+                    'frame_num': ('frame_label', frame_nums),
+                    'measurement': ['t0']},
+            name='darkadapted'
+        )
+
+    # create lightadapted
+    elif var == 'lightadapted':
+        da_list = []
+        measurement = []
+
+        for i in np.arange(1, 3):
+            indf = ['Fp', 'Fmp']
+            fmin = np.ones((10, 10), dtype='uint8') * ((i+15)*2)
+            fmax = np.ones((10, 10), dtype='uint8') * (200-i*15)
+            data = np.stack([fmin, fmax], axis=2)
+
+            lightadapted = xr.DataArray(
+                data=data[..., None],
+                dims=('x', 'y', 'frame_label', 'measurement'),
+                coords={'frame_label': indf,
+                        'frame_num': ('frame_label', range(0, 2))}
+            )
+
+            measurement.append((f't{i*40}'))
+            da_list.append(lightadapted)
+
+        prop_idx = pd.Index(measurement)
+        ps_da = xr.concat(da_list, 'measurement')
+        ps_da.name = 'lightadapted'
+        ps_da.coords['measurement'] = prop_idx
+
+    return(ps_da)
 
 
-def test_plantcv_photosynthesis_analyze_fvfm():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_fvfm")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    # filename = os.path.join(cache_dir, 'plantcv_fvfm_hist.png')
-    # Read in test data
-    fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK), -1)
-    fmin = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
-    fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
-    fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.photosynthesis.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, bins=1000, label="prefix")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    fvfm_images = pcv.photosynthesis.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
-    assert len(fvfm_images) != 0
+def test_plantcv_classes_psii_data():
+    psii = pcv.PSII_data()
+    psii.add_data(psii_cropreporter('darkadapted'))
+    assert repr(psii) == "PSII variables defined:\ndarkadapted"
 
 
-def test_plantcv_photosynthesis_analyze_fvfm_print_analysis_results():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_fvfm")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK), -1)
-    fmin = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
-    fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
-    fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
-    _ = pcv.photosynthesis.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
-    result_file = os.path.join(cache_dir, "results.txt")
-    pcv.print_results(result_file)
-    pcv.outputs.clear()
-    assert os.path.exists(result_file)
+def test_plantcv_photosynthesis_read_cropreporter():
+    # Test with debug = None
+    pcv.params.debug = None
+    fluor_filename = os.path.join(PHOTOSYNTHESIS_TEST_DATA, PHOTOSYNTHESIS_NPQ_IMG_INF)
+    ps = pcv.photosynthesis.read_cropreporter(filename=fluor_filename)
+    assert isinstance(ps, pcv.PSII_data) and ps.darkadapted.shape == (966, 1296, 21, 1)
 
 
-def test_plantcv_photosynthesis_analyze_fvfm_bad_fdark():
-    # Clear previous outputs
-    pcv.outputs.clear()
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_fvfm")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    # Read in test data
-    fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FDARK), -1)
-    fmin = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
-    fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
-    fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
-    _ = pcv.photosynthesis.analyze_fvfm(fdark=fdark + 3000, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
-    check = pcv.outputs.observations['default']['fdark_passed_qc']['value'] is False
-    assert check
+def test_plantcv_photosynthesis_read_cropreporter_spc_only(tmpdir):
+    # Create a test tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+    # Create dataset with only SPC
+    shutil.copyfile(os.path.join(PHOTOSYNTHESIS_TEST_DATA, PHOTOSYNTHESIS_NPQ_IMG_INF),
+                    os.path.join(cache_dir, PHOTOSYNTHESIS_NPQ_IMG_INF))
+    PHOTOSYNTHESIS_SPC_IMG_DAT = PHOTOSYNTHESIS_NPQ_IMG_INF.replace("HDR", "SPC")
+    PHOTOSYNTHESIS_SPC_IMG_DAT = PHOTOSYNTHESIS_SPC_IMG_DAT.replace("INF", "DAT")
+    shutil.copyfile(os.path.join(PHOTOSYNTHESIS_TEST_DATA, PHOTOSYNTHESIS_SPC_IMG_DAT),
+                    os.path.join(cache_dir, PHOTOSYNTHESIS_SPC_IMG_DAT))
+    # Test with debug = None
+    pcv.params.debug = None
+    fluor_filename = os.path.join(cache_dir, PHOTOSYNTHESIS_NPQ_IMG_INF)
+    ps = pcv.photosynthesis.read_cropreporter(filename=fluor_filename)
+    assert isinstance(ps, pcv.PSII_data) and ps.spectral.array_data.shape == (966, 1296, 3)
 
 
-def test_plantcv_photosynthesis_analyze_fvfm_bad_input():
-    fdark = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    fmin = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMIN), -1)
-    fmax = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMAX), -1)
-    fmask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_FMASK), -1)
+@pytest.mark.parametrize("mda, mlabels",
+                         # test darkadapted control seq
+                         [[psii_cropreporter("darkadapted"), None],
+                          # test lightadapted control seq and measurement_labels arg
+                          [psii_cropreporter("lightadapted"), ["Fq/Fm"]],
+                          # test darkadapted walz
+                          [psii_walz("darkadapted"), ["Fv/Fm"]],
+                          # test lightadapted walz
+                          [psii_walz("lightadapted"), [f't{i*40}' for i in np.arange(1, 3)]]
+                          ]
+                        )
+def test_plantcv_photosynthesis_analyze_yii(mda, mlabels):
+    # Test with debug = None
+    pcv.params.debug = None
+    _ = pcv.photosynthesis.analyze_yii(ps_da=mda, mask=ps_mask(), bins=100,
+                                       measurement_labels=mlabels, label="default")
+    if mlabels is None:
+        med = pcv.outputs.observations["default"]["yii_median_t0"]["value"]
+        pcv.outputs.clear()
+        assert med == 0.8
+    elif "Fq/Fm" in mlabels:
+        med = pcv.outputs.observations["default"]["yii_median_Fq/Fm"]["value"]
+        pcv.outputs.clear()
+        assert med == 0.75
+    elif "Fv/Fm" in mlabels:
+        med = pcv.outputs.observations["default"]["yii_median_Fv/Fm"]["value"]
+        pcv.outputs.clear()
+        assert med == float(np.around((200 - 30) / 200, decimals=4))
+    elif "t40" in mlabels:
+        med = pcv.outputs.observations["default"]["yii_median_t40"]["value"]
+        pcv.outputs.clear()
+        assert med == float(np.around((185 - 32) / 185, decimals=4))
+
+
+@pytest.mark.parametrize("mlabels, tmask",
+                         # test wrong mask shape
+                         [[None, np.ones((2, 2))],
+                          # test non binary mask
+                          [None, np.random.random(ps_mask().shape)],
+                          # test bad measurement_labels
+                          [['f', 'm'], ps_mask()]])
+def test_plantcv_photosynthesis_analyze_yii_fatalerror(mlabels, tmask):
+    # Test with debug = None
+    pcv.params.debug = None
+
     with pytest.raises(RuntimeError):
-        _ = pcv.photosynthesis.analyze_fvfm(fdark=fdark, fmin=fmin, fmax=fmax, mask=fmask, bins=1000)
+        _ = pcv.photosynthesis.analyze_yii(ps_da=psii_cropreporter('darkadapted'), mask=tmask,
+                                           bins=100, measurement_labels=mlabels, label="default")
+
+
+@pytest.mark.parametrize("mda_light, mda_dark, mlabels",
+                         [
+                            # test cropreporter with measurement_labels
+                            [psii_cropreporter('lightadapted'), psii_cropreporter('darkadapted'), ["Fq/Fm"]],
+                            # test walz
+                            [psii_walz('lightadapted'), psii_walz('darkadapted'), None]
+                         ]
+                        )
+def test_plantcv_photosynthesis_analyze_npq(mda_dark, mda_light, mlabels):
+    # Test with debug = None
+    pcv.params.debug = None
+    _ = pcv.photosynthesis.analyze_npq(ps_da_light=mda_light, ps_da_dark=mda_dark,
+                                       mask=ps_mask(), bins=100, measurement_labels=mlabels, label="prefix")
+    if mlabels is not None:
+        med = pcv.outputs.observations["prefix"]["npq_median_Fq/Fm"]["value"]
+        pcv.outputs.clear()
+        assert med == 0.25
+    else:
+        med = pcv.outputs.observations["prefix"]["npq_median_t40"]["value"]
+        pcv.outputs.clear()
+        assert med == float(np.around(200 / 185 - 1, decimals=4))
+
+
+@pytest.mark.parametrize("mlabels, tmask",
+                         # test wrong mask shape
+                         [[None, np.ones((2, 2))],
+                          # test non binary mask or not uint8
+                          [None, np.random.random(ps_mask().shape)],
+                          # test bad measurement_labels
+                          ['fm', ps_mask()]])
+def test_plantcv_photosynthesis_analyze_npq_fatalerror(mlabels, tmask):
+    # Test with debug = None
+    pcv.params.debug = None
+
+    with pytest.raises(RuntimeError):
+        _ = pcv.photosynthesis.analyze_npq(ps_da_dark=psii_cropreporter('darkadapted'), ps_da_light=psii_cropreporter(
+            'lightadapted'), mask=tmask, bins=100, measurement_labels=mlabels, label="default")
+
+
+@pytest.mark.parametrize("da",
+                         [
+                            # test darkadapted
+                            psii_cropreporter("darkadapted"),
+                            # test lightadapted
+                            psii_cropreporter("lightadapted")
+                         ]
+                         )
+def test_plantcv_photosynthesis_reassign_frame_labels(da):
+    # Test with debug = None
+    pcv.params.debug = None
+    _ = pcv.photosynthesis.reassign_frame_labels(ps_da=da, mask=ps_mask())
+
+
+@pytest.mark.parametrize("da, tmask",
+                         [
+                             # test not PSII_data
+                             [pcv.PSII_data(), ps_mask()],
+                             # test input is dataarray
+                            ['nope', ps_mask()],
+                            # test input is dataarray with correct name
+                            [psii_cropreporter('darkadapted').rename('test'), ps_mask()],
+                            # test mask shape
+                            [psii_cropreporter('darkadapted'), np.ones((2, 2))],
+                            # test mask is binary
+                            [psii_cropreporter('lightadapted'), np.random.random(ps_mask().shape)]
+                         ]
+                         )
+def test_plantcv_photosynthesis_reassign_frame_labels_fatalerror(da, tmask):
+    # Test with debug = None
+    pcv.params.debug = None
+    with pytest.raises(RuntimeError):
+        _, _ = pcv.photosynthesis.reassign_frame_labels(ps_da=da, mask=tmask)
 
 
 # ##############################
@@ -5793,8 +6055,8 @@ def test_plantcv_transform_warp_default():
     pcv.params.debug = "plot"
     img = create_test_img((12, 10, 3))
     refimg = create_test_img((12, 10, 3))
-    pts = [(0, 0),(1, 0),(0, 3),(4, 4)]
-    refpts = [(0, 0),(1, 0),(0, 3),(4, 4)]
+    pts = [(0, 0), (1, 0), (0, 3), (4, 4)]
+    refpts = [(0, 0), (1, 0), (0, 3), (4, 4)]
     warped_img, mat = pcv.transform.warp(img, refimg, pts, refpts, method="default")
     assert mat.shape == (3, 3)
 
@@ -5830,8 +6092,8 @@ def test_plantcv_transform_warp_ransac():
 
 
 @pytest.mark.parametrize("pts, refpts", [
-    [[(0,0)],[(0,0),(0,1)]],  # different # of points provided for img and refimg
-    [[(0,0)],[(0,0)]],  # not enough pairs of points provided
+    [[(0, 0)], [(0, 0), (0, 1)]],  # different # of points provided for img and refimg
+    [[(0, 0)], [(0, 0)]],  # not enough pairs of points provided
     [[(0, 0), (0, 14), (9, 14), (0, 9), (3, 3)],
      [(0, 0), (149, 0), (99, 149), (0, 99), (3, 3)]]  # homography not able to be calculated (cannot converge)
 ])
@@ -5846,8 +6108,8 @@ def test_plantcv_transform_warp_err(pts, refpts):
 def test_plantcv_transform_warp_align():
     img = create_test_img((10, 10, 3))
     refimg = create_test_img((11, 11))
-    mat = np.array([[ 1.00000000e+00,  1.04238500e-15, -7.69185075e-16],
-                    [ 1.44375646e-16,  1.00000000e+00,  0.00000000e+00],
+    mat = np.array([[1.00000000e+00,  1.04238500e-15, -7.69185075e-16],
+                    [1.44375646e-16,  1.00000000e+00,  0.00000000e+00],
                     [-5.41315251e-16,  1.78930521e-15,  1.00000000e+00]])
     warp_img = pcv.transform.warp_align(img=img, mat=mat, refimg=refimg)
     assert warp_img.shape == (11, 11, 3)
@@ -6140,6 +6402,7 @@ def test_plantcv_threshold_mask_bad_nan_bad_input():
 
     assert mask11.all() == np.zeros(sz, dtype='uint8').all()
 
+
 def test_plantcv_threshold_mask_bad_input_color_img():
     # Read in test data
     bad_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
@@ -6302,8 +6565,9 @@ def test_plantcv_visualize_colorize_masks_bad_color_input():
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']], colors=['red', 1.123])
 
+
 def test_plantcv_visualize_colorize_label_img():
-    label_img = np.array([[1,2,3],[4,5,6],[7,8,9]])
+    label_img = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
     pcv.params.debug = None
     colored_img = pcv.visualize.colorize_label_img(label_img)
     assert (colored_img.shape[0:-1] == label_img.shape) and colored_img.shape[-1] == 3
@@ -6380,13 +6644,13 @@ def test_plantcv_visualize_clustered_contours():
     # Reset the saved color scale (can be saved between tests)
     pcv.params.saved_color_scale = None
     _ = pcv.visualize.clustered_contours(img=img1, grouped_contour_indices=cluster, roi_objects=objs,
-                                                   roi_obj_hierarchy=obj_hierarchy, bounding=False)
+                                         roi_obj_hierarchy=obj_hierarchy, bounding=False)
     # Test in print mode
     pcv.params.debug = "print"
     # Reset the saved color scale (can be saved between tests)
     pcv.params.saved_color_scale = None
     cluster_img = pcv.visualize.clustered_contours(img=img, grouped_contour_indices=cluster, roi_objects=objs,
-                                         roi_obj_hierarchy=obj_hierarchy, nrow=2, ncol=2, bounding=True)
+                                                   roi_obj_hierarchy=obj_hierarchy, nrow=2, ncol=2, bounding=True)
     assert np.sum(cluster_img) > np.sum(img)
 
 
