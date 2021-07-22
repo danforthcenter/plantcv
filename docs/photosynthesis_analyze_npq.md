@@ -20,7 +20,7 @@ Calculates (Fm/Fm') - 1 data from a masked region. The photosynthesis subpackage
     - Generates histogram of NPQ values.
     - Generates an NPQ image.
 - **Example use:**
-    - [Use In PSII Tutorial](psII_tutorial.md)
+    - [Use In PSII Tutorial](tutorials/psII_tutorial.md)
 - **Output data stored:** Data ('npq_hist_{measurement_label}', 'npq_max_{measurement_label}', 'npq_median_{measurement_label}') are automatically stored to the 
   [`Outputs` class](outputs.md) when this function is run. These data can be accessed during a workflow (example below). `{measurement_label}` is automatically created when importing the dataset, e.g. with `read_cropreporter()` but can be overwritten with `measurement_labels` argument.
   [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
