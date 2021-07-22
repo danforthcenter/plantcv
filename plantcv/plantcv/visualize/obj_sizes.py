@@ -39,7 +39,9 @@ def obj_sizes(img, mask, num_objects=100):
     id_objects, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
     sorted_objects = sorted(id_objects, key=lambda x: cv2.contourArea(x))
     # Function sorts smallest to largest so keep the last X objects listed
-    sorted_objects = sorted_objects[len(sorted_objects) - num_objects: len(sorted_objects)]
+    # sorted_objects = sorted_objects[len(sorted_objects) - num_objects: len(sorted_objects)]
+    # Reverse the sorted list to order contours from largest to smallest
+    sorted_objects.reverse()
 
     rand_color = color_palette(num=num_objects, saved=False)
     random.shuffle(rand_color)
@@ -49,8 +51,15 @@ def obj_sizes(img, mask, num_objects=100):
     area_vals = []
 
     for i, contour in enumerate(sorted_objects):
+        # Break out of the for loop once the number of objects have been plotted
+        if i >= num_objects:
+            break
         # ID and store area values and centers of mass for labeling them
         m = cv2.moments(contour)
+        # Skip iteration if contour area is zero
+        # This is needed because cv2.contourArea can be > 0 while moments area is 0.
+        if m['m00'] == 0:
+            continue
         area_vals.append(m['m00'])
         label_coord_x.append(int(m["m10"] / m["m00"]))
         label_coord_y.append(int(m["m01"] / m["m00"]))

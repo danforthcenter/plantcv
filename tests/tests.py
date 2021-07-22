@@ -1077,6 +1077,7 @@ TEST_INPUT_THERMAL_CSV = "FLIR2600.csv"
 # TEST_IM_BAD_NAN = "bad_mask_nan.pkl"
 # TEST_IM_BAD_INF = "bad_mask_inf.pkl"
 PIXEL_VALUES = "pixel_inspector_rgb_values.txt"
+TEST_INPUT_LEAF_MASK = "leaves_mask.png"
 
 
 # ##########################
@@ -6452,11 +6453,12 @@ def test_plantcv_visualize_overlay_two_imgs_size_mismatch():
 
 def test_plantcv_visualize_size():
     pcv.params.debug = None
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_visualize_sizes")
-    os.mkdir(cache_dir)
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_LEAF_MASK), -1)
     visualization = pcv.visualize.obj_sizes(img=img, mask=img, num_objects=4)
-    assert len(np.unique(visualization)) == 4
+    # Output unique colors are the 4 objects, the gray text, the black background, and white unlabeled leaves
+    assert len(np.unique(visualization.reshape(-1, visualization.shape[2]), axis=0)) == 7
+
+
 @pytest.mark.parametrize("title", ["Include Title", None])
 def test_plantcv_visualize_obj_size_ecdf(title):
     pcv.params.debug = None
