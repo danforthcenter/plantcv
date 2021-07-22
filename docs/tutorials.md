@@ -43,6 +43,7 @@
     </select>
 </div>
 
+<!--VIS Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/vis_tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/vis_tutorial/vis_tutorial_card_img.png?raw=true" alt="VIS tutorial" width="600" height="auto">
@@ -58,6 +59,7 @@
     </div>
 </div>
 
+<!--VIS-NIR Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/vis_nir_tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/vis_nir_tutorial/vis_nir_tutorial_card_img.jpg?raw=true" alt="VIS-NIR tutorial" width="600" height="auto">
@@ -73,6 +75,7 @@
     </div>
 </div>
 
+<!--NIR Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/nir_tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/nir_tutorial/nir_tutorial_card_img.jpg?raw=true" alt="NIR tutorial" width="600" height="auto">
@@ -88,6 +91,7 @@
     </div>
 </div>
 
+<!--Photosynthesis Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/psII_tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/photosynthesis_tutorial/photosynthesis_tutorial_card.jpg?raw=true" alt="PSII tutorial" width="600" height="auto">
@@ -103,6 +107,7 @@
     </div>
 </div>
 
+<!--Thermal Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/thermal_tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/thermal_tutorial/thermal_tutorial_card.jpg?raw=true" alt="Thermal tutorial" width="600" height="auto">
@@ -118,6 +123,7 @@
     </div>
 </div>
 
+<!--Hyperspectral Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/hyperspectral_tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/hyperspectral_tutorial/hyperspectral_tutorial_card.jpg?raw=true" alt="Hyperspectral tutorial" width="600" height="auto">
@@ -133,6 +139,7 @@
     </div>
 </div>
 
+<!--Naive Bayes Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/machine_learning_tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/naive_bayes_tutorial/naive_bayes_tutorial_card.png?raw=true" alt="Naive Bayes tutorial" width="600" height="auto">
@@ -148,6 +155,7 @@
     </div>
 </div>
 
+<!--Multi-plant tools Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/multi-plant_tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/multi_plant_tutorial/multi_plant_tutorial_card.png?raw=true" alt="Multi-plant tutorial" width="600" height="auto">
@@ -163,6 +171,7 @@
     </div>
 </div>
 
+<!--Morphology Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/morphology_tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/morphology_tutorial/morphology_tutorial_card.png?raw=true" alt="Morphology tutorial" width="600" height="auto">
@@ -178,6 +187,7 @@
     </div>
 </div>
 
+<!--Color correction Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/transform_color_correction_tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/color_correction_tutorial/color_correction_tutorial_card.png?raw=true" alt="Color correction tutorial" width="600" height="auto">
@@ -193,6 +203,7 @@
     </div>
 </div>
 
+<!--Input-Output Tutorial-->
 <div class="card" style="display:block">
     <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/input_output_tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/input_output_tutorial/input_output_tutorial_card.jpg?raw=true" alt="Input-output tutorial" width="600" height="auto">
@@ -208,8 +219,9 @@
     </div>
 </div>
 
+<!--Threshold tools Tutorial-->
 <div class="card" style="display:block">
-    <a target="_blank" hre<a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/threshold_tutorial');return false;">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/threshold_tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/threshold_tutorial/threshold_tutorial_card.png?raw=true" alt="Thresholding tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
@@ -223,8 +235,9 @@
     </div>
 </div>
 
+<!--ROI Tutorial-->
 <div class="card" style="display:block">
-    <a target="_blank" hre<a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/roi_tutorial');return false;">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/roi_tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/roi_tutorial/roi_tutorial_card.png?raw=true" alt="ROI tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
@@ -238,8 +251,9 @@
     </div>
 </div>
 
+<!--Watershed Tutorial-->
 <div class="card" style="display:block">
-    <a target="_blank" hre<a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/watershed_segmentation_tutorial');return false;">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/watershed_segmentation_tutorial');return false;">
         <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/watershed_segmentation_tutorial/watershed_segmentation_tutorial_card.png?raw=true" alt="Watershed tutorial" width="600" height="auto">
     </a>
     <div class="card-title">
