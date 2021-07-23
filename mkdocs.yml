@@ -164,6 +164,7 @@ nav:
           - 'Colorize Masks': visualize_colorize_masks.md
           - 'Colorspaces': visualize_colorspace.md
           - 'Histogram': visualize_histogram.md
+          - 'Hyperspectral Histogram': visualize_hyper_histogram.md
           - 'Overlay Images': visualize_ovelay_two_imgs.md
           - 'Object Size ECDF': visualize_obj_size_ecdf.md
           - 'Object Sizes': visualize_obj_sizes.md
