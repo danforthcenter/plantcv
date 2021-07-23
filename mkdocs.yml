@@ -19,19 +19,9 @@ nav:
     - 'Contributing to PlantCV': CONTRIBUTING.md
     - 'Code of Conduct': CODE_OF_CONDUCT.md
     - 'Adding/Editing Documentation': documentation.md
-  - Tutorials:
-    - 'VIS Workflow': vis_tutorial.md
-    - 'NIR Workflow': nir_tutorial.md
-    - 'PSII Workflow': psII_tutorial.md
-    - 'VIS/NIR Dual Workflow': vis_nir_tutorial.md
-    - 'Multi Plant Workflow': multi-plant_tutorial.md
-    - 'Machine Learning': machine_learning_tutorial.md
-    - 'Workflow Parallelization': pipeline_parallel.md
-    - 'Exporting Data': db-exporter.md
-    - 'Color Correction Workflow': transform_color_correction_tutorial.md
-    - 'Morphology Workflow': morphology_tutorial.md
-    - 'Thermal Workflow': thermal_tutorial.md
-    - 'Hyperspectral Workflow': hyperspectral_tutorial.md
+  - "Tutorials": tutorials.md
+  - 'Workflow Parallelization': pipeline_parallel.md
+  - 'Exporting Data': db-exporter.md
   - 'PlantCV Namespace':
     - 'PlantCV':
       - 'Analyze Color': analyze_color.md
@@ -175,6 +165,7 @@ nav:
           - 'Histogram': visualize_histogram.md
           - 'Overlay Images': visualize_ovelay_two_imgs.md
           - 'Object Size ECDF': visualize_obj_size_ecdf.md
+          - 'Object Sizes': visualize_obj_sizes.md
           - 'Pseudocolor': visualize_pseudocolor.md
       - 'Watershed Segmentation': watershed.md
       - 'White balance': white_balance.md

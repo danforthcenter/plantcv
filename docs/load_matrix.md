@@ -13,7 +13,7 @@ Load a matrix from an '.npz' file.
     - matrix - an ndarray loaded from a '.npz' file
     
 - **Example use:**
-    - [Color Correction Tutorial](transform_color_correction_tutorial.md)
+    - [Color Correction Tutorial](tutorials/transform_color_correction_tutorial.md)
 
 ```python
 

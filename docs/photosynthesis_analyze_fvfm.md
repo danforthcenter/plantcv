@@ -18,7 +18,7 @@ Extract Fv/Fm data of objects.
     - Generates histogram of Fv/Fm data.
     - Generates Fv/Fm image.
 - **Example use:**
-    - [Use In PSII Tutorial](psII_tutorial.md)
+    - [Use In PSII Tutorial](tutorials/psII_tutorial.md)
 - **Output data stored:** Data ('fvfm_hist', 'fvfm_hist_peak', 'fvfm_median', 'fdark_passed_qc') automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
     These data can always get accessed during a workflow (example below). [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 

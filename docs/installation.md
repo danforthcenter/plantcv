@@ -112,7 +112,7 @@ will persist on your local filesystem after the container is shut down.
 
 You can also run PlantCV on the command-line without Jupyter notebooks. For the sake of this example, assume that 
 your working directory contains a PlantCV script called `test-script.py` and an image called `test-image.png`. 
-The `test-script.py` in this case would be a script like the one described in the [VIS tutorial](vis_tutorial.md).
+The `test-script.py` in this case would be a script like the one described in the [VIS tutorial](tutorials/vis_tutorial.md).
 
 ```bash
 # Analyzing data using the PlantCV docker image

@@ -17,7 +17,7 @@ and plotnine ggplots (like the histograms returned in [pcv.analyze_nir_intensity
     - Often used to debug new image processing workflows
     - Used to write out final results images  
 - **Example use:**
-    - [Use In VIS Tutorial](vis_tutorial.md)  
+    - [Use In VIS Tutorial](tutorials/vis_tutorial.md)  
 
 ```python
 
