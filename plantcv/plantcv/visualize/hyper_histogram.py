@@ -23,6 +23,7 @@ def _get_color_dict_uv():
         uv_colors[wv] = uv_colors_[i]
     return uv_colors
 
+
 def _get_color_dict_vis():
     # vis
     params.color_scale = "turbo"
@@ -34,6 +35,7 @@ def _get_color_dict_vis():
         vis_colors[wv] = vis_colors_[i]
     return vis_colors
 
+
 def _get_color_dict_nir():
     # nir
     params.color_scale = "inferno"
@@ -41,11 +43,12 @@ def _get_color_dict_nir():
     # nir_wavelengths = [_round_to_multiple(x, multiple=4, min_wv=701, max_wv=1725) for x in nir_wavelengths_]
     nir_colors_ = color_palette(num=256)
     nir_colors_ = [tuple([xi / 255 for xi in nir_colors_[math.floor(idx / 4)]]) for (idx, _) in
-                  enumerate(nir_wavelengths)]
+                   enumerate(nir_wavelengths)]
     nir_colors = {}
     for i, wv in enumerate(nir_wavelengths):
         nir_colors[wv] = nir_colors_[i]
     return nir_colors
+
 
 def _rgb_to_webcode(rgb_values):
     """
@@ -153,7 +156,8 @@ def hyper_histogram(array, mask=None, bins=100, lower_bound=None, upper_bound=No
     debug = params.debug
     params.debug = None
 
-    # Create a dataframe for all histogram related information (using the "histogram" function in "visualization" subpackage)
+    # Create a dataframe for all histogram related information
+    # (using the "histogram" function in "visualization" subpackage)
     for i_wv, (wv, color) in enumerate(zip(wvlengths, colors_hex)):
         idx = match_ids[i_wv]
         _, hist_data = histogram(array_data[:, :, idx], mask=mask, bins=bins, lower_bound=lower_bound,
@@ -178,7 +182,3 @@ def hyper_histogram(array, mask=None, bins=100, lower_bound=None, upper_bound=No
     _debug(fig_hist, filename=os.path.join(params.debug_outdir, str(params.device) + '_histogram.png'))
 
     return fig_hist
-
-
-
-
