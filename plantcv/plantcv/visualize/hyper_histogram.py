@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import fatal_error, params, color_palette
-from plotnine import ggplot, aes, geom_line, scale_color_manual, theme_classic
+from plotnine import ggplot, aes, geom_line, scale_color_manual, theme_classic, labels
 from plantcv.plantcv.visualize import histogram
 from plantcv.plantcv.hyperspectral import _find_closest
 import math
@@ -181,6 +181,9 @@ def hyper_histogram(hsi, mask=None, bins=100, lower_bound=None, upper_bound=None
                 + scale_color_manual(colors_hex, expand=(0, 0))
                 + theme_classic()
                 )
+    if title is not None:
+        fig_hist = fig_hist + labels.ggtitle(title)
+
     params.debug = debug
     _debug(fig_hist, filename=os.path.join(params.debug_outdir, str(params.device) + '_histogram.png'))
 

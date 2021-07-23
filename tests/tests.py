@@ -6359,7 +6359,7 @@ def test_plantcv_visualize_hyper_histogram(wavelengths):
     array = pcv.hyperspectral.read_data(filename=spectral_filename)
     mask = np.ones((array.lines, array.samples))
 
-    fig_hist = pcv.visualize.hyper_histogram(array, mask, wvlengths=wavelengths)
+    fig_hist = pcv.visualize.hyper_histogram(array, mask, wvlengths=wavelengths, title="Hyper Histogram Test")
     assert isinstance(fig_hist, ggplot)
 
 
