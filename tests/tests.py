@@ -6350,10 +6350,9 @@ def test_plantcv_visualize_histogram_array():
 
 
 @pytest.mark.parametrize("wavelengths", [[], [390, 500, 640, 992, 990]])
-def test_plantcv_visualize_hyper_histogram(wavelengths, tmpdir):
-    # Test cache directory
-    img_outdir = tmpdir.mkdir("sub")
-    pcv.params.debug_outdir = img_outdir
+def test_plantcv_visualize_hyper_histogram(wavelengths):
+    # Test with debug = None
+    pcv.params.debug = None
 
     # Read in test data
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
@@ -6371,10 +6370,9 @@ def test_plantcv_visualize_hyper_histogram_wv_out_range():
         _ = pcv.visualize.hyper_histogram(array, wvlengths=[200,  550])
 
 
-def test_plantcv_visualize_hyper_histogram_extreme_wvs(tmpdir):
-    # Test cache directory
-    img_outdir = tmpdir.mkdir("sub")
-    pcv.params.debug_outdir = img_outdir
+def test_plantcv_visualize_hyper_histogram_extreme_wvs():
+    # Test with debug = None
+    pcv.params.debug = None
 
     # Read in test data
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
