@@ -13,7 +13,7 @@ This is a wrapper for the Opencv Function [bitwise_xor](https://docs.opencv.org/
 - **Context:**
     - Used to combine to images. Very useful when combining image channels that have been thresholded seperately.
 - **Example use:**
-    - [Use In VIS Tutorial](vis_tutorial.md)
+    - [Use In VIS Tutorial](tutorials/vis_tutorial.md)
 
 **Input binary image 1**
 

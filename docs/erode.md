@@ -15,7 +15,7 @@ conditions set in kernel are true, otherwise removes pixel.
 - **Context:**
     - Used to perform morphological erosion filtering. Helps remove isolated noise pixels or remove boundary of objects.
 - **Example use:**
-    - [Use In NIR Tutorial](nir_tutorial.md)
+    - [Use In NIR Tutorial](tutorials/nir_tutorial.md)
     
 **Input grayscale image**
 
