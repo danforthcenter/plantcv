@@ -469,7 +469,7 @@ def test_plantcv_parallel_metadata_parser_multivalue_filter_nomatch():
     }
     assert meta == expected
 
-    
+
 def test_plantcv_parallel_metadata_parser_regex():
     # Create config instance
     config = plantcv.parallel.WorkflowConfig()
@@ -1082,6 +1082,7 @@ TEST_INPUT_THERMAL_CSV = "FLIR2600.csv"
 # TEST_IM_BAD_NAN = "bad_mask_nan.pkl"
 # TEST_IM_BAD_INF = "bad_mask_inf.pkl"
 PIXEL_VALUES = "pixel_inspector_rgb_values.txt"
+TEST_INPUT_LEAF_MASK = "leaves_mask.png"
 
 # leaving photosynthesis data here so it can be used to test plot_image and print_image
 
@@ -6414,22 +6415,17 @@ def test_plantcv_threshold_mask_bad_input_color_img():
 # Tests for the visualize subpackage
 # ###################################
 def test_plantcv_visualize_auto_threshold_methods_bad_input():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_auto_threshold_methods")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    # Test with debug = None
+    pcv.params.debug = None
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.auto_threshold_methods(gray_img=img)
 
 
 def test_plantcv_visualize_auto_threshold_methods():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_auto_threshold_methods")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    # Test with debug = None
+    pcv.params.debug = None
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    pcv.params.debug = "print"
-    _ = pcv.visualize.auto_threshold_methods(gray_img=img)
-    pcv.params.debug = "plot"
     labeled_imgs = pcv.visualize.auto_threshold_methods(gray_img=img)
     assert len(labeled_imgs) == 5 and np.shape(labeled_imgs[0])[0] == np.shape(img)[0]
 
@@ -6518,25 +6514,12 @@ def test_plantcv_visualize_pseudocolor_bad_mask():
 
 
 def test_plantcv_visualize_colorize_masks():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_naive_bayes_classifier")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    # Read in test data
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    mask = pcv.naive_bayes_classifier(rgb_img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
-    _ = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']],
-                                     colors=[(0, 0, 0), (1, 1, 1)])
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']],
-                                     colors=[(0, 0, 0), (1, 1, 1)])
     # Test with debug = None
     pcv.params.debug = None
-    colored_img = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']],
-                                               colors=['red', 'blue'])
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
+    mask = pcv.naive_bayes_classifier(rgb_img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
+    colored_img = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']], colors=['red', 'blue'])
     # Assert that the output image has the dimensions of the input image
     assert not np.average(colored_img) == 0
 
@@ -6549,8 +6532,6 @@ def test_plantcv_visualize_colorize_masks_bad_input_empty():
 def test_plantcv_visualize_colorize_masks_bad_input_mismatch_number():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
     mask = pcv.naive_bayes_classifier(rgb_img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']], colors=['red', 'green', 'blue'])
@@ -6559,8 +6540,6 @@ def test_plantcv_visualize_colorize_masks_bad_input_mismatch_number():
 def test_plantcv_visualize_colorize_masks_bad_color_input():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
     mask = pcv.naive_bayes_classifier(rgb_img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']], colors=['red', 1.123])
@@ -6730,6 +6709,15 @@ def test_plantcv_visualize_overlay_two_imgs_size_mismatch():
     img2 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED))
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2)
+
+
+@pytest.mark.parametrize("num,expected", [[100, 35], [30, 33]])
+def test_plantcv_visualize_size(num, expected):
+    pcv.params.debug = None
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_LEAF_MASK), -1)
+    visualization = pcv.visualize.obj_sizes(img=img, mask=img, num_objects=num)
+    # Output unique colors are the 32 objects, the gray text, the black background, and white unlabeled leaves
+    assert len(np.unique(visualization.reshape(-1, visualization.shape[2]), axis=0)) == expected
 
 
 @pytest.mark.parametrize("title", ["Include Title", None])
