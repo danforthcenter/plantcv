@@ -5854,6 +5854,16 @@ def test_plantcv_transform_warp_align():
     assert warp_img.shape == (11, 11, 3)
 
 
+def test_plantcv_transform_gamma_correct():
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MARKER))
+    # Test
+    gamma_corrected = pcv.transform.gamma_correct(img=img, gamma=2, gain=1)
+    imgavg = np.average(img)
+    correctedavg = np.average(gamma_corrected)
+    assert correctedavg != imgavg
+
+
 # ##############################
 # Tests for the threshold subpackage
 # ##############################
