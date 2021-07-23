@@ -2,12 +2,12 @@
 
 This is a plotting method that is used to examine the distrubution of signal within an hyperspectral image for specific wavelengths. This function is an application of the [histogram](visualize_histogram.md) function.
 
-**plantcv.visualize.hyper_histogram**(*array, mask=None, bins=100, lower_bound=None, upper_bound=None, title=None, wvlengths=[480, 550, 670]*)
+**plantcv.visualize.hyper_histogram**(*hsi, mask=None, bins=100, lower_bound=None, upper_bound=None, title=None, wvlengths=[480, 550, 670]*)
 
 **returns** fig_hist
 
 - **Parameters:**
-    - array - Spectral_data
+    - hsi - Spectral_data
     - mask - Optional binary mask made from selected contours.
     - bins - Number of class to divide spectrum into (default bins=100).
     - lower_bound - Lower bound of range to be shown in the histogram (default lower_range=None). 
@@ -39,16 +39,16 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 # Showing histograms for 3 default wavelengths
-hist_figure1 = pcv.visualize.hyper_histogram(array, mask=mask)
+hist_figure1 = pcv.visualize.hyper_histogram(hsi, mask=mask)
 
 # Showing the histogram for a single wavelength (700nm)
-hist_figure2 = pcv.visualize.hyper_histogram(array, mask=mask, wvlengths=[700])
+hist_figure2 = pcv.visualize.hyper_histogram(hsi, mask=mask, wvlengths=[700])
 
 # Showing the histogram for two wavelengths 
-hist_figure3 = pcv.visualize.hyper_histogram(array, mask=mask, wvlengths=[380, 970])
+hist_figure3 = pcv.visualize.hyper_histogram(hsi, mask=mask, wvlengths=[380, 970])
 
 # Showing the histogram for multiple wavelengths
-hist_figure4 = pcv.visualize.hyper_histogram(array, mask, 
+hist_figure4 = pcv.visualize.hyper_histogram(hsi, mask, 
                                              wvlengths=[379, 409, 439, 469, 499, 529, 559, 568, 
                                                         619, 649, 679, 709, 739, 769, 799, 
                                                         829, 859, 889, 

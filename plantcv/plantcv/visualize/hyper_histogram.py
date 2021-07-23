@@ -62,14 +62,17 @@ def _rgb_to_webcode(rgb_values):
     return webcode
 
 
-def hyper_histogram(array, mask=None, bins=100, lower_bound=None, upper_bound=None,
+def hyper_histogram(hsi, mask=None, bins=100, lower_bound=None, upper_bound=None,
                     title=None, wvlengths=[480, 550, 650]):
-    """This function calculates the histogram of selected wavelengths hyperspectral images
+    """
+    Plot a histograms of selected wavelengths from a hyperspectral image.
+    
+    This function calculates the histogram of selected wavelengths hyperspectral images
     The color of the histograms are based on the wavelength if the wavelength is in the range of visible spectrum;
     otherwise, random colors are assigned
 
     Inputs:
-    array        = Hyperspectral data instance
+    hsi          = Hyperspectral data instance
     mask         = binary mask, if provided, calculate histogram from masked area only (default=None)
     bins         = divide the data into n evenly spaced bins (default=100)
     lower_bound  = the lower bound of the bins (x-axis min value) (default=None)
@@ -81,7 +84,7 @@ def hyper_histogram(array, mask=None, bins=100, lower_bound=None, upper_bound=No
     Returns:
     fig_hist      = histogram figure
 
-    :param array: plantcv.plantcv.classes.Spectral_data
+    :param hsi: plantcv.plantcv.classes.Spectral_data
     :param mask: numpy.ndarray
     :param bins: int
     :param lower_bound: None, int, float
@@ -95,7 +98,7 @@ def hyper_histogram(array, mask=None, bins=100, lower_bound=None, upper_bound=No
     wvlengths.sort()
 
     # Available wavelengths of the spectral data
-    wl_keys = array.wavelength_dict.keys()
+    wl_keys = hsi.wavelength_dict.keys()
     wls = np.array([float(i) for i in wl_keys])
     wls.sort()
 
@@ -107,11 +110,11 @@ def hyper_histogram(array, mask=None, bins=100, lower_bound=None, upper_bound=No
     # If the distance > 2x resolution, it is considered being out of available ranges
     checks = []
     for i in range(0, len(wvlengths)):
-        checks.append(array.min_wavelength - wvlengths[i] > 2 * spc_res)
-        checks.append(wvlengths[i] - array.max_wavelength > 2 * spc_res)
+        checks.append(hsi.min_wavelength - wvlengths[i] > 2 * spc_res)
+        checks.append(wvlengths[i] - hsi.max_wavelength > 2 * spc_res)
     if np.any(checks):
         fatal_error(f"At least one band is too far from the available wavelength range: "
-                    f"({array.min_wavelength},{array.max_wavelength})!")
+                    f"({hsi.min_wavelength},{hsi.max_wavelength})!")
 
     # Find indices of bands whose wavelengths are closest to desired ones
     match_ids = [_find_closest(wls, wv) for wv in wvlengths]
@@ -148,7 +151,7 @@ def hyper_histogram(array, mask=None, bins=100, lower_bound=None, upper_bound=No
     colors_rgb = [color_dict[wv] for wv in match_wls]
     colors_hex = [_rgb_to_webcode(x) for x in colors_rgb]
 
-    array_data = array.array_data
+    array_data = hsi.array_data
 
     # List of wavelengths recorded created from parsing the header file will be string, make list of floats
     histograms = dict()
@@ -170,10 +173,10 @@ def hyper_histogram(array, mask=None, bins=100, lower_bound=None, upper_bound=No
 
     # Make the histogram figure using plotnine
     df_hist = pd.melt(hist_dataset, id_vars=['reflectance'], value_vars=wvlengths,
-                      var_name='Wavelength (' + array.wavelength_units + ')', value_name='proportion of pixels (%)')
+                      var_name='Wavelength (' + hsi.wavelength_units + ')', value_name='proportion of pixels (%)')
 
     fig_hist = (ggplot(df_hist, aes(x='reflectance', y='proportion of pixels (%)',
-                                    color='Wavelength (' + array.wavelength_units + ')'))
+                                    color='Wavelength (' + hsi.wavelength_units + ')'))
                 + geom_line()
                 + scale_color_manual(colors_hex, expand=(0, 0))
                 + theme_classic()
