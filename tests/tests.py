@@ -6447,12 +6447,13 @@ def test_plantcv_visualize_overlay_two_imgs_size_mismatch():
         _ = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2)
 
 
-def test_plantcv_visualize_size():
+@pytest.mark.parametrize("num,expected", [[100, 35], [30, 33]])
+def test_plantcv_visualize_size(num, expected):
     pcv.params.debug = None
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_LEAF_MASK), -1)
-    visualization = pcv.visualize.obj_sizes(img=img, mask=img, num_objects=30)
+    visualization = pcv.visualize.obj_sizes(img=img, mask=img, num_objects=num)
     # Output unique colors are the 32 objects, the gray text, the black background, and white unlabeled leaves
-    assert len(np.unique(visualization.reshape(-1, visualization.shape[2]), axis=0)) == 33
+    assert len(np.unique(visualization.reshape(-1, visualization.shape[2]), axis=0)) == expected
 
 
 @pytest.mark.parametrize("title", ["Include Title", None])
