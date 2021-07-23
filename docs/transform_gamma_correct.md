@@ -1,8 +1,8 @@
 ## Gamma Correction
 
-Wrapper for scikit-image gamma correction function. Performs Gamma Correction on the input image. Also known as 
-    Power Law Transform. This function transforms the input image pixelwise according to the equation O = I**gamma 
-    after scaling each pixel to the range 0 to 1.
+Applies a [gamma correction](https://en.wikipedia.org/wiki/Gamma_correction) on the input image using the
+[scikit-image adjust_gamma](https://scikit-image.org/docs/dev/api/skimage.exposure.html?highlight=adjust_gamma#skimage.exposure.adjust_gamma)
+method. A pixelwise transformation is applied using the equation: `out = ((in / scale) ** gamma) * scale * gain`.
 
 **plantcv.transform.gamma_correct**(*img, gamma=1, gain=1*)
 
