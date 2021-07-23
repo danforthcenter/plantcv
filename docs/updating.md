@@ -900,7 +900,7 @@ pages for more details on the input and output variable types.
 #### plantcv.transform.gamma_correct
 
 * pre v3.12.1: NA
-* post v3.12.1: corrected_img = **plantcv.transform.gamma_correct**(*img, gamma=1, gain=1*)
+* post v3.13: corrected_img = **plantcv.transform.gamma_correct**(*img, gamma=1, gain=1*)
 
 #### plantcv.transform.get_color_matrix
 
