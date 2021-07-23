@@ -918,6 +918,11 @@ pages for more details on the input and output variable types.
 * post v3.9: df, start_coord, spacing = **plantcv.transform.find_color_card**(*rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark', record_chip_size='median'*)
 * post v3.11: df, start_coord, spacing = **plantcv.transform.find_color_card**(*rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark', record_chip_size='median', label="default"*)
 
+#### plantcv.transform.gamma_correct
+
+* pre v3.12.1: NA
+* post v3.13: corrected_img = **plantcv.transform.gamma_correct**(*img, gamma=1, gain=1*)
+
 #### plantcv.transform.get_color_matrix
 
 * pre v3.0dev1: NA
@@ -988,6 +993,11 @@ pages for more details on the input and output variable types.
 * post v3.5: fig_hist = **plantcv.visualize.histogram**(*gray_img, mask=None, bins=256, color='red', title=None*)
 * post v3.12: fig_hist, hist_data = **plantcv.visualize.histogram**(*img, mask=None, bins=100, lower_bound=None, upper_bound=None, title=None, hist_data=False*)
 
+#### plantcv.visualize.hyper_histogram
+
+* pre v3.13: NA
+* post v3.13: fig_hist = **plantcv.visualize.hyper_histogram**(*hsi, mask=None, bins=100, lower_bound=None, upper_bound=None, title=None, wvlengths=[480, 550, 650]*)
+
 #### plantcv.visualize.obj_size_ecdf
 
 * pre v3.13: NA
@@ -999,6 +1009,11 @@ pages for more details on the input and output variable types.
 * post v3.2: pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, dpi=None, axes=True, colorbar=True*)
 * post v3.3: pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, axes=True, colorbar=True*)
 * post v3.12: pseudo_img = **plantcv.visualize.pseudocolor**(*gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255, axes=True, colorbar=True, obj_padding="auto", title=None*)
+
+#### plantcv.visualize.obj_sizes
+
+* pre v3.13: NA
+* post v3.13: plotting_img = **pcv.visualize.obj_sizes**(*img, mask, num_objects=100*)
 
 #### plantcv.watershed_segmentation
 

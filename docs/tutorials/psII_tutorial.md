@@ -4,7 +4,7 @@ PlantCV is composed of modular functions that can be arranged (or rearranged) an
 Workflows do not need to be linear (and often are not). Please see workflow example below for more details.
 A global variable "debug" allows the user to print out the resulting image.
 The debug has three modes: either None, 'plot', or 'print'. If set to
-'print' then the function prints the image out, or if using a [Jupyter](jupyter.md) notebook you could set debug to 
+'print' then the function prints the image out, or if using a [Jupyter](../jupyter.md) notebook you could set debug to 
 'plot' to have the images plot to the screen.
 This allows users to visualize and optimize each step on individual test images and small test sets before workflows 
 are deployed over whole datasets.
@@ -85,7 +85,7 @@ def options():
 ```
 
 All required frames are contained within the `.DAT` files. See the documentation page for 
-[`plantcv.photosynthesis.read_cropreporter()`](photosynthesis_read_cropreporter.md) to see more detail on
+[`plantcv.photosynthesis.read_cropreporter()`](../photosynthesis_read_cropreporter.md) to see more detail on
 how this type of data is read in.
 
 ```python
@@ -104,14 +104,14 @@ def main():
 
 **Figure 1.** CropReporter dark-adapted images
 
-![Screenshot](img/documentation_images/photosynthesis_read_cropreporter/0_PSD-frames.png)
+![Screenshot](../img/documentation_images/photosynthesis_read_cropreporter/0_PSD-frames.png)
 
 From top-left to bottom-right: F-dark (lights off), F0 (minimum fluorescence of dark-adapted plant), and post-saturating
 light pulse images (PSD1-PSDn). The frame annotated as containing maximum fluorescence is labeled Fm.
 
 **Figure 2.** CropReporter light-adapted images
 
-![Screenshot](img/documentation_images/photosynthesis_read_cropreporter/1_PSL-frames.png)
+![Screenshot](../img/documentation_images/photosynthesis_read_cropreporter/1_PSL-frames.png)
 
 From top-left to bottom-right: F-light (lights on), Fp (steady-state fluorescence of light-adapted plant (F')), and 
 post-saturating light pulse images (PSL1-PSLn). The frame annotated as containing maximum fluorescence (Fm') is labeled 
@@ -119,13 +119,13 @@ Fmp.
 
 **Figure 3.** CropReporter chlorophyll fluorescence images
 
-![Screenshot](img/documentation_images/photosynthesis_read_cropreporter/2_CHL-frames.png)
+![Screenshot](../img/documentation_images/photosynthesis_read_cropreporter/2_CHL-frames.png)
 
 Top: F-dark, bottom: chlorophyll fluorescence.
 
 **Figure 4.** CropReporter spectral reflectance RGB image
 
-![Screenshot](img/documentation_images/photosynthesis_read_cropreporter/3_spectral-RGB.png)
+![Screenshot](../img/documentation_images/photosynthesis_read_cropreporter/3_spectral-RGB.png)
 
 The spectral dataset can contain blue (460nm), green (500nm), red (670nm), green2 (550nm), far-red (700nm), and 
 near-infrared (800nm) frames.
@@ -134,14 +134,14 @@ near-infrared (800nm) frames.
 class stores two dataset attributes (`datapath` and `filename`) and stores each of the datasets with the following
 variable names: `darkadapted`, `lightadapted`, `chlorophyll`, `spectral`. The darkadapted, lightadapted, and 
 chlorophyll datasets are stored as xarray DataArrays. The spectral dataset is stored as a PlantCV
-[Spectral_data](Spectral_data.md) class instance.
+[Spectral_data](../Spectral_data.md) class instance.
 
 #### Create a binary mask
 
 The chlorophyll fluorescence image can be thresholded to create a binary mask for the entire dataset.
 The scikit-image method `img_as_ubyte` converts the image from 16-bit to 8-bit. Thresholding is done
-using the autothreshold method [Otsu](otsu_threshold.md). Missing areas of the plant are filled in
-using the [fill_holes](fill_holes.md) function.
+using the autothreshold method [Otsu](../otsu_threshold.md). Missing areas of the plant are filled in
+using the [fill_holes](../fill_holes.md) function.
 
 ```python
     # Threshold the chlorophyll image
@@ -164,14 +164,14 @@ using the [fill_holes](fill_holes.md) function.
 
 **Figure 5.** Binary mask
 
-![Screenshot](img/tutorial_images/psII/mask.png)
+![Screenshot](../img/tutorial_images/psII/mask.png)
 
 #### Relabel the Fm and Fm' frames (optional)
 
 In this experiment, the plant was dark-adapted. An image is taken of the plant in the dark (F-dark). The plant is then
 exposed to a saturating red light pulse briefly. An image of chlorophyll fluorescence is taken immediately after the
 pulse to measure minimal fluorescence (F0). Successive images are taken at a fixed time interval (20 total frames from
-F0 to F19 in this example). Here we will use the [reassign_frame_labels](photosynthesis_reassign_frame_labels.md)
+F0 to F19 in this example). Here we will use the [reassign_frame_labels](../photosynthesis_reassign_frame_labels.md)
 function to analyze the fluorescence induction curve and identify the frame with maximal fluorescence (Fm).
 
 ```python
@@ -192,13 +192,13 @@ function to analyze the fluorescence induction curve and identify the frame with
 
 **Figure 6.** Dark-adapted fluorescence induction curve.  
 
-![Screenshot](img/documentation_images/photosynthesis_reassign_frame_labels/da_induction.png)
+![Screenshot](../img/documentation_images/photosynthesis_reassign_frame_labels/da_induction.png)
 
 After the Fv/Fm protocol, the plant is light-adapted. An image is taken of the plant in the light (F-light). The plant
 is then exposed to an actinic light, and an image of chlorophyll fluorescence is taken to measure steady-state
 fluorescence (F'). The plant is then exposed to a saturating red light pulse briefly. Successive images are taken at a 
 fixed time interval (20 total frames from F0 to F19 in this example). Here we will use the 
-[reassign_frame_labels](photosynthesis_reassign_frame_labels.md) function to analyze the fluorescence induction curve 
+[reassign_frame_labels](../photosynthesis_reassign_frame_labels.md) function to analyze the fluorescence induction curve 
 and identify the frame with maximal fluorescence (Fm').
 
 ```python
@@ -219,13 +219,13 @@ and identify the frame with maximal fluorescence (Fm').
 
 **Figure 7.** Light-adapted fluorescence induction curve.  
 
-![Screenshot](img/documentation_images/photosynthesis_reassign_frame_labels/la_induction.png)
+![Screenshot](../img/documentation_images/photosynthesis_reassign_frame_labels/la_induction.png)
 
 #### Estimate the efficiency of PSII
 
 Using the dark-adapted and light-adapted datasets, calculate the metric Fv/Fm to estimate the maximum efficiency of
 PSII and the metric Fq'/Fm' to estimate the operating efficiency of PSII. In both cases the function 
-[analyze_yii](photosynthesis_analyze_yii.md) is used.
+[analyze_yii](../photosynthesis_analyze_yii.md) is used.
 
 ```python
     # Analyze Fv/Fm
@@ -247,7 +247,7 @@ PSII and the metric Fq'/Fm' to estimate the operating efficiency of PSII. In bot
 
 **Figure 8.** Fv/Fm histogram.  
 
-![Screenshot](img/tutorial_images/psII/fvfm_hist.png)
+![Screenshot](../img/tutorial_images/psII/fvfm_hist.png)
 
 ```python
     # Analyze Fq'/Fm'
@@ -269,11 +269,11 @@ PSII and the metric Fq'/Fm' to estimate the operating efficiency of PSII. In bot
 
 **Figure 9.** Fq'/Fm' histogram.  
 
-![Screenshot](img/tutorial_images/psII/fqfm_hist.png)
+![Screenshot](../img/tutorial_images/psII/fqfm_hist.png)
 
 #### Estimate non-photochemical quenching
 
-Nonphotochemical quanching (NPQ) can be estimated using the [analyze_npq](photosynthesis_analyze_npq.md) function.
+Nonphotochemical quanching (NPQ) can be estimated using the [analyze_npq](../photosynthesis_analyze_npq.md) function.
 
 ```python
     # Analyze NPQ
@@ -297,9 +297,9 @@ Nonphotochemical quanching (NPQ) can be estimated using the [analyze_npq](photos
 
 **Figure 10.** NPQ histogram.  
 
-![Screenshot](img/tutorial_images/psII/npq_hist.png)
+![Screenshot](../img/tutorial_images/psII/npq_hist.png)
 
-Optionally, the Fv/Fm, Fq'/Fm', and NPQ images can be visualized using the [pseudocolor](visualize_pseudocolor.md)
+Optionally, the Fv/Fm, Fq'/Fm', and NPQ images can be visualized using the [pseudocolor](../visualize_pseudocolor.md)
 function to assess the distribution of values across the plant.
 
 ```python
@@ -335,21 +335,21 @@ function to assess the distribution of values across the plant.
 
 **Figure 11.** Pseudocolored Fv/Fm.  
 
-![Screenshot](img/documentation_images/fluor_fvfm/fvfm_colormap.png)
+![Screenshot](../img/documentation_images/fluor_fvfm/fvfm_colormap.png)
 
 **Figure 12.** Pseudocolored Fq'/Fm'.  
 
-![Screenshot](img/documentation_images/fluor_fvfm/fqfm_colormap.png)
+![Screenshot](../img/documentation_images/fluor_fvfm/fqfm_colormap.png)
 
 **Figure 13.** Pseudocolored NPQ.  
 
-![Screenshot](img/documentation_images/analyze_npq/npq_colormap.png)
+![Screenshot](../img/documentation_images/analyze_npq/npq_colormap.png)
 
 #### Analyze spectral indices (optional)
 
 ##### Anthocyanin Reflectance Index
 
-Calculate ARI using the [ari](spectral_index.md) function, plot a colormap, and analyze the plant values.
+Calculate ARI using the [ari](../spectral_index.md) function, plot a colormap, and analyze the plant values.
 
 ```python
     # Inputs:
@@ -377,15 +377,15 @@ Calculate ARI using the [ari](spectral_index.md) function, plot a colormap, and 
 
 **Figure 14.** ARI pseudocolor image.  
 
-![Screenshot](img/tutorial_images/psII/ari.png)
+![Screenshot](../img/tutorial_images/psII/ari.png)
 
 **Figure 15.** ARI histogram.  
 
-![Screenshot](img/tutorial_images/psII/ari_hist.png)
+![Screenshot](../img/tutorial_images/psII/ari_hist.png)
 
 ##### Chlorophyll Index Red Edge
 
-Calculate CI using the [ci_rededge](spectral_index.md) function, plot a colormap, and analyze the plant values.
+Calculate CI using the [ci_rededge](../spectral_index.md) function, plot a colormap, and analyze the plant values.
 
 ```python
     # Inputs:
@@ -413,15 +413,15 @@ Calculate CI using the [ci_rededge](spectral_index.md) function, plot a colormap
 
 **Figure 16.** CI pseudocolor image.  
 
-![Screenshot](img/tutorial_images/psII/ci.png)
+![Screenshot](../img/tutorial_images/psII/ci.png)
 
 **Figure 17.** CI histogram.  
 
-![Screenshot](img/tutorial_images/psII/ci_hist.png)
+![Screenshot](../img/tutorial_images/psII/ci_hist.png)
 
 ##### Normalized Difference Vegetation Index
 
-Calculate NDVI using the [ndvi](spectral_index.md) function, plot a colormap, and analyze the plant values.
+Calculate NDVI using the [ndvi](../spectral_index.md) function, plot a colormap, and analyze the plant values.
 
 ```python
     # Inputs:
@@ -449,11 +449,11 @@ Calculate NDVI using the [ndvi](spectral_index.md) function, plot a colormap, an
 
 **Figure 18.** NDVI pseudocolor image.  
 
-![Screenshot](img/tutorial_images/psII/ndvi.png)
+![Screenshot](../img/tutorial_images/psII/ndvi.png)
 
 **Figure 19.** NDVI histogram.  
 
-![Screenshot](img/tutorial_images/psII/ndvi_hist.png)
+![Screenshot](../img/tutorial_images/psII/ndvi_hist.png)
 
 #### Save results and finish the workflow
 
@@ -482,7 +482,7 @@ if __name__ == '__main__':
 
 ```
 
-To deploy a workflow over a full image set please see tutorial on [workflow parallelization](pipeline_parallel.md).
+To deploy a workflow over a full image set please see tutorial on [workflow parallelization](../pipeline_parallel.md).
 
 ## PSII Script
 

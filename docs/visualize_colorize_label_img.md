@@ -11,7 +11,7 @@ This is a plotting method used to visualize labeled images.
 - **Context:**
     - Visualize different class labels in one image
 - **Example use:**
-    - [Use In Morphology Tutorial](morphology_tutorial.md)
+    - [Use In Morphology Tutorial](tutorials/morphology_tutorial.md)
 
 **Original image**
 

@@ -469,7 +469,7 @@ def test_plantcv_parallel_metadata_parser_multivalue_filter_nomatch():
     }
     assert meta == expected
 
-    
+
 def test_plantcv_parallel_metadata_parser_regex():
     # Create config instance
     config = plantcv.parallel.WorkflowConfig()
@@ -1082,6 +1082,7 @@ TEST_INPUT_THERMAL_CSV = "FLIR2600.csv"
 # TEST_IM_BAD_NAN = "bad_mask_nan.pkl"
 # TEST_IM_BAD_INF = "bad_mask_inf.pkl"
 PIXEL_VALUES = "pixel_inspector_rgb_values.txt"
+TEST_INPUT_LEAF_MASK = "leaves_mask.png"
 
 # leaving photosynthesis data here so it can be used to test plot_image and print_image
 
@@ -6115,6 +6116,16 @@ def test_plantcv_transform_warp_align():
     assert warp_img.shape == (11, 11, 3)
 
 
+def test_plantcv_transform_gamma_correct():
+    # Read in test data
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MARKER))
+    # Test
+    gamma_corrected = pcv.transform.gamma_correct(img=img, gamma=2, gain=1)
+    imgavg = np.average(img)
+    correctedavg = np.average(gamma_corrected)
+    assert correctedavg != imgavg
+
+
 # ##############################
 # Tests for the threshold subpackage
 # ##############################
@@ -6414,22 +6425,17 @@ def test_plantcv_threshold_mask_bad_input_color_img():
 # Tests for the visualize subpackage
 # ###################################
 def test_plantcv_visualize_auto_threshold_methods_bad_input():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_auto_threshold_methods")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    # Test with debug = None
+    pcv.params.debug = None
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.auto_threshold_methods(gray_img=img)
 
 
 def test_plantcv_visualize_auto_threshold_methods():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_auto_threshold_methods")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    # Test with debug = None
+    pcv.params.debug = None
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    pcv.params.debug = "print"
-    _ = pcv.visualize.auto_threshold_methods(gray_img=img)
-    pcv.params.debug = "plot"
     labeled_imgs = pcv.visualize.auto_threshold_methods(gray_img=img)
     assert len(labeled_imgs) == 5 and np.shape(labeled_imgs[0])[0] == np.shape(img)[0]
 
@@ -6517,26 +6523,16 @@ def test_plantcv_visualize_pseudocolor_bad_mask():
     pcv.params.debug = None
 
 
-def test_plantcv_visualize_colorize_masks():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_naive_bayes_classifier")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    # Read in test data
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    mask = pcv.naive_bayes_classifier(rgb_img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
-    _ = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']],
-                                     colors=[(0, 0, 0), (1, 1, 1)])
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']],
-                                     colors=[(0, 0, 0), (1, 1, 1)])
+@pytest.mark.parametrize('colors', [['red', 'blue'], [(0, 0, 255), (255, 0, 0)]])
+def test_plantcv_visualize_colorize_masks(colors):
     # Test with debug = None
     pcv.params.debug = None
-    colored_img = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']],
-                                               colors=['red', 'blue'])
+    # Create test data
+    mask1 = np.zeros((100, 100), dtype=np.uint8)
+    mask2 = np.copy(mask1)
+    mask1[0:50, 0:50] = 255
+    mask2[50:100, 50:100] = 255
+    colored_img = pcv.visualize.colorize_masks(masks=[mask1, mask2], colors=colors)
     # Assert that the output image has the dimensions of the input image
     assert not np.average(colored_img) == 0
 
@@ -6547,23 +6543,23 @@ def test_plantcv_visualize_colorize_masks_bad_input_empty():
 
 
 def test_plantcv_visualize_colorize_masks_bad_input_mismatch_number():
-    # Read in test data
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    mask = pcv.naive_bayes_classifier(rgb_img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
+    # Create test data
+    mask1 = np.zeros((100, 100), dtype=np.uint8)
+    mask2 = np.copy(mask1)
+    mask1[0:50, 0:50] = 255
+    mask2[50:100, 50:100] = 255
     with pytest.raises(RuntimeError):
-        _ = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']], colors=['red', 'green', 'blue'])
+        _ = pcv.visualize.colorize_masks(masks=[mask1, mask2], colors=['red', 'green', 'blue'])
 
 
 def test_plantcv_visualize_colorize_masks_bad_color_input():
-    # Read in test data
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    mask = pcv.naive_bayes_classifier(rgb_img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
+    # Create test data
+    mask1 = np.zeros((100, 100), dtype=np.uint8)
+    mask2 = np.copy(mask1)
+    mask1[0:50, 0:50] = 255
+    mask2[50:100, 50:100] = 255
     with pytest.raises(RuntimeError):
-        _ = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']], colors=['red', 1.123])
+        _ = pcv.visualize.colorize_masks(masks=[mask1, mask2], colors=['red', 1.123])
 
 
 def test_plantcv_visualize_colorize_label_img():
@@ -6612,7 +6608,6 @@ def test_plantcv_visualize_histogram_multispectral_img():
     fig_hist = pcv.visualize.histogram(img=img_multi)
     assert isinstance(fig_hist, ggplot)
 
-
 def test_plantcv_visualize_histogram_no_img():
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.histogram(img=None)
@@ -6623,6 +6618,46 @@ def test_plantcv_visualize_histogram_array():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.histogram(img=img[0, :])
+
+
+@pytest.mark.parametrize("wavelengths", [[], [390, 500, 640, 992, 990]])
+def test_plantcv_visualize_hyper_histogram(wavelengths):
+    # Test with debug = None
+    pcv.params.debug = None
+
+    # Read in test data
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    array = pcv.hyperspectral.read_data(filename=spectral_filename)
+    mask = np.ones((array.lines, array.samples))
+
+    fig_hist = pcv.visualize.hyper_histogram(array, mask, wvlengths=wavelengths, title="Hyper Histogram Test")
+    assert isinstance(fig_hist, ggplot)
+
+
+def test_plantcv_visualize_hyper_histogram_wv_out_range():
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    array = pcv.hyperspectral.read_data(filename=spectral_filename)
+    with pytest.raises(RuntimeError):
+        _ = pcv.visualize.hyper_histogram(array, wvlengths=[200,  550])
+
+
+def test_plantcv_visualize_hyper_histogram_extreme_wvs():
+    # Test with debug = None
+    pcv.params.debug = None
+
+    # Read in test data
+    spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
+    array = pcv.hyperspectral.read_data(filename=spectral_filename)
+    mask = np.ones((array.lines, array.samples))
+
+    wv_keys = list(array.wavelength_dict.keys())
+    wavelengths = [250, 270, 1800, 2500]
+    # change first 4 keys
+    for (k_, k) in zip(wv_keys[0:5], wavelengths):
+        array.wavelength_dict[k] = array.wavelength_dict.pop(k_)
+    array.min_wavelength, array.max_wavelength = min(array.wavelength_dict), max(array.wavelength_dict)
+    fig_hist = pcv.visualize.hyper_histogram(array, mask, wvlengths=wavelengths)
+    assert isinstance(fig_hist, ggplot)
 
 
 def test_plantcv_visualize_clustered_contours():
@@ -6730,6 +6765,15 @@ def test_plantcv_visualize_overlay_two_imgs_size_mismatch():
     img2 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED))
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.overlay_two_imgs(img1=img1, img2=img2)
+
+
+@pytest.mark.parametrize("num,expected", [[100, 35], [30, 33]])
+def test_plantcv_visualize_size(num, expected):
+    pcv.params.debug = None
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_LEAF_MASK), -1)
+    visualization = pcv.visualize.obj_sizes(img=img, mask=img, num_objects=num)
+    # Output unique colors are the 32 objects, the gray text, the black background, and white unlabeled leaves
+    assert len(np.unique(visualization.reshape(-1, visualization.shape[2]), axis=0)) == expected
 
 
 @pytest.mark.parametrize("title", ["Include Title", None])

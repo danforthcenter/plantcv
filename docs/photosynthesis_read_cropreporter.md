@@ -24,7 +24,7 @@ with labeled frames.
       `spectral`. Frames are stored by reflectance wavelength and can include: blue (460nm), green (500nm), red (670nm),
       green2 (550nm), far-red (700nm), and near-infrared (800nm).
 - **Example use:**
-    - [Use In PSII Tutorial](psII_tutorial.md) 
+    - [Use In PSII Tutorial](tutorials/psII_tutorial.md) 
 
 !!! note
     This function assumes a specific pattern between the .INF metadata file and the corresponding .DAT binary image

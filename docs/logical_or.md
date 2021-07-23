@@ -14,8 +14,8 @@ This is a wrapper for the Opencv Function [bitwise_or](http://docs.opencv.org/2.
 - **Context:**
     - Used to combine to images. Very useful when combining image channels that have been thresholded seperately.
 - **Example use:**
-    - [Use In VIS Tutorial](vis_tutorial.md)
-    - [Use In NIR Tutorial](nir_tutorial.md)
+    - [Use In VIS Tutorial](tutorials/vis_tutorial.md)
+    - [Use In NIR Tutorial](tutorials/nir_tutorial.md)
     
 **Input binary image 1**
 

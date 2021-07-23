@@ -17,7 +17,7 @@ observed and relabels the Fm or Fm' frame, if needed.
     - Used to assign Fm or Fm' based on observed plant fluorescence.
     - Generates a plot of fluorescence induction over a timeseries.
 - **Example use:**
-    - [Use In PSII Tutorial](psII_tutorial.md)
+    - [Use In PSII Tutorial](tutorials/psII_tutorial.md)
 
 **Assign Fm**
 

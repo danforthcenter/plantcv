@@ -17,7 +17,7 @@ Extract estimates of the efficiency (YII) of Photosystem II (PSII). The photosyn
     - Generates histogram of Fv/Fm, Fv'/Fm' or Fq'/Fm' data.
     - Generates an Fv/Fm, Fv'/Fm' or Fq'/Fm' image.
 - **Example use:**
-    - [Use In PSII Tutorial](psII_tutorial.md)
+    - [Use In PSII Tutorial](tutorials/psII_tutorial.md)
 - **Output data stored:** Data ('yii_hist_{measurement_label}', 'yii_max_{measurement_label}', 'yii_median_{measurement_label}' automatically gets stored to the 
   [`Outputs` class](outputs.md) when this function is run. These data can always get accessed during a workflow 
   (example below). [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
