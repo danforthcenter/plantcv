@@ -12,7 +12,7 @@ import math
 
 
 def _get_color_dict_uv():
-    # uv
+    """Create a color dictionary for UV wavelengths."""
     params.color_scale = "cool_r"
     uv_wavelengths = np.arange(290, 444)
     uv_colors_ = color_palette(num=256)
@@ -25,7 +25,7 @@ def _get_color_dict_uv():
 
 
 def _get_color_dict_vis():
-    # vis
+    """Create a color dictionary for VIS wavelengths."""
     params.color_scale = "turbo"
     vis_wavelengths = np.arange(445, 701)
     vis_colors_ = color_palette(num=256)
@@ -37,7 +37,7 @@ def _get_color_dict_vis():
 
 
 def _get_color_dict_nir():
-    # nir
+    """Create a color dictionary for infrared wavelengths."""
     params.color_scale = "inferno"
     nir_wavelengths = np.arange(701, 1725)
     # nir_wavelengths = [_round_to_multiple(x, multiple=4, min_wv=701, max_wv=1725) for x in nir_wavelengths_]
@@ -52,7 +52,13 @@ def _get_color_dict_nir():
 
 def _rgb_to_webcode(rgb_values):
     """
-    RGB_value: a tuple of RGB values (0~1, float)
+    Convert RGB values to webcodes.
+
+    Inputs:
+    rgb_value: a tuple of RGB values (0~1, float)
+
+    Returns:
+    webcode: a webcode string encoding the RGB values
     """
     webcode = "#"
     for value in rgb_values:
