@@ -7,21 +7,19 @@ from plantcv.plantcv._debug import _debug
 
 
 def gamma_correct(img, gamma=1, gain=1):
-    """Wrapper for scikit-image gamma correction function. Performs Gamma Correction on the input image. Also known as
-    Power Law Transform. This function transforms the input image pixelwise according to the equation O = I**gamma
-    after scaling each pixel to the range 0 to 1.
+    """
+    Apply a gamma correction to the input image.
 
     Inputs:
     img     = input image (RGB or grayscale)
     gamma   = Non negative real number. Default value is 1.
     gain    = The constant multiplier. Default value is 1.
 
-    :param img: ndarray
-    :param gamma = float
-    :param gain = float
-    :return corrected_img: ndarray
+    :param img: numpy.ndarray
+    :param gamma: float
+    :param gain: float
+    :return corrected_img: numpy.ndarray
     """
-
     corrected_img = exposure.adjust_gamma(image=img, gamma=gamma, gain=gain)
 
     _debug(visual=corrected_img,
