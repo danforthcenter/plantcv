@@ -6260,13 +6260,14 @@ def test_plantcv_visualize_pseudocolor_bad_mask():
     pcv.params.debug = None
 
 
-def test_plantcv_visualize_colorize_masks():
+@pytest.mark.parametrize('colors', [['red', 'blue'], [(0, 0, 255), (255, 0, 0)]])
+def test_plantcv_visualize_colorize_masks(colors):
     # Test with debug = None
     pcv.params.debug = None
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = pcv.naive_bayes_classifier(rgb_img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
-    colored_img = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']], colors=['red', 'blue'])
+    colored_img = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['background']], colors=colors)
     # Assert that the output image has the dimensions of the input image
     assert not np.average(colored_img) == 0
 
