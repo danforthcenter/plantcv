@@ -1,8 +1,7 @@
 # Gamma Correction Function
 
 import os
-import numpy as np
-from skimage import exposure, img_as_float
+from skimage import exposure
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 
