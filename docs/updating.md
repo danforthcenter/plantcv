@@ -961,6 +961,11 @@ pages for more details on the input and output variable types.
 * post v3.5: fig_hist = **plantcv.visualize.histogram**(*gray_img, mask=None, bins=256, color='red', title=None*)
 * post v3.12: fig_hist, hist_data = **plantcv.visualize.histogram**(*img, mask=None, bins=100, lower_bound=None, upper_bound=None, title=None, hist_data=False*)
 
+#### plantcv.visualize.hyper_histogram
+
+* pre v3.13: NA
+* post v3.13: fig_hist = **plantcv.visualize.hyper_histogram**(*hsi, mask=None, bins=100, lower_bound=None, upper_bound=None, title=None, wvlengths=[480, 550, 650]*)
+
 #### plantcv.visualize.obj_size_ecdf
 
 * pre v3.13: NA
