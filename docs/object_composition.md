@@ -14,9 +14,9 @@ Combine objects together for downstream analysis, usually done after object filt
 - **Context:**
     - This function combines objects together. This is important for downstream analysis of shape characteristics, if plant objects are not combined then one plant can appear to be many different objects.
 - **Example use:**
-    - [Use in VIS tutorial](vis_tutorial.md)
-    - [Use in NIR tutorial](nir_tutorial.md)
-    - [Use in PSII tutorial](psII_tutorial.md) 
+    - [Use in VIS tutorial](tutorials/vis_tutorial.md)
+    - [Use in NIR tutorial](tutorials/nir_tutorial.md)
+    - [Use in PSII tutorial](tutorials/psII_tutorial.md) 
 
 **Original image**
 

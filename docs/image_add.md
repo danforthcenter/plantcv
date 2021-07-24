@@ -14,7 +14,7 @@ than the cv2.add fxn which is a saturation operation.
 - **Context:**
     - Used to combine/stack the pixelwise intensity found in two images
 - **Example use:**
-    - [Use In NIR Tutorial](nir_tutorial.md)
+    - [Use In NIR Tutorial](tutorials/nir_tutorial.md)
     
 **Image 1 to be added**
 
