@@ -1597,7 +1597,11 @@ def test_plantcv_auto_crop():
     roi_contours = [contours[arr_n] for arr_n in contours]
     # Test with debug = None
     pcv.params.debug = None
+    # padding as tuple
     _ = pcv.auto_crop(img=img1, obj=roi_contours[1], padding_x=(20, 10), padding_y=(20, 10), color='black')
+    # padding 0 so crop same as image
+    _ = pcv.auto_crop(img=img1, obj=roi_contours[1], color='image')
+    # padding as int
     cropped = pcv.auto_crop(img=img1, obj=roi_contours[1], padding_x=20, padding_y=20, color='image')
     x, y, z = np.shape(img1)
     x1, y1, z1 = np.shape(cropped)
