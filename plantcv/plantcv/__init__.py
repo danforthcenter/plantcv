@@ -83,6 +83,7 @@ from plantcv.plantcv.fill_holes import fill_holes
 from plantcv.plantcv.get_kernel import get_kernel
 from plantcv.plantcv.crop import crop
 from plantcv.plantcv.stdev_filter import stdev_filter
+from plantcv.plantcv import time_series
 from plantcv.plantcv.spatial_clustering import spatial_clustering
 from plantcv.plantcv import photosynthesis
 from plantcv.plantcv import time_series
@@ -105,12 +106,6 @@ __all__ = ['fatal_error', 'Params', 'Outputs', 'Spectral_data', 'deprecation_war
            'x_axis_pseudolandmarks', 'y_axis_pseudolandmarks', 'cluster_contours', 'visualize',
            'cluster_contour_splitimg', 'rotate', 'shift_img', 'output_mask', 'auto_crop', 'canny_edge_detect',
            'background_subtraction', 'naive_bayes_classifier', 'acute', 'distance_transform', 'params',
-           'cluster_contour_mask', 'analyze_thermal_values', 'opening',
-           'closing', 'within_frame', 'fill_holes', 'get_kernel', 'Spectral_data', 'crop', 'stdev_filter', 'time_series',
-           'cluster_contour_mask','analyze_thermal_values', 'opening',
-           'closing','within_frame', 'fill_holes', 'get_kernel', 'Spectral_data', 'crop', 'stdev_filter',
-           'spatial_clustering']
-
-from ._version import get_versions
-__version__ = get_versions()['version']
-del get_versions
+           'cluster_contour_mask', 'analyze_thermal_values', 'opening','closing', 'within_frame', 'fill_holes', 'get_kernel', 
+           'Spectral_data', 'crop', 'stdev_filter', 'spatial_clustering'
+           'time_series', 'photosynthesis']
