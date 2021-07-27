@@ -110,7 +110,7 @@ class InstanceTimeSeriesLinking(object):
 
         weight = np.delete(weight, idx_col, 1)
 
-        row_ind, col_ind = linear_sum_assignment(weight)
+        row_ind, col_ind = linear_sum_assignment(weight, maximuze=True)
         for (r, c) in zip(row_ind, col_ind):
             if weight[r, c] >= thres:
                 link[r] = avail_col[c]
