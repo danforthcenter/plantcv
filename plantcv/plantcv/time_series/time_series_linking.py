@@ -112,7 +112,7 @@ class InstanceTimeSeriesLinking(object):
 
         row_ind, col_ind = linear_sum_assignment(weight)
         for (r, c) in zip(row_ind, col_ind):
-            if weight[r, c] <= thres:
+            if weight[r, c] >= thres:
                 link[r] = avail_col[c]
         return link, row_ind, col_ind
 
