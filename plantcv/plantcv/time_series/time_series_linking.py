@@ -105,7 +105,7 @@ class InstanceTimeSeriesLinking(object):
         n1, n2 = weight.shape
         link = -np.ones(n1, dtype=np.int64)
 
-        idx_col = np.where(np.max(weight, axis=0) > thres)[0]  # find those columns with maximum value < threshold
+        idx_col = np.where(np.max(weight, axis=0) < thres)[0]  # find those columns with maximum value < threshold
         avail_col = [x for x in range(0, n2) if x not in idx_col]
 
         weight = np.delete(weight, idx_col, 1)
