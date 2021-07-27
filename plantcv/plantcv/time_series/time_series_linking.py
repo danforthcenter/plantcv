@@ -201,7 +201,7 @@ class InstanceTimeSeriesLinking(object):
 
         masks0, masks1 = copy.deepcopy(self.masks[t0]), copy.deepcopy(self.masks[t0 + 1])  # both masks0 and masks1 are ndarrays
         self.weights[t0], _, _, _ = self.compute_overlaps_weights(masks0, masks1, self.metric)
-        self.link_info[t0], _, _ = self.get_link(-self.weights[t0], self.thres)
+        self.link_info[t0], _, _ = self.get_link(self.weights[t0], self.thres)
 
     def get_uid(self):
         """
