@@ -124,7 +124,7 @@ class InstanceTimeSeriesLinking(object):
         The overlaps are represented by IoU (intersection over union) and IoS (intersection over self-area of the 1st mask).
         Inputs:
         masks1 = Binary masks data correspond to the 1st image
-        masks1 = Binary masks data correspond to the 2nd image
+        masks2 = Binary masks data correspond to the 2nd image
         metric = metric to evaluate the overlap between 2 sets of binary masks
         Outputs:
         n1     = the number of instances in 1st set of binary masks
@@ -312,24 +312,56 @@ class InstanceTimeSeriesLinking(object):
                 leaf_status_report[t, uid] = np.sum(masks_t[:, :, cid])
         return leaf_status_report
 
-
-    def visualize(self, imgs, timepoints, visualdir, color_all=None):
+    @staticmethod
+    def visualize(imgs, masks_all, tps, savedir, ti = None, color_all = None):
         params.debug = "plot"
-        if not osp.exists(visualdir):
-            os.makedirs(visualdir)
-        if color_all is None:
-            colors_ = color_palette(self.N)
+        if not osp.exists(savedir):
+            os.makedirs(savedir)
+
+        n_insts = [masks.shape[2] for masks in masks_all]
+        if not color_all:
+            if not ti: # if no tracking information provided, the color assignment would base on local id (cid) solely
+                N = max(n_insts)
+                T = len(imgs)
+            else:
+                T, N = ti.shape
+            colors_ = color_palette(N)
             colors = [tuple([ci / 255 for ci in c]) for c in colors_]
-            color_all = [[tuple() for _ in range(0, num)] for num in self.n_insts]
-            for (t,ti_t) in enumerate(self.ti):
-                for (uid,cid) in enumerate(ti_t):
-                    if cid > -1:
-                        color_all[t][cid] = colors[uid]
-        for img,masks,t,colors_t in zip(imgs, self.masks, timepoints, color_all):
+            if not ti:
+                color_all = [[colors[i] for i in range(0, num)] for num in n_insts]
+            else:
+                color_all = [[tuple() for _ in range(0, num)] for num in n_insts]
+                for (t,ti_t) in enumerate(ti):
+                    for (uid,cid) in enumerate(ti_t):
+                        if cid > -1:
+                            color_all[t][cid] = colors[uid]
+        for img, masks, t, colors_t in zip(imgs, masks, tps, color_all):
             savename = osp.join(visualdir, '{}.jpg'.format(t))
             display_instances(img, masks, colors=colors_t)
             plt.savefig(savename, bbox_inches="tight", pad_inches=0)
             plt.close("all")
+
+
+
+
+
+    # def visualize(self, imgs, timepoints, visualdir, color_all=None):
+    #     params.debug = "plot"
+    #     if not osp.exists(visualdir):
+    #         os.makedirs(visualdir)
+    #     if color_all is None:
+    #         colors_ = color_palette(self.N)
+    #         colors = [tuple([ci / 255 for ci in c]) for c in colors_]
+    #         color_all = [[tuple() for _ in range(0, num)] for num in self.n_insts]
+    #         for (t,ti_t) in enumerate(self.ti):
+    #             for (uid,cid) in enumerate(ti_t):
+    #                 if cid > -1:
+    #                     color_all[t][cid] = colors[uid]
+    #     for img,masks,t,colors_t in zip(imgs, self.masks, timepoints, color_all):
+    #         savename = osp.join(visualdir, '{}.jpg'.format(t))
+    #         display_instances(img, masks, colors=colors_t)
+    #         plt.savefig(savename, bbox_inches="tight", pad_inches=0)
+    #         plt.close("all")
 
     def link(self, masks, metric="IOS", thres=0.2):
 
