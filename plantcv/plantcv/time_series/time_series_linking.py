@@ -309,7 +309,7 @@ class InstanceTimeSeriesLinking(object):
             ti_t = ti[t, :]
             for cid in range(masks_t.shape[2]):
                 uid = np.where(ti_t == cid)[0][0]
-                leaf_status_report[t, uid] = np.sum(masks[:, :, cid])
+                leaf_status_report[t, uid] = np.sum(masks_t[:, :, cid])
         return leaf_status_report
 
 
