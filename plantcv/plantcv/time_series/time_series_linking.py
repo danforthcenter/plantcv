@@ -74,6 +74,7 @@ class InstanceTimeSeriesLinking(object):
         self.metric = None
         # self.name_sub = None
         # self.key_id = None
+        self.leaf_status_report = None
 
         # update releated
         self.updated = 0
@@ -171,120 +172,146 @@ class InstanceTimeSeriesLinking(object):
             return ioss, n1, n2, unions
 
     def save_linked_series(self, savedir, savename):
-        """save linking information into a .pkl file with the same prefix of filename
-        Inputs:
-        savedir  = desired saving directory
-        savename = desired saving name
-
-        :param savedir: str
-        :param savename: str
-        :return:
-        """
-
         pkl.dump(vars(self), open(osp.join(savedir,  f"{savename}.pkl"), 'wb'))
 
     def import_linked_series(self, savedir, savename):
-        """import a linked time-series from previously saved file
-        savedir = directory of saved file
-        savename = name of saved file
-
-        :param savedir: str
-        :param savename: str
-        :return:
-        """
-
         linked = pkl.load(open(osp.join(savedir, savename + '.pkl'), "rb"))
         for key, value in linked.items():
             setattr(self, key, value)
 
     def linking(self,t0):
-
+        """
+        Time-series linking for a given timepoint to the next time point
+        :param t0:
+        :return:
+        """
         masks0, masks1 = copy.deepcopy(self.masks[t0]), copy.deepcopy(self.masks[t0 + 1])  # both masks0 and masks1 are ndarrays
         self.weights[t0], _, _, _ = self.compute_overlaps_weights(masks0, masks1, self.metric)
         self.link_info[t0], _, _ = self.get_link(self.weights[t0], self.thres)
 
-    def get_uid(self):
+    @staticmethod
+    def get_uid(link_info, n_insts):
         """
-        get unique ids for every timepoint based on link_info
-        uids: a list
-            arrays inside the list
-            every array has a length of num_insts for that corresponding time
+        Get unique ids for every timepoint
+        Inputs:
+        link_info = link information for every timepoint. If there are T timepoints in total, the length of link_info would be T-1
+        n_insts   = number of instances for every timepiont
+        Outputs:
+        uids      = every array inside the list has a length of n_insts for that corresponding time
+        N         = number of unique instances
+        :param link_info: list
+        :param n_insts: list
+        :return uids: list
+        :return N: int
         """
-        self.uids = [-np.ones(n, dtype=np.int64) for n in self.n_insts]
-        self.uids[0] = np.arange(len(self.link_info[0]), dtype=np.int64)
-        # self.max_uid = max(self.uids[0])
-        max_uid = max(self.uids[0])
-        self.N = len(self.uids[0])
-        for (t, link_t) in enumerate(self.link_info):
+
+        uids = [-np.ones(n, dtype=np.int64) for n in n_insts]
+        uids[0] = np.arange(len(link_info[0]), dtype=np.int64)
+        max_uid = max(uids[0])
+        N = len(uids[0]) # initial number of instances
+        for (t, link_t) in enumerate(link_info):
             for (cidt, cidt_) in enumerate(link_t):
                 if cidt_ >= 0:
-                    self.uids[t + 1][cidt_] = self.uids[t][cidt]
-            if -1 in self.uids[t + 1]:  # -1 means there is no predecessor from a former timepoint -> potential to assign new uids
-                temp = np.where(self.uids[t + 1] == -1)[0]
+                    uids[t + 1][cidt_] = uids[t][cidt]
+            if -1 in uids[t + 1]:  # -1 means there is no predecessor from a former timepoint -> potential to assign new uids
+                temp = np.where(uids[t + 1] == -1)[0]
                 for tid in temp:
-                    # self.max_uid += 1
-                    # self.uids[t + 1][tid] = self.max_uid
                     max_uid += 1
-                    self.uids[t + 1][tid] = max_uid
-                    self.N += 1
+                    uids[t + 1][tid] = max_uid
+                    N += 1
+        return uids, N
 
-    def get_emergence(self):
-        self.emergence = [[] for _ in self.uids]
-        self.emergence[0] = list(self.uids[0])
-        for (t, temp) in enumerate(self.uids):
+
+    @staticmethod
+    def get_emergence(uids):
+        """
+        Get emergence information of new unique instances, and their emerging times
+        Inputs:
+        uids         = every array inside the list has a length of n_insts for that corresponding time
+        Outputs:
+        emergence    =
+        emerge_times =
+        :param uids:
+        :return emergence:
+        :return emerge_times:
+        """
+
+        emergence = [[] for _ in uids]
+        emergence[0] = list(uids[0])
+        for (t, temp) in enumerate(uids):
             if t >= 1:
-                new = [x for x in temp if x not in self.uids[t - 1]]
-                self.emergence[t] = new
-        self.emerge_times = [i for i in range(len(self.emergence)) if len(self.emergence[i]) > 0]
+                new = [x for x in temp if x not in uids[t - 1]]
+                emergence[t] = new
+        emerge_times = [i for i in range(len(emergence)) if len(emergence[i]) > 0]
+        return emergence, emerge_times
 
-    def get_ti(self):
-        self.ti = -np.ones((self.T, self.N), dtype=np.int64)
-        self.ti[0,0:self.n_insts[0]] = self.uids[0]
-        for t in range(1,self.T):
-            link = self.link_info[t-1]                # link_info from t-1 to t
-            prev = self.ti[t-1]                       # tracking info at previous timepoint (t-1)
-            cids = list(np.arange(0,self.n_insts[t])) # possible values of current indices
+
+    @staticmethod
+    def get_ti(T, N, n_insts, uids, link_info):
+        emergence, emerge_times = InstanceTimeSeriesLinking.get_emergence(uids)
+        ti = -np.ones((T, N), dtype=np.int64)
+        ti[0,0:n_insts[0]] = uids[0] # initialize ti for 1st timepoint as unique ids of the 1st timepoint
+        for t in range(1,T):
+            link = link_info[t-1]                # link_info from t-1 to t
+            prev = ti[t-1]                       # tracking info at previous timepoint (t-1)
+            cids = list(np.arange(0,n_insts[t])) # possible values of current indices
             for (uid,pid) in enumerate(prev):
                 if pid >= 0:
                     cid = link[pid]
-                    self.ti[t,uid] = cid
+                    ti[t,uid] = cid
                     if cid >= 0:
                         cids.remove(cid)
             # if t is a timepoint with new instances
-            if t in self.emerge_times:
-                new_ids = self.emergence[t]
+            if t in emerge_times:
+                new_ids = emergence[t]
                 for (cid,new_id) in zip(cids,new_ids):
-                    self.ti[t,new_id] = cid
+                    ti[t,new_id] = cid
 
         # get appear and disappear information
-        self.t_appear    = np.zeros(self.N,dtype=np.int64)
-        self.t_disappear = -np.ones(self.N, dtype=np.int64)
+        t_appear    = np.zeros(N,dtype=np.int64)
+        t_disappear = -np.ones(N, dtype=np.int64)
 
-        for (t,uids_t) in enumerate(self.emergence):
+        for (t,uids_t) in enumerate(emergence):
             if uids_t:
                 for uid in uids_t:
-                    self.t_appear[uid] = t
-        for uid in range(0,self.N):
+                    t_appear[uid] = t
+        for uid in range(0,N):
             t = 0
-            while t < self.T:
-                if (self.ti[t][uid] == -1) and (t > self.t_appear[uid]):
-                    self.t_disappear[uid] = t
+            while t < T:
+                if (ti[t][uid] == -1) and (t > t_appear[uid]):
+                    t_disappear[uid] = t
                     break
                 else:
                     t += 1
+        return ti, t_appear, t_disappear
 
-    def get_li_from_ti(self):
-        self.T, self.N = self.ti.shape
-        self.link_info = [np.empty(0) for _ in range(0, self.T - 1)]
-        for t in range(self.T - 1):
-            ti_0 = self.ti[t, :]
-            ti_1 = self.ti[t + 1, :]
+
+    @staticmethod
+    def get_li_from_ti(ti):
+        T, N = ti.shape
+        link_info = [np.empty(0) for _ in range(0, T - 1)]
+        for t in range(T - 1):
+            ti_0 = ti[t, :]
+            ti_1 = ti[t + 1, :]
             l0 = [x for x in ti_0 if x >= 0]
             l1 = [x for (x, y) in zip(ti_1, ti_0) if y >= 0]
             link_t = -np.ones(len(l0), dtype=np.int64)
             for (idx, x) in enumerate(l0):
                 link_t[x] = l1[idx]
-            self.link_info[t] = link_t
+            link_info[t] = link_t
+        return link_info
+
+
+    @staticmethod
+    def status_report(ti, masks):
+        leaf_status_report = np.zeros(ti.shape)
+        for (t, masks_t) in enumerate(masks):
+            ti_t = ti[t, :]
+            for cid in range(masks_t.shape[2]):
+                uid = np.where(ti_t == cid)[0][0]
+                leaf_status_report[t, uid] = np.sum(masks[:, :, cid])
+        return leaf_status_report
+
 
     def visualize(self, imgs, timepoints, visualdir, color_all=None):
         params.debug = "plot"
@@ -319,14 +346,20 @@ class InstanceTimeSeriesLinking(object):
         self.thres     = thres
         self.link_info = [-np.ones((self.n_insts[i]), dtype=np.int64) for i in range(0, self.T - 1)]
 
-        self.weights  = [np.empty(0) for _ in range(self.T)]
+        self.weights  = [np.empty(0) for _ in range(self.T-1)]
         self.metric    = metric.upper()
 
         for t0 in range(0, self.T - 1):
             self.linking(t0)
-        self.get_uid()
-        self.get_emergence()
-        self.get_ti()
+
+        self.uids, self.N = self.get_uid(self.link_info, self.n_insts)
+        self.emergence, self.emerge_times = self.get_emergence(self.uids)
+        self.ti, self.t_appear, self.t_disappear = self.get_ti(self.T, self.N, self.n_insts, self.uids, self.link_info)
+
+        self.leaf_status_report = InstanceTimeSeriesLinking.status_report(self.ti, self.masks)
+
+
+
 
 
 
