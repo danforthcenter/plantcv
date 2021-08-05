@@ -4,3 +4,11 @@ plantcv/plantcv/_version.py export-subst
 * text=auto eol=lf
 *.{cmd,[cC][mM][dD]} text eol=crlf
 *.{bat,[bB][aA][tT]} text eol=crlf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.tif binary
+*.tiff binary
+*.pkl binary
+*.npz binary
+*.DAT binary
