@@ -9,7 +9,6 @@ from plantcv.plantcv.visualize.colorize_label_img import colorize_label_img
 from plantcv.plantcv.visualize.obj_sizes import obj_sizes
 from plantcv.plantcv.visualize.obj_size_ecdf import obj_size_ecdf
 from plantcv.plantcv.visualize.hyper_histogram import hyper_histogram
-from plantcv.plantcv.visualize.pixel_scatter_vis import pixel_scatter_vis
 
 __all__ = ["pseudocolor", "colorize_masks", "histogram", "clustered_contours", "colorspaces", "auto_threshold_methods",
-           "overlay_two_imgs", "colorize_label_img", "obj_size_ecdf", "obj_sizes", "hyper_histogram", "pixel_scatter_vis"]
+           "overlay_two_imgs", "colorize_label_img", "obj_size_ecdf", "obj_sizes", "hyper_histogram"]
