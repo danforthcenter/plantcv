@@ -46,7 +46,7 @@ def pixel_scatter_vis(paths_to_imgs, channel):
     The color of each dot is given by the original RGB color of the pixel.
 
     Inputs:
-    paths_to_imgs  = Lists of paths to the images
+    paths_to_imgs  = List of paths to the images
     channel        = Channel to use for the vertical coordinate of the scatter.
                      Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', and 'gray'
 
