@@ -313,14 +313,14 @@ class InstanceTimeSeriesLinking(object):
         return leaf_status_report
 
     @staticmethod
-    def visualize(imgs, masks_all, tps, savedir, ti = None, color_all = None):
+    def visualize(imgs, masks, tps, savedir, ti = None, color_all = None):
         params.debug = "plot"
         if not osp.exists(savedir):
             os.makedirs(savedir)
 
-        n_insts = [masks.shape[2] for masks in masks_all]
+        n_insts = [masks_t.shape[2] for masks_t in masks]
         if not color_all:
-            if not ti: # if no tracking information provided, the color assignment would base on local id (cid) solely
+            if ti is None: # if no tracking information provided, the color assignment would base on local id (cid) solely
                 N = max(n_insts)
                 T = len(imgs)
             else:
@@ -331,13 +331,13 @@ class InstanceTimeSeriesLinking(object):
                 color_all = [[colors[i] for i in range(0, num)] for num in n_insts]
             else:
                 color_all = [[tuple() for _ in range(0, num)] for num in n_insts]
-                for (t,ti_t) in enumerate(ti):
-                    for (uid,cid) in enumerate(ti_t):
+                for (t, ti_t) in enumerate(ti):
+                    for (uid, cid) in enumerate(ti_t):
                         if cid > -1:
                             color_all[t][cid] = colors[uid]
-        for img, masks, t, colors_t in zip(imgs, masks, tps, color_all):
-            savename = osp.join(visualdir, '{}.jpg'.format(t))
-            display_instances(img, masks, colors=colors_t)
+        for img_t, masks_t, t, colors_t in zip(imgs, masks, tps, color_all):
+            savename = osp.join(savedir, '{}.jpg'.format(t))
+            display_instances(img_t, masks_t, colors=colors_t)
             plt.savefig(savename, bbox_inches="tight", pad_inches=0)
             plt.close("all")
 
