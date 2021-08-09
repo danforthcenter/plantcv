@@ -327,7 +327,7 @@ class InstanceTimeSeriesLinking(object):
                 T, N = ti.shape
             colors_ = color_palette(N)
             colors = [tuple([ci / 255 for ci in c]) for c in colors_]
-            if not ti:
+            if ti is None:
                 color_all = [[colors[i] for i in range(0, num)] for num in n_insts]
             else:
                 color_all = [[tuple() for _ in range(0, num)] for num in n_insts]
