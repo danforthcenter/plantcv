@@ -12,4 +12,4 @@ from plantcv.plantcv.visualize.obj_size_ecdf import obj_size_ecdf
 from plantcv.plantcv.visualize.hyper_histogram import hyper_histogram
 
 __all__ = ["pseudocolor", "colorize_masks", "histogram", "clustered_contours", "colorspaces", "auto_threshold_methods",
-           "overlay_two_imgs", , "colorize_label_img", "obj_size_ecdf", "obj_sizes", "hyper_histogram", "time_lapse_video"]
+           "overlay_two_imgs", "colorize_label_img", "obj_size_ecdf", "obj_sizes", "hyper_histogram", "time_lapse_video"]
