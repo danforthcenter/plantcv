@@ -7,7 +7,7 @@ import os
 import numpy as np
 from scipy import ndimage as ndi
 from skimage.feature import peak_local_max
-from skimage.morphology import watershed
+from skimage.segmentation import watershed
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 from plantcv.plantcv import apply_mask

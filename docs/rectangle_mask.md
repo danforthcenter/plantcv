@@ -15,7 +15,7 @@ Note that p1 = (0,0) is the top left hand corner bottom right hand corner is p2 
 - **Context:**
     - Used to mask rectangular regions of an image
 - **Example use:**
-    - [Use In NIR Tutorial](nir_tutorial.md)
+    - [Use In NIR Tutorial](tutorials/nir_tutorial.md)
     
 **Grayscale image**
 

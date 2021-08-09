@@ -19,19 +19,9 @@ nav:
     - 'Contributing to PlantCV': CONTRIBUTING.md
     - 'Code of Conduct': CODE_OF_CONDUCT.md
     - 'Adding/Editing Documentation': documentation.md
-  - Tutorials:
-    - 'VIS Workflow': vis_tutorial.md
-    - 'NIR Workflow': nir_tutorial.md
-    - 'PSII Workflow': psII_tutorial.md
-    - 'VIS/NIR Dual Workflow': vis_nir_tutorial.md
-    - 'Multi Plant Workflow': multi-plant_tutorial.md
-    - 'Machine Learning': machine_learning_tutorial.md
-    - 'Workflow Parallelization': pipeline_parallel.md
-    - 'Exporting Data': db-exporter.md
-    - 'Color Correction Workflow': transform_color_correction_tutorial.md
-    - 'Morphology Workflow': morphology_tutorial.md
-    - 'Thermal Workflow': thermal_tutorial.md
-    - 'Hyperspectral Workflow': hyperspectral_tutorial.md
+  - "Tutorials": tutorials.md
+  - 'Workflow Parallelization': pipeline_parallel.md
+  - 'Exporting Data': db-exporter.md
   - 'PlantCV Namespace':
     - 'PlantCV':
       - 'Analyze Color': analyze_color.md
@@ -80,6 +70,7 @@ nav:
           - 'Spectral data objects': Spectral_data.md
       - 'Image Add': image_add.md
       - 'Image Subtract': image_subtract.md
+      - 'Image Fusion': image_fusion.md
       - 'Invert': invert.md
       - 'Landmark Analysis':
         - 'Acute Vertex': acute_vertex.md
@@ -117,7 +108,9 @@ nav:
       - 'Outputs Class': outputs.md
       - 'Photosynthesis Functions':
           - 'Read CropReporter Data': photosynthesis_read_cropreporter.md
-          - 'Analyze Fv/Fm': photosynthesis_analyze_fvfm.md
+          - 'Analyze YII': photosynthesis_analyze_yii.md
+          - 'Analyze NPQ': photosynthesis_analyze_npq.md
+          - 'Reassign Frame Labels': photosynthesis_reassign_frame_labels.md
       - 'Params (Debugging)': params.md
       - 'Print Image': print_image.md
       - 'Print Results': print_results.md
@@ -161,6 +154,7 @@ nav:
           - 'Quick Color Check': quick_color_check.md
           - 'Load Matrix': load_matrix.md
           - 'Save Matrix': save_matrix.md
+          - 'Gamma Correction': transform_gamma_correct.md
           - 'Nonuniform Illumination Correction': nonuniform_illumination.md
           - 'Perspective warp': transform_warp.md
           - 'Rescale Image Values': transform_rescale.md
@@ -168,10 +162,14 @@ nav:
       - 'Visualization Methods':
           - 'Auto Threshold Methods': visualize_auto_threshold_methods.md
           - 'Clustered Contours': visualize_clustered_contours.md
+          - 'Colorize Label Image': visualize_colorize_label_img.md
           - 'Colorize Masks': visualize_colorize_masks.md
           - 'Colorspaces': visualize_colorspace.md
           - 'Histogram': visualize_histogram.md
+          - 'Hyperspectral Histogram': visualize_hyper_histogram.md
           - 'Overlay Images': visualize_ovelay_two_imgs.md
+          - 'Object Size ECDF': visualize_obj_size_ecdf.md
+          - 'Object Sizes': visualize_obj_sizes.md
           - 'Pseudocolor': visualize_pseudocolor.md
       - 'Watershed Segmentation': watershed.md
       - 'White balance': white_balance.md

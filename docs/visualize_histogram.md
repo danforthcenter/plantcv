@@ -14,10 +14,10 @@ This is a plotting method used to examine the distribution of signal within an i
     - hist_data - Return histogram data if True (default hist_data=False)
     
 **Context:**
-    - Examine the distribution of the signal, this can help select a value for calling the binary thresholding function.
+- Examine the distribution of the signal, this can help select a value for calling the binary thresholding function.
     
 - **Example use:**
-    - [Use In NIR Tutorial](nir_tutorial.md)
+    - [Use In NIR Tutorial](tutorials/nir_tutorial.md)
 
 **Grayscale image**
 
@@ -55,6 +55,7 @@ hist_figure3, hist_data3 = pcv.visualize.histogram(img=gray_img, mask=mask, lowe
 The histogram function plots histograms from 3 color bands automatically if an RGB input image is given.
 
 **RGB image**
+
 ![Screenshot](img/tutorial_images/vis/original_image.jpg)
 
 ```python

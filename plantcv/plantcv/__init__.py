@@ -1,9 +1,8 @@
-import os
-import matplotlib
 from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.classes import Params
 from plantcv.plantcv.classes import Outputs
 from plantcv.plantcv.classes import Spectral_data
+from plantcv.plantcv.classes import PSII_data
 # Initialize an instance of the Params and Outputs class with default values
 # params and outputs are available when plantcv is imported
 params = Params()
@@ -30,6 +29,7 @@ from plantcv.plantcv.sobel_filter import sobel_filter
 from plantcv.plantcv.scharr_filter import scharr_filter
 from plantcv.plantcv.hist_equalization import hist_equalization
 from plantcv.plantcv.image_add import image_add
+from plantcv.plantcv.image_fusion import image_fusion
 from plantcv.plantcv.image_subtract import image_subtract
 from plantcv.plantcv.erode import erode
 from plantcv.plantcv.dilate import dilate
@@ -93,7 +93,7 @@ from ._version import get_versions
 __version__ = get_versions()['version']
 del get_versions
 
-__all__ = ['fatal_error', 'Params', 'Outputs', 'Spectral_data', 'deprecation_warning', 'warn', 'print_image', 'plot_image',
+__all__ = ['fatal_error', 'Params', 'Outputs', 'Spectral_data', 'PSII_data', 'deprecation_warning', 'warn', 'print_image', 'plot_image',
            'color_palette', 'apply_mask', 'gaussian_blur', 'transform', 'hyperspectral', 'readimage', 'readbayer',
            'laplace_filter', 'sobel_filter', 'scharr_filter', 'hist_equalization', 'erode', 'image_add', 
            'image_subtract', 'dilate', 'watershed', 'rectangle_mask', 'rgb2gray_hsv', 'rgb2gray_lab', 'rgb2gray_cmyk',
@@ -106,5 +106,5 @@ __all__ = ['fatal_error', 'Params', 'Outputs', 'Spectral_data', 'deprecation_war
            'cluster_contour_splitimg', 'rotate', 'shift_img', 'output_mask', 'auto_crop', 'canny_edge_detect',
            'background_subtraction', 'naive_bayes_classifier', 'acute', 'distance_transform', 'params',
            'cluster_contour_mask', 'analyze_thermal_values', 'opening',
-           'closing', 'within_frame', 'fill_holes', 'get_kernel',  'crop', 'stdev_filter',
+           'closing', 'within_frame', 'fill_holes', 'get_kernel', 'crop', 'stdev_filter',
            'spatial_clustering', 'photosynthesis']

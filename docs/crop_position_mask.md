@@ -19,7 +19,7 @@ Takes a binary mask and positions it on another image.
       The function will also resize the mask so it is the same size as the target image.
    
 - **Example use:**
- - [Use in VIS/NIR Tutorial](vis_nir_tutorial.md)
+ - [Use in VIS/NIR Tutorial](tutorials/vis_nir_tutorial.md)
 
 **Original image**
 
