@@ -118,6 +118,7 @@ def read_data(filename):
         hdata = hdata.replace("{\n", "{")
         hdata = hdata.replace("\n}", "}")
         hdata = hdata.replace(" \n ", "")
+        hdata = hdata.replace(" \n", "")
         hdata = hdata.replace(";", "")
     hdata = hdata.split("\n")
 
