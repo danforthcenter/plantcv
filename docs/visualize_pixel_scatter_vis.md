@@ -11,7 +11,7 @@ linear position in the image. The color of each dot is given by the original RGB
 - **Parameters:**
     - paths_to_imgs   - List of paths to the images.
     - channel         - Channel to use for the vertical coordinate of the scatter plot.
-    Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', and 'gray'
+    Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', and 'gray'.
 
 
 - **Context:**
@@ -36,8 +36,6 @@ linear position in the image. The color of each dot is given by the original RGB
 ```python
 
 from plantcv import plantcv as pcv
-
-pcv.params.debug='plot'
 
 plotting_img = pcv.visualize.pixel_scatter_vis(paths_to_imgs=file_paths, channel='G')
 
