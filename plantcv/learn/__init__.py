@@ -6,6 +6,6 @@ if "DISPLAY" not in os.environ or "MPLBACKEND" not in os.environ:
 
 from plantcv.learn.naive_bayes import naive_bayes
 from plantcv.learn.naive_bayes import naive_bayes_multiclass
-from plantcv.learn.gmm import gmm
+from plantcv.learn.color_clustering_train import color_clustering_train
 
-__all__ = ["naive_bayes", "naive_bayes_multiclass","gmm"]
+__all__ = ["naive_bayes", "naive_bayes_multiclass","color_clustering_train"]

@@ -228,7 +228,7 @@ from plantcv.plantcv.get_kernel import get_kernel
 from plantcv.plantcv.crop import crop
 from plantcv.plantcv.stdev_filter import stdev_filter
 from plantcv.plantcv.spatial_clustering import spatial_clustering
-from plantcv.plantcv.gmm_classifier import gmm_classifier
+from plantcv.plantcv.color_clustering_segmentation import color_clustering_segmentation
 
 # add new functions to end of lists
 
@@ -246,7 +246,7 @@ __all__ = ['fatal_error', 'print_image', 'plot_image', 'color_palette', 'apply_m
            'background_subtraction', 'naive_bayes_classifier', 'acute', 'distance_transform', 'params',
            'cluster_contour_mask','analyze_thermal_values', 'opening',
            'closing','within_frame', 'fill_holes', 'get_kernel', 'Spectral_data', 'crop', 'stdev_filter',
-           'spatial_clustering', 'gmm_classifier']
+           'spatial_clustering', 'color_clustering_segmentation']
 
 
 from ._version import get_versions
