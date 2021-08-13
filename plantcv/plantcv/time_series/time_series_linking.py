@@ -171,7 +171,7 @@ class InstanceTimeSeriesLinking(object):
     @staticmethod
     def get_sorted_uids(li, n_insts):
         uids_sort = [-1 * np.ones(num, dtype=np.int64) for num in n_insts]
-        uids_sort[0] = np.arange(inst_ts_linking.n_insts[0])
+        uids_sort[0] = np.arange(n_insts[0])
         max_uid = max(uids_sort[0])
         for t in range(1, len(li) + 1):
 
@@ -376,7 +376,7 @@ class InstanceTimeSeriesLinking(object):
 
                 # calculate weight to calculate the link
                 weights, n1, n2, _ = InstanceTimeSeriesLinking.compute_overlaps_weights(masks_t, masks_t_, metric)
-                li_ts, _, _ = inst_ts_linking.get_link(weights, thres)
+                li_ts, _, _ = InstanceTimeSeriesLinking.get_link(weights, thres)
 
                 uids_undisap = []
                 for (idx, uid_disap) in enumerate(uids_disap):  # loop over all disappeared indices
