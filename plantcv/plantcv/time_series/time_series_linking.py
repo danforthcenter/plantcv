@@ -190,7 +190,7 @@ class InstanceTimeSeriesLinking(object):
         return uids_sort
 
     @staticmethod
-    def get_uid_from_ti(ti):
+    def get_uids_from_ti(ti):
         # uids: a list of length T, where every sub-list has a length of n_t (# of instances at time t). Every sub-list is
         # contains the unique indices present at time t
 
@@ -222,6 +222,7 @@ class InstanceTimeSeriesLinking(object):
     def get_ti(uids, link_info, n_insts):
         emergence, _ = InstanceTimeSeriesLinking.get_emerg_disap_info(uids)
         N = max([max(uid) for uid in uids]) + 1
+        T = len(uids)
         ti = -np.ones((T, N), dtype=np.int64)
         ti[0,0:n_insts[0]] = uids[0] # initialize ti for 1st timepoint as unique ids of the 1st timepoint
         for t in range(1,T):
@@ -347,7 +348,7 @@ class InstanceTimeSeriesLinking(object):
     @staticmethod
     def update_ti(ti, metric, thres, max_gap=5):
         ti_ = copy.deepcopy(ti)
-        uids, uids_sort, T, N = InstanceTimeSeriesLinking.get_uid(ti)
+        uids, uids_sort, T, N = InstanceTimeSeriesLinking.get_uids_from_ti(ti)
         emergence, disappearance = InstanceTimeSeriesLinking.get_emerg_disap_info(uids_sort)
         t_emerg, t_disap = emergence.keys(), disappearance.keys()
 
@@ -401,11 +402,14 @@ class InstanceTimeSeriesLinking(object):
                         disappearance[t] = uids_disap
         remove_uids = []
         for uid in range(N):
-            if (ti_[:, uid] == 1).all():
+            if (ti_[:, uid] == -1).all():
                 remove_uids.append(uid)
         ti_ = np.delete(ti_, remove_uids, axis=1)
-        if not np.array_equal(ti_, ti):
-            return InstanceTimeSeriesLinking.update_ti(ti_, metric, thres, max_gap)
+        return ti_
+        # if np.array_equal(ti_, ti):
+        #     return ti_
+        # return InstanceTimeSeriesLinking.update_ti(ti_, metric, thres, max_gap)
+
 
     # def __call__(self, images, masks, timepoints, metric="IOS", thres=0.2, name_sub="instance", update=False, max_delta_t=2):
     #     # a list of images which are ndarrays
