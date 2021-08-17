@@ -2059,11 +2059,6 @@ def test_plantcv_fill_holes():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.fill_holes(bin_img=img)
-    pcv.params.debug = "plot"
-    _ = pcv.fill_holes(bin_img=img)
     # Test with debug = None
     pcv.params.debug = None
     fill_img = pcv.fill_holes(bin_img=img)
