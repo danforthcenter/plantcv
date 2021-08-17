@@ -2218,12 +2218,6 @@ def test_plantcv_image_add():
     # Read in test data
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     img2 = np.copy(img1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.image_add(gray_img1=img1, gray_img2=img2)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.image_add(gray_img1=img1, gray_img2=img2)
     # Test with debug = None
     pcv.params.debug = None
     added_img = pcv.image_add(gray_img1=img1, gray_img2=img2)
