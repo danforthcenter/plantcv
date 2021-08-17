@@ -2357,12 +2357,6 @@ def test_plantcv_logical_xor():
     # Read in test data
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     img2 = np.copy(img1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.logical_xor(bin_img1=img1, bin_img2=img2)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.logical_xor(bin_img1=img1, bin_img2=img2)
     # Test with debug = None
     pcv.params.debug = None
     xor_img = pcv.logical_xor(bin_img1=img1, bin_img2=img2)
@@ -2384,6 +2378,7 @@ def test_plantcv_median_blur():
     _ = pcv.median_blur(gray_img=img, ksize=5)
     # Test with debug = None
     pcv.params.debug = None
+    _ = pcv.median_blur(gray_img=img, ksize=(5, 5))
     blur_img = pcv.median_blur(gray_img=img, ksize=5)
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(blur_img), TEST_BINARY_DIM)):
