@@ -1957,12 +1957,6 @@ def test_plantcv_dilate():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.dilate(gray_img=img, ksize=5, i=1)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.dilate(gray_img=img, ksize=5, i=1)
     # Test with debug = None
     pcv.params.debug = None
     dilate_img = pcv.dilate(gray_img=img, ksize=5, i=1)

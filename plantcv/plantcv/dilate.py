@@ -3,13 +3,13 @@
 import cv2
 import numpy as np
 import os
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
 
 
 def dilate(gray_img, ksize, i):
-    """Performs morphological 'dilation' filtering. Adds pixel to center of kernel if conditions set in kernel are true.
+    """
+    Performs morphological 'dilation' filtering. Adds pixel to center of kernel if conditions set in kernel are true.
 
     Inputs:
     gray_img = Grayscale (usually binary) image data
@@ -31,10 +31,10 @@ def dilate(gray_img, ksize, i):
     kernel1 = int(ksize)
     kernel2 = np.ones((kernel1, kernel1), np.uint8)
     dil_img = cv2.dilate(src=gray_img, kernel=kernel2, iterations=i)
-    params.device += 1
-    if params.debug == 'print':
-        print_image(dil_img, os.path.join(params.debug_outdir,
-                                          str(params.device) + '_dil_image' + str(ksize) + '_itr' + str(i) + '.png'))
-    elif params.debug == 'plot':
-        plot_image(dil_img, cmap='gray')
+
+    _debug(visual=dil_img,
+           filename=os.path.join(params.debug_outdir,
+                                 str(params.device) + '_dil_image' + str(ksize) + '_itr' + str(i) + '.png'),
+           cmap='gray')
+
     return dil_img
