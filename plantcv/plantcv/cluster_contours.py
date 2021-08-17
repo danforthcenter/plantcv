@@ -1,8 +1,7 @@
 import os
 import cv2
 import numpy as np
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import color_palette
 from plantcv.plantcv import params
 
@@ -36,8 +35,6 @@ def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1, show_g
     :return contours: list
     :return roi_obj_hierarchy: list
     """
-
-    params.device += 1
 
     if len(np.shape(img)) == 3:
         iy, ix, iz = np.shape(img)
@@ -140,9 +137,8 @@ def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1, show_g
                 cv2.line(img_copy, (0, y), (ix, y), (255, 0, 0), params.line_thickness)
             for x in cbreaks:
                 cv2.line(img_copy, (x, 0), (x, iy), (255, 0, 0), params.line_thickness)
-        if params.debug == 'print':
-            print_image(img_copy, os.path.join(params.debug_outdir, str(params.device) + '_clusters.png'))
-        elif params.debug == 'plot':
-            plot_image(img_copy)
+
+        _debug(visual=img_copy,
+               filename=os.path.join(params.debug_outdir, str(params.device) + '_clusters.png'))
 
     return grouped_contour_indexes, contours, roi_obj_hierarchy
