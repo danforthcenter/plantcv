@@ -2506,11 +2506,7 @@ def test_plantcv_opening():
     # Test with debug=None
     pcv.params.debug = None
     _ = pcv.opening(gray_img)
-    # Test with debug='plot'
-    pcv.params.debug = 'plot'
     _ = pcv.opening(bin_img, np.ones((4, 4), np.uint8))
-    # Test with debug='print'
-    pcv.params.debug = 'print'
     filtered_img = pcv.opening(bin_img)
     assert np.sum(filtered_img) == 16184595
 
