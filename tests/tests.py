@@ -2343,12 +2343,6 @@ def test_plantcv_logical_or():
     # Read in test data
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     img2 = np.copy(img1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.logical_or(bin_img1=img1, bin_img2=img2)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.logical_or(bin_img1=img1, bin_img2=img2)
     # Test with debug = None
     pcv.params.debug = None
     or_img = pcv.logical_or(bin_img1=img1, bin_img2=img2)
