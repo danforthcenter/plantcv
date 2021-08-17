@@ -3,8 +3,7 @@
 import os
 import cv2
 from plantcv.plantcv import fatal_error
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
 
 
@@ -72,9 +71,7 @@ def readbayer(filename, bayerpattern='BG', alg='default'):
     # Split path from filename
     path, img_name = os.path.split(filename)
 
-    if params.debug == "print":
-        print_image(img, os.path.join(params.debug_outdir, "input_image.png"))
-    elif params.debug == "plot":
-        plot_image(img)
+    _debug(visual=img,
+           filename=os.path.join(params.debug_outdir, "input_image.png"))
 
     return img, path, img_name
