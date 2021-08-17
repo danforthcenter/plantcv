@@ -13,7 +13,7 @@ Shifts image, but keeps dimensions the same
 - **Context:**
     - Shifts image from the specified direction.
 - **Example use:**
-    - [Use In Multi-Plant Tutorial](multi-plant_tutorial.md)
+    - [Use In Multi-Plant Tutorial](tutorials/multi-plant_tutorial.md)
     
 **Input image**
 

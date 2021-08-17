@@ -17,7 +17,7 @@ best if the pot size/position of the plant remains relatively constant.
 - **Context:**
     - Used to define a boundary line for the image, to find the width to the right and to the left as well as area to the right and to the left of a boundary line.
 - **Example use:**
-    - [Use of horizontal companion tool in In VIS Tutorial](vis_tutorial.md)
+    - [Use of horizontal companion tool in In VIS Tutorial](tutorials/vis_tutorial.md)
 - **Output data stored:** Data ('vertical_reference_position', 'width_left_reference', 'width_right_reference', 'area_left_reference', 'percent_area_left_reference',
     'area_right_reference', 'percent_area_right_reference') automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
     These data can always get accessed during a workflow (example below). For more detail about data output see [Summary of Output Observations](output_measurements.md#summary-of-output-observations)

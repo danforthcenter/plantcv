@@ -4,7 +4,7 @@ We have added a function to help identify problems with color chips. One frequen
 be better off excluded from analysis . A quick way to examine this is by plotting the source matrix value against the target matrix value for all color chips
 masked in the color card.
 
-To see an example of how to check for problematic color chips see [here](transform_color_correction_tutorial.md#checking-the-color-card-chips).
+To see an example of how to check for problematic color chips see [here](tutorials/transform_color_correction_tutorial.md#checking-the-color-card-chips).
 
 **plantcv.transform.quick_color_check**(*source_matrix, target_matrix, num_chips*)
 
@@ -18,7 +18,7 @@ To see an example of how to check for problematic color chips see [here](transfo
     - num_chips     - the number of color card chips included in the matrices (integer)
     
 - **Example use:**
-    - [Color Correction Tutorial](transform_color_correction_tutorial.md)
+    - [Color Correction Tutorial](tutorials/transform_color_correction_tutorial.md)
     
 
 ```python
