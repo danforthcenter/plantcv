@@ -1656,14 +1656,9 @@ def test_plantcv_canny_edge_detect():
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
     _ = pcv.canny_edge_detect(img=rgb_img, mask=mask, mask_color='white')
     _ = pcv.canny_edge_detect(img=img, mask=mask, mask_color='black')
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
     _ = pcv.canny_edge_detect(img=img, thickness=2)
-    _ = pcv.canny_edge_detect(img=img)
     # Test with debug = None
     pcv.params.debug = None
     edge_img = pcv.canny_edge_detect(img=img)
