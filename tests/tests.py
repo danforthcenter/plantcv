@@ -1834,11 +1834,7 @@ def test_plantcv_crop():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     img, _, _ = pcv.readimage(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK), 'gray')
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.crop(img=img, x=10, y=10, h=50, w=50)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
+    pcv.params.debug = None
     cropped = pcv.crop(img=img, x=10, y=10, h=50, w=50)
     assert np.shape(cropped) == (50, 50)
 
@@ -1851,11 +1847,7 @@ def test_plantcv_crop_hyperspectral():
     # Read in test data
     img = np.ones((2056, 2454))
     img_stacked = cv2.merge((img, img, img, img))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.crop(img=img_stacked, x=10, y=10, h=50, w=50)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
+    pcv.params.debug = None
     cropped = pcv.crop(img=img_stacked, x=10, y=10, h=50, w=50)
     assert np.shape(cropped) == (50, 50, 4)
 
