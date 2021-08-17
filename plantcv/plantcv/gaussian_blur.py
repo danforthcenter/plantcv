@@ -3,13 +3,13 @@
 import cv2
 import os
 import numpy as np
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
 
 
 def gaussian_blur(img, ksize, sigma_x=0, sigma_y=None):
-    """Applies a Gaussian blur filter.
+    """
+    Applies a Gaussian blur filter.
 
     Inputs:
     # img     = RGB or grayscale image data
@@ -29,13 +29,13 @@ def gaussian_blur(img, ksize, sigma_x=0, sigma_y=None):
 
     img_gblur = cv2.GaussianBlur(img, ksize, sigma_x, sigma_y)
 
-    params.device += 1
-    if params.debug == 'print':
-        print_image(img_gblur, os.path.join(params.debug_outdir, str(params.device) + '_gaussian_blur.png'))
-    elif params.debug == 'plot':
-        if len(np.shape(img_gblur)) == 3:
-            plot_image(img_gblur)
-        else:
-            plot_image(img_gblur, cmap='gray')
+    if len(np.shape(img_gblur)) == 3:
+        cmap = None
+    else:
+        cmap = 'gray'
+
+    _debug(visual=img_gblur,
+           filename=os.path.join(params.debug_outdir, str(params.device) + '_gaussian_blur.png'),
+           cmap=cmap)
 
     return img_gblur
