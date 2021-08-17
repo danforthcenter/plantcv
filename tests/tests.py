@@ -2023,12 +2023,6 @@ def test_plantcv_distance_transform():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED_MASK), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.distance_transform(bin_img=mask, distance_type=1, mask_size=3)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.distance_transform(bin_img=mask, distance_type=1, mask_size=3)
     # Test with debug = None
     pcv.params.debug = None
     distance_transform_img = pcv.distance_transform(bin_img=mask, distance_type=1, mask_size=3)
