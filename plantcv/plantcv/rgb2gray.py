@@ -2,9 +2,8 @@
 
 import cv2
 import os
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
+from plantcv.plantcv._debug import _debug
 
 
 def rgb2gray(rgb_img):
@@ -21,9 +20,7 @@ def rgb2gray(rgb_img):
     """
 
     gray = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
-    params.device += 1
-    if params.debug == 'print':
-        print_image(gray, os.path.join(params.debug_outdir, str(params.device) + '_gray.png'))
-    elif params.debug == 'plot':
-        plot_image(gray, cmap='gray')
+
+    _debug(visual=gray, filename=os.path.join(params.debug_outdir, str(params.device) + "_gray.png"))
+
     return gray

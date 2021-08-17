@@ -12,8 +12,8 @@ Find objects within the image.
 - **Context:**
     - Used to identify objects (plant material) in an image.
 - **Example use:**
-    - [Use In VIS Tutorial](vis_tutorial.md)
-    - [Use In PSII Tutorial](psII_tutorial.md) 
+    - [Use In VIS Tutorial](tutorials/vis_tutorial.md)
+    - [Use In PSII Tutorial](tutorials/psII_tutorial.md) 
 
 **Original image**
 
