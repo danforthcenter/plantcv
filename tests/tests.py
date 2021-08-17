@@ -2084,12 +2084,6 @@ def test_plantcv_find_objects():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.find_objects(img=img, mask=mask)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.find_objects(img=img, mask=mask)
     # Test with debug = None
     pcv.params.debug = None
     contours, hierarchy = pcv.find_objects(img=img, mask=mask)
@@ -2105,8 +2099,8 @@ def test_plantcv_find_objects_grayscale_input():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
+    # Test with debug = None
+    pcv.params.debug = None
     contours, hierarchy = pcv.find_objects(img=img, mask=mask)
     # Assert the correct number of contours are found
     assert len(contours) == 2
