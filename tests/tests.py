@@ -2314,12 +2314,6 @@ def test_plantcv_laplace_filter():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.laplace_filter(gray_img=img, ksize=1, scale=1)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.laplace_filter(gray_img=img, ksize=1, scale=1)
     # Test with debug = None
     pcv.params.debug = None
     lp_img = pcv.laplace_filter(gray_img=img, ksize=1, scale=1)
