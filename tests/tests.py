@@ -2189,12 +2189,6 @@ def test_plantcv_hist_equalization():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.hist_equalization(gray_img=img)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.hist_equalization(gray_img=img)
     # Test with debug = None
     pcv.params.debug = None
     hist = pcv.hist_equalization(gray_img=img)
@@ -2209,7 +2203,7 @@ def test_plantcv_hist_equalization_bad_input():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     # Read in test data
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), 1)
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 1)
     # Test with debug = None
     pcv.params.debug = None
     with pytest.raises(RuntimeError):
