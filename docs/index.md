@@ -33,15 +33,15 @@ so you can test out workflows and even upload your own images to test on.
 
 Also see our tutorials documentation pages for more detailed overviews of using PlantCV for specific tasks:
 
-* [VIS/RGB Image Processing](vis_tutorial.md)
-* [Near-Infrared Image Processing](nir_tutorial.md)
-* [PSII Image Processing](psII_tutorial.md)
-* [VIS / NIR Dual Workflows](vis_nir_tutorial.md)
-* [Multi Plant Image Processing](multi-plant_tutorial.md)
-* [Morphology Package](morphology_tutorial.md) 
-* [Thermal Image Processing](thermal_tutorial.md)
-* [Hyperspectral Image Processing](hyperspectral_tutorial.md)
-* [Machine Learning Tutorial](machine_learning_tutorial.md)
+* [VIS/RGB Image Processing](tutorials/vis_tutorial.md)
+* [Near-Infrared Image Processing](tutorials/nir_tutorial.md)
+* [PSII Image Processing](tutorials/psII_tutorial.md)
+* [VIS / NIR Dual Workflows](tutorials/vis_nir_tutorial.md)
+* [Multi Plant Image Processing](tutorials/multi-plant_tutorial.md)
+* [Morphology Package](tutorials/morphology_tutorial.md) 
+* [Thermal Image Processing](tutorials/thermal_tutorial.md)
+* [Hyperspectral Image Processing](tutorials/hyperspectral_tutorial.md)
+* [Machine Learning Tutorial](tutorials/machine_learning_tutorial.md)
 * [Parallel Image Processing](pipeline_parallel.md)
 * [Exporting Data for Downstream Analysis](db-exporter.md)
 

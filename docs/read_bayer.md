@@ -14,7 +14,7 @@ Reads image into numpy ndarray and splits the path and image filename. This is a
 - **Context:**
     - Reads in an image file with Bayer mosaic pixel pattern to be processed
 - **Example use:**
-    - Not exactly available, but could substitute for `readimage` [in VIS Tutorial](vis_tutorial.md)
+    - Not exactly available, but could substitute for `readimage` [in VIS Tutorial](tutorials/vis_tutorial.md)
 
 ```python
 from plantcv import plantcv as pcv      

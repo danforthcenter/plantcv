@@ -105,7 +105,7 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
                                               value=(0, 0, 0))
 
         # Apply the mask
-        masked_img = np.ma.array(gray_img1, mask=~mask.astype(np.bool))
+        masked_img = np.ma.array(gray_img1, mask=~mask.astype(bool))
 
         # Set the background color or type
         if background.upper() == "BLACK":

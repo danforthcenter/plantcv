@@ -16,7 +16,7 @@ the values out to the [Outputs class](outputs.md). Can also return/plot/print ou
 - **Context:**
     - Near Infrared pixel frequencies within a masked area of an image. 
 - **Example use:**
-    - [Use In NIR Tutorial](nir_tutorial.md)
+    - [Use In NIR Tutorial](tutorials/nir_tutorial.md)
 - **Output data stored:** Data ('nir_frequencies', 'nir_mean', 'nir_median', 'nir_stdev') automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
     These data can always get accessed during a workflow (example below). For more detail about data output see [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
 

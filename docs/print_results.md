@@ -41,7 +41,7 @@ print an output .json file for data analysis.
     - Print out a result file containing all measurements recorded by functions included in the workflow
       for each image processed.  
 - **Example use:**
-    - [Use In VIS Tutorial](vis_tutorial.md)  
+    - [Use In VIS Tutorial](tutorials/vis_tutorial.md)  
 
 ```python
 from plantcv import plantcv as pcv
