@@ -1693,12 +1693,7 @@ def test_plantcv_closing():
     bin_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug=None
     pcv.params.debug = None
-    _ = pcv.closing(gray_img)
-    # Test with debug='plot'
-    pcv.params.debug = 'plot'
-    _ = pcv.closing(bin_img, np.ones((4, 4), np.uint8))
-    # Test with debug='print'
-    pcv.params.debug = 'print'
+    _ = pcv.closing(gray_img, np.ones((4, 4), np.uint8))
     filtered_img = pcv.closing(bin_img)
     assert np.sum(filtered_img) == 16261860
 
