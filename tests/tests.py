@@ -2114,15 +2114,9 @@ def test_plantcv_flip():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     img_binary = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.flip(img=img, direction="horizontal")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.flip(img=img, direction="vertical")
-    _ = pcv.flip(img=img_binary, direction="vertical")
     # Test with debug = None
     pcv.params.debug = None
+    _ = pcv.flip(img=img_binary, direction="vertical")
     flipped_img = pcv.flip(img=img, direction="horizontal")
     assert all([i == j] for i, j in zip(np.shape(flipped_img), TEST_COLOR_DIM))
 
