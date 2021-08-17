@@ -2443,15 +2443,9 @@ def test_plantcv_object_composition():
     object_contours = [object_contours_npz[arr_n] for arr_n in object_contours_npz]
     object_hierarchy_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_OBJECT_HIERARCHY), encoding="latin1")
     object_hierarchy = object_hierarchy_npz['arr_0']
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.object_composition(img=img, contours=object_contours, hierarchy=object_hierarchy)
-    _ = pcv.object_composition(img=img, contours=[], hierarchy=object_hierarchy)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.object_composition(img=img, contours=object_contours, hierarchy=object_hierarchy)
     # Test with debug = None
     pcv.params.debug = None
+    _ = pcv.object_composition(img=img, contours=[], hierarchy=object_hierarchy)
     contours, mask = pcv.object_composition(img=img, contours=object_contours, hierarchy=object_hierarchy)
     # Assert that the objects have been combined
     contour_shape = np.shape(contours)  # type: tuple
