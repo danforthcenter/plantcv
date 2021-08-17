@@ -2735,15 +2735,10 @@ def test_plantcv_rectangle_mask():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     img_color = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.rectangle_mask(img=img, p1=(0, 0), p2=(2454, 2056), color="white")
-    _ = pcv.rectangle_mask(img=img, p1=(0, 0), p2=(2454, 2056), color="white")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.rectangle_mask(img=img_color, p1=(0, 0), p2=(2454, 2056), color="gray")
     # Test with debug = None
     pcv.params.debug = None
+    _ = pcv.rectangle_mask(img=img, p1=(0, 0), p2=(2454, 2056), color="white")
+    _ = pcv.rectangle_mask(img=img_color, p1=(0, 0), p2=(2454, 2056), color="gray")
     masked, hist, contour, heir = pcv.rectangle_mask(img=img, p1=(0, 0), p2=(2454, 2056), color="black")
     maskedsum = np.sum(masked)
     imgsum = np.sum(img)
