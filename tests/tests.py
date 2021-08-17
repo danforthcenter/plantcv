@@ -2251,12 +2251,6 @@ def test_plantcv_image_subtract():
     # read in images
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     img2 = np.copy(img1)
-    # Test with debug = "print"
-    pcv.params.debug = 'print'
-    _ = pcv.image_subtract(img1, img2)
-    # Test with debug = "plot"
-    pcv.params.debug = 'plot'
-    _ = pcv.image_subtract(img1, img2)
     # Test with debug = None
     pcv.params.debug = None
     new_img = pcv.image_subtract(img1, img2)
