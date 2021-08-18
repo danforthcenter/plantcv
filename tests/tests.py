@@ -3065,12 +3065,6 @@ def test_plantcv_scharr_filter():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    pcv.params.debug = "print"
-    # Test with debug = "print"
-    _ = pcv.scharr_filter(img=img, dx=1, dy=0, scale=1)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.scharr_filter(img=img, dx=1, dy=0, scale=1)
     # Test with debug = None
     pcv.params.debug = None
     scharr_img = pcv.scharr_filter(img=img, dx=1, dy=0, scale=1)
