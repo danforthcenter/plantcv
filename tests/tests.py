@@ -2875,12 +2875,6 @@ def test_plantcv_rgb2gray_lab():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.rgb2gray_lab(rgb_img=img, channel='b')
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.rgb2gray_lab(rgb_img=img, channel='b')
     # Test with debug = None
     pcv.params.debug = None
     b = pcv.rgb2gray_lab(rgb_img=img, channel='b')
