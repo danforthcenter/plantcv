@@ -2704,17 +2704,17 @@ def test_plantcv_readimage_bad_file():
 
 
 @pytest.mark.parametrize("alg, pattern", [["default", 'BG'],
-                                        ["default", 'GB'],
-                                        ["default", 'RG'],
-                                        ["default", 'GR'],
-                                        ["edgeaware", 'BG'],
-                                        ["edgeaware", 'GB'],
-                                        ["edgeaware", 'RG'],
-                                         ["edgeaware", 'GR'],
-                                         ["variablenumbergradients", 'BG'],
-                                        ["variablenumbergradients", 'GB'],
-                                        ["variablenumbergradients", 'RG'],
-                                         ["variablenumbergradients", 'GR']])
+                                          ["default", 'GB'],
+                                          ["default", 'RG'],
+                                          ["default", 'GR'],
+                                          ["edgeaware", 'BG'],
+                                          ["edgeaware", 'GB'],
+                                          ["edgeaware", 'RG'],
+                                          ["edgeaware", 'GR'],
+                                          ["variablenumbergradients", 'BG'],
+                                          ["variablenumbergradients", 'GB'],
+                                          ["variablenumbergradients", 'RG'],
+                                          ["variablenumbergradients", 'GR']])
 def test_plantcv_readbayer_default_bg(alg, pattern):
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_readbayer_default_bg")
@@ -3424,25 +3424,16 @@ def test_plantcv_background_subtraction_different_sizes():
     assert np.sum(fgmask) > 0
 
 
-def test_plantcv_spatial_clustering_dbscan():
+@pytest.mark.parametrize("alg, min_size, max_size", [['DBSCAN', 10, None],
+                                                     ['OPTICS', 100, 5000]]
+                         )
+def test_plantcv_spatial_clustering(alg, min_size, max_size):
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_spatial_clustering_dbscan")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI_MASK), -1)
-    pcv.params.debug = "print"
-    _ = pcv.spatial_clustering(img, algorithm="DBSCAN", min_cluster_size=10, max_distance=None)
-    pcv.params.debug = "plot"
-    spmask = pcv.spatial_clustering(img, algorithm="DBSCAN", min_cluster_size=10, max_distance=None)
-    assert len(spmask[1]) == 2
-
-
-def test_plantcv_spatial_clustering_optics():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_spatial_clustering_optics")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI_MASK), -1)
     pcv.params.debug = None
-    spmask = pcv.spatial_clustering(img, algorithm="OPTICS", min_cluster_size=100, max_distance=5000)
+    spmask = pcv.spatial_clustering(img, algorithm=alg, min_cluster_size=min_size, max_distance=max_size)
     assert len(spmask[1]) == 2
 
 
@@ -5971,7 +5962,6 @@ def test_plantcv_visualize_colorize_masks_bad_color_input():
         _ = pcv.visualize.colorize_masks(masks=[mask1, mask2], colors=['red', 1.123])
 
 
-
 def test_plantcv_visualize_colorize_label_img():
     label_img = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
     pcv.params.debug = None
@@ -6017,6 +6007,7 @@ def test_plantcv_visualize_histogram_multispectral_img():
     img_multi = np.concatenate((img_rgb, img_rgb), axis=2)
     fig_hist = pcv.visualize.histogram(img=img_multi)
     assert isinstance(fig_hist, ggplot)
+
 
 def test_plantcv_visualize_histogram_no_img():
     with pytest.raises(RuntimeError):
