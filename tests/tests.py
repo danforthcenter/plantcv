@@ -6804,7 +6804,7 @@ def test_plantcv_time_series_inst_ts_linking_import_update(tmpdir):
     name_save = "link_series"
     inst_ts_linking.import_linked_series(path_save, savename=name_save)
     inst_ts_linking.update_ti(max_gap=3)
-    assert (inst_ts_linking.ti is not None) and (inst_ts_linking.ti_old is not None)
+    assert (inst_ts_linking.ti is not None) and (inst_ts_linking.ti_old is not None) and (inst_ts_linking.tracking_report_old is not None)
 
 def test_plantcv_time_series_inst_ts_linking_compute_overlap(tmpdir):
     # test for the static method "compute_overlap_weights"
