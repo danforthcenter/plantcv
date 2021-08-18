@@ -3221,18 +3221,14 @@ def test_plantcv_x_axis_pseudolandmarks():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR), encoding="latin1")
     obj_contour = contours_npz['arr_0']
-    pcv.params.debug = "print"
-    _ = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
+    # Test with debug = None
+    pcv.params.debug = None
     _ = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img, label="prefix")
     _ = pcv.x_axis_pseudolandmarks(obj=np.array([[0, 0], [0, 0]]), mask=np.array([[0, 0], [0, 0]]), img=img)
     _ = pcv.x_axis_pseudolandmarks(obj=np.array(([[89, 222]], [[252, 39]], [[89, 207]])),
                                    mask=np.array(([[42, 161]], [[2, 47]], [[211, 222]])), img=img)
 
     _ = pcv.x_axis_pseudolandmarks(obj=(), mask=mask, img=img)
-    # Test with debug = None
-    pcv.params.debug = None
     top, bottom, center_v = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
     pcv.outputs.clear()
     assert all([all([i == j] for i, j in zip(np.shape(top), (20, 1, 2))),
@@ -3245,12 +3241,9 @@ def test_plantcv_x_axis_pseudolandmarks_small_obj():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL_PLANT), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR_SMALL_PLANT), encoding="latin1")
     obj_contour = contours_npz['arr_0']
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _, _, _ = pcv.x_axis_pseudolandmarks(obj=[], mask=mask, img=img)
+    # Test with debug = None
+    pcv.params.debug = None
     _, _, _ = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
     _, _, _ = pcv.x_axis_pseudolandmarks(obj=[], mask=mask, img=img)
     top, bottom, center_v = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
     assert all([all([i == j] for i, j in zip(np.shape(top), (20, 1, 2))),
