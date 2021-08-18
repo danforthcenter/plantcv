@@ -3142,16 +3142,10 @@ def test_plantcv_watershed_segmentation():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED_MASK), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10, label="prefix")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10)
     # Test with debug = None
     pcv.params.debug = None
-    _ = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10)
-    assert pcv.outputs.observations['default']['estimated_object_count']['value'] > 9
+    _ = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10, label='prefix')
+    assert pcv.outputs.observations['prefix']['estimated_object_count']['value'] > 9
 
 
 def test_plantcv_white_balance_gray_16bit():
