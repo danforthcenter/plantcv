@@ -89,6 +89,13 @@ class InstanceTimeSeriesLinking(object):
         return link#, row_ind, col_ind
 
 
+    # @staticmethod
+    # def compute_dist_weights(pts1, pts2):
+    #     n1, n2 = len(pts1), len(pts2)
+    #     weight = distance.cdist(pts1, pts2)
+    #     return weight, n1, n2
+
+
     @staticmethod
     def compute_overlaps_weights(masks1, masks2, metric):
         """
@@ -146,6 +153,16 @@ class InstanceTimeSeriesLinking(object):
         else:
             return ioss, n1, n2, unions
 
+
+    # @staticmethod
+    # def compute_weights(measure1, measure2, metric):
+    #     if metric.upper() == "IOU" or metric.upper() == "IOS":
+    #         weights, n1, n2, _ = InstanceTimeSeriesLinking.compute_overlaps_weights(measure1, measure2, metric)
+    #     elif metric.upper() == "DIST":
+    #         weights, n1, n2, _ = InstanceTimeSeriesLinking.compute_dist_weights(measure1, measure2, metric)
+    #     else:
+    #         fatal_error("Currently only calculating metrics 'IOU', 'IOS', or 'DIST' are available!")
+    #     return weights, n1, n2
 
 
     @staticmethod
