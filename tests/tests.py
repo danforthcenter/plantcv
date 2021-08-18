@@ -6792,8 +6792,11 @@ def test_plantcv_time_series_inst_ts_linking(tmpdir):
                 color_all[t][cid] = colors[uid]
 
     pcv.time_series.InstanceTimeSeriesLinking.visualize(images[0:3], masks[0:3], timepoints[0:3], vis_dir, ti, color_all)
+    # an extra test for visualize without "color_all", with "ti"
+    vis_dir2 = os.path.join(vis_dir, "extra")
+    pcv.time_series.InstanceTimeSeriesLinking.visualize(images[0:3], masks[0:3], timepoints[0:3], vis_dir2, ti, color_all=None)
     assert inst_ts_linking.ti.shape[0] == len(timepoints) and os.path.isfile(os.path.join(cache_dir, f"{savename}.pkl")) \
-           and inst_ts_linking.ti_old is None and len(os.listdir(vis_dir)) > 0
+           and inst_ts_linking.ti_old is None and len(os.listdir(vis_dir)) > 0 and len(os.listdir(vis_dir2)) > 0
 
 def test_plantcv_time_series_inst_ts_linking_import_update(tmpdir):
     cache_dir = tmpdir.mkdir("sub")
