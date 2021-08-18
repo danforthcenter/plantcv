@@ -3155,17 +3155,11 @@ def test_plantcv_white_balance_gray_16bit():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.white_balance(img=img, mode='hist', roi=(5, 5, 80, 80))
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.white_balance(img=img, mode='max', roi=(5, 5, 80, 80))
     # Test without an ROI
     pcv.params.debug = None
-    _ = pcv.white_balance(img=img, mode='hist', roi=None)
+    _ = pcv.white_balance(img=img, mode='max', roi=None)
     # Test with debug = None
-    white_balanced = pcv.white_balance(img=img, roi=(5, 5, 80, 80))
+    white_balanced = pcv.white_balance(img=img, mode='hist', roi=(5, 5, 80, 80))
     imgavg = np.average(img)
     balancedavg = np.average(white_balanced)
     assert balancedavg != imgavg
@@ -3179,17 +3173,11 @@ def test_plantcv_white_balance_gray_8bit():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK))
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.white_balance(img=img, mode='hist', roi=(5, 5, 80, 80))
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.white_balance(img=img, mode='max', roi=(5, 5, 80, 80))
     # Test without an ROI
     pcv.params.debug = None
-    _ = pcv.white_balance(img=img, mode='hist', roi=None)
+    _ = pcv.white_balance(img=img, mode='max', roi=None)
     # Test with debug = None
-    white_balanced = pcv.white_balance(img=img, roi=(5, 5, 80, 80))
+    white_balanced = pcv.white_balance(img=img, mode='hist', roi=(5, 5, 80, 80))
     imgavg = np.average(img)
     balancedavg = np.average(white_balanced)
     assert balancedavg != imgavg
@@ -3202,47 +3190,26 @@ def test_plantcv_white_balance_rgb():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MARKER))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.white_balance(img=img, mode='hist', roi=(5, 5, 80, 80))
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.white_balance(img=img, mode='max', roi=(5, 5, 80, 80))
-    # Test without an ROI
     pcv.params.debug = None
-    _ = pcv.white_balance(img=img, mode='hist', roi=None)
+    # Test without an ROI
+    _ = pcv.white_balance(img=img, mode='max', roi=None)
     # Test with debug = None
-    white_balanced = pcv.white_balance(img=img, roi=(5, 5, 80, 80))
+    white_balanced = pcv.white_balance(img=img, mode='hist', roi=(5, 5, 80, 80))
     imgavg = np.average(img)
     balancedavg = np.average(white_balanced)
     assert balancedavg != imgavg
 
 
-def test_plantcv_white_balance_bad_input():
+@pytest.mark.parametrize("mode, roi", [['hist', (5, 5, 5, 5, 5)],  # too many points
+                                       ['hist', (5., 5, 5, 5)],  # not all integers
+                                       ['histogram', (5, 5, 80, 80)]])  # bad mode
+def test_plantcv_white_balance_bad_input(mode, roi):
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK), -1)
     # Test with debug = None
     with pytest.raises(RuntimeError):
-        pcv.params.debug = "plot"
-        _ = pcv.white_balance(img=img, mode='hist', roi=(5, 5, 5, 5, 5))
-
-
-def test_plantcv_white_balance_bad_mode_input():
-    # Read in test data
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MARKER))
-    # Test with debug = None
-    with pytest.raises(RuntimeError):
-        pcv.params.debug = "plot"
-        _ = pcv.white_balance(img=img, mode='histogram', roi=(5, 5, 80, 80))
-
-
-def test_plantcv_white_balance_bad_input_int():
-    # Read in test data
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK), -1)
-    # Test with debug = None
-    with pytest.raises(RuntimeError):
-        pcv.params.debug = "plot"
-        _ = pcv.white_balance(img=img, mode='hist', roi=(5., 5, 5, 5))
+        pcv.params.debug = None
+        _ = pcv.white_balance(img=img, mode=mode, roi=roi)
 
 
 def test_plantcv_x_axis_pseudolandmarks():
