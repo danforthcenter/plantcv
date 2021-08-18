@@ -3113,12 +3113,6 @@ def test_plantcv_sobel_filter():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.sobel_filter(gray_img=img, dx=1, dy=0, ksize=1)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.sobel_filter(gray_img=img, dx=1, dy=0, ksize=1)
     # Test with debug = None
     pcv.params.debug = None
     sobel_img = pcv.sobel_filter(gray_img=img, dx=1, dy=0, ksize=1)
