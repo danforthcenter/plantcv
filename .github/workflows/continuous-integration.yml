@@ -6,10 +6,10 @@ name: builds
 on:
   push:
     # Run when master is updated
-    branches: [ master, 4.x ]
+    branches: [ master, 4.x, Visualize show instances ]
   pull_request:
     # Run on pull requests against master
-    branches: [ master, 4.x ]
+    branches: [ master, 4.x, visualize_show_instances ]
 
 jobs:
   build:
