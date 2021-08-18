@@ -41,7 +41,7 @@ class InstanceTimeSeriesLinking(object):
 
         # initialization for linking
         self.thres, self.metric, self.uids, self.link_info, self.weights  = None, None, None, None, None
-        self.ti, self.ti_old, self.tracking_report = None, None, None
+        self.ti, self.ti_old, self.tracking_report, self.tracking_report_old = None, None, None, None
         # self.name_sub = None
         # self.key_id = None
 
@@ -412,6 +412,7 @@ class InstanceTimeSeriesLinking(object):
     def update_ti(self, max_gap=5):
         # self.ti_old = ti
         self.ti_old = self.ti
+        self.tracking_report_old = self.tracking_report
         min_gap = 1
         # ti_ = InstanceTimeSeriesLinking._update_ti(self.masks, self.metric, self.thres, ti, min_gap, max_gap)
         ti_ = InstanceTimeSeriesLinking._update_ti(self.masks, self.metric, self.thres, self.ti_old, min_gap, max_gap)
@@ -422,6 +423,8 @@ class InstanceTimeSeriesLinking(object):
             if np.array_equal(ti_, ti) or min_gap == max_gap - 2:
                 # return ti_
                 self.ti = ti_
+                # update tracking_report
+                self.tracking_report = InstanceTimeSeriesLinking.get_tracking_report(self.ti, self.masks)
                 break
 
 
