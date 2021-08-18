@@ -3127,9 +3127,7 @@ def test_plantcv_stdev_filter():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY_SMALL), -1)
-    pcv.params.debug = "plot"
-    _ = pcv.stdev_filter(img=img, ksize=11)
-    pcv.params.debug = "print"
+    pcv.params.debug = None
     filter_img = pcv.stdev_filter(img=img, ksize=11)
     assert (np.shape(filter_img) == np.shape(img))
 
