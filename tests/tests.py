@@ -3801,19 +3801,29 @@ def test_plantcv_segment_image_series():
     cache_out_dir = os.path.join(TEST_TMPDIR, 'segment_image_series_out')
     os.mkdir(cache_out_dir)
 
+    imgs_paths = []
+    masks_paths = []
+
     # generate image series
     obj1_init = np.array(OBJ1_COORDS)
     obj2_init = np.array(OBJ2_COORDS)
     for i in range(FRAMES):
         img = np.zeros((H,W,C), dtype=np.uint8)
+
         obj1  = obj1_init + rng.integers(low=-1, high=1, size=2)
         img[obj1[0]:obj1[0]+OBJ_SIZE,obj1[1]:obj1[1]+OBJ_SIZE,:] = RGB_VAL
         obj2  = obj2_init  + rng.integers(low=-1, high=1, size=2)
         img[obj2[0]:obj2[0]+OBJ_SIZE,obj2[1]:obj2[1]+OBJ_SIZE,:] = RGB_VAL
 
-        cv2.imwrite(os.path.join(cache_img_dir, f"{i}.png"), img)
-        cv2.imwrite(os.path.join(cache_mask_dir, f"{i}_mask.png"),
-                    255*(img!=0).astype(np.uint8))
+        img_path = os.path.join(cache_img_dir, f"{i}.png")
+        mask_path = os.path.join(cache_mask_dir, f"{i}_mask.png")
+
+        cv2.imwrite(img_path, img)
+        cv2.imwrite(mask_path, 255*(img!=0).astype(np.uint8))
+
+        imgs_paths.append(img_path)
+        masks_paths.append(mask_path)
+
 
     pcv.params.debug_outdir = cache_out_dir
     pcv.params.color_sequence = 'random'
@@ -3825,7 +3835,7 @@ def test_plantcv_segment_image_series():
 
     # test that the function detects the two objects and propagates the labels
     # to the last frame
-    markers = pcv.segment_image_series(cache_img_dir, cache_mask_dir,
+    markers = pcv.segment_image_series(imgs_paths, masks_paths,
                                         rois=valid_rois, save_labels=True,
                                         ksize=3)
 
