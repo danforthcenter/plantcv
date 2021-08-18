@@ -6725,30 +6725,21 @@ def test_plantcv_visualize_colorspaces_bad_input():
         _ = pcv.visualize.colorspaces(rgb_img=img)
 
 
-# ##############################
+# #####################################
 # Tests for the time_series subpackage
-# ##############################
+# #####################################
 
-# def test_plantcv_time_series_display_instances():
-#     # Test cache directory
-#     loaded = pkl.load(open(os.path.join(TIME_SERIES_TEST_INSTANCE_SEG, "img_segment_.pkl"), 'rb'))
-#     img = loaded['img']
-#     masks = loaded['segment']['masks']
-#     pcv.time_series._display_instances(img, masks, figsize=(16, 16), title="", ax=None, colors=None)
-
-def test_plantcv_time_series_time_series():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_time_series")
-    os.mkdir(cache_dir)
+def test_plantcv_time_series_inst_ts_linking(tmpdir):
+    cache_dir = tmpdir.mkdir("sub")
     pcv.params.debug_outdir = cache_dir
 
     path_img = TIME_SERIES_TEST_RAW
     path_segmentation = TIME_SERIES_TEST_INSTANCE_SEG
-    path_save = cache_dir
+
+    ext_img = "_crop-img12.jpg"
+    ext_seg = ".pkl"
     savename = "link_series"
     pattern_datetime = "\d{4}-\d{2}-\d{2}-\d{2}-\d{2}"  # YYYY-MM-DD-hh
-    ext = "_crop-img12.jpg"
-    ext_seg = ".pkl"
 
     list_seg = glob.glob(os.path.join(path_segmentation, "2*{}".format(ext_seg)))
     timepoints = []
@@ -6756,13 +6747,14 @@ def test_plantcv_time_series_time_series():
         tp_temp = re.search(pattern_datetime, f_seg).group()
         timepoints.append(tp_temp)
     timepoints.sort()
+
     # Load original images
     images = []
     temp_imgs = []
     sz = []
 
     for tp in timepoints:
-        filename_ = "*_{}{}".format(tp, ext)
+        filename_ = "*_{}{}".format(tp, ext_img)
         filename = glob.glob(os.path.join(path_img, filename_))[0]
 
         junk_ = skimage.io.imread(filename)
@@ -6783,54 +6775,91 @@ def test_plantcv_time_series_time_series():
         r = pkl.load(open(filename, 'rb'))
         masks.append(r['masks'][0: min_dim, 0:min_dim, :])  # make all masks the same size
 
-    # test for "_compute_overlap_masks"
-    masks1 = masks[0]
-    masks2 = masks[1]
-    n1, n2, _, _, _ = pcv.time_series._compute_overlaps_masks(masks1[:, :, 0], masks2)
-    n1_, n2_, _, _, _ = pcv.time_series._compute_overlaps_masks(masks1, masks2[:, :, 0])
-    assert n1 == 1 and n2 == masks2.shape[2] and n1_ == masks1.shape[2] and n2_ == 1
-
-    logic = 'IOS'
-    thres = 0.1
-
-    # create an instance of Instance_timeseries_linking
-    name_sub = 'leaf'
     inst_ts_linking = pcv.time_series.InstanceTimeSeriesLinking()
-    inst_ts_linking(images=images, masks=masks, timepoints=timepoints, logic=logic, thres=thres, name_sub=name_sub, update=False)
-    assert inst_ts_linking.updated == 0 and len(inst_ts_linking.timepoints)-1==len(inst_ts_linking.link_info)
+    inst_ts_linking.link(masks, metric="IOU", thres=0.05)
+    inst_ts_linking.save_linked_series(cache_dir, savename)
 
-    # test with update_ti = True
+    vis_dir = os.path.join(cache_dir, "vis")
+    os.makedirs(vis_dir)
+    colors_ = pcv.color_palette(inst_ts_linking.N)
+    colors = [tuple([ci / 255 for ci in c]) for c in colors_]
+    n_insts = inst_ts_linking.n_insts[0:3]
+    ti = inst_ts_linking.ti[0:3]
+    color_all = [[tuple() for _ in range(0, num)] for num in n_insts]
+    for (t, ti_t) in enumerate(ti):
+        for (uid, cid) in enumerate(ti_t):
+            if cid > -1:
+                color_all[t][cid] = colors[uid]
+
+    pcv.time_series.InstanceTimeSeriesLinking.visualize(images[0:3], masks[0:3], timepoints[0:3], vis_dir, ti, color_all)
+    assert inst_ts_linking.ti.shape[0] == len(timepoints) and os.path.isfile(os.path.join(cache_dir, f"{savename}.pkl")) \
+           and inst_ts_linking.ti_old is None and len(os.listdir(vis_dir)) > 0
+
+def test_plantcv_time_series_inst_ts_linking_import_update(tmpdir):
+    cache_dir = tmpdir.mkdir("sub")
+    pcv.params.debug_outdir = cache_dir
+
     inst_ts_linking = pcv.time_series.InstanceTimeSeriesLinking()
-    inst_ts_linking(images=images, masks=masks, timepoints=timepoints, logic=logic, thres=thres, name_sub=name_sub, update=True)
-    assert len(inst_ts_linking.timepoints)-1==len(inst_ts_linking.link_info)
+    path_save = TIME_SERIES_TEST_DIR
+    name_save = "link_series"
+    inst_ts_linking.import_linked_series(path_save, savename=name_save)
+    inst_ts_linking.update_ti(max_gap=3)
+    assert (inst_ts_linking.ti is not None) and (inst_ts_linking.ti_old is not None)
 
-    # test on update_ti
-    inst_ts_linking.update_ti(delta_t=2)
-    assert len(inst_ts_linking.timepoints)-1==len(inst_ts_linking.link_info)
+def test_plantcv_time_series_inst_ts_linking_compute_overlap(tmpdir):
+    # test for the static method "compute_overlap_weights"
+    # metric = IOS (not tested when testing the class)
+    seg_name1 = os.path.join(TIME_SERIES_TEST_INSTANCE_SEG, "2019-10-21-21-05.pkl")
+    # seg_name2 = os.path.join(TIME_SERIES_TEST_INSTANCE_SEG, "2019-10-22-11-05.pkl")
+    masks1 = pkl.load(open(seg_name1, 'rb'))['masks']
+    # masks2 = pkl.load(open(seg_name2, 'rb'))['masks']
+    ioss, n1, n2, unions = pcv.time_series.InstanceTimeSeriesLinking.compute_overlaps_weights(masks1[:,:,0], masks1[:,:,1], "IOS")
+    assert ioss.shape == (n1,n2) and (n1==n2) and (n1==1)
 
-    # test on save_linked_series
-    inst_ts_linking.save_linked_series(path_save,savename)
-    assert (len(os.listdir(path_save)) > 0)
 
-    # test on using IOU as linking logic
-    logic = 'IOU'
-    inst_ts_linking = pcv.time_series.InstanceTimeSeriesLinking()
-    inst_ts_linking(images=images, masks=masks, timepoints=timepoints, logic=logic, thres=thres, name_sub=name_sub, update=False)
-    assert inst_ts_linking.updated == 0 and len(inst_ts_linking.timepoints)-1==len(inst_ts_linking.link_info)
-
-    # test on using logic that is currently unavailable
-    logic = 'emd'
-    inst_ts_linking = pcv.time_series.InstanceTimeSeriesLinking()
+def test_plantcv_time_series_inst_ts_linking_compute_overlap_bad_metric(tmpdir):
+    # test for the static method "compute_overlap_weights", bad metric
     with pytest.raises(RuntimeError):
-        inst_ts_linking(images=images, masks=masks, timepoints=timepoints, logic=logic, thres=thres, name_sub=name_sub, update=False)
-    # assert (len(os.listdir(path_save)) > 0) and inst_ts_linking.updated == 0
+        _ = pcv.time_series.InstanceTimeSeriesLinking.compute_overlaps_weights(np.ones((5,5)), np.zeros((5,5)), "")
 
-    # test on import_linked_series and then for the case where there is no potential updates
-    inst_ts_linking = pcv.time_series.InstanceTimeSeriesLinking()
-    inst_ts_linking.import_linked_series(TIME_SERIES_TEST_DIR, 'link_series_no_updates')
-    assert len(inst_ts_linking.timepoints)-1==len(inst_ts_linking.link_info)
-    inst_ts_linking.update_ti()
-    assert inst_ts_linking.updated == 0
+
+def test_plantcv_time_series_inst_ts_linking_visualize(tmpdir):
+    # test for the static method "visualize"
+    cache_dir = tmpdir.mkdir("sub")
+    pcv.params.debug_outdir = cache_dir
+    path_img = TIME_SERIES_TEST_RAW
+    path_segmentation = TIME_SERIES_TEST_INSTANCE_SEG
+    temp_imgs, imgs, masks = [], [], []
+    tps = ["2019-10-21-21-05", "2019-10-22-11-05"]
+    sz = []
+    for tp in tps:
+        filename_ = f"*_{tp}_crop-img12.jpg"
+        filename = glob.glob(os.path.join(path_img, filename_))[0]
+
+        junk_ = skimage.io.imread(filename)
+        junk = junk_
+        if len(junk_.shape) == 2:
+            junk = cv2.cvtColor(junk_, cv2.COLOR_GRAY2BGR)
+        temp_imgs.append(junk)
+        sz.append(np.min(junk.shape[0:2]))
+    min_dim = np.min(sz)
+    for junk in temp_imgs:
+        img = junk[0: min_dim, 0:min_dim, :]  # make all images the same size
+        imgs.append(img)
+    for tp in tps:
+        filename_ = f"*{tp}.pkl"
+        filename = glob.glob(os.path.join(path_segmentation, filename_))[0]
+        r = pkl.load(open(filename, 'rb'))
+        masks.append(r['masks'][0: min_dim, 0:min_dim, :])  # make all masks the same size
+    pcv.time_series.InstanceTimeSeriesLinking.visualize(imgs, masks, tps, cache_dir)
+    assert len(os.listdir(cache_dir)) > 0
+
+
+def test_plantcv_time_series_inst_ts_linking_get_li_from_ti(tmpdir):
+    # test for the static method "get_li_from_ti"
+    ti_gt = pkl.load(open(os.path.join(TIME_SERIES_TEST_DIR, "gt.pkl"), "rb"))["ti_gt"]
+    li_gt = pcv.time_series.InstanceTimeSeriesLinking.get_li_from_ti(ti_gt)
+    assert len(li_gt) == (ti_gt.shape[0]-1)
 
 
 def test_plantcv_time_series_evaluation():
