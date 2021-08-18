@@ -2934,16 +2934,10 @@ def test_plantcv_roi_objects():
     object_contours = [object_contours_npz[arr_n] for arr_n in object_contours_npz]
     object_hierarchy_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_OBJECT_HIERARCHY), encoding="latin1")
     object_hierarchy = object_hierarchy_npz['arr_0']
-    # Test with debug = "print"
-    pcv.params.debug = "print"
+    # Test with debug = None
+    pcv.params.debug = None
     _ = pcv.roi_objects(img=img, roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
                         object_contour=object_contours, obj_hierarchy=object_hierarchy, roi_type="largest")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.roi_objects(img=img, roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
-                        object_contour=object_contours, obj_hierarchy=object_hierarchy, roi_type="partial")
-    # Test with debug = None and roi_type = cutto
-    pcv.params.debug = None
     _ = pcv.roi_objects(img=img, roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
                         object_contour=object_contours, obj_hierarchy=object_hierarchy, roi_type="cutto")
     # Test with debug = None
@@ -2987,8 +2981,7 @@ def test_plantcv_roi_objects_grayscale_input():
     object_contours = [object_contours_npz[arr_n] for arr_n in object_contours_npz]
     object_hierarchy_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_OBJECT_HIERARCHY), encoding="latin1")
     object_hierarchy = object_hierarchy_npz['arr_0']
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
+    pcv.params.debug = None
     kept_contours, kept_hierarchy, mask, area = pcv.roi_objects(img=img, roi_type="partial", roi_contour=roi_contour,
                                                                 roi_hierarchy=roi_hierarchy,
                                                                 object_contour=object_contours,
