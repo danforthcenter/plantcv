@@ -41,22 +41,9 @@ class InstanceTimeSeriesLinking(object):
 
         # initialization for linking
         self.thres, self.metric, self.uids, self.link_info, self.weights  = None, None, None, None, None
-        # self.emergence = None
-        # self.emerge_times = None
-        # self.t_appear = None
-        # self.t_disappear = None
-        self.ti, self.tracking_report = None, None
+        self.ti, self.ti_old, self.tracking_report = None, None, None
         # self.name_sub = None
         # self.key_id = None
-
-        # # update releated
-        # self.updated = 0
-        # self.delta_t = None
-        # self.disp_uids = None
-        # self.ids_update = None
-        # self.ti_ = None
-        # self.t_appear_ = None
-        # self.t_disappear_ = None
 
     def save_linked_series(self, savedir, savename):
         pkl.dump(vars(self), open(osp.join(savedir,  f"{savename}.pkl"), 'wb'))
@@ -128,6 +115,9 @@ class InstanceTimeSeriesLinking(object):
         :return unions: numpy.ndarray of shape: [n1, n2]
         """
 
+        if not (metric.upper() == "IOU" or metric.upper() == "IOS"):
+            fatal_error("Currently only calculating metrics 'IOU' and 'IOS' are available!")
+
         # If either set of masks is empty return an empty result
         # if masks1.shape[-1] == 0 or masks2.shape[-1] == 0:
         #     return np.zeros((masks1.shape[-1], masks2.shape[-1]))
@@ -153,8 +143,9 @@ class InstanceTimeSeriesLinking(object):
         ious = np.divide(intersections, unions)
         if metric.upper() == "IOU":
             return ious, n1, n2, unions
-        if metric.upper() == "IOS":
+        else:
             return ioss, n1, n2, unions
+
 
 
     @staticmethod
@@ -176,7 +167,7 @@ class InstanceTimeSeriesLinking(object):
         uids_sort[0] = np.arange(n_insts[0])
         max_uid = max(uids_sort[0])
         N = len(np.unique(uids_sort[0]))
-        for t in range(1, len(li) + 1):
+        for t in range(1, len(link_info) + 1):
 
             li_t = link_info[t - 1]
             uids_sort_t = uids_sort[t]
@@ -268,23 +259,6 @@ class InstanceTimeSeriesLinking(object):
                 new_ids = emergence[t]
                 for (cid,new_id) in zip(cids,new_ids):
                     ti[t,new_id] = cid
-
-        # # get appear and disappear information
-        # t_appear    = np.zeros(N,dtype=np.int64)
-        # t_disappear = -np.ones(N, dtype=np.int64)
-        #
-        # for (t,uids_t) in enumerate(emergence):
-        #     if uids_t:
-        #         for uid in uids_t:
-        #             t_appear[uid] = t
-        # for uid in range(0,N):
-        #     t = 0
-        #     while t < T:
-        #         if (ti[t][uid] == -1) and (t > t_appear[uid]):
-        #             t_disappear[uid] = t
-        #             break
-        #         else:
-        #             t += 1
         return ti
 
 
@@ -316,7 +290,7 @@ class InstanceTimeSeriesLinking(object):
             ti_t = ti[t, :]
             for cid in range(masks_t.shape[2]):
                 uid = np.where(ti_t == cid)[0][0]
-                leaf_status_report[t, uid] = np.sum(masks_t[:, :, cid])
+                tracking_report[t, uid] = np.sum(masks_t[:, :, cid])
         return tracking_report
 
 
@@ -377,9 +351,11 @@ class InstanceTimeSeriesLinking(object):
         self.ti = self.get_ti(self.uids, self.link_info, self.n_insts)
         self.tracking_report = InstanceTimeSeriesLinking.get_tracking_report(self.ti, self.masks)
 
-    def update_ti(self, ti, max_gap=5):
+
+    @staticmethod
+    def _update_ti(masks, metric, thres, ti, min_gap, max_gap):
         ti_ = copy.deepcopy(ti)
-        # uids, uids_sort, T, N = InstanceTimeSeriesLinking.get_uids_from_ti(ti)
+        T, N = ti.shape
         uids_sort = InstanceTimeSeriesLinking.get_uids_from_ti(ti)
         emergence, disappearance = InstanceTimeSeriesLinking.get_emerg_disap_info(uids_sort)
         t_emerg, t_disap = emergence.keys(), disappearance.keys()
@@ -390,10 +366,10 @@ class InstanceTimeSeriesLinking(object):
             # corresponding cid(s) (i.e. indices for masks)
             cids_disap = [uids_sort[t].index(i) for i in uids_disap]
             # pull out masks
-            masks_t = np.take(self.masks[t], cids_disap, axis=2)
+            masks_t = np.take(masks[t], cids_disap, axis=2)
 
             # timepoints with potential link with t
-            ts_pot = [te for te in t_emerg if t < te < t + max_gap]
+            ts_pot = [te for te in t_emerg if t + min_gap < te < t + max_gap]
             # loop over timepoints for a potential link and get cids and masks for every timepoint
             for t_ in ts_pot:
                 uids_emerg = emergence[t_]
@@ -401,9 +377,9 @@ class InstanceTimeSeriesLinking(object):
                 masks_t_ = np.take(masks[t_], cids_emerg, axis=2)
 
                 # calculate weight to calculate the link
-                weights, n1, n2, _ = InstanceTimeSeriesLinking.compute_overlaps_weights(masks_t, masks_t_, self.metric)
+                weights, n1, n2, _ = InstanceTimeSeriesLinking.compute_overlaps_weights(masks_t, masks_t_, metric)
                 # li_ts, _, _ = InstanceTimeSeriesLinking.get_link(weights, self.thres)
-                li_ts = InstanceTimeSeriesLinking.get_link(weights, self.thres)
+                li_ts = InstanceTimeSeriesLinking.get_link(weights, thres)
 
                 uids_undisap = []
                 for (idx, uid_disap) in enumerate(uids_disap):  # loop over all disappeared indices
@@ -432,70 +408,21 @@ class InstanceTimeSeriesLinking(object):
         return ti_
 
 
-    # @staticmethod
-    # def update_ti(ti, metric, thres, max_gap=5):
-    #     ti_ = copy.deepcopy(ti)
-    #     uids, uids_sort, T, N = InstanceTimeSeriesLinking.get_uids_from_ti(ti)
-    #     emergence, disappearance = InstanceTimeSeriesLinking.get_emerg_disap_info(uids_sort)
-    #     t_emerg, t_disap = emergence.keys(), disappearance.keys()
-    #
-    #     # loop over timepoints with disappearing leaves (in reversed order)
-    #     for t in reversed(sorted(t_disap)):
-    #         # unique indices(index) that last appear at t
-    #         uids_disap = disappearance[t]
-    #         # corresponding cid(s) (i.e. indices for masks)
-    #         cids_disap = [uids_sort[t].index(i) for i in uids_disap]
-    #         # pull out masks
-    #         masks_t = np.take(masks[t], cids_disap, axis=2)
-    #
-    #         # cids_emerg = dict()
-    #         # ts_pot = pot_link_time[t]
-    #
-    #         # timepoints with potential link with t
-    #         ts_pot = [te for te in t_emerg if t < te < t + max_gap]
-    #         # loop over timepoints for a potential link and get cids and masks for every timepoint
-    #         for t_ in ts_pot:
-    #             uids_emerg = emergence[t_]
-    #             # cids_emerg[t_] = [uids_sort[t_].index(i) for i in uids_emerg]
-    #             cids_emerg = [uids_sort[t_].index(i) for i in uids_emerg]
-    #
-    #             # masks_t_ = np.take(masks[t_], cids_emerg[t_], axis=2)
-    #             masks_t_ = np.take(masks[t_], cids_emerg, axis=2)
-    #
-    #             # calculate weight to calculate the link
-    #             weights, n1, n2, _ = InstanceTimeSeriesLinking.compute_overlaps_weights(masks_t, masks_t_, metric)
-    #             li_ts, _, _ = InstanceTimeSeriesLinking.get_link(weights, thres)
-    #
-    #             uids_undisap = []
-    #             for (idx, uid_disap) in enumerate(uids_disap):  # loop over all disappeared indices
-    #                 li_t = li_ts[idx]
-    #                 if li_t > -1:
-    #                     print(f"\n{t} -> {t_}: ")
-    #                     print(f"{uid_disap} <- {uids_emerg[li_t]}")
-    #                     # update ti
-    #                     # ti[t_, uid_disap] = cids_emerg[t_][li_t]
-    #                     ti_[t_:, uid_disap] = ti_[t_:, uids_emerg[li_t]]
-    #                     ti_[t_:, uids_emerg[li_t]] = -np.ones(T - t_, dtype=np.int64)
-    #
-    #                     uids_undisap.append(uid_disap)
-    #                 uids_disap = list(set(uids_disap).difference(set(uids_undisap)))
-    #
-    #                 if len(uids_disap) == 0:
-    #                     # remove key
-    #                     disappearance.pop(t)
-    #                     break
-    #                 else:
-    #                     # update
-    #                     disappearance[t] = uids_disap
-    #     remove_uids = []
-    #     for uid in range(N):
-    #         if (ti_[:, uid] == -1).all():
-    #             remove_uids.append(uid)
-    #     ti_ = np.delete(ti_, remove_uids, axis=1)
-    #     return ti_
-    #     # if np.array_equal(ti_, ti):
-    #     #     return ti_
-    #     # return InstanceTimeSeriesLinking.update_ti(ti_, metric, thres, max_gap)
+    # def update_ti(self, ti, max_gap=5):
+    def update_ti(self, max_gap=5):
+        # self.ti_old = ti
+        self.ti_old = self.ti
+        min_gap = 1
+        # ti_ = InstanceTimeSeriesLinking._update_ti(self.masks, self.metric, self.thres, ti, min_gap, max_gap)
+        ti_ = InstanceTimeSeriesLinking._update_ti(self.masks, self.metric, self.thres, self.ti_old, min_gap, max_gap)
+        while True:
+            min_gap += 1
+            ti = ti_
+            ti_ = InstanceTimeSeriesLinking._update_ti(self.masks, self.metric, self.thres, ti, min_gap, max_gap)
+            if np.array_equal(ti_, ti) or min_gap == max_gap - 2:
+                # return ti_
+                self.ti = ti_
+                break
 
 
     # def __call__(self, images, masks, timepoints, metric="IOS", thres=0.2, name_sub="instance", update=False, max_delta_t=2):
