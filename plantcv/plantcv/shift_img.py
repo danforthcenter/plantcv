@@ -2,8 +2,7 @@
 
 import os
 import numpy as np
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 
@@ -24,7 +23,6 @@ def shift_img(img, number, side="right"):
     :param side: str
     :return newmask: numpy.ndarray
     """
-    params.device += 1
 
     number -= 1
 
@@ -35,9 +33,11 @@ def shift_img(img, number, side="right"):
     if len(np.shape(img)) == 3:
         ix, iy, iz = np.shape(img)
         ori_img = np.copy(img)
+        cmap = None
     else:
         ix, iy = np.shape(img)
         ori_img = np.dstack((img, img, img))
+        cmap = 'gray'
 
     if side.upper() == "TOP":
         top = np.zeros((number, iy, 3), dtype=np.uint8)
@@ -58,12 +58,9 @@ def shift_img(img, number, side="right"):
 
     if len(np.shape(img)) == 2:
         adjusted_img = adjusted_img[:, :, 0]
-    if params.debug == 'print':
-        print_image(adjusted_img, os.path.join(params.debug_outdir, str(params.device) + "_shifted_img.png"))
-    elif params.debug == 'plot':
-        if len(np.shape(adjusted_img)) == 3:
-            plot_image(adjusted_img)
-        else:
-            plot_image(adjusted_img, cmap='gray')
+
+    _debug(visual=adjusted_img,
+           filename=os.path.join(params.debug_outdir, str(params.device) + "_shifted_img.png"),
+           cmap=cmap)
 
     return adjusted_img

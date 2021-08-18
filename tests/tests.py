@@ -3080,20 +3080,10 @@ def test_plantcv_shift_img():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.shift_img(img=img, number=300, side="top")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.shift_img(img=img, number=300, side="top")
-    # Test with debug = "plot"
-    _ = pcv.shift_img(img=img, number=300, side="bottom")
-    # Test with debug = "plot"
-    _ = pcv.shift_img(img=img, number=300, side="right")
-    # Test with debug = "plot"
-    _ = pcv.shift_img(img=mask, number=300, side="left")
-    # Test with debug = None
     pcv.params.debug = None
+    _ = pcv.shift_img(img=img, number=300, side="bottom")
+    _ = pcv.shift_img(img=img, number=300, side="right")
+    _ = pcv.shift_img(img=mask, number=300, side="left")
     rotated = pcv.shift_img(img=img, number=300, side="top")
     imgavg = np.average(img)
     shiftavg = np.average(rotated)
