@@ -3788,7 +3788,8 @@ def test_plantcv_segment_image_series():
     RGB_VAL = [50,150,50]
     N_OBJ = 10
     OBJ1_COORDS = [10,10]
-    OBJ2_COORDS = [20,20]
+    SPACING = (10,10)
+    OBJ2_COORDS = [OBJ1_COORDS[0]+SPACING[0],OBJ1_COORDS[1]+SPACING[1]]
     OBJ_SIZE = 4
 
     rng = np.random.default_rng(0)
@@ -3818,11 +3819,15 @@ def test_plantcv_segment_image_series():
     pcv.params.color_sequence = 'random'
     pcv.params.debug = None
 
+    rois, roi_hierarchy = pcv.roi.multi(img=img, coord=(OBJ1_COORDS[0], OBJ1_COORDS[1]),
+                                        radius=OBJ_SIZE-1, spacing=SPACING, nrows=2, ncols=2)
+    valid_rois = [rois[i] for i in range(0,len(rois),2)]
+
     # test that the function detects the two objects and propagates the labels
     # to the last frame
     markers = pcv.segment_image_series(cache_img_dir, cache_mask_dir,
-                                        init_frame=5, save_labels=True,
-                                        init_labels=None, ksize=3)
+                                        rois=valid_rois, save_labels=True,
+                                        ksize=3)
 
     nb_obj = np.unique(markers[:,:,FRAMES-1]).size - 1
 
