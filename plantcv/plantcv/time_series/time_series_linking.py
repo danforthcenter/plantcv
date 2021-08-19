@@ -383,7 +383,7 @@ class InstanceTimeSeriesLinking(object):
 
     def link_dist_t(self,t0):
         tips0, tips1 = copy.deepcopy(self.tips[t0]), copy.deepcopy(self.tips[t0 + 1])  # both masks0 and masks1 are ndarrays
-        weights, _, _, _ = self.compute_dist_weights(tips0, tips1)
+        weights, _, _ = self.compute_dist_weights(tips0, tips1)
         self.weights[t0] = -weights
         self.link_info[t0] = self.get_link(self.weights[t0], self.thres)
 
