@@ -7,7 +7,7 @@ from plantcv.plantcv import fatal_error
 def get_kernel(size, shape):
     """Creates a kernel structuring element of specified size and shape.
 
-    size   = Kernel size (n,m). A (m x n) kernel will be built. Must be greater than 1 to have an effect.
+    size   = Kernel size (n,m). A (n x m) kernel will be built. Must be greater than 1 to have an effect.
     shape  = Element shape, either rectangle, cross, or ellipse.
 
     Returns:

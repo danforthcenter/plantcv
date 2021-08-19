@@ -9,7 +9,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def analyze_bound_horizontal(img, obj, mask, line_position):
+def analyze_bound_horizontal(img, obj, mask, line_position, label="default"):
     """User-input boundary line tool
 
     Inputs:
@@ -17,6 +17,7 @@ def analyze_bound_horizontal(img, obj, mask, line_position):
     obj             = single or grouped contour object
     mask            = Binary mask made from selected contours
     line_position   = position of boundary line (a value of 0 would draw the line through the top of the image)
+    label           = optional label parameter, modifies the variable name of observations recorded
 
     Returns:
     analysis_images = list of output images
@@ -25,6 +26,7 @@ def analyze_bound_horizontal(img, obj, mask, line_position):
     :param obj: list
     :param mask: numpy.ndarray
     :param line_position: int
+    :param label: str
     :return analysis_images: list
     """
 
@@ -67,7 +69,7 @@ def analyze_bound_horizontal(img, obj, mask, line_position):
     obj_points1 = np.transpose(obj_points)
 
     for i, c in enumerate(obj_points1):
-        xy = tuple(c)
+        xy = tuple([int(ci) for ci in c])
         pptest = cv2.pointPolygonTest(below_contour[0], xy, measureDist=False)
         if pptest == 1:
             below.append(xy)
@@ -144,25 +146,26 @@ def analyze_bound_horizontal(img, obj, mask, line_position):
             plot_image(wback)
             plot_image(ori_img)
 
-    outputs.add_observation(variable='horizontal_reference_position', trait='horizontal reference position',
+    outputs.add_observation(sample=label, variable='horizontal_reference_position',
+                            trait='horizontal reference position',
                             method='plantcv.plantcv.analyze_bound_horizontal', scale='none', datatype=int,
                             value=line_position, label='none')
-    outputs.add_observation(variable='height_above_reference', trait='height above reference',
+    outputs.add_observation(sample=label, variable='height_above_reference', trait='height above reference',
                             method='plantcv.plantcv.analyze_bound_horizontal', scale='pixels', datatype=int,
                             value=height_above_bound, label='pixels')
-    outputs.add_observation(variable='height_below_reference', trait='height_below_reference',
+    outputs.add_observation(sample=label, variable='height_below_reference', trait='height_below_reference',
                             method='plantcv.plantcv.analyze_bound_horizontal', scale='pixels', datatype=int,
                             value=height_below_bound, label='pixels')
-    outputs.add_observation(variable='area_above_reference', trait='area above reference',
+    outputs.add_observation(sample=label, variable='area_above_reference', trait='area above reference',
                             method='plantcv.plantcv.analyze_bound_horizontal', scale='pixels', datatype=int,
                             value=above_bound_area, label='pixels')
-    outputs.add_observation(variable='percent_area_above_reference', trait='percent area above reference',
+    outputs.add_observation(sample=label, variable='percent_area_above_reference', trait='percent area above reference',
                             method='plantcv.plantcv.analyze_bound_horizontal', scale='none', datatype=float,
                             value=percent_bound_area_above, label='none')
-    outputs.add_observation(variable='area_below_reference', trait='area below reference',
+    outputs.add_observation(sample=label, variable='area_below_reference', trait='area below reference',
                             method='plantcv.plantcv.analyze_bound_horizontal', scale='pixels', datatype=int,
                             value=below_bound_area, label='pixels')
-    outputs.add_observation(variable='percent_area_below_reference', trait='percent area below reference',
+    outputs.add_observation(sample=label, variable='percent_area_below_reference', trait='percent area below reference',
                             method='plantcv.plantcv.analyze_bound_horizontal', scale='none', datatype=float,
                             value=percent_bound_area_below, label='none')
 

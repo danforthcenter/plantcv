@@ -14,7 +14,7 @@ Gets NIR image that matches VIS image
 that is found in the same directory but which contains multiple images (regex). Would need to be modified for different file naming structure / image types / file structures.  
 
 - **Example use:**
- - [Use in VIS/NIR Tutorial](vis_nir_tutorial.md)
+ - [Use in VIS/NIR Tutorial](tutorials/vis_nir_tutorial.md)
 
 ```python
 
@@ -25,8 +25,8 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Get NIR image
-nir_path = pcv.get_nir("/home/images/sorghum/snapshot1", 
-                       "VIS_SV_90_z300_h1_g0_e85_v500_86939.png")
+nir_path = pcv.get_nir(path="/home/images/sorghum/snapshot1", 
+                       filename="VIS_SV_90_z300_h1_g0_e85_v500_86939.png")
 
 ```
 

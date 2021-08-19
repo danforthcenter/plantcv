@@ -32,7 +32,7 @@ First, if PlantCV is installed in the global Python search path, you can
 import the PlantCV library like normal:
 
 ```python
-from plantcv import plantcv
+from plantcv import plantcv as pcv
 ```
 
 On the other hand, if you installed PlantCV into a local Python path,
@@ -42,7 +42,7 @@ example:
 ```python
 import sys
 sys.path.append("/home/user/plantcv")
-from plantcv import plantcv
+from plantcv import plantcv as pcv 
 ```
 
 Second, we use [matplotlib](http://matplotlib.org/) to do the
@@ -202,7 +202,7 @@ def main():
     # Jupyter here
     
     # Print data that gets collected into the Outputs 
-    pcv.print_results(args.result)
+    pcv.outputs.save_results(filename=.result, outformat="json")
 
 if __name__ == '__main__':
     main()
@@ -211,14 +211,14 @@ if __name__ == '__main__':
 
 There are examples of full Python scripts found at the bottom of each tutorial.
 
-*  [VIS Image Workflow](vis_tutorial.md)
-*  [NIR Image Workflow](nir_tutorial.md)
-*  [PSII Workflow](psII_tutorial.md)
-*  [VIS / NIR Dual Workflow](vis_nir_tutorial.md)
-*  [Multi Plant Tutorial](multi-plant_tutorial.md)
-*  [Morphology Tutorial](morphology_tutorial.md) 
-*  [Machine Learning Tutorial](machine_learning_tutorial.md)
-*  [Color Correction Tutorial](transform_color_correction_tutorial.md)
-*  [Morphology Tutorial](morphology_tutorial.md) 
-*  [Thermal Tutorial](thermal_tutorial.md) 
-*  [Hyperspectral Tutorial](hyperspectral_tutorial.md)
+*  [VIS Image Workflow](tutorials/vis_tutorial.md)
+*  [NIR Image Workflow](tutorials/nir_tutorial.md)
+*  [PSII Workflow](tutorials/psII_tutorial.md)
+*  [VIS / NIR Dual Workflow](tutorials/vis_nir_tutorial.md)
+*  [Multi Plant Tutorial](tutorials/multi-plant_tutorial.md)
+*  [Morphology Tutorial](tutorials/morphology_tutorial.md) 
+*  [Machine Learning Tutorial](tutorials/machine_learning_tutorial.md)
+*  [Color Correction Tutorial](tutorials/transform_color_correction_tutorial.md)
+*  [Morphology Tutorial](tutorials/morphology_tutorial.md) 
+*  [Thermal Tutorial](tutorials/thermal_tutorial.md) 
+*  [Hyperspectral Tutorial](tutorials/hyperspectral_tutorial.md)

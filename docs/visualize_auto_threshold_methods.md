@@ -1,4 +1,4 @@
-## Visualize Available Auto Thresholding Methods 
+## Visualize All Auto-Thresholding Methods 
 
 This is a plotting method used to represent various auto-thresholding methods available in PlantCV. These include [Gaussian](gaussian_threshold.md),
 [triangle](triangle_threshold.md), [mean](mean_threshold.md), and [Otsu](otsu_threshold.md). 

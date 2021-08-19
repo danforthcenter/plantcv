@@ -15,7 +15,7 @@ conditions set in kernel are true, otherwise removes pixel.
 - **Context:**
     - Used to perform morphological erosion filtering. Helps remove isolated noise pixels or remove boundary of objects.
 - **Example use:**
-    - [Use In NIR Tutorial](nir_tutorial.md)
+    - [Use In NIR Tutorial](tutorials/nir_tutorial.md)
     
 **Input grayscale image**
 
@@ -31,7 +31,7 @@ pcv.params.debug = "print"
 
 # Perform erosion filtering
 # Results in removal of isolated pixels or boundary of object removal
-er_img = pcv.erode(gray_img, ksize, 1)
+er_img = pcv.erode(gray_img=gray_img, ksize=3, i=1)
 
 ```
 

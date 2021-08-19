@@ -16,7 +16,7 @@ Similar results to the [Scharr filter](scharr_filter.md) function.
     - Used to define edges within and around objects
     - Aperture size must be greater than the largest derivative (`ksize >= dx & ksize >= dy`) in order to run
 - **Example use:**
-    - [Use In NIR Tutorial](nir_tutorial.md)
+    - [Use In NIR Tutorial](tutorials/nir_tutorial.md)
 
 **Original grayscale image**
 
@@ -29,11 +29,10 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
-# Apply to a grayscale image
 # Filtered image will highlight areas of coarse pixel 
 # intensity change based on 1st derivative
-sb_x_img = pcv.sobel_filter(gray_img, 1, 0, 1)
-sb_y_img = pcv.sobel_filter(gray_img, 0, 1, 1)
+sb_x_img = pcv.sobel_filter(gray_img=gray_img, dx=1, dy=0, ksize=1)
+sb_y_img = pcv.sobel_filter(gray_img=gray_img, dx=0, dy=1, ksize=1)
 
 ```
 

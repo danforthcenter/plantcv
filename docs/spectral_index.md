@@ -2,12 +2,11 @@
 
 The `plantcv.spectral_index` subpackage contains functions that calculate indices from multi-channel image data, 
 typically from a hyperspectral datacube, which is a [`Spectral_data` class](Spectral_data.md) instance created while 
-reading in with the [pcv.readimage](read_image.md) function with `mode='envi'`. For certain indices RGB images are 
-valid input. There is also a parameter to allow some flexibility if the required wavelengths for a specific index 
-are not available.
+reading in with the [pcv.readimage](read_image.md) function with `mode='envi'`. RGB images are valid input for certain 
+indices. There is also a parameter to allow some flexibility if the required wavelengths are not available for a specific index.
 
 !!! note
-    We are adding potential indices as needed by PlantCV contributors, however the functions added to PlantCV are 
+    We are adding potential indices as needed by PlantCV community members, however the functions added to PlantCV are 
     shaped in large part by the end users so please post feature requests (including a specific index), questions, 
     and comments on the [GitHub issues page](https://github.com/danforthcenter/plantcv/issues).
 
@@ -16,10 +15,11 @@ are not available.
 Calculates the Anthocyanin Reflectance Index using reflectance values ([Gitelson et al., 2001](#references)):
 
 ```
-ARI = (1 / R550) - (1 / R700)
+ARI = (1 / R550) - (1 / R700) 
+
 ```
 
-Index range: -Inf, Inf
+Index range: -∞, ∞
 
 **plantcv.spectral_index.ari**(*hsi, distance=20*)
 
@@ -37,7 +37,7 @@ Calculates the Chlorophyll Index Rededge using reflectance values ([Gitelson et 
 CI_REDEDGE = (R800 / R700) - 1
 ```
 
-Index range: -1.0, Inf
+Index range: -1.0, ∞
 
 **plantcv.spectral_index.ci_rededge**(*hsi, distance=20*)
 
@@ -55,7 +55,7 @@ Calculates the Carotenoid Reflectance Index 550 using reflectance values ([Gitel
 CRI550 = (1 / R510) - (1 / R550)
 ```
 
-Index range: -Inf, Inf
+Index range: -∞, ∞
 
 **plantcv.spectral_index.cri550**(*hsi, distance=20*)
 
@@ -73,7 +73,7 @@ Calculates the Carotenoid Reflectance Index 700 using reflectance values ([Gitel
 CRI700 = (1 / R510) - (1 / R700)
 ```
 
-Index range: -Inf, Inf
+Index range: -∞, ∞
 
 **plantcv.spectral_index.cri700**(*hsi, distance=20*)
 
@@ -117,7 +117,7 @@ Here, we use ~R800 for NIR, ~R670 for RED, and ~R480 for BLUE:
 EVI = (2.5 * (R800 - R670)) / (1 + R800 + (6 * R670) - (7.5 * R480))
 ```
 
-Index range: -Inf, Inf
+Index range: -∞, ∞
 
 **plantcv.spectral_index.evi**(*hsi, distance=20*)
 
@@ -159,7 +159,7 @@ Calculates the Modified Anthocyanin Reflectance Index using reflectance values (
 MARI = ((1 / R550) - (1 / R700)) * R800
 ```
 
-Index range: -Inf, Inf
+Index range: -∞, ∞
 
 **plantcv.spectral_index.mari**(*hsi, distance=20*)
 
@@ -177,7 +177,7 @@ Calculates the Modified Chlorophyll Absorption Reflectance Index using reflectan
 MCARI = ((R700 - R670) - 0.2 * (R700 - R550)) * (R700 / R670)
 ```
 
-Index range: -Inf, Inf
+Index range: -∞, ∞
 
 **plantcv.spectral_index.mcari**(*hsi, distance=20*)
 
@@ -195,7 +195,7 @@ Calculates the MERIS Terrestrial Chlorophyll Index using reflectance values ([Da
 MTCI = (R753.75 - R708.75) / (R708.75 - R681.25)
 ```
 
-Index range: -Inf, Inf
+Index range: -∞, ∞
 
 **plantcv.spectral_index.mtci**(*hsi, distance=20*)
 
@@ -330,7 +330,7 @@ Calculates the Plant Senescence Reflectance Index using reflectance values ([Mer
 PSRI = (R678 - R500) / R750
 ```
 
-Index range: -Inf, Inf
+Index range: -∞, ∞
 
 **plantcv.spectral_index.psri**(*hsi, distance=20*)
 
@@ -411,7 +411,7 @@ Here, we use ~R670 for RED and ~R560 for GREEN:
 RGRI = R670 / R560
 ```
 
-Index range: 0.0, Inf
+Index range: 0.0, ∞
 
 **plantcv.spectral_index.rgri**(*hsi, distance=20*)
 
@@ -477,7 +477,7 @@ Here, we use ~R800 for NIR, ~670 for RED and ~R480 for BLUE:
 SIPI = (R800 - R680) / (R800 - R480)
 ```
 
-Index range: -Inf, Inf
+Index range: -∞, ∞
 
 **plantcv.spectral_index.sipi**(*hsi, distance=20*)
 
@@ -501,7 +501,7 @@ Here, we use ~R800 for NIR and ~R670 for RED:
 SR = R800 / R670
 ```
 
-Index range: 0.0, Inf
+Index range: 0.0, ∞
 
 **plantcv.spectral_index.sr**(*hsi, distance=20*)
 
@@ -525,7 +525,7 @@ Here, we use ~R480 for BLUE, ~R550 for GREEN, and ~R670 for RED:
 VARI = (R550 - R670) / (R550 + R670 - R480)
 ```
 
-Index range: -Inf, Inf
+Index range: -∞, ∞
 
 **plantcv.spectral_index.vari**(*hsi, distance=20*)
 
@@ -567,7 +567,7 @@ Calculates the Water Index using reflectance values ([Penuelas et al., 1997](#re
 WI = R900 / R970
 ```
 
-Index range: 0.0, Inf
+Index range: 0.0, ∞
 
 **plantcv.spectral_index.wi**(*hsi, distance=20*)
 

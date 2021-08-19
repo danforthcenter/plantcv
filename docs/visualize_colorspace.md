@@ -1,4 +1,4 @@
-## Visualize all potential colorspaces
+## Visualize Potential Colorspaces
 
 This is a plotting method used to examine all potential colorspaces from available PlantCV functions.
 

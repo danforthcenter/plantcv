@@ -1,6 +1,6 @@
 ## Distance Transform
 
-Perform distance transform on binary image
+Perform a distance transformation on binary image.
 
 **plantcv.distance_transform**(*bin_img, distance_type, mask_size*)
 
@@ -29,7 +29,7 @@ pcv.params.debug = "print"
 
 # Perform dilation
 # Results in addition of pixels to the boundary of object
-distance_transform_img = pcv.distance_transform(mask, 1, 3)
+distance_transform_img = pcv.distance_transform(bin_img=mask, distance_type=1, mask_size=3)
 
 ```
 

@@ -1,6 +1,6 @@
 ## Canny Edge Detection
 
-Creates a binary image from an RGB or grayscale image using a Canny filter from [skimage](http://scikit-image.org/docs/dev/index.html).
+Creates a binary image of edges from an RGB or grayscale image using a Canny filter from [skimage](http://scikit-image.org/docs/dev/index.html).
 
 
 **plantcv.canny_edge_detect(*img, mask=None, sigma=1.0, low_thresh=None, high_thresh=None, thickness=1, mask_color=None, use_quantiles=False*)**
@@ -43,28 +43,17 @@ edges = pcv.canny_edge_detect(img)
 # Lower sigma value to pick up more edges
 edges2 = pcv.canny_edge_detect(img=img, sigma=0.1)
 
-# Create a mask
-masked, bin_img, rect_contour, hierarchy = pcv.rectangle_mask(img, (100,150), 
-                                                              (300,325), 'black')
-
-# Find edges within a mask
-edges3 = pcv.canny_edge_detect(img=img, mask=bin_img, mask_color='black')
-
 ```
 
 
 **Default Canny Edge Detection**
 
-![Screenshot](img/documentation_images/canny_edge_detect/default_canny.jpg)
+![Screenshot](img/documentation_images/canny_edge_detect/edges.jpg)
 
-**Canny Edge Detection, sigma=3**
+**Canny Edge Detection, sigma=0.1**
 
-![Screenshot](img/documentation_images/canny_edge_detect/low_sigma_canny.jpg)
+![Screenshot](img/documentation_images/canny_edge_detect/edges_lowsigma.jpg)
 
-**Canny Edge Detection with Mask**
 
-![Screenshot](img/documentation_images/canny_edge_detect/mask_canny.jpg)
-
-![Screenshot](img/documentation_images/canny_edge_detect/masked_img_canny.jpg)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/canny_edge_detect.py)

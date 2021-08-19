@@ -2,7 +2,7 @@
 
 Creates a binary image from a gray image using adaptive thresholding.
 
-**plantcv.threshold.triangle(*gray_img, max_value, object_type="light", xstep=1*)**
+**plantcv.threshold.triangle**(*gray_img, max_value, object_type="light", xstep=1*)
 
 **returns** thresholded/binary image
 
@@ -31,7 +31,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Create binary image from a gray image based
-thresholded = pcv.threshold.triangle(gray_img, 255, 'light', xstep=10)
+thresholded = pcv.threshold.triangle(gray_img=gray_img, max_value=255, object_type='light', xstep=10)
 
 ```
 
@@ -43,14 +43,8 @@ thresholded = pcv.threshold.triangle(gray_img, 255, 'light', xstep=10)
 
 ```python
 
-from plantcv import plantcv as pcv
-
-# Set global debug behavior to None (default), "print" (to file), 
-# or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
-
 # Create binary image from a gray image based 
-thresholded = pcv.threshold.triangle(gray_img, 255, 'light', xstep=1)
+thresholded = pcv.threshold.triangle(gray_img=gray_img, max_value=255, object_type='light', xstep=1)
 
 ```
 

@@ -5,7 +5,7 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/danforthcenter/plantcv.svg)](https://hub.docker.com/r/danforthcenter/plantcv/)
 [![GitHub release](https://img.shields.io/github/release/danforthcenter/plantcv.svg)](https://github.com/danforthcenter/plantcv/releases)
 [![PyPI version](https://badge.fury.io/py/plantcv.svg)](https://badge.fury.io/py/plantcv)
-![Conda](https://img.shields.io/conda/v/bioconda/plantcv.svg)
+![Conda](https://img.shields.io/conda/v/conda-forge/plantcv)
 [![license](https://img.shields.io/github/license/danforthcenter/plantcv.svg)](https://github.com/danforthcenter/plantcv/blob/master/LICENSE)
 
 # PlantCV: Plant phenotyping using computer vision
@@ -15,7 +15,7 @@ If you have questions, please submit them via the
 [GitHub issues page](https://github.com/danforthcenter/plantcv/issues).
 Follow us on twitter [@plantcv](https://twitter.com/plantcv).
 
----
+***
 
 ## Introduction to PlantCV
 
@@ -24,7 +24,7 @@ programming and documentation interface to a collection of image analysis techni
 of source packages and algorithms. PlantCV utilizes a modular architecture that enables flexibility in the design of
 analysis workflows and rapid assimilation and integration of new methods. For more information about the project,
 links to recorded presentations, and publications using PlantCV, please visit our homepage: 
-https://plantcv.danforthcenter.org/.
+<https://plantcv.danforthcenter.org/>.
 
 ### Quick Links
 
@@ -38,8 +38,8 @@ https://plantcv.danforthcenter.org/.
 * Downloads
   * [GitHub](https://github.com/danforthcenter/plantcv)
   * [PyPI](https://pypi.org/project/plantcv/)
-  * [Bioconda](https://anaconda.org/bioconda/plantcv)
-  * [Docker](https://hub.docker.com/repository/docker/danforthcenter/plantcv)
+  * [Conda-forge](https://anaconda.org/conda-forge/plantcv)
+  * [Docker](https://hub.docker.com/r/danforthcenter/plantcv)
   * [Zenodo](https://doi.org/10.5281/zenodo.595522)
 
 ### Citing PlantCV
@@ -48,12 +48,12 @@ If you use PlantCV, please cite the [PlantCV publications](https://plantcv.danfo
 relevant to your work. To see how others have used PlantCV in their research, check out our list of 
 [publications using PlantCV](https://plantcv.danforthcenter.org/#publications-using-plantcv).
 
-___
+***
 
-## Issues with PlantCV?
+## Issues with PlantCV
 
 Please file any PlantCV suggestions/issues/bugs via our 
 [GitHub issues page](https://github.com/danforthcenter/plantcv/issues). Please check to see if any related 
 issues have already been filed.
 
----
+***

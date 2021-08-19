@@ -7,7 +7,7 @@ Create a kernel structuring element
 **returns** filtered_img
 
 - **Parameters:**
-    - size - Kernel size (n,m). A (m x n) kernel will be built. Must be greater than 1 to have an effect.
+    - size - Kernel size (n,m). A (n x m) kernel will be built. Must be greater than 1 to have an effect.
     - shape - Element shape, either "rectangle", "cross", or "ellipse".
   - **Context:**
     - Create a kernel structuring element to be used in various filter functions i.e. [closing](closing.md) and [opening](opening.md)

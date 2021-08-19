@@ -12,8 +12,8 @@ Find objects within the image.
 - **Context:**
     - Used to identify objects (plant material) in an image.
 - **Example use:**
-    - [Use In VIS Tutorial](vis_tutorial.md)
-    - [Use In PSII Tutorial](psII_tutorial.md) 
+    - [Use In VIS Tutorial](tutorials/vis_tutorial.md)
+    - [Use In PSII Tutorial](tutorials/psII_tutorial.md) 
 
 **Original image**
 
@@ -33,7 +33,7 @@ pcv.params.debug = "print"
 
 # Identify objects (plant material) in an image, all objects regardless of 
 # hierarchy are filled (e.g. holes between leaves).
-id_objects, obj_hierarchy = pcv.find_objects(img, mask)
+id_objects, obj_hierarchy = pcv.find_objects(img=img, mask=mask)
 
 ```
 

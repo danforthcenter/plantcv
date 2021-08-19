@@ -23,9 +23,9 @@ completely within the image.
 - **Warning:** 
     - Using `roi_type='largest` will only return the largest outer contour. All child contours are left behind. 
 - **Example use:**
-    - [Use In VIS Tutorial](vis_tutorial.md)
-    - [Use In NIR Tutorial](nir_tutorial.md)
-    - [Use In PSII Tutorial](psII_tutorial.md) 
+    - [Use In VIS Tutorial](tutorials/vis_tutorial.md)
+    - [Use In NIR Tutorial](tutorials/nir_tutorial.md)
+    - [Use In PSII Tutorial](tutorials/psII_tutorial.md) 
 
 
 ```python

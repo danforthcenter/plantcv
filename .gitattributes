@@ -1,1 +1,14 @@
 plantcv/plantcv/_version.py export-subst
+
+# this should force unix line endings except for any windows specific files
+* text=auto eol=lf
+*.{cmd,[cC][mM][dD]} text eol=crlf
+*.{bat,[bB][aA][tT]} text eol=crlf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.tif binary
+*.tiff binary
+*.pkl binary
+*.npz binary
+*.DAT binary

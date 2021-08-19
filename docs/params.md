@@ -10,7 +10,7 @@ configured attributes.
 
 ### Attributes
 
-Attributes are accessed as plantcv.*attribute*.
+Attributes are accessed as plantcv.params.*attribute*.
 
 **device**: A counter for image processing steps that is autoincremented by functions that use `params`. Default = 0.
 
@@ -35,6 +35,8 @@ the morphology sub-package.
 [segment_id](segment_id.md), [segment_insertion_angle](segment_insertion_angle.md), [segment_path_length](segment_pathlength.md), and [segment_tangent_angle](segment_tangent_angle.md) from
 the morphology sub-package. 
 
+**marker_size**: Size of markers in debugging plots created by [plantcv.transform.warp](transform_warp.md). Default = 60.
+
 **color_scale**: The name of a color scale (a Matplot lib colormap) used by [segment_angle](segment_angle.md), [segment_curvature](segment_curvature.md), 
 [segment_euclidean_length](segment_euclidean_length.md), [segment_insertion_angle](segment_insertion_angle.md), [segment_path_length](segment_pathlength.md), and [segment_skeleton](segment_skeleton.md), 
 [segment_tangent_angle](segment_tangent_angle.md) from the morphology sub-package, and [cluster_contours](cluster_contours.md), [spatial_clustering](spatial_clustering.md), and 
@@ -44,6 +46,7 @@ the morphology sub-package.
 
 **saved_color_scale**: Using the `color_palette` function will save the color scale here for reuse in downstream functions. Set to `None` to remove. Default = `None`.
 
+**verbose**: Set the status of verboseness. When in "verbose" mode, the deprecation warning will always be printed once triggered. Default: `True`. Users can turn off deprecation warnings by setting `verbose=False`.
 ### Example
 
 Updated PlantCV functions use `params` implicitly, so overriding the `params` defaults will alter the behavior of
@@ -78,4 +81,4 @@ roi_contour, roi_hierarchy = pcv.roi.rectangle(x=100, y=100, h=200, w=200, img=i
 
 ![Screenshot](img/documentation_images/params/thickness3.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/__init__.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/classes.py)

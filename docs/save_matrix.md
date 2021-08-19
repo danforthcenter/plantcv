@@ -7,11 +7,11 @@ Save a matrix from to '.npz' file.
 **returns** none
 
 - **Parameters**
-    - matrix   = a numpy.matrix or numpy.ndarray
-    - filename = name of file to which matrix will be saved. Must end in .npz
+    - matrix   - a numpy.matrix or numpy.ndarray
+    - filename - name of file to which matrix will be saved. Must end in .npz
     
 - **Example use:**
-    - [Color Correction Tutorial](transform_color_correction_tutorial.md)
+    - [Color Correction Tutorial](tutorials/transform_color_correction_tutorial.md)
     
 ```python
 
@@ -19,10 +19,10 @@ from plantcv import plantcv as pcv
 import numpy as np
 
 
-filename = "test.npz"
+fname = "test.npz"
 matrix = np.matrix('1 2; 3 4')
 
-pcv.transform.save_matrix(matrix, filename)
+pcv.transform.save_matrix(matrix=matrix, filename=fname)
 
 ```
 

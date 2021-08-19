@@ -14,6 +14,7 @@ Crops image to user specified coordinates
     - w - Width
 - **Context:**
     - Crops image 
+    - Allows users to avoid splicing arrays with Python code, although Numpy arrays can be cropped with this method as well.  
     
 
 ```python

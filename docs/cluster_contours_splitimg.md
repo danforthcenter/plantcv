@@ -3,12 +3,12 @@
 This function takes clustered contours and splits them into multiple images, also does a check to make sure that
 the number of inputted filenames matches the number of clustered contours.
 
-**plantcv.cluster_contour_splitimg**(*rgb_img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None, filenames=None*)
+**plantcv.cluster_contour_splitimg**(*img, grouped_contour_indexes, contours, hierarchy, outdir=None, file=None, filenames=None*)
 
 **returns** output_paths, output_imgs, output_masks
 
 - **Parameters:**
-    - rgb_img - RGB image data
+    - img - image data
     - grouped_contour_indexes - output of cluster_contours, indexes of clusters of contours
     - contours - contours to cluster, output of cluster_contours
     - hierarchy - object hierarchy
@@ -19,7 +19,7 @@ the number of inputted filenames matches the number of clustered contours.
     - Takes clustered contours and splits them into multiple images.
     - Function input usually comes from the output of the [cluster contours](cluster_contours.md) function.
 - **Example use:**
-    - [Use In Multi-Plant Tutorial](multi-plant_tutorial.md)
+    - [Use In Multi-Plant Tutorial](tutorials/multi-plant_tutorial.md)
 
 
 **Output of Cluster Contours**
@@ -39,7 +39,7 @@ pcv.params.debug = "print"
 # Cluster Contours and Split into Separate Images
 
 out = './examples/'
-output_path, imgs, masks = pcv.cluster_contour_splitimg(rgb_img, clusters_i, contours, 
+output_path, imgs, masks = pcv.cluster_contour_splitimg(img, clusters_i, contours, 
                                                         hierarchy, out, file, 
                                                         filenames=None)
                                            

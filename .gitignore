@@ -314,3 +314,6 @@ _site/*
 change_plantcv.sh
 
 .history/
+
+## Spyder files
+.spyproject

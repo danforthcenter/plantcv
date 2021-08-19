@@ -26,7 +26,9 @@ jobs:
         pip install pytest
         pip install -r requirements.txt
     - name: Cross-platform tests
-      run: py.test tests/
+      run: |
+        python setup.py install
+        py.test tests/
 
   deploy:
     needs: build
@@ -34,6 +36,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@main
+      with:
+        fetch-depth: 0
     - name: Set up Python
       uses: actions/setup-python@main
       with:

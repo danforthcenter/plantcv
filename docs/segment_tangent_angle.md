@@ -2,7 +2,7 @@
 
 Measure tangent angles of segments as a way to quantify leaf behavior. 
 
-**plantcv.morphology.segment_tangent_angle**(*segmented_img, objects, size*)
+**plantcv.morphology.segment_tangent_angle**(*segmented_img, objects, size, label="default"*)
 
 **returns** labeled image 
 
@@ -13,6 +13,7 @@ Measure tangent angles of segments as a way to quantify leaf behavior.
     [plantcv.morphology.segment_skeleton](segment_skeleton.md), or
     [plantcv.morphology.segment_sort](segment_sort.md)).
     - size - Size of ends (number of pixels) used to calculate "tangent" lines
+    - label         - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
 - **Context:**
     - Find 'tangent' angles in degrees of skeleton segments. Use `size` pixels on either end of
       each segment to find a linear regression line, and calculate angle between the two lines
@@ -39,10 +40,10 @@ pcv.params.line_thickness = 3
 
 labeled_img = pcv.morphology.segment_tangent_angle(segmented_img=leaves_segment, 
                                                    objects=leaf_obj,
-                                                   size=15)
+                                                   size=15, label="default")
 
 # Access data stored out from segment_tangent_angle
-leaf_tangent_angles = pcv.outputs.observations['segment_tangent_angle']['value']
+leaf_tangent_angles = pcv.outputs.observations['default']['segment_tangent_angle']['value']
 
 ```
 

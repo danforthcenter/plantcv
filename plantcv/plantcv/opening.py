@@ -1,3 +1,5 @@
+# Remove small bright spots
+
 import os
 import numpy as np
 from skimage import morphology

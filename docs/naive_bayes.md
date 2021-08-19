@@ -2,9 +2,9 @@
 
 The modules in the `plantcv.learn` subpackage are not necessarily meant to be used directly. Instead,
 each module is implemented in the `plantcv-train.py` script, but feel free to use these functions within your own
-script if needed. See the [Machine Learning Tutorial](machine_learning_tutorial.md) for more details.
+script if needed. See the [Machine Learning Tutorial](tutorials/machine_learning_tutorial.md) for more details.
 
-The naive_bayes function reads 8-bit RGB images from the input image directory and corresponding binary mask images
+The `naive_bayes` function reads 8-bit RGB images from the input image directory and corresponding binary mask images
 from the input mask directory. The input color images are converted the HSV colorspace, and using the masks, the input 
 RGB images are split into foreground (plant) and background pixels. A random sampling of 10% of the foreground pixels 
 and the same number of background pixels are kept. A Kernel Density Estimator (KDE) using a Gaussian kernel is used
@@ -12,7 +12,7 @@ to estimate the Probability Density Function (PDF) for each of the hue, saturati
 foreground and background classes. The PDFs, sampled at each of the possible 8-bit (256) intensity values are written
 to the output file and can be used with the [naive Bayes classifier](naive_bayes_classifier.md) to segment plants.
 
-**naive_bayes(*imgdir, maskdir, outfile, mkplots=False*)**
+**naive_bayes**(*imgdir, maskdir, outfile, mkplots=False*)
 
 **returns** none
 
@@ -25,6 +25,6 @@ to the output file and can be used with the [naive Bayes classifier](naive_bayes
 - **Context:**
     - Used to help differentiate plant and background
 - **Example use:**
-    - [Use In Machine Learning Tutorial](machine_learning_tutorial.md)
+    - [Use In Machine Learning Tutorial](tutorials/machine_learning_tutorial.md)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/learn/naive_bayes.py)
