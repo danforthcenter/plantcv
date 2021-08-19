@@ -393,7 +393,7 @@ class InstanceTimeSeriesLinking(object):
         # number of instances: a list in which every element represent for number of instances in corresponding image
         self.n_insts = []
         for i in range(0, self.T):
-            self.n_insts.append(self.tips[i].shape[2])
+            self.n_insts.append(len(self.tips[i]))
         # initialization for linking
         self.thres     = thres
         self.link_info = [-np.ones((self.n_insts[i]), dtype=np.int64) for i in range(0, self.T - 1)]
