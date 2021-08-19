@@ -387,7 +387,7 @@ class InstanceTimeSeriesLinking(object):
         self.weights[t0] = -weights
         self.link_info[t0] = self.get_link(self.weights[t0], self.thres)
 
-    def link_dist(self, tips, thres=0.0):
+    def link_dist(self, tips, thres=10000):
         self.tips = tips
         self.T = len(tips)
         # number of instances: a list in which every element represent for number of instances in corresponding image
@@ -395,7 +395,7 @@ class InstanceTimeSeriesLinking(object):
         for i in range(0, self.T):
             self.n_insts.append(len(self.tips[i]))
         # initialization for linking
-        self.thres     = thres
+        self.thres     = -thres
         self.link_info = [-np.ones((self.n_insts[i]), dtype=np.int64) for i in range(0, self.T - 1)]
         self.weights = [np.empty(0) for _ in range(self.T - 1)]
 
@@ -404,7 +404,7 @@ class InstanceTimeSeriesLinking(object):
 
         self.uids, self.max_uid, self.N = InstanceTimeSeriesLinking.get_sorted_uids(self.link_info, self.n_insts)
         self.ti = self.get_ti(self.uids, self.link_info, self.n_insts)
-        self.tracking_report = InstanceTimeSeriesLinking.area_tracking_report(self.ti, self.masks)
+        # self.tracking_report = InstanceTimeSeriesLinking.area_tracking_report(self.ti, self.masks)
 
 
     @staticmethod
