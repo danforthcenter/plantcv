@@ -439,7 +439,7 @@ class InstanceTimeSeriesLinking(object):
                 uids_undisap = []
                 for (idx, uid_disap) in enumerate(uids_disap):  # loop over all disappeared indices
                     li_t = li_ts[idx]
-                    if li_t > -1:
+                    if li_t > -1 and uid_disap != uids_emerg[li_t]:
                         print(f"\n{t} -> {t_}: ")
                         print(f"{uid_disap} <- {uids_emerg[li_t]}")
                         # update ti
