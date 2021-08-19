@@ -3,7 +3,7 @@
 This function calculates the reflectance frequencies associated with a hyperspectral datacube and writes 
 the values out as observations to get saved out. Can also print out a histogram of average reflectance intensity.
 
-**plantcv.hyperspectral.analyze_spectral**(*array, mask, histplot=False*)
+**plantcv.hyperspectral.analyze_spectral**(*array, mask, histplot=False, label="default"*)
 
 **returns** reflectance histogram (if `histplot=True`, otherwise returns None object)
 
@@ -11,6 +11,7 @@ the values out as observations to get saved out. Can also print out a histogram 
     - array         - A hyperspectral datacube object, an instance of the `Spectral_data` class (read in with [pcv.readimage](read_image.md) with `mode='envi'`)
     - mask          - Binary mask made from selected contours
     - histplot      - If True plots histogram of reflectance intensity values (default histplot = False)
+    - label         - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
 - **Example use:**
     - Below 
 - **Output data stored:** Data ('max_reflectance', 'min_reflectance', 'median_reflectance', 'spectral_std', 'spectral_frequencies', 'global_mean_reflectance', 'global_median_reflectance', 'global_spectral_std') automatically gets stored to the 
@@ -27,10 +28,10 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Calculates reflectance frequencies and writes the values as observations. Also provides a histogram of this data
-spectral_hist  = pcv.hyperspectral.analyze_spectral(array=spectral_data, mask=mask, histplot=True)
+spectral_hist  = pcv.hyperspectral.analyze_spectral(array=spectral_data, mask=mask, histplot=True, label="default")
 
 # Access data stored 
-reflectance_range = max(pcv.outputs.observations['max_reflectance']['value']) - min(pcv.outputs.observations['min_reflectance']['value'])
+reflectance_range = max(pcv.outputs.observations['default']['max_reflectance']['value']) - min(pcv.outputs.observations['default']['min_reflectance']['value'])
 
 ```
 

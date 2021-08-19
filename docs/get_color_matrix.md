@@ -7,15 +7,15 @@ Computes the average *R*, *G*, *B* values for each region in the RGB image denot
 **returns** headers, color_matrix
 
 - **Parameters**
-    - rgb_img = RGB image with color chips visualized
-    - mask    = a gray-scale img with unique values for each segmented space, representing unique, discrete color chips.
+    - rgb_img - RGB image with color chips visualized
+    - mask    - a gray-scale img with unique values for each segmented space, representing unique, discrete color chips.
 
 - **Returns**
-    - color_matrix = a *n* x 4 matrix containing the average red value, average green value, and average blue value for each color chip.
-    - headers      = a list of 4 headers corresponding to the 4 columns of color_matrix respectively
+    - color_matrix - a *n* x 4 matrix containing the average red value, average green value, and average blue value for each color chip.
+    - headers      - a list of 4 headers corresponding to the 4 columns of color_matrix respectively
 
 - **Example use:**
-    - [Color Correction Tutorial](transform_color_correction_tutorial.md)
+    - [Color Correction Tutorial](tutorials/transform_color_correction_tutorial.md)
     
 ```python
 
@@ -24,7 +24,7 @@ from plantcv import plantcv as pcv
 rgb_img, imgpath, imgname = pcv.readimage(filename="target_img.png")
 mask, maskpath, maskname = pcv.readimage(filename="mask_img.png")
 
-headers, color_matrix = pcv.transform.get_color_matrix(rgb_img, mask)
+headers, color_matrix = pcv.transform.get_color_matrix(rgb_img=rgb_img, mask=mask)
 
 print(headers)
 print(color_matrix)

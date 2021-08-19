@@ -6,7 +6,7 @@ available by downloading/cloning the GitHub repository.
 ### Training machine learning models
 
 `plantcv-train.py` is a command-line tool for training machine learning classifiers or other models in PlantCV. More
-detail is provided in the [Machine Learning Tutorial](machine_learning_tutorial.md) but command/input details are
+detail is provided in the [Machine Learning Tutorial](tutorials/machine_learning_tutorial.md) but command/input details are
 provided below:
 
 ```
@@ -89,7 +89,7 @@ Testing a workflow on small test set (that ideally spans time and/or treatments)
 test it on other images in the dataset to determine how robust the workflow will be. The random image sampler can help 
 identify 'problem images' before running a workflow in parallel over a large set of images. This
 tool can handle LemnaTec structured output in addition to a flat file directory. Currently supported image types include 
-.png, .jpg, .jpeg, .tif, .tiff, and .gif. A source directory will be created if it does not already exist. The number of 
+.png, .jpg, .jpeg, .tif, .tiff, and .gif. An output directory will be created if it does not already exist. The number of 
 random images requested must be less than or equal to the number of images in the source directory. 
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/utils/sample_images.py)
@@ -99,77 +99,7 @@ random images requested must be less than or equal to the number of images in th
 
 `plantcv-workflow.py` is a command-line tool for parallel processing of user-defined PlantCV workflows. It is used to
 process metadata and execute custom workflows on each image in a dataset. More detail is provided in the 
-[Workflow Parallelization Tutorial](pipeline_parallel.md) but command/input details are provided below:
-
-```
-usage: plantcv-workflow.py [-h] -d DIR [-a ADAPTOR] -p WORKFLOW -j JSON
-                           [-i OUTDIR] [-T CPU] [-c] [-D DATES] [-t TYPE]
-                           [-l DELIMITER] [-f META] [-M MATCH] [-C COPROCESS]
-                           [-w] [-o OTHER_ARGS]
-
-Parallel imaging processing with PlantCV.
-
-optional arguments:
-  -h, --help            
-                        Show this help message and exit
-  -d DIR, --dir DIR     
-                        Input directory containing images or snapshots.
-                        (default: None)
-  -a ADAPTOR, --adaptor ADAPTOR
-                        Image metadata reader adaptor. PhenoFront metadata is
-                        stored in a CSV file and the image file name. For the
-                        filename option, all metadata is stored in the image
-                        file name. Current adaptors: phenofront, filename
-                        (default: phenofront)
-  -p WORKFLOW, --workflow WORKFLOW
-                        Workflow script file. (default: None)
-  -j JSON, --json JSON  
-                        Output database file name. (default: None)
-  -f META, --meta META  
-                        Image file name metadata format. List valid metadata
-                        fields separated by commas.
-                        Valid metadata fields are: camera, imgtype, zoom,
-                        exposure, gain, frame, lifter, timestamp, id,
-                        plantbarcode, treatment, cartag, measurementlabel,
-                        other (default: imgtype_camera_frame_zoom_id)
-  -i OUTDIR, --outdir OUTDIR
-                        Output directory for images. Not required by all
-                        workflows. (default: .)
-  -T CPU, --cpu CPU     
-                        Number of CPU to use. (default: 1)
-  -c, --create          
-                        Will overwrite an existing database. Warning: activating
-                        this option will delete an existing database!
-                        (default: False)
-  -D DATES, --dates DATES
-                        Date range. Format: YYYY-MM-DD-hh-mm-ss_YYYY-MM-DD-hh-
-                        mm-ss. If the second date is excluded then the current
-                        date is assumed. (default: None)
-  -t TYPE, --type TYPE  
-                        Image format type (extension). (default: png)
-  -l DELIMITER, --delimiter DELIMITER
-                        Image file name metadata delimiter character. Alternatively, a regular expression for parsing filename metadata.
-                        (default: _)
-  -M MATCH, --match MATCH
-                        Restrict analysis to images with metadata matching
-                        input criteria. Input a metadata:value comma-separated
-                        list. This is an exact match search. E.g.
-                        imgtype:VIS,camera:SV,zoom:z500 (default: None)
-  -C COPROCESS, --coprocess COPROCESS
-                        Coprocess the specified imgtype with the imgtype
-                        specified in --match (e.g. coprocess NIR images with
-                        VIS). (default: None)
-  -s timestampformat, --timestampformat timestampformat
-                        A date format code compatible with strptime C library.
-                        e.g. "%%Y-%%m-%%d %%H_%%M_%%S", except "%%" symbols must be escaped on Windows with "%%" e.g. "%%%%Y-%%%%m-%%%%d %%%%H_%%%%M_%%%%S". 
-                        (default: "%%Y-%%m-%%d %%H:%%M:%%S.%%f")
-  -w, --writeimg        
-                        Include analysis images in output. (default: False)
-  -o OTHER_ARGS, --other_args OTHER_ARGS
-                        Other arguments to pass to the workflow script.
-                        (default: None)
-
-```
+[Workflow Parallelization Tutorial](pipeline_parallel.md).
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv-workflow.py)
 

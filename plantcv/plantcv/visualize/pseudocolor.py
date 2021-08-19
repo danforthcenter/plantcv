@@ -5,12 +5,12 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 from plantcv.plantcv import params
-from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
+from plantcv.plantcv.apply_mask import apply_mask
 
 
 def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", min_value=0, max_value=255,
-                axes=True, colorbar=True, obj_padding="auto"):
+                axes=True, colorbar=True, obj_padding="auto", title=None, bad_mask=None, bad_color="red"):
     """Pseudocolor any grayscale image to custom colormap
 
     Inputs:
@@ -28,7 +28,10 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
     obj_padding = (optional) if "auto" (default) and an obj is supplied, then the image is cropped to an extent 20%
                   larger in each dimension than the object. An single integer is also accepted to define the padding
                   in pixels
-
+    title       = (optional) custom title for the plot gets drawn if title is not None. default = None
+    bad_mask    = (optional) binary mask of pixels with "bad" values, e.g. nan or inf or any other values considered
+                  to be not informative and to be excluded from analysis. default = None
+    bad_color   = (optional) desired color to show "bad" pixels. default = "red"
     Returns:
     pseudo_image = pseudocolored image
 
@@ -42,7 +45,10 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
     :param axes: bool
     :param colorbar: bool
     :param obj_padding: str, int
+    :param title: str
     :return pseudo_image: numpy.ndarray
+    :param bad_mask: numpy.ndarray
+    :param bad_color: str
     """
 
     # Auto-increment the device counter
@@ -54,6 +60,8 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
     # Check if the image is grayscale
     if len(np.shape(gray_img)) != 2:
         fatal_error("Image must be grayscale.")
+
+    bad_idx, bad_idy = [], []
 
     # Apply the mask if given
     if mask is not None:
@@ -90,8 +98,14 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
             mask = cv2.copyMakeBorder(crop_mask, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT,
                                       value=(0, 0, 0))
 
+            # Crop the bad mask if there is one
+            if bad_mask is not None:
+                crop_bad_mask = bad_mask[y:y + h, x:x + w]
+                bad_mask = cv2.copyMakeBorder(crop_bad_mask, offsety, offsety, offsetx, offsetx, cv2.BORDER_CONSTANT,
+                                              value=(0, 0, 0))
+
         # Apply the mask
-        masked_img = np.ma.array(gray_img1, mask=~mask.astype(np.bool))
+        masked_img = np.ma.array(gray_img1, mask=~mask.astype(bool))
 
         # Set the background color or type
         if background.upper() == "BLACK":
@@ -103,7 +117,7 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
             # Background is all 255 (white)
             bkg_img = np.zeros(np.shape(gray_img1), dtype=np.uint8)
             bkg_img += 255
-            bkg_cmap = "gray"
+            bkg_cmap = "gray_r"
         elif background.upper() == "IMAGE":
             # Set the background to the input gray image
             bkg_img = gray_img1
@@ -112,17 +126,27 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
             fatal_error(
                 "Background type {0} is not supported. Please use 'white', 'black', or 'image'.".format(background))
 
+        if bad_mask is not None:
+            debug_mode = params.debug
+            params.debug = None
+            bad_mask = apply_mask(bad_mask, mask, mask_color='black')
+            bad_idx, bad_idy = np.where(bad_mask > 0)
+            params.debug = debug_mode
+
+        plt.figure()
         # Pseudocolor the image, plot the background first
-        pseudo_img1 = plt.imshow(bkg_img, cmap=bkg_cmap)
+        plt.imshow(bkg_img, cmap=bkg_cmap)
         # Overlay the masked grayscale image with the user input colormap
         plt.imshow(masked_img, cmap=cmap, vmin=min_value, vmax=max_value)
+        plt.plot(bad_idy, bad_idx, '.', color=bad_color)
 
         if colorbar:
             plt.colorbar(fraction=0.033, pad=0.04)
 
         if axes:
             # Include image title
-            plt.title('Pseudocolored image')
+            if title is not None:
+                plt.title(title)
         else:
             # Remove axes
             plt.xticks([])
@@ -131,20 +155,14 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
         # Store the current figure
         pseudo_img = plt.gcf()
 
-        # Print or plot if debug is turned on
-        if params.debug == 'print':
-            plt.savefig(os.path.join(params.debug_outdir, str(params.device) + '_pseudocolored.png'), dpi=params.dpi)
-            plt.close()
-        elif params.debug == 'plot':
-            plot_image(pseudo_img1)
-            # Use non-blocking mode in case the function is run more than once
-            plt.show(block=False)
-        elif params.debug is None:
-            plt.show(block=False)
-
     else:
+
+        if bad_mask is not None:
+            bad_idx, bad_idy = np.where(bad_mask > 0)
+        plt.figure()
         # Pseudocolor the image
-        pseudo_img1 = plt.imshow(gray_img1, cmap=cmap, vmin=min_value, vmax=max_value)
+        plt.imshow(gray_img1, cmap=cmap, vmin=min_value, vmax=max_value)
+        plt.plot(bad_idy, bad_idx, '.', color=bad_color)
 
         if colorbar:
             # Include the colorbar
@@ -152,7 +170,8 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
 
         if axes:
             # Include image title
-            plt.title('Pseudocolored image')  # + os.path.splitext(filename)[0])
+            if title is not None:
+                plt.title(title)
         else:
             # Remove axes
             plt.xticks([])
@@ -160,16 +179,16 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
 
         pseudo_img = plt.gcf()
 
-        # Print or plot if debug is turned on
+    # Print or plot if debug is turned on
+    if params.debug is not None:
         if params.debug == 'print':
-            plt.savefig(os.path.join(params.debug_outdir, str(params.device) + '_pseudocolored.png'), dpi=params.dpi)
-            pseudo_img.clear()
+            plt.savefig(os.path.join(params.debug_outdir, str(
+                params.device) + '_pseudocolored.png'), dpi=params.dpi)
             plt.close()
         elif params.debug == 'plot':
-            plot_image(pseudo_img1)
             # Use non-blocking mode in case the function is run more than once
             plt.show(block=False)
-        elif params.debug is None:
-            plt.show(block=False)
+    else:
+        plt.close()
 
     return pseudo_img

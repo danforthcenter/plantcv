@@ -7,15 +7,15 @@ Creates a uniquely labeled mask for each color chip based on user-defined positi
 **returns** mask
 
 - **Parameters**
-    - rgb_img        = Input RGB image data containing a color card.
-    - radius         = Radius of color masks.
-    - start_coord    = Two-element tuple of the first chip mask starting x and y coordinate.
-    - spacing        = Two-element tuple of the horizontal and vertical spacing between chip masks.
-    - nrows          = Number of chip rows.
-    - ncols          = Number of chip columns.
-    - exclude        = Optional list of chips to exclude.
+    - rgb_img        - Input RGB image data containing a color card.
+    - radius         - Radius of color masks.
+    - start_coord    - Two-element tuple of the first chip mask starting x and y coordinate.
+    - spacing        - Two-element tuple of the horizontal and vertical spacing between chip masks.
+    - nrows          - Number of chip rows.
+    - ncols          - Number of chip columns.
+    - exclude        - Optional list of chips to exclude.
 - **Returns**
-    - mask           = Labeled mask of chips. The first chip is labeled with the value 0, then 10, 20, and so on.
+    - mask           - Labeled mask of chips. The first chip is labeled with the value 0, then 10, 20, and so on.
     
 ```python
 from plantcv import plantcv as pcv

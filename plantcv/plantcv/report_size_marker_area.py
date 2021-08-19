@@ -17,7 +17,7 @@ from plantcv.plantcv import outputs
 
 
 def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None,
-                            thresh=None):
+                            thresh=None, label="default"):
     """Detects a size marker in a specified region and reports its size and eccentricity
 
     Inputs:
@@ -29,6 +29,7 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
     objcolor        = Object color is 'dark' or 'light' (is the marker darker or lighter than the background)
     thresh_channel  = 'h', 's', or 'v' for hue, saturation or value
     thresh          = Binary threshold value (integer)
+    label      = optional label parameter, modifies the variable name of observations recorded
 
     Returns:
     analysis_images = List of output images
@@ -40,6 +41,7 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
     :param objcolor: str
     :param thresh_channel: str
     :param thresh: int
+    :param label: str
     :return: analysis_images: list
     """
     # Store debug
@@ -124,16 +126,18 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
     elif params.debug == 'plot':
         plot_image(ref_img)
 
-    outputs.add_observation(variable='marker_area', trait='marker area',
+    outputs.add_observation(sample=label, variable='marker_area', trait='marker area',
                             method='plantcv.plantcv.report_size_marker_area', scale='pixels', datatype=int,
                             value=marker_area, label='pixels')
-    outputs.add_observation(variable='marker_ellipse_major_axis', trait='marker ellipse major axis length',
+    outputs.add_observation(sample=label, variable='marker_ellipse_major_axis',
+                            trait='marker ellipse major axis length',
                             method='plantcv.plantcv.report_size_marker_area', scale='pixels', datatype=int,
                             value=major_axis_length, label='pixels')
-    outputs.add_observation(variable='marker_ellipse_minor_axis', trait='marker ellipse minor axis length',
+    outputs.add_observation(sample=label, variable='marker_ellipse_minor_axis',
+                            trait='marker ellipse minor axis length',
                             method='plantcv.plantcv.report_size_marker_area', scale='pixels', datatype=int,
                             value=minor_axis_length, label='pixels')
-    outputs.add_observation(variable='marker_ellipse_eccentricity', trait='marker ellipse eccentricity',
+    outputs.add_observation(sample=label, variable='marker_ellipse_eccentricity', trait='marker ellipse eccentricity',
                             method='plantcv.plantcv.report_size_marker_area', scale='none', datatype=float,
                             value=eccentricity, label='none')
 

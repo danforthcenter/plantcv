@@ -7,15 +7,15 @@ Applies the transformation matrix to an image.
 **returns** corrected_img
 
 - **Parameters**
-    - source_img            = an RGB image to be corrected to the target color space
-    - target_img            = an RGB image with the target color space
-    - transformation_matrix = a 9x9 matrix of transformation coefficients
+    - source_img            - an RGB image to be corrected to the target color space
+    - target_img            - an RGB image with the target color space
+    - transformation_matrix - a 9x9 matrix of transformation coefficients
 
 - **Returns**
-    - corrected_img = an RGB image in correct color space
+    - corrected_img - an RGB image in correct color space
     
 - **Example use:**
-    - [Color Correction Tutorial](transform_color_correction_tutorial.md)
+    - [Color Correction Tutorial](tutorials/transform_color_correction_tutorial.md)
     
 **Reference Images**
 

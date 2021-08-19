@@ -1,3 +1,5 @@
+# Find objects partially inside a region of interest or cuts objects to the ROI
+
 import cv2
 import numpy as np
 import os

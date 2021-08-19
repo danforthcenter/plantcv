@@ -1,0 +1,8 @@
+sample,trait,value,label
+default,string,string,none
+default,boolean,1,none
+default,list,1,1
+default,list,2,2
+default,list,3,3
+default,tuple,1,1
+default,tuple,2,2

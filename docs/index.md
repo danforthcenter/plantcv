@@ -11,16 +11,10 @@ near-infrared, "NIR"), thermal infrared images, grayscale images from chlorophyl
 PlantCV is ongoing---we encourage input from the greater plant phenomics community. Please post questions and comments 
 on the [GitHub issues page](https://github.com/danforthcenter/plantcv/issues).
 
-!!! note
-    At the Danforth Center we refer to our saturation pulse imaging  fluorometer (PSII) camera system as 'FLU' 
-    internally. But others have previously published on their steady-state fluorescence imaging systems 
-    (a different type of fluorescence imaging system) and referred to it as 'FLU'. We are working to make the 
-    naming changes of our functions from 'FLU' to 'PSII' to try and prevent further confusion.
-
 ## Getting started
 
 The documentation can be navigated using the sidebar table of contents. Documentation for individual PlantCV functions
-are listed under the headings "Package plantcv" and "Package plantcv.learn." For general information on installation,
+are listed under the headings "PlantCV Namespace". For general information on installation,
 updating, and other questions, see:
 
 * [Installing PlantCV](installation.md)
@@ -30,26 +24,26 @@ updating, and other questions, see:
 * [Using Jupyter Notebooks with PlantCV](jupyter.md)
 * [Summary of Output Measurements and Database Structure](output_measurements.md)
 
-Also see our tutorials for more detailed overviews of using PlantCV for specific tasks:
-
-* [VIS/RGB Image Processing](vis_tutorial.md)
-* [Near-Infrared Image Processing](nir_tutorial.md)
-* [PSII Image Processing](psII_tutorial.md)
-* [VIS / NIR Dual Workflows](vis_nir_tutorial.md)
-* [Multi Plant Image Processing](multi-plant_tutorial.md)
-* [Morphology Package](morphology_tutorial.md) 
-* [Thermal Image Processing](thermal_tutorial.md)
-* [Hyperspectral Image Processing](hyperspectral_tutorial.md)
-* [Machine Learning Tutorial](machine_learning_tutorial.md)
-* [Parallel Image Processing](pipeline_parallel.md)
-* [Exporting Data for Downstream Analysis](db-exporter.md)
+## Tutorials 
 
 We have added interactive documentation (the link takes up to a few minutes to load so be patient please),
 so you can test out workflows and even upload your own images to test on.
 
-## Interactive Tutorials 
-
 * [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=index.ipynb) Check out our interactive tutorials! 
+
+Also see our tutorials documentation pages for more detailed overviews of using PlantCV for specific tasks:
+
+* [VIS/RGB Image Processing](tutorials/vis_tutorial.md)
+* [Near-Infrared Image Processing](tutorials/nir_tutorial.md)
+* [PSII Image Processing](tutorials/psII_tutorial.md)
+* [VIS / NIR Dual Workflows](tutorials/vis_nir_tutorial.md)
+* [Multi Plant Image Processing](tutorials/multi-plant_tutorial.md)
+* [Morphology Package](tutorials/morphology_tutorial.md) 
+* [Thermal Image Processing](tutorials/thermal_tutorial.md)
+* [Hyperspectral Image Processing](tutorials/hyperspectral_tutorial.md)
+* [Machine Learning Tutorial](tutorials/machine_learning_tutorial.md)
+* [Parallel Image Processing](pipeline_parallel.md)
+* [Exporting Data for Downstream Analysis](db-exporter.md)
 
 ## Contributing 
 

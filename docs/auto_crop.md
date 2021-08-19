@@ -10,7 +10,7 @@ Crops image to an object and allows user to specify image padding (if desired)
     - img - RGB or grayscale image data
     - obj - contour of target object 
     - padding_x - integer or tuple to add padding the x direction (default padding_x=0)
-    - padding_y - integer or tuple to add padding the y direction (default padding_x=0)
+    - padding_y - integer or tuple to add padding the y direction (default padding_y=0)
     - color - either 'black' (default), 'white', or 'image'
 - **Context:**
     - Crops image to object
@@ -29,9 +29,9 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Crop image
-crop_img = pcv.auto_crop(rgb_img, id_objects[0], 20, 20, 'black')
+crop_img = pcv.auto_crop(img=rgb_img, obj=id_objects, padding_x=20, padding_y=20, color='black')
 
-crop_img2 = pcv.auto_crop(rgb_img, id_objects[0], 20, 20, 'image')
+crop_img2 = pcv.auto_crop(img=rgb_img, obj=id_objects, padding_x=20, padding_y=20, color='image')
 
 ```
 

@@ -7,7 +7,7 @@ The background image should be the same background as the foreground image excep
 Images must be of the same size and type.
 If not, larger image will be taken and downsampled to smaller image size.
 If they are of different types, an error will occur.
-Requires cv2 version 3.0+
+
 
 **plantcv.background_subtraction(*foreground_image, background_image*)**
 
@@ -18,9 +18,9 @@ Requires cv2 version 3.0+
 	- background_image - RGB or grayscale image object
 - **Context:**
     - Used to extract object from foreground image containing it and background image without it.
-	- E.g. A picture of a pot and the background and a picture of the plant, pot, and same background. Preferably taken from same background.
+	- E.g. A picture of an empty pot and the background and a picture of the plant, pot, and same background. Preferably taken from same location.
 - **Example use:**
-    - [NIR tutorial](nir_tutorial.md)
+    - [NIR tutorial](tutorials/nir_tutorial.md)
     - See below.
 
 **Foreground Image**
@@ -41,7 +41,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Create a foreground mask from both images 
-fgmask = pcv.background_subtraction(foreground_image, background_image)
+fgmask = pcv.background_subtraction(foreground_image=plant_img, background_image=b_img)
 
 ```
 

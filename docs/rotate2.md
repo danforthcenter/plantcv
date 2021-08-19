@@ -2,7 +2,7 @@
 
 Rotates image without changing the dimensions of the image.
 
-**rotate**(*img, rotation_deg, crop*)
+**plantcv.transform.rotate**(*img, rotation_deg, crop*)
 
 **returns** image after rotation
 
@@ -13,7 +13,7 @@ Rotates image without changing the dimensions of the image.
 - **Context:**
     - Rotates image, sometimes it is necessary to rotate an image, especially when clustering objects.
 - **Example use:**
-    - [Use In Multi-Plant Tutorial](multi-plant_tutorial.md)
+    - [Use In Multi-Plant Tutorial](tutorials/multi-plant_tutorial.md)
     
 **Input image**
 
@@ -28,7 +28,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Rotate image
-device, rotate_img = pcv.rotate(img, 10, True)
+rotate_img = pcv.transform.rotate(img, 10, True)
 
 ```
 
@@ -45,7 +45,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Rotate image
-rotate_img = pcv.rotate(img, -10, False)
+rotate_img = pcv.transform.rotate(img, -10, False)
 
 ```
 
@@ -53,4 +53,4 @@ rotate_img = pcv.rotate(img, -10, False)
 
 ![Screenshot](img/documentation_images/rotate2/8_rotated_img.png)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/rotate.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/transform/rotate.py)

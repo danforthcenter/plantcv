@@ -14,7 +14,7 @@ This is a filtering method used to identify and highlight fine edges based on th
 - **Context:**
     - Used to define edges around objects
 - **Example use:**
-    - [Use In NIR Tutorial](nir_tutorial.md)
+    - [Use In NIR Tutorial](tutorials/nir_tutorial.md)
 
 **Input grayscale image**
 
@@ -29,7 +29,7 @@ pcv.params.debug = "print"
 
 # Apply to a grayscale image
 # Filtered image will highlight areas of rapid pixel intensity change
-lp_img = pcv.laplace_filter(gray_img, 1, 1)
+lp_img = pcv.laplace_filter(gray_img=gray_img, ksize=1, scale=1)
 
 ```
 

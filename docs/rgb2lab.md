@@ -13,7 +13,7 @@ Convert image from RGB color space to LAB color space and split the channels.
 - **Context:**
     - Used to help differentiate plant and background
 - **Example use:**
-    - [Use In VIS Tutorial](vis_tutorial.md)
+    - [Use In VIS Tutorial](tutorials/vis_tutorial.md)
 
 **Original RGB image**
 
@@ -28,8 +28,8 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # image converted from RGB to LAB, channels are then split. 
-# Lightness ('l') channel is outputed.
-l_channel = pcv.rgb2gray_lab(rgb_img, 'l')
+# Lightness ('l') channel is output
+l_channel = pcv.rgb2gray_lab(rgb_img=rgb_img, channel='l')
 
 ```
 
@@ -39,15 +39,8 @@ l_channel = pcv.rgb2gray_lab(rgb_img, 'l')
 
 ```python
 
-from plantcv import plantcv as pcv
-
-# Set global debug behavior to None (default), "print" (to file), 
-# or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
-
-# image converted from RGB to LAB, channels are then split. 
-# Green-Magenta ('a') channel is outputed.
-a_channel = pcv.rgb2gray_lab(rgb_img, 'a')
+# Green-Magenta ('a') channel is output
+a_channel = pcv.rgb2gray_lab(rgb_img=rgb_img, channel='a')
 
 ```
 
@@ -57,15 +50,8 @@ a_channel = pcv.rgb2gray_lab(rgb_img, 'a')
    
 ```python
 
-from plantcv import plantcv as pcv
-
-# Set global debug behavior to None (default), "print" (to file), 
-# or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
-
-# image converted from RGB to Lab, channels are then split. 
-# Blue-Yellow ('b') channel is outputed.
-b_channel = pcv.rgb2gray_lab(rgb_img, 'b')
+# Blue-Yellow ('b') channel is output
+b_channel = pcv.rgb2gray_lab(rgb_img=rgb_img, channel='b')
 
 ```
 

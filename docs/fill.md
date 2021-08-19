@@ -12,8 +12,8 @@ Identifies objects and fills objects that are less than specified size
   - **Context:**
     - Used to reduce image noise
 - **Example use:**
-    - [Use In VIS Tutorial](vis_tutorial.md)
-    - [Use In PSII Tutorial](psII_tutorial.md) 
+    - [Use In VIS Tutorial](tutorials/vis_tutorial.md)
+    - [Use In PSII Tutorial](tutorials/psII_tutorial.md) 
 
 ```python
 
@@ -26,9 +26,9 @@ pcv.params.debug = "print"
 # Apply fill to a binary image that has had a median blur applied.
 # Image mask is the same binary image with median blur.
 
-binary_img = pcv.median_blur(img, 5)
+binary_img = pcv.median_blur(gray_img=img, ksize=5)
 
-fill_image = pcv.fill(binary_img, 200)
+fill_image = pcv.fill(bin_img=binary_img, size=200)
 
 ```
 
@@ -36,7 +36,7 @@ fill_image = pcv.fill(binary_img, 200)
 
 ![Screenshot](img/documentation_images/fill/binary_image.jpg)
 
-**Binary image with median blur and fill (200 pixels)**
+**Filled in binary mask (200 pixels)**
 
 ![Screenshot](img/documentation_images/fill/fill_200.jpg)
 

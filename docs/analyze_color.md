@@ -2,19 +2,20 @@
 
 Extract color data of objects and produce pseudocolored images, can extract data for RGB (Red, Green, Blue), HSV (Hue, Saturation, Value) and LAB (Lightness, Green-Magenta, Blue Yellow) channels.
 
-**plantcv.analyze_color**(*rgb_img, mask, hist_plot_type=None*)
+**plantcv.analyze_color**(*rgb_img, mask, hist_plot_type=None, label="default"*)
 
 **returns** Histogram image (if hist_plot_type is not `None`, otherwise returns `None` object)   
 
 - **Parameters:**  
     - rgb_img - RGB image data
     - mask - binary mask of selected contours
-    - hist_plot_type - None (default), 'all', 'rgb','lab' or 'hsv', this is the data to be printed to an SVG histogram file, however all (every channel) data is still stored to the database.
+    - hist_plot_type - None (default), 'all', 'rgb', 'lab', or 'hsv'. This can limit the data saved out. Hue data is still saved out when set to None. 
+    - label - Optional label parameter, modifies the variable name of observations recorded. (default `label="default"`)
 - **Context:**
     - Used to extract color data from RGB, LAB, and HSV color channels.
     - Generates histogram of color channel data. 
 - **Example use:**
-    - [Use In VIS Tutorial](vis_tutorial.md)
+    - [Use In VIS Tutorial](tutorials/vis_tutorial.md)
 - **Output data stored:**  Data ('blue_frequencies', 'green_frequencies', 'red_frequencies', 'lightness_frequencies', 'green-magenta_frequencies', 
     'blue-yellow_frequencies', 'hue_frequencies', 'saturation_frequencies', 'value_frequencies', 'hue_circular_mean', 'hue_circular_std', 'hue_median') 
     automatically gets stored to the [`Outputs` class](outputs.md) when this function is ran. 
@@ -35,10 +36,10 @@ pcv.params.debug = "print"
 
 # Analyze Color
     
-analysis_image = pcv.analyze_color(rgb_img, mask, 'all')
+analysis_image = pcv.analyze_color(rgb_img=rgb_img, mask=mask, hist_plot_type='all', label="default")
 
 # Access data stored out from analyze_color
-hue_circular_mean = pcv.outputs.observations['hue_circular_mean']['value']
+hue_circular_mean = pcv.outputs.observations['default']['hue_circular_mean']['value']
 
 ```
 

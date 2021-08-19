@@ -11,18 +11,20 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import find_objects
 
 
-def find_branch_pts(skel_img, mask=None):
+def find_branch_pts(skel_img, mask=None, label="default"):
     """
     The branching algorithm was inspired by Jean-Patrick Pommier: https://gist.github.com/jeanpat/5712699
     Inputs:
     skel_img    = Skeletonized image
     mask        = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
+    label        = optional label parameter, modifies the variable name of observations recorded
 
     Returns:
     branch_pts_img = Image with just branch points, rest 0
 
     :param skel_img: numpy.ndarray
     :param mask: np.ndarray
+    :param label: str
     :return branch_pts_img: numpy.ndarray
     """
 
@@ -89,11 +91,13 @@ def find_branch_pts(skel_img, mask=None):
     branch_labels = []
     for i, branch in enumerate(branch_objects):
         x, y = branch.ravel()[:2]
-        branch_list.append((float(x), float(y)))
+        coord = (int(x), int(y))
+        branch_list.append(coord)
         branch_labels.append(i)
         cv2.circle(branch_plot, (x, y), params.line_thickness, (255, 0, 255), -1)
 
-    outputs.add_observation(variable='branch_pts', trait='list of branch-point coordinates identified from a skeleton',
+    outputs.add_observation(sample=label, variable='branch_pts',
+                            trait='list of branch-point coordinates identified from a skeleton',
                             method='plantcv.plantcv.morphology.find_branch_pts', scale='pixels', datatype=list,
                             value=branch_list, label=branch_labels)
 

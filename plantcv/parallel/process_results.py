@@ -42,9 +42,10 @@ def process_results(job_dir, json_file):
                     for var in obs["metadata"]:
                         data["variables"][var] = {"category": "metadata", "datatype": "<class 'str'>"}
                     # Keep track of all observations variables stored
-                    for othervars in obs["observations"]:
-                        data["variables"][othervars] = {"category": "observations",
-                                                        "datatype": obs["observations"][othervars]["datatype"]}
+                    for sample in obs["observations"]:
+                        for othervars in obs["observations"][sample]:
+                            data["variables"][othervars] = {"category": "observations",
+                                                            "datatype": obs["observations"][sample][othervars]["datatype"]}
 
     # Write out json file with info from all images
     with open(json_file, 'w') as datafile:

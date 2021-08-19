@@ -81,11 +81,11 @@ def canny_edge_detect(img, mask=None, sigma=1.0, low_thresh=None, high_thresh=No
         params.debug = None
         bin_img = dilate(bin_img, thickness, 1)
         params.debug = debug
-    else:
-        # Print or plot the binary image
-        if params.debug == 'print':
-            print_image(bin_img, os.path.join(params.debug_outdir, (str(params.device) + '_canny_edge_detect.png')))
-        elif params.debug == 'plot':
-            plot_image(bin_img, cmap='gray')
+
+    # Print or plot the binary image
+    if params.debug == 'print':
+        print_image(bin_img, os.path.join(params.debug_outdir, (str(params.device) + '_canny_edge_detect.png')))
+    elif params.debug == 'plot':
+        plot_image(bin_img, cmap='gray')
 
     return bin_img

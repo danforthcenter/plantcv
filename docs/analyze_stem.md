@@ -1,19 +1,20 @@
 ## Analyze Stem Objects
 
-Primary, or stem, objects identified during workflows that examine the [morphology](morphology_tutorial.md) of 
+Primary, or stem, objects identified during workflows that examine the [morphology](tutorials/morphology_tutorial.md) of 
 plants or plant organs can have specific characteristics measured about the stem segments of a skeleton.
 
-**plantcv.morphology.analyze_stem**(*rgb_img, stem_objects*)
+**plantcv.morphology.analyze_stem**(*rgb_img, stem_objects, label="default"*)
 
 **returns** labeled_img
 
 - **Parameters:**
-    - rgb_img - RGB image data for plotting.
+    - rgb_img      - RGB image data for plotting.
     - stem_objects - List of stem segments (output from [segment_sort](segment_sort.md) function)
+    - label        - Optional label parameter, modifies the variable name of observations recorded 
 - **Context:**
     - Used to output stem morphological characteristics, including height, angle, and length.
 - **Example use:**
-    - [Use In Morphology Tutorial](morphology_tutorial.md)
+    - [Use In Morphology Tutorial](tutorials/morphology_tutorial.md)
 
 
 - **Output data stored:** Data ('stem_angle', 'stem_height', and 'stem_length') 
@@ -22,7 +23,7 @@ plants or plant organs can have specific characteristics measured about the stem
     these data can always get accessed during a workflow. For more detail about data output see 
     [Summary of Output Observations](output_measurements.md#summary-of-output-observations)
     
- ```python
+```python
 
 from plantcv import plantcv as pcv
 
@@ -31,11 +32,12 @@ from plantcv import plantcv as pcv
 
 pcv.params.debug = "print"
     
-stem_debug_img1 = pcv.morphology.analyze_stem(rgb_img=img1, stem_objects=stem_objects1)
-stem_debug_img2 = pcv.morphology.analyze_stem(rgb_img=img2, stem_objects=stem_objects2)
-
+stem_debug_img1 = pcv.morphology.analyze_stem(rgb_img=img1, stem_objects=stem_objects1, label="default")
 # Access data stored out from analyze_object
-stem_angle = pcv.outputs.observations['stem_angle']['value']
+stem_angle = pcv.outputs.observations['default']['stem_angle']['value']
+
+stem_debug_img2 = pcv.morphology.analyze_stem(rgb_img=img2, stem_objects=stem_objects2, label="rep1")
+stem_angle = pcv.outputs.observations['rep1']['stem_angle']['value']
 
 ```
 
@@ -47,4 +49,4 @@ stem_angle = pcv.outputs.observations['stem_angle']['value']
 
 ![Screenshot](img/documentation_images/analyze_stem/218_segmented_angles.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/analyze_stem.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/morphology/analyze_stem.py)

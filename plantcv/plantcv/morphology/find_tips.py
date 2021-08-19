@@ -11,7 +11,7 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import find_objects
 
 
-def find_tips(skel_img, mask=None):
+def find_tips(skel_img, mask=None, label="default"):
     """
     The endpoints algorithm was inspired by Jean-Patrick Pommier: https://gist.github.com/jeanpat/5712699
     Find tips in skeletonized image.
@@ -19,12 +19,14 @@ def find_tips(skel_img, mask=None):
     Inputs:
     skel_img    = Skeletonized image
     mask        = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
+    label        = optional label parameter, modifies the variable name of observations recorded
 
     Returns:
     tip_img   = Image with just tips, rest 0
 
     :param skel_img: numpy.ndarray
     :param mask: numpy.ndarray
+    :param label: str
     :return tip_img: numpy.ndarray
     """
 
@@ -72,11 +74,12 @@ def find_tips(skel_img, mask=None):
     tip_labels = []
     for i, tip in enumerate(tip_objects):
         x, y = tip.ravel()[:2]
-        tip_list.append((int(x), int(y)))
+        coord = (int(x), int(y))
+        tip_list.append(coord)
         tip_labels.append(i)
         cv2.circle(tip_plot, (x, y), params.line_thickness, (0, 255, 0), -1)
 
-    outputs.add_observation(variable='tips', trait='list of tip coordinates identified from a skeleton',
+    outputs.add_observation(sample=label, variable='tips', trait='list of tip coordinates identified from a skeleton',
                             method='plantcv.plantcv.morphology.find_tips', scale='pixels', datatype=list,
                             value=tip_list, label=tip_labels)
 
