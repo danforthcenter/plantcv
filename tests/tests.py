@@ -3830,8 +3830,8 @@ def test_plantcv_segment_image_series():
     pcv.params.debug = None
 
     rois, roi_hierarchy = pcv.roi.multi(img=img, coord=(OBJ1_COORDS[0], OBJ1_COORDS[1]),
-                                        radius=OBJ_SIZE-1, spacing=SPACING, nrows=2, ncols=2)
-    valid_rois = [rois[i] for i in range(0,len(rois),2)]
+                                        radius=OBJ_SIZE-2, spacing=SPACING, nrows=2, ncols=2)
+    valid_rois = [rois[0], rois[3]]
 
     # test that the function detects the two objects and propagates the labels
     # to the last frame

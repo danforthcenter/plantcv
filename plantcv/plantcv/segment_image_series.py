@@ -51,7 +51,7 @@ def segment_image_series(imgs_paths, masks_paths, rois, save_labels=True, ksize=
     # output initialization
     N = len(image_names)
     out_labels = np.zeros((h,w,N),dtype=np.uint8)
-    out_labels[:,:,0] = roi_labels
+    out_labels[:,:,0] = roi_labels.copy()
 
     # values for visualization output image
     rgb_values = color_palette(n_labels)
