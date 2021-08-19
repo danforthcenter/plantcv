@@ -433,36 +433,42 @@ class InstanceTimeSeriesLinking(object):
                 ts_pot = [te for te in t_emerg if t + min_gap < te < t + max_gap]
                 # loop over timepoints for a potential link and get cids and masks for every timepoint
                 for t_ in ts_pot:
-                    uids_emerg = emergence[t_]
-                    cids_emerg = [uids_sort[t_].index(i) for i in uids_emerg]
-                    masks_t_ = np.take(masks[t_], cids_emerg, axis=2)
+                    uids_emerg_ = emergence[t_]
+                    idx = []
+                    for (i, uid_emerg) in enumerate(uids_emerg_):
+                        if (ti[0:t:, uid_emerg] == -1).all():
+                            idx.append(i)
+                    uids_emerg = [uids_emerg_[i] for i in idx]
+                    if len(uids_emerg) > 0:
+                        cids_emerg = [uids_sort[t_].index(i) for i in uids_emerg]
+                        masks_t_ = np.take(masks[t_], cids_emerg, axis=2)
 
-                    # calculate weight to calculate the link
-                    weights, n1, n2, _ = InstanceTimeSeriesLinking.compute_overlaps_weights(masks_t, masks_t_, metric)
-                    # li_ts, _, _ = InstanceTimeSeriesLinking.get_link(weights, self.thres)
-                    li_ts = InstanceTimeSeriesLinking.get_link(weights, thres)
+                        # calculate weight to calculate the link
+                        weights, n1, n2, _ = InstanceTimeSeriesLinking.compute_overlaps_weights(masks_t, masks_t_, metric)
+                        # li_ts, _, _ = InstanceTimeSeriesLinking.get_link(weights, self.thres)
+                        li_ts = InstanceTimeSeriesLinking.get_link(weights, thres)
 
-                    uids_undisap = []
-                    uids_reemerged = []
-                    for (idx, uid_disap) in enumerate(uids_disap):  # loop over all disappeared indices
-                        li_t = li_ts[idx]
-                        if li_t > -1 and uid_disap != uids_emerg[li_t] and uids_emerg[li_t] not in uids_reemerged:
-                            uids_reemerged.append(uid_disap)
-                            print(f"\n{t} -> {t_}: ")
-                            print(f"{uid_disap} <- {uids_emerg[li_t]}")
-                            # update ti
-                            ti_[t_:, uid_disap] = ti_[t_:, uids_emerg[li_t]]
-                            ti_[t_:, uids_emerg[li_t]] = -np.ones(T - t_, dtype=np.int64)
-                            uids_undisap.append(uid_disap)
-                        uids_disap = list(set(uids_disap).difference(set(uids_undisap)))
+                        uids_undisap = []
+                        uids_reemerged = []
+                        for (idx, uid_disap) in enumerate(uids_disap):  # loop over all disappeared indices
+                            li_t = li_ts[idx]
+                            if li_t > -1 and uid_disap != uids_emerg[li_t] and uids_emerg[li_t] not in uids_reemerged:
+                                uids_reemerged.append(uid_disap)
+                                print(f"\n{t} -> {t_}: ")
+                                print(f"{uid_disap} <- {uids_emerg[li_t]}")
+                                # update ti
+                                ti_[t_:, uid_disap] = ti_[t_:, uids_emerg[li_t]]
+                                ti_[t_:, uids_emerg[li_t]] = -np.ones(T - t_, dtype=np.int64)
+                                uids_undisap.append(uid_disap)
+                            uids_disap = list(set(uids_disap).difference(set(uids_undisap)))
 
-                        if len(uids_disap) == 0:
-                            # remove key
-                            disappearance.pop(t)
-                            break
-                        else:
-                            # update
-                            disappearance[t] = uids_disap
+                            if len(uids_disap) == 0:
+                                # remove key
+                                disappearance.pop(t)
+                                break
+                            else:
+                                # update
+                                disappearance[t] = uids_disap
         remove_uids = []
         for uid in range(N):
             if (ti_[:, uid] == -1).all():
