@@ -34,7 +34,7 @@ class InstanceTimeSeriesLinking(object):
 
     def __init__(self):
         # a list of masks which are ndarrays (of the same length of images)
-        self.masks = None
+        self.masks, self.tips = None, None
         self.T, self.N, self.max_uid = None, None, None
         # number of instances: a list in which every element represent for number of instances in corresponding image
         self.n_insts = None
@@ -52,17 +52,6 @@ class InstanceTimeSeriesLinking(object):
         linked = pkl.load(open(osp.join(savedir, savename + '.pkl'), "rb"))
         for key, value in linked.items():
             setattr(self, key, value)
-
-    def linking(self,t0):
-        """
-        Time-series linking for a given timepoint to the next time point
-        :param t0:
-        :return:
-        """
-        masks0, masks1 = copy.deepcopy(self.masks[t0]), copy.deepcopy(self.masks[t0 + 1])  # both masks0 and masks1 are ndarrays
-        self.weights[t0], _, _, _ = self.compute_overlaps_weights(masks0, masks1, self.metric)
-        # self.link_info[t0], _, _ = self.get_link(self.weights[t0], self.thres)
-        self.link_info[t0] = self.get_link(self.weights[t0], self.thres)
 
     @staticmethod
     def get_link(weight, thres):
@@ -87,13 +76,6 @@ class InstanceTimeSeriesLinking(object):
             if weight[r, c] >= thres:
                 link[r] = avail_col[c]
         return link#, row_ind, col_ind
-
-
-    # @staticmethod
-    # def compute_dist_weights(pts1, pts2):
-    #     n1, n2 = len(pts1), len(pts2)
-    #     weight = distance.cdist(pts1, pts2)
-    #     return weight, n1, n2
 
 
     @staticmethod
@@ -301,7 +283,7 @@ class InstanceTimeSeriesLinking(object):
 
 
     @staticmethod
-    def get_tracking_report(ti, masks):
+    def area_tracking_report(ti, masks):
         tracking_report = np.zeros(ti.shape)
         for (t, masks_t) in enumerate(masks):
             ti_t = ti[t, :]
@@ -309,6 +291,17 @@ class InstanceTimeSeriesLinking(object):
                 uid = np.where(ti_t == cid)[0][0]
                 tracking_report[t, uid] = np.sum(masks_t[:, :, cid])
         return tracking_report
+
+
+    # @staticmethod
+    # def length_tracking_report(ti, masks):
+    #     tracking_report = np.zeros(ti.shape)
+    #     for (t, masks_t) in enumerate(masks):
+    #         ti_t = ti[t, :]
+    #         for cid in range(masks_t.shape[2]):
+    #             uid = np.where(ti_t == cid)[0][0]
+    #             tracking_report[t, uid] = np.sum(masks_t[:, :, cid])
+    #     return tracking_report
 
 
     @staticmethod
@@ -341,6 +334,18 @@ class InstanceTimeSeriesLinking(object):
             plt.close("all")
 
 
+    def link_t(self,t0):
+        """
+        Time-series linking for a given timepoint to the next time point
+        :param t0:
+        :return:
+        """
+        masks0, masks1 = copy.deepcopy(self.masks[t0]), copy.deepcopy(self.masks[t0 + 1])  # both masks0 and masks1 are ndarrays
+        self.weights[t0], _, _, _ = self.compute_overlaps_weights(masks0, masks1, self.metric)
+        # self.link_info[t0], _, _ = self.get_link(self.weights[t0], self.thres)
+        self.link_info[t0] = self.get_link(self.weights[t0], self.thres)
+
+
     def link(self, masks, metric="IOS", thres=0.2):
         # a list of masks which are ndarrays (of the same length of images)
         self.masks = masks
@@ -358,7 +363,7 @@ class InstanceTimeSeriesLinking(object):
         self.metric    = metric.upper()
 
         for t0 in range(0, self.T - 1):
-            self.linking(t0)
+            self.link_t(t0)
 
         # self.ti, self.t_appear, self.t_disappear = self.get_ti(self.T, self.N, self.n_insts, self.uids, self.link_info)
         # self.uids, uids_sort, _, self.N = self.get_uid(self.ti)
@@ -366,7 +371,40 @@ class InstanceTimeSeriesLinking(object):
 
         self.uids, self.max_uid, self.N = InstanceTimeSeriesLinking.get_sorted_uids(self.link_info, self.n_insts)
         self.ti = self.get_ti(self.uids, self.link_info, self.n_insts)
-        self.tracking_report = InstanceTimeSeriesLinking.get_tracking_report(self.ti, self.masks)
+        self.tracking_report = InstanceTimeSeriesLinking.area_tracking_report(self.ti, self.masks)
+
+
+    @staticmethod
+    def compute_dist_weights(pts1, pts2):
+        n1, n2 = len(pts1), len(pts2)
+        weight = distance.cdist(pts1, pts2)
+        return weight, n1, n2
+
+
+    def link_dist_t(self,t0):
+        tips0, tips1 = copy.deepcopy(self.tips[t0]), copy.deepcopy(self.tips[t0 + 1])  # both masks0 and masks1 are ndarrays
+        weights, _, _, _ = self.compute_dist_weights(tips0, tips1)
+        self.weights[t0] = -weights
+        self.link_info[t0] = self.get_link(self.weights[t0], self.thres)
+
+    def link_dist(self, tips, thres=0.0):
+        self.tips = tips
+        self.T = len(tips)
+        # number of instances: a list in which every element represent for number of instances in corresponding image
+        self.n_insts = []
+        for i in range(0, self.T):
+            self.n_insts.append(self.tips[i].shape[2])
+        # initialization for linking
+        self.thres     = thres
+        self.link_info = [-np.ones((self.n_insts[i]), dtype=np.int64) for i in range(0, self.T - 1)]
+        self.weights = [np.empty(0) for _ in range(self.T - 1)]
+
+        for t0 in range(0, self.T - 1):
+            self.link_dist_t(t0)
+
+        self.uids, self.max_uid, self.N = InstanceTimeSeriesLinking.get_sorted_uids(self.link_info, self.n_insts)
+        self.ti = self.get_ti(self.uids, self.link_info, self.n_insts)
+        self.tracking_report = InstanceTimeSeriesLinking.area_tracking_report(self.ti, self.masks)
 
 
     @staticmethod
@@ -441,7 +479,7 @@ class InstanceTimeSeriesLinking(object):
                 # return ti_
                 self.ti = ti_
                 # update tracking_report
-                self.tracking_report = InstanceTimeSeriesLinking.get_tracking_report(self.ti, self.masks)
+                self.tracking_report = InstanceTimeSeriesLinking.area_tracking_report(self.ti, self.masks)
                 break
 
 
