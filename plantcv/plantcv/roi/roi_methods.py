@@ -393,8 +393,7 @@ class custom_interactive(object):
         :param img: image data
         :param figsize: desired figure size, (12,6) by default
         """
-        print(
-            "Warning: this tool is under development and is expected to have updates frequently, please check the documentation page to make sure you are using the correct version!")
+        
         self.fig, self.ax = plt.subplots(1, 1, figsize=figsize)
         self.ax.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
 
