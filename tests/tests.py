@@ -5503,6 +5503,15 @@ def test_plantcv_roi_custom_bad_input():
         _ = pcv.roi.custom(img=img, vertices=[[226, -1], [3130, 1848], [2404, 2029], [2205, 2298], [1617, 1761]])
 
 
+def test_plantcv_roi_custom_interactive():
+    # Read in a test grayscale image
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), -1)
+    drawer_rgb = pcv.roi.custom_interactive(img, figsize=(12,6))
+    # Assert the contours and hierarchy lists contain only the ROI
+    assert np.type(drawer_rgb.points) == list
+
+
+
 # ##############################
 # Tests for the transform subpackage
 # ##############################
