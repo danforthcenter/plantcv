@@ -5507,6 +5507,16 @@ def test_plantcv_roi_custom_interactive():
     # Read in a test grayscale image
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), -1)
     drawer_rgb = pcv.roi.custom_interactive(img, figsize=(12,6))
+    # simulate mouse clicks
+    e1 = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=drawer_rgb.fig.canvas,
+                                             x=0, y=0, button=1)
+    e1.xdata, e1.ydata = (200, 200)
+    drawer_rgb.onclick(e1)
+    # right click
+    e2 = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=drawer_rgb.fig.canvas,
+                                             x=0, y=0, button=3)
+    e2.xdata, e2.ydata = (199, 200)
+    drawer_rgb.onclick(e2)
     # Assert the contours and hierarchy lists contain only the ROI
     assert np.type(drawer_rgb.points) == list
 
