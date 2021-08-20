@@ -5518,7 +5518,7 @@ def test_plantcv_roi_custom_interactive():
     e2.xdata, e2.ydata = (199, 200)
     drawer_rgb.onclick(e2)
     # Assert the contours and hierarchy lists contain only the ROI
-    assert np.type(drawer_rgb.points) == list
+    assert type(drawer_rgb.points) == list
 
 
 
