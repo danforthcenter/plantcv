@@ -5515,7 +5515,7 @@ def test_plantcv_roi_custom_interactive():
     # right click
     e2 = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=drawer_rgb.fig.canvas,
                                              x=0, y=0, button=3)
-    e2.xdata, e2.ydata = (199, 200)
+    e2.xdata, e2.ydata = (200, 200)
     drawer_rgb.onclick(e2)
     # Assert the contours and hierarchy lists contain only the ROI
     assert type(drawer_rgb.points) == list
