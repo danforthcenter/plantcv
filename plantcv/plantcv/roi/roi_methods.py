@@ -413,7 +413,7 @@ class custom_interactive(object):
             idx_remove, _ = _find_closest_pt((event.xdata, event.ydata), self.points)
 
             # remove the closest point to the user right clicked one
-            print(self.points)
+            print(idx_remove)
             self.points.pop(idx_remove)
             ax0plots = self.ax.lines
             self.ax.lines.remove(ax0plots[idx_remove])
