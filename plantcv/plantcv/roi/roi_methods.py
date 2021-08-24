@@ -379,6 +379,8 @@ def _find_closest_pt(pt, pts):
         return pt
     dists =	distance.cdist([pt], pts, 'euclidean')
     idx = np.argmin(dists)
+    print(pts[idx])
+    print(idx)
     return idx, pts[idx]
 
 
@@ -413,7 +415,6 @@ class custom_interactive(object):
             idx_remove, _ = _find_closest_pt((event.xdata, event.ydata), self.points)
 
             # remove the closest point to the user right clicked one
-            print(idx_remove)
             self.points.pop(idx_remove)
             ax0plots = self.ax.lines
             self.ax.lines.remove(ax0plots[idx_remove])
