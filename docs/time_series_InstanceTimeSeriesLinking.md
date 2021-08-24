@@ -1,12 +1,15 @@
-## time_series
+## Time-series Tracking
 
-This class is designed to link segmented instances over time. Images should be taken across a time (e.g. every 4 hours for several days), and ideally there should be minimal or no movment of plant and camera.
+This class is designed to track segmented instances over time. Images should be taken across a time (e.g. every 4 hours 
+for several days), and ideally either plant or camera should have minimal or no movment. 
 
-To use this class for generating time-series linking, the instance segmentation for every image is required. For more information on instance segmentation and a demo of instance segmentation, check here: [Instance Segmentation](instance_segmentation_tutorial.md).
+To use this class for generating time-series linking, instance segmentation for every image is required. For more 
+information of instance segmentation, check out here: [Instance Segmentation](instance_segmentation_tutorial.md) for 
+a demo of instance segmentation.
  
-When using instance segmentation algorithms like maskRCNN, the assignment for the instance labels is random, i.e. the same index does not necessarily represents the same instance in different images. 
-
-To understand the growth of every leaf instance of a plant, we need to re-assign the instance labels so that the same leaf always has the same instance label (identifier) across the whole time period. 
+The goals are:
+1) Assign global unique indices to every instance at every timepoint
+2) Learn how instances connect with each other between consective timepoints
 
 For details of using this class, see examples below.
 
@@ -14,65 +17,114 @@ For details of using this class, see examples below.
 
 **inst_ts_linking = plantcv.time_series.InstanceTimeSeriesLinking()**
 
-*run the callable object*
+*use the class method `link` to track time-series*
 
-**inst_ts_linking**(*images, masks, timepoints, savedir, savename, logic="IOS", thres=0.2, name_sub="instance",update=False, max_delta_t=2*)
+**inst_ts_linking.link**(*masks, metric, thres*)
 **returns** No returned value, the inst_ts_linking is an instance object which belongs to InstanceTimeSeriesLinking class. 
 
 - **Parameters**
-    - images: a list of images. Every element of this list is an array represents one image
-    - masks: a list of instance segmentation masks. Every element of this list is an array represents instance segmentation masks correspond to one image.
-    - timepoints: a list of timepoints. The lengths for images, masks and timepoint should be the same and the elements are correspond to each other
-    - logic (optional): the logic used in linking. Segments from different timepoints are believed to be the same instance appeared in different timepoints based on either their IOU (intersection-over-union) or IOS (Intersection-over-self_area)
-      If the value is larger than the threshold, they will be connected. The logic can be either "IOU" or "IOS". Default value is "IOS".
-    - thres (optional): threshold used in the linking logic as mentioned above. Different threshold is needed when using different linking logic. Default value is 0.2.
-    - name_sub (optional): name of the main subject we care about. By default name_sub = 'instance', which means the instances we care about in images are called "instance". Other examples can be "leaf" which means that we call one instance in images a "leaf".
-    - update (optional): whether or not updating the time-series linking result. By default (not updating) the time-series linking would only examine the neighboring pairs of time points (time interval = 1). By updating the time-series linking we will be examining a larger interval of time. 
-    - max_delta_t (optional): only needed when update=True. By default max_delta_t=2.
+    - masks: a list of instance segmentation masks. Every element of this list is a numpy array represents instance 
+      segmentation masks correspond to one image (one timepoint). To be specific, a numpy array of size `r*c*n` represents 
+      that there are `n` segmented instances in the image (hence `n` masks), and the size of the original image is `r*c`.
+
+    - metric (optional): the metric to measure how likely two instances (segmentation masks) appear in two timepoints 
+      can be considered as the same object appear in different timepoints. Currently, two overlap-based metrics are 
+      available: IoU (intersection-over-union) and IoF (Intersection-over-first timepoint area). 
+      Default value is "IOU".
+
+    - thres (optional): how large the weight `W_t1_i_t2_j` (calculated based on the metric of choice) should be to for the 
+      connection from i-th segment from t1 to j-th segment from t2 to be considered as a potential link. 
+      Different threshold should be chosen when using different metric. Default value is 0.2.
 
 - **Output:**
-        An instance of InstanceTimeSeriesLinking class is returned, with all information (original image series, mask series, link information, etc.) included.   
+        An instance object of InstanceTimeSeriesLinking class, with all information (original, mask series, link information, etc.) included.   
+    
+- images: a list of images. Every element of this list is an array represents one image
+- timepoints: a list of timepoints. The lengths for images, masks and timepoint should be the same and the elements are correspond to each other
+Note: when comparing instances from two timepoints, we are comparing n1 masks from t1 and n2 masks from t2, 
+
 
 ```python
-from plantcv import plantcv as pcv
-# Below are examples of input variables, always adjust base on your own application. 
-logic = 'IOS'
-thres = 0.1
-name_sub = 'leaf'
-## Initialize an instance of class InstanceTimeSeriesLinking
-inst_ts_linking = pcv.time_series.InstanceTimeSeriesLinking()
-inst_ts_linking(images=images, masks=masks, timepoints=timepoints, logic=logic, thres=thres, name_sub=name_sub)
-```
-Make sure all the images and masks are already sorted based on timepoints. 
+from plantcv.plantcv import time_series_linking as tsl
+## Load all segmentation masks and put them into a list in the correct order here
+# masks = 
 
-To save the result, simply specify the directory of saving as well as the name (prefix)
+# Below are examples of input variables, always adjust base on your own application. 
+metric = 'IOU'
+thres = 0.1
+
+## Initialize an instance of class InstanceTimeSeriesLinking
+inst_ts_linking = tsl.InstanceTimeSeriesLinking()
+inst_ts_linking.link(masks=masks, metric=metric, thres=thres)
+```
+Make sure the list of all the masks is temporarily sorted. 
+
+To save the instance object, simply specify the directory of saving as well as the name (prefix)
 ```python
 ## Specify the desired directory to save results
-dir_save = '/shares/mgehan_share/hsheng/projects/maskRCNN/results/output_10.1.9.214_wtCol_512/index12/2020-08-24-07-29/time_series_linking'
+dir_save = "./results"
 
 ## Specify the desired name to save the result (prefix)
-savename = 'linked_series'
+savename = "linked_series"
 
 inst_ts_linking.save_linked_series(savedir=dir_save, savename=savename)
 ```
+
 To import a previously saved result:
 ```python
-dir_save = '/shares/mgehan_share/hsheng/projects/maskRCNN/results/output_10.1.9.214_wtCol_512/index12/2020-08-24-07-29/time_series_linking'
-savename = 'linked_series'
-inst_ts_linking = time_series_linking.InstanceTimeSeriesLinking()
+dir_save = "./results"
+savename = "linked_series"
+## Initialize an instance of class InstanceTimeSeriesLinking
+inst_ts_linking = tsl.InstanceTimeSeriesLinking()
 inst_ts_linking.import_linked_series(savedir=dir_save, savename=savename)
 ```
 
-The option to update the time-series linking result is also available:
+To visualize the time-series tracking result, a list of images corresponding to every set of masks in the list of masks 
+must be provided. Besides, a list of timepoints also need to be provided.
+The visualization assigns colors based on unique object indices information, in other words, all objects in the time-series 
+with the same unique index will be assigned the same color.
+The information can be achieved from `inst_ts_linking.ti`.
+The visualization results are saved in the provided directory `savedir`.
 ```python
-max_delta_t = 3
-inst_ts_linking.update_ti(delta_t=max_delta_t)
+## Load all original images and put them into a list in the correct order here (same order as masks)
+# imgs = 
+
+## Get a list of timepoints (usually from the file names of original images)
+# timepoints = 
+
+# specify the directory to save visualization
+visualdir = "./results/visualization"
+inst_ts_linking.visualize(imgs=imgs, masks=masks, tps=timepoints, savedir=visualdir, ti=inst_ts_linking.ti, color_all=None)
+```
+Note: `visualize` is a static method of class `InstanceTimeSeriesLinking`. In other words, it can be called without initialization 
+of a class object, as long as all required parameters as passed in. See example below. If `ti` is not provided, the color 
+assignment is based on local indices.
+```python
+## Load all segmentation masks and put them into a list in the correct order here
+# masks = 
+
+## Load all original images and put them into a list in the correct order here (same order as masks)
+# imgs = 
+
+## Get a list of timepoints (usually from the file names of original images)
+# timepoints = 
+
+# specify the directory to save visualization
+visualdir = "./results/visualization"
+
+tsl.InstanceTimeSeriesLinking.visualize(imgs=imgs, masks=masks, tps=timepoints, savedir=visualdir)
 ```
 
-Alternatively, the time-series linking can be done with ```update=True```
+In some cases, objects disappear in one or several timepoints and re-appear. To lower the rate of assigning new indices
+(false positive) to those objects, updating the time-series tracking is also possible by indicating the expected maximum 
+time gap of disappearance `max_gap`. By default `max_gap=5`. A larger number of `max_gap` is not recommended. 
+
 ```python
-inst_ts_linking(images=images, masks=masks, timepoints=timepoints, logic=logic, thres=thres, name_sub=name_sub, update=True, max_delta_t=3)
+nax_gap = 3
+inst_ts_linking.update_ti(max_gap=nax_gap)
 ```
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/time_series/time_series_linking.py)
 
 <!--
 You will get two sets of results: those end with "_old" are results before updating; others are final results.
@@ -246,6 +298,6 @@ All the analysis for the results are same to what described above.
 -->
 
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/time_series/time_series.py)
+
 
 
