@@ -95,25 +95,11 @@ def confusion(ti, ti_gt):
         confu_ = np.append(confu_, new_col, 1)
         life = life + [0 for n in range(delta_N)]
 
-    # delta matrix of lift and life_gt
-    # delta_life = -np.ones((N,max(N_,N)),dtype=int)
-    # for i in range(0,N):
-    #     delta_life[i,:] = abs(np.int64(life_gt[i])-life)
-
-    # linear assignment based on delta_life: find most probable corresponding based on life
-    # row_i, col_i = linear_sum_assignment(delta_life)
-
-    # linear assignment based on confusion matrix: find those with largest values in confusion matrix
     row_i, col_i = linear_sum_assignment(confu_, maximize=True)
 
     match = [confu_[i, j] for (i, j) in zip(row_i, col_i)]  # "diagonal"
     rate = [match_t / time_i for (match_t, time_i) in zip(match, life_gt)]
 
-    # # always make the same length of num_gt
-    # if N_ < N:
-    #     for i in range(N_-N):
-    #         match.append(0)
-    #         rate.append(0)
     score = sum(rate) / N
 
     return N, N_, confu, match, rate, score
