@@ -376,7 +376,8 @@ def _find_closest_pt(pt, pts):
     :return: index of the closest point and the coordinates of that point
     """
     if pt in pts:
-        return pts.index(pt)
+        idx = pts.index(pt)
+        return idx, pt
     dists =	distance.cdist([pt], pts, 'euclidean')
     idx = np.argmin(dists)
     return idx, pts[idx]
