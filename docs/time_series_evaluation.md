@@ -1,12 +1,13 @@
-## Evaluation of time-series linking result
+## Evaluation of time-series tracking result
 
-This set of functions are designed to evaluate the time-series leaf tracking result by comparing to the ground-truth.
+This set of functions are designed to evaluate the time-series tracking result by comparing to the time-series ground-truth.
 
-To start, get familiar with some notations and definitions:
+First, get familiar with some notations and definitions:
 
-**T**: total time
+**T**: total time (length of the time-series)
 
 **N**: total number of unique leaves in ground truth
+- *note*: in python indices start with 0 so the maximum unique index is N-1.
 
 **n<sub>t</sub>**: number of leaves at time t
 
@@ -22,7 +23,7 @@ To start, get familiar with some notations and definitions:
 
 **N'**: total number of (unique) leaves in leaf tracking result
 
-- *note: N=N' not necessary holds.*
+- *note*: N=N' does not necessary hold.
 
 **li'**: link info in tracking result
 
