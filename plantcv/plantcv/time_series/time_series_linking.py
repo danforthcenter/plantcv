@@ -22,9 +22,6 @@ from scipy.optimize import linear_sum_assignment
 from scipy.spatial import distance
 import csv
 from plantcv.plantcv.visualize import display_instances
-# import sys
-# sys.path.append('/shares/mgehan_share/hsheng/projects/test_plantcv/visualize_display_instances')
-# from visualize_display_instances import display_instances
 
 
 class InstanceTimeSeriesLinking(object):
@@ -91,7 +88,8 @@ class InstanceTimeSeriesLinking(object):
         n1     = the number of instances in 1st set of binary masks
         n2     = the number of instances in 2nd set of binary masks
         ious   = inversection over union between any pairs of instances in masks1 and masks2
-        ioss   = inversection over self-area (areas of instances in 1st set of masks) between any pairs of instances in masks1 and masks2
+        iofs   = inversection over first timepoint area (areas of instances in 1st set of masks) between any pairs of
+        instances in masks1 and masks2
         unions = unions between any pairs of instances in masks1 and masks2
 
         :param masks1: (numpy.ndarray of shape: [Height, Width, n1]) , where n1 is the number of instances
@@ -100,12 +98,12 @@ class InstanceTimeSeriesLinking(object):
         :return n1: int
         :return n2: int
         :return ious: numpy.ndarray of shape: [n1, n2]
-        :return ioss: numpy.ndarray of shape: [n1, n2]
+        :return iofs: numpy.ndarray of shape: [n1, n2]
         :return unions: numpy.ndarray of shape: [n1, n2]
         """
 
-        if not (metric.upper() == "IOU" or metric.upper() == "IOS"):
-            fatal_error("Currently only calculating metrics 'IOU' and 'IOS' are available!")
+        if not (metric.upper() == "IOU" or metric.upper() == "IOF"):
+            fatal_error("Currently only calculating metrics 'IOU' and 'IOF' are available!")
 
         # If either set of masks is empty return an empty result
         # if masks1.shape[-1] == 0 or masks2.shape[-1] == 0:
@@ -119,7 +117,7 @@ class InstanceTimeSeriesLinking(object):
         n2 = masks2.shape[2]
         intersections = np.zeros((n1, n2))
         unions = np.zeros((n1, n2))
-        ioss = np.zeros((n1, n2))
+        iofs = np.zeros((n1, n2))
         for idx_m in range(0, n1):
             maski = np.expand_dims(masks1[:, :, idx_m], axis=2)
             masks_ = np.reshape(masks2 > .5, (-1, masks2.shape[-1])).astype(np.float32)
@@ -128,12 +126,12 @@ class InstanceTimeSeriesLinking(object):
             intersections[idx_m, :] = intersection
             union = np.sum(masks_, 0) + np.sum(maski_) - intersection
             unions[idx_m, :] = union
-            ioss[idx_m, :] = intersection / maski_.sum()
+            iofs[idx_m, :] = intersection / maski_.sum()
         ious = np.divide(intersections, unions)
         if metric.upper() == "IOU":
             return ious, n1, n2, unions
         else:
-            return ioss, n1, n2, unions
+            return iofs, n1, n2, unions
 
 
     # @staticmethod
@@ -346,7 +344,7 @@ class InstanceTimeSeriesLinking(object):
         self.link_info[t0] = self.get_link(self.weights[t0], self.thres)
 
 
-    def link(self, masks, metric="IOS", thres=0.2):
+    def link(self, masks, metric="IOU", thres=0.2):
         # a list of masks which are ndarrays (of the same length of images)
         self.masks = masks
         self.T = len(masks)
