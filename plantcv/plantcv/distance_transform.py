@@ -32,7 +32,7 @@ def distance_transform(bin_img, distance_type, mask_size):
     norm_image = cv2.normalize(src=dist, dst=dist, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
 
     _debug(visual=norm_image,
-           filename=os.path.join(params.debug, str(params.device) + '_distance_transform.png'),
+           filename=os.path.join(params.debug_outdir, str(params.device) + '_distance_transform.png'),
            cmap='gray')
 
     return norm_image
