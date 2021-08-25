@@ -1530,12 +1530,6 @@ def test_plantcv_apply_mask_white():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.apply_mask(img=img, mask=mask, mask_color="white")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.apply_mask(img=img, mask=mask, mask_color="white")
     # Test with debug = None
     pcv.params.debug = None
     masked_img = pcv.apply_mask(img=img, mask=mask, mask_color="white")
@@ -1550,12 +1544,6 @@ def test_plantcv_apply_mask_black():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.apply_mask(img=img, mask=mask, mask_color="black")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.apply_mask(img=img, mask=mask, mask_color="black")
     # Test with debug = None
     pcv.params.debug = None
     masked_img = pcv.apply_mask(img=img, mask=mask, mask_color="black")
@@ -1573,11 +1561,8 @@ def test_plantcv_apply_mask_hyperspectral():
 
     img = np.ones((2056, 2454))
     img_stacked = cv2.merge((img, img, img, img))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.apply_mask(img=img_stacked, mask=img, mask_color="black")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
+    # Test with debug = none
+    pcv.params.debug = None
     masked_array = pcv.apply_mask(img=hyper_array.array_data, mask=img, mask_color="black")
     assert np.mean(masked_array) == 13.97111260224949
 
