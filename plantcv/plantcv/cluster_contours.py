@@ -7,7 +7,6 @@ from plantcv.plantcv import params
 
 
 def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1, show_grid=False):
-
     """
     This function take a image with multiple contours and clusters them based on user input of rows and columns
 
@@ -137,8 +136,10 @@ def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1, show_g
                 cv2.line(img_copy, (0, y), (ix, y), (255, 0, 0), params.line_thickness)
             for x in cbreaks:
                 cv2.line(img_copy, (x, 0), (x, iy), (255, 0, 0), params.line_thickness)
+    else:
+        img_copy = img  # for _debug
 
-        _debug(visual=img_copy,
-               filename=os.path.join(params.debug_outdir, str(params.device) + '_clusters.png'))
+    _debug(visual=img_copy,  # keep this outside if statement to avoid additional test
+           filename=os.path.join(params.debug_outdir, str(params.device) + '_clusters.png'))
 
     return grouped_contour_indexes, contours, roi_obj_hierarchy

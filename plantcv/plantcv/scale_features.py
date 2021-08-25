@@ -65,10 +65,12 @@ def scale_features(obj, mask, points, line_position):
     blx_scaled = float(blx - xmin) / float(xmax - xmin)
     bly_scaled = float(bly - ymin) / float(ymax - ymin)
     boundary_line_scaled = (blx_scaled, bly_scaled)
+
+    # Make a decent size blank image regardless of debug
+    scaled_img = np.zeros((1500, 1500, 3), np.uint8)
+
     # If debug is 'True' plot an image of the scaled points on a black background
     if params.debug is not None:
-        # Make a decent size blank image
-        scaled_img = np.zeros((1500, 1500, 3), np.uint8)
         plotter = np.array(rescaled)
         # Multiple the values between 0 - 1.0 by 1000 so you can plot on the black image
         plotter = plotter * 1000
@@ -83,8 +85,12 @@ def scale_features(obj, mask, points, line_position):
                    (0, 255, 0), -1)
         # Because the coordinates inc as you go down and right on the img you need to flip the object around the x-axis
         flipped_scaled = cv2.flip(scaled_img, 0)
-        _debug(visual=flipped_scaled,
-               filename=os.path.join(params.debug_outdir, str(params.device) + '_feature_scaled.png'))
+    else:
+        flipped_scaled = scaled_img  # for _debug
+
+    # keep outside if statement to avoid new tests
+    _debug(visual=flipped_scaled,
+           filename=os.path.join(params.debug_outdir, str(params.device) + '_feature_scaled.png'))
 
     # Return the transformed points
     return rescaled, centroid_scaled, boundary_line_scaled
