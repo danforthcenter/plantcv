@@ -53,7 +53,7 @@ def white_balance(img, mode='hist', roi=None):
 
     ori_img = np.copy(img)
 
-    if mode != 'hist' or mode != 'max':
+    if mode != 'hist' and mode != 'max':
         fatal_error('Mode must be either "hist" or "max" but ' + mode + ' was input.')
 
     if roi is not None:
