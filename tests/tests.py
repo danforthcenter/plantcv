@@ -2715,7 +2715,7 @@ def test_plantcv_readimage_bad_file():
                                           ["variablenumbergradients", 'GB'],
                                           ["variablenumbergradients", 'RG'],
                                           ["variablenumbergradients", 'GR']])
-def test_plantcv_readbayer_default_bg(alg, pattern):
+def test_plantcv_readbayer(alg, pattern):
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_readbayer_default_bg")
     os.mkdir(cache_dir)
@@ -2725,6 +2725,13 @@ def test_plantcv_readbayer_default_bg(alg, pattern):
     img, path, img_name = pcv.readbayer(filename=os.path.join(TEST_DATA, TEST_INPUT_BAYER),
                                         bayerpattern=pattern, alg=alg)
     assert all([i == j] for i, j in zip(np.shape(img), (335, 400, 3)))
+
+
+def test_plantcv_readbayer_default_bad_input():
+    # Test with debug = None
+    pcv.params.debug = None
+    with pytest.raises(RuntimeError):
+        _, _, _ = pcv.readbayer(filename=os.path.join(TEST_DATA, "no-image.png"), bayerpattern="GR", alg="default")
 
 
 def test_plantcv_rectangle_mask():
