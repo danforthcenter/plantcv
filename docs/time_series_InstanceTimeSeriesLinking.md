@@ -45,7 +45,7 @@ Note: when comparing instances from two timepoints, we are comparing n1 masks fr
 
 
 ```python
-from plantcv.plantcv import time_series_linking as tsl
+from plantcv.plantcv.time_series  import time_series_linking as tsl
 ## Load all segmentation masks and put them into a list in the correct order here
 # masks = 
 
