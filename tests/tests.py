@@ -3048,9 +3048,11 @@ def test_plantcv_scale_features():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR), encoding="latin1")
     obj_contour = contours_npz['arr_0']
+    # test with debug = 'plot' to cover plotting logic
+    pcv.params.debug = 'plot'
+    _ = pcv.scale_features(obj=obj_contour, mask=mask, points=TEST_ACUTE_RESULT, line_position='NA')
     # Test with debug = None
     pcv.params.debug = None
-    _ = pcv.scale_features(obj=obj_contour, mask=mask, points=TEST_ACUTE_RESULT, line_position='NA')
     points_rescaled, centroid_rescaled, bottomline_rescaled = pcv.scale_features(obj=obj_contour, mask=mask,
                                                                                  points=TEST_ACUTE_RESULT,
                                                                                  line_position=50)
