@@ -1716,9 +1716,11 @@ def test_plantcv_cluster_contours():
     hierarchy = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_HIERARCHY), encoding="latin1")
     objs = [roi_objects[arr_n] for arr_n in roi_objects]
     obj_hierarchy = hierarchy['arr_0']
+    # Test with debug = 'plot' to cover plotting logic
+    pcv.params.debug = 'plot'
+    _ = pcv.cluster_contours(img=img1, roi_objects=objs, roi_obj_hierarchy=obj_hierarchy, show_grid=True)
     # Test with debug = None
     pcv.params.debug = None
-    _ = pcv.cluster_contours(img=img1, roi_objects=objs, roi_obj_hierarchy=obj_hierarchy, show_grid=True)
     clusters_i, contours, hierarchy = pcv.cluster_contours(img=img1, roi_objects=objs, roi_obj_hierarchy=obj_hierarchy,
                                                            nrow=4, ncol=6)
     lenori = len(objs)
@@ -1737,6 +1739,9 @@ def test_plantcv_cluster_contours_grayscale_input():
     hierachy = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_HIERARCHY), encoding="latin1")
     objs = [roi_objects[arr_n] for arr_n in roi_objects]
     obj_hierarchy = hierachy['arr_0']
+    # Test with debug = 'plot' to cover plotting logic
+    pcv.params.debug = 'plot'
+    _ = pcv.cluster_contours(img=img1, roi_objects=objs, roi_obj_hierarchy=obj_hierarchy, show_grid=True)
     # Test with debug = None
     pcv.params.debug = None
     clusters_i, contours, hierachy = pcv.cluster_contours(img=img1, roi_objects=objs, roi_obj_hierarchy=obj_hierarchy,
