@@ -53,6 +53,9 @@ def white_balance(img, mode='hist', roi=None):
 
     ori_img = np.copy(img)
 
+    if mode != 'hist' or mode != 'max':
+        fatal_error('Mode must be either "hist" or "max" but ' + mode + ' was input.')
+
     if roi is not None:
         roiint = all(isinstance(item, (list, int)) for item in roi)
 
@@ -102,8 +105,6 @@ def white_balance(img, mode='hist', roi=None):
             channel1 = _max(c1, hmax, mask, x, y, h, w, data_type)
             channel2 = _max(c2, hmax, mask, x, y, h, w, data_type)
             channel3 = _max(c3, hmax, mask, x, y, h, w, data_type)
-        else:
-            fatal_error('Mode must be either "hist" or "max" but ' + mode + ' was input.')
 
         finalcorrected = np.dstack((channel1, channel2, channel3))
 
