@@ -143,6 +143,7 @@ nav:
         - 'Saturation Threshold': saturation_threshold.md
         - 'Triangle Auto Threshold': triangle_threshold.md
         - 'Texture Threshold': texture_threshold.md
+      - 'Time Series': time_series.md
       - 'Transformation Methods':
           - 'Auto-Detect Color Card': find_color_card.md
           - 'Create Color Card Mask': create_color_card_mask.md
@@ -171,6 +172,7 @@ nav:
           - 'Object Size ECDF': visualize_obj_size_ecdf.md
           - 'Object Sizes': visualize_obj_sizes.md
           - 'Pseudocolor': visualize_pseudocolor.md
+          - 'Time Lapse Video': visualize_time_lapse_video.md
       - 'Watershed Segmentation': watershed.md
       - 'White balance': white_balance.md
       - 'Within Frame': within_frame.md

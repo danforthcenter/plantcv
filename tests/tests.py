@@ -21,6 +21,9 @@ import matplotlib.pyplot as plt
 import dask
 from dask.distributed import Client
 import pickle as pkl
+import glob
+import re
+import skimage.io
 from skimage import img_as_ubyte
 
 
@@ -1127,6 +1130,10 @@ def psii_cropreporter(var):
                       )
     return(da)
 
+
+TIME_SERIES_TEST_DIR          = os.path.join(os.path.dirname(os.path.abspath(__file__)), "time_seires_data")
+TIME_SERIES_TEST_RAW          = os.path.join(TIME_SERIES_TEST_DIR, "raw_im")
+TIME_SERIES_TEST_INSTANCE_SEG = os.path.join(TIME_SERIES_TEST_DIR, "inst_seg")
 
 # ##########################
 # Tests for the main package
@@ -5008,6 +5015,7 @@ def test_plantcv_hyperspectral_analyze_index_outside_range_warning():
         pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, min_bin=.5, max_bin=.55, label="i")
     out = f.getvalue()
     # assert os.listdir(cache_dir) is 0
+
     assert out[0:10] == 'WARNING!!!'
 
 
@@ -6706,7 +6714,6 @@ def test_plantcv_visualize_colorspaces():
     vis_img = pcv.visualize.colorspaces(rgb_img=img)
     assert np.shape(vis_img)[1] > (np.shape(img)[1]) and np.shape(vis_img_small)[1] > (np.shape(img)[1])
 
-
 def test_plantcv_visualize_colorspaces_bad_input():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_plot_hist")
@@ -6716,6 +6723,183 @@ def test_plantcv_visualize_colorspaces_bad_input():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     with pytest.raises(RuntimeError):
         _ = pcv.visualize.colorspaces(rgb_img=img)
+
+
+# #####################################
+# Tests for the time_series subpackage
+# #####################################
+
+def test_plantcv_time_series_inst_ts_linking(tmpdir):
+    cache_dir = tmpdir.mkdir("sub")
+    pcv.params.debug_outdir = cache_dir
+
+    path_img = TIME_SERIES_TEST_RAW
+    path_segmentation = TIME_SERIES_TEST_INSTANCE_SEG
+
+    ext_img = "_crop-img12.jpg"
+    ext_seg = ".pkl"
+    savename = "link_series"
+    pattern_datetime = "\d{4}-\d{2}-\d{2}-\d{2}-\d{2}"  # YYYY-MM-DD-hh
+
+    list_seg = glob.glob(os.path.join(path_segmentation, "2*{}".format(ext_seg)))
+    timepoints = []
+    for f_seg in list_seg:
+        tp_temp = re.search(pattern_datetime, f_seg).group()
+        timepoints.append(tp_temp)
+    timepoints.sort()
+
+    # Load original images
+    images = []
+    temp_imgs = []
+    sz = []
+
+    for tp in timepoints:
+        filename_ = "*_{}{}".format(tp, ext_img)
+        filename = glob.glob(os.path.join(path_img, filename_))[0]
+
+        junk_ = skimage.io.imread(filename)
+        junk = junk_
+        if len(junk_.shape) == 2:
+            junk = cv2.cvtColor(junk_, cv2.COLOR_GRAY2BGR)
+        temp_imgs.append(junk)
+        sz.append(np.min(junk.shape[0:2]))
+    min_dim = np.min(sz)
+    for junk in temp_imgs:
+        img = junk[0: min_dim, 0:min_dim, :]  # make all images the same size
+        images.append(img)
+    # load instance segmentation results (masks)
+    masks = []
+    for tp in timepoints:
+        filename_ = "*{}{}".format(tp, ext_seg)
+        filename = glob.glob(os.path.join(path_segmentation, filename_))[0]
+        r = pkl.load(open(filename, 'rb'))
+        masks.append(r['masks'][0: min_dim, 0:min_dim, :])  # make all masks the same size
+
+    inst_ts_linking = pcv.time_series.InstanceTimeSeriesLinking()
+    inst_ts_linking.link(masks, metric="IOU", thres=0.05)
+    inst_ts_linking.save_linked_series(cache_dir, savename)
+
+    vis_dir = os.path.join(cache_dir, "vis")
+    os.makedirs(vis_dir)
+    colors_ = pcv.color_palette(inst_ts_linking.N)
+    colors = [tuple([ci / 255 for ci in c]) for c in colors_]
+    n_insts = inst_ts_linking.n_insts[0:3]
+    ti = inst_ts_linking.ti[0:3]
+    color_all = [[tuple() for _ in range(0, num)] for num in n_insts]
+    for (t, ti_t) in enumerate(ti):
+        for (uid, cid) in enumerate(ti_t):
+            if cid > -1:
+                color_all[t][cid] = colors[uid]
+
+    pcv.time_series.InstanceTimeSeriesLinking.visualize(images[0:3], masks[0:3], timepoints[0:3], vis_dir, ti, color_all)
+    # an extra test for visualize without "color_all", with "ti"
+    vis_dir2 = os.path.join(vis_dir, "extra")
+    pcv.time_series.InstanceTimeSeriesLinking.visualize(images[0:3], masks[0:3], timepoints[0:3], vis_dir2, ti, color_all=None)
+    assert inst_ts_linking.ti.shape[0] == len(timepoints) and os.path.isfile(os.path.join(cache_dir, f"{savename}.pkl")) \
+           and inst_ts_linking.ti_old is None and len(os.listdir(vis_dir)) > 0 and len(os.listdir(vis_dir2)) > 0
+
+def test_plantcv_time_series_inst_ts_linking_import_update(tmpdir):
+    cache_dir = tmpdir.mkdir("sub")
+    pcv.params.debug_outdir = cache_dir
+
+    inst_ts_linking = pcv.time_series.InstanceTimeSeriesLinking()
+    path_save = TIME_SERIES_TEST_DIR
+    name_save = "link_series"
+    inst_ts_linking.import_linked_series(path_save, savename=name_save)
+    inst_ts_linking.update_ti(max_gap=3)
+    assert (inst_ts_linking.ti is not None) and (inst_ts_linking.ti_old is not None) and (inst_ts_linking.tracking_report_old is not None)
+
+def test_plantcv_time_series_inst_ts_linking_compute_overlap(tmpdir):
+    # test for the static method "compute_overlap_weights"
+    # metric = IOS (not tested when testing the class)
+    seg_name1 = os.path.join(TIME_SERIES_TEST_INSTANCE_SEG, "2019-10-21-21-05.pkl")
+    # seg_name2 = os.path.join(TIME_SERIES_TEST_INSTANCE_SEG, "2019-10-22-11-05.pkl")
+    masks1 = pkl.load(open(seg_name1, 'rb'))['masks']
+    # masks2 = pkl.load(open(seg_name2, 'rb'))['masks']
+    ioss, n1, n2, unions = pcv.time_series.InstanceTimeSeriesLinking.compute_overlaps_weights(masks1[:,:,0], masks1[:,:,1], "IOF")
+    assert ioss.shape == (n1,n2) and (n1==n2) and (n1==1)
+
+
+def test_plantcv_time_series_inst_ts_linking_compute_overlap_bad_metric(tmpdir):
+    # test for the static method "compute_overlap_weights", bad metric
+    with pytest.raises(RuntimeError):
+        _ = pcv.time_series.InstanceTimeSeriesLinking.compute_overlaps_weights(np.ones((5,5)), np.zeros((5,5)), "")
+
+
+def test_plantcv_time_series_inst_ts_linking_visualize(tmpdir):
+    # test for the static method "visualize"
+    cache_dir = tmpdir.mkdir("sub")
+    pcv.params.debug_outdir = cache_dir
+    path_img = TIME_SERIES_TEST_RAW
+    path_segmentation = TIME_SERIES_TEST_INSTANCE_SEG
+    temp_imgs, imgs, masks = [], [], []
+    tps = ["2019-10-21-21-05", "2019-10-22-11-05"]
+    sz = []
+    for tp in tps:
+        filename_ = f"*_{tp}_crop-img12.jpg"
+        filename = glob.glob(os.path.join(path_img, filename_))[0]
+
+        junk_ = skimage.io.imread(filename)
+        junk = junk_
+        if len(junk_.shape) == 2:
+            junk = cv2.cvtColor(junk_, cv2.COLOR_GRAY2BGR)
+        temp_imgs.append(junk)
+        sz.append(np.min(junk.shape[0:2]))
+    min_dim = np.min(sz)
+    for junk in temp_imgs:
+        img = junk[0: min_dim, 0:min_dim, :]  # make all images the same size
+        imgs.append(img)
+    for tp in tps:
+        filename_ = f"*{tp}.pkl"
+        filename = glob.glob(os.path.join(path_segmentation, filename_))[0]
+        r = pkl.load(open(filename, 'rb'))
+        masks.append(r['masks'][0: min_dim, 0:min_dim, :])  # make all masks the same size
+    pcv.time_series.InstanceTimeSeriesLinking.visualize(imgs, masks, tps, cache_dir)
+    assert len(os.listdir(cache_dir)) > 0
+
+
+def test_plantcv_time_series_inst_ts_linking_get_li_from_ti(tmpdir):
+    # test for the static method "get_li_from_ti"
+    ti_gt = pkl.load(open(os.path.join(TIME_SERIES_TEST_DIR, "gt.pkl"), "rb"))["ti_gt"]
+    li_gt = pcv.time_series.InstanceTimeSeriesLinking.get_li_from_ti(ti_gt)
+    assert len(li_gt) == (ti_gt.shape[0]-1)
+
+
+def test_plantcv_time_series_evaluation():
+    loaded17    = pkl.load(open(os.path.join(TIME_SERIES_TEST_DIR,"result_N_17.pkl"),'rb'))
+    loaded18    = pkl.load(open(os.path.join(TIME_SERIES_TEST_DIR, "result_N_18.pkl"), 'rb'))
+    loaded20 = pkl.load(open(os.path.join(TIME_SERIES_TEST_DIR, "result_N_20.pkl"), 'rb'))
+    loaded_gt = pkl.load(open(os.path.join(TIME_SERIES_TEST_DIR,"gt.pkl"),'rb'))
+    li17 = loaded17['li']
+    ti17 = loaded17['ti']
+    li18 = loaded18['li']
+    ti18 = loaded18['ti']
+    li20 = loaded20['li']
+    ti20 = loaded20['ti']
+    li_gt = loaded_gt['li_gt']
+    ti_gt = loaded_gt['ti_gt']
+
+    scores = pcv.time_series.get_scores(li18, ti18, li_gt, ti_gt)
+    assert len(li18) == ti18.shape[0]-1 and len(li_gt) == ti_gt.shape[0]-1 and ti18.shape[1] == scores['N_'] and ti_gt.shape[1] == scores['N']
+
+    scores = pcv.time_series.get_scores(li20, ti20, li_gt, ti_gt)
+    assert len(li20) == ti20.shape[0]-1 and len(li_gt) == ti_gt.shape[0]-1 and ti20.shape[1] == scores['N_'] and ti_gt.shape[1] == scores['N']
+
+    scores = pcv.time_series.get_scores(li17, ti17, li_gt, ti_gt)
+    assert len(li17) == ti17.shape[0] - 1 and len(li_gt) == ti_gt.shape[0] - 1 and ti17.shape[1] == scores['N_'] and ti_gt.shape[1] == scores['N']
+
+    # 1st fatal_error in evaluate_link
+    with pytest.raises(RuntimeError):
+        pcv.time_series.evaluate_link(li18[0:-1], li_gt)
+
+    with pytest.raises(RuntimeError):
+        pcv.time_series.evaluate_link(li18[1:], li_gt)
+
+    # 2nd fatal_error in evaluate_link
+    li18_ = li18
+    li18_[0] = np.delete(li18[0],2)
+    with pytest.raises(RuntimeError):
+        pcv.time_series.evaluate_link(li18_, li_gt)
 
 
 def test_plantcv_visualize_overlay_two_imgs():

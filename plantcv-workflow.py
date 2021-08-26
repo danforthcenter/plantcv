@@ -26,6 +26,103 @@ def options():
         ValueError: if a metadata field is not supported.
     """
 
+    # These are metadata types that PlantCV deals with.
+    # Values are default values in the event the metadata is missing
+    valid_meta = {
+        # Camera settings
+        "camera": {
+            "label": "camera identifier",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "imgtype": {
+            "label": "image type",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "zoom": {
+            "label": "camera zoom setting",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "exposure": {
+            "label": "camera exposure setting",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "gain": {
+            "label": "camera gain setting",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "frame": {
+            "label": "image series frame identifier",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "lifter": {
+            "label": "imaging platform height setting",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        # Date-Time
+        "timestamp": {
+            "label": "datetime of image",
+            "datatype": "<class 'datetime.datetime'>",
+            "value": None
+        },
+        # Sample attributes
+        "id": {
+            "label": "image identifier",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "plantbarcode": {
+            "label": "plant barcode identifier",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "treatment": {
+            "label": "treatment identifier",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "cartag": {
+            "label": "plant carrier identifier",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        # Experiment attributes
+        "measurementlabel": {
+            "label": "experiment identifier",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        # Device identifier
+        "ip": {
+            "label": "ip address of device",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        # Location
+        "location":{
+            "label": "location",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        # Other
+        "other": {
+            "label": "other identifier",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        # Unique Leaf Identifier
+        "uid_leaf":{
+            "label": "unique leaf identifier",
+            "datatype": "<class 'int'>",
+            "value": None
+        }
+    }
     parser = argparse.ArgumentParser(description='Parallel imaging processing with PlantCV.')
     config_grp = parser.add_argument_group('CONFIG')
     config_grp.add_argument("--config", required=False,
