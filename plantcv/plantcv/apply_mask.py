@@ -53,14 +53,9 @@ def apply_mask(img, mask, mask_color):
                                 rescale(array_data[:, :, num_bands - 1])))
         params.debug = debug
 
-        if params.debug == 'print':
-            print_image(pseudo_rgb, os.path.join(params.debug_outdir, str(params.device) + '_masked.png'))
-        elif params.debug == 'plot':
-            plot_image(pseudo_rgb)
+        _debug(visual=pseudo_rgb, filename=os.path.join(params.debug_outdir, str(params.device) + "_masked.png"))
+
     else:
-        if params.debug == 'print':
-            print_image(array_data, os.path.join(params.debug_outdir, str(params.device) + '_masked.png'))
-        elif params.debug == 'plot':
-            plot_image(array_data)
+        _debug(visual=array_data, filename=os.path.join(params.debug_outdir, str(params.device) + "_masked.png"))
 
     return array_data
