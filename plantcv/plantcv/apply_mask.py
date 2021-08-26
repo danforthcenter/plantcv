@@ -4,10 +4,9 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv import params
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv.transform import rescale
+from plantcv.plantcv._debug import _debug
 
 
 def apply_mask(img, mask, mask_color):
