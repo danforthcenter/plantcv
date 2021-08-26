@@ -6816,7 +6816,7 @@ def test_plantcv_time_series_inst_ts_linking_compute_overlap(tmpdir):
     # seg_name2 = os.path.join(TIME_SERIES_TEST_INSTANCE_SEG, "2019-10-22-11-05.pkl")
     masks1 = pkl.load(open(seg_name1, 'rb'))['masks']
     # masks2 = pkl.load(open(seg_name2, 'rb'))['masks']
-    ioss, n1, n2, unions = pcv.time_series.InstanceTimeSeriesLinking.compute_overlaps_weights(masks1[:,:,0], masks1[:,:,1], "IOS")
+    ioss, n1, n2, unions = pcv.time_series.InstanceTimeSeriesLinking.compute_overlaps_weights(masks1[:,:,0], masks1[:,:,1], "IOF")
     assert ioss.shape == (n1,n2) and (n1==n2) and (n1==1)
 
 
