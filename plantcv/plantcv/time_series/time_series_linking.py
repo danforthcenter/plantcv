@@ -53,6 +53,7 @@ class InstanceTimeSeriesLinking(object):
     @staticmethod
     def get_link(weight, thres):
         """Get the link (coordinates) between two sets of instances based on pre-calculated weight matrix
+        Called by static method "_update_ti", class methods "link_t", "link_dist_t".
         Inputs:
         weight = weight matrix, the smaller the weight, the more possible two will be linked
         thres = minimum weight value for two instances to be considered as the same one
@@ -78,6 +79,7 @@ class InstanceTimeSeriesLinking(object):
     @staticmethod
     def compute_overlaps_weights(masks1, masks2, metric):
         """
+        Called by class method "link_t" and static method "_update_ti"
         Compute weights between 2 sets of binary masks based on their overlaps
         The overlaps are represented by either IoU (intersection over union) and IoS (intersection over self-area of the 1st mask).
         Inputs:
@@ -148,6 +150,7 @@ class InstanceTimeSeriesLinking(object):
     @staticmethod
     def get_sorted_uids(link_info, n_insts):
         """
+        Called by class methods "link" and "link_dist"
         Get unique indices at every timestamp based on link information and number of instances at every timepoint
         Inputs:
         link_info = a list (length: T-1) of linking information, every sub-list contains the information of how every instance link to instances to the next timepoint
@@ -185,6 +188,7 @@ class InstanceTimeSeriesLinking(object):
     @staticmethod
     def get_uids_from_ti(ti):
         """
+        Called by static method "_update_ti".
         Get unique indices at every timestamp based on tracking information
         :param ti: numpy.array
         :return uids_sort: list
@@ -203,6 +207,7 @@ class InstanceTimeSeriesLinking(object):
     @staticmethod
     def get_emerg_disap_info(uids):
         """
+        Called by static methods "get_ti" and "_update_ti".
         Get emergence and disappearence indices and corresponding timepoints based on uids
         Inputs:
         uids = unique indices present at evert timepoint
@@ -230,6 +235,7 @@ class InstanceTimeSeriesLinking(object):
     @staticmethod
     def get_ti(uids, link_info, n_insts):
         """
+        Called by class methods "link" and "link_dist"
         Get tracking information from linking information, number of instances, and unique indices at every timepoint
         :param uids: list
         :param link_info: list
@@ -282,6 +288,9 @@ class InstanceTimeSeriesLinking(object):
 
     @staticmethod
     def area_tracking_report(ti, masks):
+        """
+        Called by class methods "link" and "update_ti".
+        """
         tracking_report = np.zeros(ti.shape)
         for (t, masks_t) in enumerate(masks):
             ti_t = ti[t, :]
@@ -334,13 +343,13 @@ class InstanceTimeSeriesLinking(object):
 
     def link_t(self,t0):
         """
+        Called by class method "link"
         Time-series linking for a given timepoint to the next time point
         :param t0:
         :return:
         """
         masks0, masks1 = copy.deepcopy(self.masks[t0]), copy.deepcopy(self.masks[t0 + 1])  # both masks0 and masks1 are ndarrays
         self.weights[t0], _, _, _ = self.compute_overlaps_weights(masks0, masks1, self.metric)
-        # self.link_info[t0], _, _ = self.get_link(self.weights[t0], self.thres)
         self.link_info[t0] = self.get_link(self.weights[t0], self.thres)
 
 
@@ -363,10 +372,6 @@ class InstanceTimeSeriesLinking(object):
         for t0 in range(0, self.T - 1):
             self.link_t(t0)
 
-        # self.ti, self.t_appear, self.t_disappear = self.get_ti(self.T, self.N, self.n_insts, self.uids, self.link_info)
-        # self.uids, uids_sort, _, self.N = self.get_uid(self.ti)
-        # self.emergence, self.emerge_times = self.get_emerg_disap_info(uids_sort)
-
         self.uids, self.max_uid, self.N = InstanceTimeSeriesLinking.get_sorted_uids(self.link_info, self.n_insts)
         self.ti = self.get_ti(self.uids, self.link_info, self.n_insts)
         self.tracking_report = InstanceTimeSeriesLinking.area_tracking_report(self.ti, self.masks)
@@ -374,12 +379,17 @@ class InstanceTimeSeriesLinking(object):
 
     @staticmethod
     def compute_dist_weights(pts1, pts2):
+        """
+        Called by class method "link_dist_t"
+        """
         n1, n2 = len(pts1), len(pts2)
         weight = distance.cdist(pts1, pts2)
         return weight, n1, n2
 
-
     def link_dist_t(self,t0):
+        """
+        Called by class method "link_dist"
+        """
         tips0, tips1 = copy.deepcopy(self.tips[t0]), copy.deepcopy(self.tips[t0 + 1])  # both masks0 and masks1 are ndarrays
         weights, _, _ = self.compute_dist_weights(tips0, tips1)
         self.weights[t0] = -weights
@@ -407,6 +417,8 @@ class InstanceTimeSeriesLinking(object):
 
     @staticmethod
     def _update_ti(masks, metric, thres, ti, min_gap, max_gap):
+        """ Called by class method "update_ti"
+        """
         ti_ = copy.deepcopy(ti)
         T, N = ti.shape
         uids_sort = InstanceTimeSeriesLinking.get_uids_from_ti(ti)
@@ -443,7 +455,6 @@ class InstanceTimeSeriesLinking(object):
 
                         # calculate weight to calculate the link
                         weights, n1, n2, _ = InstanceTimeSeriesLinking.compute_overlaps_weights(masks_t, masks_t_, metric)
-                        # li_ts, _, _ = InstanceTimeSeriesLinking.get_link(weights, self.thres)
                         li_ts = InstanceTimeSeriesLinking.get_link(weights, thres)
 
                         uids_undisap = []
@@ -475,7 +486,6 @@ class InstanceTimeSeriesLinking(object):
         return ti_
 
 
-    # def update_ti(self, ti, max_gap=5):
     def update_ti(self, max_gap=5):
         # self.ti_old = ti
         self.ti_old = self.ti
@@ -493,21 +503,3 @@ class InstanceTimeSeriesLinking(object):
                 # update tracking_report
                 self.tracking_report = InstanceTimeSeriesLinking.area_tracking_report(self.ti, self.masks)
                 break
-
-
-    # def __call__(self, images, masks, timepoints, metric="IOS", thres=0.2, name_sub="instance", update=False, max_delta_t=2):
-    #     # a list of images which are ndarrays
-    #     self.images = images
-    #     # a list of masks which are ndarrays (of the same length of images)
-    #     self.masks = masks
-    #     # a list of timepoints (of the same length of images)
-    #     self.timepoints = timepoints
-    #     self.T = len(self.timepoints)
-    #     self.name_sub = name_sub
-    #     self.key_id = '{}_ids'.format(name_sub)
-    #     # number of instances: a list in which every element represent for number of instances in corresponding image
-    #     self.n_insts = []
-    #     for i in range(0, len(self.masks)):
-    #         self.n_insts.append(self.masks[i].shape[2])
-    #     if update:
-    #         self.update_ti(max_delta_t)
