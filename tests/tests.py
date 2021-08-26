@@ -580,7 +580,7 @@ def test_plantcv_parallel_workflowconfig_subdaily_timestampformat():
         }
     }
 
-    
+
 def test_plantcv_parallel_check_date_range_wrongdateformat():
     start_date = 10
     end_date = 10
@@ -1548,19 +1548,10 @@ def test_plantcv_analyze_thermal_values():
     assert thermal_hist is not None and pcv.outputs.observations['default']['median_temp']['value'] == 33.20922
 
 def test_plantcv_apply_mask_white():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_apply_mask_white")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.apply_mask(img=img, mask=mask, mask_color="white")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.apply_mask(img=img, mask=mask, mask_color="white")
+
     # Test with debug = None
     pcv.params.debug = None
     masked_img = pcv.apply_mask(img=img, mask=mask, mask_color="white")
@@ -1568,19 +1559,10 @@ def test_plantcv_apply_mask_white():
 
 
 def test_plantcv_apply_mask_black():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_apply_mask_black")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.apply_mask(img=img, mask=mask, mask_color="black")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.apply_mask(img=img, mask=mask, mask_color="black")
+
     # Test with debug = None
     pcv.params.debug = None
     masked_img = pcv.apply_mask(img=img, mask=mask, mask_color="black")
@@ -1588,21 +1570,15 @@ def test_plantcv_apply_mask_black():
 
 
 def test_plantcv_apply_mask_hyperspectral():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_apply_mask_hyperspectral")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     # Read in test data
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     hyper_array = pcv.hyperspectral.read_data(filename=spectral_filename)
 
     img = np.ones((2056, 2454))
     img_stacked = cv2.merge((img, img, img, img))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.apply_mask(img=img_stacked, mask=img, mask_color="black")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
+
+    # Test with debug = None
+    pcv.params.debug = None
     masked_array = pcv.apply_mask(img=hyper_array.array_data, mask=img, mask_color="black")
     assert np.mean(masked_array) == 13.97111260224949
 
@@ -1612,7 +1588,8 @@ def test_plantcv_apply_mask_bad_input():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     with pytest.raises(RuntimeError):
-        pcv.params.debug = "plot"
+        # pcv.params.debug = "plot"
+        pcv.params.debug = None
         _ = pcv.apply_mask(img=img, mask=mask, mask_color="wite")
 
 
