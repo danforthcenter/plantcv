@@ -4,6 +4,7 @@ import numpy as np
 import cv2 as cv
 from scipy import ndimage as ndi
 from skimage.segmentation import watershed
+from skimage.color import label2rgb
 #from skimage.measure import label
 
 from plantcv import plantcv as pcv
@@ -14,14 +15,14 @@ from plantcv.plantcv._debug import _debug
 
 
 # to change for colorize_label_img once it's merged
-def _labels2rgb(labels, n_labels, rgb_values):
-
-    h,w = labels.shape
-    rgb_img = np.zeros((h,w,3), dtype=np.uint8)
-    for l in range(n_labels):
-        rgb_img[labels == l+1] = rgb_values[l]
-
-    return rgb_img
+# def _labels2rgb(labels, n_labels, rgb_values):
+#
+#     h,w = labels.shape
+#     rgb_img = np.zeros((h,w,3), dtype=np.uint8)
+#     for l in range(n_labels):
+#         rgb_img[labels == l+1] = rgb_values[l]
+#
+#     return rgb_img
 
 
 def segment_image_series(imgs_paths, masks_paths, rois, save_labels=True, ksize=3):
@@ -102,9 +103,10 @@ def segment_image_series(imgs_paths, masks_paths, rois, save_labels=True, ksize=
 
 
         # Create images for plotting and printing (debug mode)
-        rgb_seg = _labels2rgb(out_labels[:,:,n], n_labels, rgb_values)
+        # rgb_seg = _labels2rgb(out_labels[:,:,n], n_labels, rgb_values)
         #vis_seg = cv.addWeighted(img_n_rgb, 0.7, rgb_seg, 0.3, 0.0)
-        vis_seg = pcv.visualize.overlay_two_imgs(img1=img_n_rgb, img2=rgb_seg, alpha=0.3)
+        # vis_seg = pcv.visualize.overlay_two_imgs(img1=img_n_rgb, img2=rgb_seg, alpha=0.3)
+        vis_seg = label2rgb(out_labels[:,:,n], image=img_n_rgb, colors=None, alpha=0.3, bg_label=0)
         params.debug = debug
         _debug(visual=vis_seg, filename=os.path.join(params.debug_outdir,
                                 f"{str(params.device)}_{image_names[n][:-4]}_WSeg.png"))
