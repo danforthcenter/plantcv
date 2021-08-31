@@ -383,7 +383,7 @@ def _find_closest_pt(pt, pts):
     return idx, pts[idx]
 
 
-class custom_interactive(object):
+class CustomROI(object):
     """
     Draw polygon
     """
