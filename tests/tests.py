@@ -580,7 +580,7 @@ def test_plantcv_parallel_workflowconfig_subdaily_timestampformat():
         }
     }
 
-    
+
 def test_plantcv_parallel_check_date_range_wrongdateformat():
     start_date = 10
     end_date = 10
@@ -1038,6 +1038,7 @@ TEST_FOREGROUND = "TEST_FOREGROUND.jpg"
 TEST_BACKGROUND = "TEST_BACKGROUND.jpg"
 TEST_INPUT_COLOR_CLUSTER_FIRST="VIS_SV_180_z1_h1_g0_e82_285379_masked.png"
 TEST_INPUT_COLOR_CLUSTER_SECOND="VIS_SV_270_z1_h1_g0_e82_282151-masked.png"
+TEST_4_PIXELS="4_Pixels.png"
 TEST_PDFS = "naive_bayes_pdfs.txt"
 TEST_PDFS_BAD = "naive_bayes_pdfs_bad.txt"
 TEST_VIS_SMALL = "setaria_small_vis.png"
@@ -3792,8 +3793,9 @@ def test_plantcv_gmm_classifier_use_model():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR_CLUSTER_FIRST), -1)
     pcv.params.debug = "print"
     _,spmask = pcv.color_clustering_segmentation(img=img, project_name=os.path.join(TEST_DATA, "temp_testing_multi"))
+    pcv.params.debug = "plot"
+    _,spmask = pcv.color_clustering_segmentation(img=img, project_name=os.path.join(TEST_DATA, "temp_testing_multi"))
     assert len(spmask)==4
-
 
 def test_plantcv_kmeans_classifier_use_model():
     # Test cache directory
@@ -3802,6 +3804,8 @@ def test_plantcv_kmeans_classifier_use_model():
     pcv.params.debug_outdir = cache_dir
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR_CLUSTER_FIRST), -1)
     pcv.params.debug = "print"
+    _,spmask = pcv.color_clustering_segmentation(img=img, algorithm="Kmeans", project_name=os.path.join(TEST_DATA, "temp_testing_multi"))
+    pcv.params.debug = "plot"
     _,spmask = pcv.color_clustering_segmentation(img=img, algorithm="Kmeans", project_name=os.path.join(TEST_DATA, "temp_testing_multi"))
     assert len(spmask)==4
 
@@ -3814,7 +3818,23 @@ def test_plantcv_gmm_classifier_use_model_mask_alias():
     alias_file = os.path.join(TEST_DATA, "temp_testing_multi_alias_file.txt")
     pcv.params.debug = "plot"
     _,spmask = pcv.color_clustering_segmentation(img=img, project_name=os.path.join(TEST_DATA, "temp_testing_multi"), alias_file=alias_file)
+    pcv.params.debug = "print"
+    _,spmask = pcv.color_clustering_segmentation(img=img, project_name=os.path.join(TEST_DATA, "temp_testing_multi"), alias_file=alias_file)
     assert ("test_submask" in spmask) == True
+
+def test_plantcv_gmm_classifier_use_model_remove_grays():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_gmm_classifier_use_alias")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR_CLUSTER_FIRST), -1)
+    alias_file = os.path.join(TEST_DATA, "temp_testing_multi_alias_file.txt")
+    pcv.params.debug = "print"
+    _,spmask = pcv.color_clustering_segmentation(img=img, project_name=os.path.join(TEST_DATA, "temp_testing_remove_grays"))
+    pcv.params.debug = "plot"
+    _,spmask = pcv.color_clustering_segmentation(img=img, project_name=os.path.join(TEST_DATA, "temp_testing_remove_grays"))
+    assert len(spmask)==4
+
 
 
 # ##############################
@@ -3870,6 +3890,105 @@ def test_plantcv_learn_gmm_train_model_exists():
     plantcv.learn.color_clustering_train(img=img, remove=[[255, 255, 255]], project_name="tbd")
     assert os.path.exists(os.path.join(cache_dir,"tbd_Gaussian_Model.mdl"))
 
+def test_plantcv_learn_gmm_train_model_exists_remove_grays():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_learn_color_clustering_train")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR_CLUSTER_FIRST), -1)
+    pcv.params.debug = "print"
+    plantcv.learn.color_clustering_train(img=img, project_name="tbd_removed_grays", remove_grays=True)
+    pcv.params.debug = "plot"
+    plantcv.learn.color_clustering_train(img=img, project_name="tbd_removed_grays", remove_grays=True)
+    assert os.path.exists(os.path.join(cache_dir,"tbd_removed_grays_Gaussian_Model.mdl"))
+
+
+def test_plantcv_learn_gmm_train_model_exists_50_least():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_learn_color_clustering_train")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR_CLUSTER_FIRST), -1)
+    pcv.params.debug = "print"
+    plantcv.learn.color_clustering_train(img=img, project_name="tbd_fifty_least", remove_grays=True, sample_pixels="50 least", sample_pixel_file="Tbd_50_least_alias_file.txt")
+    pcv.params.debug = "plot"
+    plantcv.learn.color_clustering_train(img=img, project_name="tbd_fifty_least", remove_grays=True, sample_pixels="50 least", sample_pixel_file="Tbd_50_least_alias_file.txt")
+    assert os.path.exists(os.path.join(cache_dir,"Tbd_50_least_alias_file.txt"))
+
+def test_plantcv_learn_gmm_train_model_exists_50_most():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_learn_color_clustering_train")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR_CLUSTER_FIRST), -1)
+    pcv.params.debug = "print"
+    plantcv.learn.color_clustering_train(img=img, project_name="tbd_most_least", remove_grays=True, sample_pixels="50 most", sample_pixel_file="Tbd_50_most_alias_file.txt")
+    pcv.params.debug = "plot"
+    plantcv.learn.color_clustering_train(img=img, project_name="tbd_most_least", remove_grays=True, sample_pixels="50 most", sample_pixel_file="Tbd_50_most_alias_file.txt")
+    assert os.path.exists(os.path.join(cache_dir,"Tbd_50_most_alias_file.txt"))
+
+def test_plantcv_learn_gmm_train_model_exists_50_random():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_learn_color_clustering_train")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR_CLUSTER_FIRST), -1)
+    pcv.params.debug = "print"
+    plantcv.learn.color_clustering_train(img=img, project_name="tbd_random_least", remove_grays=True, sample_pixels="50 random", sample_pixel_file="Tbd_50_random_alias_file.txt")
+    pcv.params.debug = "plot"
+    plantcv.learn.color_clustering_train(img=img, project_name="tbd_random_least", remove_grays=True, sample_pixels="50 random", sample_pixel_file="Tbd_50_random_alias_file.txt")
+    assert os.path.exists(os.path.join(cache_dir,"Tbd_50_random_alias_file.txt"))
+
+def test_plantcv_learn_gmm_train_index_error():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_learn_color_clustering_train")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_4_PIXELS), -1)
+    pcv.params.debug = "print"
+    plantcv.learn.color_clustering_train(img=img, project_name="tbd_index_error", remove_grays=True, sample_pixels="50 random", sample_pixel_file="Tbd_50_index_error_alias_file.txt")
+    pcv.params.debug = "plot"
+    plantcv.learn.color_clustering_train(img=img, project_name="tbd_index_error", remove_grays=True, sample_pixels="50 random", sample_pixel_file="Tbd_50_index_error_alias_file.txt")
+    assert os.path.exists(os.path.join(cache_dir,"Tbd_50_index_error_alias_file.txt"))
+
+def test_plantcv_learn_gmm_train_index_bad_input_for_sample_name():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_learn_color_clustering_train")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_4_PIXELS), -1)
+    with pytest.raises(TypeError):
+        pcv.params.debug = "print"
+        plantcv.learn.color_clustering_train(img=img, project_name="nil_bad_input", remove_grays=True, sample_pixels="chimera ants", sample_pixel_file="Tbd_chimera_ants.txt")
+        pcv.params.debug = "plot"
+        plantcv.learn.color_clustering_train(img=img, project_name="nil_bad_input", remove_grays=True, sample_pixels="chimera ants", sample_pixel_file="Tbd_chimera_ants.txt")
+
+def test_plantcv_learn_gmm_train_index_bad_input_for_means():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_learn_color_clustering_train")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_4_PIXELS), -1)
+    with pytest.raises(TypeError):
+        pcv.params.debug = "print"
+        plantcv.learn.color_clustering_train(img=img, project_name="nil_bad_mean_input", remove_grays=True, sample_pixels="10 means", sample_pixel_file="Tbd_10_means.txt")
+        pcv.params.debug = "plot"
+        plantcv.learn.color_clustering_train(img=img, project_name="nil_bad_mean_input", remove_grays=True, sample_pixels="10 means", sample_pixel_file="Tbd_10_means.txt")
+
+
+def test_plantcv_learn_gmm_train_index_bad_input_for_least():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_learn_color_clustering_train")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_4_PIXELS), -1)
+    with pytest.raises(TypeError):
+        pcv.params.debug = "print"
+        plantcv.learn.color_clustering_train(img=img, project_name="nil_bad_least", remove_grays=True, sample_pixels="least", sample_pixel_file="Tbd_least.txt")
+        pcv.params.debug = "plot"
+        plantcv.learn.color_clustering_train(img=img, project_name="nil_bad_least", remove_grays=True, sample_pixels="least", sample_pixel_file="Tbd_least.txt")
+
+
 def test_plantcv_learn_gmm_train_alias_file_exists():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_learn_color_clustering_train")
@@ -3881,6 +4000,18 @@ def test_plantcv_learn_gmm_train_alias_file_exists():
     pcv.params.debug = "plot"
     plantcv.learn.color_clustering_train(img=img, remove=[[255, 255, 255]], project_name="tbd",  sample_pixels=50, sample_pixel_file="Tbd_alias_file.txt")
     assert os.path.exists(os.path.join(cache_dir, "Tbd_alias_file.txt"))
+
+def test_plantcv_learn_gmm_train_means_alias_file_exists():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_learn_color_clustering_train")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR_CLUSTER_FIRST), -1)
+    pcv.params.debug = "print"
+    plantcv.learn.color_clustering_train(img=img, remove=[[255,255,255]], project_name="tbd", sample_pixels="means", sample_pixel_file="Tbd_means_alias_file.txt")
+    pcv.params.debug = "plot"
+    plantcv.learn.color_clustering_train(img=img, remove=[[255, 255, 255]], project_name="tbd",  sample_pixels="means", sample_pixel_file="Tbd_means_alias_file.txt")
+    assert os.path.exists(os.path.join(cache_dir, "Tbd_means_alias_file.txt"))
 
 
 def test_plantcv_learn_kmeans_train_model_exists():

@@ -1,0 +1,2 @@
+Submask_0	Submask_1	Submask_2	Submask_3
+36,48,20	145,133,79	79,88,34	145,107,64

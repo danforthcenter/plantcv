@@ -5,7 +5,7 @@ import numpy as np
 from plantcv.plantcv import params
 from sklearn import mixture
 from sklearn.cluster import MiniBatchKMeans
-import operator, random
+import operator, random, math
 import pickle
 
 def color_clustering_train(img, remove=[], num_components=4, project_name="PlantCV", algorithm="Gaussian", remove_grays=False, sample_pixels=0, sample_pixel_file="alias_file.txt"):
@@ -26,6 +26,31 @@ def color_clustering_train(img, remove=[], num_components=4, project_name="Plant
        :param algorithm: str
 
     """
+    #####Check to make sure right values are entered#####
+    if not algorithm in("Gaussian", "Kmeans"):
+        raise KeyError("Invalid value for Algorithm parameter.  Please choose either 'Gaussian' or 'Kmeans'")
+
+    if not type(sample_pixel_file)==str:
+        raise TypeError("sample_pixel_part should be a string.  This is the file name to which the sampled pixel should be written")
+
+    if type(sample_pixels)==str:
+        if "means" in sample_pixels.lower():
+            try:
+                numbers=[int(s) for s in sample_pixels.split() if s.isdigit()][0]
+                raise TypeError("'means' should be used without numbers.  Each binary mask has only one value for the mean")
+            except IndexError:
+                pass
+
+        elif "least" in sample_pixels.lower() or "most" in sample_pixels.lower() or "random" in sample_pixels.lower():
+            try:
+                numbers=[int(s) for s in sample_pixels.split() if s.isdigit()][0]
+            except IndexError:
+                raise TypeError("'random', 'least', and 'most' should be used with an integer value.")
+        else:
+            raise TypeError("Either 'random', 'least', 'most', 'means', or an integer value should be passed to the 'sample_pixel' parameter.")
+    #####################################################
+
+
 
     chosen_algorithm={"Gaussian":mixture.GaussianMixture(n_components=num_components),
                 "Kmeans":MiniBatchKMeans(n_clusters=num_components)}
@@ -161,11 +186,13 @@ def color_clustering_train(img, remove=[], num_components=4, project_name="Plant
             if type(sample_pixels)==str:
 
                 if sample_pixels.lower()=="means":
-                    means= {"Gaussian":gmm.means_,
-                            "Kmeans":gmm.cluster_centers_}
-                    centers=means[algorithm]
+                    if algorithm=="Gaussian":
+                        centers=gmm.means_
+                    elif algorithm=="Kmeans":
+                         center=gmm.cluster_centers_
+
                     for line in range(num_components):
-                        listofcolors[line].append(tuple((centers[line][2],centers[line][1],centers[line][0])))
+                        listofcolors[line].append(tuple((math.ceil(centers[line][2]),math.ceil(centers[line][1]),math.ceil(centers[line][0]))))
 
                 elif "most" in sample_pixels.lower() or "least" in sample_pixels.lower():
                     alreadydone=[]
@@ -182,7 +209,7 @@ def color_clustering_train(img, remove=[], num_components=4, project_name="Plant
                             formattedline=formattedline.lstrip("[")
                             formattedline=formattedline.rstrip("]")
                             formattedline=[int(s) for s in formattedline.split() if s.isdigit()]
-                            count=np.count_nonzero(np.all(img==[formattedline[0],formattedline[1],formattedline[2]],axis=2))
+                            count=np.count_nonzero(np.all(remain_zipped==[formattedline[0],formattedline[1],formattedline[2]],axis=1))
                             countofcolors[colormap[line]][tuple((formattedline[2],formattedline[1],formattedline[0]))]=count
 
                     for x in range(num_components):
@@ -208,6 +235,9 @@ def color_clustering_train(img, remove=[], num_components=4, project_name="Plant
                     formattedline=[int(s) for s in formattedline.split() if s.isdigit()]
                     listofcolors[colormap[line]].append(tuple((formattedline[2],formattedline[1],formattedline[0])))
 
+            if sample_pixels=="means":
+                sample_pixels=1
+
             for x in range(sample_pixels):
                 for y in range(num_components):
                     x1=random.choice(range(len(listofcolors[y])))
@@ -228,8 +258,3 @@ def color_clustering_train(img, remove=[], num_components=4, project_name="Plant
                         else:
                             filetowrite.write("\n")
                 #filetowrite.write("\n")
-
-
-
-
-
