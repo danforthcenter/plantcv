@@ -3835,6 +3835,18 @@ def test_plantcv_gmm_classifier_use_model_remove_grays():
     _,spmask = pcv.color_clustering_segmentation(img=img, project_name=os.path.join(TEST_DATA, "temp_testing_remove_grays"))
     assert len(spmask)==4
 
+def test_plantcv_gmm_classifier_use_model_remove():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_gmm_classifier_use_alias")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR_CLUSTER_FIRST), -1)
+    pcv.params.debug = "print"
+    _,spmask = pcv.color_clustering_segmentation(img=img, project_name=os.path.join(TEST_DATA, "removed_255"))
+    pcv.params.debug = "plot"
+    _,spmask = pcv.color_clustering_segmentation(img=img, project_name=os.path.join(TEST_DATA, "removed_255"))
+    assert len(spmask)==4
+
 
 
 # ##############################
@@ -3946,9 +3958,9 @@ def test_plantcv_learn_gmm_train_index_error():
     pcv.params.debug_outdir = cache_dir
     img = cv2.imread(os.path.join(TEST_DATA, TEST_4_PIXELS), -1)
     pcv.params.debug = "print"
-    plantcv.learn.color_clustering_train(img=img, project_name="tbd_index_error", remove_grays=True, sample_pixels="50 random", sample_pixel_file="Tbd_50_index_error_alias_file.txt")
+    plantcv.learn.color_clustering_train(img=img, project_name="tbd_index_error", remove_grays=True, num_components=3, sample_pixels="50 random", sample_pixel_file="Tbd_50_index_error_alias_file.txt")
     pcv.params.debug = "plot"
-    plantcv.learn.color_clustering_train(img=img, project_name="tbd_index_error", remove_grays=True, sample_pixels="50 random", sample_pixel_file="Tbd_50_index_error_alias_file.txt")
+    plantcv.learn.color_clustering_train(img=img, project_name="tbd_index_error", remove_grays=True, num_components=3, sample_pixels="50 random", sample_pixel_file="Tbd_50_index_error_alias_file.txt")
     assert os.path.exists(os.path.join(cache_dir,"Tbd_50_index_error_alias_file.txt"))
 
 def test_plantcv_learn_gmm_train_index_bad_input_for_sample_name():
@@ -4012,6 +4024,32 @@ def test_plantcv_learn_gmm_train_means_alias_file_exists():
     pcv.params.debug = "plot"
     plantcv.learn.color_clustering_train(img=img, remove=[[255, 255, 255]], project_name="tbd",  sample_pixels="means", sample_pixel_file="Tbd_means_alias_file.txt")
     assert os.path.exists(os.path.join(cache_dir, "Tbd_means_alias_file.txt"))
+
+
+def test_plantcv_learn_gmm_train_kmeans_means_alias_file_exists():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_learn_color_clustering_train")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR_CLUSTER_FIRST), -1)
+    pcv.params.debug = "print"
+    plantcv.learn.color_clustering_train(img=img, remove=[[255,255,255]], algorithm="Kmeans", project_name="tbd", sample_pixels="means", sample_pixel_file="Tbd_kmeans_means_alias_file.txt")
+    pcv.params.debug = "plot"
+    plantcv.learn.color_clustering_train(img=img, remove=[[255, 255, 255]], project_name="tbd", algorithm="Kmeans", sample_pixels="means", sample_pixel_file="Tbd_kmeans_means_alias_file.txt")
+    assert os.path.exists(os.path.join(cache_dir, "Tbd_kmeans_means_alias_file.txt"))
+
+
+def test_plantcv_learn_gmm_train_sample_pixel_badinput():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_learn_color_clustering_train")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR_CLUSTER_FIRST), -1)
+    with pytest.raises(TypeError):
+        pcv.params.debug = "print"
+        plantcv.learn.color_clustering_train(img=img, remove=[[255,255,255]], algorithm="Kmeans", project_name="tbd", sample_pixels="means", sample_pixel_file=100000)
+        pcv.params.debug = "plot"
+        plantcv.learn.color_clustering_train(img=img, remove=[[255, 255, 255]], project_name="tbd", algorithm="Kmeans", sample_pixels="means", sample_pixel_file=100000)
 
 
 def test_plantcv_learn_kmeans_train_model_exists():

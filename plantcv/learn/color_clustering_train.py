@@ -189,7 +189,7 @@ def color_clustering_train(img, remove=[], num_components=4, project_name="Plant
                     if algorithm=="Gaussian":
                         centers=gmm.means_
                     elif algorithm=="Kmeans":
-                         center=gmm.cluster_centers_
+                         centers=gmm.cluster_centers_
 
                     for line in range(num_components):
                         listofcolors[line].append(tuple((math.ceil(centers[line][2]),math.ceil(centers[line][1]),math.ceil(centers[line][0]))))
