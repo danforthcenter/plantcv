@@ -3957,10 +3957,11 @@ def test_plantcv_learn_gmm_train_index_error():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     img = cv2.imread(os.path.join(TEST_DATA, TEST_4_PIXELS), -1)
-    pcv.params.debug = "print"
-    plantcv.learn.color_clustering_train(img=img, project_name="tbd_index_error", remove_grays=True, num_components=3, sample_pixels="50 random", sample_pixel_file="Tbd_50_index_error_alias_file.txt")
-    pcv.params.debug = "plot"
-    plantcv.learn.color_clustering_train(img=img, project_name="tbd_index_error", remove_grays=True, num_components=3, sample_pixels="50 random", sample_pixel_file="Tbd_50_index_error_alias_file.txt")
+    with pytest.raises(IndexError):
+        pcv.params.debug = "print"
+        plantcv.learn.color_clustering_train(img=img, project_name="tbd_index_error", remove_grays=True, num_components=3, sample_pixels="50 least", sample_pixel_file="Tbd_50_index_error_alias_file.txt")
+        pcv.params.debug = "plot"
+        plantcv.learn.color_clustering_train(img=img, project_name="tbd_index_error", remove_grays=True, num_components=3, sample_pixels="50 least", sample_pixel_file="Tbd_50_index_error_alias_file.txt")
     assert os.path.exists(os.path.join(cache_dir,"Tbd_50_index_error_alias_file.txt"))
 
 def test_plantcv_learn_gmm_train_index_bad_input_for_sample_name():
@@ -4078,6 +4079,20 @@ def test_plantcv_learn_gmm_train_model_multi_img():
     pcv.params.debug = "plot"
     plantcv.learn.color_clustering_train(img=vis, remove=[[255, 255, 255]], num_components=6, project_name="tbd_multi")
     assert os.path.exists(os.path.join(cache_dir, "tbd_multi_Gaussian_Model.mdl"))
+
+def test_plantcv_learn_gmm_train_model_multi_img_remove_grayss():
+    # Test cache directory
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_learn_color_clustering_train")
+    os.mkdir(cache_dir)
+    pcv.params.debug_outdir = cache_dir
+    first=(os.path.join(TEST_DATA, TEST_INPUT_COLOR_CLUSTER_FIRST))
+    second=(os.path.join(TEST_DATA, TEST_INPUT_COLOR_CLUSTER_SECOND))
+    vis=first+","+second
+    pcv.params.debug = "print"
+    plantcv.learn.color_clustering_train(img=vis, remove_grays=True, num_components=6, project_name="tbd_multi_remove_grays")
+    pcv.params.debug = "plot"
+    plantcv.learn.color_clustering_train(img=vis, remove_grays=True, num_components=6, project_name="tbd_multi_remove_grays")
+    assert os.path.exists(os.path.join(cache_dir, "tbd_multi_remove_grays_Gaussian_Model.mdl"))
 
 
 # ####################################
