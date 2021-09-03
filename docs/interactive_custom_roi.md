@@ -20,12 +20,23 @@ the plotted image.
 ```python
 from plantcv import plantcv as pcv
 
-# 
+# Create an instance of the Custom ROI class 
+marker = pcv.roi.CustomROI(img=img, figsize=(12,6))
+
+# Click on the plotted image to collect coordinates 
+
+# Use the identified coordinates to create a custom polygon ROI 
+roi_contour, roi_hierarchy = pcv.roi.custom(img=img, vertices = marker.points)
 
 ```
 
 **Selecting Coordinates**
 
 ![screen-gif](img/documentation_images/interactive_roi/custom_roi.gif)
+
+**Resulting ROI**
+
+![Screenshot](img/documentation_images/interactive_roi/custom_roi.jpg)
+
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/roi/roi_methods.py)
