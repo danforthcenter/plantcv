@@ -650,6 +650,11 @@ pages for more details on the input and output variable types.
 * post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.circle**(*x, y, r, img*)
 * post v3.2: roi_contour, roi_hierarchy = **plantcv.roi.circle**(*img, x, y, r*)
 
+#### plantcv.roi.CustomRoi
+
+* pre v4.0: NA
+* post v4.0: marker = **plantcv.roi.CustomRoi**(*img, figsize=(6,12)*)
+
 #### plantcv.roi.ellipse
 
 * pre v3.0dev1: NA
