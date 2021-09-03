@@ -24,8 +24,8 @@ from plantcv import plantcv as pcv
 
 ```
 
-**Combined image**
+**Selecting Coordinates**
 
-![Screenshot](img/documentation_images/interactive/joined.jpg)
+![screen-gif](img/documentation_images/interactive_roi/custom_roi.gif)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/roi/roi_methods.py)
