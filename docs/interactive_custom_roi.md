@@ -3,7 +3,7 @@
 Using [Jupyter Notebooks](jupyter.md) it is possible to interactively collect coordinates for the [`pcv.roi.custom`](roi_custom.md) function by clicking on
 the plotted image.   
 
-**plantcv.CustomROI**(*img, figsize=(12, 6)*)
+**plantcv.roi.CustomROI**(*img, figsize=(12, 6)*)
 
 **returns** interactive image class
 
