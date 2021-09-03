@@ -124,6 +124,7 @@ nav:
         - 'Create an Elliptical ROI': roi_ellipse.md
         - 'Create a Rectangular ROI': roi_rectangle.md
         - 'Create a Custom ROI': roi_custom.md
+          - 'Interactive ROI': interactive_custom_roi.md
         - 'Create ROI from Binary Image': roi_from_binary_image.md
         - 'Create Multi ROIs': 'roi_multi.md'
         - 'Filter Objects by ROI': roi_objects.md
