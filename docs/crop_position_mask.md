@@ -1,4 +1,4 @@
-## Crop and position Mask
+## Crop and Position Mask
 
 Takes a binary mask and positions it on another image. 
 
@@ -19,7 +19,7 @@ Takes a binary mask and positions it on another image.
       The function will also resize the mask so it is the same size as the target image.
    
 - **Example use:**
- - [Use in VIS/NIR Tutorial](vis_nir_tutorial.md)
+ - [Use in VIS/NIR Tutorial](tutorials/vis_nir_tutorial.md)
 
 **Original image**
 
@@ -39,7 +39,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Image not positioned (no adustment)
-cropped1 = pcv.crop_position_mask(img, mask, 0, 0, "top", "right")
+cropped1 = pcv.crop_position_mask(img=img, mask=mask, x=0, y=0, v_pos="top", h_pos="right")
 
 ```
 
@@ -49,14 +49,9 @@ cropped1 = pcv.crop_position_mask(img, mask, 0, 0, "top", "right")
 
 
 ```python
-from plantcv import plantcv as pcv
-
-# Set global debug behavior to None (default), "print" (to file), 
-# or "plot" (Jupyter Notebooks or X11)
-pcv.params.debug = "print"
 
 # Image positioned
-cropped1 = pcv.crop_position_mask(img, mask, 40, 3, "top", "right")
+cropped2 = pcv.crop_position_mask(img=img, mask=mask, x=40, y=3, v_pos="top", h_pos="right")
 
 ```
 

@@ -3,7 +3,7 @@
 Creates a binary image from a gray image based on the threshold values. 
 The object target can be specified as dark or light.
 
-**plantcv.threshold.binary(*gray_img, threshold, max_value, object_type="light"*)**
+**plantcv.threshold.binary**(*gray_img, threshold, max_value, object_type="light"*)
 
 **returns** thresholded/binary image
 
@@ -16,9 +16,9 @@ The object target can be specified as dark or light.
 - **Context:**
     - Used to help differentiate plant and background
 - **Example use:**
-    - [Use In VIS Tutorial](vis_tutorial.md)
-    - [Use In NIR Tutorial](nir_tutorial.md)
-    - [Use In PSII Tutorial](psII_tutorial.md)
+    - [Use In VIS Tutorial](tutorials/vis_tutorial.md)
+    - [Use In NIR Tutorial](tutorials/nir_tutorial.md)
+    - [Use In PSII Tutorial](tutorials/psII_tutorial.md)
     
 **Original image**
 
@@ -39,7 +39,7 @@ pcv.params.debug = "print"
 
 # Create binary image from a gray image based on threshold values, 
 # targeting light objects in the image.
-threshold_light = pcv.threshold.binary(gray_img, 36, 255, 'light')
+threshold_light = pcv.threshold.binary(gray_img=gray_img, threshold=36, max_value=255, object_type='light')
 
 ```
 
@@ -49,16 +49,9 @@ threshold_light = pcv.threshold.binary(gray_img, 36, 255, 'light')
 
 ```python
 
-from plantcv import plantcv as pcv
-
-# Set global debug behavior to None (default), "print" (to file), 
-# or "plot" (Jupyter Notebooks or X11)
-
-pcv.params.debug = "print"
-
 # Create binary image from a gray image based on threshold values, 
 # targeting dark objects in the image.
-threshold_dark = pcv.threshold.binary(gray_img, 36, 255, 'dark')
+threshold_dark = pcv.threshold.binary(gray_img=gray_img, threshold=36, max_value=255, object_type='dark')
 
 ```
 

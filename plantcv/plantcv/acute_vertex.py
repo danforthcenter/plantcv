@@ -10,7 +10,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def acute_vertex(img, obj, win, thresh, sep):
+def acute_vertex(img, obj, win, thresh, sep, label="default"):
     """acute_vertex: identify corners/acute angles of an object
 
     For each point in contour, get a point before (pre) and after (post) the point of interest,
@@ -23,6 +23,8 @@ def acute_vertex(img, obj, win, thresh, sep):
     thresh = an threshold to set for acuteness; keep points with an angle more acute than the threshold (a value of 15
              worked well for sample image)
     sep    = the number of contour points to search within for the most acute value
+    label  = optional label parameter, modifies the variable name of observations recorded
+
 
     Returns:
     acute_points = list of acute points
@@ -33,6 +35,7 @@ def acute_vertex(img, obj, win, thresh, sep):
     :param win: int
     :param thresh: int
     :param sep: int
+    :param label: str
     :return acute_points: ndarray
     :return img2: ndarray
     """
@@ -102,7 +105,7 @@ def acute_vertex(img, obj, win, thresh, sep):
         plot_image(img2)
 
     # Store into global measurements
-    outputs.add_observation(variable='tip_coordinates', trait='tip coordinates',
+    outputs.add_observation(sample=label, variable='tip_coordinates', trait='tip coordinates',
                             method='plantcv.plantcv.acute_vertex', scale='none', datatype=list,
                             value=acute_points, label='none')
 

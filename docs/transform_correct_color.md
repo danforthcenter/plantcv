@@ -11,14 +11,14 @@ It also outputs, corrected_img, but storage (print or plot) is determined by deb
  The following example uses a 24-color Colorchecker passport.
 
  - **Parameters:**
-    - target_img       = an RGB image with color chips visualized
-    - target_mask      = a grayscale image with color chips and background each represented with unique values
-    - source_img       = an RGB image with color chips visualized
-    - source_mask      = a grayscale image with color chips and background each represented as unique values
-    - output_directory = a file path to which the target_matrix, source_matrix, and transformation_matrix will be save as .npz files
+    - target_img       - an RGB image with color chips visualized
+    - target_mask      - a grayscale image with color chips and background each represented with unique values
+    - source_img       - an RGB image with color chips visualized
+    - source_mask      - a grayscale image with color chips and background each represented as unique values
+    - output_directory - a file path to which the target_matrix, source_matrix, and transformation_matrix will be save as .npz files
 
 
-To see an example of how to create a grayscale mask of color chips see [here](transform_color_correction_tutorial.md#creating-masks).
+To see an example of how to create a grayscale mask of color chips see [here](tutorials/transform_color_correction_tutorial.md#creating-masks).
 
 
 **Reference Images**
@@ -37,18 +37,22 @@ To see an example of how to create a grayscale mask of color chips see [here](tr
 from plantcv import plantcv as pcv
 import cv2
 
-target_img, targetpath, targetname = pcv.readimage("target_img.png")
-source_img, sourcepath, sourcename = pcv.readimage("source1_img.png")
+target_img, targetpath, targetname = pcv.readimage(filename="target_img.png")
+source_img, sourcepath, sourcename = pcv.readimage(filename="source1_img.png")
 
-target_mask, tmaskpath, tmaskname = pcv.readimage("mask_img.png")
-source_mask, smaskpath, smaskname = pcv.readimage("mask_img.png") # in this case, as our images share a zoom level and colorchecker placement, the same mask is used for both the target and the source.
+target_mask, tmaskpath, tmaskname = pcv.readimage(filename="mask_img.png")
+source_mask, smaskpath, smaskname = pcv.readimage(filename="mask_img.png") # in this case, as our images share a zoom level and colorchecker placement, the same mask is used for both the target and the source.
 
-output_directory = "."
+outdir = "."
 
 # Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = 'plot'
 
-target_matrix, source_matrix, transformation_matrix, corrected_img = pcv.transform.correct_color(target_img, target_mask, source_img, source_mask, output_directory)
+target_matrix, source_matrix, transformation_matrix, corrected_img = pcv.transform.correct_color(target_img=target_img, 
+                                                                                                 target_mask=t_mask, 
+                                                                                                 source_img=img, 
+                                                                                                 source_mask=mask, 
+                                                                                                 output_directory=outdir)
 
 ```
 

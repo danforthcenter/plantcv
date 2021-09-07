@@ -1,5 +1,8 @@
 ## Print Measurement Results 
 
+!!! warning
+    `plantcv.print_results` is deprecated and will be removed in a future version.
+
 An [Outputs](outputs.md) class has been added that automatically stores measurements collected by the following 
 functions:
 
@@ -38,7 +41,7 @@ print an output .json file for data analysis.
     - Print out a result file containing all measurements recorded by functions included in the workflow
       for each image processed.  
 - **Example use:**
-    - [Use In VIS Tutorial](vis_tutorial.md)  
+    - [Use In VIS Tutorial](tutorials/vis_tutorial.md)  
 
 ```python
 from plantcv import plantcv as pcv

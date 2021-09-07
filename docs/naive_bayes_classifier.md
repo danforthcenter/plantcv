@@ -18,7 +18,7 @@ labeled as plant (255) or background (0) if P(Pixel = plant) > P(Pixel = backgro
 - **Context:**
     - Used to help differentiate plant and background
 - **Example use:**
-    - [Use In Machine Learning Tutorial](machine_learning_tutorial.md)
+    - [Use In Machine Learning Tutorial](tutorials/machine_learning_tutorial.md)
     
 **Original image**
 

@@ -8,13 +8,13 @@ Rescales grayscale images to user input minimum and maximum values.
 
 - **Parameters:**
     - gray_img - Grayscale image to rescale
-    - min_value - New minimum value for range of interest. default = 0
-    - max_value - New maximum value for range of interest. default = 255
+    - min_value - New minimum value for range of interest. Default = 0
+    - max_value - New maximum value for range of interest. Default = 255
    
 - **Context:**
     - Rescales pixel values in grayscale images.
 - **Example use:**
-    - [Use In Thermal Tutorial](thermal_tutorial.md)
+    - [Use In Thermal Tutorial](tutorials/thermal_tutorial.md)
     
 **Input image**
 
@@ -29,7 +29,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Resize image
-scaled_img = pcv.transform.rescale(thermal_data, 0, 255)
+scaled_img = pcv.transform.rescale(gray_img=thermal_data, min_value=0, max_value=255)
 
 ```
 

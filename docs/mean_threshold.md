@@ -2,7 +2,7 @@
 
 Creates a binary image from a grayscale image using the mean adaptive thresholding method.
 
-**plantcv.threshold.mean(*gray_img, max_value, object_type="light"*)**
+**plantcv.threshold.mean**(*gray_img, max_value, object_type="light"*)
 
 **returns** thresholded/binary image
 
@@ -28,7 +28,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Create binary image from a gray image based 
-threshold_mean = pcv.threshold.mean(gray_img, 255, 'dark')
+threshold_mean = pcv.threshold.mean(gray_img=gray_img, max_value=255, object_type='dark')
 
 ```
 

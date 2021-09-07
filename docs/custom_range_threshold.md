@@ -15,7 +15,7 @@ The threshold color-spaces that can be used are grayscale, RGB, HSV, or LAB.
 - **Context:**
     - Used to help differentiate plant and background
 - **Example use:**
-    - [Use In NIR Tutorial](nir_tutorial.md)
+    - [Use In NIR Tutorial](tutorials/nir_tutorial.md)
 
 ```python
 
@@ -47,22 +47,14 @@ mask, masked_img = pcv.threshold.custom_range(img=img, lower_thresh=[10,10,10], 
 ![Screenshot](img/documentation_images/custom_range_threshold/rgb_mask.jpg)
 
 ```python
-
-from plantcv import plantcv as pcv
-
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
-
-pcv.params.debug = "print"
-
 # Read in the image
-
 img, path, filename = pcv.readimage(filename="hsv_example_img.jpg")
 
 # Create masked image from a color image based HSV color-space and threshold values. 
 # for lower and upper_thresh list as: thresh = [hue_thresh, saturation_thresh, value_thresh]
 
-
 mask, masked_img = pcv.threshold.custom_range(img=img, lower_thresh=[30,65,20], upper_thresh=[70,255,220], channel='HSV')
+
 ```
 
 **Original image (HSV Color-space)**
@@ -79,21 +71,13 @@ mask, masked_img = pcv.threshold.custom_range(img=img, lower_thresh=[30,65,20], 
 
 ```python
 
-from plantcv import plantcv as pcv
-
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
-
-pcv.params.debug = "print"
-
 # Read in the image
-
 img, path, filename = pcv.readimage(filename="lab_example_img.jpg")
 
 # Create masked image from a color image based LAB color-space and threshold values.
 # for lower and upper_thresh list as: thresh = [L_thresh, A_thresh, B_thresh]
-
- 
 mask, masked_img = pcv.threshold.custom_range(img=img, lower_thresh=[0,0,158], upper_thresh=[255,255,255], channel='LAB')
+
 ```
 
 **Original image (LAB Color-space)**
@@ -111,20 +95,13 @@ mask, masked_img = pcv.threshold.custom_range(img=img, lower_thresh=[0,0,158], u
 
 ```python
 
-from plantcv import plantcv as pcv
-
-# Set global debug behavior to None (default), "print" (to file), or "plot" (Jupyter Notebooks or X11)
-
-pcv.params.debug = "print"
-
 # Read in the image
-
 gray_img, path, filename = pcv.readimage(filename="gray_example_img.jpg")
 
 # Create masked image based grayscale color-space and threshold values. 
 # Note that a grayscale image is used. pcv.threshold.custom_range works with both RGB and gray input images. 
-
 mask, masked_img = pcv.threshold.custom_range(img=gray_img, lower_thresh=[39], upper_thresh=[100], channel='gray')
+
 ```
 
 **Original image (Grayscale Color-space)**

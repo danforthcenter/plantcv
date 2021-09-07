@@ -2,8 +2,7 @@
 
 This is a filtering method used to identify and highlight gradient edges/features using the 1st derivative.
        Typically used to identify gradients along the x-axis (dx = 1, dy = 0) and y-axis (dx = 0, dy = 1) independently.
-       Performance is quite similar to [Sobel filter](sobel_filter.md). Used to detect edges / changes in pixel intensity. ddepth = -1
-       specifies that the dimensions of output image will be the same as the input image.
+       Performance is quite similar to [Sobel filter](sobel_filter.md). Used to detect edges and/or changes in pixel intensity. 
 
 **plantcv.scharr_filter**(*img, dx, dy, scale*)
 
@@ -33,8 +32,8 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Apply to a grayscale image
-sr_x_img = pcv.scharr_filter(gray_img, 1, 0, 1)
-sr_y_img = pcv.scharr_filter(gray_img, 0, 1, 1)
+sr_x_img = pcv.scharr_filter(gray_img=gray_img, dx=1, dy=0, scale=1)
+sr_y_img = pcv.scharr_filter(gray_img=gray_img, dx=0, dy=1, scale=1)
 
 ```
 

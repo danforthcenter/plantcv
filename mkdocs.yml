@@ -1,5 +1,5 @@
 site_name: PlantCV
-site_url: http://plantcv.readthedocs.io/
+site_url: https://plantcv.readthedocs.io/
 site_description: Plant phenotyping using computer vision
 site_author: PlantCV Development Team
 repo_url: https://github.com/danforthcenter/plantcv
@@ -19,24 +19,13 @@ nav:
     - 'Contributing to PlantCV': CONTRIBUTING.md
     - 'Code of Conduct': CODE_OF_CONDUCT.md
     - 'Adding/Editing Documentation': documentation.md
-  - Tutorials:
-    - 'VIS Workflow': vis_tutorial.md
-    - 'NIR Workflow': nir_tutorial.md
-    - 'PSII Workflow': psII_tutorial.md
-    - 'VIS/NIR Dual Workflow': vis_nir_tutorial.md
-    - 'Multi Plant Workflow': multi-plant_tutorial.md
-    - 'Machine Learning': machine_learning_tutorial.md
-    - 'Workflow Parallelization': pipeline_parallel.md
-    - 'Exporting Data': db-exporter.md
-    - 'Color Correction Workflow': transform_color_correction_tutorial.md
-    - 'Morphology Workflow': morphology_tutorial.md
-    - 'Thermal Workflow': thermal_tutorial.md
-    - 'Hyperspectral Workflow': hyperspectral_tutorial.md
+  - "Tutorials": tutorials.md
+  - 'Workflow Parallelization': pipeline_parallel.md
+  - 'Exporting Data': db-exporter.md
   - 'PlantCV Namespace':
     - 'PlantCV':
-      - 'Analyze color': analyze_color.md
+      - 'Analyze Color': analyze_color.md
       - 'Analyze NIR': analyze_NIR_intensity.md
-      - 'Analyze PSII': fluor_fvfm.md
       - 'Analyze Shape': analyze_shape.md
       - 'Analyze Thermal': analyze_thermal_values.md
       - 'Apply Mask': apply_mask.md
@@ -52,6 +41,7 @@ nav:
       - 'Color Palette': color_palette.md
       - 'Colorspace Conversion':
         - 'RGB to Gray': rgb2gray.md
+        - 'RGB to CMYK': rgb2cmyk.md
         - 'RGB to LAB': rgb2lab.md
         - 'RGB to HSV': rgb2hsv.md
       - 'Crop': crop.md
@@ -80,6 +70,7 @@ nav:
           - 'Spectral data objects': Spectral_data.md
       - 'Image Add': image_add.md
       - 'Image Subtract': image_subtract.md
+      - 'Image Fusion': image_fusion.md
       - 'Invert': invert.md
       - 'Landmark Analysis':
         - 'Acute Vertex': acute_vertex.md
@@ -95,6 +86,7 @@ nav:
       - 'Morphology Functions':
         - 'Analyze_stem': analyze_stem.md
         - 'Check Cycles': check_cycles.md
+        - 'Fill Segments': fill_segments.md
         - 'Find Branches': find_branch_pts.md
         - 'Find Tips': find_tips.md
         - 'Prune': prune.md
@@ -114,6 +106,9 @@ nav:
       - 'Opening': opening.md
       - 'Output Mask': output_mask.md
       - 'Outputs Class': outputs.md
+      - 'Photosynthesis Functions':
+          - 'Read CropReporter Data': photosynthesis_read_cropreporter.md
+          - 'Analyze Fv/Fm': photosynthesis_analyze_fvfm.md
       - 'Params (Debugging)': params.md
       - 'Print Image': print_image.md
       - 'Print Results': print_results.md
@@ -122,7 +117,6 @@ nav:
       - 'Read Bayer Raw Image': read_bayer.md
       - 'Rectangle Mask': rectangle_mask.md
       - 'Report Size Marker': report_size_marker.md
-      - 'Resize': resize.md
       - 'Region of Interest Tools':
         - 'Create a Circular ROI': roi_circle.md
         - 'Create an Elliptical ROI': roi_ellipse.md
@@ -141,6 +135,7 @@ nav:
         - 'Binary Threshold': binary_threshold.md
         - 'Custom Range Threshold': custom_range_threshold.md
         - 'Gaussian Adaptive Threshold': gaussian_threshold.md
+        - 'Mask Bad Threshold': mask_bad_threshold.md
         - 'Mean Adaptive Threshold': mean_threshold.md
         - 'Otsu Auto Threshold': otsu_threshold.md
         - 'Saturation Threshold': saturation_threshold.md
@@ -157,14 +152,22 @@ nav:
           - 'Quick Color Check': quick_color_check.md
           - 'Load Matrix': load_matrix.md
           - 'Save Matrix': save_matrix.md
+          - 'Gamma Correction': transform_gamma_correct.md
           - 'Nonuniform Illumination Correction': nonuniform_illumination.md
+          - 'Perspective warp': transform_warp.md
           - 'Rescale Image Values': transform_rescale.md
+          - 'Resize Images': transform_resize.md
       - 'Visualization Methods':
           - 'Auto Threshold Methods': visualize_auto_threshold_methods.md
           - 'Clustered Contours': visualize_clustered_contours.md
+          - 'Colorize Label Image': visualize_colorize_label_img.md
           - 'Colorize Masks': visualize_colorize_masks.md
           - 'Colorspaces': visualize_colorspace.md
           - 'Histogram': visualize_histogram.md
+          - 'Hyperspectral Histogram': visualize_hyper_histogram.md
+          - 'Overlay Images': visualize_ovelay_two_imgs.md
+          - 'Object Size ECDF': visualize_obj_size_ecdf.md
+          - 'Object Sizes': visualize_obj_sizes.md
           - 'Pseudocolor': visualize_pseudocolor.md
       - 'Watershed Segmentation': watershed.md
       - 'White balance': white_balance.md
@@ -173,10 +176,11 @@ nav:
       - 'Naive Bayes': naive_bayes.md
       - 'Naive Bayes Multiclass': naive_bayes_multiclass.md
     - 'Parallelization':
-        - 'Job Builder': job_builder.md
-        - 'Metadata Parser': metadata_parser.md
-        - 'Multiprocess': multiprocess.md
-        - 'Process Results': process_results.md
+        - 'Configure Parallelization': parallel_config.md
+        - 'Metadata Parser': parallel_metadata_parser.md
+        - 'Job Builder': parallel_job_builder.md
+        - 'Multiprocess': parallel_multiprocess.md
+        - 'Process Results': parallel_process_results.md
         - 'Workflow Parallelization': pipeline_parallel.md
   - 'Accessory tools': tools.md
 markdown_extensions:

@@ -1,0 +1,99 @@
+{
+    "input_dir": "",
+    "json": "",
+    "filename_metadata": [],
+    "workflow": "",
+    "img_outdir": "./output_images",
+    "tmp_dir": null,
+    "start_date": null,
+    "end_date": null,
+    "imgformat": "png",
+    "delimiter": "_",
+    "metadata_filters": {},
+    "timestampformat": "%Y-%m-%d %H:%M:%S.%f",
+    "writeimg": false,
+    "other_args": null,
+    "coprocess": null,
+    "cluster": "LocalCluster",
+    "cluster_config": {
+        "n_workers": 1,
+        "cores": 1,
+        "memory": "1GB",
+        "disk": "1GB",
+        "log_directory": null,
+        "local_directory": null,
+        "job_extra": null
+    },
+    "metadata_terms": {
+        "camera": {
+            "label": "camera identifier",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "imgtype": {
+            "label": "image type",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "zoom": {
+            "label": "camera zoom setting",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "exposure": {
+            "label": "camera exposure setting",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "gain": {
+            "label": "camera gain setting",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "frame": {
+            "label": "image series frame identifier",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "lifter": {
+            "label": "imaging platform height setting",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "timestamp": {
+            "label": "datetime of image",
+            "datatype": "<class 'datetime.datetime'>",
+            "value": null
+        },
+        "id": {
+            "label": "image identifier",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "plantbarcode": {
+            "label": "plant barcode identifier",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "treatment": {
+            "label": "treatment identifier",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "cartag": {
+            "label": "plant carrier identifier",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "measurementlabel": {
+            "label": "experiment identifier",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
+        "other": {
+            "label": "other identifier",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        }
+    }
+}

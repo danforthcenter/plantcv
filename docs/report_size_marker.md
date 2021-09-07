@@ -3,7 +3,7 @@
 Get and record the size of a size marker or set an area as a size marker.
 
 **plantcv.report_size_marker_area**(*img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None,
-                            thresh=None*)
+                            thresh=None, label="default"*)
 
 **returns** analysis_image
 
@@ -16,6 +16,7 @@ Get and record the size of a size marker or set an area as a size marker.
     - objcolor        = Object color is 'dark' (default) or 'light' (is the marker darker or lighter than the background)
     - thresh_channel  = 'h', 's', or 'v' for hue, saturation or value, default set to None
     - thresh          = Binary threshold value (integer), default set to None.
+    - label           =  Optional label parameter, modifies the variable name of observations recorded
 - **Context:**
     - Allows user to add size marker data, so that shape data can be normalized between images/cameras
 - **Output data stored:** Data ('marker_area', 'marker_ellipse_major_axis', 'marker_ellipse_minor_axis', 'marker_ellipse_eccentricity') 
@@ -37,13 +38,14 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Define an ROI for the marker
-roi_contour, roi_hierarchy = pcv.roi.rectangle(img1, 3550, 850, 500, 500)
+roi_contour, roi_hierarchy = pcv.roi.rectangle(img=img1, x=3550, y=850, h=500, w=500)
 
 # Detect and Measure Size Marker
-image = pcv.report_size_marker_area(img1, roi_contour, roi_hierarchy, marker='detect', objcolor='light', thresh_channel='s', thresh=120)
+image = pcv.report_size_marker_area(img=img1, roi_contour=roi_contour, roi_hierarchy=roi_hierarchy, 
+                    marker='detect', objcolor='light', thresh_channel='s', thresh=120, label="default")
 
 # Access data stored out from report_size_marker_area
-marker_area = pcv.outputs.observations['marker_area']['value']
+marker_area = pcv.outputs.observations['default']['marker_area']['value']
 
 ```
 

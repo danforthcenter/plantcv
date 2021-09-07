@@ -8,18 +8,20 @@ from plantcv.plantcv import plot_image
 from plantcv.plantcv import print_image
 
 
-def segment_path_length(segmented_img, objects):
+def segment_path_length(segmented_img, objects, label="default"):
     """ Use segments to calculate geodesic distance per segment
 
         Inputs:
         segmented_img = Segmented image to plot lengths on
         objects       = List of contours
+        label        = optional label parameter, modifies the variable name of observations recorded
 
         Returns:
         labeled_img        = Segmented debugging image with lengths labeled
 
         :param segmented_img: numpy.ndarray
         :param objects: list
+        :param label: str
         :return labeled_img: numpy.ndarray
 
         """
@@ -44,10 +46,9 @@ def segment_path_length(segmented_img, objects):
         h = label_coord_y[c]
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                     fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
-        # segment_label = "ID" + str(c)
         segment_ids.append(c)
 
-    outputs.add_observation(variable='segment_path_length', trait='segment path length',
+    outputs.add_observation(sample=label, variable='segment_path_length', trait='segment path length',
                             method='plantcv.plantcv.morphology.segment_path_length', scale='pixels', datatype=list,
                             value=segment_lengths, label=segment_ids)
 

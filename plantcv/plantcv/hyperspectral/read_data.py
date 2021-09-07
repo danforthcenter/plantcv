@@ -4,10 +4,10 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv import params
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import Spectral_data
 from plantcv.plantcv.transform import rescale
+from plantcv.plantcv import fatal_error
 
 
 def _find_closest(spectral_array, target):
@@ -118,6 +118,7 @@ def read_data(filename):
         hdata = hdata.replace("{\n", "{")
         hdata = hdata.replace("\n}", "}")
         hdata = hdata.replace(" \n ", "")
+        hdata = hdata.replace(" \n", "")
         hdata = hdata.replace(";", "")
     hdata = hdata.split("\n")
 
@@ -125,9 +126,11 @@ def read_data(filename):
     for i, string in enumerate(hdata):
         if ' = ' in string:
             header_data = string.split(" = ")
+            header_data[0] = header_data[0].lower()
             header_dict.update({header_data[0].rstrip(): header_data[1].rstrip()})
         elif ' : ' in string:
             header_data = string.split(" : ")
+            header_data[0] = header_data[0].lower()
             header_dict.update({header_data[0].rstrip(): header_data[1].rstrip()})
 
     # Reformat wavelengths
@@ -150,9 +153,29 @@ def read_data(filename):
     raw_data = np.fromfile(filename, header_dict["data type"], -1)
 
     # Reshape the raw data into a datacube array
-    array_data = raw_data.reshape(int(header_dict["lines"]),
-                                  int(header_dict["bands"]),
-                                  int(header_dict["samples"])).transpose((0, 2, 1))
+    data_format = {
+        # Band Interleaved by Line (BIL)
+        "BIL": {
+            # Divide the raw data by Y (lines), Z (spectral bands), and X (samples)
+            # Then reorder into a cube in Y, X, Z order
+            "reshape": (int(header_dict["lines"]), int(header_dict["bands"]), int(header_dict["samples"])),
+            "transpose": (0, 2, 1)
+        },
+        # Band Sequential (BSQ)
+        "BSQ": {
+            # Divide the raw data by Z (spectral bands), Y (lines), and X (samples)
+            # Then reorder into a cube in Y, X, Z order
+            "reshape": (int(header_dict["bands"]), int(header_dict["lines"]), int(header_dict["samples"])),
+            "transpose": (1, 2, 0)
+        }
+    }
+    interleave_type = header_dict.get("interleave").upper()
+    if interleave_type not in data_format:
+        fatal_error(f"Interleave type {interleave_type} is not supported.")
+
+    # Reshape raw data into a data cube
+    array_data = raw_data.reshape(data_format[interleave_type]["reshape"]
+                                  ).transpose(data_format[interleave_type]["transpose"])
 
     # Check for default bands (that get used to make pseudo_rgb image)
     default_bands = None
@@ -184,9 +207,6 @@ def read_data(filename):
     pseudo_rgb = _make_pseudo_rgb(spectral_array)
     spectral_array.pseudo_rgb = pseudo_rgb
 
-    if params.debug == "plot":
-        plot_image(pseudo_rgb)
-    elif params.debug == "print":
-        print_image(pseudo_rgb, os.path.join(params.debug_outdir, str(params.device)+"_pseudo_rgb.png"))
+    _debug(visual=pseudo_rgb, filename=os.path.join(params.debug_outdir, str(params.device) + "_pseudo_rgb.png"))
 
     return spectral_array

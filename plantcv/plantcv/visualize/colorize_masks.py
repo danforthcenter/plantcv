@@ -4,8 +4,7 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv import params
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import fatal_error
 
 
@@ -59,11 +58,6 @@ def colorize_masks(masks, colors):
             fatal_error("All elements of the 'colors' list must be either str or tuple")
         colored_img = colored_img + mask
 
-    params.device += 1
-
-    if params.debug == 'print':
-        print_image(colored_img, os.path.join(params.debug_outdir, str(params.device) + '_classes_plot.png'))
-    elif params.debug == 'plot':
-        plot_image(colored_img)
+    _debug(visual=colored_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_classes_plot.png'))
 
     return colored_img
