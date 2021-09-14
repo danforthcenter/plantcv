@@ -95,12 +95,12 @@ def constella(cur_plms, PCstarscape,  group_iter, outfile_prefix, debug):
 	for li in range(0,len(plmnames)):
 	    labelnames.append(''.join(plmnames[li]+' ('+str(int(grpnames[li]))+')'))
 
-	plm_HCA = plt.figure(figsize=(25, 13))
+	plm_HCA = plt.figure(figsize=(25, 15))
 	plm_HCA = plt.title('')
 	plm_HCA = plt.xlabel('')
 	plm_HCA = plt.ylabel('')
-	plm_HCA = plt.tick_params(axis='x', which='major', labelsize=15)
-	plm_HCA = dendrogram(plm_links, color_threshold=100, leaf_rotation=90, leaf_font_size=10, labels=labelnames)
+	plm_HCA = plt.tick_params(axis='x', which='major', labelsize=18)
+	plm_HCA = dendrogram(plm_links, color_threshold=100, leaf_rotation=45, leaf_font_size=10, labels=labelnames)
 
 	if debug==True and outfile_prefix==None:
 		plt.show(plm_HCA)
