@@ -33,7 +33,7 @@ def read_dataset(source_path, pattern='', sort=True):
                 if ext.lower() in img_extensions:
                     img_path_list.append(os.path.join(root, file))
 
-    if sort == True:
+    if sort is True:
         img_path_list = sorted(img_path_list)
 
     return img_path_list

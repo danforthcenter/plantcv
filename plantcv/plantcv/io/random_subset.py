@@ -3,6 +3,7 @@ import random
 
 from plantcv.plantcv import fatal_error
 
+
 def random_subset(dataset, num=100, seed=None):
     """
     Get a random subset of the elements in a list.
@@ -24,9 +25,7 @@ def random_subset(dataset, num=100, seed=None):
     if num > N:
         fatal_error("Number of images found less than 'num'.")
 
-
     # Get random images
     samples = random.sample(dataset, k=num)
-
 
     return samples
