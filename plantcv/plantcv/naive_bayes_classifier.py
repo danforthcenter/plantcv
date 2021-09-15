@@ -4,14 +4,14 @@
 import cv2
 import numpy as np
 import os
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 
 
 def naive_bayes_classifier(rgb_img, pdf_file):
-    """Use the Naive Bayes classifier to output a plant binary mask.
+    """
+    Use the Naive Bayes classifier to output a plant binary mask.
 
     Inputs:
     rgb_img      = RGB image data
@@ -24,7 +24,6 @@ def naive_bayes_classifier(rgb_img, pdf_file):
     :param pdf_file: str
     :return masks: dict
     """
-    params.device += 1
 
     # Initialize PDF dictionary
     pdfs = {}
@@ -66,7 +65,7 @@ def naive_bayes_classifier(rgb_img, pdf_file):
             for class_name in pdfs.keys():
                 # Calculate the joint probability that this is in the class
                 px_p[class_name][i][j] = pdfs[class_name]["hue"][h[i][j]] * pdfs[class_name]["saturation"][s[i][j]] * \
-                                         pdfs[class_name]["value"][v[i][j]]
+                    pdfs[class_name]["value"][v[i][j]]
 
     # Initialize empty masks
     masks = {}
@@ -82,12 +81,11 @@ def naive_bayes_classifier(rgb_img, pdf_file):
         masks[class_name][np.where(px_p[class_name] > background_class)] = 255
 
     # Print or plot the mask if debug is not None
-    if params.debug == "print":
+    if params.debug is not None:
         for class_name, mask in masks.items():
-            print_image(mask, os.path.join(params.debug_outdir,
-                                           str(params.device) + "_naive_bayes_" + class_name + "_mask.png"))
-    elif params.debug == "plot":
-        for class_name, mask in masks.items():
-            plot_image(mask, cmap="gray")
+            _debug(visual=mask,
+                   filename=os.path.join(params.debug_outdir, str(params.device) +
+                                         "_naive_bayes_" + class_name + "_mask.png"),
+                   cmap='gray')
 
     return masks
