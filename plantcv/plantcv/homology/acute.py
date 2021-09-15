@@ -48,11 +48,11 @@ def acute(obj, mask, win, threshold):
             if r >= 2:
                 if (dist_2 > dist_1) & (dist_2 <= win):  # Further from vertex than current pt A while within window?
                     dist_1 = dist_2
-                    ptA = pos                              # Load best fit within window as point A
+                    pt_a = pos                              # Load best fit within window as point A
                 elif dist_2 > win:
                     break
             else:
-                ptA = pos
+                pt_a = pos
         dist_1 = 0
         for f in range(len(obj)):                      # Forward scan to obtain point B
             fwd = k + f
@@ -63,17 +63,17 @@ def acute(obj, mask, win, threshold):
             if f >= 2:
                 if (dist_2 > dist_1) & (dist_2 <= win):  # Further from vertex than current pt B while within window?
                     dist_1 = dist_2
-                    ptB = pos                              # Load best fit within window as point B
+                    pt_b = pos                              # Load best fit within window as point B
                 elif dist_2 > win:
                     break
             else:
-                ptB = pos
+                pt_b = pos
 
         # Angle in radians derived from Law of Cosines, converted to degrees
-        P12 = np.sqrt((vert[0][0]-ptA[0][0])*(vert[0][0]-ptA[0][0])+(vert[0][1]-ptA[0][1])*(vert[0][1]-ptA[0][1]))
-        P13 = np.sqrt((vert[0][0]-ptB[0][0])*(vert[0][0]-ptB[0][0])+(vert[0][1]-ptB[0][1])*(vert[0][1]-ptB[0][1]))
-        P23 = np.sqrt((ptA[0][0]-ptB[0][0])*(ptA[0][0]-ptB[0][0])+(ptA[0][1]-ptB[0][1])*(ptA[0][1]-ptB[0][1]))
-        dot = (P12*P12 + P13*P13 - P23*P23)/(2*P12*P13)
+        p12 = np.sqrt((vert[0][0]-pt_a[0][0])*(vert[0][0]-pt_a[0][0])+(vert[0][1]-pt_a[0][1])*(vert[0][1]-pt_a[0][1]))
+        p13 = np.sqrt((vert[0][0]-pt_b[0][0])*(vert[0][0]-pt_b[0][0])+(vert[0][1]-pt_b[0][1])*(vert[0][1]-pt_b[0][1]))
+        p23 = np.sqrt((pt_a[0][0]-pt_b[0][0])*(pt_a[0][0]-pt_b[0][0])+(pt_a[0][1]-pt_b[0][1])*(pt_a[0][1]-pt_b[0][1]))
+        dot = (p12*p12 + p13*p13 - p23*p23)/(2*p12*p13)
 
         # Used a random number generator to test if either of these cases were possible but neither is possible
         if dot > 1:              # If float exceeds 1 prevent arcos error and force to equal 1
@@ -106,9 +106,9 @@ def acute(obj, mask, win, threshold):
             elif island[-1]+1 == index[c]:
                 island.append(index[c])       # Append successful iteration to island
             elif island[-1]+1 != index[c]:
-                ptA = obj[index[c]]
-                ptB = obj[island[-1]+1]
-                dist = np.sqrt(np.square(ptA[0][0]-ptB[0][0])+np.square(ptA[0][1]-ptB[0][1]))
+                pt_a = obj[index[c]]
+                pt_b = obj[island[-1]+1]
+                dist = np.sqrt(np.square(pt_a[0][0]-pt_b[0][0])+np.square(pt_a[0][1]-pt_b[0][1]))
                 if win/2 > dist:
                     island.append(index[c])
                 else:
@@ -134,8 +134,8 @@ def acute(obj, mask, win, threshold):
         pt = []
         vals = []
         maxpts = []
-        SSpts = []
-        TSpts = []
+        ss_pts = []
+        ts_pts = []
         ptvals = []
         max_dist = [['cont_pos', 'max_dist', 'angle']]
         for x in range(len(isle)):
@@ -167,16 +167,16 @@ def acute(obj, mask, win, threshold):
             #elif len(isle[x]) == 2:         # If landmark is a pair of points (store more acute position)
             #    if debug == True:
             #        print('route B')
-            #    ptA = chain[isle[x][0]]
-            #    ptB = chain[isle[x][1]]
-            #    print(ptA, ptB)
-            #    if ptA == ptB:
+            #    pt_a = chain[isle[x][0]]
+            #    pt_b = chain[isle[x][1]]
+            #    print(pt_a, pt_b)
+            #    if pt_a == pt_b:
             #        pt = isle[x][0]             # Store point A if both are equally acute
             #        max_dist.append([isle[x][0], '-', chain[isle[x][0]]])                
-            #    elif ptA < ptB:
+            #    elif pt_a < pt_b:
             #        pt = isle[x][0]             # Store point A if more acute
             #        max_dist.append([isle[x][0], '-', chain[isle[x][0]]])
-            #    elif ptA > ptB:
+            #    elif pt_a > pt_b:
             #        pt = isle[x][1]             # Store point B if more acute
             #        max_dist.append([isle[x][1], '-', chain[isle[x][1]]])
                 # print pt
@@ -184,15 +184,15 @@ def acute(obj, mask, win, threshold):
             if len(isle[x]) >= 3:                           # If landmark is multiple points (distance scan for position)
                 if params.debug is not None:
                     print('route C')
-                SS = obj[isle[x][0]]            # Store isle "x" start site
-                TS = obj[isle[x][-1]]           # Store isle "x" termination site
+                ss = obj[isle[x][0]]            # Store isle "x" start site
+                ts = obj[isle[x][-1]]           # Store isle "x" termination site
                 dist_1 = 0
-                for d in range(len(isle[x])):   # Scan from SS to TS within isle "x"
+                for d in range(len(isle[x])):   # Scan from ss to ts within isle "x"
                     site = obj[[isle[x][d]]]
-                    SSd = np.sqrt(np.square(SS[0][0]-site[0][0][0])+np.square(SS[0][1]-site[0][0][1]))
-                    TSd = np.sqrt(np.square(TS[0][0]-site[0][0][0])+np.square(TS[0][1]-site[0][0][1]))
-                    # Current mean distance of 'd' to 'SS' & 'TS'
-                    dist_2 = np.mean([np.abs(SSd), np.abs(TSd)])
+                    ss_d = np.sqrt(np.square(ss[0][0] - site[0][0][0]) + np.square(ss[0][1] - site[0][0][1]))
+                    ts_d = np.sqrt(np.square(ts[0][0] - site[0][0][0]) + np.square(ts[0][1] - site[0][0][1]))
+                    # Current mean distance of 'd' to 'ss' & 'ts'
+                    dist_2 = np.mean([np.abs(ss_d), np.abs(ts_d)])
                     max_dist.append([isle[x][d], dist_2, chain[isle[x][d]]])
                     if dist_2 > dist_1:                           # Current mean distance better fit that previous best?
                         pt = isle[x][d]
@@ -202,17 +202,17 @@ def acute(obj, mask, win, threshold):
                     print(f"Landmark site: {pt}, Start site: {isle[x][0]}, Term. site: {isle[x][-1]}")
                 
                 maxpts.append(pt)           # Empty 'pts' prior to next mean distance scan
-                SSpts.append(isle[x][0])
-                TSpts.append(isle[x][-1])
+                ss_pts.append(isle[x][0])
+                ts_pts.append(isle[x][-1])
 
             if params.debug is not None:
                 print(f'Landmark point indices: {maxpts}')
-                print(f'Starting site indices: {SSpts}')
-                print(f'Termination site indices: {TSpts}')
+                print(f'Starting site indices: {ss_pts}')
+                print(f'Termination site indices: {ts_pts}')
             
         homolog_pts = obj[maxpts]
-        start_pts = obj[SSpts]
-        stop_pts = obj[TSpts]
+        start_pts = obj[ss_pts]
+        stop_pts = obj[ts_pts]
 
         return homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist
     else:
