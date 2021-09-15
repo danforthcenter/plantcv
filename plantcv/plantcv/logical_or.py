@@ -7,7 +7,8 @@ from plantcv.plantcv import params
 
 
 def logical_or(bin_img1, bin_img2):
-    """Join two images using the bitwise OR operator.
+    """
+    Join two images using the bitwise OR operator.
 
     Inputs:
     bin_img1   = Binary image data to be compared to bin_img2

@@ -7,9 +7,10 @@ from plantcv.plantcv import params
 
 
 def laplace_filter(gray_img, ksize, scale):
-    """This is a filtering method used to identify and highlight fine edges based on the 2nd derivative. A very
-       sensetive method to highlight edges but will also amplify background noise. ddepth = -1 specifies that the
-       dimensions of output image will be the same as the input image.
+    """
+    This is a filtering method used to identify and highlight fine edges based on the 2nd derivative. A very
+    sensetive method to highlight edges but will also amplify background noise. ddepth = -1 specifies that the
+    dimensions of output image will be the same as the input image.
 
     Inputs:
     gray_img    = Grayscale image data

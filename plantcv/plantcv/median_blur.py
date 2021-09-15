@@ -8,7 +8,8 @@ from scipy.ndimage.filters import median_filter
 
 
 def median_blur(gray_img, ksize):
-    """Applies a median blur filter (applies median value to central pixel within a kernel size).
+    """
+    Applies a median blur filter (applies median value to central pixel within a kernel size).
 
     Inputs:
     gray_img  = Grayscale image data

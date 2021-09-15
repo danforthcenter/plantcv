@@ -7,7 +7,8 @@ from plantcv.plantcv import params
 
 
 def invert(gray_img):
-    """Inverts grayscale images.
+    """
+    Inverts grayscale images.
 
     Inputs:
     gray_img     = Grayscale image data
