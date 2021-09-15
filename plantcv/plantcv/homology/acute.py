@@ -76,10 +76,10 @@ def acute(obj, mask, win, threshold):
         dot = (p12*p12 + p13*p13 - p23*p23)/(2*p12*p13)
 
         # Used a random number generator to test if either of these cases were possible but neither is possible
-        if dot > 1:              # If float exceeds 1 prevent arcos error and force to equal 1
-            dot = 1
-        elif dot < -1:           # If float exceeds -1 prevent arcos error and force to equal -1
-            dot = -1
+        # if dot > 1:              # If float exceeds 1 prevent arcos error and force to equal 1
+        #     dot = 1
+        # elif dot < -1:           # If float exceeds -1 prevent arcos error and force to equal -1
+        #     dot = -1
 
         ang = math.degrees(math.acos(dot))
         # print(str(k)+'  '+str(dot)+'  '+str(ang))
