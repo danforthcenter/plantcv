@@ -51,7 +51,7 @@ class ShowSpectra(object):
         plt.subplots_adjust(left=0.25, bottom=0.25)
 
         # make a horizontal slider to control the radius
-        axradius = self.plt.axes([0.15, 0.035, 0.3, 0.035], facecolor='lightgoldenrodyellow')  # [left, bottom, width, height]
+        axradius = self.fig.add_axes([0.15, 0.035, 0.3, 0.035], facecolor='lightgoldenrodyellow')  # [left, bottom, width, height]
         self.radius_slider = Slider(
             ax=axradius,
             label="radius",
