@@ -86,6 +86,7 @@ from plantcv.plantcv.crop import crop
 from plantcv.plantcv.stdev_filter import stdev_filter
 from plantcv.plantcv.spatial_clustering import spatial_clustering
 from plantcv.plantcv import photosynthesis
+from plantcv.plantcv import io
 # add new functions to end of lists
 
 # Auto versioning
@@ -107,4 +108,4 @@ __all__ = ['fatal_error', 'Params', 'Outputs', 'Spectral_data', 'deprecation_war
            'background_subtraction', 'naive_bayes_classifier', 'acute', 'distance_transform', 'params',
            'cluster_contour_mask', 'analyze_thermal_values', 'opening',
            'closing', 'within_frame', 'fill_holes', 'get_kernel',  'crop', 'stdev_filter',
-           'spatial_clustering', 'photosynthesis']
+           'spatial_clustering', 'photosynthesis', 'io']
