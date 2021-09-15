@@ -3,6 +3,7 @@
 import os
 import cv2
 import numpy as np
+from math import floor
 from scipy.spatial import distance
 import matplotlib.pyplot as plt
 from plantcv.plantcv import print_image
@@ -408,7 +409,7 @@ class CustomROI(object):
         if event.button == 1:
 
             self.ax.plot(event.xdata, event.ydata, 'x', c='red')
-            self.points.append((event.xdata, event.ydata))
+            self.points.append((floor(event.xdata), floor(event.ydata))) 
 
         else:
             idx_remove, _ = _find_closest_pt((event.xdata, event.ydata), self.points)
