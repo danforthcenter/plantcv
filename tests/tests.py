@@ -1210,11 +1210,7 @@ def test_plantcv_outputs_save_results_csv(tmpdir):
     assert results == test_results
 
 
-<<<<<<< Updated upstream
-def test_plantcv_acute():
-=======
 def test_plantcv_homology_acute():
->>>>>>> Stashed changes
     # Read in test data
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR), encoding="latin1")
