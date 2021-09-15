@@ -1,6 +1,6 @@
 ## Show Spectra for Selected Pixels (Developing)
 
-`ShowSpectra` is a class that is capable of handling user's selecting and clicking behaviour by showing spectra of user selected pixels and storing selected coordinates as well as spectra.
+`ShowSpectra` is a class that is capable of handling user's selecting and clicking behavior by showing spectra of user selected pixels and storing selected coordinates as well as spectra.
 
 *class* **plantcv.visualize.ShowSpectra(spectral_data, figsize=(12,6))**
 - To initialize the ShowSpectra class, the only required parameter is `spectral_data`, which is of type `__main__.Spectral_data`.
@@ -17,7 +17,7 @@
 
 from plantcv import plantcv as pcv
 
-show_spectra = pcv.visualize.ShowSpectra(array)
+show_spectra = pcv.visualize.ShowSpectra(spectral_data=array)
 
 ```
 
