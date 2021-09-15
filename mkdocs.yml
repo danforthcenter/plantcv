@@ -182,9 +182,6 @@ nav:
           - 'Object Sizes': visualize_obj_sizes.md
           - 'Pixel Scatter Visualization': 'visualize_pixel_scatter_vis.md'
           - 'Pseudocolor': visualize_pseudocolor.md
-      - 'I/O Methods':
-          - 'Random Subset': io_random_subset.md
-          - 'Read Dataset': io_read_dataset.md
       - 'Watershed Segmentation': watershed.md
       - 'White balance': white_balance.md
       - 'Within Frame': within_frame.md
