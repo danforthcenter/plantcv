@@ -15,7 +15,7 @@ Applies the transformation matrix to an image.
     - corrected_img - an RGB image in correct color space
     
 - **Example use:**
-    - [Color Correction Tutorial](transform_color_correction_tutorial.md)
+    - [Color Correction Tutorial](tutorials/transform_color_correction_tutorial.md)
     
 **Reference Images**
 

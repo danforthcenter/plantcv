@@ -16,7 +16,7 @@ Similar results to the [Scharr filter](scharr_filter.md) function.
     - Used to define edges within and around objects
     - Aperture size must be greater than the largest derivative (`ksize >= dx & ksize >= dy`) in order to run
 - **Example use:**
-    - [Use In NIR Tutorial](nir_tutorial.md)
+    - [Use In NIR Tutorial](tutorials/nir_tutorial.md)
 
 **Original grayscale image**
 
