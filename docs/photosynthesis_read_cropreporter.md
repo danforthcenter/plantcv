@@ -16,7 +16,7 @@ Reads .DAT image data into numpy ndarray and reshapes the frames into a datacube
     We assume that for every image file `xx_PSD_xxx.DAT` there will be a corresponding metadata file with the same path
     named `xx_HDR_xxx.INF` 
 - **Example use:**
-    - [Use In PSII Tutorial](psII_tutorial.md) 
+    - [Use In PSII Tutorial](tutorials/psII_tutorial.md) 
 
 
 ```python

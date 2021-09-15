@@ -15,7 +15,7 @@ The threshold color-spaces that can be used are grayscale, RGB, HSV, or LAB.
 - **Context:**
     - Used to help differentiate plant and background
 - **Example use:**
-    - [Use In NIR Tutorial](nir_tutorial.md)
+    - [Use In NIR Tutorial](tutorials/nir_tutorial.md)
 
 ```python
 
