@@ -2,8 +2,7 @@
 
 import cv2
 import os
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
 
 
@@ -29,13 +28,11 @@ def distance_transform(bin_img, distance_type, mask_size):
     :return norm_image: numpy.ndarray
     """
 
-    params.device += 1
     dist = cv2.distanceTransform(src=bin_img, distanceType=distance_type, maskSize=mask_size)
     norm_image = cv2.normalize(src=dist, dst=dist, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
 
-    if params.debug == 'print':
-        print_image(norm_image, os.path.join(params.debug, str(params.device) + '_distance_transform.png'))
-    elif params.debug == 'plot':
-        plot_image(norm_image, cmap='gray')
+    _debug(visual=norm_image,
+           filename=os.path.join(params.debug_outdir, str(params.device) + '_distance_transform.png'),
+           cmap='gray')
 
     return norm_image

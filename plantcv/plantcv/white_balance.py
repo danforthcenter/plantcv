@@ -3,8 +3,7 @@
 import cv2
 import os
 import numpy as np
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import apply_mask
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
@@ -33,7 +32,8 @@ def _max(img, hmax, mask, x, y, h, w, data_type):
 
 
 def white_balance(img, mode='hist', roi=None):
-    """Corrects the exposure of an image based on its histogram.
+    """
+    Corrects the exposure of an image based on its histogram.
 
     Inputs:
     img     = An RGB image on which to perform the correction, correction is done on each channel and then reassembled,
@@ -50,9 +50,11 @@ def white_balance(img, mode='hist', roi=None):
     :param roi: list
     :return finalcorrected: numpy.ndarray
     """
-    params.device += 1
 
     ori_img = np.copy(img)
+
+    if mode != 'hist' and mode != 'max':
+        fatal_error('Mode must be either "hist" or "max" but ' + mode + ' was input.')
 
     if roi is not None:
         roiint = all(isinstance(item, (list, int)) for item in roi)
@@ -84,7 +86,6 @@ def white_balance(img, mode='hist', roi=None):
         y = 0
         w = ix
         h = iy
-
     else:
         x = roi[0]
         y = roi[1]
@@ -104,8 +105,6 @@ def white_balance(img, mode='hist', roi=None):
             channel1 = _max(c1, hmax, mask, x, y, h, w, data_type)
             channel2 = _max(c2, hmax, mask, x, y, h, w, data_type)
             channel3 = _max(c3, hmax, mask, x, y, h, w, data_type)
-        else:
-            fatal_error('Mode must be either "hist" or "max" but ' + mode + ' was input.')
 
         finalcorrected = np.dstack((channel1, channel2, channel3))
 
@@ -116,12 +115,11 @@ def white_balance(img, mode='hist', roi=None):
         elif mode.upper() == 'MAX':
             finalcorrected = _max(img, hmax, mask, x, y, h, w, data_type)
 
-    if params.debug == 'print':
-        print_image(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_whitebalance_roi.png'))
-        print_image(finalcorrected, os.path.join(params.debug_outdir, str(params.device) + '_whitebalance.png'))
-
-    elif params.debug == 'plot':
-        plot_image(ori_img, cmap='gray')
-        plot_image(finalcorrected, cmap='gray')
+    _debug(visual=ori_img,
+           filename=os.path.join(params.debug_outdir, str(params.device) + '_whitebalance_roi.png'),
+           cmap='gray')
+    _debug(visual=finalcorrected,
+           filename=os.path.join(params.debug_outdir, str(params.device) + '_whitebalance.png'),
+           cmap='gray')
 
     return finalcorrected
