@@ -87,8 +87,8 @@ def acute(obj, mask, win, threshold):
 
     index = []                      # Index chain to find clusters below angle threshold
 
-    for c in range(len(chain)):     # Identify links in chain with acute angles
-        if float(chain[c]) <= threshold:
+    for c, link in enumerate(chain):     # Identify links in chain with acute angles
+        if float(link) <= threshold:
             index.append(c)         # Append positions of acute links to index
 
     # acute_pos = obj[index]            # Extract all island points blindly
@@ -100,20 +100,20 @@ def acute(obj, mask, win, threshold):
         isle = []
         island = []
 
-        for c in range(len(index)):           # Scan for iterative links within index
+        for ind in index:           # Scan for iterative links within index
             if not island:
-                island.append(index[c])       # Initiate new link island
-            elif island[-1]+1 == index[c]:
-                island.append(index[c])       # Append successful iteration to island
-            elif island[-1]+1 != index[c]:
-                pt_a = obj[index[c]]
+                island.append(ind)       # Initiate new link island
+            elif island[-1]+1 == ind:
+                island.append(ind)       # Append successful iteration to island
+            elif island[-1]+1 != ind:
+                pt_a = obj[ind]
                 pt_b = obj[island[-1]+1]
                 dist = np.sqrt(np.square(pt_a[0][0]-pt_b[0][0])+np.square(pt_a[0][1]-pt_b[0][1]))
                 if win/2 > dist:
-                    island.append(index[c])
+                    island.append(ind)
                 else:
                     isle.append(island)
-                    island = [index[c]]
+                    island = [ind]
 
         isle.append(island)
 
@@ -138,15 +138,15 @@ def acute(obj, mask, win, threshold):
         ts_pts = []
         ptvals = []
         max_dist = [['cont_pos', 'max_dist', 'angle']]
-        for x in range(len(isle)):
+        for island in isle:
 
             # Identify if contour is concavity/convexity using image mask
-            pix_x, pix_y, w, h = cv2.boundingRect(obj[isle[x]])  # Obtain local window around island
+            pix_x, pix_y, w, h = cv2.boundingRect(obj[island])  # Obtain local window around island
 
             for c in range(w):
                 for r in range(h):
                     # Identify pixels in local window internal to the island hull
-                    pos = cv2.pointPolygonTest(obj[isle[x]], (pix_x+c, pix_y+r), 0)
+                    pos = cv2.pointPolygonTest(obj[island], (pix_x+c, pix_y+r), 0)
                     if 0 < pos:
                         vals.append(mask[pix_y+r][pix_x+c])  # Store pixel value if internal
             if len(vals) > 0:
@@ -180,29 +180,29 @@ def acute(obj, mask, win, threshold):
             #        max_dist.append([isle[x][1], '-', chain[isle[x][1]]])
             #     print pt
 
-            if len(isle[x]) >= 3:               # If landmark is multiple points (distance scan for position)
+            if len(island) >= 3:               # If landmark is multiple points (distance scan for position)
                 if params.debug is not None:
                     print('route C')
-                ss = obj[isle[x][0]]            # Store isle "x" start site
-                ts = obj[isle[x][-1]]           # Store isle "x" termination site
+                ss = obj[island[0]]            # Store isle "x" start site
+                ts = obj[island[-1]]           # Store isle "x" termination site
                 dist_1 = 0
-                for d in range(len(isle[x])):   # Scan from ss to ts within isle "x"
-                    site = obj[[isle[x][d]]]
+                for d in range(len(island)):   # Scan from ss to ts within isle "x"
+                    site = obj[[island[d]]]
                     ss_d = np.sqrt(np.square(ss[0][0] - site[0][0][0]) + np.square(ss[0][1] - site[0][0][1]))
                     ts_d = np.sqrt(np.square(ts[0][0] - site[0][0][0]) + np.square(ts[0][1] - site[0][0][1]))
                     # Current mean distance of 'd' to 'ss' & 'ts'
                     dist_2 = np.mean([np.abs(ss_d), np.abs(ts_d)])
-                    max_dist.append([isle[x][d], dist_2, chain[isle[x][d]]])
+                    max_dist.append([island[d], dist_2, chain[island[d]]])
                     if dist_2 > dist_1:                          # Current mean distance better fit that previous best?
-                        pt = isle[x][d]
+                        pt = island[d]
                         dist_1 = dist_2                          # Current mean becomes new best mean
                 # print pt
                 if params.debug is not None:
-                    print(f"Landmark site: {pt}, Start site: {isle[x][0]}, Term. site: {isle[x][-1]}")
+                    print(f"Landmark site: {pt}, Start site: {island[0]}, Term. site: {island[-1]}")
                 
                 maxpts.append(pt)           # Empty 'pts' prior to next mean distance scan
-                ss_pts.append(isle[x][0])
-                ts_pts.append(isle[x][-1])
+                ss_pts.append(island[0])
+                ts_pts.append(island[-1])
 
             if params.debug is not None:
                 print(f'Landmark point indices: {maxpts}')
