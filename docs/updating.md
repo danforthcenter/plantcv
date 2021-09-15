@@ -138,6 +138,7 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist = **plantcv.acute**(*obj, win, thresh, mask, device, debug=None*)
 * post v3.0dev2: homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist = **plantcv.acute**(*obj, win, thresh, mask*)
 * post v3.2: homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist = **plantcv.acute**(*obj, mask, win, thresh*)
+* post v4.0: DEPRECATED see plantcv.homology.acute
 
 #### plantcv.acute_vertex
 
@@ -338,6 +339,11 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, img_eh = **plantcv.hist_equalization**(*img, device, debug=None*)
 * post v3.0dev2: img_eh = **plantcv.hist_equalization**(*gray_img*)
+
+#### plantcv.homology.acute
+
+* pre v4.0: NA, see plantcv.acute
+* post v4.0: homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist = **plantcv.homology.acute**(*obj, mask, win, threshold*)
 
 #### plantcv.hyperspectral.analyze_index
 
