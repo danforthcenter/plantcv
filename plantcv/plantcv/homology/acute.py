@@ -3,9 +3,10 @@
 import numpy as np
 import math
 import cv2
+from plantcv.plantcv import params
 
 
-def acute(obj, mask, win, threshold, debug):
+def acute(obj, mask, win, threshold):
     """acute: identify landmark positions within a contour for morphometric analysis
 
     Inputs:
@@ -15,7 +16,6 @@ def acute(obj, mask, win, threshold, debug):
                   score; 1 cm in pixels often works well
     thresh      = angle score threshold to be applied for mapping out landmark
                   coordinate clusters within each contour
-    debug       = Debugging mode enabled/disabled for use in troubleshooting
 
     Outputs:
     homolog_pts = pseudo-landmarks selected from each landmark cluster
@@ -118,7 +118,7 @@ def acute(obj, mask, win, threshold, debug):
 
         if len(isle) > 1:
             if (isle[0][0] == 0) & (isle[-1][-1] == (len(chain)-1)):
-                if debug==True:
+                if params.debug is not None:
                     print('Fusing contour edges')
                 island = isle[-1]+isle[0]  # Fuse overlapping ends of contour
                 # Delete islands to be spliced if start-end fusion required
@@ -126,7 +126,7 @@ def acute(obj, mask, win, threshold, debug):
                 del isle[-1]
                 isle.insert(0, island)      # Prepend island to isle
         else:
-            if debug==True:
+            if params.debug is not None:
                 print('Microcontour...')
 
         # Homologous point maximum distance method
@@ -181,7 +181,7 @@ def acute(obj, mask, win, threshold, debug):
                 # print pt
 
             if len(isle[x]) >= 3:                           # If landmark is multiple points (distance scan for position)
-                if debug == True:
+                if params.debug is not None:
                     print('route C')
                 SS = obj[isle[x][0]]            # Store isle "x" start site
                 TS = obj[isle[x][-1]]           # Store isle "x" termination site
@@ -197,14 +197,14 @@ def acute(obj, mask, win, threshold, debug):
                         pt = isle[x][d]
                         dist_1 = dist_2                           # Current mean becomes new best mean
                 # print pt
-                if debug == True:
+                if params.debug is not None:
                     print('Landmark site: ',pt, ' , Start site: ', isle[x][0], ' , Term. site: ', isle[x][-1])
                 
                 maxpts.append(pt)           # Empty 'pts' prior to next mean distance scan
                 SSpts.append(isle[x][0])
                 TSpts.append(isle[x][-1])
 
-            if debug==True:
+            if params.debug is not None:
                 print('Landmark point indices: ', maxpts)
                 print('Starting site indices: ', SSpts)
                 print('Termination site indices: ', TSpts)
