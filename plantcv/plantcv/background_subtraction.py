@@ -31,7 +31,6 @@ def background_subtraction(background_image, foreground_image):
     :param foreground_image: numpy.ndarray
     :return fgmask: numpy.ndarray
     """
-    params.device += 1
     # Copying images to make sure not alter originals
     bg_img = np.copy(background_image)
     fg_img = np.copy(foreground_image)
