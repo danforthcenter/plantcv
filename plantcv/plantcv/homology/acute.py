@@ -91,9 +91,9 @@ def acute(obj, mask, win, threshold):
         if float(chain[c]) <= threshold:
             index.append(c)         # Append positions of acute links to index
 
-    acute_pos = obj[index]            # Extract all island points blindly
-
-    float(len(acute_pos)) / float(len(obj))  # Proportion of informative positions
+    # acute_pos = obj[index]            # Extract all island points blindly
+    #
+    # float(len(acute_pos)) / float(len(obj))  # Proportion of informative positions
 
     if len(index) != 0:
 
@@ -157,7 +157,6 @@ def acute(obj, mask, win, threshold):
                 vals = []
 
             # Identify pixel coordinate to use as pseudolandmark for island
-            
             # if len(isle[x]) == 1:           # If landmark is a single point (store position)
             #    if debug == True:
             #        print('route A')
