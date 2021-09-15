@@ -199,16 +199,16 @@ def acute(obj, mask, win, threshold):
                         dist_1 = dist_2                           # Current mean becomes new best mean
                 # print pt
                 if params.debug is not None:
-                    print('Landmark site: ',pt, ' , Start site: ', isle[x][0], ' , Term. site: ', isle[x][-1])
+                    print(f"Landmark site: {pt}, Start site: {isle[x][0]}, Term. site: {isle[x][-1]}")
                 
                 maxpts.append(pt)           # Empty 'pts' prior to next mean distance scan
                 SSpts.append(isle[x][0])
                 TSpts.append(isle[x][-1])
 
             if params.debug is not None:
-                print('Landmark point indices: ', maxpts)
-                print('Starting site indices: ', SSpts)
-                print('Termination site indices: ', TSpts)
+                print(f'Landmark point indices: {maxpts}')
+                print(f'Starting site indices: {SSpts}')
+                print(f'Termination site indices: {TSpts}')
             
         homolog_pts = obj[maxpts]
         start_pts = obj[SSpts]
