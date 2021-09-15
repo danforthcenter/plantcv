@@ -8,7 +8,8 @@ from plantcv.plantcv import params
 
 
 def object_composition(img, contours, hierarchy):
-    """Groups objects into a single object, usually done after object filtering.
+    """
+    Groups objects into a single object, usually done after object filtering.
 
     Inputs:
     img       = RGB or grayscale image data for plotting

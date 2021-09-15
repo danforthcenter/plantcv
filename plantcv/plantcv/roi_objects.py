@@ -10,7 +10,8 @@ from plantcv.plantcv import params
 
 
 def roi_objects(img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, roi_type="partial"):
-    """Find objects partially inside a region of interest or cut objects to the ROI.
+    """
+    Find objects partially inside a region of interest or cut objects to the ROI.
 
     Inputs:
     img            = RGB or grayscale image data for plotting

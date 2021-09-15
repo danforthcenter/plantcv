@@ -8,7 +8,8 @@ from plantcv.plantcv import params
 
 
 def readbayer(filename, bayerpattern='BG', alg='default'):
-    """Read image from file that has a Bayer mosaic.
+    """
+    Read image from file that has a Bayer mosaic.
 
     Inputs:
     filename = name of image file

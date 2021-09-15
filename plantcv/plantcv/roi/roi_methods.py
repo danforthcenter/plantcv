@@ -10,7 +10,8 @@ from plantcv.plantcv import params
 
 # Create an ROI from a binary mask
 def from_binary_image(img, bin_img):
-    """Create an ROI from a binary image
+    """
+    Create an ROI from a binary image
 
     Inputs:
     img           = An RGB or grayscale image to plot the ROI on.
@@ -39,7 +40,8 @@ def from_binary_image(img, bin_img):
 
 # Create a rectangular ROI
 def rectangle(img, x, y, h, w):
-    """Create a rectangular ROI.
+    """
+    Create a rectangular ROI.
 
     Inputs:
     img           = An RGB or grayscale image to plot the ROI on in debug mode.
@@ -87,7 +89,8 @@ def rectangle(img, x, y, h, w):
 
 # Create a circular ROI
 def circle(img, x, y, r):
-    """Create a circular ROI.
+    """
+    Create a circular ROI.
 
     Inputs:
     img           = An RGB or grayscale image to plot the ROI on in debug mode.
@@ -131,7 +134,8 @@ def circle(img, x, y, r):
 
 # Create an elliptical ROI
 def ellipse(img, x, y, r1, r2, angle):
-    """Create an elliptical ROI.
+    """
+    Create an elliptical ROI.
 
     Inputs:
     img           = An RGB or grayscale image to plot the ROI on in debug mode.
@@ -180,7 +184,8 @@ def ellipse(img, x, y, r1, r2, angle):
 
 # Draw the ROI on a reference image
 def _draw_roi(img, roi_contour):
-    """Draw an ROI
+    """
+    Draw an ROI
 
     :param img: numpy.ndarray
     :param roi_contour: list
@@ -197,7 +202,8 @@ def _draw_roi(img, roi_contour):
 
 
 def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
-    """Create multiple circular ROIs on a single image
+    """
+    Create multiple circular ROIs on a single image
     Inputs
     img           = Input image data.
     coord         = Two-element tuple of the center of the top left object (x,y) or a list of tuples identifying
@@ -311,7 +317,8 @@ def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
 
 
 def custom(img, vertices):
-    """Create an custom polygon ROI.
+    """
+    Create an custom polygon ROI.
 
         Inputs:
         img           = An RGB or grayscale image to plot the ROI on in debug mode.

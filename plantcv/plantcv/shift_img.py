@@ -8,7 +8,8 @@ from plantcv.plantcv import params
 
 
 def shift_img(img, number, side="right"):
-    """this function allows you to shift an image over without changing dimensions
+    """
+    This function allows you to shift an image over without changing dimensions
 
     Inputs:
     img     = RGB or grayscale image data

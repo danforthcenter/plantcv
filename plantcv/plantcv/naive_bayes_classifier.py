@@ -10,7 +10,8 @@ from plantcv.plantcv import params
 
 
 def naive_bayes_classifier(rgb_img, pdf_file):
-    """Use the Naive Bayes classifier to output a plant binary mask.
+    """
+    Use the Naive Bayes classifier to output a plant binary mask.
 
     Inputs:
     rgb_img      = RGB image data
