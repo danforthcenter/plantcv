@@ -1,7 +1,6 @@
 # Canny edge detection
 
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import dilate
 from plantcv.plantcv import params
 from plantcv.plantcv import fatal_error
@@ -13,7 +12,8 @@ import os
 
 def canny_edge_detect(img, mask=None, sigma=1.0, low_thresh=None, high_thresh=None, thickness=1,
                       mask_color=None, use_quantiles=False):
-    """Edge filter an image using the Canny algorithm.
+    """
+    Edge filter an image using the Canny algorithm.
 
     Inputs:
     img           = RGB or grayscale image data
@@ -52,8 +52,6 @@ def canny_edge_detect(img, mask=None, sigma=1.0, low_thresh=None, high_thresh=No
     Original author: Lee Kamentsky
     """
 
-    params.device += 1
-
     # Check if the image is grayscale; if color img then make it grayscale
     dimensions = np.shape(img)
     if len(dimensions) == 3:
@@ -83,9 +81,8 @@ def canny_edge_detect(img, mask=None, sigma=1.0, low_thresh=None, high_thresh=No
         params.debug = debug
 
     # Print or plot the binary image
-    if params.debug == 'print':
-        print_image(bin_img, os.path.join(params.debug_outdir, (str(params.device) + '_canny_edge_detect.png')))
-    elif params.debug == 'plot':
-        plot_image(bin_img, cmap='gray')
+    _debug(visual=bin_img,
+           filename=os.path.join(params.debug_outdir, (str(params.device) + '_canny_edge_detect.png')),
+           cmap='gray')
 
     return bin_img

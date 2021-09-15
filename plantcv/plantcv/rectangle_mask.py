@@ -4,13 +4,13 @@ import cv2
 import numpy as np
 import os
 from plantcv.plantcv import fatal_error
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
 
 
 def rectangle_mask(img, p1, p2, color="black"):
-    """Takes an input image and returns a binary image masked by a rectangular area denoted by p1 and p2. Note that
+    """
+    Takes an input image and returns a binary image masked by a rectangular area denoted by p1 and p2. Note that
        p1 = (0,0) is the top left hand corner bottom right hand corner is p2 = (max-value(x), max-value(y)).
 
     Inputs:
@@ -35,12 +35,12 @@ def rectangle_mask(img, p1, p2, color="black"):
     :return hierarchy: list
     """
 
-    params.device += 1
     # get the dimensions of the input image
     if len(np.shape(img)) == 3:
         ix, iy, iz = np.shape(img)
     else:
         ix, iy = np.shape(img)
+        
     # create a blank image of same size
     bnk = np.zeros((ix, iy), dtype=np.uint8)
     img1 = np.copy(img)
@@ -66,9 +66,10 @@ def rectangle_mask(img, p1, p2, color="black"):
     else:
         fatal_error(str(color) + " is not a valid color, must be 'white', 'black', or 'gray'.")
 
-    if params.debug == 'print':
-        print_image(bnk, os.path.join(params.debug_outdir, str(params.device) + '_roi.png'))
-    elif params.debug == 'plot':
-        plot_image(img1, cmap="gray")
-        plot_image(bnk, cmap="gray")
+    _debug(visual=bnk,
+           filename=os.path.join(params.debug_outdir, str(params.device) + '_rectroi.png'))
+    _debug(visual=img1,
+           filename=os.path.join(params.debug_outdir, str(params.device) + '_rectmask.png'),
+           cmap='gray')
+
     return img1, bnk, contour, hierarchy
