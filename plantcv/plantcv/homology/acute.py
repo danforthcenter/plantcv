@@ -82,7 +82,7 @@ def acute(obj, mask, win, threshold):
             dot = -1
 
         ang = math.degrees(math.acos(dot))
-        #print(str(k)+'  '+str(dot)+'  '+str(ang))
+        # print(str(k)+'  '+str(dot)+'  '+str(ang))
         chain.append(ang)
 
     index = []                      # Index chain to find clusters below angle threshold
@@ -158,13 +158,13 @@ def acute(obj, mask, win, threshold):
 
             # Identify pixel coordinate to use as pseudolandmark for island
             
-            #if len(isle[x]) == 1:           # If landmark is a single point (store position)
+            # if len(isle[x]) == 1:           # If landmark is a single point (store position)
             #    if debug == True:
             #        print('route A')
             #    pt = isle[x][0]
             #    max_dist.append([isle[x][0], '-', chain[isle[x][0]]])
             #    # print pt
-            #elif len(isle[x]) == 2:         # If landmark is a pair of points (store more acute position)
+            # elif len(isle[x]) == 2:         # If landmark is a pair of points (store more acute position)
             #    if debug == True:
             #        print('route B')
             #    pt_a = chain[isle[x][0]]
@@ -172,16 +172,16 @@ def acute(obj, mask, win, threshold):
             #    print(pt_a, pt_b)
             #    if pt_a == pt_b:
             #        pt = isle[x][0]             # Store point A if both are equally acute
-            #        max_dist.append([isle[x][0], '-', chain[isle[x][0]]])                
+            #        max_dist.append([isle[x][0], '-', chain[isle[x][0]]])
             #    elif pt_a < pt_b:
             #        pt = isle[x][0]             # Store point A if more acute
             #        max_dist.append([isle[x][0], '-', chain[isle[x][0]]])
             #    elif pt_a > pt_b:
             #        pt = isle[x][1]             # Store point B if more acute
             #        max_dist.append([isle[x][1], '-', chain[isle[x][1]]])
-                # print pt
+            #     print pt
 
-            if len(isle[x]) >= 3:                           # If landmark is multiple points (distance scan for position)
+            if len(isle[x]) >= 3:               # If landmark is multiple points (distance scan for position)
                 if params.debug is not None:
                     print('route C')
                 ss = obj[isle[x][0]]            # Store isle "x" start site
@@ -194,9 +194,9 @@ def acute(obj, mask, win, threshold):
                     # Current mean distance of 'd' to 'ss' & 'ts'
                     dist_2 = np.mean([np.abs(ss_d), np.abs(ts_d)])
                     max_dist.append([isle[x][d], dist_2, chain[isle[x][d]]])
-                    if dist_2 > dist_1:                           # Current mean distance better fit that previous best?
+                    if dist_2 > dist_1:                          # Current mean distance better fit that previous best?
                         pt = isle[x][d]
-                        dist_1 = dist_2                           # Current mean becomes new best mean
+                        dist_1 = dist_2                          # Current mean becomes new best mean
                 # print pt
                 if params.debug is not None:
                     print(f"Landmark site: {pt}, Start site: {isle[x][0]}, Term. site: {isle[x][-1]}")
