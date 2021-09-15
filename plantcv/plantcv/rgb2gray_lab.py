@@ -2,14 +2,14 @@
 
 import cv2
 import os
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 
 
 def rgb2gray_lab(rgb_img, channel):
-    """Convert image from RGB colorspace to LAB colorspace. Returns the specified subchannel as a gray image.
+    """
+    Convert image from RGB colorspace to LAB colorspace. Returns the specified subchannel as a gray image.
 
     Inputs:
     rgb_img   = RGB image data
@@ -22,8 +22,7 @@ def rgb2gray_lab(rgb_img, channel):
     :param channel: str
     :return channel: numpy.ndarray
     """
-    # Auto-increment the device counter
-    params.device += 1
+
     # The allowable channel inputs are l, a or b
     names = {"l": "lightness", "a": "green-magenta", "b": "blue-yellow"}
     channel = channel.lower()
@@ -37,10 +36,9 @@ def rgb2gray_lab(rgb_img, channel):
     # Create a channel dictionaries for lookups by a channel name index
     channels = {"l": l, "a": a, "b": b}
 
-    if params.debug == "print":
-        print_image(channels[channel], os.path.join(params.debug_outdir,
-                                                    str(params.device) + "_lab_" + names[channel] + ".png"))
-    elif params.debug == "plot":
-        plot_image(channels[channel], cmap="gray")
+    _debug(visual=channels[channel],
+           filename=os.path.join(params.debug_outdir,
+                                 str(params.device) + "_lab_" + names[channel] + ".png"),
+           cmap="gray")
 
     return channels[channel]

@@ -4,21 +4,21 @@ import cv2
 import numpy as np
 import os
 from plantcv.plantcv import fatal_error
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
 from plantcv.plantcv import rgb2gray_hsv
 from plantcv.plantcv import find_objects
 from plantcv.plantcv.threshold import binary as binary_threshold
 from plantcv.plantcv import roi_objects
 from plantcv.plantcv import object_composition
 from plantcv.plantcv import apply_mask
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
 def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None,
                             thresh=None, label="default"):
-    """Detects a size marker in a specified region and reports its size and eccentricity
+    """
+    Detects a size marker in a specified region and reports its size and eccentricity
 
     Inputs:
     img             = An RGB or grayscale image to plot the marker object on
@@ -121,10 +121,8 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
     # Reset debug mode
     params.debug = debug
 
-    if params.debug == 'print':
-        print_image(ref_img, os.path.join(params.debug_outdir, str(params.device) + '_marker_shape.png'))
-    elif params.debug == 'plot':
-        plot_image(ref_img)
+    _debug(visual=ref_img,
+           filename=os.path.join(params.debug_outdir, str(params.device) + '_marker_shape.png'))
 
     outputs.add_observation(sample=label, variable='marker_area', trait='marker area',
                             method='plantcv.plantcv.report_size_marker_area', scale='pixels', datatype=int,

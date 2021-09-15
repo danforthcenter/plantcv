@@ -2,14 +2,14 @@
 
 import cv2
 import os
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 
 
 def rgb2gray_hsv(rgb_img, channel):
-    """Convert an RGB color image to HSV colorspace and return a gray image (one channel).
+    """
+    Convert an RGB color image to HSV colorspace and return a gray image (one channel).
 
     Inputs:
     rgb_img = RGB image data
@@ -22,8 +22,6 @@ def rgb2gray_hsv(rgb_img, channel):
     :param channel: str
     :return channel: numpy.ndarray
     """
-    # Auto-increment the device counter
-    params.device += 1
 
     # The allowable channel inputs are h, s or v
     names = {"h": "hue", "s": "saturation", "v": "value"}
@@ -38,10 +36,9 @@ def rgb2gray_hsv(rgb_img, channel):
     # Create a channel dictionaries for lookups by a channel name index
     channels = {"h": h, "s": s, "v": v}
 
-    if params.debug == "print":
-        print_image(channels[channel], os.path.join(params.debug_outdir,
-                                                    str(params.device) + "_hsv_" + names[channel] + ".png"))
-    elif params.debug == "plot":
-        plot_image(channels[channel], cmap="gray")
+    _debug(visual=channels[channel],
+           filename=os.path.join(params.debug_outdir,
+                                 str(params.device) + "_hsv_" + names[channel] + ".png"),
+           cmap='gray')
 
     return channels[channel]
