@@ -186,20 +186,20 @@ def acute(obj, mask, win, threshold):
                 ss = obj[island[0]]            # Store isle "x" start site
                 ts = obj[island[-1]]           # Store isle "x" termination site
                 dist_1 = 0
-                for d in range(len(island)):   # Scan from ss to ts within isle "x"
-                    site = obj[[island[d]]]
+                for d in island:   # Scan from ss to ts within isle "x"
+                    site = obj[[d]]
                     ss_d = np.sqrt(np.square(ss[0][0] - site[0][0][0]) + np.square(ss[0][1] - site[0][0][1]))
                     ts_d = np.sqrt(np.square(ts[0][0] - site[0][0][0]) + np.square(ts[0][1] - site[0][0][1]))
                     # Current mean distance of 'd' to 'ss' & 'ts'
                     dist_2 = np.mean([np.abs(ss_d), np.abs(ts_d)])
-                    max_dist.append([island[d], dist_2, chain[island[d]]])
+                    max_dist.append([d, dist_2, chain[d]])
                     if dist_2 > dist_1:                          # Current mean distance better fit that previous best?
-                        pt = island[d]
+                        pt = d
                         dist_1 = dist_2                          # Current mean becomes new best mean
                 # print pt
                 if params.debug is not None:
                     print(f"Landmark site: {pt}, Start site: {island[0]}, Term. site: {island[-1]}")
-                
+
                 maxpts.append(pt)           # Empty 'pts' prior to next mean distance scan
                 ss_pts.append(island[0])
                 ts_pts.append(island[-1])
