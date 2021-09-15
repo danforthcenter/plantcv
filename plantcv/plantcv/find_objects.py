@@ -8,7 +8,8 @@ from plantcv.plantcv import params
 
 
 def find_objects(img, mask):
-    """Find all objects and color them blue.
+    """
+    Find all objects and color them blue.
 
     Inputs:
     img       = RGB or grayscale image data for plotting
