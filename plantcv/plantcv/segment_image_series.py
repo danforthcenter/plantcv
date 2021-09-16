@@ -114,8 +114,10 @@ def segment_image_series(imgs_paths, masks_paths, rois, save_labels=True, ksize=
         out_labels[:,:,n] = labels[:,:,half_k]
 
 
-        # Create images for plotting and printing (debug mode)
+        # create images for plotting and printing (debug mode)
         vis_seg = label2rgb(out_labels[:,:,n], image=img_n_rgb, colors=None, alpha=0.3, bg_label=0)
+        # cast visualization image as int 
+        vis_seg = (np.floor(255*vis_seg)).astype(np.uint8)
         params.debug = debug
         _debug(visual=vis_seg, filename=os.path.join(params.debug_outdir,
                                 f"{str(params.device)}_{image_names[n][:-4]}_WSeg.png"))
