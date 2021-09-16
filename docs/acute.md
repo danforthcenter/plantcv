@@ -2,7 +2,7 @@
 
 Identify landmark positions within a contour for morphometric analysis
 
-**plantcv.homology.acute**(*obj, mask, win, threshold*)
+**plantcv.homology.acute**(*img, obj, mask, win, threshold*)
 
 **returns**
 
@@ -18,6 +18,7 @@ useful in parsing homolog_pts in downstream analyses
 chain       = raw angle scores for entire contour, used to visualize landmark clusters
 
 - **Parameters:**
+    - img - The original image, used for plotting purposes
     - obj - A contour of the plant object
     - mask - Binary mask used to generate contour array (necessary for ptvals)
     - win - The maximum cumulative pixel distance window for calculating angle score; 1 cm in pixels often works well

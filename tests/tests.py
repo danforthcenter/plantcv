@@ -1210,23 +1210,29 @@ def test_plantcv_outputs_save_results_csv(tmpdir):
     assert results == test_results
 
 
-def test_plantcv_homology_acute():
+@pytest.mark.parametrize("win", [0, 5])
+def test_plantcv_homology_acute(win):
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
     # Read in test data
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR), encoding="latin1")
     obj_contour = contours_npz['arr_0']
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.homology.acute(obj=obj_contour, win=5, threshold=15, mask=mask)
-    _ = pcv.homology.acute(obj=obj_contour, win=0, threshold=15, mask=mask)
-    _ = pcv.homology.acute(obj=np.array(([[213, 190]], [[83, 61]], [[149, 246]])), win=84, threshold=192, mask=mask)
-    _ = pcv.homology.acute(obj=np.array(([[3, 29]], [[31, 102]], [[161, 63]])), win=148, threshold=56, mask=mask)
-    _ = pcv.homology.acute(obj=np.array(([[103, 154]], [[27, 227]], [[152, 83]])), win=35, threshold=0, mask=mask)
-    # Test with debug = None
-    pcv.params.debug = None
-    _ = pcv.homology.acute(obj=np.array(([[103, 154]], [[27, 227]], [[152, 83]])), win=35, threshold=0, mask=mask)
-    _ = pcv.homology.acute(obj=obj_contour, win=0, threshold=15, mask=mask)
-    homology_pts = pcv.homology.acute(obj=obj_contour, win=5, threshold=15, mask=mask)
+    homology_pts = pcv.homology.acute(img=mask, obj=obj_contour, mask=mask, win=win, threshold=15)
+    assert all([i == j] for i, j in zip(np.shape(homology_pts), (29, 1, 2)))
+
+
+@pytest.mark.parametrize("cnt,win,thresh", [
+    [np.array(([[213, 190]], [[83, 61]], [[149, 246]])), 84, 192],
+    [np.array(([[3, 29]], [[31, 102]], [[161, 63]])), 148, 56],
+    [np.array(([[103, 154]], [[27, 227]], [[152, 83]])), 35, 0]
+])
+def test_plantcv_homology_acute_smallcontours(cnt, win, thresh):
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    # Read in test data
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
+    homology_pts = pcv.homology.acute(img=mask, obj=cnt, mask=mask, win=win, threshold=thresh)
     assert all([i == j] for i, j in zip(np.shape(homology_pts), (29, 1, 2)))
 
 

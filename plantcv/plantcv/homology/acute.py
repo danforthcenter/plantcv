@@ -4,13 +4,15 @@ import numpy as np
 import math
 import cv2
 from plantcv.plantcv import params
+from plantcv.plantcv._debug import _debug
 
 
-def acute(obj, mask, win, threshold):
+def acute(img, obj, mask, win, threshold):
     """
     Identify landmark positions within a contour for morphometric analysis
 
     Inputs:
+    img         = Original image used for plotting purposes
     obj         = An opencv contour array of interest to be scanned for landmarks
     mask        = binary mask used to generate contour array (necessary for ptvals)
     win         = maximum cumulative pixel distance window for calculating angle
@@ -30,6 +32,7 @@ def acute(obj, mask, win, threshold):
                   landmark cluster edges, and angle score for entire contour.  Used
                   in troubleshooting.
 
+    :param img: numpy.ndarray
     :param obj: numpy.ndarray
     :param mask: numpy.ndarray
     :param win: int
@@ -208,10 +211,19 @@ def acute(obj, mask, win, threshold):
                 print(f'Landmark point indices: {maxpts}')
                 print(f'Starting site indices: {ss_pts}')
                 print(f'Termination site indices: {ts_pts}')
-            
+
         homolog_pts = obj[maxpts]
         start_pts = obj[ss_pts]
         stop_pts = obj[ts_pts]
+
+        ori_img = np.copy(img)
+        # Convert grayscale images to color
+        if len(np.shape(ori_img)) == 2:
+            ori_img = cv2.cvtColor(ori_img, cv2.COLOR_GRAY2BGR)
+        # Draw acute points on the original image
+        cv2.drawContours(ori_img, homolog_pts, -1, (255, 255, 255), params.line_thickness)
+        # print/plot debug image
+        _debug(visual=ori_img, filename=f"{params.device}_acute_plms.png")
 
         return homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist
     else:
