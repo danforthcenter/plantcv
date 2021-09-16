@@ -25,7 +25,35 @@ chain       = raw angle scores for entire contour, used to visualize landmark cl
     - thresh - Angle score threshold to be applied for mapping out landmark coordinate clusters within each contour
 - **Context:**
     - Used to identify pseudo-landmark positions along the contour of a plant for morphometric analysis 
+- **Example use:**
+    - [Use In Homology Tutorial](tutorials/homology_tutorial.md)
 
+**Original image**
 
+![Screenshot](img/documentation_images/acute/B100_rep1_d10.jpg)
+
+**Image mask**
+
+![Screenshot](img/documentation_images/acute/mask.png)
+
+```python
+
+from plantcv import plantcv as pcv
+
+# Set global debug behavior to None (default), "print" (to file), 
+# or "plot" (Jupyter Notebooks or X11)
+
+pcv.params.debug = "print"
+
+# Given an image, mask, and object contours, identify pseudo-landmarks with acute
+
+homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist = pcv.homology.acute(img=img, obj=obj, 
+                                                                               mask=mask, win=25, threshold=90)
+
+```
+
+**Pseudo-landmark points**
+
+![Screenshot](img/documentation_images/acute/acute_plms.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/homology/acute.py)

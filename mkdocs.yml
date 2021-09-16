@@ -73,6 +73,7 @@ nav:
       - 'Image Fusion': image_fusion.md
       - 'Invert': invert.md
       - 'Landmark Analysis':
+        - 'Acute': acute.md
         - 'Acute Vertex': acute_vertex.md
         - 'x-Axis Pseudolandmarks': x_axis_pseudolandmarks.md
         - 'y-Axis Pseudolandmarks': y_axis_pseudolandmarks.md
