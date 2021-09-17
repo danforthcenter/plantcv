@@ -29,6 +29,9 @@ def starscape(cur_plms, group_a, group_b, outfile_prefix):
     :param group_a: str
     :param group_b: str
     :param outfile_prefix: str
+    :return final_df: pandas.core.frame.DataFrame
+    :return eigenvals: numpy.ndarray
+    :return loadings: pandas.core.frame.DataFrame
     """
     init_comps = 4
 

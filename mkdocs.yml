@@ -75,6 +75,7 @@ nav:
       - 'Landmark Analysis':
         - 'Acute': homology_acute.md
         - 'Space': homology_space.md
+        - 'Starscape': homology_starscape.md
         - 'Acute Vertex': acute_vertex.md
         - 'x-Axis Pseudolandmarks': x_axis_pseudolandmarks.md
         - 'y-Axis Pseudolandmarks': y_axis_pseudolandmarks.md

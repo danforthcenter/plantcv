@@ -350,6 +350,11 @@ pages for more details on the input and output variable types.
 * pre v4.0: NA
 * post v4.0: cur_plms = **plantcv.homology.space**(*cur_plms, include_bound_dist=False, include_centroid_dist=False, include_orient_angles=False*)
 
+#### plantcv.homology.starscape
+
+* pre v4.0: NA
+* post v4.0: final_df, eigenvals, loadings = **plantcv.homology.starscape**(*cur_plms, group_a, group_b, outfile_prefix*)
+
 #### plantcv.hyperspectral.analyze_index
 
 * pre v3.7: NA
