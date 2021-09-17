@@ -1,4 +1,4 @@
-## Click and count objects (developing)
+## Click and count objects 
 
 `ClickCount` is a class that allows user interactive to count objects in images.
 
@@ -39,7 +39,7 @@
 ![ori_im](img/documentation_images/visualize_click_count/count_img.jpg)
 
 **Mask of automated detected objects**
-Note: for how to get this mask, refer to function `pcv.detect_descs`.
+Note: for how to get this mask, refer to function `pcv.detect_discs`.
 ![count_im](img/documentation_images/visualize_click_count/count_mask.png)
 
 
