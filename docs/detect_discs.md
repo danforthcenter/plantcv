@@ -1,4 +1,4 @@
-## Detect discs (developing)
+## Detect discs 
 
 Detects disc-shaped regions in a binary image based on eccentricity.
 A value of eccentricity between 0 and 1 corresponds to an ellipse.
