@@ -4,24 +4,24 @@ import matplotlib.pyplot as plt
 from scipy.spatial.distance import pdist
 from scipy.cluster.hierarchy import dendrogram, linkage
 from scipy.cluster.hierarchy import cut_tree
+from plantcv.plantcv import params
 
 
-def constella(cur_plms, PCstarscape, group_iter, outfile_prefix, debug):
-    """plmConstella: Generate a plm multivariate space for downstream use in homology group assignments
+def constella(cur_plms, PCstarscape, group_iter, outfile_prefix):
+    """
+    Group pseudo-landmarks into homology groupings
 
     Inputs:
-        cur_plms		= A pandas array of plm multivariate space representing capturing two adjacent frames in a
-                          time series or otherwise analogous dataset in order to enable homology assignments
-    groupA
-    groupB
-    comps		   = User defined number of principal components to retrieve
-    outfile_prefix  = User defined file path and prefix name for PCA output graphics
-    debug		   = Debugging mode enabled/disabled for use in troubleshooting
-
+    cur_plms      = A pandas array of plm multivariate space representing capturing two adjacent frames in a
+                    time series or otherwise analogous dataset in order to enable homology assignments
+    PCstarscape   = PCA results from starscape
+    group_iter    =
+    outfile_prefix = User defined file path and prefix name for PCA output graphics
 
     :param cur_plms: pandas.core.frame.DataFrame
-    :param debug: bool
-
+    :param PCstarscape: pandas.core.frame.DataFrame
+    :param group_iter: int
+    :param outfile_prefix: str
     """
     sanity_check_pos = 2  # Needs to point at days in image identifier!
 
@@ -29,8 +29,8 @@ def constella(cur_plms, PCstarscape, group_iter, outfile_prefix, debug):
 
     singleton_no = PCstarscape.shape[0]
 
-    if debug == True:
-        print(str(singleton_no) + ' plms to group')
+    if params.debug is not None:
+        print(f'{singleton_no} plms to group')
 
     plm_links = linkage(PCstarscape.loc[:, PCstarscape.columns[2:len(PCstarscape.columns)]].values, 'ward')
 
@@ -95,18 +95,18 @@ def constella(cur_plms, PCstarscape, group_iter, outfile_prefix, debug):
     for li in range(0, len(plmnames)):
         labelnames.append(''.join(plmnames[li] + ' (' + str(int(grpnames[li])) + ')'))
 
-    plm_HCA = plt.figure(figsize=(25, 15))
-    plm_HCA = plt.title('')
-    plm_HCA = plt.xlabel('')
-    plm_HCA = plt.ylabel('')
-    plm_HCA = plt.tick_params(axis='x', which='major', labelsize=18)
-    plm_HCA = dendrogram(plm_links, color_threshold=100, leaf_rotation=45, leaf_font_size=10, labels=labelnames)
+    if params.debug is not None:
+        plt.figure()
+        plt.title('')
+        plt.xlabel('')
+        plt.ylabel('')
+        dendrogram(plm_links, color_threshold=100, orientation="left", leaf_font_size=10, labels=np.array(labelnames))
+        plt.tight_layout()
 
-    if debug == True and outfile_prefix == None:
-        plt.show(plm_HCA)
-    else:
-        plt.savefig(outfile_prefix + '_plmHCA.png')
-
-    plt.close()
+        if params.debug == "print":
+            plt.savefig(outfile_prefix + '_plmHCA.png')
+            plt.close()
+        elif params.debug == "plot":
+            plt.show()
 
     return cur_plms, group_iter
