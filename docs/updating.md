@@ -345,6 +345,11 @@ pages for more details on the input and output variable types.
 * pre v4.0: NA, see plantcv.acute
 * post v4.0: homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist = **plantcv.homology.acute**(*img, obj, mask, win, threshold*)
 
+#### plantcv.homology.space
+
+* pre v4.0: NA
+* post v4.0: cur_plms = **plantcv.homology.space**(*cur_plms, include_bound_dist=False, include_centroid_dist=False, include_orient_angles=False*)
+
 #### plantcv.hyperspectral.analyze_index
 
 * pre v3.7: NA

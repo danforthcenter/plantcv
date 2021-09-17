@@ -1,21 +1,21 @@
 # Generate a plm multivariate space for downstream use in homology group assignments
 
 import numpy as np
+from plantcv.plantcv import params
 
-def space(cur_plms, debug=False, include_bound_dist=False, include_centroid_dist=False, include_orient_angles=False):
+
+def space(cur_plms, include_bound_dist=False, include_centroid_dist=False, include_orient_angles=False):
 
     """plmSpace: Generate a plm multivariate space for downstream use in homology group assignments
 
     Inputs:
     cur_plms    = A pandas array of acute plms representing capturing two adjacent frames in a time series
                   or otherwise analogous dataset in order to enable homology assignments
-    debug       = Debugging mode enabled/disabled for use in troubleshooting
     include_bound_dist = Add bounding box distances to space for Starscape clustering
     include_centroid_dist = Add centroid distances to space for Starscape clustering
     include_orient_angles = Add plm and centroid orientation angles to space for Starscape clustering
 
     :param cur_plms: pandas.core.frame.DataFrame
-    :param debug: bool
     :param include_bound_dist: bool
     :param include_centroid_dist: bool
     :param include_orient_angles: bool
@@ -80,7 +80,7 @@ def space(cur_plms, debug=False, include_bound_dist=False, include_centroid_dist
         cur_plms.insert(len(cur_plms.columns), 'orientation', orientation, True)
         cur_plms.insert(len(cur_plms.columns), 'centroid_orientation', centroid_orientation, True)
 
-    if (debug==True):
+    if params.debug is not None:
         print(cur_plms.head())
 
     return(cur_plms)
