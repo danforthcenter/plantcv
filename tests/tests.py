@@ -1259,8 +1259,8 @@ def test_plantcv_homology_starscape_2d():
     # Read input dataframe
     cur_plms = pd.read_csv(os.path.join(TEST_DATA, "plms_space_df.csv"))
     # Drop columns to reduce dataset vars
-    cur_plms.drop(columns=["bot_left_dist", "bot_right_dist", "top_left_dist", "top_right_dist", "centroid_dist",
-                          "orientation", "centroid_orientation"])
+    cur_plms = cur_plms.drop(columns=["bot_left_dist", "bot_right_dist", "top_left_dist", "top_right_dist",
+                                      "centroid_dist", "orientation", "centroid_orientation"])
     final_df, eigenvals, loadings = pcv.homology.starscape(cur_plms=cur_plms, group_a="B100_rep1_d10",
                                                            group_b="B100_rep1_d11",
                                                            outfile_prefix="starscape")
