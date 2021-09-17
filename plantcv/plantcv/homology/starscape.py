@@ -6,13 +6,13 @@ import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
 import pandas as pd
 import numpy as np
+from plantcv.plantcv import params
+from plantcv.plantcv._debug import _debug
 
-def starscape(cur_plms, groupA, groupB, outfile_prefix, debug):
 
-    init_comps=4
-    cutoff=0.99
-
-    """plmSpace: Generate a plm multivariate space for downstream use in homology group assignments
+def starscape(cur_plms, groupA, groupB, outfile_prefix):
+    """
+    Generate a plm multivariate space for downstream use in homology group assignments
 
     Inputs:
     cur_plms        = A pandas array of plm multivariate space representing capturing two adjacent frames in a 
@@ -28,6 +28,8 @@ def starscape(cur_plms, groupA, groupB, outfile_prefix, debug):
     :param debug: bool
 
     """
+    init_comps = 4
+    cutoff = 0.99
     
     #Store names of our features/dimensions used to generate our PCA
     features = cur_plms.columns[3:len(cur_plms.columns)].tolist()
@@ -49,7 +51,7 @@ def starscape(cur_plms, groupA, groupB, outfile_prefix, debug):
     #Store variance explained by each component
     var_exp=pca2.explained_variance_ratio_
 
-    if debug==True:
+    if params.debug is not None:
         #Print cumulative variance explained by each component
         print('Eigenvalues: ', eigenvals, '\n\n')
         #Print cumulative variance explained by each component
@@ -79,67 +81,58 @@ def starscape(cur_plms, groupA, groupB, outfile_prefix, debug):
 
     loadings = pd.DataFrame(pca.components_.T, columns = ["PC" + str(i) for i in range(1,informative_comps+1)], index=features)
 
-    #Generate Screeplot for PCA of plm space
-    screeplot=plt.figure(figsize=(6, 6))
-    screeplot = plt.plot(np.arange(1,len(eigenvals)+1), eigenvals)
-    screeplot = plt.hlines(1, 1, len(eigenvals)+1, linestyles='dotted', color='r')
-    screeplot = plt.title('Screeplot for Principal Components of plm Space')
-    screeplot = plt.xlabel('Number of Components', fontsize = 12)
-    screeplot = plt.ylabel('Eigenvalues', fontsize = 12)
+    if params.debug is not None:
+        # Generate Screeplot for PCA of plm space
+        plt.figure()
+        plt.plot(np.arange(1, len(eigenvals) + 1), eigenvals)
+        plt.hlines(1, 1, len(eigenvals) + 1, linestyles='dotted', color='r')
+        plt.title('Screeplot for Principal Components of plm Space')
+        plt.xlabel('Number of Components', fontsize=12)
+        plt.ylabel('Eigenvalues', fontsize=12)
 
-    if debug==True:
-        if outfile_prefix==None:
-            plt.show(screeplot)
-        else:
-            plt.savefig(outfile_prefix+'_screeplot.png')
+        if params.debug == 'print':
+            plt.savefig(f"{outfile_prefix}_screeplot.png", dpi=params.dpi)
+            plt.close()
+        elif params.debug == 'plot':
+            # Use non-blocking mode in case the function is run more than once
+            plt.show(block=False)
 
-    plt.close()
-
-    colors = ['r', 'b']
-
-    if informative_comps>=3:
-        #3D plot of First 3 PCA dimensions
-        fig_PrComp = plt.figure(figsize=(8, 8))
-        fig_PrComp = plt.axes(projection='3d')
-
-        fig_PrComp.set_xlabel('Principal Component 1', fontsize = 14)
-        fig_PrComp.set_ylabel('Principal Component 2', fontsize = 14)
-        fig_PrComp.set_zlabel('Principal Component 3', fontsize = 14)
-
+        # Plot principal components
+        plt.figure()
         targets = [groupA, groupB]
+        colors = ['r', 'b']
+        if informative_comps >= 3:
+            # 3D plot of first 3 PCA dimensions
+            prcomp = plt.axes(projection='3d')
+            # Set axis labels
+            prcomp.set_xlabel('Principal Component 1')
+            prcomp.set_ylabel('Principal Component 2')
+            prcomp.set_zlabel('Principal Component 3')
 
-        indicesToKeep = finalDf['filename'] == targets[0]
-        fig_PrComp.scatter3D(finalDf.loc[indicesToKeep, 'PC1'], 
-                      finalDf.loc[indicesToKeep, 'PC2'], 
-                      finalDf.loc[indicesToKeep, 'PC3'], c=colors[0]);
+            indicesToKeep = finalDf['filename'] == targets[0]
+            prcomp.scatter3D(finalDf.loc[indicesToKeep, 'PC1'],
+                             finalDf.loc[indicesToKeep, 'PC2'],
+                             finalDf.loc[indicesToKeep, 'PC3'], c=colors[0])
 
-        indicesToKeep = finalDf['filename'] == targets[1]
-        fig_PrComp.scatter3D(finalDf.loc[indicesToKeep, 'PC1'], 
-                      finalDf.loc[indicesToKeep, 'PC2'], 
-                      finalDf.loc[indicesToKeep, 'PC3'], c=colors[1]);
-    elif informative_comps==2:
-        #2D plot of First 2 PCA dimensions
-        fig_PrComp = plt.figure(figsize=(8, 8))
+            indicesToKeep = finalDf['filename'] == targets[1]
+            prcomp.scatter3D(finalDf.loc[indicesToKeep, 'PC1'],
+                             finalDf.loc[indicesToKeep, 'PC2'],
+                             finalDf.loc[indicesToKeep, 'PC3'], c=colors[1])
+        elif informative_comps==2:
+            # 2D plot of First 2 PCA dimensions
+            indicesToKeep = finalDf['filename'] == targets[0]
+            plt.scatter(finalDf.loc[indicesToKeep, 'PC1'], finalDf.loc[indicesToKeep, 'PC2'], c=colors[0])
 
-        targets = [groupA, groupB]
+            indicesToKeep = finalDf['filename'] == targets[1]
+            plt.scatter(finalDf.loc[indicesToKeep, 'PC1'], finalDf.loc[indicesToKeep, 'PC2'], c=colors[1])
 
-        indicesToKeep = finalDf['filename'] == targets[0]
-        fig_PrComp = plt.scatter(finalDf.loc[indicesToKeep, 'PC1'], 
-                      finalDf.loc[indicesToKeep, 'PC2'], c=colors[0]);
+            plt.xlabel('Principal Component 1')
+            plt.ylabel('Principal Component 2')
 
-        indicesToKeep = finalDf['filename'] == targets[1]
-        fig_PrComp = plt.scatter(finalDf.loc[indicesToKeep, 'PC1'], 
-                      finalDf.loc[indicesToKeep, 'PC2'], c=colors[1]);
+        if params.debug == "print":
+            plt.savefig(f"{outfile_prefix}_PCspace.png", dpi=params.dpi)
+            plt.close()
+        elif params.debug == "plot":
+            plt.show(block=False)
 
-        fig_PrComp = plt.xlabel('Principal Component 1', fontsize = 14)
-        fig_PrComp = plt.ylabel('Principal Component 2', fontsize = 14)
-
-    if debug==True:
-        if outfile_prefix==None:
-            plt.show(fig_PrComp)
-        else:
-            plt.savefig(outfile_prefix+'_PCspace.png')
-
-    plt.close()
-
-    return(finalDf, eigenvals, loadings)
+    return finalDf, eigenvals, loadings
