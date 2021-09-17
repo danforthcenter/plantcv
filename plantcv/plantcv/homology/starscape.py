@@ -14,7 +14,7 @@ def starscape(cur_plms, group_a, group_b, outfile_prefix):
     Generate a plm multivariate space for downstream use in homology group assignments
 
     Inputs:
-    cur_plms        = A pandas array of plm multivariate space representing capturing two adjacent frames in a 
+    cur_plms        = A pandas array of plm multivariate space representing capturing two adjacent frames in a
                       time series or otherwise analogous dataset in order to enable homology assignments
     group_a         = Name of group A (timepoint 1)
     group_b         = Name of group B (timepoint 2)
