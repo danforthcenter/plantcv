@@ -69,22 +69,20 @@ def space(cur_plms, include_bound_dist=False, include_centroid_dist=False, inclu
     for m in range(0, len(run)):
         # Use the sign of the run to determine if the weight should shift
         # in the 0-180 or 180-360 range for 360 arc conversion
+        a = 0
         if run[m] > 0:
             a = 90 - (np.arctan(rise[m] / run[m]) * (180 / np.pi))
         elif run[m] < 0:
             a = -(90 - (np.arctan(rise[m] / run[m]) * (180 / np.pi)))
-        else:
-            a = 0
         orientation.append(float(a))
 
         # Use the sign of the run to determine if the weight should
         # shift in the 0-180 or 180-360 range for 360 arc conversion
+        centroid_a = 0
         if centroid_run[m] > 0:
             centroid_a = 90 - (np.arctan(centroid_rise[m] / centroid_run[m]) * (180 / np.pi))
         elif centroid_run[m] < 0:
             centroid_a = -(90 - (np.arctan(centroid_rise[m] / centroid_run[m]) * (180 / np.pi)))
-        else:
-            centroid_a = 0
         centroid_orientation.append(float(centroid_a))
 
     if include_orient_angles is True:
