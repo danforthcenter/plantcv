@@ -19,47 +19,47 @@ def space(cur_plms, include_bound_dist=False, include_centroid_dist=False, inclu
     :param include_bound_dist: bool
     :param include_centroid_dist: bool
     :param include_orient_angles: bool
-
+    :return new_plms: pandas.core.frame.DataFrame
     """
+    new_plms = cur_plms.copy(deep=True)
+    bot_left = [int(min(new_plms.loc[:, ['plm_x']].values)), int(max(new_plms.loc[:, ['plm_y']].values))]
+    bot_right = [int(max(new_plms.loc[:, ['plm_x']].values)), int(max(new_plms.loc[:, ['plm_y']].values))]
+    top_left = [int(min(new_plms.loc[:, ['plm_x']].values)), int(min(new_plms.loc[:, ['plm_y']].values))]
+    top_right = [int(max(new_plms.loc[:, ['plm_x']].values)), int(min(new_plms.loc[:, ['plm_y']].values))]
+    centroid = [int(np.mean(new_plms.loc[:, ['plm_x']].values)), int(np.mean(new_plms.loc[:, ['plm_y']].values))]
 
-    bot_left = [int(min(cur_plms.loc[:, ['plm_x']].values)), int(max(cur_plms.loc[:, ['plm_y']].values))]
-    bot_right = [int(max(cur_plms.loc[:, ['plm_x']].values)), int(max(cur_plms.loc[:, ['plm_y']].values))]
-    top_left = [int(min(cur_plms.loc[:, ['plm_x']].values)), int(min(cur_plms.loc[:, ['plm_y']].values))]
-    top_right = [int(max(cur_plms.loc[:, ['plm_x']].values)), int(min(cur_plms.loc[:, ['plm_y']].values))]
-    centroid = [int(np.mean(cur_plms.loc[:, ['plm_x']].values)), int(np.mean(cur_plms.loc[:, ['plm_y']].values))]
-
-    bot_left_dist = np.sqrt(np.square(cur_plms.loc[:, ['plm_x']].values - bot_left[0]) + np.square(
-        cur_plms.loc[:, ['plm_y']].values - bot_left[1]))
-    bot_right_dist = np.sqrt(np.square(cur_plms.loc[:, ['plm_x']].values - bot_right[0]) + np.square(
-        cur_plms.loc[:, ['plm_y']].values - bot_right[1]))
-    top_left_dist = np.sqrt(np.square(cur_plms.loc[:, ['plm_x']].values - top_left[0]) + np.square(
-        cur_plms.loc[:, ['plm_y']].values - top_left[1]))
-    top_right_dist = np.sqrt(np.square(cur_plms.loc[:, ['plm_x']].values - top_right[0]) + np.square(
-        cur_plms.loc[:, ['plm_y']].values - top_right[1]))
+    bot_left_dist = np.sqrt(np.square(new_plms.loc[:, ['plm_x']].values - bot_left[0]) + np.square(
+        new_plms.loc[:, ['plm_y']].values - bot_left[1]))
+    bot_right_dist = np.sqrt(np.square(new_plms.loc[:, ['plm_x']].values - bot_right[0]) + np.square(
+        new_plms.loc[:, ['plm_y']].values - bot_right[1]))
+    top_left_dist = np.sqrt(np.square(new_plms.loc[:, ['plm_x']].values - top_left[0]) + np.square(
+        new_plms.loc[:, ['plm_y']].values - top_left[1]))
+    top_right_dist = np.sqrt(np.square(new_plms.loc[:, ['plm_x']].values - top_right[0]) + np.square(
+        new_plms.loc[:, ['plm_y']].values - top_right[1]))
 
     if include_bound_dist is True:
-        cur_plms.insert(len(cur_plms.columns), 'bot_left_dist', bot_left_dist, True)
-        cur_plms.insert(len(cur_plms.columns), 'bot_right_dist', bot_right_dist, True)
-        cur_plms.insert(len(cur_plms.columns), 'top_left_dist', top_left_dist, True)
-        cur_plms.insert(len(cur_plms.columns), 'top_right_dist', top_right_dist, True)
+        new_plms.insert(len(new_plms.columns), 'bot_left_dist', bot_left_dist, True)
+        new_plms.insert(len(new_plms.columns), 'bot_right_dist', bot_right_dist, True)
+        new_plms.insert(len(new_plms.columns), 'top_left_dist', top_left_dist, True)
+        new_plms.insert(len(new_plms.columns), 'top_right_dist', top_right_dist, True)
 
-    centroid_dist = np.sqrt(np.square(cur_plms.loc[:, ['plm_x']].values - centroid[0]) + np.square(
-        cur_plms.loc[:, ['plm_y']].values - centroid[1]))
+    centroid_dist = np.sqrt(np.square(new_plms.loc[:, ['plm_x']].values - centroid[0]) + np.square(
+        new_plms.loc[:, ['plm_y']].values - centroid[1]))
 
     if include_centroid_dist is True:
-        cur_plms.insert(len(cur_plms.columns), 'centroid_dist', centroid_dist, True)
+        new_plms.insert(len(new_plms.columns), 'centroid_dist', centroid_dist, True)
 
     run = (
-                  (cur_plms.loc[:, ['SS_x']].values + cur_plms.loc[:, ['TS_x']].values) / 2
-          ) - cur_plms.loc[:, ['plm_x']].values
+                  (new_plms.loc[:, ['SS_x']].values + new_plms.loc[:, ['TS_x']].values) / 2
+          ) - new_plms.loc[:, ['plm_x']].values
     rise = (
-                   (cur_plms.loc[:, ['SS_y']].values + cur_plms.loc[:, ['TS_y']].values) / 2
-           ) - cur_plms.loc[:, ['plm_y']].values
+                   (new_plms.loc[:, ['SS_y']].values + new_plms.loc[:, ['TS_y']].values) / 2
+           ) - new_plms.loc[:, ['plm_y']].values
     # print('delta_y=',rise,'   delta_x=',run)
     # slope=rise/run
 
-    centroid_run = (cur_plms.loc[:, ['plm_x']].values - centroid[0])
-    centroid_rise = (cur_plms.loc[:, ['plm_y']].values - centroid[1])
+    centroid_run = (new_plms.loc[:, ['plm_x']].values - centroid[0])
+    centroid_rise = (new_plms.loc[:, ['plm_y']].values - centroid[1])
     # print('cent_delta_y=',centroid_rise,'   cent_delta_x=',centroid_run)
     # centroid_slope=centroid_rise/centroid_run
 
@@ -88,10 +88,10 @@ def space(cur_plms, include_bound_dist=False, include_centroid_dist=False, inclu
         centroid_orientation.append(float(centroid_a))
 
     if include_orient_angles is True:
-        cur_plms.insert(len(cur_plms.columns), 'orientation', orientation, True)
-        cur_plms.insert(len(cur_plms.columns), 'centroid_orientation', centroid_orientation, True)
+        new_plms.insert(len(new_plms.columns), 'orientation', orientation, True)
+        new_plms.insert(len(new_plms.columns), 'centroid_orientation', centroid_orientation, True)
 
     if params.debug is not None:
-        print(cur_plms.head())
+        print(new_plms.head())
 
-    return cur_plms
+    return new_plms
