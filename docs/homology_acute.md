@@ -30,11 +30,11 @@ chain       = raw angle scores for entire contour, used to visualize landmark cl
 
 **Original image**
 
-![Screenshot](img/documentation_images/acute/B100_rep1_d10.jpg)
+![Screenshot](img/documentation_images/homology_acute/B100_rep1_d10.jpg)
 
 **Image mask**
 
-![Screenshot](img/documentation_images/acute/mask.png)
+![Screenshot](img/documentation_images/homology_acute/mask.png)
 
 ```python
 
@@ -54,6 +54,6 @@ homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist = pcv.homology.acute(i
 
 **Pseudo-landmark points**
 
-![Screenshot](img/documentation_images/acute/acute_plms.png)
+![Screenshot](img/documentation_images/homology_acute/acute_plms.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/homology/acute.py)
