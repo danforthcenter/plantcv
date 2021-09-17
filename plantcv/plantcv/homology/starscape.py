@@ -21,7 +21,9 @@ def starscape(cur_plms, group_a, group_b, outfile_prefix):
     outfile_prefix  = User defined file path and prefix name for PCA output graphics
 
     Outputs:
-
+    final_df        = Output dataframe
+    eigenvals       = PCA eigen values
+    loadings        = PCA loadings
 
     :param cur_plms: pandas.core.frame.DataFrame
     :param group_a: str

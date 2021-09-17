@@ -1225,6 +1225,7 @@ def test_plantcv_homology_acute(win):
 def test_plantcv_homology_space():
     # Test with debug = "plot"
     pcv.params.debug = "plot"
+    # Read input dataframe
     cur_plms = pd.read_csv(os.path.join(TEST_DATA, "plms_df.csv"))
     df = pcv.homology.space(cur_plms=cur_plms, include_bound_dist=True, include_centroid_dist=True,
                             include_orient_angles=True)
@@ -1232,6 +1233,39 @@ def test_plantcv_homology_space():
                 "bot_left_dist", "bot_right_dist", "top_left_dist", "top_right_dist", "centroid_dist", "orientation",
                 "centroid_orientation"]
     result = list(df.columns)
+    assert all([i == j] for i, j in zip(expected, result))
+
+
+@pytest.mark.parametrize("debug", ["print", "plot"])
+def test_plantcv_homology_starscape(debug, tmpdir):
+    # Set debug
+    pcv.params.debug = debug
+    # Create a test tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+    pcv.params.debug_outdir = cache_dir
+    # Read input dataframe
+    cur_plms = pd.read_csv(os.path.join(TEST_DATA, "plms_space_df.csv"))
+    final_df, eigenvals, loadings = pcv.homology.starscape(cur_plms=cur_plms, group_a="B100_rep1_d10",
+                                                           group_b="B100_rep1_d11",
+                                                           outfile_prefix=os.path.join(cache_dir, "starscape"))
+    expected = ["plmname", "filename", "PC1", "PC2", "PC3"]
+    result = list(final_df.columns)
+    assert all([i == j] for i, j in zip(expected, result))
+
+
+def test_plantcv_homology_starscape_2d():
+    # Set debug
+    pcv.params.debug = "plot"
+    # Read input dataframe
+    cur_plms = pd.read_csv(os.path.join(TEST_DATA, "plms_space_df.csv"))
+    # Drop columns to reduce dataset vars
+    cur_plms.drop(columns=["bot_left_dist", "bot_right_dist", "top_left_dist", "top_right_dist", "centroid_dist",
+                          "orientation", "centroid_orientation"])
+    final_df, eigenvals, loadings = pcv.homology.starscape(cur_plms=cur_plms, group_a="B100_rep1_d10",
+                                                           group_b="B100_rep1_d11",
+                                                           outfile_prefix="starscape")
+    expected = ["plmname", "filename", "PC1", "PC2"]
+    result = list(final_df.columns)
     assert all([i == j] for i, j in zip(expected, result))
 
 
