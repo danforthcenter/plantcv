@@ -1222,6 +1222,19 @@ def test_plantcv_homology_acute(win):
     assert all([i == j] for i, j in zip(np.shape(homology_pts), (29, 1, 2)))
 
 
+def test_plantcv_homology_space():
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    cur_plms = pd.read_csv(os.path.join(TEST_DATA, "plms_df.csv"))
+    df = pcv.homology.space(cur_plms=cur_plms, include_bound_dist=True, include_centroid_dist=True,
+                            include_orient_angles=True)
+    expected = ["group", "plmname", "filename", "plm_x", "plm_y", "SS_x", "SS_y", "TS_x", "TS_y", "CC_ratio",
+                "bot_left_dist", "bot_right_dist", "top_left_dist", "top_right_dist", "centroid_dist", "orientation",
+                "centroid_orientation"]
+    result = list(df.columns)
+    assert all([i == j] for i, j in zip(expected, result))
+
+
 @pytest.mark.parametrize("cnt,win,thresh", [
     [np.array(([[213, 190]], [[83, 61]], [[149, 246]])), 84, 192],
     [np.array(([[3, 29]], [[31, 102]], [[161, 63]])), 148, 56],
