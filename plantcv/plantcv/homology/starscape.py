@@ -11,7 +11,7 @@ from plantcv.plantcv import params
 
 def starscape(cur_plms, group_a, group_b, outfile_prefix):
     """
-    Generate a plm multivariate space for downstream use in homology group assignments
+    Principal Component Analysis on pseudo-landmark data between two timepoints
 
     Inputs:
     cur_plms        = A pandas array of plm multivariate space representing capturing two adjacent frames in a

@@ -1,6 +1,6 @@
 ## Homology: Starscape
 
-Generate a plm multivariate space for downstream use in homology group assignments
+Principal Component Analysis on pseudo-landmark data between two timepoints
 
 **plantcv.homology.starscape**(*cur_plms, group_a, group_b, outfile_prefix*)
 
@@ -12,7 +12,7 @@ Generate a plm multivariate space for downstream use in homology group assignmen
     - group_b - Name of group B (timepoint 2)
     - outfile_prefix - User defined file path and prefix name for PCA output graphics
 - **Context:**
-    - Used to generate a plm multivariate space for downstream use in homology group assignments
+    - Used to do Principal Component Analysis on pseudo-landmark data between two timepoints
 - **Example use:**
     - [Use In Homology Tutorial](tutorials/homology_tutorial.md)
 
