@@ -48,4 +48,4 @@ final_df.head()
 
 ![Screenshot](img/documentation_images/homology_starscape/prcomp_plot.png)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/homology/space.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/homology/starscape.py)
