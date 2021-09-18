@@ -1269,6 +1269,22 @@ def test_plantcv_homology_starscape_2d():
     assert all([i == j] for i, j in zip(expected, result))
 
 
+@pytest.mark.parametrize("debug", ["print", "plot"])
+def test_plantcv_homology_constella(debug, tmpdir):
+    # Set debug
+    pcv.params.debug = debug
+    # Create a test tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+    pcv.params.debug_outdir = cache_dir
+    # Read input dataframes
+    cur_plms = pd.read_csv(os.path.join(TEST_DATA, "plms_space_df.csv"))
+    cur_plms.group = None
+    starscape_df = pd.read_csv(os.path.join(TEST_DATA, "plms_starscape_df.csv"))
+    cur_plms, grp_iter = pcv.homology.constella(cur_plms=cur_plms, pc_starscape=starscape_df,
+                                                group_iter=1, outfile_prefix=os.path.join(cache_dir, "constella"))
+    assert max(cur_plms.group) == 10
+
+
 @pytest.mark.parametrize("cnt,win,thresh", [
     [np.array(([[213, 190]], [[83, 61]], [[149, 246]])), 84, 192],
     [np.array(([[3, 29]], [[31, 102]], [[161, 63]])), 148, 56],
