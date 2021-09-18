@@ -23,8 +23,6 @@ def constella(cur_plms, pc_starscape, group_iter, outfile_prefix):
     """
     sanity_check_pos = 2  # Needs to point at days in image identifier!
 
-    plm_links = linkage(pc_starscape.loc[:, pc_starscape.columns[2:len(pc_starscape.columns)]].values, 'ward')
-
     singleton_no = pc_starscape.shape[0]
 
     if params.debug is not None:
