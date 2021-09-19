@@ -1285,6 +1285,20 @@ def test_plantcv_homology_constella(debug, tmpdir):
     assert max(cur_plms.group) == 10
 
 
+def test_plantcv_homology_constella_one_time():
+    # Set debug
+    pcv.params.debug = None
+    # Read input dataframes
+    cur_plms = pd.read_csv(os.path.join(TEST_DATA, "plms_space_df.csv"))
+    cur_plms.group = None
+    starscape_df = pd.read_csv(os.path.join(TEST_DATA, "plms_starscape_df.csv"))
+    cur_plms = cur_plms.loc[cur_plms.filename.eq("B100_rep1_d10")]
+    starscape_df = starscape_df.loc[starscape_df.filename.eq("B100_rep1_d10")]
+    cur_plms, grp_iter = pcv.homology.constella(cur_plms=cur_plms, pc_starscape=starscape_df,
+                                                group_iter=1, outfile_prefix="constella")
+    assert max(cur_plms.group) == 8
+
+
 @pytest.mark.parametrize("cnt,win,thresh", [
     [np.array(([[213, 190]], [[83, 61]], [[149, 246]])), 84, 192],
     [np.array(([[3, 29]], [[31, 102]], [[161, 63]])), 148, 56],
