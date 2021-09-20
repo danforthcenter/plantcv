@@ -1,23 +1,21 @@
 import pandas as pd
 import numpy as np
+from plantcv.plantcv import params
 
 
-def constellaqc(denovo_groups, annotated_groups, debug):
+def constellaqc(denovo_groups, annotated_groups):
 
-    """plmConstellaQC: Compare de novo annotations of Constella to known standards in order to estimate error rates
+    """
+    Compare de novo annotations of Constella to known standards in order to estimate error rates
 
     Inputs:
     denovo_groups    = A pandas array representing homology groups predicted by Constella for plms
     annotated_groups = A pandas array representing the true biological identities of plms
-    debug		     = Debugging mode enabled/disabled for use in troubleshooting
-
 
     :param denovo_groups: pandas.core.frame.DataFrame
     :param annotated_groups: pandas.core.frame.DataFrame
-    :param debug: bool
 
     """
-
     known_feat=np.unique(annotated_groups.loc[:,'group'])
     pred_group=np.unique(denovo_groups.loc[:,'group'])
 
@@ -34,7 +32,7 @@ def constellaqc(denovo_groups, annotated_groups, debug):
 
     scores=pd.DataFrame(scores, index=known_feat, columns=pred_group)
 
-    if debug == True:
+    if params.debug is not None:
         print('Known Feature-Predicted Group Scoring Matrix:\n')
         print(scores)
 
