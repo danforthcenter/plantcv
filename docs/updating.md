@@ -360,6 +360,11 @@ pages for more details on the input and output variable types.
 * pre v4.0: NA
 * post v4.0: cur_plms, group_iter = **plantcv.homology.constella**(*cur_plms, pc_starscape, group_iter, outfile_prefix*)
 
+#### plantcv.homology.constellaqc
+
+* pre v4.0: NA
+* post v4.0: **plantcv.homology.constellaqc**(*denovo_groups, annotated_groups*)
+
 #### plantcv.hyperspectral.analyze_index
 
 * pre v3.7: NA
