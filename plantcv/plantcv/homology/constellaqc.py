@@ -21,7 +21,7 @@ def constellaqc(denovo_groups, annotated_groups):
     scores = []
 
     for anno in known_feat:
-        anno_bool_index = annotated_groups.loc[:, 'group'] == anno
+        # anno_bool_index = annotated_groups.loc[:, 'group'] == anno
         anno_group_calls = denovo_groups.loc[annotated_groups.loc[:, 'group'] == anno, 'group'].values
         # print(anno, 'count: ', np.sum(anno_bool_index))
         score_row = []
@@ -57,7 +57,7 @@ def constellaqc(denovo_groups, annotated_groups):
         nj.append(1)
 
     anno_valid = np.array(anno_sum) - ni - np.array(anno_error)
-    pred_valid = np.array(pred_sum) - nj - np.array(pred_error)
+    # pred_valid = np.array(pred_sum) - nj - np.array(pred_error)
 
     v_sum = np.sum(anno_valid)
     s_sum = np.sum(anno_error)
