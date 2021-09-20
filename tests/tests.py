@@ -1222,6 +1222,20 @@ def test_plantcv_homology_acute(win):
     assert all([i == j] for i, j in zip(np.shape(homology_pts), (29, 1, 2)))
 
 
+@pytest.mark.parametrize("cnt,win,thresh", [
+    [np.array(([[213, 190]], [[83, 61]], [[149, 246]])), 84, 192],
+    [np.array(([[3, 29]], [[31, 102]], [[161, 63]])), 148, 56],
+    [np.array(([[103, 154]], [[27, 227]], [[152, 83]])), 35, 0]
+])
+def test_plantcv_homology_acute_smallcontours(cnt, win, thresh):
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    # Read in test data
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
+    homology_pts = pcv.homology.acute(img=mask, obj=cnt, mask=mask, win=win, threshold=thresh)
+    assert all([i == j] for i, j in zip(np.shape(homology_pts), (29, 1, 2)))
+
+
 def test_plantcv_homology_space():
     # Test with debug = "plot"
     pcv.params.debug = "plot"
@@ -1299,18 +1313,13 @@ def test_plantcv_homology_constella_one_time():
     assert max(cur_plms.group) == 8
 
 
-@pytest.mark.parametrize("cnt,win,thresh", [
-    [np.array(([[213, 190]], [[83, 61]], [[149, 246]])), 84, 192],
-    [np.array(([[3, 29]], [[31, 102]], [[161, 63]])), 148, 56],
-    [np.array(([[103, 154]], [[27, 227]], [[152, 83]])), 35, 0]
-])
-def test_plantcv_homology_acute_smallcontours(cnt, win, thresh):
-    # Test with debug = "plot"
+def test_plantcv_homology_constellaqc():
+    # Set debug
     pcv.params.debug = "plot"
-    # Read in test data
-    mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
-    homology_pts = pcv.homology.acute(img=mask, obj=cnt, mask=mask, win=win, threshold=thresh)
-    assert all([i == j] for i, j in zip(np.shape(homology_pts), (29, 1, 2)))
+    plms = pd.read_csv(os.path.join(TEST_DATA, "plms_landmarks.csv"))
+    annotations = pd.read_csv(os.path.join(TEST_DATA, "plms_annotated.csv"))
+    pcv.homology.constellaqc(denovo_groups=plms, annotated_groups=annotations)
+    assert True
 
 
 def test_plantcv_acute_vertex():
