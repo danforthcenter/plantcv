@@ -1313,6 +1313,23 @@ def test_plantcv_homology_constella_one_time():
     assert max(cur_plms.group) == 8
 
 
+def test_plantcv_homology_constella_redundant_plm():
+    # Set debug
+    pcv.params.debug = None
+    # Read input dataframes
+    cur_plms = pd.read_csv(os.path.join(TEST_DATA, "plms_space_df.csv"))
+    cur_plms.group = None
+    starscape_df = pd.read_csv(os.path.join(TEST_DATA, "plms_starscape_df.csv"))
+    # Append duplicate plms
+    cur_plms = cur_plms.append(cur_plms.iloc[0])
+    cur_plms = cur_plms.reset_index(drop=True)
+    starscape_df = starscape_df.append(starscape_df.iloc[0])
+    starscape_df = starscape_df.reset_index(drop=True)
+    cur_plms, grp_iter = pcv.homology.constella(cur_plms=cur_plms, pc_starscape=starscape_df,
+                                                group_iter=1, outfile_prefix="constella")
+    assert max(cur_plms.group) == 11
+
+
 def test_plantcv_homology_constellaqc():
     # Set debug
     pcv.params.debug = "plot"
