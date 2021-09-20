@@ -1210,24 +1210,133 @@ def test_plantcv_outputs_save_results_csv(tmpdir):
     assert results == test_results
 
 
-def test_plantcv_acute():
+@pytest.mark.parametrize("win", [0, 5])
+def test_plantcv_homology_acute(win):
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
     # Read in test data
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR), encoding="latin1")
     obj_contour = contours_npz['arr_0']
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.acute(obj=obj_contour, win=5, thresh=15, mask=mask)
-    _ = pcv.acute(obj=obj_contour, win=0, thresh=15, mask=mask)
-    _ = pcv.acute(obj=np.array(([[213, 190]], [[83, 61]], [[149, 246]])), win=84, thresh=192, mask=mask)
-    _ = pcv.acute(obj=np.array(([[3, 29]], [[31, 102]], [[161, 63]])), win=148, thresh=56, mask=mask)
-    _ = pcv.acute(obj=np.array(([[103, 154]], [[27, 227]], [[152, 83]])), win=35, thresh=0, mask=mask)
-    # Test with debug = None
-    pcv.params.debug = None
-    _ = pcv.acute(obj=np.array(([[103, 154]], [[27, 227]], [[152, 83]])), win=35, thresh=0, mask=mask)
-    _ = pcv.acute(obj=obj_contour, win=0, thresh=15, mask=mask)
-    homology_pts = pcv.acute(obj=obj_contour, win=5, thresh=15, mask=mask)
+    homology_pts = pcv.homology.acute(img=mask, obj=obj_contour, mask=mask, win=win, threshold=15)
     assert all([i == j] for i, j in zip(np.shape(homology_pts), (29, 1, 2)))
+
+
+@pytest.mark.parametrize("cnt,win,thresh", [
+    [np.array(([[213, 190]], [[83, 61]], [[149, 246]])), 84, 192],
+    [np.array(([[3, 29]], [[31, 102]], [[161, 63]])), 148, 56],
+    [np.array(([[103, 154]], [[27, 227]], [[152, 83]])), 35, 0]
+])
+def test_plantcv_homology_acute_smallcontours(cnt, win, thresh):
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    # Read in test data
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
+    homology_pts = pcv.homology.acute(img=mask, obj=cnt, mask=mask, win=win, threshold=thresh)
+    assert all([i == j] for i, j in zip(np.shape(homology_pts), (29, 1, 2)))
+
+
+def test_plantcv_homology_space():
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    # Read input dataframe
+    cur_plms = pd.read_csv(os.path.join(TEST_DATA, "plms_df.csv"))
+    df = pcv.homology.space(cur_plms=cur_plms, include_bound_dist=True, include_centroid_dist=True,
+                            include_orient_angles=True)
+    expected = ["group", "plmname", "filename", "plm_x", "plm_y", "SS_x", "SS_y", "TS_x", "TS_y", "CC_ratio",
+                "bot_left_dist", "bot_right_dist", "top_left_dist", "top_right_dist", "centroid_dist", "orientation",
+                "centroid_orientation"]
+    result = list(df.columns)
+    assert all([i == j] for i, j in zip(expected, result))
+
+
+@pytest.mark.parametrize("debug", ["print", "plot"])
+def test_plantcv_homology_starscape(debug, tmpdir):
+    # Set debug
+    pcv.params.debug = debug
+    # Create a test tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+    pcv.params.debug_outdir = cache_dir
+    # Read input dataframe
+    cur_plms = pd.read_csv(os.path.join(TEST_DATA, "plms_space_df.csv"))
+    final_df, eigenvals, loadings = pcv.homology.starscape(cur_plms=cur_plms, group_a="B100_rep1_d10",
+                                                           group_b="B100_rep1_d11",
+                                                           outfile_prefix=os.path.join(cache_dir, "starscape"))
+    expected = ["plmname", "filename", "PC1", "PC2", "PC3"]
+    result = list(final_df.columns)
+    assert all([i == j] for i, j in zip(expected, result))
+
+
+def test_plantcv_homology_starscape_2d():
+    # Set debug
+    pcv.params.debug = "plot"
+    # Read input dataframe
+    cur_plms = pd.read_csv(os.path.join(TEST_DATA, "plms_space_df.csv"))
+    # Drop columns to reduce dataset vars
+    cur_plms = cur_plms.drop(columns=["bot_left_dist", "bot_right_dist", "top_left_dist", "top_right_dist",
+                                      "centroid_dist", "orientation", "centroid_orientation"])
+    final_df, eigenvals, loadings = pcv.homology.starscape(cur_plms=cur_plms, group_a="B100_rep1_d10",
+                                                           group_b="B100_rep1_d11",
+                                                           outfile_prefix="starscape")
+    expected = ["plmname", "filename", "PC1", "PC2"]
+    result = list(final_df.columns)
+    assert all([i == j] for i, j in zip(expected, result))
+
+
+@pytest.mark.parametrize("debug", ["print", "plot"])
+def test_plantcv_homology_constella(debug, tmpdir):
+    # Set debug
+    pcv.params.debug = debug
+    # Create a test tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+    pcv.params.debug_outdir = cache_dir
+    # Read input dataframes
+    cur_plms = pd.read_csv(os.path.join(TEST_DATA, "plms_space_df.csv"))
+    cur_plms.group = None
+    starscape_df = pd.read_csv(os.path.join(TEST_DATA, "plms_starscape_df.csv"))
+    cur_plms, grp_iter = pcv.homology.constella(cur_plms=cur_plms, pc_starscape=starscape_df,
+                                                group_iter=1, outfile_prefix=os.path.join(cache_dir, "constella"))
+    assert max(cur_plms.group) == 10
+
+
+def test_plantcv_homology_constella_one_time():
+    # Set debug
+    pcv.params.debug = None
+    # Read input dataframes
+    cur_plms = pd.read_csv(os.path.join(TEST_DATA, "plms_space_df.csv"))
+    cur_plms.group = None
+    starscape_df = pd.read_csv(os.path.join(TEST_DATA, "plms_starscape_df.csv"))
+    cur_plms = cur_plms.loc[cur_plms.filename.eq("B100_rep1_d10")]
+    starscape_df = starscape_df.loc[starscape_df.filename.eq("B100_rep1_d10")]
+    cur_plms, grp_iter = pcv.homology.constella(cur_plms=cur_plms, pc_starscape=starscape_df,
+                                                group_iter=1, outfile_prefix="constella")
+    assert max(cur_plms.group) == 8
+
+
+def test_plantcv_homology_constella_redundant_plm():
+    # Set debug
+    pcv.params.debug = None
+    # Read input dataframes
+    cur_plms = pd.read_csv(os.path.join(TEST_DATA, "plms_space_df.csv"))
+    cur_plms.group = None
+    starscape_df = pd.read_csv(os.path.join(TEST_DATA, "plms_starscape_df.csv"))
+    # Append duplicate plms
+    cur_plms = cur_plms.append(cur_plms.iloc[0])
+    cur_plms = cur_plms.reset_index(drop=True)
+    starscape_df = starscape_df.append(starscape_df.iloc[0])
+    starscape_df = starscape_df.reset_index(drop=True)
+    cur_plms, grp_iter = pcv.homology.constella(cur_plms=cur_plms, pc_starscape=starscape_df,
+                                                group_iter=1, outfile_prefix="constella")
+    assert max(cur_plms.group) == 11
+
+
+def test_plantcv_homology_constellaqc():
+    # Set debug
+    pcv.params.debug = "plot"
+    plms = pd.read_csv(os.path.join(TEST_DATA, "plms_landmarks.csv"))
+    annotations = pd.read_csv(os.path.join(TEST_DATA, "plms_annotated.csv"))
+    pcv.homology.constellaqc(denovo_groups=plms, annotated_groups=annotations)
+    assert True
 
 
 def test_plantcv_acute_vertex():

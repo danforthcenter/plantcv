@@ -73,6 +73,11 @@ nav:
       - 'Image Fusion': image_fusion.md
       - 'Invert': invert.md
       - 'Landmark Analysis':
+        - 'Acute': homology_acute.md
+        - 'Space': homology_space.md
+        - 'StarScape': homology_starscape.md
+        - 'Constella': homology_constella.md
+        - 'ConstellaQC': homology_constellaqc.md
         - 'Acute Vertex': acute_vertex.md
         - 'x-Axis Pseudolandmarks': x_axis_pseudolandmarks.md
         - 'y-Axis Pseudolandmarks': y_axis_pseudolandmarks.md
