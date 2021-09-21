@@ -278,6 +278,22 @@
     </div>
 </div>
 
+<!--Interactive Seed Count Tutorial-->
+<div class="card" style="display:block">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/interactive_ClickCount_tutorial');return false;">
+        <img src="https://github.com/danforthcenter/plantcv-binder/blob/master/notebooks/interactive_seed_count_tutorial/interactive_seed_count_card.png?raw=true" alt="Interactive Seed Count tutorial" width="600" height="auto">
+    </a>
+    <div class="card-title">
+        <h6>Interactive Seed Count Tutorial</h6>
+    </div>
+    <div class="card-tags">
+        <span><strong>Tags</strong>: seed, seed analysis, human-in-the-loop, RGB, seed count, camilina</span>
+    </div>
+    <div class="card-button">
+        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks/interactive_seed_count_tutorial/interactive_seed_count_workflow.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
+    </div>
+</div>
+
 <script type="text/javascript">
     function getTags() {
         var tag_list = [];
