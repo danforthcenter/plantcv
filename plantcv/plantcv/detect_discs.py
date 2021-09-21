@@ -38,9 +38,8 @@ def detect_discs(bin_img, ecc_thresh=0):
     for i,obj in enumerate(obj_measures):
         if obj.eccentricity < ecc_thresh:
             # Convert coord values to int
-            #coords = tuple(map(int, obj.centroid))
-            #discs_coor.append(coords)
-            discs_coor.append(obj.centroid)
+            coords = tuple(map(int, obj.centroid))
+            discs_coor.append(coords)
             discs_mask = discs_mask + (labeled_img == i+1)
 
     _debug(visual=255*discs_mask, filename=os.path.join(params.debug_outdir,
