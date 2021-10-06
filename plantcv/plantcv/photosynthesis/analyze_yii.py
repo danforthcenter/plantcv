@@ -70,7 +70,7 @@ def analyze_yii(ps_da, mask, bins=256, measurement_labels=None, label="default")
         # median value
         outputs.add_observation(sample=label, variable=f"yii_median_{mlabel}", trait="median yii value",
                                 method='plantcv.plantcv.photosynthesis.analyze_yii', scale='none', datatype=float,
-                                value=float(np.around(yii_median[i], decimals=4)), label='none')
+                                value=float(yii_median[i]), label='none')
         # max value
         outputs.add_observation(sample=label, variable=f"yii_max_{mlabel}", trait="peak yii value",
                                 method='plantcv.plantcv.photosynthesis.analyze_yii', scale='none', datatype=float,

@@ -62,7 +62,7 @@ def analyze_npq(ps_da_light, ps_da_dark, mask, bins=256, measurement_labels=None
         # median value
         outputs.add_observation(sample=label, variable=f"npq_median_{mlabel}", trait="median npq value",
                                 method='plantcv.plantcv.photosynthesis.analyze_npq', scale='none', datatype=float,
-                                value=float(np.around(npq_median[i], decimals=4)), label='none')
+                                value=float(npq_median[i]), label='none')
         # max value
         outputs.add_observation(sample=label, variable=f"npq_max_{mlabel}", trait="peak npq value",
                                 method='plantcv.plantcv.photosynthesis.analyze_npq', scale='none', datatype=float,
