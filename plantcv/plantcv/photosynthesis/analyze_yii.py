@@ -68,7 +68,7 @@ def analyze_yii(ps_da, mask, measurement_labels=None, label="default"):
         if measurement_labels is not None:
             mlabel = measurement_labels[i]
 
-        hist_df, hist_fig = _create_histogram(yii.isel({'measurement': i}).values, mlabel, 100)
+        hist_df, hist_fig = _create_histogram(yii.isel({'measurement': i}).values, mlabel)
 
         # median value
         outputs.add_observation(sample=label, variable=f"yii_median_{mlabel}", trait="median yii value",
@@ -113,26 +113,24 @@ def analyze_yii(ps_da, mask, measurement_labels=None, label="default"):
     return yii, hist_fig
 
 
-def _create_histogram(yii_img, mlabel, bins):
+def _create_histogram(yii_img, mlabel):
     """
     Compute histogram of YII
 
     Inputs:
     yii_img     = numpy array of yii
-    bins        = number of bins for the histogram (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
 
     Returns:
     hist_fig  = Histogram of efficiency estimate
     yii_img   = DataArray of efficiency estimate values
 
     :param yii_img: numpy.ndarray
-    :param bins: int
     :return hist_df: pandas.DataFrame
     :return hist_fig: plotnine.ggplot.ggplot
     """
 
     # Calculate the histogram of Fv/Fm, Fv'/Fm', or Fq'/Fm' non-zero values
-    yii_hist, yii_bins = np.histogram(yii_img[np.where(yii_img > 0)], bins, range=(0, 1))
+    yii_hist, yii_bins = np.histogram(yii_img[np.where(yii_img > 0)], 100, range=(0, 1))
     # yii_bins is a bins + 1 length list of bin endpoints, so we need to calculate bin midpoints so that
     # the we have a one-to-one list of x (YII) and y (frequency) values.
     # To do this we add half the bin width to each lower bin edge x-value
