@@ -13,14 +13,13 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def analyze_yii(ps_da, mask, bins=256, measurement_labels=None, label="default"):
+def analyze_yii(ps_da, mask, measurement_labels=None, label="default"):
     """
     Calculate and analyze PSII efficiency estimates from fluorescence image data.
 
     Inputs:
     ps_da               = photosynthesis xarray DataArray
     mask                = mask of plant (binary, single channel)
-    bins                = number of bins for the histogram (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
     measurement_labels  = labels for each measurement, modifies the variable name of observations recorded
     label               = optional label parameter, modifies the variable name of observations recorded
 
@@ -30,7 +29,6 @@ def analyze_yii(ps_da, mask, bins=256, measurement_labels=None, label="default")
 
     :param ps_da: xarray.core.dataarray.DataArray
     :param mask: numpy.ndarray
-    :param bins: int
     :param measurement_labels: list
     :param label: str
     :return yii: xarray.core.dataarray.DataArray
@@ -70,7 +68,7 @@ def analyze_yii(ps_da, mask, bins=256, measurement_labels=None, label="default")
         if measurement_labels is not None:
             mlabel = measurement_labels[i]
 
-        hist_df, hist_fig = _create_histogram(yii.isel({'measurement': i}).values, mlabel, bins)
+        hist_df, hist_fig = _create_histogram(yii.isel({'measurement': i}).values, mlabel, 100)
 
         # median value
         outputs.add_observation(sample=label, variable=f"yii_median_{mlabel}", trait="median yii value",
@@ -138,13 +136,13 @@ def _create_histogram(yii_img, mlabel, bins):
     # yii_bins is a bins + 1 length list of bin endpoints, so we need to calculate bin midpoints so that
     # the we have a one-to-one list of x (YII) and y (frequency) values.
     # To do this we add half the bin width to each lower bin edge x-value
-    midpoints = yii_bins[:-1] + 0.5 * np.diff(yii_bins)
+    # midpoints = yii_bins[:-1] + 0.5 * np.diff(yii_bins)
 
     # Calculate which non-zero bin has the maximum Fv/Fm value
-    max_bin = midpoints[np.argmax(yii_hist)]
+    max_bin = yii_bins[np.argmax(yii_hist)]
 
     # Create a dataframe
-    hist_df = pd.DataFrame({'Plant Pixels': yii_hist, mlabel: midpoints})
+    hist_df = pd.DataFrame({'Plant Pixels': yii_hist, mlabel: yii_bins[:-1]})
 
     # Make the histogram figure using plotnine
     hist_fig = (ggplot(data=hist_df, mapping=aes(x=mlabel, y='Plant Pixels'))

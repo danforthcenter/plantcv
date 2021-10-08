@@ -2,14 +2,13 @@
 
 Extract estimates of the efficiency (YII) of Photosystem II (PSII). The photosynthesis subpackage is dependent on a PSII_Data instance file structure as created by photosynthesis.read_* files.
 
-**plantcv.photosynthesis.analyze_yii**(*ps_da, mask, bins=256, measurement_labels=None, label="default"*)
+**plantcv.photosynthesis.analyze_yii**(*ps_da, mask, measurement_labels=None, label="default"*)
 
 **returns** YII histogram, and YII image
 
 - **Parameters:**
     - ps_da - photosynthesis xarray DataArray for which to compute yii. Can either have a pair of frames F0,Fm or pair(s) of Fp,Fmp
     - mask - binary mask of plant
-    - bins - number of grayscale bins (0-256 for 8-bit images and 0 to 65,536), if you would like to bin data, you would alter this number (default bins=256)
     - measurement_labels - list of label(s) for each measurement, modifies the default variable names of observations. must have same length as number of measurements in ps_da
     - label - Optional label parameter, modifies the entity name of observations recorded. (default `label="default"`)
 - **Context:**
@@ -44,7 +43,6 @@ ps = pcv.photosynthesis.read_cropreporter(filename = "mydata.inf")
 fvfm, fvfm_hist = pcv.photosynthesis.analyze_yii(ps_da=ps.darkadapted, 
 mask=kept_mask, 
 measurement_labels=["Fv/Fm"],
-bins=256, 
 label="fluor")
 
 # Access data stored out from fluor_fvfm
@@ -75,8 +73,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Analyze Fq'/Fm'    
-fqfm, fqfm_hist = pcv.photosynthesis.analyze_yii(ps=ps.lightadapted, mask=kept_mask,                                                         
-bins=256, 
+fqfm, fqfm_hist = pcv.photosynthesis.analyze_yii(ps=ps.lightadapted, mask=kept_mask,
 measurement_labels=["Fq'/Fm'"],
 label="fluor")
 

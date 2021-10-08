@@ -255,7 +255,6 @@ PSII and the metric Fq'/Fm' to estimate the operating efficiency of PSII. In bot
     # Inputs:
     # ps_da               = photosynthesis xarray DataArray
     # mask                = mask of plant (binary, single channel)
-    # bins                = number of bins for the histogram (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
     # measurement_labels  = labels for each measurement, modifies the variable name of observations recorded
     # label               = optional label parameter, modifies the variable name of observations recorded
     # 
@@ -573,7 +572,6 @@ def main():
     # Inputs:
     # ps_da               = photosynthesis xarray DataArray
     # mask                = mask of plant (binary, single channel)
-    # bins                = number of bins for the histogram (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
     # measurement_labels  = labels for each measurement, modifies the variable name of observations recorded
     # label               = optional label parameter, modifies the variable name of observations recorded
     # 
@@ -588,7 +586,6 @@ def main():
     # Inputs:
     # ps_da               = photosynthesis xarray DataArray
     # mask                = mask of plant (binary, single channel)
-    # bins                = number of bins for the histogram (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
     # measurement_labels  = labels for each measurement, modifies the variable name of observations recorded
     # label               = optional label parameter, modifies the variable name of observations recorded
     # 

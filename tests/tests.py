@@ -4876,8 +4876,7 @@ def test_plantcv_photosynthesis_read_cropreporter_spc_only(tmpdir):
 def test_plantcv_photosynthesis_analyze_yii(mda, mlabels):
     # Test with debug = None
     pcv.params.debug = None
-    _ = pcv.photosynthesis.analyze_yii(ps_da=mda, mask=ps_mask(), bins=100,
-                                       measurement_labels=mlabels, label="default")
+    _ = pcv.photosynthesis.analyze_yii(ps_da=mda, mask=ps_mask(), measurement_labels=mlabels, label="default")
     if mlabels is None:
         med = pcv.outputs.observations["default"]["yii_median_t0"]["value"]
         pcv.outputs.clear()
@@ -4909,7 +4908,7 @@ def test_plantcv_photosynthesis_analyze_yii_fatalerror(mlabels, tmask):
 
     with pytest.raises(RuntimeError):
         _ = pcv.photosynthesis.analyze_yii(ps_da=psii_cropreporter('darkadapted'), mask=tmask,
-                                           bins=100, measurement_labels=mlabels, label="default")
+                                           measurement_labels=mlabels, label="default")
 
 
 @pytest.mark.parametrize("mda_light, mda_dark, mlabels",
