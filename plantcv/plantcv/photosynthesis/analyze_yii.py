@@ -3,9 +3,7 @@
 import os
 import numpy as np
 import pandas as pd
-from scipy import stats
-import xarray as xr
-from plotnine import ggplot, aes, geom_line, geom_label
+from plotnine import ggplot, aes, geom_line, geom_point, theme, scale_color_brewer
 from plotnine.labels import labs
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv._debug import _debug
@@ -57,6 +55,7 @@ def analyze_yii(ps_da, mask, measurement_labels=None, label="default"):
         yii = yii0.groupby('measurement', squeeze=False).map(_calc_yii)
 
     # compute observations to store in Outputs
+    yii_mean = yii.where(yii > 0).groupby('measurement').mean(['x', 'y']).values
     yii_median = yii.where(yii > 0).groupby('measurement').median(['x', 'y']).values
     yii_max = yii.where(yii > 0).groupby('measurement').max(['x', 'y']).values
 
@@ -65,20 +64,26 @@ def analyze_yii(ps_da, mask, measurement_labels=None, label="default"):
         if measurement_labels is not None:
             mlabel = measurement_labels[i]
 
-        hist_df, hist_fig, yii_mode = _create_histogram(yii.isel({'measurement': i}).values, mlabel)
-
+        # mean value
+        outputs.add_observation(sample=label, variable=f"yii_mean_{mlabel}", trait="mean yii value",
+                                method='plantcv.plantcv.photosynthesis.analyze_yii', scale='none', datatype=float,
+                                value=float(yii_mean[i]), label='none')
         # median value
         outputs.add_observation(sample=label, variable=f"yii_median_{mlabel}", trait="median yii value",
                                 method='plantcv.plantcv.photosynthesis.analyze_yii', scale='none', datatype=float,
                                 value=float(yii_median[i]), label='none')
-        # mode value
-        outputs.add_observation(sample=label, variable=f"yii_mode_{mlabel}", trait="mode yii value",
-                                method='plantcv.plantcv.photosynthesis.analyze_yii', scale='none', datatype=float,
-                                value=float(yii_mode), label='none')
         # max value
         outputs.add_observation(sample=label, variable=f"yii_max_{mlabel}", trait="peak yii value",
                                 method='plantcv.plantcv.photosynthesis.analyze_yii', scale='none', datatype=float,
                                 value=float(yii_max[i]), label='none')
+
+        hist_df, hist_fig, yii_mode = _create_histogram(yii.isel({'measurement': i}).values, mlabel,
+                                                        outputs.observations[label])
+
+        # mode value
+        outputs.add_observation(sample=label, variable=f"yii_mode_{mlabel}", trait="mode yii value",
+                                method='plantcv.plantcv.photosynthesis.analyze_yii', scale='none', datatype=float,
+                                value=float(yii_mode), label='none')
         # hist frequencies
         outputs.add_observation(sample=label, variable=f"yii_hist_{mlabel}", trait="yii frequencies",
                                 method='plantcv.plantcv.photosynthesis.analyze_yii', scale='none', datatype=list,
@@ -110,18 +115,22 @@ def analyze_yii(ps_da, mask, measurement_labels=None, label="default"):
     return yii, hist_fig
 
 
-def _create_histogram(yii_img, mlabel):
+def _create_histogram(yii_img, mlabel, obs):
     """
     Compute histogram of YII
 
     Inputs:
     yii_img     = numpy array of yii
+    mlabel      = measurement label
+    obs         = PlantCV observations used to retrieve statistics
 
     Returns:
     hist_fig  = Histogram of efficiency estimate
     yii_img   = DataArray of efficiency estimate values
 
     :param yii_img: numpy.ndarray
+    :param mlabel: str
+    :param obs: dict
     :return hist_df: pandas.DataFrame
     :return hist_fig: plotnine.ggplot.ggplot
     """
@@ -136,14 +145,29 @@ def _create_histogram(yii_img, mlabel):
     # Calculate which non-zero bin has the maximum Fv/Fm value
     yii_mode = yii_bins[np.argmax(yii_hist)]
 
-    # Create a dataframe
+    # Create a dataframe for the histogram
     hist_df = pd.DataFrame({'Plant Pixels': yii_hist, mlabel: yii_bins[:-1]})
+
+    # Round values for plotting
+    bins = np.around(yii_bins, decimals=2)
+    round_mean = np.around(obs[f"yii_mean_{mlabel}"]["value"], decimals=2)
+    round_median = np.around(obs[f"yii_median_{mlabel}"]["value"], decimals=2)
+    round_mode = np.around(yii_mode, decimals=2)
+    mean_index = bins.tolist().index(round_mean)
+    median_index = bins.tolist().index(round_median)
+    mode_index = np.argmax(yii_hist)
+    # Create a dataframe for the statistics
+    stats_df = pd.DataFrame({'Plant Pixels': [yii_hist[mean_index], yii_hist[median_index], yii_hist[mode_index]],
+                             mlabel: [round_mean, round_median, round_mode],
+                             "Stat": ["mean", "median", "mode"]})
 
     # Make the histogram figure using plotnine
     hist_fig = (ggplot(data=hist_df, mapping=aes(x=mlabel, y='Plant Pixels'))
-                + geom_line(show_legend=True, color="green")
-                + geom_label(label=f"Peak Bin Value: {str(yii_mode)}", x=.15, y=205, size=8, color="green")
+                + geom_line(show_legend=True, color="darkblue")
+                + geom_point(data=stats_df, mapping=aes(color='Stat'))
                 + labs(title=f"measurement: {mlabel}",
-                       x='photosynthetic efficiency (yii)'))
+                       x='photosynthetic efficiency (yii)')
+                + theme(subplots_adjust={"right": 0.8})
+                + scale_color_brewer(type="qual", palette=2))
 
     return hist_df, hist_fig, yii_mode
