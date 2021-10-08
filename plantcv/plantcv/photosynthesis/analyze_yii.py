@@ -59,16 +59,13 @@ def analyze_yii(ps_da, mask, measurement_labels=None, label="default"):
     # compute observations to store in Outputs
     yii_median = yii.where(yii > 0).groupby('measurement').median(['x', 'y']).values
     yii_max = yii.where(yii > 0).groupby('measurement').max(['x', 'y']).values
-    _mode = lambda measure: stats.mode(measure.flatten(), nan_policy="omit", axis=None).mode
-    yii_mode = xr.apply_ufunc(_mode, yii.where(yii > 0), input_core_dims=[["x", "y"]],
-                              exclude_dims={"x", "y"}, vectorize=True).values
 
     # Create variables to label traits based on measurement label in data array
     for i, mlabel in enumerate(ps_da.measurement.values):
         if measurement_labels is not None:
             mlabel = measurement_labels[i]
 
-        hist_df, hist_fig = _create_histogram(yii.isel({'measurement': i}).values, mlabel)
+        hist_df, hist_fig, yii_mode = _create_histogram(yii.isel({'measurement': i}).values, mlabel)
 
         # median value
         outputs.add_observation(sample=label, variable=f"yii_median_{mlabel}", trait="median yii value",
@@ -77,7 +74,7 @@ def analyze_yii(ps_da, mask, measurement_labels=None, label="default"):
         # mode value
         outputs.add_observation(sample=label, variable=f"yii_mode_{mlabel}", trait="mode yii value",
                                 method='plantcv.plantcv.photosynthesis.analyze_yii', scale='none', datatype=float,
-                                value=float(yii_mode[i]), label='none')
+                                value=float(yii_mode), label='none')
         # max value
         outputs.add_observation(sample=label, variable=f"yii_max_{mlabel}", trait="peak yii value",
                                 method='plantcv.plantcv.photosynthesis.analyze_yii', scale='none', datatype=float,
@@ -137,7 +134,7 @@ def _create_histogram(yii_img, mlabel):
     # midpoints = yii_bins[:-1] + 0.5 * np.diff(yii_bins)
 
     # Calculate which non-zero bin has the maximum Fv/Fm value
-    max_bin = yii_bins[np.argmax(yii_hist)]
+    yii_mode = yii_bins[np.argmax(yii_hist)]
 
     # Create a dataframe
     hist_df = pd.DataFrame({'Plant Pixels': yii_hist, mlabel: yii_bins[:-1]})
@@ -145,8 +142,8 @@ def _create_histogram(yii_img, mlabel):
     # Make the histogram figure using plotnine
     hist_fig = (ggplot(data=hist_df, mapping=aes(x=mlabel, y='Plant Pixels'))
                 + geom_line(show_legend=True, color="green")
-                + geom_label(label=f"Peak Bin Value: {str(max_bin)}", x=.15, y=205, size=8, color="green")
+                + geom_label(label=f"Peak Bin Value: {str(yii_mode)}", x=.15, y=205, size=8, color="green")
                 + labs(title=f"measurement: {mlabel}",
                        x='photosynthetic efficiency (yii)'))
 
-    return hist_df, hist_fig
+    return hist_df, hist_fig, yii_mode
