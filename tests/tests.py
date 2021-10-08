@@ -4893,7 +4893,7 @@ def test_plantcv_photosynthesis_analyze_yii(mda, mlabels):
     elif "t40" in mlabels:
         med = pcv.outputs.observations["default"]["yii_median_t40"]["value"]
         pcv.outputs.clear()
-        assert med == float(np.around((185 - 32) / 185, decimals=4))
+        assert med == float((185 - 32) / 185)
 
 
 @pytest.mark.parametrize("mlabels, tmask",
@@ -4932,7 +4932,7 @@ def test_plantcv_photosynthesis_analyze_npq(mda_dark, mda_light, mlabels):
     else:
         med = pcv.outputs.observations["prefix"]["npq_median_t40"]["value"]
         pcv.outputs.clear()
-        assert med == float(np.around(200 / 185 - 1, decimals=4))
+        assert med == float((200 / 185) - 1)
 
 
 @pytest.mark.parametrize("mlabels, tmask",
