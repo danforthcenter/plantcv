@@ -3,6 +3,8 @@
 import os
 import numpy as np
 import pandas as pd
+from scipy import stats
+import xarray as xr
 from plotnine import ggplot, aes, geom_line, geom_label
 from plotnine.labels import labs
 from plantcv.plantcv import fatal_error
@@ -59,6 +61,9 @@ def analyze_yii(ps_da, mask, bins=256, measurement_labels=None, label="default")
     # compute observations to store in Outputs
     yii_median = yii.where(yii > 0).groupby('measurement').median(['x', 'y']).values
     yii_max = yii.where(yii > 0).groupby('measurement').max(['x', 'y']).values
+    _mode = lambda measure: stats.mode(measure.flatten(), nan_policy="omit", axis=None).mode
+    yii_mode = xr.apply_ufunc(_mode, yii.where(yii > 0), input_core_dims=[["x", "y"]],
+                              exclude_dims={"x", "y"}, vectorize=True).values
 
     # Create variables to label traits based on measurement label in data array
     for i, mlabel in enumerate(ps_da.measurement.values):
@@ -71,6 +76,10 @@ def analyze_yii(ps_da, mask, bins=256, measurement_labels=None, label="default")
         outputs.add_observation(sample=label, variable=f"yii_median_{mlabel}", trait="median yii value",
                                 method='plantcv.plantcv.photosynthesis.analyze_yii', scale='none', datatype=float,
                                 value=float(yii_median[i]), label='none')
+        # mode value
+        outputs.add_observation(sample=label, variable=f"yii_mode_{mlabel}", trait="mode yii value",
+                                method='plantcv.plantcv.photosynthesis.analyze_yii', scale='none', datatype=float,
+                                value=float(yii_mode[i]), label='none')
         # max value
         outputs.add_observation(sample=label, variable=f"yii_max_{mlabel}", trait="peak yii value",
                                 method='plantcv.plantcv.photosynthesis.analyze_yii', scale='none', datatype=float,
