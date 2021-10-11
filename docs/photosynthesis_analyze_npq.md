@@ -3,7 +3,7 @@
 Extract estimates of the nonphotochemical quenching (NPQ) of Photosystem II (PSII). 
 Calculates (Fm/Fm') - 1 data from a masked region. The photosynthesis subpackage is dependent on a PSII_Data instance file structure as created by photosynthesis.read_* files.
 
-**plantcv.photosynthesis.analyze_npq**(*ps_da_light, ps_da_dark, mask, bins=256, measurement_labels = None, label="default"*)
+**plantcv.photosynthesis.analyze_npq**(*ps_da_light, ps_da_dark, mask, measurement_labels=None, label="default"*)
 
 **returns** Histogram of NPQ values and an NPQ image
 
@@ -11,7 +11,6 @@ Calculates (Fm/Fm') - 1 data from a masked region. The photosynthesis subpackage
     - ps_da_light - photosynthesis xarray DataArray for which to compute npq
     - ps_da_dark - photosynthesis xarray DataArray that contains frame_label `Fm`
     - mask - binary mask of selected contours
-    - bins - number of grayscale bins (0-256 for 8-bit images and 0 to 65,536), if you would like to bin data, you 
       would alter this number (default bins=256)
     - measurement_labels - list of label(s) for each measurement in `ps_da_light`, modifies the variable name of observations recorded
     - label - Optional label parameter, modifies the entity name of observations recorded. (default `label="default"`)
@@ -33,7 +32,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Analyze NPQ   
-npq, npq_hist = pcv.photosynthesis.analyze_npq(ps_da_light=ps.lightadapted, ps_da_dark=ps.darkadapted, mask=kept_mask, bins=256, label="fluor")
+npq, npq_hist = pcv.photosynthesis.analyze_npq(ps_da_light=ps.lightadapted, ps_da_dark=ps.darkadapted, mask=kept_mask, label="fluor")
 
 # Access data stored out from fluor_NPQ
 # the default measurement label for cropreporter data is t1

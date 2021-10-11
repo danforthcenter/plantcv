@@ -11,7 +11,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def analyze_npq(ps_da_light, ps_da_dark, mask, bins=256, measurement_labels=None, label="default"):
+def analyze_npq(ps_da_light, ps_da_dark, mask, measurement_labels=None, label="default"):
     """
     Calculate and analyze non-photochemical quenching estimates from fluorescence image data.
 
@@ -49,6 +49,7 @@ def analyze_npq(ps_da_light, ps_da_dark, mask, bins=256, measurement_labels=None
     npq = ps_da_light.sel(frame_label='Fmp').groupby('measurement', squeeze=False).map(_calc_npq, fm=fm)
 
     # compute observations to store in Outputs
+    npq_mean = npq.where(npq > 0).groupby('measurement').mean(['x', 'y']).values
     npq_median = npq.where(npq > 0).groupby('measurement').median(['x', 'y']).values
     npq_max = npq.where(npq > 0).groupby('measurement').max(['x', 'y']).values
 
@@ -57,8 +58,10 @@ def analyze_npq(ps_da_light, ps_da_dark, mask, bins=256, measurement_labels=None
         if measurement_labels is not None:
             mlabel = measurement_labels[i]
 
-        hist_df, hist_fig = _create_histogram(npq.isel({'measurement': i}).values, mlabel, bins)
-
+        # mean value
+        outputs.add_observation(sample=label, variable=f"npq_mean_{mlabel}", trait="mean npq value",
+                                method='plantcv.plantcv.photosynthesis.analyze_npq', scale='none', datatype=float,
+                                value=float(npq_mean[i]), label='none')
         # median value
         outputs.add_observation(sample=label, variable=f"npq_median_{mlabel}", trait="median npq value",
                                 method='plantcv.plantcv.photosynthesis.analyze_npq', scale='none', datatype=float,
@@ -67,6 +70,9 @@ def analyze_npq(ps_da_light, ps_da_dark, mask, bins=256, measurement_labels=None
         outputs.add_observation(sample=label, variable=f"npq_max_{mlabel}", trait="peak npq value",
                                 method='plantcv.plantcv.photosynthesis.analyze_npq', scale='none', datatype=float,
                                 value=float(npq_max[i]), label='none')
+
+        hist_df, hist_fig = _create_histogram(npq.isel({'measurement': i}).values, mlabel)
+
         # hist frequencies
         outputs.add_observation(sample=label, variable=f"npq_hist_{mlabel}", trait="frequencies",
                                 method='plantcv.plantcv.photosynthesis.analyze_npq', scale='none', datatype=list,
@@ -108,26 +114,24 @@ def _calc_npq(fmp, fm):
     return sub
 
 
-def _create_histogram(npq_img, mlabel, bins):
+def _create_histogram(npq_img, mlabel):
     """
     Compute histogram of NPQ
 
     Inputs:
     npq_img     = numpy array of npq
-    bins        = number of bins for the histogram (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
 
     Returns:
     hist_fig  = Histogram of efficiency estimate
     npq_img   = DataArray of efficiency estimate values
 
     :param npq_img: numpy.ndarray
-    :param bins: int
     :return hist_df: pandas.DataFrame
     :return hist_fig: plotnine.ggplot.ggplot
     """
 
-    # Calculate the histogram of Fv/Fm, Fv'/Fm', or Fq'/Fm' non-zero values
-    npq_hist, npq_bins = np.histogram(npq_img[np.where(npq_img > 0)], bins, range=(0, 1))
+    # Calculate the histogram of NPQ non-zero values
+    npq_hist, npq_bins = np.histogram(npq_img[np.where(npq_img > 0)], 100, range=(0, 1))
     # npq_bins is a bins + 1 length list of bin endpoints, so we need to calculate bin midpoints so that
     # the we have a one-to-one list of x (NPQ) and y (frequency) values.
     # To do this we add half the bin width to each lower bin edge x-value
