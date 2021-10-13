@@ -4876,8 +4876,7 @@ def test_plantcv_photosynthesis_read_cropreporter_spc_only(tmpdir):
 def test_plantcv_photosynthesis_analyze_yii(mda, mlabels):
     # Test with debug = None
     pcv.params.debug = None
-    _ = pcv.photosynthesis.analyze_yii(ps_da=mda, mask=ps_mask(), bins=100,
-                                       measurement_labels=mlabels, label="default")
+    _ = pcv.photosynthesis.analyze_yii(ps_da=mda, mask=ps_mask(), measurement_labels=mlabels, label="default")
     if mlabels is None:
         med = pcv.outputs.observations["default"]["yii_median_t0"]["value"]
         pcv.outputs.clear()
@@ -4893,7 +4892,7 @@ def test_plantcv_photosynthesis_analyze_yii(mda, mlabels):
     elif "t40" in mlabels:
         med = pcv.outputs.observations["default"]["yii_median_t40"]["value"]
         pcv.outputs.clear()
-        assert med == float(np.around((185 - 32) / 185, decimals=4))
+        assert med == float((185 - 32) / 185)
 
 
 @pytest.mark.parametrize("mlabels, tmask",
@@ -4909,7 +4908,7 @@ def test_plantcv_photosynthesis_analyze_yii_fatalerror(mlabels, tmask):
 
     with pytest.raises(RuntimeError):
         _ = pcv.photosynthesis.analyze_yii(ps_da=psii_cropreporter('darkadapted'), mask=tmask,
-                                           bins=100, measurement_labels=mlabels, label="default")
+                                           measurement_labels=mlabels, label="default")
 
 
 @pytest.mark.parametrize("mda_light, mda_dark, mlabels",
@@ -4924,7 +4923,8 @@ def test_plantcv_photosynthesis_analyze_npq(mda_dark, mda_light, mlabels):
     # Test with debug = None
     pcv.params.debug = None
     _ = pcv.photosynthesis.analyze_npq(ps_da_light=mda_light, ps_da_dark=mda_dark,
-                                       mask=ps_mask(), bins=100, measurement_labels=mlabels, label="prefix")
+                                       mask=ps_mask(), measurement_labels=mlabels, label="prefix",
+                                       min_bin="auto", max_bin="auto")
     if mlabels is not None:
         med = pcv.outputs.observations["prefix"]["npq_median_Fq/Fm"]["value"]
         pcv.outputs.clear()
@@ -4932,7 +4932,7 @@ def test_plantcv_photosynthesis_analyze_npq(mda_dark, mda_light, mlabels):
     else:
         med = pcv.outputs.observations["prefix"]["npq_median_t40"]["value"]
         pcv.outputs.clear()
-        assert med == float(np.around(200 / 185 - 1, decimals=4))
+        assert med == float((200 / 185) - 1)
 
 
 @pytest.mark.parametrize("mlabels, tmask",
@@ -4948,7 +4948,7 @@ def test_plantcv_photosynthesis_analyze_npq_fatalerror(mlabels, tmask):
 
     with pytest.raises(RuntimeError):
         _ = pcv.photosynthesis.analyze_npq(ps_da_dark=psii_cropreporter('darkadapted'), ps_da_light=psii_cropreporter(
-            'lightadapted'), mask=tmask, bins=100, measurement_labels=mlabels, label="default")
+            'lightadapted'), mask=tmask, measurement_labels=mlabels, label="default")
 
 
 @pytest.mark.parametrize("da",

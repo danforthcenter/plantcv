@@ -233,7 +233,6 @@ PSII and the metric Fq'/Fm' to estimate the operating efficiency of PSII. In bot
     # Inputs:
     # ps_da               = photosynthesis xarray DataArray
     # mask                = mask of plant (binary, single channel)
-    # bins                = number of bins for the histogram (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
     # measurement_labels  = labels for each measurement, modifies the variable name of observations recorded
     # label               = optional label parameter, modifies the variable name of observations recorded
     # 
@@ -255,7 +254,6 @@ PSII and the metric Fq'/Fm' to estimate the operating efficiency of PSII. In bot
     # Inputs:
     # ps_da               = photosynthesis xarray DataArray
     # mask                = mask of plant (binary, single channel)
-    # bins                = number of bins for the histogram (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
     # measurement_labels  = labels for each measurement, modifies the variable name of observations recorded
     # label               = optional label parameter, modifies the variable name of observations recorded
     # 
@@ -282,7 +280,6 @@ Nonphotochemical quanching (NPQ) can be estimated using the [analyze_npq](../pho
     # ps_da_light        = photosynthesis xarray DataArray for which to compute npq
     # ps_da_dark         = photosynthesis xarray DataArray that contains frame_label `Fm`
     # mask               = mask of plant (binary, single channel)
-    # bins               = number of bins for the histogram (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
     # measurement_labels = labels for each measurement in ps_da_light, modifies the variable name of observations recorded
     # label              = optional label parameter, modifies the entity name of observations recorded
     # 
@@ -573,7 +570,6 @@ def main():
     # Inputs:
     # ps_da               = photosynthesis xarray DataArray
     # mask                = mask of plant (binary, single channel)
-    # bins                = number of bins for the histogram (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
     # measurement_labels  = labels for each measurement, modifies the variable name of observations recorded
     # label               = optional label parameter, modifies the variable name of observations recorded
     # 
@@ -588,7 +584,6 @@ def main():
     # Inputs:
     # ps_da               = photosynthesis xarray DataArray
     # mask                = mask of plant (binary, single channel)
-    # bins                = number of bins for the histogram (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
     # measurement_labels  = labels for each measurement, modifies the variable name of observations recorded
     # label               = optional label parameter, modifies the variable name of observations recorded
     # 
@@ -604,7 +599,6 @@ def main():
     # ps_da_light        = photosynthesis xarray DataArray for which to compute npq
     # ps_da_dark         = photosynthesis xarray DataArray that contains frame_label `Fm`
     # mask               = mask of plant (binary, single channel)
-    # bins               = number of bins for the histogram (1 to 256 for 8-bit; 1 to 65,536 for 16-bit; default is 256)
     # measurement_labels = labels for each measurement in ps_da_light, modifies the variable name of observations recorded
     # label              = optional label parameter, modifies the entity name of observations recorded
     # 
