@@ -52,9 +52,9 @@ def analyze_npq(ps_da_light, ps_da_dark, mask, min_bin=0, max_bin="auto", measur
     npq = ps_da_light.sel(frame_label='Fmp').groupby('measurement', squeeze=False).map(_calc_npq, fm=fm)
 
     # Auto calculate max_bin if set
-    if type(max_bin) is str and (max_bin.upper() == "AUTO"):
+    if isinstance(max_bin, str) and (max_bin.upper() == "AUTO"):
         max_bin = ceil(np.nanmax(npq))  # Auto bins will detect the max value to use for calculating labels/bins
-    if type(min_bin) is str and (min_bin.upper() == "AUTO"):
+    if isinstance(min_bin, str) and (min_bin.upper() == "AUTO"):
         min_bin = floor(np.nanmin(npq))  # Auto bins will detect the min value to use for calculating labels/bins
 
     # compute observations to store in Outputs
