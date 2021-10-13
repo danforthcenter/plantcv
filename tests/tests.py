@@ -4923,7 +4923,8 @@ def test_plantcv_photosynthesis_analyze_npq(mda_dark, mda_light, mlabels):
     # Test with debug = None
     pcv.params.debug = None
     _ = pcv.photosynthesis.analyze_npq(ps_da_light=mda_light, ps_da_dark=mda_dark,
-                                       mask=ps_mask(), measurement_labels=mlabels, label="prefix")
+                                       mask=ps_mask(), measurement_labels=mlabels, label="prefix",
+                                       min_bin="auto", max_bin="auto")
     if mlabels is not None:
         med = pcv.outputs.observations["prefix"]["npq_median_Fq/Fm"]["value"]
         pcv.outputs.clear()

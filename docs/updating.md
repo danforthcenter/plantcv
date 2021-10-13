@@ -583,7 +583,7 @@ pages for more details on the input and output variable types.
 #### plantcv.photosynthesis.analyze_npq
 
 * pre v4.0: NA
-* post v4.0: npq, hist_fig = **plantcv.photosynthesis.analyze_npq**(*ps_da_light, ps_da_dark, mask, measurement_labels=None, label="default"*)
+* post v4.0: npq, hist_fig = **plantcv.photosynthesis.analyze_npq**(*ps_da_light, ps_da_dark, mask, min_bin=0, max_bin="auto", measurement_labels=None, label="default"*)
 
 #### plantcv.photosynthesis.read_cropreporter
 

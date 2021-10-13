@@ -37,16 +37,13 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # photosynthesis read functions will read fluroescence data into predefined data format that includes at least attribute 'darkadapted'
-ps = pcv.photosynthesis.read_cropreporter(filename = "mydata.inf")
+ps = pcv.photosynthesis.read_cropreporter(filename="mydata.inf")
 
 # Analyze Fv/Fm    
-fvfm, fvfm_hist = pcv.photosynthesis.analyze_yii(ps_da=ps.darkadapted, 
-mask=kept_mask, 
-measurement_labels=["Fv/Fm"],
-label="fluor")
+fvfm, fvfm_hist = pcv.photosynthesis.analyze_yii(ps_da=ps.darkadapted, mask=kept_mask, label="fluor")
 
-# Access data stored out from fluor_fvfm
-fvfm_median = pcv.outputs.observations['fluor']['yii_median_Fv/Fm']['value']
+# Access Fv/Fm median value
+fvfm_median = pcv.outputs.observations['fluor']['yii_median_t0']['value']
 
 # Pseudocolor the Fv/Fm image
 fvfm_cmap = pcv.visualize.pseudocolor(gray_img=fvfm, mask=kept_mask, min_value=0, max_value=1, title="Fv/Fm")
@@ -73,12 +70,10 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Analyze Fq'/Fm'    
-fqfm, fqfm_hist = pcv.photosynthesis.analyze_yii(ps=ps.lightadapted, mask=kept_mask,
-measurement_labels=["Fq'/Fm'"],
-label="fluor")
+fqfm, fqfm_hist = pcv.photosynthesis.analyze_yii(ps=ps.lightadapted, mask=kept_mask, label="fluor")
 
-# Access data stored out from fluor_fvfm
-fqfm_median = pcv.outputs.observations['fluor']["yii_median_Fq'/Fm'"]['value']
+# Access Fq'/Fm' median value
+fqfm_median = pcv.outputs.observations['fluor']["yii_median_t1"]['value']
 
 fqfm_cmap = pcv.visualize.pseudocolor(gray_img=fqfm, mask=kept_mask, min_value=0, max_value=1, title="Fq'/Fm'")
 
