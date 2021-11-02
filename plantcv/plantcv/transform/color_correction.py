@@ -206,6 +206,8 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
     red, green, blue, red2, green2, blue2, red3, green3, blue3 = np.split(transformation_matrix, 9, 1)
 
     # find linear, square, and cubic values of source_img color channels
+    source_img = source_img.astype(np.float64)/255
+
     source_b, source_g, source_r = cv2.split(source_img)
     source_b2 = np.square(source_b)
     source_b3 = np.power(source_b, 3)
@@ -227,6 +229,7 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
     corrected_img = cv2.merge(bgr)
 
     # round corrected_img elements to be within range and of the correct data type
+    corrected_img = 255*corrected_img
     corrected_img = np.rint(corrected_img)
     corrected_img[np.where(corrected_img > 255)] = 255
     corrected_img = corrected_img.astype(np.uint8)
