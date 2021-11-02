@@ -36,6 +36,8 @@ def get_color_matrix(rgb_img, mask):
     if len(np.shape(mask)) != 2:
         fatal_error("Input mask is not an gray-scale image.")
 
+    rgb_img = rgb_img.astype(np.float64)/255
+
     # create empty color_matrix
     color_matrix = np.zeros((len(np.unique(mask))-1, 4))
 
