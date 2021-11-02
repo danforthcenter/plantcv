@@ -231,9 +231,9 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
     corrected_img = cv2.merge(bgr)
 
     # round corrected_img elements to be within range and of the correct data type
-    corrected_img = 255*corrected_img
-    corrected_img = np.rint(corrected_img).astype(np.uint8)
-    corrected_img[np.where(corrected_img > 255)] = 255
+    corrected_img = 255*np.clip(corrected_img, 0, 1)
+    corrected_img = np.floor(corrected_img)
+    # corrected_img[np.where(corrected_img > 255)] = 255
     corrected_img = corrected_img.astype(np.uint8)
 
     if params.debug == "print":
