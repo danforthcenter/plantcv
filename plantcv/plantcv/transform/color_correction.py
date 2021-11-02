@@ -230,7 +230,7 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
 
     # round corrected_img elements to be within range and of the correct data type
     corrected_img = 255*corrected_img
-    corrected_img = np.rint(corrected_img)
+    corrected_img = np.rint(corrected_img).astype(np.uint8)
     corrected_img[np.where(corrected_img > 255)] = 255
     corrected_img = corrected_img.astype(np.uint8)
 
