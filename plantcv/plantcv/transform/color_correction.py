@@ -240,6 +240,7 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
     elif params.debug == "plot":
         # If debug is plot, print a horizontal view of source_img, corrected_img, and target_img to the plotting device
         # plot horizontal comparison of source_img, corrected_img (with rounded elements) and target_img
+        source_img = (255*source_img).astype(np.uint8)
         plot_image(np.hstack([source_img, corrected_img, target_img]))
 
     # return corrected_img
