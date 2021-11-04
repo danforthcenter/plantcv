@@ -36,6 +36,9 @@ def get_color_matrix(rgb_img, mask):
     if len(np.shape(mask)) != 2:
         fatal_error("Input mask is not an gray-scale image.")
 
+    # convert to float and normalize to work with values between 0-1
+    rgb_img = rgb_img.astype(np.float64)/255
+
     # create empty color_matrix
     color_matrix = np.zeros((len(np.unique(mask))-1, 4))
 
@@ -205,6 +208,8 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
     # split transformation_matrix
     red, green, blue, red2, green2, blue2, red3, green3, blue3 = np.split(transformation_matrix, 9, 1)
 
+    # convert img to float to avoid integer overflow, normalize between 0-1
+    source_img = source_img.astype(np.float64)/255
     # find linear, square, and cubic values of source_img color channels
     source_b, source_g, source_r = cv2.split(source_img)
     source_b2 = np.square(source_b)
@@ -226,9 +231,10 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
     bgr = [b, g, r]
     corrected_img = cv2.merge(bgr)
 
-    # round corrected_img elements to be within range and of the correct data type
-    corrected_img = np.rint(corrected_img)
-    corrected_img[np.where(corrected_img > 255)] = 255
+    # return values of the image to the 0-255 range
+    corrected_img = 255*np.clip(corrected_img, 0, 1)
+    corrected_img = np.floor(corrected_img)
+    # cast back to unsigned int
     corrected_img = corrected_img.astype(np.uint8)
 
     if params.debug == "print":
@@ -237,6 +243,8 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
     elif params.debug == "plot":
         # If debug is plot, print a horizontal view of source_img, corrected_img, and target_img to the plotting device
         # plot horizontal comparison of source_img, corrected_img (with rounded elements) and target_img
+        # cast source_img back to unsigned int between 0-255 for visualization
+        source_img = (255*source_img).astype(np.uint8)
         plot_image(np.hstack([source_img, corrected_img, target_img]))
 
     # return corrected_img
