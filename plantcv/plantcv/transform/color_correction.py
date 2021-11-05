@@ -433,6 +433,10 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
         scale_y_continuous, scale_color_manual, aes
     import pandas as pd
 
+    # Scale matrices back to 0-255
+    target_matrix = 255*target_matrix
+    source_matrix = 255*source_matrix
+
     # Extract and organize matrix info
     tr = target_matrix[:num_chips, 1:2]
     tg = target_matrix[:num_chips, 2:3]
