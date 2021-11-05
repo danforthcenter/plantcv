@@ -116,7 +116,7 @@ def get_matrix_m(target_matrix, source_matrix):
     s_b3 = np.power(s_b, 3)
 
     # create matrix_a
-    matrix_a = np.concatenate((s_r, s_g, s_b, s_b2, s_g2, s_r2, s_b3, s_g3, s_r3), 1)
+    matrix_a = np.concatenate((s_r, s_g, s_b, s_r2, s_g2, s_b2, s_r3, s_g3, s_b3), 1)
     # create matrix_m
     matrix_m = np.linalg.solve(np.matmul(matrix_a.T, matrix_a), matrix_a.T)
     # create matrix_b
