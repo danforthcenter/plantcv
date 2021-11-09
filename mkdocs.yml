@@ -73,6 +73,11 @@ nav:
       - 'Image Fusion': image_fusion.md
       - 'Invert': invert.md
       - 'Landmark Analysis':
+        - 'Acute': homology_acute.md
+        - 'Space': homology_space.md
+        - 'StarScape': homology_starscape.md
+        - 'Constella': homology_constella.md
+        - 'ConstellaQC': homology_constellaqc.md
         - 'Acute Vertex': acute_vertex.md
         - 'x-Axis Pseudolandmarks': x_axis_pseudolandmarks.md
         - 'y-Axis Pseudolandmarks': y_axis_pseudolandmarks.md
@@ -108,7 +113,9 @@ nav:
       - 'Outputs Class': outputs.md
       - 'Photosynthesis Functions':
           - 'Read CropReporter Data': photosynthesis_read_cropreporter.md
-          - 'Analyze Fv/Fm': photosynthesis_analyze_fvfm.md
+          - 'Analyze YII': photosynthesis_analyze_yii.md
+          - 'Analyze NPQ': photosynthesis_analyze_npq.md
+          - 'Reassign Frame Labels': photosynthesis_reassign_frame_labels.md
       - 'Params (Debugging)': params.md
       - 'Print Image': print_image.md
       - 'Print Results': print_results.md

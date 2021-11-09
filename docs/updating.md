@@ -138,6 +138,7 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist = **plantcv.acute**(*obj, win, thresh, mask, device, debug=None*)
 * post v3.0dev2: homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist = **plantcv.acute**(*obj, win, thresh, mask*)
 * post v3.2: homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist = **plantcv.acute**(*obj, mask, win, thresh*)
+* post v4.0: DEPRECATED see plantcv.homology.acute
 
 #### plantcv.acute_vertex
 
@@ -338,6 +339,31 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, img_eh = **plantcv.hist_equalization**(*img, device, debug=None*)
 * post v3.0dev2: img_eh = **plantcv.hist_equalization**(*gray_img*)
+
+#### plantcv.homology.acute
+
+* pre v4.0: NA, see plantcv.acute
+* post v4.0: homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist = **plantcv.homology.acute**(*img, obj, mask, win, threshold*)
+
+#### plantcv.homology.space
+
+* pre v4.0: NA
+* post v4.0: cur_plms = **plantcv.homology.space**(*cur_plms, include_bound_dist=False, include_centroid_dist=False, include_orient_angles=False*)
+
+#### plantcv.homology.starscape
+
+* pre v4.0: NA
+* post v4.0: final_df, eigenvals, loadings = **plantcv.homology.starscape**(*cur_plms, group_a, group_b, outfile_prefix*)
+
+#### plantcv.homology.constella
+
+* pre v4.0: NA
+* post v4.0: cur_plms, group_iter = **plantcv.homology.constella**(*cur_plms, pc_starscape, group_iter, outfile_prefix*)
+
+#### plantcv.homology.constellaqc
+
+* pre v4.0: NA
+* post v4.0: **plantcv.homology.constellaqc**(*denovo_groups, annotated_groups*)
 
 #### plantcv.hyperspectral.analyze_index
 
@@ -542,14 +568,33 @@ pages for more details on the input and output variable types.
 * post v3.12: **plantcv.outputs.save_results**(*filename, outformat="json"*)
 
 #### plantcv.photosynthesis.analyze_fvfm
+
 * pre v3.10: see plantcv.fluor_fvfm
 * post v3.10: analysis_images = **plantcv.photosynthesis.analyze_fvfm**(*fdark, fmin, fmax, mask, bins=256*)
 * post v3.11: analysis_images = **plantcv.photosynthesis.analyze_fvfm**(*fdark, fmin, fmax, mask, bins=256, label="default"*)
+* post v4.0: Deprecated, see:
+  * yii, hist_fig = **plantcv.photosynthesis.analyze_yii**(*ps_da, mask, bins=256, measurement_labels=None, label="default"*)
+
+#### plantcv.photosynthesis.analyze_yii
+
+* pre v4.0: NA
+* post v4.0: yii, hist_fig = **plantcv.photosynthesis.analyze_yii**(*ps_da, mask, measurement_labels=None, label="default"*)
+
+#### plantcv.photosynthesis.analyze_npq
+
+* pre v4.0: NA
+* post v4.0: npq, hist_fig = **plantcv.photosynthesis.analyze_npq**(*ps_da_light, ps_da_dark, mask, min_bin=0, max_bin="auto", measurement_labels=None, label="default"*)
 
 #### plantcv.photosynthesis.read_cropreporter
 
 * pre v3.10: NA
 * post v3.10: fdark, fmin, fmax = **plantcv.photosynthesis.read_cropreporter**(*filename*)
+* post v4.0: ps = **plantcv.photosynthesis.read_cropreporter**(*filename*)
+
+#### plantcv.photosynthesis.reassign_frame_labels
+
+* pre v4.0: NA
+* post v4.0: ps_da, ind_fig, ind_df = **plantcv.photosynthesis.reassign_frame_labels(*ps_da, mask*)**
 
 #### plantcv.plot_hist
 
@@ -607,6 +652,8 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev2: device, reimg = **plantcv.resize**(*img, resize_x, resize_y, device, debug=None*)
 * post v3.0dev2: reimg = **plantcv.resize**(*img, resize_x, resize_y*)
+* post v3.11: Deprecated, see:
+    * **pcv.transform.resize** and **pcv.transform.resize_factor**
 
 #### plantcv.rgb2gray
 
@@ -916,6 +963,17 @@ pages for more details on the input and output variable types.
 
 * pre v3.0dev1: NA
 * post v3.0dev2: matrix = **plantcv.transform.load_matrix**(*filename*)
+
+#### plantcv.transform.resize
+
+* pre v3.11: NA
+* post v3.11: resized_img = **plantcv.transform.resize**(*img, size, interpolation="auto"*)
+
+#### plantcv.transform.resize_factor
+
+* pre v3.11: NA
+* post v3.11: resized_img = **plantcv.transform.resize_factor**(*img, factors, interpolation="auto"*)
+
 
 #### plantcv.transform.nonuniform_illumination
 
