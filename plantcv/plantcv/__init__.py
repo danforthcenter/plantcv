@@ -68,7 +68,7 @@ from plantcv.plantcv.output_mask_ori_img import output_mask
 from plantcv.plantcv.auto_crop import auto_crop
 from plantcv.plantcv.background_subtraction import background_subtraction
 from plantcv.plantcv.naive_bayes_classifier import naive_bayes_classifier
-from plantcv.plantcv.acute import acute
+from plantcv.plantcv import homology
 from plantcv.plantcv.distance_transform import distance_transform
 from plantcv.plantcv.canny_edge_detect import canny_edge_detect
 from plantcv.plantcv.opening import opening
@@ -103,7 +103,7 @@ __all__ = ['fatal_error', 'Params', 'Outputs', 'Spectral_data', 'PSII_data', 'de
            'white_balance', 'acute_vertex', 'scale_features', 'landmark_reference_pt_dist', 'outputs',
            'x_axis_pseudolandmarks', 'y_axis_pseudolandmarks', 'cluster_contours', 'visualize',
            'cluster_contour_splitimg', 'rotate', 'shift_img', 'output_mask', 'auto_crop', 'canny_edge_detect',
-           'background_subtraction', 'naive_bayes_classifier', 'acute', 'distance_transform', 'params',
+           'background_subtraction', 'naive_bayes_classifier', 'distance_transform', 'params',
            'cluster_contour_mask', 'analyze_thermal_values', 'opening',
            'closing', 'within_frame', 'fill_holes', 'get_kernel', 'crop', 'stdev_filter',
-           'spatial_clustering', 'photosynthesis']
+           'spatial_clustering', 'photosynthesis', 'homology']

@@ -331,6 +331,22 @@
     </div>
 </div>
 
+<!--Homology Tutorial-->
+<div class="card" style="display:block">
+    <a target="_blank" href="" onclick="location.href=this.href.replace('tutorials', 'tutorials/homology_tutorial');return false;">
+        <img src="https://github.com/danforthcenter/plantcv-homology-tutorials/blob/main/plm_tutorial_card.png?raw=true" alt="Watershed tutorial" width="600" height="auto">
+    </a>
+    <div class="card-title">
+        <h6>Pseudo-landmark Homology Tutorial</h6>
+    </div>
+    <div class="card-tags">
+        <span><strong>Tags</strong>: pseudo-landmarking, homology, morphometrics, setaria</span>
+    </div>
+    <div class="card-button">
+        <a href="https://mybinder.org/v2/gh/danforthcenter/plantcv-homology-tutorials/HEAD?filepath=index.ipynb"><img src="https://mybinder.org/badge_logo.svg"></a>
+    </div>
+</div>
+
 <script type="text/javascript">
     function getTags() {
         var tag_list = [];

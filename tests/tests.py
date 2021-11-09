@@ -1210,43 +1210,140 @@ def test_plantcv_outputs_save_results_csv(tmpdir):
     assert results == test_results
 
 
-def test_plantcv_acute():
+@pytest.mark.parametrize("win", [0, 5])
+def test_plantcv_homology_acute(win):
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
     # Read in test data
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR), encoding="latin1")
     obj_contour = contours_npz['arr_0']
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.acute(obj=obj_contour, win=5, thresh=15, mask=mask)
-    _ = pcv.acute(obj=obj_contour, win=0, thresh=15, mask=mask)
-    _ = pcv.acute(obj=np.array(([[213, 190]], [[83, 61]], [[149, 246]])), win=84, thresh=192, mask=mask)
-    _ = pcv.acute(obj=np.array(([[3, 29]], [[31, 102]], [[161, 63]])), win=148, thresh=56, mask=mask)
-    _ = pcv.acute(obj=np.array(([[103, 154]], [[27, 227]], [[152, 83]])), win=35, thresh=0, mask=mask)
-    # Test with debug = None
-    pcv.params.debug = None
-    _ = pcv.acute(obj=np.array(([[103, 154]], [[27, 227]], [[152, 83]])), win=35, thresh=0, mask=mask)
-    _ = pcv.acute(obj=obj_contour, win=0, thresh=15, mask=mask)
-    homology_pts = pcv.acute(obj=obj_contour, win=5, thresh=15, mask=mask)
+    homology_pts = pcv.homology.acute(img=mask, obj=obj_contour, mask=mask, win=win, threshold=15)
     assert all([i == j] for i, j in zip(np.shape(homology_pts), (29, 1, 2)))
 
 
-def test_plantcv_acute_vertex():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_acute_vertex")
-    os.mkdir(cache_dir)
+@pytest.mark.parametrize("cnt,win,thresh", [
+    [np.array(([[213, 190]], [[83, 61]], [[149, 246]])), 84, 192],
+    [np.array(([[3, 29]], [[31, 102]], [[161, 63]])), 148, 56],
+    [np.array(([[103, 154]], [[27, 227]], [[152, 83]])), 35, 0]
+])
+def test_plantcv_homology_acute_smallcontours(cnt, win, thresh):
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    # Read in test data
+    mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
+    homology_pts = pcv.homology.acute(img=mask, obj=cnt, mask=mask, win=win, threshold=thresh)
+    assert all([i == j] for i, j in zip(np.shape(homology_pts), (29, 1, 2)))
+
+
+def test_plantcv_homology_space():
+    # Test with debug = "plot"
+    pcv.params.debug = "plot"
+    # Read input dataframe
+    cur_plms = pd.read_csv(os.path.join(TEST_DATA, "plms_df.csv"))
+    df = pcv.homology.space(cur_plms=cur_plms, include_bound_dist=True, include_centroid_dist=True,
+                            include_orient_angles=True)
+    expected = ["group", "plmname", "filename", "plm_x", "plm_y", "SS_x", "SS_y", "TS_x", "TS_y", "CC_ratio",
+                "bot_left_dist", "bot_right_dist", "top_left_dist", "top_right_dist", "centroid_dist", "orientation",
+                "centroid_orientation"]
+    result = list(df.columns)
+    assert all([i == j] for i, j in zip(expected, result))
+
+
+@pytest.mark.parametrize("debug", ["print", "plot"])
+def test_plantcv_homology_starscape(debug, tmpdir):
+    # Set debug
+    pcv.params.debug = debug
+    # Create a test tmp directory
+    cache_dir = tmpdir.mkdir("sub")
     pcv.params.debug_outdir = cache_dir
+    # Read input dataframe
+    cur_plms = pd.read_csv(os.path.join(TEST_DATA, "plms_space_df.csv"))
+    final_df, eigenvals, loadings = pcv.homology.starscape(cur_plms=cur_plms, group_a="B100_rep1_d10",
+                                                           group_b="B100_rep1_d11",
+                                                           outfile_prefix=os.path.join(cache_dir, "starscape"))
+    expected = ["plmname", "filename", "PC1", "PC2", "PC3"]
+    result = list(final_df.columns)
+    assert all([i == j] for i, j in zip(expected, result))
+
+
+def test_plantcv_homology_starscape_2d():
+    # Set debug
+    pcv.params.debug = "plot"
+    # Read input dataframe
+    cur_plms = pd.read_csv(os.path.join(TEST_DATA, "plms_space_df.csv"))
+    # Drop columns to reduce dataset vars
+    cur_plms = cur_plms.drop(columns=["bot_left_dist", "bot_right_dist", "top_left_dist", "top_right_dist",
+                                      "centroid_dist", "orientation", "centroid_orientation"])
+    final_df, eigenvals, loadings = pcv.homology.starscape(cur_plms=cur_plms, group_a="B100_rep1_d10",
+                                                           group_b="B100_rep1_d11",
+                                                           outfile_prefix="starscape")
+    expected = ["plmname", "filename", "PC1", "PC2"]
+    result = list(final_df.columns)
+    assert all([i == j] for i, j in zip(expected, result))
+
+
+@pytest.mark.parametrize("debug", ["print", "plot"])
+def test_plantcv_homology_constella(debug, tmpdir):
+    # Set debug
+    pcv.params.debug = debug
+    # Create a test tmp directory
+    cache_dir = tmpdir.mkdir("sub")
+    pcv.params.debug_outdir = cache_dir
+    # Read input dataframes
+    cur_plms = pd.read_csv(os.path.join(TEST_DATA, "plms_space_df.csv"))
+    cur_plms.group = None
+    starscape_df = pd.read_csv(os.path.join(TEST_DATA, "plms_starscape_df.csv"))
+    cur_plms, grp_iter = pcv.homology.constella(cur_plms=cur_plms, pc_starscape=starscape_df,
+                                                group_iter=1, outfile_prefix=os.path.join(cache_dir, "constella"))
+    assert max(cur_plms.group) == 10
+
+
+def test_plantcv_homology_constella_one_time():
+    # Set debug
+    pcv.params.debug = None
+    # Read input dataframes
+    cur_plms = pd.read_csv(os.path.join(TEST_DATA, "plms_space_df.csv"))
+    cur_plms.group = None
+    starscape_df = pd.read_csv(os.path.join(TEST_DATA, "plms_starscape_df.csv"))
+    cur_plms = cur_plms.loc[cur_plms.filename.eq("B100_rep1_d10")]
+    starscape_df = starscape_df.loc[starscape_df.filename.eq("B100_rep1_d10")]
+    cur_plms, grp_iter = pcv.homology.constella(cur_plms=cur_plms, pc_starscape=starscape_df,
+                                                group_iter=1, outfile_prefix="constella")
+    assert max(cur_plms.group) == 8
+
+
+def test_plantcv_homology_constella_redundant_plm():
+    # Set debug
+    pcv.params.debug = None
+    # Read input dataframes
+    cur_plms = pd.read_csv(os.path.join(TEST_DATA, "plms_space_df.csv"))
+    cur_plms.group = None
+    starscape_df = pd.read_csv(os.path.join(TEST_DATA, "plms_starscape_df.csv"))
+    # Append duplicate plms
+    cur_plms = cur_plms.append(cur_plms.iloc[0])
+    cur_plms = cur_plms.reset_index(drop=True)
+    starscape_df = starscape_df.append(starscape_df.iloc[0])
+    starscape_df = starscape_df.reset_index(drop=True)
+    cur_plms, grp_iter = pcv.homology.constella(cur_plms=cur_plms, pc_starscape=starscape_df,
+                                                group_iter=1, outfile_prefix="constella")
+    assert max(cur_plms.group) == 11
+
+
+def test_plantcv_homology_constellaqc():
+    # Set debug
+    pcv.params.debug = "plot"
+    plms = pd.read_csv(os.path.join(TEST_DATA, "plms_landmarks.csv"))
+    annotations = pd.read_csv(os.path.join(TEST_DATA, "plms_annotated.csv"))
+    pcv.homology.constellaqc(denovo_groups=plms, annotated_groups=annotations)
+    assert True
+
+
+def test_plantcv_acute_vertex():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_VIS_SMALL))
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR), encoding="latin1")
     obj_contour = contours_npz['arr_0']
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img, label="prefix")
-    _ = pcv.acute_vertex(obj=[], win=5, thresh=15, sep=5, img=img)
-    _ = pcv.acute_vertex(obj=[], win=.01, thresh=.01, sep=1, img=img)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img)
     # Test with debug = None
     pcv.params.debug = None
     acute = pcv.acute_vertex(obj=obj_contour, win=5, thresh=15, sep=5, img=img)
@@ -1266,27 +1363,17 @@ def test_plantcv_acute_vertex_bad_obj():
 def test_plantcv_analyze_bound_horizontal():
     # Clear previous outputs
     pcv.outputs.clear()
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_bound_horizontal")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     img_above_bound_only = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL_PLANT))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
     object_contours = contours_npz['arr_0']
-    # Test with debug = "print"
-    pcv.params.debug = "print"
+    pcv.params.debug = None
     _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=300, label="prefix")
     pcv.outputs.clear()
     _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=100)
     _ = pcv.analyze_bound_horizontal(img=img_above_bound_only, obj=object_contours, mask=mask, line_position=1756)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=1756)
-    # Test with debug = None
-    pcv.params.debug = None
     _ = pcv.analyze_bound_horizontal(img=img, obj=object_contours, mask=mask, line_position=1756)
     assert len(pcv.outputs.observations["default"]) == 7
 
@@ -1326,21 +1413,11 @@ def test_plantcv_analyze_bound_horizontal_neg_y():
 def test_plantcv_analyze_bound_vertical():
     # Clear previous outputs
     pcv.outputs.clear()
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_analyze_bound_vertical")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_CONTOURS), encoding="latin1")
     object_contours = contours_npz['arr_0']
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=1000, label="prefix")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=1000)
     # Test with debug = None
     pcv.params.debug = None
     _ = pcv.analyze_bound_vertical(img=img, obj=object_contours, mask=mask, line_position=1000)
@@ -1603,12 +1680,6 @@ def test_plantcv_apply_mask_white():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.apply_mask(img=img, mask=mask, mask_color="white")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.apply_mask(img=img, mask=mask, mask_color="white")
     # Test with debug = None
     pcv.params.debug = None
     masked_img = pcv.apply_mask(img=img, mask=mask, mask_color="white")
@@ -1623,12 +1694,6 @@ def test_plantcv_apply_mask_black():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.apply_mask(img=img, mask=mask, mask_color="black")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.apply_mask(img=img, mask=mask, mask_color="black")
     # Test with debug = None
     pcv.params.debug = None
     masked_img = pcv.apply_mask(img=img, mask=mask, mask_color="black")
@@ -1646,11 +1711,8 @@ def test_plantcv_apply_mask_hyperspectral():
 
     img = np.ones((2056, 2454))
     img_stacked = cv2.merge((img, img, img, img))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.apply_mask(img=img_stacked, mask=img, mask_color="black")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
+    # Test with debug = none
+    pcv.params.debug = None
     masked_array = pcv.apply_mask(img=hyper_array.array_data, mask=img, mask_color="black")
     assert np.mean(masked_array) == 13.97111260224949
 
@@ -1665,24 +1727,18 @@ def test_plantcv_apply_mask_bad_input():
 
 
 def test_plantcv_auto_crop():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_auto_crop")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     # Read in test data
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI), -1)
     contours = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_OBJECT), encoding="latin1")
     roi_contours = [contours[arr_n] for arr_n in contours]
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.auto_crop(img=img1, obj=roi_contours[1], padding_x=(20, 10), padding_y=(20, 10), color='black')
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.auto_crop(img=img1, obj=roi_contours[1], color='image')
-    _ = pcv.auto_crop(img=img1, obj=roi_contours[1], padding_x=2000, padding_y=2000, color='image')
     # Test with debug = None
     pcv.params.debug = None
-    cropped = pcv.auto_crop(img=img1, obj=roi_contours[1], padding_x=20, padding_y=20, color='black')
+    # padding as tuple
+    _ = pcv.auto_crop(img=img1, obj=roi_contours[1], padding_x=(20, 10), padding_y=(20, 10), color='black')
+    # padding 0 so crop same as image
+    _ = pcv.auto_crop(img=img1, obj=roi_contours[1], color='image')
+    # padding as int
+    cropped = pcv.auto_crop(img=img1, obj=roi_contours[1], padding_x=20, padding_y=20, color='image')
     x, y, z = np.shape(img1)
     x1, y1, z1 = np.shape(cropped)
     assert x > x1
@@ -1735,14 +1791,9 @@ def test_plantcv_canny_edge_detect():
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
     _ = pcv.canny_edge_detect(img=rgb_img, mask=mask, mask_color='white')
     _ = pcv.canny_edge_detect(img=img, mask=mask, mask_color='black')
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
     _ = pcv.canny_edge_detect(img=img, thickness=2)
-    _ = pcv.canny_edge_detect(img=img)
     # Test with debug = None
     pcv.params.debug = None
     edge_img = pcv.canny_edge_detect(img=img)
@@ -1777,12 +1828,7 @@ def test_plantcv_closing():
     bin_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     # Test with debug=None
     pcv.params.debug = None
-    _ = pcv.closing(gray_img)
-    # Test with debug='plot'
-    pcv.params.debug = 'plot'
-    _ = pcv.closing(bin_img, np.ones((4, 4), np.uint8))
-    # Test with debug='print'
-    pcv.params.debug = 'print'
+    _ = pcv.closing(gray_img, np.ones((4, 4), np.uint8))
     filtered_img = pcv.closing(bin_img)
     assert np.sum(filtered_img) == 16261860
 
@@ -1805,13 +1851,9 @@ def test_plantcv_cluster_contours():
     hierarchy = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_HIERARCHY), encoding="latin1")
     objs = [roi_objects[arr_n] for arr_n in roi_objects]
     obj_hierarchy = hierarchy['arr_0']
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.cluster_contours(img=img1, roi_objects=objs, roi_obj_hierarchy=obj_hierarchy, nrow=4, ncol=6)
+    # Test with debug = 'plot' to cover plotting logic
+    pcv.params.debug = 'plot'
     _ = pcv.cluster_contours(img=img1, roi_objects=objs, roi_obj_hierarchy=obj_hierarchy, show_grid=True)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.cluster_contours(img=img1, roi_objects=objs, roi_obj_hierarchy=obj_hierarchy, nrow=4, ncol=6)
     # Test with debug = None
     pcv.params.debug = None
     clusters_i, contours, hierarchy = pcv.cluster_contours(img=img1, roi_objects=objs, roi_obj_hierarchy=obj_hierarchy,
@@ -1832,12 +1874,9 @@ def test_plantcv_cluster_contours_grayscale_input():
     hierachy = np.load(os.path.join(TEST_DATA, TEST_INPUT_MULTI_HIERARCHY), encoding="latin1")
     objs = [roi_objects[arr_n] for arr_n in roi_objects]
     obj_hierarchy = hierachy['arr_0']
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.cluster_contours(img=img1, roi_objects=objs, roi_obj_hierarchy=obj_hierarchy, nrow=4, ncol=6)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.cluster_contours(img=img1, roi_objects=objs, roi_obj_hierarchy=obj_hierarchy, nrow=4, ncol=6)
+    # Test with debug = 'plot' to cover plotting logic
+    pcv.params.debug = 'plot'
+    _ = pcv.cluster_contours(img=img1, roi_objects=objs, roi_obj_hierarchy=obj_hierarchy, show_grid=True)
     # Test with debug = None
     pcv.params.debug = None
     clusters_i, contours, hierachy = pcv.cluster_contours(img=img1, roi_objects=objs, roi_obj_hierarchy=obj_hierarchy,
@@ -1935,11 +1974,7 @@ def test_plantcv_crop():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     img, _, _ = pcv.readimage(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK), 'gray')
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.crop(img=img, x=10, y=10, h=50, w=50)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
+    pcv.params.debug = None
     cropped = pcv.crop(img=img, x=10, y=10, h=50, w=50)
     assert np.shape(cropped) == (50, 50)
 
@@ -1952,11 +1987,7 @@ def test_plantcv_crop_hyperspectral():
     # Read in test data
     img = np.ones((2056, 2454))
     img_stacked = cv2.merge((img, img, img, img))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.crop(img=img_stacked, x=10, y=10, h=50, w=50)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
+    pcv.params.debug = None
     cropped = pcv.crop(img=img_stacked, x=10, y=10, h=50, w=50)
     assert np.shape(cropped) == (50, 50, 4)
 
@@ -2066,12 +2097,6 @@ def test_plantcv_dilate():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.dilate(gray_img=img, ksize=5, i=1)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.dilate(gray_img=img, ksize=5, i=1)
     # Test with debug = None
     pcv.params.debug = None
     dilate_img = pcv.dilate(gray_img=img, ksize=5, i=1)
@@ -2102,12 +2127,6 @@ def test_plantcv_erode():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.erode(gray_img=img, ksize=5, i=1)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.erode(gray_img=img, ksize=5, i=1)
     # Test with debug = None
     pcv.params.debug = None
     erode_img = pcv.erode(gray_img=img, ksize=5, i=1)
@@ -2138,12 +2157,6 @@ def test_plantcv_distance_transform():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED_MASK), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.distance_transform(bin_img=mask, distance_type=1, mask_size=3)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.distance_transform(bin_img=mask, distance_type=1, mask_size=3)
     # Test with debug = None
     pcv.params.debug = None
     distance_transform_img = pcv.distance_transform(bin_img=mask, distance_type=1, mask_size=3)
@@ -2186,11 +2199,6 @@ def test_plantcv_fill_holes():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.fill_holes(bin_img=img)
-    pcv.params.debug = "plot"
-    _ = pcv.fill_holes(bin_img=img)
     # Test with debug = None
     pcv.params.debug = None
     fill_img = pcv.fill_holes(bin_img=img)
@@ -2216,12 +2224,6 @@ def test_plantcv_find_objects():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.find_objects(img=img, mask=mask)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.find_objects(img=img, mask=mask)
     # Test with debug = None
     pcv.params.debug = None
     contours, hierarchy = pcv.find_objects(img=img, mask=mask)
@@ -2237,8 +2239,8 @@ def test_plantcv_find_objects_grayscale_input():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 0)
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
+    # Test with debug = None
+    pcv.params.debug = None
     contours, hierarchy = pcv.find_objects(img=img, mask=mask)
     # Assert the correct number of contours are found
     assert len(contours) == 2
@@ -2252,15 +2254,9 @@ def test_plantcv_flip():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     img_binary = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.flip(img=img, direction="horizontal")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.flip(img=img, direction="vertical")
-    _ = pcv.flip(img=img_binary, direction="vertical")
     # Test with debug = None
     pcv.params.debug = None
+    _ = pcv.flip(img=img_binary, direction="vertical")
     flipped_img = pcv.flip(img=img, direction="horizontal")
     assert all([i == j] for i, j in zip(np.shape(flipped_img), TEST_COLOR_DIM))
 
@@ -2280,15 +2276,9 @@ def test_plantcv_gaussian_blur():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     img_color = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.gaussian_blur(img=img, ksize=(51, 51), sigma_x=0, sigma_y=None)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.gaussian_blur(img=img, ksize=(51, 51), sigma_x=0, sigma_y=None)
-    _ = pcv.gaussian_blur(img=img_color, ksize=(51, 51), sigma_x=0, sigma_y=None)
     # Test with debug = None
     pcv.params.debug = None
+    _ = pcv.gaussian_blur(img=img_color, ksize=(51, 51), sigma_x=0, sigma_y=None)
     gaussian_img = pcv.gaussian_blur(img=img, ksize=(51, 51), sigma_x=0, sigma_y=None)
     imgavg = np.average(img)
     gavg = np.average(gaussian_img)
@@ -2339,12 +2329,6 @@ def test_plantcv_hist_equalization():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.hist_equalization(gray_img=img)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.hist_equalization(gray_img=img)
     # Test with debug = None
     pcv.params.debug = None
     hist = pcv.hist_equalization(gray_img=img)
@@ -2359,7 +2343,7 @@ def test_plantcv_hist_equalization_bad_input():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     # Read in test data
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), 1)
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), 1)
     # Test with debug = None
     pcv.params.debug = None
     with pytest.raises(RuntimeError):
@@ -2374,12 +2358,6 @@ def test_plantcv_image_add():
     # Read in test data
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     img2 = np.copy(img1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.image_add(gray_img1=img1, gray_img2=img2)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.image_add(gray_img1=img1, gray_img2=img2)
     # Test with debug = None
     pcv.params.debug = None
     added_img = pcv.image_add(gray_img1=img1, gray_img2=img2)
@@ -2413,12 +2391,6 @@ def test_plantcv_image_subtract():
     # read in images
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     img2 = np.copy(img1)
-    # Test with debug = "print"
-    pcv.params.debug = 'print'
-    _ = pcv.image_subtract(img1, img2)
-    # Test with debug = "plot"
-    pcv.params.debug = 'plot'
-    _ = pcv.image_subtract(img1, img2)
     # Test with debug = None
     pcv.params.debug = None
     new_img = pcv.image_subtract(img1, img2)
@@ -2441,12 +2413,6 @@ def test_plantcv_invert():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.invert(gray_img=img)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.invert(gray_img=img)
     # Test with debug = None
     pcv.params.debug = None
     inverted_img = pcv.invert(gray_img=img)
@@ -2488,12 +2454,6 @@ def test_plantcv_laplace_filter():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.laplace_filter(gray_img=img, ksize=1, scale=1)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.laplace_filter(gray_img=img, ksize=1, scale=1)
     # Test with debug = None
     pcv.params.debug = None
     lp_img = pcv.laplace_filter(gray_img=img, ksize=1, scale=1)
@@ -2509,12 +2469,6 @@ def test_plantcv_logical_and():
     # Read in test data
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     img2 = np.copy(img1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.logical_and(bin_img1=img1, bin_img2=img2)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.logical_and(bin_img1=img1, bin_img2=img2)
     # Test with debug = None
     pcv.params.debug = None
     and_img = pcv.logical_and(bin_img1=img1, bin_img2=img2)
@@ -2529,12 +2483,6 @@ def test_plantcv_logical_or():
     # Read in test data
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     img2 = np.copy(img1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.logical_or(bin_img1=img1, bin_img2=img2)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.logical_or(bin_img1=img1, bin_img2=img2)
     # Test with debug = None
     pcv.params.debug = None
     or_img = pcv.logical_or(bin_img1=img1, bin_img2=img2)
@@ -2549,12 +2497,6 @@ def test_plantcv_logical_xor():
     # Read in test data
     img1 = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     img2 = np.copy(img1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.logical_xor(bin_img1=img1, bin_img2=img2)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.logical_xor(bin_img1=img1, bin_img2=img2)
     # Test with debug = None
     pcv.params.debug = None
     xor_img = pcv.logical_xor(bin_img1=img1, bin_img2=img2)
@@ -2568,14 +2510,9 @@ def test_plantcv_median_blur():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.median_blur(gray_img=img, ksize=5)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.median_blur(gray_img=img, ksize=5)
     # Test with debug = None
     pcv.params.debug = None
+    _ = pcv.median_blur(gray_img=img, ksize=(5, 5))
     blur_img = pcv.median_blur(gray_img=img, ksize=5)
     # Assert that the output image has the dimensions of the input image
     if all([i == j] for i, j in zip(np.shape(blur_img), TEST_BINARY_DIM)):
@@ -2606,9 +2543,6 @@ def test_plantcv_naive_bayes_classifier():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.naive_bayes_classifier(rgb_img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
     # Test with debug = "plot"
     pcv.params.debug = "plot"
     _ = pcv.naive_bayes_classifier(rgb_img=img, pdf_file=os.path.join(TEST_DATA, TEST_PDFS))
@@ -2646,15 +2580,9 @@ def test_plantcv_object_composition():
     object_contours = [object_contours_npz[arr_n] for arr_n in object_contours_npz]
     object_hierarchy_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_OBJECT_HIERARCHY), encoding="latin1")
     object_hierarchy = object_hierarchy_npz['arr_0']
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.object_composition(img=img, contours=object_contours, hierarchy=object_hierarchy)
-    _ = pcv.object_composition(img=img, contours=[], hierarchy=object_hierarchy)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.object_composition(img=img, contours=object_contours, hierarchy=object_hierarchy)
     # Test with debug = None
     pcv.params.debug = None
+    _ = pcv.object_composition(img=img, contours=[], hierarchy=object_hierarchy)
     contours, mask = pcv.object_composition(img=img, contours=object_contours, hierarchy=object_hierarchy)
     # Assert that the objects have been combined
     contour_shape = np.shape(contours)  # type: tuple
@@ -2715,11 +2643,7 @@ def test_plantcv_opening():
     # Test with debug=None
     pcv.params.debug = None
     _ = pcv.opening(gray_img)
-    # Test with debug='plot'
-    pcv.params.debug = 'plot'
     _ = pcv.opening(bin_img, np.ones((4, 4), np.uint8))
-    # Test with debug='print'
-    pcv.params.debug = 'print'
     filtered_img = pcv.opening(bin_img)
     assert np.sum(filtered_img) == 16184595
 
@@ -2996,107 +2920,27 @@ def test_plantcv_readimage_bad_file():
         _ = pcv.readimage(filename=TEST_INPUT_COLOR)
 
 
-def test_plantcv_readbayer_default_bg():
+@pytest.mark.parametrize("alg, pattern", [["default", 'BG'],
+                                          ["default", 'GB'],
+                                          ["default", 'RG'],
+                                          ["default", 'GR'],
+                                          ["edgeaware", 'BG'],
+                                          ["edgeaware", 'GB'],
+                                          ["edgeaware", 'RG'],
+                                          ["edgeaware", 'GR'],
+                                          ["variablenumbergradients", 'BG'],
+                                          ["variablenumbergradients", 'GB'],
+                                          ["variablenumbergradients", 'RG'],
+                                          ["variablenumbergradients", 'GR']])
+def test_plantcv_readbayer(alg, pattern):
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_readbayer_default_bg")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _, _, _ = pcv.readbayer(filename=os.path.join(TEST_DATA, TEST_INPUT_BAYER),
-                            bayerpattern="BG", alg="default")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    img, path, img_name = pcv.readbayer(filename=os.path.join(TEST_DATA, TEST_INPUT_BAYER),
-                                        bayerpattern="BG", alg="default")
-    assert all([i == j] for i, j in zip(np.shape(img), (335, 400, 3)))
-
-
-def test_plantcv_readbayer_default_gb():
     # Test with debug = None
     pcv.params.debug = None
     img, path, img_name = pcv.readbayer(filename=os.path.join(TEST_DATA, TEST_INPUT_BAYER),
-                                        bayerpattern="GB", alg="default")
-    assert all([i == j] for i, j in zip(np.shape(img), (335, 400, 3)))
-
-
-def test_plantcv_readbayer_default_rg():
-    # Test with debug = None
-    pcv.params.debug = None
-    img, path, img_name = pcv.readbayer(filename=os.path.join(TEST_DATA, TEST_INPUT_BAYER),
-                                        bayerpattern="RG", alg="default")
-    assert all([i == j] for i, j in zip(np.shape(img), (335, 400, 3)))
-
-
-def test_plantcv_readbayer_default_gr():
-    # Test with debug = None
-    pcv.params.debug = None
-    img, path, img_name = pcv.readbayer(filename=os.path.join(TEST_DATA, TEST_INPUT_BAYER),
-                                        bayerpattern="GR", alg="default")
-    assert all([i == j] for i, j in zip(np.shape(img), (335, 400, 3)))
-
-
-def test_plantcv_readbayer_edgeaware_bg():
-    # Test with debug = None
-    pcv.params.debug = None
-    img, path, img_name = pcv.readbayer(filename=os.path.join(TEST_DATA, TEST_INPUT_BAYER),
-                                        bayerpattern="BG", alg="edgeaware")
-    assert all([i == j] for i, j in zip(np.shape(img), (335, 400, 3)))
-
-
-def test_plantcv_readbayer_edgeaware_gb():
-    # Test with debug = None
-    pcv.params.debug = None
-    img, path, img_name = pcv.readbayer(filename=os.path.join(TEST_DATA, TEST_INPUT_BAYER),
-                                        bayerpattern="GB", alg="edgeaware")
-    assert all([i == j] for i, j in zip(np.shape(img), (335, 400, 3)))
-
-
-def test_plantcv_readbayer_edgeaware_rg():
-    # Test with debug = None
-    pcv.params.debug = None
-    img, path, img_name = pcv.readbayer(filename=os.path.join(TEST_DATA, TEST_INPUT_BAYER),
-                                        bayerpattern="RG", alg="edgeaware")
-    assert all([i == j] for i, j in zip(np.shape(img), (335, 400, 3)))
-
-
-def test_plantcv_readbayer_edgeaware_gr():
-    # Test with debug = None
-    pcv.params.debug = None
-    img, path, img_name = pcv.readbayer(filename=os.path.join(TEST_DATA, TEST_INPUT_BAYER),
-                                        bayerpattern="GR", alg="edgeaware")
-    assert all([i == j] for i, j in zip(np.shape(img), (335, 400, 3)))
-
-
-def test_plantcv_readbayer_variablenumbergradients_bg():
-    # Test with debug = None
-    pcv.params.debug = None
-    img, path, img_name = pcv.readbayer(filename=os.path.join(TEST_DATA, TEST_INPUT_BAYER),
-                                        bayerpattern="BG", alg="variablenumbergradients")
-    assert all([i == j] for i, j in zip(np.shape(img), (335, 400, 3)))
-
-
-def test_plantcv_readbayer_variablenumbergradients_gb():
-    # Test with debug = None
-    pcv.params.debug = None
-    img, path, img_name = pcv.readbayer(filename=os.path.join(TEST_DATA, TEST_INPUT_BAYER),
-                                        bayerpattern="GB", alg="variablenumbergradients")
-    assert all([i == j] for i, j in zip(np.shape(img), (335, 400, 3)))
-
-
-def test_plantcv_readbayer_variablenumbergradients_rg():
-    # Test with debug = None
-    pcv.params.debug = None
-    img, path, img_name = pcv.readbayer(filename=os.path.join(TEST_DATA, TEST_INPUT_BAYER),
-                                        bayerpattern="RG", alg="variablenumbergradients")
-    assert all([i == j] for i, j in zip(np.shape(img), (335, 400, 3)))
-
-
-def test_plantcv_readbayer_variablenumbergradients_gr():
-    # Test with debug = None
-    pcv.params.debug = None
-    img, path, img_name = pcv.readbayer(filename=os.path.join(TEST_DATA, TEST_INPUT_BAYER),
-                                        bayerpattern="GR", alg="variablenumbergradients")
+                                        bayerpattern=pattern, alg=alg)
     assert all([i == j] for i, j in zip(np.shape(img), (335, 400, 3)))
 
 
@@ -3115,15 +2959,10 @@ def test_plantcv_rectangle_mask():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
     img_color = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.rectangle_mask(img=img, p1=(0, 0), p2=(2454, 2056), color="white")
-    _ = pcv.rectangle_mask(img=img, p1=(0, 0), p2=(2454, 2056), color="white")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.rectangle_mask(img=img_color, p1=(0, 0), p2=(2454, 2056), color="gray")
     # Test with debug = None
     pcv.params.debug = None
+    _ = pcv.rectangle_mask(img=img, p1=(0, 0), p2=(2454, 2056), color="white")
+    _ = pcv.rectangle_mask(img=img_color, p1=(0, 0), p2=(2454, 2056), color="gray")
     masked, hist, contour, heir = pcv.rectangle_mask(img=img, p1=(0, 0), p2=(2454, 2056), color="black")
     maskedsum = np.sum(masked)
     imgsum = np.sum(img)
@@ -3154,14 +2993,6 @@ def test_plantcv_report_size_marker_detect():
     roi_contour = [np.array([[[3550, 850]], [[3550, 1349]], [[4049, 1349]], [[4049, 850]]], dtype=np.int32)]
     roi_hierarchy = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
 
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.report_size_marker_area(img=img, roi_contour=roi_contour, roi_hierarchy=roi_hierarchy, marker='detect',
-                                    objcolor='light', thresh_channel='s', thresh=120, label="prefix")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.report_size_marker_area(img=img, roi_contour=roi_contour, roi_hierarchy=roi_hierarchy, marker='detect',
-                                    objcolor='light', thresh_channel='s', thresh=120)
     # Test with debug = None
     pcv.params.debug = None
     images = pcv.report_size_marker_area(img=img, roi_contour=roi_contour, roi_hierarchy=roi_hierarchy, marker='detect',
@@ -3247,12 +3078,6 @@ def test_plantcv_rgb2gray_hsv():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.rgb2gray_hsv(rgb_img=img, channel="s")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.rgb2gray_hsv(rgb_img=img, channel="s")
     # Test with debug = None
     pcv.params.debug = None
     s = pcv.rgb2gray_hsv(rgb_img=img, channel="s")
@@ -3274,12 +3099,6 @@ def test_plantcv_rgb2gray_lab():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.rgb2gray_lab(rgb_img=img, channel='b')
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.rgb2gray_lab(rgb_img=img, channel='b')
     # Test with debug = None
     pcv.params.debug = None
     b = pcv.rgb2gray_lab(rgb_img=img, channel='b')
@@ -3317,9 +3136,7 @@ def test_plantcv_roi2mask():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_VIS_SMALL))
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR), encoding="latin1")
     obj_contour = contours_npz['arr_0']
-    pcv.params.debug = "plot"
-    _ = pcv.roi.roi2mask(img=img, contour=obj_contour)
-    pcv.params.debug = "print"
+    pcv.params.debug = None
     mask = pcv.roi.roi2mask(img=img, contour=obj_contour)
     assert np.shape(mask)[0:2] == np.shape(img)[0:2] and np.sum(mask) == 255
 
@@ -3339,16 +3156,10 @@ def test_plantcv_roi_objects():
     object_contours = [object_contours_npz[arr_n] for arr_n in object_contours_npz]
     object_hierarchy_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_OBJECT_HIERARCHY), encoding="latin1")
     object_hierarchy = object_hierarchy_npz['arr_0']
-    # Test with debug = "print"
-    pcv.params.debug = "print"
+    # Test with debug = None
+    pcv.params.debug = None
     _ = pcv.roi_objects(img=img, roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
                         object_contour=object_contours, obj_hierarchy=object_hierarchy, roi_type="largest")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.roi_objects(img=img, roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
-                        object_contour=object_contours, obj_hierarchy=object_hierarchy, roi_type="partial")
-    # Test with debug = None and roi_type = cutto
-    pcv.params.debug = None
     _ = pcv.roi_objects(img=img, roi_contour=roi_contour, roi_hierarchy=roi_hierarchy,
                         object_contour=object_contours, obj_hierarchy=object_hierarchy, roi_type="cutto")
     # Test with debug = None
@@ -3392,8 +3203,7 @@ def test_plantcv_roi_objects_grayscale_input():
     object_contours = [object_contours_npz[arr_n] for arr_n in object_contours_npz]
     object_hierarchy_npz = np.load(os.path.join(TEST_DATA, TEST_INPUT_OBJECT_HIERARCHY), encoding="latin1")
     object_hierarchy = object_hierarchy_npz['arr_0']
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
+    pcv.params.debug = None
     kept_contours, kept_hierarchy, mask, area = pcv.roi_objects(img=img, roi_type="partial", roi_contour=roi_contour,
                                                                 roi_hierarchy=roi_hierarchy,
                                                                 object_contour=object_contours,
@@ -3453,11 +3263,8 @@ def test_plantcv_scale_features():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR), encoding="latin1")
     obj_contour = contours_npz['arr_0']
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.scale_features(obj=obj_contour, mask=mask, points=TEST_ACUTE_RESULT, line_position=50)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
+    # test with debug = 'plot' to cover plotting logic
+    pcv.params.debug = 'plot'
     _ = pcv.scale_features(obj=obj_contour, mask=mask, points=TEST_ACUTE_RESULT, line_position='NA')
     # Test with debug = None
     pcv.params.debug = None
@@ -3482,12 +3289,6 @@ def test_plantcv_scharr_filter():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    pcv.params.debug = "print"
-    # Test with debug = "print"
-    _ = pcv.scharr_filter(img=img, dx=1, dy=0, scale=1)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.scharr_filter(img=img, dx=1, dy=0, scale=1)
     # Test with debug = None
     pcv.params.debug = None
     scharr_img = pcv.scharr_filter(img=img, dx=1, dy=0, scale=1)
@@ -3503,20 +3304,10 @@ def test_plantcv_shift_img():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.shift_img(img=img, number=300, side="top")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.shift_img(img=img, number=300, side="top")
-    # Test with debug = "plot"
-    _ = pcv.shift_img(img=img, number=300, side="bottom")
-    # Test with debug = "plot"
-    _ = pcv.shift_img(img=img, number=300, side="right")
-    # Test with debug = "plot"
-    _ = pcv.shift_img(img=mask, number=300, side="left")
-    # Test with debug = None
     pcv.params.debug = None
+    _ = pcv.shift_img(img=img, number=300, side="bottom")
+    _ = pcv.shift_img(img=img, number=300, side="right")
+    _ = pcv.shift_img(img=mask, number=300, side="left")
     rotated = pcv.shift_img(img=img, number=300, side="top")
     imgavg = np.average(img)
     shiftavg = np.average(rotated)
@@ -3546,12 +3337,6 @@ def test_plantcv_sobel_filter():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.sobel_filter(gray_img=img, dx=1, dy=0, ksize=1)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.sobel_filter(gray_img=img, dx=1, dy=0, ksize=1)
     # Test with debug = None
     pcv.params.debug = None
     sobel_img = pcv.sobel_filter(gray_img=img, dx=1, dy=0, ksize=1)
@@ -3566,9 +3351,7 @@ def test_plantcv_stdev_filter():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY_SMALL), -1)
-    pcv.params.debug = "plot"
-    _ = pcv.stdev_filter(img=img, ksize=11)
-    pcv.params.debug = "print"
+    pcv.params.debug = None
     filter_img = pcv.stdev_filter(img=img, ksize=11)
     assert (np.shape(filter_img) == np.shape(img))
 
@@ -3583,16 +3366,10 @@ def test_plantcv_watershed_segmentation():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_CROPPED_MASK), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10, label="prefix")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10)
     # Test with debug = None
     pcv.params.debug = None
-    _ = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10)
-    assert pcv.outputs.observations['default']['estimated_object_count']['value'] > 9
+    _ = pcv.watershed_segmentation(rgb_img=img, mask=mask, distance=10, label='prefix')
+    assert pcv.outputs.observations['prefix']['estimated_object_count']['value'] > 9
 
 
 def test_plantcv_white_balance_gray_16bit():
@@ -3602,17 +3379,11 @@ def test_plantcv_white_balance_gray_16bit():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.white_balance(img=img, mode='hist', roi=(5, 5, 80, 80))
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.white_balance(img=img, mode='max', roi=(5, 5, 80, 80))
     # Test without an ROI
     pcv.params.debug = None
-    _ = pcv.white_balance(img=img, mode='hist', roi=None)
+    _ = pcv.white_balance(img=img, mode='max', roi=None)
     # Test with debug = None
-    white_balanced = pcv.white_balance(img=img, roi=(5, 5, 80, 80))
+    white_balanced = pcv.white_balance(img=img, mode='hist', roi=(5, 5, 80, 80))
     imgavg = np.average(img)
     balancedavg = np.average(white_balanced)
     assert balancedavg != imgavg
@@ -3626,17 +3397,11 @@ def test_plantcv_white_balance_gray_8bit():
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK))
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.white_balance(img=img, mode='hist', roi=(5, 5, 80, 80))
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.white_balance(img=img, mode='max', roi=(5, 5, 80, 80))
     # Test without an ROI
     pcv.params.debug = None
-    _ = pcv.white_balance(img=img, mode='hist', roi=None)
+    _ = pcv.white_balance(img=img, mode='max', roi=None)
     # Test with debug = None
-    white_balanced = pcv.white_balance(img=img, roi=(5, 5, 80, 80))
+    white_balanced = pcv.white_balance(img=img, mode='hist', roi=(5, 5, 80, 80))
     imgavg = np.average(img)
     balancedavg = np.average(white_balanced)
     assert balancedavg != imgavg
@@ -3649,47 +3414,26 @@ def test_plantcv_white_balance_rgb():
     pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MARKER))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.white_balance(img=img, mode='hist', roi=(5, 5, 80, 80))
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.white_balance(img=img, mode='max', roi=(5, 5, 80, 80))
-    # Test without an ROI
     pcv.params.debug = None
-    _ = pcv.white_balance(img=img, mode='hist', roi=None)
+    # Test without an ROI
+    _ = pcv.white_balance(img=img, mode='max', roi=None)
     # Test with debug = None
-    white_balanced = pcv.white_balance(img=img, roi=(5, 5, 80, 80))
+    white_balanced = pcv.white_balance(img=img, mode='hist', roi=(5, 5, 80, 80))
     imgavg = np.average(img)
     balancedavg = np.average(white_balanced)
     assert balancedavg != imgavg
 
 
-def test_plantcv_white_balance_bad_input():
+@pytest.mark.parametrize("mode, roi", [['hist', (5, 5, 5, 5, 5)],  # too many points
+                                       ['hist', (5., 5, 5, 5)],  # not all integers
+                                       ['histogram', (5, 5, 80, 80)]])  # bad mode
+def test_plantcv_white_balance_bad_input(mode, roi):
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK), -1)
     # Test with debug = None
     with pytest.raises(RuntimeError):
-        pcv.params.debug = "plot"
-        _ = pcv.white_balance(img=img, mode='hist', roi=(5, 5, 5, 5, 5))
-
-
-def test_plantcv_white_balance_bad_mode_input():
-    # Read in test data
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MARKER))
-    # Test with debug = None
-    with pytest.raises(RuntimeError):
-        pcv.params.debug = "plot"
-        _ = pcv.white_balance(img=img, mode='histogram', roi=(5, 5, 80, 80))
-
-
-def test_plantcv_white_balance_bad_input_int():
-    # Read in test data
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_NIR_MASK), -1)
-    # Test with debug = None
-    with pytest.raises(RuntimeError):
-        pcv.params.debug = "plot"
-        _ = pcv.white_balance(img=img, mode='hist', roi=(5., 5, 5, 5))
+        pcv.params.debug = None
+        _ = pcv.white_balance(img=img, mode=mode, roi=roi)
 
 
 def test_plantcv_x_axis_pseudolandmarks():
@@ -3701,18 +3445,14 @@ def test_plantcv_x_axis_pseudolandmarks():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR), encoding="latin1")
     obj_contour = contours_npz['arr_0']
-    pcv.params.debug = "print"
-    _ = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
+    # Test with debug = None
+    pcv.params.debug = None
     _ = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img, label="prefix")
     _ = pcv.x_axis_pseudolandmarks(obj=np.array([[0, 0], [0, 0]]), mask=np.array([[0, 0], [0, 0]]), img=img)
     _ = pcv.x_axis_pseudolandmarks(obj=np.array(([[89, 222]], [[252, 39]], [[89, 207]])),
                                    mask=np.array(([[42, 161]], [[2, 47]], [[211, 222]])), img=img)
 
     _ = pcv.x_axis_pseudolandmarks(obj=(), mask=mask, img=img)
-    # Test with debug = None
-    pcv.params.debug = None
     top, bottom, center_v = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
     pcv.outputs.clear()
     assert all([all([i == j] for i, j in zip(np.shape(top), (20, 1, 2))),
@@ -3725,12 +3465,9 @@ def test_plantcv_x_axis_pseudolandmarks_small_obj():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL_PLANT), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR_SMALL_PLANT), encoding="latin1")
     obj_contour = contours_npz['arr_0']
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _, _, _ = pcv.x_axis_pseudolandmarks(obj=[], mask=mask, img=img)
+    # Test with debug = None
+    pcv.params.debug = None
     _, _, _ = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
     _, _, _ = pcv.x_axis_pseudolandmarks(obj=[], mask=mask, img=img)
     top, bottom, center_v = pcv.x_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
     assert all([all([i == j] for i, j in zip(np.shape(top), (20, 1, 2))),
@@ -3762,20 +3499,14 @@ def test_plantcv_y_axis_pseudolandmarks():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR), encoding="latin1")
     obj_contour = contours_npz['arr_0']
-    pcv.params.debug = "print"
-    _ = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img, label="prefix")
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
-    pcv.outputs.clear()
+    # Test with debug = None
+    pcv.params.debug = None
     _ = pcv.y_axis_pseudolandmarks(obj=[], mask=mask, img=img)
     _ = pcv.y_axis_pseudolandmarks(obj=(), mask=mask, img=img)
     _ = pcv.y_axis_pseudolandmarks(obj=np.array(([[89, 222]], [[252, 39]], [[89, 207]])),
                                    mask=np.array(([[42, 161]], [[2, 47]], [[211, 222]])), img=img)
     _ = pcv.y_axis_pseudolandmarks(obj=np.array(([[21, 11]], [[159, 155]], [[237, 11]])),
                                    mask=np.array(([[38, 54]], [[144, 169]], [[81, 137]])), img=img)
-    # Test with debug = None
-    pcv.params.debug = None
     left, right, center_h = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
     pcv.outputs.clear()
     assert all([all([i == j] for i, j in zip(np.shape(left), (20, 1, 2))),
@@ -3790,12 +3521,8 @@ def test_plantcv_y_axis_pseudolandmarks_small_obj():
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_MASK_SMALL_PLANT), -1)
     contours_npz = np.load(os.path.join(TEST_DATA, TEST_VIS_COMP_CONTOUR_SMALL_PLANT), encoding="latin1")
     obj_contour = contours_npz['arr_0']
-    # Test with debug = "print"
-    pcv.params.debug = "print"
+    pcv.params.debug = None
     _, _, _ = pcv.y_axis_pseudolandmarks(obj=[], mask=mask, img=img)
-    _, _, _ = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
     pcv.outputs.clear()
     left, right, center_h = pcv.y_axis_pseudolandmarks(obj=obj_contour, mask=mask, img=img)
     pcv.outputs.clear()
@@ -3845,27 +3572,6 @@ def test_plantcv_background_subtraction():
     assert (all(truths))
 
 
-def test_plantcv_background_subtraction_debug():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_background_subtraction_debug")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    # List to hold result of all tests.
-    truths = []
-    fg_img = cv2.imread(os.path.join(TEST_DATA, TEST_FOREGROUND))
-    bg_img = cv2.imread(os.path.join(TEST_DATA, TEST_BACKGROUND))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    fgmask = pcv.background_subtraction(background_image=bg_img, foreground_image=fg_img)
-    truths.append(np.sum(fgmask) > 0)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    fgmask = pcv.background_subtraction(background_image=bg_img, foreground_image=fg_img)
-    truths.append(np.sum(fgmask) > 0)
-    # All of these should be true for the function to pass testing.
-    assert (all(truths))
-
-
 def test_plantcv_background_subtraction_bad_img_type():
     fg_color = cv2.imread(os.path.join(TEST_DATA, TEST_FOREGROUND))
     bg_gray = cv2.imread(os.path.join(TEST_DATA, TEST_BACKGROUND), 0)
@@ -3884,25 +3590,16 @@ def test_plantcv_background_subtraction_different_sizes():
     assert np.sum(fgmask) > 0
 
 
-def test_plantcv_spatial_clustering_dbscan():
+@pytest.mark.parametrize("alg, min_size, max_size", [['DBSCAN', 10, None],
+                                                     ['OPTICS', 100, 5000]]
+                         )
+def test_plantcv_spatial_clustering(alg, min_size, max_size):
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_spatial_clustering_dbscan")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI_MASK), -1)
-    pcv.params.debug = "print"
-    _ = pcv.spatial_clustering(img, algorithm="DBSCAN", min_cluster_size=10, max_distance=None)
-    pcv.params.debug = "plot"
-    spmask = pcv.spatial_clustering(img, algorithm="DBSCAN", min_cluster_size=10, max_distance=None)
-    assert len(spmask[1]) == 2
-
-
-def test_plantcv_spatial_clustering_optics():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_spatial_clustering_optics")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_MULTI_MASK), -1)
     pcv.params.debug = None
-    spmask = pcv.spatial_clustering(img, algorithm="OPTICS", min_cluster_size=100, max_distance=5000)
+    spmask = pcv.spatial_clustering(img, algorithm=alg, min_cluster_size=min_size, max_distance=max_size)
     assert len(spmask[1]) == 2
 
 
@@ -5179,8 +4876,7 @@ def test_plantcv_photosynthesis_read_cropreporter_spc_only(tmpdir):
 def test_plantcv_photosynthesis_analyze_yii(mda, mlabels):
     # Test with debug = None
     pcv.params.debug = None
-    _ = pcv.photosynthesis.analyze_yii(ps_da=mda, mask=ps_mask(), bins=100,
-                                       measurement_labels=mlabels, label="default")
+    _ = pcv.photosynthesis.analyze_yii(ps_da=mda, mask=ps_mask(), measurement_labels=mlabels, label="default")
     if mlabels is None:
         med = pcv.outputs.observations["default"]["yii_median_t0"]["value"]
         pcv.outputs.clear()
@@ -5196,7 +4892,7 @@ def test_plantcv_photosynthesis_analyze_yii(mda, mlabels):
     elif "t40" in mlabels:
         med = pcv.outputs.observations["default"]["yii_median_t40"]["value"]
         pcv.outputs.clear()
-        assert med == float(np.around((185 - 32) / 185, decimals=4))
+        assert med == float((185 - 32) / 185)
 
 
 @pytest.mark.parametrize("mlabels, tmask",
@@ -5212,7 +4908,7 @@ def test_plantcv_photosynthesis_analyze_yii_fatalerror(mlabels, tmask):
 
     with pytest.raises(RuntimeError):
         _ = pcv.photosynthesis.analyze_yii(ps_da=psii_cropreporter('darkadapted'), mask=tmask,
-                                           bins=100, measurement_labels=mlabels, label="default")
+                                           measurement_labels=mlabels, label="default")
 
 
 @pytest.mark.parametrize("mda_light, mda_dark, mlabels",
@@ -5227,7 +4923,8 @@ def test_plantcv_photosynthesis_analyze_npq(mda_dark, mda_light, mlabels):
     # Test with debug = None
     pcv.params.debug = None
     _ = pcv.photosynthesis.analyze_npq(ps_da_light=mda_light, ps_da_dark=mda_dark,
-                                       mask=ps_mask(), bins=100, measurement_labels=mlabels, label="prefix")
+                                       mask=ps_mask(), measurement_labels=mlabels, label="prefix",
+                                       min_bin="auto", max_bin="auto")
     if mlabels is not None:
         med = pcv.outputs.observations["prefix"]["npq_median_Fq/Fm"]["value"]
         pcv.outputs.clear()
@@ -5235,7 +4932,7 @@ def test_plantcv_photosynthesis_analyze_npq(mda_dark, mda_light, mlabels):
     else:
         med = pcv.outputs.observations["prefix"]["npq_median_t40"]["value"]
         pcv.outputs.clear()
-        assert med == float(np.around(200 / 185 - 1, decimals=4))
+        assert med == float((200 / 185) - 1)
 
 
 @pytest.mark.parametrize("mlabels, tmask",
@@ -5251,7 +4948,7 @@ def test_plantcv_photosynthesis_analyze_npq_fatalerror(mlabels, tmask):
 
     with pytest.raises(RuntimeError):
         _ = pcv.photosynthesis.analyze_npq(ps_da_dark=psii_cropreporter('darkadapted'), ps_da_light=psii_cropreporter(
-            'lightadapted'), mask=tmask, bins=100, measurement_labels=mlabels, label="default")
+            'lightadapted'), mask=tmask, measurement_labels=mlabels, label="default")
 
 
 @pytest.mark.parametrize("da",
@@ -6638,6 +6335,7 @@ def test_plantcv_visualize_histogram_multispectral_img():
     img_multi = np.concatenate((img_rgb, img_rgb), axis=2)
     fig_hist = pcv.visualize.histogram(img=img_multi)
     assert isinstance(fig_hist, ggplot)
+
 
 def test_plantcv_visualize_histogram_no_img():
     with pytest.raises(RuntimeError):

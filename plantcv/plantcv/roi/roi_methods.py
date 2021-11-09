@@ -8,13 +8,15 @@ from scipy.spatial import distance
 import matplotlib.pyplot as plt
 from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 
 
 # Create an ROI from a binary mask
 def from_binary_image(img, bin_img):
-    """Create an ROI from a binary image
+    """
+    Create an ROI from a binary image
 
     Inputs:
     img           = An RGB or grayscale image to plot the ROI on.
@@ -29,8 +31,6 @@ def from_binary_image(img, bin_img):
     :return roi_contour: list
     :return roi_hierarchy: numpy.ndarray
     """
-    # Autoincrement the device counter
-    params.device += 1
     # Make sure the input bin_img is binary
     if len(np.unique(bin_img)) != 2:
         fatal_error("Input image is not binary!")
@@ -45,7 +45,8 @@ def from_binary_image(img, bin_img):
 
 # Create a rectangular ROI
 def rectangle(img, x, y, h, w):
-    """Create a rectangular ROI.
+    """
+    Create a rectangular ROI.
 
     Inputs:
     img           = An RGB or grayscale image to plot the ROI on in debug mode.
@@ -66,8 +67,6 @@ def rectangle(img, x, y, h, w):
     :return roi_contour: list
     :return roi_hierarchy: numpy.ndarray
     """
-    # Autoincrement the device counter
-    params.device += 1
 
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
@@ -95,7 +94,8 @@ def rectangle(img, x, y, h, w):
 
 # Create a circular ROI
 def circle(img, x, y, r):
-    """Create a circular ROI.
+    """
+    Create a circular ROI.
 
     Inputs:
     img           = An RGB or grayscale image to plot the ROI on in debug mode.
@@ -114,8 +114,6 @@ def circle(img, x, y, r):
     :return roi_contour: list
     :return roi_hierarchy: numpy.ndarray
     """
-    # Autoincrement the device counter
-    params.device += 1
 
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
@@ -141,7 +139,8 @@ def circle(img, x, y, r):
 
 # Create an elliptical ROI
 def ellipse(img, x, y, r1, r2, angle):
-    """Create an elliptical ROI.
+    """
+    Create an elliptical ROI.
 
     Inputs:
     img           = An RGB or grayscale image to plot the ROI on in debug mode.
@@ -164,8 +163,6 @@ def ellipse(img, x, y, r1, r2, angle):
     :return roi_contour: list
     :return roi_hierarchy: numpy.ndarray
     """
-    # Autoincrement the device counter
-    params.device += 1
 
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
@@ -192,7 +189,8 @@ def ellipse(img, x, y, r1, r2, angle):
 
 # Draw the ROI on a reference image
 def _draw_roi(img, roi_contour):
-    """Draw an ROI
+    """
+    Draw an ROI
 
     :param img: numpy.ndarray
     :param roi_contour: list
@@ -204,16 +202,13 @@ def _draw_roi(img, roi_contour):
         ref_img = cv2.cvtColor(ref_img, cv2.COLOR_GRAY2BGR)
     # Draw the contour on the reference image
     cv2.drawContours(ref_img, roi_contour, -1, (255, 0, 0), params.line_thickness)
-    if params.debug == "print":
-        # If debug is print, save the image to a file
-        print_image(ref_img, os.path.join(params.debug_outdir, str(params.device) + "_roi.png"))
-    elif params.debug == "plot":
-        # If debug is plot, print to the plotting device
-        plot_image(ref_img)
+    _debug(visual=ref_img,
+           filename=os.path.join(params.debug_outdir, str(params.device) + "_roi.png"))
 
 
 def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
-    """Create multiple circular ROIs on a single image
+    """
+    Create multiple circular ROIs on a single image
     Inputs
     img           = Input image data.
     coord         = Two-element tuple of the center of the top left object (x,y) or a list of tuples identifying
@@ -236,9 +231,6 @@ def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
     :param ncols: int
     :return mask: numpy.ndarray
     """
-
-    # Autoincrement the device counter
-    params.device += 1
 
     # Store user debug
     debug = params.debug
@@ -330,7 +322,8 @@ def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
 
 
 def custom(img, vertices):
-    """Create an custom polygon ROI.
+    """
+    Create an custom polygon ROI.
 
         Inputs:
         img           = An RGB or grayscale image to plot the ROI on in debug mode.
@@ -344,9 +337,7 @@ def custom(img, vertices):
         :param vertices: list
         :return roi_contour: list
         :return roi_hierarchy: numpy.ndarray
-        """
-    # Autoincrement the device counter
-    params.device += 1
+    """
 
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
