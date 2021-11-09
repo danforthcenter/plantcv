@@ -4,14 +4,14 @@
 import os
 import cv2
 import numpy as np
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 
 
 def background_subtraction(background_image, foreground_image):
-    """Creates a binary image from a background subtraction of the foreground using cv2.BackgroundSubtractorMOG().
+    """
+    Creates a binary image from a background subtraction of the foreground using cv2.BackgroundSubtractorMOG().
     The binary image returned is a mask that should contain mostly foreground pixels.
     The background image should be the same background as the foreground image except not containing the object
     of interest.
@@ -31,8 +31,6 @@ def background_subtraction(background_image, foreground_image):
     :param foreground_image: numpy.ndarray
     :return fgmask: numpy.ndarray
     """
-
-    params.device += 1
     # Copying images to make sure not alter originals
     bg_img = np.copy(background_image)
     fg_img = np.copy(foreground_image)
@@ -57,10 +55,8 @@ def background_subtraction(background_image, foreground_image):
     # Applying the foreground image to the background subtractor (therefore removing the background)
     fgmask = bgsub.apply(fg_img)
 
-    # Debug options
-    if params.debug == "print":
-        print_image(fgmask, os.path.join(params.debug_outdir, str(params.device) + "_background_subtraction.png"))
-    elif params.debug == "plot":
-        plot_image(fgmask, cmap="gray")
+    _debug(visual=fgmask,
+           filename=os.path.join(params.debug_outdir, str(params.device) + "_background_subtraction.png"),
+           cmap='gray')
 
     return fgmask

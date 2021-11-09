@@ -2,8 +2,7 @@ import os
 import numpy as np
 from skimage import morphology
 from plantcv.plantcv import params
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import fatal_error
 
 
@@ -19,8 +18,6 @@ def closing(gray_img, kernel=None):
     :return filtered_img: ndarray
     """
 
-    params.device += 1
-
     # Make sure the image is binary/grayscale
     if len(np.shape(gray_img)) != 2:
         fatal_error("Input image must be grayscale or binary")
@@ -33,9 +30,8 @@ def closing(gray_img, kernel=None):
     else:
         filtered_img = morphology.closing(gray_img, kernel)
 
-    if params.debug == 'print':
-        print_image(filtered_img, os.path.join(params.debug_outdir, str(params.device) + '_opening' + '.png'))
-    elif params.debug == 'plot':
-        plot_image(filtered_img, cmap='gray')
+    _debug(visual=filtered_img,
+           filename=os.path.join(params.debug_outdir, str(params.device) + '_opening' + '.png'),
+           cmap='gray')
 
     return filtered_img

@@ -6,13 +6,13 @@ from sklearn.cluster import DBSCAN
 from sklearn.cluster import OPTICS
 from sklearn.preprocessing import StandardScaler
 from plantcv.plantcv import params
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import color_palette
 
 
 def spatial_clustering(mask, algorithm="DBSCAN", min_cluster_size=5, max_distance=None):
-    """Counts and segments portions of an image based on distance between two pixels.
+    """
+    Counts and segments portions of an image based on distance between two pixels.
     Masks showing all clusters, plus masks of individual clusters, are returned.
 
     Inputs:
@@ -37,9 +37,6 @@ def spatial_clustering(mask, algorithm="DBSCAN", min_cluster_size=5, max_distanc
     :return clust_img: numpy.ndarray
     :return clust_masks: list
     """
-
-    # Increment device counter
-    params.device += 1
 
     # Uppercase algorithm name
     al_upper = algorithm.upper()
@@ -95,10 +92,7 @@ def spatial_clustering(mask, algorithm="DBSCAN", min_cluster_size=5, max_distanc
                                                  dict_of_colors[str(db.labels_[z])][1],
                                                  dict_of_colors[str(db.labels_[z])][0])
 
-    if params.debug == 'print':
-        print_image(clust_img, os.path.join(params.debug_outdir, f"{params.device}_{al_upper}_clusters.png"))
-
-    elif params.debug == 'plot':
-        plot_image(clust_img)
+    _debug(visual=clust_img,
+           filename=os.path.join(params.debug_outdir, f"{params.device}_{al_upper}_clusters.png"))
 
     return clust_img, clust_masks
