@@ -32,6 +32,8 @@ def find_objects(img, mask):
     if len(np.shape(ori_img)) == 2:
         ori_img = cv2.cvtColor(ori_img, cv2.COLOR_GRAY2BGR)
     objects, hierarchy = cv2.findContours(mask1, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
+    # Cast tuple objects as a list
+    objects = list(objects)
     for i, cnt in enumerate(objects):
         cv2.drawContours(ori_img, objects, i, (255, 102, 255), -1, lineType=8, hierarchy=hierarchy)
 
