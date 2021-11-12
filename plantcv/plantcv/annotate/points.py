@@ -1,5 +1,11 @@
 # Point/vertice annotation tool(s)
 
+import cv2
+import numpy as np
+from math import floor
+from scipy.spatial import distance
+import matplotlib.pyplot as plt
+
 ## INTERACTIVE ROI TOOLS ##
 
 def _find_closest_pt(pt, pts):
@@ -18,7 +24,7 @@ def _find_closest_pt(pt, pts):
     return idx, pts[idx]
 
 
-class CustomROI(object):
+class Points(object):
     """
     Draw polygon
     """
