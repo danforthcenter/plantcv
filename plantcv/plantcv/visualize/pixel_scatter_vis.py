@@ -8,7 +8,7 @@ from plantcv.plantcv import fatal_error
 
 
 MAX_MARKER_SIZE = 20
-IMG_WIDTH = 256
+IMG_WIDTH = 128
 
 
 # functions to get a given channel with parameters compatible
@@ -32,30 +32,40 @@ def _get_gray(rgb_img, _):
     """ Get the gray scale transformation of a RGB image """
     return pcv.rgb2gray(rgb_img=rgb_img)
 
+def _get_index(rgb_img, _):
+    """ Get a vector with linear indices of the pixels in an image """
+    h,w,_ = rgb_img.shape
+    return np.arange(h*w)
+
 
 def _not_valid(*args):
     """ Error for a non valid channel """
-    return fatal_error("channel not valid, use R, G, B, l, a, b, h, s, v or gray")
+    return fatal_error("channel not valid, use R, G, B, l, a, b, h, s, v, gray, or index")
 
 
-def pixel_scatter_vis(paths_to_imgs, channel):
+def pixel_scatter_vis(paths_to_imgs, x_channel, y_channel):
     """
     Plot a 2D pixel scatter visualization for a dataset of images.
-    The vertical coordinate is defined by the intensity of the pixel in the selected
-    channel and the horizontal coordinate is defined by the pixels linear position in the image.
+    The horizontal and vertical coordinates are defined by the intensity of the
+    pixels in the specified channels.
     The color of each dot is given by the original RGB color of the pixel.
 
     Inputs:
     paths_to_imgs  = List of paths to the images
-    channel        = Channel to use for the vertical coordinate of the scatter.
-                     Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', and 'gray'
+    x_channel      = Channel to use for the horizontal coordinate of the scatter plot.
+                     Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'gray', and 'index'
+    y_channel      = Channel to use for the vertical coordinate of the scatter plot.
+                     Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'gray', and 'index'
 
     Returns:
-    scatter_vis = 2D pixel scatter visualization
+    fig = matplotlib pyplot Figure object of the visualization
+    ax  = matplotlib pyplot Axes object of the visualization
 
     :param paths_to_imgs: str
-    :param channel: str
-    :return
+    :param x_channel: str
+    :param y_channel: str
+    :return fig: matplotlib.pyplot Figure object
+    :return ax: matplotlib.pyplot Axes object
     """
     # dictionary returns the function that gets the required image channel
     channel_dict = {
@@ -69,10 +79,12 @@ def pixel_scatter_vis(paths_to_imgs, channel):
         'h': pcv.rgb2gray_hsv,
         's': pcv.rgb2gray_hsv,
         'v': pcv.rgb2gray_hsv,
+        'index': _get_index,
     }
 
     N = len(paths_to_imgs)
-    _ = plt.figure()
+    # _ = plt.figure()
+    fig, ax = plt.subplots()
     # load and plot the set of images sequentially
     for p in paths_to_imgs:
         img, _, _ = pcv.readimage(filename=p, mode="native")
@@ -88,14 +100,16 @@ def pixel_scatter_vis(paths_to_imgs, channel):
         sub_img_rgb = cv.cvtColor(sub_img, cv.COLOR_BGR2RGB)
         fcolors = sub_img_rgb.reshape(img_height*IMG_WIDTH,c)/255
 
-        # get the channel
-        sub_img_ch = channel_dict.get(channel, _not_valid)(sub_img, channel)
-        sub_img_ch_lin = sub_img_ch.reshape(-1)
+        # get channels
+        sub_img_x_ch = channel_dict.get(x_channel, _not_valid)(sub_img, x_channel)
+        sub_img_y_ch = channel_dict.get(y_channel, _not_valid)(sub_img, y_channel)
 
-        plt.scatter(np.arange(img_height*IMG_WIDTH),
-                    sub_img_ch_lin,
+        ax.scatter(sub_img_x_ch.reshape(-1),
+                    sub_img_y_ch.reshape(-1),
                     alpha=0.05, s=MAX_MARKER_SIZE/N,
                     edgecolors=None, facecolors=fcolors)
 
-    plt.xlabel('Pixel linear index')
-    plt.ylabel(channel + ' channel')
+    plt.xlabel(x_channel)
+    plt.ylabel(y_channel)
+
+    return fig, ax
