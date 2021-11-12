@@ -1,3 +1,4 @@
-from plantcv.plantcv.annotate.points import points
+from plantcv.plantcv.annotate.points import Points
+from plantcv.plantcv.annotate.points import _find_closest_pt
 
-__all__ = ["points"]
+__all__ = ["Points", "_find_closest_pt"]
