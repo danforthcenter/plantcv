@@ -5200,10 +5200,10 @@ def test_plantcv_roi_custom_bad_input():
         _ = pcv.roi.custom(img=img, vertices=[[226, -1], [3130, 1848], [2404, 2029], [2205, 2298], [1617, 1761]])
 
 
-def test_plantcv_roi_custom_interactive():
+def test_plantcv_annotate_Points_interactive():
     # Read in a test grayscale image
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), -1)
-    drawer_rgb = pcv.roi.CustomROI(img, figsize=(12, 6))
+    drawer_rgb = pcv.annotate.Points(img, figsize=(12, 6))
     # simulate mouse clicks
     e1 = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=drawer_rgb.fig.canvas,
                                              x=0, y=0, button=1)
