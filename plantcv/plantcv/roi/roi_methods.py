@@ -3,11 +3,6 @@
 import os
 import cv2
 import numpy as np
-from math import floor
-from scipy.spatial import distance
-import matplotlib.pyplot as plt
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
