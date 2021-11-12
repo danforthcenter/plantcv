@@ -212,6 +212,11 @@ pages for more details on the input and output variable types.
 * post v3.5: thermal_histogram = **plantcv.analyze_thermal_values**(*thermal_array, mask, histplot=False*)
 * post v3.11: thermal_histogram = **plantcv.analyze_thermal_values**(*thermal_array, mask, histplot=False, label="default"*)
 
+#### plantcv.annotate.Points
+
+* pre v4.0: NA
+* post v4.0: marker = **plantcv.annotate.Points**(*img, figsize=(6,12)*)
+
 #### plantcv.apply_mask
 
 * pre v3.0dev2: device, masked_img = **plantcv.apply_mask**(*img, mask, mask_color, device, debug=None*)
@@ -675,11 +680,6 @@ pages for more details on the input and output variable types.
 * pre v3.0dev1: NA
 * post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.circle**(*x, y, r, img*)
 * post v3.2: roi_contour, roi_hierarchy = **plantcv.roi.circle**(*img, x, y, r*)
-
-#### plantcv.roi.CustomRoi
-
-* pre v4.0: NA
-* post v4.0: marker = **plantcv.roi.CustomRoi**(*img, figsize=(6,12)*)
 
 #### plantcv.roi.ellipse
 
