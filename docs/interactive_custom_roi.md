@@ -1,9 +1,8 @@
-## Interactive Polygon ROI 
+## Interactive Point Annotation Tool 
 
-Using [Jupyter Notebooks](jupyter.md) it is possible to interactively collect coordinates for the [`pcv.roi.custom`](roi_custom.md) function by clicking on
-the plotted image.   
+Using [Jupyter Notebooks](jupyter.md) it is possible to interactively click to collect coordinates from an image, which can be used in various downstream applications. 
 
-**plantcv.roi.CustomROI**(*img, figsize=(12, 6)*)
+**plantcv.annotate.Points**(*img, figsize=(12, 6)*)
 
 **returns** interactive image class
 
@@ -13,6 +12,8 @@ the plotted image.
     
 - **Context:**
     - Used to define coordinates for custom polygon region(s) of interest. Output of this function works upstream of the 
+    - For example the [`pcv.roi.custom`](roi_custom.md) function defines a polygon Region of Interest based on a list of vertices, which can be labor intensive to define but is streamlined with the ability to click for point collection. 
+    - The list of vertices output has also shown to be helpful while using [pcv.roi.multi](roi_multi.md) in cases where centers are defined with a custom list of vertices.    
 - **Example use:**
     - Below
     
@@ -20,8 +21,8 @@ the plotted image.
 ```python
 from plantcv import plantcv as pcv
 
-# Create an instance of the Custom ROI class 
-marker = pcv.roi.CustomROI(img=img, figsize=(12,6))
+# Create an instance of the Points class 
+marker = pcv.annotate.Points(img=img, figsize=(12,6))
 
 # Click on the plotted image to collect coordinates 
 
