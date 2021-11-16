@@ -5,6 +5,7 @@ import json
 from plantcv.plantcv import fatal_error
 import matplotlib.pyplot as plt
 from math import floor
+from plantcv.plantcv.annotate import _find_closest_pt
 
 
 
