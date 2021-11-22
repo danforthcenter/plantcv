@@ -5,6 +5,11 @@ import cv2
 import math
 import numpy as np
 from matplotlib import pyplot as plt
+from plantcv.plantcv import rgb2gray
+from plantcv.plantcv import rgb2gray_hsv
+from plantcv.plantcv import rgb2gray_lab
+from plantcv.plantcv import print_image
+from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 from skimage.feature import greycomatrix, greycoprops
@@ -752,5 +757,92 @@ def mask_bad(float_img, bad_type='native'):
         print('{} does not appear in the current image.'.format(bad_type.lower()))
 
     _debug(visual=mask, filename=os.path.join(params.debug_outdir, str(params.device) + "_bad_mask.png"))
+
+    return mask
+
+# functions to get a given channel with parameters compatible
+# with rgb2gray_lab and rgb2gray_hsv to use in the dict
+def _get_R(rgb_img, _):
+    """ Get the red channel from a RGB image """
+    return rgb_img[:,:,2]
+
+
+def _get_G(rgb_img, _):
+    """ Get the green channel from a RGB image """
+    return rgb_img[:,:,1]
+
+
+def _get_B(rgb_img, _):
+    """ Get the blue channel from a RGB image """
+    return rgb_img[:,:,0]
+
+
+def _get_gray(rgb_img, _):
+    """ Get the gray scale transformation of a RGB image """
+    return rgb2gray(rgb_img=rgb_img)
+
+def _get_index(rgb_img, _):
+    """ Get a vector with linear indices of the pixels in an image """
+    h,w,_ = rgb_img.shape
+    return np.arange(h*w)
+
+
+def _not_valid(*args):
+    """ Error for a non valid channel """
+    return fatal_error("channel not valid, use R, G, B, l, a, b, h, s, v, gray, or index")
+
+
+def threshold_2_channels(rgb_img, x_channel, y_channel, points, above=True, max_value=255):
+
+    """Creates a binary image from a grayscale image based on the threshold value.
+    Inputs:
+    rgb_img   = A colored image with channels Red, Green and Blue
+    ch_x      = A one character string deciding the channel for the x-axis ("R","G","B")
+    ch_y      = A one character string deciding the channel for the y-axis ("R","G","B")
+    slope     = The slope of the line used to segment the image (m in "y=mx+b")
+    y_int     = The y-intercept for the line used to segment the image (b in "y=mx+b")
+
+    Returns:
+    bin_img      = Thresholded, binary image
+    :param rgb_img: numpy.ndarray
+    :param ch_x: str
+    :param ch_y: str
+    :param slope: double
+    :param y_int: double
+    :return bin_img: numpy.ndarray
+    """
+
+    # dictionary returns the function that gets the required image channel
+    channel_dict = {
+        'R': _get_R,
+        'G': _get_G,
+        'B': _get_B,
+        'l': rgb2gray_lab,
+        'a': rgb2gray_lab,
+        'b': rgb2gray_lab,
+        'gray': _get_gray,
+        'h': rgb2gray_hsv,
+        's': rgb2gray_hsv,
+        'v': rgb2gray_hsv,
+        'index': _get_index,
+    }
+
+    # get channels
+    img_x_ch = channel_dict.get(x_channel, _not_valid)(rgb_img, x_channel)
+    img_y_ch = channel_dict.get(y_channel, _not_valid)(rgb_img, y_channel)
+
+    mask = np.ones(rgb_img.shape, dtype=np.uint8)
+    x0, y0 = points[0]
+    x1, y1 = points[1]
+
+    m = (y1-y0) / (x1-x0)
+    b = y0 - m*x0
+
+    y_line = m*img_x_ch + b
+
+    if above:
+        mask = max_value*(img_y_ch > y_line)
+    else:
+        mask = max_value*(img_y_ch < y_line)
 
     return mask
