@@ -11,7 +11,7 @@ Using [Jupyter Notebooks](jupyter.md) it is possible to interactively click to c
     - figsize - Interactive plot figure size (default = (12,6)) 
     
 - **Context:**
-    - Used to define coordinates for custom polygon region(s) of interest. Output of this function works upstream of the 
+    - Used to define a list of coordinates of interest. 
     - For example the [`pcv.roi.custom`](roi_custom.md) function defines a polygon Region of Interest based on a list of vertices, which can be labor intensive to define but is streamlined with the ability to click for point collection. 
     - The list of vertices output has also shown to be helpful while using [pcv.roi.multi](roi_multi.md) in cases where centers are defined with a custom list of vertices.    
 - **Example use:**
@@ -33,11 +33,11 @@ roi_contour, roi_hierarchy = pcv.roi.custom(img=img, vertices = marker.points)
 
 **Selecting Coordinates**
 
-![screen-gif](img/documentation_images/interactive_roi/custom_roi.gif)
+![screen-gif](img/documentation_images/annotate_Points/custom_roi.gif)
 
 **Resulting ROI**
 
-![Screenshot](img/documentation_images/interactive_roi/custom_roi.jpg)
+![Screenshot](img/documentation_images/annotate_Points/custom_roi.jpg)
 
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/roi/roi_methods.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/classes.py)
