@@ -836,11 +836,18 @@ def threshold_2_channels(rgb_img, x_channel, y_channel, points, above=True, max_
     img_x_ch = channel_dict.get(x_channel, _not_valid)(rgb_img, x_channel)
     img_y_ch = channel_dict.get(y_channel, _not_valid)(rgb_img, y_channel)
 
+    if len(points) < 2:
+        fatal_error('Two points are required')
+
+    if len(points) > 2:
+        # Print warning statement
+        print("Warning: only the first two points are used in this function")
+
     mask = np.ones(rgb_img.shape, dtype=np.uint8)
     x0, y0 = points[0]
     x1, y1 = points[1]
 
-    m = (y1-y0) / (x1-x0)
+    m = (y1-y0) / (x1-x0+1e-10) # avoid division by 0
     b = y0 - m*x0
 
     y_line = m*img_x_ch + b
