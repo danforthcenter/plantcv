@@ -350,5 +350,3 @@ def custom(img, vertices):
             fatal_error("An ROI extends outside of the image!")
 
     return roi_contour, roi_hierarchy
-
-
