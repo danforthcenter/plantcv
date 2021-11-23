@@ -4,8 +4,7 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv import params
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv.transform import rescale
 
@@ -26,8 +25,6 @@ def apply_mask(img, mask, mask_color):
     :param mask_color: str
     :return masked_img: numpy.ndarray
     """
-
-    params.device += 1
 
     if mask_color.upper() == "WHITE":
         color_val = 255
@@ -53,14 +50,10 @@ def apply_mask(img, mask, mask_color):
                                 rescale(array_data[:, :, num_bands - 1])))
         params.debug = debug
 
-        if params.debug == 'print':
-            print_image(pseudo_rgb, os.path.join(params.debug_outdir, str(params.device) + '_masked.png'))
-        elif params.debug == 'plot':
-            plot_image(pseudo_rgb)
+        _debug(visual=pseudo_rgb,
+               filename=os.path.join(params.debug_outdir, str(params.device) + '_masked.png'))
     else:
-        if params.debug == 'print':
-            print_image(array_data, os.path.join(params.debug_outdir, str(params.device) + '_masked.png'))
-        elif params.debug == 'plot':
-            plot_image(array_data)
+        _debug(visual=array_data,
+               filename=os.path.join(params.debug_outdir, str(params.device) + '_masked.png'))
 
     return array_data

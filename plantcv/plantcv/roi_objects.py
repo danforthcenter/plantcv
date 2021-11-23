@@ -4,14 +4,14 @@ import cv2
 import numpy as np
 import os
 from plantcv.plantcv import logical_and
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 
 
 def roi_objects(img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, roi_type="partial"):
-    """Find objects partially inside a region of interest or cut objects to the ROI.
+    """
+    Find objects partially inside a region of interest or cut objects to the ROI.
 
     Inputs:
     img            = RGB or grayscale image data for plotting
@@ -42,7 +42,6 @@ def roi_objects(img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, 
     debug = params.debug
     params.debug = None
 
-    params.device += 1
     # Create an empty grayscale (black) image the same dimensions as the input image
     mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
     cv2.drawContours(mask, object_contour, -1, (255), -1, lineType=8, hierarchy=obj_hierarchy)
@@ -142,11 +141,10 @@ def roi_objects(img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, 
 
     # Reset debug mode
     params.debug = debug
-    if params.debug == 'print':
-        print_image(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_obj_on_img.png'))
-        print_image(mask, os.path.join(params.debug_outdir, str(params.device) + '_roi_mask.png'))
-    elif params.debug == 'plot':
-        plot_image(ori_img)
-        plot_image(mask, cmap='gray')
+    _debug(ori_img,
+           filename=os.path.join(params.debug_outdir, str(params.device) + '_obj_on_img.png'))
+    _debug(mask, 
+           filename=os.path.join(params.debug_outdir, str(params.device) + '_roi_mask.png'),
+           cmap='gray')
 
     return kept_cnt, kept_hierarchy, mask, obj_area

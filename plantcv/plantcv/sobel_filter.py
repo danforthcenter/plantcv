@@ -2,16 +2,16 @@
 
 import cv2
 import os
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
 
 
 def sobel_filter(gray_img, dx, dy, ksize):
-    """This is a filtering method used to identify and highlight gradient edges/features using the 1st derivative.
-       Typically used to identify gradients along the x-axis (dx = 1, dy = 0) and y-axis (dx = 0, dy = 1) independently.
-       Performance is quite similar to Scharr filter. Used to detect edges / changes in pixel intensity. ddepth = -1
-       specifies that the dimensions of output image will be the same as the input image.
+    """
+    This is a filtering method used to identify and highlight gradient edges/features using the 1st derivative.
+    Typically used to identify gradients along the x-axis (dx = 1, dy = 0) and y-axis (dx = 0, dy = 1) independently.
+    Performance is quite similar to Scharr filter. Used to detect edges / changes in pixel intensity. ddepth = -1
+    specifies that the dimensions of output image will be the same as the input image.
 
     Inputs:
     gray_img = Grayscale image data
@@ -28,13 +28,12 @@ def sobel_filter(gray_img, dx, dy, ksize):
     :param ksize: int
     :return sb_img: numpy.ndarray
     """
-    params.device += 1
+
     sb_img = cv2.Sobel(src=gray_img, ddepth=-1, dx=dx, dy=dy, ksize=ksize)
 
-    if params.debug == 'print':
-        fname = str(params.device) + '_sb_img_dx' + str(dx) + '_dy' + str(dy) + '_kernel' + str(ksize) + '.png'
-        name = os.path.join(params.debug_outdir, fname)
-        print_image(sb_img, name)
-    elif params.debug == 'plot':
-        plot_image(sb_img, cmap='gray')
+    fname = str(params.device) + '_sb_img_dx' + str(dx) + '_dy' + str(dy) + '_kernel' + str(ksize) + '.png'
+    _debug(visual=sb_img,
+           filename=os.path.join(params.debug_outdir, fname),
+           cmap='gray')
+
     return sb_img

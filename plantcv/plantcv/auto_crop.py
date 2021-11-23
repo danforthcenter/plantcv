@@ -3,14 +3,14 @@
 import os
 import cv2
 import numpy as np
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
 from plantcv.plantcv import fatal_error
 
 
 def auto_crop(img, obj, padding_x=0, padding_y=0, color='black'):
-    """Resize image.
+    """
+    Resize image.
 
     Inputs:
     img       = RGB or grayscale image data
@@ -59,13 +59,15 @@ def auto_crop(img, obj, padding_x=0, padding_y=0, color='black'):
 
     if color.upper() == 'BLACK':
         colorval = (0, 0, 0)
-        cropped = cv2.copyMakeBorder(crop_img, offsety_top, offsety_bottom, offsetx_left, offsetx_right, cv2.BORDER_CONSTANT, value=colorval)
+        cropped = cv2.copyMakeBorder(crop_img, offsety_top, offsety_bottom, offsetx_left,
+                                     offsetx_right, cv2.BORDER_CONSTANT, value=colorval)
     elif color.upper() == 'WHITE':
         colorval = (255, 255, 255)
-        cropped = cv2.copyMakeBorder(crop_img, offsety_top, offsety_bottom, offsetx_left, offsetx_right, cv2.BORDER_CONSTANT, value=colorval)
+        cropped = cv2.copyMakeBorder(crop_img, offsety_top, offsety_bottom, offsetx_left,
+                                     offsetx_right, cv2.BORDER_CONSTANT, value=colorval)
     elif color.upper() == 'IMAGE':
         # Check whether the ROI is correctly bounded inside the image
-        if x - offsetx_right < 0  or y - offsety_top < 0 or x + w + offsetx_right > width or y + h + offsety_bottom > height:
+        if x - offsetx_right < 0 or y - offsety_top < 0 or x + w + offsetx_right > width or y + h + offsety_bottom > height:
             cropped = img_copy2[y:y + h, x:x + w]
         else:
             # If padding is the image, crop the image with a buffer rather than cropping and adding a buffer
@@ -73,16 +75,16 @@ def auto_crop(img, obj, padding_x=0, padding_y=0, color='black'):
     else:
         fatal_error('Color was provided but ' + str(color) + ' is not "white", "black", or "image"!')
 
+    if len(np.shape(img_copy)) == 3:
+        cmap = None
+    else:
+        cmap = 'gray'
 
-    if params.debug == 'print':
-        print_image(img_copy, os.path.join(params.debug_outdir, str(params.device) + "_crop_area.png"))
-        print_image(cropped, os.path.join(params.debug_outdir, str(params.device) + "_auto_cropped.png"))
-    elif params.debug == 'plot':
-        if len(np.shape(img_copy)) == 3:
-            plot_image(img_copy)
-            plot_image(cropped)
-        else:
-            plot_image(img_copy, cmap='gray')
-            plot_image(cropped, cmap='gray')
+    _debug(visual=img_copy,
+           filename=os.path.join(params.debug_outdir, str(params.device) + "_crop_area.png"),
+           cmap=cmap)
+    _debug(visual=cropped,
+           filename=os.path.join(params.debug_outdir, str(params.device) + "_auto_cropped.png"),
+           cmap=cmap)
 
     return cropped
