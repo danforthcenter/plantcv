@@ -6141,6 +6141,15 @@ def test_plantcv_threshold_threshold_2_channels_bad_points():
     with pytest.raises(RuntimeError):
         mask = pcv.threshold.threshold_2_channels(img, x_channel=x_ch, y_channel=y_ch, points=pts, above=True, max_value=255)
 
+def test_plantcv_threshold_threshold_2_channels_bad_ch():
+    # Create a synthetic RGB image containing a single pixel
+    img = np.array([100,50,200], dtype=np.uint8).reshape((1,1,3))
+    pts = [(0,0),(255,255)]
+    x_ch = 'B'
+    y_ch = 'Z'
+    with pytest.raises(RuntimeError):
+        mask = pcv.threshold.threshold_2_channels(img, x_channel=x_ch, y_channel=y_ch, points=pts, above=True, max_value=255)
+
 
 # ###################################
 # Tests for the visualize subpackage
