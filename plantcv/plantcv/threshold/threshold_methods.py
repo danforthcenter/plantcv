@@ -832,9 +832,12 @@ def threshold_2_channels(rgb_img, x_channel, y_channel, points, above=True, max_
         'index': _get_index,
     }
 
+    debug = params.debug
+    params.debug = None
     # get channels
     img_x_ch = channel_dict.get(x_channel, _not_valid)(rgb_img, x_channel)
     img_y_ch = channel_dict.get(y_channel, _not_valid)(rgb_img, y_channel)
+    params.debug = debug
 
     if len(points) < 2:
         fatal_error('Two points are required')
@@ -856,5 +859,8 @@ def threshold_2_channels(rgb_img, x_channel, y_channel, points, above=True, max_
         mask = max_value*(img_y_ch > y_line)
     else:
         mask = max_value*(img_y_ch < y_line)
+
+    _debug(visual=mask, filename=os.path.join(params.debug_outdir,
+                                              str(params.device) + '_' + x_channel + y_channel + '_2D_threshold_mask.png'))
 
     return mask
