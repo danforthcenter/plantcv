@@ -1,4 +1,4 @@
-## Binary Threshold
+## Threshold Two Channels
 
 Creates a binary image from an RGB image based on the pixels values in two channels.
 The x and y channels define a 2D plane and the two input points define a straight line.
