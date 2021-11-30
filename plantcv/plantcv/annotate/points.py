@@ -19,6 +19,3 @@ def _find_closest_pt(pt, pts):
     dists =	distance.cdist([pt], pts, 'euclidean')
     idx = np.argmin(dists)
     return idx, pts[idx]
-
-
-
