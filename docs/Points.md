@@ -31,7 +31,7 @@ marker = pcv.Points(img=img, figsize=(12,6))
 # Click on the plotted image to collect coordinates
 
 # Use the identified coordinates to create a custom polygon ROI
-roi_contour, roi_hierarchy = pcv.roi.custom(img=img, vertices = marker.points)
+roi_contour, roi_hierarchy = pcv.roi.custom(img=img, vertices=marker.points)
 
 ```
 
