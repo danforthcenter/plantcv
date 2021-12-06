@@ -5230,7 +5230,6 @@ def test_plantcv_annotate_Points_interactive():
     assert drawer_rgb.points[0] == point1
 
 
-
 # ##############################
 # Tests for the transform subpackage
 # ##############################
