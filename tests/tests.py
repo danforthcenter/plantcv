@@ -5203,31 +5203,31 @@ def test_plantcv_roi_custom_bad_input():
 def test_plantcv_annotate_Points_interactive():
     # Read in a test grayscale image
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), -1)
+
+    # initialize interactive tool
     drawer_rgb = pcv.Points(img, figsize=(12, 6))
+
     # simulate mouse clicks
+    # event 1, left click to add point
     e1 = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=drawer_rgb.fig.canvas,
                                              x=0, y=0, button=1)
-    e1.xdata, e1.ydata = (200, 200)
+    point1 = (200, 200)
+    e1.xdata, e1.ydata = point1
     drawer_rgb.onclick(e1)
-    e11 = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=drawer_rgb.fig.canvas,
-                                             x=0, y=0, button=1)
-    e11.xdata, e11.ydata = (300, 200)
-    drawer_rgb.onclick(e11)
-    # right click
+
+    # event 2, left click to add point
     e2 = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=drawer_rgb.fig.canvas,
-                                             x=0, y=0, button=3)
-    e2.xdata, e2.ydata = (200, 200)
+                                             x=0, y=0, button=1)
+    e2.xdata, e2.ydata = (300, 200)
     drawer_rgb.onclick(e2)
+
+    # event 3, right click to remove point
     e3 = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=drawer_rgb.fig.canvas,
                                              x=0, y=0, button=3)
     e3.xdata, e3.ydata = (301, 200)
     drawer_rgb.onclick(e3)
-    #e2 = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=drawer_rgb.fig.canvas,
-    #                                         x=0, y=0, button=3)
-    #e2.xdata, e2.ydata = (199, 200)
-    #drawer_rgb.onclick(e2)
-    # Assert the contours and hierarchy lists contain only the ROI
-    assert type(drawer_rgb.points) == list
+
+    assert drawer_rgb.points[0] == point1
 
 
 
