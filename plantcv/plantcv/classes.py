@@ -251,7 +251,8 @@ class PSII_data:
 
 class Points(object):
     """Point annotation/collection class to use in Jupyter notebooks. It allows the user to
-    interactively click to collect coordinates from an image 
+    interactively click to collect coordinates from an image. Left click collects the point and
+    right click removes the closest collected point 
     """
 
     def __init__(self, img, figsize=(12, 6)):
