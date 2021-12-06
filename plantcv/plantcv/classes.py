@@ -187,7 +187,7 @@ class Outputs:
 
 class Spectral_data:
     """PlantCV Hyperspectral data class"""
-    
+
     def __init__(self, array_data, max_wavelength, min_wavelength, max_value, min_value, d_type, wavelength_dict,
                  samples, lines, interleave, wavelength_units, array_type, pseudo_rgb, filename, default_bands):
         # The actual array/datacube
@@ -240,7 +240,7 @@ class PSII_data:
             if v is not None:
                 mvars.append(k)
         return "PSII variables defined:\n" + '\n'.join(mvars)
-    
+
     def add_data(self, protocol):
         """
         Input:
@@ -250,7 +250,8 @@ class PSII_data:
 
 
 class Points(object):
-    """Point annotation/collection class
+    """Point annotation/collection class to use in Jupyter notebooks. It allows the user to
+    interactively click to collect coordinates from an image 
     """
 
     def __init__(self, img, figsize=(12, 6)):
@@ -258,6 +259,7 @@ class Points(object):
         Initialization
         :param img: image data
         :param figsize: desired figure size, (12,6) by default
+        :attribute points: list of points as (x,y) coordinates tuples
         """
 
         self.fig, self.ax = plt.subplots(1, 1, figsize=figsize)
@@ -269,6 +271,8 @@ class Points(object):
         self.fig.canvas.mpl_connect('button_press_event', self.onclick)
 
     def onclick(self, event):
+        """ Handle mouse click events
+        """
         self.events.append(event)
         if event.button == 1:
 
@@ -282,4 +286,3 @@ class Points(object):
             ax0plots = self.ax.lines
             self.ax.lines.remove(ax0plots[idx_remove])
         self.fig.canvas.draw()
-
