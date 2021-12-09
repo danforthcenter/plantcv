@@ -3,11 +3,9 @@
 import os
 import numpy as np
 from plantcv.plantcv import params
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import Spectral_data
 from plantcv.plantcv.hyperspectral.read_data import _make_pseudo_rgb
-
 
 
 def calibrate(raw_data, white_reference, dark_reference):
@@ -26,9 +24,6 @@ def calibrate(raw_data, white_reference, dark_reference):
     :param dark_reference: __main__.Spectral_data
     :return calibrated: __main__.Spectral_data
     """
-    # Auto-increment device
-    params.device += 1
-
     # Collect the number of wavelengths present
     num_bands = len(white_reference.wavelength_dict)
     den = white_reference.array_data - dark_reference.array_data
@@ -65,10 +60,8 @@ def calibrate(raw_data, white_reference, dark_reference):
     # Make pseudo-rgb image for the calibrated image
     calibrated.pseudo_rgb = _make_pseudo_rgb(spectral_array=calibrated)
 
-    if params.debug == "plot":
-        # Gamma correct pseudo_rgb image
-        plot_image(calibrated.pseudo_rgb)
-    elif params.debug == "print":
-        print_image(calibrated.pseudo_rgb, os.path.join(params.debug_outdir, str(params.device) + "_calibrated_rgb.png"))
+    # Debug visualization
+    _debug(visual=calibrated.pseudo_rgb,
+           filename=os.path.join(params.debug_outdir, str(params.device) + '_calibrated_rgb.png'))
 
     return calibrated
