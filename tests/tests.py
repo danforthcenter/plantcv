@@ -2938,7 +2938,7 @@ def test_plantcv_roi_objects():
                                                                 object_contour=object_contours,
                                                                 obj_hierarchy=object_hierarchy, roi_type="partial")
     # Assert that the contours were filtered as expected
-    assert len(kept_contours) == 1891
+    assert len(kept_contours) == 9
 
 
 def test_plantcv_roi_objects_bad_input():
@@ -2979,7 +2979,7 @@ def test_plantcv_roi_objects_grayscale_input():
                                                                 object_contour=object_contours,
                                                                 obj_hierarchy=object_hierarchy)
     # Assert that the contours were filtered as expected
-    assert len(kept_contours) == 1891
+    assert len(kept_contours) == 9
 
 
 def test_plantcv_rotate():
