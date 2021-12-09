@@ -44,7 +44,7 @@ def calibrate(raw_data, white_reference, dark_reference):
 
     # Make a new class instance with the calibrated hyperspectral image
     calibrated = Spectral_data(array_data=cal, max_wavelength=raw_data.max_wavelength, min_wavelength=raw_data.min_wavelength,
-                               max_value=np.amax(cal), min_value=np.amin(cal), d_type=cal.d_type,
+                               max_value=np.amax(cal), min_value=np.amin(cal), d_type=cal.dtype,
                                wavelength_dict=raw_data.wavelength_dict, samples=raw_data.samples, lines=raw_data.lines,
                                interleave=raw_data.interleave, wavelength_units=raw_data.wavelength_units,
                                array_type=raw_data.array_type, pseudo_rgb=None, filename=raw_data.filename,
