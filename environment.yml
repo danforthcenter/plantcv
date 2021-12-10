@@ -16,6 +16,8 @@ dependencies:
   - nb_conda
   - opencv
   - statsmodels
+  - mkdocs
+  - pytest
 channels:
   - conda-forge
   - defaults
