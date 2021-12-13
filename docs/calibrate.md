@@ -19,7 +19,7 @@ Calibrate a raw hyperspectral image using white and dark reference images.
     the functionality of this function to handle data from different cameras. 
     
 !!! note
-    Depending on white and dark_reference images there may be pixel values >1.0 but all pixel values <0 are truncated to 0. 
+    Calibrated values are clipped to the range 0-1 
 
 - **Example use:**
     - Below

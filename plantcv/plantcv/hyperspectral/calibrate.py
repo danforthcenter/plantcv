@@ -3,11 +3,9 @@
 import os
 import numpy as np
 from plantcv.plantcv import params
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import Spectral_data
 from plantcv.plantcv.hyperspectral.read_data import _make_pseudo_rgb
-
 
 
 def calibrate(raw_data, white_reference, dark_reference):
@@ -26,49 +24,37 @@ def calibrate(raw_data, white_reference, dark_reference):
     :param dark_reference: __main__.Spectral_data
     :return calibrated: __main__.Spectral_data
     """
-    # Auto-increment device
-    params.device += 1
+    # Average dark reference over the first axis (repeated line scans) -> float64
+    # Converts the input shape from (y, x, z) to (1, x, z)
+    dark = np.mean(dark_reference.array_data, axis=0, keepdims=True)
 
-    # Collect the number of wavelengths present
-    num_bands = len(white_reference.wavelength_dict)
-    den = white_reference.array_data - dark_reference.array_data
+    # Average white reference over the first axis (repeated line scans) -> float64
+    # Converts the input shape from (y, x, z) to (1, x, z)
+    white = np.mean(white_reference.array_data, axis=0, keepdims=True)
+
+    # Convert the raw data to float64
+    raw = raw_data.array_data.astype("float64")
 
     # Calibrate using reflectance = (raw data - dark reference) / (white reference - dark reference)
-    output_num = []
-    for i in range(0, raw_data.lines):
-        ans = raw_data.array_data[i,].astype(np.float16) - dark_reference.array_data
-        output_num.append(ans)
-    num = np.stack(output_num, axis=2)
-    output_calibrated = []
-    for i in range(0, raw_data.lines):
-        ans1 = raw_data.array_data[i,] / den
-        output_calibrated.append(ans1)
+    # Note that dark and white are broadcast over each line (y) in raw
+    cal = (raw - dark) / (white - dark)
 
-    # Reshape into hyperspectral datacube
-    scalibrated = np.stack(output_calibrated, axis=2)
-    calibrated_array = np.transpose(scalibrated[0], (1, 0, 2))
-    calibrated_array[np.where(calibrated_array < 0)] = 0
-
-    # Find array min and max values
-    max_pixel = float(np.amax(calibrated_array))
-    min_pixel = float(np.amin(calibrated_array))
+    # Clip the calibrated values to the range 0 - 1
+    np.clip(cal, a_min=0, a_max=1, out=cal)
 
     # Make a new class instance with the calibrated hyperspectral image
-    calibrated = Spectral_data(array_data=calibrated_array, max_wavelength=raw_data.max_wavelength,
-                               min_wavelength=raw_data.min_wavelength, max_value=max_pixel, min_value=min_pixel,
-                               d_type=raw_data.d_type,
-                               wavelength_dict=raw_data.wavelength_dict, samples=raw_data.samples,
-                               lines=raw_data.lines, interleave=raw_data.interleave,
-                               wavelength_units=raw_data.wavelength_units, array_type=raw_data.array_type,
-                               pseudo_rgb=None, filename=None, default_bands=raw_data.default_bands)
+    calibrated = Spectral_data(array_data=cal, max_wavelength=raw_data.max_wavelength, min_wavelength=raw_data.min_wavelength,
+                               max_value=np.amax(cal), min_value=np.amin(cal), d_type=cal.dtype,
+                               wavelength_dict=raw_data.wavelength_dict, samples=raw_data.samples, lines=raw_data.lines,
+                               interleave=raw_data.interleave, wavelength_units=raw_data.wavelength_units,
+                               array_type=raw_data.array_type, pseudo_rgb=None, filename=raw_data.filename,
+                               default_bands=raw_data.default_bands)
 
     # Make pseudo-rgb image for the calibrated image
     calibrated.pseudo_rgb = _make_pseudo_rgb(spectral_array=calibrated)
 
-    if params.debug == "plot":
-        # Gamma correct pseudo_rgb image
-        plot_image(calibrated.pseudo_rgb)
-    elif params.debug == "print":
-        print_image(calibrated.pseudo_rgb, os.path.join(params.debug_outdir, str(params.device) + "_calibrated_rgb.png"))
+    # Debug visualization
+    _debug(visual=calibrated.pseudo_rgb,
+           filename=os.path.join(params.debug_outdir, str(params.device) + '_calibrated_rgb.png'))
 
     return calibrated
