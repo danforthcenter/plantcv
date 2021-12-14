@@ -11,7 +11,7 @@ from plantcv.plantcv.transform import resize
 from plantcv.plantcv import warn
 
 
-def time_lapse_video(img_directory, list_img=None, auto_sort = True, suffix_img=None, size_frame=None, fps=29.97,
+def time_lapse_video(img_directory, list_img=None, auto_sort=True, suffix_img=None, size_frame=None, fps=29.97,
                      name_video='time_lapse_video', path_video=None, display='on'):
     """ Generate time-lapse video given a folder of images
     Inputs:
