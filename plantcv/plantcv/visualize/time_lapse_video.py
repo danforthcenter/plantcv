@@ -4,7 +4,6 @@ import os
 import cv2
 import numpy as np
 import mimetypes
-from plantcv.plantcv import params
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv.transform import resize
 # import warnings
