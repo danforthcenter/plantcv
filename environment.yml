@@ -2,7 +2,7 @@
 # optionally, change channel name with -n {plantcv-dev}
 name: plantcv
 dependencies:
-  - python=3.7
+  - python=3.9
   - matplotlib>=1.5
   - numpy>=1.11
   - pandas
@@ -14,9 +14,11 @@ dependencies:
   - dask
   - dask-jobqueue
   - nb_conda
-  - opencv<4, >=3.4
+  - opencv
   - statsmodels
   - xarray
+  - mkdocs
+  - pytest
 channels:
   - conda-forge
   - defaults
