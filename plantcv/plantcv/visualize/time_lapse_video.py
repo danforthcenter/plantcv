@@ -51,7 +51,7 @@ def time_lapse_video(img_directory, list_img=None, auto_sort=True, suffix_img=No
     :return size_frame: tuple
     """
 
-    ## Get the list of image files in the given directory and sort them alphabetically by their names
+    # Get the list of image files in the given directory and sort them alphabetically by their names
     temp_list = []
     for f in os.listdir(img_directory):
         type_f = mimetypes.guess_type(f)[0]
@@ -64,15 +64,15 @@ def time_lapse_video(img_directory, list_img=None, auto_sort=True, suffix_img=No
     # get an "extension free" list of images
     temp_list_no_ext = [os.path.splitext(f)[0] if os.path.splitext(f)[1] else f for f in temp_list]
 
-    ## if the list of images is provided, stick to it, but automatically handle the extension issue
+    # if the list of images is provided, stick to it, but automatically handle the extension issue
     if list_img is not None:
         #  make the list of images extension free
         list_img_no_ext = [os.path.splitext(f)[0] if os.path.splitext(f)[1] else f for f in list_img]
-        temp_set        = set(temp_list_no_ext)
+        temp_set = set(temp_list_no_ext)
         list_img_ = []
         # check if the images in the given list exist in the directory by comparing both lists
         # only include the images in the provided list who is also availabe in the given directory
-        for (f,f_) in zip(list_img_no_ext,list_img):
+        for (f, f_) in zip(list_img_no_ext, list_img):
             if f in temp_set:
                 list_img_.append(f_)
 
@@ -83,7 +83,7 @@ def time_lapse_video(img_directory, list_img=None, auto_sort=True, suffix_img=No
             # warnings.warn("Warning: Some files in the provided list not found, the video will be created based on "
             #               "available files in the provided directory!")
             warn("Some files in the provided list not found, the video will be created based on "
-                          "available files in the provided directory!")
+                 "available files in the provided directory!")
 
     # if the list of images is not provided, check if suffix information is available
     elif suffix_img is not None:
@@ -97,7 +97,7 @@ def time_lapse_video(img_directory, list_img=None, auto_sort=True, suffix_img=No
     if auto_sort:
         list_img.sort()
 
-    imgs   = []
+    imgs = []
     list_r = []
     list_c = []
     for file in list_img:
@@ -111,9 +111,9 @@ def time_lapse_video(img_directory, list_img=None, auto_sort=True, suffix_img=No
     size_frame = size_frame or (max_c, max_r)
 
     if not (len(np.unique(list_r)) == 1 and len(np.unique(list_c)) == 1):
-        warn(f"The sizes of images are not the same, an image resizing (cropping or zero-padding) will be done "
-                      "to make all images the same size ({size_frame[0]}x{size_frame[1])}) before creating the video! "
-                      "If you assume the images should have the same size, please check the images used to generate this video!")
+        warn("The sizes of images are not the same, an image resizing (cropping or zero-padding) will be done "
+             f"to make all images the same size ({size_frame[0]}x{size_frame[1]}) before creating the video! "
+             "If you assume the images should have the same size, please check the images used to generate this video!")
 
     # If the video saving directory is not provided, save it in the same directory of the images
     if path_video is None:
