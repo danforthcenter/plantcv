@@ -3179,7 +3179,7 @@ def test_plantcv_roi_objects():
                                                                 object_contour=object_contours,
                                                                 obj_hierarchy=object_hierarchy, roi_type="partial")
     # Assert that the contours were filtered as expected
-    assert len(kept_contours) == 1891
+    assert len(kept_contours) == 9
 
 
 def test_plantcv_roi_objects_bad_input():
@@ -3220,7 +3220,7 @@ def test_plantcv_roi_objects_grayscale_input():
                                                                 object_contour=object_contours,
                                                                 obj_hierarchy=object_hierarchy)
     # Assert that the contours were filtered as expected
-    assert len(kept_contours) == 1891
+    assert len(kept_contours) == 9
 
 
 def test_plantcv_rotate():
@@ -4746,18 +4746,12 @@ def test_plantcv_hyperspectral_analyze_index_bad_input_datatype():
 
 
 def test_plantcv_hyperspectral_calibrate():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_calibrate")
-    os.mkdir(cache_dir)
     raw = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     white = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_WHITE)
     dark = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DARK)
     raw = pcv.hyperspectral.read_data(filename=raw)
     white = pcv.hyperspectral.read_data(filename=white)
     dark = pcv.hyperspectral.read_data(filename=dark)
-    pcv.params.debug = "plot"
-    _ = pcv.hyperspectral.calibrate(raw_data=raw, white_reference=white, dark_reference=dark)
-    pcv.params.debug = "print"
     calibrated = pcv.hyperspectral.calibrate(raw_data=raw, white_reference=white, dark_reference=dark)
     assert np.shape(calibrated.array_data) == (1, 1600, 978)
 
@@ -5209,6 +5203,48 @@ def test_plantcv_roi_custom_bad_input():
     # ROI goes out of bounds
     with pytest.raises(RuntimeError):
         _ = pcv.roi.custom(img=img, vertices=[[226, -1], [3130, 1848], [2404, 2029], [2205, 2298], [1617, 1761]])
+
+
+def test_plantcv_annotate_Points_interactive():
+    # Read in a test grayscale image
+    img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR), -1)
+
+    # initialize interactive tool
+    drawer_rgb = pcv.Points(img, figsize=(12, 6))
+
+    # simulate mouse clicks
+    # event 1, left click to add point
+    e1 = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=drawer_rgb.fig.canvas,
+                                             x=0, y=0, button=1)
+    point1 = (200, 200)
+    e1.xdata, e1.ydata = point1
+    drawer_rgb.onclick(e1)
+
+    # event 2, left click to add point
+    e2 = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=drawer_rgb.fig.canvas,
+                                             x=0, y=0, button=1)
+    e2.xdata, e2.ydata = (300, 200)
+    drawer_rgb.onclick(e2)
+
+    # event 3, left click to add point
+    e3 = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=drawer_rgb.fig.canvas,
+                                             x=0, y=0, button=1)
+    e3.xdata, e3.ydata = (50, 50)
+    drawer_rgb.onclick(e3)
+
+    # event 4, right click to remove point with exact coordinates
+    e4 = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=drawer_rgb.fig.canvas,
+                                             x=0, y=0, button=3)
+    e4.xdata, e4.ydata = (50, 50)
+    drawer_rgb.onclick(e4)
+
+    # event 5, right click to remove point with coordinates close but not equal
+    e5 = matplotlib.backend_bases.MouseEvent(name="button_press_event", canvas=drawer_rgb.fig.canvas,
+                                             x=0, y=0, button=3)
+    e5.xdata, e5.ydata = (301, 200)
+    drawer_rgb.onclick(e5)
+
+    assert drawer_rgb.points[0] == point1
 
 
 # ##############################
