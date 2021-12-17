@@ -5166,17 +5166,9 @@ def test_plantcv_transform_rescale_bad_input():
 
 
 def test_plantcv_transform_resize():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_trancform_resize")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY_SMALL), -1)
     size = (100, 100)
-    # Test with debug "print"
-    pcv.params.debug = "print"
-    _ = pcv.transform.resize(img=gray_img, size=size, interpolation="auto")
-    # Test with debug "plot"
-    pcv.params.debug = "plot"
+    pcv.params.debug = None
     resized_img = pcv.transform.resize(img=gray_img, size=size, interpolation="auto")
     assert resized_img.shape == size
 
@@ -5209,19 +5201,11 @@ def test_plantcv_transform_resize_pad_crop_color():
 
 
 def test_plantcv_transform_resize_factor():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_trancform_resize_factor")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY_SMALL), -1)
     # Resizing factors
     factor_x = 0.5
     factor_y = 0.2
-    # Test with debug "print"
-    pcv.params.debug = "print"
-    _ = pcv.transform.resize_factor(img=gray_img, factors=(factor_x, factor_y), interpolation="auto")
-    # Test with debug "plot"
-    pcv.params.debug = "plot"
+    pcv.params.debug = None
     resized_img = pcv.transform.resize_factor(img=gray_img, factors=(factor_x, factor_y), interpolation="auto")
     output_size = resized_img.shape
     expected_size = (int(gray_img.shape[0] * factor_y), int(gray_img.shape[1] * factor_x))

@@ -3,10 +3,9 @@
 import cv2
 import os
 import numpy as np
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
+from plantcv.plantcv._debug import _debug
 
 
 def _set_interpolation(input_size, output_size, method):
@@ -84,7 +83,6 @@ def resize(img, size, interpolation="auto"):
     :param interpolation: str
     :return resized_img: numpy.ndarray
     """
-    params.device += 1
     if interpolation is not None:
         interp_mtd = _set_interpolation(input_size=img.shape[0:2], output_size=size, method=interpolation)
         resized_img = cv2.resize(img, dsize=size, interpolation=interp_mtd)
@@ -126,10 +124,7 @@ def resize(img, size, interpolation="auto"):
         if b == 1:
             resized_img = np.squeeze(resized_img, axis=2)
 
-    if params.debug == 'print':
-        print_image(resized_img, os.path.join(params.debug_outdir, str(params.device) + "_resized.png"))
-    elif params.debug == 'plot':
-        plot_image(resized_img)
+    _debug(visual=resized_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_resized.png'))
 
     return resized_img
 
@@ -156,16 +151,12 @@ def resize_factor(img, factors, interpolation="auto"):
     :param interpolation: str
     :return resized_img: numpy.ndarray
     """
-    params.device += 1
     if not isinstance(factors, tuple) or len(factors) != 2 or not all([n > 0 for n in factors]):
         fatal_error(f"The input factors={factors} should be a tuple of length 2 with values greater than 0.")
 
     interp_mtd = _set_interpolation(input_size=(1, 1), output_size=factors, method=interpolation)
     resized_img = cv2.resize(img, (0, 0), fx=factors[0], fy=factors[1], interpolation=interp_mtd)
 
-    if params.debug == 'print':
-        print_image(resized_img, os.path.join(params.debug_outdir, str(params.device) + "_resize.png"))
-    elif params.debug == 'plot':
-        plot_image(resized_img)
+    _debug(visual=resized_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_resized.png'))
 
     return resized_img
