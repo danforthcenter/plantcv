@@ -3836,9 +3836,6 @@ def test_plantcv_hyperspectral_read_data_bad_interleave():
 
 
 def test_plantcv_spectral_index_ndvi():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_ndvi")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -3856,9 +3853,6 @@ def test_plantcv_spectral_index_ndvi_bad_input():
 
 
 def test_plantcv_spectral_index_gdvi():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_gdvi")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -3876,9 +3870,6 @@ def test_plantcv_spectral_index_gdvi_bad_input():
 
 
 def test_plantcv_spectral_index_savi():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_savi")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -3896,9 +3887,6 @@ def test_plantcv_spectral_index_savi_bad_input():
 
 
 def test_plantcv_spectral_index_pri():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_pri")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -3916,9 +3904,6 @@ def test_plantcv_spectral_index_pri_bad_input():
 
 
 def test_plantcv_spectral_index_ari():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_ari")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -3936,9 +3921,6 @@ def test_plantcv_spectral_index_ari_bad_input():
 
 
 def test_plantcv_spectral_index_ci_rededge():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_ci_rededge")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -3956,9 +3938,6 @@ def test_plantcv_spectral_index_ci_rededge_bad_input():
 
 
 def test_plantcv_spectral_index_cri550():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_cri550")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -3976,9 +3955,6 @@ def test_plantcv_spectral_index_cri550_bad_input():
 
 
 def test_plantcv_spectral_index_cri700():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_cri700")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -3996,9 +3972,6 @@ def test_plantcv_spectral_index_cri700_bad_input():
 
 
 def test_plantcv_spectral_index_egi():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_egi")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     index_array = pcv.spectral_index.egi(rgb_img=rgb_img)
@@ -4006,9 +3979,6 @@ def test_plantcv_spectral_index_egi():
 
 
 def test_plantcv_spectral_index_evi():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_evi")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4026,9 +3996,6 @@ def test_plantcv_spectral_index_evi_bad_input():
 
 
 def test_plantcv_spectral_index_mari():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_mari")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4046,9 +4013,6 @@ def test_plantcv_spectral_index_mari_bad_input():
 
 
 def test_plantcv_spectral_index_mcari():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_mcari")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4066,9 +4030,6 @@ def test_plantcv_spectral_index_mcari_bad_input():
 
 
 def test_plantcv_spectral_index_mtci():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_mtci")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4086,9 +4047,6 @@ def test_plantcv_spectral_index_mtci_bad_input():
 
 
 def test_plantcv_spectral_index_ndre():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_ndre")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4106,9 +4064,6 @@ def test_plantcv_spectral_index_ndre_bad_input():
 
 
 def test_plantcv_spectral_index_psnd_chla():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_psnd_chla")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4126,9 +4081,6 @@ def test_plantcv_spectral_index_psnd_chla_bad_input():
 
 
 def test_plantcv_spectral_index_psnd_chlb():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_psnd_chlb")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4146,9 +4098,6 @@ def test_plantcv_spectral_index_psnd_chlb_bad_input():
 
 
 def test_plantcv_spectral_index_psnd_car():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_psnd_car")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4166,9 +4115,6 @@ def test_plantcv_spectral_index_psnd_car_bad_input():
 
 
 def test_plantcv_spectral_index_psri():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_psri")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4186,9 +4132,6 @@ def test_plantcv_spectral_index_psri_bad_input():
 
 
 def test_plantcv_spectral_index_pssr_chla():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_pssr_chla")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4206,9 +4149,6 @@ def test_plantcv_spectral_index_pssr_chla_bad_input():
 
 
 def test_plantcv_spectral_index_pssr_chlb():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_pssr_chlb")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4226,9 +4166,6 @@ def test_plantcv_spectral_index_pssr_chlb_bad_input():
 
 
 def test_plantcv_spectral_index_pssr_car():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_pssr_car")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4246,9 +4183,6 @@ def test_plantcv_spectral_index_pssr_car_bad_input():
 
 
 def test_plantcv_spectral_index_rgri():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_rgri")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4266,9 +4200,6 @@ def test_plantcv_spectral_index_rgri_bad_input():
 
 
 def test_plantcv_spectral_index_rvsi():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_rvsi")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4286,9 +4217,6 @@ def test_plantcv_spectral_index_rvsi_bad_input():
 
 
 def test_plantcv_spectral_index_sipi():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_sipi")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4306,9 +4234,6 @@ def test_plantcv_spectral_index_sipi_bad_input():
 
 
 def test_plantcv_spectral_index_sr():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_sr")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4326,9 +4251,6 @@ def test_plantcv_spectral_index_sr_bad_input():
 
 
 def test_plantcv_spectral_index_vari():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_vari")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4346,9 +4268,6 @@ def test_plantcv_spectral_index_vari_bad_input():
 
 
 def test_plantcv_spectral_index_vi_green():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_vi_green")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4366,9 +4285,6 @@ def test_plantcv_spectral_index_vi_green_bad_input():
 
 
 def test_plantcv_spectral_index_wi():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_wi")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
