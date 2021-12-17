@@ -19,7 +19,7 @@ the number of inputted filenames matches the number of clustered contours.
     - Takes clustered contours and splits them into multiple images.
     - Function input usually comes from the output of the [cluster contours](cluster_contours.md) function.
 - **Example use:**
-    - [Use In Multi-Plant Tutorial](multi-plant_tutorial.md)
+    - [Use In Multi-Plant Tutorial](tutorials/multi-plant_tutorial.md)
 
 
 **Output of Cluster Contours**

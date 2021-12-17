@@ -4,12 +4,12 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv import params
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
+from plantcv.plantcv._debug import _debug
 
 
 def roi2mask(img, contour):
-    """Create a binary mask from an ROI contour
+    """
+    Create a binary mask from an ROI contour
     Inputs:
     img                  = RGB or grayscale image data
     contour              = An ROI set of points (contour)
@@ -21,7 +21,6 @@ def roi2mask(img, contour):
     :param contour: list
     :return mask: numpy.ndarray
     """
-    params.device += 1
 
     # create a blank image of same size
     shape_info = np.shape(img)
@@ -29,9 +28,8 @@ def roi2mask(img, contour):
 
     mask = cv2.drawContours(bnk, contour, 0, 255, -1)
 
-    if params.debug == 'print':
-        print_image(mask, os.path.join(params.debug_outdir, str(params.device) + '_roi_mask.png'))
-    elif params.debug == 'plot':
-        plot_image(mask, cmap="gray")
+    _debug(visual=mask,
+           filename=os.path.join(params.debug_outdir, str(params.device) + '_roi_mask.png'),
+           cmap='gray')
 
     return mask

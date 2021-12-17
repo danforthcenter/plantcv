@@ -5,9 +5,8 @@ import cv2
 import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv.transform import resize_factor
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
 from plantcv.plantcv import fatal_error
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv.threshold import mean
 from plantcv.plantcv.threshold import otsu
 from plantcv.plantcv.threshold import gaussian
@@ -64,13 +63,9 @@ def auto_threshold_methods(gray_img, grid_img=True, object_type="light"):
                               fontScale=params.text_size, color=(255, 0, 255), thickness=params.text_thickness)
         # Reset debug mode
         params.debug = debug
-        if params.debug == "print":
-            # If debug is print, save the image to a file
-            print_image(labeled, os.path.join(params.debug_outdir, str(params.device) + "_" +
-                                              method_names[i] + "_vis_thresholds.png"))
-        elif params.debug == "plot":
-            # If debug is plot, print to the plotting device
-            plot_image(labeled)
+        _debug(visual=labeled,
+               filename=os.path.join(params.debug_outdir,
+                                     str(params.device) + "_" + method_names[i] + "_vis_thresholds.png"))
         labeled_imgs.append(labeled)
 
     if grid_img:
@@ -85,11 +80,7 @@ def auto_threshold_methods(gray_img, grid_img=True, object_type="light"):
         plotting_img = resize_factor(plotting_img, factors=(0.5, 0.5))
         # Reset debug mode
         params.debug = debug
-        if params.debug == "print":
-            # If debug is print, save the image to a file
-            print_image(plotting_img, os.path.join(params.debug_outdir, str(params.device) + "_vis_all_thresholds.png"))
-        elif params.debug == "plot":
-            # If debug is plot, print to the plotting device
-            plot_image(plotting_img)
+        _debug(visual=plotting_img,
+               filename=os.path.join(params.debug_outdir, str(params.device) + "_vis_all_thresholds.png"))
 
     return labeled_imgs

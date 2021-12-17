@@ -3,15 +3,15 @@
 import cv2
 import os
 import numpy as np
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 from plantcv.plantcv import fatal_error
 
 
 def y_axis_pseudolandmarks(img, obj, mask, label="default"):
-    """Divide up object contour into 19 equidistant segments and generate landmarks for each
+    """
+    Divide up object contour into 19 equidistant segments and generate landmarks for each
 
     Inputs:
     img      = This is a copy of the original plant image generated using np.copy if debug is true it will be drawn on
@@ -37,8 +37,6 @@ def y_axis_pseudolandmarks(img, obj, mask, label="default"):
         return ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA')
     x, y, width, height = cv2.boundingRect(obj)
     extent = height
-
-    params.device += 1
 
     # Outputs
     left = []
@@ -161,10 +159,9 @@ def y_axis_pseudolandmarks(img, obj, mask, label="default"):
             y = i[0, 1]
             cv2.circle(img2, (int(x), int(y)), params.line_thickness, (0, 79, 255), -1)
 
-        if params.debug == 'plot':
-            plot_image(img2)
-        elif params.debug == 'print':
-            print_image(img2, os.path.join(params.debug_outdir, (str(params.device) + '_y_axis_pseudolandmarks.png')))
+        _debug(visual=img2,
+               filename=os.path.join(params.debug_outdir, (str(params.device) + '_y_axis_pseudolandmarks.png')))
+
     elif extent < 21:
         # If the length of the object is less than 20 pixels just make the object a 20 pixel rectangle
         x, y, width, height = cv2.boundingRect(obj)
@@ -202,10 +199,9 @@ def y_axis_pseudolandmarks(img, obj, mask, label="default"):
             y = i[0, 1]
             cv2.circle(img2, (int(x), int(y)), params.line_thickness, (0, 79, 255), -1)
         # print_image(img2, (str(device) + '_y_axis_pseudolandmarks.png'))
-        if params.debug == 'plot':
-            plot_image(img2)
-        elif params.debug == 'print':
-            print_image(img2, os.path.join(params.debug_outdir, (str(params.device) + '_y_axis_pseudolandmarks.png')))
+
+        _debug(visual=img2,
+               filename=os.path.join(params.debug_outdir, (str(params.device) + '_y_axis_pseudolandmarks.png')))
 
     # Store into global measurements
     for pt in left:

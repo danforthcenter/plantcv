@@ -7,9 +7,8 @@ import os
 import numpy as np
 from scipy import ndimage as ndi
 from skimage.feature import peak_local_max
-from skimage.morphology import watershed
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
+from skimage.segmentation import watershed
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import apply_mask
 from plantcv.plantcv import color_palette
 from plantcv.plantcv import params
@@ -17,8 +16,9 @@ from plantcv.plantcv import outputs
 
 
 def watershed_segmentation(rgb_img, mask, distance=10, label="default"):
-    """Uses the watershed algorithm to detect boundary of objects. Needs a marker file which specifies area which is
-       object (white), background (grey), unknown area (black).
+    """
+    Uses the watershed algorithm to detect boundary of objects. Needs a marker file which specifies area which is
+    object (white), background (grey), unknown area (black).
 
     Inputs:
     rgb_img             = image to perform watershed on needs to be 3D (i.e. np.shape = x,y,z not np.shape = x,y)
@@ -35,7 +35,6 @@ def watershed_segmentation(rgb_img, mask, distance=10, label="default"):
     :param label: str
     :return analysis_images: list
     """
-    params.device += 1
 
     # Store debug mode
     debug = params.debug
@@ -63,12 +62,11 @@ def watershed_segmentation(rgb_img, mask, distance=10, label="default"):
 
     # Reset debug mode
     params.debug = debug
-    if params.debug == 'print':
-        print_image(dist_transform, os.path.join(params.debug_outdir, str(params.device) + '_watershed_dist_img.png'))
-        print_image(joined, os.path.join(params.debug_outdir, str(params.device) + '_watershed_img.png'))
-    elif params.debug == 'plot':
-        plot_image(dist_transform, cmap='gray')
-        plot_image(joined)
+    _debug(visual=dist_transform,
+           filename=os.path.join(params.debug_outdir, str(params.device) + '_watershed_dist_img.png'),
+           cmap='gray')
+    _debug(visual=joined,
+           filename=os.path.join(params.debug_outdir, str(params.device) + '_watershed_img.png'))
 
     outputs.add_observation(sample=label, variable='estimated_object_count', trait='estimated object count',
                             method='plantcv.plantcv.watershed', scale='none', datatype=int,

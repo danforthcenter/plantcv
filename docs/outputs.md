@@ -75,7 +75,7 @@ Methods are accessed as plantcv.outputs.*method*.
 * outformat: Output file format (default = "json"). Supports "json" and "csv" formats
 
 **Example use:**
-    - [Use In VIS/NIR Tutorial](vis_nir_tutorial.md)
+    - [Use In VIS/NIR Tutorial](tutorials/vis_nir_tutorial.md)
 
 ### Examples
 

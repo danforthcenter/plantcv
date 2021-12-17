@@ -1,9 +1,10 @@
-import os
-import matplotlib
 from plantcv.plantcv.fatal_error import fatal_error
 from plantcv.plantcv.classes import Params
 from plantcv.plantcv.classes import Outputs
 from plantcv.plantcv.classes import Spectral_data
+from plantcv.plantcv.classes import PSII_data
+from plantcv.plantcv.classes import Points
+
 # Initialize an instance of the Params and Outputs class with default values
 # params and outputs are available when plantcv is imported
 params = Params()
@@ -69,7 +70,7 @@ from plantcv.plantcv.output_mask_ori_img import output_mask
 from plantcv.plantcv.auto_crop import auto_crop
 from plantcv.plantcv.background_subtraction import background_subtraction
 from plantcv.plantcv.naive_bayes_classifier import naive_bayes_classifier
-from plantcv.plantcv.acute import acute
+from plantcv.plantcv import homology
 from plantcv.plantcv.distance_transform import distance_transform
 from plantcv.plantcv.canny_edge_detect import canny_edge_detect
 from plantcv.plantcv.opening import opening
@@ -86,6 +87,7 @@ from plantcv.plantcv.crop import crop
 from plantcv.plantcv.stdev_filter import stdev_filter
 from plantcv.plantcv.spatial_clustering import spatial_clustering
 from plantcv.plantcv import photosynthesis
+from plantcv.plantcv import annotate
 # add new functions to end of lists
 
 # Auto versioning
@@ -93,18 +95,18 @@ from ._version import get_versions
 __version__ = get_versions()['version']
 del get_versions
 
-__all__ = ['fatal_error', 'Params', 'Outputs', 'Spectral_data', 'deprecation_warning', 'print_image', 'plot_image',
-           'color_palette', 'apply_mask', 'gaussian_blur', 'transform', 'hyperspectral', 'readimage', 'readbayer',
-           'laplace_filter', 'sobel_filter', 'scharr_filter', 'hist_equalization', 'erode', 'image_add',
-           'image_fusion', 'image_subtract', 'dilate', 'watershed', 'rectangle_mask', 'rgb2gray_hsv', 'rgb2gray_lab',
-           'rgb2gray_cmyk', 'rgb2gray', 'median_blur', 'fill', 'invert', 'logical_and', 'logical_or', 'logical_xor',
+__all__ = ['fatal_error', 'Params', 'Outputs', 'Spectral_data', 'PSII_data', 'Points', 'deprecation_warning', 'print_image',
+           'plot_image', 'color_palette', 'apply_mask', 'gaussian_blur', 'transform', 'hyperspectral', 'readimage', 'readbayer',
+           'laplace_filter', 'sobel_filter', 'scharr_filter', 'hist_equalization', 'erode', 'image_add', 
+           'image_subtract', 'dilate', 'watershed', 'rectangle_mask', 'rgb2gray_hsv', 'rgb2gray_lab', 'rgb2gray_cmyk',
+           'rgb2gray', 'median_blur', 'fill', 'invert', 'logical_and', 'logical_or', 'logical_xor',
            'find_objects', 'roi_objects', 'object_composition', 'analyze_object', 'morphology',
            'analyze_bound_horizontal', 'analyze_bound_vertical', 'analyze_color', 'analyze_nir_intensity',
            'print_results', 'flip', 'crop_position_mask', 'get_nir', 'report_size_marker_area',
            'white_balance', 'acute_vertex', 'scale_features', 'landmark_reference_pt_dist', 'outputs',
            'x_axis_pseudolandmarks', 'y_axis_pseudolandmarks', 'cluster_contours', 'visualize',
            'cluster_contour_splitimg', 'rotate', 'shift_img', 'output_mask', 'auto_crop', 'canny_edge_detect',
-           'background_subtraction', 'naive_bayes_classifier', 'acute', 'distance_transform', 'params',
+           'background_subtraction', 'naive_bayes_classifier', 'distance_transform', 'params',
            'cluster_contour_mask', 'analyze_thermal_values', 'opening',
-           'closing', 'within_frame', 'fill_holes', 'get_kernel',  'crop', 'stdev_filter',
-           'spatial_clustering', 'photosynthesis']
+           'closing', 'within_frame', 'fill_holes', 'get_kernel', 'crop', 'stdev_filter',
+           'spatial_clustering', 'photosynthesis', 'homology', 'annotate']
