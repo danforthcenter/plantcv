@@ -2,23 +2,11 @@
 
 import cv2
 from plantcv import plantcv as pcv
+from plantcv.plantcv.annotate.points import _find_closest_pt
 from scipy.spatial import distance
 import numpy as np
 import matplotlib.pyplot as plt
 import pickle as pkl
-
-
-def _find_closest(pt, pts):
-    """ Given coordinates of a point and a list of coordinates of a bunch of points,
-    find the point that has the smallest Euclidean to the given point
-
-    :param pt: (tuple) coordinates of a point
-    :param pts: (a list of tuples) coordinates of a list of points
-    :return: index of the closest point and the coordinates of that point
-    """
-    dists = distance.cdist([pt], pts, 'euclidean')
-    idx = np.argmin(dists)
-    return idx, pts[idx]
 
 
 class ImageRegistrator:
@@ -69,7 +57,7 @@ class ImageRegistrator:
         self.points[idx_ax].append((x, y))
 
     def right_click(self, idx_ax, x, y):
-        idx_remove, _ = _find_closest((x, y), self.points[idx_ax])
+        idx_remove, _ = _find_closest_pt((x, y), self.points[idx_ax])
         # remove the last added point
         # idx_remove = -1
         self.points[idx_ax].pop(idx_remove)
