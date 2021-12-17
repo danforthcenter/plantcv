@@ -5145,15 +5145,8 @@ def test_plantcv_transform_find_color_card_bad_colorcard():
 
 
 def test_plantcv_transform_rescale():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_rescale")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.transform.rescale(gray_img=gray_img, min_value=0, max_value=100)
-    pcv.params.debug = "plot"
+    pcv.params.debug = None
     rescaled_img = pcv.transform.rescale(gray_img=gray_img, min_value=0, max_value=100)
     assert max(np.unique(rescaled_img)) == 100
 
