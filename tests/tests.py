@@ -2938,7 +2938,7 @@ def test_plantcv_roi_objects():
                                                                 object_contour=object_contours,
                                                                 obj_hierarchy=object_hierarchy, roi_type="partial")
     # Assert that the contours were filtered as expected
-    assert len(kept_contours) == 1891
+    assert len(kept_contours) == 9
 
 
 def test_plantcv_roi_objects_bad_input():
@@ -2979,7 +2979,7 @@ def test_plantcv_roi_objects_grayscale_input():
                                                                 object_contour=object_contours,
                                                                 obj_hierarchy=object_hierarchy)
     # Assert that the contours were filtered as expected
-    assert len(kept_contours) == 1891
+    assert len(kept_contours) == 9
 
 
 def test_plantcv_rotate():
@@ -4505,18 +4505,12 @@ def test_plantcv_hyperspectral_analyze_index_bad_input_datatype():
 
 
 def test_plantcv_hyperspectral_calibrate():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_calibrate")
-    os.mkdir(cache_dir)
     raw = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     white = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_WHITE)
     dark = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DARK)
     raw = pcv.hyperspectral.read_data(filename=raw)
     white = pcv.hyperspectral.read_data(filename=white)
     dark = pcv.hyperspectral.read_data(filename=dark)
-    pcv.params.debug = "plot"
-    _ = pcv.hyperspectral.calibrate(raw_data=raw, white_reference=white, dark_reference=dark)
-    pcv.params.debug = "print"
     calibrated = pcv.hyperspectral.calibrate(raw_data=raw, white_reference=white, dark_reference=dark)
     assert np.shape(calibrated.array_data) == (1, 1600, 978)
 
