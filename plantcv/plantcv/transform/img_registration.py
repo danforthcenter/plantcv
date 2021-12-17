@@ -3,8 +3,6 @@
 import cv2
 from plantcv import plantcv as pcv
 from plantcv.plantcv.annotate.points import _find_closest_pt
-from scipy.spatial import distance
-import numpy as np
 import matplotlib.pyplot as plt
 import pickle as pkl
 
