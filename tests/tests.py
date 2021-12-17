@@ -4836,24 +4836,12 @@ def test_plantcv_transform_calc_transformation_matrix_not_mat():
 def test_plantcv_transform_apply_transformation():
     # load corrected image to compare
     corrected_compare = cv2.imread(os.path.join(TEST_DATA, TEST_S1_CORRECTED))
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform")
-    os.mkdir(cache_dir)
-    # Make image and mask directories in the cache directory
-    imgdir = os.path.join(cache_dir, "images")
     # read in matrices
     matrix_t_file = np.load(os.path.join(TEST_DATA, TEST_TRANSFORM1), encoding="latin1")
     matrix_t = matrix_t_file['arr_0']
     # read in images
     target_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
     source_img = cv2.imread(os.path.join(TEST_DATA, TEST_SOURCE1_IMG))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    pcv.params.debug_outdir = imgdir
-    _ = pcv.transform.apply_transformation_matrix(source_img, target_img, matrix_t)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.transform.apply_transformation_matrix(source_img, target_img, matrix_t)
     # Test with debug = None
     pcv.params.debug = None
     corrected_img = pcv.transform.apply_transformation_matrix(source_img, target_img, matrix_t)
@@ -4897,9 +4885,6 @@ def test_plantcv_transform_save_matrix():
 
 
 def test_plantcv_transform_save_matrix_incorrect_filename():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform")
-    os.mkdir(cache_dir)
     # read in matrix
     matrix_t_file = np.load(os.path.join(TEST_DATA, TEST_TRANSFORM1), encoding="latin1")
     matrix_t = matrix_t_file['arr_0']
@@ -4919,37 +4904,23 @@ def test_plantcv_transform_load_matrix():
 
 
 def test_plantcv_transform_correct_color():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform")
-    os.mkdir(cache_dir)
     # load corrected image to compare
     corrected_compare = cv2.imread(os.path.join(TEST_DATA, TEST_S1_CORRECTED))
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_correct_color")
     os.mkdir(cache_dir)
-    # Make image and mask directories in the cache directory
-    imgdir = os.path.join(cache_dir, "images")
-    matdir = os.path.join(cache_dir, "saved_matrices")
     # Read in target, source, and gray-scale mask
     target_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
     source_img = cv2.imread(os.path.join(TEST_DATA, TEST_SOURCE1_IMG))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_MASK), -1)
-    output_path = os.path.join(matdir)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    pcv.params.debug_outdir = imgdir
-    _, _, _, _ = pcv.transform.correct_color(target_img, mask, source_img, mask, cache_dir)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _, _, _, _ = pcv.transform.correct_color(target_img, mask, source_img, mask, output_path)
     # Test with debug = None
     pcv.params.debug = None
-    _, _, matrix_t, corrected_img = pcv.transform.correct_color(target_img, mask, source_img, mask, output_path)
+    _, _, matrix_t, corrected_img = pcv.transform.correct_color(target_img, mask, source_img, mask, cache_dir)
     # assert source and corrected have same shape
     assert all([np.array_equal(corrected_img, corrected_compare),
-                os.path.exists(os.path.join(output_path, "target_matrix.npz")) is True,
-                os.path.exists(os.path.join(output_path, "source_matrix.npz")) is True,
-                os.path.exists(os.path.join(output_path, "transformation_matrix.npz")) is True])
+                os.path.exists(os.path.join(cache_dir, "target_matrix.npz")) is True,
+                os.path.exists(os.path.join(cache_dir, "source_matrix.npz")) is True,
+                os.path.exists(os.path.join(cache_dir, "transformation_matrix.npz")) is True])
 
 
 def test_plantcv_transform_correct_color_output_dne():
@@ -4958,28 +4929,18 @@ def test_plantcv_transform_correct_color_output_dne():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_correct_color_output_dne")
     os.mkdir(cache_dir)
-    # Make image and mask directories in the cache directory
-    imgdir = os.path.join(cache_dir, "images")
     # Read in target, source, and gray-scale mask
     target_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
     source_img = cv2.imread(os.path.join(TEST_DATA, TEST_SOURCE1_IMG))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_MASK), -1)
-    output_path = os.path.join(cache_dir, "saved_matrices_1")  # output_directory that does not currently exist
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    pcv.params.debug_outdir = imgdir
-    _, _, _, _ = pcv.transform.correct_color(target_img, mask, source_img, mask, output_path)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _, _, _, _ = pcv.transform.correct_color(target_img, mask, source_img, mask, output_path)
     # Test with debug = None
     pcv.params.debug = None
-    _, _, matrix_t, corrected_img = pcv.transform.correct_color(target_img, mask, source_img, mask, output_path)
+    _, _, matrix_t, corrected_img = pcv.transform.correct_color(target_img, mask, source_img, mask, cache_dir)
     # assert source and corrected have same shape
     assert all([np.array_equal(corrected_img, corrected_compare),
-                os.path.exists(os.path.join(output_path, "target_matrix.npz")) is True,
-                os.path.exists(os.path.join(output_path, "source_matrix.npz")) is True,
-                os.path.exists(os.path.join(output_path, "transformation_matrix.npz")) is True])
+                os.path.exists(os.path.join(cache_dir, "target_matrix.npz")) is True,
+                os.path.exists(os.path.join(cache_dir, "source_matrix.npz")) is True,
+                os.path.exists(os.path.join(cache_dir, "transformation_matrix.npz")) is True])
 
 
 def test_plantcv_transform_create_color_card_mask():
@@ -4988,15 +4949,6 @@ def test_plantcv_transform_create_color_card_mask():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_create_color_card_mask")
     os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=(166, 166),
-                                             spacing=(21, 21), nrows=6, ncols=4, exclude=[20, 0])
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=(166, 166),
-                                             spacing=(21, 21), nrows=6, ncols=4, exclude=[20, 0])
     # Test with debug = None
     pcv.params.debug = None
     mask = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=(166, 166),
@@ -5019,32 +4971,14 @@ def test_plantcv_transform_quick_color_check():
     # Test with debug = "print"
     pcv.params.debug = "print"
     pcv.transform.quick_color_check(target_matrix, source_matrix, num_chips=22)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    pcv.transform.quick_color_check(target_matrix, source_matrix, num_chips=22)
-    # Test with debug = None
-    pcv.params.debug = None
-    pcv.transform.quick_color_check(target_matrix, source_matrix, num_chips=22)
     assert os.path.exists(os.path.join(cache_dir, "color_quick_check.png"))
 
 
 def test_plantcv_transform_find_color_card():
     # Load rgb image
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_find_color_card")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     df, start, space = pcv.transform.find_color_card(rgb_img=rgb_img, threshold_type='adaptgauss', blurry=False,
                                                      threshvalue=90)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=start,
-                                             spacing=space, nrows=6, ncols=4, exclude=[20, 0])
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=start,
-                                             spacing=space, nrows=6, ncols=4, exclude=[20, 0])
     # Test with debug = None
     pcv.params.debug = None
     mask = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=start,
@@ -5059,10 +4993,7 @@ def test_plantcv_transform_find_color_card_optional_parameters():
     pcv.outputs.clear()
     # Load rgb image
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG_COLOR_CARD))
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_find_color_card")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     # Test with threshold ='normal'
     df1, start1, space1 = pcv.transform.find_color_card(rgb_img=rgb_img, threshold_type='normal', blurry=True,
                                                         background='light', threshvalue=90, label="prefix")
@@ -5074,10 +5005,7 @@ def test_plantcv_transform_find_color_card_otsu():
     pcv.outputs.clear()
     # Load rgb image
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG_COLOR_CARD))
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_find_color_card_otsu")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     # Test with threshold ='normal'
     df1, start1, space1 = pcv.transform.find_color_card(rgb_img=rgb_img, threshold_type='otsu', blurry=True,
                                                         background='light', threshvalue=90, label="prefix")
@@ -5089,10 +5017,7 @@ def test_plantcv_transform_find_color_card_optional_size_parameters():
     pcv.outputs.clear()
     # Load rgb image
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG_COLOR_CARD))
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_find_color_card")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     _, _, _ = pcv.transform.find_color_card(rgb_img=rgb_img, record_chip_size="mean")
     assert pcv.outputs.observations["default"]["color_chip_size"]["value"] > 15000
 
@@ -5102,10 +5027,7 @@ def test_plantcv_transform_find_color_card_optional_size_parameters_none():
     pcv.outputs.clear()
     # Load rgb image
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG_COLOR_CARD))
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_find_color_card")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     _, _, _ = pcv.transform.find_color_card(rgb_img=rgb_img, record_chip_size=None)
     assert pcv.outputs.observations.get("default") is None
 
