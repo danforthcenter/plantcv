@@ -4908,7 +4908,6 @@ def test_plantcv_transform_correct_color():
     corrected_compare = cv2.imread(os.path.join(TEST_DATA, TEST_S1_CORRECTED))
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_correct_color")
-    os.mkdir(cache_dir)
     # Read in target, source, and gray-scale mask
     target_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
     source_img = cv2.imread(os.path.join(TEST_DATA, TEST_SOURCE1_IMG))
@@ -4968,6 +4967,9 @@ def test_plantcv_transform_quick_color_check():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_quick_color_check")
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
+    # Test with debug = "print"
+    pcv.params.debug = "plot"
+    pcv.transform.quick_color_check(target_matrix, source_matrix, num_chips=22)
     # Test with debug = "print"
     pcv.params.debug = "print"
     pcv.transform.quick_color_check(target_matrix, source_matrix, num_chips=22)
