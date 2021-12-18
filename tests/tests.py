@@ -4843,7 +4843,7 @@ def test_plantcv_transform_apply_transformation():
     target_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
     source_img = cv2.imread(os.path.join(TEST_DATA, TEST_SOURCE1_IMG))
     # Test with debug = None
-    pcv.params.debug = None
+    pcv.params.debug = "plot"
     corrected_img = pcv.transform.apply_transformation_matrix(source_img, target_img, matrix_t)
     # assert source and corrected have same shape
     assert np.array_equal(corrected_img, corrected_compare)
@@ -4950,7 +4950,7 @@ def test_plantcv_transform_create_color_card_mask():
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_create_color_card_mask")
     os.mkdir(cache_dir)
     # Test with debug = None
-    pcv.params.debug = None
+    pcv.params.debug = "plot"
     mask = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=(166, 166),
                                                 spacing=(21, 21), nrows=6, ncols=4, exclude=[20, 0])
     assert all([i == j] for i, j in zip(np.unique(mask), np.array([0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110,
