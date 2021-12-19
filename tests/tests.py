@@ -3752,30 +3752,19 @@ def test_plantcv_morphology_segment_combine_bad_input():
 
 
 def test_plantcv_morphology_analyze_stem():
+    pcv.params.debug = "plot"
     # Clear previous outputs
     pcv.outputs.clear()
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_analyze_stem")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
     pruned, segmented_img, _ = pcv.morphology.prune(skel_img=skeleton, size=6)
     segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=pruned)
     leaf_obj, stem_obj = pcv.morphology.segment_sort(pruned, seg_objects)
-    pcv.params.debug = "plot"
-    _ = pcv.morphology.analyze_stem(rgb_img=segmented_img, stem_objects=stem_obj, label="prefix")
-    pcv.params.debug = "print"
     _ = pcv.morphology.analyze_stem(rgb_img=segmented_img, stem_objects=stem_obj)
     assert pcv.outputs.observations['default']['stem_angle']['value'] == -12.531776428222656
 
 
 def test_plantcv_morphology_analyze_stem_bad_angle():
-    # Clear previous outputs
-    pcv.outputs.clear()
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
     pruned, _, _ = pcv.morphology.prune(skel_img=skeleton, size=5)
     segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=pruned)

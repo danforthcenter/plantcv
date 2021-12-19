@@ -5,8 +5,7 @@ import cv2
 import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
+from plantcv.plantcv._debug import _debug
 
 
 def analyze_stem(rgb_img, stem_objects, label="default"):
@@ -26,7 +25,6 @@ def analyze_stem(rgb_img, stem_objects, label="default"):
         :param label: str
         :return labeled_img: numpy.ndarray
     """
-    params.device += 1
     labeled_img = np.copy(rgb_img)
     img_x, img_y, _ = np.shape(labeled_img)
     grouped_stem = np.vstack(stem_objects)
@@ -63,9 +61,7 @@ def analyze_stem(rgb_img, stem_objects, label="default"):
             print("Slope  is ", slope, " and cannot be plotted.")
         else:
             cv2.line(labeled_img, (x_max - 1, intercept2), (x_min, intercept1), (0, 0, 255), 1)
-        if params.debug == 'print':
-            print_image(labeled_img, os.path.join(params.debug_outdir, str(params.device) + 'stem_analze.png'))
-        elif params.debug == 'plot':
-            plot_image(labeled_img)
+        _debug(visual=labeled_img, 
+               filename=os.path.join(params.debug_outdir, f"{params.device}_stem_analze.png"))
 
     return labeled_img
