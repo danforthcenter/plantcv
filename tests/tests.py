@@ -3425,15 +3425,7 @@ def test_plantcv_morphology_segment_curvature():
 def test_plantcv_morphology_check_cycles():
     # Clear previous outputs
     pcv.outputs.clear()
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_branches")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    pcv.params.debug = "print"
-    _ = pcv.morphology.check_cycles(mask, label="prefix")
-    pcv.params.debug = "plot"
-    _ = pcv.morphology.check_cycles(mask)
     pcv.params.debug = None
     _ = pcv.morphology.check_cycles(mask)
     assert pcv.outputs.observations['default']['num_cycles']['value'] == 1
