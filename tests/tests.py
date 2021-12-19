@@ -3541,16 +3541,10 @@ def test_plantcv_morphology_fill_segments_with_stem():
 def test_plantcv_morphology_segment_angle():
     # Clear previous outputs
     pcv.outputs.clear()
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_angles")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
-    pcv.params.debug = "print"
+    pcv.params.debug = None
     segmented_img, segment_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
-    _ = pcv.morphology.segment_angle(segmented_img=segmented_img, objects=segment_objects, label="prefix")
-    pcv.params.debug = "plot"
-    _ = pcv.morphology.segment_angle(segmented_img, segment_objects)
+    _ = pcv.morphology.segment_angle(segmented_img=segmented_img, objects=segment_objects)
     assert len(pcv.outputs.observations['default']['segment_angle']['value']) == 22
 
 
