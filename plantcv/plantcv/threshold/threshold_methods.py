@@ -5,8 +5,6 @@ import cv2
 import math
 import numpy as np
 from matplotlib import pyplot as plt
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 from skimage.feature import greycomatrix, greycoprops
@@ -578,7 +576,7 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
     # find indices of all peaks
     dx = x[1:] - x[:-1]
     # handle NaN's
-    indnan = np.where(np.isnan(x))[0]
+    # indnan = np.where(np.isnan(x))[0]
 
     # x will never contain NaN since calcHist will never return NaN
     # if indnan.size:
