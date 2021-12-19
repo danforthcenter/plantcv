@@ -4,8 +4,7 @@ import os
 import cv2
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
+from plantcv.plantcv._debug import _debug
 
 
 def segment_path_length(segmented_img, objects, label="default"):
@@ -52,12 +51,6 @@ def segment_path_length(segmented_img, objects, label="default"):
                             method='plantcv.plantcv.morphology.segment_path_length', scale='pixels', datatype=list,
                             value=segment_lengths, label=segment_ids)
 
-    # Auto-increment device
-    params.device += 1
-
-    if params.debug == 'print':
-        print_image(labeled_img, os.path.join(params.debug_outdir, str(params.device) + '_segment_path_lengths.png'))
-    elif params.debug == 'plot':
-        plot_image(labeled_img)
+    _debug(visual=labeled_img, filename=os.path.join(params.debug_outdir, f"{params.device}_segment_path_lengths.png"))
 
     return labeled_img
