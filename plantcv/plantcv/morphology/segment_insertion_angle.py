@@ -45,7 +45,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     debug = params.debug
     params.debug = None
 
-    rows, cols = segmented_img.shape[:2]
+    cols = segmented_img.shape[1]
     labeled_img = segmented_img.copy()
     segment_slopes = []
     insertion_segments = []
