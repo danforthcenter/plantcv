@@ -3553,15 +3553,9 @@ def test_plantcv_morphology_segment_angle_overflow():
 def test_plantcv_morphology_segment_euclidean_length():
     # Clear previous outputs
     pcv.outputs.clear()
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_eu_length")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
-    pcv.params.debug = "print"
     segmented_img, segment_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
-    _ = pcv.morphology.segment_euclidean_length(segmented_img, segment_objects, label="prefix")
-    pcv.params.debug = "plot"
     _ = pcv.morphology.segment_euclidean_length(segmented_img, segment_objects)
     assert len(pcv.outputs.observations['default']['segment_eu_length']['value']) == 22
 
