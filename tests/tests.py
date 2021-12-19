@@ -3485,15 +3485,10 @@ def test_plantcv_morphology_iterative_prune():
 
 
 def test_plantcv_morphology_segment_skeleton():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_skeleton")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
-    pcv.params.debug = "print"
     _ = pcv.morphology.segment_skeleton(skel_img=skeleton, mask=mask)
-    pcv.params.debug = "plot"
     segmented_img, segment_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
     assert len(segment_objects) == 73
 
