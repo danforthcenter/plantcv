@@ -3407,17 +3407,9 @@ def test_plantcv_learn_naive_bayes_multiclass():
 def test_plantcv_morphology_segment_curvature():
     # Clear previous outputs
     pcv.outputs.clear()
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_curvature")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
-    pcv.params.debug = "print"
     segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
-    pcv.outputs.clear()
-    _ = pcv.morphology.segment_curvature(segmented_img, seg_objects, label="prefix")
-    pcv.params.debug = "plot"
-    pcv.outputs.clear()
     _ = pcv.morphology.segment_curvature(segmented_img, seg_objects)
     assert len(pcv.outputs.observations['default']['segment_curvature']['value']) == 22
 

@@ -5,13 +5,12 @@ import cv2
 import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
 from plantcv.plantcv import find_objects
 from plantcv.plantcv import color_palette
 from plantcv.plantcv.morphology import find_tips
 from plantcv.plantcv.morphology import segment_path_length
 from plantcv.plantcv.morphology import segment_euclidean_length
+from plantcv.plantcv._debug import _debug
 
 
 def segment_curvature(segmented_img, objects, label="default"):
@@ -89,12 +88,6 @@ def segment_curvature(segmented_img, objects, label="default"):
                             method='plantcv.plantcv.morphology.segment_curvature', scale='none', datatype=list,
                             value=curvature_measure, label=segment_ids)
 
-    # Auto-increment device
-    params.device += 1
-
-    if params.debug == 'print':
-        print_image(labeled_img, os.path.join(params.debug_outdir, str(params.device) + '_segment_curvature.png'))
-    elif params.debug == 'plot':
-        plot_image(labeled_img)
+    _debug(visual=labeled_img, filename=os.path.join(params.debug_outdir, f"{params.device}_segment_curvature.png"))
 
     return labeled_img
