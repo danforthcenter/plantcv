@@ -3763,6 +3763,7 @@ def test_plantcv_morphology_analyze_stem_bad_angle():
     # print([stem_obj[3]])
     # stem_obj = [stem_obj[3]]
     stem_obj = [[[[1116, 1728]], [[1116, 1]]]]
+    pcv.params.debug = "plot"
     _ = pcv.morphology.analyze_stem(rgb_img=segmented_img, stem_objects=stem_obj)
     assert pcv.outputs.observations['default']['stem_angle']['value'] == 22877334.0
 
