@@ -5,10 +5,9 @@ import cv2
 import numpy as np
 from plantcv.plantcv import dilate
 from plantcv.plantcv import params
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
 from plantcv.plantcv import logical_and
 from plantcv.plantcv.morphology import find_tips
+from plantcv.plantcv._debug import _debug
 
 
 def segment_sort(skel_img, objects, mask=None, first_stem=True):
@@ -77,12 +76,6 @@ def segment_sort(skel_img, objects, mask=None, first_stem=True):
     for i, cnt in enumerate(secondary_objects):
         cv2.drawContours(labeled_img, secondary_objects, i, (0, 255, 0), params.line_thickness, lineType=8)
 
-    # Auto-increment device
-    params.device += 1
-
-    if params.debug == 'print':
-        print_image(labeled_img, os.path.join(params.debug_outdir, str(params.device) + '_sorted_segments.png'))
-    elif params.debug == 'plot':
-        plot_image(labeled_img)
+    _debug(visual=labeled_img, filename=os.path.join(params.debug_outdir, f"{params.device}_sorted_segments.png"))
 
     return secondary_objects, primary_objects

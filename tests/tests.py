@@ -3592,15 +3592,17 @@ def test_plantcv_morphology_skeletonize():
 
 
 def test_plantcv_morphology_segment_sort():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_sort")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
     segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
-    pcv.params.debug = "print"
-    _ = pcv.morphology.segment_sort(skeleton, seg_objects, mask=skeleton)
-    pcv.params.debug = "plot"
+    leaf_obj, stem_obj = pcv.morphology.segment_sort(skeleton, seg_objects, mask=skeleton)
+    assert len(leaf_obj) == 36
+
+
+def test_plantcv_morphology_segment_sort_no_mask():
+    pcv.params.debug = None
+    skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
+    segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
     leaf_obj, stem_obj = pcv.morphology.segment_sort(skeleton, seg_objects)
     assert len(leaf_obj) == 36
 
