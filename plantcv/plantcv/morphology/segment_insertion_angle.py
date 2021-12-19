@@ -7,16 +7,15 @@ from plantcv.plantcv import params
 from plantcv.plantcv import dilate
 from plantcv.plantcv import closing
 from plantcv.plantcv import outputs
-from plantcv.plantcv import plot_image
 from plantcv.plantcv import logical_and
 from plantcv.plantcv import fatal_error
-from plantcv.plantcv import print_image
 from plantcv.plantcv import find_objects
 from plantcv.plantcv import color_palette
 from plantcv.plantcv.morphology import _iterative_prune
 from plantcv.plantcv.morphology import find_tips
 from plantcv.plantcv.morphology import find_branch_pts
 from plantcv.plantcv.morphology.segment_tangent_angle import _slope_to_intesect_angle
+from plantcv.plantcv._debug import _debug
 
 
 def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects, size, label="default"):
@@ -190,13 +189,8 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
 
     # Reset debug mode
     params.debug = debug
-    # Auto-increment device
-    params.device += 1
-
-    if params.debug == 'print':
-        print_image(labeled_img,
-                    os.path.join(params.debug_outdir, str(params.device) + '_segment_insertion_angles.png'))
-    elif params.debug == 'plot':
-        plot_image(labeled_img)
+    
+    _debug(visual=labeled_img, 
+           filename=os.path.join(params.debug_outdir, f"{params.device}_segment_insertion_angles.png"))
 
     return labeled_img
