@@ -13,7 +13,7 @@ from plantcv.plantcv import find_objects
 from plantcv.plantcv import color_palette
 from plantcv.plantcv.morphology import _iterative_prune
 from plantcv.plantcv.morphology import find_tips
-from plantcv.plantcv.morphology import find_branch_pts
+# from plantcv.plantcv.morphology import find_branch_pts
 from plantcv.plantcv.morphology.segment_tangent_angle import _slope_to_intesect_angle
 from plantcv.plantcv._debug import _debug
 
@@ -115,7 +115,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     # Plot stem segments
     stem_img = np.zeros(segmented_img.shape[:2], np.uint8)
     cv2.drawContours(stem_img, stem_objects, -1, 255, 2, lineType=8)
-    branch_pts = find_branch_pts(skel_img)
+    # branch_pts = find_branch_pts(skel_img)
     # stem_img = stem_img + branch_pts ## there can be branch points not along the stem, and they're not needed
     stem_img = closing(stem_img)
     combined_stem, combined_stem_hier = find_objects(stem_img, stem_img)
