@@ -3,9 +3,8 @@
 import os
 import numpy as np
 from plantcv.plantcv import params
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
 from skimage import morphology as skmorph
+from plantcv.plantcv._debug import _debug
 
 
 def skeletonize(mask):
@@ -26,12 +25,6 @@ def skeletonize(mask):
 
     skeleton = skeleton.astype(np.uint8) * 255
 
-    # Auto-increment device
-    params.device += 1
-
-    if params.debug == 'print':
-        print_image(skeleton, os.path.join(params.debug_outdir, str(params.device) + '_skeleton.png'))
-    elif params.debug == 'plot':
-        plot_image(skeleton, cmap='gray')
+    _debug(visual=skeleton, filename=os.path.join(params.debug_outdir, f"{params.device}_skeleton.png"))
 
     return skeleton
