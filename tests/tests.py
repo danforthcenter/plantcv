@@ -3432,16 +3432,15 @@ def test_plantcv_morphology_check_cycles():
 
 
 def test_plantcv_morphology_find_branch_pts():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_branches")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
-    pcv.params.debug = "print"
-    _ = pcv.morphology.find_branch_pts(skel_img=skeleton, mask=mask, label="prefix")
-    pcv.params.debug = "plot"
-    _ = pcv.morphology.find_branch_pts(skel_img=skeleton)
+    pcv.params.debug = None
+    branches = pcv.morphology.find_branch_pts(skel_img=skeleton, mask=mask, label="prefix")
+    assert np.sum(branches) == 9435
+
+
+def test_plantcv_morphology_find_branch_pts_no_mask():
+    skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
     pcv.params.debug = None
     branches = pcv.morphology.find_branch_pts(skel_img=skeleton)
     assert np.sum(branches) == 9435
