@@ -3610,16 +3610,10 @@ def test_plantcv_morphology_segment_sort_no_mask():
 def test_plantcv_morphology_segment_tangent_angle():
     # Clear previous outputs
     pcv.outputs.clear()
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_tangent_angle")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     skel = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
     objects = np.load(os.path.join(TEST_DATA, TEST_SKELETON_OBJECTS), encoding="latin1")
     objs = [objects[arr_n] for arr_n in objects]
-    pcv.params.debug = "print"
-    _ = pcv.morphology.segment_tangent_angle(skel, objs, 2, label="prefix")
-    pcv.params.debug = "plot"
     _ = pcv.morphology.segment_tangent_angle(skel, objs, 2)
     assert len(pcv.outputs.observations['default']['segment_tangent_angle']['value']) == 73
 

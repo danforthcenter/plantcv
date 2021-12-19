@@ -6,11 +6,10 @@ import numpy as np
 import pandas as pd
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
 from plantcv.plantcv import find_objects
 from plantcv.plantcv import color_palette
 from plantcv.plantcv.morphology import _iterative_prune
+from plantcv.plantcv._debug import _debug
 
 
 def _slope_to_intesect_angle(m1, m2):
@@ -129,12 +128,6 @@ def segment_tangent_angle(segmented_img, objects, size, label="default"):
                             method='plantcv.plantcv.morphology.segment_tangent_angle', scale='degrees', datatype=list,
                             value=intersection_angles, label=segment_ids)
 
-    # Auto-increment device
-    params.device += 1
-
-    if params.debug == 'print':
-        print_image(labeled_img, os.path.join(params.debug_outdir, str(params.device) + '_segment_tangent_angles.png'))
-    elif params.debug == 'plot':
-        plot_image(labeled_img)
+    _debug(visual=labeled_img, filename=os.path.join(params.debug_outdir, f"{params.device}_segment_tangent_angles.png"))
 
     return labeled_img
