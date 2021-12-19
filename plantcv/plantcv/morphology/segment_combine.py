@@ -4,10 +4,9 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv import params
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import color_palette
+from plantcv.plantcv._debug import _debug
 
 
 def segment_combine(segment_list, objects, mask):
@@ -96,13 +95,6 @@ def segment_combine(segment_list, objects, mask):
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                     fontScale=params.text_size, color=rand_color[i], thickness=2)
 
-    # Auto-increment device
-    params.device += 1
-
-    if params.debug == 'print':
-        print_image(labeled_img,
-                    os.path.join(params.debug_outdir, str(params.device) + '_combined_segment_ids.png'))
-    elif params.debug == 'plot':
-        plot_image(labeled_img)
+    _debug(visual=labeled_img, filename=os.path.join(params.debug_outdir, f"{params.device}_combined_segment_ids.png"))
 
     return labeled_img, all_objects

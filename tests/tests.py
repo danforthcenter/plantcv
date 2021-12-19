@@ -3552,10 +3552,6 @@ def test_plantcv_morphology_segment_angle_overflow():
     # Clear previous outputs
     pcv.outputs.clear()
     # Don't prune, would usually give overflow error without extra if statement in segment_angle
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_angles")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
     segmented_img, segment_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
     _ = pcv.morphology.segment_angle(segmented_img, segment_objects)
@@ -3702,31 +3698,27 @@ def test_plantcv_morphology_segment_insertion_angle_bad_stem():
 
 
 def test_plantcv_morphology_segment_combine():
+    pcv.params.debug = None
     skel = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
     segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=skel)
-    pcv.params.debug = "plot"
     # Test with list of IDs input
     _, new_objects = pcv.morphology.segment_combine([0, 1], seg_objects, skel)
     assert len(new_objects) + 1 == len(seg_objects)
 
 
 def test_plantcv_morphology_segment_combine_lists():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     skel = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
     segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=skel)
-    pcv.params.debug = "print"
     # Test with list of lists input
     _, new_objects = pcv.morphology.segment_combine([[0, 1, 2], [3, 4]], seg_objects, skel)
     assert len(new_objects) + 3 == len(seg_objects)
 
 
 def test_plantcv_morphology_segment_combine_bad_input():
+    pcv.params.debug = None
     skel = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
     segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=skel)
-    pcv.params.debug = "plot"
     with pytest.raises(RuntimeError):
         _, new_objects = pcv.morphology.segment_combine([0.5, 1.5], seg_objects, skel)
 
