@@ -3,9 +3,8 @@
 import os
 import cv2
 from plantcv.plantcv import color_palette
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
 from plantcv.plantcv import params
+from plantcv.plantcv._debug import _debug
 
 
 def segment_id(skel_img, objects, mask=None):
@@ -55,12 +54,7 @@ def segment_id(skel_img, objects, mask=None):
         text = "ID:{}".format(i)
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                     fontScale=params.text_size, color=rand_color[i], thickness=params.text_thickness)
-    # Auto-increment device
-    params.device += 1
-
-    if params.debug == 'print':
-        print_image(labeled_img, os.path.join(params.debug_outdir, str(params.device) + '_segmented_ids.png'))
-    elif params.debug == 'plot':
-        plot_image(labeled_img)
+    
+    _debug(visual=labeled_img, filename=os.path.join(params.debug_outdir, f"{params.device}_segmented_ids.png"))
 
     return segmented_img, labeled_img

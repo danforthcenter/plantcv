@@ -3634,17 +3634,20 @@ def test_plantcv_morphology_segment_tangent_angle():
 
 
 def test_plantcv_morphology_segment_id():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_tangent_angle")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     skel = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
     objects = np.load(os.path.join(TEST_DATA, TEST_SKELETON_OBJECTS), encoding="latin1")
     objs = [objects[arr_n] for arr_n in objects]
-    pcv.params.debug = "print"
-    _ = pcv.morphology.segment_id(skel, objs)
-    pcv.params.debug = "plot"
     _, labeled_img = pcv.morphology.segment_id(skel, objs, mask=skel)
+    assert np.sum(labeled_img) > np.sum(skel)
+
+
+def test_plantcv_morphology_segment_id_no_mask():
+    pcv.params.debug = None
+    skel = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
+    objects = np.load(os.path.join(TEST_DATA, TEST_SKELETON_OBJECTS), encoding="latin1")
+    objs = [objects[arr_n] for arr_n in objects]
+    _, labeled_img = pcv.morphology.segment_id(skel, objs)
     assert np.sum(labeled_img) > np.sum(skel)
 
 
