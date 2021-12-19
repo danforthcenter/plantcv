@@ -10,21 +10,19 @@ from plantcv.plantcv._debug import _debug
 def segment_path_length(segmented_img, objects, label="default"):
     """ Use segments to calculate geodesic distance per segment
 
-        Inputs:
-        segmented_img = Segmented image to plot lengths on
-        objects       = List of contours
-        label        = optional label parameter, modifies the variable name of observations recorded
+    Inputs:
+    segmented_img = Segmented image to plot lengths on
+    objects       = List of contours
+    label        = optional label parameter, modifies the variable name of observations recorded
 
-        Returns:
-        labeled_img        = Segmented debugging image with lengths labeled
+    Returns:
+    labeled_img        = Segmented debugging image with lengths labeled
 
-        :param segmented_img: numpy.ndarray
-        :param objects: list
-        :param label: str
-        :return labeled_img: numpy.ndarray
-
-        """
-
+    :param segmented_img: numpy.ndarray
+    :param objects: list
+    :param label: str
+    :return labeled_img: numpy.ndarray
+    """
     label_coord_x = []
     label_coord_y = []
     segment_lengths = []

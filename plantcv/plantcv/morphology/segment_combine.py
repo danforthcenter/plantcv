@@ -12,23 +12,23 @@ from plantcv.plantcv._debug import _debug
 def segment_combine(segment_list, objects, mask):
     """ Combine user specified segments together
 
-            Inputs:
-            segment_list  = List of segments to get combined, or list of lists of segments to get combined
-            objects       = List of contours
-            hierarchy     = Contour hierarchy NumPy array
-            mask          = Binary mask for debugging image
+    Inputs:
+    segment_list  = List of segments to get combined, or list of lists of segments to get combined
+    objects       = List of contours
+    hierarchy     = Contour hierarchy NumPy array
+    mask          = Binary mask for debugging image
 
-            Returns:
-            segmented_img = Segmented image
-            objects       = Updated list of contours
-            hierarchy     = Updated contour hierarchy NumPy array
+    Returns:
+    segmented_img = Segmented image
+    objects       = Updated list of contours
+    hierarchy     = Updated contour hierarchy NumPy array
 
-            :param segment_list: list
-            :param objects: list
-            :param mask: numpy.ndarray
-            :return labeled_img: numpy.ndarray
-            :return objects: list
-            """
+    :param segment_list: list
+    :param objects: list
+    :param mask: numpy.ndarray
+    :return labeled_img: numpy.ndarray
+    :return objects: list
+    """
     label_coord_x = []
     label_coord_y = []
     all_objects = objects[:]

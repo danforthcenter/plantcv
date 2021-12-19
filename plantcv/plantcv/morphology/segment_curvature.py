@@ -17,22 +17,20 @@ def segment_curvature(segmented_img, objects, label="default"):
     """ Calculate segment curvature as defined by the ratio between geodesic and euclidean distance.
         Measurement of two-dimensional tortuosity.
 
-        Inputs:
-        segmented_img     = Segmented image to plot lengths on
-        objects           = List of contours
-        label          = optional label parameter, modifies the variable name of observations recorded
+    Inputs:
+    segmented_img     = Segmented image to plot lengths on
+    objects           = List of contours
+    label          = optional label parameter, modifies the variable name of observations recorded
 
-        Returns:
-        labeled_img        = Segmented debugging image with curvature labeled
+    Returns:
+    labeled_img        = Segmented debugging image with curvature labeled
 
 
-        :param segmented_img: numpy.ndarray
-        :param objects: list
-        :param label: str
-        :return labeled_img: numpy.ndarray
-
-        """
-
+    :param segmented_img: numpy.ndarray
+    :param objects: list
+    :param label: str
+    :return labeled_img: numpy.ndarray
+    """
     label_coord_x = []
     label_coord_y = []
     labeled_img = segmented_img.copy()

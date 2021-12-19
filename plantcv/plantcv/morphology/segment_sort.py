@@ -14,24 +14,24 @@ from plantcv.plantcv.morphology import find_tips
 def segment_sort(skel_img, objects, mask=None, first_stem=True):
     """ Calculate segment curvature as defined by the ratio between geodesic and euclidean distance
 
-        Inputs:
-        skel_img          = Skeletonized image
-        objects           = List of contours
-        mask              = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
-        first_stem        = (Optional) if True, then the first (bottom) segment always gets classified as stem
+    Inputs:
+    skel_img          = Skeletonized image
+    objects           = List of contours
+    mask              = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
+    first_stem        = (Optional) if True, then the first (bottom) segment always gets classified as stem
 
-        Returns:
-        labeled_img       = Segmented debugging image with lengths labeled
-        secondary_objects = List of secondary segments (leaf)
-        primary_objects   = List of primary objects (stem)
+    Returns:
+    labeled_img       = Segmented debugging image with lengths labeled
+    secondary_objects = List of secondary segments (leaf)
+    primary_objects   = List of primary objects (stem)
 
-        :param skel_img: numpy.ndarray
-        :param objects: list
-        :param mask: numpy.ndarray
-        :param first_stem: bool
-        :return secondary_objects: list
-        :return other_objects: list
-        """
+    :param skel_img: numpy.ndarray
+    :param objects: list
+    :param mask: numpy.ndarray
+    :param first_stem: bool
+    :return secondary_objects: list
+    :return other_objects: list
+    """
     # Store debug
     debug = params.debug
     params.debug = None

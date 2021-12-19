@@ -22,26 +22,25 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     """ Find leaf insertion angles in degrees of skeleton segments. Fit a linear regression line to the stem.
         Use `size` pixels on  the portion of leaf next to the stem find a linear regression line,
         and calculate angle between the two lines per leaf object.
-        Inputs:
-        skel_img         = Skeletonized image
-        segmented_img    = Segmented image to plot slope lines and intersection angles on
-        leaf_objects     = List of leaf segments
-        stem_objects     = List of stem segments
-        size             = Size of inner leaf used to calculate slope lines
-        label        = optional label parameter, modifies the variable name of observations recorded
+    Inputs:
+    skel_img         = Skeletonized image
+    segmented_img    = Segmented image to plot slope lines and intersection angles on
+    leaf_objects     = List of leaf segments
+    stem_objects     = List of stem segments
+    size             = Size of inner leaf used to calculate slope lines
+    label        = optional label parameter, modifies the variable name of observations recorded
 
-        Returns:
-        labeled_img      = Debugging image with angles labeled
+    Returns:
+    labeled_img      = Debugging image with angles labeled
 
-        :param skel_img: numpy.ndarray
-        :param segmented_img: numpy.ndarray
-        :param leaf_objects: list
-        :param stem_objects: list
-        :param size: int
-        :param label: str
-        :return labeled_img: numpy.ndarray
-        """
-
+    :param skel_img: numpy.ndarray
+    :param segmented_img: numpy.ndarray
+    :param leaf_objects: list
+    :param stem_objects: list
+    :param size: int
+    :param label: str
+    :return labeled_img: numpy.ndarray
+    """
     # Store debug
     debug = params.debug
     params.debug = None
@@ -189,8 +188,8 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
 
     # Reset debug mode
     params.debug = debug
-    
-    _debug(visual=labeled_img, 
+
+    _debug(visual=labeled_img,
            filename=os.path.join(params.debug_outdir, f"{params.device}_segment_insertion_angles.png"))
 
     return labeled_img

@@ -28,7 +28,6 @@ def segment_euclidean_length(segmented_img, objects, label="default"):
     :param objects: list
     :param label: str
     :return labeled_img: numpy.ndarray
-
     """
     x_list = []
     y_list = []

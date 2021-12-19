@@ -11,19 +11,19 @@ from plantcv.plantcv._debug import _debug
 def analyze_stem(rgb_img, stem_objects, label="default"):
     """ Calculate angle of segments (in degrees) by fitting a linear regression line to segments.
 
-        Inputs:
-        rgb_img       = RGB image to plot debug image
-        stem_objects  = List of stem segments (output from segment_sort function)
-        label        = optional label parameter, modifies the variable name of observations recorded
+    Inputs:
+    rgb_img       = RGB image to plot debug image
+    stem_objects  = List of stem segments (output from segment_sort function)
+    label        = optional label parameter, modifies the variable name of observations recorded
 
-        Returns:
-        labeled_img    = Stem analysis debugging image
+    Returns:
+    labeled_img    = Stem analysis debugging image
 
 
-        :param rgb_img: numpy.ndarray
-        :param stem_objects: list
-        :param label: str
-        :return labeled_img: numpy.ndarray
+    :param rgb_img: numpy.ndarray
+    :param stem_objects: list
+    :param label: str
+    :return labeled_img: numpy.ndarray
     """
     labeled_img = np.copy(rgb_img)
     img_x, img_y, _ = np.shape(labeled_img)
@@ -61,7 +61,7 @@ def analyze_stem(rgb_img, stem_objects, label="default"):
             print("Slope  is ", slope, " and cannot be plotted.")
         else:
             cv2.line(labeled_img, (x_max - 1, intercept2), (x_min, intercept1), (0, 0, 255), 1)
-        _debug(visual=labeled_img, 
+        _debug(visual=labeled_img,
                filename=os.path.join(params.debug_outdir, f"{params.device}_stem_analze.png"))
 
     return labeled_img
