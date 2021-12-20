@@ -74,7 +74,7 @@ class ImageRegistrator:
 
         # collect points on reference image
         if str(event.inaxes._subplotspec) == 'GridSpec(1, 2)[0:1, 0:1]':
-            self.left_right_click(idx_ax=0, x=event.xdata, y=event.ydata, click_event=event.button)
+            self.left_right_click(idx_ax=0, x=event.xdata, y=event.ydata, event=event.button)
             # # left click
             # if event.button == 1:
             #     self.left_click(0, event.xdata, event.ydata)
@@ -84,7 +84,7 @@ class ImageRegistrator:
 
         # collect points on target image
         elif str(event.inaxes._subplotspec) == 'GridSpec(1, 2)[0:1, 1:2]':
-            self.left_right_click(idx_ax=1, x=event.xdata, y=event.ydata, click_event=event.button)
+            self.left_right_click(idx_ax=1, x=event.xdata, y=event.ydata, event=event.button)
             # # left click
             # if event.button == 1:
             #     self.left_click(1, event.xdata, event.ydata)
