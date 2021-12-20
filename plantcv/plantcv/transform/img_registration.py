@@ -50,8 +50,8 @@ class ImageRegistrator:
         self.model = None
         self.img_registered = None
 
-    def left_right_click(self, idx_ax, x, y, click_event):
-        if click_event.button == 1:
+    def left_right_click(self, idx_ax, x, y, event):
+        if event.button == 1:
             self.axes[idx_ax].plot(x, y, 'x', c='red')
             self.points[idx_ax].append((x, y))
         else: #right click
