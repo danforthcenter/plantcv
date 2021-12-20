@@ -4,13 +4,12 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv import params
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
 from plantcv.plantcv import find_objects
 from plantcv.plantcv import image_subtract
 from plantcv.plantcv.morphology import segment_sort
 from plantcv.plantcv.morphology import segment_skeleton
 from plantcv.plantcv.morphology import _iterative_prune
+from plantcv.plantcv._debug import _debug
 
 
 def prune(skel_img, size=0, mask=None):
@@ -86,16 +85,8 @@ def prune(skel_img, size=0, mask=None):
     cv2.drawContours(pruned_plot, removed_segments, -1, (0, 0, 255), params.line_thickness, lineType=8)
     cv2.drawContours(pruned_plot, pruned_obj, -1, (150, 150, 150), params.line_thickness, lineType=8)
 
-    # Auto-increment device
-    params.device += 1
-
-    if params.debug == 'print':
-        print_image(pruned_img, os.path.join(params.debug_outdir, str(params.device) + '_pruned.png'))
-        print_image(pruned_plot, os.path.join(params.debug_outdir, str(params.device) + '_pruned_debug.png'))
-
-    elif params.debug == 'plot':
-        plot_image(pruned_img, cmap='gray')
-        plot_image(pruned_plot)
+    _debug(visual=pruned_img, filename=os.path.join(params.debug_outdir, f"{params.device}_pruned.png"))
+    _debug(visual=pruned_img, filename=os.path.join(params.debug_outdir, f"{params.device}_pruned_debug.png"))
 
     # Segment the pruned skeleton
     segmented_img, segment_objects = segment_skeleton(pruned_img, mask)

@@ -4,11 +4,10 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv import params
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
 from plantcv.plantcv import rgb2gray
 from plantcv.plantcv import gaussian_blur
 from plantcv.plantcv.transform import rescale
+from plantcv.plantcv._debug import _debug
 
 
 def nonuniform_illumination(img, ksize):
@@ -44,13 +43,7 @@ def nonuniform_illumination(img, ksize):
 
     # Reset debug mode
     params.debug = debug
-    # Autoincrement the device counter
-    params.device += 1
 
-    if params.debug == 'print':
-        print_image(corrected_img, os.path.join(params.debug_outdir, str(params.device) +
-                                                '_correct_illumination' + '.png'))
-    elif params.debug == 'plot':
-        plot_image(corrected_img, cmap='gray')
+    _debug(visual=corrected_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_correct_illumination.png'))
 
     return corrected_img

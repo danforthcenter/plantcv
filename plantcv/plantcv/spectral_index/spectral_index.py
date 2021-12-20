@@ -913,7 +913,6 @@ def _package_index(hsi, raw_index, method):
     :params method: str
     :params index: __main__.Spectral_data
     """
-    params.device += 1
 
     # Store debug mode
     debug = params.debug

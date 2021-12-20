@@ -1,10 +1,9 @@
 # Find NIR image
 
 import os
-import numpy as np
 from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
+from plantcv.plantcv._debug import _debug
 
 
 def output_mask(img, mask, filename, outdir=None, mask_only=False):
@@ -29,14 +28,11 @@ def output_mask(img, mask, filename, outdir=None, mask_only=False):
     :return imgpath: str
     :return maskpath: str
     """
-
-    params.device += 1
     analysis_images = []
 
+    directory = outdir
     if outdir is None:
         directory = os.getcwd()
-    else:
-        directory = outdir
 
     if not mask_only:
         path = os.path.join(str(directory), "ori-images")
@@ -64,17 +60,8 @@ def output_mask(img, mask, filename, outdir=None, mask_only=False):
             print_image(mask, maskpath)
             analysis_images.append(['IMAGE', 'mask', maskpath])
 
-        if params.debug == 'print':
-            print_image(img, os.path.join(params.debug_outdir, str(params.device) + '_ori-img.png'))
-            print_image(mask, os.path.join(params.debug_outdir, str(params.device) + '_mask-img.png'))
-
-        elif params.debug == 'plot':
-            if len(np.shape(img)) == 3:
-                plot_image(img)
-                plot_image(mask, cmap='gray')
-            else:
-                plot_image(img, cmap='gray')
-                plot_image(mask, cmap='gray')
+        _debug(visual=img, filename=os.path.join(params.debug_outdir, f"{params.device}_ori-img.png"))
+        _debug(visual=mask, filename=os.path.join(params.debug_outdir, f"{params.device}_mask-img.png"))
 
         return imgpath, maskpath, analysis_images
 
@@ -91,9 +78,6 @@ def output_mask(img, mask, filename, outdir=None, mask_only=False):
             print_image(mask, maskpath)
             analysis_images.append(['IMAGE', 'mask', maskpath])
 
-        if params.debug == 'print':
-            print_image(mask, os.path.join(params.debug_outdir, str(params.device) + '_mask-img.png'))
-        elif params.debug == 'plot':
-            plot_image(mask, cmap='gray')
+        _debug(visual=mask, filename=os.path.join(params.debug_outdir, f"{params.device}_mask-img.png"))
 
         return maskpath, analysis_images
