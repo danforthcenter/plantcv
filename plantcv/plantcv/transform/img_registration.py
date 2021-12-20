@@ -50,39 +50,48 @@ class ImageRegistrator:
         self.model = None
         self.img_registered = None
 
-    def left_click(self, idx_ax, x, y):
-        self.axes[idx_ax].plot(x, y, 'x', c='red')
-        self.points[idx_ax].append((x, y))
+    def left_right_click(self, idx_ax, idx_ax, y, click_event):
+        if click_event.button == 1:
+            self.axes[idx_ax].plot(x, y, 'x', c='red')
+            self.points[idx_ax].append((x, y))
+        else: #right click
+            idx_remove, _ = _find_closest_pt((x, y), self.points[idx_ax])
+            # remove the closest point to the user right clicked one
+            self.points[idx_ax].pop(idx_remove)
+            axplots = self.axes[idx_ax].lines
+            self.axes[idx_ax].lines.remove(axplots[idx_remove])
 
-    def right_click(self, idx_ax, x, y):
-        idx_remove, _ = _find_closest_pt((x, y), self.points[idx_ax])
-        # remove the last added point
-        # idx_remove = -1
-        self.points[idx_ax].pop(idx_remove)
-        axplots = self.axes[idx_ax].lines
-        self.axes[idx_ax].lines.remove(axplots[idx_remove])
+    # def right_click(self, idx_ax, x, y):
+    #     idx_remove, _ = _find_closest_pt((x, y), self.points[idx_ax])
+    #     # remove the last added point
+    #     # idx_remove = -1
+    #     self.points[idx_ax].pop(idx_remove)
+    #     axplots = self.axes[idx_ax].lines
+    #     self.axes[idx_ax].lines.remove(axplots[idx_remove])
 
     def onclick(self, event):
         self.events.append(event)
 
         # collect points on reference image
         if str(event.inaxes._subplotspec) == 'GridSpec(1, 2)[0:1, 0:1]':
-            # left click
-            if event.button == 1:
-                self.left_click(0, event.xdata, event.ydata)
-            # right click
-            else:
-                self.right_click(0, event.xdata, event.ydata)
+            self.left_right_click(idx_ax=0, x=event.xdata, y=event.ydata, click_event=event.button)
+            # # left click
+            # if event.button == 1:
+            #     self.left_click(0, event.xdata, event.ydata)
+            # # right click
+            # else:
+            #     self.right_click(0, event.xdata, event.ydata)
 
         # collect points on target image
         elif str(event.inaxes._subplotspec) == 'GridSpec(1, 2)[0:1, 1:2]':
-            # left click
-            if event.button == 1:
-                self.left_click(1, event.xdata, event.ydata)
-
-            # right click
-            else:
-                self.right_click(1, event.xdata, event.ydata)
+            self.left_right_click(idx_ax=1, x=event.xdata, y=event.ydata, click_event=event.button)
+            # # left click
+            # if event.button == 1:
+            #     self.left_click(1, event.xdata, event.ydata)
+            #
+            # # right click
+            # else:
+            #     self.right_click(1, event.xdata, event.ydata)
         self.fig.canvas.draw()
 
     def save_model(self, model_file="model"):
