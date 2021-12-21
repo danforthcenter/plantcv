@@ -5303,6 +5303,14 @@ def test_plantcv_annotate_img_registration(tmpdir):
            and os.path.isfile(os.path.join(cache_dir, "model.pkl"))
 
 
+def test_plantcv_transform_img_registration_gray():
+    # generate fake testing images
+    img_ref = create_test_img((12, 10))
+    img_tar = create_test_img((12, 10))
+    img_registrator = pcv.annotate.ImageRegistrator(img_ref, img_tar)
+    assert len(img_registrator.events) == 0
+
+
 # ##############################
 # Tests for the transform subpackage
 # ##############################
@@ -5850,14 +5858,6 @@ def test_plantcv_transform_nonuniform_illumination_gray():
     pcv.params.debug = "print"
     corrected = pcv.transform.nonuniform_illumination(img=gray_img, ksize=11)
     assert np.shape(corrected) == np.shape(gray_img)
-    
-
-def test_plantcv_transform_img_registration_gray():
-    # generate fake testing images
-    img_ref = create_test_img((12, 10))
-    img_tar = create_test_img((12, 10))
-    img_registrator = pcv.transform.ImageRegistrator(img_ref, img_tar)
-    assert len(img_registrator.events) == 0
 
 
 
