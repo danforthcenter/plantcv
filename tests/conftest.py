@@ -13,6 +13,7 @@ class TestData:
         self.datadir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "testdata")
         self.workflowconfig_template_file = os.path.join(self.datadir, "workflowconfig_template.json")
         self.flat_imgdir = os.path.join(self.datadir, "flat_imgdir")
+        self.snapshot_imgdir = os.path.join(self.datadir, "snapshot_imgdir")
         self.workflow_script = os.path.join(self.datadir, "plantcv-script.py")
 
     # JSON loading helper function
