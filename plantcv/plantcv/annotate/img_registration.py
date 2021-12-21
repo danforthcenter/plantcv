@@ -56,8 +56,6 @@ class ImageRegistrator:
 
     def right_click(self, idx_ax, x, y):
         idx_remove, _ = _find_closest_pt((x, y), self.points[idx_ax])
-        # remove the last added point
-        # idx_remove = -1
         self.points[idx_ax].pop(idx_remove)
         axplots = self.axes[idx_ax].lines
         self.axes[idx_ax].lines.remove(axplots[idx_remove])
@@ -76,11 +74,8 @@ class ImageRegistrator:
 
         # collect points on target image
         elif str(event.inaxes._subplotspec) == 'GridSpec(1, 2)[0:1, 1:2]':
-            # left click
             if event.button == 1:
                 self.left_click(1, event.xdata, event.ydata)
-
-            # right click
             else:
                 self.right_click(1, event.xdata, event.ydata)
         self.fig.canvas.draw()
@@ -103,4 +98,3 @@ class ImageRegistrator:
                                                                    self.points[1],
                                                                    self.points[0],
                                                                    method='ransac')
-
