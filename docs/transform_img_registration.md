@@ -3,7 +3,7 @@
 `ImageRegistrator` is a class that registrater a target image based on user selected landmark pixels on reference and 
 target images. 
 
-*class* **plantcv.transform.ImageRegistrator(img_ref, img_tar, figsize=(12, 6))**
+*class* **plantcv.annotate.ImageRegistrator(img_ref, img_tar, figsize=(12, 6))**
 
 To initialize an instance of `ImageRegistrator` class, two required parameters are `img_ref` and `img_tar`, represent 
 for target image and reference image, respectively.
@@ -34,7 +34,7 @@ Save the transformation matrix used for image registration.
 
 from plantcv import plantcv as pcv
 # Initialize an image registrator
-img_registrator = ImageRegistrator(img_ref, img_tar, figsize=(12, 6))
+img_registrator = pcv.annotate.ImageRegistrator(img_ref, img_tar, figsize=(12, 6))
 
 ## 
 # collecting land mark points
@@ -72,4 +72,4 @@ Check out this video for how this interactive tool works!
 <iframe src="https://player.vimeo.com/video/522809945" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
 
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/transform/img_registration.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/annotate/img_registration.py)
