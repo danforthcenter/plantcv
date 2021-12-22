@@ -13,6 +13,8 @@ class UtilsTestData:
         self.invalid_results_file = os.path.join(self.datadir, "invalid_results.json")
         # Snapshot image directory
         self.snapshot_imgdir = os.path.join(self.datadir, "snapshot_imgdir")
+        # ImageJ Pixel Inspector sampled RGB values
+        self.rgb_values_file = os.path.join(self.datadir, "pixel_inspector_rgb_values.txt")
 
 
 @pytest.fixture(scope="session")
