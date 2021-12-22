@@ -18,6 +18,14 @@ class ParallelTestData:
         self.snapshot_imgdir = os.path.join(self.datadir, "snapshot_imgdir")
         # PlantCV workflow script
         self.workflow_script = os.path.join(self.datadir, "plantcv-script.py")
+        # Output directory from parallel processing, contains results files
+        self.parallel_results_dir = os.path.join(self.datadir, "parallel_results")
+        # JSON results file with appended results
+        self.appended_results_file = os.path.join(self.datadir, "appended_results.json")
+        # JSON results file with a single set of results
+        self.new_results_file = os.path.join(self.datadir, "new_results.json")
+        # Valid JSON file but invalid results
+        self.valid_json_file = os.path.join(self.datadir, "valid.json")
         # Metadata results for a VIS image from a snapshot directory
         self.metadata_snapshot_vis = {
             'VIS_SV_0_z1_h1_g0_e82_117770.jpg': {
@@ -268,6 +276,14 @@ class ParallelTestData:
     def workflowconfig_template(self):
         """Load WorkflowConfig template from file."""
         return self.load_json(json_file=self.workflowconfig_template_file)
+
+    def appended_results(self):
+        """Load appended results from file."""
+        return self.load_json(json_file=self.appended_results_file)
+
+    def new_results(self):
+        """Load appended results from file."""
+        return self.load_json(json_file=self.new_results_file)
 
 
 @pytest.fixture(scope="session")
