@@ -11,6 +11,8 @@ class UtilsTestData:
         self.plantcv_results_file = os.path.join(self.datadir, "plantcv_results.json")
         # Invalid results file
         self.invalid_results_file = os.path.join(self.datadir, "invalid_results.json")
+        # Snapshot image directory
+        self.snapshot_imgdir = os.path.join(self.datadir, "snapshot_imgdir")
 
 
 @pytest.fixture(scope="session")
