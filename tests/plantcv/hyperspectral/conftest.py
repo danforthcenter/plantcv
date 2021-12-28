@@ -18,10 +18,13 @@ class HyperspectralTestData:
         self.envi_bad_interleave = os.path.join(self.datadir, "darkReference4")
         self.hsi_file = os.path.join(self.datadir, "hsi.pkl")
         self.hsi_mask_file = os.path.join(self.datadir, "hsi_mask.png")
+        self.hsi_whiteref_file = os.path.join(self.datadir, "hsi_whiteref.pkl")
+        self.hsi_darkref_file = os.path.join(self.datadir, "hsi_darkref.pkl")
+        self.savi_file = os.path.join(self.datadir, "savi.pkl")
 
-    def load_hsi(self):
+    def load_hsi(self, pkl_file):
         """Load PlantCV Spectral_data pickled object."""
-        with open(self.hsi_file, "rb") as fp:
+        with open(pkl_file, "rb") as fp:
             return pkl.load(fp)
 
 
