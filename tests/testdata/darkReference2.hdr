@@ -9,7 +9,6 @@ data type = 12
 interleave = bil
 sensor type = Unknown
 byte order = 0
-wavelength units = nm
 wavelength = {
 513.342
 ,513.342
