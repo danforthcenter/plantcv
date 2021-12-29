@@ -26,7 +26,7 @@ def test_add_observation_invalid_type():
 
 def test_save_results_json_newfile(tmpdir):
     # Create a test tmp directory
-    cache_dir = tmpdir.mkdir("sub")
+    cache_dir = tmpdir.mkdir("cache")
     outfile = os.path.join(cache_dir, "results.json")
     # Create output instance
     outputs = Outputs()
@@ -40,7 +40,7 @@ def test_save_results_json_newfile(tmpdir):
 
 def test_save_results_json_existing_file(test_data, tmpdir):
     # Create a test tmp directory
-    cache_dir = tmpdir.mkdir("sub")
+    cache_dir = tmpdir.mkdir("cache")
     outfile = os.path.join(cache_dir, os.path.basename(test_data.outputs_results_json))
     copyfile(test_data.outputs_results_json, outfile)
     # Create output instance
@@ -55,7 +55,7 @@ def test_save_results_json_existing_file(test_data, tmpdir):
 
 def test_save_results_csv(test_data, tmpdir):
     # Create a test tmp directory
-    outfile = tmpdir.mkdir("sub").join("results.csv")
+    outfile = tmpdir.mkdir("cache").join("results.csv")
     # Create output instance
     outputs = Outputs()
     outputs.add_observation(sample='default', variable='string', trait='string variable', method='string', scale='none',
