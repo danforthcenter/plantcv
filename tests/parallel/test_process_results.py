@@ -18,7 +18,7 @@ def test_process_results(parallel_test_data, tmpdir):
 def test_process_results_new_output(parallel_test_data, tmpdir):
     # Create a test tmp directory and results file
     result_file = tmpdir.mkdir("sub").join("new_result.json")
-    process_results(job_dir=parallel_test_data.parallel_results_dir, json_file=str(result_file))
+    process_results(job_dir=parallel_test_data.parallel_results_dir, json_file=result_file)
     # Assert output matches expected values
     results = parallel_test_data.new_results()
     expected = parallel_test_data.load_json(json_file=result_file)
@@ -36,4 +36,4 @@ def test_process_results_invalid_json(tmpdir):
     result_file = tmpdir.mkdir("bad_results").join("invalid.txt")
     result_file.write("Invalid")
     with pytest.raises(RuntimeError):
-        process_results(job_dir=os.path.split(str(result_file))[0], json_file=str(result_file))
+        process_results(job_dir=os.path.split(str(result_file))[0], json_file=result_file)

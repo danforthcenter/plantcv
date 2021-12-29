@@ -9,7 +9,7 @@ def test_create_dask_cluster_local(tmpdir):
     # Create tmp directory
     tmp_dir = tmpdir.mkdir("cache")
     # Set the temp directory for dask
-    dask.config.set(temporary_directory=str(tmp_dir))
+    dask.config.set(temporary_directory=tmp_dir)
     client = create_dask_cluster(cluster="LocalCluster", cluster_config={})
     status = client.status
     client.shutdown()
@@ -20,7 +20,7 @@ def test_create_dask_cluster(tmpdir):
     # Create tmp directory
     tmp_dir = tmpdir.mkdir("cache")
     # Set the temp directory for dask
-    dask.config.set(temporary_directory=str(tmp_dir))
+    dask.config.set(temporary_directory=tmp_dir)
     client = create_dask_cluster(cluster="HTCondorCluster", cluster_config={"cores": 1, "memory": "1GB", "disk": "1GB"})
     status = client.status
     client.shutdown()
@@ -36,7 +36,7 @@ def test_plantcv_parallel_multiprocess(parallel_test_data, tmpdir):
     # Create tmp directory
     tmp_dir = tmpdir.mkdir("sub")
     # Set the temp directory for dask
-    dask.config.set(temporary_directory=str(tmp_dir))
+    dask.config.set(temporary_directory=tmp_dir)
     image_name = list(parallel_test_data.metadata_snapshot_vis.keys())[0]
     image_path = os.path.join(parallel_test_data.metadata_snapshot_vis[image_name]['path'], image_name)
     result_file = os.path.join(tmp_dir, image_name + '.txt')

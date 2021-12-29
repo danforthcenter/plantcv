@@ -6,8 +6,8 @@ from plantcv.learn import naive_bayes, naive_bayes_multiclass
 def test_naive_bayes(learn_test_data, tmpdir):
     # Create tmp directory
     tmp_dir = tmpdir.mkdir("cache")
-    imgdir = os.path.join(str(tmp_dir), "images")
-    maskdir = os.path.join(str(tmp_dir), "masks")
+    imgdir = os.path.join(tmp_dir, "images")
+    maskdir = os.path.join(tmp_dir, "masks")
     # Make image and mask directories in the cache directory
     os.makedirs(imgdir, exist_ok=True)
     os.makedirs(maskdir, exist_ok=True)
@@ -24,6 +24,6 @@ def test_naive_bayes_multiclass(learn_test_data, tmpdir):
     # Create tmp directory
     tmp_dir = tmpdir.mkdir("cache")
     # Run the naive Bayes multiclass training module
-    outfile = os.path.join(str(tmp_dir), "naive_bayes_multiclass_pdfs.txt")
+    outfile = os.path.join(tmp_dir, "naive_bayes_multiclass_pdfs.txt")
     naive_bayes_multiclass(samples_file=learn_test_data.rgb_values_table, outfile=outfile, mkplots=True)
     assert os.path.exists(outfile)
