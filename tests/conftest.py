@@ -16,6 +16,8 @@ class TestData:
         self.camelina_rgb_img = os.path.join(self.datadir, "camelina_rgb_img.jpg")
         # Binary mask for RGB image
         self.camelina_bin_img = os.path.join(self.datadir, "camelina_bin_img.png")
+        # Gray image
+        self.camelina_gray_img = os.path.join(self.datadir, "camelina_gray_img.jpg")
         # PlantCV Spectral_data object
         self.hsi_file = os.path.join(self.datadir, "hsi.pkl")
         # Binary mask for HSI
