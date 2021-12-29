@@ -11,6 +11,7 @@ class TestData:
         """Initialize simple variables."""
         # Test data directory
         self.datadir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "testdata")
+        self.camelina_rgb_img = os.path.join(self.datadir, "camelina_rgb_img.jpg")
 
 
 @pytest.fixture(scope="session")
