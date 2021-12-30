@@ -266,8 +266,7 @@ def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
                 circle_img = cv2.circle(bin_img, (x, y), radius, 255, -1)
                 overlap_img = overlap_img + circle_img
                 # Make a list of contours and hierarchies
-                _, rc, rh = cv2.findContours(circle_img, cv2.RETR_EXTERNAL,
-                                             cv2.CHAIN_APPROX_NONE)
+                rc, rh = cv2.findContours(circle_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[-2:]
                 roi_contour.append(rc)
                 roi_hierarchy.append(rh)
 

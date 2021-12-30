@@ -608,6 +608,11 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: **plantcv.plot_image**(*img, cmap=None*)
 * post v3.0dev2: **plantcv.plot_image**(*img, cmap=None*)
 
+#### plantcv.Points
+
+* pre v4.0: NA
+* post v4.0: marker = **plantcv.Points**(*img, figsize=(6,12)*)
+
 #### plantcv.print_image
 
 * pre v3.0dev2: **plantcv.print_image**(*img, filename*)
