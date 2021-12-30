@@ -93,9 +93,9 @@ def test_cri700_bad_input(spectral_index_test_data):
 
 
 def test_egi(spectral_index_test_data):
-    rgb_img = cv2.imread(spectral_index_test_data.camelina_rgb_img)
+    rgb_img = cv2.imread(spectral_index_test_data.small_rgb_img)
     index_array = spectral_index.egi(rgb_img=rgb_img)
-    assert np.shape(index_array.array_data) == (2056, 2454) and np.nanmax(index_array.pseudo_rgb) == 255
+    assert np.shape(index_array.array_data) == (335, 400) and np.nanmax(index_array.pseudo_rgb) == 255
 
 
 def test_evi(spectral_index_test_data):
