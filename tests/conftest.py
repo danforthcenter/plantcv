@@ -26,6 +26,12 @@ class TestData:
         self.outputs_results_json = os.path.join(self.datadir, "outputs_results.json")
         # Outputs results file - CSV
         self.outputs_results_csv = os.path.join(self.datadir, "outputs_results.csv")
+        # RGBA image
+        self.owl_rgba_img = os.path.join(self.datadir, "owl_rgba_img.png")
+        # ENVI hyperspectral data
+        self.envi_bil_file = os.path.join(self.datadir, "darkReference")
+        # Thermal image
+        self.thermal_img = os.path.join(self.datadir, "FLIR2600.csv")
 
     def load_hsi(self, pkl_file):
         """Load PlantCV Spectral_data pickled object."""
