@@ -4,8 +4,8 @@ from plantcv.plantcv import readimage
 
 
 def test_plantcv_readimage_native(test_data):
-    img, path, img_name = readimage(filename=test_data.large_rgb_img, mode='native')
-    expected = [3] + list(os.path.split(test_data.large_rgb_img))
+    img, path, img_name = readimage(filename=test_data.small_rgb_img, mode='native')
+    expected = [3] + list(os.path.split(test_data.small_rgb_img))
     # Assert that the image name returned equals the name of the input image
     # Assert that the path of the image returned equals the path of the input image
     # Assert that the dimensions of the returned image equals the expected dimensions
@@ -14,12 +14,12 @@ def test_plantcv_readimage_native(test_data):
 
 @pytest.mark.parametrize("mode", ["gray", "grey"])
 def test_readimage_grayscale(mode, test_data):
-    img, _, _ = readimage(filename=test_data.large_gray_img, mode=mode)
+    img, _, _ = readimage(filename=test_data.small_gray_img, mode=mode)
     assert len(img.shape) == 2
 
 
 def test_readimage_rgb(test_data):
-    img, _, _ = readimage(filename=test_data.large_gray_img, mode="rgb")
+    img, _, _ = readimage(filename=test_data.small_gray_img, mode="rgb")
     assert len(img.shape) == 3
 
 
