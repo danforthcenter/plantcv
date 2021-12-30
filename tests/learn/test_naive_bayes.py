@@ -12,8 +12,8 @@ def test_naive_bayes(learn_test_data, tmpdir):
     os.makedirs(imgdir, exist_ok=True)
     os.makedirs(maskdir, exist_ok=True)
     # Copy and image and mask to the image/mask directories
-    copyfile(learn_test_data.setaria_small_rgb_img, os.path.join(imgdir, "image.png"))
-    copyfile(learn_test_data.setaria_small_bin_img, os.path.join(maskdir, "image.png"))
+    copyfile(learn_test_data.small_rgb_img, os.path.join(imgdir, "image.png"))
+    copyfile(learn_test_data.small_bin_img, os.path.join(maskdir, "image.png"))
     # Run the naive Bayes training module
     outfile = os.path.join(str(tmp_dir), "naive_bayes_pdfs.txt")
     naive_bayes(imgdir=imgdir, maskdir=maskdir, outfile=outfile, mkplots=True)

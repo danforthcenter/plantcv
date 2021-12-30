@@ -7,14 +7,14 @@ from plantcv.plantcv import plot_image
 
 
 def test_plot_rgb(test_data):
-    img = cv2.imread(test_data.camelina_rgb_img)
+    img = cv2.imread(test_data.large_rgb_img)
     plot_image(img=img)
     assert True
 
 
 @pytest.mark.parametrize("cmap", [None, "viridis"])
 def test_plot_gray(cmap, test_data):
-    gray_img = cv2.imread(test_data.camelina_gray_img, -1)
+    gray_img = cv2.imread(test_data.large_gray_img, -1)
     plot_image(img=gray_img, cmap=cmap)
 
 

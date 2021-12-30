@@ -6,16 +6,16 @@ from plantcv.plantcv import apply_mask
 
 def test_apply_mask_white(test_data):
     # Read in test data
-    img = cv2.imread(test_data.camelina_rgb_img)
-    mask = cv2.imread(test_data.camelina_bin_img, -1)
+    img = cv2.imread(test_data.large_rgb_img)
+    mask = cv2.imread(test_data.large_bin_img, -1)
     masked_img = apply_mask(img=img, mask=mask, mask_color="white")
     assert np.unique(masked_img[np.where(mask == 0)]) == 255
 
 
 def test_apply_mask_black(test_data):
     # Read in test data
-    img = cv2.imread(test_data.camelina_rgb_img)
-    mask = cv2.imread(test_data.camelina_bin_img, -1)
+    img = cv2.imread(test_data.large_rgb_img)
+    mask = cv2.imread(test_data.large_bin_img, -1)
     masked_img = apply_mask(img=img, mask=mask, mask_color="black")
     assert np.unique(masked_img[np.where(mask == 0)]) == 0
 
@@ -30,7 +30,7 @@ def test_apply_mask_hyperspectral(test_data):
 
 def test_apply_mask_bad_input(test_data):
     # Read in test data
-    img = cv2.imread(test_data.camelina_rgb_img)
-    mask = cv2.imread(test_data.camelina_bin_img, -1)
+    img = cv2.imread(test_data.large_rgb_img)
+    mask = cv2.imread(test_data.large_bin_img, -1)
     with pytest.raises(RuntimeError):
         _ = apply_mask(img=img, mask=mask, mask_color="wite")

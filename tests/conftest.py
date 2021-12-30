@@ -13,11 +13,11 @@ class TestData:
         # Test data directory
         self.datadir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "testdata")
         # RGB image
-        self.camelina_rgb_img = os.path.join(self.datadir, "camelina_rgb_img.jpg")
+        self.large_rgb_img = os.path.join(self.datadir, "camelina_rgb_img.jpg")
         # Binary mask for RGB image
-        self.camelina_bin_img = os.path.join(self.datadir, "camelina_bin_img.png")
+        self.large_bin_img = os.path.join(self.datadir, "camelina_bin_img.png")
         # Gray image
-        self.camelina_gray_img = os.path.join(self.datadir, "camelina_gray_img.jpg")
+        self.large_gray_img = os.path.join(self.datadir, "camelina_gray_img.jpg")
         # PlantCV Spectral_data object
         self.hsi_file = os.path.join(self.datadir, "hsi.pkl")
         # Binary mask for HSI
@@ -27,7 +27,7 @@ class TestData:
         # Outputs results file - CSV
         self.outputs_results_csv = os.path.join(self.datadir, "outputs_results.csv")
         # RGBA image
-        self.owl_rgba_img = os.path.join(self.datadir, "owl_rgba_img.png")
+        self.rgba_img = os.path.join(self.datadir, "owl_rgba_img.png")
         # ENVI hyperspectral data
         self.envi_bil_file = os.path.join(self.datadir, "darkReference")
         # Thermal image

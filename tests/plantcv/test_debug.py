@@ -9,8 +9,8 @@ from plantcv.plantcv._debug import _debug
 def test_debug(debug, test_data, tmpdir):
     # Create a test tmp directory
     cache = tmpdir.mkdir("cache")
-    output_img = os.path.join(cache, os.path.basename(test_data.camelina_rgb_img))
+    output_img = os.path.join(cache, os.path.basename(test_data.large_rgb_img))
     params.debug = debug
-    img = cv2.imread(test_data.camelina_rgb_img)
+    img = cv2.imread(test_data.large_rgb_img)
     _debug(visual=img, filename=output_img)
     assert True
