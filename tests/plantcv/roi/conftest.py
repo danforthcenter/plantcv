@@ -1,5 +1,6 @@
 import pytest
 import os
+import numpy as np
 import matplotlib
 
 # Disable plotting
@@ -15,6 +16,13 @@ class RoiTestData:
         self.small_rgb_img = os.path.join(self.datadir, "setaria_small_plant_rgb.png")
         # Gray image
         self.small_gray_img = os.path.join(self.datadir, "setaria_small_plant_gray.png")
+        # Contours file
+        self.small_contours_file = os.path.join(self.datadir, "setaria_small_plant_contours.npz")
+
+    def load_npz(self, npz_file):
+        """Load data saved in a NumPy .npz file."""
+        data = np.load(npz_file, encoding="latin1")
+        return data['arr_0']
 
 
 @pytest.fixture(scope="session")
