@@ -465,15 +465,7 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
         scale_x_continuous(limits=(-5, 270)) + scale_y_continuous(limits=(-5, 275)) + \
         scale_color_manual(values=['blue', 'green', 'red'])
 
-    # Autoincrement the device counter
-    params.device += 1
-
-    # Reset debug
-    if params.debug is not None:
-        if params.debug == 'print':
-            p1.save(os.path.join(params.debug_outdir, 'color_quick_check.png'), verbose=False)
-        elif params.debug == 'plot':
-            print(p1)
+    _debug(visual=p1, filename=os.path.join(params.debug_outdir, 'color_quick_check.png'))
 
 
 def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark',
