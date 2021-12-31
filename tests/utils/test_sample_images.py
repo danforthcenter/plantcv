@@ -17,11 +17,11 @@ def test_sample_images_snapshot(utils_test_data, tmpdir):
 def test_sample_images_flatdir(utils_test_data, tmpdir):
     # Create tmp directory
     tmp_dir = tmpdir.mkdir("cache")
-    flat_dir = utils_test_data.datadir
+    flat_dir = utils_test_data.flat_imgdir
     img_outdir = os.path.join(str(tmp_dir), "images")
-    sample_images(source_path=flat_dir, dest_path=img_outdir, num=30)
+    sample_images(source_path=flat_dir, dest_path=img_outdir, num=1)
     random_images = os.listdir(img_outdir)
-    assert all([len(random_images) == 30, len(np.unique(random_images)) == 30])
+    assert all([len(random_images) == 1, len(np.unique(random_images)) == 1])
 
 
 def test_sample_images_bad_source(tmpdir):
