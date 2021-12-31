@@ -387,14 +387,13 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
     for chip in chips:
         mask = cv2.drawContours(mask, chip[0], -1, (i * 10), -1)
         i += 1
-    if params.debug is not None:
-        # Create a copy of the input image for plotting
-        canvas = np.copy(rgb_img)
-        # Draw chip ROIs on the canvas image
-        for chip in chips:
-            cv2.drawContours(canvas, chip[0], -1, (255, 255, 0), params.line_thickness)
-        _debug(visual=canvas, filename=os.path.join(params.debug_outdir, str(params.device) + '_color_card_mask_rois.png'))
-        _debug(visual=mask, filename=os.path.join(params.debug_outdir, str(params.device) + '_color_card_mask.png'))
+    # Create a copy of the input image for plotting
+    canvas = np.copy(rgb_img)
+    # Draw chip ROIs on the canvas image
+    for chip in chips:
+        cv2.drawContours(canvas, chip[0], -1, (255, 255, 0), params.line_thickness)
+    _debug(visual=canvas, filename=os.path.join(params.debug_outdir, str(params.device) + '_color_card_mask_rois.png'))
+    _debug(visual=mask, filename=os.path.join(params.debug_outdir, str(params.device) + '_color_card_mask.png'))
     return mask
 
 
