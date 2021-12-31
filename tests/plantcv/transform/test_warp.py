@@ -3,7 +3,7 @@ import numpy as np
 from plantcv.plantcv.transform import warp, warp_align
 
 
-def test_plantcv_transform_warp_default(transform_test_data):
+def test_warp_default(transform_test_data):
     img = transform_test_data.create_test_img((12, 10, 3))
     refimg = transform_test_data.create_test_img((12, 10, 3))
     pts = [(0, 0), (1, 0), (0, 3), (4, 4)]
@@ -12,7 +12,7 @@ def test_plantcv_transform_warp_default(transform_test_data):
     assert mat.shape == (3, 3)
 
 
-def test_plantcv_transform_warp_lmeds(transform_test_data):
+def test_warp_lmeds(transform_test_data):
     img = transform_test_data.create_test_img((10, 10, 3))
     refimg = transform_test_data.create_test_img((11, 11))
     pts = [(0, 0), (1, 0), (0, 3), (4, 4)]
@@ -21,7 +21,7 @@ def test_plantcv_transform_warp_lmeds(transform_test_data):
     assert mat.shape == (3, 3)
 
 
-def test_plantcv_transform_warp_rho(transform_test_data):
+def test_warp_rho(transform_test_data):
     img = transform_test_data.create_test_img_bin((10, 10))
     refimg = transform_test_data.create_test_img((11, 11))
     pts = [(0, 0), (1, 0), (0, 3), (4, 4)]
@@ -30,7 +30,7 @@ def test_plantcv_transform_warp_rho(transform_test_data):
     assert mat.shape == (3, 3)
 
 
-def test_plantcv_transform_warp_ransac(transform_test_data):
+def test_warp_ransac(transform_test_data):
     img = transform_test_data.create_test_img((100, 150))
     refimg = transform_test_data.create_test_img((10, 15))
     pts = [(0, 0), (149, 0), (99, 149), (0, 99), (3, 3)]
@@ -45,7 +45,7 @@ def test_plantcv_transform_warp_ransac(transform_test_data):
     [[(0, 0), (0, 14), (9, 14), (0, 9), (3, 3)],
      [(0, 0), (149, 0), (99, 149), (0, 99), (3, 3)]]  # homography not able to be calculated (cannot converge)
 ])
-def test_plantcv_transform_warp_err(pts, refpts, transform_test_data):
+def test_warp_err(pts, refpts, transform_test_data):
     img = transform_test_data.create_test_img((10, 15))
     refimg = transform_test_data.create_test_img((100, 150))
     method = "rho"
@@ -53,7 +53,7 @@ def test_plantcv_transform_warp_err(pts, refpts, transform_test_data):
         warp(img, refimg, pts, refpts, method=method)
 
 
-def test_plantcv_transform_warp_align(transform_test_data):
+def test_warp_align(transform_test_data):
     img = transform_test_data.create_test_img((10, 10, 3))
     refimg = transform_test_data.create_test_img((11, 11))
     mat = np.array([[1.00000000e+00,  1.04238500e-15, -7.69185075e-16],
