@@ -233,13 +233,12 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
     # cast back to unsigned int
     corrected_img = corrected_img.astype(np.uint8)
 
-    if params.debug is not None:
-        # For debugging, create a horizontal view of source_img, corrected_img, and target_img to the plotting device
-        # plot horizontal comparison of source_img, corrected_img (with rounded elements) and target_img
-        # cast source_img back to unsigned int between 0-255 for visualization
-        source_flt = (255*source_flt).astype(np.uint8)
-        out_img = np.hstack([source_img, corrected_img, target_img])
-        _debug(visual=out_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_corrected.png'))
+    # For debugging, create a horizontal view of source_img, corrected_img, and target_img to the plotting device
+    # plot horizontal comparison of source_img, corrected_img (with rounded elements) and target_img
+    # cast source_img back to unsigned int between 0-255 for visualization
+    source_flt = (255*source_flt).astype(np.uint8)
+    out_img = np.hstack([source_img, corrected_img, target_img])
+    _debug(visual=out_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_corrected.png'))
 
     # return corrected_img
     return corrected_img
