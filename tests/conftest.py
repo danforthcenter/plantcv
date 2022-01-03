@@ -1,6 +1,7 @@
 import pytest
 import os
 import pickle as pkl
+import numpy as np
 import matplotlib
 
 # Disable plotting
@@ -18,6 +19,10 @@ class TestData:
         self.small_bin_img = os.path.join(self.datadir, "setaria_small_plant_mask.png")
         # Gray image
         self.small_gray_img = os.path.join(self.datadir, "setaria_small_plant_gray.png")
+        # Contours file
+        self.small_contours_file = os.path.join(self.datadir, "setaria_small_plant_contours.npz")
+        # Composed contours file
+        self.small_composed_contours_file = os.path.join(self.datadir, "setaria_small_plant_composed_contours.npz")
         # PlantCV Spectral_data object
         self.hsi_file = os.path.join(self.datadir, "hsi.pkl")
         # Binary mask for HSI
@@ -41,6 +46,16 @@ class TestData:
         """Load PlantCV Spectral_data pickled object."""
         with open(pkl_file, "rb") as fp:
             return pkl.load(fp)
+
+    def load_contours(self, npz_file):
+        """Load data saved in a NumPy .npz file."""
+        data = np.load(npz_file, encoding="latin1")
+        return data['contours'], data['hierarchy']
+
+    def load_composed_contours(self, npz_file):
+        """Load data saved in a NumPy .npz file."""
+        data = np.load(npz_file, encoding="latin1")
+        return data['contour']
 
 
 @pytest.fixture(scope="session")
