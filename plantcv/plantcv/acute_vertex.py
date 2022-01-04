@@ -41,7 +41,7 @@ def acute_vertex(img, obj, win, thresh, sep, label="default"):
     params.device += 1
     chain = []
     if not np.any(obj):
-        acute = ('NA', 'NA')
+        acute = ['NA', 'NA']
         return acute
     for i in range(len(obj) - win):
         x, y = obj[i].ravel()
