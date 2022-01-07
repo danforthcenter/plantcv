@@ -12,7 +12,7 @@ COPY . /tmp
 RUN cd /tmp && sed -i'' -e 's/opencv.*//g' requirements.txt
 
 # Install PlantCV
-RUN cd /tmp && conda install --quiet --yes -c conda-forge --file requirements.txt 'opencv<4' && conda clean --all -f -y
+RUN cd /tmp && conda install --quiet --yes -c conda-forge --file requirements.txt 'opencv' && conda clean --all -f -y
 
 # Install PlantCV Python prerequisites and PlantCV
 RUN cd /tmp && python setup.py install

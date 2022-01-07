@@ -8,6 +8,6 @@ scikit-learn
 plotnine
 dask
 dask-jobqueue
-opencv-python<4, >=3.4
+opencv-python
 xarray
 statsmodels
