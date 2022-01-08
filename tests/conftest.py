@@ -13,6 +13,8 @@ class TestData:
         """Initialize simple variables."""
         # Test data directory
         self.datadir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "testdata")
+        # Flat image directory
+        self.snapshot_dir = os.path.join(self.datadir, "snapshot_dir")
         # RGB image
         self.small_rgb_img = os.path.join(self.datadir, "setaria_small_plant_rgb.png")
         # Binary mask for RGB image
