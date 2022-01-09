@@ -2,6 +2,7 @@ import pytest
 import os
 import numpy as np
 import matplotlib
+import pickle as pkl
 
 # Disable plotting
 matplotlib.use("Template")
@@ -20,11 +21,18 @@ class VisualizeTestData:
         self.small_bin_img = os.path.join(self.datadir, "setaria_small_plant_mask.png")
         # Composed contours file
         self.small_composed_contours_file = os.path.join(self.datadir, "setaria_small_plant_composed_contours.npz")
+        # PlantCV hyperspectral image object
+        self.hsi_file = os.path.join(self.datadir, "hsi.pkl")
 
     def load_composed_contours(self, npz_file):
         """Load data saved in a NumPy .npz file."""
         data = np.load(npz_file, encoding="latin1")
         return data['contour']
+
+    def load_hsi(self, pkl_file):
+        """Load PlantCV Spectral_data pickled object."""
+        with open(pkl_file, "rb") as fp:
+            return pkl.load(fp)
 
 
 @pytest.fixture(scope="session")
