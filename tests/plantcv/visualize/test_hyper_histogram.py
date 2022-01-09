@@ -1,5 +1,4 @@
 import pytest
-import cv2
 import numpy as np
 from plotnine import ggplot
 from plantcv.plantcv.visualize import hyper_histogram
