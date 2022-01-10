@@ -5,6 +5,7 @@ from matplotlib import pyplot as plt
 
 from plantcv import plantcv as pcv
 from plantcv.plantcv import fatal_error
+from plantcv.plantcv import params
 
 
 MAX_MARKER_SIZE = 20
@@ -82,6 +83,10 @@ def pixel_scatter_vis(paths_to_imgs, x_channel, y_channel):
         'index': _get_index,
     }
 
+    # store debug mode
+    debug = params.debug
+    params.debug = None
+
     N = len(paths_to_imgs)
     # _ = plt.figure()
     fig, ax = plt.subplots()
@@ -111,5 +116,8 @@ def pixel_scatter_vis(paths_to_imgs, x_channel, y_channel):
 
     plt.xlabel(x_channel)
     plt.ylabel(y_channel)
+
+    # reset debug
+    params.debug = debug
 
     return fig, ax
