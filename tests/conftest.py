@@ -41,6 +41,10 @@ class TestData:
         self.envi_bil_file = os.path.join(self.datadir, "darkReference")
         # Thermal image
         self.thermal_img = os.path.join(self.datadir, "FLIR2600.csv")
+        # Thermal image data
+        self.thermal_obj_file = os.path.join(self.datadir, "thermal_img.npz")
+        # Thermal image mask
+        self.thermal_mask = os.path.join(self.datadir, "thermal_img_mask.png")
         # Bayer image
         self.bayer_img = os.path.join(self.datadir, "bayer_img.png")
 
@@ -58,6 +62,11 @@ class TestData:
         """Load data saved in a NumPy .npz file."""
         data = np.load(npz_file, encoding="latin1")
         return data['contour']
+
+    def load_npz(self, npz_file):
+        """Load data saved in a NumPy .npz file."""
+        data = np.load(npz_file, encoding="latin1")
+        return data['arr_0']
 
 
 @pytest.fixture(scope="session")
