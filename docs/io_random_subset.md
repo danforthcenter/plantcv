@@ -20,3 +20,4 @@ This function returns a random subset of the elements in an input list.
 from plantcv import plantcv as pcv
 
 imgs_sub_set = pcv.io.random_subset(dataset=paths_to_imgs, num=5)
+```
