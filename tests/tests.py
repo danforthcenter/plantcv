@@ -2991,18 +2991,8 @@ def test_plantcv_rotate():
 
 
 def test_plantcv_transform_rotate():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_rotate_img")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     # Read in test data
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.transform.rotate(img=img, rotation_deg=45, crop=True)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.transform.rotate(img=img, rotation_deg=45, crop=True)
     # Test with debug = None
     pcv.params.debug = None
     rotated = pcv.transform.rotate(img=img, rotation_deg=45, crop=True)
@@ -3013,9 +3003,6 @@ def test_plantcv_transform_rotate():
 
 def test_plantcv_transform_rotate_gray():
     img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.transform.rotate(img=img, rotation_deg=45, crop=False)
     # Test with debug = None
     pcv.params.debug = None
     rotated = pcv.transform.rotate(img=img, rotation_deg=45, crop=False)
@@ -3420,17 +3407,9 @@ def test_plantcv_learn_naive_bayes_multiclass():
 def test_plantcv_morphology_segment_curvature():
     # Clear previous outputs
     pcv.outputs.clear()
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_curvature")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
-    pcv.params.debug = "print"
     segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
-    pcv.outputs.clear()
-    _ = pcv.morphology.segment_curvature(segmented_img, seg_objects, label="prefix")
-    pcv.params.debug = "plot"
-    pcv.outputs.clear()
     _ = pcv.morphology.segment_curvature(segmented_img, seg_objects)
     assert len(pcv.outputs.observations['default']['segment_curvature']['value']) == 22
 
@@ -3438,72 +3417,58 @@ def test_plantcv_morphology_segment_curvature():
 def test_plantcv_morphology_check_cycles():
     # Clear previous outputs
     pcv.outputs.clear()
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_branches")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
-    pcv.params.debug = "print"
-    _ = pcv.morphology.check_cycles(mask, label="prefix")
-    pcv.params.debug = "plot"
-    _ = pcv.morphology.check_cycles(mask)
     pcv.params.debug = None
     _ = pcv.morphology.check_cycles(mask)
     assert pcv.outputs.observations['default']['num_cycles']['value'] == 1
 
 
 def test_plantcv_morphology_find_branch_pts():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_branches")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
-    pcv.params.debug = "print"
-    _ = pcv.morphology.find_branch_pts(skel_img=skeleton, mask=mask, label="prefix")
-    pcv.params.debug = "plot"
-    _ = pcv.morphology.find_branch_pts(skel_img=skeleton)
+    pcv.params.debug = None
+    branches = pcv.morphology.find_branch_pts(skel_img=skeleton, mask=mask, label="prefix")
+    assert np.sum(branches) == 9435
+
+
+def test_plantcv_morphology_find_branch_pts_no_mask():
+    skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
     pcv.params.debug = None
     branches = pcv.morphology.find_branch_pts(skel_img=skeleton)
     assert np.sum(branches) == 9435
 
 
 def test_plantcv_morphology_find_tips():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_tips")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
-    pcv.params.debug = "print"
-    _ = pcv.morphology.find_tips(skel_img=skeleton, mask=mask, label="prefix")
-    pcv.params.debug = "plot"
-    _ = pcv.morphology.find_tips(skel_img=skeleton)
+    pcv.params.debug = None
+    tips = pcv.morphology.find_tips(skel_img=skeleton, mask=mask, label="prefix")
+    assert np.sum(tips) == 9435
+
+
+def test_plantcv_morphology_find_tips_no_mask():
+    skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
     pcv.params.debug = None
     tips = pcv.morphology.find_tips(skel_img=skeleton)
     assert np.sum(tips) == 9435
 
 
 def test_plantcv_morphology_prune():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_pruned")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
-    pcv.params.debug = "print"
-    _ = pcv.morphology.prune(skel_img=skeleton, size=1)
-    pcv.params.debug = "plot"
-    _ = pcv.morphology.prune(skel_img=skeleton, size=1, mask=skeleton)
+    pcv.params.debug = None
+    pruned_img, _, _ = pcv.morphology.prune(skel_img=skeleton, size=1, mask=skeleton)
+    assert np.sum(pruned_img) < np.sum(skeleton)
+
+
+def test_plantcv_morphology_prune_no_mask():
+    skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
     pcv.params.debug = None
     pruned_img, _, _ = pcv.morphology.prune(skel_img=skeleton, size=3)
     assert np.sum(pruned_img) < np.sum(skeleton)
 
 
 def test_plantcv_morphology_prune_size0():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_pruned")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
     pruned_img, _, _ = pcv.morphology.prune(skel_img=skeleton, size=0)
     assert np.sum(pruned_img) == np.sum(skeleton)
@@ -3520,15 +3485,10 @@ def test_plantcv_morphology_iterative_prune():
 
 
 def test_plantcv_morphology_segment_skeleton():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_skeleton")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
-    pcv.params.debug = "print"
     _ = pcv.morphology.segment_skeleton(skel_img=skeleton, mask=mask)
-    pcv.params.debug = "plot"
     segmented_img, segment_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
     assert len(segment_objects) == 73
 
@@ -3568,16 +3528,10 @@ def test_plantcv_morphology_fill_segments_with_stem():
 def test_plantcv_morphology_segment_angle():
     # Clear previous outputs
     pcv.outputs.clear()
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_angles")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
-    pcv.params.debug = "print"
+    pcv.params.debug = None
     segmented_img, segment_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
-    _ = pcv.morphology.segment_angle(segmented_img=segmented_img, objects=segment_objects, label="prefix")
-    pcv.params.debug = "plot"
-    _ = pcv.morphology.segment_angle(segmented_img, segment_objects)
+    _ = pcv.morphology.segment_angle(segmented_img=segmented_img, objects=segment_objects)
     assert len(pcv.outputs.observations['default']['segment_angle']['value']) == 22
 
 
@@ -3585,10 +3539,6 @@ def test_plantcv_morphology_segment_angle_overflow():
     # Clear previous outputs
     pcv.outputs.clear()
     # Don't prune, would usually give overflow error without extra if statement in segment_angle
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_angles")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
     segmented_img, segment_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
     _ = pcv.morphology.segment_angle(segmented_img, segment_objects)
@@ -3598,15 +3548,9 @@ def test_plantcv_morphology_segment_angle_overflow():
 def test_plantcv_morphology_segment_euclidean_length():
     # Clear previous outputs
     pcv.outputs.clear()
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_eu_length")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
-    pcv.params.debug = "print"
     segmented_img, segment_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
-    _ = pcv.morphology.segment_euclidean_length(segmented_img, segment_objects, label="prefix")
-    pcv.params.debug = "plot"
     _ = pcv.morphology.segment_euclidean_length(segmented_img, segment_objects)
     assert len(pcv.outputs.observations['default']['segment_eu_length']['value']) == 22
 
@@ -3623,30 +3567,16 @@ def test_plantcv_morphology_segment_euclidean_length_bad_input():
 def test_plantcv_morphology_segment_path_length():
     # Clear previous outputs
     pcv.outputs.clear()
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_path_length")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
-    pcv.params.debug = "print"
     segmented_img, segment_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
-    _ = pcv.morphology.segment_path_length(segmented_img, segment_objects, label="prefix")
-    pcv.params.debug = "plot"
     _ = pcv.morphology.segment_path_length(segmented_img, segment_objects)
     assert len(pcv.outputs.observations['default']['segment_path_length']['value']) == 22
 
 
 def test_plantcv_morphology_skeletonize():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_skeletonize")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_BINARY), -1)
     input_skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
-    pcv.params.debug = "print"
-    _ = pcv.morphology.skeletonize(mask=mask)
-    pcv.params.debug = "plot"
-    _ = pcv.morphology.skeletonize(mask=mask)
     pcv.params.debug = None
     skeleton = pcv.morphology.skeletonize(mask=mask)
     arr = np.array(skeleton == input_skeleton)
@@ -3654,15 +3584,17 @@ def test_plantcv_morphology_skeletonize():
 
 
 def test_plantcv_morphology_segment_sort():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_sort")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
     segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
-    pcv.params.debug = "print"
-    _ = pcv.morphology.segment_sort(skeleton, seg_objects, mask=skeleton)
-    pcv.params.debug = "plot"
+    leaf_obj, stem_obj = pcv.morphology.segment_sort(skeleton, seg_objects, mask=skeleton)
+    assert len(leaf_obj) == 36
+
+
+def test_plantcv_morphology_segment_sort_no_mask():
+    pcv.params.debug = None
+    skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
+    segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=skeleton)
     leaf_obj, stem_obj = pcv.morphology.segment_sort(skeleton, seg_objects)
     assert len(leaf_obj) == 36
 
@@ -3670,49 +3602,41 @@ def test_plantcv_morphology_segment_sort():
 def test_plantcv_morphology_segment_tangent_angle():
     # Clear previous outputs
     pcv.outputs.clear()
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_tangent_angle")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     skel = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
     objects = np.load(os.path.join(TEST_DATA, TEST_SKELETON_OBJECTS), encoding="latin1")
     objs = [objects[arr_n] for arr_n in objects]
-    pcv.params.debug = "print"
-    _ = pcv.morphology.segment_tangent_angle(skel, objs, 2, label="prefix")
-    pcv.params.debug = "plot"
     _ = pcv.morphology.segment_tangent_angle(skel, objs, 2)
     assert len(pcv.outputs.observations['default']['segment_tangent_angle']['value']) == 73
 
 
 def test_plantcv_morphology_segment_id():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_tangent_angle")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     skel = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
     objects = np.load(os.path.join(TEST_DATA, TEST_SKELETON_OBJECTS), encoding="latin1")
     objs = [objects[arr_n] for arr_n in objects]
-    pcv.params.debug = "print"
-    _ = pcv.morphology.segment_id(skel, objs)
-    pcv.params.debug = "plot"
     _, labeled_img = pcv.morphology.segment_id(skel, objs, mask=skel)
+    assert np.sum(labeled_img) > np.sum(skel)
+
+
+def test_plantcv_morphology_segment_id_no_mask():
+    pcv.params.debug = None
+    skel = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
+    objects = np.load(os.path.join(TEST_DATA, TEST_SKELETON_OBJECTS), encoding="latin1")
+    objs = [objects[arr_n] for arr_n in objects]
+    _, labeled_img = pcv.morphology.segment_id(skel, objs)
     assert np.sum(labeled_img) > np.sum(skel)
 
 
 def test_plantcv_morphology_segment_insertion_angle():
     # Clear previous outputs
     pcv.outputs.clear()
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
     pruned, _, _ = pcv.morphology.prune(skel_img=skeleton, size=6)
     segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=pruned)
     leaf_obj, stem_obj = pcv.morphology.segment_sort(pruned, seg_objects)
-    pcv.params.debug = "plot"
     _ = pcv.morphology.segment_insertion_angle(pruned, segmented_img, leaf_obj, stem_obj, 3, label="prefix")
-    pcv.params.debug = "print"
     _ = pcv.morphology.segment_insertion_angle(pruned, segmented_img, leaf_obj, stem_obj, 10)
     assert pcv.outputs.observations['default']['segment_insertion_angle']['value'][:6] == ['NA', 'NA', 'NA',
                                                                                            24.956918822001636,
@@ -3721,10 +3645,7 @@ def test_plantcv_morphology_segment_insertion_angle():
 
 
 def test_plantcv_morphology_segment_insertion_angle_bad_stem():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
     pruned, _, _ = pcv.morphology.prune(skel_img=skeleton, size=5)
     segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=pruned)
@@ -3735,60 +3656,45 @@ def test_plantcv_morphology_segment_insertion_angle_bad_stem():
 
 
 def test_plantcv_morphology_segment_combine():
+    pcv.params.debug = None
     skel = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
     segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=skel)
-    pcv.params.debug = "plot"
     # Test with list of IDs input
     _, new_objects = pcv.morphology.segment_combine([0, 1], seg_objects, skel)
     assert len(new_objects) + 1 == len(seg_objects)
 
 
 def test_plantcv_morphology_segment_combine_lists():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     skel = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
     segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=skel)
-    pcv.params.debug = "print"
     # Test with list of lists input
     _, new_objects = pcv.morphology.segment_combine([[0, 1, 2], [3, 4]], seg_objects, skel)
     assert len(new_objects) + 3 == len(seg_objects)
 
 
 def test_plantcv_morphology_segment_combine_bad_input():
+    pcv.params.debug = None
     skel = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON_PRUNED), -1)
     segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=skel)
-    pcv.params.debug = "plot"
     with pytest.raises(RuntimeError):
         _, new_objects = pcv.morphology.segment_combine([0.5, 1.5], seg_objects, skel)
 
 
 def test_plantcv_morphology_analyze_stem():
+    pcv.params.debug = "plot"
     # Clear previous outputs
     pcv.outputs.clear()
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_analyze_stem")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
     pruned, segmented_img, _ = pcv.morphology.prune(skel_img=skeleton, size=6)
     segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=pruned)
     leaf_obj, stem_obj = pcv.morphology.segment_sort(pruned, seg_objects)
-    pcv.params.debug = "plot"
-    _ = pcv.morphology.analyze_stem(rgb_img=segmented_img, stem_objects=stem_obj, label="prefix")
-    pcv.params.debug = "print"
     _ = pcv.morphology.analyze_stem(rgb_img=segmented_img, stem_objects=stem_obj)
     assert pcv.outputs.observations['default']['stem_angle']['value'] == -12.531776428222656
 
 
 def test_plantcv_morphology_analyze_stem_bad_angle():
-    # Clear previous outputs
-    pcv.outputs.clear()
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_morphology_segment_insertion_angle")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     skeleton = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_SKELETON), -1)
     pruned, _, _ = pcv.morphology.prune(skel_img=skeleton, size=5)
     segmented_img, seg_objects = pcv.morphology.segment_skeleton(skel_img=pruned)
@@ -3796,6 +3702,7 @@ def test_plantcv_morphology_analyze_stem_bad_angle():
     # print([stem_obj[3]])
     # stem_obj = [stem_obj[3]]
     stem_obj = [[[[1116, 1728]], [[1116, 1]]]]
+    pcv.params.debug = "plot"
     _ = pcv.morphology.analyze_stem(rgb_img=segmented_img, stem_objects=stem_obj)
     assert pcv.outputs.observations['default']['stem_angle']['value'] == 22877334.0
 
@@ -3836,9 +3743,6 @@ def test_plantcv_hyperspectral_read_data_bad_interleave():
 
 
 def test_plantcv_spectral_index_ndvi():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_ndvi")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -3856,9 +3760,6 @@ def test_plantcv_spectral_index_ndvi_bad_input():
 
 
 def test_plantcv_spectral_index_gdvi():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_gdvi")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -3876,9 +3777,6 @@ def test_plantcv_spectral_index_gdvi_bad_input():
 
 
 def test_plantcv_spectral_index_savi():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_savi")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -3896,9 +3794,6 @@ def test_plantcv_spectral_index_savi_bad_input():
 
 
 def test_plantcv_spectral_index_pri():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_pri")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -3916,9 +3811,6 @@ def test_plantcv_spectral_index_pri_bad_input():
 
 
 def test_plantcv_spectral_index_ari():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_ari")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -3936,9 +3828,6 @@ def test_plantcv_spectral_index_ari_bad_input():
 
 
 def test_plantcv_spectral_index_ci_rededge():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_ci_rededge")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -3956,9 +3845,6 @@ def test_plantcv_spectral_index_ci_rededge_bad_input():
 
 
 def test_plantcv_spectral_index_cri550():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_cri550")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -3976,9 +3862,6 @@ def test_plantcv_spectral_index_cri550_bad_input():
 
 
 def test_plantcv_spectral_index_cri700():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_cri700")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -3996,9 +3879,6 @@ def test_plantcv_spectral_index_cri700_bad_input():
 
 
 def test_plantcv_spectral_index_egi():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_egi")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_COLOR))
     index_array = pcv.spectral_index.egi(rgb_img=rgb_img)
@@ -4006,9 +3886,6 @@ def test_plantcv_spectral_index_egi():
 
 
 def test_plantcv_spectral_index_evi():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_evi")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4026,9 +3903,6 @@ def test_plantcv_spectral_index_evi_bad_input():
 
 
 def test_plantcv_spectral_index_mari():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_mari")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4046,9 +3920,6 @@ def test_plantcv_spectral_index_mari_bad_input():
 
 
 def test_plantcv_spectral_index_mcari():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_mcari")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4066,9 +3937,6 @@ def test_plantcv_spectral_index_mcari_bad_input():
 
 
 def test_plantcv_spectral_index_mtci():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_mtci")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4086,9 +3954,6 @@ def test_plantcv_spectral_index_mtci_bad_input():
 
 
 def test_plantcv_spectral_index_ndre():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_ndre")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4106,9 +3971,6 @@ def test_plantcv_spectral_index_ndre_bad_input():
 
 
 def test_plantcv_spectral_index_psnd_chla():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_psnd_chla")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4126,9 +3988,6 @@ def test_plantcv_spectral_index_psnd_chla_bad_input():
 
 
 def test_plantcv_spectral_index_psnd_chlb():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_psnd_chlb")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4146,9 +4005,6 @@ def test_plantcv_spectral_index_psnd_chlb_bad_input():
 
 
 def test_plantcv_spectral_index_psnd_car():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_psnd_car")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4166,9 +4022,6 @@ def test_plantcv_spectral_index_psnd_car_bad_input():
 
 
 def test_plantcv_spectral_index_psri():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_psri")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4186,9 +4039,6 @@ def test_plantcv_spectral_index_psri_bad_input():
 
 
 def test_plantcv_spectral_index_pssr_chla():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_pssr_chla")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4206,9 +4056,6 @@ def test_plantcv_spectral_index_pssr_chla_bad_input():
 
 
 def test_plantcv_spectral_index_pssr_chlb():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_pssr_chlb")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4226,9 +4073,6 @@ def test_plantcv_spectral_index_pssr_chlb_bad_input():
 
 
 def test_plantcv_spectral_index_pssr_car():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_pssr_car")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4246,9 +4090,6 @@ def test_plantcv_spectral_index_pssr_car_bad_input():
 
 
 def test_plantcv_spectral_index_rgri():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_rgri")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4266,9 +4107,6 @@ def test_plantcv_spectral_index_rgri_bad_input():
 
 
 def test_plantcv_spectral_index_rvsi():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_rvsi")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4286,9 +4124,6 @@ def test_plantcv_spectral_index_rvsi_bad_input():
 
 
 def test_plantcv_spectral_index_sipi():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_sipi")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4306,9 +4141,6 @@ def test_plantcv_spectral_index_sipi_bad_input():
 
 
 def test_plantcv_spectral_index_sr():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_sr")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4326,9 +4158,6 @@ def test_plantcv_spectral_index_sr_bad_input():
 
 
 def test_plantcv_spectral_index_vari():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_vari")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4346,9 +4175,6 @@ def test_plantcv_spectral_index_vari_bad_input():
 
 
 def test_plantcv_spectral_index_vi_green():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_vi_green")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4366,9 +4192,6 @@ def test_plantcv_spectral_index_vi_green_bad_input():
 
 
 def test_plantcv_spectral_index_wi():
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_index_wi")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
@@ -4388,9 +4211,6 @@ def test_plantcv_spectral_index_wi_bad_input():
 def test_plantcv_hyperspectral_analyze_spectral():
     # Clear previous outputs
     pcv.outputs.clear()
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_analyze_spectral")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     mask = cv2.imread(os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_MASK), -1)
@@ -4399,7 +4219,6 @@ def test_plantcv_hyperspectral_analyze_spectral():
     # _ = pcv.hyperspectral.analyze_spectral(array=array_data, mask=mask, histplot=True)
     # pcv.params.debug = "print"
     # _ = pcv.hyperspectral.analyze_spectral(array=array_data, mask=mask, histplot=True, label="prefix")
-    pcv.params.debug = None
     _ = pcv.hyperspectral.analyze_spectral(array=array_data, mask=mask, histplot=True, label="prefix")
     assert len(pcv.outputs.observations['prefix']['spectral_frequencies']['value']) == 978
 
@@ -4407,9 +4226,7 @@ def test_plantcv_hyperspectral_analyze_spectral():
 def test_plantcv_hyperspectral_analyze_index():
     # Clear previous outputs
     pcv.outputs.clear()
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_analyze_index")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
     index_array = pcv.spectral_index.savi(hsi=array_data, distance=801)
@@ -4418,8 +4235,6 @@ def test_plantcv_hyperspectral_analyze_index():
     # pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, histplot=True)
     # pcv.params.debug = "plot"
     # pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, histplot=True)
-
-    pcv.params.debug = None
     pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, histplot=True)
 
     assert pcv.outputs.observations['default']['mean_index_savi']['value'] > 0
@@ -4428,14 +4243,11 @@ def test_plantcv_hyperspectral_analyze_index():
 def test_plantcv_hyperspectral_analyze_index_set_range():
     # Clear previous outputs
     pcv.outputs.clear()
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_analyze_index_set_range")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
     index_array = pcv.spectral_index.savi(hsi=array_data, distance=801)
     mask_img = np.ones(np.shape(index_array.array_data), dtype=np.uint8) * 255
-    pcv.params.debug = None
     pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, histplot=True, min_bin=0, max_bin=1)
     assert pcv.outputs.observations['default']['mean_index_savi']['value'] > 0
 
@@ -4443,14 +4255,11 @@ def test_plantcv_hyperspectral_analyze_index_set_range():
 def test_plantcv_hyperspectral_analyze_index_auto_range():
     # Clear previous outputs
     pcv.outputs.clear()
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_analyze_index_auto_range")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
     index_array = pcv.spectral_index.savi(hsi=array_data, distance=801)
     mask_img = np.ones(np.shape(index_array.array_data), dtype=np.uint8) * 255
-    pcv.params.debug = None
     pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, min_bin="auto", max_bin="auto")
     assert pcv.outputs.observations['default']['mean_index_savi']['value'] > 0
 
@@ -4458,16 +4267,13 @@ def test_plantcv_hyperspectral_analyze_index_auto_range():
 def test_plantcv_hyperspectral_analyze_index_outside_range_warning():
     import io
     from contextlib import redirect_stdout
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_analyze_index_auto_range")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     spectral_filename = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     array_data = pcv.hyperspectral.read_data(filename=spectral_filename)
     index_array = pcv.spectral_index.savi(hsi=array_data, distance=801)
     mask_img = np.ones(np.shape(index_array.array_data), dtype=np.uint8) * 255
     f = io.StringIO()
     with redirect_stdout(f):
-        pcv.params.debug = None
         pcv.hyperspectral.analyze_index(index_array=index_array, mask=mask_img, min_bin=.5, max_bin=.55, label="i")
     out = f.getvalue()
     # assert os.listdir(cache_dir) is 0
@@ -4516,14 +4322,8 @@ def test_plantcv_hyperspectral_calibrate():
 
 
 def test_plantcv_hyperspectral_extract_wavelength():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_hyperspectral_extract_wavelength")
-    os.mkdir(cache_dir)
     spectral = os.path.join(HYPERSPECTRAL_TEST_DATA, HYPERSPECTRAL_DATA)
     spectral = pcv.hyperspectral.read_data(filename=spectral)
-    pcv.params.debug = "plot"
-    _ = pcv.hyperspectral.extract_wavelength(spectral_data=spectral, wavelength=500)
-    pcv.params.debug = "print"
     new = pcv.hyperspectral.extract_wavelength(spectral_data=spectral, wavelength=500)
     assert np.shape(new.array_data) == (1, 1600)
 
@@ -4956,26 +4756,14 @@ def test_plantcv_transform_calc_transformation_matrix_not_mat():
 def test_plantcv_transform_apply_transformation():
     # load corrected image to compare
     corrected_compare = cv2.imread(os.path.join(TEST_DATA, TEST_S1_CORRECTED))
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform")
-    os.mkdir(cache_dir)
-    # Make image and mask directories in the cache directory
-    imgdir = os.path.join(cache_dir, "images")
     # read in matrices
     matrix_t_file = np.load(os.path.join(TEST_DATA, TEST_TRANSFORM1), encoding="latin1")
     matrix_t = matrix_t_file['arr_0']
     # read in images
     target_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
     source_img = cv2.imread(os.path.join(TEST_DATA, TEST_SOURCE1_IMG))
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    pcv.params.debug_outdir = imgdir
-    _ = pcv.transform.apply_transformation_matrix(source_img, target_img, matrix_t)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.transform.apply_transformation_matrix(source_img, target_img, matrix_t)
     # Test with debug = None
-    pcv.params.debug = None
+    pcv.params.debug = "plot"
     corrected_img = pcv.transform.apply_transformation_matrix(source_img, target_img, matrix_t)
     # assert source and corrected have same shape
     assert np.array_equal(corrected_img, corrected_compare)
@@ -5017,9 +4805,6 @@ def test_plantcv_transform_save_matrix():
 
 
 def test_plantcv_transform_save_matrix_incorrect_filename():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform")
-    os.mkdir(cache_dir)
     # read in matrix
     matrix_t_file = np.load(os.path.join(TEST_DATA, TEST_TRANSFORM1), encoding="latin1")
     matrix_t = matrix_t_file['arr_0']
@@ -5039,37 +4824,22 @@ def test_plantcv_transform_load_matrix():
 
 
 def test_plantcv_transform_correct_color():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform")
-    os.mkdir(cache_dir)
     # load corrected image to compare
     corrected_compare = cv2.imread(os.path.join(TEST_DATA, TEST_S1_CORRECTED))
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_correct_color")
-    os.mkdir(cache_dir)
-    # Make image and mask directories in the cache directory
-    imgdir = os.path.join(cache_dir, "images")
-    matdir = os.path.join(cache_dir, "saved_matrices")
     # Read in target, source, and gray-scale mask
     target_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
     source_img = cv2.imread(os.path.join(TEST_DATA, TEST_SOURCE1_IMG))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_MASK), -1)
-    output_path = os.path.join(matdir)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    pcv.params.debug_outdir = imgdir
-    _, _, _, _ = pcv.transform.correct_color(target_img, mask, source_img, mask, cache_dir)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _, _, _, _ = pcv.transform.correct_color(target_img, mask, source_img, mask, output_path)
     # Test with debug = None
     pcv.params.debug = None
-    _, _, matrix_t, corrected_img = pcv.transform.correct_color(target_img, mask, source_img, mask, output_path)
+    _, _, matrix_t, corrected_img = pcv.transform.correct_color(target_img, mask, source_img, mask, cache_dir)
     # assert source and corrected have same shape
     assert all([np.array_equal(corrected_img, corrected_compare),
-                os.path.exists(os.path.join(output_path, "target_matrix.npz")) is True,
-                os.path.exists(os.path.join(output_path, "source_matrix.npz")) is True,
-                os.path.exists(os.path.join(output_path, "transformation_matrix.npz")) is True])
+                os.path.exists(os.path.join(cache_dir, "target_matrix.npz")) is True,
+                os.path.exists(os.path.join(cache_dir, "source_matrix.npz")) is True,
+                os.path.exists(os.path.join(cache_dir, "transformation_matrix.npz")) is True])
 
 
 def test_plantcv_transform_correct_color_output_dne():
@@ -5078,28 +4848,18 @@ def test_plantcv_transform_correct_color_output_dne():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_correct_color_output_dne")
     os.mkdir(cache_dir)
-    # Make image and mask directories in the cache directory
-    imgdir = os.path.join(cache_dir, "images")
     # Read in target, source, and gray-scale mask
     target_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
     source_img = cv2.imread(os.path.join(TEST_DATA, TEST_SOURCE1_IMG))
     mask = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_MASK), -1)
-    output_path = os.path.join(cache_dir, "saved_matrices_1")  # output_directory that does not currently exist
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    pcv.params.debug_outdir = imgdir
-    _, _, _, _ = pcv.transform.correct_color(target_img, mask, source_img, mask, output_path)
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _, _, _, _ = pcv.transform.correct_color(target_img, mask, source_img, mask, output_path)
     # Test with debug = None
     pcv.params.debug = None
-    _, _, matrix_t, corrected_img = pcv.transform.correct_color(target_img, mask, source_img, mask, output_path)
+    _, _, matrix_t, corrected_img = pcv.transform.correct_color(target_img, mask, source_img, mask, cache_dir)
     # assert source and corrected have same shape
     assert all([np.array_equal(corrected_img, corrected_compare),
-                os.path.exists(os.path.join(output_path, "target_matrix.npz")) is True,
-                os.path.exists(os.path.join(output_path, "source_matrix.npz")) is True,
-                os.path.exists(os.path.join(output_path, "transformation_matrix.npz")) is True])
+                os.path.exists(os.path.join(cache_dir, "target_matrix.npz")) is True,
+                os.path.exists(os.path.join(cache_dir, "source_matrix.npz")) is True,
+                os.path.exists(os.path.join(cache_dir, "transformation_matrix.npz")) is True])
 
 
 def test_plantcv_transform_create_color_card_mask():
@@ -5108,17 +4868,8 @@ def test_plantcv_transform_create_color_card_mask():
     # Test cache directory
     cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_create_color_card_mask")
     os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=(166, 166),
-                                             spacing=(21, 21), nrows=6, ncols=4, exclude=[20, 0])
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=(166, 166),
-                                             spacing=(21, 21), nrows=6, ncols=4, exclude=[20, 0])
     # Test with debug = None
-    pcv.params.debug = None
+    pcv.params.debug = "plot"
     mask = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=(166, 166),
                                                 spacing=(21, 21), nrows=6, ncols=4, exclude=[20, 0])
     assert all([i == j] for i, j in zip(np.unique(mask), np.array([0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110,
@@ -5137,13 +4888,10 @@ def test_plantcv_transform_quick_color_check():
     os.mkdir(cache_dir)
     pcv.params.debug_outdir = cache_dir
     # Test with debug = "print"
-    pcv.params.debug = "print"
-    pcv.transform.quick_color_check(target_matrix, source_matrix, num_chips=22)
-    # Test with debug = "plot"
     pcv.params.debug = "plot"
     pcv.transform.quick_color_check(target_matrix, source_matrix, num_chips=22)
-    # Test with debug = None
-    pcv.params.debug = None
+    # Test with debug = "print"
+    pcv.params.debug = "print"
     pcv.transform.quick_color_check(target_matrix, source_matrix, num_chips=22)
     assert os.path.exists(os.path.join(cache_dir, "color_quick_check.png"))
 
@@ -5151,20 +4899,8 @@ def test_plantcv_transform_quick_color_check():
 def test_plantcv_transform_find_color_card():
     # Load rgb image
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_find_color_card")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     df, start, space = pcv.transform.find_color_card(rgb_img=rgb_img, threshold_type='adaptgauss', blurry=False,
                                                      threshvalue=90)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=start,
-                                             spacing=space, nrows=6, ncols=4, exclude=[20, 0])
-    # Test with debug = "plot"
-    pcv.params.debug = "plot"
-    _ = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=start,
-                                             spacing=space, nrows=6, ncols=4, exclude=[20, 0])
     # Test with debug = None
     pcv.params.debug = None
     mask = pcv.transform.create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=start,
@@ -5179,10 +4915,7 @@ def test_plantcv_transform_find_color_card_optional_parameters():
     pcv.outputs.clear()
     # Load rgb image
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG_COLOR_CARD))
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_find_color_card")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     # Test with threshold ='normal'
     df1, start1, space1 = pcv.transform.find_color_card(rgb_img=rgb_img, threshold_type='normal', blurry=True,
                                                         background='light', threshvalue=90, label="prefix")
@@ -5194,10 +4927,7 @@ def test_plantcv_transform_find_color_card_otsu():
     pcv.outputs.clear()
     # Load rgb image
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG_COLOR_CARD))
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_find_color_card_otsu")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     # Test with threshold ='normal'
     df1, start1, space1 = pcv.transform.find_color_card(rgb_img=rgb_img, threshold_type='otsu', blurry=True,
                                                         background='light', threshvalue=90, label="prefix")
@@ -5209,10 +4939,7 @@ def test_plantcv_transform_find_color_card_optional_size_parameters():
     pcv.outputs.clear()
     # Load rgb image
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG_COLOR_CARD))
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_find_color_card")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     _, _, _ = pcv.transform.find_color_card(rgb_img=rgb_img, record_chip_size="mean")
     assert pcv.outputs.observations["default"]["color_chip_size"]["value"] > 15000
 
@@ -5222,10 +4949,7 @@ def test_plantcv_transform_find_color_card_optional_size_parameters_none():
     pcv.outputs.clear()
     # Load rgb image
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG_COLOR_CARD))
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_find_color_card")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
+    pcv.params.debug = None
     _, _, _ = pcv.transform.find_color_card(rgb_img=rgb_img, record_chip_size=None)
     assert pcv.outputs.observations.get("default") is None
 
@@ -5265,15 +4989,8 @@ def test_plantcv_transform_find_color_card_bad_colorcard():
 
 
 def test_plantcv_transform_rescale():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_rescale")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    # Test with debug = "print"
-    pcv.params.debug = "print"
-    _ = pcv.transform.rescale(gray_img=gray_img, min_value=0, max_value=100)
-    pcv.params.debug = "plot"
+    pcv.params.debug = None
     rescaled_img = pcv.transform.rescale(gray_img=gray_img, min_value=0, max_value=100)
     assert max(np.unique(rescaled_img)) == 100
 
@@ -5286,17 +5003,9 @@ def test_plantcv_transform_rescale_bad_input():
 
 
 def test_plantcv_transform_resize():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_trancform_resize")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY_SMALL), -1)
     size = (100, 100)
-    # Test with debug "print"
-    pcv.params.debug = "print"
-    _ = pcv.transform.resize(img=gray_img, size=size, interpolation="auto")
-    # Test with debug "plot"
-    pcv.params.debug = "plot"
+    pcv.params.debug = None
     resized_img = pcv.transform.resize(img=gray_img, size=size, interpolation="auto")
     assert resized_img.shape == size
 
@@ -5329,19 +5038,11 @@ def test_plantcv_transform_resize_pad_crop_color():
 
 
 def test_plantcv_transform_resize_factor():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_trancform_resize_factor")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY_SMALL), -1)
     # Resizing factors
     factor_x = 0.5
     factor_y = 0.2
-    # Test with debug "print"
-    pcv.params.debug = "print"
-    _ = pcv.transform.resize_factor(img=gray_img, factors=(factor_x, factor_y), interpolation="auto")
-    # Test with debug "plot"
-    pcv.params.debug = "plot"
+    pcv.params.debug = None
     resized_img = pcv.transform.resize_factor(img=gray_img, factors=(factor_x, factor_y), interpolation="auto")
     output_size = resized_img.shape
     expected_size = (int(gray_img.shape[0] * factor_y), int(gray_img.shape[1] * factor_x))
@@ -5355,29 +5056,17 @@ def test_plantcv_transform_resize_factor_bad_input():
 
 
 def test_plantcv_transform_nonuniform_illumination_rgb():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_nonuniform_illumination")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     # Load rgb image
     rgb_img = cv2.imread(os.path.join(TEST_DATA, TEST_TARGET_IMG))
-    pcv.params.debug = "plot"
-    _ = pcv.transform.nonuniform_illumination(img=rgb_img, ksize=11)
-    pcv.params.debug = "print"
+    pcv.params.debug = None
     corrected = pcv.transform.nonuniform_illumination(img=rgb_img, ksize=11)
     assert np.mean(corrected) < np.mean(rgb_img)
 
 
 def test_plantcv_transform_nonuniform_illumination_gray():
-    # Test cache directory
-    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_transform_nonuniform_illumination")
-    os.mkdir(cache_dir)
-    pcv.params.debug_outdir = cache_dir
     # Load rgb image
     gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GRAY), -1)
-    pcv.params.debug = "plot"
-    _ = pcv.transform.nonuniform_illumination(img=gray_img, ksize=11)
-    pcv.params.debug = "print"
+    pcv.params.debug = None
     corrected = pcv.transform.nonuniform_illumination(img=gray_img, ksize=11)
     assert np.shape(corrected) == np.shape(gray_img)
 
