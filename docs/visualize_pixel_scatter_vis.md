@@ -37,9 +37,9 @@ This function plots a 2D pixel scatter plot visualization for a dataset of image
 
 from plantcv import plantcv as pcv
 
-plotting_img = pcv.visualize.pixel_scatter_plot(paths_to_imgs=file_paths, x_channel='index', y_channel='G')
+fig1, ax1 = pcv.visualize.pixel_scatter_plot(paths_to_imgs=file_paths, x_channel='index', y_channel='G')
 
-plotting_img = pcv.visualize.pixel_scatter_plot(paths_to_imgs=file_paths, x_channel='index', y_channel='s')
+fig2, ax2 = pcv.visualize.pixel_scatter_plot(paths_to_imgs=file_paths, x_channel='index', y_channel='s')
 
 ```
 
@@ -61,9 +61,9 @@ plotting_img = pcv.visualize.pixel_scatter_plot(paths_to_imgs=file_paths, x_chan
 
 from plantcv import plantcv as pcv
 
-plotting_img = pcv.visualize.pixel_scatter_plot(paths_to_imgs=file_paths, x_channel='b', y_channel='a')
+fig1, ax1 = pcv.visualize.pixel_scatter_plot(paths_to_imgs=file_paths, x_channel='b', y_channel='a')
 
-plotting_img = pcv.visualize.pixel_scatter_plot(paths_to_imgs=file_paths, x_channel='G', y_channel='b')
+fig2, ax2 = pcv.visualize.pixel_scatter_plot(paths_to_imgs=file_paths, x_channel='G', y_channel='b')
 
 ```
 
