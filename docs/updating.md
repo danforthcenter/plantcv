@@ -1056,6 +1056,11 @@ pages for more details on the input and output variable types.
 * pre v3.13: NA
 * post v3.13: plotting_img = **pcv.visualize.obj_sizes**(*img, mask, num_objects=100*)
 
+#### plantcv.visualize.pixel_scatter_plot
+
+* pre v4.0: NA
+* post v4.0: fig, ax = **pcv.visualize.pixel_scatter_plot**(*paths_to_imgs, x_channel, y_channel*)
+
 #### plantcv.watershed_segmentation
 
 * pre v3.0dev2: device, watershed_header, watershed_data, analysis_images = **plantcv.watershed_segmentation**(*device, img, mask, distance=10, filename=False, debug=None*)
