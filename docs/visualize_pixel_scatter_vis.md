@@ -1,8 +1,8 @@
-## Pixel scatter visualization
+## Pixel scatter plot
 
-This function plots a 2D pixel scatter visualization for a dataset of images. The horizontal and vertical coordinates are defined by the intensity of the pixels in the specified channels. The color of each dot is given by the original RGB color of the pixel.
+This function plots a 2D pixel scatter plot visualization for a dataset of images. The horizontal and vertical coordinates are defined by the intensity of the pixels in the specified channels. The color of each dot is given by the original RGB color of the pixel.
 
-**plantcv.visualize.pixel_scatter_vis**(*paths_to_imgs, x_channel, y_channel*)
+**plantcv.visualize.pixel_scatter_plot**(*paths_to_imgs, x_channel, y_channel*)
 
 **returns** fig, ax
 
@@ -37,9 +37,9 @@ This function plots a 2D pixel scatter visualization for a dataset of images. Th
 
 from plantcv import plantcv as pcv
 
-plotting_img = pcv.visualize.pixel_scatter_vis(paths_to_imgs=file_paths, x_channel='index', y_channel='G')
+plotting_img = pcv.visualize.pixel_scatter_plot(paths_to_imgs=file_paths, x_channel='index', y_channel='G')
 
-plotting_img = pcv.visualize.pixel_scatter_vis(paths_to_imgs=file_paths, x_channel='index', y_channel='s')
+plotting_img = pcv.visualize.pixel_scatter_plot(paths_to_imgs=file_paths, x_channel='index', y_channel='s')
 
 ```
 
@@ -61,9 +61,9 @@ plotting_img = pcv.visualize.pixel_scatter_vis(paths_to_imgs=file_paths, x_chann
 
 from plantcv import plantcv as pcv
 
-plotting_img = pcv.visualize.pixel_scatter_vis(paths_to_imgs=file_paths, x_channel='b', y_channel='a')
+plotting_img = pcv.visualize.pixel_scatter_plot(paths_to_imgs=file_paths, x_channel='b', y_channel='a')
 
-plotting_img = pcv.visualize.pixel_scatter_vis(paths_to_imgs=file_paths, x_channel='G', y_channel='b')
+plotting_img = pcv.visualize.pixel_scatter_plot(paths_to_imgs=file_paths, x_channel='G', y_channel='b')
 
 ```
 
