@@ -44,9 +44,9 @@ def _not_valid(*args):
     return fatal_error("channel not valid, use R, G, B, l, a, b, h, s, v, gray, or index")
 
 
-def pixel_scatter_vis(paths_to_imgs, x_channel, y_channel):
+def pixel_scatter_plot(paths_to_imgs, x_channel, y_channel):
     """
-    Plot a 2D pixel scatter visualization for a dataset of images.
+    Plot a 2D pixel scatter plot visualization for a dataset of images.
     The horizontal and vertical coordinates are defined by the intensity of the
     pixels in the specified channels.
     The color of each dot is given by the original RGB color of the pixel.
