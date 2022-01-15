@@ -56,6 +56,10 @@ class TestData:
                                          [[246, 271]], [[260, 277]], [[141, 248]], [[183, 194]], [[188, 237]], [[173, 240]],
                                          [[186, 260]], [[147, 244]], [[163, 246]], [[173, 268]], [[170, 272]], [[151, 320]],
                                          [[195, 289]], [[228, 272]], [[210, 272]], [[209, 247]], [[210, 232]]])
+        # Fmin image
+        self.fmin = os.path.join(self.datadir, "FLUO_TV_min.png")
+        # Fmax image
+        self.fmax = os.path.join(self.datadir, "FLUO_TV_max.png")
 
     def load_hsi(self, pkl_file):
         """Load PlantCV Spectral_data pickled object."""
