@@ -116,28 +116,24 @@ def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1, show_g
     grouped_contour_indexes = coordlist
 
     # Debug image is rainbow printed contours
-
-    if params.debug is not None:
-        if len(np.shape(img)) == 3:
-            img_copy = np.copy(img)
-        else:
-            iy, ix = np.shape(img)
-            img_copy = np.zeros((iy, ix, 3), dtype=np.uint8)
-
-        rand_color = color_palette(len(coordlist))
-        for i, x in enumerate(coordlist):
-            for a in x:
-                if roi_obj_hierarchy[0][a][3] > -1:
-                    pass
-                else:
-                    cv2.drawContours(img_copy, roi_objects, a, rand_color[i], -1, hierarchy=roi_obj_hierarchy)
-        if show_grid:
-            for y in rbreaks:
-                cv2.line(img_copy, (0, y), (ix, y), (255, 0, 0), params.line_thickness)
-            for x in cbreaks:
-                cv2.line(img_copy, (x, 0), (x, iy), (255, 0, 0), params.line_thickness)
+    if len(np.shape(img)) == 3:
+        img_copy = np.copy(img)
     else:
-        img_copy = img  # for _debug
+        iy, ix = np.shape(img)
+        img_copy = np.zeros((iy, ix, 3), dtype=np.uint8)
+
+    rand_color = color_palette(len(coordlist))
+    for i, x in enumerate(coordlist):
+        for a in x:
+            if roi_obj_hierarchy[0][a][3] > -1:
+                pass
+            else:
+                cv2.drawContours(img_copy, roi_objects, a, rand_color[i], -1, hierarchy=roi_obj_hierarchy)
+    if show_grid:
+        for y in rbreaks:
+            cv2.line(img_copy, (0, y), (ix, y), (255, 0, 0), params.line_thickness)
+        for x in cbreaks:
+            cv2.line(img_copy, (x, 0), (x, iy), (255, 0, 0), params.line_thickness)
 
     _debug(visual=img_copy,  # keep this outside if statement to avoid additional test
            filename=os.path.join(params.debug_outdir, str(params.device) + '_clusters.png'))
