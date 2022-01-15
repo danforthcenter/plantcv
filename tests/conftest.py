@@ -47,6 +47,10 @@ class TestData:
         self.thermal_mask = os.path.join(self.datadir, "thermal_img_mask.png")
         # Bayer image
         self.bayer_img = os.path.join(self.datadir, "bayer_img.png")
+        # Naive Bayes trained model file
+        self.nb_trained_model = os.path.join(self.datadir, "naive_bayes_pdfs.txt")
+        # Naive Bayes bad model file
+        self.nb_bad_model = os.path.join(self.datadir, "naive_bayes_pdfs_bad.txt")
 
     def load_hsi(self, pkl_file):
         """Load PlantCV Spectral_data pickled object."""
