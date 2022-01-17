@@ -60,6 +60,8 @@ class TestData:
         self.fmin = os.path.join(self.datadir, "FLUO_TV_min.png")
         # Fmax image
         self.fmax = os.path.join(self.datadir, "FLUO_TV_max.png")
+        # Mask image
+        self.ps_mask = os.path.join(self.datadir, "FLUO_TV_MASK.png")
         # Multi-plant RGB image
         self.multi_rgb_img = os.path.join(self.datadir, "brassica_multi_rgb_img.jpg")
         # Multi-plant contours file
