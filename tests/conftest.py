@@ -60,6 +60,10 @@ class TestData:
         self.fmin = os.path.join(self.datadir, "FLUO_TV_min.png")
         # Fmax image
         self.fmax = os.path.join(self.datadir, "FLUO_TV_max.png")
+        # Multi-plant RGB image
+        self.multi_rgb_img = os.path.join(self.datadir, "brassica_multi_rgb_img.jpg")
+        # Multi-plant contours file
+        self.multi_contours_file = os.path.join(self.datadir, "brassica_multi_contours.npz")
 
     def load_hsi(self, pkl_file):
         """Load PlantCV Spectral_data pickled object."""
@@ -68,7 +72,7 @@ class TestData:
 
     def load_contours(self, npz_file):
         """Load data saved in a NumPy .npz file."""
-        data = np.load(npz_file, encoding="latin1")
+        data = np.load(npz_file, encoding="latin1", allow_pickle=True)
         return data['contours'], data['hierarchy']
 
     def load_composed_contours(self, npz_file):
