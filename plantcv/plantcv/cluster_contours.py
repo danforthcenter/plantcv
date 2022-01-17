@@ -75,9 +75,7 @@ def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1, show_g
     coord = []
     for i in range(0, len(roi_objects)):
         m = cv2.moments(roi_objects[i])
-        if m['m00'] == 0:
-            pass
-        else:
+        if m['m00'] != 0:
             cx = int(m['m10'] / m['m00'])
             cy = int(m['m01'] / m['m00'])
             colbin = digitize(cx, cbreaks)
