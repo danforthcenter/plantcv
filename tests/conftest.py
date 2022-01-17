@@ -64,6 +64,10 @@ class TestData:
         self.multi_rgb_img = os.path.join(self.datadir, "brassica_multi_rgb_img.jpg")
         # Multi-plant contours file
         self.multi_contours_file = os.path.join(self.datadir, "brassica_multi_contours.npz")
+        # Clustered contours names file
+        self.cluster_names = os.path.join(self.datadir, "cluster_names.txt")
+        # Clustered contours names file with too many labels
+        self.cluster_names_too_many = os.path.join(self.datadir, "cluster_names_too_many.txt")
 
     def load_hsi(self, pkl_file):
         """Load PlantCV Spectral_data pickled object."""
