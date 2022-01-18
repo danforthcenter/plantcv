@@ -6206,6 +6206,42 @@ def test_plantcv_visualize_obj_size_ecdf(title):
     fig_ecdf = plantcv.plantcv.visualize.obj_size_ecdf(mask=mask, title=title)
     assert isinstance(fig_ecdf, ggplot)
 
+# ##############################
+# Tests for the io subpackage
+# ##############################
+
+def test_plantcv_io_random_subset():
+    full_list = ['a', 'b', 'c', 'd', 'e']
+    n_samples = 3
+    samples_list = pcv.io.random_subset(dataset=full_list, num=n_samples, seed=None)
+    assert set(samples_list).issubset(set(full_list))
+
+def test_plantcv_io_random_subset_greater_than_len():
+    full_list = ['a', 'b', 'c', 'd', 'e']
+    # test error when asking for one more sample than the existent number in the list
+    n_samples = len(full_list) + 1
+    with pytest.raises(RuntimeError):
+        _ = pcv.io.random_subset(dataset=full_list, num=n_samples, seed=None)
+
+def test_plantcv_io_read_dataset_non_existent_path():
+    with pytest.raises(IOError):
+        _ = pcv.io.read_dataset(source_path='./non_existent_dir', pattern='')
+
+@pytest.mark.parametrize("test_pattern,expected", [['', 5], ['0', 1]])
+def test_plantcv_io_read_dataset(test_pattern,expected):
+    cache_dir = os.path.join(TEST_TMPDIR, "test_plantcv_io_read_dataset")
+    os.mkdir(cache_dir)
+    rng = np.random.default_rng()
+    n_images = 5 # must be the same as 'expected' when pattern is ''
+    img_size = (10,10,3)
+    # create several random images and write them to the temporary directory
+    for i in range(n_images):
+        img = rng.integers(low=0, high=255, size=img_size, dtype=np.uint8, endpoint=True)
+        cv2.imwrite(os.path.join(cache_dir, f"tmp_img_{i}.png"), img)
+    # run the function to read the temporary directory
+    img_paths = pcv.io.read_dataset(source_path=cache_dir, pattern=test_pattern)
+    assert len(img_paths ) == expected
+
 
 # ##############################
 # Tests for the utils subpackage
