@@ -6,27 +6,26 @@ import numpy as np
 import pandas as pd
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
 from plantcv.plantcv import find_objects
 from plantcv.plantcv import color_palette
 from plantcv.plantcv.morphology import _iterative_prune
+from plantcv.plantcv._debug import _debug
 
 
 def _slope_to_intesect_angle(m1, m2):
     """ Calculate intersections angle (in degrees) from the slope of two lines
 
-        Inputs:
-        m1    = Slope of line 1
-        m2    = Slope of line 2
+    Inputs:
+    m1    = Slope of line 1
+    m2    = Slope of line 2
 
-        Returns:
-        angle = Intersection angle (in degrees)
+    Returns:
+    angle = Intersection angle (in degrees)
 
-        :param m1: float
-        :param m2: float
-        :return angle: float
-            """
+    :param m1: float
+    :param m2: float
+    :return angle: float
+    """
     angle = (np.pi - np.absolute(np.arctan(m1) - np.arctan(m2))) * 180 / np.pi
     return angle
 
@@ -36,21 +35,21 @@ def segment_tangent_angle(segmented_img, objects, size, label="default"):
         each segment to find a linear regression line, and calculate angle between the two lines
         drawn per segment.
 
-        Inputs:
-        segmented_img  = Segmented image to plot slope lines and intersection angles on
-        objects        = List of contours
-        size           = Size of ends used to calculate "tangent" lines
-        label          = optional label parameter, modifies the variable name of observations recorded
+    Inputs:
+    segmented_img  = Segmented image to plot slope lines and intersection angles on
+    objects        = List of contours
+    size           = Size of ends used to calculate "tangent" lines
+    label          = optional label parameter, modifies the variable name of observations recorded
 
-        Returns:
-        labeled_img    = Segmented debugging image with angles labeled
+    Returns:
+    labeled_img    = Segmented debugging image with angles labeled
 
-        :param segmented_img: numpy.ndarray
-        :param objects: list
-        :param size: int
-        :param label: str
-        :return labeled_img: numpy.ndarray
-        """
+    :param segmented_img: numpy.ndarray
+    :param objects: list
+    :param size: int
+    :param label: str
+    :return labeled_img: numpy.ndarray
+    """
     # Store debug
     debug = params.debug
     params.debug = None
@@ -129,12 +128,6 @@ def segment_tangent_angle(segmented_img, objects, size, label="default"):
                             method='plantcv.plantcv.morphology.segment_tangent_angle', scale='degrees', datatype=list,
                             value=intersection_angles, label=segment_ids)
 
-    # Auto-increment device
-    params.device += 1
-
-    if params.debug == 'print':
-        print_image(labeled_img, os.path.join(params.debug_outdir, str(params.device) + '_segment_tangent_angles.png'))
-    elif params.debug == 'plot':
-        plot_image(labeled_img)
+    _debug(visual=labeled_img, filename=os.path.join(params.debug_outdir, f"{params.device}_segment_tangent_angles.png"))
 
     return labeled_img
