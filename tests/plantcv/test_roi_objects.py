@@ -52,7 +52,7 @@ def test_roi_objects_no_overlap(test_data):
     assert area == 0
 
 
-def test_roi_objects_nested(test_data):
+def test_roi_objects_nested():
     # Create test data
     img = np.zeros((100, 100), dtype=np.uint8)
     cnt = [np.array([[[25, 25]], [[25, 49]], [[49, 49]], [[49, 25]]], dtype=np.int32),

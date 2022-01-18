@@ -28,4 +28,12 @@ def test_object_composition_no_contours(test_data):
     assert contours is None
 
 
-# TODO: test contours with a hole
+def test_object_composition_nested():
+    # Create test data
+    img = np.zeros((100, 100), dtype=np.uint8)
+    cnt = [np.array([[[25, 25]], [[25, 49]], [[49, 49]], [[49, 25]]], dtype=np.int32),
+           np.array([[[34, 35]], [[35, 34]], [[39, 34]], [[40, 35]], [[40, 39]], [[39, 40]], [[35, 40]], [[34, 39]]],
+                    dtype=np.int32)]
+    cnt_str = np.array([[[-1, -1,  1, -1], [-1, -1, -1,  0]]], dtype=np.int32)
+    _, mask = object_composition(img=img, contours=cnt, hierarchy=cnt_str)
+    assert np.count_nonzero(mask) == 600
