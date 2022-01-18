@@ -9,4 +9,5 @@ plotnine
 dask
 dask-jobqueue
 opencv-python
+xarray
 statsmodels

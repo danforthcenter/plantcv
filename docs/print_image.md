@@ -4,7 +4,7 @@ Write image to the file specified. This is a wrapper for the OpenCV function [im
 for numpy arrays (like the images that get returned by most PlantCV functions), and can handle matplotlib Figures (like the one returned by [pcv.visualize.pseudocolor](visualize_pseudocolor.md)) 
 and plotnine ggplots (like the histograms returned in [pcv.analyze_nir_intensity](analyze_NIR_intensity.md), 
 [pcv.analyze_color](analyze_color.md), [pcv.visualize.histogram](visualize_histogram.md),
- and [pcv.photosynthesis.analyze_fvfm](photosynthesis_analyze_fvfm.md)).
+ and [pcv.photosynthesis.analyze_yii](photosynthesis_analyze_yii.md)).
 
 **plantcv.print_image**(*img, filename*)
 

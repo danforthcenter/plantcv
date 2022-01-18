@@ -28,6 +28,8 @@ nav:
       - 'Analyze NIR': analyze_NIR_intensity.md
       - 'Analyze Shape': analyze_shape.md
       - 'Analyze Thermal': analyze_thermal_values.md
+      - 'Annotation Tools':
+          - 'Points': Points.md
       - 'Apply Mask': apply_mask.md
       - 'Auto Crop': auto_crop.md
       - 'Background Subtraction': background_subtraction.md
@@ -76,6 +78,11 @@ nav:
           - 'Random Subset': io_random_subset.md
           - 'Read Dataset': io_read_dataset.md
       - 'Landmark Analysis':
+        - 'Acute': homology_acute.md
+        - 'Space': homology_space.md
+        - 'StarScape': homology_starscape.md
+        - 'Constella': homology_constella.md
+        - 'ConstellaQC': homology_constellaqc.md
         - 'Acute Vertex': acute_vertex.md
         - 'x-Axis Pseudolandmarks': x_axis_pseudolandmarks.md
         - 'y-Axis Pseudolandmarks': y_axis_pseudolandmarks.md
@@ -111,7 +118,9 @@ nav:
       - 'Outputs Class': outputs.md
       - 'Photosynthesis Functions':
           - 'Read CropReporter Data': photosynthesis_read_cropreporter.md
-          - 'Analyze Fv/Fm': photosynthesis_analyze_fvfm.md
+          - 'Analyze YII': photosynthesis_analyze_yii.md
+          - 'Analyze NPQ': photosynthesis_analyze_npq.md
+          - 'Reassign Frame Labels': photosynthesis_reassign_frame_labels.md
       - 'Params (Debugging)': params.md
       - 'Print Image': print_image.md
       - 'Print Results': print_results.md

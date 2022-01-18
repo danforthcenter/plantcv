@@ -16,6 +16,7 @@ dependencies:
   - nb_conda
   - opencv
   - statsmodels
+  - xarray
   - mkdocs
   - pytest
 channels:
