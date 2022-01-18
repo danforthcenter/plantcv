@@ -3,13 +3,12 @@
 import os
 import cv2
 import numpy as np
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
 from plantcv.plantcv import color_palette
 from plantcv.plantcv import params
+from plantcv.plantcv._debug import _debug
 
 
-def clustered_contours(img, grouped_contour_indices, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1, bounding = True):
+def clustered_contours(img, grouped_contour_indices, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1, bounding=True):
     """
     This function takes the outputs from cluster_contours
 
@@ -31,11 +30,9 @@ def clustered_contours(img, grouped_contour_indices, roi_objects, roi_obj_hierar
     :param roi_obj_hierarchy: numpy.ndarray
     :param nrow: int
     :param ncol: int
-    :param bounding: bool 
-
+    :param bounding: bool
     :return clustered_image: numpy.ndarray
     """
-
     clustered_image = np.copy(img)
     iy, ix = np.shape(img)[:2]
 
@@ -69,19 +66,14 @@ def clustered_contours(img, grouped_contour_indices, roi_objects, roi_obj_hierar
             if bounding:
                 center, radius = cv2.minEnclosingCircle(points=grouped_contours)
                 cv2.circle(img=clustered_image, center=(int(center[0]), int(center[1])), radius=int(radius),
-                       color=rand_color[i], thickness=params.line_thickness, lineType=8)
-                #Label the cluster ID
+                           color=rand_color[i], thickness=params.line_thickness, lineType=8)
+                # Label the cluster ID
                 cv2.putText(img=clustered_image, text=str(i),
-                        org=(int(center[0]), int(center[1])), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                        fontScale=params.text_size, color=(200, 200, 200), thickness=params.text_thickness)
+                            org=(int(center[0]), int(center[1])), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                            fontScale=params.text_size, color=(200, 200, 200), thickness=params.text_thickness)
         # Empty the grouped_contours list for the next group
         grouped_contours = []
 
-    params.device += 1
-
-    if params.debug == 'print':
-        print_image(clustered_image, os.path.join(params.debug_outdir, str(params.device) + '_clusters.png'))
-    elif params.debug == 'plot':
-        plot_image(clustered_image)
+    _debug(visual=clustered_image, filename=os.path.join(params.debug_outdir, f"{params.device}_clusters.png"))
 
     return clustered_image
