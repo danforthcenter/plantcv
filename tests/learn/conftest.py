@@ -11,10 +11,8 @@ class LearnTestData:
         """Initialize simple variables."""
         # Test data directory
         self.datadir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "testdata")
-        # RGB image
-        self.small_rgb_img = os.path.join(self.datadir, "setaria_small_plant_rgb.png")
-        # Binary mask
-        self.small_bin_img = os.path.join(self.datadir, "setaria_small_plant_mask.png")
+        # Training data directory
+        self.train_data = os.path.join(self.datadir, "ml_train")
         # RGB values table
         self.rgb_values_table = os.path.join(self.datadir, "rgb_values_table.txt")
 
