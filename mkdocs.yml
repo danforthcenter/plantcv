@@ -74,6 +74,9 @@ nav:
       - 'Image Subtract': image_subtract.md
       - 'Image Fusion': image_fusion.md
       - 'Invert': invert.md
+      - 'I/O Functions':
+          - 'Random Subset': io_random_subset.md
+          - 'Read Dataset': io_read_dataset.md
       - 'Landmark Analysis':
         - 'Acute': homology_acute.md
         - 'Space': homology_space.md

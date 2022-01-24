@@ -3,9 +3,8 @@
 import os
 import cv2
 import numpy as np
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
+from plantcv.plantcv._debug import _debug
 
 
 def rotate(img, rotation_deg, crop):
@@ -47,16 +46,6 @@ def rotate(img, rotation_deg, crop):
     else:
         rotated_img = cv2.warpAffine(img, m, (ix, iy))
 
-    params.device += 1
-
-    if params.debug == 'print':
-        print_image(rotated_img, os.path.join(params.debug_outdir,
-                                              str(params.device) + '_' + str(rotation_deg) + '_rotated_img.png'))
-
-    elif params.debug == 'plot':
-        if len(np.shape(img)) == 3:
-            plot_image(rotated_img)
-        else:
-            plot_image(rotated_img, cmap='gray')
+    _debug(visual=rotated_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_rotated_img.png'))
 
     return rotated_img

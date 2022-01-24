@@ -5,10 +5,9 @@ import cv2
 import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
-from plantcv.plantcv import plot_image
 from plantcv.plantcv.roi import circle
-from plantcv.plantcv import print_image
 from plantcv.plantcv import fatal_error
+from plantcv.plantcv._debug import _debug
 
 
 def get_color_matrix(rgb_img, mask):
@@ -202,16 +201,13 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
     if len(np.shape(source_img)) != 3:
         fatal_error("Source_img is not an RGB image.")
 
-    # Autoincrement the device counter
-    params.device += 1
-
     # split transformation_matrix
     red, green, blue, red2, green2, blue2, red3, green3, blue3 = np.split(transformation_matrix, 9, 1)
 
     # convert img to float to avoid integer overflow, normalize between 0-1
-    source_img = source_img.astype(np.float64)/255
+    source_flt = source_img.astype(np.float64)/255
     # find linear, square, and cubic values of source_img color channels
-    source_b, source_g, source_r = cv2.split(source_img)
+    source_b, source_g, source_r = cv2.split(source_flt)
     source_b2 = np.square(source_b)
     source_b3 = np.power(source_b, 3)
     source_g2 = np.square(source_g)
@@ -237,15 +233,13 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
     # cast back to unsigned int
     corrected_img = corrected_img.astype(np.uint8)
 
-    if params.debug == "print":
-        # If debug is print, save the image to a file
-        print_image(corrected_img, os.path.join(params.debug_outdir, str(params.device) + "_corrected.png"))
-    elif params.debug == "plot":
-        # If debug is plot, print a horizontal view of source_img, corrected_img, and target_img to the plotting device
+    if params.debug is not None:
+        # For debugging, create a horizontal view of source_img, corrected_img, and target_img to the plotting device
         # plot horizontal comparison of source_img, corrected_img (with rounded elements) and target_img
         # cast source_img back to unsigned int between 0-255 for visualization
-        source_img = (255*source_img).astype(np.uint8)
-        plot_image(np.hstack([source_img, corrected_img, target_img]))
+        source_flt = (255*source_flt).astype(np.uint8)
+        out_img = np.hstack([source_img, corrected_img, target_img])
+        _debug(visual=out_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_corrected.png'))
 
     # return corrected_img
     return corrected_img
@@ -362,9 +356,6 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
     :param exclude: list
     :return mask: numpy.ndarray
     """
-
-    # Autoincrement the device counter
-    params.device += 1
     # Initialize chip list
     chips = []
     # Store debug mode
@@ -403,13 +394,8 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
         # Draw chip ROIs on the canvas image
         for chip in chips:
             cv2.drawContours(canvas, chip[0], -1, (255, 255, 0), params.line_thickness)
-        if params.debug == "print":
-            print_image(img=canvas, filename=os.path.join(params.debug_outdir,
-                                                          str(params.device) + "_color_card_mask_rois.png"))
-            print_image(img=mask, filename=os.path.join(params.debug_outdir,
-                                                        str(params.device) + "_color_card_mask.png"))
-        elif params.debug == "plot":
-            plot_image(canvas)
+        _debug(visual=canvas, filename=os.path.join(params.debug_outdir, str(params.device) + '_color_card_mask_rois.png'))
+        _debug(visual=mask, filename=os.path.join(params.debug_outdir, str(params.device) + '_color_card_mask.png'))
     return mask
 
 
