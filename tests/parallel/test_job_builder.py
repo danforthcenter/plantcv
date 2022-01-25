@@ -3,7 +3,7 @@ from plantcv.parallel import job_builder, WorkflowConfig
 
 
 def test_job_builder_single_image(parallel_test_data, tmpdir):
-    """PlantCV test function."""
+    """Test for PlantCV."""
     # Create tmp directory
     tmp_dir = tmpdir.mkdir("cache")
     # Create config instance
@@ -35,7 +35,7 @@ def test_job_builder_single_image(parallel_test_data, tmpdir):
 
 
 def test_job_builder_coprocess(parallel_test_data, tmpdir):
-    """PlantCV test function."""
+    """Test for PlantCV."""
     # Create tmp directory
     tmp_dir = tmpdir.mkdir("cache")
     # Create config instance

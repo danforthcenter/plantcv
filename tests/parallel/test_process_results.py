@@ -4,7 +4,7 @@ from plantcv.parallel import process_results
 
 
 def test_process_results(parallel_test_data, tmpdir):
-    """PlantCV test function."""
+    """Test for PlantCV."""
     # Create a test tmp directory and results file
     result_file = tmpdir.mkdir("sub").join("appended_results.json")
     # Run twice to create appended results
@@ -17,7 +17,7 @@ def test_process_results(parallel_test_data, tmpdir):
 
 
 def test_process_results_new_output(parallel_test_data, tmpdir):
-    """PlantCV test function."""
+    """Test for PlantCV."""
     # Create a test tmp directory and results file
     result_file = tmpdir.mkdir("sub").join("new_result.json")
     process_results(job_dir=parallel_test_data.parallel_results_dir, json_file=result_file)
@@ -28,14 +28,14 @@ def test_process_results_new_output(parallel_test_data, tmpdir):
 
 
 def test_process_results_valid_json(parallel_test_data):
-    """PlantCV test function."""
+    """Test for PlantCV."""
     # Test when the file is a valid json file but doesn't contain expected keys
     with pytest.raises(RuntimeError):
         process_results(job_dir=parallel_test_data.parallel_results_dir, json_file=parallel_test_data.valid_json_file)
 
 
 def test_process_results_invalid_json(tmpdir):
-    """PlantCV test function."""
+    """Test for PlantCV."""
     # Create a test tmp directory and invalid results file
     result_file = tmpdir.mkdir("bad_results").join("invalid.txt")
     result_file.write("Invalid")

@@ -224,7 +224,7 @@ def test_metadata_parser_images_no_frame(parallel_test_data):
 
 
 def test_metadata_parser_images_no_camera(parallel_test_data):
-    """PlantCV test function."""
+    """Test for PlantCV."""
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.snapshot_imgdir
@@ -266,19 +266,19 @@ def test_metadata_parser_subdaily_timestampformat(parallel_test_data):
 
 
 def test_convert_datetime_to_unixtime():
-    """PlantCV test function."""
+    """Test for PlantCV."""
     unix_time = convert_datetime_to_unixtime(timestamp_str="1970-01-01", date_format="%Y-%m-%d")
     assert unix_time == 0
 
 
 def test_convert_datetime_to_unixtime_bad_strptime():
-    """PlantCV test function."""
+    """Test for PlantCV."""
     with pytest.raises(SystemExit):
         _ = convert_datetime_to_unixtime(timestamp_str="1970-01-01", date_format="%Y-%m")
 
 
 def test_check_date_range_wrongdateformat():
-    """PlantCV test function."""
+    """Test for PlantCV."""
     start_date = 10
     end_date = 10
     img_time = '2010-10-10'
