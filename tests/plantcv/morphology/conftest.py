@@ -21,6 +21,7 @@ class MorphologyTestData:
         # Mask image
         self.ps_mask = os.path.join(self.datadir, "FLUO_TV_MASK.png")
 
+    @staticmethod
     def load_segments(self, npz_file, segment):
         """Load data saved in a NumPy .npz file."""
         data = np.load(npz_file, encoding="latin1", allow_pickle=True)

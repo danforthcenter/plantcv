@@ -22,7 +22,8 @@ class HyperspectralTestData:
         self.hsi_darkref_file = os.path.join(self.datadir, "hsi_darkref.pkl")
         self.savi_file = os.path.join(self.datadir, "savi.pkl")
 
-    def load_hsi(self, pkl_file):
+    @staticmethod
+    def load_hsi(pkl_file):
         """Load PlantCV Spectral_data pickled object."""
         with open(pkl_file, "rb") as fp:
             return pkl.load(fp)

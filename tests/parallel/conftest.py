@@ -258,7 +258,8 @@ class ParallelTestData:
             }
         }
 
-    def load_json(self, json_file):
+    @staticmethod
+    def load_json(json_file):
         """JSON loader helper function.
         Inputs:
         json_file = JSON filepath

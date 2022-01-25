@@ -73,22 +73,26 @@ class TestData:
         # Clustered contours names file with too many labels
         self.cluster_names_too_many = os.path.join(self.datadir, "cluster_names_too_many.txt")
 
-    def load_hsi(self, pkl_file):
+    @staticmethod
+    def load_hsi(pkl_file):
         """Load PlantCV Spectral_data pickled object."""
         with open(pkl_file, "rb") as fp:
             return pkl.load(fp)
 
-    def load_contours(self, npz_file):
+    @staticmethod
+    def load_contours(npz_file):
         """Load data saved in a NumPy .npz file."""
         data = np.load(npz_file, encoding="latin1", allow_pickle=True)
         return data['contours'], data['hierarchy']
 
-    def load_composed_contours(self, npz_file):
+    @staticmethod
+    def load_composed_contours(npz_file):
         """Load data saved in a NumPy .npz file."""
         data = np.load(npz_file, encoding="latin1")
         return data['contour']
 
-    def load_npz(self, npz_file):
+    @staticmethod
+    def load_npz(npz_file):
         """Load data saved in a NumPy .npz file."""
         data = np.load(npz_file, encoding="latin1")
         return data['arr_0']

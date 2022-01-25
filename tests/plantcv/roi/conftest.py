@@ -19,7 +19,8 @@ class RoiTestData:
         # Contours file
         self.small_contours_file = os.path.join(self.datadir, "setaria_small_plant_contours.npz")
 
-    def load_contours(self, npz_file):
+    @staticmethod
+    def load_contours(npz_file):
         """Load data saved in a NumPy .npz file."""
         data = np.load(npz_file, encoding="latin1")
         return data['contours'], data['hierarchy']

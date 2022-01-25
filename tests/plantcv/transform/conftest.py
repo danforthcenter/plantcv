@@ -45,17 +45,20 @@ class TransformTestData:
         # Color card image
         self.colorcard_img = os.path.join(self.datadir, "colorcard_img.png")
 
-    def create_test_img(self, sz_img):
+    @staticmethod
+    def create_test_img(sz_img):
         img = np.random.randint(np.prod(sz_img), size=sz_img) * 255
         img = img.astype(np.uint8)
         return img
 
-    def create_test_img_bin(self, sz_img):
+    @staticmethod
+    def create_test_img_bin(sz_img):
         img = np.zeros(sz_img)
         img[3:7, 2:8] = 1
         return img
 
-    def load_npz(self, npz_file):
+    @staticmethod
+    def load_npz(npz_file):
         """Load data saved in a NumPy .npz file."""
         data = np.load(npz_file, encoding="latin1")
         return data['arr_0']

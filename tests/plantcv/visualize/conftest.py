@@ -24,12 +24,14 @@ class VisualizeTestData:
         # PlantCV hyperspectral image object
         self.hsi_file = os.path.join(self.datadir, "hsi.pkl")
 
-    def load_composed_contours(self, npz_file):
+    @staticmethod
+    def load_composed_contours(npz_file):
         """Load data saved in a NumPy .npz file."""
         data = np.load(npz_file, encoding="latin1")
         return data['contour']
 
-    def load_hsi(self, pkl_file):
+    @staticmethod
+    def load_hsi(pkl_file):
         """Load PlantCV Spectral_data pickled object."""
         with open(pkl_file, "rb") as fp:
             return pkl.load(fp)
