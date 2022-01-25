@@ -25,6 +25,12 @@ class HomologyTestData:
         self.plms = os.path.join(self.datadir, "plms_df.csv")
         # Pseudolandmarks Space CSV file
         self.plms_space = os.path.join(self.datadir, "plms_space_df.csv")
+        # Pseudolandmarks Starscape CSV file
+        self.plms_starscape = os.path.join(self.datadir, "plms_starscape_df.csv")
+        # Pseudolandmarks Landmarks CSV file
+        self.plms_landmarks = os.path.join(self.datadir, "plms_landmarks.csv")
+        # Annotated pseudolandmarks
+        self.plms_annotated = os.path.join(self.datadir, "plms_annotated.csv")
 
     @staticmethod
     def load_composed_contours(npz_file):
