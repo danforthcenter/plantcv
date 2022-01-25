@@ -1,8 +1,8 @@
+# Visualize a scatter plot of pixels
+
 import numpy as np
 import cv2 as cv
-
 from matplotlib import pyplot as plt
-
 from plantcv import plantcv as pcv
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
