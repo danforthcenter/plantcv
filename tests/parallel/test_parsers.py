@@ -3,7 +3,7 @@ from plantcv.parallel import check_date_range, convert_datetime_to_unixtime, met
 
 
 def test_metadata_parser_snapshots(parallel_test_data):
-    """PlantCV test function."""
+    """Test for PlantCV."""
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.snapshot_imgdir
@@ -21,7 +21,7 @@ def test_metadata_parser_snapshots(parallel_test_data):
 
 
 def test_metadata_parser_snapshots_coimg(parallel_test_data):
-    """PlantCV test function."""
+    """Test for PlantCV."""
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.snapshot_imgdir
@@ -41,7 +41,7 @@ def test_metadata_parser_snapshots_coimg(parallel_test_data):
 
 @pytest.mark.parametrize("subdirs", [True, False])
 def test_metadata_parser_images(parallel_test_data, subdirs):
-    """PlantCV test function."""
+    """Test for PlantCV."""
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.flat_imgdir
@@ -60,7 +60,7 @@ def test_metadata_parser_images(parallel_test_data, subdirs):
 
 
 def test_metadata_parser_multivalue_filter(parallel_test_data):
-    """PlantCV test function."""
+    """Test for PlantCV."""
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.flat_imgdir
@@ -75,7 +75,7 @@ def test_metadata_parser_multivalue_filter(parallel_test_data):
 
 
 def test_metadata_parser_multivalue_filter_nomatch(parallel_test_data):
-    """PlantCV test function."""
+    """Test for PlantCV."""
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.flat_imgdir
@@ -90,7 +90,7 @@ def test_metadata_parser_multivalue_filter_nomatch(parallel_test_data):
 
 
 def test_metadata_parser_regex(parallel_test_data):
-    """PlantCV test function."""
+    """Test for PlantCV."""
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.flat_imgdir
@@ -109,7 +109,7 @@ def test_metadata_parser_regex(parallel_test_data):
 
 
 def test_metadata_parser_images_outside_daterange(parallel_test_data):
-    """PlantCV test function."""
+    """Test for PlantCV."""
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.flat_imgdir_dates
@@ -128,7 +128,7 @@ def test_metadata_parser_images_outside_daterange(parallel_test_data):
 
 
 def test_metadata_parser_no_default_dates(parallel_test_data):
-    """PlantCV test function."""
+    """Test for PlantCV."""
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.snapshot_imgdir
@@ -146,7 +146,7 @@ def test_metadata_parser_no_default_dates(parallel_test_data):
 
 
 def test_metadata_parser_snapshot_outside_daterange(parallel_test_data):
-    """PlantCV test function."""
+    """Test for PlantCV."""
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.snapshot_imgdir
@@ -165,7 +165,7 @@ def test_metadata_parser_snapshot_outside_daterange(parallel_test_data):
 
 
 def test_metadata_parser_fail_images(parallel_test_data):
-    """PlantCV test function."""
+    """Test for PlantCV."""
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.snapshot_imgdir
@@ -184,7 +184,7 @@ def test_metadata_parser_fail_images(parallel_test_data):
 
 
 def test_metadata_parser_images_with_frame(parallel_test_data):
-    """PlantCV test function."""
+    """Test for PlantCV."""
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.snapshot_imgdir
@@ -204,7 +204,7 @@ def test_metadata_parser_images_with_frame(parallel_test_data):
 
 
 def test_metadata_parser_images_no_frame(parallel_test_data):
-    """PlantCV test function."""
+    """Test for PlantCV."""
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.snapshot_imgdir
