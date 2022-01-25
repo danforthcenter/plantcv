@@ -9,6 +9,7 @@ from plantcv.plantcv import outputs
 
 
 def test_get_color_matrix(transform_test_data):
+    """Test for PlantCV."""
     # load in target_matrix
     matrix_compare = transform_test_data.load_npz(transform_test_data.target_matrix_file)
     # Read in rgb_img and gray-scale mask
@@ -20,6 +21,7 @@ def test_get_color_matrix(transform_test_data):
 
 
 def test_get_color_matrix_img(transform_test_data):
+    """Test for PlantCV."""
     # Read in two gray-scale images
     rgb_img = cv2.imread(transform_test_data.colorcard_mask, -1)
     mask = cv2.imread(transform_test_data.colorcard_mask, -1)
@@ -29,6 +31,7 @@ def test_get_color_matrix_img(transform_test_data):
 
 
 def test_get_color_matrix_mask(transform_test_data):
+    """Test for PlantCV."""
     # Read in two gray-scale images
     rgb_img = cv2.imread(transform_test_data.target_img)
     mask = cv2.imread(transform_test_data.colorcard_mask)
@@ -38,6 +41,7 @@ def test_get_color_matrix_mask(transform_test_data):
 
 
 def test_get_matrix_m(transform_test_data):
+    """Test for PlantCV."""
     # load in comparison matrices
     matrix_compare_m = transform_test_data.load_npz(transform_test_data.matrix_m1_file)
     matrix_compare_b = transform_test_data.load_npz(transform_test_data.matrix_b1_file)
@@ -54,6 +58,7 @@ def test_get_matrix_m(transform_test_data):
 
 
 def test_get_matrix_m_unequal_data(transform_test_data):
+    """Test for PlantCV."""
     # load in comparison matrices
     matrix_compare_m = transform_test_data.load_npz(transform_test_data.matrix_m2_file)
     matrix_compare_b = transform_test_data.load_npz(transform_test_data.matrix_b2_file)
@@ -70,6 +75,7 @@ def test_get_matrix_m_unequal_data(transform_test_data):
 
 
 def test_calc_transformation_matrix(transform_test_data):
+    """Test for PlantCV."""
     # load in comparison matrices
     matrix_compare = transform_test_data.load_npz(transform_test_data.transformation_matrix_file)
     # read in matrices
@@ -83,6 +89,7 @@ def test_calc_transformation_matrix(transform_test_data):
 
 
 def test_calc_transformation_matrix_b_incorrect(transform_test_data):
+    """Test for PlantCV."""
     # read in matrices
     matrix_m = transform_test_data.load_npz(transform_test_data.matrix_m1_file)
     matrix_b = transform_test_data.load_npz(transform_test_data.matrix_b1_file)
@@ -92,6 +99,7 @@ def test_calc_transformation_matrix_b_incorrect(transform_test_data):
 
 
 def test_calc_transformation_matrix_not_mult(transform_test_data):
+    """Test for PlantCV."""
     # read in matrices
     matrix_m = transform_test_data.load_npz(transform_test_data.matrix_m1_file)
     matrix_b = transform_test_data.load_npz(transform_test_data.matrix_b1_file)
@@ -100,6 +108,7 @@ def test_calc_transformation_matrix_not_mult(transform_test_data):
 
 
 def test_calc_transformation_matrix_not_mat(transform_test_data):
+    """Test for PlantCV."""
     # read in matrices
     matrix_m = transform_test_data.load_npz(transform_test_data.matrix_m1_file)
     matrix_b = transform_test_data.load_npz(transform_test_data.matrix_b1_file)
@@ -108,6 +117,7 @@ def test_calc_transformation_matrix_not_mat(transform_test_data):
 
 
 def test_apply_transformation(transform_test_data):
+    """Test for PlantCV."""
     # load corrected image to compare
     corrected_compare = cv2.imread(transform_test_data.source_corrected)
     # read in matrices
@@ -121,6 +131,7 @@ def test_apply_transformation(transform_test_data):
 
 
 def test_apply_transformation_incorrect_t(transform_test_data):
+    """Test for PlantCV."""
     # read in matrices
     matrix_t = transform_test_data.load_npz(transform_test_data.matrix_b1_file)
     # read in images
@@ -131,6 +142,7 @@ def test_apply_transformation_incorrect_t(transform_test_data):
 
 
 def test_apply_transformation_incorrect_img(transform_test_data):
+    """Test for PlantCV."""
     # read in matrices
     matrix_t = transform_test_data.load_npz(transform_test_data.transformation_matrix_file)
     # read in images
@@ -141,6 +153,7 @@ def test_apply_transformation_incorrect_img(transform_test_data):
 
 
 def test_save_matrix(transform_test_data, tmpdir):
+    """Test for PlantCV."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("cache")
     # read in matrix
@@ -152,6 +165,7 @@ def test_save_matrix(transform_test_data, tmpdir):
 
 
 def test_save_matrix_incorrect_filename(transform_test_data):
+    """Test for PlantCV."""
     # read in matrix
     matrix_t = transform_test_data.load_npz(transform_test_data.transformation_matrix_file)
     # .npz filename
@@ -161,6 +175,7 @@ def test_save_matrix_incorrect_filename(transform_test_data):
 
 
 def test_load_matrix(transform_test_data):
+    """Test for PlantCV."""
     # read in matrix_t
     matrix_t = transform_test_data.load_npz(transform_test_data.transformation_matrix_file)
     # test load function with matrix_t
@@ -169,6 +184,7 @@ def test_load_matrix(transform_test_data):
 
 
 def test_correct_color(transform_test_data, tmpdir):
+    """Test for PlantCV."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("cache")
     # load corrected image to compare
@@ -186,6 +202,7 @@ def test_correct_color(transform_test_data, tmpdir):
 
 
 def test_correct_color_output_dne(transform_test_data, tmpdir):
+    """Test for PlantCV."""
     # Create a test tmp directory
     tmp_dir = tmpdir.mkdir("cache")
     cache_dir = os.path.join(tmp_dir, "outputs")
@@ -204,6 +221,7 @@ def test_correct_color_output_dne(transform_test_data, tmpdir):
 
 
 def test_create_color_card_mask(transform_test_data):
+    """Test for PlantCV."""
     # Load target image
     rgb_img = cv2.imread(transform_test_data.target_img)
     mask = create_color_card_mask(rgb_img=rgb_img, radius=6, start_coord=(166, 166), spacing=(21, 21), nrows=6, ncols=4,
@@ -214,6 +232,7 @@ def test_create_color_card_mask(transform_test_data):
 
 
 def test_quick_color_check(transform_test_data):
+    """Test for PlantCV."""
     # Load target image
     target_matrix = transform_test_data.load_npz(transform_test_data.target_matrix_file)
     source_matrix = transform_test_data.load_npz(transform_test_data.source1_matrix_file)
@@ -222,6 +241,7 @@ def test_quick_color_check(transform_test_data):
 
 
 def test_find_color_card(transform_test_data):
+    """Test for PlantCV."""
     # Load rgb image
     rgb_img = cv2.imread(transform_test_data.target_img)
     _, start, space = find_color_card(rgb_img=rgb_img, threshold_type='adaptgauss', blurry=False, threshvalue=90)
@@ -229,6 +249,7 @@ def test_find_color_card(transform_test_data):
 
 
 def test_find_color_card_optional_parameters(transform_test_data):
+    """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     # Load rgb image
@@ -240,6 +261,7 @@ def test_find_color_card_optional_parameters(transform_test_data):
 
 
 def test_find_color_card_otsu(transform_test_data):
+    """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     # Load rgb image
@@ -251,6 +273,7 @@ def test_find_color_card_otsu(transform_test_data):
 
 
 def test_find_color_card_optional_size_parameters(transform_test_data):
+    """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     # Load rgb image
@@ -260,6 +283,7 @@ def test_find_color_card_optional_size_parameters(transform_test_data):
 
 
 def test_find_color_card_optional_size_parameters_none(transform_test_data):
+    """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     # Load rgb image
@@ -269,6 +293,7 @@ def test_find_color_card_optional_size_parameters_none(transform_test_data):
 
 
 def test_find_color_card_bad_record_chip_size(transform_test_data):
+    """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     # Load rgb image
@@ -278,6 +303,7 @@ def test_find_color_card_bad_record_chip_size(transform_test_data):
 
 
 def test_find_color_card_bad_thresh_input(transform_test_data):
+    """Test for PlantCV."""
     # Load rgb image
     rgb_img = cv2.imread(transform_test_data.target_img)
     with pytest.raises(RuntimeError):
@@ -285,6 +311,7 @@ def test_find_color_card_bad_thresh_input(transform_test_data):
 
 
 def test_find_color_card_bad_background_input(transform_test_data):
+    """Test for PlantCV."""
     # Load rgb image
     rgb_img = cv2.imread(transform_test_data.target_img)
     with pytest.raises(RuntimeError):
@@ -292,6 +319,7 @@ def test_find_color_card_bad_background_input(transform_test_data):
 
 
 def test_find_color_card_none_found(transform_test_data):
+    """Test for PlantCV."""
     # Load rgb image
     rgb_img = cv2.imread(transform_test_data.target_img)
     with pytest.raises(RuntimeError):

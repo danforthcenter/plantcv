@@ -5,6 +5,7 @@ from plantcv.plantcv import background_subtraction
 
 
 def test_background_subtraction(test_data):
+    """Test for PlantCV."""
     fg_img = cv2.imread(test_data.small_gray_img, -1)
     bg_img = cv2.imread(test_data.small_bin_img, -1)
     fgmask = background_subtraction(background_image=bg_img, foreground_image=fg_img)
@@ -13,6 +14,7 @@ def test_background_subtraction(test_data):
 
 
 def test_background_subtraction_bad_img_type(test_data):
+    """Test for PlantCV."""
     fg_color = cv2.imread(test_data.small_rgb_img)
     bg_gray = cv2.imread(test_data.small_gray_img, -1)
     with pytest.raises(RuntimeError):
@@ -20,6 +22,7 @@ def test_background_subtraction_bad_img_type(test_data):
 
 
 def test_background_subtraction_larger_fg(test_data):
+    """Test for PlantCV."""
     fg_img = cv2.imread(test_data.small_gray_img, -1)
     bg_img = cv2.imread(test_data.small_bin_img, -1)
     h, w = fg_img.shape
@@ -30,6 +33,7 @@ def test_background_subtraction_larger_fg(test_data):
 
 
 def test_background_subtraction_larger_bg(test_data):
+    """Test for PlantCV."""
     fg_img = cv2.imread(test_data.small_gray_img, -1)
     bg_img = cv2.imread(test_data.small_bin_img, -1)
     h, w = bg_img.shape

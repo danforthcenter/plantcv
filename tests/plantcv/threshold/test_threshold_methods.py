@@ -7,6 +7,7 @@ from plantcv.plantcv import params
 
 @pytest.mark.parametrize("objtype", ["dark", "light"])
 def test_binary(objtype, threshold_test_data):
+    """Test for PlantCV."""
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
     binary_img = binary(gray_img=gray_img, threshold=25, max_value=255, object_type=objtype)
@@ -15,6 +16,7 @@ def test_binary(objtype, threshold_test_data):
 
 
 def test_binary_incorrect_object_type(threshold_test_data):
+    """Test for PlantCV."""
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
     with pytest.raises(RuntimeError):
@@ -23,6 +25,7 @@ def test_binary_incorrect_object_type(threshold_test_data):
 
 @pytest.mark.parametrize("objtype", ["dark", "light"])
 def test_gaussian(objtype, threshold_test_data):
+    """Test for PlantCV."""
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
     binary_img = gaussian(gray_img=gray_img, max_value=255, object_type=objtype)
@@ -31,6 +34,7 @@ def test_gaussian(objtype, threshold_test_data):
 
 
 def test_gaussian_incorrect_object_type(threshold_test_data):
+    """Test for PlantCV."""
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
     with pytest.raises(RuntimeError):
@@ -39,6 +43,7 @@ def test_gaussian_incorrect_object_type(threshold_test_data):
 
 @pytest.mark.parametrize("objtype", ["dark", "light"])
 def test_mean(objtype, threshold_test_data):
+    """Test for PlantCV."""
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
     binary_img = mean(gray_img=gray_img, max_value=255, object_type=objtype)
@@ -47,6 +52,7 @@ def test_mean(objtype, threshold_test_data):
 
 
 def test_mean_incorrect_object_type(threshold_test_data):
+    """Test for PlantCV."""
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
     with pytest.raises(RuntimeError):
@@ -55,6 +61,7 @@ def test_mean_incorrect_object_type(threshold_test_data):
 
 @pytest.mark.parametrize("objtype", ["dark", "light"])
 def test_otsu(objtype, threshold_test_data):
+    """Test for PlantCV."""
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
     binary_img = otsu(gray_img=gray_img, max_value=255, object_type=objtype)
@@ -63,6 +70,7 @@ def test_otsu(objtype, threshold_test_data):
 
 
 def test_otsu_incorrect_object_type(threshold_test_data):
+    """Test for PlantCV."""
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
     with pytest.raises(RuntimeError):
@@ -74,6 +82,7 @@ def test_otsu_incorrect_object_type(threshold_test_data):
                                                                ["RGB", [0, 0, 0], [100, 100, 100]],
                                                                ["GRAY", [0], [100]]])
 def test_custom_range_rgb(channel, lower_thresh, upper_thresh, threshold_test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(threshold_test_data.small_rgb_img)
     binary_img, _ = custom_range(img, lower_thresh=lower_thresh, upper_thresh=upper_thresh, channel=channel)
@@ -82,6 +91,7 @@ def test_custom_range_rgb(channel, lower_thresh, upper_thresh, threshold_test_da
 
 
 def test_custom_range_grayscale(threshold_test_data):
+    """Test for PlantCV."""
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
     # # Test channel='gray'
@@ -96,6 +106,7 @@ def test_custom_range_grayscale(threshold_test_data):
                                                                ["GRAY", [0, 0], [2]],
                                                                ["CMYK", [0], [2]]])
 def test_custom_range_bad_input(channel, lower_thresh, upper_thresh, threshold_test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(threshold_test_data.small_rgb_img)
     with pytest.raises(RuntimeError):
@@ -104,6 +115,7 @@ def test_custom_range_bad_input(channel, lower_thresh, upper_thresh, threshold_t
 
 @pytest.mark.parametrize("channel", ["all", "any"])
 def test_saturation(channel, threshold_test_data):
+    """Test for PlantCV."""
     # Read in test data
     rgb_img = cv2.imread(threshold_test_data.small_rgb_img)
     thresh = saturation(rgb_img=rgb_img, threshold=254, channel=channel)
@@ -111,6 +123,7 @@ def test_saturation(channel, threshold_test_data):
 
 
 def test_saturation_bad_input(threshold_test_data):
+    """Test for PlantCV."""
     # Read in test data
     rgb_img = cv2.imread(threshold_test_data.small_rgb_img)
     with pytest.raises(RuntimeError):
@@ -119,6 +132,7 @@ def test_saturation_bad_input(threshold_test_data):
 
 @pytest.mark.parametrize("debug", ["print", "plot", None])
 def test_triangle(debug, threshold_test_data, tmpdir):
+    """Test for PlantCV."""
     # Test cache directory
     cache_dir = tmpdir.mkdir("cache")
     params.debug_outdir = cache_dir
@@ -131,6 +145,7 @@ def test_triangle(debug, threshold_test_data, tmpdir):
 
 
 def test_triangle_dark(threshold_test_data):
+    """Test for PlantCV."""
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
     binary_img = triangle(gray_img=gray_img, max_value=255, object_type="dark", xstep=10)
@@ -139,6 +154,7 @@ def test_triangle_dark(threshold_test_data):
 
 
 def test_triangle_incorrect_object_type(threshold_test_data):
+    """Test for PlantCV."""
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
     with pytest.raises(RuntimeError):
@@ -146,6 +162,7 @@ def test_triangle_incorrect_object_type(threshold_test_data):
 
 
 def test_texture(threshold_test_data):
+    """Test for PlantCV."""
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
     # Subset input data
@@ -158,6 +175,7 @@ def test_texture(threshold_test_data):
 
 @pytest.mark.parametrize("bad_type", ["native", "nan", "inf"])
 def test_mask_bad(bad_type):
+    """Test for PlantCV."""
     # Create a synthetic bad image
     bad_img = np.reshape(np.random.rand(25), (5, 5))
     bad_img[2, 2] = np.inf
@@ -168,6 +186,7 @@ def test_mask_bad(bad_type):
 
 
 def test_mask_bad_native_bad_input():
+    """Test for PlantCV."""
     # Create a synthetic bad image
     bad_img = np.reshape(np.random.rand(25), (5, 5))
     mask = mask_bad(bad_img, bad_type='native')
@@ -175,6 +194,7 @@ def test_mask_bad_native_bad_input():
 
 
 def test_mask_bad_nan_bad_input():
+    """Test for PlantCV."""
     # Create a synthetic bad image
     bad_img = np.reshape(np.random.rand(25), (5, 5))
     bad_img[2, 2] = np.inf
@@ -183,6 +203,7 @@ def test_mask_bad_nan_bad_input():
 
 
 def test_mask_bad_input_color_img(threshold_test_data):
+    """Test for PlantCV."""
     # Read in test data
     bad_img = cv2.imread(threshold_test_data.small_rgb_img)
     with pytest.raises(RuntimeError):

@@ -5,6 +5,7 @@ from plantcv.plantcv import x_axis_pseudolandmarks
 
 
 def test_x_axis_pseudolandmarks(test_data):
+    """Test for PlantCV."""
     img = cv2.imread(test_data.small_rgb_img)
     mask = cv2.imread(test_data.small_bin_img, -1)
     obj_contour = test_data.load_composed_contours(test_data.small_composed_contours_file)
@@ -21,12 +22,14 @@ def test_x_axis_pseudolandmarks(test_data):
      (20, 1, 2)]
 ])
 def test_x_axis_pseudolandmarks_small_obj(obj, mask, shape, test_data):
+    """Test for PlantCV."""
     img = cv2.imread(test_data.small_rgb_img)
     top, bottom, center_v = x_axis_pseudolandmarks(obj=obj, mask=mask, img=img)
     assert all([np.shape(top) == shape, np.shape(bottom) == shape, np.shape(center_v) == shape])
 
 
 def test_x_axis_pseudolandmarks_bad_input():
+    """Test for PlantCV."""
     img = np.array([])
     mask = np.array([])
     obj_contour = np.array([])
@@ -35,6 +38,7 @@ def test_x_axis_pseudolandmarks_bad_input():
 
 
 def test_x_axis_pseudolandmarks_bad_obj_input(test_data):
+    """Test for PlantCV."""
     img = cv2.imread(test_data.small_rgb_img)
     with pytest.raises(RuntimeError):
         _ = x_axis_pseudolandmarks(obj=np.array([[-2, -2], [-2, -2]]), mask=np.array([[-2, -2], [-2, -2]]), img=img)

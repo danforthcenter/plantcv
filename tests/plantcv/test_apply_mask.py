@@ -5,6 +5,7 @@ from plantcv.plantcv import apply_mask
 
 
 def test_apply_mask_white(test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.small_rgb_img)
     mask = cv2.imread(test_data.small_bin_img, -1)
@@ -13,6 +14,7 @@ def test_apply_mask_white(test_data):
 
 
 def test_apply_mask_black(test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.small_rgb_img)
     mask = cv2.imread(test_data.small_bin_img, -1)
@@ -21,6 +23,7 @@ def test_apply_mask_black(test_data):
 
 
 def test_apply_mask_hyperspectral(test_data):
+    """Test for PlantCV."""
     # Read in test data
     hsi = test_data.load_hsi(test_data.hsi_file)
     mask = cv2.imread(test_data.hsi_mask_file, -1)
@@ -29,6 +32,7 @@ def test_apply_mask_hyperspectral(test_data):
 
 
 def test_apply_mask_bad_input(test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.small_rgb_img)
     mask = cv2.imread(test_data.small_bin_img, -1)

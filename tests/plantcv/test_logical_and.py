@@ -3,6 +3,7 @@ from plantcv.plantcv import logical_and
 
 
 def test_logical_and():
+    """Test for PlantCV."""
     # Create test data
     img1 = np.zeros((20, 20), dtype=np.uint8)
     img1[0:10, 0:10] = 255

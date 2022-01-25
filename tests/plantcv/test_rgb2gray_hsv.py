@@ -4,6 +4,7 @@ from plantcv.plantcv import rgb2gray_hsv
 
 
 def test_rgb2gray_hsv(test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.small_rgb_img)
     gray_img = rgb2gray_hsv(rgb_img=img, channel="s")
@@ -12,6 +13,7 @@ def test_rgb2gray_hsv(test_data):
 
 
 def test_rgb2gray_hsv_bad_input(test_data):
+    """Test for PlantCV."""
     img = cv2.imread(test_data.small_rgb_img)
     with pytest.raises(RuntimeError):
         _ = rgb2gray_hsv(rgb_img=img, channel="l")

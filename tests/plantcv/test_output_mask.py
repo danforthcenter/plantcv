@@ -4,6 +4,7 @@ from plantcv.plantcv import output_mask
 
 
 def test_output_mask(test_data, tmpdir):
+    """Test for PlantCV."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("cache")
     # Read in test data

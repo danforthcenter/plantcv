@@ -4,6 +4,7 @@ from plantcv.plantcv.morphology import segment_path_length
 
 
 def test_segment_path_length(morphology_test_data):
+    """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     skel = cv2.imread(morphology_test_data.skel_img, -1)

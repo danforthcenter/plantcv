@@ -4,6 +4,7 @@ from plantcv.plantcv.morphology import segment_combine
 
 
 def test_segment_combine(morphology_test_data):
+    """Test for PlantCV."""
     skel = cv2.imread(morphology_test_data.skel_img, -1)
     edges = morphology_test_data.load_segments(morphology_test_data.segments_file, "edges")
     # Test with list of IDs input
@@ -12,6 +13,7 @@ def test_segment_combine(morphology_test_data):
 
 
 def test_segment_combine_lists(morphology_test_data):
+    """Test for PlantCV."""
     skel = cv2.imread(morphology_test_data.skel_img, -1)
     edges = morphology_test_data.load_segments(morphology_test_data.segments_file, "edges")
     # Test with list of lists input
@@ -20,6 +22,7 @@ def test_segment_combine_lists(morphology_test_data):
 
 
 def test_segment_combine_bad_input(morphology_test_data):
+    """Test for PlantCV."""
     skel = cv2.imread(morphology_test_data.skel_img, -1)
     edges = morphology_test_data.load_segments(morphology_test_data.segments_file, "edges")
     with pytest.raises(RuntimeError):

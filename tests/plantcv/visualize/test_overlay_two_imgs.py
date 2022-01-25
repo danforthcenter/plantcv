@@ -5,6 +5,7 @@ from plantcv.plantcv.visualize import overlay_two_imgs
 
 
 def test_overlay_two_imgs(visualize_test_data):
+    """Test for PlantCV."""
     img1 = cv2.imread(visualize_test_data.small_rgb_img)
     img2 = cv2.imread(visualize_test_data.small_bin_img)
     out_img = overlay_two_imgs(img1=img1, img2=img2)
@@ -17,6 +18,7 @@ def test_overlay_two_imgs(visualize_test_data):
 
 
 def test_overlay_two_imgs_grayscale(visualize_test_data):
+    """Test for PlantCV."""
     img1 = cv2.imread(visualize_test_data.small_gray_img, -1)
     img2 = cv2.imread(visualize_test_data.small_bin_img, -1)
     out_img = overlay_two_imgs(img1=img1, img2=img2)
@@ -29,6 +31,7 @@ def test_overlay_two_imgs_grayscale(visualize_test_data):
 
 
 def test_overlay_two_imgs_bad_alpha(visualize_test_data):
+    """Test for PlantCV."""
     img1 = cv2.imread(visualize_test_data.small_rgb_img)
     img2 = cv2.imread(visualize_test_data.small_bin_img, -1)
     alpha = -1
@@ -37,6 +40,7 @@ def test_overlay_two_imgs_bad_alpha(visualize_test_data):
 
 
 def test_overlay_two_imgs_size_mismatch(visualize_test_data):
+    """Test for PlantCV."""
     img1 = cv2.imread(visualize_test_data.small_rgb_img)
     img2 = img1.copy()
     img2 = img2[1:, 1:, :]

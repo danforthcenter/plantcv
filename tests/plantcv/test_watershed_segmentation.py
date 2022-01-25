@@ -3,6 +3,7 @@ from plantcv.plantcv import watershed_segmentation, outputs
 
 
 def test_watershed_segmentation(test_data):
+    """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     # Read in test data

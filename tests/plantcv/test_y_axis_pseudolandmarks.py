@@ -5,6 +5,7 @@ from plantcv.plantcv import y_axis_pseudolandmarks
 
 
 def test_y_axis_pseudolandmarks(test_data):
+    """Test for PlantCV."""
     img = cv2.imread(test_data.small_rgb_img)
     mask = cv2.imread(test_data.small_bin_img, -1)
     obj_contour = test_data.load_composed_contours(test_data.small_composed_contours_file)
@@ -19,12 +20,14 @@ def test_y_axis_pseudolandmarks(test_data):
     [np.array(([[21, 11]], [[159, 155]], [[237, 11]])), np.array(([[38, 54]], [[144, 169]], [[81, 137]])), (20, 1, 2)]
 ])
 def test_y_axis_pseudolandmarks_small_obj(obj, mask, shape, test_data):
+    """Test for PlantCV."""
     img = cv2.imread(test_data.small_rgb_img)
     left, right, center_h = y_axis_pseudolandmarks(obj=obj, mask=mask, img=img)
     assert all([np.shape(left) == shape, np.shape(right) == shape, np.shape(center_h) == shape])
 
 
 def test_y_axis_pseudolandmarks_bad_input():
+    """Test for PlantCV."""
     img = np.array([])
     mask = np.array([])
     obj_contour = np.array([])
@@ -33,6 +36,7 @@ def test_y_axis_pseudolandmarks_bad_input():
 
 
 def test_y_axis_pseudolandmarks_bad_obj_input(test_data):
+    """Test for PlantCV."""
     img = cv2.imread(test_data.small_rgb_img)
     with pytest.raises(RuntimeError):
         _ = y_axis_pseudolandmarks(obj=np.array([[-2, -2], [-2, -2]]), mask=np.array([[-2, -2], [-2, -2]]), img=img)

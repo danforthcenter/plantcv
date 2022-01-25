@@ -5,7 +5,8 @@ from plantcv.plantcv.visualize import hyper_histogram
 
 
 @pytest.mark.parametrize("wavelengths", [[], [390, 500, 640, 992, 990]])
-def test_plantcv_visualize_hyper_histogram(wavelengths, visualize_test_data):
+def test_hyper_histogram(wavelengths, visualize_test_data):
+    """Test for PlantCV."""
     # Read in test data
     hsi = visualize_test_data.load_hsi(visualize_test_data.hsi_file)
     mask = np.zeros(hsi.array_data.shape[:2], dtype=np.uint8)
@@ -14,13 +15,15 @@ def test_plantcv_visualize_hyper_histogram(wavelengths, visualize_test_data):
     assert isinstance(fig_hist, ggplot)
 
 
-def test_plantcv_visualize_hyper_histogram_wv_out_range(visualize_test_data):
+def test_hyper_histogram_wv_out_range(visualize_test_data):
+    """Test for PlantCV."""
     hsi = visualize_test_data.load_hsi(visualize_test_data.hsi_file)
     with pytest.raises(RuntimeError):
         _ = hyper_histogram(hsi=hsi, wvlengths=[200,  550])
 
 
-def test_plantcv_visualize_hyper_histogram_extreme_wvs(visualize_test_data):
+def test_hyper_histogram_extreme_wvs(visualize_test_data):
+    """Test for PlantCV."""
     # Read in test data
     hsi = visualize_test_data.load_hsi(visualize_test_data.hsi_file)
     mask = np.zeros(hsi.array_data.shape[:2], dtype=np.uint8)

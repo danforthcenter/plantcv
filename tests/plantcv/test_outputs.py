@@ -9,6 +9,7 @@ from plantcv.plantcv import Outputs
 @pytest.mark.parametrize("datatype,value", [[list, []], [int, 2], [float, 2.2], [bool, True], [str, "2"], [dict, {}],
                                             [tuple, ()], [None, None]])
 def test_add_observation(datatype, value):
+    """Test for PlantCV."""
     # Create output instance
     outputs = Outputs()
     outputs.add_observation(sample='default', variable='test', trait='test variable', method='type', scale='none',
@@ -17,6 +18,7 @@ def test_add_observation(datatype, value):
 
 
 def test_add_observation_invalid_type():
+    """Test for PlantCV."""
     # Create output instance
     outputs = Outputs()
     with pytest.raises(RuntimeError):
@@ -25,6 +27,7 @@ def test_add_observation_invalid_type():
 
 
 def test_save_results_json_newfile(tmpdir):
+    """Test for PlantCV."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("cache")
     outfile = os.path.join(cache_dir, "results.json")
@@ -39,6 +42,7 @@ def test_save_results_json_newfile(tmpdir):
 
 
 def test_save_results_json_existing_file(test_data, tmpdir):
+    """Test for PlantCV."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("cache")
     outfile = os.path.join(cache_dir, os.path.basename(test_data.outputs_results_json))
@@ -54,6 +58,7 @@ def test_save_results_json_existing_file(test_data, tmpdir):
 
 
 def test_save_results_csv(test_data, tmpdir):
+    """Test for PlantCV."""
     # Create a test tmp directory
     outfile = tmpdir.mkdir("cache").join("results.csv")
     # Create output instance
@@ -77,6 +82,7 @@ def test_save_results_csv(test_data, tmpdir):
 
 
 def test_clear_outputs():
+    """Test for PlantCV."""
     # Create output instance
     outputs = Outputs()
     outputs.add_observation(sample='default', variable='test', trait='test variable', method='test', scale='none',

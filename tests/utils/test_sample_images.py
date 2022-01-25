@@ -5,6 +5,7 @@ from plantcv.utils import sample_images
 
 
 def test_sample_images_snapshot(utils_test_data, tmpdir):
+    """Test for PlantCV."""
     # Create tmp directory
     tmp_dir = tmpdir.mkdir("cache")
     snapshot_dir = utils_test_data.snapshot_imgdir
@@ -15,6 +16,7 @@ def test_sample_images_snapshot(utils_test_data, tmpdir):
 
 
 def test_sample_images_flatdir(utils_test_data, tmpdir):
+    """Test for PlantCV."""
     # Create tmp directory
     tmp_dir = tmpdir.mkdir("cache")
     flat_dir = utils_test_data.flat_imgdir
@@ -25,6 +27,7 @@ def test_sample_images_flatdir(utils_test_data, tmpdir):
 
 
 def test_sample_images_bad_source(tmpdir):
+    """Test for PlantCV."""
     # Create tmp directory
     tmp_dir = tmpdir.mkdir("cache")
     fake_dir = "snapshot"
@@ -34,6 +37,7 @@ def test_sample_images_bad_source(tmpdir):
 
 
 def test_sample_images_bad_flat_num(utils_test_data, tmpdir):
+    """Test for PlantCV."""
     # Create tmp directory
     tmp_dir = tmpdir.mkdir("cache")
     flat_dir = utils_test_data.datadir
@@ -43,6 +47,7 @@ def test_sample_images_bad_flat_num(utils_test_data, tmpdir):
 
 
 def test_sample_images_bad_phenofront_num(utils_test_data, tmpdir):
+    """Test for PlantCV."""
     # Create tmp directory
     tmp_dir = tmpdir.mkdir("cache")
     snapshot_dir = utils_test_data.snapshot_imgdir

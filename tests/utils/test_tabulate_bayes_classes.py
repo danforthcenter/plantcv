@@ -5,6 +5,7 @@ from plantcv.utils import tabulate_bayes_classes
 
 
 def test_tabulate_bayes_classes(utils_test_data, tmpdir):
+    """Test for PlantCV."""
     # Create tmp directory
     tmp_dir = tmpdir.mkdir("cache")
     outfile = os.path.join(str(tmp_dir), "rgb_table.txt")
@@ -14,6 +15,7 @@ def test_tabulate_bayes_classes(utils_test_data, tmpdir):
 
 
 def test_tabulate_bayes_classes_missing_input(tmpdir):
+    """Test for PlantCV."""
     # Create tmp directory
     tmp_dir = tmpdir.mkdir("cache")
     outfile = os.path.join(str(tmp_dir), "rgb_table.txt")

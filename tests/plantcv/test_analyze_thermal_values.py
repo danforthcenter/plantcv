@@ -3,6 +3,7 @@ from plantcv.plantcv import analyze_thermal_values, outputs
 
 
 def test_analyze_thermal_values(test_data):
+    """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     # Read in test data

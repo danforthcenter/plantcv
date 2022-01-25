@@ -5,6 +5,7 @@ from plantcv.plantcv import fill_holes
 
 
 def test_fill_holes(test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.small_bin_img, -1)
     fill_img = fill_holes(bin_img=img)
@@ -13,6 +14,7 @@ def test_fill_holes(test_data):
 
 
 def test_fill_holes_bad_input(test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.small_gray_img, -1)
     with pytest.raises(RuntimeError):

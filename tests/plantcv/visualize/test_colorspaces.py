@@ -4,6 +4,7 @@ from plantcv.plantcv.visualize import colorspaces
 
 
 def test_colorspaces(visualize_test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(visualize_test_data.small_rgb_img)
     vis_img = colorspaces(rgb_img=img)
@@ -11,6 +12,7 @@ def test_colorspaces(visualize_test_data):
 
 
 def test_colorspaces_bad_input(visualize_test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(visualize_test_data.small_gray_img, -1)
     with pytest.raises(RuntimeError):

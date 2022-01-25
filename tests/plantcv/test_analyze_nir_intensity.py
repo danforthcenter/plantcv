@@ -4,6 +4,7 @@ from plantcv.plantcv import analyze_nir_intensity, outputs
 
 
 def test_analyze_nir(test_data):
+    """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     # Read in test data
@@ -15,6 +16,7 @@ def test_analyze_nir(test_data):
 
 
 def test_analyze_nir_16bit(test_data):
+    """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     # Read in test data

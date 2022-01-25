@@ -3,6 +3,7 @@ from plantcv.plantcv import image_add
 
 
 def test_image_add():
+    """Test for PlantCV."""
     # Create test data
     img1 = np.zeros((25, 25), dtype=np.uint8)
     img1[0:10, 0:10] = 255

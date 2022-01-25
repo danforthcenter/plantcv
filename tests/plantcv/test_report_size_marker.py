@@ -6,6 +6,7 @@ from plantcv.plantcv import report_size_marker_area, outputs
 
 @pytest.mark.parametrize("marker,exp", [["detect", 1257], ["define", 2601]])
 def test_report_size_marker(marker, exp, test_data):
+    """Test for PlantCV."""
     # Clear outputs
     outputs.clear()
     # Read in test data
@@ -21,6 +22,7 @@ def test_report_size_marker(marker, exp, test_data):
 
 
 def test_report_size_marker_grayscale_input(test_data):
+    """Test for PlantCV."""
     # Clear outputs
     outputs.clear()
     # Read in test data
@@ -38,6 +40,7 @@ def test_report_size_marker_grayscale_input(test_data):
     ["detect", None]  # Invalid channel
     ])
 def test_report_size_marker_bad_inputs(marker, channel, test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.small_rgb_img)
     # ROI contour

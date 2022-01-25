@@ -6,6 +6,7 @@ from plantcv.plantcv.morphology import segment_tangent_angle
 
 @pytest.mark.parametrize("size", [3, 100])
 def test_segment_tangent_angle(size, morphology_test_data):
+    """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     skel = cv2.imread(morphology_test_data.skel_img, -1)

@@ -4,6 +4,7 @@ from plantcv.plantcv.morphology import fill_segments
 
 
 def test_fill_segments(morphology_test_data):
+    """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     mask = cv2.imread(morphology_test_data.bin_img, -1)
@@ -13,6 +14,7 @@ def test_fill_segments(morphology_test_data):
 
 
 def test_fill_segments_no_stem(morphology_test_data):
+    """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     mask = cv2.imread(morphology_test_data.bin_img, -1)

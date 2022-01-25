@@ -5,6 +5,7 @@ from plantcv.plantcv import analyze_bound_vertical, outputs
 
 @pytest.mark.parametrize('pos,exp', [[220, 13], [2454, 16], [1, 0]])
 def test_analyze_bound_vertical(pos, exp, test_data):
+    """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     # Read in test data
@@ -16,6 +17,7 @@ def test_analyze_bound_vertical(pos, exp, test_data):
 
 
 def test_analyze_bound_vertical_grayscale_image(test_data):
+    """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     # Read in test data

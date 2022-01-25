@@ -8,6 +8,7 @@ from plantcv.plantcv import print_image
 
 
 def test_print_image(tmpdir):
+    """Test for PlantCV."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("cache")
     # Create test image
@@ -19,11 +20,13 @@ def test_print_image(tmpdir):
 
 
 def test_print_image_bad_type():
+    """Test for PlantCV."""
     with pytest.raises(RuntimeError):
         print_image(img=[], filename="/dev/null")
 
 
 def test_print_image_plotnine(tmpdir):
+    """Test for PlantCV."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("cache")
     dataset = pd.DataFrame({'x': [1, 2, 3, 4], 'y': [1, 2, 3, 4]})
@@ -35,6 +38,7 @@ def test_print_image_plotnine(tmpdir):
 
 
 def test_print_image_matplotlib(tmpdir):
+    """Test for PlantCV."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("cache")
     # Create test image

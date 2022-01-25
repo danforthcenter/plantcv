@@ -6,6 +6,7 @@ from plantcv.plantcv import image_fusion, Spectral_data
 
 
 def test_image_fusion(test_data):
+    """Test for PlantCV."""
     # Read in test data
     # 16-bit image
     img1 = cv2.imread(test_data.fmax, -1)
@@ -17,6 +18,7 @@ def test_image_fusion(test_data):
 
 
 def test_image_fusion_size_diff(test_data):
+    """Test for PlantCV."""
     img1 = cv2.imread(test_data.small_bin_img, 0)
     img2 = np.copy(img1)
     img2 = img2[0:10, 0:10]

@@ -5,6 +5,7 @@ from plantcv.plantcv import analyze_color, outputs
 
 @pytest.mark.parametrize("colorspace", ["all", "lab", "hsv", "rgb"])
 def test_analyze_color(colorspace, test_data):
+    """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     # Read in test data
@@ -15,6 +16,7 @@ def test_analyze_color(colorspace, test_data):
 
 
 def test_analyze_color_bad_imgtype(test_data):
+    """Test for PlantCV."""
     img_binary = cv2.imread(test_data.small_bin_img, -1)
     mask = cv2.imread(test_data.small_bin_img, -1)
     with pytest.raises(RuntimeError):
@@ -22,6 +24,7 @@ def test_analyze_color_bad_imgtype(test_data):
 
 
 def test_analyze_color_bad_hist_type(test_data):
+    """Test for PlantCV."""
     img = cv2.imread(test_data.small_rgb_img)
     mask = cv2.imread(test_data.small_bin_img, -1)
     with pytest.raises(RuntimeError):

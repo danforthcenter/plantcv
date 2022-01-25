@@ -13,6 +13,7 @@ from plantcv.plantcv import landmark_reference_pt_dist, outputs
      (0.4685, 0.2569)]
 ])
 def test_landmark_reference_pt_dist(points, centroid, bline):
+    """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     landmark_reference_pt_dist(points_r=points, centroid_r=centroid, bline_r=bline)
@@ -20,5 +21,6 @@ def test_landmark_reference_pt_dist(points, centroid, bline):
 
 
 def test_landmark_reference_pt_dist_bad_centroid():
+    """Test for PlantCV."""
     result = landmark_reference_pt_dist(points_r=[], centroid_r=('a', 'b'), bline_r=(0, 0))
     assert np.array_equal(np.unique(result), np.array(["NA"]))

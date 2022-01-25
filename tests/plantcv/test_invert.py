@@ -4,6 +4,7 @@ from plantcv.plantcv import invert
 
 
 def test_invert(test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.small_bin_img, -1)
     inverted_img = invert(gray_img=img)

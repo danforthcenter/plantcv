@@ -4,6 +4,7 @@ from plantcv.plantcv import distance_transform
 
 
 def test_distance_transform(test_data):
+    """Test for PlantCV."""
     # Read in test data
     mask = cv2.imread(test_data.small_bin_img, -1)
     distance_transform_img = distance_transform(bin_img=mask, distance_type=1, mask_size=3)

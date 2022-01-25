@@ -4,6 +4,7 @@ from plantcv.plantcv.transform import gamma_correct
 
 
 def test_gamma_correct(transform_test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(transform_test_data.small_rgb_img)
     # Test

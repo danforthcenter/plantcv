@@ -4,6 +4,7 @@ from plantcv.plantcv.morphology import segment_curvature
 
 
 def test_segment_curvature(morphology_test_data):
+    """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     skeleton = cv2.imread(morphology_test_data.skel_img, -1)

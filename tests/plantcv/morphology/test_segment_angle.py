@@ -5,6 +5,7 @@ from plantcv.plantcv.morphology import segment_angle
 
 
 def test_segment_angle(morphology_test_data):
+    """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     skeleton = cv2.imread(morphology_test_data.skel_img, -1)
@@ -14,6 +15,7 @@ def test_segment_angle(morphology_test_data):
 
 
 def test_segment_angle_overflow():
+    """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     # Don't prune, would usually give overflow error without extra if statement in segment_angle

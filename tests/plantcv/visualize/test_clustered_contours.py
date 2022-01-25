@@ -4,6 +4,7 @@ from plantcv.plantcv.visualize import clustered_contours
 
 
 def test_clustered_contours(test_data):
+    """Test for PlantCV."""
     # Reset the saved color scale (can be saved between tests)
     params.saved_color_scale = None
     # Read in test data

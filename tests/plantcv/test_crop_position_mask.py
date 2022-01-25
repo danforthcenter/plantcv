@@ -6,6 +6,7 @@ from plantcv.plantcv import crop_position_mask
 
 @pytest.mark.parametrize("v_pos,h_pos", [["top", "right"], ["bottom", "left"]])
 def test_crop_position_mask(v_pos, h_pos, test_data):
+    """Test for PlantCV."""
     # Read in test data - img is bigger than mask and both are grayscale
     img = cv2.imread(test_data.fmax, -1)
     mask = cv2.imread(test_data.small_bin_img, -1)
@@ -14,6 +15,7 @@ def test_crop_position_mask(v_pos, h_pos, test_data):
 
 
 def test_crop_position_rgb_inputs(test_data):
+    """Test for PlantCV."""
     # Read in test data - mask is bigger than img and both are RGB
     mask = cv2.imread(test_data.fmax)
     img = cv2.imread(test_data.small_bin_img)
@@ -28,6 +30,7 @@ def test_crop_position_rgb_inputs(test_data):
     ["bottom", "left", -100, -99]
     ])
 def test_crop_position_mask_size(v_pos, h_pos, r, c, test_data):
+    """Test for PlantCV."""
     img = cv2.imread(test_data.small_gray_img, -1)
     h, w = img.shape
     mask = np.zeros((h + r, w + c), dtype=np.uint8)
@@ -41,6 +44,7 @@ def test_crop_position_mask_size(v_pos, h_pos, r, c, test_data):
     [40, 3, "top", "starboard"]  # Invalid h_pos
     ])
 def test_crop_position_mask_bad_inputs(x, y, v_pos, h_pos, test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.fmax, -1)
     mask = cv2.imread(test_data.small_bin_img, -1)

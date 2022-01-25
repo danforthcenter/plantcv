@@ -6,6 +6,7 @@ from plantcv.plantcv import median_blur
 
 @pytest.mark.parametrize("kernel", [5, (5, 5)])
 def test_median_blur(kernel, test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.small_bin_img, -1)
     blur_img = median_blur(gray_img=img, ksize=kernel)
@@ -14,6 +15,7 @@ def test_median_blur(kernel, test_data):
 
 
 def test_median_blur_bad_input(test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.small_gray_img, -1)
     with pytest.raises(RuntimeError):

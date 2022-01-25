@@ -4,6 +4,7 @@ from plantcv.plantcv import find_objects
 
 
 def test_find_objects(test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.small_rgb_img)
     mask = cv2.imread(test_data.small_bin_img, -1)
@@ -14,6 +15,7 @@ def test_find_objects(test_data):
 
 
 def test_find_objects_grayscale_input(test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.small_gray_img, -1)
     mask = cv2.imread(test_data.small_bin_img, -1)

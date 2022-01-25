@@ -4,6 +4,7 @@ from plantcv.plantcv import rgb2gray_cmyk
 
 
 def test_rgb2gray_cmyk(test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.small_rgb_img)
     gray_img = rgb2gray_cmyk(rgb_img=img, channel="c")
@@ -12,6 +13,7 @@ def test_rgb2gray_cmyk(test_data):
 
 
 def test_rgb2gray_cmyk_bad_channel(test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.small_rgb_img)
     with pytest.raises(RuntimeError):

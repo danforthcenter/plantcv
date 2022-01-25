@@ -6,6 +6,7 @@ from plantcv.plantcv import roi_objects
 
 @pytest.mark.parametrize("mode,exp", [["largest", 221], ["cutto", 152], ["partial", 221]])
 def test_roi_objects(mode, exp, test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.small_rgb_img)
     cnt, cnt_str = test_data.load_contours(test_data.small_contours_file)
@@ -18,6 +19,7 @@ def test_roi_objects(mode, exp, test_data):
 
 
 def test_roi_objects_bad_input(test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.small_rgb_img)
     cnt, cnt_str = test_data.load_contours(test_data.small_contours_file)
@@ -29,6 +31,7 @@ def test_roi_objects_bad_input(test_data):
 
 
 def test_roi_objects_grayscale_input(test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.small_gray_img, -1)
     cnt, cnt_str = test_data.load_contours(test_data.small_contours_file)
@@ -41,6 +44,7 @@ def test_roi_objects_grayscale_input(test_data):
 
 
 def test_roi_objects_no_overlap(test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.small_rgb_img)
     cnt, cnt_str = test_data.load_contours(test_data.small_contours_file)
@@ -53,6 +57,7 @@ def test_roi_objects_no_overlap(test_data):
 
 
 def test_roi_objects_nested():
+    """Test for PlantCV."""
     # Create test data
     img = np.zeros((100, 100), dtype=np.uint8)
     cnt = [np.array([[[25, 25]], [[25, 49]], [[49, 49]], [[49, 25]]], dtype=np.int32),

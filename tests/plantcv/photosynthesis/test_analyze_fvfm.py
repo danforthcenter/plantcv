@@ -6,6 +6,7 @@ from plantcv.plantcv.photosynthesis import analyze_fvfm
 
 @pytest.mark.parametrize("debug", ["print", "plot", None])
 def test_analyze_fvfm(debug, photosynthesis_test_data, tmpdir):
+    """Test for PlantCV."""
     # Clear outputs
     outputs.clear()
     # Create a test tmp directory
@@ -22,6 +23,7 @@ def test_analyze_fvfm(debug, photosynthesis_test_data, tmpdir):
 
 
 def test_analyze_fvfm_bad_fdark(photosynthesis_test_data):
+    """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     # Read in test data
@@ -34,6 +36,7 @@ def test_analyze_fvfm_bad_fdark(photosynthesis_test_data):
 
 
 def test_analyze_fvfm_bad_input(photosynthesis_test_data):
+    """Test for PlantCV."""
     fdark = cv2.imread(photosynthesis_test_data.fdark)
     fmin = cv2.imread(photosynthesis_test_data.fmin, -1)
     fmax = cv2.imread(photosynthesis_test_data.fmax, -1)

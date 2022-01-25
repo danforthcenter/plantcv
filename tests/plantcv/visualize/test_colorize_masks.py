@@ -5,6 +5,7 @@ from plantcv.plantcv.visualize import colorize_masks
 
 @pytest.mark.parametrize('colors', [['red', 'blue'], [(0, 0, 255), (255, 0, 0)]])
 def test_colorize_masks(colors):
+    """Test for PlantCV."""
     # Create test data
     mask1 = np.zeros((100, 100), dtype=np.uint8)
     mask2 = np.copy(mask1)
@@ -16,11 +17,13 @@ def test_colorize_masks(colors):
 
 
 def test_colorize_masks_bad_input_empty():
+    """Test for PlantCV."""
     with pytest.raises(RuntimeError):
         _ = colorize_masks(masks=[], colors=[])
 
 
 def test_colorize_masks_bad_input_mismatch_number():
+    """Test for PlantCV."""
     # Create test data
     mask1 = np.zeros((100, 100), dtype=np.uint8)
     mask2 = np.copy(mask1)
@@ -31,6 +34,7 @@ def test_colorize_masks_bad_input_mismatch_number():
 
 
 def test_colorize_masks_bad_color_input():
+    """Test for PlantCV."""
     # Create test data
     mask1 = np.zeros((100, 100), dtype=np.uint8)
     mask2 = np.copy(mask1)

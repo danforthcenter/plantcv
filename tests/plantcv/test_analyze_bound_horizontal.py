@@ -5,6 +5,7 @@ from plantcv.plantcv import analyze_bound_horizontal, outputs
 
 @pytest.mark.parametrize('pos,exp', [[200, 58], [-1, 0], [100, 0], [150, 11]])
 def test_analyze_bound_horizontal(pos, exp, test_data):
+    """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     # Read in test data
@@ -16,6 +17,7 @@ def test_analyze_bound_horizontal(pos, exp, test_data):
 
 
 def test_analyze_bound_horizontal_grayscale_image(test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.small_gray_img, -1)
     mask = cv2.imread(test_data.small_bin_img, -1)

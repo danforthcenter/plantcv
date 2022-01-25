@@ -5,6 +5,7 @@ from plantcv.plantcv import dilate
 
 
 def test_dilate(test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.small_bin_img, -1)
     dilate_img = dilate(gray_img=img, ksize=5, i=1)
@@ -13,6 +14,7 @@ def test_dilate(test_data):
 
 
 def test_dilate_small_k(test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.small_bin_img, -1)
     with pytest.raises(ValueError):

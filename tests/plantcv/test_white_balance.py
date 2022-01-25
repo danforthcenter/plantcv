@@ -4,6 +4,7 @@ from plantcv.plantcv import white_balance
 
 
 def test_white_balance_gray_16bit(test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.fmax, -1)
     # Test with mode "hist"
@@ -12,6 +13,7 @@ def test_white_balance_gray_16bit(test_data):
 
 
 def test_white_balance_gray_8bit(test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.small_gray_img, -1)
     # Test with mode "max"
@@ -21,6 +23,7 @@ def test_white_balance_gray_8bit(test_data):
 
 @pytest.mark.parametrize("mode", ["hist", "max"])
 def test_white_balance_rgb(mode, test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.small_rgb_img)
     # Test without an ROI
@@ -32,6 +35,7 @@ def test_white_balance_rgb(mode, test_data):
                                        ['hist', (5., 5, 5, 5)],  # not all integers
                                        ['histogram', (5, 5, 80, 80)]])  # bad mode
 def test_white_balance_bad_input(mode, roi, test_data):
+    """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.small_bin_img, -1)
     with pytest.raises(RuntimeError):

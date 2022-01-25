@@ -5,6 +5,7 @@ from plantcv.plantcv.photosynthesis import read_cropreporter
 
 @pytest.mark.parametrize("debug", ["print", "plot", None])
 def test_read_cropreporter(debug, photosynthesis_test_data, tmpdir):
+    """Test for PlantCV."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("cache")
     params.debug_outdir = cache_dir

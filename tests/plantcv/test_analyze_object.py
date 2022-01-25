@@ -4,6 +4,7 @@ from plantcv.plantcv import analyze_object, outputs
 
 
 def test_analyze_object(test_data):
+    """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     # Read in test data
@@ -15,6 +16,7 @@ def test_analyze_object(test_data):
 
 
 def test_analyze_object_grayscale_input(test_data):
+    """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     # Read in test data
@@ -26,6 +28,7 @@ def test_analyze_object_grayscale_input(test_data):
 
 
 def test_analyze_object_zero_slope(test_data):
+    """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     # Create a test image
@@ -46,6 +49,7 @@ def test_analyze_object_zero_slope(test_data):
 
 
 def test_analyze_object_longest_axis_2d(test_data):
+    """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     # Create a test image
@@ -62,6 +66,7 @@ def test_analyze_object_longest_axis_2d(test_data):
 
 
 def test_analyze_object_longest_axis_2e(test_data):
+    """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     # Create a test image
@@ -83,6 +88,7 @@ def test_analyze_object_longest_axis_2e(test_data):
 
 
 def test_analyze_object_small_contour(test_data):
+    """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     # Read in test data

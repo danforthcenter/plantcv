@@ -4,6 +4,7 @@ from plantcv.plantcv import outputs
 
 
 def test_analyze_spectral(hyperspectral_test_data):
+    """Test for PlantCV."""
     # Clear previous outputs
     outputs.clear()
     mask = cv2.imread(hyperspectral_test_data.hsi_mask_file, -1)
