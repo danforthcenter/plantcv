@@ -49,19 +49,17 @@ def analyze_stem(rgb_img, stem_objects, label="default"):
                             method='plantcv.plantcv.morphology.analyze_stem', scale='None', datatype=float,
                             value=stem_length, label=None)
 
-    if params.debug is not None:
-        # Draw culm_height
-        cv2.line(labeled_img, (int(stem_x), stem_y), (int(stem_x), stem_y + height), (0, 255, 0), params.line_thickness)
-        # Draw combined stem angle
-        x_min = 0  # Set bounds for regression lines to get drawn
-        x_max = img_x
-        intercept1 = int(((x - x_min) * slope) + y)
-        intercept2 = int(((x - x_max) * slope) + y)
-        if slope > 1000000 or slope < -1000000:
-            print("Slope  is ", slope, " and cannot be plotted.")
-        else:
-            cv2.line(labeled_img, (x_max - 1, intercept2), (x_min, intercept1), (0, 0, 255), 1)
-        _debug(visual=labeled_img,
-               filename=os.path.join(params.debug_outdir, f"{params.device}_stem_analze.png"))
+    # Draw culm_height
+    cv2.line(labeled_img, (int(stem_x), stem_y), (int(stem_x), stem_y + height), (0, 255, 0), params.line_thickness)
+    # Draw combined stem angle
+    x_min = 0  # Set bounds for regression lines to get drawn
+    x_max = img_x
+    intercept1 = int(((x - x_min) * slope) + y)
+    intercept2 = int(((x - x_max) * slope) + y)
+    if slope > 1000000 or slope < -1000000:
+        print("Slope  is ", slope, " and cannot be plotted.")
+    else:
+        cv2.line(labeled_img, (x_max - 1, intercept2), (x_min, intercept1), (0, 0, 255), 1)
+    _debug(visual=labeled_img, filename=os.path.join(params.debug_outdir, f"{params.device}_stem_analze.png"))
 
     return labeled_img

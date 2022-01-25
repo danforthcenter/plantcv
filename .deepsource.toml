@@ -8,3 +8,5 @@ enabled = true
 
   [analyzers.meta]
   runtime_version = "3.x.x"
+  max_line_length = 127
+  skip_doc_coverage = ["magic", "init", "class", "module"]
