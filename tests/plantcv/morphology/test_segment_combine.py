@@ -23,4 +23,4 @@ def test_segment_combine_bad_input(morphology_test_data):
     skel = cv2.imread(morphology_test_data.skel_img, -1)
     edges = morphology_test_data.load_segments(morphology_test_data.segments_file, "edges")
     with pytest.raises(RuntimeError):
-        _, new_objects = segment_combine(segment_list=[0.5, 1.5], objects=edges, mask=skel)
+        _ = segment_combine(segment_list=[0.5, 1.5], objects=edges, mask=skel)
