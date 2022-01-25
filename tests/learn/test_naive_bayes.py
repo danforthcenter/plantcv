@@ -3,6 +3,7 @@ from plantcv.learn import naive_bayes, naive_bayes_multiclass
 
 
 def test_naive_bayes(learn_test_data, tmpdir):
+    """PlantCV test function."""
     # Create tmp directory
     tmp_dir = tmpdir.mkdir("cache")
     imgdir = os.path.join(learn_test_data.train_data, "images")
@@ -14,6 +15,7 @@ def test_naive_bayes(learn_test_data, tmpdir):
 
 
 def test_naive_bayes_multiclass(learn_test_data, tmpdir):
+    """PlantCV test function."""
     # Create tmp directory
     tmp_dir = tmpdir.mkdir("cache")
     # Run the naive Bayes multiclass training module

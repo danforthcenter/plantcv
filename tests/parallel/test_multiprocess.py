@@ -6,6 +6,7 @@ from plantcv.parallel import create_dask_cluster, multiprocess
 
 
 def test_create_dask_cluster_local(tmpdir):
+    """PlantCV test function."""
     # Create tmp directory
     tmp_dir = tmpdir.mkdir("cache")
     # Set the temp directory for dask
@@ -17,6 +18,7 @@ def test_create_dask_cluster_local(tmpdir):
 
 
 def test_create_dask_cluster(tmpdir):
+    """PlantCV test function."""
     # Create tmp directory
     tmp_dir = tmpdir.mkdir("cache")
     # Set the temp directory for dask
@@ -28,11 +30,13 @@ def test_create_dask_cluster(tmpdir):
 
 
 def test_create_dask_cluster_invalid_cluster():
+    """PlantCV test function."""
     with pytest.raises(ValueError):
         _ = create_dask_cluster(cluster="Skynet", cluster_config={})
 
 
 def test_plantcv_parallel_multiprocess(parallel_test_data, tmpdir):
+    """PlantCV test function."""
     # Create tmp directory
     tmp_dir = tmpdir.mkdir("sub")
     # Set the temp directory for dask

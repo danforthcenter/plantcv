@@ -3,6 +3,7 @@ from plantcv.parallel import check_date_range, convert_datetime_to_unixtime, met
 
 
 def test_metadata_parser_snapshots(parallel_test_data):
+    """PlantCV test function."""
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.snapshot_imgdir
@@ -20,6 +21,7 @@ def test_metadata_parser_snapshots(parallel_test_data):
 
 
 def test_metadata_parser_snapshots_coimg(parallel_test_data):
+    """PlantCV test function."""
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.snapshot_imgdir
@@ -39,6 +41,7 @@ def test_metadata_parser_snapshots_coimg(parallel_test_data):
 
 @pytest.mark.parametrize("subdirs", [True, False])
 def test_metadata_parser_images(parallel_test_data, subdirs):
+    """PlantCV test function."""
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.flat_imgdir
@@ -57,6 +60,7 @@ def test_metadata_parser_images(parallel_test_data, subdirs):
 
 
 def test_metadata_parser_multivalue_filter(parallel_test_data):
+    """PlantCV test function."""
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.flat_imgdir
@@ -71,6 +75,7 @@ def test_metadata_parser_multivalue_filter(parallel_test_data):
 
 
 def test_metadata_parser_multivalue_filter_nomatch(parallel_test_data):
+    """PlantCV test function."""
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.flat_imgdir
@@ -85,6 +90,7 @@ def test_metadata_parser_multivalue_filter_nomatch(parallel_test_data):
 
 
 def test_metadata_parser_regex(parallel_test_data):
+    """PlantCV test function."""
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.flat_imgdir
@@ -103,6 +109,7 @@ def test_metadata_parser_regex(parallel_test_data):
 
 
 def test_metadata_parser_images_outside_daterange(parallel_test_data):
+    """PlantCV test function."""
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.flat_imgdir_dates
@@ -121,6 +128,7 @@ def test_metadata_parser_images_outside_daterange(parallel_test_data):
 
 
 def test_metadata_parser_no_default_dates(parallel_test_data):
+    """PlantCV test function."""
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.snapshot_imgdir
@@ -138,6 +146,7 @@ def test_metadata_parser_no_default_dates(parallel_test_data):
 
 
 def test_metadata_parser_snapshot_outside_daterange(parallel_test_data):
+    """PlantCV test function."""
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.snapshot_imgdir
@@ -156,6 +165,7 @@ def test_metadata_parser_snapshot_outside_daterange(parallel_test_data):
 
 
 def test_metadata_parser_fail_images(parallel_test_data):
+    """PlantCV test function."""
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.snapshot_imgdir
@@ -174,6 +184,7 @@ def test_metadata_parser_fail_images(parallel_test_data):
 
 
 def test_metadata_parser_images_with_frame(parallel_test_data):
+    """PlantCV test function."""
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.snapshot_imgdir
@@ -193,6 +204,7 @@ def test_metadata_parser_images_with_frame(parallel_test_data):
 
 
 def test_metadata_parser_images_no_frame(parallel_test_data):
+    """PlantCV test function."""
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.snapshot_imgdir
@@ -212,6 +224,7 @@ def test_metadata_parser_images_no_frame(parallel_test_data):
 
 
 def test_metadata_parser_images_no_camera(parallel_test_data):
+    """PlantCV test function."""
     # Create config instance
     config = WorkflowConfig()
     config.input_dir = parallel_test_data.snapshot_imgdir
@@ -253,16 +266,19 @@ def test_metadata_parser_subdaily_timestampformat(parallel_test_data):
 
 
 def test_convert_datetime_to_unixtime():
+    """PlantCV test function."""
     unix_time = convert_datetime_to_unixtime(timestamp_str="1970-01-01", date_format="%Y-%m-%d")
     assert unix_time == 0
 
 
 def test_convert_datetime_to_unixtime_bad_strptime():
+    """PlantCV test function."""
     with pytest.raises(SystemExit):
         _ = convert_datetime_to_unixtime(timestamp_str="1970-01-01", date_format="%Y-%m")
 
 
 def test_check_date_range_wrongdateformat():
+    """PlantCV test function."""
     start_date = 10
     end_date = 10
     img_time = '2010-10-10'

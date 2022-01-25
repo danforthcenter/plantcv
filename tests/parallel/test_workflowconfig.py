@@ -2,6 +2,7 @@ from plantcv.parallel import WorkflowConfig
 
 
 def test_save_config_file(parallel_test_data, tmpdir):
+    """PlantCV test function."""
     # Create a tmp JSON file
     template_file = tmpdir.mkdir("cache").join("config.json")
     # Create config instance
@@ -14,6 +15,7 @@ def test_save_config_file(parallel_test_data, tmpdir):
 
 
 def test_import_config_file(parallel_test_data):
+    """PlantCV test function."""
     # Create config instance
     config = WorkflowConfig()
     # import config file
@@ -23,6 +25,7 @@ def test_import_config_file(parallel_test_data):
 
 
 def test_validate_config(parallel_test_data, tmpdir):
+    """PlantCV test function."""
     # Create a test tmp directory
     img_outdir = tmpdir.mkdir("cache")
     # Create config instance
@@ -38,6 +41,7 @@ def test_validate_config(parallel_test_data, tmpdir):
 
 
 def test_invalid_startdate(parallel_test_data, tmpdir):
+    """PlantCV test function."""
     # Create a test tmp directory
     img_outdir = tmpdir.mkdir("cache")
     # Create config instance
@@ -54,6 +58,7 @@ def test_invalid_startdate(parallel_test_data, tmpdir):
 
 
 def test_invalid_enddate(parallel_test_data, tmpdir):
+    """PlantCV test function."""
     # Create a test tmp directory
     img_outdir = tmpdir.mkdir("cache")
     # Create config instance
@@ -71,6 +76,7 @@ def test_invalid_enddate(parallel_test_data, tmpdir):
 
 
 def test_invalid_metadata_terms():
+    """PlantCV test function."""
     # Create config instance
     config = WorkflowConfig()
     # Set invalid values in config
@@ -82,6 +88,7 @@ def test_invalid_metadata_terms():
 
 
 def test_invalid_filename_metadata():
+    """PlantCV test function."""
     # Create config instance
     config = WorkflowConfig()
     # Set invalid values in config
@@ -92,6 +99,7 @@ def test_invalid_filename_metadata():
 
 
 def test_invalid_cluster():
+    """PlantCV test function."""
     # Create config instance
     config = WorkflowConfig()
     # Set invalid values in config
