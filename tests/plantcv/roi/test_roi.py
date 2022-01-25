@@ -61,7 +61,6 @@ def test_rectangle_out_of_frame(roi_test_data):
 def test_circle(roi_test_data):
     # Read in test RGB image
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
-    # _, _ = circle(x=100, y=100, r=50, img=rgb_img)
     roi, _ = circle(x=100, y=100, r=75, img=rgb_img)
     # Assert the contours and hierarchy lists contain only the ROI
     assert np.shape(roi) == (1, 424, 1, 2)
@@ -110,7 +109,6 @@ def test_ellipse_out_of_frame(roi_test_data):
 def test_multi(roi_test_data):
     # Read in test RGB image
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
-    # _ = multi(rgb_img, coord=[(25, 120), (100, 100)], radius=20)
     rois, _ = multi(rgb_img, coord=(10, 10), radius=10, spacing=(10, 10), nrows=2, ncols=2)
     # Assert the contours has 18 ROIs
     assert len(rois) == 4

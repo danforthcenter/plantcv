@@ -57,7 +57,6 @@ def test_mean_incorrect_object_type(threshold_test_data):
 def test_otsu(objtype, threshold_test_data):
     # Read in test data
     gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
-    # gray_img = cv2.imread(os.path.join(TEST_DATA, TEST_INPUT_GREENMAG), -1)
     binary_img = otsu(gray_img=gray_img, max_value=255, object_type=objtype)
     # Assert that the output image has the dimensions of the input image and is binary
     assert gray_img.shape == binary_img.shape and np.array_equal(np.unique(binary_img), np.array([0, 255]))
