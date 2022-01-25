@@ -30,4 +30,5 @@ class MorphologyTestData:
 
 @pytest.fixture(scope="session")
 def morphology_test_data():
+    """Test data object for the PlantCV morphology submodule."""
     return MorphologyTestData()

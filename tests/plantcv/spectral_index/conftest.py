@@ -23,4 +23,5 @@ class SpectralIndexTestData:
 
 @pytest.fixture(scope="session")
 def spectral_index_test_data():
+    """Test data object for the PlantCV spectral_index submodule."""
     return SpectralIndexTestData()

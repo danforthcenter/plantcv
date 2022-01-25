@@ -289,4 +289,5 @@ class ParallelTestData:
 
 @pytest.fixture(scope="session")
 def parallel_test_data():
+    """Test data object for the PlantCV parallel submodule."""
     return ParallelTestData()

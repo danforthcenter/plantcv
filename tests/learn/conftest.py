@@ -19,4 +19,5 @@ class LearnTestData:
 
 @pytest.fixture(scope="session")
 def learn_test_data():
+    """Test data object for the PlantCV learn submodule."""
     return LearnTestData()

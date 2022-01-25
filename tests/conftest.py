@@ -100,4 +100,5 @@ class TestData:
 
 @pytest.fixture(scope="session")
 def test_data():
+    """Test data object for the main PlantCV module."""
     return TestData()

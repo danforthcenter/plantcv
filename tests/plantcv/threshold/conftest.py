@@ -19,4 +19,5 @@ class ThresholdTestData:
 
 @pytest.fixture(scope="session")
 def threshold_test_data():
+    """Test data object for the PlantCV threshold submodule."""
     return ThresholdTestData()

@@ -5,6 +5,7 @@ import argparse
 
 
 def options():
+    """Parse command-line options."""
     parser = argparse.ArgumentParser(description="Test PlantCV workflow.")
     parser.add_argument("--image", help="Input image file.", required=True)
     parser.add_argument("--debug", help="Turn on debug, prints intermediate images.", default=None)
@@ -17,6 +18,7 @@ def options():
 
 
 def main():
+    """Run main program."""
     args = options()
     _ = pcv.__version__
 

@@ -25,4 +25,5 @@ class PhotosynthesisTestData:
 
 @pytest.fixture(scope="session")
 def photosynthesis_test_data():
+    """Test data object for the PlantCV photosynthesis submodule."""
     return PhotosynthesisTestData()

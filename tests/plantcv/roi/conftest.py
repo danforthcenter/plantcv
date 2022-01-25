@@ -28,4 +28,5 @@ class RoiTestData:
 
 @pytest.fixture(scope="session")
 def roi_test_data():
+    """Test data object for the PlantCV roi submodule."""
     return RoiTestData()

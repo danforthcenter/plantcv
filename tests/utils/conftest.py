@@ -21,4 +21,5 @@ class UtilsTestData:
 
 @pytest.fixture(scope="session")
 def utils_test_data():
+    """Test data object for the PlantCV utils submodule."""
     return UtilsTestData()

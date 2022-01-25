@@ -31,4 +31,5 @@ class HyperspectralTestData:
 
 @pytest.fixture(scope="session")
 def hyperspectral_test_data():
+    """Test data object for the PlantCV hyperspectral submodule."""
     return HyperspectralTestData()

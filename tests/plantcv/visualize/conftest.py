@@ -39,4 +39,5 @@ class VisualizeTestData:
 
 @pytest.fixture(scope="session")
 def visualize_test_data():
+    """Test data object for the PlantCV visualize submodule."""
     return VisualizeTestData()
