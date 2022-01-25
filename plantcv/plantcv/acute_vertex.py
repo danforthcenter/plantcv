@@ -41,7 +41,7 @@ def acute_vertex(img, obj, win, thresh, sep, label="default"):
     params.device += 1
     chain = []
     if not np.any(obj):
-        acute = ('NA', 'NA')
+        acute = ['NA', 'NA']
         return acute
     for i in range(len(obj) - win):
         x, y = obj[i].ravel()
@@ -54,13 +54,12 @@ def acute_vertex(img, obj, win, thresh, sep, label="default"):
                       (y - post_y))
         P23 = np.sqrt((pre_x - post_x) * (pre_x - post_x) + (pre_y - post_y) *
                       (pre_y - post_y))
+        den = 0.001
         if (2 * P12 * P13) > 0.001:
-            dot = (P12 * P12 + P13 * P13 - P23 * P23) / (2 * P12 * P13)
-        elif (2 * P12 * P13) < 0.001:
-            dot = (P12 * P12 + P13 * P13 - P23 * P23) / 0.001
+            den = (2 * P12 * P13)
+        dot = (P12 * P12 + P13 * P13 - P23 * P23) / den
 
-        if dot < -1:  # If float exceeds -1 prevent arcos error and force to equal -1
-            dot = -1
+        dot = -1 if dot < -1 else dot  # If float exceeds -1 prevent arcos error and force to equal -1
         ang = math.degrees(math.acos(dot))
         chain.append(ang)
 

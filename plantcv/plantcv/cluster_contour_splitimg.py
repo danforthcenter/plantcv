@@ -48,10 +48,7 @@ def cluster_contour_splitimg(img, grouped_contour_indexes, contours, hierarchy, 
     i = datetime.now()
     timenow = i.strftime('%m-%d-%Y_%H:%M:%S')
 
-    if file is None:
-        filebase = timenow
-    else:
-        filebase = os.path.splitext(file)[0]
+    filebase = timenow if file is None else os.path.splitext(file)[0]
 
     if filenames is None:
         namelist = []
@@ -130,9 +127,7 @@ def cluster_contour_splitimg(img, grouped_contour_indexes, contours, hierarchy, 
 
         mask_binary = mask[:, :, 0]
 
-        if np.sum(mask_binary) == 0:
-            pass
-        else:
+        if np.sum(mask_binary) != 0:
             retval, mask_binary = cv2.threshold(mask_binary, 254, 255, cv2.THRESH_BINARY)
             masked1 = apply_mask(masked_img, mask_binary, 'white')
             output_imgs.append(masked1)

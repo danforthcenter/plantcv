@@ -58,13 +58,12 @@ def obj_sizes(img, mask, num_objects=100):
         m = cv2.moments(contour)
         # Skip iteration if contour area is zero
         # This is needed because cv2.contourArea can be > 0 while moments area is 0.
-        if m['m00'] == 0:
-            continue
-        area_vals.append(m['m00'])
-        label_coord_x.append(int(m["m10"] / m["m00"]))
-        label_coord_y.append(int(m["m01"] / m["m00"]))
-        # Fill in objects with color
-        cv2.drawContours(plotting_img, sorted_objects, i, rand_color[i], thickness=-1)
+        if m['m00'] != 0:
+            area_vals.append(m['m00'])
+            label_coord_x.append(int(m["m10"] / m["m00"]))
+            label_coord_y.append(int(m["m01"] / m["m00"]))
+            # Fill in objects with color
+            cv2.drawContours(plotting_img, sorted_objects, i, rand_color[i], thickness=-1)
 
     # Label with area values
     for c, value in enumerate(area_vals):
