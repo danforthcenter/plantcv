@@ -232,8 +232,8 @@ def test_metadata_parser_images_no_camera(parallel_test_data):
 
 def test_metadata_parser_subdaily_timestampformat(parallel_test_data):
     '''
-    timestampformats with only hours and smaller units of time were failing if the script was run earlier in the day than the
-    images were taken. this was fixed by setting end_date to 23-59-59 if we don't detect the year-month-day
+    The timestampformats with only hours and smaller units of time were failing if the script was run earlier in the day than
+    the images were taken. this was fixed by setting end_date to 23-59-59 if we don't detect the year-month-day
     '''
     # Create config instance
     config = WorkflowConfig()
