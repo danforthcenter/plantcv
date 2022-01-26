@@ -6,6 +6,7 @@ from plantcv.plantcv.homology import starscape
 
 @pytest.mark.parametrize("debug", ["print", "plot", None])
 def test_starscape(debug, tmpdir, homology_test_data):
+    """Test for PlantCV."""
     # Set debug
     params.debug = debug
     # Create a test tmp directory
@@ -22,6 +23,7 @@ def test_starscape(debug, tmpdir, homology_test_data):
 
 @pytest.mark.parametrize("debug", ["plot", None])
 def test_starscape_2d(debug, homology_test_data):
+    """Test for PlantCV."""
     # Set debug
     params.debug = debug
     # Read input dataframe

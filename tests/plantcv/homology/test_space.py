@@ -5,6 +5,7 @@ from plantcv.plantcv.homology import space
 
 @pytest.mark.parametrize("debug", ["plot", None])
 def test_space(debug, homology_test_data):
+    """Test for PlantCV."""
     # Set debug
     params.debug = debug
     # Read input dataframe

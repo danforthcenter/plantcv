@@ -4,6 +4,7 @@ from plantcv.plantcv import Points
 
 
 def test_points_interactive(annotate_test_data):
+    """Test for PlantCV."""
     # Read in a test grayscale image
     img = cv2.imread(annotate_test_data.small_rgb_img)
 

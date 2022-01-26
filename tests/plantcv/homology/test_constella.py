@@ -6,6 +6,7 @@ from plantcv.plantcv.homology import constella
 
 @pytest.mark.parametrize("debug", ["print", "plot", None])
 def test_constella(debug, tmpdir, homology_test_data):
+    """Test for PlantCV."""
     # Set debug
     params.debug = debug
     # Create a test tmp directory
@@ -21,6 +22,7 @@ def test_constella(debug, tmpdir, homology_test_data):
 
 
 def test_constella_one_time(homology_test_data):
+    """Test for PlantCV."""
     # Read input dataframes
     cur_plms = homology_test_data.read_df(homology_test_data.plms_space)
     cur_plms.group = None
@@ -32,6 +34,7 @@ def test_constella_one_time(homology_test_data):
 
 
 def test_constella_redundant_plm(homology_test_data):
+    """Test for PlantCV."""
     # Read input dataframes
     cur_plms = homology_test_data.read_df(homology_test_data.plms_space)
     cur_plms.group = None
