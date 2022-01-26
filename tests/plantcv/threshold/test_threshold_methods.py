@@ -215,7 +215,7 @@ def test_mask_bad_input_color_img(threshold_test_data):
                                         ['l', True, 255], ['a', True, 255], ['b', True, 255],
                                         ['h', False, 0], ['s', False, 0], ['v', False, 0],
                                         ['gray', True, 255], ['index', True, 0]])
-def test_plantcv_threshold_threshold_2_channels(y_ch, abv, expected):
+def test_dual_channels(y_ch, abv, expected):
     # Create a synthetic RGB image containing a single pixel
     img = np.array([100,50,200], dtype=np.uint8).reshape((1,1,3))
     # first two points for a straight line of slope 1 and y-intercept of 0
@@ -225,7 +225,7 @@ def test_plantcv_threshold_threshold_2_channels(y_ch, abv, expected):
     mask = dual_channels(img, x_channel=x_ch, y_channel=y_ch, points=pts, above=abv, max_value=255)
     assert mask[0,0] == expected
 
-def test_plantcv_threshold_threshold_2_channels_bad_points():
+def test_dual_channels_bad_points():
     # Create a synthetic RGB image containing a single pixel
     img = np.array([100,50,200], dtype=np.uint8).reshape((1,1,3))
     # only one point given
