@@ -1,7 +1,8 @@
 import pytest
 import numpy as np
 import cv2
-from plantcv.plantcv.threshold import binary, gaussian, mean, otsu, custom_range, saturation, triangle, texture, mask_bad
+from plantcv.plantcv.threshold import binary, gaussian, mean, otsu, custom_range, saturation, triangle, texture, \
+    mask_bad, threshold_2_channels
 from plantcv.plantcv import params
 
 
@@ -208,3 +209,29 @@ def test_mask_bad_input_color_img(threshold_test_data):
     bad_img = cv2.imread(threshold_test_data.small_rgb_img)
     with pytest.raises(RuntimeError):
         _ = mask_bad(bad_img, bad_type='nan')
+
+
+@pytest.mark.parametrize("y_ch,abv,expected", [['R', True, 255], ['G', True, 0],
+                                        ['l', True, 255], ['a', True, 255], ['b', True, 255],
+                                        ['h', False, 0], ['s', False, 0], ['v', False, 0],
+                                        ['gray', True, 255], ['index', True, 0]])
+def test_plantcv_threshold_threshold_2_channels(y_ch, abv, expected):
+    # Create a synthetic RGB image containing a single pixel
+    img = np.array([100,50,200], dtype=np.uint8).reshape((1,1,3))
+    # first two points for a straight line of slope 1 and y-intercept of 0
+    # last two points are ignored ut trigger the warning
+    pts = [(0,0),(255,255), (0,1), (2,3)]
+    x_ch = 'B'
+    mask = threshold_2_channels(img, x_channel=x_ch, y_channel=y_ch, points=pts, above=abv, max_value=255)
+    assert mask[0,0] == expected
+
+def test_plantcv_threshold_threshold_2_channels_bad_points():
+    # Create a synthetic RGB image containing a single pixel
+    img = np.array([100,50,200], dtype=np.uint8).reshape((1,1,3))
+    # only one point given
+    pts = [(0,0)]
+    x_ch = 'B'
+    y_ch = 'R'
+    with pytest.raises(RuntimeError):
+        mask = threshold_2_channels(img, x_channel=x_ch, y_channel=y_ch, points=pts, above=True, max_value=255)
+
