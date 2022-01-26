@@ -16,14 +16,8 @@ class PhotosynthesisTestData:
         self.datadir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "testdata")
         # CropReporter data file
         self.cropreporter = os.path.join(self.datadir, "PSII_HDR_020321_WT_TOP_1.INF")
-        # Fdark image
-        self.fdark = os.path.join(self.datadir, "FLUO_TV_dark.png")
-        # Fmin image
-        self.fmin = os.path.join(self.datadir, "FLUO_TV_min.png")
-        # Fmax image
-        self.fmax = os.path.join(self.datadir, "FLUO_TV_max.png")
         # Mask image
-        self.ps_mask = os.path.join(self.datadir, "FLUO_TV_MASK.png")
+        self.ps_mask = os.path.join(self.datadir, "PSII_HDR_020321_WT_TOP_1_mask.png")
 
     @staticmethod
     def psii_walz(var):
