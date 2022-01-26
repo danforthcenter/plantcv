@@ -4,7 +4,7 @@ Creates a binary image from an RGB image based on the pixels values in two chann
 The x and y channels define a 2D plane and the two input points define a straight line.
 Pixels in the plane above and below the straight line are assigned two different values.
 
-**plantcv.threshold.threshold_2_channels**(*rgb_img, x_channel, y_channel, points, above=True, max_value=255*)
+**plantcv.threshold.dual_channels**(*rgb_img, x_channel, y_channel, points, above=True, max_value=255*)
 
 **returns** thresholded/binary image
 
