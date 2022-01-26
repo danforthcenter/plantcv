@@ -10,6 +10,7 @@ from plantcv.plantcv.photosynthesis import analyze_yii
     # test lightadapted control seq and measurement_labels arg
     ["lightadapted", ["Fq/Fm"], 0.75]])
 def test_analyze_yii_cropreporter(prot, mlabels, exp, photosynthesis_test_data):
+    """Test for PlantCV."""
     # Clear results
     outputs.clear()
     _ = analyze_yii(ps_da=photosynthesis_test_data.psii_cropreporter(prot),
@@ -25,6 +26,7 @@ def test_analyze_yii_cropreporter(prot, mlabels, exp, photosynthesis_test_data):
     # test lightadapted control seq and measurement_labels arg
     ["lightadapted", [f't{i*40}' for i in np.arange(1, 3)], float((185 - 32) / 185)]])
 def test_analyze_yii_waltz(prot, mlabels, exp, photosynthesis_test_data):
+    """Test for PlantCV."""
     # Clear results
     outputs.clear()
     _ = analyze_yii(ps_da=photosynthesis_test_data.psii_walz(prot),
@@ -42,6 +44,7 @@ def test_analyze_yii_waltz(prot, mlabels, exp, photosynthesis_test_data):
                           # test bad measurement_labels
                           [['f', 'm'], np.ones((10, 10), dtype=np.uint8)]])
 def test_analyze_yii_fatalerror(mlabels, tmask, photosynthesis_test_data):
+    """Test for PlantCV."""
     tmask[0, 0] = 255
     with pytest.raises(RuntimeError):
         _ = analyze_yii(ps_da=photosynthesis_test_data.psii_cropreporter('darkadapted'), mask=tmask,

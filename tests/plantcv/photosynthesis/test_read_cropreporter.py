@@ -5,11 +5,13 @@ from plantcv.plantcv.photosynthesis import read_cropreporter
 
 
 def test_read_cropreporter(photosynthesis_test_data):
+    """Test for PlantCV."""
     ps = read_cropreporter(filename=photosynthesis_test_data.cropreporter)
     assert isinstance(ps, PSII_data) and ps.darkadapted.shape == (966, 1296, 21, 1)
 
 
 def test_read_cropreporter_spc_only(photosynthesis_test_data, tmpdir):
+    """Test for PlantCV."""
     # Create a test tmp directory
     cache_dir = tmpdir.mkdir("sub")
     # Create dataset with only SPC
