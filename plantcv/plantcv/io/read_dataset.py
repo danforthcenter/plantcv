@@ -1,20 +1,21 @@
+# Read dataset of images
+
 import os
 import re
 
 
-def read_dataset(source_path, pattern=''):
+def read_dataset(source_path, pattern='', sort=True):
     """
     Read a dataset of images as a list of paths.
-
     Inputs:
     source_path  = Path to the directory containing the images
     pattern      = Optional, return only filenames containing the pattern
-
+    sort         = True by default, sorts the paths alphabetically
     Returns:
     dataset = List of paths to the images in the source path
-
     :param source_path: str
     :param pattern: str
+    :param sort: bool
     :return dataset: list
     """
     if not os.path.exists(source_path):
@@ -31,5 +32,8 @@ def read_dataset(source_path, pattern=''):
                 name, ext = os.path.splitext(file)
                 if ext.lower() in img_extensions:
                     img_path_list.append(os.path.join(root, file))
+
+    if sort is True:
+        img_path_list = sorted(img_path_list)
 
     return img_path_list
