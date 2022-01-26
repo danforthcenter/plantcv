@@ -10,4 +10,4 @@ from plantcv.plantcv.threshold.threshold_methods import mask_bad
 from plantcv.plantcv.threshold.threshold_methods import dual_channels
 
 __all__ = ["binary", "gaussian", "mean", "otsu", "triangle", "texture", "custom_range",
-            "saturation", "mask_bad", "dual_channels", ]
+           "saturation", "mask_bad", "dual_channels", ]

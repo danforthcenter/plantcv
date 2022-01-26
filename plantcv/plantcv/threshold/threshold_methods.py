@@ -758,31 +758,33 @@ def mask_bad(float_img, bad_type='native'):
 
     return mask
 
+
 # functions to get a given channel with parameters compatible
 # with rgb2gray_lab and rgb2gray_hsv to use in the dict
 def _get_R(rgb_img, _):
     """ Get the red channel from a RGB image """
-    return rgb_img[:,:,2]
+    return rgb_img[:, :, 2]
 
 
 def _get_G(rgb_img, _):
     """ Get the green channel from a RGB image """
-    return rgb_img[:,:,1]
+    return rgb_img[:, :, 1]
 
 
 def _get_B(rgb_img, _):
     """ Get the blue channel from a RGB image """
-    return rgb_img[:,:,0]
+    return rgb_img[:, :, 0]
 
 
 def _get_gray(rgb_img, _):
     """ Get the gray scale transformation of a RGB image """
     return rgb2gray(rgb_img=rgb_img)
 
+
 def _get_index(rgb_img, _):
     """ Get a vector with linear indices of the pixels in an image """
-    h,w,_ = rgb_img.shape
-    return np.arange(h*w).reshape(h,w)
+    h, w, _ = rgb_img.shape
+    return np.arange(h*w).reshape(h, w)
 
 
 def _not_valid(*args):
@@ -848,7 +850,7 @@ def dual_channels(rgb_img, x_channel, y_channel, points, above=True, max_value=2
     x0, y0 = points[0]
     x1, y1 = points[1]
 
-    m = (y1-y0) / (x1-x0+1e-10) # avoid division by 0
+    m = (y1-y0) / (x1-x0+1e-10)  # avoid division by 0
     b = y0 - m*x0
 
     y_line = m*img_x_ch + b
