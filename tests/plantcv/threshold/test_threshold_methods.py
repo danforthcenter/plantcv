@@ -225,6 +225,7 @@ def test_dual_channels(y_ch, abv, expected):
     mask = dual_channels(img, x_channel=x_ch, y_channel=y_ch, points=pts, above=abv, max_value=255)
     assert mask[0,0] == expected
 
+
 def test_dual_channels_bad_points():
     # Create a synthetic RGB image containing a single pixel
     img = np.array([100,50,200], dtype=np.uint8).reshape((1,1,3))
@@ -234,4 +235,13 @@ def test_dual_channels_bad_points():
     y_ch = 'R'
     with pytest.raises(RuntimeError):
         mask = dual_channels(img, x_channel=x_ch, y_channel=y_ch, points=pts, above=True, max_value=255)
+
+
+def test_dual_channels_bad_channel():
+    # Create a synthetic RGB image containing a single pixel
+    img = np.array([100,50,200], dtype=np.uint8).reshape((1,1,3))
+    # only one point given
+    pts = [(0,0),(255,255)]
+    with pytest.raises(RuntimeError):
+        mask = dual_channels(img, x_channel='wrong_ch', y_channel='index', points=pts, above=True, max_value=255)
 
