@@ -890,10 +890,10 @@ pages for more details on the input and output variable types.
 * pre v3.9: NA
 * post v3.9: filtered_img = **plantcv.stdev_filter**(*img, kszie, borders="nearest"*)
 
-#### plantcv.threshold.threshold_2_channels
+#### plantcv.threshold.dual_channels
 
 * pre v4.0: NA
-* post v4.0: bin_img **plantcv.threshold.threshold_2_channels**(*rgb_img, x_channel, y_channel, points, above=True, max_value=255*)
+* post v4.0: bin_img = **plantcv.threshold.dual_channels**(*rgb_img, x_channel, y_channel, points, above=True, max_value=255*)
 
 #### plantcv.threshold.binary
 
