@@ -21,7 +21,7 @@ def test_plantcv_visualize_pixel_scatter_plot(ch, tmpdir):
     assert 1
 
 
-def test_plantcv_visualize_pixel_scatter_plot_wrong_ch(ch, tmpdir):
+def test_plantcv_visualize_pixel_scatter_plot_wrong_ch(tmpdir):
     """Test for PlantCV."""
     # Create a tmp directory
     cache_dir = tmpdir.mkdir("cache")
