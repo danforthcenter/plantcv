@@ -30,54 +30,32 @@ def output_mask(img, mask, filename, outdir=None, mask_only=False):
     """
     analysis_images = []
 
-    directory = outdir
-    if outdir is None:
-        directory = os.getcwd()
+    directory = os.getcwd() if outdir is None else outdir
 
+    # Return values
+    results = []
+
+    # Save the original image unless mask_only=True
     if not mask_only:
         path = os.path.join(str(directory), "ori-images")
-
-        if os.path.exists(path):
-            imgpath = os.path.join(str(path), str(filename))
-            print_image(img, imgpath)
-            analysis_images.append(['IMAGE', 'ori-img', imgpath])
-
-        else:
-            os.mkdir(path)
-            imgpath = os.path.join(str(path), str(filename))
-            print_image(img, imgpath)
-            analysis_images.append(['IMAGE', 'ori-img', imgpath])
-
-        path1 = os.path.join(str(directory), "mask-images")
-
-        if os. path.exists(path1):
-            maskpath = os.path.join(str(path1), str(filename))
-            print_image(mask, maskpath)
-            analysis_images.append(['IMAGE', 'mask', maskpath])
-        else:
-            os.mkdir(path1)
-            maskpath = os.path.join(str(path1), str(filename))
-            print_image(mask, maskpath)
-            analysis_images.append(['IMAGE', 'mask', maskpath])
-
+        os.makedirs(path, exist_ok=True)
+        imgpath = os.path.join(str(path), str(filename))
+        print_image(img, imgpath)
+        analysis_images.append(['IMAGE', 'ori-img', imgpath])
+        results.append(imgpath)
+        # Print/plot original image
         _debug(visual=img, filename=os.path.join(params.debug_outdir, f"{params.device}_ori-img.png"))
-        _debug(visual=mask, filename=os.path.join(params.debug_outdir, f"{params.device}_mask-img.png"))
 
-        return imgpath, maskpath, analysis_images
+    # Save the mask
+    path = os.path.join(str(directory), "mask-images")
+    os.makedirs(path, exist_ok=True)
+    maskpath = os.path.join(str(path), str(filename))
+    print_image(mask, maskpath)
+    analysis_images.append(['IMAGE', 'mask', maskpath])
+    results.append(maskpath)
+    # Print/plot mask
+    _debug(visual=mask, filename=os.path.join(params.debug_outdir, f"{params.device}_mask-img.png"))
 
-    else:
-        path1 = os.path.join(str(directory), "mask-images")
+    results.append(analysis_images)
 
-        if os.path.exists(path1):
-            maskpath = os.path.join(str(path1), str(filename))
-            print_image(mask, maskpath)
-            analysis_images.append(['IMAGE', 'mask', maskpath])
-        else:
-            os.mkdir(path1)
-            maskpath = os.path.join(str(path1), str(filename))
-            print_image(mask, maskpath)
-            analysis_images.append(['IMAGE', 'mask', maskpath])
-
-        _debug(visual=mask, filename=os.path.join(params.debug_outdir, f"{params.device}_mask-img.png"))
-
-        return maskpath, analysis_images
+    return results

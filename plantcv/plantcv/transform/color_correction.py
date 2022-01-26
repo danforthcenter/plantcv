@@ -233,13 +233,12 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
     # cast back to unsigned int
     corrected_img = corrected_img.astype(np.uint8)
 
-    if params.debug is not None:
-        # For debugging, create a horizontal view of source_img, corrected_img, and target_img to the plotting device
-        # plot horizontal comparison of source_img, corrected_img (with rounded elements) and target_img
-        # cast source_img back to unsigned int between 0-255 for visualization
-        source_flt = (255*source_flt).astype(np.uint8)
-        out_img = np.hstack([source_img, corrected_img, target_img])
-        _debug(visual=out_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_corrected.png'))
+    # For debugging, create a horizontal view of source_img, corrected_img, and target_img to the plotting device
+    # plot horizontal comparison of source_img, corrected_img (with rounded elements) and target_img
+    # cast source_img back to unsigned int between 0-255 for visualization
+    source_flt = (255*source_flt).astype(np.uint8)
+    out_img = np.hstack([source_img, corrected_img, target_img])
+    _debug(visual=out_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_corrected.png'))
 
     # return corrected_img
     return corrected_img
@@ -388,14 +387,13 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
     for chip in chips:
         mask = cv2.drawContours(mask, chip[0], -1, (i * 10), -1)
         i += 1
-    if params.debug is not None:
-        # Create a copy of the input image for plotting
-        canvas = np.copy(rgb_img)
-        # Draw chip ROIs on the canvas image
-        for chip in chips:
-            cv2.drawContours(canvas, chip[0], -1, (255, 255, 0), params.line_thickness)
-        _debug(visual=canvas, filename=os.path.join(params.debug_outdir, str(params.device) + '_color_card_mask_rois.png'))
-        _debug(visual=mask, filename=os.path.join(params.debug_outdir, str(params.device) + '_color_card_mask.png'))
+    # Create a copy of the input image for plotting
+    canvas = np.copy(rgb_img)
+    # Draw chip ROIs on the canvas image
+    for chip in chips:
+        cv2.drawContours(canvas, chip[0], -1, (255, 255, 0), params.line_thickness)
+    _debug(visual=canvas, filename=os.path.join(params.debug_outdir, str(params.device) + '_color_card_mask_rois.png'))
+    _debug(visual=mask, filename=os.path.join(params.debug_outdir, str(params.device) + '_color_card_mask.png'))
     return mask
 
 
@@ -467,15 +465,7 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
         scale_x_continuous(limits=(-5, 270)) + scale_y_continuous(limits=(-5, 275)) + \
         scale_color_manual(values=['blue', 'green', 'red'])
 
-    # Autoincrement the device counter
-    params.device += 1
-
-    # Reset debug
-    if params.debug is not None:
-        if params.debug == 'print':
-            p1.save(os.path.join(params.debug_outdir, 'color_quick_check.png'), verbose=False)
-        elif params.debug == 'plot':
-            print(p1)
+    _debug(visual=p1, filename=os.path.join(params.debug_outdir, 'color_quick_check.png'))
 
 
 def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark',

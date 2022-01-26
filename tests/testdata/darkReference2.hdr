@@ -1,0 +1,68 @@
+ENVI
+description = {[HEADWALL Hyperspec III]}
+samples = 1600
+lines = 1
+bands = 978
+header offset = 0
+file type = ENVI Standard
+data type = 12
+interleave = bil
+sensor type = Unknown
+byte order = 0
+wavelength = {
+513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+,513.342
+}
+;AOI height = 1008
+;AOI left = 480
+;AOI top = 576
+;AOI width = 1600
+;Array Pixel Pitch (um) = 6.5
+;AverageDispersion = 0.636564
+;Col binning = 1
+;HSIII_VERSION = E61202 vs64 5.5.1
+;Lens EFL (mm) = 23
+;Lens folder = 23mm
+;Nuc folder = C:/headwall/sensorConfig/G4-426/23mm/nuc
+;POST AOI height = 978
+;POST AOI left = 0
+;POST AOI top = 0
+;POST AOI width : 1600
+;POST Col binning = 1
+;POST Row binning = 1
+;Pixel0 = 12.3658
+;Row binning = 1
+;Serial Number = G4-426

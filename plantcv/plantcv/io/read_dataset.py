@@ -7,12 +7,10 @@ import re
 def read_dataset(source_path, pattern='', sort=True):
     """
     Read a dataset of images as a list of paths.
-
     Inputs:
     source_path  = Path to the directory containing the images
     pattern      = Optional, return only filenames containing the pattern
     sort         = True by default, sorts the paths alphabetically
-
     Returns:
     dataset = List of paths to the images in the source path
     :param source_path: str
