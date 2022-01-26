@@ -2,7 +2,7 @@ import pytest
 import numpy as np
 import cv2
 from plantcv.plantcv.threshold import binary, gaussian, mean, otsu, custom_range, saturation, triangle, texture, \
-    mask_bad, threshold_2_channels
+    mask_bad, dual_channels
 from plantcv.plantcv import params
 
 
@@ -222,7 +222,7 @@ def test_plantcv_threshold_threshold_2_channels(y_ch, abv, expected):
     # last two points are ignored ut trigger the warning
     pts = [(0,0),(255,255), (0,1), (2,3)]
     x_ch = 'B'
-    mask = threshold_2_channels(img, x_channel=x_ch, y_channel=y_ch, points=pts, above=abv, max_value=255)
+    mask = dual_channels(img, x_channel=x_ch, y_channel=y_ch, points=pts, above=abv, max_value=255)
     assert mask[0,0] == expected
 
 def test_plantcv_threshold_threshold_2_channels_bad_points():
@@ -233,5 +233,5 @@ def test_plantcv_threshold_threshold_2_channels_bad_points():
     x_ch = 'B'
     y_ch = 'R'
     with pytest.raises(RuntimeError):
-        mask = threshold_2_channels(img, x_channel=x_ch, y_channel=y_ch, points=pts, above=True, max_value=255)
+        mask = dual_channels(img, x_channel=x_ch, y_channel=y_ch, points=pts, above=True, max_value=255)
 

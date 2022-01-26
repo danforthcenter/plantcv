@@ -41,7 +41,7 @@ pcv.params.debug = "plot"
 pts = [(159, 128), (132, 110)]
 # Create binary image from a RGB image based on two color channels and a straight
 # line defined by two points
-mask = pcv.threshold.threshold_2_channels(rgb_img=img, x_channel='b', y_channel='a', points=pts, above=True, max_value=255)
+mask = pcv.threshold.dual_channels(rgb_img=img, x_channel='b', y_channel='a', points=pts, above=True, max_value=255)
 
 ```
 

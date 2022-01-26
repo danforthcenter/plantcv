@@ -790,7 +790,7 @@ def _not_valid(*args):
     return fatal_error("channel not valid, use R, G, B, l, a, b, h, s, v, gray, or index")
 
 
-def threshold_2_channels(rgb_img, x_channel, y_channel, points, above=True, max_value=255):
+def dual_channels(rgb_img, x_channel, y_channel, points, above=True, max_value=255):
     """Create a binary image from an RGB image based on the pixels values in two channels.
     The x and y channels define a 2D plane and the two input points define a straight line.
     Pixels in the plane above and below the straight line are assigned two different values.

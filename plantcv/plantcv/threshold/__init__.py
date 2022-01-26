@@ -7,7 +7,7 @@ from plantcv.plantcv.threshold.threshold_methods import texture
 from plantcv.plantcv.threshold.threshold_methods import custom_range
 from plantcv.plantcv.threshold.threshold_methods import saturation
 from plantcv.plantcv.threshold.threshold_methods import mask_bad
-from plantcv.plantcv.threshold.threshold_methods import threshold_2_channels
+from plantcv.plantcv.threshold.threshold_methods import dual_channels
 
 __all__ = ["binary", "gaussian", "mean", "otsu", "triangle", "texture", "custom_range",
-            "saturation", "mask_bad", "threshold_2_channels",]
+            "saturation", "mask_bad", "dual_channels", ]
