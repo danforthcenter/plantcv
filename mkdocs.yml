@@ -151,7 +151,7 @@ nav:
         - 'Mean Adaptive Threshold': mean_threshold.md
         - 'Otsu Auto Threshold': otsu_threshold.md
         - 'Saturation Threshold': saturation_threshold.md
-        - 'Threshold Two Channels': threshold_threshold_2_channels.md
+        - 'Threshold Two Channels': threshold_dual_channels.md
         - 'Triangle Auto Threshold': triangle_threshold.md
         - 'Texture Threshold': texture_threshold.md
       - 'Transformation Methods':
