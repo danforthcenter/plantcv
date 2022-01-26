@@ -6,7 +6,7 @@ from plantcv.plantcv.visualize.pixel_scatter_vis import pixel_scatter_plot
 
 
 @pytest.mark.parametrize("ch", ['R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'gray'])
-def test_plantcv_visualize_pixel_scatter_plot(ch, tmpdir):
+def test_pixel_scatter_plot(ch, tmpdir):
     """Test for PlantCV."""
     # Create a tmp directory
     cache_dir = tmpdir.mkdir("cache")
