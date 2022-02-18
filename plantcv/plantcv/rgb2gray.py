@@ -18,7 +18,6 @@ def rgb2gray(rgb_img):
     :param rgb_img: numpy.ndarray
     :return gray: numpy.ndarray
     """
-
     gray = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
 
     _debug(visual=gray, filename=os.path.join(params.debug_outdir, str(params.device) + "_gray.png"))

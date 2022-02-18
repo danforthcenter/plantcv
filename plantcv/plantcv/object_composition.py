@@ -26,7 +26,6 @@ def object_composition(img, contours, hierarchy):
     :return group: list
     :return mask: numpy.ndarray
     """
-
     ori_img = np.copy(img)
     # If the reference image is grayscale convert it to color
     if len(np.shape(ori_img)) == 2:

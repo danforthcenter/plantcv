@@ -24,7 +24,6 @@ def naive_bayes_classifier(rgb_img, pdf_file):
     :param pdf_file: str
     :return masks: dict
     """
-
     # Initialize PDF dictionary
     pdfs = {}
     # Read the PDF file

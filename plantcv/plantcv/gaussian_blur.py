@@ -26,7 +26,6 @@ def gaussian_blur(img, ksize, sigma_x=0, sigma_y=None):
     :param sigma_y: str or int
     :return img_gblur: numpy.ndarray
     """
-
     img_gblur = cv2.GaussianBlur(img, ksize, sigma_x, sigma_y)
 
     if len(np.shape(img_gblur)) == 3:

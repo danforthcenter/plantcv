@@ -39,7 +39,6 @@ def cluster_contour_splitimg(img, grouped_contour_indexes, contours, hierarchy, 
     :param filenames: str
     :return output_path: str
     """
-
     params.device += 1
 
     sys.stderr.write(

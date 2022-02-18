@@ -27,7 +27,6 @@ def stdev_filter(img, ksize, borders='nearest'):
     :param borders: str
     :return output: numpy.ndarray
     """
-
     # Make an array the same size as the original image
     output = np.zeros(img.shape, dtype=img.dtype)
 

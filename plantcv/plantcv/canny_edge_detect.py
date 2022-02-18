@@ -51,7 +51,6 @@ def canny_edge_detect(img, mask=None, sigma=1.0, low_thresh=None, high_thresh=No
     All rights reserved.
     Original author: Lee Kamentsky
     """
-
     # Check if the image is grayscale; if color img then make it grayscale
     dimensions = np.shape(img)
     if len(dimensions) == 3:

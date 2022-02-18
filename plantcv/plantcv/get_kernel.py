@@ -17,7 +17,6 @@ def get_kernel(size, shape):
     :param shape: str
     :return kernel: numpy.ndarray
     """
-
     if size[0] <= 1 and size[1] <= 1:
         raise ValueError('size needs to be greater than 1 for the function to have an effect')
 

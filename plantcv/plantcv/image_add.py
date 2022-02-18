@@ -22,7 +22,6 @@ def image_add(gray_img1, gray_img2):
     :param gray_img2: numpy.ndarray
     :return added_img: numpy.ndarray
     """
-
     added_img = gray_img1 + gray_img2
 
     _debug(visual=added_img,

@@ -28,7 +28,6 @@ def scharr_filter(img, dx, dy, scale):
     :param scale: int
     :return sr_img: numpy.ndarray
     """
-
     sr_img = cv2.Scharr(src=img, ddepth=-1, dx=dx, dy=dy, scale=scale)
     name = os.path.join(params.debug_outdir, str(params.device))
     name += '_sr_img_dx' + str(dx) + '_dy' + str(dy) + '_scale' + str(scale) + '.png'

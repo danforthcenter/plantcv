@@ -34,7 +34,6 @@ def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1, show_g
     :return contours: list
     :return roi_obj_hierarchy: list
     """
-
     if len(np.shape(img)) == 3:
         iy, ix, iz = np.shape(img)
     else:
