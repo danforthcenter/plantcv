@@ -28,7 +28,7 @@ def laplace_filter(gray_img, ksize, scale):
     """
 
     lp_filtered = cv2.Laplacian(src=gray_img, ddepth=-1, ksize=ksize, scale=scale)
-    
+
     _debug(visual=lp_filtered,
            filename=os.path.join(params.debug_outdir,
                                  str(params.device) + '_lp_out_k' + str(ksize) + '_scale' + str(scale) + '.png'),

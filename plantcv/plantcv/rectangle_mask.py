@@ -40,7 +40,7 @@ def rectangle_mask(img, p1, p2, color="black"):
         ix, iy, iz = np.shape(img)
     else:
         ix, iy = np.shape(img)
-        
+
     # create a blank image of same size
     bnk = np.zeros((ix, iy), dtype=np.uint8)
     img1 = np.copy(img)

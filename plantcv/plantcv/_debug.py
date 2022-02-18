@@ -17,7 +17,7 @@ def _debug(visual, filename=None, **kwargs):
     """
     # Auto-increment the device counter
     params.device += 1
-    
+
     if params.debug == "print":
         # If debug is print, save the image to a file
         print_image(img=visual, filename=filename)

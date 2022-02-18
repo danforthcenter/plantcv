@@ -72,7 +72,7 @@ def hyper_histogram(hsi, mask=None, bins=100, lower_bound=None, upper_bound=None
                     title=None, wvlengths=[480, 550, 650]):
     """
     Plot a histograms of selected wavelengths from a hyperspectral image.
-    
+
     This function calculates the histogram of selected wavelengths hyperspectral images
     The color of the histograms are based on the wavelength if the wavelength is in the range of visible spectrum;
     otherwise, random colors are assigned
