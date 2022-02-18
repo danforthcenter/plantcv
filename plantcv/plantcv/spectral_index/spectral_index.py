@@ -29,7 +29,6 @@ def ndvi(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 670:
         # Obtain index that best represents NIR and red bands
         r800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
@@ -60,7 +59,6 @@ def gdvi(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 550:
         r800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
         r550_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 550)
@@ -90,7 +88,6 @@ def savi(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 680:
         r800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
         r680_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 680)
@@ -120,7 +117,6 @@ def pri(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-
     if (float(hsi.max_wavelength) + distance) >= 570 and (float(hsi.min_wavelength) - distance) <= 531:
         # Obtain index that best approximates 570 and 531 nm bands
         r570_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 570)
@@ -150,7 +146,6 @@ def ari(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-
     if (float(hsi.max_wavelength) + distance) >= 700 and (float(hsi.min_wavelength) - distance) <= 550:
         r550_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 550)
         r700_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 700)
@@ -179,7 +174,6 @@ def ci_rededge(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 700:
         r700_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 700)
         r800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
@@ -209,7 +203,6 @@ def cri550(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-
     if (float(hsi.max_wavelength) + distance) >= 550 and (float(hsi.min_wavelength) - distance) <= 510:
         r510_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 510)
         r550_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 550)
@@ -239,7 +232,6 @@ def cri700(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-
     if (float(hsi.max_wavelength) + distance) >= 700 and (float(hsi.min_wavelength) - distance) <= 510:
         r510_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 510)
         r700_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 700)
@@ -270,7 +262,6 @@ def egi(rgb_img):
     :param rgb_img: np.array
     :return index_array: np.array
     """
-
     # Split the RGB image into component channels
     blue, green, red = cv2.split(rgb_img)
     # Calculate float32 sum of all channels
@@ -306,7 +297,6 @@ def evi(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 480:
         r480_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 480)
         r670_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
@@ -338,7 +328,6 @@ def mari(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 550:
         r550_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 550)
         r700_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 700)
@@ -370,7 +359,6 @@ def mcari(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-
     if (float(hsi.max_wavelength) + distance) >= 700 and (float(hsi.min_wavelength) - distance) <= 550:
         r550_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 550)
         r670_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
@@ -402,7 +390,6 @@ def mtci(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-
     if (float(hsi.max_wavelength) + distance) >= 753.75 and (float(hsi.min_wavelength) - distance) <= 681.25:
         r681_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 681.25)
         r708_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 708.75)
@@ -434,7 +421,6 @@ def ndre(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-
     if (float(hsi.max_wavelength) + distance) >= 790 and (float(hsi.min_wavelength) - distance) <= 720:
         r720_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 720)
         r790_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 790)
@@ -464,7 +450,6 @@ def psnd_chla(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 680:
         r680_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 680)
         r800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
@@ -494,7 +479,6 @@ def psnd_chlb(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 635:
         r635_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 635)
         r800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
@@ -524,7 +508,6 @@ def psnd_car(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 470:
         r470_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 470)
         r800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
@@ -554,7 +537,6 @@ def psri(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-
     if (float(hsi.max_wavelength) + distance) >= 750 and (float(hsi.min_wavelength) - distance) <= 500:
         r500_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 500)
         r678_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 678)
@@ -586,7 +568,6 @@ def pssr_chla(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 680:
         r800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
         r680_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 680)
@@ -616,7 +597,6 @@ def pssr_chlb(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 635:
         r800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
         r635_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 635)
@@ -646,7 +626,6 @@ def pssr_car(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 470:
         r800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
         r470_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 470)
@@ -673,7 +652,6 @@ def rgri(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-
     if (float(hsi.max_wavelength) + distance) >= 670 and (float(hsi.min_wavelength) - distance) <= 560:
         r670_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
         r560_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 560)
@@ -703,7 +681,6 @@ def rvsi(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-
     if (float(hsi.max_wavelength) + distance) >= 752 and (float(hsi.min_wavelength) - distance) <= 714:
         r714_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 714)
         r733_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 733)
@@ -735,7 +712,6 @@ def sipi(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 480:
         r480_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 480)
         r670_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
@@ -767,7 +743,6 @@ def sr(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-
     if (float(hsi.max_wavelength) + distance) >= 800 and (float(hsi.min_wavelength) - distance) <= 670:
         r670_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
         r800_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 800)
@@ -797,7 +772,6 @@ def vari(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-
     if (float(hsi.max_wavelength) + distance) >= 670 and (float(hsi.min_wavelength) - distance) <= 480:
         r670_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
         r550_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 550)
@@ -829,7 +803,6 @@ def vi_green(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-
     if (float(hsi.max_wavelength) + distance) >= 670 and (float(hsi.min_wavelength) - distance) <= 550:
         r670_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 670)
         r550_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 550)
@@ -859,7 +832,6 @@ def wi(hsi, distance=20):
     :param distance: int
     :return index_array: __main__.Spectral_data
     """
-
     if (float(hsi.max_wavelength) + distance) >= 970 and (float(hsi.min_wavelength) - distance) <= 900:
         r900_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 900)
         r970_index = _find_closest(np.array([float(i) for i in hsi.wavelength_dict.keys()]), 970)
@@ -886,7 +858,6 @@ def _package_index(hsi, raw_index, method):
     :params method: str
     :params index: __main__.Spectral_data
     """
-
     # Store debug mode
     debug = params.debug
     params.debug = None

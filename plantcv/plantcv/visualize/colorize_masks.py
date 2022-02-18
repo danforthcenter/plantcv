@@ -18,7 +18,6 @@ def colorize_masks(masks, colors):
         :param colors: list
         :return colored_img: ndarray
         """
-
     # Users must enter the exact same number of colors as classes they'd like to color
     num_classes = len(masks)
     num_colors = len(colors)

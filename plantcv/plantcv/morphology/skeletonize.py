@@ -19,7 +19,6 @@ def skeletonize(mask):
     :param mask: numpy.ndarray
     :return skeleton: numpy.ndarray
     """
-
     # Convert mask to boolean image, rather than 0 and 255 for skimage to use it
     skeleton = skmorph.skeletonize(mask.astype(bool))
 

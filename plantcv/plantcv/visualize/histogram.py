@@ -34,7 +34,6 @@ def _hist_gray(gray_img, bins, lower_bound, upper_bound, mask=None):
     :return hist_percent: numpy.ndarray
     :return hist_gray_data: numpy.ndarray
     """
-
     params.device += 1
     debug = params.debug
 
