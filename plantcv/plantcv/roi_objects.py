@@ -104,12 +104,10 @@ def roi_objects(img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, 
             # Overwrite mask so it only has the largest contour
             mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
             for i, cnt in enumerate(largest_cnt):
-                # print(cnt)
                 if i == 0:
                     color = (255)
                 else:
                     color = (0)
-                    # print(i)
                 cv2.drawContours(mask, largest_cnt, i, color, -1, lineType=8, hierarchy=largest_hierarchy, maxLevel=0)
 
             # Refind contours and hierarchy from new mask so they are easier to work with downstream
@@ -141,10 +139,7 @@ def roi_objects(img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, 
 
     # Reset debug mode
     params.debug = debug
-    _debug(ori_img,
-           filename=os.path.join(params.debug_outdir, str(params.device) + '_obj_on_img.png'))
-    _debug(mask, 
-           filename=os.path.join(params.debug_outdir, str(params.device) + '_roi_mask.png'),
-           cmap='gray')
+    _debug(ori_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_obj_on_img.png'))
+    _debug(mask, filename=os.path.join(params.debug_outdir, str(params.device) + '_roi_mask.png'), cmap='gray')
 
     return kept_cnt, kept_hierarchy, mask, obj_area

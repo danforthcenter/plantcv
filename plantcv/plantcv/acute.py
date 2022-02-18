@@ -122,7 +122,6 @@ def acute(obj, mask, win, thresh):
                 # Delete islands to be spliced if start-end fusion required
                 del isle[0]
                 del isle[-1]
-                # isle.insert(0, island)      # Prepend island to isle
         else:
             print('Microcontour...')
 
