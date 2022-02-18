@@ -79,8 +79,6 @@ def run_naive_bayes_multiclass(args):
 ###########################################
 
 
-# Main
-###########################################
 def main():
     """Main program.
     """

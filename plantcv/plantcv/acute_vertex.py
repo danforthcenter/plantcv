@@ -79,7 +79,6 @@ def acute_vertex(img, obj, win, thresh, sep, label="default"):
             tester.append(index[i])
         if index[i + 1] - index[i] >= sep:
             tester.append(index[i])
-            # print(tester)
             angles = ([chain[d] for d in tester])
             keeper = angles.index(min(angles))
             t = tester[keeper]

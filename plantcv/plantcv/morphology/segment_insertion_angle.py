@@ -13,7 +13,6 @@ from plantcv.plantcv import find_objects
 from plantcv.plantcv import color_palette
 from plantcv.plantcv.morphology import _iterative_prune
 from plantcv.plantcv.morphology import find_tips
-# from plantcv.plantcv.morphology import find_branch_pts
 from plantcv.plantcv.morphology.segment_tangent_angle import _slope_to_intesect_angle
 from plantcv.plantcv._debug import _debug
 
@@ -65,7 +64,6 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     for i, cnt in enumerate(tip_objects):
         tip_tuples.append((cnt[0][0][0], cnt[0][0][1]))
 
-    # rand_color = color_palette(len(leaf_objects))
 
     for i, cnt in enumerate(leaf_objects):
         # Draw leaf objects
@@ -78,7 +76,6 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
         # Segment ends are the portions pruned off
         segment_ends = find_segment_tangents - pruned_segment
         segment_end_obj, segment_end_hierarchy = find_objects(segment_ends, segment_ends)
-        # is_insertion_segment = []
 
         if not len(segment_end_obj) == 2:
             print("Size too large, contour with ID#", i, "got pruned away completely.")
@@ -94,7 +91,6 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
                 segment_plot = np.zeros(segmented_img.shape[:2], np.uint8)
                 cv2.drawContours(segment_plot, obj, -1, 255, 1, lineType=8)
                 segment_plot = dilate(segment_plot, 3, 1)
-                # tips = dilate(tips, 3, 1)
                 overlap_img = logical_and(segment_plot, tips)
 
                 # If none of the tips are within a segment_end then it's an insertion segment
@@ -115,8 +111,6 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     # Plot stem segments
     stem_img = np.zeros(segmented_img.shape[:2], np.uint8)
     cv2.drawContours(stem_img, stem_objects, -1, 255, 2, lineType=8)
-    # branch_pts = find_branch_pts(skel_img)
-    # stem_img = stem_img + branch_pts ## there can be branch points not along the stem, and they're not needed
     stem_img = closing(stem_img)
     combined_stem, combined_stem_hier = find_objects(stem_img, stem_img)
 
@@ -179,7 +173,6 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
         text = "{:.2f}".format(intersection_angles[i])
         cv2.putText(img=labeled_img, text=text, org=(w, h), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                     fontScale=params.text_size, color=(150, 150, 150), thickness=params.text_thickness)
-        # segment_label = "ID" + str(i)
         segment_ids.append(i)
 
     outputs.add_observation(sample=label, variable='segment_insertion_angle', trait='segment insertion angle',

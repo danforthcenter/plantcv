@@ -626,7 +626,6 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
             if len(approx) == 4 or len(approx) == 5:
                 msquarecoords.append(approx)
             else:  # It's not square
-                # msquare.append(0)
                 msquarecoords.append(0)
         else:  # Contour has area of 0, not interesting
             msquare.append(0)

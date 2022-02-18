@@ -26,8 +26,6 @@ def colorize_label_img(label_img):
     colored_img = np.zeros((h, w, 3), dtype=np.uint8)
     for (i, l) in enumerate(labels):
         colored_img[label_img == l] = rgb_vals[i]
-    #     for ch in range(3):
-    #         colored_img[:, :, ch][label_img == l] = rgb_vals[i][ch]
 
     _debug(visual=colored_img, filename=os.path.join(params.debug_outdir,
                                                      str(params.device) + "_colorized_label_img.png"))

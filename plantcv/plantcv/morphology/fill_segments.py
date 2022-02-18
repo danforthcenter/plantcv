@@ -63,11 +63,6 @@ def fill_segments(mask, objects, stem_objects=None, label="default"):
                                 value=counts[-1].tolist(),
                                 label=(ids[-1]-1).tolist())
 
-    # rgb_vals = color_palette(num=len(labels), saved=False)
-    # filled_img = np.zeros((h, w, 3), dtype=np.uint8)
-    # for l in labels:
-    #     for ch in range(3):
-    #         filled_img[:, :, ch][filled_mask == l] = rgb_vals[l - 1][ch]
 
     debug = params.debug
     params.debug = None
