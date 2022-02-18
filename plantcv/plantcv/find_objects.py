@@ -25,7 +25,6 @@ def find_objects(img, mask):
     :return objects: list
     :return hierarchy: numpy.ndarray
     """
-
     mask1 = np.copy(mask)
     ori_img = np.copy(img)
     # If the reference image is grayscale convert it to color

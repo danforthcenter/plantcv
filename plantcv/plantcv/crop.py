@@ -28,7 +28,6 @@ def crop(img, x, y, h, w):
        :param w: int
        :return cropped: numpy.ndarray
        """
-
     # Check if the array data format
     if len(np.shape(img)) > 2 and np.shape(img)[-1] > 3:
         ref_img = img[:, :, [0]]

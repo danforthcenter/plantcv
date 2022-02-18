@@ -10,5 +10,4 @@ def fatal_error(error):
     :param error: str
     :return:
     """
-
     raise RuntimeError(error)

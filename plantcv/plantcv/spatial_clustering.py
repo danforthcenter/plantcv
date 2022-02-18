@@ -37,7 +37,6 @@ def spatial_clustering(mask, algorithm="DBSCAN", min_cluster_size=5, max_distanc
     :return clust_img: numpy.ndarray
     :return clust_masks: list
     """
-
     # Uppercase algorithm name
     al_upper = algorithm.upper()
 

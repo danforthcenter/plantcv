@@ -32,7 +32,6 @@ def x_axis_pseudolandmarks(img, obj, mask, label="default"):
     :return bottom: list
     :return center_v: list
     """
-
     # Lets get some landmarks scanning along the x-axis
     if not np.any(obj):
         return ('NA', 'NA'), ('NA', 'NA'), ('NA', 'NA')

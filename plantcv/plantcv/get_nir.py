@@ -19,7 +19,6 @@ def get_nir(path, filename):
     :param filename: str
     :return nirpath: str
     """
-
     visname = filename.split("_")
     allfiles = np.array(os.listdir(path))
     nirfiles = []
