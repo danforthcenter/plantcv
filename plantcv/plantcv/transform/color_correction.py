@@ -622,7 +622,7 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
             mwhratio.append(wh_sorted[1] / wh_sorted[0])
             msquare.append(len(approx))
             # If the approx contour has 4 points then we can assume we have 4-sided objects
-            if len(approx) == 4 or len(approx) == 5:
+            if len(approx) in (4, 5):
                 msquarecoords.append(approx)
             else:  # It's not square
                 msquarecoords.append(0)

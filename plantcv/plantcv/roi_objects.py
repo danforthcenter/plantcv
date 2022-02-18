@@ -58,7 +58,7 @@ def roi_objects(img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, 
         ori_img = cv2.cvtColor(ori_img, cv2.COLOR_GRAY2BGR)
 
     # Allows user to find all objects that are completely inside or overlapping with ROI
-    if roi_type.upper() == 'PARTIAL' or roi_type.upper() == 'LARGEST':
+    if roi_type.upper() in ('PARTIAL', 'LARGEST'):
         # Filter contours outside of the region of interest
         for c, cnt in enumerate(object_contour):
             filtering_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)

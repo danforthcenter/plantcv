@@ -26,7 +26,7 @@ def colorize_masks(masks, colors):
         fatal_error("The number of colors provided doesn't match the number of class masks provided.")
 
     # Check to make sure user provided at least one mask and color
-    if len(colors) == 0 or len(masks) == 0:
+    if 0 in (len(colors), len(masks)):
         fatal_error("At least one class mask and color must be provided.")
 
     # Dictionary of colors and the BGR values, based on some of the colors listed here:
