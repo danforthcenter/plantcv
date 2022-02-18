@@ -32,7 +32,6 @@ def analyze_fvfm(fdark, fmin, fmax, mask, bins=256, label="default"):
     :param label: str
     :return analysis_images: numpy.ndarray
     """
-
     # Auto-increment the device counter
     params.device += 1
     # Check that fdark, fmin, and fmax are grayscale (single channel)

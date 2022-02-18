@@ -24,7 +24,6 @@ def rotate(img, rotation_deg, crop):
     :param crop: bool
     :return rotated_img: numpy.ndarray
     """
-
     # Extract image spatial dimensions
     iy, ix = np.shape(img)[:2]
 

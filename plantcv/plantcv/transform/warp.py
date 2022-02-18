@@ -54,7 +54,6 @@ def warp(img, refimg, pts, refpts, method='default'):
     :return warped_img: numpy.ndarray
     :return mat: numpy.ndarray
     """
-
     if len(pts) != len(refpts):
         fatal_error('Please provide same number of corresponding coordinates.')
     if not(len(pts) >= 4 and len(refpts) >= 4):
@@ -166,7 +165,6 @@ def warp_align(img, refimg, mat):
     :param mat: numpy.ndarray
     :return warpped image: numpy.ndarray
     """
-
     # Ensure refimg is compatible with OpenCV
     refimg = _preprocess_img_dtype(refimg.copy())
 
