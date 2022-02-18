@@ -56,6 +56,5 @@ def object_composition(img, contours, hierarchy):
         _debug(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_objcomp_mask.png'))
 
         return group, mask
-    else:
-        print("Warning: Invalid contour.")
-        return None, None
+    print("Warning: Invalid contour.")
+    return None, None

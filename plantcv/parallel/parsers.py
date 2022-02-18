@@ -246,8 +246,7 @@ def check_date_range(start_date, end_date, img_time, date_format):
     # Does the image date-time fall outside or inside the included range
     if unix_time < start_date or unix_time > end_date:
         return False
-    else:
-        return True
+    return True
 ###########################################
 
 
