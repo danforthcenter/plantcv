@@ -155,7 +155,7 @@ class Outputs:
                 for var in self.observations[sample]:
                     val = self.observations[sample][var]["value"]
                     # If the data type is a list or tuple we need to unpack the data
-                    if isinstance(val, list) or isinstance(val, tuple):
+                    if isinstance(val, (list, tuple)):
                         # Combine each value with its label
                         for value, label in zip(self.observations[sample][var]["value"],
                                                 self.observations[sample][var]["label"]):
