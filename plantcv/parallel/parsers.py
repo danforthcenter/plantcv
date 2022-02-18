@@ -240,7 +240,6 @@ def check_date_range(start_date, end_date, img_time, date_format):
     :param date_format: str
     :return: bool
     """
-
     # Convert image datetime to unix time
     unix_time = convert_datetime_to_unixtime(timestamp_str=img_time, date_format=date_format)
     # Does the image date-time fall outside or inside the included range
@@ -292,7 +291,6 @@ def _parse_filename(filename, delimiter, regex):
     :param regex: re.Pattern
     :return metadata: list
     """
-
     # Split the filename on delimiter if it is a single character
     if len(delimiter) == 1:
         metadata = filename.split(delimiter)

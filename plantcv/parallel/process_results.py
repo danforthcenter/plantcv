@@ -16,7 +16,6 @@ def process_results(job_dir, json_file):
     :param job_dir: str
     :param json_file: obj
     """
-
     if os.path.exists(json_file):
         with open(json_file, 'r') as datafile:
             try:
