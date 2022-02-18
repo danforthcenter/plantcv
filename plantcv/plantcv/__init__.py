@@ -89,9 +89,8 @@ from plantcv.plantcv import photosynthesis
 # add new functions to end of lists
 
 # Auto versioning
-from ._version import get_versions
-__version__ = get_versions()['version']
-del get_versions
+from . import _version
+__version__ = _version.get_versions()['version']
 
 __all__ = ['fatal_error', 'Params', 'Outputs', 'Spectral_data', 'deprecation_warning', 'print_image', 'plot_image',
            'color_palette', 'apply_mask', 'gaussian_blur', 'transform', 'hyperspectral', 'readimage', 'readbayer',
