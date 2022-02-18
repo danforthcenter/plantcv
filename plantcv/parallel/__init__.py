@@ -10,8 +10,8 @@ from plantcv.parallel.process_results import process_results
 from plantcv.parallel.multiprocess import multiprocess
 from plantcv.parallel.multiprocess import create_dask_cluster
 
-__all__ = ["metadata_parser", "job_builder", "process_results", "multiprocess", "convert_datetime_to_unixtime",
-           "check_date_range", "WorkflowConfig"]
+__all__ = ["metadata_parser", "convert_datetime_to_unixtime", "check_date_range", "job_builder", "process_results",
+           "multiprocess", "create_dask_cluster", "WorkflowConfig"]
 
 
 class WorkflowConfig:
