@@ -25,7 +25,6 @@ def options():
         ValueError: if adaptor is not phenofront or dbimportexport.
         ValueError: if a metadata field is not supported.
     """
-
     parser = argparse.ArgumentParser(description='Parallel imaging processing with PlantCV.')
     config_grp = parser.add_argument_group('CONFIG')
     config_grp.add_argument("--config", required=False,
@@ -152,7 +151,6 @@ def main():
     Raises:
 
     """
-
     # Job start time
     start_time = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     print("Starting run " + start_time + '\n', file=sys.stderr)

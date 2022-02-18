@@ -16,7 +16,6 @@ def options():
     :return args: object -- parsed arguments
     :raises: IOError, KeyError
     """
-
     # Job start time
     start_time = datetime.datetime.now().strftime('%Y-%m-%d_%H:%M:%S')
     print("Starting run " + start_time + '\n', file=sys.stderr)
