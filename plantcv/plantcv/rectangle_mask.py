@@ -34,7 +34,6 @@ def rectangle_mask(img, p1, p2, color="black"):
     :return contour: list
     :return hierarchy: list
     """
-
     # get the dimensions of the input image
     if len(np.shape(img)) == 3:
         ix, iy, iz = np.shape(img)

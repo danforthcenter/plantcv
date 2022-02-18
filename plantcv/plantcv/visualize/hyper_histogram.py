@@ -98,7 +98,6 @@ def hyper_histogram(hsi, mask=None, bins=100, lower_bound=None, upper_bound=None
     :param wvlengths: list
     :return fig_hist: plotnine.ggplot.ggplot
     """
-
     # Always sort desired wavelengths
     wvlengths.sort()
 

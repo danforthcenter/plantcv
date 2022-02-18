@@ -26,7 +26,6 @@ def laplace_filter(gray_img, ksize, scale):
     :param scale: int
     :return lp_filtered: numpy.ndarray
     """
-
     lp_filtered = cv2.Laplacian(src=gray_img, ddepth=-1, ksize=ksize, scale=scale)
 
     _debug(visual=lp_filtered,
