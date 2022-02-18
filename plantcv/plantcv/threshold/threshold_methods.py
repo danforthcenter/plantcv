@@ -427,7 +427,7 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         mask = cv2.bitwise_and(l_mask, gm_mask)
         mask = cv2.bitwise_and(mask, by_mask)
 
-    elif channel.upper() == 'GRAY' or channel.upper() == 'GREY':
+    elif channel.upper() in ('GRAY', 'GREY'):
 
         # Check threshold input
         if not (len(lower_thresh) == 1 and len(upper_thresh) == 1):

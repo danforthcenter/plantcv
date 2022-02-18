@@ -59,7 +59,7 @@ def rectangle_mask(img, p1, p2, color="black"):
         bnk += 255
         cv2.drawContours(bnk, contour, 0, (0, 0, 0), -1)
         cv2.drawContours(img1, contour, 0, (0, 0, 0), -1)
-    elif color.upper() == "GRAY" or color.upper() == "GREY":
+    elif color.upper() in ("GRAY", "GREY"):
         cv2.drawContours(bnk, contour, 0, (192, 192, 192), -1)
         cv2.drawContours(img1, contour, 0, (192, 192, 192), -1)
     else:
