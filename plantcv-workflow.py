@@ -137,10 +137,11 @@ def options():
     if not config.validate_config():
         raise ValueError("Invalid configuration file. Check errors above.")
     return config
-
-
 ###########################################
 
+
+# Run the main program
+###########################################
 def main():
     """Main program.
 

@@ -64,7 +64,6 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
     for i, cnt in enumerate(tip_objects):
         tip_tuples.append((cnt[0][0][0], cnt[0][0][1]))
 
-
     for i, cnt in enumerate(leaf_objects):
         # Draw leaf objects
         find_segment_tangents = np.zeros(segmented_img.shape[:2], np.uint8)

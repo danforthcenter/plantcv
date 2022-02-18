@@ -97,7 +97,6 @@ class Outputs:
         :param value:
         :param label:
         """
-
         # Create an empty dictionary for the sample if it does not exist
         if sample not in self.observations:
             self.observations[sample] = {}
@@ -212,4 +211,3 @@ class Spectral_data:
         self.filename = filename
         # The default band indices needed to make an pseudo_rgb image, if not available then store None
         self.default_bands = default_bands
-

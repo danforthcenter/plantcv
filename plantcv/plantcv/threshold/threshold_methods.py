@@ -296,7 +296,6 @@ def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity'
     :param max_value: int
     :return bin_img: numpy.ndarray
     """
-
     # Function that calculates the texture of a kernel
     def calc_texture(inputs):
         inputs = np.reshape(a=inputs, newshape=[ksize, ksize])
@@ -562,7 +561,6 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
     # set threshold = 2
     detect_peaks(x, threshold = 2, show=True)
     """
-
     x = np.atleast_1d(x).astype('float64')
 
     # It is always the case that x.size=256 since 256 hardcoded in line 186 ->
@@ -603,8 +601,6 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
     # if ind.size and mph is not None:
     #     ind = ind[x[ind] >= mph]
     # remove peaks - neighbors < threshold
-
-
 
     if show:
         # x will never contain NaN since calcHist will never return NaN

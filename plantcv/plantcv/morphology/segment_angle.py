@@ -27,7 +27,6 @@ def segment_angle(segmented_img, objects, label="default"):
     :param label: str
     :return labeled_img: numpy.ndarray
     """
-
     label_coord_x = []
     label_coord_y = []
     segment_angles = []

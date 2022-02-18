@@ -10,9 +10,6 @@ from codecs import open
 from os import path
 import versioneer
 
-
-
-
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file

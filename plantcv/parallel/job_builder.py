@@ -2,7 +2,6 @@ import os
 import sys
 import json
 from copy import deepcopy
-import tempfile
 
 
 # Build job list
@@ -21,7 +20,6 @@ def job_builder(meta, config):
     :param config: plantcv.parallel.WorkflowConfig
     :return job_stack: list
     """
-
     # Overall job stack. List of list of jobs
     jobs = []
 

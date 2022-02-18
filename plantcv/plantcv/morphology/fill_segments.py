@@ -26,7 +26,6 @@ def fill_segments(mask, objects, stem_objects=None, label="default"):
     :param label: str
     :return filled_mask: numpy.ndarray
     """
-
     h, w = mask.shape
     markers = np.zeros((h, w))
 
@@ -62,7 +61,6 @@ def fill_segments(mask, objects, stem_objects=None, label="default"):
                                 scale='pixels', datatype=list,
                                 value=counts[-1].tolist(),
                                 label=(ids[-1]-1).tolist())
-
 
     debug = params.debug
     params.debug = None

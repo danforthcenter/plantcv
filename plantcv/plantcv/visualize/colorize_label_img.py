@@ -8,7 +8,7 @@ from plantcv.plantcv._debug import _debug
 
 
 def colorize_label_img(label_img):
-    """ Color a labeled image
+    """Color a labeled image
 
     Inputs:
         label_img = 2d image with int values at every pixel, where the values represent for the class the
@@ -19,7 +19,6 @@ def colorize_label_img(label_img):
     :param label_img: numpy.ndarray
     :return: colored_img: numpy.ndarray
     """
-
     labels = np.unique(label_img) + 1
     h, w = label_img.shape
     rgb_vals = color_palette(num=len(labels), saved=False)

@@ -139,10 +139,7 @@ def roi_objects(img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, 
 
     # Reset debug mode
     params.debug = debug
-    _debug(ori_img,
-           filename=os.path.join(params.debug_outdir, str(params.device) + '_obj_on_img.png'))
-    _debug(mask, 
-           filename=os.path.join(params.debug_outdir, str(params.device) + '_roi_mask.png'),
-           cmap='gray')
+    _debug(ori_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_obj_on_img.png'))
+    _debug(mask, filename=os.path.join(params.debug_outdir, str(params.device) + '_roi_mask.png'), cmap='gray')
 
     return kept_cnt, kept_hierarchy, mask, obj_area
