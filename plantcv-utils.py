@@ -50,29 +50,28 @@ def options():
 ###########################################
 
 
-# run_json2csv
+# Run the JSON to CSV converter
 ###########################################
 def run_json2csv(args):
     plantcv.utils.json2csv(json_file=args.json, csv_file=args.csv)
 ###########################################
 
 
-# run_json2csv
+# Run the naive Bayes tabulation converter
 ###########################################
 def run_tabulate_bayes_classes(args):
     plantcv.utils.tabulate_bayes_classes(input_file=args.infile, output_file=args.outfile)
 ###########################################
 
 
-# run_sample_images
+# Run the image random sampling utility
 ###########################################
 def run_sample_images(args):
     plantcv.utils.sample_images(source_path=args.source, dest_path=args.outdir, num=args.number)
-
 ###########################################
 
 
-# Main
+# Run the main program
 ###########################################
 def main():
     """Main program.

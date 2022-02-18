@@ -10,23 +10,6 @@ from codecs import open
 from os import path
 import versioneer
 
-
-# class PyTest(TestCommand):
-#     def initialize_options(self):
-#         TestCommand.initialize_options(self)
-#         self.pytest_args = ["--verbose", "tests/tests.py"]
-#
-#     def finalize_options(self):
-#         TestCommand.finalize_options(self)
-#         self.test_args = []
-#         self.test_suite = True
-#
-#     def run_tests(self):
-#         import pytest
-#         errno = pytest.main(self.pytest_args)
-#         sys.exit(errno)
-
-
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the README file
