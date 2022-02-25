@@ -5,14 +5,13 @@ import cv2
 import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
-from plantcv.plantcv import plot_image
 from plantcv.plantcv.roi import circle
-from plantcv.plantcv import print_image
 from plantcv.plantcv import fatal_error
+from plantcv.plantcv._debug import _debug
 
 
 def get_color_matrix(rgb_img, mask):
-    """ Calculate the average value of pixels in each color chip for each color channel.
+    """Calculate the average value of pixels in each color chip for each color channel.
 
     Inputs:
     rgb_img         = RGB image with color chips visualized
@@ -35,6 +34,9 @@ def get_color_matrix(rgb_img, mask):
     # Check mask for gray-scale
     if len(np.shape(mask)) != 2:
         fatal_error("Input mask is not an gray-scale image.")
+
+    # convert to float and normalize to work with values between 0-1
+    rgb_img = rgb_img.astype(np.float64)/255
 
     # create empty color_matrix
     color_matrix = np.zeros((len(np.unique(mask))-1, 4))
@@ -59,7 +61,7 @@ def get_color_matrix(rgb_img, mask):
 
 
 def get_matrix_m(target_matrix, source_matrix):
-    """ Calculate Moore-Penrose inverse matrix for use in calculating transformation_matrix
+    """Calculate Moore-Penrose inverse matrix for use in calculating transformation_matrix
 
     Inputs:
     target_matrix       = a 22x4 matrix containing the average red value, average green value, and average blue value
@@ -78,7 +80,6 @@ def get_matrix_m(target_matrix, source_matrix):
     :return matrix_a: numpy.ndarray
     :return matrix_m: numpy.ndarray
     :return matrix_b: numpy.ndarray
-
     """
     # if the number of chips in source_img match the number of chips in target_matrix
     if np.shape(target_matrix) == np.shape(source_matrix):
@@ -113,7 +114,7 @@ def get_matrix_m(target_matrix, source_matrix):
     s_b3 = np.power(s_b, 3)
 
     # create matrix_a
-    matrix_a = np.concatenate((s_r, s_g, s_b, s_b2, s_g2, s_r2, s_b3, s_g3, s_r3), 1)
+    matrix_a = np.concatenate((s_r, s_g, s_b, s_r2, s_g2, s_b2, s_r3, s_g3, s_b3), 1)
     # create matrix_m
     matrix_m = np.linalg.solve(np.matmul(matrix_a.T, matrix_a), matrix_a.T)
     # create matrix_b
@@ -122,7 +123,7 @@ def get_matrix_m(target_matrix, source_matrix):
 
 
 def calc_transformation_matrix(matrix_m, matrix_b):
-    """ Calculates transformation matrix (transformation_matrix).
+    """Calculates transformation matrix (transformation_matrix).
 
     Inputs:
     matrix_m    = a 9x22 Moore-Penrose inverse matrix
@@ -177,7 +178,7 @@ def calc_transformation_matrix(matrix_m, matrix_b):
 
 
 def apply_transformation_matrix(source_img, target_img, transformation_matrix):
-    """ Apply the transformation matrix to the source_image.
+    """Apply the transformation matrix to the source_image.
 
     Inputs:
     source_img      = an RGB image to be corrected to the target color space
@@ -199,14 +200,13 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
     if len(np.shape(source_img)) != 3:
         fatal_error("Source_img is not an RGB image.")
 
-    # Autoincrement the device counter
-    params.device += 1
-
     # split transformation_matrix
     red, green, blue, red2, green2, blue2, red3, green3, blue3 = np.split(transformation_matrix, 9, 1)
 
+    # convert img to float to avoid integer overflow, normalize between 0-1
+    source_flt = source_img.astype(np.float64)/255
     # find linear, square, and cubic values of source_img color channels
-    source_b, source_g, source_r = cv2.split(source_img)
+    source_b, source_g, source_r = cv2.split(source_flt)
     source_b2 = np.square(source_b)
     source_b3 = np.power(source_b, 3)
     source_g2 = np.square(source_g)
@@ -226,25 +226,25 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
     bgr = [b, g, r]
     corrected_img = cv2.merge(bgr)
 
-    # round corrected_img elements to be within range and of the correct data type
-    corrected_img = np.rint(corrected_img)
-    corrected_img[np.where(corrected_img > 255)] = 255
+    # return values of the image to the 0-255 range
+    corrected_img = 255*np.clip(corrected_img, 0, 1)
+    corrected_img = np.floor(corrected_img)
+    # cast back to unsigned int
     corrected_img = corrected_img.astype(np.uint8)
 
-    if params.debug == "print":
-        # If debug is print, save the image to a file
-        print_image(corrected_img, os.path.join(params.debug_outdir, str(params.device) + "_corrected.png"))
-    elif params.debug == "plot":
-        # If debug is plot, print a horizontal view of source_img, corrected_img, and target_img to the plotting device
-        # plot horizontal comparison of source_img, corrected_img (with rounded elements) and target_img
-        plot_image(np.hstack([source_img, corrected_img, target_img]))
+    # For debugging, create a horizontal view of source_img, corrected_img, and target_img to the plotting device
+    # plot horizontal comparison of source_img, corrected_img (with rounded elements) and target_img
+    # cast source_img back to unsigned int between 0-255 for visualization
+    source_flt = (255*source_flt).astype(np.uint8)
+    out_img = np.hstack([source_img, corrected_img, target_img])
+    _debug(visual=out_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_corrected.png'))
 
     # return corrected_img
     return corrected_img
 
 
 def save_matrix(matrix, filename):
-    """ Serializes a matrix as an numpy.ndarray object and save to a .npz file.
+    """Serializes a matrix as an numpy.ndarray object and save to a .npz file.
     Inputs:
     matrix      = a numpy.matrix
     filename    = name of file to which matrix will be saved. Must end in .npz
@@ -262,7 +262,7 @@ def save_matrix(matrix, filename):
 
 
 def load_matrix(filename):
-    """ Deserializes from file an numpy.ndarray object as a matrix
+    """Deserializes from file an numpy.ndarray object as a matrix
     Inputs:
     filename    = .npz file to which a numpy.matrix or numpy.ndarray is saved
 
@@ -354,9 +354,6 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
     :param exclude: list
     :return mask: numpy.ndarray
     """
-
-    # Autoincrement the device counter
-    params.device += 1
     # Initialize chip list
     chips = []
     # Store debug mode
@@ -389,24 +386,18 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
     for chip in chips:
         mask = cv2.drawContours(mask, chip[0], -1, (i * 10), -1)
         i += 1
-    if params.debug is not None:
-        # Create a copy of the input image for plotting
-        canvas = np.copy(rgb_img)
-        # Draw chip ROIs on the canvas image
-        for chip in chips:
-            cv2.drawContours(canvas, chip[0], -1, (255, 255, 0), params.line_thickness)
-        if params.debug == "print":
-            print_image(img=canvas, filename=os.path.join(params.debug_outdir,
-                                                          str(params.device) + "_color_card_mask_rois.png"))
-            print_image(img=mask, filename=os.path.join(params.debug_outdir,
-                                                        str(params.device) + "_color_card_mask.png"))
-        elif params.debug == "plot":
-            plot_image(canvas)
+    # Create a copy of the input image for plotting
+    canvas = np.copy(rgb_img)
+    # Draw chip ROIs on the canvas image
+    for chip in chips:
+        cv2.drawContours(canvas, chip[0], -1, (255, 255, 0), params.line_thickness)
+    _debug(visual=canvas, filename=os.path.join(params.debug_outdir, str(params.device) + '_color_card_mask_rois.png'))
+    _debug(visual=mask, filename=os.path.join(params.debug_outdir, str(params.device) + '_color_card_mask.png'))
     return mask
 
 
 def quick_color_check(target_matrix, source_matrix, num_chips):
-    """ Quickly plot target matrix values against source matrix values to determine
+    """Quickly plot target matrix values against source matrix values to determine
     over saturated color chips or other issues.
 
     Inputs:
@@ -424,6 +415,10 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
     from plotnine import ggplot, geom_point, geom_smooth, theme_seaborn, facet_grid, geom_label, scale_x_continuous, \
         scale_y_continuous, scale_color_manual, aes
     import pandas as pd
+
+    # Scale matrices back to 0-255
+    target_matrix = 255*target_matrix
+    source_matrix = 255*source_matrix
 
     # Extract and organize matrix info
     tr = target_matrix[:num_chips, 1:2]
@@ -469,15 +464,7 @@ def quick_color_check(target_matrix, source_matrix, num_chips):
         scale_x_continuous(limits=(-5, 270)) + scale_y_continuous(limits=(-5, 275)) + \
         scale_color_manual(values=['blue', 'green', 'red'])
 
-    # Autoincrement the device counter
-    params.device += 1
-
-    # Reset debug
-    if params.debug is not None:
-        if params.debug == 'print':
-            p1.save(os.path.join(params.debug_outdir, 'color_quick_check.png'), verbose=False)
-        elif params.debug == 'plot':
-            print(p1)
+    _debug(visual=p1, filename=os.path.join(params.debug_outdir, 'color_quick_check.png'))
 
 
 def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurry=False, background='dark',
@@ -635,10 +622,9 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
             mwhratio.append(wh_sorted[1] / wh_sorted[0])
             msquare.append(len(approx))
             # If the approx contour has 4 points then we can assume we have 4-sided objects
-            if len(approx) == 4 or len(approx) == 5:
+            if len(approx) in (4, 5):
                 msquarecoords.append(approx)
             else:  # It's not square
-                # msquare.append(0)
                 msquarecoords.append(0)
         else:  # Contour has area of 0, not interesting
             msquare.append(0)

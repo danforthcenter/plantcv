@@ -9,7 +9,8 @@ from skimage.morphology import remove_small_objects
 
 
 def fill(bin_img, size):
-    """Identifies objects and fills objects that are less than size.
+    """
+    Identifies objects and fills objects that are less than size.
 
     Inputs:
     bin_img      = Binary image data
@@ -23,8 +24,6 @@ def fill(bin_img, size):
     :param size: int
     :return filtered_img: numpy.ndarray
     """
-    params.device += 1
-
     # Make sure the image is binary
     if len(np.shape(bin_img)) != 2 or len(np.unique(bin_img)) != 2:
         fatal_error("Image is not binary")

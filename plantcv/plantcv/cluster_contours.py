@@ -1,14 +1,12 @@
 import os
 import cv2
 import numpy as np
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import color_palette
 from plantcv.plantcv import params
 
 
 def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1, show_grid=False):
-
     """
     This function take a image with multiple contours and clusters them based on user input of rows and columns
 
@@ -36,9 +34,6 @@ def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1, show_g
     :return contours: list
     :return roi_obj_hierarchy: list
     """
-
-    params.device += 1
-
     if len(np.shape(img)) == 3:
         iy, ix, iz = np.shape(img)
     else:
@@ -72,16 +67,14 @@ def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1, show_g
             else:
                 if a >= step[x - 1] and a < step[x]:
                     return x
-                elif a >= np.max(step):
+                if a >= np.max(step):
                     return num_bins
 
     dtype = [('cx', int), ('cy', int), ('rowbin', int), ('colbin', int), ('index', int)]
     coord = []
     for i in range(0, len(roi_objects)):
         m = cv2.moments(roi_objects[i])
-        if m['m00'] == 0:
-            pass
-        else:
+        if m['m00'] != 0:
             cx = int(m['m10'] / m['m00'])
             cy = int(m['m01'] / m['m00'])
             colbin = digitize(cx, cbreaks)
@@ -120,29 +113,26 @@ def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1, show_g
     grouped_contour_indexes = coordlist
 
     # Debug image is rainbow printed contours
+    if len(np.shape(img)) == 3:
+        img_copy = np.copy(img)
+    else:
+        iy, ix = np.shape(img)
+        img_copy = np.zeros((iy, ix, 3), dtype=np.uint8)
 
-    if params.debug is not None:
-        if len(np.shape(img)) == 3:
-            img_copy = np.copy(img)
-        else:
-            iy, ix = np.shape(img)
-            img_copy = np.zeros((iy, ix, 3), dtype=np.uint8)
+    rand_color = color_palette(len(coordlist))
+    for i, x in enumerate(coordlist):
+        for a in x:
+            if roi_obj_hierarchy[0][a][3] > -1:
+                pass
+            else:
+                cv2.drawContours(img_copy, roi_objects, a, rand_color[i], -1, hierarchy=roi_obj_hierarchy)
+    if show_grid:
+        for y in rbreaks:
+            cv2.line(img_copy, (0, y), (ix, y), (255, 0, 0), params.line_thickness)
+        for x in cbreaks:
+            cv2.line(img_copy, (x, 0), (x, iy), (255, 0, 0), params.line_thickness)
 
-        rand_color = color_palette(len(coordlist))
-        for i, x in enumerate(coordlist):
-            for a in x:
-                if roi_obj_hierarchy[0][a][3] > -1:
-                    pass
-                else:
-                    cv2.drawContours(img_copy, roi_objects, a, rand_color[i], -1, hierarchy=roi_obj_hierarchy)
-        if show_grid:
-            for y in rbreaks:
-                cv2.line(img_copy, (0, y), (ix, y), (255, 0, 0), params.line_thickness)
-            for x in cbreaks:
-                cv2.line(img_copy, (x, 0), (x, iy), (255, 0, 0), params.line_thickness)
-        if params.debug == 'print':
-            print_image(img_copy, os.path.join(params.debug_outdir, str(params.device) + '_clusters.png'))
-        elif params.debug == 'plot':
-            plot_image(img_copy)
+    _debug(visual=img_copy,  # keep this outside if statement to avoid additional test
+           filename=os.path.join(params.debug_outdir, str(params.device) + '_clusters.png'))
 
     return grouped_contour_indexes, contours, roi_obj_hierarchy

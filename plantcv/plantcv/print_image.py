@@ -17,7 +17,6 @@ def print_image(img, filename):
     :param filename: string
     :return:
     """
-
     # Print numpy array type images
     image_type = type(img)
     if image_type == numpy.ndarray:

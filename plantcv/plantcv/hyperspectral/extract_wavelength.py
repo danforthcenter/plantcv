@@ -3,8 +3,7 @@
 import os
 import numpy as np
 from plantcv.plantcv import params
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import Spectral_data
 from plantcv.plantcv.hyperspectral.read_data import _find_closest
 
@@ -44,11 +43,7 @@ def extract_wavelength(spectral_data, wavelength):
     index_array = (255 * normalized).astype(np.uint8)  # scale to 255
 
     # Plot out grayscale image
-    if params.debug == "plot":
-        plot_image(index_array)
-    elif params.debug == "print":
-        print_image(index_array,
-                    os.path.join(params.debug_outdir, str(params.device) + str(wavelength) + "_index.png"))
+    _debug(visual=index_array, filename=os.path.join(params.debug_outdir, f"{params.device}_{wavelength}_index.png"))
 
     # Find array min and max values
     max_pixel = float(np.amax(index_array_raw))

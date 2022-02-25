@@ -5,7 +5,7 @@ from plantcv.plantcv import print_image
 from plantcv.plantcv import plot_image
 
 
-def _debug(visual, filename=None):
+def _debug(visual, filename=None, **kwargs):
     """Save or display a visual for debugging.
 
     Inputs:
@@ -17,10 +17,10 @@ def _debug(visual, filename=None):
     """
     # Auto-increment the device counter
     params.device += 1
-    
+
     if params.debug == "print":
         # If debug is print, save the image to a file
         print_image(img=visual, filename=filename)
     elif params.debug == "plot":
         # If debug is plot, print to the plotting device
-        plot_image(img=visual)
+        plot_image(img=visual, **kwargs)

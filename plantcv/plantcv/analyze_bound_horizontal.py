@@ -3,14 +3,14 @@
 import os
 import cv2
 import numpy as np
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
 def analyze_bound_horizontal(img, obj, mask, line_position, label="default"):
-    """User-input boundary line tool
+    """
+    User-input boundary line tool
 
     Inputs:
     img             = RGB or grayscale image data for plotting
@@ -29,7 +29,6 @@ def analyze_bound_horizontal(img, obj, mask, line_position, label="default"):
     :param label: str
     :return analysis_images: list
     """
-
     ori_img = np.copy(img)
 
     # Draw line horizontal line through bottom of image, that is adjusted to user input height
@@ -114,37 +113,31 @@ def analyze_bound_horizontal(img, obj, mask, line_position, label="default"):
         analysis_images.append(wback)
         analysis_images.append(ori_img)
 
-    if params.debug is not None:
-        params.device += 1
-        point3 = (0, y_coor - 4)
-        point4 = (x_coor, y_coor - 4)
-        cv2.line(ori_img, point3, point4, (255, 0, 255), params.line_thickness)
-        cv2.line(wback, point3, point4, (255, 0, 255), params.line_thickness)
-        m = cv2.moments(mask, binaryImage=True)
-        cmx, cmy = (m['m10'] / m['m00'], m['m01'] / m['m00'])
-        if y_coor - y <= 0:
-            cv2.line(ori_img, (int(cmx), y), (int(cmx), y + height), (0, 255, 0), params.line_thickness)
-            cv2.line(wback, (int(cmx), y), (int(cmx), y + height), (0, 255, 0), params.line_thickness)
-        elif y_coor - y > 0:
-            height_1 = y_coor - y
-            if height - height_1 <= 0:
-                cv2.line(ori_img, (int(cmx), y), (int(cmx), y + height), (255, 0, 0), params.line_thickness)
-                cv2.line(wback, (int(cmx), y), (int(cmx), y + height), (255, 0, 0), params.line_thickness)
-            else:
-                cv2.line(ori_img, (int(cmx), y_coor - 2), (int(cmx), y_coor - height_above_bound), (255, 0, 0),
-                         params.line_thickness)
-                cv2.line(ori_img, (int(cmx), y_coor - 2), (int(cmx), y_coor + height_below_bound), (0, 255, 0),
-                         params.line_thickness)
-                cv2.line(wback, (int(cmx), y_coor - 2), (int(cmx), y_coor - height_above_bound), (255, 0, 0),
-                         params.line_thickness)
-                cv2.line(wback, (int(cmx), y_coor - 2), (int(cmx), y_coor + height_below_bound), (0, 255, 0),
-                         params.line_thickness)
-        if params.debug == 'print':
-            print_image(wback, os.path.join(params.debug_outdir, str(params.device) + '_boundary_on_white.png'))
-            print_image(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_boundary_on_img.png'))
-        if params.debug == 'plot':
-            plot_image(wback)
-            plot_image(ori_img)
+    point3 = (0, y_coor - 4)
+    point4 = (x_coor, y_coor - 4)
+    cv2.line(ori_img, point3, point4, (255, 0, 255), params.line_thickness)
+    cv2.line(wback, point3, point4, (255, 0, 255), params.line_thickness)
+    m = cv2.moments(mask, binaryImage=True)
+    cmx, cmy = (m['m10'] / m['m00'], m['m01'] / m['m00'])
+    if y_coor - y <= 0:
+        cv2.line(ori_img, (int(cmx), y), (int(cmx), y + height), (0, 255, 0), params.line_thickness)
+        cv2.line(wback, (int(cmx), y), (int(cmx), y + height), (0, 255, 0), params.line_thickness)
+    elif y_coor - y > 0:
+        height_1 = y_coor - y
+        if height - height_1 <= 0:
+            cv2.line(ori_img, (int(cmx), y), (int(cmx), y + height), (255, 0, 0), params.line_thickness)
+            cv2.line(wback, (int(cmx), y), (int(cmx), y + height), (255, 0, 0), params.line_thickness)
+        else:
+            cv2.line(ori_img, (int(cmx), y_coor - 2), (int(cmx), y_coor - height_above_bound), (255, 0, 0),
+                     params.line_thickness)
+            cv2.line(ori_img, (int(cmx), y_coor - 2), (int(cmx), y_coor + height_below_bound), (0, 255, 0),
+                     params.line_thickness)
+            cv2.line(wback, (int(cmx), y_coor - 2), (int(cmx), y_coor - height_above_bound), (255, 0, 0),
+                     params.line_thickness)
+            cv2.line(wback, (int(cmx), y_coor - 2), (int(cmx), y_coor + height_below_bound), (0, 255, 0),
+                     params.line_thickness)
+    _debug(visual=wback, filename=os.path.join(params.debug_outdir, str(params.device) + '_boundary_on_white.png'))
+    _debug(visual=ori_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_boundary_on_img.png'))
 
     outputs.add_observation(sample=label, variable='horizontal_reference_position',
                             trait='horizontal reference position',

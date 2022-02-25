@@ -16,7 +16,6 @@ def _inverse_covariance(spectral_array):
             :param spectral_array: __main__.Spectral_data
             :return inverse_covariance: numpy array
             """
-
     hsi_img = spectral_array.array_data
 
     n_lines, n_samples, n_band = hsi_img.shape

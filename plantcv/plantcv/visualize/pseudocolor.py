@@ -50,7 +50,6 @@ def pseudocolor(gray_img, obj=None, mask=None, cmap=None, background="image", mi
     :param bad_mask: numpy.ndarray
     :param bad_color: str
     """
-
     # Auto-increment the device counter
     params.device += 1
 

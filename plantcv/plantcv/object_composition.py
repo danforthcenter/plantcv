@@ -3,13 +3,13 @@
 import numpy as np
 import cv2
 import os
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
+from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import params
 
 
 def object_composition(img, contours, hierarchy):
-    """Groups objects into a single object, usually done after object filtering.
+    """
+    Groups objects into a single object, usually done after object filtering.
 
     Inputs:
     img       = RGB or grayscale image data for plotting
@@ -26,7 +26,6 @@ def object_composition(img, contours, hierarchy):
     :return group: list
     :return mask: numpy.ndarray
     """
-
     ori_img = np.copy(img)
     # If the reference image is grayscale convert it to color
     if len(np.shape(ori_img)) == 2:
@@ -44,21 +43,17 @@ def object_composition(img, contours, hierarchy):
 
     ids = np.where(stack == 1)[0]
     if len(ids) > 0:
-        params.device += 1
         contour_list = [contours[i] for i in ids]
         group = np.vstack(contour_list)
         cv2.drawContours(mask, contours, -1, 255, -1, hierarchy=hierarchy)
 
-        if params.debug is not None:
-            cv2.drawContours(ori_img, group, -1, (255, 0, 0), params.line_thickness)
-            for cnt in contours:
-                cv2.drawContours(ori_img, cnt, -1, (255, 0, 0), params.line_thickness)
-            if params.debug == 'print':
-                print_image(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_objcomp.png'))
-                print_image(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_objcomp_mask.png'))
-            elif params.debug == 'plot':
-                plot_image(ori_img)
+        cv2.drawContours(ori_img, group, -1, (255, 0, 0), params.line_thickness)
+        for cnt in contours:
+            cv2.drawContours(ori_img, cnt, -1, (255, 0, 0), params.line_thickness)
+
+        _debug(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_objcomp.png'))
+        _debug(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_objcomp_mask.png'))
+
         return group, mask
-    else:
-        print("Warning: Invalid contour.")
-        return None, None
+    print("Warning: Invalid contour.")
+    return None, None
