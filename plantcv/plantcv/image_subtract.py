@@ -24,7 +24,6 @@ def image_subtract(gray_img1, gray_img2):
     :param gray_img2: numpy.ndarray
     :return new_img: numpy.ndarray
     """
-
     # check inputs for gray-scale
     if len(np.shape(gray_img1)) != 2 or len(np.shape(gray_img2)) != 2:
         fatal_error("Input image is not gray-scale")

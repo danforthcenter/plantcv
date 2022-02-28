@@ -20,7 +20,6 @@ def plot_image(img, cmap=None, **kwargs):
     :param kwargs: key-value arguments to xarray.plot method
     :return:
     """
-
     dimensions = numpy.shape(img)
 
     if isinstance(img, numpy.ndarray):

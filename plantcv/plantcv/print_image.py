@@ -24,7 +24,6 @@ def print_image(img, filename, **kwargs):
     :param kwargs: dict
     :return:
     """
-
     # Print numpy array type images
     if isinstance(img, numpy.ndarray):
         cv2.imwrite(filename, img)

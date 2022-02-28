@@ -2,7 +2,6 @@ import os
 import sys
 import json
 from copy import deepcopy
-import tempfile
 
 
 # Build job list
@@ -21,7 +20,6 @@ def job_builder(meta, config):
     :param config: plantcv.parallel.WorkflowConfig
     :return job_stack: list
     """
-
     # Overall job stack. List of list of jobs
     jobs = []
 
@@ -29,14 +27,6 @@ def job_builder(meta, config):
     # images = list(meta.keys())
     images = []
     for img in list(meta.keys()):
-        # # If a date range was requested, check whether the image is within range
-        # if args.dates:
-        #     # Convert image datetime to unix time
-        #     timestamp = dt_parser(meta[img]['timestamp'])
-        #     time_delta = timestamp - datetime.datetime(1970, 1, 1)
-        #     unix_time = (time_delta.days * 24 * 3600) + time_delta.seconds
-        #     if unix_time < args.start_date or unix_time > args.end_date:
-        #         continue
         if config.coprocess is not None:
             if meta[img]['imgtype'] != config.coprocess:
                 images.append(img)

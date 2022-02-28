@@ -17,7 +17,6 @@ def closing(gray_img, kernel=None):
     :param kernel = ndarray
     :return filtered_img: ndarray
     """
-
     # Make sure the image is binary/grayscale
     if len(np.shape(gray_img)) != 2:
         fatal_error("Input image must be grayscale or binary")
