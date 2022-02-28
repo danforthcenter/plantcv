@@ -154,8 +154,7 @@ class WorkflowConfig:
 
     # Validation checks on current config
     def validate_config(self):
-        """Validation checks on current configuration.
-        """
+        """Validation checks on current configuration."""
         checks = [True]
         # Validate input directory
         if not os.path.exists(self.input_dir):
