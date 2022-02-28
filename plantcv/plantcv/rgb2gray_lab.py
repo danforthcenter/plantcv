@@ -22,7 +22,6 @@ def rgb2gray_lab(rgb_img, channel):
     :param channel: str
     :return channel: numpy.ndarray
     """
-
     # The allowable channel inputs are l, a or b
     names = {"l": "lightness", "a": "green-magenta", "b": "blue-yellow"}
     channel = channel.lower()

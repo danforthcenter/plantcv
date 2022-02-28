@@ -193,5 +193,4 @@ def acute(obj, mask, win, thresh):
         stop_pts = obj[TSpts]
 
         return homolog_pts, start_pts, stop_pts, ptvals, chain, max_dist
-    else:
-        return [], [], [], [], [], []
+    return [], [], [], [], [], []

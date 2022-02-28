@@ -19,7 +19,6 @@ def invert(gray_img):
     :param gray_img: numpy.ndarray
     :return img_inv: numpy.ndarray
     """
-
     img_inv = cv2.bitwise_not(gray_img)
 
     _debug(visual=img_inv,

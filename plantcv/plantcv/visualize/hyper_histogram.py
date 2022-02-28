@@ -157,7 +157,7 @@ def hyper_histogram(hsi, mask=None, bins=100, lower_bound=None, upper_bound=None
     array_data = hsi.array_data
 
     # List of wavelengths recorded created from parsing the header file will be string, make list of floats
-    histograms = dict()
+    histograms = {}
     hist_dataset = pd.DataFrame(columns=['reflectance'])
     debug = params.debug
     params.debug = None

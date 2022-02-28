@@ -34,7 +34,6 @@ def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1, show_g
     :return contours: list
     :return roi_obj_hierarchy: list
     """
-
     if len(np.shape(img)) == 3:
         iy, ix, iz = np.shape(img)
     else:
@@ -68,7 +67,7 @@ def cluster_contours(img, roi_objects, roi_obj_hierarchy, nrow=1, ncol=1, show_g
             else:
                 if a >= step[x - 1] and a < step[x]:
                     return x
-                elif a >= np.max(step):
+                if a >= np.max(step):
                     return num_bins
 
     dtype = [('cx', int), ('cy', int), ('rowbin', int), ('colbin', int), ('index', int)]

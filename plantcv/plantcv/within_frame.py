@@ -21,7 +21,6 @@ def within_frame(mask, border_width=1, label="default"):
     :param label: str
     :return in_bounds: bool
     """
-
     # Check if object is touching image boundaries (QC)
     if len(np.shape(mask)) > 2 or len(np.unique(mask)) > 2:
         fatal_error("Mask should be a binary image of 0 and nonzero values.")

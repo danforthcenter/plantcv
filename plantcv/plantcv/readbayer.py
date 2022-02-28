@@ -28,14 +28,12 @@ def readbayer(filename, bayerpattern='BG', alg='default'):
     :return path: str
     :return img_name: str
     """
-
     # bayerpattern is defined as the colors of the pixels in the 2nd and 3rd column of the 2nd row.
     # see https://docs.opencv.org/3.2.0/de/d25/imgproc_color_conversions.html
     # COLOR_BayerBG2BGR
     # COLOR_BayerGB2BGR
     # COLOR_BayerRG2BGR
     # COLOR_BayerGR2BGR
-
     image_raw = cv2.imread(filename, flags=-1)
 
     if image_raw is None:

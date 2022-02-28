@@ -50,7 +50,6 @@ def white_balance(img, mode='hist', roi=None):
     :param roi: list
     :return finalcorrected: numpy.ndarray
     """
-
     ori_img = np.copy(img)
 
     if mode not in ('hist', 'max'):

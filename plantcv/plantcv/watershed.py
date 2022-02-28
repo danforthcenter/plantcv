@@ -35,7 +35,6 @@ def watershed_segmentation(rgb_img, mask, distance=10, label="default"):
     :param label: str
     :return analysis_images: list
     """
-
     # Store debug mode
     debug = params.debug
     params.debug = None
