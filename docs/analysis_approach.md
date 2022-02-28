@@ -5,7 +5,7 @@ The following are suggestions on how to approach image analysis with PlantCV.
 ###**Image Processing Goals**
 
 When starting an image-based phenotyping project it is important to consider what the end goals of the project are.
-This is important because the goals of the project will determine the the camera type, imaging layout, and will help to 
+This is important because the goals of the project will determine the camera type, imaging layout, and will help to 
 guide downstream analysis. For example, if the goal of the project is to quantify the growth rates of a population of 
 Arabidopsis plants, you may want to take timelapse images of whole flats of plants with an RGB (VIS) camera. If it was 
 an experiment focused on drought of maize plants and your goal was to get information about water content of plants you
