@@ -25,7 +25,6 @@ def apply_mask(img, mask, mask_color):
     :param mask_color: str
     :return masked_img: numpy.ndarray
     """
-
     if mask_color.upper() == "WHITE":
         color_val = 255
     elif mask_color.upper() == "BLACK":

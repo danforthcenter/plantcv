@@ -180,7 +180,7 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, colorspaces="all", label="
     # Diverging values on a -128 to 127 scale (green-magenta and blue-yellow)
     diverging_values = [i for i in range(-128, 128)]
 
-    if colorspaces.upper() == 'RGB' or colorspaces.upper() == 'ALL':
+    if colorspaces.upper() in ('RGB', 'ALL'):
         outputs.add_observation(sample=label, variable='blue_frequencies', trait='blue frequencies',
                                 method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
                                 value=histograms["b"]["hist"], label=rgb_values)
@@ -191,7 +191,7 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, colorspaces="all", label="
                                 method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
                                 value=histograms["r"]["hist"], label=rgb_values)
 
-    if colorspaces.upper() == 'LAB' or colorspaces.upper() == 'ALL':
+    if colorspaces.upper() in ('LAB', 'ALL'):
         outputs.add_observation(sample=label, variable='lightness_frequencies', trait='lightness frequencies',
                                 method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
                                 value=histograms["l"]["hist"], label=percent_values)
@@ -203,7 +203,7 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, colorspaces="all", label="
                                 method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
                                 value=histograms["y"]["hist"], label=diverging_values)
 
-    if colorspaces.upper() == 'HSV' or colorspaces.upper() == 'ALL':
+    if colorspaces.upper() in ('HSV', 'ALL'):
         outputs.add_observation(sample=label, variable='hue_frequencies', trait='hue frequencies',
                                 method='plantcv.plantcv.analyze_color', scale='frequency', datatype=list,
                                 value=histograms["h"]["hist"][0:180], label=hue_values)

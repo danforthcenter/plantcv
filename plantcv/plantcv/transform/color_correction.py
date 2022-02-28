@@ -11,7 +11,7 @@ from plantcv.plantcv._debug import _debug
 
 
 def get_color_matrix(rgb_img, mask):
-    """ Calculate the average value of pixels in each color chip for each color channel.
+    """Calculate the average value of pixels in each color chip for each color channel.
 
     Inputs:
     rgb_img         = RGB image with color chips visualized
@@ -61,7 +61,7 @@ def get_color_matrix(rgb_img, mask):
 
 
 def get_matrix_m(target_matrix, source_matrix):
-    """ Calculate Moore-Penrose inverse matrix for use in calculating transformation_matrix
+    """Calculate Moore-Penrose inverse matrix for use in calculating transformation_matrix
 
     Inputs:
     target_matrix       = a 22x4 matrix containing the average red value, average green value, and average blue value
@@ -80,7 +80,6 @@ def get_matrix_m(target_matrix, source_matrix):
     :return matrix_a: numpy.ndarray
     :return matrix_m: numpy.ndarray
     :return matrix_b: numpy.ndarray
-
     """
     # if the number of chips in source_img match the number of chips in target_matrix
     if np.shape(target_matrix) == np.shape(source_matrix):
@@ -124,7 +123,7 @@ def get_matrix_m(target_matrix, source_matrix):
 
 
 def calc_transformation_matrix(matrix_m, matrix_b):
-    """ Calculates transformation matrix (transformation_matrix).
+    """Calculates transformation matrix (transformation_matrix).
 
     Inputs:
     matrix_m    = a 9x22 Moore-Penrose inverse matrix
@@ -179,7 +178,7 @@ def calc_transformation_matrix(matrix_m, matrix_b):
 
 
 def apply_transformation_matrix(source_img, target_img, transformation_matrix):
-    """ Apply the transformation matrix to the source_image.
+    """Apply the transformation matrix to the source_image.
 
     Inputs:
     source_img      = an RGB image to be corrected to the target color space
@@ -245,7 +244,7 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
 
 
 def save_matrix(matrix, filename):
-    """ Serializes a matrix as an numpy.ndarray object and save to a .npz file.
+    """Serializes a matrix as an numpy.ndarray object and save to a .npz file.
     Inputs:
     matrix      = a numpy.matrix
     filename    = name of file to which matrix will be saved. Must end in .npz
@@ -263,7 +262,7 @@ def save_matrix(matrix, filename):
 
 
 def load_matrix(filename):
-    """ Deserializes from file an numpy.ndarray object as a matrix
+    """Deserializes from file an numpy.ndarray object as a matrix
     Inputs:
     filename    = .npz file to which a numpy.matrix or numpy.ndarray is saved
 
@@ -398,7 +397,7 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
 
 
 def quick_color_check(target_matrix, source_matrix, num_chips):
-    """ Quickly plot target matrix values against source matrix values to determine
+    """Quickly plot target matrix values against source matrix values to determine
     over saturated color chips or other issues.
 
     Inputs:
@@ -623,10 +622,9 @@ def find_color_card(rgb_img, threshold_type='adaptgauss', threshvalue=125, blurr
             mwhratio.append(wh_sorted[1] / wh_sorted[0])
             msquare.append(len(approx))
             # If the approx contour has 4 points then we can assume we have 4-sided objects
-            if len(approx) == 4 or len(approx) == 5:
+            if len(approx) in (4, 5):
                 msquarecoords.append(approx)
             else:  # It's not square
-                # msquare.append(0)
                 msquarecoords.append(0)
         else:  # Contour has area of 0, not interesting
             msquare.append(0)

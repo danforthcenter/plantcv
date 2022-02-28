@@ -198,7 +198,6 @@ def y_axis_pseudolandmarks(img, obj, mask, label="default"):
             x = i[0, 0]
             y = i[0, 1]
             cv2.circle(img2, (int(x), int(y)), params.line_thickness, (0, 79, 255), -1)
-        # print_image(img2, (str(device) + '_y_axis_pseudolandmarks.png'))
 
         _debug(visual=img2,
                filename=os.path.join(params.debug_outdir, (str(params.device) + '_y_axis_pseudolandmarks.png')))

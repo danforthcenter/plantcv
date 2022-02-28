@@ -299,7 +299,6 @@ def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity'
     :param max_value: int
     :return bin_img: numpy.ndarray
     """
-
     # Function that calculates the texture of a kernel
     def calc_texture(inputs):
         inputs = np.reshape(a=inputs, newshape=[ksize, ksize])
@@ -431,7 +430,7 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         mask = cv2.bitwise_and(l_mask, gm_mask)
         mask = cv2.bitwise_and(mask, by_mask)
 
-    elif channel.upper() == 'GRAY' or channel.upper() == 'GREY':
+    elif channel.upper() in ('GRAY', 'GREY'):
 
         # Check threshold input
         if not (len(lower_thresh) == 1 and len(upper_thresh) == 1):
@@ -565,7 +564,6 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
     # set threshold = 2
     detect_peaks(x, threshold = 2, show=True)
     """
-
     x = np.atleast_1d(x).astype('float64')
 
     # It is always the case that x.size=256 since 256 hardcoded in line 186 ->
@@ -586,16 +584,9 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
     #     x[indnan] = np.inf
     #     dx[np.where(np.isnan(dx))[0]] = np.inf
     ine, ire, ife = np.array([[], [], []], dtype=int)
-    # # Where this function is used it is hardcoded to use the default edge='rising' so we will never have
-    # # edge=None, thus this will never be used
-    # if not edge:
-    #     ine = np.where((np.hstack((dx, 0)) < 0) & (np.hstack((0, dx)) > 0))[0]
 
     if edge.lower() in ['rising', 'both']:
         ire = np.where((np.hstack((dx, 0)) <= 0) & (np.hstack((0, dx)) > 0))[0]
-        # # Where this function is used it is hardcoded to use the default edge='rising' so this will never be used
-        # if edge.lower() in ['falling', 'both']:
-        #     ife = np.where((np.hstack((dx, 0)) < 0) & (np.hstack((0, dx)) >= 0))[0]
     ind = np.unique(np.hstack((ine, ire, ife)))
     # x will never contain NaN since calcHist will never return NaN
     # if ind.size and indnan.size:
@@ -613,25 +604,6 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
     # if ind.size and mph is not None:
     #     ind = ind[x[ind] >= mph]
     # remove peaks - neighbors < threshold
-
-    # # Where this function is used threshold is hardcoded to the default threshold=0 so this will never be used
-    # if ind.size and threshold > 0:
-    #     dx = np.min(np.vstack([x[ind] - x[ind - 1], x[ind] - x[ind + 1]]), axis=0)
-    #     ind = np.delete(ind, np.where(dx < threshold)[0])
-
-    # # Where this function is used has hardcoded mpd=1 so this will never be used
-    # # detect small peaks closer than minimum peak distance
-    # if ind.size and mpd > 1:
-    #     ind = ind[np.argsort(x[ind])][::-1]  # sort ind by peak height
-    #     idel = np.zeros(ind.size, dtype=bool)
-    #     for i in range(ind.size):
-    #         if not idel[i]:
-    #             # keep peaks with the same height if kpsh is True
-    #             idel = idel | (ind >= ind[i] - mpd) & (ind <= ind[i] + mpd) \
-    #                           & (x[ind[i]] > x[ind] if kpsh else True)
-    #             idel[i] = 0  # Keep current peak
-    #     # remove the small peaks and sort back the indices by their occurrence
-    #     ind = np.sort(ind[~idel])
 
     if show:
         # x will never contain NaN since calcHist will never return NaN
@@ -667,7 +639,6 @@ def _plot(x, mph, mpd, threshold, edge, valley, ax, ind):
     mode = 'Valley detection' if valley else 'Peak detection'
     ax.set_title("%s (mph=%s, mpd=%d, threshold=%s, edge='%s')"
                  % (mode, str(mph), mpd, str(threshold), edge))
-    # plt.grid()
     plt.show()
 
 
@@ -741,8 +712,6 @@ def mask_bad(float_img, bad_type='native'):
     # at least one of the "bad" exists
     # desired bad to mark is "native"
     elif bad_type.lower() == 'native':
-        # mask[np.isnan(gray_img)] = 255
-        # mask[np.isinf(gray_img)] = 255
         mask[idx_nan, idy_nan] = 255
         mask[idx_inf, idy_inf] = 255
     elif bad_type.lower() == 'nan' and len(idx_nan) >= 1:

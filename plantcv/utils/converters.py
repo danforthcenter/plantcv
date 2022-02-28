@@ -99,7 +99,6 @@ def tabulate_bayes_classes(input_file, output_file):
     :param input_file: str
     :param output_file: str
     """
-
     # If the input file does not exist raise an error
     if not os.path.exists(input_file):
         raise IOError("File does not exist: {0}".format(input_file))

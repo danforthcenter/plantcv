@@ -9,7 +9,7 @@ from plantcv.plantcv import params
 
 
 def rectangle_mask(img, p1, p2, color="black"):
-    """
+    """Mask a rectangular area.
     Takes an input image and returns a binary image masked by a rectangular area denoted by p1 and p2. Note that
        p1 = (0,0) is the top left hand corner bottom right hand corner is p2 = (max-value(x), max-value(y)).
 
@@ -34,13 +34,12 @@ def rectangle_mask(img, p1, p2, color="black"):
     :return contour: list
     :return hierarchy: list
     """
-
     # get the dimensions of the input image
     if len(np.shape(img)) == 3:
         ix, iy, iz = np.shape(img)
     else:
         ix, iy = np.shape(img)
-        
+
     # create a blank image of same size
     bnk = np.zeros((ix, iy), dtype=np.uint8)
     img1 = np.copy(img)
@@ -60,7 +59,7 @@ def rectangle_mask(img, p1, p2, color="black"):
         bnk += 255
         cv2.drawContours(bnk, contour, 0, (0, 0, 0), -1)
         cv2.drawContours(img1, contour, 0, (0, 0, 0), -1)
-    elif color.upper() == "GRAY" or color.upper() == "GREY":
+    elif color.upper() in ("GRAY", "GREY"):
         cv2.drawContours(bnk, contour, 0, (192, 192, 192), -1)
         cv2.drawContours(img1, contour, 0, (192, 192, 192), -1)
     else:

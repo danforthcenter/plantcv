@@ -50,7 +50,6 @@ def segment_sort(skel_img, objects, mask=None, first_stem=True):
     for i, cnt in enumerate(objects):
         segment_plot = np.zeros(skel_img.shape[:2], np.uint8)
         cv2.drawContours(segment_plot, objects, i, 255, 1, lineType=8)
-        # is_leaf = False
         overlap_img = logical_and(segment_plot, tips_img)
 
         # The first contour is the base, and while it contains a tip, it isn't a leaf
@@ -62,7 +61,6 @@ def segment_sort(skel_img, objects, mask=None, first_stem=True):
 
             if np.sum(overlap_img) > 0:
                 secondary_objects.append(cnt)
-                # is_leaf = True
             else:
                 primary_objects.append(cnt)
 

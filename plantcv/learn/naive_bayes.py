@@ -183,7 +183,6 @@ def _plot_pdf(channel, outdir, **kwargs):
     :param outdir: str
     :param kwargs: dict
     """
-
     for class_name, pdf in kwargs.items():
         plt.plot(pdf, label=class_name)
     plt.legend(loc="best")

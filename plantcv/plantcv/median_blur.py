@@ -23,7 +23,6 @@ def median_blur(gray_img, ksize):
     :param ksize: int or tuple
     :return img_mblur: numpy.ndarray
     """
-
     # Make sure ksize is valid
     if type(ksize) is not int and type(ksize) is not tuple:
         fatal_error("Invalid ksize, must be integer or tuple")
