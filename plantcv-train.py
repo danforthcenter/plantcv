@@ -16,7 +16,6 @@ def options():
     :return args: object -- parsed arguments
     :raises: IOError, KeyError
     """
-
     # Job start time
     start_time = datetime.datetime.now().strftime('%Y-%m-%d_%H:%M:%S')
     print("Starting run " + start_time + '\n', file=sys.stderr)
@@ -79,7 +78,7 @@ def run_naive_bayes_multiclass(args):
 ###########################################
 
 
-# Main
+# Run the main program
 ###########################################
 def main():
     """Main program.

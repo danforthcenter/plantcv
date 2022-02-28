@@ -29,7 +29,6 @@ def auto_crop(img, obj, padding_x=0, padding_y=0, color='black'):
     :param color: str
     :return cropped: numpy.ndarray
     """
-
     params.device += 1
     img_copy = np.copy(img)
     img_copy2 = np.copy(img)

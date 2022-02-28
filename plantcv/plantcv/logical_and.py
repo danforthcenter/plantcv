@@ -21,7 +21,6 @@ def logical_and(bin_img1, bin_img2):
     :param bin_img2: numpy.ndarray
     :return merged: numpy.ndarray
     """
-
     merged = cv2.bitwise_and(bin_img1, bin_img2)
 
     _debug(visual=merged,

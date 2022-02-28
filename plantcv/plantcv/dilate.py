@@ -24,7 +24,6 @@ def dilate(gray_img, ksize, i):
     :param i: int
     :return dil_img: numpy.ndarray
     """
-
     if ksize <= 1:
         raise ValueError('ksize needs to be greater than 1 for the function to have an effect')
 

@@ -24,7 +24,6 @@ def landmark_reference_pt_dist(points_r, centroid_r, bline_r, label="default"):
     :param bline_r: tuple
     :param label: str
     """
-
     params.device += 1
     vert_dist_c = []
     hori_dist_c = []

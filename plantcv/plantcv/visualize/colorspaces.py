@@ -25,7 +25,6 @@ def colorspaces(rgb_img, original_img=True):
     :param original_img: bool
     :return labeled_img: numpy.ndarray
     """
-
     if not len(np.shape(rgb_img)) == 3:
         fatal_error("Input image is not RGB!")
 

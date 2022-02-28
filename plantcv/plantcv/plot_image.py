@@ -14,7 +14,6 @@ def plot_image(img, cmap=None):
     :param cmap: str
     :return:
     """
-
     image_type = type(img)
 
     dimensions = numpy.shape(img)

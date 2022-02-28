@@ -25,7 +25,6 @@ def check_cycles(skel_img, label="default"):
     :param label: str
     :return cycle_img: numpy.ndarray
     """
-
     # Create the mask needed for cv2.floodFill, must be larger than the image
     h, w = skel_img.shape[:2]
     mask = np.zeros((h + 2, w + 2), np.uint8)
