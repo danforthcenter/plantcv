@@ -4,6 +4,7 @@ import os
 import cv2
 import numpy as np
 import mimetypes
+from plantcv.plantcv import params
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv.transform import resize
 # import warnings
@@ -50,6 +51,9 @@ def time_lapse_video(img_directory, list_img=None, auto_sort=True, suffix_img=No
     :return list_img: list
     :return size_frame: tuple
     """
+
+    debug = params.debug
+    params.debug = None
 
     # Get the list of image files in the given directory and sort them alphabetically by their names
     temp_list = []
