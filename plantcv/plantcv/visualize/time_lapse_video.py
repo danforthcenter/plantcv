@@ -10,27 +10,22 @@ from plantcv.plantcv.transform import resize
 from plantcv.plantcv import warn
 
 
-def time_lapse_video(img_list, frame_size=None, fps=29.97, out_filename='./time_lapse_video.mp4', display='on'):
+def time_lapse_video(img_list, out_filename='./time_lapse_video.mp4', fps=29.97, display='on'):
     """ Generate time-lapse video given a list of paths to the images
 
     Inputs:
     img_list       = the desired list of images in img_directory to create the video.
             If None is passed, all images would be included by default.
-    frame_size     = the desired size of every frame.
-            If the frame size is given, if an image is larger than the given size, the image would be cropped automatically;
-            if an image is smaller than the given size, the image would be zero-padded automatically
-            If the frame size is not given, the largest size of all images would be used as the frame size.
     fps            = (frames per second) frame rate.
             Commonly used values: 23.98, 24, 25, 29.97, 30, 50, 59.94, 60
     out_filename   = name of file to save the generated video to
-    display        = indicator of whether to display current status while running this function
+    display        = if True, displays the path to the generated video
 
     Outputs:
     img_list       = the list of images used to generate the video
     frame_size     = the frame size of the generated video
 
     :param img_list: list
-    :param frame_size: tuple
     :param fps: float
     :param out_filename: string
     :param display: boolean
