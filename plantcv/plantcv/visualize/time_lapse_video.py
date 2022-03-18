@@ -51,8 +51,9 @@ def time_lapse_video(img_list, out_filename='./time_lapse_video.mp4', fps=29.97,
         imgs.append(img)
     max_c, max_r = np.max(list_c), np.max(list_r)
 
-    # If the frame size is not provided, use the largest size of the images as the frame size
-    frame_size = frame_size or (max_c, max_r)
+    # use the largest size of the images as the frame size
+    # frame_size = frame_size or (max_c, max_r)
+    frame_size = (max_c, max_r)
 
     if not (len(np.unique(list_r)) == 1 and len(np.unique(list_c)) == 1):
         warn("The sizes of images are not the same, an image resizing (cropping or zero-padding) will be done "
