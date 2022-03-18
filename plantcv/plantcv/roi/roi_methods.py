@@ -32,8 +32,7 @@ def from_binary_image(img, bin_img):
     # Use the binary image to create an ROI contour
     roi_contour, roi_hierarchy = cv2.findContours(np.copy(bin_img), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
     # Draw the ROI if requested
-    if params.debug is not None:
-        _draw_roi(img=img, roi_contour=roi_contour)
+    _draw_roi(img=img, roi_contour=roi_contour)
 
     return roi_contour, roi_hierarchy
 
@@ -77,8 +76,7 @@ def rectangle(img, x, y, h, w):
     roi_hierarchy = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
 
     # Draw the ROI if requested
-    if params.debug is not None:
-        _draw_roi(img=img, roi_contour=roi_contour)
+    _draw_roi(img=img, roi_contour=roi_contour)
 
     # Check whether the ROI is correctly bounded inside the image
     if x < 0 or y < 0 or x + w > width or y + h > height:
@@ -122,8 +120,7 @@ def circle(img, x, y, r):
     roi_contour, roi_hierarchy = cv2.findContours(bin_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
 
     # Draw the ROI if requested
-    if params.debug is not None:
-        _draw_roi(img=img, roi_contour=roi_contour)
+    _draw_roi(img=img, roi_contour=roi_contour)
 
     # Check whether the ROI is correctly bounded inside the image
     if x - r < 0 or x + r > width or y - r < 0 or y + r > height:
@@ -171,8 +168,7 @@ def ellipse(img, x, y, r1, r2, angle):
     roi_contour, roi_hierarchy = cv2.findContours(bin_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
 
     # Draw the ROI if requested
-    if params.debug is not None:
-        _draw_roi(img=img, roi_contour=roi_contour)
+    _draw_roi(img=img, roi_contour=roi_contour)
 
     # Checks ellipse goes outside the image by checking row and column sum of edges
     if (np.sum(bin_img[0, :]) + np.sum(bin_img[-1, :]) + np.sum(bin_img[:, 0]) + np.sum(bin_img[:, -1]) > 0) or \
@@ -302,15 +298,12 @@ def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
         print("WARNING: Two or more of the user defined regions of interest overlap! "
               "If you only see one ROI then they may overlap exactly.")
 
+    # Draw the ROIs if requested
+    # Create an array of contours and list of hierarchy for debug image
+    roi_contour1, _ = cv2.findContours(all_roi_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
     # Reset debug
     params.debug = debug
-
-    # Draw the ROIs if requested
-    if params.debug is not None:
-        # Create an array of contours and list of hierarchy for debug image
-        roi_contour1, roi_hierarchy1 = cv2.findContours(all_roi_img, cv2.RETR_TREE,
-                                                        cv2.CHAIN_APPROX_NONE)[-2:]
-        _draw_roi(img=img, roi_contour=roi_contour1)
+    _draw_roi(img=img, roi_contour=roi_contour1)
 
     return roi_contour, roi_hierarchy
 
@@ -339,8 +332,8 @@ def custom(img, vertices):
     roi_contour = [np.array(vertices, dtype=np.int32)]
     roi_hierarchy = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
 
-    if params.debug is not None:
-        _draw_roi(img=img, roi_contour=roi_contour)
+    # Draw the ROIs if requested
+    _draw_roi(img=img, roi_contour=roi_contour)
 
     # Check that the ROI doesn't go off the screen
     for i in vertices:

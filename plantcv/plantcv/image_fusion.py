@@ -25,7 +25,6 @@ def image_fusion(img1, img2, wvs1, wvs2, array_type="multispectral"):
     :param array_type: str
     :return fused_array: plantcv.Spectral_data
     """
-
     # If the image is 2D, expand to 3D to make stackable
     img1 = _expand_img_dims(img1)
     r1, c1, _ = img1.shape

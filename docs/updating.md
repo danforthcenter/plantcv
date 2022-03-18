@@ -405,6 +405,16 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, img_inv = **plantcv.invert**(*img, device, debug=None*)
 * post v3.0dev2: img_inv = **plantcv.invert**(*gray_img*)
 
+#### plantcv.io.random_subset
+
+* pre v3.14.0: NA
+* post v3.14.0: sub_dataset = **plantcv.io.random_subset**(*dataset, num=100, seed=None*)
+
+#### plantcv.io.read_dataset
+
+* pre v3.14.0: NA
+* post v3.14.0:  image_dataset = **plantcv.io.read_dataset**(*source_path, pattern='', sort=True*)
+
 #### plantcv.landmark_reference_pt_dist
 
 * pre v3.0dev2: device, vert_ave_c, hori_ave_c, euc_ave_c, ang_ave_c, vert_ave_b, hori_ave_b, euc_ave_b, ang_ave_b = **plantcv.landmark_reference_pt_dist**(*points_r, centroid_r, bline_r, device, debug=None*)
@@ -880,10 +890,15 @@ pages for more details on the input and output variable types.
 * pre v3.9: NA
 * post v3.9: filtered_img = **plantcv.stdev_filter**(*img, kszie, borders="nearest"*)
 
+#### plantcv.threshold.dual_channels
+
+* pre v4.0: NA
+* post v4.0: bin_img = **plantcv.threshold.dual_channels**(*rgb_img, x_channel, y_channel, points, above=True, max_value=255*)
+
 #### plantcv.threshold.binary
 
 * pre v3.0dev2: NA
-* post v3.0dev2: bin_img = plantcv.threshold.binary**(*gray_img, threshold, max_value, object_type="light"*)
+* post v3.0dev2: bin_img = **plantcv.threshold.binary**(*gray_img, threshold, max_value, object_type="light"*)
 
 #### plantcv.threshold.custom_range
 
@@ -1045,6 +1060,11 @@ pages for more details on the input and output variable types.
 
 * pre v3.13: NA
 * post v3.13: plotting_img = **pcv.visualize.obj_sizes**(*img, mask, num_objects=100*)
+
+#### plantcv.visualize.pixel_scatter_plot
+
+* pre v4.0: NA
+* post v4.0: fig, ax = **pcv.visualize.pixel_scatter_plot**(*paths_to_imgs, x_channel, y_channel*)
 
 #### plantcv.watershed_segmentation
 

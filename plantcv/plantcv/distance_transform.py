@@ -27,7 +27,6 @@ def distance_transform(bin_img, distance_type, mask_size):
     :param mask_size: int
     :return norm_image: numpy.ndarray
     """
-
     dist = cv2.distanceTransform(src=bin_img, distanceType=distance_type, maskSize=mask_size)
     norm_image = cv2.normalize(src=dist, dst=dist, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
 

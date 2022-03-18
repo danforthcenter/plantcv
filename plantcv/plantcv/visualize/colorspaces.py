@@ -5,11 +5,10 @@ import cv2
 import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv.transform import resize_factor
-from plantcv.plantcv import plot_image
 from plantcv.plantcv import fatal_error
-from plantcv.plantcv import print_image
 from plantcv.plantcv import rgb2gray_hsv
 from plantcv.plantcv import rgb2gray_lab
+from plantcv.plantcv._debug import _debug
 
 
 def colorspaces(rgb_img, original_img=True):
@@ -26,7 +25,6 @@ def colorspaces(rgb_img, original_img=True):
     :param original_img: bool
     :return labeled_img: numpy.ndarray
     """
-
     if not len(np.shape(rgb_img)) == 3:
         fatal_error("Input image is not RGB!")
 
@@ -69,11 +67,6 @@ def colorspaces(rgb_img, original_img=True):
     # Reset debug mode
     params.debug = debug
 
-    if params.debug == "print":
-        # If debug is print, save the image to a file
-        print_image(plotting_img, os.path.join(params.debug_outdir, str(params.device) + "_vis_colorspaces.png"))
-    elif params.debug == "plot":
-        # If debug is plot, print to the plotting device
-        plot_image(plotting_img)
+    _debug(visual=plotting_img, filename=os.path.join(params.debug_outdir, f"{params.device}_vis_colorspaces.png"))
 
     return plotting_img

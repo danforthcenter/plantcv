@@ -45,7 +45,6 @@ def _make_pseudo_rgb(spectral_array):
     :param spectral_array: __main__.Spectral_data
     :return pseudo_rgb: numpy.ndarray
     """
-
     # Make shorter variable names for data from the spectral class instance object
     array_data = spectral_array.array_data
     default_bands = spectral_array.default_bands
@@ -102,7 +101,6 @@ def read_data(filename):
     :param filename: str
     :return spectral_array: __main__.Spectral_data
         """
-
     # Initialize dictionary
     header_dict = {}
 

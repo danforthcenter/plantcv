@@ -55,8 +55,6 @@ def analyze_object(img, obj, mask, label="default"):
     # Moments
     #  m = cv2.moments(obj)
     m = cv2.moments(mask, binaryImage=True)
-    # Properties
-    # Area
     area = m['m00']
 
     if area:

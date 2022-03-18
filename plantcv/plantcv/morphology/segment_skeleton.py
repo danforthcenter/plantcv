@@ -4,31 +4,29 @@ import os
 import cv2
 from plantcv.plantcv import dilate
 from plantcv.plantcv import params
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
 from plantcv.plantcv import find_objects
 from plantcv.plantcv import color_palette
 from plantcv.plantcv import image_subtract
 from plantcv.plantcv.morphology import find_branch_pts
+from plantcv.plantcv._debug import _debug
 
 
 def segment_skeleton(skel_img, mask=None):
     """ Segment a skeleton image into pieces
 
-        Inputs:
-        skel_img         = Skeletonized image
-        mask             = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
+    Inputs:
+    skel_img         = Skeletonized image
+    mask             = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.
 
-        Returns:
-        segmented_img       = Segmented debugging image
-        segment_objects     = list of contours
+    Returns:
+    segmented_img       = Segmented debugging image
+    segment_objects     = list of contours
 
-        :param skel_img: numpy.ndarray
-        :param mask: numpy.ndarray
-        :return segmented_img: numpy.ndarray
-        :return segment_objects: list
-        """
-
+    :param skel_img: numpy.ndarray
+    :param mask: numpy.ndarray
+    :return segmented_img: numpy.ndarray
+    :return segment_objects: list
+    """
     # Store debug
     debug = params.debug
     params.debug = None
@@ -58,12 +56,6 @@ def segment_skeleton(skel_img, mask=None):
     for i, cnt in enumerate(segment_objects):
         cv2.drawContours(segmented_img, segment_objects, i, rand_color[i], params.line_thickness, lineType=8)
 
-    # Auto-increment device
-    params.device += 1
-
-    if params.debug == 'print':
-        print_image(segmented_img, os.path.join(params.debug_outdir, str(params.device) + '_segmented.png'))
-    elif params.debug == 'plot':
-        plot_image(segmented_img)
+    _debug(visual=segmented_img, filename=os.path.join(params.debug_outdir, f"{params.device}_segmented.png"))
 
     return segmented_img, segment_objects

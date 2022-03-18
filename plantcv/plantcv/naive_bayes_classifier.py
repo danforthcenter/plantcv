@@ -24,7 +24,6 @@ def naive_bayes_classifier(rgb_img, pdf_file):
     :param pdf_file: str
     :return masks: dict
     """
-
     # Initialize PDF dictionary
     pdfs = {}
     # Read the PDF file
@@ -81,11 +80,8 @@ def naive_bayes_classifier(rgb_img, pdf_file):
         masks[class_name][np.where(px_p[class_name] > background_class)] = 255
 
     # Print or plot the mask if debug is not None
-    if params.debug is not None:
-        for class_name, mask in masks.items():
-            _debug(visual=mask,
-                   filename=os.path.join(params.debug_outdir, str(params.device) +
-                                         "_naive_bayes_" + class_name + "_mask.png"),
-                   cmap='gray')
+    for class_name, mask in masks.items():
+        _debug(visual=mask, filename=os.path.join(params.debug_outdir, f"{params.device}_naive_bayes_{class_name}_mask.png"),
+               cmap='gray')
 
     return masks

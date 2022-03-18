@@ -5,28 +5,26 @@ import cv2
 import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
+from plantcv.plantcv._debug import _debug
 
 
 def analyze_stem(rgb_img, stem_objects, label="default"):
     """ Calculate angle of segments (in degrees) by fitting a linear regression line to segments.
 
-        Inputs:
-        rgb_img       = RGB image to plot debug image
-        stem_objects  = List of stem segments (output from segment_sort function)
-        label        = optional label parameter, modifies the variable name of observations recorded
+    Inputs:
+    rgb_img       = RGB image to plot debug image
+    stem_objects  = List of stem segments (output from segment_sort function)
+    label        = optional label parameter, modifies the variable name of observations recorded
 
-        Returns:
-        labeled_img    = Stem analysis debugging image
+    Returns:
+    labeled_img    = Stem analysis debugging image
 
 
-        :param rgb_img: numpy.ndarray
-        :param stem_objects: list
-        :param label: str
-        :return labeled_img: numpy.ndarray
+    :param rgb_img: numpy.ndarray
+    :param stem_objects: list
+    :param label: str
+    :return labeled_img: numpy.ndarray
     """
-    params.device += 1
     labeled_img = np.copy(rgb_img)
     img_x, img_y, _ = np.shape(labeled_img)
     grouped_stem = np.vstack(stem_objects)
@@ -51,21 +49,17 @@ def analyze_stem(rgb_img, stem_objects, label="default"):
                             method='plantcv.plantcv.morphology.analyze_stem', scale='None', datatype=float,
                             value=stem_length, label=None)
 
-    if params.debug is not None:
-        # Draw culm_height
-        cv2.line(labeled_img, (int(stem_x), stem_y), (int(stem_x), stem_y + height), (0, 255, 0), params.line_thickness)
-        # Draw combined stem angle
-        x_min = 0  # Set bounds for regression lines to get drawn
-        x_max = img_x
-        intercept1 = int(((x - x_min) * slope) + y)
-        intercept2 = int(((x - x_max) * slope) + y)
-        if slope > 1000000 or slope < -1000000:
-            print("Slope  is ", slope, " and cannot be plotted.")
-        else:
-            cv2.line(labeled_img, (x_max - 1, intercept2), (x_min, intercept1), (0, 0, 255), 1)
-        if params.debug == 'print':
-            print_image(labeled_img, os.path.join(params.debug_outdir, str(params.device) + 'stem_analze.png'))
-        elif params.debug == 'plot':
-            plot_image(labeled_img)
+    # Draw culm_height
+    cv2.line(labeled_img, (int(stem_x), stem_y), (int(stem_x), stem_y + height), (0, 255, 0), params.line_thickness)
+    # Draw combined stem angle
+    x_min = 0  # Set bounds for regression lines to get drawn
+    x_max = img_x
+    intercept1 = int(((x - x_min) * slope) + y)
+    intercept2 = int(((x - x_max) * slope) + y)
+    if slope > 1000000 or slope < -1000000:
+        print("Slope  is ", slope, " and cannot be plotted.")
+    else:
+        cv2.line(labeled_img, (x_max - 1, intercept2), (x_min, intercept1), (0, 0, 255), 1)
+    _debug(visual=labeled_img, filename=os.path.join(params.debug_outdir, f"{params.device}_stem_analze.png"))
 
     return labeled_img

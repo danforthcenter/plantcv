@@ -39,7 +39,7 @@ def sample_images(source_path, dest_path, num=100):
         random_index = random.sample(range(0, len(line_array) - 1), num)
         for i in random_index:
             row = line_array[int(i)]
-            out_file.write(','.join(row))
+            out_file.write(','.join(row) + "\n")
             snap_path = os.path.join(source_path, "snapshot" + row[1])
             folder_path = os.path.join(dest_path, "snapshot" + row[1])
             if not os.path.exists(folder_path):

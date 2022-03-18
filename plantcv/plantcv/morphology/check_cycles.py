@@ -7,10 +7,9 @@ from plantcv.plantcv import params
 from plantcv.plantcv import erode
 from plantcv.plantcv import dilate
 from plantcv.plantcv import outputs
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
 from plantcv.plantcv import find_objects
 from plantcv.plantcv import color_palette
+from plantcv.plantcv._debug import _debug
 
 
 def check_cycles(skel_img, label="default"):
@@ -26,7 +25,6 @@ def check_cycles(skel_img, label="default"):
     :param label: str
     :return cycle_img: numpy.ndarray
     """
-
     # Create the mask needed for cv2.floodFill, must be larger than the image
     h, w = skel_img.shape[:2]
     mask = np.zeros((h + 2, w + 2), np.uint8)
@@ -69,12 +67,7 @@ def check_cycles(skel_img, label="default"):
 
     # Reset debug mode
     params.debug = debug
-    # Auto-increment device
-    params.device += 1
 
-    if params.debug == 'print':
-        print_image(cycle_img, os.path.join(params.debug_outdir, str(params.device) + '_cycles.png'))
-    elif params.debug == 'plot':
-        plot_image(cycle_img)
+    _debug(visual=cycle_img, filename=os.path.join(params.debug_outdir, f"{params.device}_cycles.png"))
 
     return cycle_img

@@ -24,7 +24,6 @@ def shift_img(img, number, side="right"):
     :param side: str
     :return newmask: numpy.ndarray
     """
-
     number -= 1
 
     if number < 0:

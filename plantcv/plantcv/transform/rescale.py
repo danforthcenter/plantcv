@@ -3,9 +3,8 @@
 import os
 import numpy as np
 from plantcv.plantcv import fatal_error
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
 from plantcv.plantcv import params
+from plantcv.plantcv._debug import _debug
 
 
 def rescale(gray_img, min_value=0, max_value=255):
@@ -30,12 +29,6 @@ def rescale(gray_img, min_value=0, max_value=255):
     rescaled_img = np.interp(gray_img, (np.nanmin(gray_img), np.nanmax(gray_img)), (min_value, max_value))
     rescaled_img = (rescaled_img).astype('uint8')
 
-    # Autoincrement the device counter
-    params.device += 1
-
-    if params.debug == 'print':
-        print_image(rescaled_img, os.path.join(params.debug_outdir, str(params.device) + "_rescaled.png"))
-    elif params.debug == 'plot':
-        plot_image(rescaled_img, cmap='gray')
+    _debug(visual=rescaled_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_rescaled.png'))
 
     return rescaled_img
