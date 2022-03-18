@@ -59,9 +59,8 @@ def time_lapse_video(img_list, out_filename='./time_lapse_video.mp4', fps=29.97,
         warn("The sizes of images are not the same, an image resizing (cropping or zero-padding) will be done "
              f"to make all images the same size ({frame_size[0]}x{frame_size[1]}) before creating the video! ")
 
-    out_path, out_ext = os.path.splitext(out_filename)
-    if out_ext !=  '.mp4':
-        out_filename =  out_path + '.mp4'
+    out_path, _ = os.path.splitext(out_filename)
+    out_filename =  out_path + '.mp4'
 
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Be sure to use lower case
     out = cv2.VideoWriter(out_filename, fourcc, fps, frame_size)
