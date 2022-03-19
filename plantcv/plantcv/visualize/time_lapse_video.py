@@ -10,7 +10,7 @@ from plantcv.plantcv.transform import resize
 from plantcv.plantcv import warn
 
 
-def time_lapse_video(img_list, out_filename='./time_lapse_video.mp4', fps=29.97, display='on'):
+def time_lapse_video(img_list, out_filename='./time_lapse_video.mp4', fps=29.97, display=True):
     """ Generate time-lapse video given a list of paths to the images
 
     Inputs:
@@ -69,7 +69,7 @@ def time_lapse_video(img_list, out_filename='./time_lapse_video.mp4', fps=29.97,
         out.write(resize(img, frame_size, interpolation=None))
     out.release()
     cv2.destroyAllWindows()
-    if display == 'on':
+    if display == True:
         print(f'Path to generated video: \n{out_filename}')
 
     return img_list, frame_size
