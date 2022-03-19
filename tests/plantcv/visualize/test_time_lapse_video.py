@@ -5,7 +5,7 @@ import numpy as np
 
 from plantcv.plantcv.visualize.time_lapse_video import time_lapse_video
 
-@pytest.mark.parametrize("display",[(False),(True)])
+@pytest.mark.parametrize("display",[False,True])
 def test_plantcv_visualize_time_lapse_video_passes(display, tmpdir):
 
     # Generate 3 test images and saved in tmpdir
