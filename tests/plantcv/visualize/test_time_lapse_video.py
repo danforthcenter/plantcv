@@ -5,7 +5,7 @@ import numpy as np
 
 from plantcv.plantcv.visualize.time_lapse_video import time_lapse_video
 
-@pytest.mark.parametrize("display",[[False],[True]])
+@pytest.mark.parametrize("display",[(False),(True)])
 def test_plantcv_visualize_time_lapse_video_passes(display, tmpdir):
 
     # Generate 3 test images and saved in tmpdir
@@ -45,7 +45,7 @@ def test_plantcv_visualize_time_lapse_video_different_img_sizes_warns(tmpdir, ca
         list_im.append(img_i_path)
 
     vid_name = os.path.join(tmpdir, 'test_time_lapse_video.mp4')
-    _, _ = time_lapse_video(img_list=list_im, out_filename=vid_name, fps=29.97, display='off')
+    _, _ = time_lapse_video(img_list=list_im, out_filename=vid_name, fps=29.97, display=True)
     out, err = capsys.readouterr()
 
     assert "Warning" in err and os.path.exists(vid_name)
