@@ -11,7 +11,7 @@ from plantcv.plantcv import warn
 
 
 def time_lapse_video(img_list, out_filename='./time_lapse_video.mp4', fps=29.97, display=True):
-    """ Generate time-lapse video given a list of paths to the images
+    """Generate time-lapse video given a list of paths to the images
 
     Inputs:
     img_list       = the desired list of images in img_directory to create the video.
@@ -32,8 +32,7 @@ def time_lapse_video(img_list, out_filename='./time_lapse_video.mp4', fps=29.97,
     :return img_list: list
     :return frame_size: tuple
     """
-
-    debug = params.debug
+    # debug = params.debug
     params.debug = None
 
     if len(img_list) <= 0:
@@ -60,7 +59,7 @@ def time_lapse_video(img_list, out_filename='./time_lapse_video.mp4', fps=29.97,
              f"to make all images the same size ({frame_size[0]}x{frame_size[1]}) before creating the video! ")
 
     out_path, _ = os.path.splitext(out_filename)
-    out_filename =  out_path + '.mp4'
+    out_filename = out_path + '.mp4'
 
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Be sure to use lower case
     out = cv2.VideoWriter(out_filename, fourcc, fps, frame_size)
@@ -69,7 +68,7 @@ def time_lapse_video(img_list, out_filename='./time_lapse_video.mp4', fps=29.97,
         out.write(resize(img, frame_size, interpolation=None))
     out.release()
     cv2.destroyAllWindows()
-    if display == True:
+    if display is True:
         print(f'Path to generated video: \n{out_filename}')
 
     return img_list, frame_size

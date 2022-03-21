@@ -7,7 +7,7 @@ from plantcv.plantcv.visualize.time_lapse_video import time_lapse_video
 
 @pytest.mark.parametrize("display",[False,True])
 def test_plantcv_visualize_time_lapse_video_passes(display, tmpdir):
-
+    """Test for PlantCV."""
     # Generate 3 test images and saved in tmpdir
     list_im = []
     for i in range(3):
@@ -28,12 +28,14 @@ def test_plantcv_visualize_time_lapse_video_passes(display, tmpdir):
                          [([]),    # empty list
                          (['./this_img_does_not_exist.png'])])  # non existent image
 def test_plantcv_visualize_time_lapse_video_errors(list_im_f, tmpdir):
+    """Test for PlantCV."""
     with pytest.raises(RuntimeError):
         _, _ = time_lapse_video(img_list=list_im_f, fps=29.97)
 
 
 # not all images have the same size (essential to generate a video)
 def test_plantcv_visualize_time_lapse_video_different_img_sizes_warns(tmpdir, capsys):
+    """Test for PlantCV."""
     # Generate 3 test images of different size and save in tmpdir
     list_im = []
     for i in range(2):
@@ -46,6 +48,6 @@ def test_plantcv_visualize_time_lapse_video_different_img_sizes_warns(tmpdir, ca
 
     vid_name = os.path.join(tmpdir, 'test_time_lapse_video.mp4')
     _, _ = time_lapse_video(img_list=list_im, out_filename=vid_name, fps=29.97, display=True)
-    out, err = capsys.readouterr()
+    _, err = capsys.readouterr()
 
     assert "Warning" in err and os.path.exists(vid_name)
