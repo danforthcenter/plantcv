@@ -14,12 +14,10 @@ def time_lapse_video(img_list, out_filename='./time_lapse_video.mp4', fps=29.97,
     """Generate time-lapse video given a list of paths to the images
 
     Inputs:
-    img_list       = the desired list of images in img_directory to create the video.
-            If None is passed, all images would be included by default.
-    fps            = (frames per second) frame rate.
-            Commonly used values: 23.98, 24, 25, 29.97, 30, 50, 59.94, 60
+    img_list       = the desired list of paths to the images to create the video
     out_filename   = name of file to save the generated video to
-    display        = if True, displays the path to the generated video
+    fps            = frame rate (frames per second)
+    display        = if True (default), displays the path to the generated video
 
     Outputs:
     img_list       = the list of images used to generate the video
