@@ -21,7 +21,7 @@ def test_plantcv_visualize_time_lapse_video_passes(display, tmpdir):
     # list_im = [os.path.join(tmpdir, img) for img in os.listdir(tmpdir) if img.endswith('.png')]
 
     vid_name = os.path.join(tmpdir, 'test_time_lapse_video.mp4')
-    _, _ = time_lapse_video(img_list=list_im, out_filename=vid_name, fps=29.97, display=display)
+    _ = time_lapse_video(img_list=list_im, out_filename=vid_name, fps=29.97, display=display)
     assert os.path.exists(vid_name)
 
 @pytest.mark.parametrize("list_im_f",
@@ -30,7 +30,7 @@ def test_plantcv_visualize_time_lapse_video_passes(display, tmpdir):
 def test_plantcv_visualize_time_lapse_video_errors(list_im_f, tmpdir):
     """Test for PlantCV."""
     with pytest.raises(RuntimeError):
-        _, _ = time_lapse_video(img_list=list_im_f, fps=29.97)
+        _ = time_lapse_video(img_list=list_im_f, fps=29.97)
 
 
 # not all images have the same size (essential to generate a video)
@@ -47,7 +47,7 @@ def test_plantcv_visualize_time_lapse_video_different_img_sizes_warns(tmpdir, ca
         list_im.append(img_i_path)
 
     vid_name = os.path.join(tmpdir, 'test_time_lapse_video.mp4')
-    _, _ = time_lapse_video(img_list=list_im, out_filename=vid_name, fps=29.97, display=True)
+    _ = time_lapse_video(img_list=list_im, out_filename=vid_name, fps=29.97, display=True)
     _, err = capsys.readouterr()
 
     assert "Warning" in err and os.path.exists(vid_name)
