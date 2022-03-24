@@ -36,7 +36,7 @@ img_list, frame_size = pcv.visualize.time_lapse_video(img_list=img_paths_list,
 
 **Video generated**
 
-The generated video is saved automatically in the user-specified directory name_video. The generated video should look similar to the one below:
+The generated video is saved automatically in the user-specified directory name_video. The user defined directory must already exist. The generated video should look similar to the one below:
 <iframe src="https://player.vimeo.com/video/436453444" width="640" height="640" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
 
 
