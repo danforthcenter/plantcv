@@ -14,6 +14,7 @@ This function generates and saves the time-lapse video based on a list of paths 
 
 - **Context:**
     - Used to generate time-lapse video given a list of images.
+    - List of image paths can be generated with [`plantcv.io.read_dataset`](io_read_dataset.md). 
 
 - **Example Use:**
     - Below
