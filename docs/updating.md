@@ -1069,7 +1069,7 @@ pages for more details on the input and output variable types.
 #### plantcv.visualize.time_lapse_video
 
 * pre v4.0: NA
-* post v4.0: img_list, frame_size = **pcv.visualize.time_lapse_video**(*img_list, out_filename='./time_lapse_video.mp4', fps=29.97, display=True*)
+* post v4.0: frame_size = **pcv.visualize.time_lapse_video**(*img_list, out_filename='./time_lapse_video.mp4', fps=29.97, display=True*)
 
 #### plantcv.watershed_segmentation
 
