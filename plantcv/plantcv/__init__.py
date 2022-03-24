@@ -12,6 +12,7 @@ params = Params()
 outputs = Outputs()
 
 from plantcv.plantcv.deprecation_warning import deprecation_warning
+from plantcv.plantcv.warn import warn
 from plantcv.plantcv.print_image import print_image
 from plantcv.plantcv.plot_image import plot_image
 from plantcv.plantcv.color_palette import color_palette
