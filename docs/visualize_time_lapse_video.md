@@ -4,7 +4,7 @@ This function generates and saves the time-lapse video based on a list of paths 
 
 **plantcv.visualize.time_lapse_video**(*img_list, out_filename='./time_lapse_video.mp4', fps=29.97, display=True*)
 
-**returns** img_list, frame_size
+**returns** frame_size
 
 - **Parameters:**
     - list_img       - List of paths to the images to create the video.    
@@ -30,7 +30,7 @@ fps = 29.97
 name_video = './eg_time_lapse'
 display    = True
 
-img_list, frame_size = pcv.visualize.time_lapse_video(img_list=img_paths_list,
+frame_size = pcv.visualize.time_lapse_video(img_list=img_paths_list,
                                                     out_filename=name_video,
                                                     fps=fps, display=display)
 ```
