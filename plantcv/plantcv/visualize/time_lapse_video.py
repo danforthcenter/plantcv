@@ -20,14 +20,12 @@ def time_lapse_video(img_list, out_filename='./time_lapse_video.mp4', fps=29.97,
     display        = if True (default), displays the path to the generated video
 
     Outputs:
-    img_list       = the list of images used to generate the video
     frame_size     = the frame size of the generated video
 
     :param img_list: list
     :param fps: float
     :param out_filename: string
     :param display: boolean
-    :return img_list: list
     :return frame_size: tuple
     """
     # debug = params.debug
@@ -69,4 +67,4 @@ def time_lapse_video(img_list, out_filename='./time_lapse_video.mp4', fps=29.97,
     if display is True:
         print(f'Path to generated video: \n{out_filename}')
 
-    return img_list, frame_size
+    return frame_size
