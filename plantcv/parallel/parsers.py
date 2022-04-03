@@ -26,11 +26,11 @@ def metadata_parser(config):
     if end_date is None:
         end_date = datetime.datetime.now().strftime(config.timestampformat)
         now = datetime.datetime.now()
-        # now() maybe be before time of images if timestampformat is subdaily 
+        # now() maybe be before time of images if timestampformat is subdaily
         # if timestampformat is only hours,min,sec then the strptime will use year 1900
         if now > datetime.datetime.strptime(end_date, config.timestampformat):
             nextyear = (now+datetime.timedelta(days=366)).year
-            end_date = datetime.datetime(nextyear,12,31,23,59,59).strftime(config.timestampformat)
+            end_date = datetime.datetime(nextyear, 12, 31, 23, 59, 59).strftime(config.timestampformat)
 
     start_date_unixtime = convert_datetime_to_unixtime(timestamp_str=start_date, date_format=config.timestampformat)
     end_date_unixtime = convert_datetime_to_unixtime(timestamp_str=end_date, date_format=config.timestampformat)
@@ -166,7 +166,7 @@ def metadata_parser(config):
 
         # Prepare lists of paths and filenames of images by walking through the input directory and get only files
         # Initialize the dictionary with two keys: "dirpath" and "filename"
-        paths_files = dict({'dirpath':[],'filename':[]})
+        paths_files = dict({'dirpath': [], 'filename': []})
         if config.include_all_subdirs is True:
             for (dirpath, dirnames, filenames) in os.walk(config.input_dir):
                 for filename in filenames:
@@ -175,8 +175,8 @@ def metadata_parser(config):
                         paths_files['dirpath'].append(dirpath)
                         paths_files['filename'].append(filename)
         else:
-            paths_files['filename'] = [f for f in os.listdir(config.input_dir) if os.path.isfile(os.path.join(config.input_dir,f))]
-            paths_files['dirpath']  = [config.input_dir for i in paths_files['filename']]
+            paths_files['filename'] = [f for f in os.listdir(config.input_dir) if os.path.isfile(os.path.join(config.input_dir, f))]
+            paths_files['dirpath'] = [config.input_dir for i in paths_files['filename']]
 
         # Walk through all files and find images that match input criteria
         for (dirpath, filename) in zip(paths_files['dirpath'], paths_files['filename']):
