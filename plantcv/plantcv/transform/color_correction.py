@@ -37,7 +37,7 @@ def get_color_matrix(rgb_img, mask):
 
     img_dtype = rgb_img.dtype
     # normalization value as max number if the type is unsigned int
-    if img_dtype.kind is 'u':
+    if img_dtype.kind == 'u':
         max_val = np.iinfo(img_dtype).max
     else:
         max_val = 1.0
@@ -212,7 +212,7 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
 
     source_dtype = source_img.dtype
     # normalization value as max number if the type is unsigned int
-    if source_dtype.kind is 'u':
+    if source_dtype.kind == 'u':
         max_val = np.iinfo(source_dtype).max
     else:
         max_val = 1.0
