@@ -37,10 +37,9 @@ def get_color_matrix(rgb_img, mask):
 
     img_dtype = rgb_img.dtype
     # normalization value as max number if the type is unsigned int
+    max_val = 1.0
     if img_dtype.kind == 'u':
         max_val = np.iinfo(img_dtype).max
-    else:
-        max_val = 1.0
 
     # convert to float and normalize to work with values between 0-1
     rgb_img = rgb_img.astype(np.float64)/max_val
@@ -212,10 +211,9 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
 
     source_dtype = source_img.dtype
     # normalization value as max number if the type is unsigned int
+    max_val = 1.0
     if source_dtype.kind == 'u':
         max_val = np.iinfo(source_dtype).max
-    else:
-        max_val = 1.0
     # convert img to float to avoid integer overflow, normalize between 0-1
     source_flt = source_img.astype(np.float64)/max_val
     # find linear, square, and cubic values of source_img color channels
