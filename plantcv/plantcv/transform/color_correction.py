@@ -236,18 +236,18 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
     # merge corrected color channels onto source_image
     bgr = [b, g, r]
     corrected_img = cv2.merge(bgr)
+    print(corrected_img.dtype)
 
     # return values of the image to the original range
     corrected_img = max_val*np.clip(corrected_img, 0, 1)
-    corrected_img = np.floor(corrected_img)
-    # cast back to original dtype
+    # cast back to original dtype (if uint the value defaults to the closest smaller integer)
     corrected_img = corrected_img.astype(source_dtype)
 
     # For debugging, create a horizontal view of source_img, corrected_img, and target_img to the plotting device
     # plot horizontal comparison of source_img, corrected_img (with rounded elements) and target_img
     out_img = np.hstack([source_img, corrected_img, target_img])
     # Change range of visualization image to 0-255 and convert to uin8
-    out_img = np.floor((255.0/max_val)*out_img).astype(np.uint8)
+    out_img = ((255.0/max_val)*out_img).astype(np.uint8)
     _debug(visual=out_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_corrected.png'))
 
     # return corrected_img
