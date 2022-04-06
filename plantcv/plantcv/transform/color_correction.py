@@ -236,7 +236,6 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
     # merge corrected color channels onto source_image
     bgr = [b, g, r]
     corrected_img = cv2.merge(bgr)
-    print(corrected_img.dtype)
 
     # return values of the image to the original range
     corrected_img = max_val*np.clip(corrected_img, 0, 1)
