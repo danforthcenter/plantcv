@@ -246,6 +246,8 @@ def apply_transformation_matrix(source_img, target_img, transformation_matrix):
     # For debugging, create a horizontal view of source_img, corrected_img, and target_img to the plotting device
     # plot horizontal comparison of source_img, corrected_img (with rounded elements) and target_img
     out_img = np.hstack([source_img, corrected_img, target_img])
+    # Change range of visualization image to 0-255 and convert to uin8
+    out_img = np.floor((255.0/max_val)*out_img).astype(np.uint8)
     _debug(visual=out_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_corrected.png'))
 
     # return corrected_img
