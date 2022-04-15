@@ -76,6 +76,11 @@ class WorkflowConfig:
                     "datatype": "<class 'str'>",
                     "value": "none"
                 },
+                "rotation": {
+                    "label": "sample rotation in degrees",
+                    "datatype": "<class 'str'>",
+                    "value": "none"
+                },
                 "lifter": {
                     "label": "imaging platform height setting",
                     "datatype": "<class 'str'>",
@@ -93,7 +98,7 @@ class WorkflowConfig:
                     "datatype": "<class 'str'>",
                     "value": "none"
                 },
-                "plantbarcode": {
+                "barcode": {
                     "label": "plant barcode identifier",
                     "datatype": "<class 'str'>",
                     "value": "none"
