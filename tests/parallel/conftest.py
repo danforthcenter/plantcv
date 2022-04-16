@@ -16,6 +16,8 @@ class ParallelTestData:
         self.flat_imgdir_dates = os.path.join(self.datadir, "images_w_date")
         # Snapshot image directory
         self.snapshot_imgdir = os.path.join(self.datadir, "snapshot_imgdir")
+        # Phenodata directory
+        self.phenodata_dir = os.path.join(self.datadir, "phenodata_dir")
         # PlantCV workflow script
         self.workflow_script = os.path.join(self.datadir, "plantcv-script.py")
         # Output directory from parallel processing, contains results files
