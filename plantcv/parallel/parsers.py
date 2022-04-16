@@ -233,7 +233,7 @@ def _parse_filename(filename, config, metadata_index):
     # Otherwise use a regular expression to parse metadata terms
     else:
         # Search using the supplied regular expression
-        meta_list = re.search(config.regex, filename)
+        meta_list = re.search(config.delimiter, filename)
         # If there is a match convert the collected matches to a list
         if meta_list is not None:
             meta_list = list(meta_list.groups())
