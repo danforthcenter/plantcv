@@ -28,7 +28,7 @@ class WorkflowConfig:
         self.timestampformat = "%Y-%m-%dT%H:%M:%S.%fZ"
         self.writeimg = False
         self.other_args = []
-        self.coprocess = None
+        self.groupby = ["filepath"]
         self.cleanup = True
         self.append = True
         self.cluster = "LocalCluster"

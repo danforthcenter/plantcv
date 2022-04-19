@@ -32,6 +32,9 @@ def metadata_parser(config):
     # Apply user-supplied date range filters
     meta = _apply_date_range_filter(df=meta, config=config)
 
+    # Apply metadata grouping
+    meta = _group_metadata(df=meta, config=config)
+
     return meta
 ###########################################
 
@@ -163,6 +166,27 @@ def _apply_date_range_filter(df, config):
     # Keep rows with dates between start and end date
     filtered_df = df.loc[df["timestamp"].between(start_date, end_date, inclusive="both")]
     return filtered_df
+###########################################
+
+
+# Group metadata dataframe into sets
+###########################################
+def _group_metadata(df, config):
+    """Group metadata.
+
+    Keyword arguments:
+    df = metadata dataframe
+    config = plantcv.parallel.WorkflowConfig object
+
+    Outputs:
+    groups = grouped metadata
+
+    :param df: pandas.core.frame.DataFrame
+    :param config: plantcv.parallel.WorkflowConfig
+    :return groups: pandas.core.groupby.generic.DataFrameGroupBy
+    """
+    groups = df.groupby(by=config.groupby)
+    return groups
 ###########################################
 
 
