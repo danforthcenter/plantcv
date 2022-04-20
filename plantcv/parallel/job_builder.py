@@ -39,6 +39,10 @@ def job_builder(meta, config):
                 "datatype": "<class 'str'>",
                 "value": grp_df["filepath"].values.tolist()
             }
+
+        # Convert datetime to string before serialization
+        grp_df["timestamp"] = grp_df["timestamp"].dt.strftime(config.timestampformat)
+
         # Valid metadata
         for m in list(config.metadata_terms.keys()):
             img_meta["metadata"][m]["value"] = grp_df[m].values.tolist()
