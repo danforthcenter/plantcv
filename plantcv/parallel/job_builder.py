@@ -46,7 +46,7 @@ def job_builder(meta, config):
         # Create random unique output file to store the image processing results and populate with metadata
         outfile = os.path.join(config.tmp_dir, f"{uuid.uuid4()}.json")
         with open(outfile, "w") as fp:
-            json.dump(img_meta, fp)
+            json.dump(img_meta, fp, indent=4)
 
         # Build job
         job_parts = ["python", config.workflow, "--image", ",".join(map(str, grp_df["filepath"].values.tolist())),
