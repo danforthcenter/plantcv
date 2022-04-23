@@ -11,10 +11,11 @@
     "imgformat": "png",
     "delimiter": "_",
     "metadata_filters": {},
-    "timestampformat": "%Y-%m-%d %H:%M:%S.%f",
+    "timestampformat": "%Y-%m-%dT%H:%M:%S.%fZ",
     "writeimg": false,
     "other_args": [],
-    "coprocess": null,
+    "groupby": ["filepath"],
+    "group_name": "imgtype",
     "cleanup": true,
     "append": true,
     "cluster": "LocalCluster",
@@ -58,6 +59,11 @@
             "datatype": "<class 'str'>",
             "value": "none"
         },
+        "rotation": {
+            "label": "sample rotation in degrees",
+            "datatype": "<class 'str'>",
+            "value": "none"
+        },
         "lifter": {
             "label": "imaging platform height setting",
             "datatype": "<class 'str'>",
@@ -73,7 +79,7 @@
             "datatype": "<class 'str'>",
             "value": "none"
         },
-        "plantbarcode": {
+        "barcode": {
             "label": "plant barcode identifier",
             "datatype": "<class 'str'>",
             "value": "none"
