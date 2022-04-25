@@ -53,13 +53,14 @@ def job_builder(meta, config):
             json.dump(img_meta, fp, indent=4)
 
         # Build job
-        job_parts = ["python", config.workflow, "--image", ",".join(map(str, grp_df["filepath"].values.tolist())),
-                     "--outdir", config.img_outdir, "--result", outfile]
+        job_parts = ["python", config.workflow, "--outdir", config.img_outdir, "--result", outfile]
         # Add job to list
         if config.writeimg:
             job_parts.append("--writeimg")
         if config.other_args:
             job_parts = job_parts + config.other_args
+        for fname in grp_df["filepath"].values.tolist():
+            job_parts.append(fname)
         jobs.append(job_parts)
 
     return jobs

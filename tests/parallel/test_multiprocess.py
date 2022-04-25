@@ -44,8 +44,8 @@ def test_plantcv_parallel_multiprocess(parallel_test_data, tmpdir):
     image_name = list(parallel_test_data.metadata_snapshot_vis.keys())[0]
     image_path = os.path.join(parallel_test_data.metadata_snapshot_vis[image_name]['path'], image_name)
     result_file = os.path.join(tmp_dir, image_name + '.txt')
-    jobs = [['python', parallel_test_data.workflow_script, '--image', image_path, '--outdir', tmp_dir, '--result', result_file,
-             '--writeimg', '--other', 'on']]
+    jobs = [['python', parallel_test_data.workflow_script, '--outdir', tmp_dir, '--result', result_file, "--keys", "vis",
+             '--writeimg', '--other', 'on', image_path]]
     # Create a dask LocalCluster client
     client = Client(n_workers=1)
     multiprocess(jobs, client=client)
