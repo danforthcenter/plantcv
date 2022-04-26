@@ -26,29 +26,44 @@ def json2csv(json_file, csv_file):
     # Create a CSV file of traits
     with open(csv_file, "w") as csv:
         # Create a header for the long-format table
-        csv.write(",".join(map(str, ["sample", "trait", "value", "label"])) + "\n")
+        csv.write(",".join(map(str, meta_vars + ["sample", "trait", "value", "label"])) + "\n")
         # Iterate over each entity
         for entity in data["entities"]:
-            meta_row = []
             # Add metadata variables
-            for var in meta_vars:
-                obs = entity[data["variables"][var]["category"]]
-                meta_row.append("_".join(map(str, obs[var]["value"]))) if var in obs else meta_row.append("NA")
+            meta_row = _create_metadata_row(meta_vars=meta_vars, metadata=entity["metadata"])
             # Add trait variables
             for sample, var in itertools.product(entity["observations"].keys(), trait_vars):
-                if var in entity["observations"][sample]:
-                    value = entity["observations"][sample][var]["value"]
-                    label = entity["observations"][sample][var]["label"]
-                    if isinstance(value, (list, tuple)):
-                        for val, lbl in zip(value, label):
-                            if not isinstance(val, tuple):
-                                csv.write(",".join(map(str, [sample, var, val, lbl])) + "\n")
-                    elif isinstance(value, bool):
-                        csv.write(",".join(map(str, [sample, var, int(value), label])) + "\n")
-                    else:
-                        csv.write(",".join(map(str, [sample, var, value, label])) + "\n")
-                else:
-                    csv.write(",".join(map(str, meta_row + [sample, var, "NA", "NA"])) + "\n")
+                data_rows = _create_data_rows(var=var, obs=entity["observations"][sample])
+                for row in data_rows:
+                    csv.write(",".join(map(str, meta_row + [sample] + row)) + "\n")
+
+
+def _create_metadata_row(meta_vars, metadata):
+    meta_row = []
+    for var in meta_vars:
+        val = "NA"
+        if var in metadata:
+            val = "_".join(map(str, metadata[var]["value"]))
+        meta_row.append(val)
+    return meta_row
+
+
+def _create_data_rows(var, obs):
+    data_rows = []
+    if var in obs:
+        value = obs[var]["value"]
+        label = obs[var]["label"]
+        if isinstance(value, bool):
+            value = int(value)
+        if isinstance(value, (list, tuple)):
+            for val, lbl in zip(value, label):
+                if not isinstance(val, tuple):
+                    data_rows.append([var, val, lbl])
+        else:
+            data_rows.append([var, value, label])
+    else:
+        data_rows.append([var, "NA", "NA"])
+    return data_rows
 
 
 def tabulate_bayes_classes(input_file, output_file):
