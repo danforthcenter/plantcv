@@ -1,83 +1,54 @@
 import os
 import json
+import itertools
 
 
 def json2csv(json_file, csv_file):
-    if os.path.exists(json_file):
-        # If the JSON file exists open it for reading
-        json_data = open(json_file, "r")
-        data = json.load(json_data)
-        # If the data is JSON but it does not have the components we expect from PlantCV raise an error
-        if "variables" not in data or "entities" not in data:
-            raise ValueError("Invalid JSON file: {0}".format(json_file))
+    if not os.path.exists(json_file):
+        # If the file does not exist raise an error
+        raise IOError(f"File does not exist: {json_file}")
+    # Open the JSON file for reading
+    with open(json_file, "r") as fp:
+        data = json.load(fp)
+    # If the data is JSON but it does not have the components we expect from PlantCV raise an error
+    if "variables" not in data or "entities" not in data:
+        raise ValueError(f"Invalid JSON file: {json_file}")
 
-        # Split up variables
-        meta_vars = []
-        scalar_vars = []
-        multi_vars = []
-        for key, var in data["variables"].items():
-            if var["category"] == "metadata":
-                meta_vars.append(key)
-            elif var["datatype"] in ["<class 'bool'>", "<class 'int'>", "<class 'float'>", "<class 'str'>",
-                                     "<type 'bool'>", "<type 'int'>", "<type 'float'>", "<type 'str'>"]:
-                scalar_vars.append(key)
-            elif var["datatype"] in ["<class 'list'>", "<type 'list'>"]:
-                multi_vars.append(key)
+    # Split up variables
+    meta_vars = []
+    trait_vars = []
+    for key, var in data["variables"].items():
+        if var["category"] == "metadata":
+            meta_vars.append(key)
+        else:
+            trait_vars.append(key)
 
-        # Create a CSV file of single-value traits
-        csv = open(csv_file + "-single-value-traits.csv", "w")
-
-        # Build the single-value variables output table
-        csv.write(",".join(map(str, meta_vars + ["sample"] + scalar_vars)) + "\n")
-        for entity in data["entities"]:
-            row = []
-            # Add metadata variables
-            for var in meta_vars:
-                obs = entity[data["variables"][var]["category"]]
-                if var in obs:
-                    row.append(obs[var]["value"])
-                else:
-                    row.append("NA")
-            # Add scalar variables
-            for sample in entity["observations"]:
-                measurements = [sample]
-                for var in scalar_vars:
-                    obs = entity[data["variables"][var]["category"]][sample]
-                    if var in obs:
-                        measurements.append(obs[var]["value"])
-                    else:
-                        measurements.append("NA")
-                csv.write(",".join(map(str, row + measurements)) + "\n")
-        # Close the CSV file
-        csv.close()
-
-        # Create a CSV file of multi-value variables
-        csv = open(csv_file + "-multi-value-traits.csv", "w")
-        csv.write(",".join(map(str, meta_vars + ["sample", "trait", "value", "label"])) + "\n")
+    # Create a CSV file of traits
+    with open(csv_file, "w") as csv:
+        # Create a header for the long-format table
+        csv.write(",".join(map(str, ["sample", "trait", "value", "label"])) + "\n")
+        # Iterate over each entity
         for entity in data["entities"]:
             meta_row = []
             # Add metadata variables
             for var in meta_vars:
                 obs = entity[data["variables"][var]["category"]]
-                if var in obs:
-                    meta_row.append(obs[var]["value"])
-                else:
-                    meta_row.append("NA")
-            # Add multi-value variables
-            for sample in entity["observations"]:
-                for var in multi_vars:
-                    obs = entity[data["variables"][var]["category"]][sample]
-                    if var in obs:
-                        if obs[var]["label"] != "none":
-                            for i in range(0, len(obs[var]["value"])):
-                                row = [sample, var, obs[var]["value"][i], obs[var]["label"][i]]
-                                csv.write(",".join(map(str, meta_row + row)) + "\n")
+                meta_row.append("_".join(map(str, obs[var]["value"]))) if var in obs else meta_row.append("NA")
+            # Add trait variables
+            for sample, var in itertools.product(entity["observations"].keys(), trait_vars):
+                if var in entity["observations"][sample]:
+                    value = entity["observations"][sample][var]["value"]
+                    label = entity["observations"][sample][var]["label"]
+                    if isinstance(value, (list, tuple)):
+                        for val, lbl in zip(value, label):
+                            if not isinstance(val, tuple):
+                                csv.write(",".join(map(str, [sample, var, val, lbl])) + "\n")
+                    elif isinstance(value, bool):
+                        csv.write(",".join(map(str, [sample, var, int(value), label])) + "\n")
                     else:
-                        csv.write(",".join(map(str, meta_row + [sample, var, "NA", "NA"])) + "\n")
-        csv.close()
-    else:
-        # If the file does not exist raise an error
-        raise IOError("File does not exist: {0}".format(json_file))
+                        csv.write(",".join(map(str, [sample, var, value, label])) + "\n")
+                else:
+                    csv.write(",".join(map(str, meta_row + [sample, var, "NA", "NA"])) + "\n")
 
 
 def tabulate_bayes_classes(input_file, output_file):
