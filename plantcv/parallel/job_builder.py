@@ -26,7 +26,7 @@ def job_builder(meta, config):
 
     # Log the number of jobs to be run
     n_jobs = len(meta)
-    print(f"Job list will include {n_jobs} images", file=sys.stderr)
+    print(f"Task list includes {n_jobs} workflows", file=sys.stderr)
 
     # Each grouping has a tuple of grouped metadata values and a dataframe of image metadata
     for grp, grp_df in meta:
@@ -53,7 +53,8 @@ def job_builder(meta, config):
             json.dump(img_meta, fp, indent=4)
 
         # Build job
-        job_parts = ["python", config.workflow, "--outdir", config.img_outdir, "--result", outfile]
+        job_parts = ["python", config.workflow, "--outdir", config.img_outdir, "--result", outfile,
+                     "--names", ",".join(map(str, list(grp_df[config.group_name])))]
         # Add job to list
         if config.writeimg:
             job_parts.append("--writeimg")
