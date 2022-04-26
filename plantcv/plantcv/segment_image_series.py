@@ -1,3 +1,5 @@
+# Image Series Segmentation
+
 import os
 import math
 import numpy as np
@@ -83,11 +85,10 @@ def segment_image_series(imgs_paths, masks_paths, rois, save_labels=True, ksize=
         # The number of frames used is always the same but the borders are
         # treated as 'constant' or 'zero padding'
         stack_idx = 0 # borders are 'constant'
-        #stack_idx = -min(0,n-half_k) # left border is 'zero padded' not necessary
 
         # loop to build the stacks. half_k gives the index of the frame in process
         for m in range(-half_k,half_k+1):
-            frame = min(N-1, max(n+m,0)) # borders handling
+            frame = min(N-1, max(n+m,0)) # border handling
 
             img, _, _ = pcv.readimage(filename=imgs_paths[frame])
             img_stack[:,:,stack_idx] = pcv.rgb2gray(rgb_img=img)
@@ -121,7 +122,6 @@ def segment_image_series(imgs_paths, masks_paths, rois, save_labels=True, ksize=
         params.debug = debug
         _debug(visual=vis_seg, filename=os.path.join(params.debug_outdir,
                                 f"{str(params.device)}_{image_names[n][:-4]}_WSeg.png"))
-        params.debug = None
 
 
     if save_labels == True:
