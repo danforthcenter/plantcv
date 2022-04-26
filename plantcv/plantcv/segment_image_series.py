@@ -7,10 +7,9 @@ import cv2 as cv
 from scipy import ndimage as ndi
 from skimage.segmentation import watershed
 from skimage.color import label2rgb
-#from skimage.measure import label
-
-from plantcv import plantcv as pcv
-#from plantcv.plantcv import fatal_error
+from plantcv.plantcv import readimage
+from plantcv.plantcv import rgb2gray
+from plantcv.plantcv import fill_holes
 from plantcv.plantcv import color_palette
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
@@ -51,7 +50,7 @@ def segment_image_series(imgs_paths, masks_paths, rois, save_labels=True, ksize=
     image_names = [os.path.basename(img_path) for img_path in imgs_paths]
 
     #get the size of the images
-    tmp, _, _ = pcv.readimage(filename=masks_paths[0])
+    tmp, _, _ = readimage(filename=masks_paths[0])
     h, w = tmp.shape[0], tmp.shape[1]
 
     # create an image where all the pixels inside each roi have the roi label
@@ -60,7 +59,7 @@ def segment_image_series(imgs_paths, masks_paths, rois, save_labels=True, ksize=
     for i in range(n_labels):
         img_roi = np.zeros((h,w), dtype=np.uint8)
         img_roi = cv.drawContours(img_roi, rois[i], -1, 255, 3)
-        img_roi = pcv.fill_holes(img_roi)
+        img_roi = fill_holes(img_roi)
         roi_labels = roi_labels + (img_roi==255)*(i+1)
 
     # output initialization
@@ -90,9 +89,9 @@ def segment_image_series(imgs_paths, masks_paths, rois, save_labels=True, ksize=
         for m in range(-half_k,half_k+1):
             frame = min(N-1, max(n+m,0)) # border handling
 
-            img, _, _ = pcv.readimage(filename=imgs_paths[frame])
-            img_stack[:,:,stack_idx] = pcv.rgb2gray(rgb_img=img)
-            mask, _, _ = pcv.readimage(filename=masks_paths[frame], mode='gray')
+            img, _, _ = readimage(filename=imgs_paths[frame])
+            img_stack[:,:,stack_idx] = rgb2gray(rgb_img=img)
+            mask, _, _ = readimage(filename=masks_paths[frame], mode='gray')
             mask_stack[:,:,stack_idx] = mask
 
             if m == 0:
