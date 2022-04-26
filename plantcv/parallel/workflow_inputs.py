@@ -61,5 +61,5 @@ def _name_images(names: str, img_list: list) -> dict:
     # Enumerate the list of names split from the input comma-delimited string
     for i, name in enumerate(names.split(",")):
         # Pair each name with the corresponding image file path
-        images[name] = img_list[i]
+        images[name.lower()] = img_list[i]
     return images
