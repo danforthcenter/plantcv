@@ -1071,6 +1071,11 @@ pages for more details on the input and output variable types.
 * pre v4.0: NA
 * post v4.0: fig, ax = **pcv.visualize.pixel_scatter_plot**(*paths_to_imgs, x_channel, y_channel*)
 
+#### plantcv.visualize.time_lapse_video
+
+* pre v4.0: NA
+* post v4.0: frame_size = **pcv.visualize.time_lapse_video**(*img_list, out_filename='./time_lapse_video.mp4', fps=29.97, display=True*)
+
 #### plantcv.watershed_segmentation
 
 * pre v3.0dev2: device, watershed_header, watershed_data, analysis_images = **plantcv.watershed_segmentation**(*device, img, mask, distance=10, filename=False, debug=None*)
