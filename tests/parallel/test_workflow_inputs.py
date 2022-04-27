@@ -1,6 +1,13 @@
-from plantcv.parallel import WorkflowInputs
+from plantcv.parallel import WorkflowInputs, workflow_inputs
 
 
 def test_workflowinputs():
     args = WorkflowInputs(images=["vis.png", "nir.png"], names="vis,nir", result="test.txt")
     assert args.vis == "vis.png" and args.nir == "nir.png"
+
+
+def test_workflow_inputs():
+    import sys
+    sys.argv = ["workflow.py", "--names", "vis", "--result", "test.txt", "vis.png"]
+    args = workflow_inputs()
+    assert args.vis == "vis.png"
