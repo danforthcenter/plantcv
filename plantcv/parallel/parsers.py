@@ -99,7 +99,7 @@ def _dataset2dataframe(dataset, config):
         for term in config.metadata_terms:
             metadata[term].append(dataset["images"][image].get(term))
     df = pd.DataFrame(data=metadata)
-    utc = True if "Z" in config.timestampformat else False
+    utc = bool("Z" in config.timestampformat)
     df["timestamp"] = pd.to_datetime(df.timestamp, format=config.timestampformat, utc=utc)
     return df
 ###########################################
@@ -159,7 +159,7 @@ def _apply_date_range_filter(df, config):
     if None in [config.start_date, config.end_date]:
         return df
     # Set whether the datetime code is in UTC or not
-    utc = True if "Z" in config.timestampformat else False
+    utc = bool("Z" in config.timestampformat)
     # Convert start and end dates to datetimes
     start_date = pd.to_datetime(config.start_date, format=config.timestampformat, utc=utc)
     end_date = pd.to_datetime(config.end_date, format=config.timestampformat, utc=utc)
