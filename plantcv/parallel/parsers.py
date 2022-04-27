@@ -193,8 +193,7 @@ def _group_metadata(df, config):
 # Initialize a dataset dictionary
 ###########################################
 def _init_dataset():
-    """Initialize a dataset.
-    """
+    """Initialize a dataset."""
     dataset = {
         "dataset": {
             "experiment": ""
