@@ -52,9 +52,17 @@ def job_builder(meta, config):
         with open(outfile, "w") as fp:
             json.dump(img_meta, fp, indent=4)
 
+        # Generate image names if set to auto
+        if config.group_name == "auto":
+            names = []
+            for i in range(0, len(grp_df)):
+                names.append(f"image{i + 1}")
+        else:
+            names = list(grp_df[config.group_name])
+
         # Build job
         job_parts = ["python", config.workflow, "--outdir", config.img_outdir, "--result", outfile,
-                     "--names", ",".join(map(str, list(grp_df[config.group_name])))]
+                     "--names", ",".join(map(str, names))]
         # Add job to list
         if config.writeimg:
             job_parts.append("--writeimg")
