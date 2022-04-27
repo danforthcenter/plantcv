@@ -3,6 +3,7 @@ import argparse
 
 class WorkflowInputs:
     """Class for setting workflow inputs in Jupyter."""
+
     def __init__(self, images: list, names: str, result: str, outdir: str = ".", writeimg: bool = False,
                  debug: str = None, other: str = ""):
         """Configure input variables for a PlantCV workflow.
