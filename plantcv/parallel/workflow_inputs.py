@@ -30,7 +30,6 @@ def workflow_inputs() -> argparse.Namespace:
     Outputs:
     args = an argparse ArgumentParser object with command-line keyword attributes.
     """
-    import argparse
     parser = argparse.ArgumentParser(description="PlantCV user workflow.")
     parser.add_argument("images", help="Input image files.", type=str, nargs="+", metavar="IMAGES")
     parser.add_argument("--names", help="A unique name mapped to each input image.", required=True)
