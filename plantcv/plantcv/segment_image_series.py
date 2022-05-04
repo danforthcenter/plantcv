@@ -10,7 +10,6 @@ from skimage.color import label2rgb
 from plantcv.plantcv import readimage
 from plantcv.plantcv import rgb2gray
 from plantcv.plantcv import fill_holes
-from plantcv.plantcv import color_palette
 from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 
@@ -65,9 +64,6 @@ def segment_image_series(imgs_paths, masks_paths, rois, save_labels=True, ksize=
     N = len(image_names)
     out_labels = np.zeros((h, w, N), dtype=np.uint8)
     out_labels[:, :, 0] = roi_labels.copy()
-
-    # values for visualization output image
-    rgb_values = color_palette(n_labels)
 
     # Propagate labels sequentially n is the index in the output of the frame currently
     # in process. At each iteration only one frame is labeled.
