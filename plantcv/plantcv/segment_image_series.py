@@ -121,7 +121,7 @@ def segment_image_series(imgs_paths, masks_paths, rois, save_labels=True, ksize=
             _debug(visual=vis_seg, filename=os.path.join(params.debug_outdir,
                                                          f"{str(params.device)}_{image_names[n][:-4]}_WSeg.png"))
 
-    if save_labels == True:
+    if save_labels is True:
         [np.save(os.path.join(params.debug_outdir, f"{image_names[i][:-4]}_labels"),
                  out_labels[:, :, i]) for i in range(N)]
 
