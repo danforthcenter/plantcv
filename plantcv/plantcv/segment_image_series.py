@@ -15,7 +15,6 @@ from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 
 
-
 def segment_image_series(imgs_paths, masks_paths, rois, save_labels=True, ksize=3):
     """ Segments the objects in a time series of images using watershed segmentation.
     The objects (labels) are given by a list of rois (region of interest) and the labels
@@ -49,58 +48,58 @@ def segment_image_series(imgs_paths, masks_paths, rois, save_labels=True, ksize=
 
     image_names = [os.path.basename(img_path) for img_path in imgs_paths]
 
-    #get the size of the images
+    # get the size of the images
     tmp, _, _ = readimage(filename=masks_paths[0])
     h, w = tmp.shape[0], tmp.shape[1]
 
     # create an image where all the pixels inside each roi have the roi label
-    roi_labels = np.zeros((h,w), dtype=np.uint8)
+    roi_labels = np.zeros((h, w), dtype=np.uint8)
     n_labels = len(rois)
     for i in range(n_labels):
-        img_roi = np.zeros((h,w), dtype=np.uint8)
+        img_roi = np.zeros((h, w), dtype=np.uint8)
         img_roi = cv.drawContours(img_roi, rois[i], -1, 255, 3)
         img_roi = fill_holes(img_roi)
-        roi_labels = roi_labels + (img_roi==255)*(i+1)
+        roi_labels = roi_labels + (img_roi == 255)*(i+1)
 
     # output initialization
     N = len(image_names)
-    out_labels = np.zeros((h,w,N),dtype=np.uint8)
-    out_labels[:,:,0] = roi_labels.copy()
+    out_labels = np.zeros((h, w, N), dtype=np.uint8)
+    out_labels[:, :, 0] = roi_labels.copy()
 
     # values for visualization output image
     rgb_values = color_palette(n_labels)
 
     # Propagate labels sequentially n is the index in the output of the frame currently
     # in process. At each iteration only one frame is labeled.
-    for n in range(0,N):
+    for n in range(0, N):
         # size of the stack used at each iteration
         d = 2*half_k+1
 
         # stacks init
-        img_stack = np.zeros((h,w,d))
-        mask_stack = np.zeros((h,w,d))
-        markers = np.zeros((h,w,d))
+        img_stack = np.zeros((h, w, d))
+        mask_stack = np.zeros((h, w, d))
+        markers = np.zeros((h, w, d))
 
         # The number of frames used is always the same but the borders are
         # treated as 'constant' or 'zero padding'
-        stack_idx = 0 # borders are 'constant'
+        stack_idx = 0  # borders are 'constant'
 
         # loop to build the stacks. half_k gives the index of the frame in process
-        for m in range(-half_k,half_k+1):
-            frame = min(N-1, max(n+m,0)) # border handling
+        for m in range(-half_k, half_k+1):
+            frame = min(N-1, max(n+m, 0))  # border handling
 
             img, _, _ = readimage(filename=imgs_paths[frame])
-            img_stack[:,:,stack_idx] = rgb2gray(rgb_img=img)
+            img_stack[:, :, stack_idx] = rgb2gray(rgb_img=img)
             mask, _, _ = readimage(filename=masks_paths[frame], mode='gray')
-            mask_stack[:,:,stack_idx] = mask
+            mask_stack[:, :, stack_idx] = mask
 
             if m == 0:
                 # required to create the output image
                 img_n_rgb = img
                 # enforcing the label inside the regions of interest
-                markers[:,:,stack_idx] = (mask!=0)*roi_labels
+                markers[:, :, stack_idx] = (mask != 0)*roi_labels
             else:
-                markers[:,:,stack_idx] = out_labels[:,:,frame]
+                markers[:, :, stack_idx] = out_labels[:, :, frame]
 
             stack_idx += 1
 
@@ -111,12 +110,11 @@ def segment_image_series(imgs_paths, masks_paths, rois, save_labels=True, ksize=
         labels = watershed(edges, markers=markers, mask=mask_stack, compactness=0)
 
         # add the resulting labels to the outputs block
-        out_labels[:,:,n] = labels[:,:,half_k]
-
+        out_labels[:, :, n] = labels[:, :, half_k]
 
         # create images for plotting and printing (debug mode)
-        vis_seg = label2rgb(out_labels[:,:,n], image=img_n_rgb, colors=None, alpha=0.3, bg_label=0)
-        # cast visualization image as int 
+        vis_seg = label2rgb(out_labels[:, :, n], image=img_n_rgb, colors=None, alpha=0.3, bg_label=0)
+        # cast visualization image as int
         vis_seg = (np.floor(255*vis_seg)).astype(np.uint8)
         if n == N - 1:
             params.debug = debug
@@ -125,6 +123,6 @@ def segment_image_series(imgs_paths, masks_paths, rois, save_labels=True, ksize=
 
     if save_labels == True:
         [np.save(os.path.join(params.debug_outdir, f"{image_names[i][:-4]}_labels"),
-                out_labels[:,:,i]) for i in range(N)]
+                 out_labels[:, :, i]) for i in range(N)]
 
     return out_labels
