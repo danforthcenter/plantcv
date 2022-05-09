@@ -25,6 +25,7 @@ def write_data(filename, spectral_data):
     with open(filename+'.hdr', mode='w') as f:
         f.write('ENVI\n')
         f.write(f'; this file was created using PlantCV version {__version__}\n')
+        f.write(f'; original file: {spectral_data.filename}\n')
         f.write('interleave = bil\n')
         f.write(f'samples = {samples}\n')
         f.write(f'lines = {lines}\n')
