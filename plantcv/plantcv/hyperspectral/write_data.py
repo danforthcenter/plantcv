@@ -24,7 +24,7 @@ def write_data(filename, spectral_data):
     wavelenghths = list(spectral_data.wavelength_dict.keys())
     with open(filename+'.hdr', mode='w') as f:
         f.write('ENVI\n')
-        f.write(f'; this file was created using PlantCV version {pcv.__version__}\n')
+        f.write(f'; this file was created using PlantCV version {__version__}\n')
         f.write('interleave = bil\n')
         f.write(f'samples = {samples}\n')
         f.write(f'lines = {lines}\n')
