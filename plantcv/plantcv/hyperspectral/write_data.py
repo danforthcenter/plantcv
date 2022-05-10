@@ -1,7 +1,7 @@
 import os
 import numpy as np
 
-from . import _version
+from plantcv.plantcv import _version
 
 __version__ = _version.get_versions()['version']
 
