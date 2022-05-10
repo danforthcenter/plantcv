@@ -1,7 +1,9 @@
 import os
 import numpy as np
 
-from plantcv.plantcv import __version__
+from . import _version
+
+__version__ = _version.get_versions()['version']
 
 def write_data(filename, spectral_data):
     """Write hyperspectral image data to a file.
