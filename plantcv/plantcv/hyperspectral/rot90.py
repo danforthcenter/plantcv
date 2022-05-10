@@ -31,11 +31,12 @@ def rot90(spectral_data, k):
     dims = np.shape(rot_array)
 
     # Create new spectral data object with rotated image data and metadata
-    rot_hsi = Spectral_data(array_data=rot_array, max_wavelength=spectral_data.max_wavelength,
-                            min_value=spectral_data.min_value, d_type=spectral_data.d_type,
+    rot_hsi = Spectral_data(array_data=rot_array, min_wavelength=spectral_data.min_wavelength,
+                            max_wavelength=spectral_data.max_wavelength, min_value=spectral_data.min_value,
+                            max_value=spectral_data.max_value, d_type=spectral_data.d_type,
                             wavelength_dict=spectral_data.wavelength_dict, samples=int(dims[2]), lines=int(dims[0]),
                             interleave=spectral_data.interleave, wavelength_units=spectral_data.wavelength_units,
-                            array_type="datacube", pseudo_rgb=rot_rgb, default_bands=array_data.default_bands,
+                            array_type="datacube", pseudo_rgb=rot_rgb, default_bands=spectral_data.default_bands,
                             filename="rot_k" + str(k) + spectral_data.filename)
 
     _debug(visual=rot_rgb,
