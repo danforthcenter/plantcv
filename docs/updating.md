@@ -767,6 +767,11 @@ pages for more details on the input and output variable types.
 * pre v3.0dev2: device, adjusted_img = **plantcv.shift_img**(*img, device, number, side="right", debug=None*)
 * post v3.0dev2: adjusted_img = **plantcv.shift_img**(*img, number, side="right"*)
 
+#### plantcv.segment_image_series
+
+* pre v4.0: NA
+* post v4.0: out_labels = **plantcv.segment_image_series**(*imgs_paths, masks_paths, rois, save_labels=True, ksize=3*)
+
 #### plantcv.sobel_filter
 
 * pre v3.0dev2: device, sb_img = **plantcv.sobel_filter**(*img, dx, dy, k, device, debug=None*)
