@@ -73,7 +73,7 @@ def json2csv(json_file, csv_file):
                                 row = [sample, var, obs[var]["value"][i], obs[var]["label"][i]]
                                 csv.write(",".join(map(str, meta_row + row)) + "\n")
                     else:
-                        csv.write(",".join(map(str, meta_row + [var, "NA", "NA"])) + "\n")
+                        csv.write(",".join(map(str, meta_row + [sample, var, "NA", "NA"])) + "\n")
         csv.close()
     else:
         # If the file does not exist raise an error
@@ -99,7 +99,6 @@ def tabulate_bayes_classes(input_file, output_file):
     :param input_file: str
     :param output_file: str
     """
-
     # If the input file does not exist raise an error
     if not os.path.exists(input_file):
         raise IOError("File does not exist: {0}".format(input_file))

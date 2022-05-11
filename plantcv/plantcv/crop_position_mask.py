@@ -31,7 +31,6 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
     :param h_pos: str
     :return newmask: numpy.ndarray
     """
-
     if x < 0 or y < 0:
         fatal_error("x and y cannot be negative numbers or non-integers")
 
@@ -202,15 +201,11 @@ def crop_position_mask(img, mask, x, y, v_pos="top", h_pos="right"):
         fatal_error(str(h_pos) + ' is not valid, must be "left" or "right"!')
 
     newmask = np.array(maskv)
-    if params.debug is not None:
-        _debug(visual=newmask,
-               filename=os.path.join(params.debug_outdir, str(params.device) + "_newmask.png"),
-               cmap='gray')
+    _debug(visual=newmask, filename=os.path.join(params.debug_outdir, str(params.device) + "_newmask.png"), cmap='gray')
 
-        objects, hierarchy = cv2.findContours(np.copy(newmask), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
-        for i, cnt in enumerate(objects):
-            cv2.drawContours(ori_img, objects, i, (255, 102, 255), -1, lineType=8, hierarchy=hierarchy)
-        _debug(visual=ori_img,
-               filename=os.path.join(params.debug_outdir, str(params.device) + '_mask_overlay.png'))
+    objects, hierarchy = cv2.findContours(np.copy(newmask), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
+    for i, cnt in enumerate(objects):
+        cv2.drawContours(ori_img, objects, i, (255, 102, 255), -1, lineType=8, hierarchy=hierarchy)
+    _debug(visual=ori_img, filename=os.path.join(params.debug_outdir, str(params.device) + '_mask_overlay.png'))
 
     return newmask

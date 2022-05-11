@@ -22,7 +22,6 @@ def hist_equalization(gray_img):
     :param gray_img: numpy.ndarray
     :return img_eh: numpy.ndarray
     """
-
     if len(np.shape(gray_img)) == 3:
         fatal_error("Input image must be gray")
 

@@ -5,8 +5,9 @@ import cv2
 import math
 import numpy as np
 from matplotlib import pyplot as plt
-from plantcv.plantcv import print_image
-from plantcv.plantcv import plot_image
+from plantcv.plantcv import rgb2gray
+from plantcv.plantcv import rgb2gray_hsv
+from plantcv.plantcv import rgb2gray_lab
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
 from skimage.feature import greycomatrix, greycoprops
@@ -298,7 +299,6 @@ def texture(gray_img, ksize, threshold, offset=3, texture_method='dissimilarity'
     :param max_value: int
     :return bin_img: numpy.ndarray
     """
-
     # Function that calculates the texture of a kernel
     def calc_texture(inputs):
         inputs = np.reshape(a=inputs, newshape=[ksize, ksize])
@@ -430,7 +430,7 @@ def custom_range(img, lower_thresh, upper_thresh, channel='gray'):
         mask = cv2.bitwise_and(l_mask, gm_mask)
         mask = cv2.bitwise_and(mask, by_mask)
 
-    elif channel.upper() == 'GRAY' or channel.upper() == 'GREY':
+    elif channel.upper() in ('GRAY', 'GREY'):
 
         # Check threshold input
         if not (len(lower_thresh) == 1 and len(upper_thresh) == 1):
@@ -564,7 +564,6 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
     # set threshold = 2
     detect_peaks(x, threshold = 2, show=True)
     """
-
     x = np.atleast_1d(x).astype('float64')
 
     # It is always the case that x.size=256 since 256 hardcoded in line 186 ->
@@ -578,23 +577,16 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
     # find indices of all peaks
     dx = x[1:] - x[:-1]
     # handle NaN's
-    indnan = np.where(np.isnan(x))[0]
+    # indnan = np.where(np.isnan(x))[0]
 
     # x will never contain NaN since calcHist will never return NaN
     # if indnan.size:
     #     x[indnan] = np.inf
     #     dx[np.where(np.isnan(dx))[0]] = np.inf
     ine, ire, ife = np.array([[], [], []], dtype=int)
-    # # Where this function is used it is hardcoded to use the default edge='rising' so we will never have
-    # # edge=None, thus this will never be used
-    # if not edge:
-    #     ine = np.where((np.hstack((dx, 0)) < 0) & (np.hstack((0, dx)) > 0))[0]
 
     if edge.lower() in ['rising', 'both']:
         ire = np.where((np.hstack((dx, 0)) <= 0) & (np.hstack((0, dx)) > 0))[0]
-        # # Where this function is used it is hardcoded to use the default edge='rising' so this will never be used
-        # if edge.lower() in ['falling', 'both']:
-        #     ife = np.where((np.hstack((dx, 0)) < 0) & (np.hstack((0, dx)) >= 0))[0]
     ind = np.unique(np.hstack((ine, ire, ife)))
     # x will never contain NaN since calcHist will never return NaN
     # if ind.size and indnan.size:
@@ -612,25 +604,6 @@ def _detect_peaks(x, mph=None, mpd=1, threshold=0, edge='rising', kpsh=False, va
     # if ind.size and mph is not None:
     #     ind = ind[x[ind] >= mph]
     # remove peaks - neighbors < threshold
-
-    # # Where this function is used threshold is hardcoded to the default threshold=0 so this will never be used
-    # if ind.size and threshold > 0:
-    #     dx = np.min(np.vstack([x[ind] - x[ind - 1], x[ind] - x[ind + 1]]), axis=0)
-    #     ind = np.delete(ind, np.where(dx < threshold)[0])
-
-    # # Where this function is used has hardcoded mpd=1 so this will never be used
-    # # detect small peaks closer than minimum peak distance
-    # if ind.size and mpd > 1:
-    #     ind = ind[np.argsort(x[ind])][::-1]  # sort ind by peak height
-    #     idel = np.zeros(ind.size, dtype=bool)
-    #     for i in range(ind.size):
-    #         if not idel[i]:
-    #             # keep peaks with the same height if kpsh is True
-    #             idel = idel | (ind >= ind[i] - mpd) & (ind <= ind[i] + mpd) \
-    #                           & (x[ind[i]] > x[ind] if kpsh else True)
-    #             idel[i] = 0  # Keep current peak
-    #     # remove the small peaks and sort back the indices by their occurrence
-    #     ind = np.sort(ind[~idel])
 
     if show:
         # x will never contain NaN since calcHist will never return NaN
@@ -666,7 +639,6 @@ def _plot(x, mph, mpd, threshold, edge, valley, ax, ind):
     mode = 'Valley detection' if valley else 'Peak detection'
     ax.set_title("%s (mph=%s, mpd=%d, threshold=%s, edge='%s')"
                  % (mode, str(mph), mpd, str(threshold), edge))
-    # plt.grid()
     plt.show()
 
 
@@ -740,8 +712,6 @@ def mask_bad(float_img, bad_type='native'):
     # at least one of the "bad" exists
     # desired bad to mark is "native"
     elif bad_type.lower() == 'native':
-        # mask[np.isnan(gray_img)] = 255
-        # mask[np.isinf(gray_img)] = 255
         mask[idx_nan, idy_nan] = 255
         mask[idx_inf, idy_inf] = 255
     elif bad_type.lower() == 'nan' and len(idx_nan) >= 1:
@@ -754,5 +724,112 @@ def mask_bad(float_img, bad_type='native'):
         print('{} does not appear in the current image.'.format(bad_type.lower()))
 
     _debug(visual=mask, filename=os.path.join(params.debug_outdir, str(params.device) + "_bad_mask.png"))
+
+    return mask
+
+
+# functions to get a given channel with parameters compatible
+# with rgb2gray_lab and rgb2gray_hsv to use in the dict
+def _get_R(rgb_img, _):
+    """ Get the red channel from a RGB image """
+    return rgb_img[:, :, 2]
+
+
+def _get_G(rgb_img, _):
+    """ Get the green channel from a RGB image """
+    return rgb_img[:, :, 1]
+
+
+def _get_B(rgb_img, _):
+    """ Get the blue channel from a RGB image """
+    return rgb_img[:, :, 0]
+
+
+def _get_gray(rgb_img, _):
+    """ Get the gray scale transformation of a RGB image """
+    return rgb2gray(rgb_img=rgb_img)
+
+
+def _get_index(rgb_img, _):
+    """ Get a vector with linear indices of the pixels in an image """
+    h, w, _ = rgb_img.shape
+    return np.arange(h*w).reshape(h, w)
+
+
+def _not_valid(*args):
+    """ Error for a non valid channel """
+    return fatal_error("channel not valid, use R, G, B, l, a, b, h, s, v, gray, or index")
+
+
+def dual_channels(rgb_img, x_channel, y_channel, points, above=True, max_value=255):
+    """Create a binary image from an RGB image based on the pixels values in two channels.
+    The x and y channels define a 2D plane and the two input points define a straight line.
+    Pixels in the plane above and below the straight line are assigned two different values.
+    Inputs:
+    rgb_img   = RGB image
+    ch_x      = Channel to use for the horizontal coordinate.
+                Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'gray', and 'index'
+    ch_y      = Channel to use for the vertical coordinate.
+                Options:  'R', 'G', 'B', 'l', 'a', 'b', 'h', 's', 'v', 'gray', and 'index'
+    points    = List containing two points as tuples defining the segmenting straight line
+    above     = Whether the pixels above the line are given the value of 0 or max_value
+    max_value = Value to apply above threshold (usually 255 = white)
+
+    Returns:
+    bin_img      = Thresholded, binary image
+    :param rgb_img: numpy.ndarray
+    :param x_channel: str
+    :param y_channel: str
+    :param points: list of two tuples
+    :param above: bool
+    :param max_value: int
+    :return bin_img: numpy.ndarray
+    """
+
+    # dictionary returns the function that gets the required image channel
+    channel_dict = {
+        'R': _get_R,
+        'G': _get_G,
+        'B': _get_B,
+        'l': rgb2gray_lab,
+        'a': rgb2gray_lab,
+        'b': rgb2gray_lab,
+        'gray': _get_gray,
+        'h': rgb2gray_hsv,
+        's': rgb2gray_hsv,
+        'v': rgb2gray_hsv,
+        'index': _get_index,
+    }
+
+    debug = params.debug
+    params.debug = None
+    # get channels
+    img_x_ch = channel_dict.get(x_channel, _not_valid)(rgb_img, x_channel)
+    img_y_ch = channel_dict.get(y_channel, _not_valid)(rgb_img, y_channel)
+    params.debug = debug
+
+    if len(points) < 2:
+        fatal_error('Two points are required')
+
+    if len(points) > 2:
+        # Print warning statement
+        print("Warning: only the first two points are used in this function")
+
+    mask = np.ones(rgb_img.shape, dtype=np.uint8)
+    x0, y0 = points[0]
+    x1, y1 = points[1]
+
+    m = (y1-y0) / (x1-x0+1e-10)  # avoid division by 0
+    b = y0 - m*x0
+
+    y_line = m*img_x_ch + b
+
+    if above:
+        mask = max_value*(img_y_ch > y_line)
+    else:
+        mask = max_value*(img_y_ch < y_line)
+
+    _debug(visual=mask, filename=os.path.join(params.debug_outdir,
+                                              str(params.device) + '_' + x_channel + y_channel + '_2D_threshold_mask.png'))
 
     return mask

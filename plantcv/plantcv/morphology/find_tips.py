@@ -6,9 +6,8 @@ import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import dilate
 from plantcv.plantcv import outputs
-from plantcv.plantcv import plot_image
-from plantcv.plantcv import print_image
 from plantcv.plantcv import find_objects
+from plantcv.plantcv._debug import _debug
 
 
 def find_tips(skel_img, mask=None, label="default"):
@@ -29,7 +28,6 @@ def find_tips(skel_img, mask=None, label="default"):
     :param label: str
     :return tip_img: numpy.ndarray
     """
-
     # In a kernel: 1 values line up with 255s, -1s line up with 0s, and 0s correspond to dont care
     endpoint1 = np.array([[-1, -1, -1],
                           [-1, 1, -1],
@@ -85,12 +83,6 @@ def find_tips(skel_img, mask=None, label="default"):
 
     # Reset debug mode
     params.debug = debug
-    # Auto-increment device
-    params.device += 1
-
-    if params.debug == 'print':
-        print_image(tip_plot, os.path.join(params.debug_outdir, str(params.device) + '_skeleton_tips.png'))
-    elif params.debug == 'plot':
-        plot_image(tip_plot)
+    _debug(visual=tip_plot, filename=os.path.join(params.debug_outdir, f"{params.device}_skeleton_tips.png"))
 
     return tip_img

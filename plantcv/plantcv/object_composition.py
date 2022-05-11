@@ -26,7 +26,6 @@ def object_composition(img, contours, hierarchy):
     :return group: list
     :return mask: numpy.ndarray
     """
-
     ori_img = np.copy(img)
     # If the reference image is grayscale convert it to color
     if len(np.shape(ori_img)) == 2:
@@ -48,15 +47,13 @@ def object_composition(img, contours, hierarchy):
         group = np.vstack(contour_list)
         cv2.drawContours(mask, contours, -1, 255, -1, hierarchy=hierarchy)
 
-        if params.debug is not None:
-            cv2.drawContours(ori_img, group, -1, (255, 0, 0), params.line_thickness)
-            for cnt in contours:
-                cv2.drawContours(ori_img, cnt, -1, (255, 0, 0), params.line_thickness)
+        cv2.drawContours(ori_img, group, -1, (255, 0, 0), params.line_thickness)
+        for cnt in contours:
+            cv2.drawContours(ori_img, cnt, -1, (255, 0, 0), params.line_thickness)
 
-            _debug(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_objcomp.png'))
-            _debug(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_objcomp_mask.png'))
+        _debug(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_objcomp.png'))
+        _debug(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_objcomp_mask.png'))
 
         return group, mask
-    else:
-        print("Warning: Invalid contour.")
-        return None, None
+    print("Warning: Invalid contour.")
+    return None, None

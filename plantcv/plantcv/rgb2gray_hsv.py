@@ -22,7 +22,6 @@ def rgb2gray_hsv(rgb_img, channel):
     :param channel: str
     :return channel: numpy.ndarray
     """
-
     # The allowable channel inputs are h, s or v
     names = {"h": "hue", "s": "saturation", "v": "value"}
     channel = channel.lower()

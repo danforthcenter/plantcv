@@ -40,7 +40,6 @@ def _get_color_dict_nir():
     """Create a color dictionary for infrared wavelengths."""
     params.color_scale = "inferno"
     nir_wavelengths = np.arange(701, 1725)
-    # nir_wavelengths = [_round_to_multiple(x, multiple=4, min_wv=701, max_wv=1725) for x in nir_wavelengths_]
     nir_colors_ = color_palette(num=256)
     nir_colors_ = [tuple([xi / 255 for xi in nir_colors_[math.floor(idx / 4)]]) for (idx, _) in
                    enumerate(nir_wavelengths)]
@@ -70,9 +69,8 @@ def _rgb_to_webcode(rgb_values):
 
 def hyper_histogram(hsi, mask=None, bins=100, lower_bound=None, upper_bound=None,
                     title=None, wvlengths=[480, 550, 650]):
-    """
-    Plot a histograms of selected wavelengths from a hyperspectral image.
-    
+    """Plot a histograms of selected wavelengths from a hyperspectral image.
+
     This function calculates the histogram of selected wavelengths hyperspectral images
     The color of the histograms are based on the wavelength if the wavelength is in the range of visible spectrum;
     otherwise, random colors are assigned
@@ -99,7 +97,6 @@ def hyper_histogram(hsi, mask=None, bins=100, lower_bound=None, upper_bound=None
     :param wvlengths: list
     :return fig_hist: plotnine.ggplot.ggplot
     """
-
     # Always sort desired wavelengths
     wvlengths.sort()
 
@@ -160,7 +157,7 @@ def hyper_histogram(hsi, mask=None, bins=100, lower_bound=None, upper_bound=None
     array_data = hsi.array_data
 
     # List of wavelengths recorded created from parsing the header file will be string, make list of floats
-    histograms = dict()
+    histograms = {}
     hist_dataset = pd.DataFrame(columns=['reflectance'])
     debug = params.debug
     params.debug = None

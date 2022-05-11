@@ -28,7 +28,6 @@ def sobel_filter(gray_img, dx, dy, ksize):
     :param ksize: int
     :return sb_img: numpy.ndarray
     """
-
     sb_img = cv2.Sobel(src=gray_img, ddepth=-1, dx=dx, dy=dy, ksize=ksize)
 
     fname = str(params.device) + '_sb_img_dx' + str(dx) + '_dy' + str(dy) + '_kernel' + str(ksize) + '.png'
