@@ -100,7 +100,7 @@ def read_data(filename):
 
     :param filename: str
     :return spectral_array: __main__.Spectral_data
-        """
+    """
     # Initialize dictionary
     header_dict = {}
 
@@ -121,7 +121,7 @@ def read_data(filename):
     hdata = hdata.split("\n")
 
     # Loop through and create a dictionary from the header file
-    for i, string in enumerate(hdata):
+    for string in hdata:
         if ' = ' in string:
             header_data = string.split(" = ")
             header_data[0] = header_data[0].lower()
@@ -167,7 +167,9 @@ def read_data(filename):
             "transpose": (1, 2, 0)
         }
     }
-    interleave_type = header_dict.get("interleave").upper()
+    interleave_type = header_dict.get("interleave")
+    if interleave_type is not None:
+        interleave_type = interleave_type.upper()
     if interleave_type not in data_format:
         fatal_error(f"Interleave type {interleave_type} is not supported.")
 
