@@ -22,7 +22,6 @@ def rot90(spectral_data, k):
     :param k: int
     :return rot_hsi: __main__.Spectral_data
     """
-
     # Extract array data and rotate with numpy function
     rot_array = np.rot90(m=spectral_data.array_data, k=k)
     rot_rgb = np.rot90(m=spectral_data.pseudo_rgb, k=k)
@@ -39,8 +38,7 @@ def rot90(spectral_data, k):
                             array_type="datacube", pseudo_rgb=rot_rgb, default_bands=spectral_data.default_bands,
                             filename="rot_k" + str(k) + spectral_data.filename)
 
-    _debug(visual=rot_rgb,
-           filename=os.path.join(params.debug_outdir, str(params.device) + "_pseudo_rgb_rot_k" + str(k) + ".png"))
-
+    _debug(visual=rot_rgb,filename=os.path.join(params.debug_outdir, str(params.device) + "_pseudo_rgb_rot_k" +
+                                                str(k) + ".png"))
 
     return rot_hsi
