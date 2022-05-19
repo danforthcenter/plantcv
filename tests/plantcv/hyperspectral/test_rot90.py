@@ -1,5 +1,5 @@
 import numpy as np
-from plantcv.plantcv.hyperspectral import rot90 as rot90
+from plantcv.plantcv.hyperspectral import rot90 
 
 
 def test_rot90(hyperspectral_test_data):
