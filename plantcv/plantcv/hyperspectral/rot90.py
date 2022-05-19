@@ -23,7 +23,6 @@ def rot90(spectral_data, k):
     """
 
     # Extract array data and rotate with numpy function
-    array_data = spectral_data.array_data
     rot_array = np.rot90(m=spectral_data.array_data, k=k)
     rot_rgb = np.rot90(m=spectral_data.pseudo_rgb, k=k)
 
