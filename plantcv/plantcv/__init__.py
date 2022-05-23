@@ -91,7 +91,7 @@ from plantcv.plantcv.spatial_clustering import spatial_clustering
 from plantcv.plantcv import photosynthesis
 from plantcv.plantcv import annotate
 from plantcv.plantcv import io
-
+from plantcv.plantcv.segment_image_series import segment_image_series
 # add new functions to end of lists
 
 # Auto versioning
@@ -111,4 +111,4 @@ __all__ = ["fatal_error", "Params", "Outputs", "Spectral_data", 'PSII_data', 'Po
            "background_subtraction", "naive_bayes_classifier", "distance_transform", "canny_edge_detect", "opening",
            "closing", "roi", "threshold", "cluster_contour_mask", "analyze_thermal_values", "visualize", "morphology",
            "fill_holes", "get_kernel", "crop", "stdev_filter", "spatial_clustering", "photosynthesis", "homology", "annotate",
-           "io"]
+           "io", "segment_image_series"]
