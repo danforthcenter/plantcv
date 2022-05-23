@@ -28,6 +28,8 @@ nav:
       - 'Analyze NIR': analyze_NIR_intensity.md
       - 'Analyze Shape': analyze_shape.md
       - 'Analyze Thermal': analyze_thermal_values.md
+      - 'Annotation Tools':
+          - 'Points': Points.md
       - 'Apply Mask': apply_mask.md
       - 'Auto Crop': auto_crop.md
       - 'Background Subtraction': background_subtraction.md
@@ -72,7 +74,15 @@ nav:
       - 'Image Subtract': image_subtract.md
       - 'Image Fusion': image_fusion.md
       - 'Invert': invert.md
+      - 'I/O Functions':
+          - 'Random Subset': io_random_subset.md
+          - 'Read Dataset': io_read_dataset.md
       - 'Landmark Analysis':
+        - 'Acute': homology_acute.md
+        - 'Space': homology_space.md
+        - 'StarScape': homology_starscape.md
+        - 'Constella': homology_constella.md
+        - 'ConstellaQC': homology_constellaqc.md
         - 'Acute Vertex': acute_vertex.md
         - 'x-Axis Pseudolandmarks': x_axis_pseudolandmarks.md
         - 'y-Axis Pseudolandmarks': y_axis_pseudolandmarks.md
@@ -108,7 +118,9 @@ nav:
       - 'Outputs Class': outputs.md
       - 'Photosynthesis Functions':
           - 'Read CropReporter Data': photosynthesis_read_cropreporter.md
-          - 'Analyze Fv/Fm': photosynthesis_analyze_fvfm.md
+          - 'Analyze YII': photosynthesis_analyze_yii.md
+          - 'Analyze NPQ': photosynthesis_analyze_npq.md
+          - 'Reassign Frame Labels': photosynthesis_reassign_frame_labels.md
       - 'Params (Debugging)': params.md
       - 'Print Image': print_image.md
       - 'Print Results': print_results.md
@@ -127,6 +139,7 @@ nav:
         - 'Filter Objects by ROI': roi_objects.md
         - 'Convert ROI to Mask': roi2mask.md
       - 'Rotate': rotate2.md
+      - 'Segment Image Series': segment_image_series.md
       - 'Shift Image': shift.md
       - 'Spatial Clustering': spatial_clustering.md
       - 'Spectral Index': spectral_index.md
@@ -139,6 +152,7 @@ nav:
         - 'Mean Adaptive Threshold': mean_threshold.md
         - 'Otsu Auto Threshold': otsu_threshold.md
         - 'Saturation Threshold': saturation_threshold.md
+        - 'Threshold Two Channels': threshold_dual_channels.md
         - 'Triangle Auto Threshold': triangle_threshold.md
         - 'Texture Threshold': texture_threshold.md
       - 'Transformation Methods':
@@ -168,7 +182,9 @@ nav:
           - 'Overlay Images': visualize_ovelay_two_imgs.md
           - 'Object Size ECDF': visualize_obj_size_ecdf.md
           - 'Object Sizes': visualize_obj_sizes.md
+          - 'Pixel Scatter Plot': 'visualize_pixel_scatter_vis.md'
           - 'Pseudocolor': visualize_pseudocolor.md
+          - 'Time Lapse Video': visualize_time_lapse_video.md
       - 'Watershed Segmentation': watershed.md
       - 'White balance': white_balance.md
       - 'Within Frame': within_frame.md
