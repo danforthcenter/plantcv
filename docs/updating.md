@@ -951,7 +951,7 @@ pages for more details on the input and output variable types.
 #### plantcv.visualize.colorspaces
 
 * pre v3.8: NA
-* post v3.8: plotting_img = pcv.visualize.colorspaces(rgb_img)
+* post v3.8: plotting_img = pcv.visualize.colorspaces(rgb_img, original_img=True)
 
 #### plantcv.visualize.histogram
 
