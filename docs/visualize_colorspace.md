@@ -2,7 +2,7 @@
 
 This is a plotting method used to examine all potential colorspaces from available PlantCV functions.
 
-**plantcv.visualize.colorspaces**(*rgb_img, originial_img*)
+**plantcv.visualize.colorspaces**(*rgb_img, originial_img=True*)
 
 **returns** plotting_img
 
