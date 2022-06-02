@@ -1,4 +1,4 @@
-# Rotate hyperspectral datacubes (in increments of 90 degrees)
+# Rotate hyperspectral datacubes counterclockwise (in increments of 90 degrees)
 
 # imports
 import numpy as np
@@ -9,7 +9,7 @@ from plantcv.plantcv import Spectral_data
 
 
 def rot90(spectral_data, k):
-    """This function allows you rotate hyperspectral image data in 90 degree increments.
+    """This function allows you rotate hyperspectral image data counterclockwise in 90 degree increments.
 
     Inputs:
     spectral_data   = Hyperspectral data instance
