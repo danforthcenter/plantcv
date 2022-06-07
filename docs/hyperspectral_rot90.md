@@ -17,9 +17,6 @@ but is specifically suitable for HSI image analysis.
     - Below
     
     
-**Input image**
-
-![Screenshot](img/documentation_images/rotate2/34_whitebalance.jpg)
 
 ```python
 
@@ -33,11 +30,6 @@ pcv.params.debug = "plot"
 rot_hsi = pcv.hyperspectral.rot90(spectral_data=spectral_array_obj, k=1)
 
 ```
-
-
-**Image after rotating 90 degrees (k=1)**
-
-![Screenshot](img/documentation_images/rotate2/10_rotated_img.jpg)
 
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/hyperspectral/rot90.py)
