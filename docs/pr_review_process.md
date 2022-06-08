@@ -12,21 +12,28 @@
 
 The steps below do not necessarily need to be followed precisely in this order. Not all PRs will require all steps and some will not require an in-depth review at all (e.g., minor documentation updates).
 
-### Step 0: Familiarize yourself with the PR
+### Step 0: Set up a local PlantCV environment for the branch being reviewed
+
+1. Read through the steps of the [contributing guide](https://plantcv.readthedocs.io/en/latest/CONTRIBUTING/).
+2. Email plantcv@danforthcenter.org to get added as a contributor.
+3. [Install PlantCV from the source code](https://plantcv.readthedocs.io/en/latest/installation/#installation-from-the-source-code)
+4. Activate the plantcv environment, then change the current directory to the location where plantcv is installed.  Then, run `git checkout <pull-request-branch>` to navigate to the branch to be reviewed.
+
+### Step 1: Familiarize yourself with the PR
 
 Before starting the review it is convenient to understand the type of update and/or the intended functionality.  
 
 1. Inspect the files changed. 
 2. Read the updated documentation. To compile the documentation locally, run: `mkdocs serve --theme readthedocs` in a local terminal with an activated PlantCV environment (Testing the documentation is done in step 4). 
 
-### Step 1: Prepare materials for the review
+### Step 2: Prepare materials for the review
 
 1. Maintain a shared team directory for reviews (data and notebooks) in the PlantCV Google Drive. Email plantcv@danforthcenter.org from a gmail account to have the team share access to this google drive.
 2. Find appropriate sample data (either already in the shared directory or new data), ideally not data used by the PR author.
 3. Update your local development environment to use the PR branch.
 4. Create a new Jupyter notebook named `pr<num>_<short description>.ipynb`
 
-### Step 2: Review the PR functionality
+### Step 3: Review the PR functionality
 
 Read the PR documentation and use your intuition to run relevant parts of PlantCV to test the PR code. For example, test upstream and downstream functionality to ensure the new function works well with other steps in a workflow. Try more than one data type if a function works on both RGB and grayscale. Potential findings to report to the PR author and/or to propose fixes for:
 
@@ -36,7 +43,7 @@ Read the PR documentation and use your intuition to run relevant parts of PlantC
 
 Iterate as needed.
 
-### Step 3: Review the tests
+### Step 4: Review the tests
 
 1. Do all tests pass?
     1. Running relevant tests locally: `pytest -v tests/tests.py -k test_name_or_keywords` in a local terminal with an activated PlantCV environment
@@ -45,7 +52,7 @@ Iterate as needed.
 
 Propose updates as needed.
 
-### Step 4: Test the documentation
+### Step 5: Test the documentation
 
 Reviewing the documentation code is important, but compiling the documentation locally ensures that the resulting pages are rendered correctly. The easiest way to view the documentation live on your local machine is to run: `mkdocs serve --theme readthedocs` in a local terminal with an activated PlantCV environment
 
@@ -57,7 +64,7 @@ Some common oversights that are hard to see in the code but easy to detect in th
 4. Changes to function input/output signatures or new functions should be added to updating.md.
 5. Link out to source code at the end of a documentation page.
 
-### Step 5: Review the code
+### Step 6: Review the code
 
 Once the PR is working as intended, review the code itself for potential improvements. Some common types of improvements to suggest:
 
@@ -70,6 +77,6 @@ Once the PR is working as intended, review the code itself for potential improve
 
 Communicate via github with PR author(s) and directly contribute changes to the PR branch as appropriate until it is ready to merge.
 
-### Step 6: Approve the PR
+### Step 7: Approve the PR
 
 Once you and the PR author have refined the PR and it is ready to merge, the PR can be approved. It’s important that the PR not be approved until it is actually ready to merge. Please add the name of the Jupyter notebook used for review, in the shared directory (but not a link to it) to the PR approval.
