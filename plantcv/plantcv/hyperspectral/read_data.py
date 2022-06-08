@@ -100,7 +100,7 @@ def read_data(filename):
 
     :param filename: str
     :return spectral_array: __main__.Spectral_data
-        """
+    """
     # Initialize dictionary
     header_dict = {}
 
@@ -121,7 +121,7 @@ def read_data(filename):
     hdata = hdata.split("\n")
 
     # Loop through and create a dictionary from the header file
-    for i, string in enumerate(hdata):
+    for string in hdata:
         if ' = ' in string:
             header_data = string.split(" = ")
             header_data[0] = header_data[0].lower()
@@ -144,7 +144,7 @@ def read_data(filename):
 
     # Replace datatype ID number with the numpy datatype
     dtype_dict = {"1": np.uint8, "2": np.int16, "3": np.int32, "4": np.float32, "5": np.float64, "6": np.complex64,
-                  "9": np.complex128, "12": np.uint16, "13": np.uint32, "14": np.uint64, "15": np.uint64}
+                  "9": np.complex128, "12": np.uint16, "13": np.uint32, "14": np.int64, "15": np.uint64}
     header_dict["data type"] = dtype_dict[header_dict["data type"]]
 
     # Read in the data from the file
@@ -167,7 +167,9 @@ def read_data(filename):
             "transpose": (1, 2, 0)
         }
     }
-    interleave_type = header_dict.get("interleave").upper()
+    interleave_type = header_dict.get("interleave")
+    if interleave_type is not None:
+        interleave_type = interleave_type.upper()
     if interleave_type not in data_format:
         fatal_error(f"Interleave type {interleave_type} is not supported.")
 
