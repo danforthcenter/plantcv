@@ -388,7 +388,7 @@ pages for more details on the input and output variable types.
 #### plantcv.hyperspectral.rot90
 
 * pre v4.x: NA
-* post v4.x: index_array = **plantcv.hyperspectral.rot90**(*spectral_data, k*)
+* post v4.x: rot_hsi = **plantcv.hyperspectral.rot90**(*spectral_data, k*)
 
 #### plantcv.image_add
 
