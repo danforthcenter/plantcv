@@ -26,8 +26,11 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "plot"
 
-# Many plants absorb 430nm wavelength light. 
+# Rotate 90 degrees counterclockwise 
 rot_hsi = pcv.hyperspectral.rot90(spectral_data=spectral_array_obj, k=1)
+
+# Rotate 180 degrees
+upside_down_hsi = pcv.hyperspectral.rot90(spectral_data=spectral_array_obj, k=2)
 
 ```
 
