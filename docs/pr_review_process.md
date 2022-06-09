@@ -10,7 +10,8 @@
 
 ### Overview
 
-The steps below do not necessarily need to be followed precisely in this order. Not all PRs will require all steps and some will not require an in-depth review at all (e.g., minor documentation updates).
+!!! note
+    The steps below do not necessarily need to be followed precisely in this order. Not all PRs will require all steps and some will not require an in-depth review at all (e.g., minor documentation updates).
 
 ### Step 0: Set up a local PlantCV environment for the branch being reviewed
 
