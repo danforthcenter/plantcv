@@ -19,6 +19,7 @@ nav:
     - 'Contributing to PlantCV': CONTRIBUTING.md
     - 'Code of Conduct': CODE_OF_CONDUCT.md
     - 'Adding/Editing Documentation': documentation.md
+    - 'Pull Request Review Process' : pr_review_process.md
   - "Tutorials": tutorials.md
   - 'Workflow Parallelization': pipeline_parallel.md
   - 'Exporting Data': db-exporter.md
