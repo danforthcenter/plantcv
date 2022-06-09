@@ -29,7 +29,7 @@ Before starting the review it is convenient to understand the type of update and
 
 ### Step 2: Prepare materials for the review
 
-1. Maintain a shared team directory for reviews (data and notebooks) in the PlantCV Google Drive. Email plantcv@danforthcenter.org from a gmail account to have the team share access to this google drive.
+1. Maintain a shared team directory for reviews (data and notebooks) in the PlantCV Google Drive. Email plantcv@danforthcenter.org from a Gmail account to have the team share access to this Google Drive.
 2. Find appropriate sample data (either already in the shared directory or new data), ideally not data used by the PR author.
 3. Update your local development environment to use the PR branch.
 4. Create a new Jupyter notebook named `pr<num>_<short description>.ipynb`
