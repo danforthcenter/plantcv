@@ -25,15 +25,15 @@ Attributes are accessed as plantcv.params.*attribute*.
  [plantcv.morphology.find_tips](find_tips.md), [plantcv.morphology.segment_skeleton](segment_skeleton.md), [plantcv.morphology.segment_tangent_angle](segment_tangent_angle.md),
  [plantcv.morphology.segment_id](segment_id.md), and every region of interest function. Default = 5. 
 
-**dpi**: Dots per inch for plotting debugging images. 
+**dpi**: Dots per inch for plotting debugging images. Default = 100.
 
 **text_size**: Size of the text for labels in debugging plots created by [segment_angle](segment_angle.md), [segment_curvature](segment_curvature.md), [segment_euclidean_length](segment_euclidean_length.md),
 [segment_id](segment_id.md), [segment_insertion_angle](segment_insertion_angle.md), [segment_path_length](segment_pathlength.md), and [segment_tangent_angle](segment_tangent_angle.md) from
-the morphology sub-package. 
+the morphology sub-package. Default = 0.55.
 
 **text_thickness**: Thickness of the text for labels in debugging plots created by [segment_angle](segment_angle.md), [segment_curvature](segment_curvature.md), [segment_euclidean_length](segment_euclidean_length.md),
 [segment_id](segment_id.md), [segment_insertion_angle](segment_insertion_angle.md), [segment_path_length](segment_pathlength.md), and [segment_tangent_angle](segment_tangent_angle.md) from
-the morphology sub-package. 
+the morphology sub-package. Default = 2.
 
 **marker_size**: Size of markers in debugging plots created by [plantcv.transform.warp](transform_warp.md). Default = 60.
 
