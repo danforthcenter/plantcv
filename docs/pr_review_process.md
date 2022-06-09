@@ -1,6 +1,6 @@
 # Pull Request Review Process
 
-### Pull Request Author Rules
+### Pull Request Author Guidelines
 
 1. PRs (Pull Requests) should be modular and as targeted as possible.
 2. PRs for new features should focus on a minimum viable product. Embellishments can be added in additional PRs.
