@@ -2,12 +2,11 @@
 
 import os
 import numpy as np
-from plantcv.plantcv import params
+from plantcv.plantcv import deprecation_warning, params
 from plantcv.plantcv import outputs
-from plotnine import labs
-from plantcv.plantcv.visualize import histogram
-from plantcv.plantcv import deprecation_warning
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv.visualize import histogram
+from plotnine import labs
 
 
 def analyze_thermal_values(thermal_array, mask, histplot=None, label="default"):
