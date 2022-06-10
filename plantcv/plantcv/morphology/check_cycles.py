@@ -57,7 +57,7 @@ def check_cycles(skel_img, label="default"):
     if num_cycles > 0:
         # Get a new color scale
         rand_color = color_palette(num=num_cycles, saved=False)
-        for i, cnt in enumerate(cycle_objects):
+        for i in range(0, len(cycle_objects)):
             cv2.drawContours(cycle_img, cycle_objects, i, rand_color[i], params.line_thickness, lineType=8,
                              hierarchy=cycle_hierarchies)
 
