@@ -4,7 +4,7 @@ import numpy as np
 
 
 def _avg_reflectance(spectral_data, mask):
-    """ Find average reflectance of masked hyperspectral data instance.
+    """Find average reflectance of masked hyperspectral data instance.
     This is useful for calculating a target signature (n_band x 1 - column array) which is required in various GatorSense
     hyperspectral tools (https://github.com/GatorSense/hsi_toolkit_py)
 

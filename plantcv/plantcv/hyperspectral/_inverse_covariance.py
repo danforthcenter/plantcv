@@ -4,7 +4,7 @@ import numpy as np
 
 
 def _inverse_covariance(spectral_array):
-    """ Calculate the inverse covariance matrix of a hyperspectral datacube.
+    """Calculate the inverse covariance matrix of a hyperspectral datacube.
     Used in various GatorSense hyperspectral tools (https://github.com/GatorSense/hsi_toolkit_py)
 
     Inputs:
