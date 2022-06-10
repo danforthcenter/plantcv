@@ -29,7 +29,6 @@ def analyze_thermal_values(thermal_array, mask, histplot=None, label="default"):
     :param label: str
     :return analysis_image: ggplot
     """
-
     if histplot is not None:
         deprecation_warning("'histplot' will be deprecated in a future version of PlantCV. "
                             "This function creates a histogram by default.")
