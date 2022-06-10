@@ -14,7 +14,7 @@ from plantcv.plantcv._debug import _debug
 
 
 def segment_euclidean_length(segmented_img, objects, label="default"):
-    """ Use segmented skeleton image to gather euclidean length measurements per segment
+    """Use segmented skeleton image to gather euclidean length measurements per segment.
 
     Inputs:
     segmented_img = Segmented image to plot lengths on

@@ -11,9 +11,8 @@ from plantcv.plantcv._debug import _debug
 
 
 def find_tips(skel_img, mask=None, label="default"):
-    """
+    """Find tips in skeletonized image.
     The endpoints algorithm was inspired by Jean-Patrick Pommier: https://gist.github.com/jeanpat/5712699
-    Find tips in skeletonized image.
 
     Inputs:
     skel_img    = Skeletonized image

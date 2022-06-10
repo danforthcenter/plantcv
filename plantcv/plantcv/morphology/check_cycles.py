@@ -13,7 +13,8 @@ from plantcv.plantcv._debug import _debug
 
 
 def check_cycles(skel_img, label="default"):
-    """ Check for cycles in a skeleton image
+    """Check for cycles in a skeleton image.
+
     Inputs:
     skel_img     = Skeletonized image
     label        = optional label parameter, modifies the variable name of observations recorded
