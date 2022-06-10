@@ -11,7 +11,7 @@ from plantcv.plantcv._debug import _debug
 
 
 def segment_sort(skel_img, objects, mask=None, first_stem=True):
-    """ Sort segments from a skeletonized image into two categories: leaf objects and other objects.
+    """Sort segments from a skeletonized image into two categories: leaf objects and other objects.
 
     Inputs:
     skel_img          = Skeletonized image

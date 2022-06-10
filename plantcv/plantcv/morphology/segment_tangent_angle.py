@@ -31,9 +31,9 @@ def _slope_to_intesect_angle(m1, m2):
 
 
 def segment_tangent_angle(segmented_img, objects, size, label="default"):
-    """ Find 'tangent' angles in degrees of skeleton segments. Use `size` pixels on either end of
-        each segment to find a linear regression line, and calculate angle between the two lines
-        drawn per segment.
+    """Find 'tangent' angles in degrees of skeleton segments.
+    Use `size` pixels on either end of each segment to find a linear regression line, and calculate angle between the two
+    lines drawn per segment.
 
     Inputs:
     segmented_img  = Segmented image to plot slope lines and intersection angles on

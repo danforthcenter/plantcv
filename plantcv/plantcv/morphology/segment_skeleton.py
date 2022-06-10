@@ -12,7 +12,7 @@ from plantcv.plantcv._debug import _debug
 
 
 def segment_skeleton(skel_img, mask=None):
-    """ Segment a skeleton image into pieces
+    """Segment a skeleton image into pieces.
 
     Inputs:
     skel_img         = Skeletonized image
