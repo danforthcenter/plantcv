@@ -69,6 +69,7 @@ nav:
           - 'Calibrate': calibrate.md
           - 'Spectral Index': spectral_index.md
           - 'Extract wavelength': extract_wavelength.md
+          - 'Rotate Hyperspectral Datacubes ': hyperspectral_rot90.md
           - 'Spectral data objects': Spectral_data.md
           - 'Write data': write_data.md
       - 'Image Add': image_add.md

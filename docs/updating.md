@@ -385,6 +385,11 @@ pages for more details on the input and output variable types.
 * post v3.7: index_array = **plantcv.hyperspectral.extract_index**(*array, index="NDVI", distance=20*)
 * post v3.8: DEPRECATED see plantcv.spectral_index
 
+#### plantcv.hyperspectral.rot90
+
+* pre v4.x: NA
+* post v4.x: rot_hsi = **plantcv.hyperspectral.rot90**(*spectral_data, k*)
+
 #### plantcv.hyperspectral.write_data
 
 * pre v4.0: NA
@@ -1039,7 +1044,7 @@ pages for more details on the input and output variable types.
 #### plantcv.visualize.colorspaces
 
 * pre v3.8: NA
-* post v3.8: plotting_img = pcv.visualize.colorspaces(rgb_img)
+* post v3.8: plotting_img = pcv.visualize.colorspaces(rgb_img, original_img=True)
 
 #### plantcv.visualize.histogram
 
