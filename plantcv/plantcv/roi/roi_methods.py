@@ -61,7 +61,6 @@ def rectangle(img, x, y, h, w):
     :return roi_contour: list
     :return roi_hierarchy: numpy.ndarray
     """
-
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
 
@@ -107,7 +106,6 @@ def circle(img, x, y, r):
     :return roi_contour: list
     :return roi_hierarchy: numpy.ndarray
     """
-
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
 
@@ -155,7 +153,6 @@ def ellipse(img, x, y, r1, r2, angle):
     :return roi_contour: list
     :return roi_hierarchy: numpy.ndarray
     """
-
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
 
@@ -222,7 +219,6 @@ def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
     :param ncols: int
     :return mask: numpy.ndarray
     """
-
     # Store user debug
     debug = params.debug
 
@@ -325,7 +321,6 @@ def custom(img, vertices):
         :return roi_contour: list
         :return roi_hierarchy: numpy.ndarray
     """
-
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
 
