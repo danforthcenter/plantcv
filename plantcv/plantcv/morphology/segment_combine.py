@@ -10,7 +10,7 @@ from plantcv.plantcv._debug import _debug
 
 
 def segment_combine(segment_list, objects, mask):
-    """ Combine user specified segments together
+    """Combine user specified segments together.
 
     Inputs:
     segment_list  = List of segments to get combined, or list of lists of segments to get combined
