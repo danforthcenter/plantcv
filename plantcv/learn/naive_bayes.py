@@ -49,7 +49,7 @@ def naive_bayes(imgdir, maskdir, outfile, mkplots=False):
                     channels = {"hue": hue, "saturation": saturation, "value": value}
 
                     # Split channels into plant and non-plant signal
-                    for channel in channels.keys():
+                    for channel in channels:
                         fg, bg = _split_plant_background_signal(channels[channel], mask)
 
                         # Randomly sample from the plant class (sample 10% of the pixels)
@@ -63,7 +63,7 @@ def naive_bayes(imgdir, maskdir, outfile, mkplots=False):
     # Create an output file for the PDFs
     out = open(outfile, "w")
     out.write("class\tchannel\t" + "\t".join(map(str, range(0, 256))) + "\n")
-    for channel in plant.keys():
+    for channel in plant:
         print("Calculating PDF for the " + channel + " channel...")
         plant_kde = stats.gaussian_kde(plant[channel])
         bg_kde = stats.gaussian_kde(background[channel])
@@ -140,7 +140,7 @@ def naive_bayes_multiclass(samples_file, outfile, mkplots=False):
         # Create an HSV channel dictionary that stores the channels as lists (horizontally stacked ndarrays)
         channels = {"hue": np.hstack(hue), "saturation": np.hstack(saturation), "value": np.hstack(value)}
         # For each channel
-        for channel in channels.keys():
+        for channel in channels:
             # Create a kernel density estimator for the channel values (Gaussian kernel)
             kde = stats.gaussian_kde(channels[channel])
             # Use the KDE to calculate a probability density function for the channel
