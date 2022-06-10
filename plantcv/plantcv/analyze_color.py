@@ -172,13 +172,13 @@ def analyze_color(rgb_img, mask, hist_plot_type=None, colorspaces="all", label="
 
     # Store into global measurements
     # RGB signal values are in an unsigned 8-bit scale of 0-255
-    rgb_values = [i for i in range(0, 256)]
+    rgb_values = list(range(0, 256))
     # Hue values are in a 0-359 degree scale, every 2 degrees at the midpoint of the interval
     hue_values = [i * 2 + 1 for i in range(0, 180)]
     # Percentage values on a 0-100 scale (lightness, saturation, and value)
     percent_values = [round((i / 255) * 100, 2) for i in range(0, 256)]
     # Diverging values on a -128 to 127 scale (green-magenta and blue-yellow)
-    diverging_values = [i for i in range(-128, 128)]
+    diverging_values = list(range(-128, 128))
 
     if colorspaces.upper() in ('RGB', 'ALL'):
         outputs.add_observation(sample=label, variable='blue_frequencies', trait='blue frequencies',
