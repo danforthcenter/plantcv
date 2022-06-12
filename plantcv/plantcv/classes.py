@@ -3,9 +3,10 @@ import os
 import cv2
 import json
 from plantcv.plantcv import fatal_error
+from plantcv.plantcv.annotate.points import _find_closest_pt
 import matplotlib.pyplot as plt
 from math import floor
-from plantcv.plantcv.annotate.points import _find_closest_pt
+import numpy as np
 
 
 class Params:
@@ -280,3 +281,26 @@ class Points(object):
             ax0plots = self.ax.lines
             self.ax.lines.remove(ax0plots[idx_remove])
         self.fig.canvas.draw()
+
+
+class Image(np.ndarray):
+    """The generic Image class extends the np.ndarray class by adding attributes."""
+
+    # From NumPy documentation
+    # Add filename attribute
+    def __new__(cls, input_array: np.ndarray, filename: str):
+        obj = np.asarray(input_array).view(cls)
+        # New attribute filename stores the path and filename of the source file
+        obj.filename = filename
+        return obj
+
+    def __array_finalize__(self, obj):
+        if obj is not None:
+            self.filename = getattr(obj, "filename", None)
+
+    def __getitem__(self, key):
+        # Enhance the np.ndarray __getitem__ method
+        # Slice the array as requested but return an array of the same class
+        # Idea from NumPy examples of subclassing:
+        value = super(Image, self).__getitem__(key)
+        return value
