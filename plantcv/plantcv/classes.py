@@ -304,3 +304,19 @@ class Image(np.ndarray):
         # Idea from NumPy examples of subclassing:
         value = super(Image, self).__getitem__(key)
         return value
+
+
+class BGR(Image):
+    """Subclass of Image for Blue Green Red (BGR)/OpenCV-type images."""
+
+    def __new__(cls, input_array: np.ndarray, filename: str):
+        obj = Image.__new__(cls, input_array, filename)
+        return obj.view(cls)
+
+
+class RGB(Image):
+    """Subclass of Image for Red Green Blue (RGB)-type images."""
+
+    def __new__(cls, input_array: np.ndarray, filename: str):
+        obj = Image.__new__(cls, input_array, filename)
+        return obj.view(cls)
