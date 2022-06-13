@@ -320,3 +320,11 @@ class RGB(Image):
     def __new__(cls, input_array: np.ndarray, filename: str):
         obj = Image.__new__(cls, input_array, filename)
         return obj.view(cls)
+
+
+class GRAY(Image):
+    """Subclass of Image for grayscale images."""
+
+    def __new__(cls, input_array: np.ndarray, filename: str):
+        obj = Image.__new__(cls, input_array, filename)
+        return obj.view(cls)

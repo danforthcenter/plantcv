@@ -1,5 +1,5 @@
 import numpy as np
-from plantcv.plantcv import Image, BGR, RGB
+from plantcv.plantcv import Image, BGR, RGB, GRAY
 
 
 def test_image():
@@ -30,3 +30,9 @@ def test_rgb():
     """Test creating a RGB class image."""
     bgr = RGB(input_array=np.zeros((10, 10, 3), dtype=np.uint8), filename="rgb.png")
     assert isinstance(bgr, RGB)
+
+
+def test_gray():
+    """Test creating a GRAY class image."""
+    gray = GRAY(input_array=np.zeros((10, 10), dtype=np.uint8), filename="gray.png")
+    assert isinstance(gray, GRAY)
