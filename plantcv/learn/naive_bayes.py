@@ -49,7 +49,7 @@ def naive_bayes(imgdir, maskdir, outfile, mkplots=False):
                     channels = {"hue": hue, "saturation": saturation, "value": value}
 
                     # Split channels into plant and non-plant signal
-                    for channel in channels.keys():
+                    for channel in channels:
                         fg, bg = _split_plant_background_signal(channels[channel], mask)
 
                         # Randomly sample from the plant class (sample 10% of the pixels)
@@ -61,22 +61,20 @@ def naive_bayes(imgdir, maskdir, outfile, mkplots=False):
 
     # Calculate a probability density function for each channel using a Gaussian kernel density estimator
     # Create an output file for the PDFs
-    out = open(outfile, "w")
-    out.write("class\tchannel\t" + "\t".join(map(str, range(0, 256))) + "\n")
-    for channel in plant.keys():
-        print("Calculating PDF for the " + channel + " channel...")
-        plant_kde = stats.gaussian_kde(plant[channel])
-        bg_kde = stats.gaussian_kde(background[channel])
-        # Calculate p from the PDFs for each 8-bit intensity value and save to outfile
-        plant_pdf = plant_kde(range(0, 256))
-        out.write("plant\t" + channel + "\t" + "\t".join(map(str, plant_pdf)) + "\n")
-        bg_pdf = bg_kde(range(0, 256))
-        out.write("background\t" + channel + "\t" + "\t".join(map(str, bg_pdf)) + "\n")
-        if mkplots:
-            # If mkplots is True, make the PDF charts
-            _plot_pdf(channel, os.path.dirname(outfile), plant=plant_pdf, background=bg_pdf)
-
-    out.close()
+    with open(outfile, "w") as out:
+        out.write("class\tchannel\t" + "\t".join(map(str, range(0, 256))) + "\n")
+        for channel in plant:
+            print("Calculating PDF for the " + channel + " channel...")
+            plant_kde = stats.gaussian_kde(plant[channel])
+            bg_kde = stats.gaussian_kde(background[channel])
+            # Calculate p from the PDFs for each 8-bit intensity value and save to outfile
+            plant_pdf = plant_kde(range(0, 256))
+            out.write("plant\t" + channel + "\t" + "\t".join(map(str, plant_pdf)) + "\n")
+            bg_pdf = bg_kde(range(0, 256))
+            out.write("background\t" + channel + "\t" + "\t".join(map(str, bg_pdf)) + "\n")
+            if mkplots:
+                # If mkplots is True, make the PDF charts
+                _plot_pdf(channel, os.path.dirname(outfile), plant=plant_pdf, background=bg_pdf)
 
 
 def naive_bayes_multiclass(samples_file, outfile, mkplots=False):
@@ -98,33 +96,33 @@ def naive_bayes_multiclass(samples_file, outfile, mkplots=False):
     # Initialize a dictionary to store sampled RGB pixel values for each input class
     sample_points = {}
     # Open the sampled points text file
-    f = open(samples_file, "r")
-    # Read the first line and use the column headers as class labels
-    header = f.readline()
-    header = header.rstrip("\n")
-    class_list = header.split("\t")
-    # Initialize a dictionary for the red, green, and blue channels for each class
-    for cls in class_list:
-        sample_points[cls] = {"red": [], "green": [], "blue": []}
-    # Loop over the rest of the data in the input file
-    for row in f:
-        # Remove newlines and quotes
-        row = row.rstrip("\n")
-        row = row.replace('"', '')
-        # If this is not a blank line, parse the data
-        if len(row) > 0:
-            # Split the row into a list of points per class
-            points = row.split("\t")
-            # For each point per class
-            for i, point in enumerate(points):
-                if len(point) > 0:
-                    # Split the point into red, green, and blue integer values
-                    red, green, blue = map(int, point.split(","))
-                    # Append each intensity value into the appropriate class list
-                    sample_points[class_list[i]]["red"].append(red)
-                    sample_points[class_list[i]]["green"].append(green)
-                    sample_points[class_list[i]]["blue"].append(blue)
-    f.close()
+    with open(samples_file, "r") as f:
+        # Read the first line and use the column headers as class labels
+        header = f.readline()
+        header = header.rstrip("\n")
+        class_list = header.split("\t")
+        # Initialize a dictionary for the red, green, and blue channels for each class
+        for cls in class_list:
+            sample_points[cls] = {"red": [], "green": [], "blue": []}
+        # Loop over the rest of the data in the input file
+        for row in f:
+            # Remove newlines and quotes
+            row = row.rstrip("\n")
+            row = row.replace('"', '')
+            # If this is not a blank line, parse the data
+            if len(row) > 0:
+                # Split the row into a list of points per class
+                points = row.split("\t")
+                # For each point per class
+                for i, point in enumerate(points):
+                    if len(point) > 0:
+                        # Split the point into red, green, and blue integer values
+                        red, green, blue = map(int, point.split(","))
+                        # Append each intensity value into the appropriate class list
+                        sample_points[class_list[i]]["red"].append(red)
+                        sample_points[class_list[i]]["green"].append(green)
+                        sample_points[class_list[i]]["blue"].append(blue)
+
     # Initialize a dictionary to store probability density functions per color channel in HSV colorspace
     pdfs = {"hue": {}, "saturation": {}, "value": {}}
     # For each class
@@ -140,7 +138,7 @@ def naive_bayes_multiclass(samples_file, outfile, mkplots=False):
         # Create an HSV channel dictionary that stores the channels as lists (horizontally stacked ndarrays)
         channels = {"hue": np.hstack(hue), "saturation": np.hstack(saturation), "value": np.hstack(value)}
         # For each channel
-        for channel in channels.keys():
+        for channel in channels:
             # Create a kernel density estimator for the channel values (Gaussian kernel)
             kde = stats.gaussian_kde(channels[channel])
             # Use the KDE to calculate a probability density function for the channel

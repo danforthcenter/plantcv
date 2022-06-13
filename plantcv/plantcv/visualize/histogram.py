@@ -11,7 +11,7 @@ from plotnine import ggplot, aes, geom_line, labels, scale_color_manual
 
 
 def _hist_gray(gray_img, bins, lower_bound, upper_bound, mask=None):
-    """ Prepare the ready to plot histogram data
+    """Prepare the ready to plot histogram data.
 
     Inputs:
     gray_img       = grayscale image to analyze
