@@ -310,6 +310,7 @@ class BGR(Image):
     """Subclass of Image for Blue Green Red (BGR)/OpenCV-type images."""
 
     def __new__(cls, input_array: np.ndarray, filename: str):
+        # Create an instance of Image but return an instance of BGR
         obj = Image.__new__(cls, input_array, filename)
         return obj.view(cls)
 
@@ -318,6 +319,7 @@ class RGB(Image):
     """Subclass of Image for Red Green Blue (RGB)-type images."""
 
     def __new__(cls, input_array: np.ndarray, filename: str):
+        # Create an instance of Image but return an instance of RGB
         obj = Image.__new__(cls, input_array, filename)
         return obj.view(cls)
 
@@ -326,5 +328,6 @@ class GRAY(Image):
     """Subclass of Image for grayscale images."""
 
     def __new__(cls, input_array: np.ndarray, filename: str):
+        # Create an instance of Image but return an instance of GRAY
         obj = Image.__new__(cls, input_array, filename)
         return obj.view(cls)
