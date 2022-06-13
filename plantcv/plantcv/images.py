@@ -39,7 +39,7 @@ class RGB(Image):
     def __new__(cls, input_array: np.ndarray, filename: str):
         # Create an instance of Image but return an instance of RGB
         obj = Image.__new__(cls, input_array, filename)
-        return obj.view(cls)
+        return obj
 
 
 class GRAY(Image):
@@ -48,7 +48,7 @@ class GRAY(Image):
     def __new__(cls, input_array: np.ndarray, filename: str):
         # Create an instance of Image but return an instance of GRAY
         obj = Image.__new__(cls, input_array, filename)
-        return obj.view(cls)
+        return obj
 
 
 class HSI(Image):
@@ -61,10 +61,18 @@ class HSI(Image):
         # Add HSI-specific attributes
         obj.wavelengths = wavelengths
         obj.wavelength_units = wavelength_units
-        obj.default_wavelengths = default_wavelengths
         obj.min_wavelength = np.min(wavelengths)
         obj.max_wavelength = np.max(wavelengths)
-        return obj.view(cls)
+        obj.default_wavelengths = default_wavelengths
+        if default_wavelengths is None:
+            if obj.max_wavelength >= 635 and obj.min_wavelength <= 490:
+                obj.default_wavelengths = [480, 540, 710]
+            else:
+                obj.default_wavelengths = [wavelengths[np.argmax(np.sum(input_array, axis=(0, 1)))]]
+        return obj
+
+    def __init__(self, **kwargs):
+        self.thumb = self._create_thumb()
 
     def get_wavelength(self, wavelength):
         idx = np.abs(self - wavelength).argmin()
@@ -73,3 +81,14 @@ class HSI(Image):
         obj.min_wavelength = np.min(obj.wavelengths)
         obj.max_wavelength = np.max(obj.wavelengths)
         return obj
+
+    def _create_thumb(self):
+        if len(self.default_wavelengths) == 3:
+            thumb = BGR(input_array=np.dstack([self.get_wavelength(self.default_wavelengths[0]),
+                                               self.get_wavelength(self.default_wavelengths[1]),
+                                               self.get_wavelength(self.default_wavelengths[2])]),
+                        filename=self.filename)
+        else:
+            thumb = GRAY(input_array=self.get_wavelength(self.default_wavelengths[0]),
+                         filename=self.filename)
+        return thumb
