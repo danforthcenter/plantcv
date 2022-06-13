@@ -21,7 +21,6 @@ def roi2mask(img, contour):
     :param contour: list
     :return mask: numpy.ndarray
     """
-
     # create a blank image of same size
     shape_info = np.shape(img)
     bnk = np.zeros((shape_info[0], shape_info[1]), dtype=np.uint8)
