@@ -54,8 +54,8 @@ class GRAY(Image):
 class HSI(Image):
     """Subclass of Image for hyperspectral images."""
 
-    def __new__(cls, input_array: np.ndarray, filename: str, wavelengths: list, wavelength_units: str,
-                default_wavelengths: list):
+    def __new__(cls, input_array: np.ndarray, filename: str, wavelengths: list, default_wavelengths: list,
+                wavelength_units: str = "nm"):
         # Create an instance of Image with default attributes
         obj = Image.__new__(cls, input_array, filename)
         # Add HSI-specific attributes

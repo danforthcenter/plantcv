@@ -1,5 +1,5 @@
 import numpy as np
-from plantcv.plantcv import Image, BGR, RGB, GRAY
+from plantcv.plantcv import Image, BGR, RGB, GRAY, HSI
 
 
 def test_image():
@@ -36,3 +36,17 @@ def test_gray():
     """Test creating a GRAY class image."""
     gray = GRAY(input_array=np.zeros((10, 10), dtype=np.uint8), filename="gray.png")
     assert isinstance(gray, GRAY)
+
+
+def test_hsi():
+    """Test creating an HSI class image."""
+    hsi = HSI(input_array=np.zeros((10, 10, 5), dtype=np.uint8), filename="hsi.data", wavelengths=[480, 540, 710, 800, 900],
+              default_wavelengths=None, wavelength_units="nm")
+    assert isinstance(hsi, HSI)
+
+
+def test_hsi_grayscale_thumb():
+    """Test creating an HSI class image."""
+    hsi = HSI(input_array=np.zeros((10, 10, 5), dtype=np.uint8), filename="hsi.data", wavelengths=[700, 800, 900],
+              default_wavelengths=None, wavelength_units="nm")
+    assert isinstance(hsi, HSI)
