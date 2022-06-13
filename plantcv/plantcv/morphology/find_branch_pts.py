@@ -11,8 +11,9 @@ from plantcv.plantcv._debug import _debug
 
 
 def find_branch_pts(skel_img, mask=None, label="default"):
-    """
+    """Find branch points in a skeletonized image.
     The branching algorithm was inspired by Jean-Patrick Pommier: https://gist.github.com/jeanpat/5712699
+
     Inputs:
     skel_img    = Skeletonized image
     mask        = (Optional) binary mask for debugging. If provided, debug image will be overlaid on the mask.

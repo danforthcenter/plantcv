@@ -13,7 +13,7 @@ from plantcv.plantcv._debug import _debug
 
 
 def prune(skel_img, size=0, mask=None):
-    """
+    """Prune the ends of skeletonized segments.
     The pruning algorithm proposed by https://github.com/karnoldbio
     Segments a skeleton into discrete pieces, prunes off all segments less than or
     equal to user specified size. Returns the remaining objects as a list and the
@@ -35,7 +35,6 @@ def prune(skel_img, size=0, mask=None):
     :return pruned_img: numpy.ndarray
     :return segmented_img: numpy.ndarray
     :return segment_objects: list
-
     """
     # Store debug
     debug = params.debug

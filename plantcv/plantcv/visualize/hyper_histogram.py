@@ -5,9 +5,9 @@ import numpy as np
 import pandas as pd
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import fatal_error, params, color_palette
-from plotnine import ggplot, aes, geom_line, scale_color_manual, theme_classic, labels
-from plantcv.plantcv.visualize import histogram
 from plantcv.plantcv.hyperspectral import _find_closest
+from plantcv.plantcv.visualize import histogram
+from plotnine import ggplot, aes, geom_line, scale_color_manual, theme_classic, labels
 import math
 
 

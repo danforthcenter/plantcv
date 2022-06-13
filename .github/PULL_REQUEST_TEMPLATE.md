@@ -15,3 +15,14 @@ Reference associated issue numbers. Does this pull request close any issues?
 
 **Additional context**
 Add any other context about the problem here.
+
+**For the reviewer**
+See [this page](https://plantcv.readthedocs.io/en/stable/pr_review_process/) for instructions on how to review the pull request.
+- [ ] PR functionality reviewed in a Jupyter Notebook
+- [ ] All tests pass
+- [ ] Test coverage remains 100%
+- [ ] Documentation tested
+- [ ] New documentation pages added to `plantcv/mkdocs.yml`
+- [ ] Changes to function input/output signatures added to `updating.md`
+- [ ] Code reviewed
+- [ ] PR approved
