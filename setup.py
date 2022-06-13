@@ -17,7 +17,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 requirements_f = open('requirements.txt', 'r')
-dependencies = [req for req in requirements_f.readlines()]
+dependencies = list(requirements_f.readlines())
 
 setuptools.setup(
     name='plantcv',
