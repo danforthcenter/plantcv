@@ -331,3 +331,27 @@ class GRAY(Image):
         # Create an instance of Image but return an instance of GRAY
         obj = Image.__new__(cls, input_array, filename)
         return obj.view(cls)
+
+
+class HSI(Image):
+    """Subclass of Image for hyperspectral images."""
+
+    def __new__(cls, input_array: np.ndarray, filename: str, wavelengths: list, wavelength_units: str,
+                default_wavelengths: list):
+        # Create an instance of Image with default attributes
+        obj = Image.__new__(cls, input_array, filename)
+        # Add HSI-specific attributes
+        obj.wavelengths = wavelengths
+        obj.wavelength_units = wavelength_units
+        obj.default_wavelengths = default_wavelengths
+        obj.min_wavelength = np.min(wavelengths)
+        obj.max_wavelength = np.max(wavelengths)
+        return obj.view(cls)
+
+    def get_wavelength(self, wavelength):
+        idx = np.abs(self - wavelength).argmin()
+        obj = super(HSI, self).__getitem__(np.s_[:, :, idx])
+        obj.wavelengths = [self.wavelengths[idx]]
+        obj.min_wavelength = np.min(obj.wavelengths)
+        obj.max_wavelength = np.max(obj.wavelengths)
+        return obj
