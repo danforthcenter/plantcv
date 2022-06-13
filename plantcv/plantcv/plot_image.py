@@ -2,9 +2,8 @@
 import cv2
 import numpy
 import matplotlib
-from plantcv.plantcv import params
+from plantcv.plantcv import fatal_error, params
 from matplotlib import pyplot as plt
-from plantcv.plantcv import fatal_error
 
 
 def plot_image(img, cmap=None):
