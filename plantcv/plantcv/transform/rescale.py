@@ -10,19 +10,19 @@ from plantcv.plantcv._debug import _debug
 def rescale(gray_img, min_value=0, max_value=255):
     """Rescale image.
 
-        Inputs:
-        gray_img  = Grayscale image data
-        min_value = (optional) new minimum value for range of interest. default = 0
-        max_value = (optional) new maximum value for range of interest. default = 255
+    Inputs:
+    gray_img  = Grayscale image data
+    min_value = (optional) new minimum value for range of interest. default = 0
+    max_value = (optional) new maximum value for range of interest. default = 255
 
-        Returns:
-        rescaled_img = rescaled image
+    Returns:
+    rescaled_img = rescaled image
 
-        :param gray_img: numpy.ndarray
-        :param min_value: int
-        :param max_value: int
-        :return c: numpy.ndarray
-        """
+    :param gray_img: numpy.ndarray
+    :param min_value: int
+    :param max_value: int
+    :return c: numpy.ndarray
+    """
     if len(np.shape(gray_img)) != 2:
         fatal_error("Image is not grayscale")
 

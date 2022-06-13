@@ -9,7 +9,7 @@ from plantcv.plantcv._debug import _debug
 
 
 def analyze_stem(rgb_img, stem_objects, label="default"):
-    """ Calculate angle of segments (in degrees) by fitting a linear regression line to segments.
+    """Calculate angle of segments (in degrees) by fitting a linear regression line to segments.
 
     Inputs:
     rgb_img       = RGB image to plot debug image
@@ -18,7 +18,6 @@ def analyze_stem(rgb_img, stem_objects, label="default"):
 
     Returns:
     labeled_img    = Stem analysis debugging image
-
 
     :param rgb_img: numpy.ndarray
     :param stem_objects: list

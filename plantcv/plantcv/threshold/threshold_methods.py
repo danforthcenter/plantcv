@@ -10,9 +10,9 @@ from plantcv.plantcv import rgb2gray_hsv
 from plantcv.plantcv import rgb2gray_lab
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import params
+from plantcv.plantcv._debug import _debug
 from skimage.feature import greycomatrix, greycoprops
 from scipy.ndimage import generic_filter
-from plantcv.plantcv._debug import _debug
 
 
 # Binary threshold

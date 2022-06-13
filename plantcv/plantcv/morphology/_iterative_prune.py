@@ -7,9 +7,9 @@ from plantcv.plantcv.morphology import find_tips
 
 
 def _iterative_prune(skel_img, size):
-    """
+    """Iteratively remove endpoints (tips) from a skeletonized image.
     The pruning algorithm was inspired by Jean-Patrick Pommier: https://gist.github.com/jeanpat/5712699
-    Iteratively remove endpoints (tips) from a skeletonized image. "Prunes" barbs off a skeleton.
+    "Prunes" barbs off a skeleton.
     Inputs:
     skel_img    = Skeletonized image
     size        = Size to get pruned off each branch
