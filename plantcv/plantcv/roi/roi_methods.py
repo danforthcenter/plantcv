@@ -193,8 +193,127 @@ def _draw_roi(img, roi_contour):
     _debug(visual=ref_img,
            filename=os.path.join(params.debug_outdir, str(params.device) + "_roi.png"))
 
+def _calculate_coord_and_radius_from_mask(bin_mask):
+    #I considered also making two other functions that just calculate the coord or radius,
+    #or having a bunch of if statements to not calculate the one we don't need when we don't need it,
+    #but I don't think it's very computationally intensive and starts to get really redudnant and/or cluttered trying 
+    #to write it either of those ways. Suggestions appreciated!
+    contours, hierarchy = cv2.findContours(bin_mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE) #https://learnopencv.com/find-center-of-blob-centroid-using-opencv-cpp-python/
+    centers = []
+    radius = 0 # get the width and height of contours to determine the radius of rois
+    for c in contours:
+        m = cv2.moments(c)
+        cmx, cmy = (float(m['m10'] / m['m00']), float(m['m01'] / m['m00']))
+        centers.append((round(cmx),round(cmy)))
+        _, _, w, h = cv2.boundingRect(c)
+        r = round(max(w, h)/2)
+        if r > radius:
+            radius = r
+    return centers, radius
+    
+def _calculate_grid(bin_mask, nrows, ncols):
+    from sklearn.mixture import GaussianMixture
+    contours, hierarchy = cv2.findContours(bin_mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE) #https://learnopencv.com/find-center-of-blob-centroid-using-opencv-cpp-python/
+    centers = []
+    for c in contours:
+        m = cv2.moments(c)
+        cmx, cmy = (float(m['m10'] / m['m00']), float(m['m01'] / m['m00']))
+        centers.append((cmx,cmy))
+    #cluster by x and y coordinates to get grid layout
+    centers_x = np.array(np.array([i[0] for i in centers]).reshape(-1,1))
+    centers_y = np.array(np.array([i[1] for i in centers]).reshape(-1,1))
+    gm_x = GaussianMixture(n_components=ncols, random_state=0).fit(centers_x)
+    gm_y = GaussianMixture(n_components=nrows, random_state=0).fit(centers_y)
+    clusters_x = np.sort(gm_x.means_[:,0])
+    clusters_y = np.sort(gm_y.means_[:,0])
+    spacing_x = (clusters_x[ncols-1] - clusters_x[0])/(ncols-1)
+    spacing_y = (clusters_y[nrows-1] - clusters_y[0])/(nrows-1)
+    spacing = (round(spacing_x), round(spacing_y))
+    coord = (round(clusters_x[0]),round(clusters_y[0]))
+    return coord, spacing
+def _rois_from_coordinates(img,bin_mask=None, coord=None, radius=None):
+    if (coord or radius) is None and bin_mask is None:
+        fatal_error("Please specify a binary mask to enable automatic detection of parameters")#could probably be re-worded
+    elif (coord and radius) is None:
+        coord, radius = _calculate_coord_and_radius_from_mask(bin_mask)
+    elif coord is None:
+        coord, _ = _calculate_coord_and_radius_from_mask(bin_mask)
+    elif radius is None:
+        _, radius = _calculate_coord_and_radius_from_mask
+        
+    # Get the height and width of the reference image
+    height, width = np.shape(img)[:2]
+    overlap_img = np.zeros((height, width))
 
-def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
+    # Initialize a binary image of the circle that will contain all ROI
+    all_roi_img = np.zeros((height, width), dtype=np.uint8)
+    roi_contour = []
+    roi_hierarchy = []
+        
+    for i in range(0, len(coord)):
+    # Initialize a binary image for each circle
+        bin_img = np.zeros((height, width), dtype=np.uint8)
+        y = coord[i][1]
+        x = coord[i][0]
+        if x - radius < 0 or x + radius > width or y - radius < 0 or y + radius > height:
+            fatal_error("An ROI extends outside of the image!")
+        # Draw the circle on the binary image
+        # Keep track of all roi
+        all_roi_img = cv2.circle(all_roi_img, (x, y), radius, 255, -1)
+        # Keep track of each roi individually to check overlapping
+        circle_img = cv2.circle(bin_img, (x, y), radius, 255, -1)
+        overlap_img = overlap_img + circle_img
+        # Make a list of contours and hierarchies
+        rc, rh = cv2.findContours(circle_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[-2:]
+        roi_contour.append(rc)
+        roi_hierarchy.append(rh)
+    return roi_contour, roi_hierarchy, overlap_img, all_roi_img
+
+def _grid_roi(img, coord=None, radius=None, spacing=None, nrows=None, ncols=None, bin_mask = None):
+    if (spacing or coord or radius) is None and bin_mask is None:
+        fatal_error("Please specify a binary mask to enable automatic detection of parameters")#could probably be re-worded
+    if ((spacing or coord) is None):
+        coord, spacing = _calculate_grid(bin_mask, nrows, ncols)
+    if radius is None:
+        radius = round(0.325*(spacing[0]+spacing[1])/2)
+        
+    # Get the height and width of the reference image
+    height, width = np.shape(img)[:2]
+    overlap_img = np.zeros((height, width))
+
+    # Initialize a binary image of the circle that will contain all ROI
+    all_roi_img = np.zeros((height, width), dtype=np.uint8)
+    roi_contour = []
+    roi_hierarchy = []
+    
+    # Loop over each row
+    for i in range(0, nrows):
+        # The upper left corner is the y starting coordinate + the ROI offset * the vertical spacing
+        y = coord[1] + i * spacing[1]
+        # Loop over each column
+        for j in range(0, ncols):
+            # Initialize a binary image for each circle
+            bin_img = np.zeros((height, width), dtype=np.uint8)
+            # The upper left corner is the x starting coordinate + the ROI offset * the
+            # horizontal spacing between chips
+            x = coord[0] + j * spacing[0]
+            # Check whether the ROI is correctly bounded inside the image
+            if x - radius < 0 or x + radius > width or y - radius < 0 or y + radius > height:
+                print(x,y,radius,width,height)
+                fatal_error("An ROI extends outside of the image!")
+            # Draw the circle on the binary images
+            # Keep track of all roi
+            all_roi_img = cv2.circle(all_roi_img, (x, y), radius, 255, -1)
+            # Keep track of each roi individually to check overlapping
+            circle_img = cv2.circle(bin_img, (x, y), radius, 255, -1)
+            overlap_img = overlap_img + circle_img
+            # Make a list of contours and hierarchies
+            rc, rh = cv2.findContours(circle_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[-2:]
+            roi_contour.append(rc)
+            roi_hierarchy.append(rh)
+    return roi_contour, roi_hierarchy, overlap_img, all_roi_img
+    
+def multi(img, coord=None, radius=None, spacing=None, nrows=None, ncols=None, bin_mask = None):
     """
     Create multiple circular ROIs on a single image
     Inputs
@@ -206,11 +325,10 @@ def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
                     is a list and `rows` and `cols` are None.
     nrows         = Number of rows in ROI layout. Should be missing or None if each center coordinate pair is listed.
     ncols         = Number of columns in ROI layout. Should be missing or None if each center coordinate pair is listed.
-
+    bin_mask      = A binary mask used to calculate other parameters. Should have 1 object per plant.
     Returns:
     roi_contour           = list of roi contours
     roi_hierarchy         = list of roi hierarchies
-
     :param img: numpy.ndarray
     :param coord: tuple, list
     :param radius: int
@@ -219,76 +337,15 @@ def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
     :param ncols: int
     :return mask: numpy.ndarray
     """
-    # Store user debug
-    debug = params.debug
 
-    # Temporarily disable debug
-    params.debug = None
-
-    # Get the height and width of the reference image
-    height, width = np.shape(img)[:2]
-    overlap_img = np.zeros((height, width))
-
-    # Initialize a binary image of the circle that will contain all ROI
-    all_roi_img = np.zeros((height, width), dtype=np.uint8)
-    roi_contour = []
-    roi_hierarchy = []
     # Grid of ROIs
-    if (type(coord) == tuple) and ((nrows and ncols) is not None) and (type(spacing) == tuple):
-        # Loop over each row
-        for i in range(0, nrows):
-            # The upper left corner is the y starting coordinate + the ROI offset * the vertical spacing
-            y = coord[1] + i * spacing[1]
-            # Loop over each column
-            for j in range(0, ncols):
-                # Initialize a binary image for each circle
-                bin_img = np.zeros((height, width), dtype=np.uint8)
-                # The upper left corner is the x starting coordinate + the ROI offset * the
-                # horizontal spacing between chips
-                x = coord[0] + j * spacing[0]
-                # Check whether the ROI is correctly bounded inside the image
-                if x - radius < 0 or x + radius > width or y - radius < 0 or y + radius > height:
-                    # Reset debug
-                    params.debug = debug
-                    fatal_error("An ROI extends outside of the image!")
-                # Draw the circle on the binary images
-                # Keep track of all roi
-                all_roi_img = cv2.circle(all_roi_img, (x, y), radius, 255, -1)
-                # Keep track of each roi individually to check overlapping
-                circle_img = cv2.circle(bin_img, (x, y), radius, 255, -1)
-                overlap_img = overlap_img + circle_img
-                # Make a list of contours and hierarchies
-                rc, rh = cv2.findContours(circle_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[-2:]
-                roi_contour.append(rc)
-                roi_hierarchy.append(rh)
-
-    # User specified ROI centers
-    elif (type(coord) == list) and ((nrows and ncols) is None) and (spacing is None):
-        for i in range(0, len(coord)):
-            # Initialize a binary image for each circle
-            bin_img = np.zeros((height, width), dtype=np.uint8)
-            y = coord[i][1]
-            x = coord[i][0]
-            if x - radius < 0 or x + radius > width or y - radius < 0 or y + radius > height:
-                # Reset debug
-                params.debug = debug
-                fatal_error("An ROI extends outside of the image!")
-            # Draw the circle on the binary image
-            # Keep track of all roi
-            all_roi_img = cv2.circle(all_roi_img, (x, y), radius, 255, -1)
-            # Keep track of each roi individually to check overlapping
-            circle_img = cv2.circle(bin_img, (x, y), radius, 255, -1)
-            overlap_img = overlap_img + circle_img
-            # Make a list of contours and hierarchies
-            rc, rh = cv2.findContours(circle_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[-2:]
-            roi_contour.append(rc)
-            roi_hierarchy.append(rh)
+    if ((nrows and ncols) is not None):
+        roi_contour, roi_hierarchy, overlap_img, all_roi_img = _grid_roi(img, coord, radius, spacing, 
+                                                                         nrows, ncols, bin_mask)   
+    # User specified ROI centers or automatic detectin of ROIs
     else:
-        # Reset debug
-        params.debug = debug
-        fatal_error("Function can either make a grid of ROIs (user must provide nrows, ncols, spacing, and coord) "
-                    "or take custom ROI coordinates (user must provide only a list of tuples to 'coord' parameter). "
-                    "Both options require a user-defined radius as well")
+        roi_contour, roi_hierarchy, overlap_img, all_roi_img = _rois_from_coordinates(img=img, coord=coord,
+                                                                                           radius=radius, bin_mask=bin_mask)
 
     if np.amax(overlap_img) > 255:
         print("WARNING: Two or more of the user defined regions of interest overlap! "
@@ -297,10 +354,7 @@ def multi(img, coord, radius, spacing=None, nrows=None, ncols=None):
     # Draw the ROIs if requested
     # Create an array of contours and list of hierarchy for debug image
     roi_contour1, _ = cv2.findContours(all_roi_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
-    # Reset debug
-    params.debug = debug
     _draw_roi(img=img, roi_contour=roi_contour1)
-
     return roi_contour, roi_hierarchy
 
 
