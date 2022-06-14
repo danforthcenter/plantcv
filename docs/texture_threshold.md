@@ -24,7 +24,7 @@ texture calculation for thresholding.
 - **Note:**
     - This function is computationally expensive and will likely take several minutes to run (even longer if images are large).
 - **Example use:**
-    - [Interactive Documentation](https://mybinder.org/v2/gh/danforthcenter/plantcv-binder.git/master?filepath=notebooks%2Fthreshold.ipynb)
+    - Below
 
 **Original image (lightness channel)**
 
