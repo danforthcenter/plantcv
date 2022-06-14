@@ -26,9 +26,8 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
-# image converted from RGB to LAB, channels are then split. 
-# Lightness ('l') channel is output
-l_channel = pcv.rgb2gray_cmyk(rgb_img=rgb_img, channel='Y')
+# image converted from RGB to CMYK, channels are then split. 
+y_channel = pcv.rgb2gray_cmyk(rgb_img=rgb_img, channel='Y')
 
 ```
 
@@ -38,8 +37,8 @@ l_channel = pcv.rgb2gray_cmyk(rgb_img=rgb_img, channel='Y')
 
 ```python
 
-# Green-Magenta ('a') channel is output
-a_channel = pcv.rgb2gray_cmyk(rgb_img=rgb_img, channel='C')
+# Cyan ('c') channel is output
+c_channel = pcv.rgb2gray_cmyk(rgb_img=rgb_img, channel='C')
 
 ```
 
@@ -49,8 +48,8 @@ a_channel = pcv.rgb2gray_cmyk(rgb_img=rgb_img, channel='C')
 
 ```python
 
-# Green-Magenta ('a') channel is output
-a_channel = pcv.rgb2gray_cmyk(rgb_img=rgb_img, channel='M')
+# Magenta ('m') channel is output
+m_channel = pcv.rgb2gray_cmyk(rgb_img=rgb_img, channel='M')
 
 ```
 
@@ -60,8 +59,8 @@ a_channel = pcv.rgb2gray_cmyk(rgb_img=rgb_img, channel='M')
 
 ```python
 
-# Green-Magenta ('a') channel is output
-a_channel = pcv.rgb2gray_cmyk(rgb_img=rgb_img, channel='Y')
+# Yellow ('a') channel is output
+y_channel = pcv.rgb2gray_cmyk(rgb_img=rgb_img, channel='Y')
 
 ```
 
@@ -71,7 +70,7 @@ a_channel = pcv.rgb2gray_cmyk(rgb_img=rgb_img, channel='Y')
 
 ```python
 
-# Green-Magenta ('a') channel is output
-a_channel = pcv.rgb2gray_cmyk(rgb_img=rgb_img, channel='K')
+# Black ('k') channel is output
+k_channel = pcv.rgb2gray_cmyk(rgb_img=rgb_img, channel='K')
 
 ```
