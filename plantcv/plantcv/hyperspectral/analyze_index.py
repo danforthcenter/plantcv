@@ -2,13 +2,12 @@
 
 import os
 import numpy as np
-from plantcv.plantcv import params
+from plantcv.plantcv import deprecation_warning, params
 from plantcv.plantcv import outputs
 from plantcv.plantcv._debug import _debug
 from plantcv.plantcv import fatal_error
-from plotnine import labs
 from plantcv.plantcv.visualize import histogram
-from plantcv.plantcv import deprecation_warning
+from plotnine import labs
 
 
 def analyze_index(index_array, mask, bins=100, min_bin=0, max_bin=1, histplot=None, label="default"):

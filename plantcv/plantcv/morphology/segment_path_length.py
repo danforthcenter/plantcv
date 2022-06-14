@@ -8,12 +8,12 @@ from plantcv.plantcv._debug import _debug
 
 
 def segment_path_length(segmented_img, objects, label="default"):
-    """ Use segments to calculate geodesic distance per segment
+    """Use segments to calculate geodesic distance per segment.
 
     Inputs:
     segmented_img = Segmented image to plot lengths on
     objects       = List of contours
-    label        = optional label parameter, modifies the variable name of observations recorded
+    label         = optional label parameter, modifies the variable name of observations recorded
 
     Returns:
     labeled_img        = Segmented debugging image with lengths labeled

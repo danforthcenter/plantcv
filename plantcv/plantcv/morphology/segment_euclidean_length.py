@@ -8,13 +8,13 @@ from plantcv.plantcv import outputs
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv import find_objects
 from plantcv.plantcv import color_palette
-from scipy.spatial.distance import euclidean
-from plantcv.plantcv.morphology import find_tips
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv.morphology import find_tips
+from scipy.spatial.distance import euclidean
 
 
 def segment_euclidean_length(segmented_img, objects, label="default"):
-    """ Use segmented skeleton image to gather euclidean length measurements per segment
+    """Use segmented skeleton image to gather euclidean length measurements per segment.
 
     Inputs:
     segmented_img = Segmented image to plot lengths on

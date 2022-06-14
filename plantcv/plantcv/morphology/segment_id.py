@@ -8,7 +8,7 @@ from plantcv.plantcv._debug import _debug
 
 
 def segment_id(skel_img, objects, mask=None):
-    """ Plot segment ID's
+    """Plot segment IDs.
 
     Inputs:
     skel_img      = Skeletonized image

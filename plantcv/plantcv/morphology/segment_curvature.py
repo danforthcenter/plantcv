@@ -14,8 +14,8 @@ from plantcv.plantcv._debug import _debug
 
 
 def segment_curvature(segmented_img, objects, label="default"):
-    """ Calculate segment curvature as defined by the ratio between geodesic and euclidean distance.
-        Measurement of two-dimensional tortuosity.
+    """Calculate segment curvature as defined by the ratio between geodesic and euclidean distance.
+    Measurement of two-dimensional tortuosity.
 
     Inputs:
     segmented_img     = Segmented image to plot lengths on
@@ -24,7 +24,6 @@ def segment_curvature(segmented_img, objects, label="default"):
 
     Returns:
     labeled_img        = Segmented debugging image with curvature labeled
-
 
     :param segmented_img: numpy.ndarray
     :param objects: list
