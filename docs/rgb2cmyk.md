@@ -74,3 +74,5 @@ y_channel = pcv.rgb2gray_cmyk(rgb_img=rgb_img, channel='Y')
 k_channel = pcv.rgb2gray_cmyk(rgb_img=rgb_img, channel='K')
 
 ```
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/rgb2gray_cmyk.py)
