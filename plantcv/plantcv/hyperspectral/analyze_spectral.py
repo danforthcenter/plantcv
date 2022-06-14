@@ -3,11 +3,10 @@
 import os
 import numpy as np
 import pandas as pd
-from plantcv.plantcv import params
+from plantcv.plantcv import deprecation_warning, params
 from plantcv.plantcv import outputs
-from plotnine import ggplot, aes, geom_line, scale_x_continuous
-from plantcv.plantcv import deprecation_warning
 from plantcv.plantcv._debug import _debug
+from plotnine import ggplot, aes, geom_line, scale_x_continuous
 
 
 def analyze_spectral(array, mask, histplot=None, label="default"):

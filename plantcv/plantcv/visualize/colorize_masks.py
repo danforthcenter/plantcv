@@ -11,13 +11,13 @@ from plantcv.plantcv import fatal_error
 def colorize_masks(masks, colors):
     """Plot masks with different colors
     Inputs:
-        masks    = list of masks to colorize
-        colors   = list of colors (either keys from the color_dict or a list of custom tuples)
+    masks    = list of masks to colorize
+    colors   = list of colors (either keys from the color_dict or a list of custom tuples)
 
-        :param masks: list
-        :param colors: list
-        :return colored_img: ndarray
-        """
+    :param masks: list
+    :param colors: list
+    :return colored_img: ndarray
+    """
     # Users must enter the exact same number of colors as classes they'd like to color
     num_classes = len(masks)
     num_colors = len(colors)

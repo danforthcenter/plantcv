@@ -4,11 +4,10 @@ import numpy
 import matplotlib
 from xarray.core.dataarray import DataArray
 from plotnine.ggplot import ggplot
-from plantcv.plantcv import params
+from plantcv.plantcv import fatal_error, params
 from plantcv.plantcv.classes import PSII_data
-from matplotlib import pyplot as plt
-from plantcv.plantcv import fatal_error
 from plantcv.plantcv._show_dataarray import _show_dataarray
+from matplotlib import pyplot as plt
 
 
 def plot_image(img, cmap=None, **kwargs):
