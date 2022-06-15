@@ -2,12 +2,11 @@
 
 Write a hyperspectral image in ENVI format to the specified file.
 It creates a text header file with extension .hdr and a binary file with
-extension .raw.  This function only supports Band-interleaved-by-line (BIL)
+extension .raw.  This function only supports Band-Interleaved-by-Line (BIL)
 interleave.
 
 **plantcv.hyperspectral.write_data**(*filename, spectral_data*):
 
-**returns** Bool
 
 - **Parameters:**
     - filename- desired name of the hyperspectral image file. The extensions are ignored and .hdr and .raw are used.

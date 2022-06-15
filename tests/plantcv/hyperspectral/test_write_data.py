@@ -45,7 +45,7 @@ def test_write_data_default(tmpdir):
 
 
     filename = os.path.join(cache_dir, 'plantcv_hyperspectral_write_data.raw')
-    out = write_data(filename=filename, spectral_data=rand_spectral_array)
+    write_data(filename=filename, spectral_data=rand_spectral_array)
 
     # Read written hyperspectral image
     array_data = read_data(filename=filename)

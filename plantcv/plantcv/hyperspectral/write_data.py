@@ -45,4 +45,3 @@ def write_data(filename, spectral_data):
     with open(filename+'.raw', mode='w+b') as f:
         f.write(spectral_data.array_data.transpose(0,2,1).tobytes(order='C'))
 
-    return True
