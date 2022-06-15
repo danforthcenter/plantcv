@@ -69,6 +69,7 @@ resize_img5 = pcv.transform.resize_factor(img=img, factors=(0.1154905775, 0.1154
 ```
 
 **Images after resizing**
+**1st resized image (default interpolation)
 
 ![Screenshot](img/documentation_images/resize/19_resize1.jpg)
 
