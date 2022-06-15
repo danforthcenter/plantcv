@@ -81,7 +81,7 @@ resize_img5 = pcv.transform.resize_factor(img=img, factors=(0.1154905775, 0.1154
 
 ![Screenshot](img/documentation_images/resize/19_resize3.jpg)
 
-**3rd resized image (zero-padding)**
+**4th resized image (zero-padding)**
 
 ![Screenshot](img/documentation_images/resize/19_resize4.jpg)
 
