@@ -73,7 +73,7 @@ resize_img5 = pcv.transform.resize_factor(img=img, factors=(0.1154905775, 0.1154
 
 ![Screenshot](img/documentation_images/resize/19_resize1.jpg)
 
-**2nd resized image**
+**2nd resized image (Interpolation by nearest)**
 
 ![Screenshot](img/documentation_images/resize/19_resize2.jpg)
 
