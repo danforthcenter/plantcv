@@ -193,6 +193,21 @@ def _draw_roi(img, roi_contour):
     _debug(visual=ref_img,
            filename=os.path.join(params.debug_outdir, str(params.device) + "_roi.png"))
 
+from dataclasses import dataclass
+@dataclass
+class Objects:
+    """Class for keeping track of an item in inventory."""
+    contours: list
+    hierarchy: np.ndarray
+
+    def save(self, filename):
+        np.savez(filename, contours = self.contours, hierarchy = self.hierarchy)
+    @staticmethod
+    def load(filename):
+        file = np.load(filename)
+        obj = Objects(file['contours'].tolist(),file['hierarchy'])
+        return obj
+
 def _calculate_coord_and_radius_from_mask(bin_mask):
     #I considered also making two other functions that just calculate the coord or radius,
     #or having a bunch of if statements to not calculate the one we don't need when we don't need it,
@@ -231,10 +246,34 @@ def _calculate_grid(bin_mask, nrows, ncols):
     spacing = (round(spacing_x), round(spacing_y))
     coord = (round(clusters_x[0]),round(clusters_y[0]))
     return coord, spacing
+
+def _adjust_radius_coord(height, width, coord, radius):
+    x = [i[0] for i in coord]
+    y = [i[1] for i in coord]
+    return _adjust_radius_max_min(height, width, radius, max(x),min(x),max(y),min(y))
+    
+def _adjust_radius_grid(height, width, coord, radius, spacing, nrows, ncols):
+    xmax = coord[0] + (ncols-1)*spacing[0]
+    xmin = coord[0]
+    ymax = coord[1] + (nrows-1)*spacing[1]
+    ymin = coord[1]
+    return _adjust_radius_max_min(height,width,radius,xmax,xmin,ymax,ymin)
+
+def _adjust_radius_max_min(height, width, radius, xmax, xmin, ymax, ymin):
+    if ((xmin < 0) or (xmax > height) or (ymin < 0) or (ymax > height)):
+        fatal_error("An ROI extends outside of the image!")
+    distances_to_edge = [xmin, width-xmax, ymin, height-ymax]
+    min_distance = min(distances_to_edge)
+    if min_distance < radius:
+        print('Shrinking radius to make ROIs fit in the image')
+        radius = min_distance - 1
+    return(radius)
+    
+
 def _rois_from_coordinates(img,bin_mask=None, coord=None, radius=None):
-    if (coord or radius) is None and bin_mask is None:
+    if ((coord is None) or (radius is None)) and bin_mask is None:
         fatal_error("Please specify a binary mask to enable automatic detection of parameters")#could probably be re-worded
-    elif (coord and radius) is None:
+    elif (coord is None) and (radius is None):
         coord, radius = _calculate_coord_and_radius_from_mask(bin_mask)
     elif coord is None:
         coord, _ = _calculate_coord_and_radius_from_mask(bin_mask)
@@ -243,6 +282,7 @@ def _rois_from_coordinates(img,bin_mask=None, coord=None, radius=None):
         
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
+    radius = _adjust_radius_coord(height, width, coord, radius)
     overlap_img = np.zeros((height, width))
 
     # Initialize a binary image of the circle that will contain all ROI
@@ -255,8 +295,6 @@ def _rois_from_coordinates(img,bin_mask=None, coord=None, radius=None):
         bin_img = np.zeros((height, width), dtype=np.uint8)
         y = coord[i][1]
         x = coord[i][0]
-        if x - radius < 0 or x + radius > width or y - radius < 0 or y + radius > height:
-            fatal_error("An ROI extends outside of the image!")
         # Draw the circle on the binary image
         # Keep track of all roi
         all_roi_img = cv2.circle(all_roi_img, (x, y), radius, 255, -1)
@@ -270,15 +308,15 @@ def _rois_from_coordinates(img,bin_mask=None, coord=None, radius=None):
     return roi_contour, roi_hierarchy, overlap_img, all_roi_img
 
 def _grid_roi(img, coord=None, radius=None, spacing=None, nrows=None, ncols=None, bin_mask = None):
-    if (spacing or coord or radius) is None and bin_mask is None:
+    if (spacing is None or coord is None or radius is None) and bin_mask is None:
         fatal_error("Please specify a binary mask to enable automatic detection of parameters")#could probably be re-worded
-    if ((spacing or coord) is None):
+    if (spacing is None) or (coord is None):
         coord, spacing = _calculate_grid(bin_mask, nrows, ncols)
     if radius is None:
         radius = round(0.325*(spacing[0]+spacing[1])/2)
-        
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
+    radius = _adjust_radius_grid(height, width, coord, radius, spacing, nrows, ncols)
     overlap_img = np.zeros((height, width))
 
     # Initialize a binary image of the circle that will contain all ROI
@@ -297,10 +335,6 @@ def _grid_roi(img, coord=None, radius=None, spacing=None, nrows=None, ncols=None
             # The upper left corner is the x starting coordinate + the ROI offset * the
             # horizontal spacing between chips
             x = coord[0] + j * spacing[0]
-            # Check whether the ROI is correctly bounded inside the image
-            if x - radius < 0 or x + radius > width or y - radius < 0 or y + radius > height:
-                print(x,y,radius,width,height)
-                fatal_error("An ROI extends outside of the image!")
             # Draw the circle on the binary images
             # Keep track of all roi
             all_roi_img = cv2.circle(all_roi_img, (x, y), radius, 255, -1)
@@ -355,8 +389,8 @@ def multi(img, coord=None, radius=None, spacing=None, nrows=None, ncols=None, bi
     # Create an array of contours and list of hierarchy for debug image
     roi_contour1, _ = cv2.findContours(all_roi_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
     _draw_roi(img=img, roi_contour=roi_contour1)
-    return roi_contour, roi_hierarchy
-
+    roi_objects = Objects(roi_contour, roi_hierarchy)
+    return roi_objects
 
 def custom(img, vertices):
     """
