@@ -208,23 +208,34 @@ class Objects:
         obj = Objects(file['contours'].tolist(),file['hierarchy'])
         return obj
 
-def _calculate_coord_and_radius_from_mask(bin_mask):
-    #I considered also making two other functions that just calculate the coord or radius,
-    #or having a bunch of if statements to not calculate the one we don't need when we don't need it,
-    #but I don't think it's very computationally intensive and starts to get really redudnant and/or cluttered trying 
-    #to write it either of those ways. Suggestions appreciated!
+
+def _draw_roi(img, roi_contour):
+    """
+    Draw an ROI
+    :param img: numpy.ndarray
+    :param roi_contour: list
+    """
+    # Make a copy of the reference image
+    ref_img = np.copy(img)
+    # If the reference image is grayscale convert it to color
+    if len(np.shape(ref_img)) == 2:
+        ref_img = cv2.cvtColor(ref_img, cv2.COLOR_GRAY2BGR)
+    # Draw the contour on the reference image
+    cv2.drawContours(ref_img, roi_contour, -1, (255, 0, 0), params.line_thickness)
+    _debug(visual=ref_img,
+           filename=os.path.join(params.debug_outdir, str(params.device) + "_roi.png"))
+    
+def _calculate_radius_from_mask(bin_mask):
     contours, hierarchy = cv2.findContours(bin_mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE) #https://learnopencv.com/find-center-of-blob-centroid-using-opencv-cpp-python/
-    centers = []
     radius = 0 # get the width and height of contours to determine the radius of rois
     for c in contours:
         m = cv2.moments(c)
         cmx, cmy = (float(m['m10'] / m['m00']), float(m['m01'] / m['m00']))
-        centers.append((round(cmx),round(cmy)))
         _, _, w, h = cv2.boundingRect(c)
         r = round(max(w, h)/2)
         if r > radius:
             radius = r
-    return centers, radius
+    return radius
     
 def _calculate_grid(bin_mask, nrows, ncols):
     from sklearn.mixture import GaussianMixture
@@ -271,25 +282,18 @@ def _adjust_radius_max_min(height, width, radius, xmax, xmin, ymax, ymin):
     
 
 def _rois_from_coordinates(img,bin_mask=None, coord=None, radius=None):
-    if ((coord is None) or (radius is None)) and bin_mask is None:
-        fatal_error("Please specify a binary mask to enable automatic detection of parameters")#could probably be re-worded
-    elif (coord is None) and (radius is None):
-        coord, radius = _calculate_coord_and_radius_from_mask(bin_mask)
-    elif coord is None:
-        coord, _ = _calculate_coord_and_radius_from_mask(bin_mask)
+    if (radius is None) and (bin_mask is None):
+        fatal_error("Either specify a radius or add a binary mask to enable automatic detection of radius")#could probably be re-worded
     elif radius is None:
-        _, radius = _calculate_coord_and_radius_from_mask
-        
+        radius = _calculate_radius_from_mask(bin_mask)
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
     radius = _adjust_radius_coord(height, width, coord, radius)
     overlap_img = np.zeros((height, width))
-
     # Initialize a binary image of the circle that will contain all ROI
     all_roi_img = np.zeros((height, width), dtype=np.uint8)
     roi_contour = []
     roi_hierarchy = []
-        
     for i in range(0, len(coord)):
     # Initialize a binary image for each circle
         bin_img = np.zeros((height, width), dtype=np.uint8)
@@ -307,15 +311,15 @@ def _rois_from_coordinates(img,bin_mask=None, coord=None, radius=None):
         roi_hierarchy.append(rh)
     return roi_contour, roi_hierarchy, overlap_img, all_roi_img
 
-def _grid_roi(img, coord=None, radius=None, spacing=None, nrows=None, ncols=None, bin_mask = None):
-    if (spacing is None or coord is None or radius is None) and bin_mask is None:
-        fatal_error("Please specify a binary mask to enable automatic detection of parameters")#could probably be re-worded
-    if (spacing is None) or (coord is None):
-        coord, spacing = _calculate_grid(bin_mask, nrows, ncols)
+def _grid_roi(img, coord=None, radius=None, spacing=None, nrows=None, ncols=None):
     if radius is None:
         radius = round(0.325*(spacing[0]+spacing[1])/2)
     # Get the height and width of the reference image
-    height, width = np.shape(img)[:2]
+    height, width = 0,0
+    if img is None:
+        height, width = np.shape(img)
+    else:
+        height, width = np.shape(img)[:2]
     radius = _adjust_radius_grid(height, width, coord, radius, spacing, nrows, ncols)
     overlap_img = np.zeros((height, width))
 
@@ -347,39 +351,36 @@ def _grid_roi(img, coord=None, radius=None, spacing=None, nrows=None, ncols=None
             roi_hierarchy.append(rh)
     return roi_contour, roi_hierarchy, overlap_img, all_roi_img
     
-def multi(img, coord=None, radius=None, spacing=None, nrows=None, ncols=None, bin_mask = None):
-    """
-    Create multiple circular ROIs on a single image
-    Inputs
-    img           = Input image data.
-    coord         = Two-element tuple of the center of the top left object (x,y) or a list of tuples identifying
-                    the center of each roi [(x1,y1),(x2,y2)]
-    radius        = A single radius for all ROIs.
-    spacing       = Two-element tuple of the horizontal and vertical spacing between ROIs, (x,y). Ignored if `coord`
-                    is a list and `rows` and `cols` are None.
-    nrows         = Number of rows in ROI layout. Should be missing or None if each center coordinate pair is listed.
-    ncols         = Number of columns in ROI layout. Should be missing or None if each center coordinate pair is listed.
-    bin_mask      = A binary mask used to calculate other parameters. Should have 1 object per plant.
-    Returns:
-    roi_contour           = list of roi contours
-    roi_hierarchy         = list of roi hierarchies
-    :param img: numpy.ndarray
-    :param coord: tuple, list
-    :param radius: int
-    :param spacing: tuple
-    :param nrows: int
-    :param ncols: int
-    :return mask: numpy.ndarray
-    """
-
+def auto_grid(bin_mask, nrows, ncols, radius=None, img=None):
+    coord, spacing = _calculate_grid(bin_mask, nrows, ncols)
+    if img is None:
+        img = bin_mask
+    roi_contour, roi_hierarchy, overlap_img, all_roi_img = _grid_roi(img, coord, radius, spacing, 
+                                                                         nrows, ncols)
+    if np.amax(overlap_img) > 255:
+        print("WARNING: Two or more of the user defined regions of interest overlap! "
+              "If you only see one ROI then they may overlap exactly.")
+    # Draw the ROIs if requested
+    # Create an array of contours and list of hierarchy for debug image
+    roi_contour1, _ = cv2.findContours(all_roi_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
+    _draw_roi(img=img, roi_contour=roi_contour1)
+    roi_objects = Objects(roi_contour, roi_hierarchy)
+    return roi_objects
+    
+def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None, bin_mask = None):
     # Grid of ROIs
-    if ((nrows and ncols) is not None):
+    if (type(coord) == tuple) and ((nrows and ncols) is not None) and (type(spacing) == tuple):
         roi_contour, roi_hierarchy, overlap_img, all_roi_img = _grid_roi(img, coord, radius, spacing, 
-                                                                         nrows, ncols, bin_mask)   
-    # User specified ROI centers or automatic detectin of ROIs
-    else:
+                                                                         nrows, ncols)   
+        # User specified ROI centers
+    elif (type(coord) == list) and ((nrows and ncols) is None) and (spacing is None):
         roi_contour, roi_hierarchy, overlap_img, all_roi_img = _rois_from_coordinates(img=img, coord=coord,
                                                                                            radius=radius, bin_mask=bin_mask)
+    else:
+        fatal_error("Function can either make a grid of ROIs (user must provide nrows, ncols, spacing, and coord) "
+                    "or take custom ROI coordinates (user must provide only a list of tuples to 'coord' parameter). "
+                    "For automatic detection of a grid layout from just nrows, ncols, and a binary mask, use auto_grid")
+        
 
     if np.amax(overlap_img) > 255:
         print("WARNING: Two or more of the user defined regions of interest overlap! "
