@@ -390,6 +390,11 @@ pages for more details on the input and output variable types.
 * pre v4.x: NA
 * post v4.x: rot_hsi = **plantcv.hyperspectral.rot90**(*spectral_data, k*)
 
+#### plantcv.hyperspectral.write_data
+
+* pre v4.0: NA
+* post v4.0: **plantcv.hyperspectral.write_data**(*filename, spectral_data*)
+
 #### plantcv.image_add
 
 * pre v3.0dev2: device, added_img = **plantcv.image_add**(*img1, img2, device, debug=None*)
