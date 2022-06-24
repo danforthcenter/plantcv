@@ -11,9 +11,9 @@ class ImageRegistrator:
     """
     An interactive tool that takes user selected landmark points to register two images
     """
-    def __init__(self, img_ref, img_tar, figsize=(12, 6), cmap='jet'):
-        self.img_ref = img_ref
-        self.img_tar = img_tar
+    def __init__(self, ref_img, target_img, figsize=(12, 6), cmap='jet'):
+        self.img_ref = ref_img
+        self.img_tar = target_img
 
         self.fig, self.axes = plt.subplots(1, 2, figsize=figsize)
         self.axes[0].text(0, -100,
@@ -24,17 +24,17 @@ class ImageRegistrator:
 
         # assumption: any 3-d images whose 3rd dimension is 3 are rgb images
         # This check to be replaced when image class implemented
-        dim_ref, dim_tar = img_ref.shape, img_tar.shape
+        dim_ref, dim_tar = ref_img.shape, target_img.shape
         if len(dim_ref) == 3 and dim_ref[-1] == 3:
-            self.axes[0].imshow(cv2.cvtColor(img_ref, cv2.COLOR_BGR2RGB))
+            self.axes[0].imshow(cv2.cvtColor(ref_img, cv2.COLOR_BGR2RGB))
         else:
-            self.axes[0].imshow(img_ref, cmap=cmap)
+            self.axes[0].imshow(ref_img, cmap=cmap)
         self.axes[0].set_title('Reference Image')
 
         if len(dim_tar) == 3 and dim_tar[-1] == 3:
-            self.axes[1].imshow(cv2.cvtColor(img_tar, cv2.COLOR_BGR2RGB))
+            self.axes[1].imshow(cv2.cvtColor(target_img, cv2.COLOR_BGR2RGB))
         else:
-            self.axes[1].imshow(img_tar, cmap=cmap)
+            self.axes[1].imshow(target_img, cmap=cmap)
         self.axes[1].set_title('Target Image')
 
         # Set useblit=True on most backends for enhanced performance.
