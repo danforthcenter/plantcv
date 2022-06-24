@@ -12,6 +12,19 @@ class ImageRegistrator:
     An interactive tool that takes user selected landmark points to register two images
     """
     def __init__(self, ref_img, target_img, figsize=(12, 6), cmap='jet'):
+        """Initialize parameters.
+
+                Keyword arguments/parameters:
+                ref_img           = Reference image
+                target_img        = Target image
+                figsize           = optional parameter is the desired figure size (default figsize=(12,6))
+                cmap              = Width of line drawings. (default: 5)
+
+                :param ref_img: image data
+                :param target_img: image data
+                :param figsize: tuple
+                :param cmap: str
+                """
         self.img_ref = ref_img
         self.img_tar = target_img
 
