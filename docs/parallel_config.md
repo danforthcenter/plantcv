@@ -212,7 +212,7 @@ See [Workflow Parallization tutorial for examples](pipeline_parallel.md)
 To run `plantcv-workflow.py` with a config file you can use the following:
 
 ```shell
-python plantcv-workflow.py --config my_config.json
+plantcv-workflow.py --config my_config.json
 ```
 
 Remember that `python` and `plantcv-workflow.py` need to be in your PATH, for example with Conda environment. On 
