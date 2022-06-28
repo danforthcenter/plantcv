@@ -4,7 +4,7 @@ name: plantcv
 dependencies:
   - python=3.9
   - matplotlib>=1.5
-  - numpy>=1.11
+  - numpy>=1.11,<1.23
   - pandas
   - python-dateutil
   - scipy
@@ -19,6 +19,11 @@ dependencies:
   - xarray
   - mkdocs
   - pytest
+  - pytest-cov
+  - flake8
+  - ipympl
+  - nodejs
+  - jupyterlab
 channels:
   - conda-forge
   - defaults
