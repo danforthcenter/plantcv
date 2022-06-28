@@ -63,11 +63,12 @@ def job_builder(meta, config):
         # Build job
         job_parts = ["python", config.workflow, "--outdir", config.img_outdir, "--result", outfile,
                      "--names", ",".join(map(str, names))]
-        # Add job to list
+        # Add other arguments
+        for key, value in config.other_args.items():
+            job_parts.append(f"--{key}")
+            job_parts.append(value)
         if config.writeimg:
             job_parts.append("--writeimg")
-        if config.other_args:
-            job_parts = job_parts + config.other_args
         for fname in grp_df["filepath"].values.tolist():
             job_parts.append(fname)
         jobs.append(job_parts)

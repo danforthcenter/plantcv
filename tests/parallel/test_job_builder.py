@@ -19,7 +19,7 @@ def test_job_builder_single_image(parallel_test_data, tmpdir):
     config.end_date = "2014-10-23 00:00:00.0"
     config.timestampformat = '%Y-%m-%d %H:%M:%S.%f'
     config.imgformat = "jpg"
-    config.other_args = ["--other", "on"]
+    config.other_args = {"other": "on"}
     config.writeimg = True
 
     jobs = job_builder(meta=parallel_test_data.metadata_snapshot_vis(), config=config)
@@ -50,7 +50,7 @@ def test_job_builder_coprocess(parallel_test_data, tmpdir):
     config.end_date = "2014-10-23 00:00:00.0"
     config.timestampformat = '%Y-%m-%d %H:%M:%S.%f'
     config.imgformat = "jpg"
-    config.other_args = ["--other", "on"]
+    config.other_args = {"other": "on"}
     config.writeimg = True
     config.groupby = ["camera", "rotation"]
 
@@ -83,7 +83,7 @@ def test_job_builder_auto_name(parallel_test_data, tmpdir):
     config.end_date = "2014-10-23 00:00:00.0"
     config.timestampformat = '%Y-%m-%d %H:%M:%S.%f'
     config.imgformat = "jpg"
-    config.other_args = ["--other", "on"]
+    config.other_args = {"other": "on"}
     config.writeimg = True
     config.group_name = "auto"
 
