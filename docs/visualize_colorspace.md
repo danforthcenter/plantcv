@@ -2,12 +2,13 @@
 
 This is a plotting method used to examine all potential colorspaces from available PlantCV functions.
 
-**plantcv.visualize.colorspaces**(*rgb_img*)
+**plantcv.visualize.colorspaces**(*rgb_img, originial_img=True*)
 
 **returns** plotting_img
 
 - **Parameters:**
     - rgb_img - RGB image data, the original image for analysis.
+    - original_img - Whether or not to include the original image the the debugging plot (default original_img=True)
 
 - **Example use:**
     - Below

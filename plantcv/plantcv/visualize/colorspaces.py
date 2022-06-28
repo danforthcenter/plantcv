@@ -12,7 +12,7 @@ from plantcv.plantcv._debug import _debug
 
 
 def colorspaces(rgb_img, original_img=True):
-    """ Visualize an RGB image in all potential colorspaces
+    """Visualize an RGB image in all potential colorspaces.
 
     Inputs:
     rgb_img      = RGB image data

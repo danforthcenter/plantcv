@@ -11,7 +11,7 @@ from plantcv.plantcv._debug import _debug
 
 
 def segment_sort(skel_img, objects, mask=None, first_stem=True):
-    """ Calculate segment curvature as defined by the ratio between geodesic and euclidean distance
+    """Sort segments from a skeletonized image into two categories: leaf objects and other objects.
 
     Inputs:
     skel_img          = Skeletonized image

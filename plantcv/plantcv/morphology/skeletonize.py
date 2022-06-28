@@ -3,8 +3,8 @@
 import os
 import numpy as np
 from plantcv.plantcv import params
-from skimage import morphology as skmorph
 from plantcv.plantcv._debug import _debug
+from skimage import morphology as skmorph
 
 
 def skeletonize(mask):

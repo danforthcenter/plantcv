@@ -8,26 +8,25 @@ from plantcv.plantcv import params
 
 
 def crop(img, x, y, h, w):
+    """Crop image.
+
+    Inputs:
+    img       = RGB, grayscale, or hyperspectral image data
+    x         = X coordinate of starting point
+    y         = Y coordinate of starting point
+    h         = Height
+    w         = Width
+
+    Returns:
+    cropped   = cropped image
+
+    :param img: numpy.ndarray
+    :param x: int
+    :param y: int
+    :param h: int
+    :param w: int
+    :return cropped: numpy.ndarray
     """
-    Crop image.
-
-       Inputs:
-       img       = RGB, grayscale, or hyperspectral image data
-       x         = X coordinate of starting point
-       y         = Y coordinate of starting point
-       h         = Height
-       w         = Width
-
-       Returns:
-       cropped   = cropped image
-
-       :param img: numpy.ndarray
-       :param x: int
-       :param y: int
-       :param h: int
-       :param w: int
-       :return cropped: numpy.ndarray
-       """
     # Check if the array data format
     if len(np.shape(img)) > 2 and np.shape(img)[-1] > 3:
         ref_img = img[:, :, [0]]

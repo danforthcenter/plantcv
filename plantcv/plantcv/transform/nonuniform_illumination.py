@@ -13,17 +13,17 @@ from plantcv.plantcv._debug import _debug
 def nonuniform_illumination(img, ksize):
     """Correct for non uniform illumination i.e. spotlight correction.
 
-            Inputs:
-            img       = RGB or grayscale image data
-            ksize     = (optional) new minimum value for range of interest. default = 0
+    Inputs:
+    img       = RGB or grayscale image data
+    ksize     = (optional) new minimum value for range of interest. default = 0
 
-            Returns:
-            corrected_img = rescaled image
+    Returns:
+    corrected_img = rescaled image
 
-            :param img: numpy.ndarray
-            :param ksize: int
-            :return corrected_img: numpy.ndarray
-            """
+    :param img: numpy.ndarray
+    :param ksize: int
+    :return corrected_img: numpy.ndarray
+    """
     if len(np.shape(img)) == 3:
         img = rgb2gray(img)
 
