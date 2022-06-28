@@ -98,8 +98,8 @@ Validate parameters/structure of configuration data.
 * **writeimg**: (bool, default = `False`): save analysis images to `img_outdir` if `True`.
 
 
-* **other_args**: (list, default = `[]`): list of other arguments required by the workflow (e.g.
-  `["--input1", "value1", "--input2", "value2"]`).
+* **other_args**: (dict, default = `{}`): dictionary of other argument keywords and values required by the workflow (e.g.
+  `{"input1": "value1", "input2": "value2"}`).
 
 
 * **groupby** (list, default = `["filepath"]`): a list of one or more metadata terms used to create unique groups of images

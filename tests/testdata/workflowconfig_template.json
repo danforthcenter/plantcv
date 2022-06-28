@@ -13,7 +13,7 @@
     "metadata_filters": {},
     "timestampformat": "%Y-%m-%dT%H:%M:%S.%fZ",
     "writeimg": false,
-    "other_args": [],
+    "other_args": {},
     "groupby": ["filepath"],
     "group_name": "imgtype",
     "cleanup": true,

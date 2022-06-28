@@ -29,7 +29,7 @@ class WorkflowConfig:
         self.metadata_filters = {}
         self.timestampformat = "%Y-%m-%dT%H:%M:%S.%fZ"
         self.writeimg = False
-        self.other_args = []
+        self.other_args = {}
         self.groupby = ["filepath"]
         self.group_name = "imgtype"
         self.cleanup = True
