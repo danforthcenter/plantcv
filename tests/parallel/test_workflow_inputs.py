@@ -8,6 +8,6 @@ def test_workflowinputs():
 
 def test_workflow_inputs():
     import sys
-    sys.argv = ["workflow.py", "--names", "vis", "--result", "test.txt", "vis.png"]
-    args = workflow_inputs()
+    sys.argv = ["workflow.py", "--names", "vis", "--result", "test.txt", "--other", "otherval", "vis.png"]
+    args = workflow_inputs(*["other"])
     assert args.vis == "vis.png"
