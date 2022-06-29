@@ -45,8 +45,8 @@ Second, you can import the PlantCV library like normal:
 from plantcv import plantcv as pcv
 ```
 
-Third (optionally), utilize PlantCV's `WorkflowInputs` class to organize and name workflow
-inputs for compatibility with running the workflow later in parallel.
+Third (optionally), utilize PlantCV's [WorkflowInputs](parallel_workflow_inputs.md#jupyter-notebook-inputs) class to
+organize and name workflow inputs for compatibility with running the workflow later in parallel.
 
 PlantCV has a built-in debug mode that is set to `None` by 
 default. Setting debug to `"print"` will cause PlantCV to print debug
@@ -108,6 +108,8 @@ To:
 ```python
 args = workflow_inputs()
 ```
+
+See [workflow_inputs](parallel_workflow_inputs.md#parallel-workflow-inputs) for more details.
 
 Make any other alterations as necessary after testing. Based on the
 simple Jupyter Notebook example above, the fully modified version would
