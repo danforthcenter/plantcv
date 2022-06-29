@@ -5,7 +5,7 @@ class WorkflowInputs:
     """Class for setting workflow inputs in Jupyter."""
 
     def __init__(self, images: list, names: str, result: str, outdir: str = ".", writeimg: bool = False,
-                 debug: str = None, other: str = ""):
+                 debug: str = None, **kwargs):
         """Configure input variables for a PlantCV workflow.
 
         Keyword arguments:
@@ -15,21 +15,27 @@ class WorkflowInputs:
         outdir = An output directory for saved images (default = '.').
         writeimg = Save output images (default = False).
         debug = Set debug mode to None, 'print', or 'plot' (default = None).
-        other = Additional, user-defined workflow inputs.
+        kwargs = Additional, user-defined workflow inputs.
         """
         self.result = result
         self.outdir = outdir
         self.writeimg = writeimg
         self.debug = debug
-        self.other = other
+        self.__dict__.update(kwargs)
         self.__dict__.update(_name_images(names=names, img_list=images))
 
 
-def workflow_inputs() -> argparse.Namespace:
+def workflow_inputs(*other_args) -> argparse.Namespace:
     """Parse PlantCV workflow command-line options.
+
+    Keyword arguments:
+    other_args = additional, user-defined workflow inputs.
 
     Outputs:
     args = an argparse ArgumentParser object with command-line keyword attributes.
+
+    :param other_args: list
+    :return args: argparse.Namespace
     """
     parser = argparse.ArgumentParser(description="PlantCV user workflow.")
     parser.add_argument("images", help="Input image files.", type=str, nargs="+", metavar="IMAGES")
@@ -39,7 +45,9 @@ def workflow_inputs() -> argparse.Namespace:
     parser.add_argument("--writeimg", help="Save output images.", default=False, action="store_true")
     parser.add_argument("--debug", help="Turn on debug, prints/plot intermediate images.",
                         choices=[None, "print", "plot"], default=None)
-    parser.add_argument("--other", help="User-defined inputs.", required=False)
+    # Parse additional user-defined workflow inputs
+    for arg in other_args:
+        parser.add_argument(f"--{arg}", help="Additional, user-defined workflow input.", required=False)
     args = parser.parse_args()
 
     images = _name_images(names=args.names, img_list=args.images)
