@@ -1,6 +1,7 @@
 # Read in a hyperspectral data cube as an array and parse metadata from the header file
 
 import os
+import re
 import cv2
 import numpy as np
 from plantcv.plantcv import params
@@ -88,6 +89,32 @@ def _make_pseudo_rgb(spectral_array):
     params.debug = debug
 
     return pseudo_rgb
+
+
+def _find_hdr(filename):
+    """Find a header file paired with an hyperspectral data file.
+
+    Keyword arguments:
+    filename = File path/name of a hyperspectral data file.
+
+    Returns:
+    hdrfile = File path/name of hyperspectral header file.
+
+    :param filename: str
+    :return hdrfile: str
+    """
+    # Split the filename into the path and name
+    dat_path, dat_filename = os.path.split(filename)
+    # Extract the base of the data file name and the extension, if any
+    dat_basename, dat_ext = os.path.splitext(dat_filename)
+    # Create a regular expression for the header file
+    # The data file extension is included optionally
+    hdr_regex = re.compile(f"{dat_basename}({dat_ext})?.hdr")
+    # List all the files in the data file directory
+    for fname in os.listdir(dat_path):
+        # If the filename matches, return the header file path
+        if hdr_regex.match(fname):
+            return os.path.join(dat_path, fname)
 
 
 def read_data(filename):
