@@ -16,17 +16,16 @@ def process_results(job_dir, json_file):
     :param job_dir: str
     :param json_file: obj
     """
+    # Data dictionary
+    data = {"variables": {}, "entities": []}
     if os.path.exists(json_file):
         with open(json_file, 'r') as datafile:
             try:
                 data = json.load(datafile)
                 if "variables" not in data or "entities" not in data:
                     fatal_error("Invalid JSON file")
-            except:
+            except json.decoder.JSONDecodeError:
                 fatal_error("Invalid JSON file")
-    else:
-        # Data dictionary
-        data = {"variables": {}, "entities": []}
 
     # Walk through the image processing job directory and process data from each file
     for (dirpath, dirnames, filenames) in os.walk(job_dir):
