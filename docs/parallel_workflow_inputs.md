@@ -96,7 +96,8 @@ args = WorkflowInputs(images=["rgb_image.jpg", "nir_image.jpg"],
                       outdir=".",
                       writeimg=True,
                       debug="plot",
-                      **{"myinput": "myvalue"})
+                      **{"myinput1": "myvalue1",
+                         "myinput2": "myvalue2"})
 
 
 # In[8]:
@@ -141,7 +142,7 @@ from plantcv import plantcv as pcv
 from plantcv.parallel import workflow_inputs
 
 # Parse command-line arguments
-args = workflow_inputs(*["myinput"])
+args = workflow_inputs(*["myinput1", "myinput2"])
 
 # Workflow
 pcv.params.debug = args.debug
