@@ -18,6 +18,11 @@ dependencies:
   - statsmodels
   - mkdocs
   - pytest
+  - pytest-cov
+  - flake8
+  - ipympl
+  - nodejs
+  - jupyterlab
 channels:
   - conda-forge
   - defaults
