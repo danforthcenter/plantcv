@@ -122,18 +122,18 @@ def test_multi(roi_test_data):
     """Test for PlantCV."""
     # Read in test RGB image
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
-    rois, _ = multi(rgb_img, coord=(10, 10), radius=10, spacing=(10, 10), nrows=2, ncols=2)
+    rois = multi(rgb_img, coord=(10, 10), radius=10, spacing=(10, 10), nrows=2, ncols=2)
     # Assert the contours has 18 ROIs
-    assert len(rois) == 4
+    assert len(rois.hierarchy) == 4
 
 
 def test_multi_input_coords(roi_test_data):
     """Test for PlantCV."""
     # Read in test RGB image
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
-    rois, _ = multi(rgb_img, coord=[(25, 120), (100, 100)], radius=20)
+    rois_ = multi(rgb_img, coord=[(25, 120), (100, 100)], radius=20)
     # Assert the contours has 18 ROIs
-    assert len(rois) == 2
+    assert len(rois.hierarchy) == 2
 
 
 def test_multi_bad_input(roi_test_data):
@@ -142,7 +142,7 @@ def test_multi_bad_input(roi_test_data):
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
     # The user must input a list of custom coordinates OR inputs to make a grid. Not both
     with pytest.raises(RuntimeError):
-        _, _ = multi(rgb_img, coord=[(25, 120), (100, 100)], radius=20, spacing=(10, 10), nrows=3, ncols=6)
+        _ = multi(rgb_img, coord=[(25, 120), (100, 100)], radius=20, spacing=(10, 10), nrows=3, ncols=6)
 
 
 def test_multi_bad_input_oob(roi_test_data):
@@ -151,7 +151,7 @@ def test_multi_bad_input_oob(roi_test_data):
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
     # nputs to make a grid make ROIs that go off the screen
     with pytest.raises(RuntimeError):
-        _, _ = multi(rgb_img, coord=(25000, 12000), radius=2, spacing=(1, 1), nrows=3, ncols=6)
+        _ = multi(rgb_img, coord=(25000, 12000), radius=2, spacing=(1, 1), nrows=3, ncols=6)
 
 
 def test_multi_bad_input_oob_list(roi_test_data):
@@ -160,7 +160,7 @@ def test_multi_bad_input_oob_list(roi_test_data):
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
     # All vertices in the list of centers must draw roi's that are inside the image
     with pytest.raises(RuntimeError):
-        _, _ = multi(rgb_img, coord=[(25000, 25000), (25000, 12000), (12000, 12000)], radius=20)
+        _ = multi(rgb_img, coord=[(25000, 25000), (25000, 12000), (12000, 12000)], radius=20)
 
 
 def test_roi_custom(roi_test_data):
