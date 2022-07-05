@@ -118,16 +118,16 @@ def test_ellipse_out_of_frame(roi_test_data):
         _, _ = ellipse(x=50, y=225, r1=75, r2=50, angle=0, img=rgb_img)
 
 
-def test_multi(roi_test_data):
+def test_auto_grid(roi_test_data):
     """Test for PlantCV."""
     # Read in test binary mask
     bin_mask = cv2.imread(roi_test_data.bin_grid_img)
-    rois = auto_grid(bin_mask = img, nrows = 1, ncols = 2)
+    rois = auto_grid(bin_mask = bin_mask, nrows = 1, ncols = 2)
     # Assert the contours has 2 ROIs
     assert len(rois.contours) == 2
 
 
-def test_multi_bad_input_img(roi_test_data):
+def test_auto_grid_bad_input_img(roi_test_data):
     """Test for PlantCV."""
     # Read in test binary mask
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
