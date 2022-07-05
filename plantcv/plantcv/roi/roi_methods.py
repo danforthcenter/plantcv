@@ -222,8 +222,8 @@ def _calculate_grid(bin_mask, nrows, ncols):
     gm_y = GaussianMixture(n_components=nrows, random_state=0).fit(centers_y)
     clusters_x = np.sort(gm_x.means_[:,0])
     clusters_y = np.sort(gm_y.means_[:,0])
-    spacing_x = (clusters_x[ncols-1] - clusters_x[0])/(ncols-1)
-    spacing_y = (clusters_y[nrows-1] - clusters_y[0])/(nrows-1)
+    spacing_x = (clusters_x[ncols-1] - clusters_x[0])/(ncols-1)if ncols > 1 else 0
+    spacing_y = (clusters_y[nrows-1] - clusters_y[0])/(nrows-1) if nrows > 1 else 0
     spacing = (round(spacing_x), round(spacing_y))
     coord = (round(clusters_x[0]),round(clusters_y[0]))
     return coord, spacing
@@ -241,7 +241,7 @@ def _adjust_radius_grid(height, width, coord, radius, spacing, nrows, ncols):
     return _adjust_radius_max_min(height,width,radius,xmax,xmin,ymax,ymin)
 
 def _adjust_radius_max_min(height, width, radius, xmax, xmin, ymax, ymin):
-    if ((xmin < 0) or (xmax > height) or (ymin < 0) or (ymax > height)):
+    if ((xmin < 0) or (xmax > width) or (ymin < 0) or (ymax > height)):
         fatal_error("An ROI extends outside of the image!")
     distances_to_edge = [xmin, width-xmax, ymin, height-ymax]
     min_distance = min(distances_to_edge)
@@ -280,7 +280,12 @@ def _rois_from_coordinates(img, coord=None, radius=None):
 
 def _grid_roi(img, nrows, ncols, coord=None, radius=None, spacing=None):
     if radius is None:
-        radius = round(0.325*(spacing[0]+spacing[1])/2)
+        if spacing[0] == 0:
+            radius = round(0.325*spacing[1])
+        elif spacing[1] == 0:
+            radius = round(0.325*spacing[0])
+        else:
+            radius = round(0.325*(spacing[0]+spacing[1])/2)
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
     radius = _adjust_radius_grid(height, width, coord, radius, spacing, nrows, ncols)
