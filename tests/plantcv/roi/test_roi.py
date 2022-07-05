@@ -131,7 +131,7 @@ def test_multi_input_coords(roi_test_data):
     """Test for PlantCV."""
     # Read in test RGB image
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
-    rois_ = multi(rgb_img, coord=[(25, 120), (100, 100)], radius=20)
+    rois = multi(rgb_img, coord=[(25, 120), (100, 100)], radius=20)
     # Assert the contours has 18 ROIs
     assert len(rois.hierarchy) == 2
 
