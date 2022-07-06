@@ -212,30 +212,30 @@ class Objects:
 
 def _calculate_grid(bin_mask, nrows, ncols):
     from sklearn.mixture import GaussianMixture
-    contours, hierarchy = cv2.findContours(bin_mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE) #https://learnopencv.com/find-center-of-blob-centroid-using-opencv-cpp-python/
+    contours, hierarchy = cv2.findContours(bin_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     centers = []
     for c in contours:
         m = cv2.moments(c)
         cmx, cmy = (float(m['m10'] / m['m00']), float(m['m01'] / m['m00']))
-        centers.append((cmx,cmy))
-    #cluster by x and y coordinates to get grid layout
-    centers_x = np.array(np.array([i[0] for i in centers]).reshape(-1,1))
-    centers_y = np.array(np.array([i[1] for i in centers]).reshape(-1,1))
+        centers.append((cmx, cmy))
+    # cluster by x and y coordinates to get grid layout
+    centers_x = np.array(np.array([i[0] for i in centers]).reshape(-1, 1))
+    centers_y = np.array(np.array([i[1] for i in centers]).reshape(-1, 1))
     gm_x = GaussianMixture(n_components=ncols, random_state=0).fit(centers_x)
     gm_y = GaussianMixture(n_components=nrows, random_state=0).fit(centers_y)
-    clusters_x = np.sort(gm_x.means_[:,0])
-    clusters_y = np.sort(gm_y.means_[:,0])
+    clusters_x = np.sort(gm_x.means_[:, 0])
+    clusters_y = np.sort(gm_y.means_[:, 0])
     spacing_x = (clusters_x[ncols-1] - clusters_x[0])/(ncols-1)if ncols > 1 else 0
     spacing_y = (clusters_y[nrows-1] - clusters_y[0])/(nrows-1) if nrows > 1 else 0
     spacing = (round(spacing_x), round(spacing_y))
-    coord = (round(clusters_x[0]),round(clusters_y[0]))
+    coord = (round(clusters_x[0]), round(clusters_y[0]))
     return coord, spacing
 
 
 def _adjust_radius_coord(height, width, coord, radius):
     x = [i[0] for i in coord]
     y = [i[1] for i in coord]
-    return _adjust_radius_max_min(height, width, radius, max(x),min(x),max(y),min(y))
+    return _adjust_radius_max_min(height, width, radius, max(x), min(x), max(y), min(y))
 
 
 def _adjust_radius_grid(height, width, coord, radius, spacing, nrows, ncols):
@@ -243,7 +243,7 @@ def _adjust_radius_grid(height, width, coord, radius, spacing, nrows, ncols):
     xmin = coord[0]
     ymax = coord[1] + (nrows-1)*spacing[1]
     ymin = coord[1]
-    return _adjust_radius_max_min(height,width,radius,xmax,xmin,ymax,ymin)
+    return _adjust_radius_max_min(height, width, radius, xmax, xmin, ymax, ymin)
 
 
 def _adjust_radius_max_min(height, width, radius, xmax, xmin, ymax, ymin):
@@ -269,7 +269,7 @@ def _rois_from_coordinates(img, coord=None, radius=None):
     roi_contour = []
     roi_hierarchy = []
     for i in range(0, len(coord)):
-    # Initialize a binary image for each circle
+        # Initialize a binary image for each circle
         bin_img = np.zeros((height, width), dtype=np.uint8)
         y = coord[i][1]
         x = coord[i][0]
@@ -331,11 +331,11 @@ def auto_grid(bin_mask, nrows, ncols, radius=None, img=None):
     Detect and create multiple circular ROIs on a single binary mask
     Inputs
     bin_mask      = A binary mask.
-    nrows         = Number of rows in ROI layout. 
-    ncols         = Number of columns in ROI layout.    
+    nrows         = Number of rows in ROI layout.
+    ncols         = Number of columns in ROI layout.
     radius        = Optional parameter to specify the radius of the circular rois.
     img           = (Optional) Image from which the binary mask was derived.
-     
+    
     Returns:
     roi_objects   = a dataclass with roi objects and hierarchies
     :param bin_mask: numpy.ndarray
@@ -389,16 +389,15 @@ def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
     # Grid of ROIs
     if (type(coord) == tuple) and ((nrows and ncols) is not None) and (type(spacing) == tuple):
         roi_contour, roi_hierarchy, overlap_img, all_roi_img = _grid_roi(img, nrows, ncols, coord,
-                                                                         radius, spacing)   
+                                                                         radius, spacing)
         # User specified ROI centers
     elif (type(coord) == list) and ((nrows and ncols) is None) and (spacing is None):
         roi_contour, roi_hierarchy, overlap_img, all_roi_img = _rois_from_coordinates(img=img, coord=coord,
-                                                                                           radius=radius)
+        radius=radius)
     else:
         fatal_error("Function can either make a grid of ROIs (user must provide nrows, ncols, spacing, and coord) "
                     "or take custom ROI coordinates (user must provide only a list of tuples to 'coord' parameter). "
                     "For automatic detection of a grid layout from just nrows, ncols, and a binary mask, use auto_grid")
-        
 
     if np.amax(overlap_img) > 255:
         print("WARNING: Two or more of the user defined regions of interest overlap! "
@@ -444,3 +443,4 @@ def custom(img, vertices):
         if x < 0 or x > width or y < 0 or y > height:
             fatal_error("An ROI extends outside of the image!")
     return roi_contour, roi_hierarchy
+    
