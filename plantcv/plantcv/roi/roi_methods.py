@@ -336,6 +336,9 @@ def auto_grid(bin_mask, nrows, ncols, radius=None, img=None):
     :param img: numpy.ndarray
     :return roi_objects: plantcv.roi.Objects
     """
+    # Make sure the input bin_img is binary
+    if len(np.unique(bin_mask)) != 2:
+        fatal_error("Input binary mask is not binary!")
     coord, spacing = _calculate_grid(bin_mask, nrows, ncols)
     if img is None:
         img = bin_mask
