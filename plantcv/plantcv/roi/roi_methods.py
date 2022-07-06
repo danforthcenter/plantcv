@@ -335,7 +335,7 @@ def auto_grid(bin_mask, nrows, ncols, radius=None, img=None):
     ncols         = Number of columns in ROI layout.
     radius        = Optional parameter to specify the radius of the circular rois.
     img           = (Optional) Image from which the binary mask was derived.
-    
+
     Returns:
     roi_objects   = a dataclass with roi objects and hierarchies
     :param bin_mask: numpy.ndarray
@@ -392,8 +392,7 @@ def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
                                                                          radius, spacing)
         # User specified ROI centers
     elif (type(coord) == list) and ((nrows and ncols) is None) and (spacing is None):
-        roi_contour, roi_hierarchy, overlap_img, all_roi_img = _rois_from_coordinates(img=img, coord=coord,
-        radius=radius)
+        roi_contour, roi_hierarchy, overlap_img, all_roi_img = _rois_from_coordinates(img=img, coord=coord, radius=radius)
     else:
         fatal_error("Function can either make a grid of ROIs (user must provide nrows, ncols, spacing, and coord) "
                     "or take custom ROI coordinates (user must provide only a list of tuples to 'coord' parameter). "
@@ -443,4 +442,3 @@ def custom(img, vertices):
         if x < 0 or x > width or y < 0 or y > height:
             fatal_error("An ROI extends outside of the image!")
     return roi_contour, roi_hierarchy
-    
