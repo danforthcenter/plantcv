@@ -1,6 +1,7 @@
 # ROI functions
 
 import os
+from dataclasses import dataclass
 import cv2
 import numpy as np
 from plantcv.plantcv._debug import _debug
@@ -192,7 +193,6 @@ def _draw_roi(img, roi_contour):
     _debug(visual=ref_img,
            filename=os.path.join(params.debug_outdir, str(params.device) + "_roi.png"))
     
-from dataclasses import dataclass
 @dataclass
 class Objects:
     """Class for keeping track of an item in inventory."""

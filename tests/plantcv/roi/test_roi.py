@@ -1,7 +1,8 @@
 import pytest
+import os
 import cv2
 import numpy as np
-from plantcv.plantcv.roi import from_binary_image, rectangle, circle, ellipse, auto_grid, multi, custom
+from plantcv.plantcv.roi import from_binary_image, rectangle, circle, ellipse, Objects, auto_grid, multi, custom
 
 
 def test_from_binary_image(roi_test_data):
@@ -118,6 +119,16 @@ def test_ellipse_out_of_frame(roi_test_data):
         _, _ = ellipse(x=50, y=225, r1=75, r2=50, angle=0, img=rgb_img)
 
 
+def test_save_Objects(tmpdir):
+    """Test for PlantCV."""
+    # Create a tmp directory
+    cache_dir = tmpdir.mkdir("cache")
+    outfile = os.path.join(cache_dir, "test.npz")
+    a = Objects([1,2],[3,4])
+    a.save(outfile)
+    assert os.path.exists(outfile)
+
+
 def test_auto_grid(roi_test_data):
     """Test for PlantCV."""
     # Read in test binary mask
@@ -134,6 +145,24 @@ def test_auto_grid_bad_input_img(roi_test_data):
     # The user must input a binary mask to bin_mask, not an rgb or grayscale
     with pytest.raises(RuntimeError):
         _ = auto_grid(rgb_img, nrows = 1, ncols = 2)
+
+
+def test_auto_grid_one_column(roi_test_data):
+    """Test for PlantCV."""
+    # Read in test binary mask
+    bin_mask = cv2.imread(roi_test_data.bin_grid_img,0)
+    rois = auto_grid(bin_mask = bin_mask, nrows = 2, ncols = 1, radius = 50)
+    # Assert the contours has 2 ROIs
+    assert len(rois.contours) == 2
+
+
+def test_auto_grid_multiple_cols_rows(roi_test_data):
+    """Test for PlantCV."""
+    # Read in test binary mask
+    bin_mask = cv2.imread(roi_test_data.bin_grid_img,0)
+    rois = auto_grid(bin_mask = bin_mask, nrows = 2, ncols = 2)
+    # Assert the contours has 2 ROIs
+    assert len(rois.contours) == 4
 
 
 def test_multi(roi_test_data):
@@ -161,6 +190,15 @@ def test_multi_bad_input(roi_test_data):
     # The user must input a list of custom coordinates OR inputs to make a grid. Not both
     with pytest.raises(RuntimeError):
         _ = multi(rgb_img, coord=[(25, 120), (100, 100)], radius=20, spacing=(10, 10), nrows=3, ncols=6)
+
+
+def test_multi_bad_input_no_radius(roi_test_data):
+    """Test for PlantCV."""
+    # Read in test RGB image
+    rgb_img = cv2.imread(roi_test_data.small_rgb_img)
+    #The user must input a radius if using a list of custom coordinates
+    with pytest.raises(RuntimeError):
+        _ = multi(rgb_img, coord=[(25, 120), (100, 100)])
 
 
 def test_multi_bad_input_oob(roi_test_data):
