@@ -192,7 +192,8 @@ def _draw_roi(img, roi_contour):
     cv2.drawContours(ref_img, roi_contour, -1, (255, 0, 0), params.line_thickness)
     _debug(visual=ref_img,
            filename=os.path.join(params.debug_outdir, str(params.device) + "_roi.png"))
-    
+
+
 @dataclass
 class Objects:
     """Class for keeping track of an item in inventory."""
@@ -200,13 +201,15 @@ class Objects:
     hierarchy: np.ndarray
 
     def save(self, filename):
-        np.savez(filename, contours = self.contours, hierarchy = self.hierarchy)
+        np.savez(filename, contours=self.contours, hierarchy=self.hierarchy)
+
     @staticmethod
     def load(filename):
         file = np.load(filename)
-        obj = Objects(file['contours'].tolist(),file['hierarchy'])
+        obj = Objects(file['contours'].tolist(), file['hierarchy'])
         return obj
-    
+
+
 def _calculate_grid(bin_mask, nrows, ncols):
     from sklearn.mixture import GaussianMixture
     contours, hierarchy = cv2.findContours(bin_mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE) #https://learnopencv.com/find-center-of-blob-centroid-using-opencv-cpp-python/
@@ -228,17 +231,20 @@ def _calculate_grid(bin_mask, nrows, ncols):
     coord = (round(clusters_x[0]),round(clusters_y[0]))
     return coord, spacing
 
+
 def _adjust_radius_coord(height, width, coord, radius):
     x = [i[0] for i in coord]
     y = [i[1] for i in coord]
     return _adjust_radius_max_min(height, width, radius, max(x),min(x),max(y),min(y))
-    
+
+
 def _adjust_radius_grid(height, width, coord, radius, spacing, nrows, ncols):
     xmax = coord[0] + (ncols-1)*spacing[0]
     xmin = coord[0]
     ymax = coord[1] + (nrows-1)*spacing[1]
     ymin = coord[1]
     return _adjust_radius_max_min(height,width,radius,xmax,xmin,ymax,ymin)
+
 
 def _adjust_radius_max_min(height, width, radius, xmax, xmin, ymax, ymin):
     if ((xmin < 0) or (xmax > width) or (ymin < 0) or (ymax > height)):
@@ -249,7 +255,8 @@ def _adjust_radius_max_min(height, width, radius, xmax, xmin, ymax, ymin):
         print('Shrinking radius to make ROIs fit in the image')
         radius = min_distance - 1
     return(radius)
-    
+
+
 def _rois_from_coordinates(img, coord=None, radius=None):
     if radius is None:
         fatal_error("Specify a radius if creating rois from a list of coordinates")
@@ -277,6 +284,7 @@ def _rois_from_coordinates(img, coord=None, radius=None):
         roi_contour.append(rc)
         roi_hierarchy.append(rh)
     return roi_contour, roi_hierarchy, overlap_img, all_roi_img
+
 
 def _grid_roi(img, nrows, ncols, coord=None, radius=None, spacing=None):
     if radius is None:
@@ -317,6 +325,7 @@ def _grid_roi(img, nrows, ncols, coord=None, radius=None, spacing=None):
             roi_hierarchy.append(rh)
     return roi_contour, roi_hierarchy, overlap_img, all_roi_img
 
+
 def auto_grid(bin_mask, nrows, ncols, radius=None, img=None):
     """
     Detect and create multiple circular ROIs on a single binary mask
@@ -353,7 +362,8 @@ def auto_grid(bin_mask, nrows, ncols, radius=None, img=None):
     _draw_roi(img=img, roi_contour=roi_contour1)
     roi_objects = Objects(roi_contour, roi_hierarchy)
     return roi_objects
-    
+
+
 def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
     """
     Create multiple circular ROIs on a single image
@@ -401,6 +411,7 @@ def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
     roi_objects = Objects(roi_contour, roi_hierarchy)
     return roi_objects
 
+
 def custom(img, vertices):
     """
     Create an custom polygon ROI.
@@ -432,5 +443,4 @@ def custom(img, vertices):
         (x, y) = i
         if x < 0 or x > width or y < 0 or y > height:
             fatal_error("An ROI extends outside of the image!")
-
     return roi_contour, roi_hierarchy
