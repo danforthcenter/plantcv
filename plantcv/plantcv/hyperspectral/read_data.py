@@ -135,6 +135,9 @@ def read_data(filename):
     # Remove any file extension and set .hdr filename
     headername = _find_hdr(filename=filename)
 
+    if headername is None:
+        fatal_error("Unable to find the header file corresponding to " + filename)
+
     with open(headername, "r") as f:
         # Replace characters for easier parsing
         hdata = f.read()
