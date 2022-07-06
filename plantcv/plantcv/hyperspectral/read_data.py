@@ -115,8 +115,7 @@ def _find_hdr(filename):
         # If the filename matches, return the header file path
         if hdr_regex.match(fname):
             return os.path.join(dat_path, fname)
-        else:
-            return None 
+    return None
 
 
 def read_data(filename):
