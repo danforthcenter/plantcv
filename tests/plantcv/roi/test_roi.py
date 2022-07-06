@@ -151,9 +151,18 @@ def test_auto_grid_one_column(roi_test_data):
     """Test for PlantCV."""
     # Read in test binary mask
     bin_mask = cv2.imread(roi_test_data.bin_grid_img, 0)
-    rois = auto_grid(bin_mask=bin_mask, nrows=2, ncols=1, radius=50)
+    rois = auto_grid(bin_mask=bin_mask, nrows=2, ncols=1)
     # Assert the contours has 2 ROIs
     assert len(rois.contours) == 2
+
+
+def test_auto_grid_overlap(roi_test_data):
+    """Test for PlantCV."""
+    # Read in test binary mask
+    bin_mask = cv2.imread(roi_test_data.bin_grid_img, 0)
+    # Check for the overlapping ROI warning
+    with pytest.raises(RuntimeWarning):
+        _ = auto_grid(bin_mask=bin_mask, nrows=1, ncols=2, radius=50)
 
 
 def test_auto_grid_multiple_cols_rows(roi_test_data):
