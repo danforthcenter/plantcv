@@ -139,6 +139,7 @@ nav:
         - 'Create a Custom ROI': roi_custom.md
         - 'Create ROI from Binary Image': roi_from_binary_image.md
         - 'Create Multi ROIs': 'roi_multi.md'
+        - 'Create Grid of ROIs Automatically': roi_auto_grid.md
         - 'Filter Objects by ROI': roi_objects.md
         - 'Convert ROI to Mask': roi2mask.md
       - 'Rotate': rotate2.md

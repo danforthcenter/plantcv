@@ -334,7 +334,7 @@ def auto_grid(bin_mask, nrows, ncols, radius=None, img=None):
     nrows         = Number of rows in ROI layout.
     ncols         = Number of columns in ROI layout.
     radius        = Optional parameter to specify the radius of the circular rois.
-    img           = (Optional) Image from which the binary mask was derived.
+    img           = (Optional) Image from which the binary mask was created.
 
     Returns:
     roi_objects   = a dataclass with roi objects and hierarchies
