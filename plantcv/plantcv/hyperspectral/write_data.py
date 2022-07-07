@@ -34,7 +34,8 @@ def write_data(filename, spectral_data):
         f.write(f'bands = {bands}\n')
         f.write(f'data type = {dtype_dict[spectral_data.array_data.dtype.char]}\n')
         f.write(f'wavelength units = {spectral_data.wavelength_units}\n')
-        f.write(f'default bands ={spectral_data.default_bands}\n')
+        if spectral_data.default_bands is not None:
+            f.write(f'default bands = {spectral_data.default_bands}\n')
         f.write('wavelength = {\n')
         for wl in wavelenghths[:-1]:
             f.write(f'{wl},\n')
