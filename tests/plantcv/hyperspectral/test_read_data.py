@@ -26,6 +26,7 @@ def test_read_data_bad_interleave(hyperspectral_test_data):
     with pytest.raises(RuntimeError):
         _ = read_data(filename=hyperspectral_test_data.envi_bad_interleave)
 
+
 def test_read_data_bad_filename(hyperspectral_test_data):
     """Test for PlantCV."""
     with pytest.raises(RuntimeError):
