@@ -28,8 +28,8 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Create binary image from a gray image based on threshold values. 
-# Targeting light objects in the image.
-threshold_light = pcv.threshold.otsu(gray_img=gray_img, max_value=255, object_type='dark')
+# Targeting dark objects in the image.
+threshold_dark = pcv.threshold.otsu(gray_img=gray_img, max_value=255, object_type='dark')
 
 ```
 
@@ -44,8 +44,8 @@ threshold_light = pcv.threshold.otsu(gray_img=gray_img, max_value=255, object_ty
 ```python
 
 # Create binary image from a gray image based on threshold values. 
-# Targeting dark objects in the image.
-threshold_dark = pcv.threshold.otsu(gray_img=gray_img, max_value=255, object_type='light')
+# Targeting light objects in the image.
+threshold_light = pcv.threshold.otsu(gray_img=gray_img, max_value=255, object_type='light')
 
 ```
 

@@ -51,3 +51,5 @@ avg_chip_size = pcv.outputs.observations['prefix']['color_chip_size']['value']
 **Tilted color card**
 
 ![Screenshot](img/documentation_images/correct_color_imgs/tilted_color_card.jpg)
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/transform/color_correction.py)
