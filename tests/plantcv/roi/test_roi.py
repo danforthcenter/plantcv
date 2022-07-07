@@ -129,6 +129,13 @@ def test_save_Objects(tmpdir):
     assert os.path.exists(outfile)
 
 
+def test_load_objects(roi_test_data):
+    """Test for PlantCV."""
+    # Load in npz file
+    obj = Objects.load(roi_test_data.small_contours_file)
+    assert len(obj.contours[0]) == 130
+
+
 def test_auto_grid(roi_test_data):
     """Test for PlantCV."""
     # Read in test binary mask
@@ -156,13 +163,14 @@ def test_auto_grid_one_column(roi_test_data):
     assert len(rois.contours) == 2
 
 
-def test_auto_grid_overlap(roi_test_data):
+def test_auto_grid_overlap(roi_test_data, capfd):
     """Test for PlantCV."""
     # Read in test binary mask
     bin_mask = cv2.imread(roi_test_data.bin_grid_img, 0)
     # Check for the overlapping ROI warning
-    with pytest.raises(RuntimeWarning):
-        _ = auto_grid(bin_mask=bin_mask, nrows=2, ncols=1, radius=50)
+    _ = auto_grid(bin_mask=bin_mask, nrows=2, ncols=1, radius=50)
+    out, err = capfd.readouterr()
+    assert len(out) == 172
 
 
 def test_auto_grid_multiple_cols_rows(roi_test_data):
