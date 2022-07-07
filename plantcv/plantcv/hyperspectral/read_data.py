@@ -136,7 +136,7 @@ def read_data(filename):
     headername = _find_hdr(filename=filename)
 
     if headername is None:
-        fatal_error("Unable to find the header file corresponding to " + filename)
+        fatal_error(f"Unable to find the header file corresponding to {filename}")
 
     with open(headername, "r") as f:
         # Replace characters for easier parsing
