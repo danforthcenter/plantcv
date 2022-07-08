@@ -41,7 +41,7 @@ def test_write_data_default(tmpdir):
                                 array_type="datacube",
                                 pseudo_rgb=None,
                                 filename='random_hyperspectral_test',
-                                default_bands=None)
+                                default_bands=[0,1,2])
 
 
     filename = os.path.join(cache_dir, 'plantcv_hyperspectral_write_data.raw')
