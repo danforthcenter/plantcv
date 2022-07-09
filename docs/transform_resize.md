@@ -69,19 +69,24 @@ resize_img5 = pcv.transform.resize_factor(img=img, factors=(0.1154905775, 0.1154
 ```
 
 **Images after resizing**
-1st resized image
+**1st resized image (default interpolation)
+
 ![Screenshot](img/documentation_images/resize/19_resize1.jpg)
 
-2nd resized image
+**2nd resized image (Interpolation by nearest)**
+
 ![Screenshot](img/documentation_images/resize/19_resize2.jpg)
 
-3rd resized image (cropping)
+**3rd resized image (cropping)**
+
 ![Screenshot](img/documentation_images/resize/19_resize3.jpg)
 
-3rd resized image (zero-padding)
+**4th resized image (zero-padding)**
+
 ![Screenshot](img/documentation_images/resize/19_resize4.jpg)
 
-5th resize image
+**5th resized image (by factor)**
+
 ![Screenshot](img/documentation_images/resize/19_resize5.jpg)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/transform/resize.py)

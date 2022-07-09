@@ -16,6 +16,7 @@ class HyperspectralTestData:
         self.envi_no_default = os.path.join(self.datadir, "darkReference2")
         self.envi_appox_pseudo = os.path.join(self.datadir, "darkReference3")
         self.envi_bad_interleave = os.path.join(self.datadir, "darkReference4")
+        self.bad_filename = os.path.join(self.datadir, "darkReference0")
         self.hsi_file = os.path.join(self.datadir, "hsi.pkl")
         self.hsi_mask_file = os.path.join(self.datadir, "hsi_mask.png")
         self.hsi_whiteref_file = os.path.join(self.datadir, "hsi_whiteref.pkl")
