@@ -34,7 +34,9 @@ def write_data(filename, spectral_data):
         f.write(f'bands = {bands}\n')
         f.write(f'data type = {dtype_dict[spectral_data.array_data.dtype.char]}\n')
         f.write(f'wavelength units = {spectral_data.wavelength_units}\n')
-        f.write(f'default bands ={spectral_data.default_bands}\n')
+        if spectral_data.default_bands is not None:
+            db_string = ",".join([str(band) for band in spectral_data.default_bands])
+            f.write(f'default bands = {{{db_string}}}\n')
         f.write('wavelength = {\n')
         for wl in wavelenghths[:-1]:
             f.write(f'{wl},\n')
@@ -44,4 +46,3 @@ def write_data(filename, spectral_data):
     # create raw binary file containing the hyperspectral array values
     with open(filename+'.raw', mode='w+b') as f:
         f.write(spectral_data.array_data.transpose(0,2,1).tobytes(order='C'))
-

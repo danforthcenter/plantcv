@@ -1,6 +1,7 @@
 # Read in a hyperspectral data cube as an array and parse metadata from the header file
 
 import os
+import re
 import cv2
 import numpy as np
 from plantcv.plantcv import params
@@ -90,6 +91,33 @@ def _make_pseudo_rgb(spectral_array):
     return pseudo_rgb
 
 
+def _find_hdr(filename):
+    """Find a header file paired with an hyperspectral data file.
+
+    Keyword arguments:
+    filename = File path/name of a hyperspectral data file.
+
+    Returns:
+    hdrfile = File path/name of hyperspectral header file.
+
+    :param filename: str
+    :return hdrfile: str
+    """
+    # Split the filename into the path and name
+    dat_path, dat_filename = os.path.split(filename)
+    # Extract the base of the data file name and the extension, if any
+    dat_basename, dat_ext = os.path.splitext(dat_filename)
+    # Create a regular expression for the header file
+    # The data file extension is included optionally
+    hdr_regex = re.compile(f"{dat_basename}({dat_ext})?.hdr")
+    # List all the files in the data file directory
+    for fname in os.listdir(dat_path):
+        # If the filename matches, return the header file path
+        if hdr_regex.match(fname):
+            return os.path.join(dat_path, fname)
+    return None
+
+
 def read_data(filename):
     """Read hyperspectral image data from file.
     Inputs:
@@ -105,8 +133,10 @@ def read_data(filename):
     header_dict = {}
 
     # Remove any file extension and set .hdr filename
-    filename_base = os.path.splitext(filename)[0]
-    headername = filename_base + ".hdr"
+    headername = _find_hdr(filename=filename)
+
+    if headername is None:
+        fatal_error(f"Unable to find the header file corresponding to {filename}")
 
     with open(headername, "r") as f:
         # Replace characters for easier parsing
@@ -121,13 +151,16 @@ def read_data(filename):
     hdata = hdata.split("\n")
 
     # Loop through and create a dictionary from the header file
+    # Try to reformat strings by replacing all " = " with '=' and " : "
     for string in hdata:
-        if ' = ' in string:
-            header_data = string.split(" = ")
+        # Remove white space for consistency across header file formats
+        string = string.replace(' ', '')
+        if '=' in string:
+            header_data = string.split("=")
             header_data[0] = header_data[0].lower()
             header_dict.update({header_data[0].rstrip(): header_data[1].rstrip()})
-        elif ' : ' in string:
-            header_data = string.split(" : ")
+        elif ':' in string:
+            header_data = string.split(":")
             header_data[0] = header_data[0].lower()
             header_dict.update({header_data[0].rstrip(): header_data[1].rstrip()})
 
@@ -145,10 +178,10 @@ def read_data(filename):
     # Replace datatype ID number with the numpy datatype
     dtype_dict = {"1": np.uint8, "2": np.int16, "3": np.int32, "4": np.float32, "5": np.float64, "6": np.complex64,
                   "9": np.complex128, "12": np.uint16, "13": np.uint32, "14": np.int64, "15": np.uint64}
-    header_dict["data type"] = dtype_dict[header_dict["data type"]]
+    header_dict["datatype"] = dtype_dict[header_dict["datatype"]]
 
     # Read in the data from the file
-    raw_data = np.fromfile(filename, header_dict["data type"], -1)
+    raw_data = np.fromfile(filename, header_dict["datatype"], -1)
 
     # Reshape the raw data into a datacube array
     data_format = {
@@ -179,16 +212,16 @@ def read_data(filename):
 
     # Check for default bands (that get used to make pseudo_rgb image)
     default_bands = None
-    if "default bands" in header_dict:
-        header_dict["default bands"] = header_dict["default bands"].replace("{", "")
-        header_dict["default bands"] = header_dict["default bands"].replace("}", "")
-        default_bands = header_dict["default bands"].split(",")
+    if "defaultbands" in header_dict:
+        header_dict["defaultbands"] = header_dict["defaultbands"].replace("{", "")
+        header_dict["defaultbands"] = header_dict["defaultbands"].replace("}", "")
+        default_bands = header_dict["defaultbands"].split(",")
 
     # Find array min and max values
     max_pixel = float(np.amax(array_data))
     min_pixel = float(np.amin(array_data))
 
-    wavelength_units = header_dict.get("wavelength units")
+    wavelength_units = header_dict.get("wavelengthunits")
     if wavelength_units is None:
         wavelength_units = "nm"
 
@@ -197,7 +230,7 @@ def read_data(filename):
                                    max_wavelength=float(str(header_dict["wavelength"][-1]).rstrip()),
                                    min_wavelength=float(str(header_dict["wavelength"][0]).rstrip()),
                                    max_value=max_pixel, min_value=min_pixel,
-                                   d_type=header_dict["data type"],
+                                   d_type=header_dict["datatype"],
                                    wavelength_dict=wavelength_dict, samples=int(header_dict["samples"]),
                                    lines=int(header_dict["lines"]), interleave=header_dict["interleave"],
                                    wavelength_units=wavelength_units, array_type="datacube",
