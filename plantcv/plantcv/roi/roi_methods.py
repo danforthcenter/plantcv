@@ -1,12 +1,10 @@
 # ROI functions
 
 import os
-from dataclasses import dataclass
 import cv2
 import numpy as np
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import fatal_error
-from plantcv.plantcv import params
+from plantcv.plantcv import fatal_error, params, Objects
 
 
 # Create an ROI from a binary mask
@@ -192,22 +190,6 @@ def _draw_roi(img, roi_contour):
     cv2.drawContours(ref_img, roi_contour, -1, (255, 0, 0), params.line_thickness)
     _debug(visual=ref_img,
            filename=os.path.join(params.debug_outdir, str(params.device) + "_roi.png"))
-
-
-@dataclass
-class Objects:
-    """Class for keeping track of an item in inventory."""
-    contours: list
-    hierarchy: np.ndarray
-
-    def save(self, filename):
-        np.savez(filename, contours=self.contours, hierarchy=self.hierarchy)
-
-    @staticmethod
-    def load(filename):
-        file = np.load(filename)
-        obj = Objects(file['contours'].tolist(), file['hierarchy'])
-        return obj
 
 
 def _calculate_grid(bin_mask, nrows, ncols):

@@ -1,8 +1,7 @@
 import pytest
-import os
 import cv2
 import numpy as np
-from plantcv.plantcv.roi import from_binary_image, rectangle, circle, ellipse, Objects, auto_grid, multi, custom
+from plantcv.plantcv.roi import from_binary_image, rectangle, circle, ellipse, auto_grid, multi, custom
 
 
 def test_from_binary_image(roi_test_data):
@@ -117,23 +116,6 @@ def test_ellipse_out_of_frame(roi_test_data):
     # The resulting rectangle needs to be within the dimensions of the image
     with pytest.raises(RuntimeError):
         _, _ = ellipse(x=50, y=225, r1=75, r2=50, angle=0, img=rgb_img)
-
-
-def test_save_Objects(tmpdir):
-    """Test for PlantCV."""
-    # Create a tmp directory
-    cache_dir = tmpdir.mkdir("cache")
-    outfile = os.path.join(cache_dir, "test.npz")
-    a = Objects([1, 2], [3, 4])
-    a.save(outfile)
-    assert os.path.exists(outfile)
-
-
-def test_load_objects(roi_test_data):
-    """Test for PlantCV."""
-    # Load in npz file
-    obj = Objects.load(roi_test_data.small_contours_file)
-    assert len(obj.contours[0]) == 130
 
 
 def test_auto_grid(roi_test_data):

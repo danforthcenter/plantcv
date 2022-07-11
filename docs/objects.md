@@ -1,0 +1,40 @@
+## class Objects
+
+A PlantCV data object class.
+
+*class* plantcv.**Objects**
+
+`Objects` is a class that is used when plantcv functions draw curves on images. 
+These attributes are used internally by PlantCV functions but also can be utilized by users. 
+
+### Attributes
+
+Attributes are accessed as Objects.*attribute*.
+
+**contours**: A list of all the points that form a curve. Based on [OpenCV contours](https://docs.opencv.org/3.4/d4/d73/tutorial_py_contours_begin.html)
+
+**hierarchy**: An array that contains the hierarchy for each contour. Based on [OpenCV hierarchies](https://docs.opencv.org/4.x/d9/d8b/tutorial_py_contours_hierarchy.html)
+
+### Methods
+
+**save**(self, *filename*): Save results to a file.
+
+**load**(*filename*): Load results from a file.
+
+
+### Example
+
+PlantCV functions from the roi sub-package use `Objects` implicitly.
+
+```python
+from plantcv import plantcv as pcv
+
+# Make a grid of ROIs 
+rois_objects = pcv.roi.multi(img=img1, coord=(25,120), radius=20, 
+                                      spacing=(70, 70), nrows=3, ncols=6)
+
+rois_objects.save(filename="test.npz")
+```
+
+
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/classes.py)

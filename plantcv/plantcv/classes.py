@@ -2,6 +2,8 @@
 import os
 import cv2
 import json
+import numpy as np
+from dataclasses import dataclass
 from plantcv.plantcv import fatal_error
 import matplotlib.pyplot as plt
 from math import floor
@@ -280,3 +282,19 @@ class Points(object):
             ax0plots = self.ax.lines
             self.ax.lines.remove(ax0plots[idx_remove])
         self.fig.canvas.draw()
+
+
+@dataclass
+class Objects:
+    """Class for keeping track of an item in inventory."""
+    contours: list
+    hierarchy: np.ndarray
+
+    def save(self, filename):
+        np.savez(filename, contours=self.contours, hierarchy=self.hierarchy)
+
+    @staticmethod
+    def load(filename):
+        file = np.load(filename)
+        obj = Objects(file['contours'].tolist(), file['hierarchy'])
+        return obj
