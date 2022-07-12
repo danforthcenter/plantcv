@@ -24,6 +24,7 @@ dependencies:
   - ipympl
   - nodejs
   - jupyterlab
+
 channels:
   - conda-forge
   - defaults
