@@ -9,7 +9,7 @@
     - nrows          = Number of rows in ROI layout.
     - ncols          = Number of columns in ROI layout.
     - radius         = Optional parameter to specify the radius of the rois.
-    - img            = (Optional) Image from which the binary mask was created.
+    - img            = Optional Image from which the binary mask was created.
 - **Context:**
     - Used to define a grid of multiple circular regions of interest in the same binary mask. Users
       specify a number of rows and columns, and the function detects a grid of circular rois based
@@ -33,7 +33,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Make a grid of ROIs 
-rois = pcv.roi.multi(bin_mask = mask, nrows=3, ncols=6, radius=20, img = img1)
+rois = pcv.roi.multi(bin_mask=mask, nrows=3, ncols=6, radius=20, img=img)
 
 ```
 
@@ -64,8 +64,8 @@ if os.path.exists(args.result):
     # Delete the file, we will create new ones
     os.remove(args.result)
 
-for i in range(0, len(rois1.contours)):
-    roi = rois1.contours[i]
+for i in range(0, len(rois.contours)):
+    roi = rois.contours[i]
     hierarchy = roi.hierarchy[i]
     # Find objects
     filtered_contours, filtered_hierarchy, filtered_mask, filtered_area = pcv.roi_objects(
