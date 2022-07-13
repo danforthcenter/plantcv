@@ -38,6 +38,7 @@ unaltered, the  matplotlib default DPI is 100 pixels per inch.
 ![Screenshot](img/documentation_images/pseudocolor/mask.jpg)
 
 **Mask of "bad" values**
+
 ![Screenshot](img/documentation_images/pseudocolor/bad_mask.png)
 
 
@@ -109,9 +110,11 @@ pseudo_img_mask_obj_bad_mask = pcv.visualize.pseudocolor(gray_img=img, obj=obg, 
 ![Screenshot](img/documentation_images/pseudocolor/pseudo_onimage_simple.jpg)
 
 **Pseudocolored, Pixels With User Defined "bad" Values Marked Using Red Color (no axes or colorbar)**
+
 ![Screenshot](img/documentation_images/pseudocolor/pseudocolored_mask_bad.png)
 
 **Pseudocolored, Cropped, background="white", Pixels With User Defined "bad" Values Marked Using Red Color (no axes)**
+
 ![Screenshot](img/documentation_images/pseudocolor/pseudocolored_mask_bad_obj.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/visualize/pseudocolor.py)
