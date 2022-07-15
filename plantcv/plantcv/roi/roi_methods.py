@@ -207,7 +207,7 @@ def _calculate_grid(bin_mask, nrows, ncols):
     gm_y = GaussianMixture(n_components=nrows, random_state=0).fit(centers_y)
     clusters_x = np.sort(gm_x.means_[:, 0])
     clusters_y = np.sort(gm_y.means_[:, 0])
-    spacing_x = (clusters_x[ncols-1] - clusters_x[0])/(ncols-1)if ncols > 1 else 0
+    spacing_x = (clusters_x[ncols-1] - clusters_x[0])/(ncols-1) if ncols > 1 else 0
     spacing_y = (clusters_y[nrows-1] - clusters_y[0])/(nrows-1) if nrows > 1 else 0
     spacing = (round(spacing_x), round(spacing_y))
     coord = (round(clusters_x[0]), round(clusters_y[0]))
