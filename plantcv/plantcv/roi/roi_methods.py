@@ -193,8 +193,8 @@ def _draw_roi(img, roi_contour):
            filename=os.path.join(params.debug_outdir, str(params.device) + "_roi.png"))
 
 
-def _calculate_grid(bin_mask, nrows, ncols):
-    contours, hierarchy = cv2.findContours(bin_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+def _calculate_grid(mask, nrows, ncols):
+    contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     centers = []
     for c in contours:
         m = cv2.moments(c)
@@ -305,11 +305,11 @@ def _grid_roi(img, nrows, ncols, coord=None, radius=None, spacing=None):
     return roi_objects, overlap_img, all_roi_img
 
 
-def auto_grid(bin_mask, nrows, ncols, radius=None, img=None):
+def auto_grid(mask, nrows, ncols, radius=None, img=None):
     """
     Detect and create multiple circular ROIs on a single binary mask
     Inputs
-    bin_mask      = A binary mask.
+    mask      = A binary mask.
     nrows         = Number of rows in ROI layout.
     ncols         = Number of columns in ROI layout.
     radius        = Optional parameter to specify the radius of the circular rois.
@@ -317,19 +317,19 @@ def auto_grid(bin_mask, nrows, ncols, radius=None, img=None):
 
     Returns:
     roi_objects   = a dataclass with roi objects and hierarchies
-    :param bin_mask: numpy.ndarray
+    :param mask: numpy.ndarray
     :param nrows: int
     :param ncols: int
     :param radius: int
     :param img: numpy.ndarray
-    :return roi_objects: plantcv.roi.Objects
+    :return roi_objects: plantcv.plantcv.classes.Objects
     """
     # Make sure the input bin_img is binary
-    if len(np.unique(bin_mask)) != 2:
+    if len(np.unique(mask)) != 2:
         fatal_error("Input binary mask is not binary!")
-    coord, spacing = _calculate_grid(bin_mask, nrows, ncols)
+    coord, spacing = _calculate_grid(mask, nrows, ncols)
     if img is None:
-        img = bin_mask
+        img = mask
     roi_objects, overlap_img, all_roi_img = _grid_roi(img, nrows, ncols,
                                                       coord, radius, spacing)
     if np.amax(overlap_img) > 255:
@@ -362,7 +362,7 @@ def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
     :param spacing: tuple
     :param nrows: int
     :param ncols: int
-    :return roi_objects: plantcv.roi.Objects
+    :return roi_objects: plantcv.plantcv.classes.Objects
     """
     # Grid of ROIs
     if (type(coord) == tuple) and ((nrows and ncols) is not None) and (type(spacing) == tuple):

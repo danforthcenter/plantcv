@@ -1,11 +1,11 @@
 ## Create a Grid of Circular Regions of Interest (ROI) Automatically
 
-**plantcv.roi.auto_grid**(*bin_mask, nrows, ncols, radius=None, img=None*)
+**plantcv.roi.auto_grid**(*mask, nrows, ncols, radius=None, img=None*)
 
 **returns** roi_objects
 
 - **Parameters:**
-    - bin_mask       = A binary mask.
+    - mask       = A binary mask.
     - nrows          = Number of rows in ROI layout.
     - ncols          = Number of columns in ROI layout.
     - radius         = Optional parameter to specify the radius of the ROIs.
@@ -33,7 +33,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Make a grid of ROIs 
-rois = pcv.roi.auto_grid(bin_mask=mask, nrows=3, ncols=6, radius=20, img=img)
+rois = pcv.roi.auto_grid(mask=mask, nrows=3, ncols=6, radius=20, img=img)
 
 ```
 
@@ -53,39 +53,22 @@ import numpy as np
 
 img_copy = np.copy(img)
 
-# The result file should exist if plantcv-workflow.py was run
-if os.path.exists(args.result):
-    # Open the result file
-    results = open(args.result, "r")
-    # The result file would have image metadata in it from plantcv-workflow.py, read it into memory
-    metadata = results.read()
-    # Close the file
-    results.close()
-    # Delete the file, we will create new ones
-    os.remove(args.result)
-
+roi_id = 0
 for roi, hierarchy in rois:
+    roi_id += 1
     # Find objects
     filtered_contours, filtered_hierarchy, filtered_mask, filtered_area = pcv.roi_objects(
         img=img, roi_type="partial", roi_contour=roi, roi_hierarchy=hierarchy, object_contour=obj, 
         obj_hierarchy=obj_hierarchy)
-    
+
     # Combine objects together in each plant     
     plant_contour, plant_mask = pcv.object_composition(img=img, contours=filtered_contours, hierarchy=filtered_hierarchy)        
-    
+
     # Analyze the shape of each plant 
-    analysis_images = pcv.analyze_object(img=img_copy, obj=plant_contour, mask=plant_mask)
-    
-    # Save the image with shape characteristics 
-    img_copy = analysis_images
-    
-    # Print out a text file with shape data for each plant in the image 
-    filename = args.result[:-4] + "_" + str(i) + ".txt" 
-    with open(filename, "w") as r:
-        r.write(metadata)
-    pcv.outputs.save_results(filename=filename)
-    # Clear the measurements stored globally into the Outputs class
-    pcv.outputs.clear()
+    img_copy = pcv.analyze_object(img=img_copy, obj=plant_contour, mask=plant_mask, label=f"plant_{roi_id}")
+
+# Print out a text file with shape data for each plant in the image 
+pcv.outputs.save_results(filename=filename)
     
 # Plot out the image with shape analysis on each plant in the image 
 pcv.plot_image(img_copy)

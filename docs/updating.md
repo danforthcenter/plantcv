@@ -727,7 +727,7 @@ pages for more details on the input and output variable types.
 #### plantcv.roi.auto_grid
 
 * pre v4.0: NA
-* post v4.0: roi_objects = **pcv.roi.auto_grid**(*bin_mask, nrows, ncols, radius=None, img=None*)
+* post v4.0: roi_objects = **pcv.roi.auto_grid**(*mask, nrows, ncols, radius=None, img=None*)
 
 #### plantcv.roi.multi
 

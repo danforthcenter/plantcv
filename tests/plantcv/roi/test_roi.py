@@ -121,8 +121,8 @@ def test_ellipse_out_of_frame(roi_test_data):
 def test_auto_grid(roi_test_data):
     """Test for PlantCV."""
     # Read in test binary mask
-    bin_mask = cv2.imread(roi_test_data.bin_grid_img, 0)
-    rois = auto_grid(bin_mask=bin_mask, nrows=1, ncols=2)
+    mask = cv2.imread(roi_test_data.bin_grid_img, 0)
+    rois = auto_grid(mask=mask, nrows=1, ncols=2)
     # Assert the contours has 2 ROIs
     assert len(rois.contours) == 2
 
@@ -131,7 +131,7 @@ def test_auto_grid_bad_input_img(roi_test_data):
     """Test for PlantCV."""
     # Read in test binary mask
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
-    # The user must input a binary mask to bin_mask, not an rgb or grayscale
+    # The user must input a binary mask to mask, not an rgb or grayscale
     with pytest.raises(RuntimeError):
         _ = auto_grid(rgb_img, nrows=1, ncols=2)
 
@@ -139,8 +139,8 @@ def test_auto_grid_bad_input_img(roi_test_data):
 def test_auto_grid_one_column(roi_test_data):
     """Test for PlantCV."""
     # Read in test binary mask
-    bin_mask = cv2.imread(roi_test_data.bin_grid_img, 0)
-    rois = auto_grid(bin_mask=bin_mask, nrows=2, ncols=1)
+    mask = cv2.imread(roi_test_data.bin_grid_img, 0)
+    rois = auto_grid(mask=mask, nrows=2, ncols=1)
     # Assert the contours has 2 ROIs
     assert len(rois.contours) == 2
 
@@ -148,9 +148,9 @@ def test_auto_grid_one_column(roi_test_data):
 def test_auto_grid_overlap(roi_test_data, capfd):
     """Test for PlantCV."""
     # Read in test binary mask
-    bin_mask = cv2.imread(roi_test_data.bin_grid_img, 0)
+    mask = cv2.imread(roi_test_data.bin_grid_img, 0)
     # Check for the overlapping ROI warning
-    _ = auto_grid(bin_mask=bin_mask, nrows=2, ncols=1, radius=50)
+    _ = auto_grid(mask=mask, nrows=2, ncols=1, radius=50)
     out, err = capfd.readouterr()
     assert len(out) == 172
 
@@ -158,8 +158,8 @@ def test_auto_grid_overlap(roi_test_data, capfd):
 def test_auto_grid_multiple_cols_rows(roi_test_data):
     """Test for PlantCV."""
     # Read in test binary mask
-    bin_mask = cv2.imread(roi_test_data.bin_grid_img, 0)
-    rois = auto_grid(bin_mask=bin_mask, nrows=2, ncols=2)
+    mask = cv2.imread(roi_test_data.bin_grid_img, 0)
+    rois = auto_grid(mask=mask, nrows=2, ncols=2)
     # Assert the contours has 2 ROIs
     assert len(rois.contours) == 4
 
