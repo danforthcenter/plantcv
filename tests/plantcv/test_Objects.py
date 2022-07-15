@@ -17,3 +17,10 @@ def test_load_objects(test_data):
     # Load in npz file
     obj = Objects.load(test_data.small_contours_file)
     assert len(obj.contours[0]) == 130
+
+def test_objects_iteration():
+    """Test for PlantCV."""
+    obj = Objects([1,2], [3,4])
+    for i in obj:
+        _, x = i
+    assert x == 4
