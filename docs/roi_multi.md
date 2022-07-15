@@ -70,9 +70,7 @@ if os.path.exists(args.result):
     # Delete the file, we will create new ones
     os.remove(args.result)
 
-for i in range(0, len(rois1)):
-    roi = rois1.contours[i]
-    hierarchy = rois1.hierarchy[i]
+for i in roi, hierarchy in rois1:
     # Find objects
     filtered_contours, filtered_hierarchy, filtered_mask, filtered_area = pcv.roi_objects(
         img=img, roi_type="partial", roi_contour=roi, roi_hierarchy=hierarchy, object_contour=obj, 
