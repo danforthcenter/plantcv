@@ -284,17 +284,34 @@ class Points(object):
         self.fig.canvas.draw()
 
 
-@dataclass
 class Objects:
-    """Class for keeping track of an item in inventory."""
-    contours: list
-    hierarchy: np.ndarray
+    """Class for managing image contours/objects and their hierarchical relationships. """
+    def __init__(self, contours: list=None, hierarchy: list=None):
+        if contours is None:
+            self.contours = []
+            self.hierarchy = []
+        else:
+            self.contours = contours
+            self.hierarchy = hierarchy
 
+    def __iter__(self):
+        self.n = 0
+        return self
+
+    def __next__(self):
+        if self.n < len(self.contours):
+            self.n += 1
+            return self.contours[self.n-1], self.hierarchy[self.n-1]
+        else:
+            raise StopIteration
+    
+    def append(self,contour, h):
+        self.contours.append(contour)
+        self.hierarchy.append(h)
     def save(self, filename):
-        np.savez(filename, contours=self.contours, hierarchy=self.hierarchy)
-
+        np.savez(filename, contours = self.contours, hierarchy = self.hierarchy)
     @staticmethod
     def load(filename):
         file = np.load(filename)
-        obj = Objects(file['contours'].tolist(), file['hierarchy'])
+        obj = Objects(file['contours'].tolist(),file['hierarchy'])
         return obj
