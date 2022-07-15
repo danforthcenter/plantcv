@@ -11,9 +11,9 @@ These attributes are used internally by PlantCV functions but also can be utiliz
 
 Attributes are accessed as Objects.*attribute*.
 
-**contours**: A list of all the points that form the outline of a shape. Based on [OpenCV contours](https://docs.opencv.org/3.4/d4/d73/tutorial_py_contours_begin.html)
+**contours**: A list contours (all the points that form the outline of a shape. Based on [OpenCV contours](https://docs.opencv.org/3.4/d4/d73/tutorial_py_contours_begin.html))
 
-**hierarchy**: An array that contains the relationship between contours. Based on [OpenCV hierarchies](https://docs.opencv.org/4.x/d9/d8b/tutorial_py_contours_hierarchy.html)
+**hierarchy**: A list of hierarchies (An array that contains the relationship between contours. Based on [OpenCV hierarchies](https://docs.opencv.org/4.x/d9/d8b/tutorial_py_contours_hierarchy.html))
 
 ### Methods
 

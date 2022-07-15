@@ -301,7 +301,7 @@ def _grid_roi(img, nrows, ncols, coord=None, radius=None, spacing=None):
             overlap_img = overlap_img + circle_img
             # Make a list of contours and hierarchies
             rc, rh = cv2.findContours(circle_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[-2:]
-            roi_objects.append(rc,rh)
+            roi_objects.append(rc, rh)
     return roi_objects, overlap_img, all_roi_img
 
 
@@ -331,7 +331,7 @@ def auto_grid(bin_mask, nrows, ncols, radius=None, img=None):
     if img is None:
         img = bin_mask
     roi_objects, overlap_img, all_roi_img = _grid_roi(img, nrows, ncols,
-                                                                     coord, radius, spacing)
+                                                      coord, radius, spacing)
     if np.amax(overlap_img) > 255:
         print("WARNING: Two or more of the user defined regions of interest overlap! "
               "If you only see one ROI then they may overlap exactly.")
@@ -367,7 +367,7 @@ def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
     # Grid of ROIs
     if (type(coord) == tuple) and ((nrows and ncols) is not None) and (type(spacing) == tuple):
         roi_objects, overlap_img, all_roi_img = _grid_roi(img, nrows, ncols, coord,
-                                                                         radius, spacing)
+                                                          radius, spacing)
         # User specified ROI centers
     elif (type(coord) == list) and ((nrows and ncols) is None) and (spacing is None):
         roi_objects, overlap_img, all_roi_img = _rois_from_coordinates(img=img, coord=coord, radius=radius)
@@ -385,6 +385,7 @@ def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
     roi_contour1, _ = cv2.findContours(all_roi_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
     _draw_roi(img=img, roi_contour=roi_contour1)
     return roi_objects
+
 
 def custom(img, vertices):
     """

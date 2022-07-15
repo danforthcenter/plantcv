@@ -286,13 +286,12 @@ class Points(object):
 
 class Objects:
     """Class for managing image contours/objects and their hierarchical relationships. """
-    def __init__(self, contours: list=None, hierarchy: list=None):
+    def __init__(self, contours: list = None, hierarchy: list = None):
+        self.contours = contours
+        self.hierarchy = hierarchy
         if contours is None:
             self.contours = []
-            self.hierarchy = []
-        else:
-            self.contours = contours
-            self.hierarchy = hierarchy
+            self.hierarchy = []            
 
     def __iter__(self):
         self.n = 0
@@ -304,14 +303,15 @@ class Objects:
             return self.contours[self.n-1], self.hierarchy[self.n-1]
         else:
             raise StopIteration
-    
-    def append(self,contour, h):
+    def append(self, contour, h):
         self.contours.append(contour)
         self.hierarchy.append(h)
+
     def save(self, filename):
-        np.savez(filename, contours = self.contours, hierarchy = self.hierarchy)
+        np.savez(filename, contours=self.contours, hierarchy=self.hierarchy)
+
     @staticmethod
     def load(filename):
         file = np.load(filename)
-        obj = Objects(file['contours'].tolist(),file['hierarchy'])
+        obj = Objects(file['contours'].tolist(), file['hierarchy'])
         return obj
