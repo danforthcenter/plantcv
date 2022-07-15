@@ -309,7 +309,7 @@ def auto_grid(mask, nrows, ncols, radius=None, img=None):
     """
     Detect and create multiple circular ROIs on a single binary mask
     Inputs
-    mask      = A binary mask.
+    mask          = A binary mask.
     nrows         = Number of rows in ROI layout.
     ncols         = Number of columns in ROI layout.
     radius        = Optional parameter to specify the radius of the circular rois.

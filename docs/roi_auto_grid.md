@@ -5,7 +5,7 @@
 **returns** roi_objects
 
 - **Parameters:**
-    - mask       = A binary mask.
+    - mask           = A binary mask.
     - nrows          = Number of rows in ROI layout.
     - ncols          = Number of columns in ROI layout.
     - radius         = Optional parameter to specify the radius of the ROIs.
