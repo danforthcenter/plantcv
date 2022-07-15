@@ -33,7 +33,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Make a grid of ROIs 
-rois = pcv.roi.multi(bin_mask=mask, nrows=3, ncols=6, radius=20, img=img)
+rois = pcv.roi.auto_grid(bin_mask=mask, nrows=3, ncols=6, radius=20, img=img)
 
 ```
 
@@ -64,7 +64,7 @@ if os.path.exists(args.result):
     # Delete the file, we will create new ones
     os.remove(args.result)
 
-for i in rois, hierarchy:
+for roi, hierarchy in rois:
     # Find objects
     filtered_contours, filtered_hierarchy, filtered_mask, filtered_area = pcv.roi_objects(
         img=img, roi_type="partial", roi_contour=roi, roi_hierarchy=hierarchy, object_contour=obj, 
