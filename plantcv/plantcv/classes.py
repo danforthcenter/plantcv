@@ -284,13 +284,13 @@ class Points(object):
 
 
 class Objects:
-    """Class for managing image contours/objects and their hierarchical relationships. """
+    """Class for managing image contours/objects and their hierarchical relationships."""
     def __init__(self, contours: list = None, hierarchy: list = None):
         self.contours = contours
         self.hierarchy = hierarchy
         if contours is None:
             self.contours = []
-            self.hierarchy = []            
+            self.hierarchy = []
 
     def __iter__(self):
         self.n = 0
@@ -302,6 +302,7 @@ class Objects:
             return self.contours[self.n-1], self.hierarchy[self.n-1]
         else:
             raise StopIteration
+
     def append(self, contour, h):
         self.contours.append(contour)
         self.hierarchy.append(h)
