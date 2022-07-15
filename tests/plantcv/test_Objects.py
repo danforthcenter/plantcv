@@ -1,4 +1,3 @@
-import pytest
 import os
 from plantcv.plantcv import Objects
 

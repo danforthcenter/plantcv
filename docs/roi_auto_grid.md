@@ -8,13 +8,13 @@
     - bin_mask       = A binary mask.
     - nrows          = Number of rows in ROI layout.
     - ncols          = Number of columns in ROI layout.
-    - radius         = Optional parameter to specify the radius of the rois.
+    - radius         = Optional parameter to specify the radius of the ROIs.
     - img            = Optional Image from which the binary mask was created.
 - **Context:**
     - Used to define a grid of multiple circular regions of interest in the same binary mask. Users
-      specify a number of rows and columns, and the function detects a grid of circular rois based
+      specify a number of rows and columns, and the function detects a grid of circular ROIs based
       on the inputs. A custom radius can optionally be set for the individual circles. If the image from
-      which the binary mask was created is passed as an argumnet, rois will be drawn on that image if
+      which the binary mask was created is passed as an argumnet, ROIs will be drawn on that image if
       debug is set to plot. Otherwise, they will be drawn on the binary mask. Returns an Objects
       dataclass that can be used in downstream steps. It is not necessary for there to be a plant
       in every grid cell, just that the objects follow a general grid structure and that there is at
