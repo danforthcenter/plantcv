@@ -1,13 +1,13 @@
 ## Create Multiple Regions of Interest (ROI) 
 
-**plantcv.roi.multi**(*img, coord, radius, spacing=None, nrows=None, ncols=None*)
+**plantcv.roi.multi**(*img, coord, radius=None, spacing=None, nrows=None, ncols=None*)
 
-**returns** roi_contours, roi_hierarchies
+**returns** roi_objects
 
 - **Parameters:**
     - img            = Input image data.
     - coord          = Two-element tuple of the center of the top left object.
-    - radius         = Radius of ROIs.
+    - radius         = Optional parameter to specify the radius of the ROIs.
     - spacing        = Two-element tuple of the horizontal and vertical spacing between ROIs.
     - nrows          = Number of rows in ROI layout.
     - ncols          = Number of columns in ROI layout.
@@ -16,7 +16,7 @@
       starting coordinate (`coord`), number of row and columns, and spacing to create a grid of ROIs,
       or a custom list of coordinates that specify the centers of the ROIs. Providing a custom list 
       of coordinates (list of tuples) is useful for missing plants or any arrangement that isn't 
-      a perfect grid. Returns lists of contours and hierarchies that can be used in downstream steps. 
+      a perfect grid. Returns an Objects instance that can be used in downstream steps. 
 
 **Reference Image**
 
@@ -31,11 +31,11 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Make a grid of ROIs 
-rois1, roi_hierarchy1 = pcv.roi.multi(img=img1, coord=(25,120), radius=20, 
+rois1 = pcv.roi.multi(img=img1, coord=(25,120), radius=20, 
                                       spacing=(70, 70), nrows=3, ncols=6)
 
 # Specify a list of coordinates of desired ROIs 
-rois2, roi_hierarchy2 = pcv.roi.multi(img=img1, coord=[(25,120), (165,260), (310, 260)], 
+rois2 = pcv.roi.multi(img=img1, coord=[(25,120), (165,260), (310, 260)], 
                                       radius=20)
                                       
 ```
@@ -70,9 +70,7 @@ if os.path.exists(args.result):
     # Delete the file, we will create new ones
     os.remove(args.result)
 
-for i in range(0, len(rois1)):
-    roi = rois1[i]
-    hierarchy = roi_hierarchy1[i]
+for roi, hierarchy in rois1:
     # Find objects
     filtered_contours, filtered_hierarchy, filtered_mask, filtered_area = pcv.roi_objects(
         img=img, roi_type="partial", roi_contour=roi, roi_hierarchy=hierarchy, object_contour=obj, 

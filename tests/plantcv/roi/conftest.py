@@ -18,6 +18,8 @@ class RoiTestData:
         self.small_gray_img = os.path.join(self.datadir, "setaria_small_plant_gray.png")
         # Contours file
         self.small_contours_file = os.path.join(self.datadir, "setaria_small_plant_contours.npz")
+        # Grid image
+        self.bin_grid_img = os.path.join(self.datadir, "brassica_2plants_bin_img.png")
 
     @staticmethod
     def load_contours(npz_file):

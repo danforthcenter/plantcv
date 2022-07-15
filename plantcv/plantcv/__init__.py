@@ -5,6 +5,7 @@ from plantcv.plantcv.classes import Outputs
 from plantcv.plantcv.classes import Spectral_data
 from plantcv.plantcv.classes import PSII_data
 from plantcv.plantcv.classes import Points
+from plantcv.plantcv.classes import Objects
 
 # Initialize an instance of the Params and Outputs class with default values
 # params and outputs are available when plantcv is imported
@@ -98,7 +99,7 @@ from plantcv.plantcv.segment_image_series import segment_image_series
 from . import _version
 __version__ = _version.get_versions()['version']
 
-__all__ = ["fatal_error", "Params", "Outputs", "Spectral_data", 'PSII_data', 'Points', "deprecation_warning", "print_image",
+__all__ = ["fatal_error", "Params", "Outputs", "Spectral_data", 'PSII_data', 'Points', "Objects", "deprecation_warning", "print_image",
            "plot_image", "color_palette", "rgb2gray", "rgb2gray_hsv", "rgb2gray_lab", "rgb2gray_cmyk", "gaussian_blur",
            "transform", "hyperspectral", "spectral_index", "apply_mask", "readimage", "readbayer", "laplace_filter",
            "sobel_filter", "scharr_filter", "hist_equalization", "image_add", "image_fusion", "image_subtract", "erode",
