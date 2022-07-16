@@ -116,6 +116,7 @@ nav:
         - 'Skeletonize': skeletonize.md
       - 'Naive Bayes Classifier': naive_bayes_classifier.md
       - 'Object Composition': object_composition.md
+      - 'Objects Class': objects.md
       - 'Opening': opening.md
       - 'Output Mask': output_mask.md
       - 'Outputs Class': outputs.md
@@ -139,6 +140,7 @@ nav:
         - 'Create a Custom ROI': roi_custom.md
         - 'Create ROI from Binary Image': roi_from_binary_image.md
         - 'Create Multi ROIs': 'roi_multi.md'
+        - 'Create Grid of ROIs Automatically': roi_auto_grid.md
         - 'Filter Objects by ROI': roi_objects.md
         - 'Convert ROI to Mask': roi2mask.md
       - 'Rotate': rotate2.md
@@ -196,6 +198,7 @@ nav:
       - 'Naive Bayes Multiclass': naive_bayes_multiclass.md
     - 'Parallelization':
         - 'Configure Parallelization': parallel_config.md
+        - 'Workflow Inputs Management': parallel_workflow_inputs.md
         - 'Metadata Parser': parallel_metadata_parser.md
         - 'Job Builder': parallel_job_builder.md
         - 'Multiprocess': parallel_multiprocess.md

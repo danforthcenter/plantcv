@@ -1,7 +1,7 @@
 import pytest
 import cv2
 import numpy as np
-from plantcv.plantcv.roi import from_binary_image, rectangle, circle, ellipse, multi, custom
+from plantcv.plantcv.roi import from_binary_image, rectangle, circle, ellipse, auto_grid, multi, custom
 
 
 def test_from_binary_image(roi_test_data):
@@ -118,22 +118,68 @@ def test_ellipse_out_of_frame(roi_test_data):
         _, _ = ellipse(x=50, y=225, r1=75, r2=50, angle=0, img=rgb_img)
 
 
+def test_auto_grid(roi_test_data):
+    """Test for PlantCV."""
+    # Read in test binary mask
+    mask = cv2.imread(roi_test_data.bin_grid_img, 0)
+    rois = auto_grid(mask=mask, nrows=1, ncols=2)
+    # Assert the contours has 2 ROIs
+    assert len(rois.contours) == 2
+
+
+def test_auto_grid_bad_input_img(roi_test_data):
+    """Test for PlantCV."""
+    # Read in test binary mask
+    rgb_img = cv2.imread(roi_test_data.small_rgb_img)
+    # The user must input a binary mask to mask, not an rgb or grayscale
+    with pytest.raises(RuntimeError):
+        _ = auto_grid(rgb_img, nrows=1, ncols=2)
+
+
+def test_auto_grid_one_column(roi_test_data):
+    """Test for PlantCV."""
+    # Read in test binary mask
+    mask = cv2.imread(roi_test_data.bin_grid_img, 0)
+    rois = auto_grid(mask=mask, nrows=2, ncols=1)
+    # Assert the contours has 2 ROIs
+    assert len(rois.contours) == 2
+
+
+def test_auto_grid_overlap(roi_test_data, capfd):
+    """Test for PlantCV."""
+    # Read in test binary mask
+    mask = cv2.imread(roi_test_data.bin_grid_img, 0)
+    # Check for the overlapping ROI warning
+    _ = auto_grid(mask=mask, nrows=2, ncols=1, radius=50)
+    out, err = capfd.readouterr()
+    assert len(out) == 172
+
+
+def test_auto_grid_multiple_cols_rows(roi_test_data):
+    """Test for PlantCV."""
+    # Read in test binary mask
+    mask = cv2.imread(roi_test_data.bin_grid_img, 0)
+    rois = auto_grid(mask=mask, nrows=2, ncols=2)
+    # Assert the contours has 2 ROIs
+    assert len(rois.contours) == 4
+
+
 def test_multi(roi_test_data):
     """Test for PlantCV."""
     # Read in test RGB image
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
-    rois, _ = multi(rgb_img, coord=(10, 10), radius=10, spacing=(10, 10), nrows=2, ncols=2)
+    rois = multi(rgb_img, coord=(10, 10), radius=10, spacing=(10, 10), nrows=2, ncols=2)
     # Assert the contours has 18 ROIs
-    assert len(rois) == 4
+    assert len(rois.hierarchy) == 4
 
 
 def test_multi_input_coords(roi_test_data):
     """Test for PlantCV."""
     # Read in test RGB image
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
-    rois, _ = multi(rgb_img, coord=[(25, 120), (100, 100)], radius=20)
+    rois = multi(rgb_img, coord=[(25, 120), (100, 100)], radius=20)
     # Assert the contours has 18 ROIs
-    assert len(rois) == 2
+    assert len(rois.hierarchy) == 2
 
 
 def test_multi_bad_input(roi_test_data):
@@ -142,7 +188,16 @@ def test_multi_bad_input(roi_test_data):
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
     # The user must input a list of custom coordinates OR inputs to make a grid. Not both
     with pytest.raises(RuntimeError):
-        _, _ = multi(rgb_img, coord=[(25, 120), (100, 100)], radius=20, spacing=(10, 10), nrows=3, ncols=6)
+        _ = multi(rgb_img, coord=[(25, 120), (100, 100)], radius=20, spacing=(10, 10), nrows=3, ncols=6)
+
+
+def test_multi_bad_input_no_radius(roi_test_data):
+    """Test for PlantCV."""
+    # Read in test RGB image
+    rgb_img = cv2.imread(roi_test_data.small_rgb_img)
+    # The user must input a radius if using a list of custom coordinates
+    with pytest.raises(RuntimeError):
+        _ = multi(rgb_img, coord=[(25, 120), (100, 100)])
 
 
 def test_multi_bad_input_oob(roi_test_data):
@@ -151,7 +206,7 @@ def test_multi_bad_input_oob(roi_test_data):
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
     # nputs to make a grid make ROIs that go off the screen
     with pytest.raises(RuntimeError):
-        _, _ = multi(rgb_img, coord=(25000, 12000), radius=2, spacing=(1, 1), nrows=3, ncols=6)
+        _ = multi(rgb_img, coord=(25000, 12000), radius=2, spacing=(1, 1), nrows=3, ncols=6)
 
 
 def test_multi_bad_input_oob_list(roi_test_data):
@@ -160,7 +215,7 @@ def test_multi_bad_input_oob_list(roi_test_data):
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
     # All vertices in the list of centers must draw roi's that are inside the image
     with pytest.raises(RuntimeError):
-        _, _ = multi(rgb_img, coord=[(25000, 25000), (25000, 12000), (12000, 12000)], radius=20)
+        _ = multi(rgb_img, coord=[(25000, 25000), (25000, 12000), (12000, 12000)], radius=20)
 
 
 def test_roi_custom(roi_test_data):

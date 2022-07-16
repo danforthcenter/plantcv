@@ -52,8 +52,9 @@ def test_plantcv_segment_image_series(tmpdir):
 
     # pcv.params.color_sequence = 'random'
 
-    rois, roi_hierarchy = multi(img=img, coord=(OBJ1_COORDS[0], OBJ1_COORDS[1]),
-                                radius=OBJ_SIZE-2, spacing=SPACING, nrows=2, ncols=2)
+    roi_objects = multi(img=img, coord=(OBJ1_COORDS[0], OBJ1_COORDS[1]),
+                        radius=OBJ_SIZE-2, spacing=SPACING, nrows=2, ncols=2)
+    rois, _ = roi_objects.contours, roi_objects.hierarchy
     valid_rois = [rois[0], rois[3]]
 
     # test that the function detects the two objects and propagates the labels

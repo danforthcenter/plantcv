@@ -2,6 +2,7 @@
 import os
 import cv2
 import json
+import numpy as np
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv.annotate.points import _find_closest_pt
 import matplotlib.pyplot as plt
@@ -281,3 +282,37 @@ class Points(object):
             ax0plots = self.ax.lines
             self.ax.lines.remove(ax0plots[idx_remove])
         self.fig.canvas.draw()
+
+
+class Objects:
+    """Class for managing image contours/objects and their hierarchical relationships."""
+    def __init__(self, contours: list = None, hierarchy: list = None):
+        self.contours = contours
+        self.hierarchy = hierarchy
+        if contours is None:
+            self.contours = []
+            self.hierarchy = []
+
+    def __iter__(self):
+        self.n = 0
+        return self
+
+    def __next__(self):
+        if self.n < len(self.contours):
+            self.n += 1
+            return self.contours[self.n-1], self.hierarchy[self.n-1]
+        else:
+            raise StopIteration
+
+    def append(self, contour, h):
+        self.contours.append(contour)
+        self.hierarchy.append(h)
+
+    def save(self, filename):
+        np.savez(filename, contours=self.contours, hierarchy=self.hierarchy)
+
+    @staticmethod
+    def load(filename):
+        file = np.load(filename)
+        obj = Objects(file['contours'].tolist(), file['hierarchy'])
+        return obj

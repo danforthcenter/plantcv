@@ -6,6 +6,11 @@ from subprocess import call
 # Process images using multiprocessing
 ###########################################
 def _process_images_multiproc(job):
+    """Process images using multiprocessing.
+
+    Keyword arguments:
+    job = workflow command-line components
+    """
     call(job)
 
 

@@ -724,10 +724,16 @@ pages for more details on the input and output variable types.
 * pre v3.8: NA
 * post v3.8: mask = **pcv.roi.roi2mask**(*img, contour*)
 
+#### plantcv.roi.auto_grid
+
+* pre v4.0: NA
+* post v4.0: roi_objects = **pcv.roi.auto_grid**(*mask, nrows, ncols, radius=None, img=None*)
+
 #### plantcv.roi.multi
 
 * pre v3.1: NA
 * post v3.1: roi_contours, roi_hierarchies = **plantcv.roi.multi**(*img, coord, radius, spacing=None, nrows=None, ncols=None*)
+* post v4.0: roi_objects = **plantcv.roi.multi**(*img, coord, radius=None, spacing=None, nrows=None, ncols=None*)
 
 #### plantcv.roi_objects
 
