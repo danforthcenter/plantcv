@@ -75,7 +75,7 @@ class HSI(Image):
         self.thumb = self._create_thumb()
 
     def get_wavelength(self, wavelength):
-        idx = np.abs(self - wavelength).argmin()
+        idx = np.abs(np.array(self.wavelengths) - wavelength).argmin()
         obj = super(HSI, self).__getitem__(np.s_[:, :, idx])
         obj.wavelengths = [self.wavelengths[idx]]
         obj.min_wavelength = np.min(obj.wavelengths)
