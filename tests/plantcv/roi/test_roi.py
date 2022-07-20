@@ -11,9 +11,9 @@ def test_from_binary_image(roi_test_data):
     # Create a binary image
     bin_img = np.zeros(np.shape(rgb_img)[0:2], dtype=np.uint8)
     cv2.rectangle(bin_img, (100, 100), (10, 10), 255, -1)
-    roi, _ = from_binary_image(bin_img=bin_img, img=rgb_img)
+    roi = from_binary_image(bin_img=bin_img, img=rgb_img)
     # Assert the contours and hierarchy lists contain only the ROI
-    assert np.shape(roi) == (1, 360, 1, 2)
+    assert np.shape(roi.contours) == (1, 360, 1, 2)
 
 
 def test_from_binary_image_grayscale_input(roi_test_data):
@@ -23,9 +23,9 @@ def test_from_binary_image_grayscale_input(roi_test_data):
     # Create a binary image
     bin_img = np.zeros(np.shape(gray_img)[0:2], dtype=np.uint8)
     cv2.rectangle(bin_img, (100, 100), (10, 10), 255, -1)
-    roi, _ = from_binary_image(bin_img=bin_img, img=gray_img)
+    roi = from_binary_image(bin_img=bin_img, img=gray_img)
     # Assert the contours and hierarchy lists contain only the ROI
-    assert np.shape(roi) == (1, 360, 1, 2)
+    assert np.shape(roi.contours) == (1, 360, 1, 2)
 
 
 def test_from_binary_image_bad_binary_input(roi_test_data):
@@ -34,25 +34,25 @@ def test_from_binary_image_bad_binary_input(roi_test_data):
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
     # Binary input is required but an RGB input is provided
     with pytest.raises(RuntimeError):
-        _, _ = from_binary_image(bin_img=rgb_img, img=rgb_img)
+        _ = from_binary_image(bin_img=rgb_img, img=rgb_img)
 
 
 def test_rectangle(roi_test_data):
     """Test for PlantCV."""
     # Read in test RGB image
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
-    roi, _ = rectangle(x=100, y=100, h=100, w=100, img=rgb_img)
+    roi = rectangle(x=100, y=100, h=100, w=100, img=rgb_img)
     # Assert the contours and hierarchy lists contain only the ROI
-    assert np.shape(roi) == (1, 4, 1, 2)
+    assert np.shape(roi.contours) == (1, 4, 1, 2)
 
 
 def test_rectangle_grayscale_input(roi_test_data):
     """Test for PlantCV."""
     # Read in a test grayscale image
     gray_img = cv2.imread(roi_test_data.small_gray_img, -1)
-    roi, _ = rectangle(x=100, y=100, h=100, w=100, img=gray_img)
+    roi = rectangle(x=100, y=100, h=100, w=100, img=gray_img)
     # Assert the contours and hierarchy lists contain only the ROI
-    assert np.shape(roi) == (1, 4, 1, 2)
+    assert np.shape(roi.contours) == (1, 4, 1, 2)
 
 
 def test_rectangle_out_of_frame(roi_test_data):
@@ -61,25 +61,25 @@ def test_rectangle_out_of_frame(roi_test_data):
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
     # The resulting rectangle needs to be within the dimensions of the image
     with pytest.raises(RuntimeError):
-        _, _ = rectangle(x=100, y=100, h=500, w=3000, img=rgb_img)
+        _ = rectangle(x=100, y=100, h=500, w=3000, img=rgb_img)
 
 
 def test_circle(roi_test_data):
     """Test for PlantCV."""
     # Read in test RGB image
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
-    roi, _ = circle(x=100, y=100, r=75, img=rgb_img)
+    roi = circle(x=100, y=100, r=75, img=rgb_img)
     # Assert the contours and hierarchy lists contain only the ROI
-    assert np.shape(roi) == (1, 424, 1, 2)
+    assert np.shape(roi.contours) == (1, 424, 1, 2)
 
 
 def test_circle_grayscale_input(roi_test_data):
     """Test for PlantCV."""
     # Read in a test grayscale image
     gray_img = cv2.imread(roi_test_data.small_gray_img, -1)
-    roi, _ = circle(x=100, y=100, r=75, img=gray_img)
+    roi = circle(x=100, y=100, r=75, img=gray_img)
     # Assert the contours and hierarchy lists contain only the ROI
-    assert np.shape(roi) == (1, 424, 1, 2)
+    assert np.shape(roi.contours) == (1, 424, 1, 2)
 
 
 def test_circle_out_of_frame(roi_test_data):
@@ -88,25 +88,25 @@ def test_circle_out_of_frame(roi_test_data):
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
     # The resulting rectangle needs to be within the dimensions of the image
     with pytest.raises(RuntimeError):
-        _, _ = circle(x=50, y=225, r=75, img=rgb_img)
+        _ = circle(x=50, y=225, r=75, img=rgb_img)
 
 
 def test_ellipse(roi_test_data):
     """Test for PlantCV."""
     # Read in test RGB image
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
-    roi, _ = ellipse(x=100, y=100, r1=75, r2=50, angle=0, img=rgb_img)
+    roi = ellipse(x=100, y=100, r1=75, r2=50, angle=0, img=rgb_img)
     # Assert the contours and hierarchy lists contain only the ROI
-    assert np.shape(roi) == (1, 360, 1, 2)
+    assert np.shape(roi.contours) == (1, 360, 1, 2)
 
 
 def test_ellipse_grayscale_input(roi_test_data):
     """Test for PlantCV."""
     # Read in a test grayscale image
     gray_img = cv2.imread(roi_test_data.small_gray_img, -1)
-    roi, _ = ellipse(x=100, y=100, r1=75, r2=50, angle=0, img=gray_img)
+    roi = ellipse(x=100, y=100, r1=75, r2=50, angle=0, img=gray_img)
     # Assert the contours and hierarchy lists contain only the ROI
-    assert np.shape(roi) == (1, 360, 1, 2)
+    assert np.shape(roi.contours) == (1, 360, 1, 2)
 
 
 def test_ellipse_out_of_frame(roi_test_data):
@@ -115,7 +115,7 @@ def test_ellipse_out_of_frame(roi_test_data):
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
     # The resulting rectangle needs to be within the dimensions of the image
     with pytest.raises(RuntimeError):
-        _, _ = ellipse(x=50, y=225, r1=75, r2=50, angle=0, img=rgb_img)
+        _ = ellipse(x=50, y=225, r1=75, r2=50, angle=0, img=rgb_img)
 
 
 def test_auto_grid(roi_test_data):
@@ -222,8 +222,8 @@ def test_roi_custom(roi_test_data):
     """Test for PlantCV."""
     # Read in test RGB image
     img = cv2.imread(roi_test_data.small_rgb_img)
-    roi, _ = custom(img=img, vertices=[[226, 1], [313, 184], [240, 202], [220, 229], [161, 171]])
-    assert np.shape(roi) == (1, 5, 2)
+    roi = custom(img=img, vertices=[[226, 1], [313, 184], [240, 202], [220, 229], [161, 171]])
+    assert np.shape(roi.contours) == (1, 5, 2)
 
 
 def test_custom_bad_input(roi_test_data):
