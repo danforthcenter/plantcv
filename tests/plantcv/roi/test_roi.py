@@ -13,7 +13,7 @@ def test_from_binary_image(roi_test_data):
     cv2.rectangle(bin_img, (100, 100), (10, 10), 255, -1)
     roi = from_binary_image(bin_img=bin_img, img=rgb_img)
     # Assert the contours and hierarchy lists contain only the ROI
-    assert np.shape(roi.contours) == (1, 360, 1, 2)
+    assert np.shape(roi.contours[0]) == (1, 360, 1, 2)
 
 
 def test_from_binary_image_grayscale_input(roi_test_data):
@@ -25,7 +25,7 @@ def test_from_binary_image_grayscale_input(roi_test_data):
     cv2.rectangle(bin_img, (100, 100), (10, 10), 255, -1)
     roi = from_binary_image(bin_img=bin_img, img=gray_img)
     # Assert the contours and hierarchy lists contain only the ROI
-    assert np.shape(roi.contours) == (1, 360, 1, 2)
+    assert np.shape(roi.contours[0]) == (1, 360, 1, 2)
 
 
 def test_from_binary_image_bad_binary_input(roi_test_data):
@@ -43,7 +43,7 @@ def test_rectangle(roi_test_data):
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
     roi = rectangle(x=100, y=100, h=100, w=100, img=rgb_img)
     # Assert the contours and hierarchy lists contain only the ROI
-    assert np.shape(roi.contours) == (1, 4, 1, 2)
+    assert np.shape(roi.contours[0]) == (1, 4, 1, 2)
 
 
 def test_rectangle_grayscale_input(roi_test_data):
@@ -52,7 +52,7 @@ def test_rectangle_grayscale_input(roi_test_data):
     gray_img = cv2.imread(roi_test_data.small_gray_img, -1)
     roi = rectangle(x=100, y=100, h=100, w=100, img=gray_img)
     # Assert the contours and hierarchy lists contain only the ROI
-    assert np.shape(roi.contours) == (1, 4, 1, 2)
+    assert np.shape(roi.contours[0]) == (1, 4, 1, 2)
 
 
 def test_rectangle_out_of_frame(roi_test_data):
@@ -70,7 +70,7 @@ def test_circle(roi_test_data):
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
     roi = circle(x=100, y=100, r=75, img=rgb_img)
     # Assert the contours and hierarchy lists contain only the ROI
-    assert np.shape(roi.contours) == (1, 424, 1, 2)
+    assert np.shape(roi.contours[0]) == (1, 424, 1, 2)
 
 
 def test_circle_grayscale_input(roi_test_data):
@@ -79,7 +79,7 @@ def test_circle_grayscale_input(roi_test_data):
     gray_img = cv2.imread(roi_test_data.small_gray_img, -1)
     roi = circle(x=100, y=100, r=75, img=gray_img)
     # Assert the contours and hierarchy lists contain only the ROI
-    assert np.shape(roi.contours) == (1, 424, 1, 2)
+    assert np.shape(roi.contours[0]) == (1, 424, 1, 2)
 
 
 def test_circle_out_of_frame(roi_test_data):
@@ -97,7 +97,7 @@ def test_ellipse(roi_test_data):
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
     roi = ellipse(x=100, y=100, r1=75, r2=50, angle=0, img=rgb_img)
     # Assert the contours and hierarchy lists contain only the ROI
-    assert np.shape(roi.contours) == (1, 360, 1, 2)
+    assert np.shape(roi.contours[0]) == (1, 360, 1, 2)
 
 
 def test_ellipse_grayscale_input(roi_test_data):
@@ -106,7 +106,7 @@ def test_ellipse_grayscale_input(roi_test_data):
     gray_img = cv2.imread(roi_test_data.small_gray_img, -1)
     roi = ellipse(x=100, y=100, r1=75, r2=50, angle=0, img=gray_img)
     # Assert the contours and hierarchy lists contain only the ROI
-    assert np.shape(roi.contours) == (1, 360, 1, 2)
+    assert np.shape(roi.contours[0]) == (1, 360, 1, 2)
 
 
 def test_ellipse_out_of_frame(roi_test_data):
@@ -223,7 +223,7 @@ def test_roi_custom(roi_test_data):
     # Read in test RGB image
     img = cv2.imread(roi_test_data.small_rgb_img)
     roi = custom(img=img, vertices=[[226, 1], [313, 184], [240, 202], [220, 229], [161, 171]])
-    assert np.shape(roi.contours) == (1, 5, 2)
+    assert np.shape(roi.contours[0]) == (1, 5, 2)
 
 
 def test_custom_bad_input(roi_test_data):
