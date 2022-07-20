@@ -278,6 +278,7 @@ pages for more details on the input and output variable types.
     * roi_contour, roi_hierarchy = **plantcv.roi.ellipse**(*img, x, y, r1, r2, angle*)
     * roi_contour, roi_hierarchy = **plantcv.roi.from_binary_image**(*img, bin_img*)
     * roi_contour, roi_hierarchy = **plantcv.roi.rectangle**(*img, x, y, h, w*)
+    * roi_contour, roi_hierarchy = **plantcv.roi.custom(*img, vertices*)
 
 #### plantcv.dilate
 
@@ -700,24 +701,37 @@ pages for more details on the input and output variable types.
 * pre v3.0dev1: NA
 * post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.circle**(*x, y, r, img*)
 * post v3.2: roi_contour, roi_hierarchy = **plantcv.roi.circle**(*img, x, y, r*)
+* post v4.0: roi_objects = **plantcv.roi.circle**(*img, x, y, r*)
+
+#### plantcv.roi.custom
+
+* pre v3.0dev1: NA
+* post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.custom  **(*img, vertices*)
+* post v3.2: roi_contour, roi_hierarchy = **plantcv.roi.circle**(*img, vertices*)
+* post v4.0: roi_objects = **plantcv.roi.circle**(*img, vertices*)
 
 #### plantcv.roi.ellipse
 
 * pre v3.0dev1: NA
 * post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.ellipse**(*x, y, r1, r2, angle, img*)
 * post v3.2: roi_contour, roi_hierarchy = **plantcv.roi.ellipse**(*img, x, y, r1, r2, angle*)
+* post v4.0: roi_objects = **plantcv.roi.ellipse**(*img, x, y, r1, r2, angle*)
+
 
 #### plantcv.roi.from_binary_image
 
 * pre v3.0dev1: NA
 * post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.from_binary_image**(*bin_img, img*)
 * post v3.2: roi_contour, roi_hierarchy = **plantcv.roi.from_binary**(*img, bin_img*)
+* post v4.0: roi_objects = **plantcv.roi.from_binary**(*img, bin_img*)
 
 #### plantcv.roi.rectangle
 
 * pre v3.0dev1: NA
 * post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.rectangle**(*x, y, h, w, img*)
 * post v3.2: roi_contour, roi_hierarchy = **plantcv.roi.rectangle**(*img, x, y, h, w*)
+* post v4.0: roi_objects = **plantcv.roi.rectangle**(*img, x, y, h, w*)
+
 
 #### plantcv.roi.roi2mask
 
