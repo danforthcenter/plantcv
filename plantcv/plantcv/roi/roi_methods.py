@@ -32,9 +32,11 @@ def from_binary_image(img, bin_img):
     # Use the binary image to create an ROI contour
     roi_contour, roi_hierarchy = cv2.findContours(np.copy(bin_img), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
     # Draw the ROI if requested
+    roi_objects = Objects()
+    roi_objects.append(roi_contour, roi_hierarchy)
     _draw_roi(img=img, roi_contour=roi_contour)
 
-    return roi_contour, roi_hierarchy
+    return roi_objects
 
 
 # Create a rectangular ROI
@@ -73,7 +75,8 @@ def rectangle(img, x, y, h, w):
     # Create the ROI contour
     roi_contour = [np.array([[pt1], [pt2], [pt3], [pt4]], dtype=np.int32)]
     roi_hierarchy = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
-
+    roi_objects = Objects()
+    roi_objects.append(roi_contour,roi_hierarchy)
     # Draw the ROI if requested
     _draw_roi(img=img, roi_contour=roi_contour)
 
@@ -81,7 +84,7 @@ def rectangle(img, x, y, h, w):
     if x < 0 or y < 0 or x + w > width or y + h > height:
         fatal_error("The ROI extends outside of the image!")
 
-    return roi_contour, roi_hierarchy
+    return roi_objects
 
 
 # Create a circular ROI
@@ -116,7 +119,8 @@ def circle(img, x, y, r):
 
     # Use the binary image to create an ROI contour
     roi_contour, roi_hierarchy = cv2.findContours(bin_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
-
+    roi_objects = Objects()
+    roi_objects.append(roi_contour, roi_hierarchy)
     # Draw the ROI if requested
     _draw_roi(img=img, roi_contour=roi_contour)
 
@@ -124,7 +128,7 @@ def circle(img, x, y, r):
     if x - r < 0 or x + r > width or y - r < 0 or y + r > height:
         fatal_error("The ROI extends outside of the image!")
 
-    return roi_contour, roi_hierarchy
+    return roi_objects
 
 
 # Create an elliptical ROI
@@ -163,7 +167,8 @@ def ellipse(img, x, y, r1, r2, angle):
 
     # Use the binary image to create an ROI contour
     roi_contour, roi_hierarchy = cv2.findContours(bin_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
-
+    roi_objects = Objects()
+    roi_objects.append(roi_contour, roi_hierarchy)
     # Draw the ROI if requested
     _draw_roi(img=img, roi_contour=roi_contour)
 
@@ -172,7 +177,7 @@ def ellipse(img, x, y, r1, r2, angle):
             len(roi_contour) == 0:
         fatal_error("The ROI extends outside of the image, or ROI is not on the image!")
 
-    return roi_contour, roi_hierarchy
+    return roi_objects
 
 
 # Draw the ROI on a reference image
@@ -409,7 +414,8 @@ def custom(img, vertices):
 
     roi_contour = [np.array(vertices, dtype=np.int32)]
     roi_hierarchy = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
-
+    roi_objects = Objects()
+    roi_objects.append(roi_contour, roi_hierarchy)
     # Draw the ROIs if requested
     _draw_roi(img=img, roi_contour=roi_contour)
 
@@ -418,4 +424,4 @@ def custom(img, vertices):
         (x, y) = i
         if x < 0 or x > width or y < 0 or y > height:
             fatal_error("An ROI extends outside of the image!")
-    return roi_contour, roi_hierarchy
+    return roi_objects
