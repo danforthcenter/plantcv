@@ -119,7 +119,7 @@ def roi_objects(img, roi_objects, objects, roi_type="partial"):
         background1 = np.zeros(np.shape(img)[:2], dtype=np.uint8)
         background2 = np.zeros(np.shape(img)[:2], dtype=np.uint8)
         cv2.drawContours(background1, objects.contours, -1, (255), -1, lineType=8, hierarchy=objects.hierarchy)
-        roi_points = np.vstack(roi_object.contours[0])
+        roi_points = np.vstack(roi_objects.contours[0])
         cv2.fillPoly(background2, [roi_points], (255))
         mask = cv2.multiply(background1, background2)
         obj_area = cv2.countNonZero(mask)
