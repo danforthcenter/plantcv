@@ -4,7 +4,8 @@ import cv2
 import numpy as np
 import os
 from plantcv.plantcv._debug import _debug
-from plantcv.plantcv import params
+from plantcv.plantcv import params, Objects
+
 
 
 def find_objects(img, mask):
@@ -17,26 +18,24 @@ def find_objects(img, mask):
 
 
     Returns:
-    objects   = list of contours
-    hierarchy = contour hierarchy list
+    objects   = plantcv.Objects class
 
     :param img: numpy.ndarray
     :param mask: numpy.ndarray
-    :return objects: list
-    :return hierarchy: numpy.ndarray
+    :return objects: plantcv.Objects
     """
     mask1 = np.copy(mask)
     ori_img = np.copy(img)
     # If the reference image is grayscale convert it to color
     if len(np.shape(ori_img)) == 2:
         ori_img = cv2.cvtColor(ori_img, cv2.COLOR_GRAY2BGR)
-    objects, hierarchy = cv2.findContours(mask1, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
-    # Cast tuple objects as a list
-    objects = list(objects)
-    for i, cnt in enumerate(objects):
+    contours, hierarchy = cv2.findContours(mask1, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
+
+    objects = Objects(list(contours), hierarchy)
+    for i, cnt in enumerate(objects.contours):
         cv2.drawContours(ori_img, objects, i, (255, 102, 255), -1, lineType=8, hierarchy=hierarchy)
 
     _debug(visual=ori_img,
            filename=os.path.join(params.debug_outdir, str(params.device) + '_id_objects.png'))
 
-    return objects, hierarchy
+    return objects
