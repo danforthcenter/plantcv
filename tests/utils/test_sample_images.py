@@ -54,3 +54,24 @@ def test_sample_images_bad_phenofront_num(utils_test_data, tmpdir):
     img_outdir = os.path.join(str(tmp_dir), "images")
     with pytest.raises(RuntimeError):
         sample_images(source_path=snapshot_dir, dest_path=img_outdir, num=300)
+
+
+def test_sample_images_phenodata(utils_test_data, tmpdir):
+    """Test for PlantCV."""
+    # Create tmp directory
+    tmp_dir = tmpdir.mkdir("cache")
+    phenodata_dir = utils_test_data.phenodata_dir
+    img_outdir = os.path.join(str(tmp_dir), "images")
+    sample_images(source_path=phenodata_dir, dest_path=img_outdir, num=1)
+    random_images = os.listdir(img_outdir)
+    assert len(random_images) == 2
+
+
+def test_sample_images_phenodata_bad_num(utils_test_data, tmpdir):
+    """Test for PlantCV."""
+    # Create tmp directory
+    tmp_dir = tmpdir.mkdir("cache")
+    phenodata_dir = utils_test_data.phenodata_dir
+    img_outdir = os.path.join(str(tmp_dir), "images")
+    with pytest.raises(RuntimeError):
+        sample_images(source_path=phenodata_dir, dest_path=img_outdir, num=300)
