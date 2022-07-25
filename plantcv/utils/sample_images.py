@@ -1,6 +1,7 @@
 import os
 import random
 import shutil
+import json
 from plantcv.plantcv import fatal_error
 
 
@@ -14,6 +15,8 @@ def sample_images(source_path, dest_path, num=100):
     # If SnapshotInfo exists then need to make a new csv for the random image sample
     if os.path.exists(os.path.join(source_path, 'SnapshotInfo.csv')):
         _sample_phenofront(source_path, dest_path, num)
+    elif os.path.exists(os.path.join(source_path, 'metadata.json')):
+        _sample_phenodata(source_path, dest_path, num)
     else:
         _sample_filenames(source_path, dest_path, num)
 
@@ -37,7 +40,7 @@ def _sample_phenofront(source_path, dest_path, num=100):
 
     # Check to make sure number of imgs to select is less than number of images found
     if num > len(line_array):
-        fatal_error(f"Number of images found ({len(line_array)}) less than 'num'.")
+        fatal_error(f"Number of snapshots found ({len(line_array)}) less than 'num'.")
 
     # Create SnapshotInfo file
     with open(os.path.join(dest_path, 'SnapshotInfo.csv'), 'w') as out_file:
@@ -83,3 +86,47 @@ def _sample_filenames(source_path, dest_path, num=100):
     # Copy images over to destination
     for i in random_index:
         shutil.copy(img_element_array[int(i)], dest_path)
+
+
+def _sample_phenodata(source_path, dest_path, num=100):
+    """
+    Sample images from a phenodata dataset.
+    :param source_path: Path to phenodata images.
+    :param dest_path: Path to save sampled images.
+    :param num: Number of images to sample.
+    :return: None
+    """
+    # Initialize an empty dataset
+    sampled_dataset = {}
+    # Read in the metadata
+    with open(os.path.join(source_path, "metadata.json"), "r") as fp:
+        dataset = json.load(fp)
+    # Set the dataset to the sampled dataset
+    sampled_dataset["dataset"] = dataset["dataset"]
+    # Leave the environment secton empty
+    sampled_dataset["environment"] = {}
+    # Initialize the images section
+    sampled_dataset["images"] = {}
+    # Create a unique dictionary of snapshot IDs
+    snapshots = {}
+    # Store the snapshot IDs in the snapshots dictionary
+    for value in dataset["images"].values():
+        snapshots[value["snapshot"]] = True
+    # Check to make sure number of imgs to select is less than number of images found
+    if len(snapshots) < num:
+        fatal_error(f"Number of snapshots found ({len(snapshots)}) less than 'num'.")
+    # Randomly select the snapshots
+    random_snapshots = random.sample(snapshots.keys(), num)
+    # Iterate over all images in the dataset
+    for fpath, meta in dataset["images"].items():
+        # If the snapshot ID is in the random snapshots
+        if meta["snapshot"] in random_snapshots:
+            # Store the image in the sampled dataset
+            sampled_dataset["images"][fpath] = meta
+            # Copy the image to the destination directory
+            parent_path = os.path.split(fpath)[0]
+            os.makedirs(os.path.join(dest_path, parent_path), exist_ok=True)
+            shutil.copy(os.path.join(source_path, fpath), os.path.join(dest_path, fpath))
+    # Write the sampled dataset to a JSON file
+    with open(os.path.join(dest_path, "metadata.json"), "w") as fp:
+        json.dump(sampled_dataset, fp, indent=4)
