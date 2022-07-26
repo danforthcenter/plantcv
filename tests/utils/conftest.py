@@ -15,6 +15,8 @@ class UtilsTestData:
         self.snapshot_imgdir = os.path.join(self.datadir, "snapshot_imgdir")
         # Flat image directory
         self.flat_imgdir = os.path.join(self.datadir, "flat_imgdir")
+        # Phenodata directory
+        self.phenodata_dir = os.path.join(self.datadir, "phenodata_dir")
         # ImageJ Pixel Inspector sampled RGB values
         self.rgb_values_file = os.path.join(self.datadir, "pixel_inspector_rgb_values.txt")
 
