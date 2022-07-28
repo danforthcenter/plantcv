@@ -31,7 +31,7 @@ def test_object_composition_no_contours(test_data):
     img = cv2.imread(test_data.small_rgb_img)
     obj = Objects()
     contours, _ = object_composition(img=img, objects=obj)
-    assert objects.contours is None
+    assert contours is None
 
 
 def test_object_composition_nested():
