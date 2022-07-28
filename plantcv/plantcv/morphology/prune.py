@@ -43,7 +43,7 @@ def prune(skel_img, size=0, mask=None):
     pruned_img = skel_img.copy()
 
     # Check to see if the skeleton has multiple objects
-    skel_objects, _ = find_objects(skel_img, skel_img)
+    skel_objects = find_objects(skel_img, skel_img)
 
     _, objects = segment_skeleton(skel_img)
     kept_segments = []
@@ -53,7 +53,7 @@ def prune(skel_img, size=0, mask=None):
         # If size>0 then check for segments that are smaller than size pixels long
 
         # Sort through segments since we don't want to remove primary segments
-        secondary_objects, primary_objects = segment_sort(skel_img, objects)
+        secondary_objects, primary_objects = segment_sort(skel_img, objects.contours)
 
         # Keep segments longer than specified size
         for i in range(0, len(secondary_objects)):
@@ -80,9 +80,9 @@ def prune(skel_img, size=0, mask=None):
     else:
         pruned_plot = mask.copy()
     pruned_plot = cv2.cvtColor(pruned_plot, cv2.COLOR_GRAY2RGB)
-    pruned_obj, pruned_hierarchy = find_objects(pruned_img, pruned_img)
+    pruned_obj = find_objects(pruned_img, pruned_img)
     cv2.drawContours(pruned_plot, removed_segments, -1, (0, 0, 255), params.line_thickness, lineType=8)
-    cv2.drawContours(pruned_plot, pruned_obj, -1, (150, 150, 150), params.line_thickness, lineType=8)
+    cv2.drawContours(pruned_plot, pruned_obj.contours, -1, (150, 150, 150), params.line_thickness, lineType=8)
 
     _debug(visual=pruned_img, filename=os.path.join(params.debug_outdir, f"{params.device}_pruned.png"))
     _debug(visual=pruned_img, filename=os.path.join(params.debug_outdir, f"{params.device}_pruned_debug.png"))
@@ -90,4 +90,4 @@ def prune(skel_img, size=0, mask=None):
     # Segment the pruned skeleton
     segmented_img, segment_objects = segment_skeleton(pruned_img, mask)
 
-    return pruned_img, segmented_img, segment_objects
+    return pruned_img, segmented_img, segment_objects.contours

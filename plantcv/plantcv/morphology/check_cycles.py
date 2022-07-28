@@ -45,10 +45,10 @@ def check_cycles(skel_img, label="default"):
     just_cycles = erode(just_cycles, 2, 1)
 
     # Use pcv.find_objects to turn plots of holes into countable contours
-    cycle_objects, cycle_hierarchies = find_objects(just_cycles, just_cycles)
+    cycle_objects = find_objects(just_cycles, just_cycles)
 
     # Count the number of holes
-    num_cycles = len(cycle_objects)
+    num_cycles = len(cycle_objects.contours)
 
     # Make debugging image
     cycle_img = skel_img.copy()
@@ -57,9 +57,9 @@ def check_cycles(skel_img, label="default"):
     if num_cycles > 0:
         # Get a new color scale
         rand_color = color_palette(num=num_cycles, saved=False)
-        for i in range(0, len(cycle_objects)):
-            cv2.drawContours(cycle_img, cycle_objects, i, rand_color[i], params.line_thickness, lineType=8,
-                             hierarchy=cycle_hierarchies)
+        for i in range(0, len(cycle_objects.contours)):
+            cv2.drawContours(cycle_img, cycle_objects.contours, i, rand_color[i], params.line_thickness, lineType=8,
+                             hierarchy=cycle_objects.hierarchy)
 
     # Store Cycle Data
     outputs.add_observation(sample=label, variable='num_cycles', trait='number of cycles',
