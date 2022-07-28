@@ -79,16 +79,16 @@ def find_branch_pts(skel_img, mask=None, label="default"):
         # Make debugging image on mask
         mask_copy = mask.copy()
         branch_plot = cv2.cvtColor(mask_copy, cv2.COLOR_GRAY2RGB)
-        skel_obj, skel_hier = find_objects(skel_img, skel_img)
-        cv2.drawContours(branch_plot, skel_obj, -1, (150, 150, 150), params.line_thickness, lineType=8,
-                         hierarchy=skel_hier)
+        skel_obj = find_objects(skel_img, skel_img)
+        cv2.drawContours(branch_plot, skel_obj.contours, -1, (150, 150, 150), params.line_thickness, lineType=8,
+                         hierarchy=skel_obj.hierarchy)
 
-    branch_objects, _ = find_objects(branch_pts_img, branch_pts_img)
+    branch_objects = find_objects(branch_pts_img, branch_pts_img)
 
     # Initialize list of tip data points
     branch_list = []
     branch_labels = []
-    for i, branch in enumerate(branch_objects):
+    for i, branch in enumerate(branch_objects.contours):
         x, y = branch.ravel()[:2]
         coord = (int(x), int(y))
         branch_list.append(coord)
