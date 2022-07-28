@@ -55,10 +55,10 @@ def segment_curvature(segmented_img, objects, label="default"):
         finding_tips_img = np.zeros(segmented_img.shape[:2], np.uint8)
         cv2.drawContours(finding_tips_img, objects, i, (255, 255, 255), 1, lineType=8)
         segment_tips = find_tips(finding_tips_img)
-        tip_objects, tip_hierarchies = find_objects(segment_tips, segment_tips)
+        tip_objects = find_objects(segment_tips, segment_tips)
         points = []
 
-        for t in tip_objects:
+        for t in tip_objects.contours:
             # Gather pairs of coordinates
             x, y = t.ravel()
             coord = (x, y)

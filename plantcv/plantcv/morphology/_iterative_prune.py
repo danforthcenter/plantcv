@@ -25,7 +25,7 @@ def _iterative_prune(skel_img, size):
     params.debug = None
 
     # Check to see if the skeleton has multiple objects
-    objects, _ = find_objects(pruned_img, pruned_img)
+    objects = find_objects(pruned_img, pruned_img)
 
     # Iteratively remove endpoints (tips) from a skeleton
     for i in range(0, size):
@@ -35,15 +35,15 @@ def _iterative_prune(skel_img, size):
     # Make debugging image
     pruned_plot = np.zeros(skel_img.shape[:2], np.uint8)
     pruned_plot = cv2.cvtColor(pruned_plot, cv2.COLOR_GRAY2RGB)
-    skel_obj, skel_hierarchy = find_objects(skel_img, skel_img)
-    pruned_obj, pruned_hierarchy = find_objects(pruned_img, pruned_img)
+    skel_obj = find_objects(skel_img, skel_img)
+    pruned_obj = find_objects(pruned_img, pruned_img)
 
     # Reset debug mode
     params.debug = debug
 
-    cv2.drawContours(pruned_plot, skel_obj, -1, (0, 0, 255), params.line_thickness,
-                     lineType=8, hierarchy=skel_hierarchy)
-    cv2.drawContours(pruned_plot, pruned_obj, -1, (255, 255, 255), params.line_thickness,
-                     lineType=8, hierarchy=pruned_hierarchy)
+    cv2.drawContours(pruned_plot, skel_obj.contours, -1, (0, 0, 255), params.line_thickness,
+                     lineType=8, hierarchy=skel_obj.hierarchy)
+    cv2.drawContours(pruned_plot, pruned_obj.contours, -1, (255, 255, 255), params.line_thickness,
+                     lineType=8, hierarchy=pruned_obj.hierarchy)
 
     return pruned_img
