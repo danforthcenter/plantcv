@@ -54,4 +54,4 @@ def object_composition(img, objects):
 
         return group, mask
     print("Warning: Invalid contour.")
-    return None
+    return None, None
