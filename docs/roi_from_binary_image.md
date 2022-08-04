@@ -2,7 +2,7 @@
 
 **plantcv.roi.from_binary_image**(*img, bin_img*)
 
-**returns** roi_contour, roi_hierarchy
+**returns** roi_objects
 
 - **Parameters:**
     - img - An RGB or grayscale image to plot the ROI on in debug mode.
@@ -21,7 +21,7 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
-roi_contour, roi_hierarchy = pcv.roi.from_binary_image(img=rgb_img, bin_img=bin_img)
+roi_objects = pcv.roi.from_binary_image(img=rgb_img, bin_img=bin_img)
 
 ```
 

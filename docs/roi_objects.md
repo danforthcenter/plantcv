@@ -5,17 +5,15 @@ or include objects that overlap with the region of interest.
 
 **plantcv.roi_objects**(*img, roi_contour, roi_hierarchy, object_contour, obj_hierarchy, roi_type='partial'*)
 
-**returns** kept objects, object hierarchy, object mask, object area
+**returns** kept objects, object mask, object area
 
 **Important Note:** If your ROI object detection does not perform first check that the ROI is 
 completely within the image.
 
 - **Parameters:**
     - img = RGB or grayscale image data to display kept objects on
-    - roi_contour = contour of roi, output from one of the pcv.roi subpackage functions
-    - roi_hierarchy = contour of roi, output from one of the pcv.roi subpackage functions
-    - object_contour = contours of objects, output from "find_objects" function 
-    - obj_hierarchy = hierarchy of objects, output from "find_objects" function
+    - roi_objects = pcv.Objects class of roi, output from one of the pcv.roi subpackage functions
+    - object_contour = pcv.Objects class, output from "find_objects" function 
     - roi_type = 'partial' (for partially inside, default), 'cutto', or 'largest' (keep only the largest contour)
     
 - **Context:**
@@ -37,8 +35,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # ROI objects allows the user to define if objects partially inside ROI are included or if objects are cut to ROI.
-roi_objects, hierarchy, kept_mask, obj_area = pcv.roi_objects(img, roi, roi_hierarchy, 
-                                                              objects, obj_hierarchy, 'partial')
+roi_objects, kept_mask, obj_area = pcv.roi_objects(img, roi, objects, 'partial')
 
 ```
 
@@ -62,7 +59,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "print"
 
 # Define region of interest in an image, there is a futher function 'ROI Objects' that allows the user to define if you want to include objects partially inside ROI or if you want to do cut objects to ROI.
-roi_objects, hierarchy, kept_mask, obj_area = pcv.roi_objects(img, roi, roi_hierarchy, objects, obj_hierarchy, 'cutto')
+roi_objects, kept_mask, obj_area = pcv.roi_objects(img, roi, objects, 'cutto')
 ```
 
 **Object (green) that is cut to the ROI**

@@ -2,7 +2,7 @@
 
 **plantcv.roi.circle**(*img, x, y, r*)
 
-**returns** roi_contour, roi_hierarchy
+**returns** roi_objects
 
 - **Parameters:**
     - img - An RGB or grayscale image to plot the ROI on in debug mode.
@@ -24,7 +24,7 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
-roi_contour, roi_hierarchy = pcv.roi.circle(img=rgb_img, x=200, y=225, r=75)
+roi_objects = pcv.roi.circle(img=rgb_img, x=200, y=225, r=75)
 
 ```
 

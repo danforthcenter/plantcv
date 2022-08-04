@@ -2,7 +2,7 @@
 
 **plantcv.roi.custom**(*img, vertices*)
 
-**returns** roi_contours, roi_hierarchies
+**returns** roi_objects
 
 - **Parameters:**
     - img            = Input image data.
@@ -27,7 +27,7 @@ from plantcv import plantcv as pcv
 pcv.params.debug = "plot"
 
 # Make a custom polygon ROI
-roi_contour, roi_hierarchy = pcv.roi.custom(img=img, 
+roi_objects = pcv.roi.custom(img=img, 
                                             vertices=[[1190,490], [1470,830], 
                                             [1565,1460], [1130,1620], 
                                             [920,1430], [890,950]])

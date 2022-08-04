@@ -2,7 +2,7 @@
 
 **plantcv.roi.ellipse**(*img, x, y, r1, r2, angle*)
 
-**returns** roi_contour, roi_hierarchy
+**returns** roi_objects
 
 - **Parameters:**
     - img - An RGB or grayscale image to plot the ROI on in debug mode.
@@ -26,7 +26,7 @@ from plantcv import plantcv as pcv
 # or "plot" (Jupyter Notebooks or X11)
 pcv.params.debug = "print"
 
-roi_contour, roi_hierarchy = pcv.roi.ellipse(img=rgb_img, x=200, y=200, 
+roi_objects = pcv.roi.ellipse(img=rgb_img, x=200, y=200, 
                                              r1=100, r2=80, angle=0)
 
 ```
