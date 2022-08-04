@@ -11,11 +11,18 @@ from plantcv.plantcv._debug import _debug
 
 
 def std_color_matrix(pos=0):
-    """Standard color values for the x-rite ColorCheker Classic, ColorChecker Mini,
-    and ColorChecker Passport targets.
+    """Standard color values compatible with the x-rite ColorCheker Classic,
+    ColorChecker Mini, and ColorChecker Passport targets.
+    Source: https://en.wikipedia.org/wiki/ColorChecker
 
     Inputs:
-    pos     = reference value indicating orientation of the color card
+    pos     = reference value indicating orientation of the color card. The reference
+                is based on the position of the white chip:
+
+                pos = 0: bottom-left corner
+                pos = 1: bottom-right corner
+                pos = 2: top-right corner
+                pos = 3: top-left corner
 
     Outputs:
     color_matrix    = matrix containing the standard red, green, and blue
