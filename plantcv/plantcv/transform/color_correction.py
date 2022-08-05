@@ -1,6 +1,7 @@
 # Color Corrections Functions
 
 import os
+import math
 import cv2
 import numpy as np
 from plantcv.plantcv import params
@@ -57,6 +58,10 @@ def std_color_matrix(pos=0):
             [122,122,121], # neutral 5 (.7*)
             [85,85,85], # neutral 3.5 (1.05*)
             [52,52,52]], dtype=np.float64) # black (1.50*)
+
+    pos = math.floor(pos)
+    if (pos < 0) or (pos > 3):
+        fatal_error("white chip position reference 'pos' must be a value among {0, 1, 2, 3}")
 
     N_chips = values_list.shape[0]
 
