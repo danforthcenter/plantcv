@@ -9,7 +9,7 @@ from plantcv.plantcv import outputs
 
 def test_std_color_matrix():
     """Test for PlantCV"""
-    std_matrix = pcv.transform.std_color_matrix(pos=0)
+    std_matrix = std_color_matrix(pos=0)
 
     # indices for the color matrix where the white chip should be depending on
     # the value of pos
