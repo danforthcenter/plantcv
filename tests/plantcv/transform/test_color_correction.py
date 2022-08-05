@@ -25,6 +25,12 @@ def test_std_color_matrix():
     # compare RGB values in the range [0-255]
     assert np.sum(255*white_val - white_rgb) < 1
 
+def test_std_color_matrix_bad_pos():
+    """Test for PlantCV"""
+    with pytest.raises(RuntimeError):
+        _ = std_color_matrix(pos=4.5)
+
+
 
 def test_get_color_matrix(transform_test_data):
     """Test for PlantCV."""
