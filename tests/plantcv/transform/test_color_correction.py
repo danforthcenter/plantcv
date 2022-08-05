@@ -7,9 +7,9 @@ from plantcv.plantcv.transform import (get_color_matrix, get_matrix_m, calc_tran
                                        find_color_card, std_color_matrix)
 from plantcv.plantcv import outputs
 
-def test_std_color_matrix():
+@pytest.mark.parametrize("pos", [0, 1, 2, 3])
+def test_std_color_matrix(pos):
     """Test for PlantCV"""
-    pos = 0
     std_matrix = std_color_matrix(pos=pos)
 
     # indices for the color matrix where the white chip should be depending on
