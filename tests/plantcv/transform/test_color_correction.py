@@ -4,8 +4,25 @@ import cv2
 import numpy as np
 from plantcv.plantcv.transform import (get_color_matrix, get_matrix_m, calc_transformation_matrix, apply_transformation_matrix,
                                        save_matrix, load_matrix, correct_color, create_color_card_mask, quick_color_check,
-                                       find_color_card)
+                                       find_color_card, std_color_matrix)
 from plantcv.plantcv import outputs
+
+def test_std_color_matrix():
+    """Test for PlantCV"""
+    std_matrix = pcv.transform.std_color_matrix(pos=0)
+
+    # indices for the color matrix where the white chip should be depending on
+    # the value of pos
+    white_indices = [18, 23, 5, 0]
+    white_idx_pos = white_indices[pos]
+
+    # RGB values in white chip of the returned matrix in the range [0-1]
+    white_val = std_matrix[white_idx_pos,1:]
+
+    # RGB values of the white chip in the range [0-255]
+    white_rgb = np.array([243., 243., 242.], dtype=np.float64)
+    # compare RGB values in the range [0-255]
+    assert np.sum(255*white_val - white_rgb) < 1
 
 
 def test_get_color_matrix(transform_test_data):
