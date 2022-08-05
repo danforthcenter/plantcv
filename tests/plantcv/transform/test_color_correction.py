@@ -7,6 +7,7 @@ from plantcv.plantcv.transform import (get_color_matrix, get_matrix_m, calc_tran
                                        find_color_card, std_color_matrix)
 from plantcv.plantcv import outputs
 
+
 @pytest.mark.parametrize("pos", [0, 1, 2, 3])
 def test_std_color_matrix(pos):
     """Test for PlantCV"""
@@ -18,18 +19,18 @@ def test_std_color_matrix(pos):
     white_idx_pos = white_indices[pos]
 
     # RGB values in white chip of the returned matrix in the range [0-1]
-    white_val = std_matrix[white_idx_pos,1:]
+    white_val = std_matrix[white_idx_pos, 1:]
 
     # RGB values of the white chip in the range [0-255]
     white_rgb = np.array([243., 243., 242.], dtype=np.float64)
     # compare RGB values in the range [0-255]
     assert np.sum(255*white_val - white_rgb) < 1
 
+
 def test_std_color_matrix_bad_pos():
     """Test for PlantCV"""
     with pytest.raises(RuntimeError):
         _ = std_color_matrix(pos=4.5)
-
 
 
 def test_get_color_matrix(transform_test_data):
