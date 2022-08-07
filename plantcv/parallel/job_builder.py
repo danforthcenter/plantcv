@@ -47,32 +47,30 @@ def job_builder(meta, config):
         if (config.coprocess is not None) and ('coimg' in meta[img]):
             # Create an output file to store the co-image processing results and populate with metadata
             coimg = meta[meta[img]['coimg']]
-            coout = open(os.path.join(config.tmp_dir, meta[img]["coimg"] + ".txt"), 'w')
+            with open(os.path.join(config.tmp_dir, meta[img]["coimg"] + ".txt"), 'w') as coout:
+                # Store metadata in JSON
+                coimg_meta["metadata"]["image"] = {
+                    "label": "image file",
+                    "datatype": "<class 'str'>",
+                    "value": coimg['path']
+                }
+                # Valid metadata
+                for m in list(config.metadata_terms.keys()):
+                    coimg_meta["metadata"][m]["value"] = coimg[m]
+                json.dump(coimg_meta, coout)
+
+            # Create an output file to store the image processing results and populate with metadata
+        with open(os.path.join(config.tmp_dir, img + ".txt"), 'w') as outfile:
             # Store metadata in JSON
-            coimg_meta["metadata"]["image"] = {
-                "label": "image file",
-                "datatype": "<class 'str'>",
-                "value": coimg['path']
-            }
+            img_meta["metadata"]["image"] = {
+                    "label": "image file",
+                    "datatype": "<class 'str'>",
+                    "value": meta[img]['path']
+                }
             # Valid metadata
             for m in list(config.metadata_terms.keys()):
-                coimg_meta["metadata"][m]["value"] = coimg[m]
-            json.dump(coimg_meta, coout)
-            coout.close()
-
-        # Create an output file to store the image processing results and populate with metadata
-        outfile = open(os.path.join(config.tmp_dir, img + ".txt"), 'w')
-        # Store metadata in JSON
-        img_meta["metadata"]["image"] = {
-                "label": "image file",
-                "datatype": "<class 'str'>",
-                "value": meta[img]['path']
-            }
-        # Valid metadata
-        for m in list(config.metadata_terms.keys()):
-            img_meta["metadata"][m]["value"] = meta[img][m]
-        json.dump(img_meta, outfile)
-        outfile.close()
+                img_meta["metadata"][m]["value"] = meta[img][m]
+            json.dump(img_meta, outfile)
 
         # Build job
         job_parts = ["python", config.workflow, "--image", meta[img]['path'],
