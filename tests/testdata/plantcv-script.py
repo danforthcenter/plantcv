@@ -38,34 +38,33 @@ def main():
     boundary_img = ['IMAGE', 'boundary', 'boundary_img.png']
 
     # Output shape and color parallel_data
-    result = open(args.result, "a")
-    result.write('META\timage\t' + args.image + '\n')
-    result.write('META\ttimestamp\t2014-10-22 17:49:35.187\n')
-    result.write('META\tframe\t0\n')
-    result.write('META\tlifter\th1\n')
-    result.write('META\tgain\tg0\n')
-    result.write('META\tmeasurementlabel\tC002ch_092214_biomass\n')
-    result.write('META\tcartag\t2143\n')
-    result.write('META\tid\t117770\n')
-    result.write('META\texposure\te82\n')
-    result.write('META\tzoom\tz1\n')
-    result.write('META\tplantbarcode\tCa031AA010564\n')
-    result.write('META\tcamera\tSV\n')
-    result.write('META\ttreatment\tnone\n')
-    result.write('META\timgtype\tVIS\n')
-    result.write('META\tother\tnone\n')
-    result.write('\t'.join(map(str, shape_header)) + "\n")
-    result.write('\t'.join(map(str, shape_data)) + "\n")
-    for row in shape_img:
-        result.write('\t'.join(map(str, row)) + "\n")
-    result.write('\t'.join(map(str, color_header)) + "\n")
-    result.write('\t'.join(map(str, color_data)) + "\n")
-    result.write('\t'.join(map(str, boundary_header)) + "\n")
-    result.write('\t'.join(map(str, boundary_data)) + "\n")
-    result.write('\t'.join(map(str, boundary_img)) + "\n")
-    for row in color_img:
-        result.write('\t'.join(map(str, row)) + "\n")
-    result.close()
+    with open(args.result, "a") as result:
+        result.write('META\timage\t' + args.image + '\n')
+        result.write('META\ttimestamp\t2014-10-22 17:49:35.187\n')
+        result.write('META\tframe\t0\n')
+        result.write('META\tlifter\th1\n')
+        result.write('META\tgain\tg0\n')
+        result.write('META\tmeasurementlabel\tC002ch_092214_biomass\n')
+        result.write('META\tcartag\t2143\n')
+        result.write('META\tid\t117770\n')
+        result.write('META\texposure\te82\n')
+        result.write('META\tzoom\tz1\n')
+        result.write('META\tplantbarcode\tCa031AA010564\n')
+        result.write('META\tcamera\tSV\n')
+        result.write('META\ttreatment\tnone\n')
+        result.write('META\timgtype\tVIS\n')
+        result.write('META\tother\tnone\n')
+        result.write('\t'.join(map(str, shape_header)) + "\n")
+        result.write('\t'.join(map(str, shape_data)) + "\n")
+        for row in shape_img:
+            result.write('\t'.join(map(str, row)) + "\n")
+        result.write('\t'.join(map(str, color_header)) + "\n")
+        result.write('\t'.join(map(str, color_data)) + "\n")
+        result.write('\t'.join(map(str, boundary_header)) + "\n")
+        result.write('\t'.join(map(str, boundary_data)) + "\n")
+        result.write('\t'.join(map(str, boundary_img)) + "\n")
+        for row in color_img:
+            result.write('\t'.join(map(str, row)) + "\n")
 
 
 if __name__ == '__main__':
