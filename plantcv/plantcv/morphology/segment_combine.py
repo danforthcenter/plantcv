@@ -42,15 +42,12 @@ def segment_combine(segment_list, objects, mask):
     combined_object = objects[segment_list_copy[0]]
     # Remove the objects getting combined from the list of all objects
     all_objects.pop(segment_list_copy[0])
-    #all_objects = np.delete(arr=all_objects, obj=segment_list[0])
-    #all_objects.remove(obj)
 
     while count < num_contours:
         # Combine segments into a single object
         combined_object = np.append(combined_object, objects[segment_list_copy[count]], 0)
         # Remove the segment that was combined from the list of all objects
         all_objects.pop(segment_list_copy[count])
-        #all_objects.remove(objects[segment_list[count]])
         count += 1
     # Replace with the combined object
     all_objects.append(combined_object)
