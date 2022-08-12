@@ -30,6 +30,8 @@ def segment_combine(segment_list, objects, mask):
     label_coord_x = []
     label_coord_y = []
     all_objects = objects[:]
+    if type(segment_list[0]) is not int:
+        fatal_error("segment_list must be a list of object ID's")
     segment_list_copy = sorted(segment_list, reverse=True)
 
     # If user provides a single list of objects to combine
