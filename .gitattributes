@@ -12,3 +12,4 @@ plantcv/plantcv/_version.py export-subst
 *.pkl binary
 *.npz binary
 *.DAT binary
+*.gif binary
