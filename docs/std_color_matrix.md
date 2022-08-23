@@ -1,58 +1,67 @@
 ## Color Matrix
 
-Computes the average *R*, *G*, *B* values for each region in the RGB image denoted by the gray-scale mask and saves them in a matrix of n x 4, where n = the number of color chips represented in the mask.
+Returns a color matrix with the standard *R*, *G*, *B* values compatible with the x-rite ColorCheker Classic,
+ColorChecker Mini, and ColorChecker Passport targets.
 
-**plantcv.transform.get_color_matrix**(*rgb_img, mask*)
+Source: https://en.wikipedia.org/wiki/ColorChecker
 
-**returns** headers, color_matrix
+**plantcv.transform.std_color_matrix**(*pos=0*)
+
+**returns** color_matrix
 
 - **Parameters**
-    - rgb_img - RGB image with color chips visualized
-    - mask    - a gray-scale img with unique values for each segmented space, representing unique, discrete color chips.
+    - pos - reference value indicating orientation of the color card. The reference
+    is based on the position of the white chip:
+
+        - pos = 0: bottom-left corner  
+        - pos = 1: bottom-right corner
+        - pos = 2: top-right corner
+        - pos = 3: top-left corner
 
 - **Returns**
-    - color_matrix - a *n* x 4 matrix containing the average red value, average green value, and average blue value for each color chip.
-    - headers      - a list of 4 headers corresponding to the 4 columns of color_matrix respectively
+    - color_matrix - a *n* x 4 matrix containing the standard red, green, and blue
+    values for each color chip
+
+
 
 - **Example use:**
-    - [Color Correction Tutorial](tutorials/transform_color_correction_tutorial.md)
+    - Tutorial in progress
 
 ```python
 
 from plantcv import plantcv as pcv
 
-rgb_img, imgpath, imgname = pcv.readimage(filename="target_img.png")
-mask, maskpath, maskname = pcv.readimage(filename="mask_img.png")
+std_color_matrix = pcv.transform.std_color_matrix(pos=0)
 
-headers, color_matrix = pcv.transform.get_color_matrix(rgb_img=rgb_img, mask=mask)
+# use fixed point notation for printing the matrix
+np.set_printoptions(precision=2, suppress=True)
 
-print(headers)
-print(color_matrix)
+print(std_color_matrix)
 
-
-    ['chip_number', 'r_avg', 'g_avg', 'b_avg']
-    [[  10.       20.7332   33.672    92.7748]
-     [  20.      203.508    79.774    25.77  ]
-     [  30.       54.6916   34.0924   26.0352]
-     [  40.      193.2972  203.198   199.4544]
-     [  50.       40.2052   92.0536   37.222 ]
-     [  60.       36.9256   52.4976  123.6224]
-     [  70.      177.7984  103.3772   85.1672]
-     [  80.      119.4276  128.4068  126.6948]
-     [  90.      141.9036   34.0584   22.5056]
-     [ 100.      160.9764   50.3872   47.6984]
-     [ 110.       51.994    73.584   107.734 ]
-     [ 120.       65.9104   69.5172   68.482 ]
-     [ 130.      227.1652  183.1696   30.1332]
-     [ 140.       35.9472   25.4984   47.3424]
-     [ 150.       39.51     52.9624   26.3956]
-     [ 160.       32.8148   34.8512   35.5284]
-     [ 170.      146.522    55.7016   94.7452]
-     [ 180.      114.6672  155.3968   42.5688]
-     [ 190.       84.2172   88.8424  134.2356]
-     [ 200.       34.5308   90.4592  132.9108]
-     [ 210.      207.1596  128.736    28.7744]
-     [ 220.       74.632   158.8224  144.3724]]
+        [[ 10.     0.45   0.32   0.27]
+         [ 20.     0.76   0.59   0.51]
+         [ 30.     0.38   0.48   0.62]
+         [ 40.     0.34   0.42   0.26]
+         [ 50.     0.52   0.5    0.69]
+         [ 60.     0.4    0.74   0.67]
+         [ 70.     0.84   0.49   0.17]
+         [ 80.     0.31   0.36   0.65]
+         [ 90.     0.76   0.35   0.39]
+         [100.     0.37   0.24   0.42]
+         [110.     0.62   0.74   0.25]
+         [120.     0.88   0.64   0.18]
+         [130.     0.22   0.24   0.59]
+         [140.     0.27   0.58   0.29]
+         [150.     0.69   0.21   0.24]
+         [160.     0.91   0.78   0.12]
+         [170.     0.73   0.34   0.58]
+         [180.     0.03   0.52   0.63]
+         [190.     0.95   0.95   0.95]
+         [200.     0.78   0.78   0.78]
+         [210.     0.63   0.63   0.63]
+         [220.     0.48   0.48   0.47]
+         [230.     0.33   0.33   0.33]
+         [240.     0.2    0.2    0.2 ]]
 
 ```
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/transform/color_correction.py)
