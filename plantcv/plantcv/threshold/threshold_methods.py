@@ -90,12 +90,12 @@ def gaussian(gray_img, max_value, object_type="light"):
 
 
 # Mean adaptive threshold
-def mean(gray_img, max_value, object_type="light"):
+def mean(gray_img, object_type="light", max_value=255):
     """Creates a binary image from a grayscale image based on the mean adaptive threshold method.
 
     Inputs:
     gray_img     = Grayscale image data
-    max_value    = value to apply above threshold (usually 255 = white)
+    max_value    = value to apply above threshold (default 255 = white)
     object_type  = "light" or "dark" (default: "light")
                    - If object is lighter than the background then standard thresholding is done
                    - If object is darker than the background then inverse thresholding is done
