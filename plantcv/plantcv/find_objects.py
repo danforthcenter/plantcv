@@ -33,7 +33,7 @@ def find_objects(img, mask):
 
     objects = Objects(list(contours), hierarchy)
     for i, cnt in enumerate(objects.contours):
-        cv2.drawContours(ori_img, objects.contours, i, (255, 102, 255), -1, lineType=8, hierarchy=objects.hierarchy)
+        cv2.drawContours(ori_img, objects, i, (255, 102, 255), -1, lineType=8, hierarchy=hierarchy)
 
     _debug(visual=ori_img,
            filename=os.path.join(params.debug_outdir, str(params.device) + '_id_objects.png'))
