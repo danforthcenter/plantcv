@@ -51,7 +51,7 @@ def find_tips(skel_img, mask=None, label="default"):
     # Store debug
     debug = params.debug
     params.debug = None
-    tip_objects = find_objects(tip_img, tip_img)
+    tip_objects, _ = find_objects(tip_img, tip_img)
 
     if mask is None:
         # Make debugging image
@@ -62,14 +62,14 @@ def find_tips(skel_img, mask=None, label="default"):
         # Make debugging image on mask
         mask_copy = mask.copy()
         tip_plot = cv2.cvtColor(mask_copy, cv2.COLOR_GRAY2RGB)
-        skel_obj = find_objects(skel_img, skel_img)
-        cv2.drawContours(tip_plot, skel_obj.contours, -1, (150, 150, 150), params.line_thickness,
-                         lineType=8, hierarchy=skel_obj.hierarchy)
+        skel_obj, skel_hier = find_objects(skel_img, skel_img)
+        cv2.drawContours(tip_plot, skel_obj, -1, (150, 150, 150), params.line_thickness,
+                         lineType=8, hierarchy=skel_hier)
 
     # Initialize list of tip data points
     tip_list = []
     tip_labels = []
-    for i, tip in enumerate(tip_objects.contours):
+    for i, tip in enumerate(tip_objects):
         x, y = tip.ravel()[:2]
         coord = (int(x), int(y))
         tip_list.append(coord)

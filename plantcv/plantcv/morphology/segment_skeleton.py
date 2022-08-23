@@ -39,13 +39,13 @@ def segment_skeleton(skel_img, mask=None):
     segments = image_subtract(skel_img, bp)
 
     # Gather contours of leaves
-    segment_objects = find_objects(segments, segments)
+    segment_objects, _ = find_objects(segments, segments)
 
     # Reset debug mode
     params.debug = debug
 
     # Color each segment a different color, do not used a previously saved color scale
-    rand_color = color_palette(num=len(segment_objects.contours), saved=False)
+    rand_color = color_palette(num=len(segment_objects), saved=False)
 
     if mask is None:
         segmented_img = skel_img.copy()
@@ -53,8 +53,8 @@ def segment_skeleton(skel_img, mask=None):
         segmented_img = mask.copy()
 
     segmented_img = cv2.cvtColor(segmented_img, cv2.COLOR_GRAY2RGB)
-    for i, cnt in enumerate(segment_objects.contours):
-        cv2.drawContours(segmented_img, segment_objects.contours, i, rand_color[i], params.line_thickness, lineType=8)
+    for i, cnt in enumerate(segment_objects):
+        cv2.drawContours(segmented_img, segment_objects, i, rand_color[i], params.line_thickness, lineType=8)
 
     _debug(visual=segmented_img, filename=os.path.join(params.debug_outdir, f"{params.device}_segmented.png"))
 
