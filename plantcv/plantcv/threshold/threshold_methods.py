@@ -90,12 +90,12 @@ def gaussian(gray_img, max_value, object_type="light"):
 
 
 # Mean adaptive threshold
-def mean(gray_img, object_type="light", max_value=255):
+def mean(gray_img, block_size, offset, object_type="light", max_value=255):
     """Creates a binary image from a grayscale image based on the mean adaptive threshold method.
 
     Inputs:
     gray_img     = Grayscale image data
-    max_value    = value to apply above threshold (default 255 = white)
+    max_value    = Value to apply above threshold (default 255 = white)
     object_type  = "light" or "dark" (default: "light")
                    - If object is lighter than the background then standard thresholding is done
                    - If object is darker than the background then inverse thresholding is done
@@ -119,8 +119,8 @@ def mean(gray_img, object_type="light", max_value=255):
 
     params.device += 1
 
-    bin_img = _call_adaptive_threshold(gray_img, max_value, cv2.ADAPTIVE_THRESH_MEAN_C, threshold_method,
-                                       "_mean_threshold_")
+    bin_img = _call_adaptive_threshold(gray_img, block_size, offset, max_value, cv2.ADAPTIVE_THRESH_MEAN_C,
+                                        threshold_method, "_mean_threshold_")
 
     return bin_img
 
@@ -477,9 +477,9 @@ def _call_threshold(gray_img, threshold, max_value, threshold_method, method_nam
 
 
 # Internal method for calling the OpenCV adaptiveThreshold function to reduce code duplication
-def _call_adaptive_threshold(gray_img, max_value, adaptive_method, threshold_method, method_name):
+def _call_adaptive_threshold(gray_img, block_size, offset, max_value, adaptive_method, threshold_method, method_name):
     # Threshold the image
-    bin_img = cv2.adaptiveThreshold(gray_img, max_value, adaptive_method, threshold_method, 11, 2)
+    bin_img = cv2.adaptiveThreshold(gray_img, max_value, adaptive_method, threshold_method, block_size, offset)
 
     # Print or plot the binary image if debug is on
     _debug(visual=bin_img, filename=os.path.join(params.debug_outdir, str(params.device) + method_name + '.png'))
