@@ -68,9 +68,9 @@ def segment_tangent_angle(segmented_img, objects, size, label="default"):
         cv2.drawContours(labeled_img, objects, i, rand_color[i], params.line_thickness, lineType=8)
         pruned_segment = _iterative_prune(find_tangents, size)
         segment_ends = find_tangents - pruned_segment
-        segment_end_obj = find_objects(segment_ends, segment_ends)
+        segment_end_obj, segment_end_hierarchy = find_objects(segment_ends, segment_ends)
         slopes = []
-        for j, obj in enumerate(segment_end_obj.contours):
+        for j, obj in enumerate(segment_end_obj):
             # Find bounds for regression lines to get drawn
             rect = cv2.minAreaRect(cnt)
             pts = cv2.boxPoints(rect)
