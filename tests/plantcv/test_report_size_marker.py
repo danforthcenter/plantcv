@@ -17,7 +17,7 @@ def test_report_size_marker(marker, exp, test_data):
     roi_contour = [np.array([[[25, 75]], [[25, 125]], [[75, 125]], [[75, 75]]], dtype=np.int32)]
     roi_hierarchy = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     roi_objects = Objects(roi_contour, roi_hierarchy)
-    _ = report_size_marker_area(img=img, roi_obj=roi_objects, marker=marker,
+    _ = report_size_marker_area(img=img, roi_objects=roi_objects, marker=marker,
                                 objcolor='light', thresh_channel='s', thresh=120)
     assert int(outputs.observations["default"]["marker_area"]["value"]) == exp
 
@@ -32,7 +32,7 @@ def test_report_size_marker_grayscale_input(test_data):
     roi_contour = [np.array([[[25, 75]], [[25, 125]], [[75, 125]], [[75, 75]]], dtype=np.int32)]
     roi_hierarchy = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     roi_objects = Objects(roi_contour, roi_hierarchy)
-    _ = report_size_marker_area(img=img, roi_obj=roi_objects, marker='define',
+    _ = report_size_marker_area(img=img, roi_objects=roi_objects, marker='define',
                                 objcolor='light', thresh_channel='s', thresh=120)
     assert int(outputs.observations["default"]["marker_area"]["value"]) == 2601
 
@@ -50,5 +50,5 @@ def test_report_size_marker_bad_inputs(marker, channel, test_data):
     roi_hierarchy = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     roi_objects = Objects(roi_contour, roi_hierarchy)
     with pytest.raises(RuntimeError):
-        _ = report_size_marker_area(img=img, roi_obj=roi_objects, marker=marker,
+        _ = report_size_marker_area(img=img, roi_objects=roi_objects, marker=marker,
                                     objcolor='light', thresh_channel=channel, thresh=120)
