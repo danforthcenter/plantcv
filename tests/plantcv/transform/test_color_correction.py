@@ -24,7 +24,7 @@ def test_std_color_matrix(pos):
     # RGB values of the white chip in the range [0-255]
     white_rgb = np.array([243., 243., 242.], dtype=np.float64)
     # compare RGB values in the range [0-255]
-    assert np.sum(255*white_val - white_rgb) < 1
+    assert np.sum(np.abs(255*white_val - white_rgb)) < 1
 
 
 def test_std_color_matrix_bad_pos():
