@@ -54,12 +54,12 @@ def binary(gray_img, threshold, max_value, object_type="light"):
 
 
 # Gaussian adaptive threshold
-def gaussian(gray_img, max_value, object_type="light"):
+def gaussian(gray_img, block_size, offset, object_type="light", max_value=255):
     """Creates a binary image from a grayscale image based on the Gaussian adaptive threshold method.
 
     Inputs:
     gray_img     = Grayscale image data
-    max_value    = value to apply above threshold (usually 255 = white)
+    max_value    = value to apply above threshold (default: 255 = white)
     object_type  = "light" or "dark" (default: "light")
                    - If object is lighter than the background then standard thresholding is done
                    - If object is darker than the background then inverse thresholding is done
@@ -83,8 +83,8 @@ def gaussian(gray_img, max_value, object_type="light"):
 
     params.device += 1
 
-    bin_img = _call_adaptive_threshold(gray_img, max_value, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, threshold_method,
-                                       "_gaussian_threshold_")
+    bin_img = _call_adaptive_threshold(gray_img, block_size, offset, max_value, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                        threshold_method, "_gaussian_threshold_")
 
     return bin_img
 
@@ -95,7 +95,7 @@ def mean(gray_img, block_size, offset, object_type="light", max_value=255):
 
     Inputs:
     gray_img     = Grayscale image data
-    max_value    = Value to apply above threshold (default 255 = white)
+    max_value    = Value to apply above threshold (default: 255 = white)
     object_type  = "light" or "dark" (default: "light")
                    - If object is lighter than the background then standard thresholding is done
                    - If object is darker than the background then inverse thresholding is done
