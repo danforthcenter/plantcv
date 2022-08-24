@@ -22,7 +22,7 @@ def report_size_marker_area(img, roi_obj, marker='define', objcolor='dark', thre
 
     Inputs:
     img             = An RGB or grayscale image to plot the marker object on
-    roi_obj     = A region of interest Objects class (e.g. output from pcv.roi.rectangle or other methods)
+    roi_obj         = A region of interest Objects class (e.g. output from pcv.roi.rectangle or other methods)
     marker          = 'define' or 'detect'. If define it means you set an area, if detect it means you want to
                       detect within an area
     objcolor        = Object color is 'dark' or 'light' (is the marker darker or lighter than the background)
