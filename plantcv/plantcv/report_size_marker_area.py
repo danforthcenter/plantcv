@@ -15,15 +15,15 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None,
+
+def report_size_marker_area(img, roi_obj, marker='define', objcolor='dark', thresh_channel=None,
                             thresh=None, label="default"):
     """
     Detects a size marker in a specified region and reports its size and eccentricity
 
     Inputs:
     img             = An RGB or grayscale image to plot the marker object on
-    roi_contour     = A region of interest contour (e.g. output from pcv.roi.rectangle or other methods)
-    roi_hierarchy   = A region of interest contour hierarchy (e.g. output from pcv.roi.rectangle or other methods)
+    roi_obj         = A region of interest Objects class (e.g. output from pcv.roi.rectangle or other methods)
     marker          = 'define' or 'detect'. If define it means you set an area, if detect it means you want to
                       detect within an area
     objcolor        = Object color is 'dark' or 'light' (is the marker darker or lighter than the background)
@@ -35,8 +35,7 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
     analysis_images = List of output images
 
     :param img: numpy.ndarray
-    :param roi_contour: list
-    :param roi_hierarchy: numpy.ndarray
+    :param roi_obj: plantcv.Objects
     :param marker: str
     :param objcolor: str
     :param thresh_channel: str
@@ -60,7 +59,7 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
     # Initialize a binary image
     roi_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
     # Draw the filled ROI on the mask
-    cv2.drawContours(roi_mask, roi_contour, -1, (255), -1)
+    cv2.drawContours(roi_mask, roi_obj.contours, -1, (255), -1)
     marker_mask = []
     marker_contour = []
 
@@ -77,11 +76,7 @@ def report_size_marker_area(img, roi_contour, roi_hierarchy, marker='define', ob
             # Identify contours in the masked image
             contours, hierarchy = find_objects(img=ref_img, mask=marker_bin)
             # Filter marker contours using the input ROI
-            kept_contours, kept_hierarchy, kept_mask, obj_area = roi_objects(img=ref_img, object_contour=contours,
-                                                                             obj_hierarchy=hierarchy,
-                                                                             roi_contour=roi_contour,
-                                                                             roi_hierarchy=roi_hierarchy,
-                                                                             roi_type="partial")
+            kept_objects, kept_mask, obj_area = roi_objects(img=ref_img, roi_objects=roi_obj, objects=objects, roi_type="partial")
             # If there are more than one contour detected, combine them into one
             # These become the marker contour and mask
             marker_contour, marker_mask = object_composition(img=ref_img, contours=kept_contours,
