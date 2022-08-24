@@ -14,4 +14,4 @@ def test_auto_threshold_methods(visualize_test_data):
     """Test for PlantCV."""
     img = cv2.imread(visualize_test_data.small_gray_img, -1)
     labeled_imgs = auto_threshold_methods(gray_img=img)
-    assert len(labeled_imgs) == 5
+    assert len(labeled_imgs) == 3
