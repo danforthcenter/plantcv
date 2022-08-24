@@ -15,7 +15,6 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
 
-
 def report_size_marker_area(img, roi_obj, marker='define', objcolor='dark', thresh_channel=None,
                             thresh=None, label="default"):
     """
