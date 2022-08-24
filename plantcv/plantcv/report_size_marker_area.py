@@ -22,7 +22,7 @@ def report_size_marker_area(img, roi_obj, marker='define', objcolor='dark', thre
 
     Inputs:
     img             = An RGB or grayscale image to plot the marker object on
-    roi_obj         = A region of interest Objects class (e.g. output from pcv.roi.rectangle or other methods)
+    roi_obj     = A region of interest Objects class (e.g. output from pcv.roi.rectangle or other methods)
     marker          = 'define' or 'detect'. If define it means you set an area, if detect it means you want to
                       detect within an area
     objcolor        = Object color is 'dark' or 'light' (is the marker darker or lighter than the background)
@@ -73,23 +73,22 @@ def report_size_marker_area(img, roi_obj, marker='define', objcolor='dark', thre
             # Threshold the HSV image
             marker_bin = binary_threshold(gray_img=marker_hsv, threshold=thresh, max_value=255, object_type=objcolor)
             # Identify contours in the masked image
-            contours, hierarchy = find_objects(img=ref_img, mask=marker_bin)
+            objects = find_objects(img=ref_img, mask=marker_bin)
             # Filter marker contours using the input ROI
             kept_objects, kept_mask, obj_area = roi_objects(img=ref_img, roi_objects=roi_obj, objects=objects, roi_type="partial")
             # If there are more than one contour detected, combine them into one
             # These become the marker contour and mask
-            marker_contour, marker_mask = object_composition(img=ref_img, contours=kept_contours,
-                                                             hierarchy=kept_hierarchy)
+            marker_contour, marker_mask = object_composition(img=ref_img, objects=kept_objects)
         else:
             # Reset debug mode
             params.debug = debug
             fatal_error('thresh_channel and thresh must be defined in detect mode')
     elif marker.upper() == "DEFINE":
         # Identify contours in the masked image
-        contours, hierarchy = find_objects(img=ref_img, mask=roi_mask)
+        objects = find_objects(img=ref_img, mask=roi_mask)
         # If there are more than one contour detected, combine them into one
         # These become the marker contour and mask
-        marker_contour, marker_mask = object_composition(img=ref_img, contours=contours, hierarchy=hierarchy)
+        marker_contour, marker_mask = object_composition(img=ref_img, objects=objects)
     else:
         # Reset debug mode
         params.debug = debug
