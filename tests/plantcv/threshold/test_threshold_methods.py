@@ -60,6 +60,13 @@ def test_mean_incorrect_object_type(threshold_test_data):
     with pytest.raises(RuntimeError):
         _ = mean(gray_img=gray_img, block_size=11, offset=2, object_type="lite", max_value=255)
 
+def test_mean_incorrect_block_size(threshold_test_data):
+    """Test for PlantCV."""
+    # Read in test data
+    gray_img = cv2.imread(threshold_test_data.small_gray_img, -1)
+    with pytest.raises(RuntimeError):
+        _ = mean(gray_img=gray_img, block_size=1, offset=2, object_type="dark", max_value=255)
+
 
 @pytest.mark.parametrize("objtype", ["dark", "light"])
 def test_otsu(objtype, threshold_test_data):

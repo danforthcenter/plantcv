@@ -478,9 +478,14 @@ def _call_threshold(gray_img, threshold, max_value, threshold_method, method_nam
 
 # Internal method for calling the OpenCV adaptiveThreshold function to reduce code duplication
 def _call_adaptive_threshold(gray_img, block_size, offset, max_value, adaptive_method, threshold_method, method_name):
+
+    if block_size < 3:
+        fatal_error("block_size must be >= 3")
+
     # Force block_size to be odd number
+    block_size = int(block_size)
     if (block_size % 2) != 1:
-        block_size = block_size + 1 
+        block_size = block_size + 1
 
     # Threshold the image
     bin_img = cv2.adaptiveThreshold(gray_img, max_value, adaptive_method, threshold_method, block_size, offset)
