@@ -15,7 +15,7 @@ def roi_objects(img, roi_objects, objects, roi_type="partial"):
 
     Inputs:
     img            = RGB or grayscale image data for plotting
-    roi_objects    = objects of rois, output from "View and Adjust ROI" function
+    roi_objects    = objects of rois, output from any ROI function
     objects        = objects, output from "find_objects" function
     roi_type       = 'cutto', 'partial' (for partially inside, default), or 'largest' (keep only the largest contour)
 
