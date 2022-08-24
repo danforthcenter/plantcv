@@ -42,7 +42,7 @@ def test_gaussian_incorrect_object_type(threshold_test_data):
         _ = gaussian(gray_img=gray_img, block_size=11, offset=2, object_type="lite", max_value=255)
 
 
-@pytest.mark.parametrize("objtype", "size" [["dark", 11],
+@pytest.mark.parametrize("objtype", "size", [["dark", 11],
                                             ["light", 10]])
 def test_mean(objtype, size, threshold_test_data):
     """Test for PlantCV."""
