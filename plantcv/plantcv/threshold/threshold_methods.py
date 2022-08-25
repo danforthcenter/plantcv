@@ -57,19 +57,33 @@ def binary(gray_img, threshold, max_value, object_type="light"):
 def gaussian(gray_img, block_size, offset, object_type="light", max_value=255):
     """Creates a binary image from a grayscale image based on the Gaussian adaptive threshold method.
 
+    Adaptive thresholds use a threshold value that varies across the image.
+    This local threshold depends on the local average, computed in a squared portion of the image of
+    block_size by block_size pixels, and on the offset relative to that local average.
+
+    In the Gaussian adaptive threshold, the local average is a weighed average of the pixel values
+    in the block, where the weights are a 2D Gaussian centered in the middle.
+
     Inputs:
     gray_img     = Grayscale image data
-    max_value    = value to apply above threshold (default: 255 = white)
+    block_size   = Size of the block of pixels used to compute the local average
+    offset       = Value substracted from the local average to compute the local threshold.
+                    A negative offset sets the local threshold above the local average.
     object_type  = "light" or "dark" (default: "light")
-                   - If object is lighter than the background then standard thresholding is done
-                   - If object is darker than the background then inverse thresholding is done
+                   - "light" (for objects brighter than the background) sets the pixels above
+                        the local threshold to max_value and the pixels below to 0.
+                   - "dark" (for objects darker than the background) sets the pixels below the
+                        local threshold to max_value and the pixels above to 0.
+    max_value    = value to apply above local threshold (default: 255 = white)
 
     Returns:
     bin_img      = Thresholded, binary image
 
     :param gray_img: numpy.ndarray
-    :param max_value: int
+    :param block_size: int
+    :param offset: float
     :param object_type: str
+    :param max_value: int
     :return bin_img: numpy.ndarray
     """
     # Set the threshold method
