@@ -42,7 +42,6 @@ def test_object_composition_nested():
            np.array([[[34, 35]], [[35, 34]], [[39, 34]], [[40, 35]], [[40, 39]], [[39, 40]], [[35, 40]], [[34, 39]]],
                     dtype=np.int32)]
     cnt_str = np.array([[[-1, -1,  1, -1], [-1, -1, -1,  0]]], dtype=np.int32)
-    roi_objects = Objects(cnt, cnt_str)
     objs = Objects(cnt, cnt_str)
     _, mask = object_composition(img=img, objects=objs)
     assert np.count_nonzero(mask) == 600
