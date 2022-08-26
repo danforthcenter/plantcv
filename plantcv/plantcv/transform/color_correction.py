@@ -380,7 +380,7 @@ def create_color_card_mask(rgb_img, radius, start_coord, spacing, nrows, ncols, 
             # horizontal spacing between chips
             x = start_coord[0] + j * spacing[0]
             # Create a chip ROI
-            chips.append(circle(img=rgb_img, x=x, y=y, r=radius))
+            chips.append(circle(img=rgb_img, x=x, y=y, r=radius).contours)
     # Restore debug parameter
     params.debug = debug
     # Sort excluded chips from largest to smallest
