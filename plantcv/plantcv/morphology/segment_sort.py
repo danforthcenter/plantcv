@@ -49,7 +49,7 @@ def segment_sort(skel_img, objects, mask=None, first_stem=True):
     # Loop through segment contours
     for i, cnt in enumerate(objects):
         segment_plot = np.zeros(skel_img.shape[:2], np.uint8)
-        cv2.drawContours(segment_plot, objects, i, 255, 1, lineType=8)
+        cv2.drawContours(segment_plot, cnt, -1, 255, 1, lineType=8)
         overlap_img = logical_and(segment_plot, tips_img)
 
         # The first contour is the base, and while it contains a tip, it isn't a leaf
