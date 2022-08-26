@@ -119,7 +119,7 @@ def segment_insertion_angle(skel_img, segmented_img, leaf_objects, stem_objects,
         fatal_error('Unable to combine stem objects.')
 
     # Find slope of the stem
-    [vx, vy, x, y] = cv2.fitLine(combined_stem[0], cv2.DIST_L2, 0, 0.01, 0.01)
+    [vx, vy, x, y] = cv2.fitLine(combined_stem.contours[0], cv2.DIST_L2, 0, 0.01, 0.01)
     stem_slope = -vy / vx
     stem_slope = stem_slope[0]
     lefty = int((-x * vy / vx) + y)
