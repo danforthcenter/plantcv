@@ -9,7 +9,7 @@ def test_object_composition(test_data):
     img = cv2.imread(test_data.small_rgb_img)
     cnt, cnt_str = test_data.load_contours(test_data.small_contours_file)
     objs = Objects(cnt, cnt_str)
-    contours, _ = object_composition(img=img, contours=objs)
+    contours, _ = object_composition(img=img, objects=objs)
     expected = test_data.load_composed_contours(test_data.small_composed_contours_file)
     assert np.all(expected) == np.all(contours)
 
@@ -20,7 +20,7 @@ def test_object_composition_grayscale(test_data):
     img = cv2.imread(test_data.small_gray_img, -1)
     cnt, cnt_str = test_data.load_contours(test_data.small_contours_file)
     objs = Objects(cnt, cnt_str)
-    contours, _ = object_composition(img=img, contours=objs)
+    contours, _ = object_composition(img=img, objects=objs)
     expected = test_data.load_composed_contours(test_data.small_composed_contours_file)
     assert np.all(expected) == np.all(contours)
 
@@ -29,7 +29,8 @@ def test_object_composition_no_contours(test_data):
     """Test for PlantCV."""
     # Read in test data
     img = cv2.imread(test_data.small_rgb_img)
-    contours, _ = object_composition(img=img, objects=[], hierarchy=np.array([]))
+    objs = Objects([], np.array([]))
+    contours, _ = object_composition(img=img, objects=objs)
     assert contours is None
 
 
@@ -43,5 +44,5 @@ def test_object_composition_nested():
     cnt_str = np.array([[[-1, -1,  1, -1], [-1, -1, -1,  0]]], dtype=np.int32)
     roi_objects = Objects(cnt, cnt_str)
     objs = Objects(cnt, cnt_str)
-    _, mask = object_composition(img=img, contours=objs)
+    _, mask = object_composition(img=img, objects=objs)
     assert np.count_nonzero(mask) == 600
