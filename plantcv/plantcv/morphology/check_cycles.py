@@ -48,7 +48,7 @@ def check_cycles(skel_img, label="default"):
     cycle_objects = find_objects(just_cycles, just_cycles)
 
     # Count the number of holes
-    num_cycles = len(cycle_objects)
+    num_cycles = len(cycle_objects.contours)
 
     # Make debugging image
     cycle_img = skel_img.copy()
