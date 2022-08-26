@@ -14,7 +14,7 @@ def test_roi_objects(mode, exp, test_data):
     roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     objs = Objects(cnt, cnt_str)
     rois = Objects(roi, roi_str)
-    _, _, _, area = roi_objects(img=img, roi_objects=rois, objects=objs, roi_type=mode)
+    _, _, area = roi_objects(img=img, roi_objects=rois, objects=objs, roi_type=mode)
     # Assert that the contours were filtered as expected
     assert area == exp
 
@@ -41,7 +41,7 @@ def test_roi_objects_grayscale_input(test_data):
     roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     objs = Objects(cnt, cnt_str)
     rois = Objects(roi, roi_str)
-    _, _, _, area = roi_objects(img=img, roi_type="partial", roi_objects=rois, objects=objs)
+    _, _, area = roi_objects(img=img, roi_type="partial", roi_objects=rois, objects=objs)
     # Assert that the contours were filtered as expected
     assert area == 221
 
@@ -55,7 +55,7 @@ def test_roi_objects_no_overlap(test_data):
     roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     objs = Objects(cnt, cnt_str)
     rois = Objects(roi, roi_str)
-    _, _, _, area = roi_objects(img=img, roi_objects=rois, objects=objs, roi_type="partial")
+    _, _, area = roi_objects(img=img, roi_objects=rois, objects=objs, roi_type="partial")
     # Assert that the contours were filtered as expected
     assert area == 0
 
@@ -72,5 +72,5 @@ def test_roi_objects_nested():
     roi_str = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     objs = Objects(cnt, cnt_str)
     rois = Objects(roi, roi_str)
-    _, _, _, area = roi_objects(img=img, roi_objects=rois, objects=objs, roi_type="largest")
+    _, _, area = roi_objects(img=img, roi_objects=rois, objects=objs, roi_type="largest")
     assert area == 580
