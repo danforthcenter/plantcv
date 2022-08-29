@@ -32,9 +32,8 @@ def object_composition(img, objects):
     stack = np.zeros((len(objects.contours), 1))
     r, g, b = cv2.split(ori_img)
     mask = np.zeros(g.shape, dtype=np.uint8)
-    objs = objects.contours
 
-    for c, cnt in enumerate(objs):
+    for c, cnt in enumerate(objects.contours):
         if objects.hierarchy[0][c][2] == -1 and objects.hierarchy[0][c][3] > -1:
             stack[c] = 0
         else:
@@ -47,7 +46,7 @@ def object_composition(img, objects):
         cv2.drawContours(mask, objects.contours, -1, 255, -1, hierarchy=objects.hierarchy)
 
         cv2.drawContours(ori_img, group, -1, (255, 0, 0), params.line_thickness)
-        for cnt, _ in objects:
+        for cnt, _ in objects.contours:
             cv2.drawContours(ori_img, cnt, -1, (255, 0, 0), params.line_thickness)
 
         _debug(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_objcomp.png'))
