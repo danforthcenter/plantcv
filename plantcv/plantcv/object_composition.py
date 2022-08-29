@@ -32,8 +32,9 @@ def object_composition(img, objects):
     stack = np.zeros((len(objects.contours), 1))
     r, g, b = cv2.split(ori_img)
     mask = np.zeros(g.shape, dtype=np.uint8)
+    objs = objects.contours
 
-    for c, cnt in enumerate(objects.contours):
+    for c, cnt in enumerate(objs):
         if objects.hierarchy[0][c][2] == -1 and objects.hierarchy[0][c][3] > -1:
             stack[c] = 0
         else:
