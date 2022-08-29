@@ -46,7 +46,7 @@ def object_composition(img, objects):
         cv2.drawContours(mask, objects.contours, -1, 255, -1, hierarchy=objects.hierarchy)
 
         cv2.drawContours(ori_img, group, -1, (255, 0, 0), params.line_thickness)
-        for cnt, _ in objects.contours:
+        for cnt in objects.contours:
             cv2.drawContours(ori_img, cnt, -1, (255, 0, 0), params.line_thickness)
 
         _debug(ori_img, os.path.join(params.debug_outdir, str(params.device) + '_objcomp.png'))
