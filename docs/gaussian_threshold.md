@@ -29,7 +29,7 @@ In the Gaussian adaptive threshold, the local average is a weighed average of th
 
 **Grayscale image (green-magenta channel)**
 
-![Screenshot](img/documentation_images/auto_threshold/original_image1.jpg)
+![Screenshot](img/documentation_images/adaptive_threshold/pollen_grains.png)
 
 
 ```python
@@ -37,16 +37,30 @@ from plantcv import plantcv as pcv
 
 # Set global debug behavior to None (default), "print" (to file),
 # or "plot" (Jupyter Notebooks or X11)
-
 pcv.params.debug = "print"
 
-# Create binary image from a gray image based
-threshold_gaussian = pcv.threshold.gaussian(gray_img=gray_img, max_value=255, object_type='dark')
+# Adaptive threshold with different parameters
+bin_gauss1 = pcv.threshold.gaussian(gray_img=gray_img, block_size=250, offset=15,
+                                    object_type='dark', max_value=255)
+
+bin_gauss1 = pcv.threshold.gaussian(gray_img=gray_img, block_size=25, offset=5,
+                                    object_type='dark', max_value=255)
+                                    
+bin_gauss1 = pcv.threshold.gaussian(gray_img=gray_img, block_size=2000, offset=15,
+                                    object_type='dark', max_value=255)
 
 ```
 
-**Auto-Thresholded image (gaussian)**
+**Thresholded image**
 
-![Screenshot](img/documentation_images/auto_threshold/gaussian_threshold.jpg)
+![Screenshot](img/documentation_images/adaptive_threshold/pollen_grains_adaptive_Gauss_250-15_scaled.png)
+
+**Thresholded image using a small block size**
+
+![Screenshot](img/documentation_images/adaptive_threshold/pollen_grains_adaptive_Gauss_25-5_scaled.png)
+
+**Thresholded image using a large block size**
+
+![Screenshot](img/documentation_images/adaptive_threshold/pollen_grains_adaptive_Gauss_2000-15_scaled.png)
 
 **Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/threshold/threshold_methods.py)
