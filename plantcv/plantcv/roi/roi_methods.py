@@ -259,9 +259,7 @@ def _rois_from_coordinates(img, coord=None, radius=None):
         overlap_img = overlap_img + circle_img
         # Make a list of contours and hierarchies
         rc, rh = cv2.findContours(circle_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[-2:]
-        roi_objects.contours.append(rc)
-        roi_objects.hierarchy.append(rh)
-        #roi_objects.append(rc, rh)
+        roi_objects.append(rc, rh)
     return roi_objects, overlap_img, all_roi_img
 
 
