@@ -64,7 +64,7 @@ def roi_objects(img, roi_objects, objects, roi_type="partial"):
 
         # Find the kept contours and area
         kept_cnt, kept_hierarchy = cv2.findContours(np.copy(mask), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
-        kept_obj = Objects(kept_cnt,kept_hierarchy)
+        kept_obj = Objects(list(kept_cnt),kept_hierarchy)
         obj_area = cv2.countNonZero(mask)
 
         # Find the largest contour if roi_type is set to 'largest'
@@ -107,7 +107,7 @@ def roi_objects(img, roi_objects, objects, roi_type="partial"):
 
             # Refind contours and hierarchy from new mask so they are easier to work with downstream
             kept_cnt, kept_hierarchy = cv2.findContours(np.copy(mask), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
-            kept_obj = Objects(kept_cnt, kept_hierarchy)
+            kept_obj = Objects(list(kept_cnt), kept_hierarchy)
             # Compute object area
             obj_area = cv2.countNonZero(mask)
 
@@ -124,7 +124,7 @@ def roi_objects(img, roi_objects, objects, roi_type="partial"):
         mask = cv2.multiply(background1, background2)
         obj_area = cv2.countNonZero(mask)
         kept_cnt, kept_hierarchy = cv2.findContours(np.copy(mask), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
-        kept_obj = Objects(kept_cnt, kept_hierarchy)
+        kept_obj = Objects(list(kept_cnt), kept_hierarchy)
         cv2.drawContours(ori_img, kept_obj.contours[0], -1, (0, 255, 0), -1, lineType=8, hierarchy=kept_obj.hierarchy[0])
         cv2.drawContours(ori_img, roi_objects.contours[0], -1, (255, 0, 0), params.line_thickness, lineType=8,
                          hierarchy=roi_objects.hierarchy[0])
