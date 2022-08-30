@@ -38,7 +38,7 @@ def roi_objects(img, roi_objects, objects, roi_type="partial"):
 
     # Create an empty grayscale (black) image the same dimensions as the input image
     mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
-    cv2.drawContours(mask, objects.contours, -1, (255), -1, lineType=8, hierarchy=objects.hierarchy)
+    cv2.drawContours(mask, objects.contours[0], -1, (255), -1, lineType=8, hierarchy=objects.hierarchy)
 
     # Create a mask of the filled in ROI
     roi_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
@@ -60,7 +60,7 @@ def roi_objects(img, roi_objects, objects, roi_type="partial"):
             overlap_img = logical_and(filtering_mask, roi_mask)
             # Delete contours that do not overlap at all with the ROI
             if np.sum(overlap_img) == 0:
-                cv2.drawContours(mask, objects.contours, c, (0), -1, lineType=8, hierarchy=objects.hierarchy)
+                cv2.drawContours(mask, objects.contours[0], c, (0), -1, lineType=8, hierarchy=objects.hierarchy)
 
         # Find the kept contours and area
         kept_cnt, kept_hierarchy = cv2.findContours(np.copy(mask), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
@@ -112,22 +112,22 @@ def roi_objects(img, roi_objects, objects, roi_type="partial"):
             obj_area = cv2.countNonZero(mask)
 
         cv2.drawContours(ori_img, kept_cnt, -1, (0, 255, 0), -1, lineType=8, hierarchy=kept_hierarchy)
-        cv2.drawContours(ori_img, roi_objects.contours, -1, (255, 0, 0), params.line_thickness, lineType=8,
-                         hierarchy=roi_objects.hierarchy)
+        cv2.drawContours(ori_img, roi_objects.contours[0], -1, (255, 0, 0), params.line_thickness, lineType=8,
+                         hierarchy=roi_objects.hierarchy[0])
     # Allows user to cut objects to the ROI (all objects completely outside ROI will not be kept)
     elif roi_type.upper() == 'CUTTO':
         background1 = np.zeros(np.shape(img)[:2], dtype=np.uint8)
         background2 = np.zeros(np.shape(img)[:2], dtype=np.uint8)
-        cv2.drawContours(background1, objects.contours, -1, (255), -1, lineType=8, hierarchy=objects.hierarchy)
+        cv2.drawContours(background1, objects.contours[0], -1, (255), -1, lineType=8, hierarchy=objects.hierarchy)
         roi_points = np.vstack(roi_objects.contours[0])
         cv2.fillPoly(background2, [roi_points], (255))
         mask = cv2.multiply(background1, background2)
         obj_area = cv2.countNonZero(mask)
         kept_cnt, kept_hierarchy = cv2.findContours(np.copy(mask), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
         kept_obj = Objects(kept_cnt, kept_hierarchy)
-        cv2.drawContours(ori_img, kept_obj.contours, -1, (0, 255, 0), -1, lineType=8, hierarchy=kept_obj.hierarchy)
-        cv2.drawContours(ori_img, roi_objects.contours, -1, (255, 0, 0), params.line_thickness, lineType=8,
-                         hierarchy=roi_objects.hierarchy)
+        cv2.drawContours(ori_img, kept_obj.contours[0], -1, (0, 255, 0), -1, lineType=8, hierarchy=kept_obj.hierarchy[0])
+        cv2.drawContours(ori_img, roi_objects.contours[0], -1, (255, 0, 0), params.line_thickness, lineType=8,
+                         hierarchy=roi_objects.hierarchy[0])
     else:
         # Reset debug mode
         params.debug = debug
