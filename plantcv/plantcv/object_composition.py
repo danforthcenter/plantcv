@@ -43,7 +43,7 @@ def object_composition(img, objects):
     if len(ids) > 0:
         contour_list = [objects.contours[i] for i in ids]
         group = np.vstack(contour_list)
-        cv2.drawContours(mask, objects.contours, -1, 255, -1, hierarchy=objects.hierarchy)
+        cv2.drawContours(mask, objects.contours[0], -1, 255, -1, hierarchy=objects.hierarchy)
 
         cv2.drawContours(ori_img, group, -1, (255, 0, 0), params.line_thickness)
         for cnt in objects.contours:
