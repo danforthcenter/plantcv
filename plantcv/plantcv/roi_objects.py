@@ -38,7 +38,7 @@ def roi_objects(img, roi_objects, objects, roi_type="partial"):
 
     # Create an empty grayscale (black) image the same dimensions as the input image
     mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
-    cv2.drawContours(mask, objects.contours[0], -1, (255), -1, lineType=8, hierarchy=objects.hierarchy[0])
+    cv2.drawContours(mask, objects.contours, -1, (255), -1, lineType=8, hierarchy=objects.hierarchy)
 
     # Create a mask of the filled in ROI
     roi_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
