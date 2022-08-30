@@ -58,7 +58,7 @@ def report_size_marker_area(img, roi_obj, marker='define', objcolor='dark', thre
     # Initialize a binary image
     roi_mask = np.zeros(np.shape(img)[:2], dtype=np.uint8)
     # Draw the filled ROI on the mask
-    cv2.drawContours(roi_mask, roi_obj.contours, -1, (255), -1)
+    cv2.drawContours(roi_mask, roi_obj.contours[0], -1, (255), -1)
     marker_mask = []
     marker_contour = []
 
