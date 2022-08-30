@@ -100,7 +100,7 @@ def report_size_marker_area(img, roi_obj, marker='define', objcolor='dark', thre
     marker_area = m['m00']
 
     # Fit a bounding ellipse to the marker
-    center, axes, angle = cv2.fitEllipse([marker_contour])
+    center, axes, angle = cv2.fitEllipse(marker_contour[0])
     major_axis = np.argmax(axes)
     minor_axis = 1 - major_axis
     major_axis_length = axes[major_axis]
