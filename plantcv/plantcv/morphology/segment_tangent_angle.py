@@ -6,10 +6,10 @@ import numpy as np
 import pandas as pd
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
-from plantcv.plantcv import find_objects
 from plantcv.plantcv import color_palette
 from plantcv.plantcv.morphology import _iterative_prune
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _cv2_findcontours
 
 
 def _slope_to_intesect_angle(m1, m2):
@@ -68,7 +68,7 @@ def segment_tangent_angle(segmented_img, objects, size, label="default"):
         cv2.drawContours(labeled_img, objects, i, rand_color[i], params.line_thickness, lineType=8)
         pruned_segment = _iterative_prune(find_tangents, size)
         segment_ends = find_tangents - pruned_segment
-        segment_end_obj, segment_end_hierarchy = find_objects(segment_ends, segment_ends)
+        segment_end_obj, _ = _cv2_findcontours(bin_img=segment_ends)
         slopes = []
         for j, obj in enumerate(segment_end_obj):
             # Find bounds for regression lines to get drawn
