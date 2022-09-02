@@ -26,12 +26,11 @@ def find_objects(img, mask):
     :return objects: list
     :return hierarchy: numpy.ndarray
     """
-    mask1 = np.copy(mask)
     ori_img = np.copy(img)
     # If the reference image is grayscale convert it to color
     if len(np.shape(ori_img)) == 2:
         ori_img = cv2.cvtColor(ori_img, cv2.COLOR_GRAY2BGR)
-    objects, hierarchy = _cv2_findcontours(bin_img=mask1)
+    objects, hierarchy = _cv2_findcontours(bin_img=mask)
     # Cast tuple objects as a list
     objects = list(objects)
     for i, cnt in enumerate(objects):

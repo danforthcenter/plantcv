@@ -31,7 +31,7 @@ def from_binary_image(img, bin_img):
     if len(np.unique(bin_img)) != 2:
         fatal_error("Input image is not binary!")
     # Use the binary image to create an ROI contour
-    roi_contour, roi_hierarchy = _cv2_findcontours(bin_img=np.copy(bin_img))
+    roi_contour, roi_hierarchy = _cv2_findcontours(bin_img=bin_img)
     # Draw the ROI if requested
     _draw_roi(img=img, roi_contour=roi_contour)
 
