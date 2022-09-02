@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 from sklearn.mixture import GaussianMixture
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _cv2_findcontours
 from plantcv.plantcv import fatal_error, params, Objects
 
 
@@ -30,7 +31,7 @@ def from_binary_image(img, bin_img):
     if len(np.unique(bin_img)) != 2:
         fatal_error("Input image is not binary!")
     # Use the binary image to create an ROI contour
-    roi_contour, roi_hierarchy = cv2.findContours(np.copy(bin_img), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
+    roi_contour, roi_hierarchy = _cv2_findcontours(bin_img=np.copy(bin_img))
     # Draw the ROI if requested
     _draw_roi(img=img, roi_contour=roi_contour)
 
@@ -115,7 +116,7 @@ def circle(img, x, y, r):
     cv2.circle(bin_img, (x, y), r, 255, -1)
 
     # Use the binary image to create an ROI contour
-    roi_contour, roi_hierarchy = cv2.findContours(bin_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
+    roi_contour, roi_hierarchy = _cv2_findcontours(bin_img=bin_img)
 
     # Draw the ROI if requested
     _draw_roi(img=img, roi_contour=roi_contour)
@@ -162,7 +163,7 @@ def ellipse(img, x, y, r1, r2, angle):
     cv2.ellipse(bin_img, (x, y), (r1, r2), angle, 0, 360, 255, -1)
 
     # Use the binary image to create an ROI contour
-    roi_contour, roi_hierarchy = cv2.findContours(bin_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
+    roi_contour, roi_hierarchy = _cv2_findcontours(bin_img=bin_img)
 
     # Draw the ROI if requested
     _draw_roi(img=img, roi_contour=roi_contour)
@@ -194,7 +195,7 @@ def _draw_roi(img, roi_contour):
 
 
 def _calculate_grid(mask, nrows, ncols):
-    contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[-2:]
     centers = []
     for c in contours:
         m = cv2.moments(c)
@@ -337,7 +338,7 @@ def auto_grid(mask, nrows, ncols, radius=None, img=None):
               "If you only see one ROI then they may overlap exactly.")
     # Draw the ROIs if requested
     # Create an array of contours and list of hierarchy for debug image
-    roi_contour1, _ = cv2.findContours(all_roi_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
+    roi_contour1, _ = _cv2_findcontours(bin_img=all_roi_img)
     _draw_roi(img=img, roi_contour=roi_contour1)
     return roi_objects
 
@@ -382,7 +383,7 @@ def multi(img, coord, radius=None, spacing=None, nrows=None, ncols=None):
 
     # Draw the ROIs if requested
     # Create an array of contours and list of hierarchy for debug image
-    roi_contour1, _ = cv2.findContours(all_roi_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
+    roi_contour1, _ = _cv2_findcontours(bin_img=all_roi_img)
     _draw_roi(img=img, roi_contour=roi_contour1)
     return roi_objects
 
