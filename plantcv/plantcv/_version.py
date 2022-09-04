@@ -190,7 +190,7 @@ def git_versions_from_keywords(keywords, tag_prefix, verbose):
         # refs/heads/ and refs/tags/ prefixes that would let us distinguish
         # between branches and tags. By ignoring refnames without digits, we
         # filter out many common branch names like "release" and
-        # "stabilization", as well as "HEAD" and "master".
+        # "stabilization", as well as "HEAD" and "main".
         tags = {r for r in refs if re.search(r'\d', r)}
         if verbose:
             print("discarding '%s', no digits" % ",".join(refs - tags))
@@ -383,8 +383,8 @@ def render_pep440(pieces):
 def render_pep440_branch(pieces):
     """TAG[[.dev0]+DISTANCE.gHEX[.dirty]] .
 
-    The ".dev0" means not master branch. Note that .dev0 sorts backwards
-    (a feature branch will appear "older" than the master branch).
+    The ".dev0" means not main branch. Note that .dev0 sorts backwards
+    (a feature branch will appear "older" than the main branch).
 
     Exceptions:
     1: no tags. 0[.dev0]+untagged.DISTANCE.gHEX[.dirty]
@@ -474,7 +474,7 @@ def render_pep440_post(pieces):
 def render_pep440_post_branch(pieces):
     """TAG[.postDISTANCE[.dev0]+gHEX[.dirty]] .
 
-    The ".dev0" means not master branch.
+    The ".dev0" means not main branch.
 
     Exceptions:
     1: no tags. 0.postDISTANCE[.dev0]+gHEX[.dirty]
