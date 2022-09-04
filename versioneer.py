@@ -700,8 +700,8 @@ def git_pieces_from_vcs(tag_prefix, root, verbose, runner=run_command):
 
         # Strip off the leading "* " from the list of branches.
         branches = [branch[2:] for branch in branches]
-        if "master" in branches:
-            branch_name = "master"
+        if "main" in branches:
+            branch_name = "main"
         elif not branches:
             branch_name = None
         else:
@@ -808,7 +808,7 @@ def render_pep440_branch(pieces):
     if pieces["closest-tag"]:
         rendered = pieces["closest-tag"]
         if pieces["distance"] or pieces["dirty"]:
-            if pieces["branch"] != "master":
+            if pieces["branch"] != "main":
                 rendered += ".dev0"
             rendered += plus_or_dot(pieces)
             rendered += "%%d.g%%s" %% (pieces["distance"], pieces["short"])
@@ -817,7 +817,7 @@ def render_pep440_branch(pieces):
     else:
         # exception #1
         rendered = "0"
-        if pieces["branch"] != "master":
+        if pieces["branch"] != "main":
             rendered += ".dev0"
         rendered += "+untagged.%%d.g%%s" %% (pieces["distance"],
                                           pieces["short"])
@@ -899,7 +899,7 @@ def render_pep440_post_branch(pieces):
         rendered = pieces["closest-tag"]
         if pieces["distance"] or pieces["dirty"]:
             rendered += ".post%%d" %% pieces["distance"]
-            if pieces["branch"] != "master":
+            if pieces["branch"] != "main":
                 rendered += ".dev0"
             rendered += plus_or_dot(pieces)
             rendered += "g%%s" %% pieces["short"]
@@ -908,7 +908,7 @@ def render_pep440_post_branch(pieces):
     else:
         # exception #1
         rendered = "0.post%%d" %% pieces["distance"]
-        if pieces["branch"] != "master":
+        if pieces["branch"] != "main":
             rendered += ".dev0"
         rendered += "+g%%s" %% pieces["short"]
         if pieces["dirty"]:
@@ -1218,8 +1218,8 @@ def git_pieces_from_vcs(tag_prefix, root, verbose, runner=run_command):
 
         # Strip off the leading "* " from the list of branches.
         branches = [branch[2:] for branch in branches]
-        if "master" in branches:
-            branch_name = "master"
+        if "main" in branches:
+            branch_name = "main"
         elif not branches:
             branch_name = None
         else:
@@ -1433,7 +1433,7 @@ def render_pep440_branch(pieces):
     if pieces["closest-tag"]:
         rendered = pieces["closest-tag"]
         if pieces["distance"] or pieces["dirty"]:
-            if pieces["branch"] != "master":
+            if pieces["branch"] != "main":
                 rendered += ".dev0"
             rendered += plus_or_dot(pieces)
             rendered += "%d.g%s" % (pieces["distance"], pieces["short"])
@@ -1442,7 +1442,7 @@ def render_pep440_branch(pieces):
     else:
         # exception #1
         rendered = "0"
-        if pieces["branch"] != "master":
+        if pieces["branch"] != "main":
             rendered += ".dev0"
         rendered += "+untagged.%d.g%s" % (pieces["distance"],
                                           pieces["short"])
@@ -1524,7 +1524,7 @@ def render_pep440_post_branch(pieces):
         rendered = pieces["closest-tag"]
         if pieces["distance"] or pieces["dirty"]:
             rendered += ".post%d" % pieces["distance"]
-            if pieces["branch"] != "master":
+            if pieces["branch"] != "main":
                 rendered += ".dev0"
             rendered += plus_or_dot(pieces)
             rendered += "g%s" % pieces["short"]
@@ -1533,7 +1533,7 @@ def render_pep440_post_branch(pieces):
     else:
         # exception #1
         rendered = "0.post%d" % pieces["distance"]
-        if pieces["branch"] != "master":
+        if pieces["branch"] != "main":
             rendered += ".dev0"
         rendered += "+g%s" % pieces["short"]
         if pieces["dirty"]:
