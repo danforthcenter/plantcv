@@ -31,4 +31,4 @@ fdark, fmin, fmax = pcv.photosynthesis.read_cropreporter(filename="PSII_PSD_2020
 
 ```
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/photosynthesis/read_dat.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/photosynthesis/read_dat.py)

@@ -40,4 +40,4 @@ subtracted_img = pcv.image_subtract(gray_img1, gray_img2)
 
 ![Screenshot](img/documentation_images/image_subtract/result.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/image_subtract.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/image_subtract.py)

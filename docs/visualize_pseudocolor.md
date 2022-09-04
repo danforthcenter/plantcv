@@ -117,4 +117,4 @@ pseudo_img_mask_obj_bad_mask = pcv.visualize.pseudocolor(gray_img=img, obj=obg, 
 
 ![Screenshot](img/documentation_images/pseudocolor/pseudocolored_mask_bad_obj.png)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/visualize/pseudocolor.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/visualize/pseudocolor.py)

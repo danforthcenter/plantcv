@@ -67,4 +67,4 @@ pseudo_img = pcv.pseudocolor(gray_img=fvfm_img, mask=kept_mask)
 The grayscale Fv/Fm image (returned to analysis_image) can be used with the [pcv.visualize.pseudocolor](visualize_pseudocolor.md) function
 which allows the user to pick a colormap for plotting.
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/photosynthesis/analyze_fvfm.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/photosynthesis/analyze_fvfm.py)

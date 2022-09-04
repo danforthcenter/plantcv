@@ -55,4 +55,4 @@ pcv.print_results(filename='test_workflow_results.txt')
 
 ```
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/print_results.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/print_results.py)

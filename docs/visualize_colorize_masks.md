@@ -21,7 +21,7 @@ This is a plotting method used to color masks.
 
 **Original image**
 
-![Screenshot](img/tutorial_images/machine_learning/color_image.jpg) 
+![Screenshot](img/tutorial_images/machine_learning/color_image.jpg)
 
 ```python
 
@@ -51,4 +51,4 @@ plotted = pcv.visualize.colorize_masks(masks=[mask['plant'], mask['pustule'], ma
 
 ![Screenshot](img/documentation_images/colorize_masks/colored_classes.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/visualize/colorize_masks.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/visualize/colorize_masks.py)

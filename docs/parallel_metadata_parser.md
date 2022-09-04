@@ -27,4 +27,4 @@ A helper function to convert datetimes/timestamps in string format to Unix/Epoch
     - A timestamp is often an important piece of metadata associated with automated imaging. This function is used to
     convert between human and machine readable datetime formats within [Workflow Parallelization](pipeline_parallel.md).
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/parallel/parsers.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/parallel/parsers.py)

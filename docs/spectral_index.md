@@ -701,7 +701,7 @@ egi_array = pcv.spectral_index.egi(rgb_img=img)
 
 ![Screenshot](img/tutorial_images/hyperspectral/wbi_index.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/spectral_index/spectral_index.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/spectral_index/spectral_index.py)
 
 ### References
 
