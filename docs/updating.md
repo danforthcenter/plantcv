@@ -34,7 +34,7 @@ conda list plantcv
 
 ### Updating from the source code
 
-The general procedure for updating PlantCV if you are using the `master` branch
+The general procedure for updating PlantCV if you are using the `main` branch
 cloned from the `danforthcenter/plantcv` repository is to update your local 
 repository and reinstall the package.
 
@@ -42,7 +42,7 @@ With GitHub Desktop you can [synchronize](https://docs.github.com/en/free-pro-te
 to pull updates from GitHub. Or on the command line update using `git pull`.
 
 If you are not sure that you have cloned the `danforthcenter/plantcv` repository
-and are on the `master` branch, here is how you can tell:
+and are on the `main` branch, here is how you can tell:
 
 If you installed PlantCV using the "editable" mode `pip install -e .` then your installation should be updated
 automatically. Alternatively, you can run `python setup.py install` to reinstall the package from the cloned repository.
