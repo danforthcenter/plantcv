@@ -40,4 +40,4 @@ bottom_landmarks = pcv.outputs.observations['default']['bottom_lmk']['value']
 
 ![Screenshot](img/documentation_images/x_axis_pseudolandmarks/xap_output.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/x_axis_pseudolandmarks.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/x_axis_pseudolandmarks.py)

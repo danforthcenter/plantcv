@@ -49,4 +49,4 @@ stem_angle = pcv.outputs.observations['rep1']['stem_angle']['value']
 
 ![Screenshot](img/documentation_images/analyze_stem/218_segmented_angles.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/morphology/analyze_stem.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/morphology/analyze_stem.py)

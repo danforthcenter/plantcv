@@ -15,7 +15,7 @@ The function is a wrapper for the SciPy function [median filter](https://docs.sc
 - **Example use:**
     - [Use In VIS Tutorial](tutorials/vis_tutorial.md)
     - [Use In NIR Tutorial](tutorials/nir_tutorial.md)
-    - [Use In PSII Tutorial](tutorials/psII_tutorial.md) 
+    - [Use In PSII Tutorial](tutorials/psII_tutorial.md)
 
 **Thresholded image**
 
@@ -53,4 +53,4 @@ blur_11 = pcv.median_blur(gray_img, (11, 11))
 
 ![Screenshot](img/documentation_images/median_blur/median_blur11.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/median_blur.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/median_blur.py)

@@ -224,7 +224,7 @@ Clone the PlantCV repository into your home directory
 git clone https://github.com/danforthcenter/plantcv.git
 ```
 
-The default branch (master) is the latest release. If you want to check out a specific version:
+The default branch (main) is the latest release. If you want to check out a specific version:
 
 ```bash
 # Switch to a stable release

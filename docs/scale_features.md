@@ -38,4 +38,4 @@ points_rescaled, centroid_rescaled, base_rescaled = pcv.scale_features(obj, mask
 
 ![Screenshot](img/documentation_images/scale_features/sf_output.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/scale_features.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/scale_features.py)

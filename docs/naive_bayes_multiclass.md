@@ -29,4 +29,4 @@ be created with [pcv.visualize.colorize_masks](visualize_colorize_masks.md).
 - **Example use:**
     - [Use In Machine Learning Tutorial](tutorials/machine_learning_tutorial.md)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/learn/naive_bayes.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/learn/naive_bayes.py)

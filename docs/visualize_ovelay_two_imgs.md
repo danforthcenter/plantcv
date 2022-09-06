@@ -40,4 +40,4 @@ blended_im = pcv.overlay_two_imgs(img1=img1, img2=img2, alpha=0.5)
 ![Screenshot](img/documentation_images/visualize_overlay_two_imgs/overlay_result.png)
 
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/visualize/overlay_two_imgs.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/visualize/overlay_two_imgs.py)

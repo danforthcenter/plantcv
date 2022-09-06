@@ -44,4 +44,4 @@ sb_y_img = pcv.sobel_filter(gray_img=gray_img, dx=0, dy=1, ksize=1)
 
 ![Screenshot](img/documentation_images/sobel_filter/sobel-y.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/sobel_filter.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/sobel_filter.py)

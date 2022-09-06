@@ -37,4 +37,4 @@ dark_reference = pcv.readimage(filename=dark_reference_filename)
 calibrated_data = pcv.hyperspectral.calibrate(raw_data=raw, white_reference=white_reference, dark_reference=dark_reference)
 ```
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/hyperspectral/calibrate.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/hyperspectral/calibrate.py)

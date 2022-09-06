@@ -65,4 +65,4 @@ colmap = pcv.visualize.pseudocolor(gray_img=ndvi.array_data, mask=mask, cmap="Rd
 
 ![Pseudocolored NDVI image](img/documentation_images/image_fusion/ndvi_colormap.png)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/image_fusion.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/image_fusion.py)

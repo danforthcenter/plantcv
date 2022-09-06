@@ -49,4 +49,4 @@ nir_frequencies = pcv.outputs.observations['default']['nir_frequencies']['value'
 **Note:** The grayscale input image and object mask can be used with the [pcv.visualize.pseudocolor](visualize_pseudocolor.md) function
 which allows the user to pick a colormap for plotting.
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/analyze_nir_intensity.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/analyze_nir_intensity.py)
