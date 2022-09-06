@@ -16,7 +16,7 @@ Combine objects together for downstream analysis, usually done after object filt
 - **Example use:**
     - [Use in VIS tutorial](tutorials/vis_tutorial.md)
     - [Use in NIR tutorial](tutorials/nir_tutorial.md)
-    - [Use in PSII tutorial](tutorials/psII_tutorial.md) 
+    - [Use in PSII tutorial](tutorials/psII_tutorial.md)
 
 **Original image**
 
@@ -42,4 +42,4 @@ obj, mask = pcv.object_composition(img, roi_objects, hierarchy)
 
 ![Screenshot](img/documentation_images/object_composition/combined.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/object_composition.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/object_composition.py)

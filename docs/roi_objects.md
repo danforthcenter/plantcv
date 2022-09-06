@@ -25,7 +25,7 @@ completely within the image.
 - **Example use:**
     - [Use In VIS Tutorial](tutorials/vis_tutorial.md)
     - [Use In NIR Tutorial](tutorials/nir_tutorial.md)
-    - [Use In PSII Tutorial](tutorials/psII_tutorial.md) 
+    - [Use In PSII Tutorial](tutorials/psII_tutorial.md)
 
 
 ```python
@@ -77,4 +77,4 @@ roi_objects, hierarchy, kept_mask, obj_area = pcv.roi_objects(img, roi, roi_hier
 
 ![Screenshot](img/documentation_images/roi_objects/kept_objects2.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/roi_objects.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/roi_objects.py)

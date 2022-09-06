@@ -38,4 +38,4 @@ mask = pcv.transform.create_color_card_mask(rgb_img=img, radius=10, start_coord=
 
 ![Screenshot](img/documentation_images/correct_color_imgs/color_card_mask.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/transform/color_correction.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/transform/color_correction.py)

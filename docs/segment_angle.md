@@ -42,4 +42,4 @@ segment_angles = pcv.outputs.observations['default']['segment_angle']['value']
 
 ![Screenshot](img/documentation_images/segment_angle/labeled_angles.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/morphology/segment_angle.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/morphology/segment_angle.py)

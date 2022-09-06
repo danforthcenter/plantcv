@@ -49,4 +49,4 @@ segments_area = pcv.outputs.observations['default']['segment_area']['value']
 
 ![Screenshot](img/documentation_images/fill_segments/filled_image.png)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/morphology/fill_segments.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/morphology/fill_segments.py)
