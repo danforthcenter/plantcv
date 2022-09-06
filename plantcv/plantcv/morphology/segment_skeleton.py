@@ -4,11 +4,11 @@ import os
 import cv2
 from plantcv.plantcv import dilate
 from plantcv.plantcv import params
-from plantcv.plantcv import find_objects
 from plantcv.plantcv import color_palette
 from plantcv.plantcv import image_subtract
 from plantcv.plantcv.morphology import find_branch_pts
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _cv2_findcontours
 
 
 def segment_skeleton(skel_img, mask=None):
@@ -39,7 +39,7 @@ def segment_skeleton(skel_img, mask=None):
     segments = image_subtract(skel_img, bp)
 
     # Gather contours of leaves
-    segment_objects, _ = find_objects(segments, segments)
+    segment_objects, _ = _cv2_findcontours(bin_img=segments)
 
     # Reset debug mode
     params.debug = debug

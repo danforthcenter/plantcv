@@ -4,12 +4,12 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv import params
-from plantcv.plantcv import find_objects
 from plantcv.plantcv import image_subtract
 from plantcv.plantcv.morphology import segment_sort
 from plantcv.plantcv.morphology import segment_skeleton
 from plantcv.plantcv.morphology import _iterative_prune
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _cv2_findcontours
 
 
 def prune(skel_img, size=0, mask=None):
@@ -43,7 +43,7 @@ def prune(skel_img, size=0, mask=None):
     pruned_img = skel_img.copy()
 
     # Check to see if the skeleton has multiple objects
-    skel_objects, _ = find_objects(skel_img, skel_img)
+    skel_objects, _ = _cv2_findcontours(bin_img=skel_img)
 
     _, objects = segment_skeleton(skel_img)
     kept_segments = []
@@ -80,7 +80,7 @@ def prune(skel_img, size=0, mask=None):
     else:
         pruned_plot = mask.copy()
     pruned_plot = cv2.cvtColor(pruned_plot, cv2.COLOR_GRAY2RGB)
-    pruned_obj, pruned_hierarchy = find_objects(pruned_img, pruned_img)
+    pruned_obj, _ = _cv2_findcontours(bin_img=pruned_img)
     cv2.drawContours(pruned_plot, removed_segments, -1, (0, 0, 255), params.line_thickness, lineType=8)
     cv2.drawContours(pruned_plot, pruned_obj, -1, (150, 150, 150), params.line_thickness, lineType=8)
 
