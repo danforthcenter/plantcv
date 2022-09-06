@@ -11,7 +11,7 @@ def test_find_objects(test_data):
     cnt, _ = test_data.load_contours(test_data.small_contours_file)
     objects = find_objects(img=img, mask=mask)
     # Assert contours match test data
-    assert np.all(cnt) == np.all(objects.contours[0])
+    assert np.all(cnt) == np.all(objects.contours)
 
 
 def test_find_objects_grayscale_input(test_data):
@@ -22,4 +22,4 @@ def test_find_objects_grayscale_input(test_data):
     cnt, _ = test_data.load_contours(test_data.small_contours_file)
     objects = find_objects(img=img, mask=mask)
     # Assert contours match test data
-    assert np.all(cnt) == np.all(objects.contours[0])
+    assert np.all(cnt) == np.all(objects.contours)
