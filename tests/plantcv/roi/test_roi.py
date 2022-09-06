@@ -41,9 +41,9 @@ def test_rectangle(roi_test_data):
     """Test for PlantCV."""
     # Read in test RGB image
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
-    roi, _ = rectangle(x=100, y=100, h=100, w=100, img=rgb_img)
+    roi = rectangle(x=100, y=100, h=100, w=100, img=rgb_img)
     # Assert the contours and hierarchy lists contain only the ROI
-    assert np.shape(roi) == (1, 4, 1, 2)
+    assert np.shape(roi.contours[0]) == (1, 4, 1, 2)
 
 
 def test_rectangle_grayscale_input(roi_test_data):
