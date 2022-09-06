@@ -5,6 +5,7 @@ import numpy as np
 import os
 from plantcv.plantcv import fatal_error
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _cv2_findcontours
 from plantcv.plantcv import params
 
 
@@ -47,7 +48,7 @@ def rectangle_mask(img, p1, p2, color="black"):
 
     cv2.rectangle(img=bnk, pt1=p1, pt2=p2, color=(255, 255, 255), thickness=-1)
     ret, bnk = cv2.threshold(bnk, 127, 255, 0)
-    contour, hierarchy = cv2.findContours(bnk, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
+    contour, hierarchy = _cv2_findcontours(bin_img=bnk)
     # make sure entire rectangle is within (visable within) plotting region or else it will not fill with
     # thickness = -1. Note that you should only print the first contour (contour[0]) if you want to fill with
     # thickness = -1. otherwise two rectangles will be drawn and the space between them will get filled

@@ -42,4 +42,4 @@ mask = pcv.roi.roi2mask(img=img, contour=roi_contour)
 
 ![Screenshot](img/documentation_images/roi2mask/custom_mask.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/roi/roi2mask.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/roi/roi2mask.py)

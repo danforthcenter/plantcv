@@ -48,4 +48,4 @@ segmented_img2, obj = pcv.morphology.segment_skeleton(skel_img=skeleton,
 
 ![Screenshot](img/documentation_images/segment_skeleton/segmented_img_mask.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/morphology/segment_skeleton.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/morphology/segment_skeleton.py)

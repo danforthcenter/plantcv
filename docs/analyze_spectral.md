@@ -39,4 +39,4 @@ reflectance_range = max(pcv.outputs.observations['default']['max_reflectance']['
 
 ![Screenshot](img/tutorial_images/hyperspectral/spectral_histogram.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/hyperspectral/analyze_spectral.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/hyperspectral/analyze_spectral.py)

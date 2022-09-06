@@ -43,4 +43,4 @@ avg_vert_distance = pcv.outputs.observations['default']['vert_ave_c']['value']
 
 ![Screenshot](img/documentation_images/landmark_reference_pt_dist/lrpd_output.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/landmark_reference_pt_dist.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/landmark_reference_pt_dist.py)

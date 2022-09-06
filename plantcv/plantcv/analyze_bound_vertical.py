@@ -4,6 +4,7 @@ import os
 import cv2
 import numpy as np
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _cv2_findcontours
 from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 
@@ -44,7 +45,7 @@ def analyze_bound_vertical(img, obj, mask, line_position, label="default"):
     rec_point1 = (0, 0)
     rec_point2 = (x_coor, y_coor - 2)
     cv2.rectangle(background, rec_point1, rec_point2, (255), -1)
-    right_contour, right_hierarchy = cv2.findContours(background, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
+    right_contour, right_hierarchy = _cv2_findcontours(bin_img=background)
 
     x, y, width, height = cv2.boundingRect(obj)
 

@@ -12,7 +12,7 @@ Runs PlantCV workflows in parallel locally or in a distributed computing resourc
 - **Context:**
     - Used to create a computing cluster resource (including local environment) for [PlantCV Workflow Parallelization](pipeline_parallel.md).
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/parallel/multiprocess.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/parallel/multiprocess.py)
 
 
 **plantcv.parallel.multiprocess**(*jobs, client*)
@@ -26,4 +26,4 @@ Runs PlantCV workflows in parallel locally or in a distributed computing resourc
     - This is one of the last steps built into the [PlantCV Workflow Parallelization](pipeline_parallel.md) feature. 
     It executes jobs from a list created by the [job builder](parallel_job_builder.md) step. 
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/parallel/multiprocess.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/parallel/multiprocess.py)

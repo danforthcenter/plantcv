@@ -89,4 +89,4 @@ resize_img5 = pcv.transform.resize_factor(img=img, factors=(0.1154905775, 0.1154
 
 ![Screenshot](img/documentation_images/resize/19_resize5.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/transform/resize.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/transform/resize.py)

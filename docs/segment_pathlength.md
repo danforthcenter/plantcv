@@ -44,4 +44,4 @@ path_lengths = pcv.outputs.observations['default']['segment_path_length']['value
 
 ![Screenshot](img/documentation_images/segment_path_length/labeled_path_lengths.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/morphology/segment_path_length.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/morphology/segment_path_length.py)
