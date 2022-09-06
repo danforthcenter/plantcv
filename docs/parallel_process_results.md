@@ -26,4 +26,4 @@ parallel.process_results(job_dir="home/user/parallel_results", json_file="combin
 
 ```
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/parallel/process_results.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/parallel/process_results.py)

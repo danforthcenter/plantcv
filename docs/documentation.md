@@ -12,7 +12,7 @@ new version of code is pushed to the PlantCV GitHub repository.
 Follow the [contribution guide](CONTRIBUTING.md) to learn how clone a copy of the PlantCV
 repository, edit files, and generate a `pull` request to merge your updates back into the 
 main repository. Changes to PlantCV should be done in a branch, and pull against the 
-`master` branch  which corresponds to the `latest` version of the documentation on Read the Docs.
+`main` branch  which corresponds to the `latest` version of the documentation on Read the Docs.
 
 The documentation files are all located in the `docs` folder. If you are
 editing existing documentation, the Markdown files can be edited in any

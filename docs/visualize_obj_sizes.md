@@ -41,4 +41,4 @@ plotting_img = pcv.visualize.obj_sizes(img=rgb_img, mask=mask, num_objects=27)
 ![Screenshot](img/documentation_images/visualize_sizes/annotated_leaf_sizes.jpg)
 
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/visualize/sizes.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/visualize/sizes.py)

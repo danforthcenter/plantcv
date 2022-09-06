@@ -31,4 +31,4 @@ in_bounds = pcv.within_frame(mask=mask)  #True or False?
 
 ```
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/within_frame.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/within_frame.py)

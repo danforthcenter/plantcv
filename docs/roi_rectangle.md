@@ -31,4 +31,4 @@ roi_contour, roi_hierarchy = pcv.roi.rectangle(img=rgb_img, x=100, y=100, h=200,
 
 ![Screenshot](img/documentation_images/rectangle/image_with_roi.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/roi/roi_methods.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/roi/roi_methods.py)

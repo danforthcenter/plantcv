@@ -29,4 +29,4 @@ skeleton = pcv.morphology.skeletonize(mask=plant_mask)
 
 ![Screenshot](img/documentation_images/skeletonize/skeleton_image.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/morphology/skeletonize.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/morphology/skeletonize.py)

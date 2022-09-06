@@ -47,4 +47,4 @@ gaussian_img = pcv.gaussian_blur(img=img1, ksize=(101, 101), sigma_x=0, sigma_y=
 
 ![Screenshot](img/documentation_images/gaussian_blur/gaussian_blur101.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/gaussian_blur.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/gaussian_blur.py)

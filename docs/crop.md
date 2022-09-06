@@ -40,4 +40,4 @@ crop_img = pcv.crop(img=img, x=800, y=400, h=1200, w=900)
 
 ![Screenshot](img/documentation_images/crop/cropped_img.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/crop.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/crop.py)

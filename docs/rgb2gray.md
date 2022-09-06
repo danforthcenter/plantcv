@@ -33,4 +33,4 @@ gray = pcv.rgb2gray(rgb_img=img)
 
 ![Screenshot](img/documentation_images/rgb2gray/gray.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/rgb2gray.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/rgb2gray.py)

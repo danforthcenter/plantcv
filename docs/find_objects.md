@@ -13,7 +13,7 @@ Find objects within the image.
     - Used to identify objects (plant material) in an image.
 - **Example use:**
     - [Use In VIS Tutorial](tutorials/vis_tutorial.md)
-    - [Use In PSII Tutorial](tutorials/psII_tutorial.md) 
+    - [Use In PSII Tutorial](tutorials/psII_tutorial.md)
 
 **Original image**
 
@@ -41,4 +41,4 @@ id_objects, obj_hierarchy = pcv.find_objects(img=img, mask=mask)
 
 ![Screenshot](img/documentation_images/find_objects/contours.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/find_objects.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/find_objects.py)

@@ -49,4 +49,4 @@ texture_img_111 = pcv.stdev_filter(img=gray_img, ksize=111, borders='nearest')
 
 ![Screenshot](img/documentation_images/stdev_filter/stdev_img111.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/stdev_filter.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/stdev_filter.py)

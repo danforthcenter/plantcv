@@ -53,4 +53,4 @@ rotate_img = pcv.transform.rotate(img, -10, False)
 
 ![Screenshot](img/documentation_images/rotate2/8_rotated_img.png)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/transform/rotate.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/transform/rotate.py)
