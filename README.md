@@ -7,6 +7,7 @@
 [![PyPI version](https://badge.fury.io/py/plantcv.svg)](https://badge.fury.io/py/plantcv)
 ![Conda](https://img.shields.io/conda/v/conda-forge/plantcv)
 [![license](https://img.shields.io/github/license/danforthcenter/plantcv.svg)](https://github.com/danforthcenter/plantcv/blob/main/LICENSE)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](docs/CODE_OF_CONDUCT.md)
 
 # PlantCV: Plant phenotyping using computer vision
 
