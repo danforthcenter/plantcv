@@ -33,4 +33,4 @@ roi_contour, roi_hierarchy = pcv.roi.ellipse(img=rgb_img, x=200, y=200,
 
 ![Screenshot](img/documentation_images/ellipse/image_with_roi.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/roi/roi_methods.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/roi/roi_methods.py)

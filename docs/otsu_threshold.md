@@ -53,4 +53,4 @@ threshold_light = pcv.threshold.otsu(gray_img=gray_img, max_value=255, object_ty
 
 ![Screenshot](img/documentation_images/otsu_threshold/thresholded_light.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/threshold/threshold_methods.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/threshold/threshold_methods.py)

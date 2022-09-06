@@ -5,11 +5,11 @@ name: builds
 
 on:
   push:
-    # Run when master is updated
-    branches: [ master, 4.x ]
+    # Run when main is updated
+    branches: [ main, 4.x, release-4.0 ]
   pull_request:
-    # Run on pull requests against master
-    branches: [ master, 4.x ]
+    # Run on pull requests against main
+    branches: [ main, 4.x, release-4.0 ]
 
 jobs:
   build:

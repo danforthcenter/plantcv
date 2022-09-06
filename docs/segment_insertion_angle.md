@@ -53,4 +53,4 @@ segment_insertion_angles = pcv.outputs.observations['default']['segment_insertio
 
 ![Screenshot](img/documentation_images/segment_insertion_angle/insertion_angle_img.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/morphology/segment_insertion_angle.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/morphology/segment_insertion_angle.py)

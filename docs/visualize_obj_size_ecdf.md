@@ -33,4 +33,4 @@ fig_ecdf = pcv.visualize.ecdf.obj_size(mask=mask)
 
 ![Screenshot](img/documentation_images/visualize_obj_size_ecdf/ecdf_obj_size.png)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/visualize/obj_size_ecdf.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/visualize/obj_size_ecdf.py)

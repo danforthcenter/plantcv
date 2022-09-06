@@ -39,7 +39,7 @@ Subcommands:
 
 `plantcv-utils.py` is a command-line tool for running various utilities.
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv-utils.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv-utils.py)
 
 
 #### Convert output JSON data files to CSV tables
@@ -63,7 +63,7 @@ where it is created by running `plantcv.parallel.process_results` on a directory
 [hierarchical data structure](output_measurements.md) is convenient for flexible data processing but not for downstream
 analysis. The tool creates an output CSV file. The format of this table is one row per value/label (i.e. R long format). 
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/utils/converters.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/utils/converters.py)
 
 
 #### Collect a random sample of images for testing workflows
@@ -89,7 +89,7 @@ tool can handle LemnaTec structured output in addition to a flat file directory.
 .png, .jpg, .jpeg, .tif, .tiff, and .gif. An output directory will be created if it does not already exist. The number of 
 random images requested must be less than or equal to the number of images in the source directory. 
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/utils/sample_images.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/utils/sample_images.py)
 
 
 ### Parallel workflow processing
@@ -98,5 +98,5 @@ random images requested must be less than or equal to the number of images in th
 process metadata and execute custom workflows on each image in a dataset. More detail is provided in the 
 [Workflow Parallelization Tutorial](pipeline_parallel.md).
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv-workflow.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv-workflow.py)
 

@@ -34,4 +34,4 @@ inverted_img = pcv.invert(gray_img)
 
 ![Screenshot](img/documentation_images/invert/inverted_image.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/invert.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/invert.py)

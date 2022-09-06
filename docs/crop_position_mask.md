@@ -59,4 +59,4 @@ cropped2 = pcv.crop_position_mask(img=img, mask=mask, x=40, y=3, v_pos="top", h_
 
 ![Screenshot](img/documentation_images/crop_position_mask/19_mask_overlay.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/crop_position_mask.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/crop_position_mask.py)

@@ -29,4 +29,4 @@ maskpath, analysis_images = pcv.output_mask(img, mask, 'test.png',
 
 ```
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/output_mask_ori_img.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/output_mask_ori_img.py)

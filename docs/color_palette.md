@@ -47,4 +47,4 @@ print(colors)
 pcv.params.saved_color_scale = None
 ```
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/color_palette.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/color_palette.py)
