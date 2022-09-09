@@ -142,8 +142,7 @@ def ellipse(img, x, y, r1, r2, angle):
     angle         = The angle of rotation in degrees of the major axis.
 
     Outputs:
-    roi_contour   = An ROI set of points (contour).
-    roi_hierarchy = The hierarchy of ROI contour(s).
+    roi           = a dataclass with the roi object and hierarchy
 
     :param img: numpy.ndarray
     :param x: int
@@ -151,8 +150,7 @@ def ellipse(img, x, y, r1, r2, angle):
     :param r1: int
     :param r2: int
     :param angle: double
-    :return roi_contour: list
-    :return roi_hierarchy: numpy.ndarray
+    :return roi: plantcv.plantcv.classes.Objects
     """
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
@@ -164,6 +162,7 @@ def ellipse(img, x, y, r1, r2, angle):
 
     # Use the binary image to create an ROI contour
     roi_contour, roi_hierarchy = _cv2_findcontours(bin_img=bin_img)
+    roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
 
     # Draw the ROI if requested
     _draw_roi(img=img, roi_contour=roi_contour)
@@ -173,7 +172,7 @@ def ellipse(img, x, y, r1, r2, angle):
             len(roi_contour) == 0:
         fatal_error("The ROI extends outside of the image, or ROI is not on the image!")
 
-    return roi_contour, roi_hierarchy
+    return roi
 
 
 # Draw the ROI on a reference image
