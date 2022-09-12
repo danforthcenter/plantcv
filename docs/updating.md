@@ -723,6 +723,7 @@ pages for more details on the input and output variable types.
 
 * pre v3.8: NA
 * post v3.8: mask = **pcv.roi.roi2mask**(*img, contour*)
+* post v4.0: mask = **pcv.roi.roi2mask**(*img, roi*)
 
 #### plantcv.roi.auto_grid
 
