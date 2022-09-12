@@ -418,9 +418,5 @@ def custom(img, vertices):
         (x, y) = i
         if x < 0 or x > width or y < 0 or y > height:
             fatal_error("An ROI extends outside of the image!")
-<<<<<<< HEAD
-    return roi_contour, roi_hierarchy
-=======
 
     return roi
->>>>>>> 47996c5f (start updating roi.custom)
