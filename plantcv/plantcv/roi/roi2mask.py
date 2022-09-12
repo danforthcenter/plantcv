@@ -23,9 +23,10 @@ def roi2mask(img, roi):
     """
     # create a blank image of same size
     shape_info = np.shape(img)
-    bnk = np.zeros((shape_info[0], shape_info[1]), dtype=np.uint8)
+    mask = np.zeros((shape_info[0], shape_info[1]), dtype=np.uint8)
 
-    mask = cv2.drawContours(bnk, roi.contours[0], 0, 255, -1)
+    for single_roi_cnt, _ in roi:
+        _ = cv2.drawContours(mask, single_roi_cnt, 0, 255, -1)
 
     _debug(visual=mask,
            filename=os.path.join(params.debug_outdir, str(params.device) + '_roi_mask.png'),
