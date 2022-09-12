@@ -718,6 +718,7 @@ pages for more details on the input and output variable types.
 * pre v3.0dev1: NA
 * post v3.0dev2: roi_contour, roi_hierarchy = **plantcv.roi.rectangle**(*x, y, h, w, img*)
 * post v3.2: roi_contour, roi_hierarchy = **plantcv.roi.rectangle**(*img, x, y, h, w*)
+* post v4.0: roi = **plantcv.roi.rectangle**(*img, x, y, h, w*)
 
 #### plantcv.roi.roi2mask
 

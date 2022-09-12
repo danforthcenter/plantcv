@@ -51,16 +51,14 @@ def rectangle(img, x, y, h, w):
     w             = The width of the rectangle.
 
     Outputs:
-    roi_contour   = An ROI set of points (contour).
-    roi_hierarchy = The hierarchy of ROI contour(s).
+    roi
 
     :param img: numpy.ndarray
     :param x: int
     :param y: int
     :param h: int
     :param w: int
-    :return roi_contour: list
-    :return roi_hierarchy: numpy.ndarray
+    :return roi: plantcv.plantcv.classes.Objects
     """
     # Get the height and width of the reference image
     height, width = np.shape(img)[:2]
@@ -74,6 +72,7 @@ def rectangle(img, x, y, h, w):
     # Create the ROI contour
     roi_contour = [np.array([[pt1], [pt2], [pt3], [pt4]], dtype=np.int32)]
     roi_hierarchy = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
+    roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
 
     # Draw the ROI if requested
     _draw_roi(img=img, roi_contour=roi_contour)
@@ -82,7 +81,7 @@ def rectangle(img, x, y, h, w):
     if x < 0 or y < 0 or x + w > width or y + h > height:
         fatal_error("The ROI extends outside of the image!")
 
-    return roi_contour, roi_hierarchy
+    return roi
 
 
 # Create a circular ROI
