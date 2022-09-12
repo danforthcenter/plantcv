@@ -222,8 +222,8 @@ def test_roi_custom(roi_test_data):
     """Test for PlantCV."""
     # Read in test RGB image
     img = cv2.imread(roi_test_data.small_rgb_img)
-    roi, _ = custom(img=img, vertices=[[226, 1], [313, 184], [240, 202], [220, 229], [161, 171]])
-    assert np.shape(roi) == (1, 5, 2)
+    roi = custom(img=img, vertices=[[226, 1], [313, 184], [240, 202], [220, 229], [161, 171]])
+    assert np.shape(roi.contours[0]) == (1, 5, 2)
 
 
 def test_custom_bad_input(roi_test_data):
