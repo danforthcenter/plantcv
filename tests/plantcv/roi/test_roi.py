@@ -95,18 +95,18 @@ def test_ellipse(roi_test_data):
     """Test for PlantCV."""
     # Read in test RGB image
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
-    roi, _ = ellipse(x=100, y=100, r1=75, r2=50, angle=0, img=rgb_img)
+    roi = ellipse(x=100, y=100, r1=75, r2=50, angle=0, img=rgb_img)
     # Assert the contours and hierarchy lists contain only the ROI
-    assert np.shape(roi) == (1, 360, 1, 2)
+    assert np.shape(roi.contours) == (1, 360, 1, 2)
 
 
 def test_ellipse_grayscale_input(roi_test_data):
     """Test for PlantCV."""
     # Read in a test grayscale image
     gray_img = cv2.imread(roi_test_data.small_gray_img, -1)
-    roi, _ = ellipse(x=100, y=100, r1=75, r2=50, angle=0, img=gray_img)
+    roi = ellipse(x=100, y=100, r1=75, r2=50, angle=0, img=gray_img)
     # Assert the contours and hierarchy lists contain only the ROI
-    assert np.shape(roi) == (1, 360, 1, 2)
+    assert np.shape(roi.contours) == (1, 360, 1, 2)
 
 
 def test_ellipse_out_of_frame(roi_test_data):
@@ -115,7 +115,7 @@ def test_ellipse_out_of_frame(roi_test_data):
     rgb_img = cv2.imread(roi_test_data.small_rgb_img)
     # The resulting rectangle needs to be within the dimensions of the image
     with pytest.raises(RuntimeError):
-        _, _ = ellipse(x=50, y=225, r1=75, r2=50, angle=0, img=rgb_img)
+        _ = ellipse(x=50, y=225, r1=75, r2=50, angle=0, img=rgb_img)
 
 
 def test_auto_grid(roi_test_data):
