@@ -12,13 +12,13 @@ def roi2mask(img, roi):
     Create a binary mask from an ROI contour
     Inputs:
     img                  = RGB or grayscale image data
-    contour              = An ROI set of points (contour)
+    roi                  = A region of interest as an instance of the class Objects
 
     Returns:
     mask   = Binary mask
 
     :param img: numpy.ndarray
-    :param contour: list
+    :param roi: plantcv.plantcv.classes.Objects
     :return mask: numpy.ndarray
     """
     # create a blank image of same size
