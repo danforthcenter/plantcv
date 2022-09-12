@@ -7,7 +7,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv._debug import _debug
 
 
-def roi2mask(img, contour):
+def roi2mask(img, roi):
     """
     Create a binary mask from an ROI contour
     Inputs:
@@ -25,7 +25,7 @@ def roi2mask(img, contour):
     shape_info = np.shape(img)
     bnk = np.zeros((shape_info[0], shape_info[1]), dtype=np.uint8)
 
-    mask = cv2.drawContours(bnk, contour, 0, 255, -1)
+    mask = cv2.drawContours(bnk, roi.contours[0], 0, 255, -1)
 
     _debug(visual=mask,
            filename=os.path.join(params.debug_outdir, str(params.device) + '_roi_mask.png'),
