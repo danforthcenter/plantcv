@@ -53,4 +53,4 @@ output_path, imgs, masks = pcv.cluster_contour_splitimg(img, clusters_i, contour
 
 ![Screenshot](img/documentation_images/cluster_contour_splitimg/17_clusters.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/cluster_contour_splitimg.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/cluster_contour_splitimg.py)

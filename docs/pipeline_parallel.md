@@ -52,10 +52,10 @@ workflows locally or distribute workflows to a cluster using a scheduler service
 !!! note
     PlantCV can analyze images in parallel that are stored in a directory (including subdirectories). Our aim is to
     make this process as flexible as possible but consistency in naming images is key. Ideally image filenames are
-    constructed of metadata information separated by a consistent delimiter (though we provide a regular 
+    constructed of metadata information separated by a consistent delimiter (though we provide a regular
     expression-based parser if needed). Please follow the instructions below carefully.
 
-In order for PlantCV to extract all of the necessary metadata from the image files, image files need to be named in 
+In order for PlantCV to extract all of the necessary metadata from the image files, image files need to be named in
 a particular way.
 
 **Image name might include:**
@@ -83,7 +83,7 @@ AABA002948_2014-03-14 03-29-45_Pilot-031014_VIS_TV_z3500.png
 Valid metadata that can be collected from filenames are `camera`, `imgtype`, `zoom`, `exposure`, `gain`, `frame`, `rotation`,
 `lifter`, `timestamp`, `id`, `barcode`, `treatment`, `cartag`, `measurementlabel`, and `other`.
 
-To correctly process timestamps, you need to specify the timestamp format (`timestampformat` configuration 
+To correctly process timestamps, you need to specify the timestamp format (`timestampformat` configuration
 parameter) code for the
 [strptime C library](https://docs.python.org/3.7/library/datetime.html#strftime-and-strptime-behavior).
 For the example above you would use `"timestampformat": "%Y-%m-%d %H-%M-%S"`.
@@ -211,7 +211,7 @@ patterns. Also feel free to post an [issue](https://github.com/danforthcenter/pl
 #### Grouping images for multi-image workflows
 
 Advanced PlantCV workflows can co-analyze multiple images. For example, a dataset containing an RGB and grayscale
-near-infrared image could be co-analyzed in a single workflow. 
+near-infrared image could be co-analyzed in a single workflow.
 
 Sample image filenames: `rgb_16-08-06-16:45_el1100s1_p19.jpg` and `nir_16-08-06-16:45_el1100s1_p19.jpg`
 
@@ -264,4 +264,4 @@ plantcv-utils.py json2csv -j output.json -c result-table.csv
 
 See [Accessory Tools](tools.md) for more information.
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv-workflow.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv-workflow.py)

@@ -49,4 +49,4 @@ fgmask = pcv.background_subtraction(foreground_image=plant_img, background_image
 
 ![Screenshot](img/documentation_images/background_subtraction/1_background_subtraction.png)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/background_subtraction.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/background_subtraction.py)

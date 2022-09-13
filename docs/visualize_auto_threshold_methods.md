@@ -43,4 +43,4 @@ labeled_imgs = pcv.visualize.auto_threshold_methods(gray_img=gray_img, grid_img=
 ![Screenshot](img/documentation_images/visualize_auto_threshold_methods/all_thresholds.jpg)
 
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/visualize/auto_threshold_methods.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/visualize/auto_threshold_methods.py)

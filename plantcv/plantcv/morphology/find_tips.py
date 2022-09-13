@@ -6,8 +6,8 @@ import numpy as np
 from plantcv.plantcv import params
 from plantcv.plantcv import dilate
 from plantcv.plantcv import outputs
-from plantcv.plantcv import find_objects
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _cv2_findcontours
 
 
 def find_tips(skel_img, mask=None, label="default"):
@@ -51,7 +51,7 @@ def find_tips(skel_img, mask=None, label="default"):
     # Store debug
     debug = params.debug
     params.debug = None
-    tip_objects, _ = find_objects(tip_img, tip_img)
+    tip_objects, _ = _cv2_findcontours(bin_img=tip_img)
 
     if mask is None:
         # Make debugging image
@@ -62,7 +62,7 @@ def find_tips(skel_img, mask=None, label="default"):
         # Make debugging image on mask
         mask_copy = mask.copy()
         tip_plot = cv2.cvtColor(mask_copy, cv2.COLOR_GRAY2RGB)
-        skel_obj, skel_hier = find_objects(skel_img, skel_img)
+        skel_obj, skel_hier = _cv2_findcontours(bin_img=skel_img)
         cv2.drawContours(tip_plot, skel_obj, -1, (150, 150, 150), params.line_thickness,
                          lineType=8, hierarchy=skel_hier)
 

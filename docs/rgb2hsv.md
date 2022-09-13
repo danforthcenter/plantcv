@@ -60,4 +60,4 @@ v_channel = pcv.rgb2gray_hsv(rgb_img=rgb_img, channel='v')
 
 ![Screenshot](img/documentation_images/rgb2hsv/hsv_value.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/rgb2gray_hsv.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/rgb2gray_hsv.py)

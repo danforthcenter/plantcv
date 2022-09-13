@@ -57,4 +57,4 @@ marker_area = pcv.outputs.observations['default']['marker_area']['value']
 
 ![Screenshot](img/documentation_images/report_size_marker/21_marker_shape.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/report_size_marker_area.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/report_size_marker_area.py)

@@ -40,4 +40,4 @@ corrected_img = pcv.transform.apply_transformation_matrix(source_img=source_img,
 
 ![Screenshot](img/documentation_images/correct_color_imgs/hstack.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/transform/color_correction.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/transform/color_correction.py)

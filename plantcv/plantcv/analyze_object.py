@@ -7,6 +7,7 @@ from plantcv.plantcv import params
 from plantcv.plantcv import outputs
 from plantcv.plantcv import within_frame
 from plantcv.plantcv._debug import _debug
+from plantcv.plantcv._helpers import _cv2_findcontours
 
 
 def analyze_object(img, obj, mask, label="default"):
@@ -82,7 +83,7 @@ def analyze_object(img, obj, mask, label="default"):
         cv2.circle(background, (int(cmx), int(cmy)), 4, (255, 255, 255), -1)
         center_p = cv2.cvtColor(background, cv2.COLOR_BGR2GRAY)
         ret, centerp_binary = cv2.threshold(center_p, 0, 255, cv2.THRESH_BINARY)
-        centerpoint, cpoint_h = cv2.findContours(centerp_binary, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)[-2:]
+        centerpoint, cpoint_h = _cv2_findcontours(bin_img=centerp_binary)
 
         dist = []
         vhull = np.vstack(hull)

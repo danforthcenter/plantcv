@@ -29,4 +29,4 @@ colored_img = pcv.visualize.colorize_label_img(label_img=label_img)
 
 ![Screenshot](img/documentation_images/colorize_masks/colored_classes.jpg)
 
-**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/master/plantcv/plantcv/visualize/colorize_label_img.py)
+**Source Code:** [Here](https://github.com/danforthcenter/plantcv/blob/main/plantcv/plantcv/visualize/colorize_label_img.py)
