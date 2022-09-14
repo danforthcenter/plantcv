@@ -602,6 +602,7 @@ pages for more details on the input and output variable types.
 * post v3.1: marker_header, marker_data, analysis_image = **plantcv.report_size_marker_area**(*img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None, thresh=None*)
 * post v3.3: analysis_image = **plantcv.report_size_marker_area**(*img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None, thresh=None*)
 * post v3.11: analysis_image = **plantcv.report_size_marker_area**(*img, roi_contour, roi_hierarchy, marker='define', objcolor='dark', thresh_channel=None, thresh=None, label="default"*)
+* post v4.0: analysis_image = **plantcv.report_size_marker_area**(*img, roi, marker='define', objcolor='dark', thresh_channel=None, thresh=None, label="default"*)
 
 #### plantcv.resize
 
