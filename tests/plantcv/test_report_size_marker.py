@@ -50,5 +50,5 @@ def test_report_size_marker_bad_inputs(marker, channel, test_data):
     roi_hierarchy = np.array([[[-1, -1, -1, -1]]], dtype=np.int32)
     roi = Objects(contours=[roi_contour], hierarchy=[roi_hierarchy])
     with pytest.raises(RuntimeError):
-        _ = report_size_marker_area(img=img, roi_contour=roi, marker=marker,
+        _ = report_size_marker_area(img=img, roi=roi, marker=marker,
                                     objcolor='light', thresh_channel=channel, thresh=120)
